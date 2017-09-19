@@ -54,6 +54,7 @@
     <Compile Include="AutomationUtil.cs" />
     <Compile Include="ClangCheckAttribute.cs" />
     <Compile Include="CompileCommand.cs" />
+    <Compile Include="DefaultOptions.cs" />
     <Compile Include="ErrorParser.cs" />
     <Compile Include="ErrorParserConstants.cs" />
     <Compile Include="ErrorsWindowManager.cs" />
