@@ -83,8 +83,8 @@ namespace ClangPowerTools
     {
       string parameters = aTidyPage.Fix ? $" {ScriptConstants.kTidyFix} ''-*" : $" {ScriptConstants.kTidy} ''-*";
      
-      if (null != aTidyPage.TidyFlags && 0 < aTidyPage.TidyFlags.Length)
-        parameters = $"{parameters} ''-*,{String.Join(",", aTidyPage.TidyFlags)}''";
+      if (null != aTidyPage.TidyChecks && 0 < aTidyPage.TidyChecks.Length)
+        parameters = $"{parameters} ''-*,{String.Join(",", aTidyPage.TidyChecks)}''";
       else
       {
         foreach (PropertyInfo prop in aTidyPage.GetType().GetProperties())
