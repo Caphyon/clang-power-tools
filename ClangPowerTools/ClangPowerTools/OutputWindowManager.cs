@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows;
 
 namespace ClangPowerTools
 {
@@ -35,12 +36,12 @@ namespace ClangPowerTools
 
     public void AddMessages(IEnumerable<string> aErrors)
     {
-      using (OutputWindow windowWriter = new OutputWindow(mDte))
+      using (OutputWindow outputWindow = new OutputWindow(mDte))
       {
-        windowWriter.Clear();
+        outputWindow.Clear();
+        outputWindow.Show(mDte);
         foreach (string error in aErrors.Where(err => !String.IsNullOrWhiteSpace(err)))
-          windowWriter.Write(error);
-        windowWriter.Write("\n");
+          outputWindow.Write(error);
       }
     }
 

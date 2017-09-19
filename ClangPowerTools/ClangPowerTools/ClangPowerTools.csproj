@@ -52,6 +52,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AutomationUtil.cs" />
+    <Compile Include="ClangCheckAttribute.cs" />
     <Compile Include="CompileCommand.cs" />
     <Compile Include="ErrorParser.cs" />
     <Compile Include="ErrorParserConstants.cs" />
@@ -70,7 +71,7 @@
     <Compile Include="SilentFileChangerGuard.cs" />
     <Compile Include="StringArrayConverter.cs" />
     <Compile Include="TidyCommand.cs" />
-    <Compile Include="RunPowerShellCommandPackage.cs" />
+    <Compile Include="ClangPowerToolsPackage.cs" />
     <Compile Include="ErrorWindow.cs" />
     <Compile Include="ScriptBuiler.cs" />
     <Compile Include="ScriptConstants.cs" />
@@ -84,8 +85,8 @@
   <ItemGroup>
     <None Include="app.config" />
     <Content Include="clang-build.ps1">
-      <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="Key.snk" />
     <None Include="packages.config" />
@@ -208,7 +209,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <VSCTCompile Include="RunPowerShellCommandPackage.vsct">
+    <VSCTCompile Include="ClangPowerTools.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
       <SubType>Designer</SubType>
     </VSCTCompile>
@@ -220,7 +221,14 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Resources\CompileCommand.png" />
+    <Content Include="Resources\Icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\PreviewImage.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\RunPowerShellCommand.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

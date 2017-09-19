@@ -13,8 +13,8 @@ namespace ClangPowerTools
 
     private const string kPaneName = "Clang Power Tools";
     private static readonly Guid mPaneGuid = new Guid("AB9F45E4-2001-4197-BAF5-4B165222AF29");
-    private IVsOutputWindow mOutputWindow = null;
-    private IVsOutputWindowPane mOutputPane = null;
+    private static IVsOutputWindow mOutputWindow = null;
+    private static IVsOutputWindowPane mOutputPane = null;
     
     #endregion
 
@@ -22,20 +22,21 @@ namespace ClangPowerTools
 
     public OutputWindow(DTE2 aDte)
     {
-      if( mOutputWindow == null )
+      if( null == mOutputWindow )
       {
         IServiceProvider serviceProvider = 
           new ServiceProvider(aDte as Microsoft.VisualStudio.OLE.Interop.IServiceProvider);
         mOutputWindow = serviceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
       }
 
-      if (mOutputPane == null)
+      if (null == mOutputPane)
       {
         Guid generalPaneGuid = mPaneGuid;
         mOutputWindow.GetPane(ref generalPaneGuid, out IVsOutputWindowPane pane);
-        if (pane == null)
+        
+        if ( null == pane)
         {
-          mOutputWindow.CreatePane(ref generalPaneGuid, kPaneName, 1, 1);
+          mOutputWindow.CreatePane(ref generalPaneGuid, kPaneName, 3, 1);
           mOutputWindow.GetPane(ref generalPaneGuid, out pane);
         }
         mOutputPane = pane;
@@ -55,6 +56,12 @@ namespace ClangPowerTools
     public override void Write(string aMessage) => mOutputPane.OutputString($"{aMessage}\n");
 
     public override void Write(char aCharacter) => mOutputPane.OutputString(aCharacter.ToString());
+
+    public void Show(DTE2 aDte)
+    {
+      mOutputPane.Activate();
+      aDte.ExecuteCommand("View.Output", string.Empty);
+    }
 
     public void Clear() => mOutputPane.Clear();
 

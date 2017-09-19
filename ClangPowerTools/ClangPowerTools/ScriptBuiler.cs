@@ -1,7 +1,10 @@
 ﻿using EnvDTE;
 using System;
+using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Reflection;
+using System.Windows;
 
 namespace ClangPowerTools
 {
@@ -45,6 +48,8 @@ namespace ClangPowerTools
 
       if (aTidyPage != null)
         mParameters = $"{mParameters} {GetTidyParameters(aTidyPage)}";
+      else
+        mParameters = $"{mParameters} {ScriptConstants.kParallel}";
 
       mParameters = $"{mParameters} -vs-ver {aVsVersion} -vs-sku {aVsEdition}";
     }
@@ -76,21 +81,41 @@ namespace ClangPowerTools
       if (null != aGeneralOptions.ProjectsToIgnore && 0 < aGeneralOptions.ProjectsToIgnore.Length)
         parameters = $"{parameters} -proj-ignore {String.Join(",", aGeneralOptions.ProjectsToIgnore)}";
 
-      return $"{parameters} {ScriptConstants.kParallel}".Trim(new char[] { ' ', ',' });
+      return $"{parameters}".Trim(new char[] { ' ', ',' });
     }
 
     private string GetTidyParameters(TidyOptions aTidyPage)
     {
-      string parameters = string.Empty;
-
-      if (aTidyPage.Fix)
-        parameters = $"{parameters} -tidy-fix";
-      else
-        parameters = $"{parameters} -tidy";
-
+      string parameters = aTidyPage.Fix ? " -tidy-fix ''-*" : " -tidy ''-*";
+     
       if (null != aTidyPage.TidyFlags && 0 < aTidyPage.TidyFlags.Length)
         parameters = $"{parameters} ''-*,{String.Join(",", aTidyPage.TidyFlags)}''";
+      else
+      {
+        foreach (PropertyInfo prop in aTidyPage.GetType().GetProperties())
+        {
+          object[] propAttrs = prop.GetCustomAttributes(false);
+          object clangCheckAttr = propAttrs.FirstOrDefault(a => a.GetType() == typeof(ClangCheckAttribute));
+          object displayNameAttrObj = propAttrs.FirstOrDefault(a => a.GetType() == typeof(DisplayNameAttribute));
 
+          if ( null == clangCheckAttr || null == displayNameAttrObj)
+            continue;
+
+          DisplayNameAttribute displayNameAttr = (DisplayNameAttribute)displayNameAttrObj;
+          
+          var value = prop.GetValue(aTidyPage, null);
+
+          if (Boolean.TrueString != value.ToString())
+            continue;
+          
+          //var displayName = typeof().GetCustomAttributes(typeof(DisplayNameAttribute), true).FirstOrDefault() as DisplayNameAttribute;
+          //if (displayName != null)
+          //  Console.WriteLine(displayName.DisplayName);
+
+          parameters = $"{parameters},{displayNameAttr.DisplayName}";
+        }
+        parameters = $"{parameters}''";
+      }
       return parameters.Trim(new char[] { ' ', ',' });
     }
 

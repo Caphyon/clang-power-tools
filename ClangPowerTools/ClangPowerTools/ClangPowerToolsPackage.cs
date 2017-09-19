@@ -34,11 +34,11 @@ namespace ClangPowerTools
   [PackageRegistration(UseManagedResourcesOnly = true)]
   [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
   [ProvideMenuResource("Menus.ctmenu", 1)]
-  [Guid(RunPowerShellCommandPackage.PackageGuidString)]
+  [Guid(RunClangPowerToolsPackage.PackageGuidString)]
   [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
   [ProvideOptionPage(typeof(TidyOptions), "Clang Power Tools", "Tidy", 0, 0, true)]
   [ProvideOptionPage(typeof(GeneralOptions), "Clang Power Tools", "General", 0, 0, true)]
-  public sealed class RunPowerShellCommandPackage : Package
+  public sealed class RunClangPowerToolsPackage : Package
   {
     #region Members
 
@@ -63,7 +63,7 @@ namespace ClangPowerTools
     /// <summary>
     /// Initializes a new instance of the <see cref="TidyCommand"/> class.
     /// </summary>
-    public RunPowerShellCommandPackage()
+    public RunClangPowerToolsPackage()
     {
       // Inside this method you can place any initialization code that does not require
       // any Visual Studio service because at this point the package object is created but

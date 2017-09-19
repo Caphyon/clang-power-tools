@@ -48,7 +48,16 @@
 .PARAMETER aTidyFlags
       Alias 'tidy'. If not empty clang-tidy will be called with given flags, instead of clang++. 
       The tidy operation is applied to whole translation units, meaning all directory headers 
-      included in the CPP will be tidied up too.
+      included in the CPP will be tidied up too. Changes will not be applied, only simulated.
+
+      If aTidyFixFlags is present, it takes precedence over this parameter.
+      
+.PARAMETER aTidyFixFlags
+      Alias 'tidy-fix'. If not empty clang-tidy will be called with given flags, instead of clang++. 
+      The tidy operation is applied to whole translation units, meaning all directory headers 
+      included in the CPP will be tidied up too. Changes will be applied to the file(s).
+
+      If present, this parameter takes precedence over aTidyFlags.
 
 .PARAMETER aVisualStudioVersion
       Alias 'vs-ver'. Version of Visual Studio (VC++) installed and that'll be used for 
@@ -58,37 +67,34 @@
       Alias 'vs-sku'. Sku of Visual Studio (VC++) installed and that'll be used for 
       standard library include directories. E.g. Professional.
 
-.EXAMPLE
-    PS .\clang-build.ps1 -dir C:\Proj -proj foo,bar -file meow -tidy "-*,modernize-*"
-    <Description of example>
-    Runs clang-tidy, using "-*,modernize-*", on all CPPs containing 'meow' in their name from 
-    the projects containing 'foo' or 'bar' in their names.
+.PARAMETER aDefaultWinSdkVersion
+      Alias 'win-sdk-ver'. Default version of Windows SDK to be used for default include directories.
+      It is used only when the project does not explictly specify a Windows Target Platform Version.
+      
+      Only Windows 10 SDKs versions are supported.
 
-.EXAMPLE
-    PS .\clang-build.ps1 -dir C:\Proj -proj foo -proj-ignore foobar
-    <Description of example>
-    Runs clang++ on all CPPs in foo... projects, except foobar
-  
-.OUTPUTS
-    Will output Clang warnings and errors to screen. The return code will be 0 for success, >0 for failure.
+      If not given as parameter and project doesn't specify it either , no WinSDK include paths are added. 
+      E.g. 10.0.14393.0
 
 .NOTES
     Author: Gabriel Diaconita
 #>
-param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aDirectory,
-       [alias("proj")]         [Parameter(Mandatory=$false)][string[]] $aVcxprojToCompile,
-       [alias("proj-ignore")]  [Parameter(Mandatory=$false)][string[]] $aVcxprojToIgnore,
-       [alias("file")]         [Parameter(Mandatory=$false)][string]   $aCppToCompile,
-       [alias("include-dirs")] [Parameter(Mandatory=$false)][string[]] $aIncludeDirectories,
-       [alias("parallel")]     [Parameter(Mandatory=$false)][switch]   $aUseParallelCompile,
-       [alias("continue")]     [Parameter(Mandatory=$false)][switch]   $aContinueOnError,
-       [alias("clang-flags")]  [Parameter(Mandatory=$true)] [string[]] $aClangCompileFlags,
-       [alias("literal")]      [Parameter(Mandatory=$false)][switch]   $aDisableNameRegexMatching,
-       [alias("tidy")]         [Parameter(Mandatory=$false)][string]   $aTidyFlags,
-       [alias("vs-ver")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioVersion,
-       [alias("vs-sku")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioSku
+param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aDirectory
+     , [alias("proj")]         [Parameter(Mandatory=$false)][string[]] $aVcxprojToCompile
+     , [alias("proj-ignore")]  [Parameter(Mandatory=$false)][string[]] $aVcxprojToIgnore
+     , [alias("file")]         [Parameter(Mandatory=$false)][string]   $aCppToCompile
+     , [alias("include-dirs")] [Parameter(Mandatory=$false)][string[]] $aIncludeDirectories
+     , [alias("parallel")]     [Parameter(Mandatory=$false)][switch]   $aUseParallelCompile
+     , [alias("continue")]     [Parameter(Mandatory=$false)][switch]   $aContinueOnError
+     , [alias("clang-flags")]  [Parameter(Mandatory=$true)] [string[]] $aClangCompileFlags
+     , [alias("literal")]      [Parameter(Mandatory=$false)][switch]   $aDisableNameRegexMatching
+     , [alias("tidy")]         [Parameter(Mandatory=$false)][string]   $aTidyFlags
+     , [alias("tidy-fix")]     [Parameter(Mandatory=$false)][string]   $aTidyFixFlags
+     , [alias("vs-ver")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioVersion
+     , [alias("vs-sku")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioSku
+     , [alias("win-sdk-ver")]  [Parameter(Mandatory=$false)][string]   $aDefaultWinSdkVersion
      )
-       
+
 # System Architecture Constants
 # ------------------------------------------------------------------------------------------------
        
@@ -100,7 +106,6 @@ Set-Variable -name kLogicalCoreCount -value (Get-WmiObject -class Win32_processo
 # Return Value Constants
 
 Set-Variable -name kScriptFailsExitCode      -value  47                 -Option Constant
-Set-Variable -name kScriptSuccessExitCode    -value  0                  -Option Constant
 
 # ------------------------------------------------------------------------------------------------
 # File System Constants
@@ -142,37 +147,27 @@ Set-Variable -name kClangDefinePrefix       -value "-D"                 -Option 
 
 Set-Variable -name kClangCompiler             -value "clang++"          -Option Constant
 Set-Variable -name kClangTidy                 -value "clang-tidy"       -Option Constant
-Set-Variable -name kClangTidyFlags            -value @("-fix", "--")    -Option Constant
+Set-Variable -name kClangTidyFlags            -value @("--")            -Option Constant
+Set-Variable -name kClangTidyFixFlags         -value @("-fix", "--")    -Option Constant
 Set-Variable -name kClangTidyFlagHeaderFilter -value "-header-filter="  -Option Constant
 Set-Variable -name kClangTidyFlagChecks       -value "-checks="         -Option Constant
 
 #-------------------------------------------------------------------------------------------------
 # PlatformToolset-Related Constants
-#
-# *Important* When updating constants for a new platform toolset version, pleased update the
-# 'PlatformToolset' custom enum type defined below, in the 'Custom Types' section.
 
-Set-Variable -name kClangFlagsClCompat_v141   -value @("-DUNICODE",
-                                                       "-D_UNICODE")    -Option Constant
+Set-Variable -name kDefinesUnicode   -value @("-DUNICODE"
+                                             ,"-D_UNICODE"
+                                             ) `
+                                     -Option Constant
 
-Set-Variable -name KClangFlagsClCompat_v141_xp                          -Option Constant `
-                                              -value @("-DUNICODE",
-                                                       "-D_UNICODE", 
-                                                       "-D_USING_V110_SDK71_")
+Set-Variable -name kDefinesClangXpTargeting `
+             -value @("-D_USING_V110_SDK71_") `
+             -Option Constant
 
-Set-Variable -name kIncludePaths_v141                                   -Option Constant `
-             -value (@("${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$aVisualStudioVersion\$aVisualStudioSku\VC\Tools\MSVC\14.11.25503\include",
-                      "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$aVisualStudioVersion\$aVisualStudioSku\VC\Tools\MSVC\14.11.25503\atlmfc\include",
-                      "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\10.0.14393.0\ucrt",
-                      "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\10.0.14393.0\um",
-                      "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\10.0.14393.0\shared",
-                      "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\10.0.14393.0\winrt") + $aIncludeDirectories)
 
-Set-Variable -name kIncludePaths_v141_xp                                -Option Constant `
-             -value (@("${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$aVisualStudioVersion\$aVisualStudioSku\VC\Tools\MSVC\14.11.25503\include",
-                      "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$aVisualStudioVersion\$aVisualStudioSku\VC\Tools\MSVC\14.11.25503\atlmfc\include",
-                      "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\10.0.14393.0\ucrt",
-                      "${Env:ProgramFiles(x86)}\Microsoft SDKs\Windows\v7.1A\Include") + $aIncludeDirectories)
+Set-Variable -name kIncludePathsXPTargetingSDK  `
+             -value "${Env:ProgramFiles(x86)}\Microsoft SDKs\Windows\v7.1A\Include"  `
+             -Option Constant
 
 #-------------------------------------------------------------------------------------------------
 # Custom Types
@@ -181,24 +176,12 @@ Add-Type -TypeDefinition @"
   public enum WorkloadType
   {
     Compile,
-    Tidy
+    Tidy,
+    TidyFix
   }
 "@
 
-# *IMPORTANT* When adding a new platform toolset enum VAL, corresponding kIncludePaths_VAL and
-# kClangFlagsClCompat_VAL have to be created. This is all that is required. 
-# The code automatically uses those variables. Just be sure that the enum value matches the value 
-# used by Visual Studio in the .vcxproj file.
-
-Add-Type -TypeDefinition @"
-  public enum PlatformToolset
-  {
-    v141,        //Visual Studio 2017
-    v141_xp      //Visual Studio 2017 - Windows XP
-  }
-"@
-
-Set-Variable -name kVStudioDefaultPlatformToolset -Value ([PlatformToolset]::v141) -Option Constant
+Set-Variable -name kVStudioDefaultPlatformToolset -Value "v141" -Option Constant
 
 #-------------------------------------------------------------------------------------------------
 # Global functions
@@ -206,11 +189,12 @@ Set-Variable -name kVStudioDefaultPlatformToolset -Value ([PlatformToolset]::v14
 [System.Collections.ArrayList] $global:FilesToDeleteWhenScriptQuits = @()
 [Boolean]                      $global:FoundErrors                  = $false
 
-Function Exit-Script([Parameter(Mandatory=$true)][int] $code)
+Function Exit-Script([Parameter(Mandatory=$false)][int] $code = 0)
 {
   # Clean-up
   foreach ($file in $global:FilesToDeleteWhenScriptQuits)
   {
+    Write-Verbose "Cleaning up $file"
     Remove-Item $file -ErrorAction SilentlyContinue | Out-Null
   }
 
@@ -229,8 +213,8 @@ Function Fail-Script([parameter(Mandatory=$false)][string] $msg = "Got errors.")
   Exit-Script($kScriptFailsExitCode)
 }
 
-Function Write-Message([parameter(Mandatory=$true)][string] $msg,
-                       [Parameter(Mandatory=$true)][System.ConsoleColor] $color)
+Function Write-Message([parameter(Mandatory=$true)][string] $msg
+                      ,[Parameter(Mandatory=$true)][System.ConsoleColor] $color)
 {
   $foregroundColor = $host.ui.RawUI.ForegroundColor
   $host.ui.RawUI.ForegroundColor = $color
@@ -254,8 +238,8 @@ Function Get-FileDirectory([Parameter(Mandatory=$true)][string] $filePath)
   return ([System.IO.Path]::GetDirectoryName($filePath))
 }
 
-Function Get-FileName([Parameter(Mandatory=$true)][string] $path,
-                      [Parameter(Mandatory=$false)][switch] $noext)
+Function Get-FileName( [Parameter(Mandatory=$true)][string] $path
+                     , [Parameter(Mandatory=$false)][switch] $noext)
 {
   if ($noext)
   {
@@ -267,8 +251,8 @@ Function Get-FileName([Parameter(Mandatory=$true)][string] $path,
   }
 }
 
-Function IsFileMatchingName([Parameter(Mandatory=$true)][string] $filePath,
-                            [Parameter(Mandatory=$true)][string] $matchName)
+Function IsFileMatchingName( [Parameter(Mandatory=$true)][string] $filePath
+                           , [Parameter(Mandatory=$true)][string] $matchName)
 {
   [string] $fileName      = (Get-FileName -path $filePath)
   [string] $fileNameNoExt = (Get-FileName -path $filePath -noext) 
@@ -282,9 +266,9 @@ Function IsFileMatchingName([Parameter(Mandatory=$true)][string] $filePath,
   }
 }
 
-Function Canonize-Path([Parameter(Mandatory=$true)][string] $base, 
-                       [Parameter(Mandatory=$true)][string] $child, 
-                       [switch] $ignoreErrors)
+Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
+                      , [Parameter(Mandatory=$true)][string] $child
+                      , [switch] $ignoreErrors)
 {
   [string] $errorAction = If ($ignoreErrors) {"SilentlyContinue"} Else {"Stop"}
   [string] $path = Join-Path -Path "$base" -ChildPath "$child" -Resolve -ErrorAction $errorAction
@@ -292,11 +276,10 @@ Function Canonize-Path([Parameter(Mandatory=$true)][string] $base,
   return $path
 }
 
-Function Detect-MscVer([Parameter(Mandatory=$true)][string] $vsVer,
-                       [Parameter(Mandatory=$true)][string] $vsSku)
+Function Get-MscVer()
 {
   [string] $path = "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\"
-  $path         += "$vsVer\$vsSku\VC\Tools\MSVC\"
+  $path         += "$aVisualStudioVersion\$aVisualStudioSku\VC\Tools\MSVC\"
 
   [System.IO.DirectoryInfo] $directory = (Get-Item $path)
   [System.IO.DirectoryInfo] $child = ($directory | Get-ChildItem)
@@ -366,7 +349,7 @@ Function Get-Project-SDKVer([Parameter(Mandatory=$true)][string] $vcxprojPath)
   [xml] $vcxproj = Get-Content $vcxprojPath
   [string] $sdkVer = $vcxproj.Project.PropertyGroup.WindowsTargetPlatformVersion
 
-  return $sdkVer
+  If ([string]::IsNullOrEmpty($sdkVer)) { "" } Else { $sdkVer.Trim() }
 }
 
 Function Is-Project-Unicode([Parameter(Mandatory=$true)][string] $vcxprojPath)
@@ -377,6 +360,66 @@ Function Is-Project-Unicode([Parameter(Mandatory=$true)][string] $vcxprojPath)
                               $_.GetAttribute("Label") -eq "Configuration" }
   
   return ($propGroup.CharacterSet -eq "Unicode")
+}
+
+Function Get-ProjectPlatformToolset([Parameter(Mandatory=$true)][string] $vcxprojPath)
+{
+  [xml] $vcxproj = Get-Content $vcxprojPath
+  $propGroup = $vcxproj.Project.PropertyGroup | `
+               Where-Object { $_.GetAttribute("Condition") -eq $kPlatformFilter -and 
+                              $_.GetAttribute("Label") -eq "Configuration" }
+  
+  $toolset = $propGroup.PlatformToolset
+
+  if ($toolset)
+  {
+    return $toolset
+  }
+  else
+  {
+    return $kVStudioDefaultPlatformToolset
+  }
+}
+
+Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcxprojPath)
+{
+  [string[]] $returnArray = @()
+
+  [string] $mscVer = Get-MscVer
+  
+  $returnArray += @("${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$aVisualStudioVersion\$aVisualStudioSku\VC\Tools\MSVC\$mscVer\include"
+                   ,"${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$aVisualStudioVersion\$aVisualStudioSku\VC\Tools\MSVC\$mscVer\atlmfc\include"
+                   )
+
+  $sdkVer = (Get-Project-SDKVer -vcxprojPath $vcxprojPath)
+
+  if ([string]::IsNullOrEmpty($sdkVer))
+  {
+    $sdkVer = $aDefaultWinSdkVersion
+  }
+
+  if ((![string]::IsNullOrEmpty($sdkVer)) -and ($sdkVer.StartsWith("10")))
+  {
+    $returnArray += @("${Env:ProgramFiles(x86)}\Windows Kits\10\Include\$sdkVer\ucrt")
+
+    [string] $platformToolset = (Get-ProjectPlatformToolset -vcxprojPath $vcxprojPath)
+
+    if ($platformToolset.EndsWith("xp"))
+    {
+      $returnArray += @($kIncludePathsXPTargetingSDK)
+    }
+    else
+    {
+      $returnArray += @( "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\$sdkVer\um"
+                       , "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\$sdkVer\shared"
+                       , "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\$sdkVer\winrt"
+                       )
+    }
+  }
+
+  $returnArray += $aIncludeDirectories
+
+  return $returnArray
 }
 
 Function Get-Projects()
@@ -420,12 +463,16 @@ Function Project-HasPch([Parameter(Mandatory=$true)][string] $vcxprojPath)
 Function Set-ProjectIncludePaths([Parameter(Mandatory=$true)] $includeDirectories)
 {
   [string] $includePathsString = $includeDirectories -join ";"
-  Write-Output "  --> include directories: $includePathsString"
+  Write-Verbose "  --> include directories:"
+  foreach ($dir in $includeDirectories)
+  {
+    Write-Verbose $dir
+  }
   $ENV:INCLUDE = $includePathsString;
 }
 
-Function Generate-Pch([Parameter(Mandatory=$true)] [string]   $stdafxDir,
-                      [Parameter(Mandatory=$false)][string[]] $preprocessorDefinitions)
+Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
+                     , [Parameter(Mandatory=$false)][string[]] $preprocessorDefinitions)
 {
   [string] $stdafx = (Canonize-Path -base $stdafxDir -child $kNameStdAfxH)
   [string] $vcxprojShortName = [System.IO.Path]::GetFileNameWithoutExtension($vcxprojPath);
@@ -435,13 +482,13 @@ Function Generate-Pch([Parameter(Mandatory=$true)] [string]   $stdafxDir,
 
   $global:FilesToDeleteWhenScriptQuits.Add($stdafxPch) | Out-Null
 
-  [string[]] $compilationFlags = @("""$stdafx""",
-                                   $kClangFlagEmitPch,
-                                   $kClangFlagMinusO,
-                                   """$stdafxPch""",
-                                   $aClangCompileFlags,
-                                   (Get-Variable -name ("kClangFlagsClCompat_" + $platformToolset) -ValueOnly),
-                                   $preprocessorDefinitions)
+  [string[]] $compilationFlags = @("""$stdafx"""
+                                  ,$kClangFlagEmitPch
+                                  ,$kClangFlagMinusO
+                                  ,"""$stdafxPch"""
+                                  ,$aClangCompileFlags
+                                  ,$preprocessorDefinitions
+                                  )
 
   [System.Diagnostics.Process] $processInfo = Start-Process -FilePath "clang++" `
                                                             -ArgumentList $compilationFlags `
@@ -486,10 +533,10 @@ Function Get-PropertySheets([Parameter(Mandatory=$true)][string] $vcxprojPath)
   return $sheetAbsolutePaths
 }
 
-Function Get-ProjectClCompileData([Parameter(Mandatory=$true)][string]   $vcxprojOrPropSheetPath,
-                                  [Parameter(Mandatory=$true)][string]   $clCompileChildItem,
-                                  [Parameter(Mandatory=$true)][string[]] $valuesToIgnore,
-                                  [switch] $isPropSheet)
+Function Get-ProjectClCompileData( [Parameter(Mandatory=$true)][string]   $vcxprojOrPropSheetPath
+                                 , [Parameter(Mandatory=$true)][string]   $clCompileChildItem
+                                 , [Parameter(Mandatory=$true)][string[]] $valuesToIgnore
+                                 , [switch] $isPropSheet)
 {
   [string] $itemDefinitionFilter = if ($isPropSheet) { "" } else { $kPlatformFilter }
 
@@ -540,7 +587,20 @@ Function Get-ProjectPreprocessorDefines([Parameter(Mandatory=$true)][string] $vc
   [string[]] $tokens = Get-ProjectClCompileData -vcxprojOrPropSheetPath $vcxprojPath `
                                                 -clCompileChildItem     "PreprocessorDefinitions" `
                                                 -valuesToIgnore         @($kVcxprojItemInheritedPreprocessorDefs)
-  return ($tokens | ForEach-Object { $kClangDefinePrefix + $_ })
+  $defines = ($tokens | ForEach-Object { $kClangDefinePrefix + $_ })
+
+  if (Is-Project-Unicode -vcxprojPath $vcxprojPath)
+  {
+    $defines += $kDefinesUnicode
+  }
+
+  [string] $platformToolset = Get-ProjectPlatformToolset -vcxprojPath $vcxprojPath
+  if ($platformToolset.EndsWith("xp"))
+  {
+    $defines += $kDefinesClangXpTargeting
+  }
+
+  return $defines
 }
 
 Function Get-ProjectAdditionalIncludes([Parameter(Mandatory=$true)][string] $vcxprojPath)
@@ -564,88 +624,82 @@ Function Get-ProjectAdditionalIncludes([Parameter(Mandatory=$true)][string] $vcx
   }
 }
 
-Function Get-ProjectPlatformToolset([Parameter(Mandatory=$true)][string] $vcxprojPath)
-{
-  [xml] $vcxproj = Get-Content $vcxprojPath
-  $propGroup = $vcxproj.Project.PropertyGroup | `
-               Where-Object { $_.GetAttribute("Condition") -eq $kPlatformFilter -and 
-                              $_.GetAttribute("Label") -eq "Configuration" }
-  
-  $toolset = $propGroup.PlatformToolset
-
-  if ($toolset)
-  {
-    return $toolset
-  }
-  else
-  {
-    return $kVStudioDefaultPlatformToolset
-  }
-}
-
 Function Get-ExeToCall([Parameter(Mandatory=$true)][WorkloadType] $workloadType)
 {
   switch ($workloadType)
   {
      "Compile"  { return $kClangCompiler }
      "Tidy"     { return $kClangTidy     }
+     "TidyFix"  { return $kClangTidy     }
   }
 }
 
-Function Get-CompileCallArguments([Parameter(Mandatory=$true)][string[]]        $preprocessorDefinitions,
-                                  [Parameter(Mandatory=$true)][PlatformToolset] $platformToolset,
-                                  [Parameter(Mandatory=$true)][string]          $pchFilePath,
-                                  [Parameter(Mandatory=$true)][string]          $fileToCompile)
+Function Get-CompileCallArguments( [Parameter(Mandatory=$true)][string[]]        $preprocessorDefinitions
+                                 , [Parameter(Mandatory=$true)][string]          $pchFilePath
+                                 , [Parameter(Mandatory=$true)][string]          $fileToCompile)
 {
-  [string[]] $projectCompileArgs = @($kClangFlagIncludePch,
-                                     """$pchFilePath""",
-                                     """$fileToCompile""",
-                                     $aClangCompileFlags,
-                                     (Get-Variable -name ("kClangFlagsClCompat_" + $platformToolset) -ValueOnly),
-                                     $kClangFlagSupressLINK,
-                                     $kClangFlagWarningIsError,
-                                     $preprocessorDefinitions)
+  [string[]] $projectCompileArgs = @( $kClangFlagIncludePch
+                                    , """$pchFilePath"""
+                                    , """$fileToCompile"""
+                                    , $aClangCompileFlags
+                                    , $kClangFlagSupressLINK
+                                    , $kClangFlagWarningIsError
+                                    , $preprocessorDefinitions
+                                    )
 
   return $projectCompileArgs
 }
 
-Function Get-TidyCallArguments([Parameter(Mandatory=$true)][string[]]        $preprocessorDefinitions,
-                               [Parameter(Mandatory=$true)][PlatformToolset] $platformToolset,
-                               [Parameter(Mandatory=$true)][string]          $fileToTidy)
+Function Get-TidyCallArguments([Parameter(Mandatory=$true)][string[]]        $preprocessorDefinitions
+                              , [Parameter(Mandatory=$true)][string]          $fileToTidy
+                              , [Parameter(Mandatory=$false)][switch]         $fix)
 {
   [string[]] $tidyArgs = @("""$fileToTidy""")
-  $tidyArgs += $kClangTidyFlagChecks + $aTidyFlags
+  if ($fix)
+  { 
+    $tidyArgs += "$kClangTidyFlagChecks$aTidyFixFlags"
+  } 
+  else
+  { 
+    $tidyArgs += "$kClangTidyFlagChecks$aTidyFlags"
+  }
 
   # The header-filter flag enables clang-tidy to run on headers too.
   # We want all headers from our directory to be tidied up.
   $tidyArgs += $kClangTidyFlagHeaderFilter + '"' + [regex]::Escape($aDirectory) + '"'
 
-  $tidyArgs += $kClangTidyFlags
+  if ($fix)
+  {
+    $tidyArgs += $kClangTidyFixFlags
+  }
+  else 
+  {
+    $tidyArgs += $kClangTidyFlags
+  }
   
   # We reuse flags used for compilation and preprocessor definitions.
   $tidyArgs += $aClangCompileFlags
-  $tidyArgs += (Get-Variable -name ("kClangFlagsClCompat_" + $platformToolset) -ValueOnly)
   $tidyArgs += $preprocessorDefinitions
 
   return $tidyArgs
 }
 
-Function Get-ExeCallArguments([Parameter(Mandatory=$true) ][string]         $vcxprojPath,
-                              [Parameter(Mandatory=$true)][PlatformToolset] $platformToolset,
-                              [Parameter(Mandatory=$false)][string]         $pchFilePath,
-                              [Parameter(Mandatory=$true) ][string[]]       $preprocessorDefinitions,
-                              [Parameter(Mandatory=$true) ][string]         $currentFile,
-                              [Parameter(Mandatory=$true) ][WorkloadType]   $workloadType)
+Function Get-ExeCallArguments( [Parameter(Mandatory=$true) ][string]         $vcxprojPath
+                             , [Parameter(Mandatory=$false)][string]         $pchFilePath
+                             , [Parameter(Mandatory=$true) ][string[]]       $preprocessorDefinitions
+                             , [Parameter(Mandatory=$true) ][string]         $currentFile
+                             , [Parameter(Mandatory=$true) ][WorkloadType]   $workloadType)
 {
   switch ($workloadType)
   {
     Compile { return Get-CompileCallArguments -preprocessorDefinitions $preprocessorDefinitions `
-                                              -platformToolset         $platformToolset `
                                               -pchFilePath             $pchFilePath `
                                               -fileToCompile           $currentFile }
     Tidy    { return Get-TidyCallArguments -preprocessorDefinitions $preprocessorDefinitions `
-                                           -platformToolset         $platformToolset `
                                            -fileToTidy              $currentFile }
+    TidyFix { return Get-TidyCallArguments -preprocessorDefinitions $preprocessorDefinitions `
+                                           -fileToTidy              $currentFile `
+                                           -fix}
   }
 }
 
@@ -663,6 +717,13 @@ Function Process-ProjectResult($compileResult)
     }
 
     $global:FoundErrors = $true
+  }
+  else 
+  {
+    if ( $compileResult.Output.Length -gt 0)
+    {
+      Write-Output $compileResult.Output
+    }
   }
 }
 
@@ -752,8 +813,8 @@ Function Run-ClangJobs([Parameter(Mandatory=$true)] $clangJobs)
   Wait-AndProcessBuildJobs
 }
 
-Function Process-Project([Parameter(Mandatory=$true)][string]       $vcxprojPath, 
-                         [Parameter(Mandatory=$true)][WorkloadType] $workloadType)
+Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPath
+                        , [Parameter(Mandatory=$true)][WorkloadType] $workloadType)
 {  
   #-----------------------------------------------------------------------------------------------
   # LOCATE STDAFX.H DIRECTORY
@@ -771,28 +832,31 @@ Function Process-Project([Parameter(Mandatory=$true)][string]       $vcxprojPath
   }
   else
   {
-    Write-Output ("  --> $kNameStdAfxH located in $stdafxDir")
+    Write-Verbose ("  --> $kNameStdAfxH located in $stdafxDir")
   }
   #-----------------------------------------------------------------------------------------------
   # DETECT PROJECT PREPROCESSOR DEFINITIONS
 
   [string[]] $preprocessorDefinitions = Get-ProjectPreprocessorDefines($vcxprojPath)
-  Write-Output "  --> preprocessor definitions: $preprocessorDefinitions"
+  Write-Verbose "  --> preprocessor definitions: $preprocessorDefinitions"
   
   #-----------------------------------------------------------------------------------------------
   # DETECT PLATFORM TOOLSET
 
-  [PlatformToolset] $platformToolset = Get-ProjectPlatformToolset($vcxprojPath)
-  Write-Output "  --> platform toolset: $platformToolset"
+  [string] $platformToolset = Get-ProjectPlatformToolset($vcxprojPath)
+  Write-Verbose "  --> platform toolset: $platformToolset"
 
   #-----------------------------------------------------------------------------------------------
   # DETECT PROJECT ADDITIONAL INCLUDE DIRECTORIES AND CONSTRUCT INCLUDE PATHS
 
   [string[]] $includeDirectories = Get-ProjectAdditionalIncludes($vcxprojPath)
-  Write-Output "  --> additional includes: $includeDirectories"
+  Write-Verbose "  --> additional includes:"
+  foreach ($include in $includeDirectories)
+  {
+    Write-Verbose $include
+  }
   
-  $defaultIncludePaths = (Get-Variable -Name ("kIncludePaths_" + $platformToolset) -ValueOnly)
-  $includeDirectories = $defaultIncludePaths + $includeDirectories
+  $includeDirectories = (Get-ProjectIncludeDirectories -vcxprojPath $vcxprojPath) + $includeDirectories
 
   if (![string]::IsNullOrEmpty($stdafxDir))
   {
@@ -813,7 +877,7 @@ Function Process-Project([Parameter(Mandatory=$true)][string]       $vcxprojPath
                   Where-Object {  IsFileMatchingName -filePath $_ `
                                                      -matchName $aCppToCompile } )
   }
-  Write-Output ("  --> processing " + $projCpps.Count + " cpps")
+  Write-Verbose ("  --> processing " + $projCpps.Count + " cpps")
  
   #-----------------------------------------------------------------------------------------------
   # CREATE PCH IF NEED BE
@@ -823,10 +887,10 @@ Function Process-Project([Parameter(Mandatory=$true)][string]       $vcxprojPath
       $workloadType -eq [WorkloadType]::Compile)
   {
     # COMPILE PCH
-    Write-Output "  --> generating PCH..."
+    Write-Verbose "  --> generating PCH..."
     $pchFilePath = Generate-Pch -stdafxDir "$stdafxDir" `
                                 -preprocessorDefinitions $preprocessorDefinitions
-    Write-Output "  --> generated $pchFilePath"
+    Write-Verbose "  --> generated $pchFilePath"
   }
   
   #-----------------------------------------------------------------------------------------------
@@ -839,7 +903,6 @@ Function Process-Project([Parameter(Mandatory=$true)][string]       $vcxprojPath
     [string] $exeToCall = Get-ExeToCall -workloadType $workloadType
                         
     [string] $exeArgs   = Get-ExeCallArguments -vcxprojPath             $vcxprojPath `
-                                               -platformToolset         $platformToolset `
                                                -workloadType            $workloadType `
                                                -pchFilePath             $pchFilePath `
                                                -preprocessorDefinitions $preprocessorDefinitions `
@@ -868,18 +931,18 @@ Push-Location $aDirectory
 # This powershell process may already have completed jobs. Discard them.
 Remove-Job -State Completed
 
-Write-Output "[INFO] Source directory: $aDirectory"
-Write-Output "  --> scanning for .vcxproj files"
+Write-Verbose "[INFO] Source directory: $aDirectory"
+Write-Verbose "  --> scanning for .vcxproj files"
 
 [System.IO.FileInfo[]] $projects = Get-Projects
-Write-Output ("  --> found " + $projects.Count + " projects")
+Write-Verbose ("  --> found " + $projects.Count + " projects")
 
 [System.IO.FileInfo[]] $projectsToProcess = @()
 
 if ([string]::IsNullOrEmpty($aVcxprojToCompile) -and 
     [string]::IsNullOrEmpty($aVcxprojToIgnore))
 {
-  Write-Output "[ INFO ] PROCESSING ALL PROJECTS"
+  Write-Verbose "[ INFO ] PROCESSING ALL PROJECTS"
   $projectsToProcess = $projects
 }
 else
@@ -904,9 +967,17 @@ foreach ($project in $projectsToProcess)
 { 
   [string] $vcxprojPath = $project.FullName;
 
-  [WorkloadType] $workloadType = `
-         if ([string]::IsNullOrEmpty($aTidyFlags)) { [WorkloadType]::Compile    } `
-         else                                      { [WorkloadType]::Tidy }
+  [WorkloadType] $workloadType = [WorkloadType]::Compile
+
+  if (![string]::IsNullOrEmpty($aTidyFlags)) 
+  {
+     $workloadType = [WorkloadType]::Tidy    
+  }
+  
+  if (![string]::IsNullOrEmpty($aTidyFixFlags))
+  {
+     $workloadType = [WorkloadType]::TidyFix
+  }
 
   Write-Output ("`n[ INFO ] $projectCounter. PROCESSING PROJECT " + $vcxprojPath)
   Process-Project -vcxprojPath $vcxprojPath -workloadType $workloadType
@@ -920,5 +991,5 @@ if ($global:FoundErrors)
 }
 else
 {
-  Exit-Script($kScriptSuccessExitCode)
+  Exit-Script
 }
