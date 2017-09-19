@@ -37,7 +37,6 @@ namespace ClangPowerTools
         parentDirectoryPath = new DirectoryInfo(project.FullName).Parent.FullName;
         script = $"{script} {ScriptConstants.kProject} {aFileName}";
       }
-
       return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{parentDirectoryPath}'''";
     }
 
@@ -45,12 +44,8 @@ namespace ClangPowerTools
       TidyOptions aTidyPage, string aVsEdition, string aVsVersion)
     {
       mParameters = GetGeneralParameters(aGeneralOptions);
-
-      if (aTidyPage != null)
-        mParameters = $"{mParameters} {GetTidyParameters(aTidyPage)}";
-      else
-        mParameters = $"{mParameters} {ScriptConstants.kParallel}";
-
+      mParameters = null != aTidyPage ?
+        $"{mParameters} {GetTidyParameters(aTidyPage)}" : $"{mParameters} {ScriptConstants.kParallel}";
       mParameters = $"{mParameters} {ScriptConstants.kVsVersion} {aVsVersion} {ScriptConstants.kVsEdition} {aVsEdition}";
     }
 
@@ -81,7 +76,7 @@ namespace ClangPowerTools
       if (null != aGeneralOptions.ProjectsToIgnore && 0 < aGeneralOptions.ProjectsToIgnore.Length)
         parameters = $"{parameters} {ScriptConstants.kProjectsToIgnore} {String.Join(",", aGeneralOptions.ProjectsToIgnore)}";
 
-      return $"{parameters}".Trim(new char[] { ' ', ',' });
+      return $"{parameters}";
     }
 
     private string GetTidyParameters(TidyOptions aTidyPage)
@@ -95,16 +90,14 @@ namespace ClangPowerTools
         foreach (PropertyInfo prop in aTidyPage.GetType().GetProperties())
         {
           object[] propAttrs = prop.GetCustomAttributes(false);
-          object clangCheckAttr = propAttrs.FirstOrDefault(a => a.GetType() == typeof(ClangCheckAttribute));
-          object displayNameAttrObj = propAttrs.FirstOrDefault(a => a.GetType() == typeof(DisplayNameAttribute));
+          object clangCheckAttr = propAttrs.FirstOrDefault(attr => typeof(ClangCheckAttribute) == attr.GetType());
+          object displayNameAttrObj = propAttrs.FirstOrDefault(attr => typeof(DisplayNameAttribute) == attr.GetType());
 
           if ( null == clangCheckAttr || null == displayNameAttrObj)
             continue;
 
           DisplayNameAttribute displayNameAttr = (DisplayNameAttribute)displayNameAttrObj;
-          
           var value = prop.GetValue(aTidyPage, null);
-
           if (Boolean.TrueString != value.ToString())
             continue;
 
@@ -112,7 +105,7 @@ namespace ClangPowerTools
         }
         parameters = $"{parameters}''";
       }
-      return parameters.Trim(new char[] { ' ', ',' });
+      return parameters;
     }
 
     #endregion

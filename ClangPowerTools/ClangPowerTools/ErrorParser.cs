@@ -99,6 +99,8 @@ namespace ClangPowerTools
         }
         if (isError)
           mErrors.Add(new ScriptError(mHierarchy, mErrorfilePath, mErrorMessage, mErrorPosition[0], mErrorPosition[1]));
+
+        mErrors.RemoveAll(err => String.IsNullOrWhiteSpace(err.ErrorMessage));
       }
       catch(Exception exception)
       {
