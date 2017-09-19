@@ -123,8 +123,8 @@ namespace ClangPowerTools
 
         dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
         {
-          mErrorsManager.AddErrors(powerShell.GetErrors);
           mOutputManager.AddMessages(powerShell.GetOutput);
+          mErrorsManager.AddErrors(powerShell.GetErrors);
         }));
       });
 
