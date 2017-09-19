@@ -29,16 +29,16 @@ namespace ClangPowerTools
         aFileName = aFileName.Substring(0, aFileName.IndexOf('.'));
         ProjectItem projectItem = aItem.GetObject() as ProjectItem;
         parentDirectoryPath = new DirectoryInfo(projectItem.ContainingProject.FullName).Parent.FullName;
-        script = $"{script} -proj {projectItem.ContainingProject.Name} -file {aFileName}";
+        script = $"{script} {ScriptConstants.kProject} {projectItem.ContainingProject.Name} {ScriptConstants.kFile} {aFileName}";
       }
       else if (aItem is SelectedProject)
       {
         Project project = aItem.GetObject() as Project;
         parentDirectoryPath = new DirectoryInfo(project.FullName).Parent.FullName;
-        script = $"{script} -proj {aFileName}";
+        script = $"{script} {ScriptConstants.kProject} {aFileName}";
       }
 
-      return $"{script} {mParameters} -dir ''{parentDirectoryPath}'''";
+      return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{parentDirectoryPath}'''";
     }
 
     public void ConstructParameters(GeneralOptions aGeneralOptions, 
@@ -51,7 +51,7 @@ namespace ClangPowerTools
       else
         mParameters = $"{mParameters} {ScriptConstants.kParallel}";
 
-      mParameters = $"{mParameters} -vs-ver {aVsVersion} -vs-sku {aVsEdition}";
+      mParameters = $"{mParameters} {ScriptConstants.kVsVersion} {aVsVersion} {ScriptConstants.kVsEdition} {aVsEdition}";
     }
 
     #endregion
@@ -70,23 +70,23 @@ namespace ClangPowerTools
       string parameters = string.Empty;
 
       if (null != aGeneralOptions.ClangFlags && 0 < aGeneralOptions.ClangFlags.Length)
-        parameters = $"{parameters} -clang-flags (''{String.Join("'',''", aGeneralOptions.ClangFlags)}'')";
+        parameters = $"{parameters} {ScriptConstants.kClangFlags} (''{String.Join("'',''", aGeneralOptions.ClangFlags)}'')";
       
       if (aGeneralOptions.Continue)
-        parameters = $"{parameters} -continue";
+        parameters = $"{parameters} {ScriptConstants.kContinue}";
       
       if (null != aGeneralOptions.IncludeDirectories && 0 < aGeneralOptions.IncludeDirectories.Length)
-        parameters = $"{parameters} -includeDirs {String.Join(",", aGeneralOptions.IncludeDirectories)}";
+        parameters = $"{parameters} {ScriptConstants.kIncludeDirectores} {String.Join(",", aGeneralOptions.IncludeDirectories)}";
       
       if (null != aGeneralOptions.ProjectsToIgnore && 0 < aGeneralOptions.ProjectsToIgnore.Length)
-        parameters = $"{parameters} -proj-ignore {String.Join(",", aGeneralOptions.ProjectsToIgnore)}";
+        parameters = $"{parameters} {ScriptConstants.kProjectsToIgnore} {String.Join(",", aGeneralOptions.ProjectsToIgnore)}";
 
       return $"{parameters}".Trim(new char[] { ' ', ',' });
     }
 
     private string GetTidyParameters(TidyOptions aTidyPage)
     {
-      string parameters = aTidyPage.Fix ? " -tidy-fix ''-*" : " -tidy ''-*";
+      string parameters = aTidyPage.Fix ? $" {ScriptConstants.kTidyFix} ''-*" : $" {ScriptConstants.kTidy} ''-*";
      
       if (null != aTidyPage.TidyFlags && 0 < aTidyPage.TidyFlags.Length)
         parameters = $"{parameters} ''-*,{String.Join(",", aTidyPage.TidyFlags)}''";
@@ -107,10 +107,6 @@ namespace ClangPowerTools
 
           if (Boolean.TrueString != value.ToString())
             continue;
-          
-          //var displayName = typeof().GetCustomAttributes(typeof(DisplayNameAttribute), true).FirstOrDefault() as DisplayNameAttribute;
-          //if (displayName != null)
-          //  Console.WriteLine(displayName.DisplayName);
 
           parameters = $"{parameters},{displayNameAttr.DisplayName}";
         }

@@ -125,8 +125,8 @@ namespace ClangPowerTools
 
         dispatcher.BeginInvoke(() =>
         {
-          mErrorsManager.AddErrors(powerShell.GetErrors);
           mOutputManager.AddMessages(powerShell.GetOutput);
+          mErrorsManager.AddErrors(powerShell.GetErrors);
         });
       });
     }
