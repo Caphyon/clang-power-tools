@@ -9,13 +9,13 @@ namespace ClangPowerTools
 
     [Category(" Tidy")]
     [DisplayName("Tidy Flags")]
-    [Description("Array of project(s) to ignore, from the matched ones. If empty, all already matched projects are compiled.")]
+    [Description("If not empty clang-tidy will be called with given flags, instead of clang++. The tidy operation is applied to whole translation units, meaning all directory headers included in the CPP will be tidied up too. Changes will not be applied, only simulated.")]
     [TypeConverter(typeof(StringArrayConverter))]
     public string[] TidyFlags { get; set; }
 
     [Category(" Tidy")]
     [DisplayName("Fix")]
-    [Description("")]
+    [Description("If not empty clang-tidy will be called with given flags, instead of clang++. The tidy operation is applied to whole translation units, meaning all directory headers included in the CPP will be tidied up too. Changes will be applied to the file(s).")]
     public bool Fix { get; set; }
 
     [Category("Checks")]
