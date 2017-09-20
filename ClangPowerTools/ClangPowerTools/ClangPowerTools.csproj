@@ -86,6 +86,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Settings.png" />
+    <Content Include="sample-clang-build.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="app.config" />
     <Content Include="clang-build.ps1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
