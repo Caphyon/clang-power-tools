@@ -42,8 +42,6 @@ namespace ClangPowerTools
   {
     #region Members
 
-    public const string guidValue = "11223344-5566-7788-99AA-BBCCDDEEFF00";
-
     /// <summary>
     /// RunPowerShellCommandPackage GUID string.
     /// </summary>
@@ -90,7 +88,7 @@ namespace ClangPowerTools
 
       TidyCommand.Initialize(this, mDte, edition, version);  
       CompileCommand.Initialize(this, mDte, edition, version);
-        SettingsCommand.Initialize(this);
+      SettingsCommand.Initialize(this);
     }
 
     #endregion

@@ -21,9 +21,11 @@
       <Group guid="guidClangPowerToolsPackageCmdSet1" id="MyMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
       </Group>
+      
     </Groups>
     
     <Buttons>
+      
       <Button guid="guidClangPowerToolsPackageCmdSet" id="CompileId" priority="0x0000" type="Button">
         <Strings>
           <ButtonText>Compile (syntax only)</ButtonText>
@@ -48,7 +50,6 @@
           <ButtonText>Invoke CompileCommand</ButtonText>
         </Strings>
       </Button>
-      
       
     </Buttons>
 
@@ -111,6 +112,7 @@
   </CommandPlacements>
     
   <Symbols>
+    
     <GuidSymbol name="guidClangPowerToolsPackage" value="{f564f9d3-01ae-493e-883b-18deebdb975e}" />
 
     <GuidSymbol name="guidClangPowerToolsPackageCmdSet" value="{498fdff5-5217-4da9-88d2-edad44ba3874}">
