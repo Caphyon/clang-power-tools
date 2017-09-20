@@ -8,8 +8,6 @@ using System.Runtime.InteropServices;
 
 namespace ClangPowerTools
 {
-  [ClassInterface(ClassInterfaceType.AutoDual)]
-  [Guid("11111111-1111-1111-1111-111111111111")]
   public class GeneralOptions : DialogPage
   {
     #region Members

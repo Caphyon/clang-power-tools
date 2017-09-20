@@ -84,19 +84,7 @@ namespace ClangPowerTools
     /// <param name="e">Event args.</param>
     private void MenuItemCallback(object sender, EventArgs e)
     {
-      Type myType = typeof(GeneralOptions);
-      Guid myGuid = myType.GUID;
-
-      string targetGUID = myGuid.ToString();
-
-      CommandID command = new CommandID(
-        VSConstants.GUID_VSStandardCommandSet97,
-        VSConstants.cmdidToolsOptions);
-
-      MenuCommandService mcs = ServiceProvider.GetService(typeof(IMenuCommandService))
-        as MenuCommandService;
-
-      mcs.GlobalInvoke(command, targetGUID);
+      mPackage.ShowOptionPage(typeof(GeneralOptions));
     }
 
     #endregion

@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 
 namespace ClangPowerTools
 {
-  [ClassInterface(ClassInterfaceType.AutoDual)]
   public class TidyOptions : DialogPage
   {
     #region Members
