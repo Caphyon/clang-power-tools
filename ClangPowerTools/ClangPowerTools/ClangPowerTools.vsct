@@ -35,16 +35,25 @@
           <ButtonText>Tidy Code</ButtonText>
         </Strings>
       </Button>
+
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0002" type="Button">
+        <Strings>
+          <ButtonText>Settings</ButtonText>
+        </Strings>
+      </Button>
+      
       <Button guid="guidClangPowerToolsPackageCmdSet1" id="cmdidCompileCommand" priority="0x0100" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet1" id="MyMenuGroup" />
         <Strings>
           <ButtonText>Invoke CompileCommand</ButtonText>
         </Strings>
       </Button>
+      
+      
     </Buttons>
 
     <Bitmaps>
-      <Bitmap guid="guidImages" href="Resources\Icon.png" usedList="bmpPic1"/>
+      <Bitmap guid="guidImages" href="Resources\Icon.png" usedList="bmpPic1" />
     </Bitmaps>
     
   </Commands>
@@ -94,7 +103,11 @@
     <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0002">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
     </CommandPlacement>
-    
+
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0003">
+      <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
+    </CommandPlacement>
+
   </CommandPlacements>
     
   <Symbols>
@@ -106,6 +119,7 @@
       <IDSymbol name="Submenu" value="0x0100" />
       <IDSymbol name="CompileId" value="0x0102" />
       <IDSymbol name="TidyId" value="0x0101" />
+      <IDSymbol name="SettingsId" value="0x0103" />
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70a}">
@@ -114,7 +128,6 @@
   
     <GuidSymbol value="{8c09918d-f108-4d1e-bacc-aa708b84c166}" name="guidClangPowerToolsPackageCmdSet1">
       <IDSymbol value="4128" name="MyMenuGroup" />
-      <IDSymbol value="256" name="cmdidTidyCommand" />
       <IDSymbol value="4129" name="cmdidCompileCommand" />
     </GuidSymbol>
     

@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio;
+﻿using EnvDTE;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
@@ -7,6 +8,8 @@ using System.Runtime.InteropServices;
 
 namespace ClangPowerTools
 {
+  [ClassInterface(ClassInterfaceType.AutoDual)]
+  [Guid("11111111-1111-1111-1111-111111111111")]
   public class GeneralOptions : DialogPage
   {
     #region Members

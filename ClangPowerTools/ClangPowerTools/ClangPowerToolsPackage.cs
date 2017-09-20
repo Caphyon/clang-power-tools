@@ -36,11 +36,13 @@ namespace ClangPowerTools
   [ProvideMenuResource("Menus.ctmenu", 1)]
   [Guid(RunClangPowerToolsPackage.PackageGuidString)]
   [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
-  [ProvideOptionPage(typeof(TidyOptions), "Clang Power Tools", "Tidy", 0, 0, true)]
   [ProvideOptionPage(typeof(GeneralOptions), "Clang Power Tools", "General", 0, 0, true)]
+  [ProvideOptionPage(typeof(TidyOptions), "Clang Power Tools", "Tidy", 0, 1, true)]
   public sealed class RunClangPowerToolsPackage : Package
   {
     #region Members
+
+    public const string guidValue = "11223344-5566-7788-99AA-BBCCDDEEFF00";
 
     /// <summary>
     /// RunPowerShellCommandPackage GUID string.
@@ -88,6 +90,7 @@ namespace ClangPowerTools
 
       TidyCommand.Initialize(this, mDte, edition, version);  
       CompileCommand.Initialize(this, mDte, edition, version);
+        SettingsCommand.Initialize(this);
     }
 
     #endregion

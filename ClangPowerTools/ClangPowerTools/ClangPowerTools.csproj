@@ -68,6 +68,7 @@
     <Compile Include="PowerShellWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegexConstants.cs" />
+    <Compile Include="SettingsCommand.cs" />
     <Compile Include="SilentFileChanger.cs" />
     <Compile Include="SilentFileChangerGuard.cs" />
     <Compile Include="StringArrayConverter.cs" />
@@ -84,6 +85,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\Settings.png" />
     <None Include="app.config" />
     <Content Include="clang-build.ps1">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
