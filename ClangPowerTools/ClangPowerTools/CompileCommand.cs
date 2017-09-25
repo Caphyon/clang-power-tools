@@ -10,6 +10,8 @@ using System.ComponentModel.Design;
 using EnvDTE80;
 using System.Windows.Interop;
 using System.Windows.Threading;
+using System.Diagnostics;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools
 {
@@ -41,6 +43,7 @@ namespace ClangPowerTools
 
     private OutputWindowManager mOutputManager;
     private ErrorsWindowManager mErrorsManager;
+    private Dispatcher mDispatcher;
 
     #endregion
 
@@ -58,6 +61,7 @@ namespace ClangPowerTools
       mDte = aDte;
       mVsEdition = aEdition;
       mVsVersion = aVersion;
+      mDispatcher = HwndSource.FromHwnd((IntPtr)mDte.MainWindow.HWnd).RootVisual.Dispatcher;
 
       mOutputManager = new OutputWindowManager(mDte);
       mErrorsManager = new ErrorsWindowManager(mPackage);
@@ -117,19 +121,39 @@ namespace ClangPowerTools
         mItemsCollector.CollectSelectedFiles(mDte);
 
         PowerShellWrapper powerShell = new PowerShellWrapper();
-        powerShell.Invoke(mItemsCollector.GetItems, scriptBuilder, mPackage);
+        powerShell.DataHandler += OutputDataReceived;
+        powerShell.DataErrorHandler += OutputDataErrorReceived;
 
-        Dispatcher dispatcher = HwndSource.FromHwnd((IntPtr)mDte.MainWindow.HWnd).RootVisual.Dispatcher;
-
-        dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+        try
         {
-          mOutputManager.AddMessages(powerShell.GetOutput);
-          mErrorsManager.AddErrors(powerShell.GetErrors);
-        }));
+          powerShell.Invoke(mItemsCollector.GetItems, scriptBuilder);
+        }
+        catch(Exception exception)
+        {
+          VsShellUtilities.ShowMessageBox(mPackage, exception.Message, "Error",
+            OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+        }
       });
 
-      #endregion
-
     }
+
+    private void OutputDataReceived(object sender, DataReceivedEventArgs e)
+    {
+      mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+      {
+        mOutputManager.AddMessage(e.Data);
+      }));
+    }
+
+    private void OutputDataErrorReceived(object sender, DataReceivedEventArgs e)
+    {
+      mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+      {
+        mOutputManager.AddMessage(e.Data);
+      }));
+    }
+
+    #endregion
+
   }
 }

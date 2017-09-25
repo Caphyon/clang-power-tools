@@ -1,66 +1,55 @@
-﻿using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
+﻿using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Management.Automation;
+using System.Diagnostics;
 
 namespace ClangPowerTools
 {
   public class PowerShellWrapper
   {
-    #region Members
-
-    private PowerShell mPowerShell;
-    private List<ScriptError> mErrors = new List<ScriptError>();
-    private List<string> mOutput = new List<string>();
-
-    #endregion
-
     #region Properties
 
-    public List<ScriptError> GetErrors => mErrors;
-    public List<string> GetOutput => mOutput;
+    public DataReceivedEventHandler DataErrorHandler { get; set; }
+    public DataReceivedEventHandler DataHandler { get; set; }
 
     #endregion
 
     #region Public Methods
 
-    public void Invoke(List<Tuple<IItem, IVsHierarchy>> aItems, ScriptBuiler aScriptBuilder, IServiceProvider aServiceProvider)
+    public void Invoke(List<Tuple<IItem, IVsHierarchy>> aItems, ScriptBuiler aScriptBuilder)
     {
       foreach (var itm in aItems)
       {
-        using (mPowerShell = PowerShell.Create())
+        Process p = new Process();
+        try
         {
-          try
+          string script = aScriptBuilder.GetScript(itm.Item1, itm.Item1.GetName());
+          p.StartInfo = new ProcessStartInfo()
           {
-            string script = aScriptBuilder.GetScript(itm.Item1, itm.Item1.GetName());
-            mPowerShell.AddScript(script);
+            FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}",
+            RedirectStandardError = true,
+            RedirectStandardOutput = true,
+            CreateNoWindow = true,
+            UseShellExecute = false,
+            Arguments = script
+          };
 
-            Collection<PSObject> PSOutput;
-            using (var guard = new SilentFileChangerGuard(aServiceProvider, itm.Item1.GetPath(), true))
-            {
-              PSOutput = mPowerShell.Invoke();
-            }
-
-            ErrorParser errorParser = new ErrorParser(itm.Item2);
-            errorParser.Start(PSOutput);
-            mErrors.AddRange(errorParser.Errors);
-            mOutput.AddRange(errorParser.Output);
-            mOutput.Add(String.Join("\n", mPowerShell.Streams.Error
-              .Where(err => !string.IsNullOrWhiteSpace(err.ToString()))));
-          }
-          catch (RuntimeException exception)
-          {
-            VsShellUtilities.ShowMessageBox((IServiceProvider)this, exception.Message, "Error",
-              OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-          }
+          p.ErrorDataReceived += DataErrorHandler;
+          p.OutputDataReceived += DataHandler;
+          p.Start();
+          p.BeginErrorReadLine();
+          p.BeginOutputReadLine();
+          p.WaitForExit();
+        }
+        finally
+        {
+          p.ErrorDataReceived -= DataErrorHandler;
+          p.ErrorDataReceived -= DataHandler;
         }
       }
     }
 
     #endregion
-    
+
   }
 }
