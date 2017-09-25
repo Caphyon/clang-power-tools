@@ -26,9 +26,10 @@ namespace ClangPowerTools
       if (String.IsNullOrWhiteSpace(aError))
         return;
 
-      using (OutputWindow windowWriter = new OutputWindow(mDte))
+      using (OutputWindow outputWindow = new OutputWindow(mDte))
       {
-        windowWriter.Write(aError);
+        outputWindow.Show(mDte);
+        outputWindow.Write(aError);
       }
     }
 

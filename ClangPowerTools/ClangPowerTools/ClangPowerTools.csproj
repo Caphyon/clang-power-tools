@@ -41,6 +41,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DeployExtension>True</DeployExtension>
+    <CreateVsixContainer>True</CreateVsixContainer>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -63,6 +65,15 @@
     </Compile>
     <Compile Include="IItem.cs" />
     <Compile Include="ItemsCollector.cs" />
+    <Compile Include="MyUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MyUserControl.Designer.cs">
+      <DependentUpon>MyUserControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="OptionPageCustom.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="OutputWindowManager.cs" />
     <Compile Include="OutputWindow.cs" />
     <Compile Include="PowerShellWrapper.cs" />
@@ -222,6 +233,9 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="MyUserControl.resx">
+      <DependentUpon>MyUserControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>VSPackage</ManifestResourceName>

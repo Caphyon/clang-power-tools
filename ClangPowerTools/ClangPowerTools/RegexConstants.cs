@@ -10,7 +10,7 @@ namespace ClangPowerTools
   {
     #region Constants
 
-    public const string kFindAllPaths = @"(([a-z]:|\\\\[a-z0-9_.$]+\\[a-z0-9_.$]+)?(\\?(?:[^\\/:*?""<>|\r\n]+\\)+)[^\\/:*?""<>|\r\n]+)";
+    public const string kFindAllPaths = @"(.\:\\[^ ]*)";
     public const string kFindAllNumbers = "[0-9]+";
 
     #endregion

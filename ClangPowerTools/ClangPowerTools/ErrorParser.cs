@@ -1,10 +1,12 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using EnvDTE;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Management.Automation;
 using System.Text.RegularExpressions;
+using System.Windows;
 
 namespace ClangPowerTools
 {
@@ -13,104 +15,106 @@ namespace ClangPowerTools
     #region Members
 
     private List<ScriptError> mErrors = new List<ScriptError>();
-    private List<string> mOutput = new List<string>();
 
-    private IVsHierarchy mHierarchy;
     private string mErrorfilePath = string.Empty;
     private string mErrorMessage = string.Empty;
     private int[] mErrorPosition = new int[2];
+    private IVsHierarchy mVsHierarchy;
 
     #endregion
 
     #region Properties
 
     public List<ScriptError> Errors => mErrors;
-    public List<string> Output => mOutput;
 
     #endregion
 
     #region Ctor
 
-    public ErrorParser(IVsHierarchy aHierarchy) => mHierarchy = aHierarchy;
+    public ErrorParser(IServiceProvider aServiceProvider, IItem aItem)
+    {
+      if (aItem is SelectedProjectItem)
+      {
+        ProjectItem projectItem = aItem.GetObject() as ProjectItem;
+        mVsHierarchy = AutomationUtil.GetProjectHierarchy(aServiceProvider, projectItem.ContainingProject);
+      }
+      else
+      {
+        Project project = aItem.GetObject() as Project;
+        mVsHierarchy = AutomationUtil.GetProjectHierarchy(aServiceProvider, project);
+      }
+    }
+
+    public ErrorParser() { }
 
     #endregion
 
-    public void Start(Collection<PSObject> aOutput)
+    public void Start(List<string> aMessages)
     {
       bool isError = false;
       bool pathFound = false;
       bool positionFound = false;
       bool skipSearchPath = false;
 
-      try
+      foreach (string message in aMessages)
       {
-        foreach (PSObject outObj in aOutput)
+        string errorMessage = message;
+
+        if (string.IsNullOrWhiteSpace(errorMessage))
+          continue;
+
+        if (errorMessage.Contains(ErrorParserConstants.kEndErrorsTag))
+          break;
+
+        if (errorMessage.StartsWith(ErrorParserConstants.kErrorTag))
         {
-          string outputMessage = outObj.BaseObject.ToString();
-          mOutput.Add(outputMessage);
-
-          if (string.IsNullOrWhiteSpace(outputMessage))
-            continue;
-
-          if (outputMessage.Contains(ErrorParserConstants.kEndErrorsTag))
-            break;
-
-          if (outputMessage.StartsWith(ErrorParserConstants.kErrorTag))
-          {
-            outputMessage = outputMessage.Substring(ErrorParserConstants.kErrorTag.Length);
-            isError = true;
-          }
-
-          if (isError == false)
-            continue;
-
-          if (pathFound == false)
-          {
-            if (!FindPath(outputMessage, ref mErrorfilePath, ref pathFound, ref positionFound, ref skipSearchPath, false))
-              continue;
-          }
-
-          if (positionFound == false)
-          {
-            if (!FindPosition(outputMessage, ref positionFound))
-              continue;
-          }
-
-          if (skipSearchPath == false)
-          {
-            if (FindPath(outputMessage, ref mErrorfilePath, ref pathFound, ref positionFound, ref skipSearchPath, true))
-            {
-              if (!FindPosition(outputMessage, ref positionFound))
-                continue;
-
-              skipSearchPath = true;
-              FindErrorMessage(outputMessage);
-              continue;
-            }
-            else
-            {
-              mErrorMessage = $"{mErrorMessage}\n{outputMessage}";
-              continue;
-            }
-          }
-
-          skipSearchPath = false;
-          FindErrorMessage(outputMessage);
+          errorMessage = errorMessage.Substring(ErrorParserConstants.kErrorTag.Length);
+          isError = true;
         }
-        if (isError)
-          mErrors.Add(new ScriptError(mHierarchy, mErrorfilePath, mErrorMessage, mErrorPosition[0], mErrorPosition[1]));
 
-        mErrors.RemoveAll(err => String.IsNullOrWhiteSpace(err.ErrorMessage));
-      }
-      catch(Exception exception)
-      {
-        VsShellUtilities.ShowMessageBox((IServiceProvider)this, exception.Message, "Error",
-          OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-      }
+        if (isError == false)
+          continue;
 
+        if (pathFound == false)
+        {
+          if (!FindPath(errorMessage, ref mErrorfilePath, ref pathFound, ref positionFound, ref skipSearchPath, false))
+            continue;
+        }
+
+        if (positionFound == false)
+        {
+          if (!FindPosition(errorMessage, ref positionFound))
+            continue;
+        }
+
+        if (skipSearchPath == false)
+        {
+          if (FindPath(errorMessage, ref mErrorfilePath, ref pathFound, ref positionFound, ref skipSearchPath, true))
+          {
+            if (!FindPosition(errorMessage, ref positionFound))
+              continue;
+
+            skipSearchPath = true;
+            FindErrorMessage(errorMessage);
+            continue;
+          }
+          else
+          {
+            mErrorMessage = $"{mErrorMessage}\n{errorMessage}";
+            continue;
+          }
+        }
+
+        skipSearchPath = false;
+        FindErrorMessage(errorMessage);
+      }
+      if (isError)
+        mErrors.Add(new ScriptError(mVsHierarchy, mErrorfilePath, mErrorMessage, mErrorPosition[0], mErrorPosition[1]));
+
+      mErrors.RemoveAll(err => String.IsNullOrWhiteSpace(err.ErrorMessage));
     }
 
-    private bool FindPath(string aOutputMessage, ref string aErrorfilePath, ref bool aPathFound, 
+    private bool FindPath(string aOutputMessage, ref string aErrorFilePath, ref bool aPathFound,
       ref bool aPositionFound, ref bool aSkipSearchPath, bool aAddError)
     {
       Regex regex = new Regex(RegexConstants.kFindAllPaths);
@@ -119,14 +123,25 @@ namespace ClangPowerTools
         return false;
 
       if (aAddError)
-        mErrors.Add(new ScriptError(mHierarchy, aErrorfilePath, mErrorMessage, mErrorPosition[0], mErrorPosition[1]));
+      {
+        aErrorFilePath = RemoveCharactersFromTheEnd(aErrorFilePath);
+        mErrors.Add(new ScriptError(mVsHierarchy, aErrorFilePath, mErrorMessage, mErrorPosition[0], mErrorPosition[1]));
+      }
 
-      aErrorfilePath = matchResult.Value;
+      aErrorFilePath = RemoveCharactersFromTheEnd(matchResult.Value);
       aPathFound = true;
       aPositionFound = false;
       aSkipSearchPath = true;
 
       return true;
+    }
+
+    private string RemoveCharactersFromTheEnd(string path)
+    {
+      foreach(string extensionTag in ErrorParserConstants.kExtensionsTag)
+        if (path.Contains(extensionTag) && path.Length > path.IndexOf(extensionTag) + extensionTag.Length)
+          return path.Remove(path.IndexOf(extensionTag) + extensionTag.Length);
+      return path;
     }
 
     private bool FindPosition(string aOutputMessage, ref bool aPositionFound)

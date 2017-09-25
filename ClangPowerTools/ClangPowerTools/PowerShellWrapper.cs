@@ -16,36 +16,32 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public void Invoke(List<Tuple<IItem, IVsHierarchy>> aItems, ScriptBuiler aScriptBuilder)
+    public void Invoke(string aScript)
     {
-      foreach (var itm in aItems)
+      Process p = new Process();
+      try
       {
-        Process p = new Process();
-        try
+        p.StartInfo = new ProcessStartInfo()
         {
-          string script = aScriptBuilder.GetScript(itm.Item1, itm.Item1.GetName());
-          p.StartInfo = new ProcessStartInfo()
-          {
-            FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}",
-            RedirectStandardError = true,
-            RedirectStandardOutput = true,
-            CreateNoWindow = true,
-            UseShellExecute = false,
-            Arguments = script
-          };
+          FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}",
+          RedirectStandardError = true,
+          RedirectStandardOutput = true,
+          CreateNoWindow = true,
+          UseShellExecute = false,
+          Arguments = aScript
+        };
 
-          p.ErrorDataReceived += DataErrorHandler;
-          p.OutputDataReceived += DataHandler;
-          p.Start();
-          p.BeginErrorReadLine();
-          p.BeginOutputReadLine();
-          p.WaitForExit();
-        }
-        finally
-        {
-          p.ErrorDataReceived -= DataErrorHandler;
-          p.ErrorDataReceived -= DataHandler;
-        }
+        p.ErrorDataReceived += DataErrorHandler;
+        p.OutputDataReceived += DataHandler;
+        p.Start();
+        p.BeginErrorReadLine();
+        p.BeginOutputReadLine();
+        p.WaitForExit();
+      }
+      finally
+      {
+        p.ErrorDataReceived -= DataErrorHandler;
+        p.ErrorDataReceived -= DataHandler;
       }
     }
 
@@ -53,3 +49,4 @@ namespace ClangPowerTools
 
   }
 }
+

@@ -13,7 +13,8 @@ namespace ClangPowerTools
     public const string kEndErrorsTag = "errors generated";
     public const string kErrorTag = "Error:";
     public const string kNoteTag = "note:";
-
+    public static readonly List<string> kExtensionsTag = new List<string>() { ".cpp", ".h" };
+    
     #endregion
   }
 }

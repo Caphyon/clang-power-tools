@@ -12,6 +12,8 @@ using System.Windows.Threading;
 using System.Windows.Interop;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Diagnostics;
+using System.Text;
+using System.Collections.Generic;
 
 namespace ClangPowerTools
 {
@@ -44,6 +46,7 @@ namespace ClangPowerTools
     private OutputWindowManager mOutputManager;
     private ErrorsWindowManager mErrorsManager;
     private Dispatcher mDispatcher;
+    private List<string> mOutputMessages = new List<string>();
 
     #endregion
 
@@ -128,7 +131,22 @@ namespace ClangPowerTools
 
         try
         {
-          powerShell.Invoke(mItemsCollector.GetItems, scriptBuilder);
+          foreach (var item in mItemsCollector.GetItems)
+          {
+            string script = scriptBuilder.GetScript(item.Item1, item.Item1.GetName());
+            using (var guard = new SilentFileChangerGuard(mPackage, item.Item1.GetPath(), true))
+            {
+              powerShell.Invoke(script);
+            }
+
+            ErrorParser errorParser = new ErrorParser(mPackage, item.Item1);
+            errorParser.Start(mOutputMessages);
+            mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+            {
+              mErrorsManager.AddErrors(errorParser.Errors);
+            }));
+            mOutputMessages.Clear();
+          }
         }
         catch (Exception exception)
         {
@@ -144,6 +162,7 @@ namespace ClangPowerTools
       {
         mOutputManager.AddMessage(e.Data);
       }));
+      mOutputMessages.Add(e.Data);
     }
 
     private void OutputDataErrorReceived(object sender, DataReceivedEventArgs e)
