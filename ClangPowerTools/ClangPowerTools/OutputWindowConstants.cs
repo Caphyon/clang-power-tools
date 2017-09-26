@@ -13,8 +13,8 @@ namespace ClangPowerTools
     public const string kPaneName = "Clang Power Tools";
     public const string kStart = "Start";
     public const string kDone = "Done";
-    public const string kComplileCommand = "Complile";
-    public const string kTidyCodeCommand = "Tidy Code";
+    public const string kComplileCommand = "Clang Complile";
+    public const string kTidyCodeCommand = "Clang Tidy";
     
     #endregion
 

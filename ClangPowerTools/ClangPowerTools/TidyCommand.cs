@@ -139,7 +139,7 @@ namespace ClangPowerTools
             ErrorParser errorParser = new ErrorParser(mPackage, item.Item1);
             errorParser.Start(mOutputMessages);
 
-            mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone}\n");
+            mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kTidyCodeCommand}\n");
             mErrorsManager.AddErrors(errorParser.Errors);
             mOutputMessages.Clear();
           }
