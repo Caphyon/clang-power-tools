@@ -65,6 +65,7 @@
     </Compile>
     <Compile Include="IItem.cs" />
     <Compile Include="ItemsCollector.cs" />
+    <Compile Include="OutputWindowConstants.cs" />
     <Compile Include="OutputWindowManager.cs" />
     <Compile Include="OutputWindow.cs" />
     <Compile Include="PowerShellWrapper.cs" />

@@ -11,7 +11,6 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private const string kPaneName = "Clang Power Tools";
     private static readonly Guid mPaneGuid = new Guid("AB9F45E4-2001-4197-BAF5-4B165222AF29");
     private static IVsOutputWindow mOutputWindow = null;
     private static IVsOutputWindowPane mOutputPane = null;
@@ -36,7 +35,7 @@ namespace ClangPowerTools
         
         if ( null == pane)
         {
-          mOutputWindow.CreatePane(ref generalPaneGuid, kPaneName, 3, 1);
+          mOutputWindow.CreatePane(ref generalPaneGuid, OutputWindowConstants.kPaneName, 3, 1);
           mOutputWindow.GetPane(ref generalPaneGuid, out pane);
         }
         mOutputPane = pane;
