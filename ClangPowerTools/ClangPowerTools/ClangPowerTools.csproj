@@ -72,8 +72,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegexConstants.cs" />
     <Compile Include="SettingsCommand.cs" />
-    <Compile Include="SilentFileChanger.cs" />
-    <Compile Include="SilentFileChangerGuard.cs" />
     <Compile Include="StringArrayConverter.cs" />
     <Compile Include="TidyCommand.cs" />
     <Compile Include="ClangPowerToolsPackage.cs" />
