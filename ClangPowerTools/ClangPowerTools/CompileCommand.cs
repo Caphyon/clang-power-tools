@@ -14,6 +14,8 @@ using System.Diagnostics;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Text;
 using System.Collections.Generic;
+using EnvDTE;
+using System.IO;
 
 namespace ClangPowerTools
 {
@@ -129,13 +131,12 @@ namespace ClangPowerTools
 
         try
         {
-          foreach( var item in mItemsCollector.GetItems)
+          mDte.Documents.SaveAll();
+          foreach ( var item in mItemsCollector.GetItems)
           {
             string script = scriptBuilder.GetScript(item.Item1, item.Item1.GetName());
-            using (var guard = new SilentFileChangerGuard(mPackage, item.Item1.GetPath(), true))
-            {
-              powerShell.Invoke(script);
-            }
+            powerShell.Invoke(script);
+            
             ErrorParser errorParser = new ErrorParser(mPackage, item.Item1);
             errorParser.Start(mOutputMessages);
             mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>

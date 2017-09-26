@@ -109,7 +109,7 @@ namespace ClangPowerTools
         FindErrorMessage(errorMessage);
       }
       if (isError)
-        mErrors.Add(new ScriptError(mVsHierarchy, mErrorfilePath, mErrorMessage, mErrorPosition[0], mErrorPosition[1]));
+        mErrors.Add(new ScriptError(mVsHierarchy, mErrorfilePath, $"{ErrorParserConstants.kClangTag}{mErrorMessage}", mErrorPosition[0], mErrorPosition[1]));
 
       mErrors.RemoveAll(err => String.IsNullOrWhiteSpace(err.ErrorMessage));
     }
@@ -125,7 +125,7 @@ namespace ClangPowerTools
       if (aAddError)
       {
         aErrorFilePath = RemoveCharactersFromTheEnd(aErrorFilePath);
-        mErrors.Add(new ScriptError(mVsHierarchy, aErrorFilePath, mErrorMessage, mErrorPosition[0], mErrorPosition[1]));
+        mErrors.Add(new ScriptError(mVsHierarchy, aErrorFilePath, $"{ErrorParserConstants.kClangTag}{mErrorMessage}", mErrorPosition[0], mErrorPosition[1]));
       }
 
       aErrorFilePath = RemoveCharactersFromTheEnd(matchResult.Value);

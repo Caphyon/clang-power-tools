@@ -131,13 +131,11 @@ namespace ClangPowerTools
 
         try
         {
+          mDte.Documents.SaveAll();
           foreach (var item in mItemsCollector.GetItems)
           {
             string script = scriptBuilder.GetScript(item.Item1, item.Item1.GetName());
-            using (var guard = new SilentFileChangerGuard(mPackage, item.Item1.GetPath(), true))
-            {
-              powerShell.Invoke(script);
-            }
+            powerShell.Invoke(script);
 
             ErrorParser errorParser = new ErrorParser(mPackage, item.Item1);
             errorParser.Start(mOutputMessages);

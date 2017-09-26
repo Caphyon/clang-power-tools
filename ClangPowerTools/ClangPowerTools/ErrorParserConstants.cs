@@ -10,6 +10,7 @@ namespace ClangPowerTools
   {
     #region Constants
 
+    public const string kClangTag = "Clang : ";
     public const string kEndErrorsTag = "errors generated";
     public const string kErrorTag = "Error:";
     public const string kNoteTag = "note:";
