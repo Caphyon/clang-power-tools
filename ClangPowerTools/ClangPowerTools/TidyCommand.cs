@@ -45,7 +45,6 @@ namespace ClangPowerTools
 
     private OutputWindowManager mOutputManager;
     private ErrorsWindowManager mErrorsManager;
-    private Dispatcher mDispatcher;
     private List<string> mOutputMessages = new List<string>();
 
     #endregion
@@ -65,10 +64,9 @@ namespace ClangPowerTools
       mDte = aDte;
       mVsEdition = aEdition;
       mVsVersion = aVersion;
-      mDispatcher = HwndSource.FromHwnd((IntPtr)mDte.MainWindow.HWnd).RootVisual.Dispatcher;
 
       mOutputManager = new OutputWindowManager(mDte);
-      mErrorsManager = new ErrorsWindowManager(mPackage);
+      mErrorsManager = new ErrorsWindowManager(mPackage, mDte);
 
       if (this.ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
@@ -139,10 +137,8 @@ namespace ClangPowerTools
 
             ErrorParser errorParser = new ErrorParser(mPackage, item.Item1);
             errorParser.Start(mOutputMessages);
-            mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
-            {
-              mErrorsManager.AddErrors(errorParser.Errors);
-            }));
+
+            mErrorsManager.AddErrors(errorParser.Errors);
             mOutputMessages.Clear();
           }
         }
@@ -156,19 +152,13 @@ namespace ClangPowerTools
 
     private void OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
-      mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
-      {
-        mOutputManager.AddMessage(e.Data);
-      }));
+      mOutputManager.AddMessage(e.Data);
       mOutputMessages.Add(e.Data);
     }
 
     private void OutputDataErrorReceived(object sender, DataReceivedEventArgs e)
     {
-      mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
-      {
-        mOutputManager.AddMessage(e.Data);
-      }));
+      mOutputManager.AddMessage(e.Data);
     }
 
     #endregion

@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Interop;
+using System.Windows.Threading;
 
 namespace ClangPowerTools
 {
@@ -10,37 +12,34 @@ namespace ClangPowerTools
     #region Members
 
     private DTE2 mDte = null;
+    private Dispatcher mDispatcher;
 
     #endregion
 
     #region Ctor
 
-    public OutputWindowManager(DTE2 aDte) => mDte = aDte;
+    public OutputWindowManager(DTE2 aDte)
+    {
+      mDte = aDte;
+      mDispatcher = HwndSource.FromHwnd((IntPtr)mDte.MainWindow.HWnd).RootVisual.Dispatcher;
+    }
 
     #endregion
 
     #region Public Methods
 
-    public void AddMessage(string aError)
+    public void AddMessage(string aMessage)
     {
-      if (String.IsNullOrWhiteSpace(aError))
+      if (String.IsNullOrWhiteSpace(aMessage))
         return;
 
       using (OutputWindow outputWindow = new OutputWindow(mDte))
       {
         outputWindow.Show(mDte);
-        outputWindow.Write(aError);
-      }
-    }
-
-    public void AddMessages(IEnumerable<string> aErrors)
-    {
-      using (OutputWindow outputWindow = new OutputWindow(mDte))
-      {
-        outputWindow.Clear();
-        outputWindow.Show(mDte);
-        foreach (string error in aErrors.Where(err => !String.IsNullOrWhiteSpace(err)))
-          outputWindow.Write(error);
+        mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+        {
+          outputWindow.Write(aMessage);
+        }));
       }
     }
 

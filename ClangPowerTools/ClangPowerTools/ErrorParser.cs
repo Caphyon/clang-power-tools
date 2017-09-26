@@ -109,9 +109,9 @@ namespace ClangPowerTools
         FindErrorMessage(errorMessage);
       }
       if (isError)
-        mErrors.Add(new ScriptError(mVsHierarchy, mErrorfilePath, $"{ErrorParserConstants.kClangTag}{mErrorMessage}", mErrorPosition[0], mErrorPosition[1]));
+        mErrors.Add(new ScriptError(mVsHierarchy, mErrorfilePath, $"{ErrorParserConstants.kClangTag}{mErrorMessage.Trim('\n')}", mErrorPosition[0], mErrorPosition[1]));
 
-      mErrors.RemoveAll(err => String.IsNullOrWhiteSpace(err.ErrorMessage));
+      mErrors.RemoveAll(err => ErrorParserConstants.kClangTag == err.ErrorMessage);
     }
 
     private bool FindPath(string aOutputMessage, ref string aErrorFilePath, ref bool aPathFound,
@@ -125,7 +125,7 @@ namespace ClangPowerTools
       if (aAddError)
       {
         aErrorFilePath = RemoveCharactersFromTheEnd(aErrorFilePath);
-        mErrors.Add(new ScriptError(mVsHierarchy, aErrorFilePath, $"{ErrorParserConstants.kClangTag}{mErrorMessage}", mErrorPosition[0], mErrorPosition[1]));
+        mErrors.Add(new ScriptError(mVsHierarchy, aErrorFilePath, $"{ErrorParserConstants.kClangTag}{mErrorMessage.Trim('\n')}", mErrorPosition[0], mErrorPosition[1]));
       }
 
       aErrorFilePath = RemoveCharactersFromTheEnd(matchResult.Value);

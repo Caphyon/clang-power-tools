@@ -47,7 +47,6 @@ namespace ClangPowerTools
 
     private OutputWindowManager mOutputManager;
     private ErrorsWindowManager mErrorsManager;
-    private Dispatcher mDispatcher;
     private List<string> mOutputMessages = new List<string>();
 
     #endregion
@@ -66,10 +65,9 @@ namespace ClangPowerTools
       mDte = aDte;
       mVsEdition = aEdition;
       mVsVersion = aVersion;
-      mDispatcher = HwndSource.FromHwnd((IntPtr)mDte.MainWindow.HWnd).RootVisual.Dispatcher;
 
       mOutputManager = new OutputWindowManager(mDte);
-      mErrorsManager = new ErrorsWindowManager(mPackage);
+      mErrorsManager = new ErrorsWindowManager(mPackage, mDte);
 
       if (this.ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
@@ -132,47 +130,39 @@ namespace ClangPowerTools
         try
         {
           mDte.Documents.SaveAll();
-          foreach ( var item in mItemsCollector.GetItems)
+          foreach (var item in mItemsCollector.GetItems)
           {
             string script = scriptBuilder.GetScript(item.Item1, item.Item1.GetName());
             powerShell.Invoke(script);
-            
+
             ErrorParser errorParser = new ErrorParser(mPackage, item.Item1);
             errorParser.Start(mOutputMessages);
-            mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
-            {
-              mErrorsManager.AddErrors(errorParser.Errors);
-            }));
+
+            mErrorsManager.AddErrors(errorParser.Errors);
             mOutputMessages.Clear();
           }
         }
-        catch(Exception exception)
+        catch (Exception exception)
         {
           VsShellUtilities.ShowMessageBox(mPackage, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
       });
-
     }
 
     private void OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
-      mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
-      {
-        mOutputManager.AddMessage(e.Data);
-      }));
+      mOutputManager.AddMessage(e.Data);
       mOutputMessages.Add(e.Data);
     }
 
     private void OutputDataErrorReceived(object sender, DataReceivedEventArgs e)
     {
-      mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
-      {
-        mOutputManager.AddMessage(e.Data);
-      }));
+      mOutputManager.AddMessage(e.Data);
     }
 
     #endregion
 
   }
 }
+

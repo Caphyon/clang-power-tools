@@ -1,5 +1,8 @@
-﻿using System;
+﻿using EnvDTE80;
+using System;
 using System.Collections.Generic;
+using System.Windows.Interop;
+using System.Windows.Threading;
 
 namespace ClangPowerTools
 {
@@ -8,14 +11,17 @@ namespace ClangPowerTools
     #region Members
 
     private ErrorWindow mErrorWindow = new ErrorWindow();
+    private Dispatcher mDispatcher;
 
     #endregion
 
     #region Ctor
 
-    public ErrorsWindowManager(IServiceProvider aServiceProvider) => 
+    public ErrorsWindowManager(IServiceProvider aServiceProvider, DTE2 aDte)
+    {
       mErrorWindow.Initialize(aServiceProvider);
-
+      mDispatcher = HwndSource.FromHwnd((IntPtr)aDte.MainWindow.HWnd).RootVisual.Dispatcher;
+    }
     #endregion
 
     #region Public Methods
@@ -29,8 +35,11 @@ namespace ClangPowerTools
     public void AddErrors(IEnumerable<ScriptError> aErrors)
     {
       mErrorWindow.Clear();
-      foreach (ScriptError error in aErrors)
-        mErrorWindow.AddError(error);
+      mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+      {
+        foreach (ScriptError error in aErrors)
+          mErrorWindow.AddError(error);
+      }));
     }
 
     #endregion
