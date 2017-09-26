@@ -1,12 +1,8 @@
 ﻿using EnvDTE;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Management.Automation;
 using System.Text.RegularExpressions;
-using System.Windows;
 
 namespace ClangPowerTools
 {

@@ -1,7 +1,5 @@
 ﻿using Microsoft.VisualStudio.Shell;
-using System;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
 
 namespace ClangPowerTools
 {

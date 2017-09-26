@@ -1,10 +1,5 @@
-﻿using EnvDTE;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using System;
+﻿using Microsoft.VisualStudio.Shell;
 using System.ComponentModel;
-using System.Runtime.InteropServices;
 
 namespace ClangPowerTools
 {
