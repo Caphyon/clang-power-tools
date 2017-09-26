@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("ClangPowerTools")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("A tool bringing clang-tidy magic to Visual Studio C++ developers.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Caphyon")]
 [assembly: AssemblyProduct("ClangPowerTools")]
 [assembly: AssemblyCopyright("")]
 [assembly: AssemblyTrademark("")]
