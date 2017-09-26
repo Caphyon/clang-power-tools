@@ -7,7 +7,7 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private string[] mClangFlags;
+    private string[] mClangFlags = new string[] { };
 
     #endregion
 
