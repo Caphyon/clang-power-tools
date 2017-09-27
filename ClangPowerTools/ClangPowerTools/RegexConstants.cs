@@ -4,8 +4,8 @@
   {
     #region Constants
 
-    public const string kFindAllPaths = @"(.\:\\[^ ]*)";
-    public const string kFindAllNumbers = "[0-9]+";
+    public const string kFindAllPaths = @"(.\:\\[^ ]+[ \w+\\.]*[h|cpp])";
+    public const string kFindLineAndColumn = @"(\d+)(?=:)";
 
     #endregion
 
