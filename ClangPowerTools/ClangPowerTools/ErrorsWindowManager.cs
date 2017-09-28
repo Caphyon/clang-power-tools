@@ -12,7 +12,7 @@ namespace ClangPowerTools
 
     private ErrorWindow mErrorWindow = new ErrorWindow();
     private Dispatcher mDispatcher;
-
+    
     #endregion
 
     #region Ctor
@@ -34,9 +34,9 @@ namespace ClangPowerTools
 
     public void AddErrors(IEnumerable<ScriptError> aErrors)
     {
-      mErrorWindow.Clear();
       mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
       {
+        mErrorWindow.Clear();
         foreach (ScriptError error in aErrors)
           mErrorWindow.AddError(error);
       }));

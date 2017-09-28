@@ -5,10 +5,13 @@ namespace ClangPowerTools
 {
   public class ErrorWindow
   {
-    private ErrorListProvider mErrorProvider;
+    private static ErrorListProvider mErrorProvider = null;
 
-    public void Initialize(IServiceProvider aServiceProvider) => 
-      mErrorProvider = new ErrorListProvider(aServiceProvider);
+    public void Initialize(IServiceProvider aServiceProvider)
+    {
+      if( null == mErrorProvider )
+        mErrorProvider = new ErrorListProvider(aServiceProvider);
+    }
 
     public void Clear() => mErrorProvider.Tasks.Clear();
 
