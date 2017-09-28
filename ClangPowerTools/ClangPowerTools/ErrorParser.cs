@@ -13,7 +13,7 @@ namespace ClangPowerTools
     private List<ScriptError> mErrors = new List<ScriptError>();
 
     private string mErrorfilePath = string.Empty;
-    private string mErrorMessage = string.Empty;
+    private string mErrorMessage = ErrorParserConstants.kClangTag;
     private int[] mErrorPosition = new int[2];
     private IVsHierarchy mVsHierarchy;
 
@@ -45,7 +45,7 @@ namespace ClangPowerTools
 
     #endregion
 
-    public void Start(List<string> aMessages)
+    public bool Start(List<string> aMessages)
     {
       bool isError = false;
       bool pathFound = false;
@@ -58,6 +58,12 @@ namespace ClangPowerTools
 
         if (string.IsNullOrWhiteSpace(errorMessage))
           continue;
+
+        if (errorMessage.Contains(ErrorParserConstants.kCompileClangMissingFromPath) ||
+          errorMessage.Contains(ErrorParserConstants.kTidyClangMissingFromPath))
+        {
+          return false;
+        }
 
         if (errorMessage.Contains(ErrorParserConstants.kEndErrorsTag))
           break;
@@ -105,9 +111,12 @@ namespace ClangPowerTools
         FindErrorMessage(errorMessage);
       }
       if (isError)
-        mErrors.Add(new ScriptError(mVsHierarchy, mErrorfilePath, $"{ErrorParserConstants.kClangTag}{mErrorMessage.Trim('\n')}", mErrorPosition[0], mErrorPosition[1]));
-
+      {
+        mErrors.Add(new ScriptError(mVsHierarchy, mErrorfilePath, mErrorMessage, mErrorPosition[0], mErrorPosition[1]));
+        mErrorMessage = ErrorParserConstants.kClangTag;
+      }
       mErrors.RemoveAll(err => ErrorParserConstants.kClangTag == err.ErrorMessage);
+      return true;
     }
 
     private bool FindPath(string aOutputMessage, ref string aErrorFilePath, ref bool aPathFound,
@@ -120,11 +129,11 @@ namespace ClangPowerTools
 
       if (aAddError)
       {
-        aErrorFilePath = RemoveCharactersFromTheEnd(aErrorFilePath);
-        mErrors.Add(new ScriptError(mVsHierarchy, aErrorFilePath, $"{ErrorParserConstants.kClangTag}{mErrorMessage.Trim('\n')}", mErrorPosition[0], mErrorPosition[1]));
+        mErrors.Add(new ScriptError(mVsHierarchy, aErrorFilePath, mErrorMessage, mErrorPosition[0], mErrorPosition[1]));
+        mErrorMessage = ErrorParserConstants.kClangTag;
       }
 
-      aErrorFilePath = RemoveCharactersFromTheEnd(matchResult.Value);
+      aErrorFilePath = matchResult.Value;
       aPathFound = true;
       aPositionFound = false;
       aSkipSearchPath = true;
@@ -132,18 +141,11 @@ namespace ClangPowerTools
       return true;
     }
 
-    private string RemoveCharactersFromTheEnd(string path)
-    {
-      foreach(string extensionTag in ErrorParserConstants.kExtensionsTag)
-        if (path.Contains(extensionTag) && path.Length > path.IndexOf(extensionTag) + extensionTag.Length)
-          return path.Remove(path.IndexOf(extensionTag) + extensionTag.Length);
-      return path;
-    }
-
     private bool FindPosition(string aOutputMessage, ref bool aPositionFound)
     {
-      Regex regex = new Regex(RegexConstants.kFindAllNumbers);
+      Regex regex = new Regex(RegexConstants.kFindLineAndColumn);
       Match matchResult = regex.Match(aOutputMessage);
+
       if (!matchResult.Success)
         return false;
 
@@ -154,8 +156,6 @@ namespace ClangPowerTools
       {
         int.TryParse(matchResult.Value, out mErrorPosition[index++]);
         matchResult = matchResult.NextMatch();
-        if (1 < index)
-          break;
       }
       return true;
     }
@@ -168,10 +168,10 @@ namespace ClangPowerTools
         message = aOutputMessage.IndexOf(ErrorParserConstants.kNoteTag);
         if (-1 == message)
           return false;
-        mErrorMessage = aOutputMessage.Substring(message + ErrorParserConstants.kNoteTag.Length);
+        mErrorMessage = $"{mErrorMessage}{aOutputMessage.Substring(message + ErrorParserConstants.kNoteTag.Length)}";
       }
       else
-        mErrorMessage = aOutputMessage.Substring(message + ErrorParserConstants.kErrorTag.Length);
+        mErrorMessage = $"{mErrorMessage}{aOutputMessage.Substring(message + ErrorParserConstants.kErrorTag.Length)}";
 
       return true;
     }
