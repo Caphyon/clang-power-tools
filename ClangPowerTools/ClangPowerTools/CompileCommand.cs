@@ -148,7 +148,6 @@ namespace ClangPowerTools
               mOutputManager.AddMessage(ErrorParserConstants.kClangPathVariablesMessage);
             }
             mOutputMessages.Clear();
-
           }
         }
         catch (Exception exception)

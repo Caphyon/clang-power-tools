@@ -41,8 +41,6 @@ namespace ClangPowerTools
       }
     }
 
-    public ErrorParser() { }
-
     #endregion
 
     public bool Start(List<string> aMessages)
@@ -65,8 +63,11 @@ namespace ClangPowerTools
           return false;
         }
 
-        if (errorMessage.Contains(ErrorParserConstants.kEndErrorsTag))
+        if (errorMessage.Trim() == ErrorParserConstants.kEndErrorsCompileTag
+          || errorMessage.Trim() == ErrorParserConstants.kEndErrorsTidyTag)
+        {
           break;
+        }
 
         if (errorMessage.StartsWith(ErrorParserConstants.kErrorTag))
         {
@@ -111,10 +112,7 @@ namespace ClangPowerTools
         FindErrorMessage(errorMessage);
       }
       if (isError)
-      {
-        mErrors.Add(new ScriptError(mVsHierarchy, mErrorfilePath, mErrorMessage, mErrorPosition[0], mErrorPosition[1]));
-        mErrorMessage = ErrorParserConstants.kClangTag;
-      }
+        CollectError();
       mErrors.RemoveAll(err => ErrorParserConstants.kClangTag == err.ErrorMessage);
       return true;
     }
@@ -128,10 +126,7 @@ namespace ClangPowerTools
         return false;
 
       if (aAddError)
-      {
-        mErrors.Add(new ScriptError(mVsHierarchy, aErrorFilePath, mErrorMessage, mErrorPosition[0], mErrorPosition[1]));
-        mErrorMessage = ErrorParserConstants.kClangTag;
-      }
+        CollectError();
 
       aErrorFilePath = matchResult.Value;
       aPathFound = true;
@@ -139,6 +134,12 @@ namespace ClangPowerTools
       aSkipSearchPath = true;
 
       return true;
+    }
+
+    private void CollectError()
+    {
+      mErrors.Add(new ScriptError(mVsHierarchy, mErrorfilePath, mErrorMessage, mErrorPosition[0], mErrorPosition[1]));
+      mErrorMessage = ErrorParserConstants.kClangTag;
     }
 
     private bool FindPosition(string aOutputMessage, ref bool aPositionFound)

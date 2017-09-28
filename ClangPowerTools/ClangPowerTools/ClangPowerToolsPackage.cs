@@ -85,7 +85,7 @@ namespace ClangPowerTools
       mDte = (DTE2)GetService(typeof(DTE));
       string edition = mDte.Edition;
       mVsVersions.TryGetValue(mDte.Version, out string version);
-
+      
       TidyCommand.Initialize(this, mDte, edition, version);  
       CompileCommand.Initialize(this, mDte, edition, version);
       SettingsCommand.Initialize(this);
