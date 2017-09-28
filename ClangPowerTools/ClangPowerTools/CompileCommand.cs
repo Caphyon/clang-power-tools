@@ -132,11 +132,18 @@ namespace ClangPowerTools
             powerShell.Invoke(script);
 
             ErrorParser errorParser = new ErrorParser(mPackage, item.Item1);
-            errorParser.Start(mOutputMessages);
-
-            mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kComplileCommand}\n");
-            mErrorsManager.AddErrors(errorParser.Errors);
-            mOutputMessages.Clear();
+            bool hasErrors = errorParser.Start(mOutputMessages);
+            
+            if(hasErrors)
+            {
+              mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kComplileCommand}\n");
+              mErrorsManager.AddErrors(errorParser.Errors);
+              mOutputMessages.Clear();
+            }
+            else
+            {
+              mOutputManager.AddMessage(ErrorParserConstants.kClangPathVariablesMessage);
+            }
           }
         }
         catch (Exception exception)
@@ -156,6 +163,7 @@ namespace ClangPowerTools
     private void OutputDataErrorReceived(object sender, DataReceivedEventArgs e)
     {
       mOutputManager.AddMessage(e.Data);
+      mOutputMessages.Add(e.Data);
     }
 
     #endregion
