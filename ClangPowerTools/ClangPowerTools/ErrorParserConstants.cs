@@ -12,8 +12,8 @@ namespace ClangPowerTools
     public const string kNoteTag                      = "note:";
     public const string kCompileClangMissingFromPath  = "error: The system cannot find the file specified.";
     public const string kTidyClangMissingFromPath     = "The term 'clang-tidy' is not recognized";
-    public const string kClangPathVariablesMessage    = "\n\nDid you forget to install LLVM and set the bin directory to the system path variables?\n\nYou can do this by following the next steps:\n\n1. Please download LLVM from here : http://releases.llvm.org/download.html \n2. Please run the executable file of LLVM.\n3. After the install window appears please press: Next -> I Agree -> Check: Add LLVM to the system PATH for all users/current user -> Next -> Next -> Install -> Finish -> Restart Visual Studio.";
-    
+    public const string kClangPathVariablesMessage    = "\n\nDid you forget to set-up LLVM?\n\nPlease follow these steps:\n- Go to http://releases.llvm.org/download.html. \n- Download the latest LLVM pre-build binaries for Windows. \n- Run installer. \n- During install, tick checkbox 'Add LLVM to the system PATH for all users/current user'. \n- Restart Visual Studio.";
+
     #endregion
   }
 }
