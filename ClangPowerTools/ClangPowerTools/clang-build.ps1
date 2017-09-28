@@ -920,11 +920,52 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   Run-ClangJobs -clangJobs $clangJobs
 }
+
+Function Is-LLVM-Reachable
+{
+  [string[]] $dirs = $env:Path.Split(";")
+  foreach ($dir in $dirs)
+  {
+    if ([string]::IsNullOrEmpty($dir))
+    {
+      continue
+    }
+
+    if (Canonize-Path -base $dir -child $kClangCompiler -ignoreErrors)
+    {
+      return $true
+    }
+  }
+  return $false
+}
+
+Function TryDetect-LLVM([Parameter(Mandatory=$true)][string]$location)
+{
+  $llvmPath = (Canonize-Path -base $location -child "bin" -ignoreErrors)
+  if (![string]::IsNullOrEmpty($llvmPath))
+  {
+    Write-Verbose "Detected LLVM at $llvmPath"
+    $env:Path += ";$llvmPath"
+
+    return $true
+  }
+
+  return $false
+}
  
 #-------------------------------------------------------------------------------------------------
 # Script entry point
 
 Clear-Host # clears console
+
+# If LLVM is not in PATH try to detect it automatically
+if (! (Is-LLVM-Reachable) )
+{
+  if (!(TryDetect-LLVM -location "${Env:ProgramFiles}\LLVM"))
+  {
+    TryDetect-LLVM -location "${Env:ProgramFiles(x86)}\LLVM"
+  }
+}
 
 Push-Location $aDirectory
 
