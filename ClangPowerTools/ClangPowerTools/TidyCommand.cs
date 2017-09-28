@@ -127,6 +127,10 @@ namespace ClangPowerTools
         try
         {
           mDte.Documents.SaveAll();
+
+          Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
+          solutionLoader.EnsureSolutionProjectsAreLoaded();
+
           mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kTidyCodeCommand}\n");
           foreach (var item in mItemsCollector.GetItems)
           {
@@ -138,14 +142,14 @@ namespace ClangPowerTools
 
             if (hasErrors)
             {
-              mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kComplileCommand}\n");
+              mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kTidyCodeCommand}\n");
               mErrorsManager.AddErrors(errorParser.Errors);
-              mOutputMessages.Clear();
             }
             else
             {
               mOutputManager.AddMessage(ErrorParserConstants.kClangPathVariablesMessage);
             }
+            mOutputMessages.Clear();
           }
         }
         catch (Exception exception)
