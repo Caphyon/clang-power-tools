@@ -9,7 +9,7 @@
         <GettingStartedGuide>https://github.com/Caphyon/clang-power-tools</GettingStartedGuide>
         <ReleaseNotes>https://github.com/Caphyon/clang-power-tools</ReleaseNotes>
         <Icon>Resources\Icon.png</Icon>
-        <PreviewImage>Resources\PreviewImage.png</PreviewImage>
+        <PreviewImage>Resources\Icon.png</PreviewImage>
         <Tags>c++;clang;clang-tidy;developer</Tags>
     </Metadata>
     <Installation>
