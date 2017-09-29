@@ -11,6 +11,7 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.Text;
 
 namespace ClangPowerTools
 {
@@ -42,7 +43,7 @@ namespace ClangPowerTools
 
     private OutputWindowManager mOutputManager;
     private ErrorsWindowManager mErrorsManager;
-    private List<string> mOutputMessages = new List<string>();
+    private StringBuilder mOutputMessages = new StringBuilder();
 
     #endregion
 
@@ -138,7 +139,7 @@ namespace ClangPowerTools
             powerShell.Invoke(script);
 
             ErrorParser errorParser = new ErrorParser(mPackage, item.Item1);
-            bool hasErrors = errorParser.Start(mOutputMessages);
+            bool hasErrors = errorParser.Start(mOutputMessages.ToString());
 
             if (hasErrors)
             {
@@ -147,7 +148,7 @@ namespace ClangPowerTools
             }
             else
             {
-              mOutputManager.AddMessage(ErrorParserConstants.kClangPathVariablesMessage);
+              mOutputManager.AddMessage(ErrorParserConstants.kMissingClangMessage);
             }
             mOutputMessages.Clear();
           }
@@ -163,13 +164,13 @@ namespace ClangPowerTools
     private void OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
       mOutputManager.AddMessage(e.Data);
-      mOutputMessages.Add(e.Data);
+      mOutputMessages.AppendLine(e.Data);
     }
 
     private void OutputDataErrorReceived(object sender, DataReceivedEventArgs e)
     {
       mOutputManager.AddMessage(e.Data);
-      mOutputMessages.Add(e.Data);
+      mOutputMessages.AppendLine(e.Data);
     }
 
     #endregion

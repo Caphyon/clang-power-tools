@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Windows.Forms;
 
 namespace ClangPowerTools
 {
@@ -11,10 +12,7 @@ namespace ClangPowerTools
     #region Members
 
     private List<ScriptError> mErrors = new List<ScriptError>();
-
-    private string mErrorfilePath = string.Empty;
-    private string mErrorMessage = ErrorParserConstants.kClangTag;
-    private int[] mErrorPosition = new int[2];
+    public const string kCompileErrorsRegex = @"(.\:\\[ \w+\\.]*[h|cpp])(\r\n|\r|\n| )?(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*error(\r\n|\r|\n| |:)*(.*)";
     private IVsHierarchy mVsHierarchy;
 
     #endregion
@@ -43,139 +41,32 @@ namespace ClangPowerTools
 
     #endregion
 
-    public bool Start(List<string> aMessages)
+    public bool Start(string aMessages)
     {
-      bool isError = false;
-      bool pathFound = false;
-      bool positionFound = false;
-      bool skipSearchPath = false;
-
-      foreach (string message in aMessages)
+      if (aMessages.Contains(ErrorParserConstants.kCompileClangMissingFromPath) ||
+          aMessages.Contains(ErrorParserConstants.kTidyClangMissingFromPath))
       {
-        string errorMessage = message;
-
-        if (string.IsNullOrWhiteSpace(errorMessage))
-          continue;
-
-        if (errorMessage.Contains(ErrorParserConstants.kCompileClangMissingFromPath) ||
-          errorMessage.Contains(ErrorParserConstants.kTidyClangMissingFromPath))
-        {
-          return false;
-        }
-
-        if (errorMessage.Trim() == ErrorParserConstants.kEndErrorsCompileTag
-          || errorMessage.Trim() == ErrorParserConstants.kEndErrorsTidyTag)
-        {
-          break;
-        }
-
-        if (errorMessage.StartsWith(ErrorParserConstants.kErrorTag))
-        {
-          errorMessage = errorMessage.Substring(ErrorParserConstants.kErrorTag.Length);
-          isError = true;
-        }
-
-        if (isError == false)
-          continue;
-
-        if (pathFound == false)
-        {
-          if (!FindPath(errorMessage, ref mErrorfilePath, ref pathFound, ref positionFound, ref skipSearchPath, false))
-            continue;
-        }
-
-        if (positionFound == false)
-        {
-          if (!FindPosition(errorMessage, ref positionFound))
-            continue;
-        }
-
-        if (skipSearchPath == false)
-        {
-          if (FindPath(errorMessage, ref mErrorfilePath, ref pathFound, ref positionFound, ref skipSearchPath, true))
-          {
-            if (!FindPosition(errorMessage, ref positionFound))
-              continue;
-
-            skipSearchPath = true;
-            FindErrorMessage(errorMessage);
-            continue;
-          }
-          else
-          {
-            mErrorMessage = $"{mErrorMessage}\n{errorMessage}";
-            continue;
-          }
-        }
-
-        skipSearchPath = false;
-        FindErrorMessage(errorMessage);
+        return false;
       }
-      if (isError)
-        CollectError();
-      mErrors.RemoveAll(err => ErrorParserConstants.kClangTag == err.ErrorMessage);
-      return true;
-    }
 
-    private bool FindPath(string aOutputMessage, ref string aErrorFilePath, ref bool aPathFound,
-      ref bool aPositionFound, ref bool aSkipSearchPath, bool aAddError)
-    {
-      Regex regex = new Regex(RegexConstants.kFindAllPaths);
-      Match matchResult = regex.Match(aOutputMessage);
+      Regex regex = new Regex(kCompileErrorsRegex);
+      Match matchResult = regex.Match(aMessages);
       if (!matchResult.Success)
-        return false;
-
-      if (aAddError)
-        CollectError();
-
-      aErrorFilePath = matchResult.Value;
-      aPathFound = true;
-      aPositionFound = false;
-      aSkipSearchPath = true;
-
-      return true;
-    }
-
-    private void CollectError()
-    {
-      mErrors.Add(new ScriptError(mVsHierarchy, mErrorfilePath, mErrorMessage, mErrorPosition[0], mErrorPosition[1]));
-      mErrorMessage = ErrorParserConstants.kClangTag;
-    }
-
-    private bool FindPosition(string aOutputMessage, ref bool aPositionFound)
-    {
-      Regex regex = new Regex(RegexConstants.kFindLineAndColumn);
-      Match matchResult = regex.Match(aOutputMessage);
-
-      if (!matchResult.Success)
-        return false;
-
-      aPositionFound = true;
-      int index = 0;
+        return true;
 
       while (matchResult.Success)
       {
-        int.TryParse(matchResult.Value, out mErrorPosition[index++]);
+        var groups = matchResult.Groups;
+
+        string path = groups[1].Value;
+        int.TryParse(groups[4].Value, out int line);
+        int.TryParse(groups[6].Value, out int column);
+        string errorMessage = $"{ErrorParserConstants.kClangTag}{groups[9].Value}";
+        mErrors.Add(new ScriptError(mVsHierarchy, path, errorMessage, line, column));
+
         matchResult = matchResult.NextMatch();
       }
       return true;
     }
-
-    private bool FindErrorMessage(string aOutputMessage)
-    {
-      int message = aOutputMessage.IndexOf(ErrorParserConstants.kErrorTag.ToLower());
-      if (-1 == message)
-      {
-        message = aOutputMessage.IndexOf(ErrorParserConstants.kNoteTag);
-        if (-1 == message)
-          return false;
-        mErrorMessage = $"{mErrorMessage}{aOutputMessage.Substring(message + ErrorParserConstants.kNoteTag.Length)}";
-      }
-      else
-        mErrorMessage = $"{mErrorMessage}{aOutputMessage.Substring(message + ErrorParserConstants.kErrorTag.Length)}";
-
-      return true;
-    }
-
   }
 }
