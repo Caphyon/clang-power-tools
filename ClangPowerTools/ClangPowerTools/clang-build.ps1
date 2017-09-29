@@ -271,8 +271,10 @@ Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
                       , [switch] $ignoreErrors)
 {
   [string] $errorAction = If ($ignoreErrors) {"SilentlyContinue"} Else {"Stop"}
-  [string] $path = Join-Path -Path "$base" -ChildPath "$child" -Resolve -ErrorAction $errorAction
-
+  [string] $path = $child
+  if (![System.IO.Path]::IsPathRooted($path)) {
+    [string] $path = Join-Path -Path "$base" -ChildPath "$child" -Resolve -ErrorAction $errorAction
+  } 
   return $path
 }
 
