@@ -34,7 +34,6 @@ namespace ClangPowerTools
         Priority = TaskPriority.High
       };
       errorTask.Navigate += ErrorTaskNavigate;
-
       mErrorProvider.Tasks.Add(errorTask);
       mErrorProvider.Show();
     }

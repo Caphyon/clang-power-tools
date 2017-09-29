@@ -10,7 +10,6 @@ using Microsoft.VisualStudio.Shell;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Diagnostics;
-using System.Collections.Generic;
 using System.Text;
 
 namespace ClangPowerTools

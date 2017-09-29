@@ -62,11 +62,6 @@ namespace ClangPowerTools
 
     private void GetProject(Project aProject)
     {
-      if(string.Compare(EnvDTE.Constants.vsProjectKindUnmodeled, aProject.Kind,
-        System.StringComparison.OrdinalIgnoreCase) == 0)
-      {
-        aProject = AutomationUtil.ReloadProject(mServiceProvider, aProject);
-      }
       IVsHierarchy hierarchy = AutomationUtil.GetProjectHierarchy(mServiceProvider, aProject);
       mItems.Add(new Tuple<IItem, IVsHierarchy>(new SelectedProject(aProject), hierarchy));
     }

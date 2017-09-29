@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using System.Windows.Forms;
 
 namespace ClangPowerTools
 {

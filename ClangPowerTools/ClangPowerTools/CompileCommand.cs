@@ -10,7 +10,6 @@ using System.ComponentModel.Design;
 using EnvDTE80;
 using System.Diagnostics;
 using Microsoft.VisualStudio.Shell.Interop;
-using System.Collections.Generic;
 using System.Text;
 
 namespace ClangPowerTools
