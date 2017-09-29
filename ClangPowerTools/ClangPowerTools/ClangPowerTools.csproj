@@ -69,7 +69,6 @@
     <Compile Include="OutputWindow.cs" />
     <Compile Include="PowerShellWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegexConstants.cs" />
     <Compile Include="SettingsCommand.cs" />
     <Compile Include="StringArrayConverter.cs" />
     <Compile Include="TidyCommand.cs" />
