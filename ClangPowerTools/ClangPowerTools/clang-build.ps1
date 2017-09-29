@@ -356,8 +356,9 @@ Function Is-Project-Unicode([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
   [xml] $vcxproj = Get-Content $vcxprojPath
   $propGroup = $vcxproj.Project.PropertyGroup | `
-               Where-Object { $_.GetAttribute("Condition") -eq $kPlatformFilter -and 
-                              $_.GetAttribute("Label") -eq "Configuration" }
+  Where-Object { $_.GetAttribute -ne $null -and
+                 $_.GetAttribute("Condition") -eq $kPlatformFilter -and 
+                 $_.GetAttribute("Label") -eq "Configuration" }
   
   return ($propGroup.CharacterSet -eq "Unicode")
 }
@@ -366,7 +367,8 @@ Function Get-ProjectPlatformToolset([Parameter(Mandatory=$true)][string] $vcxpro
 {
   [xml] $vcxproj = Get-Content $vcxprojPath
   $propGroup = $vcxproj.Project.PropertyGroup | `
-               Where-Object { $_.GetAttribute("Condition") -eq $kPlatformFilter -and 
+               Where-Object { $_.GetAttribute -ne $null -and
+                              $_.GetAttribute("Condition") -eq $kPlatformFilter -and 
                               $_.GetAttribute("Label") -eq "Configuration" }
   
   $toolset = $propGroup.PlatformToolset
@@ -435,7 +437,7 @@ Function Get-ProjectStdafxDir([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
   [string[]] $projectHeaders = Get-ProjectHeaders($vcxprojPath)
   [string] $stdafxRelativePath = $projectHeaders | Where-Object { $_ -cmatch $kNameStdAfxH }
-  if ($stdafxRelativePath -eq $null)
+  if ([string]::IsNullOrEmpty($stdafxRelativePath))
   {
     return ""
   }
@@ -587,7 +589,8 @@ Function Get-ProjectPreprocessorDefines([Parameter(Mandatory=$true)][string] $vc
   [string[]] $tokens = Get-ProjectClCompileData -vcxprojOrPropSheetPath $vcxprojPath `
                                                 -clCompileChildItem     "PreprocessorDefinitions" `
                                                 -valuesToIgnore         @($kVcxprojItemInheritedPreprocessorDefs)
-  $defines = ($tokens | ForEach-Object { $kClangDefinePrefix + $_ })
+
+  $defines = ($tokens | Where-Object { $_ } | ForEach-Object { $kClangDefinePrefix + $_ })
 
   if (Is-Project-Unicode -vcxprojPath $vcxprojPath)
   {
@@ -634,25 +637,29 @@ Function Get-ExeToCall([Parameter(Mandatory=$true)][WorkloadType] $workloadType)
   }
 }
 
-Function Get-CompileCallArguments( [Parameter(Mandatory=$true)][string[]]        $preprocessorDefinitions
-                                 , [Parameter(Mandatory=$true)][string]          $pchFilePath
-                                 , [Parameter(Mandatory=$true)][string]          $fileToCompile)
+Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $preprocessorDefinitions
+                                 , [Parameter(Mandatory=$false)][string]  $pchFilePath
+                                 , [Parameter(Mandatory=$true)][string]   $fileToCompile)
 {
-  [string[]] $projectCompileArgs = @( $kClangFlagIncludePch
-                                    , """$pchFilePath"""
-                                    , """$fileToCompile"""
-                                    , $aClangCompileFlags
-                                    , $kClangFlagSupressLINK
-                                    , $kClangFlagWarningIsError
-                                    , $preprocessorDefinitions
-                                    )
+  [string[]] $projectCompileArgs = @()
+  if (! [string]::IsNullOrEmpty($pchFilePath))
+  {
+    $projectCompileArgs += @($kClangFlagIncludePch , """$pchFilePath""")
+  }
+  
+  $projectCompileArgs += @( """$fileToCompile"""
+                          , $aClangCompileFlags
+                          , $kClangFlagSupressLINK
+                          , $kClangFlagWarningIsError
+                          , $preprocessorDefinitions
+                          )
 
   return $projectCompileArgs
 }
 
-Function Get-TidyCallArguments([Parameter(Mandatory=$true)][string[]]        $preprocessorDefinitions
-                              , [Parameter(Mandatory=$true)][string]          $fileToTidy
-                              , [Parameter(Mandatory=$false)][switch]         $fix)
+Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preprocessorDefinitions
+                              , [Parameter(Mandatory=$true)][string]   $fileToTidy
+                              , [Parameter(Mandatory=$false)][switch]  $fix)
 {
   [string[]] $tidyArgs = @("""$fileToTidy""")
   if ($fix)
@@ -684,11 +691,11 @@ Function Get-TidyCallArguments([Parameter(Mandatory=$true)][string[]]        $pr
   return $tidyArgs
 }
 
-Function Get-ExeCallArguments( [Parameter(Mandatory=$true) ][string]         $vcxprojPath
-                             , [Parameter(Mandatory=$false)][string]         $pchFilePath
-                             , [Parameter(Mandatory=$true) ][string[]]       $preprocessorDefinitions
-                             , [Parameter(Mandatory=$true) ][string]         $currentFile
-                             , [Parameter(Mandatory=$true) ][WorkloadType]   $workloadType)
+Function Get-ExeCallArguments( [Parameter(Mandatory=$true) ][string]       $vcxprojPath
+                             , [Parameter(Mandatory=$false)][string]       $pchFilePath
+                             , [Parameter(Mandatory=$false) ][string[]]    $preprocessorDefinitions
+                             , [Parameter(Mandatory=$true) ][string]       $currentFile
+                             , [Parameter(Mandatory=$true) ][WorkloadType] $workloadType)
 {
   switch ($workloadType)
   {
@@ -827,8 +834,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
       Fail-Script "Project has a pch cpp, but not a $kNameStdAfxH!"
     }
 
-    Write-Output ("  --> $kNameStdAfxH doesn't exist, skipping project")
-    Return
+    Write-Verbose ("  --> $kNameStdAfxH doesn't exist, PCH not enabled.")
   }
   else
   {
@@ -884,6 +890,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   [string] $pchFilePath = ""
   if ($projCpps.Count -gt 0 -and 
+      ![string]::IsNullOrEmpty($stdafxDir) -and
       $workloadType -eq [WorkloadType]::Compile)
   {
     # COMPILE PCH

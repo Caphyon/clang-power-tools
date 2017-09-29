@@ -10,6 +10,7 @@ First official release.
 
 Improvements:
 * Automatically detect clang installation folder.
+* Support for projects without PCH/stdafx.
 
 Bugs:
 * Fixed navigation to clang error in code editor.
