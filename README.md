@@ -13,14 +13,14 @@ The extension can be configured via the standard Visual Studio options panel.
 **Tools** > **Options** > **Clang Power Tools**  
 You can customize the tool behavior as well as the clang++ compilation flags, clang-tidy checks, etc.
 
-### Download 
-
-The latest version of this extension is available at [Visual Studio Gallery](https://marketplace.visualstudio.com/items?itemName=vs-publisher-690586.ClangPowerTools).
-
 ### Requirements
 
 Download and install **Clang for Windows** (LLVM pre-built binary)  
 http://releases.llvm.org/5.0.0/LLVM-5.0.0-win64.exe  
 http://releases.llvm.org/download.html
 
-We will automatically load clang from the default installation path *C:\Program Files\LLVM*. If you prefer to use a different location you must manually add the **bin** folder to **PATH**.
+We will automatically load clang from the default installation path *C:\Program Files\LLVM*. If you prefer to use a different location you must manually add the **bin** folder to **PATH**.  
+
+### Download 
+
+The latest version of this extension is available at [Visual Studio Gallery](https://marketplace.visualstudio.com/items?itemName=vs-publisher-690586.ClangPowerTools).
