@@ -11,7 +11,7 @@ namespace ClangPowerTools
     #region Members
 
     private List<ScriptError> mErrors = new List<ScriptError>();
-    public const string kCompileErrorsRegex = @"(.\:\\[ \w+\\.]*[h|cpp])(\r\n|\r|\n| )?(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*error(\r\n|\r|\n| |:)*(.*)";
+    public const string kCompileErrorsRegex = @"(.\:\\[ \w+\\\/.]*[h|cpp])(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*error(\r\n|\r|\n| |:)*(.*)";
     private IVsHierarchy mVsHierarchy;
 
     #endregion
@@ -58,9 +58,9 @@ namespace ClangPowerTools
         var groups = matchResult.Groups;
 
         string path = groups[1].Value;
-        int.TryParse(groups[4].Value, out int line);
-        int.TryParse(groups[6].Value, out int column);
-        string errorMessage = $"{ErrorParserConstants.kClangTag}{groups[9].Value}";
+        int.TryParse(groups[3].Value, out int line);
+        int.TryParse(groups[5].Value, out int column);
+        string errorMessage = $"{ErrorParserConstants.kClangTag}{groups[8].Value}";
         mErrors.Add(new ScriptError(mVsHierarchy, path, errorMessage, line, column));
 
         matchResult = matchResult.NextMatch();
