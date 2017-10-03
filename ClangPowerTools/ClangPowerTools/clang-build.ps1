@@ -383,15 +383,33 @@ Function Get-ProjectPlatformToolset([Parameter(Mandatory=$true)][string] $vcxpro
   }
 }
 
+Function Get-VisualStudio-Includes([Parameter(Mandatory=$true)][string]  $vsPath,
+                                   [Parameter(Mandatory=$false)][string] $mscVer)
+{
+  [string] $mscVerToken = ""
+  If (![string]::IsNullOrEmpty($mscVer)) 
+  { 
+    $mscVerToken = "$mscVer\" 
+  }
+  
+  return @( "$vsPath\VC\Tools\MSVC\$($mscVerToken)include"
+          , "$vsPath\VC\Tools\MSVC\$($mscVerToken)atlmfc\include"
+          )
+}
+
 Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
   [string[]] $returnArray = @()
-
-  [string] $mscVer = Get-MscVer
   
-  $returnArray += @("${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$aVisualStudioVersion\$aVisualStudioSku\VC\Tools\MSVC\$mscVer\include"
-                   ,"${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$aVisualStudioVersion\$aVisualStudioSku\VC\Tools\MSVC\$mscVer\atlmfc\include"
-                   )
+  if ($aVisualStudioVersion -eq "2015")
+  {
+    $returnArray += Get-VisualStudio-Includes -vsPath "${Env:ProgramFiles(x86)}\Microsoft Visual Studio 14.0"
+  }
+  else
+  {
+    $returnArray += Get-VisualStudio-Includes -vsPath "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$aVisualStudioVersion\$aVisualStudioSku" `
+                                              -mscVer (Get-MscVer)
+  }
 
   $sdkVer = (Get-Project-SDKVer -vcxprojPath $vcxprojPath)
 
