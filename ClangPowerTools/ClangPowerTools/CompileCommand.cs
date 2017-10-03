@@ -126,8 +126,10 @@ namespace ClangPowerTools
         {
           mDte.Documents.SaveAll();
 
-          Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
-          solutionLoader.EnsureSolutionProjectsAreLoaded();
+          {
+            Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
+            solutionLoader.EnsureSolutionProjectsAreLoaded();
+          }
 
           mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kComplileCommand}\n");
           foreach (var item in mItemsCollector.GetItems)

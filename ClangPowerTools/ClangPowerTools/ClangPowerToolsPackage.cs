@@ -55,7 +55,7 @@ namespace ClangPowerTools
       {"15.0", "2017"}
     };
     private DTE2 mDte;
-    
+
     #endregion
 
     #region Ctor
@@ -85,7 +85,7 @@ namespace ClangPowerTools
       mDte = (DTE2)GetService(typeof(DTE));
       string edition = mDte.Edition;
       mVsVersions.TryGetValue(mDte.Version, out string version);
-      
+
       TidyCommand.Initialize(this, mDte, edition, version);  
       CompileCommand.Initialize(this, mDte, edition, version);
       SettingsCommand.Initialize(this);
