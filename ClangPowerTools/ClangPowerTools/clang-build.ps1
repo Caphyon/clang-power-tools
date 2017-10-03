@@ -389,11 +389,11 @@ Function Get-VisualStudio-Includes([Parameter(Mandatory=$true)][string]  $vsPath
   [string] $mscVerToken = ""
   If (![string]::IsNullOrEmpty($mscVer)) 
   { 
-    $mscVerToken = "$mscVer\" 
+    $mscVerToken = "Tools\MSVC\$mscVer\" 
   }
   
-  return @( "$vsPath\VC\Tools\MSVC\$($mscVerToken)include"
-          , "$vsPath\VC\Tools\MSVC\$($mscVerToken)atlmfc\include"
+  return @( "$vsPath\VC\$($mscVerToken)include"
+          , "$vsPath\VC\$($mscVerToken)atlmfc\include"
           )
 }
 
