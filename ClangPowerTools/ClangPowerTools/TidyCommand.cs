@@ -39,6 +39,7 @@ namespace ClangPowerTools
     private DTE2 mDte;
     private string mVsEdition;
     private string mVsVersion;
+    private string kVs15Version = "2017";
 
     private OutputWindowManager mOutputManager;
     private ErrorsWindowManager mErrorsManager;
@@ -128,8 +129,11 @@ namespace ClangPowerTools
         {
           mDte.Documents.SaveAll();
 
-          Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
-          solutionLoader.EnsureSolutionProjectsAreLoaded();
+          if (kVs15Version == mVsVersion)
+          {
+            Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
+            solutionLoader.EnsureSolutionProjectsAreLoaded();
+          }
 
           mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kTidyCodeCommand}\n");
           foreach (var item in mItemsCollector.GetItems)
