@@ -42,11 +42,8 @@ namespace ClangPowerTools
 
     public bool Start(string aMessages)
     {
-      if (aMessages.Contains(ErrorParserConstants.kCompileClangMissingFromPath) ||
-          aMessages.Contains(ErrorParserConstants.kTidyClangMissingFromPath))
-      {
+      if (LlvmIsMissing(aMessages))
         return false;
-      }
 
       Regex regex = new Regex(kCompileErrorsRegex);
       Match matchResult = regex.Match(aMessages);
@@ -66,6 +63,13 @@ namespace ClangPowerTools
         matchResult = matchResult.NextMatch();
       }
       return true;
+    }
+
+    private bool LlvmIsMissing(string aMessages)
+    {
+      return aMessages.Contains(ErrorParserConstants.kCompileClangMissingFromPath) ||
+        aMessages.Contains(ErrorParserConstants.kTidyClangMissingFromPath) ?
+        true : false;
     }
   }
 }

@@ -43,7 +43,7 @@ namespace ClangPowerTools
 
     private OutputWindowManager mOutputManager;
     private ErrorsWindowManager mErrorsManager;
-    private StringBuilder mOutputMessages = new StringBuilder();
+    private StringBuilder mOutputMessages;
 
     #endregion
 
@@ -111,6 +111,7 @@ namespace ClangPowerTools
     {
       System.Threading.Tasks.Task.Run(() =>
       {
+        mOutputMessages = new StringBuilder();
         GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
 
         ScriptBuiler scriptBuilder = new ScriptBuiler();
@@ -132,7 +133,7 @@ namespace ClangPowerTools
             Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
             solutionLoader.EnsureSolutionProjectsAreLoaded();
           }
-
+          bool succesParse = false;
           mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kComplileCommand}\n");
           foreach (var item in mItemsCollector.GetItems)
           {
@@ -140,19 +141,18 @@ namespace ClangPowerTools
             powerShell.Invoke(script);
 
             ErrorParser errorParser = new ErrorParser(mPackage, item.Item1);
-            bool hasErrors = errorParser.Start(mOutputMessages.ToString());
-            
-            if(hasErrors)
-            {
-              mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kComplileCommand}\n");
-              mErrorsManager.AddErrors(errorParser.Errors);
-            }
-            else
+            succesParse = errorParser.Start(mOutputMessages.ToString());
+
+            if (!succesParse)
             {
               mOutputManager.AddMessage(ErrorParserConstants.kMissingClangMessage);
+              break;
             }
+            mErrorsManager.AddErrors(errorParser.Errors);
             mOutputMessages.Clear();
           }
+          if (succesParse)
+            mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kComplileCommand}\n");
         }
         catch (Exception exception)
         {
