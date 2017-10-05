@@ -79,6 +79,9 @@
     <Compile Include="ErrorParser.cs" />
     <Compile Include="ErrorParserConstants.cs" />
     <Compile Include="ErrorsWindowManager.cs" />
+    <Compile Include="FileChangerWatcher.cs" />
+    <Compile Include="FileOpener.cs" />
+    <Compile Include="FilePathCollector.cs" />
     <Compile Include="GeneralOptions.cs">
       <SubType>Component</SubType>
     </Compile>

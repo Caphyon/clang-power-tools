@@ -11,6 +11,7 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Diagnostics;
 using System.Text;
+using System.IO;
 
 namespace ClangPowerTools
 {
@@ -44,6 +45,8 @@ namespace ClangPowerTools
     private OutputWindowManager mOutputManager;
     private ErrorsWindowManager mErrorsManager;
     private StringBuilder mOutputMessages;
+    private FileChangerWatcher mFileWatcher;
+    private FileOpener mFileOpener = new FileOpener();
 
     #endregion
 
@@ -126,15 +129,22 @@ namespace ClangPowerTools
         powerShell.DataHandler += OutputDataReceived;
         powerShell.DataErrorHandler += OutputDataErrorReceived;
 
+        FilePathCollector fileCollector = new FilePathCollector();
+        fileCollector.Collect(mItemsCollector.GetItems);
+
+        mFileWatcher = new FileChangerWatcher();
+        mFileWatcher.OnChanged += FileChanged;
+        mFileWatcher.Run(fileCollector.CommonPrefixPath());
+
         try
         {
           mDte.Documents.SaveAll();
-
           if (kVs15Version == mVsVersion)
           {
             Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
             solutionLoader.EnsureSolutionProjectsAreLoaded();
           }
+
           bool succesParse = false;
           mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kTidyCodeCommand}\n");
           foreach (var item in mItemsCollector.GetItems)
@@ -174,6 +184,12 @@ namespace ClangPowerTools
     {
       mOutputManager.AddMessage(e.Data);
       mOutputMessages.AppendLine(e.Data);
+    }
+
+    private void FileChanged(object source, FileSystemEventArgs e)
+    {
+      // Open the changed files in the editor
+      mFileOpener.Open(mDte, e.FullPath);
     }
 
     #endregion
