@@ -1,4 +1,5 @@
-﻿<#
+﻿#Requires -Version 3
+<#
 .SYNOPSIS
     Compiles or tidies up code from Visual Studio .vcxproj project files.
 
