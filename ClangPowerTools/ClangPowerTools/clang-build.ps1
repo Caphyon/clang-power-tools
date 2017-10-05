@@ -153,6 +153,10 @@ Set-Variable -name kClangTidyFixFlags         -value @("-fix", "--")    -Option 
 Set-Variable -name kClangTidyFlagHeaderFilter -value "-header-filter="  -Option Constant
 Set-Variable -name kClangTidyFlagChecks       -value "-checks="         -Option Constant
 
+Set-Variable -name kLLVMInstallLocations    -value @("${Env:ProgramW6432}\LLVM\bin"
+                                                    ,"${Env:ProgramFiles(x86)}\LLVM\bin"
+                                                    )                   -Option Constant
+
 #-------------------------------------------------------------------------------------------------
 # PlatformToolset-Related Constants
 
@@ -233,6 +237,19 @@ Function Write-Success([parameter(ValueFromPipeline, Mandatory=$true)][string] $
 {
   Write-Message -msg $msg -color Green
 }   
+
+Function Exists-Command([Parameter(Mandatory=$true)][string] $command)
+{
+  try
+  { 
+    Get-Command -name $command -ErrorAction Stop
+    return $true
+  }
+  catch
+  {
+    return $false
+  }
+}
 
 Function Get-FileDirectory([Parameter(Mandatory=$true)][string] $filePath)
 {
@@ -946,38 +963,6 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   Run-ClangJobs -clangJobs $clangJobs
 }
-
-Function Is-LLVM-Reachable
-{
-  [string[]] $dirs = $env:Path.Split(";")
-  foreach ($dir in $dirs)
-  {
-    if ([string]::IsNullOrEmpty($dir))
-    {
-      continue
-    }
-
-    if (Canonize-Path -base $dir -child $kClangCompiler -ignoreErrors)
-    {
-      return $true
-    }
-  }
-  return $false
-}
-
-Function TryDetect-LLVM([Parameter(Mandatory=$true)][string]$location)
-{
-  $llvmPath = (Canonize-Path -base $location -child "bin" -ignoreErrors)
-  if (![string]::IsNullOrEmpty($llvmPath))
-  {
-    Write-Verbose "Detected LLVM at $llvmPath"
-    $env:Path += ";$llvmPath"
-
-    return $true
-  }
-
-  return $false
-}
  
 #-------------------------------------------------------------------------------------------------
 # Script entry point
@@ -985,11 +970,16 @@ Function TryDetect-LLVM([Parameter(Mandatory=$true)][string]$location)
 Clear-Host # clears console
 
 # If LLVM is not in PATH try to detect it automatically
-if (! (Is-LLVM-Reachable) )
+if (! (Exists-Command($kClangCompiler)) )
 {
-  if (!(TryDetect-LLVM -location "${Env:ProgramFiles}\LLVM"))
+  foreach ($locationLLVM in $kLLVMInstallLocations)
   {
-    TryDetect-LLVM -location "${Env:ProgramFiles(x86)}\LLVM"
+    if (Test-Path $locationLLVM)
+    {
+      Write-Verbose "Detected LLVM at $locationLLVM"
+      $env:Path += ";$locationLLVM"
+      break
+    }
   }
 }
 
