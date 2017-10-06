@@ -149,8 +149,10 @@ Set-Variable -name kClangDefinePrefix       -value "-D"                 -Option 
 
 Set-Variable -name kClangCompiler             -value "clang++.exe"      -Option Constant
 Set-Variable -name kClangTidy                 -value "clang-tidy.exe"   -Option Constant
-Set-Variable -name kClangTidyFlags            -value @("--")            -Option Constant
-Set-Variable -name kClangTidyFixFlags         -value @("-fix-errors"
+Set-Variable -name kClangTidyFlags            -value @("-quiet"
+                                                      ,"--")            -Option Constant
+Set-Variable -name kClangTidyFixFlags         -value @("-quiet"
+                                                      ,"-fix-errors"
                                                       , "--")           -Option Constant
 Set-Variable -name kClangTidyFlagHeaderFilter -value "-header-filter="  -Option Constant
 Set-Variable -name kClangTidyFlagChecks       -value "-checks="         -Option Constant
@@ -722,7 +724,6 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
                               , [Parameter(Mandatory=$false)][switch]  $fix)
 {
   [string[]] $tidyArgs = @("""$fileToTidy""")
-  $tidyArgs += "-quiet"
   if ($fix)
   { 
     $tidyArgs += "$kClangTidyFlagChecks$aTidyFixFlags"
@@ -775,7 +776,7 @@ Function Process-ProjectResult($compileResult)
 {
   if (!$compileResult.Success)
   {
-    Write-Err ("Error: " + $compileResult.Output)
+    Write-Err ($compileResult.Output)
 
     if (!$aContinueOnError)
     {
@@ -839,7 +840,7 @@ Function Run-ClangJobs([Parameter(Mandatory=$true)] $clangJobs)
     Push-Location $job.WorkingDirectory
 
     $callOutput = & $job.FilePath $job.ArgumentList.Split(' ') 2>&1 |`
-                  ForEach-Object { $_.ToString() -replace "^(.*):(\d+):(\d+): (.*)$",'$1($2): $4' } |`
+                  ForEach-Object { $_.ToString() } |`
                   Out-String
 
     $callSuccess = $LASTEXITCODE -eq 0
