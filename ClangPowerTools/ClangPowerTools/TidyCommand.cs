@@ -146,6 +146,7 @@ namespace ClangPowerTools
           }
 
           bool succesParse = false;
+          mOutputManager.Clear();
           mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kTidyCodeCommand}\n");
           foreach (var item in mItemsCollector.GetItems)
           {
@@ -164,7 +165,9 @@ namespace ClangPowerTools
             mOutputMessages.Clear();
           }
           if (succesParse)
-            mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kTidyCodeCommand}\n");
+            mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kComplileCommand}\n");
+          if (0 != mErrorsManager.Count)
+            mErrorsManager.Show();
         }
         catch (Exception exception)
         {

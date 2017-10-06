@@ -10,7 +10,7 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private ErrorWindow mErrorWindow = new ErrorWindow();
+    private static ErrorWindow mErrorWindow = new ErrorWindow();
     private Dispatcher mDispatcher;
     
     #endregion
@@ -41,6 +41,12 @@ namespace ClangPowerTools
           mErrorWindow.AddError(error);
       }));
     }
+
+    public void Show() => mErrorWindow.Show();
+
+    public void Clear() => mErrorWindow.Clear();
+
+    public int Count => mErrorWindow.Count;
 
     #endregion
   }

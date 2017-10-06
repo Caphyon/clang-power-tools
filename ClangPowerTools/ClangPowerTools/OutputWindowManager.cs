@@ -26,6 +26,17 @@ namespace ClangPowerTools
 
     #region Public Methods
 
+    public void Clear()
+    {
+      using (OutputWindow outputWindow = new OutputWindow(mDte))
+      {
+        mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+        {
+          outputWindow.Clear();
+        }));
+      }
+    }
+
     public void AddMessage(string aMessage)
     {
       if (String.IsNullOrWhiteSpace(aMessage))
