@@ -11,7 +11,9 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Diagnostics;
 using System.Text;
+using EnvDTE;
 using System.IO;
+using System.Security.Permissions;
 
 namespace ClangPowerTools
 {
@@ -111,6 +113,8 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
+
+    [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
     private void MenuItemCallback(object sender, EventArgs e)
     {
       System.Threading.Tasks.Task.Run(() =>
@@ -145,29 +149,39 @@ namespace ClangPowerTools
             solutionLoader.EnsureSolutionProjectsAreLoaded();
           }
 
-          bool succesParse = false;
-          mOutputManager.Clear();
-          mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kTidyCodeCommand}\n");
-          foreach (var item in mItemsCollector.GetItems)
+          
+          using (var guard = new SilentFileChangerGuard())
           {
-            string script = scriptBuilder.GetScript(item.Item1, item.Item1.GetName());
-            powerShell.Invoke(script);
+            // silent all open files
+            foreach (Document doc in mDte.Documents)
+              guard.Add(new SilentFileChanger(mPackage, Path.Combine(doc.Path, doc.Name), true));
 
-            ErrorParser errorParser = new ErrorParser(mPackage, item.Item1);
-            succesParse = errorParser.Start(mOutputMessages.ToString());
+            //silent all selected files
+            guard.AddRange(mPackage, fileCollector.Files);
 
-            if( !succesParse )
+            bool succesParse = false;
+            mOutputManager.Clear();
+            mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kTidyCodeCommand}\n");
+            foreach (var item in mItemsCollector.GetItems)
             {
-              mOutputManager.AddMessage(ErrorParserConstants.kMissingClangMessage);
-              break;
+              string script = scriptBuilder.GetScript(item.Item1, item.Item1.GetName());
+              powerShell.Invoke(script);
+
+              ErrorParser errorParser = new ErrorParser(mPackage, item.Item1);
+              succesParse = errorParser.Start(mOutputMessages.ToString());
+              if (!succesParse)
+              {
+                mOutputManager.AddMessage(ErrorParserConstants.kMissingClangMessage);
+                break;
+              }
+              mErrorsManager.AddErrors(errorParser.Errors);
+              mOutputMessages.Clear();
             }
-            mErrorsManager.AddErrors(errorParser.Errors);
-            mOutputMessages.Clear();
+            if (succesParse)
+              mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kTidyCodeCommand}\n");
+            if (0 != mErrorsManager.Count)
+              mErrorsManager.Show();
           }
-          if (succesParse)
-            mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kComplileCommand}\n");
-          if (0 != mErrorsManager.Count)
-            mErrorsManager.Show();
         }
         catch (Exception exception)
         {
