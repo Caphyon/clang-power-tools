@@ -83,12 +83,21 @@ namespace ClangPowerTools
     {
       base.Initialize();
       mDte = (DTE2)GetService(typeof(DTE));
+      mDte.Events.BuildEvents.OnBuildBegin += 
+        new _dispBuildEvents_OnBuildBeginEventHandler(this.OnBuildBegin);
+
       string edition = mDte.Edition;
       mVsVersions.TryGetValue(mDte.Version, out string version);
 
       TidyCommand.Initialize(this, mDte, edition, version);  
       CompileCommand.Initialize(this, mDte, edition, version);
       SettingsCommand.Initialize(this);
+    }
+
+    private void OnBuildBegin(EnvDTE.vsBuildScope Scope, EnvDTE.vsBuildAction Action)
+    {
+      ErrorsWindowManager errorsManager = new ErrorsWindowManager(this, mDte);
+      errorsManager.Clear();
     }
 
     #endregion
