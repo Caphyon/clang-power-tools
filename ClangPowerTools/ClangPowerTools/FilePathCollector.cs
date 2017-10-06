@@ -16,6 +16,12 @@ namespace ClangPowerTools
 
     #endregion
 
+    #region Properties
+
+    public List<string> Files => mFilesPath; 
+
+    #endregion
+
     #region Public Methods
 
     //Return the common prefix of all paths stored in the mFilePath list
