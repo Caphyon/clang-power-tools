@@ -113,8 +113,6 @@ Set-Variable -name kScriptFailsExitCode      -value  47                 -Option 
 
 Set-Variable -name kExtensionVcxproj         -value ".vcxproj"          -Option Constant
 Set-Variable -name kExtensionClangPch        -value ".clang.pch"        -Option Constant
-Set-Variable -name kNameStdAfxCpp            -value "stdafx.cpp"        -Option Constant
-Set-Variable -name kNameStdAfxH              -value "stdafx.h"          -Option Constant
 
 # ------------------------------------------------------------------------------------------------
 # Vcxproj Related Constants
@@ -346,13 +344,14 @@ Function Should-IgnoreProject([Parameter(Mandatory=$true)][string] $vcxprojPath)
   return $false
 }
 
-Function Get-ProjectCpps([Parameter(Mandatory=$true)][string] $vcxprojPath)
+Function Get-ProjectCpps([Parameter(Mandatory=$true)][string] $vcxprojPath,
+                         [Parameter(Mandatory=$false)][string] $pchCppName)
 {
   [xml] $vcxproj = Get-Content $vcxprojPath
 
   [string[]] $cpps = $vcxproj.Project.ItemGroup.ClCompile                     | 
                      Where-Object { ($_.Include -ne $null)     -and 
-                                    ($_.Include -notmatch $kNameStdAfxCpp) }  | 
+                                    ($_.Include -notmatch $pchCppName) }  | 
                      ForEach-Object { Canonize-Path -base (Get-FileDirectory($vcxprojPath)) `
                                                     -child $_.Include }
 
@@ -484,11 +483,22 @@ Function Get-Projects()
   return $vcxprojs;
 }
 
+Function Get-PchCppIncludeHeader([Parameter(Mandatory=$true)][string] $vcxprojPath
+                                ,[Parameter(Mandatory=$true)][string] $pchCppFile)
+{
+  [string] $vcxprojDir = Get-FileDirectory -filePath $vcxprojPath
+  [string] $cppPath = Canonize-Path -base $vcxprojDir -child $pchCppFile
+  [string] $fileContent = Get-Content -path $cppPath
+
+  return [regex]::match($fileContent,'#include "(\S+)"').Groups[1].Value
+}
+
 # Retrieve directory in which stdafx.h resides
-Function Get-ProjectStdafxDir([Parameter(Mandatory=$true)][string] $vcxprojPath)
+Function Get-ProjectStdafxDir([Parameter(Mandatory=$true)][string] $vcxprojPath,
+                              [Parameter(Mandatory=$true)][string] $pchHeaderName)
 {
   [string[]] $projectHeaders = Get-ProjectHeaders($vcxprojPath)
-  [string] $stdafxRelativePath = $projectHeaders | Where-Object { $_ -cmatch $kNameStdAfxH }
+  [string] $stdafxRelativePath = $projectHeaders | Where-Object { $_ -cmatch $pchHeaderName }
   if ([string]::IsNullOrEmpty($stdafxRelativePath))
   {
     return ""
@@ -502,7 +512,7 @@ Function Get-ProjectStdafxDir([Parameter(Mandatory=$true)][string] $vcxprojPath)
 }
 
 # Retrieve directory in which the PCH CPP resides (e.g. stdafx.cpp, stdafxA.cpp)
-Function Project-HasPch([Parameter(Mandatory=$true)][string] $vcxprojPath)
+Function Get-Project-PchCpp([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
   [xml] $vcxproj = Get-Content $vcxprojPath
   $pchCppRelativePath = $vcxproj.Project.ItemGroup.ClCompile.PrecompiledHeader | 
@@ -511,7 +521,7 @@ Function Project-HasPch([Parameter(Mandatory=$true)][string] $vcxprojPath)
                         Select-Object -first 1                                 |
                         Select-Object -ExpandProperty Include
 
-  return $pchCppRelativePath -ne $null
+  return $pchCppRelativePath
 }
 
 Function Set-ProjectIncludePaths([Parameter(Mandatory=$true)] $includeDirectories)
@@ -525,10 +535,12 @@ Function Set-ProjectIncludePaths([Parameter(Mandatory=$true)] $includeDirectorie
   $ENV:INCLUDE = $includePathsString;
 }
 
-Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
+Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
+                     , [Parameter(Mandatory=$true)] [string]   $stdafxDir
+                     , [Parameter(Mandatory=$true)] [string]   $stdafxHeaderName
                      , [Parameter(Mandatory=$false)][string[]] $preprocessorDefinitions)
 {
-  [string] $stdafx = (Canonize-Path -base $stdafxDir -child $kNameStdAfxH)
+  [string] $stdafx = (Canonize-Path -base $stdafxDir -child $stdafxHeaderName)
   [string] $vcxprojShortName = [System.IO.Path]::GetFileNameWithoutExtension($vcxprojPath);
   [string] $stdafxPch = (Join-Path -Path $stdafxDir `
                                    -ChildPath "$vcxprojShortName$kExtensionClangPch")
@@ -889,37 +901,48 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   #-----------------------------------------------------------------------------------------------
   # LOCATE STDAFX.H DIRECTORY
 
-  [string] $stdafxDir = Get-ProjectStdafxDir($vcxprojPath)
+  [string] $stdafxDir = ""
+  [string] $stdafxCpp = Get-Project-PchCpp -vcxprojPath $vcxprojPath
+  
+  if (![string]::IsNullOrEmpty($stdafxCpp))
+  {
+    Write-Verbose "PCH cpp name: $stdafxCpp"
+    [string] $stdafxHeader = Get-PchCppIncludeHeader -vcxprojPath $vcxprojPath `
+                                                     -pchCppFile $stdafxCpp
+    Write-Verbose "PCH header name: $stdafxHeader"
+  }
+  
+  if (![string]::IsNullOrEmpty($stdafxCpp))
+  {
+    $stdafxDir = Get-ProjectStdafxDir -vcxprojPath $vcxprojPath `
+                                      -pchHeaderName $stdafxHeader
+  }
+
   if ([string]::IsNullOrEmpty($stdafxDir))
   {
-    if (Project-HasPch($vcxprojPath))
-    {
-      Fail-Script "Project has a pch cpp, but not a $kNameStdAfxH!"
-    }
-
-    Write-Verbose ("  --> $kNameStdAfxH doesn't exist, PCH not enabled.")
+    Write-Verbose ("PCH not enabled for this project!")
   }
   else
   {
-    Write-Verbose ("  --> $kNameStdAfxH located in $stdafxDir")
+    Write-Verbose ("PCH directory: $stdafxDir")
   }
   #-----------------------------------------------------------------------------------------------
   # DETECT PROJECT PREPROCESSOR DEFINITIONS
 
   [string[]] $preprocessorDefinitions = Get-ProjectPreprocessorDefines($vcxprojPath)
-  Write-Verbose "  --> preprocessor definitions: $preprocessorDefinitions"
+  Write-Verbose "Preprocessor definitions: $preprocessorDefinitions"
   
   #-----------------------------------------------------------------------------------------------
   # DETECT PLATFORM TOOLSET
 
   [string] $platformToolset = Get-ProjectPlatformToolset($vcxprojPath)
-  Write-Verbose "  --> platform toolset: $platformToolset"
+  Write-Verbose "Platform toolset: $platformToolset"
 
   #-----------------------------------------------------------------------------------------------
   # DETECT PROJECT ADDITIONAL INCLUDE DIRECTORIES AND CONSTRUCT INCLUDE PATHS
 
   [string[]] $includeDirectories = Get-ProjectAdditionalIncludes($vcxprojPath)
-  Write-Verbose "  --> additional includes:"
+  Write-Verbose "Additional includes:"
   foreach ($include in $includeDirectories)
   {
     Write-Verbose $include
@@ -938,7 +961,8 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   #-----------------------------------------------------------------------------------------------
   # FIND LIST OF CPPs TO PROCESS
 
-  [string[]] $projCpps = Get-ProjectCpps($vcxprojPath)
+  [string[]] $projCpps = Get-ProjectCpps -vcxprojPath $vcxprojPath `
+                                         -pchCppName  $stdafxCpp
 
   if (![string]::IsNullOrEmpty($aCppToCompile))
   {
@@ -946,7 +970,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
                   Where-Object {  IsFileMatchingName -filePath $_ `
                                                      -matchName $aCppToCompile } )
   }
-  Write-Verbose ("  --> processing " + $projCpps.Count + " cpps")
+  Write-Verbose ("Processing " + $projCpps.Count + " cpps")
  
   #-----------------------------------------------------------------------------------------------
   # CREATE PCH IF NEED BE
@@ -957,10 +981,12 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
       $workloadType -eq [WorkloadType]::Compile)
   {
     # COMPILE PCH
-    Write-Verbose "  --> generating PCH..."
-    $pchFilePath = Generate-Pch -stdafxDir "$stdafxDir" `
+    Write-Verbose "Generating PCH..."
+    $pchFilePath = Generate-Pch -vcxprojPath      "$vcxprojPath"  `
+                                -stdafxDir        "$stdafxDir"    `
+                                -stdafxHeaderName "$stdafxHeader" `
                                 -preprocessorDefinitions $preprocessorDefinitions
-    Write-Verbose "  --> generated $pchFilePath"
+    Write-Verbose "Generated $pchFilePath"
   }
   
   #-----------------------------------------------------------------------------------------------
