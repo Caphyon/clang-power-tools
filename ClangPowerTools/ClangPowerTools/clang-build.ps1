@@ -149,7 +149,8 @@ Set-Variable -name kClangDefinePrefix       -value "-D"                 -Option 
 Set-Variable -name kClangCompiler             -value "clang++"          -Option Constant
 Set-Variable -name kClangTidy                 -value "clang-tidy"       -Option Constant
 Set-Variable -name kClangTidyFlags            -value @("--")            -Option Constant
-Set-Variable -name kClangTidyFixFlags         -value @("-fix", "--")    -Option Constant
+Set-Variable -name kClangTidyFixFlags         -value @("-fix-errors"
+                                                      , "--")           -Option Constant
 Set-Variable -name kClangTidyFlagHeaderFilter -value "-header-filter="  -Option Constant
 Set-Variable -name kClangTidyFlagChecks       -value "-checks="         -Option Constant
 
