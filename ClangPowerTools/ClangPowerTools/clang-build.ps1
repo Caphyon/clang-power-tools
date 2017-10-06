@@ -352,7 +352,7 @@ Function Get-ProjectCpps([Parameter(Mandatory=$true)][string] $vcxprojPath,
 
   [string[]] $cpps = $vcxproj.Project.ItemGroup.ClCompile                     | 
                      Where-Object { ($_.Include -ne $null)             -and 
-                                    ($_.Include -notmatch $pchCppName) -and 
+                                    ([string]::IsNullOrEmpty($pchCppName) -or ($_.Include -notmatch $pchCppName)) -and 
                                     ($_.Include -match $kExtensionCpp) 
                                   }                                           | 
                      ForEach-Object { Canonize-Path -base (Get-FileDirectory($vcxprojPath)) `
