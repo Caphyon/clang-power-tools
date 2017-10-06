@@ -351,10 +351,13 @@ Function Get-ProjectCpps([Parameter(Mandatory=$true)][string] $vcxprojPath,
   [xml] $vcxproj = Get-Content $vcxprojPath
 
   [string[]] $cpps = $vcxproj.Project.ItemGroup.ClCompile                     | 
-                     Where-Object { ($_.Include -ne $null)             -and 
-                                    ($_.Include -notmatch $pchCppName) -and 
-                                    ($_.Include -match $kExtensionCpp) 
-                                  }                                           | 
+                     Where-Object { ($_.Include -ne $null)     -and 
+<<<<<<< HEAD
+                                    ($_.Include -notmatch $pchCppName) }  | 
+=======
+                                    ($_.Include -match $kExtensionCpp) -and 
+                                    ($_.Include -notmatch $kNameStdAfxCpp) }  | 
+>>>>>>> parent of ecf02c6... Removed restriction to CPP files when looking for ClCompile entries
                      ForEach-Object { Canonize-Path -base (Get-FileDirectory($vcxprojPath)) `
                                                     -child $_.Include }
 
