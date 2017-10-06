@@ -146,6 +146,7 @@ namespace ClangPowerTools
           }
 
           bool succesParse = false;
+          mOutputManager.Clear();
           mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kTidyCodeCommand}\n");
           foreach (var item in mItemsCollector.GetItems)
           {

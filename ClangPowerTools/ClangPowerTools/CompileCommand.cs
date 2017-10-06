@@ -134,6 +134,7 @@ namespace ClangPowerTools
           }
 
           bool succesParse = false;
+          mOutputManager.Clear();
           mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kComplileCommand}\n");
           foreach (var item in mItemsCollector.GetItems)
           {
