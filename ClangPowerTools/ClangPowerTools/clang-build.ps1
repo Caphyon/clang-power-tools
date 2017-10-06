@@ -111,7 +111,6 @@ Set-Variable -name kScriptFailsExitCode      -value  47                 -Option 
 # ------------------------------------------------------------------------------------------------
 # File System Constants
 
-Set-Variable -name kExtensionCpp             -value ".cpp"              -Option Constant
 Set-Variable -name kExtensionVcxproj         -value ".vcxproj"          -Option Constant
 Set-Variable -name kExtensionClangPch        -value ".clang.pch"        -Option Constant
 Set-Variable -name kNameStdAfxCpp            -value "stdafx.cpp"        -Option Constant
@@ -347,7 +346,6 @@ Function Get-ProjectCpps([Parameter(Mandatory=$true)][string] $vcxprojPath)
 
   [string[]] $cpps = $vcxproj.Project.ItemGroup.ClCompile                     | 
                      Where-Object { ($_.Include -ne $null)     -and 
-                                    ($_.Include -match $kExtensionCpp) -and 
                                     ($_.Include -notmatch $kNameStdAfxCpp) }  | 
                      ForEach-Object { Canonize-Path -base (Get-FileDirectory($vcxprojPath)) `
                                                     -child $_.Include }
