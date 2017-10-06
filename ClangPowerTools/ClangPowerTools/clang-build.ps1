@@ -120,9 +120,11 @@ Set-Variable -name kNameStdAfxH              -value "stdafx.h"          -Option 
 # Vcxproj Related Constants
 
 # filter used when looking for project additional includes and preprocessor definitions
-Set-Variable -name kPlatformFilter    `
-             -value '''$(Configuration)|$(Platform)''==''Debug|Win32''' -Option Constant
-             
+Set-Variable -name kValidPlatformFilters -value @(
+        '''$(Configuration)|$(Platform)''==''Debug|x64''',
+        '''$(Configuration)|$(Platform)''==''Debug|Win32'''
+    ) -Option Constant
+
 Set-Variable -name kVcxprojElemPreprocessorDefs  `
              -value                      "PreprocessorDefinitions"      -Option Constant
 Set-Variable -name kVcxprojElemAdditionalIncludes `
@@ -145,8 +147,8 @@ Set-Variable -name kClangFlagMinusO         -value "-o"                 -Option 
 
 Set-Variable -name kClangDefinePrefix       -value "-D"                 -Option Constant
 
-Set-Variable -name kClangCompiler             -value "clang++"          -Option Constant
-Set-Variable -name kClangTidy                 -value "clang-tidy"       -Option Constant
+Set-Variable -name kClangCompiler             -value "clang++.exe"      -Option Constant
+Set-Variable -name kClangTidy                 -value "clang-tidy.exe"   -Option Constant
 Set-Variable -name kClangTidyFlags            -value @("--")            -Option Constant
 Set-Variable -name kClangTidyFixFlags         -value @("-fix-errors"
                                                       , "--")           -Option Constant
@@ -289,8 +291,10 @@ Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
                       , [switch] $ignoreErrors)
 {
   [string] $errorAction = If ($ignoreErrors) {"SilentlyContinue"} Else {"Stop"}
-  [string] $path = Join-Path -Path "$base" -ChildPath "$child" -Resolve -ErrorAction $errorAction
-
+  [string] $path = $child
+  if (![System.IO.Path]::IsPathRooted($path)) {
+    [string] $path = Join-Path -Path "$base" -ChildPath "$child" -Resolve -ErrorAction $errorAction
+  } 
   return $path
 }
 
@@ -369,12 +373,23 @@ Function Get-Project-SDKVer([Parameter(Mandatory=$true)][string] $vcxprojPath)
   If ([string]::IsNullOrEmpty($sdkVer)) { "" } Else { $sdkVer.Trim() }
 }
 
+Function Is-ValidPlatform([string] $platformConfig)
+{
+  foreach ($filter in $kValidPlatformFilters)
+  {
+    if ($platformConfig -eq $filter) {
+      return $true;
+    }
+  }
+  return $false;
+}
+
 Function Is-Project-Unicode([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
   [xml] $vcxproj = Get-Content $vcxprojPath
   $propGroup = $vcxproj.Project.PropertyGroup | `
   Where-Object { $_.GetAttribute -ne $null -and
-                 $_.GetAttribute("Condition") -eq $kPlatformFilter -and 
+                 (Is-ValidPlatform($_.GetAttribute("Condition"))) -and
                  $_.GetAttribute("Label") -eq "Configuration" }
   
   return ($propGroup.CharacterSet -eq "Unicode")
@@ -385,7 +400,7 @@ Function Get-ProjectPlatformToolset([Parameter(Mandatory=$true)][string] $vcxpro
   [xml] $vcxproj = Get-Content $vcxprojPath
   $propGroup = $vcxproj.Project.PropertyGroup | `
                Where-Object { $_.GetAttribute -ne $null -and
-                              $_.GetAttribute("Condition") -eq $kPlatformFilter -and 
+                              (Is-ValidPlatform($_.GetAttribute("Condition"))) -and
                               $_.GetAttribute("Label") -eq "Configuration" }
   
   $toolset = $propGroup.PlatformToolset
@@ -554,8 +569,11 @@ Function Get-PropertySheets([Parameter(Mandatory=$true)][string] $vcxprojPath)
 
   [System.Xml.XmlElement] $importGroup = $vcxproj.Project.ImportGroup | 
                  Where-Object { $_.GetAttribute("Label")     -eq "PropertySheets" -and
-                                $_.GetAttribute("Condition") -eq $kPlatformFilter }
+                                (Is-ValidPlatform($_.GetAttribute("Condition")))  }
 
+  if (!$importGroup) {
+      return $null
+  }
   [string[]] $sheetAbsolutePaths = $importGroup.Import | 
                                    Where-Object `
                                    { 
@@ -575,8 +593,6 @@ Function Get-ProjectClCompileData( [Parameter(Mandatory=$true)][string]   $vcxpr
                                  , [Parameter(Mandatory=$true)][string[]] $valuesToIgnore
                                  , [switch] $isPropSheet)
 {
-  [string] $itemDefinitionFilter = if ($isPropSheet) { "" } else { $kPlatformFilter }
-
   [xml] $vcxproj = Get-Content $vcxprojOrPropSheetPath
   $ns = New-Object System.Xml.XmlNamespaceManager($vcxproj.NameTable) 
   $ns.AddNamespace("ns", $vcxproj.DocumentElement.NamespaceURI)
@@ -584,12 +600,21 @@ Function Get-ProjectClCompileData( [Parameter(Mandatory=$true)][string]   $vcxpr
   [string[]] $tokenData = @()
 
   [string] $xPathSelector = 'ns:Project/ns:ItemDefinitionGroup'
-  if (![string]::IsNullOrEmpty($itemDefinitionFilter))
+  if (!$isPropSheet)
   {
-    $xPathSelector += '[@Condition="' + $itemDefinitionFilter + '"]'
+    $xPathSelector += '['
+    $count = 0
+    foreach ($validPlatform in $kValidPlatformFilters) 
+    {
+      if ($count -ne 0) {
+        $xPathSelector += ' or '
+      }
+      $xPathSelector += 'contains(@Condition, "' + $validPlatform + '")'
+      $count++
+    }
+    $xPathSelector += ']'
   }
   $xPathSelector += "/ns:ClCompile/ns:$clCompileChildItem/text()"
-
   [System.Xml.XmlText[]] $definitions = $vcxproj.SelectNodes($xPathSelector, $ns)
   if ($definitions -ne $null -and $definitions.InnerText.Length -gt 0)
   {
@@ -697,6 +722,7 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
                               , [Parameter(Mandatory=$false)][switch]  $fix)
 {
   [string[]] $tidyArgs = @("""$fileToTidy""")
+  $tidyArgs += "-quiet"
   if ($fix)
   { 
     $tidyArgs += "$kClangTidyFlagChecks$aTidyFixFlags"
@@ -813,7 +839,7 @@ Function Run-ClangJobs([Parameter(Mandatory=$true)] $clangJobs)
     Push-Location $job.WorkingDirectory
 
     $callOutput = & $job.FilePath $job.ArgumentList.Split(' ') 2>&1 |`
-                  ForEach-Object { $_.ToString() }                  |`
+                  ForEach-Object { $_.ToString() -replace "^(.*):(\d+):(\d+): (.*)$",'$1($2): $4' } |`
                   Out-String
 
     $callSuccess = $LASTEXITCODE -eq 0
