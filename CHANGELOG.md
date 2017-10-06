@@ -16,3 +16,21 @@ Bugs:
 * Fixed navigation to clang error in code editor.
 * Fixed clang error parse algorithm.
 * Fixed detection when lightweight solution load is enabled.
+
+### Clang Power Tools 1.1.0
+
+Improvements:
+* Support for Visual Studio 2015.
+* Open the modified files after clang tidy format command.
+* Suppress the reload popup shown by the Visual Studio.
+* Integrated -quiet in the same way as other clag flags.
+* Generalized PCH support for more than stdafx.h.
+
+Bugs:
+* Clean the output and errors before a new command and build action.
+* Fixed the include directories option.
+* Fixed error detection for error list.
+* Fixed LLVM detection mechanism from Visual Studio Extension.
+* Switched to -fix-errors when calling clang-tidy.
+* Removed restriction to CPP files when looking for ClCompile entries.
+* Fixed compilation when vcxproj has both 32 and 64 bit platform configrations.
