@@ -127,12 +127,12 @@ namespace ClangPowerTools
         try
         {
           mDte.Documents.SaveAll();
-
           if (kVs15Version == mVsVersion )
           {
             Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
             solutionLoader.EnsureSolutionProjectsAreLoaded();
           }
+
           bool succesParse = false;
           mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kComplileCommand}\n");
           foreach (var item in mItemsCollector.GetItems)
@@ -153,6 +153,9 @@ namespace ClangPowerTools
           }
           if (succesParse)
             mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kComplileCommand}\n");
+          if (0 != mErrorsManager.Count)
+            mErrorsManager.Show();
+
         }
         catch (Exception exception)
         {

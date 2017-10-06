@@ -42,6 +42,10 @@ namespace ClangPowerTools
       }));
     }
 
+    public void Show() => mErrorWindow.Show();
+
+    public int Count => mErrorWindow.Count;
+
     #endregion
   }
 }

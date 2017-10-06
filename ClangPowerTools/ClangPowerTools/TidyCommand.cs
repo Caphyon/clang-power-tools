@@ -164,7 +164,9 @@ namespace ClangPowerTools
             mOutputMessages.Clear();
           }
           if (succesParse)
-            mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kTidyCodeCommand}\n");
+            mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kComplileCommand}\n");
+          if (0 != mErrorsManager.Count)
+            mErrorsManager.Show();
         }
         catch (Exception exception)
         {

@@ -13,6 +13,10 @@ namespace ClangPowerTools
         mErrorProvider = new ErrorListProvider(aServiceProvider);
     }
 
+    public int Count => mErrorProvider.Tasks.Count;
+
+    public void Show() => mErrorProvider.Show();
+
     public void Clear() => mErrorProvider.Tasks.Clear();
 
     public void AddError(ScriptError aError) => AddTask(aError, TaskErrorCategory.Error);
@@ -35,7 +39,7 @@ namespace ClangPowerTools
       };
       errorTask.Navigate += ErrorTaskNavigate;
       mErrorProvider.Tasks.Add(errorTask);
-      mErrorProvider.Show();
+      //mErrorProvider.Show();
     }
 
     private void ErrorTaskNavigate(object sender, EventArgs e)
