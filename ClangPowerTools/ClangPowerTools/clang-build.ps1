@@ -569,9 +569,10 @@ Function Get-PropertySheets([Parameter(Mandatory=$true)][string] $vcxprojPath)
 
   [string] $vcxprojDir = Get-FileDirectory($vcxprojPath)
 
-  [System.Xml.XmlElement] $importGroup = $vcxproj.Project.ImportGroup | 
+  [System.Xml.XmlElement] $importGroup = $vcxproj.Project.ImportGroup               | 
                  Where-Object { $_.GetAttribute("Label")     -eq "PropertySheets" -and
-                                (Is-ValidPlatform($_.GetAttribute("Condition")))  }
+                                (Is-ValidPlatform($_.GetAttribute("Condition")))  } |
+                 Select-Object -first 1
 
   if (!$importGroup) {
       return $null
