@@ -349,10 +349,11 @@ Function Get-ProjectCpps([Parameter(Mandatory=$true)][string] $vcxprojPath,
                          [Parameter(Mandatory=$false)][string] $pchCppName)
 {
   [xml] $vcxproj = Get-Content $vcxprojPath
+  [Boolean] $pchDisabled = [string]::IsNullOrEmpty($pchCppName)
 
   [string[]] $cpps = $vcxproj.Project.ItemGroup.ClCompile                     | 
-                     Where-Object { ($_.Include -ne $null)             -and 
-                                    ([string]::IsNullOrEmpty($pchCppName) -or ($_.Include -notmatch $pchCppName)) -and 
+                     Where-Object { ($_.Include -ne $null)                                  -and 
+                                    ($pchDisabled -or ($_.Include -notmatch $pchCppName) )  -and 
                                     ($_.Include -match $kExtensionCpp) 
                                   }                                           | 
                      ForEach-Object { Canonize-Path -base (Get-FileDirectory($vcxprojPath)) `
