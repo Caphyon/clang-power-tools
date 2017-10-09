@@ -22,7 +22,7 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region Ctor
+    #region Constructor
 
     public ErrorParser(IServiceProvider aServiceProvider, IItem aItem)
     {
@@ -39,6 +39,8 @@ namespace ClangPowerTools
     }
 
     #endregion
+
+    #region Methods
 
     public bool Start(string aMessages)
     {
@@ -71,5 +73,8 @@ namespace ClangPowerTools
         aMessages.Contains(ErrorParserConstants.kTidyClangMissingFromPath) ?
         true : false;
     }
+
+    #endregion
+
   }
 }

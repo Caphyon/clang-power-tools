@@ -10,7 +10,7 @@ namespace ClangPowerTools
 {
   public class FilePathCollector
   {
-    #region members
+    #region Members
 
     private List<string> mFilesPath = new List<string>();
 

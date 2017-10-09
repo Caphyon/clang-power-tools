@@ -12,10 +12,10 @@ namespace ClangPowerTools
 
     private static ErrorWindow mErrorWindow = new ErrorWindow();
     private Dispatcher mDispatcher;
-    
+
     #endregion
 
-    #region Ctor
+    #region Constructor
 
     public ErrorsWindowManager(IServiceProvider aServiceProvider, DTE2 aDte)
     {

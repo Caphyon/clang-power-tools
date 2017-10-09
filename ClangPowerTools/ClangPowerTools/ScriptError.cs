@@ -11,10 +11,10 @@ namespace ClangPowerTools
     public int Line { get; set; }
     public int Column { get; set; }
     public IVsHierarchy FileHierarchy { get; set; }
-    
+
     #endregion
 
-    #region Ctor
+    #region Constructor
 
     public ScriptError(IVsHierarchy aHierarchy, string aFilePath, string aError, int aLine, int aColumn)
     {

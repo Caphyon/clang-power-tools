@@ -3,17 +3,24 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace ClangPowerTools
 {
   public class Vs15SolutionLoader
   {
+    #region Members
+
     private IServiceProvider mServiceProvider;
-    public Vs15SolutionLoader(IServiceProvider aServiceProvider)
-    {
-      mServiceProvider = aServiceProvider;
-    }
+
+    #endregion
+
+    #region Constructor
+
+    public Vs15SolutionLoader(IServiceProvider aServiceProvider) => mServiceProvider = aServiceProvider;
+
+    #endregion
+
+    #region Public Methods
 
     public void EnsureSolutionProjectsAreLoaded()
     {
@@ -25,6 +32,13 @@ namespace ClangPowerTools
         EnsureProjectIsLoaded(prj, mServiceProvider);
     }
 
+    public IEnumerable<IVsHierarchy> GetProjectsInSolution(IServiceProvider aServiceProvider) =>
+      GetProjectsInSolution(aServiceProvider, __VSENUMPROJFLAGS.EPF_ALLPROJECTS);
+
+    #endregion
+
+    #region Private Methods
+
     private IVsHierarchy EnsureProjectIsLoaded(IVsHierarchy projectToLoad, IServiceProvider aServiceProvider)
     {
       int hr = VSConstants.S_OK;
@@ -35,16 +49,10 @@ namespace ClangPowerTools
       hr = ((IVsSolution4)solution).EnsureProjectIsLoaded(projectGuid, (uint)__VSBSLFLAGS.VSBSLFLAGS_None);
       hr = ErrorHandler.ThrowOnFailure(hr);
 
-      // 2. After the project is loaded, grab the latest IVsHierarchy object.
       hr = ((IVsSolution)solution).GetProjectOfGuid(projectGuid, out IVsHierarchy loadedProject);
       hr = ErrorHandler.ThrowOnFailure(hr);
 
       return loadedProject;
-    }
-
-    public IEnumerable<IVsHierarchy> GetProjectsInSolution(IServiceProvider aServiceProvider)
-    {
-      return GetProjectsInSolution(aServiceProvider, __VSENUMPROJFLAGS.EPF_ALLPROJECTS);
     }
 
     private IEnumerable<IVsHierarchy> GetProjectsInSolution(IServiceProvider aServiceProvider, __VSENUMPROJFLAGS flags)
@@ -72,5 +80,8 @@ namespace ClangPowerTools
       IVsSolution7 vsSolution = mServiceProvider.GetService(typeof(SVsSolution)) as IVsSolution7;
       return vsSolution.IsSolutionLoadDeferred();
     }
+
+    #endregion
+
   }
 }

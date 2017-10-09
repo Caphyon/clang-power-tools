@@ -52,7 +52,7 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region Ctor
+    #region Constructor
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TidyCommand"/> class.
@@ -148,7 +148,6 @@ namespace ClangPowerTools
             Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
             solutionLoader.EnsureSolutionProjectsAreLoaded();
           }
-
           
           using (var guard = new SilentFileChangerGuard())
           {

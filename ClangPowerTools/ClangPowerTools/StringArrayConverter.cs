@@ -6,7 +6,13 @@ namespace ClangPowerTools
 {
   public class StringArrayConverter : TypeConverter
   {
+    #region Members
+
     private const string kDelimiter = ";";
+
+    #endregion
+
+    #region Public Methods
 
     public override bool CanConvertFrom(ITypeDescriptorContext aContext, Type aSourceType) =>
       typeof(string) == aSourceType || base.CanConvertFrom(aContext, aSourceType);
@@ -27,5 +33,8 @@ namespace ClangPowerTools
         return base.ConvertTo(aContext, aCulture, aValue, aDestinationType);
       return string.Join(kDelimiter, values);
     }
+
+    #endregion
+
   }
 }

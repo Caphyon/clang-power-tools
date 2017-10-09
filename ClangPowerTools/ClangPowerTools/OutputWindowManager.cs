@@ -14,7 +14,7 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region Ctor
+    #region Constructor
 
     public OutputWindowManager(DTE2 aDte)
     {

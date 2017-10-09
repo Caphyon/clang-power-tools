@@ -10,7 +10,7 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region Ctor
+    #region Constructor
 
     public SelectedProjectItem(ProjectItem aProjectItem) => mProjectItem = aProjectItem;
 
