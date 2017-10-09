@@ -531,7 +531,7 @@ Function Get-Project-PchCpp([Parameter(Mandatory=$true)][string] $vcxprojPath)
 Function Set-ProjectIncludePaths([Parameter(Mandatory=$true)] $includeDirectories)
 {
   [string] $includePathsString = $includeDirectories -join ";"
-  Write-Verbose "  --> include directories:"
+  Write-Verbose "Include directories:"
   foreach ($dir in $includeDirectories)
   {
     Write-Verbose $dir
@@ -560,7 +560,7 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
                                   ,$preprocessorDefinitions
                                   )
 
-  [System.Diagnostics.Process] $processInfo = Start-Process -FilePath "clang++" `
+  [System.Diagnostics.Process] $processInfo = Start-Process -FilePath $kClangCompiler `
                                                             -ArgumentList $compilationFlags `
                                                             -WorkingDirectory "$aDirectory" `
                                                             -NoNewWindow `
@@ -622,7 +622,7 @@ Function Get-ProjectClCompileData( [Parameter(Mandatory=$true)][string]   $vcxpr
   if (!$isPropSheet)
   {
     $xPathSelector += '['
-    $count = 0
+    [int] $count = 0
     foreach ($validPlatform in $kValidPlatformFilters) 
     {
       if ($count -ne 0) {
@@ -1046,10 +1046,10 @@ Push-Location $aDirectory
 Remove-Job -State Completed
 
 Write-Verbose "[INFO] Source directory: $aDirectory"
-Write-Verbose "  --> scanning for .vcxproj files"
+Write-Verbose "Scanning for .vcxproj files"
 
 [System.IO.FileInfo[]] $projects = Get-Projects
-Write-Verbose ("  --> found " + $projects.Count + " projects")
+Write-Verbose ("Found $($projects.Count) projects")
 
 [System.IO.FileInfo[]] $projectsToProcess = @()
 
