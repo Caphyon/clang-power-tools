@@ -28,7 +28,7 @@ namespace ClangPowerTools
 
     public void AddError(ScriptError aError)
     {
-      if (!String.IsNullOrWhiteSpace(aError.ErrorMessage))
+      if (!String.IsNullOrWhiteSpace(aError.Message))
         mErrorWindow.AddError(aError);
     }
 

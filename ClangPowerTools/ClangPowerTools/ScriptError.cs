@@ -6,7 +6,9 @@ namespace ClangPowerTools
   {
     #region Properties
 
-    public string ErrorMessage { get; set; }
+    public string Message { get; set; }
+    public string FullMessage { get; set; }
+
     public string FilePath { get; set; }
     public int Line { get; set; }
     public int Column { get; set; }
@@ -16,11 +18,12 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public ScriptError(IVsHierarchy aHierarchy, string aFilePath, string aError, int aLine, int aColumn)
+    public ScriptError(IVsHierarchy aHierarchy, string aFilePath, string aFullMessage, string aMessage, int aLine, int aColumn)
     {
       FileHierarchy = aHierarchy;
       FilePath = aFilePath;
-      ErrorMessage = aError;
+      FullMessage = aFullMessage;
+      Message = aMessage;
       Line = aLine;
       Column = aColumn;
     }

@@ -60,7 +60,7 @@ namespace ClangPowerTools
         int.TryParse(groups[3].Value, out int line);
         int.TryParse(groups[5].Value, out int column);
         string errorMessage = $"{ErrorParserConstants.kClangTag}{groups[8].Value}";
-        mErrors.Add(new ScriptError(mVsHierarchy, path, errorMessage, line, column));
+        //mErrors.Add(new ScriptError(mVsHierarchy, path, errorMessage, line, column));
 
         matchResult = matchResult.NextMatch();
       }

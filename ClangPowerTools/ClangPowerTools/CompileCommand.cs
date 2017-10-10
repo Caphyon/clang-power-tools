@@ -62,7 +62,6 @@ namespace ClangPowerTools
       mVsEdition = aEdition;
       mVsVersion = aVersion;
 
-      mOutputManager = new OutputWindowManager(mDte);
       mErrorsManager = new ErrorsWindowManager(mPackage, mDte);
 
       if (this.ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
@@ -120,9 +119,10 @@ namespace ClangPowerTools
         ItemsCollector mItemsCollector = new ItemsCollector(mPackage);
         mItemsCollector.CollectSelectedFiles(mDte);
 
+        mOutputManager = new OutputWindowManager(mDte);
         PowerShellWrapper powerShell = new PowerShellWrapper();
-        powerShell.DataHandler += OutputDataReceived;
-        powerShell.DataErrorHandler += OutputDataErrorReceived;
+        powerShell.DataHandler += mOutputManager.OutputDataReceived;
+        powerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;
 
         try
         {
@@ -133,7 +133,6 @@ namespace ClangPowerTools
             solutionLoader.EnsureSolutionProjectsAreLoaded();
           }
 
-          bool succesParse = false;
           mOutputManager.Clear();
           mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kComplileCommand}\n");
           foreach (var item in mItemsCollector.GetItems)
@@ -141,22 +140,22 @@ namespace ClangPowerTools
             string script = scriptBuilder.GetScript(item.Item1, item.Item1.GetName());
             powerShell.Invoke(script);
 
-            ErrorParser errorParser = new ErrorParser(mPackage, item.Item1);
-            succesParse = errorParser.Start(mOutputMessages.ToString());
-
-            if (!succesParse)
+            if (mOutputManager.MissingLlvm)
             {
-              mOutputManager.AddMessage(ErrorParserConstants.kMissingClangMessage);
+              mOutputManager.AddMessage(ErrorParserConstants.kMissingLlvmMessage);
               break;
             }
-            mErrorsManager.AddErrors(errorParser.Errors);
-            mOutputMessages.Clear();
+            if(!mOutputManager.EmptyBuffer)
+              foreach (string message in mOutputManager.Buffer)
+                mOutputManager.AddMessage(message);
           }
-          if (succesParse)
+          if (!mOutputManager.MissingLlvm)
             mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kComplileCommand}\n");
-          if (0 != mErrorsManager.Count)
+          if( 0 != mOutputManager.Errors.Count )
+          {
+            mErrorsManager.AddErrors(mOutputManager.Errors);
             mErrorsManager.Show();
-
+          }
         }
         catch (Exception exception)
         {
@@ -164,18 +163,6 @@ namespace ClangPowerTools
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
       });
-    }
-
-    private void OutputDataReceived(object sender, DataReceivedEventArgs e)
-    {
-      mOutputManager.AddMessage(e.Data);
-      mOutputMessages.AppendLine(e.Data);
-    }
-
-    private void OutputDataErrorReceived(object sender, DataReceivedEventArgs e)
-    {
-      mOutputManager.AddMessage(e.Data);
-      mOutputMessages.AppendLine(e.Data);
     }
 
     #endregion

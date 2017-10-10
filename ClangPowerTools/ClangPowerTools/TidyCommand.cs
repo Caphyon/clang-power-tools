@@ -170,7 +170,7 @@ namespace ClangPowerTools
               succesParse = errorParser.Start(mOutputMessages.ToString());
               if (!succesParse)
               {
-                mOutputManager.AddMessage(ErrorParserConstants.kMissingClangMessage);
+                mOutputManager.AddMessage(ErrorParserConstants.kMissingLlvmMessage);
                 break;
               }
               mErrorsManager.AddErrors(errorParser.Errors);

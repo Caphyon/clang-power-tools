@@ -42,7 +42,7 @@ namespace ClangPowerTools
         ErrorCategory = aCategory,
         HierarchyItem = aError.FileHierarchy,
         Document = aError.FilePath,
-        Text = aError.ErrorMessage,
+        Text = aError.Message,
         Line = aError.Line,
         Column = aError.Column,
         Priority = TaskPriority.High
