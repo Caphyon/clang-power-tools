@@ -19,8 +19,6 @@ namespace ClangPowerTools
         mErrorProvider = new ErrorListProvider(aServiceProvider);
     }
 
-    public int Count => mErrorProvider.Tasks.Count;
-
     public void Show() => mErrorProvider.Show();
 
     public void Clear() => mErrorProvider.Tasks.Clear();

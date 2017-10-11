@@ -18,14 +18,13 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public ScriptError(IVsHierarchy aHierarchy, string aFilePath, string aFullMessage, string aMessage, int aLine, int aColumn)
+    public ScriptError(IVsHierarchy aHierarchy, string aFilePath, string aFullMessage, string aMessage, int aLine)
     {
       FileHierarchy = aHierarchy;
       FilePath = aFilePath;
       FullMessage = aFullMessage;
       Message = aMessage;
       Line = aLine;
-      Column = aColumn;
     }
     #endregion
 

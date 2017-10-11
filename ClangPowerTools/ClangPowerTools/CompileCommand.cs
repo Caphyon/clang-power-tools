@@ -110,7 +110,6 @@ namespace ClangPowerTools
     {
       System.Threading.Tasks.Task.Run(() =>
       {
-        mOutputMessages = new StringBuilder();
         GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
 
         ScriptBuiler scriptBuilder = new ScriptBuiler();
@@ -139,23 +138,18 @@ namespace ClangPowerTools
           {
             string script = scriptBuilder.GetScript(item.Item1, item.Item1.GetName());
             powerShell.Invoke(script);
-
             if (mOutputManager.MissingLlvm)
             {
               mOutputManager.AddMessage(ErrorParserConstants.kMissingLlvmMessage);
               break;
             }
-            if(!mOutputManager.EmptyBuffer)
-              foreach (string message in mOutputManager.Buffer)
-                mOutputManager.AddMessage(message);
           }
+          if (!mOutputManager.EmptyBuffer)
+            mOutputManager.AddMessage(String.Join("\n", mOutputManager.Buffer));
           if (!mOutputManager.MissingLlvm)
             mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kComplileCommand}\n");
-          if( 0 != mOutputManager.Errors.Count )
-          {
+          if (mOutputManager.HasErrors)
             mErrorsManager.AddErrors(mOutputManager.Errors);
-            mErrorsManager.Show();
-          }
         }
         catch (Exception exception)
         {

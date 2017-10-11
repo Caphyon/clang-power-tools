@@ -2,7 +2,10 @@
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace ClangPowerTools
 {
@@ -10,21 +13,14 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private List<ScriptError> mErrors = new List<ScriptError>();
-    public const string kCompileErrorsRegex = @"(.\:\\[ \w+\\\/.]*[h|cpp])(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*error(\r\n|\r|\n| |:)*(.*)";
+    private const string kCompileErrorsRegex = @"(.\:\\[ \w+\\\/.]*[h|cpp])(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*error(\r\n|\r|\n| |:)*(.*)";
     private IVsHierarchy mVsHierarchy;
 
     #endregion
 
-    #region Properties
+    #region Public Methods
 
-    public List<ScriptError> Errors => mErrors;
-
-    #endregion
-
-    #region Constructor
-
-    public ErrorParser(IServiceProvider aServiceProvider, IItem aItem)
+    public void FindHierarchy(IServiceProvider aServiceProvider, IItem aItem)
     {
       if (aItem is SelectedProjectItem)
       {
@@ -38,36 +34,35 @@ namespace ClangPowerTools
       }
     }
 
-    #endregion
-
-    #region Methods
-
-    public bool Start(string aMessages)
+    public bool FindErrors(string aMessages, out ScriptError aError)
     {
-      if (LlvmIsMissing(aMessages))
-        return false;
-
       Regex regex = new Regex(kCompileErrorsRegex);
       Match matchResult = regex.Match(aMessages);
+      aError = null;
       if (!matchResult.Success)
-        return true;
+        return false;
 
-      while (matchResult.Success)
-      {
-        var groups = matchResult.Groups;
+      var groups = matchResult.Groups;
+      if (string.IsNullOrWhiteSpace(groups[8].Value))
+        return false;
 
-        string path = groups[1].Value;
-        int.TryParse(groups[3].Value, out int line);
-        int.TryParse(groups[5].Value, out int column);
-        string errorMessage = $"{ErrorParserConstants.kClangTag}{groups[8].Value}";
-        //mErrors.Add(new ScriptError(mVsHierarchy, path, errorMessage, line, column));
+      string path = groups[1].Value;
+      int.TryParse(groups[3].Value, out int line);
+      string message = $"{ErrorParserConstants.kClangTag}{groups[8].Value}";
+      string fullMessage = $"{path}({line}): error: {groups[8].Value}";
 
-        matchResult = matchResult.NextMatch();
-      }
+      aError = new ScriptError(mVsHierarchy, path, fullMessage, message, line);
+
       return true;
     }
 
-    private bool LlvmIsMissing(string aMessages)
+    public string Format(string aMessages, string aReplacement)
+    {
+      Regex regex = new Regex(kCompileErrorsRegex);
+      return regex.Replace(aMessages, aReplacement);
+    }
+
+    public bool LlvmIsMissing(string aMessages)
     {
       return aMessages.Contains(ErrorParserConstants.kCompileClangMissingFromPath) ||
         aMessages.Contains(ErrorParserConstants.kTidyClangMissingFromPath) ?

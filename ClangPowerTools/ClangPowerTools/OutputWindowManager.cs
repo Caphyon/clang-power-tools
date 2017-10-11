@@ -18,7 +18,7 @@ namespace ClangPowerTools
     private int kBufferSize = 5;
     private List<string> mMessagesBuffer = new List<string>();
 
-    private ErrorCreator errorCreator = new ErrorCreator();
+    private ErrorParser errorCreator = new ErrorParser();
     private bool mMissingLlvm = false;
     private List<ScriptError> mErrors = new List<ScriptError>();
 
@@ -27,12 +27,10 @@ namespace ClangPowerTools
     #region Properties
 
     public bool MissingLlvm => mMissingLlvm;
-
     public List<string> Buffer => mMessagesBuffer;
-
     public bool EmptyBuffer => mMessagesBuffer.Count == 0;
-
     public List<ScriptError> Errors => mErrors;
+    public bool HasErrors => 0 != mErrors.Count;
 
     #endregion
 
@@ -93,9 +91,6 @@ namespace ClangPowerTools
         }
         else if (kBufferSize <= mMessagesBuffer.Count)
         {
-          //foreach (string message in mMessagesBuffer)
-          //  AddMessage(message);
-
           AddMessage(mMessagesBuffer[0]);
           mMessagesBuffer.RemoveAt(0);
         }
@@ -112,8 +107,10 @@ namespace ClangPowerTools
 
     public void OutputDataErrorReceived(object sender, DataReceivedEventArgs e)
     {
-      //mOutputManager.AddMessage(e.Data);
-      //mOutputMessages.AppendLine(e.Data);
+      //if (null == e.Data)
+      //  return;
+      //mMessagesBuffer.Add(e.Data);
+      //ProcessOutput(e.Data);
     }
 
 

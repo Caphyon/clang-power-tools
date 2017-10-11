@@ -39,14 +39,12 @@ namespace ClangPowerTools
         mErrorWindow.Clear();
         foreach (ScriptError error in aErrors)
           mErrorWindow.AddError(error);
+        mErrorWindow.Show();
       }));
+
     }
 
-    public void Show() => mErrorWindow.Show();
-
     public void Clear() => mErrorWindow.Clear();
-
-    public int Count => mErrorWindow.Count;
 
     #endregion
   }
