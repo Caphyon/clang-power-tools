@@ -30,7 +30,7 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region Ctor
+    #region Constructor
 
     public SilentFileChanger() { }
 
@@ -117,5 +117,6 @@ namespace ClangPowerTools
     }
 
     #endregion
+
   }
 }

@@ -28,7 +28,7 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region Ctor
+    #region Constructor
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SettingsCommand"/> class.

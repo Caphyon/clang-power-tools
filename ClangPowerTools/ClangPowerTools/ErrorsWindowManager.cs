@@ -12,10 +12,10 @@ namespace ClangPowerTools
 
     private static ErrorWindow mErrorWindow = new ErrorWindow();
     private Dispatcher mDispatcher;
-    
+
     #endregion
 
-    #region Ctor
+    #region Constructor
 
     public ErrorsWindowManager(IServiceProvider aServiceProvider, DTE2 aDte)
     {
@@ -28,7 +28,7 @@ namespace ClangPowerTools
 
     public void AddError(ScriptError aError)
     {
-      if (!String.IsNullOrWhiteSpace(aError.ErrorMessage))
+      if (!String.IsNullOrWhiteSpace(aError.Message))
         mErrorWindow.AddError(aError);
     }
 
@@ -39,14 +39,12 @@ namespace ClangPowerTools
         mErrorWindow.Clear();
         foreach (ScriptError error in aErrors)
           mErrorWindow.AddError(error);
+        mErrorWindow.Show();
       }));
+
     }
 
-    public void Show() => mErrorWindow.Show();
-
     public void Clear() => mErrorWindow.Clear();
-
-    public int Count => mErrorWindow.Count;
 
     #endregion
   }

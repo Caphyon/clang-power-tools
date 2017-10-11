@@ -14,10 +14,10 @@ namespace ClangPowerTools
     private static readonly Guid mPaneGuid = new Guid("AB9F45E4-2001-4197-BAF5-4B165222AF29");
     private static IVsOutputWindow mOutputWindow = null;
     private static IVsOutputWindowPane mOutputPane = null;
-    
+
     #endregion
 
-    #region Ctor
+    #region Constructor
 
     public OutputWindow(DTE2 aDte)
     {

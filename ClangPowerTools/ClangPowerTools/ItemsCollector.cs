@@ -14,10 +14,10 @@ namespace ClangPowerTools
     private readonly List<string> kAcceptedExtensionTypes = new List<string> { ".cpp"};
     private List<Tuple<IItem, IVsHierarchy>> mItems = new List<Tuple<IItem, IVsHierarchy>>();
     private IServiceProvider mServiceProvider;
-        
+
     #endregion
 
-    #region Ctor
+    #region Constructor
 
     public ItemsCollector(IServiceProvider aServiceProvider) => mServiceProvider = aServiceProvider;
 

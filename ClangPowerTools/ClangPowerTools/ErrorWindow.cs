@@ -5,15 +5,19 @@ namespace ClangPowerTools
 {
   public class ErrorWindow
   {
+    #region Members
+
     private static ErrorListProvider mErrorProvider = null;
+
+    #endregion
+
+    #region Public Methods
 
     public void Initialize(IServiceProvider aServiceProvider)
     {
       if( null == mErrorProvider )
         mErrorProvider = new ErrorListProvider(aServiceProvider);
     }
-
-    public int Count => mErrorProvider.Tasks.Count;
 
     public void Show() => mErrorProvider.Show();
 
@@ -25,6 +29,10 @@ namespace ClangPowerTools
 
     public void AddMessage(ScriptError aMessage) => AddTask(aMessage, TaskErrorCategory.Message);
 
+    #endregion
+
+    #region Private Methods
+
     private void AddTask(ScriptError aError, TaskErrorCategory aCategory)
     {
       ErrorTask errorTask = new ErrorTask
@@ -32,14 +40,13 @@ namespace ClangPowerTools
         ErrorCategory = aCategory,
         HierarchyItem = aError.FileHierarchy,
         Document = aError.FilePath,
-        Text = aError.ErrorMessage,
+        Text = aError.Message,
         Line = aError.Line,
         Column = aError.Column,
         Priority = TaskPriority.High
       };
       errorTask.Navigate += ErrorTaskNavigate;
       mErrorProvider.Tasks.Add(errorTask);
-      //mErrorProvider.Show();
     }
 
     private void ErrorTaskNavigate(object sender, EventArgs e)
@@ -47,5 +54,8 @@ namespace ClangPowerTools
       ErrorTask objErrorTask = (ErrorTask)sender;
       bool bResult = mErrorProvider.Navigate(objErrorTask, new Guid(EnvDTE.Constants.vsViewKindCode));
     }
+
+    #endregion
+
   }
 }

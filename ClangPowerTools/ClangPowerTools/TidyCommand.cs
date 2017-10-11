@@ -46,13 +46,12 @@ namespace ClangPowerTools
 
     private OutputWindowManager mOutputManager;
     private ErrorsWindowManager mErrorsManager;
-    private StringBuilder mOutputMessages;
     private FileChangerWatcher mFileWatcher;
     private FileOpener mFileOpener = new FileOpener();
 
     #endregion
 
-    #region Ctor
+    #region Constructor
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TidyCommand"/> class.
@@ -119,7 +118,6 @@ namespace ClangPowerTools
     {
       System.Threading.Tasks.Task.Run(() =>
       {
-        mOutputMessages = new StringBuilder();
         GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
         TidyOptions tidyPage = (TidyOptions)mPackage.GetDialogPage(typeof(TidyOptions));
 
@@ -129,9 +127,10 @@ namespace ClangPowerTools
         ItemsCollector mItemsCollector = new ItemsCollector(mPackage);
         mItemsCollector.CollectSelectedFiles(mDte);
 
+        mOutputManager = new OutputWindowManager(mDte);
         PowerShellWrapper powerShell = new PowerShellWrapper();
-        powerShell.DataHandler += OutputDataReceived;
-        powerShell.DataErrorHandler += OutputDataErrorReceived;
+        powerShell.DataHandler += mOutputManager.OutputDataReceived;
+        powerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;
 
         FilePathCollector fileCollector = new FilePathCollector();
         fileCollector.Collect(mItemsCollector.GetItems);
@@ -148,7 +147,6 @@ namespace ClangPowerTools
             Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
             solutionLoader.EnsureSolutionProjectsAreLoaded();
           }
-
           
           using (var guard = new SilentFileChangerGuard())
           {
@@ -159,28 +157,24 @@ namespace ClangPowerTools
             //silent all selected files
             guard.AddRange(mPackage, fileCollector.Files);
 
-            bool succesParse = false;
             mOutputManager.Clear();
             mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kTidyCodeCommand}\n");
             foreach (var item in mItemsCollector.GetItems)
             {
               string script = scriptBuilder.GetScript(item.Item1, item.Item1.GetName());
               powerShell.Invoke(script);
-
-              ErrorParser errorParser = new ErrorParser(mPackage, item.Item1);
-              succesParse = errorParser.Start(mOutputMessages.ToString());
-              if (!succesParse)
+              if (mOutputManager.MissingLlvm)
               {
-                mOutputManager.AddMessage(ErrorParserConstants.kMissingClangMessage);
+                mOutputManager.AddMessage(ErrorParserConstants.kMissingLlvmMessage);
                 break;
               }
-              mErrorsManager.AddErrors(errorParser.Errors);
-              mOutputMessages.Clear();
             }
-            if (succesParse)
+            if (!mOutputManager.EmptyBuffer)
+              mOutputManager.AddMessage(String.Join("\n", mOutputManager.Buffer));
+            if (!mOutputManager.MissingLlvm)
               mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kTidyCodeCommand}\n");
-            if (0 != mErrorsManager.Count)
-              mErrorsManager.Show();
+            if (mOutputManager.HasErrors)
+              mErrorsManager.AddErrors(mOutputManager.Errors);
           }
         }
         catch (Exception exception)
@@ -189,18 +183,6 @@ namespace ClangPowerTools
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
       });
-    }
-
-    private void OutputDataReceived(object sender, DataReceivedEventArgs e)
-    {
-      mOutputManager.AddMessage(e.Data);
-      mOutputMessages.AppendLine(e.Data);
-    }
-
-    private void OutputDataErrorReceived(object sender, DataReceivedEventArgs e)
-    {
-      mOutputManager.AddMessage(e.Data);
-      mOutputMessages.AppendLine(e.Data);
     }
 
     private void FileChanged(object source, FileSystemEventArgs e)

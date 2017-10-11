@@ -12,9 +12,13 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region Public methods
+    #region Constructor
 
     public SilentFileChangerGuard() { }
+
+    #endregion
+
+    #region Public methods
 
     public SilentFileChangerGuard(IServiceProvider aSite, string aDocument, bool aReloadDocument)
       : base(aSite, aDocument, aReloadDocument) => Suspend();
