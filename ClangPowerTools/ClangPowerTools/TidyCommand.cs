@@ -46,7 +46,6 @@ namespace ClangPowerTools
 
     private OutputWindowManager mOutputManager;
     private ErrorsWindowManager mErrorsManager;
-    private StringBuilder mOutputMessages;
     private FileChangerWatcher mFileWatcher;
     private FileOpener mFileOpener = new FileOpener();
 
@@ -184,18 +183,6 @@ namespace ClangPowerTools
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
       });
-    }
-
-    private void OutputDataReceived(object sender, DataReceivedEventArgs e)
-    {
-      mOutputManager.AddMessage(e.Data);
-      mOutputMessages.AppendLine(e.Data);
-    }
-
-    private void OutputDataErrorReceived(object sender, DataReceivedEventArgs e)
-    {
-      mOutputManager.AddMessage(e.Data);
-      mOutputMessages.AppendLine(e.Data);
     }
 
     private void FileChanged(object source, FileSystemEventArgs e)

@@ -43,7 +43,6 @@ namespace ClangPowerTools
 
     private OutputWindowManager mOutputManager;
     private ErrorsWindowManager mErrorsManager;
-    private StringBuilder mOutputMessages;
 
     #endregion
 
