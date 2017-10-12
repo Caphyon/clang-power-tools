@@ -23,26 +23,22 @@ namespace ClangPowerTools
 
     public void Clear() => mErrorProvider.Tasks.Clear();
 
-    public void AddError(ScriptError aError) => AddTask(aError, TaskErrorCategory.Error);
-
-    public void AddWarning(ScriptError aWarning) => AddTask(aWarning, TaskErrorCategory.Warning);
-
-    public void AddMessage(ScriptError aMessage) => AddTask(aMessage, TaskErrorCategory.Message);
+    public void AddError(TaskError aError) => AddTask(aError);
 
     #endregion
 
     #region Private Methods
 
-    private void AddTask(ScriptError aError, TaskErrorCategory aCategory)
+    private void AddTask(TaskError aError)
     {
       ErrorTask errorTask = new ErrorTask
       {
-        ErrorCategory = aCategory,
-        HierarchyItem = aError.FileHierarchy,
+        ErrorCategory = aError.Category,
         Document = aError.FilePath,
         Text = aError.Message,
         Line = aError.Line,
         Column = aError.Column,
+        Category = TaskCategory.BuildCompile,
         Priority = TaskPriority.High
       };
       errorTask.Navigate += ErrorTaskNavigate;
