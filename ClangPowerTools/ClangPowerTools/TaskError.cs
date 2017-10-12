@@ -1,31 +1,32 @@
-﻿using Microsoft.VisualStudio.Shell.Interop;
+﻿using Microsoft.VisualStudio.Shell;
 
 namespace ClangPowerTools
 {
-  public class ScriptError
+  public class TaskError
   {
     #region Properties
 
     public string Message { get; set; }
     public string FullMessage { get; set; }
-
     public string FilePath { get; set; }
     public int Line { get; set; }
     public int Column { get; set; }
-    public IVsHierarchy FileHierarchy { get; set; }
+    public TaskErrorCategory Category { get; set; } 
 
-    #endregion
+  #endregion
 
-    #region Constructor
+  #region Constructor
 
-    public ScriptError(IVsHierarchy aHierarchy, string aFilePath, string aFullMessage, string aMessage, int aLine)
+  public TaskError(string aFilePath, string aFullMessage, 
+    string aMessage, int aLine, TaskErrorCategory aCategory)
     {
-      FileHierarchy = aHierarchy;
       FilePath = aFilePath;
       FullMessage = aFullMessage;
       Message = aMessage;
       Line = aLine;
+      Category = aCategory;
     }
+
     #endregion
 
   }
