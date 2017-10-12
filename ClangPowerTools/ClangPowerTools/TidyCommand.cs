@@ -9,11 +9,8 @@ using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
-using System.Diagnostics;
-using System.Text;
 using EnvDTE;
 using System.IO;
-using System.Security.Permissions;
 
 namespace ClangPowerTools
 {
@@ -44,8 +41,8 @@ namespace ClangPowerTools
     private string mVsVersion;
     private string kVs15Version = "2017";
 
-    private OutputWindowManager mOutputManager;
-    private ErrorsWindowManager mErrorsManager;
+    private OutputManager mOutputManager;
+    private ErrorsManager mErrorsManager;
     private FileChangerWatcher mFileWatcher;
     private FileOpener mFileOpener = new FileOpener();
 
@@ -67,8 +64,8 @@ namespace ClangPowerTools
       mVsEdition = aEdition;
       mVsVersion = aVersion;
 
-      mOutputManager = new OutputWindowManager(mDte);
-      mErrorsManager = new ErrorsWindowManager(mPackage, mDte);
+      mOutputManager = new OutputManager(mDte);
+      mErrorsManager = new ErrorsManager(mPackage, mDte);
 
       if (this.ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
@@ -112,8 +109,6 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
-
-    [PermissionSet(SecurityAction.Demand, Name = "FullTrust")]
     private void MenuItemCallback(object sender, EventArgs e)
     {
       System.Threading.Tasks.Task.Run(() =>
@@ -127,7 +122,7 @@ namespace ClangPowerTools
         ItemsCollector mItemsCollector = new ItemsCollector(mPackage);
         mItemsCollector.CollectSelectedFiles(mDte);
 
-        mOutputManager = new OutputWindowManager(mDte);
+        mOutputManager = new OutputManager(mDte);
         PowerShellWrapper powerShell = new PowerShellWrapper();
         powerShell.DataHandler += mOutputManager.OutputDataReceived;
         powerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;

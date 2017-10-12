@@ -7,20 +7,19 @@ using System.Windows.Threading;
 
 namespace ClangPowerTools
 {
-  public class OutputWindowManager
+  public class OutputManager
   {
     #region Members
 
     private DTE2 mDte = null;
     private Dispatcher mDispatcher;
 
-    private const string kCompileErrorsRegex = @"(.\:\\[ \w+\\\/.]*[h|cpp])(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*error(\r\n|\r|\n| |:)*(.*)";
     private int kBufferSize = 5;
     private List<string> mMessagesBuffer = new List<string>();
 
-    private ErrorParser errorCreator = new ErrorParser();
+    private ErrorParser mParser = new ErrorParser();
     private bool mMissingLlvm = false;
-    private List<ScriptError> mErrors = new List<ScriptError>();
+    private List<TaskError> mErrors = new List<TaskError>();
 
     #endregion
 
@@ -29,14 +28,14 @@ namespace ClangPowerTools
     public bool MissingLlvm => mMissingLlvm;
     public List<string> Buffer => mMessagesBuffer;
     public bool EmptyBuffer => mMessagesBuffer.Count == 0;
-    public List<ScriptError> Errors => mErrors;
+    public List<TaskError> Errors => mErrors;
     public bool HasErrors => 0 != mErrors.Count;
 
     #endregion
 
     #region Constructor
 
-    public OutputWindowManager(DTE2 aDte)
+    public OutputManager(DTE2 aDte)
     {
       mDte = aDte;
       mDispatcher = HwndSource.FromHwnd((IntPtr)mDte.MainWindow.HWnd).RootVisual.Dispatcher;
@@ -74,16 +73,16 @@ namespace ClangPowerTools
 
     public void ProcessOutput(string aMessage)
     {
-      if (errorCreator.LlvmIsMissing(aMessage))
+      if (mParser.LlvmIsMissing(aMessage))
       {
         mMissingLlvm = true;
       }
       else if (!mMissingLlvm)
       {
         string messages = String.Join("\n", mMessagesBuffer);
-        if (errorCreator.FindErrors(messages, out ScriptError aError))
+        if (mParser.FindErrors(messages, out TaskError aError))
         {
-          messages = errorCreator.Format(messages, aError.FullMessage);
+          messages = mParser.Format(messages, aError.FullMessage);
           AddMessage(messages);
           mMessagesBuffer.Clear();
           if( null != aError )
@@ -107,12 +106,11 @@ namespace ClangPowerTools
 
     public void OutputDataErrorReceived(object sender, DataReceivedEventArgs e)
     {
-      //if (null == e.Data)
-      //  return;
-      //mMessagesBuffer.Add(e.Data);
-      //ProcessOutput(e.Data);
+      if (null == e.Data)
+        return;
+      mMessagesBuffer.Add(e.Data);
+      ProcessOutput(e.Data);
     }
-
 
     #endregion
 

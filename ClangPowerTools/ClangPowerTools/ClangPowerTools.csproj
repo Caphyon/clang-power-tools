@@ -78,7 +78,7 @@
     <Compile Include="DefaultOptions.cs" />
     <Compile Include="ErrorParser.cs" />
     <Compile Include="ErrorParserConstants.cs" />
-    <Compile Include="ErrorsWindowManager.cs" />
+    <Compile Include="ErrorsManager.cs" />
     <Compile Include="FileChangerWatcher.cs" />
     <Compile Include="FileOpener.cs" />
     <Compile Include="FilePathCollector.cs" />
@@ -89,7 +89,7 @@
     <Compile Include="IItem.cs" />
     <Compile Include="ItemsCollector.cs" />
     <Compile Include="OutputWindowConstants.cs" />
-    <Compile Include="OutputWindowManager.cs" />
+    <Compile Include="OutputManager.cs" />
     <Compile Include="OutputWindow.cs" />
     <Compile Include="PowerShellWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -102,7 +102,7 @@
     <Compile Include="ErrorWindow.cs" />
     <Compile Include="ScriptBuiler.cs" />
     <Compile Include="ScriptConstants.cs" />
-    <Compile Include="ScriptError.cs" />
+    <Compile Include="TaskError.cs" />
     <Compile Include="SelectedProject.cs" />
     <Compile Include="SelectedProjectItem.cs" />
     <Compile Include="TidyOptions.cs">

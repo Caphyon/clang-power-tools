@@ -1,11 +1,5 @@
-﻿using EnvDTE;
-using Microsoft.VisualStudio.Shell.Interop;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Microsoft.VisualStudio.Shell;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace ClangPowerTools
 {
@@ -13,28 +7,13 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private const string kCompileErrorsRegex = @"(.\:\\[ \w+\\\/.]*[h|cpp])(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*error(\r\n|\r|\n| |:)*(.*)";
-    private IVsHierarchy mVsHierarchy;
+    private const string kCompileErrorsRegex = @"(.\:\\[ \w+\\\/.]*[h|cpp])(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*(error|note|warning)[^s](\r\n|\r|\n| |:)*(.*)";
 
     #endregion
 
     #region Public Methods
 
-    public void FindHierarchy(IServiceProvider aServiceProvider, IItem aItem)
-    {
-      if (aItem is SelectedProjectItem)
-      {
-        ProjectItem projectItem = aItem.GetObject() as ProjectItem;
-        mVsHierarchy = AutomationUtil.GetProjectHierarchy(aServiceProvider, projectItem.ContainingProject);
-      }
-      else
-      {
-        Project project = aItem.GetObject() as Project;
-        mVsHierarchy = AutomationUtil.GetProjectHierarchy(aServiceProvider, project);
-      }
-    }
-
-    public bool FindErrors(string aMessages, out ScriptError aError)
+    public bool FindErrors(string aMessages, out TaskError aError)
     {
       Regex regex = new Regex(kCompileErrorsRegex);
       Match matchResult = regex.Match(aMessages);
@@ -43,17 +22,41 @@ namespace ClangPowerTools
         return false;
 
       var groups = matchResult.Groups;
-      if (string.IsNullOrWhiteSpace(groups[8].Value))
+      string message = groups[9].Value;
+
+      if (string.IsNullOrWhiteSpace(message))
         return false;
 
       string path = groups[1].Value;
       int.TryParse(groups[3].Value, out int line);
-      string message = $"{ErrorParserConstants.kClangTag}{groups[8].Value}";
-      string fullMessage = $"{path}({line}): error: {groups[8].Value}";
+      string category = groups[7].Value;
 
-      aError = new ScriptError(mVsHierarchy, path, fullMessage, message, line);
+      CategoryAndFullMessageBuilder(category, message, path, line, 
+        out TaskErrorCategory errorCategory, out string fullMessage);
 
+      message = message.Insert(0, ErrorParserConstants.kClangTag);
+      aError = new TaskError(path, fullMessage, message, line, errorCategory);
       return true;
+    }
+
+    private void CategoryAndFullMessageBuilder(string aCategory, string aMessage, string aPath, 
+      int aLine, out TaskErrorCategory aErrorCategory, out string aFullMessage)
+    {
+      switch (aCategory)
+      {
+        case ErrorParserConstants.kErrorTag:
+          aErrorCategory = TaskErrorCategory.Error;
+          aFullMessage = $"{aPath}({aLine}): {ErrorParserConstants.kErrorTag}: {aMessage}";
+          break;
+        case ErrorParserConstants.kWarningTag:
+          aErrorCategory = TaskErrorCategory.Warning;
+          aFullMessage = $"{aPath}({aLine}): {ErrorParserConstants.kWarningTag}: {aMessage}";
+          break;
+        default:
+          aErrorCategory = TaskErrorCategory.Message;
+          aFullMessage = $"{aPath}({aLine}): {ErrorParserConstants.kMessageTag}: {aMessage}";
+          break;
+      }
     }
 
     public string Format(string aMessages, string aReplacement)
