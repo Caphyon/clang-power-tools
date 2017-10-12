@@ -9,11 +9,8 @@ using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
-using System.Diagnostics;
-using System.Text;
 using EnvDTE;
 using System.IO;
-using System.Security.Permissions;
 
 namespace ClangPowerTools
 {
