@@ -96,7 +96,7 @@ namespace ClangPowerTools
 
     private void OnBuildBegin(EnvDTE.vsBuildScope Scope, EnvDTE.vsBuildAction Action)
     {
-      ErrorsWindowManager errorsManager = new ErrorsWindowManager(this, mDte);
+      ErrorsManager errorsManager = new ErrorsManager(this, mDte);
       errorsManager.Clear();
     }
 

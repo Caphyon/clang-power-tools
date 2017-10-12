@@ -41,8 +41,8 @@ namespace ClangPowerTools
     private string mVsVersion;
     private string kVs15Version = "2017";
 
-    private OutputWindowManager mOutputManager;
-    private ErrorsWindowManager mErrorsManager;
+    private OutputManager mOutputManager;
+    private ErrorsManager mErrorsManager;
 
     #endregion
 
@@ -61,7 +61,7 @@ namespace ClangPowerTools
       mVsEdition = aEdition;
       mVsVersion = aVersion;
 
-      mErrorsManager = new ErrorsWindowManager(mPackage, mDte);
+      mErrorsManager = new ErrorsManager(mPackage, mDte);
 
       if (this.ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
@@ -117,7 +117,7 @@ namespace ClangPowerTools
         ItemsCollector mItemsCollector = new ItemsCollector(mPackage);
         mItemsCollector.CollectSelectedFiles(mDte);
 
-        mOutputManager = new OutputWindowManager(mDte);
+        mOutputManager = new OutputManager(mDte);
         PowerShellWrapper powerShell = new PowerShellWrapper();
         powerShell.DataHandler += mOutputManager.OutputDataReceived;
         powerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;

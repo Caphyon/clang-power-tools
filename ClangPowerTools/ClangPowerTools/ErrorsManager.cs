@@ -26,15 +26,18 @@ namespace ClangPowerTools
 
     #region Public Methods
 
+    public void AddError(TaskError aError)
     {
       if (!String.IsNullOrWhiteSpace(aError.Message))
         mErrorWindow.AddError(aError);
     }
 
+    public void AddErrors(IEnumerable<TaskError> aErrors)
     {
       mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
       {
         mErrorWindow.Clear();
+        foreach (TaskError error in aErrors)
           mErrorWindow.AddError(error);
         mErrorWindow.Show();
       }));
