@@ -38,27 +38,32 @@ namespace ClangPowerTools
       int.TryParse(groups[3].Value, out int line);
       string category = groups[7].Value;
 
-      string fullMessage = string.Empty;
-      TaskErrorCategory errorCategory;
-      if (category == ErrorParserConstants.kErrorTag)
-      {
-        errorCategory = TaskErrorCategory.Error;
-        fullMessage = $"{path}({line}): {ErrorParserConstants.kErrorTag}: {message}";
-      }
-      else if (category == ErrorParserConstants.kWarningTag)
-      {
-        errorCategory = TaskErrorCategory.Warning;
-        fullMessage = $"{path}({line}): {ErrorParserConstants.kWarningTag}: {message}";
-      }
-      else
-      {
-        errorCategory = TaskErrorCategory.Message;
-        fullMessage = $"{path}({line}): {ErrorParserConstants.kMessageTag}: {message}";
-      }
-      
+      CategoryAndFullMessageBuilder(category, message, path, line, 
+        out TaskErrorCategory errorCategory, out string fullMessage);
+
       message = message.Insert(0, ErrorParserConstants.kClangTag);
       aError = new TaskError(path, fullMessage, message, line, errorCategory);
       return true;
+    }
+
+    private void CategoryAndFullMessageBuilder(string aCategory, string aMessage, string aPath, 
+      int aLine, out TaskErrorCategory aErrorCategory, out string aFullMessage)
+    {
+      switch (aCategory)
+      {
+        case ErrorParserConstants.kErrorTag:
+          aErrorCategory = TaskErrorCategory.Error;
+          aFullMessage = $"{aPath}({aLine}): {ErrorParserConstants.kErrorTag}: {aMessage}";
+          break;
+        case ErrorParserConstants.kWarningTag:
+          aErrorCategory = TaskErrorCategory.Warning;
+          aFullMessage = $"{aPath}({aLine}): {ErrorParserConstants.kWarningTag}: {aMessage}";
+          break;
+        default:
+          aErrorCategory = TaskErrorCategory.Message;
+          aFullMessage = $"{aPath}({aLine}): {ErrorParserConstants.kMessageTag}: {aMessage}";
+          break;
+      }
     }
 
     public string Format(string aMessages, string aReplacement)

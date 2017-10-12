@@ -37,7 +37,6 @@ namespace ClangPowerTools
         Document = aError.FilePath,
         Text = aError.Message,
         Line = aError.Line,
-        Column = aError.Column,
         Category = TaskCategory.BuildCompile,
         Priority = TaskPriority.High
       };

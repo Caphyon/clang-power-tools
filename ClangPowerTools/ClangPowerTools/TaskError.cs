@@ -10,7 +10,6 @@ namespace ClangPowerTools
     public string FullMessage { get; set; }
     public string FilePath { get; set; }
     public int Line { get; set; }
-    public int Column { get; set; }
     public TaskErrorCategory Category { get; set; } 
 
   #endregion
