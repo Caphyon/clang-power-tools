@@ -34,3 +34,15 @@ Bugs:
 * Switched to -fix-errors when calling clang-tidy.
 * Removed restriction to CPP files when looking for ClCompile entries.
 * Fixed compilation when vcxproj has both 32 and 64 bit platform configrations.
+
+### Clang Power Tools 1.2.0
+
+Improvements:
+* Added clang warnings and messages with line navigation in both output pane and error list.
+* Included clang notification(errors, warnings, messages) in Build Only category.
+* Formatted clang output.
+
+Bugs:
+* Fixed clang error detection algorithm.
+* Fixed clang errors line navigation from output pane.
+* Fixed the vsix installer detection for VS2017.
