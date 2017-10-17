@@ -44,8 +44,9 @@ namespace ClangPowerTools
     private OutputManager mOutputManager;
     private ErrorsManager mErrorsManager;
     private FileChangerWatcher mFileWatcher;
-    private FileOpener mFileOpener = new FileOpener();
-
+    private FileOpener mFileOpener;
+    private CommandsController mCommandsController;
+    private ItemsCollector mItemsCollector;
     #endregion
 
     #region Constructor
@@ -56,20 +57,22 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
 
-    private TidyCommand(Package aPackage, DTE2 aDte, string aEdition, string aVersion)
+    private TidyCommand(Package aPackage, DTE2 aDte, string aEdition, 
+      string aVersion, CommandsController aCommandsController)
     {
       mPackage = aPackage ?? throw new ArgumentNullException("package");
 
       mDte = aDte;
       mVsEdition = aEdition;
       mVsVersion = aVersion;
-
-      mOutputManager = new OutputManager(mDte);
+      mCommandsController = aCommandsController;
       mErrorsManager = new ErrorsManager(mPackage, mDte);
+      mFileOpener = new FileOpener(mDte);
 
       if (this.ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
         var menuCommandID = new CommandID(CommandSet, CommandId);
+        mCommandsController.AddCommand(menuCommandID);
         var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
         commandService.AddCommand(menuItem);
       }
@@ -97,9 +100,10 @@ namespace ClangPowerTools
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static void Initialize(Package aPackage, DTE2 aDte, string aEdition, string aVersion)
+    public static void Initialize(Package aPackage, DTE2 aDte, string aEdition, 
+      string aVersion, CommandsController aCommandsController)
     {
-      Instance = new TidyCommand(aPackage, aDte, aEdition, aVersion);
+      Instance = new TidyCommand(aPackage, aDte, aEdition, aVersion, aCommandsController);
     }
 
     /// <summary>
@@ -111,6 +115,7 @@ namespace ClangPowerTools
     /// <param name="e">Event args.</param>
     private void MenuItemCallback(object sender, EventArgs e)
     {
+      mCommandsController.BeforeExecute();
       System.Threading.Tasks.Task.Run(() =>
       {
         GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
@@ -119,7 +124,7 @@ namespace ClangPowerTools
         ScriptBuiler scriptBuilder = new ScriptBuiler();
         scriptBuilder.ConstructParameters(generalOptions, tidyPage, mVsEdition, mVsVersion);
 
-        ItemsCollector mItemsCollector = new ItemsCollector(mPackage);
+        mItemsCollector = new ItemsCollector(mPackage);
         mItemsCollector.CollectSelectedFiles(mDte);
 
         mOutputManager = new OutputManager(mDte);
@@ -127,12 +132,7 @@ namespace ClangPowerTools
         powerShell.DataHandler += mOutputManager.OutputDataReceived;
         powerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;
 
-        FilePathCollector fileCollector = new FilePathCollector();
-        fileCollector.Collect(mItemsCollector.GetItems);
-
         mFileWatcher = new FileChangerWatcher();
-        mFileWatcher.OnChanged += FileChanged;
-        mFileWatcher.Run(fileCollector.CommonPrefixPath());
 
         try
         {
@@ -142,15 +142,13 @@ namespace ClangPowerTools
             Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
             solutionLoader.EnsureSolutionProjectsAreLoaded();
           }
-          
           using (var guard = new SilentFileChangerGuard())
           {
-            // silent all open files
-            foreach (Document doc in mDte.Documents)
-              guard.Add(new SilentFileChanger(mPackage, Path.Combine(doc.Path, doc.Name), true));
-
-            //silent all selected files
-            guard.AddRange(mPackage, fileCollector.Files);
+            if(tidyPage.Fix)
+            {
+              WatchFiles();
+              SilentFiles(guard);
+            }
 
             mOutputManager.Clear();
             mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kTidyCodeCommand}\n");
@@ -177,13 +175,31 @@ namespace ClangPowerTools
           VsShellUtilities.ShowMessageBox(mPackage, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
-      });
+      }).ContinueWith(tsk => mCommandsController.AfterExecute()); ;
     }
 
-    private void FileChanged(object source, FileSystemEventArgs e)
+    #endregion
+
+    #region Helpers
+
+    private void SilentFiles(SilentFileChangerGuard aGuard)
     {
-      // Open the changed files in the editor
-      mFileOpener.Open(mDte, e.FullPath);
+      FilePathCollector fileCollector = new FilePathCollector();
+      fileCollector.Collect(mItemsCollector.GetItems);
+
+      // silent all open files
+      foreach (Document doc in mDte.Documents)
+        aGuard.Add(new SilentFileChanger(mPackage, Path.Combine(doc.Path, doc.Name), true));
+      //silent all selected files
+      aGuard.AddRange(mPackage, fileCollector.Files);
+    }
+
+    private void WatchFiles()
+    {
+      mFileWatcher.OnChanged += mFileOpener.FileChanged;
+      string solutionFolderPath = mDte.Solution.FullName
+        .Substring(0, mDte.Solution.FullName.LastIndexOf('\\'));
+      mFileWatcher.Run(solutionFolderPath);
     }
 
     #endregion
