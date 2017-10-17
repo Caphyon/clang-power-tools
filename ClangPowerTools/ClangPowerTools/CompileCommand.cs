@@ -41,6 +41,7 @@ namespace ClangPowerTools
 
     private OutputManager mOutputManager;
     private ErrorsManager mErrorsManager;
+    private CommandsController mCommandsController;
 
     #endregion
 
@@ -51,20 +52,22 @@ namespace ClangPowerTools
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    private CompileCommand(Package aPackage, DTE2 aDte, string aEdition, string aVersion)
+    private CompileCommand(Package aPackage, DTE2 aDte, string aEdition, 
+      string aVersion, CommandsController aCommandsController)
     {
       this.mPackage = aPackage ?? throw new ArgumentNullException("package");
 
       mDte = aDte;
       mVsEdition = aEdition;
       mVsVersion = aVersion;
-
+      mCommandsController = aCommandsController;
       mErrorsManager = new ErrorsManager(mPackage, mDte);
 
       if (this.ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
         var menuCommandID = new CommandID(CommandSet, CommandId);
-        var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
+        mCommandsController.AddCommand(menuCommandID);
+        var menuItem = new OleMenuCommand(this.MenuItemCallback, menuCommandID);
         commandService.AddCommand(menuItem);
       }
     }
@@ -91,9 +94,10 @@ namespace ClangPowerTools
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static void Initialize(Package aPackage, DTE2 aDte, string aEdition, string aVersion)
+    public static void Initialize(Package aPackage, DTE2 aDte, string aEdition, 
+      string aVersion, CommandsController aCommandsController)
     {
-      Instance = new CompileCommand(aPackage, aDte, aEdition, aVersion);
+      Instance = new CompileCommand(aPackage, aDte, aEdition, aVersion, aCommandsController);
     }
 
     /// <summary>
@@ -105,7 +109,8 @@ namespace ClangPowerTools
     /// <param name="e">Event args.</param>
     private void MenuItemCallback(object sender, EventArgs e)
     {
-      System.Threading.Tasks.Task.Run(() =>
+      mCommandsController.BeforeExecute();
+      var task = System.Threading.Tasks.Task.Run(() =>
       {
         GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
 
@@ -123,7 +128,7 @@ namespace ClangPowerTools
         try
         {
           mDte.Documents.SaveAll();
-          if (kVs15Version == mVsVersion )
+          if (kVs15Version == mVsVersion)
           {
             Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
             solutionLoader.EnsureSolutionProjectsAreLoaded();
@@ -146,14 +151,14 @@ namespace ClangPowerTools
           if (!mOutputManager.MissingLlvm)
             mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kComplileCommand}\n");
           if (mOutputManager.HasErrors)
-            mErrorsManager.AddErrors(mOutputManager.Errors);
+            mErrorsManager.AddErrors(mOutputManager.Errors);//.Completed += mCommandsController.AfterExecute;
         }
         catch (Exception exception)
         {
           VsShellUtilities.ShowMessageBox(mPackage, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
-      });
+      }).ContinueWith(tsk => mCommandsController.AfterExecute());
     }
 
     #endregion

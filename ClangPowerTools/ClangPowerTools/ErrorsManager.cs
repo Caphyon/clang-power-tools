@@ -41,7 +41,6 @@ namespace ClangPowerTools
           mErrorWindow.AddError(error);
         mErrorWindow.Show();
       }));
-
     }
 
     public void Clear() => mErrorWindow.Clear();

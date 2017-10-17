@@ -1,4 +1,5 @@
 ﻿using EnvDTE80;
+using System.IO;
 
 namespace ClangPowerTools
 {
@@ -7,13 +8,21 @@ namespace ClangPowerTools
     #region Members
 
     private string kOpenCommand = "File.OpenFile";
+    private DTE2 mDte;
+
+    #endregion
+
+    #region Constructor
+
+    public FileOpener(DTE2 aDte) => mDte = aDte;
 
     #endregion
 
     #region Public methods
-
-    public void Open(DTE2 aDte, string aFilePath) => 
-      aDte.ExecuteCommand(kOpenCommand, aFilePath);
+    
+    // Open the changed files in the editor
+    public void FileChanged(object source, FileSystemEventArgs e) => 
+      mDte.ExecuteCommand(kOpenCommand, e.FullPath);
 
     #endregion
   }
