@@ -299,10 +299,23 @@ Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
   return $path
 }
 
+
+Function Get-VisualStudio-Path() {
+  [string] $path = ""
+  if ($aVisualStudioVersion -eq "2017") {
+    $path = (&"vswhere.exe" -nologo -property installationPath)
+  }
+  else {
+    $path = "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$aVisualStudioVersion\$aVisualStudioSku"
+  }
+
+  return $path.Trim()
+}
+
 Function Get-MscVer()
 {
-  [string] $path = "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\"
-  $path         += "$aVisualStudioVersion\$aVisualStudioSku\VC\Tools\MSVC\"
+  [string] $path = (Get-VisualStudio-Path)
+  $path += "\VC\Tools\MSVC\"
 
   [System.IO.DirectoryInfo] $directory = (Get-Item $path)
   [System.IO.DirectoryInfo] $child = ($directory | Get-ChildItem)
@@ -444,8 +457,8 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcx
   }
   else
   {
-    $returnArray += Get-VisualStudio-Includes -vsPath "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$aVisualStudioVersion\$aVisualStudioSku" `
-                                              -mscVer (Get-MscVer)
+    [string] $path = (Get-VisualStudio-Path)
+    $returnArray += Get-VisualStudio-Includes -vsPath $path -mscVer (Get-MscVer)
   }
 
   $sdkVer = (Get-Project-SDKVer -vcxprojPath $vcxprojPath)
