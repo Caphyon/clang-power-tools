@@ -303,7 +303,7 @@ Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
 Function Get-VisualStudio-Path() {
   [string] $path = ""
   if ($aVisualStudioVersion -eq "2017") {
-    $path = (&"vswhere.exe" -nologo -property installationPath)
+    $path = (&"${Env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -nologo -property installationPath)
   }
   else {
     $path = "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$aVisualStudioVersion\$aVisualStudioSku"
