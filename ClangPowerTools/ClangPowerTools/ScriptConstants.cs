@@ -12,6 +12,7 @@ namespace ClangPowerTools
     public const string kFile = "-file";
     public const string kProject = "-proj";
     public const string kDirectory = "-dir";
+    public const string kLiteral = "-literal";
 
     public const string kContinue = "-continue";
     public const string kParallel = "-parallel";
