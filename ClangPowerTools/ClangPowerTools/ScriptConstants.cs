@@ -15,6 +15,7 @@ namespace ClangPowerTools
     public const string kLiteral = "-literal";
 
     public const string kContinue = "-continue";
+    public const string kTreatWarningsAsErrors = "-Werror";
     public const string kParallel = "-parallel";
 
     public const string kTidy = "-tidy";
@@ -22,7 +23,8 @@ namespace ClangPowerTools
 
     public const string kClangFlags = "-clang-flags";
     public const string kIncludeDirectores = "-include-dirs";
-    public const string kProjectsToIgnore = "-proj-ignore";
+    public const string kProjectsToIgnore = "-proj-ignore"; 
+    public const string kFilesToIgnore = "-file-ignore"; 
 
     public const string kVsVersion = "-vs-ver";
     public const string kVsEdition = "-vs-sku";

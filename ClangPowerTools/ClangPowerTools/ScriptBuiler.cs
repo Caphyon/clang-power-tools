@@ -65,8 +65,12 @@ namespace ClangPowerTools
       string parameters = string.Empty;
 
       if (null != aGeneralOptions.ClangFlags && 0 < aGeneralOptions.ClangFlags.Length)
-        parameters = $"{parameters} {ScriptConstants.kClangFlags} (''{String.Join("'',''", aGeneralOptions.ClangFlags)}'')";
-      
+      {
+        parameters = $"{parameters} {ScriptConstants.kClangFlags} (" +
+          $"{string.Format("{0}", aGeneralOptions.TreatWarningsAsErrors ? string.Format("''{0}'',",ScriptConstants.kTreatWarningsAsErrors) : string.Empty)}''" +
+          $"{String.Join("'',''", aGeneralOptions.ClangFlags)}'')";
+      }
+
       if (aGeneralOptions.Continue)
         parameters = $"{parameters} {ScriptConstants.kContinue}";
 
@@ -74,7 +78,10 @@ namespace ClangPowerTools
         parameters = $"{parameters} {ScriptConstants.kIncludeDirectores} (''{String.Join("'',''", aGeneralOptions.IncludeDirectories)}'')";
 
       if (null != aGeneralOptions.ProjectsToIgnore && 0 < aGeneralOptions.ProjectsToIgnore.Length)
-        parameters = $"{parameters} {ScriptConstants.kProjectsToIgnore} {String.Join(",", aGeneralOptions.ProjectsToIgnore)}";
+        parameters = $"{parameters} {ScriptConstants.kProjectsToIgnore} (''{String.Join("'',''", aGeneralOptions.ProjectsToIgnore)}'')";
+
+      if (null != aGeneralOptions.FilesToIgnore && 0 < aGeneralOptions.FilesToIgnore.Length)
+        parameters = $"{parameters} {ScriptConstants.kFilesToIgnore} (''{String.Join("'',''", aGeneralOptions.FilesToIgnore)}'')";
 
       return $"{parameters}";
     }

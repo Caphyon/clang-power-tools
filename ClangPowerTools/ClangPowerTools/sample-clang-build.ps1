@@ -4,7 +4,7 @@
     It sets up the scene required for clang-build.ps1 to do its job, and makes
     command-line usage for projects and files quicker.
 
-    Before calling ai-clang-build.ps1 you need to set the current directory
+    Before calling sample-clang-build.ps1 you need to set the current directory
     to the root source directory.
 
 .PARAMETER aVcxprojToCompile
@@ -26,6 +26,14 @@
     Alias 'file'. What cpp(s) to compile from the found project(s). If empty, all CPPs are compiled.
     If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used, 
     e.g. "table" compiles all CPPs containing 'table'.
+
+.PARAMETER aCppToIgnore
+    Alias 'file-ignore'. Array of file(s) to ignore, from the matched ones. 
+    If empty, all already matched files are compiled.
+    If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used, 
+    e.g. "table" ignores all CPPs containing 'table'.
+
+    Can be passed as comma separated values.
 
 .PARAMETER aIncludeDirectories
     Alias 'includeDirs'. Directories to be used for includes (libraries, helpers, etc).
@@ -58,7 +66,7 @@
       If present, this parameter takes precedence over aTidyFlags.
 
 .EXAMPLE
-    PS .\ai-clang-build.ps1 -dir -proj foo,bar -file meow -tidy "-*,modernize-*"
+    PS .\sample-clang-build.ps1 -dir -proj foo,bar -file meow -tidy "-*,modernize-*"
     <Description of example>
     Runs clang-tidy, using "-*,modernize-*", on all CPPs containing 'meow' in their name from 
     the projects containing 'foo' or 'bar' in their names. 
@@ -67,7 +75,7 @@
     It will only print the tidy module output.
     
 .EXAMPLE
-    PS .\ai-clang-build.ps1 -dir -proj foo,bar -file meow -tidy-fix "-*,modernize-*"
+    PS .\sample-clang-build.ps1 -dir -proj foo,bar -file meow -tidy-fix "-*,modernize-*"
     <Description of example>
     Runs clang-tidy, using "-*,modernize-*", on all CPPs containing 'meow' in their name from 
     the projects containing 'foo' or 'bar' in their names. 
@@ -75,7 +83,7 @@
     It will apply all tidy module changes to CPPs.
 
 .EXAMPLE
-    PS .\ai-clang-build.ps1 -dir -proj foo -proj-ignore foobar
+    PS .\sample-clang-build.ps1 -dir -proj foo -proj-ignore foobar
     <Description of example>
     Runs clang++ on all CPPs in foo... projects, except foobar
   
@@ -88,6 +96,7 @@
 param( [alias("proj")]        [Parameter(Mandatory=$false)][string[]] $aVcxprojToCompile
      , [alias("proj-ignore")] [Parameter(Mandatory=$false)][string[]] $aVcxprojToIgnore
      , [alias("file")]        [Parameter(Mandatory=$false)][string]   $aCppToCompile
+     , [alias("file-ignore")] [Parameter(Mandatory=$false)][string[]] $aCppToIgnore
      , [alias("parallel")]    [Parameter(Mandatory=$false)][switch]   $aUseParallelCompile
      , [alias("continue")]    [Parameter(Mandatory=$false)][switch]   $aContinueOnError
      , [alias("literal")]     [Parameter(Mandatory=$false)][switch]   $aDisableNameRegexMatching
@@ -99,6 +108,7 @@ param( [alias("proj")]        [Parameter(Mandatory=$false)][string[]] $aVcxprojT
 
 Set-Variable -name kClangCompileFlags                                       -Option Constant `
                                             -value @( "-std=c++14"
+                                                    , "-Werror"
                                                     , "-Wall"
                                                     , "-fms-compatibility-version=19.10"
                                                     , "-Wmicrosoft"
@@ -142,6 +152,11 @@ if (![string]::IsNullOrEmpty($aVcxprojToIgnore))
 if (![string]::IsNullOrEmpty($aCppToCompile))
 {
   $scriptParams += ("-aCppToCompile", (Merge-Array $aCppToCompile))
+}
+
+if (![string]::IsNullOrEmpty($aCppToIgnore))
+{
+  $scriptParams += ("-aCppToIgnore", (Merge-Array $aCppToIgnore))
 }
 
 $scriptParams += ("-aClangCompileFlags", (Merge-Array $kClangCompileFlags))

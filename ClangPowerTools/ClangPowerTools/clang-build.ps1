@@ -13,7 +13,7 @@
 .PARAMETER aVcxprojToCompile
     Alias 'proj'. Array of project(s) to compile. If empty, all projects are compiled.
     If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used, 
-    e.g. "msicomp" compiles all msicomp projects.
+    e.g. "msicomp" compiles all projects containing 'msicomp'.
     
     Can be passed as comma separated values.
 
@@ -21,7 +21,7 @@
     Alias 'proj-ignore'. Array of project(s) to ignore, from the matched ones. 
     If empty, all already matched projects are compiled.
     If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used, 
-    e.g. "msicomp" compiles all msicomp projects.
+    e.g. "msicomp" ignores projects containing 'msicomp'.
 
     Can be passed as comma separated values.
 
@@ -29,6 +29,14 @@
     Alias 'file'. What cpp(s) to compile from the found project(s). If empty, all CPPs are compiled.
     If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used, 
     e.g. "table" compiles all CPPs containing 'table'.
+
+.PARAMETER aCppToIgnore
+    Alias 'file-ignore'. Array of file(s) to ignore, from the matched ones. 
+    If empty, all already matched files are compiled.
+    If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used, 
+    e.g. "table" ignores all CPPs containing 'table'.
+
+    Can be passed as comma separated values.
 
 .PARAMETER aIncludeDirectories
     Alias 'includeDirs'. Directories to be used for includes (libraries, helpers, etc).
@@ -84,6 +92,7 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aDirecto
      , [alias("proj")]         [Parameter(Mandatory=$false)][string[]] $aVcxprojToCompile
      , [alias("proj-ignore")]  [Parameter(Mandatory=$false)][string[]] $aVcxprojToIgnore
      , [alias("file")]         [Parameter(Mandatory=$false)][string]   $aCppToCompile
+     , [alias("file-ignore")]  [Parameter(Mandatory=$false)][string[]] $aCppToIgnore
      , [alias("include-dirs")] [Parameter(Mandatory=$false)][string[]] $aIncludeDirectories
      , [alias("parallel")]     [Parameter(Mandatory=$false)][switch]   $aUseParallelCompile
      , [alias("continue")]     [Parameter(Mandatory=$false)][switch]   $aContinueOnError
@@ -111,7 +120,6 @@ Set-Variable -name kScriptFailsExitCode      -value  47                 -option 
 # ------------------------------------------------------------------------------------------------
 # File System Constants
 
-Set-Variable -name kExtensionCpp             -value ".cpp"              -option Constant
 Set-Variable -name kExtensionVcxproj         -value ".vcxproj"          -option Constant
 Set-Variable -name kExtensionClangPch        -value ".clang.pch"        -option Constant
 
@@ -145,6 +153,9 @@ Set-Variable -name kClangFlagEmitPch        -value "-emit-pch"          -option 
 Set-Variable -name kClangFlagMinusO         -value "-o"                 -option Constant
 
 Set-Variable -name kClangDefinePrefix       -value "-D"                 -option Constant
+Set-Variable -name kClangFlagNoUnusedArg    -value "-Wno-unused-command-line-argument" `
+                                                                        -option Constant
+Set-Variable -name kClangFlagFileIsCPP      -value "-x c++"             -option Constant
 
 Set-Variable -name kClangCompiler             -value "clang++.exe"      -option Constant
 Set-Variable -name kClangTidy                 -value "clang-tidy.exe"   -option Constant
@@ -366,21 +377,40 @@ Function Should-IgnoreProject([Parameter(Mandatory=$true)][string] $vcxprojPath)
   return $false
 }
 
-Function Get-ProjectCpps([Parameter(Mandatory=$true)][string] $vcxprojPath,
-                         [Parameter(Mandatory=$false)][string] $pchCppName)
+Function Should-IgnoreFile([Parameter(Mandatory=$true)][string] $file)
+{
+  if ($aCppToIgnore -eq $null)
+  {
+    return $false
+  }
+
+  foreach ($projIgnoreMatch in $aCppToIgnore)
+  {
+    if (IsFileMatchingName -filePath $file -matchName $projIgnoreMatch)
+    {
+      return $true
+    }
+  }
+
+  return $false
+}
+
+Function Get-ProjectFilesToCompile([Parameter(Mandatory=$true)][string] $vcxprojPath,
+                                   [Parameter(Mandatory=$false)][string] $pchCppName)
 {
   [xml] $vcxproj = Get-Content $vcxprojPath
   [Boolean] $pchDisabled = [string]::IsNullOrEmpty($pchCppName)
 
-  [string[]] $cpps = $vcxproj.Project.ItemGroup.ClCompile                     | 
-                     Where-Object { ($_.Include -ne $null)                                  -and 
-                                    ($pchDisabled -or ($_.Include -notmatch $pchCppName) )  -and 
-                                    ($_.Include -match $kExtensionCpp) 
-                                  }                                           | 
+  [string[]] $files = $vcxproj.Project.ItemGroup.ClCompile                    |
+                     Where-Object { ($_.Include -ne $null) -and
+                                    ($pchDisabled -or ($_.Include -notmatch $pchCppName))
+                                  }                                           |
                      ForEach-Object { Canonize-Path -base (Get-FileDirectory($vcxprojPath)) `
                                                     -child $_.Include }
 
-  return $cpps
+  $files = $files | Where-Object { ! (Should-IgnoreFile -file $_) }
+
+  return $files
 }
 
 Function Get-ProjectHeaders([Parameter(Mandatory=$true)][string] $vcxprojPath)
@@ -600,11 +630,15 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
 
   $global:FilesToDeleteWhenScriptQuits.Add($stdafxPch) | Out-Null
 
+  # Supress -Werror for PCH generation as it throws warnings quite often in code we cannot control
+  [string[]] $clangFlags = $aClangCompileFlags | Where-Object { $_ -ne $kClangFlagWarningIsError }
+
   [string[]] $compilationFlags = @("""$stdafx"""
                                   ,$kClangFlagEmitPch
                                   ,$kClangFlagMinusO
                                   ,"""$stdafxPch"""
-                                  ,$aClangCompileFlags
+                                  ,$clangFlags
+                                  ,$kClangFlagNoUnusedArg
                                   ,$preprocessorDefinitions
                                   )
 
@@ -774,10 +808,10 @@ Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $prep
     $projectCompileArgs += @($kClangFlagIncludePch , """$pchFilePath""")
   }
   
-  $projectCompileArgs += @( """$fileToCompile"""
+  $projectCompileArgs += @($kClangFlagFileIsCPP
+                          ,"""$fileToCompile"""
                           , $aClangCompileFlags
                           , $kClangFlagSupressLINK
-                          , $kClangFlagWarningIsError
                           , $preprocessorDefinitions
                           )
 
@@ -1013,8 +1047,8 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   #-----------------------------------------------------------------------------------------------
   # FIND LIST OF CPPs TO PROCESS
 
-  [string[]] $projCpps = Get-ProjectCpps -vcxprojPath $vcxprojPath `
-                                         -pchCppName  $stdafxCpp
+  [string[]] $projCpps = Get-ProjectFilesToCompile -vcxprojPath $vcxprojPath `
+                                                   -pchCppName  $stdafxCpp
 
   if (![string]::IsNullOrEmpty($aCppToCompile))
   {
