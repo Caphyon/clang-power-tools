@@ -904,12 +904,11 @@ Function Run-ClangJobs([Parameter(Mandatory=$true)] $clangJobs)
     
     Push-Location $job.WorkingDirectory
 
-    [string[]] $callOutputData = (& $job.FilePath $job.ArgumentList.Split(' ') 2>&1) | `
-                                  ForEach-Object { $_.ToString() }
+    $callOutput = & $job.FilePath $job.ArgumentList.Split(' ') 2>&1 |`
+                  ForEach-Object { $_.ToString() } |`
+                  Out-String
 
-    [string] $callOutput = If ($callOutputData) { [string]::Concat($callOutputData) } Else { "" }
-
-    [Boolean] $callSuccess = $LASTEXITCODE -eq 0
+    $callSuccess = $LASTEXITCODE -eq 0
 
     Pop-Location
 
