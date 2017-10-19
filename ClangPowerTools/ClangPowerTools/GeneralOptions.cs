@@ -20,6 +20,12 @@ namespace ClangPowerTools
     public string[] ProjectsToIgnore { get; set; }
 
     [Category("General")]
+    [DisplayName("File to ignore")]
+    [Description("Array of file(s) to ignore, from the matched ones. If empty, all already matched files are compiled.")]
+    [TypeConverter(typeof(StringArrayConverter))]
+    public string[] FilesToIgnore { get; set; }
+
+    [Category("General")]
     [DisplayName("Include Directories")]
     [Description("Directories to be used for includes (libraries, helpers).")]
     [TypeConverter(typeof(StringArrayConverter))]
@@ -29,6 +35,11 @@ namespace ClangPowerTools
     [DisplayName("Continue On Error")]
     [Description("Switch to continue project compilation even when errors occur.")]
     public bool Continue { get; set; }
+
+    [Category("General")]
+    [DisplayName("Treat Warnings As Errors")]
+    [Description("Treats all compiler warnings as errors. For a new project, it may be best to use in all compilations; resolving all warnings will ensure the fewest possible hard to find code defects.")]
+    public bool TreatWarningsAsErrors { get; set; }
 
     [Category("General")]
     [DisplayName("Compile Flags")]
