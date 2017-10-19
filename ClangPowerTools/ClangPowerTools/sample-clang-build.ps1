@@ -27,6 +27,14 @@
     If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used, 
     e.g. "table" compiles all CPPs containing 'table'.
 
+.PARAMETER aCppToIgnore
+    Alias 'file-ignore'. Array of file(s) to ignore, from the matched ones. 
+    If empty, all already matched files are compiled.
+    If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used, 
+    e.g. "table" ignores all CPPs containing 'table'.
+
+    Can be passed as comma separated values.
+
 .PARAMETER aIncludeDirectories
     Alias 'includeDirs'. Directories to be used for includes (libraries, helpers, etc).
 
@@ -88,6 +96,7 @@
 param( [alias("proj")]        [Parameter(Mandatory=$false)][string[]] $aVcxprojToCompile
      , [alias("proj-ignore")] [Parameter(Mandatory=$false)][string[]] $aVcxprojToIgnore
      , [alias("file")]        [Parameter(Mandatory=$false)][string]   $aCppToCompile
+     , [alias("file-ignore")] [Parameter(Mandatory=$false)][string[]] $aCppToIgnore
      , [alias("parallel")]    [Parameter(Mandatory=$false)][switch]   $aUseParallelCompile
      , [alias("continue")]    [Parameter(Mandatory=$false)][switch]   $aContinueOnError
      , [alias("literal")]     [Parameter(Mandatory=$false)][switch]   $aDisableNameRegexMatching
@@ -143,6 +152,11 @@ if (![string]::IsNullOrEmpty($aVcxprojToIgnore))
 if (![string]::IsNullOrEmpty($aCppToCompile))
 {
   $scriptParams += ("-aCppToCompile", (Merge-Array $aCppToCompile))
+}
+
+if (![string]::IsNullOrEmpty($aCppToIgnore))
+{
+  $scriptParams += ("-aCppToIgnore", (Merge-Array $aCppToIgnore))
 }
 
 $scriptParams += ("-aClangCompileFlags", (Merge-Array $kClangCompileFlags))
