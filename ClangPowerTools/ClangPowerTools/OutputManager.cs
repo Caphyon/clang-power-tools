@@ -63,7 +63,6 @@ namespace ClangPowerTools
 
       using (OutputWindow outputWindow = new OutputWindow(mDte))
       {
-        outputWindow.Show(mDte);
         mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
         {
           outputWindow.Write(aMessage);
