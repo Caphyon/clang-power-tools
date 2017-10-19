@@ -102,18 +102,18 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aDirecto
 Set-Variable -name kLogicalCoreCount -value (Get-WmiObject -class Win32_processor | `
                                              Select-Object -property NumberOfLogicalProcessors `
                                                            -ExpandProperty NumberOfLogicalProcessors) `
-                                                                        -Option Constant
+                                                                        -option Constant
 # ------------------------------------------------------------------------------------------------
 # Return Value Constants
 
-Set-Variable -name kScriptFailsExitCode      -value  47                 -Option Constant
+Set-Variable -name kScriptFailsExitCode      -value  47                 -option Constant
 
 # ------------------------------------------------------------------------------------------------
 # File System Constants
 
-Set-Variable -name kExtensionCpp             -value ".cpp"              -Option Constant
-Set-Variable -name kExtensionVcxproj         -value ".vcxproj"          -Option Constant
-Set-Variable -name kExtensionClangPch        -value ".clang.pch"        -Option Constant
+Set-Variable -name kExtensionCpp             -value ".cpp"              -option Constant
+Set-Variable -name kExtensionVcxproj         -value ".vcxproj"          -option Constant
+Set-Variable -name kExtensionClangPch        -value ".clang.pch"        -option Constant
 
 # ------------------------------------------------------------------------------------------------
 # Vcxproj Related Constants
@@ -122,43 +122,64 @@ Set-Variable -name kExtensionClangPch        -value ".clang.pch"        -Option 
 Set-Variable -name kValidPlatformFilters -value @(
         '''$(Configuration)|$(Platform)''==''Debug|x64''',
         '''$(Configuration)|$(Platform)''==''Debug|Win32'''
-    ) -Option Constant
+    ) -option Constant
 
 Set-Variable -name kVcxprojElemPreprocessorDefs  `
-             -value                      "PreprocessorDefinitions"      -Option Constant
+             -value                      "PreprocessorDefinitions"      -option Constant
 Set-Variable -name kVcxprojElemAdditionalIncludes `
-             -value                      "AdditionalIncludeDirectories" -Option Constant
+             -value                      "AdditionalIncludeDirectories" -option Constant
 Set-Variable -name kVcxprojItemInheritedPreprocessorDefs `
-             -value                      "%(PreprocessorDefinitions)"   -Option Constant
+             -value                      "%(PreprocessorDefinitions)"   -option Constant
 Set-Variable -name kVcxprojItemInheritedAdditionalIncludes `
-             -value "%(AdditionalIncludeDirectories)"                   -Option Constant
+             -value "%(AdditionalIncludeDirectories)"                   -option Constant
 
-Set-Variable -name kVStudioVarProjDir          -value '$(ProjectDir)'   -Option Constant
+Set-Variable -name kVStudioVarProjDir          -value '$(ProjectDir)'   -option Constant
 
 # ------------------------------------------------------------------------------------------------
 # Clang-Related Constants
 
-Set-Variable -name kClangFlagSupressLINK    -value @("-fsyntax-only")   -Option Constant
-Set-Variable -name kClangFlagWarningIsError -value @("-Werror")         -Option Constant
-Set-Variable -name kClangFlagIncludePch     -value "-include-pch"       -Option Constant
-Set-Variable -name kClangFlagEmitPch        -value "-emit-pch"          -Option Constant
-Set-Variable -name kClangFlagMinusO         -value "-o"                 -Option Constant
+Set-Variable -name kClangFlagSupressLINK    -value @("-fsyntax-only")   -option Constant
+Set-Variable -name kClangFlagWarningIsError -value @("-Werror")         -option Constant
+Set-Variable -name kClangFlagIncludePch     -value "-include-pch"       -option Constant
+Set-Variable -name kClangFlagEmitPch        -value "-emit-pch"          -option Constant
+Set-Variable -name kClangFlagMinusO         -value "-o"                 -option Constant
 
-Set-Variable -name kClangDefinePrefix       -value "-D"                 -Option Constant
+Set-Variable -name kClangDefinePrefix       -value "-D"                 -option Constant
 
-Set-Variable -name kClangCompiler             -value "clang++.exe"      -Option Constant
-Set-Variable -name kClangTidy                 -value "clang-tidy.exe"   -Option Constant
+Set-Variable -name kClangCompiler             -value "clang++.exe"      -option Constant
+Set-Variable -name kClangTidy                 -value "clang-tidy.exe"   -option Constant
 Set-Variable -name kClangTidyFlags            -value @("-quiet"
-                                                      ,"--")            -Option Constant
+                                                      ,"--")            -option Constant
 Set-Variable -name kClangTidyFixFlags         -value @("-quiet"
                                                       ,"-fix-errors"
-                                                      , "--")           -Option Constant
-Set-Variable -name kClangTidyFlagHeaderFilter -value "-header-filter="  -Option Constant
-Set-Variable -name kClangTidyFlagChecks       -value "-checks="         -Option Constant
+                                                      , "--")           -option Constant
+Set-Variable -name kClangTidyFlagHeaderFilter -value "-header-filter="  -option Constant
+Set-Variable -name kClangTidyFlagChecks       -value "-checks="         -option Constant
+
+# ------------------------------------------------------------------------------------------------
+# Default install locations of LLVM. If present there, we automatically use it
 
 Set-Variable -name kLLVMInstallLocations    -value @("${Env:ProgramW6432}\LLVM\bin"
                                                     ,"${Env:ProgramFiles(x86)}\LLVM\bin"
-                                                    )                   -Option Constant
+                                                    )                   -option Constant
+
+# ------------------------------------------------------------------------------------------------
+# Helpers for locating Visual Studio on the computer
+
+# VsWhere is available starting with Visual Studio 2017 version 15.2.
+Set-Variable -name   kVsWhereLocation `
+             -value  "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" `
+             -option Constant
+
+# Default installation path of Visual Studio 2017. We'll use when VsWhere isn't available.
+Set-Variable -name   kVs15DefaultLocation `
+             -value  "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$aVisualStudioVersion\$aVisualStudioSku" `
+             -option Constant
+
+# Registry key containing information about Visual Studio 2015 installation path.
+Set-Variable -name   kVs2015RegistryKey `
+             -value  "HKLM:SOFTWARE\Wow6432Node\Microsoft\VisualStudio\14.0" `
+             -option Constant
 
 #-------------------------------------------------------------------------------------------------
 # PlatformToolset-Related Constants
@@ -166,16 +187,16 @@ Set-Variable -name kLLVMInstallLocations    -value @("${Env:ProgramW6432}\LLVM\b
 Set-Variable -name kDefinesUnicode   -value @("-DUNICODE"
                                              ,"-D_UNICODE"
                                              ) `
-                                     -Option Constant
+                                     -option Constant
 
 Set-Variable -name kDefinesClangXpTargeting `
              -value @("-D_USING_V110_SDK71_") `
-             -Option Constant
+             -option Constant
 
 
 Set-Variable -name kIncludePathsXPTargetingSDK  `
              -value "${Env:ProgramFiles(x86)}\Microsoft SDKs\Windows\v7.1A\Include"  `
-             -Option Constant
+             -option Constant
 
 #-------------------------------------------------------------------------------------------------
 # Custom Types
@@ -189,7 +210,7 @@ Add-Type -TypeDefinition @"
   }
 "@
 
-Set-Variable -name kVStudioDefaultPlatformToolset -Value "v141" -Option Constant
+Set-Variable -name kVStudioDefaultPlatformToolset -Value "v141" -option Constant
 
 #-------------------------------------------------------------------------------------------------
 # Global functions
@@ -434,18 +455,45 @@ Function Get-VisualStudio-Includes([Parameter(Mandatory=$true)][string]  $vsPath
           )
 }
 
+
+Function Get-VisualStudio-Path()
+{
+  if ($aVisualStudioVersion -eq "2015")
+  {
+    $installLocation = (Get-Item kVs2015RegistryKey).GetValue("InstallDir")
+    return Canonize-Path -base $installLocation -child "..\.."
+  }
+  else 
+  {
+    if (Test-Path $kVsWhereLocation)
+    {
+      return (& "$kVsWhereLocation" -nologo -property installationPath)
+    }
+
+    if (Test-Path -Path $kVs15DefaultLocation)
+    {
+      return $kVs15DefaultLocation
+    }
+
+    throw "Cannot locate Visual Studio location"
+  }
+}
+
 Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
   [string[]] $returnArray = @()
-  
+
+  [string] $vsPath = Get-VisualStudio-Path
+  Write-Verbose "Detected Visual Studio at $vsPath"
+
   if ($aVisualStudioVersion -eq "2015")
   {
-    $returnArray += Get-VisualStudio-Includes -vsPath "${Env:ProgramFiles(x86)}\Microsoft Visual Studio 14.0"
+    $returnArray += Get-VisualStudio-Includes -vsPath $vsPath
   }
   else
   {
-    $returnArray += Get-VisualStudio-Includes -vsPath "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$aVisualStudioVersion\$aVisualStudioSku" `
-                                              -mscVer (Get-MscVer)
+    $returnArray += Get-VisualStudio-Includes -vsPath $vsPath `
+                                              -mscVer (Get-MscVer -visualStudioPath $vsPath)
   }
 
   $sdkVer = (Get-Project-SDKVer -vcxprojPath $vcxprojPath)
