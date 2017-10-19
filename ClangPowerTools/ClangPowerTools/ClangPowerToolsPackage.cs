@@ -55,6 +55,7 @@ namespace ClangPowerTools
       {"15.0", "2017"}
     };
     private DTE2 mDte;
+    private CommandsController mCommandsController;
 
     #endregion
 
@@ -88,9 +89,10 @@ namespace ClangPowerTools
 
       string edition = mDte.Edition;
       mVsVersions.TryGetValue(mDte.Version, out string version);
+      mCommandsController = new CommandsController(this, mDte);
 
-      TidyCommand.Initialize(this, mDte, edition, version);  
-      CompileCommand.Initialize(this, mDte, edition, version);
+      TidyCommand.Initialize(this, mDte, edition, version, mCommandsController);  
+      CompileCommand.Initialize(this, mDte, edition, version, mCommandsController);
       SettingsCommand.Initialize(this);
     }
 

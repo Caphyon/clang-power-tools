@@ -25,10 +25,11 @@ namespace ClangPowerTools
 
       if (aItem is SelectedProjectItem)
       {
-        aFileName = aFileName.Substring(0, aFileName.IndexOf('.'));
         ProjectItem projectItem = aItem.GetObject() as ProjectItem;
         parentDirectoryPath = new DirectoryInfo(projectItem.ContainingProject.FullName).Parent.FullName;
-        script = $"{script} {ScriptConstants.kProject} {projectItem.ContainingProject.Name} {ScriptConstants.kFile} {aFileName}";
+        string containingProject = projectItem.ContainingProject.FullName;
+        string containingProjectName = containingProject.Substring(containingProject.LastIndexOf('\\') + 1);
+        script = $"{script} {ScriptConstants.kProject} {containingProjectName} {ScriptConstants.kFile} {aFileName}";
       }
       else if (aItem is SelectedProject)
       {
@@ -36,7 +37,7 @@ namespace ClangPowerTools
         parentDirectoryPath = new DirectoryInfo(project.FullName).Parent.FullName;
         script = $"{script} {ScriptConstants.kProject} {aFileName}";
       }
-      return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{parentDirectoryPath}'''";
+      return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{parentDirectoryPath}'' {ScriptConstants.kLiteral}'";
     }
 
     public void ConstructParameters(GeneralOptions aGeneralOptions, 

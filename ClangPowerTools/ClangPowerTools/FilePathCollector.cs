@@ -22,18 +22,6 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    //Return the common prefix of all paths stored in the mFilePath list
-    public string CommonPrefixPath()
-    {
-      IEnumerable<string> matchingChars =
-            from len in Enumerable.Range(0, mFilesPath.Min(s => s.Length)).Reverse()
-            let possibleMatch = mFilesPath.First().Substring(0, len)
-            where mFilesPath.All(f => f.StartsWith(possibleMatch))
-            select possibleMatch;
-
-      return Path.GetDirectoryName(matchingChars.First());
-    }
-
     public void Collect(List<Tuple<IItem, IVsHierarchy>> aItems)
     {
       foreach (var item in aItems)

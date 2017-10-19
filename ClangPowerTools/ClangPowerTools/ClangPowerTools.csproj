@@ -74,6 +74,7 @@
   <ItemGroup>
     <Compile Include="AutomationUtil.cs" />
     <Compile Include="ClangCheckAttribute.cs" />
+    <Compile Include="CommandsController.cs" />
     <Compile Include="CompileCommand.cs" />
     <Compile Include="DefaultOptions.cs" />
     <Compile Include="ErrorParser.cs" />

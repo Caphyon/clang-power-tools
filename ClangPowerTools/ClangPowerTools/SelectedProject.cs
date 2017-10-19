@@ -18,7 +18,7 @@ namespace ClangPowerTools
 
     #region IItem implementation
 
-    public string GetName() => mProject.Name;
+    public string GetName() => mProject.FullName.Substring(mProject.FullName.LastIndexOf('\\') + 1);
 
     public string GetPath() => mProject.FullName;
 
