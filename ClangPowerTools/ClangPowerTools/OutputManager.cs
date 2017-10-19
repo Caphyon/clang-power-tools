@@ -30,7 +30,6 @@ namespace ClangPowerTools
     public bool EmptyBuffer => mMessagesBuffer.Count == 0;
     public List<TaskError> Errors => mErrors;
     public bool HasErrors => 0 != mErrors.Count;
-
     #endregion
 
     #region Constructor
@@ -54,6 +53,12 @@ namespace ClangPowerTools
           outputWindow.Clear();
         }));
       }
+    }
+
+    public void Show()
+    {
+      using (OutputWindow outputWindow = new OutputWindow(mDte))
+        outputWindow.Show(mDte);
     }
 
     public void AddMessage(string aMessage)

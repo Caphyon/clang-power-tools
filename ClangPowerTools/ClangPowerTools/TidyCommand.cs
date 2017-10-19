@@ -152,6 +152,7 @@ namespace ClangPowerTools
             }
 
             mOutputManager.Clear();
+            mOutputManager.Show();
             mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kTidyCodeCommand}\n");
             foreach (var item in mItemsCollector.GetItems)
             {
@@ -166,7 +167,10 @@ namespace ClangPowerTools
             if (!mOutputManager.EmptyBuffer)
               mOutputManager.AddMessage(String.Join("\n", mOutputManager.Buffer));
             if (!mOutputManager.MissingLlvm)
+            {
+              mOutputManager.Show();
               mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kTidyCodeCommand}\n");
+            }
             if (mOutputManager.HasErrors)
               mErrorsManager.AddErrors(mOutputManager.Errors);
           }
