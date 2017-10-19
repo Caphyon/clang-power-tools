@@ -11,7 +11,7 @@ Improvements:
 * Enabled compilation for all files included in the Vcxproj <ClCompile> section
 
 Bugs:
-* Fixed project detection when the project name from UI is dffrent of project name on the disk.
+* Fixed project detection when the project name from UI is different of the project name on the disk.
 * Prevents the Output window from stealing the focus.
 * Fixed the detection for modified files after clang tidy fix.
 * Fixed the "Project To Ignore" option
