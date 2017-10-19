@@ -6,7 +6,7 @@ Changelog of Clang Power Tools extension
 
 Improvements:
 * Added support for ignoring specific files
-* Added support for treat warnings as errors
+* Added support for treating warnings as errors
 * Detect Visual Studio 2015 / 2017 custom installation paths
 * Enabled compilation for all files included in the Vcxproj <ClCompile> section
 
