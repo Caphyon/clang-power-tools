@@ -47,6 +47,7 @@ namespace ClangPowerTools
     private FileOpener mFileOpener;
     private CommandsController mCommandsController;
     private ItemsCollector mItemsCollector;
+
     #endregion
 
     #region Constructor
@@ -72,8 +73,8 @@ namespace ClangPowerTools
       if (this.ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
         var menuCommandID = new CommandID(CommandSet, CommandId);
-        mCommandsController.AddCommand(menuCommandID);
-        var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
+        var menuItem = new OleMenuCommand(this.MenuItemCallback, menuCommandID);
+        menuItem.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
         commandService.AddCommand(menuItem);
       }
     }
@@ -115,7 +116,7 @@ namespace ClangPowerTools
     /// <param name="e">Event args.</param>
     private void MenuItemCallback(object sender, EventArgs e)
     {
-      mCommandsController.BeforeExecute();
+      mCommandsController.Running = true;
       System.Threading.Tasks.Task.Run(() =>
       {
         GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
