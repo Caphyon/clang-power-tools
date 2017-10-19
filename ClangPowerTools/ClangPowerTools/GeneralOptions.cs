@@ -39,7 +39,7 @@ namespace ClangPowerTools
     [Category("General")]
     [DisplayName("Treat Warnings As Errors")]
     [Description("Treats all compiler warnings as errors. For a new project, it may be best to use in all compilations; resolving all warnings will ensure the fewest possible hard to find code defects.")]
-    public bool TreatWarningsAsErrors { get; set; }
+    public bool TreatWarningsAsErrors { get; set; } = true;
 
     [Category("General")]
     [DisplayName("Compile Flags")]
