@@ -4,7 +4,7 @@
     It sets up the scene required for clang-build.ps1 to do its job, and makes
     command-line usage for projects and files quicker.
 
-    Before calling ai-clang-build.ps1 you need to set the current directory
+    Before calling sample-clang-build.ps1 you need to set the current directory
     to the root source directory.
 
 .PARAMETER aVcxprojToCompile
@@ -58,7 +58,7 @@
       If present, this parameter takes precedence over aTidyFlags.
 
 .EXAMPLE
-    PS .\ai-clang-build.ps1 -dir -proj foo,bar -file meow -tidy "-*,modernize-*"
+    PS .\sample-clang-build.ps1 -dir -proj foo,bar -file meow -tidy "-*,modernize-*"
     <Description of example>
     Runs clang-tidy, using "-*,modernize-*", on all CPPs containing 'meow' in their name from 
     the projects containing 'foo' or 'bar' in their names. 
@@ -67,7 +67,7 @@
     It will only print the tidy module output.
     
 .EXAMPLE
-    PS .\ai-clang-build.ps1 -dir -proj foo,bar -file meow -tidy-fix "-*,modernize-*"
+    PS .\sample-clang-build.ps1 -dir -proj foo,bar -file meow -tidy-fix "-*,modernize-*"
     <Description of example>
     Runs clang-tidy, using "-*,modernize-*", on all CPPs containing 'meow' in their name from 
     the projects containing 'foo' or 'bar' in their names. 
@@ -75,7 +75,7 @@
     It will apply all tidy module changes to CPPs.
 
 .EXAMPLE
-    PS .\ai-clang-build.ps1 -dir -proj foo -proj-ignore foobar
+    PS .\sample-clang-build.ps1 -dir -proj foo -proj-ignore foobar
     <Description of example>
     Runs clang++ on all CPPs in foo... projects, except foobar
   
@@ -99,6 +99,7 @@ param( [alias("proj")]        [Parameter(Mandatory=$false)][string[]] $aVcxprojT
 
 Set-Variable -name kClangCompileFlags                                       -Option Constant `
                                             -value @( "-std=c++14"
+                                                    , "-Werror"
                                                     , "-Wall"
                                                     , "-fms-compatibility-version=19.10"
                                                     , "-Wmicrosoft"

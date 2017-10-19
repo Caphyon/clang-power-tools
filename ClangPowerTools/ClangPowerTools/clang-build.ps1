@@ -111,7 +111,6 @@ Set-Variable -name kScriptFailsExitCode      -value  47                 -option 
 # ------------------------------------------------------------------------------------------------
 # File System Constants
 
-Set-Variable -name kExtensionCpp             -value ".cpp"              -option Constant
 Set-Variable -name kExtensionVcxproj         -value ".vcxproj"          -option Constant
 Set-Variable -name kExtensionClangPch        -value ".clang.pch"        -option Constant
 
@@ -145,6 +144,9 @@ Set-Variable -name kClangFlagEmitPch        -value "-emit-pch"          -option 
 Set-Variable -name kClangFlagMinusO         -value "-o"                 -option Constant
 
 Set-Variable -name kClangDefinePrefix       -value "-D"                 -option Constant
+Set-Variable -name kClangFlagNoUnusedArg    -value "-Wno-unused-command-line-argument" `
+                                                                        -option Constant
+Set-Variable -name kClangFlagFileIsCPP      -value "-x c++"             -option Constant
 
 Set-Variable -name kClangCompiler             -value "clang++.exe"      -option Constant
 Set-Variable -name kClangTidy                 -value "clang-tidy.exe"   -option Constant
@@ -366,16 +368,15 @@ Function Should-IgnoreProject([Parameter(Mandatory=$true)][string] $vcxprojPath)
   return $false
 }
 
-Function Get-ProjectCpps([Parameter(Mandatory=$true)][string] $vcxprojPath,
-                         [Parameter(Mandatory=$false)][string] $pchCppName)
+Function Get-ProjectFilesToCompile([Parameter(Mandatory=$true)][string] $vcxprojPath,
+                                   [Parameter(Mandatory=$false)][string] $pchCppName)
 {
   [xml] $vcxproj = Get-Content $vcxprojPath
   [Boolean] $pchDisabled = [string]::IsNullOrEmpty($pchCppName)
 
   [string[]] $cpps = $vcxproj.Project.ItemGroup.ClCompile                     | 
                      Where-Object { ($_.Include -ne $null)                                  -and 
-                                    ($pchDisabled -or ($_.Include -notmatch $pchCppName) )  -and 
-                                    ($_.Include -match $kExtensionCpp) 
+                                    ($pchDisabled -or ($_.Include -notmatch $pchCppName) ) 
                                   }                                           | 
                      ForEach-Object { Canonize-Path -base (Get-FileDirectory($vcxprojPath)) `
                                                     -child $_.Include }
@@ -605,6 +606,7 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
                                   ,$kClangFlagMinusO
                                   ,"""$stdafxPch"""
                                   ,$aClangCompileFlags
+                                  ,$kClangFlagNoUnusedArg
                                   ,$preprocessorDefinitions
                                   )
 
@@ -774,7 +776,8 @@ Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $prep
     $projectCompileArgs += @($kClangFlagIncludePch , """$pchFilePath""")
   }
   
-  $projectCompileArgs += @( """$fileToCompile"""
+  $projectCompileArgs += @($kClangFlagFileIsCPP
+                          ,"""$fileToCompile"""
                           , $aClangCompileFlags
                           , $kClangFlagSupressLINK
                           , $kClangFlagWarningIsError
@@ -1014,8 +1017,8 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   #-----------------------------------------------------------------------------------------------
   # FIND LIST OF CPPs TO PROCESS
 
-  [string[]] $projCpps = Get-ProjectCpps -vcxprojPath $vcxprojPath `
-                                         -pchCppName  $stdafxCpp
+  [string[]] $projCpps = Get-ProjectFilesToCompile -vcxprojPath $vcxprojPath `
+                                                   -pchCppName  $stdafxCpp
 
   if (![string]::IsNullOrEmpty($aCppToCompile))
   {
