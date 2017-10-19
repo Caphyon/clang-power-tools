@@ -73,9 +73,9 @@ namespace ClangPowerTools
       if (this.ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
         var menuCommandID = new CommandID(CommandSet, CommandId);
-        var menuItem = new OleMenuCommand(this.MenuItemCallback, menuCommandID);
-        menuItem.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
-        commandService.AddCommand(menuItem);
+        var menuCommand = new OleMenuCommand(this.MenuItemCallback, menuCommandID);
+        //menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
+        commandService.AddCommand(menuCommand);
       }
     }
 
@@ -116,7 +116,7 @@ namespace ClangPowerTools
     /// <param name="e">Event args.</param>
     private void MenuItemCallback(object sender, EventArgs e)
     {
-      mCommandsController.Running = true;
+      //mCommandsController.Running = true;
       System.Threading.Tasks.Task.Run(() =>
       {
         GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
@@ -145,7 +145,7 @@ namespace ClangPowerTools
           }
           using (var guard = new SilentFileChangerGuard())
           {
-            if(tidyPage.Fix)
+            if (tidyPage.Fix)
             {
               WatchFiles();
               SilentFiles(guard);
@@ -180,7 +180,7 @@ namespace ClangPowerTools
           VsShellUtilities.ShowMessageBox(mPackage, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
-      }).ContinueWith(tsk => mCommandsController.AfterExecute()); ;
+      });//.ContinueWith(tsk => mCommandsController.AfterExecute()); ;
     }
 
     #endregion

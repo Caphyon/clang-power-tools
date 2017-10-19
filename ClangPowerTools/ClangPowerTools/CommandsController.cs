@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Threading;
 
@@ -48,6 +49,7 @@ namespace ClangPowerTools
       {
         if (sender is OleMenuCommand command)
         {
+          //MessageBox.Show(command.CommandID.ID.ToString());
           command.Enabled = !Running;
           command.Visible = true;
         }
