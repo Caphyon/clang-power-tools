@@ -155,7 +155,10 @@ Set-Variable -name kClangFlagMinusO         -value "-o"                 -option 
 Set-Variable -name kClangDefinePrefix       -value "-D"                 -option Constant
 Set-Variable -name kClangFlagNoUnusedArg    -value "-Wno-unused-command-line-argument" `
                                                                         -option Constant
+Set-Variable -name kClangFlagNoMsInclude    -value "-Wno-microsoft-include" `
+                                                                        -Option Constant
 Set-Variable -name kClangFlagFileIsCPP      -value "-x c++"             -option Constant
+Set-Variable -name kClangFlagForceInclude   -value "-include"           -option Constant
 
 Set-Variable -name kClangCompiler             -value "clang++.exe"      -option Constant
 Set-Variable -name kClangTidy                 -value "clang-tidy.exe"   -option Constant
@@ -433,13 +436,7 @@ Function Get-Project-SDKVer([Parameter(Mandatory=$true)][string] $vcxprojPath)
 
 Function Is-ValidPlatform([string] $platformConfig)
 {
-  foreach ($filter in $kValidPlatformFilters)
-  {
-    if ($platformConfig -eq $filter) {
-      return $true;
-    }
-  }
-  return $false;
+  return $kValidPlatformFilters -contains $platformConfig
 }
 
 Function Is-Project-Unicode([Parameter(Mandatory=$true)][string] $vcxprojPath)
@@ -486,7 +483,6 @@ Function Get-VisualStudio-Includes([Parameter(Mandatory=$true)][string]  $vsPath
           , "$vsPath\VC\$($mscVerToken)atlmfc\include"
           )
 }
-
 
 Function Get-VisualStudio-Path()
 {
@@ -815,6 +811,24 @@ Function Get-ProjectAdditionalIncludes([Parameter(Mandatory=$true)][string] $vcx
   }
 }
 
+Function Get-ProjectForceIncludes([Parameter(Mandatory=$true)][string] $vcxprojPath)
+{
+  [xml] $vcxproj = Get-Content $vcxprojPath
+  
+  [System.Xml.XmlElement[]] $itemDefinitionGroup = $vcxproj.Project.ItemDefinitionGroup     | 
+                            Where-Object { Is-ValidPlatform($_.GetAttribute("Condition")) }
+  foreach ($group in $itemDefinitionGroup)
+  {
+    if (!$group.ClCompile -or !$group.ClCompile.ForcedIncludeFiles)
+    {
+      continue
+    }
+    return $group.ClCompile.ForcedIncludeFiles -split ";"
+  }
+  
+  return $null
+}
+
 Function Get-ExeToCall([Parameter(Mandatory=$true)][WorkloadType] $workloadType)
 {
   switch ($workloadType)
@@ -826,8 +840,9 @@ Function Get-ExeToCall([Parameter(Mandatory=$true)][WorkloadType] $workloadType)
 }
 
 Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $preprocessorDefinitions
-                                 , [Parameter(Mandatory=$false)][string]  $pchFilePath
-                                 , [Parameter(Mandatory=$true)][string]   $fileToCompile)
+                                 , [Parameter(Mandatory=$false)][string[]] $forceIncludeFiles
+                                 , [Parameter(Mandatory=$false)][string]   $pchFilePath
+                                 , [Parameter(Mandatory=$true)][string]    $fileToCompile)
 {
   [string[]] $projectCompileArgs = @()
   if (! [string]::IsNullOrEmpty($pchFilePath))
@@ -835,12 +850,21 @@ Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $prep
     $projectCompileArgs += @($kClangFlagIncludePch , """$pchFilePath""")
   }
   
-  $projectCompileArgs += @($kClangFlagFileIsCPP
-                          ,"""$fileToCompile"""
+  $projectCompileArgs += @( $kClangFlagFileIsCPP
+                          , """$fileToCompile"""
                           , $aClangCompileFlags
                           , $kClangFlagSupressLINK
                           , $preprocessorDefinitions
                           )
+  if ($forceIncludeFiles)
+  {
+    $projectCompileArgs += $kClangFlagNoMsInclude;
+    
+    foreach ($file in $forceIncludeFiles)
+    {
+      $projectCompileArgs += "$kClangFlagForceInclude $file"
+    }
+  }
 
   return $projectCompileArgs
 }
@@ -881,13 +905,15 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
 
 Function Get-ExeCallArguments( [Parameter(Mandatory=$true) ][string]       $vcxprojPath
                              , [Parameter(Mandatory=$false)][string]       $pchFilePath
-                             , [Parameter(Mandatory=$false) ][string[]]    $preprocessorDefinitions
+                             , [Parameter(Mandatory=$false)][string[]]     $preprocessorDefinitions
+                             , [Parameter(Mandatory=$false)][string[]]     $forceIncludeFiles
                              , [Parameter(Mandatory=$true) ][string]       $currentFile
                              , [Parameter(Mandatory=$true) ][WorkloadType] $workloadType)
 {
   switch ($workloadType)
   {
     Compile { return Get-CompileCallArguments -preprocessorDefinitions $preprocessorDefinitions `
+                                              -forceIncludeFiles       $forceIncludeFiles `
                                               -pchFilePath             $pchFilePath `
                                               -fileToCompile           $currentFile }
     Tidy    { return Get-TidyCallArguments -preprocessorDefinitions $preprocessorDefinitions `
@@ -1072,6 +1098,12 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   Set-ProjectIncludePaths($includeDirectories)
 
   #-----------------------------------------------------------------------------------------------
+  # FIND FORCE INCLUDES
+
+  [string[]] $forceIncludeFiles = Get-ProjectForceIncludes -vcxprojPath $vcxprojPath
+  Write-Verbose "Force includes: $forceIncludeFiles"
+
+  #-----------------------------------------------------------------------------------------------
   # FIND LIST OF CPPs TO PROCESS
 
   [string[]] $projCpps = Get-ProjectFilesToCompile -vcxprojPath $vcxprojPath `
@@ -1115,6 +1147,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
                                                -workloadType            $workloadType `
                                                -pchFilePath             $pchFilePath `
                                                -preprocessorDefinitions $preprocessorDefinitions `
+                                               -forceIncludeFiles       $forceIncludeFiles `
                                                -currentFile             $cpp
 
     $newJob = New-Object PsObject -Prop @{ 'FilePath'        = $exeToCall;
