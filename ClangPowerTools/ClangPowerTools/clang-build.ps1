@@ -493,6 +493,7 @@ Function Get-VisualStudio-Path()
   if ($aVisualStudioVersion -eq "2015")
   {
     $installLocation = (Get-Item kVs2015RegistryKey).GetValue("InstallDir")
+    $installLocation = (Get-Item $kVs2015RegistryKey).GetValue("InstallDir")
     return Canonize-Path -base $installLocation -child "..\.."
   }
   else 
