@@ -407,8 +407,10 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory=$true)][string] $vcxproj
                                   }                                           |
                      ForEach-Object { Canonize-Path -base (Get-FileDirectory($vcxprojPath)) `
                                                     -child $_.Include }
-
-  $files = $files | Where-Object { ! (Should-IgnoreFile -file $_) }
+  if ($files.Count -gt 0)
+  {
+    $files = $files | Where-Object { ! (Should-IgnoreFile -file $_) }
+  }
 
   return $files
 }
