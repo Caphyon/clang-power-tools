@@ -492,7 +492,6 @@ Function Get-VisualStudio-Path()
 {
   if ($aVisualStudioVersion -eq "2015")
   {
-    $installLocation = (Get-Item kVs2015RegistryKey).GetValue("InstallDir")
     $installLocation = (Get-Item $kVs2015RegistryKey).GetValue("InstallDir")
     return Canonize-Path -base $installLocation -child "..\.."
   }
@@ -536,6 +535,9 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcx
     $sdkVer = $aDefaultWinSdkVersion
   }
 
+  # ----------------------------------------------------------------------------------------------
+  # Windows 10
+
   if ((![string]::IsNullOrEmpty($sdkVer)) -and ($sdkVer.StartsWith("10")))
   {
     $returnArray += @("${Env:ProgramFiles(x86)}\Windows Kits\10\Include\$sdkVer\ucrt")
@@ -552,6 +554,28 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcx
                        , "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\$sdkVer\shared"
                        , "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\$sdkVer\winrt"
                        )
+    }
+  }
+
+  # ----------------------------------------------------------------------------------------------
+  # Windows 8 / 8.1
+
+  if ((![string]::IsNullOrEmpty($sdkVer)) -and ($sdkVer.StartsWith("8.")))
+  {
+    $returnArray += @("${Env:ProgramFiles(x86)}\Windows Kits\10\Include\10.0.10240.0\ucrt")
+
+    [string] $platformToolset = (Get-ProjectPlatformToolset -vcxprojPath $vcxprojPath)
+
+    if ($platformToolset.EndsWith("xp"))
+    {
+      $returnArray += @($kIncludePathsXPTargetingSDK)
+    }
+    else
+    {
+      $returnArray += @( "${Env:ProgramFiles(x86)}\Windows Kits\$sdkVer\Include\um"
+                        , "${Env:ProgramFiles(x86)}\Windows Kits\$sdkVer\Include\shared"
+                        , "${Env:ProgramFiles(x86)}\Windows Kits\$sdkVer\Include\winrt"
+                        )
     }
   }
 
