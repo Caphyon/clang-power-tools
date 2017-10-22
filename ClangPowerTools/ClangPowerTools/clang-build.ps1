@@ -336,9 +336,9 @@ Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
 
 Function Get-MscVer()
 {
-  [string] $path = "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\"
-  $path         += "$aVisualStudioVersion\$aVisualStudioSku\VC\Tools\MSVC\"
-
+  [string] $path = Get-VisualStudio-Path
+  $path         += "\VC\Tools\MSVC\"
+	
   [System.IO.DirectoryInfo] $directory = (Get-Item $path)
   [System.IO.DirectoryInfo] $child = ($directory | Get-ChildItem)
   return $child.Name
