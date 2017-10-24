@@ -42,6 +42,11 @@ namespace ClangPowerTools
     public bool TreatWarningsAsErrors { get; set; } = true;
 
     [Category("General")]
+    [DisplayName("Verbose Mode")]
+    [Description("Enables verbose logging for diagnostic purposes.")]
+    public bool VerboseMode { get; set; }
+
+    [Category("General")]
     [DisplayName("Compile Flags")]
     [Description("Flags given to clang++ when compiling project, alongside project - specific defines. If empty the default flags will be loaded.")]
     [TypeConverter(typeof(StringArrayConverter))]
