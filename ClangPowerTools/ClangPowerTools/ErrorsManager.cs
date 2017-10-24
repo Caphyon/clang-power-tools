@@ -32,9 +32,9 @@ namespace ClangPowerTools
         mErrorWindow.AddError(aError);
     }
 
-    public void AddErrors(IEnumerable<TaskError> aErrors)
+    public DispatcherOperation AddErrors(IEnumerable<TaskError> aErrors)
     {
-      mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+      return mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
       {
         mErrorWindow.Clear();
         foreach (TaskError error in aErrors)
