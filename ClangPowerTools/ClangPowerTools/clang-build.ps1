@@ -76,15 +76,6 @@
       Alias 'vs-sku'. Sku of Visual Studio (VC++) installed and that'll be used for 
       standard library include directories. E.g. Professional.
 
-.PARAMETER aDefaultWinSdkVersion
-      Alias 'win-sdk-ver'. Default version of Windows SDK to be used for default include directories.
-      It is used only when the project does not explictly specify a Windows Target Platform Version.
-      
-      Only Windows 10 SDKs versions are supported.
-
-      If not given as parameter and project doesn't specify it either , no WinSDK include paths are added. 
-      E.g. 10.0.14393.0
-
 .NOTES
     Author: Gabriel Diaconita
 #>
@@ -102,7 +93,6 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aDirecto
      , [alias("tidy-fix")]     [Parameter(Mandatory=$false)][string]   $aTidyFixFlags
      , [alias("vs-ver")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioVersion
      , [alias("vs-sku")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioSku
-     , [alias("win-sdk-ver")]  [Parameter(Mandatory=$false)][string]   $aDefaultWinSdkVersion
      )
 
 # System Architecture Constants
@@ -144,6 +134,8 @@ Set-Variable -name kVcxprojItemInheritedAdditionalIncludes `
              -value "%(AdditionalIncludeDirectories)"                   -option Constant
 
 Set-Variable -name kVStudioVarProjDir          -value '$(ProjectDir)'   -option Constant
+Set-Variable -name kVSDefaultWinSDK            -value '8.1'             -option Constant
+Set-Variable -name kVSDefaultWinSDK_XP         -value '7.0'             -option Constant
 
 # ------------------------------------------------------------------------------------------------
 # Clang-Related Constants
@@ -453,7 +445,8 @@ Function Get-ProjectPlatformToolset([Parameter(Mandatory=$true)][string] $vcxpro
   $propGroup = $vcxproj.Project.PropertyGroup | `
                Where-Object { $_.GetAttribute -ne $null -and
                               (Is-ValidPlatform($_.GetAttribute("Condition"))) -and
-                              $_.GetAttribute("Label") -eq "Configuration" }
+                              $_.GetAttribute("Label") -eq "Configuration" } | `
+               Select-Object -First 1
   
   $toolset = $propGroup.PlatformToolset
 
@@ -510,6 +503,8 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcx
 
   [string] $vsPath = Get-VisualStudio-Path
   Write-Verbose "Detected Visual Studio at $vsPath"
+  
+  [string] $platformToolset = (Get-ProjectPlatformToolset -vcxprojPath $vcxprojPath)
 
   if ($aVisualStudioVersion -eq "2015")
   {
@@ -518,17 +513,27 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcx
   else
   {
     $mscVer = Get-MscVer -visualStudioPath $vsPath
-    Write-Verbose "MSCVER = $mscVer"
+    Write-Verbose "MSCVER : $mscVer"
 
     $returnArray += Get-VisualStudio-Includes -vsPath $vsPath -mscVer $mscVer
   }
 
   $sdkVer = (Get-Project-SDKVer -vcxprojPath $vcxprojPath)
 
+  # We did not find a WinSDK version in the vcxproj. We use Visual Studio's defaults
   if ([string]::IsNullOrEmpty($sdkVer))
   {
-    $sdkVer = $aDefaultWinSdkVersion
+    if ($platformToolset.EndsWith("xp"))
+    {
+      $sdkVer = $kVSDefaultWinSDK_XP
+    }
+    else
+    {
+      $sdkVer = $kVSDefaultWinSDK
+    }
   }
+
+  Write-Verbose "WinSDK version : $sdkVer"
 
   # ----------------------------------------------------------------------------------------------
   # Windows 10
@@ -536,8 +541,6 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcx
   if ((![string]::IsNullOrEmpty($sdkVer)) -and ($sdkVer.StartsWith("10")))
   {
     $returnArray += @("${Env:ProgramFiles(x86)}\Windows Kits\10\Include\$sdkVer\ucrt")
-
-    [string] $platformToolset = (Get-ProjectPlatformToolset -vcxprojPath $vcxprojPath)
 
     if ($platformToolset.EndsWith("xp"))
     {
@@ -559,8 +562,6 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcx
   {
     $returnArray += @("${Env:ProgramFiles(x86)}\Windows Kits\10\Include\10.0.10240.0\ucrt")
 
-    [string] $platformToolset = (Get-ProjectPlatformToolset -vcxprojPath $vcxprojPath)
-
     if ($platformToolset.EndsWith("xp"))
     {
       $returnArray += @($kIncludePathsXPTargetingSDK)
@@ -571,6 +572,25 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcx
                         , "${Env:ProgramFiles(x86)}\Windows Kits\$sdkVer\Include\shared"
                         , "${Env:ProgramFiles(x86)}\Windows Kits\$sdkVer\Include\winrt"
                         )
+    }
+  }
+  
+  # ----------------------------------------------------------------------------------------------
+  # Windows 7
+
+  if ((![string]::IsNullOrEmpty($sdkVer)) -and ($sdkVer.StartsWith("7.0")))
+  {
+    $returnArray += @("$vsPath\VC\Auxiliary\VS\include")
+
+    if ($platformToolset.EndsWith("xp"))
+    {
+      $returnArray += @( "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\10.0.10240.0\ucrt"
+                       , $kIncludePathsXPTargetingSDK
+                       )
+    }
+    else
+    {
+      $returnArray += @( "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\7.0\ucrt")
     }
   }
 
