@@ -338,12 +338,7 @@ Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
 
 Function Get-MscVer()
 {
-  [string] $path = "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\"
-  $path         += "$aVisualStudioVersion\$aVisualStudioSku\VC\Tools\MSVC\"
-
-  [System.IO.DirectoryInfo] $directory = (Get-Item $path)
-  [System.IO.DirectoryInfo] $child = ($directory | Get-ChildItem)
-  return $child.Name
+  return (Get-Item "$(Get-VisualStudio-Path)\VC\Tools\MSVC\" | Get-ChildItem).Name
 }
 
 Function Should-CompileProject([Parameter(Mandatory=$true)][string] $vcxprojPath)
@@ -522,8 +517,10 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcx
   }
   else
   {
-    $returnArray += Get-VisualStudio-Includes -vsPath $vsPath `
-                                              -mscVer (Get-MscVer -visualStudioPath $vsPath)
+    $mscVer = Get-MscVer -visualStudioPath $vsPath
+    Write-Verbose "MSCVER = $mscVer"
+
+    $returnArray += Get-VisualStudio-Includes -vsPath $vsPath -mscVer $mscVer
   }
 
   $sdkVer = (Get-Project-SDKVer -vcxprojPath $vcxprojPath)
