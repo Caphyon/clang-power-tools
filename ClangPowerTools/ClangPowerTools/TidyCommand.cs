@@ -74,7 +74,7 @@ namespace ClangPowerTools
       {
         var menuCommandID = new CommandID(CommandSet, CommandId);
         var menuCommand = new OleMenuCommand(this.MenuItemCallback, menuCommandID);
-        //menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
+        menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
         commandService.AddCommand(menuCommand);
       }
     }
@@ -116,8 +116,8 @@ namespace ClangPowerTools
     /// <param name="e">Event args.</param>
     private void MenuItemCallback(object sender, EventArgs e)
     {
-      //mCommandsController.Running = true;
-      System.Threading.Tasks.Task.Run(() =>
+      mCommandsController.Running = true;
+      var task = System.Threading.Tasks.Task.Run(() =>
       {
         GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
         TidyOptions tidyPage = (TidyOptions)mPackage.GetDialogPage(typeof(TidyOptions));
@@ -134,7 +134,6 @@ namespace ClangPowerTools
         powerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;
 
         mFileWatcher = new FileChangerWatcher();
-
         try
         {
           mDte.Documents.SaveAll();
@@ -180,7 +179,7 @@ namespace ClangPowerTools
           VsShellUtilities.ShowMessageBox(mPackage, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
-      });//.ContinueWith(tsk => mCommandsController.AfterExecute()); ;
+      }).ContinueWith(tsk => mCommandsController.AfterExecute()); ;
     }
 
     #endregion
