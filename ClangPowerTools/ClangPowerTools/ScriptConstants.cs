@@ -17,6 +17,7 @@ namespace ClangPowerTools
     public const string kContinue = "-continue";
     public const string kTreatWarningsAsErrors = "-Werror";
     public const string kParallel = "-parallel";
+    public const string kVerboseMode = "-Verbose";
 
     public const string kTidy = "-tidy";
     public const string kTidyFix = "-tidy-fix";
@@ -28,6 +29,7 @@ namespace ClangPowerTools
 
     public const string kVsVersion = "-vs-ver";
     public const string kVsEdition = "-vs-sku";
+
 
     #endregion
 
