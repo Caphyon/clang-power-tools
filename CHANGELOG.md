@@ -2,6 +2,15 @@
 
 Changelog of Clang Power Tools extension
 
+### Clang Power Tools 1.3.1
+
+Bugs:
+* Allow the path to include any non-whitespace character.
+* Added support for project-specific force include files.
+* Added support for Win 8/8.1 SDKs.
+* Fix typo preventing detection of VS2015 install location.
+* Fixed crash when project has no files to compile.
+
 ### Clang Power Tools 1.3.0
 
 Improvements:

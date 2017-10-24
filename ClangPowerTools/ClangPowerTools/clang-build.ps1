@@ -108,10 +108,12 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aDirecto
 # System Architecture Constants
 # ------------------------------------------------------------------------------------------------
        
-Set-Variable -name kLogicalCoreCount -value (Get-WmiObject -class Win32_processor | `
-                                             Select-Object -property NumberOfLogicalProcessors `
-                                                           -ExpandProperty NumberOfLogicalProcessors) `
-                                                                        -option Constant
+Set-Variable -name kLogicalCoreCount -value                                                                 `
+  (@(Get-WmiObject -class Win32_processor)  |                                                               `
+   ForEach-Object -Begin   { $coreCount = 0 }                                                               `
+                  -Process { $coreCount += ($_ | Select-Object -property       NumberOfLogicalProcessors    `
+                                                               -ExpandProperty NumberOfLogicalProcessors) } `
+                  -End     { $coreCount })                              -option Constant
 # ------------------------------------------------------------------------------------------------
 # Return Value Constants
 
@@ -336,12 +338,7 @@ Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
 
 Function Get-MscVer()
 {
-  [string] $path = Get-VisualStudio-Path
-  $path         += "\VC\Tools\MSVC\"
-	
-  [System.IO.DirectoryInfo] $directory = (Get-Item $path)
-  [System.IO.DirectoryInfo] $child = ($directory | Get-ChildItem)
-  return $child.Name
+  return (Get-Item "$(Get-VisualStudio-Path)\VC\Tools\MSVC\" | Get-ChildItem).Name
 }
 
 Function Should-CompileProject([Parameter(Mandatory=$true)][string] $vcxprojPath)
@@ -520,8 +517,10 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcx
   }
   else
   {
-    $returnArray += Get-VisualStudio-Includes -vsPath $vsPath `
-                                              -mscVer (Get-MscVer -visualStudioPath $vsPath)
+    $mscVer = Get-MscVer -visualStudioPath $vsPath
+    Write-Verbose "MSCVER = $mscVer"
+
+    $returnArray += Get-VisualStudio-Includes -vsPath $vsPath -mscVer $mscVer
   }
 
   $sdkVer = (Get-Project-SDKVer -vcxprojPath $vcxprojPath)
@@ -1167,6 +1166,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 # Script entry point
 
 Clear-Host # clears console
+Write-Verbose "CPU logical core count = $kLogicalCoreCount"
 
 # If LLVM is not in PATH try to detect it automatically
 if (! (Exists-Command($kClangCompiler)) )
