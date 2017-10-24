@@ -108,10 +108,12 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aDirecto
 # System Architecture Constants
 # ------------------------------------------------------------------------------------------------
        
-Set-Variable -name kLogicalCoreCount -value (Get-WmiObject -class Win32_processor | `
-                                             Select-Object -property NumberOfLogicalProcessors `
-                                                           -ExpandProperty NumberOfLogicalProcessors) `
-                                                                        -option Constant
+Set-Variable -name kLogicalCoreCount -value                                                                 `
+  (@(Get-WmiObject -class Win32_processor)  |                                                               `
+   ForEach-Object -Begin   { $coreCount = 0 }                                                               `
+                  -Process { $coreCount += ($_ | Select-Object -property       NumberOfLogicalProcessors    `
+                                                               -ExpandProperty NumberOfLogicalProcessors) } `
+                  -End     { $coreCount })                              -option Constant
 # ------------------------------------------------------------------------------------------------
 # Return Value Constants
 
@@ -1167,6 +1169,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 # Script entry point
 
 Clear-Host # clears console
+Write-Verbose "CPU logical core count = $kLogicalCoreCount"
 
 # If LLVM is not in PATH try to detect it automatically
 if (! (Exists-Command($kClangCompiler)) )
