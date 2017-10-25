@@ -6,11 +6,23 @@
   <Commands package="guidClangPowerToolsPackage">
 
     <Menus>
+
+      <!--Commands submenu-->
       <Menu guid="guidClangPowerToolsPackageCmdSet" id="Submenu" priority="0x0000" type="Menu">
         <Strings>
           <ButtonText>Clang Power Tools</ButtonText>
         </Strings>
       </Menu>
+      
+      <!--Toolbar menu-->
+      <Menu guid="guidClangPowerToolsPackageCmdSet" id="Toolbar" type="Toolbar" >
+        <CommandFlag>DefaultDocked</CommandFlag>
+        <Strings>
+          <ButtonText>Clang Power Tools</ButtonText>
+          <CommandName>Clang Power Tools</CommandName>
+        </Strings>
+      </Menu>
+      
     </Menus>
     
     <Groups>
@@ -18,21 +30,24 @@
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0000" />
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0000" />
 
-      <Group guid="guidClangPowerToolsPackageCmdSet1" id="MyMenuGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" priority="0x0000">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="Toolbar"/>
       </Group>
       
     </Groups>
     
     <Buttons>
-      
+
+      <!--Context Menu Buttons-->
       <Button guid="guidClangPowerToolsPackageCmdSet" id="CompileId" priority="0x0000" type="Button">
+        <!--<CommandFlag>DefaultDisabled</CommandFlag>-->
         <Strings>
           <ButtonText>Compile (syntax only)</ButtonText>
         </Strings>
       </Button>
       
       <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0001" type="Button">
+        <!--<CommandFlag>DefaultDisabled</CommandFlag>-->
         <Strings>
           <ButtonText>Tidy Code</ButtonText>
         </Strings>
@@ -43,24 +58,45 @@
           <ButtonText>Settings</ButtonText>
         </Strings>
       </Button>
-      
-      <Button guid="guidClangPowerToolsPackageCmdSet1" id="cmdidCompileCommand" priority="0x0100" type="Button">
-        <Parent guid="guidClangPowerToolsPackageCmdSet1" id="MyMenuGroup" />
+
+      <!--Toolbar Buttons-->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="CompileId" priority="0x0000" type="Button">
+        <Parent guid= "guidClangPowerToolsPackageCmdSet" id="ToolbarGroup"/>
         <Strings>
-          <ButtonText>Invoke CompileCommand</ButtonText>
+          <ButtonText>Compile (syntax only)</ButtonText>
         </Strings>
       </Button>
-      
-    </Buttons>
 
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0001" type="Button">
+        <Parent guid= "guidClangPowerToolsPackageCmdSet" id="ToolbarGroup"/>
+        <Strings>
+          <ButtonText>Tidy Code</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0002" type="Button">
+        <Parent guid= "guidClangPowerToolsPackageCmdSet" id="ToolbarGroup"/>
+        <Strings>
+          <ButtonText>Settings</ButtonText>
+        </Strings>
+      </Button>
+
+    </Buttons>
+    
     <Bitmaps>
+      
       <Bitmap guid="guidImages" href="Resources\Icon.png" usedList="bmpPic1" />
+    
     </Bitmaps>
     
   </Commands>
 
   <CommandPlacements>
 
+    <!-- Placement for commands.
+           The parent of a command is always a group, never a menu, context menu or toolbar.-->
+    
+    <!--Add the GroupForSubmenu(commands) in context menu of solution, project, folder, file and tab editor -->
     <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0xFFFF">
       <!-- The parent of the group will be the solution context menu -->
       <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE" />
@@ -86,6 +122,7 @@
       <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_EZDOCWINTAB" />
     </CommandPlacement>
 
+    <!--Create the commands group and submenu -->
     <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="Submenu" priority="0x0001">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" />
     </CommandPlacement>
@@ -94,9 +131,7 @@
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
     </CommandPlacement>
 
-    <!-- Placement for commands.
-           The parent of a command is always a group, never a menu, context menu or toolbar.
-      -->
+    <!--Add the commands in GroupForCommands -->
     <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="CompileId" priority="0x0001">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
     </CommandPlacement>
@@ -114,24 +149,32 @@
   <Symbols>
     
     <GuidSymbol name="guidClangPowerToolsPackage" value="{f564f9d3-01ae-493e-883b-18deebdb975e}" />
-
     <GuidSymbol name="guidClangPowerToolsPackageCmdSet" value="{498fdff5-5217-4da9-88d2-edad44ba3874}">
+      
+      <!--Groups and submenu-->
       <IDSymbol name="GroupForSubmenu" value="0x1020" />
       <IDSymbol name="GroupForCommands" value="0x1021" />
       <IDSymbol name="Submenu" value="0x0100" />
+      
+      <!--Commands-->
       <IDSymbol name="CompileId" value="0x0102" />
       <IDSymbol name="TidyId" value="0x0101" />
       <IDSymbol name="SettingsId" value="0x0103" />
+      
+      <!--Toolbar-->
+      <IDSymbol name="Toolbar" value="0x1000" />
+      <IDSymbol name="ToolbarGroup" value="0x1050" />
     </GuidSymbol>
-
+    
+    <!--Icon for preview image and main icon -->
     <GuidSymbol name="guidImages" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70a}">
       <IDSymbol name="bmpPic1" value="1" />
     </GuidSymbol>
-  
-    <GuidSymbol value="{8c09918d-f108-4d1e-bacc-aa708b84c166}" name="guidClangPowerToolsPackageCmdSet1">
-      <IDSymbol value="4128" name="MyMenuGroup" />
-      <IDSymbol value="4129" name="cmdidCompileCommand" />
+
+    <!--Icon for commands from submenu and toolbar-->
+    <GuidSymbol name="guidImageCommands" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70d}">
     </GuidSymbol>
     
   </Symbols>
+  
 </CommandTable>
