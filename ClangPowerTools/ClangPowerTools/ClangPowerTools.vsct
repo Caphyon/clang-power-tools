@@ -40,6 +40,7 @@
 
       <!--Context Menu Buttons-->
       <Button guid="guidClangPowerToolsPackageCmdSet" id="CompileId" priority="0x0000" type="Button">
+        <Icon guid="guidImageCommands" id="SmallIcon" />
         <!--<CommandFlag>DefaultDisabled</CommandFlag>-->
         <Strings>
           <ButtonText>Compile (syntax only)</ButtonText>
@@ -47,6 +48,7 @@
       </Button>
       
       <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0001" type="Button">
+        <Icon guid="guidImageCommands" id="SmallIcon" />
         <!--<CommandFlag>DefaultDisabled</CommandFlag>-->
         <Strings>
           <ButtonText>Tidy Code</ButtonText>
@@ -54,6 +56,7 @@
       </Button>
 
       <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0002" type="Button">
+        <Icon guid="guidImageCommands" id="SmallIcon" />
         <Strings>
           <ButtonText>Settings</ButtonText>
         </Strings>
@@ -86,6 +89,7 @@
     <Bitmaps>
       
       <Bitmap guid="guidImages" href="Resources\Icon.png" usedList="bmpPic1" />
+      <Bitmap guid="guidImageCommands" href="Resources\SmallIcon.png" usedList="SmallIcon" />
     
     </Bitmaps>
     
@@ -173,6 +177,7 @@
 
     <!--Icon for commands from submenu and toolbar-->
     <GuidSymbol name="guidImageCommands" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70d}">
+      <IDSymbol name="SmallIcon" value="1" />
     </GuidSymbol>
     
   </Symbols>

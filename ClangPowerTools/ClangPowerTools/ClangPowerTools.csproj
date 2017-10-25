@@ -112,6 +112,7 @@
     <Compile Include="Vs15SolutionLoader.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\SmallIcon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
