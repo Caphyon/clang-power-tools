@@ -1,6 +1,7 @@
 ﻿using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
+using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Threading;
 
@@ -11,14 +12,15 @@ namespace ClangPowerTools
     #region Members
 
     private Dispatcher mDispatcher;
-
+    private DTE2 mDte;
     #endregion
 
     #region Constructor
 
     public CommandsController(IServiceProvider aServiceProvider, DTE2 aDte)
     {
-      mDispatcher = HwndSource.FromHwnd((IntPtr)aDte.MainWindow.HWnd).RootVisual.Dispatcher;
+      mDte = aDte;
+      mDispatcher = HwndSource.FromHwnd((IntPtr)mDte.MainWindow.HWnd).RootVisual.Dispatcher;
     }
 
     #endregion
@@ -43,7 +45,11 @@ namespace ClangPowerTools
     {
       mDispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
       {
-        if (sender is OleMenuCommand command)
+        if (!(sender is OleMenuCommand command))
+          return;
+        if (!mDte.Solution.IsOpen)
+          command.Enabled = false;
+        else
         {
           command.Enabled = !Running;
           command.Visible = true;

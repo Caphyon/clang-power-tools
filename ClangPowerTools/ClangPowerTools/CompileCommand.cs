@@ -68,6 +68,7 @@ namespace ClangPowerTools
         var menuCommandID = new CommandID(CommandSet, CommandId);
         var menuCommand = new OleMenuCommand(this.MenuItemCallback, menuCommandID);
         menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
+        menuCommand.Enabled = true;
         commandService.AddCommand(menuCommand);
       }
     }

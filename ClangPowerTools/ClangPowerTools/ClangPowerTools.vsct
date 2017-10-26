@@ -41,7 +41,7 @@
       <!--Context Menu Buttons-->
       <Button guid="guidClangPowerToolsPackageCmdSet" id="CompileId" priority="0x0000" type="Button">
         <Icon guid="guidImageCommands" id="SmallIcon" />
-        <!--<CommandFlag>DefaultDisabled</CommandFlag>-->
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Compile (syntax only)</ButtonText>
         </Strings>
@@ -49,7 +49,7 @@
       
       <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0001" type="Button">
         <Icon guid="guidImageCommands" id="SmallIcon" />
-        <!--<CommandFlag>DefaultDisabled</CommandFlag>-->
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Tidy Code</ButtonText>
         </Strings>
