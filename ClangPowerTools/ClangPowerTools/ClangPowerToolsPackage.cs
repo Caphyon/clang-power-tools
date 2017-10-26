@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Shell;
 using EnvDTE;
 using EnvDTE80;
 using System.Collections.Generic;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools
 {
@@ -38,6 +39,7 @@ namespace ClangPowerTools
   [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
   [ProvideOptionPage(typeof(GeneralOptions), "Clang Power Tools", "General", 0, 0, true)]
   [ProvideOptionPage(typeof(TidyOptions), "Clang Power Tools", "Tidy", 0, 1, true)]
+  [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
   public sealed class RunClangPowerToolsPackage : Package
   {
     #region Members
@@ -86,6 +88,8 @@ namespace ClangPowerTools
       mDte = (DTE2)GetService(typeof(DTE));
       mDte.Events.BuildEvents.OnBuildBegin += 
         new _dispBuildEvents_OnBuildBeginEventHandler(this.OnBuildBegin);
+
+
 
       string edition = mDte.Edition;
       mVsVersions.TryGetValue(mDte.Version, out string version);
