@@ -2,6 +2,19 @@
 
 Changelog of Clang Power Tools extension
 
+### Clang Power Tools 1.4.0
+
+Improvements:
+* Added verbose mode in settings
+* Created Clang Power Tools toolbar
+
+Bugs:
+* Fixed logical core count detection on systems with more than one physical CPU.
+* Disabled the commands when another command is running.
+* Fixed MSCVER detection bug when VS is not installed in default location.
+* Added WinSDKVer defaults for when not mentioned in project.
+* Fixed error message when project does not include force include files
+
 ### Clang Power Tools 1.3.1
 
 Bugs:

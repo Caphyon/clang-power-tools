@@ -1,7 +1,6 @@
 ﻿using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
-using System.Windows.Forms;
 using System.Windows.Interop;
 using System.Windows.Threading;
 
@@ -13,6 +12,7 @@ namespace ClangPowerTools
 
     private Dispatcher mDispatcher;
     private DTE2 mDte;
+
     #endregion
 
     #region Constructor
