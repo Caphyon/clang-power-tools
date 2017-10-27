@@ -220,6 +220,50 @@ Add-Type -TypeDefinition @"
 
 Set-Variable -name kVStudioDefaultPlatformToolset -Value "v141" -option Constant
 
+class Project
+{
+  [xml]    $xml;
+  [string] $vcxprojPath;
+  [System.Xml.XmlNamespaceManager] $xpathNS;
+
+  Project([string] $vcxprojPath)
+  {
+    $this.vcxprojPath = $vcxprojPath
+    $this.xml         = Get-Content $vcxprojPath
+    $this.xpathNS     = New-Object System.Xml.XmlNamespaceManager($this.xml.NameTable) 
+    $this.xpathNS.AddNamespace("ns", $this.xml.DocumentElement.NamespaceURI)
+  }
+
+  [string]PropToXPath([string] $propertyPath)
+  {
+    [string[]] $tokens = $propertyPath -split "\."
+    [string[]] $newTokens = @()
+
+    foreach ($token in $tokens)
+    {
+      if (!$token.StartsWith("ns:"))
+      {
+        $token = "ns:" + $token
+      }
+
+      $newTokens = $newTokens + $token
+    }
+
+    return $newTokens -join "/"
+  }
+
+  [System.Xml.XmlNodeList]SelectXPath([string] $xpath)
+  {
+    return $this.xml.SelectNodes($xpath, $this.xpathNS)
+  }
+
+  [System.Xml.XmlNodeList]SelectProp([string] $propPath)
+  {
+    $xpath = $this.PropToXPath($propPath)
+    return $this.SelectXPath($xpath)
+  }
+}
+
 #-------------------------------------------------------------------------------------------------
 # Global functions
 
@@ -390,10 +434,13 @@ Function Should-IgnoreFile([Parameter(Mandatory=$true)][string] $file)
 Function Get-ProjectFilesToCompile([Parameter(Mandatory=$true)][string] $vcxprojPath,
                                    [Parameter(Mandatory=$false)][string] $pchCppName)
 {
-  [xml] $vcxproj = Get-Content $vcxprojPath
+  [Project] $vcxproj = [Project]::new($vcxprojPath)
+
+  #[xml] $vcxproj = Get-Content $vcxprojPath
   [Boolean] $pchDisabled = [string]::IsNullOrEmpty($pchCppName)
 
-  [string[]] $files = $vcxproj.Project.ItemGroup.ClCompile                    |
+  #[string[]] $files = $vcxproj.Project.ItemGroup.ClCompile                    |
+  [string[]] $files = $vcxproj.SelectProp("Project.ItemGroup.ClCompile") |
                      Where-Object { ($_.Include -ne $null) -and
                                     ($pchDisabled -or ($_.Include -notmatch $pchCppName))
                                   }                                           |
@@ -409,8 +456,8 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory=$true)][string] $vcxproj
 
 Function Get-ProjectHeaders([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
-  [xml] $vcxproj = Get-Content $vcxprojPath
-  [string[]] $headers = $vcxproj.Project.ItemGroup.ClInclude | ForEach-Object {$_.Include }
+  [Project] $vcxproj = [Project]::new($vcxprojPath)
+  [string[]] $headers = $vcxproj.SelectProp("Project.ItemGroup.ClInclude") | ForEach-Object {$_.Include }
 
   return $headers
 }
@@ -430,8 +477,9 @@ Function Is-ValidPlatform([string] $platformConfig)
 
 Function Is-Project-Unicode([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
-  [xml] $vcxproj = Get-Content $vcxprojPath
-  $propGroup = $vcxproj.Project.PropertyGroup | `
+  [Project] $vcxproj = [Project]::new($vcxprojPath)
+
+  $propGroup = $vcxproj.SelectProp("Project.PropertyGroup") | `
   Where-Object { $_.GetAttribute -ne $null -and
                  (Is-ValidPlatform($_.GetAttribute("Condition"))) -and
                  $_.GetAttribute("Label") -eq "Configuration" }
@@ -441,8 +489,9 @@ Function Is-Project-Unicode([Parameter(Mandatory=$true)][string] $vcxprojPath)
 
 Function Get-ProjectPlatformToolset([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
-  [xml] $vcxproj = Get-Content $vcxprojPath
-  $propGroup = $vcxproj.Project.PropertyGroup | `
+  [Project] $vcxproj = [Project]::new($vcxprojPath)
+
+  $propGroup = $vcxproj.SelectProp("Project.PropertyGroup") | `
                Where-Object { $_.GetAttribute -ne $null -and
                               (Is-ValidPlatform($_.GetAttribute("Condition"))) -and
                               $_.GetAttribute("Label") -eq "Configuration" } | `
@@ -638,8 +687,8 @@ Function Get-ProjectStdafxDir([Parameter(Mandatory=$true)][string] $vcxprojPath,
 # Retrieve directory in which the PCH CPP resides (e.g. stdafx.cpp, stdafxA.cpp)
 Function Get-Project-PchCpp([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
-  [xml] $vcxproj = Get-Content $vcxprojPath
-  $pchCppRelativePath = $vcxproj.Project.ItemGroup.ClCompile.PrecompiledHeader | 
+  [Project] $vcxproj = [Project]::new($vcxprojPath)
+  $pchCppRelativePath = $vcxproj.SelectProp("Project.ItemGroup.ClCompile.PrecompiledHeader") | 
                         Where-Object {($_.InnerText -eq "Create")}             | 
                         Select-Object -ExpandProperty ParentNode               | 
                         Select-Object -first 1                                 |
