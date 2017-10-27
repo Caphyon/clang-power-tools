@@ -40,7 +40,7 @@
 
       <!--Context Menu Buttons-->
       <Button guid="guidClangPowerToolsPackageCmdSet" id="CompileId" priority="0x0000" type="Button">
-        <Icon guid="guidImageCommands" id="SmallIcon" />
+        <Icon guid="guidImageCompile" id="Compile"/>
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Compile (syntax only)</ButtonText>
@@ -48,7 +48,7 @@
       </Button>
       
       <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0001" type="Button">
-        <Icon guid="guidImageCommands" id="SmallIcon" />
+        <Icon guid="guidImageTidy" id="Tidy" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Tidy Code</ButtonText>
@@ -56,7 +56,7 @@
       </Button>
 
       <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0002" type="Button">
-        <Icon guid="guidImageCommands" id="SmallIcon" />
+        <Icon guid="guidImageSettings" id="Settings" />
         <Strings>
           <ButtonText>Settings</ButtonText>
         </Strings>
@@ -87,10 +87,12 @@
     </Buttons>
     
     <Bitmaps>
-      
+
       <Bitmap guid="guidImages" href="Resources\Icon.png" usedList="bmpPic1" />
-      <Bitmap guid="guidImageCommands" href="Resources\SmallIcon.png" usedList="SmallIcon" />
-    
+      <Bitmap guid="guidImageTidy" href="Resources\TidyIcon.png" usedList="Tidy"/>
+      <Bitmap guid="guidImageCompile" href="Resources\CompileIcon.png" usedList="Compile"/>
+      <Bitmap guid="guidImageSettings" href="Resources\SettingsIcon.png" usedList="Settings"/>
+      
     </Bitmaps>
     
   </Commands>
@@ -176,8 +178,16 @@
     </GuidSymbol>
 
     <!--Icon for commands from submenu and toolbar-->
-    <GuidSymbol name="guidImageCommands" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70d}">
-      <IDSymbol name="SmallIcon" value="1" />
+    <GuidSymbol name="guidImageTidy" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70d}">
+      <IDSymbol name="Tidy" value="1" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidImageCompile" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70e}">
+      <IDSymbol name="Compile" value="1" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidImageSettings" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70f}">
+      <IDSymbol name="Settings" value="1" />
     </GuidSymbol>
     
   </Symbols>
