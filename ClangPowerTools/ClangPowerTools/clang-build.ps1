@@ -833,6 +833,10 @@ Function Get-ProjectAdditionalIncludes([Parameter(Mandatory=$true)][string] $vcx
 Function Get-ProjectForceIncludes([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
   [xml] $vcxproj = Get-Content $vcxprojPath
+  if (!$vcxproj.Project.ItemDefinitionGroup)
+  {
+    return $null
+  }
   
   [System.Xml.XmlElement[]] $itemDefinitionGroup = $vcxproj.Project.ItemDefinitionGroup     | 
                             Where-Object { Is-ValidPlatform($_.GetAttribute("Condition")) }
