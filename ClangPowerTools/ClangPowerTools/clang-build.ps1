@@ -38,9 +38,6 @@
 
     Can be passed as comma separated values.
 
-.PARAMETER aIncludeDirectories
-    Alias 'includeDirs'. Directories to be used for includes (libraries, helpers, etc).
-
 .PARAMETER aUseParallelCompile
     Alias 'parallel'. Switch to run in parallel mode, on all logical CPU cores.
 
@@ -84,7 +81,6 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aDirecto
      , [alias("proj-ignore")]  [Parameter(Mandatory=$false)][string[]] $aVcxprojToIgnore
      , [alias("file")]         [Parameter(Mandatory=$false)][string]   $aCppToCompile
      , [alias("file-ignore")]  [Parameter(Mandatory=$false)][string[]] $aCppToIgnore
-     , [alias("include-dirs")] [Parameter(Mandatory=$false)][string[]] $aIncludeDirectories
      , [alias("parallel")]     [Parameter(Mandatory=$false)][switch]   $aUseParallelCompile
      , [alias("continue")]     [Parameter(Mandatory=$false)][switch]   $aContinueOnError
      , [alias("clang-flags")]  [Parameter(Mandatory=$true)] [string[]] $aClangCompileFlags
@@ -593,8 +589,6 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcx
       $returnArray += @( "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\7.0\ucrt")
     }
   }
-
-  $returnArray += $aIncludeDirectories
 
   return $returnArray
 }

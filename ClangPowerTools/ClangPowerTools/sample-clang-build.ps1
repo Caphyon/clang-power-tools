@@ -35,9 +35,6 @@
 
     Can be passed as comma separated values.
 
-.PARAMETER aIncludeDirectories
-    Alias 'includeDirs'. Directories to be used for includes (libraries, helpers, etc).
-
 .PARAMETER aUseParallelCompile
     Alias 'parallel'. Switch to run in parallel mode, on all logical CPU cores.
 
@@ -116,14 +113,10 @@ Set-Variable -name kClangCompileFlags                                       -Opt
                                                     , "-Wno-unknown-pragmas"
                                                     , "-Wno-unused-value"
                                                     )
-                                                    
-Set-Variable -name kIncludeDirectories  -value @( "third-party", 
-                                                , "third-party\WTL\Include"
-                                                ) -Option Constant
 
 Set-Variable -name kVisualStudioVersion -value "2017"                       -Option Constant
 Set-Variable -name kVisualStudioSku     -value "Professional"               -Option Constant
-                                              
+
 # ------------------------------------------------------------------------------------------------
 
 Function Merge-Array([string[]] $aArray)
@@ -186,7 +179,6 @@ if ($aDisableNameRegexMatching)
   $scriptParams += ("-aDisableNameRegexMatching")
 }
 
-$scriptParams += ("-aIncludeDirectories",  (Merge-Array $kIncludeDirectories))
 $scriptParams += ("-aVisualStudioVersion", $kVisualStudioVersion)
 $scriptParams += ("-aVisualStudioSku",     $kVisualStudioSku)
 
