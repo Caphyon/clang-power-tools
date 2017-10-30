@@ -437,18 +437,12 @@ Function Get-Project-SDKVer([Parameter(Mandatory=$true)][string] $vcxprojPath)
   If ([string]::IsNullOrEmpty($sdkVer)) { "" } Else { $sdkVer.Trim() }
 }
 
-Function Is-ValidPlatform([string] $platformConfig)
-{
-  return $kValidPlatformFilters -contains $platformConfig
-}
-
 Function Is-Project-Unicode([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
   LoadProject($vcxprojPath)
 
   $propGroup = Get-ProjectProperty("Project.PropertyGroup") | `
   Where-Object { $_.GetAttribute -ne $null -and
-                 (Is-ValidPlatform($_.GetAttribute("Condition"))) -and
                  $_.GetAttribute("Label") -eq "Configuration" }
   
   return ($propGroup.CharacterSet -eq "Unicode")
@@ -460,7 +454,6 @@ Function Get-ProjectPlatformToolset([Parameter(Mandatory=$true)][string] $vcxpro
 
   $propGroup = Get-ProjectProperty("Project.PropertyGroup") | `
                Where-Object { $_.GetAttribute -ne $null -and
-                              (Is-ValidPlatform($_.GetAttribute("Condition"))) -and
                               $_.GetAttribute("Label") -eq "Configuration" } | `
                Select-Object -First 1
   
@@ -714,101 +707,36 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
   return $stdafxPch
 }
 
-function Get-ProjectPropertySheets()
-{
-  [xml] $vcxproj = Get-Content $global:vcxprojPath
-  if (!$vcxproj.Project -or 
-      !$vcxproj.Project.ImportGroup)
+##########
+
+  [xml[]]  $global:projectFiles                    = @();
+  [string] $global:vcxprojPath                     = "";
+  [System.Xml.XmlNamespaceManager] $global:xpathNS = $null;
+
+  [string[]] $configPlatforms = @('''$(Configuration)|$(Platform)''==''Debug|x64'''
+                                 ,'''$(Configuration)|$(Platform)''==''Debug|Win32'''
+                                 );  
+
+  function Get-ProjectFileNodes([xml] $projectFile, [string] $xpath)
   {
-    return $null
+    [System.Xml.XmlElement[]] $nodes = $projectFile.SelectNodes($xpath, $global:xpathNS)
+    return $nodes
   }
 
-  [string] $vcxprojDir = Get-FileDirectory($global:vcxprojPath)
-
-  # XXX TODO handle case for multiple prop sheets
-
-  [System.Xml.XmlElement] $importGroup = $vcxproj.Project.ImportGroup               | 
-                Where-Object { $_.GetAttribute("Label")     -eq "PropertySheets" -and
-                                (Is-ValidPlatform($_.GetAttribute("Condition")))  } |
-                Select-Object -first 1
-
-  if (!$importGroup) {
-      return $null
-  }
-  [string[]] $sheetAbsolutePaths = $importGroup.Import | 
-                                  Where-Object `
-                                  { 
-                                    ![string]::IsNullOrEmpty((Canonize-Path -base $vcxprojDir `
-                                                                            -child $_.GetAttribute("Project") `
-                                                                            -ignoreErrors)) 
-                                  }                   |
-                                  ForEach-Object `
-                                  {
-                                    Canonize-Path -base $vcxprojDir -child $_.GetAttribute("Project")
-                                  }
-  return $sheetAbsolutePaths
-}
-
-function PropToXPath([string] $propertyPath)
-{
-  [string[]] $tokens = $propertyPath -split "\."
-  [string[]] $newTokens = @()
-
-  foreach ($token in $tokens)
+  function Get-ProjectNodes([string] $xpath, $fileIndex = 0)
   {
-    if (!$token.StartsWith("ns:"))
+    [System.Xml.XmlElement[]] $returnNodes = @() 
+    if ($fileIndex -ge $global:projectFiles.Count)
     {
-      $token = "ns:" + $token
+      return $returnNodes
     }
+      [System.Xml.XmlElement[]] $nodes = ProjectFileNodes -projectFile $global:projectFiles[$fileIndex] -xpath $xpath
 
-    $newTokens = $newTokens + $token
-  }
-
-  return $newTokens -join "/"
-}
-
-function LoadProject([string] $vcxprojPath)
-{
-  $global:projectFiles = @([xml] (Get-Content $vcxprojPath))
-
-  $global:vcxprojPath = $vcxprojPath
-  $global:xpathNS     = New-Object System.Xml.XmlNamespaceManager($global:projectFiles[0].NameTable) 
-  $global:xpathNS.AddNamespace("ns", $global:projectFiles[0].DocumentElement.NamespaceURI)
-
-  [string] $projectDirectory = Get-FileDirectory -filePath $vcxprojPath
-
-  [string[]] $propertySheetRelativePaths = Get-ProjectPropertySheets
-
-  foreach ($propSheetRelPath in $propertySheetRelativePaths)
-  {
-    [string] $propSheetPath = Canonize-Path -base $projectDirectory -child $propSheetRelPath
-
-    [xml] $propSheetXml = Get-Content $propSheetPath
-
-    $global:projectFiles += $propSheetXml
-  }
-}
-
-function Get-ProjectFileNodes([xml] $projectFile, [string] $xpath)
-{
-  [System.Xml.XmlElement[]] $nodes = $projectFile.SelectNodes($xpath, $global:xpathNS)
-  return $nodes
-}
-
-function Get-ProjectNodes([string] $xpath, $fileIndex = 0)
-{
-  [System.Xml.XmlElement[]] $returnNodes = @() 
-  if ($fileIndex -ge $global:projectFiles.Count)
-  {
-    return $returnNodes
-  }
-    [System.Xml.XmlElement[]] $nodes = ProjectFileNodes -projectFile $global:projectFiles[$fileIndex] -xpath $xpath
-
-    # nothing on this level, go above
-    if ($nodes.Count -eq 0)
-    {
-      $nodes = Get-ProjectNodes -xpath $xpath -fileIndex ($fileIndex + 1)
-    }
+      # nothing on this level, go above
+      if ($nodes.Count -eq 0)
+      {
+        $nodes = Get-ProjectNodes -xpath $xpath -fileIndex ($fileIndex + 1)
+      }
 
     # we found something. see if we should inherit values from above
     if ($nodes.Count -eq 1)
@@ -842,15 +770,127 @@ function Get-ProjectNodes([string] $xpath, $fileIndex = 0)
       return $nodes
     }
 
-  # return what we found
-  return $nodes
-}
+    # return what we found
+    return $nodes
+  }  
 
-function Get-ProjectProperty([string] $propPath)
-{
-  $xpath = PropToXPath($propPath)
-  return Get-ProjectNodes($xpath)
-}
+  function PropToXPath([string] $propertyPath)
+  {
+    [string[]] $tokens = $propertyPath -split "\."
+    [string[]] $newTokens = @()
+
+    foreach ($token in $tokens)
+    {
+      if (!$token.StartsWith("ns:"))
+      {
+        $token = "ns:" + $token
+      }
+
+      $newTokens = $newTokens + $token
+    }
+
+    return $newTokens -join "/"
+  }
+
+  function Get-ProjectProperty([string] $propPath)
+  {
+    $xpath = PropToXPath($propPath)
+    return Get-ProjectNodes($xpath)
+  }
+
+  function SanitizeProject([xml] $vcxproj)
+  {
+    [string]$preferredPlatform = ""
+    foreach ($platform in $configPlatforms)
+    {
+      [System.Xml.XmlElement[]] $configNodes = Get-ProjectNodes -xpath "//*[@Condition=""$platform""]"
+      if ($configNodes.Count -gt 0)
+      {
+        $preferredPlatform = $platform
+        break
+      }
+    }
+
+    if ([string]::IsNullOrEmpty($preferredPlatform))
+    {
+      throw "There must be a config platform"
+    }
+
+    [System.Xml.XmlElement[]] $configNodes = Get-ProjectNodes -xpath "//*[@Condition]"
+
+    foreach ($node in $configNodes)
+    {
+      [string] $nodeConfigPlatform = $node.GetAttribute("Condition")
+
+      if ($nodeConfigPlatform -eq $preferredPlatform)
+      {
+        $node.RemoveAttribute("Condition")
+      }
+      else
+      {
+        $node.ParentNode.RemoveChild($node) | out-null
+      }
+    }
+  }
+    
+  function Get-ProjectPropertySheets()
+  {
+  # XXX handle recursive sheets
+
+    [string] $vcxprojDir = Get-FileDirectory($global:vcxprojPath)
+
+    [System.Xml.XmlElement] $importGroup = Get-ProjectNodes "ns:Project/ns:ImportGroup[@Label='PropertySheets']"
+
+    if (!$importGroup -or !$importGroup.Import) 
+    {
+        return $null
+    }
+
+    [string[]] $sheetAbsolutePaths = $importGroup.Import | 
+                                    Where-Object `
+                                    { 
+                                      ![string]::IsNullOrEmpty((Canonize-Path -base $vcxprojDir `
+                                                                              -child $_.GetAttribute("Project") `
+                                                                              -ignoreErrors)) 
+                                    }                   |
+                                    ForEach-Object `
+                                    {
+                                      Canonize-Path -base $vcxprojDir -child $_.GetAttribute("Project")
+                                    }
+    return $sheetAbsolutePaths
+  }
+
+  function LoadProject([string] $vcxprojPath)
+  {
+    $global:projectFiles = @([xml] (Get-Content $vcxprojPath))
+
+    $global:vcxprojPath = $vcxprojPath
+    $global:xpathNS     = New-Object System.Xml.XmlNamespaceManager($global:projectFiles[0].NameTable) 
+    $global:xpathNS.AddNamespace("ns", $global:projectFiles[0].DocumentElement.NamespaceURI)
+    
+    SanitizeProject($global:projectFiles[0])
+
+    [string] $projectDirectory = Get-FileDirectory -filePath $vcxprojPath
+
+    [string[]] $propertySheetRelativePaths = Get-ProjectPropertySheets
+    if (!$propertySheetRelativePaths)
+    {
+      return
+    }
+
+    [array]::Reverse($propertySheetRelativePaths)
+    foreach ($propSheetRelPath in $propertySheetRelativePaths)
+    {
+      [string] $propSheetPath = Canonize-Path -base $projectDirectory -child $propSheetRelPath
+
+      [xml] $propSheetXml = Get-Content $propSheetPath
+
+      $global:projectFiles += $propSheetXml
+    }
+  }
+
+
+##########
 
 # Retrieve array of preprocessor definitions for a given project, in Clang format (-DNAME )
 Function Get-ProjectPreprocessorDefines([Parameter(Mandatory=$true)][string] $vcxprojPath)
@@ -900,8 +940,7 @@ Function Get-ProjectForceIncludes([Parameter(Mandatory=$true)][string] $vcxprojP
     return $null
   }
   
-  [System.Xml.XmlElement[]] $itemDefinitionGroup = $vcxproj.Project.ItemDefinitionGroup     | 
-                            Where-Object { Is-ValidPlatform($_.GetAttribute("Condition")) }
+  [System.Xml.XmlElement[]] $itemDefinitionGroup = $vcxproj.Project.ItemDefinitionGroup
   foreach ($group in $itemDefinitionGroup)
   {
     if (!$group.ClCompile -or !$group.ClCompile.ForcedIncludeFiles)
