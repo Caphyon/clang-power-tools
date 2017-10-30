@@ -118,7 +118,7 @@ Set-Variable -name kExtensionClangPch        -value ".clang.pch"        -option 
 Set-Variable -name kValidPlatformFilters -value @(
         '''$(Configuration)|$(Platform)''==''Debug|x64''',
         '''$(Configuration)|$(Platform)''==''Debug|Win32'''
-    ) -option Constant
+    )        -option Constant
 
 Set-Variable -name kVcxprojElemPreprocessorDefs  `
              -value "Project.ItemDefinitionGroup.ClCompile.PreprocessorDefinitions" `
@@ -128,7 +128,7 @@ Set-Variable -name kVcxprojElemAdditionalIncludes `
              -value "Project.ItemDefinitionGroup.ClCompile.AdditionalIncludeDirectories" `
              -option Constant
 
-Set-Variable -name kVcxprojElemHeaders 
+Set-Variable -name kVcxprojElemHeaders `
              -value "Project.ItemGroup.ClInclude" `
              -option Constant
 
@@ -145,7 +145,7 @@ Set-Variable -name kVcxprojElemForceIncludes `
              -option Constant 
 
 Set-Variable -name kVcxprojElemPCH `
-             -value "Project.ItemGroup.ClCompile.PrecompiledHeader" `
+             -value "ns:Project/ns:ItemGroup/ns:ClCompile/ns:PrecompiledHeader[text()='Create']" `
              -option Constant 
 
 Set-Variable -name kVcxprojXpathPropSheets `
@@ -464,7 +464,7 @@ Function Is-Project-Unicode([Parameter(Mandatory=$true)][string] $vcxprojPath)
 
 Function Get-ProjectPlatformToolset([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
-  $propGroup = Select-ProjectXPath(xxxxxxxxx)
+  $propGroup = Select-ProjectXPath($kVcxprojXpathToolset)
   
   $toolset = $propGroup.InnerText
 
@@ -654,10 +654,9 @@ Function Get-ProjectStdafxDir([Parameter(Mandatory=$true)][string] $vcxprojPath,
 # Retrieve directory in which the PCH CPP resides (e.g. stdafx.cpp, stdafxA.cpp)
 Function Get-Project-PchCpp([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
-  $pchCppRelativePath = Select-ProjectProperty($kVcxprojElemPCH) | 
-                        Where-Object {($_.InnerText -eq "Create")}             | 
-                        Select-Object -ExpandProperty ParentNode               | 
-                        Select-Object -first 1                                 |
+  $pchCppRelativePath = Select-ProjectXPath($kVcxprojElemPCH)    |
+                        Select-Object -ExpandProperty ParentNode | 
+                        Select-Object -first 1                   |
                         Select-Object -ExpandProperty Include
 
   return $pchCppRelativePath
