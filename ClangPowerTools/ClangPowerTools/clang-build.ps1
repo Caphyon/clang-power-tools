@@ -144,7 +144,7 @@ Set-Variable -name kVcxprojElemForceIncludes `
              -value "Project.ItemDefinitionGroup.ClCompile.ForceIncludeFiles" `
              -option Constant 
 
-Set-Variable -name kVcxprojElemPCH `
+Set-Variable -name kVcxprojXpathPCH `
              -value "ns:Project/ns:ItemGroup/ns:ClCompile/ns:PrecompiledHeader[text()='Create']" `
              -option Constant 
 
@@ -654,7 +654,7 @@ Function Get-ProjectStdafxDir([Parameter(Mandatory=$true)][string] $vcxprojPath,
 # Retrieve directory in which the PCH CPP resides (e.g. stdafx.cpp, stdafxA.cpp)
 Function Get-Project-PchCpp([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
-  $pchCppRelativePath = Select-ProjectXPath($kVcxprojElemPCH)    |
+  $pchCppRelativePath = Select-ProjectXPath($kVcxprojXpathPCH)   |
                         Select-Object -ExpandProperty ParentNode | 
                         Select-Object -first 1                   |
                         Select-Object -ExpandProperty Include
@@ -711,8 +711,6 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
 
   return $stdafxPch
 }
-
-##########
 
 [string[]] $configPlatforms = @('''$(Configuration)|$(Platform)''==''Debug|x64'''
                                 ,'''$(Configuration)|$(Platform)''==''Debug|Win32'''
@@ -893,8 +891,6 @@ function LoadProject([string] $vcxprojPath)
     $global:projectFiles += $propSheetXml
   }
 }
-
-##########
 
 # Retrieve array of preprocessor definitions for a given project, in Clang format (-DNAME )
 Function Get-ProjectPreprocessorDefines([Parameter(Mandatory=$true)][string] $vcxprojPath)
