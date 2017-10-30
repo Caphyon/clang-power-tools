@@ -830,7 +830,14 @@ function Get-ProjectNodes([string] $xpath, $fileIndex = 0)
           $replaceWith = $inheritedNodes[0].InnerText
         }
         
-        $nodes[0].InnerText = ($nodes[0].InnerText -replace [regex]::Escape("$inheritanceToken"), $replaceWith)
+        [string] $whatToReplace = [regex]::Escape($inheritanceToken);
+        if ([string]::IsNullOrEmpty($replaceWith))
+        {
+          # handle case when string ends with semicolon separator
+          $whatToReplace = ";?\s*" + [regex]::Escape($inheritanceToken) + "(\s*;\s*$)?";
+        }
+
+        $nodes[0].InnerText = ($nodes[0].InnerText -replace $whatToReplace, $replaceWith)
       } 
       return $nodes
     }
@@ -848,7 +855,7 @@ function Get-ProjectProperty([string] $propPath)
 # Retrieve array of preprocessor definitions for a given project, in Clang format (-DNAME )
 Function Get-ProjectPreprocessorDefines([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
-  [string[]] $tokens = (Get-ProjectProperty $kVcxprojElemPreprocessorDefs).InnerText -split ";" | Where-Object { $_ }
+  [string[]] $tokens = (Get-ProjectProperty $kVcxprojElemPreprocessorDefs).InnerText -split ";"
 
   $defines = ($tokens | Where-Object { $_ } | ForEach-Object { $kClangDefinePrefix + $_ })
 
@@ -868,7 +875,7 @@ Function Get-ProjectPreprocessorDefines([Parameter(Mandatory=$true)][string] $vc
 
 Function Get-ProjectAdditionalIncludes([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
-  [string[]] $tokens = (Get-ProjectProperty $kVcxprojElemAdditionalIncludes).InnerText -split ";" | Where-Object { $_ }
+  [string[]] $tokens = (Get-ProjectProperty $kVcxprojElemAdditionalIncludes).InnerText -split ";"
 
   [string] $projDir = Get-FileDirectory($vcxprojPath)
   
