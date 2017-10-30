@@ -761,9 +761,11 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
         [string] $whatToReplace = [regex]::Escape($inheritanceToken);
         if ([string]::IsNullOrEmpty($replaceWith))
         {
-          # handle case when string ends with semicolon separator
-          $whatToReplace = ";?\s*" + [regex]::Escape($inheritanceToken) + "(\s*;\s*$)?";
+          # handle case when a semicolon was before and there's nothing to be inserted
+          $whatToReplace = ";?\s*" + [regex]::Escape($inheritanceToken)
         }
+        # handle case when string ends with semicolon separator
+        $whatToReplace += "(\s*;\s*$)?"
 
         $nodes[0].InnerText = ($nodes[0].InnerText -replace $whatToReplace, $replaceWith)
       } 
@@ -933,21 +935,11 @@ Function Get-ProjectAdditionalIncludes([Parameter(Mandatory=$true)][string] $vcx
 }
 
 Function Get-ProjectForceIncludes([Parameter(Mandatory=$true)][string] $vcxprojPath)
-{
-  [xml] $vcxproj = Get-Content $vcxprojPath
-  if (!$vcxproj.Project.ItemDefinitionGroup)
+{ 
+  [System.Xml.XmlElement] $forceIncludes = Get-ProjectProperty "Project.ItemDefinitionGroup.ClCompile.ForceIncludeFiles"
+  if ($forceIncludes)
   {
-    return $null
-  }
-  
-  [System.Xml.XmlElement[]] $itemDefinitionGroup = $vcxproj.Project.ItemDefinitionGroup
-  foreach ($group in $itemDefinitionGroup)
-  {
-    if (!$group.ClCompile -or !$group.ClCompile.ForcedIncludeFiles)
-    {
-      continue
-    }
-    return $group.ClCompile.ForcedIncludeFiles -split ";"
+    return $forceIncludes.InnerText -split ";"
   }
   
   return $null
