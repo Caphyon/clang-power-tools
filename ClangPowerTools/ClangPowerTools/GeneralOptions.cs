@@ -26,12 +26,6 @@ namespace ClangPowerTools
     public string[] FilesToIgnore { get; set; }
 
     [Category("General")]
-    [DisplayName("Include Directories")]
-    [Description("Directories to be used for includes (libraries, helpers).")]
-    [TypeConverter(typeof(StringArrayConverter))]
-    public string[] IncludeDirectories { get; set; }
-
-    [Category("General")]
     [DisplayName("Continue On Error")]
     [Description("Switch to continue project compilation even when errors occur.")]
     public bool Continue { get; set; }
