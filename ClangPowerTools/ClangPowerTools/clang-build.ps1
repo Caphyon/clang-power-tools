@@ -1382,7 +1382,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 # Script entry point
 
 Clear-Host # clears console
-Write-Verbose "CPU logical core count = $kLogicalCoreCount"
+Write-Verbose "CPU logical core count: $kLogicalCoreCount"
 
 # If LLVM is not in PATH try to detect it automatically
 if (! (Exists-Command($kClangCompiler)) )
@@ -1403,7 +1403,7 @@ Push-Location $aDirectory
 # This powershell process may already have completed jobs. Discard them.
 Remove-Job -State Completed
 
-Write-Verbose "[INFO] Source directory: $aDirectory"
+Write-Verbose "Source directory: $aDirectory"
 Write-Verbose "Scanning for .vcxproj files"
 
 [System.IO.FileInfo[]] $projects = Get-Projects
