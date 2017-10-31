@@ -114,12 +114,6 @@ Set-Variable -name kExtensionClangPch        -value ".clang.pch"        -option 
 # ------------------------------------------------------------------------------------------------
 # Vcxproj Related Constants
 
-# filter used when looking for project additional includes and preprocessor definitions
-Set-Variable -name kValidPlatformFilters -value @(
-        '''$(Configuration)|$(Platform)''==''Debug|x64''',
-        '''$(Configuration)|$(Platform)''==''Debug|Win32'''
-    )        -option Constant
-
 Set-Variable -name kVcxprojXpathPreprocessorDefs  `
              -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:PreprocessorDefinitions" `
              -option Constant
