@@ -149,7 +149,7 @@ Set-Variable -name kVcxprojXpathPCH `
              -option Constant 
 
 Set-Variable -name kVcxprojXpathPropSheets `
-             -value "ns:Project/ns:ImportGroup[@Label='PropertySheets']" `
+             -value "ns:Project/ns:ImportGroup[@Label='PropertySheets']/ns:Import" `
              -option Constant
 
 Set-Variable -name kVcxprojXpathToolset `
@@ -816,31 +816,46 @@ function SanitizeProject([xml] $vcxproj)
   }
 }
   
-function Get-ProjectPropertySheets()
+function Get-ProjectPropertySheets([string] $filePath, [xml] $fileXml)
 {
-# XXX handle recursive sheets
+  [string] $vcxprojDir = Get-FileDirectory($filePath)
 
-  [string] $vcxprojDir = Get-FileDirectory($global:vcxprojPath)
-
-  [System.Xml.XmlElement] $importGroup = Select-ProjectNodes $kVcxprojXpathPropSheets
-
-  if (!$importGroup -or !$importGroup.Import) 
+  [System.Xml.XmlElement[]] $importGroup = $fileXml.SelectNodes($kVcxprojXpathPropSheets, $global:xpathNS)
+  if (!$importGroup) 
   {
-      return $null
+      return @()
   }
 
-  [string[]] $sheetAbsolutePaths = $importGroup.Import | 
-                                  Where-Object `
-                                  { 
-                                    ![string]::IsNullOrEmpty((Canonize-Path -base $vcxprojDir `
-                                                                            -child $_.GetAttribute("Project") `
-                                                                            -ignoreErrors)) 
-                                  }                   |
-                                  ForEach-Object `
-                                  {
-                                    Canonize-Path -base $vcxprojDir -child $_.GetAttribute("Project")
-                                  }
-  return $sheetAbsolutePaths
+  [string[]] $sheetAbsolutePaths = $importGroup | 
+                                   Where-Object `
+                                   { 
+                                     ![string]::IsNullOrEmpty((Canonize-Path -base $vcxprojDir `
+                                                                             -child $_.GetAttribute("Project") `
+                                                                             -ignoreErrors)) 
+                                   }                   |
+                                   ForEach-Object `
+                                   {
+                                     Canonize-Path -base $vcxprojDir -child $_.GetAttribute("Project")
+                                   }
+  
+  # a property sheet may have references to other property sheets
+  [string[]] $returnPaths = @()
+  if ($sheetAbsolutePaths)
+  {
+    foreach ($path in $sheetAbsolutePaths)
+    {
+      $returnPaths += $path
+
+      [string[]] $childrenPaths = Get-ProjectPropertySheets -filePath $path `
+                                                            -fileXml ([xml](Get-Content $path))
+      if ($childrenPaths.Length -gt 0)
+      {
+        $returnPaths += $childrenPaths
+      }
+    }
+  }
+
+  return $returnPaths
 }
 
 function LoadProject([string] $vcxprojPath)
@@ -853,19 +868,17 @@ function LoadProject([string] $vcxprojPath)
   
   SanitizeProject($global:projectFiles[0])
 
-  [string] $projectDirectory = Get-FileDirectory -filePath $vcxprojPath
-
-  [string[]] $propertySheetRelativePaths = Get-ProjectPropertySheets
-  if (!$propertySheetRelativePaths)
+  [string[]] $propertySheetAbsolutePaths = Get-ProjectPropertySheets -filePath $global:vcxprojPath `
+                                                                     -fileXml  $global:projectFiles[0]
+  if (!$propertySheetAbsolutePaths)
   {
     return
   }
+  Write-Verbose "Property sheets: $propertySheetAbsolutePaths"
 
-  [array]::Reverse($propertySheetRelativePaths)
-  foreach ($propSheetRelPath in $propertySheetRelativePaths)
+  [array]::Reverse($propertySheetAbsolutePaths)
+  foreach ($propSheetPath in $propertySheetAbsolutePaths)
   {
-    [string] $propSheetPath = Canonize-Path -base $projectDirectory -child $propSheetRelPath
-
     [xml] $propSheetXml = Get-Content $propSheetPath
 
     $global:projectFiles += $propSheetXml
