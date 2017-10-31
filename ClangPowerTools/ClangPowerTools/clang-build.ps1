@@ -156,6 +156,14 @@ Set-Variable -name kVcxprojXpathToolset `
              -value "ns:Project/ns:PropertyGroup[@Label='Configuration']/ns:PlatformToolset" `
              -option Constant
 
+Set-Variable -name kVcxprojXpathDefaultConfigPlatform `
+             -value "ns:Project/ns:ItemGroup[@Label='ProjectConfigurations']/ns:ProjectConfiguration[1]" `
+             -option Constant
+
+Set-Variable -name kVcxprojXpathConfigPlatformSpecificElements `
+             -value "//*[starts-with(@Condition, ""'`$(Configuration)|`$(Platform)'"")]" `
+             -option Constant
+
 Set-Variable -name kVStudioVarProjDir          -value '$(ProjectDir)'   -option Constant
 Set-Variable -name kVSDefaultWinSDK            -value '8.1'             -option Constant
 Set-Variable -name kVSDefaultWinSDK_XP         -value '7.0'             -option Constant
@@ -712,10 +720,6 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
   return $stdafxPch
 }
 
-[string[]] $configPlatforms = @('''$(Configuration)|$(Platform)''==''Debug|x64'''
-                                ,'''$(Configuration)|$(Platform)''==''Debug|Win32'''
-                                );  
-
 function Help:Get-ProjectFileNodes([xml] $projectFile, [string] $xpath)
 {
   [System.Xml.XmlElement[]] $nodes = $projectFile.SelectNodes($xpath, $global:xpathNS)
@@ -779,31 +783,29 @@ function Select-ProjectNodes([string] $xpath, $fileIndex = 0)
 
 function SanitizeProject([xml] $vcxproj)
 {
-  [string]$preferredPlatform = ""
-  foreach ($platform in $configPlatforms)
+  [string]$configPlatformCondition = ""
+  [System.Xml.XmlElement[]] $configNodes = Select-ProjectNodes -xpath $kVcxprojXpathDefaultConfigPlatform
+  if ($configNodes)
   {
-    [System.Xml.XmlElement[]] $configNodes = Select-ProjectNodes -xpath "//*[@Condition=""$platform""]"
-    if ($configNodes.Count -gt 0)
-    {
-      $preferredPlatform = $platform
-      break
-    }
+    $configPlatformName = $configNodes.GetAttribute("Include")
+    Write-Verbose "Configuration platform: $configPlatformName"
+
+    $configPlatformCondition = "'`$(Configuration)|`$(Platform)'=='$configPlatformName'"
   }
 
-  if ([string]::IsNullOrEmpty($preferredPlatform))
+  if ([string]::IsNullOrEmpty($configPlatformCondition))
   {
-    throw "There must be a config platform"
+    throw "Could not detect a configuration platform"
   }
 
-  Write-Verbose "Configuration platform: $preferredPlatform"
 
-  [System.Xml.XmlElement[]] $configNodes = Select-ProjectNodes -xpath "//*[@Condition]"
+  [System.Xml.XmlElement[]] $configNodes = Select-ProjectNodes -xpath $kVcxprojXpathConfigPlatformSpecificElements
 
   foreach ($node in $configNodes)
   {
     [string] $nodeConfigPlatform = $node.GetAttribute("Condition")
 
-    if ($nodeConfigPlatform -eq $preferredPlatform)
+    if ($nodeConfigPlatform -eq $configPlatformCondition)
     {
       $node.RemoveAttribute("Condition")
     }
