@@ -737,6 +737,11 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
   return $stdafxPch
 }
 
+<#
+.DESCRIPTION
+A wrapper over the XmlDOcument.SelectNodes function. For convenience.
+Not to be used directly. Please use Select-ProjectNodes instead.
+#>
 function Help:Get-ProjectFileNodes([xml] $projectFile, [string] $xpath)
 {
   [System.Xml.XmlElement[]] $nodes = $projectFile.SelectNodes($xpath, $global:xpathNS)
