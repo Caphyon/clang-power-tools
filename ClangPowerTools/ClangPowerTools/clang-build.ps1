@@ -815,6 +815,28 @@ function SanitizeProject([xml] $vcxproj)
     }
   }
 }
+
+function Get-AutoPropertySheet()
+{
+  $startPath = $global:vcxprojPath
+  while ($true)
+  {
+    $propSheetPath = Canonize-Path -base $startPath `
+                                   -child "Directory.Build.props" `
+                                   -ignoreErrors
+    if (![string]::IsNullOrEmpty($propSheetPath))
+    {
+      return $propSheetPath
+    }
+
+    $newPath = Canonize-Path -base $startPath -child ".."
+    if ($newPath -eq $startPath)
+    {
+      return ""
+    }
+    $startPath = $newPath
+  }
+}
   
 function Get-ProjectPropertySheets([string] $filePath, [xml] $fileXml)
 {
@@ -844,14 +866,14 @@ function Get-ProjectPropertySheets([string] $filePath, [xml] $fileXml)
   {
     foreach ($path in $sheetAbsolutePaths)
     {
-      $returnPaths += $path
-
       [string[]] $childrenPaths = Get-ProjectPropertySheets -filePath $path `
                                                             -fileXml ([xml](Get-Content $path))
       if ($childrenPaths.Length -gt 0)
       {
         $returnPaths += $childrenPaths
       }
+      
+      $returnPaths += $path
     }
   }
 
@@ -867,17 +889,28 @@ function LoadProject([string] $vcxprojPath)
   $global:xpathNS.AddNamespace("ns", $global:projectFiles[0].DocumentElement.NamespaceURI)
   
   SanitizeProject($global:projectFiles[0])
+   
+  # see if we can find a Directory.Build.props automatic prop sheet
+  [string[]] $propSheetAbsolutePaths = @()
+  $autoPropSheet = Get-AutoPropertySheet
+  if (![string]::IsNullOrEmpty($autoPropSheet))
+  {
+    $propSheetAbsolutePaths += $autoPropSheet
+  }
 
-  [string[]] $propertySheetAbsolutePaths = Get-ProjectPropertySheets -filePath $global:vcxprojPath `
-                                                                     -fileXml  $global:projectFiles[0]
-  if (!$propertySheetAbsolutePaths)
+  # see if project has manually specified property sheets
+  $propSheetAbsolutePaths += Get-ProjectPropertySheets -filePath $global:vcxprojPath `
+                                                       -fileXml  $global:projectFiles[0]
+
+  if (!$propSheetAbsolutePaths)
   {
     return
   }
-  Write-Verbose "Property sheets: $propertySheetAbsolutePaths"
 
-  [array]::Reverse($propertySheetAbsolutePaths)
-  foreach ($propSheetPath in $propertySheetAbsolutePaths)
+  Write-Verbose "Property sheets: $($propSheetAbsolutePaths -join '; ')"
+
+  [array]::Reverse($propSheetAbsolutePaths)
+  foreach ($propSheetPath in $propSheetAbsolutePaths)
   {
     [xml] $propSheetXml = Get-Content $propSheetPath
 
