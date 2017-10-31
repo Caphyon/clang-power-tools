@@ -359,6 +359,23 @@ Function IsFileMatchingName( [Parameter(Mandatory=$true)][string] $filePath
   }
 }
 
+ <#
+  .DESCRIPTION
+  Merges an absolute and a relative file path.
+  .EXAMPLE
+  Havin base = C:\Windows\System32 and child = .. we get C:\Windows
+  .EXAMPLE
+  Havin base = C:\Windows\System32 and child = ..\..\..\.. we get C:\ (cannot go further up)
+  .PARAMETER base
+  The absolute path from which we start.
+  .PARAMETER child
+  The relative path to be merged into base. 
+  .PARAMETER ignoreErrors
+  If this switch is not present, an error will be triggered if the resulting path
+  is not present on disk (e.g. c:\Windows\System33).
+
+  If present and the resulting path does not exist, the function returns an empty string.
+  #>
 Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
                       , [Parameter(Mandatory=$true)][string] $child
                       , [switch] $ignoreErrors)
@@ -641,7 +658,10 @@ Function Get-PchCppIncludeHeader([Parameter(Mandatory=$true)][string] $vcxprojPa
   return [regex]::match($fileContent,'#include "(\S+)"').Groups[1].Value
 }
 
-# Retrieve directory in which stdafx.h resides
+<#
+.DESCRIPTION
+  Retrieve directory in which stdafx.h resides
+#>
 Function Get-ProjectStdafxDir([Parameter(Mandatory=$true)][string] $vcxprojPath,
                               [Parameter(Mandatory=$true)][string] $pchHeaderName)
 {
@@ -659,7 +679,10 @@ Function Get-ProjectStdafxDir([Parameter(Mandatory=$true)][string] $vcxprojPath,
   return $stdafxDir
 }
 
-# Retrieve directory in which the PCH CPP resides (e.g. stdafx.cpp, stdafxA.cpp)
+<#
+.DESCRIPTION
+  Retrieve directory in which the PCH CPP resides (e.g. stdafx.cpp, stdafxA.cpp)
+#>
 Function Get-Project-PchCpp([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
   $pchCppRelativePath = Select-ProjectNodes($kVcxprojXpathPCH)   |
@@ -726,7 +749,30 @@ function Help:Get-ProjectFileNodes([xml] $projectFile, [string] $xpath)
   return $nodes
 }
 
-function Select-ProjectNodes([string] $xpath, $fileIndex = 0)
+<#
+.SYNOPSIS
+Selects one or more nodes from the project.
+.DESCRIPTION
+We often need to access data from the project, e.g. additional includes, Win SDK version.
+A naive implementation would be to simply look inside the vcxproj, but that leaves out 
+property sheets.
+
+This function takes care to retrieve the nodes we're searching by looking in both the .vcxproj
+and property sheets, taking care to inherit values accordingly.
+.EXAMPLE
+Give an example of how to use it
+.EXAMPLE
+Give another example of how to use it.
+.PARAMETER xpath
+XPath we want to use for searching nodes.
+.PARAMETER fileIndex
+Optional. Index of the project xml file we want to start our search in. 
+0 = .vcxproj and then, recursively, all property sheets
+1 = first property sheet and then, recursively, all other property sheets
+etc.
+#>
+function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpath
+                            ,[Parameter(Mandatory=$false)] [int]            $fileIndex = 0)
 {
   [System.Xml.XmlElement[]] $returnNodes = @() 
   if ($fileIndex -ge $global:projectFiles.Count)
@@ -781,7 +827,16 @@ function Select-ProjectNodes([string] $xpath, $fileIndex = 0)
   return $nodes
 }
 
-function SanitizeProject([xml] $vcxproj)
+<#
+.DESCRIPTION
+   Finds what the first config-platform pair in the vcxproj and removed all
+   items for other config-platform pairs. 
+
+   This is needed so that our XPath selectors don't get confused when looking for data.
+   Since we leave only one config platform in the project, we don't need the Condition 
+   field for its config anymore.
+#>
+function SanitizeProject()
 {
   [string]$configPlatformCondition = ""
   [System.Xml.XmlElement[]] $configNodes = Select-ProjectNodes -xpath $kVcxprojXpathDefaultConfigPlatform
@@ -797,7 +852,6 @@ function SanitizeProject([xml] $vcxproj)
   {
     throw "Could not detect a configuration platform"
   }
-
 
   [System.Xml.XmlElement[]] $configNodes = Select-ProjectNodes -xpath $kVcxprojXpathConfigPlatformSpecificElements
 
@@ -816,6 +870,13 @@ function SanitizeProject([xml] $vcxproj)
   }
 }
 
+<#
+.DESCRIPTION
+  Tries to find a Directory.Build.props property sheet, starting from the
+  project directories, going up. When one is found, the search stops.
+
+  Multiple Directory.Build.props sheets are not supported.
+#>
 function Get-AutoPropertySheet()
 {
   $startPath = $global:vcxprojPath
@@ -837,7 +898,13 @@ function Get-AutoPropertySheet()
     $startPath = $newPath
   }
 }
-  
+
+<#
+.DESCRIPTION
+  Retrieves the property sheets referred by the project.
+  Only those we can locate on the disk are returned. 
+  MSBuild variables are not expanded, so those sheets are not returned.
+#>
 function Get-ProjectPropertySheets([string] $filePath, [xml] $fileXml)
 {
   [string] $vcxprojDir = Get-FileDirectory($filePath)
@@ -880,6 +947,11 @@ function Get-ProjectPropertySheets([string] $filePath, [xml] $fileXml)
   return $returnPaths
 }
 
+<#
+.DESCRIPTION
+Loads vcxproj and property sheets into memory. This needs to be called only once
+when processing a project. Accessing project nodes can be done using Select-ProjectNodes.
+#>
 function LoadProject([string] $vcxprojPath)
 {
   $global:projectFiles = @([xml] (Get-Content $vcxprojPath))
@@ -888,7 +960,7 @@ function LoadProject([string] $vcxprojPath)
   $global:xpathNS     = New-Object System.Xml.XmlNamespaceManager($global:projectFiles[0].NameTable) 
   $global:xpathNS.AddNamespace("ns", $global:projectFiles[0].DocumentElement.NamespaceURI)
   
-  SanitizeProject($global:projectFiles[0])
+  SanitizeProject
    
   # see if we can find a Directory.Build.props automatic prop sheet
   [string[]] $propSheetAbsolutePaths = @()
@@ -918,7 +990,10 @@ function LoadProject([string] $vcxprojPath)
   }
 }
 
-# Retrieve array of preprocessor definitions for a given project, in Clang format (-DNAME )
+<#
+.DESCRIPTION
+  Retrieve array of preprocessor definitions for a given project, in Clang format (-DNAME )
+#>
 Function Get-ProjectPreprocessorDefines([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
   [string[]] $tokens = (Select-ProjectNodes $kVcxprojXpathPreprocessorDefs).InnerText -split ";"
