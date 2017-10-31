@@ -768,10 +768,9 @@ etc.
 function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpath
                             ,[Parameter(Mandatory=$false)] [int]            $fileIndex = 0)
 {
-  [System.Xml.XmlElement[]] $returnNodes = @() 
   if ($fileIndex -ge $global:projectFiles.Count)
   {
-    return $returnNodes
+    return @()
   }
 
   [System.Xml.XmlElement[]] $nodes = Help:Get-ProjectFileNodes -projectFile $global:projectFiles[$fileIndex] `
