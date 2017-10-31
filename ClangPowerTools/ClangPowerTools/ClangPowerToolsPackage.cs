@@ -89,8 +89,6 @@ namespace ClangPowerTools
       mDte.Events.BuildEvents.OnBuildBegin += 
         new _dispBuildEvents_OnBuildBeginEventHandler(this.OnBuildBegin);
 
-
-
       string edition = mDte.Edition;
       mVsVersions.TryGetValue(mDte.Version, out string version);
       mCommandsController = new CommandsController(this, mDte);

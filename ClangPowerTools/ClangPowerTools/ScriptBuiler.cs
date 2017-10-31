@@ -77,9 +77,6 @@ namespace ClangPowerTools
       if(aGeneralOptions.VerboseMode) 
         parameters = $"{parameters} {ScriptConstants.kVerboseMode}";
 
-      if (null != aGeneralOptions.IncludeDirectories && 0 < aGeneralOptions.IncludeDirectories.Length)
-        parameters = $"{parameters} {ScriptConstants.kIncludeDirectores} (''{String.Join("'',''", aGeneralOptions.IncludeDirectories)}'')";
-
       if (null != aGeneralOptions.ProjectsToIgnore && 0 < aGeneralOptions.ProjectsToIgnore.Length)
         parameters = $"{parameters} {ScriptConstants.kProjectsToIgnore} (''{String.Join("'',''", aGeneralOptions.ProjectsToIgnore)}'')";
 
