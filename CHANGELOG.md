@@ -5,11 +5,10 @@ Changelog of Clang Power Tools extension
 ### Clang Power Tools 1.5.0
 
 Improvements:
-* Added support for detecting auto property sheets (Directory.Build.props).
-* Added support for property sheets that include other property sheets.
-* Automatically detect the first config platform of the project.
-* Generalized property sheet usage.
-* Improved parsing of detected data.
+* Generalized property sheet usage for project data.
+* Support for detecting auto property sheets (Directory.Build.props).
+* Support for property sheets that include other property sheets.
+* Automatically detect the first project configuration platform.
 
 ### Clang Power Tools 1.4.0
 
