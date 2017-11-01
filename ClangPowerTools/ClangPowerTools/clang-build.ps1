@@ -1001,7 +1001,10 @@ Function Get-ProjectPreprocessorDefines([Parameter(Mandatory=$true)][string] $vc
 {
   [string[]] $tokens = (Select-ProjectNodes $kVcxprojXpathPreprocessorDefs).InnerText -split ";"
 
-  $defines = ($tokens | Where-Object { $_ } | ForEach-Object { $kClangDefinePrefix + $_ })
+  # make sure we add the required prefix and escape double quotes
+  [string[]]$defines = ( $tokens             | `
+                         Where-Object { $_ } | `
+                         ForEach-Object { ($kClangDefinePrefix + $_) -replace '"','"""' } )
 
   if (Is-Project-Unicode -vcxprojPath $vcxprojPath)
   {
