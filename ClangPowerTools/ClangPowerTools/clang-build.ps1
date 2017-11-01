@@ -827,12 +827,11 @@ function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpa
 
 <#
 .DESCRIPTION
-   Finds what the first config-platform pair in the vcxproj and removed all
-   items for other config-platform pairs. 
+   Finds the first config-platform pair in the vcxproj.
+   We'll use it for all project data retrievals.
 
+   Items for other config-platform pairs will be removed from the DOM. 
    This is needed so that our XPath selectors don't get confused when looking for data.
-   Since we leave only one config platform in the project, we don't need the Condition 
-   field for its config anymore.
 #>
 function SanitizeProject()
 {
@@ -859,6 +858,8 @@ function SanitizeProject()
 
     if ($nodeConfigPlatform -eq $configPlatformCondition)
     {
+      # Since we leave only one config platform in the project, we don't need 
+      # the Condition field for its config xml elements anymore
       $node.RemoveAttribute("Condition")
     }
     else
