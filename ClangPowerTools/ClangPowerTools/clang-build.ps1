@@ -539,7 +539,7 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcx
   [string[]] $returnArray = @()
 
   [string] $vsPath = Get-VisualStudio-Path
-  Write-Verbose "Detected Visual Studio at $vsPath"
+  Write-Verbose "Visual Studio location: $vsPath"
   
   [string] $platformToolset = (Get-ProjectPlatformToolset -vcxprojPath $vcxprojPath)
 
@@ -550,7 +550,7 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcx
   else
   {
     $mscVer = Get-MscVer -visualStudioPath $vsPath
-    Write-Verbose "MSCVER : $mscVer"
+    Write-Verbose "MSCVER: $mscVer"
 
     $returnArray += Get-VisualStudio-Includes -vsPath $vsPath -mscVer $mscVer
   }
@@ -570,7 +570,7 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcx
     }
   }
 
-  Write-Verbose "WinSDK version : $sdkVer"
+  Write-Verbose "WinSDK version: $sdkVer"
 
   # ----------------------------------------------------------------------------------------------
   # Windows 10
@@ -693,7 +693,7 @@ Function Set-ProjectIncludePaths([Parameter(Mandatory=$true)] $includeDirectorie
   Write-Verbose "Include directories:"
   foreach ($dir in $includeDirectories)
   {
-    Write-Verbose $dir
+    Write-Verbose "  $dir"
   }
   $ENV:INCLUDE = $includePathsString;
 }
@@ -977,7 +977,11 @@ function LoadProject([string] $vcxprojPath)
     return
   }
 
-  Write-Verbose "Property sheets: $($propSheetAbsolutePaths -join '; ')"
+  Write-Verbose "Property sheets: "
+  foreach ($propSheet in $propSheetAbsolutePaths)
+  {
+    Write-Verbose "  $propSheet"
+  }
 
   [array]::Reverse($propSheetAbsolutePaths)
   foreach ($propSheetPath in $propSheetAbsolutePaths)
@@ -1289,7 +1293,11 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # DETECT PROJECT PREPROCESSOR DEFINITIONS
 
   [string[]] $preprocessorDefinitions = Get-ProjectPreprocessorDefines($vcxprojPath)
-  Write-Verbose "Preprocessor definitions: $preprocessorDefinitions"
+  Write-Verbose "Preprocessor definitions: "
+  foreach ($def in $preprocessorDefinitions)
+  {
+    Write-Verbose "  $def"
+  }
   
   #-----------------------------------------------------------------------------------------------
   # DETECT PLATFORM TOOLSET
@@ -1304,7 +1312,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   Write-Verbose "Additional includes:"
   foreach ($include in $includeDirectories)
   {
-    Write-Verbose $include
+    Write-Verbose "  $include"
   }
   
   $includeDirectories = (Get-ProjectIncludeDirectories -vcxprojPath $vcxprojPath) + $includeDirectories
@@ -1396,7 +1404,7 @@ if (! (Exists-Command($kClangCompiler)) )
   {
     if (Test-Path $locationLLVM)
     {
-      Write-Verbose "Detected LLVM at $locationLLVM"
+      Write-Verbose "LLVM location: $locationLLVM"
       $env:Path += ";$locationLLVM"
       break
     }
