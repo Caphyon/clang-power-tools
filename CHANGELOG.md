@@ -11,14 +11,6 @@ Improvements:
 * Generalized property sheet usage.
 * Improved parsing of detected data.
 
-Bugs:
-* Unified project node selection, only xpath mechanism remains
-* Sanitize vcxproj when loading project.
-* Fixed defines.
-* Removed global include directories option.
-* Fixed issue regarding semicolons in prop sheet entries.
-* Alligned verbose comments to used pattern.
-
 ### Clang Power Tools 1.4.0
 
 Improvements:
