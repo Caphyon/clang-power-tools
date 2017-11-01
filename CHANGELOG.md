@@ -5,7 +5,7 @@ Changelog of Clang Power Tools extension
 ### Clang Power Tools 1.5.0
 
 Improvements:
-* Generalized property sheet usage for project data.
+* Generalized property sheet usage for project data retrieval.
 * Detect auto property sheets ([Directory.Build.props](https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build)). Merging not supported.
 * Detect property sheets included indirectly, through other property sheets.
 * Automatically detect the first project configuration platform.
