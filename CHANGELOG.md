@@ -2,18 +2,35 @@
 
 Changelog of Clang Power Tools extension
 
+### Clang Power Tools 1.5.0
+
+Improvements:
+* Added support for detecting auto property sheets (Directory.Build.props).
+* Added support for property sheets that include other property sheets.
+* Automatically detect the first config platform of the project.
+* Generalized property sheet usage.
+* Improved parsing of detected data.
+
+Bugs:
+* Unified project node selection, only xpath mechanism remains
+* Sanitize vcxproj when loading project.
+* Fixed defines.
+* Removed global include directories option.
+* Fixed issue regarding semicolons in prop sheet entries.
+* Alligned verbose comments to used pattern.
+
 ### Clang Power Tools 1.4.0
 
 Improvements:
-* Added verbose mode in settings
-* Created Clang Power Tools toolbar
+* Added verbose mode in settings.
+* Created Clang Power Tools toolbar.
 
 Bugs:
 * Fixed logical core count detection on systems with more than one physical CPU.
 * Disabled the commands when another command is running.
 * Fixed MSCVER detection bug when VS is not installed in default location.
 * Added WinSDKVer defaults for when not mentioned in project.
-* Fixed error message when project does not include force include files
+* Fixed error message when project does not include force include files.
 
 ### Clang Power Tools 1.3.1
 
@@ -27,16 +44,16 @@ Bugs:
 ### Clang Power Tools 1.3.0
 
 Improvements:
-* Added support for ignoring specific files
-* Added support for treating warnings as errors
-* Detect Visual Studio 2015 / 2017 custom installation paths
-* Enabled compilation for all files included in the Vcxproj <ClCompile> section
+* Added support for ignoring specific files.
+* Added support for treating warnings as errors.
+* Detect Visual Studio 2015 / 2017 custom installation paths.
+* Enabled compilation for all files included in the Vcxproj <ClCompile> section.
 
 Bugs:
 * Fixed project detection when the project name from UI is different of the project name on the disk.
 * Prevents the Output window from stealing the focus.
 * Fixed the detection for modified files after clang tidy fix.
-* Fixed the "Project To Ignore" option
+* Fixed the "Project To Ignore" option.
 
 ### Clang Power Tools 1.2.0
 
