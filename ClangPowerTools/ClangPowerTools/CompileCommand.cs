@@ -151,6 +151,7 @@ namespace ClangPowerTools
               script = scriptBuilder.GetScript(selectedProjectItem, selectedProjectItem.GetName());
             }
             else 
+              script = scriptBuilder.GetScript(item, item.GetName());
 
             powerShell.Invoke(script);
             if (mOutputManager.MissingLlvm)
