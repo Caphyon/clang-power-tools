@@ -12,7 +12,7 @@ namespace ClangPowerTools
     #region Members
 
     private readonly List<string> kAcceptedExtensionTypes = new List<string> { ".cpp"};
-    private List<Tuple<IItem, IVsHierarchy>> mItems = new List<Tuple<IItem, IVsHierarchy>>();
+    private List<IItem> mItems = new List<IItem>();
     private IServiceProvider mServiceProvider;
 
     #endregion
@@ -25,7 +25,7 @@ namespace ClangPowerTools
 
     #region Properties
 
-    public List<Tuple<IItem, IVsHierarchy>> GetItems => mItems;
+    public List<IItem> GetItems => mItems;
     public bool HaveItems => mItems.Count != 0;
 
     #endregion
@@ -62,8 +62,8 @@ namespace ClangPowerTools
 
     private void GetProject(Project aProject)
     {
-      IVsHierarchy hierarchy = AutomationUtil.GetProjectHierarchy(mServiceProvider, aProject);
-      mItems.Add(new Tuple<IItem, IVsHierarchy>(new SelectedProject(aProject), hierarchy));
+      //IVsHierarchy hierarchy = AutomationUtil.GetProjectHierarchy(mServiceProvider, aProject);
+      mItems.Add(new SelectedProject(aProject));
     }
 
     private void GetProjectItem(ProjectItem aProjectItem)
@@ -92,8 +92,8 @@ namespace ClangPowerTools
     {
       if (kAcceptedExtensionTypes.Contains(Path.GetExtension(aItem.Name).ToLower()))
       {
-        IVsHierarchy hierarchy = AutomationUtil.GetProjectHierarchy(mServiceProvider, aItem.ContainingProject);
-        mItems.Add(new Tuple<IItem, IVsHierarchy>(new SelectedProjectItem(aItem), hierarchy));
+        //IVsHierarchy hierarchy = AutomationUtil.GetProjectHierarchy(mServiceProvider, aItem.ContainingProject);
+        mItems.Add(new SelectedProjectItem(aItem));
       }
     }
 

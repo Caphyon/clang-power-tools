@@ -118,7 +118,9 @@ namespace ClangPowerTools
     private void MenuItemCallback(object sender, EventArgs e)
     {
       mCommandsController.Running = true;
-      var task = System.Threading.Tasks.Task.Run(() =>
+			var projectItem = mDte.ActiveWindow.ProjectItem;
+
+			var task = System.Threading.Tasks.Task.Run(() =>
       {
         GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
         TidyOptions tidyPage = (TidyOptions)mPackage.GetDialogPage(typeof(TidyOptions));
@@ -156,7 +158,14 @@ namespace ClangPowerTools
             mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kTidyCodeCommand}\n");
             foreach (var item in mItemsCollector.GetItems)
             {
-              string script = scriptBuilder.GetScript(item.Item1, item.Item1.GetName());
+              var script = string.Empty;
+              if (null != projectItem)
+              {
+                var selectedProjectItem = new SelectedProjectItem(projectItem);
+                script = scriptBuilder.GetScript(selectedProjectItem, selectedProjectItem.GetName());
+              }
+              else
+
               powerShell.Invoke(script);
               if (mOutputManager.MissingLlvm)
               {
