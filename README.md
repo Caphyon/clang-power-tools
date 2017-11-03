@@ -17,6 +17,8 @@ https://clang-analyzer.llvm.org/available_checks.html
 
 ![ClangPowerTools](images/VSTidyChecks.PNG)
 
+Custom clang-tidy wildcard checks:
+
 ![ClangPowerTools](images/VSTidyChecksWildcard.PNG)
 
 The extension can be configured via the standard Visual Studio options panel.  
