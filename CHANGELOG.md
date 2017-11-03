@@ -2,6 +2,15 @@
 
 Changelog of Clang Power Tools extension
 
+### Clang Power Tools 1.5.1
+
+Improvements:
+* Created dedicated option page for tidy checks.
+* Provided better defaults for "Tidy Checks" dialog.
+
+Bugs:
+* Fixed script building for tidy checks. 
+
 ### Clang Power Tools 1.5.0
 
 Improvements:
