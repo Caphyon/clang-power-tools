@@ -83,7 +83,7 @@
     <Compile Include="FileChangerWatcher.cs" />
     <Compile Include="FileOpener.cs" />
     <Compile Include="FilePathCollector.cs" />
-    <Compile Include="GeneralOptions.cs">
+    <Compile Include="DialogPages\GeneralOptions.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SilentFileChangerEqualityComparer.cs" />
@@ -98,6 +98,9 @@
     <Compile Include="SilentFileChanger.cs" />
     <Compile Include="SilentFileChangerGuard.cs" />
     <Compile Include="StringArrayConverter.cs" />
+    <Compile Include="DialogPages\TidyChecks.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="TidyCommand.cs" />
     <Compile Include="ClangPowerToolsPackage.cs" />
     <Compile Include="ErrorWindow.cs" />
@@ -106,7 +109,10 @@
     <Compile Include="TaskError.cs" />
     <Compile Include="SelectedProject.cs" />
     <Compile Include="SelectedProjectItem.cs" />
-    <Compile Include="TidyOptions.cs">
+    <Compile Include="DialogPages\TidyOptions.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DialogPages\TidyPage.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Vs15SolutionLoader.cs" />
