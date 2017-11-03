@@ -25,7 +25,7 @@ The extension can be configured via the standard Visual Studio options panel.
 **Tools** > **Options** > **Clang Power Tools**  
 You can customize the tool behavior as well as the clang++ compilation flags, clang-tidy checks, etc.
 
-![ClangPowerTools](images/VSSettings1.png)
+![ClangPowerTools](images/VSSettings.png)
 
 ### Requirements
 
