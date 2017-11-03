@@ -779,7 +779,7 @@ function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpa
   }
 
   [System.Xml.XmlElement[]] $nodes = Help:Get-ProjectFileNodes -projectFile $global:projectFiles[$fileIndex] `
-                                                                -xpath $xpath
+                                                               -xpath $xpath
 
   # nothing on this level, go above
   if ($nodes.Count -eq 0)
@@ -833,7 +833,7 @@ function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpa
    Items for other config-platform pairs will be removed from the DOM. 
    This is needed so that our XPath selectors don't get confused when looking for data.
 #>
-function SanitizeProject()
+function Get-ProjectDefaultConfigPlatformCondition()
 {
   [string]$configPlatformCondition = ""
   [System.Xml.XmlElement[]] $configNodes = Select-ProjectNodes -xpath $kVcxprojXpathDefaultConfigPlatform
@@ -850,7 +850,19 @@ function SanitizeProject()
     throw "Could not detect a configuration platform"
   }
 
-  [System.Xml.XmlElement[]] $configNodes = Select-ProjectNodes -xpath $kVcxprojXpathConfigPlatformSpecificElements
+  return $configPlatformCondition
+}
+
+<#
+.DESCRIPTION
+   Sanitizes a project xml file, by removing config-platform pairs different from the 
+   one we selected. 
+   This is needed so that our XPath selectors don't get confused when looking for data.
+#>
+function SanitizeProjectFile([string]$configPlatformCondition, [xml]$projectFile)
+{
+  [System.Xml.XmlElement[]] $configNodes = Help:Get-ProjectFileNodes -projectFile $projectFile `
+                                                                     -xpath $kVcxprojXpathConfigPlatformSpecificElements
 
   foreach ($node in $configNodes)
   {
@@ -959,7 +971,10 @@ function LoadProject([string] $vcxprojPath)
   $global:xpathNS     = New-Object System.Xml.XmlNamespaceManager($global:projectFiles[0].NameTable) 
   $global:xpathNS.AddNamespace("ns", $global:projectFiles[0].DocumentElement.NamespaceURI)
   
-  SanitizeProject
+  [string]$configPlatformCondition = Get-ProjectDefaultConfigPlatformCondition
+
+  SanitizeProjectFile -projectFile             $global:projectFiles[0] `
+                      -configPlatformCondition $configPlatformCondition
    
   # see if we can find a Directory.Build.props automatic prop sheet
   [string[]] $propSheetAbsolutePaths = @()
@@ -988,6 +1003,9 @@ function LoadProject([string] $vcxprojPath)
   foreach ($propSheetPath in $propSheetAbsolutePaths)
   {
     [xml] $propSheetXml = Get-Content $propSheetPath
+
+    SanitizeProjectFile -projectFile             $propSheetXml `
+                        -configPlatformCondition $configPlatformCondition
 
     $global:projectFiles += $propSheetXml
   }
