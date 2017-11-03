@@ -41,11 +41,11 @@ namespace ClangPowerTools
     }
 
     public void ConstructParameters(GeneralOptions aGeneralOptions, 
-      TidyOptions aTidyPage, string aVsEdition, string aVsVersion)
+      TidyOptions aTidyOptions, TidyChecks aTidyChecks, string aVsEdition, string aVsVersion)
     {
       mParameters = GetGeneralParameters(aGeneralOptions);
-      mParameters = null != aTidyPage ?
-        $"{mParameters} {GetTidyParameters(aTidyPage)}" : $"{mParameters} {ScriptConstants.kParallel}";
+      mParameters = null != aTidyOptions ?
+        $"{mParameters} {GetTidyParameters(aTidyOptions, aTidyChecks)}" : $"{mParameters} {ScriptConstants.kParallel}";
       mParameters = $"{mParameters} {ScriptConstants.kVsVersion} {aVsVersion} {ScriptConstants.kVsEdition} {aVsEdition}";
     }
 
@@ -86,15 +86,15 @@ namespace ClangPowerTools
       return $"{parameters}";
     }
 
-    private string GetTidyParameters(TidyOptions aTidyPage)
+    private string GetTidyParameters(TidyOptions aTidyOptions, TidyChecks aTidyChecks)
     {
-      string parameters = aTidyPage.Fix ? $" {ScriptConstants.kTidyFix} ''-*," : $" {ScriptConstants.kTidy} ''-*,";
+      string parameters = aTidyOptions.Fix ? $" {ScriptConstants.kTidyFix} ''-*," : $" {ScriptConstants.kTidy} ''-*,";
      
-      if (null != aTidyPage.TidyChecks && 0 < aTidyPage.TidyChecks.Length)
-        parameters = $"{parameters}{String.Join(",", aTidyPage.TidyChecks)}''";
+      if (null != aTidyOptions.TidyChecks && 0 < aTidyOptions.TidyChecks.Length)
+        parameters = $"{parameters}{String.Join(",", aTidyOptions.TidyChecks)}''";
       else
       {
-        foreach (PropertyInfo prop in aTidyPage.GetType().GetProperties())
+        foreach (PropertyInfo prop in aTidyChecks.GetType().GetProperties())
         {
           object[] propAttrs = prop.GetCustomAttributes(false);
           object clangCheckAttr = propAttrs.FirstOrDefault(attr => typeof(ClangCheckAttribute) == attr.GetType());
@@ -104,7 +104,7 @@ namespace ClangPowerTools
             continue;
 
           DisplayNameAttribute displayNameAttr = (DisplayNameAttribute)displayNameAttrObj;
-          var value = prop.GetValue(aTidyPage, null);
+          var value = prop.GetValue(aTidyChecks, null);
           if (Boolean.TrueString != value.ToString())
             continue;
 

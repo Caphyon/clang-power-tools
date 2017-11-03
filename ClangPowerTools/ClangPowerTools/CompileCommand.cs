@@ -116,7 +116,7 @@ namespace ClangPowerTools
         GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
 
         ScriptBuiler scriptBuilder = new ScriptBuiler();
-        scriptBuilder.ConstructParameters(generalOptions, null, mVsEdition, mVsVersion);
+        scriptBuilder.ConstructParameters(generalOptions, null, null, mVsEdition, mVsVersion);
 
         ItemsCollector mItemsCollector = new ItemsCollector(mPackage);
         mItemsCollector.CollectSelectedFiles(mDte);
