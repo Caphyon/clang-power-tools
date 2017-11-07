@@ -86,6 +86,7 @@
     <Compile Include="DialogPages\GeneralOptions.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ProjectConfiguration.cs" />
     <Compile Include="SilentFileChangerEqualityComparer.cs" />
     <Compile Include="IItem.cs" />
     <Compile Include="ItemsCollector.cs" />

@@ -29,7 +29,7 @@ namespace ClangPowerTools
 
     public const string kVsVersion = "-vs-ver";
     public const string kVsEdition = "-vs-sku";
-
+    public const string kActiveConfiguration = "-active-config";
 
     #endregion
 

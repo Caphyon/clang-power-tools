@@ -127,8 +127,7 @@ namespace ClangPowerTools
           TidyChecks tidyChecks = (TidyChecks)mPackage.GetDialogPage(typeof(TidyChecks));
 
           ScriptBuiler scriptBuilder = new ScriptBuiler();
-          scriptBuilder.ConstructParameters(generalOptions, tidyOptions, tidyChecks, mVsEdition, mVsVersion);
-
+          scriptBuilder.ConstructParameters(generalOptions, tidyOptions, tidyChecks, mDte, mVsEdition, mVsVersion);
 
           mItemsCollector = new ItemsCollector(mPackage);
           mItemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));

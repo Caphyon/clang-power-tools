@@ -1,4 +1,5 @@
 ﻿using EnvDTE;
+using EnvDTE80;
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -40,13 +41,14 @@ namespace ClangPowerTools
       return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{parentDirectoryPath}'' {ScriptConstants.kLiteral}'";
     }
 
-    public void ConstructParameters(GeneralOptions aGeneralOptions, 
-      TidyOptions aTidyOptions, TidyChecks aTidyChecks, string aVsEdition, string aVsVersion)
+    public void ConstructParameters(GeneralOptions aGeneralOptions, TidyOptions aTidyOptions, 
+      TidyChecks aTidyChecks, DTE2 aDte, string aVsEdition, string aVsVersion)
     {
       mParameters = GetGeneralParameters(aGeneralOptions);
       mParameters = null != aTidyOptions ?
         $"{mParameters} {GetTidyParameters(aTidyOptions, aTidyChecks)}" : $"{mParameters} {ScriptConstants.kParallel}";
-      mParameters = $"{mParameters} {ScriptConstants.kVsVersion} {aVsVersion} {ScriptConstants.kVsEdition} {aVsEdition}";
+      mParameters = $"{mParameters} {ScriptConstants.kVsVersion} {aVsVersion} {ScriptConstants.kVsEdition} {aVsEdition} " +
+        $"{ScriptConstants.kActiveConfiguration} ''{ProjectConfiguration.GetConfiguration(aDte)}|{ProjectConfiguration.GetPlatform(aDte)}''";
     }
 
     #endregion
