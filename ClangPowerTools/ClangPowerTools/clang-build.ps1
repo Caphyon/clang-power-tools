@@ -818,13 +818,17 @@ function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpa
       [string] $whatToReplace = [regex]::Escape($inheritanceToken);
       if ([string]::IsNullOrEmpty($replaceWith))
       {
-        # handle case when a semicolon was before and there's nothing to be inserted
-        $whatToReplace = ";?\s*" + [regex]::Escape($inheritanceToken)
+        # handle semicolon separators
+        [string] $escTok = [regex]::Escape($inheritanceToken)
+        $whatToReplace = "(;$escTok)|($escTok;)|($escTok)"
       }
-      # handle case when string ends with semicolon separator
-      $whatToReplace += "(\s*;\s*$)?"
-
+      # replace inherited token
       $nodes[0].InnerText = ($nodes[0].InnerText -replace $whatToReplace, $replaceWith)
+      # handle multiple consecutive separators
+      $nodes[0].InnerText = ($nodes[0].InnerText -replace ";+", ";")
+      # handle corner cases when we have separators at beginning or at end
+      $nodes[0].InnerText = ($nodes[0].InnerText -replace ";$", "")
+      $nodes[0].InnerText = ($nodes[0].InnerText -replace "^;", "")
     } 
     return $nodes
   }
@@ -1055,7 +1059,8 @@ Function Get-ProjectPreprocessorDefines([Parameter(Mandatory=$true)][string] $vc
 
 Function Get-ProjectAdditionalIncludes([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
-  [string[]] $tokens = (Select-ProjectNodes $kVcxprojXpathAdditionalIncludes).InnerText -split ";"
+  $data = Select-ProjectNodes $kVcxprojXpathAdditionalIncludes
+  [string[]] $tokens = ($data).InnerText -split ";"
   if (!$tokens)
   {
     return
@@ -1071,7 +1076,11 @@ Function Get-ProjectAdditionalIncludes([Parameter(Mandatory=$true)][string] $vcx
     }
     Else
     {
-      Canonize-Path -base $projDir -child $token -ignoreErrors
+      [string] $includePath = Canonize-Path -base $projDir -child $token -ignoreErrors
+      if (![string]::IsNullOrEmpty($includePath))
+      {
+        $includePath
+      }
     }
   }
 }
