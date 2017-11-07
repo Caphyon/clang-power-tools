@@ -118,32 +118,35 @@ namespace ClangPowerTools
     private void MenuItemCallback(object sender, EventArgs e)
     {
       mCommandsController.Running = true;
-      var task = System.Threading.Tasks.Task.Run(() =>
+			var task = System.Threading.Tasks.Task.Run(() =>
       {
-        GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
-        TidyOptions tidyOptions = (TidyOptions)mPackage.GetDialogPage(typeof(TidyOptions));
-        TidyChecks tidyChecks = (TidyChecks)mPackage.GetDialogPage(typeof(TidyChecks));
-
-        ScriptBuiler scriptBuilder = new ScriptBuiler();
-        scriptBuilder.ConstructParameters(generalOptions, tidyOptions, tidyChecks, mVsEdition, mVsVersion);
-
-        mItemsCollector = new ItemsCollector(mPackage);
-        mItemsCollector.CollectSelectedFiles(mDte);
-
-        mOutputManager = new OutputManager(mDte);
-        PowerShellWrapper powerShell = new PowerShellWrapper();
-        powerShell.DataHandler += mOutputManager.OutputDataReceived;
-        powerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;
-
-        mFileWatcher = new FileChangerWatcher();
         try
         {
-          mDte.Documents.SaveAll();
+          GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
+          TidyOptions tidyOptions = (TidyOptions)mPackage.GetDialogPage(typeof(TidyOptions));
+          TidyChecks tidyChecks = (TidyChecks)mPackage.GetDialogPage(typeof(TidyChecks));
+
+          ScriptBuiler scriptBuilder = new ScriptBuiler();
+          scriptBuilder.ConstructParameters(generalOptions, tidyOptions, tidyChecks, mVsEdition, mVsVersion);
+
+
+          mItemsCollector = new ItemsCollector(mPackage);
+          mItemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));
+
+          mOutputManager = new OutputManager(mDte);
+          PowerShellWrapper powerShell = new PowerShellWrapper();
+          powerShell.DataHandler += mOutputManager.OutputDataReceived;
+          powerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;
+
+          mFileWatcher = new FileChangerWatcher();
+
           if (kVs15Version == mVsVersion)
           {
             Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
             solutionLoader.EnsureSolutionProjectsAreLoaded();
           }
+
+          mDte.Documents.SaveAll();
           using (var guard = new SilentFileChangerGuard())
           {
             if (tidyOptions.Fix)
@@ -157,7 +160,7 @@ namespace ClangPowerTools
             mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kTidyCodeCommand}\n");
             foreach (var item in mItemsCollector.GetItems)
             {
-              string script = scriptBuilder.GetScript(item.Item1, item.Item1.GetName());
+              var script = scriptBuilder.GetScript(item, item.GetName());
               powerShell.Invoke(script);
               if (mOutputManager.MissingLlvm)
               {

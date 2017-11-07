@@ -22,10 +22,10 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public void Collect(List<Tuple<IItem, IVsHierarchy>> aItems)
+    public void Collect(List<IItem> aItems)
     {
       foreach (var item in aItems)
-        this.Add(item.Item1.GetPath());
+        Add(item.GetPath());
     }
 
     #endregion

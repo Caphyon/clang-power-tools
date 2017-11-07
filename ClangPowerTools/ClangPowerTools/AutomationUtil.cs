@@ -10,9 +10,9 @@ namespace ClangPowerTools
   {
     #region Public methods
 
-    public static List<Tuple<IItem, IVsHierarchy>> GetAllProjects(IServiceProvider aServiceProvider, Solution aSolution)
+    public static List<IItem> GetAllProjects(IServiceProvider aServiceProvider, Solution aSolution)
     {
-      List<Tuple<IItem, IVsHierarchy>> list = new List<Tuple<IItem, IVsHierarchy>>();
+      List<IItem> list = new List<IItem>();
       Projects projects = aSolution.Projects;
 
       for ( int index = 1; index <= projects.Count; ++index)
@@ -24,7 +24,7 @@ namespace ClangPowerTools
         if (project.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
           list.AddRange(GetSolutionFolderProjects(aServiceProvider, project));
         else
-          list.Add(new Tuple<IItem, IVsHierarchy>( new SelectedProject(project), GetProjectHierarchy(aServiceProvider, project)));
+          list.Add(new SelectedProject(project));
       }
       return list;
     }
@@ -40,9 +40,9 @@ namespace ClangPowerTools
 
     #region Helpers
 
-    private static List<Tuple<IItem, IVsHierarchy>> GetSolutionFolderProjects(IServiceProvider aServiceProvider, Project aSolutionFolderItem)
+    private static List<IItem> GetSolutionFolderProjects(IServiceProvider aServiceProvider, Project aSolutionFolderItem)
     {
-      List<Tuple<IItem, IVsHierarchy>> list = new List<Tuple<IItem, IVsHierarchy>>();
+      List<IItem> list = new List<IItem>();
        
       foreach (ProjectItem projectItem in aSolutionFolderItem.ProjectItems)
       {
@@ -53,7 +53,7 @@ namespace ClangPowerTools
         if (subProject.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
           list.AddRange(GetSolutionFolderProjects(aServiceProvider, subProject));
         else
-          list.Add(new Tuple<IItem, IVsHierarchy>(new SelectedProject(subProject), GetProjectHierarchy(aServiceProvider, subProject)));
+          list.Add(new SelectedProject(subProject));
       }
       return list;
     }
