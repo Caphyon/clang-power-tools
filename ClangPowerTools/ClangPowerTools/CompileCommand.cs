@@ -55,7 +55,7 @@ namespace ClangPowerTools
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    private CompileCommand(Package aPackage, DTE2 aDte, string aEdition, 
+    private CompileCommand(Package aPackage, DTE2 aDte, string aEdition,
       string aVersion, CommandsController aCommandsController)
     {
       this.mPackage = aPackage ?? throw new ArgumentNullException("package");
@@ -98,7 +98,7 @@ namespace ClangPowerTools
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static void Initialize(Package aPackage, DTE2 aDte, string aEdition, 
+    public static void Initialize(Package aPackage, DTE2 aDte, string aEdition,
       string aVersion, CommandsController aCommandsController)
     {
       Instance = new CompileCommand(aPackage, aDte, aEdition, aVersion, aCommandsController);
@@ -121,7 +121,7 @@ namespace ClangPowerTools
           GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
 
           ScriptBuiler scriptBuilder = new ScriptBuiler();
-          scriptBuilder.ConstructParameters(generalOptions, null, null, mVsEdition, mVsVersion);
+          scriptBuilder.ConstructParameters(generalOptions, null, null, mDte, mVsEdition, mVsVersion);
 
           ItemsCollector mItemsCollector = new ItemsCollector(mPackage);
           mItemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));

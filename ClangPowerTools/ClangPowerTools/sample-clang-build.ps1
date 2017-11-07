@@ -22,6 +22,13 @@
 
     Can be passed as comma separated values.
 
+.PARAMETER aVcxprojConfigPlatform
+    Alias 'active-config'. The configuration-platform pair, separated by |, 
+    to be used when processing project files.
+
+    E.g. 'Debug|Win32'. 
+    If not specified, the first configuration-plaform found in the current project is used.
+
 .PARAMETER aCppToCompile
     Alias 'file'. What cpp(s) to compile from the found project(s). If empty, all CPPs are compiled.
     If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used, 
@@ -92,6 +99,7 @@
 #>
 param( [alias("proj")]        [Parameter(Mandatory=$false)][string[]] $aVcxprojToCompile
      , [alias("proj-ignore")] [Parameter(Mandatory=$false)][string[]] $aVcxprojToIgnore
+     , [alias("active-config")][Parameter(Mandatory=$false)][string]  $aVcxprojConfigPlatform
      , [alias("file")]        [Parameter(Mandatory=$false)][string]   $aCppToCompile
      , [alias("file-ignore")] [Parameter(Mandatory=$false)][string[]] $aCppToIgnore
      , [alias("parallel")]    [Parameter(Mandatory=$false)][switch]   $aUseParallelCompile
@@ -140,6 +148,11 @@ if (![string]::IsNullOrEmpty($aVcxprojToCompile))
 if (![string]::IsNullOrEmpty($aVcxprojToIgnore))
 {
   $scriptParams += ("-aVcxprojToIgnore", (Merge-Array $aVcxprojToIgnore))
+}
+
+if (![string]::IsNullOrEmpty($aVcxprojConfigPlatform))
+{
+  $scriptParams += ("-aVcxprojConfigPlatform",  (Merge-Array $aVcxprojConfigPlatform))
 }
 
 if (![string]::IsNullOrEmpty($aCppToCompile))
