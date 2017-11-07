@@ -38,7 +38,9 @@ namespace ClangPowerTools
   [Guid(RunClangPowerToolsPackage.PackageGuidString)]
   [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
   [ProvideOptionPage(typeof(GeneralOptions), "Clang Power Tools", "General", 0, 0, true)]
-  [ProvideOptionPage(typeof(TidyOptions), "Clang Power Tools", "Tidy", 0, 1, true)]
+  [ProvideOptionPage(typeof(TidyPage), "Clang Power Tools", "Tidy", 0, 0, true)]
+  [ProvideOptionPage(typeof(TidyOptions), "Clang Power Tools\\Tidy", "Options", 0, 0, true)]
+  [ProvideOptionPage(typeof(TidyChecks), "Clang Power Tools\\Tidy", "Checks", 0, 0, true)]
   [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
   public sealed class RunClangPowerToolsPackage : Package
   {

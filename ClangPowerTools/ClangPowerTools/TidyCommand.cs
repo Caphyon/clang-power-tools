@@ -123,10 +123,12 @@ namespace ClangPowerTools
         try
         {
           GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
-          TidyOptions tidyPage = (TidyOptions)mPackage.GetDialogPage(typeof(TidyOptions));
+          TidyOptions tidyOptions = (TidyOptions)mPackage.GetDialogPage(typeof(TidyOptions));
+          TidyChecks tidyChecks = (TidyChecks)mPackage.GetDialogPage(typeof(TidyChecks));
 
           ScriptBuiler scriptBuilder = new ScriptBuiler();
-          scriptBuilder.ConstructParameters(generalOptions, tidyPage, mVsEdition, mVsVersion);
+          scriptBuilder.ConstructParameters(generalOptions, tidyOptions, tidyChecks, mVsEdition, mVsVersion);
+
 
           mItemsCollector = new ItemsCollector(mPackage);
           mItemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));
@@ -147,7 +149,7 @@ namespace ClangPowerTools
           mDte.Documents.SaveAll();
           using (var guard = new SilentFileChangerGuard())
           {
-            if (tidyPage.Fix)
+            if (tidyOptions.Fix)
             {
               WatchFiles();
               SilentFiles(guard);
