@@ -1,10 +1,13 @@
 ﻿using EnvDTE;
 using EnvDTE80;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Microsoft.VisualStudio.VCProjectEngine;
+using System.Text.RegularExpressions;
 
 namespace ClangPowerTools
 {
@@ -23,7 +26,7 @@ namespace ClangPowerTools
       string containingDirectoryPath = string.Empty;
       string parentDirectoryPath = string.Empty;
       string script = $"{ScriptConstants.kScriptBeginning} ''{GetScriptPath()}''";
-
+      string[] includeDirectoriesOfProject = new string[] {};
       if (aItem is SelectedProjectItem)
       {
         ProjectItem projectItem = aItem.GetObject() as ProjectItem;
@@ -31,12 +34,32 @@ namespace ClangPowerTools
         string containingProject = projectItem.ContainingProject.FullName;
         string containingProjectName = containingProject.Substring(containingProject.LastIndexOf('\\') + 1);
         script = $"{script} {ScriptConstants.kProject} {containingProjectName} {ScriptConstants.kFile} {aFileName}";
+        includeDirectoriesOfProject = GetIncludeDirectoriesFromProject(projectItem.ContainingProject);
       }
       else if (aItem is SelectedProject)
       {
         Project project = aItem.GetObject() as Project;
         parentDirectoryPath = new DirectoryInfo(project.FullName).Parent.FullName;
         script = $"{script} {ScriptConstants.kProject} {aFileName}";
+        includeDirectoriesOfProject = GetIncludeDirectoriesFromProject(project);
+      }
+      // Combine include directories from project files and clang power tools configuration. 
+      // @todo: This look ugly. We should look at the overall design for a smarter solution
+      if (0 < includeDirectoriesOfProject.Length)
+      {
+        if (mParameters.Contains(ScriptConstants.kIncludeDirectores))
+        {
+          string pattern = $@"{ScriptConstants.kIncludeDirectores} \((.*)\)";
+          string replacement = $" {ScriptConstants.kIncludeDirectores} ($1, ''{String.Join("'',''", includeDirectoriesOfProject)}'')";
+          Regex rgx = new Regex(pattern);
+          string result = rgx.Replace(mParameters, replacement);
+          return $"{script} {result} {ScriptConstants.kDirectory} ''{parentDirectoryPath}'' {ScriptConstants.kLiteral}'";
+        }
+        else
+        {
+          string includeDirectoriesOfProjectParameter = $" {ScriptConstants.kIncludeDirectores} (''{String.Join("'',''", includeDirectoriesOfProject)}'')";
+          return $"{script} {mParameters} {includeDirectoriesOfProjectParameter} {ScriptConstants.kDirectory} ''{parentDirectoryPath}'' {ScriptConstants.kLiteral}'";
+        }
       }
       return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{parentDirectoryPath}'' {ScriptConstants.kLiteral}'";
     }
@@ -60,6 +83,75 @@ namespace ClangPowerTools
       string assemblyPath = Assembly.GetExecutingAssembly().Location;
       assemblyPath = assemblyPath.Substring(0, assemblyPath.LastIndexOf('\\'));
       return $"{assemblyPath}\\{ScriptConstants.kScriptName}";
+    }
+
+    private string[] GetIncludeDirectoriesFromProject(EnvDTE.Project project)
+    {
+      List<string> includeDirectories = new List<string>();
+      VCProject vcproject = (VCProject)project.Object;
+
+      IVCCollection configurationsCollection = (IVCCollection)vcproject.Configurations;
+
+      Configuration dteActiveConfiguration = project.ConfigurationManager.ActiveConfiguration;
+
+      VCConfiguration vcActiveConfiguration = null;
+      foreach (VCConfiguration configuration in configurationsCollection)
+      {
+        if (configuration.ConfigurationName == dteActiveConfiguration.ConfigurationName && configuration.Platform.Name == dteActiveConfiguration.PlatformName)
+        {
+          vcActiveConfiguration = configuration;
+          break;
+        }
+      }
+
+      IVCCollection toolsCollection = (IVCCollection)vcActiveConfiguration.Tools;
+
+      foreach (Object toolObject in toolsCollection)
+      {
+        if (toolObject is VCCLCompilerTool)
+        {
+          VCCLCompilerTool compilerTool = (VCCLCompilerTool)toolObject;
+          string additionalIncludeDirectories = compilerTool.AdditionalIncludeDirectories;
+          includeDirectories.AddRange( additionalIncludeDirectories.Split(';') );
+          break;
+        }
+      }
+
+      includeDirectories.AddRange( AdditionalIncludeDirectoriesFromAllPropertySheets(vcActiveConfiguration.PropertySheets) );
+
+      List<string> evaluatedIncludeDirectories = new List<string>();
+      foreach (string includeDirectory in includeDirectories)
+      {
+        string evaluatedIncludeDirectory = vcActiveConfiguration.Evaluate(includeDirectory);
+        if (evaluatedIncludeDirectory != "")
+        {
+          evaluatedIncludeDirectories.Add(evaluatedIncludeDirectory);
+        }
+      }
+      return evaluatedIncludeDirectories.ToArray();
+    }
+
+    private static List<string> AdditionalIncludeDirectoriesFromAllPropertySheets(IVCCollection vcActiveConfiguration)
+    {
+      List<string> additionalIncludes = new List<string>();
+      foreach (VCPropertySheet propertySheet in vcActiveConfiguration)
+      {
+        VCCLCompilerTool compilerToolPropertySheet = (VCCLCompilerTool)((IVCCollection)propertySheet.Tools).Item("VCCLCompilerTool");
+
+        if (compilerToolPropertySheet != null)
+        {
+          additionalIncludes.AddRange(compilerToolPropertySheet.AdditionalIncludeDirectories.Split(';'));
+          IVCCollection InherPSS = propertySheet.PropertySheets;
+          if (InherPSS != null)
+          {
+            if (InherPSS.Count != 0)
+            {
+              additionalIncludes.AddRange(AdditionalIncludeDirectoriesFromAllPropertySheets(InherPSS));
+            }
+          }
+        }
+      }
+      return additionalIncludes;
     }
 
     private string GetGeneralParameters(GeneralOptions aGeneralOptions)
