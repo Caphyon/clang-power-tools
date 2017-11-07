@@ -25,6 +25,13 @@
 
     Can be passed as comma separated values.
 
+.PARAMETER aVcxprojConfigPlatform
+    Alias 'active-config'. The configuration-platform pair, separated by |, 
+    to be used when processing project files.
+
+    E.g. 'Debug|Win32'. 
+    If not specified, the first configuration-plaform found in the current project is used.
+
 .PARAMETER aCppToCompile
     Alias 'file'. What cpp(s) to compile from the found project(s). If empty, all CPPs are compiled.
     If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used, 
@@ -79,6 +86,7 @@
 param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aDirectory
      , [alias("proj")]         [Parameter(Mandatory=$false)][string[]] $aVcxprojToCompile
      , [alias("proj-ignore")]  [Parameter(Mandatory=$false)][string[]] $aVcxprojToIgnore
+     , [alias("active-config")][Parameter(Mandatory=$false)][string]   $aVcxprojConfigPlatform
      , [alias("file")]         [Parameter(Mandatory=$false)][string]   $aCppToCompile
      , [alias("file-ignore")]  [Parameter(Mandatory=$false)][string[]] $aCppToIgnore
      , [alias("parallel")]     [Parameter(Mandatory=$false)][switch]   $aUseParallelCompile
@@ -835,22 +843,29 @@ function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpa
 #>
 function Get-ProjectDefaultConfigPlatformCondition()
 {
-  [string]$configPlatformCondition = ""
-  [System.Xml.XmlElement[]] $configNodes = Select-ProjectNodes -xpath $kVcxprojXpathDefaultConfigPlatform
-  if ($configNodes)
+  [string]$configPlatformName = ""
+  
+  if (![string]::IsNullOrEmpty($aVcxprojConfigPlatform))
   {
-    $configPlatformName = $configNodes.GetAttribute("Include")
-    Write-Verbose "Configuration platform: $configPlatformName"
-
-    $configPlatformCondition = "'`$(Configuration)|`$(Platform)'=='$configPlatformName'"
+     $configPlatformName = $aVcxprojConfigPlatform
+  }
+  else
+  {
+    [System.Xml.XmlElement[]] $configNodes = Select-ProjectNodes -xpath $kVcxprojXpathDefaultConfigPlatform
+    if ($configNodes)
+    {
+      $configPlatformName = $configNodes.GetAttribute("Include")
+    }
   }
 
-  if ([string]::IsNullOrEmpty($configPlatformCondition))
+  if ([string]::IsNullOrEmpty($configPlatformName))
   {
-    throw "Could not detect a configuration platform"
+    throw "Could not automatically detect a configuration platform"
   }
 
-  return $configPlatformCondition
+  Write-Verbose "Configuration platform: $configPlatformName"
+
+  return "'`$(Configuration)|`$(Platform)'=='$configPlatformName'"
 }
 
 <#
