@@ -118,33 +118,33 @@ namespace ClangPowerTools
     private void MenuItemCallback(object sender, EventArgs e)
     {
       mCommandsController.Running = true;
-			var projectItem = mDte.ActiveWindow.ProjectItem;
-
 			var task = System.Threading.Tasks.Task.Run(() =>
       {
-        GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
-        TidyOptions tidyPage = (TidyOptions)mPackage.GetDialogPage(typeof(TidyOptions));
-
-        ScriptBuiler scriptBuilder = new ScriptBuiler();
-        scriptBuilder.ConstructParameters(generalOptions, tidyPage, mVsEdition, mVsVersion);
-
-        mItemsCollector = new ItemsCollector(mPackage);
-        mItemsCollector.CollectSelectedFiles(mDte);
-
-        mOutputManager = new OutputManager(mDte);
-        PowerShellWrapper powerShell = new PowerShellWrapper();
-        powerShell.DataHandler += mOutputManager.OutputDataReceived;
-        powerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;
-
-        mFileWatcher = new FileChangerWatcher();
         try
         {
-          mDte.Documents.SaveAll();
+          GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
+          TidyOptions tidyPage = (TidyOptions)mPackage.GetDialogPage(typeof(TidyOptions));
+
+          ScriptBuiler scriptBuilder = new ScriptBuiler();
+          scriptBuilder.ConstructParameters(generalOptions, tidyPage, mVsEdition, mVsVersion);
+
+          mItemsCollector = new ItemsCollector(mPackage);
+          mItemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));
+
+          mOutputManager = new OutputManager(mDte);
+          PowerShellWrapper powerShell = new PowerShellWrapper();
+          powerShell.DataHandler += mOutputManager.OutputDataReceived;
+          powerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;
+
+          mFileWatcher = new FileChangerWatcher();
+
           if (kVs15Version == mVsVersion)
           {
             Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
             solutionLoader.EnsureSolutionProjectsAreLoaded();
           }
+
+          mDte.Documents.SaveAll();
           using (var guard = new SilentFileChangerGuard())
           {
             if (tidyPage.Fix)
@@ -158,15 +158,7 @@ namespace ClangPowerTools
             mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kTidyCodeCommand}\n");
             foreach (var item in mItemsCollector.GetItems)
             {
-              var script = string.Empty;
-              if (null != projectItem)
-              {
-                var selectedProjectItem = new SelectedProjectItem(projectItem);
-                script = scriptBuilder.GetScript(selectedProjectItem, selectedProjectItem.GetName());
-              }
-              else
-                script = scriptBuilder.GetScript(item, item.GetName());
-
+              var script = scriptBuilder.GetScript(item, item.GetName());
               powerShell.Invoke(script);
               if (mOutputManager.MissingLlvm)
               {

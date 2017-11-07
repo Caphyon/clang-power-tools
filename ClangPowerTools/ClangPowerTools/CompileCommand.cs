@@ -11,6 +11,7 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Windows.Forms;
 using EnvDTE;
+using System.IO;
 
 namespace ClangPowerTools
 {
@@ -113,46 +114,36 @@ namespace ClangPowerTools
     private void MenuItemCallback(object sender, EventArgs e)
     {
       mCommandsController.Running = true;
-      var projectItem = mDte.ActiveWindow.ProjectItem;
-
-			var task = System.Threading.Tasks.Task.Run(() =>
+      var task = System.Threading.Tasks.Task.Run(() =>
       {
-        GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
-
-        ScriptBuiler scriptBuilder = new ScriptBuiler();
-        scriptBuilder.ConstructParameters(generalOptions, null, mVsEdition, mVsVersion);
-
-        ItemsCollector mItemsCollector = new ItemsCollector(mPackage);
-        mItemsCollector.CollectSelectedFiles(mDte);
-
-        mOutputManager = new OutputManager(mDte);
-        PowerShellWrapper powerShell = new PowerShellWrapper();
-        powerShell.DataHandler += mOutputManager.OutputDataReceived;
-        powerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;
-
         try
         {
-          mDte.Documents.SaveAll();
+          GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
+
+          ScriptBuiler scriptBuilder = new ScriptBuiler();
+          scriptBuilder.ConstructParameters(generalOptions, null, mVsEdition, mVsVersion);
+
+          ItemsCollector mItemsCollector = new ItemsCollector(mPackage);
+          mItemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));
+
+          mOutputManager = new OutputManager(mDte);
+          PowerShellWrapper powerShell = new PowerShellWrapper();
+          powerShell.DataHandler += mOutputManager.OutputDataReceived;
+          powerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;
+
           if (kVs15Version == mVsVersion)
           {
             Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
             solutionLoader.EnsureSolutionProjectsAreLoaded();
           }
+          mDte.Documents.SaveAll();
 
           mOutputManager.Clear();
           mOutputManager.Show();
           mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kComplileCommand}\n");
           foreach (var item in mItemsCollector.GetItems)
           {
-            var script = string.Empty;
-            if ( null != projectItem)
-            {
-              var selectedProjectItem = new SelectedProjectItem(projectItem);
-              script = scriptBuilder.GetScript(selectedProjectItem, selectedProjectItem.GetName());
-            }
-            else 
-              script = scriptBuilder.GetScript(item, item.GetName());
-
+            var script = scriptBuilder.GetScript(item, item.GetName());
             powerShell.Invoke(script);
             if (mOutputManager.MissingLlvm)
             {

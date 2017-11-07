@@ -32,8 +32,17 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public void CollectSelectedFiles(DTE2 aDte)
+    public void CollectSelectedFiles(DTE2 aDte, ProjectItem aProjectItem)
     {
+      // the command has been given from tab file
+      // will be just one file selected
+      if (null != aProjectItem)
+      {
+        AddProjectItem(aProjectItem); 
+        return;
+      }
+
+      // the command has been given from Solution Explorer or toolbar
       Array selectedItems = aDte.ToolWindows.SolutionExplorer.SelectedItems as Array;
       if (null == selectedItems || 0 == selectedItems.Length)
         return;
@@ -44,10 +53,19 @@ namespace ClangPowerTools
           GetProjectsFromSolution(item.Object as Solution);
 
         else if (item.Object is Project)
-          GetProject(item.Object as Project);
+          AddProject(item.Object as Project);
 
         else if (item.Object is ProjectItem)
           GetProjectItem(item.Object as ProjectItem);
+      }
+    }
+
+    public void AddProjectItem(ProjectItem aItem)
+    {
+      if (kAcceptedExtensionTypes.Contains(Path.GetExtension(aItem.Name).ToLower()))
+      {
+        //IVsHierarchy hierarchy = AutomationUtil.GetProjectHierarchy(mServiceProvider, aItem.ContainingProject);
+        mItems.Add(new SelectedProjectItem(aItem));
       }
     }
 
@@ -60,11 +78,7 @@ namespace ClangPowerTools
       mItems = AutomationUtil.GetAllProjects(mServiceProvider, aSolution);
     }
 
-    private void GetProject(Project aProject)
-    {
-      //IVsHierarchy hierarchy = AutomationUtil.GetProjectHierarchy(mServiceProvider, aProject);
-      mItems.Add(new SelectedProject(aProject));
-    }
+    private void AddProject(Project aProject) => mItems.Add(new SelectedProject(aProject));
 
     private void GetProjectItem(ProjectItem aProjectItem)
     {
@@ -72,7 +86,7 @@ namespace ClangPowerTools
       if (null == aProjectItem.ProjectItems)
       {
         if (null != aProjectItem.SubProject)
-          GetProject(aProjectItem.SubProject);
+          AddProject(aProjectItem.SubProject);
         return;
       }
       // Folders or filters
@@ -84,19 +98,11 @@ namespace ClangPowerTools
       // Files
       else
       {
-        GetItem(aProjectItem);
+        AddProjectItem(aProjectItem);
       }
     }
 
-    private void GetItem(ProjectItem aItem)
-    {
-      if (kAcceptedExtensionTypes.Contains(Path.GetExtension(aItem.Name).ToLower()))
-      {
-        //IVsHierarchy hierarchy = AutomationUtil.GetProjectHierarchy(mServiceProvider, aItem.ContainingProject);
-        mItems.Add(new SelectedProjectItem(aItem));
-      }
-    }
-
+    
     #endregion
 
   }
