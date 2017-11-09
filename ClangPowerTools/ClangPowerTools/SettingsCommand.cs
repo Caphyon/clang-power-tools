@@ -35,7 +35,7 @@ namespace ClangPowerTools
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    private SettingsCommand(Package aPackage)
+    public SettingsCommand(Package aPackage)
     {
       mPackage = aPackage ?? throw new ArgumentNullException("package");
 
@@ -52,11 +52,6 @@ namespace ClangPowerTools
     #region Properties
 
     /// <summary>
-    /// Gets the instance of the command.
-    /// </summary>
-    public static SettingsCommand Instance { get; private set; }
-
-    /// <summary>
     /// Gets the service provider from the owner package.
     /// </summary>
     private IServiceProvider ServiceProvider => this.mPackage;
@@ -64,15 +59,6 @@ namespace ClangPowerTools
     #endregion
 
     #region Methods
-
-    /// <summary>
-    /// Initializes the singleton instance of the command.
-    /// </summary>
-    /// <param name="package">Owner package, not null.</param>
-    public static void Initialize(Package package)
-    {
-      Instance = new SettingsCommand(package);
-    }
 
     /// <summary>
     /// This function is the callback used to execute the command when the menu item is clicked.

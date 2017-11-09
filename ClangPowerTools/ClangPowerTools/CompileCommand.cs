@@ -55,7 +55,7 @@ namespace ClangPowerTools
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    private CompileCommand(Package aPackage, DTE2 aDte, string aEdition,
+    public CompileCommand(Package aPackage, DTE2 aDte, string aEdition,
       string aVersion, CommandsController aCommandsController)
     {
       this.mPackage = aPackage ?? throw new ArgumentNullException("package");
@@ -81,11 +81,6 @@ namespace ClangPowerTools
     #region Properties
 
     /// <summary>
-    /// Gets the instance of the command.
-    /// </summary>
-    public static CompileCommand Instance { get; private set; }
-
-    /// <summary>
     /// Gets the service provider from the owner package.
     /// </summary>
     private IServiceProvider ServiceProvider => this.mPackage;
@@ -93,16 +88,6 @@ namespace ClangPowerTools
     #endregion
 
     #region Methods
-
-    /// <summary>
-    /// Initializes the singleton instance of the command.
-    /// </summary>
-    /// <param name="package">Owner package, not null.</param>
-    public static void Initialize(Package aPackage, DTE2 aDte, string aEdition,
-      string aVersion, CommandsController aCommandsController)
-    {
-      Instance = new CompileCommand(aPackage, aDte, aEdition, aVersion, aCommandsController);
-    }
 
     /// <summary>
     /// This function is the callback used to execute the command when the menu item is clicked.
@@ -118,6 +103,13 @@ namespace ClangPowerTools
       {
         try
         {
+          if (kVs15Version == mVsVersion)
+          {
+            Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
+            solutionLoader.EnsureSolutionProjectsAreLoaded();
+          }
+          mDte.Documents.SaveAll();
+
           GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
 
           ScriptBuiler scriptBuilder = new ScriptBuiler();
@@ -130,13 +122,6 @@ namespace ClangPowerTools
           PowerShellWrapper powerShell = new PowerShellWrapper();
           powerShell.DataHandler += mOutputManager.OutputDataReceived;
           powerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;
-
-          if (kVs15Version == mVsVersion)
-          {
-            Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
-            solutionLoader.EnsureSolutionProjectsAreLoaded();
-          }
-          mDte.Documents.SaveAll();
 
           mOutputManager.Clear();
           mOutputManager.Show();

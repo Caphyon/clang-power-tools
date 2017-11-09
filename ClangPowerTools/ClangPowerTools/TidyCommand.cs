@@ -58,7 +58,7 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
 
-    private TidyCommand(Package aPackage, DTE2 aDte, string aEdition, 
+    public TidyCommand(Package aPackage, DTE2 aDte, string aEdition, 
       string aVersion, CommandsController aCommandsController)
     {
       mPackage = aPackage ?? throw new ArgumentNullException("package");
@@ -85,11 +85,6 @@ namespace ClangPowerTools
     #region Properties
 
     /// <summary>
-    /// Gets the instance of the command.
-    /// </summary>
-    public static TidyCommand Instance { get; private set; }
-
-    /// <summary>
     /// Gets the service provider from the owner package.
     /// </summary>
     private IServiceProvider ServiceProvider => this.mPackage;
@@ -98,15 +93,6 @@ namespace ClangPowerTools
 
     #region Methods
 
-    /// <summary>
-    /// Initializes the singleton instance of the command.
-    /// </summary>
-    /// <param name="package">Owner package, not null.</param>
-    public static void Initialize(Package aPackage, DTE2 aDte, string aEdition, 
-      string aVersion, CommandsController aCommandsController)
-    {
-      Instance = new TidyCommand(aPackage, aDte, aEdition, aVersion, aCommandsController);
-    }
 
     /// <summary>
     /// This function is the callback used to execute the command when the menu item is clicked.
@@ -122,6 +108,12 @@ namespace ClangPowerTools
       {
         try
         {
+          if (kVs15Version == mVsVersion)
+          {
+            Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
+            solutionLoader.EnsureSolutionProjectsAreLoaded();
+          }
+
           GeneralOptions generalOptions = (GeneralOptions)mPackage.GetDialogPage(typeof(GeneralOptions));
           TidyOptions tidyOptions = (TidyOptions)mPackage.GetDialogPage(typeof(TidyOptions));
           TidyChecks tidyChecks = (TidyChecks)mPackage.GetDialogPage(typeof(TidyChecks));
@@ -138,12 +130,6 @@ namespace ClangPowerTools
           powerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;
 
           mFileWatcher = new FileChangerWatcher();
-
-          if (kVs15Version == mVsVersion)
-          {
-            Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(mPackage);
-            solutionLoader.EnsureSolutionProjectsAreLoaded();
-          }
 
           mDte.Documents.SaveAll();
           using (var guard = new SilentFileChangerGuard())

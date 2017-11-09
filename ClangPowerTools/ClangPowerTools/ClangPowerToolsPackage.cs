@@ -63,6 +63,14 @@ namespace ClangPowerTools
 
     #endregion
 
+    #region Properties
+
+    private static CompileCommand CompileCmd { get; set; }
+    private static TidyCommand TidyCmd { get; set; }
+    private static SettingsCommand SettingsCmd { get; set; }
+
+    #endregion
+
     #region Constructor
 
     /// <summary>
@@ -95,9 +103,9 @@ namespace ClangPowerTools
       mVsVersions.TryGetValue(mDte.Version, out string version);
       mCommandsController = new CommandsController(this, mDte);
 
-      TidyCommand.Initialize(this, mDte, edition, version, mCommandsController);  
-      CompileCommand.Initialize(this, mDte, edition, version, mCommandsController);
-      SettingsCommand.Initialize(this);
+      TidyCmd = new TidyCommand(this, mDte, edition, version, mCommandsController);
+      CompileCmd = new CompileCommand(this, mDte, edition, version, mCommandsController);
+      SettingsCmd = new SettingsCommand(this);
     }
 
     private void OnBuildBegin(EnvDTE.vsBuildScope Scope, EnvDTE.vsBuildAction Action)
