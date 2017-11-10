@@ -101,7 +101,6 @@ namespace ClangPowerTools
         AddProjectItem(aProjectItem);
       }
     }
-
     
     #endregion
 
