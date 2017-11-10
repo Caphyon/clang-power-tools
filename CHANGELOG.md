@@ -2,6 +2,17 @@
 
 Changelog of Clang Power Tools extension
 
+### Clang Power Tools 1.6.0
+
+Improvements:
+* Improved handling of project value separator.
+* Used the active project configuration.
+
+Bugs:
+* Fixed the commands launching from file tab.
+* Fixed the default tidy settings page.
+* Fixed the cleaning of all messages from Error tab when a command begins.
+
 ### Clang Power Tools 1.5.1
 
 Improvements:

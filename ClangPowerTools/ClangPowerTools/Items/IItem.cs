@@ -1,5 +1,4 @@
-﻿
-namespace ClangPowerTools
+﻿namespace ClangPowerTools
 {
   public interface IItem
   {
