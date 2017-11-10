@@ -74,12 +74,12 @@
   <ItemGroup>
     <Compile Include="AutomationUtil.cs" />
     <Compile Include="Commands\BasicCommand.cs" />
-    <Compile Include="ClangCheckAttribute.cs" />
+    <Compile Include="DialogPages\ClangCheckAttribute.cs" />
     <Compile Include="Commands\ClangCommand.cs" />
-    <Compile Include="CommandIds.cs" />
-    <Compile Include="CommandsController.cs" />
+    <Compile Include="Commands\CommandIds.cs" />
+    <Compile Include="Commands\CommandsController.cs" />
     <Compile Include="Commands\CompileCommand.cs" />
-    <Compile Include="DefaultOptions.cs" />
+    <Compile Include="DialogPages\DefaultOptions.cs" />
     <Compile Include="ErrorParser.cs" />
     <Compile Include="ErrorParserConstants.cs" />
     <Compile Include="ErrorsManager.cs" />
@@ -114,9 +114,6 @@
     <Compile Include="SelectedProject.cs" />
     <Compile Include="SelectedProjectItem.cs" />
     <Compile Include="DialogPages\TidyOptions.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="DialogPages\TidyPage.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Vs15SolutionLoader.cs" />
