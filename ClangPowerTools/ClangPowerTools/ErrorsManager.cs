@@ -36,7 +36,6 @@ namespace ClangPowerTools
     {
       return mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
       {
-        mErrorWindow.Clear();
         foreach (TaskError error in aErrors)
           mErrorWindow.AddError(error);
         mErrorWindow.Show();
