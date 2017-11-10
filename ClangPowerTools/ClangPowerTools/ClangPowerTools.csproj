@@ -73,12 +73,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AutomationUtil.cs" />
-    <Compile Include="BasicCommand.cs" />
+    <Compile Include="Commands\BasicCommand.cs" />
     <Compile Include="ClangCheckAttribute.cs" />
-    <Compile Include="ClangCommand.cs" />
+    <Compile Include="Commands\ClangCommand.cs" />
     <Compile Include="CommandIds.cs" />
     <Compile Include="CommandsController.cs" />
-    <Compile Include="CompileCommand.cs" />
+    <Compile Include="Commands\CompileCommand.cs" />
     <Compile Include="DefaultOptions.cs" />
     <Compile Include="ErrorParser.cs" />
     <Compile Include="ErrorParserConstants.cs" />
@@ -98,14 +98,14 @@
     <Compile Include="OutputWindow.cs" />
     <Compile Include="PowerShellWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SettingsCommand.cs" />
+    <Compile Include="Commands\SettingsCommand.cs" />
     <Compile Include="SilentFileChanger.cs" />
     <Compile Include="SilentFileChangerGuard.cs" />
     <Compile Include="StringArrayConverter.cs" />
     <Compile Include="DialogPages\TidyChecks.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="TidyCommand.cs" />
+    <Compile Include="Commands\TidyCommand.cs" />
     <Compile Include="ClangPowerToolsPackage.cs" />
     <Compile Include="ErrorWindow.cs" />
     <Compile Include="ScriptBuiler.cs" />
