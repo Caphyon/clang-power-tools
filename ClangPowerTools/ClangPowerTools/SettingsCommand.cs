@@ -7,27 +7,8 @@ namespace ClangPowerTools
   /// <summary>
   /// Command handler
   /// </summary>
-  internal sealed class SettingsCommand
+  internal sealed class SettingsCommand : BasicCommand
   {
-    #region Members
-
-    /// <summary>
-    /// Command ID.
-    /// </summary>
-    public const int CommandId = 0x0103;
-
-    /// <summary>
-    /// Command menu group (command set GUID).
-    /// </summary>
-    public static readonly Guid CommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
-
-    /// <summary>
-    /// VS Package that provides this command, not null.
-    /// </summary>
-    private readonly Package mPackage;
-
-    #endregion
-
     #region Constructor
 
     /// <summary>
@@ -35,13 +16,11 @@ namespace ClangPowerTools
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public SettingsCommand(Package aPackage)
+    public SettingsCommand(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
-      mPackage = aPackage ?? throw new ArgumentNullException("package");
-
-      if (this.ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+      if ( ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
-        var menuCommandID = new CommandID(CommandSet, CommandId);
+        var menuCommandID = new CommandID(CommandSet, Id);
         var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
         commandService.AddCommand(menuItem);
       }
@@ -49,16 +28,7 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region Properties
-
-    /// <summary>
-    /// Gets the service provider from the owner package.
-    /// </summary>
-    private IServiceProvider ServiceProvider => this.mPackage;
-
-    #endregion
-
-    #region Methods
+    #region Command
 
     /// <summary>
     /// This function is the callback used to execute the command when the menu item is clicked.
@@ -69,7 +39,7 @@ namespace ClangPowerTools
     /// <param name="e">Event args.</param>
     private void MenuItemCallback(object sender, EventArgs e)
     {
-      mPackage.ShowOptionPage(typeof(GeneralOptions));
+      Package.ShowOptionPage(typeof(GeneralOptions));
     }
 
     #endregion

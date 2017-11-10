@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace ClangPowerTools
 {
+  public abstract class BasicCommand
   {
     #region Members
 
@@ -23,6 +24,7 @@ namespace ClangPowerTools
 
     #region Constructor
 
+    protected BasicCommand(Package aPackage, Guid aGuid, int aId)
     {
       Package = aPackage ?? throw new ArgumentNullException("package");
       CommandSet = aGuid;

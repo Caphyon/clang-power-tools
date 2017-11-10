@@ -50,6 +50,7 @@ namespace ClangPowerTools
     /// RunPowerShellCommandPackage GUID string.
     /// </summary>
     public const string PackageGuidString = "f564f9d3-01ae-493e-883b-18deebdb975e";
+    public static readonly Guid CommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
     private Dictionary<string, string> mVsVersions = new Dictionary<string, string>
     {
       {"11.0", "2010"},
@@ -60,14 +61,6 @@ namespace ClangPowerTools
     };
     private DTE2 mDte;
     private CommandsController mCommandsController;
-
-    #endregion
-
-    #region Properties
-
-    private static CompileCommand CompileCmd { get; set; }
-    private static TidyCommand TidyCmd { get; set; }
-    private static SettingsCommand SettingsCmd { get; set; }
 
     #endregion
 
@@ -103,9 +96,13 @@ namespace ClangPowerTools
       mVsVersions.TryGetValue(mDte.Version, out string version);
       mCommandsController = new CommandsController(this, mDte);
 
-      TidyCmd = new TidyCommand(this, mDte, edition, version, mCommandsController);
-      CompileCmd = new CompileCommand(this, mDte, edition, version, mCommandsController);
-      SettingsCmd = new SettingsCommand(this);
+      TidyCommand TidyCmd = new TidyCommand(this, CommandSet, CommandIds.kTidyId, mDte,
+       edition, version, mCommandsController);
+
+      CompileCommand CompileCmd = new CompileCommand(this, CommandSet, CommandIds.kCompileId, mDte,
+        edition, version, mCommandsController);
+
+      SettingsCommand SettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
     }
 
     private void OnBuildBegin(EnvDTE.vsBuildScope Scope, EnvDTE.vsBuildAction Action)
