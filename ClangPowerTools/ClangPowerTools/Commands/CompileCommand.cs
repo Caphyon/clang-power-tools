@@ -1,10 +1,4 @@
-﻿//------------------------------------------------------------------------------
-// <copyright file="RunPowerShellCommand.cs" company="Company">
-//     Copyright (c) Company.  All rights reserved.
-// </copyright>
-//------------------------------------------------------------------------------
-
-using System;
+﻿using System;
 using Microsoft.VisualStudio.Shell;
 using System.ComponentModel.Design;
 using EnvDTE80;
