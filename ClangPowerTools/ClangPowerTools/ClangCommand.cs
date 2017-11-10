@@ -8,7 +8,7 @@ using EnvDTE80;
 
 namespace ClangPowerTools
 {
-  public abstract class ClangCommand : SimpleCommand
+  public abstract class ClangCommand : BasicCommand
   {
     #region Members
 

@@ -73,9 +73,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AutomationUtil.cs" />
+    <Compile Include="BasicCommand.cs" />
     <Compile Include="ClangCheckAttribute.cs" />
     <Compile Include="ClangCommand.cs" />
-    <Compile Include="SimpleCommand.cs" />
     <Compile Include="CommandIds.cs" />
     <Compile Include="CommandsController.cs" />
     <Compile Include="CompileCommand.cs" />
