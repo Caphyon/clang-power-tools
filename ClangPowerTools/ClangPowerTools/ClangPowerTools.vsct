@@ -29,6 +29,7 @@
 
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0000" />
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0000" />
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0001" />
 
       <Group guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" priority="0x0000">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="Toolbar"/>
@@ -128,26 +129,30 @@
       <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_EZDOCWINTAB" />
     </CommandPlacement>
 
-    <!--Create the commands group and submenu -->
-    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="Submenu" priority="0x0001">
+    <!--Create the command groups and submenu -->
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="Submenu" priority="0x0000">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" />
     </CommandPlacement>
     
     <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0001">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
     </CommandPlacement>
+    
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0002">
+      <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
+    </CommandPlacement>
 
     <!--Add the commands in GroupForCommands -->
-    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="CompileId" priority="0x0001">
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="CompileId" priority="0x0000">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
     </CommandPlacement>
     
-    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0002">
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0001">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
     </CommandPlacement>
 
-    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0003">
-      <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0002">
+      <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" />
     </CommandPlacement>
 
   </CommandPlacements>
@@ -160,6 +165,7 @@
       <!--Groups and submenu-->
       <IDSymbol name="GroupForSubmenu" value="0x1020" />
       <IDSymbol name="GroupForCommands" value="0x1021" />
+      <IDSymbol name="GroupForSettings" value="0x1022" />
       <IDSymbol name="Submenu" value="0x0100" />
       
       <!--Commands-->
