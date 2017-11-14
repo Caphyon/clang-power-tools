@@ -90,10 +90,10 @@ namespace ClangPowerTools
 
     private string GetTidyParameters(TidyOptions aTidyOptions, TidyChecks aTidyChecks)
     {
-      string parameters = aTidyOptions.Fix ? $" {ScriptConstants.kTidyFix} ''-*," : $" {ScriptConstants.kTidy} ''-*,";
+      string parameters = aTidyOptions.Fix ? $" {ScriptConstants.kTidyFix} ''-*" : $" {ScriptConstants.kTidy} ''-*";
      
       if (null != aTidyOptions.TidyChecks && 0 < aTidyOptions.TidyChecks.Length)
-        parameters = $"{parameters}{String.Join(",", aTidyOptions.TidyChecks)}''";
+        parameters = $"{parameters},{String.Join(",", aTidyOptions.TidyChecks)}''";
       else
       {
         foreach (PropertyInfo prop in aTidyChecks.GetType().GetProperties())
