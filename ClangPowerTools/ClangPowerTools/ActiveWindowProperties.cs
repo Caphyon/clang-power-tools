@@ -15,7 +15,8 @@ namespace ClangPowerTools
       activeWindow.Activate();
 
       var projectItem = activeWindow.ProjectItem;
-      SelectContainingProject(aDte, projectItem);
+      if( null != projectItem )
+        SelectContainingProject(aDte, projectItem);
       
       return activeWindow.ProjectItem;
     }
