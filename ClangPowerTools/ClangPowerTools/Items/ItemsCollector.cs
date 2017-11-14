@@ -33,7 +33,7 @@ namespace ClangPowerTools
 
     public void CollectSelectedFiles(DTE2 aDte, ProjectItem aProjectItem)
     {
-      // the command has been given from tab file
+      // if the command has been given from tab file
       // will be just one file selected
       if (null != aProjectItem)
       {
@@ -62,10 +62,7 @@ namespace ClangPowerTools
     public void AddProjectItem(ProjectItem aItem)
     {
       if (kAcceptedExtensionTypes.Contains(Path.GetExtension(aItem.Name).ToLower()))
-      {
-        //IVsHierarchy hierarchy = AutomationUtil.GetProjectHierarchy(mServiceProvider, aItem.ContainingProject);
         mItems.Add(new SelectedProjectItem(aItem));
-      }
     }
 
     #endregion
