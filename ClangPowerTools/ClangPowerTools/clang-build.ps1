@@ -1457,7 +1457,7 @@ Clear-Host # clears console
 $bParams = $PSCmdlet.MyInvocation.BoundParameters
 if ($bParams)
 {
-  [string] $paramStr = "Invocation arguments: `n"
+  [string] $paramStr = "clang-build.ps1 invocation args: `n"
   foreach ($key in $bParams.Keys)
   {
     $paramStr += "  $($key) = $($bParams[$key]) `n"
