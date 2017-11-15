@@ -1434,7 +1434,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   #-----------------------------------------------------------------------------------------------
   # PRINT DIAGNOSTICS
 
-  if ($clangJobs.Count -gt 1)
+  if ($clangJobs.Count -ge 1)
   {
     Write-Verbose "Clang job tool: $exeToCall"
     Write-Verbose "Clang job args[0]: $($clangJobs[0].ArgumentList)"
