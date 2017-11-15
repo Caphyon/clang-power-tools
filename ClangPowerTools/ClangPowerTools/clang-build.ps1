@@ -1429,7 +1429,16 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
                                            'ArgumentList'    = $exeArgs;
                                            'File'            = $cpp }
     $clangJobs += $newJob
-  }  
+  }
+   
+  #-----------------------------------------------------------------------------------------------
+  # PRINT DIAGNOSTICS
+
+  if ($clangJobs.Count -gt 1)
+  {
+    Write-Verbose "Clang job tool: $exeToCall"
+    Write-Verbose "Clang job args[0]: $($clangJobs[0].ArgumentList)"
+  }
   
   #-----------------------------------------------------------------------------------------------
   # RUN CLANG JOBS
