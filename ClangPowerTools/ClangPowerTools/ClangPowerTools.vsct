@@ -29,7 +29,7 @@
 
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0000" />
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0000" />
-      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForStopClang" priority="0x0001" />
+      <!--<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForStopClang" priority="0x0001" />-->
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0002" />
 
       <Group guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" priority="0x0000">
@@ -59,6 +59,7 @@
 
       <Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0002" type="Button">
         <Icon guid="guidImageStopClang" id="StopClang" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Stop Clang</ButtonText>
         </Strings>
@@ -89,14 +90,14 @@
       <Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0002" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
         <Strings>
-          <ButtonText>Settings</ButtonText>
+          <ButtonText>Stop Clang</ButtonText>
         </Strings>
       </Button>
       
       <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0003" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
         <Strings>
-          <ButtonText>Stop Clang</ButtonText>
+          <ButtonText>Settings</ButtonText>
         </Strings>
       </Button>
 
@@ -154,9 +155,9 @@
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
     </CommandPlacement>
 
-    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForStopClang" priority="0x0002">
+    <!--<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForStopClang" priority="0x0002">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
-    </CommandPlacement>
+    </CommandPlacement>-->
     
     <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0003">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
@@ -171,8 +172,8 @@
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
     </CommandPlacement>
 
-    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0000">
-      <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForStopClang" />
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0002">
+      <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
     </CommandPlacement>
     
     <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0000">
@@ -189,7 +190,7 @@
       <!--Groups and submenu-->
       <IDSymbol name="GroupForSubmenu" value="0x1020" />
       <IDSymbol name="GroupForCommands" value="0x1021" />
-      <IDSymbol name="GroupForStopClang" value="0x1023" />
+      <!--<IDSymbol name="GroupForStopClang" value="0x1023" />-->
       <IDSymbol name="GroupForSettings" value="0x1022" />
       <IDSymbol name="Submenu" value="0x0100" />
 

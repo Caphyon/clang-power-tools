@@ -97,7 +97,7 @@ namespace ClangPowerTools
         edition, version, mCommandsController);
 
       SettingsCommand SettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
-      StopClang stopClang = new StopClang(this, CommandSet, CommandIds.kStopClang);
+      StopClang stopClang = new StopClang(this, CommandSet, CommandIds.kStopClang, mCommandsController);
     }
 
     private void OnBuildBegin(EnvDTE.vsBuildScope Scope, EnvDTE.vsBuildAction Action)
