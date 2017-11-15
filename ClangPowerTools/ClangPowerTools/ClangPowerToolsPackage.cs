@@ -6,6 +6,7 @@ using EnvDTE;
 using EnvDTE80;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Shell.Interop;
+using ClangPowerTools.Commands;
 
 namespace ClangPowerTools
 {
@@ -96,6 +97,7 @@ namespace ClangPowerTools
         edition, version, mCommandsController);
 
       SettingsCommand SettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
+      StopClang stopClang = new StopClang(this, CommandSet, CommandIds.kStopClang);
     }
 
     private void OnBuildBegin(EnvDTE.vsBuildScope Scope, EnvDTE.vsBuildAction Action)
