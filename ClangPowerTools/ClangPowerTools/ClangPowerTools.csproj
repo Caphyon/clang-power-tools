@@ -75,7 +75,8 @@
     <Compile Include="AutomationUtil.cs" />
     <Compile Include="ClangTidyOptions.cs" />
     <Compile Include="Commands\BasicCommand.cs" />
-    <Compile Include="ClangCheckAttribute.cs" />
+    <Compile Include="Commands\StopClang.cs" />
+    <Compile Include="DialogPages\ClangCheckAttribute.cs" />
     <Compile Include="Commands\ClangCommand.cs" />
     <Compile Include="Commands\CommandIds.cs" />
     <Compile Include="Commands\CommandsController.cs" />
@@ -283,8 +284,10 @@
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
