@@ -1450,6 +1450,24 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 # Script entry point
 
 Clear-Host # clears console
+
+#-------------------------------------------------------------------------------------------------
+# Print script parameters
+
+$bParams = $PSCmdlet.MyInvocation.BoundParameters
+if ($bParams)
+{
+  [string] $paramStr = "Invocation arguments: `n"
+  foreach ($key in $bParams.Keys)
+  {
+    $paramStr += "  $($key) = $($bParams[$key]) `n"
+  }
+  Write-Verbose $paramStr
+}
+
+#-------------------------------------------------------------------------------------------------
+# Script entry point
+
 Write-Verbose "CPU logical core count: $kLogicalCoreCount"
 
 # If LLVM is not in PATH try to detect it automatically
