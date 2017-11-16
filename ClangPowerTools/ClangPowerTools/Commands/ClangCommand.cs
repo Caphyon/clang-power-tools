@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Shell;
-using EnvDTE80;
 
 namespace ClangPowerTools
 {
@@ -9,6 +8,15 @@ namespace ClangPowerTools
   {
     #region Members
 
+    protected static CommandsController mCommandsController = null;
+    protected ItemsCollector mItemsCollector;
+    protected static RunningProcesses mRunningProcesses = new RunningProcesses();
+
+    private OutputManager mOutputManager;
+    private ErrorsManager mErrorsManager;
+    private GeneralOptions mGeneralOptions;
+    private PowerShellWrapper mPowerShell = new PowerShellWrapper();
+    private ScriptBuiler mScriptBuilder;
     private const string kVs15Version = "2017";
     private Dictionary<string, string> mVsVersions = new Dictionary<string, string>
     {
@@ -18,16 +26,6 @@ namespace ClangPowerTools
       {"14.0", "2015"},
       {"15.0", "2017"}
     };
-
-    protected OutputManager mOutputManager;
-    protected ErrorsManager mErrorsManager;
-
-    protected static CommandsController mCommandsController = null;
-    protected ItemsCollector mItemsCollector;
-    protected GeneralOptions mGeneralOptions;
-
-    protected PowerShellWrapper mPowerShell = new PowerShellWrapper();
-    protected ScriptBuiler mScriptBuilder;
 
     #endregion
 
@@ -69,8 +67,12 @@ namespace ClangPowerTools
       mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
       foreach (var item in mItemsCollector.GetItems)
       {
+        if (!mCommandsController.Running)
+          break;
+
         var script = mScriptBuilder.GetScript(item, item.GetName());
-        mPowerShell.Invoke(script);
+        var process = mPowerShell.Invoke(script);
+        mRunningProcesses.Add(process);
         if (mOutputManager.MissingLlvm)
         {
           mOutputManager.AddMessage(ErrorParserConstants.kMissingLlvmMessage);

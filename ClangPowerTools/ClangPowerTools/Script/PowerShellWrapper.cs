@@ -14,12 +14,12 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public void Invoke(string aScript)
+    public Process Invoke(string aScript)
     {
-      Process p = new Process();
+      Process process = new Process();
       try
       {
-        p.StartInfo = new ProcessStartInfo()
+        process.StartInfo = new ProcessStartInfo()
         {
           FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}",
           RedirectStandardError = true,
@@ -29,18 +29,19 @@ namespace ClangPowerTools
           Arguments = aScript
         };
 
-        p.ErrorDataReceived += DataErrorHandler;
-        p.OutputDataReceived += DataHandler;
-        p.Start();
-        p.BeginErrorReadLine();
-        p.BeginOutputReadLine();
-        p.WaitForExit();
+        process.ErrorDataReceived += DataErrorHandler;
+        process.OutputDataReceived += DataHandler;
+        process.Start();
+        process.BeginErrorReadLine();
+        process.BeginOutputReadLine();
+        process.WaitForExit();
       }
       finally
       {
-        p.ErrorDataReceived -= DataErrorHandler;
-        p.ErrorDataReceived -= DataHandler;
+        process.ErrorDataReceived -= DataErrorHandler;
+        process.ErrorDataReceived -= DataHandler;
       }
+      return process;
     }
 
     #endregion

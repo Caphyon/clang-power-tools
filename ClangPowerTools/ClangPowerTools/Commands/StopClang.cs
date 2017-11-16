@@ -37,7 +37,11 @@ namespace ClangPowerTools.Commands
     private void MenuItemCallback(object sender, EventArgs e)
     {
       mCommandsController.Running = false;
-      MessageBox.Show("Stop Clang !! NOW !!!");
+     // MessageBox.Show("Stop Clang !! NOW !!!");
+      var task = System.Threading.Tasks.Task.Run(() =>
+      {
+        mRunningProcesses.KillAll();
+      });
     }
   }
 }

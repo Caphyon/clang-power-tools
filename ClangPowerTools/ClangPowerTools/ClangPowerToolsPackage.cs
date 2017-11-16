@@ -82,8 +82,6 @@ namespace ClangPowerTools
       SettingsCommand SettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
     }
 
-
-
     #endregion
   }
 }
