@@ -9,17 +9,21 @@ namespace ClangPowerTools
   {
     #region Members
 
-    protected DTE2 mDte;
-    protected string mVsEdition;
-    protected string mVsVersion;
-    protected const string kVs15Version = "2017";
+    private const string kVs15Version = "2017";
+    private Dictionary<string, string> mVsVersions = new Dictionary<string, string>
+    {
+      {"11.0", "2010"},
+      {"12.0", "2012"},
+      {"13.0", "2013"},
+      {"14.0", "2015"},
+      {"15.0", "2017"}
+    };
 
     protected OutputManager mOutputManager;
     protected ErrorsManager mErrorsManager;
 
-    protected CommandsController mCommandsController;
+    protected static CommandsController mCommandsController = null;
     protected ItemsCollector mItemsCollector;
-
     protected GeneralOptions mGeneralOptions;
 
     protected PowerShellWrapper mPowerShell = new PowerShellWrapper();
@@ -27,19 +31,25 @@ namespace ClangPowerTools
 
     #endregion
 
+    #region Properties
+
+    protected string VsEdition { get; set; }
+    protected string VsVersion { get; set; }
+
+    #endregion
 
     #region Constructor
 
-    public ClangCommand(Package aPackage, Guid aGuid, int aId, DTE2 aDte, 
-      string aEdition, string aVersion, CommandsController aCommandsController) 
-        : base(aPackage, aGuid, aId)
+    public ClangCommand(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
-      mDte = aDte;
-      mVsEdition = aEdition;
-      mVsVersion = aVersion;
-      mCommandsController = aCommandsController;
+      VsEdition = DTEObj.Edition;
+      mVsVersions.TryGetValue(DTEObj.Version, out string version);
+      VsVersion = version;
 
-      mErrorsManager = new ErrorsManager(Package, mDte);
+      if( null == mCommandsController )
+        mCommandsController = new CommandsController(ServiceProvider, DTEObj);
+
+      mErrorsManager = new ErrorsManager(Package, DTEObj);
       mGeneralOptions = (GeneralOptions)Package.GetDialogPage(typeof(GeneralOptions));
     }
 
@@ -50,9 +60,10 @@ namespace ClangPowerTools
     protected void RunScript(string aCommandName, TidyOptions mTidyOptions = null, TidyChecks mTidyChecks = null)
     {
       mScriptBuilder = new ScriptBuiler();
-      mScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks, mDte, mVsEdition, mVsVersion);
-     
-      mOutputManager = new OutputManager(mDte);
+      mScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks, 
+        DTEObj, VsEdition, VsVersion);
+
+      mOutputManager = new OutputManager(DTEObj);
       InitPowerShell();
       ClearWindows(aCommandName);
       mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
@@ -80,19 +91,19 @@ namespace ClangPowerTools
     protected List<IItem> CollectSelectedItems()
     {
       mItemsCollector = new ItemsCollector(Package);
-      mItemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));
+      mItemsCollector.CollectSelectedFiles(DTEObj, ActiveWindowProperties.GetProjectItemOfActiveWindow(DTEObj));
       return mItemsCollector.GetItems;
     }
 
     protected void LoadAllProjects()
     {
-      if (kVs15Version != mVsVersion)
+      if (kVs15Version != VsVersion)
         return;
       Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(Package);
       solutionLoader.EnsureSolutionProjectsAreLoaded();
     }
 
-    protected void SaveActiveDocuments() => mDte.Documents.SaveAll();
+    protected void SaveActiveDocuments() => DTEObj.Documents.SaveAll();
 
     #endregion
 

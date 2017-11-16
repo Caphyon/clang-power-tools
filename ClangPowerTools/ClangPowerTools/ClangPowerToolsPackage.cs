@@ -45,16 +45,6 @@ namespace ClangPowerTools
     /// </summary>
     public const string PackageGuidString = "f564f9d3-01ae-493e-883b-18deebdb975e";
     public static readonly Guid CommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
-    private Dictionary<string, string> mVsVersions = new Dictionary<string, string>
-    {
-      {"11.0", "2010"},
-      {"12.0", "2012"},
-      {"13.0", "2013"},
-      {"14.0", "2015"},
-      {"15.0", "2017"}
-    };
-    private DTE2 mDte;
-    private CommandsController mCommandsController;
 
     #endregion
 
@@ -82,29 +72,17 @@ namespace ClangPowerTools
     protected override void Initialize()
     {
       base.Initialize();
-      mDte = (DTE2)GetService(typeof(DTE));
-      mDte.Events.BuildEvents.OnBuildBegin += 
-        new _dispBuildEvents_OnBuildBeginEventHandler(this.OnBuildBegin);
 
-      string edition = mDte.Edition;
-      mVsVersions.TryGetValue(mDte.Version, out string version);
-      mCommandsController = new CommandsController(this, mDte);
+      TidyCommand TidyCmd = new TidyCommand(this, CommandSet, CommandIds.kTidyId);
 
-      TidyCommand TidyCmd = new TidyCommand(this, CommandSet, CommandIds.kTidyId, mDte,
-       edition, version, mCommandsController);
+      CompileCommand CompileCmd = new CompileCommand(this, CommandSet, CommandIds.kCompileId);
 
-      CompileCommand CompileCmd = new CompileCommand(this, CommandSet, CommandIds.kCompileId, mDte,
-        edition, version, mCommandsController);
+      StopClang stopClang = new StopClang(this, CommandSet, CommandIds.kStopClang);
 
       SettingsCommand SettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
-      StopClang stopClang = new StopClang(this, CommandSet, CommandIds.kStopClang, mCommandsController);
     }
 
-    private void OnBuildBegin(EnvDTE.vsBuildScope Scope, EnvDTE.vsBuildAction Action)
-    {
-      ErrorsManager errorsManager = new ErrorsManager(this, mDte);
-      errorsManager.Clear();
-    }
+
 
     #endregion
   }

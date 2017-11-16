@@ -18,11 +18,9 @@ namespace ClangPowerTools
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public CompileCommand(Package aPackage, Guid aGuid, int aId, DTE2 aDte,
-      string aEdition, string aVersion, CommandsController aCommandsController) 
-        : base(aPackage, aGuid, aId, aDte, aEdition, aVersion, aCommandsController)
+    public CompileCommand(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
-      if (this.ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+      if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
         var menuCommand = new OleMenuCommand(this.MenuItemCallback, menuCommandID);
