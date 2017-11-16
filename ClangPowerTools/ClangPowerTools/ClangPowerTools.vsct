@@ -29,7 +29,6 @@
 
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0000" />
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0000" />
-      <!--<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForStopClang" priority="0x0001" />-->
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0002" />
 
       <Group guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" priority="0x0000">
@@ -155,10 +154,6 @@
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
     </CommandPlacement>
 
-    <!--<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForStopClang" priority="0x0002">
-      <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
-    </CommandPlacement>-->
-    
     <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0003">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
     </CommandPlacement>
@@ -190,7 +185,6 @@
       <!--Groups and submenu-->
       <IDSymbol name="GroupForSubmenu" value="0x1020" />
       <IDSymbol name="GroupForCommands" value="0x1021" />
-      <!--<IDSymbol name="GroupForStopClang" value="0x1023" />-->
       <IDSymbol name="GroupForSettings" value="0x1022" />
       <IDSymbol name="Submenu" value="0x0100" />
 
