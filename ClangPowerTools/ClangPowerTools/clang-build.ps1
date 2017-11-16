@@ -745,6 +745,34 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
   return $stdafxPch
 }
 
+function Evaluate-MSBuildCondition([Parameter(Mandatory=$true)][string] $condition)
+{
+  Write-Debug "Start evaluate MSBuild expression $condition"
+
+  $msbuildToPsRules = @{ "([^a-zA-Z])=="     = '$1 -eq '
+                       ; "([^a-zA-Z])!="     = '$1 -ne '
+                       ; "([^a-zA-Z])<="     = '$1 -le ' 
+                       ; "([^a-zA-Z])>="     = '$1 -ge '
+                       ; "([^a-zA-Z])<"      = '$1 -lt ' 
+                       ; "([^a-zA-Z])>"      = '$1 -gt '
+                       ; "([^a-zA-Z])or"     = '$1 -or '
+                       ; "([^a-zA-Z])and"    = '$1 -and '
+                       ; "\$\(([a-zA-Z]+)\)" = '$$$1' # remove () from ($var)
+                       ; "\'"         = '"'           # replace single quotes with doubles
+                       ; "exists\((.+)\)"   = "(Test-Path(`$1))"
+                       }
+  foreach ($ruleName in $msbuildToPsRules.Keys)
+  {
+    $condition = $condition -replace $ruleName, $msbuildToPsRules[$ruleName]
+  }
+
+  Write-Debug "Intermediate PS expression : $condition"
+  $res = Invoke-Expression $condition
+  Write-Debug "Evaluated expression to : $res"
+
+  return $res -eq $true
+}
+
 <#
 .DESCRIPTION
 A wrapper over the XmlDOcument.SelectNodes function. For convenience.
@@ -868,6 +896,9 @@ function Get-ProjectDefaultConfigPlatformCondition()
   }
 
   Write-Verbose "Configuration platform: $configPlatformName"
+  [string[]] $configAndPlatform = $configPlatformName.Split('|')
+  Set-Variable -Name "Configuration" -Value $configAndPlatform[0] -Scope Global
+  Set-Variable -Name "Platform"      -Value $configAndPlatform[1] -Scope Global
 
   return "'`$(Configuration)|`$(Platform)'=='$configPlatformName'"
 }
@@ -878,7 +909,7 @@ function Get-ProjectDefaultConfigPlatformCondition()
    one we selected. 
    This is needed so that our XPath selectors don't get confused when looking for data.
 #>
-function SanitizeProjectFile([string]$configPlatformCondition, [xml]$projectFile)
+function SanitizeProjectFile([xml]$projectFile)
 {
   [System.Xml.XmlElement[]] $configNodes = Help:Get-ProjectFileNodes -projectFile $projectFile `
                                                                      -xpath $kVcxprojXpathConfigPlatformSpecificElements
@@ -887,7 +918,7 @@ function SanitizeProjectFile([string]$configPlatformCondition, [xml]$projectFile
   {
     [string] $nodeConfigPlatform = $node.GetAttribute("Condition")
 
-    if ($nodeConfigPlatform -eq $configPlatformCondition)
+    if (Evaluate-MSBuildCondition($nodeConfigPlatform))
     {
       # Since we leave only one config platform in the project, we don't need 
       # the Condition field for its config xml elements anymore
@@ -992,8 +1023,7 @@ function LoadProject([string] $vcxprojPath)
   
   [string]$configPlatformCondition = Get-ProjectDefaultConfigPlatformCondition
 
-  SanitizeProjectFile -projectFile             $global:projectFiles[0] `
-                      -configPlatformCondition $configPlatformCondition
+  SanitizeProjectFile -projectFile $global:projectFiles[0]
    
   # see if we can find a Directory.Build.props automatic prop sheet
   [string[]] $propSheetAbsolutePaths = @()
@@ -1023,8 +1053,7 @@ function LoadProject([string] $vcxprojPath)
   {
     [xml] $propSheetXml = Get-Content $propSheetPath
 
-    SanitizeProjectFile -projectFile             $propSheetXml `
-                        -configPlatformCondition $configPlatformCondition
+    SanitizeProjectFile -projectFile $propSheetXml
 
     $global:projectFiles += $propSheetXml
   }
