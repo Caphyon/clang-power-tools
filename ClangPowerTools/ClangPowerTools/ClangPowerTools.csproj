@@ -109,7 +109,6 @@
     <Compile Include="Commands\SettingsCommand.cs" />
     <Compile Include="SilentFileChanger\SilentFileChanger.cs" />
     <Compile Include="SilentFileChanger\SilentFileChangerGuard.cs" />
-    <Compile Include="DialogPages\StringArrayConverter.cs" />
     <Compile Include="DialogPages\TidyChecks.cs">
       <SubType>Component</SubType>
     </Compile>
