@@ -303,7 +303,7 @@ Function Fail-Script([parameter(Mandatory=$false)][string] $msg = "Got errors.")
 Function Set-Var([parameter(Mandatory=$false)][string] $name,
                  [parameter(Mandatory=$false)][string] $value)
 {
-  Write-Debug "SET_VAR $name : $value"
+  Write-Verbose "SET_VAR $name : $value"
   Set-Variable -name $name -Value $value -Scope Global
   
   $global:ProjectSpecificVariables.Add($name) | Out-Null
@@ -311,11 +311,11 @@ Function Set-Var([parameter(Mandatory=$false)][string] $name,
 
 Function Clear-Vars()
 {
-  Write-Debug "Clearing project specific variables"
+  Write-Verbose "Clearing project specific variables"
 
   foreach ($var in $global:ProjectSpecificVariables)
   {
-    Write-Debug "  DEL_VAR $var"
+    Write-Verbose "  DEL_VAR $var"
     Remove-Variable -name $var -scope Global
   }
 
