@@ -889,6 +889,9 @@ function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpa
       # handle corner cases when we have separators at beginning or at end
       $nodes[0].InnerText = ($nodes[0].InnerText -replace ";$", "")
       $nodes[0].InnerText = ($nodes[0].InnerText -replace "^;", "")
+
+      # we need to evaluate the expression to take properties into account
+      $nodes[0].InnerText = Evaluate-MSBuildExpression $nodes[0].InnerText
     } 
     return $nodes
   }
