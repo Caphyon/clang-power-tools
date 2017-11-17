@@ -170,7 +170,6 @@ Set-Variable -name kVcxprojXpathPropGroupElements `
              -value "/ns:Project/ns:PropertyGroup/*" `
              -option Constant
 
-Set-Variable -name kVStudioVarProjDir          -value '$(ProjectDir)'   -option Constant
 Set-Variable -name kVSDefaultWinSDK            -value '8.1'             -option Constant
 Set-Variable -name kVSDefaultWinSDK_XP         -value '7.0'             -option Constant
 
@@ -1176,17 +1175,10 @@ Function Get-ProjectAdditionalIncludes([Parameter(Mandatory=$true)][string] $vcx
   
   foreach ($token in $tokens)
   {
-    if ($token -eq $kVStudioVarProjDir)
+    [string] $includePath = Canonize-Path -base $projDir -child $token -ignoreErrors
+    if (![string]::IsNullOrEmpty($includePath))
     {
-      $projDir
-    }
-    Else
-    {
-      [string] $includePath = Canonize-Path -base $projDir -child $token -ignoreErrors
-      if (![string]::IsNullOrEmpty($includePath))
-      {
-        $includePath
-      }
+      $includePath
     }
   }
 }
