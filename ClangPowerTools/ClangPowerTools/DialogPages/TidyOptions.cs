@@ -1,24 +1,18 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using ClangPowerTools.Properties;
+using Microsoft.VisualStudio.Shell;
+using System;
 using System.ComponentModel;
+using System.Linq;
+using System.Web.UI.WebControls;
 
 namespace ClangPowerTools
 {
+  [Serializable]
   public class TidyOptions : DialogPage
   {
     #region Members
 
     private string[] mTidyChecks;
-
-    #endregion
-
-    #region Methods
-
-    public override void LoadSettingsFromStorage()
-    {
-      base.LoadSettingsFromStorage();
-      TidyChecks = UseUserSettings ? mTidyChecks : DefaultOptions.kTidyChecks;
-      UseUserSettings = true;
-    }
 
     #endregion
 
@@ -46,6 +40,40 @@ namespace ClangPowerTools
     public bool UseUserSettings { get; set; }
 
     #endregion
+
+    [Browsable(false)]
+    public ClangTidyOptions SavedUserSettings
+    {
+      get { return Settings.Default.TidyOptions; }
+      set { Settings.Default.TidyOptions = value; }
+    }
+
+    public override void SaveSettingsToStorage()
+    {
+      SavedUserSettings.TidyChecks = this.TidyChecks.ToList();
+      SavedUserSettings.Fix = this.Fix;
+      SavedUserSettings.UseUserSettings = this.UseUserSettings;
+
+      base.SaveSettingsToStorage();
+      Settings.Default.Save();
+    }
+
+    #region Methods
+
+    public override void LoadSettingsFromStorage()
+    {
+      if (SavedUserSettings == null)
+        SavedUserSettings = new ClangTidyOptions();
+
+      this.UseUserSettings = SavedUserSettings.UseUserSettings;
+      this.TidyChecks = UseUserSettings ? SavedUserSettings.TidyChecks.ToArray() : DefaultOptions.kTidyChecks;
+      this.Fix = SavedUserSettings.Fix;
+
+      base.LoadSettingsFromStorage();
+    }
+
+    #endregion
+
 
   }
 }
