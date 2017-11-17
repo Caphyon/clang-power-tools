@@ -749,8 +749,8 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
   return $stdafxPch
 }
 
-function Evaluate-MSBuildExpression([Parameter(Mandatory=$true)][string] $expression)
-{
+function Evaluate-MSBuildExpression([string] $expression)
+{  
   Write-Debug "Start evaluate MSBuild expression $expression"
 
   $msbuildToPsRules = (  ("([^a-zA-Z])=="    , '$1 -eq ' )`
@@ -782,7 +782,7 @@ function Evaluate-MSBuildExpression([Parameter(Mandatory=$true)][string] $expres
   {
     write-debug $_.Exception.Message
   }
-  
+
   Write-Debug "Evaluated expression to : $res"
 
   return $res
