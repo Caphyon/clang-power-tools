@@ -2,6 +2,18 @@
 
 Changelog of Clang Power Tools extension
 
+### Clang Power Tools 1.7.0
+
+Improvements:
+* Added support for `Track Active Item in Solution Explorer` option set to `Off`.
+* Verbose-Mode now logs `clang-build.ps1` and `clang++` invocation arguments
+
+Bugs:
+* Fixed the `user settings saving`.
+* Fixed the script execution for clang-tidy options.
+* Moved `Clang Power Tools` above the `Properties` item in `Context Menu`.
+
+
 ### Clang Power Tools 1.6.0
 
 Improvements:
