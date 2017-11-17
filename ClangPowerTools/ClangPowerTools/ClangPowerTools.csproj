@@ -73,8 +73,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AutomationUtil.cs" />
+    <Compile Include="ClangTidyOptions.cs" />
     <Compile Include="Commands\BasicCommand.cs" />
-    <Compile Include="DialogPages\ClangCheckAttribute.cs" />
+    <Compile Include="ClangCheckAttribute.cs" />
     <Compile Include="Commands\ClangCommand.cs" />
     <Compile Include="Commands\CommandIds.cs" />
     <Compile Include="Commands\CommandsController.cs" />
@@ -89,7 +90,14 @@
     <Compile Include="DialogPages\GeneralOptions.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="ClangOptions.cs" />
     <Compile Include="ProjectConfiguration.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Compile>
     <Compile Include="SilentFileChanger\SilentFileChangerEqualityComparer.cs" />
     <Compile Include="Items\IItem.cs" />
     <Compile Include="Items\ItemsCollector.cs" />
@@ -157,6 +165,12 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
+    <Content Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -191,6 +205,7 @@
       <HintPath>..\packages\Microsoft.VisualStudio.OLE.Interop.7.10.6070\lib\Microsoft.VisualStudio.OLE.Interop.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.Settings.14.0, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=x86" />
     <Reference Include="Microsoft.VisualStudio.Shell.14.0, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Shell.14.0.14.3.25407\lib\Microsoft.VisualStudio.Shell.14.0.dll</HintPath>
       <Private>True</Private>
@@ -270,6 +285,7 @@
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System.Design" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />

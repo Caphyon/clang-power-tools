@@ -1,8 +1,13 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using ClangPowerTools.Properties;
+using Microsoft.VisualStudio.Shell;
+using System;
 using System.ComponentModel;
+using System.Linq;
+using System.Web.UI.WebControls;
 
 namespace ClangPowerTools
 {
+  [Serializable]
   public class GeneralOptions : DialogPage
   {
     #region Members
@@ -48,6 +53,46 @@ namespace ClangPowerTools
     {
       get => 0 == mClangFlags.Length ? DefaultOptions.kClangFlags : mClangFlags;
       set => mClangFlags = value;
+    }
+
+    [Browsable(false)]
+    public ClangOptions SavedUserSettings
+    {
+      get { return Settings.Default.GeneralOptions; }
+      set { Settings.Default.GeneralOptions = value; }
+    }
+
+    #endregion
+
+    #region DialogPage Save and Load implementation 
+
+    public override void SaveSettingsToStorage()
+    {
+      SavedUserSettings.ProjectsToIgnore = this.ProjectsToIgnore.ToList();
+      SavedUserSettings.FilesToIgnore = this.FilesToIgnore.ToList();
+      SavedUserSettings.Continue = this.Continue;
+      SavedUserSettings.TreatWarningsAsErrors = this.TreatWarningsAsErrors;
+      SavedUserSettings.VerboseMode = this.VerboseMode;
+      SavedUserSettings.ClangFlags = this.ClangFlags.ToList();
+
+      base.SaveSettingsToStorage();
+      Settings.Default.Save();
+
+    }
+
+    public override void LoadSettingsFromStorage()
+    {
+      if (SavedUserSettings == null)
+        SavedUserSettings = new ClangOptions();
+
+      this.ProjectsToIgnore = SavedUserSettings.ProjectsToIgnore.ToArray();
+      this.FilesToIgnore = SavedUserSettings.FilesToIgnore.ToArray();
+      this.Continue = SavedUserSettings.Continue;
+      this.TreatWarningsAsErrors = SavedUserSettings.TreatWarningsAsErrors;
+      this.VerboseMode = SavedUserSettings.VerboseMode;
+      this.ClangFlags = SavedUserSettings.ClangFlags.ToArray();
+
+      base.LoadSettingsFromStorage();
     }
 
     #endregion
