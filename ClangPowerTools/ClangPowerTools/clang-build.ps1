@@ -162,8 +162,12 @@ Set-Variable -name kVcxprojXpathDefaultConfigPlatform `
              -value "ns:Project/ns:ItemGroup[@Label='ProjectConfigurations']/ns:ProjectConfiguration[1]" `
              -option Constant
 
-Set-Variable -name kVcxprojXpathConfigPlatformSpecificElements `
-             -value "//*[starts-with(@Condition, ""'`$(Configuration)|`$(Platform)'"")]" `
+Set-Variable -name kVcxprojXpathConditionedElements `
+             -value "//*[@Condition]" `
+             -option Constant
+
+Set-Variable -name kVcxprojXpathPropGroupElements `
+             -value "/ns:Project/ns:PropertyGroup/*" `
              -option Constant
 
 Set-Variable -name kVStudioVarProjDir          -value '$(ProjectDir)'   -option Constant
@@ -745,32 +749,53 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
   return $stdafxPch
 }
 
-function Evaluate-MSBuildCondition([Parameter(Mandatory=$true)][string] $condition)
+function Evaluate-MSBuildExpression([Parameter(Mandatory=$true)][string] $expression)
 {
-  Write-Debug "Start evaluate MSBuild expression $condition"
+  Write-Debug "Start evaluate MSBuild expression $expression"
 
-  $msbuildToPsRules = @{ "([^a-zA-Z])=="     = '$1 -eq '
-                       ; "([^a-zA-Z])!="     = '$1 -ne '
-                       ; "([^a-zA-Z])<="     = '$1 -le ' 
-                       ; "([^a-zA-Z])>="     = '$1 -ge '
-                       ; "([^a-zA-Z])<"      = '$1 -lt ' 
-                       ; "([^a-zA-Z])>"      = '$1 -gt '
-                       ; "([^a-zA-Z])or"     = '$1 -or '
-                       ; "([^a-zA-Z])and"    = '$1 -and '
-                       ; "\$\(([a-zA-Z]+)\)" = '$$$1' # remove () from ($var)
-                       ; "\'"         = '"'           # replace single quotes with doubles
-                       ; "exists\((.+)\)"   = "(Test-Path(`$1))"
-                       }
-  foreach ($ruleName in $msbuildToPsRules.Keys)
+  $msbuildToPsRules = (  ("([^a-zA-Z])=="    , '$1 -eq ' )`
+                       , ("([^a-zA-Z])!="    , '$1 -ne ' )`
+                       , ("([^a-zA-Z])<="    , '$1 -le ' )`
+                       , ("([^a-zA-Z])>="    , '$1 -ge ' )`
+                       , ("([^a-zA-Z])<"     , '$1 -lt ' )`
+                       , ("([^a-zA-Z])>"     , '$1 -gt ' )`
+                       , ("([^a-zA-Z])or"    , '$1 -or ' )`
+                       , ("([^a-zA-Z])and"   , '$1 -and ')`
+                       <# $(var) => $($var) #> `
+                       , ("\$\(([a-zA-Z]+)\)", '$$($$$1)')`
+                       , ("\'"               , '"'       )`
+                       , ('"'                , '""'      )`
+                       , ("exists\((.+)\)"   , "(Test-Path(`$1))")
+                       )
+  foreach ($rule in $msbuildToPsRules)
   {
-    $condition = $condition -replace $ruleName, $msbuildToPsRules[$ruleName]
+    $expression = $expression -replace $rule[0], $rule[1]
   }
 
-  Write-Debug "Intermediate PS expression : $condition"
-  $res = Invoke-Expression $condition
+  Write-Debug "Intermediate PS expression : $expression"
+
+  try
+  {
+    $res = Invoke-Expression "(`$s = ""$expression"")"
+  }
+  catch
+  {
+    write-debug $_.Exception.Message
+  }
+  
   Write-Debug "Evaluated expression to : $res"
 
-  return $res -eq $true
+  return $res
+}
+function Evaluate-MSBuildCondition([Parameter(Mandatory=$true)][string] $condition)
+{
+  Write-Debug "Evaluating condition $condition"
+  $expression = Evaluate-MSBuildExpression $condition
+
+  [bool] $res = (Invoke-Expression $expression) -eq $true
+  Write-Debug "Evaluated condition to $res" 
+
+  return $res
 }
 
 <#
@@ -903,6 +928,21 @@ function Get-ProjectDefaultConfigPlatformCondition()
   return "'`$(Configuration)|`$(Platform)'=='$configPlatformName'"
 }
 
+function LoadProjectFileProperties([xml] $projectFile)
+{
+  [System.Xml.XmlElement[]] $propNodes = Help:Get-ProjectFileNodes -projectFile $projectFile `
+                                                                   -xpath $kVcxprojXpathPropGroupElements
+  
+  foreach ($node in $propNodes)
+  {
+    [string] $propertyName  = $node.Name
+    [string] $propertyValue = Evaluate-MSBuildExpression($node.InnerText)
+
+    Write-Verbose "PROP_SET $propertyName : $propertyValue"
+    Set-Variable -Name $propertyName -Value $propertyValue -Scope Global
+  }
+}
+
 <#
 .DESCRIPTION
    Sanitizes a project xml file, by removing config-platform pairs different from the 
@@ -912,13 +952,13 @@ function Get-ProjectDefaultConfigPlatformCondition()
 function SanitizeProjectFile([xml]$projectFile)
 {
   [System.Xml.XmlElement[]] $configNodes = Help:Get-ProjectFileNodes -projectFile $projectFile `
-                                                                     -xpath $kVcxprojXpathConfigPlatformSpecificElements
+                                                                     -xpath $kVcxprojXpathConditionedElements
 
   foreach ($node in $configNodes)
   {
     [string] $nodeConfigPlatform = $node.GetAttribute("Condition")
 
-    if (Evaluate-MSBuildCondition($nodeConfigPlatform))
+    if ((Evaluate-MSBuildCondition($nodeConfigPlatform)) -eq $true)
     {
       # Since we leave only one config platform in the project, we don't need 
       # the Condition field for its config xml elements anymore
@@ -1023,6 +1063,7 @@ function LoadProject([string] $vcxprojPath)
   
   [string]$configPlatformCondition = Get-ProjectDefaultConfigPlatformCondition
 
+  Write-Debug "Sanitizing main project XML"
   SanitizeProjectFile -projectFile $global:projectFiles[0]
    
   # see if we can find a Directory.Build.props automatic prop sheet
@@ -1053,9 +1094,16 @@ function LoadProject([string] $vcxprojPath)
   {
     [xml] $propSheetXml = Get-Content $propSheetPath
 
+    Write-Debug "`nSanitizing property sheets $propSheetPath"
     SanitizeProjectFile -projectFile $propSheetXml
 
     $global:projectFiles += $propSheetXml
+  }
+
+  # we must load project properties, starting with the base prop sheets
+  for ([int]$i = $global:projectFiles.Count - 1; $i -ge 0; $i = $i - 1)
+  {
+    LoadProjectFileProperties $global:projectFiles[$i]
   }
 }
 
