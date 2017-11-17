@@ -299,6 +299,13 @@ Function Fail-Script([parameter(Mandatory=$false)][string] $msg = "Got errors.")
   Exit-Script($kScriptFailsExitCode)
 }
 
+Function Set-Var([parameter(Mandatory=$false)][string] $name,
+                 [parameter(Mandatory=$false)][string] $value)
+{
+  Write-Debug "SET_VARIABLE $name : $value"
+  Set-Variable -name $name -Value $value -Scope Global
+}
+
 Function Write-Message([parameter(Mandatory=$true)][string] $msg
                       ,[Parameter(Mandatory=$true)][System.ConsoleColor] $color)
 {
@@ -922,8 +929,8 @@ function Get-ProjectDefaultConfigPlatformCondition()
 
   Write-Verbose "Configuration platform: $configPlatformName"
   [string[]] $configAndPlatform = $configPlatformName.Split('|')
-  Set-Variable -Name "Configuration" -Value $configAndPlatform[0] -Scope Global
-  Set-Variable -Name "Platform"      -Value $configAndPlatform[1] -Scope Global
+  Set-Var -Name "Configuration" -Value $configAndPlatform[0]
+  Set-Var -Name "Platform"      -Value $configAndPlatform[1]
 
   return "'`$(Configuration)|`$(Platform)'=='$configPlatformName'"
 }
@@ -938,8 +945,7 @@ function LoadProjectFileProperties([xml] $projectFile)
     [string] $propertyName  = $node.Name
     [string] $propertyValue = Evaluate-MSBuildExpression($node.InnerText)
 
-    Write-Verbose "PROP_SET $propertyName : $propertyValue"
-    Set-Variable -Name $propertyName -Value $propertyValue -Scope Global
+    Set-Var -Name $propertyName -Value $propertyValue
   }
 }
 
@@ -1058,6 +1064,10 @@ function LoadProject([string] $vcxprojPath)
   $global:projectFiles = @([xml] (Get-Content $vcxprojPath))
 
   $global:vcxprojPath = $vcxprojPath
+
+  $projDir = Get-FileDirectory -filePath $global:vcxprojPath
+  Set-Var -name "ProjectDir" -value $projDir
+  
   $global:xpathNS     = New-Object System.Xml.XmlNamespaceManager($global:projectFiles[0].NameTable) 
   $global:xpathNS.AddNamespace("ns", $global:projectFiles[0].DocumentElement.NamespaceURI)
   
