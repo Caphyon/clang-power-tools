@@ -261,6 +261,7 @@ Set-Variable -name kVStudioDefaultPlatformToolset -Value "v141" -option Constant
 # Global variables
 
 [System.Collections.ArrayList] $global:FilesToDeleteWhenScriptQuits = @()
+[System.Collections.ArrayList] $global:ProjectSpecificVariables     = @()
 [Boolean]                      $global:FoundErrors                  = $false
 
 # current vcxproj and property sheets
@@ -304,6 +305,21 @@ Function Set-Var([parameter(Mandatory=$false)][string] $name,
 {
   Write-Debug "SET_VARIABLE $name : $value"
   Set-Variable -name $name -Value $value -Scope Global
+  
+  $global:ProjectSpecificVariables.Add($name) | Out-Null
+}
+
+Function Clear-Vars()
+{
+  Write-Debug "Clearing project specific variables"
+
+  foreach ($var in $global:ProjectSpecificVariables)
+  {
+    Write-Debug "  deleting $var"
+    Remove-Variable -name $var -scope Global
+  }
+
+  $global:ProjectSpecificVariables.Clear()
 }
 
 Function Write-Message([parameter(Mandatory=$true)][string] $msg
@@ -1534,6 +1550,11 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # RUN CLANG JOBS
 
   Run-ClangJobs -clangJobs $clangJobs
+
+  #-----------------------------------------------------------------------------------------------
+  # CLEAN GLOBAL VARIABLES SPECIFIC TO CURRENT PROJECT
+
+  Clear-Vars
 }
  
 #-------------------------------------------------------------------------------------------------
