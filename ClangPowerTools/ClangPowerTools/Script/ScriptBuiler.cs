@@ -16,18 +16,23 @@ namespace ClangPowerTools
 
     #endregion
 
+    #region Properties
+
+    public string DirectoryPath { get; set; }
+
+    #endregion
+
     #region Public Methods
 
     public string GetScript(IItem aItem, string aFileName)
     {
       string containingDirectoryPath = string.Empty;
-      string parentDirectoryPath = string.Empty;
       string script = $"{ScriptConstants.kScriptBeginning} ''{GetScriptPath()}''";
 
       if (aItem is SelectedProjectItem)
       {
         ProjectItem projectItem = aItem.GetObject() as ProjectItem;
-        parentDirectoryPath = new DirectoryInfo(projectItem.ContainingProject.FullName).Parent.FullName;
+        DirectoryPath = new DirectoryInfo(projectItem.ContainingProject.FullName).Parent.FullName;
         string containingProject = projectItem.ContainingProject.FullName;
         string containingProjectName = containingProject.Substring(containingProject.LastIndexOf('\\') + 1);
         script = $"{script} {ScriptConstants.kProject} {containingProjectName} {ScriptConstants.kFile} {aFileName} " +
@@ -36,10 +41,10 @@ namespace ClangPowerTools
       else if (aItem is SelectedProject)
       {
         Project project = aItem.GetObject() as Project;
-        parentDirectoryPath = new DirectoryInfo(project.FullName).Parent.FullName;
-        script = $"{script} {ScriptConstants.kProject} {aFileName} ''{ProjectConfiguration.GetConfiguration(project)}|{ProjectConfiguration.GetPlatform(project)}''";
+        DirectoryPath = new DirectoryInfo(project.FullName).Parent.FullName;
+        script = $"{script} {ScriptConstants.kProject} {aFileName}";
       }
-      return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{parentDirectoryPath}'' {ScriptConstants.kLiteral}'";
+      return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{DirectoryPath}'' {ScriptConstants.kLiteral}'";
     }
 
     public void ConstructParameters(GeneralOptions aGeneralOptions, TidyOptions aTidyOptions, 
