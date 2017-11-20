@@ -107,7 +107,7 @@
       <Bitmap guid="guidImages" href="Resources\Icon.png" usedList="bmpPic1" />
       <Bitmap guid="guidImageTidy" href="Resources\TidyIcon.png" usedList="Tidy" />
       <Bitmap guid="guidImageCompile" href="Resources\CompileIcon.png" usedList="Compile" />
-      <Bitmap guid="guidImageStopClang" href="Resources\delete.png" usedList="StopClang" />
+      <Bitmap guid="guidImageStopClang" href="Resources\StopCommandIcon.png" usedList="StopClang" />
       <Bitmap guid="guidImageSettings" href="Resources\SettingsIcon.png" usedList="Settings" />
 
     </Bitmaps>
