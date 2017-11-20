@@ -305,7 +305,10 @@ Function Set-Var([parameter(Mandatory=$false)][string] $name,
   Write-Verbose "SET_VAR $name : $value"
   Set-Variable -name $name -Value $value -Scope Global
   
-  $global:ProjectSpecificVariables.Add($name) | Out-Null
+  if (!$global:ProjectSpecificVariables.Contains($name))
+  {
+    $global:ProjectSpecificVariables.Add($name) | Out-Null
+  }
 }
 
 Function Clear-Vars()
@@ -356,7 +359,7 @@ Function Exists-Command([Parameter(Mandatory=$true)][string] $command)
 
 Function Get-FileDirectory([Parameter(Mandatory=$true)][string] $filePath)
 {
-  return ([System.IO.Path]::GetDirectoryName($filePath))
+  return ([System.IO.Path]::GetDirectoryName($filePath) + "\")
 }
 
 Function Get-FileName( [Parameter(Mandatory=$true)][string] $path
@@ -419,6 +422,30 @@ Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
 Function Get-MscVer()
 {
   return (Get-Item "$(Get-VisualStudio-Path)\VC\Tools\MSVC\" | Get-ChildItem).Name
+}
+
+Function InitializeMsBuildCurrentFileProperties([Parameter(Mandatory=$true)][string] $aFilePath)
+{
+  Set-Var -name "MSBuildThisFileFullPath"  -value $aFilePath
+  Set-Var -name "MSBuildThisFileExtension" -value ([IO.Path]::GetExtension($aFilePath))
+  Set-Var -name "MSBuildThisFile"          -value (Get-FileName -path $aFilePath)
+  Set-Var -name "MSBuildThisFileName"      -value (Get-FileName -path $aFilePath -noext)
+  Set-Var -name "MSBuildThisFileDirectory" -value (Get-FileDirectory -filePath $aFilePath)
+}
+
+Function InitializeMsBuildProjectProperties()
+{
+  Set-Var -name "MSBuildProjectExtension"  -value ([IO.Path]::GetExtension($global:vcxprojPath))
+  Set-Var -name "MSBuildProjectName"       -value (Get-FileName -path $global:vcxprojPath -noext)
+  Set-Var -name "MSBuildProjectDirectory"  -value (Get-FileDirectory -filePath $global:vcxprojPath)
+  Set-Var -name "MSBuildProgramFiles32"    -value "${Env:ProgramFiles(x86)}"
+
+  [string] $vsVer = "15.0"
+  if ($aVisualStudioVersion -eq "2015")
+  {
+    $vsVer = "14.0"
+  }
+  Set-Var -name "VisualStudioVersion"    -value "$vsVer"
 }
 
 Function Should-CompileProject([Parameter(Mandatory=$true)][string] $vcxprojPath)
@@ -784,7 +811,7 @@ function Evaluate-MSBuildExpression([string] $expression)
                        , ("([^a-zA-Z])or"    , '$1 -or ' )`
                        , ("([^a-zA-Z])and"   , '$1 -and ')`
                        <# $(var) => $($var) #> `
-                       , ("\$\(([a-zA-Z]+)\)", '$$($$$1)')`
+                       , ("\$\(([a-zA-Z0-9_]+)\)", '$$($$$1)')`
                        , ("\'"               , '"'       )`
                        , ('"'                , '""'      )`
                        , ("exists\((.+)\)"   , "(Test-Path(`$1))")
@@ -1082,6 +1109,9 @@ function LoadProject([string] $vcxprojPath)
   $global:projectFiles = @([xml] (Get-Content $vcxprojPath))
 
   $global:vcxprojPath = $vcxprojPath
+  
+  InitializeMsBuildProjectProperties
+  InitializeMsBuildCurrentFileProperties -aFilePath $global:vcxprojPath
 
   $projDir = Get-FileDirectory -filePath $global:vcxprojPath
   Set-Var -name "ProjectDir" -value $projDir
@@ -1120,6 +1150,7 @@ function LoadProject([string] $vcxprojPath)
   [array]::Reverse($propSheetAbsolutePaths)
   foreach ($propSheetPath in $propSheetAbsolutePaths)
   {
+    InitializeMsBuildCurrentFileProperties -aFilePath $propSheet
     [xml] $propSheetXml = Get-Content $propSheetPath
 
     Write-Debug "`nSanitizing property sheets $propSheetPath"
@@ -1133,6 +1164,8 @@ function LoadProject([string] $vcxprojPath)
   {
     LoadProjectFileProperties $global:projectFiles[$i]
   }
+  
+  InitializeMsBuildCurrentFileProperties -aFilePath $global:vcxprojPath  
 }
 
 <#
