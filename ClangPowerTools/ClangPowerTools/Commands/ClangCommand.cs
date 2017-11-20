@@ -11,6 +11,8 @@ namespace ClangPowerTools
     protected static CommandsController mCommandsController = null;
     protected ItemsCollector mItemsCollector;
     protected static RunningProcesses mRunningProcesses = new RunningProcesses();
+    protected List<string> mDirectoriesPath = new List<string>();
+
 
     private OutputManager mOutputManager;
     private ErrorsManager mErrorsManager;
@@ -33,6 +35,7 @@ namespace ClangPowerTools
 
     protected string VsEdition { get; set; }
     protected string VsVersion { get; set; }
+    protected string WorkingDirectoryPath { get; set; }
 
     #endregion
 
@@ -44,7 +47,7 @@ namespace ClangPowerTools
       mVsVersions.TryGetValue(DTEObj.Version, out string version);
       VsVersion = version;
 
-      if( null == mCommandsController )
+      if (null == mCommandsController)
         mCommandsController = new CommandsController(ServiceProvider, DTEObj);
 
       mErrorsManager = new ErrorsManager(Package, DTEObj);
@@ -58,8 +61,9 @@ namespace ClangPowerTools
     protected void RunScript(string aCommandName, TidyOptions mTidyOptions = null, TidyChecks mTidyChecks = null)
     {
       mScriptBuilder = new ScriptBuiler();
-      mScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks, 
+      mScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
         DTEObj, VsEdition, VsVersion);
+
 
       mOutputManager = new OutputManager(DTEObj);
       InitPowerShell();
@@ -67,12 +71,15 @@ namespace ClangPowerTools
       mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
       foreach (var item in mItemsCollector.GetItems)
       {
+        var script = mScriptBuilder.GetScript(item, item.GetName());
+        mDirectoriesPath.Add(mScriptBuilder.DirectoryPath);
+
         if (!mCommandsController.Running)
           break;
 
-        var script = mScriptBuilder.GetScript(item, item.GetName());
         var process = mPowerShell.Invoke(script);
         mRunningProcesses.Add(process);
+
         if (mOutputManager.MissingLlvm)
         {
           mOutputManager.AddMessage(ErrorParserConstants.kMissingLlvmMessage);

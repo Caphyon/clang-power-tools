@@ -10,6 +10,12 @@ namespace ClangPowerTools.Commands
   /// </summary>
   internal sealed class StopClang : ClangCommand
   {
+    #region Members
+
+    PCHCleaner mPCHCleaner = new PCHCleaner();
+
+    #endregion
+
     /// <summary>
     /// Initializes a new instance of the <see cref="StopClang"/> class.
     /// Adds our command handlers for menu (commands must exist in the command table file)
@@ -17,6 +23,7 @@ namespace ClangPowerTools.Commands
     /// <param name="package">Owner package, not null.</param>
     public StopClang(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
+      
       if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
@@ -37,10 +44,11 @@ namespace ClangPowerTools.Commands
     private void MenuItemCallback(object sender, EventArgs e)
     {
       mCommandsController.Running = false;
-     // MessageBox.Show("Stop Clang !! NOW !!!");
       var task = System.Threading.Tasks.Task.Run(() =>
       {
         mRunningProcesses.KillAll();
+        mPCHCleaner.Clean(mDirectoriesPath);
+        mDirectoriesPath.Clear();
       });
     }
   }
