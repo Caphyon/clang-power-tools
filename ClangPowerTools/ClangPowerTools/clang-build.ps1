@@ -97,11 +97,12 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aDirecto
      , [alias("tidy-fix")]     [Parameter(Mandatory=$false)][string]   $aTidyFixFlags
      , [alias("vs-ver")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioVersion
      , [alias("vs-sku")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioSku
+     , [alias("vs-props")]     [Parameter(Mandatory=$true)] [string[]] $aVisualStudioUserProperties
      )
 
 # System Architecture Constants
 # ------------------------------------------------------------------------------------------------
-       
+
 Set-Variable -name kLogicalCoreCount -value                                                                 `
   (@(Get-WmiObject -class Win32_processor)  |                                                               `
    ForEach-Object -Begin   { $coreCount = 0 }                                                               `
@@ -790,6 +791,7 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
                                   ,$kClangFlagNoUnusedArg
                                   ,$preprocessorDefinitions
                                   )
+  Write-Verbose "PCH creation args: $compilationFlags"
 
   [System.Diagnostics.Process] $processInfo = Start-Process -FilePath $kClangCompiler `
                                                             -ArgumentList $compilationFlags `
@@ -809,14 +811,14 @@ function Evaluate-MSBuildExpression([string] $expression)
 {  
   Write-Debug "Start evaluate MSBuild expression $expression"
 
-  $msbuildToPsRules = (  ("([^a-zA-Z])=="    , '$1 -eq ' )`
-                       , ("([^a-zA-Z])!="    , '$1 -ne ' )`
-                       , ("([^a-zA-Z])<="    , '$1 -le ' )`
-                       , ("([^a-zA-Z])>="    , '$1 -ge ' )`
-                       , ("([^a-zA-Z])<"     , '$1 -lt ' )`
-                       , ("([^a-zA-Z])>"     , '$1 -gt ' )`
-                       , ("([^a-zA-Z])or"    , '$1 -or ' )`
-                       , ("([^a-zA-Z])and"   , '$1 -and ')`
+  $msbuildToPsRules = (  ("([\s\)\'""])=="    , '$1 -eq ' )`
+                       , ("([\s\)\'""])!="    , '$1 -ne ' )`
+                       , ("([\s\)\'""])<="    , '$1 -le ' )`
+                       , ("([\s\)\'""])>="    , '$1 -ge ' )`
+                       , ("([\s\)\'""])<"     , '$1 -lt ' )`
+                       , ("([\s\)\'""])>"     , '$1 -gt ' )`
+                       , ("([\s\)\'""])or"    , '$1 -or ' )`
+                       , ("([\s\)\'""])and"   , '$1 -and ')`
                        <# $(var) => $($var) #> `
                        <#, ("\$\(([a-zA-Z0-9_]+)\)", '$$($$$1)')#>`
                        , ("\'"               , '"'       )`
@@ -1035,6 +1037,15 @@ function LoadProjectFileProperties([xml] $projectFile)
 
     Set-Var -Name $propertyName -Value $propertyValue
   }
+
+  if ($aVisualStudioUserProperties)
+  {
+    for ($i = 0; $i -lt $aVisualStudioUserProperties.Count; $i += 2)
+    {
+      Set-Var -Name  $aVisualStudioUserProperties[$i] `
+              -Value $aVisualStudioUserProperties[$i + 1]
+    }
+  }
 }
 
 <#
@@ -1204,7 +1215,7 @@ function LoadProject([string] $vcxprojPath)
   # load .vcxproj project properties. 
   LoadProjectFileProperties($global:projectFiles[0])
   
-  InitializeMsBuildCurrentFileProperties -aFilePath $global:vcxprojPath  
+  InitializeMsBuildCurrentFileProperties -filePath $global:vcxprojPath  
 }
 
 <#
