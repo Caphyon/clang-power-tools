@@ -415,7 +415,14 @@ Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
   [string] $path = $child
   if (![System.IO.Path]::IsPathRooted($path)) {
     [string] $path = Join-Path -Path "$base" -ChildPath "$child" -Resolve -ErrorAction $errorAction
-  } 
+  }
+  else
+  {
+    if (!(Test-Path $path))
+    {
+      $path = ""
+    }
+  }
   return $path
 }
 
@@ -424,13 +431,13 @@ Function Get-MscVer()
   return (Get-Item "$(Get-VisualStudio-Path)\VC\Tools\MSVC\" | Get-ChildItem).Name
 }
 
-Function InitializeMsBuildCurrentFileProperties([Parameter(Mandatory=$true)][string] $aFilePath)
+Function InitializeMsBuildCurrentFileProperties([Parameter(Mandatory=$true)][string] $filePath)
 {
-  Set-Var -name "MSBuildThisFileFullPath"  -value $aFilePath
-  Set-Var -name "MSBuildThisFileExtension" -value ([IO.Path]::GetExtension($aFilePath))
-  Set-Var -name "MSBuildThisFile"          -value (Get-FileName -path $aFilePath)
-  Set-Var -name "MSBuildThisFileName"      -value (Get-FileName -path $aFilePath -noext)
-  Set-Var -name "MSBuildThisFileDirectory" -value (Get-FileDirectory -filePath $aFilePath)
+  Set-Var -name "MSBuildThisFileFullPath"  -value $filePath
+  Set-Var -name "MSBuildThisFileExtension" -value ([IO.Path]::GetExtension($filePath))
+  Set-Var -name "MSBuildThisFile"          -value (Get-FileName -path $filePath)
+  Set-Var -name "MSBuildThisFileName"      -value (Get-FileName -path $filePath -noext)
+  Set-Var -name "MSBuildThisFileDirectory" -value (Get-FileDirectory -filePath $filePath)
 }
 
 Function InitializeMsBuildProjectProperties()
@@ -811,7 +818,7 @@ function Evaluate-MSBuildExpression([string] $expression)
                        , ("([^a-zA-Z])or"    , '$1 -or ' )`
                        , ("([^a-zA-Z])and"   , '$1 -and ')`
                        <# $(var) => $($var) #> `
-                       , ("\$\(([a-zA-Z0-9_]+)\)", '$$($$$1)')`
+                       <#, ("\$\(([a-zA-Z0-9_]+)\)", '$$($$$1)')#>`
                        , ("\'"               , '"'       )`
                        , ('"'                , '""'      )`
                        , ("exists\((.+)\)"   , "(Test-Path(`$1))")
@@ -819,6 +826,42 @@ function Evaluate-MSBuildExpression([string] $expression)
   foreach ($rule in $msbuildToPsRules)
   {
     $expression = $expression -replace $rule[0], $rule[1]
+  }
+  
+  [int] $expressionStartIndex = -1
+  [int] $openParantheses = 0
+  for ([int] $i = 0; $i -lt $expression.Length; $i += 1)
+  {
+    if ($expression.Substring($i, 1) -eq '$')
+    {
+      $expressionStartIndex = $i
+    }
+
+    if ($expression.Substring($i, 1) -eq '('  -and $expressionStartIndex -ge 0)
+    {
+      $openParantheses += 1
+    }
+
+    if ($expression.Substring($i, 1) -eq ')'  -and $expressionStartIndex -ge 0)
+    {
+      $openParantheses -= 1
+      if ($openParantheses -lt 0)
+      {
+        throw "Parse error"
+      }
+      if ($openParantheses -eq 0)
+      {
+        $content = $expression.Substring($expressionStartIndex + 2, $i - $expressionStartIndex - 2)
+        [int] $initialLength = $content.Length
+        $content = $content -replace '(^|\s)([a-zA-Z0-9_]+)(\.|\s|$)', '$1$$$2$3'
+        [int] $newLength = $content.Length
+        $newCond = $expression.Substring(0, $expressionStartIndex + 2) + $content + $expression.Substring($i)
+        $expression = $newCond
+        
+        $i += ($newLength - $initialLength)
+        $expressionStartIndex = -1
+      }
+    }
   }
 
   Write-Debug "Intermediate PS expression : $expression"
@@ -1060,6 +1103,9 @@ function Get-AutoPropertySheet()
 function Get-ProjectPropertySheets([string] $filePath, [xml] $fileXml)
 {
   [string] $vcxprojDir = Get-FileDirectory($filePath)
+  
+  LoadProjectFileProperties($fileXml)
+  InitializeMsBuildCurrentFileProperties -filePath $filePath
 
   [System.Xml.XmlElement[]] $importGroup = $fileXml.SelectNodes($kVcxprojXpathPropSheets, $global:xpathNS)
   if (!$importGroup) 
@@ -1067,17 +1113,13 @@ function Get-ProjectPropertySheets([string] $filePath, [xml] $fileXml)
       return @()
   }
 
-  [string[]] $sheetAbsolutePaths = $importGroup | 
-                                   Where-Object `
+  [string[]] $sheetEntries = $importGroup  | ForEach-Object { Evaluate-MSBuildExpression($_.GetAttribute("Project")) }
+  [string[]] $sheetAbsolutePaths = $sheetEntries | ForEach-Object `
                                    { 
-                                     ![string]::IsNullOrEmpty((Canonize-Path -base $vcxprojDir `
-                                                                             -child $_.GetAttribute("Project") `
-                                                                             -ignoreErrors)) 
-                                   }                   |
-                                   ForEach-Object `
-                                   {
-                                     Canonize-Path -base $vcxprojDir -child $_.GetAttribute("Project")
-                                   }
+                                     Canonize-Path -base $vcxprojDir `
+                                                   -child $_         `
+                                                   -ignoreErrors     `
+                                   } | Where-Object { ![string]::IsNullOrEmpty($_) }
   
   # a property sheet may have references to other property sheets
   [string[]] $returnPaths = @()
@@ -1111,7 +1153,7 @@ function LoadProject([string] $vcxprojPath)
   $global:vcxprojPath = $vcxprojPath
   
   InitializeMsBuildProjectProperties
-  InitializeMsBuildCurrentFileProperties -aFilePath $global:vcxprojPath
+  InitializeMsBuildCurrentFileProperties -filePath $global:vcxprojPath
 
   $projDir = Get-FileDirectory -filePath $global:vcxprojPath
   Set-Var -name "ProjectDir" -value $projDir
@@ -1150,7 +1192,7 @@ function LoadProject([string] $vcxprojPath)
   [array]::Reverse($propSheetAbsolutePaths)
   foreach ($propSheetPath in $propSheetAbsolutePaths)
   {
-    InitializeMsBuildCurrentFileProperties -aFilePath $propSheet
+    InitializeMsBuildCurrentFileProperties -filePath $propSheetPath
     [xml] $propSheetXml = Get-Content $propSheetPath
 
     Write-Debug "`nSanitizing property sheets $propSheetPath"
@@ -1159,11 +1201,8 @@ function LoadProject([string] $vcxprojPath)
     $global:projectFiles += $propSheetXml
   }
 
-  # we must load project properties, starting with the base prop sheets
-  for ([int]$i = $global:projectFiles.Count - 1; $i -ge 0; $i = $i - 1)
-  {
-    LoadProjectFileProperties $global:projectFiles[$i]
-  }
+  # load .vcxproj project properties. 
+  LoadProjectFileProperties($global:projectFiles[0])
   
   InitializeMsBuildCurrentFileProperties -aFilePath $global:vcxprojPath  
 }
