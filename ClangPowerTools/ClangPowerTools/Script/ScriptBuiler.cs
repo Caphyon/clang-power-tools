@@ -30,13 +30,14 @@ namespace ClangPowerTools
         parentDirectoryPath = new DirectoryInfo(projectItem.ContainingProject.FullName).Parent.FullName;
         string containingProject = projectItem.ContainingProject.FullName;
         string containingProjectName = containingProject.Substring(containingProject.LastIndexOf('\\') + 1);
-        script = $"{script} {ScriptConstants.kProject} {containingProjectName} {ScriptConstants.kFile} {aFileName}";
+        script = $"{script} {ScriptConstants.kProject} {containingProjectName} {ScriptConstants.kFile} {aFileName} " +
+          $"{ScriptConstants.kActiveConfiguration} ''{ProjectConfiguration.GetConfiguration(projectItem.ContainingProject)}|{ProjectConfiguration.GetPlatform(projectItem.ContainingProject)}''";
       }
       else if (aItem is SelectedProject)
       {
         Project project = aItem.GetObject() as Project;
         parentDirectoryPath = new DirectoryInfo(project.FullName).Parent.FullName;
-        script = $"{script} {ScriptConstants.kProject} {aFileName}";
+        script = $"{script} {ScriptConstants.kProject} {aFileName} ''{ProjectConfiguration.GetConfiguration(project)}|{ProjectConfiguration.GetPlatform(project)}''";
       }
       return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{parentDirectoryPath}'' {ScriptConstants.kLiteral}'";
     }
@@ -47,8 +48,7 @@ namespace ClangPowerTools
       mParameters = GetGeneralParameters(aGeneralOptions);
       mParameters = null != aTidyOptions ?
         $"{mParameters} {GetTidyParameters(aTidyOptions, aTidyChecks)}" : $"{mParameters} {ScriptConstants.kParallel}";
-      mParameters = $"{mParameters} {ScriptConstants.kVsVersion} {aVsVersion} {ScriptConstants.kVsEdition} {aVsEdition} " +
-        $"{ScriptConstants.kActiveConfiguration} ''{ProjectConfiguration.GetConfiguration(aDte)}|{ProjectConfiguration.GetPlatform(aDte)}''";
+      mParameters = $"{mParameters} {ScriptConstants.kVsVersion} {aVsVersion} {ScriptConstants.kVsEdition} {aVsEdition}";
     }
 
     #endregion
