@@ -305,7 +305,7 @@ Function Fail-Script([parameter(Mandatory=$false)][string] $msg = "Got errors.")
 Function Set-Var([parameter(Mandatory=$false)][string] $name,
                  [parameter(Mandatory=$false)][string] $value)
 {
-  Write-Verbose "SET_VAR $name : $value"
+  Write-Verbose "SET_VAR $($name): $value"
   Set-Variable -name $name -Value $value -Scope Global
   
   if (!$global:ProjectSpecificVariables.Contains($name))
@@ -345,7 +345,13 @@ Function Write-Err([parameter(ValueFromPipeline, Mandatory=$true)][string] $msg)
 Function Write-Success([parameter(ValueFromPipeline, Mandatory=$true)][string] $msg)
 {
   Write-Message -msg $msg -color Green
-}   
+}
+
+Function Write-Verbose-Array($array, $name)
+{
+  Write-Verbose "$($name):"
+  $array | ForEach-Object { Write-Verbose "  $_" }
+}
 
 Function Exists-Command([Parameter(Mandatory=$true)][string] $command)
 {
@@ -431,14 +437,15 @@ Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
 
 function Load-Solutions()
 {
-   Write-Verbose "Loading .sln files"
+   Write-Verbose "Scanning for .sln files"
    $slns = Get-ChildItem -recurse -LiteralPath "$aDirectory" | Where-Object { $_.Extension -eq '.sln' }
    foreach ($sln in $slns)
    {
      $slnPath = $sln.FullName
      $global:slnFiles[$slnPath] = (Get-Content $slnPath)
    }
-   $global:slnFiles.Keys | ForEach-Object { Write-Verbose "  $_" }
+   
+   Write-Verbose-Array -array $global:slnFiles.Keys  -name "Solution file paths"
 }
 
 function Get-SolutionProjects($slnPath)
@@ -799,11 +806,8 @@ Function Get-Project-PchCpp([Parameter(Mandatory=$true)][string] $vcxprojPath)
 Function Set-ProjectIncludePaths([Parameter(Mandatory=$true)] $includeDirectories)
 {
   [string] $includePathsString = $includeDirectories -join ";"
-  Write-Verbose "Include directories:"
-  foreach ($dir in $includeDirectories)
-  {
-    Write-Verbose "  $dir"
-  }
+  Write-Verbose-Array -array $includeDirectories -name "Include directories"
+
   $ENV:INCLUDE = $includePathsString;
 }
 
@@ -906,7 +910,7 @@ function Evaluate-MSBuildExpression([string] $expression)
     }
   }
 
-  Write-Debug "Intermediate PS expression : $expression"
+  Write-Debug "Intermediate PS expression: $expression"
 
   try
   {
@@ -917,7 +921,7 @@ function Evaluate-MSBuildExpression([string] $expression)
     write-debug $_.Exception.Message
   }
 
-  Write-Debug "Evaluated expression to : $res"
+  Write-Debug "Evaluated expression to: $res"
 
   return $res
 }
@@ -1214,7 +1218,7 @@ function LoadProject([string] $vcxprojPath)
   
   [string]$configPlatformCondition = Get-ProjectDefaultConfigPlatformCondition
 
-  Write-Verbose "Sanitizing main project XML"
+  Write-Verbose "`nSanitizing $global:vcxprojPath"
   SanitizeProjectFile -projectFile $global:projectFiles[0]
    
   # see if we can find a Directory.Build.props automatic prop sheet
@@ -1246,7 +1250,7 @@ function LoadProject([string] $vcxprojPath)
     InitializeMsBuildCurrentFileProperties -filePath $propSheetPath
     [xml] $propSheetXml = Get-Content $propSheetPath
 
-    Write-Debug "`nSanitizing property sheets $propSheetPath"
+    Write-Verbose "`nSanitizing $propSheetPath"
     SanitizeProjectFile -projectFile $propSheetXml
 
     $global:projectFiles += $propSheetXml
@@ -1560,11 +1564,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # DETECT PROJECT PREPROCESSOR DEFINITIONS
 
   [string[]] $preprocessorDefinitions = Get-ProjectPreprocessorDefines($vcxprojPath)
-  Write-Verbose "Preprocessor definitions: "
-  foreach ($def in $preprocessorDefinitions)
-  {
-    Write-Verbose "  $def"
-  }
+  Write-Verbose-Array -array $preprocessorDefinitions -name "Preprocessor definitions"
   
   #-----------------------------------------------------------------------------------------------
   # DETECT PLATFORM TOOLSET
@@ -1576,11 +1576,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # DETECT PROJECT ADDITIONAL INCLUDE DIRECTORIES AND CONSTRUCT INCLUDE PATHS
 
   [string[]] $includeDirectories = Get-ProjectAdditionalIncludes($vcxprojPath)
-  Write-Verbose "Additional includes:"
-  foreach ($include in $includeDirectories)
-  {
-    Write-Verbose "  $include"
-  }
+  Write-Verbose-Array -array $includeDirectories -name "Additional includes"
   
   $includeDirectories = (Get-ProjectIncludeDirectories -vcxprojPath $vcxprojPath) + $includeDirectories
 
