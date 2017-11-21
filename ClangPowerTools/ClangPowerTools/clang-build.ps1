@@ -444,16 +444,17 @@ function Load-Solutions()
      $slnPath = $sln.FullName
      $global:slnFiles[$slnPath] = (Get-Content $slnPath)
    }
-   
+
    Write-Verbose-Array -array $global:slnFiles.Keys  -name "Solution file paths"
 }
 
 function Get-SolutionProjects($slnPath)
 {
   [string] $slnDirectory = Get-FileDirectory -file $slnPath
-  $matches = [regex]::Matches($global:slnFiles[$slnPath], 'Project\([{}\"A-Z0-9\-]+\) = \"[a-zA-Z0-9]+\", \"([\.A-Za-z0-9_\\\s]+)\"')
-  $projectAbsolutePaths = $matches | ForEach-Object { Canonize-Path -base $slnDirectory -child $_.Groups[1].Value -ignoreErrors } `
-                   | Where-Object { ! [string]::IsNullOrEmpty($_) }
+  $matches = [regex]::Matches($global:slnFiles[$slnPath], 'Project\([{}\"A-Z0-9\-]+\) = \S+,\s(\S+),')
+  $projectAbsolutePaths = $matches `
+    | ForEach-Object { Canonize-Path -base $slnDirectory -child $_.Groups[1].Value.Replace('"','') -ignoreErrors } `
+    | Where-Object { ! [string]::IsNullOrEmpty($_) }
   return $projectAbsolutePaths
 }
 
