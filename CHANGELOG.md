@@ -2,6 +2,11 @@
 
 Changelog of Clang Power Tools extension
 
+### Clang Power Tools 1.7.1
+
+Bugs:
+* Fixed the support for `Track Active Item in Solution Explorer` set to `Off`.
+
 ### Clang Power Tools 1.7.0
 
 Improvements:
