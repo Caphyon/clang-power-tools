@@ -97,7 +97,6 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aDirecto
      , [alias("tidy-fix")]     [Parameter(Mandatory=$false)][string]   $aTidyFixFlags
      , [alias("vs-ver")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioVersion
      , [alias("vs-sku")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioSku
-     , [alias("vs-props")]     [Parameter(Mandatory=$true)] [string[]] $aVisualStudioUserProperties
      )
 
 # System Architecture Constants
@@ -273,6 +272,9 @@ Set-Variable -name kVStudioDefaultPlatformToolset -Value "v141" -option Constant
 # namespace of current project vcxproj XML
 [System.Xml.XmlNamespaceManager] $global:xpathNS = $null;
 
+# filePath-fileData for SLN files located in source directory
+[System.Collections.Generic.Dictionary[String,String]] $global:slnFiles = @{}
+
 #-------------------------------------------------------------------------------------------------
 # Global functions
 
@@ -427,6 +429,40 @@ Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
   return $path
 }
 
+function Load-Solutions()
+{
+   Write-Verbose "Loading .sln files"
+   $slns = Get-ChildItem -recurse -LiteralPath "$aDirectory" | Where-Object { $_.Extension -eq '.sln' }
+   foreach ($sln in $slns)
+   {
+     $slnPath = $sln.FullName
+     $global:slnFiles[$slnPath] = (Get-Content $slnPath)
+   }
+   $global:slnFiles.Keys | ForEach-Object { Write-Verbose "  $_" }
+}
+
+function Get-SolutionProjects($slnPath)
+{
+  [string] $slnDirectory = Get-FileDirectory -file $slnPath
+  $matches = [regex]::Matches($global:slnFiles[$slnPath], 'Project\([{}\"A-Z0-9\-]+\) = \"[a-zA-Z0-9]+\", \"([\.A-Za-z0-9_\\\s]+)\"')
+  $projectAbsolutePaths = $matches | ForEach-Object { Canonize-Path -base $slnDirectory -child $_.Groups[1].Value -ignoreErrors } `
+                   | Where-Object { ! [string]::IsNullOrEmpty($_) }
+  return $projectAbsolutePaths
+}
+
+function Get-ProjectSolution()
+{
+  foreach ($slnPath in $global:slnFiles.Keys)
+  {
+    [string[]] $solutionProjectPaths = Get-SolutionProjects $slnPath
+    if ($solutionProjectPaths -and $solutionProjectPaths.Contains($global:vcxprojPath))
+    {
+      return $slnPath
+    }
+  }
+  return ""
+}
+
 Function Get-MscVer()
 {
   return (Get-Item "$(Get-VisualStudio-Path)\VC\Tools\MSVC\" | Get-ChildItem).Name
@@ -454,6 +490,10 @@ Function InitializeMsBuildProjectProperties()
     $vsVer = "14.0"
   }
   Set-Var -name "VisualStudioVersion"    -value "$vsVer"
+
+  [string] $projectSlnPath = Get-ProjectSolution
+  [string] $projectSlnDir = Get-FileDirectory -filePath $projectSlnPath
+  Set-Var -name "SolutionDir" -value $projectSlnDir
 }
 
 Function Should-CompileProject([Parameter(Mandatory=$true)][string] $vcxprojPath)
@@ -1174,7 +1214,7 @@ function LoadProject([string] $vcxprojPath)
   
   [string]$configPlatformCondition = Get-ProjectDefaultConfigPlatformCondition
 
-  Write-Debug "Sanitizing main project XML"
+  Write-Verbose "Sanitizing main project XML"
   SanitizeProjectFile -projectFile $global:projectFiles[0]
    
   # see if we can find a Directory.Build.props automatic prop sheet
@@ -1671,6 +1711,9 @@ if (! (Exists-Command($kClangCompiler)) )
 }
 
 Push-Location $aDirectory
+
+# fetch .sln paths and data
+Load-Solutions
 
 # This powershell process may already have completed jobs. Discard them.
 Remove-Job -State Completed
