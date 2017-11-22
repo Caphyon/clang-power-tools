@@ -565,7 +565,7 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory=$true)][string] $vcxproj
 
   [string[]] $files = Select-ProjectNodes($kVcxprojXpathCompileFiles) |
                       Where-Object { ($_.Include -ne $null) -and
-                                     ($pchDisabled -or ($_.Include -notmatch $pchCppName))
+                                     ($pchDisabled -or ($_.Include -ne $pchCppName))
                                    }                                 |
                       ForEach-Object { Canonize-Path -base (Get-FileDirectory($vcxprojPath)) `
                                                      -child $_.Include }
@@ -856,7 +856,8 @@ function Evaluate-MSBuildExpression([string] $expression)
 {  
   Write-Debug "Start evaluate MSBuild expression $expression"
 
-  $msbuildToPsRules = (  ("([\s\)\'""])=="    , '$1 -eq ' )`
+  $msbuildToPsRules = (  ('`'                 , ''''      )`
+                       , ("([\s\)\'""])=="    , '$1 -eq ' )`
                        , ("([\s\)\'""])!="    , '$1 -ne ' )`
                        , ("([\s\)\'""])<="    , '$1 -le ' )`
                        , ("([\s\)\'""])>="    , '$1 -ge ' )`
@@ -879,12 +880,12 @@ function Evaluate-MSBuildExpression([string] $expression)
   [int] $openParantheses = 0
   for ([int] $i = 0; $i -lt $expression.Length; $i += 1)
   {
-    if ($expression.Substring($i, 1) -eq '$')
+    if ($expression.Substring($i, 1) -eq '$' -and $expressionStartIndex -lt 0)
     {
       $expressionStartIndex = $i
     }
 
-    if ($expression.Substring($i, 1) -eq '('  -and $expressionStartIndex -ge 0)
+    if ($expression.Substring($i, 1) -eq '(' -and $expressionStartIndex -ge 0)
     {
       $openParantheses += 1
     }
@@ -900,7 +901,7 @@ function Evaluate-MSBuildExpression([string] $expression)
       {
         $content = $expression.Substring($expressionStartIndex + 2, $i - $expressionStartIndex - 2)
         [int] $initialLength = $content.Length
-        $content = $content -replace '(^|\s)([a-zA-Z0-9_]+)(\.|\s|$)', '$1$$$2$3'
+        $content = $content -replace '(^|\s)(\$\()?([a-zA-Z0-9_]+)(\))?(\,|\.|\s|$)', '$1$2$$$3$4$5'
         [int] $newLength = $content.Length
         $newCond = $expression.Substring(0, $expressionStartIndex + 2) + $content + $expression.Substring($i)
         $expression = $newCond
