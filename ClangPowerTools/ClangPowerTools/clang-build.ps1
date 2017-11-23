@@ -16,6 +16,8 @@
     Alias 'proj'. Array of project(s) to compile. If empty, all projects are compiled.
     If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used, 
     e.g. "msicomp" compiles all projects containing 'msicomp'.
+
+    Absolute disk paths to vcxproj files are accepted.
     
     Can be passed as comma separated values.
 
@@ -401,6 +403,11 @@ Function Get-FileName( [Parameter(Mandatory=$true)][string] $path
 Function IsFileMatchingName( [Parameter(Mandatory=$true)][string] $filePath
                            , [Parameter(Mandatory=$true)][string] $matchName)
 {
+  if ([System.IO.Path]::IsPathRooted($matchName))
+  {
+    return $filePath -ieq $matchName
+  }
+
   [string] $fileName      = (Get-FileName -path $filePath)
   [string] $fileNameNoExt = (Get-FileName -path $filePath -noext) 
   if ($aDisableNameRegexMatching) 
@@ -1043,15 +1050,22 @@ function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpa
         [string] $escTok = [regex]::Escape($inheritanceToken)
         $whatToReplace = "(;$escTok)|($escTok;)|($escTok)"
       }
-      # replace inherited token
-      $nodes[0].InnerText = ($nodes[0].InnerText -replace $whatToReplace, $replaceWith)
-      # handle multiple consecutive separators
-      $nodes[0].InnerText = ($nodes[0].InnerText -replace ";+", ";")
-      # handle corner cases when we have separators at beginning or at end
-      $nodes[0].InnerText = ($nodes[0].InnerText -replace ";$", "")
-      $nodes[0].InnerText = ($nodes[0].InnerText -replace "^;", "")
 
-      # we need to evaluate the expression to take properties into account
+      $replaceRules = ( <# replace inherited token                #>      `
+                          ($whatToReplace                 , $replaceWith )`
+                        <# handle multiple consecutive separators #>      `
+                        , (";+"           , ";"     )                     `
+                        <# handle separator at end                #>      `
+                        , (";$"                , ""      )                `
+                        <# handle separator at beginning          #>      `
+                        , ("^;"               , ""      )                 `
+                      )
+      foreach ($rule in $replaceRules)
+      {
+        $nodes[0].InnerText = $nodes[0].InnerText -replace $rule[0], $rule[1]
+      }
+
+      # we need to evaluate the expression in order to expand properties
       $nodes[0].InnerText = Evaluate-MSBuildExpression $nodes[0].InnerText
     } 
     return $nodes
