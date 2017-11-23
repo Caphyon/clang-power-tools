@@ -262,8 +262,18 @@ Set-Variable -name kVStudioDefaultPlatformToolset -Value "v141" -option Constant
 #-------------------------------------------------------------------------------------------------
 # Global variables
 
+# temporary files created during project processing (e.g. PCH files)
 [System.Collections.ArrayList] $global:FilesToDeleteWhenScriptQuits = @()
+
+# vcxproj and property sheet files declare MsBuild properties (e.g. $(MYPROP)).
+# they are used in project xml nodes expressions. we have a 
+# translation engine (MSBUILD-POWERSHELL) for these. it relies on
+# PowerShell to evaluate these expressions. We have to inject project 
+# properties in the Powershell runtime context. We keep track of them in
+# this list, to be cleaned before the next project begins processing
 [System.Collections.ArrayList] $global:ProjectSpecificVariables     = @()
+
+# flag to signal when errors are encounteres during project processing
 [Boolean]                      $global:FoundErrors                  = $false
 
 # current vcxproj and property sheets
