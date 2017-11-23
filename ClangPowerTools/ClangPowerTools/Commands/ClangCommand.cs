@@ -60,7 +60,7 @@ namespace ClangPowerTools
       mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
       foreach (var item in mItemsCollector.GetItems)
       {
-        var script = mScriptBuilder.GetScript(item, item.GetName(), solutionPath);
+        var script = mScriptBuilder.GetScript(item, solutionPath);
         mPowerShell.Invoke(script);
         if (mOutputManager.MissingLlvm)
         {
