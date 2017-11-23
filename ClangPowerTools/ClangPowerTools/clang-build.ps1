@@ -463,7 +463,7 @@ function Get-ProjectSolution()
   foreach ($slnPath in $global:slnFiles.Keys)
   {
     [string[]] $solutionProjectPaths = Get-SolutionProjects $slnPath
-    if ($solutionProjectPaths -and $solutionProjectPaths.Contains($global:vcxprojPath))
+    if ($solutionProjectPaths -and $solutionProjectPaths -contains $global:vcxprojPath)
     {
       return $slnPath
     }
