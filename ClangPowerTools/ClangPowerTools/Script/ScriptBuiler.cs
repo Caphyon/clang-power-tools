@@ -1,6 +1,7 @@
 ﻿using EnvDTE;
 using EnvDTE80;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -18,7 +19,7 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public string GetScript(IItem aItem, string aFileName)
+    public string GetScript(IItem aItem, string aFileName, string aSolutionPath)
     {
       string containingDirectoryPath = string.Empty;
       string parentDirectoryPath = string.Empty;
@@ -39,6 +40,7 @@ namespace ClangPowerTools
         parentDirectoryPath = new DirectoryInfo(project.FullName).Parent.FullName;
         script = $"{script} {ScriptConstants.kProject} {aFileName} ''{ProjectConfiguration.GetConfiguration(project)}|{ProjectConfiguration.GetPlatform(project)}''";
       }
+      parentDirectoryPath = GetCommandPath(aSolutionPath, parentDirectoryPath);
       return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{parentDirectoryPath}'' {ScriptConstants.kLiteral}'";
     }
 
@@ -116,6 +118,19 @@ namespace ClangPowerTools
           aTidyOptions.Fix ? ScriptConstants.kTidyFix : ScriptConstants.kTidy, parameters);
 
       return parameters;
+    }
+
+    public string GetCommandPath(string aFirstPath, string aSecondPath)
+    {
+      var paths = new List<string>() { aFirstPath, aSecondPath };
+
+      var matchingChars =
+            from len in Enumerable.Range(0, paths.Min(s => s.Length)).Reverse()
+            let possibleMatch = paths.First().Substring(0, len)
+            where paths.All(f => f.StartsWith(possibleMatch))
+            select possibleMatch;
+
+      return Path.GetDirectoryName(matchingChars.First());
     }
 
     #endregion
