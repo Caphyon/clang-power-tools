@@ -151,7 +151,7 @@ Set-Variable -name kVcxprojXpathPCH `
              -option Constant 
 
 Set-Variable -name kVcxprojXpathPropSheets `
-             -value "ns:Project/ns:ImportGroup[@Label='PropertySheets']/ns:Import" `
+             -value "ns:Project/ns:ImportGroup[@Label='PropertySheets']/ns:Import[@Project]|ns:Project/ns:Import[@Project]" `
              -option Constant
 
 Set-Variable -name kVcxprojXpathToolset `
@@ -487,6 +487,7 @@ Function InitializeMsBuildCurrentFileProperties([Parameter(Mandatory=$true)][str
 
 Function InitializeMsBuildProjectProperties()
 {
+  Set-Var -name "ProjectDir"               -value (Get-FileDirectory -filePath $global:vcxprojPath)
   Set-Var -name "MSBuildProjectExtension"  -value ([IO.Path]::GetExtension($global:vcxprojPath))
   Set-Var -name "MSBuildProjectName"       -value (Get-FileName -path $global:vcxprojPath -noext)
   Set-Var -name "MSBuildProjectDirectory"  -value (Get-FileDirectory -filePath $global:vcxprojPath)
@@ -1051,7 +1052,7 @@ function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpa
    Items for other config-platform pairs will be removed from the DOM. 
    This is needed so that our XPath selectors don't get confused when looking for data.
 #>
-function Get-ProjectDefaultConfigPlatformCondition()
+function Detect-ProjectDefaultConfigPlatform()
 {
   [string]$configPlatformName = ""
   
@@ -1073,12 +1074,9 @@ function Get-ProjectDefaultConfigPlatformCondition()
     throw "Could not automatically detect a configuration platform"
   }
 
-  Write-Verbose "Configuration platform: $configPlatformName"
   [string[]] $configAndPlatform = $configPlatformName.Split('|')
   Set-Var -Name "Configuration" -Value $configAndPlatform[0]
   Set-Var -Name "Platform"      -Value $configAndPlatform[1]
-
-  return "'`$(Configuration)|`$(Platform)'=='$configPlatformName'"
 }
 
 function LoadProjectFileProperties([xml] $projectFile)
@@ -1224,14 +1222,11 @@ function LoadProject([string] $vcxprojPath)
   
   InitializeMsBuildProjectProperties
   InitializeMsBuildCurrentFileProperties -filePath $global:vcxprojPath
-
-  $projDir = Get-FileDirectory -filePath $global:vcxprojPath
-  Set-Var -name "ProjectDir" -value $projDir
   
   $global:xpathNS     = New-Object System.Xml.XmlNamespaceManager($global:projectFiles[0].NameTable) 
   $global:xpathNS.AddNamespace("ns", $global:projectFiles[0].DocumentElement.NamespaceURI)
   
-  [string]$configPlatformCondition = Get-ProjectDefaultConfigPlatformCondition
+  Detect-ProjectDefaultConfigPlatform
 
   Write-Verbose "`nSanitizing $global:vcxprojPath"
   SanitizeProjectFile -projectFile $global:projectFiles[0]
