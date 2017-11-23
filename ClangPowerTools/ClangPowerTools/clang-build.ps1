@@ -856,21 +856,28 @@ function Evaluate-MSBuildExpression([string] $expression)
 {  
   Write-Debug "Start evaluate MSBuild expression $expression"
 
-  $msbuildToPsRules = (  ('`'                 , ''''      )`
-                       , ("([\s\)\'""])=="    , '$1 -eq ' )`
+  $msbuildToPsRules = (<# backticks are control characters in PS, replace them #>
+                         ('`'                 , ''''      )`
+                       <# Temporarily replace $( #>        `
+                       , ('\$\s*\('           , '!@#'     )`
+                       <# Escape $               #>        `
+                       , ('\$'                , '`$'      )`
+                       <# Put back $(            #>        `
+                       , ('!@#'               , '$('      )`
+                       <# Various operators      #>        `
                        , ("([\s\)\'""])!="    , '$1 -ne ' )`
                        , ("([\s\)\'""])<="    , '$1 -le ' )`
                        , ("([\s\)\'""])>="    , '$1 -ge ' )`
+                       , ("([\s\)\'""])=="    , '$1 -eq ' )`
                        , ("([\s\)\'""])<"     , '$1 -lt ' )`
                        , ("([\s\)\'""])>"     , '$1 -gt ' )`
                        , ("([\s\)\'""])or"    , '$1 -or ' )`
                        , ("([\s\)\'""])and"   , '$1 -and ')`
-                       <# $(var) => $($var) #> `
-                       <#, ("\$\(([a-zA-Z0-9_]+)\)", '$$($$$1)')#>`
-                       , ("\'"               , '"'       )`
-                       , ('"'                , '""'      )`
+                       <# Use only double quotes #>        `
+                       , ("\'"               , '"'        )`
+                       , ('"'                , '""'       )`
                        , ("exists\((.+)\)"   , "(Test-Path(`$1))")
-                       )
+                      )
   foreach ($rule in $msbuildToPsRules)
   {
     $expression = $expression -replace $rule[0], $rule[1]
@@ -880,14 +887,17 @@ function Evaluate-MSBuildExpression([string] $expression)
   [int] $openParantheses = 0
   for ([int] $i = 0; $i -lt $expression.Length; $i += 1)
   {
-    if ($expression.Substring($i, 1) -eq '$' -and $expressionStartIndex -lt 0)
+    if ($expression.Substring($i, 1) -eq '(')# -and $expressionStartIndex -ge 0)
     {
-      $expressionStartIndex = $i
-    }
+      if ($i -gt 0 -and $expressionStartIndex -lt 0 -and $expression.Substring($i - 1, 1) -eq '$')
+      {
+        $expressionStartIndex = $i - 1
+      }
 
-    if ($expression.Substring($i, 1) -eq '(' -and $expressionStartIndex -ge 0)
-    {
-      $openParantheses += 1
+      if ($expressionStartIndex -ge 0)
+      {
+        $openParantheses += 1
+      }
     }
 
     if ($expression.Substring($i, 1) -eq ')'  -and $expressionStartIndex -ge 0)
@@ -1124,35 +1134,6 @@ function SanitizeProjectFile([xml]$projectFile)
 
 <#
 .DESCRIPTION
-  Tries to find a Directory.Build.props property sheet, starting from the
-  project directories, going up. When one is found, the search stops.
-
-  Multiple Directory.Build.props sheets are not supported.
-#>
-function Get-AutoPropertySheet()
-{
-  $startPath = $global:vcxprojPath
-  while ($true)
-  {
-    $propSheetPath = Canonize-Path -base $startPath `
-                                   -child "Directory.Build.props" `
-                                   -ignoreErrors
-    if (![string]::IsNullOrEmpty($propSheetPath))
-    {
-      return $propSheetPath
-    }
-
-    $newPath = Canonize-Path -base $startPath -child ".."
-    if ($newPath -eq $startPath)
-    {
-      return ""
-    }
-    $startPath = $newPath
-  }
-}
-
-<#
-.DESCRIPTION
   Retrieves the property sheets referred by the project.
   Only those we can locate on the disk are returned. 
   MSBuild variables are not expanded, so those sheets are not returned.
@@ -1161,8 +1142,8 @@ function Get-ProjectPropertySheets([string] $filePath, [xml] $fileXml)
 {
   [string] $vcxprojDir = Get-FileDirectory($filePath)
   
-  LoadProjectFileProperties($fileXml)
   InitializeMsBuildCurrentFileProperties -filePath $filePath
+  LoadProjectFileProperties($fileXml)
 
   [System.Xml.XmlElement[]] $importGroup = $fileXml.SelectNodes($kVcxprojXpathPropSheets, $global:xpathNS)
   if (!$importGroup) 
@@ -1196,6 +1177,38 @@ function Get-ProjectPropertySheets([string] $filePath, [xml] $fileXml)
   }
 
   return $returnPaths
+}
+
+<#
+.DESCRIPTION
+  Tries to find a Directory.Build.props property sheet, starting from the
+  project directories, going up. When one is found, the search stops.
+
+  Multiple Directory.Build.props sheets are not supported.
+#>
+function Get-AutoPropertySheet()
+{
+  $startPath = $global:vcxprojPath
+  while ($true)
+  {
+    $propSheetPath = Canonize-Path -base $startPath `
+                                   -child "Directory.Build.props" `
+                                   -ignoreErrors
+    if (![string]::IsNullOrEmpty($propSheetPath))
+    {
+      [xml] $fileXml = Get-Content $propSheetPath
+      [string[]] $inheritedSheets = Get-ProjectPropertySheets -filePath $propSheetPath `
+                                                              -fileXml $fileXml
+      return ($inheritedSheets + $propSheetPath)
+    }
+
+    $newPath = Canonize-Path -base $startPath -child ".."
+    if ($newPath -eq $startPath)
+    {
+      return ""
+    }
+    $startPath = $newPath
+  }
 }
 
 <#
