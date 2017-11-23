@@ -8,7 +8,9 @@
     One or more of these projects will be compiled or tidied up (modernized), using Clang.
 
 .PARAMETER aDirectory
-    Alias 'dir'. Source directory to process.
+    Alias 'dir'. Source directory to process. 
+    Important: Projects and solutions must be reachable, recursively,
+               in this directory. Otherwise, they won't be processed.
 
 .PARAMETER aVcxprojToCompile
     Alias 'proj'. Array of project(s) to compile. If empty, all projects are compiled.
@@ -117,6 +119,7 @@ Set-Variable -name kScriptFailsExitCode      -value  47                 -option 
 # File System Constants
 
 Set-Variable -name kExtensionVcxproj         -value ".vcxproj"          -option Constant
+Set-Variable -name kExtensionSolution        -value ".sln"              -option Constant
 Set-Variable -name kExtensionClangPch        -value ".clang.pch"        -option Constant
 
 # ------------------------------------------------------------------------------------------------
@@ -280,7 +283,8 @@ Set-Variable -name kVStudioDefaultPlatformToolset -Value "v141" -option Constant
 
 Function Exit-Script([Parameter(Mandatory=$false)][int] $code = 0)
 {
-  Write-Verbose-Array -array $global:FilesToDeleteWhenScriptQuits -name "Cleaning up PCH temporaries"
+  Write-Verbose-Array -array $global:FilesToDeleteWhenScriptQuits `
+                      -name "Cleaning up PCH temporaries"
   # Clean-up
   foreach ($file in $global:FilesToDeleteWhenScriptQuits)
   {
@@ -316,7 +320,8 @@ Function Set-Var([parameter(Mandatory=$false)][string] $name,
 
 Function Clear-Vars()
 {
-  Write-Verbose-Array -array $global:ProjectSpecificVariables -name "Deleting project specific variables"
+  Write-Verbose-Array -array $global:ProjectSpecificVariables `
+                      -name "Deleting project specific variables"
 
   foreach ($var in $global:ProjectSpecificVariables)
   {
@@ -436,8 +441,9 @@ Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
 
 function Load-Solutions()
 {
-   Write-Verbose "Scanning for .sln files"
-   $slns = Get-ChildItem -recurse -LiteralPath "$aDirectory" | Where-Object { $_.Extension -eq '.sln' }
+   Write-Verbose "Scanning for solution files"
+   $slns = Get-ChildItem -recurse -LiteralPath "$aDirectory" `
+           | Where-Object { $_.Extension -eq $kExtensionSolution }
    foreach ($sln in $slns)
    {
      $slnPath = $sln.FullName
@@ -447,12 +453,13 @@ function Load-Solutions()
    Write-Verbose-Array -array $global:slnFiles.Keys  -name "Solution file paths"
 }
 
-function Get-SolutionProjects($slnPath)
+function Get-SolutionProjects([Parameter(Mandatory=$true)][string] $slnPath)
 {
   [string] $slnDirectory = Get-FileDirectory -file $slnPath
   $matches = [regex]::Matches($global:slnFiles[$slnPath], 'Project\([{}\"A-Z0-9\-]+\) = \S+,\s(\S+),')
   $projectAbsolutePaths = $matches `
-    | ForEach-Object { Canonize-Path -base $slnDirectory -child $_.Groups[1].Value.Replace('"','') -ignoreErrors } `
+    | ForEach-Object { Canonize-Path -base $slnDirectory `
+                                     -child $_.Groups[1].Value.Replace('"','') -ignoreErrors } `
     | Where-Object { ! [string]::IsNullOrEmpty($_) }
   return $projectAbsolutePaths
 }
@@ -909,14 +916,15 @@ function Evaluate-MSBuildExpression([string] $expression)
       }
       if ($openParantheses -eq 0)
       {
-        $content = $expression.Substring($expressionStartIndex + 2, $i - $expressionStartIndex - 2)
+        [string] $content = $expression.Substring($expressionStartIndex + 2, 
+                                                  $i - $expressionStartIndex - 2)
         [int] $initialLength = $content.Length
         $content = $content -replace '(^|\s)(\$\()?([a-zA-Z0-9_]+)(\))?(\,|\.|\s|$)', '$1$2$$$3$4$5'
-        [int] $newLength = $content.Length
-        $newCond = $expression.Substring(0, $expressionStartIndex + 2) + $content + $expression.Substring($i)
+        $newCond = $expression.Substring(0, $expressionStartIndex + 2) + 
+                   $content + $expression.Substring($i)
         $expression = $newCond
         
-        $i += ($newLength - $initialLength)
+        $i += ($content.Length - $initialLength)
         $expressionStartIndex = -1
       }
     }
@@ -1724,7 +1732,7 @@ Load-Solutions
 Remove-Job -State Completed
 
 Write-Verbose "Source directory: $aDirectory"
-Write-Verbose "Scanning for .vcxproj files"
+Write-Verbose "Scanning for project files"
 
 [System.IO.FileInfo[]] $projects = Get-Projects
 Write-Verbose ("Found $($projects.Count) projects")
