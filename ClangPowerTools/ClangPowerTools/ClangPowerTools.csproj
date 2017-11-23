@@ -73,10 +73,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AutomationUtil.cs" />
+    <Compile Include="ClangCheckAttribute.cs" />
     <Compile Include="ClangTidyOptions.cs" />
     <Compile Include="Commands\BasicCommand.cs" />
     <Compile Include="Commands\StopClang.cs" />
-    <Compile Include="DialogPages\ClangCheckAttribute.cs" />
     <Compile Include="Commands\ClangCommand.cs" />
     <Compile Include="Commands\CommandIds.cs" />
     <Compile Include="Commands\CommandsController.cs" />
