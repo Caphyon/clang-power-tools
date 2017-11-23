@@ -280,10 +280,10 @@ Set-Variable -name kVStudioDefaultPlatformToolset -Value "v141" -option Constant
 
 Function Exit-Script([Parameter(Mandatory=$false)][int] $code = 0)
 {
+  Write-Verbose-Array -array $global:FilesToDeleteWhenScriptQuits -name "Cleaning up PCH temporaries"
   # Clean-up
   foreach ($file in $global:FilesToDeleteWhenScriptQuits)
   {
-    Write-Verbose "Cleaning up $file"
     Remove-Item $file -ErrorAction SilentlyContinue | Out-Null
   }
 
@@ -316,11 +316,10 @@ Function Set-Var([parameter(Mandatory=$false)][string] $name,
 
 Function Clear-Vars()
 {
-  Write-Verbose "Clearing project specific variables"
+  Write-Verbose-Array -array $global:ProjectSpecificVariables -name "Deleting project specific variables"
 
   foreach ($var in $global:ProjectSpecificVariables)
   {
-    Write-Verbose "  DEL_VAR $var"
     Remove-Variable -name $var -scope Global
   }
 
