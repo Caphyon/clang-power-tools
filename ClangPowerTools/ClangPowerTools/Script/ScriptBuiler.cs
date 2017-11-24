@@ -30,14 +30,18 @@ namespace ClangPowerTools
         ProjectItem projectItem = aItem.GetObject() as ProjectItem;
         parentDirectoryPath = new DirectoryInfo(projectItem.ContainingProject.FullName).Parent.FullName;
         string containingProject = projectItem.ContainingProject.FullName;
-        script = $"{script} {ScriptConstants.kProject} {containingProject} {ScriptConstants.kFile} {projectItem.Name} " +
+        script = $"{script} {ScriptConstants.kProject} ''{containingProject}'' {ScriptConstants.kFile} {projectItem.Name} " +
           $"{ScriptConstants.kActiveConfiguration} ''{ProjectConfiguration.GetConfiguration(projectItem.ContainingProject)}|{ProjectConfiguration.GetPlatform(projectItem.ContainingProject)}''";
       }
       else if (aItem is SelectedProject)
       {
         Project project = aItem.GetObject() as Project;
         parentDirectoryPath = new DirectoryInfo(project.FullName).Parent.FullName;
-        script = $"{script} {ScriptConstants.kProject} {project.FullName} ''{ProjectConfiguration.GetConfiguration(project)}|{ProjectConfiguration.GetPlatform(project)}''";
+
+        var projPath = project.FullName;
+
+        script = $"{script} {ScriptConstants.kProject} ''{projPath}'' {ScriptConstants.kActiveConfiguration} " +
+          $"''{ProjectConfiguration.GetConfiguration(project)}|{ProjectConfiguration.GetPlatform(project)}''";
       }
       parentDirectoryPath = GetCommandPath(aSolutionPath, parentDirectoryPath);
       return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{parentDirectoryPath}'' {ScriptConstants.kLiteral}'";
