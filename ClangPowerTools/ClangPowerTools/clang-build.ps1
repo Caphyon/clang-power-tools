@@ -510,6 +510,7 @@ Function InitializeMsBuildCurrentFileProperties([Parameter(Mandatory=$true)][str
 
 Function InitializeMsBuildProjectProperties()
 {
+  Set-Var -name "MSBuildProjectFullPath"   -value $global:vcxprojPath
   Set-Var -name "ProjectDir"               -value (Get-FileDirectory -filePath $global:vcxprojPath)
   Set-Var -name "MSBuildProjectExtension"  -value ([IO.Path]::GetExtension($global:vcxprojPath))
   Set-Var -name "MSBuildProjectName"       -value (Get-FileName -path $global:vcxprojPath -noext)
