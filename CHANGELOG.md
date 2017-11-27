@@ -2,6 +2,21 @@
 
 Changelog of Clang Power Tools extension
 
+### Clang Power Tools 2.0.0
+
+Improvements:
+* Fully evaluate MsBuild conditions for project and property sheet XML data.
+  * XML nodes with conditions evaluated to false are ignored.
+* Project settings can now reference:
+  * User defined macros 
+    * e.g. $(MY_MACRO_DIR)\bin\$(MY_MACRO_FILE)
+  * Build-in macros: 
+    * $(VisualStudioVersion), $(ProjectDir), $(SolutionDir), $(Platform), $(Configuration), $(MSBuildProjectName), $(MSBuildProjectFullPath), $(MSBuildProjectDirectory), $(MSBuildThisFile), $(MSBuildThisFileName), $(MSBuildThisFileFullPath), $(MSBuildThisFileDirectory), $(MSBuildProgramFiles32).
+  * .NET expressions
+    * e.g. $([System.DateTime]::Now.ToString("yyyy.MM.dd"))
+* Detect property sheets included in Directory.Build.props.
+* Automatically detect the project solution file.
+    
 ### Clang Power Tools 1.7.1
 
 Bugs:
@@ -11,7 +26,7 @@ Bugs:
 
 Improvements:
 * Added support for `Track Active Item in Solution Explorer` option set to `Off`.
-* Verbose-Mode now logs `clang-build.ps1` and `clang++` invocation arguments
+* Verbose-Mode now logs `clang-build.ps1` and `clang++` invocation arguments.
 
 Bugs:
 * Fixed the `user settings saving`.
