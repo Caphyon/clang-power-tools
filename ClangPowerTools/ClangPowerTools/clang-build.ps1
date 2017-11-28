@@ -928,7 +928,7 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
   return $stdafxPch
 }
 
-function Evaluate-MSBuildExpression([string] $expression)
+function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
 {  
   Write-Debug "Start evaluate MSBuild expression $expression"
 
@@ -1003,7 +1003,13 @@ function Evaluate-MSBuildExpression([string] $expression)
 
   try
   {
-    $res = Invoke-Expression "(`$s = ""$expression"")"
+    [string] $toInvoke = "(`$s = ""$expression"")"
+    if ($isCondition)
+    {
+      $toInvoke = "(`$s = ""`$($expression)"")"
+    }
+
+    $res = Invoke-Expression $toInvoke
   }
   catch
   {
@@ -1017,7 +1023,17 @@ function Evaluate-MSBuildExpression([string] $expression)
 function Evaluate-MSBuildCondition([Parameter(Mandatory=$true)][string] $condition)
 {
   Write-Debug "Evaluating condition $condition"
-  $expression = Evaluate-MSBuildExpression $condition
+  $expression = Evaluate-MSBuildExpression -expression $condition -isCondition
+
+  if ($expression -ieq "true")
+  {
+    return $true
+  } 
+
+  if ($expression -ieq "false")
+  {
+    return $false
+  }
 
   [bool] $res = (Invoke-Expression $expression) -eq $true
   Write-Debug "Evaluated condition to $res" 
