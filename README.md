@@ -27,6 +27,15 @@ You can customize the tool behavior as well as the clang++ compilation flags, cl
 
 ![ClangPowerTools](images/VSSettings.png)
 
+### Download 
+
+The latest version of this extension is available (FREE) at [Visual Studio Gallery](https://marketplace.visualstudio.com/items?itemName=vs-publisher-690586.ClangPowerTools)
+
+### PowerShell script (for CI / automation):
+
+[clang-build.ps1](https://github.com/Caphyon/clang-power-tools/blob/master/ClangPowerTools/ClangPowerTools/clang-build.ps1)  
+[sample-clang-build.ps1](https://github.com/Caphyon/clang-power-tools/blob/master/ClangPowerTools/ClangPowerTools/sample-clang-build.ps1)
+
 ### Requirements
 
 Download and install **Clang for Windows** (LLVM pre-built binary)  
@@ -37,13 +46,4 @@ We will automatically load clang from the default installation path *C:\Program 
 
 Windows 7: Download and install at least PowerShell 3.0 (already available on Windows 10)  
 https://www.microsoft.com/en-us/download/details.aspx?id=34595
-
-### Download 
-
-The latest version of this extension is available (FREE) at [Visual Studio Gallery](https://marketplace.visualstudio.com/items?itemName=vs-publisher-690586.ClangPowerTools)
-
-### PowerShell script (for CI / automation):
-
-[clang-build.ps1](https://github.com/Caphyon/clang-power-tools/blob/master/ClangPowerTools/ClangPowerTools/clang-build.ps1)  
-[sample-clang-build.ps1](https://github.com/Caphyon/clang-power-tools/blob/master/ClangPowerTools/ClangPowerTools/sample-clang-build.ps1)
 
