@@ -40,7 +40,7 @@ https://www.microsoft.com/en-us/download/details.aspx?id=34595
 
 ### Download 
 
-The latest version of this extension is available at [Visual Studio Gallery](https://marketplace.visualstudio.com/items?itemName=vs-publisher-690586.ClangPowerTools)
+The latest version of this extension is available (FREE) at [Visual Studio Gallery](https://marketplace.visualstudio.com/items?itemName=vs-publisher-690586.ClangPowerTools)
 
 ### PowerShell script (for CI / automation):
 
