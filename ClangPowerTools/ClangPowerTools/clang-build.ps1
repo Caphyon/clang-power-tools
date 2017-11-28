@@ -175,12 +175,17 @@ Set-Variable -name kVcxprojXpathPropGroupElements `
              -value "/ns:Project/ns:PropertyGroup/*" `
              -option Constant
 
+Set-Variable -name kVcxprojXpathCppStandard `
+             -value "/ns:Project/ns:ClCompile/ns:LanguageStandard" `
+             -option Constant
+
 Set-Variable -name kVSDefaultWinSDK            -value '8.1'             -option Constant
 Set-Variable -name kVSDefaultWinSDK_XP         -value '7.0'             -option Constant
 
 # ------------------------------------------------------------------------------------------------
 # Clang-Related Constants
 
+Set-Variable -name kDefaultCppStd           -value "stdcpp14"              -option Constant
 Set-Variable -name kClangFlagSupressLINK    -value @("-fsyntax-only")   -option Constant
 Set-Variable -name kClangFlagWarningIsError -value @("-Werror")         -option Constant
 Set-Variable -name kClangFlagIncludePch     -value "-include-pch"       -option Constant
@@ -623,6 +628,52 @@ Function Is-Project-Unicode([Parameter(Mandatory=$true)][string] $vcxprojPath)
   return ($propGroup.CharacterSet -eq "Unicode")
 }
 
+Function Get-Project-CppStandard()
+{
+  [string] $cachedValueVarName = "ClangPowerTools:CppStd"
+
+  [string] $cachedVar = (Get-Variable $cachedValueVarName -ErrorAction SilentlyContinue -ValueOnly)
+  if (![string]::IsNullOrEmpty($cachedVar))
+  {
+    return $cachedVar
+  }
+
+  [string] $cppStd = ""
+  
+  $cppStdNode = Select-ProjectNodes($kVcxprojXpathCppStandard)
+  if ($cppStdNode)
+  {
+    $cppStd = $cppStdNode.InnertText
+  }
+  else
+  {
+    $cppStd = $kDefaultCppStd
+  }
+
+  $cppStdMap = @{ 'stdcpplatest' = 'c++1z'
+                ;  'stdcpp14'    = 'c++14'
+                ;  'stdcpp17'    = 'c++17'
+                }
+
+  [string] $cppStdClangValue = $cppStdMap[$cppStd]
+  Set-Var -name $cachedValueVarName -value $cppStdClangValue
+
+  return $cppStdClangValue
+}
+
+Function Get-ClangCompileFlags()
+{
+  [string[]] $flags = $aClangCompileFlags
+  if (!($flags -match "-std=.*"))
+  {
+    [string] $cppStandard = Get-Project-CppStandard
+
+    $flags = @("-std=$cppStandard") + $flags
+  }
+  
+  return $flags
+}
+
 Function Get-ProjectPlatformToolset([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
   $propGroup = Select-ProjectNodes($kVcxprojXpathToolset)
@@ -851,7 +902,7 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
   $global:FilesToDeleteWhenScriptQuits.Add($stdafxPch) | Out-Null
 
   # Supress -Werror for PCH generation as it throws warnings quite often in code we cannot control
-  [string[]] $clangFlags = $aClangCompileFlags | Where-Object { $_ -ne $kClangFlagWarningIsError }
+  [string[]] $clangFlags = Get-ClangCompileFlags | Where-Object { $_ -ne $kClangFlagWarningIsError }
 
   [string[]] $compilationFlags = @("""$stdafx"""
                                   ,$kClangFlagEmitPch
@@ -1386,7 +1437,7 @@ Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $prep
   
   $projectCompileArgs += @( $kClangFlagFileIsCPP
                           , """$fileToCompile"""
-                          , $aClangCompileFlags
+                          , @(Get-ClangCompileFlags)
                           , $kClangFlagSupressLINK
                           , $preprocessorDefinitions
                           )
@@ -1431,7 +1482,7 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
   }
   
   # We reuse flags used for compilation and preprocessor definitions.
-  $tidyArgs += $aClangCompileFlags
+  $tidyArgs += @(Get-ClangCompileFlags)
   $tidyArgs += $preprocessorDefinitions
 
   return $tidyArgs
