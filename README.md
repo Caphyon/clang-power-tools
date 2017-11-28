@@ -5,6 +5,10 @@ A tool bringing clang-tidy magic to Visual Studio C++ developers.
 
 This Visual Studio extension helps Visual Studio C++ developers leverage Clang/LLVM tools like clang-tidy in order to perform various code transformations and fixes like modernizing code to C++11/14/17 and finding subtle latent bugs with its static analyzer and ‘cppcoreguidelines’ modules (Guidelines Support Library).
 
+### Download 
+
+The latest version of this extension is available (FREE) in the [Visual Studio Gallery](https://marketplace.visualstudio.com/items?itemName=vs-publisher-690586.ClangPowerTools)
+
 ![ClangPowerTools](images/VSDemo1.png)
 
 ![ClangPowerTools](images/Toolbar1.png)
@@ -26,10 +30,6 @@ The extension can be configured via the standard Visual Studio options panel.
 You can customize the tool behavior as well as the clang++ compilation flags, clang-tidy checks, etc.
 
 ![ClangPowerTools](images/VSSettings.png)
-
-### Download 
-
-The latest version of this extension is available (FREE) in the [Visual Studio Gallery](https://marketplace.visualstudio.com/items?itemName=vs-publisher-690586.ClangPowerTools)
 
 ### PowerShell scripts (for CI / automation):
 
