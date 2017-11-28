@@ -29,7 +29,7 @@ You can customize the tool behavior as well as the clang++ compilation flags, cl
 
 ### Download 
 
-The latest version of this extension is available (FREE) at [Visual Studio Gallery](https://marketplace.visualstudio.com/items?itemName=vs-publisher-690586.ClangPowerTools)
+The latest version of this extension is available (FREE) in the [Visual Studio Gallery](https://marketplace.visualstudio.com/items?itemName=vs-publisher-690586.ClangPowerTools)
 
 ### PowerShell scripts (for CI / automation):
 
