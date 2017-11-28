@@ -31,7 +31,7 @@ You can customize the tool behavior as well as the clang++ compilation flags, cl
 
 The latest version of this extension is available (FREE) at [Visual Studio Gallery](https://marketplace.visualstudio.com/items?itemName=vs-publisher-690586.ClangPowerTools)
 
-### PowerShell script (for CI / automation):
+### PowerShell scripts (for CI / automation):
 
 [clang-build.ps1](https://github.com/Caphyon/clang-power-tools/blob/master/ClangPowerTools/ClangPowerTools/clang-build.ps1)  
 [sample-clang-build.ps1](https://github.com/Caphyon/clang-power-tools/blob/master/ClangPowerTools/ClangPowerTools/sample-clang-build.ps1)
