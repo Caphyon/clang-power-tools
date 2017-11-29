@@ -1122,9 +1122,13 @@ function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpa
         $whatToReplace = "(;$escTok)|($escTok;)|($escTok)"
       }
 
-      $replaceRules = ( <# replace inherited token                #>      `
-                          ($whatToReplace                 , $replaceWith )`
-                        <# handle multiple consecutive separators #>      `
+      # replace inherited token 
+      $nodes[0].InnerText = $nodes[0].InnerText -replace $whatToReplace, $replaceWith
+
+      # we need to evaluate the expression in order to expand properties
+      $nodes[0].InnerText = Evaluate-MSBuildExpression $nodes[0].InnerText
+
+      $replaceRules = ( <# handle multiple consecutive separators #>      `
                         , (";+"           , ";"     )                     `
                         <# handle separator at end                #>      `
                         , (";$"                , ""      )                `
@@ -1135,9 +1139,6 @@ function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpa
       {
         $nodes[0].InnerText = $nodes[0].InnerText -replace $rule[0], $rule[1]
       }
-
-      # we need to evaluate the expression in order to expand properties
-      $nodes[0].InnerText = Evaluate-MSBuildExpression $nodes[0].InnerText
     } 
     return $nodes
   }
