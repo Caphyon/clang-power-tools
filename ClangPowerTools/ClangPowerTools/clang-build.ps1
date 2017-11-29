@@ -521,6 +521,9 @@ Function InitializeMsBuildProjectProperties()
   Set-Var -name "MSBuildProjectName"       -value (Get-FileName -path $global:vcxprojPath -noext)
   Set-Var -name "MSBuildProjectDirectory"  -value (Get-FileDirectory -filePath $global:vcxprojPath)
   Set-Var -name "MSBuildProgramFiles32"    -value "${Env:ProgramFiles(x86)}"
+  # defaults for projectname and targetname, may be overriden by project settings
+  Set-Var -name "ProjectName"              -value $MSBuildProjectName
+  Set-Var -name "TargetName"               -value $MSBuildProjectName
 
   [string] $vsVer = "15.0"
   if ($aVisualStudioVersion -eq "2015")
@@ -1186,18 +1189,18 @@ function LoadProjectFileProperties([xml] $projectFile)
   foreach ($node in $propNodes)
   {
     [string] $propertyName  = $node.Name
-    [string] $propertyValue = Evaluate-MSBuildExpression($node.InnerText)
+
+    # properties are loaded before xml sanitization so we need to manually evalute present conditions
+    if ($node.HasAttribute("Condition"))
+    {
+      if (!@(Evaluate-MSBuildCondition -condition ($node.GetAttribute("Condition"))))
+      {
+        break
+      }
+    }
+    [string] $propertyValue = Evaluate-MSBuildExpression -expression $node.InnerText
 
     Set-Var -Name $propertyName -Value $propertyValue
-  }
-
-  if ($aVisualStudioUserProperties)
-  {
-    for ($i = 0; $i -lt $aVisualStudioUserProperties.Count; $i += 2)
-    {
-      Set-Var -Name  $aVisualStudioUserProperties[$i] `
-              -Value $aVisualStudioUserProperties[$i + 1]
-    }
   }
 }
 
@@ -1326,6 +1329,9 @@ function LoadProject([string] $vcxprojPath)
   $global:xpathNS.AddNamespace("ns", $global:projectFiles[0].DocumentElement.NamespaceURI)
   
   Detect-ProjectDefaultConfigPlatform
+  
+  # preload properties so that sanitization of project xml conditions can access them
+  LoadProjectFileProperties($global:projectFiles[0])
 
   Write-Verbose "`nSanitizing $global:vcxprojPath"
   SanitizeProjectFile -projectFile $global:projectFiles[0]
@@ -1365,7 +1371,8 @@ function LoadProject([string] $vcxprojPath)
     $global:projectFiles += $propSheetXml
   }
 
-  # load .vcxproj project properties. 
+  # .vcxproj project properties may have been overriden by property sheet
+  # loading process, put them back in place.
   LoadProjectFileProperties($global:projectFiles[0])
   
   InitializeMsBuildCurrentFileProperties -filePath $global:vcxprojPath  
