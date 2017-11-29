@@ -3,6 +3,8 @@ Clang Power Tools
 
 A tool bringing clang-tidy magic to Visual Studio C++ developers.
 
+[www.clangpowertools.com](http://clangpowertools.com)
+
 This Visual Studio extension helps Visual Studio C++ developers leverage Clang/LLVM tools like clang-tidy in order to perform various code transformations and fixes like modernizing code to C++11/14/17 and finding subtle latent bugs with its static analyzer and ‘cppcoreguidelines’ modules (Guidelines Support Library).
 
 ### Download 
