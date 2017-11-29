@@ -49,3 +49,6 @@ We will automatically load clang from the default installation path *C:\Program 
 Windows 7: Download and install at least PowerShell 3.0 (already available on Windows 10)  
 https://www.microsoft.com/en-us/download/details.aspx?id=34595
 
+### Version History
+
+[CHANGELOG.md](https://github.com/Caphyon/clang-power-tools/blob/master/CHANGELOG.md)
