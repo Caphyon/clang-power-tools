@@ -148,7 +148,7 @@ Set-Variable -name kVcxprojXpathWinPlatformVer `
              -option Constant           
 
 Set-Variable -name kVcxprojXpathForceIncludes `
-             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:ForceIncludeFiles" `
+             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:ForcedIncludeFiles" `
              -option Constant 
 
 Set-Variable -name kVcxprojXpathPCH `
