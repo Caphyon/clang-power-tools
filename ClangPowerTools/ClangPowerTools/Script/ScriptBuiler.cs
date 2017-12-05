@@ -30,17 +30,15 @@ namespace ClangPowerTools
         ProjectItem projectItem = aItem.GetObject() as ProjectItem;
         parentDirectoryPath = new DirectoryInfo(projectItem.ContainingProject.FullName).Parent.FullName;
         string containingProject = projectItem.ContainingProject.FullName;
-        script = $"{script} {ScriptConstants.kProject} ''{containingProject}'' {ScriptConstants.kFile} {projectItem.Name} " +
-          $"{ScriptConstants.kActiveConfiguration} ''{ProjectConfiguration.GetConfiguration(projectItem.ContainingProject)}|{ProjectConfiguration.GetPlatform(projectItem.ContainingProject)}''";
+        script = $"{script} {ScriptConstants.kProject} ''{containingProject}'' " +
+          $"{ScriptConstants.kFile} {projectItem.Name} {ScriptConstants.kActiveConfiguration} " +
+          $"''{ProjectConfiguration.GetConfiguration(projectItem.ContainingProject)}|{ProjectConfiguration.GetPlatform(projectItem.ContainingProject)}''";
       }
       else if (aItem is SelectedProject)
       {
         Project project = aItem.GetObject() as Project;
         parentDirectoryPath = new DirectoryInfo(project.FullName).Parent.FullName;
-
-        var projPath = project.FullName;
-
-        script = $"{script} {ScriptConstants.kProject} ''{projPath}'' {ScriptConstants.kActiveConfiguration} " +
+        script = $"{script} {ScriptConstants.kProject} ''{project.FullName}'' {ScriptConstants.kActiveConfiguration} " +
           $"''{ProjectConfiguration.GetConfiguration(project)}|{ProjectConfiguration.GetPlatform(project)}''";
       }
       parentDirectoryPath = GetCommandPath(aSolutionPath, parentDirectoryPath);
@@ -123,17 +121,22 @@ namespace ClangPowerTools
       return parameters;
     }
 
-    public string GetCommandPath(string aFirstPath, string aSecondPath)
+    private string GetCommandPath(string aFirstPath, string aSecondPath)
     {
-      var paths = new List<string>() { aFirstPath, aSecondPath };
+      var firstPath = aFirstPath.ToLower().Split(new char[] { '/', '\\' });
+      var secondPath = aSecondPath.ToLower().Split(new char[] { '/', '\\' });
+      var length = firstPath.Length < secondPath.Length ? firstPath.Length : secondPath.Length;
 
-      var matchingChars =
-            from len in Enumerable.Range(0, paths.Min(s => s.Length)).Reverse()
-            let possibleMatch = paths.First().Substring(0, len)
-            where paths.All(f => f.StartsWith(possibleMatch))
-            select possibleMatch;
-
-      return Path.GetDirectoryName(matchingChars.First());
+      var path = new List<string>();
+      for (int index = 0; index < length - 1; ++index)
+      {
+        if (0 != firstPath[index].CompareTo(secondPath[index]))
+          break;
+        if (0 == index)
+          firstPath[index] += "\\";
+        path.Add(firstPath[index]);
+      }
+      return Path.Combine(path.ToArray());
     }
 
     #endregion
