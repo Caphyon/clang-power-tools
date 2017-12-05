@@ -1414,8 +1414,10 @@ Function Get-ProjectPreprocessorDefines([Parameter(Mandatory=$true)][string] $vc
 
 Function Get-ProjectAdditionalIncludes([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
+  [string[]] $tokens = $IncludePath -split ";"
+
   $data = Select-ProjectNodes $kVcxprojXpathAdditionalIncludes
-  [string[]] $tokens = ($data).InnerText -split ";"
+  $tokens += ($data).InnerText -split ";"
   if (!$tokens)
   {
     return
@@ -1425,6 +1427,11 @@ Function Get-ProjectAdditionalIncludes([Parameter(Mandatory=$true)][string] $vcx
   
   foreach ($token in $tokens)
   {
+    if ([string]::IsNullOrEmpty($token))
+    {
+      continue
+    }
+    
     [string] $includePath = Canonize-Path -base $projDir -child $token -ignoreErrors
     if (![string]::IsNullOrEmpty($includePath))
     {
