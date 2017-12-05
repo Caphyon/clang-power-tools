@@ -1701,7 +1701,17 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   }
   else
   {
-    Write-Verbose ("PCH directory: $stdafxDir")
+    # pch generation crashes on VS 15.5
+    [string] $mscVer = Get-MscVer -visualStudioPath $vsPath
+    if ($mscVer -eq "14.12.25827")
+    {
+      Write-Verbose "IMPORTANT: PCH disabled on VS 2017.5 (MscVer $mscVer) until compatibility issues are resolved :("
+      $stdafxDir = ""
+    }
+    else
+    {
+      Write-Verbose ("PCH directory: $stdafxDir")
+    }
   }
   #-----------------------------------------------------------------------------------------------
   # DETECT PROJECT PREPROCESSOR DEFINITIONS
