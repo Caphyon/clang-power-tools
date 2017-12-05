@@ -1785,10 +1785,10 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   Write-Verbose ("Processing " + $projCpps.Count + " cpps")
  
   #-----------------------------------------------------------------------------------------------
-  # CREATE PCH IF NEED BE
+  # CREATE PCH IF NEED BE, ONLY FOR TWO CPPS OR MORE
 
   [string] $pchFilePath = ""
-  if ($projCpps.Count -gt 0 -and 
+  if ($projCpps.Count -ge 2 -and 
       ![string]::IsNullOrEmpty($stdafxDir) -and
       $workloadType -eq [WorkloadType]::Compile)
   {
