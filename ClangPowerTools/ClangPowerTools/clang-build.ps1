@@ -8,9 +8,8 @@
     One or more of these projects will be compiled or tidied up (modernized), using Clang.
 
 .PARAMETER aSolutionsPath
-    Alias 'dir'. Source directory to find sln files. Projects will be extracted from each sln.
-    Important: Solutions must be reachable, recursively,
-               in this directory. Otherwise, they won't be processed.
+    Alias 'dir'. Source directory to find sln files. 
+                 Projects will be extracted from each sln.
     
     Important: You can pass an absolute path to a sln. This way, no file searching will be done, and
                only the projects from this solution file will be taken into acount.
