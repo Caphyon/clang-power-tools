@@ -1492,6 +1492,7 @@ Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $prep
 }
 
 Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preprocessorDefinitions
+                              , [Parameter(Mandatory=$false)][string[]] $forceIncludeFiles
                               , [Parameter(Mandatory=$true)][string]   $fileToTidy
                               , [Parameter(Mandatory=$false)][switch]  $fix)
 {
@@ -1522,6 +1523,16 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
   $tidyArgs += @(Get-ClangCompileFlags)
   $tidyArgs += $preprocessorDefinitions
 
+  if ($forceIncludeFiles)
+  {
+    $tidyArgs += $kClangFlagNoMsInclude;
+    
+    foreach ($file in $forceIncludeFiles)
+    {
+      $tidyArgs += "$kClangFlagForceInclude $file"
+    }
+  }
+
   return $tidyArgs
 }
 
@@ -1539,8 +1550,10 @@ Function Get-ExeCallArguments( [Parameter(Mandatory=$true) ][string]       $vcxp
                                               -pchFilePath             $pchFilePath `
                                               -fileToCompile           $currentFile }
     Tidy    { return Get-TidyCallArguments -preprocessorDefinitions $preprocessorDefinitions `
+                                           -forceIncludeFiles       $forceIncludeFiles `
                                            -fileToTidy              $currentFile }
     TidyFix { return Get-TidyCallArguments -preprocessorDefinitions $preprocessorDefinitions `
+                                           -forceIncludeFiles       $forceIncludeFiles `
                                            -fileToTidy              $currentFile `
                                            -fix}
   }
