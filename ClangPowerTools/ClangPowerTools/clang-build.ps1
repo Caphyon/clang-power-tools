@@ -461,6 +461,19 @@ Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
   return $path
 }
 
+Function Get-SourceDirectory()
+{
+  [bool] $isDirectory = ($(Get-Item $aDirectory) -is [System.IO.DirectoryInfo])
+  if ($isDirectory)
+  {
+    return $aDirectory
+  }
+  else 
+  {
+    return (Get-FileDirectory -filePath $aDirectory)
+  }
+}
+
 function Load-Solutions()
 {
    Write-Verbose "Scanning for solution files"
@@ -838,10 +851,18 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcx
 
 Function Get-Projects()
 {
-  $vcxprojs = Get-ChildItem -LiteralPath "$aDirectory" -recurse | 
-              Where-Object { $_.Extension -eq $kExtensionVcxproj }
+  [string[]] $projects = @()
 
-  return $vcxprojs;
+  foreach ($slnPath in $global:slnFiles.Keys)
+  {
+    [string[]] $solutionProjects = Get-SolutionProjects -slnPath $slnPath
+    if ($solutionProjects.Count -gt 0)
+    {
+      $projects += $solutionProjects
+    }
+  }
+
+  return ($projects | Select -Unique);
 }
 
 Function Get-PchCppIncludeHeader([Parameter(Mandatory=$true)][string] $vcxprojPath
@@ -925,7 +946,7 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
 
   [System.Diagnostics.Process] $processInfo = Start-Process -FilePath $kClangCompiler `
                                                             -ArgumentList $compilationFlags `
-                                                            -WorkingDirectory "$aDirectory" `
+                                                            -WorkingDirectory "$(Get-SourceDirectory)" `
                                                             -NoNewWindow `
                                                             -Wait `
                                                             -PassThru
@@ -1772,7 +1793,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
                                                -currentFile             $cpp
 
     $newJob = New-Object PsObject -Prop @{ 'FilePath'        = $exeToCall;
-                                           'WorkingDirectory'= $aDirectory;
+                                           'WorkingDirectory'= Get-SourceDirectory;
                                            'ArgumentList'    = $exeArgs;
                                            'File'            = $cpp }
     $clangJobs += $newJob
@@ -1836,7 +1857,7 @@ if (! (Exists-Command($kClangCompiler)) )
   }
 }
 
-Push-Location $aDirectory
+Push-Location (Get-SourceDirectory)
 
 # fetch .sln paths and data
 Load-Solutions
@@ -1844,7 +1865,7 @@ Load-Solutions
 # This powershell process may already have completed jobs. Discard them.
 Remove-Job -State Completed
 
-Write-Verbose "Source directory: $aDirectory"
+Write-Verbose "Source directory: $(Get-SourceDirectory)"
 Write-Verbose "Scanning for project files"
 
 [System.IO.FileInfo[]] $projects = Get-Projects
