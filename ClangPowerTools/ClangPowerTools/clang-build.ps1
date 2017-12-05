@@ -497,7 +497,7 @@ function Get-SolutionProjects([Parameter(Mandatory=$true)][string] $slnPath)
   $projectAbsolutePaths = $matches `
     | ForEach-Object { Canonize-Path -base $slnDirectory `
                                      -child $_.Groups[1].Value.Replace('"','') -ignoreErrors } `
-    | Where-Object { ! [string]::IsNullOrEmpty($_) }
+    | Where-Object { ! [string]::IsNullOrEmpty($_) -and $_.EndsWith($kExtensionVcxproj) }
   return $projectAbsolutePaths
 }
 
