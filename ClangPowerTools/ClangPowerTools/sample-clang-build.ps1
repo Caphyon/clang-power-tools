@@ -138,7 +138,7 @@ Function Merge-Array([string[]] $aArray)
 [string]   $scriptDirectory = (Split-Path -parent $PSCommandPath)
 
 [string]   $clangScript     = "$scriptDirectory\clang-build.ps1"
-[string[]] $scriptParams    = @("-aDirectory", "'$(Get-Location)'")
+[string[]] $scriptParams    = @("-aSolutionsPath", "'$(Get-Location)'")
 
 if (![string]::IsNullOrEmpty($aVcxprojToCompile))
 {
