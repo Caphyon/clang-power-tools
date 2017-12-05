@@ -515,6 +515,12 @@ Function InitializeMsBuildCurrentFileProperties([Parameter(Mandatory=$true)][str
 
 Function InitializeMsBuildProjectProperties()
 {
+  Write-Verbose "Importing environment variables into current scope"
+  foreach ($var in (Get-ChildItem Env:))
+  {
+    Set-Var -name $var.Name -value $var.Value
+  }
+  
   Set-Var -name "MSBuildProjectFullPath"   -value $global:vcxprojPath
   Set-Var -name "ProjectDir"               -value (Get-FileDirectory -filePath $global:vcxprojPath)
   Set-Var -name "MSBuildProjectExtension"  -value ([IO.Path]::GetExtension($global:vcxprojPath))
