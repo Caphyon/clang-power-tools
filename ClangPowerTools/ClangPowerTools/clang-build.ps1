@@ -7,13 +7,15 @@
     This PowerShell script scans for all .vcxproj Visual Studio projects inside a source directory.
     One or more of these projects will be compiled or tidied up (modernized), using Clang.
 
-.PARAMETER aDirectory
-    Alias 'dir'. Source directory to process. 
-    Important: Projects and solutions must be reachable, recursively,
-               in this directory. Otherwise, they won't be processed.
+.PARAMETER aSolutionsPath
+    Alias 'dir'. Source directory to find sln files. 
+                 Projects will be extracted from each sln.
+    
+    Important: You can pass an absolute path to a sln. This way, no file searching will be done, and
+               only the projects from this solution file will be taken into acount.
 
 .PARAMETER aVcxprojToCompile
-    Alias 'proj'. Array of project(s) to compile. If empty, all projects are compiled.
+    Alias 'proj'. Array of project(s) to compile. If empty, all projects found in solutions are compiled.
     If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used, 
     e.g. "msicomp" compiles all projects containing 'msicomp'.
 
@@ -87,7 +89,7 @@
 .NOTES
     Author: Gabriel Diaconita
 #>
-param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aDirectory
+param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aSolutionsPath
      , [alias("proj")]         [Parameter(Mandatory=$false)][string[]] $aVcxprojToCompile
      , [alias("proj-ignore")]  [Parameter(Mandatory=$false)][string[]] $aVcxprojToIgnore
      , [alias("active-config")][Parameter(Mandatory=$false)][string]   $aVcxprojConfigPlatform
@@ -461,10 +463,23 @@ Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
   return $path
 }
 
+Function Get-SourceDirectory()
+{
+  [bool] $isDirectory = ($(Get-Item $aSolutionsPath) -is [System.IO.DirectoryInfo])
+  if ($isDirectory)
+  {
+    return $aSolutionsPath
+  }
+  else 
+  {
+    return (Get-FileDirectory -filePath $aSolutionsPath)
+  }
+}
+
 function Load-Solutions()
 {
    Write-Verbose "Scanning for solution files"
-   $slns = Get-ChildItem -recurse -LiteralPath "$aDirectory" `
+   $slns = Get-ChildItem -recurse -LiteralPath "$aSolutionsPath" `
            | Where-Object { $_.Extension -eq $kExtensionSolution }
    foreach ($sln in $slns)
    {
@@ -838,10 +853,18 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcx
 
 Function Get-Projects()
 {
-  $vcxprojs = Get-ChildItem -LiteralPath "$aDirectory" -recurse | 
-              Where-Object { $_.Extension -eq $kExtensionVcxproj }
+  [string[]] $projects = @()
 
-  return $vcxprojs;
+  foreach ($slnPath in $global:slnFiles.Keys)
+  {
+    [string[]] $solutionProjects = Get-SolutionProjects -slnPath $slnPath
+    if ($solutionProjects.Count -gt 0)
+    {
+      $projects += $solutionProjects
+    }
+  }
+
+  return ($projects | Select -Unique);
 }
 
 Function Get-PchCppIncludeHeader([Parameter(Mandatory=$true)][string] $vcxprojPath
@@ -925,7 +948,7 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
 
   [System.Diagnostics.Process] $processInfo = Start-Process -FilePath $kClangCompiler `
                                                             -ArgumentList $compilationFlags `
-                                                            -WorkingDirectory "$aDirectory" `
+                                                            -WorkingDirectory "$(Get-SourceDirectory)" `
                                                             -NoNewWindow `
                                                             -Wait `
                                                             -PassThru
@@ -1508,7 +1531,7 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
 
   # The header-filter flag enables clang-tidy to run on headers too.
   # We want all headers from our directory to be tidied up.
-  $tidyArgs += $kClangTidyFlagHeaderFilter + '"' + [regex]::Escape($aDirectory) + '"'
+  $tidyArgs += $kClangTidyFlagHeaderFilter + '"' + [regex]::Escape((Get-SourceDirectory)) + '"'
 
   if ($fix)
   {
@@ -1737,7 +1760,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   {
     $includeDirectories = @($stdafxDir) + $includeDirectories
   }
-  $includeDirectories = @($aDirectory) + $includeDirectories
+  $includeDirectories = @(Get-SourceDirectory) + $includeDirectories
 
   Set-ProjectIncludePaths($includeDirectories)
 
@@ -1795,7 +1818,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
                                                -currentFile             $cpp
 
     $newJob = New-Object PsObject -Prop @{ 'FilePath'        = $exeToCall;
-                                           'WorkingDirectory'= $aDirectory;
+                                           'WorkingDirectory'= Get-SourceDirectory;
                                            'ArgumentList'    = $exeArgs;
                                            'File'            = $cpp }
     $clangJobs += $newJob
@@ -1859,7 +1882,7 @@ if (! (Exists-Command($kClangCompiler)) )
   }
 }
 
-Push-Location $aDirectory
+Push-Location (Get-SourceDirectory)
 
 # fetch .sln paths and data
 Load-Solutions
@@ -1867,7 +1890,7 @@ Load-Solutions
 # This powershell process may already have completed jobs. Discard them.
 Remove-Job -State Completed
 
-Write-Verbose "Source directory: $aDirectory"
+Write-Verbose "Source directory: $(Get-SourceDirectory)"
 Write-Verbose "Scanning for project files"
 
 [System.IO.FileInfo[]] $projects = Get-Projects
