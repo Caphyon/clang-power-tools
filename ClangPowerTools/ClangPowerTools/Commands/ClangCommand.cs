@@ -64,7 +64,7 @@ namespace ClangPowerTools
       mScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
         DTEObj, VsEdition, VsVersion);
       
-	  string solutionPath = mDte.Solution.FullName;
+	  string solutionPath = DTEObj.Solution.FullName;
 
       mOutputManager = new OutputManager(DTEObj);
       InitPowerShell();
