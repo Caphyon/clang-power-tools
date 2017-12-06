@@ -7,40 +7,25 @@ namespace ClangPowerTools
   {
     #region Public Methods
 
-    public void Clean(string aDirectoriesPath)
+    public void Clean(string aPath) => DeleteFile(aPath);
+
+    public void Clean(IEnumerable<string> aPaths)
     {
-      var directories = Directory.GetDirectories(aDirectoriesPath);
-      foreach (var directory in directories)
-        Clean(directory);
-
-      var files = Directory.GetFiles(aDirectoriesPath, $"*{ScriptConstants.kTempFileExtension}");
-      RemoveFiles(files);
-    }
-
-    public void Clean(IEnumerable<string> aDirectoriesPath)
-    {
-      foreach (var directory in aDirectoriesPath)
-      {
-        var directories = Directory.GetDirectories(directory);
-        Clean(directories);
-
-        var files = Directory.GetFiles(directory, ScriptConstants.kTempFileExtension);
-        RemoveFiles(files);
-      }
+      foreach (var path in aPaths)
+        DeleteFile(path);
     }
 
     #endregion
 
     #region Private Methods
 
-    private void RemoveFiles(IEnumerable<string> aFiles)
+    private void DeleteFile(string aPath)
     {
-      foreach (var file in aFiles)
-        File.Delete(file);
+      if (File.Exists(aPath))
+        File.Delete(aPath);
     }
-    
-    #endregion
 
+    #endregion
 
   }
 }

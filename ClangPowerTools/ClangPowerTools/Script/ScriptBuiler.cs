@@ -17,12 +17,6 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region Properties
-
-    public string DirectoryPath { get; set; }
-
-    #endregion
-
     #region Public Methods
 
     public string GetScript(IItem aItem, string aSolutionPath)

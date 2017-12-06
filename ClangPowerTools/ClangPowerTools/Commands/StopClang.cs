@@ -47,7 +47,7 @@ namespace ClangPowerTools.Commands
       var task = System.Threading.Tasks.Task.Run(() =>
       {
         mRunningProcesses.KillAll();
-        mPCHCleaner.Clean(mDirectoriesPath);
+        mPCHCleaner.Clean(mOutputManager.PCHPaths);
         mDirectoriesPath.Clear();
       });
     }

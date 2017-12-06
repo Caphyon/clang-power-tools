@@ -30,8 +30,6 @@
     public const string kVsEdition = "-vs-sku";
     public const string kActiveConfiguration = "-active-config";
 
-    public const string kTempFileExtension = ".clang.pch";
-
     #endregion
 
   }
