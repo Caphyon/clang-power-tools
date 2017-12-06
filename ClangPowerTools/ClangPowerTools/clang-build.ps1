@@ -1777,12 +1777,13 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   #-----------------------------------------------------------------------------------------------
   # CREATE PCH IF NEED BE, ONLY FOR TWO CPPS OR MORE
 
-  # pch generation crashes on VS 15.5
+  # [HACK] pch generation crashes on VS 15.5 because of STL library, known bug.
+  # Triggered by addition of line directives to improve std::function debugging.
+  # There's a definition that supresses line directives.
   [string] $mscVer = Get-MscVer -visualStudioPath $vsPath
   if ($mscVer -eq "14.12.25827")
   {
-    Write-Verbose "IMPORTANT: PCH disabled on VS 15.5 (MscVer $mscVer) until compatibility issues are resolved :("
-    $stdafxDir = ""
+    $preprocessorDefinitions += "_DEBUG_FUNCTIONAL_MACHINERY"
   }
 
   [string] $pchFilePath = ""
