@@ -48,7 +48,6 @@ namespace ClangPowerTools
       {
         try
         {
-          LoadAllProjects();
           SaveActiveDocuments();
           CollectSelectedItems();
           RunScript(OutputWindowConstants.kComplileCommand);

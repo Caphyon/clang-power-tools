@@ -3,7 +3,13 @@ Clang Power Tools
 
 A tool bringing clang-tidy magic to Visual Studio C++ developers.
 
+[www.clangpowertools.com](http://clangpowertools.com)
+
 This Visual Studio extension helps Visual Studio C++ developers leverage Clang/LLVM tools like clang-tidy in order to perform various code transformations and fixes like modernizing code to C++11/14/17 and finding subtle latent bugs with its static analyzer and ‘cppcoreguidelines’ modules (Guidelines Support Library).
+
+### Download 
+
+The latest version of this extension is available (FREE) in the [Visual Studio Gallery](https://marketplace.visualstudio.com/items?itemName=vs-publisher-690586.ClangPowerTools)
 
 ![ClangPowerTools](images/VSDemo1.png)
 
@@ -27,6 +33,11 @@ You can customize the tool behavior as well as the clang++ compilation flags, cl
 
 ![ClangPowerTools](images/VSSettings.png)
 
+### PowerShell scripts (for CI / automation):
+
+[clang-build.ps1](https://github.com/Caphyon/clang-power-tools/blob/master/ClangPowerTools/ClangPowerTools/clang-build.ps1)  
+[sample-clang-build.ps1](https://github.com/Caphyon/clang-power-tools/blob/master/ClangPowerTools/ClangPowerTools/sample-clang-build.ps1)
+
 ### Requirements
 
 Download and install **Clang for Windows** (LLVM pre-built binary)  
@@ -38,6 +49,6 @@ We will automatically load clang from the default installation path *C:\Program 
 Windows 7: Download and install at least PowerShell 3.0 (already available on Windows 10)  
 https://www.microsoft.com/en-us/download/details.aspx?id=34595
 
-### Download 
+### Version History
 
-The latest version of this extension is available at [Visual Studio Gallery](https://marketplace.visualstudio.com/items?itemName=vs-publisher-690586.ClangPowerTools).
+[CHANGELOG.md](https://github.com/Caphyon/clang-power-tools/blob/master/CHANGELOG.md)

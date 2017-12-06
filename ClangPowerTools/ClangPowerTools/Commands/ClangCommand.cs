@@ -63,7 +63,8 @@ namespace ClangPowerTools
       mScriptBuilder = new ScriptBuiler();
       mScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
         DTEObj, VsEdition, VsVersion);
-
+      
+	  string solutionPath = mDte.Solution.FullName;
 
       mOutputManager = new OutputManager(DTEObj);
       InitPowerShell();
@@ -71,7 +72,7 @@ namespace ClangPowerTools
       mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
       foreach (var item in mItemsCollector.GetItems)
       {
-        var script = mScriptBuilder.GetScript(item, item.GetName());
+        var script = mScriptBuilder.GetScript(item, solutionPath);
         mDirectoriesPath.Add(mScriptBuilder.DirectoryPath);
 
         if (!mCommandsController.Running)

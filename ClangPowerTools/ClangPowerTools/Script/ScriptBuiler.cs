@@ -1,6 +1,7 @@
 ﻿using EnvDTE;
 using EnvDTE80;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public string GetScript(IItem aItem, string aFileName)
+    public string GetScript(IItem aItem, string aSolutionPath)
     {
       string containingDirectoryPath = string.Empty;
       string script = $"{ScriptConstants.kScriptBeginning} ''{GetScriptPath()}''";
@@ -34,16 +35,18 @@ namespace ClangPowerTools
         ProjectItem projectItem = aItem.GetObject() as ProjectItem;
         DirectoryPath = new DirectoryInfo(projectItem.ContainingProject.FullName).Parent.FullName;
         string containingProject = projectItem.ContainingProject.FullName;
-        string containingProjectName = containingProject.Substring(containingProject.LastIndexOf('\\') + 1);
-        script = $"{script} {ScriptConstants.kProject} {containingProjectName} {ScriptConstants.kFile} {aFileName} " +
-          $"{ScriptConstants.kActiveConfiguration} ''{ProjectConfiguration.GetConfiguration(projectItem.ContainingProject)}|{ProjectConfiguration.GetPlatform(projectItem.ContainingProject)}''";
+        script = $"{script} {ScriptConstants.kProject} ''{containingProject}'' " +
+          $"{ScriptConstants.kFile} {projectItem.Name} {ScriptConstants.kActiveConfiguration} " +
+          $"''{ProjectConfiguration.GetConfiguration(projectItem.ContainingProject)}|{ProjectConfiguration.GetPlatform(projectItem.ContainingProject)}''";
       }
       else if (aItem is SelectedProject)
       {
         Project project = aItem.GetObject() as Project;
         DirectoryPath = new DirectoryInfo(project.FullName).Parent.FullName;
-        script = $"{script} {ScriptConstants.kProject} {aFileName}";
+		script = $"{script} {ScriptConstants.kProject} ''{project.FullName}'' {ScriptConstants.kActiveConfiguration} " +
+          $"''{ProjectConfiguration.GetConfiguration(project)}|{ProjectConfiguration.GetPlatform(project)}''";
       }
+      DirectoryPath = GetCommandPath(aSolutionPath, DirectoryPath);
       return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{DirectoryPath}'' {ScriptConstants.kLiteral}'";
     }
 
@@ -121,6 +124,24 @@ namespace ClangPowerTools
           aTidyOptions.Fix ? ScriptConstants.kTidyFix : ScriptConstants.kTidy, parameters);
 
       return parameters;
+    }
+
+    private string GetCommandPath(string aFirstPath, string aSecondPath)
+    {
+      var firstPath = aFirstPath.ToLower().Split(new char[] { '/', '\\' });
+      var secondPath = aSecondPath.ToLower().Split(new char[] { '/', '\\' });
+      var length = firstPath.Length < secondPath.Length ? firstPath.Length : secondPath.Length;
+
+      var path = new List<string>();
+      for (int index = 0; index < length - 1; ++index)
+      {
+        if (0 != firstPath[index].CompareTo(secondPath[index]))
+          break;
+        if (0 == index)
+          firstPath[index] += "\\";
+        path.Add(firstPath[index]);
+      }
+      return Path.Combine(path.ToArray());
     }
 
     #endregion

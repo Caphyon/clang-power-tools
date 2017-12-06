@@ -7,13 +7,19 @@
     This PowerShell script scans for all .vcxproj Visual Studio projects inside a source directory.
     One or more of these projects will be compiled or tidied up (modernized), using Clang.
 
-.PARAMETER aDirectory
-    Alias 'dir'. Source directory to process.
+.PARAMETER aSolutionsPath
+    Alias 'dir'. Source directory to find sln files. 
+                 Projects will be extracted from each sln.
+    
+    Important: You can pass an absolute path to a sln. This way, no file searching will be done, and
+               only the projects from this solution file will be taken into acount.
 
 .PARAMETER aVcxprojToCompile
-    Alias 'proj'. Array of project(s) to compile. If empty, all projects are compiled.
+    Alias 'proj'. Array of project(s) to compile. If empty, all projects found in solutions are compiled.
     If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used, 
     e.g. "msicomp" compiles all projects containing 'msicomp'.
+
+    Absolute disk paths to vcxproj files are accepted.
     
     Can be passed as comma separated values.
 
@@ -83,7 +89,7 @@
 .NOTES
     Author: Gabriel Diaconita
 #>
-param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aDirectory
+param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aSolutionsPath
      , [alias("proj")]         [Parameter(Mandatory=$false)][string[]] $aVcxprojToCompile
      , [alias("proj-ignore")]  [Parameter(Mandatory=$false)][string[]] $aVcxprojToIgnore
      , [alias("active-config")][Parameter(Mandatory=$false)][string]   $aVcxprojConfigPlatform
@@ -101,7 +107,7 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aDirecto
 
 # System Architecture Constants
 # ------------------------------------------------------------------------------------------------
-       
+
 Set-Variable -name kLogicalCoreCount -value                                                                 `
   (@(Get-WmiObject -class Win32_processor)  |                                                               `
    ForEach-Object -Begin   { $coreCount = 0 }                                                               `
@@ -117,6 +123,7 @@ Set-Variable -name kScriptFailsExitCode      -value  47                 -option 
 # File System Constants
 
 Set-Variable -name kExtensionVcxproj         -value ".vcxproj"          -option Constant
+Set-Variable -name kExtensionSolution        -value ".sln"              -option Constant
 Set-Variable -name kExtensionClangPch        -value ".clang.pch"        -option Constant
 
 # ------------------------------------------------------------------------------------------------
@@ -143,7 +150,7 @@ Set-Variable -name kVcxprojXpathWinPlatformVer `
              -option Constant           
 
 Set-Variable -name kVcxprojXpathForceIncludes `
-             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:ForceIncludeFiles" `
+             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:ForcedIncludeFiles" `
              -option Constant 
 
 Set-Variable -name kVcxprojXpathPCH `
@@ -151,7 +158,7 @@ Set-Variable -name kVcxprojXpathPCH `
              -option Constant 
 
 Set-Variable -name kVcxprojXpathPropSheets `
-             -value "ns:Project/ns:ImportGroup[@Label='PropertySheets']/ns:Import" `
+             -value "ns:Project/ns:ImportGroup[@Label='PropertySheets']/ns:Import[@Project]|ns:Project/ns:Import[@Project]" `
              -option Constant
 
 Set-Variable -name kVcxprojXpathToolset `
@@ -162,17 +169,25 @@ Set-Variable -name kVcxprojXpathDefaultConfigPlatform `
              -value "ns:Project/ns:ItemGroup[@Label='ProjectConfigurations']/ns:ProjectConfiguration[1]" `
              -option Constant
 
-Set-Variable -name kVcxprojXpathConfigPlatformSpecificElements `
-             -value "//*[starts-with(@Condition, ""'`$(Configuration)|`$(Platform)'"")]" `
+Set-Variable -name kVcxprojXpathConditionedElements `
+             -value "//*[@Condition]" `
              -option Constant
 
-Set-Variable -name kVStudioVarProjDir          -value '$(ProjectDir)'   -option Constant
+Set-Variable -name kVcxprojXpathPropGroupElements `
+             -value "/ns:Project/ns:PropertyGroup/*" `
+             -option Constant
+
+Set-Variable -name kVcxprojXpathCppStandard `
+             -value "/ns:Project/ns:ClCompile/ns:LanguageStandard" `
+             -option Constant
+
 Set-Variable -name kVSDefaultWinSDK            -value '8.1'             -option Constant
 Set-Variable -name kVSDefaultWinSDK_XP         -value '7.0'             -option Constant
 
 # ------------------------------------------------------------------------------------------------
 # Clang-Related Constants
 
+Set-Variable -name kDefaultCppStd           -value "stdcpp14"              -option Constant
 Set-Variable -name kClangFlagSupressLINK    -value @("-fsyntax-only")   -option Constant
 Set-Variable -name kClangFlagWarningIsError -value @("-Werror")         -option Constant
 Set-Variable -name kClangFlagIncludePch     -value "-include-pch"       -option Constant
@@ -256,7 +271,18 @@ Set-Variable -name kVStudioDefaultPlatformToolset -Value "v141" -option Constant
 #-------------------------------------------------------------------------------------------------
 # Global variables
 
+# temporary files created during project processing (e.g. PCH files)
 [System.Collections.ArrayList] $global:FilesToDeleteWhenScriptQuits = @()
+
+# vcxproj and property sheet files declare MsBuild properties (e.g. $(MYPROP)).
+# they are used in project xml nodes expressions. we have a 
+# translation engine (MSBUILD-POWERSHELL) for these. it relies on
+# PowerShell to evaluate these expressions. We have to inject project 
+# properties in the Powershell runtime context. We keep track of them in
+# this list, to be cleaned before the next project begins processing
+[System.Collections.ArrayList] $global:ProjectSpecificVariables     = @()
+
+# flag to signal when errors are encounteres during project processing
 [Boolean]                      $global:FoundErrors                  = $false
 
 # current vcxproj and property sheets
@@ -268,15 +294,19 @@ Set-Variable -name kVStudioDefaultPlatformToolset -Value "v141" -option Constant
 # namespace of current project vcxproj XML
 [System.Xml.XmlNamespaceManager] $global:xpathNS = $null;
 
+# filePath-fileData for SLN files located in source directory
+[System.Collections.Generic.Dictionary[String,String]] $global:slnFiles = @{}
+
 #-------------------------------------------------------------------------------------------------
 # Global functions
 
 Function Exit-Script([Parameter(Mandatory=$false)][int] $code = 0)
 {
+  Write-Verbose-Array -array $global:FilesToDeleteWhenScriptQuits `
+                      -name "Cleaning up PCH temporaries"
   # Clean-up
   foreach ($file in $global:FilesToDeleteWhenScriptQuits)
   {
-    Write-Verbose "Cleaning up $file"
     Remove-Item $file -ErrorAction SilentlyContinue | Out-Null
   }
 
@@ -293,6 +323,31 @@ Function Fail-Script([parameter(Mandatory=$false)][string] $msg = "Got errors.")
     Write-Err $msg
   }
   Exit-Script($kScriptFailsExitCode)
+}
+
+Function Set-Var([parameter(Mandatory=$false)][string] $name,
+                 [parameter(Mandatory=$false)][string] $value)
+{
+  Write-Verbose "SET_VAR $($name): $value"
+  Set-Variable -name $name -Value $value -Scope Global
+  
+  if (!$global:ProjectSpecificVariables.Contains($name))
+  {
+    $global:ProjectSpecificVariables.Add($name) | Out-Null
+  }
+}
+
+Function Clear-Vars()
+{
+  Write-Verbose-Array -array $global:ProjectSpecificVariables `
+                      -name "Deleting project specific variables"
+
+  foreach ($var in $global:ProjectSpecificVariables)
+  {
+    Remove-Variable -name $var -scope Global
+  }
+
+  $global:ProjectSpecificVariables.Clear()
 }
 
 Function Write-Message([parameter(Mandatory=$true)][string] $msg
@@ -313,7 +368,13 @@ Function Write-Err([parameter(ValueFromPipeline, Mandatory=$true)][string] $msg)
 Function Write-Success([parameter(ValueFromPipeline, Mandatory=$true)][string] $msg)
 {
   Write-Message -msg $msg -color Green
-}   
+}
+
+Function Write-Verbose-Array($array, $name)
+{
+  Write-Verbose "$($name):"
+  $array | ForEach-Object { Write-Verbose "  $_" }
+}
 
 Function Exists-Command([Parameter(Mandatory=$true)][string] $command)
 {
@@ -330,7 +391,7 @@ Function Exists-Command([Parameter(Mandatory=$true)][string] $command)
 
 Function Get-FileDirectory([Parameter(Mandatory=$true)][string] $filePath)
 {
-  return ([System.IO.Path]::GetDirectoryName($filePath))
+  return ([System.IO.Path]::GetDirectoryName($filePath) + "\")
 }
 
 Function Get-FileName( [Parameter(Mandatory=$true)][string] $path
@@ -349,6 +410,11 @@ Function Get-FileName( [Parameter(Mandatory=$true)][string] $path
 Function IsFileMatchingName( [Parameter(Mandatory=$true)][string] $filePath
                            , [Parameter(Mandatory=$true)][string] $matchName)
 {
+  if ([System.IO.Path]::IsPathRooted($matchName))
+  {
+    return $filePath -ieq $matchName
+  }
+
   [string] $fileName      = (Get-FileName -path $filePath)
   [string] $fileNameNoExt = (Get-FileName -path $filePath -noext) 
   if ($aDisableNameRegexMatching) 
@@ -386,13 +452,110 @@ Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
   [string] $path = $child
   if (![System.IO.Path]::IsPathRooted($path)) {
     [string] $path = Join-Path -Path "$base" -ChildPath "$child" -Resolve -ErrorAction $errorAction
-  } 
+  }
+  else
+  {
+    if (!(Test-Path $path))
+    {
+      $path = ""
+    }
+  }
   return $path
+}
+
+Function Get-SourceDirectory()
+{
+  [bool] $isDirectory = ($(Get-Item $aSolutionsPath) -is [System.IO.DirectoryInfo])
+  if ($isDirectory)
+  {
+    return $aSolutionsPath
+  }
+  else 
+  {
+    return (Get-FileDirectory -filePath $aSolutionsPath)
+  }
+}
+
+function Load-Solutions()
+{
+   Write-Verbose "Scanning for solution files"
+   $slns = Get-ChildItem -recurse -LiteralPath "$aSolutionsPath" `
+           | Where-Object { $_.Extension -eq $kExtensionSolution }
+   foreach ($sln in $slns)
+   {
+     $slnPath = $sln.FullName
+     $global:slnFiles[$slnPath] = (Get-Content $slnPath)
+   }
+
+   Write-Verbose-Array -array $global:slnFiles.Keys  -name "Solution file paths"
+}
+
+function Get-SolutionProjects([Parameter(Mandatory=$true)][string] $slnPath)
+{
+  [string] $slnDirectory = Get-FileDirectory -file $slnPath
+  $matches = [regex]::Matches($global:slnFiles[$slnPath], 'Project\([{}\"A-Z0-9\-]+\) = \S+,\s(\S+),')
+  $projectAbsolutePaths = $matches `
+    | ForEach-Object { Canonize-Path -base $slnDirectory `
+                                     -child $_.Groups[1].Value.Replace('"','') -ignoreErrors } `
+    | Where-Object { ! [string]::IsNullOrEmpty($_) -and $_.EndsWith($kExtensionVcxproj) }
+  return $projectAbsolutePaths
+}
+
+function Get-ProjectSolution()
+{
+  foreach ($slnPath in $global:slnFiles.Keys)
+  {
+    [string[]] $solutionProjectPaths = Get-SolutionProjects $slnPath
+    if ($solutionProjectPaths -and $solutionProjectPaths -contains $global:vcxprojPath)
+    {
+      return $slnPath
+    }
+  }
+  return ""
 }
 
 Function Get-MscVer()
 {
   return (Get-Item "$(Get-VisualStudio-Path)\VC\Tools\MSVC\" | Get-ChildItem).Name
+}
+
+Function InitializeMsBuildCurrentFileProperties([Parameter(Mandatory=$true)][string] $filePath)
+{
+  Set-Var -name "MSBuildThisFileFullPath"  -value $filePath
+  Set-Var -name "MSBuildThisFileExtension" -value ([IO.Path]::GetExtension($filePath))
+  Set-Var -name "MSBuildThisFile"          -value (Get-FileName -path $filePath)
+  Set-Var -name "MSBuildThisFileName"      -value (Get-FileName -path $filePath -noext)
+  Set-Var -name "MSBuildThisFileDirectory" -value (Get-FileDirectory -filePath $filePath)
+}
+
+Function InitializeMsBuildProjectProperties()
+{
+  Write-Verbose "Importing environment variables into current scope"
+  foreach ($var in (Get-ChildItem Env:))
+  {
+    Set-Var -name $var.Name -value $var.Value
+  }
+  
+  Set-Var -name "MSBuildProjectFullPath"   -value $global:vcxprojPath
+  Set-Var -name "ProjectDir"               -value (Get-FileDirectory -filePath $global:vcxprojPath)
+  Set-Var -name "MSBuildProjectExtension"  -value ([IO.Path]::GetExtension($global:vcxprojPath))
+  Set-Var -name "MSBuildProjectName"       -value (Get-FileName -path $global:vcxprojPath -noext)
+  Set-Var -name "MSBuildProjectDirectory"  -value (Get-FileDirectory -filePath $global:vcxprojPath)
+  Set-Var -name "MSBuildProgramFiles32"    -value "${Env:ProgramFiles(x86)}"
+  # defaults for projectname and targetname, may be overriden by project settings
+  Set-Var -name "ProjectName"              -value $MSBuildProjectName
+  Set-Var -name "TargetName"               -value $MSBuildProjectName
+
+  [string] $vsVer = "15.0"
+  if ($aVisualStudioVersion -eq "2015")
+  {
+    $vsVer = "14.0"
+  }
+  Set-Var -name "VisualStudioVersion"    -value "$vsVer"
+
+  [string] $projectSlnPath = Get-ProjectSolution
+  [string] $projectSlnDir = Get-FileDirectory -filePath $projectSlnPath
+  Set-Var -name "SolutionDir" -value $projectSlnDir
 }
 
 Function Should-CompileProject([Parameter(Mandatory=$true)][string] $vcxprojPath)
@@ -456,7 +619,7 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory=$true)][string] $vcxproj
 
   [string[]] $files = Select-ProjectNodes($kVcxprojXpathCompileFiles) |
                       Where-Object { ($_.Include -ne $null) -and
-                                     ($pchDisabled -or ($_.Include -notmatch $pchCppName))
+                                     ($pchDisabled -or ($_.Include -ne $pchCppName))
                                    }                                 |
                       ForEach-Object { Canonize-Path -base (Get-FileDirectory($vcxprojPath)) `
                                                      -child $_.Include }
@@ -487,6 +650,52 @@ Function Is-Project-Unicode([Parameter(Mandatory=$true)][string] $vcxprojPath)
   $propGroup = Select-ProjectNodes("ns:Project/ns:PropertyGroup[@Label='Configuration']")
   
   return ($propGroup.CharacterSet -eq "Unicode")
+}
+
+Function Get-Project-CppStandard()
+{
+  [string] $cachedValueVarName = "ClangPowerTools:CppStd"
+
+  [string] $cachedVar = (Get-Variable $cachedValueVarName -ErrorAction SilentlyContinue -ValueOnly)
+  if (![string]::IsNullOrEmpty($cachedVar))
+  {
+    return $cachedVar
+  }
+
+  [string] $cppStd = ""
+  
+  $cppStdNode = Select-ProjectNodes($kVcxprojXpathCppStandard)
+  if ($cppStdNode)
+  {
+    $cppStd = $cppStdNode.InnertText
+  }
+  else
+  {
+    $cppStd = $kDefaultCppStd
+  }
+
+  $cppStdMap = @{ 'stdcpplatest' = 'c++1z'
+                ;  'stdcpp14'    = 'c++14'
+                ;  'stdcpp17'    = 'c++17'
+                }
+
+  [string] $cppStdClangValue = $cppStdMap[$cppStd]
+  Set-Var -name $cachedValueVarName -value $cppStdClangValue
+
+  return $cppStdClangValue
+}
+
+Function Get-ClangCompileFlags()
+{
+  [string[]] $flags = $aClangCompileFlags
+  if (!($flags -match "-std=.*"))
+  {
+    [string] $cppStandard = Get-Project-CppStandard
+
+    $flags = @("-std=$cppStandard") + $flags
+  }
+  
+  return $flags
 }
 
 Function Get-ProjectPlatformToolset([Parameter(Mandatory=$true)][string] $vcxprojPath)
@@ -644,10 +853,18 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcx
 
 Function Get-Projects()
 {
-  $vcxprojs = Get-ChildItem -LiteralPath "$aDirectory" -recurse | 
-              Where-Object { $_.Extension -eq $kExtensionVcxproj }
+  [string[]] $projects = @()
 
-  return $vcxprojs;
+  foreach ($slnPath in $global:slnFiles.Keys)
+  {
+    [string[]] $solutionProjects = Get-SolutionProjects -slnPath $slnPath
+    if ($solutionProjects.Count -gt 0)
+    {
+      $projects += $solutionProjects
+    }
+  }
+
+  return ($projects | Select -Unique);
 }
 
 Function Get-PchCppIncludeHeader([Parameter(Mandatory=$true)][string] $vcxprojPath
@@ -698,11 +915,8 @@ Function Get-Project-PchCpp([Parameter(Mandatory=$true)][string] $vcxprojPath)
 Function Set-ProjectIncludePaths([Parameter(Mandatory=$true)] $includeDirectories)
 {
   [string] $includePathsString = $includeDirectories -join ";"
-  Write-Verbose "Include directories:"
-  foreach ($dir in $includeDirectories)
-  {
-    Write-Verbose "  $dir"
-  }
+  Write-Verbose-Array -array $includeDirectories -name "Include directories"
+
   $ENV:INCLUDE = $includePathsString;
 }
 
@@ -720,7 +934,7 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
   $global:FilesToDeleteWhenScriptQuits.Add($stdafxPch) | Out-Null
 
   # Supress -Werror for PCH generation as it throws warnings quite often in code we cannot control
-  [string[]] $clangFlags = $aClangCompileFlags | Where-Object { $_ -ne $kClangFlagWarningIsError }
+  [string[]] $clangFlags = Get-ClangCompileFlags | Where-Object { $_ -ne $kClangFlagWarningIsError }
 
   [string[]] $compilationFlags = @("""$stdafx"""
                                   ,$kClangFlagEmitPch
@@ -730,10 +944,11 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
                                   ,$kClangFlagNoUnusedArg
                                   ,$preprocessorDefinitions
                                   )
+  Write-Verbose "PCH creation args: $compilationFlags"
 
   [System.Diagnostics.Process] $processInfo = Start-Process -FilePath $kClangCompiler `
                                                             -ArgumentList $compilationFlags `
-                                                            -WorkingDirectory "$aDirectory" `
+                                                            -WorkingDirectory "$(Get-SourceDirectory)" `
                                                             -NoNewWindow `
                                                             -Wait `
                                                             -PassThru
@@ -743,6 +958,119 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
   }
 
   return $stdafxPch
+}
+
+function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
+{  
+  Write-Debug "Start evaluate MSBuild expression $expression"
+
+  $msbuildToPsRules = (<# backticks are control characters in PS, replace them #>
+                         ('`'                 , ''''      )`
+                       <# Temporarily replace $( #>        `
+                       , ('\$\s*\('           , '!@#'     )`
+                       <# Escape $               #>        `
+                       , ('\$'                , '`$'      )`
+                       <# Put back $(            #>        `
+                       , ('!@#'               , '$('      )`
+                       <# Various operators      #>        `
+                       , ("([\s\)\'""])!="    , '$1 -ne ' )`
+                       , ("([\s\)\'""])<="    , '$1 -le ' )`
+                       , ("([\s\)\'""])>="    , '$1 -ge ' )`
+                       , ("([\s\)\'""])=="    , '$1 -eq ' )`
+                       , ("([\s\)\'""])<"     , '$1 -lt ' )`
+                       , ("([\s\)\'""])>"     , '$1 -gt ' )`
+                       , ("([\s\)\'""])or"    , '$1 -or ' )`
+                       , ("([\s\)\'""])and"   , '$1 -and ')`
+                       <# Use only double quotes #>        `
+                       , ("\'"               , '"'        )`
+                       , ('"'                , '""'       )`
+                       , ("exists\((.+)\)"   , "(Test-Path(`$1))")
+                      )
+  foreach ($rule in $msbuildToPsRules)
+  {
+    $expression = $expression -replace $rule[0], $rule[1]
+  }
+  
+  [int] $expressionStartIndex = -1
+  [int] $openParantheses = 0
+  for ([int] $i = 0; $i -lt $expression.Length; $i += 1)
+  {
+    if ($expression.Substring($i, 1) -eq '(')# -and $expressionStartIndex -ge 0)
+    {
+      if ($i -gt 0 -and $expressionStartIndex -lt 0 -and $expression.Substring($i - 1, 1) -eq '$')
+      {
+        $expressionStartIndex = $i - 1
+      }
+
+      if ($expressionStartIndex -ge 0)
+      {
+        $openParantheses += 1
+      }
+    }
+
+    if ($expression.Substring($i, 1) -eq ')'  -and $expressionStartIndex -ge 0)
+    {
+      $openParantheses -= 1
+      if ($openParantheses -lt 0)
+      {
+        throw "Parse error"
+      }
+      if ($openParantheses -eq 0)
+      {
+        [string] $content = $expression.Substring($expressionStartIndex + 2, 
+                                                  $i - $expressionStartIndex - 2)
+        [int] $initialLength = $content.Length
+        $content = $content -replace '(^|\s)(\$\()?([a-zA-Z0-9_]+)(\))?(\,|\.|\s|$)', '$1$2$$$3$4$5'
+        $newCond = $expression.Substring(0, $expressionStartIndex + 2) + 
+                   $content + $expression.Substring($i)
+        $expression = $newCond
+        
+        $i += ($content.Length - $initialLength)
+        $expressionStartIndex = -1
+      }
+    }
+  }
+
+  Write-Debug "Intermediate PS expression: $expression"
+
+  try
+  {
+    [string] $toInvoke = "(`$s = ""$expression"")"
+    if ($isCondition)
+    {
+      $toInvoke = "(`$s = ""`$($expression)"")"
+    }
+
+    $res = Invoke-Expression $toInvoke
+  }
+  catch
+  {
+    write-debug $_.Exception.Message
+  }
+
+  Write-Debug "Evaluated expression to: $res"
+
+  return $res
+}
+function Evaluate-MSBuildCondition([Parameter(Mandatory=$true)][string] $condition)
+{
+  Write-Debug "Evaluating condition $condition"
+  $expression = Evaluate-MSBuildExpression -expression $condition -isCondition
+
+  if ($expression -ieq "true")
+  {
+    return $true
+  } 
+
+  if ($expression -ieq "false")
+  {
+    return $false
+  }
+
+  [bool] $res = (Invoke-Expression $expression) -eq $true
+  Write-Debug "Evaluated condition to $res" 
+
+  return $res
 }
 
 <#
@@ -822,13 +1150,24 @@ function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpa
         [string] $escTok = [regex]::Escape($inheritanceToken)
         $whatToReplace = "(;$escTok)|($escTok;)|($escTok)"
       }
-      # replace inherited token
-      $nodes[0].InnerText = ($nodes[0].InnerText -replace $whatToReplace, $replaceWith)
-      # handle multiple consecutive separators
-      $nodes[0].InnerText = ($nodes[0].InnerText -replace ";+", ";")
-      # handle corner cases when we have separators at beginning or at end
-      $nodes[0].InnerText = ($nodes[0].InnerText -replace ";$", "")
-      $nodes[0].InnerText = ($nodes[0].InnerText -replace "^;", "")
+
+      # replace inherited token 
+      $nodes[0].InnerText = $nodes[0].InnerText -replace $whatToReplace, $replaceWith
+
+      # we need to evaluate the expression in order to expand properties
+      $nodes[0].InnerText = Evaluate-MSBuildExpression $nodes[0].InnerText
+
+      $replaceRules = ( <# handle multiple consecutive separators #>      `
+                        , (";+"           , ";"     )                     `
+                        <# handle separator at end                #>      `
+                        , (";$"                , ""      )                `
+                        <# handle separator at beginning          #>      `
+                        , ("^;"               , ""      )                 `
+                      )
+      foreach ($rule in $replaceRules)
+      {
+        $nodes[0].InnerText = $nodes[0].InnerText -replace $rule[0], $rule[1]
+      }
     } 
     return $nodes
   }
@@ -845,7 +1184,7 @@ function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpa
    Items for other config-platform pairs will be removed from the DOM. 
    This is needed so that our XPath selectors don't get confused when looking for data.
 #>
-function Get-ProjectDefaultConfigPlatformCondition()
+function Detect-ProjectDefaultConfigPlatform()
 {
   [string]$configPlatformName = ""
   
@@ -867,9 +1206,32 @@ function Get-ProjectDefaultConfigPlatformCondition()
     throw "Could not automatically detect a configuration platform"
   }
 
-  Write-Verbose "Configuration platform: $configPlatformName"
+  [string[]] $configAndPlatform = $configPlatformName.Split('|')
+  Set-Var -Name "Configuration" -Value $configAndPlatform[0]
+  Set-Var -Name "Platform"      -Value $configAndPlatform[1]
+}
 
-  return "'`$(Configuration)|`$(Platform)'=='$configPlatformName'"
+function LoadProjectFileProperties([xml] $projectFile)
+{
+  [System.Xml.XmlElement[]] $propNodes = Help:Get-ProjectFileNodes -projectFile $projectFile `
+                                                                   -xpath $kVcxprojXpathPropGroupElements
+  
+  foreach ($node in $propNodes)
+  {
+    [string] $propertyName  = $node.Name
+
+    # properties are loaded before xml sanitization so we need to manually evalute present conditions
+    if ($node.HasAttribute("Condition"))
+    {
+      if (!@(Evaluate-MSBuildCondition -condition ($node.GetAttribute("Condition"))))
+      {
+        break
+      }
+    }
+    [string] $propertyValue = Evaluate-MSBuildExpression -expression $node.InnerText
+
+    Set-Var -Name $propertyName -Value $propertyValue
+  }
 }
 
 <#
@@ -878,16 +1240,16 @@ function Get-ProjectDefaultConfigPlatformCondition()
    one we selected. 
    This is needed so that our XPath selectors don't get confused when looking for data.
 #>
-function SanitizeProjectFile([string]$configPlatformCondition, [xml]$projectFile)
+function SanitizeProjectFile([xml]$projectFile)
 {
   [System.Xml.XmlElement[]] $configNodes = Help:Get-ProjectFileNodes -projectFile $projectFile `
-                                                                     -xpath $kVcxprojXpathConfigPlatformSpecificElements
+                                                                     -xpath $kVcxprojXpathConditionedElements
 
   foreach ($node in $configNodes)
   {
     [string] $nodeConfigPlatform = $node.GetAttribute("Condition")
 
-    if ($nodeConfigPlatform -eq $configPlatformCondition)
+    if ((Evaluate-MSBuildCondition($nodeConfigPlatform)) -eq $true)
     {
       # Since we leave only one config platform in the project, we don't need 
       # the Condition field for its config xml elements anymore
@@ -902,35 +1264,6 @@ function SanitizeProjectFile([string]$configPlatformCondition, [xml]$projectFile
 
 <#
 .DESCRIPTION
-  Tries to find a Directory.Build.props property sheet, starting from the
-  project directories, going up. When one is found, the search stops.
-
-  Multiple Directory.Build.props sheets are not supported.
-#>
-function Get-AutoPropertySheet()
-{
-  $startPath = $global:vcxprojPath
-  while ($true)
-  {
-    $propSheetPath = Canonize-Path -base $startPath `
-                                   -child "Directory.Build.props" `
-                                   -ignoreErrors
-    if (![string]::IsNullOrEmpty($propSheetPath))
-    {
-      return $propSheetPath
-    }
-
-    $newPath = Canonize-Path -base $startPath -child ".."
-    if ($newPath -eq $startPath)
-    {
-      return ""
-    }
-    $startPath = $newPath
-  }
-}
-
-<#
-.DESCRIPTION
   Retrieves the property sheets referred by the project.
   Only those we can locate on the disk are returned. 
   MSBuild variables are not expanded, so those sheets are not returned.
@@ -938,6 +1271,9 @@ function Get-AutoPropertySheet()
 function Get-ProjectPropertySheets([string] $filePath, [xml] $fileXml)
 {
   [string] $vcxprojDir = Get-FileDirectory($filePath)
+  
+  InitializeMsBuildCurrentFileProperties -filePath $filePath
+  LoadProjectFileProperties($fileXml)
 
   [System.Xml.XmlElement[]] $importGroup = $fileXml.SelectNodes($kVcxprojXpathPropSheets, $global:xpathNS)
   if (!$importGroup) 
@@ -945,17 +1281,13 @@ function Get-ProjectPropertySheets([string] $filePath, [xml] $fileXml)
       return @()
   }
 
-  [string[]] $sheetAbsolutePaths = $importGroup | 
-                                   Where-Object `
+  [string[]] $sheetEntries = $importGroup  | ForEach-Object { Evaluate-MSBuildExpression($_.GetAttribute("Project")) }
+  [string[]] $sheetAbsolutePaths = $sheetEntries | ForEach-Object `
                                    { 
-                                     ![string]::IsNullOrEmpty((Canonize-Path -base $vcxprojDir `
-                                                                             -child $_.GetAttribute("Project") `
-                                                                             -ignoreErrors)) 
-                                   }                   |
-                                   ForEach-Object `
-                                   {
-                                     Canonize-Path -base $vcxprojDir -child $_.GetAttribute("Project")
-                                   }
+                                     Canonize-Path -base $vcxprojDir `
+                                                   -child $_         `
+                                                   -ignoreErrors     `
+                                   } | Where-Object { ![string]::IsNullOrEmpty($_) }
   
   # a property sheet may have references to other property sheets
   [string[]] $returnPaths = @()
@@ -979,6 +1311,38 @@ function Get-ProjectPropertySheets([string] $filePath, [xml] $fileXml)
 
 <#
 .DESCRIPTION
+  Tries to find a Directory.Build.props property sheet, starting from the
+  project directories, going up. When one is found, the search stops.
+
+  Multiple Directory.Build.props sheets are not supported.
+#>
+function Get-AutoPropertySheet()
+{
+  $startPath = $global:vcxprojPath
+  while ($true)
+  {
+    $propSheetPath = Canonize-Path -base $startPath `
+                                   -child "Directory.Build.props" `
+                                   -ignoreErrors
+    if (![string]::IsNullOrEmpty($propSheetPath))
+    {
+      [xml] $fileXml = Get-Content $propSheetPath
+      [string[]] $inheritedSheets = Get-ProjectPropertySheets -filePath $propSheetPath `
+                                                              -fileXml $fileXml
+      return ($inheritedSheets + $propSheetPath)
+    }
+
+    $newPath = Canonize-Path -base $startPath -child ".."
+    if ($newPath -eq $startPath)
+    {
+      return ""
+    }
+    $startPath = $newPath
+  }
+}
+
+<#
+.DESCRIPTION
 Loads vcxproj and property sheets into memory. This needs to be called only once
 when processing a project. Accessing project nodes can be done using Select-ProjectNodes.
 #>
@@ -987,13 +1351,20 @@ function LoadProject([string] $vcxprojPath)
   $global:projectFiles = @([xml] (Get-Content $vcxprojPath))
 
   $global:vcxprojPath = $vcxprojPath
+  
+  InitializeMsBuildProjectProperties
+  InitializeMsBuildCurrentFileProperties -filePath $global:vcxprojPath
+  
   $global:xpathNS     = New-Object System.Xml.XmlNamespaceManager($global:projectFiles[0].NameTable) 
   $global:xpathNS.AddNamespace("ns", $global:projectFiles[0].DocumentElement.NamespaceURI)
   
-  [string]$configPlatformCondition = Get-ProjectDefaultConfigPlatformCondition
+  Detect-ProjectDefaultConfigPlatform
+  
+  # preload properties so that sanitization of project xml conditions can access them
+  LoadProjectFileProperties($global:projectFiles[0])
 
-  SanitizeProjectFile -projectFile             $global:projectFiles[0] `
-                      -configPlatformCondition $configPlatformCondition
+  Write-Verbose "`nSanitizing $global:vcxprojPath"
+  SanitizeProjectFile -projectFile $global:projectFiles[0]
    
   # see if we can find a Directory.Build.props automatic prop sheet
   [string[]] $propSheetAbsolutePaths = @()
@@ -1021,13 +1392,20 @@ function LoadProject([string] $vcxprojPath)
   [array]::Reverse($propSheetAbsolutePaths)
   foreach ($propSheetPath in $propSheetAbsolutePaths)
   {
+    InitializeMsBuildCurrentFileProperties -filePath $propSheetPath
     [xml] $propSheetXml = Get-Content $propSheetPath
 
-    SanitizeProjectFile -projectFile             $propSheetXml `
-                        -configPlatformCondition $configPlatformCondition
+    Write-Verbose "`nSanitizing $propSheetPath"
+    SanitizeProjectFile -projectFile $propSheetXml
 
     $global:projectFiles += $propSheetXml
   }
+
+  # .vcxproj project properties may have been overriden by property sheet
+  # loading process, put them back in place.
+  LoadProjectFileProperties($global:projectFiles[0])
+  
+  InitializeMsBuildCurrentFileProperties -filePath $global:vcxprojPath  
 }
 
 <#
@@ -1059,8 +1437,10 @@ Function Get-ProjectPreprocessorDefines([Parameter(Mandatory=$true)][string] $vc
 
 Function Get-ProjectAdditionalIncludes([Parameter(Mandatory=$true)][string] $vcxprojPath)
 {
+  [string[]] $tokens = $IncludePath -split ";"
+
   $data = Select-ProjectNodes $kVcxprojXpathAdditionalIncludes
-  [string[]] $tokens = ($data).InnerText -split ";"
+  $tokens += ($data).InnerText -split ";"
   if (!$tokens)
   {
     return
@@ -1070,17 +1450,15 @@ Function Get-ProjectAdditionalIncludes([Parameter(Mandatory=$true)][string] $vcx
   
   foreach ($token in $tokens)
   {
-    if ($token -eq $kVStudioVarProjDir)
+    if ([string]::IsNullOrEmpty($token))
     {
-      $projDir
+      continue
     }
-    Else
+    
+    [string] $includePath = Canonize-Path -base $projDir -child $token -ignoreErrors
+    if (![string]::IsNullOrEmpty($includePath))
     {
-      [string] $includePath = Canonize-Path -base $projDir -child $token -ignoreErrors
-      if (![string]::IsNullOrEmpty($includePath))
-      {
-        $includePath
-      }
+      $includePath
     }
   }
 }
@@ -1119,7 +1497,7 @@ Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $prep
   
   $projectCompileArgs += @( $kClangFlagFileIsCPP
                           , """$fileToCompile"""
-                          , $aClangCompileFlags
+                          , @(Get-ClangCompileFlags)
                           , $kClangFlagSupressLINK
                           , $preprocessorDefinitions
                           )
@@ -1137,6 +1515,7 @@ Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $prep
 }
 
 Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preprocessorDefinitions
+                              , [Parameter(Mandatory=$false)][string[]] $forceIncludeFiles
                               , [Parameter(Mandatory=$true)][string]   $fileToTidy
                               , [Parameter(Mandatory=$false)][switch]  $fix)
 {
@@ -1152,7 +1531,7 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
 
   # The header-filter flag enables clang-tidy to run on headers too.
   # We want all headers from our directory to be tidied up.
-  $tidyArgs += $kClangTidyFlagHeaderFilter + '"' + [regex]::Escape($aDirectory) + '"'
+  $tidyArgs += $kClangTidyFlagHeaderFilter + '"' + [regex]::Escape((Get-SourceDirectory)) + '"'
 
   if ($fix)
   {
@@ -1164,8 +1543,18 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
   }
   
   # We reuse flags used for compilation and preprocessor definitions.
-  $tidyArgs += $aClangCompileFlags
+  $tidyArgs += @(Get-ClangCompileFlags)
   $tidyArgs += $preprocessorDefinitions
+
+  if ($forceIncludeFiles)
+  {
+    $tidyArgs += $kClangFlagNoMsInclude;
+    
+    foreach ($file in $forceIncludeFiles)
+    {
+      $tidyArgs += "$kClangFlagForceInclude $file"
+    }
+  }
 
   return $tidyArgs
 }
@@ -1184,8 +1573,10 @@ Function Get-ExeCallArguments( [Parameter(Mandatory=$true) ][string]       $vcxp
                                               -pchFilePath             $pchFilePath `
                                               -fileToCompile           $currentFile }
     Tidy    { return Get-TidyCallArguments -preprocessorDefinitions $preprocessorDefinitions `
+                                           -forceIncludeFiles       $forceIncludeFiles `
                                            -fileToTidy              $currentFile }
     TidyFix { return Get-TidyCallArguments -preprocessorDefinitions $preprocessorDefinitions `
+                                           -forceIncludeFiles       $forceIncludeFiles `
                                            -fileToTidy              $currentFile `
                                            -fix}
   }
@@ -1339,11 +1730,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # DETECT PROJECT PREPROCESSOR DEFINITIONS
 
   [string[]] $preprocessorDefinitions = Get-ProjectPreprocessorDefines($vcxprojPath)
-  Write-Verbose "Preprocessor definitions: "
-  foreach ($def in $preprocessorDefinitions)
-  {
-    Write-Verbose "  $def"
-  }
+  Write-Verbose-Array -array $preprocessorDefinitions -name "Preprocessor definitions"
   
   #-----------------------------------------------------------------------------------------------
   # DETECT PLATFORM TOOLSET
@@ -1355,11 +1742,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # DETECT PROJECT ADDITIONAL INCLUDE DIRECTORIES AND CONSTRUCT INCLUDE PATHS
 
   [string[]] $includeDirectories = Get-ProjectAdditionalIncludes($vcxprojPath)
-  Write-Verbose "Additional includes:"
-  foreach ($include in $includeDirectories)
-  {
-    Write-Verbose "  $include"
-  }
+  Write-Verbose-Array -array $includeDirectories -name "Additional includes"
   
   $includeDirectories = (Get-ProjectIncludeDirectories -vcxprojPath $vcxprojPath) + $includeDirectories
 
@@ -1367,7 +1750,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   {
     $includeDirectories = @($stdafxDir) + $includeDirectories
   }
-  $includeDirectories = @($aDirectory) + $includeDirectories
+  $includeDirectories = @(Get-SourceDirectory) + $includeDirectories
 
   Set-ProjectIncludePaths($includeDirectories)
 
@@ -1392,10 +1775,18 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   Write-Verbose ("Processing " + $projCpps.Count + " cpps")
  
   #-----------------------------------------------------------------------------------------------
-  # CREATE PCH IF NEED BE
+  # CREATE PCH IF NEED BE, ONLY FOR TWO CPPS OR MORE
+
+  # pch generation crashes on VS 15.5
+  [string] $mscVer = Get-MscVer -visualStudioPath $vsPath
+  if ($mscVer -eq "14.12.25827")
+  {
+    Write-Verbose "IMPORTANT: PCH disabled on VS 15.5 (MscVer $mscVer) until compatibility issues are resolved :("
+    $stdafxDir = ""
+  }
 
   [string] $pchFilePath = ""
-  if ($projCpps.Count -gt 0 -and 
+  if ($projCpps.Count -ge 2 -and 
       ![string]::IsNullOrEmpty($stdafxDir) -and
       $workloadType -eq [WorkloadType]::Compile)
   {
@@ -1425,7 +1816,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
                                                -currentFile             $cpp
 
     $newJob = New-Object PsObject -Prop @{ 'FilePath'        = $exeToCall;
-                                           'WorkingDirectory'= $aDirectory;
+                                           'WorkingDirectory'= Get-SourceDirectory;
                                            'ArgumentList'    = $exeArgs;
                                            'File'            = $cpp }
     $clangJobs += $newJob
@@ -1444,6 +1835,11 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # RUN CLANG JOBS
 
   Run-ClangJobs -clangJobs $clangJobs
+
+  #-----------------------------------------------------------------------------------------------
+  # CLEAN GLOBAL VARIABLES SPECIFIC TO CURRENT PROJECT
+
+  Clear-Vars
 }
  
 #-------------------------------------------------------------------------------------------------
@@ -1484,13 +1880,16 @@ if (! (Exists-Command($kClangCompiler)) )
   }
 }
 
-Push-Location $aDirectory
+Push-Location (Get-SourceDirectory)
+
+# fetch .sln paths and data
+Load-Solutions
 
 # This powershell process may already have completed jobs. Discard them.
 Remove-Job -State Completed
 
-Write-Verbose "Source directory: $aDirectory"
-Write-Verbose "Scanning for .vcxproj files"
+Write-Verbose "Source directory: $(Get-SourceDirectory)"
+Write-Verbose "Scanning for project files"
 
 [System.IO.FileInfo[]] $projects = Get-Projects
 Write-Verbose ("Found $($projects.Count) projects")

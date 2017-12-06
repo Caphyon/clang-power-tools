@@ -64,7 +64,6 @@ namespace ClangPowerTools
       {
         try
         {
-          LoadAllProjects();
           SaveActiveDocuments();
           CollectSelectedItems();
           mFileWatcher = new FileChangerWatcher();
