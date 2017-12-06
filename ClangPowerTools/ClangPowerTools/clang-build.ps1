@@ -1730,6 +1730,15 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # DETECT PROJECT PREPROCESSOR DEFINITIONS
 
   [string[]] $preprocessorDefinitions = Get-ProjectPreprocessorDefines($vcxprojPath)
+  # [HACK] pch generation crashes on VS 15.5 because of STL library, known bug.
+  # Triggered by addition of line directives to improve std::function debugging.
+  # There's a definition that supresses line directives.
+  [string] $mscVer = Get-MscVer -visualStudioPath $vsPath
+  if ($true) #if ($mscVer -eq "14.12.25827")
+  {
+    $preprocessorDefinitions += "-D_DEBUG_FUNCTIONAL_MACHINERY"
+  }
+  
   Write-Verbose-Array -array $preprocessorDefinitions -name "Preprocessor definitions"
   
   #-----------------------------------------------------------------------------------------------
@@ -1776,15 +1785,6 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
  
   #-----------------------------------------------------------------------------------------------
   # CREATE PCH IF NEED BE, ONLY FOR TWO CPPS OR MORE
-
-  # [HACK] pch generation crashes on VS 15.5 because of STL library, known bug.
-  # Triggered by addition of line directives to improve std::function debugging.
-  # There's a definition that supresses line directives.
-  [string] $mscVer = Get-MscVer -visualStudioPath $vsPath
-  if ($mscVer -eq "14.12.25827")
-  {
-    $preprocessorDefinitions += "_DEBUG_FUNCTIONAL_MACHINERY"
-  }
 
   [string] $pchFilePath = ""
   if ($projCpps.Count -ge 2 -and 
