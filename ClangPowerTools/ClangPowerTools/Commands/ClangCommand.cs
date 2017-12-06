@@ -12,9 +12,8 @@ namespace ClangPowerTools
     protected ItemsCollector mItemsCollector;
     protected static RunningProcesses mRunningProcesses = new RunningProcesses();
     protected List<string> mDirectoriesPath = new List<string>();
+    protected static OutputManager mOutputManager;
 
-
-    private OutputManager mOutputManager;
     private ErrorsManager mErrorsManager;
     private GeneralOptions mGeneralOptions;
     private PowerShellWrapper mPowerShell = new PowerShellWrapper();
@@ -63,8 +62,8 @@ namespace ClangPowerTools
       mScriptBuilder = new ScriptBuiler();
       mScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
         DTEObj, VsEdition, VsVersion);
-      
-	  string solutionPath = DTEObj.Solution.FullName;
+
+      string solutionPath = DTEObj.Solution.FullName;
 
       mOutputManager = new OutputManager(DTEObj);
       InitPowerShell();
@@ -73,8 +72,6 @@ namespace ClangPowerTools
       foreach (var item in mItemsCollector.GetItems)
       {
         var script = mScriptBuilder.GetScript(item, solutionPath);
-        mDirectoriesPath.Add(mScriptBuilder.DirectoryPath);
-
         if (!mCommandsController.Running)
           break;
 
