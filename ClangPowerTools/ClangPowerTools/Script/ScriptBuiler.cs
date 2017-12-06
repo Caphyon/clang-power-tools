@@ -33,7 +33,6 @@ namespace ClangPowerTools
       if (aItem is SelectedProjectItem)
       {
         ProjectItem projectItem = aItem.GetObject() as ProjectItem;
-        DirectoryPath = new DirectoryInfo(projectItem.ContainingProject.FullName).Parent.FullName;
         string containingProject = projectItem.ContainingProject.FullName;
         script = $"{script} {ScriptConstants.kProject} ''{containingProject}'' " +
           $"{ScriptConstants.kFile} {projectItem.Name} {ScriptConstants.kActiveConfiguration} " +
@@ -42,12 +41,10 @@ namespace ClangPowerTools
       else if (aItem is SelectedProject)
       {
         Project project = aItem.GetObject() as Project;
-        DirectoryPath = new DirectoryInfo(project.FullName).Parent.FullName;
-		script = $"{script} {ScriptConstants.kProject} ''{project.FullName}'' {ScriptConstants.kActiveConfiguration} " +
+        script = $"{script} {ScriptConstants.kProject} ''{project.FullName}'' {ScriptConstants.kActiveConfiguration} " +
           $"''{ProjectConfiguration.GetConfiguration(project)}|{ProjectConfiguration.GetPlatform(project)}''";
       }
-      DirectoryPath = GetCommandPath(aSolutionPath, DirectoryPath);
-      return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{DirectoryPath}'' {ScriptConstants.kLiteral}'";
+      return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{aSolutionPath}'' {ScriptConstants.kLiteral}'";
     }
 
     public void ConstructParameters(GeneralOptions aGeneralOptions, TidyOptions aTidyOptions, 
@@ -124,24 +121,6 @@ namespace ClangPowerTools
           aTidyOptions.Fix ? ScriptConstants.kTidyFix : ScriptConstants.kTidy, parameters);
 
       return parameters;
-    }
-
-    private string GetCommandPath(string aFirstPath, string aSecondPath)
-    {
-      var firstPath = aFirstPath.ToLower().Split(new char[] { '/', '\\' });
-      var secondPath = aSecondPath.ToLower().Split(new char[] { '/', '\\' });
-      var length = firstPath.Length < secondPath.Length ? firstPath.Length : secondPath.Length;
-
-      var path = new List<string>();
-      for (int index = 0; index < length - 1; ++index)
-      {
-        if (0 != firstPath[index].CompareTo(secondPath[index]))
-          break;
-        if (0 == index)
-          firstPath[index] += "\\";
-        path.Add(firstPath[index]);
-      }
-      return Path.Combine(path.ToArray());
     }
 
     #endregion
