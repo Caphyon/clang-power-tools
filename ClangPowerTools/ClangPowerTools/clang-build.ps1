@@ -1797,7 +1797,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
                                 -stdafxDir        "$stdafxDir"    `
                                 -stdafxHeaderName "$stdafxHeader" `
                                 -preprocessorDefinitions $preprocessorDefinitions
-    Write-Verbose "Generated $pchFilePath"
+    Write-Output "PCH: $pchFilePath"
   }
   
   #-----------------------------------------------------------------------------------------------
