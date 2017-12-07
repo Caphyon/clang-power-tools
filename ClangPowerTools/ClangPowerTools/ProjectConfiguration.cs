@@ -1,5 +1,4 @@
 ﻿using EnvDTE;
-using EnvDTE80;
 
 namespace ClangPowerTools
 {

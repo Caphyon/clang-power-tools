@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Microsoft.VisualStudio.Shell.Interop;
+﻿using System.Collections.Generic;
 
 namespace ClangPowerTools
 {

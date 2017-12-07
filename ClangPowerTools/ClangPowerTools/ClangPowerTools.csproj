@@ -127,7 +127,6 @@
     <Compile Include="DialogPages\TidyOptions.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Vs15SolutionLoader.cs" />
     <Compile Include="ActiveWindowProperties.cs" />
   </ItemGroup>
   <ItemGroup>
