@@ -1,6 +1,5 @@
 ﻿using EnvDTE;
 using EnvDTE80;
-using System.IO;
 
 namespace ClangPowerTools
 {

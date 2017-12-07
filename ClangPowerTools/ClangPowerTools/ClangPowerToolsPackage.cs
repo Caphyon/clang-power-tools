@@ -2,9 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
-using EnvDTE;
-using EnvDTE80;
-using System.Collections.Generic;
 using Microsoft.VisualStudio.Shell.Interop;
 using ClangPowerTools.Commands;
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
-using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE;
 using System.IO;

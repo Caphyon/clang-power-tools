@@ -102,14 +102,6 @@ namespace ClangPowerTools
       return mItemsCollector.GetItems;
     }
 
-    protected void LoadAllProjects()
-    {
-      if (kVs15Version != VsVersion)
-        return;
-      Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(Package);
-      solutionLoader.EnsureSolutionProjectsAreLoaded();
-    }
-
     protected void SaveActiveDocuments() => DTEObj.Documents.SaveAll();
 
     #endregion
