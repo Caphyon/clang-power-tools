@@ -5,20 +5,20 @@ Changelog of Clang Power Tools extension
 ### Clang Power Tools v.2.1.0
 
 Improvements:
-* Posibility to abort clang compile and clang tidy commands.
-* Eliminated delay caused by .sln and .vcxproj file scanning
-* Create PCH only for more than 2 cpps
+* Possibility to abort clang compile and clang tidy commands.
+* Eliminated delay caused by .sln and .vcxproj file scanning.
+* Create PCH only for more than 2 cpps.
 * Detect C++ standard automatically from project. Default to C++14 if not set.
 
 Bugs:
-* Environment variables were not used when evaluating MsBuild expressions
-* MsBuild expressions didn't work when starting with ! operator
-* ForcedIncludes for clang compile were not working, regression in v2.0
-* ForcedIncludes were not taken into account for clang-tidy
-* Project > IncludePath was not taken into account for include directories
-* Error occured when include directories contained empty values
-* Fixed PCH crash when using Visual Studio 15.5 STL libraries (mscver 14.12.25827)
-* Fixed the commands execution for default console application
+* Environment variables were not used when evaluating MsBuild expressions.
+* MsBuild expressions didn't work when starting with ! operator.
+* ForcedIncludes for clang compile were not working, regression in v2.0.
+* ForcedIncludes were not taken into account for clang-tidy.
+* Project > IncludePath was not taken into account for include directories.
+* Error occured when include directories contained empty values.
+* Fixed PCH crash when using Visual Studio 15.5 STL libraries (mscver 14.12.25827).
+* Fixed the commands execution for default console application.
 
 ### Clang Power Tools v.2.0.0
 
