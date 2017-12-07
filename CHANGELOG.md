@@ -1,8 +1,6 @@
-# ChangeLog
+# Version History
 
-Changelog of Clang Power Tools extension
-
-### Clang Power Tools v.2.1.0
+### Clang Power Tools 2.1
 
 Improvements:
 * Possibility to abort clang compile and clang tidy commands.
@@ -20,7 +18,7 @@ Bugs:
 * Fixed PCH crash when using Visual Studio 15.5 STL libraries (mscver 14.12.25827).
 * Fixed the commands execution for default console application.
 
-### Clang Power Tools v.2.0.0
+### Clang Power Tools 2.0
 
 Improvements:
 * Fully evaluate MsBuild conditions for project and property sheet XML data.
@@ -35,12 +33,12 @@ Improvements:
 * Detect property sheets included in Directory.Build.props.
 * Automatically detect the project solution file.
     
-### Clang Power Tools v.1.7.1
+### Clang Power Tools 1.7.1
 
 Bugs:
 * Fixed the support for `Track Active Item in Solution Explorer` set to `Off`.
 
-### Clang Power Tools v.1.7.0
+### Clang Power Tools 1.7
 
 Improvements:
 * Added support for `Track Active Item in Solution Explorer` option set to `Off`.
@@ -52,7 +50,7 @@ Bugs:
 * Moved `Clang Power Tools` above the `Properties` item in `Context Menu`.
 
 
-### Clang Power Tools v.1.6.0
+### Clang Power Tools 1.6
 
 Improvements:
 * Improved handling of project value separator.
@@ -63,7 +61,7 @@ Bugs:
 * Fixed the default tidy settings page.
 * Fixed the cleaning of all messages from Error tab when a command begins.
 
-### Clang Power Tools v.1.5.1
+### Clang Power Tools 1.5.1
 
 Improvements:
 * Created dedicated option page for tidy checks.
@@ -72,7 +70,7 @@ Improvements:
 Bugs:
 * Fixed script building for tidy checks. 
 
-### Clang Power Tools v.1.5.0
+### Clang Power Tools 1.5
 
 Improvements:
 * Generalized property sheet usage for project data retrieval.
@@ -80,7 +78,7 @@ Improvements:
 * Detect property sheets included indirectly, through other property sheets.
 * Automatically detect the first project configuration platform.
 
-### Clang Power Tools v.1.4.0
+### Clang Power Tools 1.4
 
 Improvements:
 * Added verbose mode in settings.
@@ -93,7 +91,7 @@ Bugs:
 * Added WinSDKVer defaults for when not mentioned in project.
 * Fixed error message when project does not include force include files.
 
-### Clang Power Tools v.1.3.1
+### Clang Power Tools 1.3.1
 
 Bugs:
 * Allow the path to include any non-whitespace character.
@@ -102,7 +100,7 @@ Bugs:
 * Fix typo preventing detection of VS2015 install location.
 * Fixed crash when project has no files to compile.
 
-### Clang Power Tools v.1.3.0
+### Clang Power Tools 1.3
 
 Improvements:
 * Added support for ignoring specific files.
@@ -116,7 +114,7 @@ Bugs:
 * Fixed the detection for modified files after clang tidy fix.
 * Fixed the "Project To Ignore" option.
 
-### Clang Power Tools v.1.2.0
+### Clang Power Tools 1.2
 
 Improvements:
 * Added clang warnings and messages with line navigation in both output pane and error list.
@@ -128,7 +126,7 @@ Bugs:
 * Fixed clang errors line navigation from output pane.
 * Fixed the vsix installer detection for VS2017.
 
-### Clang Power Tools v.1.1.0
+### Clang Power Tools 1.1
 
 Improvements:
 * Support for Visual Studio 2015.
@@ -146,7 +144,7 @@ Bugs:
 * Removed restriction to CPP files when looking for ClCompile entries.
 * Fixed compilation when vcxproj has both 32 and 64 bit platform configrations.
 
-### Clang Power Tools v.1.0.1
+### Clang Power Tools 1.0.1
 
 Improvements:
 * Automatically detect clang installation folder.
@@ -157,7 +155,7 @@ Bugs:
 * Fixed clang error parse algorithm.
 * Fixed detection when lightweight solution load is enabled.
 
-### Clang Power Tools v.1.0.0
+### Clang Power Tools 1.0
 
 First official release.
 
