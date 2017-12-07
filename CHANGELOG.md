@@ -18,6 +18,7 @@ Bugs:
 * Project > IncludePath was not taken into account for include directories
 * Error occured when include directories contained empty values
 * Fixed PCH crash when using Visual Studio 15.5 STL libraries (mscver 14.12.25827)
+* Fixed the commands execution for default console application
 
 ### Clang Power Tools v.2.0.0
 
