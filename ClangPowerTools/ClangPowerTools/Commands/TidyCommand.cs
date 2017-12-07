@@ -30,14 +30,12 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
 
-    public TidyCommand(Package aPackage, Guid aGuid, int aId, DTE2 aDte,
-      string aEdition, string aVersion, CommandsController aCommandsController)
-        : base(aPackage, aGuid, aId, aDte, aEdition, aVersion, aCommandsController)
+    public TidyCommand(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
       mTidyOptions = (TidyOptions)Package.GetDialogPage(typeof(TidyOptions));
       mTidyChecks = (TidyChecks)Package.GetDialogPage(typeof(TidyChecks));
-      mFileOpener = new FileOpener(mDte);
-      if (this.ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+      mFileOpener = new FileOpener(DTEObj);
+      if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
         var menuCommand = new OleMenuCommand(this.MenuItemCallback, menuCommandID);
@@ -97,7 +95,7 @@ namespace ClangPowerTools
       fileCollector.Collect(mItemsCollector.GetItems);
 
       // silent all open files
-      foreach (Document doc in mDte.Documents)
+      foreach (Document doc in DTEObj.Documents)
         aGuard.Add(new SilentFileChanger(Package, Path.Combine(doc.Path, doc.Name), true));
       //silent all selected files
       aGuard.AddRange(Package, fileCollector.Files);
@@ -106,8 +104,8 @@ namespace ClangPowerTools
     private void WatchFiles()
     {
       mFileWatcher.OnChanged += mFileOpener.FileChanged;
-      string solutionFolderPath = mDte.Solution.FullName
-        .Substring(0, mDte.Solution.FullName.LastIndexOf('\\'));
+      string solutionFolderPath = DTEObj.Solution.FullName
+        .Substring(0, DTEObj.Solution.FullName.LastIndexOf('\\'));
       mFileWatcher.Run(solutionFolderPath);
     }
 

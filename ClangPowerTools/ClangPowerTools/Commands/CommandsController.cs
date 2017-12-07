@@ -51,7 +51,7 @@ namespace ClangPowerTools
           command.Enabled = false;
         else
         {
-          command.Enabled = !Running;
+          command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !Running : Running;
           command.Visible = true;
         }
       }));

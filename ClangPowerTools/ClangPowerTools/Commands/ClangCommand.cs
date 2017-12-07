@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Shell;
-using EnvDTE80;
 
 namespace ClangPowerTools
 {
@@ -9,37 +8,48 @@ namespace ClangPowerTools
   {
     #region Members
 
-    protected DTE2 mDte;
-    protected string mVsEdition;
-    protected string mVsVersion;
-    protected const string kVs15Version = "2017";
-
-    protected OutputManager mOutputManager;
-    protected ErrorsManager mErrorsManager;
-
-    protected CommandsController mCommandsController;
+    protected static CommandsController mCommandsController = null;
     protected ItemsCollector mItemsCollector;
+    protected static RunningProcesses mRunningProcesses = new RunningProcesses();
+    protected List<string> mDirectoriesPath = new List<string>();
+    protected static OutputManager mOutputManager;
 
-    protected GeneralOptions mGeneralOptions;
-
-    protected PowerShellWrapper mPowerShell = new PowerShellWrapper();
-    protected ScriptBuiler mScriptBuilder;
+    private ErrorsManager mErrorsManager;
+    private GeneralOptions mGeneralOptions;
+    private PowerShellWrapper mPowerShell = new PowerShellWrapper();
+    private ScriptBuiler mScriptBuilder;
+    private const string kVs15Version = "2017";
+    private Dictionary<string, string> mVsVersions = new Dictionary<string, string>
+    {
+      {"11.0", "2010"},
+      {"12.0", "2012"},
+      {"13.0", "2013"},
+      {"14.0", "2015"},
+      {"15.0", "2017"}
+    };
 
     #endregion
 
+    #region Properties
+
+    protected string VsEdition { get; set; }
+    protected string VsVersion { get; set; }
+    protected string WorkingDirectoryPath { get; set; }
+
+    #endregion
 
     #region Constructor
 
-    public ClangCommand(Package aPackage, Guid aGuid, int aId, DTE2 aDte, 
-      string aEdition, string aVersion, CommandsController aCommandsController) 
-        : base(aPackage, aGuid, aId)
+    public ClangCommand(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
-      mDte = aDte;
-      mVsEdition = aEdition;
-      mVsVersion = aVersion;
-      mCommandsController = aCommandsController;
+      VsEdition = DTEObj.Edition;
+      mVsVersions.TryGetValue(DTEObj.Version, out string version);
+      VsVersion = version;
 
-      mErrorsManager = new ErrorsManager(Package, mDte);
+      if (null == mCommandsController)
+        mCommandsController = new CommandsController(ServiceProvider, DTEObj);
+
+      mErrorsManager = new ErrorsManager(Package, DTEObj);
       mGeneralOptions = (GeneralOptions)Package.GetDialogPage(typeof(GeneralOptions));
     }
 
@@ -50,18 +60,24 @@ namespace ClangPowerTools
     protected void RunScript(string aCommandName, TidyOptions mTidyOptions = null, TidyChecks mTidyChecks = null)
     {
       mScriptBuilder = new ScriptBuiler();
-      mScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks, mDte, mVsEdition, mVsVersion);
+      mScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
+        DTEObj, VsEdition, VsVersion);
 
-      string solutionPath = mDte.Solution.FullName;
+      string solutionPath = DTEObj.Solution.FullName;
 
-      mOutputManager = new OutputManager(mDte);
+      mOutputManager = new OutputManager(DTEObj);
       InitPowerShell();
       ClearWindows(aCommandName);
       mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
       foreach (var item in mItemsCollector.GetItems)
       {
         var script = mScriptBuilder.GetScript(item, solutionPath);
-        mPowerShell.Invoke(script);
+        if (!mCommandsController.Running)
+          break;
+
+        var process = mPowerShell.Invoke(script);
+        mRunningProcesses.Add(process);
+
         if (mOutputManager.MissingLlvm)
         {
           mOutputManager.AddMessage(ErrorParserConstants.kMissingLlvmMessage);
@@ -82,19 +98,19 @@ namespace ClangPowerTools
     protected List<IItem> CollectSelectedItems()
     {
       mItemsCollector = new ItemsCollector(Package);
-      mItemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));
+      mItemsCollector.CollectSelectedFiles(DTEObj, ActiveWindowProperties.GetProjectItemOfActiveWindow(DTEObj));
       return mItemsCollector.GetItems;
     }
 
     protected void LoadAllProjects()
     {
-      if (kVs15Version != mVsVersion)
+      if (kVs15Version != VsVersion)
         return;
       Vs15SolutionLoader solutionLoader = new Vs15SolutionLoader(Package);
       solutionLoader.EnsureSolutionProjectsAreLoaded();
     }
 
-    protected void SaveActiveDocuments() => mDte.Documents.SaveAll();
+    protected void SaveActiveDocuments() => DTEObj.Documents.SaveAll();
 
     #endregion
 

@@ -17,9 +17,12 @@ namespace ClangPowerTools
     private int kBufferSize = 5;
     private List<string> mMessagesBuffer = new List<string>();
 
-    private ErrorParser mParser = new ErrorParser();
+    private ErrorParser mErrorParser = new ErrorParser();
+    private PCHParser mPCHParser = new PCHParser();
+
     private bool mMissingLlvm = false;
     private List<TaskError> mErrors = new List<TaskError>();
+    private List<string> mPCHPaths = new List<string>();
 
     #endregion
 
@@ -30,6 +33,8 @@ namespace ClangPowerTools
     public bool EmptyBuffer => mMessagesBuffer.Count == 0;
     public List<TaskError> Errors => mErrors;
     public bool HasErrors => 0 != mErrors.Count;
+    public List<string> PCHPaths => mPCHPaths;
+
     #endregion
 
     #region Constructor
@@ -77,19 +82,31 @@ namespace ClangPowerTools
 
     public void ProcessOutput(string aMessage)
     {
-      if (mParser.LlvmIsMissing(aMessage))
+      FindErrors(aMessage);
+      FindPCHPath(aMessage);
+    }
+
+    public void FindPCHPath(string aMessage)
+    {
+      if (mPCHParser.FindPath(aMessage, out string path))
+        mPCHPaths.Add(path);
+    }
+
+    public void FindErrors(string aMessage)
+    {
+      if (mErrorParser.LlvmIsMissing(aMessage))
       {
         mMissingLlvm = true;
       }
       else if (!mMissingLlvm)
       {
         string messages = String.Join("\n", mMessagesBuffer);
-        if (mParser.FindErrors(messages, out TaskError aError))
+        if (mErrorParser.FindErrors(messages, out TaskError aError))
         {
-          messages = mParser.Format(messages, aError.FullMessage);
+          messages = mErrorParser.Format(messages, aError.FullMessage);
           AddMessage(messages);
           mMessagesBuffer.Clear();
-          if( null != aError )
+          if (null != aError)
             mErrors.Add(aError);
         }
         else if (kBufferSize <= mMessagesBuffer.Count)
