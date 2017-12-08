@@ -516,7 +516,7 @@ function Get-ProjectSolution()
 
 Function Get-MscVer()
 {
-  return (Get-Item "$(Get-VisualStudio-Path)\VC\Tools\MSVC\" | Get-ChildItem).Name
+  return ((Get-Item "$(Get-VisualStudio-Path)\VC\Tools\MSVC\" | Get-ChildItem) | select -last 1).Name
 }
 
 Function InitializeMsBuildCurrentFileProperties([Parameter(Mandatory=$true)][string] $filePath)
@@ -965,26 +965,26 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
   Write-Debug "Start evaluate MSBuild expression $expression"
 
   $msbuildToPsRules = (<# backticks are control characters in PS, replace them #>
-                         ('`'                 , ''''      )`
-                       <# Temporarily replace $( #>        `
-                       , ('\$\s*\('           , '!@#'     )`
-                       <# Escape $               #>        `
-                       , ('\$'                , '`$'      )`
-                       <# Put back $(            #>        `
-                       , ('!@#'               , '$('      )`
-                       <# Various operators      #>        `
-                       , ("([\s\)\'""])!="    , '$1 -ne ' )`
-                       , ("([\s\)\'""])<="    , '$1 -le ' )`
-                       , ("([\s\)\'""])>="    , '$1 -ge ' )`
-                       , ("([\s\)\'""])=="    , '$1 -eq ' )`
-                       , ("([\s\)\'""])<"     , '$1 -lt ' )`
-                       , ("([\s\)\'""])>"     , '$1 -gt ' )`
-                       , ("([\s\)\'""])or"    , '$1 -or ' )`
-                       , ("([\s\)\'""])and"   , '$1 -and ')`
-                       <# Use only double quotes #>        `
-                       , ("\'"               , '"'        )`
-                       , ('"'                , '""'       )`
-                       , ("exists\((.+)\)"   , "(Test-Path(`$1))")
+                         ('`'                     , ''''                 )`
+                       <# Temporarily replace     $( #>                   `
+                       , ('\$\s*\('               , '!@#'                )`
+                       <# Escape $                   #>                   `
+                       , ('\$'                    , '`$'                 )`
+                       <# Put back $(                #>                   `
+                       , ('!@#'                   , '$('                 )`
+                       <# Various operators          #>                   `
+                       , ("([\s\)\'""])!="        , '$1 -ne '            )`
+                       , ("([\s\)\'""])<="        , '$1 -le '            )`
+                       , ("([\s\)\'""])>="        , '$1 -ge '            )`
+                       , ("([\s\)\'""])=="        , '$1 -eq '            )`
+                       , ("([\s\)\'""])<"         , '$1 -lt '            )`
+                       , ("([\s\)\'""])>"         , '$1 -gt '            )`
+                       , ("([\s\)\'""])or"        , '$1 -or '            )`
+                       , ("([\s\)\'""])and"       , '$1 -and '           )`
+                       <# Use only double quotes #>                       `
+                       , ("\'"                    , '"'                  )`
+                       , ('"'                     , '""'                 )`
+                       , ("exists\((.*?)\)(\s|$)" , "(Test-Path(`$1))`$2")`
                       )
   foreach ($rule in $msbuildToPsRules)
   {
@@ -1734,7 +1734,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # Triggered by addition of line directives to improve std::function debugging.
   # There's a definition that supresses line directives.
   [string] $mscVer = Get-MscVer -visualStudioPath $vsPath
-  if ($true) #if ($mscVer -eq "14.12.25827")
+  if ($mscVer -eq "14.12.25827")
   {
     $preprocessorDefinitions += "-D_DEBUG_FUNCTIONAL_MACHINERY"
   }
