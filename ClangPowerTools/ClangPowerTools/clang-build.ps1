@@ -992,7 +992,7 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
 {
   [string] $stdafx = (Canonize-Path -base $stdafxDir -child $stdafxHeaderName)
   [string] $vcxprojShortName = [System.IO.Path]::GetFileNameWithoutExtension($global:vcxprojPath);
-  [string] $stdafxPch = (Join-Path -Path $stdafxDir `
+  [string] $stdafxPch = (Join-Path -path (Get-SourceDirectory) `
                                    -ChildPath "$vcxprojShortName$kExtensionClangPch")
   Remove-Item -Path "$stdafxPch" -ErrorAction SilentlyContinue | Out-Null
 
@@ -1924,7 +1924,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
     $pchFilePath = Generate-Pch -stdafxDir        $stdafxDir    `
                                 -stdafxHeaderName $stdafxHeader `
                                 -preprocessorDefinitions $preprocessorDefinitions
-    Write-Output "PCH: $pchFilePath"
+    Write-Verbose "PCH: $pchFilePath"
   }
   
   #-----------------------------------------------------------------------------------------------
