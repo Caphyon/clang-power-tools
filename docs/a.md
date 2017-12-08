@@ -1,4 +1,0 @@
-# TODO
-
-Open Source License
-
