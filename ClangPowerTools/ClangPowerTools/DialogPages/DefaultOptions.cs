@@ -4,7 +4,6 @@
   {
     public static readonly string[] kClangFlags = new string[]
     {
-      "-std=c++14",
       "-Wall",
       "-fms-compatibility-version=19.10",
       "-fms-compatibility",
