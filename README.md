@@ -18,8 +18,8 @@ The latest version of this extension is available (FREE) in the [Visual Studio G
 ![ClangPowerTools](images/VSDemo3.PNG)
 
 A list of available checks that clang-tidy can perform:  
-https://clang.llvm.org/extra/clang-tidy/checks/list.html  
-https://clang-analyzer.llvm.org/available_checks.html
+[clang-tidy checks](https://clang.llvm.org/extra/clang-tidy/checks/list.html)  
+[clang-analyzer checks](https://clang-analyzer.llvm.org/available_checks.html)
 
 ![ClangPowerTools](images/VSTidyChecks.PNG)
 
