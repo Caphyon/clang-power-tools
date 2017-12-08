@@ -612,8 +612,7 @@ Function Should-IgnoreFile([Parameter(Mandatory=$true)][string] $file)
   return $false
 }
 
-Function Get-ProjectFilesToCompile([Parameter(Mandatory=$true)][string] $vcxprojPath,
-                                   [Parameter(Mandatory=$false)][string] $pchCppName)
+Function Get-ProjectFilesToCompile([Parameter(Mandatory=$false)][string] $pchCppName)
 {
   [Boolean] $pchDisabled = [string]::IsNullOrEmpty($pchCppName)
 
@@ -621,7 +620,7 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory=$true)][string] $vcxproj
                       Where-Object { ($_.Include -ne $null) -and
                                      ($pchDisabled -or ($_.Include -ne $pchCppName))
                                    }                                 |
-                      ForEach-Object { Canonize-Path -base (Get-FileDirectory($vcxprojPath)) `
+                      ForEach-Object { Canonize-Path -base (Get-FileDirectory($global:vcxprojPath)) `
                                                      -child $_.Include }
   if ($files.Count -gt 0)
   {
@@ -631,21 +630,21 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory=$true)][string] $vcxproj
   return $files
 }
 
-Function Get-ProjectHeaders([Parameter(Mandatory=$true)][string] $vcxprojPath)
+Function Get-ProjectHeaders()
 {
   [string[]] $headers = Select-ProjectNodes($kVcxprojXpathHeaders) | ForEach-Object {$_.Include }
 
   return $headers
 }
 
-Function Get-Project-SDKVer([Parameter(Mandatory=$true)][string] $vcxprojPath)
+Function Get-Project-SDKVer()
 {
   [string] $sdkVer = (Select-ProjectNodes($kVcxprojXpathWinPlatformVer)).InnerText
 
   If ([string]::IsNullOrEmpty($sdkVer)) { "" } Else { $sdkVer.Trim() }
 }
 
-Function Is-Project-Unicode([Parameter(Mandatory=$true)][string] $vcxprojPath)
+Function Is-Project-Unicode()
 {
   $propGroup = Select-ProjectNodes("ns:Project/ns:PropertyGroup[@Label='Configuration']")
   
@@ -698,7 +697,7 @@ Function Get-ClangCompileFlags()
   return $flags
 }
 
-Function Get-ProjectPlatformToolset([Parameter(Mandatory=$true)][string] $vcxprojPath)
+Function Get-ProjectPlatformToolset()
 {
   $propGroup = Select-ProjectNodes($kVcxprojXpathToolset)
   
@@ -751,14 +750,14 @@ Function Get-VisualStudio-Path()
   }
 }
 
-Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcxprojPath)
+Function Get-ProjectIncludeDirectories()
 {
   [string[]] $returnArray = @()
 
   [string] $vsPath = Get-VisualStudio-Path
   Write-Verbose "Visual Studio location: $vsPath"
   
-  [string] $platformToolset = (Get-ProjectPlatformToolset -vcxprojPath $vcxprojPath)
+  [string] $platformToolset = Get-ProjectPlatformToolset
 
   if ($aVisualStudioVersion -eq "2015")
   {
@@ -772,7 +771,7 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$true)][string] $vcx
     $returnArray += Get-VisualStudio-Includes -vsPath $vsPath -mscVer $mscVer
   }
 
-  $sdkVer = (Get-Project-SDKVer -vcxprojPath $vcxprojPath)
+  $sdkVer = Get-Project-SDKVer
 
   # We did not find a WinSDK version in the vcxproj. We use Visual Studio's defaults
   if ([string]::IsNullOrEmpty($sdkVer))
@@ -867,10 +866,9 @@ Function Get-Projects()
   return ($projects | Select -Unique);
 }
 
-Function Get-PchCppIncludeHeader([Parameter(Mandatory=$true)][string] $vcxprojPath
-                                ,[Parameter(Mandatory=$true)][string] $pchCppFile)
+Function Get-PchCppIncludeHeader([Parameter(Mandatory=$true)][string] $pchCppFile)
 {
-  [string] $vcxprojDir = Get-FileDirectory -filePath $vcxprojPath
+  [string] $vcxprojDir = Get-FileDirectory -filePath $global:vcxprojPath
   [string] $cppPath = Canonize-Path -base $vcxprojDir -child $pchCppFile
   [string] $fileContent = Get-Content -path $cppPath
 
@@ -881,17 +879,16 @@ Function Get-PchCppIncludeHeader([Parameter(Mandatory=$true)][string] $vcxprojPa
 .DESCRIPTION
   Retrieve directory in which stdafx.h resides
 #>
-Function Get-ProjectStdafxDir([Parameter(Mandatory=$true)][string] $vcxprojPath,
-                              [Parameter(Mandatory=$true)][string] $pchHeaderName)
+Function Get-ProjectStdafxDir([Parameter(Mandatory=$true)][string] $pchHeaderName)
 {
-  [string[]] $projectHeaders = Get-ProjectHeaders($vcxprojPath)
+  [string[]] $projectHeaders = Get-ProjectHeaders
   [string] $stdafxRelativePath = $projectHeaders | Where-Object { $_ -cmatch $pchHeaderName }
   if ([string]::IsNullOrEmpty($stdafxRelativePath))
   {
-    return ""
+    $stdafxRelativePath = $pchHeaderName
   }
 
-  [string] $stdafxAbsolutePath = Canonize-Path -base (Get-FileDirectory($vcxprojPath)) `
+  [string] $stdafxAbsolutePath = Canonize-Path -base (Get-FileDirectory($global:vcxprojPath)) `
                                                -child $stdafxRelativePath;
   [string] $stdafxDir = Get-FileDirectory($stdafxAbsolutePath)
 
@@ -902,7 +899,7 @@ Function Get-ProjectStdafxDir([Parameter(Mandatory=$true)][string] $vcxprojPath,
 .DESCRIPTION
   Retrieve directory in which the PCH CPP resides (e.g. stdafx.cpp, stdafxA.cpp)
 #>
-Function Get-Project-PchCpp([Parameter(Mandatory=$true)][string] $vcxprojPath)
+Function Get-Project-PchCpp()
 {
   $pchCppRelativePath = Select-ProjectNodes($kVcxprojXpathPCH)   |
                         Select-Object -ExpandProperty ParentNode | 
@@ -920,13 +917,12 @@ Function Set-ProjectIncludePaths([Parameter(Mandatory=$true)] $includeDirectorie
   $ENV:INCLUDE = $includePathsString;
 }
 
-Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $vcxprojPath
-                     , [Parameter(Mandatory=$true)] [string]   $stdafxDir
+Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
                      , [Parameter(Mandatory=$true)] [string]   $stdafxHeaderName
                      , [Parameter(Mandatory=$false)][string[]] $preprocessorDefinitions)
 {
   [string] $stdafx = (Canonize-Path -base $stdafxDir -child $stdafxHeaderName)
-  [string] $vcxprojShortName = [System.IO.Path]::GetFileNameWithoutExtension($vcxprojPath);
+  [string] $vcxprojShortName = [System.IO.Path]::GetFileNameWithoutExtension($global:vcxprojPath);
   [string] $stdafxPch = (Join-Path -Path $stdafxDir `
                                    -ChildPath "$vcxprojShortName$kExtensionClangPch")
   Remove-Item -Path "$stdafxPch" -ErrorAction SilentlyContinue | Out-Null
@@ -1412,7 +1408,7 @@ function LoadProject([string] $vcxprojPath)
 .DESCRIPTION
   Retrieve array of preprocessor definitions for a given project, in Clang format (-DNAME )
 #>
-Function Get-ProjectPreprocessorDefines([Parameter(Mandatory=$true)][string] $vcxprojPath)
+Function Get-ProjectPreprocessorDefines()
 {
   [string[]] $tokens = (Select-ProjectNodes $kVcxprojXpathPreprocessorDefs).InnerText -split ";"
 
@@ -1421,12 +1417,12 @@ Function Get-ProjectPreprocessorDefines([Parameter(Mandatory=$true)][string] $vc
                          Where-Object { $_ } | `
                          ForEach-Object { ($kClangDefinePrefix + $_) -replace '"','"""' } )
 
-  if (Is-Project-Unicode -vcxprojPath $vcxprojPath)
+  if (Is-Project-Unicode)
   {
     $defines += $kDefinesUnicode
   }
 
-  [string] $platformToolset = Get-ProjectPlatformToolset -vcxprojPath $vcxprojPath
+  [string] $platformToolset = Get-ProjectPlatformToolset
   if ($platformToolset.EndsWith("xp"))
   {
     $defines += $kDefinesClangXpTargeting
@@ -1435,7 +1431,7 @@ Function Get-ProjectPreprocessorDefines([Parameter(Mandatory=$true)][string] $vc
   return $defines
 }
 
-Function Get-ProjectAdditionalIncludes([Parameter(Mandatory=$true)][string] $vcxprojPath)
+Function Get-ProjectAdditionalIncludes()
 {
   [string[]] $tokens = $IncludePath -split ";"
 
@@ -1446,7 +1442,7 @@ Function Get-ProjectAdditionalIncludes([Parameter(Mandatory=$true)][string] $vcx
     return
   }
 
-  [string] $projDir = Get-FileDirectory($vcxprojPath)
+  [string] $projDir = Get-FileDirectory($global:vcxprojPath)
   
   foreach ($token in $tokens)
   {
@@ -1559,8 +1555,7 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
   return $tidyArgs
 }
 
-Function Get-ExeCallArguments( [Parameter(Mandatory=$true) ][string]       $vcxprojPath
-                             , [Parameter(Mandatory=$false)][string]       $pchFilePath
+Function Get-ExeCallArguments( [Parameter(Mandatory=$false)][string]       $pchFilePath
                              , [Parameter(Mandatory=$false)][string[]]     $preprocessorDefinitions
                              , [Parameter(Mandatory=$false)][string[]]     $forceIncludeFiles
                              , [Parameter(Mandatory=$true) ][string]       $currentFile
@@ -1699,24 +1694,34 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   LoadProject($vcxprojPath)
 
   #-----------------------------------------------------------------------------------------------
+  # FIND FORCE INCLUDES
+
+  [string[]] $forceIncludeFiles = Get-ProjectForceIncludes
+  Write-Verbose "Force includes: $forceIncludeFiles"
+
+  #-----------------------------------------------------------------------------------------------
   # LOCATE STDAFX.H DIRECTORY
 
-  [string] $stdafxDir = ""
-  [string] $stdafxCpp = Get-Project-PchCpp -vcxprojPath $vcxprojPath
+  [string] $stdafxCpp    = Get-Project-PchCpp
+  [string] $stdafxDir    = ""
+  [string] $stdafxHeader = ""
   
   if (![string]::IsNullOrEmpty($stdafxCpp))
   {
     Write-Verbose "PCH cpp name: $stdafxCpp"
-    [string] $stdafxHeader = Get-PchCppIncludeHeader -vcxprojPath $vcxprojPath `
-                                                     -pchCppFile $stdafxCpp
+
+    if ($forceIncludeFiles.Count -gt 0)
+    {
+      $stdafxHeader = $forceIncludeFiles[0]
+    }
+    else
+    {
+      $stdafxHeader = Get-PchCppIncludeHeader -pchCppFile $stdafxCpp
+    }
+
     Write-Verbose "PCH header name: $stdafxHeader"
-  }
-  
-  if (![string]::IsNullOrEmpty($stdafxCpp))
-  {
-    $stdafxDir = Get-ProjectStdafxDir -vcxprojPath $vcxprojPath `
-                                      -pchHeaderName $stdafxHeader
-  }
+    $stdafxDir = Get-ProjectStdafxDir -pchHeaderName $stdafxHeader
+  }  
 
   if ([string]::IsNullOrEmpty($stdafxDir))
   {
@@ -1729,7 +1734,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   #-----------------------------------------------------------------------------------------------
   # DETECT PROJECT PREPROCESSOR DEFINITIONS
 
-  [string[]] $preprocessorDefinitions = Get-ProjectPreprocessorDefines($vcxprojPath)
+  [string[]] $preprocessorDefinitions = Get-ProjectPreprocessorDefines
   # [HACK] pch generation crashes on VS 15.5 because of STL library, known bug.
   # Triggered by addition of line directives to improve std::function debugging.
   # There's a definition that supresses line directives.
@@ -1744,16 +1749,16 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   #-----------------------------------------------------------------------------------------------
   # DETECT PLATFORM TOOLSET
 
-  [string] $platformToolset = Get-ProjectPlatformToolset($vcxprojPath)
+  [string] $platformToolset = Get-ProjectPlatformToolset
   Write-Verbose "Platform toolset: $platformToolset"
 
   #-----------------------------------------------------------------------------------------------
   # DETECT PROJECT ADDITIONAL INCLUDE DIRECTORIES AND CONSTRUCT INCLUDE PATHS
 
-  [string[]] $includeDirectories = Get-ProjectAdditionalIncludes($vcxprojPath)
+  [string[]] $includeDirectories = Get-ProjectAdditionalIncludes
   Write-Verbose-Array -array $includeDirectories -name "Additional includes"
   
-  $includeDirectories = (Get-ProjectIncludeDirectories -vcxprojPath $vcxprojPath) + $includeDirectories
+  $includeDirectories = (Get-ProjectIncludeDirectories) + $includeDirectories
 
   if (![string]::IsNullOrEmpty($stdafxDir))
   {
@@ -1764,16 +1769,9 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   Set-ProjectIncludePaths($includeDirectories)
 
   #-----------------------------------------------------------------------------------------------
-  # FIND FORCE INCLUDES
-
-  [string[]] $forceIncludeFiles = Get-ProjectForceIncludes
-  Write-Verbose "Force includes: $forceIncludeFiles"
-
-  #-----------------------------------------------------------------------------------------------
   # FIND LIST OF CPPs TO PROCESS
 
-  [string[]] $projCpps = Get-ProjectFilesToCompile -vcxprojPath $vcxprojPath `
-                                                   -pchCppName  $stdafxCpp
+  [string[]] $projCpps = Get-ProjectFilesToCompile -pchCppName  $stdafxCpp
 
   if (![string]::IsNullOrEmpty($aCppToCompile))
   {
@@ -1793,9 +1791,8 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   {
     # COMPILE PCH
     Write-Verbose "Generating PCH..."
-    $pchFilePath = Generate-Pch -vcxprojPath      "$vcxprojPath"  `
-                                -stdafxDir        "$stdafxDir"    `
-                                -stdafxHeaderName "$stdafxHeader" `
+    $pchFilePath = Generate-Pch -stdafxDir        $stdafxDir    `
+                                -stdafxHeaderName $stdafxHeader `
                                 -preprocessorDefinitions $preprocessorDefinitions
     Write-Output "PCH: $pchFilePath"
   }
@@ -1809,8 +1806,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   {    
     [string] $exeToCall = Get-ExeToCall -workloadType $workloadType
                         
-    [string] $exeArgs   = Get-ExeCallArguments -vcxprojPath             $vcxprojPath `
-                                               -workloadType            $workloadType `
+    [string] $exeArgs   = Get-ExeCallArguments -workloadType            $workloadType `
                                                -pchFilePath             $pchFilePath `
                                                -preprocessorDefinitions $preprocessorDefinitions `
                                                -forceIncludeFiles       $forceIncludeFiles `
@@ -1908,7 +1904,7 @@ else
   $projectsToProcess = $projects |
                        Where-Object {       (Should-CompileProject -vcxprojPath $_.FullName) `
                                       -and !(Should-IgnoreProject  -vcxprojPath $_.FullName ) }
-                                       
+
   if ($projectsToProcess -ne $null)
   {
     Write-Output ("[ INFO ] WILL PROCESS PROJECTS: `n`t" + ($projectsToProcess -join "`n`t"))
