@@ -46,8 +46,7 @@ Download and install **Clang for Windows** (LLVM pre-built binary)
 
 We will automatically load clang from the default installation path *C:\Program Files\LLVM*. If you prefer to use a different location you must manually add the **bin** folder to **PATH**.  
 
-Windows 7: Download and install at least PowerShell 3.0 (already available on Windows 10)  
-https://www.microsoft.com/en-us/download/details.aspx?id=34595
+Windows 7: Download and install at least [PowerShell 3.0](https://www.microsoft.com/en-us/download/details.aspx?id=34595) (already available on Windows10)  
 
 ### Version History
 
