@@ -5,6 +5,8 @@ Clang Power Tools is a free Visual Studio extension helping Visual Studio C++ de
 
 Install this extension from [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=vs-publisher-690586.ClangPowerTools)
 
+### Features
+
 ![ClangPowerTools](images/VSDemo1.png)
 
 ![ClangPowerTools](images/Toolbar1.png)
