@@ -1,7 +1,7 @@
 
 Clang Power Tools is a free Visual Studio extension helping Visual Studio C++ developers leverage Clang/LLVM tools (clang-tidy), in order to perform various code transformations and fixes like modernizing code to C++11/14/17 and finding subtle latent bugs with its static analyzer and CppCoreGuidelines checks.
 
-### <img src="images/VSExtIcon.PNG" width="32"> Download 
+### Download 
 
 Install this extension from [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=vs-publisher-690586.ClangPowerTools)
 
