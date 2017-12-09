@@ -5,6 +5,8 @@ Clang Power Tools is a free Visual Studio extension helping Visual Studio C++ de
 
 Install this extension from [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=vs-publisher-690586.ClangPowerTools)
 
+Visual Studio 2015 / 2017
+
 ### Features
 
 ![ClangPowerTools](images/VSDemo1.png)
@@ -35,6 +37,8 @@ You can customize the tool behavior as well as the clang++ compilation flags, cl
 - [sample-clang-build.ps1](https://github.com/Caphyon/clang-power-tools/blob/master/ClangPowerTools/ClangPowerTools/sample-clang-build.ps1)
 
 ### Requirements
+
+Visual Studio 2015 / 2017
 
 Download and install **Clang for Windows** (LLVM pre-built binary)  
 [LLVM-5.0.0-win64](http://releases.llvm.org/5.0.0/LLVM-5.0.0-win64.exe)  
