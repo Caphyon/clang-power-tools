@@ -1,6 +1,7 @@
 # Version History
 
 ### Clang Power Tools 2.1
+December 7, 2017
 
 Improvements:
 * Possibility to abort clang compile and clang tidy commands.
@@ -19,6 +20,7 @@ Bugs:
 * Fixed the commands execution for default console application.
 
 ### Clang Power Tools 2.0
+November 26, 2017
 
 Improvements:
 * Fully evaluate MsBuild conditions for project and property sheet XML data.
@@ -34,11 +36,13 @@ Improvements:
 * Automatically detect the project solution file.
     
 ### Clang Power Tools 1.7.1
+November 20, 2017
 
 Bugs:
 * Fixed the support for `Track Active Item in Solution Explorer` set to `Off`.
 
 ### Clang Power Tools 1.7
+November 16, 2017
 
 Improvements:
 * Added support for `Track Active Item in Solution Explorer` option set to `Off`.
@@ -51,6 +55,7 @@ Bugs:
 
 
 ### Clang Power Tools 1.6
+November 9, 2017
 
 Improvements:
 * Improved handling of project value separator.
@@ -62,6 +67,7 @@ Bugs:
 * Fixed the cleaning of all messages from Error tab when a command begins.
 
 ### Clang Power Tools 1.5.1
+November 3, 2017
 
 Improvements:
 * Created dedicated option page for tidy checks.
@@ -71,6 +77,7 @@ Bugs:
 * Fixed script building for tidy checks. 
 
 ### Clang Power Tools 1.5
+November 1st, 2017
 
 Improvements:
 * Generalized property sheet usage for project data retrieval.
@@ -79,6 +86,7 @@ Improvements:
 * Automatically detect the first project configuration platform.
 
 ### Clang Power Tools 1.4
+October 27, 2017
 
 Improvements:
 * Added verbose mode in settings.
@@ -92,6 +100,7 @@ Bugs:
 * Fixed error message when project does not include force include files.
 
 ### Clang Power Tools 1.3.1
+October 23, 2017
 
 Bugs:
 * Allow the path to include any non-whitespace character.
@@ -101,6 +110,7 @@ Bugs:
 * Fixed crash when project has no files to compile.
 
 ### Clang Power Tools 1.3
+October 19, 2017
 
 Improvements:
 * Added support for ignoring specific files.
@@ -115,6 +125,7 @@ Bugs:
 * Fixed the "Project To Ignore" option.
 
 ### Clang Power Tools 1.2
+October 13, 2017
 
 Improvements:
 * Added clang warnings and messages with line navigation in both output pane and error list.
@@ -127,6 +138,7 @@ Bugs:
 * Fixed the vsix installer detection for VS2017.
 
 ### Clang Power Tools 1.1
+October 8, 2017
 
 Improvements:
 * Support for Visual Studio 2015.
@@ -145,6 +157,7 @@ Bugs:
 * Fixed compilation when vcxproj has both 32 and 64 bit platform configrations.
 
 ### Clang Power Tools 1.0.1
+September 30, 2017
 
 Improvements:
 * Automatically detect clang installation folder.
@@ -156,6 +169,7 @@ Bugs:
 * Fixed detection when lightweight solution load is enabled.
 
 ### Clang Power Tools 1.0
+September 27, 2017
 
 First official release.
 
