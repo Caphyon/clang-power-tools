@@ -67,7 +67,7 @@ Bugs:
 * Fixed the cleaning of all messages from Error tab when a command begins.
 
 ### Clang Power Tools 1.5.1
-*November 3, 2017*
+*November 3rd, 2017*
 
 Improvements:
 * Created dedicated option page for tidy checks.
