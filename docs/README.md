@@ -44,4 +44,4 @@ Windows 7: Download and install at least [PowerShell 3.0](https://www.microsoft.
 
 ### Version History
 
-[CHANGELOG.md](https://github.com/Caphyon/clang-power-tools/blob/master/CHANGELOG.md)
+[Release Notes](https://github.com/Caphyon/clang-power-tools/blob/master/CHANGELOG.md)
