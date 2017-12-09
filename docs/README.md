@@ -51,3 +51,9 @@ Windows 7: Download and install at least [PowerShell 3.0](https://www.microsoft.
 ### Version History
 
 [Release Notes](https://github.com/Caphyon/clang-power-tools/blob/master/CHANGELOG.md)
+
+### Feedback
+
+If you have any suggestions or feedback about Clang Power Tools, or if you encounter any issues with your projects, please submit here: [Submit issues](https://github.com/Caphyon/clang-power-tools/issues)
+
+We're excited to hear about your experience using Clang Power Tools.
