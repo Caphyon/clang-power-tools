@@ -10,7 +10,14 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private readonly List<string> kAcceptedExtensionTypes = new List<string> { ".cpp"};
+    private readonly List<string> kAcceptedExtensionTypes = new List<string>
+      { ".c",
+        ".cpp",
+        ".cc",
+        ".cxx",
+        ".c++",
+        ".cp",
+      };
     private List<IItem> mItems = new List<IItem>();
     private IServiceProvider mServiceProvider;
 
