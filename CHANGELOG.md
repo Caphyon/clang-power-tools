@@ -5,12 +5,12 @@
 
 Bugs:
 * Fixed the saving for user configurations from option pages.
-* Increased the number of compilable file types. Now supporting: .c , .cpp , .cc , .cxx , .c++ , .cp .
+* Increased the number of compilable file types. Now supporting: .c , .cpp , .cc , .cxx , .c++ , .cp
 * Could not be used in VS 2015 (regression in v2.1).
 * Could not create PCH when using forced includes and stdafx.cpp did not manually include stdafx.h.
 * Could not handle multiple MSVC versions found in the same VS installation.
-* Project load error when a project condition contained more than one call to Exists().
-* Clang-tidy header-filter flag was sometimes behaving incorrectly, ignored header files.
+* Project load error when a project condition contained more than one call to MSBuild `Exists()`.
+* Clang-tidy `-header-filter` flag was sometimes behaving incorrectly, ignored header files.
 
 ### Clang Power Tools 2.1
 *December 7, 2017*
