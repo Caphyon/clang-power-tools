@@ -95,13 +95,8 @@
     <Compile Include="PCHCleaner.cs" />
     <Compile Include="PCHParser.cs" />
     <Compile Include="ProjectConfiguration.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Compile>
     <Compile Include="Script\RunningProcesses.cs" />
+    <Compile Include="SettingsPathBuilder.cs" />
     <Compile Include="SilentFileChanger\SilentFileChangerEqualityComparer.cs" />
     <Compile Include="Items\IItem.cs" />
     <Compile Include="Items\ItemsCollector.cs" />
@@ -128,6 +123,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ActiveWindowProperties.cs" />
+    <Compile Include="XmlSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\CompileIcon.png">
@@ -167,12 +163,6 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-      <IncludeInVSIX>true</IncludeInVSIX>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>

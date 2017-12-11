@@ -16,7 +16,6 @@ namespace ClangPowerTools
 
     public List<string> ProjectsToIgnore { get; set; } = new List<string>();
 
-
     public List<string> FilesToIgnore { get; set; } = new List<string>();
 
     public bool Continue { get; set; }

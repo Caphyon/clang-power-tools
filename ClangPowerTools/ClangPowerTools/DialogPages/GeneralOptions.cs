@@ -1,7 +1,7 @@
-﻿using ClangPowerTools.Properties;
-using Microsoft.VisualStudio.Shell;
+﻿using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Web.UI.WebControls;
 
@@ -13,7 +13,8 @@ namespace ClangPowerTools
     #region Members
 
     private string[] mClangFlags = new string[] { };
-
+    private const string kGeneralSettingsFileName = "GeneralConfiguration.config";
+    private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
     #endregion
 
     #region Properties
@@ -55,44 +56,43 @@ namespace ClangPowerTools
       set => mClangFlags = value;
     }
 
-    [Browsable(false)]
-    public ClangOptions SavedUserSettings
-    {
-      get { return Settings.Default.GeneralOptions; }
-      set { Settings.Default.GeneralOptions = value; }
-    }
-
     #endregion
 
     #region DialogPage Save and Load implementation 
 
     public override void SaveSettingsToStorage()
     {
-      SavedUserSettings.ProjectsToIgnore = this.ProjectsToIgnore.ToList();
-      SavedUserSettings.FilesToIgnore = this.FilesToIgnore.ToList();
-      SavedUserSettings.Continue = this.Continue;
-      SavedUserSettings.TreatWarningsAsErrors = this.TreatWarningsAsErrors;
-      SavedUserSettings.VerboseMode = this.VerboseMode;
-      SavedUserSettings.ClangFlags = this.ClangFlags.ToList();
+      string path = mSettingsPathBuilder.GetPath(kGeneralSettingsFileName);
 
-      base.SaveSettingsToStorage();
-      Settings.Default.Save();
+      var currentSettings = new ClangOptions
+      {
+        ProjectsToIgnore = this.ProjectsToIgnore.ToList(),
+        FilesToIgnore = this.FilesToIgnore.ToList(),
+        Continue = this.Continue,
+        TreatWarningsAsErrors = this.TreatWarningsAsErrors,
+        VerboseMode = this.VerboseMode,
+        ClangFlags = this.ClangFlags.ToList()
+      };
 
+      XmlSerializer serializer = new XmlSerializer();
+      serializer.SerializeToFile(path, currentSettings);
     }
 
     public override void LoadSettingsFromStorage()
     {
-      if (SavedUserSettings == null)
-        SavedUserSettings = new ClangOptions();
+      string path = mSettingsPathBuilder.GetPath(kGeneralSettingsFileName);
+      XmlSerializer serializer = new XmlSerializer();
 
-      this.ProjectsToIgnore = SavedUserSettings.ProjectsToIgnore.ToArray();
-      this.FilesToIgnore = SavedUserSettings.FilesToIgnore.ToArray();
-      this.Continue = SavedUserSettings.Continue;
-      this.TreatWarningsAsErrors = SavedUserSettings.TreatWarningsAsErrors;
-      this.VerboseMode = SavedUserSettings.VerboseMode;
-      this.ClangFlags = SavedUserSettings.ClangFlags.ToArray();
+      var savedConfig = File.Exists(path)
+        ? serializer.DeserializeFromFIle<ClangOptions>(path)
+        : new ClangOptions();
 
-      base.LoadSettingsFromStorage();
+      this.ProjectsToIgnore = savedConfig.ProjectsToIgnore.ToArray();
+      this.FilesToIgnore = savedConfig.FilesToIgnore.ToArray();
+      this.Continue = savedConfig.Continue;
+      this.TreatWarningsAsErrors = savedConfig.TreatWarningsAsErrors;
+      this.VerboseMode = savedConfig.VerboseMode;
+      this.ClangFlags = savedConfig.ClangFlags.ToArray();
     }
 
     #endregion
