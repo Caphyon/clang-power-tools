@@ -14,11 +14,5 @@
       "-Wno-unused-value"
     };
 
-    public static readonly string[] kTidyChecks = new string[]
-    {
-      "modernize-use-equals-default",
-      "modernize-use-equals-delete"
-    };
-
   }
 }

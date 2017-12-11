@@ -1,7 +1,7 @@
-﻿using ClangPowerTools.Properties;
-using Microsoft.VisualStudio.Shell;
+﻿using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Web.UI.WebControls;
 
@@ -13,6 +13,8 @@ namespace ClangPowerTools
     #region Members
 
     private string[] mTidyChecks;
+    private const string kTidyOptionsFileName = "TidyOptionsConfiguration.config";
+    private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
 
     #endregion
 
@@ -33,43 +35,35 @@ namespace ClangPowerTools
     [Description("If not empty clang-tidy will be called with given flags, instead of clang++. The tidy operation is applied to whole translation units, meaning all directory headers included in the CPP will be tidied up too. Changes will be applied to the file(s).")]
     public bool Fix { get; set; }
 
-    [Category(" Tidy")]
-    [DisplayName("Use User Settings")]
-    [Description("If not empty clang-tidy will be called with given flags, instead of clang++. The tidy operation is applied to whole translation units, meaning all directory headers included in the CPP will be tidied up too. Changes will not be applied, only simulated.")]
-    [Browsable(false)]
-    public bool UseUserSettings { get; set; }
-
     #endregion
 
-    [Browsable(false)]
-    public ClangTidyOptions SavedUserSettings
-    {
-      get { return Settings.Default.TidyOptions; }
-      set { Settings.Default.TidyOptions = value; }
-    }
+    #region DialogPage Save and Load implementation 
 
     public override void SaveSettingsToStorage()
     {
-      SavedUserSettings.TidyChecks = this.TidyChecks.ToList();
-      SavedUserSettings.Fix = this.Fix;
-      SavedUserSettings.UseUserSettings = this.UseUserSettings;
+      string path = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
 
-      base.SaveSettingsToStorage();
-      Settings.Default.Save();
+      var currentSettings = new ClangTidyOptions
+      {
+        Fix = this.Fix,
+        TidyChecks = this.TidyChecks.ToList()
+      };
+
+      XmlSerializer serializer = new XmlSerializer();
+      serializer.SerializeToFile(path, currentSettings);
     }
-
-    #region Methods
 
     public override void LoadSettingsFromStorage()
     {
-      if (SavedUserSettings == null)
-        SavedUserSettings = new ClangTidyOptions();
+      string path = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
+      XmlSerializer serializer = new XmlSerializer();
 
-      this.UseUserSettings = SavedUserSettings.UseUserSettings;
-      this.TidyChecks = UseUserSettings ? SavedUserSettings.TidyChecks.ToArray() : DefaultOptions.kTidyChecks;
-      this.Fix = SavedUserSettings.Fix;
+      var loadedConfig = File.Exists(path)
+        ? serializer.DeserializeFromFIle<ClangTidyOptions>(path)
+        : new ClangTidyOptions();
 
-      base.LoadSettingsFromStorage();
+      this.TidyChecks = loadedConfig.TidyChecks.ToArray();
+      this.Fix = loadedConfig.Fix;
     }
 
     #endregion

@@ -18,7 +18,6 @@ namespace ClangPowerTools
 
     public bool Fix { get; set; }
 
-    public bool UseUserSettings { get; set; }
 
     #endregion
 
