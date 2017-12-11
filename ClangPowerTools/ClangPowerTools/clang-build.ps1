@@ -209,7 +209,7 @@ Set-Variable -name kClangTidyFlags            -value @("-quiet"
 Set-Variable -name kClangTidyFixFlags         -value @("-quiet"
                                                       ,"-fix-errors"
                                                       , "--")           -option Constant
-Set-Variable -name kClangTidyFlagHeaderFilter -value "-header-filter="  -option Constant
+Set-Variable -name kClangTidyFlagHeaderFilter -value "-header-filter=.*"-option Constant
 Set-Variable -name kClangTidyFlagChecks       -value "-checks="         -option Constant
 
 # ------------------------------------------------------------------------------------------------
@@ -1527,7 +1527,7 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
 
   # The header-filter flag enables clang-tidy to run on headers too.
   # We want all headers from our directory to be tidied up.
-  $tidyArgs += $kClangTidyFlagHeaderFilter + '"' + [regex]::Escape((Get-SourceDirectory)) + '"'
+  $tidyArgs += $kClangTidyFlagHeaderFilter
 
   if ($fix)
   {
