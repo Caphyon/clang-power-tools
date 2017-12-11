@@ -22,7 +22,7 @@ namespace ClangPowerTools
 
     [Category(" Tidy")]
     [DisplayName("Custom Checks")]
-    [Description("If not empty clang-tidy will be called with given flags, instead of clang++. The tidy operation is applied to whole translation units, meaning all directory headers included in the CPP will be tidied up too. Changes will not be applied, only simulated.")]
+    [Description("Specify clang-tidy checks to run using the standard tidy syntax. You can use wildcards to match multiple checks, combine them, etc (Eg. \"modernize - *, readability - *\"). When custom checks are specified, the individual tidy checks enabled (true/false) are ignored.")]
     [TypeConverter(typeof(StringArrayConverter))]
     public string[] TidyChecks
     {
@@ -32,7 +32,7 @@ namespace ClangPowerTools
 
     [Category(" Tidy")]
     [DisplayName("Fix")]
-    [Description("If not empty clang-tidy will be called with given flags, instead of clang++. The tidy operation is applied to whole translation units, meaning all directory headers included in the CPP will be tidied up too. Changes will be applied to the file(s).")]
+    [Description("Automatically applies clang-tidy fixes to selected source files, affected header files and saves them to disk.")]
     public bool Fix { get; set; }
 
     #endregion
