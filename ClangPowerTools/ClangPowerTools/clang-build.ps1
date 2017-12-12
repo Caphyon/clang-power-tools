@@ -211,6 +211,7 @@ Set-Variable -name kClangTidyFixFlags         -value @("-quiet"
                                                       , "--")           -option Constant
 Set-Variable -name kClangTidyFlagHeaderFilter -value "-header-filter=.*"-option Constant
 Set-Variable -name kClangTidyFlagChecks       -value "-checks="         -option Constant
+Set-Variable -name kClangTidyUseFile          -value ".clang-tidy"      -option Constant
 
 # ------------------------------------------------------------------------------------------------
 # Default install locations of LLVM. If present there, we automatically use it
@@ -1518,16 +1519,22 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
   [string[]] $tidyArgs = @("""$fileToTidy""")
   if ($fix)
   { 
-    $tidyArgs += "$kClangTidyFlagChecks$aTidyFixFlags"
+    if ($aTidyFixFlags -ne $kClangTidyUseFile)
+    {
+      $tidyArgs += "$kClangTidyFlagChecks$aTidyFixFlags"
+      # The header-filter flag enables clang-tidy to run on headers too.
+      $tidyArgs += $kClangTidyFlagHeaderFilter
+    }
   } 
   else
-  { 
-    $tidyArgs += "$kClangTidyFlagChecks$aTidyFlags"
+  {
+    if ($aTidyFlags -ne $kClangTidyUseFile)
+    {
+      $tidyArgs += "$kClangTidyFlagChecks$aTidyFlags"
+      # The header-filter flag enables clang-tidy to run on headers too.
+      $tidyArgs += $kClangTidyFlagHeaderFilter
+    }
   }
-
-  # The header-filter flag enables clang-tidy to run on headers too.
-  # We want all headers from our directory to be tidied up.
-  $tidyArgs += $kClangTidyFlagHeaderFilter
 
   if ($fix)
   {
