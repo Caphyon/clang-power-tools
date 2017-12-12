@@ -1528,6 +1528,7 @@ Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $prep
 Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preprocessorDefinitions
                               , [Parameter(Mandatory=$false)][string[]] $forceIncludeFiles
                               , [Parameter(Mandatory=$true)][string]   $fileToTidy
+                              , [Parameter(Mandatory=$false)][string]  $pchFilePath
                               , [Parameter(Mandatory=$false)][switch]  $fix)
 {
   [string[]] $tidyArgs = @("""$fileToTidy""")
@@ -1567,6 +1568,11 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
   # We reuse flags used for compilation and preprocessor definitions.
   $tidyArgs += @(Get-ClangCompileFlags)
   $tidyArgs += $preprocessorDefinitions
+  
+  if (! [string]::IsNullOrEmpty($pchFilePath))
+  {
+    $tidyArgs += @($kClangFlagIncludePch , """$pchFilePath""")
+  }
 
   if ($forceIncludeFiles)
   {
@@ -1595,9 +1601,11 @@ Function Get-ExeCallArguments( [Parameter(Mandatory=$false)][string]       $pchF
                                               -fileToCompile           $currentFile }
     Tidy    { return Get-TidyCallArguments -preprocessorDefinitions $preprocessorDefinitions `
                                            -forceIncludeFiles       $forceIncludeFiles `
+                                           -pchFilePath             $pchFilePath `
                                            -fileToTidy              $currentFile }
     TidyFix { return Get-TidyCallArguments -preprocessorDefinitions $preprocessorDefinitions `
                                            -forceIncludeFiles       $forceIncludeFiles `
+                                           -pchFilePath             $pchFilePath `
                                            -fileToTidy              $currentFile `
                                            -fix}
   }
@@ -1816,8 +1824,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   [string] $pchFilePath = ""
   if ($projCpps.Count -ge 2 -and 
-      ![string]::IsNullOrEmpty($stdafxDir) -and
-      $workloadType -eq [WorkloadType]::Compile)
+      ![string]::IsNullOrEmpty($stdafxDir))
   {
     # COMPILE PCH
     Write-Verbose "Generating PCH..."
