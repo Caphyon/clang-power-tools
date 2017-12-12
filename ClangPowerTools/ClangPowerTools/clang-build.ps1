@@ -191,7 +191,7 @@ Set-Variable -name kVcxprojXpathPropGroupElements `
              -option Constant
 
 Set-Variable -name kVcxprojXpathCppStandard `
-             -value "/ns:Project/ns:ClCompile/ns:LanguageStandard" `
+             -value "/ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:LanguageStandard" `
              -option Constant
 
 Set-Variable -name kVSDefaultWinSDK            -value '8.1'             -option Constant
@@ -681,7 +681,7 @@ Function Get-Project-CppStandard()
   $cppStdNode = Select-ProjectNodes($kVcxprojXpathCppStandard)
   if ($cppStdNode)
   {
-    $cppStd = $cppStdNode.InnertText
+    $cppStd = $cppStdNode.InnerText
   }
   else
   {
