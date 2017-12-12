@@ -77,6 +77,18 @@
       included in the CPP will be tidied up too. Changes will be applied to the file(s).
 
       If present, this parameter takes precedence over aTidyFlags.
+      
+.PARAMETER aAfterTidyFixFormatStyle
+      Alias 'format-style'. Used in combination with 'tidy-fix'. If present, clang-tidy will
+      also format the fixed file(s), using the specified style.
+      Possible values: - not present, no formatting will be done
+                       - 'file'
+                           Literally 'file', not a placeholder. 
+                           Uses .clang-format file in the closest parent directory.
+                       - 'llvm'
+                       - 'google'
+                       - 'webkit'
+                       - 'mozilla'
 
 .PARAMETER aVisualStudioVersion
       Alias 'vs-ver'. Version of Visual Studio (VC++) installed and that'll be used for 
@@ -101,6 +113,7 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aSolutio
      , [alias("literal")]      [Parameter(Mandatory=$false)][switch]   $aDisableNameRegexMatching
      , [alias("tidy")]         [Parameter(Mandatory=$false)][string]   $aTidyFlags
      , [alias("tidy-fix")]     [Parameter(Mandatory=$false)][string]   $aTidyFixFlags
+     , [alias("format-style")] [Parameter(Mandatory=$false)][string]   $aAfterTidyFixFormatStyle
      , [alias("vs-ver")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioVersion
      , [alias("vs-sku")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioSku
      )
@@ -212,6 +225,7 @@ Set-Variable -name kClangTidyFixFlags         -value @("-quiet"
 Set-Variable -name kClangTidyFlagHeaderFilter -value "-header-filter=.*"-option Constant
 Set-Variable -name kClangTidyFlagChecks       -value "-checks="         -option Constant
 Set-Variable -name kClangTidyUseFile          -value ".clang-tidy"      -option Constant
+Set-Variable -name kClangTidyFormatStyle      -value "-format-style="   -option Constant
 
 # ------------------------------------------------------------------------------------------------
 # Default install locations of LLVM. If present there, we automatically use it
@@ -1524,6 +1538,11 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
       $tidyArgs += "$kClangTidyFlagChecks$aTidyFixFlags"
       # The header-filter flag enables clang-tidy to run on headers too.
       $tidyArgs += $kClangTidyFlagHeaderFilter
+    }
+
+    if (![string]::IsNullOrEmpty($aAfterTidyFixFormatStyle))
+    {
+      $tidyArgs += "$kClangTidyFormatStyle$aAfterTidyFixFormatStyle"
     }
   } 
   else

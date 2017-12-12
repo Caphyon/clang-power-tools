@@ -68,6 +68,18 @@
       included in the CPP will be tidied up too. Changes will be applied to the file(s).
 
       If present, this parameter takes precedence over aTidyFlags.
+      
+.PARAMETER aAfterTidyFixFormatStyle
+      Alias 'format-style'. Used in combination with 'tidy-fix'. If present, clang-tidy will
+      also format the fixed file(s), using the specified style.
+      Possible values: - not present, no formatting will be done
+                       - 'file'
+                           Literally 'file', not a placeholder. 
+                           Uses .clang-format file in the closest parent directory.
+                       - 'llvm'
+                       - 'google'
+                       - 'webkit'
+                       - 'mozilla'
 
 .EXAMPLE
     PS .\sample-clang-build.ps1 -dir -proj foo,bar -file meow -tidy "-*,modernize-*"
@@ -107,6 +119,7 @@ param( [alias("proj")]        [Parameter(Mandatory=$false)][string[]] $aVcxprojT
      , [alias("literal")]     [Parameter(Mandatory=$false)][switch]   $aDisableNameRegexMatching
      , [alias("tidy")]        [Parameter(Mandatory=$false)][string]   $aTidyFlags
      , [alias("tidy-fix")]    [Parameter(Mandatory=$false)][string]   $aTidyFixFlags
+     , [alias("format-style")] [Parameter(Mandatory=$false)][string]  $aAfterTidyFixFormatStyle
      )
 
 # ------------------------------------------------------------------------------------------------
@@ -175,6 +188,11 @@ if (![string]::IsNullOrEmpty($aTidyFlags))
 if (![string]::IsNullOrEmpty($aTidyFixFlags))
 {
   $scriptParams += ("-aTidyFixFlags", (Merge-Array (@($aTidyFixFlags))))
+}
+
+if (![string]::IsNullOrEmpty($aAfterTidyFixFormatStyle))
+{
+  $scriptParams += ("-aAfterTidyFixFormatStyle", $aAfterTidyFixFormatStyle)
 }
 
 if ($aUseParallelCompile)
