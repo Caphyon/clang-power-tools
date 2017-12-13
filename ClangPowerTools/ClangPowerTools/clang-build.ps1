@@ -70,6 +70,9 @@
       included in the CPP will be tidied up too. Changes will not be applied, only simulated.
 
       If aTidyFixFlags is present, it takes precedence over this parameter.
+
+      If '.clang-tidy' value is given, configuration will be read from .clang-tidy file 
+      in the closest parent directory.
       
 .PARAMETER aTidyFixFlags
       Alias 'tidy-fix'. If not empty clang-tidy will be called with given flags, instead of clang++. 
@@ -77,6 +80,9 @@
       included in the CPP will be tidied up too. Changes will be applied to the file(s).
 
       If present, this parameter takes precedence over aTidyFlags.
+
+      If '.clang-tidy' value is given, configuration will be read from .clang-tidy file 
+      in the closest parent directory.
       
 .PARAMETER aAfterTidyFixFormatStyle
       Alias 'format-style'. Used in combination with 'tidy-fix'. If present, clang-tidy will
@@ -971,6 +977,16 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
   return $stdafxPch
 }
 
+function HasTrailingSlash([Parameter(Mandatory=$true)][string] $str)
+{
+  return $str.EndsWith('\') -or $str.EndsWith('/')
+}
+
+function Exists([Parameter(Mandatory=$true)][string] $path)
+{
+  return Test-Path $path
+}
+
 function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
 {  
   Write-Debug "Start evaluate MSBuild expression $expression"
@@ -995,8 +1011,9 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
                        <# Use only double quotes #>                       `
                        , ("\'"                    , '"'                  )`
                        , ('"'                     , '""'                 )`
-                       , ("exists\((.*?)\)(\s|$)" , "(Test-Path(`$1))`$2")`
-                      )
+      , ("Exists\((.*?)\)(\s|$)"           , "(Exists(`$1))`$2"          )`
+      , ("HasTrailingSlash\((.*?)\)(\s|$)" , "(HasTrailingSlash(`$1))`$2")`
+                       )
   foreach ($rule in $msbuildToPsRules)
   {
     $expression = $expression -replace $rule[0], $rule[1]
@@ -1031,7 +1048,18 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
         [string] $content = $expression.Substring($expressionStartIndex + 2, 
                                                   $i - $expressionStartIndex - 2)
         [int] $initialLength = $content.Length
-        $content = $content -replace '(^|\s)(\$\()?([a-zA-Z0-9_]+)(\))?(\,|\.|\s|$)', '$1$2$$$3$4$5'
+
+        if ([regex]::Match($content, "[a-zA-Z_][a-zA-Z0-9_]+").Value -eq $content)
+        {
+          # we have a plain property retrieval
+          $content = '$' + $content
+        }
+        else
+        {
+          # dealing with a more complex expression
+          $content = $content -replace '(^|\s+|\$\()([a-zA-Z_][a-zA-Z0-9_]+)(\.|\)|$)', '$1$$$2$3'
+        }
+
         $newCond = $expression.Substring(0, $expressionStartIndex + 2) + 
                    $content + $expression.Substring($i)
         $expression = $newCond
