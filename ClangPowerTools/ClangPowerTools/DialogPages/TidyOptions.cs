@@ -22,7 +22,7 @@ namespace ClangPowerTools
 
     [Category(" Tidy")]
     [DisplayName("Custom Checks")]
-    [Description("Specify clang-tidy checks to run using the standard tidy syntax. You can use wildcards to match multiple checks, combine them, etc (Eg. \"modernize-*, readability-*\"). When custom checks are specified, the individual tidy checks enabled (true/false) are ignored.")]
+    [Description("Specify clang-tidy checks to run using the standard tidy syntax. You can use wildcards to match multiple checks, combine them, etc (Eg. \"modernize-*, readability-*\").")]
     [TypeConverter(typeof(StringArrayConverter))]
     public string[] TidyChecks
     {
@@ -37,7 +37,7 @@ namespace ClangPowerTools
 
     [Category(" Tidy")]
     [DisplayName("Operation mode")]
-    [Description("")]
+    [Description("Switch between explicitly specified tidy checks (predefined or custom) and using .clang-tidy configuration file(s).")]
     [TypeConverter(typeof(TidyModeConvertor))]
     public string TidyMode { get; set; }
 
