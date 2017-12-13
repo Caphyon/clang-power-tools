@@ -4,7 +4,7 @@
 *December 13, 2017*
 
 Improvements:
-* Possibility to switch between explicitly specified tidy checks (predefined or custom) and using .clang-tidy configuration file(s).
+* Tidy operation mode: ability to switch between explicitly specified tidy checks and .clang-tidy configuration files.
 * Use PCH for clang-tidy workflow.
 
 Bugs:
