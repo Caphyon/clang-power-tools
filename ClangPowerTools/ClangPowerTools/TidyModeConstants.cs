@@ -4,9 +4,9 @@
   {
     #region Constants
 
-    public const string kCustomChecks = "Custom Checks";
-    public const string kPredefinedChecks = "Predefined Checks";
-    public const string kTidyFile = ".clang-tidy Config File";
+    public const string kCustomChecks = "custom checks";
+    public const string kPredefinedChecks = "predefined checks";
+    public const string kTidyFile = ".clang-tidy config file";
 
     #endregion
 

@@ -12,7 +12,6 @@ namespace ClangPowerTools
     #region Members
 
     private string mParameters = string.Empty;
-    private bool mUseTidyFile = false;
 
     #endregion
 
@@ -22,9 +21,6 @@ namespace ClangPowerTools
     {
       string containingDirectoryPath = string.Empty;
       string script = $"{ScriptConstants.kScriptBeginning} ''{GetScriptPath()}''";
-
-      if (mUseTidyFile)
-        script = $"{script} {ScriptConstants.kTidyFile}";
 
       if (aItem is SelectedProjectItem)
       {
@@ -95,7 +91,7 @@ namespace ClangPowerTools
 
       if (TidyModeConstants.kTidyFile == aTidyOptions.TidyMode)
       {
-        mUseTidyFile = true;
+        return string.Format("{0} {1}", aTidyOptions.Fix ? ScriptConstants.kTidyFix : ScriptConstants.kTidy, ScriptConstants.kTidyFile);
       }
       else if (TidyModeConstants.kCustomChecks == aTidyOptions.TidyMode)
       {

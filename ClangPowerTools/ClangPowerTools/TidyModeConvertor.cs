@@ -18,8 +18,8 @@ namespace ClangPowerTools
     {
       values = new ArrayList(new string[] 
       {
-        TidyModeConstants.kCustomChecks,
         TidyModeConstants.kPredefinedChecks,
+        TidyModeConstants.kCustomChecks,
         TidyModeConstants.kTidyFile
       });
     }
