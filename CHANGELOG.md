@@ -1,5 +1,17 @@
 # Version History
 
+### Clang Power Tools 2.3
+*December 13, 2017*
+
+Improvements:
+* Possibility to switch between explicitly specified tidy checks (predefined or custom) and using .clang-tidy configuration file(s).
+
+Bugs:
+* Could not property detect C++17 standard from project.
+* Project parse issues for MsBuild string member function calls.
+* Files with extensions other than .cpp were not compiled from VS.
+* `HasTrailingSlash` MsBuild function was not recognized.
+
 ### Clang Power Tools 2.2
 *December 11, 2017*
 
