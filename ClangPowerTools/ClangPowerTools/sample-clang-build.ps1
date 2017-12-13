@@ -125,8 +125,7 @@ param( [alias("proj")]        [Parameter(Mandatory=$false)][string[]] $aVcxprojT
 # ------------------------------------------------------------------------------------------------
 
 Set-Variable -name kClangCompileFlags                                       -Option Constant `
-                                            -value @( "-std=c++14"
-                                                    , "-Werror"
+                                            -value @( "-Werror"
                                                     , "-Wall"
                                                     , "-fms-compatibility-version=19.10"
                                                     , "-Wmicrosoft"
