@@ -5,6 +5,7 @@
 
 Improvements:
 * Possibility to switch between explicitly specified tidy checks (predefined or custom) and using .clang-tidy configuration file(s).
+* Use PCH for clang-tidy workflow.
 
 Bugs:
 * Could not property detect C++17 standard from project.
