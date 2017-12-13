@@ -22,7 +22,7 @@ namespace ClangPowerTools
 
     [Category(" Tidy")]
     [DisplayName("Custom Checks")]
-    [Description("Specify clang-tidy checks to run using the standard tidy syntax. You can use wildcards to match multiple checks, combine them, etc (Eg. \"modernize - *, readability - *\"). When custom checks are specified, the individual tidy checks enabled (true/false) are ignored.")]
+    [Description("Specify clang-tidy checks to run using the standard tidy syntax. You can use wildcards to match multiple checks, combine them, etc (Eg. \"modernize-*, readability-*\").")]
     [TypeConverter(typeof(StringArrayConverter))]
     public string[] TidyChecks
     {
@@ -35,6 +35,12 @@ namespace ClangPowerTools
     [Description("Automatically applies clang-tidy fixes to selected source files, affected header files and saves them to disk.")]
     public bool Fix { get; set; }
 
+    [Category(" Tidy")]
+    [DisplayName("Operation mode")]
+    [Description("Switch between explicitly specified tidy checks (predefined or custom) and using .clang-tidy configuration file(s).")]
+    [TypeConverter(typeof(TidyModeConvertor))]
+    public string TidyMode { get; set; }
+
     #endregion
 
     #region DialogPage Save and Load implementation 
@@ -46,7 +52,8 @@ namespace ClangPowerTools
       var currentSettings = new ClangTidyOptions
       {
         Fix = this.Fix,
-        TidyChecks = this.TidyChecks.ToList()
+        TidyChecks = this.TidyChecks.ToList(),
+        TidyMode = this.TidyMode
       };
 
       XmlSerializer serializer = new XmlSerializer();
@@ -64,10 +71,14 @@ namespace ClangPowerTools
 
       this.TidyChecks = loadedConfig.TidyChecks.ToArray();
       this.Fix = loadedConfig.Fix;
+
+      if (null == loadedConfig.TidyMode || string.Empty == loadedConfig.TidyMode)
+        this.TidyMode = (0 == this.TidyChecks.Length ? TidyModeConstants.kPredefinedChecks : TidyModeConstants.kCustomChecks);
+      else
+        this.TidyMode = loadedConfig.TidyMode;
     }
 
     #endregion
-
 
   }
 }
