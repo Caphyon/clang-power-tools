@@ -12,6 +12,7 @@ namespace ClangPowerTools
     #region Members
 
     private string mParameters = string.Empty;
+    private bool mUseTidyFile = false;
 
     #endregion
 
@@ -21,6 +22,9 @@ namespace ClangPowerTools
     {
       string containingDirectoryPath = string.Empty;
       string script = $"{ScriptConstants.kScriptBeginning} ''{GetScriptPath()}''";
+
+      if (mUseTidyFile)
+        script = $"{script} {ScriptConstants.kTidyFile}";
 
       if (aItem is SelectedProjectItem)
       {
@@ -88,8 +92,15 @@ namespace ClangPowerTools
     private string GetTidyParameters(TidyOptions aTidyOptions, TidyChecks aTidyChecks)
     {
       string parameters = string.Empty;
-      if (null != aTidyOptions.TidyChecks && 0 < aTidyOptions.TidyChecks.Length)
+
+      if (TidyModeConstants.kTidyFile == aTidyOptions.TidyMode)
+      {
+        mUseTidyFile = true;
+      }
+      else if (TidyModeConstants.kCustomChecks == aTidyOptions.TidyMode)
+      {
         parameters = $",{String.Join(",", aTidyOptions.TidyChecks)}";
+      }
       else
       {
         foreach (PropertyInfo prop in aTidyChecks.GetType().GetProperties())
@@ -98,7 +109,7 @@ namespace ClangPowerTools
           object clangCheckAttr = propAttrs.FirstOrDefault(attr => typeof(ClangCheckAttribute) == attr.GetType());
           object displayNameAttrObj = propAttrs.FirstOrDefault(attr => typeof(DisplayNameAttribute) == attr.GetType());
 
-          if ( null == clangCheckAttr || null == displayNameAttrObj)
+          if (null == clangCheckAttr || null == displayNameAttrObj)
             continue;
 
           DisplayNameAttribute displayNameAttr = (DisplayNameAttribute)displayNameAttrObj;
@@ -108,9 +119,12 @@ namespace ClangPowerTools
           parameters = $"{parameters},{displayNameAttr.DisplayName}";
         }
       }
+
       if (string.Empty != parameters)
-        parameters = string.Format("{0} ''-*{1}''", 
-          aTidyOptions.Fix ? ScriptConstants.kTidyFix : ScriptConstants.kTidy, parameters);
+      {
+        parameters = string.Format("{0} ''-*{1}''",
+          (aTidyOptions.Fix ? ScriptConstants.kTidyFix : ScriptConstants.kTidy), parameters);
+      }
 
       return parameters;
     }
