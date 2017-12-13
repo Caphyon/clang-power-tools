@@ -18,7 +18,7 @@ namespace ClangPowerTools
 
     public bool Fix { get; set; }
 
-    public string TidyModes { get; set; }
+    public string TidyMode { get; set; }
 
     #endregion
 

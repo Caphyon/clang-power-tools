@@ -36,10 +36,10 @@ namespace ClangPowerTools
     public bool Fix { get; set; }
 
     [Category(" Tidy")]
-    [DisplayName("Tidy Modes")]
-    [Description("Automatically applies clang-tidy fixes to selected source files, affected header files and saves them to disk.")]
+    [DisplayName("Operation mode")]
+    [Description("")]
     [TypeConverter(typeof(TidyModeConvertor))]
-    public string TidyModes { get; set; }
+    public string TidyMode { get; set; }
 
     #endregion
 
@@ -53,7 +53,7 @@ namespace ClangPowerTools
       {
         Fix = this.Fix,
         TidyChecks = this.TidyChecks.ToList(),
-        TidyModes = this.TidyModes
+        TidyMode = this.TidyMode
       };
 
       XmlSerializer serializer = new XmlSerializer();
@@ -71,12 +71,14 @@ namespace ClangPowerTools
 
       this.TidyChecks = loadedConfig.TidyChecks.ToArray();
       this.Fix = loadedConfig.Fix;
-      this.TidyModes = loadedConfig.TidyModes;
-    
+
+      if (null == loadedConfig.TidyMode || string.Empty == loadedConfig.TidyMode)
+        this.TidyMode = (0 == this.TidyChecks.Length ? TidyModeConstants.kPredefinedChecks : TidyModeConstants.kCustomChecks);
+      else
+        this.TidyMode = loadedConfig.TidyMode;
     }
 
     #endregion
-
 
   }
 }

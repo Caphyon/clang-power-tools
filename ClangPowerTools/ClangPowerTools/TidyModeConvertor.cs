@@ -16,7 +16,12 @@ namespace ClangPowerTools
 
     public TidyModeConvertor()
     {
-      values = new ArrayList(new string[] { "PredefinedChecks", "CustomChecks", "TidyFile" });
+      values = new ArrayList(new string[] 
+      {
+        TidyModeConstants.kCustomChecks,
+        TidyModeConstants.kPredefinedChecks,
+        TidyModeConstants.kTidyFile
+      });
     }
 
     public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
