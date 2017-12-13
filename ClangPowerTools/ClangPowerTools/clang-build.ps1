@@ -1568,6 +1568,7 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
   # We reuse flags used for compilation and preprocessor definitions.
   $tidyArgs += @(Get-ClangCompileFlags)
   $tidyArgs += $preprocessorDefinitions
+  $tidyArgs += $kClangFlagFileIsCPP
   
   if (! [string]::IsNullOrEmpty($pchFilePath))
   {
