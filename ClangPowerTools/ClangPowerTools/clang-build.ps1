@@ -192,12 +192,16 @@ Set-Variable -name kVcxprojXpathConditionedElements `
              -value "//*[@Condition]" `
              -option Constant
 
+Set-Variable -name kVcxprojXpathChooseElements `
+             -value "ns:Project//ns:Choose" `
+             -option Constant
+
 Set-Variable -name kVcxprojXpathPropGroupElements `
-             -value "/ns:Project/ns:PropertyGroup/*" `
+             -value "ns:Project//ns:PropertyGroup/*" `
              -option Constant
 
 Set-Variable -name kVcxprojXpathCppStandard `
-             -value "/ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:LanguageStandard" `
+             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:LanguageStandard" `
              -option Constant
 
 Set-Variable -name kVSDefaultWinSDK            -value '8.1'             -option Constant
@@ -1259,17 +1263,50 @@ function LoadProjectFileProperties([xml] $projectFile)
   {
     [string] $propertyName  = $node.Name
 
-    # properties are loaded before xml sanitization so we need to manually evalute present conditions
-    if ($node.HasAttribute("Condition"))
+    [bool] $shouldUseNode = $true
+    $conditionCheckNode = $node
+
+    while ($conditionCheckNode.Name -ine "#document")
     {
-      if (!@(Evaluate-MSBuildCondition -condition ($node.GetAttribute("Condition"))))
+      # properties are loaded before xml sanitization so we need to manually evalute present conditions
+      if ($conditionCheckNode.HasAttribute("Condition"))
       {
-        break
+        if (!@(Evaluate-MSBuildCondition -condition ($conditionCheckNode.GetAttribute("Condition"))))
+        {
+          $shouldUseNode = $false
+          break
+        }
+      }
+      $conditionCheckNode = $conditionCheckNode.ParentNode
+    }
+
+    if ($shouldUseNode)
+    {
+      [string] $propertyValue = Evaluate-MSBuildExpression -expression $node.InnerText
+
+      Set-Var -Name $propertyName -Value $propertyValue
+
+      # we may be inside an <When> element, needs special handling
+      $parentNode = $node.ParentNode
+      while ($parentNode.Name -ine "When" -and $parentNode.Name -ine "#document")
+      {
+        $parentNode = $parentNode.ParentNode
+      }
+
+      if ($parentNode.Name -ieq "When")
+      {
+        # we need to invalide all siblings of current When node.
+        # there can be a Otherwise node which does not have a condition
+        # and which can override our properties
+        foreach ($siblingNode in $parentNode.ParentNode.ChildNodes)
+        {
+          if ($siblingNode -ne $parentNode)
+          {
+            $siblingNode.SetAttribute("Condition", "0")
+          }
+        }   
       }
     }
-    [string] $propertyValue = Evaluate-MSBuildExpression -expression $node.InnerText
-
-    Set-Var -Name $propertyName -Value $propertyValue
   }
 }
 
@@ -1298,6 +1335,32 @@ function SanitizeProjectFile([xml]$projectFile)
     {
       $node.ParentNode.RemoveChild($node) | out-null
     }
+  }
+
+  [System.Xml.XmlElement[]] $chooseNodes = Help:Get-ProjectFileNodes -projectFile $projectFile `
+                                                                     -xpath $kVcxprojXpathChooseElements
+  # choose nodes should have been sanitized by the 'Condition' evaluations above
+  # so that only a <When> child remains (or only the <Otherwise>, if it exists).
+  foreach ($chooseNode in $chooseNodes)
+  {
+    if ($chooseNode.ChildNodes.Count -eq 0)
+    {
+      continue
+    }
+
+    if ($chooseNode.ChildNodes.Count -gt 2)
+    {
+      # at most we can have a <When> and <Otherwise> child
+      throw "Choose node should have only one valid child"
+    }
+
+    # we have to copy data from <When> or <Otherwise>'s child nodes into <Choose>'s parent
+    foreach ($nodeToMove in $chooseNode.ChildNodes[0].ChildNodes)
+    {
+      $chooseNode.ParentNode.AppendChild($nodeToMove.Clone())
+    }
+
+    $chooseNode.ParentNode.RemoveChild($chooseNode)
   }
 }
 
