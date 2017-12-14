@@ -37,7 +37,7 @@ namespace ClangPowerTools
 
     [Category(" Tidy")]
     [DisplayName("Operation mode")]
-    [Description("Switch between explicitly specified tidy checks (predefined or custom) and using .clang-tidy configuration file(s).")]
+    [Description("Tidy checks: switch between explicitly specified checks (predefined or custom) and using checks from .clang-tidy configuration files.\nOther options are always loaded from .clang-tidy files.")]
     [TypeConverter(typeof(TidyModeConvertor))]
     public string TidyMode { get; set; }
 
