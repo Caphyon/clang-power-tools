@@ -82,6 +82,9 @@
     <Compile Include="Commands\CommandsController.cs" />
     <Compile Include="Commands\CompileCommand.cs" />
     <Compile Include="DialogPages\DefaultOptions.cs" />
+    <Compile Include="DialogPages\TidyCustomChecks.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Error\ErrorParser.cs" />
     <Compile Include="Error\ErrorParserConstants.cs" />
     <Compile Include="Error\ErrorsManager.cs" />
