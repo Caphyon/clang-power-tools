@@ -1,14 +1,12 @@
-﻿using Microsoft.VisualStudio.Shell;
-using System;
+﻿using System;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Web.UI.WebControls;
 
 namespace ClangPowerTools
 {
   [Serializable]
-  public class GeneralOptions : DialogPage
+  public class GeneralOptions : ConfigurationPage<ClangOptions>
   {
     #region Members
 
@@ -64,7 +62,7 @@ namespace ClangPowerTools
     {
       string path = mSettingsPathBuilder.GetPath(kGeneralSettingsFileName);
 
-      var currentSettings = new ClangOptions
+      var updatedConfig = new ClangOptions
       {
         ProjectsToIgnore = this.ProjectsToIgnore.ToList(),
         FilesToIgnore = this.FilesToIgnore.ToList(),
@@ -73,26 +71,22 @@ namespace ClangPowerTools
         VerboseMode = this.VerboseMode,
         ClangFlags = this.ClangFlags.ToList()
       };
-
-      XmlSerializer serializer = new XmlSerializer();
-      serializer.SerializeToFile(path, currentSettings);
+      SaveToFile(path, updatedConfig);
     }
 
     public override void LoadSettingsFromStorage()
     {
       string path = mSettingsPathBuilder.GetPath(kGeneralSettingsFileName);
+
       XmlSerializer serializer = new XmlSerializer();
+      var loadedConfig = LoadFromFile(path);
 
-      var savedConfig = File.Exists(path)
-        ? serializer.DeserializeFromFIle<ClangOptions>(path)
-        : new ClangOptions();
-
-      this.ProjectsToIgnore = savedConfig.ProjectsToIgnore.ToArray();
-      this.FilesToIgnore = savedConfig.FilesToIgnore.ToArray();
-      this.Continue = savedConfig.Continue;
-      this.TreatWarningsAsErrors = savedConfig.TreatWarningsAsErrors;
-      this.VerboseMode = savedConfig.VerboseMode;
-      this.ClangFlags = savedConfig.ClangFlags.ToArray();
+      this.ProjectsToIgnore = loadedConfig.ProjectsToIgnore.ToArray();
+      this.FilesToIgnore = loadedConfig.FilesToIgnore.ToArray();
+      this.Continue = loadedConfig.Continue;
+      this.TreatWarningsAsErrors = loadedConfig.TreatWarningsAsErrors;
+      this.VerboseMode = loadedConfig.VerboseMode;
+      this.ClangFlags = loadedConfig.ClangFlags.ToArray();
     }
 
     #endregion
