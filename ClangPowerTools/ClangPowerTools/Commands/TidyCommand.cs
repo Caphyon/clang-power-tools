@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE;
 using System.IO;
+using ClangPowerTools.DialogPages;
 
 namespace ClangPowerTools
 {
@@ -16,6 +17,7 @@ namespace ClangPowerTools
 
     private TidyOptions mTidyOptions;
     private TidyChecks mTidyChecks;
+    private TidyCustomChecks mTidyCustomChecks;
     private FileChangerWatcher mFileWatcher;
     private FileOpener mFileOpener;
 
@@ -33,6 +35,8 @@ namespace ClangPowerTools
     {
       mTidyOptions = (TidyOptions)Package.GetDialogPage(typeof(TidyOptions));
       mTidyChecks = (TidyChecks)Package.GetDialogPage(typeof(TidyChecks));
+      mTidyCustomChecks = (TidyCustomChecks)Package.GetDialogPage(typeof(TidyCustomChecks));
+
       mFileOpener = new FileOpener(DTEObj);
       if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
@@ -73,7 +77,7 @@ namespace ClangPowerTools
               WatchFiles();
               SilentFiles(guard);
             }
-            RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mTidyChecks);
+            RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mTidyChecks, mTidyCustomChecks);
           }
         }
         catch (Exception exception)

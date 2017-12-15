@@ -82,6 +82,9 @@
     <Compile Include="Commands\CommandsController.cs" />
     <Compile Include="Commands\CompileCommand.cs" />
     <Compile Include="DialogPages\DefaultOptions.cs" />
+    <Compile Include="DialogPages\TidyCustomChecks.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Error\ErrorParser.cs" />
     <Compile Include="Error\ErrorParserConstants.cs" />
     <Compile Include="Error\ErrorsManager.cs" />
@@ -96,6 +99,9 @@
     <Compile Include="PCHParser.cs" />
     <Compile Include="ProjectConfiguration.cs" />
     <Compile Include="Script\RunningProcesses.cs" />
+    <Compile Include="ConfigurationPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="SettingsPathBuilder.cs" />
     <Compile Include="SilentFileChanger\SilentFileChangerEqualityComparer.cs" />
     <Compile Include="Items\IItem.cs" />

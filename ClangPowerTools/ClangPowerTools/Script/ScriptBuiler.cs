@@ -1,4 +1,5 @@
-﻿using EnvDTE;
+﻿using ClangPowerTools.DialogPages;
+using EnvDTE;
 using EnvDTE80;
 using System;
 using System.ComponentModel;
@@ -40,11 +41,11 @@ namespace ClangPowerTools
     }
 
     public void ConstructParameters(GeneralOptions aGeneralOptions, TidyOptions aTidyOptions, 
-      TidyChecks aTidyChecks, DTE2 aDte, string aVsEdition, string aVsVersion)
+      TidyChecks aTidyChecks, TidyCustomChecks aTidyCustomChecks, DTE2 aDte, string aVsEdition, string aVsVersion)
     {
       mParameters = GetGeneralParameters(aGeneralOptions);
       mParameters = null != aTidyOptions ?
-        $"{mParameters} {GetTidyParameters(aTidyOptions, aTidyChecks)}" : $"{mParameters} {ScriptConstants.kParallel}";
+        $"{mParameters} {GetTidyParameters(aTidyOptions, aTidyChecks, aTidyCustomChecks)}" : $"{mParameters} {ScriptConstants.kParallel}";
       mParameters = $"{mParameters} {ScriptConstants.kVsVersion} {aVsVersion} {ScriptConstants.kVsEdition} {aVsEdition}";
     }
 
@@ -85,7 +86,7 @@ namespace ClangPowerTools
       return $"{parameters}";
     }
 
-    private string GetTidyParameters(TidyOptions aTidyOptions, TidyChecks aTidyChecks)
+    private string GetTidyParameters(TidyOptions aTidyOptions, TidyChecks aTidyChecks, TidyCustomChecks aTidyCustomChecks)
     {
       string parameters = string.Empty;
 
@@ -95,7 +96,7 @@ namespace ClangPowerTools
       }
       else if (TidyModeConstants.kCustomChecks == aTidyOptions.TidyMode)
       {
-        parameters = $",{String.Join(",", aTidyOptions.TidyChecks)}";
+        parameters = $",{String.Join(",", aTidyCustomChecks.TidyChecks)}";
       }
       else
       {
