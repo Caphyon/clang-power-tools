@@ -571,6 +571,11 @@ Function InitializeMsBuildProjectProperties()
   Set-Var -name "ProjectName"              -value $MSBuildProjectName
   Set-Var -name "TargetName"               -value $MSBuildProjectName
 
+  # These would enable full project platform references parsing, we're not yet ready for it
+  # XXX
+  #Set-Var -name "ConfigurationType"        -value "Application"
+  #Set-Var -name "VCTargetsPath"            -value "$(Get-VisualStudio-Path)\Common7\IDE\VC\VCTargets\"
+
   [string] $vsVer = "15.0"
   if ($aVisualStudioVersion -eq "2015")
   {
@@ -1227,21 +1232,17 @@ function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpa
    Items for other config-platform pairs will be removed from the DOM. 
    This is needed so that our XPath selectors don't get confused when looking for data.
 #>
-function Detect-ProjectDefaultConfigPlatform()
+function Detect-ProjectDefaultConfigPlatform([string] $projectValue)
 {
   [string]$configPlatformName = ""
   
   if (![string]::IsNullOrEmpty($aVcxprojConfigPlatform))
   {
-     $configPlatformName = $aVcxprojConfigPlatform
+    $configPlatformName = $aVcxprojConfigPlatform
   }
   else
   {
-    [System.Xml.XmlElement[]] $configNodes = Select-ProjectNodes -xpath $kVcxprojXpathDefaultConfigPlatform
-    if ($configNodes)
-    {
-      $configPlatformName = $configNodes.GetAttribute("Include")
-    }
+    $configPlatformName = $projectValue
   }
 
   if ([string]::IsNullOrEmpty($configPlatformName))
@@ -1254,60 +1255,108 @@ function Detect-ProjectDefaultConfigPlatform()
   Set-Var -Name "Platform"      -Value $configAndPlatform[1]
 }
 
-function LoadProjectFileProperties([xml] $projectFile)
+function HandleChooseNode([System.Xml.XmlNode] $aChooseNode)
 {
-  [System.Xml.XmlElement[]] $propNodes = Help:Get-ProjectFileNodes -projectFile $projectFile `
-                                                                   -xpath $kVcxprojXpathPropGroupElements
-  
-  foreach ($node in $propNodes)
-  {
-    [string] $propertyName  = $node.Name
-
-    [bool] $shouldUseNode = $true
-    $conditionCheckNode = $node
-
-    while ($conditionCheckNode.Name -ine "#document")
+    SanitizeProjectNode $aChooseNode
+    if ($aChooseNode.ChildNodes.Count -eq 0)
     {
-      # properties are loaded before xml sanitization so we need to manually evalute present conditions
-      if ($conditionCheckNode.HasAttribute("Condition"))
-      {
-        if (!@(Evaluate-MSBuildCondition -condition ($conditionCheckNode.GetAttribute("Condition"))))
+      return
+    }
+
+    [System.Xml.XmlElement] $selectedChild = $aChooseNode.ChildNodes | Where-Object { $_.GetType().Name -eq "XmlElement" } | Select -first 1
+
+    foreach ($selectedGrandchild in $selectedChild.ChildNodes)
+    {
+        $aChooseNode.ParentNode.AppendChild($selectedGrandchild.Clone()) | Out-Null
+    }
+
+    $aChooseNode.ParentNode.RemoveChild($aChooseNode) | Out-Null
+}
+
+function SanitizeProjectNode([System.Xml.XmlNode] $node)
+{
+    [System.Collections.ArrayList] $nodesToRemove = @()
+   
+    if ($node.Name -eq "#text" -and $node.InnerText.Length -gt 0)
+    {
+        # evaluate node content
+        $node.InnerText = Evaluate-MSBuildExpression $node.InnerText
+    }
+
+    if ($node.Name -eq "Import")
+    {
+        [string] $relPath = Evaluate-MSBuildExpression $node.GetAttribute("Project")
+        [string] $path    = Canonize-Path -base (Get-Location) -child $relPath -ignoreErrors
+        # XXX are relative paths ok?
+        if (![string]::IsNullOrEmpty($path) -and (Test-Path $path))
         {
-          $shouldUseNode = $false
-          break
+            Write-Verbose "Property sheet: $path"
+            SanitizeProjectFile($path)
         }
-      }
-      $conditionCheckNode = $conditionCheckNode.ParentNode
-    }
-
-    if ($shouldUseNode)
-    {
-      [string] $propertyValue = Evaluate-MSBuildExpression -expression $node.InnerText
-
-      Set-Var -Name $propertyName -Value $propertyValue
-
-      # we may be inside an <When> element, needs special handling
-      $parentNode = $node.ParentNode
-      while ($parentNode.Name -ine "When" -and $parentNode.Name -ine "#document")
-      {
-        $parentNode = $parentNode.ParentNode
-      }
-
-      if ($parentNode.Name -ieq "When")
-      {
-        # we need to invalide all siblings of current When node.
-        # there can be a Otherwise node which does not have a condition
-        # and which can override our properties
-        foreach ($siblingNode in $parentNode.ParentNode.ChildNodes)
+        else
         {
-          if ($siblingNode -ne $parentNode)
-          {
-            $siblingNode.SetAttribute("Condition", "0")
-          }
-        }   
-      }
+            Write-Verbose "Could not find property sheet $relPath"
+        }
     }
-  }
+
+    if ($node.Name -eq "Choose")
+    {
+      HandleChooseNode $chooseChild
+    }
+
+    if ($node.Name -eq "Otherwise")
+    {
+        [System.Xml.XmlElement[]] $siblings = $node.ParentNode.ChildNodes | Where-Object { $_.GetType().Name -eq "XmlElement" -and $_ -ne $node }
+        if ($siblings.Count -gt 0)
+        {
+            # means there's a <When> element that matched, <Otherwise> should not be evaluated
+            return
+        }
+    }
+
+    if ($node.Name -eq "ItemGroup" -and $node.GetAttribute("Label") -eq "ProjectConfigurations")
+    {
+        Detect-ProjectDefaultConfigPlatform $node.ChildNodes[0].GetAttribute("Include")
+    }
+
+    if ($node.ParentNode.Name -eq "PropertyGroup")
+    {
+        # set new property value
+        [string] $propertyName  = $node.Name
+        [string] $propertyValue = Evaluate-MSBuildExpression $node.InnerText
+
+        Set-Var -Name $propertyName -Value $propertyValue
+
+        return
+    }
+
+    foreach ($child in $node.ChildNodes)
+    {
+        [bool] $validChild = $true
+        if ($child.GetType().Name -eq "XmlElement")
+        {
+            if ($child.HasAttribute("Condition"))
+            {
+                # process node condition
+                [string] $nodeCondition = $child.GetAttribute("Condition")
+                $validChild = ((Evaluate-MSBuildCondition($nodeCondition)) -eq $true)
+            }
+        }
+        if (!$validChild)
+        {
+            $nodesToRemove.Add($child) | out-null
+            continue
+        }
+        else
+        {
+          SanitizeProjectNode($child)
+        }
+    }
+
+    foreach ($nodeToRemove in $nodesToRemove)
+    {
+      $nodeToRemove.ParentNode.RemoveChild($nodeToRemove) | out-null
+    }
 }
 
 <#
@@ -1316,99 +1365,21 @@ function LoadProjectFileProperties([xml] $projectFile)
    one we selected. 
    This is needed so that our XPath selectors don't get confused when looking for data.
 #>
-function SanitizeProjectFile([xml]$projectFile)
+function SanitizeProjectFile([string] $projectFilePath)
 {
-  [System.Xml.XmlElement[]] $configNodes = Help:Get-ProjectFileNodes -projectFile $projectFile `
-                                                                     -xpath $kVcxprojXpathConditionedElements
+  Write-Verbose "`nSanitizing $projectFilePath"
 
-  foreach ($node in $configNodes)
-  {
-    [string] $nodeConfigPlatform = $node.GetAttribute("Condition")
+  [xml] $fileXml = Get-Content $projectFilePath
+  $global:projectFiles += @($fileXml)
+  $global:xpathNS     = New-Object System.Xml.XmlNamespaceManager($fileXml.NameTable) 
+  $global:xpathNS.AddNamespace("ns", $fileXml.DocumentElement.NamespaceURI)
 
-    if ((Evaluate-MSBuildCondition($nodeConfigPlatform)) -eq $true)
-    {
-      # Since we leave only one config platform in the project, we don't need 
-      # the Condition field for its config xml elements anymore
-      $node.RemoveAttribute("Condition")
-    }
-    else
-    {
-      $node.ParentNode.RemoveChild($node) | out-null
-    }
-  }
-
-  [System.Xml.XmlElement[]] $chooseNodes = Help:Get-ProjectFileNodes -projectFile $projectFile `
-                                                                     -xpath $kVcxprojXpathChooseElements
-  # choose nodes should have been sanitized by the 'Condition' evaluations above
-  # so that only a <When> child remains (or only the <Otherwise>, if it exists).
-  foreach ($chooseNode in $chooseNodes)
-  {
-    if ($chooseNode.ChildNodes.Count -eq 0)
-    {
-      continue
-    }
-
-    if ($chooseNode.ChildNodes.Count -gt 2)
-    {
-      # at most we can have a <When> and <Otherwise> child
-      throw "Choose node should have only one valid child"
-    }
-
-    # we have to copy data from <When> or <Otherwise>'s child nodes into <Choose>'s parent
-    foreach ($nodeToMove in $chooseNode.ChildNodes[0].ChildNodes)
-    {
-      $chooseNode.ParentNode.AppendChild($nodeToMove.Clone())
-    }
-
-    $chooseNode.ParentNode.RemoveChild($chooseNode)
-  }
-}
-
-<#
-.DESCRIPTION
-  Retrieves the property sheets referred by the project.
-  Only those we can locate on the disk are returned. 
-  MSBuild variables are not expanded, so those sheets are not returned.
-#>
-function Get-ProjectPropertySheets([string] $filePath, [xml] $fileXml)
-{
-  [string] $vcxprojDir = Get-FileDirectory($filePath)
+  Push-Location (Get-FileDirectory -filePath $projectFilePath)
   
-  InitializeMsBuildCurrentFileProperties -filePath $filePath
-  LoadProjectFileProperties($fileXml)
+  InitializeMsBuildCurrentFileProperties -filePath $projectFilePath
+  SanitizeProjectNode($fileXml.Project) 
 
-  [System.Xml.XmlElement[]] $importGroup = $fileXml.SelectNodes($kVcxprojXpathPropSheets, $global:xpathNS)
-  if (!$importGroup) 
-  {
-      return @()
-  }
-
-  [string[]] $sheetEntries = $importGroup  | ForEach-Object { Evaluate-MSBuildExpression($_.GetAttribute("Project")) }
-  [string[]] $sheetAbsolutePaths = $sheetEntries | ForEach-Object `
-                                   { 
-                                     Canonize-Path -base $vcxprojDir `
-                                                   -child $_         `
-                                                   -ignoreErrors     `
-                                   } | Where-Object { ![string]::IsNullOrEmpty($_) }
-  
-  # a property sheet may have references to other property sheets
-  [string[]] $returnPaths = @()
-  if ($sheetAbsolutePaths)
-  {
-    foreach ($path in $sheetAbsolutePaths)
-    {
-      [string[]] $childrenPaths = Get-ProjectPropertySheets -filePath $path `
-                                                            -fileXml ([xml](Get-Content $path))
-      if ($childrenPaths.Length -gt 0)
-      {
-        $returnPaths += $childrenPaths
-      }
-      
-      $returnPaths += $path
-    }
-  }
-
-  return $returnPaths
+  Pop-Location
 }
 
 <#
@@ -1428,10 +1399,7 @@ function Get-AutoPropertySheet()
                                    -ignoreErrors
     if (![string]::IsNullOrEmpty($propSheetPath))
     {
-      [xml] $fileXml = Get-Content $propSheetPath
-      [string[]] $inheritedSheets = Get-ProjectPropertySheets -filePath $propSheetPath `
-                                                              -fileXml $fileXml
-      return ($inheritedSheets + $propSheetPath)
+      return $propSheetPath
     }
 
     $newPath = Canonize-Path -base $startPath -child ".."
@@ -1450,64 +1418,30 @@ when processing a project. Accessing project nodes can be done using Select-Proj
 #>
 function LoadProject([string] $vcxprojPath)
 {
-  $global:projectFiles = @([xml] (Get-Content $vcxprojPath))
-
   $global:vcxprojPath = $vcxprojPath
   
   InitializeMsBuildProjectProperties
-  InitializeMsBuildCurrentFileProperties -filePath $global:vcxprojPath
-  
-  $global:xpathNS     = New-Object System.Xml.XmlNamespaceManager($global:projectFiles[0].NameTable) 
-  $global:xpathNS.AddNamespace("ns", $global:projectFiles[0].DocumentElement.NamespaceURI)
-  
-  Detect-ProjectDefaultConfigPlatform
-  
-  # preload properties so that sanitization of project xml conditions can access them
-  LoadProjectFileProperties($global:projectFiles[0])
-
-  Write-Verbose "`nSanitizing $global:vcxprojPath"
-  SanitizeProjectFile -projectFile $global:projectFiles[0]
    
   # see if we can find a Directory.Build.props automatic prop sheet
   [string[]] $propSheetAbsolutePaths = @()
+  [xml[]]    $autoPropSheetXmls      = $null
   $autoPropSheet = Get-AutoPropertySheet
   if (![string]::IsNullOrEmpty($autoPropSheet))
   {
-    $propSheetAbsolutePaths += $autoPropSheet
+    SanitizeProjectFile -projectFilePath $autoPropSheet
+    $autoPropSheetXmls = $global:projectFiles
   }
 
-  # see if project has manually specified property sheets
-  $propSheetAbsolutePaths += Get-ProjectPropertySheets -filePath $global:vcxprojPath `
-                                                       -fileXml  $global:projectFiles[0]
+  # the auto-prop sheet has to be last in the node retrieval sources
+  # but properties defined in it have to be accessible in all project files :(
+  $global:projectFiles = @()
 
-  if (!$propSheetAbsolutePaths)
+  SanitizeProjectFile -projectFilePath $global:vcxprojPath
+
+  if ($autoPropSheetXml)
   {
-    return
+    $global:projectFiles += $autoPropSheetXmls
   }
-
-  Write-Verbose "Property sheets: "
-  foreach ($propSheet in $propSheetAbsolutePaths)
-  {
-    Write-Verbose "  $propSheet"
-  }
-
-  [array]::Reverse($propSheetAbsolutePaths)
-  foreach ($propSheetPath in $propSheetAbsolutePaths)
-  {
-    InitializeMsBuildCurrentFileProperties -filePath $propSheetPath
-    [xml] $propSheetXml = Get-Content $propSheetPath
-
-    Write-Verbose "`nSanitizing $propSheetPath"
-    SanitizeProjectFile -projectFile $propSheetXml
-
-    $global:projectFiles += $propSheetXml
-  }
-
-  # .vcxproj project properties may have been overriden by property sheet
-  # loading process, put them back in place.
-  LoadProjectFileProperties($global:projectFiles[0])
-  
-  InitializeMsBuildCurrentFileProperties -filePath $global:vcxprojPath  
 }
 
 <#
