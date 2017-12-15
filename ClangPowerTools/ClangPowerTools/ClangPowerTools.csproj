@@ -99,6 +99,9 @@
     <Compile Include="PCHParser.cs" />
     <Compile Include="ProjectConfiguration.cs" />
     <Compile Include="Script\RunningProcesses.cs" />
+    <Compile Include="ConfigurationPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="SettingsPathBuilder.cs" />
     <Compile Include="SilentFileChanger\SilentFileChangerEqualityComparer.cs" />
     <Compile Include="Items\IItem.cs" />

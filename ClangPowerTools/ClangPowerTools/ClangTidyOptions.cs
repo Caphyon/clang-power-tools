@@ -6,12 +6,6 @@ namespace ClangPowerTools
   [Serializable]
   public class ClangTidyOptions
   {
-    #region Members
-
-    private List<string> mTidyChecks = new List<string>();
-
-    #endregion
-
     #region Properties
 
     public List<string> TidyChecks { get; set; } = new List<string>();

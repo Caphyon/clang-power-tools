@@ -1,16 +1,10 @@
-﻿using Microsoft.VisualStudio.Shell;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
+﻿using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.UI.WebControls;
 
 namespace ClangPowerTools.DialogPages
 {
-  public class TidyCustomChecks : DialogPage
+  public class TidyCustomChecks : ConfigurationPage<ClangTidyOptions>
   {
     #region Members
 
@@ -32,19 +26,6 @@ namespace ClangPowerTools.DialogPages
       set => mTidyChecks = value;
     }
 
-    [Browsable(false)]
-    [Category(" Tidy")]
-    [DisplayName("Fix")]
-    [Description("Automatically applies clang-tidy fixes to selected source files, affected header files and saves them to disk.")]
-    public bool Fix { get; set; }
-
-    [Browsable(false)]
-    [Category(" Tidy")]
-    [DisplayName("Use checks from")]
-    [Description("Tidy checks: switch between explicitly specified checks (predefined or custom) and using checks from .clang-tidy configuration files.\nOther options are always loaded from .clang-tidy files.")]
-    [TypeConverter(typeof(TidyModeConvertor))]
-    public string TidyMode { get; set; }
-
     #endregion
 
     #region DialogPage Save and Load implementation 
@@ -53,33 +34,17 @@ namespace ClangPowerTools.DialogPages
     {
       string path = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
 
-      var currentSettings = new ClangTidyOptions
-      {
-        Fix = this.Fix,
-        TidyChecks = this.TidyChecks.ToList(),
-        TidyMode = this.TidyMode
-      };
+      var updatedConfig = LoadFromFile(path);
+      updatedConfig.TidyChecks = this.TidyChecks.ToList();
 
-      XmlSerializer serializer = new XmlSerializer();
-      serializer.SerializeToFile(path, currentSettings);
+      SaveToFile(path, updatedConfig);
     }
 
     public override void LoadSettingsFromStorage()
     {
       string path = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
-      XmlSerializer serializer = new XmlSerializer();
-
-      var loadedConfig = File.Exists(path)
-        ? serializer.DeserializeFromFIle<ClangTidyOptions>(path)
-        : new ClangTidyOptions();
-
+      var loadedConfig = LoadFromFile(path);
       this.TidyChecks = loadedConfig.TidyChecks.ToArray();
-      this.Fix = loadedConfig.Fix;
-
-      if (null == loadedConfig.TidyMode || string.Empty == loadedConfig.TidyMode)
-        this.TidyMode = (0 == this.TidyChecks.Length ? TidyModeConstants.kPredefinedChecks : TidyModeConstants.kCustomChecks);
-      else
-        this.TidyMode = loadedConfig.TidyMode;
     }
 
     #endregion
