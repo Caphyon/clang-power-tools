@@ -21,6 +21,11 @@ namespace ClangPowerTools
     public bool Fix { get; set; }
 
     [Category(" Tidy")]
+    [DisplayName("Header Filter")]
+    [Description("")]
+    public string HeaderFilter { get; set; }
+
+    [Category(" Tidy")]
     [DisplayName("Use checks from")]
     [Description("Tidy checks: switch between explicitly specified checks (predefined or custom) and using checks from .clang-tidy configuration files.\nOther options are always loaded from .clang-tidy files.")]
     [TypeConverter(typeof(TidyModeConvertor))]
