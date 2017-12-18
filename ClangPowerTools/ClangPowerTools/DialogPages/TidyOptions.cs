@@ -21,7 +21,7 @@ namespace ClangPowerTools
     public bool Fix { get; set; }
 
     [Category(" Tidy")]
-    [DisplayName("Header Filter")]
+    [DisplayName("Header filter")]
     [Description("")]
     public string HeaderFilter { get; set; }
 
@@ -41,6 +41,7 @@ namespace ClangPowerTools
 
       var updatedConfig = LoadFromFile(path);
       updatedConfig.Fix = this.Fix;
+      updatedConfig.HeaderFilter = this.HeaderFilter;
       updatedConfig.TidyMode = this.TidyMode;
 
       SaveToFile(path, updatedConfig);
@@ -52,6 +53,8 @@ namespace ClangPowerTools
       var loadedConfig = LoadFromFile(path);
 
       this.Fix = loadedConfig.Fix;
+      this.HeaderFilter = loadedConfig.HeaderFilter;
+
       if (null == loadedConfig.TidyMode || string.Empty == loadedConfig.TidyMode)
         this.TidyMode = (0 == loadedConfig.TidyChecks.Count ? TidyModeConstants.kPredefinedChecks : TidyModeConstants.kCustomChecks);
       else
