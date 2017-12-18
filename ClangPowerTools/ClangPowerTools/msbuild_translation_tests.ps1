@@ -10,6 +10,31 @@ $varB          = 1
 
 # -------------------------------------------------------------------------------------------------------------------
 
+function GetRegValue([Parameter(Mandatory=$true)][string] $regPath)
+{
+  [int] $separatorIndex = $regPath.IndexOf('@')
+  [string] $valueName = ""
+  if ($separatorIndex -gt 0)
+  {
+    [string] $valueName = $regPath.Substring($separatorIndex + 1)
+    $regPath = $regPath.Substring(0, $separatorIndex)
+  }
+  if ([string]::IsNullOrEmpty($valueName))
+  {
+    throw "Cannot retrieve an empty registry value"
+  }
+  $regPath = $regPath -replace "HKEY_LOCAL_MACHINE\\", "HKLM:\"
+
+  if (Test-Path $regPath)
+  {
+    return (Get-ChildItem $regPath).GetValue($valueName)
+  }
+  else
+  {
+    return ""
+  }
+}
+
 function HasTrailingSlash([Parameter(Mandatory=$true)][string] $str)
 {
   return $str.EndsWith('\') -or $str.EndsWith('/')
@@ -46,6 +71,7 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
                        , ('"'                     , '""'                 )`
       , ("Exists\((.*?)\)(\s|$)"           , "(Exists(`$1))`$2"          )`
       , ("HasTrailingSlash\((.*?)\)(\s|$)" , "(HasTrailingSlash(`$1))`$2")`
+      , ("(\`$\()(Registry:)(.*?)(\))"     ,  '$$(GetRegValue("$3"))'  )`
                        )
   foreach ($rule in $msbuildToPsRules)
   {
@@ -171,7 +197,16 @@ function Test-Expression($expresion)
     Write-output $res
 }
 # ----------------------------------------------------------------------------
+Test-Expression '$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1A@InstallationFolder)'
+Test-Expression '$(GetRegValue("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v10.0@InstallationFolder"))'
 
+
+Test-Condition "`$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1A@InstallationFolder) != ''" `
+               -expectation $true
+
+Test-Condition "`$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\DevDiv\vs\Servicing\11.0\professional@Version) == ''" `
+               -expectation $true
+               
 
 Test-Condition -condition   "'`$(Configuration)|`$(Platform)'=='Debug|Win32' or '`$(Configuration)' == 'Release2'" `
                -expectation $true
