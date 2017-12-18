@@ -63,9 +63,8 @@
     <!-- FOOTER  -->
     <div id="footer_wrap" class="outer">
       <footer class="inner">
-        {% if site.github.is_project_page %}
-      <div>
-        <p class="copyright"> {{ site.title | default: Clang Power Tools }} project is maintained by <a href="https://caphyon.github.io">{{ site.github.owner_name }}</a> </p>
+      
+      <section id="SocialF" style="position: absolute; width: 170px; z-index: 10; bottom: 20px; right: 0; height: 70px;"/>
         <a href="https://twitter.com/ClangPowerTools" data-tooltip="Twitter" rel="nofollow" target="_blank">
           <svg width="80" height="50" viewBox="0 0 416 448" fill="#55acee">
             <path
@@ -78,7 +77,12 @@
               d="M239.75 3v66h-39.25q-21.5 0-29 9t-7.5 27v47.25h73.25l-9.75 74h-63.5v189.75h-76.5v-189.75h-63.75v-74h63.75v-54.5q0-46.5 26-72.125t69.25-25.625q36.75 0 57 3z"/>
           </svg>
         </a>
-      </div>  
+      </section>
+          
+        {% if site.github.is_project_page %}
+      
+        <p class="copyright"> {{ site.title | default: Clang Power Tools }} project is maintained by <a href="https://caphyon.github.io">{{ site.github.owner_name }}</a> </p>
+        
         {% endif %}
       </footer>
     </div>
