@@ -40,8 +40,12 @@ function HasTrailingSlash([Parameter(Mandatory=$true)][string] $str)
   return $str.EndsWith('\') -or $str.EndsWith('/')
 }
 
-function Exists([Parameter(Mandatory=$true)][string] $path)
+function Exists([Parameter(Mandatory=$false)][string] $path)
 {
+  if ([string]::IsNullOrEmpty($path))
+  {
+    return $false
+  }
   return Test-Path $path
 }
 
@@ -179,6 +183,7 @@ function Test-Condition([string] $condition, [bool]$expectation, [switch] $expec
       }
       else
       {
+        Write-Output $_.Exception.Message
         throw "Test failed"
       }
     }
@@ -197,6 +202,9 @@ function Test-Expression($expresion)
     Write-output $res
 }
 # ----------------------------------------------------------------------------
+
+Test-Condition "'`$(ImportDirectoryBuildProps)' == 'true' and exists('`$(DirectoryBuildPropsPath)')" -expectation $false
+
 Test-Expression '$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\15.0\AD7Metrics\ExpressionEvaluator\{3A12D0B7-C26C-11D0-B442-00A0244A1DD2}\{994B45C4-E6E9-11D2-903F-00C04FA302A1}@LoadInShimManagedEE)'
 Test-Expression '$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v10.0@InstallationFolder)'
 Test-Expression '$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Microsoft SDKs\Windows\v10.0@InstallationFolder)'

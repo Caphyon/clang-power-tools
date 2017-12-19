@@ -1004,8 +1004,13 @@ function HasTrailingSlash([Parameter(Mandatory=$true)][string] $str)
   return $str.EndsWith('\') -or $str.EndsWith('/')
 }
 
-function Exists([Parameter(Mandatory=$true)][string] $path)
+function Exists([Parameter(Mandatory=$false)][string] $path)
 {
+  if ([string]::IsNullOrEmpty($path))
+  {
+    return $false
+  }
+  
   return Test-Path $path
 }
 
@@ -1156,7 +1161,15 @@ function Evaluate-MSBuildCondition([Parameter(Mandatory=$true)][string] $conditi
     return $false
   }
 
-  [bool] $res = (Invoke-Expression $expression) -eq $true
+  [bool] $res = $false 
+  try
+  {
+    $res = (Invoke-Expression $expression) -eq $true
+  }
+  catch
+  {
+    Write-Debug $_.Exception.Message
+  }
   Write-Debug "Evaluated condition to $res" 
 
   return $res
@@ -1295,115 +1308,114 @@ function Detect-ProjectDefaultConfigPlatform([string] $projectValue)
 
 function HandleChooseNode([System.Xml.XmlNode] $aChooseNode)
 {
-    SanitizeProjectNode $aChooseNode
-    if ($aChooseNode.ChildNodes.Count -eq 0)
-    {
-      return
-    }
+  SanitizeProjectNode $aChooseNode
+  if ($aChooseNode.ChildNodes.Count -eq 0)
+  {
+    return
+  }
 
-    [System.Xml.XmlElement] $selectedChild = $aChooseNode.ChildNodes | `
-                                             Where-Object { $_.GetType().Name -eq "XmlElement" } | `
-                                             Select -first 1
+  [System.Xml.XmlElement] $selectedChild = $aChooseNode.ChildNodes | `
+                                            Where-Object { $_.GetType().Name -eq "XmlElement" } | `
+                                            Select -first 1
 
-    foreach ($selectedGrandchild in $selectedChild.ChildNodes)
-    {
-        $aChooseNode.ParentNode.AppendChild($selectedGrandchild.Clone()) | Out-Null
-    }
+  foreach ($selectedGrandchild in $selectedChild.ChildNodes)
+  {
+    $aChooseNode.ParentNode.AppendChild($selectedGrandchild.Clone()) | Out-Null
+  }
 
-    $aChooseNode.ParentNode.RemoveChild($aChooseNode) | Out-Null
+  $aChooseNode.ParentNode.RemoveChild($aChooseNode) | Out-Null
 }
 
 function SanitizeProjectNode([System.Xml.XmlNode] $node)
 {
-    if ($node.Name -ieq "#comment")
+  if ($node.Name -ieq "#comment")
+  {
+    return
+  }
+
+  [System.Collections.ArrayList] $nodesToRemove = @()
+  
+  if ($node.Name -ieq "#text" -and $node.InnerText.Length -gt 0)
+  {
+    # evaluate node content
+    $node.InnerText = Evaluate-MSBuildExpression $node.InnerText
+  }
+
+  if ($node.Name -ieq "Import")
+  {
+    [string] $relPath = Evaluate-MSBuildExpression $node.GetAttribute("Project")
+    [string] $path    = Canonize-Path -base (Get-Location) -child $relPath -ignoreErrors
+    if (![string]::IsNullOrEmpty($path) -and (Test-Path $path))
     {
-      return
+        Write-Verbose "Property sheet: $path"
+        SanitizeProjectFile($path)
     }
-
-    [System.Collections.ArrayList] $nodesToRemove = @()
-   
-    if ($node.Name -ieq "#text" -and $node.InnerText.Length -gt 0)
+    else
     {
-        # evaluate node content
-        $node.InnerText = Evaluate-MSBuildExpression $node.InnerText
+        Write-Verbose "Could not find property sheet $relPath"
     }
+  }
 
-    if ($node.Name -ieq "Import")
+  if ($node.Name -ieq "Choose")
+  {
+    HandleChooseNode $chooseChild
+  }
+
+  if ($node.Name -ieq "Otherwise")
+  {
+    [System.Xml.XmlElement[]] $siblings = $node.ParentNode.ChildNodes | `
+                                          Where-Object { $_.GetType().Name -ieq "XmlElement" -and $_ -ne $node }
+    if ($siblings.Count -gt 0)
     {
-        [string] $relPath = Evaluate-MSBuildExpression $node.GetAttribute("Project")
-        [string] $path    = Canonize-Path -base (Get-Location) -child $relPath -ignoreErrors
-        # XXX are relative paths ok?
-        if (![string]::IsNullOrEmpty($path) -and (Test-Path $path))
-        {
-            Write-Verbose "Property sheet: $path"
-            SanitizeProjectFile($path)
-        }
-        else
-        {
-            Write-Verbose "Could not find property sheet $relPath"
-        }
-    }
-
-    if ($node.Name -ieq "Choose")
-    {
-      HandleChooseNode $chooseChild
-    }
-
-    if ($node.Name -ieq "Otherwise")
-    {
-        [System.Xml.XmlElement[]] $siblings = $node.ParentNode.ChildNodes | `
-                                              Where-Object { $_.GetType().Name -ieq "XmlElement" -and $_ -ne $node }
-        if ($siblings.Count -gt 0)
-        {
-            # means there's a <When> element that matched
-            # <Otherwise> should not be evaluated, we could set unwated properties
-            return
-        }
-    }
-
-    if ($node.Name -ieq "ItemGroup" -and $node.GetAttribute("Label") -ieq "ProjectConfigurations")
-    {
-        Detect-ProjectDefaultConfigPlatform $node.ChildNodes[0].GetAttribute("Include")
-    }
-
-    if ($node.ParentNode.Name -ieq "PropertyGroup")
-    {
-        # set new property value
-        [string] $propertyName  = $node.Name
-        [string] $propertyValue = Evaluate-MSBuildExpression $node.InnerText
-
-        Set-Var -Name $propertyName -Value $propertyValue
-
+        # means there's a <When> element that matched
+        # <Otherwise> should not be evaluated, we could set unwated properties
         return
     }
+  }
 
-    foreach ($child in $node.ChildNodes)
+  if ($node.Name -ieq "ItemGroup" -and $node.GetAttribute("Label") -ieq "ProjectConfigurations")
+  {
+    Detect-ProjectDefaultConfigPlatform $node.ChildNodes[0].GetAttribute("Include")
+  }
+
+  if ($node.ParentNode.Name -ieq "PropertyGroup")
+  {
+    # set new property value
+    [string] $propertyName  = $node.Name
+    [string] $propertyValue = Evaluate-MSBuildExpression $node.InnerText
+
+    Set-Var -Name $propertyName -Value $propertyValue
+
+    return
+  }
+
+  foreach ($child in $node.ChildNodes)
+  {
+    [bool] $validChild = $true
+    if ($child.GetType().Name -ieq "XmlElement")
     {
-        [bool] $validChild = $true
-        if ($child.GetType().Name -ieq "XmlElement")
+        if ($child.HasAttribute("Condition"))
         {
-            if ($child.HasAttribute("Condition"))
-            {
-                # process node condition
-                [string] $nodeCondition = $child.GetAttribute("Condition")
-                $validChild = ((Evaluate-MSBuildCondition($nodeCondition)) -eq $true)
-            }
-        }
-        if (!$validChild)
-        {
-            $nodesToRemove.Add($child) | out-null
-            continue
-        }
-        else
-        {
-          SanitizeProjectNode($child)
+          # process node condition
+          [string] $nodeCondition = $child.GetAttribute("Condition")
+          $validChild = ((Evaluate-MSBuildCondition($nodeCondition)) -eq $true)
         }
     }
-
-    foreach ($nodeToRemove in $nodesToRemove)
+    if (!$validChild)
     {
-      $nodeToRemove.ParentNode.RemoveChild($nodeToRemove) | out-null
+      $nodesToRemove.Add($child) | out-null
+      continue
     }
+    else
+    {
+      SanitizeProjectNode($child)
+    }
+  }
+
+  foreach ($nodeToRemove in $nodesToRemove)
+  {
+    $nodeToRemove.ParentNode.RemoveChild($nodeToRemove) | out-null
+  }
 }
 
 <#
