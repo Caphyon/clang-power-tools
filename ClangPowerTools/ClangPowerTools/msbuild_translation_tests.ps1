@@ -197,14 +197,18 @@ function Test-Expression($expresion)
     Write-output $res
 }
 # ----------------------------------------------------------------------------
+Test-Expression '$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\15.0\AD7Metrics\ExpressionEvaluator\{3A12D0B7-C26C-11D0-B442-00A0244A1DD2}\{994B45C4-E6E9-11D2-903F-00C04FA302A1}@LoadInShimManagedEE)'
+Test-Expression '$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v10.0@InstallationFolder)'
+Test-Expression '$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Microsoft SDKs\Windows\v10.0@InstallationFolder)'
+
 Test-Expression '$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1A@InstallationFolder)'
 Test-Expression '$(GetRegValue("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v10.0@InstallationFolder"))'
 
 
-Test-Condition "`$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1A@InstallationFolder) != ''" `
+Test-Condition "'`$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1A@InstallationFolder)' != ''" `
                -expectation $true
 
-Test-Condition "`$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\DevDiv\vs\Servicing\11.0\professional@Version) == ''" `
+Test-Condition "'`$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\DevDiv\vs\Servicing\11.0\professional@Version)' == ''" `
                -expectation $true
                
 
