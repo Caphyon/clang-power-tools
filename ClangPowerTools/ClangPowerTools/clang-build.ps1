@@ -293,6 +293,32 @@ Add-Type -TypeDefinition @"
 
 Set-Variable -name kVStudioDefaultPlatformToolset -Value "v141" -option Constant
 
+Set-Variable -name "kMsbuildToPsRules" -option Constant `
+             -value    @(<# backticks are control characters in PS, replace them #>
+                         ('`'                     , ''''                 )`
+                         <# Temporarily replace     $( #>                 `
+                       , ('\$\s*\('               , '!@#'                )`
+                         <# Escape $                   #>                 `
+                       , ('\$'                    , '`$'                 )`
+                         <# Put back $(                #>                 `
+                       , ('!@#'                   , '$('                 )`
+                         <# Various operators          #>                 `
+                       , ("([\s\)\'""])!="        , '$1 -ne '            )`
+                       , ("([\s\)\'""])<="        , '$1 -le '            )`
+                       , ("([\s\)\'""])>="        , '$1 -ge '            )`
+                       , ("([\s\)\'""])=="        , '$1 -eq '            )`
+                       , ("([\s\)\'""])<"         , '$1 -lt '            )`
+                       , ("([\s\)\'""])>"         , '$1 -gt '            )`
+                       , ("([\s\)\'""])or"        , '$1 -or '            )`
+                       , ("([\s\)\'""])and"       , '$1 -and '           )`
+                         <# Use only double quotes #>                     `
+                       , ("\'"                    , '"'                  )`
+                       , ('"'                     , '""'                 )`
+      , ("Exists\((.*?)\)(\s|$)"           , '(Exists($1))$2'            )`
+      , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(HasTrailingSlash($1))$2'  )`
+      , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'     )`
+                       )
+
 #-------------------------------------------------------------------------------------------------
 # Global variables
 
@@ -1045,31 +1071,7 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
 {  
   Write-Debug "Start evaluate MSBuild expression $expression"
 
-  $msbuildToPsRules = (<# backticks are control characters in PS, replace them #>
-                         ('`'                     , ''''                 )`
-                       <# Temporarily replace     $( #>                   `
-                       , ('\$\s*\('               , '!@#'                )`
-                       <# Escape $                   #>                   `
-                       , ('\$'                    , '`$'                 )`
-                       <# Put back $(                #>                   `
-                       , ('!@#'                   , '$('                 )`
-                       <# Various operators          #>                   `
-                       , ("([\s\)\'""])!="        , '$1 -ne '            )`
-                       , ("([\s\)\'""])<="        , '$1 -le '            )`
-                       , ("([\s\)\'""])>="        , '$1 -ge '            )`
-                       , ("([\s\)\'""])=="        , '$1 -eq '            )`
-                       , ("([\s\)\'""])<"         , '$1 -lt '            )`
-                       , ("([\s\)\'""])>"         , '$1 -gt '            )`
-                       , ("([\s\)\'""])or"        , '$1 -or '            )`
-                       , ("([\s\)\'""])and"       , '$1 -and '           )`
-                       <# Use only double quotes #>                       `
-                       , ("\'"                    , '"'                  )`
-                       , ('"'                     , '""'                 )`
-      , ("Exists\((.*?)\)(\s|$)"           , '(Exists($1))$2'            )`
-      , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(HasTrailingSlash($1))$2'  )`
-      , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'     )`
-                       )
-  foreach ($rule in $msbuildToPsRules)
+  foreach ($rule in $kMsbuildToPsRules)
   {
     $expression = $expression -replace $rule[0], $rule[1]
   }
