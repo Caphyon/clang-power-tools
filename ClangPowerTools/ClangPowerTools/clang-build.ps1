@@ -599,7 +599,7 @@ Function InitializeMsBuildProjectProperties()
   Set-Var -name "TargetName"               -value $MSBuildProjectName
 
   # These would enable full project platform references parsing, experimental right now
-  if ($env:CPT_ENABLE_DEEP_PARSE)
+  if ($env:CPT_LOAD_ALL -eq '1')
   {
     Set-Var -name "ConfigurationType"        -value "Application"
     Set-Var -name "VCTargetsPath"            -value "$(Get-VisualStudio-Path)\Common7\IDE\VC\VCTargets\"
@@ -818,7 +818,7 @@ Function Get-VisualStudio-Path()
 Function Get-ProjectIncludeDirectories()
 {
   [string[]] $returnArray = ($IncludePath -split ";") | Where-Object { ![string]::IsNullOrEmpty($_) }
-  if ($env:CPT_ENABLE_DEEP_PARSE)
+  if ($env:CPT_LOAD_ALL -eq '1')
   {
     return $returnArray
   }
