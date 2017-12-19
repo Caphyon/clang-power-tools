@@ -46,7 +46,11 @@ namespace ClangPowerTools.Commands
       var task = System.Threading.Tasks.Task.Run(() =>
       {
         mRunningProcesses.KillAll();
-        mPCHCleaner.Clean(mOutputManager.PCHPaths);
+
+        string solutionPath = DTEObj.Solution.FullName;
+        string solutionFolder = solutionPath.Substring(0, solutionPath.LastIndexOf('\\'));
+        mPCHCleaner.Remove(solutionFolder);
+
         mDirectoriesPath.Clear();
       });
     }

@@ -18,7 +18,6 @@ namespace ClangPowerTools
     private List<string> mMessagesBuffer = new List<string>();
 
     private ErrorParser mErrorParser = new ErrorParser();
-    private PCHParser mPCHParser = new PCHParser();
 
     private bool mMissingLlvm = false;
     private List<TaskError> mErrors = new List<TaskError>();
@@ -80,19 +79,7 @@ namespace ClangPowerTools
       }
     }
 
-    public void ProcessOutput(string aMessage)
-    {
-      FindErrors(aMessage);
-      FindPCHPath(aMessage);
-    }
-
-    public void FindPCHPath(string aMessage)
-    {
-      if (mPCHParser.FindPath(aMessage, out string path))
-        mPCHPaths.Add(path);
-    }
-
-    public void FindErrors(string aMessage)
+    private void ProcessOutput(string aMessage)
     {
       if (mErrorParser.LlvmIsMissing(aMessage))
       {
