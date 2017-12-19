@@ -14,7 +14,7 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public Process Invoke(string aScript)
+    public Process Invoke(string aScript, RunningProcesses aRunningProcesses)
     {
       Process process = new Process();
       try
@@ -31,6 +31,9 @@ namespace ClangPowerTools
 
         process.ErrorDataReceived += DataErrorHandler;
         process.OutputDataReceived += DataHandler;
+
+        aRunningProcesses.Add(process);
+
         process.Start();
         process.BeginErrorReadLine();
         process.BeginOutputReadLine();

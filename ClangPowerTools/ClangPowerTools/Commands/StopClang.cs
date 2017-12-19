@@ -22,7 +22,6 @@ namespace ClangPowerTools.Commands
     /// <param name="package">Owner package, not null.</param>
     public StopClang(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
-      
       if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
