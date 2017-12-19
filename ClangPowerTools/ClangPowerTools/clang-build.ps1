@@ -369,7 +369,7 @@ Function Clear-Vars()
 
   foreach ($var in $global:ProjectSpecificVariables)
   {
-    Remove-Variable -name $var -scope Global
+    Remove-Variable -name $var -scope Global -ErrorAction SilentlyContinue
   }
 
   $global:ProjectSpecificVariables.Clear()
