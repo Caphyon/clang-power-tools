@@ -5,24 +5,26 @@ namespace ClangPowerTools
 {
   public class PCHCleaner
   {
-    #region Public Methods
+    #region Members
 
-    public void Clean(string aPath) => DeleteFile(aPath);
-
-    public void Clean(IEnumerable<string> aPaths)
-    {
-      foreach (var path in aPaths)
-        DeleteFile(path);
-    }
+    private const string kPchExtension = ".clang.pch";
 
     #endregion
 
-    #region Private Methods
+    #region Public Methods
 
-    private void DeleteFile(string aPath)
+    /// <summary>
+    /// Delete all PCH files with ".clang.pch" extension found in folder "aPath" from the disk
+    /// </summary>
+    /// <param name="aPath">Folder path from where the PCH fils will be deleted</param>
+    public void Remove(string aFolderPath)
     {
-      if (File.Exists(aPath))
-        File.Delete(aPath);
+      if (!Directory.Exists(aFolderPath))
+        return;
+
+      var pchPaths = Directory.GetFiles(aFolderPath, $"*{kPchExtension}");
+      foreach (var path in pchPaths)
+        File.Delete(path);
     }
 
     #endregion

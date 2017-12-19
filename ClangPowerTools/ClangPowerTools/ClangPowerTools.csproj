@@ -96,7 +96,6 @@
     </Compile>
     <Compile Include="ClangOptions.cs" />
     <Compile Include="PCHCleaner.cs" />
-    <Compile Include="PCHParser.cs" />
     <Compile Include="ProjectConfiguration.cs" />
     <Compile Include="Script\RunningProcesses.cs" />
     <Compile Include="ConfigurationPage.cs">
