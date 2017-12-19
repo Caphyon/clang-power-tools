@@ -1076,6 +1076,12 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
     $expression = $expression -replace $rule[0], $rule[1]
   }
   
+  if ( !$isCondition -and ($expression.IndexOf('$') -lt 0))
+  {
+    # we can stop here, further processing is not required
+    return $expression
+  }
+  
   [int] $expressionStartIndex = -1
   [int] $openParantheses = 0
   for ([int] $i = 0; $i -lt $expression.Length; $i += 1)
