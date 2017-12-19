@@ -791,8 +791,7 @@ Function Get-VisualStudio-Path()
 
 Function Get-ProjectIncludeDirectories()
 {
-  [string[]] $returnArray = @()
-  $returnArray += ( ($IncludePath -split ";") | Where-Object { ![string]::IsNullOrEmpty($_) } )
+  [string[]] $returnArray = ($IncludePath -split ";") | Where-Object { ![string]::IsNullOrEmpty($_) }
   if ($env:CPT_ENABLE_DEEP_PARSE)
   {
     return $returnArray
@@ -1029,7 +1028,7 @@ function GetRegValue([Parameter(Mandatory=$true)][string] $regPath)
 
   if (Test-Path $regPath)
   {
-    return (Get-ChildItem $regPath).GetValue($valueName)
+    return (Get-Item $regPath).GetValue($valueName)
   }
   else
   {
@@ -1316,6 +1315,11 @@ function HandleChooseNode([System.Xml.XmlNode] $aChooseNode)
 
 function SanitizeProjectNode([System.Xml.XmlNode] $node)
 {
+    if ($node.Name -ieq "#comment")
+    {
+      return
+    }
+
     [System.Collections.ArrayList] $nodesToRemove = @()
    
     if ($node.Name -ieq "#text" -and $node.InnerText.Length -gt 0)
