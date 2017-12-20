@@ -53,7 +53,8 @@ namespace ClangPowerTools
       var loadedConfig = LoadFromFile(path);
 
       this.Fix = loadedConfig.Fix;
-      this.HeaderFilter = loadedConfig.HeaderFilter;
+      this.HeaderFilter = null == loadedConfig.HeaderFilter ? 
+        DefaultOptions.kHeaderFilter : loadedConfig.HeaderFilter;
 
       if (null == loadedConfig.TidyMode || string.Empty == loadedConfig.TidyMode)
         this.TidyMode = (0 == loadedConfig.TidyChecks.Count ? TidyModeConstants.kPredefinedChecks : TidyModeConstants.kCustomChecks);
