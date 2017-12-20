@@ -30,7 +30,7 @@
     public const string kVsEdition = "-vs-sku";
     public const string kActiveConfiguration = "-active-config";
 
-    public const string kHeaderFilter = "-header-filter";
+    public const string kHeaderFilter = "header-filter";
     public const string kTidyFile = ".clang-tidy";
 
     #endregion
