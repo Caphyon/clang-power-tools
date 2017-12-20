@@ -293,6 +293,32 @@ Add-Type -TypeDefinition @"
 
 Set-Variable -name kVStudioDefaultPlatformToolset -Value "v141" -option Constant
 
+Set-Variable -name "kMsbuildToPsRules" -option Constant `
+             -value    @(<# backticks are control characters in PS, replace them #>
+                         ('`'                     , ''''                 )`
+                         <# Temporarily replace     $( #>                 `
+                       , ('\$\s*\('               , '!@#'                )`
+                         <# Escape $                   #>                 `
+                       , ('\$'                    , '`$'                 )`
+                         <# Put back $(                #>                 `
+                       , ('!@#'                   , '$('                 )`
+                         <# Various operators          #>                 `
+                       , ("([\s\)\'""])!="        , '$1 -ne '            )`
+                       , ("([\s\)\'""])<="        , '$1 -le '            )`
+                       , ("([\s\)\'""])>="        , '$1 -ge '            )`
+                       , ("([\s\)\'""])=="        , '$1 -eq '            )`
+                       , ("([\s\)\'""])<"         , '$1 -lt '            )`
+                       , ("([\s\)\'""])>"         , '$1 -gt '            )`
+                       , ("([\s\)\'""])or"        , '$1 -or '            )`
+                       , ("([\s\)\'""])and"       , '$1 -and '           )`
+                         <# Use only double quotes #>                     `
+                       , ("\'"                    , '"'                  )`
+                       , ('"'                     , '""'                 )`
+      , ("Exists\((.*?)\)(\s|$)"           , '(Exists($1))$2'            )`
+      , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(HasTrailingSlash($1))$2'  )`
+      , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'     )`
+                       )
+
 #-------------------------------------------------------------------------------------------------
 # Global variables
 
@@ -369,7 +395,7 @@ Function Clear-Vars()
 
   foreach ($var in $global:ProjectSpecificVariables)
   {
-    Remove-Variable -name $var -scope Global
+    Remove-Variable -name $var -scope Global -ErrorAction SilentlyContinue
   }
 
   $global:ProjectSpecificVariables.Clear()
@@ -564,6 +590,7 @@ Function InitializeMsBuildProjectProperties()
   Set-Var -name "MSBuildProjectFullPath"   -value $global:vcxprojPath
   Set-Var -name "ProjectDir"               -value (Get-FileDirectory -filePath $global:vcxprojPath)
   Set-Var -name "MSBuildProjectExtension"  -value ([IO.Path]::GetExtension($global:vcxprojPath))
+  Set-Var -name "MSBuildProjectFile"       -value (Get-FileName -path $global:vcxprojPath)
   Set-Var -name "MSBuildProjectName"       -value (Get-FileName -path $global:vcxprojPath -noext)
   Set-Var -name "MSBuildProjectDirectory"  -value (Get-FileDirectory -filePath $global:vcxprojPath)
   Set-Var -name "MSBuildProgramFiles32"    -value "${Env:ProgramFiles(x86)}"
@@ -571,12 +598,25 @@ Function InitializeMsBuildProjectProperties()
   Set-Var -name "ProjectName"              -value $MSBuildProjectName
   Set-Var -name "TargetName"               -value $MSBuildProjectName
 
+  # These would enable full project platform references parsing, experimental right now
+  if ($env:CPT_LOAD_ALL -eq '1')
+  {
+    Set-Var -name "ConfigurationType"        -value "Application"
+    Set-Var -name "VCTargetsPath"            -value "$(Get-VisualStudio-Path)\Common7\IDE\VC\VCTargets\"
+    Set-Var -name "VsInstallRoot"            -value (Get-VisualStudio-Path)
+    Set-Var -name "MSBuildExtensionsPath"    -value "$(Get-VisualStudio-Path)\MSBuild"
+    Set-Var -name "LocalAppData"             -value $env:LOCALAPPDATA
+    Set-Var -name "UserRootDir"              -value "$LocalAppData\Microsoft\MSBuild\v4.0"
+    Set-Var -name "UniversalCRT_IncludePath" -value "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\10.0.10240.0\ucrt"
+  }
+
   [string] $vsVer = "15.0"
   if ($aVisualStudioVersion -eq "2015")
   {
     $vsVer = "14.0"
   }
-  Set-Var -name "VisualStudioVersion"    -value "$vsVer"
+  Set-Var -name "VisualStudioVersion"    -value $vsVer
+  Set-Var -name "MSBuildToolsVersion"    -value $vsVer
 
   [string] $projectSlnPath = Get-ProjectSolution
   [string] $projectSlnDir = Get-FileDirectory -filePath $projectSlnPath
@@ -777,7 +817,11 @@ Function Get-VisualStudio-Path()
 
 Function Get-ProjectIncludeDirectories()
 {
-  [string[]] $returnArray = @()
+  [string[]] $returnArray = ($IncludePath -split ";") | Where-Object { ![string]::IsNullOrEmpty($_) }
+  if ($env:CPT_LOAD_ALL -eq '1')
+  {
+    return $returnArray
+  }
 
   [string] $vsPath = Get-VisualStudio-Path
   Write-Verbose "Visual Studio location: $vsPath"
@@ -986,41 +1030,56 @@ function HasTrailingSlash([Parameter(Mandatory=$true)][string] $str)
   return $str.EndsWith('\') -or $str.EndsWith('/')
 }
 
-function Exists([Parameter(Mandatory=$true)][string] $path)
+function Exists([Parameter(Mandatory=$false)][string] $path)
 {
+  if ([string]::IsNullOrEmpty($path))
+  {
+    return $false
+  }
+  
   return Test-Path $path
+}
+
+function GetRegValue([Parameter(Mandatory=$true)][string] $regPath)
+{
+  Write-Debug "REG_READ $regPath"
+
+  [int] $separatorIndex = $regPath.IndexOf('@')
+  [string] $valueName = ""
+  if ($separatorIndex -gt 0)
+  {
+    [string] $valueName = $regPath.Substring($separatorIndex + 1)
+    $regPath = $regPath.Substring(0, $separatorIndex)
+  }
+  if ([string]::IsNullOrEmpty($valueName))
+  {
+    throw "Cannot retrieve an empty registry value"
+  }
+  $regPath = $regPath -replace "HKEY_LOCAL_MACHINE\\", "HKLM:\"
+
+  if (Test-Path $regPath)
+  {
+    return (Get-Item $regPath).GetValue($valueName)
+  }
+  else
+  {
+    return ""
+  }
 }
 
 function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
 {  
   Write-Debug "Start evaluate MSBuild expression $expression"
 
-  $msbuildToPsRules = (<# backticks are control characters in PS, replace them #>
-                         ('`'                     , ''''                 )`
-                       <# Temporarily replace     $( #>                   `
-                       , ('\$\s*\('               , '!@#'                )`
-                       <# Escape $                   #>                   `
-                       , ('\$'                    , '`$'                 )`
-                       <# Put back $(                #>                   `
-                       , ('!@#'                   , '$('                 )`
-                       <# Various operators          #>                   `
-                       , ("([\s\)\'""])!="        , '$1 -ne '            )`
-                       , ("([\s\)\'""])<="        , '$1 -le '            )`
-                       , ("([\s\)\'""])>="        , '$1 -ge '            )`
-                       , ("([\s\)\'""])=="        , '$1 -eq '            )`
-                       , ("([\s\)\'""])<"         , '$1 -lt '            )`
-                       , ("([\s\)\'""])>"         , '$1 -gt '            )`
-                       , ("([\s\)\'""])or"        , '$1 -or '            )`
-                       , ("([\s\)\'""])and"       , '$1 -and '           )`
-                       <# Use only double quotes #>                       `
-                       , ("\'"                    , '"'                  )`
-                       , ('"'                     , '""'                 )`
-      , ("Exists\((.*?)\)(\s|$)"           , "(Exists(`$1))`$2"          )`
-      , ("HasTrailingSlash\((.*?)\)(\s|$)" , "(HasTrailingSlash(`$1))`$2")`
-                       )
-  foreach ($rule in $msbuildToPsRules)
+  foreach ($rule in $kMsbuildToPsRules)
   {
     $expression = $expression -replace $rule[0], $rule[1]
+  }
+  
+  if ( !$isCondition -and ($expression.IndexOf('$') -lt 0))
+  {
+    # we can stop here, further processing is not required
+    return $expression
   }
   
   [int] $expressionStartIndex = -1
@@ -1110,7 +1169,15 @@ function Evaluate-MSBuildCondition([Parameter(Mandatory=$true)][string] $conditi
     return $false
   }
 
-  [bool] $res = (Invoke-Expression $expression) -eq $true
+  [bool] $res = $false 
+  try
+  {
+    $res = (Invoke-Expression $expression) -eq $true
+  }
+  catch
+  {
+    Write-Debug $_.Exception.Message
+  }
   Write-Debug "Evaluated condition to $res" 
 
   return $res
@@ -1197,9 +1264,6 @@ function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpa
       # replace inherited token 
       $nodes[0].InnerText = $nodes[0].InnerText -replace $whatToReplace, $replaceWith
 
-      # we need to evaluate the expression in order to expand properties
-      $nodes[0].InnerText = Evaluate-MSBuildExpression $nodes[0].InnerText
-
       $replaceRules = ( <# handle multiple consecutive separators #>      `
                         , (";+"           , ";"     )                     `
                         <# handle separator at end                #>      `
@@ -1227,21 +1291,17 @@ function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpa
    Items for other config-platform pairs will be removed from the DOM. 
    This is needed so that our XPath selectors don't get confused when looking for data.
 #>
-function Detect-ProjectDefaultConfigPlatform()
+function Detect-ProjectDefaultConfigPlatform([string] $projectValue)
 {
   [string]$configPlatformName = ""
   
   if (![string]::IsNullOrEmpty($aVcxprojConfigPlatform))
   {
-     $configPlatformName = $aVcxprojConfigPlatform
+    $configPlatformName = $aVcxprojConfigPlatform
   }
   else
   {
-    [System.Xml.XmlElement[]] $configNodes = Select-ProjectNodes -xpath $kVcxprojXpathDefaultConfigPlatform
-    if ($configNodes)
-    {
-      $configPlatformName = $configNodes.GetAttribute("Include")
-    }
+    $configPlatformName = $projectValue
   }
 
   if ([string]::IsNullOrEmpty($configPlatformName))
@@ -1254,59 +1314,115 @@ function Detect-ProjectDefaultConfigPlatform()
   Set-Var -Name "Platform"      -Value $configAndPlatform[1]
 }
 
-function LoadProjectFileProperties([xml] $projectFile)
+function HandleChooseNode([System.Xml.XmlNode] $aChooseNode)
 {
-  [System.Xml.XmlElement[]] $propNodes = Help:Get-ProjectFileNodes -projectFile $projectFile `
-                                                                   -xpath $kVcxprojXpathPropGroupElements
-  
-  foreach ($node in $propNodes)
+  SanitizeProjectNode $aChooseNode
+  if ($aChooseNode.ChildNodes.Count -eq 0)
   {
+    return
+  }
+
+  [System.Xml.XmlElement] $selectedChild = $aChooseNode.ChildNodes | `
+                                            Where-Object { $_.GetType().Name -eq "XmlElement" } | `
+                                            Select -first 1
+
+  foreach ($selectedGrandchild in $selectedChild.ChildNodes)
+  {
+    $aChooseNode.ParentNode.AppendChild($selectedGrandchild.Clone()) | Out-Null
+  }
+
+  $aChooseNode.ParentNode.RemoveChild($aChooseNode) | Out-Null
+}
+
+function SanitizeProjectNode([System.Xml.XmlNode] $node)
+{
+  if ($node.Name -ieq "#comment")
+  {
+    return
+  }
+
+  [System.Collections.ArrayList] $nodesToRemove = @()
+  
+  if ($node.Name -ieq "#text" -and $node.InnerText.Length -gt 0)
+  {
+    # evaluate node content
+    $node.InnerText = Evaluate-MSBuildExpression $node.InnerText
+  }
+
+  if ($node.Name -ieq "Import")
+  {
+    [string] $relPath = Evaluate-MSBuildExpression $node.GetAttribute("Project")
+    [string] $path    = Canonize-Path -base (Get-Location) -child $relPath -ignoreErrors
+    if (![string]::IsNullOrEmpty($path) -and (Test-Path $path))
+    {
+        Write-Verbose "Property sheet: $path"
+        SanitizeProjectFile($path)
+    }
+    else
+    {
+        Write-Verbose "Could not find property sheet $relPath"
+    }
+  }
+
+  if ($node.Name -ieq "Choose")
+  {
+    HandleChooseNode $chooseChild
+  }
+
+  if ($node.Name -ieq "Otherwise")
+  {
+    [System.Xml.XmlElement[]] $siblings = $node.ParentNode.ChildNodes | `
+                                          Where-Object { $_.GetType().Name -ieq "XmlElement" -and $_ -ne $node }
+    if ($siblings.Count -gt 0)
+    {
+        # means there's a <When> element that matched
+        # <Otherwise> should not be evaluated, we could set unwated properties
+        return
+    }
+  }
+
+  if ($node.Name -ieq "ItemGroup" -and $node.GetAttribute("Label") -ieq "ProjectConfigurations")
+  {
+    Detect-ProjectDefaultConfigPlatform $node.ChildNodes[0].GetAttribute("Include")
+  }
+
+  if ($node.ParentNode.Name -ieq "PropertyGroup")
+  {
+    # set new property value
     [string] $propertyName  = $node.Name
+    [string] $propertyValue = Evaluate-MSBuildExpression $node.InnerText
 
-    [bool] $shouldUseNode = $true
-    $conditionCheckNode = $node
+    Set-Var -Name $propertyName -Value $propertyValue
 
-    while ($conditionCheckNode.Name -ine "#document")
+    return
+  }
+
+  foreach ($child in $node.ChildNodes)
+  {
+    [bool] $validChild = $true
+    if ($child.GetType().Name -ieq "XmlElement")
     {
-      # properties are loaded before xml sanitization so we need to manually evalute present conditions
-      if ($conditionCheckNode.HasAttribute("Condition"))
-      {
-        if (!@(Evaluate-MSBuildCondition -condition ($conditionCheckNode.GetAttribute("Condition"))))
+        if ($child.HasAttribute("Condition"))
         {
-          $shouldUseNode = $false
-          break
+          # process node condition
+          [string] $nodeCondition = $child.GetAttribute("Condition")
+          $validChild = ((Evaluate-MSBuildCondition($nodeCondition)) -eq $true)
         }
-      }
-      $conditionCheckNode = $conditionCheckNode.ParentNode
     }
-
-    if ($shouldUseNode)
+    if (!$validChild)
     {
-      [string] $propertyValue = Evaluate-MSBuildExpression -expression $node.InnerText
-
-      Set-Var -Name $propertyName -Value $propertyValue
-
-      # we may be inside an <When> element, needs special handling
-      $parentNode = $node.ParentNode
-      while ($parentNode.Name -ine "When" -and $parentNode.Name -ine "#document")
-      {
-        $parentNode = $parentNode.ParentNode
-      }
-
-      if ($parentNode.Name -ieq "When")
-      {
-        # we need to invalide all siblings of current When node.
-        # there can be a Otherwise node which does not have a condition
-        # and which can override our properties
-        foreach ($siblingNode in $parentNode.ParentNode.ChildNodes)
-        {
-          if ($siblingNode -ne $parentNode)
-          {
-            $siblingNode.SetAttribute("Condition", "0")
-          }
-        }   
-      }
+      $nodesToRemove.Add($child) | out-null
+      continue
     }
+    else
+    {
+      SanitizeProjectNode($child)
+    }
+  }
+
+  foreach ($nodeToRemove in $nodesToRemove)
+  {
+    $nodeToRemove.ParentNode.RemoveChild($nodeToRemove) | out-null
   }
 }
 
@@ -1316,99 +1432,21 @@ function LoadProjectFileProperties([xml] $projectFile)
    one we selected. 
    This is needed so that our XPath selectors don't get confused when looking for data.
 #>
-function SanitizeProjectFile([xml]$projectFile)
+function SanitizeProjectFile([string] $projectFilePath)
 {
-  [System.Xml.XmlElement[]] $configNodes = Help:Get-ProjectFileNodes -projectFile $projectFile `
-                                                                     -xpath $kVcxprojXpathConditionedElements
+  Write-Verbose "`nSanitizing $projectFilePath"
 
-  foreach ($node in $configNodes)
-  {
-    [string] $nodeConfigPlatform = $node.GetAttribute("Condition")
+  [xml] $fileXml = Get-Content $projectFilePath
+  $global:projectFiles += @($fileXml)
+  $global:xpathNS     = New-Object System.Xml.XmlNamespaceManager($fileXml.NameTable) 
+  $global:xpathNS.AddNamespace("ns", $fileXml.DocumentElement.NamespaceURI)
 
-    if ((Evaluate-MSBuildCondition($nodeConfigPlatform)) -eq $true)
-    {
-      # Since we leave only one config platform in the project, we don't need 
-      # the Condition field for its config xml elements anymore
-      $node.RemoveAttribute("Condition")
-    }
-    else
-    {
-      $node.ParentNode.RemoveChild($node) | out-null
-    }
-  }
-
-  [System.Xml.XmlElement[]] $chooseNodes = Help:Get-ProjectFileNodes -projectFile $projectFile `
-                                                                     -xpath $kVcxprojXpathChooseElements
-  # choose nodes should have been sanitized by the 'Condition' evaluations above
-  # so that only a <When> child remains (or only the <Otherwise>, if it exists).
-  foreach ($chooseNode in $chooseNodes)
-  {
-    if ($chooseNode.ChildNodes.Count -eq 0)
-    {
-      continue
-    }
-
-    if ($chooseNode.ChildNodes.Count -gt 2)
-    {
-      # at most we can have a <When> and <Otherwise> child
-      throw "Choose node should have only one valid child"
-    }
-
-    # we have to copy data from <When> or <Otherwise>'s child nodes into <Choose>'s parent
-    foreach ($nodeToMove in $chooseNode.ChildNodes[0].ChildNodes)
-    {
-      $chooseNode.ParentNode.AppendChild($nodeToMove.Clone())
-    }
-
-    $chooseNode.ParentNode.RemoveChild($chooseNode)
-  }
-}
-
-<#
-.DESCRIPTION
-  Retrieves the property sheets referred by the project.
-  Only those we can locate on the disk are returned. 
-  MSBuild variables are not expanded, so those sheets are not returned.
-#>
-function Get-ProjectPropertySheets([string] $filePath, [xml] $fileXml)
-{
-  [string] $vcxprojDir = Get-FileDirectory($filePath)
+  Push-Location (Get-FileDirectory -filePath $projectFilePath)
   
-  InitializeMsBuildCurrentFileProperties -filePath $filePath
-  LoadProjectFileProperties($fileXml)
+  InitializeMsBuildCurrentFileProperties -filePath $projectFilePath
+  SanitizeProjectNode($fileXml.Project) 
 
-  [System.Xml.XmlElement[]] $importGroup = $fileXml.SelectNodes($kVcxprojXpathPropSheets, $global:xpathNS)
-  if (!$importGroup) 
-  {
-      return @()
-  }
-
-  [string[]] $sheetEntries = $importGroup  | ForEach-Object { Evaluate-MSBuildExpression($_.GetAttribute("Project")) }
-  [string[]] $sheetAbsolutePaths = $sheetEntries | ForEach-Object `
-                                   { 
-                                     Canonize-Path -base $vcxprojDir `
-                                                   -child $_         `
-                                                   -ignoreErrors     `
-                                   } | Where-Object { ![string]::IsNullOrEmpty($_) }
-  
-  # a property sheet may have references to other property sheets
-  [string[]] $returnPaths = @()
-  if ($sheetAbsolutePaths)
-  {
-    foreach ($path in $sheetAbsolutePaths)
-    {
-      [string[]] $childrenPaths = Get-ProjectPropertySheets -filePath $path `
-                                                            -fileXml ([xml](Get-Content $path))
-      if ($childrenPaths.Length -gt 0)
-      {
-        $returnPaths += $childrenPaths
-      }
-      
-      $returnPaths += $path
-    }
-  }
-
-  return $returnPaths
+  Pop-Location
 }
 
 <#
@@ -1428,10 +1466,7 @@ function Get-AutoPropertySheet()
                                    -ignoreErrors
     if (![string]::IsNullOrEmpty($propSheetPath))
     {
-      [xml] $fileXml = Get-Content $propSheetPath
-      [string[]] $inheritedSheets = Get-ProjectPropertySheets -filePath $propSheetPath `
-                                                              -fileXml $fileXml
-      return ($inheritedSheets + $propSheetPath)
+      return $propSheetPath
     }
 
     $newPath = Canonize-Path -base $startPath -child ".."
@@ -1450,64 +1485,30 @@ when processing a project. Accessing project nodes can be done using Select-Proj
 #>
 function LoadProject([string] $vcxprojPath)
 {
-  $global:projectFiles = @([xml] (Get-Content $vcxprojPath))
-
   $global:vcxprojPath = $vcxprojPath
   
   InitializeMsBuildProjectProperties
-  InitializeMsBuildCurrentFileProperties -filePath $global:vcxprojPath
-  
-  $global:xpathNS     = New-Object System.Xml.XmlNamespaceManager($global:projectFiles[0].NameTable) 
-  $global:xpathNS.AddNamespace("ns", $global:projectFiles[0].DocumentElement.NamespaceURI)
-  
-  Detect-ProjectDefaultConfigPlatform
-  
-  # preload properties so that sanitization of project xml conditions can access them
-  LoadProjectFileProperties($global:projectFiles[0])
-
-  Write-Verbose "`nSanitizing $global:vcxprojPath"
-  SanitizeProjectFile -projectFile $global:projectFiles[0]
    
   # see if we can find a Directory.Build.props automatic prop sheet
   [string[]] $propSheetAbsolutePaths = @()
+  [xml[]]    $autoPropSheetXmls      = $null
   $autoPropSheet = Get-AutoPropertySheet
   if (![string]::IsNullOrEmpty($autoPropSheet))
   {
-    $propSheetAbsolutePaths += $autoPropSheet
+    SanitizeProjectFile -projectFilePath $autoPropSheet
+    $autoPropSheetXmls = $global:projectFiles
   }
 
-  # see if project has manually specified property sheets
-  $propSheetAbsolutePaths += Get-ProjectPropertySheets -filePath $global:vcxprojPath `
-                                                       -fileXml  $global:projectFiles[0]
+  # the auto-prop sheet has to be last in the node retrieval sources
+  # but properties defined in it have to be accessible in all project files :(
+  $global:projectFiles = @()
 
-  if (!$propSheetAbsolutePaths)
+  SanitizeProjectFile -projectFilePath $global:vcxprojPath
+
+  if ($autoPropSheetXml)
   {
-    return
+    $global:projectFiles += $autoPropSheetXmls
   }
-
-  Write-Verbose "Property sheets: "
-  foreach ($propSheet in $propSheetAbsolutePaths)
-  {
-    Write-Verbose "  $propSheet"
-  }
-
-  [array]::Reverse($propSheetAbsolutePaths)
-  foreach ($propSheetPath in $propSheetAbsolutePaths)
-  {
-    InitializeMsBuildCurrentFileProperties -filePath $propSheetPath
-    [xml] $propSheetXml = Get-Content $propSheetPath
-
-    Write-Verbose "`nSanitizing $propSheetPath"
-    SanitizeProjectFile -projectFile $propSheetXml
-
-    $global:projectFiles += $propSheetXml
-  }
-
-  # .vcxproj project properties may have been overriden by property sheet
-  # loading process, put them back in place.
-  LoadProjectFileProperties($global:projectFiles[0])
-  
-  InitializeMsBuildCurrentFileProperties -filePath $global:vcxprojPath  
 }
 
 <#
@@ -1539,7 +1540,7 @@ Function Get-ProjectPreprocessorDefines()
 
 Function Get-ProjectAdditionalIncludes()
 {
-  [string[]] $tokens = $IncludePath -split ";"
+  [string[]] $tokens = @()
 
   $data = Select-ProjectNodes $kVcxprojXpathAdditionalIncludes
   $tokens += ($data).InnerText -split ";"

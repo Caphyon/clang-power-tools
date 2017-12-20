@@ -10,13 +10,42 @@ $varB          = 1
 
 # -------------------------------------------------------------------------------------------------------------------
 
+function GetRegValue([Parameter(Mandatory=$true)][string] $regPath)
+{
+  [int] $separatorIndex = $regPath.IndexOf('@')
+  [string] $valueName = ""
+  if ($separatorIndex -gt 0)
+  {
+    [string] $valueName = $regPath.Substring($separatorIndex + 1)
+    $regPath = $regPath.Substring(0, $separatorIndex)
+  }
+  if ([string]::IsNullOrEmpty($valueName))
+  {
+    throw "Cannot retrieve an empty registry value"
+  }
+  $regPath = $regPath -replace "HKEY_LOCAL_MACHINE\\", "HKLM:\"
+
+  if (Test-Path $regPath)
+  {
+    return (Get-ChildItem $regPath).GetValue($valueName)
+  }
+  else
+  {
+    return ""
+  }
+}
+
 function HasTrailingSlash([Parameter(Mandatory=$true)][string] $str)
 {
   return $str.EndsWith('\') -or $str.EndsWith('/')
 }
 
-function Exists([Parameter(Mandatory=$true)][string] $path)
+function Exists([Parameter(Mandatory=$false)][string] $path)
 {
+  if ([string]::IsNullOrEmpty($path))
+  {
+    return $false
+  }
   return Test-Path $path
 }
 
@@ -46,6 +75,7 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
                        , ('"'                     , '""'                 )`
       , ("Exists\((.*?)\)(\s|$)"           , "(Exists(`$1))`$2"          )`
       , ("HasTrailingSlash\((.*?)\)(\s|$)" , "(HasTrailingSlash(`$1))`$2")`
+      , ("(\`$\()(Registry:)(.*?)(\))"     ,  '$$(GetRegValue("$3"))'  )`
                        )
   foreach ($rule in $msbuildToPsRules)
   {
@@ -153,6 +183,7 @@ function Test-Condition([string] $condition, [bool]$expectation, [switch] $expec
       }
       else
       {
+        Write-Output $_.Exception.Message
         throw "Test failed"
       }
     }
@@ -172,6 +203,22 @@ function Test-Expression($expresion)
 }
 # ----------------------------------------------------------------------------
 
+Test-Condition "'`$(ImportDirectoryBuildProps)' == 'true' and exists('`$(DirectoryBuildPropsPath)')" -expectation $false
+
+Test-Expression '$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\VisualStudio\15.0\AD7Metrics\ExpressionEvaluator\{3A12D0B7-C26C-11D0-B442-00A0244A1DD2}\{994B45C4-E6E9-11D2-903F-00C04FA302A1}@LoadInShimManagedEE)'
+Test-Expression '$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v10.0@InstallationFolder)'
+Test-Expression '$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Microsoft\Microsoft SDKs\Windows\v10.0@InstallationFolder)'
+
+Test-Expression '$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1A@InstallationFolder)'
+Test-Expression '$(GetRegValue("HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v10.0@InstallationFolder"))'
+
+
+Test-Condition "'`$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDKs\Windows\v7.1A@InstallationFolder)' != ''" `
+               -expectation $true
+
+Test-Condition "'`$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\DevDiv\vs\Servicing\11.0\professional@Version)' == ''" `
+               -expectation $true
+               
 
 Test-Condition -condition   "'`$(Configuration)|`$(Platform)'=='Debug|Win32' or '`$(Configuration)' == 'Release2'" `
                -expectation $true
