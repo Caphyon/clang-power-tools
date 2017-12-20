@@ -91,14 +91,15 @@ namespace ClangPowerTools
     {
       string parameters = string.Empty;
 
-      if (TidyModeConstants.kTidyFile == aTidyOptions.TidyMode)
+      if (ComboBoxConstants.kTidyFile == aTidyOptions.UseChecksFrom)
       {
         return string.Format("{0} {1}", aTidyOptions.Fix ? 
           ScriptConstants.kTidyFix : ScriptConstants.kTidy, ScriptConstants.kTidyFile);
       }
-      else if (TidyModeConstants.kCustomChecks == aTidyOptions.TidyMode)
+      else if (ComboBoxConstants.kCustomChecks == aTidyOptions.UseChecksFrom)
       {
-        parameters = $",{String.Join(",", aTidyCustomChecks.TidyChecks)}";
+        if(null != aTidyCustomChecks.TidyChecks && 0 != aTidyCustomChecks.TidyChecks.Length)
+          parameters = $",{String.Join(",", aTidyCustomChecks.TidyChecks)}";
       }
       else
       {
@@ -126,7 +127,10 @@ namespace ClangPowerTools
       }
 
       if (!string.IsNullOrWhiteSpace(aTidyOptions.HeaderFilter))
-        parameters = $"{parameters} {ScriptConstants.kHeaderFilter} {aTidyOptions.HeaderFilter}";
+      {
+        parameters = string.Format("{0} {1} ''{2}''", parameters, ScriptConstants.kHeaderFilter,
+          ComboBoxConstants.kCorrespondingHeader == aTidyOptions.HeaderFilter ? "_" : aTidyOptions.HeaderFilter);
+      }
 
       return parameters;
     }
