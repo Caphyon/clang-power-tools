@@ -23,13 +23,14 @@ namespace ClangPowerTools
     [Category(" Tidy")]
     [DisplayName("Header filter")]
     [Description("")]
+    [TypeConverter(typeof(HeaderFiltersConvertor))]
     public string HeaderFilter { get; set; }
 
     [Category(" Tidy")]
     [DisplayName("Use checks from")]
     [Description("Tidy checks: switch between explicitly specified checks (predefined or custom) and using checks from .clang-tidy configuration files.\nOther options are always loaded from .clang-tidy files.")]
-    [TypeConverter(typeof(TidyModeConvertor))]
-    public string TidyMode { get; set; }
+    [TypeConverter(typeof(UseChecksFromConvertor))]
+    public string UseChecksFrom { get; set; }
 
     #endregion
 
@@ -42,7 +43,7 @@ namespace ClangPowerTools
       var updatedConfig = LoadFromFile(path);
       updatedConfig.Fix = this.Fix;
       updatedConfig.HeaderFilter = this.HeaderFilter;
-      updatedConfig.TidyMode = this.TidyMode;
+      updatedConfig.TidyMode = this.UseChecksFrom;
 
       SaveToFile(path, updatedConfig);
     }
@@ -57,9 +58,9 @@ namespace ClangPowerTools
         DefaultOptions.kHeaderFilter : loadedConfig.HeaderFilter;
 
       if (null == loadedConfig.TidyMode || string.Empty == loadedConfig.TidyMode)
-        this.TidyMode = (0 == loadedConfig.TidyChecks.Count ? TidyModeConstants.kPredefinedChecks : TidyModeConstants.kCustomChecks);
+        this.UseChecksFrom = (0 == loadedConfig.TidyChecks.Count ? ComboBoxConstants.kPredefinedChecks : ComboBoxConstants.kCustomChecks);
       else
-        this.TidyMode = loadedConfig.TidyMode;
+        this.UseChecksFrom = loadedConfig.TidyMode;
     }
 
     #endregion
