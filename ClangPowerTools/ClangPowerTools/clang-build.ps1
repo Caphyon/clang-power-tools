@@ -1637,7 +1637,15 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
   # The header-filter flag enables clang-tidy to run on headers too.
   if (![string]::IsNullOrEmpty($aTidyHeaderFilter))
   {
-    $tidyArgs += "$kClangTidyFlagHeaderFilter$aTidyHeaderFilter"
+    if ($aTidyHeaderFilter -eq '_')
+    {
+      [string] $fileNameMatch = "'$(Get-FileName -path $fileToTidy -noext).*'"
+      $tidyArgs += "$kClangTidyFlagHeaderFilter$fileNameMatch"
+    }
+    else
+    {
+      $tidyArgs += "$kClangTidyFlagHeaderFilter'$aTidyHeaderFilter'"
+    }
   }
 
   if ($fix)
