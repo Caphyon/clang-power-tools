@@ -211,5 +211,6 @@ if ($aDisableNameRegexMatching)
 
 $scriptParams += ("-aVisualStudioVersion", $kVisualStudioVersion)
 $scriptParams += ("-aVisualStudioSku",     $kVisualStudioSku)
+$scriptParams += ("-aTidyHeaderFilter",    ".*")
 
 Invoke-Expression "&'$clangScript' $scriptParams"
