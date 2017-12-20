@@ -119,6 +119,7 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aSolutio
      , [alias("literal")]      [Parameter(Mandatory=$false)][switch]   $aDisableNameRegexMatching
      , [alias("tidy")]         [Parameter(Mandatory=$false)][string]   $aTidyFlags
      , [alias("tidy-fix")]     [Parameter(Mandatory=$false)][string]   $aTidyFixFlags
+     , [alais("header-filter")][Parameter(Mandatory=$false)][string]   $aTidyHeaderFilter
      , [alias("format-style")] [Parameter(Mandatory=$false)][string]   $aAfterTidyFixFormatStyle
      , [alias("vs-ver")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioVersion
      , [alias("vs-sku")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioSku
@@ -232,7 +233,7 @@ Set-Variable -name kClangTidyFlags            -value @("-quiet"
 Set-Variable -name kClangTidyFixFlags         -value @("-quiet"
                                                       ,"-fix-errors"
                                                       , "--")           -option Constant
-Set-Variable -name kClangTidyFlagHeaderFilter -value "-header-filter=.*"-option Constant
+Set-Variable -name kClangTidyFlagHeaderFilter -value "-header-filter="  -option Constant
 Set-Variable -name kClangTidyFlagChecks       -value "-checks="         -option Constant
 Set-Variable -name kClangTidyUseFile          -value ".clang-tidy"      -option Constant
 Set-Variable -name kClangTidyFormatStyle      -value "-format-style="   -option Constant
@@ -1624,32 +1625,28 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
                               , [Parameter(Mandatory=$false)][switch]  $fix)
 {
   [string[]] $tidyArgs = @("""$fileToTidy""")
-  if ($fix)
-  { 
-    if ($aTidyFixFlags -ne $kClangTidyUseFile)
-    {
-      $tidyArgs += "$kClangTidyFlagChecks$aTidyFixFlags"
-      # The header-filter flag enables clang-tidy to run on headers too.
-      $tidyArgs += $kClangTidyFlagHeaderFilter
-    }
-
-    if (![string]::IsNullOrEmpty($aAfterTidyFixFormatStyle))
-    {
-      $tidyArgs += "$kClangTidyFormatStyle$aAfterTidyFixFormatStyle"
-    }
-  } 
-  else
+  if ($fix -and $aTidyFixFlags -ne $kClangTidyUseFile)
   {
-    if ($aTidyFlags -ne $kClangTidyUseFile)
-    {
-      $tidyArgs += "$kClangTidyFlagChecks$aTidyFlags"
-      # The header-filter flag enables clang-tidy to run on headers too.
-      $tidyArgs += $kClangTidyFlagHeaderFilter
-    }
+    $tidyArgs += "$kClangTidyFlagChecks$aTidyFixFlags"
+  } 
+  elseif ($aTidyFlags -ne $kClangTidyUseFile)
+  {
+    $tidyArgs += "$kClangTidyFlagChecks$aTidyFlags"
+  }
+
+  # The header-filter flag enables clang-tidy to run on headers too.
+  if (![string]::IsNullOrEmpty($aTidyHeaderFilter))
+  {
+    $tidyArgs += "$kClangTidyFlagHeaderFilter$aTidyHeaderFilter"
   }
 
   if ($fix)
   {
+    if (![string]::IsNullOrEmpty($aAfterTidyFixFormatStyle))
+    {
+      $tidyArgs += "$kClangTidyFormatStyle$aAfterTidyFixFormatStyle"
+    }
+
     $tidyArgs += $kClangTidyFixFlags
   }
   else 
