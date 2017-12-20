@@ -14,5 +14,7 @@
       "-Wno-unused-value"
     };
 
+    public const string kHeaderFilter = ".*";
+
   }
 }

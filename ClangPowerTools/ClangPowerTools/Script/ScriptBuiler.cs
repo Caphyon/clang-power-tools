@@ -86,13 +86,15 @@ namespace ClangPowerTools
       return $"{parameters}";
     }
 
-    private string GetTidyParameters(TidyOptions aTidyOptions, TidyChecks aTidyChecks, TidyCustomChecks aTidyCustomChecks)
+    private string GetTidyParameters(TidyOptions aTidyOptions, 
+      TidyChecks aTidyChecks, TidyCustomChecks aTidyCustomChecks)
     {
       string parameters = string.Empty;
 
       if (TidyModeConstants.kTidyFile == aTidyOptions.TidyMode)
       {
-        return string.Format("{0} {1}", aTidyOptions.Fix ? ScriptConstants.kTidyFix : ScriptConstants.kTidy, ScriptConstants.kTidyFile);
+        return string.Format("{0} {1}", aTidyOptions.Fix ? 
+          ScriptConstants.kTidyFix : ScriptConstants.kTidy, ScriptConstants.kTidyFile);
       }
       else if (TidyModeConstants.kCustomChecks == aTidyOptions.TidyMode)
       {
@@ -122,6 +124,9 @@ namespace ClangPowerTools
         parameters = string.Format("{0} ''-*{1}''",
           (aTidyOptions.Fix ? ScriptConstants.kTidyFix : ScriptConstants.kTidy), parameters);
       }
+
+      if (!string.IsNullOrWhiteSpace(aTidyOptions.HeaderFilter))
+        parameters = $"{parameters} {ScriptConstants.kHeaderFilter} {aTidyOptions.HeaderFilter}";
 
       return parameters;
     }
