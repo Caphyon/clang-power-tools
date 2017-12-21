@@ -510,18 +510,20 @@ Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
                       , [switch] $ignoreErrors)
 {
   [string] $errorAction = If ($ignoreErrors) {"SilentlyContinue"} Else {"Stop"}
-  [string] $path = $child
-  if (![System.IO.Path]::IsPathRooted($path)) {
-    [string] $path = Join-Path -Path "$base" -ChildPath "$child" -Resolve -ErrorAction $errorAction
+  
+  if ([System.IO.Path]::IsPathRooted($child)) 
+  {
+    if (!(Test-Path $child))
+    {
+      return ""
+    }
+    return $child
   }
   else
   {
-    if (!(Test-Path $path))
-    {
-      $path = ""
-    }
+    [string[]] $paths = Join-Path -Path "$base" -ChildPath "$child" -Resolve -ErrorAction $errorAction
+    return $paths
   }
-  return $path
 }
 
 Function Get-SourceDirectory()
@@ -1402,15 +1404,19 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
   if ($node.Name -ieq "Import")
   {
     [string] $relPath = Evaluate-MSBuildExpression $node.GetAttribute("Project")
-    [string] $path    = Canonize-Path -base (Get-Location) -child $relPath -ignoreErrors
-    if (![string]::IsNullOrEmpty($path) -and (Test-Path $path))
+    [string[]] $paths = Canonize-Path -base (Get-Location) -child $relPath -ignoreErrors
+
+    foreach ($path in $paths)
     {
-        Write-Verbose "Property sheet: $path"
-        SanitizeProjectFile($path)
-    }
-    else
-    {
-        Write-Verbose "Could not find property sheet $relPath"
+      if (![string]::IsNullOrEmpty($path) -and (Test-Path $path))
+      {
+          Write-Verbose "Property sheet: $path"
+          SanitizeProjectFile($path)
+      }
+      else
+      {
+          Write-Verbose "Could not find property sheet $relPath"
+      }
     }
   }
 
