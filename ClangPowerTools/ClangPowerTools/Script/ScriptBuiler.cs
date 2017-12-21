@@ -13,6 +13,7 @@ namespace ClangPowerTools
     #region Members
 
     private string mParameters = string.Empty;
+    private bool mUseTidyFile = false;
 
     #endregion
 
@@ -93,15 +94,15 @@ namespace ClangPowerTools
 
       if (ComboBoxConstants.kTidyFile == aTidyOptions.UseChecksFrom)
       {
-        return string.Format("{0} {1}", aTidyOptions.Fix ? 
-          ScriptConstants.kTidyFix : ScriptConstants.kTidy, ScriptConstants.kTidyFile);
+        parameters = $"{parameters}{ScriptConstants.kTidyFile}";
+        mUseTidyFile = true;
       }
       else if (ComboBoxConstants.kCustomChecks == aTidyOptions.UseChecksFrom)
       {
         if(null != aTidyCustomChecks.TidyChecks && 0 != aTidyCustomChecks.TidyChecks.Length)
           parameters = $",{String.Join(",", aTidyCustomChecks.TidyChecks)}";
       }
-      else
+      else if(ComboBoxConstants.kPredefinedChecks == aTidyOptions.UseChecksFrom)
       {
         foreach (PropertyInfo prop in aTidyChecks.GetType().GetProperties())
         {
@@ -122,8 +123,10 @@ namespace ClangPowerTools
 
       if (string.Empty != parameters)
       {
-        parameters = string.Format("{0} ''-*{1}''",
-          (aTidyOptions.Fix ? ScriptConstants.kTidyFix : ScriptConstants.kTidy), parameters);
+        parameters = string.Format("{0} ''{1}{2}''",
+          (aTidyOptions.Fix ? ScriptConstants.kTidyFix : ScriptConstants.kTidy),
+          (mUseTidyFile ? "" : "-*"),
+          parameters);
       }
 
       if (!string.IsNullOrWhiteSpace(aTidyOptions.HeaderFilter))
