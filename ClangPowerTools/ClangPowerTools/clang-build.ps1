@@ -319,6 +319,15 @@ Set-Variable -name "kMsbuildToPsRules" -option Constant `
       , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(HasTrailingSlash($1))$2'  )`
       , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'     )`
                        )
+  
+  Set-Variable -name "kRedundantSeparatorsReplaceRules" -option Constant `
+               -value @( <# handle multiple consecutive separators #>    `
+                      , (";+" , ";")                                     `
+                         <# handle separator at end                #>    `
+                      , (";$" , "")                                      `
+                         <# handle separator at beginning          #>    `
+                      , ("^;" , "")                                      `
+                      )
 
 #-------------------------------------------------------------------------------------------------
 # Global variables
@@ -1195,6 +1204,52 @@ function Help:Get-ProjectFileNodes([xml] $projectFile, [string] $xpath)
   return $nodes
 }
 
+function  GetNodeInheritanceToken([System.Xml.XmlNode] $node)
+{
+  [string] $inheritanceToken = "%($($node.Name))";
+  if ($node.InnerText.Contains($inheritanceToken))
+  {
+    return $inheritanceToken
+  }
+
+  return ""
+}
+
+function ReplaceInheritedNodeValue([System.Xml.XmlNode] $currentNode
+                                  ,[System.Xml.XmlNode] $nodeToInheritFrom
+                                  )
+{
+  [string] $inheritanceToken = GetNodeInheritanceToken($currentNode)
+  if ([string]::IsNullOrEmpty($inheritanceToken))
+  {
+    # no need to inherit
+    return $false
+  }
+
+  [string] $replaceWith = ""
+  if ($nodeToInheritFrom)
+  {
+    $replaceWith = $nodeToInheritFrom.InnerText
+  }
+  
+  [string] $whatToReplace = [regex]::Escape($inheritanceToken);
+  if ([string]::IsNullOrEmpty($replaceWith))
+  {
+    # handle semicolon separators
+    [string] $escTok = [regex]::Escape($inheritanceToken)
+    $whatToReplace = "(;$escTok)|($escTok;)|($escTok)"
+  }
+
+  # replace inherited token and redundant separators
+  $replacementRules = @(,($whatToReplace, $replaceWith)) + $kRedundantSeparatorsReplaceRules
+  foreach ($rule in $replacementRules)
+  {
+    $currentNode.InnerText = $currentNode.InnerText -replace $rule[0], $rule[1]
+  }
+
+  return $currentNode.InnerText.Contains($inheritanceToken)
+}
+
 <#
 .SYNOPSIS
 Selects one or more nodes from the project.
@@ -1232,56 +1287,50 @@ function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpa
   if ($nodes.Count -eq 0)
   {
     $nodes = Select-ProjectNodes -xpath $xpath -fileIndex ($fileIndex + 1)
-  }
-
-  # we found something. see if we should inherit values from above
-  if ($nodes.Count -eq 1)
-  {
-    [string] $nodeName = $nodes[0].Name
-    [string] $inheritanceToken = "%($nodeName)";
-    if ($nodes[0].InnerText.Contains($inheritanceToken))
-    {
-      [System.Xml.XmlElement[]] $inheritedNodes = Select-ProjectNodes -xpath $xpath -fileIndex ($fileIndex + 1)
-      [string] $replaceWith = ""
-
-      if ($inheritedNodes.Count -gt 1)
-      {
-        throw "Did not expect that"
-      }
-
-      if ($inheritedNodes.Count -eq 1)
-      {
-        $replaceWith = $inheritedNodes[0].InnerText
-      }
-      
-      [string] $whatToReplace = [regex]::Escape($inheritanceToken);
-      if ([string]::IsNullOrEmpty($replaceWith))
-      {
-        # handle semicolon separators
-        [string] $escTok = [regex]::Escape($inheritanceToken)
-        $whatToReplace = "(;$escTok)|($escTok;)|($escTok)"
-      }
-
-      # replace inherited token 
-      $nodes[0].InnerText = $nodes[0].InnerText -replace $whatToReplace, $replaceWith
-
-      $replaceRules = ( <# handle multiple consecutive separators #>      `
-                        , (";+"           , ";"     )                     `
-                        <# handle separator at end                #>      `
-                        , (";$"                , ""      )                `
-                        <# handle separator at beginning          #>      `
-                        , ("^;"               , ""      )                 `
-                      )
-      foreach ($rule in $replaceRules)
-      {
-        $nodes[0].InnerText = $nodes[0].InnerText -replace $rule[0], $rule[1]
-      }
-    } 
+    # return what we found
     return $nodes
   }
 
-  # return what we found
-  return $nodes
+  if ($nodes[$nodes.Count -1]."#text")
+  {
+    # we found settings that can be inherited. see if we should inherit
+    
+    [System.Xml.XmlNode] $nodeToReturn = $nodes[$nodes.Count -1]
+    if ($nodeToReturn.Attributes.Count -gt 0)
+    {
+      throw "Did not expect node to have attributes"
+    }
+
+    [bool] $shouldInheritMore = ![string]::IsNullOrEmpty((GetNodeInheritanceToken -node $nodeToReturn))
+    for ([int] $i = $nodes.Count - 2; ($i -ge 0) -and $shouldInheritMore; $i -= 1)
+    {
+      $shouldInheritMore = ReplaceInheritedNodeValue -currentNode $nodeToReturn -nodeToInheritFrom $nodes[$i]
+    }
+
+    if ($shouldInheritMore)
+    {
+      [System.Xml.XmlElement[]] $inheritedNodes = Select-ProjectNodes -xpath $xpath -fileIndex ($fileIndex + 1)
+      if ($inheritedNodes.Count -gt 1)
+      {
+        throw "Did not expect to inherit more than one node"
+      }
+      if ($inheritedNodes.Count -eq 1)
+      {
+        $shouldInheritMore = ReplaceInheritedNodeValue -currentNode $nodeToReturn -nodeToInheritFrom $inheritedNodes[0]
+      }
+    }
+
+    # we still could have to inherit from parents but when not loading 
+    # all MS prop sheets we have nothing to inherit from, delete inheritance token
+    ReplaceInheritedNodeValue -currentNode $nodeToReturn -nodeToInheritFrom $null | Out-Null
+
+    return @($nodeToReturn)
+  }
+  else
+  {
+    # return what we found
+    return $nodes
+  }
 }
 
 <#
@@ -1408,6 +1457,10 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
           # process node condition
           [string] $nodeCondition = $child.GetAttribute("Condition")
           $validChild = ((Evaluate-MSBuildCondition($nodeCondition)) -eq $true)
+          if ($validChild)
+          {
+            $child.RemoveAttribute("Condition")
+          }
         }
     }
     if (!$validChild)
