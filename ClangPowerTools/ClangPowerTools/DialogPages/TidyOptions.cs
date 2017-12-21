@@ -42,7 +42,10 @@ namespace ClangPowerTools
 
       var updatedConfig = LoadFromFile(path);
       updatedConfig.Fix = this.Fix;
-      updatedConfig.HeaderFilter = this.HeaderFilter;
+
+      updatedConfig.HeaderFilter = ComboBoxConstants.kHeaderFilterMaping.ContainsKey(this.HeaderFilter) ?
+        ComboBoxConstants.kHeaderFilterMaping[this.HeaderFilter] : this.HeaderFilter;
+
       updatedConfig.TidyMode = this.UseChecksFrom;
 
       SaveToFile(path, updatedConfig);
@@ -54,13 +57,19 @@ namespace ClangPowerTools
       var loadedConfig = LoadFromFile(path);
 
       this.Fix = loadedConfig.Fix;
-      this.HeaderFilter = null == loadedConfig.HeaderFilter ? 
-        DefaultOptions.kHeaderFilter : loadedConfig.HeaderFilter;
+
+      if (null == loadedConfig.HeaderFilter)
+        this.HeaderFilter = DefaultOptions.kHeaderFilter;
+      else if (ComboBoxConstants.kHeaderFilterMaping.ContainsKey(loadedConfig.HeaderFilter))
+        this.HeaderFilter = ComboBoxConstants.kHeaderFilterMaping[loadedConfig.HeaderFilter];
+      else
+        this.HeaderFilter = loadedConfig.HeaderFilter;
 
       if (null == loadedConfig.TidyMode || string.Empty == loadedConfig.TidyMode)
         this.UseChecksFrom = (0 == loadedConfig.TidyChecks.Count ? ComboBoxConstants.kPredefinedChecks : ComboBoxConstants.kCustomChecks);
       else
         this.UseChecksFrom = loadedConfig.TidyMode;
+
     }
 
     #endregion

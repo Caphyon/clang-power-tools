@@ -129,7 +129,8 @@ namespace ClangPowerTools
       if (!string.IsNullOrWhiteSpace(aTidyOptions.HeaderFilter))
       {
         parameters = string.Format("{0} {1} ''{2}''", parameters, ScriptConstants.kHeaderFilter,
-          ComboBoxConstants.kCorrespondingHeader == aTidyOptions.HeaderFilter ? "_" : aTidyOptions.HeaderFilter);
+          ComboBoxConstants.kHeaderFilterMaping.ContainsKey(aTidyOptions.HeaderFilter) ? 
+          ComboBoxConstants.kHeaderFilterMaping[aTidyOptions.HeaderFilter]  : aTidyOptions.HeaderFilter);
       }
 
       return parameters;

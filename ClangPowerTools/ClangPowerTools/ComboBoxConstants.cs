@@ -1,4 +1,6 @@
-﻿namespace ClangPowerTools
+﻿using System.Collections.Generic;
+
+namespace ClangPowerTools
 {
   public sealed class ComboBoxConstants
   {
@@ -10,6 +12,12 @@
 
     public const string kDefaultHeaderFilter = ".*";
     public const string kCorrespondingHeader = "Corresponding Header";
+
+    public static readonly Dictionary<string, string> kHeaderFilterMaping = new Dictionary<string, string>
+    {
+      {kCorrespondingHeader, "_" },
+      {"_", kCorrespondingHeader }
+    };
 
     #endregion
 

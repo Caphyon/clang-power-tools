@@ -12,7 +12,7 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region Public Methods
+    #region TypeConverter Implementation
 
     public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
     {
