@@ -17,7 +17,7 @@ namespace ClangPowerTools.DialogPages
     #region Properties
 
     [Category(" Tidy")]
-    [DisplayName("Custom Checks")]
+    [DisplayName("Custom checks")]
     [Description("Specify clang-tidy checks to run using the standard tidy syntax. You can use wildcards to match multiple checks, combine them, etc (Eg. \"modernize-*, readability-*\").")]
     [TypeConverter(typeof(StringArrayConverter))]
     public string[] TidyChecks

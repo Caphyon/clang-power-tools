@@ -4,25 +4,21 @@ using System.ComponentModel;
 
 namespace ClangPowerTools
 {
-  public class TidyModeConvertor : TypeConverter
+  public class ComboBoxConvertor : TypeConverter
   {
     #region Members 
 
-    protected ArrayList values;
+    private ArrayList mValues;
 
     #endregion
 
-    #region Public Methods
+    #region Constructor
 
-    public TidyModeConvertor()
-    {
-      values = new ArrayList(new string[] 
-      {
-        TidyModeConstants.kPredefinedChecks,
-        TidyModeConstants.kCustomChecks,
-        TidyModeConstants.kTidyFile
-      });
-    }
+    protected ComboBoxConvertor(ArrayList aValues) => mValues = aValues;
+
+    #endregion
+
+    #region TypeConverter Implementation
 
     public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
     {
@@ -31,7 +27,7 @@ namespace ClangPowerTools
 
     public override StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
     {
-      return new StandardValuesCollection(values);
+      return new StandardValuesCollection(mValues);
     }
 
     public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)

@@ -13,6 +13,7 @@ namespace ClangPowerTools
     #region Members
 
     private string mParameters = string.Empty;
+    private bool mUseTidyFile = false;
 
     #endregion
 
@@ -91,16 +92,17 @@ namespace ClangPowerTools
     {
       string parameters = string.Empty;
 
-      if (TidyModeConstants.kTidyFile == aTidyOptions.TidyMode)
+      if (ComboBoxConstants.kTidyFile == aTidyOptions.UseChecksFrom)
       {
-        return string.Format("{0} {1}", aTidyOptions.Fix ? 
-          ScriptConstants.kTidyFix : ScriptConstants.kTidy, ScriptConstants.kTidyFile);
+        parameters = $"{parameters}{ScriptConstants.kTidyFile}";
+        mUseTidyFile = true;
       }
-      else if (TidyModeConstants.kCustomChecks == aTidyOptions.TidyMode)
+      else if (ComboBoxConstants.kCustomChecks == aTidyOptions.UseChecksFrom)
       {
-        parameters = $",{String.Join(",", aTidyCustomChecks.TidyChecks)}";
+        if(null != aTidyCustomChecks.TidyChecks && 0 != aTidyCustomChecks.TidyChecks.Length)
+          parameters = $",{String.Join(",", aTidyCustomChecks.TidyChecks)}";
       }
-      else
+      else if(ComboBoxConstants.kPredefinedChecks == aTidyOptions.UseChecksFrom)
       {
         foreach (PropertyInfo prop in aTidyChecks.GetType().GetProperties())
         {
@@ -121,12 +123,18 @@ namespace ClangPowerTools
 
       if (string.Empty != parameters)
       {
-        parameters = string.Format("{0} ''-*{1}''",
-          (aTidyOptions.Fix ? ScriptConstants.kTidyFix : ScriptConstants.kTidy), parameters);
+        parameters = string.Format("{0} ''{1}{2}''",
+          (aTidyOptions.Fix ? ScriptConstants.kTidyFix : ScriptConstants.kTidy),
+          (mUseTidyFile ? "" : "-*"),
+          parameters);
       }
 
       if (!string.IsNullOrWhiteSpace(aTidyOptions.HeaderFilter))
-        parameters = $"{parameters} {ScriptConstants.kHeaderFilter} {aTidyOptions.HeaderFilter}";
+      {
+        parameters = string.Format("{0} {1} ''{2}''", parameters, ScriptConstants.kHeaderFilter,
+          ComboBoxConstants.kHeaderFilterMaping.ContainsKey(aTidyOptions.HeaderFilter) ? 
+          ComboBoxConstants.kHeaderFilterMaping[aTidyOptions.HeaderFilter]  : aTidyOptions.HeaderFilter);
+      }
 
       return parameters;
     }

@@ -95,6 +95,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ClangOptions.cs" />
+    <Compile Include="Convertors\HeaderFiltersConvertor.cs" />
     <Compile Include="PCHCleaner.cs" />
     <Compile Include="ProjectConfiguration.cs" />
     <Compile Include="Script\RunningProcesses.cs" />
@@ -128,8 +129,9 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ActiveWindowProperties.cs" />
-    <Compile Include="TidyModeConstants.cs" />
-    <Compile Include="TidyModeConvertor.cs" />
+    <Compile Include="ComboBoxConstants.cs" />
+    <Compile Include="Convertors\ComboBoxConvertor.cs" />
+    <Compile Include="Convertors\UseChecksFromConvertor.cs" />
     <Compile Include="XmlSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
