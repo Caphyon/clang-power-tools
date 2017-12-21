@@ -22,13 +22,16 @@ namespace ClangPowerTools
 
     [Category(" Tidy")]
     [DisplayName("Header filter")]
-    [Description("")]
+    [Description("Regular expression matching the names of the headers to output diagnostics from or auto-fix. Diagnostics from the source file are always displayed." + 
+      "This option overrides the 'HeaderFilter' option in .clang - tidy file, if any.\n" +
+      "\"Corresponding Header\" : output diagnostics/fix only the corresponding header (same filename) for each source file analyzed.")]
     [TypeConverter(typeof(HeaderFiltersConvertor))]
     public string HeaderFilter { get; set; }
 
     [Category(" Tidy")]
     [DisplayName("Use checks from")]
-    [Description("Tidy checks: switch between explicitly specified checks (predefined or custom) and using checks from .clang-tidy configuration files.\nOther options are always loaded from .clang-tidy files.")]
+    [Description("Tidy checks: switch between explicitly specified checks (predefined or custom) and using checks from .clang-tidy configuration files.\n" +
+      "Other options are always loaded from .clang-tidy files.")]
     [TypeConverter(typeof(UseChecksFromConvertor))]
     public string UseChecksFrom { get; set; }
 
