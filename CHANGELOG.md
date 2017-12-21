@@ -1,5 +1,17 @@
 # Version History
 
+### Clang Power Tools 2.4
+*December 21, 2017*
+
+Improvements:
+* Configurable header-filter for tidy-fix.
+* Option to run clang-tidy only on cpp-corresponding headers.
+
+Bugs:
+* `<Choose>` project elements were not loaded.
+* Same-file appended project settings caused crash.
+* Wildcard-named property sheets were not loaded.
+
 ### Clang Power Tools 2.3
 *December 13, 2017*
 
