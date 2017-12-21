@@ -8,7 +8,13 @@ namespace ClangPowerTools
   {
     #region Members 
 
-    protected ArrayList mValues;
+    private ArrayList mValues;
+
+    #endregion
+
+    #region Constructor
+
+    protected ComboBoxConvertor(ArrayList aValues) => mValues = aValues;
 
     #endregion
 
