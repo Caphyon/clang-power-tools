@@ -7,11 +7,11 @@ namespace ClangPowerTools
     public UseChecksFromConvertor() :
       base(
         new ArrayList(new string[]
-      {
-        ComboBoxConstants.kPredefinedChecks,
-        ComboBoxConstants.kCustomChecks,
-        ComboBoxConstants.kTidyFile
-      }))
+        {
+          ComboBoxConstants.kPredefinedChecks,
+          ComboBoxConstants.kCustomChecks,
+          ComboBoxConstants.kTidyFile
+        }))
     { }
 
   }
