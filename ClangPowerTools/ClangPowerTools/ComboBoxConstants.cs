@@ -11,7 +11,7 @@ namespace ClangPowerTools
     public const string kTidyFile = ".clang-tidy config file";
 
     public const string kDefaultHeaderFilter = ".*";
-    public const string kCorrespondingHeader = "corresponding header";
+    public const string kCorrespondingHeader = "Corresponding Header";
 
     public static readonly Dictionary<string, string> kHeaderFilterMaping = new Dictionary<string, string>
     {

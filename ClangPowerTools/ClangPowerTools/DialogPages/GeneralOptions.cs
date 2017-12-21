@@ -30,22 +30,22 @@ namespace ClangPowerTools
     public string[] FilesToIgnore { get; set; }
 
     [Category("General")]
-    [DisplayName("Continue On Error")]
+    [DisplayName("Continue on error")]
     [Description("Switch to continue project compilation even when errors occur.")]
     public bool Continue { get; set; }
 
     [Category("General")]
-    [DisplayName("Treat Warnings As Errors")]
+    [DisplayName("Treat warnings as errors")]
     [Description("Treats all compiler warnings as errors. For a new project, it may be best to use in all compilations; resolving all warnings will ensure the fewest possible hard to find code defects.")]
     public bool TreatWarningsAsErrors { get; set; } = true;
 
     [Category("General")]
-    [DisplayName("Verbose Mode")]
+    [DisplayName("Verbose mode")]
     [Description("Enables verbose logging for diagnostic purposes.")]
     public bool VerboseMode { get; set; }
 
     [Category("General")]
-    [DisplayName("Compile Flags")]
+    [DisplayName("Compile flags")]
     [Description("Flags given to clang++ when compiling project, alongside project - specific defines. If empty the default flags will be loaded.")]
     [TypeConverter(typeof(StringArrayConverter))]
     public string[] ClangFlags
