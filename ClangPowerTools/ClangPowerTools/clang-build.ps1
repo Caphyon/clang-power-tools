@@ -1698,12 +1698,12 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
   {
     if ($aTidyHeaderFilter -eq '_')
     {
-      [string] $fileNameMatch = "'$(Get-FileName -path $fileToTidy -noext).*'"
+      [string] $fileNameMatch = """$(Get-FileName -path $fileToTidy -noext).*"""
       $tidyArgs += "$kClangTidyFlagHeaderFilter$fileNameMatch"
     }
     else
     {
-      $tidyArgs += "$kClangTidyFlagHeaderFilter'$aTidyHeaderFilter'"
+      $tidyArgs += "$kClangTidyFlagHeaderFilter""$aTidyHeaderFilter"""
     }
   }
 
