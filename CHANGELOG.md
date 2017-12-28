@@ -1,7 +1,7 @@
 # Version History
 
 ### Clang Power Tools 2.4.1
-*December 21, 2017*
+*December 28, 2017*
 
 Bugs:
 * Regression in 2.4.0 preventing use of clang-tidy on header files.
