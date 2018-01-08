@@ -1127,7 +1127,7 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
         if ([regex]::Match($content, "[a-zA-Z_][a-zA-Z0-9_\-]+").Value -eq $content)
         {
           # we have a plain property retrieval
-          $content = '$' + $content
+          $content = "`${$content}"
         }
         else
         {
