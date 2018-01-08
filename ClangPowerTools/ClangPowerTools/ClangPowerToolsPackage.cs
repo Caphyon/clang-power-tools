@@ -84,15 +84,15 @@ namespace ClangPowerTools
 
         TidyCommand TidyCmd = new TidyCommand(this, CommandSet, CommandIds.kTidyId);
         CompileCommand CompileCmd = new CompileCommand(this, CommandSet, CommandIds.kCompileId);
-
         StopClang stopClang = new StopClang(this, CommandSet, CommandIds.kStopClang);
-        SettingsCommand SettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
       }
       else
       {
         if (GetService(typeof(SVsShell)) is IVsShell shellService)
           ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out mEventSinkCookie));
       }
+
+      SettingsCommand SettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
 
     }
 
