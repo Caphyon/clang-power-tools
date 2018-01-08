@@ -27,7 +27,7 @@ function GetRegValue([Parameter(Mandatory=$true)][string] $regPath)
 
   if (Test-Path $regPath)
   {
-    return (Get-ChildItem $regPath).GetValue($valueName)
+    return (Get-Item $regPath).GetValue($valueName)
   }
   else
   {
@@ -112,7 +112,7 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
                                                   $i - $expressionStartIndex - 2)
         [int] $initialLength = $content.Length
 
-        if ([regex]::Match($content, "[a-zA-Z_][a-zA-Z0-9_]+").Value -eq $content)
+        if ([regex]::Match($content, "[a-zA-Z_][a-zA-Z0-9_\-]+").Value -eq $content)
         {
           # we have a plain property retrieval
           $content = '$' + $content
@@ -283,7 +283,7 @@ $MySelector = "One;Two;Three"
 Test-Condition -condition    "`$(MySelector.Contains('Three'))"`
                -expectation  $true
 
-Test-Condition -condition    "`$([System.DateTime]::Now.Year) == 2017"`
+Test-Condition -condition    "`$([System.DateTime]::Now.Year) == 2018"`
                -expectation  $true
 
 Test-Condition -condition    "HasTrailingSlash('c:\windows\')"`

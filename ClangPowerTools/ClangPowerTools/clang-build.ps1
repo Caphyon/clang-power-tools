@@ -1098,7 +1098,7 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
   [int] $openParantheses = 0
   for ([int] $i = 0; $i -lt $expression.Length; $i += 1)
   {
-    if ($expression.Substring($i, 1) -eq '(')# -and $expressionStartIndex -ge 0)
+    if ($expression.Substring($i, 1) -eq '(')
     {
       if ($i -gt 0 -and $expressionStartIndex -lt 0 -and $expression.Substring($i - 1, 1) -eq '$')
       {
@@ -1124,7 +1124,7 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
                                                   $i - $expressionStartIndex - 2)
         [int] $initialLength = $content.Length
 
-        if ([regex]::Match($content, "[a-zA-Z_][a-zA-Z0-9_]+").Value -eq $content)
+        if ([regex]::Match($content, "[a-zA-Z_][a-zA-Z0-9_\-]+").Value -eq $content)
         {
           # we have a plain property retrieval
           $content = '$' + $content
