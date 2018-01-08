@@ -5,6 +5,10 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using ClangPowerTools.Commands;
 using ClangPowerTools.DialogPages;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.CommandBars;
+using EnvDTE;
+using EnvDTE80;
 
 namespace ClangPowerTools
 {
@@ -31,11 +35,12 @@ namespace ClangPowerTools
   [Guid(RunClangPowerToolsPackage.PackageGuidString)]
   [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
   [ProvideOptionPage(typeof(GeneralOptions), "Clang Power Tools", "General", 0, 0, true)]
-  [ProvideOptionPage(typeof(TidyOptions), "Clang Power Tools\\Tidy", "Options", 0, 0, true, Sort = 0) ]
+  [ProvideOptionPage(typeof(TidyOptions), "Clang Power Tools\\Tidy", "Options", 0, 0, true, Sort = 0)]
   [ProvideOptionPage(typeof(TidyCustomChecks), "Clang Power Tools\\Tidy", "Custom Checks", 0, 0, true, Sort = 1)]
   [ProvideOptionPage(typeof(TidyChecks), "Clang Power Tools\\Tidy", "Predefined Checks", 0, 0, true, Sort = 2)]
   [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
-  public sealed class RunClangPowerToolsPackage : Package
+  [ProvideAutoLoad("ADFC4E64-0397-11D1-9F4E-00A0C911004F")]
+  public sealed class RunClangPowerToolsPackage : Package, IVsShellPropertyEvents
   {
     #region Members
 
@@ -44,6 +49,8 @@ namespace ClangPowerTools
     /// </summary>
     public const string PackageGuidString = "f564f9d3-01ae-493e-883b-18deebdb975e";
     public static readonly Guid CommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
+
+    private uint mEventSinkCookie;
 
     #endregion
 
@@ -70,15 +77,46 @@ namespace ClangPowerTools
     /// </summary>
     protected override void Initialize()
     {
-      base.Initialize();
+      var dte = GetService(typeof(DTE)) as DTE2;
+      if (dte.Solution.IsOpen)
+      {
+        base.Initialize();
 
-      TidyCommand TidyCmd = new TidyCommand(this, CommandSet, CommandIds.kTidyId);
+        TidyCommand TidyCmd = new TidyCommand(this, CommandSet, CommandIds.kTidyId);
+        CompileCommand CompileCmd = new CompileCommand(this, CommandSet, CommandIds.kCompileId);
 
-      CompileCommand CompileCmd = new CompileCommand(this, CommandSet, CommandIds.kCompileId);
+        StopClang stopClang = new StopClang(this, CommandSet, CommandIds.kStopClang);
+        SettingsCommand SettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
+      }
+      else
+      {
+        if (GetService(typeof(SVsShell)) is IVsShell shellService)
+          ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out mEventSinkCookie));
+      }
 
-      StopClang stopClang = new StopClang(this, CommandSet, CommandIds.kStopClang);
+    }
 
-      SettingsCommand SettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
+    public int OnShellPropertyChange(int propid, object propValue)
+    {
+      // Handle the event if zombie state changes from true to false
+      if ((int)__VSSPROPID.VSSPROPID_Zombie != propid)
+        return VSConstants.S_OK;
+
+      if ((bool)propValue)
+        return VSConstants.S_OK;
+
+      // Show the commandbar
+      var dte = GetService(typeof(DTE)) as DTE2;
+      var cbs = ((CommandBars)dte.CommandBars);
+      CommandBar cb = cbs["Clang Power Tools"];
+      cb.Visible = true;
+
+      // Unsubscribe from events
+      if (GetService(typeof(SVsShell)) is IVsShell shellService)
+        ErrorHandler.ThrowOnFailure(shellService.UnadviseShellPropertyChanges(mEventSinkCookie));
+      mEventSinkCookie = 0;
+
+      return VSConstants.S_OK;
     }
 
     #endregion
