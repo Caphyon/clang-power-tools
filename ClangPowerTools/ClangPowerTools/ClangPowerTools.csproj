@@ -82,6 +82,12 @@
     <Compile Include="Commands\CommandsController.cs" />
     <Compile Include="Commands\CompileCommand.cs" />
     <Compile Include="Convertors\AdditionalIncludesConvertor.cs" />
+    <Compile Include="Convertors\FallbackStyleConvertor.cs" />
+    <Compile Include="Convertors\StyleConvertor.cs" />
+    <Compile Include="DialogOptions\ClangFormatOptions.cs" />
+    <Compile Include="DialogPages\ClangFormatPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="DialogPages\DefaultOptions.cs" />
     <Compile Include="DialogPages\TidyCustomChecks.cs">
       <SubType>Component</SubType>
