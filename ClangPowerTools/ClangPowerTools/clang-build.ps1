@@ -815,7 +815,10 @@ Function Get-VisualStudio-Path()
   {
     if (Test-Path $kVsWhereLocation)
     {
-      return (& "$kVsWhereLocation" -nologo -property installationPath)
+      [string] $product = "Microsoft.VisualStudio.Product.$aVisualStudioSku"
+      return (& "$kVsWhereLocation" -nologo `
+                                    -property installationPath `
+                                    -products $product)
     }
 
     if (Test-Path -Path $kVs15DefaultLocation)
