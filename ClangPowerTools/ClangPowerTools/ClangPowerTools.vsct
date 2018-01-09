@@ -56,7 +56,15 @@
         </Strings>
       </Button>
 
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0002" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0002" type="Button">
+        <Icon guid="guidImageTidy" id="Tidy" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Clang Format</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0003" type="Button">
         <Icon guid="guidImageStopClang" id="StopClang" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
@@ -64,7 +72,7 @@
         </Strings>
       </Button>
       
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0003" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0004" type="Button">
         <Icon guid="guidImageSettings" id="Settings" />
         <Strings>
           <ButtonText>Settings</ButtonText>
@@ -86,14 +94,21 @@
         </Strings>
       </Button>
 
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0002" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0002" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
+        <Strings>
+          <ButtonText>Clang Format</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0003" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
         <Strings>
           <ButtonText>Stop Clang</ButtonText>
         </Strings>
       </Button>
       
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0003" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0004" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
         <Strings>
           <ButtonText>Settings</ButtonText>
@@ -167,7 +182,12 @@
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
     </CommandPlacement>
 
-    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0002">
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0002">
+      <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
+    </CommandPlacement>
+
+
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0003">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
     </CommandPlacement>
     
@@ -191,6 +211,7 @@
       <!--Commands-->
       <IDSymbol name="CompileId" value="0x0102" />
       <IDSymbol name="TidyId" value="0x0101" />
+      <IDSymbol name="ClangFormatId" value="0x0105" />
       <IDSymbol name="StopClangId" value="0x0104" />
       <IDSymbol name="SettingsId" value="0x0103" />
 
