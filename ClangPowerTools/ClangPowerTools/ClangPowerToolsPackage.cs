@@ -62,11 +62,12 @@ namespace ClangPowerTools
 
     #region Commands
 
-    private CompileCommand mCompileCmd = null;
-    private TidyCommand mTidyCmd = null;
-    private StopClang mStopClang = null;
-    private SettingsCommand mSettingsCmd = null;
-
+    CompileCommand mCompileCmd = null;
+    TidyCommand mTidyCmd = null;
+    StopClang mStopClang = null;
+    SettingsCommand mSettingsCmd = null;
+	ClangFormatCommand clangFormatCmd = null;
+	
     #endregion
 
     #endregion
@@ -192,7 +193,10 @@ namespace ClangPowerTools
 
         if (null == mCompileCmd)
           mCompileCmd = new CompileCommand(this, CommandSet, CommandIds.kCompileId);
-
+	
+	      if(null == clangFormatCmd)
+		      clangFormatCmd = new ClangFormatCommand(this, CommandSet, CommandIds.kClangFormat);
+	  
         if (null == mStopClang)
           mStopClang = new StopClang(this, CommandSet, CommandIds.kStopClang);
 
