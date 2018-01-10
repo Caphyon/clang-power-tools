@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ClangPowerTools.DialogPages;
+using ClangPowerTools.Script;
 using Microsoft.VisualStudio.Shell;
 
 namespace ClangPowerTools
@@ -18,7 +19,7 @@ namespace ClangPowerTools
 
     private ErrorsManager mErrorsManager;
     private PowerShellWrapper mPowerShell = new PowerShellWrapper();
-    private ScriptBuiler mScriptBuilder;
+    private ClangCompileTidyScript mScriptBuilder;
     private const string kVs15Version = "2017";
     private Dictionary<string, string> mVsVersions = new Dictionary<string, string>
     {
@@ -71,7 +72,7 @@ namespace ClangPowerTools
     {
       try
       {
-        mScriptBuilder = new ScriptBuiler();
+        mScriptBuilder = new ClangCompileTidyScript();
         mScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
           mTidyCustomChecks, DTEObj, VsEdition, VsVersion, aForceTidyToFix);
 

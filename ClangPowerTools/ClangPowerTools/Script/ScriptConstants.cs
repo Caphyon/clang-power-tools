@@ -8,6 +8,8 @@
     public const string kScriptBeginning = @"PowerShell.exe -ExecutionPolicy Bypass -NoProfile -Noninteractive -command '&";
     public const string kScriptName = "clang-build.ps1";
 
+    #region Clang Compile/Tidy constants
+
     public const string kFile = "-file";
     public const string kProject = "-proj";
     public const string kDirectory = "-dir";
@@ -34,6 +36,18 @@
     public const string kHeaderFilter = "-header-filter";
     public const string kTidyFile = ".clang-tidy";
 
+
+    #endregion
+
+    #region Clang Format constants
+
+    public const string kClangFormat = "clang-format";
+    public const string kAssumeFilename = "-assume-filename=";
+    public const string kFallbackStyle = "-fallback-style=";
+    public const string kSortIncludes = "-sort-includes=";
+    public const string kStyle = "-style=";
+
+    #endregion
 
     #endregion
 
