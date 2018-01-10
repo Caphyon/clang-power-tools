@@ -22,21 +22,26 @@ namespace ClangPowerTools.DialogPages
     public bool EnableFormatOnSave { get; set; }
 
     [Category("Format On Save")]
-    [DisplayName("File Extensions")]
+    [DisplayName("File extensions")]
     [Description("")]
     public string FileExtensions { get; set; }
+
+    [Category("Format On Save")]
+    [DisplayName("Skip files")]
+    [Description("")]
+    public string SkipFiles { get; set; }
 
     #endregion
 
     #region Format Options
 
     [Category("Format Options")]
-    [DisplayName("Assume File Name")]
+    [DisplayName("Assume filename")]
     [Description("")]
     public string AssumeFilename { get; set; }
 
     [Category("Format Options")]
-    [DisplayName("Fallback Style")]
+    [DisplayName("Fallback style")]
     [Description("")]
     [TypeConverter(typeof(FallbackStyleConvertor))]
     public string FallbackStyle { get; set; }
@@ -61,6 +66,7 @@ namespace ClangPowerTools.DialogPages
       var updatedConfig = LoadFromFile(path);
       updatedConfig.EnableFormatOnSave = this.EnableFormatOnSave;
       updatedConfig.FileExtensions = this.FileExtensions;
+      updatedConfig.SkipFiles = this.SkipFiles;
       updatedConfig.AssumeFilename = this.AssumeFilename;
       updatedConfig.FallbackStyle = this.FallbackStyle;
       updatedConfig.SortIncludes = this.SortIncludes;
@@ -75,16 +81,23 @@ namespace ClangPowerTools.DialogPages
       var loadedConfig = LoadFromFile(path);
 
       this.EnableFormatOnSave = loadedConfig.EnableFormatOnSave;
-      this.FileExtensions = loadedConfig.FileExtensions;
+
+      this.FileExtensions = null == loadedConfig.FallbackStyle?
+        DefaultOptions.kFileExtensions : loadedConfig.FallbackStyle;
+
+      this.SkipFiles = null == loadedConfig.SkipFiles?
+        DefaultOptions.kSkipFiles : loadedConfig.SkipFiles;
+
       this.AssumeFilename = loadedConfig.AssumeFilename;
 
-      this.FallbackStyle = (null == loadedConfig.FallbackStyle || string.Empty == loadedConfig.FallbackStyle) ?
-        ComboBoxConstants.kLLVM : loadedConfig.FallbackStyle;
+      this.FallbackStyle = null == loadedConfig.FallbackStyle ?
+        ComboBoxConstants.kNone : loadedConfig.FallbackStyle;
 
       this.SortIncludes = loadedConfig.SortIncludes;
 
-      this.Style = (null == loadedConfig.Style || string.Empty == loadedConfig.Style) ?
-        ComboBoxConstants.kGoogle : loadedConfig.Style;
+      this.Style = null == loadedConfig.Style?
+        ComboBoxConstants.kFile : loadedConfig.Style;
+
     }
 
     #endregion

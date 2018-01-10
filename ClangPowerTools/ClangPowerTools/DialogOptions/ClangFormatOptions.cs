@@ -13,6 +13,8 @@ namespace ClangPowerTools
 
     public string FileExtensions { get; set; }
 
+    public string SkipFiles { get; set; }
+
     #endregion
 
     #region Format Options

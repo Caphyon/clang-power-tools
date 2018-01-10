@@ -9,7 +9,8 @@
     public const string kDone = "Done";
     public const string kComplileCommand = "Clang Compile";
     public const string kTidyCodeCommand = "Clang Tidy";
-    
+    public const string kClangFormat = "Clang Format";
+
     #endregion
 
   }
