@@ -59,6 +59,13 @@ namespace ClangPowerTools.DialogPages
 
     #endregion
 
+    public ClangFormatPage Clone()
+    {
+      // Use MemberwiseClone to copy value types.
+      var clone = (ClangFormatPage)MemberwiseClone();
+      return clone;
+    }
+
     public override void SaveSettingsToStorage()
     {
       string path = mSettingsPathBuilder.GetPath(kGeneralSettingsFileName);
