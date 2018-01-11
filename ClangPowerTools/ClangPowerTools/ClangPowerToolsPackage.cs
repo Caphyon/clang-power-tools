@@ -98,6 +98,11 @@ namespace ClangPowerTools
 
     public int OnShellPropertyChange(int propid, object propValue)
     {
+      //Check if the toolbar was already activated
+      var tidyChecks = (TidyChecks)this.GetDialogPage(typeof(TidyChecks));
+      if (tidyChecks.ToolbarActivated)
+        return VSConstants.S_OK;
+
       // Handle the event if zombie state changes from true to false
       if ((int)__VSSPROPID.VSSPROPID_Zombie != propid)
         return VSConstants.S_OK;
@@ -110,6 +115,8 @@ namespace ClangPowerTools
       var cbs = ((CommandBars)dte.CommandBars);
       CommandBar cb = cbs["Clang Power Tools"];
       cb.Visible = true;
+      tidyChecks.ToolbarActivated = true;
+      tidyChecks.SaveSettingsToStorage();
 
       // Unsubscribe from events
       if (GetService(typeof(SVsShell)) is IVsShell shellService)
