@@ -38,9 +38,8 @@ namespace ClangPowerTools
   [ProvideOptionPage(typeof(TidyOptions), "Clang Power Tools\\Tidy", "Options", 0, 0, true, Sort = 0)]
   [ProvideOptionPage(typeof(TidyCustomChecks), "Clang Power Tools\\Tidy", "Custom Checks", 0, 0, true, Sort = 1)]
   [ProvideOptionPage(typeof(TidyChecks), "Clang Power Tools\\Tidy", "Predefined Checks", 0, 0, true, Sort = 2)]
-  [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
   [ProvideAutoLoad("ADFC4E64-0397-11D1-9F4E-00A0C911004F")]
-  public sealed class RunClangPowerToolsPackage : Package, IVsShellPropertyEvents
+  public sealed class RunClangPowerToolsPackage : Package, IVsShellPropertyEvents, IVsSolutionEvents
   {
     #region Members
 
@@ -49,8 +48,19 @@ namespace ClangPowerTools
     /// </summary>
     public const string PackageGuidString = "f564f9d3-01ae-493e-883b-18deebdb975e";
     public static readonly Guid CommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
-
     private uint mEventSinkCookie;
+
+    private uint mHSolutionEvents = uint.MaxValue;
+    private IVsSolution mSolution;
+
+    #region Commands
+
+    CompileCommand mCompileCmd = null;
+    TidyCommand mTidyCmd = null;
+    StopClang mStopClang = null;
+    SettingsCommand mSettingsCmd = null;
+
+    #endregion
 
     #endregion
 
@@ -77,24 +87,20 @@ namespace ClangPowerTools
     /// </summary>
     protected override void Initialize()
     {
-      var dte = GetService(typeof(DTE)) as DTE2;
-      if (dte.Solution.IsOpen)
-      {
-        base.Initialize();
+      base.Initialize();
 
-        TidyCommand TidyCmd = new TidyCommand(this, CommandSet, CommandIds.kTidyId);
-        CompileCommand CompileCmd = new CompileCommand(this, CommandSet, CommandIds.kCompileId);
-        StopClang stopClang = new StopClang(this, CommandSet, CommandIds.kStopClang);
-      }
-      else
-      {
-        if (GetService(typeof(SVsShell)) is IVsShell shellService)
-          ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out mEventSinkCookie));
-      }
+      if (GetService(typeof(SVsShell)) is IVsShell shellService)
+        ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out mEventSinkCookie));
 
-      SettingsCommand SettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
+      //Settings command is always visible
+      mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
 
+      AdviseSolutionEvents();
     }
+
+    #endregion
+
+    #region IVsShellPropertyEvents Implementation
 
     public int OnShellPropertyChange(int propid, object propValue)
     {
@@ -110,7 +116,7 @@ namespace ClangPowerTools
       if ((bool)propValue)
         return VSConstants.S_OK;
 
-      // Show the commandbar
+      // Show the toolbar
       var dte = GetService(typeof(DTE)) as DTE2;
       var cbs = ((CommandBars)dte.CommandBars);
       CommandBar cb = cbs["Clang Power Tools"];
@@ -127,5 +133,94 @@ namespace ClangPowerTools
     }
 
     #endregion
+
+    #region Get Pointer to IVsSolutionEvents
+
+    private void AdviseSolutionEvents()
+    {
+      UnadviseSolutionEvents();
+      mSolution = GetService(typeof(SVsSolution)) as IVsSolution;
+      mSolution?.AdviseSolutionEvents(this, out mHSolutionEvents);
+    }
+
+    private void UnadviseSolutionEvents()
+    {
+      if (null == mSolution)
+        return;
+      if (uint.MaxValue != mHSolutionEvents)
+      {
+        mSolution.UnadviseSolutionEvents(mHSolutionEvents);
+        mHSolutionEvents = uint.MaxValue;
+      }
+      mSolution = null;
+    }
+
+    #endregion
+
+    #region IVsSolutionEvents Implementation
+
+    public int OnAfterOpenProject(IVsHierarchy aPHierarchy, int aFAdded)
+    {
+      return VSConstants.S_OK;
+    }
+
+    public int OnQueryCloseProject(IVsHierarchy pHierarchy, int fRemoving, ref int pfCancel)
+    {
+      return VSConstants.S_OK;
+    }
+
+    public int OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved)
+    {
+      return VSConstants.S_OK;
+    }
+
+    public int OnAfterLoadProject(IVsHierarchy pStubHierarchy, IVsHierarchy pRealHierarchy)
+    {
+      return VSConstants.S_OK;
+    }
+
+    public int OnQueryUnloadProject(IVsHierarchy pRealHierarchy, ref int pfCancel)
+    {
+      return VSConstants.S_OK;
+    }
+
+    public int OnBeforeUnloadProject(IVsHierarchy pRealHierarchy, IVsHierarchy pStubHierarchy)
+    {
+      return VSConstants.S_OK;
+    }
+
+    public int OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
+    {
+      //Load the rest of the commands when a solution is loaded
+
+      if( null == mTidyCmd )
+        mTidyCmd = new TidyCommand(this, CommandSet, CommandIds.kTidyId);
+
+      if (null == mCompileCmd)
+        mCompileCmd = new CompileCommand(this, CommandSet, CommandIds.kCompileId);
+
+      if (null == mStopClang)
+        mStopClang = new StopClang(this, CommandSet, CommandIds.kStopClang);
+
+      return VSConstants.S_OK;
+    }
+
+    public int OnQueryCloseSolution(object pUnkReserved, ref int pfCancel)
+    {
+      return VSConstants.S_OK;
+    }
+
+    public int OnBeforeCloseSolution(object pUnkReserved)
+    {
+      return VSConstants.S_OK;
+    }
+
+    public int OnAfterCloseSolution(object pUnkReserved)
+    {
+      return VSConstants.S_OK;
+    }
+
+    #endregion
+
   }
 }
