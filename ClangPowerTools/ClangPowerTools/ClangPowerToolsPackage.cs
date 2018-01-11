@@ -62,12 +62,12 @@ namespace ClangPowerTools
 
     #region Commands
 
-    CompileCommand mCompileCmd = null;
-    TidyCommand mTidyCmd = null;
-    StopClang mStopClang = null;
-    SettingsCommand mSettingsCmd = null;
-	ClangFormatCommand clangFormatCmd = null;
-	
+    private CompileCommand mCompileCmd = null;
+    private TidyCommand mTidyCmd = null;
+    private StopClang mStopClang = null;
+    private SettingsCommand mSettingsCmd = null;
+    private ClangFormatCommand clangFormatCmd = null;
+
     #endregion
 
     #endregion
