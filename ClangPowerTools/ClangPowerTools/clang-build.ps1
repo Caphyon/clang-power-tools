@@ -2093,7 +2093,7 @@ Write-Verbose ("Found $($projects.Count) projects")
 if ([string]::IsNullOrEmpty($aVcxprojToCompile) -and 
     [string]::IsNullOrEmpty($aVcxprojToIgnore))
 {
-  Write-Verbose "[ INFO ] PROCESSING ALL PROJECTS"
+  Write-Verbose "PROCESSING ALL PROJECTS"
   $projectsToProcess = $projects
 }
 else
@@ -2102,12 +2102,13 @@ else
                        Where-Object {       (Should-CompileProject -vcxprojPath $_.FullName) `
                                       -and !(Should-IgnoreProject  -vcxprojPath $_.FullName ) }
 
-  if ($projectsToProcess -ne $null)
+  if ($projectsToProcess.Count -gt 1)
   {
-    Write-Output ("[ INFO ] WILL PROCESS PROJECTS: `n`t" + ($projectsToProcess -join "`n`t"))
+    Write-Output ("PROJECTS: `n`t" + ($projectsToProcess -join "`n`t"))
     $projectsToProcess = $projectsToProcess
   }
-  else
+  
+  if ($projectsToProcess.Count -eq 0)
   {
     Write-Err "Cannot find given project"
   }
@@ -2130,7 +2131,7 @@ foreach ($project in $projectsToProcess)
      $workloadType = [WorkloadType]::TidyFix
   }
 
-  Write-Output ("`n[ INFO ] $projectCounter. PROCESSING PROJECT " + $vcxprojPath)
+  Write-Output ("`nPROJECT$(if ($projectCounter -gt 1) { " #$projectCounter" } else { } ): " + $vcxprojPath)
   Process-Project -vcxprojPath $vcxprojPath -workloadType $workloadType
 
   $projectCounter -= 1
