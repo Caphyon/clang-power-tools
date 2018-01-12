@@ -43,10 +43,10 @@
     #region Clang Format constants
 
     public const string kClangFormat = "clang-format.exe";
-    public const string kAssumeFilename = "-assume-filename=";
-    public const string kFallbackStyle = "-fallback-style=";
-    public const string kSortIncludes = "-sort-includes=";
-    public const string kStyle = "-style=";
+    public const string kAssumeFilename = "-assume-filename";
+    public const string kFallbackStyle = "-fallback-style";
+    public const string kSortIncludes = "-sort-includes";
+    public const string kStyle = "-style";
 
     #endregion
 

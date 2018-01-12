@@ -1,6 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Design;
-using System.Globalization;
+using ClangPowerTools.DialogPages;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -11,6 +11,12 @@ namespace ClangPowerTools.Commands
   /// </summary>
   internal sealed class ClangFormatCommand : ClangCommand
   {
+    #region Members
+
+    private ClangFormatPage mClangFormatPage;
+
+    #endregion
+
     #region Constructor
 
     /// <summary>
@@ -20,6 +26,8 @@ namespace ClangPowerTools.Commands
     /// <param name="package">Owner package, not null.</param>
     public ClangFormatCommand(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
+      mClangFormatPage = (ClangFormatPage)Package.GetDialogPage(typeof(ClangFormatPage));
+
       if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
@@ -50,7 +58,7 @@ namespace ClangPowerTools.Commands
         {
           SaveActiveDocuments();
           CollectSelectedItems();
-          RunScript(OutputWindowConstants.kComplileCommand);
+          RunScript(OutputWindowConstants.kClangFormat);
         }
         catch (Exception exception)
         {
