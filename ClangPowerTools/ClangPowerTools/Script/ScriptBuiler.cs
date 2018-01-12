@@ -12,11 +12,11 @@ namespace ClangPowerTools
 
     #region Methods
 
-    protected string GetScriptPath()
+    //return the path of the folder where is located the script file or clang-format.exe
+    protected virtual string GetFilePath()
     {
       string assemblyPath = Assembly.GetExecutingAssembly().Location;
-      assemblyPath = assemblyPath.Substring(0, assemblyPath.LastIndexOf('\\'));
-      return $"{assemblyPath}\\{ScriptConstants.kScriptName}";
+      return assemblyPath.Substring(0, assemblyPath.LastIndexOf('\\'));
     }
 
     #endregion

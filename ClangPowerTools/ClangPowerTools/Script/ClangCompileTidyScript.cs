@@ -3,6 +3,7 @@ using EnvDTE;
 using EnvDTE80;
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 
@@ -21,7 +22,7 @@ namespace ClangPowerTools.Script
     public string GetScript(IItem aItem, string aSolutionPath)
     {
       string containingDirectoryPath = string.Empty;
-      string script = $"{ScriptConstants.kScriptBeginning} ''{GetScriptPath()}''";
+      string script = $"{ScriptConstants.kScriptBeginning} ''{GetFilePath()}''";
 
       if (aItem is SelectedProjectItem)
       {
@@ -52,6 +53,9 @@ namespace ClangPowerTools.Script
     #endregion
 
     #region Get Parameters Helpers
+
+    //Get the script file path
+    protected override string GetFilePath() => Path.Combine(base.GetFilePath(), ScriptConstants.kScriptName);
 
     private string GetGeneralParameters(GeneralOptions aGeneralOptions)
     {
