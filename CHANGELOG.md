@@ -1,5 +1,17 @@
 # Version History
 
+### Clang Power Tools 2.5
+*January 12, 2018*
+
+Improvements:
+* Automatically show toolbar on the first time install.
+
+Bugs:
+* Fixed errors detection.
+* Fixed commands execution when the project contains more files with the same name.
+* Crash when multiple SKUs of Visual Studio 2017 installed simultaneously.
+* Google.Test Nuget packages not working.
+
 ### Clang Power Tools 2.4.1
 *December 28, 2017*
 
