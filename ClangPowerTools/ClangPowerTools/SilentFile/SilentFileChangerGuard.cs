@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClangPowerTools.SilentFile;
+using System;
 using System.Collections.Generic;
 
 namespace ClangPowerTools

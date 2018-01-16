@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 using IServiceProvider = System.IServiceProvider;
 using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
 
-namespace ClangPowerTools
+namespace ClangPowerTools.SilentFile
 {
   public class SilentFileChanger
   {
