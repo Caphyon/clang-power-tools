@@ -2,10 +2,9 @@
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using EnvDTE;
-using System.IO;
 using ClangPowerTools.DialogPages;
 using EnvDTE80;
+using ClangPowerTools.SilentFile;
 
 namespace ClangPowerTools
 {
@@ -132,13 +131,21 @@ namespace ClangPowerTools
         {
           AutomationUtil.SaveDirtyFiles(Package, DTEObj.Solution, DTEObj);
           CollectSelectedItems();
+
           mFileWatcher = new FileChangerWatcher();
-          using (var guard = new SilentFileChangerGuard())
+          var silentFileController = new SilentFileController();
+
+          using (var guard = silentFileController.GetSilentFileChangerGuard())
           {
             if (true == mTidyOptions.Fix || true == mTidyOptions.AutoTidyOnSave)
             {
               WatchFiles();
-              SilentFiles(guard);
+
+              FilePathCollector fileCollector = new FilePathCollector();
+              var filesPath = fileCollector.Collect(mItemsCollector.GetItems);
+
+              silentFileController.SilentFiles(Package, guard, filesPath);
+              silentFileController.SilentOpenFiles(Package, guard, DTEObj);
             }
             RunScript(OutputWindowConstants.kTidyCodeCommand, mForceTidyToFix, mTidyOptions, mTidyChecks, mTidyCustomChecks);
           }

@@ -114,7 +114,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SettingsPathBuilder.cs" />
-    <Compile Include="SilentFileChanger\SilentFileChangerEqualityComparer.cs" />
+    <Compile Include="SilentFile\SilentFileChangerEqualityComparer.cs" />
     <Compile Include="Items\IItem.cs" />
     <Compile Include="Items\ItemsCollector.cs" />
     <Compile Include="Output\OutputWindowConstants.cs" />
@@ -123,8 +123,8 @@
     <Compile Include="Script\PowerShellWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\SettingsCommand.cs" />
-    <Compile Include="SilentFileChanger\SilentFileChanger.cs" />
-    <Compile Include="SilentFileChanger\SilentFileChangerGuard.cs" />
+    <Compile Include="SilentFile\SilentFileChanger.cs" />
+    <Compile Include="SilentFile\SilentFileChangerGuard.cs" />
     <Compile Include="DialogPages\TidyChecks.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -143,6 +143,7 @@
     <Compile Include="ComboBoxConstants.cs" />
     <Compile Include="Convertors\ComboBoxConvertor.cs" />
     <Compile Include="Convertors\UseChecksFromConvertor.cs" />
+    <Compile Include="SilentFile\SilentFileController.cs" />
     <Compile Include="Vsix.cs" />
     <Compile Include="XmlSerializer.cs" />
   </ItemGroup>

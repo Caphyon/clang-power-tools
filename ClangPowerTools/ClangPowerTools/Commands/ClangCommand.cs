@@ -19,7 +19,8 @@ namespace ClangPowerTools
 
     private ErrorsManager mErrorsManager;
     private PowerShellWrapper mPowerShell = new PowerShellWrapper();
-    private ClangCompileTidyScript mScriptBuilder;
+    private ClangCompileTidyScript mCompileTidyScriptBuilder;
+    private ClangFormatScript mClangFormatScriptBuilder;
     private const string kVs15Version = "2017";
     private Dictionary<string, string> mVsVersions = new Dictionary<string, string>
     {
@@ -84,7 +85,7 @@ namespace ClangPowerTools
         mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
         foreach (var item in mItemsCollector.GetItems)
         {
-          var script = mScriptBuilder.GetScript(item, solutionPath);
+          var script = mCompileTidyScriptBuilder.GetScript(item, solutionPath);
           if (!mCommandsController.Running)
             break;
 

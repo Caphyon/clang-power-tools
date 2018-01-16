@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using ClangPowerTools.DialogPages;
+using ClangPowerTools.SilentFile;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -58,7 +59,16 @@ namespace ClangPowerTools.Commands
         {
           SaveActiveDocuments();
           CollectSelectedItems();
-          RunScript(OutputWindowConstants.kClangFormat);
+
+          var silentFileController = new SilentFileController();
+          using (var guard = silentFileController.GetSilentFileChangerGuard())
+          {
+            FilePathCollector fileCollector = new FilePathCollector();
+            var filesPath = fileCollector.Collect(mItemsCollector.GetItems);
+            silentFileController.SilentFiles(Package, guard, filesPath);
+
+            RunScript(mClangFormatPage);
+          }
         }
         catch (Exception exception)
         {

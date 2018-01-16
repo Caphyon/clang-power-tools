@@ -18,10 +18,11 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public void Collect(List<IItem> aItems)
+    public List<string> Collect(List<IItem> aItems)
     {
       foreach (var item in aItems)
         Add(item.GetPath());
+      return mFilesPath;
     }
 
     #endregion
