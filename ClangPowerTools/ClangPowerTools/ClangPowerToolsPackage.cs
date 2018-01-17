@@ -9,10 +9,13 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.CommandBars;
 using EnvDTE;
 using EnvDTE80;
+<<<<<<< HEAD
 using System.Reflection;
 using System.Xml;
 using System.IO;
 using System.Linq;
+=======
+>>>>>>> added clang format functionality by pressing the button
 
 namespace ClangPowerTools
 {

@@ -58,7 +58,7 @@ namespace ClangPowerTools.Commands
         try
         {
           SaveActiveDocuments();
-          CollectSelectedItems();
+          CollectSelectedItems(mClangFormatPage.FileExtensions, mClangFormatPage.SkipFiles);
 
           var silentFileController = new SilentFileController();
           using (var guard = silentFileController.GetSilentFileChangerGuard())
