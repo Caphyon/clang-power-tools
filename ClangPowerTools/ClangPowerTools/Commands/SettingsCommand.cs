@@ -44,7 +44,7 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
-    private void MenuItemCallback(object sender, EventArgs e)
+    private void ShowSettings(object sender, EventArgs e)
     {
       try
       {

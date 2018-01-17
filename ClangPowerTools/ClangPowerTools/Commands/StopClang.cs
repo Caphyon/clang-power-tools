@@ -46,7 +46,7 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
-    private void MenuItemCallback(object sender, EventArgs e)
+    private void StopClangCommand(object sender, EventArgs e)
     {
       try
       {
