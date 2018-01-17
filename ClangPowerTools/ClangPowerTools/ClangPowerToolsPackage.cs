@@ -89,13 +89,31 @@ namespace ClangPowerTools
     {
       base.Initialize();
 
-      if (GetService(typeof(SVsShell)) is IVsShell shellService)
-        ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out mEventSinkCookie));
+      SubscribeToOnShellPropertyChange();
 
       //Settings command is always visible
       mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
 
       AdviseSolutionEvents();
+    }
+
+    #endregion
+
+    #region IVsShellPropertyEvents Helpers
+
+    // Subscribe to events
+    private void SubscribeToOnShellPropertyChange()
+    {
+      if (GetService(typeof(SVsShell)) is IVsShell shellService)
+        ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out mEventSinkCookie));
+    }
+
+    // Unsubscribe from events
+    private void UnsubscribeFromOnShellPropertyChange()
+    {
+      if (GetService(typeof(SVsShell)) is IVsShell shellService)
+        ErrorHandler.ThrowOnFailure(shellService.UnadviseShellPropertyChanges(mEventSinkCookie));
+      mEventSinkCookie = 0;
     }
 
     #endregion
@@ -107,14 +125,23 @@ namespace ClangPowerTools
       //Check if the toolbar was already activated
       var tidyChecks = (TidyChecks)this.GetDialogPage(typeof(TidyChecks));
       if (tidyChecks.ToolbarActivated)
+      {
+        UnsubscribeFromOnShellPropertyChange();
         return VSConstants.S_OK;
+      }
 
       // Handle the event if zombie state changes from true to false
       if ((int)__VSSPROPID.VSSPROPID_Zombie != propid)
+      {
+        UnsubscribeFromOnShellPropertyChange();
         return VSConstants.S_OK;
+      }
 
       if ((bool)propValue)
+      {
+        UnsubscribeFromOnShellPropertyChange();
         return VSConstants.S_OK;
+      }
 
       // Show the toolbar
       var dte = GetService(typeof(DTE)) as DTE2;
@@ -124,11 +151,7 @@ namespace ClangPowerTools
       tidyChecks.ToolbarActivated = true;
       tidyChecks.SaveSettingsToStorage();
 
-      // Unsubscribe from events
-      if (GetService(typeof(SVsShell)) is IVsShell shellService)
-        ErrorHandler.ThrowOnFailure(shellService.UnadviseShellPropertyChanges(mEventSinkCookie));
-      mEventSinkCookie = 0;
-
+      UnsubscribeFromOnShellPropertyChange();
       return VSConstants.S_OK;
     }
 
