@@ -1,5 +1,11 @@
 # Version History
 
+### Clang Power Tools 2.5.1
+*January 17, 2017*
+
+Bugs:
+* Fixed the unexpectedly Visual Studio session ending.
+
 ### Clang Power Tools 2.5
 *January 12, 2018*
 
