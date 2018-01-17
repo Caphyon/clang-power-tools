@@ -104,7 +104,6 @@ namespace ClangPowerTools.DialogPages
 
       this.Style = null == loadedConfig.Style?
         ComboBoxConstants.kFile : loadedConfig.Style;
-
     }
 
     #endregion
