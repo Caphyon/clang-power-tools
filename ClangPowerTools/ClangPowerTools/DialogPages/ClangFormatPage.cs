@@ -89,8 +89,8 @@ namespace ClangPowerTools.DialogPages
 
       this.EnableFormatOnSave = loadedConfig.EnableFormatOnSave;
 
-      this.FileExtensions = null == loadedConfig.FallbackStyle?
-        DefaultOptions.kFileExtensions : loadedConfig.FallbackStyle;
+      this.FileExtensions = null == loadedConfig.FileExtensions?
+        DefaultOptions.kFileExtensions : loadedConfig.FileExtensions;
 
       this.SkipFiles = null == loadedConfig.SkipFiles?
         DefaultOptions.kSkipFiles : loadedConfig.SkipFiles;
