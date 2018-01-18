@@ -18,6 +18,8 @@ namespace ClangPowerTools
     private TidyOptions mTidyOptions;
     private TidyChecks mTidyChecks;
     private TidyCustomChecks mTidyCustomChecks;
+    private ClangFormatPage mClangFormat;
+
     private FileChangerWatcher mFileWatcher;
     private FileOpener mFileOpener;
 
@@ -133,6 +135,7 @@ namespace ClangPowerTools
           CollectSelectedItems();
 
           mFileWatcher = new FileChangerWatcher();
+          mFileOpener = new FileOpener(DTEObj);
           var silentFileController = new SilentFileController();
 
           using (var guard = silentFileController.GetSilentFileChangerGuard())
@@ -147,7 +150,11 @@ namespace ClangPowerTools
               silentFileController.SilentFiles(Package, guard, filesPath);
               silentFileController.SilentOpenFiles(Package, guard, DTEObj);
             }
+<<<<<<< HEAD
             RunScript(OutputWindowConstants.kTidyCodeCommand, mForceTidyToFix, mTidyOptions, mTidyChecks, mTidyCustomChecks);
+=======
+            RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mTidyChecks, mTidyCustomChecks, mClangFormat);
+>>>>>>> automatically run clang format after clang tidy
           }
         }
         catch (Exception exception)
@@ -155,11 +162,15 @@ namespace ClangPowerTools
           VsShellUtilities.ShowMessageBox(Package, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
+<<<<<<< HEAD
         finally
         {
           mForceTidyToFix = false;
         }
       }).ContinueWith(tsk => mCommandsController.AfterExecute()); ;
+=======
+      }).ContinueWith(tsk => mCommandsController.AfterExecute());
+>>>>>>> automatically run clang format after clang tidy
     }
 
     #endregion

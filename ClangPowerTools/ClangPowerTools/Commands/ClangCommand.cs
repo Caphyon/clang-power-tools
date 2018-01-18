@@ -68,14 +68,15 @@ namespace ClangPowerTools
 
     #region Protected methods
 
-    protected void RunScript(string aCommandName, bool aForceTidyToFix, TidyOptions mTidyOptions = null,
-      TidyChecks mTidyChecks = null, TidyCustomChecks mTidyCustomChecks = null)
+
+    protected void RunScript(string aCommandName, bool aForceTidyToFix, TidyOptions mTidyOptions = null, 
+      TidyChecks mTidyChecks = null, TidyCustomChecks mTidyCustomChecks = null, ClangFormatPage aClangFormat = null)
     {
       try
       {
-        mScriptBuilder = new ClangCompileTidyScript();
-        mScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
-          mTidyCustomChecks, DTEObj, VsEdition, VsVersion, aForceTidyToFix);
+        mCompileTidyScriptBuilder = new ClangCompileTidyScript();
+        mCompileTidyScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
+          mTidyCustomChecks, aClangFormat, DTEObj, VsEdition, VsVersion, aForceTidyToFix);
 
         string solutionPath = DTEObj.Solution.FullName;
 
@@ -90,7 +91,7 @@ namespace ClangPowerTools
             break;
 
           var process = mPowerShell.Invoke(script, mRunningProcesses);
-
+          
           if (mOutputManager.MissingLlvm)
           {
             mOutputManager.AddMessage(ErrorParserConstants.kMissingLlvmMessage);
