@@ -29,7 +29,7 @@ namespace ClangPowerTools.Script
         ProjectItem projectItem = aItem.GetObject() as ProjectItem;
         string containingProject = projectItem.ContainingProject.FullName;
         script = $"{script} {ScriptConstants.kProject} ''{containingProject}'' " +
-          $"{ScriptConstants.kFile} {projectItem.Name} {ScriptConstants.kActiveConfiguration} " +
+          $"{ScriptConstants.kFile} ''{projectItem.Properties.Item("FullPath").Value}'' {ScriptConstants.kActiveConfiguration} " +
           $"''{ProjectConfiguration.GetConfiguration(projectItem.ContainingProject)}|{ProjectConfiguration.GetPlatform(projectItem.ContainingProject)}''";
       }
       else if (aItem is SelectedProject)
