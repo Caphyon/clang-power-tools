@@ -294,7 +294,7 @@ Add-Type -TypeDefinition @"
 
 Set-Variable -name kVStudioDefaultPlatformToolset -Value "v141" -option Constant
 
-Set-Variable -name "kMsbuildToPsRules" -option Constant `
+Set-Variable -name "kMsbuildExpressionToPsRules" -option Constant `
              -value    @(<# backticks are control characters in PS, replace them #>
                          ('`'                     , ''''                 )`
                          <# Temporarily replace     $( #>                 `
@@ -314,18 +314,24 @@ Set-Variable -name "kMsbuildToPsRules" -option Constant `
                        , ("([\s\)\'""])and"       , '$1 -and '           )`
                          <# Use only double quotes #>                     `
                        , ("\'"                    , '"'                  )`
-                       , ('"'                     , '""'                 )`
       , ("Exists\((.*?)\)(\s|$)"           , '(Exists($1))$2'            )`
       , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(HasTrailingSlash($1))$2'  )`
       , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'     )`
                        )
+
+Set-Variable -name "kMsbuildConditionToPsRules" -option Constant `
+             -value   @(<# Use only double quotes #>                     `
+                         ("\'"                    , '"'                  )`
+                        <# We need to escape double quotes since we will eval() the condition #> `
+                       , ('"'                     , '""'                 )`
+                       )
   
-  Set-Variable -name "kRedundantSeparatorsReplaceRules" -option Constant `
-               -value @( <# handle multiple consecutive separators #>    `
-                      , (";+" , ";")                                     `
-                         <# handle separator at end                #>    `
+Set-Variable -name "kRedundantSeparatorsReplaceRules" -option Constant `
+              -value @( <# handle multiple consecutive separators #>    `
+                        (";+" , ";")                                     `
+                        <# handle separator at end                #>    `
                       , (";$" , "")                                      `
-                         <# handle separator at beginning          #>    `
+                        <# handle separator at beginning          #>    `
                       , ("^;" , "")                                      `
                       )
 
@@ -1086,7 +1092,7 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
 {  
   Write-Debug "Start evaluate MSBuild expression $expression"
 
-  foreach ($rule in $kMsbuildToPsRules)
+  foreach ($rule in $kMsbuildExpressionToPsRules)
   {
     $expression = $expression -replace $rule[0], $rule[1]
   }
@@ -1172,6 +1178,10 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
 function Evaluate-MSBuildCondition([Parameter(Mandatory=$true)][string] $condition)
 {
   Write-Debug "Evaluating condition $condition"
+  foreach ($rule in $kMsbuildConditionToPsRules)
+  {
+    $condition = $condition -replace $rule[0], $rule[1]
+  }
   $expression = Evaluate-MSBuildExpression -expression $condition -isCondition
 
   if ($expression -ieq "true")

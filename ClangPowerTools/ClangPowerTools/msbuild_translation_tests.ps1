@@ -10,6 +10,38 @@ $varB          = 1
 
 # -------------------------------------------------------------------------------------------------------------------
 
+Set-Variable -name "kMsbuildExpressionToPsRules" -option Constant `
+             -value    @(<# backticks are control characters in PS, replace them #>
+                         ('`'                     , ''''                 )`
+                         <# Temporarily replace     $( #>                 `
+                       , ('\$\s*\('               , '!@#'                )`
+                         <# Escape $                   #>                 `
+                       , ('\$'                    , '`$'                 )`
+                         <# Put back $(                #>                 `
+                       , ('!@#'                   , '$('                 )`
+                         <# Various operators          #>                 `
+                       , ("([\s\)\'""])!="        , '$1 -ne '            )`
+                       , ("([\s\)\'""])<="        , '$1 -le '            )`
+                       , ("([\s\)\'""])>="        , '$1 -ge '            )`
+                       , ("([\s\)\'""])=="        , '$1 -eq '            )`
+                       , ("([\s\)\'""])<"         , '$1 -lt '            )`
+                       , ("([\s\)\'""])>"         , '$1 -gt '            )`
+                       , ("([\s\)\'""])or"        , '$1 -or '            )`
+                       , ("([\s\)\'""])and"       , '$1 -and '           )`
+                         <# Use only double quotes #>                     `
+                       , ("\'"                    , '"'                  )`
+      , ("Exists\((.*?)\)(\s|$)"           , '(Exists($1))$2'            )`
+      , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(HasTrailingSlash($1))$2'  )`
+      , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'     )`
+                       )
+
+Set-Variable -name "kMsbuildConditionToPsRules"  -option Constant `
+             -value   @(<# Use only double quotes #>                     `
+                         ("\'"                    , '"'                 )`
+                        <# We need to escape double quotes since we will eval() the condition #> `
+                       , ('"'                     , '""'                )`
+                       )
+
 function GetRegValue([Parameter(Mandatory=$true)][string] $regPath)
 {
   [int] $separatorIndex = $regPath.IndexOf('@')
@@ -53,40 +85,22 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
 {  
   Write-Debug "Start evaluate MSBuild expression $expression"
 
-  $msbuildToPsRules = (<# backticks are control characters in PS, replace them #>
-                         ('`'                     , ''''                 )`
-                       <# Temporarily replace     $( #>                   `
-                       , ('\$\s*\('               , '!@#'                )`
-                       <# Escape $                   #>                   `
-                       , ('\$'                    , '`$'                 )`
-                       <# Put back $(                #>                   `
-                       , ('!@#'                   , '$('                 )`
-                       <# Various operators          #>                   `
-                       , ("([\s\)\'""])!="        , '$1 -ne '            )`
-                       , ("([\s\)\'""])<="        , '$1 -le '            )`
-                       , ("([\s\)\'""])>="        , '$1 -ge '            )`
-                       , ("([\s\)\'""])=="        , '$1 -eq '            )`
-                       , ("([\s\)\'""])<"         , '$1 -lt '            )`
-                       , ("([\s\)\'""])>"         , '$1 -gt '            )`
-                       , ("([\s\)\'""])or"        , '$1 -or '            )`
-                       , ("([\s\)\'""])and"       , '$1 -and '           )`
-                       <# Use only double quotes #>                       `
-                       , ("\'"                    , '"'                  )`
-                       , ('"'                     , '""'                 )`
-      , ("Exists\((.*?)\)(\s|$)"           , "(Exists(`$1))`$2"          )`
-      , ("HasTrailingSlash\((.*?)\)(\s|$)" , "(HasTrailingSlash(`$1))`$2")`
-      , ("(\`$\()(Registry:)(.*?)(\))"     ,  '$$(GetRegValue("$3"))'  )`
-                       )
-  foreach ($rule in $msbuildToPsRules)
+  foreach ($rule in $kMsbuildExpressionToPsRules)
   {
     $expression = $expression -replace $rule[0], $rule[1]
+  }
+  
+  if ( !$isCondition -and ($expression.IndexOf('$') -lt 0))
+  {
+    # we can stop here, further processing is not required
+    return $expression
   }
   
   [int] $expressionStartIndex = -1
   [int] $openParantheses = 0
   for ([int] $i = 0; $i -lt $expression.Length; $i += 1)
   {
-    if ($expression.Substring($i, 1) -eq '(')# -and $expressionStartIndex -ge 0)
+    if ($expression.Substring($i, 1) -eq '(')
     {
       if ($i -gt 0 -and $expressionStartIndex -lt 0 -and $expression.Substring($i - 1, 1) -eq '$')
       {
@@ -133,23 +147,35 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
     }
   }
 
-  Write-Debug "Intermediate PS expression : $expression"
+  Write-Debug "Intermediate PS expression: $expression"
 
-  [string] $toInvoke = "(`$s = ""$expression"")"
-  if ($isCondition)
+  try
   {
-    $toInvoke = "(`$s = ""`$($expression)"")"
+    [string] $toInvoke = "(`$s = ""$expression"")"
+    if ($isCondition)
+    {
+      $toInvoke = "(`$s = ""`$($expression)"")"
+    }
+
+    $res = Invoke-Expression $toInvoke
+  }
+  catch
+  {
+    write-debug $_.Exception.Message
   }
 
-  $res = Invoke-Expression $toInvoke
-
-  Write-Debug "Evaluated expression to : $res"
+  Write-Debug "Evaluated expression to: $res"
 
   return $res
 }
 
 function Evaluate-MSBuildCondition([Parameter(Mandatory=$true)][string] $condition)
 {
+  Write-Debug "Evaluating condition $condition"
+  foreach ($rule in $kMsbuildConditionToPsRules)
+  {
+    $condition = $condition -replace $rule[0], $rule[1]
+  }
   $expression = Evaluate-MSBuildExpression -expression $condition -isCondition
 
   if ($expression -ieq "true")
@@ -161,8 +187,19 @@ function Evaluate-MSBuildCondition([Parameter(Mandatory=$true)][string] $conditi
   {
     return $false
   }
-  
-  return (Invoke-Expression $expression) -eq $true
+
+  [bool] $res = $false 
+  try
+  {
+    $res = (Invoke-Expression $expression) -eq $true
+  }
+  catch
+  {
+    Write-Debug $_.Exception.Message
+  }
+  Write-Debug "Evaluated condition to $res" 
+
+  return $res
 }
 
 Clear-Host
