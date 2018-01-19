@@ -858,9 +858,11 @@ Function Get-VisualStudio-Path()
 
 Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$false)][string] $stdafxDir)
 {
-  [string[]] $returnArray = ($IncludePath -split ";")                     | `
-                            Where-Object { ![string]::IsNullOrEmpty($_) } | `
-                            ForEach-Object { $_ -replace '\\$', '' }
+  [string[]] $returnArray = ($IncludePath -split ";")                                                  | `
+                            Where-Object { ![string]::IsNullOrEmpty($_) }                              | `
+                            ForEach-Object { Canonize-Path -base $ProjectDir -child $_ -ignoreErrors } | `
+                            Where-Object { ![string]::IsNullOrEmpty($_) }                              | `
+                            ForEach-Object { $_ -replace '\\$', '' }                                   
   if ($env:CPT_LOAD_ALL -eq '1')
   {
     return $returnArray
@@ -985,8 +987,7 @@ Function Get-Projects()
 
 Function Get-PchCppIncludeHeader([Parameter(Mandatory=$true)][string] $pchCppFile)
 {
-  [string] $vcxprojDir = Get-FileDirectory -filePath $global:vcxprojPath
-  [string] $cppPath = Canonize-Path -base $vcxprojDir -child $pchCppFile
+  [string] $cppPath = Canonize-Path -base $ProjectDir -child $pchCppFile
   [string] $fileContent = Get-Content -path $cppPath
 
   return [regex]::match($fileContent,'#include "(\S+)"').Groups[1].Value
@@ -1654,14 +1655,6 @@ Function Get-ProjectAdditionalIncludes()
 
   $data = Select-ProjectNodes $kVcxprojXpathAdditionalIncludes
   $tokens += ($data).InnerText -split ";"
-
-  $tokens = @(Get-SourceDirectory) + $returnArray
-  if ($tokens.Count -eq 1)
-  {
-    return $tokens
-  }
-
-  [string] $projDir = Get-FileDirectory($global:vcxprojPath)
   
   foreach ($token in $tokens)
   {
@@ -1670,7 +1663,7 @@ Function Get-ProjectAdditionalIncludes()
       continue
     }
     
-    [string] $includePath = Canonize-Path -base $projDir -child $token -ignoreErrors
+    [string] $includePath = Canonize-Path -base $ProjectDir -child $token -ignoreErrors
     if (![string]::IsNullOrEmpty($includePath))
     {
       $includePath -replace '\\$', ''
