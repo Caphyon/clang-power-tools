@@ -703,7 +703,7 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory=$false)][string] $pchCpp
                       Where-Object { ($_.Include -ne $null) -and
                                      ($pchDisabled -or ($_.Include -ne $pchCppName))
                                    }                                 |
-                      ForEach-Object { Canonize-Path -base (Get-FileDirectory($global:vcxprojPath)) `
+                      ForEach-Object { Canonize-Path -base ($ProjectDir) `
                                                      -child $_.Include }
   if ($files.Count -gt 0)
   {
@@ -838,9 +838,11 @@ Function Get-VisualStudio-Path()
 
 Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$false)][string] $stdafxDir)
 {
-  [string[]] $returnArray = ($IncludePath -split ";")                     | `
-                            Where-Object { ![string]::IsNullOrEmpty($_) } | `
-                            ForEach-Object { $_ -replace '\\$', '' }
+  [string[]] $returnArray = ($IncludePath -split ";")                                                  | `
+                            Where-Object { ![string]::IsNullOrEmpty($_) }                              | `
+                            ForEach-Object { Canonize-Path -base $ProjectDir -child $_ -ignoreErrors } | `
+                            Where-Object { ![string]::IsNullOrEmpty($_) }                              | `
+                            ForEach-Object { $_ -replace '\\$', '' }                                   
   if ($env:CPT_LOAD_ALL -eq '1')
   {
     return $returnArray
@@ -965,8 +967,7 @@ Function Get-Projects()
 
 Function Get-PchCppIncludeHeader([Parameter(Mandatory=$true)][string] $pchCppFile)
 {
-  [string] $vcxprojDir = Get-FileDirectory -filePath $global:vcxprojPath
-  [string] $cppPath = Canonize-Path -base $vcxprojDir -child $pchCppFile
+  [string] $cppPath = Canonize-Path -base $ProjectDir -child $pchCppFile
   [string] $fileContent = Get-Content -path $cppPath
 
   return [regex]::match($fileContent,'#include "(\S+)"').Groups[1].Value
@@ -985,7 +986,7 @@ Function Get-ProjectStdafxDir([Parameter(Mandatory=$true)][string] $pchHeaderNam
     $stdafxRelativePath = $pchHeaderName
   }
 
-  [string] $stdafxAbsolutePath = Canonize-Path -base (Get-FileDirectory($global:vcxprojPath)) `
+  [string] $stdafxAbsolutePath = Canonize-Path -base $ProjectDir `
                                                -child $stdafxRelativePath;
   [string] $stdafxDir = Get-FileDirectory($stdafxAbsolutePath)
 
@@ -1628,14 +1629,6 @@ Function Get-ProjectAdditionalIncludes()
 
   $data = Select-ProjectNodes $kVcxprojXpathAdditionalIncludes
   $tokens += ($data).InnerText -split ";"
-
-  $tokens = @(Get-SourceDirectory) + $returnArray
-  if ($tokens.Count -eq 1)
-  {
-    return $tokens
-  }
-
-  [string] $projDir = Get-FileDirectory($global:vcxprojPath)
   
   foreach ($token in $tokens)
   {
@@ -1644,7 +1637,7 @@ Function Get-ProjectAdditionalIncludes()
       continue
     }
     
-    [string] $includePath = Canonize-Path -base $projDir -child $token -ignoreErrors
+    [string] $includePath = Canonize-Path -base $ProjectDir -child $token -ignoreErrors
     if (![string]::IsNullOrEmpty($includePath))
     {
       $includePath -replace '\\$', ''
