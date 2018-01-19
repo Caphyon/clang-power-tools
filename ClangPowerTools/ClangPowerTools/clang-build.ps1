@@ -1433,6 +1433,13 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
     }
   }
 
+  if ($node.Name -ieq "ClCompile" -or $node.Name -ieq "ClInclude")
+  {
+    [string] $expandedAttr = Evaluate-MSBuildExpression $node.GetAttribute("Include")
+    $node.Attributes["Include"].Value = $expandedAttr
+    return
+  }
+
   if ($node.Name -ieq "Choose")
   {
     HandleChooseNode $chooseChild
