@@ -9,13 +9,10 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.CommandBars;
 using EnvDTE;
 using EnvDTE80;
-<<<<<<< HEAD
 using System.Reflection;
 using System.Xml;
 using System.IO;
 using System.Linq;
-=======
->>>>>>> added clang format functionality by pressing the button
 
 namespace ClangPowerTools
 {
@@ -71,6 +68,10 @@ namespace ClangPowerTools
     private SettingsCommand mSettingsCmd = null;
     private ClangFormatCommand clangFormatCmd = null;
 
+    private Events mDteEvents;
+    private DocumentEvents mDocumentEvents;
+    private DTE2 mDte;
+
     #endregion
 
     #endregion
@@ -98,6 +99,7 @@ namespace ClangPowerTools
     /// </summary>
     protected override void Initialize()
     {
+<<<<<<< HEAD
       try
       {
         base.Initialize();
@@ -106,6 +108,13 @@ namespace ClangPowerTools
 
         //Settings command is always visible
         mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
+=======
+      base.Initialize();
+
+      //Settings command is always visible
+      mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
+      mDte = GetService(typeof(DTE)) as DTE2;
+>>>>>>> added format on save mechanism
 
         var dte = GetService(typeof(DTE)) as DTE2;
         mBuildEvents = dte.Events.BuildEvents;
@@ -292,5 +301,6 @@ namespace ClangPowerTools
     }
 
     #endregion
+
   }
 }
