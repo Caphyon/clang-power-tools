@@ -1026,6 +1026,24 @@ Function Get-Project-PchCpp()
   return $pchCppRelativePath
 }
 
+Function Get-ClangIncludeDirectories( [Parameter(Mandatory=$false)][string[]] $includeDirectories
+                                    , [Parameter(Mandatory=$false)][string[]] $additionalIncludeDirectories
+                                    )
+{
+  [string[]] $returnDirs = @()
+
+  foreach ($includeDir in $includeDirectories)
+  {
+    $returnDirs += "-isystem""$includeDir"""
+  }
+  foreach ($includeDir in $additionalIncludeDirectories)
+  {
+    $returnDirs += "-I""$includeDir"""
+  }
+
+  return $returnDirs
+}
+
 Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
                      , [Parameter(Mandatory=$false)][string[]] $includeDirectories
                      , [Parameter(Mandatory=$false)][string[]] $additionalIncludeDirectories
@@ -1051,15 +1069,9 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
                                   ,$kClangFlagNoUnusedArg
                                   ,$preprocessorDefinitions
                                   )
-  
-  foreach ($includeDir in $includeDirectories)
-  {
-    $compilationFlags += "-isystem""$includeDir"""
-  }
-  foreach ($includeDir in $additionalIncludeDirectories)
-  {
-    $compilationFlags += "-I""$includeDir"""
-  }
+
+  $compilationFlags += Get-ClangIncludeDirectories -includeDirectories           $includeDirectories `
+                                                   -additionalIncludeDirectories $additionalIncludeDirectories
 
   Write-Verbose "INVOKE: ""$($global:llvmLocation)\$kClangCompiler"" $compilationFlags"
 
@@ -1712,14 +1724,8 @@ Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $prep
                           , $preprocessorDefinitions
                           )
 
-  foreach ($includeDir in $includeDirectories)
-  {
-    $projectCompileArgs += "-isystem""$includeDir"""
-  }
-  foreach ($includeDir in $additionalIncludeDirectories)
-  {
-    $projectCompileArgs += "-I""$includeDir"""
-  }
+  $projectCompileArgs += Get-ClangIncludeDirectories -includeDirectories           $includeDirectories `
+                                                     -additionalIncludeDirectories $additionalIncludeDirectories
 
   if ($forceIncludeFiles)
   {
@@ -1779,15 +1785,9 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
   {
     $tidyArgs += $kClangTidyFlags
   }
-
-  foreach ($includeDir in $includeDirectories)
-  {
-    $tidyArgs += "-isystem""$includeDir"""
-  }
-  foreach ($includeDir in $additionalIncludeDirectories)
-  {
-    $tidyArgs += "-I""$includeDir"""
-  }
+  
+  $tidyArgs += Get-ClangIncludeDirectories -includeDirectories           $includeDirectories `
+                                           -additionalIncludeDirectories $additionalIncludeDirectories
   
   # We reuse flags used for compilation and preprocessor definitions.
   $tidyArgs += @(Get-ClangCompileFlags)
