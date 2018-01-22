@@ -13,6 +13,8 @@ using System.Reflection;
 using System.Xml;
 using System.IO;
 using System.Linq;
+using System.Windows.Interop;
+using System.Windows.Threading;
 
 namespace ClangPowerTools
 {
@@ -67,10 +69,11 @@ namespace ClangPowerTools
     private StopClang mStopClang = null;
     private SettingsCommand mSettingsCmd = null;
     private ClangFormatCommand clangFormatCmd = null;
-
+    private ClangFormatPage mClangFormatPage;
     private Events mDteEvents;
     private DocumentEvents mDocumentEvents;
     private DTE2 mDte;
+    private int mDocumentSavedSubscriptionCounter = 0;
 
     #endregion
 
@@ -99,22 +102,14 @@ namespace ClangPowerTools
     /// </summary>
     protected override void Initialize()
     {
-<<<<<<< HEAD
       try
       {
         base.Initialize();
 
         mRunningDocTableEvents = new RunningDocTableEvents(this);
-
+      
         //Settings command is always visible
         mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
-=======
-      base.Initialize();
-
-      //Settings command is always visible
-      mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
-      mDte = GetService(typeof(DTE)) as DTE2;
->>>>>>> added format on save mechanism
 
         var dte = GetService(typeof(DTE)) as DTE2;
         mBuildEvents = dte.Events.BuildEvents;
@@ -198,17 +193,15 @@ namespace ClangPowerTools
     {
       try
       {
-        //Load the rest of the commands when a solution is loaded
-
         if (null == mTidyCmd)
           mTidyCmd = new TidyCommand(this, CommandSet, CommandIds.kTidyId);
 
         if (null == mCompileCmd)
           mCompileCmd = new CompileCommand(this, CommandSet, CommandIds.kCompileId);
-	
-	      if(null == clangFormatCmd)
-		      clangFormatCmd = new ClangFormatCommand(this, CommandSet, CommandIds.kClangFormat);
-	  
+
+        if (null == mClangFormatCmd)
+          mClangFormatCmd = new ClangFormatCommand(this, CommandSet, CommandIds.kClangFormat);
+
         if (null == mStopClang)
           mStopClang = new StopClang(this, CommandSet, CommandIds.kStopClang);
 
@@ -231,9 +224,9 @@ namespace ClangPowerTools
         mCommandEvents.BeforeExecute += mTidyCmd.CommandEventsBeforeExecute;
 
         mBuildEvents.OnBuildDone += mCompileCmd.OnBuildDone;
+
         mRunningDocTableEvents.BeforeSave += mTidyCmd.OnBeforeSave;
-
-
+        mRunningDocTableEvents.BeforeSave += mClangFormatCmd.OnBeforeSave;
       }
       catch (Exception)
       {

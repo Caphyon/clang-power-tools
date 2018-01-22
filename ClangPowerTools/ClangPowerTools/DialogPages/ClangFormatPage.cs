@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Convertors;
+using System;
 using System.ComponentModel;
 
 namespace ClangPowerTools.DialogPages
@@ -9,6 +10,9 @@ namespace ClangPowerTools.DialogPages
 
     private const string kGeneralSettingsFileName = "FormatConfiguration.config";
     private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
+    private bool mEnableFormatOnSave;
+
+    public event EventHandler<bool> ClangFormatActivated;
 
     #endregion
 
@@ -19,7 +23,21 @@ namespace ClangPowerTools.DialogPages
     [Category("Format On Save")]
     [DisplayName("Enable")]
     [Description("")]
-    public bool EnableFormatOnSave { get; set; }
+    public bool EnableFormatOnSave
+    {
+      get { return mEnableFormatOnSave; }
+      set
+      {
+        mEnableFormatOnSave = value;
+        OnClangFormatActivated(value);
+      }
+    }
+
+    private void OnClangFormatActivated(bool aValue)
+    {
+      if (null != ClangFormatActivated)
+        ClangFormatActivated(this, aValue);
+    }
 
     [Category("Format On Save")]
     [DisplayName("File extensions")]
@@ -58,13 +76,6 @@ namespace ClangPowerTools.DialogPages
     public string Style { get; set; }
 
     #endregion
-
-    public ClangFormatPage Clone()
-    {
-      // Use MemberwiseClone to copy value types.
-      var clone = (ClangFormatPage)MemberwiseClone();
-      return clone;
-    }
 
     public override void SaveSettingsToStorage()
     {

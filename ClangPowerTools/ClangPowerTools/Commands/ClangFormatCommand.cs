@@ -52,7 +52,6 @@ namespace ClangPowerTools.Commands
     /// <param name="e">Event args.</param>
     private void RunClangFormat(object sender, EventArgs e)
     {
-      mCommandsController.Running = true;
       var task = System.Threading.Tasks.Task.Run(() =>
       {
         try
@@ -75,7 +74,7 @@ namespace ClangPowerTools.Commands
           VsShellUtilities.ShowMessageBox(Package, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
-      }).ContinueWith(tsk => mCommandsController.AfterExecute());
+      });
     }
 
     #endregion
