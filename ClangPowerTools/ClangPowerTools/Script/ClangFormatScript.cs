@@ -15,7 +15,7 @@ namespace ClangPowerTools.Script
       mParameters = string.Empty;
 
       if (null != aClangFormatPage.AssumeFilename && !string.IsNullOrWhiteSpace(aClangFormatPage.AssumeFilename))
-        mParameters = $"{mParameters} {ScriptConstants.kFallbackStyle}={aClangFormatPage.AssumeFilename}";
+        mParameters = $"{mParameters} {ScriptConstants.kAssumeFilename}={aClangFormatPage.AssumeFilename}";
 
       if (null != aClangFormatPage.FallbackStyle && !string.IsNullOrWhiteSpace(aClangFormatPage.FallbackStyle)
         && aClangFormatPage.FallbackStyle != ComboBoxConstants.kNone)
