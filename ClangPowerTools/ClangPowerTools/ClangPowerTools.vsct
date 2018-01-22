@@ -57,7 +57,7 @@
       </Button>
 
       <Button guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0002" type="Button">
-        <Icon guid="guidImageTidy" id="Tidy" />
+        <Icon guid="guidImageFormat" id="Format" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Clang Format</ButtonText>
@@ -122,9 +122,10 @@
       <Bitmap guid="guidImages" href="Resources\Icon.png" usedList="bmpPic1" />
       <Bitmap guid="guidImageTidy" href="Resources\TidyIcon.png" usedList="Tidy" />
       <Bitmap guid="guidImageCompile" href="Resources\CompileIcon.png" usedList="Compile" />
+      <Bitmap guid="guidImageFormat" href="Resources\ClangFormatIcon.png" usedList="Format" />
       <Bitmap guid="guidImageStopClang" href="Resources\StopCommandIcon.png" usedList="StopClang" />
       <Bitmap guid="guidImageSettings" href="Resources\SettingsIcon.png" usedList="Settings" />
-
+      
     </Bitmaps>
 
   </Commands>
@@ -240,6 +241,10 @@
     
     <GuidSymbol name="guidImageSettings" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70f}">
       <IDSymbol name="Settings" value="1" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidImageFormat" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c71a}">
+      <IDSymbol name="Format" value="1" />
     </GuidSymbol>
 
     <GuidSymbol value="{e354bc96-69a2-474c-8ab1-a84283a4e077}" name="guidImages1">
