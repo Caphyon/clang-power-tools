@@ -40,6 +40,11 @@ namespace ClangPowerTools
     [TypeConverter(typeof(UseChecksFromConvertor))]
     public string UseChecksFrom { get; set; }
 
+    [Category(" Tidy")]
+    [DisplayName("Format after tidy")]
+    [Description("")]
+    public bool FormatAfterTidy { get; set; }
+
     #endregion
 
     #region DialogPage Save and Load implementation 
