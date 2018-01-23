@@ -13,6 +13,7 @@ namespace ClangPowerTools
 
     protected static CommandsController mCommandsController = null;
     protected ItemsCollector mItemsCollector;
+    protected FilePathCollector mFileCollector;
     protected static RunningProcesses mRunningProcesses = new RunningProcesses();
     protected List<string> mDirectoriesPath = new List<string>();
     protected static OutputManager mOutputManager;
@@ -68,7 +69,6 @@ namespace ClangPowerTools
     #endregion
 
     #region Protected methods
-
 
     protected void RunScript(string aCommandName, bool aForceTidyToFix, TidyOptions mTidyOptions = null, 
       TidyChecks mTidyChecks = null, TidyCustomChecks mTidyCustomChecks = null, ClangFormatPage aClangFormat = null)

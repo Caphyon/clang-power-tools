@@ -68,7 +68,7 @@ namespace ClangPowerTools
     private TidyCommand mTidyCmd = null;
     private StopClang mStopClang = null;
     private SettingsCommand mSettingsCmd = null;
-    private ClangFormatCommand clangFormatCmd = null;
+    private ClangFormatCommand mClangFormatCmd = null;
     private ClangFormatPage mClangFormatPage;
     private Events mDteEvents;
     private DocumentEvents mDocumentEvents;

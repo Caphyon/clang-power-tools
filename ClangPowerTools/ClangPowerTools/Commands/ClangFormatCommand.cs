@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Linq;
+using System.Windows.Interop;
+using System.Windows.Threading;
 using ClangPowerTools.DialogPages;
 using ClangPowerTools.SilentFile;
+using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -15,7 +20,7 @@ namespace ClangPowerTools.Commands
     #region Members
 
     private ClangFormatPage mClangFormatPage;
-
+    private bool mFormatAllActiveDocuments = false;
     #endregion
 
     #region Constructor
@@ -41,7 +46,26 @@ namespace ClangPowerTools.Commands
 
     #endregion
 
-    #region  Methods
+    #region Public methods
+
+    public void DocumentOnSave(Document aDocument)
+    {
+      try
+      {
+        var dispatcher = HwndSource.FromHwnd((IntPtr)DTEObj.MainWindow.HWnd).RootVisual.Dispatcher;
+        dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+        {
+          RunClangFormat(new object(), new EventArgs());
+        }));
+      }
+      catch (Exception) { }
+    }
+
+    public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action) => mFormatAllActiveDocuments = true;
+
+    #endregion
+
+    #region Private methods
 
     /// <summary>
     /// This function is the callback used to execute the command when the menu item is clicked.
@@ -57,16 +81,21 @@ namespace ClangPowerTools.Commands
         try
         {
           SaveActiveDocuments();
-          CollectSelectedItems(mClangFormatPage.FileExtensions, mClangFormatPage.SkipFiles);
+          var selectedItems = CollectSelectedItems(mClangFormatPage.FileExtensions, mClangFormatPage.SkipFiles);
 
           var silentFileController = new SilentFileController();
           using (var guard = silentFileController.GetSilentFileChangerGuard())
           {
-            FilePathCollector fileCollector = new FilePathCollector();
-            var filesPath = fileCollector.Collect(mItemsCollector.GetItems);
-            silentFileController.SilentFiles(Package, guard, filesPath);
+            mFileCollector = new FilePathCollector();
+            var filesPath = mFileCollector.Collect(selectedItems).ToList();
 
-            RunScript(mClangFormatPage);
+            if (mFormatAllActiveDocuments)
+              filesPath.AddRange(mFileCollector.Collect(DTEObj.Documents));
+
+            mFormatAllActiveDocuments = false;
+
+            silentFileController.SilentFiles(Package, guard, filesPath);
+            RunScript(mClangFormatPage, filesPath);
           }
         }
         catch (Exception exception)
