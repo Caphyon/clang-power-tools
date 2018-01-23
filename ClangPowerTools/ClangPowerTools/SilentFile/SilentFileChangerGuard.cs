@@ -30,7 +30,7 @@ namespace ClangPowerTools
       mFileChangers.Add(aFileChanger);
     }
 
-    public void AddRange(IServiceProvider aServiceProvider, List<string> aFilesPath)
+    public void AddRange(IServiceProvider aServiceProvider, IEnumerable<string> aFilesPath)
     {
       foreach (string filePath in aFilesPath)
         this.Add(new SilentFileChanger(aServiceProvider, filePath, true));

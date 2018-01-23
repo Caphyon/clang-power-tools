@@ -11,7 +11,7 @@ namespace ClangPowerTools.SilentFile
   {
     public SilentFileChangerGuard GetSilentFileChangerGuard() => new SilentFileChangerGuard();
 
-    public void SilentFiles(IServiceProvider aServiceProvider, SilentFileChangerGuard aGuard, List<string> aFilesPath)
+    public void SilentFiles(IServiceProvider aServiceProvider, SilentFileChangerGuard aGuard, IEnumerable<string> aFilesPath)
     {
       // silent all selected files
       aGuard.AddRange(aServiceProvider, aFilesPath);
