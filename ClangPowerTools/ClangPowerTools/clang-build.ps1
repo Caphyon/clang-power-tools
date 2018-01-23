@@ -699,12 +699,21 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory=$false)][string] $pchCpp
 {
   [Boolean] $pchDisabled = [string]::IsNullOrEmpty($pchCppName)
 
-  [string[]] $files = Select-ProjectNodes($kVcxprojXpathCompileFiles) |
+  [string[]] $projectEntries = Select-ProjectNodes($kVcxprojXpathCompileFiles) | `
                       Where-Object { ($_.Include -ne $null) -and
                                      ($pchDisabled -or ($_.Include -ne $pchCppName))
-                                   }                                 |
-                      ForEach-Object { Canonize-Path -base (Get-FileDirectory($global:vcxprojPath)) `
-                                                     -child $_.Include }
+                                   }                                           | `
+                      Select-Object -Property "Include" -ExpandProperty "Include"
+  [string[]] $files = @()
+  foreach ($entry in $projectEntries)
+  {
+    [string[]] $matchedFiles = Canonize-Path -base $ProjectDir -child $entry
+    if ($matchedFiles.Count -gt 0)
+    {
+      $files += $matchedFiles
+    }
+  }
+
   if ($files.Count -gt 0)
   {
     $files = $files | Where-Object { ! (Should-IgnoreFile -file $_) }
@@ -717,7 +726,17 @@ Function Get-ProjectHeaders()
 {
   [string[]] $headers = Select-ProjectNodes($kVcxprojXpathHeaders) | ForEach-Object {$_.Include }
 
-  return $headers
+  [string[]] $headerPaths = @()
+
+  foreach ($headerEntry in $headers)
+  {
+    [string[]] $paths = Canonize-Path -base $ProjectDir -child $headerEntry -ignoreErrors
+    if ($paths.Count -gt 0)
+    {
+      $headerPaths += $paths
+    }
+  }
+  return $headerPaths
 }
 
 Function Get-Project-SDKVer()
@@ -972,15 +991,14 @@ Function Get-PchCppIncludeHeader([Parameter(Mandatory=$true)][string] $pchCppFil
 Function Get-ProjectStdafxDir([Parameter(Mandatory=$true)][string] $pchHeaderName)
 {
   [string[]] $projectHeaders = Get-ProjectHeaders
-  [string] $stdafxRelativePath = $projectHeaders | Where-Object { $_ -cmatch $pchHeaderName }
-  if ([string]::IsNullOrEmpty($stdafxRelativePath))
+  [string] $stdafxPath = $projectHeaders | Where-Object { (Get-FileName -path $_) -cmatch $pchHeaderName }
+  if ([string]::IsNullOrEmpty($stdafxPath))
   {
-    $stdafxRelativePath = $pchHeaderName
+    $stdafxPath = Canonize-Path -base $ProjectDir `
+                                -child $pchHeaderName
   }
 
-  [string] $stdafxAbsolutePath = Canonize-Path -base (Get-FileDirectory($global:vcxprojPath)) `
-                                               -child $stdafxRelativePath;
-  [string] $stdafxDir = Get-FileDirectory($stdafxAbsolutePath)
+  [string] $stdafxDir = Get-FileDirectory($stdafxPath)
 
   return $stdafxDir
 }
