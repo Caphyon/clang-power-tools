@@ -1620,7 +1620,7 @@ Function Get-ProjectPreprocessorDefines()
   # make sure we add the required prefix and escape double quotes
   [string[]]$defines = ( $tokens             | `
                          Where-Object { $_ } | `
-                         ForEach-Object { ($kClangDefinePrefix + $_) -replace '"','"""' } )
+                         ForEach-Object { ($kClangDefinePrefix + $_) -replace '"','""' } )
 
   if (Is-Project-Unicode)
   {
