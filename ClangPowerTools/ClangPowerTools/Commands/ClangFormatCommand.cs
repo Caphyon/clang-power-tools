@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
 using System.Windows.Interop;
@@ -21,6 +20,7 @@ namespace ClangPowerTools.Commands
 
     private ClangFormatPage mClangFormatPage;
     private bool mFormatAllActiveDocuments = false;
+
     #endregion
 
     #region Constructor
