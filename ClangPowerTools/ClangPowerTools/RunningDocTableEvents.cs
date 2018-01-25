@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace ClangPowerTools
 {
-  class RunningDocTableEvents : IVsRunningDocTableEvents3
+  public class RunningDocTableEvents : IVsRunningDocTableEvents3
   {
     #region Members
 
