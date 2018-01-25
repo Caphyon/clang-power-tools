@@ -6,6 +6,7 @@ using System.Windows.Threading;
 using ClangPowerTools.DialogPages;
 using ClangPowerTools.SilentFile;
 using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -20,6 +21,7 @@ namespace ClangPowerTools.Commands
 
     private ClangFormatPage mClangFormatPage;
     private bool mFormatAllActiveDocuments = false;
+    private Commands2 mCommands;
 
     #endregion
 
@@ -33,6 +35,7 @@ namespace ClangPowerTools.Commands
     public ClangFormatCommand(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
       mClangFormatPage = (ClangFormatPage)Package.GetDialogPage(typeof(ClangFormatPage));
+      mCommands = DTEObj.Commands as Commands2;
 
       if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
@@ -48,6 +51,7 @@ namespace ClangPowerTools.Commands
 
     #region Public methods
 
+    // Run clang-format when a file was saved
     public void DocumentOnSave(Document aDocument)
     {
       try
@@ -61,11 +65,37 @@ namespace ClangPowerTools.Commands
       catch (Exception) { }
     }
 
-    public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action) => mFormatAllActiveDocuments = true;
+    public void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
+    {
+      string commandName = GetCommandName(aGuid, aId);
+      if (CommandsName.kCommands.Contains(commandName))
+        mFormatAllActiveDocuments = true;
+    }
+
+    //public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action) => mFormatAllActiveDocuments = true;
+
+    // public void DebuggerEventsOnEnterRunMode(dbgEventReason Reason) => mFormatAllActiveDocuments = true;
 
     #endregion
 
     #region Private methods
+
+    private string GetCommandName(string aGuid, int aId)
+    {
+      if (null == aGuid)
+        return "null";
+
+      if (null == mCommands)
+        return string.Empty;
+
+      try
+      {
+        return mCommands.Item(aGuid, aId).Name;
+      }
+      catch (System.Exception) { }
+
+      return string.Empty;
+    }
 
     /// <summary>
     /// This function is the callback used to execute the command when the menu item is clicked.
@@ -92,8 +122,6 @@ namespace ClangPowerTools.Commands
             if (mFormatAllActiveDocuments)
               filesPath.AddRange(mFileCollector.Collect(DTEObj.Documents));
 
-            mFormatAllActiveDocuments = false;
-
             silentFileController.SilentFiles(Package, guard, filesPath);
             RunScript(mClangFormatPage, filesPath);
           }
@@ -102,6 +130,10 @@ namespace ClangPowerTools.Commands
         {
           VsShellUtilities.ShowMessageBox(Package, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+        }
+        finally
+        {
+          mFormatAllActiveDocuments = false;
         }
       });
     }

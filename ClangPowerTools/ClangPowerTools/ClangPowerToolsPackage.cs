@@ -74,6 +74,9 @@ namespace ClangPowerTools
     private DocumentEvents mDocumentEvents;
     private DTE2 mDte;
     private int mDocumentSavedSubscriptionCounter = 0;
+    private DebuggerEvents mDebuggerEvents;
+    private CommandEvents mCommandEvents;
+
 
     #endregion
 
@@ -102,6 +105,7 @@ namespace ClangPowerTools
     /// </summary>
     protected override void Initialize()
     {
+<<<<<<< HEAD
       try
       {
         base.Initialize();
@@ -110,6 +114,12 @@ namespace ClangPowerTools
       
         //Settings command is always visible
         mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
+=======
+      base.Initialize();
+
+      //Settings command is always visible
+      mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
+>>>>>>> execute format on save on save file, save all, copile, build, rebuild, run debug commands
 
         var dte = GetService(typeof(DTE)) as DTE2;
         mBuildEvents = dte.Events.BuildEvents;
@@ -125,6 +135,53 @@ namespace ClangPowerTools
       {
       }
     }
+
+    private void OptionPage_ClangFormatActivated(object aOptionPage, bool aEnabled)
+    {
+      SubscribeToDocumentSaved(aEnabled);
+    }
+
+    #endregion
+
+    #region DocumentSaved event helpers
+
+    private void SubscribeToDocumentSaved(bool aSubscribe)
+    {
+      if (aSubscribe)
+      {
+        mDocumentEvents.DocumentSaved += mClangFormatCmd.DocumentOnSave;
+        ++mDocumentSavedSubscriptionCounter;
+      }
+      else
+      {
+        while (mDocumentSavedSubscriptionCounter > 0)
+        {
+          mDocumentEvents.DocumentSaved -= mClangFormatCmd.DocumentOnSave;
+          --mDocumentSavedSubscriptionCounter;
+        }
+      }
+    }
+
+    #endregion
+
+    #region IVsShellPropertyEvents Helpers
+
+    // Subscribe to events
+    private void SubscribeToOnShellPropertyChange()
+    {
+      if (GetService(typeof(SVsShell)) is IVsShell shellService)
+        ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out mEventSinkCookie));
+    }
+
+    // Unsubscribe from events
+    private void UnsubscribeFromOnShellPropertyChange()
+    {
+      if (GetService(typeof(SVsShell)) is IVsShell shellService)
+        ErrorHandler.ThrowOnFailure(shellService.UnadviseShellPropertyChanges(mEventSinkCookie));
+      mEventSinkCookie = 0;
+    }
+
+    #endregion
 
     #endregion
 
@@ -164,32 +221,32 @@ namespace ClangPowerTools
       return VSConstants.S_OK;
     }
 
-    public int OnQueryCloseProject(IVsHierarchy pHierarchy, int fRemoving, ref int pfCancel)
+    public int OnQueryCloseProject(IVsHierarchy aPHierarchy, int aFRemoving, ref int aPfCancel)
     {
       return VSConstants.S_OK;
     }
 
-    public int OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved)
+    public int OnBeforeCloseProject(IVsHierarchy aPHierarchy, int aFRemoved)
     {
       return VSConstants.S_OK;
     }
 
-    public int OnAfterLoadProject(IVsHierarchy pStubHierarchy, IVsHierarchy pRealHierarchy)
+    public int OnAfterLoadProject(IVsHierarchy aPStubHierarchy, IVsHierarchy aPRealHierarchy)
     {
       return VSConstants.S_OK;
     }
 
-    public int OnQueryUnloadProject(IVsHierarchy pRealHierarchy, ref int pfCancel)
+    public int OnQueryUnloadProject(IVsHierarchy aPRealHierarchy, ref int aPfCancel)
     {
       return VSConstants.S_OK;
     }
 
-    public int OnBeforeUnloadProject(IVsHierarchy pRealHierarchy, IVsHierarchy pStubHierarchy)
+    public int OnBeforeUnloadProject(IVsHierarchy aPRealHierarchy, IVsHierarchy aPStubHierarchy)
     {
       return VSConstants.S_OK;
     }
 
-    public int OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
+    public int OnAfterOpenSolution(object aPUnkReserved, int aFNewSolution)
     {
       try
       {
@@ -235,12 +292,12 @@ namespace ClangPowerTools
       return VSConstants.S_OK;
     }
 
-    public int OnQueryCloseSolution(object pUnkReserved, ref int pfCancel)
+    public int OnQueryCloseSolution(object aPUnkReserved, ref int aPfCancel)
     {
       return VSConstants.S_OK;
     }
 
-    public int OnBeforeCloseSolution(object pUnkReserved)
+    public int OnBeforeCloseSolution(object aPUnkReserved)
     {
       try
       {
@@ -257,7 +314,7 @@ namespace ClangPowerTools
       return VSConstants.S_OK;
     }
 
-    public int OnAfterCloseSolution(object pUnkReserved)
+    public int OnAfterCloseSolution(object aPUnkReserved)
     {
       return VSConstants.S_OK;
     }

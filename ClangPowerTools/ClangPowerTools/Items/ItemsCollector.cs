@@ -19,11 +19,10 @@ namespace ClangPowerTools
         ".c++",
         ".cp",
       };
-    private string mClangFormatFilesExtension;
-    private string mSkipFiles;
+    private string mClangFormatFilesExtension = null;
+    private string mSkipFiles = null;
     private List<IItem> mItems = new List<IItem>();
     private IServiceProvider mServiceProvider;
-    private bool mClangFormatMode = false;
 
     #endregion
 
