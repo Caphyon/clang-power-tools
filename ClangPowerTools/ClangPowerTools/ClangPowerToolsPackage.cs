@@ -69,14 +69,6 @@ namespace ClangPowerTools
     private StopClang mStopClang = null;
     private SettingsCommand mSettingsCmd = null;
     private ClangFormatCommand mClangFormatCmd = null;
-    private ClangFormatPage mClangFormatPage;
-    private Events mDteEvents;
-    private DocumentEvents mDocumentEvents;
-    private DTE2 mDte;
-    private int mDocumentSavedSubscriptionCounter = 0;
-    private DebuggerEvents mDebuggerEvents;
-    private CommandEvents mCommandEvents;
-
 
     #endregion
 
@@ -105,7 +97,6 @@ namespace ClangPowerTools
     /// </summary>
     protected override void Initialize()
     {
-<<<<<<< HEAD
       try
       {
         base.Initialize();
@@ -114,12 +105,6 @@ namespace ClangPowerTools
       
         //Settings command is always visible
         mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
-=======
-      base.Initialize();
-
-      //Settings command is always visible
-      mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
->>>>>>> execute format on save on save file, save all, copile, build, rebuild, run debug commands
 
         var dte = GetService(typeof(DTE)) as DTE2;
         mBuildEvents = dte.Events.BuildEvents;
@@ -135,53 +120,6 @@ namespace ClangPowerTools
       {
       }
     }
-
-    private void OptionPage_ClangFormatActivated(object aOptionPage, bool aEnabled)
-    {
-      SubscribeToDocumentSaved(aEnabled);
-    }
-
-    #endregion
-
-    #region DocumentSaved event helpers
-
-    private void SubscribeToDocumentSaved(bool aSubscribe)
-    {
-      if (aSubscribe)
-      {
-        mDocumentEvents.DocumentSaved += mClangFormatCmd.DocumentOnSave;
-        ++mDocumentSavedSubscriptionCounter;
-      }
-      else
-      {
-        while (mDocumentSavedSubscriptionCounter > 0)
-        {
-          mDocumentEvents.DocumentSaved -= mClangFormatCmd.DocumentOnSave;
-          --mDocumentSavedSubscriptionCounter;
-        }
-      }
-    }
-
-    #endregion
-
-    #region IVsShellPropertyEvents Helpers
-
-    // Subscribe to events
-    private void SubscribeToOnShellPropertyChange()
-    {
-      if (GetService(typeof(SVsShell)) is IVsShell shellService)
-        ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out mEventSinkCookie));
-    }
-
-    // Unsubscribe from events
-    private void UnsubscribeFromOnShellPropertyChange()
-    {
-      if (GetService(typeof(SVsShell)) is IVsShell shellService)
-        ErrorHandler.ThrowOnFailure(shellService.UnadviseShellPropertyChanges(mEventSinkCookie));
-      mEventSinkCookie = 0;
-    }
-
-    #endregion
 
     #endregion
 
@@ -311,6 +249,7 @@ namespace ClangPowerTools
       {
       }
 
+      mRunningDocTableEvents.BeforeSave -= mClangFormatCmd.OnBeforeSave;
       return VSConstants.S_OK;
     }
 

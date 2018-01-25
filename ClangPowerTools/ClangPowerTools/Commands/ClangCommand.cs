@@ -13,7 +13,7 @@ namespace ClangPowerTools
 
     protected static CommandsController mCommandsController = null;
     protected ItemsCollector mItemsCollector;
-    protected FilePathCollector mFileCollector;
+    protected FilePathCollector mFilePahtCollector;
     protected static RunningProcesses mRunningProcesses = new RunningProcesses();
     protected List<string> mDirectoriesPath = new List<string>();
     protected static OutputManager mOutputManager;

@@ -75,7 +75,6 @@
     <Compile Include="AutomationUtil.cs" />
     <Compile Include="ClangCheckAttribute.cs" />
     <Compile Include="Commands\ClangFormatCommand.cs" />
-    <Compile Include="Commands\CommandsName.cs" />
     <Compile Include="DialogOptions\ClangTidyOptions.cs" />
     <Compile Include="Commands\BasicCommand.cs" />
     <Compile Include="Commands\StopClang.cs" />

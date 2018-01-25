@@ -1,5 +1,4 @@
 ﻿using ClangPowerTools.Convertors;
-using System;
 using System.ComponentModel;
 
 namespace ClangPowerTools.DialogPages
@@ -10,9 +9,6 @@ namespace ClangPowerTools.DialogPages
 
     private const string kGeneralSettingsFileName = "FormatConfiguration.config";
     private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
-    private bool mEnableFormatOnSave;
-
-    public event EventHandler<bool> ClangFormatActivated;
 
     #endregion
 
@@ -23,21 +19,7 @@ namespace ClangPowerTools.DialogPages
     [Category("Format On Save")]
     [DisplayName("Enable")]
     [Description("Enable running clang-format when modified files are saved.")]
-    public bool EnableFormatOnSave
-    {
-      get { return mEnableFormatOnSave; }
-      set
-      {
-        mEnableFormatOnSave = value;
-        OnClangFormatActivated(value);
-      }
-    }
-
-    private void OnClangFormatActivated(bool aValue)
-    {
-      if (null != ClangFormatActivated)
-        ClangFormatActivated(this, aValue);
-    }
+    public bool EnableFormatOnSave { get; set; }
 
     [Category("Format On Save")]
     [DisplayName("File extensions")]

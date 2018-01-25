@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Linq;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using ClangPowerTools.DialogPages;
@@ -20,8 +20,9 @@ namespace ClangPowerTools.Commands
     #region Members
 
     private ClangFormatPage mClangFormatPage;
-    private bool mFormatAllActiveDocuments = false;
     private Commands2 mCommands;
+
+    private Document mDocument = null;
 
     #endregion
 
@@ -51,51 +52,29 @@ namespace ClangPowerTools.Commands
 
     #region Public methods
 
-    // Run clang-format when a file was saved
-    public void DocumentOnSave(Document aDocument)
+    public void OnBeforeSave(object sender, Document document)
     {
+      if (!mClangFormatPage.EnableFormatOnSave)
+        return;
+
+      if (!Vsix.IsDocumentDirty(document))
+        return;
+
       try
       {
         var dispatcher = HwndSource.FromHwnd((IntPtr)DTEObj.MainWindow.HWnd).RootVisual.Dispatcher;
         dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
         {
+          mDocument = document;
           RunClangFormat(new object(), new EventArgs());
         }));
       }
       catch (Exception) { }
     }
-
-    public void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
-    {
-      string commandName = GetCommandName(aGuid, aId);
-      if (CommandsName.kCommands.Contains(commandName))
-        mFormatAllActiveDocuments = true;
-    }
-
-    //public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action) => mFormatAllActiveDocuments = true;
-
-    // public void DebuggerEventsOnEnterRunMode(dbgEventReason Reason) => mFormatAllActiveDocuments = true;
-
+   
     #endregion
 
     #region Private methods
-
-    private string GetCommandName(string aGuid, int aId)
-    {
-      if (null == aGuid)
-        return "null";
-
-      if (null == mCommands)
-        return string.Empty;
-
-      try
-      {
-        return mCommands.Item(aGuid, aId).Name;
-      }
-      catch (System.Exception) { }
-
-      return string.Empty;
-    }
 
     /// <summary>
     /// This function is the callback used to execute the command when the menu item is clicked.
@@ -110,17 +89,16 @@ namespace ClangPowerTools.Commands
       {
         try
         {
-          SaveActiveDocuments();
-          var selectedItems = CollectSelectedItems(mClangFormatPage.FileExtensions, mClangFormatPage.SkipFiles);
-
           var silentFileController = new SilentFileController();
           using (var guard = silentFileController.GetSilentFileChangerGuard())
           {
-            mFileCollector = new FilePathCollector();
-            var filesPath = mFileCollector.Collect(selectedItems).ToList();
+            mFilePahtCollector = new FilePathCollector();
+            List<string> filesPath = new List<string>();
 
-            if (mFormatAllActiveDocuments)
-              filesPath.AddRange(mFileCollector.Collect(DTEObj.Documents));
+            if (null == mDocument)
+              return;
+
+            filesPath.Add(mFilePahtCollector.Collect(mDocument));
 
             silentFileController.SilentFiles(Package, guard, filesPath);
             RunScript(mClangFormatPage, filesPath);
@@ -133,7 +111,7 @@ namespace ClangPowerTools.Commands
         }
         finally
         {
-          mFormatAllActiveDocuments = false;
+          mDocument = null;
         }
       });
     }

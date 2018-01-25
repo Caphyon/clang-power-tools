@@ -23,6 +23,8 @@ namespace ClangPowerTools
       return filesPath;
     }
 
+    public string Collect(Document aDocument) => aDocument.FullName;
+
     #endregion
   }
 }
