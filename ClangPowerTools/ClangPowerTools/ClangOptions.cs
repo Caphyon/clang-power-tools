@@ -28,6 +28,8 @@ namespace ClangPowerTools
 
     public List<string> ClangFlags { get; set; } = new List<string>();
 
+    public string Version { get; set; }
+
     #endregion
 
 

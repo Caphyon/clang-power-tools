@@ -14,6 +14,7 @@ namespace ClangPowerTools
     private string[] mClangFlags = new string[] { };
     private const string kGeneralSettingsFileName = "GeneralConfiguration.config";
     private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
+
     #endregion
 
     #region Properties
@@ -61,6 +62,9 @@ namespace ClangPowerTools
     [TypeConverter(typeof(AdditionalIncludesConvertor))]
     public string AdditionalIncludes { get; set; }
 
+    [Browsable(false)]
+    public string Version { get; set; }
+
     #endregion
 
     #region DialogPage Save and Load implementation 
@@ -77,7 +81,8 @@ namespace ClangPowerTools
         TreatWarningsAsErrors = this.TreatWarningsAsErrors,
         AdditionalIncludes = this.AdditionalIncludes,
         VerboseMode = this.VerboseMode,
-        ClangFlags = this.ClangFlags.ToList()
+        ClangFlags = this.ClangFlags.ToList(),
+        Version = this.Version
       };
       SaveToFile(path, updatedConfig);
     }
@@ -106,6 +111,8 @@ namespace ClangPowerTools
 
       this.VerboseMode = loadedConfig.VerboseMode;
       this.ClangFlags = loadedConfig.ClangFlags.ToArray();
+
+      this.Version = loadedConfig.Version;
     }
 
     #endregion
