@@ -68,7 +68,7 @@ namespace ClangPowerTools
 
       mOutputManager = new OutputManager(DTEObj);
       InitPowerShell();
-      ClearWindows(aCommandName);
+      ClearWindows();
       mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
       foreach (var item in mItemsCollector.GetItems)
       {
@@ -116,7 +116,7 @@ namespace ClangPowerTools
       mPowerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;
     }
 
-    private void ClearWindows(string aCommandName)
+    private void ClearWindows()
     {
       mErrorsManager.Clear();
       mOutputManager.Clear();

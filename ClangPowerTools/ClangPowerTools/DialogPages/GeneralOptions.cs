@@ -99,15 +99,8 @@ namespace ClangPowerTools
       this.Continue = loadedConfig.Continue;
       this.TreatWarningsAsErrors = loadedConfig.TreatWarningsAsErrors;
 
-      if (null == AdditionalIncludes || string.Empty == AdditionalIncludes)
-      {
-        this.AdditionalIncludes = (true == TreatWarningsAsErrors ?
-          ComboBoxConstants.kSystemIncludeDirectories : ComboBoxConstants.kIncludeDirectories);
-      }
-      else
-      {
-        this.AdditionalIncludes = loadedConfig.AdditionalIncludes;
-      }
+      this.AdditionalIncludes = (null == AdditionalIncludes || string.Empty == AdditionalIncludes) ?
+        ComboBoxConstants.kIncludeDirectories : loadedConfig.AdditionalIncludes;
 
       this.VerboseMode = loadedConfig.VerboseMode;
       this.ClangFlags = loadedConfig.ClangFlags.ToArray();
