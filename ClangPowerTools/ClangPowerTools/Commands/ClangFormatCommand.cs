@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.IO;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using ClangPowerTools.DialogPages;
@@ -9,6 +10,7 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Text.Editor;
 
 namespace ClangPowerTools.Commands
 {
@@ -66,6 +68,7 @@ namespace ClangPowerTools.Commands
         dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
         {
           mDocument = document;
+          FormatEndFile();
           RunClangFormat(new object(), new EventArgs());
         }));
       }
@@ -121,6 +124,25 @@ namespace ClangPowerTools.Commands
         }
       });
     }
+
+    public void FormatEndFile()
+    {
+      IWpfTextView view = Vsix.GetCurrentView();
+
+      string filePath = Vsix.GetDocumentPath(view);
+      var path = Path.GetDirectoryName(filePath);
+
+      string text = view.TextBuffer.CurrentSnapshot.GetText();
+
+      string newline = text.Contains(Environment.NewLine) ? Environment.NewLine : "\n";
+      if (!text.EndsWith(newline))
+      {
+        view.TextBuffer.Insert(view.TextBuffer.CurrentSnapshot.Length, newline);
+        text += newline;
+      }
+    }
+
+
 
     #endregion
 
