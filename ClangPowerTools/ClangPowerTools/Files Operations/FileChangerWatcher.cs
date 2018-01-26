@@ -31,7 +31,9 @@ namespace ClangPowerTools
            | NotifyFilters.FileName | NotifyFilters.DirectoryName;
 
       // Only watch .cpp files.
-      mWatcher.Filter = "*.cpp";
+
+      foreach (var extension in ItemsCollector.kAcceptedExtensionTypes)
+        mWatcher.Filter = $"*{extension}";
 
       //Subdirectories will be also watched.
       mWatcher.IncludeSubdirectories = true;

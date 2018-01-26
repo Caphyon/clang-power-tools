@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.DialogPages;
-using EnvDTE;
+﻿using EnvDTE;
 using EnvDTE80;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private readonly List<string> kAcceptedExtensionTypes = new List<string>
+    public static readonly List<string> kAcceptedExtensionTypes = new List<string>
       { ".c",
         ".cpp",
         ".cc",
