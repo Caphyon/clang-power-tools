@@ -3,7 +3,10 @@ using Microsoft.VisualStudio.Shell;
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE;
+<<<<<<< HEAD
 using EnvDTE80;
+=======
+>>>>>>> created dedicated document operation class handler
 
 namespace ClangPowerTools
 {

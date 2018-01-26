@@ -6,6 +6,7 @@ using ClangPowerTools.DialogPages;
 using EnvDTE80;
 using ClangPowerTools.SilentFile;
 using System.Linq;
+using EnvDTE;
 
 namespace ClangPowerTools
 {

@@ -93,6 +93,7 @@
     <Compile Include="DialogPages\TidyCustomChecks.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DocumentsHandler.cs" />
     <Compile Include="Error\ErrorParser.cs" />
     <Compile Include="Error\ErrorParserConstants.cs" />
     <Compile Include="Error\ErrorsManager.cs" />

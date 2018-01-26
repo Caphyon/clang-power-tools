@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using ClangPowerTools.DialogPages;
 using ClangPowerTools.Script;
-using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 
 namespace ClangPowerTools

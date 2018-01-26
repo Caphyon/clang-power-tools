@@ -89,16 +89,22 @@ namespace ClangPowerTools.Commands
       {
         try
         {
+          // save the active document when the command was given from the clang-format button
+          // the save event will trigger the OnBeforeSave event handler
+          if (null == mDocument)
+          {
+            DocumentsHandler.SaveActiveDocuments((DTE)DTEObj);
+            return;
+          }
+
           var silentFileController = new SilentFileController();
           using (var guard = silentFileController.GetSilentFileChangerGuard())
           {
             mFilePahtCollector = new FilePathCollector();
-            List<string> filesPath = new List<string>();
-
-            if (null == mDocument)
-              return;
-
-            filesPath.Add(mFilePahtCollector.Collect(mDocument));
+            List<string> filesPath = new List<string>
+            {
+              mFilePahtCollector.Collect(mDocument)
+            };
 
             silentFileController.SilentFiles(Package, guard, filesPath);
             RunScript(mClangFormatPage, filesPath);
