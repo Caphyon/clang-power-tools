@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClangPowerTools.Convertors;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Web.UI.WebControls;
@@ -37,7 +38,7 @@ namespace ClangPowerTools
     [Category("General")]
     [DisplayName("Treat warnings as errors")]
     [Description("Treats all compiler warnings as errors. For a new project, it may be best to use in all compilations; resolving all warnings will ensure the fewest possible hard to find code defects.")]
-    public bool TreatWarningsAsErrors { get; set; } = true;
+    public bool TreatWarningsAsErrors { get; set; }
 
     [Category("General")]
     [DisplayName("Verbose mode")]
@@ -54,6 +55,12 @@ namespace ClangPowerTools
       set => mClangFlags = value;
     }
 
+    [Category("General")]
+    [DisplayName("Treat additional includes as")]
+    [Description("Specify how clang interprets project additional include directories: as regular includes ( -I ) or system includes ( -isystem ).")]
+    [TypeConverter(typeof(AdditionalIncludesConvertor))]
+    public string AdditionalIncludes { get; set; }
+
     #endregion
 
     #region DialogPage Save and Load implementation 
@@ -68,6 +75,7 @@ namespace ClangPowerTools
         FilesToIgnore = this.FilesToIgnore.ToList(),
         Continue = this.Continue,
         TreatWarningsAsErrors = this.TreatWarningsAsErrors,
+        AdditionalIncludes = this.AdditionalIncludes,
         VerboseMode = this.VerboseMode,
         ClangFlags = this.ClangFlags.ToList()
       };
@@ -85,6 +93,17 @@ namespace ClangPowerTools
       this.FilesToIgnore = loadedConfig.FilesToIgnore.ToArray();
       this.Continue = loadedConfig.Continue;
       this.TreatWarningsAsErrors = loadedConfig.TreatWarningsAsErrors;
+
+      if (null == AdditionalIncludes || string.Empty == AdditionalIncludes)
+      {
+        this.AdditionalIncludes = (true == TreatWarningsAsErrors ?
+          ComboBoxConstants.kSystemIncludeDirectories : ComboBoxConstants.kIncludeDirectories);
+      }
+      else
+      {
+        this.AdditionalIncludes = loadedConfig.AdditionalIncludes;
+      }
+
       this.VerboseMode = loadedConfig.VerboseMode;
       this.ClangFlags = loadedConfig.ClangFlags.ToArray();
     }
