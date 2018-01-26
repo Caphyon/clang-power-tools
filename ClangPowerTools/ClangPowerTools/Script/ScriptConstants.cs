@@ -17,6 +17,7 @@
     public const string kTreatWarningsAsErrors = "-Werror";
     public const string kParallel = "-parallel";
     public const string kVerboseMode = "-Verbose";
+    public const string kSystemIncludeDirectories = "-treat-sai";
 
     public const string kTidy = "-tidy";
     public const string kTidyFix = "-tidy-fix";
@@ -32,6 +33,7 @@
 
     public const string kHeaderFilter = "-header-filter";
     public const string kTidyFile = ".clang-tidy";
+
 
     #endregion
 

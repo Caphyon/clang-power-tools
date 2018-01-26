@@ -20,7 +20,9 @@ namespace ClangPowerTools
 
     public bool Continue { get; set; }
 
-    public bool TreatWarningsAsErrors { get; set; } = true;
+    public bool TreatWarningsAsErrors { get; set; }
+
+    public string AdditionalIncludes { get; set; }
 
     public bool VerboseMode { get; set; }
 

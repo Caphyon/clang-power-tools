@@ -19,6 +19,9 @@ namespace ClangPowerTools
       {"_", kCorrespondingHeader }
     };
 
+    public const string kIncludeDirectories = "include directories";
+    public const string kSystemIncludeDirectories = "system include directories";
+
     #endregion
 
   }
