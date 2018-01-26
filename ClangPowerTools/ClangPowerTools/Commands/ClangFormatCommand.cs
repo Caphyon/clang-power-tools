@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
+using System.Linq;
 using System.Windows.Interop;
 using System.Windows.Threading;
 using ClangPowerTools.DialogPages;
@@ -60,6 +61,12 @@ namespace ClangPowerTools.Commands
         return;
 
       if (!Vsix.IsDocumentDirty(document))
+        return;
+
+      if (!FileHasExtension(document.FullName, mClangFormatPage.FileExtensions))
+        return;
+
+      if (SkipFile(document.FullName, mClangFormatPage.SkipFiles))
         return;
 
       try
@@ -125,7 +132,7 @@ namespace ClangPowerTools.Commands
       });
     }
 
-    public void FormatEndFile()
+    private void FormatEndFile()
     {
       IWpfTextView view = Vsix.GetCurrentView();
 
@@ -142,7 +149,17 @@ namespace ClangPowerTools.Commands
       }
     }
 
+    private bool SkipFile(string aFilePath, string aSkipFiles)
+    {
+      var skipFilesList = aSkipFiles.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+      return skipFilesList.Contains(Path.GetFileName(aFilePath).ToLower());
+    }
 
+    private bool FileHasExtension(string filePath, string fileExtensions)
+    {
+      var extensions = fileExtensions.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+      return extensions.Contains(Path.GetExtension(filePath).ToLower());
+    }
 
     #endregion
 
