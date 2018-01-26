@@ -57,6 +57,9 @@
 .PARAMETER aContinueOnError
      Alias 'continue'. Switch to continue project compilation even when errors occur.
 
+.PARAMETER aTreatAdditionalIncludesAsSystemIncludes
+     Alias 'treat-sai'. Switch to treat project additional include directories as system includes.
+
 .PARAMETER aClangCompileFlags
      Alias 'clang-flags'. Flags given to clang++ when compiling project, 
      alongside project-specific defines.
@@ -115,6 +118,7 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aSolutio
      , [alias("file-ignore")]  [Parameter(Mandatory=$false)][string[]] $aCppToIgnore
      , [alias("parallel")]     [Parameter(Mandatory=$false)][switch]   $aUseParallelCompile
      , [alias("continue")]     [Parameter(Mandatory=$false)][switch]   $aContinueOnError
+     , [alias("treat-sai")]    [Parameter(Mandatory=$false)][switch]   $aTreatAdditionalIncludesAsSystemIncludes
      , [alias("clang-flags")]  [Parameter(Mandatory=$true)] [string[]] $aClangCompileFlags
      , [alias("literal")]      [Parameter(Mandatory=$false)][switch]   $aDisableNameRegexMatching
      , [alias("tidy")]         [Parameter(Mandatory=$false)][string]   $aTidyFlags
@@ -1038,7 +1042,14 @@ Function Get-ClangIncludeDirectories( [Parameter(Mandatory=$false)][string[]] $i
   }
   foreach ($includeDir in $additionalIncludeDirectories)
   {
-    $returnDirs += "-I""$includeDir"""
+    if ($aTreatAdditionalIncludesAsSystemIncludes)
+    {
+      $returnDirs += "-isystem""$includeDir"""
+    }
+    else
+    {
+      $returnDirs += "-I""$includeDir"""
+    }
   }
 
   return $returnDirs
