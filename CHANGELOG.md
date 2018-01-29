@@ -28,8 +28,8 @@ directories to **clang**, with the following defaults:
       - Resolve remaining warnings related to your code.
    
    Q: Can I use **ClangPowerTools** using the **old behavior**?     
-   A: Yes. We've added, for compatibility reasons, a UI option that allows clang to treat 
-      additional includes as system headers. Keep in mind this means we will potentially 
+   A: Yes. We've added, for compatibility reasons, a **UI option** that allows clang to **treat 
+      additional includes as system headers**. Keep in mind this means we will potentially 
       miss some of your headers when calling clang.
      
    You may want to use this option if using `-Werror` (treating warnings as errors) until you've 
