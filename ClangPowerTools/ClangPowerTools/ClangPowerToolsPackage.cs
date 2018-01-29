@@ -241,7 +241,6 @@ namespace ClangPowerTools
           $"\tCheck out what's new at https://github.com/Caphyon/clang-power-tools/blob/master/CHANGELOG.md");
 
         generalOptions.Version = currentVersion;
-        generalOptions.TreatWarningsAsErrors = false;
         generalOptions.SaveSettingsToStorage();
       }
 
