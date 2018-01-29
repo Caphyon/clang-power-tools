@@ -57,6 +57,9 @@
 .PARAMETER aContinueOnError
      Alias 'continue'. Switch to continue project compilation even when errors occur.
 
+.PARAMETER aTreatAdditionalIncludesAsSystemIncludes
+     Alias 'treat-sai'. Switch to treat project additional include directories as system includes.
+
 .PARAMETER aClangCompileFlags
      Alias 'clang-flags'. Flags given to clang++ when compiling project, 
      alongside project-specific defines.
@@ -115,6 +118,7 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aSolutio
      , [alias("file-ignore")]  [Parameter(Mandatory=$false)][string[]] $aCppToIgnore
      , [alias("parallel")]     [Parameter(Mandatory=$false)][switch]   $aUseParallelCompile
      , [alias("continue")]     [Parameter(Mandatory=$false)][switch]   $aContinueOnError
+     , [alias("treat-sai")]    [Parameter(Mandatory=$false)][switch]   $aTreatAdditionalIncludesAsSystemIncludes
      , [alias("clang-flags")]  [Parameter(Mandatory=$true)] [string[]] $aClangCompileFlags
      , [alias("literal")]      [Parameter(Mandatory=$false)][switch]   $aDisableNameRegexMatching
      , [alias("tidy")]         [Parameter(Mandatory=$false)][string]   $aTidyFlags
@@ -856,9 +860,13 @@ Function Get-VisualStudio-Path()
   }
 }
 
-Function Get-ProjectIncludeDirectories()
+Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$false)][string] $stdafxDir)
 {
-  [string[]] $returnArray = ($IncludePath -split ";") | Where-Object { ![string]::IsNullOrEmpty($_) }
+  [string[]] $returnArray = ($IncludePath -split ";")                                                  | `
+                            Where-Object { ![string]::IsNullOrEmpty($_) }                              | `
+                            ForEach-Object { Canonize-Path -base $ProjectDir -child $_ -ignoreErrors } | `
+                            Where-Object { ![string]::IsNullOrEmpty($_) }                              | `
+                            ForEach-Object { $_ -replace '\\$', '' }                                   
   if ($env:CPT_LOAD_ALL -eq '1')
   {
     return $returnArray
@@ -957,7 +965,12 @@ Function Get-ProjectIncludeDirectories()
     }
   }
 
-  return $returnArray
+  if (![string]::IsNullOrEmpty($stdafxDir))
+  {
+    $returnArray = @($stdafxDir) + $returnArray
+  }
+
+  return ( $returnArray | ForEach-Object { $_ -replace '\\$', '' } )
 }
 
 Function Get-Projects()
@@ -978,8 +991,7 @@ Function Get-Projects()
 
 Function Get-PchCppIncludeHeader([Parameter(Mandatory=$true)][string] $pchCppFile)
 {
-  [string] $vcxprojDir = Get-FileDirectory -filePath $global:vcxprojPath
-  [string] $cppPath = Canonize-Path -base $vcxprojDir -child $pchCppFile
+  [string] $cppPath = Canonize-Path -base $ProjectDir -child $pchCppFile
   [string] $fileContent = Get-Content -path $cppPath
 
   return [regex]::match($fileContent,'#include "(\S+)"').Groups[1].Value
@@ -1018,15 +1030,34 @@ Function Get-Project-PchCpp()
   return $pchCppRelativePath
 }
 
-Function Set-ProjectIncludePaths([Parameter(Mandatory=$true)] $includeDirectories)
+Function Get-ClangIncludeDirectories( [Parameter(Mandatory=$false)][string[]] $includeDirectories
+                                    , [Parameter(Mandatory=$false)][string[]] $additionalIncludeDirectories
+                                    )
 {
-  [string] $includePathsString = $includeDirectories -join ";"
-  Write-Verbose-Array -array $includeDirectories -name "Include directories"
+  [string[]] $returnDirs = @()
 
-  $ENV:INCLUDE = $includePathsString;
+  foreach ($includeDir in $includeDirectories)
+  {
+    $returnDirs += "-isystem""$includeDir"""
+  }
+  foreach ($includeDir in $additionalIncludeDirectories)
+  {
+    if ($aTreatAdditionalIncludesAsSystemIncludes)
+    {
+      $returnDirs += "-isystem""$includeDir"""
+    }
+    else
+    {
+      $returnDirs += "-I""$includeDir"""
+    }
+  }
+
+  return $returnDirs
 }
 
 Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
+                     , [Parameter(Mandatory=$false)][string[]] $includeDirectories
+                     , [Parameter(Mandatory=$false)][string[]] $additionalIncludeDirectories
                      , [Parameter(Mandatory=$true)] [string]   $stdafxHeaderName
                      , [Parameter(Mandatory=$false)][string[]] $preprocessorDefinitions)
 {
@@ -1049,7 +1080,11 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
                                   ,$kClangFlagNoUnusedArg
                                   ,$preprocessorDefinitions
                                   )
-  Write-Verbose "PCH creation args: $compilationFlags"
+
+  $compilationFlags += Get-ClangIncludeDirectories -includeDirectories           $includeDirectories `
+                                                   -additionalIncludeDirectories $additionalIncludeDirectories
+
+  Write-Verbose "INVOKE: ""$($global:llvmLocation)\$kClangCompiler"" $compilationFlags"
 
   [System.Diagnostics.Process] $processInfo = Start-Process -FilePath $kClangCompiler `
                                                             -ArgumentList $compilationFlags `
@@ -1643,12 +1678,6 @@ Function Get-ProjectAdditionalIncludes()
 
   $data = Select-ProjectNodes $kVcxprojXpathAdditionalIncludes
   $tokens += ($data).InnerText -split ";"
-  if (!$tokens)
-  {
-    return
-  }
-
-  [string] $projDir = Get-FileDirectory($global:vcxprojPath)
   
   foreach ($token in $tokens)
   {
@@ -1657,10 +1686,10 @@ Function Get-ProjectAdditionalIncludes()
       continue
     }
     
-    [string] $includePath = Canonize-Path -base $projDir -child $token -ignoreErrors
+    [string] $includePath = Canonize-Path -base $ProjectDir -child $token -ignoreErrors
     if (![string]::IsNullOrEmpty($includePath))
     {
-      $includePath
+      $includePath -replace '\\$', ''
     }
   }
 }
@@ -1687,6 +1716,8 @@ Function Get-ExeToCall([Parameter(Mandatory=$true)][WorkloadType] $workloadType)
 }
 
 Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $preprocessorDefinitions
+                                 , [Parameter(Mandatory=$false)][string[]] $includeDirectories
+                                 , [Parameter(Mandatory=$false)][string[]] $additionalIncludeDirectories
                                  , [Parameter(Mandatory=$false)][string[]] $forceIncludeFiles
                                  , [Parameter(Mandatory=$false)][string]   $pchFilePath
                                  , [Parameter(Mandatory=$true)][string]    $fileToCompile)
@@ -1703,6 +1734,10 @@ Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $prep
                           , $kClangFlagSupressLINK
                           , $preprocessorDefinitions
                           )
+
+  $projectCompileArgs += Get-ClangIncludeDirectories -includeDirectories           $includeDirectories `
+                                                     -additionalIncludeDirectories $additionalIncludeDirectories
+
   if ($forceIncludeFiles)
   {
     $projectCompileArgs += $kClangFlagNoMsInclude;
@@ -1717,6 +1752,8 @@ Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $prep
 }
 
 Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preprocessorDefinitions
+                              , [Parameter(Mandatory=$false)][string[]] $includeDirectories
+                              , [Parameter(Mandatory=$false)][string[]] $additionalIncludeDirectories
                               , [Parameter(Mandatory=$false)][string[]] $forceIncludeFiles
                               , [Parameter(Mandatory=$true)][string]   $fileToTidy
                               , [Parameter(Mandatory=$false)][string]  $pchFilePath
@@ -1760,6 +1797,9 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
     $tidyArgs += $kClangTidyFlags
   }
   
+  $tidyArgs += Get-ClangIncludeDirectories -includeDirectories           $includeDirectories `
+                                           -additionalIncludeDirectories $additionalIncludeDirectories
+  
   # We reuse flags used for compilation and preprocessor definitions.
   $tidyArgs += @(Get-ClangCompileFlags)
   $tidyArgs += $preprocessorDefinitions
@@ -1784,6 +1824,8 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
 }
 
 Function Get-ExeCallArguments( [Parameter(Mandatory=$false)][string]       $pchFilePath
+                             , [Parameter(Mandatory=$false)][string[]]     $includeDirectories
+                             , [Parameter(Mandatory=$false)][string[]]     $additionalIncludeDirectories
                              , [Parameter(Mandatory=$false)][string[]]     $preprocessorDefinitions
                              , [Parameter(Mandatory=$false)][string[]]     $forceIncludeFiles
                              , [Parameter(Mandatory=$true) ][string]       $currentFile
@@ -1791,18 +1833,24 @@ Function Get-ExeCallArguments( [Parameter(Mandatory=$false)][string]       $pchF
 {
   switch ($workloadType)
   {
-    Compile { return Get-CompileCallArguments -preprocessorDefinitions $preprocessorDefinitions `
-                                              -forceIncludeFiles       $forceIncludeFiles `
-                                              -pchFilePath             $pchFilePath `
-                                              -fileToCompile           $currentFile }
-    Tidy    { return Get-TidyCallArguments -preprocessorDefinitions $preprocessorDefinitions `
-                                           -forceIncludeFiles       $forceIncludeFiles `
-                                           -pchFilePath             $pchFilePath `
-                                           -fileToTidy              $currentFile }
-    TidyFix { return Get-TidyCallArguments -preprocessorDefinitions $preprocessorDefinitions `
-                                           -forceIncludeFiles       $forceIncludeFiles `
-                                           -pchFilePath             $pchFilePath `
-                                           -fileToTidy              $currentFile `
+    Compile { return Get-CompileCallArguments -preprocessorDefinitions       $preprocessorDefinitions `
+                                              -includeDirectories            $includeDirectories `
+                                              -additionalIncludeDirectories  $additionalIncludeDirectories `
+                                              -forceIncludeFiles             $forceIncludeFiles `
+                                              -pchFilePath                   $pchFilePath `
+                                              -fileToCompile                 $currentFile }
+    Tidy    { return Get-TidyCallArguments -preprocessorDefinitions       $preprocessorDefinitions `
+                                           -includeDirectories            $includeDirectories `
+                                           -additionalIncludeDirectories  $additionalIncludeDirectories `
+                                           -forceIncludeFiles             $forceIncludeFiles `
+                                           -pchFilePath                   $pchFilePath `
+                                           -fileToTidy                    $currentFile }
+    TidyFix { return Get-TidyCallArguments -preprocessorDefinitions       $preprocessorDefinitions `
+                                           -includeDirectories            $includeDirectories `
+                                           -additionalIncludeDirectories  $additionalIncludeDirectories `
+                                           -forceIncludeFiles             $forceIncludeFiles `
+                                           -pchFilePath                   $pchFilePath `
+                                           -fileToTidy                    $currentFile `
                                            -fix}
   }
 }
@@ -1989,18 +2037,11 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   #-----------------------------------------------------------------------------------------------
   # DETECT PROJECT ADDITIONAL INCLUDE DIRECTORIES AND CONSTRUCT INCLUDE PATHS
 
-  [string[]] $includeDirectories = Get-ProjectAdditionalIncludes
-  Write-Verbose-Array -array $includeDirectories -name "Additional includes"
+  [string[]] $additionalIncludeDirectories = Get-ProjectAdditionalIncludes
+  Write-Verbose-Array -array $additionalIncludeDirectories -name "Additional include directories"
   
-  $includeDirectories = (Get-ProjectIncludeDirectories) + $includeDirectories
-
-  if (![string]::IsNullOrEmpty($stdafxDir))
-  {
-    $includeDirectories = @($stdafxDir) + $includeDirectories
-  }
-  $includeDirectories = @(Get-SourceDirectory) + $includeDirectories
-
-  Set-ProjectIncludePaths($includeDirectories)
+  [string[]] $includeDirectories = Get-ProjectIncludeDirectories -stdafxDir $stdafxDir
+  Write-Verbose-Array -array $includeDirectories -name "Include directories"
 
   #-----------------------------------------------------------------------------------------------
   # FIND LIST OF CPPs TO PROCESS
@@ -2026,7 +2067,9 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
     Write-Verbose "Generating PCH..."
     $pchFilePath = Generate-Pch -stdafxDir        $stdafxDir    `
                                 -stdafxHeaderName $stdafxHeader `
-                                -preprocessorDefinitions $preprocessorDefinitions
+                                -preprocessorDefinitions $preprocessorDefinitions `
+                                -includeDirectories $includeDirectories `
+                                -additionalIncludeDirectories $additionalIncludeDirectories
     Write-Verbose "PCH: $pchFilePath"
   }
   
@@ -2043,7 +2086,9 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
                                                -pchFilePath             $pchFilePath `
                                                -preprocessorDefinitions $preprocessorDefinitions `
                                                -forceIncludeFiles       $forceIncludeFiles `
-                                               -currentFile             $cpp
+                                               -currentFile             $cpp `
+                                               -includeDirectories      $includeDirectories `
+                                               -additionalIncludeDirectories $additionalIncludeDirectories
 
     $newJob = New-Object PsObject -Prop @{ 'FilePath'        = $exeToCall;
                                            'WorkingDirectory'= Get-SourceDirectory;
@@ -2057,8 +2102,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   if ($clangJobs.Count -ge 1)
   {
-    Write-Verbose "Clang job tool: $exeToCall"
-    Write-Verbose "Clang job args[0]: $($clangJobs[0].ArgumentList)"
+    Write-Verbose "INVOKE: ""$($global:llvmLocation)\$exeToCall"" $($clangJobs[0].ArgumentList)"
   }
   
   #-----------------------------------------------------------------------------------------------
@@ -2105,6 +2149,7 @@ if (! (Exists-Command($kClangCompiler)) )
     {
       Write-Verbose "LLVM location: $locationLLVM"
       $env:Path += ";$locationLLVM"
+      $global:llvmLocation = $locationLLVM
       break
     }
   }

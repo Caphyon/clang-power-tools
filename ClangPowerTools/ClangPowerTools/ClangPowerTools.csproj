@@ -81,6 +81,7 @@
     <Compile Include="Commands\CommandIds.cs" />
     <Compile Include="Commands\CommandsController.cs" />
     <Compile Include="Commands\CompileCommand.cs" />
+    <Compile Include="Convertors\AdditionalIncludesConvertor.cs" />
     <Compile Include="DialogPages\DefaultOptions.cs" />
     <Compile Include="DialogPages\TidyCustomChecks.cs">
       <SubType>Component</SubType>

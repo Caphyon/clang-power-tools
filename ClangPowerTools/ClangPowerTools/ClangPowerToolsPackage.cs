@@ -9,6 +9,10 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.CommandBars;
 using EnvDTE;
 using EnvDTE80;
+using System.Reflection;
+using System.Xml;
+using System.IO;
+using System.Linq;
 
 namespace ClangPowerTools
 {
@@ -225,6 +229,22 @@ namespace ClangPowerTools
       if (null == mStopClang)
         mStopClang = new StopClang(this, CommandSet, CommandIds.kStopClang);
 
+      var generalOptions = (GeneralOptions)this.GetDialogPage(typeof(GeneralOptions));
+      var currentVersion = GetPackageVersion();
+
+      if (0 != string.Compare(generalOptions.Version, currentVersion))
+      {
+        var dte = GetService(typeof(DTE)) as DTE2;
+        OutputManager outputManager = new OutputManager(dte);
+        outputManager.Show();
+        outputManager.AddMessage($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
+          $"\tCheck out what's new at https://github.com/Caphyon/clang-power-tools/blob/master/CHANGELOG.md");
+
+        generalOptions.Version = currentVersion;
+        generalOptions.TreatWarningsAsErrors = false;
+        generalOptions.SaveSettingsToStorage();
+      }
+
       return VSConstants.S_OK;
     }
 
@@ -245,5 +265,23 @@ namespace ClangPowerTools
 
     #endregion
 
+
+    #region Private Methods
+
+    public string GetPackageVersion()
+    {
+      var assemblyPath = Assembly.GetExecutingAssembly().Location;
+      assemblyPath = assemblyPath.Substring(0, assemblyPath.LastIndexOf('\\'));
+      var manifestPath = Path.Combine(assemblyPath, "extension.vsixmanifest");
+
+      var doc = new XmlDocument();
+      doc.Load(manifestPath);
+      var metaData = doc.DocumentElement.ChildNodes.Cast<XmlElement>().First(x => x.Name == "Metadata");
+      var identity = metaData.ChildNodes.Cast<XmlElement>().First(x => x.Name == "Identity");
+
+      return identity.GetAttribute("Version");
+    }
+
+    #endregion
   }
 }
