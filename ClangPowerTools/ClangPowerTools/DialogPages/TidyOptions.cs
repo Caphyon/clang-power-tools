@@ -57,6 +57,7 @@ namespace ClangPowerTools
 
       updatedConfig.AutoTidyOnSave = this.AutoTidyOnSave;
       updatedConfig.Fix = this.Fix;
+      updatedConfig.FormatAfterTidy = this.FormatAfterTidy;
 
       updatedConfig.HeaderFilter = ComboBoxConstants.kHeaderFilterMaping.ContainsKey(this.HeaderFilter) ?
         ComboBoxConstants.kHeaderFilterMaping[this.HeaderFilter] : this.HeaderFilter;
@@ -73,6 +74,7 @@ namespace ClangPowerTools
 
       this.Fix = loadedConfig.Fix;
       this.AutoTidyOnSave = loadedConfig.AutoTidyOnSave;
+      this.FormatAfterTidy = loadedConfig.FormatAfterTidy;
 
       if (null == loadedConfig.HeaderFilter)
         this.HeaderFilter = DefaultOptions.kHeaderFilter;
