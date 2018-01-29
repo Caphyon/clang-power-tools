@@ -1,7 +1,41 @@
 # Version History
 
+### Clang Power Tools 2.6
+*January 29, 2018*
+
+Until now, we've used the `%INCLUDE%` environment variable for setting clang include directories.
+That was equivalent to using `-isystem` for each directory. 
+   
+Unfortunately, this meant that headers included relative to those include directories were ignored 
+when running <b>compiling/tidying</b> because they were treated as <b>system headers</b>. 
+   
+Having this brought to our attention, going forward we will use `-I` and `-isystem` to pass include 
+directories to <b>clang</b>, with the following defaults:
+   * include directories            passed using `-isystem`
+   * additional include directories passed using `-I`
+   
+This means you will most likely encounter new warnings when compiling or tidying your 
+existing code base.
+   
+Please make sure to include third party library dependencies using the <b>Include directories</b> project option.
+   
+<b>Additional include directories</b> should point only to code you can modernize.
+Any warnings you will see will be related to your headers that we've missed until now.
+   
+If, for any reason, you prefer the old behavior, we've added a UI option that allows 
+you to treat additional includes as system headers. Keep in mind this means we will potentially 
+miss some of your headers when calling clang.
+
+Improvements:
+* Additional includes are now treated as regular includes using `/I`.
+
+Bugs:
+* Crash when using preprocessor definitions containing double quotes.
+* Wild card project file includes were not recognized.
+* Tooling detection did not work on Visual Studio pre-release versions.
+
 ### Clang Power Tools 2.5.1
-*January 17, 2017*
+*January 17, 2018*
 
 Bugs:
 * Fixed the unexpectedly Visual Studio session ending.
