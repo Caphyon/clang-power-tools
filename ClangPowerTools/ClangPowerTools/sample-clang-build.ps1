@@ -48,6 +48,9 @@
 .PARAMETER aContinueOnError
      Alias 'continue'. Switch to continue project compilation even when errors occur.
 
+.PARAMETER aTreatAdditionalIncludesAsSystemIncludes
+     Alias 'treat-sai'. Switch to treat project additional include directories as system includes.
+
 .PARAMETER aClangCompileFlags
      Alias 'clang-flags'. Flags given to clang++ when compiling project, 
      alongside project-specific defines.
@@ -116,6 +119,7 @@ param( [alias("proj")]        [Parameter(Mandatory=$false)][string[]] $aVcxprojT
      , [alias("file-ignore")] [Parameter(Mandatory=$false)][string[]] $aCppToIgnore
      , [alias("parallel")]    [Parameter(Mandatory=$false)][switch]   $aUseParallelCompile
      , [alias("continue")]    [Parameter(Mandatory=$false)][switch]   $aContinueOnError
+     , [alias("treat-sai")]    [Parameter(Mandatory=$false)][switch]  $aTreatAdditionalIncludesAsSystemIncludes
      , [alias("literal")]     [Parameter(Mandatory=$false)][switch]   $aDisableNameRegexMatching
      , [alias("tidy")]        [Parameter(Mandatory=$false)][string]   $aTidyFlags
      , [alias("tidy-fix")]    [Parameter(Mandatory=$false)][string]   $aTidyFixFlags
@@ -202,6 +206,11 @@ if ($aUseParallelCompile)
 if ($aContinueOnError)
 {
   $scriptParams += ("-aContinueOnError")
+}
+
+if ($aTreatAdditionalIncludesAsSystemIncludes)
+{
+  $scriptParams += ("-aTreatAdditionalIncludesAsSystemIncludes")
 }
 
 if ($aDisableNameRegexMatching)
