@@ -6,7 +6,7 @@
 Until now, we've used the `%INCLUDE%` environment variable for setting clang include directories.
 That was equivalent to using `-isystem` for each directory. 
    
-Unfortunately, this meant that headers included relative to those include directories were ignored 
+Unfortunately, this caused headers included relative to those include directories to be ignored 
 when running <b>compiling/tidying</b> because they were treated as <b>system headers</b>. 
    
 Having this brought to our attention, going forward we will use `-I` and `-isystem` to pass include 
@@ -14,25 +14,37 @@ directories to <b>clang</b>, with the following defaults:
    * include directories            passed using `-isystem`
    * additional include directories passed using `-I`
    
-This means you will most likely encounter new warnings when compiling or tidying your 
-existing code base.
+   -------
    
-Please make sure to include third party library dependencies using the <b>Include directories</b> project option.
+   Q: What does this mean?    
+   A: You'll most likely see new warnings when compiling or tidying your code-base.
    
-<b>Additional include directories</b> should point only to code you can modernize.
-Any warnings you will see will be related to your headers that we've missed until now.
+   Q: Will my build fail?       
+   A: Only if you have specified `-Werror` (treat warnings as errors).
    
-If, for any reason, you prefer the old behavior, we've added a UI option that allows 
-you to treat additional includes as system headers. Keep in mind this means we will potentially 
-miss some of your headers when calling clang.
+   Q: What should I do?     
+   A: - Make sure to include third party library dependencies via the <b>Include directories</b> project option.
+      <b>Additional include directories</b> should point only to code you can modernize.
+      - Resolve remaining warnings related to your code.
+   
+   Q: Can I use ClangPowerTools using the old behavior?     
+   A: Yes. We've added, for compatibility reasons, a UI option that allows clang to treat 
+      additional includes as system headers. Keep in mind this means we will potentially 
+      miss some of your headers when calling clang.
+     
+   You may want to use this option if using -Werror (treating warnings as errors) until you've 
+   reorganized your includes, since any new warnings will break your build.
+     
+   Q: What about the continuous integration script (clang-build.ps1)?     
+   A: You can specify the `-treat-sai` switch and it will have the old behavior.
 
 Improvements:
-* Additional includes are now treated as regular includes using `/I`.
+* Additional includes are now treated as regular includes using -I
 
 Bugs:
-* Crash when using preprocessor definitions containing double quotes.
-* Wild card project file includes were not recognized.
-* Tooling detection did not work on Visual Studio pre-release versions.
+* Crash when using preprocessor definitions containing double quotes
+* Wild card project file includes were not recognized
+* Tooling detection did not work on Visual Studio pre-release versions
 
 ### Clang Power Tools 2.5.1
 *January 17, 2018*
