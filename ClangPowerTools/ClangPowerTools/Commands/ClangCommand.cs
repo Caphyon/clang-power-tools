@@ -114,7 +114,7 @@ namespace ClangPowerTools
       }
     }
 
-    protected List<IItem> CollectSelectedItems()
+    protected IEnumerable<IItem> CollectSelectedItems()
     {
       mItemsCollector = new ItemsCollector(Package);
       mItemsCollector.CollectSelectedFiles(DTEObj, ActiveWindowProperties.GetProjectItemOfActiveWindow(DTEObj));

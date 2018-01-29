@@ -1,4 +1,8 @@
-﻿using System.Reflection;
+﻿using ClangPowerTools.DialogPages;
+using System;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
 
 namespace ClangPowerTools
 {
@@ -7,6 +11,7 @@ namespace ClangPowerTools
     #region Members
 
     protected string mParameters = string.Empty;
+    private bool mUseTidyFile;
 
     #endregion
 

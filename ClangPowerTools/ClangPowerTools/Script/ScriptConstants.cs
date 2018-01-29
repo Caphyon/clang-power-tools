@@ -37,10 +37,7 @@
     public const string kHeaderFilter = "-header-filter";
     public const string kTidyFile = ".clang-tidy";
 
-<<<<<<< HEAD
-=======
     public const string kClangFormatStyle = "-format-style";
->>>>>>> automatically run clang format after clang tidy
 
     #endregion
 
