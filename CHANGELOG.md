@@ -14,8 +14,6 @@ directories to **clang**, with the following defaults:
    * include directories            passed using `-isystem`
    * additional include directories passed using `-I`
    
-   -------
-   
    Q: What does this mean?    
    A: You'll most likely see **new warnings** when **compiling** or **tidying** your code-base.
    
