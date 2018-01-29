@@ -23,7 +23,7 @@ namespace ClangPowerTools
 
     public string FallbackStyle { get; set; }
 
-    public bool SortIncludes { get; set; }
+    //public bool SortIncludes { get; set; }
 
     public string Style { get; set; }
 

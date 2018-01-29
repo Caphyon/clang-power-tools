@@ -21,8 +21,8 @@ namespace ClangPowerTools.Script
         && aClangFormatPage.FallbackStyle != ComboBoxConstants.kNone)
         mParameters = $"{mParameters} {ScriptConstants.kFallbackStyle}={aClangFormatPage.FallbackStyle}";
 
-      if (aClangFormatPage.SortIncludes)
-        mParameters = $"{mParameters} {ScriptConstants.kSortIncludes}";
+      //if (aClangFormatPage.SortIncludes)
+      //  mParameters = $"{mParameters} {ScriptConstants.kSortIncludes}";
 
       if (null != aClangFormatPage.Style && !string.IsNullOrWhiteSpace(aClangFormatPage.Style))
         mParameters = $"{mParameters} {ScriptConstants.kStyle}={aClangFormatPage.Style}";

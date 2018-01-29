@@ -48,10 +48,10 @@ namespace ClangPowerTools.DialogPages
     [TypeConverter(typeof(FallbackStyleConvertor))]
     public string FallbackStyle { get; set; }
 
-    [Category("Format Options")]
-    [DisplayName("Sort includes")]
-    [Description("If set, overrides the include sorting behavior determined by the SortIncludes style flag.")]
-    public bool SortIncludes { get; set; }
+    //[Category("Format Options")]
+    //[DisplayName("Sort includes")]
+    //[Description("If set, overrides the include sorting behavior determined by the SortIncludes style flag.")]
+    //public bool SortIncludes { get; set; }
 
     [Category("Format Options")]
     [DisplayName("Style")]
@@ -74,7 +74,9 @@ namespace ClangPowerTools.DialogPages
       updatedConfig.SkipFiles = this.SkipFiles;
       updatedConfig.AssumeFilename = this.AssumeFilename;
       updatedConfig.FallbackStyle = this.FallbackStyle;
-      updatedConfig.SortIncludes = this.SortIncludes;
+      
+      //updatedConfig.SortIncludes = this.SortIncludes;
+
       updatedConfig.Style = this.Style;
 
       SaveToFile(path, updatedConfig);
@@ -98,7 +100,7 @@ namespace ClangPowerTools.DialogPages
       this.FallbackStyle = null == loadedConfig.FallbackStyle ?
         ComboBoxConstants.kNone : loadedConfig.FallbackStyle;
 
-      this.SortIncludes = loadedConfig.SortIncludes;
+      //this.SortIncludes = loadedConfig.SortIncludes;
 
       this.Style = null == loadedConfig.Style?
         ComboBoxConstants.kFile : loadedConfig.Style;
