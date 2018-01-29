@@ -18,8 +18,6 @@ namespace ClangPowerTools
         ".c++",
         ".cp",
       };
-    private string mClangFormatFilesExtension = null;
-    private string mSkipFiles = null;
     private List<IItem> mItems = new List<IItem>();
     private IServiceProvider mServiceProvider;
 
@@ -27,12 +25,7 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public ItemsCollector(IServiceProvider aServiceProvider, string aClangFormatExtensions, string aSkipFiles)
-    {
-      mServiceProvider = aServiceProvider;
-      mClangFormatFilesExtension = aClangFormatExtensions;
-      mSkipFiles = aSkipFiles;
-    } 
+    public ItemsCollector(IServiceProvider aServiceProvider) => mServiceProvider = aServiceProvider;
 
     #endregion 
 
@@ -83,16 +76,10 @@ namespace ClangPowerTools
     public void AddProjectItem(ProjectItem aItem)
     {
       var fileExtension = Path.GetExtension(aItem.Name).ToLower();
-      if (null != mClangFormatFilesExtension)
-      {
-        if (null != mSkipFiles && mSkipFiles.Contains(aItem.Name))
-          return;
-        if (!mClangFormatFilesExtension.Contains(fileExtension))
-          return;
-        mItems.Add(new SelectedProjectItem(aItem));
-      }
-      else if (kAcceptedExtensionTypes.Contains(fileExtension))
-        mItems.Add(new SelectedProjectItem(aItem));
+      if (!kAcceptedExtensionTypes.Contains(fileExtension))
+        return;
+
+      mItems.Add(new SelectedProjectItem(aItem));
     }
 
     #endregion
