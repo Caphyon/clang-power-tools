@@ -237,7 +237,7 @@ namespace ClangPowerTools
         var dte = GetService(typeof(DTE)) as DTE2;
         OutputManager outputManager = new OutputManager(dte);
         outputManager.Show();
-        outputManager.AddMessage($"🎉\tClang Power Tools was upgraded to v.{currentVersion}\n" +
+        outputManager.AddMessage($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
           $"\tCheck out what's new at https://github.com/Caphyon/clang-power-tools/blob/master/CHANGELOG.md");
 
         generalOptions.Version = currentVersion;
