@@ -34,7 +34,7 @@ namespace ClangPowerTools
 
     public DispatcherOperation AddErrors(IEnumerable<TaskError> aErrors)
     {
-      return mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+      return mDispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
       {
         foreach (TaskError error in aErrors)
           mErrorWindow.AddError(error);
