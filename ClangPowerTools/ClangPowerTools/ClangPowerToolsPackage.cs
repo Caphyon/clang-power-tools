@@ -55,6 +55,7 @@ namespace ClangPowerTools
 
     private uint mHSolutionEvents = uint.MaxValue;
     private IVsSolution mSolution;
+    private CommandEvents mCommandEvents;
 
     #region Commands
 
@@ -190,6 +191,7 @@ namespace ClangPowerTools
         generalOptions.Version = currentVersion;
         generalOptions.SaveSettingsToStorage();
       }
+      mCommandEvents.BeforeExecute += mCompileCmd.CommandEventsBeforeExecute;
 
       return VSConstants.S_OK;
     }
@@ -201,6 +203,8 @@ namespace ClangPowerTools
 
     public int OnBeforeCloseSolution(object pUnkReserved)
     {
+      mCommandEvents.BeforeExecute -= mCompileCmd.CommandEventsBeforeExecute;
+
       return VSConstants.S_OK;
     }
 

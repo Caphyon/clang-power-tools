@@ -89,7 +89,9 @@ namespace ClangPowerTools
         mOutputManager.AddMessage(String.Join("\n", mOutputManager.Buffer));
       if (!mOutputManager.MissingLlvm)
       {
-        mOutputManager.Show();
+        // if a VS command in running then keep the Clang Power Tools output window in background
+        if (!mCommandsController.VsCommandIsRunning)
+          mOutputManager.Show();
         mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
       }
       if (mOutputManager.HasErrors)
@@ -118,7 +120,9 @@ namespace ClangPowerTools
     {
       mErrorsManager.Clear();
       mOutputManager.Clear();
-      mOutputManager.Show();
+      // if a VS command in running then keep the Clang Power Tools output window in background
+      if (!mCommandsController.VsCommandIsRunning)
+        mOutputManager.Show(); // show the Clang Power Tools output window
     }
 
     #endregion

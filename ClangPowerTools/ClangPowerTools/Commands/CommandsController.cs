@@ -28,6 +28,7 @@ namespace ClangPowerTools
     #region Properties
 
     public bool Running { get; set; }
+    public bool VsCommandIsRunning { get; set; }
 
     #endregion
 
