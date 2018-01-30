@@ -7,7 +7,7 @@
         <MoreInfo>https://github.com/Caphyon/clang-power-tools</MoreInfo>
         <License>Resources\LICENSE.txt</License>
         <GettingStartedGuide>http://www.clangpowertools.com</GettingStartedGuide>
-        <ReleaseNotes>https://caphyon.github.io/clang-power-tools/CHANGELOG.html</ReleaseNotes>
+        <ReleaseNotes>http://www.clangpowertools.com/CHANGELOG</ReleaseNotes>
         <Icon>Resources\Icon.png</Icon>
         <PreviewImage>Resources\Icon.png</PreviewImage>
         <Tags>clang;clang-tidy;clang-format;compile;modernize;CoreGuidelines;static analysis;tidy;C++;cpp;analyze</Tags>
