@@ -238,7 +238,7 @@ namespace ClangPowerTools
         OutputManager outputManager = new OutputManager(dte);
         outputManager.Show();
         outputManager.AddMessage($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
-          $"\tCheck out what's new at https://github.com/Caphyon/clang-power-tools/blob/master/CHANGELOG.md");
+          $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
 
         generalOptions.Version = currentVersion;
         generalOptions.SaveSettingsToStorage();
