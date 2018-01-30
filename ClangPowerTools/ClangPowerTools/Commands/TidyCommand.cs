@@ -52,7 +52,6 @@ namespace ClangPowerTools
 
     #region Methods
 
-
     /// <summary>
     /// This function is the callback used to execute the command when the menu item is clicked.
     /// See the constructor to see how the menu item is associated with this function using
@@ -67,7 +66,7 @@ namespace ClangPowerTools
       {
         try
         {
-          SaveActiveDocuments();
+          AutomationUtil.SaveAllProjects(Package, DTEObj.Solution);
           CollectSelectedItems();
           mFileWatcher = new FileChangerWatcher();
           using (var guard = new SilentFileChangerGuard())

@@ -48,7 +48,7 @@ namespace ClangPowerTools
       {
         try
         {
-          SaveActiveDocuments();
+          AutomationUtil.SaveAllProjects(Package, DTEObj.Solution);
           CollectSelectedItems();
           RunScript(OutputWindowConstants.kComplileCommand);
         }
