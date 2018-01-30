@@ -36,6 +36,13 @@ namespace ClangPowerTools
         hierarchy : null;
     }
 
+    public static void SaveAllProjects(IServiceProvider aServiceProvider, Solution aSolution)
+    {
+      var projects = GetAllProjects(aServiceProvider, aSolution);
+      foreach (var proj in projects)
+        proj.Save();
+    }
+
     #endregion
 
     #region Helpers

@@ -5,5 +5,6 @@
     string GetName();
     string GetPath();
     object GetObject();
+    void Save();
   }
 }

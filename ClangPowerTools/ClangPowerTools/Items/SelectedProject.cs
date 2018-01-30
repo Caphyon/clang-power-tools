@@ -24,6 +24,8 @@ namespace ClangPowerTools
 
     public object GetObject() => mProject;
 
+    public void Save() => mProject.Save(mProject.FullName);
+
     #endregion
 
   }
