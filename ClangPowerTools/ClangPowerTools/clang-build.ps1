@@ -1352,17 +1352,17 @@ function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpa
   [System.Xml.XmlElement[]] $nodes = Help:Get-ProjectFileNodes -projectFile $global:projectFiles[$fileIndex] `
                                                                -xpath $xpath
 
-  # nothing on this level, go above
-  if ($nodes.Count -eq 0)
+  # nothing on this level or we're dealing with an ItemGroup, go above
+  if ($nodes.Count -eq 0 -or $xpath.Contains("ItemGroup"))
   {
-    $nodes = Select-ProjectNodes -xpath $xpath -fileIndex ($fileIndex + 1)
+    $upperNodes = Select-ProjectNodes -xpath $xpath -fileIndex ($fileIndex + 1)
     # return what we found
-    return $nodes
+    return ($nodes + $upperNodes)
   }
 
   if ($nodes[$nodes.Count -1]."#text")
   {
-    # we found settings that can be inherited. see if we should inherit
+    # we found textual settings that can be inherited. see if we should inherit
     
     [System.Xml.XmlNode] $nodeToReturn = $nodes[$nodes.Count -1]
     if ($nodeToReturn.Attributes.Count -gt 0)
