@@ -4,6 +4,7 @@ using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Windows.Interop;
 using System.Windows.Threading;
+using EnvDTE;
 
 namespace ClangPowerTools
 {
@@ -15,6 +16,7 @@ namespace ClangPowerTools
     #region Members
 
     private Commands2 mCommand;
+    private bool mExecuteCompile = false;
 
     #endregion
 
@@ -49,22 +51,39 @@ namespace ClangPowerTools
       if (0 != string.Compare("Build.Compile", commandName))
         return;
 
-      // if a VS Compile command was executed then run Clang Compile in background 
+      mExecuteCompile = true;
+    }
+
+    public void OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
+    {
       try
       {
+        if (!mExecuteCompile)
+          return;
+
+        int exitCode = DTEObj.Solution.SolutionBuild.LastBuildInfo;
+        if (0 != exitCode)
+        {
+          // VS compile detected errors and there is not necessary to run clang compile
+          mExecuteCompile = false;
+          return; 
+        }
+
+        // Run clang compile after the VS compile succeeded 
         var dispatcher = HwndSource.FromHwnd((IntPtr)DTEObj.MainWindow.HWnd).RootVisual.Dispatcher;
         dispatcher.Invoke(DispatcherPriority.Send, new Action(() =>
         {
-          mCommandsController.VsCommandIsRunning = true;
           RunClangCompile(new object(), new EventArgs());
         }));
       }
       catch (Exception) { }
-
+      finally
+      {
+        mExecuteCompile = false;
+      }
     }
 
     #endregion
-
 
     #region Private Methods
 

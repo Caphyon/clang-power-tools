@@ -56,13 +56,14 @@ namespace ClangPowerTools
     private uint mHSolutionEvents = uint.MaxValue;
     private IVsSolution mSolution;
     private CommandEvents mCommandEvents;
+    private BuildEvents mBuildEvents;
 
     #region Commands
 
-    CompileCommand mCompileCmd = null;
-    TidyCommand mTidyCmd = null;
-    StopClang mStopClang = null;
-    SettingsCommand mSettingsCmd = null;
+    private CompileCommand mCompileCmd = null;
+    private TidyCommand mTidyCmd = null;
+    private StopClang mStopClang = null;
+    private SettingsCommand mSettingsCmd = null;
 
     #endregion
 
@@ -193,6 +194,8 @@ namespace ClangPowerTools
       }
       mCommandEvents.BeforeExecute += mCompileCmd.CommandEventsBeforeExecute;
 
+      mBuildEvents.OnBuildDone += mCompileCmd.OnBuildDone;
+
       return VSConstants.S_OK;
     }
 
@@ -204,6 +207,7 @@ namespace ClangPowerTools
     public int OnBeforeCloseSolution(object pUnkReserved)
     {
       mCommandEvents.BeforeExecute -= mCompileCmd.CommandEventsBeforeExecute;
+      mBuildEvents.OnBuildDone -= mCompileCmd.OnBuildDone;
 
       return VSConstants.S_OK;
     }
