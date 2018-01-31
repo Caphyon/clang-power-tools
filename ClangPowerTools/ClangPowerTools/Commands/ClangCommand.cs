@@ -14,9 +14,9 @@ namespace ClangPowerTools
     protected static RunningProcesses mRunningProcesses = new RunningProcesses();
     protected List<string> mDirectoriesPath = new List<string>();
     protected static OutputManager mOutputManager;
+    protected GeneralOptions mGeneralOptions;
 
     private ErrorsManager mErrorsManager;
-    private GeneralOptions mGeneralOptions;
     private PowerShellWrapper mPowerShell = new PowerShellWrapper();
     private ScriptBuiler mScriptBuilder;
     private const string kVs15Version = "2017";

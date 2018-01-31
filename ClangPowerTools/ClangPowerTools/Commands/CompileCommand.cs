@@ -47,6 +47,9 @@ namespace ClangPowerTools
 
     public void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
     {
+      if (!mGeneralOptions.ClangCompileAfterVsCompile)
+        return;
+
       string commandName = GetCommandName(aGuid, aId);
       if (0 != string.Compare("Build.Compile", commandName))
         return;
@@ -71,7 +74,7 @@ namespace ClangPowerTools
 
         // Run clang compile after the VS compile succeeded 
         var dispatcher = HwndSource.FromHwnd((IntPtr)DTEObj.MainWindow.HWnd).RootVisual.Dispatcher;
-        dispatcher.Invoke(DispatcherPriority.Send, new Action(() =>
+        dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
         {
           RunClangCompile(new object(), new EventArgs());
         }));
