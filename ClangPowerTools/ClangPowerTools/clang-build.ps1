@@ -179,10 +179,6 @@ Set-Variable -name kVcxprojXpathForceIncludes `
 
 Set-Variable -name kVcxprojXpathPCH `
              -value "ns:Project/ns:ItemGroup/ns:ClCompile/ns:PrecompiledHeader[text()='Create']" `
-             -option Constant 
-
-Set-Variable -name kVcxprojXpathPropSheets `
-             -value "ns:Project/ns:ImportGroup[@Label='PropertySheets']/ns:Import[@Project]|ns:Project/ns:Import[@Project]" `
              -option Constant
 
 Set-Variable -name kVcxprojXpathToolset `
@@ -1344,20 +1340,25 @@ etc.
 function Select-ProjectNodes([Parameter(Mandatory=$true)]  [string][string] $xpath
                             ,[Parameter(Mandatory=$false)] [int]            $fileIndex = 0)
 {
+  [System.Xml.XmlElement[]] $nodes = @()
+
   if ($fileIndex -ge $global:projectFiles.Count)
   {
-    return @()
+    return $nodes
   }
 
-  [System.Xml.XmlElement[]] $nodes = Help:Get-ProjectFileNodes -projectFile $global:projectFiles[$fileIndex] `
-                                                               -xpath $xpath
+  $nodes = Help:Get-ProjectFileNodes -projectFile $global:projectFiles[$fileIndex] `
+                                     -xpath $xpath
 
   # nothing on this level or we're dealing with an ItemGroup, go above
   if ($nodes.Count -eq 0 -or $xpath.Contains("ItemGroup"))
   {
-    $upperNodes = Select-ProjectNodes -xpath $xpath -fileIndex ($fileIndex + 1)
-    # return what we found
-    return ($nodes + $upperNodes)
+    [System.Xml.XmlElement[]] $upperNodes = Select-ProjectNodes -xpath $xpath -fileIndex ($fileIndex + 1)
+    if ($upperNodes.Count -gt 0)
+    {
+      $nodes += $upperNodes
+    }
+    return $nodes
   }
 
   if ($nodes[$nodes.Count -1]."#text")
