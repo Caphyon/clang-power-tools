@@ -111,7 +111,7 @@ namespace ClangPowerTools.Commands
 
             silentFileController.SilentFiles(Package, guard, filesPath);
             RunScript(mClangFormatPage, filesPath);
-            FormatEndFile();
+                  FormatEndFile();
           }
         }
         catch (Exception exception)
