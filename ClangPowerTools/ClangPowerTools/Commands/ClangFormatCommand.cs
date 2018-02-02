@@ -69,19 +69,10 @@ namespace ClangPowerTools.Commands
       if (SkipFile(document.FullName, mClangFormatPage.SkipFiles))
         return;
 
-      try
-      {
-        var dispatcher = HwndSource.FromHwnd((IntPtr)DTEObj.MainWindow.HWnd).RootVisual.Dispatcher;
-        dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-        {
-          mDocument = document;
-          FormatEndFile();
-          RunClangFormat(new object(), new EventArgs());
-        }));
-      }
-      catch (Exception) { }
+      mDocument = document;
+      RunClangFormat(new object(), new EventArgs());
     }
-   
+
     #endregion
 
     #region Private methods
@@ -120,6 +111,7 @@ namespace ClangPowerTools.Commands
 
             silentFileController.SilentFiles(Package, guard, filesPath);
             RunScript(mClangFormatPage, filesPath);
+            FormatEndFile();
           }
         }
         catch (Exception exception)
