@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Xml.Linq;
 using ClangPowerTools.DialogPages;
 using ClangPowerTools.Script;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
 
 namespace ClangPowerTools
 {
@@ -149,6 +153,25 @@ namespace ClangPowerTools
       catch (Exception)
       {
       }
+    }
+
+    private string FormatEndFile()
+    {
+      IWpfTextView view = Vsix.GetCurrentView();
+
+      string filePath = Vsix.GetDocumentPath(view);
+      var path = Path.GetDirectoryName(filePath);
+
+      string text = view.TextBuffer.CurrentSnapshot.GetText();
+
+      string newline = text.Contains(Environment.NewLine) ? Environment.NewLine : "\n";
+      if (!text.EndsWith(newline))
+      {
+        view.TextBuffer.Insert(view.TextBuffer.CurrentSnapshot.Length, newline);
+        text += newline;
+      }
+
+      return text;
     }
 
     #endregion
