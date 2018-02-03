@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
-using System.Windows.Interop;
-using System.Windows.Threading;
 using ClangPowerTools.DialogPages;
 using ClangPowerTools.SilentFile;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.Text.Editor;
 
 namespace ClangPowerTools.Commands
 {
@@ -86,46 +83,41 @@ namespace ClangPowerTools.Commands
     /// <param name="e">Event args.</param>
     private void RunClangFormat(object sender, EventArgs e)
     {
-      var task = System.Threading.Tasks.Task.Run(() =>
+      try
       {
-        try
-        {
-          var silentFileController = new SilentFileController();
-          mFilePahtCollector = new FilePathCollector();
-          List<string> filesPath = new List<string>();
+        var silentFileController = new SilentFileController();
+        mFilePahtCollector = new FilePathCollector();
+        List<string> filesPath = new List<string>();
 
-          using (var guard = silentFileController.GetSilentFileChangerGuard())
+        using (var guard = silentFileController.GetSilentFileChangerGuard())
+        {
+          if (null != mDocument)
           {
-            if (null != mDocument)
-            {
-              // Was used formt on save option
-              filesPath.Add(mFilePahtCollector.Collect(mDocument));
-            }
-            else
-            {
-              // Was used the clang format button was used
-              DocumentsHandler.SaveActiveDocuments((DTE)DTEObj);
-              var selectedItems = CollectSelectedItems();
-              filesPath.AddRange(mFilePahtCollector.Collect(selectedItems));
-            }
-
-            silentFileController.SilentFiles(Package, guard, filesPath);
-            RunScript(mClangFormatPage, filesPath);
+            // Was used formt on save option
+            filesPath.Add(mFilePahtCollector.Collect(mDocument));
           }
+          else
+          {
+            // Was used the clang format button was used
+            DocumentsHandler.SaveActiveDocuments((DTE)DTEObj);
+            var selectedItems = CollectSelectedItems();
+            filesPath.AddRange(mFilePahtCollector.Collect(selectedItems));
+          }
+
+          silentFileController.SilentFiles(Package, guard, filesPath);
+          RunScript(mClangFormatPage, filesPath);
         }
-        catch (Exception exception)
-        {
-          VsShellUtilities.ShowMessageBox(Package, exception.Message, "Error",
-            OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-        }
-        finally
-        {
-          mDocument = null;
-        }
-      });
+      }
+      catch (Exception exception)
+      {
+        VsShellUtilities.ShowMessageBox(Package, exception.Message, "Error",
+          OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+      }
+      finally
+      {
+        mDocument = null;
+      }
     }
-
-
 
     private bool SkipFile(string aFilePath, string aSkipFiles)
     {
