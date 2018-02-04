@@ -26,15 +26,17 @@ namespace ClangPowerTools.Script
       //string fallbackStyle = aClangFormatPage.FallbackStyle.Replace("\"", "\\\"");
 
       process.StartInfo.Arguments =
-        $" -offset " + offset +
-        $" -length " + length +
-        $" -output-replacements-xml " +
+        //$" -offset " + offset +
+        //$" -length " + length +
+        //$" -output-replacements-xml " +
+         " -i " +
         $" {ScriptConstants.kStyle} \"{aClangFormatPage.Style}\"" +
-        $" {ScriptConstants.kFallbackStyle} \"{aClangFormatPage.FallbackStyle}\"";
+        $" {ScriptConstants.kFallbackStyle} \"{aClangFormatPage.FallbackStyle}\"" +
+        $" \"{filePath}\"";
 
       string assumeFilename = aClangFormatPage.AssumeFilename;
-      if (string.IsNullOrEmpty(assumeFilename))
-        assumeFilename = filePath;
+      //if (string.IsNullOrEmpty(assumeFilename))
+      //  assumeFilename = filePath;
       if (!string.IsNullOrEmpty(assumeFilename))
         process.StartInfo.Arguments += $" {ScriptConstants.kAssumeFilename} \"{assumeFilename}\"";
 
