@@ -35,6 +35,11 @@ directories to **clang**, with the following defaults:
    Q: What about the **continuous integration script** (clang-build.ps1)?     
    A: You can specify the `-treat-sai` switch and it will have the old behavior.
 
+### 👉 Where can I see detailed information about clang-tidy checks ?
+
+A list of available checks that `clang-tidy` can perform:  
+[clang-tidy checks](https://clang.llvm.org/extra/clang-tidy/checks/list.html)  
+
 ### 👉 How can I use Clang Static Analyzer ?
 
 Clang Static Analyzer was included into `clang-tidy` some time ago.
