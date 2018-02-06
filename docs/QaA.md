@@ -52,7 +52,7 @@ VS Options > Clang Power Tools > Tidy > Options > Use checks from: (combo-box)
 
 ### 👉 How do I configure options for specific clang-tidy checks ?
 
-Configuration options for specific clang-tidy checks can be specified via the standard `.clang-tidy` configuration file.  
+Configuration options for specific clang-tidy checks can be specified via the `.clang-tidy` configuration file.  
 Eg.  
 
     Checks:          '-*,some-check'  
