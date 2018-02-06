@@ -1511,8 +1511,8 @@ namespace ClangPowerTools
     [ClangCheck(true)]
     public bool ReadabilityImplicitBoolCast { get; set; } = true;
 
-    [Browsable(false)]
-    public bool ToolbarActivated { get; set; } = false;
+    //[Browsable(false)]
+    //public bool ToolbarActivated { get; set; } = false;
 
     #endregion
 

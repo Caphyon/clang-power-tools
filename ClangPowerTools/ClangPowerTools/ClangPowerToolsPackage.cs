@@ -43,7 +43,7 @@ namespace ClangPowerTools
   [ProvideOptionPage(typeof(TidyCustomChecks), "Clang Power Tools\\Tidy", "Custom Checks", 0, 0, true, Sort = 1)]
   [ProvideOptionPage(typeof(TidyChecks), "Clang Power Tools\\Tidy", "Predefined Checks", 0, 0, true, Sort = 2)]
   [ProvideAutoLoad("ADFC4E64-0397-11D1-9F4E-00A0C911004F")]
-  public sealed class RunClangPowerToolsPackage : Package, IVsShellPropertyEvents, IVsSolutionEvents
+  public sealed class RunClangPowerToolsPackage : Package, IVsSolutionEvents
   {
     #region Members
 
@@ -52,7 +52,7 @@ namespace ClangPowerTools
     /// </summary>
     public const string PackageGuidString = "f564f9d3-01ae-493e-883b-18deebdb975e";
     public static readonly Guid CommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
-    private uint mEventSinkCookie;
+    //private uint mEventSinkCookie;
 
     private uint mHSolutionEvents = uint.MaxValue;
     private IVsSolution mSolution;
@@ -93,7 +93,7 @@ namespace ClangPowerTools
     {
       base.Initialize();
 
-      SubscribeToOnShellPropertyChange();
+      //SubscribeToOnShellPropertyChange();
 
       //Settings command is always visible
       mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
@@ -103,63 +103,63 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region IVsShellPropertyEvents Helpers
+    //#region IVsShellPropertyEvents Helpers
 
-    // Subscribe to events
-    private void SubscribeToOnShellPropertyChange()
-    {
-      if (GetService(typeof(SVsShell)) is IVsShell shellService)
-        ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out mEventSinkCookie));
-    }
+    //// Subscribe to events
+    //private void SubscribeToOnShellPropertyChange()
+    //{
+    //  if (GetService(typeof(SVsShell)) is IVsShell shellService)
+    //    ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out mEventSinkCookie));
+    //}
 
-    // Unsubscribe from events
-    private void UnsubscribeFromOnShellPropertyChange()
-    {
-      if (GetService(typeof(SVsShell)) is IVsShell shellService)
-        ErrorHandler.ThrowOnFailure(shellService.UnadviseShellPropertyChanges(mEventSinkCookie));
-      mEventSinkCookie = 0;
-    }
+    //// Unsubscribe from events
+    //private void UnsubscribeFromOnShellPropertyChange()
+    //{
+    //  if (GetService(typeof(SVsShell)) is IVsShell shellService)
+    //    ErrorHandler.ThrowOnFailure(shellService.UnadviseShellPropertyChanges(mEventSinkCookie));
+    //  mEventSinkCookie = 0;
+    //}
 
-    #endregion
+    //#endregion
 
-    #region IVsShellPropertyEvents Implementation
+    //#region IVsShellPropertyEvents Implementation
 
-    public int OnShellPropertyChange(int propid, object propValue)
-    {
-      //Check if the toolbar was already activated
-      var tidyChecks = (TidyChecks)this.GetDialogPage(typeof(TidyChecks));
-      if (tidyChecks.ToolbarActivated)
-      {
-        UnsubscribeFromOnShellPropertyChange();
-        return VSConstants.S_OK;
-      }
+    //public int OnShellPropertyChange(int propid, object propValue)
+    //{
+    //  //Check if the toolbar was already activated
+    //  var tidyChecks = (TidyChecks)this.GetDialogPage(typeof(TidyChecks));
+    //  if (tidyChecks.ToolbarActivated)
+    //  {
+    //    UnsubscribeFromOnShellPropertyChange();
+    //    return VSConstants.S_OK;
+    //  }
 
-      // Handle the event if zombie state changes from true to false
-      if ((int)__VSSPROPID.VSSPROPID_Zombie != propid)
-      {
-        UnsubscribeFromOnShellPropertyChange();
-        return VSConstants.S_OK;
-      }
+    //  // Handle the event if zombie state changes from true to false
+    //  if ((int)__VSSPROPID.VSSPROPID_Zombie != propid)
+    //  {
+    //    UnsubscribeFromOnShellPropertyChange();
+    //    return VSConstants.S_OK;
+    //  }
 
-      if ((bool)propValue)
-      {
-        UnsubscribeFromOnShellPropertyChange();
-        return VSConstants.S_OK;
-      }
+    //  if ((bool)propValue)
+    //  {
+    //    UnsubscribeFromOnShellPropertyChange();
+    //    return VSConstants.S_OK;
+    //  }
 
-      // Show the toolbar
-      var dte = GetService(typeof(DTE)) as DTE2;
-      var cbs = ((CommandBars)dte.CommandBars);
-      CommandBar cb = cbs["Clang Power Tools"];
-      cb.Visible = true;
-      tidyChecks.ToolbarActivated = true;
-      tidyChecks.SaveSettingsToStorage();
+    //  // Show the toolbar
+    //  var dte = GetService(typeof(DTE)) as DTE2;
+    //  var cbs = ((CommandBars)dte.CommandBars);
+    //  CommandBar cb = cbs["Clang Power Tools"];
+    //  cb.Visible = true;
+    //  tidyChecks.ToolbarActivated = true;
+    //  tidyChecks.SaveSettingsToStorage();
 
-      UnsubscribeFromOnShellPropertyChange();
-      return VSConstants.S_OK;
-    }
+    //  UnsubscribeFromOnShellPropertyChange();
+    //  return VSConstants.S_OK;
+    //}
 
-    #endregion
+    //#endregion
 
     #region Get Pointer to IVsSolutionEvents
 
@@ -240,6 +240,8 @@ namespace ClangPowerTools
         outputManager.AddMessage($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
           $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
 
+        ShowToolbare(dte);
+
         generalOptions.Version = currentVersion;
         generalOptions.SaveSettingsToStorage();
       }
@@ -264,7 +266,6 @@ namespace ClangPowerTools
 
     #endregion
 
-
     #region Private Methods
 
     public string GetPackageVersion()
@@ -279,6 +280,13 @@ namespace ClangPowerTools
       var identity = metaData.ChildNodes.Cast<XmlElement>().First(x => x.Name == "Identity");
 
       return identity.GetAttribute("Version");
+    }
+
+    private void ShowToolbare(DTE2 aDte)
+    {
+      var cbs = ((CommandBars)aDte.CommandBars);
+      CommandBar cb = cbs["Clang Power Tools"];
+      cb.Visible = true;
     }
 
     #endregion
