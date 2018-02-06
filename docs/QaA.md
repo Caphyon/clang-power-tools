@@ -51,8 +51,8 @@ More details here:
 
 ### 👉 Does Clang Power Tools support automatic checking of CppCoreGuidelines ?
 
-Yes. By leveraging `clang-tidy` support for checking [CppCoreGuidelines](https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md)  
-You can use the `cppcoreguidelines-*` filter from Clang Power Tools settings, to select CppCoreGuidelines from the available clang-tidy [checks](https://clang.llvm.org/extra/clang-tidy/checks/list.html)
+Yes. By leveraging `clang-tidy` support for checking [CppCoreGuidelines](https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md).  
+You can use the `cppcoreguidelines-*` filter from Clang Power Tools _settings_, to select CppCoreGuidelines from the available clang-tidy [checks](https://clang.llvm.org/extra/clang-tidy/checks/list.html).
 
 ### 👉 If I want to use a .clang-tidy file, where do I put that configuration file on the file system?
 
