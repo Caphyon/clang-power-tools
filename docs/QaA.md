@@ -35,11 +35,17 @@ directories to **clang**, with the following defaults:
    Q: What about the **continuous integration script** (clang-build.ps1)?     
    A: You can specify the `-treat-sai` switch and it will have the old behavior.
 
+### 👉 If I want Clang Power Tools to use a .clang-tidy file, where do I put that configuration file on the file system?
+
+`clang-tidy` searches for the config file starting from the given/input source file directory, going up .. until it finds a .clang-tidy file (stops at drive root). This is the standard clang-tidy lookup mechanism.
+FYI, Clang Power Tools has a setting related to this workflow:  
+VS Options > Clang Power Tools > Tidy > Options > Use checks from: (combo-box)
+
 ### 👉 How can I use Clang Static Analyzer ?
 
-Clang Static Analyzer was included into clang-tidy some time ago.
+Clang Static Analyzer was included into `clang-tidy` some time ago.
 As a result, you can use Clang Power Tools to run all static analyzer checks from Clang.
 Check our extension settings panel, in the Tidy sub-section, scroll to see and ENABLE all the checks starting with: "clang-analyzer-"
 
 More details here:  
-https://clang-analyzer.llvm.org/available_checks.html
+[clang-analyzer.llvm.org/available_checks](https://clang-analyzer.llvm.org/available_checks.html)
