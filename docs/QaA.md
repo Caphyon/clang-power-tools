@@ -49,6 +49,11 @@ Check our extension settings panel, in the Tidy sub-section, scroll to see and E
 More details here:  
 [clang-analyzer.llvm.org/available_checks](https://clang-analyzer.llvm.org/available_checks.html)
 
+### 👉 Does Clang Power Tools support automatic checking of CppCoreGuidelines ?
+
+Yes. By leveraging `clang-tidy` support for checking [CppCoreGuidelines](https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md)  
+You can use the `cppcoreguidelines-*` filter from Clang Power Tools settings, to select CppCoreGuidelines from the available clang-tidy [checks](https://clang.llvm.org/extra/clang-tidy/checks/list.html)
+
 ### 👉 If I want to use a .clang-tidy file, where do I put that configuration file on the file system?
 
 `clang-tidy` searches for the config file starting from the given/input source file directory, going up .. until it finds a .clang-tidy file (stops at drive root). This is the standard clang-tidy lookup mechanism.  
