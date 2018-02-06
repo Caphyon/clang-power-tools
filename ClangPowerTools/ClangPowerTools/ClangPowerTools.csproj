@@ -110,7 +110,6 @@
     <Compile Include="RunningDocTableEvents.cs" />
     <Compile Include="Script\ClangCompileTidyScript.cs" />
     <Compile Include="Script\ClangFormatScript.cs" />
-    <Compile Include="Script\ProcessCreator.cs" />
     <Compile Include="Script\RunningProcesses.cs" />
     <Compile Include="DialogPages\ConfigurationPage.cs">
       <SubType>Component</SubType>

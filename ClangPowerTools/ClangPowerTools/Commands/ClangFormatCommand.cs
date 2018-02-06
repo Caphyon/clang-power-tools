@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
+using System.Xml.Linq;
 using ClangPowerTools.DialogPages;
-using ClangPowerTools.SilentFile;
 using EnvDTE;
-using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Text;
+using Microsoft.VisualStudio.Text.Editor;
 
 namespace ClangPowerTools.Commands
 {
@@ -19,10 +20,15 @@ namespace ClangPowerTools.Commands
   {
     #region Members
 
-    private ClangFormatPage mClangFormatPage;
-    private Commands2 mCommands;
-
+    private ClangFormatPage mClangFormatPage = null;
     private Document mDocument = null;
+    private bool mExecuteClangFormat = false;
+
+    #endregion
+
+    #region Properties
+
+    private ClangFormatPage GetUserOptions => (ClangFormatPage)Package.GetDialogPage(typeof(ClangFormatPage));
 
     #endregion
 
@@ -35,13 +41,10 @@ namespace ClangPowerTools.Commands
     /// <param name="package">Owner package, not null.</param>
     public ClangFormatCommand(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
-      mClangFormatPage = (ClangFormatPage)Package.GetDialogPage(typeof(ClangFormatPage));
-      mCommands = DTEObj.Commands as Commands2;
-
       if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
-        var menuCommand = new OleMenuCommand(this.RunClangFormat, menuCommandID);
+        var menuCommand = new OleMenuCommand(RunClangFormat, menuCommandID);
         menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
         menuCommand.Enabled = true;
         commandService.AddCommand(menuCommand);
@@ -52,21 +55,28 @@ namespace ClangPowerTools.Commands
 
     #region Public methods
 
-    public void OnBeforeSave(object sender, Document document)
+    public void OnBeforeSave(object sender, Document aDocument)
     {
-      if (!mClangFormatPage.EnableFormatOnSave)
+      var clangFormatOptionPage = GetUserOptions;
+
+      if (false == clangFormatOptionPage.EnableFormatOnSave && false == mExecuteClangFormat)
         return;
 
-      if (!Vsix.IsDocumentDirty(document))
+      if (!Vsix.IsDocumentDirty(aDocument))
         return;
 
-      if (!FileHasExtension(document.FullName, mClangFormatPage.FileExtensions))
+      if (!FileHasExtension(aDocument.FullName, clangFormatOptionPage.FileExtensions))
         return;
 
-      if (SkipFile(document.FullName, mClangFormatPage.SkipFiles))
+      if (SkipFile(aDocument.FullName, clangFormatOptionPage.SkipFiles))
         return;
 
-      mDocument = document;
+      //mClangFormatPage = clangFormatOptionPage.Clone();
+      //mClangFormatPage.FallbackStyle = "none";
+
+      mClangFormatPage = GetUserOptions;
+      mDocument = aDocument;
+
       RunClangFormat(new object(), new EventArgs());
     }
 
@@ -85,28 +95,61 @@ namespace ClangPowerTools.Commands
     {
       try
       {
-        var silentFileController = new SilentFileController();
-        mFilePahtCollector = new FilePathCollector();
-        List<string> filesPath = new List<string>();
-
-        using (var guard = silentFileController.GetSilentFileChangerGuard())
+        List<Document> documents = new List<Document>();
+        if (null == mDocument)
         {
-          if (null != mDocument)
+          mExecuteClangFormat = true;
+
+          foreach (var item in CollectSelectedItems())
           {
-            // Was used formt on save option
-            filesPath.Add(mFilePahtCollector.Collect(mDocument));
-          }
-          else
-          {
-            // Was used the clang format button was used
-            DocumentsHandler.SaveActiveDocuments((DTE)DTEObj);
-            var selectedItems = CollectSelectedItems();
-            filesPath.AddRange(mFilePahtCollector.Collect(selectedItems));
+            if (!(item.GetObject() is ProjectItem))
+            {
+              mExecuteClangFormat = false;
+              return; // the selected file is not a project item
+            }
+
+            var document = (item.GetObject() as ProjectItem).Document;
+            if (null == document)
+              continue;
+
+            document.Save(document.FullName);
+            if (false == GetUserOptions.EnableFormatOnSave)
+              OnBeforeSave(new object(), document);
           }
 
-          silentFileController.SilentFiles(Package, guard, filesPath);
-          RunScript(mClangFormatPage, filesPath);
+          mExecuteClangFormat = false;
+          return;
         }
+
+        var view = Vsix.GetDocumentView(mDocument);
+        if (view == null)
+          return;
+
+        var text = FormatEndOfFile(view, out string dirPath, out string filePath);
+        var process = CreateProcess(text, 0, text.Length, dirPath, filePath, mClangFormatPage);
+
+        try
+        {
+          process.Start();
+        }
+        catch (Exception exception)
+        {
+          throw new Exception(
+              $"Cannot execute {process.StartInfo.FileName}.\n\"{exception.Message}\".\nPlease make sure it is on the PATH.");
+        }
+
+        process.StandardInput.Write(text);
+        process.StandardInput.Close();
+
+        var output = process.StandardOutput.ReadToEnd();
+        process.WaitForExit();
+
+        if (0 != process.ExitCode)
+        {
+          throw new Exception(process.StandardError.ReadToEnd());
+        }
+
+        ApplyClangFormat(output, view);
       }
       catch (Exception exception)
       {
@@ -116,6 +159,7 @@ namespace ClangPowerTools.Commands
       finally
       {
         mDocument = null;
+        mClangFormatPage = null;
       }
     }
 
@@ -129,6 +173,71 @@ namespace ClangPowerTools.Commands
     {
       var extensions = fileExtensions.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
       return extensions.Contains(Path.GetExtension(filePath).ToLower());
+    }
+
+    private string FormatEndOfFile(IWpfTextView aView, out string aDirPath, out string aFilePath)
+    {
+      aFilePath = Vsix.GetDocumentPath(aView);
+      aDirPath = Path.GetDirectoryName(aFilePath);
+
+      var text = aView.TextBuffer.CurrentSnapshot.GetText();
+      var newline = text.Contains(Environment.NewLine) ? Environment.NewLine : "\n";
+
+      if (!text.EndsWith(newline))
+      {
+        aView.TextBuffer.Insert(aView.TextBuffer.CurrentSnapshot.Length, newline);
+        text += newline;
+      }
+
+      return text;
+    }
+
+    private System.Diagnostics.Process CreateProcess(string aText, int aOffset, int aLength, string aPath, string aFilePath, ClangFormatPage aOptions)
+    {
+      string vsixPath = Path.GetDirectoryName(
+        typeof(RunClangPowerToolsPackage).Assembly.Location);
+
+      System.Diagnostics.Process process = new System.Diagnostics.Process();
+      process.StartInfo.UseShellExecute = false;
+      process.StartInfo.CreateNoWindow = true;
+      process.StartInfo.RedirectStandardInput = true;
+      process.StartInfo.RedirectStandardOutput = true;
+      process.StartInfo.RedirectStandardError = true;
+      process.StartInfo.FileName = Path.Combine(vsixPath, ScriptConstants.kClangFormat);
+
+      process.StartInfo.Arguments = " -offset " + aOffset +
+                                    " -length " + aLength +
+                                    " -output-replacements-xml " +
+                                    $" {ScriptConstants.kStyle} \"{aOptions.Style}\"" +
+                                    $" {ScriptConstants.kFallbackStyle} \"{aOptions.FallbackStyle}\"";
+
+      var assumeFilename = aOptions.AssumeFilename;
+      if (string.IsNullOrEmpty(assumeFilename))
+        assumeFilename = aFilePath;
+      if (!string.IsNullOrEmpty(assumeFilename))
+        process.StartInfo.Arguments += $" -assume-filename \"{assumeFilename}\"";
+
+      if (null != aPath)
+        process.StartInfo.WorkingDirectory = aPath;
+
+      return process;
+    }
+
+    private static void ApplyClangFormat(string replacements, IWpfTextView view)
+    {
+      if (string.IsNullOrWhiteSpace(replacements))
+        return;
+
+      var root = XElement.Parse(replacements);
+      var edit = view.TextBuffer.CreateEdit();
+      foreach (XElement replacement in root.Descendants("replacement"))
+      {
+        var span = new Span(
+            int.Parse(replacement.Attribute("offset").Value),
+            int.Parse(replacement.Attribute("length").Value));
+        edit.Replace(span, replacement.Value);
+      }
+      edit.Apply();
     }
 
     #endregion

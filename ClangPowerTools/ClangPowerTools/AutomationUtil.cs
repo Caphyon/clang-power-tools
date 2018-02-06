@@ -43,6 +43,8 @@ namespace ClangPowerTools
       SaveAllProjects(aServiceProvider, aSolution);
     }
 
+    public static void SaveActiveDocuments(DTE2 aDte) => aDte.Documents.SaveAll();
+
     #endregion
 
     #region Private Methods

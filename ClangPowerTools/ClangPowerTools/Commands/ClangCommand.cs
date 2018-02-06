@@ -155,25 +155,6 @@ namespace ClangPowerTools
       }
     }
 
-    private string FormatEndFile()
-    {
-      IWpfTextView view = Vsix.GetCurrentView();
-
-      string filePath = Vsix.GetDocumentPath(view);
-      var path = Path.GetDirectoryName(filePath);
-
-      string text = view.TextBuffer.CurrentSnapshot.GetText();
-
-      string newline = text.Contains(Environment.NewLine) ? Environment.NewLine : "\n";
-      if (!text.EndsWith(newline))
-      {
-        view.TextBuffer.Insert(view.TextBuffer.CurrentSnapshot.Length, newline);
-        text += newline;
-      }
-
-      return text;
-    }
-
     #endregion
 
   }
