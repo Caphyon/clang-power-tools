@@ -38,7 +38,7 @@ directories to **clang**, with the following defaults:
 ### 👉 Where can I see detailed information about clang-tidy checks ?
 
 A list of available checks that `clang-tidy` can perform:  
-[clang-tidy checks](https://clang.llvm.org/extra/clang-tidy/checks/list.html)  
+[clang.llvm.org/extra/clang-tidy/checks/list](https://clang.llvm.org/extra/clang-tidy/checks/list.html)  
 
 ### 👉 How can I use Clang Static Analyzer ?
 
