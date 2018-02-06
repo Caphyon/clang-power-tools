@@ -22,13 +22,7 @@ namespace ClangPowerTools.Commands
 
     private ClangFormatPage mClangFormatPage = null;
     private Document mDocument = null;
-    private bool mExecuteClangFormat = false;
-
-    #endregion
-
-    #region Properties
-
-    private ClangFormatPage GetUserOptions => (ClangFormatPage)Package.GetDialogPage(typeof(ClangFormatPage));
+    private bool mFormatIsRunning = false;
 
     #endregion
 
@@ -57,9 +51,9 @@ namespace ClangPowerTools.Commands
 
     public void OnBeforeSave(object sender, Document aDocument)
     {
-      var clangFormatOptionPage = GetUserOptions;
+      var clangFormatOptionPage = GetUserOptions();
 
-      if (false == clangFormatOptionPage.EnableFormatOnSave && false == mExecuteClangFormat)
+      if (false == clangFormatOptionPage.EnableFormatOnSave && false == mFormatIsRunning)
         return;
 
       if (!Vsix.IsDocumentDirty(aDocument))
@@ -71,10 +65,7 @@ namespace ClangPowerTools.Commands
       if (SkipFile(aDocument.FullName, clangFormatOptionPage.SkipFiles))
         return;
 
-      //mClangFormatPage = clangFormatOptionPage.Clone();
-      //mClangFormatPage.FallbackStyle = "none";
-
-      mClangFormatPage = GetUserOptions;
+      mClangFormatPage = GetUserOptions();
       mDocument = aDocument;
 
       RunClangFormat(new object(), new EventArgs());
@@ -98,26 +89,9 @@ namespace ClangPowerTools.Commands
         List<Document> documents = new List<Document>();
         if (null == mDocument)
         {
-          mExecuteClangFormat = true;
-
-          foreach (var item in CollectSelectedItems())
-          {
-            if (!(item.GetObject() is ProjectItem))
-            {
-              mExecuteClangFormat = false;
-              return; // the selected file is not a project item
-            }
-
-            var document = (item.GetObject() as ProjectItem).Document;
-            if (null == document)
-              continue;
-
-            document.Save(document.FullName);
-            if (false == GetUserOptions.EnableFormatOnSave)
-              OnBeforeSave(new object(), document);
-          }
-
-          mExecuteClangFormat = false;
+          mFormatIsRunning = true;
+          FormatAllSelectedDocuments();
+          mFormatIsRunning = false;
           return;
         }
 
@@ -135,7 +109,7 @@ namespace ClangPowerTools.Commands
         catch (Exception exception)
         {
           throw new Exception(
-              $"Cannot execute {process.StartInfo.FileName}.\n\"{exception.Message}\".\nPlease make sure it is on the PATH.");
+              $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
         }
 
         process.StandardInput.Write(text);
@@ -145,9 +119,7 @@ namespace ClangPowerTools.Commands
         process.WaitForExit();
 
         if (0 != process.ExitCode)
-        {
           throw new Exception(process.StandardError.ReadToEnd());
-        }
 
         ApplyClangFormat(output, view);
       }
@@ -163,6 +135,8 @@ namespace ClangPowerTools.Commands
       }
     }
 
+    private ClangFormatPage GetUserOptions() => (ClangFormatPage)Package.GetDialogPage(typeof(ClangFormatPage));
+
     private bool SkipFile(string aFilePath, string aSkipFiles)
     {
       var skipFilesList = aSkipFiles.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
@@ -173,6 +147,23 @@ namespace ClangPowerTools.Commands
     {
       var extensions = fileExtensions.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
       return extensions.Contains(Path.GetExtension(filePath).ToLower());
+    }
+
+    private void FormatAllSelectedDocuments()
+    {
+      foreach (var item in CollectSelectedItems())
+      {
+        if (!(item.GetObject() is ProjectItem))
+          return; // the selected file is not a project item
+
+        var document = (item.GetObject() as ProjectItem).Document;
+        if (null == document)
+          continue;
+
+        document.Save(document.FullName);
+        if (false == GetUserOptions().EnableFormatOnSave)
+          OnBeforeSave(new object(), document);
+      }
     }
 
     private string FormatEndOfFile(IWpfTextView aView, out string aDirPath, out string aFilePath)
