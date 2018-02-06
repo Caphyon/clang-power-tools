@@ -134,7 +134,7 @@ namespace ClangPowerTools
         try
         {
           AutomationUtil.SaveDirtyFiles(Package, DTEObj.Solution, DTEObj);
-          CollectSelectedItems();
+          CollectSelectedItems(ScriptConstants.kAcceptedFileExtensions);
 
           mFileWatcher = new FileChangerWatcher();
           mFileOpener = new FileOpener(DTEObj);

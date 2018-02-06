@@ -10,14 +10,7 @@ namespace ClangPowerTools
   {
     #region Members
 
-    public static readonly List<string> kAcceptedExtensionTypes = new List<string>
-      { ".c",
-        ".cpp",
-        ".cc",
-        ".cxx",
-        ".c++",
-        ".cp",
-      };
+    private List<string> mAcceptedFileExtensions = new List<string>();
     private List<IItem> mItems = new List<IItem>();
     private IServiceProvider mServiceProvider;
 
@@ -25,7 +18,11 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public ItemsCollector(IServiceProvider aServiceProvider) => mServiceProvider = aServiceProvider;
+    public ItemsCollector(IServiceProvider aServiceProvider, List<string> aExtensions)
+    {
+      mServiceProvider = aServiceProvider;
+      mAcceptedFileExtensions = aExtensions;
+    }
 
     #endregion 
 
@@ -76,7 +73,7 @@ namespace ClangPowerTools
     public void AddProjectItem(ProjectItem aItem)
     {
       var fileExtension = Path.GetExtension(aItem.Name).ToLower();
-      if (!kAcceptedExtensionTypes.Contains(fileExtension))
+      if (!mAcceptedFileExtensions.Contains(fileExtension))
         return;
 
       mItems.Add(new SelectedProjectItem(aItem));

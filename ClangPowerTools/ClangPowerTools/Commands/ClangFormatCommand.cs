@@ -151,7 +151,12 @@ namespace ClangPowerTools.Commands
 
     private void FormatAllSelectedDocuments()
     {
-      foreach (var item in CollectSelectedItems())
+      var fileExtensions = GetUserOptions().FileExtensions
+        .ToLower()
+        .Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+        .ToList();
+
+      foreach (var item in CollectSelectedItems(fileExtensions))
       {
         if (!(item.GetObject() is ProjectItem))
           return; // the selected file is not a project item

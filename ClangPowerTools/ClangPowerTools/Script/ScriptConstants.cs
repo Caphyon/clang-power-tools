@@ -1,10 +1,21 @@
-﻿namespace ClangPowerTools
+﻿using System.Collections.Generic;
+
+namespace ClangPowerTools
 {
   public class ScriptConstants
   {
     #region Constants
 
     #region Clang Compile/Tidy constants
+
+    public static readonly List<string> kAcceptedFileExtensions = new List<string>
+      { ".c",
+        ".cpp",
+        ".cc",
+        ".cxx",
+        ".c++",
+        ".cp",
+      };
 
     public const string kPowerShellPath = @"WindowsPowerShell\v1.0\powershell.exe";
     public const string kScriptBeginning = @"PowerShell.exe -ExecutionPolicy Bypass -NoProfile -Noninteractive -command '&";

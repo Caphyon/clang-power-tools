@@ -3,10 +3,7 @@ using Microsoft.VisualStudio.Shell;
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE;
-<<<<<<< HEAD
 using EnvDTE80;
-=======
->>>>>>> created dedicated document operation class handler
 
 namespace ClangPowerTools
 {
@@ -120,7 +117,7 @@ namespace ClangPowerTools
         try
         {
           AutomationUtil.SaveDirtyFiles(Package, DTEObj.Solution, DTEObj);
-          CollectSelectedItems();
+          CollectSelectedItems(ScriptConstants.kAcceptedFileExtensions);
           RunScript(OutputWindowConstants.kComplileCommand, false);
         }
         catch (Exception exception)

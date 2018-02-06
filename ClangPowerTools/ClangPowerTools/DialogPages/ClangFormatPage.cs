@@ -16,17 +16,17 @@ namespace ClangPowerTools.DialogPages
 
     #region Format On Save
 
-    [Category("Format On Save")]
-    [DisplayName("Enable")]
+    [Category("Clang Format")]
+    [DisplayName("Format On Save")]
     [Description("Enable running clang-format when modified files are saved.")]
     public bool EnableFormatOnSave { get; set; }
 
-    [Category("Format On Save")]
+    [Category("Clang Format")]
     [DisplayName("File extensions")]
     [Description("When formatting on save, clang-format will be applied only to files with these extensions.")]
     public string FileExtensions { get; set; }
 
-    [Category("Format On Save")]
+    [Category("Clang Format")]
     [DisplayName("Skip files")]
     [Description("When formatting on save, clang-format will not be applied on these files")]
     public string SkipFiles { get; set; }
@@ -35,25 +35,25 @@ namespace ClangPowerTools.DialogPages
 
     #region Format Options
 
-    [Category("Format Options")]
+    [Category("Clang Format")]
     [DisplayName("Assume filename")]
     [Description("When reading from stdin, clang-format assumes this filename to look for a style config file" +
       "(with - style = file) and to determine the language.")]
     public string AssumeFilename { get; set; }
 
-    [Category("Format Options")]
+    [Category("Clang Format")]
     [DisplayName("Fallback style")]
     [Description("The name of the predefined style used as a fallback in case clang - format is invoked with " +
       "- style = file, but can not find the.clang - format file to use.\nUse - fallback - style = none to skip formatting.")]
     [TypeConverter(typeof(FallbackStyleConvertor))]
     public string FallbackStyle { get; set; }
 
-    //[Category("Format Options")]
+    //[Category("Format")]
     //[DisplayName("Sort includes")]
     //[Description("If set, overrides the include sorting behavior determined by the SortIncludes style flag.")]
     //public bool SortIncludes { get; set; }
 
-    [Category("Format Options")]
+    [Category("Clang Format")]
     [DisplayName("Style")]
     [Description("Coding style, currently supports: LLVM, Google, Chromium, Mozilla, WebKit.\nUse -style=file to load " +
       "style configuration from .clang - format file located in one of the parent directories of the " +

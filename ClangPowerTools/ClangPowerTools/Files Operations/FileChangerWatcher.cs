@@ -32,7 +32,7 @@ namespace ClangPowerTools
 
       // Only watch .cpp files.
 
-      foreach (var extension in ItemsCollector.kAcceptedExtensionTypes)
+      foreach (var extension in ScriptConstants.kAcceptedFileExtensions)
         mWatcher.Filter = $"*{extension}";
 
       //Subdirectories will be also watched.
