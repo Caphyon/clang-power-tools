@@ -55,7 +55,6 @@ VS Options > Clang Power Tools > Tidy > Options > Use checks from: (combo-box)
 Configuration options for specific clang-tidy checks can be specified via the standard `.clang-tidy` configuration file.  
 Eg.  
 
-
     Checks:          '-*,some-check'  
     WarningsAsErrors: ''  
     HeaderFilterRegex: '.*'  
@@ -65,5 +64,13 @@ Eg.
         value:           'some value'  
     ...
  
- xxx
+### 👉 Do I need to install LLVM for Clang Power Tools to work ?
+
+Yes. 
+Download and install **Clang for Windows** (LLVM pre-built binary)  
+[LLVM-5.0.1-win64](http://releases.llvm.org/5.0.1/LLVM-5.0.1-win64.exe)  
+[releases.llvm.org/download.html](http://releases.llvm.org/download.html)
+
+We will automatically load clang from the default installation path *C:\Program Files\LLVM*. If you prefer to use a different location you must manually add the **bin** folder to **PATH**.  
+
  
