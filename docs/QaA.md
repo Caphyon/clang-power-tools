@@ -1,6 +1,6 @@
 # Frequently Asked Questions
 
-## 👉 How to deal with warnings from system/third-party headers ?
+### 👉 How to deal with warnings from system/third-party headers ?
 
 Until v2.6, we've used the `%INCLUDE%` environment variable for setting clang include directories.
 That was equivalent to using `-isystem` for each directory. 
