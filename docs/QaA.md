@@ -35,3 +35,11 @@ directories to **clang**, with the following defaults:
    Q: What about the **continuous integration script** (clang-build.ps1)?     
    A: You can specify the `-treat-sai` switch and it will have the old behavior.
 
+### 👉 How can I use Clang Static Analyzer ?
+
+Clang Static Analyzer was included into clang-tidy some time ago.
+As a result, you can use Clang Power Tools to run all static analyzer checks from Clang.
+Check our extension settings panel, in the Tidy sub-section, scroll to see and ENABLE all the checks starting with: "clang-analyzer-"
+
+More details here:  
+https://clang-analyzer.llvm.org/available_checks.html
