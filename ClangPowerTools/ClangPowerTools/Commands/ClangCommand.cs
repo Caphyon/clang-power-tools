@@ -59,7 +59,7 @@ namespace ClangPowerTools
     //  mRunningProcesses = new RunningProcesses();
     
       if (null == mCommandsController)
-        mCommandsController = new CommandsController(ServiceProvider, DTEObj);
+        mCommandsController = new CommandsController(Package, DTEObj);
 
         mErrorsManager = new ErrorsManager(Package, DTEObj);
         mGeneralOptions = (GeneralOptions)Package.GetDialogPage(typeof(GeneralOptions));
