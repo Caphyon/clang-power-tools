@@ -96,7 +96,7 @@ namespace ClangPowerTools
       mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
 
       var generalOptions = (GeneralOptions)this.GetDialogPage(typeof(GeneralOptions));
-      if (null == generalOptions || string.IsNullOrWhiteSpace(generalOptions.Version))
+      if (null == generalOptions.Version || string.IsNullOrWhiteSpace(generalOptions.Version))
       {
         // Show the toolbar on the first install
         var dte = GetService(typeof(DTE)) as DTE2;
