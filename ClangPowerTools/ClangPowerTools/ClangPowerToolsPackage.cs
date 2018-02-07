@@ -93,73 +93,21 @@ namespace ClangPowerTools
     {
       base.Initialize();
 
-      //SubscribeToOnShellPropertyChange();
-
       //Settings command is always visible
       mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
+
+      var generalOptions = (GeneralOptions)this.GetDialogPage(typeof(GeneralOptions));
+      if (null == generalOptions || string.IsNullOrWhiteSpace(generalOptions.Version))
+      {
+        // Show the toolbar on the first install
+        var dte = GetService(typeof(DTE)) as DTE2;
+        ShowToolbare(dte);
+      }
 
       AdviseSolutionEvents();
     }
 
     #endregion
-
-    //#region IVsShellPropertyEvents Helpers
-
-    //// Subscribe to events
-    //private void SubscribeToOnShellPropertyChange()
-    //{
-    //  if (GetService(typeof(SVsShell)) is IVsShell shellService)
-    //    ErrorHandler.ThrowOnFailure(shellService.AdviseShellPropertyChanges(this, out mEventSinkCookie));
-    //}
-
-    //// Unsubscribe from events
-    //private void UnsubscribeFromOnShellPropertyChange()
-    //{
-    //  if (GetService(typeof(SVsShell)) is IVsShell shellService)
-    //    ErrorHandler.ThrowOnFailure(shellService.UnadviseShellPropertyChanges(mEventSinkCookie));
-    //  mEventSinkCookie = 0;
-    //}
-
-    //#endregion
-
-    //#region IVsShellPropertyEvents Implementation
-
-    //public int OnShellPropertyChange(int propid, object propValue)
-    //{
-    //  //Check if the toolbar was already activated
-    //  var tidyChecks = (TidyChecks)this.GetDialogPage(typeof(TidyChecks));
-    //  if (tidyChecks.ToolbarActivated)
-    //  {
-    //    UnsubscribeFromOnShellPropertyChange();
-    //    return VSConstants.S_OK;
-    //  }
-
-    //  // Handle the event if zombie state changes from true to false
-    //  if ((int)__VSSPROPID.VSSPROPID_Zombie != propid)
-    //  {
-    //    UnsubscribeFromOnShellPropertyChange();
-    //    return VSConstants.S_OK;
-    //  }
-
-    //  if ((bool)propValue)
-    //  {
-    //    UnsubscribeFromOnShellPropertyChange();
-    //    return VSConstants.S_OK;
-    //  }
-
-    //  // Show the toolbar
-    //  var dte = GetService(typeof(DTE)) as DTE2;
-    //  var cbs = ((CommandBars)dte.CommandBars);
-    //  CommandBar cb = cbs["Clang Power Tools"];
-    //  cb.Visible = true;
-    //  tidyChecks.ToolbarActivated = true;
-    //  tidyChecks.SaveSettingsToStorage();
-
-    //  UnsubscribeFromOnShellPropertyChange();
-    //  return VSConstants.S_OK;
-    //}
-
-    //#endregion
 
     #region Get Pointer to IVsSolutionEvents
 
@@ -239,8 +187,6 @@ namespace ClangPowerTools
         outputManager.Show();
         outputManager.AddMessage($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
           $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
-
-        ShowToolbare(dte);
 
         generalOptions.Version = currentVersion;
         generalOptions.SaveSettingsToStorage();
