@@ -52,7 +52,6 @@ namespace ClangPowerTools
     /// </summary>
     public const string PackageGuidString = "f564f9d3-01ae-493e-883b-18deebdb975e";
     public static readonly Guid CommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
-    //private uint mEventSinkCookie;
 
     private uint mHSolutionEvents = uint.MaxValue;
     private IVsSolution mSolution;
