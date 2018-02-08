@@ -84,6 +84,7 @@ namespace ClangPowerTools
         ClangFlags = this.ClangFlags.ToList(),
         Version = this.Version
       };
+
       SaveToFile(path, updatedConfig);
     }
 
@@ -99,7 +100,7 @@ namespace ClangPowerTools
       this.Continue = loadedConfig.Continue;
       this.TreatWarningsAsErrors = loadedConfig.TreatWarningsAsErrors;
 
-      this.AdditionalIncludes = (null == AdditionalIncludes || string.Empty == AdditionalIncludes) ?
+      this.AdditionalIncludes = (null == loadedConfig.AdditionalIncludes || string.Empty == loadedConfig.AdditionalIncludes) ?
         ComboBoxConstants.kIncludeDirectories : loadedConfig.AdditionalIncludes;
 
       this.VerboseMode = loadedConfig.VerboseMode;
