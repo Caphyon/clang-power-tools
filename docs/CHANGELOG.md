@@ -1,5 +1,16 @@
 # Version History
 
+### Clang Power Tools 2.7
+*February 8, 2018*
+
+Improvements:
+* Save all projects before running clang compile/tidy.
+
+Bugs:
+* The `Treat additional includes as` option was not loaded from the settings file.
+* The toolbar was hidden on the first install.
+* Source files / headers not detected when specified in property sheets.
+
 ### Clang Power Tools 2.6
 *January 29, 2018*
 
