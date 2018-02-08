@@ -84,6 +84,9 @@ namespace ClangPowerTools.Script
       if (null != aGeneralOptions.FilesToIgnore && 0 < aGeneralOptions.FilesToIgnore.Length)
         parameters = $"{parameters} {ScriptConstants.kFilesToIgnore} (''{String.Join("'',''", aGeneralOptions.FilesToIgnore)}'')";
 
+      if (0 == string.Compare(aGeneralOptions.AdditionalIncludes, ComboBoxConstants.kSystemIncludeDirectories))
+        parameters = $"{parameters} {ScriptConstants.kSystemIncludeDirectories}";
+
       return $"{parameters}";
     }
 
