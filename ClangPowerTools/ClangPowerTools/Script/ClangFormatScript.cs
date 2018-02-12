@@ -14,16 +14,16 @@ namespace ClangPowerTools.Script
     {
       mParameters = string.Empty;
 
-      if (null != aClangFormatPage.AssumeFilename && !string.IsNullOrWhiteSpace(aClangFormatPage.AssumeFilename))
+      if (false == string.IsNullOrWhiteSpace(aClangFormatPage.AssumeFilename))
         mParameters = $"{mParameters} {ScriptConstants.kAssumeFilename}={aClangFormatPage.AssumeFilename}";
 
-      if (null != aClangFormatPage.FallbackStyle && !string.IsNullOrWhiteSpace(aClangFormatPage.FallbackStyle))
+      if (false == string.IsNullOrWhiteSpace(aClangFormatPage.FallbackStyle))
         mParameters = $"{mParameters} {ScriptConstants.kFallbackStyle}={aClangFormatPage.FallbackStyle}";
 
       //if (aClangFormatPage.SortIncludes)
       //  mParameters = $"{mParameters} {ScriptConstants.kSortIncludes}";
 
-      if (null != aClangFormatPage.Style && !string.IsNullOrWhiteSpace(aClangFormatPage.Style))
+      if (false == string.IsNullOrWhiteSpace(aClangFormatPage.Style))
         mParameters = $"{mParameters} {ScriptConstants.kStyle}={aClangFormatPage.Style}";
     }
 

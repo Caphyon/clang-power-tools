@@ -72,10 +72,10 @@ namespace ClangPowerTools.Script
           $"{String.Join("'',''", aGeneralOptions.ClangFlags)}'')";
       }
 
-      if (aGeneralOptions.Continue)
+      if (true == aGeneralOptions.Continue)
         parameters = $"{parameters} {ScriptConstants.kContinue}";
 
-      if (aGeneralOptions.VerboseMode)
+      if (true == aGeneralOptions.VerboseMode)
         parameters = $"{parameters} {ScriptConstants.kVerboseMode}";
 
       if (null != aGeneralOptions.ProjectsToIgnore && 0 < aGeneralOptions.ProjectsToIgnore.Length)
@@ -95,17 +95,17 @@ namespace ClangPowerTools.Script
     {
       string parameters = string.Empty;
 
-      if (ComboBoxConstants.kTidyFile == aTidyOptions.UseChecksFrom)
+      if (0 == string.Compare(ComboBoxConstants.kTidyFile, aTidyOptions.UseChecksFrom))
       {
         parameters = $"{parameters}{ScriptConstants.kTidyFile}";
         mUseTidyFile = true;
       }
-      else if (ComboBoxConstants.kCustomChecks == aTidyOptions.UseChecksFrom)
+      else if (0 == string.Compare(ComboBoxConstants.kCustomChecks, aTidyOptions.UseChecksFrom))
       {
         if (null != aTidyCustomChecks.TidyChecks && 0 != aTidyCustomChecks.TidyChecks.Length)
           parameters = $",{String.Join(",", aTidyCustomChecks.TidyChecks)}";
       }
-      else if (ComboBoxConstants.kPredefinedChecks == aTidyOptions.UseChecksFrom)
+      else if (0 == string.Compare(ComboBoxConstants.kPredefinedChecks, aTidyOptions.UseChecksFrom))
       {
         foreach (PropertyInfo prop in aTidyChecks.GetType().GetProperties())
         {
@@ -132,7 +132,7 @@ namespace ClangPowerTools.Script
           parameters);
       }
 
-      if (!string.IsNullOrWhiteSpace(aTidyOptions.HeaderFilter))
+      if (false == string.IsNullOrWhiteSpace(aTidyOptions.HeaderFilter))
       {
         parameters = string.Format("{0} {1} ''{2}''", parameters, ScriptConstants.kHeaderFilter,
           ComboBoxConstants.kHeaderFilterMaping.ContainsKey(aTidyOptions.HeaderFilter) ?
@@ -144,7 +144,7 @@ namespace ClangPowerTools.Script
 
     private string GetClangFormatParameters(ClangFormatPage aClangFormat)
     {
-      if (null == aClangFormat.Style || string.IsNullOrWhiteSpace(aClangFormat.Style))
+      if (true == string.IsNullOrWhiteSpace(aClangFormat.Style))
         return string.Empty;
 
       return aClangFormat.Style;
