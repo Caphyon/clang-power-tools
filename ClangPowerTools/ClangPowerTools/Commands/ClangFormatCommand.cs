@@ -165,9 +165,9 @@ namespace ClangPowerTools.Commands
         if (null == document)
           continue;
 
-        document.Save(document.FullName);
-        if (false == GetUserOptions().EnableFormatOnSave)
-          OnBeforeSave(new object(), document);
+        //document.Save(document.FullName);
+        //if (false == GetUserOptions().EnableFormatOnSave)
+        OnBeforeSave(new object(), document);
       }
     }
 
