@@ -20,7 +20,9 @@ namespace ClangPowerTools
     private ErrorParser mErrorParser = new ErrorParser();
 
     private bool mMissingLlvm = false;
-    private List<TaskError> mErrors = new List<TaskError>();
+    private HashSet<TaskError> mErrors = new HashSet<TaskError>();
+      //(new GenericComparer<TaskError>( (obj1, obj2) => obj1.FilePath.CompareTo(obj2.FilePath))); // && obj1.Line == obj2.Line && 0 == obj1.FullMessage.CompareTo(obj2.FullMessage)
+
     private List<string> mPCHPaths = new List<string>();
 
     #endregion
@@ -28,10 +30,15 @@ namespace ClangPowerTools
     #region Properties
 
     public bool MissingLlvm => mMissingLlvm;
+
     public List<string> Buffer => mMessagesBuffer;
+
     public bool EmptyBuffer => mMessagesBuffer.Count == 0;
-    public List<TaskError> Errors => mErrors;
+
+    public HashSet<TaskError> Errors => mErrors;
+
     public bool HasErrors => 0 != mErrors.Count;
+
     public List<string> PCHPaths => mPCHPaths;
 
     #endregion
