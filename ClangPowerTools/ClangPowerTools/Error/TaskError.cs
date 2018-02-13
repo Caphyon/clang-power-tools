@@ -26,6 +26,10 @@ namespace ClangPowerTools
       Category = aCategory;
     }
 
+    #endregion
+
+    #region Public Methods
+
     public override bool Equals(object obj)
     {
       var otherObj = obj as TaskError;
