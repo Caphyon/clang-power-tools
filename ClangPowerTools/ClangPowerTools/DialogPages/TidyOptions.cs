@@ -16,6 +16,11 @@ namespace ClangPowerTools
     #region Properties
 
     [Category(" Tidy")]
+    [DisplayName("Auto-tidy on save")]
+    [Description("")]
+    public bool AutoTidyOnSave { get; set; }
+
+    [Category(" Tidy")]
     [DisplayName("Fix")]
     [Description("Automatically applies clang-tidy fixes to selected source files, affected header files and saves them to disk.")]
     public bool Fix { get; set; }
@@ -44,6 +49,8 @@ namespace ClangPowerTools
       string path = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
 
       var updatedConfig = LoadFromFile(path);
+
+      updatedConfig.AutoTidyOnSave = this.AutoTidyOnSave;
       updatedConfig.Fix = this.Fix;
 
       updatedConfig.HeaderFilter = ComboBoxConstants.kHeaderFilterMaping.ContainsKey(this.HeaderFilter) ?
@@ -60,6 +67,7 @@ namespace ClangPowerTools
       var loadedConfig = LoadFromFile(path);
 
       this.Fix = loadedConfig.Fix;
+      this.AutoTidyOnSave = loadedConfig.AutoTidyOnSave;
 
       if (null == loadedConfig.HeaderFilter)
         this.HeaderFilter = DefaultOptions.kHeaderFilter;
@@ -72,7 +80,6 @@ namespace ClangPowerTools
         this.UseChecksFrom = (0 == loadedConfig.TidyChecks.Count ? ComboBoxConstants.kPredefinedChecks : ComboBoxConstants.kCustomChecks);
       else
         this.UseChecksFrom = loadedConfig.TidyMode;
-
     }
 
     #endregion

@@ -10,6 +10,8 @@ namespace ClangPowerTools
 
     public List<string> TidyChecks { get; set; } = new List<string>();
 
+    public bool AutoTidyOnSave { get; set; }
+
     public bool Fix { get; set; }
 
     public string HeaderFilter { get; set; }
