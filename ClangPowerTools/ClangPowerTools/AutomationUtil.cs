@@ -39,11 +39,9 @@ namespace ClangPowerTools
 
     public static void SaveDirtyFiles(IServiceProvider aServiceProvider, Solution aSolution, DTE2 aDte)
     {
-      SaveActiveDocuments(aDte);
+      DocumentsHandler.SaveActiveDocuments((DTE)aDte);
       SaveAllProjects(aServiceProvider, aSolution);
     }
-
-    public static void SaveActiveDocuments(DTE2 aDte) => aDte.Documents.SaveAll();
 
     #endregion
 
@@ -66,8 +64,6 @@ namespace ClangPowerTools
       }
       return list;
     }
-
-    private static void SaveActiveDocuments(DTE2 aDte) => aDte.Documents.SaveAll();
 
     private static void SaveAllProjects(IServiceProvider aServiceProvider, Solution aSolution)
     {
