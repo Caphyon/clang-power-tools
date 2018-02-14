@@ -60,11 +60,12 @@ namespace ClangPowerTools
 
     #region Protected methods
 
-    protected void RunScript(string aCommandName, TidyOptions mTidyOptions = null, TidyChecks mTidyChecks = null, TidyCustomChecks mTidyCustomChecks = null)
+    protected void RunScript(string aCommandName, bool aForceTidyToFix, TidyOptions mTidyOptions = null, 
+      TidyChecks mTidyChecks = null, TidyCustomChecks mTidyCustomChecks = null)
     {
       mScriptBuilder = new ScriptBuiler();
       mScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
-        mTidyCustomChecks, DTEObj, VsEdition, VsVersion);
+        mTidyCustomChecks, DTEObj, VsEdition, VsVersion, aForceTidyToFix);
 
       string solutionPath = DTEObj.Solution.FullName;
 

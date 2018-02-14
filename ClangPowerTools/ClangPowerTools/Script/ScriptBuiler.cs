@@ -42,11 +42,12 @@ namespace ClangPowerTools
     }
 
     public void ConstructParameters(GeneralOptions aGeneralOptions, TidyOptions aTidyOptions, 
-      TidyChecks aTidyChecks, TidyCustomChecks aTidyCustomChecks, DTE2 aDte, string aVsEdition, string aVsVersion)
+      TidyChecks aTidyChecks, TidyCustomChecks aTidyCustomChecks, DTE2 aDte, 
+      string aVsEdition, string aVsVersion, bool aForceTidyToFix)
     {
       mParameters = GetGeneralParameters(aGeneralOptions);
       mParameters = null != aTidyOptions ?
-        $"{mParameters} {GetTidyParameters(aTidyOptions, aTidyChecks, aTidyCustomChecks)}" : $"{mParameters} {ScriptConstants.kParallel}";
+        $"{mParameters} {GetTidyParameters(aTidyOptions, aTidyChecks, aTidyCustomChecks, aForceTidyToFix)}" : $"{mParameters} {ScriptConstants.kParallel}";
       mParameters = $"{mParameters} {ScriptConstants.kVsVersion} {aVsVersion} {ScriptConstants.kVsEdition} {aVsEdition}";
     }
 
@@ -90,8 +91,8 @@ namespace ClangPowerTools
       return $"{parameters}";
     }
 
-    private string GetTidyParameters(TidyOptions aTidyOptions, 
-      TidyChecks aTidyChecks, TidyCustomChecks aTidyCustomChecks)
+    private string GetTidyParameters(TidyOptions aTidyOptions, TidyChecks aTidyChecks, 
+      TidyCustomChecks aTidyCustomChecks, bool aForceTidyToFix)
     {
       string parameters = string.Empty;
 
@@ -127,7 +128,7 @@ namespace ClangPowerTools
       if (string.Empty != parameters)
       {
         parameters = string.Format("{0} ''{1}{2}''",
-          (aTidyOptions.Fix ? ScriptConstants.kTidyFix : ScriptConstants.kTidy),
+          (true == aTidyOptions.Fix || true == aForceTidyToFix ? ScriptConstants.kTidyFix : ScriptConstants.kTidy),
           (mUseTidyFile ? "" : "-*"),
           parameters);
       }

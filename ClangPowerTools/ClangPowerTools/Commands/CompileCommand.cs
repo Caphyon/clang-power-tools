@@ -104,7 +104,7 @@ namespace ClangPowerTools
         {
           AutomationUtil.SaveDirtyFiles(Package, DTEObj.Solution, DTEObj);
           CollectSelectedItems();
-          RunScript(OutputWindowConstants.kComplileCommand);
+          RunScript(OutputWindowConstants.kComplileCommand, false);
         }
         catch (Exception exception)
         {
