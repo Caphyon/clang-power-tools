@@ -40,7 +40,12 @@ namespace ClangPowerTools
     {
       var projects = GetAllProjects(aServiceProvider, aSolution);
       foreach (var proj in projects)
-        proj.Save();
+      {
+        var project = proj.GetObject() as Project;
+        if (project.IsDirty)
+          project.Save(project.FullName);
+      }
+        
     }
 
     #endregion
