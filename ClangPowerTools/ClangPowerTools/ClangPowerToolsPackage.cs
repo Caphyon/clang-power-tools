@@ -54,6 +54,7 @@ namespace ClangPowerTools
     public static readonly Guid CommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
 
     private uint mHSolutionEvents = uint.MaxValue;
+    private RunningDocTableEvents mRunningDocTableEvents;
     private IVsSolution mSolution;
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
@@ -93,6 +94,8 @@ namespace ClangPowerTools
     protected override void Initialize()
     {
       base.Initialize();
+
+      mRunningDocTableEvents = new RunningDocTableEvents(this);
 
       //Settings command is always visible
       mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
@@ -196,6 +199,8 @@ namespace ClangPowerTools
 
       mBuildEvents.OnBuildDone += mCompileCmd.OnBuildDone;
 
+      mRunningDocTableEvents.BeforeSave += mTidyCmd.OnBeforeSave;
+
       return VSConstants.S_OK;
     }
 
@@ -208,6 +213,7 @@ namespace ClangPowerTools
     {
       mCommandEvents.BeforeExecute -= mCompileCmd.CommandEventsBeforeExecute;
       mBuildEvents.OnBuildDone -= mCompileCmd.OnBuildDone;
+      mRunningDocTableEvents.BeforeSave -= mTidyCmd.OnBeforeSave;
 
       return VSConstants.S_OK;
     }

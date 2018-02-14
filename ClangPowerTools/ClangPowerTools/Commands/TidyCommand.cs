@@ -20,6 +20,7 @@ namespace ClangPowerTools
     private TidyCustomChecks mTidyCustomChecks;
     private FileChangerWatcher mFileWatcher;
     private FileOpener mFileOpener;
+    private bool mForceTidyToFix = false;
 
     #endregion
 
@@ -41,7 +42,7 @@ namespace ClangPowerTools
       if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
-        var menuCommand = new OleMenuCommand(this.MenuItemCallback, menuCommandID);
+        var menuCommand = new OleMenuCommand(this.RunClangTidy, menuCommandID);
         menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
         menuCommand.Enabled = true;
         commandService.AddCommand(menuCommand);
@@ -50,7 +51,20 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region Methods
+    #region Public Methods
+
+    public void OnBeforeSave(object sender, Document aDocument)
+    {
+      if (false == mTidyOptions.AutoTidyOnSave)
+        return;
+
+      mForceTidyToFix = true;
+      RunClangTidy(new object(), new EventArgs());
+    }
+
+    #endregion
+
+    #region Private Methods
 
     /// <summary>
     /// This function is the callback used to execute the command when the menu item is clicked.
@@ -59,7 +73,7 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
-    private void MenuItemCallback(object sender, EventArgs e)
+    private void RunClangTidy(object sender, EventArgs e)
     {
       mCommandsController.Running = true;
 			var task = System.Threading.Tasks.Task.Run(() =>
@@ -76,13 +90,17 @@ namespace ClangPowerTools
               WatchFiles();
               SilentFiles(guard);
             }
-            RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mTidyChecks, mTidyCustomChecks);
+            RunScript(OutputWindowConstants.kTidyCodeCommand, mForceTidyToFix, mTidyOptions, mTidyChecks, mTidyCustomChecks);
           }
         }
         catch (Exception exception)
         {
           VsShellUtilities.ShowMessageBox(Package, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+        }
+        finally
+        {
+          mForceTidyToFix = false;
         }
       }).ContinueWith(tsk => mCommandsController.AfterExecute()); ;
     }
