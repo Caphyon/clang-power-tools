@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.Shell;
 using System.ComponentModel.Design;
-using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools
@@ -48,7 +47,7 @@ namespace ClangPowerTools
       {
         try
         {
-          AutomationUtil.SaveAllProjects(Package, DTEObj.Solution);
+          AutomationUtil.SaveDirtyFiles(Package, DTEObj.Solution, DTEObj);
           CollectSelectedItems();
           RunScript(OutputWindowConstants.kComplileCommand);
         }

@@ -66,7 +66,7 @@ namespace ClangPowerTools
       {
         try
         {
-          AutomationUtil.SaveAllProjects(Package, DTEObj.Solution);
+          AutomationUtil.SaveDirtyFiles(Package, DTEObj.Solution, DTEObj);
           CollectSelectedItems();
           mFileWatcher = new FileChangerWatcher();
           using (var guard = new SilentFileChangerGuard())

@@ -1,4 +1,5 @@
 ﻿using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
@@ -8,7 +9,7 @@ namespace ClangPowerTools
 {
   public class AutomationUtil
   {
-    #region Public methods
+    #region Public Methods
 
     public static List<IItem> GetAllProjects(IServiceProvider aServiceProvider, Solution aSolution)
     {
@@ -36,21 +37,15 @@ namespace ClangPowerTools
         hierarchy : null;
     }
 
-    public static void SaveAllProjects(IServiceProvider aServiceProvider, Solution aSolution)
+    public static void SaveDirtyFiles(IServiceProvider aServiceProvider, Solution aSolution, DTE2 aDte)
     {
-      var projects = GetAllProjects(aServiceProvider, aSolution);
-      foreach (var proj in projects)
-      {
-        var project = proj.GetObject() as Project;
-        if (project.IsDirty)
-          project.Save(project.FullName);
-      }
-        
+      SaveActiveDocuments(aDte);
+      SaveAllProjects(aServiceProvider, aSolution);
     }
 
     #endregion
 
-    #region Helpers
+    #region Private Methods
 
     private static List<IItem> GetSolutionFolderProjects(IServiceProvider aServiceProvider, Project aSolutionFolderItem)
     {
@@ -68,6 +63,25 @@ namespace ClangPowerTools
           list.Add(new SelectedProject(subProject));
       }
       return list;
+    }
+
+    private static void SaveActiveDocuments(DTE2 aDte) => aDte.Documents.SaveAll();
+
+    private static void SaveAllProjects(IServiceProvider aServiceProvider, Solution aSolution)
+    {
+      var projects = GetAllProjects(aServiceProvider, aSolution);
+      if (null == projects)
+        return;
+
+      foreach (var proj in projects)
+      {
+        var project = proj.GetObject() as Project;
+        if (null == project)
+          continue;
+
+        if (true == project.IsDirty)
+          project.Save(project.FullName);
+      }
     }
 
     #endregion
