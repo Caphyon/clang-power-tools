@@ -103,8 +103,6 @@ namespace ClangPowerTools
       return mItemsCollector.GetItems;
     }
 
-    protected void SaveActiveDocuments() => DTEObj.Documents.SaveAll();
-
     #endregion
 
     #region Private Methods
