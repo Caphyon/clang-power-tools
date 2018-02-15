@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE;
 using System.IO;
 using ClangPowerTools.DialogPages;
+using EnvDTE80;
 
 namespace ClangPowerTools
 {
@@ -20,7 +21,11 @@ namespace ClangPowerTools
     private TidyCustomChecks mTidyCustomChecks;
     private FileChangerWatcher mFileWatcher;
     private FileOpener mFileOpener;
+
     private bool mForceTidyToFix = false;
+    private bool mSaveCommandWasGiven = false;
+
+    private Commands2 mCommand;
 
     #endregion
 
@@ -38,7 +43,9 @@ namespace ClangPowerTools
       mTidyChecks = (TidyChecks)Package.GetDialogPage(typeof(TidyChecks));
       mTidyCustomChecks = (TidyCustomChecks)Package.GetDialogPage(typeof(TidyCustomChecks));
 
+      mCommand = DTEObj.Commands as Commands2;
       mFileOpener = new FileOpener(DTEObj);
+
       if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
@@ -55,17 +62,38 @@ namespace ClangPowerTools
 
     public void OnBeforeSave(object sender, Document aDocument)
     {
-      if (false == mTidyOptions.AutoTidyOnSave)
+      try
+      {
+        if (false == mSaveCommandWasGiven)
+          return;
+
+        if (false == mTidyOptions.AutoTidyOnSave)
+          return;
+
+        if (true == mCommandsController.Running)
+          return;
+
+        if (true == mForceTidyToFix)
+          return;
+
+        mForceTidyToFix = true;
+        RunClangTidy(new object(), new EventArgs());
+      }
+      catch (Exception) { }
+      finally
+      {
+        mSaveCommandWasGiven = false;
+      }
+
+    }
+
+    public void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
+    {
+      string commandName = GetCommandName(aGuid, aId);
+      if (0 != string.Compare("File.SaveSelectedItems", commandName))
         return;
 
-      if (true == mCommandsController.Running)
-        return;
-
-      if (true == mForceTidyToFix)
-        return;
-
-      mForceTidyToFix = true;
-      RunClangTidy(new object(), new EventArgs());
+      mSaveCommandWasGiven = true;
     }
 
     #endregion
@@ -133,6 +161,23 @@ namespace ClangPowerTools
       string solutionFolderPath = DTEObj.Solution.FullName
         .Substring(0, DTEObj.Solution.FullName.LastIndexOf('\\'));
       mFileWatcher.Run(solutionFolderPath);
+    }
+
+    private string GetCommandName(string aGuid, int aId)
+    {
+      if (null == aGuid)
+        return "null";
+
+      if (null == mCommand)
+        return string.Empty;
+
+      try
+      {
+        return mCommand.Item(aGuid, aId).Name;
+      }
+      catch (System.Exception) { }
+
+      return string.Empty;
     }
 
     #endregion

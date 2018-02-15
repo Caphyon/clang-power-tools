@@ -195,10 +195,11 @@ namespace ClangPowerTools
         generalOptions.Version = currentVersion;
         generalOptions.SaveSettingsToStorage();
       }
+
       mCommandEvents.BeforeExecute += mCompileCmd.CommandEventsBeforeExecute;
+      mCommandEvents.BeforeExecute += mTidyCmd.CommandEventsBeforeExecute;
 
       mBuildEvents.OnBuildDone += mCompileCmd.OnBuildDone;
-
       mRunningDocTableEvents.BeforeSave += mTidyCmd.OnBeforeSave;
 
       return VSConstants.S_OK;
@@ -212,6 +213,8 @@ namespace ClangPowerTools
     public int OnBeforeCloseSolution(object pUnkReserved)
     {
       mCommandEvents.BeforeExecute -= mCompileCmd.CommandEventsBeforeExecute;
+      mCommandEvents.BeforeExecute -= mTidyCmd.CommandEventsBeforeExecute;
+
       mBuildEvents.OnBuildDone -= mCompileCmd.OnBuildDone;
       mRunningDocTableEvents.BeforeSave -= mTidyCmd.OnBeforeSave;
 
