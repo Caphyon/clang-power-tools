@@ -97,13 +97,13 @@ namespace ClangPowerTools
       //Settings command is always visible
       mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
 
+      var dte = GetService(typeof(DTE)) as DTE2;
+      mBuildEvents = dte.Events.BuildEvents;
+      mCommandEvents = dte.Events.CommandEvents;
+
       var generalOptions = (GeneralOptions)this.GetDialogPage(typeof(GeneralOptions));
       if (null == generalOptions.Version || string.IsNullOrWhiteSpace(generalOptions.Version))
-      {
-        // Show the toolbar on the first install
-        var dte = GetService(typeof(DTE)) as DTE2;
-        ShowToolbare(dte);
-      }
+        ShowToolbare(dte); // Show the toolbar on the first install
 
       AdviseSolutionEvents();
     }

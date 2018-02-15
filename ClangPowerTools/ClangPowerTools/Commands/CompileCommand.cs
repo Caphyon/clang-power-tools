@@ -2,9 +2,8 @@
 using Microsoft.VisualStudio.Shell;
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell.Interop;
-using System.Windows.Interop;
-using System.Windows.Threading;
 using EnvDTE;
+using EnvDTE80;
 
 namespace ClangPowerTools
 {
@@ -47,7 +46,7 @@ namespace ClangPowerTools
 
     public void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
     {
-      if (!mGeneralOptions.ClangCompileAfterVsCompile)
+      if (false == mGeneralOptions.ClangCompileAfterVsCompile)
         return;
 
       string commandName = GetCommandName(aGuid, aId);
@@ -61,7 +60,7 @@ namespace ClangPowerTools
     {
       try
       {
-        if (!mExecuteCompile)
+        if (false == mExecuteCompile)
           return;
 
         int exitCode = DTEObj.Solution.SolutionBuild.LastBuildInfo;
@@ -73,11 +72,7 @@ namespace ClangPowerTools
         }
 
         // Run clang compile after the VS compile succeeded 
-        var dispatcher = HwndSource.FromHwnd((IntPtr)DTEObj.MainWindow.HWnd).RootVisual.Dispatcher;
-        dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-        {
-          RunClangCompile(new object(), new EventArgs());
-        }));
+        RunClangCompile(new object(), new EventArgs());
       }
       catch (Exception) { }
       finally
@@ -115,10 +110,6 @@ namespace ClangPowerTools
         {
           VsShellUtilities.ShowMessageBox(Package, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-        }
-        finally
-        {
-          mCommandsController.VsCommandIsRunning = false;
         }
       }).ContinueWith(tsk => mCommandsController.AfterExecute());
     }
