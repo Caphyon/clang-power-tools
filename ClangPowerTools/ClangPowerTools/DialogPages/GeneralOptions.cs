@@ -62,6 +62,11 @@ namespace ClangPowerTools
     [TypeConverter(typeof(AdditionalIncludesConvertor))]
     public string AdditionalIncludes { get; set; }
 
+    [Category("General")]
+    [DisplayName("Clang compile after MSVC compile")]
+    [Description("Always run Clang compile on the current source file, after successful MSVC compilation.")]
+    public bool ClangCompileAfterVsCompile { get; set; }
+
     [Browsable(false)]
     public string Version { get; set; }
 
@@ -82,6 +87,7 @@ namespace ClangPowerTools
         AdditionalIncludes = this.AdditionalIncludes,
         VerboseMode = this.VerboseMode,
         ClangFlags = this.ClangFlags.ToList(),
+        ClangCompileAfterVsCompile = this.ClangCompileAfterVsCompile,
         Version = this.Version
       };
 
@@ -106,6 +112,7 @@ namespace ClangPowerTools
       this.VerboseMode = loadedConfig.VerboseMode;
       this.ClangFlags = loadedConfig.ClangFlags.ToArray();
 
+      this.ClangCompileAfterVsCompile = loadedConfig.ClangCompileAfterVsCompile;
       this.Version = loadedConfig.Version;
     }
 

@@ -35,7 +35,7 @@ namespace ClangPowerTools
         
         if ( null == pane)
         {
-          mOutputWindow.CreatePane(ref generalPaneGuid, OutputWindowConstants.kPaneName, 3, 1);
+          mOutputWindow.CreatePane(ref generalPaneGuid, OutputWindowConstants.kPaneName, 0, 1);
           mOutputWindow.GetPane(ref generalPaneGuid, out pane);
         }
         mOutputPane = pane;
