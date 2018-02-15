@@ -58,6 +58,12 @@ namespace ClangPowerTools
       if (false == mTidyOptions.AutoTidyOnSave)
         return;
 
+      if (true == mCommandsController.Running)
+        return;
+
+      if (true == mForceTidyToFix)
+        return;
+
       mForceTidyToFix = true;
       RunClangTidy(new object(), new EventArgs());
     }
