@@ -25,6 +25,7 @@ namespace ClangPowerTools
     private bool mForceTidyToFix = false;
     private bool mSaveCommandWasGiven = false;
 
+    //private SilentFileChangerGuard mGuard = null;
     private Commands2 mCommand;
 
     #endregion
@@ -39,20 +40,26 @@ namespace ClangPowerTools
 
     public TidyCommand(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
-      mTidyOptions = (TidyOptions)Package.GetDialogPage(typeof(TidyOptions));
-      mTidyChecks = (TidyChecks)Package.GetDialogPage(typeof(TidyChecks));
-      mTidyCustomChecks = (TidyCustomChecks)Package.GetDialogPage(typeof(TidyCustomChecks));
-
-      mCommand = DTEObj.Commands as Commands2;
-      mFileOpener = new FileOpener(DTEObj);
-
-      if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+      try
       {
-        var menuCommandID = new CommandID(CommandSet, Id);
-        var menuCommand = new OleMenuCommand(this.RunClangTidy, menuCommandID);
-        menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
-        menuCommand.Enabled = true;
-        commandService.AddCommand(menuCommand);
+        mTidyOptions = (TidyOptions)Package.GetDialogPage(typeof(TidyOptions));
+        mTidyChecks = (TidyChecks)Package.GetDialogPage(typeof(TidyChecks));
+        mTidyCustomChecks = (TidyCustomChecks)Package.GetDialogPage(typeof(TidyCustomChecks));
+
+        mCommand = DTEObj.Commands as Commands2;
+        mFileOpener = new FileOpener(DTEObj);
+
+        if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+        {
+          var menuCommandID = new CommandID(CommandSet, Id);
+          var menuCommand = new OleMenuCommand(this.RunClangTidy, menuCommandID);
+          menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
+          menuCommand.Enabled = true;
+          commandService.AddCommand(menuCommand);
+        }
+      }
+      catch (Exception)
+      {
       }
     }
 
@@ -79,10 +86,20 @@ namespace ClangPowerTools
         //if (false == Vsix.IsDocumentDirty(aDocument))
         //  return;
 
+        //mGuard = new SilentFileChangerGuard();
+
+        //if (mTidyOptions.Fix)
+        //{
+        //  WatchFiles();
+        //  SilentFiles(guard);
+        //}
+
         mForceTidyToFix = true;
         RunClangTidy(new object(), new EventArgs());
       }
-      catch (Exception) { }
+      catch (Exception)
+      {
+      }
       finally
       {
         mSaveCommandWasGiven = false;
@@ -91,15 +108,19 @@ namespace ClangPowerTools
 
     public void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
     {
-      string commandName = GetCommandName(aGuid, aId);
-
-      if (0 != string.Compare("File.SaveAll", commandName) &&
-        0 != string.Compare("File.SaveSelectedItems", commandName))
+      try
       {
-        return;
+        string commandName = GetCommandName(aGuid, aId);
+        if (0 != string.Compare("File.SaveAll", commandName) &&
+          0 != string.Compare("File.SaveSelectedItems", commandName))
+        {
+          return;
+        }
+        mSaveCommandWasGiven = true;
       }
-
-      mSaveCommandWasGiven = true;
+      catch (Exception)
+      {
+      }
     }
 
     #endregion
@@ -125,7 +146,7 @@ namespace ClangPowerTools
           mFileWatcher = new FileChangerWatcher();
           using (var guard = new SilentFileChangerGuard())
           {
-            if (mTidyOptions.Fix)
+            if (true == mTidyOptions.Fix || true == mTidyOptions.AutoTidyOnSave)
             {
               WatchFiles();
               SilentFiles(guard);
@@ -151,22 +172,35 @@ namespace ClangPowerTools
 
     private void SilentFiles(SilentFileChangerGuard aGuard)
     {
-      FilePathCollector fileCollector = new FilePathCollector();
-      fileCollector.Collect(mItemsCollector.GetItems);
+      try
+      {
+        FilePathCollector fileCollector = new FilePathCollector();
+        fileCollector.Collect(mItemsCollector.GetItems);
 
-      // silent all open files
-      foreach (Document doc in DTEObj.Documents)
-        aGuard.Add(new SilentFileChanger(Package, Path.Combine(doc.Path, doc.Name), true));
-      //silent all selected files
-      aGuard.AddRange(Package, fileCollector.Files);
+        // silent all open files
+        foreach (Document doc in DTEObj.Documents)
+          aGuard.Add(new SilentFileChanger(Package, Path.Combine(doc.Path, doc.Name), true));
+        //silent all selected files
+        aGuard.AddRange(Package, fileCollector.Files);
+      }
+      catch (Exception)
+      {
+      }
+
     }
 
     private void WatchFiles()
     {
-      mFileWatcher.OnChanged += mFileOpener.FileChanged;
-      string solutionFolderPath = DTEObj.Solution.FullName
-        .Substring(0, DTEObj.Solution.FullName.LastIndexOf('\\'));
-      mFileWatcher.Run(solutionFolderPath);
+      try
+      {
+        mFileWatcher.OnChanged += mFileOpener.FileChanged;
+        string solutionFolderPath = DTEObj.Solution.FullName
+          .Substring(0, DTEObj.Solution.FullName.LastIndexOf('\\'));
+        mFileWatcher.Run(solutionFolderPath);
+      }
+      catch (Exception)
+      {
+      }
     }
 
     private string GetCommandName(string aGuid, int aId)
@@ -181,7 +215,9 @@ namespace ClangPowerTools
       {
         return mCommand.Item(aGuid, aId).Name;
       }
-      catch (System.Exception) { }
+      catch (Exception)
+      {
+      }
 
       return string.Empty;
     }

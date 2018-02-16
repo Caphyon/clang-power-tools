@@ -17,7 +17,7 @@ namespace ClangPowerTools
 
     [Category(" Tidy")]
     [DisplayName("Perform clang-tidy on save")]
-    [Description("Enable running clang-tidy when modified files are saved.")]
+    [Description("Automatically run clang-tidy when saving the current source file.")]
     public bool AutoTidyOnSave { get; set; }
 
     [Category(" Tidy")]

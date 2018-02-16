@@ -40,30 +40,37 @@ namespace ClangPowerTools
 
     public void CollectSelectedFiles(DTE2 aDte, ProjectItem aProjectItem)
     {
-      // if the command has been given from tab file
-      // will be just one file selected
-      if (null != aProjectItem)
+      try
       {
-        AddProjectItem(aProjectItem); 
-        return;
+        // if the command has been given from tab file
+        // will be just one file selected
+        if (null != aProjectItem)
+        {
+          AddProjectItem(aProjectItem);
+          return;
+        }
+
+        // the command has been given from Solution Explorer or toolbar
+        Array selectedItems = aDte.ToolWindows.SolutionExplorer.SelectedItems as Array;
+        if (null == selectedItems || 0 == selectedItems.Length)
+          return;
+
+        foreach (UIHierarchyItem item in selectedItems)
+        {
+          if (item.Object is Solution)
+            GetProjectsFromSolution(item.Object as Solution);
+
+          else if (item.Object is Project)
+            AddProject(item.Object as Project);
+
+          else if (item.Object is ProjectItem)
+            GetProjectItem(item.Object as ProjectItem);
+        }
+      }
+      catch (Exception)
+      {
       }
 
-      // the command has been given from Solution Explorer or toolbar
-      Array selectedItems = aDte.ToolWindows.SolutionExplorer.SelectedItems as Array;
-      if (null == selectedItems || 0 == selectedItems.Length)
-        return;
-
-      foreach (UIHierarchyItem item in selectedItems)
-      {
-        if (item.Object is Solution)
-          GetProjectsFromSolution(item.Object as Solution);
-
-        else if (item.Object is Project)
-          AddProject(item.Object as Project);
-
-        else if (item.Object is ProjectItem)
-          GetProjectItem(item.Object as ProjectItem);
-      }
     }
 
     public void AddProjectItem(ProjectItem aItem)

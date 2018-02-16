@@ -39,6 +39,10 @@ namespace ClangPowerTools
         process.BeginOutputReadLine();
         process.WaitForExit();
       }
+      catch (Exception)
+      {
+
+      }
       finally
       {
         process.ErrorDataReceived -= DataErrorHandler;

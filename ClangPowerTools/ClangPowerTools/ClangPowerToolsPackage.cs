@@ -93,22 +93,28 @@ namespace ClangPowerTools
     /// </summary>
     protected override void Initialize()
     {
-      base.Initialize();
+      try
+      {
+        base.Initialize();
 
-      mRunningDocTableEvents = new RunningDocTableEvents(this);
+        mRunningDocTableEvents = new RunningDocTableEvents(this);
 
-      //Settings command is always visible
-      mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
+        //Settings command is always visible
+        mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
 
-      var dte = GetService(typeof(DTE)) as DTE2;
-      mBuildEvents = dte.Events.BuildEvents;
-      mCommandEvents = dte.Events.CommandEvents;
+        var dte = GetService(typeof(DTE)) as DTE2;
+        mBuildEvents = dte.Events.BuildEvents;
+        mCommandEvents = dte.Events.CommandEvents;
 
-      var generalOptions = (GeneralOptions)this.GetDialogPage(typeof(GeneralOptions));
-      if (null == generalOptions.Version || string.IsNullOrWhiteSpace(generalOptions.Version))
-        ShowToolbare(dte); // Show the toolbar on the first install
+        var generalOptions = (GeneralOptions)this.GetDialogPage(typeof(GeneralOptions));
+        if (null == generalOptions.Version || string.IsNullOrWhiteSpace(generalOptions.Version))
+          ShowToolbare(dte); // Show the toolbar on the first install
 
-      AdviseSolutionEvents();
+        AdviseSolutionEvents();
+      }
+      catch (Exception)
+      {
+      }
     }
 
     #endregion
@@ -117,9 +123,15 @@ namespace ClangPowerTools
 
     private void AdviseSolutionEvents()
     {
-      UnadviseSolutionEvents();
-      mSolution = GetService(typeof(SVsSolution)) as IVsSolution;
-      mSolution?.AdviseSolutionEvents(this, out mHSolutionEvents);
+      try
+      {
+        UnadviseSolutionEvents();
+        mSolution = GetService(typeof(SVsSolution)) as IVsSolution;
+        mSolution?.AdviseSolutionEvents(this, out mHSolutionEvents);
+      }
+      catch (Exception)
+      {
+      }
     }
 
     private void UnadviseSolutionEvents()
@@ -170,37 +182,45 @@ namespace ClangPowerTools
 
     public int OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
     {
-      //Load the rest of the commands when a solution is loaded
-
-      if( null == mTidyCmd )
-        mTidyCmd = new TidyCommand(this, CommandSet, CommandIds.kTidyId);
-
-      if (null == mCompileCmd)
-        mCompileCmd = new CompileCommand(this, CommandSet, CommandIds.kCompileId);
-
-      if (null == mStopClang)
-        mStopClang = new StopClang(this, CommandSet, CommandIds.kStopClang);
-
-      var generalOptions = (GeneralOptions)this.GetDialogPage(typeof(GeneralOptions));
-      var currentVersion = GetPackageVersion();
-
-      if (0 != string.Compare(generalOptions.Version, currentVersion))
+      try
       {
-        var dte = GetService(typeof(DTE)) as DTE2;
-        OutputManager outputManager = new OutputManager(dte);
-        outputManager.Show();
-        outputManager.AddMessage($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
-          $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
+        //Load the rest of the commands when a solution is loaded
 
-        generalOptions.Version = currentVersion;
-        generalOptions.SaveSettingsToStorage();
+        if (null == mTidyCmd)
+          mTidyCmd = new TidyCommand(this, CommandSet, CommandIds.kTidyId);
+
+        if (null == mCompileCmd)
+          mCompileCmd = new CompileCommand(this, CommandSet, CommandIds.kCompileId);
+
+        if (null == mStopClang)
+          mStopClang = new StopClang(this, CommandSet, CommandIds.kStopClang);
+
+        var generalOptions = (GeneralOptions)this.GetDialogPage(typeof(GeneralOptions));
+        var currentVersion = GetPackageVersion();
+
+        if (0 != string.Compare(generalOptions.Version, currentVersion))
+        {
+          var dte = GetService(typeof(DTE)) as DTE2;
+          OutputManager outputManager = new OutputManager(dte);
+          outputManager.Show();
+          outputManager.AddMessage($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
+            $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
+
+          generalOptions.Version = currentVersion;
+          generalOptions.SaveSettingsToStorage();
+        }
+
+        mCommandEvents.BeforeExecute += mCompileCmd.CommandEventsBeforeExecute;
+        mCommandEvents.BeforeExecute += mTidyCmd.CommandEventsBeforeExecute;
+
+        mBuildEvents.OnBuildDone += mCompileCmd.OnBuildDone;
+        mRunningDocTableEvents.BeforeSave += mTidyCmd.OnBeforeSave;
+
+
       }
-
-      mCommandEvents.BeforeExecute += mCompileCmd.CommandEventsBeforeExecute;
-      mCommandEvents.BeforeExecute += mTidyCmd.CommandEventsBeforeExecute;
-
-      mBuildEvents.OnBuildDone += mCompileCmd.OnBuildDone;
-      mRunningDocTableEvents.BeforeSave += mTidyCmd.OnBeforeSave;
+      catch (Exception)
+      {
+      }
 
       return VSConstants.S_OK;
     }
@@ -212,11 +232,17 @@ namespace ClangPowerTools
 
     public int OnBeforeCloseSolution(object pUnkReserved)
     {
-      mCommandEvents.BeforeExecute -= mCompileCmd.CommandEventsBeforeExecute;
-      mCommandEvents.BeforeExecute -= mTidyCmd.CommandEventsBeforeExecute;
+      try
+      {
+        mCommandEvents.BeforeExecute -= mCompileCmd.CommandEventsBeforeExecute;
+        mCommandEvents.BeforeExecute -= mTidyCmd.CommandEventsBeforeExecute;
 
-      mBuildEvents.OnBuildDone -= mCompileCmd.OnBuildDone;
-      mRunningDocTableEvents.BeforeSave -= mTidyCmd.OnBeforeSave;
+        mBuildEvents.OnBuildDone -= mCompileCmd.OnBuildDone;
+        mRunningDocTableEvents.BeforeSave -= mTidyCmd.OnBeforeSave;
+      }
+      catch (Exception)
+      {
+      }
 
       return VSConstants.S_OK;
     }
@@ -246,9 +272,15 @@ namespace ClangPowerTools
 
     private void ShowToolbare(DTE2 aDte)
     {
-      var cbs = ((CommandBars)aDte.CommandBars);
-      CommandBar cb = cbs["Clang Power Tools"];
-      cb.Visible = true;
+      try
+      {
+        var cbs = ((CommandBars)aDte.CommandBars);
+        CommandBar cb = cbs["Clang Power Tools"];
+        cb.Visible = true;
+      }
+      catch (Exception)
+      {
+      }
     }
 
     #endregion

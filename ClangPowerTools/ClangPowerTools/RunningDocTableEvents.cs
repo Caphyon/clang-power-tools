@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using System;
 using System.Linq;
 
 namespace ClangPowerTools
@@ -22,9 +23,16 @@ namespace ClangPowerTools
 
     public RunningDocTableEvents(Package aPackage)
     {
-      mDte = (DTE)Package.GetGlobalService(typeof(DTE));
-      mRunningDocumentTable = new RunningDocumentTable(aPackage);
-      mRunningDocumentTable.Advise(this);
+      try
+      {
+        mDte = (DTE)Package.GetGlobalService(typeof(DTE));
+        mRunningDocumentTable = new RunningDocumentTable(aPackage);
+        mRunningDocumentTable.Advise(this);
+      }
+      catch (Exception)
+      {
+      }
+     
     }
 
     #endregion
@@ -68,14 +76,21 @@ namespace ClangPowerTools
 
     public int OnBeforeSave(uint docCookie)
     {
-      if (null == BeforeSave)
-        return VSConstants.S_OK;
+      try
+      {
+        if (null == BeforeSave)
+          return VSConstants.S_OK;
 
-      var document = FindDocumentByCookie(docCookie);
-      if (null == document)
-        return VSConstants.S_OK;
+        var document = FindDocumentByCookie(docCookie);
+        if (null == document)
+          return VSConstants.S_OK;
 
-      BeforeSave(this, FindDocumentByCookie(docCookie));
+        BeforeSave(this, FindDocumentByCookie(docCookie));
+      }
+      catch (Exception)
+      {
+      }
+      
       return VSConstants.S_OK;
     }
 
@@ -85,8 +100,17 @@ namespace ClangPowerTools
 
     private Document FindDocumentByCookie(uint docCookie)
     {
-      var documentInfo = mRunningDocumentTable.GetDocumentInfo(docCookie);
-      return mDte.Documents.Cast<Document>().FirstOrDefault(doc => doc.FullName == documentInfo.Moniker);
+      Document document = null;
+      try
+      {
+        var documentInfo = mRunningDocumentTable.GetDocumentInfo(docCookie);
+        document = mDte.Documents.Cast<Document>().FirstOrDefault(doc => doc.FullName == documentInfo.Moniker);
+      }
+      catch (Exception)
+      {
+      }
+
+      return document;
     }
 
     #endregion
