@@ -64,17 +64,20 @@ namespace ClangPowerTools
     {
       try
       {
-        if (false == mSaveCommandWasGiven)
+        if (false == mSaveCommandWasGiven) // The save event was not triggered by Save File or SaveAll commands
           return;
 
-        if (false == mTidyOptions.AutoTidyOnSave)
+        if (false == mTidyOptions.AutoTidyOnSave) // The clang-tidy on save option is disable 
           return;
 
-        if (true == mCommandsController.Running)
+        if (true == mCommandsController.Running) // A clang command is running
           return;
 
-        if (true == mForceTidyToFix)
+        if (true == mForceTidyToFix) // Clang-tidy on save is running 
           return;
+
+        //if (false == Vsix.IsDocumentDirty(aDocument))
+        //  return;
 
         mForceTidyToFix = true;
         RunClangTidy(new object(), new EventArgs());
@@ -84,14 +87,17 @@ namespace ClangPowerTools
       {
         mSaveCommandWasGiven = false;
       }
-
     }
 
     public void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
     {
       string commandName = GetCommandName(aGuid, aId);
-      if (0 != string.Compare("File.SaveSelectedItems", commandName))
+
+      if (0 != string.Compare("File.SaveAll", commandName) &&
+        0 != string.Compare("File.SaveSelectedItems", commandName))
+      {
         return;
+      }
 
       mSaveCommandWasGiven = true;
     }
@@ -110,7 +116,7 @@ namespace ClangPowerTools
     private void RunClangTidy(object sender, EventArgs e)
     {
       mCommandsController.Running = true;
-			var task = System.Threading.Tasks.Task.Run(() =>
+      var task = System.Threading.Tasks.Task.Run(() =>
       {
         try
         {
