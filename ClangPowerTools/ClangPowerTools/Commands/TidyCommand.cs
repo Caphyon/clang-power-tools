@@ -77,23 +77,12 @@ namespace ClangPowerTools
         if (false == mTidyOptions.AutoTidyOnSave) // The clang-tidy on save option is disable 
           return;
 
-        if (true == mCommandsController.Running) // A clang command is running
+        if (true == mCommandsController.Running) // Clang compile/tidy command is running
           return;
 
         if (true == mForceTidyToFix) // Clang-tidy on save is running 
           return;
-
-        //if (false == Vsix.IsDocumentDirty(aDocument))
-        //  return;
-
-        //mGuard = new SilentFileChangerGuard();
-
-        //if (mTidyOptions.Fix)
-        //{
-        //  WatchFiles();
-        //  SilentFiles(guard);
-        //}
-
+        
         mForceTidyToFix = true;
         RunClangTidy(new object(), new EventArgs());
       }
