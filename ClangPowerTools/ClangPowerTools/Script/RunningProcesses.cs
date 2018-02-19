@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Management;
-using System.Windows.Forms;
 
 namespace ClangPowerTools
 {
@@ -11,16 +10,25 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private const string processeName = "powershell";
     private List<Process> mProcesses = new List<Process>();
 
     #endregion
 
     #region Public Methods
 
-    public void Add(Process aProcess)
+    public void Add(Process aProcess) => mProcesses.Add(aProcess);
+
+    public void Kill()
     {
-      mProcesses.Add(aProcess);
+      foreach (var process in mProcesses)
+      {
+        if (process.HasExited)
+          continue;
+
+        KillProcessAndChildren(process.Id);
+        process.Dispose();
+      }
+      mProcesses.Clear();
     }
 
     public void KillById(int aId)
@@ -31,63 +39,34 @@ namespace ClangPowerTools
       procees.Kill();
     }
 
-    public void KillAll()
+    #endregion
+
+    #region Private Methods
+
+    private static void KillProcessAndChildren(int aPid)
     {
-      foreach (var process in mProcesses)
-      {
-        if (process.HasExited)
-          continue;
-        KillProcessAndChildren(process.Id);
-        process.Dispose();
-      }
-      mProcesses.Clear();
-    }
-
-    //private void KillProcessAndChildren(string processName)
-    //{
-    //  MessageBox.Show(processeName);
-    //  var retVal = Process.GetProcesses().Where(p => p.ProcessName.Contains(processName)).ToList();
-    //  foreach (var proc in retVal)
-    //  {
-    //    if (proc.HasExited)
-    //      continue;
-    //    proc.Kill();
-    //  }
-
-    //}
-
-    private void KillProcessAndChildren(int aPid)
-    {
-      // Cannot close 'system idle process'.
-      if (0 == aPid)
+      // Cannot close 'system idle process'
+      if (aPid == 0)
         return;
-
-      ManagementObjectSearcher searcher = new ManagementObjectSearcher
-        ("Select * From Win64_Process Where ParentProcessID=" + aPid);
-      ManagementObjectCollection moc = searcher.Get();
-
-      foreach (ManagementObject mo in moc)
-        KillProcessAndChildren(Convert.ToInt32(mo["ProcessID"]));
 
       try
       {
+        ManagementObjectSearcher searcher = new ManagementObjectSearcher
+          ("Select * From Win32_Process Where ParentProcessID=" + aPid);
+        ManagementObjectCollection moc = searcher.Get();
+
+        foreach (ManagementObject mo in moc)
+          KillProcessAndChildren(Convert.ToInt32(mo["ProcessID"]));
+
         Process proc = Process.GetProcessById(aPid);
-        if (!proc.HasExited)
-        {
-          proc.Kill();
-        }
+        proc.Kill();
       }
-      catch (ArgumentException e)
-      {
-        MessageBox.Show(e.Message);
-        // Process already exited.
-      }
+      catch (ArgumentException) { } // The process has already exited.
     }
 
+    #endregion
+
   }
-
-  #endregion
-
 }
 
 
