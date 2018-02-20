@@ -75,7 +75,6 @@ namespace ClangPowerTools
         mScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
           mTidyCustomChecks, DTEObj, VsEdition, VsVersion, aForceTidyToFix);
 
-        var process = mPowerShell.Invoke(script, mRunningProcesses);
         string solutionPath = DTEObj.Solution.FullName;
 
         mOutputManager = new OutputManager(DTEObj);
@@ -88,8 +87,7 @@ namespace ClangPowerTools
           if (!mCommandsController.Running)
             break;
 
-          var process = mPowerShell.Invoke(script);
-          mRunningProcesses.Add(process);
+          var process = mPowerShell.Invoke(script, mRunningProcesses);
 
           if (mOutputManager.MissingLlvm)
           {
