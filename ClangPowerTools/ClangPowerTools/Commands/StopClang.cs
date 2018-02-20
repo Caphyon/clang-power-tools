@@ -22,7 +22,6 @@ namespace ClangPowerTools.Commands
     /// <param name="package">Owner package, not null.</param>
     public StopClang(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
-      
       if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
@@ -45,7 +44,7 @@ namespace ClangPowerTools.Commands
       mCommandsController.Running = false;
       var task = System.Threading.Tasks.Task.Run(() =>
       {
-        mRunningProcesses.KillAll();
+        mRunningProcesses.Kill();
 
         string solutionPath = DTEObj.Solution.FullName;
         string solutionFolder = solutionPath.Substring(0, solutionPath.LastIndexOf('\\'));

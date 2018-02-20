@@ -47,6 +47,8 @@ namespace ClangPowerTools
       mVsVersions.TryGetValue(DTEObj.Version, out string version);
       VsVersion = version;
 
+    //  mRunningProcesses = new RunningProcesses();
+    
       if (null == mCommandsController)
         mCommandsController = new CommandsController(ServiceProvider, DTEObj);
 
@@ -76,8 +78,7 @@ namespace ClangPowerTools
         if (!mCommandsController.Running)
           break;
 
-        var process = mPowerShell.Invoke(script);
-        mRunningProcesses.Add(process);
+        var process = mPowerShell.Invoke(script, mRunningProcesses);
 
         if (mOutputManager.MissingLlvm)
         {
@@ -85,6 +86,7 @@ namespace ClangPowerTools
           break;
         }
       }
+
       if (!mOutputManager.EmptyBuffer)
         mOutputManager.AddMessage(String.Join("\n", mOutputManager.Buffer));
       if (!mOutputManager.MissingLlvm)
