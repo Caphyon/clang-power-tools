@@ -19,8 +19,15 @@ namespace ClangPowerTools
 
     public CommandsController(IServiceProvider aServiceProvider, DTE2 aDte)
     {
-      mDte = aDte;
-      mDispatcher = HwndSource.FromHwnd((IntPtr)mDte.MainWindow.HWnd).RootVisual.Dispatcher;
+      try
+      {
+        mDte = aDte;
+        mDispatcher = HwndSource.FromHwnd((IntPtr)mDte.MainWindow.HWnd).RootVisual.Dispatcher;
+      }
+      catch (Exception)
+      {
+      }
+     
     }
 
     #endregion
@@ -43,18 +50,24 @@ namespace ClangPowerTools
 
     public void QueryCommandHandler(object sender, EventArgs e)
     {
-      mDispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+      try
       {
-        if (!(sender is OleMenuCommand command))
-          return;
-        if (!mDte.Solution.IsOpen)
-          command.Enabled = false;
-        else
+        mDispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
         {
-          command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !Running : Running;
-          command.Visible = true;
-        }
-      }));
+          if (!(sender is OleMenuCommand command))
+            return;
+          if (!mDte.Solution.IsOpen)
+            command.Enabled = false;
+          else
+          {
+            command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !Running : Running;
+            command.Visible = true;
+          }
+        }));
+      }
+      catch (Exception)
+      {
+      }
     }
 
     #endregion

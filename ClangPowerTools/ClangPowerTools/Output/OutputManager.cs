@@ -21,7 +21,6 @@ namespace ClangPowerTools
 
     private bool mMissingLlvm = false;
     private HashSet<TaskError> mErrors = new HashSet<TaskError>();
-      //(new GenericComparer<TaskError>( (obj1, obj2) => obj1.FilePath.CompareTo(obj2.FilePath))); // && obj1.Line == obj2.Line && 0 == obj1.FullMessage.CompareTo(obj2.FullMessage)
 
     private List<string> mPCHPaths = new List<string>();
 
@@ -88,27 +87,35 @@ namespace ClangPowerTools
 
     private void ProcessOutput(string aMessage)
     {
-      if (mErrorParser.LlvmIsMissing(aMessage))
+      try
       {
-        mMissingLlvm = true;
+        if (mErrorParser.LlvmIsMissing(aMessage))
+        {
+          mMissingLlvm = true;
+        }
+        else if (!mMissingLlvm)
+        {
+          string messages = String.Join("\n", mMessagesBuffer);
+          if (mErrorParser.FindErrors(messages, out TaskError aError))
+          {
+            messages = mErrorParser.Format(messages, aError.FullMessage);
+            AddMessage(messages);
+            mMessagesBuffer.Clear();
+            if (null != aError)
+              mErrors.Add(aError);
+          }
+          else if (kBufferSize <= mMessagesBuffer.Count)
+          {
+            AddMessage(mMessagesBuffer[0]);
+            mMessagesBuffer.RemoveAt(0);
+          }
+        }
       }
-      else if (!mMissingLlvm)
+      catch (Exception)
       {
-        string messages = String.Join("\n", mMessagesBuffer);
-        if (mErrorParser.FindErrors(messages, out TaskError aError))
-        {
-          messages = mErrorParser.Format(messages, aError.FullMessage);
-          AddMessage(messages);
-          mMessagesBuffer.Clear();
-          if (null != aError)
-            mErrors.Add(aError);
-        }
-        else if (kBufferSize <= mMessagesBuffer.Count)
-        {
-          AddMessage(mMessagesBuffer[0]);
-          mMessagesBuffer.RemoveAt(0);
-        }
+
       }
+
     }
 
     public void OutputDataReceived(object sender, DataReceivedEventArgs e)

@@ -43,59 +43,72 @@ namespace ClangPowerTools
 
     public ClangCommand(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
-      VsEdition = DTEObj.Edition;
-      mVsVersions.TryGetValue(DTEObj.Version, out string version);
-      VsVersion = version;
+      try
+      {
+        VsEdition = DTEObj.Edition;
+        mVsVersions.TryGetValue(DTEObj.Version, out string version);
+        VsVersion = version;
 
     //  mRunningProcesses = new RunningProcesses();
     
       if (null == mCommandsController)
         mCommandsController = new CommandsController(ServiceProvider, DTEObj);
 
-      mErrorsManager = new ErrorsManager(Package, DTEObj);
-      mGeneralOptions = (GeneralOptions)Package.GetDialogPage(typeof(GeneralOptions));
+        mErrorsManager = new ErrorsManager(Package, DTEObj);
+        mGeneralOptions = (GeneralOptions)Package.GetDialogPage(typeof(GeneralOptions));
+      }
+      catch (Exception)
+      {
+      }
     }
 
     #endregion
 
     #region Protected methods
 
-    protected void RunScript(string aCommandName, TidyOptions mTidyOptions = null, TidyChecks mTidyChecks = null, TidyCustomChecks mTidyCustomChecks = null)
+    protected void RunScript(string aCommandName, bool aForceTidyToFix, TidyOptions mTidyOptions = null,
+      TidyChecks mTidyChecks = null, TidyCustomChecks mTidyCustomChecks = null)
     {
-      mScriptBuilder = new ScriptBuiler();
-      mScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
-        mTidyCustomChecks, DTEObj, VsEdition, VsVersion);
-
-      string solutionPath = DTEObj.Solution.FullName;
-
-      mOutputManager = new OutputManager(DTEObj);
-      InitPowerShell();
-      ClearWindows();
-      mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
-      foreach (var item in mItemsCollector.GetItems)
+      try
       {
-        var script = mScriptBuilder.GetScript(item, solutionPath);
-        if (!mCommandsController.Running)
-          break;
+        mScriptBuilder = new ScriptBuiler();
+        mScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
+          mTidyCustomChecks, DTEObj, VsEdition, VsVersion, aForceTidyToFix);
 
-        var process = mPowerShell.Invoke(script, mRunningProcesses);
+        string solutionPath = DTEObj.Solution.FullName;
 
-        if (mOutputManager.MissingLlvm)
+        mOutputManager = new OutputManager(DTEObj);
+        InitPowerShell();
+        ClearWindows();
+        mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
+        foreach (var item in mItemsCollector.GetItems)
         {
-          mOutputManager.AddMessage(ErrorParserConstants.kMissingLlvmMessage);
-          break;
-        }
-      }
+          var script = mScriptBuilder.GetScript(item, solutionPath);
+          if (!mCommandsController.Running)
+            break;
 
-      if (!mOutputManager.EmptyBuffer)
-        mOutputManager.AddMessage(String.Join("\n", mOutputManager.Buffer));
-      if (!mOutputManager.MissingLlvm)
-      {
-        mOutputManager.Show();
-        mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
+          var process = mPowerShell.Invoke(script, mRunningProcesses);
+
+          if (mOutputManager.MissingLlvm)
+          {
+            mOutputManager.AddMessage(ErrorParserConstants.kMissingLlvmMessage);
+            break;
+          }
+        }
+        if (!mOutputManager.EmptyBuffer)
+          mOutputManager.AddMessage(String.Join("\n", mOutputManager.Buffer));
+        if (!mOutputManager.MissingLlvm)
+        {
+          mOutputManager.Show();
+          mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
+        }
+        if (mOutputManager.HasErrors)
+          mErrorsManager.AddErrors(mOutputManager.Errors);
+
       }
-      if (mOutputManager.HasErrors)
-        mErrorsManager.AddErrors(mOutputManager.Errors);
+      catch (Exception)
+      {
+      }
     }
 
     protected List<IItem> CollectSelectedItems()
@@ -111,16 +124,28 @@ namespace ClangPowerTools
 
     private void InitPowerShell()
     {
-      mPowerShell = new PowerShellWrapper();
-      mPowerShell.DataHandler += mOutputManager.OutputDataReceived;
-      mPowerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;
+      try
+      {
+        mPowerShell = new PowerShellWrapper();
+        mPowerShell.DataHandler += mOutputManager.OutputDataReceived;
+        mPowerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;
+      }
+      catch (Exception)
+      {
+      }
     }
 
     private void ClearWindows()
     {
-      mErrorsManager.Clear();
-      mOutputManager.Clear();
-      mOutputManager.Show();
+      try
+      {
+        mErrorsManager.Clear();
+        mOutputManager.Clear();
+        mOutputManager.Show();
+      }
+      catch (Exception)
+      {
+      }
     }
 
     #endregion

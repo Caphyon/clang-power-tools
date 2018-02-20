@@ -28,15 +28,21 @@ namespace ClangPowerTools
     /// <param name="package">Owner package, not null.</param>
     public CompileCommand(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
-      mCommand = DTEObj.Commands as Commands2;
-
-      if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+      try
       {
-        var menuCommandID = new CommandID(CommandSet, Id);
-        var menuCommand = new OleMenuCommand(this.RunClangCompile, menuCommandID);
-        menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
-        menuCommand.Enabled = true;
-        commandService.AddCommand(menuCommand);
+        mCommand = DTEObj.Commands as Commands2;
+
+        if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+        {
+          var menuCommandID = new CommandID(CommandSet, Id);
+          var menuCommand = new OleMenuCommand(this.RunClangCompile, menuCommandID);
+          menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
+          menuCommand.Enabled = true;
+          commandService.AddCommand(menuCommand);
+        }
+      }
+      catch (Exception)
+      {
       }
     }
 
@@ -46,14 +52,20 @@ namespace ClangPowerTools
 
     public void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
     {
-      if (false == mGeneralOptions.ClangCompileAfterVsCompile)
-        return;
+      try
+      {
+        if (false == mGeneralOptions.ClangCompileAfterVsCompile)
+          return;
 
-      string commandName = GetCommandName(aGuid, aId);
-      if (0 != string.Compare("Build.Compile", commandName))
-        return;
+        string commandName = GetCommandName(aGuid, aId);
+        if (0 != string.Compare("Build.Compile", commandName))
+          return;
 
-      mExecuteCompile = true;
+        mExecuteCompile = true;
+      }
+      catch (Exception)
+      {
+      }
     }
 
     public void OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
@@ -68,13 +80,15 @@ namespace ClangPowerTools
         {
           // VS compile detected errors and there is not necessary to run clang compile
           mExecuteCompile = false;
-          return; 
+          return;
         }
 
         // Run clang compile after the VS compile succeeded 
         RunClangCompile(new object(), new EventArgs());
       }
-      catch (Exception) { }
+      catch (Exception)
+      {
+      }
       finally
       {
         mExecuteCompile = false;
@@ -104,7 +118,7 @@ namespace ClangPowerTools
         {
           AutomationUtil.SaveDirtyFiles(Package, DTEObj.Solution, DTEObj);
           CollectSelectedItems();
-          RunScript(OutputWindowConstants.kComplileCommand);
+          RunScript(OutputWindowConstants.kComplileCommand, false);
         }
         catch (Exception exception)
         {
@@ -126,7 +140,9 @@ namespace ClangPowerTools
       {
         return mCommand.Item(aGuid, aId).Name;
       }
-      catch (System.Exception) { }
+      catch (Exception)
+      {
+      }
 
       return string.Empty;
     }

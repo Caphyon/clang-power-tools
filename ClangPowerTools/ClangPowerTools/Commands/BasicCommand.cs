@@ -36,21 +36,33 @@ namespace ClangPowerTools
 
     protected BasicCommand(Package aPackage, Guid aGuid, int aId)
     {
-      Package = aPackage ?? throw new ArgumentNullException("package");
-      CommandSet = aGuid;
-      Id = aId;
+      try
+      {
+        Package = aPackage ?? throw new ArgumentNullException("package");
+        CommandSet = aGuid;
+        Id = aId;
 
-      DTEObj = (DTE2)ServiceProvider.GetService(typeof(DTE));
-      DTEObj.Events.BuildEvents.OnBuildBegin +=
-        new _dispBuildEvents_OnBuildBeginEventHandler(this.OnBuildBegin);
+        DTEObj = (DTE2)ServiceProvider.GetService(typeof(DTE));
+        DTEObj.Events.BuildEvents.OnBuildBegin +=
+          new _dispBuildEvents_OnBuildBeginEventHandler(this.OnBuildBegin);
+      }
+      catch (Exception)
+      {
+      }
     }
 
     #endregion
 
     private void OnBuildBegin(EnvDTE.vsBuildScope Scope, EnvDTE.vsBuildAction Action)
     {
-      ErrorsManager errorsManager = new ErrorsManager(ServiceProvider, DTEObj);
-      errorsManager.Clear();
+      try
+      {
+        ErrorsManager errorsManager = new ErrorsManager(ServiceProvider, DTEObj);
+        errorsManager.Clear();
+      }
+      catch (Exception)
+      {
+      }
     }
 
   }

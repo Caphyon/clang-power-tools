@@ -22,14 +22,21 @@ namespace ClangPowerTools.Commands
     /// <param name="package">Owner package, not null.</param>
     public StopClang(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
-      if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+      try
       {
-        var menuCommandID = new CommandID(CommandSet, Id);
-        var menuCommand = new OleMenuCommand(this.MenuItemCallback, menuCommandID);
-        menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
-        menuCommand.Enabled = true;
-        commandService.AddCommand(menuCommand);
+        if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+        {
+          var menuCommandID = new CommandID(CommandSet, Id);
+          var menuCommand = new OleMenuCommand(this.MenuItemCallback, menuCommandID);
+          menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
+          menuCommand.Enabled = true;
+          commandService.AddCommand(menuCommand);
+        }
       }
+      catch (Exception)
+      {
+      }
+      
     }
 
     /// <summary>
@@ -41,17 +48,24 @@ namespace ClangPowerTools.Commands
     /// <param name="e">Event args.</param>
     private void MenuItemCallback(object sender, EventArgs e)
     {
-      mCommandsController.Running = false;
-      var task = System.Threading.Tasks.Task.Run(() =>
+      try
       {
-        mRunningProcesses.Kill();
+        mCommandsController.Running = false;
+        var task = System.Threading.Tasks.Task.Run(() =>
+        {
+          mRunningProcesses.Kill();
 
-        string solutionPath = DTEObj.Solution.FullName;
-        string solutionFolder = solutionPath.Substring(0, solutionPath.LastIndexOf('\\'));
-        mPCHCleaner.Remove(solutionFolder);
+          string solutionPath = DTEObj.Solution.FullName;
+          string solutionFolder = solutionPath.Substring(0, solutionPath.LastIndexOf('\\'));
+          mPCHCleaner.Remove(solutionFolder);
 
-        mDirectoriesPath.Clear();
-      });
+          mDirectoriesPath.Clear();
+        });
+      }
+      catch (Exception)
+      {
+      }
+      
     }
   }
 }

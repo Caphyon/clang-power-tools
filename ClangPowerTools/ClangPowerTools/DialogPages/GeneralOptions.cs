@@ -64,7 +64,7 @@ namespace ClangPowerTools
 
     [Category("General")]
     [DisplayName("Clang compile after MSVC compile")]
-    [Description("Always run Clang compile on the current source file, after successful MSVC compilation.")]
+    [Description("Automatically run Clang compile on the current source file, after successful MSVC compilation.")]
     public bool ClangCompileAfterVsCompile { get; set; }
 
     [Browsable(false)]
