@@ -71,29 +71,26 @@ namespace ClangPowerTools
             command.Visible = true;
           }
 
-          if (CommandIds.kClangFormat == command.CommandID.ID)
-        {
-          if (Running)
-            return;
+        //if (CommandIds.kClangFormat == command.CommandID.ID)
+        //{
+        //  if (Running)
+        //    return;
 
-          var fileExtensions = mClangFormatPage.FileExtensions
-            .ToLower()
-            .Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-            .ToList();
+        //  var fileExtensions = mClangFormatPage.FileExtensions
+        //    .ToLower()
+        //    .Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+        //    .ToList();
 
-          var itemsCollector = new ItemsCollector(mPackage, fileExtensions);
-          itemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));
+        //  var itemsCollector = new ItemsCollector(mPackage, fileExtensions);
+        //  itemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));
 
-          if(false == ContainsAcceptedFiles(itemsCollector.GetItems, fileExtensions) )
-            command.Enabled = false;
-          else
-            command.Enabled = true;
-        }
-        }));
-      }
-      catch (Exception)
-      {
-      }
+        //  if(false == ContainsAcceptedFiles(itemsCollector.GetItems, fileExtensions) )
+        //    command.Enabled = false;
+        //  else
+        //    command.Enabled = true;
+        //}
+        
+      }));
     }
 
     #endregion
