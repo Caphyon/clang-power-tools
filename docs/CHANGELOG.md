@@ -1,5 +1,21 @@
 # Version History
 
+### Clang Power Tools 2.8
+*February 20, 2018*
+
+Improvements:
+
+* Automatically run Clang-tidy when the current source file is saved.
+* Automatically run Clang compile on the current source file after successful MSVC compilation.
+
+Bugs:
+
+* A project was saved even if it was not dirty.
+* Stop Clang command crashed all Powershell processes.
+* A single error found in a header was displayed multiple times.
+* COM objects caused errors when a command was running.
+
+
 ### Clang Power Tools 2.7
 *February 8, 2018*
 
