@@ -23,7 +23,7 @@ namespace ClangPowerTools
         if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
         {
           var menuCommandID = new CommandID(CommandSet, Id);
-          var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
+          var menuItem = new MenuCommand(this.ShowSettings, menuCommandID);
           commandService.AddCommand(menuItem);
         }
       }

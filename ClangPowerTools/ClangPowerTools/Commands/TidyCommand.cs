@@ -70,7 +70,7 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public void OnBeforeSave(object sender, Document aDocument)
+    public override void OnBeforeSave(object sender, Document aDocument)
     {
       try
       {
@@ -85,7 +85,7 @@ namespace ClangPowerTools
 
         if (true == mForceTidyToFix) // Clang-tidy on save is running 
           return;
-        
+
         mForceTidyToFix = true;
         RunClangTidy(new object(), new EventArgs());
       }
@@ -98,7 +98,7 @@ namespace ClangPowerTools
       }
     }
 
-    public void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
+    public override void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
     {
       try
       {
@@ -152,11 +152,7 @@ namespace ClangPowerTools
               silentFileController.SilentFiles(Package, guard, filesPath);
               silentFileController.SilentOpenFiles(Package, guard, DTEObj);
             }
-<<<<<<< HEAD
-            RunScript(OutputWindowConstants.kTidyCodeCommand, mForceTidyToFix, mTidyOptions, mTidyChecks, mTidyCustomChecks);
-=======
-            RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mTidyChecks, mTidyCustomChecks, mClangFormat);
->>>>>>> automatically run clang format after clang tidy
+            RunScript(OutputWindowConstants.kTidyCodeCommand, mForceTidyToFix, mTidyOptions, mTidyChecks, mTidyCustomChecks, mClangFormat);
           }
         }
         catch (Exception exception)
@@ -164,39 +160,16 @@ namespace ClangPowerTools
           VsShellUtilities.ShowMessageBox(Package, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
-<<<<<<< HEAD
         finally
         {
           mForceTidyToFix = false;
         }
-      }).ContinueWith(tsk => mCommandsController.AfterExecute()); ;
-=======
       }).ContinueWith(tsk => mCommandsController.AfterExecute());
->>>>>>> automatically run clang format after clang tidy
     }
 
     #endregion
 
     #region Helpers
-
-    private void SilentFiles(SilentFileChangerGuard aGuard)
-    {
-      try
-      {
-        FilePathCollector fileCollector = new FilePathCollector();
-        fileCollector.Collect(mItemsCollector.GetItems);
-
-        // silent all open files
-        foreach (Document doc in DTEObj.Documents)
-          aGuard.Add(new SilentFileChanger(Package, Path.Combine(doc.Path, doc.Name), true));
-        //silent all selected files
-        aGuard.AddRange(Package, fileCollector.Files);
-      }
-      catch (Exception)
-      {
-      }
-
-    }
 
     private void WatchFiles()
     {

@@ -5,7 +5,6 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Windows.Interop;
 using System.Windows.Threading;
 
@@ -34,7 +33,7 @@ namespace ClangPowerTools
       catch (Exception)
       {
       }
-     
+
     }
 
     #endregion
@@ -71,26 +70,29 @@ namespace ClangPowerTools
             command.Visible = true;
           }
 
-        //if (CommandIds.kClangFormat == command.CommandID.ID)
-        //{
-        //  if (Running)
-        //    return;
+          //if (CommandIds.kClangFormat == command.CommandID.ID)
+          //{
+          //  if (Running)
+          //    return;
 
-        //  var fileExtensions = mClangFormatPage.FileExtensions
-        //    .ToLower()
-        //    .Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-        //    .ToList();
+          //  var fileExtensions = mClangFormatPage.FileExtensions
+          //    .ToLower()
+          //    .Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
+          //    .ToList();
 
-        //  var itemsCollector = new ItemsCollector(mPackage, fileExtensions);
-        //  itemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));
+          //  var itemsCollector = new ItemsCollector(mPackage, fileExtensions);
+          //  itemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));
 
-        //  if(false == ContainsAcceptedFiles(itemsCollector.GetItems, fileExtensions) )
-        //    command.Enabled = false;
-        //  else
-        //    command.Enabled = true;
-        //}
-        
-      }));
+          //  if(false == ContainsAcceptedFiles(itemsCollector.GetItems, fileExtensions) )
+          //    command.Enabled = false;
+          //  else
+          //    command.Enabled = true;
+          //}
+
+        }));
+      }
+      catch (Exception) { }
+
     }
 
     #endregion
