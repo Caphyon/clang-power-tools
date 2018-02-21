@@ -10,16 +10,9 @@ namespace ClangPowerTools
 
     public static ProjectItem GetProjectItemOfActiveWindow(DTE2 aDte)
     {
-      try
-      {
-        var activeWindow = aDte.ActiveWindow;
-        activeWindow.Activate();
-        return activeWindow.ProjectItem;
-      }
-      catch (Exception)
-      {
-      }
-      return null;
+      var activeWindow = aDte.ActiveWindow;
+      activeWindow.Activate();
+      return activeWindow.ProjectItem;
     }
 
     #endregion

@@ -95,28 +95,22 @@ namespace ClangPowerTools
     /// </summary>
     protected override void Initialize()
     {
-      try
-      {
-        base.Initialize();
+      base.Initialize();
 
-        mRunningDocTableEvents = new RunningDocTableEvents(this);
-      
-        //Settings command is always visible
-        mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
+      mRunningDocTableEvents = new RunningDocTableEvents(this);
 
-        var dte = GetService(typeof(DTE)) as DTE2;
-        mBuildEvents = dte.Events.BuildEvents;
-        mCommandEvents = dte.Events.CommandEvents;
+      //Settings command is always visible
+      mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
 
-        var generalOptions = (GeneralOptions)this.GetDialogPage(typeof(GeneralOptions));
-        if (null == generalOptions.Version || string.IsNullOrWhiteSpace(generalOptions.Version))
-          ShowToolbare(dte); // Show the toolbar on the first install
+      var dte = GetService(typeof(DTE)) as DTE2;
+      mBuildEvents = dte.Events.BuildEvents;
+      mCommandEvents = dte.Events.CommandEvents;
 
-        AdviseSolutionEvents();
-      }
-      catch (Exception)
-      {
-      }
+      var generalOptions = (GeneralOptions)this.GetDialogPage(typeof(GeneralOptions));
+      if (null == generalOptions.Version || string.IsNullOrWhiteSpace(generalOptions.Version))
+        ShowToolbare(dte); // Show the toolbar on the first install
+
+      AdviseSolutionEvents();
     }
 
     #endregion
@@ -235,19 +229,14 @@ namespace ClangPowerTools
 
     public int OnBeforeCloseSolution(object aPUnkReserved)
     {
-      try
-      {
-        mCommandEvents.BeforeExecute -= mCompileCmd.CommandEventsBeforeExecute;
-        mCommandEvents.BeforeExecute -= mTidyCmd.CommandEventsBeforeExecute;
+      mCommandEvents.BeforeExecute -= mCompileCmd.CommandEventsBeforeExecute;
+      mCommandEvents.BeforeExecute -= mTidyCmd.CommandEventsBeforeExecute;
 
-        mBuildEvents.OnBuildDone -= mCompileCmd.OnBuildDone;
-        mRunningDocTableEvents.BeforeSave -= mTidyCmd.OnBeforeSave;
-      }
-      catch (Exception)
-      {
-      }
-
+      mRunningDocTableEvents.BeforeSave -= mTidyCmd.OnBeforeSave;
       mRunningDocTableEvents.BeforeSave -= mClangFormatCmd.OnBeforeSave;
+
+      mBuildEvents.OnBuildDone -= mCompileCmd.OnBuildDone;
+
       return VSConstants.S_OK;
     }
 
@@ -276,15 +265,9 @@ namespace ClangPowerTools
 
     private void ShowToolbare(DTE2 aDte)
     {
-      try
-      {
-        var cbs = ((CommandBars)aDte.CommandBars);
-        CommandBar cb = cbs["Clang Power Tools"];
-        cb.Visible = true;
-      }
-      catch (Exception)
-      {
-      }
+      var cbs = ((CommandBars)aDte.CommandBars);
+      CommandBar cb = cbs["Clang Power Tools"];
+      cb.Visible = true;
     }
 
     #endregion
