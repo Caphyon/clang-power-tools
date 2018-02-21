@@ -14,7 +14,6 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private Commands2 mCommand;
     private bool mExecuteCompile = false;
 
     #endregion
@@ -28,21 +27,13 @@ namespace ClangPowerTools
     /// <param name="package">Owner package, not null.</param>
     public CompileCommand(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
-      try
+      if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
-        mCommand = DTEObj.Commands as Commands2;
-
-        if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
-        {
-          var menuCommandID = new CommandID(CommandSet, Id);
-          var menuCommand = new OleMenuCommand(this.RunClangCompile, menuCommandID);
-          menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
-          menuCommand.Enabled = true;
-          commandService.AddCommand(menuCommand);
-        }
-      }
-      catch (Exception)
-      {
+        var menuCommandID = new CommandID(CommandSet, Id);
+        var menuCommand = new OleMenuCommand(this.RunClangCompile, menuCommandID);
+        menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
+        menuCommand.Enabled = true;
+        commandService.AddCommand(menuCommand);
       }
     }
 
@@ -52,47 +43,32 @@ namespace ClangPowerTools
 
     public override void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
     {
-      try
-      {
-        if (false == mGeneralOptions.ClangCompileAfterVsCompile)
-          return;
+      if (false == mGeneralOptions.ClangCompileAfterVsCompile)
+        return;
 
-        string commandName = GetCommandName(aGuid, aId);
-        if (0 != string.Compare("Build.Compile", commandName))
-          return;
+      string commandName = GetCommandName(aGuid, aId);
+      if (0 != string.Compare("Build.Compile", commandName))
+        return;
 
-        mExecuteCompile = true;
-      }
-      catch (Exception)
-      {
-      }
+      mExecuteCompile = true;
     }
 
     public override void OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
     {
-      try
-      {
-        if (false == mExecuteCompile)
-          return;
+      if (false == mExecuteCompile)
+        return;
 
-        int exitCode = DTEObj.Solution.SolutionBuild.LastBuildInfo;
-        if (0 != exitCode)
-        {
-          // VS compile detected errors and there is not necessary to run clang compile
-          mExecuteCompile = false;
-          return;
-        }
-
-        // Run clang compile after the VS compile succeeded 
-        RunClangCompile(new object(), new EventArgs());
-      }
-      catch (Exception)
+      int exitCode = DTEObj.Solution.SolutionBuild.LastBuildInfo;
+      if (0 != exitCode)
       {
-      }
-      finally
-      {
+        // VS compile detected errors and there is not necessary to run clang compile
         mExecuteCompile = false;
+        return;
       }
+
+      // Run clang compile after the VS compile succeeded 
+      RunClangCompile(new object(), new EventArgs());
+      mExecuteCompile = false;
     }
 
     #endregion
@@ -126,25 +102,6 @@ namespace ClangPowerTools
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
       }).ContinueWith(tsk => mCommandsController.AfterExecute());
-    }
-
-    private string GetCommandName(string aGuid, int aId)
-    {
-      if (null == aGuid)
-        return "null";
-
-      if (null == mCommand)
-        return string.Empty;
-
-      try
-      {
-        return mCommand.Item(aGuid, aId).Name;
-      }
-      catch (Exception)
-      {
-      }
-
-      return string.Empty;
     }
 
     #endregion

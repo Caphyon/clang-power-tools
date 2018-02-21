@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using ClangPowerTools.DialogPages;
 using ClangPowerTools.Script;
 using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 
 namespace ClangPowerTools
@@ -18,11 +19,11 @@ namespace ClangPowerTools
     protected List<string> mDirectoriesPath = new List<string>();
     protected static OutputManager mOutputManager;
     protected GeneralOptions mGeneralOptions;
+    private Commands2 mCommand;
 
     private ErrorsManager mErrorsManager;
     private PowerShellWrapper mPowerShell = new PowerShellWrapper();
     private ClangCompileTidyScript mCompileTidyScriptBuilder;
-    private ClangFormatScript mClangFormatScriptBuilder;
     private const string kVs15Version = "2017";
     private Dictionary<string, string> mVsVersions = new Dictionary<string, string>
     {
@@ -47,30 +48,33 @@ namespace ClangPowerTools
 
     public ClangCommand(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
-      try
-      {
-        VsEdition = DTEObj.Edition;
-        mVsVersions.TryGetValue(DTEObj.Version, out string version);
-        VsVersion = version;
+      mCommand = DTEObj.Commands as Commands2;
+      VsEdition = DTEObj.Edition;
+      mVsVersions.TryGetValue(DTEObj.Version, out string version);
+      VsVersion = version;
 
-    //  mRunningProcesses = new RunningProcesses();
-    
       if (null == mCommandsController)
         mCommandsController = new CommandsController(Package, DTEObj);
 
-        mErrorsManager = new ErrorsManager(Package, DTEObj);
-        mGeneralOptions = (GeneralOptions)Package.GetDialogPage(typeof(GeneralOptions));
-      }
-      catch (Exception)
-      {
-      }
+      mErrorsManager = new ErrorsManager(Package, DTEObj);
+      mGeneralOptions = (GeneralOptions)Package.GetDialogPage(typeof(GeneralOptions));
     }
+
+    #endregion
+
+    #region Public Methods
+
+    public virtual void OnBeforeSave(object sender, Document aDocument) { }
+
+    public virtual void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault) { }
+
+    public virtual void OnBuildDone(vsBuildScope Scope, vsBuildAction Action) { }
 
     #endregion
 
     #region Protected methods
 
-    protected void RunScript(string aCommandName, bool aForceTidyToFix, TidyOptions mTidyOptions = null, 
+    protected void RunScript(string aCommandName, bool aForceTidyToFix, TidyOptions mTidyOptions = null,
       TidyChecks mTidyChecks = null, TidyCustomChecks mTidyCustomChecks = null, ClangFormatPage aClangFormat = null)
     {
       try
@@ -92,7 +96,7 @@ namespace ClangPowerTools
             break;
 
           var process = mPowerShell.Invoke(script, mRunningProcesses);
-          
+
           if (mOutputManager.MissingLlvm)
           {
             mOutputManager.AddMessage(ErrorParserConstants.kMissingLlvmMessage);
@@ -122,11 +126,20 @@ namespace ClangPowerTools
       return mItemsCollector.GetItems;
     }
 
-    public virtual void OnBeforeSave(object sender, Document aDocument) { }
+    protected string GetCommandName(string aGuid, int aId)
+    {
+      if (null == aGuid)
+        return string.Empty;
 
-    public virtual void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault) { }
+      if (null == mCommand)
+        return string.Empty;
 
-    public virtual void OnBuildDone(vsBuildScope Scope, vsBuildAction Action) { }
+      Command cmd = mCommand.Item(aGuid, aId);
+      if (null == cmd)
+        return string.Empty;
+
+      return cmd.Name;
+    }
 
     #endregion
 
@@ -134,28 +147,16 @@ namespace ClangPowerTools
 
     private void InitPowerShell()
     {
-      try
-      {
-        mPowerShell = new PowerShellWrapper();
-        mPowerShell.DataHandler += mOutputManager.OutputDataReceived;
-        mPowerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;
-      }
-      catch (Exception)
-      {
-      }
+      mPowerShell = new PowerShellWrapper();
+      mPowerShell.DataHandler += mOutputManager.OutputDataReceived;
+      mPowerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;
     }
 
     private void ClearWindows()
     {
-      try
-      {
-        mErrorsManager.Clear();
-        mOutputManager.Clear();
-        mOutputManager.Show();
-      }
-      catch (Exception)
-      {
-      }
+      mErrorsManager.Clear();
+      mOutputManager.Clear();
+      mOutputManager.Show();
     }
 
     #endregion

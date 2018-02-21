@@ -16,8 +16,8 @@ namespace ClangPowerTools
 
     private Dispatcher mDispatcher;
     private DTE2 mDte;
-    private ClangFormatPage mClangFormatPage;
-    private Package mPackage;
+    //private ClangFormatPage mClangFormatPage;
+    //private Package mPackage;
 
     #endregion
 
@@ -25,15 +25,8 @@ namespace ClangPowerTools
 
     public CommandsController(Package aPackage, DTE2 aDte)
     {
-      try
-      {
-        mDte = aDte;
-        mDispatcher = HwndSource.FromHwnd((IntPtr)mDte.MainWindow.HWnd).RootVisual.Dispatcher;
-      }
-      catch (Exception)
-      {
-      }
-
+      mDte = aDte;
+      mDispatcher = HwndSource.FromHwnd((IntPtr)mDte.MainWindow.HWnd).RootVisual.Dispatcher;
     }
 
     #endregion
@@ -56,19 +49,17 @@ namespace ClangPowerTools
 
     public void QueryCommandHandler(object sender, EventArgs e)
     {
-      try
+      mDispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
       {
-        mDispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+        if (!(sender is OleMenuCommand command))
+          return;
+        if (!mDte.Solution.IsOpen)
+          command.Enabled = false;
+        else
         {
-          if (!(sender is OleMenuCommand command))
-            return;
-          if (!mDte.Solution.IsOpen)
-            command.Enabled = false;
-          else
-          {
-            command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !Running : Running;
-            command.Visible = true;
-          }
+          command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !Running : Running;
+          command.Visible = true;
+        }
 
           //if (CommandIds.kClangFormat == command.CommandID.ID)
           //{
@@ -90,30 +81,27 @@ namespace ClangPowerTools
           //}
 
         }));
-      }
-      catch (Exception) { }
-
     }
 
     #endregion
 
     #region Private methods
 
-    private bool ContainsAcceptedFiles(List<IItem> aItems, List<string> aFileExtensions)
-    {
-      foreach (var item in aItems)
-      {
-        if (!(item.GetObject() is ProjectItem))
-          return false;
+    //private bool ContainsAcceptedFiles(List<IItem> aItems, List<string> aFileExtensions)
+    //{
+    //  foreach (var item in aItems)
+    //  {
+    //    if (!(item.GetObject() is ProjectItem))
+    //      return false;
 
-        var itemName = (item.GetObject() as ProjectItem).Name;
+    //    var itemName = (item.GetObject() as ProjectItem).Name;
 
-        var extension = Path.GetExtension((item.GetObject() as ProjectItem).Name).ToLower();
-        if (aFileExtensions.Contains(extension))
-          return true;
-      }
-      return false;
-    }
+    //    var extension = Path.GetExtension((item.GetObject() as ProjectItem).Name).ToLower();
+    //    if (aFileExtensions.Contains(extension))
+    //      return true;
+    //  }
+    //  return false;
+    //}
 
     #endregion
 

@@ -28,9 +28,6 @@ namespace ClangPowerTools
     private bool mForceTidyToFix = false;
     private bool mSaveCommandWasGiven = false;
 
-    //private SilentFileChangerGuard mGuard = null;
-    private Commands2 mCommand;
-
     #endregion
 
     #region Constructor
@@ -43,26 +40,19 @@ namespace ClangPowerTools
 
     public TidyCommand(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
-      try
-      {
-        mTidyOptions = (TidyOptions)Package.GetDialogPage(typeof(TidyOptions));
-        mTidyChecks = (TidyChecks)Package.GetDialogPage(typeof(TidyChecks));
-        mTidyCustomChecks = (TidyCustomChecks)Package.GetDialogPage(typeof(TidyCustomChecks));
+      mTidyOptions = (TidyOptions)Package.GetDialogPage(typeof(TidyOptions));
+      mTidyChecks = (TidyChecks)Package.GetDialogPage(typeof(TidyChecks));
+      mTidyCustomChecks = (TidyCustomChecks)Package.GetDialogPage(typeof(TidyCustomChecks));
 
-        mCommand = DTEObj.Commands as Commands2;
-        mFileOpener = new FileOpener(DTEObj);
+      mFileOpener = new FileOpener(DTEObj);
 
-        if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
-        {
-          var menuCommandID = new CommandID(CommandSet, Id);
-          var menuCommand = new OleMenuCommand(this.RunClangTidy, menuCommandID);
-          menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
-          menuCommand.Enabled = true;
-          commandService.AddCommand(menuCommand);
-        }
-      }
-      catch (Exception)
+      if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
+        var menuCommandID = new CommandID(CommandSet, Id);
+        var menuCommand = new OleMenuCommand(this.RunClangTidy, menuCommandID);
+        menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
+        menuCommand.Enabled = true;
+        commandService.AddCommand(menuCommand);
       }
     }
 
@@ -72,47 +62,32 @@ namespace ClangPowerTools
 
     public override void OnBeforeSave(object sender, Document aDocument)
     {
-      try
-      {
-        if (false == mSaveCommandWasGiven) // The save event was not triggered by Save File or SaveAll commands
-          return;
+      if (false == mSaveCommandWasGiven) // The save event was not triggered by Save File or SaveAll commands
+        return;
 
-        if (false == mTidyOptions.AutoTidyOnSave) // The clang-tidy on save option is disable 
-          return;
+      if (false == mTidyOptions.AutoTidyOnSave) // The clang-tidy on save option is disable 
+        return;
 
-        if (true == mCommandsController.Running) // Clang compile/tidy command is running
-          return;
+      if (true == mCommandsController.Running) // Clang compile/tidy command is running
+        return;
 
-        if (true == mForceTidyToFix) // Clang-tidy on save is running 
-          return;
+      if (true == mForceTidyToFix) // Clang-tidy on save is running 
+        return;
 
-        mForceTidyToFix = true;
-        RunClangTidy(new object(), new EventArgs());
-      }
-      catch (Exception)
-      {
-      }
-      finally
-      {
-        mSaveCommandWasGiven = false;
-      }
+      mForceTidyToFix = true;
+      RunClangTidy(new object(), new EventArgs());
+      mSaveCommandWasGiven = false;
     }
 
     public override void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
     {
-      try
+      string commandName = GetCommandName(aGuid, aId);
+      if (0 != string.Compare("File.SaveAll", commandName) &&
+        0 != string.Compare("File.SaveSelectedItems", commandName))
       {
-        string commandName = GetCommandName(aGuid, aId);
-        if (0 != string.Compare("File.SaveAll", commandName) &&
-          0 != string.Compare("File.SaveSelectedItems", commandName))
-        {
-          return;
-        }
-        mSaveCommandWasGiven = true;
+        return;
       }
-      catch (Exception)
-      {
-      }
+      mSaveCommandWasGiven = true;
     }
 
     #endregion
@@ -180,28 +155,7 @@ namespace ClangPowerTools
           .Substring(0, DTEObj.Solution.FullName.LastIndexOf('\\'));
         mFileWatcher.Run(solutionFolderPath);
       }
-      catch (Exception)
-      {
-      }
-    }
-
-    private string GetCommandName(string aGuid, int aId)
-    {
-      if (null == aGuid)
-        return "null";
-
-      if (null == mCommand)
-        return string.Empty;
-
-      try
-      {
-        return mCommand.Item(aGuid, aId).Name;
-      }
-      catch (Exception)
-      {
-      }
-
-      return string.Empty;
+      catch (Exception) { }
     }
 
     #endregion

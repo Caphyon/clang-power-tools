@@ -18,19 +18,12 @@ namespace ClangPowerTools
     /// <param name="package">Owner package, not null.</param>
     public SettingsCommand(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
-      try
+      if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
-        if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
-        {
-          var menuCommandID = new CommandID(CommandSet, Id);
-          var menuItem = new MenuCommand(this.ShowSettings, menuCommandID);
-          commandService.AddCommand(menuItem);
-        }
+        var menuCommandID = new CommandID(CommandSet, Id);
+        var menuItem = new MenuCommand(this.ShowSettings, menuCommandID);
+        commandService.AddCommand(menuItem);
       }
-      catch (Exception)
-      {
-      }
-      
     }
 
     #endregion
@@ -46,13 +39,7 @@ namespace ClangPowerTools
     /// <param name="e">Event args.</param>
     private void ShowSettings(object sender, EventArgs e)
     {
-      try
-      {
-        Package.ShowOptionPage(typeof(GeneralOptions));
-      }
-      catch (Exception)
-      {
-      }
+      Package.ShowOptionPage(typeof(GeneralOptions));
     }
 
     #endregion
