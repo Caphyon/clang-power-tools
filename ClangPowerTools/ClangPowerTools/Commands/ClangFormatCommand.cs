@@ -49,7 +49,7 @@ namespace ClangPowerTools.Commands
 
     #region Public methods
 
-    public void OnBeforeSave(object sender, Document aDocument)
+    public override void OnBeforeSave(object sender, Document aDocument)
     {
       var clangFormatOptionPage = GetUserOptions();
 

@@ -62,11 +62,11 @@ namespace ClangPowerTools
 
     #region Commands
 
-    private CompileCommand mCompileCmd = null;
-    private TidyCommand mTidyCmd = null;
-    private StopClang mStopClang = null;
-    private SettingsCommand mSettingsCmd = null;
-    private ClangFormatCommand mClangFormatCmd = null;
+    private ClangCommand mCompileCmd = null;
+    private ClangCommand mTidyCmd = null;
+    private ClangCommand mClangFormatCmd = null;
+    private ClangCommand mStopClangCmd = null;
+    private BasicCommand mSettingsCmd = null;
 
     #endregion
 
@@ -195,8 +195,8 @@ namespace ClangPowerTools
         if (null == mClangFormatCmd)
           mClangFormatCmd = new ClangFormatCommand(this, CommandSet, CommandIds.kClangFormat);
 
-        if (null == mStopClang)
-          mStopClang = new StopClang(this, CommandSet, CommandIds.kStopClang);
+        if (null == mStopClangCmd)
+          mStopClangCmd = new StopClang(this, CommandSet, CommandIds.kStopClang);
 
         var generalOptions = (GeneralOptions)this.GetDialogPage(typeof(GeneralOptions));
         var currentVersion = GetPackageVersion();

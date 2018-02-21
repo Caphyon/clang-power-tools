@@ -50,7 +50,7 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
+    public override void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
     {
       try
       {
@@ -68,7 +68,7 @@ namespace ClangPowerTools
       }
     }
 
-    public void OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
+    public override void OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
     {
       try
       {

@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Xml.Linq;
 using ClangPowerTools.DialogPages;
 using ClangPowerTools.Script;
+using EnvDTE;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor;
 
 namespace ClangPowerTools
 {
@@ -124,6 +121,12 @@ namespace ClangPowerTools
       mItemsCollector.CollectSelectedFiles(DTEObj, ActiveWindowProperties.GetProjectItemOfActiveWindow(DTEObj));
       return mItemsCollector.GetItems;
     }
+
+    public virtual void OnBeforeSave(object sender, Document aDocument) { }
+
+    public virtual void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault) { }
+
+    public virtual void OnBuildDone(vsBuildScope Scope, vsBuildAction Action) { }
 
     #endregion
 
