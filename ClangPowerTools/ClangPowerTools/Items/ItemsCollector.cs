@@ -18,7 +18,7 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public ItemsCollector(IServiceProvider aServiceProvider, List<string> aExtensions)
+    public ItemsCollector(IServiceProvider aServiceProvider, List<string> aExtensions = null)
     {
       mServiceProvider = aServiceProvider;
       mAcceptedFileExtensions = aExtensions;
@@ -73,7 +73,7 @@ namespace ClangPowerTools
     public void AddProjectItem(ProjectItem aItem)
     {
       var fileExtension = Path.GetExtension(aItem.Name).ToLower();
-      if (!mAcceptedFileExtensions.Contains(fileExtension))
+      if ( null != mAcceptedFileExtensions && false == mAcceptedFileExtensions.Contains(fileExtension))
         return;
 
       mItems.Add(new SelectedProjectItem(aItem));

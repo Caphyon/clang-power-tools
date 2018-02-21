@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
@@ -22,7 +21,6 @@ namespace ClangPowerTools.Commands
 
     private ClangFormatPage mClangFormatPage = null;
     private Document mDocument = null;
-    private bool mFormatIsRunning = false;
 
     #endregion
 
@@ -53,19 +51,27 @@ namespace ClangPowerTools.Commands
     {
       var clangFormatOptionPage = GetUserOptions();
 
-      if (false == clangFormatOptionPage.EnableFormatOnSave && false == mFormatIsRunning)
+      if (false == clangFormatOptionPage.EnableFormatOnSave)
         return;
 
-      if (!Vsix.IsDocumentDirty(aDocument))
+      if (false == Vsix.IsDocumentDirty(aDocument))
         return;
 
-      if (!FileHasExtension(aDocument.FullName, clangFormatOptionPage.FileExtensions))
+      if (false == FileHasExtension(aDocument.FullName, clangFormatOptionPage.FileExtensions))
         return;
 
-      if (SkipFile(aDocument.FullName, clangFormatOptionPage.SkipFiles))
+      if (true == SkipFile(aDocument.FullName, clangFormatOptionPage.SkipFiles))
         return;
 
-      mClangFormatPage = GetUserOptions();
+      var option = GetUserOptions().Clone();
+      option.FallbackStyle = "none";
+
+      FormatDocument(aDocument, option);
+    }
+
+    private void FormatDocument(Document aDocument, ClangFormatPage aOptions)
+    {
+      mClangFormatPage = aOptions;
       mDocument = aDocument;
 
       RunClangFormat(new object(), new EventArgs());
@@ -86,12 +92,9 @@ namespace ClangPowerTools.Commands
     {
       try
       {
-        List<Document> documents = new List<Document>();
-        if (null == mDocument)
+        if (null == mClangFormatPage)
         {
-          mFormatIsRunning = true;
           FormatAllSelectedDocuments();
-          mFormatIsRunning = false;
           return;
         }
 
@@ -151,12 +154,7 @@ namespace ClangPowerTools.Commands
 
     private void FormatAllSelectedDocuments()
     {
-      var fileExtensions = GetUserOptions().FileExtensions
-        .ToLower()
-        .Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-        .ToList();
-
-      foreach (var item in CollectSelectedItems(fileExtensions))
+      foreach (var item in CollectSelectedItems())
       {
         if (!(item.GetObject() is ProjectItem))
           return; // the selected file is not a project item
@@ -165,9 +163,10 @@ namespace ClangPowerTools.Commands
         if (null == document)
           continue;
 
-        //document.Save(document.FullName);
-        //if (false == GetUserOptions().EnableFormatOnSave)
-        OnBeforeSave(new object(), document);
+        mClangFormatPage = GetUserOptions();
+        mDocument = document;
+
+        RunClangFormat(new object(), new EventArgs());
       }
     }
 
