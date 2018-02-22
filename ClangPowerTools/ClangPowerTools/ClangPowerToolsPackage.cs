@@ -42,6 +42,7 @@ namespace ClangPowerTools
   [ProvideOptionPage(typeof(TidyOptions), "Clang Power Tools\\Tidy", "Options", 0, 0, true, Sort = 0)]
   [ProvideOptionPage(typeof(TidyCustomChecks), "Clang Power Tools\\Tidy", "Custom Checks", 0, 0, true, Sort = 1)]
   [ProvideOptionPage(typeof(TidyChecks), "Clang Power Tools\\Tidy", "Predefined Checks", 0, 0, true, Sort = 2)]
+  [ProvideOptionPage(typeof(ClangFormatPage), "Clang Power Tools", "Format", 0, 0, true, Sort = 4)]
   [ProvideAutoLoad("ADFC4E64-0397-11D1-9F4E-00A0C911004F")]
   public sealed class RunClangPowerToolsPackage : Package, IVsSolutionEvents
   {
@@ -61,10 +62,11 @@ namespace ClangPowerTools
 
     #region Commands
 
-    private CompileCommand mCompileCmd = null;
-    private TidyCommand mTidyCmd = null;
-    private StopClang mStopClang = null;
-    private SettingsCommand mSettingsCmd = null;
+    private ClangCommand mCompileCmd = null;
+    private ClangCommand mTidyCmd = null;
+    private ClangCommand mClangFormatCmd = null;
+    private ClangCommand mStopClangCmd = null;
+    private BasicCommand mSettingsCmd = null;
 
     #endregion
 
@@ -93,28 +95,22 @@ namespace ClangPowerTools
     /// </summary>
     protected override void Initialize()
     {
-      try
-      {
-        base.Initialize();
+      base.Initialize();
 
-        mRunningDocTableEvents = new RunningDocTableEvents(this);
+      mRunningDocTableEvents = new RunningDocTableEvents(this);
 
-        //Settings command is always visible
-        mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
+      //Settings command is always visible
+      mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
 
-        var dte = GetService(typeof(DTE)) as DTE2;
-        mBuildEvents = dte.Events.BuildEvents;
-        mCommandEvents = dte.Events.CommandEvents;
+      var dte = GetService(typeof(DTE)) as DTE2;
+      mBuildEvents = dte.Events.BuildEvents;
+      mCommandEvents = dte.Events.CommandEvents;
 
-        var generalOptions = (GeneralOptions)this.GetDialogPage(typeof(GeneralOptions));
-        if (null == generalOptions.Version || string.IsNullOrWhiteSpace(generalOptions.Version))
-          ShowToolbare(dte); // Show the toolbar on the first install
+      var generalOptions = (GeneralOptions)this.GetDialogPage(typeof(GeneralOptions));
+      if (null == generalOptions.Version || string.IsNullOrWhiteSpace(generalOptions.Version))
+        ShowToolbare(dte); // Show the toolbar on the first install
 
-        AdviseSolutionEvents();
-      }
-      catch (Exception)
-      {
-      }
+      AdviseSolutionEvents();
     }
 
     #endregion
@@ -155,45 +151,46 @@ namespace ClangPowerTools
       return VSConstants.S_OK;
     }
 
-    public int OnQueryCloseProject(IVsHierarchy pHierarchy, int fRemoving, ref int pfCancel)
+    public int OnQueryCloseProject(IVsHierarchy aPHierarchy, int aFRemoving, ref int aPfCancel)
     {
       return VSConstants.S_OK;
     }
 
-    public int OnBeforeCloseProject(IVsHierarchy pHierarchy, int fRemoved)
+    public int OnBeforeCloseProject(IVsHierarchy aPHierarchy, int aFRemoved)
     {
       return VSConstants.S_OK;
     }
 
-    public int OnAfterLoadProject(IVsHierarchy pStubHierarchy, IVsHierarchy pRealHierarchy)
+    public int OnAfterLoadProject(IVsHierarchy aPStubHierarchy, IVsHierarchy aPRealHierarchy)
     {
       return VSConstants.S_OK;
     }
 
-    public int OnQueryUnloadProject(IVsHierarchy pRealHierarchy, ref int pfCancel)
+    public int OnQueryUnloadProject(IVsHierarchy aPRealHierarchy, ref int aPfCancel)
     {
       return VSConstants.S_OK;
     }
 
-    public int OnBeforeUnloadProject(IVsHierarchy pRealHierarchy, IVsHierarchy pStubHierarchy)
+    public int OnBeforeUnloadProject(IVsHierarchy aPRealHierarchy, IVsHierarchy aPStubHierarchy)
     {
       return VSConstants.S_OK;
     }
 
-    public int OnAfterOpenSolution(object pUnkReserved, int fNewSolution)
+    public int OnAfterOpenSolution(object aPUnkReserved, int aFNewSolution)
     {
       try
       {
-        //Load the rest of the commands when a solution is loaded
-
         if (null == mTidyCmd)
           mTidyCmd = new TidyCommand(this, CommandSet, CommandIds.kTidyId);
 
         if (null == mCompileCmd)
           mCompileCmd = new CompileCommand(this, CommandSet, CommandIds.kCompileId);
 
-        if (null == mStopClang)
-          mStopClang = new StopClang(this, CommandSet, CommandIds.kStopClang);
+        if (null == mClangFormatCmd)
+          mClangFormatCmd = new ClangFormatCommand(this, CommandSet, CommandIds.kClangFormat);
+
+        if (null == mStopClangCmd)
+          mStopClangCmd = new StopClang(this, CommandSet, CommandIds.kStopClang);
 
         var generalOptions = (GeneralOptions)this.GetDialogPage(typeof(GeneralOptions));
         var currentVersion = GetPackageVersion();
@@ -214,9 +211,9 @@ namespace ClangPowerTools
         mCommandEvents.BeforeExecute += mTidyCmd.CommandEventsBeforeExecute;
 
         mBuildEvents.OnBuildDone += mCompileCmd.OnBuildDone;
+
         mRunningDocTableEvents.BeforeSave += mTidyCmd.OnBeforeSave;
-
-
+        mRunningDocTableEvents.BeforeSave += mClangFormatCmd.OnBeforeSave;
       }
       catch (Exception)
       {
@@ -225,29 +222,25 @@ namespace ClangPowerTools
       return VSConstants.S_OK;
     }
 
-    public int OnQueryCloseSolution(object pUnkReserved, ref int pfCancel)
+    public int OnQueryCloseSolution(object aPUnkReserved, ref int aPfCancel)
     {
       return VSConstants.S_OK;
     }
 
-    public int OnBeforeCloseSolution(object pUnkReserved)
+    public int OnBeforeCloseSolution(object aPUnkReserved)
     {
-      try
-      {
-        mCommandEvents.BeforeExecute -= mCompileCmd.CommandEventsBeforeExecute;
-        mCommandEvents.BeforeExecute -= mTidyCmd.CommandEventsBeforeExecute;
+      mCommandEvents.BeforeExecute -= mCompileCmd.CommandEventsBeforeExecute;
+      mCommandEvents.BeforeExecute -= mTidyCmd.CommandEventsBeforeExecute;
 
-        mBuildEvents.OnBuildDone -= mCompileCmd.OnBuildDone;
-        mRunningDocTableEvents.BeforeSave -= mTidyCmd.OnBeforeSave;
-      }
-      catch (Exception)
-      {
-      }
+      mRunningDocTableEvents.BeforeSave -= mTidyCmd.OnBeforeSave;
+      mRunningDocTableEvents.BeforeSave -= mClangFormatCmd.OnBeforeSave;
+
+      mBuildEvents.OnBuildDone -= mCompileCmd.OnBuildDone;
 
       return VSConstants.S_OK;
     }
 
-    public int OnAfterCloseSolution(object pUnkReserved)
+    public int OnAfterCloseSolution(object aPUnkReserved)
     {
       return VSConstants.S_OK;
     }
@@ -272,17 +265,12 @@ namespace ClangPowerTools
 
     private void ShowToolbare(DTE2 aDte)
     {
-      try
-      {
-        var cbs = ((CommandBars)aDte.CommandBars);
-        CommandBar cb = cbs["Clang Power Tools"];
-        cb.Visible = true;
-      }
-      catch (Exception)
-      {
-      }
+      var cbs = ((CommandBars)aDte.CommandBars);
+      CommandBar cb = cbs["Clang Power Tools"];
+      cb.Visible = true;
     }
 
     #endregion
+
   }
 }

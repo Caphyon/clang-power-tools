@@ -41,7 +41,6 @@ namespace ClangPowerTools
       }
       catch (Exception)
       {
-
       }
       finally
       {

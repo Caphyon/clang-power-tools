@@ -74,7 +74,8 @@
   <ItemGroup>
     <Compile Include="AutomationUtil.cs" />
     <Compile Include="ClangCheckAttribute.cs" />
-    <Compile Include="ClangTidyOptions.cs" />
+    <Compile Include="Commands\ClangFormatCommand.cs" />
+    <Compile Include="DialogOptions\ClangTidyOptions.cs" />
     <Compile Include="Commands\BasicCommand.cs" />
     <Compile Include="Commands\StopClang.cs" />
     <Compile Include="Commands\ClangCommand.cs" />
@@ -82,10 +83,17 @@
     <Compile Include="Commands\CommandsController.cs" />
     <Compile Include="Commands\CompileCommand.cs" />
     <Compile Include="Convertors\AdditionalIncludesConvertor.cs" />
-    <Compile Include="DialogPages\DefaultOptions.cs" />
+    <Compile Include="Convertors\FallbackStyleConvertor.cs" />
+    <Compile Include="Convertors\StyleConvertor.cs" />
+    <Compile Include="DialogOptions\ClangFormatOptions.cs" />
+    <Compile Include="DialogPages\ClangFormatPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DialogOptions\DefaultOptions.cs" />
     <Compile Include="DialogPages\TidyCustomChecks.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="DocumentsHandler.cs" />
     <Compile Include="Error\ErrorParser.cs" />
     <Compile Include="Error\ErrorParserConstants.cs" />
     <Compile Include="Error\ErrorsManager.cs" />
@@ -95,17 +103,18 @@
     <Compile Include="DialogPages\GeneralOptions.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ClangOptions.cs" />
+    <Compile Include="DialogOptions\ClangOptions.cs" />
     <Compile Include="Convertors\HeaderFiltersConvertor.cs" />
     <Compile Include="PCHCleaner.cs" />
     <Compile Include="ProjectConfiguration.cs" />
     <Compile Include="RunningDocTableEvents.cs" />
+    <Compile Include="Script\ClangCompileTidyScript.cs" />
     <Compile Include="Script\RunningProcesses.cs" />
-    <Compile Include="ConfigurationPage.cs">
+    <Compile Include="DialogPages\ConfigurationPage.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SettingsPathBuilder.cs" />
-    <Compile Include="SilentFileChanger\SilentFileChangerEqualityComparer.cs" />
+    <Compile Include="SilentFile\SilentFileChangerEqualityComparer.cs" />
     <Compile Include="Items\IItem.cs" />
     <Compile Include="Items\ItemsCollector.cs" />
     <Compile Include="Output\OutputWindowConstants.cs" />
@@ -114,8 +123,8 @@
     <Compile Include="Script\PowerShellWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\SettingsCommand.cs" />
-    <Compile Include="SilentFileChanger\SilentFileChanger.cs" />
-    <Compile Include="SilentFileChanger\SilentFileChangerGuard.cs" />
+    <Compile Include="SilentFile\SilentFileChanger.cs" />
+    <Compile Include="SilentFile\SilentFileChangerGuard.cs" />
     <Compile Include="DialogPages\TidyChecks.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -134,9 +143,19 @@
     <Compile Include="ComboBoxConstants.cs" />
     <Compile Include="Convertors\ComboBoxConvertor.cs" />
     <Compile Include="Convertors\UseChecksFromConvertor.cs" />
+    <Compile Include="SilentFile\SilentFileController.cs" />
+    <Compile Include="Vsix.cs" />
     <Compile Include="XmlSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="clang-format.exe">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\ClangFormatIcon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\CompileIcon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -195,6 +214,8 @@
     <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.CoreUtility, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Editor, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Imaging, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Imaging.14.3.25407\lib\net45\Microsoft.VisualStudio.Imaging.dll</HintPath>
       <Private>True</Private>
@@ -264,6 +285,9 @@
       <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.9.0.9.0.30729\lib\Microsoft.VisualStudio.Shell.Interop.9.0.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.Data, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Text.UI, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Text.UI.Wpf, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.TextManager.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>..\packages\Microsoft.VisualStudio.TextManager.Interop.7.10.6070\lib\Microsoft.VisualStudio.TextManager.Interop.dll</HintPath>
       <Private>True</Private>
@@ -294,6 +318,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>

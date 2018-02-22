@@ -16,5 +16,7 @@
 
     public const string kHeaderFilter = ".*";
 
+    public const string kFileExtensions = ".c;.cpp;.cxx;.cc;.tli;.tlh;.h;.hh;.hpp;.hxx;.hh;";
+    public const string kSkipFiles = "resource.h;";
   }
 }

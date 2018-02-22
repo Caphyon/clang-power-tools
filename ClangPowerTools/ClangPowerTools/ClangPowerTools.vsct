@@ -56,7 +56,15 @@
         </Strings>
       </Button>
 
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0002" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0002" type="Button">
+        <Icon guid="guidImageFormat" id="Format" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Clang Format</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0003" type="Button">
         <Icon guid="guidImageStopClang" id="StopClang" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
@@ -64,7 +72,7 @@
         </Strings>
       </Button>
       
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0003" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0004" type="Button">
         <Icon guid="guidImageSettings" id="Settings" />
         <Strings>
           <ButtonText>Settings</ButtonText>
@@ -86,14 +94,21 @@
         </Strings>
       </Button>
 
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0002" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0002" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
+        <Strings>
+          <ButtonText>Clang Format</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0003" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
         <Strings>
           <ButtonText>Stop Clang</ButtonText>
         </Strings>
       </Button>
       
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0003" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0004" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
         <Strings>
           <ButtonText>Settings</ButtonText>
@@ -107,9 +122,10 @@
       <Bitmap guid="guidImages" href="Resources\Icon.png" usedList="bmpPic1" />
       <Bitmap guid="guidImageTidy" href="Resources\TidyIcon.png" usedList="Tidy" />
       <Bitmap guid="guidImageCompile" href="Resources\CompileIcon.png" usedList="Compile" />
+      <Bitmap guid="guidImageFormat" href="Resources\ClangFormatIcon.png" usedList="Format" />
       <Bitmap guid="guidImageStopClang" href="Resources\StopCommandIcon.png" usedList="StopClang" />
       <Bitmap guid="guidImageSettings" href="Resources\SettingsIcon.png" usedList="Settings" />
-
+      
     </Bitmaps>
 
   </Commands>
@@ -167,7 +183,12 @@
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
     </CommandPlacement>
 
-    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0002">
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0002">
+      <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
+    </CommandPlacement>
+
+
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0003">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
     </CommandPlacement>
     
@@ -191,6 +212,7 @@
       <!--Commands-->
       <IDSymbol name="CompileId" value="0x0102" />
       <IDSymbol name="TidyId" value="0x0101" />
+      <IDSymbol name="ClangFormatId" value="0x0105" />
       <IDSymbol name="StopClangId" value="0x0104" />
       <IDSymbol name="SettingsId" value="0x0103" />
 
@@ -219,6 +241,10 @@
     
     <GuidSymbol name="guidImageSettings" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70f}">
       <IDSymbol name="Settings" value="1" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidImageFormat" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c71a}">
+      <IDSymbol name="Format" value="1" />
     </GuidSymbol>
 
     <GuidSymbol value="{e354bc96-69a2-474c-8ab1-a84283a4e077}" name="guidImages1">

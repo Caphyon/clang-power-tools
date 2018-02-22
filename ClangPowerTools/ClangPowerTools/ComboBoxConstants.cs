@@ -13,6 +13,15 @@ namespace ClangPowerTools
     public const string kDefaultHeaderFilter = ".*";
     public const string kCorrespondingHeader = "Corresponding Header";
 
+
+    public const string kNone = "none";
+    public const string kFile = "file";
+    public const string kChromium = "Chromium";
+    public const string kGoogle = "Google";
+    public const string kLLVM = "LLVM";
+    public const string kMozilla = "Mozilla";
+    public const string kWebKit = "WebKit";
+
     public static readonly Dictionary<string, string> kHeaderFilterMaping = new Dictionary<string, string>
     {
       {kCorrespondingHeader, "_" },

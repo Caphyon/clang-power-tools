@@ -1,12 +1,26 @@
-﻿namespace ClangPowerTools
+﻿using System.Collections.Generic;
+
+namespace ClangPowerTools
 {
   public class ScriptConstants
   {
     #region Constants
 
+    #region Clang Compile/Tidy constants
+
+    public static readonly List<string> kAcceptedFileExtensions = new List<string>
+      { ".c",
+        ".cpp",
+        ".cc",
+        ".cxx",
+        ".c++",
+        ".cp",
+      };
+
     public const string kPowerShellPath = @"WindowsPowerShell\v1.0\powershell.exe";
     public const string kScriptBeginning = @"PowerShell.exe -ExecutionPolicy Bypass -NoProfile -Noninteractive -command '&";
     public const string kScriptName = "clang-build.ps1";
+
 
     public const string kFile = "-file";
     public const string kProject = "-proj";
@@ -34,6 +48,21 @@
     public const string kHeaderFilter = "-header-filter";
     public const string kTidyFile = ".clang-tidy";
 
+    public const string kClangFormatStyle = "-format-style";
+
+    #endregion
+
+    #region Clang Format constants
+
+    public const string kClangFormat = "clang-format.exe";
+    public const string kAssumeFilename = "-assume-filename";
+    public const string kFallbackStyle = "-fallback-style";
+
+    //public const string kSortIncludes = "-sort-includes";
+
+    public const string kStyle = "-style";
+
+    #endregion
 
     #endregion
 

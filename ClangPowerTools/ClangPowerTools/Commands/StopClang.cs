@@ -22,21 +22,14 @@ namespace ClangPowerTools.Commands
     /// <param name="package">Owner package, not null.</param>
     public StopClang(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
-      try
+      if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {
-        if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
-        {
-          var menuCommandID = new CommandID(CommandSet, Id);
-          var menuCommand = new OleMenuCommand(this.MenuItemCallback, menuCommandID);
-          menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
-          menuCommand.Enabled = true;
-          commandService.AddCommand(menuCommand);
-        }
+        var menuCommandID = new CommandID(CommandSet, Id);
+        var menuCommand = new OleMenuCommand(this.RunStopClangCommand, menuCommandID);
+        menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
+        menuCommand.Enabled = true;
+        commandService.AddCommand(menuCommand);
       }
-      catch (Exception)
-      {
-      }
-      
     }
 
     /// <summary>
@@ -46,12 +39,12 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
-    private void MenuItemCallback(object sender, EventArgs e)
+    private void RunStopClangCommand(object sender, EventArgs e)
     {
-      try
+      mCommandsController.Running = false;
+      var task = System.Threading.Tasks.Task.Run(() =>
       {
-        mCommandsController.Running = false;
-        var task = System.Threading.Tasks.Task.Run(() =>
+        try
         {
           mRunningProcesses.Kill();
 
@@ -60,12 +53,12 @@ namespace ClangPowerTools.Commands
           mPCHCleaner.Remove(solutionFolder);
 
           mDirectoriesPath.Clear();
-        });
-      }
-      catch (Exception)
-      {
-      }
-      
+        }
+        catch (Exception) { }
+
+      });
     }
+
   }
 }
+
