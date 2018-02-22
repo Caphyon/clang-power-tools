@@ -1,4 +1,4 @@
-# Frequently Asked Questions
+# Tips & Frequently Asked Questions
 
 ### 👉 How to deal with warnings from system/third-party headers ?
 
@@ -35,10 +35,24 @@ directories to **clang**, with the following defaults:
    Q: What about the **continuous integration script** (clang-build.ps1)?     
    A: You can specify the `-treat-sai` switch and it will have the old behavior.
 
+### 💡 Did you know you can automatically run Clang compile on the current source file after each MSVC compilation ?
+
+The option was a real game changer for our team, because developers often broke CI build pipelines (Clang project build). 
+_Scenario:_ Developer compiles code in Visual Studio (`/W4 /WX`) ✔️ ... push commit ... CI build pipeline .... broken Clang build 🔥
+After enabling this option (_Settings_) developers _**immediately**_ see when they compile a source file from VS if it also works in Clang.
+
 ### 👉 Where can I see detailed information about clang-tidy checks ?
 
 A list of available checks that `clang-tidy` can perform:  
 [clang.llvm.org/extra/clang-tidy/checks/list](https://clang.llvm.org/extra/clang-tidy/checks/list.html)  
+
+### 💡 Did you know you can auto tidy code on save ?
+
+There is a setting (off by default) that enables _automatic_ `clang-tidy` (fix) when the current source file is saved.
+
+### 💡 Did you know you can UNDO all the changes performed by clang-tidy ?
+
+After performing `clang-tidy` on a source file **opened** in the VS editor, you can Undo the tidy changes (atomically) by hitting `Ctrl+Z`
 
 ### 👉 How can I use Clang Static Analyzer ?
 
