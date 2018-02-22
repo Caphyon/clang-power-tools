@@ -52,9 +52,9 @@ Windows 7: Download and install at least [PowerShell 3.0](https://www.microsoft.
 
 [Release Notes](CHANGELOG.md)
 
-### Q & A
+### Tips / Q & A
 
-[Frequently asked questions](QaA.md)
+[Tips and Frequently asked questions](QaA.md)
 
 ### Feedback
 
