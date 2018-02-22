@@ -37,10 +37,10 @@ directories to **clang**, with the following defaults:
 
 ### 💡 Did you know you can automatically run Clang compile on the current source file after each MSVC compilation ?
 
-The option was a real game changer for our team, because developers often broke CI build pipelines (Clang project build). 
+This option was a real game changer for our team, because developers often broke CI build pipelines (_Clang_ build). 
 _Scenario:_  
-Developer compiles code in Visual Studio (`/W4 /WX`) ✔️ ... push commit ... CI build pipeline .... broken Clang build 🔥  
-After enabling this option (_Settings_) developers _**immediately**_ see when they compile a source file from VS if it also works in Clang.
+Developer compiles code in Visual Studio (`/W4 /WX`) ✔️ ... push commit ... CI build pipeline .... broken **Clang** build 🔥  
+After enabling this option (from _Settings_), developers _**immediately**_ see when they compile a source file from VS if it also works in Clang. Each successful MSVC compile is automatically followed by a Clang compile. 
 
 ### 👉 Where can I see detailed information about clang-tidy checks ?
 
