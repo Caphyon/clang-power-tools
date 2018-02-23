@@ -38,7 +38,8 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
 
-    public TidyCommand(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
+    public TidyCommand(Package aPackage, Guid aGuid, int aId, CommandsController aCommandsController) 
+      : base(aCommandsController, aPackage, aGuid, aId)
     {
       mTidyOptions = (TidyOptions)Package.GetDialogPage(typeof(TidyOptions));
       mTidyChecks = (TidyChecks)Package.GetDialogPage(typeof(TidyChecks));

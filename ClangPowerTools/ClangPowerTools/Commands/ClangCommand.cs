@@ -46,7 +46,7 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public ClangCommand(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
+    public ClangCommand(CommandsController aCommandsController, Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
       mCommand = DTEObj.Commands as Commands2;
       VsEdition = DTEObj.Edition;
@@ -54,7 +54,7 @@ namespace ClangPowerTools
       VsVersion = version;
 
       if (null == mCommandsController)
-        mCommandsController = new CommandsController(Package, DTEObj);
+        mCommandsController = aCommandsController;
 
       mErrorsManager = new ErrorsManager(Package, DTEObj);
       mGeneralOptions = (GeneralOptions)Package.GetDialogPage(typeof(GeneralOptions));
