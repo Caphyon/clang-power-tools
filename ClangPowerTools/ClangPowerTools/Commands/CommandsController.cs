@@ -1,10 +1,7 @@
-﻿using ClangPowerTools.DialogPages;
-using EnvDTE;
+﻿using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Windows.Interop;
 using System.Windows.Threading;
 
@@ -14,6 +11,7 @@ namespace ClangPowerTools
   {
     #region Members
 
+    private IServiceProvider mServiceProvider;
     private Dispatcher mDispatcher;
     private DTE2 mDte;
     //private ClangFormatPage mClangFormatPage;
@@ -23,9 +21,10 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public CommandsController(Package aPackage, DTE2 aDte)
+    public CommandsController(IServiceProvider aServiceProvider, DTE2 aDte)
     {
       mDte = aDte;
+      mServiceProvider = aServiceProvider;
       mDispatcher = HwndSource.FromHwnd((IntPtr)mDte.MainWindow.HWnd).RootVisual.Dispatcher;
     }
 
@@ -34,6 +33,7 @@ namespace ClangPowerTools
     #region Properties
 
     public bool Running { get; set; }
+    public bool VsBuildRunning { get; set; }
 
     #endregion
 
@@ -54,6 +54,8 @@ namespace ClangPowerTools
         if (!(sender is OleMenuCommand command))
           return;
         if (!mDte.Solution.IsOpen)
+          command.Enabled = false;
+        else if(true == VsBuildRunning && command.CommandID.ID != CommandIds.kSettingsId)
           command.Enabled = false;
         else
         {
@@ -82,6 +84,19 @@ namespace ClangPowerTools
 
         }));
     }
+
+    public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action)
+    {
+      VsBuildRunning = true;
+      ErrorsManager errorsManager = new ErrorsManager(mServiceProvider, mDte);
+      errorsManager.Clear();
+    }
+
+    public void OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
+    {
+      VsBuildRunning = false;
+    }
+
 
     #endregion
 

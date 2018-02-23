@@ -20,7 +20,8 @@ namespace ClangPowerTools.Commands
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public StopClang(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
+    public StopClang(Package aPackage, Guid aGuid, int aId, CommandsController aCommandsController) 
+      : base(aCommandsController, aPackage, aGuid, aId)
     {
       if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
       {

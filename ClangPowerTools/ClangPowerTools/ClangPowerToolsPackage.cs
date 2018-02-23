@@ -62,11 +62,12 @@ namespace ClangPowerTools
 
     #region Commands
 
-    private ClangCommand mCompileCmd = null;
-    private ClangCommand mTidyCmd = null;
-    private ClangCommand mClangFormatCmd = null;
-    private ClangCommand mStopClangCmd = null;
-    private BasicCommand mSettingsCmd = null;
+    private CommandsController mCommandsController  = null;
+    private ClangCommand mCompileCmd                = null;
+    private ClangCommand mTidyCmd                   = null;
+    private ClangCommand mClangFormatCmd            = null;
+    private ClangCommand mStopClangCmd              = null;
+    private BasicCommand mSettingsCmd               = null;
 
     #endregion
 
@@ -103,6 +104,7 @@ namespace ClangPowerTools
       mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
 
       var dte = GetService(typeof(DTE)) as DTE2;
+
       mBuildEvents = dte.Events.BuildEvents;
       mCommandEvents = dte.Events.CommandEvents;
 
@@ -180,24 +182,26 @@ namespace ClangPowerTools
     {
       try
       {
+        var dte = GetService(typeof(DTE)) as DTE2;
+        mCommandsController = new CommandsController(this, dte);
+
         if (null == mTidyCmd)
-          mTidyCmd = new TidyCommand(this, CommandSet, CommandIds.kTidyId);
+          mTidyCmd = new TidyCommand(this, CommandSet, CommandIds.kTidyId, mCommandsController);
 
         if (null == mCompileCmd)
-          mCompileCmd = new CompileCommand(this, CommandSet, CommandIds.kCompileId);
+          mCompileCmd = new CompileCommand(this, CommandSet, CommandIds.kCompileId, mCommandsController);
 
         if (null == mClangFormatCmd)
-          mClangFormatCmd = new ClangFormatCommand(this, CommandSet, CommandIds.kClangFormat);
+          mClangFormatCmd = new ClangFormatCommand(this, CommandSet, CommandIds.kClangFormat, mCommandsController);
 
         if (null == mStopClangCmd)
-          mStopClangCmd = new StopClang(this, CommandSet, CommandIds.kStopClang);
+          mStopClangCmd = new StopClang(this, CommandSet, CommandIds.kStopClang, mCommandsController);
 
         var generalOptions = (GeneralOptions)this.GetDialogPage(typeof(GeneralOptions));
         var currentVersion = GetPackageVersion();
 
         if (0 != string.Compare(generalOptions.Version, currentVersion))
         {
-          var dte = GetService(typeof(DTE)) as DTE2;
           OutputManager outputManager = new OutputManager(dte);
           outputManager.Show();
           outputManager.AddMessage($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
@@ -207,10 +211,13 @@ namespace ClangPowerTools
           generalOptions.SaveSettingsToStorage();
         }
 
-        mCommandEvents.BeforeExecute += mCompileCmd.CommandEventsBeforeExecute;
-        mCommandEvents.BeforeExecute += mTidyCmd.CommandEventsBeforeExecute;
+        mBuildEvents.OnBuildBegin += mCommandsController.OnBuildBegin;
+        mBuildEvents.OnBuildDone += mCommandsController.OnBuildDone;
 
         mBuildEvents.OnBuildDone += mCompileCmd.OnBuildDone;
+
+        mCommandEvents.BeforeExecute += mCompileCmd.CommandEventsBeforeExecute;
+        mCommandEvents.BeforeExecute += mTidyCmd.CommandEventsBeforeExecute;
 
         mRunningDocTableEvents.BeforeSave += mTidyCmd.OnBeforeSave;
         mRunningDocTableEvents.BeforeSave += mClangFormatCmd.OnBeforeSave;
@@ -222,6 +229,7 @@ namespace ClangPowerTools
       return VSConstants.S_OK;
     }
 
+  
     public int OnQueryCloseSolution(object aPUnkReserved, ref int aPfCancel)
     {
       return VSConstants.S_OK;
