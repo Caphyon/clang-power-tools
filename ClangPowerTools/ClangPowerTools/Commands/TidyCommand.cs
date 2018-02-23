@@ -128,7 +128,7 @@ namespace ClangPowerTools
               silentFileController.SilentFiles(Package, guard, filesPath);
               silentFileController.SilentOpenFiles(Package, guard, DTEObj);
             }
-            RunScript(OutputWindowConstants.kTidyCodeCommand, mForceTidyToFix, mTidyOptions, mTidyChecks, mTidyCustomChecks, mClangFormat);
+            RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mTidyChecks, mTidyCustomChecks, mClangFormat);
           }
         }
         catch (Exception exception)
