@@ -41,13 +41,12 @@ namespace ClangPowerTools.Script
       return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{aSolutionPath}'' {ScriptConstants.kLiteral}'";
     }
 
-    public void ConstructParameters(GeneralOptions aGeneralOptions, TidyOptions aTidyOptions, 
-      TidyChecks aTidyChecks, TidyCustomChecks aTidyCustomChecks, ClangFormatPage aClangFormat, 
-      DTE2 aDTEObj, string aVsEdition, string aVsVersion, bool aForceTidyToFix)
+    public void ConstructParameters(GeneralOptions aGeneralOptions, TidyOptions aTidyOptions, TidyChecks aTidyChecks, 
+      TidyCustomChecks aTidyCustomChecks, ClangFormatPage aClangFormat, DTE2 aDTEObj, string aVsEdition, string aVsVersion)
     {
       mParameters = GetGeneralParameters(aGeneralOptions);
       mParameters = null != aTidyOptions ?
-        $"{mParameters} {GetTidyParameters(aTidyOptions, aTidyChecks, aTidyCustomChecks, aForceTidyToFix)}" : $"{mParameters} {ScriptConstants.kParallel}";
+        $"{mParameters} {GetTidyParameters(aTidyOptions, aTidyChecks, aTidyCustomChecks)}" : $"{mParameters} {ScriptConstants.kParallel}";
 
       if (null != aClangFormat && null != aTidyOptions && true == aTidyOptions.Fix && true == aTidyOptions.FormatAfterTidy)
         mParameters = $"{mParameters} {ScriptConstants.kClangFormatStyle} {GetClangFormatParameters(aClangFormat)}";
@@ -91,8 +90,7 @@ namespace ClangPowerTools.Script
       return $"{parameters}";
     }
 
-    private string GetTidyParameters(TidyOptions aTidyOptions, TidyChecks aTidyChecks, 
-      TidyCustomChecks aTidyCustomChecks, bool aForceTidyToFix)
+    private string GetTidyParameters(TidyOptions aTidyOptions, TidyChecks aTidyChecks, TidyCustomChecks aTidyCustomChecks)
     {
       string parameters = string.Empty;
 
@@ -128,7 +126,7 @@ namespace ClangPowerTools.Script
       if (string.Empty != parameters)
       {
         parameters = string.Format("{0} ''{1}{2}''",
-          (true == aTidyOptions.Fix || true == aForceTidyToFix ? ScriptConstants.kTidyFix : ScriptConstants.kTidy),
+          (true == aTidyOptions.Fix ? ScriptConstants.kTidyFix : ScriptConstants.kTidy),
           (mUseTidyFile ? "" : "-*"),
           parameters);
       }
