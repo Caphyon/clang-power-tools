@@ -237,13 +237,16 @@ namespace ClangPowerTools
 
     public int OnBeforeCloseSolution(object aPUnkReserved)
     {
+      mBuildEvents.OnBuildBegin += mCommandsController.OnBuildBegin;
+      mBuildEvents.OnBuildDone += mCommandsController.OnBuildDone;
+
+      mBuildEvents.OnBuildDone -= mCompileCmd.OnBuildDone;
+
       mCommandEvents.BeforeExecute -= mCompileCmd.CommandEventsBeforeExecute;
       mCommandEvents.BeforeExecute -= mTidyCmd.CommandEventsBeforeExecute;
 
       mRunningDocTableEvents.BeforeSave -= mTidyCmd.OnBeforeSave;
       mRunningDocTableEvents.BeforeSave -= mClangFormatCmd.OnBeforeSave;
-
-      mBuildEvents.OnBuildDone -= mCompileCmd.OnBuildDone;
 
       return VSConstants.S_OK;
     }
