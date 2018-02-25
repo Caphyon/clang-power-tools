@@ -858,10 +858,10 @@ Function Get-VisualStudio-Path()
 
 Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$false)][string] $stdafxDir)
 {
-  [string[]] $returnArray = ($IncludePath -split ";")                                                  | `
-                            Where-Object { ![string]::IsNullOrEmpty($_) }                              | `
-                            ForEach-Object { Canonize-Path -base $ProjectDir -child $_ -ignoreErrors } | `
-                            Where-Object { ![string]::IsNullOrEmpty($_) }                              | `
+  [string[]] $returnArray = ($IncludePath -split ";")                                                         | `
+                            Where-Object { ![string]::IsNullOrWhiteSpace($_) }                                | `
+                            ForEach-Object { Canonize-Path -base $ProjectDir -child $_.Trim() -ignoreErrors } | `
+                            Where-Object { ![string]::IsNullOrEmpty($_) }                                     | `
                             ForEach-Object { $_ -replace '\\$', '' }                                   
   if ($env:CPT_LOAD_ALL -eq '1')
   {
@@ -1682,12 +1682,12 @@ Function Get-ProjectAdditionalIncludes()
   
   foreach ($token in $tokens)
   {
-    if ([string]::IsNullOrEmpty($token))
+    if ([string]::IsNullOrWhiteSpace($token))
     {
       continue
     }
     
-    [string] $includePath = Canonize-Path -base $ProjectDir -child $token -ignoreErrors
+    [string] $includePath = Canonize-Path -base $ProjectDir -child $token.Trim() -ignoreErrors
     if (![string]::IsNullOrEmpty($includePath))
     {
       $includePath -replace '\\$', ''
