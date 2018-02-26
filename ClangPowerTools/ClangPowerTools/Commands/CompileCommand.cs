@@ -93,7 +93,9 @@ namespace ClangPowerTools
       {
         try
         {
-          AutomationUtil.SaveDirtyFiles(Package, DTEObj.Solution, DTEObj);
+          DocumentsHandler.SaveActiveDocuments((DTE)DTEObj);
+          AutomationUtil.SaveDirtyProjects(ServiceProvider, DTEObj.Solution);
+
           CollectSelectedItems(ScriptConstants.kAcceptedFileExtensions);
           RunScript(OutputWindowConstants.kComplileCommand);
         }

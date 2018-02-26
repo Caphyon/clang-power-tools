@@ -37,10 +37,21 @@ namespace ClangPowerTools
         hierarchy : null;
     }
 
-    public static void SaveDirtyFiles(IServiceProvider aServiceProvider, Solution aSolution, DTE2 aDte)
+    public static void SaveDirtyProjects(IServiceProvider aServiceProvider, Solution aSolution)
     {
-      DocumentsHandler.SaveActiveDocuments((DTE)aDte);
-      SaveAllProjects(aServiceProvider, aSolution);
+      var projects = GetAllProjects(aServiceProvider, aSolution);
+      if (null == projects)
+        return;
+
+      foreach (var proj in projects)
+      {
+        var project = proj.GetObject() as Project;
+        if (null == project)
+          continue;
+
+        if (true == project.IsDirty)
+          project.Save(project.FullName);
+      }
     }
 
     #endregion
@@ -63,23 +74,6 @@ namespace ClangPowerTools
           list.Add(new SelectedProject(subProject));
       }
       return list;
-    }
-
-    private static void SaveAllProjects(IServiceProvider aServiceProvider, Solution aSolution)
-    {
-      var projects = GetAllProjects(aServiceProvider, aSolution);
-      if (null == projects)
-        return;
-
-      foreach (var proj in projects)
-      {
-        var project = proj.GetObject() as Project;
-        if (null == project)
-          continue;
-
-        if (true == project.IsDirty)
-          project.Save(project.FullName);
-      }
     }
 
     #endregion
