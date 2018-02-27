@@ -116,6 +116,8 @@ namespace ClangPowerTools
       }
       catch (Exception)
       {
+        mOutputManager.Show();
+        mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
       }
     }
 
@@ -128,17 +130,23 @@ namespace ClangPowerTools
 
     protected string GetCommandName(string aGuid, int aId)
     {
-      if (null == aGuid)
-        return string.Empty;
+      try
+      {
+        if (null == aGuid)
+          return string.Empty;
 
-      if (null == mCommand)
-        return string.Empty;
+        if (null == mCommand)
+          return string.Empty;
 
-      Command cmd = mCommand.Item(aGuid, aId);
-      if (null == cmd)
-        return string.Empty;
+        Command cmd = mCommand.Item(aGuid, aId);
+        if (null == cmd)
+          return string.Empty;
 
-      return cmd.Name;
+        return cmd.Name;
+      }
+      catch (Exception) { }
+
+      return string.Empty;
     }
 
     #endregion
