@@ -16,7 +16,7 @@ namespace ClangPowerTools
       List<IItem> list = new List<IItem>();
       Projects projects = aSolution.Projects;
 
-      for ( int index = 1; index <= projects.Count; ++index)
+      for (int index = 1; index <= projects.Count; ++index)
       {
         Project project = projects.Item(index);
         if (null == project)
@@ -54,6 +54,25 @@ namespace ClangPowerTools
       }
     }
 
+    public static bool AreAllUnloadedItems(IEnumerable<IItem> aItems)
+    {
+      foreach( var item in aItems )
+      {
+        var projItem = item.GetObject() as ProjectItem;
+        if (null == projItem)
+          continue;
+
+        var project = projItem.ContainingProject;
+        if (null == project)
+          continue;
+
+        if (false == IsUnloadedProject(project))
+          return false; 
+      }
+
+      return true;
+    }
+
     #endregion
 
     #region Private Methods
@@ -61,7 +80,7 @@ namespace ClangPowerTools
     private static List<IItem> GetSolutionFolderProjects(IServiceProvider aServiceProvider, Project aSolutionFolderItem)
     {
       List<IItem> list = new List<IItem>();
-       
+
       foreach (ProjectItem projectItem in aSolutionFolderItem.ProjectItems)
       {
         Project subProject = projectItem.SubProject;
@@ -75,6 +94,14 @@ namespace ClangPowerTools
       }
       return list;
     }
+
+    private static bool IsUnloadedProject(Project aProject)
+    {
+      return 0 == string.Compare(EnvDTE.Constants.vsProjectKindMisc, aProject.Kind, System.StringComparison.OrdinalIgnoreCase) ||
+        0 == string.Compare(EnvDTE.Constants.vsProjectKindUnmodeled, aProject.Kind, System.StringComparison.OrdinalIgnoreCase);
+    }
+
+
 
     #endregion
 
