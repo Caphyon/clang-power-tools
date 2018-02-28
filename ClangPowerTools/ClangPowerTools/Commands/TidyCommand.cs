@@ -3,7 +3,6 @@ using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using ClangPowerTools.DialogPages;
-using EnvDTE80;
 using ClangPowerTools.SilentFile;
 using System.Linq;
 using EnvDTE;

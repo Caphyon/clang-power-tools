@@ -1,5 +1,4 @@
 ﻿using EnvDTE;
-using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
@@ -54,23 +53,23 @@ namespace ClangPowerTools
       }
     }
 
-    public static bool AreAllUnloadedItems(IEnumerable<IItem> aItems)
+    public static bool ContainLoadedItems(IEnumerable<IItem> aItems)
     {
       foreach( var item in aItems )
       {
         var projItem = item.GetObject() as ProjectItem;
         if (null == projItem)
-          continue;
+          return true;
 
         var project = projItem.ContainingProject;
         if (null == project)
-          continue;
+          return true;
 
-        if (false == IsUnloadedProject(project))
-          return false; 
+        if (true == IsLoadedProject(project))
+          return true; 
       }
 
-      return true;
+      return false;
     }
 
     #endregion
@@ -95,10 +94,10 @@ namespace ClangPowerTools
       return list;
     }
 
-    private static bool IsUnloadedProject(Project aProject)
+    private static bool IsLoadedProject(Project aProject)
     {
-      return 0 == string.Compare(EnvDTE.Constants.vsProjectKindMisc, aProject.Kind, System.StringComparison.OrdinalIgnoreCase) ||
-        0 == string.Compare(EnvDTE.Constants.vsProjectKindUnmodeled, aProject.Kind, System.StringComparison.OrdinalIgnoreCase);
+      return 0 != string.Compare(EnvDTE.Constants.vsProjectKindMisc, aProject.Kind, System.StringComparison.OrdinalIgnoreCase) &&
+        0 != string.Compare(EnvDTE.Constants.vsProjectKindUnmodeled, aProject.Kind, System.StringComparison.OrdinalIgnoreCase);
     }
 
 
