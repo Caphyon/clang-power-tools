@@ -562,7 +562,7 @@ function Load-Solutions()
 function Get-SolutionProjects([Parameter(Mandatory=$true)][string] $slnPath)
 {
   [string] $slnDirectory = Get-FileDirectory -file $slnPath
-  $matches = [regex]::Matches($global:slnFiles[$slnPath], 'Project\([{}\"A-Z0-9\-]+\) = \S+,\s(\S+),')
+  $matches = [regex]::Matches($global:slnFiles[$slnPath], 'Project\([{}\"A-Z0-9\-]+\) = \".*?\",\s\"(.*?)\"')
   $projectAbsolutePaths = $matches `
     | ForEach-Object { Canonize-Path -base $slnDirectory `
                                      -child $_.Groups[1].Value.Replace('"','') -ignoreErrors } `
