@@ -1,6 +1,5 @@
 ﻿using EnvDTE;
 using EnvDTE80;
-using Microsoft.Internal.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Windows.Interop;
@@ -64,11 +63,10 @@ namespace ClangPowerTools
         else if (true == VsBuildRunning && command.CommandID.ID != CommandIds.kSettingsId)
           command.Enabled = false;
 
-        else if (1 == itemsCollector.GetItems.Count &&
+        else if (1 == itemsCollector.GetItems.Count && 
           (command.CommandID.ID == CommandIds.kCompileId || command.CommandID.ID == CommandIds.kTidyId) &&
-          AutomationUtil.AreAllUnloadedItems(itemsCollector.GetItems))
+          false == AutomationUtil.ContainLoadedItems(itemsCollector.GetItems))
         {
-          // disable the commands only if a single file is selected 
           command.Enabled = false;
         }
         else
@@ -96,15 +94,6 @@ namespace ClangPowerTools
     #endregion
 
     #region Private methods
-
-    private bool IsInALoadedProject(ProjectItem aItem)
-    {
-      Project project = aItem.ContainingProject;
-      if (null == project)
-        return false;
-
-      return true;
-    }
 
     //private bool ContainsAcceptedFiles(List<IItem> aItems, List<string> aFileExtensions)
     //{
