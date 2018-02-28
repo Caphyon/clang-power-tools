@@ -3,7 +3,6 @@ using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using ClangPowerTools.DialogPages;
-using EnvDTE80;
 using ClangPowerTools.SilentFile;
 using System.Linq;
 using EnvDTE;
@@ -109,7 +108,9 @@ namespace ClangPowerTools
       {
         try
         {
-          AutomationUtil.SaveDirtyFiles(Package, DTEObj.Solution, DTEObj);
+          DocumentsHandler.SaveActiveDocuments((DTE)DTEObj);
+          AutomationUtil.SaveDirtyProjects(ServiceProvider, DTEObj.Solution);
+
           CollectSelectedItems(ScriptConstants.kAcceptedFileExtensions);
 
           mFileWatcher = new FileChangerWatcher();

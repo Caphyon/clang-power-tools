@@ -15,7 +15,7 @@ namespace ClangPowerTools
     private Dispatcher mDispatcher;
     private DTE2 mDte;
     //private ClangFormatPage mClangFormatPage;
-    //private Package mPackage;
+    private Package mPackage;
 
     #endregion
 
@@ -51,38 +51,31 @@ namespace ClangPowerTools
     {
       mDispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
       {
+        var itemsCollector = new ItemsCollector(mPackage);
+        itemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));
+
         if (!(sender is OleMenuCommand command))
           return;
-        if (!mDte.Solution.IsOpen)
+
+        if (false == mDte.Solution.IsOpen)
           command.Enabled = false;
-        else if(true == VsBuildRunning && command.CommandID.ID != CommandIds.kSettingsId)
+
+        else if (true == VsBuildRunning && command.CommandID.ID != CommandIds.kSettingsId)
           command.Enabled = false;
+
+        else if (1 == itemsCollector.GetItems.Count && 
+          (command.CommandID.ID == CommandIds.kCompileId || command.CommandID.ID == CommandIds.kTidyId) &&
+          false == AutomationUtil.ContainLoadedItems(itemsCollector.GetItems))
+        {
+          command.Enabled = false;
+        }
         else
         {
           command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !Running : Running;
           command.Visible = true;
         }
 
-          //if (CommandIds.kClangFormat == command.CommandID.ID)
-          //{
-          //  if (Running)
-          //    return;
-
-          //  var fileExtensions = mClangFormatPage.FileExtensions
-          //    .ToLower()
-          //    .Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries)
-          //    .ToList();
-
-          //  var itemsCollector = new ItemsCollector(mPackage, fileExtensions);
-          //  itemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));
-
-          //  if(false == ContainsAcceptedFiles(itemsCollector.GetItems, fileExtensions) )
-          //    command.Enabled = false;
-          //  else
-          //    command.Enabled = true;
-          //}
-
-        }));
+      }));
     }
 
     public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action)
@@ -117,6 +110,8 @@ namespace ClangPowerTools
     //  }
     //  return false;
     //}
+
+
 
     #endregion
 

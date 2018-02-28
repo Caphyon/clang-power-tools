@@ -3,7 +3,6 @@ using Microsoft.VisualStudio.Shell;
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE;
-using EnvDTE80;
 
 namespace ClangPowerTools
 {
@@ -93,7 +92,9 @@ namespace ClangPowerTools
       {
         try
         {
-          AutomationUtil.SaveDirtyFiles(Package, DTEObj.Solution, DTEObj);
+          DocumentsHandler.SaveActiveDocuments((DTE)DTEObj);
+          AutomationUtil.SaveDirtyProjects(ServiceProvider, DTEObj.Solution);
+
           CollectSelectedItems(ScriptConstants.kAcceptedFileExtensions);
           RunScript(OutputWindowConstants.kComplileCommand);
         }
