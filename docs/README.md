@@ -1,5 +1,5 @@
 
-Clang Power Tools is a **free** Visual Studio extension helping Visual Studio C++ developers leverage Clang/LLVM tools (`clang++`, `clang-tidy` and `clang-format`), in order to perform various code transformations and fixes like modernizing code to C++11/14/17 and finding subtle latent bugs with its static analyzer and CppCoreGuidelines checks.
+_Clang Power Tools_ is a **free** Visual Studio extension helping Visual Studio C++ developers leverage Clang/LLVM tools (`clang++`, `clang-tidy` and `clang-format`), in order to perform various code transformations and fixes like modernizing code to C++11/14/17 and finding subtle latent bugs with its static analyzer and CppCoreGuidelines checks.
 
 **NEW**: Built-in support for **[clang-format](https://clang.llvm.org/docs/ClangFormat.html)**  
 Auto-format source file on save, configurable [style options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html), file extension rules, etc.
