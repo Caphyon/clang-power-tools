@@ -1,7 +1,7 @@
 # Version History
 
 ### Clang Power Tools 3.0
-*March 1, 2018*
+*March 1st, 2018*
 
 **NEW**: Built-in support for **[clang-format](https://clang.llvm.org/docs/ClangFormat.html)**  
 Auto-format source file on save, configurable [style options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html), file extension rules, etc.
