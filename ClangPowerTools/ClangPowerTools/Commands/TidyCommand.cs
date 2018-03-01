@@ -43,6 +43,7 @@ namespace ClangPowerTools
       mTidyOptions = (TidyOptions)Package.GetDialogPage(typeof(TidyOptions));
       mTidyChecks = (TidyChecks)Package.GetDialogPage(typeof(TidyChecks));
       mTidyCustomChecks = (TidyCustomChecks)Package.GetDialogPage(typeof(TidyCustomChecks));
+      mClangFormat = (ClangFormatPage)Package.GetDialogPage(typeof(ClangFormatPage));
 
       mFileOpener = new FileOpener(DTEObj);
 
