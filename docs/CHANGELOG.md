@@ -12,7 +12,7 @@ Improvements:
 
 Bugs:
 
-* Automatic clang-tidy on save option is applying fixes when Fix option is set to false.
+* Automatic clang-tidy on save option was applying fixes even when Fix option was set to _false_.
 * Running a command with different elements of VS selected (eg. properties window, toolbox) sometimes caused errors.
 * Clang compile and tidy commands were not disabled for source files not loaded in a project context.
 * Properly trim whitespace from #include paths.
