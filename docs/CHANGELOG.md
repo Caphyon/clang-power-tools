@@ -12,11 +12,11 @@ Improvements:
 
 Bugs:
 
-* Perform clang-tidy on save option is applying fixes when Fix option is set to false.
-* Running a command with different elements of VS selected(eg. properties window, toolbox) sometimes caused errors.
-* Clang compile and tidy commands were not disabled for a file that is not in any loaded project.
-* Trim whitespace from #include paths.
-* In project name and path were not allowed white spaces.
+* Automatic clang-tidy on save option is applying fixes when Fix option is set to false.
+* Running a command with different elements of VS selected (eg. properties window, toolbox) sometimes caused errors.
+* Clang compile and tidy commands were not disabled for source files not loaded in a project context.
+* Properly trim whitespace from #include paths.
+* Whitespaces in VS project name were not supported.
 
 ### Clang Power Tools 2.8
 *February 20, 2018*
