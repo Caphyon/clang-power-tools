@@ -1,5 +1,23 @@
 # Version History
 
+### Clang Power Tools 3.0
+*March 1, 2018*
+
+**NEW**: Built-in support for **[clang-format](https://clang.llvm.org/docs/ClangFormat.html)**  
+Auto-format source file on save, configurable [style options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html), file extension rules, etc.
+
+Improvements:
+
+* Disable the clang commands when VS build is running.
+
+Bugs:
+
+* Perform clang-tidy on save option is applying fixes when Fix option is set to false.
+* Running a command with different elements of VS selected(eg. properties window, toolbox) sometimes caused errors.
+* Clang compile and tidy commands were not disabled for a file that is not in any loaded project.
+* Trim whitespace from #include paths.
+* In project name and path were not allowed white spaces.
+
 ### Clang Power Tools 2.8
 *February 20, 2018*
 
