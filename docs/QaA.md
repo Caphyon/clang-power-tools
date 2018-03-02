@@ -5,6 +5,12 @@
 Yes. Starting with version 3.0 Clang Power Tools VS extension has built-in support for **[clang-format](https://clang.llvm.org/docs/ClangFormat.html)**  
 Auto-format source file on save, configurable [style options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html), file extension rules, etc.
 
+### 👉 What Clang/LLVM tools are supported by Clang Power Tools workflows ?
+
+ * `clang++`      Clang compile (syntax-only)
+ * `clang-tidy`   Clang Tidy (checks, auto-fixes, modernizing code, static analysis)
+ * `clang-format` code formating (auto format on save)
+
 ### 👉 How to deal with warnings from system/third-party headers ?
 
 Until v2.6, we've used the `%INCLUDE%` environment variable for setting clang include directories.
