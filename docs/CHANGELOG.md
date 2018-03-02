@@ -1,5 +1,10 @@
 # Version History
 
+### Clang Power Tools 3.0.1
+*March 2, 2018*
+
+* VS loses focus on selected items.
+
 ### Clang Power Tools 3.0
 *March 1st, 2018*
 
