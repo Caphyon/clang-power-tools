@@ -51,8 +51,8 @@ namespace ClangPowerTools
     {
       mDispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
       {
-        var itemsCollector = new ItemsCollector(mPackage);
-        itemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));
+        //var itemsCollector = new ItemsCollector(mPackage);
+        //itemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));
 
         if (!(sender is OleMenuCommand command))
           return;
@@ -63,12 +63,12 @@ namespace ClangPowerTools
         else if (true == VsBuildRunning && command.CommandID.ID != CommandIds.kSettingsId)
           command.Enabled = false;
 
-        else if (1 == itemsCollector.GetItems.Count && 
-          (command.CommandID.ID == CommandIds.kCompileId || command.CommandID.ID == CommandIds.kTidyId) &&
-          false == AutomationUtil.ContainLoadedItems(itemsCollector.GetItems))
-        {
-          command.Enabled = false;
-        }
+        //else if (1 == itemsCollector.GetItems.Count && 
+        //  (command.CommandID.ID == CommandIds.kCompileId || command.CommandID.ID == CommandIds.kTidyId) &&
+        //  false == AutomationUtil.ContainLoadedItems(itemsCollector.GetItems))
+        //{
+        //  command.Enabled = false;
+        //}
         else
         {
           command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !Running : Running;
