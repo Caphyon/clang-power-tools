@@ -1,7 +1,7 @@
 # Version History
 
 ### Clang Power Tools 3.0.1
-*March 2, 2018*
+*March 2nd, 2018*
 
 Bugs:
 
