@@ -1,5 +1,10 @@
 # Tips & Frequently Asked Questions
 
+### 👉 Does Clang Power Tools support `clang-format` ?
+
+Yes. Starting with version 3.0 Clang Power Tools VS extension has built-in support for **[clang-format](https://clang.llvm.org/docs/ClangFormat.html)**  
+Auto-format source file on save, configurable [style options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html), file extension rules, etc.
+
 ### 👉 How to deal with warnings from system/third-party headers ?
 
 Until v2.6, we've used the `%INCLUDE%` environment variable for setting clang include directories.
