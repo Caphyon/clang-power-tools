@@ -7,9 +7,9 @@ Auto-format source file on save, configurable [style options](https://clang.llvm
 
 ### 👉 What Clang/LLVM tools are supported by Clang Power Tools workflows ?
 
- * `clang++`      Clang compile (syntax-only)
- * `clang-tidy`   Clang Tidy (checks, auto-fixes, modernizing code, static analysis)
- * `clang-format` code formating (auto format on save)
+ * `clang++`      - Clang compile (syntax-only)
+ * `clang-tidy`   - Clang Tidy (checks, auto-fixes, modernizing code, static analysis)
+ * `clang-format` - source code formating (auto format on save)
 
 ### 👉 How to deal with warnings from system/third-party headers ?
 
