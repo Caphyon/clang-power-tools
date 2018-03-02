@@ -31,7 +31,7 @@ namespace ClangPowerTools.Commands
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public ClangFormatCommand(Package aPackage, Guid aGuid, int aId, CommandsController aCommandsController) 
+    public ClangFormatCommand(Package aPackage, Guid aGuid, int aId, CommandsController aCommandsController)
       : base(aCommandsController, aPackage, aGuid, aId)
     {
       if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
@@ -129,8 +129,8 @@ namespace ClangPowerTools.Commands
       }
       catch (Exception exception)
       {
-        VsShellUtilities.ShowMessageBox(Package, exception.Message, "Error",
-          OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+        VsShellUtilities.ShowMessageBox(Package, exception.Message, "Error while running clang-format",
+          OLEMSGICON.OLEMSGICON_INFO, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
       }
       finally
       {
@@ -219,7 +219,7 @@ namespace ClangPowerTools.Commands
       return process;
     }
 
-    private static void ApplyClangFormat(string replacements, IWpfTextView view)
+    private void ApplyClangFormat(string replacements, IWpfTextView view)
     {
       if (string.IsNullOrWhiteSpace(replacements))
         return;
