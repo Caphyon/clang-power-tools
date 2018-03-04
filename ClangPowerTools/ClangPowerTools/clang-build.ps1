@@ -99,6 +99,15 @@
                        - 'webkit'
                        - 'mozilla'
 
+.PARAMETER aClangBinDirectory
+      Alias 'clang-bin-dir'. Manual override of the Clang "bin" directory.
+      Use only if the Clang binaries are not in %PATH% and you are not able to install in the default "LLVM" directory.
+      The script searches for the Clang binaries in the following order:
+      - %PATH%
+      - the manual Clang "bin" directory override (this parameter, if present)
+      - %ProgramW6432%\LLVM\bin (64-bit Clang default installed on 64-bit Windows)
+      - %ProgramFiles(x86)%\LLVM\bin (32-bit Clang default installed on 64-bit Windows)
+
 .PARAMETER aVisualStudioVersion
       Alias 'vs-ver'. Version of Visual Studio (VC++) installed and that'll be used for 
       standard library include directories. E.g. 2017.
@@ -119,6 +128,7 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aSolutio
      , [alias("parallel")]     [Parameter(Mandatory=$false)][switch]   $aUseParallelCompile
      , [alias("continue")]     [Parameter(Mandatory=$false)][switch]   $aContinueOnError
      , [alias("treat-sai")]    [Parameter(Mandatory=$false)][switch]   $aTreatAdditionalIncludesAsSystemIncludes
+     , [alias("clang-bin-dir")][Parameter(Mandatory=$false)][string]   $aClangBinDirectory
      , [alias("clang-flags")]  [Parameter(Mandatory=$true)] [string[]] $aClangCompileFlags
      , [alias("literal")]      [Parameter(Mandatory=$false)][switch]   $aDisableNameRegexMatching
      , [alias("tidy")]         [Parameter(Mandatory=$false)][string]   $aTidyFlags
@@ -2144,7 +2154,18 @@ Write-Verbose "CPU logical core count: $kLogicalCoreCount"
 # If LLVM is not in PATH try to detect it automatically
 if (! (Exists-Command($kClangCompiler)) )
 {
-  foreach ($locationLLVM in $kLLVMInstallLocations)
+  if ([string]::IsNullOrEmpty($aClangBinDirectory))
+  {
+    $testedLLVMPaths = $kLLVMInstallLocations
+  }
+  else
+  {
+    # If LLVM location is overridden, prioritize it over the default installation paths
+    Write-Verbose "Manual LLVM location override: $aClangBinDirectory"
+    $testedLLVMPaths = @($aClangBinDirectory, $kLLVMInstallLocations)
+  }
+
+  foreach ($locationLLVM in $testedLLVMPaths)
   {
     if (Test-Path $locationLLVM)
     {

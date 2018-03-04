@@ -32,6 +32,8 @@ namespace ClangPowerTools
 
     public string Version { get; set; }
 
+    public string ClangBinDirectory { get; set; }
+
     #endregion
 
 

@@ -1,8 +1,10 @@
 ﻿using ClangPowerTools.Convertors;
 using System;
 using System.ComponentModel;
+using System.Drawing.Design;
 using System.Linq;
 using System.Web.UI.WebControls;
+using System.Windows.Forms.Design;
 
 namespace ClangPowerTools
 {
@@ -67,6 +69,12 @@ namespace ClangPowerTools
     [Description("Automatically run Clang compile on the current source file, after successful MSVC compilation.")]
     public bool ClangCompileAfterVsCompile { get; set; }
 
+    [Category("General")]
+    [DisplayName("Path to the Clang \"bin\" directory")]
+    [Description("Use only if the Clang binaries are not in %PATH% and you are not able to install in the default \"LLVM\" directory from \"Program Files\".")]
+    [Editor(typeof(FolderNameEditor), typeof(UITypeEditor))]
+    public string ClangBinDirectory { get; set; }
+
     [Browsable(false)]
     public string Version { get; set; }
 
@@ -88,6 +96,7 @@ namespace ClangPowerTools
         VerboseMode = this.VerboseMode,
         ClangFlags = this.ClangFlags.ToList(),
         ClangCompileAfterVsCompile = this.ClangCompileAfterVsCompile,
+        ClangBinDirectory = this.ClangBinDirectory,
         Version = this.Version
       };
 
@@ -111,6 +120,8 @@ namespace ClangPowerTools
 
       this.VerboseMode = loadedConfig.VerboseMode;
       this.ClangFlags = loadedConfig.ClangFlags.ToArray();
+
+      this.ClangBinDirectory = loadedConfig.ClangBinDirectory;
 
       this.ClangCompileAfterVsCompile = loadedConfig.ClangCompileAfterVsCompile;
       this.Version = loadedConfig.Version;
