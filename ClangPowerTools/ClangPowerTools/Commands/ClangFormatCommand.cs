@@ -103,8 +103,28 @@ namespace ClangPowerTools.Commands
         if (view == null)
           return;
 
-        var text = FormatEndOfFile(view, out string dirPath, out string filePath);
-        var process = CreateProcess(text, 0, text.Length, dirPath, filePath, mClangFormatPage);
+        System.Diagnostics.Process process;
+        var dirPath = string.Empty;
+        var filePath = Vsix.GetDocumentPath(view);
+        var text = view.TextBuffer.CurrentSnapshot.GetText();
+
+        var startPosition = 0;
+        var length = text.Length;
+
+        if( false == view.Selection.StreamSelectionSpan.IsEmpty) 
+        {
+          // get the necessary elements for format selection
+          FindStartPositionAndLengthOfSelectedText(view, text, out startPosition, out length);
+          dirPath = Vsix.GetDocumentParent(view);
+          mClangFormatPage = GetUserOptions();
+        }
+        else 
+        {
+          // format the end of the file for format document
+          text = FormatEndOfFile(view, filePath, out dirPath);
+        }
+
+        process = CreateProcess(text, startPosition, length, dirPath, filePath, mClangFormatPage);
 
         try
         {
@@ -171,9 +191,8 @@ namespace ClangPowerTools.Commands
       }
     }
 
-    private string FormatEndOfFile(IWpfTextView aView, out string aDirPath, out string aFilePath)
+    private string FormatEndOfFile(IWpfTextView aView, string aFilePath, out string aDirPath)
     {
-      aFilePath = Vsix.GetDocumentPath(aView);
       aDirPath = Path.GetDirectoryName(aFilePath);
 
       var text = aView.TextBuffer.CurrentSnapshot.GetText();
@@ -186,6 +205,17 @@ namespace ClangPowerTools.Commands
       }
 
       return text;
+    }
+
+    private void FindStartPositionAndLengthOfSelectedText(IWpfTextView aView, string aText, out int aStartPosition, out int aLength)
+    {
+      aStartPosition = aView.Selection.Start.Position.GetContainingLine().Start.Position;
+      int end = aView.Selection.End.Position.GetContainingLine().End.Position;
+      aLength = end - aStartPosition;
+
+      // formatting a range that starts at the end of the file is not supported.
+      if (aStartPosition >= aText.Length && aText.Length > 0)
+        aStartPosition = aText.Length - 1;
     }
 
     private System.Diagnostics.Process CreateProcess(string aText, int aOffset, int aLength, string aPath, string aFilePath, ClangFormatPage aOptions)
