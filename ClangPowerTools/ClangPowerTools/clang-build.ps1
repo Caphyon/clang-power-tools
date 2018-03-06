@@ -161,6 +161,10 @@ Set-Variable -name kVcxprojXpathAdditionalIncludes `
              -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:AdditionalIncludeDirectories" `
              -option Constant
 
+Set-Variable -name kVcxprojXpathRuntimeLibrary `
+             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:RuntimeLibrary" `
+             -option Constant
+
 Set-Variable -name kVcxprojXpathHeaders `
              -value "ns:Project/ns:ItemGroup/ns:ClInclude" `
              -option Constant
@@ -269,6 +273,9 @@ Set-Variable -name   kVs2015RegistryKey `
 Set-Variable -name kDefinesUnicode   -value @("-DUNICODE"
                                              ,"-D_UNICODE"
                                              ) `
+                                     -option Constant
+
+Set-Variable -name kDefinesMultiThreaded -value @("-D_MT") `
                                      -option Constant
 
 Set-Variable -name kDefinesClangXpTargeting `
@@ -744,6 +751,15 @@ Function Get-Project-SDKVer()
   [string] $sdkVer = (Select-ProjectNodes($kVcxprojXpathWinPlatformVer)).InnerText
 
   If ([string]::IsNullOrEmpty($sdkVer)) { "" } Else { $sdkVer.Trim() }
+}
+
+Function Is-Project-MultiThreaded()
+{
+  $propGroup = Select-ProjectNodes($kVcxprojXpathRuntimeLibrary)
+  
+  $runtimeLibrary = $propGroup.InnerText
+
+  return ![string]::IsNullOrEmpty($runtimeLibrary)
 }
 
 Function Is-Project-Unicode()
@@ -1664,6 +1680,11 @@ Function Get-ProjectPreprocessorDefines()
     $defines += $kDefinesUnicode
   }
 
+  if (Is-Project-MultiThreaded)
+  {
+    $defines += $kDefinesMultiThreaded
+  }
+
   [string] $platformToolset = Get-ProjectPlatformToolset
   if ($platformToolset.EndsWith("xp"))
   {
@@ -2010,6 +2031,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   {
     Write-Verbose ("PCH directory: $stdafxDir")
   }
+   
   #-----------------------------------------------------------------------------------------------
   # DETECT PROJECT PREPROCESSOR DEFINITIONS
 
