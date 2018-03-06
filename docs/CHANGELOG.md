@@ -17,7 +17,7 @@ Bugs:
 
 Bugs:
 
-* VS loses focus on selected items.
+* Visual Studio loses focus on selected items.
 
 ### Clang Power Tools 3.0
 *March 1st, 2018*
