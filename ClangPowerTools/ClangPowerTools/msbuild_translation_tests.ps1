@@ -82,20 +82,20 @@ function Exists([Parameter(Mandatory=$false)][string] $path)
 }
 
 function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
-{  
+{
   Write-Debug "Start evaluate MSBuild expression $expression"
 
   foreach ($rule in $kMsbuildExpressionToPsRules)
   {
     $expression = $expression -replace $rule[0], $rule[1]
   }
-  
+
   if ( !$isCondition -and ($expression.IndexOf('$') -lt 0))
   {
     # we can stop here, further processing is not required
     return $expression
   }
-  
+
   [int] $expressionStartIndex = -1
   [int] $openParantheses = 0
   for ([int] $i = 0; $i -lt $expression.Length; $i += 1)
@@ -122,7 +122,7 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
       }
       if ($openParantheses -eq 0)
       {
-        [string] $content = $expression.Substring($expressionStartIndex + 2, 
+        [string] $content = $expression.Substring($expressionStartIndex + 2,
                                                   $i - $expressionStartIndex - 2)
         [int] $initialLength = $content.Length
 
@@ -137,10 +137,10 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
           $content = $content -replace '(^|\s+|\$\()([a-zA-Z_][a-zA-Z0-9_]+)(\.|\)|$)', '$1$$$2$3'
         }
 
-        $newCond = $expression.Substring(0, $expressionStartIndex + 2) + 
+        $newCond = $expression.Substring(0, $expressionStartIndex + 2) +
                    $content + $expression.Substring($i)
         $expression = $newCond
-        
+
         $i += ($content.Length - $initialLength)
         $expressionStartIndex = -1
       }
@@ -181,14 +181,14 @@ function Evaluate-MSBuildCondition([Parameter(Mandatory=$true)][string] $conditi
   if ($expression -ieq "true")
   {
     return $true
-  } 
+  }
 
   if ($expression -ieq "false")
   {
     return $false
   }
 
-  [bool] $res = $false 
+  [bool] $res = $false
   try
   {
     $res = (Invoke-Expression $expression) -eq $true
@@ -197,7 +197,7 @@ function Evaluate-MSBuildCondition([Parameter(Mandatory=$true)][string] $conditi
   {
     Write-Debug $_.Exception.Message
   }
-  Write-Debug "Evaluated condition to $res" 
+  Write-Debug "Evaluated condition to $res"
 
   return $res
 }
@@ -255,7 +255,7 @@ Test-Condition "'`$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Microsoft SDK
 
 Test-Condition "'`$(Registry:HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\DevDiv\vs\Servicing\11.0\professional@Version)' == ''" `
                -expectation $true
-               
+
 
 Test-Condition -condition   "'`$(Configuration)|`$(Platform)'=='Debug|Win32' or '`$(Configuration)' == 'Release2'" `
                -expectation $true
@@ -263,12 +263,12 @@ Test-Condition -condition   "'`$(Configuration)|`$(Platform)'=='Debug|Win32' or 
 Test-Condition -condition   "'`$(Platform)'=='x64' or '`$(Platform)'=='Win32' or '`$(Platform)'=='Durango' or exists('`$(UserRootDir)\Microsoft.Cpp.`$(Platform).user.props2')"`
                -expectation $true
 
-Test-Condition -condition   "exists('c:\ai trunk')"`
+Test-Condition -condition   "exists('c:\windows')"`
                -expectation $true
 
 Test-Condition -condition   "'`$(Configuration)|`$(Platform)'=='Release|Win32'"`
                -expectation $false
- 
+
 Test-Condition -condition    '$(Platform.Replace(" ", "")) and $(testB)'`
                -expectation $false
 
