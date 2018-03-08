@@ -2043,10 +2043,10 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
     # There's a definition that supresses line directives.
 
     [string] $mscVer = Get-MscVer -visualStudioPath $vsPath
-    if ($mscVer -eq "14.12.25827")
-    {
+    #if ($mscVer -eq "14.12.25827")
+    #{
       $preprocessorDefinitions += "-D_DEBUG_FUNCTIONAL_MACHINERY"
-    }
+    #}
   }
   
   Write-Verbose-Array -array $preprocessorDefinitions -name "Preprocessor definitions"
