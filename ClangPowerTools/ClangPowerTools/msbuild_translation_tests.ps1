@@ -10,7 +10,7 @@ $varB          = 1
 
 # -------------------------------------------------------------------------------------------------------------------
 
-Set-Variable -name "kMsbuildExpressionToPsRules" -option Constant `
+Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#> `
              -value    @(<# backticks are control characters in PS, replace them #>
                          ('`'                     , ''''                 )`
                          <# Temporarily replace     $( #>                 `
@@ -33,6 +33,8 @@ Set-Variable -name "kMsbuildExpressionToPsRules" -option Constant `
       , ("Exists\((.*?)\)(\s|$)"           , '(Exists($1))$2'            )`
       , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(HasTrailingSlash($1))$2'  )`
       , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'     )`
+      , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?(.+?)(`"|')\)+",
+         'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
                        )
 
 Set-Variable -name "kMsbuildConditionToPsRules"  -option Constant `
@@ -42,6 +44,26 @@ Set-Variable -name "kMsbuildConditionToPsRules"  -option Constant `
                        , ('"'                     , '""'                )`
                        )
 
+Function Canonize-Path( [Parameter(Mandatory=$true)][string] $base
+                      , [Parameter(Mandatory=$true)][string] $child
+                      , [switch] $ignoreErrors)
+{
+  [string] $errorAction = If ($ignoreErrors) {"SilentlyContinue"} Else {"Stop"}
+
+  if ([System.IO.Path]::IsPathRooted($child))
+  {
+    if (!(Test-Path $child))
+    {
+      return ""
+    }
+    return $child
+  }
+  else
+  {
+    [string[]] $paths = Join-Path -Path "$base" -ChildPath "$child" -Resolve -ErrorAction $errorAction
+    return $paths
+  }
+}
 function GetRegValue([Parameter(Mandatory=$true)][string] $regPath)
 {
   [int] $separatorIndex = $regPath.IndexOf('@')
@@ -79,6 +101,28 @@ function Exists([Parameter(Mandatory=$false)][string] $path)
     return $false
   }
   return Test-Path $path
+}
+
+function GetDirNameOfFileAbove([Parameter(Mandatory=$true)][string] $startDir
+                              ,[Parameter(Mandatory=$true)][string] $targetFile
+                              )
+{
+  if ($targetFile.Contains('$'))
+  {
+    $targetFile = Invoke-Expression $targetFile
+  }
+  [string] $base = $startDir
+  while ([string]::IsNullOrEmpty((Canonize-Path -base  $base        `
+                                                -child $targetFile  `
+                                                -ignoreErrors)))
+  {
+    $base = [System.IO.Path]::GetDirectoryName($base)
+    if ([string]::IsNullOrEmpty($base))
+    {
+      return ""
+    }
+  }
+  return $base
 }
 
 function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
@@ -204,7 +248,7 @@ function Evaluate-MSBuildCondition([Parameter(Mandatory=$true)][string] $conditi
 
 Clear-Host
 
-function Test-Condition([string] $condition, [bool]$expectation, [switch] $expectFailure)
+function Test-Condition([Parameter(Mandatory=$true)][string] $condition, [bool]$expectation, [switch] $expectFailure)
 {
     [boolean] $condValue
     try
@@ -233,9 +277,9 @@ function Test-Condition([string] $condition, [bool]$expectation, [switch] $expec
     Write-Output "TEST OK"
 }
 
-function Test-Expression($expresion)
+function Test-Expression([Parameter(Mandatory=$true)] [string] $expression)
 {
-    $res = Evaluate-MSBuildExpression $expresion
+    $res = Evaluate-MSBuildExpression $expression
     Write-output $res
 }
 # ----------------------------------------------------------------------------
@@ -279,7 +323,7 @@ Test-Condition -condition    "exists('`$(UserRootDir)\Microsoft.Cpp.`$(Platform)
                -expectation $true
 
 Test-Expression -expression  "`$(SolutionDir)\Tools\PropertySheets\Evolution.Module.props"
-Test-Expression -expresion "WIN32_LEAN_AND_MEAN and `$(Configuration)"
+Test-Expression -expression "WIN32_LEAN_AND_MEAN and `$(Configuration)"
 
 Test-Condition  -condition  "exists('`$([Microsoft.Build.Utilities.ToolLocationHelper]::GetPlatformExtensionSDKLocation(``WindowsMobile, Version=10.0.10240.0``, `$(TargetPlatformIdentifier), `$(TargetPlatformVersion), `$(SDKReferenceDirectoryRoot), `$(SDKExtensionDirectoryRoot), `$(SDKReferenceRegistryRoot)))\DesignTime\CommonConfiguration\Neutral\WindowsMobile.props')"`
                 -expectFailure
@@ -332,3 +376,11 @@ Test-Condition -condition    "HasTrailingSlash('c:\windows\') and hasTrailingSla
 $prop = "c:\windows\"
 Test-Condition -condition    "hasTrailingSlash(`$(prop))"`
                -expectation  $true
+
+Test-Expression -expression '"$(prop)"'
+
+$MSBuildThisFileDirectory = "C:\windows"
+Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), ''Program Files'')Program Files'
+
+$whatToFind = "Program Files"
+Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), ''$(whatToFind)'')Program Files'
