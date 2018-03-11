@@ -324,8 +324,19 @@ Set-Variable -name "kMsbuildExpressionToPsRules" -option Constant         `
       , ("Exists\((.*?)\)(\s|$)"           , '(Exists($1))$2'            )`
       , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(HasTrailingSlash($1))$2'  )`
       , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'     )`
-      , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?(.+?)(`"|')\)+",
-         'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
+
+	  <# for cases with ' or ", like: #>
+      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, 'file') #>
+      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, "file") #>
+      , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?(.+?)(`"|')\)", `
+       'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2''' )`
+      <# for cases without ' and ", like: #>
+      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, file) #>
+      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, $(file))' #>
+      , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*((|.+)?)\)\)", `
+       'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'' )' )`
+
+      , ("\`$\(LOCALAPPDATA\)"                 , '$env:LOCALAPPDATA' )`
                        )
 
 Set-Variable -name "kMsbuildConditionToPsRules" -option Constant `
