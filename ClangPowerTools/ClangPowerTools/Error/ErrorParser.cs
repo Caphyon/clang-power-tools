@@ -68,8 +68,7 @@ namespace ClangPowerTools
     public bool LlvmIsMissing(string aMessages)
     {
       return aMessages.Contains(ErrorParserConstants.kCompileClangMissingFromPath) ||
-        aMessages.Contains(ErrorParserConstants.kTidyClangMissingFromPath) ?
-        true : false;
+        aMessages.Contains(ErrorParserConstants.kTidyClangMissingFromPath);
     }
 
     #endregion
