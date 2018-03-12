@@ -33,8 +33,16 @@ Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#> `
       , ("Exists\((.*?)\)(\s|$)"           , '(Exists($1))$2'            )`
       , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(HasTrailingSlash($1))$2'  )`
       , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'     )`
-      , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?(.+?)(`"|')\)+",
-         'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
+      <# for cases with ' or ", like: #>
+      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, 'file') #>
+      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, "file") #>
+      , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?(.+?)(`"|')\)", `
+       'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2''' )`
+      <# for cases without ' and ", like: #>
+      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, file) #>
+      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, $(file))' #>
+      , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*((|.+)?)\)\)", `
+       'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'' )' )`
                        )
 
 Set-Variable -name "kMsbuildConditionToPsRules"  -option Constant `
@@ -380,7 +388,11 @@ Test-Condition -condition    "hasTrailingSlash(`$(prop))"`
 Test-Expression -expression '"$(prop)"'
 
 $MSBuildThisFileDirectory = "C:\windows"
-Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), ''Program Files'')Program Files'
-
+Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), ''Program Files''))Program Files'
+Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), "Program Files"))Program Files'
+Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Users))Program Files'
 $whatToFind = "Program Files"
-Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), ''$(whatToFind)'')Program Files'
+Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), ''$(whatToFind)''))Program Files'
+Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), "$(whatToFind)"))Program Files'
+$whatToFind = "Users"
+Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), $(whatToFind)))Program Files'

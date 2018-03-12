@@ -149,6 +149,7 @@ Set-Variable -name kScriptFailsExitCode      -value  47                 -option 
 Set-Variable -name kExtensionVcxproj         -value ".vcxproj"          -option Constant
 Set-Variable -name kExtensionSolution        -value ".sln"              -option Constant
 Set-Variable -name kExtensionClangPch        -value ".clang.pch"        -option Constant
+Set-Variable -name kExtensionProp            -value ".props"            -option Constant
 
 # ------------------------------------------------------------------------------------------------
 # Vcxproj Related Constants
@@ -268,6 +269,19 @@ Set-Variable -name   kVs2015RegistryKey `
              -option Constant
 
 #-------------------------------------------------------------------------------------------------
+# Helpers for locating MSBuild on the computer
+
+# Default MSBuild v4.0 location
+Set-Variable -name kMSBuildCpp140Location `
+             -value "${Env:ProgramFiles(x86)}\MSBuild\Microsoft.Cpp\v4.0\V140" `
+             -option Constant
+
+# Default location of props 
+Set-Variable -name kMSBuildCpp14DefaultPropsLocation `
+             -value "$kMSBuildCpp140Location\ImportBefore\Default" `
+             -option Constant
+
+#-------------------------------------------------------------------------------------------------
 # PlatformToolset-Related Constants
 
 Set-Variable -name kDefinesUnicode   -value @("-DUNICODE"
@@ -324,8 +338,19 @@ Set-Variable -name "kMsbuildExpressionToPsRules" -option Constant         `
       , ("Exists\((.*?)\)(\s|$)"           , '(Exists($1))$2'            )`
       , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(HasTrailingSlash($1))$2'  )`
       , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'     )`
-      , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?(.+?)(`"|')\)+",
-         'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
+
+	  <# for cases with ' or ", like: #>
+      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, 'file') #>
+      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, "file") #>
+      , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?(.+?)(`"|')\)", `
+       'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2''' )`
+      <# for cases without ' and ", like: #>
+      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, file) #>
+      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, $(file))' #>
+      , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*((|.+)?)\)\)", `
+       'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'' )' )`
+
+      , ("\`$\(LOCALAPPDATA\)"                 , '$env:LOCALAPPDATA' )`
                        )
 
 Set-Variable -name "kMsbuildConditionToPsRules" -option Constant `
@@ -1608,9 +1633,13 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
    one we selected.
    This is needed so that our XPath selectors don't get confused when looking for data.
 #>
-function SanitizeProjectFile([string] $projectFilePath)
+function SanitizeProjectFile([string] $projectFilePath, [string[]] $additionalPropsFilePaths)
 {
   Write-Verbose "`nSanitizing $projectFilePath"
+  foreach ($propFilePath in $additionalPropsFilePaths )
+  {
+    Write-Verbose "`n with additional properties: $propFilePath"
+  }
 
   [xml] $fileXml = Get-Content $projectFilePath
   $global:projectFiles += @($fileXml)
@@ -1620,6 +1649,17 @@ function SanitizeProjectFile([string] $projectFilePath)
   Push-Location (Get-FileDirectory -filePath $projectFilePath)
 
   InitializeMsBuildCurrentFileProperties -filePath $projectFilePath
+
+  foreach ($propFilePath in $additionalPropsFilePaths )
+  {
+    [xml] $propFileXml = Get-Content $propFilePath
+	$import = $fileXml.CreateElement("Import")
+	$importAttrib = $fileXml.CreateAttribute("Project")
+	$importAttrib.Value = "$propFilePath"
+	$import.Attributes.Append($importAttrib)
+	$fileXml.Project.AppendChild($import)
+  }
+
   SanitizeProjectNode($fileXml.Project)
 
   Pop-Location
@@ -1656,6 +1696,17 @@ function Get-AutoPropertySheet()
 
 <#
 .DESCRIPTION
+  Returns default MSBuild property sheets
+#>
+function Get-DefaultPropeties()
+{
+  Get-ChildItem -Path $kMSBuildCpp14DefaultPropsLocation | `
+                      Where-Object { $_.Extension -eq $kExtensionProp } | `
+                      ForEach-Object { $_.FullName }
+}
+
+<#
+.DESCRIPTION
 Loads vcxproj and property sheets into memory. This needs to be called only once
 when processing a project. Accessing project nodes can be done using Select-ProjectNodes.
 #>
@@ -1667,7 +1718,9 @@ function LoadProject([string] $vcxprojPath)
 
   $global:projectFiles = @()
 
-  SanitizeProjectFile -projectFilePath $global:vcxprojPath
+  $properties = Get-DefaultPropeties
+
+  SanitizeProjectFile -projectFilePath $global:vcxprojPath -additionalPropsFilePaths $properties
 }
 
 <#
