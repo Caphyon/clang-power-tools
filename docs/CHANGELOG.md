@@ -10,7 +10,6 @@ Improvements:
 
 Bugs:
 
-* When the LLVM was not installed the custom error message was not displayed.
 * /MD and /MT project settings not propagated to clang
 
 ### Clang Power Tools 3.0.1
