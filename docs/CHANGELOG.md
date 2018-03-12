@@ -1,5 +1,17 @@
 # Version History
 
+### Clang Power Tools 3.1
+*March 12, 2018*
+
+Improvements:
+
+* Added support for [MSBuild]::GetDirectoryNameOfFileAbove.
+* Added support for clang format selection.
+
+Bugs:
+
+* When the LLVM was not installed the custom error message was not displayed.
+
 ### Clang Power Tools 3.0.1
 *March 2nd, 2018*
 
