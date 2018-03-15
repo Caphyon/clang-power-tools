@@ -20,13 +20,13 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public TaskError(string aFilePath, string aFullMessage,
-      string aMessage, int aLine, TaskErrorCategory aCategory)
+    public TaskError(string aFilePath, int aLine, 
+      TaskErrorCategory aCategory, string aDescription, string aFullMessage)
     {
       FilePath = aFilePath;
       Line = aLine;
       Category = aCategory;
-      Description = aMessage;
+      Description = aDescription;
       FullMessage = aFullMessage;
     }
 

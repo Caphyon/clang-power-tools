@@ -18,45 +18,62 @@ namespace ClangPowerTools
       Regex regex = new Regex(kCompileErrorsRegex);
       Match matchResult = regex.Match(aMessages);
       aError = null;
+
       if (!matchResult.Success)
         return false;
 
       var groups = matchResult.Groups;
-      string message = groups[9].Value;
+      string messageDescription = groups[9].Value;
 
-      if (string.IsNullOrWhiteSpace(message))
+      if (string.IsNullOrWhiteSpace(messageDescription))
         return false;
 
       string path = groups[1].Value;
       int.TryParse(groups[3].Value, out int line);
-      string category = groups[7].Value;
 
-      CategoryAndFullMessageBuilder(category, message, path, line, 
-        out TaskErrorCategory errorCategory, out string fullMessage);
+      string categoryAsString = groups[7].Value;
+      TaskErrorCategory category = FindErrorCategory(ref categoryAsString);
 
-      message = message.Insert(0, ErrorParserConstants.kClangTag);
-      aError = new TaskError(path, fullMessage, message, line, errorCategory);
+      string clangTidyChecker = groups[10].Value;
+
+      string fullMessage = CreateFullErrorMessage(path, line, categoryAsString, clangTidyChecker, messageDescription);
+
+      messageDescription = messageDescription.Insert(0, ErrorParserConstants.kClangTag); // Add clang prefix for error list
+      aError = new TaskError(path, line, category, messageDescription, fullMessage );
+
       return true;
     }
 
-    private void CategoryAndFullMessageBuilder(string aCategory, string aMessage, string aPath, 
-      int aLine, out TaskErrorCategory aErrorCategory, out string aFullMessage)
+    private TaskErrorCategory FindErrorCategory(ref string aCategoryAsString)
     {
-      switch (aCategory)
+      TaskErrorCategory category;
+
+      switch (aCategoryAsString)
       {
         case ErrorParserConstants.kErrorTag:
-          aErrorCategory = TaskErrorCategory.Error;
-          aFullMessage = $"{aPath}({aLine}): {ErrorParserConstants.kErrorTag}: {aMessage}";
+          category = TaskErrorCategory.Error;
+          aCategoryAsString = ErrorParserConstants.kErrorTag;
           break;
+
         case ErrorParserConstants.kWarningTag:
-          aErrorCategory = TaskErrorCategory.Warning;
-          aFullMessage = $"{aPath}({aLine}): {ErrorParserConstants.kWarningTag}: {aMessage}";
+          category = TaskErrorCategory.Warning;
+          aCategoryAsString = ErrorParserConstants.kWarningTag;
           break;
+
         default:
-          aErrorCategory = TaskErrorCategory.Message;
-          aFullMessage = $"{aPath}({aLine}): {ErrorParserConstants.kMessageTag}: {aMessage}";
+          category = TaskErrorCategory.Message;
+          aCategoryAsString = ErrorParserConstants.kMessageTag;
           break;
       }
+      return category;
+    }
+
+    private string CreateFullErrorMessage(string aPath, int aLine, 
+      string aCategory, string aClangTidyChecker, string aDescription)
+    {
+      return string.Format("{0}({1}): {2}{3}: {4}", aPath, aLine, aCategory,
+        (true == string.IsNullOrWhiteSpace(aClangTidyChecker) ? string.Empty : " " + aClangTidyChecker),
+        aDescription);
     }
 
     public string Format(string aMessages, string aReplacement)
