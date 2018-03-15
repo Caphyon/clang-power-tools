@@ -6,11 +6,15 @@ namespace ClangPowerTools
   {
     #region Properties
 
-    public string Message { get; set; }
-    public string FullMessage { get; set; }
     public string FilePath { get; set; }
+
     public int Line { get; set; }
+
     public TaskErrorCategory Category { get; set; }
+
+    public string FullMessage { get; set; }
+
+    public string Description { get; set; }
 
     #endregion
 
@@ -20,10 +24,10 @@ namespace ClangPowerTools
       string aMessage, int aLine, TaskErrorCategory aCategory)
     {
       FilePath = aFilePath;
-      FullMessage = aFullMessage;
-      Message = aMessage;
       Line = aLine;
       Category = aCategory;
+      Description = aMessage;
+      FullMessage = aFullMessage;
     }
 
     #endregion
