@@ -35,7 +35,7 @@ namespace ClangPowerTools
       {
         ErrorCategory = aError.Category,
         Document = aError.FilePath,
-        Text = aError.Message,
+        Text = aError.Description,
         Line = aError.Line,
         Category = TaskCategory.BuildCompile,
         Priority = TaskPriority.High
