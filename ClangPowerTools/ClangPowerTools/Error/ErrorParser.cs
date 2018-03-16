@@ -72,14 +72,14 @@ namespace ClangPowerTools
       string aCategory, string aClangTidyChecker, string aDescription)
     {
       return string.Format("{0}({1}): {2}{3}: {4}", aPath, aLine, aCategory,
-        (true == string.IsNullOrWhiteSpace(aClangTidyChecker) ? string.Empty : " " + aClangTidyChecker),
+        (true == string.IsNullOrWhiteSpace(aClangTidyChecker) ? string.Empty : $" {aClangTidyChecker.Trim(new char[] { ' ', '\n', '\r', '\t' })}"),
         aDescription);
     }
 
     public string Format(string aMessages, string aReplacement)
     {
       Regex regex = new Regex(kErrorMessageRegex);
-      return regex.Replace(aMessages, aReplacement);
+      return regex.Replace(aMessages, aReplacement, 1);
     }
 
     public bool LlvmIsMissing(string aMessages)

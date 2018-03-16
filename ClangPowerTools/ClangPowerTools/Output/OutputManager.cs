@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using System.Windows.Interop;
 using System.Windows.Threading;
 
@@ -95,14 +96,43 @@ namespace ClangPowerTools
         }
         else if (!mMissingLlvm)
         {
-          string messages = String.Join("\n", mMessagesBuffer);
+          string messages = String.Join("\n", mMessagesBuffer) + "\n";
+
+          // Find error messages from powershell script output
+          // replace them with an error message format that VS output window knows to interpret
           if (mErrorParser.FindErrors(messages, out TaskError aError))
           {
+            StringBuilder output = new StringBuilder();
+            List<TaskError> errors = new List<TaskError>();
+            errors.Add(aError);
+
             messages = mErrorParser.Format(messages, aError.FullMessage);
-            AddMessage(messages);
-            mMessagesBuffer.Clear();
-            if (null != aError)
-              mErrors.Add(aError);
+
+            string before = StringExtension.SubstringBefore(messages, aError.FullMessage);
+            string after = StringExtension.SubstringAfter(messages, aError.FullMessage);
+
+            output.Append(before + aError.FullMessage);
+            messages = after;
+
+            while (mErrorParser.FindErrors(messages, out aError))
+            {
+              errors.Add(aError);
+              messages = mErrorParser.Format(messages, aError.FullMessage);
+
+              before = StringExtension.SubstringBefore(messages, aError.FullMessage);
+              after = StringExtension.SubstringAfter(messages, aError.FullMessage);
+
+              output.Append(before + aError.FullMessage);
+              messages = after;
+            }
+
+            AddMessage(output.ToString());
+            output.Clear();
+
+            if (0 != mMessagesBuffer.Count)
+              mMessagesBuffer.Clear();
+
+            SaveErrorsMessages(errors);
           }
           else if (kBufferSize <= mMessagesBuffer.Count)
           {
@@ -132,6 +162,23 @@ namespace ClangPowerTools
         return;
       mMessagesBuffer.Add(e.Data);
       ProcessOutput(e.Data);
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private void SaveErrorsMessages(List<TaskError> aErrorCollection)
+    {
+      if (0 == aErrorCollection.Count)
+        return;
+
+      foreach (var newError in aErrorCollection)
+      {
+        if (null == newError)
+          continue;
+        mErrors.Add(newError);
+      }
     }
 
     #endregion
