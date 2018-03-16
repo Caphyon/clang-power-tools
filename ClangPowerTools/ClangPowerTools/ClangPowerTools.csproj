@@ -144,6 +144,7 @@
     <Compile Include="Convertors\ComboBoxConvertor.cs" />
     <Compile Include="Convertors\UseChecksFromConvertor.cs" />
     <Compile Include="SilentFile\SilentFileController.cs" />
+    <Compile Include="StringExtension.cs" />
     <Compile Include="Vsix.cs" />
     <Compile Include="XmlSerializer.cs" />
   </ItemGroup>
