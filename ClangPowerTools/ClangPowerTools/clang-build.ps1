@@ -648,6 +648,8 @@ Function InitializeMsBuildProjectProperties()
   [string] $projectSlnPath = Get-ProjectSolution
   [string] $projectSlnDir = Get-FileDirectory -filePath $projectSlnPath
   Set-Var -name "SolutionDir" -value $projectSlnDir
+  [string] $projectSlnName = Get-FileName -path $projectSlnPath -noext
+  Set-Var -name "SolutionName" -value $projectSlnName
 }
 
 Function Should-CompileProject([Parameter(Mandatory=$true)][string] $vcxprojPath)
