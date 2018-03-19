@@ -79,6 +79,9 @@ namespace ClangPowerTools
     {
       try
       {
+        DTEObj.StatusBar.Text = aCommandName + " started...";
+        DTEObj.StatusBar.Animate(true, vsStatusAnimation.vsStatusAnimationBuild);
+
         mCompileTidyScriptBuilder = new ClangCompileTidyScript();
         mCompileTidyScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
           mTidyCustomChecks, aClangFormat, DTEObj, VsEdition, VsVersion);
@@ -118,6 +121,11 @@ namespace ClangPowerTools
       {
         mOutputManager.Show();
         mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
+      }
+      finally
+      {
+        DTEObj.StatusBar.Clear();
+        DTEObj.StatusBar.Animate(false, vsStatusAnimation.vsStatusAnimationBuild);
       }
     }
 
