@@ -557,8 +557,7 @@ Function Get-SourceDirectory()
 function Load-Solutions()
 {
    Write-Verbose "Scanning for solution files"
-   $slns = Get-ChildItem -recurse -LiteralPath "$aSolutionsPath" `
-           | Where-Object { $_.Extension -eq $kExtensionSolution }
+   $slns = Get-ChildItem -recurse -LiteralPath "$aSolutionsPath" -Filter "*$kExtensionSolution"
    foreach ($sln in $slns)
    {
      $slnPath = $sln.FullName
