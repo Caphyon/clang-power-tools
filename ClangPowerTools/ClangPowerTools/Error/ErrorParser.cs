@@ -7,7 +7,7 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private const string kCompileErrorsRegex = @"(.\:\\[ \S+\\\/.]*[c|C|h|H|cpp|CPP|cc|CC|cxx|CXX|c++|C++|cp|CP])(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*(error|note|warning)[^s](\r\n|\r|\n| |:)*(?<=[:|\r\n|\r|\n| ])(.*?)(?=[\[|\r\n|\r|\n])(.*)";
+    private const string kErrorMessageRegex = @"(.\:\\[ \S+\\\/.]*[c|C|h|H|cpp|CPP|cc|CC|cxx|CXX|c++|C++|cp|CP])(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*(error|note|warning)[^s](\r\n|\r|\n| |:)*(?<=[:|\r\n|\r|\n| ])(.*?)(?=[\[|\r\n|\r|\n])(.*)";
 
     #endregion
 
@@ -15,7 +15,7 @@ namespace ClangPowerTools
 
     public bool FindErrors(string aMessages, out TaskError aError)
     {
-      Regex regex = new Regex(kCompileErrorsRegex);
+      Regex regex = new Regex(kErrorMessageRegex);
       Match matchResult = regex.Match(aMessages);
       aError = null;
 
@@ -72,14 +72,14 @@ namespace ClangPowerTools
       string aCategory, string aClangTidyChecker, string aDescription)
     {
       return string.Format("{0}({1}): {2}{3}: {4}", aPath, aLine, aCategory,
-        (true == string.IsNullOrWhiteSpace(aClangTidyChecker) ? string.Empty : " " + aClangTidyChecker),
+        (true == string.IsNullOrWhiteSpace(aClangTidyChecker) ? string.Empty : $" {aClangTidyChecker.Trim(new char[] { ' ', '\n', '\r', '\t' })}"),
         aDescription);
     }
 
     public string Format(string aMessages, string aReplacement)
     {
-      Regex regex = new Regex(kCompileErrorsRegex);
-      return regex.Replace(aMessages, aReplacement);
+      Regex regex = new Regex(kErrorMessageRegex);
+      return regex.Replace(aMessages, aReplacement, 1);
     }
 
     public bool LlvmIsMissing(string aMessages)
