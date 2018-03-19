@@ -1107,12 +1107,19 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
                                                             -NoNewWindow `
                                                             -Wait `
                                                             -PassThru
-  if ($processInfo.ExitCode -ne 0)
+  if (($processInfo.ExitCode -ne 0) -and (!$aContinueOnError))
   {
     Fail-Script "Errors encountered during PCH creation"
   }
 
-  return $stdafxPch
+  if (Test-Path $stdafxPch)
+  {
+    return $stdafxPch
+  }
+  else
+  {
+    return ""
+  }
 }
 
 function HasTrailingSlash([Parameter(Mandatory=$true)][string] $str)
@@ -2103,6 +2110,12 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
                                 -includeDirectories $includeDirectories `
                                 -additionalIncludeDirectories $additionalIncludeDirectories
     Write-Verbose "PCH: $pchFilePath"
+    if ([string]::IsNullOrEmpty($pchFilePath) -and $aContinueOnError)
+    {
+      Write-Output "Skipping project. Reason: cannot create PCH."
+      Clear-Vars
+      return
+    }
   }
 
   #-----------------------------------------------------------------------------------------------
