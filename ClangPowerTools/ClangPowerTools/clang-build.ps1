@@ -1016,19 +1016,55 @@ Function Get-PchCppIncludeHeader([Parameter(Mandatory=$true)][string] $pchCppFil
 .DESCRIPTION
   Retrieve directory in which stdafx.h resides
 #>
-Function Get-ProjectStdafxDir([Parameter(Mandatory=$true)][string] $pchHeaderName)
+Function Get-ProjectStdafxDir( [Parameter(Mandatory=$true)] [string]   $pchHeaderName
+                             , [Parameter(Mandatory=$true)] [string[]] $includeDirectories
+                             , [Parameter(Mandatory=$true)] [string[]] $additionalIncludeDirectories
+                             )
 {
+  [string] $stdafxPath = ""
+
   [string[]] $projectHeaders = Get-ProjectHeaders
-  [string] $stdafxPath = $projectHeaders | Where-Object { (Get-FileName -path $_) -cmatch $pchHeaderName }
-  if ([string]::IsNullOrEmpty($stdafxPath))
+  if ($projectHeaders.Count -gt 0)
   {
-    $stdafxPath = Canonize-Path -base $ProjectDir `
-                                -child $pchHeaderName
+    # we need to use only backslashes so that we can match against file header paths
+    $pchHeaderName = $pchHeaderName.Replace("/", "\")
+
+    $stdafxPath = $projectHeaders | Where-Object { $_.EndsWith($pchHeaderName) }
   }
 
-  [string] $stdafxDir = Get-FileDirectory($stdafxPath)
+  if ([string]::IsNullOrEmpty($stdafxPath))
+  {
+    [string[]] $searchPool = @($ProjectDir);
+    if ($includeDirectories.Count -gt 0)
+    {
+      $searchPool += $includeDirectories
+    }
+    if ($additionalIncludeDirectories.Count -gt 0)
+    {
+      $searchPool += $additionalIncludeDirectories
+    }
 
-  return $stdafxDir
+    foreach ($dir in $searchPool)
+    {
+      [string] $stdafxPath = Canonize-Path -base $dir            `
+                                           -child $pchHeaderName `
+                                           -ignoreErrors
+      if (![string]::IsNullOrEmpty($stdafxPath))
+      {
+        break
+      }
+    }
+  }
+
+  if ([string]::IsNullOrEmpty($stdafxPath))
+  {
+    return ""
+  }
+  else
+  {
+    [string] $stdafxDir = Get-FileDirectory($stdafxPath)
+    return $stdafxDir
+  }
 }
 
 <#
@@ -2016,39 +2052,6 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   Write-Verbose "Force includes: $forceIncludeFiles"
 
   #-----------------------------------------------------------------------------------------------
-  # LOCATE STDAFX.H DIRECTORY
-
-  [string] $stdafxCpp    = Get-Project-PchCpp
-  [string] $stdafxDir    = ""
-  [string] $stdafxHeader = ""
-
-  if (![string]::IsNullOrEmpty($stdafxCpp))
-  {
-    Write-Verbose "PCH cpp name: $stdafxCpp"
-
-    if ($forceIncludeFiles.Count -gt 0)
-    {
-      $stdafxHeader = $forceIncludeFiles[0]
-    }
-    else
-    {
-      $stdafxHeader = Get-PchCppIncludeHeader -pchCppFile $stdafxCpp
-    }
-
-    Write-Verbose "PCH header name: $stdafxHeader"
-    $stdafxDir = Get-ProjectStdafxDir -pchHeaderName $stdafxHeader
-  }
-
-  if ([string]::IsNullOrEmpty($stdafxDir))
-  {
-    Write-Verbose ("PCH not enabled for this project!")
-  }
-  else
-  {
-    Write-Verbose ("PCH directory: $stdafxDir")
-  }
-
-  #-----------------------------------------------------------------------------------------------
   # DETECT PROJECT PREPROCESSOR DEFINITIONS
 
   [string[]] $preprocessorDefinitions = Get-ProjectPreprocessorDefines
@@ -2081,6 +2084,41 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   [string[]] $includeDirectories = Get-ProjectIncludeDirectories -stdafxDir $stdafxDir
   Write-Verbose-Array -array $includeDirectories -name "Include directories"
+
+  #-----------------------------------------------------------------------------------------------
+  # LOCATE STDAFX.H DIRECTORY
+
+  [string] $stdafxCpp    = Get-Project-PchCpp
+  [string] $stdafxDir    = ""
+  [string] $stdafxHeader = ""
+
+  if (![string]::IsNullOrEmpty($stdafxCpp))
+  {
+    Write-Verbose "PCH cpp name: $stdafxCpp"
+
+    if ($forceIncludeFiles.Count -gt 0)
+    {
+      $stdafxHeader = $forceIncludeFiles[0]
+    }
+    else
+    {
+      $stdafxHeader = Get-PchCppIncludeHeader -pchCppFile $stdafxCpp
+    }
+
+    Write-Verbose "PCH header name: $stdafxHeader"
+    $stdafxDir = Get-ProjectStdafxDir -pchHeaderName                $stdafxHeader       `
+                                      -includeDirectories           $includeDirectories `
+                                      -additionalIncludeDirectories $additionalIncludeDirectories
+  }
+
+  if ([string]::IsNullOrEmpty($stdafxDir))
+  {
+    Write-Verbose ("PCH not enabled for this project!")
+  }
+  else
+  {
+    Write-Verbose ("PCH directory: $stdafxDir")
+  }
 
   #-----------------------------------------------------------------------------------------------
   # FIND LIST OF CPPs TO PROCESS
