@@ -1,10 +1,9 @@
 ﻿using EnvDTE80;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using System.Windows.Interop;
-using System.Windows.Threading;
 
 namespace ClangPowerTools
 {
@@ -39,6 +38,8 @@ namespace ClangPowerTools
     public bool HasErrors => 0 != mErrors.Count;
 
     public List<string> PCHPaths => mPCHPaths;
+
+    public IVsHierarchy Hierarchy { get; set; }
 
     #endregion
 
@@ -105,6 +106,7 @@ namespace ClangPowerTools
           // replace them with an error message format that VS output window knows to interpret
           if (mErrorParser.FindErrors(messages, out TaskError aError))
           {
+            aError.HierarchyItem = Hierarchy;
             StringBuilder output = new StringBuilder();
             List<TaskError> errors = new List<TaskError>();
             errors.Add(aError);
@@ -119,6 +121,7 @@ namespace ClangPowerTools
 
             while (mErrorParser.FindErrors(messages, out aError))
             {
+              aError.HierarchyItem = Hierarchy;
               errors.Add(aError);
               messages = mErrorParser.Format(messages, aError.FullMessage);
 
