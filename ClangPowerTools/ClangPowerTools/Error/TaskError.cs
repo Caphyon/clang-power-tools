@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools
 {
@@ -15,6 +16,8 @@ namespace ClangPowerTools
     public string FullMessage { get; set; }
 
     public string Description { get; set; }
+
+    public IVsHierarchy HierarchyItem { get; set; }
 
     #endregion
 
