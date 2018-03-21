@@ -36,6 +36,25 @@ namespace ClangPowerTools
         hierarchy : null;
     }
 
+    public static IVsHierarchy GetItemHierarchy(IServiceProvider aServiceProvider, IItem aItem)
+    {
+      Project project = null;
+      if (aItem is SelectedProjectItem)
+      {
+        var projectItem = aItem.GetObject() as ProjectItem;
+        project = projectItem.ContainingProject;
+      }
+      else if (aItem is SelectedProject)
+      {
+        project = aItem.GetObject() as Project;
+      }
+      if (project != null)
+      {
+        return GetProjectHierarchy(aServiceProvider, project);
+      }
+      return null;
+    }
+
     public static void SaveDirtyProjects(IServiceProvider aServiceProvider, Solution aSolution)
     {
       var projects = GetAllProjects(aServiceProvider, aSolution);
