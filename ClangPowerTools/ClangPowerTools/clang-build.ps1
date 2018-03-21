@@ -1599,7 +1599,10 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
 
   if ($node.Name -ieq "ItemGroup" -and $node.GetAttribute("Label") -ieq "ProjectConfigurations")
   {
-    Detect-ProjectDefaultConfigPlatform $node.ChildNodes[0].GetAttribute("Include")
+    [System.Xml.XmlElement] $firstChild =  $node.ChildNodes                                     | `
+                                           Where-Object { $_.GetType().Name -ieq "XmlElement" } | `
+                                           Select-Object -First 1
+    Detect-ProjectDefaultConfigPlatform $firstChild.GetAttribute("Include")
   }
 
   if ($node.ParentNode.Name -ieq "PropertyGroup")
