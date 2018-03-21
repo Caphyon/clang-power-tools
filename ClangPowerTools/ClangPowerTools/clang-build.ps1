@@ -465,6 +465,11 @@ Function Exists-Command([Parameter(Mandatory=$true)][string] $command)
   }
 }
 
+Function Remove-PathTrailingSlash([Parameter(Mandatory=$true)][string] $path)
+{
+  return $path -replace '\\$', ''
+}
+
 Function Get-FileDirectory([Parameter(Mandatory=$true)][string] $filePath)
 {
   return ([System.IO.Path]::GetDirectoryName($filePath) + "\")
@@ -875,7 +880,7 @@ Function Get-VisualStudio-Path()
   }
 }
 
-Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$false)][string] $stdafxDir)
+Function Get-ProjectIncludeDirectories()
 {
   [string[]] $returnArray = ($IncludePath -split ";")                                                         | `
                             Where-Object { ![string]::IsNullOrWhiteSpace($_) }                                | `
@@ -980,12 +985,7 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$false)][string] $st
     }
   }
 
-  if (![string]::IsNullOrEmpty($stdafxDir))
-  {
-    $returnArray = @($stdafxDir) + $returnArray
-  }
-
-  return ( $returnArray | ForEach-Object { $_ -replace '\\$', '' } )
+  return ( $returnArray | ForEach-Object { Remove-PathTrailingSlash -path $_ } )
 }
 
 Function Get-Projects()
@@ -2093,7 +2093,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   [string[]] $additionalIncludeDirectories = Get-ProjectAdditionalIncludes
   Write-Verbose-Array -array $additionalIncludeDirectories -name "Additional include directories"
 
-  [string[]] $includeDirectories = Get-ProjectIncludeDirectories -stdafxDir $stdafxDir
+  [string[]] $includeDirectories = Get-ProjectIncludeDirectories
   Write-Verbose-Array -array $includeDirectories -name "Include directories"
 
   #-----------------------------------------------------------------------------------------------
@@ -2129,6 +2129,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   else
   {
     Write-Verbose ("PCH directory: $stdafxDir")
+    $includeDirectories = @(Remove-PathTrailingSlash -path $stdafxDir) + $includeDirectories
   }
 
   #-----------------------------------------------------------------------------------------------
