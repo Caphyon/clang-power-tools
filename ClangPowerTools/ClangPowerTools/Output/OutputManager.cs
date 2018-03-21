@@ -13,7 +13,6 @@ namespace ClangPowerTools
     #region Members
 
     private DTE2 mDte = null;
-    private Dispatcher mDispatcher;
 
     private int kBufferSize = 5;
     private List<string> mMessagesBuffer = new List<string>();
@@ -48,7 +47,6 @@ namespace ClangPowerTools
     public OutputManager(DTE2 aDte)
     {
       mDte = aDte;
-      mDispatcher = HwndSource.FromHwnd((IntPtr)mDte.MainWindow.HWnd).RootVisual.Dispatcher;
     }
 
     #endregion
@@ -59,17 +57,22 @@ namespace ClangPowerTools
     {
       using (OutputWindow outputWindow = new OutputWindow(mDte))
       {
-        mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+        DispatcherHandler.BeginInvoke(() =>
         {
           outputWindow.Clear();
-        }));
+        });
       }
     }
 
     public void Show()
     {
       using (OutputWindow outputWindow = new OutputWindow(mDte))
-        outputWindow.Show(mDte);
+      {
+        DispatcherHandler.BeginInvoke(() =>
+        {
+          outputWindow.Show(mDte);
+        });
+      }
     }
 
     public void AddMessage(string aMessage)
@@ -79,10 +82,10 @@ namespace ClangPowerTools
 
       using (OutputWindow outputWindow = new OutputWindow(mDte))
       {
-        mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+        DispatcherHandler.BeginInvoke(() =>
         {
           outputWindow.Write(aMessage);
-        }));
+        });
       }
     }
 

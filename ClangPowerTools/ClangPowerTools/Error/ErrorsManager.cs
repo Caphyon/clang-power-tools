@@ -11,17 +11,16 @@ namespace ClangPowerTools
     #region Members
 
     private static ErrorWindow mErrorWindow = new ErrorWindow();
-    private Dispatcher mDispatcher;
-
+    
     #endregion
 
     #region Constructor
 
-    public ErrorsManager(IServiceProvider aServiceProvider, DTE2 aDte)
+    public ErrorsManager(IServiceProvider aServiceProvider)
     {
       mErrorWindow.Initialize(aServiceProvider);
-      mDispatcher = HwndSource.FromHwnd((IntPtr)aDte.MainWindow.HWnd).RootVisual.Dispatcher;
     }
+
     #endregion
 
     #region Public Methods
@@ -32,14 +31,14 @@ namespace ClangPowerTools
         mErrorWindow.AddError(aError);
     }
 
-    public DispatcherOperation AddErrors(IEnumerable<TaskError> aErrors)
+    public void AddErrors(IEnumerable<TaskError> aErrors)
     {
-      return mDispatcher.BeginInvoke(DispatcherPriority.Send, new Action(() =>
+      DispatcherHandler.BeginInvoke(() =>
       {
         foreach (TaskError error in aErrors)
           mErrorWindow.AddError(error);
         mErrorWindow.Show();
-      }));
+      });
     }
 
     public void Clear() => mErrorWindow.Clear();

@@ -12,7 +12,6 @@ namespace ClangPowerTools
     #region Members
 
     private IServiceProvider mServiceProvider;
-    private Dispatcher mDispatcher;
     private DTE2 mDte;
     //private ClangFormatPage mClangFormatPage;
     private Package mPackage;
@@ -25,7 +24,6 @@ namespace ClangPowerTools
     {
       mDte = aDte;
       mServiceProvider = aServiceProvider;
-      mDispatcher = HwndSource.FromHwnd((IntPtr)mDte.MainWindow.HWnd).RootVisual.Dispatcher;
     }
 
     #endregion
@@ -41,15 +39,15 @@ namespace ClangPowerTools
 
     public void AfterExecute()
     {
-      mDispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+      DispatcherHandler.Invoke(() =>
       {
         Running = false;
-      }));
+      });
     }
 
     public void QueryCommandHandler(object sender, EventArgs e)
     {
-      mDispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+      DispatcherHandler.Invoke(() =>
       {
         //var itemsCollector = new ItemsCollector(mPackage);
         //itemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));
@@ -74,14 +72,14 @@ namespace ClangPowerTools
           command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !Running : Running;
           command.Visible = true;
         }
-
-      }));
+      });
+     
     }
 
     public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action)
     {
       VsBuildRunning = true;
-      ErrorsManager errorsManager = new ErrorsManager(mServiceProvider, mDte);
+      ErrorsManager errorsManager = new ErrorsManager(mServiceProvider);
       errorsManager.Clear();
     }
 
