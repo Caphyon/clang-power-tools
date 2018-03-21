@@ -79,8 +79,7 @@ namespace ClangPowerTools
     {
       try
       {
-        DTEObj.StatusBar.Text = aCommandName + " started...";
-        DTEObj.StatusBar.Animate(true, vsStatusAnimation.vsStatusAnimationBuild);
+        StatusBarHandler.Status(true, aCommandName + " started...", vsStatusAnimation.vsStatusAnimationBuild);
 
         mCompileTidyScriptBuilder = new ClangCompileTidyScript();
         mCompileTidyScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
@@ -124,6 +123,8 @@ namespace ClangPowerTools
       }
       finally
       {
+        StatusBarHandler.Status(false, aCommandName + " finished...", vsStatusAnimation.vsStatusAnimationBuild);
+
         DTEObj.StatusBar.Clear();
         DTEObj.StatusBar.Animate(false, vsStatusAnimation.vsStatusAnimationBuild);
       }
