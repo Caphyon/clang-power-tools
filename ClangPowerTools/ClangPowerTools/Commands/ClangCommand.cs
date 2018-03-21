@@ -56,7 +56,7 @@ namespace ClangPowerTools
       if (null == mCommandsController)
         mCommandsController = aCommandsController;
 
-      mErrorsManager = new ErrorsManager(Package, DTEObj);
+      mErrorsManager = new ErrorsManager(Package);
       mGeneralOptions = (GeneralOptions)Package.GetDialogPage(typeof(GeneralOptions));
     }
 
