@@ -1007,9 +1007,17 @@ Function Get-Projects()
 Function Get-PchCppIncludeHeader([Parameter(Mandatory=$true)][string] $pchCppFile)
 {
   [string] $cppPath = Canonize-Path -base $ProjectDir -child $pchCppFile
-  [string] $fileContent = Get-Content -path $cppPath
 
-  return [regex]::match($fileContent,'#include "(\S+)"').Groups[1].Value
+  [string[]] $fileLines = Get-Content -path $cppPath
+  foreach ($line in $fileLines)
+  {
+    $regexMatch = [regex]::match($line,'^\s*#include\s+"(\S+)"')
+    if ($regexMatch.Success)
+    {
+      return $regexMatch.Groups[1].Value
+    }
+  }
+  return ""
 }
 
 <#
