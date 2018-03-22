@@ -42,14 +42,14 @@ namespace ClangPowerTools.Script
     }
 
     public void ConstructParameters(GeneralOptions aGeneralOptions, TidyOptions aTidyOptions, TidyChecks aTidyChecks, 
-      TidyCustomChecks aTidyCustomChecks, ClangFormatPage aClangFormat, DTE2 aDTEObj, string aVsEdition, string aVsVersion)
+      TidyCustomChecks aTidyCustomChecks, ClangFormatOptionsView aClangFormatView, DTE2 aDTEObj, string aVsEdition, string aVsVersion)
     {
       mParameters = GetGeneralParameters(aGeneralOptions);
       mParameters = null != aTidyOptions ?
         $"{mParameters} {GetTidyParameters(aTidyOptions, aTidyChecks, aTidyCustomChecks)}" : $"{mParameters} {ScriptConstants.kParallel}";
 
-      if (null != aClangFormat && null != aTidyOptions && true == aTidyOptions.Fix && true == aTidyOptions.FormatAfterTidy)
-        mParameters = $"{mParameters} {ScriptConstants.kClangFormatStyle} {GetClangFormatParameters(aClangFormat)}";
+      if (null != aClangFormatView && null != aTidyOptions && true == aTidyOptions.Fix && true == aTidyOptions.FormatAfterTidy)
+        mParameters = $"{mParameters} {ScriptConstants.kClangFormatStyle} {GetClangFormatParameters(aClangFormatView)}";
 
       mParameters = $"{mParameters} {ScriptConstants.kVsVersion} {aVsVersion} {ScriptConstants.kVsEdition} {aVsEdition}";
     }
@@ -141,12 +141,12 @@ namespace ClangPowerTools.Script
       return parameters;
     }
 
-    private string GetClangFormatParameters(ClangFormatPage aClangFormat)
+    private string GetClangFormatParameters(ClangFormatOptionsView aClangFormatView)
     {
-      if (true == string.IsNullOrWhiteSpace(aClangFormat.Style))
+      if (true == string.IsNullOrWhiteSpace(aClangFormatView.Style))
         return string.Empty;
 
-      return aClangFormat.Style;
+      return aClangFormatView.Style;
     }
 
     #endregion
