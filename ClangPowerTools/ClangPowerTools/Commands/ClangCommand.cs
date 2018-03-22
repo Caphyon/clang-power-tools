@@ -89,6 +89,9 @@ namespace ClangPowerTools
         InitPowerShell();
         ClearWindows();
         mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
+
+        StatusBarHandler.Status(aCommandName + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
+
         foreach (var item in mItemsCollector.GetItems)
         {
           var script = mCompileTidyScriptBuilder.GetScript(item, solutionPath);
@@ -118,6 +121,10 @@ namespace ClangPowerTools
       {
         mOutputManager.Show();
         mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
+      }
+      finally
+      {
+        StatusBarHandler.Status(aCommandName + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
       }
     }
 

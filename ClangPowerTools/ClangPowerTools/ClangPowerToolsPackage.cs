@@ -198,6 +198,7 @@ namespace ClangPowerTools
           mStopClangCmd = new StopClang(this, CommandSet, CommandIds.kStopClang, mCommandsController);
 
         DispatcherHandler.Initialize(dte);
+        StatusBarHandler.Initialize(this);
 
         var generalOptions = (GeneralOptions)this.GetDialogPage(typeof(GeneralOptions));
         var currentVersion = GetPackageVersion();
