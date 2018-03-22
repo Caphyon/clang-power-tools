@@ -17,7 +17,7 @@ namespace ClangPowerTools
     #region Members
 
     private TidyOptions mTidyOptions;
-    private TidyChecks mTidyChecks;
+    private ClangTidyChecksOptionsView mTidyChecks;
     private TidyCustomChecks mTidyCustomChecks;
     private ClangFormatOptionsView mClangFormatView;
 
@@ -41,7 +41,7 @@ namespace ClangPowerTools
       : base(aCommandsController, aPackage, aGuid, aId)
     {
       mTidyOptions = (TidyOptions)Package.GetDialogPage(typeof(TidyOptions));
-      mTidyChecks = (TidyChecks)Package.GetDialogPage(typeof(TidyChecks));
+      mTidyChecks = (ClangTidyChecksOptionsView)Package.GetDialogPage(typeof(ClangTidyChecksOptionsView));
       mTidyCustomChecks = (TidyCustomChecks)Package.GetDialogPage(typeof(TidyCustomChecks));
       mClangFormatView = (ClangFormatOptionsView)Package.GetDialogPage(typeof(ClangFormatOptionsView));
 

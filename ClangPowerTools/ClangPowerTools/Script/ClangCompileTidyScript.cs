@@ -41,7 +41,7 @@ namespace ClangPowerTools.Script
       return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{aSolutionPath}'' {ScriptConstants.kLiteral}'";
     }
 
-    public void ConstructParameters(ClangGeneralOptionsView aGeneralOptions, TidyOptions aTidyOptions, TidyChecks aTidyChecks, 
+    public void ConstructParameters(ClangGeneralOptionsView aGeneralOptions, TidyOptions aTidyOptions, ClangTidyChecksOptionsView aTidyChecks, 
       TidyCustomChecks aTidyCustomChecks, ClangFormatOptionsView aClangFormatView, DTE2 aDTEObj, string aVsEdition, string aVsVersion)
     {
       mParameters = GetGeneralParameters(aGeneralOptions);
@@ -90,7 +90,7 @@ namespace ClangPowerTools.Script
       return $"{parameters}";
     }
 
-    private string GetTidyParameters(TidyOptions aTidyOptions, TidyChecks aTidyChecks, TidyCustomChecks aTidyCustomChecks)
+    private string GetTidyParameters(TidyOptions aTidyOptions, ClangTidyChecksOptionsView aTidyChecks, TidyCustomChecks aTidyCustomChecks)
     {
       string parameters = string.Empty;
 

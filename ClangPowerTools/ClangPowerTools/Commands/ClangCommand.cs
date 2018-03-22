@@ -75,7 +75,7 @@ namespace ClangPowerTools
     #region Protected methods
 
     protected void RunScript(string aCommandName, TidyOptions mTidyOptions = null,
-      TidyChecks mTidyChecks = null, TidyCustomChecks mTidyCustomChecks = null, ClangFormatOptionsView aClangFormatView = null)
+      ClangTidyChecksOptionsView mTidyChecks = null, TidyCustomChecks mTidyCustomChecks = null, ClangFormatOptionsView aClangFormatView = null)
     {
       try
       {
