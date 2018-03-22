@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace ClangPowerTools
 {
   [Serializable]
-  public class TidyOptions : ConfigurationPage<ClangTidyOptions>
+  public class ClangTidyOptionsView : ConfigurationPage<ClangTidyOptions>
   {
     #region Members
 

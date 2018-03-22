@@ -16,10 +16,10 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private TidyOptions mTidyOptions;
-    private TidyChecks mTidyChecks;
-    private TidyCustomChecks mTidyCustomChecks;
-    private ClangFormatPage mClangFormat;
+    private ClangTidyOptionsView mTidyOptions;
+    private ClangTidyChecksOptionsView mTidyChecks;
+    private ClangTidyCustomChecksOptionsView mTidyCustomChecks;
+    private ClangFormatOptionsView mClangFormatView;
 
     private FileChangerWatcher mFileWatcher;
     private FileOpener mFileOpener;
@@ -40,10 +40,10 @@ namespace ClangPowerTools
     public TidyCommand(Package aPackage, Guid aGuid, int aId, CommandsController aCommandsController) 
       : base(aCommandsController, aPackage, aGuid, aId)
     {
-      mTidyOptions = (TidyOptions)Package.GetDialogPage(typeof(TidyOptions));
-      mTidyChecks = (TidyChecks)Package.GetDialogPage(typeof(TidyChecks));
-      mTidyCustomChecks = (TidyCustomChecks)Package.GetDialogPage(typeof(TidyCustomChecks));
-      mClangFormat = (ClangFormatPage)Package.GetDialogPage(typeof(ClangFormatPage));
+      mTidyOptions = (ClangTidyOptionsView)Package.GetDialogPage(typeof(ClangTidyOptionsView));
+      mTidyChecks = (ClangTidyChecksOptionsView)Package.GetDialogPage(typeof(ClangTidyChecksOptionsView));
+      mTidyCustomChecks = (ClangTidyCustomChecksOptionsView)Package.GetDialogPage(typeof(ClangTidyCustomChecksOptionsView));
+      mClangFormatView = (ClangFormatOptionsView)Package.GetDialogPage(typeof(ClangFormatOptionsView));
 
       mFileOpener = new FileOpener(DTEObj);
 
@@ -130,7 +130,7 @@ namespace ClangPowerTools
               silentFileController.SilentFiles(Package, guard, filesPath);
               silentFileController.SilentOpenFiles(Package, guard, DTEObj);
             }
-            RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mTidyChecks, mTidyCustomChecks, mClangFormat);
+            RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mTidyChecks, mTidyCustomChecks, mClangFormatView);
           }
         }
         catch (Exception exception)

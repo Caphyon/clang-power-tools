@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace ClangPowerTools.DialogPages
 {
-  public class ClangFormatPage : ConfigurationPage<ClangFormatOptions>
+  public class ClangFormatOptionsView : ConfigurationPage<ClangFormatOptions>
   {
     #region Members
 
@@ -109,10 +109,10 @@ namespace ClangPowerTools.DialogPages
 
     #endregion
 
-    public ClangFormatPage Clone()
+    public ClangFormatOptionsView Clone()
     {
       // Use MemberwiseClone to copy value types.
-      var clone = (ClangFormatPage)MemberwiseClone();
+      var clone = (ClangFormatOptionsView)MemberwiseClone();
       return clone;
     }
 

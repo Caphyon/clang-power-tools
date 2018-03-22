@@ -18,7 +18,7 @@ namespace ClangPowerTools
     protected static RunningProcesses mRunningProcesses = new RunningProcesses();
     protected List<string> mDirectoriesPath = new List<string>();
     protected static OutputManager mOutputManager;
-    protected GeneralOptions mGeneralOptions;
+    protected ClangGeneralOptionsView mGeneralOptions;
     private Commands2 mCommand;
 
     private ErrorsManager mErrorsManager;
@@ -57,7 +57,7 @@ namespace ClangPowerTools
         mCommandsController = aCommandsController;
 
       mErrorsManager = new ErrorsManager(Package);
-      mGeneralOptions = (GeneralOptions)Package.GetDialogPage(typeof(GeneralOptions));
+      mGeneralOptions = (ClangGeneralOptionsView)Package.GetDialogPage(typeof(ClangGeneralOptionsView));
     }
 
     #endregion
@@ -74,14 +74,14 @@ namespace ClangPowerTools
 
     #region Protected methods
 
-    protected void RunScript(string aCommandName, TidyOptions mTidyOptions = null,
-      TidyChecks mTidyChecks = null, TidyCustomChecks mTidyCustomChecks = null, ClangFormatPage aClangFormat = null)
+    protected void RunScript(string aCommandName, ClangTidyOptionsView mTidyOptions = null,
+      ClangTidyChecksOptionsView mTidyChecks = null, ClangTidyCustomChecksOptionsView mTidyCustomChecks = null, ClangFormatOptionsView aClangFormatView = null)
     {
       try
       {
         mCompileTidyScriptBuilder = new ClangCompileTidyScript();
         mCompileTidyScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
-          mTidyCustomChecks, aClangFormat, DTEObj, VsEdition, VsVersion);
+          mTidyCustomChecks, aClangFormatView, DTEObj, VsEdition, VsVersion);
 
         string solutionPath = DTEObj.Solution.FullName;
 
