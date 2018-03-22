@@ -99,34 +99,22 @@ namespace ClangPowerTools
         }
         else if (!mMissingLlvm)
         {
-          string messages = String.Join("\n", mMessagesBuffer) + "\n";
+          string text = String.Join("\n", mMessagesBuffer) + "\n";
 
           // Find error messages from powershell script output
           // replace them with an error message format that VS output window knows to interpret
-          if (mErrorParser.FindErrors(messages, out TaskError aError))
+          if (mErrorParser.FindErrors(text, out TaskError aError))
           {
-            StringBuilder output = new StringBuilder();
             List<TaskError> errors = new List<TaskError>();
             errors.Add(aError);
 
-            messages = mErrorParser.Format(messages, aError.FullMessage);
+            StringBuilder output = new StringBuilder(
+              GetOutput(ref text, aError.FullMessage ));
 
-            string before = StringExtension.SubstringBefore(messages, aError.FullMessage);
-            string after = StringExtension.SubstringAfter(messages, aError.FullMessage);
-
-            output.Append(before + aError.FullMessage);
-            messages = after;
-
-            while (mErrorParser.FindErrors(messages, out aError))
+            while (mErrorParser.FindErrors(text, out aError))
             {
               errors.Add(aError);
-              messages = mErrorParser.Format(messages, aError.FullMessage);
-
-              before = StringExtension.SubstringBefore(messages, aError.FullMessage);
-              after = StringExtension.SubstringAfter(messages, aError.FullMessage);
-
-              output.Append(before + aError.FullMessage);
-              messages = after;
+              output.Append(GetOutput(ref text, aError.FullMessage));
             }
 
             AddMessage(output.ToString());
@@ -182,6 +170,23 @@ namespace ClangPowerTools
           continue;
         mErrors.Add(newError);
       }
+    }
+
+    private string GetOutput(ref string aText, string aSearchedSubstring)
+    {
+      aText = mErrorParser.Format(aText, aSearchedSubstring);
+
+      GetBeforeAndAfterSubstrings(aText, aSearchedSubstring,
+        out string substringBefore, out string substringAfter);
+
+      aText = substringAfter;
+      return substringBefore + aSearchedSubstring;
+    }
+
+    private void GetBeforeAndAfterSubstrings(string aText, string aSearchedSubstring, out string aTextBefore, out string aTextAfter)
+    {
+      aTextBefore = StringExtension.SubstringBefore(aText, aSearchedSubstring);
+      aTextAfter = StringExtension.SubstringAfter(aText, aSearchedSubstring);
     }
 
     #endregion
