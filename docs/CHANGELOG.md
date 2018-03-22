@@ -14,9 +14,9 @@ Bugs:
 * Consecutive error messages couldn't be detected. 
 * Did not work on Visual Studio 2017 Update 2 because vswhere does not support the -prerelease switch.
 * Did not work when stdafx.cpp contained commented #include lines.
-* Couldn't detect default Configuration Platform if comment nodes were present in the <ItemGroup> XML element.
+* Couldn't detect default Configuration Platform if comment nodes were present in the `<ItemGroup>` XML element.
 * PCH header couldn't be detected when in a different physical location than that of PCH cpp.
-* PCH header couldn't be detected if not present in project <ClInclude> XML element.
+* PCH header couldn't be detected if not present in project `<ClInclude>` XML element.
 * Compilation stopped on PCH-creation errors even if -continue switch was present.
 
 ### Clang Power Tools 3.1
