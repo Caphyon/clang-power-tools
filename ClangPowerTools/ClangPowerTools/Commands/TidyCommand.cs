@@ -18,7 +18,7 @@ namespace ClangPowerTools
 
     private TidyOptions mTidyOptions;
     private ClangTidyChecksOptionsView mTidyChecks;
-    private TidyCustomChecks mTidyCustomChecks;
+    private ClangTidyCustomChecksOptionsView mTidyCustomChecks;
     private ClangFormatOptionsView mClangFormatView;
 
     private FileChangerWatcher mFileWatcher;
@@ -42,7 +42,7 @@ namespace ClangPowerTools
     {
       mTidyOptions = (TidyOptions)Package.GetDialogPage(typeof(TidyOptions));
       mTidyChecks = (ClangTidyChecksOptionsView)Package.GetDialogPage(typeof(ClangTidyChecksOptionsView));
-      mTidyCustomChecks = (TidyCustomChecks)Package.GetDialogPage(typeof(TidyCustomChecks));
+      mTidyCustomChecks = (ClangTidyCustomChecksOptionsView)Package.GetDialogPage(typeof(ClangTidyCustomChecksOptionsView));
       mClangFormatView = (ClangFormatOptionsView)Package.GetDialogPage(typeof(ClangFormatOptionsView));
 
       mFileOpener = new FileOpener(DTEObj);

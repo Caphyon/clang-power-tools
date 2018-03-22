@@ -4,7 +4,7 @@ using System.Web.UI.WebControls;
 
 namespace ClangPowerTools.DialogPages
 {
-  public class TidyCustomChecks : ConfigurationPage<ClangTidyOptions>
+  public class ClangTidyCustomChecksOptionsView : ConfigurationPage<ClangTidyOptions>
   {
     #region Members
 
