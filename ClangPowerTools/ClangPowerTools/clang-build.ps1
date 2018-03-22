@@ -107,6 +107,8 @@
       Alias 'vs-sku'. Sku of Visual Studio (VC++) installed and that'll be used for
       standard library include directories. E.g. Professional.
 
+      This option is mandatory only if multiple Sku instances with the same version can be found
+
 .NOTES
     Author: Gabriel Diaconita
 #>
@@ -126,7 +128,7 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aSolutio
      , [alias("header-filter")][Parameter(Mandatory=$false)][string]   $aTidyHeaderFilter
      , [alias("format-style")] [Parameter(Mandatory=$false)][string]   $aAfterTidyFixFormatStyle
      , [alias("vs-ver")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioVersion
-     , [alias("vs-sku")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioSku
+     , [alias("vs-sku")]       [Parameter(Mandatory=$false)][string]   $aVisualStudioSku
      )
 
 # System Architecture Constants
@@ -864,11 +866,12 @@ Function Get-VisualStudio-Path()
   {
     if (Test-Path $kVsWhereLocation)
     {
-      [string] $product = "Microsoft.VisualStudio.Product.$aVisualStudioSku"
+      [string] $product = If ([string]::IsNullOrEmpty($aVisualStudioSku)) { "*" } Else { "Microsoft.VisualStudio.Product.$aVisualStudioSku" } # Specific version set? Use that one. Else, pick the only available one
       return (& "$kVsWhereLocation" -nologo `
                                     -property installationPath `
                                     -products $product `
-                                    -prerelease)
+                                    -prerelease `
+                                    -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64)
     }
 
     if (Test-Path -Path $kVs15DefaultLocation)

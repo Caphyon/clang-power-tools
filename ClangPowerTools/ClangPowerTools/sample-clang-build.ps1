@@ -80,6 +80,12 @@
                        - 'webkit'
                        - 'mozilla'
 
+.PARAMETER aVisualStudioSku
+      Alias 'vs-sku'. Sku of Visual Studio (VC++) installed and that'll be used for
+      standard library include directories. E.g. Professional.
+
+      This option is mandatory only if multiple Sku instances with the same version can be found
+
 .EXAMPLE
     PS .\sample-clang-build.ps1 -proj foo,bar -file meow -tidy "-*,modernize-*"
     <Description of example>
@@ -120,6 +126,7 @@ param( [alias("proj")]        [Parameter(Mandatory=$false)][string[]] $aVcxprojT
      , [alias("tidy")]        [Parameter(Mandatory=$false)][string]   $aTidyFlags
      , [alias("tidy-fix")]    [Parameter(Mandatory=$false)][string]   $aTidyFixFlags
      , [alias("format-style")] [Parameter(Mandatory=$false)][string]  $aAfterTidyFixFormatStyle
+     , [alias("vs-sku")]       [Parameter(Mandatory=$false)][string]  $aVisualStudioSku
      )
 
 # ------------------------------------------------------------------------------------------------
@@ -135,7 +142,6 @@ Set-Variable -name kClangCompileFlags                                       -Opt
                                                     )
 
 Set-Variable -name kVisualStudioVersion -value "2017"                       -Option Constant
-Set-Variable -name kVisualStudioSku     -value "Professional"               -Option Constant
 
 # ------------------------------------------------------------------------------------------------
 
@@ -215,7 +221,12 @@ if ($aDisableNameRegexMatching)
 }
 
 $scriptParams += ("-aVisualStudioVersion", $kVisualStudioVersion)
-$scriptParams += ("-aVisualStudioSku",     $kVisualStudioSku)
+
+if (![string]::IsNullOrEmpty($aVisualStudioSku))
+{
+  $scriptParams += ("-aVisualStudioSku", $aVisualStudioSku)
+}
+
 $scriptParams += ("-aTidyHeaderFilter",    ".*")
 
 Invoke-Expression "&'$clangScript' $scriptParams"
