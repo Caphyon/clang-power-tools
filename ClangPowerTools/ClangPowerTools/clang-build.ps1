@@ -865,10 +865,20 @@ Function Get-VisualStudio-Path()
     if (Test-Path $kVsWhereLocation)
     {
       [string] $product = "Microsoft.VisualStudio.Product.$aVisualStudioSku"
-      return (& "$kVsWhereLocation" -nologo `
-                                    -property installationPath `
-                                    -products $product `
-                                    -prerelease)
+      [string] $output =  (& "$kVsWhereLocation" -nologo `
+                                                 -property installationPath `
+                                                 -products $product `
+                                                 -prerelease)
+
+      # the -prerelease switch is not available on older VS2017 versions
+      if ($output.Contains("0x57")) <# error code for unknown parameter #>
+      {
+        $output = (& "$kVsWhereLocation" -nologo `
+                                         -property installationPath `
+                                         -products $product)
+      }
+
+      return $output
     }
 
     if (Test-Path -Path $kVs15DefaultLocation)
