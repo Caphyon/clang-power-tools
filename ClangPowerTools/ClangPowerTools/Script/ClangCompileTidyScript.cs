@@ -87,6 +87,9 @@ namespace ClangPowerTools.Script
       if (0 == string.Compare(aGeneralOptions.AdditionalIncludes, ComboBoxConstants.kSystemIncludeDirectories))
         parameters = $"{parameters} {ScriptConstants.kSystemIncludeDirectories}";
 
+      if (!string.IsNullOrWhiteSpace(aGeneralOptions.ClangBinDirectory))
+        parameters = $"{parameters} {ScriptConstants.kClangBinDirectory} ''{aGeneralOptions.ClangBinDirectory}''";
+
       return $"{parameters}";
     }
 

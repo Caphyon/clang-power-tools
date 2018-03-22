@@ -36,6 +36,7 @@ namespace ClangPowerTools
     public const string kTidy = "-tidy";
     public const string kTidyFix = "-tidy-fix";
 
+    public const string kClangBinDirectory = "-clang-bin-dir";
     public const string kClangFlags = "-clang-flags";
     public const string kIncludeDirectores = "-include-dirs";
     public const string kProjectsToIgnore = "-proj-ignore"; 
