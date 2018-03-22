@@ -79,8 +79,6 @@ namespace ClangPowerTools
     {
       try
       {
-        StatusBarHandler.Status(true, aCommandName + " started...", vsStatusAnimation.vsStatusAnimationBuild);
-
         mCompileTidyScriptBuilder = new ClangCompileTidyScript();
         mCompileTidyScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
           mTidyCustomChecks, aClangFormat, DTEObj, VsEdition, VsVersion);
@@ -91,6 +89,9 @@ namespace ClangPowerTools
         InitPowerShell();
         ClearWindows();
         mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
+
+        StatusBarHandler.Status(aCommandName + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
+
         foreach (var item in mItemsCollector.GetItems)
         {
           var script = mCompileTidyScriptBuilder.GetScript(item, solutionPath);
@@ -123,10 +124,7 @@ namespace ClangPowerTools
       }
       finally
       {
-        StatusBarHandler.Status(false, aCommandName + " finished...", vsStatusAnimation.vsStatusAnimationBuild);
-
-        DTEObj.StatusBar.Clear();
-        DTEObj.StatusBar.Animate(false, vsStatusAnimation.vsStatusAnimationBuild);
+        StatusBarHandler.Status(aCommandName + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
       }
     }
 
