@@ -41,7 +41,7 @@ namespace ClangPowerTools.Script
       return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{aSolutionPath}'' {ScriptConstants.kLiteral}'";
     }
 
-    public void ConstructParameters(GeneralOptions aGeneralOptions, TidyOptions aTidyOptions, TidyChecks aTidyChecks, 
+    public void ConstructParameters(ClangGeneralOptionsView aGeneralOptions, TidyOptions aTidyOptions, TidyChecks aTidyChecks, 
       TidyCustomChecks aTidyCustomChecks, ClangFormatOptionsView aClangFormatView, DTE2 aDTEObj, string aVsEdition, string aVsVersion)
     {
       mParameters = GetGeneralParameters(aGeneralOptions);
@@ -61,7 +61,7 @@ namespace ClangPowerTools.Script
     //Get the script file path
     protected override string GetFilePath() => Path.Combine(base.GetFilePath(), ScriptConstants.kScriptName);
 
-    private string GetGeneralParameters(GeneralOptions aGeneralOptions)
+    private string GetGeneralParameters(ClangGeneralOptionsView aGeneralOptions)
     {
       string parameters = string.Empty;
 

@@ -101,7 +101,7 @@
     <Compile Include="Files Operations\FileChangerWatcher.cs" />
     <Compile Include="Files Operations\FileOpener.cs" />
     <Compile Include="Files Operations\FilePathCollector.cs" />
-    <Compile Include="DialogOptionsView\GeneralOptions.cs">
+    <Compile Include="DialogOptionsView\ClangGeneralOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DialogOptionsModel\ClangOptions.cs" />
