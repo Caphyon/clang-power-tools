@@ -90,7 +90,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DialogOptionsModel\DefaultOptions.cs" />
-    <Compile Include="DialogOptionsView\TidyCustomChecks.cs">
+    <Compile Include="DialogOptionsView\ClangTidyCustomChecksOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DispatcherHandler.cs" />
@@ -126,7 +126,7 @@
     <Compile Include="Commands\SettingsCommand.cs" />
     <Compile Include="SilentFile\SilentFileChanger.cs" />
     <Compile Include="SilentFile\SilentFileChangerGuard.cs" />
-    <Compile Include="DialogOptionsView\TidyChecks.cs">
+    <Compile Include="DialogOptionsView\ClangTidyChecksOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Commands\TidyCommand.cs" />
@@ -137,7 +137,7 @@
     <Compile Include="Error\TaskError.cs" />
     <Compile Include="Items\SelectedProject.cs" />
     <Compile Include="Items\SelectedProjectItem.cs" />
-    <Compile Include="DialogOptionsView\TidyOptions.cs">
+    <Compile Include="DialogOptionsView\ClangTidyOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ActiveWindowProperties.cs" />
