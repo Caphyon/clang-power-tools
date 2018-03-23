@@ -1034,9 +1034,9 @@ Function Get-PchCppIncludeHeader([Parameter(Mandatory=$true)][string] $pchCppFil
 .DESCRIPTION
   Retrieve directory in which stdafx.h resides
 #>
-Function Get-ProjectStdafxDir( [Parameter(Mandatory=$true)] [string]   $pchHeaderName
-                             , [Parameter(Mandatory=$true)] [string[]] $includeDirectories
-                             , [Parameter(Mandatory=$true)] [string[]] $additionalIncludeDirectories
+Function Get-ProjectStdafxDir( [Parameter(Mandatory=$true)]  [string]   $pchHeaderName
+                             , [Parameter(Mandatory=$false)] [string[]] $includeDirectories
+                             , [Parameter(Mandatory=$false)] [string[]] $additionalIncludeDirectories
                              )
 {
   [string] $stdafxPath = ""
