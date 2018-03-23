@@ -1,13 +1,13 @@
-# Features and Functionality Demos
+# Features and Functionality
 
 ## 📹 Videos
 
-### 🎞️ Official launch at CppCon 2017 (Bellevue, WA, US)
+### 🎞️ Official launch at CppCon 2017 (Bellevue/WA, US)
 
 “Bringing Clang-tidy Magic to Visual Studio C++ Developers”  
 [![Clang Power Tools](https://img.youtube.com/vi/Wl-9ozmxXbo/0.jpg)](https://www.youtube.com/watch?v=Wl-9ozmxXbo)
 
-### 🎞️ C++ Weekly with Jason Turner (featuring _Clang Power Tools_)
+### 🎞️ C++ Weekly with _Jason Turner_ (featuring _Clang Power Tools_)
 
 Ep 101 - "Learning Modern C++": _The Tools_  
 [![Clang Power Tools](https://img.youtube.com/vi/zMrP8heIz3g/0.jpg)](https://www.youtube.com/watch?v=zMrP8heIz3g)
@@ -33,7 +33,8 @@ Ep 105 - "Learning Modern C++": _Looping and Algorithms_
 
 ## 🎙️ Podcasts
 
-**CppCast** interview with [Victor Ciura](http://twitter.com/ciura_victor), Nov 30th, 2017  
+**CppCast** interview with [Victor Ciura](http://twitter.com/ciura_victor), about **Clang Power Tools**  
+Nov 30th, 2017  
 Hosts: [Rob Irving](http://twitter.com/robwirving) and [Jason Turner](http://twitter.com/lefticus)
 
 [http://cppcast.com/2017/11/victor-ciura/](http://cppcast.com/2017/11/victor-ciura/)
