@@ -16,6 +16,8 @@ Works with Visual Studio 2015 / 2017
 
 ### Features
 
+🎞️ [Video Showcase](demos.md)  
+
 ![ClangPowerTools](images/VSDemo1.png)
 
 ![ClangPowerTools](images/Toolbar1.png)
