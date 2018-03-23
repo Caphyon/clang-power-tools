@@ -36,7 +36,7 @@ namespace ClangPowerTools
         ErrorCategory = aError.Category,
         Document = aError.FilePath,
         Text = aError.Description,
-        Line = aError.Line,
+        Line = aError.Line - 1,
         Category = TaskCategory.BuildCompile,
         Priority = TaskPriority.High,
         HierarchyItem = aError.HierarchyItem
@@ -48,7 +48,9 @@ namespace ClangPowerTools
     private void ErrorTaskNavigate(object sender, EventArgs e)
     {
       ErrorTask objErrorTask = (ErrorTask)sender;
+      objErrorTask.Line += 1;
       bool bResult = mErrorProvider.Navigate(objErrorTask, new Guid(EnvDTE.Constants.vsViewKindCode));
+      objErrorTask.Line -= 1;
     }
 
     #endregion
