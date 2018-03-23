@@ -7,21 +7,21 @@
 “Bringing Clang-tidy Magic to Visual Studio C++ Developers”  
 [![Clang Power Tools](https://img.youtube.com/vi/Wl-9ozmxXbo/0.jpg)](https://www.youtube.com/watch?v=Wl-9ozmxXbo)
 
-### 🎞️ C++ Weekly with Jason Turner (featuring Clang Power Tools)
+### 🎞️ C++ Weekly with Jason Turner (featuring _Clang Power Tools_)
 
-Ep 101 - "Learning Modern C++": The Tools  
+Ep 101 - "Learning Modern C++": _The Tools_  
 [![Clang Power Tools](https://img.youtube.com/vi/zMrP8heIz3g/0.jpg)](https://www.youtube.com/watch?v=zMrP8heIz3g)
 
-Ep 102 - "Learning Modern C++": Hello World  
+Ep 102 - "Learning Modern C++": _Hello World_  
 [![Clang Power Tools](https://img.youtube.com/vi/juJaaCf_yKc/0.jpg)](https://www.youtube.com/watch?v=juJaaCf_yKc)
 
-Ep 103 - "Learning Modern C++": Inheritance  
+Ep 103 - "Learning Modern C++": _Inheritance_  
 [![Clang Power Tools](https://img.youtube.com/vi/43qyUASBeUc/0.jpg)](https://www.youtube.com/watch?v=43qyUASBeUc)
 
-Ep 104 - "Learning Modern C++": const and constexpr  
+Ep 104 - "Learning Modern C++": _const and constexpr_  
 [![Clang Power Tools](https://img.youtube.com/vi/UYEyHlynkPc/0.jpg)](https://www.youtube.com/watch?v=UYEyHlynkPc)
 
-Ep 105 - "Learning Modern C++": Looping and Algorithms  
+Ep 105 - "Learning Modern C++": _Looping and Algorithms_  
 [![Clang Power Tools](https://img.youtube.com/vi/A0-x-Djey-Q/0.jpg)](https://www.youtube.com/watch?v=A0-x-Djey-Q)
 
 
@@ -33,7 +33,7 @@ Ep 105 - "Learning Modern C++": Looping and Algorithms
 
 ## 🎙️ Podcasts
 
-**CppCast** interview with _Victor Ciura_, Nov 30th, 2017  
+**CppCast** interview with [Victor Ciura](http://twitter.com/ciura_victor), Nov 30th, 2017  
 Hosts: [Rob Irving](http://twitter.com/robwirving) and [Jason Turner](http://twitter.com/lefticus)
 
 [http://cppcast.com/2017/11/victor-ciura/](http://cppcast.com/2017/11/victor-ciura/)
