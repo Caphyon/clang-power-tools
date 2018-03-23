@@ -1,5 +1,13 @@
 # Version History
 
+### Clang Power Tools 3.2.1
+*March 23, 2018*
+
+Bugs:
+
+* Compile failed when project has no Additional Include Directories.
+* Error line number from error list was wrong displayed.
+
 ### Clang Power Tools 3.2
 *March 22, 2018*
 
