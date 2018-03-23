@@ -53,7 +53,6 @@ namespace ClangPowerTools
 
     public static IVsTextView GetVsTextViewFrompPath(string filePath)
     {
-      // From http://stackoverflow.com/a/2427368/4039972
       var dte2 = (EnvDTE80.DTE2)Package.GetGlobalService(typeof(SDTE));
       var sp = (Microsoft.VisualStudio.OLE.Interop.IServiceProvider)dte2;
       var serviceProvider = new Microsoft.VisualStudio.Shell.ServiceProvider(sp);
