@@ -33,7 +33,7 @@ Ep 105 - "Learning Modern C++": _Looping and Algorithms_
 
 ## 🎙️ Podcasts
 
-**CppCast** interview with [Victor Ciura](http://twitter.com/ciura_victor), about **Clang Power Tools**  
+### 🔊 CppCast interview with [Victor Ciura](http://twitter.com/ciura_victor), about Clang Power Tools  
 Nov 30th, 2017  
 Hosts: [Rob Irving](http://twitter.com/robwirving) and [Jason Turner](http://twitter.com/lefticus)
 
