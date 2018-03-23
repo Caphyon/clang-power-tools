@@ -5,8 +5,8 @@
 
 Bugs:
 
-* Compile failed when project has no Additional Include Directories.
-* Error line number from error list was wrong displayed.
+* "Clang compile fails when project has no Additional Include Directories.
+* Error line number from error list was displayed wrong.
 
 ### Clang Power Tools 3.2
 *March 22, 2018*
