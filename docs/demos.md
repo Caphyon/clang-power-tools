@@ -6,7 +6,7 @@
 
 “Bringing Clang-tidy Magic to Visual Studio C++ Developers”
 
-<iframe width="2543" height="1125" src="https://www.youtube.com/embed/Wl-9ozmxXbo" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+[![Clang Power Tools](https://img.youtube.com/vi/Wl-9ozmxXbo/0.jpg)](https://www.youtube.com/watch?v=Wl-9ozmxXbo)
 
 ### C++ Weekly with Jason Turner
 
