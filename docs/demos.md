@@ -13,4 +13,4 @@
 
 ### Community build-up at Meeting C++ Berlin, 2017
 
-
+[![Clang Power Tools](https://img.youtube.com/vi/BAkdRY9l5pI/0.jpg)](https://www.youtube.com/watch?v=BAkdRY9l5pI)
