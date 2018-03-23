@@ -9,6 +9,20 @@
 
 ### C++ Weekly with Jason Turner (episodes featuring Clang Power Tools)
 
+🎞️ Ep 101 - "Learning Modern C++": The Tools  
+[![Clang Power Tools](https://img.youtube.com/vi/zMrP8heIz3g/0.jpg)](https://www.youtube.com/watch?v=zMrP8heIz3g)
+
+🎞️ Ep 102 - "Learning Modern C++": Hello World  
+[![Clang Power Tools](https://img.youtube.com/vi/juJaaCf_yKc/0.jpg)](https://www.youtube.com/watch?v=juJaaCf_yKc)
+
+🎞️ Ep 103 - "Learning Modern C++": Inheritance  
+[![Clang Power Tools](https://img.youtube.com/vi/43qyUASBeUc/0.jpg)](https://www.youtube.com/watch?v=43qyUASBeUc)
+
+🎞️ Ep 104 - "Learning Modern C++": const and constexpr  
+[![Clang Power Tools](https://img.youtube.com/vi/UYEyHlynkPc/0.jpg)](https://www.youtube.com/watch?v=UYEyHlynkPc)
+
+🎞️ Ep 105 - "Learning Modern C++": Looping and Algorithms  
+[![Clang Power Tools](https://img.youtube.com/vi/A0-x-Djey-Q/0.jpg)](https://www.youtube.com/watch?v=A0-x-Djey-Q)
 
 
 ### Community build-up at Meeting C++ Berlin, 2017
