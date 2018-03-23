@@ -7,8 +7,7 @@
 “Bringing Clang-tidy Magic to Visual Studio C++ Developers”  
 [![Clang Power Tools](https://img.youtube.com/vi/Wl-9ozmxXbo/0.jpg)](https://www.youtube.com/watch?v=Wl-9ozmxXbo)
 
-### 🎞️ C++ Weekly with Jason Turner  
-(episodes featuring Clang Power Tools)
+### 🎞️ C++ Weekly with Jason Turner (featuring Clang Power Tools)
 
 Ep 101 - "Learning Modern C++": The Tools  
 [![Clang Power Tools](https://img.youtube.com/vi/zMrP8heIz3g/0.jpg)](https://www.youtube.com/watch?v=zMrP8heIz3g)
