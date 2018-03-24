@@ -6,32 +6,32 @@ namespace ClangPowerTools
   {
     #region Public Methods
 
-    public static string SubstringAfter(this string source, string value)
+    public static string SubstringAfter(this string aText, string aSearchedSubstring)
     {
-      if (string.IsNullOrEmpty(value))
-        return source;
+      if (string.IsNullOrEmpty(aSearchedSubstring))
+        return aText;
 
       CompareInfo compareInfo = CultureInfo.InvariantCulture.CompareInfo;
-      int index = compareInfo.IndexOf(source, value, CompareOptions.Ordinal);
+      int index = compareInfo.IndexOf(aText, aSearchedSubstring, CompareOptions.Ordinal);
 
       if (index < 0)
         return string.Empty; //No such substring
 
-      return source.Substring(index + value.Length);
+      return aText.Substring(index + aSearchedSubstring.Length);
     }
 
-    public static string SubstringBefore(this string source, string value)
+    public static string SubstringBefore(this string aText, string aSearchedSubstring)
     {
-      if (string.IsNullOrEmpty(value))
-        return value;
+      if (string.IsNullOrEmpty(aSearchedSubstring))
+        return aSearchedSubstring;
 
       CompareInfo compareInfo = CultureInfo.InvariantCulture.CompareInfo;
-      int index = compareInfo.IndexOf(source, value, CompareOptions.Ordinal);
+      int index = compareInfo.IndexOf(aText, aSearchedSubstring, CompareOptions.Ordinal);
 
       if (index < 0)
         return string.Empty; //No such substring
 
-      return source.Substring(0, index);
+      return aText.Substring(0, index);
     }
 
     #endregion

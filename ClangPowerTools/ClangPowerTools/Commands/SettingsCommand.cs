@@ -39,7 +39,7 @@ namespace ClangPowerTools
     /// <param name="e">Event args.</param>
     private void ShowSettings(object sender, EventArgs e)
     {
-      Package.ShowOptionPage(typeof(GeneralOptions));
+      Package.ShowOptionPage(typeof(ClangGeneralOptionsView));
     }
 
     #endregion

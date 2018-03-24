@@ -324,7 +324,7 @@ Set-Variable -name "kMsbuildExpressionToPsRules" -option Constant         `
       , ("Exists\((.*?)\)(\s|$)"           , '(Exists($1))$2'            )`
       , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(HasTrailingSlash($1))$2'  )`
       , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'     )`
-      , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?(.+?)(`"|')\)+",
+      , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?((\$.+?\))|(.+?))((|`"|')\))+",
          'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
                        )
 
@@ -865,10 +865,20 @@ Function Get-VisualStudio-Path()
     if (Test-Path $kVsWhereLocation)
     {
       [string] $product = "Microsoft.VisualStudio.Product.$aVisualStudioSku"
-      return (& "$kVsWhereLocation" -nologo `
-                                    -property installationPath `
-                                    -products $product `
-                                    -prerelease)
+      [string] $output =  (& "$kVsWhereLocation" -nologo `
+                                                 -property installationPath `
+                                                 -products $product `
+                                                 -prerelease)
+
+      # the -prerelease switch is not available on older VS2017 versions
+      if ($output.Contains("0x57")) <# error code for unknown parameter #>
+      {
+        $output = (& "$kVsWhereLocation" -nologo `
+                                         -property installationPath `
+                                         -products $product)
+      }
+
+      return $output
     }
 
     if (Test-Path -Path $kVs15DefaultLocation)
@@ -1024,9 +1034,9 @@ Function Get-PchCppIncludeHeader([Parameter(Mandatory=$true)][string] $pchCppFil
 .DESCRIPTION
   Retrieve directory in which stdafx.h resides
 #>
-Function Get-ProjectStdafxDir( [Parameter(Mandatory=$true)] [string]   $pchHeaderName
-                             , [Parameter(Mandatory=$true)] [string[]] $includeDirectories
-                             , [Parameter(Mandatory=$true)] [string[]] $additionalIncludeDirectories
+Function Get-ProjectStdafxDir( [Parameter(Mandatory=$true)]  [string]   $pchHeaderName
+                             , [Parameter(Mandatory=$false)] [string[]] $includeDirectories
+                             , [Parameter(Mandatory=$false)] [string[]] $additionalIncludeDirectories
                              )
 {
   [string] $stdafxPath = ""

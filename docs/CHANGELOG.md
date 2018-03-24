@@ -1,5 +1,32 @@
 # Version History
 
+### Clang Power Tools 3.2.1
+*March 23, 2018*
+
+Bugs:
+
+* Clang compile fails when project has no Additional Include Directories.
+* Error line number from error list was displayed wrong.
+
+### Clang Power Tools 3.2
+*March 22, 2018*
+
+Improvements:
+
+* Added support for VS status bar.
+* Added clang-tidy checker to output window messages.
+
+Bugs:
+
+* Last error message couldn't be detected.
+* Consecutive error messages couldn't be detected. 
+* Did not work on Visual Studio 2017 Update 2 because vswhere does not support the -prerelease switch.
+* Did not work when stdafx.cpp contained commented #include lines.
+* Couldn't detect default Configuration Platform if comment nodes were present in the `<ItemGroup>` XML element.
+* PCH header couldn't be detected when in a different physical location than that of PCH cpp.
+* PCH header couldn't be detected if not present in project `<ClInclude>` XML element.
+* Compilation stopped on PCH-creation errors even if -continue switch was present.
+
 ### Clang Power Tools 3.1
 *March 12, 2018*
 

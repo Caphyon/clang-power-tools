@@ -119,8 +119,6 @@ namespace ClangPowerTools
         0 != string.Compare(EnvDTE.Constants.vsProjectKindUnmodeled, aProject.Kind, System.StringComparison.OrdinalIgnoreCase);
     }
 
-
-
     #endregion
 
   }

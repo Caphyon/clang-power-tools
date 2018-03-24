@@ -2,7 +2,7 @@
 
 namespace ClangPowerTools
 {
-  public class ProjectConfiguration
+  public class ProjectConfigurationHandler
   {
     #region Public Methods
 

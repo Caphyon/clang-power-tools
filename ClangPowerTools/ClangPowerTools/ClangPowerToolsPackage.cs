@@ -38,11 +38,11 @@ namespace ClangPowerTools
   [ProvideMenuResource("Menus.ctmenu", 1)]
   [Guid(RunClangPowerToolsPackage.PackageGuidString)]
   [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
-  [ProvideOptionPage(typeof(GeneralOptions), "Clang Power Tools", "General", 0, 0, true)]
-  [ProvideOptionPage(typeof(TidyOptions), "Clang Power Tools\\Tidy", "Options", 0, 0, true, Sort = 0)]
-  [ProvideOptionPage(typeof(TidyCustomChecks), "Clang Power Tools\\Tidy", "Custom Checks", 0, 0, true, Sort = 1)]
-  [ProvideOptionPage(typeof(TidyChecks), "Clang Power Tools\\Tidy", "Predefined Checks", 0, 0, true, Sort = 2)]
-  [ProvideOptionPage(typeof(ClangFormatPage), "Clang Power Tools", "Format", 0, 0, true, Sort = 4)]
+  [ProvideOptionPage(typeof(ClangGeneralOptionsView), "Clang Power Tools", "General", 0, 0, true)]
+  [ProvideOptionPage(typeof(ClangTidyOptionsView), "Clang Power Tools\\Tidy", "Options", 0, 0, true, Sort = 0)]
+  [ProvideOptionPage(typeof(ClangTidyCustomChecksOptionsView), "Clang Power Tools\\Tidy", "Custom Checks", 0, 0, true, Sort = 1)]
+  [ProvideOptionPage(typeof(ClangTidyChecksOptionsView), "Clang Power Tools\\Tidy", "Predefined Checks", 0, 0, true, Sort = 2)]
+  [ProvideOptionPage(typeof(ClangFormatOptionsView), "Clang Power Tools", "Format", 0, 0, true, Sort = 4)]
   [ProvideAutoLoad("ADFC4E64-0397-11D1-9F4E-00A0C911004F")]
   public sealed class RunClangPowerToolsPackage : Package, IVsSolutionEvents
   {
@@ -108,7 +108,7 @@ namespace ClangPowerTools
       mBuildEvents = dte.Events.BuildEvents;
       mCommandEvents = dte.Events.CommandEvents;
 
-      var generalOptions = (GeneralOptions)this.GetDialogPage(typeof(GeneralOptions));
+      var generalOptions = (ClangGeneralOptionsView)this.GetDialogPage(typeof(ClangGeneralOptionsView));
       if (null == generalOptions.Version || string.IsNullOrWhiteSpace(generalOptions.Version))
         ShowToolbare(dte); // Show the toolbar on the first install
 
@@ -204,8 +204,9 @@ namespace ClangPowerTools
           mStopClangCmd = new StopClang(this, CommandSet, CommandIds.kStopClang, mCommandsController);
 
         DispatcherHandler.Initialize(dte);
+        StatusBarHandler.Initialize(this);
 
-        var generalOptions = (GeneralOptions)this.GetDialogPage(typeof(GeneralOptions));
+        var generalOptions = (ClangGeneralOptionsView)this.GetDialogPage(typeof(ClangGeneralOptionsView));
         var currentVersion = GetPackageVersion();
 
         if (0 != string.Compare(generalOptions.Version, currentVersion))
