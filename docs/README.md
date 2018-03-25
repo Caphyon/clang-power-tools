@@ -1,7 +1,7 @@
 
 _Clang Power Tools_ is a **free** Visual Studio extension helping Visual Studio C++ developers leverage Clang/LLVM tools (`clang++`, `clang-tidy` and `clang-format`), in order to perform various code transformations and fixes like modernizing code to C++11/14/17 and finding subtle latent bugs with its static analyzer and CppCoreGuidelines checks.
 
-**NEW**: Built-in support for **[clang-format](https://clang.llvm.org/docs/ClangFormat.html)**  
+🆕 Built-in support for **[clang-format](https://clang.llvm.org/docs/ClangFormat.html)**  
 Auto-format source file on save, configurable [style options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html), file extension rules, etc.
 
 ### Download 
@@ -10,7 +10,13 @@ Install this extension from [Visual Studio Marketplace](https://marketplace.visu
 
 Works with Visual Studio 2015 / 2017
 
+### Version History
+
+[Release Notes](CHANGELOG.md)
+
 ### Features
+
+🎞️ [Video Showcase](demos.md)  
 
 ![ClangPowerTools](images/VSDemo1.png)
 
@@ -50,10 +56,6 @@ Download and install **Clang for Windows** (LLVM pre-built binary)
 We will automatically load clang from the default installation path *C:\Program Files\LLVM*. If you prefer to use a different location you must manually add the **bin** folder to **PATH**.  
 
 Windows 7: Download and install at least [PowerShell 3.0](https://www.microsoft.com/en-us/download/details.aspx?id=34595) (already available on Windows10)  
-
-### Version History
-
-[Release Notes](CHANGELOG.md)
 
 ### Tips / Q & A
 

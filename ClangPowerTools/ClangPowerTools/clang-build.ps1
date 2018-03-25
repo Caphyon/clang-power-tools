@@ -338,18 +338,8 @@ Set-Variable -name "kMsbuildExpressionToPsRules" -option Constant         `
       , ("Exists\((.*?)\)(\s|$)"           , '(Exists($1))$2'            )`
       , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(HasTrailingSlash($1))$2'  )`
       , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'     )`
-
-	  <# for cases with ' or ", like: #>
-      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, 'file') #>
-      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, "file") #>
-      , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?(.+?)(`"|')\)", `
-       'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2''' )`
-      <# for cases without ' and ", like: #>
-      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, file) #>
-      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, $(file))' #>
-      , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*((|.+)?)\)\)", `
-       'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'' )' )`
-
+      , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?((\$.+?\))|(.+?))((|`"|')\))+",
+         'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
       , ("\`$\(LOCALAPPDATA\)"                 , '$env:LOCALAPPDATA' )`
                        )
 
@@ -490,6 +480,11 @@ Function Exists-Command([Parameter(Mandatory=$true)][string] $command)
   }
 }
 
+Function Remove-PathTrailingSlash([Parameter(Mandatory=$true)][string] $path)
+{
+  return $path -replace '\\$', ''
+}
+
 Function Get-FileDirectory([Parameter(Mandatory=$true)][string] $filePath)
 {
   return ([System.IO.Path]::GetDirectoryName($filePath) + "\")
@@ -582,8 +577,7 @@ Function Get-SourceDirectory()
 function Load-Solutions()
 {
    Write-Verbose "Scanning for solution files"
-   $slns = Get-ChildItem -recurse -LiteralPath "$aSolutionsPath" `
-           | Where-Object { $_.Extension -eq $kExtensionSolution }
+   $slns = Get-ChildItem -recurse -LiteralPath "$aSolutionsPath" -Filter "*$kExtensionSolution"
    foreach ($sln in $slns)
    {
      $slnPath = $sln.FullName
@@ -673,6 +667,8 @@ Function InitializeMsBuildProjectProperties()
   [string] $projectSlnPath = Get-ProjectSolution
   [string] $projectSlnDir = Get-FileDirectory -filePath $projectSlnPath
   Set-Var -name "SolutionDir" -value $projectSlnDir
+  [string] $projectSlnName = Get-FileName -path $projectSlnPath -noext
+  Set-Var -name "SolutionName" -value $projectSlnName
 }
 
 Function Should-CompileProject([Parameter(Mandatory=$true)][string] $vcxprojPath)
@@ -884,10 +880,20 @@ Function Get-VisualStudio-Path()
     if (Test-Path $kVsWhereLocation)
     {
       [string] $product = "Microsoft.VisualStudio.Product.$aVisualStudioSku"
-      return (& "$kVsWhereLocation" -nologo `
-                                    -property installationPath `
-                                    -products $product `
-                                    -prerelease)
+      [string] $output =  (& "$kVsWhereLocation" -nologo `
+                                                 -property installationPath `
+                                                 -products $product `
+                                                 -prerelease)
+
+      # the -prerelease switch is not available on older VS2017 versions
+      if ($output.Contains("0x57")) <# error code for unknown parameter #>
+      {
+        $output = (& "$kVsWhereLocation" -nologo `
+                                         -property installationPath `
+                                         -products $product)
+      }
+
+      return $output
     }
 
     if (Test-Path -Path $kVs15DefaultLocation)
@@ -899,7 +905,7 @@ Function Get-VisualStudio-Path()
   }
 }
 
-Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$false)][string] $stdafxDir)
+Function Get-ProjectIncludeDirectories()
 {
   [string[]] $returnArray = ($IncludePath -split ";")                                                         | `
                             Where-Object { ![string]::IsNullOrWhiteSpace($_) }                                | `
@@ -1004,12 +1010,7 @@ Function Get-ProjectIncludeDirectories([Parameter(Mandatory=$false)][string] $st
     }
   }
 
-  if (![string]::IsNullOrEmpty($stdafxDir))
-  {
-    $returnArray = @($stdafxDir) + $returnArray
-  }
-
-  return ( $returnArray | ForEach-Object { $_ -replace '\\$', '' } )
+  return ( $returnArray | ForEach-Object { Remove-PathTrailingSlash -path $_ } )
 }
 
 Function Get-Projects()
@@ -1031,28 +1032,72 @@ Function Get-Projects()
 Function Get-PchCppIncludeHeader([Parameter(Mandatory=$true)][string] $pchCppFile)
 {
   [string] $cppPath = Canonize-Path -base $ProjectDir -child $pchCppFile
-  [string] $fileContent = Get-Content -path $cppPath
 
-  return [regex]::match($fileContent,'#include "(\S+)"').Groups[1].Value
+  [string[]] $fileLines = Get-Content -path $cppPath
+  foreach ($line in $fileLines)
+  {
+    $regexMatch = [regex]::match($line,'^\s*#include\s+"(\S+)"')
+    if ($regexMatch.Success)
+    {
+      return $regexMatch.Groups[1].Value
+    }
+  }
+  return ""
 }
 
 <#
 .DESCRIPTION
   Retrieve directory in which stdafx.h resides
 #>
-Function Get-ProjectStdafxDir([Parameter(Mandatory=$true)][string] $pchHeaderName)
+Function Get-ProjectStdafxDir( [Parameter(Mandatory=$true)]  [string]   $pchHeaderName
+                             , [Parameter(Mandatory=$false)] [string[]] $includeDirectories
+                             , [Parameter(Mandatory=$false)] [string[]] $additionalIncludeDirectories
+                             )
 {
+  [string] $stdafxPath = ""
+
   [string[]] $projectHeaders = Get-ProjectHeaders
-  [string] $stdafxPath = $projectHeaders | Where-Object { (Get-FileName -path $_) -cmatch $pchHeaderName }
-  if ([string]::IsNullOrEmpty($stdafxPath))
+  if ($projectHeaders.Count -gt 0)
   {
-    $stdafxPath = Canonize-Path -base $ProjectDir `
-                                -child $pchHeaderName
+    # we need to use only backslashes so that we can match against file header paths
+    $pchHeaderName = $pchHeaderName.Replace("/", "\")
+
+    $stdafxPath = $projectHeaders | Where-Object { $_.EndsWith($pchHeaderName) }
   }
 
-  [string] $stdafxDir = Get-FileDirectory($stdafxPath)
+  if ([string]::IsNullOrEmpty($stdafxPath))
+  {
+    [string[]] $searchPool = @($ProjectDir);
+    if ($includeDirectories.Count -gt 0)
+    {
+      $searchPool += $includeDirectories
+    }
+    if ($additionalIncludeDirectories.Count -gt 0)
+    {
+      $searchPool += $additionalIncludeDirectories
+    }
 
-  return $stdafxDir
+    foreach ($dir in $searchPool)
+    {
+      [string] $stdafxPath = Canonize-Path -base $dir            `
+                                           -child $pchHeaderName `
+                                           -ignoreErrors
+      if (![string]::IsNullOrEmpty($stdafxPath))
+      {
+        break
+      }
+    }
+  }
+
+  if ([string]::IsNullOrEmpty($stdafxPath))
+  {
+    return ""
+  }
+  else
+  {
+    [string] $stdafxDir = Get-FileDirectory($stdafxPath)
+    return $stdafxDir
+  }
 }
 
 <#
@@ -1131,12 +1176,19 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
                                                             -NoNewWindow `
                                                             -Wait `
                                                             -PassThru
-  if ($processInfo.ExitCode -ne 0)
+  if (($processInfo.ExitCode -ne 0) -and (!$aContinueOnError))
   {
     Fail-Script "Errors encountered during PCH creation"
   }
 
-  return $stdafxPch
+  if (Test-Path $stdafxPch)
+  {
+    return $stdafxPch
+  }
+  else
+  {
+    return ""
+  }
 }
 
 function HasTrailingSlash([Parameter(Mandatory=$true)][string] $str)
@@ -1580,7 +1632,10 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
 
   if ($node.Name -ieq "ItemGroup" -and $node.GetAttribute("Label") -ieq "ProjectConfigurations")
   {
-    Detect-ProjectDefaultConfigPlatform $node.ChildNodes[0].GetAttribute("Include")
+    [System.Xml.XmlElement] $firstChild =  $node.ChildNodes                                     | `
+                                           Where-Object { $_.GetType().Name -ieq "XmlElement" } | `
+                                           Select-Object -First 1
+    Detect-ProjectDefaultConfigPlatform $firstChild.GetAttribute("Include")
   }
 
   if ($node.ParentNode.Name -ieq "PropertyGroup")
@@ -2061,39 +2116,6 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   Write-Verbose "Force includes: $forceIncludeFiles"
 
   #-----------------------------------------------------------------------------------------------
-  # LOCATE STDAFX.H DIRECTORY
-
-  [string] $stdafxCpp    = Get-Project-PchCpp
-  [string] $stdafxDir    = ""
-  [string] $stdafxHeader = ""
-
-  if (![string]::IsNullOrEmpty($stdafxCpp))
-  {
-    Write-Verbose "PCH cpp name: $stdafxCpp"
-
-    if ($forceIncludeFiles.Count -gt 0)
-    {
-      $stdafxHeader = $forceIncludeFiles[0]
-    }
-    else
-    {
-      $stdafxHeader = Get-PchCppIncludeHeader -pchCppFile $stdafxCpp
-    }
-
-    Write-Verbose "PCH header name: $stdafxHeader"
-    $stdafxDir = Get-ProjectStdafxDir -pchHeaderName $stdafxHeader
-  }
-
-  if ([string]::IsNullOrEmpty($stdafxDir))
-  {
-    Write-Verbose ("PCH not enabled for this project!")
-  }
-  else
-  {
-    Write-Verbose ("PCH directory: $stdafxDir")
-  }
-
-  #-----------------------------------------------------------------------------------------------
   # DETECT PROJECT PREPROCESSOR DEFINITIONS
 
   [string[]] $preprocessorDefinitions = Get-ProjectPreprocessorDefines
@@ -2124,8 +2146,44 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   [string[]] $additionalIncludeDirectories = Get-ProjectAdditionalIncludes
   Write-Verbose-Array -array $additionalIncludeDirectories -name "Additional include directories"
 
-  [string[]] $includeDirectories = Get-ProjectIncludeDirectories -stdafxDir $stdafxDir
+  [string[]] $includeDirectories = Get-ProjectIncludeDirectories
   Write-Verbose-Array -array $includeDirectories -name "Include directories"
+
+  #-----------------------------------------------------------------------------------------------
+  # LOCATE STDAFX.H DIRECTORY
+
+  [string] $stdafxCpp    = Get-Project-PchCpp
+  [string] $stdafxDir    = ""
+  [string] $stdafxHeader = ""
+
+  if (![string]::IsNullOrEmpty($stdafxCpp))
+  {
+    Write-Verbose "PCH cpp name: $stdafxCpp"
+
+    if ($forceIncludeFiles.Count -gt 0)
+    {
+      $stdafxHeader = $forceIncludeFiles[0]
+    }
+    else
+    {
+      $stdafxHeader = Get-PchCppIncludeHeader -pchCppFile $stdafxCpp
+    }
+
+    Write-Verbose "PCH header name: $stdafxHeader"
+    $stdafxDir = Get-ProjectStdafxDir -pchHeaderName                $stdafxHeader       `
+                                      -includeDirectories           $includeDirectories `
+                                      -additionalIncludeDirectories $additionalIncludeDirectories
+  }
+
+  if ([string]::IsNullOrEmpty($stdafxDir))
+  {
+    Write-Verbose ("PCH not enabled for this project!")
+  }
+  else
+  {
+    Write-Verbose ("PCH directory: $stdafxDir")
+    $includeDirectories = @(Remove-PathTrailingSlash -path $stdafxDir) + $includeDirectories
+  }
 
   #-----------------------------------------------------------------------------------------------
   # FIND LIST OF CPPs TO PROCESS
@@ -2155,6 +2213,12 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
                                 -includeDirectories $includeDirectories `
                                 -additionalIncludeDirectories $additionalIncludeDirectories
     Write-Verbose "PCH: $pchFilePath"
+    if ([string]::IsNullOrEmpty($pchFilePath) -and $aContinueOnError)
+    {
+      Write-Output "Skipping project. Reason: cannot create PCH."
+      Clear-Vars
+      return
+    }
   }
 
   #-----------------------------------------------------------------------------------------------

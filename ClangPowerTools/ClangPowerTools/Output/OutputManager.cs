@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Text;
 using System.Windows.Interop;
 using System.Windows.Threading;
 
@@ -12,7 +13,6 @@ namespace ClangPowerTools
     #region Members
 
     private DTE2 mDte = null;
-    private Dispatcher mDispatcher;
 
     private int kBufferSize = 5;
     private List<string> mMessagesBuffer = new List<string>();
@@ -47,7 +47,6 @@ namespace ClangPowerTools
     public OutputManager(DTE2 aDte)
     {
       mDte = aDte;
-      mDispatcher = HwndSource.FromHwnd((IntPtr)mDte.MainWindow.HWnd).RootVisual.Dispatcher;
     }
 
     #endregion
@@ -58,17 +57,22 @@ namespace ClangPowerTools
     {
       using (OutputWindow outputWindow = new OutputWindow(mDte))
       {
-        mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+        DispatcherHandler.BeginInvoke(() =>
         {
           outputWindow.Clear();
-        }));
+        });
       }
     }
 
     public void Show()
     {
       using (OutputWindow outputWindow = new OutputWindow(mDte))
-        outputWindow.Show(mDte);
+      {
+        DispatcherHandler.BeginInvoke(() =>
+        {
+          outputWindow.Show(mDte);
+        });
+      }
     }
 
     public void AddMessage(string aMessage)
@@ -78,10 +82,10 @@ namespace ClangPowerTools
 
       using (OutputWindow outputWindow = new OutputWindow(mDte))
       {
-        mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+        DispatcherHandler.BeginInvoke(() =>
         {
           outputWindow.Write(aMessage);
-        }));
+        });
       }
     }
 
@@ -95,14 +99,31 @@ namespace ClangPowerTools
         }
         else if (!mMissingLlvm)
         {
-          string messages = String.Join("\n", mMessagesBuffer);
-          if (mErrorParser.FindErrors(messages, out TaskError aError))
+          string text = String.Join("\n", mMessagesBuffer) + "\n";
+
+          // Find error messages from powershell script output
+          // replace them with an error message format that VS output window knows to interpret
+          if (mErrorParser.FindErrors(text, out TaskError aError))
           {
-            messages = mErrorParser.Format(messages, aError.FullMessage);
-            AddMessage(messages);
-            mMessagesBuffer.Clear();
-            if (null != aError)
-              mErrors.Add(aError);
+            List<TaskError> errors = new List<TaskError>();
+            errors.Add(aError);
+
+            StringBuilder output = new StringBuilder(
+              GetOutput(ref text, aError.FullMessage ));
+
+            while (mErrorParser.FindErrors(text, out aError))
+            {
+              errors.Add(aError);
+              output.Append(GetOutput(ref text, aError.FullMessage));
+            }
+
+            AddMessage(output.ToString());
+            output.Clear();
+
+            if (0 != mMessagesBuffer.Count)
+              mMessagesBuffer.Clear();
+
+            SaveErrorsMessages(errors);
           }
           else if (kBufferSize <= mMessagesBuffer.Count)
           {
@@ -132,6 +153,40 @@ namespace ClangPowerTools
         return;
       mMessagesBuffer.Add(e.Data);
       ProcessOutput(e.Data);
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private void SaveErrorsMessages(List<TaskError> aErrorCollection)
+    {
+      if (0 == aErrorCollection.Count)
+        return;
+
+      foreach (var newError in aErrorCollection)
+      {
+        if (null == newError)
+          continue;
+        mErrors.Add(newError);
+      }
+    }
+
+    private string GetOutput(ref string aText, string aSearchedSubstring)
+    {
+      aText = mErrorParser.Format(aText, aSearchedSubstring);
+
+      GetBeforeAndAfterSubstrings(aText, aSearchedSubstring,
+        out string substringBefore, out string substringAfter);
+
+      aText = substringAfter;
+      return substringBefore + aSearchedSubstring;
+    }
+
+    private void GetBeforeAndAfterSubstrings(string aText, string aSearchedSubstring, out string aTextBefore, out string aTextAfter)
+    {
+      aTextBefore = StringExtension.SubstringBefore(aText, aSearchedSubstring);
+      aTextAfter = StringExtension.SubstringAfter(aText, aSearchedSubstring);
     }
 
     #endregion

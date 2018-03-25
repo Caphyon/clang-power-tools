@@ -75,7 +75,7 @@
     <Compile Include="AutomationUtil.cs" />
     <Compile Include="ClangCheckAttribute.cs" />
     <Compile Include="Commands\ClangFormatCommand.cs" />
-    <Compile Include="DialogOptions\ClangTidyOptions.cs" />
+    <Compile Include="DialogOptionsModel\ClangTidyOptions.cs" />
     <Compile Include="Commands\BasicCommand.cs" />
     <Compile Include="Commands\StopClang.cs" />
     <Compile Include="Commands\ClangCommand.cs" />
@@ -85,32 +85,33 @@
     <Compile Include="Convertors\AdditionalIncludesConvertor.cs" />
     <Compile Include="Convertors\FallbackStyleConvertor.cs" />
     <Compile Include="Convertors\StyleConvertor.cs" />
-    <Compile Include="DialogOptions\ClangFormatOptions.cs" />
-    <Compile Include="DialogPages\ClangFormatPage.cs">
+    <Compile Include="DialogOptionsModel\ClangFormatOptions.cs" />
+    <Compile Include="DialogOptionsView\ClangFormatOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="DialogOptions\DefaultOptions.cs" />
-    <Compile Include="DialogPages\TidyCustomChecks.cs">
+    <Compile Include="DialogOptionsModel\DefaultOptions.cs" />
+    <Compile Include="DialogOptionsView\ClangTidyCustomChecksOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="DocumentsHandler.cs" />
+    <Compile Include="Handlers\DispatcherHandler.cs" />
+    <Compile Include="Handlers\DocumentsHandler.cs" />
     <Compile Include="Error\ErrorParser.cs" />
     <Compile Include="Error\ErrorParserConstants.cs" />
     <Compile Include="Error\ErrorsManager.cs" />
     <Compile Include="Files Operations\FileChangerWatcher.cs" />
     <Compile Include="Files Operations\FileOpener.cs" />
     <Compile Include="Files Operations\FilePathCollector.cs" />
-    <Compile Include="DialogPages\GeneralOptions.cs">
+    <Compile Include="DialogOptionsView\ClangGeneralOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="DialogOptions\ClangOptions.cs" />
+    <Compile Include="DialogOptionsModel\ClangOptions.cs" />
     <Compile Include="Convertors\HeaderFiltersConvertor.cs" />
     <Compile Include="PCHCleaner.cs" />
-    <Compile Include="ProjectConfiguration.cs" />
+    <Compile Include="Handlers\ProjectConfigurationHandler.cs" />
     <Compile Include="RunningDocTableEvents.cs" />
     <Compile Include="Script\ClangCompileTidyScript.cs" />
     <Compile Include="Script\RunningProcesses.cs" />
-    <Compile Include="DialogPages\ConfigurationPage.cs">
+    <Compile Include="DialogOptionsView\ConfigurationPage.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SettingsPathBuilder.cs" />
@@ -125,7 +126,7 @@
     <Compile Include="Commands\SettingsCommand.cs" />
     <Compile Include="SilentFile\SilentFileChanger.cs" />
     <Compile Include="SilentFile\SilentFileChangerGuard.cs" />
-    <Compile Include="DialogPages\TidyChecks.cs">
+    <Compile Include="DialogOptionsView\ClangTidyChecksOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Commands\TidyCommand.cs" />
@@ -136,14 +137,16 @@
     <Compile Include="Error\TaskError.cs" />
     <Compile Include="Items\SelectedProject.cs" />
     <Compile Include="Items\SelectedProjectItem.cs" />
-    <Compile Include="DialogPages\TidyOptions.cs">
+    <Compile Include="DialogOptionsView\ClangTidyOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ActiveWindowProperties.cs" />
-    <Compile Include="ComboBoxConstants.cs" />
+    <Compile Include="Convertors\ComboBoxConstants.cs" />
     <Compile Include="Convertors\ComboBoxConvertor.cs" />
     <Compile Include="Convertors\UseChecksFromConvertor.cs" />
     <Compile Include="SilentFile\SilentFileController.cs" />
+    <Compile Include="Handlers\StatusBarHandler.cs" />
+    <Compile Include="StringExtension.cs" />
     <Compile Include="Vsix.cs" />
     <Compile Include="XmlSerializer.cs" />
   </ItemGroup>

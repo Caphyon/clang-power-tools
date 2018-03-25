@@ -19,7 +19,7 @@ namespace ClangPowerTools.Commands
   {
     #region Members
 
-    private ClangFormatPage mClangFormatPage = null;
+    private ClangFormatOptionsView mClangFormatView = null;
     private Document mDocument = null;
 
     #endregion
@@ -70,9 +70,9 @@ namespace ClangPowerTools.Commands
       FormatDocument(aDocument, option);
     }
 
-    private void FormatDocument(Document aDocument, ClangFormatPage aOptions)
+    private void FormatDocument(Document aDocument, ClangFormatOptionsView aOptions)
     {
-      mClangFormatPage = aOptions;
+      mClangFormatView = aOptions;
       mDocument = aDocument;
 
       RunClangFormat(new object(), new EventArgs());
@@ -93,7 +93,7 @@ namespace ClangPowerTools.Commands
     {
       try
       {
-        if (null == mClangFormatPage)
+        if (null == mClangFormatView)
         {
           FormatAllSelectedDocuments();
           return;
@@ -116,7 +116,7 @@ namespace ClangPowerTools.Commands
           // get the necessary elements for format selection
           FindStartPositionAndLengthOfSelectedText(view, text, out startPosition, out length);
           dirPath = Vsix.GetDocumentParent(view);
-          mClangFormatPage = GetUserOptions();
+          mClangFormatView = GetUserOptions();
         }
         else 
         {
@@ -124,7 +124,7 @@ namespace ClangPowerTools.Commands
           text = FormatEndOfFile(view, filePath, out dirPath);
         }
 
-        process = CreateProcess(text, startPosition, length, dirPath, filePath, mClangFormatPage);
+        process = CreateProcess(text, startPosition, length, dirPath, filePath, mClangFormatView);
 
         try
         {
@@ -155,11 +155,11 @@ namespace ClangPowerTools.Commands
       finally
       {
         mDocument = null;
-        mClangFormatPage = null;
+        mClangFormatView = null;
       }
     }
 
-    private ClangFormatPage GetUserOptions() => (ClangFormatPage)Package.GetDialogPage(typeof(ClangFormatPage));
+    private ClangFormatOptionsView GetUserOptions() => (ClangFormatOptionsView)Package.GetDialogPage(typeof(ClangFormatOptionsView));
 
     private bool SkipFile(string aFilePath, string aSkipFiles)
     {
@@ -184,7 +184,7 @@ namespace ClangPowerTools.Commands
         if (null == document)
           continue;
 
-        mClangFormatPage = GetUserOptions();
+        mClangFormatView = GetUserOptions();
         mDocument = document;
 
         RunClangFormat(new object(), new EventArgs());
@@ -218,7 +218,7 @@ namespace ClangPowerTools.Commands
         aStartPosition = aText.Length - 1;
     }
 
-    private System.Diagnostics.Process CreateProcess(string aText, int aOffset, int aLength, string aPath, string aFilePath, ClangFormatPage aOptions)
+    private System.Diagnostics.Process CreateProcess(string aText, int aOffset, int aLength, string aPath, string aFilePath, ClangFormatOptionsView aClangFormatView)
     {
       string vsixPath = Path.GetDirectoryName(
         typeof(RunClangPowerToolsPackage).Assembly.Location);
@@ -234,10 +234,10 @@ namespace ClangPowerTools.Commands
       process.StartInfo.Arguments = " -offset " + aOffset +
                                     " -length " + aLength +
                                     " -output-replacements-xml " +
-                                    $" {ScriptConstants.kStyle} \"{aOptions.Style}\"" +
-                                    $" {ScriptConstants.kFallbackStyle} \"{aOptions.FallbackStyle}\"";
+                                    $" {ScriptConstants.kStyle} \"{aClangFormatView.Style}\"" +
+                                    $" {ScriptConstants.kFallbackStyle} \"{aClangFormatView.FallbackStyle}\"";
 
-      var assumeFilename = aOptions.AssumeFilename;
+      var assumeFilename = aClangFormatView.AssumeFilename;
       if (string.IsNullOrEmpty(assumeFilename))
         assumeFilename = aFilePath;
       if (!string.IsNullOrEmpty(assumeFilename))

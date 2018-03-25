@@ -1,10 +1,12 @@
-﻿# Tests for ClangPowerTools MSBUILD Expression/Condition translation
+﻿Clear-Host
+
+# Tests for ClangPowerTools MSBUILD Expression/Condition translation
 
 $Configuration = "Release2"
 $Platform      = "Win32"
 $UserRootDir   = "c:\test"
-$SolutionDir   = "C:\AI Trunk\ClangPowerToolsProblem"
-$ProjectDir    = "C:\AI Trunk\win"
+$WinDir        = "C:\Windows"
+$ProjectDir    = "C:\Users\Default"
 $TargetName    = "YOLOTest"
 $varB          = 1
 
@@ -33,16 +35,8 @@ Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#> `
       , ("Exists\((.*?)\)(\s|$)"           , '(Exists($1))$2'            )`
       , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(HasTrailingSlash($1))$2'  )`
       , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'     )`
-      <# for cases with ' or ", like: #>
-      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, 'file') #>
-      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, "file") #>
-      , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?(.+?)(`"|')\)", `
-       'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2''' )`
-      <# for cases without ' and ", like: #>
-      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, file) #>
-      <# $([MSBuild]::GetDirectoryNameOfFileAbove(_, $(file))' #>
-      , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*((|.+)?)\)\)", `
-       'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'' )' )`
+      , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?((\$.+?\))|(.+?))((|`"|')\))+",
+         'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
                        )
 
 Set-Variable -name "kMsbuildConditionToPsRules"  -option Constant `
@@ -318,6 +312,9 @@ Test-Condition -condition   "'`$(Platform)'=='x64' or '`$(Platform)'=='Win32' or
 Test-Condition -condition   "exists('c:\windows')"`
                -expectation $true
 
+Test-Condition -condition   "exists('`$(WinDir)')"`
+               -expectation $true
+
 Test-Condition -condition   "'`$(Configuration)|`$(Platform)'=='Release|Win32'"`
                -expectation $false
 
@@ -330,7 +327,7 @@ Test-Condition -condition    '$(Platform) and $(varB)'`
 Test-Condition -condition    "exists('`$(UserRootDir)\Microsoft.Cpp.`$(Platform).user.props')"`
                -expectation $true
 
-Test-Expression -expression  "`$(SolutionDir)\Tools\PropertySheets\Evolution.Module.props"
+Test-Expression -expression  "`$(WinDir)\System32"
 Test-Expression -expression "WIN32_LEAN_AND_MEAN and `$(Configuration)"
 
 Test-Condition  -condition  "exists('`$([Microsoft.Build.Utilities.ToolLocationHelper]::GetPlatformExtensionSDKLocation(``WindowsMobile, Version=10.0.10240.0``, `$(TargetPlatformIdentifier), `$(TargetPlatformVersion), `$(SDKReferenceDirectoryRoot), `$(SDKExtensionDirectoryRoot), `$(SDKReferenceRegistryRoot)))\DesignTime\CommonConfiguration\Neutral\WindowsMobile.props')"`
@@ -391,8 +388,11 @@ $MSBuildThisFileDirectory = "C:\windows"
 Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), ''Program Files''))Program Files'
 Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), "Program Files"))Program Files'
 Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Users))Program Files'
+Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), "Program Files")Program Files'
+Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Program Files)Program Files'
+
 $whatToFind = "Program Files"
-Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), ''$(whatToFind)''))Program Files'
+Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), ''$(whatToFind)'')Program Files'
 Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), "$(whatToFind)"))Program Files'
 $whatToFind = "Users"
 Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), $(whatToFind)))Program Files'

@@ -9,35 +9,35 @@
 
 .PARAMETER aVcxprojToCompile
     Alias 'proj'. Array of project(s) to compile. If empty, all projects are compiled.
-    If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used, 
+    If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used,
     e.g. "msicomp" compiles all msicomp projects.
-    
+
     Can be passed as comma separated values.
 
 .PARAMETER aVcxprojToIgnore
-    Alias 'proj-ignore'. Array of project(s) to ignore, from the matched ones. 
+    Alias 'proj-ignore'. Array of project(s) to ignore, from the matched ones.
     If empty, all already matched projects are compiled.
-    If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used, 
-    e.g. "msicomp" compiles all msicomp projects.
+    If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used,
+    e.g. "msicomp" ignores all msicomp projects.
 
     Can be passed as comma separated values.
 
 .PARAMETER aVcxprojConfigPlatform
-    Alias 'active-config'. The configuration-platform pair, separated by |, 
+    Alias 'active-config'. The configuration-platform pair, separated by |,
     to be used when processing project files.
 
-    E.g. 'Debug|Win32'. 
+    E.g. 'Debug|Win32'.
     If not specified, the first configuration-plaform found in the current project is used.
 
 .PARAMETER aCppToCompile
     Alias 'file'. What cpp(s) to compile from the found project(s). If empty, all CPPs are compiled.
-    If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used, 
+    If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used,
     e.g. "table" compiles all CPPs containing 'table'.
 
 .PARAMETER aCppToIgnore
-    Alias 'file-ignore'. Array of file(s) to ignore, from the matched ones. 
+    Alias 'file-ignore'. Array of file(s) to ignore, from the matched ones.
     If empty, all already matched files are compiled.
-    If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used, 
+    If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used,
     e.g. "table" ignores all CPPs containing 'table'.
 
     Can be passed as comma separated values.
@@ -51,33 +51,29 @@
 .PARAMETER aTreatAdditionalIncludesAsSystemIncludes
      Alias 'treat-sai'. Switch to treat project additional include directories as system includes.
 
-.PARAMETER aClangCompileFlags
-     Alias 'clang-flags'. Flags given to clang++ when compiling project, 
-     alongside project-specific defines.
-
 .PARAMETER aDisableNameRegexMatching
      Alias 'literal'. Switch to take project and cpp name filters literally, not by regex matching.
 
 .PARAMETER aTidyFlags
-      Alias 'tidy'. If not empty clang-tidy will be called with given flags, instead of clang++. 
-      The tidy operation is applied to whole translation units, meaning all directory headers 
+      Alias 'tidy'. If not empty clang-tidy will be called with given flags, instead of clang++.
+      The tidy operation is applied to whole translation units, meaning all directory headers
       included in the CPP will be tidied up too. Changes will not be applied, only simulated.
 
       If aTidyFixFlags is present, it takes precedence over this parameter.
-      
+
 .PARAMETER aTidyFixFlags
-      Alias 'tidy-fix'. If not empty clang-tidy will be called with given flags, instead of clang++. 
-      The tidy operation is applied to whole translation units, meaning all directory headers 
+      Alias 'tidy-fix'. If not empty clang-tidy will be called with given flags, instead of clang++.
+      The tidy operation is applied to whole translation units, meaning all directory headers
       included in the CPP will be tidied up too. Changes will be applied to the file(s).
 
       If present, this parameter takes precedence over aTidyFlags.
-      
+
 .PARAMETER aAfterTidyFixFormatStyle
       Alias 'format-style'. Used in combination with 'tidy-fix'. If present, clang-tidy will
       also format the fixed file(s), using the specified style.
       Possible values: - not present, no formatting will be done
                        - 'file'
-                           Literally 'file', not a placeholder. 
+                           Literally 'file', not a placeholder.
                            Uses .clang-format file in the closest parent directory.
                        - 'llvm'
                        - 'google'
@@ -85,27 +81,27 @@
                        - 'mozilla'
 
 .EXAMPLE
-    PS .\sample-clang-build.ps1 -dir -proj foo,bar -file meow -tidy "-*,modernize-*"
+    PS .\sample-clang-build.ps1 -proj foo,bar -file meow -tidy "-*,modernize-*"
     <Description of example>
-    Runs clang-tidy, using "-*,modernize-*", on all CPPs containing 'meow' in their name from 
-    the projects containing 'foo' or 'bar' in their names. 
-    
-    Doesn't actually apply the clang-tidy module changes to CPPs. 
+    Runs clang-tidy, using "-*,modernize-*", on all CPPs containing 'meow' in their name from
+    the projects containing 'foo' or 'bar' in their names.
+
+    Doesn't actually apply the clang-tidy module changes to CPPs.
     It will only print the tidy module output.
-    
+
 .EXAMPLE
-    PS .\sample-clang-build.ps1 -dir -proj foo,bar -file meow -tidy-fix "-*,modernize-*"
+    PS .\sample-clang-build.ps1 -proj foo,bar -file meow -tidy-fix "-*,modernize-*"
     <Description of example>
-    Runs clang-tidy, using "-*,modernize-*", on all CPPs containing 'meow' in their name from 
-    the projects containing 'foo' or 'bar' in their names. 
-    
+    Runs clang-tidy, using "-*,modernize-*", on all CPPs containing 'meow' in their name from
+    the projects containing 'foo' or 'bar' in their names.
+
     It will apply all tidy module changes to CPPs.
 
 .EXAMPLE
-    PS .\sample-clang-build.ps1 -dir -proj foo -proj-ignore foobar
+    PS .\sample-clang-build.ps1 -proj foo -proj-ignore foobar
     <Description of example>
     Runs clang++ on all CPPs in foo... projects, except foobar
-  
+
 .OUTPUTS
     Will output Clang warnings and errors to screen. The return code will be 0 for success, >0 for failure.
 

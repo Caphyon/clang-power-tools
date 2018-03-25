@@ -50,7 +50,7 @@ namespace ClangPowerTools
 
     private void OnBuildBegin(EnvDTE.vsBuildScope Scope, EnvDTE.vsBuildAction Action)
     {
-      ErrorsManager errorsManager = new ErrorsManager(ServiceProvider, DTEObj);
+      ErrorsManager errorsManager = new ErrorsManager(ServiceProvider);
       errorsManager.Clear();
     }
 

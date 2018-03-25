@@ -7,7 +7,7 @@ using System.Web.UI.WebControls;
 namespace ClangPowerTools
 {
   [Serializable]
-  public class GeneralOptions : ConfigurationPage<ClangOptions>
+  public class ClangGeneralOptionsView : ConfigurationPage<ClangOptions>
   {
     #region Members
 

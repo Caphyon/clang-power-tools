@@ -30,26 +30,26 @@ namespace ClangPowerTools.Script
         string containingProject = projectItem.ContainingProject.FullName;
         script = $"{script} {ScriptConstants.kProject} ''{containingProject}'' " +
           $"{ScriptConstants.kFile} ''{projectItem.Properties.Item("FullPath").Value}'' {ScriptConstants.kActiveConfiguration} " +
-          $"''{ProjectConfiguration.GetConfiguration(projectItem.ContainingProject)}|{ProjectConfiguration.GetPlatform(projectItem.ContainingProject)}''";
+          $"''{ProjectConfigurationHandler.GetConfiguration(projectItem.ContainingProject)}|{ProjectConfigurationHandler.GetPlatform(projectItem.ContainingProject)}''";
       }
       else if (aItem is SelectedProject)
       {
         Project project = aItem.GetObject() as Project;
         script = $"{script} {ScriptConstants.kProject} ''{project.FullName}'' {ScriptConstants.kActiveConfiguration} " +
-          $"''{ProjectConfiguration.GetConfiguration(project)}|{ProjectConfiguration.GetPlatform(project)}''";
+          $"''{ProjectConfigurationHandler.GetConfiguration(project)}|{ProjectConfigurationHandler.GetPlatform(project)}''";
       }
       return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{aSolutionPath}'' {ScriptConstants.kLiteral}'";
     }
 
-    public void ConstructParameters(GeneralOptions aGeneralOptions, TidyOptions aTidyOptions, TidyChecks aTidyChecks, 
-      TidyCustomChecks aTidyCustomChecks, ClangFormatPage aClangFormat, DTE2 aDTEObj, string aVsEdition, string aVsVersion)
+    public void ConstructParameters(ClangGeneralOptionsView aGeneralOptions, ClangTidyOptionsView aTidyOptions, ClangTidyChecksOptionsView aTidyChecks, 
+      ClangTidyCustomChecksOptionsView aTidyCustomChecks, ClangFormatOptionsView aClangFormatView, DTE2 aDTEObj, string aVsEdition, string aVsVersion)
     {
       mParameters = GetGeneralParameters(aGeneralOptions);
       mParameters = null != aTidyOptions ?
         $"{mParameters} {GetTidyParameters(aTidyOptions, aTidyChecks, aTidyCustomChecks)}" : $"{mParameters} {ScriptConstants.kParallel}";
 
-      if (null != aClangFormat && null != aTidyOptions && true == aTidyOptions.Fix && true == aTidyOptions.FormatAfterTidy)
-        mParameters = $"{mParameters} {ScriptConstants.kClangFormatStyle} {GetClangFormatParameters(aClangFormat)}";
+      if (null != aClangFormatView && null != aTidyOptions && true == aTidyOptions.Fix && true == aTidyOptions.FormatAfterTidy)
+        mParameters = $"{mParameters} {ScriptConstants.kClangFormatStyle} {GetClangFormatParameters(aClangFormatView)}";
 
       mParameters = $"{mParameters} {ScriptConstants.kVsVersion} {aVsVersion} {ScriptConstants.kVsEdition} {aVsEdition}";
     }
@@ -61,7 +61,7 @@ namespace ClangPowerTools.Script
     //Get the script file path
     protected override string GetFilePath() => Path.Combine(base.GetFilePath(), ScriptConstants.kScriptName);
 
-    private string GetGeneralParameters(GeneralOptions aGeneralOptions)
+    private string GetGeneralParameters(ClangGeneralOptionsView aGeneralOptions)
     {
       string parameters = string.Empty;
 
@@ -90,7 +90,7 @@ namespace ClangPowerTools.Script
       return $"{parameters}";
     }
 
-    private string GetTidyParameters(TidyOptions aTidyOptions, TidyChecks aTidyChecks, TidyCustomChecks aTidyCustomChecks)
+    private string GetTidyParameters(ClangTidyOptionsView aTidyOptions, ClangTidyChecksOptionsView aTidyChecks, ClangTidyCustomChecksOptionsView aTidyCustomChecks)
     {
       string parameters = string.Empty;
 
@@ -141,12 +141,12 @@ namespace ClangPowerTools.Script
       return parameters;
     }
 
-    private string GetClangFormatParameters(ClangFormatPage aClangFormat)
+    private string GetClangFormatParameters(ClangFormatOptionsView aClangFormatView)
     {
-      if (true == string.IsNullOrWhiteSpace(aClangFormat.Style))
+      if (true == string.IsNullOrWhiteSpace(aClangFormatView.Style))
         return string.Empty;
 
-      return aClangFormat.Style;
+      return aClangFormatView.Style;
     }
 
     #endregion
