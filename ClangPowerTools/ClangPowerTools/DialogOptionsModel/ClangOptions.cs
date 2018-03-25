@@ -30,6 +30,8 @@ namespace ClangPowerTools
 
     public bool ClangCompileAfterVsCompile { get; set; }
 
+    public string ClangBinDirectory { get; set; }
+
     public string Version { get; set; }
 
     #endregion
