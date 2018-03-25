@@ -27,7 +27,7 @@
     to be used when processing project files.
 
     E.g. 'Debug|Win32'.
-    If not specified, the first configuration-plaform found in the current project is used.
+    If not specified, the first configuration-platform found in the current project is used.
 
 .PARAMETER aCppToCompile
     Alias 'file'. What cpp(s) to compile from the found project(s). If empty, all CPPs are compiled.

@@ -12,7 +12,7 @@
                  Projects will be extracted from each sln.
 
     Important: You can pass an absolute path to a sln. This way, no file searching will be done, and
-               only the projects from this solution file will be taken into acount.
+               only the projects from this solution file will be taken into account.
 
 .PARAMETER aVcxprojToCompile
     Alias 'proj'. Array of project(s) to compile. If empty, all projects found in solutions are compiled.
@@ -36,7 +36,7 @@
     to be used when processing project files.
 
     E.g. 'Debug|Win32'.
-    If not specified, the first configuration-plaform found in the current project is used.
+    If not specified, the first configuration-platform found in the current project is used.
 
 .PARAMETER aCppToCompile
     Alias 'file'. What cpp(s) to compile from the found project(s). If empty, all CPPs are compiled.
@@ -354,7 +354,7 @@ Set-Variable -name "kRedundantSeparatorsReplaceRules" -option Constant `
 # they are used in project xml nodes expressions. we have a
 # translation engine (MSBUILD-POWERSHELL) for these. it relies on
 # PowerShell to evaluate these expressions. We have to inject project
-# properties in the Powershell runtime context. We keep track of them in
+# properties in the PowerShell runtime context. We keep track of them in
 # this list, to be cleaned before the next project begins processing
 [System.Collections.ArrayList] $global:ProjectSpecificVariables     = @()
 
@@ -435,7 +435,7 @@ Function Write-Message([parameter(Mandatory=$true)][string] $msg
   $host.ui.RawUI.ForegroundColor = $foregroundColor
 }
 
-# Writes an error without the verbose powershell extra-info (script line location, etc.)
+# Writes an error without the verbose PowerShell extra-info (script line location, etc.)
 Function Write-Err([parameter(ValueFromPipeline, Mandatory=$true)][string] $msg)
 {
   Write-Message -msg $msg -color Red
@@ -512,9 +512,9 @@ Function IsFileMatchingName( [Parameter(Mandatory=$true)][string] $filePath
   .DESCRIPTION
   Merges an absolute and a relative file path.
   .EXAMPLE
-  Havin base = C:\Windows\System32 and child = .. we get C:\Windows
+  Having base = C:\Windows\System32 and child = .. we get C:\Windows
   .EXAMPLE
-  Havin base = C:\Windows\System32 and child = ..\..\..\.. we get C:\ (cannot go further up)
+  Having base = C:\Windows\System32 and child = ..\..\..\.. we get C:\ (cannot go further up)
   .PARAMETER base
   The absolute path from which we start.
   .PARAMETER child
@@ -1138,7 +1138,7 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
 
   $global:FilesToDeleteWhenScriptQuits.Add($stdafxPch) | Out-Null
 
-  # Supress -Werror for PCH generation as it throws warnings quite often in code we cannot control
+  # Suppress -Werror for PCH generation as it throws warnings quite often in code we cannot control
   [string[]] $clangFlags = Get-ClangCompileFlags | Where-Object { $_ -ne $kClangFlagWarningIsError }
 
   [string[]] $compilationFlags = @("""$stdafx"""
@@ -2265,7 +2265,7 @@ Push-Location (Get-SourceDirectory)
 # fetch .sln paths and data
 Load-Solutions
 
-# This powershell process may already have completed jobs. Discard them.
+# This PowerShell process may already have completed jobs. Discard them.
 Remove-Job -State Completed
 
 Write-Verbose "Source directory: $(Get-SourceDirectory)"
