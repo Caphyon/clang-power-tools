@@ -101,7 +101,11 @@
 
 .PARAMETER aClangBinDirectory
       Alias 'clang-bin-dir'. Manual override of the Clang "bin" directory.
-	  TODO
+      When not provided, the script looks for the Clang binaries in the following locations:
+      - The directories from the system %PATH%
+      - %ProgramW6432%\LLVM\bin
+      - %ProgramFiles(x86)%\LLVM\bin
+      If the parameter is present, it should be a path to the 'bin' directory of a Clang install.
 
 .PARAMETER aVisualStudioVersion
       Alias 'vs-ver'. Version of Visual Studio (VC++) installed and that'll be used for
@@ -2230,7 +2234,6 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 # Script entry point
 
 Clear-Host # clears console
-$VerbosePreference = "Continue"
 
 #-------------------------------------------------------------------------------------------------
 # Print script parameters
@@ -2251,7 +2254,7 @@ if ($bParams)
 
 Write-Verbose "CPU logical core count: $kLogicalCoreCount"
 
-# If LLVM location is overridden, place it first in PATH
+# If the LLVM location is overridden, it will be the first in PATH
 if (![string]::IsNullOrEmpty($aClangBinDirectory))
 {
   Write-Verbose "LLVM location override: $aClangBinDirectory"

@@ -69,7 +69,7 @@ namespace ClangPowerTools
 
     [Category("General")]
     [DisplayName("Clang 'bin' directory")]
-    [Description("TODO")]
+    [Description("Overrides the Clang binaries detection mechanism. By default, these are searched for in the System %PATH% or in the default install locations: %ProgramW6432%\LLVM\bin and %ProgramFiles(x86)%\LLVM\bin.")]
     [TypeConverter(typeof(ClangBinDirConvertor))]
     public ClangBinDirectory ClangBinDirectory { get; set; }
 
