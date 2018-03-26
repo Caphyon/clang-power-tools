@@ -42,7 +42,8 @@ namespace ClangPowerTools
         Text = aError.Description,
         Line = aError.Line - 1,
         Category = TaskCategory.BuildCompile,
-        Priority = TaskPriority.High
+        Priority = TaskPriority.High,
+        HierarchyItem = aError.HierarchyItem
       };
       errorTask.Navigate += ErrorTaskNavigate;
       mErrorProvider.Tasks.Add(errorTask);
