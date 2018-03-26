@@ -11,7 +11,7 @@ namespace ClangPowerTools
     #region Members
 
     private static ErrorWindow mErrorWindow = new ErrorWindow();
-    
+
     #endregion
 
     #region Constructor
@@ -27,8 +27,16 @@ namespace ClangPowerTools
 
     public void AddError(TaskError aError)
     {
-      if (!String.IsNullOrWhiteSpace(aError.Description))
-        mErrorWindow.AddError(aError);
+      DispatcherHandler.BeginInvoke(() =>
+      {
+        mErrorWindow.SuspendRefresh();
+
+        if (!String.IsNullOrWhiteSpace(aError.Description))
+          mErrorWindow.AddError(aError);
+
+        mErrorWindow.Show();
+        mErrorWindow.ResumeRefresh();
+      });
     }
 
     public void AddErrors(IEnumerable<TaskError> aErrors)
@@ -45,7 +53,13 @@ namespace ClangPowerTools
       });
     }
 
-    public void Clear() => mErrorWindow.Clear();
+    public void Clear()
+    {
+      DispatcherHandler.BeginInvoke(() =>
+      {
+        mErrorWindow.Clear();
+      });
+    }
 
     #endregion
   }

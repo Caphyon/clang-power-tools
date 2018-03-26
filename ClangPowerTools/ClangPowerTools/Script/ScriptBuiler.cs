@@ -1,8 +1,4 @@
-﻿using ClangPowerTools.DialogPages;
-using System;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 
 namespace ClangPowerTools
 {
