@@ -98,6 +98,7 @@ namespace ClangPowerTools
           if (!mCommandsController.Running)
             break;
 
+          mOutputManager.Hierarchy = AutomationUtil.GetItemHierarchy(ServiceProvider, item);
           var process = mPowerShell.Invoke(script, mRunningProcesses);
 
           if (mOutputManager.MissingLlvm)
