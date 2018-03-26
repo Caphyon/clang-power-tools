@@ -1,9 +1,10 @@
-﻿using Microsoft.VisualStudio.Shell;
-using System;
+﻿using System;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools
 {
-  public class ErrorWindow
+    public class ErrorWindow
   {
     #region Members
 
@@ -29,6 +30,8 @@ namespace ClangPowerTools
 
     public void AddError(TaskError aError) => AddTask(aError);
 
+    public void RemoveErrors(IVsHierarchy aHierarchy) => RemoveTasks(aHierarchy);
+
     #endregion
 
     #region Private Methods
@@ -47,6 +50,21 @@ namespace ClangPowerTools
       };
       errorTask.Navigate += ErrorTaskNavigate;
       mErrorProvider.Tasks.Add(errorTask);
+    }
+
+    private void RemoveTasks(IVsHierarchy aHierarchy)
+    {
+      for( int i = mErrorProvider.Tasks.Count - 1; i >= 0; --i )
+      {
+        var errorTask = mErrorProvider.Tasks[i] as ErrorTask;
+        aHierarchy.GetCanonicalName( Microsoft.VisualStudio.VSConstants.VSITEMID_ROOT, out string nameInHierarchy );
+        errorTask.HierarchyItem.GetCanonicalName( Microsoft.VisualStudio.VSConstants.VSITEMID_ROOT, out string nameErrorTaskHierarchy );
+        if( nameInHierarchy == nameErrorTaskHierarchy )
+        {
+          errorTask.Navigate -= ErrorTaskNavigate;
+          mErrorProvider.Tasks.Remove( errorTask );
+        }
+      }
     }
 
     private void ErrorTaskNavigate(object sender, EventArgs e)

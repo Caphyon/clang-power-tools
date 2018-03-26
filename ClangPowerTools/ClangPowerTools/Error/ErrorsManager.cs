@@ -1,12 +1,10 @@
-﻿using EnvDTE80;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Windows.Interop;
-using System.Windows.Threading;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools
 {
-  public class ErrorsManager
+    public class ErrorsManager
   {
     #region Members
 
@@ -49,6 +47,16 @@ namespace ClangPowerTools
           mErrorWindow.AddError(error);
 
         mErrorWindow.Show();
+        mErrorWindow.ResumeRefresh();
+      });
+    }
+
+    public void RemoveErrors(IVsHierarchy aHierarchy)
+    {
+      DispatcherHandler.BeginInvoke(() =>
+      {
+        mErrorWindow.SuspendRefresh();
+        mErrorWindow.RemoveErrors( aHierarchy );
         mErrorWindow.ResumeRefresh();
       });
     }
