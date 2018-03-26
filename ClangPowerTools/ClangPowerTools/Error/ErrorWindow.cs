@@ -54,7 +54,6 @@ namespace ClangPowerTools
       objErrorTask.Line += 1;
       bool bResult = mErrorProvider.Navigate(objErrorTask, new Guid(EnvDTE.Constants.vsViewKindCode));
       objErrorTask.Line -= 1;
-
     }
 
     #endregion

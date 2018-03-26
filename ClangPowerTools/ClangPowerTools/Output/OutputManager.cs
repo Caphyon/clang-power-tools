@@ -3,8 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using System.Windows.Interop;
-using System.Windows.Threading;
 
 namespace ClangPowerTools
 {
@@ -73,11 +71,10 @@ namespace ClangPowerTools
 
     public void AddMessage(string aMessage)
     {
-      if (String.IsNullOrWhiteSpace(aMessage))
-        return;
-
       DispatcherHandler.BeginInvoke(() =>
       {
+        if (String.IsNullOrWhiteSpace(aMessage))
+          return;
         mOutputWindow.Write(aMessage);
       });
     }
