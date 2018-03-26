@@ -35,9 +35,13 @@ namespace ClangPowerTools
     {
       DispatcherHandler.BeginInvoke(() =>
       {
+        mErrorWindow.SuspendRefresh();
+
         foreach (TaskError error in aErrors)
           mErrorWindow.AddError(error);
+
         mErrorWindow.Show();
+        mErrorWindow.ResumeRefresh();
       });
     }
 

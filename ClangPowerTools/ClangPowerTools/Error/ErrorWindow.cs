@@ -23,6 +23,10 @@ namespace ClangPowerTools
 
     public void Clear() => mErrorProvider.Tasks.Clear();
 
+    public void SuspendRefresh() => mErrorProvider.SuspendRefresh();
+
+    public void ResumeRefresh() => mErrorProvider.ResumeRefresh();
+
     public void AddError(TaskError aError) => AddTask(aError);
 
     #endregion

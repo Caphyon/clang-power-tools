@@ -13,6 +13,7 @@ namespace ClangPowerTools
     #region Members
 
     private DTE2 mDte = null;
+    private OutputWindow mOutputWindow = null;
 
     private int kBufferSize = 5;
     private List<string> mMessagesBuffer = new List<string>();
@@ -47,6 +48,7 @@ namespace ClangPowerTools
     public OutputManager(DTE2 aDte)
     {
       mDte = aDte;
+      mOutputWindow = new OutputWindow(mDte);
     }
 
     #endregion
@@ -55,24 +57,18 @@ namespace ClangPowerTools
 
     public void Clear()
     {
-      using (OutputWindow outputWindow = new OutputWindow(mDte))
+      DispatcherHandler.BeginInvoke(() =>
       {
-        DispatcherHandler.BeginInvoke(() =>
-        {
-          outputWindow.Clear();
-        });
-      }
+        mOutputWindow.Clear();
+      });
     }
 
     public void Show()
     {
-      using (OutputWindow outputWindow = new OutputWindow(mDte))
+      DispatcherHandler.BeginInvoke(() =>
       {
-        DispatcherHandler.BeginInvoke(() =>
-        {
-          outputWindow.Show(mDte);
-        });
-      }
+        mOutputWindow.Show(mDte);
+      });
     }
 
     public void AddMessage(string aMessage)
@@ -80,13 +76,10 @@ namespace ClangPowerTools
       if (String.IsNullOrWhiteSpace(aMessage))
         return;
 
-      using (OutputWindow outputWindow = new OutputWindow(mDte))
+      DispatcherHandler.BeginInvoke(() =>
       {
-        DispatcherHandler.BeginInvoke(() =>
-        {
-          outputWindow.Write(aMessage);
-        });
-      }
+        mOutputWindow.Write(aMessage);
+      });
     }
 
     private void ProcessOutput(string aMessage)
@@ -109,7 +102,7 @@ namespace ClangPowerTools
             errors.Add(aError);
 
             StringBuilder output = new StringBuilder(
-              GetOutput(ref text, aError.FullMessage ));
+              GetOutput(ref text, aError.FullMessage));
 
             while (mErrorParser.FindErrors(text, out aError))
             {
