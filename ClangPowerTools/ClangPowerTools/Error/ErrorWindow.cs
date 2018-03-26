@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 
 namespace ClangPowerTools
@@ -29,6 +30,8 @@ namespace ClangPowerTools
 
     public void AddError(TaskError aError) => AddTask(aError);
 
+    public void RemoveErrors(IVsHierarchy aHierarchy) => RemoveTasks(aHierarchy);
+
     #endregion
 
     #region Private Methods
@@ -42,10 +45,28 @@ namespace ClangPowerTools
         Text = aError.Description,
         Line = aError.Line - 1,
         Category = TaskCategory.BuildCompile,
-        Priority = TaskPriority.High
+        Priority = TaskPriority.High,
+        HierarchyItem = aError.HierarchyItem
       };
       errorTask.Navigate += ErrorTaskNavigate;
       mErrorProvider.Tasks.Add(errorTask);
+    }
+
+    private void RemoveTasks(IVsHierarchy aHierarchy)
+    {
+      mErrorProvider.SuspendRefresh();
+      for( int i = mErrorProvider.Tasks.Count - 1; i >= 0; --i )
+      {
+        var errorTask = mErrorProvider.Tasks[i] as ErrorTask;
+        aHierarchy.GetCanonicalName(Microsoft.VisualStudio.VSConstants.VSITEMID_ROOT, out string nameInHierarchy);
+        errorTask.HierarchyItem.GetCanonicalName(Microsoft.VisualStudio.VSConstants.VSITEMID_ROOT, out string nameErrorTaskHierarchy);
+        if( nameInHierarchy == nameErrorTaskHierarchy )
+        {
+          errorTask.Navigate -= ErrorTaskNavigate;
+          mErrorProvider.Tasks.Remove(errorTask);
+        }
+      }
+      mErrorProvider.ResumeRefresh();
     }
 
     private void ErrorTaskNavigate(object sender, EventArgs e)
@@ -54,7 +75,6 @@ namespace ClangPowerTools
       objErrorTask.Line += 1;
       bool bResult = mErrorProvider.Navigate(objErrorTask, new Guid(EnvDTE.Constants.vsViewKindCode));
       objErrorTask.Line -= 1;
-
     }
 
     #endregion

@@ -1,4 +1,5 @@
 ﻿using EnvDTE80;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Windows.Interop;
@@ -44,6 +45,8 @@ namespace ClangPowerTools
         mErrorWindow.ResumeRefresh();
       });
     }
+
+    public void RemoveErrors(IVsHierarchy aHierarchy) => mErrorWindow.RemoveErrors(aHierarchy);
 
     public void Clear() => mErrorWindow.Clear();
 
