@@ -2017,9 +2017,10 @@ Function Run-ClangJobs([Parameter(Mandatory=$true)] $clangJobs)
 
     Push-Location $job.WorkingDirectory
 
-    $callOutput = & $job.FilePath $job.ArgumentList.Split(' ') 2>&1 |`
-                  ForEach-Object { $_.ToString() } |`
-                  Out-String
+    # When PowerShell encounters errors, the first one is handled differently from consecutive ones
+    # To circumvent this, do not execute the job directly, but execute it via cmd.exe
+    # See also https://stackoverflow.com/a/35980675 
+    $callOutput = cmd /c $job.FilePath $job.ArgumentList.Split(' ') '2>&1' | Out-String
 
     $callSuccess = $LASTEXITCODE -eq 0
 
