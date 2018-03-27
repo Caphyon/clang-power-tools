@@ -160,6 +160,12 @@ namespace ClangPowerTools
 
     public int OnBeforeCloseProject(IVsHierarchy aPHierarchy, int aFRemoved)
     {
+      aPHierarchy.GetProperty(VSConstants.VSITEMID_ROOT, ( int )__VSHPROPID.VSHPROPID_ExtObject, out object projectObject);
+      if( projectObject is Project project )
+      {
+        var errorManager = new ErrorsManager(this);
+        errorManager.RemoveErrors( aPHierarchy );
+      }
       return VSConstants.S_OK;
     }
 
