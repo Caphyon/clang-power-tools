@@ -1047,7 +1047,7 @@ Function Get-ProjectStdafxDir( [Parameter(Mandatory=$true)]  [string]   $pchHead
     # we need to use only backslashes so that we can match against file header paths
     $pchHeaderName = $pchHeaderName.Replace("/", "\")
 
-    $stdafxPath = $projectHeaders | Where-Object { $_.EndsWith($pchHeaderName) }
+    $stdafxPath = $projectHeaders | Where-Object { (Get-FileName -path $_) -eq $pchHeaderName }
   }
 
   if ([string]::IsNullOrEmpty($stdafxPath))
