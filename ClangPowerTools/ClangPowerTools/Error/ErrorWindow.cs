@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools
 {
-    public class ErrorWindow
+  public class ErrorWindow
   {
     #region Members
 
@@ -16,13 +16,15 @@ namespace ClangPowerTools
 
     public void Initialize(IServiceProvider aServiceProvider)
     {
-      if( null == mErrorProvider )
+      if (null == mErrorProvider)
         mErrorProvider = new ErrorListProvider(aServiceProvider);
     }
 
     public void Show() => mErrorProvider.Show();
 
     public void Clear() => mErrorProvider.Tasks.Clear();
+
+    public bool HasErrors() => 0 != mErrorProvider.Tasks.Count;
 
     public void SuspendRefresh() => mErrorProvider.SuspendRefresh();
 
@@ -54,15 +56,15 @@ namespace ClangPowerTools
 
     private void RemoveTasks(IVsHierarchy aHierarchy)
     {
-      for( int i = mErrorProvider.Tasks.Count - 1; i >= 0; --i )
+      for (int i = mErrorProvider.Tasks.Count - 1; i >= 0; --i)
       {
         var errorTask = mErrorProvider.Tasks[i] as ErrorTask;
-        aHierarchy.GetCanonicalName( Microsoft.VisualStudio.VSConstants.VSITEMID_ROOT, out string nameInHierarchy );
-        errorTask.HierarchyItem.GetCanonicalName( Microsoft.VisualStudio.VSConstants.VSITEMID_ROOT, out string nameErrorTaskHierarchy );
-        if( nameInHierarchy == nameErrorTaskHierarchy )
+        aHierarchy.GetCanonicalName(Microsoft.VisualStudio.VSConstants.VSITEMID_ROOT, out string nameInHierarchy);
+        errorTask.HierarchyItem.GetCanonicalName(Microsoft.VisualStudio.VSConstants.VSITEMID_ROOT, out string nameErrorTaskHierarchy);
+        if (nameInHierarchy == nameErrorTaskHierarchy)
         {
           errorTask.Navigate -= ErrorTaskNavigate;
-          mErrorProvider.Tasks.Remove( errorTask );
+          mErrorProvider.Tasks.Remove(errorTask);
         }
       }
     }

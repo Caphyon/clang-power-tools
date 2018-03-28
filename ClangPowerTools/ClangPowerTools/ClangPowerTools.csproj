@@ -97,7 +97,7 @@
     <Compile Include="Handlers\DocumentsHandler.cs" />
     <Compile Include="Error\ErrorParser.cs" />
     <Compile Include="Error\ErrorParserConstants.cs" />
-    <Compile Include="Error\ErrorsManager.cs" />
+    <Compile Include="Error\ErrorManager.cs" />
     <Compile Include="Files Operations\FileChangerWatcher.cs" />
     <Compile Include="Files Operations\FileOpener.cs" />
     <Compile Include="Files Operations\FilePathCollector.cs" />

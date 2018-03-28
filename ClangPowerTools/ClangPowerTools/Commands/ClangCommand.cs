@@ -21,7 +21,6 @@ namespace ClangPowerTools
     protected ClangGeneralOptionsView mGeneralOptions;
     private Commands2 mCommand;
 
-    private ErrorsManager mErrorsManager;
     private PowerShellWrapper mPowerShell = new PowerShellWrapper();
     private ClangCompileTidyScript mCompileTidyScriptBuilder;
     private const string kVs15Version = "2017";
@@ -56,7 +55,6 @@ namespace ClangPowerTools
       if (null == mCommandsController)
         mCommandsController = aCommandsController;
 
-      mErrorsManager = new ErrorsManager(Package);
       mGeneralOptions = (ClangGeneralOptionsView)Package.GetDialogPage(typeof(ClangGeneralOptionsView));
     }
 
@@ -115,7 +113,7 @@ namespace ClangPowerTools
           mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
         }
         if (mOutputManager.HasErrors)
-          mErrorsManager.AddErrors(mOutputManager.Errors);
+          ErrorManager.Instance.AddErrors(mOutputManager.Errors);
 
       }
       catch (Exception)
@@ -170,7 +168,7 @@ namespace ClangPowerTools
 
     private void ClearWindows()
     {
-      mErrorsManager.Clear();
+      ErrorManager.Instance.Clear();
       mOutputManager.Clear();
       mOutputManager.Show();
     }

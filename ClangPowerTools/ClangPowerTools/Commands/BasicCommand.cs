@@ -40,18 +40,6 @@ namespace ClangPowerTools
       Id = aId;
 
       DTEObj = (DTE2)ServiceProvider.GetService(typeof(DTE));
-      DTEObj.Events.BuildEvents.OnBuildBegin +=
-        new _dispBuildEvents_OnBuildBeginEventHandler(this.OnBuildBegin);
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    private void OnBuildBegin(EnvDTE.vsBuildScope Scope, EnvDTE.vsBuildAction Action)
-    {
-      ErrorsManager errorsManager = new ErrorsManager(ServiceProvider);
-      errorsManager.Clear();
     }
 
     #endregion

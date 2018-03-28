@@ -162,10 +162,8 @@ namespace ClangPowerTools
     {
       aPHierarchy.GetProperty(VSConstants.VSITEMID_ROOT, ( int )__VSHPROPID.VSHPROPID_ExtObject, out object projectObject);
       if( projectObject is Project project )
-      {
-        var errorManager = new ErrorsManager(this);
-        errorManager.RemoveErrors( aPHierarchy );
-      }
+        ErrorManager.Instance.RemoveErrors(aPHierarchy);
+
       return VSConstants.S_OK;
     }
 
@@ -191,11 +189,12 @@ namespace ClangPowerTools
         var dte = GetService(typeof(DTE)) as DTE2;
         mCommandsController = new CommandsController(this, dte);
 
-        if (null == mTidyCmd)
-          mTidyCmd = new TidyCommand(this, CommandSet, CommandIds.kTidyId, mCommandsController);
 
         if (null == mCompileCmd)
           mCompileCmd = new CompileCommand(this, CommandSet, CommandIds.kCompileId, mCommandsController);
+
+        if (null == mTidyCmd)
+          mTidyCmd = new TidyCommand(this, CommandSet, CommandIds.kTidyId, mCommandsController);
 
         if (null == mClangFormatCmd)
           mClangFormatCmd = new ClangFormatCommand(this, CommandSet, CommandIds.kClangFormat, mCommandsController);
@@ -205,6 +204,7 @@ namespace ClangPowerTools
 
         DispatcherHandler.Initialize(dte);
         StatusBarHandler.Initialize(this);
+        ErrorManager.Initialize(this);
 
         var generalOptions = (ClangGeneralOptionsView)this.GetDialogPage(typeof(ClangGeneralOptionsView));
         var currentVersion = GetPackageVersion();
@@ -219,6 +219,8 @@ namespace ClangPowerTools
           generalOptions.Version = currentVersion;
           generalOptions.SaveSettingsToStorage();
         }
+
+        mBuildEvents.OnBuildBegin += ErrorManager.Instance.OnBuildBegin;
 
         mBuildEvents.OnBuildBegin += mCommandsController.OnBuildBegin;
         mBuildEvents.OnBuildDone += mCommandsController.OnBuildDone;
@@ -246,6 +248,8 @@ namespace ClangPowerTools
 
     public int OnBeforeCloseSolution(object aPUnkReserved)
     {
+      mBuildEvents.OnBuildBegin -= ErrorManager.Instance.OnBuildBegin;
+
       mBuildEvents.OnBuildBegin -= mCommandsController.OnBuildBegin;
       mBuildEvents.OnBuildDone -= mCommandsController.OnBuildDone;
 

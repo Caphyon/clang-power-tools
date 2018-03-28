@@ -2,8 +2,6 @@
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
-using System.Windows.Interop;
-using System.Windows.Threading;
 
 namespace ClangPowerTools
 {
@@ -79,8 +77,6 @@ namespace ClangPowerTools
     public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action)
     {
       VsBuildRunning = true;
-      ErrorsManager errorsManager = new ErrorsManager(mServiceProvider);
-      errorsManager.Clear();
     }
 
     public void OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
@@ -108,8 +104,6 @@ namespace ClangPowerTools
     //  }
     //  return false;
     //}
-
-
 
     #endregion
 
