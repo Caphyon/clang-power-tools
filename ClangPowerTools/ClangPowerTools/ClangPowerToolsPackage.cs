@@ -246,8 +246,8 @@ namespace ClangPowerTools
 
     public int OnBeforeCloseSolution(object aPUnkReserved)
     {
-      mBuildEvents.OnBuildBegin += mCommandsController.OnBuildBegin;
-      mBuildEvents.OnBuildDone += mCommandsController.OnBuildDone;
+      mBuildEvents.OnBuildBegin -= mCommandsController.OnBuildBegin;
+      mBuildEvents.OnBuildDone -= mCommandsController.OnBuildDone;
 
       mBuildEvents.OnBuildDone -= mCompileCmd.OnBuildDone;
 
