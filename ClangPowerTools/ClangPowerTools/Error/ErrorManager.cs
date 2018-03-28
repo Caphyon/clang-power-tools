@@ -1,27 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
+using EnvDTE;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools
 {
-    public class ErrorsManager
+  public class ErrorManager
   {
     #region Members
 
-    private static ErrorWindow mErrorWindow = new ErrorWindow();
+    private ErrorWindow mErrorWindow = new ErrorWindow();
 
     #endregion
 
     #region Constructor
 
-    public ErrorsManager(IServiceProvider aServiceProvider)
+    private ErrorManager(IServiceProvider aServiceProvider)
     {
       mErrorWindow.Initialize(aServiceProvider);
     }
 
     #endregion
 
+    #region Properties
+
+    public static ErrorManager Instance { get; private set; }
+
+    #endregion
+
     #region Public Methods
+
+    public static void Initialize(IServiceProvider aServiceProvider)
+    {
+      Instance = new ErrorManager(aServiceProvider);
+    }
 
     public void AddError(TaskError aError)
     {
@@ -56,7 +68,7 @@ namespace ClangPowerTools
       DispatcherHandler.BeginInvoke(() =>
       {
         mErrorWindow.SuspendRefresh();
-        mErrorWindow.RemoveErrors( aHierarchy );
+        mErrorWindow.RemoveErrors(aHierarchy);
         mErrorWindow.ResumeRefresh();
       });
     }
@@ -67,6 +79,11 @@ namespace ClangPowerTools
       {
         mErrorWindow.Clear();
       });
+    }
+
+    public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action)
+    {
+      Clear();
     }
 
     #endregion
