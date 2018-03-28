@@ -34,8 +34,6 @@ namespace ClangPowerTools
 
     public void RemoveErrors(IVsHierarchy aHierarchy) => RemoveTasks(aHierarchy);
 
-    public void RemoveErrors() => RemoveTasks();
-
     #endregion
 
     #region Private Methods
@@ -68,18 +66,6 @@ namespace ClangPowerTools
           errorTask.Navigate -= ErrorTaskNavigate;
           mErrorProvider.Tasks.Remove(errorTask);
         }
-      }
-    }
-
-    private void RemoveTasks()
-    {
-      mErrorProvider.Tasks.Clear();
-
-      for (int i = mErrorProvider.Tasks.Count - 1; i >= 0; --i)
-      {
-        var errorTask = mErrorProvider.Tasks[i] as ErrorTask;
-        errorTask.Navigate -= ErrorTaskNavigate;
-        mErrorProvider.Tasks.Remove(errorTask);
       }
     }
 
