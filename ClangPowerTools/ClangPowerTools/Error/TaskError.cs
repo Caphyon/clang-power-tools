@@ -11,6 +11,8 @@ namespace ClangPowerTools
 
     public int Line { get; set; }
 
+    public int Column { get; set; }
+
     public TaskErrorCategory Category { get; set; }
 
     public string FullMessage { get; set; }
@@ -23,11 +25,12 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public TaskError(string aFilePath, int aLine, 
+    public TaskError(string aFilePath, int aLine, int aColumn, 
       TaskErrorCategory aCategory, string aDescription, string aFullMessage)
     {
       FilePath = aFilePath;
       Line = aLine;
+      Column = aColumn;
       Category = aCategory;
       Description = aDescription;
       FullMessage = aFullMessage;
