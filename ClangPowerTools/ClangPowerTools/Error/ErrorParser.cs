@@ -30,6 +30,7 @@ namespace ClangPowerTools
 
       string path = groups[1].Value;
       int.TryParse(groups[3].Value, out int line);
+      int.TryParse(groups[5].Value, out int column);
 
       string categoryAsString = groups[7].Value;
       TaskErrorCategory category = FindErrorCategory(ref categoryAsString);
@@ -39,7 +40,7 @@ namespace ClangPowerTools
       string fullMessage = CreateFullErrorMessage(path, line, categoryAsString, clangTidyChecker, messageDescription);
 
       messageDescription = messageDescription.Insert(0, ErrorParserConstants.kClangTag); // Add clang prefix for error list
-      aError = new TaskError(path, line, category, messageDescription, fullMessage );
+      aError = new TaskError(path, line, column, category, messageDescription, fullMessage );
 
       return true;
     }
