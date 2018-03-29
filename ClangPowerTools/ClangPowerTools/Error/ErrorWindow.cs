@@ -46,6 +46,7 @@ namespace ClangPowerTools
         Document = aError.FilePath,
         Text = aError.Description,
         Line = aError.Line - 1,
+        Column = aError.Column,
         Category = TaskCategory.BuildCompile,
         Priority = TaskPriority.High,
         HierarchyItem = aError.HierarchyItem
