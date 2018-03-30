@@ -7,7 +7,7 @@ Improvements:
 
 * Improved responsiveness during lengthy operations.
 * Added support for filter errors by "Project" field in the Error List.
-* Removes errors when closing a project.
+* Cleanup errors when closing a project.
 * Use the whole file name of PCH cpp to detect PCH header directory.
 
 ### Clang Power Tools 3.2.1
