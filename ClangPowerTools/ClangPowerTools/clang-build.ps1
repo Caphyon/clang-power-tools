@@ -692,6 +692,27 @@ Function Should-IgnoreProject([Parameter(Mandatory=$true)][string] $vcxprojPath)
   return $false
 }
 
+Function Should-CompileFile([Parameter(Mandatory=$true)][System.Xml.XmlNode] $fileNode
+                           ,[Parameter(Mandatory=$false)][string] $pchCppName
+                           )
+{
+  [string] $file = $fileNode.Include
+
+  if (($file -eq $null) -or (![string]::IsNullOrEmpty($pchCppName) -and ($file -eq $pchCppName)))
+  {
+    return $false
+  }
+
+  [System.Xml.XmlNode] $excluded = $fileNode.SelectSingleNode("ns:ExcludedFromBuild", $global:xpathNS)
+
+  if (($excluded -ne $null) -and ($excluded.InnerText -ne $null) -and ($excluded.InnerText -ieq "true"))
+  {
+    return $false
+  }
+
+  return $true
+}
+
 Function Should-IgnoreFile([Parameter(Mandatory=$true)][string] $file)
 {
   if ($aCppToIgnore -eq $null)
@@ -712,12 +733,8 @@ Function Should-IgnoreFile([Parameter(Mandatory=$true)][string] $file)
 
 Function Get-ProjectFilesToCompile([Parameter(Mandatory=$false)][string] $pchCppName)
 {
-  [Boolean] $pchDisabled = [string]::IsNullOrEmpty($pchCppName)
-
   [string[]] $projectEntries = Select-ProjectNodes($kVcxprojXpathCompileFiles) | `
-                      Where-Object { ($_.Include -ne $null) -and
-                                     ($pchDisabled -or ($_.Include -ne $pchCppName))
-                                   }                                           | `
+                      Where-Object { Should-CompileFile -fileNode $_ -pchCppName $pchCppName } | `
                       Select-Object -Property "Include" -ExpandProperty "Include"
   [string[]] $files = @()
   foreach ($entry in $projectEntries)
