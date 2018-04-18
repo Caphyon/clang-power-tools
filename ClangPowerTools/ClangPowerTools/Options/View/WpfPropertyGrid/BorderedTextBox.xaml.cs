@@ -47,5 +47,6 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       if (PropertyChanged != null)
         PropertyChanged(this, new PropertyChangedEventArgs(propName));
     }
+  
   }
 }
