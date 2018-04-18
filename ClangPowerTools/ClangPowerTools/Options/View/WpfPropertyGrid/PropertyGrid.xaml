@@ -1,0 +1,58 @@
+﻿<UserControl
+      x:Class="Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid.PropertyGrid"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:Local="clr-namespace:Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid"
+      mc:Ignorable="d" 
+      d:DesignHeight="300" d:DesignWidth="300">
+  <UserControl.Resources>
+    <Local:PropertyTemplateSelector x:Key="DisplayTemplateSelector"/>
+  </UserControl.Resources>
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="4*" />
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <ListBox x:Name="PropertyList" 
+             Grid.Row="0"
+             Grid.IsSharedSizeScope="True" 
+             SelectionMode="Single"
+             HorizontalContentAlignment="Stretch"
+             ItemsSource ="{Binding}" 
+             ItemTemplateSelector="{StaticResource DisplayTemplateSelector}"
+             SelectionChanged="PropertyList_SelectionChanged">
+      <ListBox.GroupStyle>
+        <GroupStyle>
+          <GroupStyle.ContainerStyle>
+            <Style TargetType="{x:Type GroupItem}">
+              <Setter Property="Template">
+                <Setter.Value>
+                  <ControlTemplate TargetType="{x:Type GroupItem}">
+                    <Border BorderThickness="0,0,0,1">
+                      <Expander ExpandDirection="Down" IsExpanded = "True" >
+                        <Expander.Header>
+                          <TextBlock Text="{Binding Name}" />
+                        </Expander.Header>
+                        <ItemsPresenter />
+                      </Expander>
+                    </Border>
+                  </ControlTemplate>
+                </Setter.Value>
+              </Setter>
+            </Style>
+          </GroupStyle.ContainerStyle>
+        </GroupStyle>
+      </ListBox.GroupStyle>
+    </ListBox>
+    <GridSplitter Grid.Row="1" ResizeDirection="Rows" Panel.ZIndex="100" Height="4" HorizontalAlignment="Stretch"/>
+    <Border Grid.Row="2" BorderThickness="1" Margin="0">
+      <StackPanel Orientation="Vertical">
+        <TextBlock FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" x:Name="PropNameBlock" Margin="4,2,2,0" />
+        <Label x:Name="DescriptionPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+      </StackPanel>
+    </Border>
+  </Grid>
+</UserControl>

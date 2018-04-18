@@ -11,8 +11,6 @@ namespace ClangPowerTools
 
     private IServiceProvider mServiceProvider;
     private DTE2 mDte;
-    //private ClangFormatPage mClangFormatPage;
-    private Package mPackage;
 
     #endregion
 

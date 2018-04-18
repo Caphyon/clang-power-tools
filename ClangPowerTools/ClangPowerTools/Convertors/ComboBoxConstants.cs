@@ -1,7 +1,26 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace ClangPowerTools
 {
+  [Serializable]
+  public enum ClangStyle
+  {
+    [XmlEnum(Name = "File")]
+    File = 0,
+    [XmlEnum(Name = "Chromium")]
+    Chromium,
+    [XmlEnum(Name = "Google")]
+    Google,
+    [XmlEnum(Name = "LLVM")]
+    LLVM,
+    [XmlEnum(Name = "Mozilla")]
+    Mozilla,
+    [XmlEnum(Name = "WebKit")]
+    WebKit
+  }
+
   public sealed class ComboBoxConstants
   {
     #region Constants
