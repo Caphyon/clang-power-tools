@@ -49,7 +49,7 @@ namespace ClangPowerTools.Script
         $"{mParameters} {GetTidyParameters(aTidyOptions, aTidyChecks, aTidyCustomChecks)}" : $"{mParameters} {ScriptConstants.kParallel}";
 
       if (null != aClangFormatView && null != aTidyOptions && true == aTidyOptions.Fix && true == aTidyOptions.FormatAfterTidy)
-        mParameters = $"{mParameters} {ScriptConstants.kClangFormatStyle} {GetClangFormatParameters(aClangFormatView)}";
+        mParameters = $"{mParameters} {ScriptConstants.kClangFormatStyle} {aClangFormatView.Style}";
 
       mParameters = $"{mParameters} {ScriptConstants.kVsVersion} {aVsVersion} {ScriptConstants.kVsEdition} {aVsEdition}";
     }
@@ -139,14 +139,6 @@ namespace ClangPowerTools.Script
       }
 
       return parameters;
-    }
-
-    private string GetClangFormatParameters(ClangFormatOptionsView aClangFormatView)
-    {
-      if (true == string.IsNullOrWhiteSpace(aClangFormatView.Style))
-        return string.Empty;
-
-      return aClangFormatView.Style;
     }
 
     #endregion

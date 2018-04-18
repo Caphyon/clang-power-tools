@@ -1,0 +1,119 @@
+﻿<ResourceDictionary x:Class="Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid.PropertyGridResources"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:Local="clr-namespace:Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid"
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
+             xmlns:app="clr-namespace:ClangPowerTools"
+             xmlns:conv="clr-namespace:ClangPowerTools.Convertors"
+             mc:Ignorable="d" >
+
+  <SolidColorBrush x:Key="ReadOnlyForeBrush" Color="#6D6D6D" />
+
+  <conv:ClangStyleConverter x:Key="styleConverter" />
+
+  <ObjectDataProvider x:Key="stylesValues" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+    <ObjectDataProvider.MethodParameters>
+      <x:Type TypeName="app:ClangStyle"/>
+    </ObjectDataProvider.MethodParameters>
+  </ObjectDataProvider>
+
+  <!-- String DataTemplate -->
+  <DataTemplate x:Key="StringDataTemplate">
+    <Grid Margin="0" HorizontalAlignment ="Stretch">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" SharedSizeGroup="Key" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Border Grid.Column="0" >
+        <TextBlock Grid.Row="0" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="2,0"/>
+      </Border>
+      <Border Grid.Column="1">
+        <Local:BorderedTextBox
+          Grid.Row="0"
+          PreviewMouseUp="TextBoxPreviewMouseUp"
+          PreviewMouseDown="TextBoxPreviewMouseDown"
+          Margin="10,2"/>
+      </Border>
+    </Grid>
+  </DataTemplate>
+
+  <!-- String DataTemplate -->
+  <DataTemplate x:Key="StyleDataTemplate">
+    <Grid Margin="0" HorizontalAlignment ="Stretch">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" SharedSizeGroup="Key" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Border Grid.Column="0" >
+        <TextBlock Grid.Row="0" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="2,0"/>
+      </Border>
+      <Border Grid.Column="1">
+        <ComboBox ItemsSource="{Binding Source={StaticResource stylesValues}}" SelectedItem="{Binding Value}" Grid.Row="0" Margin="10,2">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Converter={StaticResource styleConverter}}"/>
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+      </Border>
+    </Grid>
+  </DataTemplate>
+
+  <!-- Bool DataTemplate -->
+  <DataTemplate x:Key="BoolDataTemplate">
+    <Grid Margin="0" HorizontalAlignment ="Stretch">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" SharedSizeGroup="Key" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Border Grid.Column="0" >
+        <TextBlock Grid.Row="0" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="2,0"/>
+      </Border>
+      <Border Grid.Column="1">
+        <CheckBox IsChecked="{Binding Value}" Margin="10,0"/>
+      </Border>
+    </Grid>
+  </DataTemplate>
+
+  <!-- FolderSelect DataTemplate -->
+  <DataTemplate x:Key="FolderSelectTemplate">
+    <Grid Margin="0" HorizontalAlignment ="Stretch">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" SharedSizeGroup="Key" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Border Grid.Column="0">
+        <TextBlock Grid.Row="0"  Text="{Binding DisplayName, Mode=OneTime}" Margin="5,0"/>
+      </Border>
+      <Border Grid.Column="1">
+        <TextBox Grid.Row="0" Text="{Binding Value, Mode=TwoWay}"  
+                 PreviewMouseUp="TextBoxPreviewMouseUp"
+                 PreviewMouseDown="TextBoxPreviewMouseDown"
+                 Margin="10,2"/>
+      </Border>
+    </Grid>
+  </DataTemplate>
+
+  <!-- Default DataTemplate -->
+  <DataTemplate x:Key="DefaultDataTemplate">
+    <Grid Margin="0" HorizontalAlignment ="Stretch">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" SharedSizeGroup="Key" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Border Grid.Column="0">
+        <TextBlock Grid.Row="0"  Text="{Binding DisplayName, Mode=OneTime}" 
+                   Foreground="{StaticResource ReadOnlyForeBrush}"
+                   VerticalAlignment="Center"/>
+      </Border>
+      <Border Grid.Column="1">
+        <TextBlock Grid.Row="0" Text="{Binding Value, Mode=OneWay}" 
+                   Foreground="{StaticResource ReadOnlyForeBrush}"
+                   VerticalAlignment="Center"
+                   Margin="10,2"/>
+      </Border>
+    </Grid>
+  </DataTemplate>
+</ResourceDictionary>

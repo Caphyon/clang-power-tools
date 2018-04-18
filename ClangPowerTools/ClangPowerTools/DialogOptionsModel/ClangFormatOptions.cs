@@ -25,7 +25,7 @@ namespace ClangPowerTools
 
     //public bool SortIncludes { get; set; }
 
-    public string Style { get; set; }
+    public ClangStyle? Style { get; set; }
 
     #endregion
 
