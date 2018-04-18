@@ -11,11 +11,11 @@
 
   <SolidColorBrush x:Key="ReadOnlyForeBrush" Color="#6D6D6D" />
 
-  <conv:ClangStyleConverter x:Key="styleConverter" />
+  <conv:ClangFormatStyleConverter x:Key="styleConverter" />
 
   <ObjectDataProvider x:Key="stylesValues" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
     <ObjectDataProvider.MethodParameters>
-      <x:Type TypeName="app:ClangStyle"/>
+      <x:Type TypeName="app:ClangFormatStyle"/>
     </ObjectDataProvider.MethodParameters>
   </ObjectDataProvider>
 

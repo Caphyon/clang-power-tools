@@ -19,9 +19,9 @@ namespace ClangPowerTools.Options.ViewModel
   /// <summary>
   /// Interaction logic for UserControlWPF.xaml
   /// </summary>
-  public partial class UserControlWPF : UserControl
+  public partial class ClangFormatOptionsUserControlWPF : UserControl
   {
-    public UserControlWPF(ClangFormatOptionsView clangFormat)
+    public ClangFormatOptionsUserControlWPF(ClangFormatOptionsView clangFormat)
     {
       InitializeComponent();
 

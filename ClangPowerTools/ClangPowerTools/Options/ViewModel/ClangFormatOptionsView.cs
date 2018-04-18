@@ -72,7 +72,7 @@ namespace ClangPowerTools.DialogPages
       "style configuration from .clang-format file located in one of the parent directories of the " +
       "source file(or current directory for stdin).\nUse -style=\"{key: value, ...}\" to set specific parameters, " +
       "e.g.: -style=\"{BasedOnStyle: llvm, IndentWidth: 8}\"")]
-    public ClangStyle? Style { get; set; }
+    public ClangFormatStyle? Style { get; set; }
 
     #endregion
 
@@ -114,14 +114,7 @@ namespace ClangPowerTools.DialogPages
 
       //this.SortIncludes = loadedConfig.SortIncludes;
 
-      //this.Style = ClangStyle.File;
-      //this.Style = null == loadedConfig.Style ? ClangStyle.File : loadedConfig.Style;
-
-      var loadedStyle = loadedConfig.Style;
-
-      this.Style = null == loadedStyle ? ClangStyle.File : loadedConfig.Style;
-
-
+      this.Style = null == loadedConfig.Style ? ClangFormatStyle.file : loadedConfig.Style;
     }
 
     #endregion
