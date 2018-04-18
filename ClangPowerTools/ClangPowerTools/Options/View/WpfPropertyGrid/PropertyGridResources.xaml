@@ -12,10 +12,17 @@
   <SolidColorBrush x:Key="ReadOnlyForeBrush" Color="#6D6D6D" />
 
   <conv:ClangFormatStyleConverter x:Key="styleConverter" />
+  <conv:ClangFormatFallbackStyleConverter x:Key="fallbackStyleConverter" />
 
   <ObjectDataProvider x:Key="stylesValues" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
     <ObjectDataProvider.MethodParameters>
       <x:Type TypeName="app:ClangFormatStyle"/>
+    </ObjectDataProvider.MethodParameters>
+  </ObjectDataProvider>
+
+  <ObjectDataProvider x:Key="falbackStyleValues" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+    <ObjectDataProvider.MethodParameters>
+      <x:Type TypeName="app:ClangFormatFallbackStyle"/>
     </ObjectDataProvider.MethodParameters>
   </ObjectDataProvider>
 
@@ -29,17 +36,20 @@
       <Border Grid.Column="0" >
         <TextBlock Grid.Row="0" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="2,0"/>
       </Border>
-      <Border Grid.Column="1">
+      <Border Grid.Column="1" Style="{x:Null}">
         <Local:BorderedTextBox
           Grid.Row="0"
           PreviewMouseUp="TextBoxPreviewMouseUp"
           PreviewMouseDown="TextBoxPreviewMouseDown"
           Margin="10,2"/>
+      
+        <!--<TextBox Style="{x:Null}"  Grid.Row="0" Margin="10,2" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"  />-->
+
       </Border>
     </Grid>
   </DataTemplate>
 
-  <!-- String DataTemplate -->
+  <!-- Clang Format Style DataTemplate -->
   <DataTemplate x:Key="StyleDataTemplate">
     <Grid Margin="0" HorizontalAlignment ="Stretch">
       <Grid.ColumnDefinitions>
@@ -61,6 +71,28 @@
     </Grid>
   </DataTemplate>
 
+  <!-- Clang Format FallbackStyle DataTemplate -->
+  <DataTemplate x:Key="FallbackStyleDataTemplate">
+    <Grid Margin="0" HorizontalAlignment ="Stretch">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" SharedSizeGroup="Key" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Border Grid.Column="0" >
+        <TextBlock Grid.Row="0" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="2,0"/>
+      </Border>
+      <Border Grid.Column="1">
+        <ComboBox ItemsSource="{Binding Source={StaticResource falbackStyleValues}}" SelectedItem="{Binding Value}" Grid.Row="0" Margin="10,2">
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Converter={StaticResource fallbackStyleConverter}}"/>
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+      </Border>
+    </Grid>
+  </DataTemplate>
+  
   <!-- Bool DataTemplate -->
   <DataTemplate x:Key="BoolDataTemplate">
     <Grid Margin="0" HorizontalAlignment ="Stretch">

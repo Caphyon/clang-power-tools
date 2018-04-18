@@ -1,11 +1,4 @@
-﻿/*
- * Copyright 2002 - 2011 Caphyon LTD. All rights reserved.
- *
- * mailto: eng@caphyon.com
- * http://www.caphyon.com
- *
- */
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Media;
 
 namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid

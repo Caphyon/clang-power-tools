@@ -10,7 +10,7 @@
       <TextBox x:Name="TextEditor" VerticalContentAlignment="Center"
                PreviewMouseUp="TextBoxPreviewMouseUp"
                PreviewMouseDown="TextBoxPreviewMouseDown" 
-               Text="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+               Text="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
     </DockPanel>
   </Grid>
 </UserControl>
