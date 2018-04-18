@@ -44,7 +44,7 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
         return mRes["StringDataTemplate"] as DataTemplate;
       if (prop.PropertyType == typeof(bool) && !prop.IsReadOnly )
         return mRes["BoolDataTemplate"] as DataTemplate;
-      if(prop.PropertyType == typeof(ClangStyle?))
+      if(prop.PropertyType == typeof(ClangFormatStyle?))
         return mRes["StyleDataTemplate"] as DataTemplate;
 
       return mRes["DefaultDataTemplate"] as DataTemplate;

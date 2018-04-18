@@ -20,7 +20,7 @@ namespace ClangPowerTools.Options.ViewModel
       this.page = page;
       InitializeComponent();
 
-      elementHost1.Child = new UserControlWPF(page);
+      clangFormatOptionsElementHost.Child = new ClangFormatOptionsUserControlWPF(page);
     }
   }
 }

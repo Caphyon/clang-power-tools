@@ -28,24 +28,24 @@
     /// </summary>
     private void InitializeComponent()
     {
-      this.elementHost1 = new System.Windows.Forms.Integration.ElementHost();
+      this.clangFormatOptionsElementHost = new System.Windows.Forms.Integration.ElementHost();
       this.SuspendLayout();
       // 
-      // elementHost1
+      // clangFormatOptionsElementHost
       // 
-      this.elementHost1.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.elementHost1.Location = new System.Drawing.Point(0, 0);
-      this.elementHost1.Name = "elementHost1";
-      this.elementHost1.Size = new System.Drawing.Size(1814, 974);
-      this.elementHost1.TabIndex = 0;
-      this.elementHost1.Text = "elementHost1";
-      this.elementHost1.Child = null;
+      this.clangFormatOptionsElementHost.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.clangFormatOptionsElementHost.Location = new System.Drawing.Point(0, 0);
+      this.clangFormatOptionsElementHost.Name = "clangFormatOptionsElementHost";
+      this.clangFormatOptionsElementHost.Size = new System.Drawing.Size(1814, 974);
+      this.clangFormatOptionsElementHost.TabIndex = 0;
+      this.clangFormatOptionsElementHost.Text = "elementHost1";
+      this.clangFormatOptionsElementHost.Child = null;
       // 
       // MyUserControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.elementHost1);
+      this.Controls.Add(this.clangFormatOptionsElementHost);
       this.Name = "MyUserControl";
       this.Size = new System.Drawing.Size(1814, 974);
       this.ResumeLayout(false);
@@ -54,6 +54,6 @@
 
     #endregion
 
-    private System.Windows.Forms.Integration.ElementHost elementHost1;
+    private System.Windows.Forms.Integration.ElementHost clangFormatOptionsElementHost;
   }
 }
