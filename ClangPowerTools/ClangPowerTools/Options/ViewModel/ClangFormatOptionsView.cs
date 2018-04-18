@@ -1,7 +1,7 @@
-﻿using ClangPowerTools.Convertors;
-using ClangPowerTools.Options.ViewModel;
+﻿using ClangPowerTools.Options.ViewModel;
 using System.ComponentModel;
 using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 
 namespace ClangPowerTools.DialogPages
 {
@@ -11,8 +11,13 @@ namespace ClangPowerTools.DialogPages
     {
       get
       {
-        MyUserControl page = new MyUserControl(this);
-        return page;
+        ElementHost elementHost = new ElementHost();
+        elementHost.Child = new ClangFormatOptionsUserControlWPF(this);
+        return elementHost;
+
+
+        //ClangFormatOptionsUserControl page = new ClangFormatOptionsUserControl(this);
+        //return page;
       }
     }
 
@@ -59,7 +64,7 @@ namespace ClangPowerTools.DialogPages
     [DisplayName("Fallback style")]
     [Description("The name of the predefined style used as a fallback in case clang-format is invoked with " +
       "-style=file, but can not find the .clang-format file to use.\nUse -fallback-style=none to skip formatting.")]
-    public string FallbackStyle { get; set; }
+    public ClangFormatFallbackStyle? FallbackStyle { get; set; }
 
     //[Category("Format Options")]
     //[DisplayName("Sort includes")]
@@ -109,8 +114,8 @@ namespace ClangPowerTools.DialogPages
 
       this.AssumeFilename = loadedConfig.AssumeFilename;
 
-      this.FallbackStyle = null == loadedConfig.FallbackStyle ?
-        ComboBoxConstants.kNone : loadedConfig.FallbackStyle;
+      this.FallbackStyle = null == loadedConfig.FallbackStyle ? 
+        ClangFormatFallbackStyle.none : loadedConfig.FallbackStyle;
 
       //this.SortIncludes = loadedConfig.SortIncludes;
 
