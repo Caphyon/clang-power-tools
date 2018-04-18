@@ -1,6 +1,6 @@
 ﻿namespace ClangPowerTools.Options.ViewModel
 {
-  partial class MyUserControl
+  partial class ClangFormatOptionsUserControl
   {
     /// <summary> 
     /// Required designer variable.
@@ -41,12 +41,12 @@
       this.clangFormatOptionsElementHost.Text = "elementHost1";
       this.clangFormatOptionsElementHost.Child = null;
       // 
-      // MyUserControl
+      // ClangFormatOptionsUserControl
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 24F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.Controls.Add(this.clangFormatOptionsElementHost);
-      this.Name = "MyUserControl";
+      this.Name = "ClangFormatOptionsUserControl";
       this.Size = new System.Drawing.Size(1814, 974);
       this.ResumeLayout(false);
 
