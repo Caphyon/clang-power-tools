@@ -5,10 +5,29 @@ using System.Xml.Serialization;
 namespace ClangPowerTools
 {
   [Serializable]
-  public enum ClangStyle
+  public enum ClangFormatStyle
   {
-    [XmlEnum(Name = "File")]
-    File = 0,
+    [XmlEnum(Name = "file")]
+    file = 0,
+    [XmlEnum(Name = "Chromium")]
+    Chromium,
+    [XmlEnum(Name = "Google")]
+    Google,
+    [XmlEnum(Name = "LLVM")]
+    LLVM,
+    [XmlEnum(Name = "Mozilla")]
+    Mozilla,
+    [XmlEnum(Name = "WebKit")]
+    WebKit
+  }
+
+  [Serializable]
+  public enum ClangFormatFallbackStyle
+  {
+    [XmlEnum(Name = "none")]
+    none = 0,
+    [XmlEnum(Name = "file")]
+    file,
     [XmlEnum(Name = "Chromium")]
     Chromium,
     [XmlEnum(Name = "Google")]
