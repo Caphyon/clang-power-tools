@@ -8,7 +8,7 @@ namespace ClangPowerTools.Convertors
   public class ClangFormatStyleConverter : IValueConverter
   {
 
-    public static Dictionary<ClangFormatStyle?, string> StyleDisplay = new Dictionary<ClangFormatStyle?, string>()
+    public static Dictionary<ClangFormatStyle?, string> styleDisplay = new Dictionary<ClangFormatStyle?, string>()
     {
       { ClangFormatStyle.file, "file" },
       { ClangFormatStyle.Chromium, "Chromium" },
@@ -21,7 +21,7 @@ namespace ClangPowerTools.Convertors
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
       ClangFormatStyle style = (ClangFormatStyle)value;
-      return StyleDisplay[style];
+      return styleDisplay[style];
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

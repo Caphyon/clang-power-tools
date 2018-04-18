@@ -38,14 +38,21 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
 
       PropertyData prop = item as PropertyData;
       string editorName = prop.EditorName;
+
       if (!string.IsNullOrEmpty(editorName))
         return mRes[editorName] as DataTemplate;
+
       if (prop.PropertyType == typeof(string) && !prop.IsReadOnly)
         return mRes["StringDataTemplate"] as DataTemplate;
+
       if (prop.PropertyType == typeof(bool) && !prop.IsReadOnly )
         return mRes["BoolDataTemplate"] as DataTemplate;
-      if(prop.PropertyType == typeof(ClangFormatStyle?))
+
+      if (prop.PropertyType == typeof(ClangFormatStyle?))
         return mRes["StyleDataTemplate"] as DataTemplate;
+
+      if (prop.PropertyType == typeof(ClangFormatFallbackStyle?))
+        return mRes["FallbackStyleDataTemplate"] as DataTemplate;
 
       return mRes["DefaultDataTemplate"] as DataTemplate;
     }
