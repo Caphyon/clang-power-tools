@@ -12,7 +12,7 @@ $varB          = 1
 
 # -------------------------------------------------------------------------------------------------------------------
 
-@( "$kScriptLocation\..\code\helper-functions.ps1"
+@( "$kScriptLocation\clang-helper-functions.ps1"
  ) | ForEach-Object { . $_ }
 
 Clear-Host
