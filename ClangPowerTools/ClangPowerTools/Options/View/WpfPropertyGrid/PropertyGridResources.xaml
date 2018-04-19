@@ -39,10 +39,10 @@
       <Border Grid.Column="1" Style="{x:Null}">
         <Local:BorderedTextBox
           Grid.Row="0"
-          PreviewMouseUp="TextBoxPreviewMouseUp"
-          PreviewMouseDown="TextBoxPreviewMouseDown"
+          PreviewMouseUp="PreviewMouseUp"
+          PreviewMouseDown="PreviewMouseDown"
           Margin="10,2"/>
-      
+
         <!--<TextBox Style="{x:Null}"  Grid.Row="0" Margin="10,2" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"  />-->
 
       </Border>
@@ -60,7 +60,9 @@
         <TextBlock Grid.Row="0" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="2,0"/>
       </Border>
       <Border Grid.Column="1">
-        <ComboBox ItemsSource="{Binding Source={StaticResource stylesValues}}" SelectedItem="{Binding Value}" Grid.Row="0" Margin="10,2">
+        <ComboBox ItemsSource="{Binding Source={StaticResource stylesValues}}" SelectedItem="{Binding Value}" Grid.Row="0" Margin="10,2"
+               PreviewMouseUp="PreviewMouseUp"
+               PreviewMouseDown="PreviewMouseDown" >
           <ComboBox.ItemTemplate>
             <DataTemplate>
               <TextBlock Text="{Binding Converter={StaticResource styleConverter}}"/>
@@ -82,7 +84,9 @@
         <TextBlock Grid.Row="0" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="2,0"/>
       </Border>
       <Border Grid.Column="1">
-        <ComboBox ItemsSource="{Binding Source={StaticResource falbackStyleValues}}" SelectedItem="{Binding Value}" Grid.Row="0" Margin="10,2">
+        <ComboBox ItemsSource="{Binding Source={StaticResource falbackStyleValues}}" SelectedItem="{Binding Value}" Grid.Row="0" Margin="10,2"
+               PreviewMouseUp="PreviewMouseUp"
+               PreviewMouseDown="PreviewMouseDown">
           <ComboBox.ItemTemplate>
             <DataTemplate>
               <TextBlock Text="{Binding Converter={StaticResource fallbackStyleConverter}}"/>
@@ -92,7 +96,7 @@
       </Border>
     </Grid>
   </DataTemplate>
-  
+
   <!-- Bool DataTemplate -->
   <DataTemplate x:Key="BoolDataTemplate">
     <Grid Margin="0" HorizontalAlignment ="Stretch">
@@ -104,7 +108,9 @@
         <TextBlock Grid.Row="0" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="2,0"/>
       </Border>
       <Border Grid.Column="1">
-        <CheckBox IsChecked="{Binding Value}" Margin="10,0"/>
+        <CheckBox IsChecked="{Binding Value}" Margin="10,0"
+               PreviewMouseUp="PreviewMouseUp"
+               PreviewMouseDown="PreviewMouseDown"/>
       </Border>
     </Grid>
   </DataTemplate>
@@ -121,8 +127,8 @@
       </Border>
       <Border Grid.Column="1">
         <TextBox Grid.Row="0" Text="{Binding Value, Mode=TwoWay}"  
-                 PreviewMouseUp="TextBoxPreviewMouseUp"
-                 PreviewMouseDown="TextBoxPreviewMouseDown"
+                 PreviewMouseUp="PreviewMouseUp"
+                 PreviewMouseDown="PreviewMouseDown"
                  Margin="10,2"/>
       </Border>
     </Grid>
