@@ -13,7 +13,7 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       InitializeComponent();
     }
 
-    private void TextBoxPreviewMouseUp(object sender, MouseButtonEventArgs e)
+    private void PreviewMouseUp(object sender, MouseButtonEventArgs e)
     {
       MouseUpDownEventForwarding(sender, e, UIElement.MouseUpEvent);
     }
@@ -29,7 +29,7 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       }
     }
 
-    private void TextBoxPreviewMouseDown(object sender, MouseButtonEventArgs e)
+    private void PreviewMouseDown(object sender, MouseButtonEventArgs e)
     {
       MouseUpDownEventForwarding(sender, e, UIElement.MouseDownEvent);
     }
