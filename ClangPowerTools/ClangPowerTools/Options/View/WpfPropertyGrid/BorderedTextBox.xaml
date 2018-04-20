@@ -6,11 +6,13 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
   <Grid>
-    <DockPanel LastChildFill="True">
-      <TextBox x:Name="TextEditor" VerticalContentAlignment="Center"
+    <!--<DockPanel LastChildFill="True">-->
+    <TextBox x:Name="TextEditor" VerticalContentAlignment="Center" Grid.Column="0"
                PreviewMouseUp="TextBoxPreviewMouseUp"
                PreviewMouseDown="TextBoxPreviewMouseDown" 
                Text="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-    </DockPanel>
+    <Button HorizontalAlignment="Right" Width="20" Grid.Column="1" Content="..."
+            Click="Button_Click"/>
+    <!--</DockPanel>-->
   </Grid>
 </UserControl>
