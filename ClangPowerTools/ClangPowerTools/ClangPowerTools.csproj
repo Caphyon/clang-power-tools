@@ -124,6 +124,9 @@
     <Compile Include="Options\View\WpfPropertyGrid\BorderedTextBox.xaml.cs">
       <DependentUpon>BorderedTextBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Options\View\WpfPropertyGrid\StringCollectionEditor.xaml.cs">
+      <DependentUpon>StringCollectionEditor.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Options\View\WpfPropertyGrid\PropertyCollection.cs" />
     <Compile Include="Options\View\WpfPropertyGrid\PropertyData.cs" />
     <Compile Include="Options\View\WpfPropertyGrid\PropertyGrid.xaml.cs">
@@ -133,6 +136,7 @@
       <DependentUpon>PropertyGridResources.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\View\WpfPropertyGrid\PropertyTemplateSelector.cs" />
+    <Compile Include="Options\View\WpfPropertyGrid\ProvideToolboxControlAttribute.cs" />
     <Compile Include="Options\View\WpfPropertyGrid\VisualTreeHelperExtension.cs" />
     <Compile Include="PCHCleaner.cs" />
     <Compile Include="Handlers\ProjectConfigurationHandler.cs" />
@@ -345,6 +349,7 @@
     <Reference Include="System" />
     <Reference Include="System.Collections.Immutable, Version=1.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Design" />
     <Reference Include="System.Management" />
     <Reference Include="System.Web" />
@@ -405,6 +410,10 @@
     <Page Include="Options\View\WpfPropertyGrid\BorderedTextBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Options\View\WpfPropertyGrid\StringCollectionEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Options\View\WpfPropertyGrid\PropertyGrid.xaml">
       <Generator>MSBuild:Compile</Generator>

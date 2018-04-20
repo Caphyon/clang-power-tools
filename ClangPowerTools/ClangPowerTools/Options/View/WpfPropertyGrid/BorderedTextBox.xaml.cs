@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using ClangPowerTools.Options.View.WpfPropertyGrid;
 
 namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
 {
@@ -47,6 +48,11 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       if (PropertyChanged != null)
         PropertyChanged(this, new PropertyChangedEventArgs(propName));
     }
-  
+
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+      StringCollectionEditor multilineTextBox = new StringCollectionEditor();
+      multilineTextBox.ShowDialog();
+    }
   }
 }
