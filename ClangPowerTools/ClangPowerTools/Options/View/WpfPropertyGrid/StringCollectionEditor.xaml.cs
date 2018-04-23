@@ -28,9 +28,15 @@ namespace ClangPowerTools.Options.View.WpfPropertyGrid
     public StringCollectionEditor()
     {
       InitializeComponent();
-      //this.SourceInitialized += Window_SourceInitialized;
 
+      this.SourceInitialized += MainWindow_SourceInitialized;
+    }
+
+    private void MainWindow_SourceInitialized(object sender, EventArgs e)
+    {
       _windowHandle = new WindowInteropHelper(this).Handle;
+
+      // hide the buttons
       HideMinimizeAndMaximizeButtons();
     }
 
