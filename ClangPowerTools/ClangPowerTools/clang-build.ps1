@@ -692,10 +692,15 @@ Function Should-IgnoreProject([Parameter(Mandatory=$true)][string] $vcxprojPath)
   return $false
 }
 
-Function Should-CompileFile([Parameter(Mandatory=$true)][System.Xml.XmlNode] $fileNode
+Function Should-CompileFile([Parameter(Mandatory=$false)][System.Xml.XmlNode] $fileNode
                            ,[Parameter(Mandatory=$false)][string] $pchCppName
                            )
 {
+  if ($fileNode -eq $null)
+  {
+    return $false
+  }
+
   [string] $file = $fileNode.Include
 
   if (($file -eq $null) -or (![string]::IsNullOrEmpty($pchCppName) -and ($file -eq $pchCppName)))
