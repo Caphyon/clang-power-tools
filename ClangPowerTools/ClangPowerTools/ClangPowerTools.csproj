@@ -109,12 +109,6 @@
     </Compile>
     <Compile Include="DialogOptionsModel\ClangOptions.cs" />
     <Compile Include="Convertors\HeaderFiltersConvertor.cs" />
-    <Compile Include="Options\View\ClangFormatOptionsUserControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Options\View\ClangFormatOptionsUserControl.Designer.cs">
-      <DependentUpon>ClangFormatOptionsUserControl.cs</DependentUpon>
-    </Compile>
     <Compile Include="Options\View\ClangFormatOptionsUserControlWPF.xaml.cs">
       <DependentUpon>ClangFormatOptionsUserControlWPF.xaml</DependentUpon>
     </Compile>
@@ -369,10 +363,6 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Options\View\ClangFormatOptionsUserControl.resx">
-      <DependentUpon>ClangFormatOptionsUserControl.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>VSPackage</ManifestResourceName>
