@@ -8,11 +8,12 @@ using System.Windows.Interop;
 namespace ClangPowerTools.Options.View.WpfPropertyGrid
 {
   /// <summary>
-  /// Interaction logic for MultilineTextBox.xaml.
+  /// Interaction logic for StringCollectionEditor.xaml.
   /// </summary>
   [ProvideToolboxControl("ClangPowerTools.Options.View.WpfPropertyGrid.MultilineTextBox", true)]
   public partial class StringCollectionEditor : Window
   {
+    #region Hide minimize and maximize buttons members
 
     [DllImport("user32.dll")]
     private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
@@ -25,33 +26,33 @@ namespace ClangPowerTools.Options.View.WpfPropertyGrid
 
     private IntPtr _windowHandle;
 
+    #endregion
+
+
     public StringCollectionEditor()
     {
       InitializeComponent();
-
-      this.SourceInitialized += MainWindow_SourceInitialized;
+      this.SourceInitialized += MainWindowSourceInitialized;
     }
 
-    private void MainWindow_SourceInitialized(object sender, EventArgs e)
+    #region Hide minimize and maximize buttons method
+
+    private void MainWindowSourceInitialized(object sender, EventArgs e)
     {
       _windowHandle = new WindowInteropHelper(this).Handle;
-
-      // hide the buttons
       HideMinimizeAndMaximizeButtons();
     }
 
     protected void HideMinimizeAndMaximizeButtons()
     {
       if (_windowHandle == null)
-        throw new InvalidOperationException("The window has not yet been completely initialized");
+        return; // The window has not yet been completely initialized
 
       SetWindowLong(_windowHandle, GWL_STYLE, GetWindowLong(_windowHandle, GWL_STYLE) & ~WS_MAXIMIZEBOX & ~WS_MINIMIZEBOX);
     }
 
-    private void Button1_Click(object sender, RoutedEventArgs e)
-    {
-      MessageBox.Show(string.Format(CultureInfo.CurrentUICulture, "We are inside {0}.Button1_Click()", this.ToString()));
-    }
-  
+    #endregion
+
+
   }
 }
