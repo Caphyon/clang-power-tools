@@ -156,6 +156,7 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       set
       {
         mPropertyInfo.SetValue(mOwner, value);
+        OnPropertyChanged("Value");
       }
     }
 

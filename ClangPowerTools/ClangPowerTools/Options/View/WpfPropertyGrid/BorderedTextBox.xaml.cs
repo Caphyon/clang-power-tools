@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -51,8 +52,12 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
 
     private void Button_Click(object sender, RoutedEventArgs e)
     {
-      StringCollectionEditor multilineTextBox = new StringCollectionEditor();
-      multilineTextBox.ShowDialog();
+      PropertyData propData = (PropertyData)DataContext;
+
+      StringCollectionEditor stringCollectionEditor = new StringCollectionEditor((string)propData.Value);
+      if (stringCollectionEditor.ShowDialog() == true)
+        propData.Value = stringCollectionEditor.CollectionValue;
     }
+
   }
 }

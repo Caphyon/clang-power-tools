@@ -9,6 +9,7 @@
           Width="525"
           WindowStyle="ThreeDBorderWindow" 
           WindowStartupLocation="CenterScreen"
+          ShowActivated ="True"
           ShowInTaskbar="False"
           Title="String Collection Editor"
           Background = "WhiteSmoke">
@@ -23,7 +24,7 @@
     <Label Grid.Row="0" Margin="10, 5, 10, 5" >Enter the strings in the collection(one per line):</Label>
     
     <TextBox x:Name="StringCollectionEditorTextBox" AcceptsReturn="True" Grid.Row="1" Margin="15, 0, 15, 0"
-      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible"/>
+      VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Visible" Text="{Binding RawValue}"/>
 
     <GridSplitter Grid.Row="2" ResizeDirection="Rows" Panel.ZIndex="100" Height="4" HorizontalAlignment="Stretch"/>
 
@@ -37,9 +38,9 @@
             VerticalAlignment="Bottom" 
             Width="75" 
             IsDefault="True"
-            Command="{Binding OKButtonCommand}"/>
-        <!--Click="OKButton_Click"-->
-
+            Command="{Binding OKButtonCommand}"
+            Click="OKButton_Click"/>
+            
         <Button
             Name="CancelButton"
             Content="Cancel" 

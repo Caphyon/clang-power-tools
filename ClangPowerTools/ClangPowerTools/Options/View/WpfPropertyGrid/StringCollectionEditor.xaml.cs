@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Interop;
 
 namespace ClangPowerTools.Options.View.WpfPropertyGrid
@@ -28,12 +26,38 @@ namespace ClangPowerTools.Options.View.WpfPropertyGrid
 
     #endregion
 
+    #region Properties
 
-    public StringCollectionEditor()
+    public string RawValue { get; set; }
+
+    public string CollectionValue
+    {
+      get
+      {
+        return string.Join(";", RawValue
+          .Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
+          .Trim('\n');
+      }
+    }
+
+    #endregion
+
+    #region Constructor
+
+    public StringCollectionEditor(string aCollection)
     {
       InitializeComponent();
       this.SourceInitialized += MainWindowSourceInitialized;
+
+      if (true == string.IsNullOrWhiteSpace(aCollection))
+        RawValue = string.Empty;
+      else
+        RawValue = string.Join("\n", aCollection.Trim().Split(';'));
+
+      DataContext = this;
     }
+
+    #endregion
 
     #region Hide minimize and maximize buttons method
 
@@ -53,6 +77,15 @@ namespace ClangPowerTools.Options.View.WpfPropertyGrid
 
     #endregion
 
+    #region Events
+
+    private void OKButton_Click(object sender, RoutedEventArgs e)
+    {
+      this.DialogResult = true;
+      this.Close();
+    }
+
+    #endregion
 
   }
 }
