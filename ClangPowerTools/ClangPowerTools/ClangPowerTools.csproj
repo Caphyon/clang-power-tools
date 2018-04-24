@@ -89,6 +89,7 @@
     <Compile Include="Convertors\FallbackStyleConvertor.cs" />
     <Compile Include="Convertors\OldConvertors\StyleConvertor.cs" />
     <Compile Include="Options\Model\ClangFormatOptions.cs" />
+    <Compile Include="Options\UIElementsActivator.cs" />
     <Compile Include="Options\ViewModel\ClangFormatOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -111,6 +112,9 @@
     <Compile Include="Convertors\HeaderFiltersConvertor.cs" />
     <Compile Include="Options\View\ClangFormatOptionsUserControl.xaml.cs">
       <DependentUpon>ClangFormatOptionsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\View\ClangGeneralOptionsUserControl.xaml.cs">
+      <DependentUpon>ClangGeneralOptionsUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\View\WpfPropertyGrid\BorderedComboBox.xaml.cs">
       <DependentUpon>BorderedComboBox.xaml</DependentUpon>
@@ -390,6 +394,10 @@
   <ItemGroup />
   <ItemGroup>
     <Page Include="Options\View\ClangFormatOptionsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Options\View\ClangGeneralOptionsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
