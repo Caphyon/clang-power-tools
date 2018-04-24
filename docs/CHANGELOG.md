@@ -1,5 +1,14 @@
 # Version History
 
+### Clang Power Tools 3.3.1
+*April 24, 2018*
+
+Bugs:
+
+* Clang output text was separated into multiple lines.
+* Source files with ExcludedFromBuild child property set to true were compiled.
+* Empty project files were not correctly handled.
+
 ### Clang Power Tools 3.3
 *March 29, 2018*
 
