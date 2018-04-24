@@ -105,10 +105,10 @@
     <Compile Include="Files Operations\FileChangerWatcher.cs" />
     <Compile Include="Files Operations\FileOpener.cs" />
     <Compile Include="Files Operations\FilePathCollector.cs" />
-    <Compile Include="DialogOptionsView\ClangGeneralOptionsView.cs">
+    <Compile Include="Options\ViewModel\ClangGeneralOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="DialogOptionsModel\ClangOptions.cs" />
+    <Compile Include="Options\Model\ClangOptions.cs" />
     <Compile Include="Convertors\HeaderFiltersConvertor.cs" />
     <Compile Include="Options\View\ClangFormatOptionsUserControl.xaml.cs">
       <DependentUpon>ClangFormatOptionsUserControl.xaml</DependentUpon>
