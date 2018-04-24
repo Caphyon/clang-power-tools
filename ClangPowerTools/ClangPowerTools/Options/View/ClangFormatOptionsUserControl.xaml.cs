@@ -8,7 +8,7 @@ namespace ClangPowerTools.Options.ViewModel
   /// <summary>
   /// Interaction logic for UserControlWPF.xaml
   /// </summary>
-  public partial class ClangFormatOptionsUserControlWPF : UserControl
+  public partial class ClangFormatOptionsUserControl : UserControl
   {
     private const UInt32 DLGC_WANTARROWS = 0x0001;
     private const UInt32 DLGC_WANTTAB = 0x0002;
@@ -17,7 +17,7 @@ namespace ClangPowerTools.Options.ViewModel
     private const UInt32 DLGC_WANTCHARS = 0x0080;
     private const UInt32 WM_GETDLGCODE = 0x0087;
 
-    public ClangFormatOptionsUserControlWPF(ClangFormatOptionsView clangFormat)
+    public ClangFormatOptionsUserControl(ClangFormatOptionsView clangFormat)
     {
       InitializeComponent();
 
