@@ -12,7 +12,7 @@ namespace ClangPowerTools.DialogPages
       get
       {
         ElementHost elementHost = new ElementHost();
-        elementHost.Child = new ClangFormatOptionsUserControlWPF(this);
+        elementHost.Child = new ClangFormatOptionsUserControl(this);
         return elementHost;
 
 

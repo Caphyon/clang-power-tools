@@ -109,8 +109,8 @@
     </Compile>
     <Compile Include="DialogOptionsModel\ClangOptions.cs" />
     <Compile Include="Convertors\HeaderFiltersConvertor.cs" />
-    <Compile Include="Options\View\ClangFormatOptionsUserControlWPF.xaml.cs">
-      <DependentUpon>ClangFormatOptionsUserControlWPF.xaml</DependentUpon>
+    <Compile Include="Options\View\ClangFormatOptionsUserControl.xaml.cs">
+      <DependentUpon>ClangFormatOptionsUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\View\WpfPropertyGrid\BorderedComboBox.xaml.cs">
       <DependentUpon>BorderedComboBox.xaml</DependentUpon>
@@ -389,7 +389,7 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Page Include="Options\View\ClangFormatOptionsUserControlWPF.xaml">
+    <Page Include="Options\View\ClangFormatOptionsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
