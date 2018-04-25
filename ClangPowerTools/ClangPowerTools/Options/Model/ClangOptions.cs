@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace ClangPowerTools
 {
@@ -14,9 +15,17 @@ namespace ClangPowerTools
 
     #region Properties
 
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public List<string> ProjectsToIgnore { get; set; } = new List<string>();
 
+    public string ProjectsToIgnoreCollection { get; set; }
+
+
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public List<string> FilesToIgnore { get; set; } = new List<string>();
+
+    public string FilesToIgnoreCollection { get; set; }
+
 
     public bool Continue { get; set; }
 
@@ -26,14 +35,18 @@ namespace ClangPowerTools
 
     public bool VerboseMode { get; set; }
 
+
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public List<string> ClangFlags { get; set; } = new List<string>();
+
+    public string ClangFlagsCollection { get; set; }
+
 
     public bool ClangCompileAfterVsCompile { get; set; }
 
     public string Version { get; set; }
 
     #endregion
-
 
   }
 }
