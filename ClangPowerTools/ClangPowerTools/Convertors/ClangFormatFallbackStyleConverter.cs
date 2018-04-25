@@ -5,18 +5,19 @@ using System.Windows.Data;
 
 namespace ClangPowerTools.Convertors
 {
-  class ClangFormatFallbackStyleConverter : IValueConverter
+  public class ClangFormatFallbackStyleConverter : IValueConverter
   {
-    public static Dictionary<ClangFormatFallbackStyle?, string> fallbackStyleDisplay = new Dictionary<ClangFormatFallbackStyle?, string>()
-    {
-      { ClangFormatFallbackStyle.none, "none" },
-      { ClangFormatFallbackStyle.file, "file" },
-      { ClangFormatFallbackStyle.Chromium, "Chromium" },
-      { ClangFormatFallbackStyle.Google, "Google" },
-      { ClangFormatFallbackStyle.LLVM, "LLVM" },
-      { ClangFormatFallbackStyle.Mozilla, "Mozilla" },
-      { ClangFormatFallbackStyle.WebKit, "WebKit" },
-    };
+    private static Dictionary<ClangFormatFallbackStyle?, string> fallbackStyleDisplay = 
+      new Dictionary<ClangFormatFallbackStyle?, string>()
+      {
+        { ClangFormatFallbackStyle.none, "none" },
+        { ClangFormatFallbackStyle.file, "file" },
+        { ClangFormatFallbackStyle.Chromium, "Chromium" },
+        { ClangFormatFallbackStyle.Google, "Google" },
+        { ClangFormatFallbackStyle.LLVM, "LLVM" },
+        { ClangFormatFallbackStyle.Mozilla, "Mozilla" },
+        { ClangFormatFallbackStyle.WebKit, "WebKit" },
+      };
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
