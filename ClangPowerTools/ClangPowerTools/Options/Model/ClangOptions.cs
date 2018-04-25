@@ -31,7 +31,7 @@ namespace ClangPowerTools
 
     public bool TreatWarningsAsErrors { get; set; }
 
-    public string AdditionalIncludes { get; set; }
+    public ClangGeneralAdditionalIncludes? AdditionalIncludes { get; set; }
 
     public bool VerboseMode { get; set; }
 

@@ -60,8 +60,7 @@ namespace ClangPowerTools
     [Category("General")]
     [DisplayName("Treat additional includes as")]
     [Description("Specify how clang interprets project additional include directories: as regular includes ( -I ) or system includes ( -isystem ).")]
-    [TypeConverter(typeof(AdditionalIncludesConvertor))]
-    public string AdditionalIncludes { get; set; }
+    public ClangGeneralAdditionalIncludes? AdditionalIncludes { get; set; }
 
 
     [Category("General")]
@@ -119,8 +118,8 @@ namespace ClangPowerTools
       this.Continue = loadedConfig.Continue;
       this.TreatWarningsAsErrors = loadedConfig.TreatWarningsAsErrors;
 
-      this.AdditionalIncludes = (null == loadedConfig.AdditionalIncludes || string.Empty == loadedConfig.AdditionalIncludes) ?
-        ComboBoxConstants.kIncludeDirectories : loadedConfig.AdditionalIncludes;
+      this.AdditionalIncludes = null == loadedConfig.AdditionalIncludes ?
+        ClangGeneralAdditionalIncludes.IncludeDirectories : loadedConfig.AdditionalIncludes;
 
       this.VerboseMode = loadedConfig.VerboseMode;
 
