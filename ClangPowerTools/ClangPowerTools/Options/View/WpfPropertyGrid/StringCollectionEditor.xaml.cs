@@ -34,9 +34,7 @@ namespace ClangPowerTools.Options.View.WpfPropertyGrid
     {
       get
       {
-        return string.Join(";", RawValue
-          .Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries))
-          .Trim('\n');
+        return RawValue.Replace("\r\n", ";");
       }
     }
 
@@ -52,7 +50,7 @@ namespace ClangPowerTools.Options.View.WpfPropertyGrid
       if (true == string.IsNullOrWhiteSpace(aCollection))
         RawValue = string.Empty;
       else
-        RawValue = string.Join("\n", aCollection.Trim().Split(';'));
+        RawValue = aCollection.Replace(";", "\r\n");
 
       DataContext = this;
     }
