@@ -1,17 +1,16 @@
 ﻿using ClangPowerTools.Convertors;
-using System;
+using ClangPowerTools.Options.View;
 using System.ComponentModel;
-using System.Linq;
-using System.Web.UI.WebControls;
+using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 
 namespace ClangPowerTools
 {
-  [Serializable]
   public class ClangGeneralOptionsView : ConfigurationPage<ClangOptions>
   {
     #region Members
 
-    private string[] mClangFlags = new string[] { };
+    private string mClangFlags;
     private const string kGeneralSettingsFileName = "GeneralConfiguration.config";
     private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
 
@@ -20,16 +19,14 @@ namespace ClangPowerTools
     #region Properties
 
     [Category("General")]
-    [DisplayName("Project to ignore")]
-    [Description("Array of project(s) to ignore, from the matched ones. If empty, all already matched projects are compiled.")]
-    [TypeConverter(typeof(StringArrayConverter))]
-    public string[] ProjectsToIgnore { get; set; }
+    [DisplayName("Compile flags")]
+    [Description("Flags given to clang++ when compiling project, alongside project - specific defines. If empty the default flags will be loaded.")]
+    public string ClangFlags
+    {
+      get => string.IsNullOrWhiteSpace(mClangFlags)? DefaultOptions.kClangFlags : mClangFlags;
+      set => mClangFlags = value;
+    }
 
-    [Category("General")]
-    [DisplayName("File to ignore")]
-    [Description("Array of file(s) to ignore, from the matched ones. If empty, all already matched files are compiled.")]
-    [TypeConverter(typeof(StringArrayConverter))]
-    public string[] FilesToIgnore { get; set; }
 
     [Category("General")]
     [DisplayName("Continue on error")]
@@ -37,24 +34,28 @@ namespace ClangPowerTools
     public bool Continue { get; set; }
 
     [Category("General")]
+    [DisplayName("Clang compile after MSVC compile")]
+    [Description("Automatically run Clang compile on the current source file, after successful MSVC compilation.")]
+    public bool ClangCompileAfterVsCompile { get; set; }
+
+
+    [Category("General")]
     [DisplayName("Treat warnings as errors")]
     [Description("Treats all compiler warnings as errors. For a new project, it may be best to use in all compilations; resolving all warnings will ensure the fewest possible hard to find code defects.")]
     public bool TreatWarningsAsErrors { get; set; }
 
-    [Category("General")]
-    [DisplayName("Verbose mode")]
-    [Description("Enables verbose logging for diagnostic purposes.")]
-    public bool VerboseMode { get; set; }
 
     [Category("General")]
-    [DisplayName("Compile flags")]
-    [Description("Flags given to clang++ when compiling project, alongside project - specific defines. If empty the default flags will be loaded.")]
-    [TypeConverter(typeof(StringArrayConverter))]
-    public string[] ClangFlags
-    {
-      get => 0 == mClangFlags.Length ? DefaultOptions.kClangFlags : mClangFlags;
-      set => mClangFlags = value;
-    }
+    [DisplayName("Project to ignore")]
+    [Description("Array of project(s) to ignore, from the matched ones. If empty, all already matched projects are compiled.")]
+    public string ProjectsToIgnore { get; set; }
+
+
+    [Category("General")]
+    [DisplayName("File to ignore")]
+    [Description("Array of file(s) to ignore, from the matched ones. If empty, all already matched files are compiled.")]
+    public string FilesToIgnore { get; set; }
+
 
     [Category("General")]
     [DisplayName("Treat additional includes as")]
@@ -62,13 +63,26 @@ namespace ClangPowerTools
     [TypeConverter(typeof(AdditionalIncludesConvertor))]
     public string AdditionalIncludes { get; set; }
 
+
     [Category("General")]
-    [DisplayName("Clang compile after MSVC compile")]
-    [Description("Automatically run Clang compile on the current source file, after successful MSVC compilation.")]
-    public bool ClangCompileAfterVsCompile { get; set; }
+    [DisplayName("Verbose mode")]
+    [Description("Enables verbose logging for diagnostic purposes.")]
+    public bool VerboseMode { get; set; }
+
 
     [Browsable(false)]
     public string Version { get; set; }
+
+
+    protected override IWin32Window Window
+    {
+      get
+      {
+        ElementHost elementHost = new ElementHost();
+        elementHost.Child = new ClangGeneralOptionsUserControl(this);
+        return elementHost;
+      }
+    }
 
     #endregion
 
@@ -80,13 +94,13 @@ namespace ClangPowerTools
 
       var updatedConfig = new ClangOptions
       {
-        ProjectsToIgnore = this.ProjectsToIgnore.ToList(),
-        FilesToIgnore = this.FilesToIgnore.ToList(),
+        ProjectsToIgnoreCollection = this.ProjectsToIgnore,
+        FilesToIgnoreCollection = this.FilesToIgnore,
         Continue = this.Continue,
         TreatWarningsAsErrors = this.TreatWarningsAsErrors,
         AdditionalIncludes = this.AdditionalIncludes,
         VerboseMode = this.VerboseMode,
-        ClangFlags = this.ClangFlags.ToList(),
+        ClangFlagsCollection = this.ClangFlags,
         ClangCompileAfterVsCompile = this.ClangCompileAfterVsCompile,
         Version = this.Version
       };
@@ -101,8 +115,7 @@ namespace ClangPowerTools
       XmlSerializer serializer = new XmlSerializer();
       var loadedConfig = LoadFromFile(path);
 
-      this.ProjectsToIgnore = loadedConfig.ProjectsToIgnore.ToArray();
-      this.FilesToIgnore = loadedConfig.FilesToIgnore.ToArray();
+      
       this.Continue = loadedConfig.Continue;
       this.TreatWarningsAsErrors = loadedConfig.TreatWarningsAsErrors;
 
@@ -110,10 +123,28 @@ namespace ClangPowerTools
         ComboBoxConstants.kIncludeDirectories : loadedConfig.AdditionalIncludes;
 
       this.VerboseMode = loadedConfig.VerboseMode;
-      this.ClangFlags = loadedConfig.ClangFlags.ToArray();
 
       this.ClangCompileAfterVsCompile = loadedConfig.ClangCompileAfterVsCompile;
       this.Version = loadedConfig.Version;
+
+
+      if (null == loadedConfig.ClangFlags || 0 == loadedConfig.ClangFlags.Count)
+        this.ClangFlags = loadedConfig.ClangFlagsCollection;
+      else
+        this.ClangFlags = string.Join(";", loadedConfig.ClangFlags);
+
+
+      if (null == loadedConfig.ProjectsToIgnore || 0 == loadedConfig.ProjectsToIgnore.Count)
+        this.ProjectsToIgnore = loadedConfig.ProjectsToIgnoreCollection;
+      else
+        this.ProjectsToIgnore = string.Join(";", loadedConfig.ProjectsToIgnore);
+
+
+      if (null == loadedConfig.FilesToIgnore || 0 == loadedConfig.FilesToIgnore.Count)
+        this.FilesToIgnore = loadedConfig.FilesToIgnoreCollection;
+      else
+        this.FilesToIgnore = string.Join(";", loadedConfig.FilesToIgnore);
+
     }
 
     #endregion
