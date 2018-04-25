@@ -1,5 +1,4 @@
 ﻿using ClangPowerTools.DialogPages;
-using System;
 using System.Windows.Controls;
 using System.Windows.Interop;
 
@@ -10,11 +9,11 @@ namespace ClangPowerTools.Options.ViewModel
   /// </summary>
   public partial class ClangFormatOptionsUserControl : UserControl
   {
-    public ClangFormatOptionsUserControl(ClangFormatOptionsView clangFormat)
+    public ClangFormatOptionsUserControl(ClangFormatOptionsView clangFormatOptions)
     {
       InitializeComponent();
 
-      wpfPropGrid.SelectedObject = clangFormat;
+      wpfPropGrid.SelectedObject = clangFormatOptions;
 
       Loaded += delegate
         {

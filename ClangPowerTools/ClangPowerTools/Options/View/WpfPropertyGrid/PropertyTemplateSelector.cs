@@ -54,6 +54,9 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       if (prop.PropertyType == typeof(ClangFormatFallbackStyle?))
         return mRes["FallbackStyleDataTemplate"] as DataTemplate;
 
+      if (prop.PropertyType == typeof(ClangGeneralAdditionalIncludes?))
+        return mRes["AdditionalIncludesDataTemplate"] as DataTemplate;
+
       return mRes["DefaultDataTemplate"] as DataTemplate;
     }
   }
