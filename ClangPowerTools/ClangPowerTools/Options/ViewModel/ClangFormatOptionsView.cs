@@ -7,20 +7,6 @@ namespace ClangPowerTools.DialogPages
 {
   public class ClangFormatOptionsView : ConfigurationPage<ClangFormatOptions>
   {
-    protected override IWin32Window Window
-    {
-      get
-      {
-        ElementHost elementHost = new ElementHost();
-        elementHost.Child = new ClangFormatOptionsUserControl(this);
-        return elementHost;
-
-
-        //ClangFormatOptionsUserControl page = new ClangFormatOptionsUserControl(this);
-        //return page;
-      }
-    }
-
 
     #region Members
 
@@ -81,6 +67,20 @@ namespace ClangPowerTools.DialogPages
 
     #endregion
 
+
+    protected override IWin32Window Window
+    {
+      get
+      {
+        ElementHost elementHost = new ElementHost();
+        elementHost.Child = new ClangFormatOptionsUserControl(this);
+        return elementHost;
+      }
+    }
+
+    #endregion
+
+
     public override void SaveSettingsToStorage()
     {
       string path = mSettingsPathBuilder.GetPath(kGeneralSettingsFileName);
@@ -122,7 +122,6 @@ namespace ClangPowerTools.DialogPages
       this.Style = null == loadedConfig.Style ? ClangFormatStyle.file : loadedConfig.Style;
     }
 
-    #endregion
 
     public ClangFormatOptionsView Clone()
     {
