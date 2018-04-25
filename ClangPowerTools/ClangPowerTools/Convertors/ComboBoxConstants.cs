@@ -40,6 +40,16 @@ namespace ClangPowerTools
     WebKit
   }
 
+  [Serializable]
+  public enum ClangGeneralAdditionalIncludes
+  {
+    [XmlEnum(Name = "include directories")]
+    IncludeDirectories,
+    
+    [XmlEnum(Name = "system include directories")]
+    SystemIncludeDirectories
+  }
+
   public sealed class ComboBoxConstants
   {
     #region Constants
