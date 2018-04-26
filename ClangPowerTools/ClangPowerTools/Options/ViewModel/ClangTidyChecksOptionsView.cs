@@ -1,5 +1,8 @@
 ﻿using ClangPowerTools.Options.Model;
+using ClangPowerTools.Options.View;
 using System.ComponentModel;
+using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 
 namespace ClangPowerTools
 {
@@ -7,366 +10,12 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private const string kGeneralSettingsFileName = "ClangTidyChecks.config";
+    private const string kGeneralSettingsFileName = "TidyPredefinedChecksConfiguration.config";
     private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
 
     #endregion
 
     #region Properties
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-core.CallAndMessage")]
-    [Description("Check for logical errors for function calls and Objective-C message expressions (e.g., uninitialized arguments, null function pointers).")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerCoreCallAndMessage { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-core.DivideZero")]
-    [Description("Check for division by zero.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerCoreDivideZero { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-core.NonNullParamChecker")]
-    [Description("Check for null pointers passed as arguments to a function whose arguments are marked with the nonnull attribute.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerCoreNonNullParamChecker { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-core.NullDereference")]
-    [Description("Check for dereferences of null pointers.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerCoreNullDereference { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-core.StackAddressEscape")]
-    [Description("Check that addresses of stack memory do not escape the function.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerCoreStackAddressEscape { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-core.UndefinedBinaryOperatorResult")]
-    [Description("Check for undefined results of binary operators.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerCoreUndefinedBinaryOperatorResult { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-core.VLASize")]
-    [Description("Check for declarations of VLA of undefined or zero size.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerCoreVLASize { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-core.uninitialized.ArraySubscript")]
-    [Description("Check for uninitialized values used as array subscripts.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerCoreuninitializedArraySubscript { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-core.uninitialized.Assign")]
-    [Description("Check for assigning uninitialized values.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerCoreuninitializedAssign { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-core.uninitialized.Branch")]
-    [Description("Check for uninitialized values used as branch conditions.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerCoreuninitializedBranch { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-core.uninitialized.CapturedBlockVariable")]
-    [Description("Check for blocks that capture uninitialized values.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerCoreuninitializedCapturedBlockVariable { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-core.uninitialized.UndefReturn")]
-    [Description("Check for uninitialized values being returned to the caller.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerCoreuninitializedUndefReturn { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-cplusplus.NewDelete")]
-    [Description("Check for double-free, use-after-free and offset problems involving C++  delete.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerCplusplusNewDelete { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-cplusplus.NewDeleteLeaks")]
-    [Description("Check for memory leaks. Traces memory managed by new/ delete.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerCplusplusNewDeleteLeaks { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-deadcode.DeadStores")]
-    [Description("Check for values stored to variables that are never read afterwards.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerDeadcodeDeadStores { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-nullability.NullPassedToNonnull")]
-    [Description("Warns when a null pointer is passed to a pointer which has a  _Nonnull type.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerNullabilityNullPassedToNonnull { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-nullability.NullReturnedFromNonnull")]
-    [Description("Warns when a null pointer is returned from a function that has  _Nonnull return type.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerNullabilityNullReturnedFromNonnull { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-nullability.NullableDereferenced")]
-    [Description("Warns when a nullable pointer is dereferenced.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerNullabilityNullableDereferenced { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-nullability.NullablePassedToNonnull")]
-    [Description("Warns when a nullable pointer is passed to a pointer which has a _Nonnull type.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerNullabilityNullablePassedToNonnull { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-optin.mpi.MPI-Checker")]
-    [Description("Checks MPI code")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOptinmpiMPIChecker { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-optin.osx.cocoa.localizability.EmptyLocalizationContextChecker")]
-    [Description("Check that NSLocalizedString macros include a comment for context.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOptinosxcocoalocalizabilityEmptyLocalizationContextChecker { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-optin.osx.cocoa.localizability.NonLocalizedStringChecker")]
-    [Description("Warns about uses of non-localized NSStrings passed to UI methods  expecting localized NSStrings")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOptinosxcocoalocalizabilityNonLocalizedStringChecker { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.API")]
-    [Description("Check for proper uses of various Apple APIs: dispatch_once")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxAPI { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.NumberObjectConversion")]
-    [Description("Check for erroneous conversions of objects representing numbers  into numbers")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxNumberObjectConversion { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.SecKeychainAPI")]
-    [Description("Check for improper uses of the Security framework's Keychain APIs: SecKeychainItemCopyContent SecKeychainFindGenericPassword SecKeychainFindInternetPassword SecKeychainItemFreeContent SecKeychainItemCopyAttributesAndData SecKeychainItemFreeAttributesAndData")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxSecKeychainAPI { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.cocoa.AtSync")]
-    [Description("Check for nil pointers used as mutexes for @synchronized.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcocoaAtSync { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.cocoa.ClassRelease")]
-    [Description("Check for sending retain, release, or  autorelease directly to a class.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcocoaClassRelease { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.cocoa.Dealloc")]
-    [Description("Warn about Objective-C classes that lack a correct implementation  of -dealloc. ")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcocoaDealloc { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.cocoa.IncompatibleMethodTypes")]
-    [Description("Check for an incompatible type signature when overriding an Objective-C method.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcocoaIncompatibleMethodTypes { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.cocoa.NSAutoreleasePool")]
-    [Description("Warn for suboptimal uses of NSAutoreleasePool in Objective-C GC mode (-fobjc-gc compiler option).")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcocoaNSAutoreleasePool { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.cocoa.NSError")]
-    [Description("Check usage of NSError** parameters.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcocoaNSError { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.cocoa.NilArg")]
-    [Description("Check for prohibited nil arguments in specific Objective-C method calls: - caseInsensitiveCompare: - compare: - compare:options: - compare:options:range: - compare:options:range:locale: - componentsSeparatedByCharactersInSet: - initWithFormat:")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcocoaNilArg { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.cocoa.ObjCGenerics")]
-    [Description("Check for type errors when using Objective-C generics")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcocoaObjCGenerics { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.cocoa.RetainCount")]
-    [Description("Check for leaks and violations of the Cocoa Memory Management rules.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcocoaRetainCount { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.cocoa.SelfInit")]
-    [Description("Check that self is properly initialized inside an initializer method.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcocoaSelfInit { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.cocoa.SuperDealloc")]
-    [Description("Warn about improper use of '[super dealloc]' in Objective-C")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcocoaSuperDealloc { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.cocoa.UnusedIvars")]
-    [Description("Warn about private ivars that are never used.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcocoaUnusedIvars { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.cocoa.VariadicMethodTypes")]
-    [Description("Check for passing non-Objective-C types to variadic collection initialization methods that expect only Objective-C types.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcocoaVariadicMethodTypes { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.coreFoundation.CFError")]
-    [Description("Check usage of CFErrorRef* parameters.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcoreFoundationCFError { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.coreFoundation.CFNumber")]
-    [Description("Check for improper uses of CFNumberCreate.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcoreFoundationCFNumber { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.coreFoundation.CFRetainRelease")]
-    [Description("Check for null arguments to CFRetain, CFRelease, CFMakeCollectable.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcoreFoundationCFRetainRelease { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.coreFoundation.containers.OutOfBounds")]
-    [Description("Checks for index out-of-bounds when using CFArray API.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcoreFoundationcontainersOutOfBounds { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.coreFoundation.containers.PointerSizedValues")]
-    [Description("Warns if CFArray, CFDictionary, CFSet are created with non-pointer-size values.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcoreFoundationcontainersPointerSizedValues { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-security.FloatLoopCounter")]
-    [Description("Warn on using a floating point value as a loop counter (CERT: FLP30-C, FLP30-CPP).")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerSecurityFloatLoopCounter { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-security.insecureAPI.UncheckedReturn")]
-    [Description("Warn on uses of functions whose return values must be always checked: setuid setgid seteuid setegid setreuid setregid")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerSecurityinsecureAPIUncheckedReturn { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-security.insecureAPI.getpw")]
-    [Description("Warn on uses of the getpw function.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerSecurityinsecureAPIgetpw { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-security.insecureAPI.gets")]
-    [Description("Warn on uses of the gets function.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerSecurityinsecureAPIgets { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-security.insecureAPI.mkstemp")]
-    [Description("Warn when mktemp, mkstemp, mkstemps or mkdtemp is passed fewer than 6 X's in the format string.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerSecurityinsecureAPImkstemp { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-security.insecureAPI.mktemp")]
-    [Description("Warn on uses of the mktemp function.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerSecurityinsecureAPImktemp { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-security.insecureAPI.rand")]
-    [Description("Warn on uses of inferior random number generating functions (only if arc4random function is available): drand48 erand48 jrand48 lcong48 lrand48 mrand48 nrand48 random rand_r")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerSecurityinsecureAPIrand { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-security.insecureAPI.strcpy")]
-    [Description("Warn on uses of the strcpy and strcat functions.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerSecurityinsecureAPIstrcpy { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-security.insecureAPI.vfork")]
-    [Description("Warn on uses of the vfork function.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerSecurityinsecureAPIvfork { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-unix.API")]
-    [Description("Check calls to various UNIX/POSIX functions: open pthread_once calloc malloc realloc alloca ")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerUnixAPI { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-unix.Malloc")]
-    [Description("Check for memory leaks, double free, and use-after-free and offset problems involving malloc.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerUnixMalloc { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-unix.MallocSizeof")]
-    [Description("Check for dubious malloc, calloc or realloc arguments involving sizeof.")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerUnixMallocSizeof { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-unix.MismatchedDeallocator")]
-    [Description("Check for mismatched deallocators (e.g. passing a pointer allocating with new to free()).")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerUnixMismatchedDeallocator { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-unix.Vfork")]
-    [Description("Check for proper usage of vfork")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerUnixVfork { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-unix.cstring.BadSizeArg")]
-    [Description("Check the size argument passed to strncat for common erroneous patterns. Use -Wno-strncat-size compiler option to mute other strncat-related compiler warnings. ")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerUnixcstringBadSizeArg { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-unix.cstring.NullArg")]
-    [Description("Check for null pointers being passed as arguments to C string functions: strlen strnlen strcpy strncpy strcat strncat strcmp strncmp strcasecmp strncasecmp")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerUnixcstringNullArg { get; set; }
 
     [Category("Checks")]
     [DisplayName("android-cloexec-creat")]
@@ -517,6 +166,450 @@ namespace ClangPowerTools
     [Description("The cert-oop11-cpp check is an alias, please see misc-move-constructor-init for more information. ")]
     [ClangCheck(true)]
     public bool CertOop11Cpp { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-apiModeling.google.GTest")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerApimodelinggoogleGTest { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-core.builtin.BuiltinFunctions")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerCorebuiltinBuiltinFunctions { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-core.builtin.NoReturnFunctions")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerCorebuiltinNoReturnFunctions { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-core.CallAndMessage")]
+    [Description("Check for logical errors for function calls and Objective-C message expressions (e.g., uninitialized arguments, null function pointers).")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerCoreCallAndMessage { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-core.DivideZero")]
+    [Description("Check for division by zero.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerCoreDivideZero { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-core.DynamicTypePropagation")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerCoreDynamicTypePropagation { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-core.NonNullParamChecker")]
+    [Description("Check for null pointers passed as arguments to a function whose arguments are marked with the nonnull attribute.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerCoreNonNullParamChecker { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-core.NullDereference")]
+    [Description("Check for dereferences of null pointers.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerCoreNullDereference { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-core.StackAddressEscape")]
+    [Description("Check that addresses of stack memory do not escape the function.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerCoreStackAddressEscape { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-core.UndefinedBinaryOperatorResult")]
+    [Description("Check for undefined results of binary operators.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerCoreUndefinedBinaryOperatorResult { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-core.uninitialized.ArraySubscript")]
+    [Description("Check for uninitialized values used as array subscripts.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerCoreuninitializedArraySubscript { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-core.uninitialized.Assign")]
+    [Description("Check for assigning uninitialized values.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerCoreuninitializedAssign { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-core.uninitialized.Branch")]
+    [Description("Check for uninitialized values used as branch conditions.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerCoreuninitializedBranch { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-core.uninitialized.CapturedBlockVariable")]
+    [Description("Check for blocks that capture uninitialized values.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerCoreuninitializedCapturedBlockVariable { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-core.uninitialized.UndefReturn")]
+    [Description("Check for uninitialized values being returned to the caller.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerCoreuninitializedUndefReturn { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-core.VLASize")]
+    [Description("Check for declarations of VLA of undefined or zero size.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerCoreVLASize { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-cplusplus.NewDelete")]
+    [Description("Check for double-free, use-after-free and offset problems involving C++  delete.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerCplusplusNewDelete { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-cplusplus.NewDeleteLeaks")]
+    [Description("Check for memory leaks. Traces memory managed by new/ delete.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerCplusplusNewDeleteLeaks { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-cplusplus.SelfAssignment")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerCplusplusSelfAssignment { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-deadcode.DeadStores")]
+    [Description("Check for values stored to variables that are never read afterwards.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerDeadcodeDeadStores { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-llvm.Conventions")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerLlvmConventions { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-nullability.NullableDereferenced")]
+    [Description("Warns when a nullable pointer is dereferenced.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerNullabilityNullableDereferenced { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-nullability.NullablePassedToNonnull")]
+    [Description("Warns when a nullable pointer is passed to a pointer which has a _Nonnull type.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerNullabilityNullablePassedToNonnull { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-nullability.NullableReturnedFromNonnull")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerNullabilityNullableReturnedFromNonnull { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-nullability.NullPassedToNonnull")]
+    [Description("Warns when a null pointer is passed to a pointer which has a  _Nonnull type.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerNullabilityNullPassedToNonnull { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-nullability.NullReturnedFromNonnull")]
+    [Description("Warns when a null pointer is returned from a function that has  _Nonnull return type.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerNullabilityNullReturnedFromNonnull { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-optin.cplusplus.VirtualCall")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOptincplusplusVirtualCall { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-optin.mpi.MPI-Checker")]
+    [Description("Checks MPI code")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOptinmpiMPIChecker { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-optin.osx.cocoa.localizability.EmptyLocalizationContextChecker")]
+    [Description("Check that NSLocalizedString macros include a comment for context.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOptinosxcocoalocalizabilityEmptyLocalizationContextChecker { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-optin.osx.cocoa.localizability.NonLocalizedStringChecker")]
+    [Description("Warns about uses of non-localized NSStrings passed to UI methods  expecting localized NSStrings")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOptinosxcocoalocalizabilityNonLocalizedStringChecker { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-optin.performance.Padding")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOptinperformancePadding { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-optin.portability.UnixAPI")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOptinportabilityUnixAPI { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.API")]
+    [Description("Check for proper uses of various Apple APIs: dispatch_once")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxAPI { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.cocoa.AtSync")]
+    [Description("Check for nil pointers used as mutexes for @synchronized.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcocoaAtSync { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.cocoa.ClassRelease")]
+    [Description("Check for sending retain, release, or  autorelease directly to a class.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcocoaClassRelease { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.cocoa.Dealloc")]
+    [Description("Warn about Objective-C classes that lack a correct implementation  of -dealloc. ")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcocoaDealloc { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.cocoa.IncompatibleMethodTypes")]
+    [Description("Check for an incompatible type signature when overriding an Objective-C method.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcocoaIncompatibleMethodTypes { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.cocoa.Loops")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcocoaLoops { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.cocoa.MissingSuperCall")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcocoaMissingSuperCall { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.cocoa.NilArg")]
+    [Description("Check for prohibited nil arguments in specific Objective-C method calls: - caseInsensitiveCompare: - compare: - compare:options: - compare:options:range: - compare:options:range:locale: - componentsSeparatedByCharactersInSet: - initWithFormat:")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcocoaNilArg { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.cocoa.NonNilReturnValue")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcocoaNonNilReturnValue { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.cocoa.NSAutoreleasePool")]
+    [Description("Warn for suboptimal uses of NSAutoreleasePool in Objective-C GC mode (-fobjc-gc compiler option).")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcocoaNSAutoreleasePool { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.cocoa.NSError")]
+    [Description("Check usage of NSError** parameters.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcocoaNSError { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.cocoa.ObjCGenerics")]
+    [Description("Check for type errors when using Objective-C generics")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcocoaObjCGenerics { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.cocoa.RetainCount")]
+    [Description("Check for leaks and violations of the Cocoa Memory Management rules.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcocoaRetainCount { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.cocoa.SelfInit")]
+    [Description("Check that self is properly initialized inside an initializer method.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcocoaSelfInit { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.cocoa.SuperDealloc")]
+    [Description("Warn about improper use of '[super dealloc]' in Objective-C")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcocoaSuperDealloc { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.cocoa.UnusedIvars")]
+    [Description("Warn about private ivars that are never used.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcocoaUnusedIvars { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.cocoa.VariadicMethodTypes")]
+    [Description("Check for passing non-Objective-C types to variadic collection initialization methods that expect only Objective-C types.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcocoaVariadicMethodTypes { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.coreFoundation.CFError")]
+    [Description("Check usage of CFErrorRef* parameters.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcoreFoundationCFError { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.coreFoundation.CFNumber")]
+    [Description("Check for improper uses of CFNumberCreate.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcoreFoundationCFNumber { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.coreFoundation.CFRetainRelease")]
+    [Description("Check for null arguments to CFRetain, CFRelease, CFMakeCollectable.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcoreFoundationCFRetainRelease { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.coreFoundation.containers.OutOfBounds")]
+    [Description("Checks for index out-of-bounds when using CFArray API.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcoreFoundationcontainersOutOfBounds { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.coreFoundation.containers.PointerSizedValues")]
+    [Description("Warns if CFArray, CFDictionary, CFSet are created with non-pointer-size values.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxcoreFoundationcontainersPointerSizedValues { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.NumberObjectConversion")]
+    [Description("Check for erroneous conversions of objects representing numbers  into numbers")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxNumberObjectConversion { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.ObjCProperty")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxObjCProperty { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-osx.SecKeychainAPI")]
+    [Description("Check for improper uses of the Security framework's Keychain APIs: SecKeychainItemCopyContent SecKeychainFindGenericPassword SecKeychainFindInternetPassword SecKeychainItemFreeContent SecKeychainItemCopyAttributesAndData SecKeychainItemFreeAttributesAndData")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerOsxSecKeychainAPI { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-security.FloatLoopCounter")]
+    [Description("Warn on using a floating point value as a loop counter (CERT: FLP30-C, FLP30-CPP).")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerSecurityFloatLoopCounter { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-security.insecureAPI.getpw")]
+    [Description("Warn on uses of the getpw function.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerSecurityinsecureAPIgetpw { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-security.insecureAPI.gets")]
+    [Description("Warn on uses of the gets function.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerSecurityinsecureAPIgets { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-security.insecureAPI.mkstemp")]
+    [Description("Warn when mktemp, mkstemp, mkstemps or mkdtemp is passed fewer than 6 X's in the format string.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerSecurityinsecureAPImkstemp { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-security.insecureAPI.mktemp")]
+    [Description("Warn on uses of the mktemp function.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerSecurityinsecureAPImktemp { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-security.insecureAPI.rand")]
+    [Description("Warn on uses of inferior random number generating functions (only if arc4random function is available): drand48 erand48 jrand48 lcong48 lrand48 mrand48 nrand48 random rand_r")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerSecurityinsecureAPIrand { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-security.insecureAPI.strcpy")]
+    [Description("Warn on uses of the strcpy and strcat functions.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerSecurityinsecureAPIstrcpy { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-security.insecureAPI.UncheckedReturn")]
+    [Description("Warn on uses of functions whose return values must be always checked: setuid setgid seteuid setegid setreuid setregid")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerSecurityinsecureAPIUncheckedReturn { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-security.insecureAPI.vfork")]
+    [Description("Warn on uses of the vfork function.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerSecurityinsecureAPIvfork { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-unix.API")]
+    [Description("Check calls to various UNIX/POSIX functions: open pthread_once calloc malloc realloc alloca ")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerUnixAPI { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-unix.cstring.BadSizeArg")]
+    [Description("Check the size argument passed to strncat for common erroneous patterns. Use -Wno-strncat-size compiler option to mute other strncat-related compiler warnings. ")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerUnixcstringBadSizeArg { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-unix.cstring.NullArg")]
+    [Description("Check for null pointers being passed as arguments to C string functions: strlen strnlen strcpy strncpy strcat strncat strcmp strncmp strcasecmp strncasecmp")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerUnixcstringNullArg { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-unix.Malloc")]
+    [Description("Check for memory leaks, double free, and use-after-free and offset problems involving malloc.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerUnixMalloc { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-unix.MallocSizeof")]
+    [Description("Check for dubious malloc, calloc or realloc arguments involving sizeof.")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerUnixMallocSizeof { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-unix.MismatchedDeallocator")]
+    [Description("Check for mismatched deallocators (e.g. passing a pointer allocating with new to free()).")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerUnixMismatchedDeallocator { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-unix.StdCLibraryFunctions")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerUnixStdCLibraryFunctions { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-unix.Vfork")]
+    [Description("Check for proper usage of vfork")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerUnixVfork { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-valist.CopyToSelf")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerValistCopyToSelf { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-valist.Uninitialized")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerValistUninitialized { get; set; }
+
+    [Category("Checks")]
+    [DisplayName("clang-analyzer-valist.Unterminated")]
+    [ClangCheck(true)]
+    public bool ClangAnalyzerValistUnterminated { get; set; }
 
     [Category("Checks")]
     [DisplayName("cppcoreguidelines-c-copy-assignment-signature")]
@@ -1251,6 +1344,11 @@ namespace ClangPowerTools
     public bool PerformanceForRangeCopy { get; set; }
 
     [Category("Checks")]
+    [DisplayName("performance-implicit-cast-in-loop")]
+    [ClangCheck(true)]
+    public bool PerformanceImplicitCastInLoop { get; set; }
+
+    [Category("Checks")]
     [DisplayName("performance-inefficient-string-concatenation")]
     [Description("This check warns about the performance overhead arising from concatenating strings using the operator+, for instance: Instead of this structure you should use operator+= or std::string‘s (std::basic_string) class member function append(). For instance: Could be rewritten in a greatly more efficient way like: And this can be rewritten too: In a slightly more efficient way like: ")]
     [ClangCheck(true)]
@@ -1299,16 +1397,16 @@ namespace ClangPowerTools
     public bool ReadabilityContainerSizeEmpty { get; set; } = true;
 
     [Category("Checks")]
-    [DisplayName("readability-delete-null-pointer")]
-    [Description("Checks the if statements where a pointer’s existence is checked and then deletes the pointer. The check is unnecessary as deleting a null pointer has no effect. ")]
-    [ClangCheck(true)]
-    public bool ReadabilityDeleteNullPointer { get; set; } = true;
-
-    [Category("Checks")]
     [DisplayName("readability-deleted-default")]
     [Description("Checks that constructors and assignment operators marked as = default are not actually deleted by the compiler. ")]
     [ClangCheck(true)]
     public bool ReadabilityDeletedDefault { get; set; } = true;
+
+    [Category("Checks")]
+    [DisplayName("readability-delete-null-pointer")]
+    [Description("Checks the if statements where a pointer’s existence is checked and then deletes the pointer. The check is unnecessary as deleting a null pointer has no effect. ")]
+    [ClangCheck(true)]
+    public bool ReadabilityDeleteNullPointer { get; set; } = true;
 
     [Category("Checks")]
     [DisplayName("readability-else-after-return")]
@@ -1327,6 +1425,11 @@ namespace ClangPowerTools
     [Description("Checks for identifiers naming style mismatch. This check will try to enforce coding guidelines on the identifiers naming. It supports lower_case, UPPER_CASE, camelBack and CamelCase casing and tries to convert from one to another if a mismatch is detected. It also supports a fixed prefix and suffix that will be prepended or appended to the identifiers, regardless of the casing. Many configuration options are available, in order to be able to create different rules for different kind of identifier. In general, the rules are falling back to a more generic rule if the specific case is not configured. ")]
     [ClangCheck(true)]
     public bool ReadabilityIdentifierNaming { get; set; } = true;
+
+    [Category("Checks")]
+    [DisplayName("readability-implicit-bool-cast")]
+    [ClangCheck(true)]
+    public bool ReadabilityImplicitBoolCast { get; set; } = true;
 
     [Category("Checks")]
     [DisplayName("readability-inconsistent-declaration-parameter-name")]
@@ -1418,105 +1521,16 @@ namespace ClangPowerTools
     [ClangCheck(true)]
     public bool ReadabilityUniqueptrDeleteRelease { get; set; } = true;
 
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-apiModeling.google.GTest")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerApimodelinggoogleGTest { get; set; }
 
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-core.DynamicTypePropagation")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerCoreDynamicTypePropagation { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-core.builtin.BuiltinFunctions")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerCorebuiltinBuiltinFunctions { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-core.builtin.NoReturnFunctions")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerCorebuiltinNoReturnFunctions { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-cplusplus.SelfAssignment")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerCplusplusSelfAssignment { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-llvm.Conventions")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerLlvmConventions { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-nullability.NullableReturnedFromNonnull")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerNullabilityNullableReturnedFromNonnull { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-optin.cplusplus.VirtualCall")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOptincplusplusVirtualCall { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-optin.performance.Padding")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOptinperformancePadding { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-optin.portability.UnixAPI")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOptinportabilityUnixAPI { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.ObjCProperty")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxObjCProperty { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.cocoa.Loops")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcocoaLoops { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.cocoa.MissingSuperCall")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcocoaMissingSuperCall { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-osx.cocoa.NonNilReturnValue")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerOsxcocoaNonNilReturnValue { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-unix.StdCLibraryFunctions")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerUnixStdCLibraryFunctions { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-valist.CopyToSelf")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerValistCopyToSelf { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-valist.Uninitialized")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerValistUninitialized { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("clang-analyzer-valist.Unterminated")]
-    [ClangCheck(true)]
-    public bool ClangAnalyzerValistUnterminated { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("performance-implicit-cast-in-loop")]
-    [ClangCheck(true)]
-    public bool PerformanceImplicitCastInLoop { get; set; }
-
-    [Category("Checks")]
-    [DisplayName("readability-implicit-bool-cast")]
-    [ClangCheck(true)]
-    public bool ReadabilityImplicitBoolCast { get; set; } = true;
+    protected override IWin32Window Window
+    {
+      get
+      {
+        ElementHost elementHost = new ElementHost();
+        elementHost.Child = new ClangTidyChecksOptionsUserControl(this);
+        return elementHost;
+      }
+    }
 
     #endregion
 
@@ -1524,69 +1538,8 @@ namespace ClangPowerTools
 
     public override void SaveSettingsToStorage()
     {
-      string path = mSettingsPathBuilder.GetPath(kGeneralSettingsFileName);
-
       var updatedConfig = new ClangTidyChecksOptions
       {
-        ClangAnalyzerCoreCallAndMessage = this.ClangAnalyzerCoreCallAndMessage,
-        ClangAnalyzerCoreDivideZero = this.ClangAnalyzerCoreDivideZero,
-        ClangAnalyzerCoreNonNullParamChecker = this.ClangAnalyzerCoreNonNullParamChecker,
-        ClangAnalyzerCoreNullDereference = this.ClangAnalyzerCoreNullDereference,
-        ClangAnalyzerCoreStackAddressEscape = this.ClangAnalyzerCoreStackAddressEscape,
-        ClangAnalyzerCoreUndefinedBinaryOperatorResult = this.ClangAnalyzerCoreUndefinedBinaryOperatorResult,
-        ClangAnalyzerCoreVLASize = this.ClangAnalyzerCoreVLASize,
-        ClangAnalyzerCoreuninitializedArraySubscript = this.ClangAnalyzerCoreuninitializedArraySubscript,
-        ClangAnalyzerCoreuninitializedAssign = this.ClangAnalyzerCoreuninitializedAssign,
-        ClangAnalyzerCoreuninitializedBranch = this.ClangAnalyzerCoreuninitializedBranch,
-        ClangAnalyzerCoreuninitializedCapturedBlockVariable = this.ClangAnalyzerCoreuninitializedCapturedBlockVariable,
-        ClangAnalyzerCoreuninitializedUndefReturn = this.ClangAnalyzerCoreuninitializedUndefReturn,
-        ClangAnalyzerCplusplusNewDelete = this.ClangAnalyzerCplusplusNewDelete,
-        ClangAnalyzerCplusplusNewDeleteLeaks = this.ClangAnalyzerCplusplusNewDeleteLeaks,
-        ClangAnalyzerDeadcodeDeadStores = this.ClangAnalyzerDeadcodeDeadStores,
-        ClangAnalyzerNullabilityNullPassedToNonnull = this.ClangAnalyzerNullabilityNullPassedToNonnull,
-        ClangAnalyzerNullabilityNullReturnedFromNonnull = this.ClangAnalyzerNullabilityNullReturnedFromNonnull,
-        ClangAnalyzerNullabilityNullableDereferenced = this.ClangAnalyzerNullabilityNullableDereferenced,
-        ClangAnalyzerNullabilityNullablePassedToNonnull = this.ClangAnalyzerNullabilityNullablePassedToNonnull,
-        ClangAnalyzerOptinmpiMPIChecker = this.ClangAnalyzerOptinmpiMPIChecker,
-        ClangAnalyzerOptinosxcocoalocalizabilityEmptyLocalizationContextChecker = this.ClangAnalyzerOptinosxcocoalocalizabilityEmptyLocalizationContextChecker,
-        ClangAnalyzerOptinosxcocoalocalizabilityNonLocalizedStringChecker = this.ClangAnalyzerOptinosxcocoalocalizabilityNonLocalizedStringChecker,
-        ClangAnalyzerOsxAPI = this.ClangAnalyzerOsxAPI,
-        ClangAnalyzerOsxNumberObjectConversion = this.ClangAnalyzerOsxNumberObjectConversion,
-        ClangAnalyzerOsxSecKeychainAPI = this.ClangAnalyzerOsxSecKeychainAPI,
-        ClangAnalyzerOsxcocoaAtSync = this.ClangAnalyzerOsxcocoaAtSync,
-        ClangAnalyzerOsxcocoaClassRelease = this.ClangAnalyzerOsxcocoaClassRelease,
-        ClangAnalyzerOsxcocoaDealloc = this.ClangAnalyzerOsxcocoaDealloc,
-        ClangAnalyzerOsxcocoaIncompatibleMethodTypes = this.ClangAnalyzerOsxcocoaIncompatibleMethodTypes,
-        ClangAnalyzerOsxcocoaNSAutoreleasePool = this.ClangAnalyzerOsxcocoaNSAutoreleasePool,
-        ClangAnalyzerOsxcocoaNSError = this.ClangAnalyzerOsxcocoaNSError,
-        ClangAnalyzerOsxcocoaNilArg = this.ClangAnalyzerOsxcocoaNilArg,
-        ClangAnalyzerOsxcocoaObjCGenerics = this.ClangAnalyzerOsxcocoaObjCGenerics,
-        ClangAnalyzerOsxcocoaRetainCount = this.ClangAnalyzerOsxcocoaRetainCount,
-        ClangAnalyzerOsxcocoaSelfInit = this.ClangAnalyzerOsxcocoaSelfInit,
-        ClangAnalyzerOsxcocoaSuperDealloc = this.ClangAnalyzerOsxcocoaSuperDealloc,
-        ClangAnalyzerOsxcocoaUnusedIvars = this.ClangAnalyzerOsxcocoaUnusedIvars,
-        ClangAnalyzerOsxcocoaVariadicMethodTypes = this.ClangAnalyzerOsxcocoaVariadicMethodTypes,
-        ClangAnalyzerOsxcoreFoundationCFError = this.ClangAnalyzerOsxcoreFoundationCFError,
-        ClangAnalyzerOsxcoreFoundationCFNumber = this.ClangAnalyzerOsxcoreFoundationCFNumber,
-        ClangAnalyzerOsxcoreFoundationCFRetainRelease = this.ClangAnalyzerOsxcoreFoundationCFRetainRelease,
-        ClangAnalyzerOsxcoreFoundationcontainersOutOfBounds = this.ClangAnalyzerOsxcoreFoundationcontainersOutOfBounds,
-        ClangAnalyzerOsxcoreFoundationcontainersPointerSizedValues = this.ClangAnalyzerOsxcoreFoundationcontainersPointerSizedValues,
-        ClangAnalyzerSecurityFloatLoopCounter = this.ClangAnalyzerSecurityFloatLoopCounter,
-        ClangAnalyzerSecurityinsecureAPIUncheckedReturn = this.ClangAnalyzerSecurityinsecureAPIUncheckedReturn,
-        ClangAnalyzerSecurityinsecureAPIgetpw = this.ClangAnalyzerSecurityinsecureAPIgetpw,
-        ClangAnalyzerSecurityinsecureAPIgets = this.ClangAnalyzerSecurityinsecureAPIgets,
-        ClangAnalyzerSecurityinsecureAPImkstemp = this.ClangAnalyzerSecurityinsecureAPImkstemp,
-        ClangAnalyzerSecurityinsecureAPImktemp = this.ClangAnalyzerSecurityinsecureAPImktemp,
-        ClangAnalyzerSecurityinsecureAPIrand = this.ClangAnalyzerSecurityinsecureAPIrand,
-        ClangAnalyzerSecurityinsecureAPIstrcpy = this.ClangAnalyzerSecurityinsecureAPIstrcpy,
-        ClangAnalyzerSecurityinsecureAPIvfork = this.ClangAnalyzerSecurityinsecureAPIvfork,
-        ClangAnalyzerUnixAPI = this.ClangAnalyzerUnixAPI,
-        ClangAnalyzerUnixMalloc = this.ClangAnalyzerUnixMalloc,
-        ClangAnalyzerUnixMallocSizeof = this.ClangAnalyzerUnixMallocSizeof,
-        ClangAnalyzerUnixMismatchedDeallocator = this.ClangAnalyzerUnixMismatchedDeallocator,
-        ClangAnalyzerUnixVfork = this.ClangAnalyzerUnixVfork,
-        ClangAnalyzerUnixcstringBadSizeArg = this.ClangAnalyzerUnixcstringBadSizeArg,
-        ClangAnalyzerUnixcstringNullArg = this.ClangAnalyzerUnixcstringNullArg,
         AndroidCloexecCreat = this.AndroidCloexecCreat,
         AndroidCloexecFopen = this.AndroidCloexecFopen,
         AndroidCloexecOpen = this.AndroidCloexecOpen,
@@ -1612,6 +1565,83 @@ namespace ClangPowerTools
         CertMsc30C = this.CertMsc30C,
         CertMsc50Cpp = this.CertMsc50Cpp,
         CertOop11Cpp = this.CertOop11Cpp,
+        ClangAnalyzerApimodelinggoogleGTest = this.ClangAnalyzerApimodelinggoogleGTest,
+        ClangAnalyzerCorebuiltinBuiltinFunctions = this.ClangAnalyzerCorebuiltinBuiltinFunctions,
+        ClangAnalyzerCorebuiltinNoReturnFunctions = this.ClangAnalyzerCorebuiltinNoReturnFunctions,
+        ClangAnalyzerCoreCallAndMessage = this.ClangAnalyzerCoreCallAndMessage,
+        ClangAnalyzerCoreDivideZero = this.ClangAnalyzerCoreDivideZero,
+        ClangAnalyzerCoreDynamicTypePropagation = this.ClangAnalyzerCoreDynamicTypePropagation,
+        ClangAnalyzerCoreNonNullParamChecker = this.ClangAnalyzerCoreNonNullParamChecker,
+        ClangAnalyzerCoreNullDereference = this.ClangAnalyzerCoreNullDereference,
+        ClangAnalyzerCoreStackAddressEscape = this.ClangAnalyzerCoreStackAddressEscape,
+        ClangAnalyzerCoreUndefinedBinaryOperatorResult = this.ClangAnalyzerCoreUndefinedBinaryOperatorResult,
+        ClangAnalyzerCoreuninitializedArraySubscript = this.ClangAnalyzerCoreuninitializedArraySubscript,
+        ClangAnalyzerCoreuninitializedAssign = this.ClangAnalyzerCoreuninitializedAssign,
+        ClangAnalyzerCoreuninitializedBranch = this.ClangAnalyzerCoreuninitializedBranch,
+        ClangAnalyzerCoreuninitializedCapturedBlockVariable = this.ClangAnalyzerCoreuninitializedCapturedBlockVariable,
+        ClangAnalyzerCoreuninitializedUndefReturn = this.ClangAnalyzerCoreuninitializedUndefReturn,
+        ClangAnalyzerCoreVLASize = this.ClangAnalyzerCoreVLASize,
+        ClangAnalyzerCplusplusNewDelete = this.ClangAnalyzerCplusplusNewDelete,
+        ClangAnalyzerCplusplusNewDeleteLeaks = this.ClangAnalyzerCplusplusNewDeleteLeaks,
+        ClangAnalyzerCplusplusSelfAssignment = this.ClangAnalyzerCplusplusSelfAssignment,
+        ClangAnalyzerDeadcodeDeadStores = this.ClangAnalyzerDeadcodeDeadStores,
+        ClangAnalyzerLlvmConventions = this.ClangAnalyzerLlvmConventions,
+        ClangAnalyzerNullabilityNullableDereferenced = this.ClangAnalyzerNullabilityNullableDereferenced,
+        ClangAnalyzerNullabilityNullablePassedToNonnull = this.ClangAnalyzerNullabilityNullablePassedToNonnull,
+        ClangAnalyzerNullabilityNullableReturnedFromNonnull = this.ClangAnalyzerNullabilityNullableReturnedFromNonnull,
+        ClangAnalyzerNullabilityNullPassedToNonnull = this.ClangAnalyzerNullabilityNullPassedToNonnull,
+        ClangAnalyzerNullabilityNullReturnedFromNonnull = this.ClangAnalyzerNullabilityNullReturnedFromNonnull,
+        ClangAnalyzerOptincplusplusVirtualCall = this.ClangAnalyzerOptincplusplusVirtualCall,
+        ClangAnalyzerOptinmpiMPIChecker = this.ClangAnalyzerOptinmpiMPIChecker,
+        ClangAnalyzerOptinosxcocoalocalizabilityEmptyLocalizationContextChecker = this.ClangAnalyzerOptinosxcocoalocalizabilityEmptyLocalizationContextChecker,
+        ClangAnalyzerOptinosxcocoalocalizabilityNonLocalizedStringChecker = this.ClangAnalyzerOptinosxcocoalocalizabilityNonLocalizedStringChecker,
+        ClangAnalyzerOptinperformancePadding = this.ClangAnalyzerOptinperformancePadding,
+        ClangAnalyzerOptinportabilityUnixAPI = this.ClangAnalyzerOptinportabilityUnixAPI,
+        ClangAnalyzerOsxAPI = this.ClangAnalyzerOsxAPI,
+        ClangAnalyzerOsxcocoaAtSync = this.ClangAnalyzerOsxcocoaAtSync,
+        ClangAnalyzerOsxcocoaClassRelease = this.ClangAnalyzerOsxcocoaClassRelease,
+        ClangAnalyzerOsxcocoaDealloc = this.ClangAnalyzerOsxcocoaDealloc,
+        ClangAnalyzerOsxcocoaIncompatibleMethodTypes = this.ClangAnalyzerOsxcocoaIncompatibleMethodTypes,
+        ClangAnalyzerOsxcocoaLoops = this.ClangAnalyzerOsxcocoaLoops,
+        ClangAnalyzerOsxcocoaMissingSuperCall = this.ClangAnalyzerOsxcocoaMissingSuperCall,
+        ClangAnalyzerOsxcocoaNilArg = this.ClangAnalyzerOsxcocoaNilArg,
+        ClangAnalyzerOsxcocoaNonNilReturnValue = this.ClangAnalyzerOsxcocoaNonNilReturnValue,
+        ClangAnalyzerOsxcocoaNSAutoreleasePool = this.ClangAnalyzerOsxcocoaNSAutoreleasePool,
+        ClangAnalyzerOsxcocoaNSError = this.ClangAnalyzerOsxcocoaNSError,
+        ClangAnalyzerOsxcocoaObjCGenerics = this.ClangAnalyzerOsxcocoaObjCGenerics,
+        ClangAnalyzerOsxcocoaRetainCount = this.ClangAnalyzerOsxcocoaRetainCount,
+        ClangAnalyzerOsxcocoaSelfInit = this.ClangAnalyzerOsxcocoaSelfInit,
+        ClangAnalyzerOsxcocoaSuperDealloc = this.ClangAnalyzerOsxcocoaSuperDealloc,
+        ClangAnalyzerOsxcocoaUnusedIvars = this.ClangAnalyzerOsxcocoaUnusedIvars,
+        ClangAnalyzerOsxcocoaVariadicMethodTypes = this.ClangAnalyzerOsxcocoaVariadicMethodTypes,
+        ClangAnalyzerOsxcoreFoundationCFError = this.ClangAnalyzerOsxcoreFoundationCFError,
+        ClangAnalyzerOsxcoreFoundationCFNumber = this.ClangAnalyzerOsxcoreFoundationCFNumber,
+        ClangAnalyzerOsxcoreFoundationCFRetainRelease = this.ClangAnalyzerOsxcoreFoundationCFRetainRelease,
+        ClangAnalyzerOsxcoreFoundationcontainersOutOfBounds = this.ClangAnalyzerOsxcoreFoundationcontainersOutOfBounds,
+        ClangAnalyzerOsxcoreFoundationcontainersPointerSizedValues = this.ClangAnalyzerOsxcoreFoundationcontainersPointerSizedValues,
+        ClangAnalyzerOsxNumberObjectConversion = this.ClangAnalyzerOsxNumberObjectConversion,
+        ClangAnalyzerOsxObjCProperty = this.ClangAnalyzerOsxObjCProperty,
+        ClangAnalyzerOsxSecKeychainAPI = this.ClangAnalyzerOsxSecKeychainAPI,
+        ClangAnalyzerSecurityFloatLoopCounter = this.ClangAnalyzerSecurityFloatLoopCounter,
+        ClangAnalyzerSecurityinsecureAPIgetpw = this.ClangAnalyzerSecurityinsecureAPIgetpw,
+        ClangAnalyzerSecurityinsecureAPIgets = this.ClangAnalyzerSecurityinsecureAPIgets,
+        ClangAnalyzerSecurityinsecureAPImkstemp = this.ClangAnalyzerSecurityinsecureAPImkstemp,
+        ClangAnalyzerSecurityinsecureAPImktemp = this.ClangAnalyzerSecurityinsecureAPImktemp,
+        ClangAnalyzerSecurityinsecureAPIrand = this.ClangAnalyzerSecurityinsecureAPIrand,
+        ClangAnalyzerSecurityinsecureAPIstrcpy = this.ClangAnalyzerSecurityinsecureAPIstrcpy,
+        ClangAnalyzerSecurityinsecureAPIUncheckedReturn = this.ClangAnalyzerSecurityinsecureAPIUncheckedReturn,
+        ClangAnalyzerSecurityinsecureAPIvfork = this.ClangAnalyzerSecurityinsecureAPIvfork,
+        ClangAnalyzerUnixAPI = this.ClangAnalyzerUnixAPI,
+        ClangAnalyzerUnixcstringBadSizeArg = this.ClangAnalyzerUnixcstringBadSizeArg,
+        ClangAnalyzerUnixcstringNullArg = this.ClangAnalyzerUnixcstringNullArg,
+        ClangAnalyzerUnixMalloc = this.ClangAnalyzerUnixMalloc,
+        ClangAnalyzerUnixMallocSizeof = this.ClangAnalyzerUnixMallocSizeof,
+        ClangAnalyzerUnixMismatchedDeallocator = this.ClangAnalyzerUnixMismatchedDeallocator,
+        ClangAnalyzerUnixStdCLibraryFunctions = this.ClangAnalyzerUnixStdCLibraryFunctions,
+        ClangAnalyzerUnixVfork = this.ClangAnalyzerUnixVfork,
+        ClangAnalyzerValistCopyToSelf = this.ClangAnalyzerValistCopyToSelf,
+        ClangAnalyzerValistUninitialized = this.ClangAnalyzerValistUninitialized,
+        ClangAnalyzerValistUnterminated = this.ClangAnalyzerValistUnterminated,
         CppcoreguidelinesCCopyAssignmentSignature = this.CppcoreguidelinesCCopyAssignmentSignature,
         CppcoreguidelinesInterfacesGlobalInit = this.CppcoreguidelinesInterfacesGlobalInit,
         CppcoreguidelinesNoMalloc = this.CppcoreguidelinesNoMalloc,
@@ -1734,6 +1764,7 @@ namespace ClangPowerTools
         MpiTypeMismatch = this.MpiTypeMismatch,
         PerformanceFasterStringFind = this.PerformanceFasterStringFind,
         PerformanceForRangeCopy = this.PerformanceForRangeCopy,
+        PerformanceImplicitCastInLoop = this.PerformanceImplicitCastInLoop,
         PerformanceInefficientStringConcatenation = this.PerformanceInefficientStringConcatenation,
         PerformanceInefficientVectorOperation = this.PerformanceInefficientVectorOperation,
         PerformanceTypePromotionInMathFn = this.PerformanceTypePromotionInMathFn,
@@ -1742,11 +1773,12 @@ namespace ClangPowerTools
         ReadabilityAvoidConstParamsInDecls = this.ReadabilityAvoidConstParamsInDecls,
         ReadabilityBracesAroundStatements = this.ReadabilityBracesAroundStatements,
         ReadabilityContainerSizeEmpty = this.ReadabilityContainerSizeEmpty,
-        ReadabilityDeleteNullPointer = this.ReadabilityDeleteNullPointer,
         ReadabilityDeletedDefault = this.ReadabilityDeletedDefault,
+        ReadabilityDeleteNullPointer = this.ReadabilityDeleteNullPointer,
         ReadabilityElseAfterReturn = this.ReadabilityElseAfterReturn,
         ReadabilityFunctionSize = this.ReadabilityFunctionSize,
         ReadabilityIdentifierNaming = this.ReadabilityIdentifierNaming,
+        ReadabilityImplicitBoolCast = this.ReadabilityImplicitBoolCast,
         ReadabilityInconsistentDeclarationParameterName = this.ReadabilityInconsistentDeclarationParameterName,
         ReadabilityMisleadingIndentation = this.ReadabilityMisleadingIndentation,
         ReadabilityMisplacedArrayIndex = this.ReadabilityMisplacedArrayIndex,
@@ -1762,99 +1794,17 @@ namespace ClangPowerTools
         ReadabilitySimplifyBooleanExpr = this.ReadabilitySimplifyBooleanExpr,
         ReadabilityStaticDefinitionInAnonymousNamespace = this.ReadabilityStaticDefinitionInAnonymousNamespace,
         ReadabilityUniqueptrDeleteRelease = this.ReadabilityUniqueptrDeleteRelease,
-        ClangAnalyzerApimodelinggoogleGTest = this.ClangAnalyzerApimodelinggoogleGTest,
-        ClangAnalyzerCoreDynamicTypePropagation = this.ClangAnalyzerCoreDynamicTypePropagation,
-        ClangAnalyzerCorebuiltinBuiltinFunctions = this.ClangAnalyzerCorebuiltinBuiltinFunctions,
-        ClangAnalyzerCorebuiltinNoReturnFunctions = this.ClangAnalyzerCorebuiltinNoReturnFunctions,
-        ClangAnalyzerCplusplusSelfAssignment = this.ClangAnalyzerCplusplusSelfAssignment,
-        ClangAnalyzerLlvmConventions = this.ClangAnalyzerLlvmConventions,
-        ClangAnalyzerNullabilityNullableReturnedFromNonnull = this.ClangAnalyzerNullabilityNullableReturnedFromNonnull,
-        ClangAnalyzerOptincplusplusVirtualCall = this.ClangAnalyzerOptincplusplusVirtualCall,
-        ClangAnalyzerOptinperformancePadding = this.ClangAnalyzerOptinperformancePadding,
-        ClangAnalyzerOptinportabilityUnixAPI = this.ClangAnalyzerOptinportabilityUnixAPI,
-        ClangAnalyzerOsxObjCProperty = this.ClangAnalyzerOsxObjCProperty,
-        ClangAnalyzerOsxcocoaLoops = this.ClangAnalyzerOsxcocoaLoops,
-        ClangAnalyzerOsxcocoaMissingSuperCall = this.ClangAnalyzerOsxcocoaMissingSuperCall,
-        ClangAnalyzerOsxcocoaNonNilReturnValue = this.ClangAnalyzerOsxcocoaNonNilReturnValue,
-        ClangAnalyzerUnixStdCLibraryFunctions = this.ClangAnalyzerUnixStdCLibraryFunctions,
-        ClangAnalyzerValistCopyToSelf = this.ClangAnalyzerValistCopyToSelf,
-        ClangAnalyzerValistUninitialized = this.ClangAnalyzerValistUninitialized,
-        ClangAnalyzerValistUnterminated = this.ClangAnalyzerValistUnterminated,
-        PerformanceImplicitCastInLoop = this.PerformanceImplicitCastInLoop,
-        ReadabilityImplicitBoolCast = this.ReadabilityImplicitBoolCast
       };
 
+      string path = mSettingsPathBuilder.GetPath(kGeneralSettingsFileName);
       SaveToFile(path, updatedConfig);
     }
 
     public override void LoadSettingsFromStorage()
     {
       string path = mSettingsPathBuilder.GetPath(kGeneralSettingsFileName);
-
-      XmlSerializer serializer = new XmlSerializer();
       var loadedConfig = LoadFromFile(path);
 
-      this.ReadabilityImplicitBoolCast = loadedConfig.ReadabilityImplicitBoolCast;
-
-      this.ClangAnalyzerCoreCallAndMessage = loadedConfig.ClangAnalyzerCoreCallAndMessage;
-      this.ClangAnalyzerCoreDivideZero = loadedConfig.ClangAnalyzerCoreDivideZero;
-      this.ClangAnalyzerCoreNonNullParamChecker = loadedConfig.ClangAnalyzerCoreNonNullParamChecker;
-      this.ClangAnalyzerCoreNullDereference = loadedConfig.ClangAnalyzerCoreNullDereference;
-      this.ClangAnalyzerCoreStackAddressEscape = loadedConfig.ClangAnalyzerCoreStackAddressEscape;
-      this.ClangAnalyzerCoreUndefinedBinaryOperatorResult = loadedConfig.ClangAnalyzerCoreUndefinedBinaryOperatorResult;
-      this.ClangAnalyzerCoreVLASize = loadedConfig.ClangAnalyzerCoreVLASize;
-      this.ClangAnalyzerCoreuninitializedArraySubscript = loadedConfig.ClangAnalyzerCoreuninitializedArraySubscript;
-      this.ClangAnalyzerCoreuninitializedAssign = loadedConfig.ClangAnalyzerCoreuninitializedAssign;
-      this.ClangAnalyzerCoreuninitializedBranch = loadedConfig.ClangAnalyzerCoreuninitializedBranch;
-      this.ClangAnalyzerCoreuninitializedCapturedBlockVariable = loadedConfig.ClangAnalyzerCoreuninitializedCapturedBlockVariable;
-      this.ClangAnalyzerCoreuninitializedUndefReturn = loadedConfig.ClangAnalyzerCoreuninitializedUndefReturn;
-      this.ClangAnalyzerCplusplusNewDelete = loadedConfig.ClangAnalyzerCplusplusNewDelete;
-      this.ClangAnalyzerCplusplusNewDeleteLeaks = loadedConfig.ClangAnalyzerCplusplusNewDeleteLeaks;
-      this.ClangAnalyzerDeadcodeDeadStores = loadedConfig.ClangAnalyzerDeadcodeDeadStores;
-      this.ClangAnalyzerNullabilityNullPassedToNonnull = loadedConfig.ClangAnalyzerNullabilityNullPassedToNonnull;
-      this.ClangAnalyzerNullabilityNullReturnedFromNonnull = loadedConfig.ClangAnalyzerNullabilityNullReturnedFromNonnull;
-      this.ClangAnalyzerNullabilityNullableDereferenced = loadedConfig.ClangAnalyzerNullabilityNullableDereferenced;
-      this.ClangAnalyzerNullabilityNullablePassedToNonnull = loadedConfig.ClangAnalyzerNullabilityNullablePassedToNonnull;
-      this.ClangAnalyzerOptinmpiMPIChecker = loadedConfig.ClangAnalyzerOptinmpiMPIChecker;
-      this.ClangAnalyzerOptinosxcocoalocalizabilityEmptyLocalizationContextChecker = loadedConfig.ClangAnalyzerOptinosxcocoalocalizabilityEmptyLocalizationContextChecker;
-      this.ClangAnalyzerOptinosxcocoalocalizabilityNonLocalizedStringChecker = loadedConfig.ClangAnalyzerOptinosxcocoalocalizabilityNonLocalizedStringChecker;
-      this.ClangAnalyzerOsxAPI = loadedConfig.ClangAnalyzerOsxAPI;
-      this.ClangAnalyzerOsxNumberObjectConversion = loadedConfig.ClangAnalyzerOsxNumberObjectConversion;
-      this.ClangAnalyzerOsxSecKeychainAPI = loadedConfig.ClangAnalyzerOsxSecKeychainAPI;
-      this.ClangAnalyzerOsxcocoaAtSync = loadedConfig.ClangAnalyzerOsxcocoaAtSync;
-      this.ClangAnalyzerOsxcocoaClassRelease = loadedConfig.ClangAnalyzerOsxcocoaClassRelease;
-      this.ClangAnalyzerOsxcocoaDealloc = loadedConfig.ClangAnalyzerOsxcocoaDealloc;
-      this.ClangAnalyzerOsxcocoaIncompatibleMethodTypes = loadedConfig.ClangAnalyzerOsxcocoaIncompatibleMethodTypes;
-      this.ClangAnalyzerOsxcocoaNSAutoreleasePool = loadedConfig.ClangAnalyzerOsxcocoaNSAutoreleasePool;
-      this.ClangAnalyzerOsxcocoaNSError = loadedConfig.ClangAnalyzerOsxcocoaNSError;
-      this.ClangAnalyzerOsxcocoaNilArg = loadedConfig.ClangAnalyzerOsxcocoaNilArg;
-      this.ClangAnalyzerOsxcocoaObjCGenerics = loadedConfig.ClangAnalyzerOsxcocoaObjCGenerics;
-      this.ClangAnalyzerOsxcocoaRetainCount = loadedConfig.ClangAnalyzerOsxcocoaRetainCount;
-      this.ClangAnalyzerOsxcocoaSelfInit = loadedConfig.ClangAnalyzerOsxcocoaSelfInit;
-      this.ClangAnalyzerOsxcocoaSuperDealloc = loadedConfig.ClangAnalyzerOsxcocoaSuperDealloc;
-      this.ClangAnalyzerOsxcocoaUnusedIvars = loadedConfig.ClangAnalyzerOsxcocoaUnusedIvars;
-      this.ClangAnalyzerOsxcocoaVariadicMethodTypes = loadedConfig.ClangAnalyzerOsxcocoaVariadicMethodTypes;
-      this.ClangAnalyzerOsxcoreFoundationCFError = loadedConfig.ClangAnalyzerOsxcoreFoundationCFError;
-      this.ClangAnalyzerOsxcoreFoundationCFNumber = loadedConfig.ClangAnalyzerOsxcoreFoundationCFNumber;
-      this.ClangAnalyzerOsxcoreFoundationCFRetainRelease = loadedConfig.ClangAnalyzerOsxcoreFoundationCFRetainRelease;
-      this.ClangAnalyzerOsxcoreFoundationcontainersOutOfBounds = loadedConfig.ClangAnalyzerOsxcoreFoundationcontainersOutOfBounds;
-      this.ClangAnalyzerOsxcoreFoundationcontainersPointerSizedValues = loadedConfig.ClangAnalyzerOsxcoreFoundationcontainersPointerSizedValues;
-      this.ClangAnalyzerSecurityFloatLoopCounter = loadedConfig.ClangAnalyzerSecurityFloatLoopCounter;
-      this.ClangAnalyzerSecurityinsecureAPIUncheckedReturn = loadedConfig.ClangAnalyzerSecurityinsecureAPIUncheckedReturn;
-      this.ClangAnalyzerSecurityinsecureAPIgetpw = loadedConfig.ClangAnalyzerSecurityinsecureAPIgetpw;
-      this.ClangAnalyzerSecurityinsecureAPIgets = loadedConfig.ClangAnalyzerSecurityinsecureAPIgets;
-      this.ClangAnalyzerSecurityinsecureAPImkstemp = loadedConfig.ClangAnalyzerSecurityinsecureAPImkstemp;
-      this.ClangAnalyzerSecurityinsecureAPImktemp = loadedConfig.ClangAnalyzerSecurityinsecureAPImktemp;
-      this.ClangAnalyzerSecurityinsecureAPIrand = loadedConfig.ClangAnalyzerSecurityinsecureAPIrand;
-      this.ClangAnalyzerSecurityinsecureAPIstrcpy = loadedConfig.ClangAnalyzerSecurityinsecureAPIstrcpy;
-      this.ClangAnalyzerSecurityinsecureAPIvfork = loadedConfig.ClangAnalyzerSecurityinsecureAPIvfork;
-      this.ClangAnalyzerUnixAPI = loadedConfig.ClangAnalyzerUnixAPI;
-      this.ClangAnalyzerUnixMalloc = loadedConfig.ClangAnalyzerUnixMalloc;
-      this.ClangAnalyzerUnixMallocSizeof = loadedConfig.ClangAnalyzerUnixMallocSizeof;
-      this.ClangAnalyzerUnixMismatchedDeallocator = loadedConfig.ClangAnalyzerUnixMismatchedDeallocator;
-      this.ClangAnalyzerUnixVfork = loadedConfig.ClangAnalyzerUnixVfork;
-      this.ClangAnalyzerUnixcstringBadSizeArg = loadedConfig.ClangAnalyzerUnixcstringBadSizeArg;
-      this.ClangAnalyzerUnixcstringNullArg = loadedConfig.ClangAnalyzerUnixcstringNullArg;
       this.AndroidCloexecCreat = loadedConfig.AndroidCloexecCreat;
       this.AndroidCloexecFopen = loadedConfig.AndroidCloexecFopen;
       this.AndroidCloexecOpen = loadedConfig.AndroidCloexecOpen;
@@ -1880,6 +1830,83 @@ namespace ClangPowerTools
       this.CertMsc30C = loadedConfig.CertMsc30C;
       this.CertMsc50Cpp = loadedConfig.CertMsc50Cpp;
       this.CertOop11Cpp = loadedConfig.CertOop11Cpp;
+      this.ClangAnalyzerApimodelinggoogleGTest = loadedConfig.ClangAnalyzerApimodelinggoogleGTest;
+      this.ClangAnalyzerCorebuiltinBuiltinFunctions = loadedConfig.ClangAnalyzerCorebuiltinBuiltinFunctions;
+      this.ClangAnalyzerCorebuiltinNoReturnFunctions = loadedConfig.ClangAnalyzerCorebuiltinNoReturnFunctions;
+      this.ClangAnalyzerCoreCallAndMessage = loadedConfig.ClangAnalyzerCoreCallAndMessage;
+      this.ClangAnalyzerCoreDivideZero = loadedConfig.ClangAnalyzerCoreDivideZero;
+      this.ClangAnalyzerCoreDynamicTypePropagation = loadedConfig.ClangAnalyzerCoreDynamicTypePropagation;
+      this.ClangAnalyzerCoreNonNullParamChecker = loadedConfig.ClangAnalyzerCoreNonNullParamChecker;
+      this.ClangAnalyzerCoreNullDereference = loadedConfig.ClangAnalyzerCoreNullDereference;
+      this.ClangAnalyzerCoreStackAddressEscape = loadedConfig.ClangAnalyzerCoreStackAddressEscape;
+      this.ClangAnalyzerCoreUndefinedBinaryOperatorResult = loadedConfig.ClangAnalyzerCoreUndefinedBinaryOperatorResult;
+      this.ClangAnalyzerCoreuninitializedArraySubscript = loadedConfig.ClangAnalyzerCoreuninitializedArraySubscript;
+      this.ClangAnalyzerCoreuninitializedAssign = loadedConfig.ClangAnalyzerCoreuninitializedAssign;
+      this.ClangAnalyzerCoreuninitializedBranch = loadedConfig.ClangAnalyzerCoreuninitializedBranch;
+      this.ClangAnalyzerCoreuninitializedCapturedBlockVariable = loadedConfig.ClangAnalyzerCoreuninitializedCapturedBlockVariable;
+      this.ClangAnalyzerCoreuninitializedUndefReturn = loadedConfig.ClangAnalyzerCoreuninitializedUndefReturn;
+      this.ClangAnalyzerCoreVLASize = loadedConfig.ClangAnalyzerCoreVLASize;
+      this.ClangAnalyzerCplusplusNewDelete = loadedConfig.ClangAnalyzerCplusplusNewDelete;
+      this.ClangAnalyzerCplusplusNewDeleteLeaks = loadedConfig.ClangAnalyzerCplusplusNewDeleteLeaks;
+      this.ClangAnalyzerCplusplusSelfAssignment = loadedConfig.ClangAnalyzerCplusplusSelfAssignment;
+      this.ClangAnalyzerDeadcodeDeadStores = loadedConfig.ClangAnalyzerDeadcodeDeadStores;
+      this.ClangAnalyzerLlvmConventions = loadedConfig.ClangAnalyzerLlvmConventions;
+      this.ClangAnalyzerNullabilityNullableDereferenced = loadedConfig.ClangAnalyzerNullabilityNullableDereferenced;
+      this.ClangAnalyzerNullabilityNullablePassedToNonnull = loadedConfig.ClangAnalyzerNullabilityNullablePassedToNonnull;
+      this.ClangAnalyzerNullabilityNullableReturnedFromNonnull = loadedConfig.ClangAnalyzerNullabilityNullableReturnedFromNonnull;
+      this.ClangAnalyzerNullabilityNullPassedToNonnull = loadedConfig.ClangAnalyzerNullabilityNullPassedToNonnull;
+      this.ClangAnalyzerNullabilityNullReturnedFromNonnull = loadedConfig.ClangAnalyzerNullabilityNullReturnedFromNonnull;
+      this.ClangAnalyzerOptincplusplusVirtualCall = loadedConfig.ClangAnalyzerOptincplusplusVirtualCall;
+      this.ClangAnalyzerOptinmpiMPIChecker = loadedConfig.ClangAnalyzerOptinmpiMPIChecker;
+      this.ClangAnalyzerOptinosxcocoalocalizabilityEmptyLocalizationContextChecker = loadedConfig.ClangAnalyzerOptinosxcocoalocalizabilityEmptyLocalizationContextChecker;
+      this.ClangAnalyzerOptinosxcocoalocalizabilityNonLocalizedStringChecker = loadedConfig.ClangAnalyzerOptinosxcocoalocalizabilityNonLocalizedStringChecker;
+      this.ClangAnalyzerOptinperformancePadding = loadedConfig.ClangAnalyzerOptinperformancePadding;
+      this.ClangAnalyzerOptinportabilityUnixAPI = loadedConfig.ClangAnalyzerOptinportabilityUnixAPI;
+      this.ClangAnalyzerOsxAPI = loadedConfig.ClangAnalyzerOsxAPI;
+      this.ClangAnalyzerOsxcocoaAtSync = loadedConfig.ClangAnalyzerOsxcocoaAtSync;
+      this.ClangAnalyzerOsxcocoaClassRelease = loadedConfig.ClangAnalyzerOsxcocoaClassRelease;
+      this.ClangAnalyzerOsxcocoaDealloc = loadedConfig.ClangAnalyzerOsxcocoaDealloc;
+      this.ClangAnalyzerOsxcocoaIncompatibleMethodTypes = loadedConfig.ClangAnalyzerOsxcocoaIncompatibleMethodTypes;
+      this.ClangAnalyzerOsxcocoaLoops = loadedConfig.ClangAnalyzerOsxcocoaLoops;
+      this.ClangAnalyzerOsxcocoaMissingSuperCall = loadedConfig.ClangAnalyzerOsxcocoaMissingSuperCall;
+      this.ClangAnalyzerOsxcocoaNilArg = loadedConfig.ClangAnalyzerOsxcocoaNilArg;
+      this.ClangAnalyzerOsxcocoaNonNilReturnValue = loadedConfig.ClangAnalyzerOsxcocoaNonNilReturnValue;
+      this.ClangAnalyzerOsxcocoaNSAutoreleasePool = loadedConfig.ClangAnalyzerOsxcocoaNSAutoreleasePool;
+      this.ClangAnalyzerOsxcocoaNSError = loadedConfig.ClangAnalyzerOsxcocoaNSError;
+      this.ClangAnalyzerOsxcocoaObjCGenerics = loadedConfig.ClangAnalyzerOsxcocoaObjCGenerics;
+      this.ClangAnalyzerOsxcocoaRetainCount = loadedConfig.ClangAnalyzerOsxcocoaRetainCount;
+      this.ClangAnalyzerOsxcocoaSelfInit = loadedConfig.ClangAnalyzerOsxcocoaSelfInit;
+      this.ClangAnalyzerOsxcocoaSuperDealloc = loadedConfig.ClangAnalyzerOsxcocoaSuperDealloc;
+      this.ClangAnalyzerOsxcocoaUnusedIvars = loadedConfig.ClangAnalyzerOsxcocoaUnusedIvars;
+      this.ClangAnalyzerOsxcocoaVariadicMethodTypes = loadedConfig.ClangAnalyzerOsxcocoaVariadicMethodTypes;
+      this.ClangAnalyzerOsxcoreFoundationCFError = loadedConfig.ClangAnalyzerOsxcoreFoundationCFError;
+      this.ClangAnalyzerOsxcoreFoundationCFNumber = loadedConfig.ClangAnalyzerOsxcoreFoundationCFNumber;
+      this.ClangAnalyzerOsxcoreFoundationCFRetainRelease = loadedConfig.ClangAnalyzerOsxcoreFoundationCFRetainRelease;
+      this.ClangAnalyzerOsxcoreFoundationcontainersOutOfBounds = loadedConfig.ClangAnalyzerOsxcoreFoundationcontainersOutOfBounds;
+      this.ClangAnalyzerOsxcoreFoundationcontainersPointerSizedValues = loadedConfig.ClangAnalyzerOsxcoreFoundationcontainersPointerSizedValues;
+      this.ClangAnalyzerOsxNumberObjectConversion = loadedConfig.ClangAnalyzerOsxNumberObjectConversion;
+      this.ClangAnalyzerOsxObjCProperty = loadedConfig.ClangAnalyzerOsxObjCProperty;
+      this.ClangAnalyzerOsxSecKeychainAPI = loadedConfig.ClangAnalyzerOsxSecKeychainAPI;
+      this.ClangAnalyzerSecurityFloatLoopCounter = loadedConfig.ClangAnalyzerSecurityFloatLoopCounter;
+      this.ClangAnalyzerSecurityinsecureAPIgetpw = loadedConfig.ClangAnalyzerSecurityinsecureAPIgetpw;
+      this.ClangAnalyzerSecurityinsecureAPIgets = loadedConfig.ClangAnalyzerSecurityinsecureAPIgets;
+      this.ClangAnalyzerSecurityinsecureAPImkstemp = loadedConfig.ClangAnalyzerSecurityinsecureAPImkstemp;
+      this.ClangAnalyzerSecurityinsecureAPImktemp = loadedConfig.ClangAnalyzerSecurityinsecureAPImktemp;
+      this.ClangAnalyzerSecurityinsecureAPIrand = loadedConfig.ClangAnalyzerSecurityinsecureAPIrand;
+      this.ClangAnalyzerSecurityinsecureAPIstrcpy = loadedConfig.ClangAnalyzerSecurityinsecureAPIstrcpy;
+      this.ClangAnalyzerSecurityinsecureAPIUncheckedReturn = loadedConfig.ClangAnalyzerSecurityinsecureAPIUncheckedReturn;
+      this.ClangAnalyzerSecurityinsecureAPIvfork = loadedConfig.ClangAnalyzerSecurityinsecureAPIvfork;
+      this.ClangAnalyzerUnixAPI = loadedConfig.ClangAnalyzerUnixAPI;
+      this.ClangAnalyzerUnixcstringBadSizeArg = loadedConfig.ClangAnalyzerUnixcstringBadSizeArg;
+      this.ClangAnalyzerUnixcstringNullArg = loadedConfig.ClangAnalyzerUnixcstringNullArg;
+      this.ClangAnalyzerUnixMalloc = loadedConfig.ClangAnalyzerUnixMalloc;
+      this.ClangAnalyzerUnixMallocSizeof = loadedConfig.ClangAnalyzerUnixMallocSizeof;
+      this.ClangAnalyzerUnixMismatchedDeallocator = loadedConfig.ClangAnalyzerUnixMismatchedDeallocator;
+      this.ClangAnalyzerUnixStdCLibraryFunctions = loadedConfig.ClangAnalyzerUnixStdCLibraryFunctions;
+      this.ClangAnalyzerUnixVfork = loadedConfig.ClangAnalyzerUnixVfork;
+      this.ClangAnalyzerValistCopyToSelf = loadedConfig.ClangAnalyzerValistCopyToSelf;
+      this.ClangAnalyzerValistUninitialized = loadedConfig.ClangAnalyzerValistUninitialized;
+      this.ClangAnalyzerValistUnterminated = loadedConfig.ClangAnalyzerValistUnterminated;
       this.CppcoreguidelinesCCopyAssignmentSignature = loadedConfig.CppcoreguidelinesCCopyAssignmentSignature;
       this.CppcoreguidelinesInterfacesGlobalInit = loadedConfig.CppcoreguidelinesInterfacesGlobalInit;
       this.CppcoreguidelinesNoMalloc = loadedConfig.CppcoreguidelinesNoMalloc;
@@ -2002,6 +2029,7 @@ namespace ClangPowerTools
       this.MpiTypeMismatch = loadedConfig.MpiTypeMismatch;
       this.PerformanceFasterStringFind = loadedConfig.PerformanceFasterStringFind;
       this.PerformanceForRangeCopy = loadedConfig.PerformanceForRangeCopy;
+      this.PerformanceImplicitCastInLoop = loadedConfig.PerformanceImplicitCastInLoop;
       this.PerformanceInefficientStringConcatenation = loadedConfig.PerformanceInefficientStringConcatenation;
       this.PerformanceInefficientVectorOperation = loadedConfig.PerformanceInefficientVectorOperation;
       this.PerformanceTypePromotionInMathFn = loadedConfig.PerformanceTypePromotionInMathFn;
@@ -2010,11 +2038,12 @@ namespace ClangPowerTools
       this.ReadabilityAvoidConstParamsInDecls = loadedConfig.ReadabilityAvoidConstParamsInDecls;
       this.ReadabilityBracesAroundStatements = loadedConfig.ReadabilityBracesAroundStatements;
       this.ReadabilityContainerSizeEmpty = loadedConfig.ReadabilityContainerSizeEmpty;
-      this.ReadabilityDeleteNullPointer = loadedConfig.ReadabilityDeleteNullPointer;
       this.ReadabilityDeletedDefault = loadedConfig.ReadabilityDeletedDefault;
+      this.ReadabilityDeleteNullPointer = loadedConfig.ReadabilityDeleteNullPointer;
       this.ReadabilityElseAfterReturn = loadedConfig.ReadabilityElseAfterReturn;
       this.ReadabilityFunctionSize = loadedConfig.ReadabilityFunctionSize;
       this.ReadabilityIdentifierNaming = loadedConfig.ReadabilityIdentifierNaming;
+      this.ReadabilityImplicitBoolCast = loadedConfig.ReadabilityImplicitBoolCast;
       this.ReadabilityInconsistentDeclarationParameterName = loadedConfig.ReadabilityInconsistentDeclarationParameterName;
       this.ReadabilityMisleadingIndentation = loadedConfig.ReadabilityMisleadingIndentation;
       this.ReadabilityMisplacedArrayIndex = loadedConfig.ReadabilityMisplacedArrayIndex;
@@ -2030,26 +2059,6 @@ namespace ClangPowerTools
       this.ReadabilitySimplifyBooleanExpr = loadedConfig.ReadabilitySimplifyBooleanExpr;
       this.ReadabilityStaticDefinitionInAnonymousNamespace = loadedConfig.ReadabilityStaticDefinitionInAnonymousNamespace;
       this.ReadabilityUniqueptrDeleteRelease = loadedConfig.ReadabilityUniqueptrDeleteRelease;
-      this.ClangAnalyzerApimodelinggoogleGTest = loadedConfig.ClangAnalyzerApimodelinggoogleGTest;
-      this.ClangAnalyzerCoreDynamicTypePropagation = loadedConfig.ClangAnalyzerCoreDynamicTypePropagation;
-      this.ClangAnalyzerCorebuiltinBuiltinFunctions = loadedConfig.ClangAnalyzerCorebuiltinBuiltinFunctions;
-      this.ClangAnalyzerCorebuiltinNoReturnFunctions = loadedConfig.ClangAnalyzerCorebuiltinNoReturnFunctions;
-      this.ClangAnalyzerCplusplusSelfAssignment = loadedConfig.ClangAnalyzerCplusplusSelfAssignment;
-      this.ClangAnalyzerLlvmConventions = loadedConfig.ClangAnalyzerLlvmConventions;
-      this.ClangAnalyzerNullabilityNullableReturnedFromNonnull = loadedConfig.ClangAnalyzerNullabilityNullableReturnedFromNonnull;
-      this.ClangAnalyzerOptincplusplusVirtualCall = loadedConfig.ClangAnalyzerOptincplusplusVirtualCall;
-      this.ClangAnalyzerOptinperformancePadding = loadedConfig.ClangAnalyzerOptinperformancePadding;
-      this.ClangAnalyzerOptinportabilityUnixAPI = loadedConfig.ClangAnalyzerOptinportabilityUnixAPI;
-      this.ClangAnalyzerOsxObjCProperty = loadedConfig.ClangAnalyzerOsxObjCProperty;
-      this.ClangAnalyzerOsxcocoaLoops = loadedConfig.ClangAnalyzerOsxcocoaLoops;
-      this.ClangAnalyzerOsxcocoaMissingSuperCall = loadedConfig.ClangAnalyzerOsxcocoaMissingSuperCall;
-      this.ClangAnalyzerOsxcocoaNonNilReturnValue = loadedConfig.ClangAnalyzerOsxcocoaNonNilReturnValue;
-      this.ClangAnalyzerUnixStdCLibraryFunctions = loadedConfig.ClangAnalyzerUnixStdCLibraryFunctions;
-      this.ClangAnalyzerValistCopyToSelf = loadedConfig.ClangAnalyzerValistCopyToSelf;
-      this.ClangAnalyzerValistUninitialized = loadedConfig.ClangAnalyzerValistUninitialized;
-      this.ClangAnalyzerValistUnterminated = loadedConfig.ClangAnalyzerValistUnterminated;
-      this.PerformanceImplicitCastInLoop = loadedConfig.PerformanceImplicitCastInLoop;
-      this.ReadabilityImplicitBoolCast = loadedConfig.ReadabilityImplicitBoolCast;
 
     }
 
