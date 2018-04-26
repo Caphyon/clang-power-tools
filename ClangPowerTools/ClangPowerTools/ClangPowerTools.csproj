@@ -78,6 +78,7 @@
     <Compile Include="Commands\ClangFormatCommand.cs" />
     <Compile Include="Convertors\ClangFormatFallbackStyleConverter.cs" />
     <Compile Include="Convertors\ClangFormatStyleConverter.cs" />
+    <Compile Include="Options\Model\ClangTidyChecksOptions.cs" />
     <Compile Include="Options\Model\ClangTidyOptions.cs" />
     <Compile Include="Commands\BasicCommand.cs" />
     <Compile Include="Commands\StopClang.cs" />
@@ -86,7 +87,7 @@
     <Compile Include="Commands\CommandsController.cs" />
     <Compile Include="Commands\CompileCommand.cs" />
     <Compile Include="Convertors\AdditionalIncludesConvertor.cs" />
-    <Compile Include="Convertors\FallbackStyleConvertor.cs" />
+    <Compile Include="Convertors\OldConvertors\FallbackStyleConvertor.cs" />
     <Compile Include="Convertors\OldConvertors\StyleConvertor.cs" />
     <Compile Include="Options\Model\ClangFormatOptions.cs" />
     <Compile Include="Options\UIElementsActivator.cs" />
@@ -159,7 +160,7 @@
     <Compile Include="Commands\SettingsCommand.cs" />
     <Compile Include="SilentFile\SilentFileChanger.cs" />
     <Compile Include="SilentFile\SilentFileChangerGuard.cs" />
-    <Compile Include="DialogOptionsView\ClangTidyChecksOptionsView.cs">
+    <Compile Include="Options\ViewModel\ClangTidyChecksOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Commands\TidyCommand.cs" />
