@@ -1,6 +1,9 @@
-﻿namespace ClangPowerTools.Options.Model
+﻿using System;
+
+namespace ClangPowerTools.Options.Model
 {
-  public class ClangTidyChecksOptions
+  [Serializable]
+  public class ClangTidyPredefinedChecksOptions
   {
     #region Properties
 
