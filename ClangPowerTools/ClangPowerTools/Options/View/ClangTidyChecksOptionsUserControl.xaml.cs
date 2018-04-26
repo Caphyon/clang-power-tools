@@ -8,7 +8,7 @@ namespace ClangPowerTools.Options.View
   /// </summary>
   public partial class ClangTidyChecksOptionsUserControl : UserControl
   {
-    public ClangTidyChecksOptionsUserControl(ClangTidyChecksOptionsView clangTidyChecksOptions)
+    public ClangTidyChecksOptionsUserControl(ClangTidyPredefinedChecksOptionsView clangTidyChecksOptions)
     {
       InitializeComponent();
 
