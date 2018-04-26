@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace ClangPowerTools
 {
-  public class ClangTidyChecksOptionsView : DialogPage
+  public class ClangTidyChecksOptionsView : ConfigurationPage<ClangOptions>
   {
     #region Properties
 
