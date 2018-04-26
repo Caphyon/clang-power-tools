@@ -1,6 +1,7 @@
-﻿using System.ComponentModel;
-using System.Linq;
-using System.Web.UI.WebControls;
+﻿using ClangPowerTools.Options.View;
+using System.ComponentModel;
+using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 
 namespace ClangPowerTools.DialogPages
 {
@@ -19,11 +20,16 @@ namespace ClangPowerTools.DialogPages
     [Category(" Tidy")]
     [DisplayName("Custom checks")]
     [Description("Specify clang-tidy checks to run using the standard tidy syntax. You can use wildcards to match multiple checks, combine them, etc (Eg. \"modernize-*, readability-*\").")]
-    [TypeConverter(typeof(StringArrayConverter))]
-    public string[] TidyChecks
+    public string TidyChecks { get; set; }
+
+    protected override IWin32Window Window
     {
-      get => mTidyChecks;
-      set => mTidyChecks = value;
+      get
+      {
+        ElementHost elementHost = new ElementHost();
+        elementHost.Child = new ClangTidyCustomChecksUserControl(this);
+        return elementHost;
+      }
     }
 
     #endregion
@@ -34,8 +40,10 @@ namespace ClangPowerTools.DialogPages
     {
       string path = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
 
-      var updatedConfig = LoadFromFile(path);
-      updatedConfig.TidyChecks = this.TidyChecks.ToList();
+      var updatedConfig = new ClangTidyOptions
+      {
+        TidyChecksCollection = this.TidyChecks
+      };
 
       SaveToFile(path, updatedConfig);
     }
@@ -44,7 +52,12 @@ namespace ClangPowerTools.DialogPages
     {
       string path = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
       var loadedConfig = LoadFromFile(path);
-      this.TidyChecks = loadedConfig.TidyChecks.ToArray();
+
+      if (null == loadedConfig.TidyChecks || 0 == loadedConfig.TidyChecks.Count)
+        this.TidyChecks = loadedConfig.TidyChecksCollection;
+      else
+        this.TidyChecks = string.Join(";", loadedConfig.TidyChecks);
+
     }
 
     #endregion

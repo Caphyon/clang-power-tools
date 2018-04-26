@@ -8,7 +8,11 @@ namespace ClangPowerTools
   {
     #region Properties
 
+    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public List<string> TidyChecks { get; set; } = new List<string>();
+
+    public string TidyChecksCollection { get; set; }
+
 
     public bool AutoTidyOnSave { get; set; }
 
