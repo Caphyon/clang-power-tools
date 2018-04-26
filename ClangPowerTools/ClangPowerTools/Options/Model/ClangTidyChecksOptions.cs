@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ClangPowerTools.Options.Model
+﻿namespace ClangPowerTools.Options.Model
 {
   public class ClangTidyChecksOptions
   {
@@ -399,6 +393,7 @@ namespace ClangPowerTools.Options.Model
     public bool ModernizeUseDefaultMemberInit { get; set; } = true;
 
     public bool ModernizeUseEmplace { get; set; } = true;
+
     public bool ModernizeUseEqualsDefault { get; set; } = true;
 
     public bool ModernizeUseEqualsDelete { get; set; } = true;
@@ -478,7 +473,6 @@ namespace ClangPowerTools.Options.Model
     public bool ReadabilityUniqueptrDeleteRelease { get; set; } = true;
 
     public bool ClangAnalyzerApimodelinggoogleGTest { get; set; }
-
 
     public bool ClangAnalyzerCoreDynamicTypePropagation { get; set; }
 
