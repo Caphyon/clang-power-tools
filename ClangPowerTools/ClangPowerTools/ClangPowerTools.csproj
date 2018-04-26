@@ -117,6 +117,9 @@
     <Compile Include="Options\View\ClangGeneralOptionsUserControl.xaml.cs">
       <DependentUpon>ClangGeneralOptionsUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Options\View\ClangTidyChecksOptionsUserControl.xaml.cs">
+      <DependentUpon>ClangTidyChecksOptionsUserControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Options\View\ClangTidyCustomChecksUserControl.xaml.cs">
       <DependentUpon>ClangTidyCustomChecksUserControl.xaml</DependentUpon>
     </Compile>
@@ -402,6 +405,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Options\View\ClangGeneralOptionsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Options\View\ClangTidyChecksOptionsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
