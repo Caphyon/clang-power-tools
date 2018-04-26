@@ -78,7 +78,7 @@
     <Compile Include="Commands\ClangFormatCommand.cs" />
     <Compile Include="Convertors\ClangFormatFallbackStyleConverter.cs" />
     <Compile Include="Convertors\ClangFormatStyleConverter.cs" />
-    <Compile Include="DialogOptionsModel\ClangTidyOptions.cs" />
+    <Compile Include="Options\Model\ClangTidyOptions.cs" />
     <Compile Include="Commands\BasicCommand.cs" />
     <Compile Include="Commands\StopClang.cs" />
     <Compile Include="Commands\ClangCommand.cs" />
@@ -94,7 +94,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="DialogOptionsModel\DefaultOptions.cs" />
-    <Compile Include="DialogOptionsView\ClangTidyCustomChecksOptionsView.cs">
+    <Compile Include="Options\ViewModel\ClangTidyCustomChecksOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Handlers\DispatcherHandler.cs" />
@@ -115,6 +115,9 @@
     </Compile>
     <Compile Include="Options\View\ClangGeneralOptionsUserControl.xaml.cs">
       <DependentUpon>ClangGeneralOptionsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\View\ClangTidyCustomChecksUserControl.xaml.cs">
+      <DependentUpon>ClangTidyCustomChecksUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\View\WpfPropertyGrid\BorderedComboBox.xaml.cs">
       <DependentUpon>BorderedComboBox.xaml</DependentUpon>
@@ -398,6 +401,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Options\View\ClangGeneralOptionsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Options\View\ClangTidyCustomChecksUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
