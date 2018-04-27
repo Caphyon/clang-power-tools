@@ -110,7 +110,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Options\Model\ClangOptions.cs" />
-    <Compile Include="Convertors\HeaderFiltersConvertor.cs" />
+    <Compile Include="Convertors\ClangTidyHeaderFiltersConvertor.cs" />
     <Compile Include="Options\View\ClangFormatOptionsUserControl.xaml.cs">
       <DependentUpon>ClangFormatOptionsUserControl.xaml</DependentUpon>
     </Compile>
