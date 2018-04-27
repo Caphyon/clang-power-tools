@@ -5,7 +5,7 @@ using System.Windows.Data;
 
 namespace ClangPowerTools
 {
-  public class HeaderFiltersConvertor : IValueConverter
+  public class ClangTidyHeaderFiltersConvertor : IValueConverter
   {
     #region Members 
 
