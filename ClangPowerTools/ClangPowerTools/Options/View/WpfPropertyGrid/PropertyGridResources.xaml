@@ -13,7 +13,7 @@
 
   <conv:ClangFormatStyleConverter x:Key="styleConverter" />
   <conv:ClangFormatFallbackStyleConverter x:Key="fallbackStyleConverter" />
-  <conv:AdditionalIncludesConvertor x:Key="additionalIncludesConvertor" />
+  <conv:ClangGeneralAdditionalIncludesConvertor x:Key="additionalIncludesConvertor" />
   
   <ObjectDataProvider x:Key="stylesValues" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
     <ObjectDataProvider.MethodParameters>

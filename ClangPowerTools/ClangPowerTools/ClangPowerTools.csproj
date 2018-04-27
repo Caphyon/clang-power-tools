@@ -86,7 +86,7 @@
     <Compile Include="Commands\CommandIds.cs" />
     <Compile Include="Commands\CommandsController.cs" />
     <Compile Include="Commands\CompileCommand.cs" />
-    <Compile Include="Convertors\AdditionalIncludesConvertor.cs" />
+    <Compile Include="Convertors\ClangGeneralAdditionalIncludesConvertor.cs" />
     <Compile Include="Convertors\OldConvertors\FallbackStyleConvertor.cs" />
     <Compile Include="Convertors\OldConvertors\StyleConvertor.cs" />
     <Compile Include="Options\Model\ClangFormatOptions.cs" />
@@ -182,7 +182,7 @@
     </Compile>
     <Compile Include="ActiveWindowProperties.cs" />
     <Compile Include="Convertors\ComboBoxConstants.cs" />
-    <Compile Include="Convertors\ComboBoxConvertor.cs" />
+    <Compile Include="Convertors\OldConvertors\ComboBoxConvertor.cs" />
     <Compile Include="Convertors\UseChecksFromConvertor.cs" />
     <Compile Include="SilentFile\SilentFileController.cs" />
     <Compile Include="Handlers\StatusBarHandler.cs" />
