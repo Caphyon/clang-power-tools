@@ -5,7 +5,7 @@ using System.Windows.Data;
 
 namespace ClangPowerTools.Convertors
 {
-  public class AdditionalIncludesConvertor : IValueConverter
+  public class ClangGeneralAdditionalIncludesConvertor : IValueConverter
   {
     #region Members
 
