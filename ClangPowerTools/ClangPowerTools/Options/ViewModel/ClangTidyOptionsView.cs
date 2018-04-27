@@ -1,5 +1,8 @@
-﻿using System;
+﻿using ClangPowerTools.Options.View;
+using System;
 using System.ComponentModel;
+using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 
 namespace ClangPowerTools
 {
@@ -30,7 +33,6 @@ namespace ClangPowerTools
     [Description("Regular expression matching the names of the headers to output diagnostics from or auto-fix. Diagnostics from the source file are always displayed." + 
       "This option overrides the 'HeaderFilter' option in .clang-tidy file, if any.\n" +
       "\"Corresponding Header\" : output diagnostics/fix only the corresponding header (same filename) for each source file analyzed.")]
-    [TypeConverter(typeof(ClangTidyHeaderFiltersConvertor))]
     public string HeaderFilter { get; set; }
 
     [Category(" Tidy")]
@@ -44,6 +46,17 @@ namespace ClangPowerTools
     [DisplayName("Format after tidy")]
     [Description("")]
     public bool FormatAfterTidy { get; set; }
+
+
+    protected override IWin32Window Window
+    {
+      get
+      {
+        ElementHost elementHost = new ElementHost();
+        elementHost.Child = new ClangTidyOptionsUserControl(this);
+        return elementHost;
+      }
+    }
 
     #endregion
 
