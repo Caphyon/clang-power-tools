@@ -14,6 +14,8 @@
   <conv:ClangFormatStyleConverter x:Key="styleConverter" />
   <conv:ClangFormatFallbackStyleConverter x:Key="fallbackStyleConverter" />
   <conv:ClangGeneralAdditionalIncludesConvertor x:Key="additionalIncludesConvertor" />
+  <conv:ClangTidyHeaderFiltersConvertor x:Key="headerFiltersConvertor" />
+
   
   <ObjectDataProvider x:Key="stylesValues" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
     <ObjectDataProvider.MethodParameters>
@@ -33,6 +35,13 @@
     </ObjectDataProvider.MethodParameters>
   </ObjectDataProvider>
 
+  <ObjectDataProvider x:Key="headerFiltersValues" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+    <ObjectDataProvider.MethodParameters>
+      <x:Type TypeName="app:ClangTidyHeaderFilters"/>
+    </ObjectDataProvider.MethodParameters>
+  </ObjectDataProvider>
+  
+  
   <!-- String DataTemplate -->
   <DataTemplate x:Key="StringDataTemplate">
     <Grid Margin="0" HorizontalAlignment ="Stretch">
@@ -121,6 +130,29 @@
       </Border>
     </Grid>
   </DataTemplate>
+
+  <!-- Clang Tidy Header Filters DataTemplate -->
+  <DataTemplate x:Key="HeaderFiltersDataTemplate">
+    <Grid Margin="0" HorizontalAlignment ="Stretch">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" SharedSizeGroup="Key" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Border Grid.Column="0" >
+        <TextBlock Grid.Row="0" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="2,0"/>
+      </Border>
+      <Border Grid.Column="1">
+        <ComboBox ItemsSource="{Binding Source={StaticResource headerFiltersValues}}" SelectedItem="{Binding Value}" Grid.Row="0" Margin="10,2" >
+          <ComboBox.ItemTemplate>
+            <DataTemplate>
+              <TextBlock Text="{Binding Converter={StaticResource headerFiltersConvertor}}"/>
+            </DataTemplate>
+          </ComboBox.ItemTemplate>
+        </ComboBox>
+      </Border>
+    </Grid>
+  </DataTemplate>
+
 
   <!-- Bool DataTemplate -->
   <DataTemplate x:Key="BoolDataTemplate">
