@@ -94,7 +94,7 @@
     <Compile Include="Options\ViewModel\ClangFormatOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="DialogOptionsModel\DefaultOptions.cs" />
+    <Compile Include="Options\Model\DefaultOptions.cs" />
     <Compile Include="Options\ViewModel\ClangTidyCustomChecksOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -148,7 +148,7 @@
     <Compile Include="RunningDocTableEvents.cs" />
     <Compile Include="Script\ClangCompileTidyScript.cs" />
     <Compile Include="Script\RunningProcesses.cs" />
-    <Compile Include="DialogOptionsView\ConfigurationPage.cs">
+    <Compile Include="Options\ViewModel\ConfigurationPage.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="SettingsPathBuilder.cs" />
@@ -174,7 +174,7 @@
     <Compile Include="Error\TaskError.cs" />
     <Compile Include="Items\SelectedProject.cs" />
     <Compile Include="Items\SelectedProjectItem.cs" />
-    <Compile Include="DialogOptionsView\ClangTidyOptionsView.cs">
+    <Compile Include="Options\ViewModel\ClangTidyOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ActiveWindowProperties.cs" />
