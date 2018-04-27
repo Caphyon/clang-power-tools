@@ -30,7 +30,7 @@ namespace ClangPowerTools
     [Description("Regular expression matching the names of the headers to output diagnostics from or auto-fix. Diagnostics from the source file are always displayed." + 
       "This option overrides the 'HeaderFilter' option in .clang-tidy file, if any.\n" +
       "\"Corresponding Header\" : output diagnostics/fix only the corresponding header (same filename) for each source file analyzed.")]
-    [TypeConverter(typeof(HeaderFiltersConvertor))]
+    [TypeConverter(typeof(ClangTidyHeaderFiltersConvertor))]
     public string HeaderFilter { get; set; }
 
     [Category(" Tidy")]
