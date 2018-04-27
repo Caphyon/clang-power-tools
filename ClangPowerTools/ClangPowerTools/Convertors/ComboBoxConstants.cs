@@ -50,6 +50,19 @@ namespace ClangPowerTools
     SystemIncludeDirectories
   }
 
+
+  [Serializable]
+  public enum ClangTidyHeaderFilters
+  {
+    [XmlEnum(Name = ".*")]
+    DefaultHeaderFilter,
+
+    [XmlEnum(Name = "Corresponding Header")]
+    CorrespondingHeader
+  }
+
+
+
   public sealed class ComboBoxConstants
   {
     #region Constants
@@ -58,8 +71,12 @@ namespace ClangPowerTools
     public const string kPredefinedChecks = "predefined checks";
     public const string kTidyFile = ".clang-tidy config file";
 
+
+
     public const string kDefaultHeaderFilter = ".*";
     public const string kCorrespondingHeader = "Corresponding Header";
+
+
 
 
     public const string kNone = "none";
