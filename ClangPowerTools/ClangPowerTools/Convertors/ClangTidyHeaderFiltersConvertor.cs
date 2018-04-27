@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Data;
 
-namespace ClangPowerTools
+namespace ClangPowerTools.Convertors
 {
   public class ClangTidyHeaderFiltersConvertor : IValueConverter
   {
@@ -32,6 +32,7 @@ namespace ClangPowerTools
 
     public static ClangTidyHeaderFilters? FromString(string aHeaderFilters)
       => mAdditionalIncludesStringToEnum[aHeaderFilters];
+
 
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
