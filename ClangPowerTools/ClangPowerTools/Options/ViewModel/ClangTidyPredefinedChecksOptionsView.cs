@@ -1559,10 +1559,6 @@ namespace ClangPowerTools
     public override void LoadSettingsFromStorage()
     {
       string path = mSettingsPathBuilder.GetPath(kGeneralSettingsFileName);
-
-      if (false == File.Exists(path))
-        return;
-
       var loadedConfig = LoadFromFile(path);
 
       foreach (var prop in this.GetType().GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public))
