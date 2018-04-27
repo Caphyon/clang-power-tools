@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace ClangPowerTools.Options.Model
 {
@@ -253,17 +254,17 @@ namespace ClangPowerTools.Options.Model
 
     public bool GoogleGlobalNamesInHeaders { get; set; }
 
-    public bool GoogleReadabilityBracesAroundStatements { get; set; }
+    public bool GoogleReadabilityBracesAroundStatements { get; set; } = true;
 
-    public bool GoogleReadabilityCasting { get; set; }
+    public bool GoogleReadabilityCasting { get; set; } = true;
 
-    public bool GoogleReadabilityFunctionSize { get; set; }
+    public bool GoogleReadabilityFunctionSize { get; set; } = true;
 
-    public bool GoogleReadabilityNamespaceComments { get; set; }
+    public bool GoogleReadabilityNamespaceComments { get; set; } = true;
 
-    public bool GoogleReadabilityRedundantSmartptrGet { get; set; }
+    public bool GoogleReadabilityRedundantSmartptrGet { get; set; } = true;
 
-    public bool GoogleReadabilityTodo { get; set; }
+    public bool GoogleReadabilityTodo { get; set; } = true;
 
     public bool GoogleRuntimeInt { get; set; }
 
@@ -399,53 +400,53 @@ namespace ClangPowerTools.Options.Model
 
     public bool MiscVirtualNearMiss { get; set; }
 
-    public bool ModernizeAvoidBind { get; set; }
+    public bool ModernizeAvoidBind { get; set; } = true;
 
-    public bool ModernizeDeprecatedHeaders { get; set; }
+    public bool ModernizeDeprecatedHeaders { get; set; } = true;
 
-    public bool ModernizeLoopConvert { get; set; }
+    public bool ModernizeLoopConvert { get; set; } = true;
 
-    public bool ModernizeMakeShared { get; set; }
+    public bool ModernizeMakeShared { get; set; } = true;
 
-    public bool ModernizeMakeUnique { get; set; }
+    public bool ModernizeMakeUnique { get; set; } = true;
 
-    public bool ModernizePassByValue { get; set; }
+    public bool ModernizePassByValue { get; set; } = true;
 
-    public bool ModernizeRawStringLiteral { get; set; }
+    public bool ModernizeRawStringLiteral { get; set; } = true;
 
-    public bool ModernizeRedundantVoidArg { get; set; }
+    public bool ModernizeRedundantVoidArg { get; set; } = true;
 
-    public bool ModernizeReplaceAutoPtr { get; set; }
+    public bool ModernizeReplaceAutoPtr { get; set; } = true;
 
-    public bool ModernizeReplaceRandomShuffle { get; set; }
+    public bool ModernizeReplaceRandomShuffle { get; set; } = true;
 
-    public bool ModernizeReturnBracedInitList { get; set; }
+    public bool ModernizeReturnBracedInitList { get; set; } = true;
 
-    public bool ModernizeShrinkToFit { get; set; }
+    public bool ModernizeShrinkToFit { get; set; } = true;
 
-    public bool ModernizeUnaryStaticAssert { get; set; }
+    public bool ModernizeUnaryStaticAssert { get; set; } = true;
 
-    public bool ModernizeUseAuto { get; set; }
+    public bool ModernizeUseAuto { get; set; } = true;
 
-    public bool ModernizeUseBoolLiterals { get; set; }
+    public bool ModernizeUseBoolLiterals { get; set; } = true;
 
-    public bool ModernizeUseDefaultMemberInit { get; set; }
+    public bool ModernizeUseDefaultMemberInit { get; set; } = true;
 
-    public bool ModernizeUseEmplace { get; set; }
+    public bool ModernizeUseEmplace { get; set; } = true;
 
-    public bool ModernizeUseEqualsDefault { get; set; }
+    public bool ModernizeUseEqualsDefault { get; set; } = true;
 
-    public bool ModernizeUseEqualsDelete { get; set; }
+    public bool ModernizeUseEqualsDelete { get; set; } = true;
 
-    public bool ModernizeUseNoexcept { get; set; }
+    public bool ModernizeUseNoexcept { get; set; } = true;
 
-    public bool ModernizeUseNullptr { get; set; }
+    public bool ModernizeUseNullptr { get; set; } = true;
 
-    public bool ModernizeUseOverride { get; set; }
+    public bool ModernizeUseOverride { get; set; } = true;
 
-    public bool ModernizeUseTransparentFunctors { get; set; }
+    public bool ModernizeUseTransparentFunctors { get; set; } = true;
 
-    public bool ModernizeUseUsing { get; set; }
+    public bool ModernizeUseUsing { get; set; } = true;
 
     public bool MpiBufferDeref { get; set; }
 
@@ -467,53 +468,53 @@ namespace ClangPowerTools.Options.Model
 
     public bool PerformanceUnnecessaryValueParam { get; set; }
 
-    public bool ReadabilityAvoidConstParamsInDecls { get; set; }
+    public bool ReadabilityAvoidConstParamsInDecls { get; set; } = true;
 
-    public bool ReadabilityBracesAroundStatements { get; set; }
+    public bool ReadabilityBracesAroundStatements { get; set; } = true;
 
-    public bool ReadabilityContainerSizeEmpty { get; set; }
+    public bool ReadabilityContainerSizeEmpty { get; set; } = true;
 
-    public bool ReadabilityDeletedDefault { get; set; }
+    public bool ReadabilityDeletedDefault { get; set; } = true;
 
-    public bool ReadabilityDeleteNullPointer { get; set; }
+    public bool ReadabilityDeleteNullPointer { get; set; } = true;
 
-    public bool ReadabilityElseAfterReturn { get; set; }
+    public bool ReadabilityElseAfterReturn { get; set; } = true;
 
-    public bool ReadabilityFunctionSize { get; set; }
+    public bool ReadabilityFunctionSize { get; set; } = true;
 
-    public bool ReadabilityIdentifierNaming { get; set; }
+    public bool ReadabilityIdentifierNaming { get; set; } = true;
 
-    public bool ReadabilityImplicitBoolCast { get; set; }
+    public bool ReadabilityImplicitBoolCast { get; set; } = true;
 
-    public bool ReadabilityInconsistentDeclarationParameterName { get; set; }
+    public bool ReadabilityInconsistentDeclarationParameterName { get; set; } = true;
 
-    public bool ReadabilityMisleadingIndentation { get; set; }
+    public bool ReadabilityMisleadingIndentation { get; set; } = true;
 
-    public bool ReadabilityMisplacedArrayIndex { get; set; }
+    public bool ReadabilityMisplacedArrayIndex { get; set; } = true;
 
-    public bool ReadabilityNamedParameter { get; set; }
+    public bool ReadabilityNamedParameter { get; set; } = true;
 
-    public bool ReadabilityNonConstParameter { get; set; }
+    public bool ReadabilityNonConstParameter { get; set; } = true;
 
-    public bool ReadabilityRedundantControlFlow { get; set; }
+    public bool ReadabilityRedundantControlFlow { get; set; } = true;
 
-    public bool ReadabilityRedundantDeclaration { get; set; }
+    public bool ReadabilityRedundantDeclaration { get; set; } = true;
 
-    public bool ReadabilityRedundantFunctionPtrDereference { get; set; }
+    public bool ReadabilityRedundantFunctionPtrDereference { get; set; } = true;
 
-    public bool ReadabilityRedundantMemberInit { get; set; }
+    public bool ReadabilityRedundantMemberInit { get; set; } = true;
 
-    public bool ReadabilityRedundantSmartptrGet { get; set; }
+    public bool ReadabilityRedundantSmartptrGet { get; set; } = true;
 
-    public bool ReadabilityRedundantStringCstr { get; set; }
+    public bool ReadabilityRedundantStringCstr { get; set; } = true;
 
-    public bool ReadabilityRedundantStringInit { get; set; }
+    public bool ReadabilityRedundantStringInit { get; set; } = true;
 
-    public bool ReadabilitySimplifyBooleanExpr { get; set; }
+    public bool ReadabilitySimplifyBooleanExpr { get; set; } = true;
 
-    public bool ReadabilityStaticDefinitionInAnonymousNamespace { get; set; }
+    public bool ReadabilityStaticDefinitionInAnonymousNamespace { get; set; } = true;
 
-    public bool ReadabilityUniqueptrDeleteRelease { get; set; }
+    public bool ReadabilityUniqueptrDeleteRelease { get; set; } = true;
 
     #endregion
 
