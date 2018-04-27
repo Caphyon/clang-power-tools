@@ -20,7 +20,7 @@ namespace ClangPowerTools
 
     public bool FormatAfterTidy { get; set; }
 
-    public string HeaderFilter { get; set; }
+    public ClangTidyHeaderFilters? HeaderFilter { get; set; }
 
     public string TidyMode { get; set; }
 

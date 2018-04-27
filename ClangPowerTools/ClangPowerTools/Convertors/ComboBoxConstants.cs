@@ -51,13 +51,13 @@ namespace ClangPowerTools
   }
 
 
-  [Serializable]
+  [Serializable] 
   public enum ClangTidyHeaderFilters
   {
     [XmlEnum(Name = ".*")]
     DefaultHeaderFilter,
 
-    [XmlEnum(Name = "Corresponding Header")]
+    [XmlEnum(Name = "_")]
     CorrespondingHeader
   }
 
@@ -87,11 +87,6 @@ namespace ClangPowerTools
     public const string kMozilla = "Mozilla";
     public const string kWebKit = "WebKit";
 
-    public static readonly Dictionary<string, string> kHeaderFilterMaping = new Dictionary<string, string>
-    {
-      {kCorrespondingHeader, "_" },
-      {"_", kCorrespondingHeader }
-    };
 
     public const string kIncludeDirectories = "include directories";
     public const string kSystemIncludeDirectories = "system include directories";

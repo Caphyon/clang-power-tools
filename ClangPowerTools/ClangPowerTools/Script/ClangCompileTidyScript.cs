@@ -132,11 +132,12 @@ namespace ClangPowerTools.Script
           parameters);
       }
 
-      if (false == string.IsNullOrWhiteSpace(aTidyOptions.HeaderFilter))
+      if (null == aTidyOptions.HeaderFilter)
       {
         parameters = string.Format("{0} {1} ''{2}''", parameters, ScriptConstants.kHeaderFilter,
-          ComboBoxConstants.kHeaderFilterMaping.ContainsKey(aTidyOptions.HeaderFilter) ?
-          ComboBoxConstants.kHeaderFilterMaping[aTidyOptions.HeaderFilter] : aTidyOptions.HeaderFilter);
+          ComboBoxConstants.kCorrespondingHeader == ClangTidyHeaderFilters.CorrespondingHeader.ToString() ?
+          ClangTidyHeaderFiltersConvertor.ScriptMaping(ClangTidyHeaderFilters.CorrespondingHeader) :
+          ClangTidyHeaderFiltersConvertor.ToString(aTidyOptions.HeaderFilter));
       }
 
       return parameters;
