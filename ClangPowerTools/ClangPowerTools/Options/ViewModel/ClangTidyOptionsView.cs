@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.Options.View;
+﻿using ClangPowerTools.Convertors;
+using ClangPowerTools.Options.View;
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
@@ -33,7 +34,7 @@ namespace ClangPowerTools
     [Description("Regular expression matching the names of the headers to output diagnostics from or auto-fix. Diagnostics from the source file are always displayed." + 
       "This option overrides the 'HeaderFilter' option in .clang-tidy file, if any.\n" +
       "\"Corresponding Header\" : output diagnostics/fix only the corresponding header (same filename) for each source file analyzed.")]
-    public string HeaderFilter { get; set; }
+    public ClangTidyHeaderFilters? HeaderFilter { get; set; }
 
     [Category(" Tidy")]
     [DisplayName("Use checks from")]
@@ -72,8 +73,7 @@ namespace ClangPowerTools
       updatedConfig.Fix = this.Fix;
       updatedConfig.FormatAfterTidy = this.FormatAfterTidy;
 
-      updatedConfig.HeaderFilter = ComboBoxConstants.kHeaderFilterMaping.ContainsKey(this.HeaderFilter) ?
-        ComboBoxConstants.kHeaderFilterMaping[this.HeaderFilter] : this.HeaderFilter;
+      updatedConfig.HeaderFilter = this.HeaderFilter;
 
       updatedConfig.TidyMode = this.UseChecksFrom;
 
@@ -90,9 +90,9 @@ namespace ClangPowerTools
       this.FormatAfterTidy = loadedConfig.FormatAfterTidy;
 
       if (null == loadedConfig.HeaderFilter)
-        this.HeaderFilter = DefaultOptions.kHeaderFilter;
-      else if (ComboBoxConstants.kHeaderFilterMaping.ContainsKey(loadedConfig.HeaderFilter))
-        this.HeaderFilter = ComboBoxConstants.kHeaderFilterMaping[loadedConfig.HeaderFilter];
+        this.HeaderFilter = ClangTidyHeaderFilters.DefaultHeaderFilter;
+      else if ( ComboBoxConstants.kCorrespondingHeader == ClangTidyHeaderFilters.CorrespondingHeader.ToString())
+        this.HeaderFilter = ClangTidyHeaderFilters.CorrespondingHeader;
       else
         this.HeaderFilter = loadedConfig.HeaderFilter;
 
