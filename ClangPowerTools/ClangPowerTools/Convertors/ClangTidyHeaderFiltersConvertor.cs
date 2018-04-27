@@ -10,11 +10,11 @@ namespace ClangPowerTools.Convertors
     #region Members 
 
     private static readonly Dictionary<ClangTidyHeaderFilters?, string> mTidyHeaderFiltersEnumToString =
-  new Dictionary<ClangTidyHeaderFilters?, string>
-  {
-        {ClangTidyHeaderFilters.DefaultHeaderFilter, ComboBoxConstants.kDefaultHeaderFilter},
-        {ClangTidyHeaderFilters.CorrespondingHeader, ComboBoxConstants.kCorrespondingHeader }
-  };
+      new Dictionary<ClangTidyHeaderFilters?, string>
+      {
+            {ClangTidyHeaderFilters.DefaultHeaderFilter, ComboBoxConstants.kDefaultHeaderFilter},
+            {ClangTidyHeaderFilters.CorrespondingHeader, ComboBoxConstants.kCorrespondingHeader }
+      };
 
     private static readonly Dictionary<string, ClangTidyHeaderFilters?> mAdditionalIncludesStringToEnum =
       new Dictionary<string, ClangTidyHeaderFilters?>
@@ -23,9 +23,24 @@ namespace ClangPowerTools.Convertors
         { ComboBoxConstants.kCorrespondingHeader, ClangTidyHeaderFilters.CorrespondingHeader }
       };
 
+
+    public static readonly Dictionary<string, string> mHeaderFilterScriptMapingEnumToString =
+      new Dictionary<string, string>
+    {
+      { ComboBoxConstants.kCorrespondingHeader, "_" },
+    };
+
+    public static readonly Dictionary<string, string> mHeaderFilterScriptMapingStringToEnum =
+      new Dictionary<string, string>
+      {
+            {"_", ComboBoxConstants.kCorrespondingHeader }
+      };
+
     #endregion
 
     #region Public Methods
+
+    #region To and From String
 
     public static string ToString(ClangTidyHeaderFilters? aHeaderFilters)
       => mTidyHeaderFiltersEnumToString[aHeaderFilters];
@@ -33,7 +48,21 @@ namespace ClangPowerTools.Convertors
     public static ClangTidyHeaderFilters? FromString(string aHeaderFilters)
       => mAdditionalIncludesStringToEnum[aHeaderFilters];
 
+    #endregion
 
+
+    #region Script Maping
+
+    public static string ScriptMaping(ClangTidyHeaderFilters? aHeaderFilters)
+     => mHeaderFilterScriptMapingEnumToString[mTidyHeaderFiltersEnumToString[aHeaderFilters]];
+
+    public static bool ScriptMapingContainsKey(ClangTidyHeaderFilters? aHeaderFilters)
+      => mHeaderFilterScriptMapingEnumToString.ContainsKey(mTidyHeaderFiltersEnumToString[aHeaderFilters]);
+
+    #endregion
+
+
+    #region IValueConverter Implementation
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
@@ -46,7 +75,11 @@ namespace ClangPowerTools.Convertors
       throw new NotImplementedException();
     }
 
-    #endregion 
+    #endregion
+
+
+
+    #endregion
 
   }
 }
