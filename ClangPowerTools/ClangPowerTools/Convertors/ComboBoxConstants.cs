@@ -62,6 +62,19 @@ namespace ClangPowerTools
   }
 
 
+  [Serializable]
+  public enum UseChecksFrom
+  {
+    [XmlEnum(Name = "predefined checks")]
+    PredefinedChecks,
+
+    [XmlEnum(Name = "custom checks")]
+    CustomChecks,
+
+    [XmlEnum(Name = ".clang-tidy config file")]
+    TidyFile
+  }
+
 
   public sealed class ComboBoxConstants
   {
