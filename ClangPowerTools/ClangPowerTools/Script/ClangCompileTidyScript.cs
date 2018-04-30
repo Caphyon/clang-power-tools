@@ -132,12 +132,10 @@ namespace ClangPowerTools.Script
           parameters);
       }
 
-      if (null == aTidyOptions.HeaderFilter)
+      if (null != aTidyOptions.HeaderFilter)
       {
-        parameters = string.Format("{0} {1} ''{2}''", parameters, ScriptConstants.kHeaderFilter,
-          ComboBoxConstants.kCorrespondingHeader == ClangTidyHeaderFilters.CorrespondingHeader.ToString() ?
-          ClangTidyHeaderFiltersConvertor.ScriptMaping(ClangTidyHeaderFilters.CorrespondingHeader) :
-          ClangTidyHeaderFiltersConvertor.ToString(aTidyOptions.HeaderFilter));
+        parameters = string.Format("{0} {1} ''{2}''", parameters, ScriptConstants.kHeaderFilter, 
+          ClangTidyHeaderFiltersConvertor.ToStringValue(aTidyOptions.HeaderFilter));
       }
 
       return parameters;
