@@ -63,7 +63,7 @@ namespace ClangPowerTools
 
 
   [Serializable]
-  public enum UseChecksFrom
+  public enum ClangTidyUseChecksFrom
   {
     [XmlEnum(Name = "predefined checks")]
     PredefinedChecks,
