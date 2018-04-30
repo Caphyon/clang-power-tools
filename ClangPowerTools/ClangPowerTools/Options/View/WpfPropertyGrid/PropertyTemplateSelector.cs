@@ -60,6 +60,8 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       if (prop.PropertyType == typeof(ClangTidyHeaderFilters?))
         return mRes["HeaderFiltersDataTemplate"] as DataTemplate;
 
+      if (prop.PropertyType == typeof(ClangTidyUseChecksFrom?))
+        return mRes["UseChecksFromDataTemplate"] as DataTemplate;
 
       return mRes["DefaultDataTemplate"] as DataTemplate;
     }
