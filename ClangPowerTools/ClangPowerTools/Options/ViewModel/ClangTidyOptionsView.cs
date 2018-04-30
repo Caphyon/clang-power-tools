@@ -40,8 +40,8 @@ namespace ClangPowerTools
     [DisplayName("Use checks from")]
     [Description("Tidy checks: switch between explicitly specified checks (predefined or custom) and using checks from .clang-tidy configuration files.\n" +
       "Other options are always loaded from .clang-tidy files.")]
-    [TypeConverter(typeof(UseChecksFromConvertor))]
-    public string UseChecksFrom { get; set; }
+    [TypeConverter(typeof(ClangTidyUseChecksFromConvertor))]
+    public ClangTidyUseChecksFrom? UseChecksFrom { get; set; }
 
     [Category(" Tidy")]
     [DisplayName("Format after tidy")]

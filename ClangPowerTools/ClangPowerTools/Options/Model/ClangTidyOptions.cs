@@ -22,7 +22,7 @@ namespace ClangPowerTools
 
     public ClangTidyHeaderFilters? HeaderFilter { get; set; }
 
-    public string TidyMode { get; set; }
+    public ClangTidyUseChecksFrom? TidyMode { get; set; }
 
     #endregion
 
