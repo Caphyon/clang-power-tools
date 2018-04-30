@@ -81,7 +81,7 @@ namespace ClangPowerTools.Convertors
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
       ClangTidyHeaderFilters aHeaderFilters = (ClangTidyHeaderFilters)value;
-      return ToStringName(aHeaderFilters);//   mTidyHeaderFiltersEnumToStringName[aHeaderFilters];
+      return ToStringName(aHeaderFilters);
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -90,7 +90,6 @@ namespace ClangPowerTools.Convertors
     }
 
     #endregion
-
 
 
     #endregion

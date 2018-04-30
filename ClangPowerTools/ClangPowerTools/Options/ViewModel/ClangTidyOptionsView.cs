@@ -92,10 +92,14 @@ namespace ClangPowerTools
       this.HeaderFilter = null == loadedConfig.HeaderFilter ?
         ClangTidyHeaderFilters.DefaultHeaderFilter : loadedConfig.HeaderFilter;
 
-      if (null == loadedConfig.TidyMode || string.Empty == loadedConfig.TidyMode)
-        this.UseChecksFrom = (0 == loadedConfig.TidyChecks.Count ? ComboBoxConstants.kPredefinedChecks : ComboBoxConstants.kCustomChecks);
+      if (null == loadedConfig.TidyMode)
+      {
+        this.UseChecksFrom = string.IsNullOrWhiteSpace(loadedConfig.TidyChecksCollection) ?
+          ClangTidyUseChecksFrom.PredefinedChecks : ClangTidyUseChecksFrom.CustomChecks;
+      }
       else
         this.UseChecksFrom = loadedConfig.TidyMode;
+
     }
 
     #endregion

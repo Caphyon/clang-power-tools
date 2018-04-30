@@ -95,17 +95,17 @@ namespace ClangPowerTools.Script
     {
       string parameters = string.Empty;
 
-      if (0 == string.Compare(ComboBoxConstants.kTidyFile, aTidyOptions.UseChecksFrom))
+      if (0 == string.Compare(ComboBoxConstants.kTidyFile, ClangTidyUseChecksFromConvertor.ToString(aTidyOptions.UseChecksFrom)))
       {
-        parameters = $"{parameters}{ScriptConstants.kTidyFile}";
+        parameters = ScriptConstants.kTidyFile;
         mUseTidyFile = true;
       }
-      else if (0 == string.Compare(ComboBoxConstants.kCustomChecks, aTidyOptions.UseChecksFrom))
+      else if (0 == string.Compare(ComboBoxConstants.kCustomChecks, ClangTidyUseChecksFromConvertor.ToString(aTidyOptions.UseChecksFrom)))
       {
-        if (null != aTidyCustomChecks.TidyChecks && 0 != aTidyCustomChecks.TidyChecks.Length)
-          parameters = $",{String.Join(",", aTidyCustomChecks.TidyChecks)}";
+        if (false == string.IsNullOrWhiteSpace(aTidyCustomChecks.TidyChecks))
+          parameters = $",{aTidyCustomChecks.TidyChecks.Replace(';', ',')}";
       }
-      else if (0 == string.Compare(ComboBoxConstants.kPredefinedChecks, aTidyOptions.UseChecksFrom))
+      else if (0 == string.Compare(ComboBoxConstants.kPredefinedChecks, ClangTidyUseChecksFromConvertor.ToString(aTidyOptions.UseChecksFrom)))
       {
         foreach (PropertyInfo prop in aTidyChecks.GetType().GetProperties())
         {
