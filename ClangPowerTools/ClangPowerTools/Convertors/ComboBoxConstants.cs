@@ -71,13 +71,9 @@ namespace ClangPowerTools
     public const string kPredefinedChecks = "predefined checks";
     public const string kTidyFile = ".clang-tidy config file";
 
-
-
     public const string kDefaultHeaderFilter = ".*";
-    public const string kCorrespondingHeader = "Corresponding Header";
-
-
-
+    public const string kCorrespondingHeaderValue = "_";
+    public const string kCorrespondingHeaderName = "Corresponding Header";
 
     public const string kNone = "none";
     public const string kFile = "file";
@@ -86,7 +82,6 @@ namespace ClangPowerTools
     public const string kLLVM = "LLVM";
     public const string kMozilla = "Mozilla";
     public const string kWebKit = "WebKit";
-
 
     public const string kIncludeDirectories = "include directories";
     public const string kSystemIncludeDirectories = "system include directories";
