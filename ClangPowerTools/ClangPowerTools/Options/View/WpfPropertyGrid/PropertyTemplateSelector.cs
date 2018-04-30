@@ -57,7 +57,7 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       if (prop.PropertyType == typeof(ClangGeneralAdditionalIncludes?))
         return mRes["AdditionalIncludesDataTemplate"] as DataTemplate;
 
-      if (prop.PropertyType == typeof(ClangGeneralAdditionalIncludes?))
+      if (prop.PropertyType == typeof(ClangTidyHeaderFilters?))
         return mRes["HeaderFiltersDataTemplate"] as DataTemplate;
 
 
