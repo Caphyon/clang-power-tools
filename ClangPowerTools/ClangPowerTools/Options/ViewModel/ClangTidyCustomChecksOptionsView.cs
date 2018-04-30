@@ -9,7 +9,7 @@ namespace ClangPowerTools.DialogPages
   {
     #region Members
 
-    private string[] mTidyChecks;
+    //private string[] mTidyChecks;
     private const string kTidyOptionsFileName = "TidyOptionsConfiguration.config";
     private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
 
