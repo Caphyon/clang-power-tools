@@ -89,12 +89,8 @@ namespace ClangPowerTools
       this.AutoTidyOnSave = loadedConfig.AutoTidyOnSave;
       this.FormatAfterTidy = loadedConfig.FormatAfterTidy;
 
-      if (null == loadedConfig.HeaderFilter)
-        this.HeaderFilter = ClangTidyHeaderFilters.DefaultHeaderFilter;
-      else if ( ComboBoxConstants.kCorrespondingHeader == ClangTidyHeaderFilters.CorrespondingHeader.ToString())
-        this.HeaderFilter = ClangTidyHeaderFilters.CorrespondingHeader;
-      else
-        this.HeaderFilter = loadedConfig.HeaderFilter;
+      this.HeaderFilter = null == loadedConfig.HeaderFilter ?
+        ClangTidyHeaderFilters.DefaultHeaderFilter : loadedConfig.HeaderFilter;
 
       if (null == loadedConfig.TidyMode || string.Empty == loadedConfig.TidyMode)
         this.UseChecksFrom = (0 == loadedConfig.TidyChecks.Count ? ComboBoxConstants.kPredefinedChecks : ComboBoxConstants.kCustomChecks);
