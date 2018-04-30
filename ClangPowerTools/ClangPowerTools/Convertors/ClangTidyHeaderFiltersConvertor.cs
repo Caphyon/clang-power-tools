@@ -9,31 +9,38 @@ namespace ClangPowerTools.Convertors
   {
     #region Members 
 
-    private static readonly Dictionary<ClangTidyHeaderFilters?, string> mTidyHeaderFiltersEnumToString =
+    private static readonly Dictionary<ClangTidyHeaderFilters?, string> mTidyHeaderFiltersEnumToStringName =
       new Dictionary<ClangTidyHeaderFilters?, string>
       {
             {ClangTidyHeaderFilters.DefaultHeaderFilter, ComboBoxConstants.kDefaultHeaderFilter},
-            {ClangTidyHeaderFilters.CorrespondingHeader, ComboBoxConstants.kCorrespondingHeader }
+            {ClangTidyHeaderFilters.CorrespondingHeader, ComboBoxConstants.kCorrespondingHeaderName }
+      };
+
+    private static readonly Dictionary<ClangTidyHeaderFilters?, string> mTidyHeaderFiltersEnumToStringValue =
+      new Dictionary<ClangTidyHeaderFilters?, string>
+      {
+            {ClangTidyHeaderFilters.DefaultHeaderFilter, ComboBoxConstants.kDefaultHeaderFilter},
+            {ClangTidyHeaderFilters.CorrespondingHeader, ComboBoxConstants.kCorrespondingHeaderValue }
       };
 
     private static readonly Dictionary<string, ClangTidyHeaderFilters?> mAdditionalIncludesStringToEnum =
       new Dictionary<string, ClangTidyHeaderFilters?>
       {
         { ComboBoxConstants.kDefaultHeaderFilter, ClangTidyHeaderFilters.DefaultHeaderFilter },
-        { ComboBoxConstants.kCorrespondingHeader, ClangTidyHeaderFilters.CorrespondingHeader }
+        { ComboBoxConstants.kCorrespondingHeaderName, ClangTidyHeaderFilters.CorrespondingHeader }
       };
 
 
     public static readonly Dictionary<string, string> mHeaderFilterScriptMapingEnumToString =
       new Dictionary<string, string>
     {
-      { ComboBoxConstants.kCorrespondingHeader, "_" },
+      { ComboBoxConstants.kCorrespondingHeaderName, "_" },
     };
 
     public static readonly Dictionary<string, string> mHeaderFilterScriptMapingStringToEnum =
       new Dictionary<string, string>
       {
-            {"_", ComboBoxConstants.kCorrespondingHeader }
+            {"_", ComboBoxConstants.kCorrespondingHeaderName }
       };
 
     #endregion
@@ -42,11 +49,18 @@ namespace ClangPowerTools.Convertors
 
     #region To and From String
 
-    public static string ToString(ClangTidyHeaderFilters? aHeaderFilters)
-      => mTidyHeaderFiltersEnumToString[aHeaderFilters];
+    public static string ToStringName(ClangTidyHeaderFilters? aHeaderFilters)
+      => mTidyHeaderFiltersEnumToStringName[aHeaderFilters];
 
-    public static ClangTidyHeaderFilters? FromString(string aHeaderFilters)
+    public static string ToStringValue(ClangTidyHeaderFilters? aHeaderFilters)
+      => mTidyHeaderFiltersEnumToStringValue[aHeaderFilters];
+
+
+    public static ClangTidyHeaderFilters? FromStringName(string aHeaderFilters)
       => mAdditionalIncludesStringToEnum[aHeaderFilters];
+
+    public static ClangTidyHeaderFilters? FromStringValue(string aHeaderFilters)
+     => mAdditionalIncludesStringToEnum[aHeaderFilters];
 
     #endregion
 
@@ -54,10 +68,10 @@ namespace ClangPowerTools.Convertors
     #region Script Maping
 
     public static string ScriptMaping(ClangTidyHeaderFilters? aHeaderFilters)
-     => mHeaderFilterScriptMapingEnumToString[mTidyHeaderFiltersEnumToString[aHeaderFilters]];
+     => mHeaderFilterScriptMapingEnumToString[mTidyHeaderFiltersEnumToStringName[aHeaderFilters]];
 
     public static bool ScriptMapingContainsKey(ClangTidyHeaderFilters? aHeaderFilters)
-      => mHeaderFilterScriptMapingEnumToString.ContainsKey(mTidyHeaderFiltersEnumToString[aHeaderFilters]);
+      => mHeaderFilterScriptMapingEnumToString.ContainsKey(mTidyHeaderFiltersEnumToStringName[aHeaderFilters]);
 
     #endregion
 
@@ -67,7 +81,7 @@ namespace ClangPowerTools.Convertors
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
       ClangTidyHeaderFilters aHeaderFilters = (ClangTidyHeaderFilters)value;
-      return mTidyHeaderFiltersEnumToString[aHeaderFilters];
+      return ToStringName(aHeaderFilters);//   mTidyHeaderFiltersEnumToStringName[aHeaderFilters];
     }
 
     public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
