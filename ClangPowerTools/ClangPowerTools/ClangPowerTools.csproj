@@ -183,7 +183,7 @@
     <Compile Include="ActiveWindowProperties.cs" />
     <Compile Include="Convertors\ComboBoxConstants.cs" />
     <Compile Include="Convertors\OldConvertors\ComboBoxConvertor.cs" />
-    <Compile Include="Convertors\UseChecksFromConvertor.cs" />
+    <Compile Include="Convertors\ClangTidyUseChecksFromConvertor.cs" />
     <Compile Include="SilentFile\SilentFileController.cs" />
     <Compile Include="Handlers\StatusBarHandler.cs" />
     <Compile Include="StringExtension.cs" />
