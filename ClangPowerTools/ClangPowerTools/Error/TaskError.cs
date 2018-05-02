@@ -46,9 +46,7 @@ namespace ClangPowerTools
       if (null == otherObj)
         return false;
 
-      return Line == otherObj.Line &&
-        FilePath == otherObj.FilePath &&
-        FullMessage == otherObj.FullMessage;
+      return FullMessage.Replace('/', '\\') == otherObj.FullMessage.Replace('/', '\\');
     }
 
     public override int GetHashCode()
