@@ -12,6 +12,10 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
   /// </summary>
   public partial class PropertyGrid : UserControl, INotifyPropertyChanged
   {
+
+
+
+
     #region Private members
     /// <summary>
     /// Object for that the pairs (property name, property value)

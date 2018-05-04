@@ -34,7 +34,7 @@ namespace ClangPowerTools
     [Description("Regular expression matching the names of the headers to output diagnostics from or auto-fix. Diagnostics from the source file are always displayed." + 
       "This option overrides the 'HeaderFilter' option in .clang-tidy file, if any.\n" +
       "\"Corresponding Header\" : output diagnostics/fix only the corresponding header (same filename) for each source file analyzed.")]
-    public ClangTidyHeaderFilters? HeaderFilter { get; set; }
+    public string HeaderFilter { get; set; }
 
     [Category(" Tidy")]
     [DisplayName("Use checks from")]
@@ -89,8 +89,8 @@ namespace ClangPowerTools
       this.AutoTidyOnSave = loadedConfig.AutoTidyOnSave;
       this.FormatAfterTidy = loadedConfig.FormatAfterTidy;
 
-      this.HeaderFilter = null == loadedConfig.HeaderFilter ?
-        ClangTidyHeaderFilters.DefaultHeaderFilter : loadedConfig.HeaderFilter;
+      this.HeaderFilter = string.IsNullOrWhiteSpace(loadedConfig.HeaderFilter) ?
+        ClangTidyHeaderFilters.DefaultHeaderFilter.ToString() : loadedConfig.HeaderFilter;
 
       if (null == loadedConfig.TidyMode)
       {

@@ -42,6 +42,9 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       if (!string.IsNullOrEmpty(editorName))
         return mRes[editorName] as DataTemplate;
 
+      if (prop.PropertyType == typeof(string) && !prop.IsReadOnly && prop.DisplayName == "Header filter")
+        return mRes["HeaderFiltersDataTemplate"] as DataTemplate;
+
       if (prop.PropertyType == typeof(string) && !prop.IsReadOnly)
         return mRes["StringDataTemplate"] as DataTemplate;
 
@@ -56,9 +59,6 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
 
       if (prop.PropertyType == typeof(ClangGeneralAdditionalIncludes?))
         return mRes["AdditionalIncludesDataTemplate"] as DataTemplate;
-
-      if (prop.PropertyType == typeof(ClangTidyHeaderFilters?))
-        return mRes["HeaderFiltersDataTemplate"] as DataTemplate;
 
       if (prop.PropertyType == typeof(ClangTidyUseChecksFrom?))
         return mRes["UseChecksFromDataTemplate"] as DataTemplate;

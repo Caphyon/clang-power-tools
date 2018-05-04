@@ -134,8 +134,7 @@ namespace ClangPowerTools.Script
 
       if (null != aTidyOptions.HeaderFilter)
       {
-        parameters = string.Format("{0} {1} ''{2}''", parameters, ScriptConstants.kHeaderFilter, 
-          ClangTidyHeaderFiltersConvertor.ToStringValue(aTidyOptions.HeaderFilter));
+        parameters = string.Format("{0} {1} ''{2}''", parameters, ScriptConstants.kHeaderFilter, aTidyOptions.HeaderFilter);
       }
 
       return parameters;
