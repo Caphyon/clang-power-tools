@@ -27,6 +27,9 @@ namespace ClangPowerTools
 
     public ClangFormatStyle? Style { get; set; }
 
+    public string ClangFormatPath { get; set; }
+
+
     #endregion
 
     #endregion
