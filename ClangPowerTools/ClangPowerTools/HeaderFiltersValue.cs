@@ -1,30 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace ClangPowerTools
 {
-  public class HeaderFiltersValue
+  public class HeaderFiltersValue : INotifyPropertyChanged
   {
-    private string mSelectedValue = string.Empty;
 
-    private List<string> mValues = new List<string>()
+    public HeaderFiltersValue(string aValue)
     {
-      "aaa",
-      "bbb",
-      "ccc"
-    };
+      mHeaderFilterValue = aValue;
+    }
 
-    public string SelectedValue { get; set; }
+    public String mHeaderFilterValue;
 
-    public List<string> Values { get; set; } = new List<string>()
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    public String HeaderFilters
     {
-      "aaa",
-      "bbb",
-      "ccc"
-    };
-
+      get
+      {
+        return mHeaderFilterValue;
+      }
+      set
+      {
+        mHeaderFilterValue = value;
+        if (PropertyChanged != null)
+          PropertyChanged(this, new PropertyChangedEventArgs("HeaderFilters"));
+      }
+    }    
   }
 }

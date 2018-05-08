@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
@@ -34,9 +35,6 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       MouseUpDownEventForwarding(sender, e, UIElement.MouseDownEvent);
     }
 
-    private void ComboBox_IsKeyboardFocusedChanged(object sender, DependencyPropertyChangedEventArgs e)
-    {
 
-    }
   }
 }
