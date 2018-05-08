@@ -65,6 +65,12 @@ namespace ClangPowerTools.DialogPages
       "e.g.: -style=\"{BasedOnStyle: llvm, IndentWidth: 8}\"")]
     public ClangFormatStyle? Style { get; set; }
 
+
+    [Category("Format Options")]
+    [DisplayName("Clang-Format Path")]
+    [Description("")]
+    public string ClangFormatPath { get; set; }
+
     #endregion
 
 
