@@ -36,12 +36,6 @@
     </ObjectDataProvider.MethodParameters>
   </ObjectDataProvider>
 
-  <ObjectDataProvider x:Key="headerFiltersValues" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
-    <ObjectDataProvider.MethodParameters>
-      <x:Type TypeName="app:ClangTidyHeaderFilters"/>
-    </ObjectDataProvider.MethodParameters>
-  </ObjectDataProvider>
-
   <ObjectDataProvider x:Key="useChecksFromValues" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
     <ObjectDataProvider.MethodParameters>
       <x:Type TypeName="app:ClangTidyUseChecksFrom"/>
@@ -82,9 +76,7 @@
         <TextBlock Grid.Row="0" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="2,0"/>
       </Border>
       <Border Grid.Column="1">
-        <ComboBox ItemsSource="{Binding Source={StaticResource stylesValues}}" SelectedItem="{Binding Value}" Grid.Row="0" Margin="10,2" 
-               PreviewMouseUp="PreviewMouseUp"
-               PreviewMouseDown="PreviewMouseDown">
+        <ComboBox ItemsSource="{Binding Source={StaticResource stylesValues}}" SelectedItem="{Binding Value}" Grid.Row="0" Margin="10,2" >
           <ComboBox.ItemTemplate>
             <DataTemplate>
               <TextBlock Text="{Binding Converter={StaticResource styleConverter}}"/>
@@ -106,9 +98,7 @@
         <TextBlock Grid.Row="0" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="2,0"/>
       </Border>
       <Border Grid.Column="1">
-        <ComboBox ItemsSource="{Binding Source={StaticResource falbackStyleValues}}" SelectedItem="{Binding Value}" Grid.Row="0" Margin="10,2" 
-               PreviewMouseUp="PreviewMouseUp"
-               PreviewMouseDown="PreviewMouseDown">
+        <ComboBox ItemsSource="{Binding Source={StaticResource falbackStyleValues}}" SelectedItem="{Binding Value}" Grid.Row="0" Margin="10,2" >
           <ComboBox.ItemTemplate>
             <DataTemplate>
               <TextBlock Text="{Binding Converter={StaticResource fallbackStyleConverter}}"/>
@@ -130,9 +120,7 @@
         <TextBlock Grid.Row="0" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="2,0"/>
       </Border>
       <Border Grid.Column="1">
-        <ComboBox ItemsSource="{Binding Source={StaticResource additionalIncludesValues}}" SelectedItem="{Binding Value}" Grid.Row="0" Margin="10,2" 
-               PreviewMouseUp="PreviewMouseUp"
-               PreviewMouseDown="PreviewMouseDown">
+        <ComboBox ItemsSource="{Binding Source={StaticResource additionalIncludesValues}}" SelectedItem="{Binding Value}" Grid.Row="0" Margin="10,2" >
           <ComboBox.ItemTemplate>
             <DataTemplate>
               <TextBlock Text="{Binding Converter={StaticResource additionalIncludesConvertor}}"/>
@@ -157,15 +145,15 @@
         <ComboBox Grid.Row="0" Margin="10,2"
                 IsEditable="True"
                 StaysOpenOnEdit="True"
-                ItemsSource="{Binding Source={StaticResource headerFiltersValues}}"  
-                Text="{Binding Value.SelectedValue}"
-                PreviewMouseUp="PreviewMouseUp"
-                PreviewMouseDown="PreviewMouseDown">
-          <ComboBox.ItemTemplate>
-            <DataTemplate>
-              <TextBlock Text="{Binding Converter={StaticResource headerFiltersConvertor}}"/>
-            </DataTemplate>
-          </ComboBox.ItemTemplate>
+                ItemsSource="{Binding Source={x:Static app:ClangTidyOptionsView.DefaultHeaderFilters}}"
+                DisplayMemberPath="HeaderFilters"
+                Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource headerFiltersConvertor}}">
+          <!--<ComboBox.Style>
+            <Style TargetType="ComboBox">
+              <EventSetter Event="PreviewMouseUp" Handler="PreviewMouseUp" />
+              <EventSetter Event="PreviewMouseDown" Handler="PreviewMouseDown" />
+            </Style>
+          </ComboBox.Style>-->
         </ComboBox>
       </Border>
     </Grid>
@@ -182,9 +170,7 @@
         <TextBlock Grid.Row="0" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="2,0"/>
       </Border>
       <Border Grid.Column="1">
-        <ComboBox ItemsSource="{Binding Source={StaticResource useChecksFromValues}}" SelectedItem="{Binding Value}" Grid.Row="0" Margin="10,2" 
-               PreviewMouseUp="PreviewMouseUp"
-               PreviewMouseDown="PreviewMouseDown">
+        <ComboBox ItemsSource="{Binding Source={StaticResource useChecksFromValues}}" SelectedItem="{Binding Value}" Grid.Row="0" Margin="10,2" >
           <ComboBox.ItemTemplate>
             <DataTemplate>
               <TextBlock Text="{Binding Converter={StaticResource useChecksFromConvertor}}"/>

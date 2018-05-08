@@ -132,9 +132,12 @@ namespace ClangPowerTools.Script
           parameters);
       }
 
-      if (null != aTidyOptions.HeaderFilter)
+      if (null != aTidyOptions.HeaderFilter && false == string.IsNullOrWhiteSpace(aTidyOptions.HeaderFilter.HeaderFilters))
       {
-        parameters = string.Format("{0} {1} ''{2}''", parameters, ScriptConstants.kHeaderFilter, aTidyOptions.HeaderFilter);
+        parameters = string.Format("{0} {1} ''{2}''",
+          parameters, ScriptConstants.kHeaderFilter,
+          true == string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(aTidyOptions.HeaderFilter.HeaderFilters)) ?
+            aTidyOptions.HeaderFilter.HeaderFilters : ClangTidyHeaderFiltersConvertor.ScriptEncode(aTidyOptions.HeaderFilter.HeaderFilters));
       }
 
       return parameters;

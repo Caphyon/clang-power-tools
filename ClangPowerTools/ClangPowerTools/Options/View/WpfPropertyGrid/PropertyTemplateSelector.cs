@@ -42,7 +42,7 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       if (!string.IsNullOrEmpty(editorName))
         return mRes[editorName] as DataTemplate;
 
-      if (prop.PropertyType == typeof(string) && !prop.IsReadOnly && prop.DisplayName == "Header filter")
+      if (prop.PropertyType == typeof(HeaderFiltersValue) && !prop.IsReadOnly)
         return mRes["HeaderFiltersDataTemplate"] as DataTemplate;
 
       if (prop.PropertyType == typeof(string) && !prop.IsReadOnly)
