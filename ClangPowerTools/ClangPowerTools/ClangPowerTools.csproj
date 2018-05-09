@@ -127,11 +127,15 @@
     <Compile Include="Options\View\ClangTidyOptionsUserControl.xaml.cs">
       <DependentUpon>ClangTidyOptionsUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Options\View\TextBoxNotifaiableUserControl.cs" />
     <Compile Include="Options\View\WpfPropertyGrid\BorderedComboBox.xaml.cs">
       <DependentUpon>BorderedComboBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\View\WpfPropertyGrid\BorderedTextBox.xaml.cs">
       <DependentUpon>BorderedTextBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowse.xaml.cs">
+      <DependentUpon>BorderedTextBoxBrowse.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\View\WpfPropertyGrid\StringCollectionEditor.xaml.cs">
       <DependentUpon>StringCollectionEditor.xaml</DependentUpon>
@@ -188,6 +192,7 @@
     <Compile Include="SilentFile\SilentFileController.cs" />
     <Compile Include="Handlers\StatusBarHandler.cs" />
     <Compile Include="StringExtension.cs" />
+    <Compile Include="TextBoxAndBrowseAttribute.cs" />
     <Compile Include="Vsix.cs" />
     <Compile Include="XmlSerializer.cs" />
   </ItemGroup>
@@ -431,6 +436,10 @@
     <Page Include="Options\View\WpfPropertyGrid\BorderedTextBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowse.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Options\View\WpfPropertyGrid\StringCollectionEditor.xaml">
       <SubType>Designer</SubType>
