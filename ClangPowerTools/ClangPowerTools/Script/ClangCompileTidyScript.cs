@@ -82,10 +82,10 @@ namespace ClangPowerTools.Script
         parameters = $"{parameters} {ScriptConstants.kVerboseMode}";
 
       if (false == string.IsNullOrWhiteSpace(aGeneralOptions.ProjectsToIgnore))
-        parameters = $"{parameters} {ScriptConstants.kProjectsToIgnore} (''{aGeneralOptions.ProjectsToIgnore.Replace(';', ',')}'')";
+        parameters = $"{parameters} {ScriptConstants.kProjectsToIgnore} (''{aGeneralOptions.ProjectsToIgnore.Replace(";", "'',''")}'')";
 
       if (false == string.IsNullOrWhiteSpace(aGeneralOptions.FilesToIgnore))
-        parameters = $"{parameters} {ScriptConstants.kFilesToIgnore} (''{aGeneralOptions.FilesToIgnore.Replace(';', ',')}'')";
+        parameters = $"{parameters} {ScriptConstants.kFilesToIgnore} (''{aGeneralOptions.FilesToIgnore.Replace(";", "'',''")}'')";
 
       if (0 == string.Compare(ClangGeneralAdditionalIncludesConvertor.ToString(aGeneralOptions.AdditionalIncludes), ComboBoxConstants.kSystemIncludeDirectories))
         parameters = $"{parameters} {ScriptConstants.kSystemIncludeDirectories}";
