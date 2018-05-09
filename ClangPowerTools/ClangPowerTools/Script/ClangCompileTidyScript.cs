@@ -70,9 +70,9 @@ namespace ClangPowerTools.Script
       {
         parameters = ScriptConstants.kClangFlags;
         if (true == aGeneralOptions.TreatWarningsAsErrors)
-          parameters += string.Format(" (''{0},{1}'')", ScriptConstants.kTreatWarningsAsErrors, aGeneralOptions.ClangFlags.Replace(';', ','));
+          parameters += string.Format(" (''{0}'',''{1}'')", ScriptConstants.kTreatWarningsAsErrors, aGeneralOptions.ClangFlags.Replace(";", "'',''"));
         else
-          parameters += string.Format(" (''{0}'')", aGeneralOptions.ClangFlags.Replace(';', ',')); 
+          parameters += string.Format(" (''{0}'')", aGeneralOptions.ClangFlags.Replace(";", "'',''"));
       }
 
       if (true == aGeneralOptions.Continue)
