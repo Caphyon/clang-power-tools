@@ -192,7 +192,7 @@
     <Compile Include="SilentFile\SilentFileController.cs" />
     <Compile Include="Handlers\StatusBarHandler.cs" />
     <Compile Include="StringExtension.cs" />
-    <Compile Include="TextBoxAndBrowseAttribute.cs" />
+    <Compile Include="ClangFormatPathAttribute.cs" />
     <Compile Include="Vsix.cs" />
     <Compile Include="XmlSerializer.cs" />
   </ItemGroup>
