@@ -68,9 +68,11 @@ namespace ClangPowerTools.Script
 
       if (null != aGeneralOptions.ClangFlags && 0 < aGeneralOptions.ClangFlags.Length)
       {
-        parameters = $"{parameters} {ScriptConstants.kClangFlags} (" +
-          $"{string.Format("{0}", aGeneralOptions.TreatWarningsAsErrors ? string.Format("''{0}'',", ScriptConstants.kTreatWarningsAsErrors) : string.Empty)}''" +
-          $"{String.Join("'',''", aGeneralOptions.ClangFlags)}'')";
+        parameters = ScriptConstants.kClangFlags;
+        if (true == aGeneralOptions.TreatWarningsAsErrors)
+          parameters += string.Format(" (''{0},{1}'')", ScriptConstants.kTreatWarningsAsErrors, aGeneralOptions.ClangFlags.Replace(';', ','));
+        else
+          parameters += string.Format(" (''{0}'')", aGeneralOptions.ClangFlags.Replace(';', ',')); 
       }
 
       if (true == aGeneralOptions.Continue)
