@@ -103,6 +103,8 @@ namespace ClangPowerTools.DialogPages
 
       updatedConfig.Style = this.Style;
 
+      updatedConfig.ClangFormatPath = this.ClangFormatPath;
+
       SaveToFile(path, updatedConfig);
     }
 
@@ -125,6 +127,8 @@ namespace ClangPowerTools.DialogPages
         ClangFormatFallbackStyle.none : loadedConfig.FallbackStyle;
 
       //this.SortIncludes = loadedConfig.SortIncludes;
+
+      this.ClangFormatPath = loadedConfig.ClangFormatPath;
 
       this.Style = null == loadedConfig.Style ? ClangFormatStyle.file : loadedConfig.Style;
     }
