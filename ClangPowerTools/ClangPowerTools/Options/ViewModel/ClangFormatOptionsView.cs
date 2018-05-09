@@ -69,6 +69,7 @@ namespace ClangPowerTools.DialogPages
     [Category("Format Options")]
     [DisplayName("Clang-Format Path")]
     [Description("")]
+    [TextBoxAndBrowse(true)]
     public string ClangFormatPath { get; set; }
 
     #endregion
