@@ -1,13 +1,15 @@
-﻿<ResourceDictionary x:Class="Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid.PropertyGridResources"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:Local="clr-namespace:Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid"
-             xmlns:System="clr-namespace:System;assembly=mscorlib"
-             xmlns:app="clr-namespace:ClangPowerTools"
-             xmlns:conv="clr-namespace:ClangPowerTools.Convertors"
-             mc:Ignorable="d" >
+﻿<ResourceDictionary 
+  x:Class="Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid.PropertyGridResources"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+  xmlns:Local="clr-namespace:Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid"
+  xmlns:System="clr-namespace:System;assembly=mscorlib"
+  xmlns:app="clr-namespace:ClangPowerTools"
+  xmlns:conv="clr-namespace:ClangPowerTools.Convertors"
+  xmlns:Local1="clr-namespace:ClangPowerTools.Options.View.WpfPropertyGrid"
+  mc:Ignorable="d" >
 
   <SolidColorBrush x:Key="ReadOnlyForeBrush" Color="#6D6D6D" />
 
@@ -58,9 +60,26 @@
           PreviewMouseUp="PreviewMouseUp"
           PreviewMouseDown="PreviewMouseDown"
           Margin="10,2"/>
+      </Border>
+    </Grid>
+  </DataTemplate>
 
-        <!--<TextBox Style="{x:Null}"  Grid.Row="0" Margin="10,2" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}"  />-->
-
+  <!-- String Browse DataTemplate -->
+  <DataTemplate x:Key="StringBrowseDataTemplate">
+    <Grid Margin="0" HorizontalAlignment ="Stretch">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" SharedSizeGroup="Key" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Border Grid.Column="0" >
+        <TextBlock Grid.Row="0" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="2,0"/>
+      </Border>
+      <Border Grid.Column="1" Style="{x:Null}">
+        <Local1:BorderedTextBoxBrowse
+          Grid.Row="0"
+          PreviewMouseUp="PreviewMouseUp"
+          PreviewMouseDown="PreviewMouseDown"
+          Margin="10,2"/>
       </Border>
     </Grid>
   </DataTemplate>
