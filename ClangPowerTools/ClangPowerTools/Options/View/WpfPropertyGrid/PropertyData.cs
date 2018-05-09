@@ -1,5 +1,7 @@
-﻿using System;
+﻿using ClangPowerTools;
+using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 
 namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
@@ -70,6 +72,28 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
         return mPropertyInfo.PropertyType;
       }
     }
+
+    
+
+    /// <summary>
+    /// Check if the property has a certain attribute
+    /// </summary>
+    public bool HasTextBoxAndBrowseAttribute
+    {
+      get
+      {
+        object[] propAttrs = mPropertyInfo.GetCustomAttributes(false);
+        object clangCheckAttr = propAttrs.FirstOrDefault(attr => typeof(TextBoxAndBrowseAttribute) == attr.GetType());
+        object displayNameAttrObj = propAttrs.FirstOrDefault(attr => typeof(DisplayNameAttribute) == attr.GetType());
+
+        if (null == clangCheckAttr || null == displayNameAttrObj)
+          return false;
+
+        return true;
+      }
+    }
+
+
 
     /// <summary>
     /// Category where the property is placed
