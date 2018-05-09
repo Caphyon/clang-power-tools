@@ -42,12 +42,12 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       if (!string.IsNullOrEmpty(editorName))
         return mRes[editorName] as DataTemplate;
 
-      if (prop.PropertyType == typeof(HeaderFiltersValue) && !prop.IsReadOnly)
-        return mRes["HeaderFiltersDataTemplate"] as DataTemplate;
+      if (true == prop.HasTextBoxAndBrowseAttribute && !prop.IsReadOnly)
+        return mRes["StringBrowseDataTemplate"] as DataTemplate;
 
       if (prop.PropertyType == typeof(string) && !prop.IsReadOnly)
         return mRes["StringDataTemplate"] as DataTemplate;
-
+      
       if (prop.PropertyType == typeof(bool) && !prop.IsReadOnly )
         return mRes["BoolDataTemplate"] as DataTemplate;
 
@@ -62,6 +62,9 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
 
       if (prop.PropertyType == typeof(ClangTidyUseChecksFrom?))
         return mRes["UseChecksFromDataTemplate"] as DataTemplate;
+
+      if (prop.PropertyType == typeof(HeaderFiltersValue) && !prop.IsReadOnly)
+        return mRes["HeaderFiltersDataTemplate"] as DataTemplate;
 
       return mRes["DefaultDataTemplate"] as DataTemplate;
     }
