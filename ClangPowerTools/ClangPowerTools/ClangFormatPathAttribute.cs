@@ -3,11 +3,11 @@
 namespace ClangPowerTools
 {
   [AttributeUsage(AttributeTargets.Property)]
-  public class TextBoxAndBrowseAttribute : Attribute
+  public class ClangFormatPathAttribute : Attribute
   {
     public bool Activate { get; set; }
 
-    public TextBoxAndBrowseAttribute(bool aActivate)
+    public ClangFormatPathAttribute(bool aActivate)
     {
       Activate = aActivate;
     }

@@ -83,7 +83,7 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       get
       {
         object[] propAttrs = mPropertyInfo.GetCustomAttributes(false);
-        object clangCheckAttr = propAttrs.FirstOrDefault(attr => typeof(TextBoxAndBrowseAttribute) == attr.GetType());
+        object clangCheckAttr = propAttrs.FirstOrDefault(attr => typeof(ClangFormatPathAttribute) == attr.GetType());
         object displayNameAttrObj = propAttrs.FirstOrDefault(attr => typeof(DisplayNameAttribute) == attr.GetType());
 
         if (null == clangCheckAttr || null == displayNameAttrObj)
