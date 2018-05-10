@@ -23,7 +23,8 @@
              HorizontalContentAlignment="Stretch"
              ItemsSource ="{Binding}" 
              ItemTemplateSelector="{StaticResource DisplayTemplateSelector}"
-             SelectionChanged="PropertyList_SelectionChanged">
+             SelectionChanged="PropertyList_SelectionChanged"
+             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
       <ListBox.GroupStyle>
         <GroupStyle>
           <GroupStyle.ContainerStyle>
