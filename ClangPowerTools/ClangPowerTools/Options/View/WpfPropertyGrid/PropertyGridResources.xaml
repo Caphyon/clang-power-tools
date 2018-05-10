@@ -207,17 +207,14 @@
         <ColumnDefinition Width="Auto" />
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
-      
       <Border Grid.Column="0">
         <CheckBox IsChecked="{Binding Value}" Margin="1,2"
                PreviewMouseUp="PreviewMouseUp"
                PreviewMouseDown="PreviewMouseDown"/>
       </Border>
-
       <Border Grid.Column="1" >
         <TextBlock Grid.Row="0" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="2,0" TextTrimming="CharacterEllipsis" />
       </Border>
-      
     </Grid>
   </DataTemplate>
 

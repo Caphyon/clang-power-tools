@@ -19,12 +19,6 @@ namespace ClangPowerTools
 
 
     [Category("General")]
-    [DisplayName("Clang compile after MSVC compile")]
-    [Description("Automatically run Clang compile on the current source file, after successful MSVC compilation.")]
-    public bool ClangCompileAfterVsCompile { get; set; }
-
-
-    [Category("General")]
     [DisplayName("Compile flags")]
     [Description("Flags given to clang++ when compiling project, alongside project - specific defines. If empty the default flags will be loaded.")]
     public string ClangFlags
@@ -32,12 +26,6 @@ namespace ClangPowerTools
       get => string.IsNullOrWhiteSpace(mClangFlags)? DefaultOptions.kClangFlags : mClangFlags;
       set => mClangFlags = value;
     }
-
-
-    [Category("General")]
-    [DisplayName("Continue on error")]
-    [Description("Switch to continue project compilation even when errors occur.")]
-    public bool Continue { get; set; }
 
 
     [Category("General")]
@@ -62,6 +50,18 @@ namespace ClangPowerTools
     [DisplayName("Treat warnings as errors")]
     [Description("Treats all compiler warnings as errors. For a new project, it may be best to use in all compilations; resolving all warnings will ensure the fewest possible hard to find code defects.")]
     public bool TreatWarningsAsErrors { get; set; }
+
+
+    [Category("General")]
+    [DisplayName("Continue on error")]
+    [Description("Switch to continue project compilation even when errors occur.")]
+    public bool Continue { get; set; }
+
+
+    [Category("General")]
+    [DisplayName("Clang compile after MSVC compile")]
+    [Description("Automatically run Clang compile on the current source file, after successful MSVC compilation.")]
+    public bool ClangCompileAfterVsCompile { get; set; }
 
 
     [Category("General")]

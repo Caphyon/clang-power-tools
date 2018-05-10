@@ -51,17 +51,17 @@ namespace ClangPowerTools
 
 
     [Category(" Tidy")]
+    [DisplayName("Perform clang-tidy on save")]
+    [Description("Automatically run clang-tidy when saving the current source file.")]
+    public bool AutoTidyOnSave { get; set; }
+
+
+    [Category(" Tidy")]
     [DisplayName("Header filter")]
     [Description("Regular expression matching the names of the headers to output diagnostics from or auto-fix. Diagnostics from the source file are always displayed." +
       "This option overrides the 'HeaderFilter' option in .clang-tidy file, if any.\n" +
       "\"Corresponding Header\" : output diagnostics/fix only the corresponding header (same filename) for each source file analyzed.")]
     public HeaderFiltersValue HeaderFilter { get; set; }
-
-
-    [Category(" Tidy")]
-    [DisplayName("Perform clang-tidy on save")]
-    [Description("Automatically run clang-tidy when saving the current source file.")]
-    public bool AutoTidyOnSave { get; set; }
 
 
     [Category(" Tidy")]
