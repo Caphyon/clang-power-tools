@@ -209,7 +209,7 @@
       </Grid.ColumnDefinitions>
       
       <Border Grid.Column="0">
-        <CheckBox IsChecked="{Binding Value}" Margin="1,0"
+        <CheckBox IsChecked="{Binding Value}" Margin="1,2"
                PreviewMouseUp="PreviewMouseUp"
                PreviewMouseDown="PreviewMouseDown"/>
       </Border>
