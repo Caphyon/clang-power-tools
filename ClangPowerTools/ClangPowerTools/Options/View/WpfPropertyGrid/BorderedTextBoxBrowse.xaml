@@ -11,11 +11,11 @@
   
   <Grid>
 
-    <TextBox x:Name="TextEditor" VerticalContentAlignment="Center" Grid.Column="0" Margin="0, 0 , 60 , 0"
+    <TextBox x:Name="TextEditor" VerticalContentAlignment="Center" Grid.Column="0" Margin="0, 0 , 70 , 0"
                PreviewMouseUp="TextBoxPreviewMouseUp"
                PreviewMouseDown="TextBoxPreviewMouseDown" 
                Text="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-    <Button HorizontalAlignment="Right" Width="50" Grid.Column="1" Content="Browse" Margin="0, 0 , 0, 0"
+    <Button HorizontalAlignment="Right" Width="60" Grid.Column="1" Content="Browse" Margin="0, 0 , 0, 0"
             Click="Button_Click"/>
 
   </Grid>
