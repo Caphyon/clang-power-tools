@@ -67,8 +67,8 @@ namespace ClangPowerTools.DialogPages
 
 
     [Category("Format Options")]
-    [DisplayName("Clang-Format Path")]
-    [Description("")]
+    [DisplayName("Custom path")]
+    [Description("Specify a custom path for \"clang-format.exe\" file to run instead of the default (v6.0.0)")]
     [ClangFormatPath(true)]
     public string ClangFormatPath { get; set; }
 
