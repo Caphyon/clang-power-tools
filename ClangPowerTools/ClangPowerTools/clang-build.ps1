@@ -99,6 +99,14 @@
                        - 'webkit'
                        - 'mozilla'
 
+.PARAMETER aClangBinDirectory
+      Alias 'clang-bin-dir'. Manual override of the Clang "bin" directory.
+      When not provided, the script looks for the Clang binaries in the following locations:
+      - The directories from the system %PATH%
+      - %ProgramW6432%\LLVM\bin
+      - %ProgramFiles(x86)%\LLVM\bin
+      If the parameter is present, it should be a path to the 'bin' directory of a Clang install.
+
 .PARAMETER aVisualStudioVersion
       Alias 'vs-ver'. Version of Visual Studio (VC++) installed and that'll be used for
       standard library include directories. E.g. 2017.
@@ -119,6 +127,7 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aSolutio
      , [alias("parallel")]     [Parameter(Mandatory=$false)][switch]   $aUseParallelCompile
      , [alias("continue")]     [Parameter(Mandatory=$false)][switch]   $aContinueOnError
      , [alias("treat-sai")]    [Parameter(Mandatory=$false)][switch]   $aTreatAdditionalIncludesAsSystemIncludes
+     , [alias("clang-bin-dir")][Parameter(Mandatory=$false)][string]   $aClangBinDirectory    
      , [alias("clang-flags")]  [Parameter(Mandatory=$true)] [string[]] $aClangCompileFlags
      , [alias("literal")]      [Parameter(Mandatory=$false)][switch]   $aDisableNameRegexMatching
      , [alias("tidy")]         [Parameter(Mandatory=$false)][string]   $aTidyFlags
@@ -2268,8 +2277,15 @@ if ($bParams)
 
 Write-Verbose "CPU logical core count: $kLogicalCoreCount"
 
-# If LLVM is not in PATH try to detect it automatically
-if (! (Exists-Command($kClangCompiler)) )
+# If the LLVM location is overridden, it will be the first in PATH
+if (![string]::IsNullOrEmpty($aClangBinDirectory))
+{
+  Write-Verbose "LLVM location override: $aClangBinDirectory"
+  $env:Path = "$aClangBinDirectory;" + $env:Path
+  $global:llvmLocation = $aClangBinDirectory
+}
+# Else, if LLVM is not found in PATH try to detect it automatically
+elseif (! (Exists-Command($kClangCompiler)) )
 {
   foreach ($locationLLVM in $kLLVMInstallLocations)
   {

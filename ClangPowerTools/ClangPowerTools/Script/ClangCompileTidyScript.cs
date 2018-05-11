@@ -87,6 +87,10 @@ namespace ClangPowerTools.Script
       if (0 == string.Compare(aGeneralOptions.AdditionalIncludes, ComboBoxConstants.kSystemIncludeDirectories))
         parameters = $"{parameters} {ScriptConstants.kSystemIncludeDirectories}";
 
+      var clangBinOverride = aGeneralOptions.ClangBinDirectory.Override;
+      if (clangBinOverride != null)
+        parameters = $"{parameters} {ScriptConstants.kClangBinDirectory} ''{clangBinOverride}''";
+
       return $"{parameters}";
     }
 
