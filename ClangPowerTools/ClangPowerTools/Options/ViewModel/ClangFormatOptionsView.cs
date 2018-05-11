@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.Options.ViewModel;
+﻿using ClangPowerTools.Options;
+using ClangPowerTools.Options.ViewModel;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
@@ -66,11 +67,10 @@ namespace ClangPowerTools.DialogPages
     public ClangFormatStyle? Style { get; set; }
 
 
-    [Category("Format Options")]
+    [Category("Path")]
     [DisplayName("Custom clang-format.exe")]
-    [Description("Specify a custom path for \"clang-format.exe\" file to run instead of the default (v6.0.0)")]
-    [ClangFormatPath(true)]
-    public string ClangFormatPath { get; set; }
+    [Description("Specify a custom path for \"clang-format.exe\" file to run instead of the built-in one (v6.0)")]
+    public ClangFormatPathValue EnacbleClangFormatPath { get; set; }
 
     #endregion
 

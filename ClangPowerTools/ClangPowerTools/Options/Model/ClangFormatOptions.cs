@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClangPowerTools.Options;
+using System;
 
 namespace ClangPowerTools
 {
@@ -6,6 +7,7 @@ namespace ClangPowerTools
   public class ClangFormatOptions
   {
     #region Properties 
+
 
     #region Format On Save
 
@@ -16,6 +18,7 @@ namespace ClangPowerTools
     public string SkipFiles { get; set; }
 
     #endregion
+
 
     #region Format Options
 
@@ -29,8 +32,15 @@ namespace ClangPowerTools
 
     public string ClangFormatPath { get; set; }
 
+    #endregion
+
+
+    #region Clang-Format executable path
+
+    public ClangFormatPathValue EnableClangFormatPath { get; set; }
 
     #endregion
+
 
     #endregion
 
