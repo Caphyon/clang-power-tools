@@ -11,7 +11,7 @@
   
   <Grid>
 
-    <TextBox x:Name="TextEditor" VerticalContentAlignment="Center" Grid.Column="0" Margin="0, 0 , 70 , 0"
+    <TextBox x:Name="TextEditor" VerticalContentAlignment="Center" Grid.Column="0" Margin="0, 0 , 65 , 0"
                PreviewMouseUp="TextBoxPreviewMouseUp"
                PreviewMouseDown="TextBoxPreviewMouseDown" 
                Text="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />

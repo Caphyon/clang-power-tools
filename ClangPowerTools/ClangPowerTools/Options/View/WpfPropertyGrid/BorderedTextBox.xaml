@@ -15,7 +15,7 @@
                PreviewMouseUp="TextBoxPreviewMouseUp"
                PreviewMouseDown="TextBoxPreviewMouseDown" 
                Text="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
-    <Button HorizontalAlignment="Right" Width="20" Grid.Column="1" Content="..."
+    <Button HorizontalAlignment="Right" Width="20"  Grid.Column="1" Content="..." Margin="2"
             Click="Button_Click"/>
     
     <!--</DockPanel>-->
