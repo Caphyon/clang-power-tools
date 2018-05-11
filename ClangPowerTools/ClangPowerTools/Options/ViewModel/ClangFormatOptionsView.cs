@@ -70,6 +70,7 @@ namespace ClangPowerTools.DialogPages
     [Category("Path")]
     [DisplayName("Custom clang-format.exe")]
     [Description("Specify a custom path for \"clang-format.exe\" file to run instead of the built-in one (v6.0)")]
+    [ClangFormatPathAttribute(true)]
     public ClangFormatPathValue ClangFormatPath { get; set; }
 
 

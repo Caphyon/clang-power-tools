@@ -64,24 +64,52 @@
     </Grid>
   </DataTemplate>
 
-  <!-- String Browse DataTemplate -->
-  <DataTemplate x:Key="StringBrowseDataTemplate">
+  <!-- Clang Format Path DataTemplate -->
+  <DataTemplate x:Key="ClangFormatPathDataTemplate">
     <Grid Margin="0" HorizontalAlignment ="Stretch">
+
+      <Grid.RowDefinitions>
+        <RowDefinition />
+        <RowDefinition />
+      </Grid.RowDefinitions>
+      
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto" SharedSizeGroup="Key" />
-        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+        <!--<ColumnDefinition Width="*" />-->
       </Grid.ColumnDefinitions>
-      <Border Grid.Column="0" >
-        <TextBlock Grid.Row="0" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="2,0"/>
+
+      <Border Grid.Column="0" Grid.Row="0" >
+        <CheckBox IsChecked="{Binding Value.Enable}" Margin="1,4"
+               PreviewMouseUp="PreviewMouseUp"
+               PreviewMouseDown="PreviewMouseDown"/>
       </Border>
-      <Border Grid.Column="1" Style="{x:Null}">
-        <Local1:BorderedTextBoxBrowse
+      <Border Grid.Column="0" Grid.Row="0" >
+        <TextBlock Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="20 0" TextTrimming="CharacterEllipsis" />
+      </Border>
+
+      <Grid Grid.Row="1" >
+
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" >
+          <TextBlock Text="Path" VerticalAlignment="Center" Margin="20 0 0 2"/>
+          <!--Text="{Binding DisplayName, Mode=OneTime}"-->
+        </Border>
+        <Border Grid.Column="1" Style="{x:Null}">
+          <Local1:BorderedTextBoxBrowse
           Grid.Row="0"
           PreviewMouseUp="PreviewMouseUp"
-          PreviewMouseDown="PreviewMouseDown"
-          Margin="10,2"/>
-      </Border>
+          PreviewMouseDown="PreviewMouseDown" 
+          Margin="10,2" />
+        </Border>
+
+      </Grid>
+      
     </Grid>
+
   </DataTemplate>
 
   <!-- Clang Format Style DataTemplate -->
