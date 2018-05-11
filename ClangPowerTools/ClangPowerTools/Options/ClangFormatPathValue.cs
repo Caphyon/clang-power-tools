@@ -9,7 +9,7 @@ namespace ClangPowerTools.Options
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    public String mPath;
+    private String mPath;
 
     #endregion
 

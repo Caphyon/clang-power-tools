@@ -70,7 +70,8 @@ namespace ClangPowerTools.DialogPages
     [Category("Path")]
     [DisplayName("Custom clang-format.exe")]
     [Description("Specify a custom path for \"clang-format.exe\" file to run instead of the built-in one (v6.0)")]
-    public ClangFormatPathValue EnacbleClangFormatPath { get; set; }
+    public ClangFormatPathValue ClangFormatPath { get; set; }
+
 
     #endregion
 
@@ -86,6 +87,8 @@ namespace ClangPowerTools.DialogPages
     }
 
     #endregion
+
+    #region DialogPage Save and Load implementation 
 
 
     public override void SaveSettingsToStorage()
@@ -133,6 +136,10 @@ namespace ClangPowerTools.DialogPages
       this.Style = null == loadedConfig.Style ? ClangFormatStyle.file : loadedConfig.Style;
     }
 
+    #endregion
+
+
+    #region Public Methods
 
     public ClangFormatOptionsView Clone()
     {
@@ -140,6 +147,8 @@ namespace ClangPowerTools.DialogPages
       var clone = (ClangFormatOptionsView)MemberwiseClone();
       return clone;
     }
+
+    #endregion
 
   }
 }

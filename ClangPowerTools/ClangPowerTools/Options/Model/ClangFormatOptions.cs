@@ -30,14 +30,13 @@ namespace ClangPowerTools
 
     public ClangFormatStyle? Style { get; set; }
 
-    public string ClangFormatPath { get; set; }
 
     #endregion
 
 
     #region Clang-Format executable path
 
-    public ClangFormatPathValue EnableClangFormatPath { get; set; }
+    public ClangFormatPathValue ClangFormatPath { get; set; }
 
     #endregion
 
