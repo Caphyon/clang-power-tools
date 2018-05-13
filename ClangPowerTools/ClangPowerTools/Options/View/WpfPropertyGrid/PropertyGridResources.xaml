@@ -66,49 +66,46 @@
 
   <!-- Clang Format Path DataTemplate -->
   <DataTemplate x:Key="ClangFormatPathDataTemplate">
-    <Grid Margin="0" HorizontalAlignment ="Stretch">
 
-      <Grid.RowDefinitions>
-        <RowDefinition />
-        <RowDefinition />
-      </Grid.RowDefinitions>
-      
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto" />
-        <!--<ColumnDefinition Width="*" />-->
-      </Grid.ColumnDefinitions>
+    <StackPanel>
 
-      <Border Grid.Column="0" Grid.Row="0" >
-        <CheckBox IsChecked="{Binding Value.Enable}" Margin="1,4"
-               PreviewMouseUp="PreviewMouseUp"
-               PreviewMouseDown="PreviewMouseDown"/>
-      </Border>
-      <Border Grid.Column="0" Grid.Row="0" >
-        <TextBlock Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="20 0" TextTrimming="CharacterEllipsis" />
-      </Border>
-
-      <Grid Grid.Row="1" >
-
+      <Grid Margin="0" HorizontalAlignment ="Stretch">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
         <Border Grid.Column="0" >
-          <TextBlock Text="Path" VerticalAlignment="Center" Margin="20 0 0 2"/>
+          <CheckBox IsChecked="{Binding Value.Enable}" Margin="1,4"
+               PreviewMouseUp="PreviewMouseUp"
+               PreviewMouseDown="PreviewMouseDown"/>
+        </Border>
+        <Border Grid.Column="0" >
+          <TextBlock Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="20 0" TextTrimming="CharacterEllipsis" />
+        </Border>
+
+      </Grid>
+
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" >
+          <TextBlock Text="Path" VerticalAlignment="Center" Margin="20 0 0 0"/>
           <!--Text="{Binding DisplayName, Mode=OneTime}"-->
         </Border>
         <Border Grid.Column="1" Style="{x:Null}">
           <Local1:BorderedTextBoxBrowse
-          Grid.Row="0"
-          PreviewMouseUp="PreviewMouseUp"
-          PreviewMouseDown="PreviewMouseDown" 
-          Margin="10,2" />
+            Grid.Row="0"
+            PreviewMouseUp="PreviewMouseUp"
+            PreviewMouseDown="PreviewMouseDown" 
+            Margin="10,2" />
         </Border>
 
       </Grid>
-      
-    </Grid>
+    </StackPanel>
 
   </DataTemplate>
 
