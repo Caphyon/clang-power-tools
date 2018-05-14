@@ -21,11 +21,11 @@ namespace ClangPowerTools
 
     public string AssumeFilename { get; set; }
 
-    public string FallbackStyle { get; set; }
+    public ClangFormatFallbackStyle? FallbackStyle { get; set; }
 
     //public bool SortIncludes { get; set; }
 
-    public string Style { get; set; }
+    public ClangFormatStyle? Style { get; set; }
 
     #endregion
 

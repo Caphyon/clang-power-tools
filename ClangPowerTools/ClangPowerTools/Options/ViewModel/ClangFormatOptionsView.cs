@@ -1,10 +1,13 @@
-﻿using ClangPowerTools.Convertors;
+﻿using ClangPowerTools.Options.ViewModel;
 using System.ComponentModel;
+using System.Windows.Forms;
+using System.Windows.Forms.Integration;
 
 namespace ClangPowerTools.DialogPages
 {
   public class ClangFormatOptionsView : ConfigurationPage<ClangFormatOptions>
   {
+
     #region Members
 
     private const string kGeneralSettingsFileName = "FormatConfiguration.config";
@@ -13,6 +16,7 @@ namespace ClangPowerTools.DialogPages
     #endregion
 
     #region Properties 
+    
 
     #region Format On Save
 
@@ -46,8 +50,7 @@ namespace ClangPowerTools.DialogPages
     [DisplayName("Fallback style")]
     [Description("The name of the predefined style used as a fallback in case clang-format is invoked with " +
       "-style=file, but can not find the .clang-format file to use.\nUse -fallback-style=none to skip formatting.")]
-    [TypeConverter(typeof(FallbackStyleConvertor))]
-    public string FallbackStyle { get; set; }
+    public ClangFormatFallbackStyle? FallbackStyle { get; set; }
 
     //[Category("Format Options")]
     //[DisplayName("Sort includes")]
@@ -60,10 +63,23 @@ namespace ClangPowerTools.DialogPages
       "style configuration from .clang-format file located in one of the parent directories of the " +
       "source file(or current directory for stdin).\nUse -style=\"{key: value, ...}\" to set specific parameters, " +
       "e.g.: -style=\"{BasedOnStyle: llvm, IndentWidth: 8}\"")]
-    [TypeConverter(typeof(StyleConvertor))]
-    public string Style { get; set; }
+    public ClangFormatStyle? Style { get; set; }
 
     #endregion
+
+
+    protected override IWin32Window Window
+    {
+      get
+      {
+        ElementHost elementHost = new ElementHost();
+        elementHost.Child = new ClangFormatOptionsUserControl(this);
+        return elementHost;
+      }
+    }
+
+    #endregion
+
 
     public override void SaveSettingsToStorage()
     {
@@ -75,7 +91,7 @@ namespace ClangPowerTools.DialogPages
       updatedConfig.SkipFiles = this.SkipFiles;
       updatedConfig.AssumeFilename = this.AssumeFilename;
       updatedConfig.FallbackStyle = this.FallbackStyle;
-      
+
       //updatedConfig.SortIncludes = this.SortIncludes;
 
       updatedConfig.Style = this.Style;
@@ -90,24 +106,22 @@ namespace ClangPowerTools.DialogPages
 
       this.EnableFormatOnSave = loadedConfig.EnableFormatOnSave;
 
-      this.FileExtensions = null == loadedConfig.FileExtensions?
+      this.FileExtensions = null == loadedConfig.FileExtensions ?
         DefaultOptions.kFileExtensions : loadedConfig.FileExtensions;
 
-      this.SkipFiles = null == loadedConfig.SkipFiles?
+      this.SkipFiles = null == loadedConfig.SkipFiles ?
         DefaultOptions.kSkipFiles : loadedConfig.SkipFiles;
 
       this.AssumeFilename = loadedConfig.AssumeFilename;
 
-      this.FallbackStyle = null == loadedConfig.FallbackStyle ?
-        ComboBoxConstants.kNone : loadedConfig.FallbackStyle;
+      this.FallbackStyle = null == loadedConfig.FallbackStyle ? 
+        ClangFormatFallbackStyle.none : loadedConfig.FallbackStyle;
 
       //this.SortIncludes = loadedConfig.SortIncludes;
 
-      this.Style = null == loadedConfig.Style?
-        ComboBoxConstants.kFile : loadedConfig.Style;
+      this.Style = null == loadedConfig.Style ? ClangFormatStyle.file : loadedConfig.Style;
     }
 
-    #endregion
 
     public ClangFormatOptionsView Clone()
     {

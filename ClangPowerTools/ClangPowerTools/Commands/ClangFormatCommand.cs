@@ -65,7 +65,7 @@ namespace ClangPowerTools.Commands
         return;
 
       var option = GetUserOptions().Clone();
-      option.FallbackStyle = "none";
+      option.FallbackStyle = ClangFormatFallbackStyle.none;
 
       FormatDocument(aDocument, option);
     }

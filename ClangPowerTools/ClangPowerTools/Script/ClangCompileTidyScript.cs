@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.DialogPages;
+﻿using ClangPowerTools.Convertors;
+using ClangPowerTools.DialogPages;
 using EnvDTE;
 using EnvDTE80;
 using System;
@@ -41,7 +42,7 @@ namespace ClangPowerTools.Script
       return $"{script} {mParameters} {ScriptConstants.kDirectory} ''{aSolutionPath}'' {ScriptConstants.kLiteral}'";
     }
 
-    public void ConstructParameters(ClangGeneralOptionsView aGeneralOptions, ClangTidyOptionsView aTidyOptions, ClangTidyChecksOptionsView aTidyChecks, 
+    public void ConstructParameters(ClangGeneralOptionsView aGeneralOptions, ClangTidyOptionsView aTidyOptions, ClangTidyPredefinedChecksOptionsView aTidyChecks, 
       ClangTidyCustomChecksOptionsView aTidyCustomChecks, ClangFormatOptionsView aClangFormatView, DTE2 aDTEObj, string aVsEdition, string aVsVersion)
     {
       mParameters = GetGeneralParameters(aGeneralOptions);
@@ -49,7 +50,7 @@ namespace ClangPowerTools.Script
         $"{mParameters} {GetTidyParameters(aTidyOptions, aTidyChecks, aTidyCustomChecks)}" : $"{mParameters} {ScriptConstants.kParallel}";
 
       if (null != aClangFormatView && null != aTidyOptions && true == aTidyOptions.Fix && true == aTidyOptions.FormatAfterTidy)
-        mParameters = $"{mParameters} {ScriptConstants.kClangFormatStyle} {GetClangFormatParameters(aClangFormatView)}";
+        mParameters = $"{mParameters} {ScriptConstants.kClangFormatStyle} {aClangFormatView.Style}";
 
       mParameters = $"{mParameters} {ScriptConstants.kVsVersion} {aVsVersion} {ScriptConstants.kVsEdition} {aVsEdition}";
     }
@@ -84,27 +85,27 @@ namespace ClangPowerTools.Script
       if (null != aGeneralOptions.FilesToIgnore && 0 < aGeneralOptions.FilesToIgnore.Length)
         parameters = $"{parameters} {ScriptConstants.kFilesToIgnore} (''{String.Join("'',''", aGeneralOptions.FilesToIgnore)}'')";
 
-      if (0 == string.Compare(aGeneralOptions.AdditionalIncludes, ComboBoxConstants.kSystemIncludeDirectories))
+      if (0 == string.Compare(ClangGeneralAdditionalIncludesConvertor.ToString(aGeneralOptions.AdditionalIncludes), ComboBoxConstants.kSystemIncludeDirectories))
         parameters = $"{parameters} {ScriptConstants.kSystemIncludeDirectories}";
 
       return $"{parameters}";
     }
 
-    private string GetTidyParameters(ClangTidyOptionsView aTidyOptions, ClangTidyChecksOptionsView aTidyChecks, ClangTidyCustomChecksOptionsView aTidyCustomChecks)
+    private string GetTidyParameters(ClangTidyOptionsView aTidyOptions, ClangTidyPredefinedChecksOptionsView aTidyChecks, ClangTidyCustomChecksOptionsView aTidyCustomChecks)
     {
       string parameters = string.Empty;
 
-      if (0 == string.Compare(ComboBoxConstants.kTidyFile, aTidyOptions.UseChecksFrom))
+      if (0 == string.Compare(ComboBoxConstants.kTidyFile, ClangTidyUseChecksFromConvertor.ToString(aTidyOptions.UseChecksFrom)))
       {
-        parameters = $"{parameters}{ScriptConstants.kTidyFile}";
+        parameters = ScriptConstants.kTidyFile;
         mUseTidyFile = true;
       }
-      else if (0 == string.Compare(ComboBoxConstants.kCustomChecks, aTidyOptions.UseChecksFrom))
+      else if (0 == string.Compare(ComboBoxConstants.kCustomChecks, ClangTidyUseChecksFromConvertor.ToString(aTidyOptions.UseChecksFrom)))
       {
-        if (null != aTidyCustomChecks.TidyChecks && 0 != aTidyCustomChecks.TidyChecks.Length)
-          parameters = $",{String.Join(",", aTidyCustomChecks.TidyChecks)}";
+        if (false == string.IsNullOrWhiteSpace(aTidyCustomChecks.TidyChecks))
+          parameters = $",{aTidyCustomChecks.TidyChecks.Replace(';', ',')}";
       }
-      else if (0 == string.Compare(ComboBoxConstants.kPredefinedChecks, aTidyOptions.UseChecksFrom))
+      else if (0 == string.Compare(ComboBoxConstants.kPredefinedChecks, ClangTidyUseChecksFromConvertor.ToString(aTidyOptions.UseChecksFrom)))
       {
         foreach (PropertyInfo prop in aTidyChecks.GetType().GetProperties())
         {
@@ -131,22 +132,15 @@ namespace ClangPowerTools.Script
           parameters);
       }
 
-      if (false == string.IsNullOrWhiteSpace(aTidyOptions.HeaderFilter))
+      if (null != aTidyOptions.HeaderFilter && false == string.IsNullOrWhiteSpace(aTidyOptions.HeaderFilter.HeaderFilters))
       {
-        parameters = string.Format("{0} {1} ''{2}''", parameters, ScriptConstants.kHeaderFilter,
-          ComboBoxConstants.kHeaderFilterMaping.ContainsKey(aTidyOptions.HeaderFilter) ?
-          ComboBoxConstants.kHeaderFilterMaping[aTidyOptions.HeaderFilter] : aTidyOptions.HeaderFilter);
+        parameters = string.Format("{0} {1} ''{2}''",
+          parameters, ScriptConstants.kHeaderFilter,
+          true == string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(aTidyOptions.HeaderFilter.HeaderFilters)) ?
+            aTidyOptions.HeaderFilter.HeaderFilters : ClangTidyHeaderFiltersConvertor.ScriptEncode(aTidyOptions.HeaderFilter.HeaderFilters));
       }
 
       return parameters;
-    }
-
-    private string GetClangFormatParameters(ClangFormatOptionsView aClangFormatView)
-    {
-      if (true == string.IsNullOrWhiteSpace(aClangFormatView.Style))
-        return string.Empty;
-
-      return aClangFormatView.Style;
     }
 
     #endregion

@@ -1,7 +1,81 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace ClangPowerTools
 {
+  [Serializable]
+  public enum ClangFormatStyle
+  {
+    [XmlEnum(Name = "file")]
+    file = 0,
+    [XmlEnum(Name = "Chromium")]
+    Chromium,
+    [XmlEnum(Name = "Google")]
+    Google,
+    [XmlEnum(Name = "LLVM")]
+    LLVM,
+    [XmlEnum(Name = "Mozilla")]
+    Mozilla,
+    [XmlEnum(Name = "WebKit")]
+    WebKit
+  }
+
+  [Serializable]
+  public enum ClangFormatFallbackStyle
+  {
+    [XmlEnum(Name = "none")]
+    none = 0,
+    [XmlEnum(Name = "file")]
+    file,
+    [XmlEnum(Name = "Chromium")]
+    Chromium,
+    [XmlEnum(Name = "Google")]
+    Google,
+    [XmlEnum(Name = "LLVM")]
+    LLVM,
+    [XmlEnum(Name = "Mozilla")]
+    Mozilla,
+    [XmlEnum(Name = "WebKit")]
+    WebKit
+  }
+
+  [Serializable]
+  public enum ClangGeneralAdditionalIncludes
+  {
+    [XmlEnum(Name = "include directories")]
+    IncludeDirectories,
+    
+    [XmlEnum(Name = "system include directories")]
+    SystemIncludeDirectories
+  }
+
+
+  [Serializable] 
+  public enum ClangTidyHeaderFilters
+  {
+    [XmlEnum(Name = ".*")]
+    DefaultHeaderFilter,
+
+    [XmlEnum(Name = "_")]
+    CorrespondingHeader
+  }
+
+
+  [Serializable]
+  public enum ClangTidyUseChecksFrom
+  {
+    [XmlEnum(Name = "predefined checks")]
+    PredefinedChecks,
+
+    [XmlEnum(Name = "custom checks")]
+    CustomChecks,
+
+    [XmlEnum(Name = ".clang-tidy config file")]
+    TidyFile
+  }
+
+
   public sealed class ComboBoxConstants
   {
     #region Constants
@@ -11,8 +85,8 @@ namespace ClangPowerTools
     public const string kTidyFile = ".clang-tidy config file";
 
     public const string kDefaultHeaderFilter = ".*";
-    public const string kCorrespondingHeader = "Corresponding Header";
-
+    public const string kCorrespondingHeaderValue = "_";
+    public const string kCorrespondingHeaderName = "Corresponding Header";
 
     public const string kNone = "none";
     public const string kFile = "file";
@@ -21,12 +95,6 @@ namespace ClangPowerTools
     public const string kLLVM = "LLVM";
     public const string kMozilla = "Mozilla";
     public const string kWebKit = "WebKit";
-
-    public static readonly Dictionary<string, string> kHeaderFilterMaping = new Dictionary<string, string>
-    {
-      {kCorrespondingHeader, "_" },
-      {"_", kCorrespondingHeader }
-    };
 
     public const string kIncludeDirectories = "include directories";
     public const string kSystemIncludeDirectories = "system include directories";
