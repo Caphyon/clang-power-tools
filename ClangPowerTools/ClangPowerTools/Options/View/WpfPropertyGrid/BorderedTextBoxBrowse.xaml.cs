@@ -20,8 +20,12 @@ namespace ClangPowerTools.Options.View.WpfPropertyGrid
       Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
 
       // Set filter for file extension and default file extension
+      //dlg.FileName = "clang-format.exe";
+
       dlg.DefaultExt = ".exe";
-      dlg.Filter = "Text documents (.exe)|*.exe";
+      dlg.Filter = "clang-format|clang-format.exe|Executable files|*.exe|All files|*.*";
+
+      //dlg.FilterIndex = 1;
 
       // Display OpenFileDialog by calling ShowDialog method
       Nullable<bool> result = dlg.ShowDialog();
