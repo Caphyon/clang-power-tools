@@ -229,8 +229,9 @@ namespace ClangPowerTools.Commands
       process.StartInfo.RedirectStandardInput = true;
       process.StartInfo.RedirectStandardOutput = true;
       process.StartInfo.RedirectStandardError = true;
-      process.StartInfo.FileName = true == string.IsNullOrWhiteSpace(aClangFormatView.ClangFormatPath.Path) ?
-        Path.Combine(vsixPath, ScriptConstants.kClangFormat) : aClangFormatView.ClangFormatPath.Path;
+      process.StartInfo.FileName = 
+        true == (aClangFormatView.ClangFormatPath.Enable && !string.IsNullOrWhiteSpace(aClangFormatView.ClangFormatPath.Path)) ?
+          aClangFormatView.ClangFormatPath.Path : Path.Combine(vsixPath, ScriptConstants.kClangFormat);
 
       process.StartInfo.Arguments = " -offset " + aOffset +
                                     " -length " + aLength +
