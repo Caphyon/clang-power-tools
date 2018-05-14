@@ -5,8 +5,8 @@
 
 Improvements:
 
-* Updated clang-format.exe to the latest version (6.0.0)
-* Added support for optionally use different version of clang-format from the one in the box
+* Updated "clang-format.exe" to the latest version 6.0.0
+* Support to use different version of "clang-format.exe" from the one in the box
 * Redesigned settings panel
 
 Bugs:
