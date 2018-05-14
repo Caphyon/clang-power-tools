@@ -92,7 +92,8 @@
         </Grid.ColumnDefinitions>
 
         <Border Grid.Column="0" >
-          <TextBlock Text="Path" VerticalAlignment="Center" Margin="20 0 0 0" />
+          <Label Content="Path" VerticalAlignment="Center" Margin="20 0 0 0" 
+            IsEnabled="{Binding ElementName=EnableClangFormatCustomPathCheckBox, Path=IsChecked}"/>
         </Border>
         <Border Grid.Column="1" Style="{x:Null}">
           <Local1:BorderedTextBoxBrowse
