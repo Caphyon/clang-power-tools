@@ -10,12 +10,12 @@
 
   <Grid>
 
-    <TextBox x:Name="TextEditor" VerticalContentAlignment="Center" Grid.Column="0" Margin="0, 0 , 65 , 0"
+    <TextBox x:Name="TextEditor" VerticalContentAlignment="Center" Grid.Column="0" Margin="0 0 65 0"
       PreviewMouseUp="TextBoxPreviewMouseUp"
       PreviewMouseDown="TextBoxPreviewMouseDown" 
-      Text="{Binding DataContext, UpdateSourceTrigger=PropertyChanged}" />
+      Text="{Binding Path, UpdateSourceTrigger=PropertyChanged}" />
 
-    <Button HorizontalAlignment="Right" Width="60" Grid.Column="1" Content="Browse" Margin="0, 0 , 0, 0"
+    <Button HorizontalAlignment="Right" Width="60" Grid.Column="1" Content="Browse" Margin="0 0 0 0"
             Click="Button_Click" />
 
   </Grid>
