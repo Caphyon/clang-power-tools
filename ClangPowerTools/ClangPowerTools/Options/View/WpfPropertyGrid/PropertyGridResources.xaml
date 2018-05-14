@@ -19,7 +19,6 @@
   <conv:ClangTidyHeaderFiltersConvertor x:Key="headerFiltersConvertor" />
   <conv:ClangTidyUseChecksFromConvertor x:Key="useChecksFromConvertor" />
 
-
   <ObjectDataProvider x:Key="stylesValues" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
     <ObjectDataProvider.MethodParameters>
       <x:Type TypeName="app:ClangFormatStyle"/>
@@ -76,7 +75,7 @@
         </Grid.ColumnDefinitions>
 
         <Border Grid.Column="0" >
-          <CheckBox IsChecked="{Binding Value.Enable}" Margin="1,4"
+          <CheckBox x:Name="EnableClangFormatCustomPathCheckBox" IsChecked="{Binding Value.Enable}" Margin="1,4"
                PreviewMouseUp="PreviewMouseUp"
                PreviewMouseDown="PreviewMouseDown"/>
         </Border>
@@ -93,15 +92,16 @@
         </Grid.ColumnDefinitions>
 
         <Border Grid.Column="0" >
-          <TextBlock Text="Path" VerticalAlignment="Center" Margin="20 0 0 0"/>
-          <!--Text="{Binding DisplayName, Mode=OneTime}"-->
+          <TextBlock Text="Path" VerticalAlignment="Center" Margin="20 0 0 0" />
         </Border>
         <Border Grid.Column="1" Style="{x:Null}">
           <Local1:BorderedTextBoxBrowse
+            DataContext="{Binding Value}"
             Grid.Row="0"
             PreviewMouseUp="PreviewMouseUp"
             PreviewMouseDown="PreviewMouseDown" 
-            Margin="10,2" />
+            Margin="10,2" 
+            IsEnabled="{Binding ElementName=EnableClangFormatCustomPathCheckBox, Path=IsChecked}" /> 
         </Border>
 
       </Grid>
