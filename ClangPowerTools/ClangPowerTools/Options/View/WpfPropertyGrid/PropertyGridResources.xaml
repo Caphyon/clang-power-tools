@@ -92,7 +92,7 @@
         </Grid.ColumnDefinitions>
 
         <Border Grid.Column="0" >
-          <Label Content="Path" VerticalAlignment="Center" Margin="20 0 0 0" 
+          <Label Content="Path" VerticalAlignment="Center" Margin="16 0 0 0"
             IsEnabled="{Binding ElementName=EnableClangFormatCustomPathCheckBox, Path=IsChecked}"/>
         </Border>
         <Border Grid.Column="1" Style="{x:Null}">
@@ -101,7 +101,7 @@
             Grid.Row="0"
             PreviewMouseUp="PreviewMouseUp"
             PreviewMouseDown="PreviewMouseDown" 
-            Margin="10,2" 
+            Margin="5,2" 
             IsEnabled="{Binding ElementName=EnableClangFormatCustomPathCheckBox, Path=IsChecked}" /> 
         </Border>
 
