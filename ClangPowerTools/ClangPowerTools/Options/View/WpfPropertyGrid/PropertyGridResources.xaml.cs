@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using ClangPowerTools.Options.View.WpfPropertyGrid;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -34,7 +35,6 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
     {
       MouseUpDownEventForwarding(sender, e, UIElement.MouseDownEvent);
     }
-
 
   }
 }

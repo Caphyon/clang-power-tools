@@ -76,9 +76,11 @@
     <Compile Include="AutomationUtil.cs" />
     <Compile Include="ClangCheckAttribute.cs" />
     <Compile Include="Commands\ClangFormatCommand.cs" />
+    <Compile Include="Convertors\BooleanToVisibilityConverter.cs" />
     <Compile Include="Convertors\ClangFormatFallbackStyleConverter.cs" />
     <Compile Include="Convertors\ClangFormatStyleConverter.cs" />
-    <Compile Include="HeaderFiltersValue.cs" />
+    <Compile Include="Options\ClangFormatPathValue.cs" />
+    <Compile Include="Options\HeaderFiltersValue.cs" />
     <Compile Include="Options\Model\ClangTidyPredefinedChecksOptions.cs" />
     <Compile Include="Options\Model\ClangTidyOptions.cs" />
     <Compile Include="Commands\BasicCommand.cs" />
@@ -127,11 +129,15 @@
     <Compile Include="Options\View\ClangTidyOptionsUserControl.xaml.cs">
       <DependentUpon>ClangTidyOptionsUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Options\View\TextBoxNotifaiableUserControl.cs" />
     <Compile Include="Options\View\WpfPropertyGrid\BorderedComboBox.xaml.cs">
       <DependentUpon>BorderedComboBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\View\WpfPropertyGrid\BorderedTextBox.xaml.cs">
       <DependentUpon>BorderedTextBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowse.xaml.cs">
+      <DependentUpon>BorderedTextBoxBrowse.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\View\WpfPropertyGrid\StringCollectionEditor.xaml.cs">
       <DependentUpon>StringCollectionEditor.xaml</DependentUpon>
@@ -188,6 +194,7 @@
     <Compile Include="SilentFile\SilentFileController.cs" />
     <Compile Include="Handlers\StatusBarHandler.cs" />
     <Compile Include="StringExtension.cs" />
+    <Compile Include="ClangFormatPathAttribute.cs" />
     <Compile Include="Vsix.cs" />
     <Compile Include="XmlSerializer.cs" />
   </ItemGroup>
@@ -431,6 +438,10 @@
     <Page Include="Options\View\WpfPropertyGrid\BorderedTextBox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowse.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Options\View\WpfPropertyGrid\StringCollectionEditor.xaml">
       <SubType>Designer</SubType>

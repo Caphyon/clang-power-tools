@@ -23,7 +23,9 @@
              HorizontalContentAlignment="Stretch"
              ItemsSource ="{Binding}" 
              ItemTemplateSelector="{StaticResource DisplayTemplateSelector}"
-             SelectionChanged="PropertyList_SelectionChanged">
+             SelectionChanged="PropertyList_SelectionChanged"
+             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+             FontSize="11.7">
       <ListBox.GroupStyle>
         <GroupStyle>
           <GroupStyle.ContainerStyle>
@@ -34,7 +36,7 @@
                     <Border BorderThickness="0,0,0,1">
                       <Expander ExpandDirection="Down" IsExpanded = "True" >
                         <Expander.Header>
-                          <TextBlock Text="{Binding Name}" />
+                          <TextBlock Text="{Binding Name}" FontSize="12"/>
                         </Expander.Header>
                         <ItemsPresenter />
                       </Expander>

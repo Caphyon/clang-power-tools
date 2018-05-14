@@ -37,15 +37,24 @@ namespace ClangPowerTools
 
     #region Properties
 
-    [Category(" Tidy")]
-    [DisplayName("Perform clang-tidy on save")]
-    [Description("Automatically run clang-tidy when saving the current source file.")]
-    public bool AutoTidyOnSave { get; set; }
 
     [Category(" Tidy")]
     [DisplayName("Fix")]
     [Description("Automatically applies clang-tidy fixes to selected source files, affected header files and saves them to disk.")]
     public bool Fix { get; set; }
+
+
+    [Category(" Tidy")]
+    [DisplayName("Format after tidy")]
+    [Description("")]
+    public bool FormatAfterTidy { get; set; }
+
+
+    [Category(" Tidy")]
+    [DisplayName("Perform clang-tidy on save")]
+    [Description("Automatically run clang-tidy when saving the current source file.")]
+    public bool AutoTidyOnSave { get; set; }
+
 
     [Category(" Tidy")]
     [DisplayName("Header filter")]
@@ -54,17 +63,13 @@ namespace ClangPowerTools
       "\"Corresponding Header\" : output diagnostics/fix only the corresponding header (same filename) for each source file analyzed.")]
     public HeaderFiltersValue HeaderFilter { get; set; }
 
+
     [Category(" Tidy")]
     [DisplayName("Use checks from")]
     [Description("Tidy checks: switch between explicitly specified checks (predefined or custom) and using checks from .clang-tidy configuration files.\n" +
       "Other options are always loaded from .clang-tidy files.")]
     [TypeConverter(typeof(ClangTidyUseChecksFromConvertor))]
     public ClangTidyUseChecksFrom? UseChecksFrom { get; set; }
-
-    [Category(" Tidy")]
-    [DisplayName("Format after tidy")]
-    [Description("")]
-    public bool FormatAfterTidy { get; set; }
 
 
     protected override IWin32Window Window
@@ -115,7 +120,7 @@ namespace ClangPowerTools
         this.HeaderFilter = new HeaderFiltersValue(ClangTidyHeaderFiltersConvertor.ScriptDecode(loadedConfig.HeaderFilter));
       else
         this.HeaderFilter = new HeaderFiltersValue(loadedConfig.HeaderFilter);
-     
+
       if (null == loadedConfig.TidyMode)
       {
         this.UseChecksFrom = string.IsNullOrWhiteSpace(loadedConfig.TidyChecksCollection) ?

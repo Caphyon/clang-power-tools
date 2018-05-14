@@ -17,6 +17,7 @@ namespace ClangPowerTools
 
     #region Properties
 
+
     [Category("General")]
     [DisplayName("Compile flags")]
     [Description("Flags given to clang++ when compiling project, alongside project - specific defines. If empty the default flags will be loaded.")]
@@ -28,20 +29,9 @@ namespace ClangPowerTools
 
 
     [Category("General")]
-    [DisplayName("Continue on error")]
-    [Description("Switch to continue project compilation even when errors occur.")]
-    public bool Continue { get; set; }
-
-    [Category("General")]
-    [DisplayName("Clang compile after MSVC compile")]
-    [Description("Automatically run Clang compile on the current source file, after successful MSVC compilation.")]
-    public bool ClangCompileAfterVsCompile { get; set; }
-
-
-    [Category("General")]
-    [DisplayName("Treat warnings as errors")]
-    [Description("Treats all compiler warnings as errors. For a new project, it may be best to use in all compilations; resolving all warnings will ensure the fewest possible hard to find code defects.")]
-    public bool TreatWarningsAsErrors { get; set; }
+    [DisplayName("File to ignore")]
+    [Description("Array of file(s) to ignore, from the matched ones. If empty, all already matched files are compiled.")]
+    public string FilesToIgnore { get; set; }
 
 
     [Category("General")]
@@ -51,15 +41,27 @@ namespace ClangPowerTools
 
 
     [Category("General")]
-    [DisplayName("File to ignore")]
-    [Description("Array of file(s) to ignore, from the matched ones. If empty, all already matched files are compiled.")]
-    public string FilesToIgnore { get; set; }
-
-
-    [Category("General")]
     [DisplayName("Treat additional includes as")]
     [Description("Specify how clang interprets project additional include directories: as regular includes ( -I ) or system includes ( -isystem ).")]
     public ClangGeneralAdditionalIncludes? AdditionalIncludes { get; set; }
+
+
+    [Category("General")]
+    [DisplayName("Treat warnings as errors")]
+    [Description("Treats all compiler warnings as errors. For a new project, it may be best to use in all compilations; resolving all warnings will ensure the fewest possible hard to find code defects.")]
+    public bool TreatWarningsAsErrors { get; set; }
+
+
+    [Category("General")]
+    [DisplayName("Continue on error")]
+    [Description("Switch to continue project compilation even when errors occur.")]
+    public bool Continue { get; set; }
+
+
+    [Category("General")]
+    [DisplayName("Clang compile after MSVC compile")]
+    [Description("Automatically run Clang compile on the current source file, after successful MSVC compilation.")]
+    public bool ClangCompileAfterVsCompile { get; set; }
 
 
     [Category("General")]

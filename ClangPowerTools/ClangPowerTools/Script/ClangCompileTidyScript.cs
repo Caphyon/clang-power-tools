@@ -66,11 +66,13 @@ namespace ClangPowerTools.Script
     {
       string parameters = string.Empty;
 
-      if (null != aGeneralOptions.ClangFlags && 0 < aGeneralOptions.ClangFlags.Length)
+      if (false == string.IsNullOrWhiteSpace(aGeneralOptions.ClangFlags))
       {
-        parameters = $"{parameters} {ScriptConstants.kClangFlags} (" +
-          $"{string.Format("{0}", aGeneralOptions.TreatWarningsAsErrors ? string.Format("''{0}'',", ScriptConstants.kTreatWarningsAsErrors) : string.Empty)}''" +
-          $"{String.Join("'',''", aGeneralOptions.ClangFlags)}'')";
+        parameters = ScriptConstants.kClangFlags;
+        if (true == aGeneralOptions.TreatWarningsAsErrors)
+          parameters += string.Format(" (''{0}'',''{1}'')", ScriptConstants.kTreatWarningsAsErrors, aGeneralOptions.ClangFlags.Replace(";", "'',''"));
+        else
+          parameters += string.Format(" (''{0}'')", aGeneralOptions.ClangFlags.Replace(";", "'',''"));
       }
 
       if (true == aGeneralOptions.Continue)
@@ -79,11 +81,11 @@ namespace ClangPowerTools.Script
       if (true == aGeneralOptions.VerboseMode)
         parameters = $"{parameters} {ScriptConstants.kVerboseMode}";
 
-      if (null != aGeneralOptions.ProjectsToIgnore && 0 < aGeneralOptions.ProjectsToIgnore.Length)
-        parameters = $"{parameters} {ScriptConstants.kProjectsToIgnore} (''{String.Join("'',''", aGeneralOptions.ProjectsToIgnore)}'')";
+      if (false == string.IsNullOrWhiteSpace(aGeneralOptions.ProjectsToIgnore))
+        parameters = $"{parameters} {ScriptConstants.kProjectsToIgnore} (''{aGeneralOptions.ProjectsToIgnore.Replace(";", "'',''")}'')";
 
-      if (null != aGeneralOptions.FilesToIgnore && 0 < aGeneralOptions.FilesToIgnore.Length)
-        parameters = $"{parameters} {ScriptConstants.kFilesToIgnore} (''{String.Join("'',''", aGeneralOptions.FilesToIgnore)}'')";
+      if (false == string.IsNullOrWhiteSpace(aGeneralOptions.FilesToIgnore))
+        parameters = $"{parameters} {ScriptConstants.kFilesToIgnore} (''{aGeneralOptions.FilesToIgnore.Replace(";", "'',''")}'')";
 
       if (0 == string.Compare(ClangGeneralAdditionalIncludesConvertor.ToString(aGeneralOptions.AdditionalIncludes), ComboBoxConstants.kSystemIncludeDirectories))
         parameters = $"{parameters} {ScriptConstants.kSystemIncludeDirectories}";

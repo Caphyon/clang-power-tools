@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.Options.ViewModel;
+﻿using ClangPowerTools.Options;
+using ClangPowerTools.Options.ViewModel;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
@@ -65,6 +66,14 @@ namespace ClangPowerTools.DialogPages
       "e.g.: -style=\"{BasedOnStyle: llvm, IndentWidth: 8}\"")]
     public ClangFormatStyle? Style { get; set; }
 
+
+    [Category("Clang-Format")]
+    [DisplayName("Use custom executable file")]
+    [Description("Specify a custom path for \"clang-format.exe\" file to run instead of the built-in one (v6.0)")]
+    [ClangFormatPathAttribute(true)]
+    public ClangFormatPathValue ClangFormatPath { get; set; }
+
+
     #endregion
 
 
@@ -79,6 +88,8 @@ namespace ClangPowerTools.DialogPages
     }
 
     #endregion
+
+    #region DialogPage Save and Load implementation 
 
 
     public override void SaveSettingsToStorage()
@@ -95,6 +106,8 @@ namespace ClangPowerTools.DialogPages
       //updatedConfig.SortIncludes = this.SortIncludes;
 
       updatedConfig.Style = this.Style;
+
+      updatedConfig.ClangFormatPath = this.ClangFormatPath;
 
       SaveToFile(path, updatedConfig);
     }
@@ -119,9 +132,15 @@ namespace ClangPowerTools.DialogPages
 
       //this.SortIncludes = loadedConfig.SortIncludes;
 
+      this.ClangFormatPath = loadedConfig.ClangFormatPath;
+
       this.Style = null == loadedConfig.Style ? ClangFormatStyle.file : loadedConfig.Style;
     }
 
+    #endregion
+
+
+    #region Public Methods
 
     public ClangFormatOptionsView Clone()
     {
@@ -129,6 +148,8 @@ namespace ClangPowerTools.DialogPages
       var clone = (ClangFormatOptionsView)MemberwiseClone();
       return clone;
     }
+
+    #endregion
 
   }
 }
