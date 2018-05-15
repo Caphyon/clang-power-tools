@@ -6,7 +6,7 @@
 
 Bugs:
 
-* Clang-format did not worked when in the box version was used.
+* Auto clang-format on save did not work for upgraded installs
 
 ### Clang Power Tools 3.4
 *May 14, 2018*
