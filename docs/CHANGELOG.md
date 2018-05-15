@@ -5,7 +5,7 @@
 
 Bugs:
 
-* Selecting elements from the "Tidy Predefined Checks" page has caused crashes.
+* Selecting elements from the `Tidy` -> `Predefined Checks` page has caused crashes.
 
 ### Clang Power Tools 3.4.1
 *May 15, 2018*
