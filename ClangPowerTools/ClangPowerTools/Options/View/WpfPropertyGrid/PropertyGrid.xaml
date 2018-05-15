@@ -52,8 +52,11 @@
     <GridSplitter Grid.Row="1" ResizeDirection="Rows" Panel.ZIndex="100" Height="4" HorizontalAlignment="Stretch"/>
     <Border Grid.Row="2" BorderThickness="1" Margin="0">
       <StackPanel Orientation="Vertical">
-        <TextBlock FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" x:Name="PropNameBlock" Margin="4,2,2,0" />
-        <Label x:Name="DescriptionPanel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        <TextBlock FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" x:Name="PropNameBlock" Margin="0 2 2 2" />
+        <TextBlock xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" x:Name="DescriptionPanel" FontFamily="Segoe UI" FontSize="12" 
+          TextWrapping="Wrap" 
+          HorizontalAlignment="Stretch" 
+          VerticalAlignment="Stretch"  />
       </StackPanel>
     </Border>
   </Grid>

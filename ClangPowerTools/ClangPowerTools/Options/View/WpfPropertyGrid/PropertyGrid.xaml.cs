@@ -91,12 +91,12 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
           // Remove end of lines from description
           string description = crtProperty.Description.Replace("\r\n", "");
           textBlockString = string.Format(GridHelpFormat, description);
-          DescriptionPanel.Content = XamlReader.Parse(textBlockString) as TextBlock;
+          DescriptionPanel.Text = description; //XamlReader.Parse(textBlockString) as TextBlock;
         }
         else
         {
           // No description
-          DescriptionPanel.Content = null;
+          DescriptionPanel.Text = null;
         }
       }
     }
