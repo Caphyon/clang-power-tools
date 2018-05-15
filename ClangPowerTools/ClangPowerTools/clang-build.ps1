@@ -202,11 +202,11 @@ Set-Variable -name "kScriptLocation"                                            
              -value (Split-Path -Path $MyInvocation.MyCommand.Definition -Parent) `
              -option Constant
 
- @( "$kScriptLocation\psClang\code\io.ps1"
-  , "$kScriptLocation\psClang\code\visualstudio-detection.ps1"
-  , "$kScriptLocation\psClang\code\msbuild-expression-eval.ps1"
-  , "$kScriptLocation\psClang\code\msbuild-project-load.ps1"
-  , "$kScriptLocation\psClang\code\msbuild-project-data.ps1"
+ @( "$kScriptLocation\psClang\io.ps1"
+  , "$kScriptLocation\psClang\visualstudio-detection.ps1"
+  , "$kScriptLocation\psClang\msbuild-expression-eval.ps1"
+  , "$kScriptLocation\psClang\msbuild-project-load.ps1"
+  , "$kScriptLocation\psClang\msbuild-project-data.ps1"
   ) | ForEach-Object { . $_ }
 
 #-------------------------------------------------------------------------------------------------

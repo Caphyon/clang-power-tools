@@ -1,4 +1,6 @@
-Set-Variable -name "kMsbuildExpressionToPsRules" -option Constant   `
+# REQUIRES io.ps1 to be included
+
+Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>   `
     -value    @(<# backticks are control characters in PS, replace them #>
     ('`'                           , ''''                 )`
         <# Temporarily replace     $( #>                   `
@@ -17,58 +19,21 @@ Set-Variable -name "kMsbuildExpressionToPsRules" -option Constant   `
         , ("([\s\)\'""])or"        , '$1 -or '            )`
         , ("([\s\)\'""])and"       , '$1 -and '           )`
         <# Use only double quotes #>                       `
-        , ("\'"                    , '"'                  )`
+        <#, ("\'"                    , '"'                  )#>`
         , ("Exists\((.*?)\)(\s|$)"           , '(Exists($1))$2'            )`
         , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(HasTrailingSlash($1))$2'  )`
         , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'     )`
-        , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?((\$.+?\))|(.+?))((|`"|')\))+",
-        'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
+        , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?((\$.+?\))|(.+?))((|`"|')\))+"`
+        ,'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
+        , ('"'                     , '""'                 ) <#TEMP#>`
 )
 
-Set-Variable -name "kMsbuildConditionToPsRules" -option Constant `
+Set-Variable -name "kMsbuildConditionToPsRules" <#-option Constant#> `
     -value   @(<# Use only double quotes #>                     `
-    ("\'"                    , '"'                  )`
+    ,("\'"                    , '"'                  )`
         <# We need to escape double quotes since we will eval() the condition #> `
-        , ('"'                     , '""'                 )`
+        <#, ('"'                     , '""'                 )` TMP #>
 )
-
-<#
-  .DESCRIPTION
-  Merges an absolute and a relative file path.
-  .EXAMPLE
-  Having base = C:\Windows\System32 and child = .. we get C:\Windows
-  .EXAMPLE
-  Having base = C:\Windows\System32 and child = ..\..\..\.. we get C:\ (cannot go further up)
-  .PARAMETER base
-  The absolute path from which we start.
-  .PARAMETER child
-  The relative path to be merged into base.
-  .PARAMETER ignoreErrors
-  If this switch is not present, an error will be triggered if the resulting path
-  is not present on disk (e.g. c:\Windows\System33).
-
-  If present and the resulting path does not exist, the function returns an empty string.
-  #>
-Function Canonize-Path( [Parameter(Mandatory = $true)][string] $base
-    , [Parameter(Mandatory = $true)][string] $child
-    , [switch] $ignoreErrors)
-{
-    [string] $errorAction = If ($ignoreErrors) {"SilentlyContinue"} Else {"Stop"}
-
-    if ([System.IO.Path]::IsPathRooted($child))
-    {
-        if (!(Test-Path $child))
-        {
-            return ""
-        }
-        return $child
-    }
-    else
-    {
-        [string[]] $paths = Join-Path -Path "$base" -ChildPath "$child" -Resolve -ErrorAction $errorAction
-        return $paths
-    }
-}
 
 
 function HasTrailingSlash([Parameter(Mandatory = $true)][string] $str)

@@ -85,6 +85,44 @@ Function IsFileMatchingName( [Parameter(Mandatory = $true)][string] $filePath
     }
 }
 
+<#
+  .DESCRIPTION
+  Merges an absolute and a relative file path.
+  .EXAMPLE
+  Having base = C:\Windows\System32 and child = .. we get C:\Windows
+  .EXAMPLE
+  Having base = C:\Windows\System32 and child = ..\..\..\.. we get C:\ (cannot go further up)
+  .PARAMETER base
+  The absolute path from which we start.
+  .PARAMETER child
+  The relative path to be merged into base.
+  .PARAMETER ignoreErrors
+  If this switch is not present, an error will be triggered if the resulting path
+  is not present on disk (e.g. c:\Windows\System33).
+
+  If present and the resulting path does not exist, the function returns an empty string.
+  #>
+Function Canonize-Path( [Parameter(Mandatory = $true)][string] $base
+    , [Parameter(Mandatory = $true)][string] $child
+    , [switch] $ignoreErrors)
+{
+    [string] $errorAction = If ($ignoreErrors) {"SilentlyContinue"} Else {"Stop"}
+
+    if ([System.IO.Path]::IsPathRooted($child))
+    {
+        if (!(Test-Path $child))
+        {
+            return ""
+        }
+        return $child
+    }
+    else
+    {
+        [string[]] $paths = Join-Path -Path "$base" -ChildPath "$child" -Resolve -ErrorAction $errorAction
+        return $paths
+    }
+}
+
 # Command IO
 # ------------------------------------------------------------------------------------------------
 Function Exists-Command([Parameter(Mandatory = $true)][string] $command)
