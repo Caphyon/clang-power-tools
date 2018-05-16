@@ -34,7 +34,7 @@ namespace ClangPowerTools.Options.View.WpfPropertyGrid
     {
       get
       {
-        return RawValue.Replace("\r\n", ";").Trim(';').Trim();
+        return RawValue.Replace("\r\n", ";").Replace(" ", "").Trim(';');
       }
     }
 
