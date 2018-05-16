@@ -10,8 +10,8 @@
   
   <Grid>
     <!--<DockPanel LastChildFill="True">-->
-    
-    <TextBox x:Name="TextEditor" VerticalContentAlignment="Center" Grid.Column="0"
+
+    <TextBox x:Name="TextEditor" VerticalContentAlignment="Center" Grid.Column="0" Padding="0 0 25 0"
                PreviewMouseUp="TextBoxPreviewMouseUp"
                PreviewMouseDown="TextBoxPreviewMouseDown" 
                Text="{Binding Path=Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
