@@ -50,7 +50,7 @@ namespace ClangPowerTools.Options.View.WpfPropertyGrid
       if (true == string.IsNullOrWhiteSpace(aCollection))
         RawValue = string.Empty;
       else
-        RawValue = aCollection.Replace(";", "\r\n");
+        RawValue = aCollection.Replace(";", "\r\n").Trim();
 
       DataContext = this;
     }
