@@ -9,9 +9,8 @@ namespace ClangPowerTools.DialogPages
   {
     #region Members
 
-    //private string[] mTidyChecks;
-    private const string kTidyOptionsFileName = "TidyOptionsConfiguration.config";
-    private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
+    private const string kTidyOptionsFileName         = "TidyOptionsConfiguration.config";
+    private SettingsPathBuilder mSettingsPathBuilder  = new SettingsPathBuilder();
 
     #endregion
 
@@ -27,7 +26,7 @@ namespace ClangPowerTools.DialogPages
       get
       {
         ElementHost elementHost = new ElementHost();
-        elementHost.Child = new ClangTidyCustomChecksUserControl(this);
+        elementHost.Child       = new ClangTidyCustomChecksUserControl(this);
         return elementHost;
       }
     }
@@ -38,11 +37,11 @@ namespace ClangPowerTools.DialogPages
 
     public override void SaveSettingsToStorage()
     {
-      string path = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
-
-      var updatedConfig = new ClangTidyOptions
+      string path             = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
+      var updatedConfig       = new ClangTidyOptions
       {
-        TidyChecksCollection = this.TidyChecks
+        TidyChecksCollection  = string.IsNullOrEmpty(this.TidyChecks) ?
+          this.TidyChecks : this.TidyChecks.Replace(" ", "").Trim(';')
       };
 
       SaveToFile(path, updatedConfig);
@@ -50,8 +49,8 @@ namespace ClangPowerTools.DialogPages
 
     public override void LoadSettingsFromStorage()
     {
-      string path = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
-      var loadedConfig = LoadFromFile(path);
+      string path       = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
+      var loadedConfig  = LoadFromFile(path);
 
       if (null == loadedConfig.TidyChecks || 0 == loadedConfig.TidyChecks.Count)
         this.TidyChecks = loadedConfig.TidyChecksCollection;
@@ -61,7 +60,6 @@ namespace ClangPowerTools.DialogPages
     }
 
     #endregion
-
 
   }
 }
