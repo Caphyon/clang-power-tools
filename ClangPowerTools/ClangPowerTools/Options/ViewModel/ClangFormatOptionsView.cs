@@ -8,16 +8,16 @@ namespace ClangPowerTools.DialogPages
 {
   public class ClangFormatOptionsView : ConfigurationPage<ClangFormatOptions>
   {
-
     #region Members
 
-    private const string kGeneralSettingsFileName = "FormatConfiguration.config";
-    private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
+    private const string kGeneralSettingsFileName     = "FormatConfiguration.config";
+    private SettingsPathBuilder mSettingsPathBuilder  = new SettingsPathBuilder();
 
     #endregion
 
+
     #region Properties 
-    
+
 
     #region Format On Save
 
@@ -38,6 +38,7 @@ namespace ClangPowerTools.DialogPages
     public string SkipFiles { get; set; }
 
     #endregion
+
 
     #region Format Options
 
@@ -81,13 +82,14 @@ namespace ClangPowerTools.DialogPages
     {
       get
       {
-        ElementHost elementHost = new ElementHost();
-        elementHost.Child = new ClangFormatOptionsUserControl(this);
+        ElementHost elementHost   = new ElementHost();
+        elementHost.Child         = new ClangFormatOptionsUserControl(this);
         return elementHost;
       }
     }
 
     #endregion
+
 
     #region DialogPage Save and Load implementation 
 
@@ -96,27 +98,33 @@ namespace ClangPowerTools.DialogPages
     {
       string path = mSettingsPathBuilder.GetPath(kGeneralSettingsFileName);
 
-      var updatedConfig = LoadFromFile(path);
-      updatedConfig.EnableFormatOnSave = this.EnableFormatOnSave;
-      updatedConfig.FileExtensions = this.FileExtensions;
-      updatedConfig.SkipFiles = this.SkipFiles;
-      updatedConfig.AssumeFilename = this.AssumeFilename;
-      updatedConfig.FallbackStyle = this.FallbackStyle;
+      var updatedConfig = new ClangFormatOptions
+      {
+        EnableFormatOnSave = this.EnableFormatOnSave,
 
-      //updatedConfig.SortIncludes = this.SortIncludes;
+        FileExtensions = string.IsNullOrEmpty(this.FileExtensions) ?
+          this.FileExtensions : this.FileExtensions.Replace(" ", "").Trim(';'),
 
-      updatedConfig.Style = this.Style;
+        SkipFiles = string.IsNullOrEmpty(this.SkipFiles) ?
+          this.SkipFiles : this.SkipFiles.Replace(" ", "").Trim(';'),
 
-      updatedConfig.ClangFormatPath = this.ClangFormatPath;
+        AssumeFilename = string.IsNullOrEmpty(this.AssumeFilename) ?
+          this.AssumeFilename : this.AssumeFilename.Replace(" ", "").Trim(';'),
+
+        FallbackStyle     = this.FallbackStyle,
+        //SortIncludes    = this.SortIncludes,
+        Style             = this.Style,
+        ClangFormatPath   = this.ClangFormatPath
+
+      };
 
       SaveToFile(path, updatedConfig);
     }
 
     public override void LoadSettingsFromStorage()
     {
-      string path = mSettingsPathBuilder.GetPath(kGeneralSettingsFileName);
-      var loadedConfig = LoadFromFile(path);
-
+      string path             = mSettingsPathBuilder.GetPath(kGeneralSettingsFileName);
+      var loadedConfig        = LoadFromFile(path);
       this.EnableFormatOnSave = loadedConfig.EnableFormatOnSave;
 
       this.FileExtensions = null == loadedConfig.FileExtensions ?
@@ -127,14 +135,14 @@ namespace ClangPowerTools.DialogPages
 
       this.AssumeFilename = loadedConfig.AssumeFilename;
 
-      this.FallbackStyle = null == loadedConfig.FallbackStyle ? 
+      this.FallbackStyle = null == loadedConfig.FallbackStyle ?
         ClangFormatFallbackStyle.none : loadedConfig.FallbackStyle;
 
-      //this.SortIncludes = loadedConfig.SortIncludes;
-
-      this.ClangFormatPath = loadedConfig.ClangFormatPath;
-
       this.Style = null == loadedConfig.Style ? ClangFormatStyle.file : loadedConfig.Style;
+
+      //this.SortIncludes   = loadedConfig.SortIncludes;
+      this.ClangFormatPath  = loadedConfig.ClangFormatPath;
+
     }
 
     #endregion
