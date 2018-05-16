@@ -9,9 +9,9 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private string mClangFlags;
-    private const string kGeneralSettingsFileName = "GeneralConfiguration.config";
-    private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
+    private string mClangFlags                        = string.Empty;
+    private const string kGeneralSettingsFileName     = "GeneralConfiguration.config";
+    private SettingsPathBuilder mSettingsPathBuilder  = new SettingsPathBuilder();
 
     #endregion
 
@@ -94,15 +94,21 @@ namespace ClangPowerTools
 
       var updatedConfig = new ClangOptions
       {
-        ProjectsToIgnoreCollection = this.ProjectsToIgnore,
-        FilesToIgnoreCollection = this.FilesToIgnore,
-        Continue = this.Continue,
-        TreatWarningsAsErrors = this.TreatWarningsAsErrors,
-        AdditionalIncludes = this.AdditionalIncludes,
-        VerboseMode = this.VerboseMode,
-        ClangFlagsCollection = this.ClangFlags,
-        ClangCompileAfterVsCompile = this.ClangCompileAfterVsCompile,
-        Version = this.Version
+        ClangFlagsCollection = string.IsNullOrEmpty(this.ClangFlags) ? 
+          this.ClangFlags : this.ClangFlags.Replace(" ", "").Trim(';'),
+
+        FilesToIgnoreCollection = string.IsNullOrEmpty(this.FilesToIgnore) ?
+          this.FilesToIgnore : this.FilesToIgnore.Replace(" ", "").Trim(';'),
+
+        ProjectsToIgnoreCollection = string.IsNullOrEmpty(this.ProjectsToIgnore) ?
+          this.ProjectsToIgnore : this.ProjectsToIgnore.Replace(" ", "").Trim(';'),
+
+        AdditionalIncludes          = this.AdditionalIncludes,
+        TreatWarningsAsErrors       = this.TreatWarningsAsErrors,
+        Continue                    = this.Continue,
+        ClangCompileAfterVsCompile  = this.ClangCompileAfterVsCompile,
+        VerboseMode                 = this.VerboseMode,
+        Version                     = this.Version
       };
 
       SaveToFile(path, updatedConfig);
@@ -115,23 +121,16 @@ namespace ClangPowerTools
       XmlSerializer serializer = new XmlSerializer();
       var loadedConfig = LoadFromFile(path);
 
-      
-      this.Continue = loadedConfig.Continue;
-      this.TreatWarningsAsErrors = loadedConfig.TreatWarningsAsErrors;
-
-      this.AdditionalIncludes = null == loadedConfig.AdditionalIncludes ?
-        ClangGeneralAdditionalIncludes.IncludeDirectories : loadedConfig.AdditionalIncludes;
-
-      this.VerboseMode = loadedConfig.VerboseMode;
-
-      this.ClangCompileAfterVsCompile = loadedConfig.ClangCompileAfterVsCompile;
-      this.Version = loadedConfig.Version;
-
-
       if (null == loadedConfig.ClangFlags || 0 == loadedConfig.ClangFlags.Count)
         this.ClangFlags = loadedConfig.ClangFlagsCollection;
       else
         this.ClangFlags = string.Join(";", loadedConfig.ClangFlags);
+
+
+      if (null == loadedConfig.FilesToIgnore || 0 == loadedConfig.FilesToIgnore.Count)
+        this.FilesToIgnore = loadedConfig.FilesToIgnoreCollection;
+      else
+        this.FilesToIgnore = string.Join(";", loadedConfig.FilesToIgnore);
 
 
       if (null == loadedConfig.ProjectsToIgnore || 0 == loadedConfig.ProjectsToIgnore.Count)
@@ -140,10 +139,14 @@ namespace ClangPowerTools
         this.ProjectsToIgnore = string.Join(";", loadedConfig.ProjectsToIgnore);
 
 
-      if (null == loadedConfig.FilesToIgnore || 0 == loadedConfig.FilesToIgnore.Count)
-        this.FilesToIgnore = loadedConfig.FilesToIgnoreCollection;
-      else
-        this.FilesToIgnore = string.Join(";", loadedConfig.FilesToIgnore);
+      this.AdditionalIncludes = null == loadedConfig.AdditionalIncludes ?
+        ClangGeneralAdditionalIncludes.IncludeDirectories : loadedConfig.AdditionalIncludes;
+
+      this.TreatWarningsAsErrors        = loadedConfig.TreatWarningsAsErrors;
+      this.Continue                     = loadedConfig.Continue;
+      this.ClangCompileAfterVsCompile   = loadedConfig.ClangCompileAfterVsCompile;
+      this.VerboseMode                  = loadedConfig.VerboseMode;
+      this.Version                      = loadedConfig.Version;
 
     }
 
