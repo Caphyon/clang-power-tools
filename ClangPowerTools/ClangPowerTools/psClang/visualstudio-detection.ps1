@@ -3,18 +3,18 @@
 
 # VsWhere is available starting with Visual Studio 2017 version 15.2.
 Set-Variable -name   kVsWhereLocation `
-             -value  "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" `
-             -option Constant
+             -value  "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" #`
+             #-option Constant
 
 # Default installation path of Visual Studio 2017. We'll use when VsWhere isn't available.
 Set-Variable -name   kVs15DefaultLocation `
-             -value  "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$aVisualStudioVersion\$aVisualStudioSku" `
-             -option Constant
+             -value  "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$aVisualStudioVersion\$aVisualStudioSku" #`
+             #-option Constant
 
 # Registry key containing information about Visual Studio 2015 installation path.
 Set-Variable -name   kVs2015RegistryKey `
-             -value  "HKLM:SOFTWARE\Wow6432Node\Microsoft\VisualStudio\14.0" `
-             -option Constant
+             -value  "HKLM:SOFTWARE\Wow6432Node\Microsoft\VisualStudio\14.0" #`
+             #-option Constant
 
 Function Get-MscVer()
 {
