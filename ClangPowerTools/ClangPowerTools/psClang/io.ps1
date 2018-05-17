@@ -129,7 +129,7 @@ Function Exists-Command([Parameter(Mandatory = $true)][string] $command)
 {
     try
     {
-        Get-Command -name $command -ErrorAction Stop
+        Get-Command -name $command -ErrorAction Stop | out-null
         return $true
     }
     catch
