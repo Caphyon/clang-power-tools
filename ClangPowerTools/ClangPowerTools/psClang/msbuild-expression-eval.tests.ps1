@@ -1,4 +1,4 @@
-﻿Clear-Host
+﻿#Clear-Host
 
 # IMPORT code blocks
 
