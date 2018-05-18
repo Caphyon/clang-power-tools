@@ -8,7 +8,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
   <Grid>
-    <propGrid:PropertyGrid x:Name="wpfPropGrid" />
+    <propGrid:PropertyGrid x:Name="wpfPropGrid" ShowGrouping="True" ShowFilter="True" EnableGrouping="True" /> 
   </Grid>
   
 </UserControl>

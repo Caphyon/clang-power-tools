@@ -14,6 +14,32 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
   public partial class PropertyGrid : UserControl, INotifyPropertyChanged
   {
 
+    public static readonly DependencyProperty ShowGroupingProperty =
+      DependencyProperty.Register("ShowGrouping", typeof(bool), typeof(PropertyGrid));
+
+    public static readonly DependencyProperty ShowFilterProperty =
+      DependencyProperty.Register("ShowFilter", typeof(bool), typeof(PropertyGrid));
+
+    public static readonly DependencyProperty EnableGroupingProperty =
+      DependencyProperty.Register("EnableGrouping", typeof(bool), typeof(PropertyGrid));
+
+    public bool ShowGrouping
+    {
+      get { return (bool)GetValue(ShowGroupingProperty); }
+      set { SetValue(ShowGroupingProperty, value); }
+    }
+
+    public bool ShowFilter
+    {
+      get { return (bool)GetValue(ShowFilterProperty); }
+      set { SetValue(ShowFilterProperty, value); }
+    }
+    public bool EnableGrouping
+    {
+      get { return (bool)GetValue(EnableGroupingProperty); }
+      set { SetValue(EnableGroupingProperty, value); }
+    }
+
     public enum ViewModes
     {
       Grouped,

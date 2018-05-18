@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Interop;
 
 namespace ClangPowerTools.Options.View
@@ -19,5 +20,9 @@ namespace ClangPowerTools.Options.View
         UIElementsActivator.Activate(HwndSource.FromVisual(this) as HwndSource);
       };
     }
+
   }
 }
+
+
+// ShowGroupingOption
