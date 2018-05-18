@@ -102,7 +102,7 @@
             PreviewMouseUp="PreviewMouseUp"
             PreviewMouseDown="PreviewMouseDown" 
             Margin="5,2" 
-            IsEnabled="{Binding ElementName=EnableClangFormatCustomPathCheckBox, Path=IsChecked}" /> 
+            IsEnabled="{Binding ElementName=EnableClangFormatCustomPathCheckBox, Path=IsChecked}" />
         </Border>
 
       </Grid>
@@ -228,19 +228,10 @@
 
   <!-- Bool DataTemplate -->
   <DataTemplate x:Key="BoolDataTemplate">
-    <Grid Margin="0" HorizontalAlignment ="Stretch">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="Auto" />
-        <ColumnDefinition Width="*" />
-      </Grid.ColumnDefinitions>
-      <Border Grid.Column="0">
-        <CheckBox IsChecked="{Binding Value}" Margin="1,4"
+    <Grid Height="28">
+      <CheckBox IsChecked="{Binding Value}" Content="{Binding DisplayName}" HorizontalAlignment="Left" VerticalAlignment="Stretch" VerticalContentAlignment="Center"
                PreviewMouseUp="PreviewMouseUp"
                PreviewMouseDown="PreviewMouseDown"/>
-      </Border>
-      <Border Grid.Column="1" >
-        <TextBlock Grid.Row="0" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="2,0" TextTrimming="CharacterEllipsis" />
-      </Border>
     </Grid>
   </DataTemplate>
 

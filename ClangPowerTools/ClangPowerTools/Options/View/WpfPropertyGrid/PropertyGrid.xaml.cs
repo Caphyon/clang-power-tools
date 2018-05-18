@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -13,20 +14,38 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
   public partial class PropertyGrid : UserControl, INotifyPropertyChanged
   {
 
-
-
+    public enum ViewModes
+    {
+      Grouped,
+      Alphabetical
+    }
 
     #region Private members
+
     /// <summary>
     /// Object for that the pairs (property name, property value)
     /// are displayed
     /// </summary>
     private object mSelectedObject = null;
+    private ViewModes mViewMode;
+
     /// <summary>
     /// Properties for the selected object
     /// </summary>
     private PropertyCollection mProperties = null;
+
     #endregion
+
+    public ViewModes ViewMode
+    {
+      get { return mViewMode; }
+      set
+      {
+        mViewMode = value;
+        UpdatePropertyView(value);
+      }
+    }
+
     public PropertyGrid()
     {
       InitializeComponent();
@@ -57,14 +76,7 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
         }
         // Set the data context
         PropertyList.DataContext = mProperties;
-        if (null != mProperties)
-        {
-          // Get the current view of the property collection
-          System.ComponentModel.ICollectionView crtView =
-            CollectionViewSource.GetDefaultView(mProperties);
-          // Create groups using the category property
-          crtView.GroupDescriptions.Add(new PropertyGroupDescription("Category"));
-        }
+        UpdatePropertyView(mViewMode);
       }
     }
 
@@ -101,12 +113,12 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       }
     }
 
-    private void Reload()
+    private void Reload(PropertyCollection aProperties)
     {
       if (null != mProperties)
       {
         PropertyList.DataContext = null;
-        PropertyList.DataContext = mProperties;
+        PropertyList.DataContext = aProperties;
       }
     }
 
@@ -114,6 +126,36 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
     {
       if (PropertyChanged != null)
         PropertyChanged(this, new PropertyChangedEventArgs(aPropertyName));
+    }
+
+    private void CategorizedButton_Checked(object sender, RoutedEventArgs e)
+    {
+      ViewMode = ViewModes.Grouped;
+    }
+
+    private void AlphabeticalButton_Checked(object sender, RoutedEventArgs e)
+    {
+      ViewMode = ViewModes.Alphabetical;
+    }
+
+    private void UpdatePropertyView(ViewModes aViewMode)
+    {
+      System.ComponentModel.ICollectionView crtView = CollectionViewSource.GetDefaultView(mProperties);
+      if (crtView == null)
+        return;
+
+      if (aViewMode == ViewModes.Alphabetical)
+      {
+        crtView.GroupDescriptions.Clear();
+        crtView.SortDescriptions.Add(new SortDescription("Category", ListSortDirection.Ascending));
+      }
+      else if (aViewMode == ViewModes.Grouped)
+      {
+        crtView.SortDescriptions.Clear();
+        crtView.GroupDescriptions.Add(new PropertyGroupDescription("Category"));
+      }
+
+      crtView.Refresh();
     }
   }
 }

@@ -12,12 +12,31 @@
   </UserControl.Resources>
   <Grid>
     <Grid.RowDefinitions>
-      <RowDefinition Height="4*" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="5*" />
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
+
+    <Border Grid.Row="0" BorderThickness="1" Margin="0 0 0 1" >
+      <Grid>
+        
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="2*"/>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <RadioButton GroupName="NameGroup" Name="CategorizedButton" Content="1" Grid.Column="0" Height="20" Width="18" Margin="0" ToolTip="Categorized" Checked="CategorizedButton_Checked" IsChecked="True" />
+        <RadioButton GroupName="NameGroup" Name="AlphabeticalButton" Content="2" Grid.Column="1" Height="20" Width="18" Margin="1 0 0 0" ToolTip="Alphabetical" Checked="AlphabeticalButton_Checked"/>
+        <!--<TextBox Name="SearchTextBloxk" Grid.Column="3" Margin="0 0 0 0" ToolTip="Search"/>-->
+
+      </Grid>
+    </Border>
+    
     <ListBox x:Name="PropertyList" 
-             Grid.Row="0"
+             Grid.Row="1"
              Grid.IsSharedSizeScope="True" 
              SelectionMode="Single"
              HorizontalContentAlignment="Stretch"
@@ -36,7 +55,7 @@
                     <Border BorderThickness="0,0,0,1">
                       <Expander ExpandDirection="Down" IsExpanded = "True" >
                         <Expander.Header>
-                          <TextBlock Text="{Binding Name}" FontSize="12"/>
+                          <TextBlock Name="PropertyNameTextBlock" Text="{Binding Name}" FontSize="12"/>
                         </Expander.Header>
                         <ItemsPresenter />
                       </Expander>
@@ -49,8 +68,8 @@
         </GroupStyle>
       </ListBox.GroupStyle>
     </ListBox>
-    <GridSplitter Grid.Row="1" ResizeDirection="Rows" Panel.ZIndex="100" Height="4" HorizontalAlignment="Stretch"/>
-    <Border Grid.Row="2" BorderThickness="1" Margin="0">
+    <GridSplitter Grid.Row="2" ResizeDirection="Rows" Panel.ZIndex="100" Height="4" HorizontalAlignment="Stretch"/>
+    <Border Grid.Row="3" BorderThickness="1" Margin="0">
       <StackPanel Orientation="Vertical">
         <TextBlock FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" x:Name="PropNameBlock" Margin="0 2 2 2" />
         <TextBlock xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" x:Name="DescriptionPanel" FontFamily="Segoe UI" FontSize="12" 
