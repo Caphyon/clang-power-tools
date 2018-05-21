@@ -6,9 +6,9 @@ namespace ClangPowerTools.Options.View
   /// <summary>
   /// Interaction logic for ClangTidyChecksOptionsUserControl.xaml
   /// </summary>
-  public partial class ClangTidyChecksOptionsUserControl : UserControl
+  public partial class ClangTidyPredefinedChecksOptionsUserControl : UserControl
   {
-    public ClangTidyChecksOptionsUserControl(ClangTidyPredefinedChecksOptionsView clangTidyChecksOptions)
+    public ClangTidyPredefinedChecksOptionsUserControl(ClangTidyPredefinedChecksOptionsView clangTidyChecksOptions)
     {
       InitializeComponent();
 
