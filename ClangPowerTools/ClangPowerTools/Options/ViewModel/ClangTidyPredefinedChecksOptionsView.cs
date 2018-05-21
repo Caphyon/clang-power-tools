@@ -1530,7 +1530,7 @@ namespace ClangPowerTools
       get
       {
         ElementHost elementHost = new ElementHost();
-        elementHost.Child = new ClangTidyChecksOptionsUserControl(this);
+        elementHost.Child = new ClangTidyPredefinedChecksOptionsUserControl(this);
         return elementHost;
       }
     }
