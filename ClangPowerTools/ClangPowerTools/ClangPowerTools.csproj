@@ -121,8 +121,8 @@
     <Compile Include="Options\View\ClangGeneralOptionsUserControl.xaml.cs">
       <DependentUpon>ClangGeneralOptionsUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Options\View\ClangTidyChecksOptionsUserControl.xaml.cs">
-      <DependentUpon>ClangTidyChecksOptionsUserControl.xaml</DependentUpon>
+    <Compile Include="Options\View\ClangTidyPredefinedChecksOptionsUserControl.xaml.cs">
+      <DependentUpon>ClangTidyPredefinedChecksOptionsUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\View\ClangTidyCustomChecksUserControl.xaml.cs">
       <DependentUpon>ClangTidyCustomChecksUserControl.xaml</DependentUpon>
@@ -213,6 +213,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\SearchIcon.png" />
     <Content Include="Resources\StopCommandIcon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -424,7 +425,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Options\View\ClangTidyChecksOptionsUserControl.xaml">
+    <Page Include="Options\View\ClangTidyPredefinedChecksOptionsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
