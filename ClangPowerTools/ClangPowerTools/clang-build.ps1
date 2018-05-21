@@ -974,6 +974,7 @@ Function Get-ProjectIncludeDirectories()
       $returnArray += @( "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\$sdkVer\um"
                        , "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\$sdkVer\shared"
                        , "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\$sdkVer\winrt"
+                       , "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\$sdkVer\cppwinrt"
                        )
     }
   }
