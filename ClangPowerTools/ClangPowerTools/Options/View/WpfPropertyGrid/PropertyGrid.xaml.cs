@@ -1,10 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Markup;
 
 namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
 {
@@ -13,32 +11,9 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
   /// </summary>
   public partial class PropertyGrid : UserControl, INotifyPropertyChanged
   {
+    #region Members
 
-    public static readonly DependencyProperty ShowGroupingProperty =
-      DependencyProperty.Register("ShowGrouping", typeof(bool), typeof(PropertyGrid));
-
-    public static readonly DependencyProperty ShowFilterProperty =
-      DependencyProperty.Register("ShowFilter", typeof(bool), typeof(PropertyGrid));
-
-    public static readonly DependencyProperty EnableGroupingProperty =
-      DependencyProperty.Register("EnableGrouping", typeof(bool), typeof(PropertyGrid));
-
-    public bool ShowGrouping
-    {
-      get { return (bool)GetValue(ShowGroupingProperty); }
-      set { SetValue(ShowGroupingProperty, value); }
-    }
-
-    public bool ShowFilter
-    {
-      get { return (bool)GetValue(ShowFilterProperty); }
-      set { SetValue(ShowFilterProperty, value); }
-    }
-    public bool EnableGrouping
-    {
-      get { return (bool)GetValue(EnableGroupingProperty); }
-      set { SetValue(EnableGroupingProperty, value); }
-    }
+    public event PropertyChangedEventHandler PropertyChanged;
 
     public enum ViewModes
     {
@@ -60,7 +35,55 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
     /// </summary>
     private PropertyCollection mProperties = null;
 
+    private const string GridHelpFormat =
+      "<TextBlock xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" TextWrapping=\"Wrap\" FontFamily=\"Segoe UI\" FontSize=\"12\">{0}</TextBlock>";
+
+
     #endregion
+
+
+    #region Dependency Properties Memberes
+
+    public static readonly DependencyProperty ShowGroupingProperty =
+      DependencyProperty.Register("ShowGrouping", typeof(bool), typeof(PropertyGrid));
+
+    public static readonly DependencyProperty ShowFilterProperty =
+      DependencyProperty.Register("ShowFilter", typeof(bool), typeof(PropertyGrid));
+
+    public static readonly DependencyProperty EnableGroupingProperty =
+      DependencyProperty.Register("EnableGrouping", typeof(bool), typeof(PropertyGrid));
+
+    #endregion
+
+
+    #endregion
+
+    #region Properties
+
+
+    #region Dependency Properties
+
+
+    public bool ShowGrouping
+    {
+      get { return (bool)GetValue(ShowGroupingProperty); }
+      set { SetValue(ShowGroupingProperty, value); }
+    }
+
+    public bool ShowFilter
+    {
+      get { return (bool)GetValue(ShowFilterProperty); }
+      set { SetValue(ShowFilterProperty, value); }
+    }
+    public bool EnableGrouping
+    {
+      get { return (bool)GetValue(EnableGroupingProperty); }
+      set { SetValue(EnableGroupingProperty, value); }
+    }
+
+
+    #endregion
+
 
     public ViewModes ViewMode
     {
@@ -72,9 +95,18 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       }
     }
 
+    #endregion
+
+
+    #region Public Methods
+
+
     public PropertyGrid()
     {
       InitializeComponent();
+
+      DataContext = this;
+
       DataContextChanged += GridDataContextChanged;
     }
 
@@ -106,10 +138,12 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       }
     }
 
-    private const string GridHelpFormat =
-      "<TextBlock xmlns=\"http://schemas.microsoft.com/winfx/2006/xaml/presentation\" TextWrapping=\"Wrap\" FontFamily=\"Segoe UI\" FontSize=\"12\">{0}</TextBlock>";
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    #endregion
+
+
+    #region Protected Methods
+
 
     private void PropertyList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -183,5 +217,8 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
 
       crtView.Refresh();
     }
+
+    #endregion
+
   }
 }
