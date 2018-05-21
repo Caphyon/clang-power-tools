@@ -70,17 +70,17 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       set { SetValue(ShowGroupingProperty, value); }
     }
 
-    public bool ShowFilter
-    {
-      get { return (bool)GetValue(ShowFilterProperty); }
-      set { SetValue(ShowFilterProperty, value); }
-    }
     public bool EnableGrouping
     {
       get { return (bool)GetValue(EnableGroupingProperty); }
       set { SetValue(EnableGroupingProperty, value); }
     }
 
+    public bool ShowFilter
+    {
+      get { return (bool)GetValue(ShowFilterProperty); }
+      set { SetValue(ShowFilterProperty, value); }
+    }
 
     #endregion
 
