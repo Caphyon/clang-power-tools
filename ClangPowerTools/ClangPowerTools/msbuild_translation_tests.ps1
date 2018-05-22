@@ -385,11 +385,14 @@ Test-Condition -condition    "hasTrailingSlash(`$(prop))"`
 Test-Expression -expression '"$(prop)"'
 
 $MSBuildThisFileDirectory = "C:\windows"
-Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), ''Program Files'')Program Files'
-
+Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), ''Program Files''))Program Files'
+Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), "Program Files"))Program Files'
+Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Users))Program Files'
 Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), "Program Files")Program Files'
+Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Program Files)Program Files'
 
 $whatToFind = "Program Files"
 Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), ''$(whatToFind)'')Program Files'
-
-Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Program Files)Program Files'
+Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), "$(whatToFind)"))Program Files'
+$whatToFind = "Users"
+Test-Expression -expression '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), $(whatToFind)))Program Files'
