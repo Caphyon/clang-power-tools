@@ -1,0 +1,88 @@
+﻿<a:UserControl
+  xmlns:a="http://schemas.microsoft.com/xps/2005/06" x:Class="ClangPowerTools.Options.View.SearchBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+
+  <UserControl.Resources>
+    <Style x:Key="NoChromeButton" TargetType="{x:Type Button}">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+      <Setter Property="Padding" Value="1"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type Button}">
+            <Border BorderThickness="1">
+              <Grid x:Name="Chrome" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
+                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+              </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Foreground" Value="#ADADAD"/>
+                <Setter Property="Opacity" TargetName="Chrome" Value="0.5"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+  </UserControl.Resources>
+
+  <Grid Margin="2" Background="White" VerticalAlignment="Center">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*"/>
+      <ColumnDefinition Width="Auto"/>
+    </Grid.ColumnDefinitions>
+    
+    <TextBox Name="SearchTextBox" BorderThickness="1" Grid.Column="0"  Height="25" Padding="0 0 30 0"
+             VerticalContentAlignment="Center" 
+             KeyDown="SearchTextBox_KeyDown"  
+             Text="{Binding SearchText}" VerticalAlignment="Center" 
+             GotFocus="SearchBox_GotFocus" 
+             GotMouseCapture="SearchTextBox_GotMouseCapture"
+             LostMouseCapture="SearchTextBox_LostMouseCapture" >
+      <TextBox.Style>
+        <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+          <Style.Resources>
+            <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
+              <VisualBrush.Visual>
+                <Label Name="SearchLabel" Content="Search" Foreground="Gray" />
+              </VisualBrush.Visual>
+            </VisualBrush>
+            <VisualBrush x:Key="HoverCueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
+              <VisualBrush.Visual>
+                <Label Name="SearchBlackLabel" Content="Search" Foreground="Black" />
+              </VisualBrush.Visual>
+            </VisualBrush>
+          </Style.Resources>
+          <Style.Triggers>
+            <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+              <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+            </Trigger>
+            <Trigger Property="Text" Value="{x:Null}">
+              <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter Property="Background" Value="{StaticResource HoverCueBannerBrush}" />
+            </Trigger>
+            <Trigger Property="IsKeyboardFocused" Value="True">
+              <Setter Property="Background" Value="White" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </TextBox.Style>
+    </TextBox>
+    <Button Grid.Column="0" Style="{DynamicResource NoChromeButton}" BorderThickness="1" 
+      VerticalAlignment="center" HorizontalAlignment="Right" Width="25" Height="25" Click="Search_Click" >
+        <Image Source="/Resources/SearchIcon.png" Height="15" Opacity="0.6"></Image>
+    </Button>
+  </Grid>
+
+</a:UserControl>
