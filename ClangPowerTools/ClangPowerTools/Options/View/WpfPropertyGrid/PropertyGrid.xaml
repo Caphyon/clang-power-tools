@@ -5,10 +5,14 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:Local="clr-namespace:Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid"
-      mc:Ignorable="d" 
+      xmlns:conv="clr-namespace:ClangPowerTools.Convertors"
+  xmlns:searchBox="clr-namespace:ClangPowerTools.Options.View"
+  mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300">
+
   <UserControl.Resources>
     <Local:PropertyTemplateSelector x:Key="DisplayTemplateSelector"/>
+    <conv:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
   </UserControl.Resources>
   <Grid>
     <Grid.RowDefinitions>
@@ -20,21 +24,44 @@
 
     <Border Grid.Row="0" BorderThickness="1" Margin="0 0 0 1" >
       <Grid>
-        
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="2*"/>
           <ColumnDefinition Width="*"/>
+          <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
-        <RadioButton GroupName="NameGroup" Name="CategorizedButton" Content="1" Grid.Column="0" Height="20" Width="18" Margin="0" ToolTip="Categorized" Checked="CategorizedButton_Checked" IsChecked="True" />
-        <RadioButton GroupName="NameGroup" Name="AlphabeticalButton" Content="2" Grid.Column="1" Height="20" Width="18" Margin="1 0 0 0" ToolTip="Alphabetical" Checked="AlphabeticalButton_Checked"/>
-        <!--<TextBox Name="SearchTextBloxk" Grid.Column="3" Margin="0 0 0 0" ToolTip="Search"/>-->
+        <!--<WrapPanel  >-->
+
+        
+        <StackPanel Grid.Column="0"  Orientation="Horizontal" Visibility="{Binding Path=DataContext.EnableGrouping, Converter={StaticResource booleanToVisibilityConverter}}">
+
+          <RadioButton GroupName="NameGroup" Name="CategorizedButton" Height="20" Width="18" ToolTip="Categorized" Checked="CategorizedButton_Checked" IsChecked="True">
+              <Image Source="/Resources/settings-for-categories.png" />
+          </RadioButton>
+
+          <RadioButton GroupName="NameGroup" Name="AlphabeticalButton" Height="20" Width="18" ToolTip="Alphabetical" Checked="AlphabeticalButton_Checked" >
+            <Image Source="/Resources/sort-by-alphabet.png" />
+          </RadioButton>
+        </StackPanel>
+
+        <!--</WrapPanel>-->
+
+        <searchBox:SearchBox Grid.Column="3" 
+          Visibility="{Binding Path=DataContext.ShowFilter, Converter={StaticResource booleanToVisibilityConverter}}" />
+
+        <!--<TextBox Name="SearchTextBloxk" Grid.Column="3" Margin="0 0 0 0" ToolTip="Search" 
+          Visibility="{Binding Path=DataContext.ShowFilter, Converter={StaticResource booleanToVisibilityConverter}}"/>
+
+        <Button Grid.Column="4" Background="White">
+          <Image Source="/Resources/SearchIcon.png" Width="16" Height="16"
+            Visibility="{Binding Path=DataContext.ShowFilter, Converter={StaticResource booleanToVisibilityConverter}}"/>
+        </Button>-->
 
       </Grid>
     </Border>
-    
+
     <ListBox x:Name="PropertyList" 
              Grid.Row="1"
              Grid.IsSharedSizeScope="True" 
