@@ -130,6 +130,9 @@
     <Compile Include="Options\View\ClangTidyOptionsUserControl.xaml.cs">
       <DependentUpon>ClangTidyOptionsUserControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Options\View\SearchBox.xaml.cs">
+      <DependentUpon>SearchBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Options\View\TextBoxNotifaiableUserControl.cs" />
     <Compile Include="Options\View\WpfPropertyGrid\BorderedComboBox.xaml.cs">
       <DependentUpon>BorderedComboBox.xaml</DependentUpon>
@@ -217,6 +220,8 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\settings-for-categories.png" />
+    <Content Include="Resources\sort-by-alphabet.png" />
     <Content Include="Resources\StopCommandIcon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -437,6 +442,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Options\View\ClangTidyOptionsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Options\View\SearchBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
