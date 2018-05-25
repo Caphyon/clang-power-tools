@@ -107,7 +107,7 @@ namespace ClangPowerTools
 
         if (subProject.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
           list.AddRange(GetSolutionFolderProjects(aServiceProvider, subProject));
-        else
+        else if (subProject.Kind != EnvDTE.Constants.vsProjectKindMisc)
           list.Add(new SelectedProject(subProject));
       }
       return list;
