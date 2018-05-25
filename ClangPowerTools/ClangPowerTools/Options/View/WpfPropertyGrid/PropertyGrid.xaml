@@ -6,14 +6,55 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:Local="clr-namespace:Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid"
       xmlns:conv="clr-namespace:ClangPowerTools.Convertors"
-  xmlns:searchBox="clr-namespace:ClangPowerTools.Options.View"
-  mc:Ignorable="d" 
+      xmlns:searchBox="clr-namespace:ClangPowerTools.Options.View"
+      mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300">
-
+  
+  
   <UserControl.Resources>
     <Local:PropertyTemplateSelector x:Key="DisplayTemplateSelector"/>
     <conv:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
+
+
+    <Style TargetType="{x:Type ListBox}" x:Key="RadioButtonsListBoxStyle">
+      <Setter Property="ListBox.ItemTemplate">
+        <Setter.Value>
+          <DataTemplate>
+            <ToggleButton Content="{Binding}" 
+              IsChecked="{Binding IsSelected, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}" />
+          </DataTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <!--<Style x:Key="NoChromeButton" TargetType="{x:Type Button}">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="1"/>
+      <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+      <Setter Property="HorizontalContentAlignment" Value="Center"/>
+      <Setter Property="VerticalContentAlignment" Value="Center"/>
+      <Setter Property="Padding" Value="1"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type Button}">
+            <Border BorderThickness="1">
+              <Grid x:Name="Chrome" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
+                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+              </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Foreground" Value="#ADADAD"/>
+                <Setter Property="Opacity" TargetName="Chrome" Value="0.5"/>
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>-->
+
   </UserControl.Resources>
+  
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
@@ -34,17 +75,112 @@
 
         <!--<WrapPanel  >-->
 
+
+
+
+
+
+
+
+
+        <!-- Var 1 -> merge sortarea -->
+
+
+
+        <!--<StackPanel Grid.Column="0"  Orientation="Horizontal" Visibility="{Binding Path=DataContext.EnableGrouping, Converter={StaticResource booleanToVisibilityConverter}}">
+
+          <RadioButton GroupName="NameGroup" Name="CategorizedButton" Height="20" Width="18" ToolTip="Categorized" BorderBrush="Transparent"
+                       Checked="CategorizedButton_Checked" IsChecked="True" 
+                       Content="/Resources/settings-for-categories.png" >
+
+
+          </RadioButton>
+
+          <RadioButton GroupName="NameGroup" Name="AlphabeticalButton" Height="20" Width="18" ToolTip="Alphabetical" 
+                       Checked="AlphabeticalButton_Checked" 
+                       Content="Resources/sort-by-alphabet.png">
+
+          </RadioButton>
+        </StackPanel>-->
+
+
+
+
+
+
+
+
+
+
+        <!-- Var 2 -->
+
+
+        <!--<StackPanel Orientation="Horizontal" Grid.Column="0"
+                    Visibility="{Binding Path=DataContext.EnableGrouping, Converter={StaticResource booleanToVisibilityConverter}}">
+          <StackPanel.Resources>
+            <Style x:Key="Flag" TargetType="RadioButton">
+              <Style.Triggers>
+                <Trigger Property="IsChecked" Value="False">
+                  <Setter Property="Opacity" Value="0.5"/>
+                </Trigger>
+              </Style.Triggers>
+
+              <Setter Property="BorderThickness" Value="2"/>
+
+              <Setter Property="Template">
+                <Setter.Value>
+                  <ControlTemplate TargetType="RadioButton">
+                    <Border BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                Background="Transparent"
+                                CornerRadius="20">
+                      
+        <Image Source="{Binding Path=Content, RelativeSource={RelativeSource TemplatedParent}}"/>
         
-        <StackPanel Grid.Column="0"  Orientation="Horizontal" Visibility="{Binding Path=DataContext.EnableGrouping, Converter={StaticResource booleanToVisibilityConverter}}">
+                    </Border>
+                  </ControlTemplate>
+                </Setter.Value>
+              </Setter>
+            </Style>
+          </StackPanel.Resources>
 
-          <RadioButton GroupName="NameGroup" Name="CategorizedButton" Height="20" Width="18" ToolTip="Categorized" Checked="CategorizedButton_Checked" IsChecked="True">
+          <ItemsControl>
+            <RadioButton Content="/Resources/settings-for-categories.png" Style="{StaticResource Flag}" Width="10" Height="10"/>
+            <RadioButton Content="/Resources/sort-by-alphabet.png" Style="{StaticResource Flag}" Width="10" Height="10"/>
+          </ItemsControl>
+        </StackPanel>-->
+
+
+
+
+
+
+
+       
+
+
+
+
+
+        <!-- Var 3 -->
+
+        <ListBox Style="{StaticResource RadioButtonsListBoxStyle}" x:Name="rbMode2" Grid.Column="0"  
+          HorizontalAlignment="Center" Margin="5" >
+
+          <ToggleButton x:Name="rbDrive1" Tag="Drive" IsChecked="true" Margin="0,0,0,0" >
               <Image Source="/Resources/settings-for-categories.png" />
-          </RadioButton>
+          </ToggleButton>
 
-          <RadioButton GroupName="NameGroup" Name="AlphabeticalButton" Height="20" Width="18" ToolTip="Alphabetical" Checked="AlphabeticalButton_Checked" >
-            <Image Source="/Resources/sort-by-alphabet.png" />
-          </RadioButton>
-        </StackPanel>
+          <ToggleButton x:Name="rbWalk1" Tag="Walk" Margin="0,0,0,0" >
+              <Image Source="/Resources/sort-by-alphabet.png" />
+          </ToggleButton>
+
+        </ListBox>
+
+
+
+
+        
 
         <!--</WrapPanel>-->
 
