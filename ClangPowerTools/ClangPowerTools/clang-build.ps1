@@ -114,7 +114,7 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aSolutio
      , [alias("proj")]         [Parameter(Mandatory=$false)][string[]] $aVcxprojToCompile
      , [alias("proj-ignore")]  [Parameter(Mandatory=$false)][string[]] $aVcxprojToIgnore
      , [alias("active-config")][Parameter(Mandatory=$false)][string]   $aVcxprojConfigPlatform
-     , [alias("file")]         [Parameter(Mandatory=$false)][string]   $aCppToCompile
+     , [alias("file")]         [Parameter(Mandatory=$false)][string[]] $aCppToCompile
      , [alias("file-ignore")]  [Parameter(Mandatory=$false)][string[]] $aCppToIgnore
      , [alias("parallel")]     [Parameter(Mandatory=$false)][switch]   $aUseParallelCompile
      , [alias("continue")]     [Parameter(Mandatory=$false)][switch]   $aContinueOnError
@@ -740,11 +740,20 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   [string[]] $projCpps = Get-ProjectFilesToCompile -pchCppName  $stdafxCpp
 
-  if (![string]::IsNullOrEmpty($aCppToCompile))
+  if ($projCpps.Count -gt 0 -and
+      ![string]::IsNullOrEmpty($aCppToCompile))
   {
-    $projCpps = ( $projCpps |
-                  Where-Object {  IsFileMatchingName -filePath $_ `
-                                                     -matchName $aCppToCompile } )
+    [string[]] $filteredCpps = @()
+    foreach ($cpp in $aCppToCompile)
+    {
+      if (![string]::IsNullOrEmpty($cpp))
+      {
+        $filteredCpps += ( $projCpps |
+                           Where-Object {  IsFileMatchingName -filePath $_ `
+                                           -matchName $cpp } )
+      }
+    }
+    $projCpps = $filteredCpps
   }
   Write-Verbose ("Processing " + $projCpps.Count + " cpps")
 

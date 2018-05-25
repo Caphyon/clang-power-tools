@@ -111,7 +111,7 @@
 param( [alias("proj")]        [Parameter(Mandatory=$false)][string[]] $aVcxprojToCompile
      , [alias("proj-ignore")] [Parameter(Mandatory=$false)][string[]] $aVcxprojToIgnore
      , [alias("active-config")][Parameter(Mandatory=$false)][string]  $aVcxprojConfigPlatform
-     , [alias("file")]        [Parameter(Mandatory=$false)][string]   $aCppToCompile
+     , [alias("file")]        [Parameter(Mandatory=$false)][string[]] $aCppToCompile
      , [alias("file-ignore")] [Parameter(Mandatory=$false)][string[]] $aCppToIgnore
      , [alias("parallel")]    [Parameter(Mandatory=$false)][switch]   $aUseParallelCompile
      , [alias("continue")]    [Parameter(Mandatory=$false)][switch]   $aContinueOnError
