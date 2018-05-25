@@ -711,6 +711,14 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   [string] $platformToolset = Get-ProjectPlatformToolset
   Write-Verbose "Platform toolset: $platformToolset"
 
+  # [HACK] since we only support Visual Studio 2015 and 2017 anyway this will make sure #339 won't happen again.
+  # If you use Visual Studio 2015 to compile with the v90 toolset all bets are off.
+  if ($platformToolset -eq "v140" -Or $platformToolset -eq "v140_xp")
+  {
+    $aVisualStudioVersion = "2015"
+    Write-Verbose "Changing Visual Studio version to 2015 because the v140 platform toolset has been detected!"
+  }
+
   #-----------------------------------------------------------------------------------------------
   # DETECT PROJECT ADDITIONAL INCLUDE DIRECTORIES AND CONSTRUCT INCLUDE PATHS
 
