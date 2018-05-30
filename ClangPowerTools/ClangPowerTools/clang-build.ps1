@@ -149,6 +149,7 @@ Set-Variable -name kScriptFailsExitCode      -value  47                 -option 
 Set-Variable -name kExtensionVcxproj         -value ".vcxproj"          -option Constant
 Set-Variable -name kExtensionSolution        -value ".sln"              -option Constant
 Set-Variable -name kExtensionClangPch        -value ".clang.pch"        -option Constant
+Set-Variable -name kExtensionC               -value ".c"                -option Constant
 
 # ------------------------------------------------------------------------------------------------
 # Clang-Related Constants
@@ -165,6 +166,7 @@ Set-Variable -name kClangFlagNoUnusedArg    -value "-Wno-unused-command-line-arg
 Set-Variable -name kClangFlagNoMsInclude    -value "-Wno-microsoft-include" `
                                                                         -Option Constant
 Set-Variable -name kClangFlagFileIsCPP      -value "-x c++"             -option Constant
+Set-Variable -name kClangFlagFileIsC        -value "-x c"               -option Constant
 Set-Variable -name kClangFlagForceInclude   -value "-include"           -option Constant
 
 Set-Variable -name kClangCompiler             -value "clang++.exe"      -option Constant
@@ -415,9 +417,17 @@ Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $prep
     $projectCompileArgs += @($kClangFlagIncludePch , """$pchFilePath""")
   }
 
-  $projectCompileArgs += @( $kClangFlagFileIsCPP
+  $isCpp = $true
+  $languageFlag = $kClangFlagFileIsCPP
+  if ($fileToCompile.EndsWith($kExtensionC))
+  {
+    $isCpp = $false
+    $languageFlag = $kClangFlagFileIsC
+  }
+
+  $projectCompileArgs += @( $languageFlag
                           , """$fileToCompile"""
-                          , @(Get-ClangCompileFlags)
+                          , @(Get-ClangCompileFlags -isCpp $isCpp)
                           , $kClangFlagSupressLINK
                           , $preprocessorDefinitions
                           )
@@ -487,10 +497,18 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
   $tidyArgs += Get-ClangIncludeDirectories -includeDirectories           $includeDirectories `
                                            -additionalIncludeDirectories $additionalIncludeDirectories
 
+  $isCpp = $true
+  $languageFlag = $kClangFlagFileIsCPP
+  if ($fileToTidy.EndsWith($kExtensionC))
+  {
+    $isCpp = $false
+    $languageFlag = $kClangFlagFileIsC
+  }
+
   # We reuse flags used for compilation and preprocessor definitions.
-  $tidyArgs += @(Get-ClangCompileFlags)
+  $tidyArgs += @(Get-ClangCompileFlags -isCpp $isCpp)
   $tidyArgs += $preprocessorDefinitions
-  $tidyArgs += $kClangFlagFileIsCPP
+  $tidyArgs += $languageFlag
 
   if (! [string]::IsNullOrEmpty($pchFilePath))
   {
