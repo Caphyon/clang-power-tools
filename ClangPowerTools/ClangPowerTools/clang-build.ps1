@@ -371,6 +371,9 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
   $compilationFlags += Get-ClangIncludeDirectories -includeDirectories           $includeDirectories `
                                                    -additionalIncludeDirectories $additionalIncludeDirectories
 
+  # Remove empty arguments from the list because Start-Process will complain
+  $compilationFlags = $compilationFlags | Where-Object { $_ } | Select -Unique
+
   Write-Verbose "INVOKE: ""$($global:llvmLocation)\$kClangCompiler"" $compilationFlags"
 
   [System.Diagnostics.Process] $processInfo = Start-Process -FilePath $kClangCompiler `
