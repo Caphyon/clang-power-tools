@@ -62,6 +62,9 @@ namespace ClangPowerTools.Script
     //Get the script file path
     protected override string GetFilePath() => Path.Combine(base.GetFilePath(), ScriptConstants.kScriptName);
 
+    //Rebuild a semicolon separated list to a PowerShell one, removing empty arguments to prevent errors when starting the script
+    private string RebuildParameterList(string list) => string.Join("'',''", list.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+
     private string GetGeneralParameters(ClangGeneralOptionsView aGeneralOptions)
     {
       string parameters = string.Empty;
@@ -70,9 +73,9 @@ namespace ClangPowerTools.Script
       {
         parameters = ScriptConstants.kClangFlags;
         if (true == aGeneralOptions.TreatWarningsAsErrors)
-          parameters += string.Format(" (''{0}'',''{1}'')", ScriptConstants.kTreatWarningsAsErrors, aGeneralOptions.ClangFlags.Replace(";", "'',''"));
+          parameters += string.Format(" (''{0}'',''{1}'')", ScriptConstants.kTreatWarningsAsErrors, RebuildParameterList(aGeneralOptions.ClangFlags));
         else
-          parameters += string.Format(" (''{0}'')", aGeneralOptions.ClangFlags.Replace(";", "'',''"));
+          parameters += string.Format(" (''{0}'')", RebuildParameterList(aGeneralOptions.ClangFlags));
       }
 
       if (true == aGeneralOptions.Continue)
@@ -82,10 +85,10 @@ namespace ClangPowerTools.Script
         parameters = $"{parameters} {ScriptConstants.kVerboseMode}";
 
       if (false == string.IsNullOrWhiteSpace(aGeneralOptions.ProjectsToIgnore))
-        parameters = $"{parameters} {ScriptConstants.kProjectsToIgnore} (''{aGeneralOptions.ProjectsToIgnore.Replace(";", "'',''")}'')";
+        parameters = $"{parameters} {ScriptConstants.kProjectsToIgnore} (''{RebuildParameterList(aGeneralOptions.ProjectsToIgnore)}'')";
 
       if (false == string.IsNullOrWhiteSpace(aGeneralOptions.FilesToIgnore))
-        parameters = $"{parameters} {ScriptConstants.kFilesToIgnore} (''{aGeneralOptions.FilesToIgnore.Replace(";", "'',''")}'')";
+        parameters = $"{parameters} {ScriptConstants.kFilesToIgnore} (''{RebuildParameterList(aGeneralOptions.FilesToIgnore)}'')";
 
       if (0 == string.Compare(ClangGeneralAdditionalIncludesConvertor.ToString(aGeneralOptions.AdditionalIncludes), ComboBoxConstants.kSystemIncludeDirectories))
         parameters = $"{parameters} {ScriptConstants.kSystemIncludeDirectories}";
