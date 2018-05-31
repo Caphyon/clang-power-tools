@@ -245,10 +245,10 @@ Function Get-Project-CppStandard()
     return $cppStdClangValue
 }
 
-Function Get-ClangCompileFlags()
+Function Get-ClangCompileFlags([Parameter(Mandatory = $false)][bool] $isCpp = $true)
 {
     [string[]] $flags = $aClangCompileFlags
-    if (!($flags -match "-std=.*"))
+    if ($isCpp -and !($flags -match "-std=.*"))
     {
         [string] $cppStandard = Get-Project-CppStandard
 
@@ -276,7 +276,7 @@ Function Get-ProjectPlatformToolset()
 
 Function Get-ProjectIncludeDirectories()
 {
-    [string[]] $returnArray = ($IncludePath -split ";")                                                         | `
+    [string[]] $returnArray = ($IncludePath -split ";")                                   | `
         Where-Object { ![string]::IsNullOrWhiteSpace($_) }                                | `
         ForEach-Object { Canonize-Path -base $ProjectDir -child $_.Trim() -ignoreErrors } | `
         Where-Object { ![string]::IsNullOrEmpty($_) }                                     | `
