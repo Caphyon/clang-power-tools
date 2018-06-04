@@ -1,5 +1,18 @@
 # Version History
 
+### Clang Power Tools 3.5
+*June 4, 2018*
+
+Improvements:
+
+* Support for compiling `C files`
+
+Bugs:
+
+* The `File Ignore` and `Project Ignore` filters didn't worked
+* `Clang Compile` and `Clang Tidy` commands crashed when extra white spaces and extra delimitaters were added in UI text fields
+* Buttons have overlapped the text in the UI fields
+
 ### Clang Power Tools 3.4.2
 *May 15, 2018*
 
