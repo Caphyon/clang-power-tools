@@ -235,6 +235,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="psClang\*.ps1" Exclude="psClang\*.tests.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="app.config" />
     <Content Include="clang-build.ps1">
       <IncludeInVSIX>true</IncludeInVSIX>
