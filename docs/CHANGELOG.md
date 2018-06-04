@@ -1,7 +1,7 @@
 # Version History
 
 ### Clang Power Tools 3.5
-*June 4, 2018*
+*June 5, 2018*
 
 Improvements:
 
