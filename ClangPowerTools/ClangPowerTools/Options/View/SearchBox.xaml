@@ -40,14 +40,15 @@
       <ColumnDefinition Width="*"/>
       <ColumnDefinition Width="Auto"/>
     </Grid.ColumnDefinitions>
-    
+
     <TextBox Name="SearchTextBox" BorderThickness="1" Grid.Column="0"  Height="25" Padding="0 0 30 0"
              VerticalContentAlignment="Center" 
              KeyDown="SearchTextBox_KeyDown"  
              Text="{Binding SearchText}" VerticalAlignment="Center" 
              GotFocus="SearchBox_GotFocus" 
              GotMouseCapture="SearchTextBox_GotMouseCapture"
-             LostMouseCapture="SearchTextBox_LostMouseCapture" >
+             LostMouseCapture="SearchTextBox_LostMouseCapture" 
+             Panel.ZIndex="1">
       <TextBox.Style>
         <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
           <Style.Resources>
@@ -80,8 +81,8 @@
       </TextBox.Style>
     </TextBox>
     <Button Grid.Column="0" Style="{DynamicResource NoChromeButton}" BorderThickness="1" 
-      VerticalAlignment="center" HorizontalAlignment="Right" Width="25" Height="25" Click="Search_Click" >
-        <Image Source="/Resources/SearchIcon.png" Height="15" Opacity="0.6"></Image>
+      VerticalAlignment="center" HorizontalAlignment="Right" Width="25" Height="25" Click="Search_Click" Panel.ZIndex="0">
+      <Image Source="/Resources/2.png" Height="15" Opacity="0.6" />
     </Button>
   </Grid>
 

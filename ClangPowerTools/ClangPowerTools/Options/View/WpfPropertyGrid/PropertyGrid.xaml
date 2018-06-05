@@ -165,7 +165,7 @@
         <!-- Var 3 -->
 
         <ListBox Style="{StaticResource RadioButtonsListBoxStyle}" x:Name="rbMode2" Grid.Column="0"  
-          HorizontalAlignment="Center" Margin="5" >
+          HorizontalAlignment="Center" Margin="5" Visibility="{Binding Path=DataContext.EnableGrouping, Converter={StaticResource booleanToVisibilityConverter}}">
 
           <ToggleButton x:Name="rbDrive1" Tag="Drive" IsChecked="true" Margin="0,0,0,0" >
               <Image Source="/Resources/settings-for-categories.png" />
