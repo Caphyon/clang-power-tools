@@ -1,0 +1,13 @@
+version: '{branch}.{build}'
+image: Visual Studio 2017
+configuration:
+- Release
+- Debug
+platform: Any CPU
+before_build:
+- cmd: cd ClangPowerTools && nuget restore
+build:
+  project: ClangPowerTools\ClangPowerTools.sln
+  verbosity: minimal
+artifacts:
+- path: ClangPowerTools\ClangPowerTools\bin\%CONFIGURATION%\ClangPowerTools.vsix
