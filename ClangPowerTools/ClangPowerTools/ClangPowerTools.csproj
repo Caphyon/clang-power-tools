@@ -199,9 +199,10 @@
     <Compile Include="XmlSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="clang-format.exe">
+    <Content Include="llvm\bin\clang-format.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
+      <VSIXSubPath>.</VSIXSubPath>
     </Content>
     <Content Include="Resources\ClangFormatIcon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
