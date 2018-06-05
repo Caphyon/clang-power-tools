@@ -20,13 +20,26 @@
           <ControlTemplate TargetType="{x:Type Button}">
             <Border BorderThickness="1">
               <Grid x:Name="Chrome" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
-                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                  Margin="{TemplateBinding Padding}" 
+                                  RecognizesAccessKey="True" 
+                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                  VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+                <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/3.png" Opacity="0.6" />
               </Grid>
             </Border>
             <ControlTemplate.Triggers>
               <Trigger Property="IsEnabled" Value="false">
                 <Setter Property="Foreground" Value="#ADADAD"/>
                 <Setter Property="Opacity" TargetName="Chrome" Value="0.5"/>
+              </Trigger>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background">
+                  <Setter.Value>
+                    <ImageBrush ImageSource="pack://application:,,,/ClangPowerTools;component/Resources/4.png" />
+                  </Setter.Value>
+                </Setter>
+                <!--<Setter Property="Opacity" TargetName="Chrome" Value="0.5"/>-->
               </Trigger>
             </ControlTemplate.Triggers>
           </ControlTemplate>
@@ -41,14 +54,14 @@
       <ColumnDefinition Width="Auto"/>
     </Grid.ColumnDefinitions>
 
-    <TextBox Name="SearchTextBox" BorderThickness="1" Grid.Column="0"  Height="25" Padding="0 0 30 0"
+    <TextBox Name="SearchTextBox" BorderThickness="1" Grid.Column="0" Padding="0 0 30 0"
              VerticalContentAlignment="Center" 
              KeyDown="SearchTextBox_KeyDown"  
-             Text="{Binding SearchText}" VerticalAlignment="Center" 
+             Text="{Binding SearchText}" VerticalAlignment="Stretch" 
              GotFocus="SearchBox_GotFocus" 
              GotMouseCapture="SearchTextBox_GotMouseCapture"
              LostMouseCapture="SearchTextBox_LostMouseCapture" 
-             Panel.ZIndex="1">
+             Panel.ZIndex="0">
       <TextBox.Style>
         <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
           <Style.Resources>
@@ -81,8 +94,8 @@
       </TextBox.Style>
     </TextBox>
     <Button Grid.Column="0" Style="{DynamicResource NoChromeButton}" BorderThickness="1" 
-      VerticalAlignment="center" HorizontalAlignment="Right" Width="25" Height="25" Click="Search_Click" Panel.ZIndex="0">
-      <Image Source="/Resources/2.png" Height="15" Opacity="0.6" />
+      VerticalAlignment="Center" HorizontalAlignment="Right" Width="25" Height="25" Click="Search_Click" Panel.ZIndex="1">
+
     </Button>
   </Grid>
 

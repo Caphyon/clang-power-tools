@@ -62,7 +62,6 @@ namespace ClangPowerTools.Options.View
     {
       var t = (TextBox)sender;
       t.SelectAll();
-      //SearchTextBox.
     }
 
     private void SearchTextBox_LostMouseCapture(object sender, MouseEventArgs e)

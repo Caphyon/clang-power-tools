@@ -79,6 +79,7 @@
 
 
 
+        <!-- Categorized and Alphabetical sorting -->
 
 
 
@@ -182,18 +183,12 @@
 
         
 
-        <!--</WrapPanel>-->
-
+        <!-- SearchBox -->
         <searchBox:SearchBox Grid.Column="3" 
           Visibility="{Binding Path=DataContext.ShowFilter, Converter={StaticResource booleanToVisibilityConverter}}" />
 
-        <!--<TextBox Name="SearchTextBloxk" Grid.Column="3" Margin="0 0 0 0" ToolTip="Search" 
-          Visibility="{Binding Path=DataContext.ShowFilter, Converter={StaticResource booleanToVisibilityConverter}}"/>
 
-        <Button Grid.Column="4" Background="White">
-          <Image Source="/Resources/SearchIcon.png" Width="16" Height="16"
-            Visibility="{Binding Path=DataContext.ShowFilter, Converter={StaticResource booleanToVisibilityConverter}}"/>
-        </Button>-->
+        
 
       </Grid>
     </Border>
