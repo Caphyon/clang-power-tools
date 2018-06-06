@@ -206,8 +206,9 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
 
       if (aViewMode == ViewModes.Alphabetical)
       {
-        crtView.GroupDescriptions.Clear();
-        crtView.SortDescriptions.Add(new SortDescription("Category", ListSortDirection.Ascending));
+        crtView.Filter = Predicate;
+        //crtView.GroupDescriptions.Clear();
+        //crtView.SortDescriptions.Add(new SortDescription("Category", ListSortDirection.Ascending));
       }
       else if (aViewMode == ViewModes.Grouped)
       {
@@ -216,6 +217,15 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       }
 
       crtView.Refresh();
+    }
+
+
+    private bool Predicate(object propertyData)
+    {
+      if (!(propertyData is PropertyData))
+        return false;
+
+      return (propertyData as PropertyData).DisplayName.Contains("b");
     }
 
     #endregion

@@ -88,7 +88,7 @@
 
 
 
-        <!--<StackPanel Grid.Column="0"  Orientation="Horizontal" Visibility="{Binding Path=DataContext.EnableGrouping, Converter={StaticResource booleanToVisibilityConverter}}">
+        <StackPanel Grid.Column="0"  Orientation="Horizontal" Visibility="{Binding Path=DataContext.EnableGrouping, Converter={StaticResource booleanToVisibilityConverter}}">
 
           <RadioButton GroupName="NameGroup" Name="CategorizedButton" Height="20" Width="18" ToolTip="Categorized" BorderBrush="Transparent"
                        Checked="CategorizedButton_Checked" IsChecked="True" 
@@ -102,7 +102,7 @@
                        Content="Resources/sort-by-alphabet.png">
 
           </RadioButton>
-        </StackPanel>-->
+        </StackPanel>
 
 
 
@@ -165,7 +165,7 @@
 
         <!-- Var 3 -->
 
-        <ListBox Style="{StaticResource RadioButtonsListBoxStyle}" x:Name="rbMode2" Grid.Column="0"  
+        <!--<ListBox Style="{StaticResource RadioButtonsListBoxStyle}" x:Name="rbMode2" Grid.Column="0"  
           HorizontalAlignment="Center" Margin="5" Visibility="{Binding Path=DataContext.EnableGrouping, Converter={StaticResource booleanToVisibilityConverter}}">
 
           <ToggleButton x:Name="rbDrive1" Tag="Drive" IsChecked="true" Margin="0,0,0,0" >
@@ -176,7 +176,7 @@
               <Image Source="/Resources/sort-by-alphabet.png" />
           </ToggleButton>
 
-        </ListBox>
+        </ListBox>-->
 
 
 
