@@ -105,7 +105,9 @@
 
 .PARAMETER aVisualStudioSku
       Alias 'vs-sku'. Sku of Visual Studio (VC++) installed and that'll be used for
-      standard library include directories. E.g. Professional.
+      standard library include directories. E.g. Professional. 
+      
+      If not given, the first detected Visual Studio SKU will be used.
 
 .NOTES
     Author: Gabriel Diaconita
@@ -126,7 +128,7 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aSolutio
      , [alias("header-filter")][Parameter(Mandatory=$false)][string]   $aTidyHeaderFilter
      , [alias("format-style")] [Parameter(Mandatory=$false)][string]   $aAfterTidyFixFormatStyle
      , [alias("vs-ver")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioVersion
-     , [alias("vs-sku")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioSku
+     , [alias("vs-sku")]       [Parameter(Mandatory=$false)][string]   $aVisualStudioSku
      )
 
 # System Architecture Constants
