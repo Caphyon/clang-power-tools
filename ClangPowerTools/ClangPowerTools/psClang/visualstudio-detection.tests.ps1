@@ -30,6 +30,10 @@ Describe "Visual Studio detection" {
   }
 
   It "Get-VisualStudio-Path [2015]" {
+    # see first if VS 2015 is installed
+    [Microsoft.Win32.RegistryKey] $vs14Key = Get-Item "HKLM:SOFTWARE\Wow6432Node\Microsoft\VisualStudio\14.0"
+    [bool] $vs2015isInstalled = $vs14Key -and ![string]::IsNullOrEmpty($vs14Key.GetValue("InstallDir"))
+
     $oldMockValue = $aVisualStudioVersion
 
     $vsPath = Get-VisualStudio-Path
@@ -37,9 +41,17 @@ Describe "Visual Studio detection" {
 
     # Re-Mock script parameter
     $aVisualStudioVersion = "2015"
-    $vs2015Path = Get-VisualStudio-Path
-    $vs2015Path | Should -Not -BeNullOrEmpty
-    $vs2015Path | Should -Not -Be $vsPath
+
+    if ($vs2015isInstalled)
+    {
+      $vs2015Path = Get-VisualStudio-Path
+      $vs2015Path | Should -Not -BeNullOrEmpty
+      $vs2015Path | Should -Not -Be $vsPath
+    }
+    else
+    {
+      { Get-VisualStudio-Path } | Should -Throw
+    }
 
     $aVisualStudioVersion = $oldMockValue
   }

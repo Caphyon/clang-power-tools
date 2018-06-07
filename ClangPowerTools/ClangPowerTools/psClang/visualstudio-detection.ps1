@@ -46,7 +46,13 @@ Function Get-VisualStudio-Path()
     {
         if (Test-Path $kVsWhereLocation)
         {
-            [string] $product = "Microsoft.VisualStudio.Product.$aVisualStudioSku"
+
+            [string] $product = "*" 
+            if (![string]::IsNullOrEmpty($aVisualStudioSku))
+            { 
+              $product = "Microsoft.VisualStudio.Product.$aVisualStudioSku"
+            }
+
             [string[]] $output = (& "$kVsWhereLocation" -nologo `
                                                         -property installationPath `
                                                         -products $product `
@@ -56,8 +62,8 @@ Function Get-VisualStudio-Path()
             if (($output -join "").Contains("0x57")) <# error code for unknown parameter #>
             {
                 $output = (& "$kVsWhereLocation" -nologo `
-                        -property installationPath `
-                        -products $product)
+                                                 -property installationPath `
+                                                 -products $product)
             }
 
             return $output[0]
