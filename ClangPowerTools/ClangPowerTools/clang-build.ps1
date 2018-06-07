@@ -862,11 +862,11 @@ Function Get-VisualStudio-Path()
     if (Test-Path $kVsWhereLocation)
     {
       [string] $product = If ([string]::IsNullOrEmpty($aVisualStudioSku)) { "*" } Else { "Microsoft.VisualStudio.Product.$aVisualStudioSku" } # Specific version set? Use that one. Else, pick the only available one
-      return (& "$kVsWhereLocation" -nologo `
-                                    -property installationPath `
-                                    -products $product `
-                                    -prerelease `
-                                    -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64)
+      return @(& "$kVsWhereLocation" -nologo `
+                                     -property installationPath `
+                                     -products $product `
+                                     -prerelease `
+                                     -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64)[0]
     }
 
     if (Test-Path -Path $kVs15DefaultLocation)
