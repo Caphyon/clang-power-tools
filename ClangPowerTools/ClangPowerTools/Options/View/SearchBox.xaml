@@ -33,14 +33,14 @@
                 <Setter Property="Foreground" Value="#ADADAD"/>
                 <Setter Property="Opacity" TargetName="Chrome" Value="0.5"/>
               </Trigger>
-              <Trigger Property="IsMouseOver" Value="True">
+              <!--<Trigger Property="IsMouseOver" Value="True">
                 <Setter Property="Background">
                   <Setter.Value>
                     <ImageBrush ImageSource="pack://application:,,,/ClangPowerTools;component/Resources/4.png" />
                   </Setter.Value>
                 </Setter>
-                <!--<Setter Property="Opacity" TargetName="Chrome" Value="0.5"/>-->
-              </Trigger>
+                --><!--<Setter Property="Opacity" TargetName="Chrome" Value="0.5"/>--><!--
+              </Trigger>-->
             </ControlTemplate.Triggers>
           </ControlTemplate>
         </Setter.Value>
@@ -57,7 +57,8 @@
     <TextBox Name="SearchTextBox" BorderThickness="1" Grid.Column="0" Padding="0 0 30 0"
              VerticalContentAlignment="Center" 
              KeyDown="SearchTextBox_KeyDown"  
-             Text="{Binding SearchText}" VerticalAlignment="Stretch" 
+             Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+             VerticalAlignment="Stretch" 
              GotFocus="SearchBox_GotFocus" 
              GotMouseCapture="SearchTextBox_GotMouseCapture"
              LostMouseCapture="SearchTextBox_LostMouseCapture" 
@@ -67,14 +68,14 @@
           <Style.Resources>
             <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
               <VisualBrush.Visual>
-                <Label Name="SearchLabel" Content="Search" Foreground="Gray" />
+                <Label Name="SearchLabel" Content="Quick Search" Foreground="Gray" />
               </VisualBrush.Visual>
             </VisualBrush>
-            <VisualBrush x:Key="HoverCueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
+            <!--<VisualBrush x:Key="HoverCueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
               <VisualBrush.Visual>
                 <Label Name="SearchBlackLabel" Content="Search" Foreground="Black" />
               </VisualBrush.Visual>
-            </VisualBrush>
+            </VisualBrush>-->
           </Style.Resources>
           <Style.Triggers>
             <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
@@ -83,9 +84,9 @@
             <Trigger Property="Text" Value="{x:Null}">
               <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
             </Trigger>
-            <Trigger Property="IsMouseOver" Value="True">
+            <!--<Trigger Property="IsMouseOver" Value="True">
               <Setter Property="Background" Value="{StaticResource HoverCueBannerBrush}" />
-            </Trigger>
+            </Trigger>-->
             <Trigger Property="IsKeyboardFocused" Value="True">
               <Setter Property="Background" Value="White" />
             </Trigger>

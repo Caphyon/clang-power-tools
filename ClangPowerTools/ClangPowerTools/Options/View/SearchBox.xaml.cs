@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -11,30 +12,33 @@ namespace ClangPowerTools.Options.View
   public partial class SearchBox : UserControl, INotifyPropertyChanged
   {
 
-    //private string _searchtext = "";
+    private string mSearchtext = "";
 
-    //public string SearchText
-    //{
-    //    get { return _searchtext; }
-    //    set {
-    //            _searchtext = value;
-    //            OnPropertyChanged("SearchText");
-    //        }
-    //}
-
-    private static DependencyProperty SearchTextProperty =
-      DependencyProperty.Register("SearchText", typeof(string), typeof(SearchBox),
-        new FrameworkPropertyMetadata(string.Empty, 
-          FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.Inherits));
+    public event PropertyChangedEventHandler PropertyChanged;
 
     public string SearchText
     {
-      get { return (string)GetValue(SearchTextProperty); }
+      get { return mSearchtext; }
       set
       {
-        SetValue(SearchTextProperty, value);
+        mSearchtext = value;
+        OnPropertyChanged("SearchText");
       }
     }
+
+    //private static DependencyProperty SearchTextProperty =
+    //  DependencyProperty.Register("SearchText", typeof(string), typeof(SearchBox),
+    //    new FrameworkPropertyMetadata(string.Empty, 
+    //      FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.Inherits));
+
+    //public string SearchText
+    //{
+    //  get { return (string)GetValue(SearchTextProperty); }
+    //  set
+    //  {
+    //    SetValue(SearchTextProperty, value);
+    //  }
+    //}
 
     public SearchBox()
     {
@@ -42,15 +46,12 @@ namespace ClangPowerTools.Options.View
       //DataContext = this;
     }
 
-    private void OnPropertyChanged(string p)
+    private void OnPropertyChanged(string aPropertyName)
     {
       if (PropertyChanged != null)
-      {
-        PropertyChanged(this, new PropertyChangedEventArgs(p));
-      }
+        PropertyChanged(this, new PropertyChangedEventArgs(aPropertyName));
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
 
     private void SearchBox_GotFocus(object sender, RoutedEventArgs e)
     {
@@ -71,6 +72,7 @@ namespace ClangPowerTools.Options.View
 
     private void Search_Click(object sender, RoutedEventArgs e)
     {
+
       OnSearchEvent();
     }
 

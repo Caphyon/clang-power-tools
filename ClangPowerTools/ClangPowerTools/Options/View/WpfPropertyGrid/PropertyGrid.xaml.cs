@@ -13,6 +13,10 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
   {
     #region Members
 
+
+    #region Public Members
+
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     public enum ViewModes
@@ -21,7 +25,15 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       Alphabetical
     }
 
+
+    #endregion
+
+
     #region Private members
+
+
+    private string mSearchtext = "";
+
 
     /// <summary>
     /// Object for that the pairs (property name, property value)
@@ -44,6 +56,7 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
 
     #region Dependency Properties Memberes
 
+
     public static readonly DependencyProperty ShowGroupingProperty =
       DependencyProperty.Register("ShowGrouping", typeof(bool), typeof(PropertyGrid));
 
@@ -53,10 +66,12 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
     public static readonly DependencyProperty EnableGroupingProperty =
       DependencyProperty.Register("EnableGrouping", typeof(bool), typeof(PropertyGrid));
 
+
     #endregion
 
 
     #endregion
+
 
     #region Properties
 
@@ -85,6 +100,9 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
     #endregion
 
 
+    #region Public Properties
+
+
     public ViewModes ViewMode
     {
       get { return mViewMode; }
@@ -95,6 +113,21 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       }
     }
 
+
+    public string SearchText
+    {
+      get { return mSearchtext; }
+      set
+      {
+        mSearchtext = value;
+        NotifyPropertyChanged("SearchText");
+        Filter();
+      }
+    }
+
+    #endregion
+
+
     #endregion
 
 
@@ -104,9 +137,7 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
     public PropertyGrid()
     {
       InitializeComponent();
-
       DataContext = this;
-
       DataContextChanged += GridDataContextChanged;
     }
 
@@ -140,6 +171,9 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
 
 
     #endregion
+
+
+    #region Methods
 
 
     #region Protected Methods
@@ -182,11 +216,6 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       }
     }
 
-    protected void NotifyPropertyChanged(string aPropertyName)
-    {
-      if (PropertyChanged != null)
-        PropertyChanged(this, new PropertyChangedEventArgs(aPropertyName));
-    }
 
     private void CategorizedButton_Checked(object sender, RoutedEventArgs e)
     {
@@ -198,6 +227,23 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       ViewMode = ViewModes.Alphabetical;
     }
 
+    private void Filter()
+    {
+      FilterPropertyView();
+    }
+
+    private void FilterPropertyView()
+    {
+      System.ComponentModel.ICollectionView crtView = CollectionViewSource.GetDefaultView(mProperties);
+      if (crtView == null)
+        return;
+
+      if (false == string.IsNullOrWhiteSpace(SearchText))
+        crtView.Filter = Predicate;
+      else
+        crtView.Filter = null;
+    }
+
     private void UpdatePropertyView(ViewModes aViewMode)
     {
       System.ComponentModel.ICollectionView crtView = CollectionViewSource.GetDefaultView(mProperties);
@@ -206,9 +252,8 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
 
       if (aViewMode == ViewModes.Alphabetical)
       {
-        crtView.Filter = Predicate;
-        //crtView.GroupDescriptions.Clear();
-        //crtView.SortDescriptions.Add(new SortDescription("Category", ListSortDirection.Ascending));
+        crtView.GroupDescriptions.Clear();
+        crtView.SortDescriptions.Add(new SortDescription("Category", ListSortDirection.Ascending));
       }
       else if (aViewMode == ViewModes.Grouped)
       {
@@ -225,10 +270,26 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       if (!(propertyData is PropertyData))
         return false;
 
-      return (propertyData as PropertyData).DisplayName.Contains("b");
+      return (propertyData as PropertyData).DisplayName.Contains(SearchText);
     }
 
     #endregion
+
+
+    #region Protected Methods
+
+    protected void NotifyPropertyChanged(string aPropertyName)
+    {
+      if (PropertyChanged != null)
+        PropertyChanged(this, new PropertyChangedEventArgs(aPropertyName));
+    }
+
+
+    #endregion
+
+
+    #endregion
+
 
   }
 }
