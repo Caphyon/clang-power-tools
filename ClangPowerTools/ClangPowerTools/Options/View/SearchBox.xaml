@@ -25,7 +25,7 @@
                                   RecognizesAccessKey="True" 
                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
                                   VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
-                <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/3.png" Opacity="0.6" />
+                <!--<Image Source="pack://application:,,,/ClangPowerTools;component/Resources/3.png" Opacity="0.6" />-->
               </Grid>
             </Border>
             <ControlTemplate.Triggers>
@@ -97,6 +97,14 @@
     <Button Grid.Column="0" Style="{DynamicResource NoChromeButton}" BorderThickness="1" 
       VerticalAlignment="Center" HorizontalAlignment="Right" Width="25" Height="25" Click="Search_Click" Panel.ZIndex="1">
 
+      <Rectangle Height="15" Width="15">
+        <Rectangle.Fill>
+          <ImageBrush ImageSource="pack://application:,,,/ClangPowerTools;component/Resources/InitialSprite.png"
+                    ViewboxUnits="RelativeToBoundingBox" Viewbox="0.32, 0, 0.17, 1" />
+        </Rectangle.Fill>
+      </Rectangle>
+
+      
     </Button>
   </Grid>
 

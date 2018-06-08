@@ -219,9 +219,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Resource Include="Resources\InitialSprite.png" />
     <Content Include="Resources\SearchIcon.jpg" />
     <Resource Include="Resources\settings-for-categories.png" />
-    <Content Include="Resources\sort-by-alphabet.png" />
+    <Resource Include="Resources\sort-by-alphabet.png" />
     <Content Include="Resources\StopCommandIcon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
