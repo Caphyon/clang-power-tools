@@ -9,8 +9,8 @@
       xmlns:searchBox="clr-namespace:ClangPowerTools.Options.View"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300">
-  
-  
+
+
   <UserControl.Resources>
     <Local:PropertyTemplateSelector x:Key="DisplayTemplateSelector"/>
     <conv:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
@@ -54,7 +54,7 @@
     </Style>-->
 
   </UserControl.Resources>
-  
+
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
@@ -82,10 +82,12 @@
 
 
 
+
+
         <!-- Var 1 -> merge sortarea -->
 
 
-        <StackPanel Grid.Column="0"  Orientation="Horizontal"
+        <!--<StackPanel Grid.Column="0"  Orientation="Horizontal"
           Visibility="{Binding Path=DataContext.EnableGrouping, Converter={StaticResource booleanToVisibilityConverter}}" Grid.ColumnSpan="3" >
 
           <RadioButton GroupName="NameGroup" Name="CategorizedButton" Height="20" Width="18" ToolTip="Categorized" BorderBrush="Transparent"
@@ -100,8 +102,74 @@
                        Content="Resources/sort-by-alphabet.png">
 
           </RadioButton>
-        </StackPanel>
+        </StackPanel>-->
 
+
+
+
+
+        <!-- Var 1.1 -->
+
+
+        <StackPanel Grid.Column="0"  Orientation="Horizontal"
+          Visibility="{Binding Path=DataContext.EnableGrouping, Converter={StaticResource booleanToVisibilityConverter}}" Grid.ColumnSpan="3" >
+
+          <RadioButton x:Name="GategorizedButton" Checked="CategorizedButton_Checked" IsChecked="True" Grid.Column="0"  Width="20" Height="24">
+            <RadioButton.Template>
+              <ControlTemplate TargetType="{x:Type RadioButton}">
+                <Border>
+                  <Grid>
+                    <ContentPresenter />
+                    <Grid x:Name="StatusPanel" Background="Black" Opacity="0"/>
+                  </Grid>
+                </Border>
+                <ControlTemplate.Triggers>
+                  <Trigger Property="IsChecked" Value="true">
+                    <Setter TargetName="StatusPanel" Property="Opacity" Value="0.2"/>
+                  </Trigger>
+                  <Trigger Property="IsMouseOver" Value="true">
+                    <Setter TargetName="StatusPanel" Property="Opacity" Value="0.1"/>
+                  </Trigger>
+                  <Trigger Property="IsPressed" Value="true">
+                    <Setter TargetName="StatusPanel" Property="Opacity" Value="0.3"/>
+                  </Trigger>
+                </ControlTemplate.Triggers>
+              </ControlTemplate>
+            </RadioButton.Template>
+            <RadioButton.Content>
+              <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/settings-for-categories.png" />
+            </RadioButton.Content>
+          </RadioButton>
+
+
+          <RadioButton x:Name="AlphabeticalButton" Checked="AlphabeticalButton_Checked" Grid.Column="0" Width="20" Height="24">
+            <RadioButton.Template>
+              <ControlTemplate TargetType="{x:Type RadioButton}">
+                <Border>
+                  <Grid>
+                    <ContentPresenter />
+                    <Grid x:Name="StatusPanel" Background="Black" Opacity="0"/>
+                  </Grid>
+                </Border>
+                <ControlTemplate.Triggers>
+                  <Trigger Property="IsChecked" Value="true">
+                    <Setter TargetName="StatusPanel" Property="Opacity" Value="0.2"/>
+                  </Trigger>
+                  <Trigger Property="IsMouseOver" Value="true">
+                    <Setter TargetName="StatusPanel" Property="Opacity" Value="0.1"/>
+                  </Trigger>
+                  <Trigger Property="IsPressed" Value="true">
+                    <Setter TargetName="StatusPanel" Property="Opacity" Value="0.3"/>
+                  </Trigger>
+                </ControlTemplate.Triggers>
+              </ControlTemplate>
+            </RadioButton.Template>
+            <RadioButton.Content>
+              <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/sort-by-alphabet.png" />
+            </RadioButton.Content>
+          </RadioButton>
+
+        </StackPanel>
 
 
 
@@ -165,13 +233,13 @@
 
         <!--<ListBox Style="{StaticResource RadioButtonsListBoxStyle}" x:Name="rbMode2" Grid.Column="0"  
           HorizontalAlignment="Center" Margin="5" Visibility="{Binding Path=DataContext.EnableGrouping, Converter={StaticResource booleanToVisibilityConverter}}">
-
-          <ToggleButton x:Name="rbDrive1" Tag="Drive" IsChecked="true" Margin="0,0,0,0" >
-              <Image Source="/Resources/settings-for-categories.png" />
+          
+          <ToggleButton x:Name="rbDrive1" Tag="Drive" IsChecked="true" >
+              <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/settings-for-categories.png" />
           </ToggleButton>
 
-          <ToggleButton x:Name="rbWalk1" Tag="Walk" Margin="0,0,0,0" >
-              <Image Source="/Resources/sort-by-alphabet.png" />
+          <ToggleButton x:Name="rbWalk1" Tag="Walk" >
+              <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/sort-by-alphabet.png" />
           </ToggleButton>
 
         </ListBox>-->
