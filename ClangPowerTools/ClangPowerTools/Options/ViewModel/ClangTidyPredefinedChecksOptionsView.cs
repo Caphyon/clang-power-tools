@@ -1551,10 +1551,12 @@ namespace ClangPowerTools
 
     #region Protected Methods
 
-    protected override void OnActivate(CancelEventArgs e)
+
+    protected override void OnDeactivate(CancelEventArgs e)
     {
       mUserControl.CleanQuickSearch();
     }
+
 
     #endregion
 
