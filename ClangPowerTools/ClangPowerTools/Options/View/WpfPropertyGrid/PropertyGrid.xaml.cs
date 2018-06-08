@@ -253,7 +253,7 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       if (aViewMode == ViewModes.Alphabetical)
       {
         crtView.GroupDescriptions.Clear();
-        crtView.SortDescriptions.Add(new SortDescription("Category", ListSortDirection.Ascending));
+        crtView.SortDescriptions.Add(new SortDescription("DisplayName", ListSortDirection.Ascending));
       }
       else if (aViewMode == ViewModes.Grouped)
       {
