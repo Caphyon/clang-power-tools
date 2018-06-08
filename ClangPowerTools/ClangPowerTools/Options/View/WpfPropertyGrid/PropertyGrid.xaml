@@ -67,10 +67,8 @@
       <Grid>
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />
-          <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="2*"/>
           <ColumnDefinition Width="*"/>
-          <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
 
         <!--<WrapPanel  >-->
@@ -87,8 +85,8 @@
         <!-- Var 1 -> merge sortarea -->
 
 
-        <!--Visibility="{Binding Path=DataContext.EnableGrouping, Converter={StaticResource booleanToVisibilityConverter}}"-->
-        <StackPanel Grid.Column="0"  Orientation="Horizontal" >
+        <StackPanel Grid.Column="0"  Orientation="Horizontal"
+          Visibility="{Binding Path=DataContext.EnableGrouping, Converter={StaticResource booleanToVisibilityConverter}}" Grid.ColumnSpan="3" >
 
           <RadioButton GroupName="NameGroup" Name="CategorizedButton" Height="20" Width="18" ToolTip="Categorized" BorderBrush="Transparent"
                        Checked="CategorizedButton_Checked" IsChecked="True" 
@@ -157,7 +155,7 @@
 
 
 
-       
+
 
 
 
@@ -181,14 +179,14 @@
 
 
 
-        
+
 
         <!-- SearchBox -->
-        <searchBox:SearchBox Grid.Column="3" x:Name="SearchBoxElement"
+        <searchBox:SearchBox Grid.Column="2" x:Name="SearchBoxElement"
           Visibility="{Binding Path=DataContext.ShowFilter, Converter={StaticResource booleanToVisibilityConverter}}" />
 
 
-        
+
 
       </Grid>
     </Border>

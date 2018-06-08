@@ -48,13 +48,13 @@
     </Style>
   </UserControl.Resources>
 
-  <Grid Margin="2" Background="White" VerticalAlignment="Center">
+  <Grid Background="White" VerticalAlignment="Center" Height="24">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*"/>
       <ColumnDefinition Width="Auto"/>
     </Grid.ColumnDefinitions>
 
-    <TextBox Name="SearchTextBox" BorderThickness="1" Grid.Column="0" Padding="0 0 30 0"
+    <TextBox Name="SearchTextBox" BorderThickness="1" BorderBrush="LightGray" Grid.Column="0" Padding="0 0 30 0"
              VerticalContentAlignment="Center" 
              KeyDown="SearchTextBox_KeyDown"  
              Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
