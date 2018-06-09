@@ -15,6 +15,7 @@
       <Setter Property="HorizontalContentAlignment" Value="Center"/>
       <Setter Property="VerticalContentAlignment" Value="Center"/>
       <Setter Property="Padding" Value="1"/>
+      <Setter Property="ToolTip" Value="Clean Search" />
       <Setter Property="Template">
         <Setter.Value>
           <ControlTemplate TargetType="{x:Type Button}">
@@ -36,6 +37,13 @@
           </ControlTemplate>
         </Setter.Value>
       </Setter>
+      <Style.Triggers>
+        <DataTrigger Binding="{Binding Text.Length, ElementName=SearchTextBox}" Value="0" >
+          <DataTrigger.Setters>
+            <Setter Property="ToolTip" Value="Search" />
+          </DataTrigger.Setters>
+        </DataTrigger>
+      </Style.Triggers>
     </Style>
   </UserControl.Resources>
 
@@ -112,9 +120,7 @@
       </Button.Template>
       
       <Button.Content>
-        <Rectangle Height="19" Width="19" 
-                   ToolTip="Clean Search" 
-                   Panel.ZIndex="2">
+        <Rectangle Height="19" Width="19" >
           <Rectangle.Style>
             <Style TargetType="{x:Type Rectangle}" >
               <Setter Property="Fill">
@@ -130,7 +136,6 @@
                         <ImageBrush ImageSource="pack://application:,,,/ClangPowerTools;component/Resources/SearchIcon.png" />
                       </Setter.Value>
                     </Setter>
-                    <Setter Property="ToolTip" Value="Search" />
                   </DataTrigger.Setters>
                 </DataTrigger>
               </Style.Triggers>
