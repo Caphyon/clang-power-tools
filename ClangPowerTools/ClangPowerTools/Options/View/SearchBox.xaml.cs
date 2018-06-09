@@ -65,46 +65,15 @@ namespace ClangPowerTools.Options.View
       t.SelectAll();
     }
 
-    private void SearchTextBox_LostMouseCapture(object sender, MouseEventArgs e)
-    {
-
-    }
 
     private void Search_Click(object sender, RoutedEventArgs e)
     {
-
-      OnSearchEvent();
+      // If the SearchBox is empty do nothing
+      // If the SearchBox is not empty delete all the tet inside
+      //
+      // Write the code here
+      //
     }
 
-    public static readonly RoutedEvent SearchEvent = EventManager.RegisterRoutedEvent(
-       "Search", // Event name
-       RoutingStrategy.Bubble, // Bubble means the event will bubble up through the tree
-       typeof(RoutedEventHandler), // The event type
-       typeof(SearchBox)
-    ); // Belongs to ChildControlBase
-
-    // Allows add and remove of event handlers to handle the custom event
-    public event RoutedEventHandler Search
-    {
-      add { AddHandler(SearchEvent, value); }
-      remove { RemoveHandler(SearchEvent, value); }
-    }
-
-    private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
-    {
-      if (e.Key.Equals(Key.Enter))
-      {
-        OnSearchEvent();
-      }
-    }
-
-    private void OnSearchEvent()
-    {
-      SearchText = SearchTextBox.Text;
-      var newEventArgs = new RoutedEventArgs(SearchBox.SearchEvent);
-      RaiseEvent(newEventArgs);
-    }
-
-    
   }
 }

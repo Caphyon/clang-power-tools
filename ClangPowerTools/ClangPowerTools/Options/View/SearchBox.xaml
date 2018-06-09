@@ -46,13 +46,12 @@
     </Grid.ColumnDefinitions>
 
     <TextBox Name="SearchTextBox" BorderThickness="1" BorderBrush="LightGray" Grid.Column="0" Padding="0 0 30 0"
+             ToolTip="Type words to search for"
              VerticalContentAlignment="Center" 
-             KeyDown="SearchTextBox_KeyDown"  
              Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
              VerticalAlignment="Stretch" 
              GotFocus="SearchBox_GotFocus" 
              GotMouseCapture="SearchTextBox_GotMouseCapture"
-             LostMouseCapture="SearchTextBox_LostMouseCapture" 
              Panel.ZIndex="0">
       <TextBox.Style>
         <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
@@ -86,8 +85,13 @@
       </TextBox.Style>
     </TextBox>
 
-    <Button Grid.Column="0" Style="{DynamicResource NoChromeButton}" BorderThickness="1" 
-            VerticalAlignment="Center" HorizontalAlignment="Right" Width="25" Height="25" Click="Search_Click" Panel.ZIndex="1">
+    <Button Grid.Column="0" Width="25" Height="25"
+            Style="{DynamicResource NoChromeButton}" 
+            BorderThickness="1"
+            VerticalAlignment="Center" 
+            HorizontalAlignment="Right"  
+            Click="Search_Click" 
+            Panel.ZIndex="1">
       <Button.Template>
         <ControlTemplate TargetType="{x:Type Button}">
           <Border>
@@ -106,9 +110,11 @@
           </ControlTemplate.Triggers>
         </ControlTemplate>
       </Button.Template>
-
+      
       <Button.Content>
-        <Rectangle x:Name="aaa" Height="19" Width="19" >
+        <Rectangle Height="19" Width="19" 
+                   ToolTip="Clean Search" 
+                   Panel.ZIndex="2">
           <Rectangle.Style>
             <Style TargetType="{x:Type Rectangle}" >
               <Setter Property="Fill">
@@ -124,6 +130,7 @@
                         <ImageBrush ImageSource="pack://application:,,,/ClangPowerTools;component/Resources/SearchIcon.png" />
                       </Setter.Value>
                     </Setter>
+                    <Setter Property="ToolTip" Value="Search" />
                   </DataTrigger.Setters>
                 </DataTrigger>
               </Style.Triggers>
