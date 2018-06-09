@@ -137,7 +137,7 @@
               </ControlTemplate>
             </RadioButton.Template>
             <RadioButton.Content>
-              <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/settings-for-categories.png" />
+              <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/Categorized.png" />
             </RadioButton.Content>
           </RadioButton>
 
@@ -165,7 +165,7 @@
               </ControlTemplate>
             </RadioButton.Template>
             <RadioButton.Content>
-              <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/sort-by-alphabet.png" />
+              <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/Alphabetical.png" />
             </RadioButton.Content>
           </RadioButton>
 
