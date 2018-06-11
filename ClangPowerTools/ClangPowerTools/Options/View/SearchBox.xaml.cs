@@ -1,5 +1,4 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,7 +11,7 @@ namespace ClangPowerTools.Options.View
   public partial class SearchBox : UserControl, INotifyPropertyChanged
   {
 
-    private string mSearchtext = "";
+    private string mSearchtext = string.Empty;
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -26,24 +25,9 @@ namespace ClangPowerTools.Options.View
       }
     }
 
-    //private static DependencyProperty SearchTextProperty =
-    //  DependencyProperty.Register("SearchText", typeof(string), typeof(SearchBox),
-    //    new FrameworkPropertyMetadata(string.Empty, 
-    //      FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.Inherits));
-
-    //public string SearchText
-    //{
-    //  get { return (string)GetValue(SearchTextProperty); }
-    //  set
-    //  {
-    //    SetValue(SearchTextProperty, value);
-    //  }
-    //}
-
     public SearchBox()
     {
       InitializeComponent();
-      //DataContext = this;
     }
 
     private void OnPropertyChanged(string aPropertyName)
@@ -68,11 +52,10 @@ namespace ClangPowerTools.Options.View
 
     private void Search_Click(object sender, RoutedEventArgs e)
     {
-      // If the SearchBox is empty do nothing
-      // If the SearchBox is not empty delete all the tet inside
-      //
-      // Write the code here
-      //
+      if (false == string.IsNullOrWhiteSpace(SearchTextBox.Text))
+        SearchTextBox.Text = string.Empty;
+
+      SearchTextBox.Focus();
     }
 
   }
