@@ -44,8 +44,8 @@
           <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0"  Orientation="Horizontal"
-          Visibility="{Binding Path=DataContext.EnableGrouping, Converter={StaticResource booleanToVisibilityConverter}}" Grid.ColumnSpan="3" >
+        <StackPanel Grid.Column="0"  Orientation="Horizontal" Grid.ColumnSpan="3"
+                    Visibility="{Binding Path=DataContext.EnableGrouping, Converter={StaticResource booleanToVisibilityConverter}}"  >
 
           <RadioButton x:Name="GategorizedButton"
                        Grid.Column="0" Width="20" Height="24"

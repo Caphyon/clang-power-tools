@@ -41,7 +41,7 @@ namespace ClangPowerTools.Options.View
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void SearchTextBox_GotMouseCapture(object sender, MouseEventArgs e)
+    private void SearchBox_GotMouseCapture(object sender, MouseEventArgs e)
     {
       var t = (TextBox)sender;
       t.SelectAll();

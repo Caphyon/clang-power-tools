@@ -59,7 +59,7 @@
              Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
              VerticalAlignment="Stretch" 
              GotFocus="SearchBox_GotFocus" 
-             GotMouseCapture="SearchTextBox_GotMouseCapture"
+             GotMouseCapture="SearchBox_GotMouseCapture"
              Panel.ZIndex="0">
       
       <TextBox.Style>
