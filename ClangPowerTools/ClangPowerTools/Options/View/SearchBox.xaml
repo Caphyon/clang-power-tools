@@ -89,6 +89,8 @@
               <MultiTrigger.Conditions>
                 <Condition Property="Text" Value="{x:Static sys:String.Empty}" />
                 <Condition Property="IsMouseOver" Value="False" />
+                <Condition Property="IsMouseCaptured" Value="False" />
+                <Condition Property="IsFocused" Value="False" />
               </MultiTrigger.Conditions>
               <MultiTrigger.Setters>
                 <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
@@ -100,6 +102,8 @@
               <MultiTrigger.Conditions>
                 <Condition Property="Text" Value="{x:Null}" />
                 <Condition Property="IsMouseOver" Value="False" />
+                <Condition Property="IsMouseCaptured" Value="False" />
+                <Condition Property="IsFocused" Value="False" />
               </MultiTrigger.Conditions>
               <MultiTrigger.Setters>
                 <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
@@ -110,6 +114,7 @@
               <MultiTrigger.Conditions>
                 <Condition Property="Text" Value="{x:Static sys:String.Empty}" />
                 <Condition Property="IsMouseOver" Value="True" />
+                <Condition Property="IsFocused" Value="False" />
               </MultiTrigger.Conditions>
               <MultiTrigger.Setters>
                 <Setter Property="Background" Value="{StaticResource HoverCueBannerBrush}" />
