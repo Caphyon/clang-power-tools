@@ -16,6 +16,8 @@ namespace ClangPowerTools
     private const string kGeneralSettingsFileName = "TidyPredefinedChecksConfiguration.config";
     private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
 
+    private ClangTidyPredefinedChecksOptionsUserControl mUserControl;
+
     #endregion
 
     #region Properties
@@ -1530,14 +1532,34 @@ namespace ClangPowerTools
       get
       {
         ElementHost elementHost = new ElementHost();
-        elementHost.Child = new ClangTidyChecksOptionsUserControl(this);
+        mUserControl = new ClangTidyPredefinedChecksOptionsUserControl(this);
+
+        elementHost.Child = mUserControl;
         return elementHost;
       }
     }
 
+
     #endregion
 
+
+    #region Methods
+
+
+    #region Protected Methods
+
+
+    protected override void OnDeactivate(CancelEventArgs e)
+    {
+      mUserControl.CleanQuickSearch();
+    }
+
+
+    #endregion
+
+
     #region DialogPage Save and Load implementation 
+
 
     public override void SaveSettingsToStorage()
     {
@@ -1571,6 +1593,10 @@ namespace ClangPowerTools
       }
 
     }
+
+
+    #endregion
+
 
     #endregion
 

@@ -121,14 +121,17 @@
     <Compile Include="Options\View\ClangGeneralOptionsUserControl.xaml.cs">
       <DependentUpon>ClangGeneralOptionsUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Options\View\ClangTidyChecksOptionsUserControl.xaml.cs">
-      <DependentUpon>ClangTidyChecksOptionsUserControl.xaml</DependentUpon>
+    <Compile Include="Options\View\ClangTidyPredefinedChecksOptionsUserControl.xaml.cs">
+      <DependentUpon>ClangTidyPredefinedChecksOptionsUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\View\ClangTidyCustomChecksUserControl.xaml.cs">
       <DependentUpon>ClangTidyCustomChecksUserControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\View\ClangTidyOptionsUserControl.xaml.cs">
       <DependentUpon>ClangTidyOptionsUserControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\View\SearchBox.xaml.cs">
+      <DependentUpon>SearchBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\View\TextBoxNotifaiableUserControl.cs" />
     <Compile Include="Options\View\WpfPropertyGrid\BorderedComboBox.xaml.cs">
@@ -205,14 +208,18 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>.</VSIXSubPath>
     </Content>
+    <Resource Include="Resources\AlphabeticalIcon.PNG" />
     <Content Include="Resources\ClangFormatIcon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Resource Include="Resources\CleanSearchIcon.PNG" />
     <Content Include="Resources\CompileIcon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Resource Include="Resources\CategorizedIcon.PNG" />
+    <Resource Include="Resources\SearchIcon.PNG" />
     <Content Include="Resources\StopCommandIcon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -424,7 +431,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Options\View\ClangTidyChecksOptionsUserControl.xaml">
+    <Page Include="Options\View\ClangTidyPredefinedChecksOptionsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -433,6 +440,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Options\View\ClangTidyOptionsUserControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Options\View\SearchBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -5,19 +5,119 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:Local="clr-namespace:Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid"
+      xmlns:conv="clr-namespace:ClangPowerTools.Convertors"
+      xmlns:searchBox="clr-namespace:ClangPowerTools.Options.View"
       mc:Ignorable="d" 
       d:DesignHeight="300" d:DesignWidth="300">
+
+
   <UserControl.Resources>
     <Local:PropertyTemplateSelector x:Key="DisplayTemplateSelector"/>
+    <conv:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
+
+    <Style TargetType="{x:Type ListBox}" x:Key="RadioButtonsListBoxStyle">
+      <Setter Property="ListBox.ItemTemplate">
+        <Setter.Value>
+          <DataTemplate>
+            <ToggleButton Content="{Binding}" 
+              IsChecked="{Binding IsSelected, Mode=TwoWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}" />
+          </DataTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+    
   </UserControl.Resources>
+
   <Grid>
     <Grid.RowDefinitions>
-      <RowDefinition Height="4*" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="5*" />
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
+
+    <Border Grid.Row="0" BorderThickness="1" Margin="0 0 0 1" >
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="2*"/>
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Column="0"  Orientation="Horizontal" Grid.ColumnSpan="3"
+                    Visibility="{Binding Path=DataContext.ShowGrouping, Converter={StaticResource booleanToVisibilityConverter}}"  >
+
+          <RadioButton x:Name="GategorizedButton"
+                       Grid.Column="0" Width="17" Height="24"
+                       Checked="CategorizedButton_Checked" 
+                       IsChecked="True" 
+                       ToolTip="Categorized">
+            <RadioButton.Template>
+              <ControlTemplate TargetType="{x:Type RadioButton}">
+                <Border>
+                  <Grid>
+                    <ContentPresenter />
+                    <Grid x:Name="StatusPanel" Background="Black" Opacity="0"/>
+                  </Grid>
+                </Border>
+                <ControlTemplate.Triggers>
+                  <Trigger Property="IsChecked" Value="true">
+                    <Setter TargetName="StatusPanel" Property="Opacity" Value="0.2"/>
+                  </Trigger>
+                  <Trigger Property="IsMouseOver" Value="true">
+                    <Setter TargetName="StatusPanel" Property="Opacity" Value="0.1"/>
+                  </Trigger>
+                  <Trigger Property="IsPressed" Value="true">
+                    <Setter TargetName="StatusPanel" Property="Opacity" Value="0.3"/>
+                  </Trigger>
+                </ControlTemplate.Triggers>
+              </ControlTemplate>
+            </RadioButton.Template>
+            <RadioButton.Content>
+              <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/CategorizedIcon.png" />
+            </RadioButton.Content>
+          </RadioButton>
+
+          <RadioButton x:Name="AlphabeticalButton" 
+                       Grid.Column="0" Width="17" Height="24"
+                       Checked="AlphabeticalButton_Checked" 
+                       ToolTip="Alphabetical">
+            <RadioButton.Template>
+              <ControlTemplate TargetType="{x:Type RadioButton}">
+                <Border>
+                  <Grid>
+                    <ContentPresenter />
+                    <Grid x:Name="StatusPanel" Background="Black" Opacity="0"/>
+                  </Grid>
+                </Border>
+                <ControlTemplate.Triggers>
+                  <Trigger Property="IsChecked" Value="true">
+                    <Setter TargetName="StatusPanel" Property="Opacity" Value="0.2"/>
+                  </Trigger>
+                  <Trigger Property="IsMouseOver" Value="true">
+                    <Setter TargetName="StatusPanel" Property="Opacity" Value="0.1"/>
+                  </Trigger>
+                  <Trigger Property="IsPressed" Value="true">
+                    <Setter TargetName="StatusPanel" Property="Opacity" Value="0.3"/>
+                  </Trigger>
+                </ControlTemplate.Triggers>
+              </ControlTemplate>
+            </RadioButton.Template>
+            <RadioButton.Content>
+              <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/AlphabeticalIcon.png" />
+            </RadioButton.Content>
+          </RadioButton>
+
+        </StackPanel>
+
+        <searchBox:SearchBox Grid.Column="2" x:Name="SearchBoxElement"
+          Visibility="{Binding Path=DataContext.ShowFilter, Converter={StaticResource booleanToVisibilityConverter}}" />
+
+      </Grid>
+    </Border>
+
     <ListBox x:Name="PropertyList" 
-             Grid.Row="0"
+             Grid.Row="1"
              Grid.IsSharedSizeScope="True" 
              SelectionMode="Single"
              HorizontalContentAlignment="Stretch"
@@ -36,7 +136,7 @@
                     <Border BorderThickness="0,0,0,1">
                       <Expander ExpandDirection="Down" IsExpanded = "True" >
                         <Expander.Header>
-                          <TextBlock Text="{Binding Name}" FontSize="12"/>
+                          <TextBlock Name="PropertyNameTextBlock" Text="{Binding Name}" FontSize="12"/>
                         </Expander.Header>
                         <ItemsPresenter />
                       </Expander>
@@ -49,8 +149,8 @@
         </GroupStyle>
       </ListBox.GroupStyle>
     </ListBox>
-    <GridSplitter Grid.Row="1" ResizeDirection="Rows" Panel.ZIndex="100" Height="4" HorizontalAlignment="Stretch"/>
-    <Border Grid.Row="2" BorderThickness="1" Margin="0">
+    <GridSplitter Grid.Row="2" ResizeDirection="Rows" Panel.ZIndex="100" Height="4" HorizontalAlignment="Stretch"/>
+    <Border Grid.Row="3" BorderThickness="1" Margin="0">
       <StackPanel Orientation="Vertical">
         <TextBlock FontFamily="Segoe UI" FontSize="12" FontWeight="Bold" x:Name="PropNameBlock" Margin="0 2 2 2" />
         <TextBlock xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" x:Name="DescriptionPanel" FontFamily="Segoe UI" FontSize="12" 
@@ -60,4 +160,5 @@
       </StackPanel>
     </Border>
   </Grid>
+  
 </UserControl>
