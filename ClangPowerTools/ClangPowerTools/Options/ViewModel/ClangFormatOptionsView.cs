@@ -141,7 +141,11 @@ namespace ClangPowerTools.DialogPages
       this.Style = null == loadedConfig.Style ? ClangFormatStyle.file : loadedConfig.Style;
 
       //this.SortIncludes   = loadedConfig.SortIncludes;
-      this.ClangFormatPath  = loadedConfig.ClangFormatPath;
+
+      if (null == loadedConfig.ClangFormatPath)
+        this.ClangFormatPath = new ClangFormatPathValue();
+      else
+        this.ClangFormatPath = loadedConfig.ClangFormatPath;
 
     }
 
