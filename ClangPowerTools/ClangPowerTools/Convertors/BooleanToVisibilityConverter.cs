@@ -10,13 +10,13 @@ namespace ClangPowerTools.Convertors
     private object GetVisibility(object value)
     {
       if (!(value is bool))
-        return Visibility.Collapsed;
+        return Visibility.Hidden;
 
       bool objValue = (bool)value;
       if (objValue)
         return Visibility.Visible;
 
-      return Visibility.Collapsed;
+      return Visibility.Hidden;
     }
   
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
