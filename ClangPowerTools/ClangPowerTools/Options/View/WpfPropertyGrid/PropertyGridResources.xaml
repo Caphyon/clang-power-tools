@@ -67,22 +67,15 @@
   <DataTemplate x:Key="ClangFormatPathDataTemplate">
 
     <StackPanel>
-
-      <Grid Margin="0" HorizontalAlignment ="Stretch">
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="Auto" />
-          <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
-
-        <Border Grid.Column="0" >
-          <CheckBox x:Name="EnableClangFormatCustomPathCheckBox" IsChecked="{Binding Value.Enable}" Margin="1,4"
-               PreviewMouseUp="PreviewMouseUp"
-               PreviewMouseDown="PreviewMouseDown"/>
-        </Border>
-        <Border Grid.Column="0" >
-          <TextBlock Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="20 0" TextTrimming="CharacterEllipsis" />
-        </Border>
-
+      <Grid Height="28">
+        <CheckBox x:Name="EnableClangFormatCustomPathCheckBox" 
+                  IsChecked="{Binding Value.Enable}" 
+                  Content="{Binding DisplayName}" 
+                  HorizontalAlignment="Left" 
+                  VerticalAlignment="Stretch" 
+                  VerticalContentAlignment="Center"
+                  PreviewMouseUp="PreviewMouseUp"
+                  PreviewMouseDown="PreviewMouseDown"/>
       </Grid>
 
       <Grid>
@@ -104,7 +97,6 @@
             Margin="5,2" 
             IsEnabled="{Binding ElementName=EnableClangFormatCustomPathCheckBox, Path=IsChecked}" />
         </Border>
-
       </Grid>
     </StackPanel>
 
