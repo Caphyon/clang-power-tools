@@ -48,7 +48,7 @@
                     Visibility="{Binding Path=DataContext.EnableGrouping, Converter={StaticResource booleanToVisibilityConverter}}"  >
 
           <RadioButton x:Name="GategorizedButton"
-                       Grid.Column="0" Width="20" Height="24"
+                       Grid.Column="0" Width="17" Height="24"
                        Checked="CategorizedButton_Checked" 
                        IsChecked="True" 
                        ToolTip="Categorized">
@@ -79,7 +79,7 @@
           </RadioButton>
 
           <RadioButton x:Name="AlphabeticalButton" 
-                       Grid.Column="0" Width="20" Height="24"
+                       Grid.Column="0" Width="17" Height="24"
                        Checked="AlphabeticalButton_Checked" 
                        ToolTip="Alphabetical">
             <RadioButton.Template>
