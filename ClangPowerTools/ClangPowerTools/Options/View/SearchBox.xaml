@@ -59,20 +59,20 @@
              Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
              VerticalAlignment="Stretch" 
              GotFocus="SearchBox_GotFocus" 
-             GotMouseCapture="SearchBox_GotMouseCapture"
              Panel.ZIndex="0">
+      <!--GotMouseCapture="SearchBox_GotMouseCapture"-->
       
       <TextBox.Style>
         <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
           <Style.Resources>
             
-            <VisualBrush x:Key="CueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
+            <VisualBrush x:Key="GrayHelperTextBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
               <VisualBrush.Visual>
                 <Label Name="SearchLabel" Content="Quick Search" Foreground="Gray" />
               </VisualBrush.Visual>
             </VisualBrush>
             
-            <VisualBrush x:Key="HoverCueBannerBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
+            <VisualBrush x:Key="BlackHelperTextBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
               <VisualBrush.Visual>
                 <Label Name="SearchBlackLabel" Content="Quick Search" Foreground="Black" />
               </VisualBrush.Visual>
@@ -84,19 +84,6 @@
             <Trigger Property="IsKeyboardFocused" Value="True">
               <Setter Property="Background" Value="White" />
             </Trigger>
-            
-            <MultiTrigger>
-              <MultiTrigger.Conditions>
-                <Condition Property="Text" Value="{x:Static sys:String.Empty}" />
-                <Condition Property="IsMouseOver" Value="False" />
-                <Condition Property="IsMouseCaptured" Value="False" />
-                <Condition Property="IsFocused" Value="False" />
-              </MultiTrigger.Conditions>
-              <MultiTrigger.Setters>
-                <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-              </MultiTrigger.Setters>
-            </MultiTrigger>
-
 
             <MultiTrigger>
               <MultiTrigger.Conditions>
@@ -106,10 +93,33 @@
                 <Condition Property="IsFocused" Value="False" />
               </MultiTrigger.Conditions>
               <MultiTrigger.Setters>
-                <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                <Setter Property="Background" Value="{StaticResource GrayHelperTextBrush}" />
               </MultiTrigger.Setters>
             </MultiTrigger>
 
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="Text" Value="{x:Static sys:String.Empty}" />
+                <Condition Property="IsMouseOver" Value="False" />
+                <Condition Property="IsMouseCaptured" Value="False" />
+                <Condition Property="IsFocused" Value="False" />
+              </MultiTrigger.Conditions>
+              <MultiTrigger.Setters>
+                <Setter Property="Background" Value="{StaticResource GrayHelperTextBrush}" />
+              </MultiTrigger.Setters>
+            </MultiTrigger>
+
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="Text" Value="{x:Null}" />
+                <Condition Property="IsMouseOver" Value="True" />
+                <Condition Property="IsFocused" Value="False" />
+              </MultiTrigger.Conditions>
+              <MultiTrigger.Setters>
+                <Setter Property="Background" Value="{StaticResource BlackHelperTextBrush}" />
+              </MultiTrigger.Setters>
+            </MultiTrigger>
+            
             <MultiTrigger>
               <MultiTrigger.Conditions>
                 <Condition Property="Text" Value="{x:Static sys:String.Empty}" />
@@ -117,10 +127,10 @@
                 <Condition Property="IsFocused" Value="False" />
               </MultiTrigger.Conditions>
               <MultiTrigger.Setters>
-                <Setter Property="Background" Value="{StaticResource HoverCueBannerBrush}" />
+                <Setter Property="Background" Value="{StaticResource BlackHelperTextBrush}" />
               </MultiTrigger.Setters>
             </MultiTrigger>
-            
+
           </Style.Triggers>
         </Style>
       </TextBox.Style>

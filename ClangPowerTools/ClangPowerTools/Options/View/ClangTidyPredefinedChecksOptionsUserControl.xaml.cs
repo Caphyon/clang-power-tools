@@ -25,6 +25,7 @@ namespace ClangPowerTools.Options.View
     public void CleanQuickSearch()
     {
       wpfPropGrid.SearchText = string.Empty;
+      wpfPropGrid.PropertyList.Focus();
     }
 
 
