@@ -9,6 +9,7 @@
   xmlns:app="clr-namespace:ClangPowerTools"
   xmlns:conv="clr-namespace:ClangPowerTools.Convertors"
   xmlns:Local1="clr-namespace:ClangPowerTools.Options.View.WpfPropertyGrid"
+  xmlns:view="clr-namespace:ClangPowerTools.Options.View"
   mc:Ignorable="d" >
 
   <SolidColorBrush x:Key="ReadOnlyForeBrush" Color="#6D6D6D" />
@@ -78,15 +79,13 @@
                   PreviewMouseDown="PreviewMouseDown"/>
       </Grid>
 
-      <Grid>
+      <Grid IsEnabled="{Binding ElementName=EnableClangFormatCustomPathCheckBox, Path=IsChecked}">
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="Auto" />
           <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-
         <Border Grid.Column="0" >
-          <Label Content="Path" VerticalAlignment="Center" Margin="16 0 0 0"
-            IsEnabled="{Binding ElementName=EnableClangFormatCustomPathCheckBox, Path=IsChecked}"/>
+          <Label Content="Path" VerticalAlignment="Center" Margin="16 0 0 0" />
         </Border>
         <Border Grid.Column="1" Style="{x:Null}">
           <Local1:BorderedTextBoxBrowse
@@ -94,8 +93,7 @@
             Grid.Row="0"
             PreviewMouseUp="PreviewMouseUp"
             PreviewMouseDown="PreviewMouseDown" 
-            Margin="5,2" 
-            IsEnabled="{Binding ElementName=EnableClangFormatCustomPathCheckBox, Path=IsChecked}" />
+            Margin="5,2" />
         </Border>
       </Grid>
     </StackPanel>
