@@ -78,16 +78,10 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       DependencyProperty.Register("ShowGrouping", typeof(bool), typeof(PropertyGrid));
 
     /// <summary>
-    /// 
+    /// Dependency property member for displaying the SearchBox filter
     /// </summary>
     public static readonly DependencyProperty ShowFilterProperty =
       DependencyProperty.Register("ShowFilter", typeof(bool), typeof(PropertyGrid));
-
-    /// <summary>
-    /// Dependency property member for displaying the SearchBox filter
-    /// </summary>
-    public static readonly DependencyProperty EnableGroupingProperty =
-      DependencyProperty.Register("EnableGrouping", typeof(bool), typeof(PropertyGrid));
 
 
     #endregion
@@ -108,15 +102,6 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
     {
       get { return (bool)GetValue(ShowGroupingProperty); }
       set { SetValue(ShowGroupingProperty, value); }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public bool EnableGrouping
-    {
-      get { return (bool)GetValue(EnableGroupingProperty); }
-      set { SetValue(EnableGroupingProperty, value); }
     }
 
     /// <summary>

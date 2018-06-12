@@ -1527,9 +1527,6 @@ namespace ClangPowerTools
     public bool ReadabilityUniqueptrDeleteRelease { get; set; } = true;
 
 
-
-
-
     protected override IWin32Window Window
     {
       get
