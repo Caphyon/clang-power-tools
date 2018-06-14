@@ -40,6 +40,8 @@
     If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used,
     e.g. "table" ignores all CPPs containing 'table'.
 
+    Note: If any headers are given then all translation units that include them will be processed.
+
     Can be passed as comma separated values.
 
 .PARAMETER aUseParallelCompile

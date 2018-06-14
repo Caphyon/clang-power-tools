@@ -85,6 +85,20 @@ Function IsFileMatchingName( [Parameter(Mandatory = $true)][string] $filePath
     }
 }
 
+Function FileHasExtension( [Parameter(Mandatory = $true)][string]   $filePath
+                         , [Parameter(Mandatory = $true)][string[]] $ext
+                         )
+{
+    foreach ($e in $ext)
+    {
+        if ($filePath.EndsWith($e))
+        {
+            return $true
+        }
+    }
+    return $false
+}
+
 <#
   .DESCRIPTION
   Merges an absolute and a relative file path.
