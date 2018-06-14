@@ -43,6 +43,8 @@
     If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used,
     e.g. "table" compiles all CPPs containing 'table'.
 
+    Note: If any headers are given then all translation units that include them will be processed.
+
 .PARAMETER aCppToIgnore
     Alias 'file-ignore'. Array of file(s) to ignore, from the matched ones.
     If empty, all already matched files are compiled.
@@ -209,6 +211,7 @@ Add-Type -TypeDefinition @"
   , "$PSScriptRoot\psClang\msbuild-expression-eval.ps1"
   , "$PSScriptRoot\psClang\msbuild-project-load.ps1"
   , "$PSScriptRoot\psClang\msbuild-project-data.ps1"
+  , "$PSScriptRoot\psClang\get-header-references.ps1"
   ) | ForEach-Object { . $_ }
 
 #-------------------------------------------------------------------------------------------------
@@ -757,6 +760,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   [string] $stdafxCpp    = Get-Project-PchCpp
   [string] $stdafxDir    = ""
   [string] $stdafxHeader = ""
+  [string] $stdafxHeaderFullPath = ""
 
   if (![string]::IsNullOrEmpty($stdafxCpp))
   {
@@ -784,7 +788,10 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   else
   {
     Write-Verbose ("PCH directory: $stdafxDir")
+
     $includeDirectories = @(Remove-PathTrailingSlash -path $stdafxDir) + $includeDirectories
+
+    $stdafxHeaderFullPath = Canonize-Path -base $stdafxDir -child $stdafxHeader -ignoreErrors
   }
 
   #-----------------------------------------------------------------------------------------------
@@ -792,20 +799,26 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   [string[]] $projCpps = Get-ProjectFilesToCompile -pchCppName  $stdafxCpp
 
-  if ($projCpps.Count -gt 0 -and
-      ![string]::IsNullOrEmpty($aCppToCompile))
+  if ($projCpps.Count -gt 0 -and $aCppToCompile.Count -gt 0)
   {
     [string[]] $filteredCpps = @()
-    foreach ($cpp in $aCppToCompile)
+    if ($aCppToCompile -notcontains $stdafxHeaderFullPath)
     {
-      if (![string]::IsNullOrEmpty($cpp))
+      foreach ($cpp in $aCppToCompile)
       {
-        $filteredCpps += ( $projCpps |
-                           Where-Object {  IsFileMatchingName -filePath $_ `
-                                           -matchName $cpp } )
+        if (![string]::IsNullOrEmpty($cpp))
+        {
+          $filteredCpps += ( $projCpps |
+                            Where-Object {  IsFileMatchingName -filePath $_ `
+                                            -matchName $cpp } )
+        }
       }
+      $projCpps = $filteredCpps
     }
-    $projCpps = $filteredCpps
+    else
+    {
+      Write-Verbose "PCH header has been targeted as dirty. Building entire project"
+    }
   }
   Write-Verbose ("Processing " + $projCpps.Count + " cpps")
 
@@ -944,6 +957,20 @@ else
     Write-Err "Cannot find given project"
   }
 }
+
+# ------------------------------------------------------------------------------------------------
+# If we get headers in the -file arg we have to detect CPPs that include that header
+
+if ($aCppToCompile.Count -gt 0)
+{
+  [string[]] $headerRefs = Get-HeaderReferences -files $aCppToCompile
+  if ($headerRefs.Count -gt 0)
+  {
+    $aCppToCompile += $headerRefs
+  }
+}
+
+# ------------------------------------------------------------------------------------------------
 
 $projectCounter = $projectsToProcess.Length;
 foreach ($project in $projectsToProcess)
