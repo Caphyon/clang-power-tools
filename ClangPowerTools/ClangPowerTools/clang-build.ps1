@@ -797,22 +797,43 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   #-----------------------------------------------------------------------------------------------
   # FIND LIST OF CPPs TO PROCESS
 
-  [string[]] $projCpps = Get-ProjectFilesToCompile -pchCppName  $stdafxCpp
+  [System.Collections.Hashtable] $projCpps = @{}
+  Get-ProjectFilesToCompile -pchCppName  $stdafxCpp | ForEach-Object { $projCpps[$_] = $true }
 
   if ($projCpps.Count -gt 0 -and $aCppToCompile.Count -gt 0)
   {
-    [string[]] $filteredCpps = @()
-    if ($aCppToCompile -notcontains $stdafxHeaderFullPath)
+    [System.Collections.Hashtable] $filteredCpps = @{}
+    [bool] $dirtyStdafx = $false
+    foreach ($cpp in $aCppToCompile)
     {
-      foreach ($cpp in $aCppToCompile)
+      if ($cpp -ieq $stdafxHeaderFullPath) 
       {
-        if (![string]::IsNullOrEmpty($cpp))
+        # stdafx modified => compile all
+        $dirtyStdafx = $true
+        break
+      }
+
+      if (![string]::IsNullOrEmpty($cpp))
+      {
+        if ([System.IO.Path]::IsPathRooted($cpp))
+        { 
+          if ($projCpps.ContainsKey($cpp))
+          {
+            # really fast, use cache
+            $filteredCpps[$cpp] = $true
+          }
+        }
+        else
         {
-          $filteredCpps += ( $projCpps |
-                            Where-Object {  IsFileMatchingName -filePath $_ `
-                                            -matchName $cpp } )
+          # take the slow road and check if it matches
+          $projCpps.Keys | Where-Object {  IsFileMatchingName -filePath $_ -matchName $cpp } | `
+                          ForEach-Object { $filteredCpps[$_] = $true }
         }
       }
+    }
+
+    if (!$dirtyStdafx)
+    {
       $projCpps = $filteredCpps
     }
     else
@@ -826,7 +847,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # CREATE PCH IF NEED BE, ONLY FOR TWO CPPS OR MORE
 
   [string] $pchFilePath = ""
-  if ($projCpps.Count -ge 2 -and
+  if ($projCpps.Keys.Count -ge 2 -and
       ![string]::IsNullOrEmpty($stdafxDir))
   {
     # COMPILE PCH
@@ -850,7 +871,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   $clangJobs = @()
 
-  foreach ($cpp in $projCpps)
+  foreach ($cpp in $projCpps.Keys)
   {
     [string] $exeToCall = Get-ExeToCall -workloadType $workloadType
 
