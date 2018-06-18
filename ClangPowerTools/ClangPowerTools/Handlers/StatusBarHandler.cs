@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.Windows.Threading;
 
 namespace ClangPowerTools
 {
@@ -41,7 +42,7 @@ namespace ClangPowerTools
         // Clear the status bar text.
         if (0 == aFreezeStatusBar)
           mStatusBar.Clear();
-      });
+      }, DispatcherPriority.Normal);
     }
 
     public static void Animation(vsStatusAnimation aAnimation, int aEnableAnimation)
@@ -53,7 +54,7 @@ namespace ClangPowerTools
 
         // Display the icon in the Animation region.  
         mStatusBar.Animation(aEnableAnimation, ref icon);
-      });
+      }, DispatcherPriority.Normal);
     }
 
     public static void Status(string aText, int aFreezeStatusBar, vsStatusAnimation aAnimation, int aEnableAnimation)

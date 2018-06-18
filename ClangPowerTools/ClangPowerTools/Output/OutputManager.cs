@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Windows.Threading;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -60,7 +61,7 @@ namespace ClangPowerTools
       DispatcherHandler.BeginInvoke(() =>
       {
         mOutputWindow.Clear();
-      });
+      }, DispatcherPriority.Normal);
     }
 
     public void Show()
@@ -68,7 +69,7 @@ namespace ClangPowerTools
       DispatcherHandler.BeginInvoke(() =>
       {
         mOutputWindow.Show(mDte);
-      });
+      }, DispatcherPriority.Normal);
     }
 
     public void AddMessage(string aMessage)
@@ -78,7 +79,7 @@ namespace ClangPowerTools
         if (String.IsNullOrWhiteSpace(aMessage))
           return;
         mOutputWindow.Write(aMessage);
-      });
+      }, DispatcherPriority.Normal);
     }
 
     private void ProcessOutput(string aMessage)

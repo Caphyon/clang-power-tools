@@ -21,17 +21,17 @@ namespace ClangPowerTools
       mDispatcher = HwndSource.FromHwnd((IntPtr)aDte.MainWindow.HWnd).RootVisual.Dispatcher;
     }
 
-    public static void BeginInvoke(Action aAction)
+    public static void BeginInvoke(Action aAction, DispatcherPriority aPrioriry)
     {
-      mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+      mDispatcher.BeginInvoke(aPrioriry, new Action(() =>
       {
-        aAction.Invoke();
+        aAction.BeginInvoke(aAction.EndInvoke, null);
       }));
     }
 
-    public static void Invoke(Action aAction)
+    public static void Invoke(Action aAction, DispatcherPriority aPrioriry)
     {
-      mDispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+      mDispatcher.Invoke(aPrioriry, new Action(() =>
       {
         aAction.Invoke();
       }));

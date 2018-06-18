@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Threading;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -46,7 +47,7 @@ namespace ClangPowerTools
 
         mErrorWindow.Show();
         mErrorWindow.ResumeRefresh();
-      });
+      }, DispatcherPriority.Normal);
     }
 
     public void AddErrors(IEnumerable<TaskError> aErrors)
@@ -60,7 +61,7 @@ namespace ClangPowerTools
 
         mErrorWindow.Show();
         mErrorWindow.ResumeRefresh();
-      });
+      }, DispatcherPriority.Normal);
     }
 
     public void RemoveErrors(IVsHierarchy aHierarchy)
@@ -70,7 +71,7 @@ namespace ClangPowerTools
         mErrorWindow.SuspendRefresh();
         mErrorWindow.RemoveErrors(aHierarchy);
         mErrorWindow.ResumeRefresh();
-      });
+      }, DispatcherPriority.Normal);
     }
 
     public void Clear()
@@ -78,7 +79,7 @@ namespace ClangPowerTools
       DispatcherHandler.BeginInvoke(() =>
       {
         mErrorWindow.Clear();
-      });
+      }, DispatcherPriority.Normal);
     }
 
     public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action)

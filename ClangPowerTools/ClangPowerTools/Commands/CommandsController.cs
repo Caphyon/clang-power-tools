@@ -2,6 +2,7 @@
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
+using System.Windows.Threading;
 
 namespace ClangPowerTools
 {
@@ -38,7 +39,7 @@ namespace ClangPowerTools
       DispatcherHandler.Invoke(() =>
       {
         Running = false;
-      });
+      }, DispatcherPriority.Normal);
     }
 
     public void QueryCommandHandler(object sender, EventArgs e)
@@ -68,7 +69,7 @@ namespace ClangPowerTools
           command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !Running : Running;
           command.Visible = true;
         }
-      });
+      }, DispatcherPriority.Normal);
      
     }
 
