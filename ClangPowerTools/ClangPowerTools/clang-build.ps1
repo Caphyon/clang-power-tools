@@ -765,7 +765,13 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # FIND LIST OF CPPs TO PROCESS
 
   [System.Collections.Hashtable] $projCpps = @{}
-  Get-ProjectFilesToCompile -pchCppName  $stdafxCpp | ForEach-Object { $projCpps[$_] = $true }
+  foreach ($fileToCompile in (Get-ProjectFilesToCompile -pchCppName $stdafxCpp))
+  {
+    if (![string]::IsNullOrEmpty($fileToCompile))
+    {
+      $projCpps[$fileToCompile] = $true
+    }
+  }
 
   if ($projCpps.Count -gt 0 -and $aCppToCompile.Count -gt 0)
   {
@@ -920,25 +926,35 @@ Write-Verbose "Scanning for project files"
 [System.IO.FileInfo[]] $projects = Get-Projects
 Write-Verbose ("Found $($projects.Count) projects")
 
+# ------------------------------------------------------------------------------------------------
+# If we get headers in the -file arg we have to detect CPPs that include that header
+
+if ($aCppToCompile.Count -gt 0)
+{
+  # We've been given particular files to compile. If headers are among them
+  # we'll find all source files that include them and tag them for processing.
+  [string[]] $headerRefs = Get-HeaderReferences -files $aCppToCompile
+  if ($headerRefs.Count -gt 0)
+  {
+    Write-Verbose-Array -name "Detected source files" -array $headerRefs
+
+    $aCppToCompile += $headerRefs
+  }
+}
+# ------------------------------------------------------------------------------------------------
+
 [System.IO.FileInfo[]] $projectsToProcess = @()
 
-if ([string]::IsNullOrEmpty($aVcxprojToCompile) -and
-    [string]::IsNullOrEmpty($aVcxprojToIgnore))
+if (!$aVcxprojToCompile -and !$aVcxprojToIgnore)
 {
-  Write-Verbose "PROCESSING ALL PROJECTS"
-  $projectsToProcess = $projects
+  $projectsToProcess = $projects # we process all projects
 }
 else
 {
-  $projectsToProcess = $projects |
+  # some filtering has to be done
+  $projectsToProcess = $projects | `
                        Where-Object {       (Should-CompileProject -vcxprojPath $_.FullName) `
                                       -and !(Should-IgnoreProject  -vcxprojPath $_.FullName ) }
-
-  if ($projectsToProcess.Count -gt 1)
-  {
-    Write-Output ("PROJECTS: `n`t" + ($projectsToProcess -join "`n`t"))
-    $projectsToProcess = $projectsToProcess
-  }
 
   if ($projectsToProcess.Count -eq 0)
   {
@@ -946,16 +962,31 @@ else
   }
 }
 
-# ------------------------------------------------------------------------------------------------
-# If we get headers in the -file arg we have to detect CPPs that include that header
-
-if ($aCppToCompile.Count -gt 0)
+if ($aCppToCompile -and $projectsToProcess.Count -gt 1)
 {
-  [string[]] $headerRefs = Get-HeaderReferences -files $aCppToCompile
-  if ($headerRefs.Count -gt 0)
+  # We've been given particular files to compile, we can narrow down 
+  # the projects to be processed (those that include any of the particular files)
+  
+  # For obvious performance reasons, no filtering is done when there's only one project to process.
+  [System.IO.FileInfo[]] $projectsThatIncludeFiles = Get-SourceCodeIncludeProjects -projectPool $projectsToProcess `
+                                                                                   -files $aCppToCompile
+  Write-Verbose-Array -name "Detected projects" -array $projectsThatIncludeFiles
+ 
+  # some projects include files using wildcards, we won't match anything in them
+  # so when matching nothing we don't do filtering at all
+  if ($projectsThatIncludeFiles)
   {
-    $aCppToCompile += $headerRefs
+    $projectsToProcess = $projectsThatIncludeFiles
   }
+}
+
+if ($projectsToProcess.Count -eq $projects.Count)
+{
+  Write-Verbose "PROCESSING ALL PROJECTS"
+}
+else
+{
+  Write-Output ("PROJECTS: `n`t" + ($projectsToProcess -join "`n`t"))
 }
 
 # ------------------------------------------------------------------------------------------------

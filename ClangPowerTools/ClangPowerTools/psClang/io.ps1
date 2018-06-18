@@ -26,6 +26,11 @@ Function Write-Verbose-Array($array, $name)
     $array | ForEach-Object { Write-Verbose "  $_" }
 }
 
+Function Write-Verbose-Timed([parameter(ValueFromPipeline, Mandatory = $true)][string] $msg)
+{
+    Write-Verbose "$([DateTime]::Now.ToString("[HH:mm:ss]")) $msg"
+}
+
 Function Print-InvocationArguments()
 {
     $bParams = $PSCmdlet.MyInvocation.BoundParameters
