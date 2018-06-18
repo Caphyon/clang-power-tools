@@ -25,7 +25,7 @@ namespace ClangPowerTools
     {
       mDispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
       {
-        aAction.Invoke();
+        aAction.BeginInvoke(aAction.EndInvoke, null);
       }));
     }
 
