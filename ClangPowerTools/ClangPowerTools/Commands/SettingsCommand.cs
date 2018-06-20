@@ -16,15 +16,25 @@ namespace ClangPowerTools
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public SettingsCommand(Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
+    public SettingsCommand(AsyncPackage aPackage, Guid aGuid, int aId)
     {
-      if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+      Initialize(aPackage, aGuid, aId);
+    }
+
+    private async void Initialize(AsyncPackage aPackage, Guid aGuid, int aId)
+    {
+      await base.Init(aPackage, aGuid, aId);
+
+      var commandService = await ServiceProvider.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+
+      if (null != commandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
         var menuItem = new MenuCommand(this.ShowSettings, menuCommandID);
         commandService.AddCommand(menuItem);
       }
     }
+
 
     #endregion
 
@@ -39,7 +49,7 @@ namespace ClangPowerTools
     /// <param name="e">Event args.</param>
     private void ShowSettings(object sender, EventArgs e)
     {
-      Package.ShowOptionPage(typeof(ClangGeneralOptionsView));
+      AsyncPackage.ShowOptionPage(typeof(ClangGeneralOptionsView));
     }
 
     #endregion

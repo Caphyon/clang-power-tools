@@ -1,12 +1,24 @@
 ﻿using System;
-using Microsoft.VisualStudio.Shell;
 using EnvDTE80;
 using EnvDTE;
 using System.Collections.Generic;
+using Microsoft.VisualStudio.Shell;
 
 namespace ClangPowerTools
 {
-  public abstract class BasicCommand
+
+  /// <summary>
+  /// Marks a type as requiring asynchronous initialization and provides the result of that initialization.
+  /// </summary>
+  public interface IAsyncInitialization
+  {
+    /// <summary>
+    /// The result of the asynchronous initialization of this instance.
+    /// </summary>
+    System.Threading.Tasks.Task Initialization { get; }
+  }
+
+  public abstract class BasicCommand : IAsyncInitialization
   {
     #region Members
 
@@ -25,24 +37,33 @@ namespace ClangPowerTools
 
     protected int Id { get; set; }
     protected Guid CommandSet { get; set; }
-    protected Package Package { get; set; }
-    protected IServiceProvider ServiceProvider => Package;
+    protected AsyncPackage AsyncPackage { get; set; }
+    protected Package Package => AsyncPackage;
+    protected IAsyncServiceProvider ServiceProvider => AsyncPackage;
     protected DTE2 DTEObj { get; set; }
+
+    public System.Threading.Tasks.Task Initialization { get; private set; }
+
 
     #endregion
 
     #region Constructor
 
-    protected BasicCommand(Package aPackage, Guid aGuid, int aId)
+
+    public async System.Threading.Tasks.Task Init(AsyncPackage aPackage, Guid aGuid, int aId)
     {
-      Package = aPackage ?? throw new ArgumentNullException("package");
+      AsyncPackage = aPackage ?? throw new ArgumentNullException("AsyncPackage");
       CommandSet = aGuid;
       Id = aId;
 
-      DTEObj = (DTE2)ServiceProvider.GetService(typeof(DTE));
+      DTEObj = await ServiceProvider.GetServiceAsync(typeof(DTE)) as DTE2;
+      
     }
 
     #endregion
 
   }
+
+
+
 }

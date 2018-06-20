@@ -10,14 +10,14 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private IServiceProvider mServiceProvider;
+    private IAsyncServiceProvider mServiceProvider;
     private DTE2 mDte;
 
     #endregion
 
     #region Constructor
 
-    public CommandsController(IServiceProvider aServiceProvider, DTE2 aDte)
+    public CommandsController(IAsyncServiceProvider aServiceProvider, DTE2 aDte)
     {
       mDte = aDte;
       mServiceProvider = aServiceProvider;

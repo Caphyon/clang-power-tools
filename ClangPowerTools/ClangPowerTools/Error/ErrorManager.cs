@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Windows.Threading;
 using EnvDTE;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools
@@ -50,18 +51,18 @@ namespace ClangPowerTools
       }, DispatcherPriority.Normal);
     }
 
-    public void AddErrors(IEnumerable<TaskError> aErrors)
+    public async void AddErrors(IEnumerable<TaskError> aErrors)
     {
-      DispatcherHandler.BeginInvoke(() =>
-      {
-        mErrorWindow.SuspendRefresh();
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-        foreach (TaskError error in aErrors)
-          mErrorWindow.AddError(error);
+      mErrorWindow.SuspendRefresh();
 
-        mErrorWindow.Show();
-        mErrorWindow.ResumeRefresh();
-      }, DispatcherPriority.Normal);
+      foreach (TaskError error in aErrors)
+        mErrorWindow.AddError(error);
+
+      mErrorWindow.Show();
+      mErrorWindow.ResumeRefresh();
+
     }
 
     public void RemoveErrors(IVsHierarchy aHierarchy)

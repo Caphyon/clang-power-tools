@@ -16,10 +16,10 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public static void Initialize(IServiceProvider aServiceProvider)
+    public async static void Initialize(Microsoft.VisualStudio.Shell.IAsyncServiceProvider aServiceProvider)
     {
       if (null == mStatusBar)
-        mStatusBar = (IVsStatusbar)aServiceProvider.GetService(typeof(SVsStatusbar));
+        mStatusBar = await aServiceProvider.GetServiceAsync(typeof(SVsStatusbar)) as IVsStatusbar;
     }
 
     public static void Text(string aText, int aFreezeStatusBar)

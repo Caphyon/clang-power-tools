@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools.Commands
 {
@@ -20,10 +21,18 @@ namespace ClangPowerTools.Commands
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public StopClang(Package aPackage, Guid aGuid, int aId, CommandsController aCommandsController) 
-      : base(aCommandsController, aPackage, aGuid, aId)
+    public StopClang(AsyncPackage aPackage, Guid aGuid, int aId, CommandsController aCommandsController, IVsSolution aSolution) 
+      : base(aCommandsController, aSolution, aPackage, aGuid, aId)
     {
-      if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+      Initialize();
+    }
+
+
+    private async void Initialize()
+    {
+      var commandService = await ServiceProvider.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+
+      if (null != commandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
         var menuCommand = new OleMenuCommand(this.RunStopClangCommand, menuCommandID);
@@ -32,6 +41,7 @@ namespace ClangPowerTools.Commands
         commandService.AddCommand(menuCommand);
       }
     }
+
 
     /// <summary>
     /// This function is the callback used to execute the command when the menu item is clicked.

@@ -17,6 +17,7 @@ namespace ClangPowerTools
 
     #endregion
 
+
     #region Constructor
 
     /// <summary>
@@ -24,10 +25,18 @@ namespace ClangPowerTools
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public CompileCommand(Package aPackage, Guid aGuid, int aId, CommandsController aCommandsController) 
-      : base(aCommandsController, aPackage, aGuid, aId)
+    public CompileCommand(AsyncPackage aPackage, Guid aGuid, int aId, CommandsController aCommandsController, IVsSolution aSolution) 
+      : base(aCommandsController, aSolution, aPackage, aGuid, aId)
     {
-      if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+      Initialize();
+    }
+
+    public async void Initialize()
+    {
+
+      var commandService = await ServiceProvider.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+
+      if (null != commandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
         var menuCommand = new OleMenuCommand(this.RunClangCompile, menuCommandID);
@@ -36,6 +45,7 @@ namespace ClangPowerTools
         commandService.AddCommand(menuCommand);
       }
     }
+
 
     #endregion
 
@@ -93,14 +103,14 @@ namespace ClangPowerTools
         try
         {
           DocumentsHandler.SaveActiveDocuments((DTE)DTEObj);
-          AutomationUtil.SaveDirtyProjects(ServiceProvider, DTEObj.Solution);
+          AutomationUtil.SaveDirtyProjects(DTEObj.Solution);
 
           CollectSelectedItems(ScriptConstants.kAcceptedFileExtensions);
           RunScript(OutputWindowConstants.kComplileCommand);
         }
         catch (Exception exception)
         {
-          VsShellUtilities.ShowMessageBox(Package, exception.Message, "Error",
+          VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
       }).ContinueWith(tsk => mCommandsController.AfterExecute());

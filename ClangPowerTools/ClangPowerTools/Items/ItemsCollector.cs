@@ -12,15 +12,13 @@ namespace ClangPowerTools
 
     private List<string> mAcceptedFileExtensions = new List<string>();
     private List<IItem> mItems = new List<IItem>();
-    private IServiceProvider mServiceProvider;
 
     #endregion
 
     #region Constructor
 
-    public ItemsCollector(IServiceProvider aServiceProvider, List<string> aExtensions = null)
+    public ItemsCollector(List<string> aExtensions = null)
     {
-      mServiceProvider = aServiceProvider;
       mAcceptedFileExtensions = aExtensions;
     }
 
@@ -85,7 +83,7 @@ namespace ClangPowerTools
 
     private void GetProjectsFromSolution(Solution aSolution)
     {
-      mItems = AutomationUtil.GetAllProjects(mServiceProvider, aSolution);
+      mItems = AutomationUtil.GetAllProjects(aSolution);
     }
 
     private void AddProject(Project aProject) => mItems.Add(new SelectedProject(aProject));
