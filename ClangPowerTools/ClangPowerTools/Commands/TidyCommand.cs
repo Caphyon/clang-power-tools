@@ -119,8 +119,11 @@ namespace ClangPowerTools
     /// <param name="e">Event args.</param>
     private void RunClangTidy(object sender, EventArgs e)
     {
+      if (mCommandsController.Running)
+        return;
+
       mCommandsController.Running = true;
-      var task = System.Threading.Tasks.Task.Run(() =>
+      System.Threading.Tasks.Task.Run(() =>
       {
         try
         {
@@ -158,6 +161,7 @@ namespace ClangPowerTools
           mForceTidyToFix = false;
         }
       }).ContinueWith(tsk => mCommandsController.AfterExecute());
+
     }
 
     #endregion

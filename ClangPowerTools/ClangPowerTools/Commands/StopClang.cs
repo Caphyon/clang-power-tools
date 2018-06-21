@@ -21,7 +21,7 @@ namespace ClangPowerTools.Commands
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public StopClang(AsyncPackage aPackage, Guid aGuid, int aId, CommandsController aCommandsController, IVsSolution aSolution) 
+    public StopClang(AsyncPackage aPackage, Guid aGuid, int aId, CommandsController aCommandsController, IVsSolution aSolution)
       : base(aCommandsController, aSolution, aPackage, aGuid, aId)
     {
       Initialize();
@@ -53,7 +53,8 @@ namespace ClangPowerTools.Commands
     private void RunStopClangCommand(object sender, EventArgs e)
     {
       mCommandsController.Running = false;
-      var task = System.Threading.Tasks.Task.Run(() =>
+
+      System.Threading.Tasks.Task.Run(() =>
       {
         try
         {
@@ -66,7 +67,6 @@ namespace ClangPowerTools.Commands
           mDirectoriesPath.Clear();
         }
         catch (Exception) { }
-
       });
     }
 

@@ -25,7 +25,7 @@ namespace ClangPowerTools
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public CompileCommand(AsyncPackage aPackage, Guid aGuid, int aId, CommandsController aCommandsController, IVsSolution aSolution) 
+    public CompileCommand(AsyncPackage aPackage, Guid aGuid, int aId, CommandsController aCommandsController, IVsSolution aSolution)
       : base(aCommandsController, aSolution, aPackage, aGuid, aId)
     {
       Initialize();
@@ -98,7 +98,8 @@ namespace ClangPowerTools
         return;
 
       mCommandsController.Running = true;
-      var task = System.Threading.Tasks.Task.Run(() =>
+
+      System.Threading.Tasks.Task.Run(() =>
       {
         try
         {
@@ -113,7 +114,9 @@ namespace ClangPowerTools
           VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
+
       }).ContinueWith(tsk => mCommandsController.AfterExecute());
+
     }
 
     #endregion

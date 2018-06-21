@@ -167,7 +167,9 @@ namespace ClangPowerTools.Commands
       }
     }
 
+
     private ClangFormatOptionsView GetUserOptions() => (ClangFormatOptionsView)AsyncPackage.GetDialogPage(typeof(ClangFormatOptionsView));
+
 
     private bool SkipFile(string aFilePath, string aSkipFiles)
     {

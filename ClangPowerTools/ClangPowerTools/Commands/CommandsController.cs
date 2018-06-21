@@ -2,7 +2,7 @@
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
-using System.Windows.Threading;
+using ClangPowerTools.Handlers;
 
 namespace ClangPowerTools
 {
@@ -36,15 +36,15 @@ namespace ClangPowerTools
 
     public void AfterExecute()
     {
-      DispatcherHandler.Invoke(() =>
+      UIUpdater.Invoke(() =>
       {
         Running = false;
-      }, DispatcherPriority.Normal);
+      });
     }
 
     public void QueryCommandHandler(object sender, EventArgs e)
     {
-      DispatcherHandler.Invoke(() =>
+      UIUpdater.Invoke(() =>
       {
         //var itemsCollector = new ItemsCollector(mPackage);
         //itemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));
@@ -69,8 +69,9 @@ namespace ClangPowerTools
           command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !Running : Running;
           command.Visible = true;
         }
-      }, DispatcherPriority.Normal);
-     
+
+      });
+
     }
 
     public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action)

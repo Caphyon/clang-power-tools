@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows.Threading;
+using ClangPowerTools.Handlers;
 using EnvDTE;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools
@@ -39,7 +38,7 @@ namespace ClangPowerTools
 
     public void AddError(TaskError aError)
     {
-      DispatcherHandler.BeginInvoke(() =>
+      UIUpdater.Invoke(() =>
       {
         mErrorWindow.SuspendRefresh();
 
@@ -48,39 +47,42 @@ namespace ClangPowerTools
 
         mErrorWindow.Show();
         mErrorWindow.ResumeRefresh();
-      }, DispatcherPriority.Normal);
+      });
     }
-
-    public async void AddErrors(IEnumerable<TaskError> aErrors)
+    /// <summary>
+    /// //////////////
+    /// </summary>
+    /// <param name="aErrors"></param>
+    public void AddErrors(IEnumerable<TaskError> aErrors)
     {
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      UIUpdater.Invoke(() =>
+      {
+        mErrorWindow.SuspendRefresh();
 
-      mErrorWindow.SuspendRefresh();
+        foreach (TaskError error in aErrors)
+          mErrorWindow.AddError(error);
 
-      foreach (TaskError error in aErrors)
-        mErrorWindow.AddError(error);
-
-      mErrorWindow.Show();
-      mErrorWindow.ResumeRefresh();
-
+        mErrorWindow.Show();
+        mErrorWindow.ResumeRefresh();
+      });
     }
 
     public void RemoveErrors(IVsHierarchy aHierarchy)
     {
-      DispatcherHandler.BeginInvoke(() =>
+      UIUpdater.Invoke(() =>
       {
         mErrorWindow.SuspendRefresh();
         mErrorWindow.RemoveErrors(aHierarchy);
         mErrorWindow.ResumeRefresh();
-      }, DispatcherPriority.Normal);
+      });
     }
 
     public void Clear()
     {
-      DispatcherHandler.BeginInvoke(() =>
+      UIUpdater.Invoke(() =>
       {
         mErrorWindow.Clear();
-      }, DispatcherPriority.Normal);
+      });
     }
 
     public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action)

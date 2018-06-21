@@ -4,11 +4,13 @@ using System.Diagnostics;
 using System.Text;
 using System.Windows.Threading;
 using EnvDTE80;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using ClangPowerTools.Handlers;
 
 namespace ClangPowerTools
 {
-    public class OutputManager
+  public class OutputManager
   {
     #region Members
 
@@ -58,28 +60,28 @@ namespace ClangPowerTools
 
     public void Clear()
     {
-      DispatcherHandler.BeginInvoke(() =>
+      UIUpdater.Invoke(() =>
       {
         mOutputWindow.Clear();
-      }, DispatcherPriority.Normal);
+      });
     }
 
     public void Show()
     {
-      DispatcherHandler.BeginInvoke(() =>
+      UIUpdater.Invoke(() =>
       {
         mOutputWindow.Show(mDte);
-      }, DispatcherPriority.Normal);
+      });
     }
 
     public void AddMessage(string aMessage)
     {
-      DispatcherHandler.BeginInvoke(() =>
+      UIUpdater.Invoke(() =>
       {
         if (String.IsNullOrWhiteSpace(aMessage))
           return;
         mOutputWindow.Write(aMessage);
-      }, DispatcherPriority.Normal);
+      });
     }
 
     private void ProcessOutput(string aMessage)

@@ -14,7 +14,6 @@ using System.Xml;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ClangPowerTools
 {
@@ -223,7 +222,6 @@ namespace ClangPowerTools
 
         InitializeCommands();
         
-        DispatcherHandler.Initialize(dte);
         StatusBarHandler.Initialize(this);
         ErrorManager.Initialize(this);
 
