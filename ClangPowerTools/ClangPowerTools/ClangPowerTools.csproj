@@ -80,7 +80,7 @@
     <Compile Include="Convertors\BooleanToVisibilityConverter.cs" />
     <Compile Include="Convertors\ClangFormatFallbackStyleConverter.cs" />
     <Compile Include="Convertors\ClangFormatStyleConverter.cs" />
-    <Compile Include="Handlers\UIUpdater.cs" />
+    <Compile Include="Helpers\UIUpdater.cs" />
     <Compile Include="Options\ClangFormatPathValue.cs" />
     <Compile Include="Options\HeaderFiltersValue.cs" />
     <Compile Include="Options\Model\ClangTidyPredefinedChecksOptions.cs" />
@@ -103,8 +103,8 @@
     <Compile Include="Options\ViewModel\ClangTidyCustomChecksOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Handlers\DispatcherHandler.cs" />
-    <Compile Include="Handlers\DocumentsHandler.cs" />
+    <Compile Include="Helpers\DispatcherHandler.cs" />
+    <Compile Include="Helpers\DocumentsHandler.cs" />
     <Compile Include="Error\ErrorParser.cs" />
     <Compile Include="Error\ErrorParserConstants.cs" />
     <Compile Include="Error\ErrorManager.cs" />
@@ -159,7 +159,7 @@
     <Compile Include="Options\View\WpfPropertyGrid\ProvideToolboxControlAttribute.cs" />
     <Compile Include="Options\View\WpfPropertyGrid\VisualTreeHelperExtension.cs" />
     <Compile Include="PCHCleaner.cs" />
-    <Compile Include="Handlers\ProjectConfigurationHandler.cs" />
+    <Compile Include="Helpers\ProjectConfigurationHandler.cs" />
     <Compile Include="RunningDocTableEvents.cs" />
     <Compile Include="Script\ClangCompileTidyScript.cs" />
     <Compile Include="Script\RunningProcesses.cs" />
@@ -197,7 +197,7 @@
     <Compile Include="Convertors\OldConvertors\ComboBoxConvertor.cs" />
     <Compile Include="Convertors\ClangTidyUseChecksFromConvertor.cs" />
     <Compile Include="SilentFile\SilentFileController.cs" />
-    <Compile Include="Handlers\StatusBarHandler.cs" />
+    <Compile Include="Helpers\StatusBarHandler.cs" />
     <Compile Include="StringExtension.cs" />
     <Compile Include="ClangFormatPathAttribute.cs" />
     <Compile Include="Vsix.cs" />
