@@ -62,12 +62,20 @@ Set-Variable -name kVcxprojXpathCppStandard `
              -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:LanguageStandard" `
              -option Constant
 
+
+Set-Variable -name kVcxprojXpathProjectCompileAs `
+             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:CompileAs" `
+             -option Constant
 # ------------------------------------------------------------------------------------------------
 # Default platform sdks and standard
 
 Set-Variable -name kVSDefaultWinSDK            -value '8.1'             -option Constant
 Set-Variable -name kVSDefaultWinSDK_XP         -value '7.0'             -option Constant
-Set-Variable -name kDefaultCppStd              -value "stdcpp14"              -option Constant
+Set-Variable -name kDefaultCppStd              -value "stdcpp14"        -option Constant
+
+
+# ------------------------------------------------------------------------------------------------
+Set-Variable -name kCProjectCompile         -value "CompileAsC" -option Constant
 
 Function Should-CompileProject([Parameter(Mandatory = $true)][string] $vcxprojPath)
 {
@@ -187,6 +195,12 @@ Function Get-ProjectHeaders()
         }
     }
     return $headerPaths
+}
+
+Function Is-CProject()
+{
+    [string] $compileAs = (Select-ProjectNodes($kVcxprojXpathProjectCompileAs)).InnerText
+    return $compileAs -eq $kCProjectCompile
 }
 
 Function Get-Project-SDKVer()

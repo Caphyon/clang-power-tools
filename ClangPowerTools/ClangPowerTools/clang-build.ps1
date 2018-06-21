@@ -105,8 +105,8 @@
 
 .PARAMETER aVisualStudioSku
       Alias 'vs-sku'. Sku of Visual Studio (VC++) installed and that'll be used for
-      standard library include directories. E.g. Professional. 
-      
+      standard library include directories. E.g. Professional.
+
       If not given, the first detected Visual Studio SKU will be used.
 
 .NOTES
@@ -350,6 +350,12 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
                      , [Parameter(Mandatory=$true)] [string]   $stdafxHeaderName
                      , [Parameter(Mandatory=$false)][string[]] $preprocessorDefinitions)
 {
+  if (Is-CProject)
+  {
+    Write-Verbose "Skipping PCH creation for C project."
+    return ""
+  }
+
   [string] $stdafx = (Canonize-Path -base $stdafxDir -child $stdafxHeaderName)
   [string] $vcxprojShortName = [System.IO.Path]::GetFileNameWithoutExtension($global:vcxprojPath);
   [string] $stdafxPch = (Join-Path -path (Get-SourceDirectory) `
@@ -417,7 +423,7 @@ Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $prep
                                  , [Parameter(Mandatory=$true)][string]    $fileToCompile)
 {
   [string[]] $projectCompileArgs = @()
-  if (! [string]::IsNullOrEmpty($pchFilePath))
+  if (! [string]::IsNullOrEmpty($pchFilePath) -and ! $fileToCompile.EndsWith($kExtensionC))
   {
     $projectCompileArgs += @($kClangFlagIncludePch , """$pchFilePath""")
   }
@@ -515,7 +521,7 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
   $tidyArgs += $preprocessorDefinitions
   $tidyArgs += $languageFlag
 
-  if (! [string]::IsNullOrEmpty($pchFilePath))
+  if (! [string]::IsNullOrEmpty($pchFilePath) -and ! $fileToTidy.EndsWith($kExtensionC))
   {
     $tidyArgs += @($kClangFlagIncludePch , """$pchFilePath""")
   }
