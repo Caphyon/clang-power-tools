@@ -6,19 +6,7 @@ using Microsoft.VisualStudio.Shell;
 
 namespace ClangPowerTools
 {
-
-  /// <summary>
-  /// Marks a type as requiring asynchronous initialization and provides the result of that initialization.
-  /// </summary>
-  public interface IAsyncInitialization
-  {
-    /// <summary>
-    /// The result of the asynchronous initialization of this instance.
-    /// </summary>
-    System.Threading.Tasks.Task Initialization { get; }
-  }
-
-  public abstract class BasicCommand : IAsyncInitialization
+  public abstract class BasicCommand
   {
     #region Members
 
@@ -36,28 +24,30 @@ namespace ClangPowerTools
     #region Properties
 
     protected int Id { get; set; }
+
     protected Guid CommandSet { get; set; }
+
     protected AsyncPackage AsyncPackage { get; set; }
+
     protected Package Package => AsyncPackage;
-    protected IAsyncServiceProvider ServiceProvider => AsyncPackage;
+
+    protected IAsyncServiceProvider AsyncServiceProvider => AsyncPackage;
+
+    protected IServiceProvider ServiceProvider => Package;
+
     protected DTE2 DTEObj { get; set; }
-
-    public System.Threading.Tasks.Task Initialization { get; private set; }
-
 
     #endregion
 
     #region Constructor
 
 
-    public async System.Threading.Tasks.Task Init(AsyncPackage aPackage, Guid aGuid, int aId)
+    protected BasicCommand(DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
     {
       AsyncPackage = aPackage ?? throw new ArgumentNullException("AsyncPackage");
       CommandSet = aGuid;
       Id = aId;
-
-      DTEObj = await ServiceProvider.GetServiceAsync(typeof(DTE)) as DTE2;
-      
+      DTEObj = aDte;
     }
 
     #endregion

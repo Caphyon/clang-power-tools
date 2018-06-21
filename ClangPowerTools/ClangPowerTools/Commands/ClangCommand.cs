@@ -47,14 +47,12 @@ namespace ClangPowerTools
 
     #endregion
 
+
     #region Constructor
 
-    public ClangCommand(CommandsController aCommandsController, IVsSolution aSolution, AsyncPackage aPackage, Guid aGuid, int aId)
-    {
-      Initialize(aCommandsController, aSolution, aPackage, aGuid, aId);
-    }
-
-    private async void Initialize(CommandsController aCommandsController, IVsSolution aSolution, AsyncPackage aPackage, Guid aGuid, int aId)
+    public ClangCommand(CommandsController aCommandsController, IVsSolution aSolution, 
+      DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
+        : base(aDte, aPackage, aGuid, aId)
     {
       if (null == mCommandsController)
         mCommandsController = aCommandsController;
@@ -62,15 +60,11 @@ namespace ClangPowerTools
       mGeneralOptions = (ClangGeneralOptionsView)aPackage.GetDialogPage(typeof(ClangGeneralOptionsView));
 
       mSolution = aSolution;
-
-      await base.Init(aPackage, aGuid, aId);
-
       mCommand = DTEObj.Commands as Commands2;
       VsEdition = DTEObj.Edition;
       mVsVersions.TryGetValue(DTEObj.Version, out string version);
       VsVersion = version;
     }
-
 
     #endregion
 

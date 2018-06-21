@@ -1,20 +1,12 @@
 ﻿using EnvDTE;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using System;
 using System.Collections.Generic;
 
 namespace ClangPowerTools
 {
   public class AutomationUtil
   {
-    #region Members
-
-    private static IVsSolution mSolution;
-
-    #endregion
-
 
     #region Public Methods
 
@@ -39,22 +31,10 @@ namespace ClangPowerTools
 
     public static IVsHierarchy GetProjectHierarchy(IVsSolution aSolution, Project aProject)
     {
-      // serviceTask.RunSynchronously();
-
-      // IVsSolution vsSolution = serviceTask as IVsSolution;
-
-      //InitServiceTask(aPackage);
-
-      return VSConstants.S_OK == aSolution.GetProjectOfUniqueName(aProject.UniqueName, out IVsHierarchy hierarchy) ?
-        hierarchy : null;
+      return 
+        VSConstants.S_OK == aSolution.GetProjectOfUniqueName(aProject.UniqueName, out IVsHierarchy hierarchy) ?
+          hierarchy : null;
     }
-
-    //private static void InitServiceTask(AsyncPackage aPackage)
-    //{
-
-    //  mSolution = aPackage.GetService(typeof(SVsSolution)) as IVsSolution;
-    //}
-
 
     public static IVsHierarchy GetItemHierarchy(IVsSolution aSolution, IItem aItem )
     {

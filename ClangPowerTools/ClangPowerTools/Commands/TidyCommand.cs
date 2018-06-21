@@ -6,6 +6,7 @@ using ClangPowerTools.DialogPages;
 using ClangPowerTools.SilentFile;
 using System.Linq;
 using EnvDTE;
+using EnvDTE80;
 
 namespace ClangPowerTools
 {
@@ -37,20 +38,9 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
 
-    public TidyCommand(AsyncPackage aPackage, Guid aGuid, int aId, CommandsController aCommandsController, IVsSolution aSolution) 
-      : base(aCommandsController, aSolution, aPackage, aGuid, aId)
-    {
-      //mTidyOptions = (ClangTidyOptionsView)Package.GetDialogPage(typeof(ClangTidyOptionsView));
-      //mTidyChecks = (ClangTidyPredefinedChecksOptionsView)Package.GetDialogPage(typeof(ClangTidyPredefinedChecksOptionsView));
-      //mTidyCustomChecks = (ClangTidyCustomChecksOptionsView)Package.GetDialogPage(typeof(ClangTidyCustomChecksOptionsView));
-      //mClangFormatView = (ClangFormatOptionsView)Package.GetDialogPage(typeof(ClangFormatOptionsView));
-
-      //mFileOpener = new FileOpener(DTEObj);
-
-      Initialize();
-    }
-
-    private async void Initialize()
+    public TidyCommand(CommandsController aCommandsController, IVsSolution aSolution, 
+      DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId) 
+        : base(aCommandsController, aSolution, aDte, aPackage, aGuid, aId)
     {
       mTidyOptions = (ClangTidyOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyOptionsView));
       mTidyChecks = (ClangTidyPredefinedChecksOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyPredefinedChecksOptionsView));
@@ -59,7 +49,7 @@ namespace ClangPowerTools
 
       mFileOpener = new FileOpener(DTEObj);
 
-      var commandService = await ServiceProvider.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+      var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
       if (null != commandService)
       {
@@ -73,6 +63,7 @@ namespace ClangPowerTools
 
 
     #endregion
+
 
     #region Public Methods
 

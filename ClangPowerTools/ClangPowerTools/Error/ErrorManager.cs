@@ -49,10 +49,8 @@ namespace ClangPowerTools
         mErrorWindow.ResumeRefresh();
       });
     }
-    /// <summary>
-    /// //////////////
-    /// </summary>
-    /// <param name="aErrors"></param>
+
+
     public void AddErrors(IEnumerable<TaskError> aErrors)
     {
       UIUpdater.Invoke(() =>
@@ -66,6 +64,7 @@ namespace ClangPowerTools
         mErrorWindow.ResumeRefresh();
       });
     }
+
 
     public void RemoveErrors(IVsHierarchy aHierarchy)
     {

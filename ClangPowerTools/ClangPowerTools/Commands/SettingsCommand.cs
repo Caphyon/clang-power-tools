@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Design;
+using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 
 namespace ClangPowerTools
@@ -16,16 +17,10 @@ namespace ClangPowerTools
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public SettingsCommand(AsyncPackage aPackage, Guid aGuid, int aId)
+    public SettingsCommand(DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
+      : base(aDte, aPackage, aGuid, aId)
     {
-      Initialize(aPackage, aGuid, aId);
-    }
-
-    private async void Initialize(AsyncPackage aPackage, Guid aGuid, int aId)
-    {
-      await base.Init(aPackage, aGuid, aId);
-
-      var commandService = await ServiceProvider.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+      var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
       if (null != commandService)
       {
@@ -35,10 +30,10 @@ namespace ClangPowerTools
       }
     }
 
-
     #endregion
 
-    #region Command
+
+    #region Private Methods
 
     /// <summary>
     /// This function is the callback used to execute the command when the menu item is clicked.

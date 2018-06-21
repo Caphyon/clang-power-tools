@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml.Linq;
 using ClangPowerTools.DialogPages;
 using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
@@ -31,15 +32,11 @@ namespace ClangPowerTools.Commands
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public ClangFormatCommand(AsyncPackage aPackage, Guid aGuid, int aId, CommandsController aCommandsController, IVsSolution aSolution)
-      : base(aCommandsController, aSolution, aPackage, aGuid, aId)
+    public ClangFormatCommand(CommandsController aCommandsController, IVsSolution aSolution,
+      DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
+        : base(aCommandsController, aSolution, aDte, aPackage, aGuid, aId)
     {
-      Initialize();
-    }
-
-    private async void Initialize()
-    {
-      var commandService = await ServiceProvider.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+      var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
       if (null != commandService)
       {
@@ -51,8 +48,8 @@ namespace ClangPowerTools.Commands
       }
     }
 
-
     #endregion
+
 
     #region Public methods
 
@@ -119,14 +116,14 @@ namespace ClangPowerTools.Commands
         var startPosition = 0;
         var length = text.Length;
 
-        if( false == view.Selection.StreamSelectionSpan.IsEmpty) 
+        if (false == view.Selection.StreamSelectionSpan.IsEmpty)
         {
           // get the necessary elements for format selection
           FindStartPositionAndLengthOfSelectedText(view, text, out startPosition, out length);
           dirPath = Vsix.GetDocumentParent(view);
           mClangFormatView = GetUserOptions();
         }
-        else 
+        else
         {
           // format the end of the file for format document
           text = FormatEndOfFile(view, filePath, out dirPath);
@@ -239,7 +236,7 @@ namespace ClangPowerTools.Commands
       process.StartInfo.RedirectStandardInput = true;
       process.StartInfo.RedirectStandardOutput = true;
       process.StartInfo.RedirectStandardError = true;
-      process.StartInfo.FileName = 
+      process.StartInfo.FileName =
         true == (null != aClangFormatView.ClangFormatPath && aClangFormatView.ClangFormatPath.Enable && !string.IsNullOrWhiteSpace(aClangFormatView.ClangFormatPath.Value)) ?
           aClangFormatView.ClangFormatPath.Value : Path.Combine(vsixPath, ScriptConstants.kClangFormat);
 

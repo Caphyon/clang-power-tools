@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Design;
+using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -16,21 +17,19 @@ namespace ClangPowerTools.Commands
 
     #endregion
 
+
+    #region Constructor
+
     /// <summary>
     /// Initializes a new instance of the <see cref="StopClang"/> class.
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public StopClang(AsyncPackage aPackage, Guid aGuid, int aId, CommandsController aCommandsController, IVsSolution aSolution)
-      : base(aCommandsController, aSolution, aPackage, aGuid, aId)
+    public StopClang(CommandsController aCommandsController, IVsSolution aSolution,
+      DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
+      : base(aCommandsController, aSolution, aDte, aPackage, aGuid, aId)
     {
-      Initialize();
-    }
-
-
-    private async void Initialize()
-    {
-      var commandService = await ServiceProvider.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+      var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
       if (null != commandService)
       {
@@ -42,6 +41,10 @@ namespace ClangPowerTools.Commands
       }
     }
 
+    #endregion
+
+
+    #region Private Methods 
 
     /// <summary>
     /// This function is the callback used to execute the command when the menu item is clicked.
@@ -69,6 +72,9 @@ namespace ClangPowerTools.Commands
         catch (Exception) { }
       });
     }
+
+    #endregion
+
 
   }
 }

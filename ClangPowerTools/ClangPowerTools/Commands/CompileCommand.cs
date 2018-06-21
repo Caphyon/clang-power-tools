@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.Shell;
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE;
+using EnvDTE80;
 
 namespace ClangPowerTools
 {
@@ -25,16 +26,11 @@ namespace ClangPowerTools
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public CompileCommand(AsyncPackage aPackage, Guid aGuid, int aId, CommandsController aCommandsController, IVsSolution aSolution)
-      : base(aCommandsController, aSolution, aPackage, aGuid, aId)
+    public CompileCommand(CommandsController aCommandsController, IVsSolution aSolution, 
+      DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
+        : base(aCommandsController, aSolution, aDte, aPackage, aGuid, aId)
     {
-      Initialize();
-    }
-
-    public async void Initialize()
-    {
-
-      var commandService = await ServiceProvider.GetServiceAsync(typeof(IMenuCommandService)) as OleMenuCommandService;
+      var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
       if (null != commandService)
       {
@@ -46,8 +42,9 @@ namespace ClangPowerTools
       }
     }
 
-
     #endregion
+
+
 
     #region Public Methods
 

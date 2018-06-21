@@ -60,6 +60,7 @@ namespace ClangPowerTools
     private IVsSolution mSolution;
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
+    private DTE2 mDte;
 
     #region Commands
 
@@ -98,18 +99,18 @@ namespace ClangPowerTools
     protected async override System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
     {
       mRunningDocTableEvents = new RunningDocTableEvents(this);
+      mDte = await GetServiceAsync(typeof(DTE)) as DTE2;
 
       //Settings command is always visible
-      mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
+      mSettingsCmd = new SettingsCommand(mDte, this, CommandSet, CommandIds.kSettingsId);
 
-      var dte = GetService(typeof(DTE)) as DTE2;
 
-      mBuildEvents = dte.Events.BuildEvents;
-      mCommandEvents = dte.Events.CommandEvents;
+      mBuildEvents = mDte.Events.BuildEvents;
+      mCommandEvents = mDte.Events.CommandEvents;
 
       var generalOptions = (ClangGeneralOptionsView)this.GetDialogPage(typeof(ClangGeneralOptionsView));
       if (null == generalOptions.Version || string.IsNullOrWhiteSpace(generalOptions.Version))
-        ShowToolbare(dte); // Show the toolbar on the first install
+        ShowToolbare(mDte); // Show the toolbar on the first install
 
 
       AdviseSolutionEvents();
@@ -188,27 +189,16 @@ namespace ClangPowerTools
     private void InitializeCommands()
     {
       if (null == mCompileCmd)
-      {
-        mCompileCmd = new CompileCommand(this, CommandSet, CommandIds.kCompileId, mCommandsController, mSolution);
-      }
+        mCompileCmd = new CompileCommand(mCommandsController, mSolution, mDte, this, CommandSet, CommandIds.kCompileId);
 
       if (null == mTidyCmd)
-      {
-        mTidyCmd = new TidyCommand(this, CommandSet, CommandIds.kTidyId, mCommandsController, mSolution);
-
-      }
+        mTidyCmd = new TidyCommand(mCommandsController, mSolution, mDte, this, CommandSet, CommandIds.kTidyId);
 
       if (null == mClangFormatCmd)
-      {
-        mClangFormatCmd = new ClangFormatCommand(this, CommandSet, CommandIds.kClangFormat, mCommandsController, mSolution);
-
-      }
+        mClangFormatCmd = new ClangFormatCommand(mCommandsController, mSolution, mDte, this, CommandSet, CommandIds.kClangFormat);
 
       if (null == mStopClangCmd)
-      {
-        mStopClangCmd = new StopClang(this, CommandSet, CommandIds.kStopClang, mCommandsController, mSolution);
-
-      }
+        mStopClangCmd = new StopClang(mCommandsController, mSolution, mDte, this, CommandSet, CommandIds.kStopClang);
 
     }
 
@@ -217,8 +207,7 @@ namespace ClangPowerTools
     {
       try
       {
-        var dte = GetService(typeof(DTE)) as DTE2;
-        mCommandsController = new CommandsController(this, dte);
+        mCommandsController = new CommandsController(this, mDte);
 
         InitializeCommands();
         
@@ -230,7 +219,7 @@ namespace ClangPowerTools
 
         if (0 != string.Compare(generalOptions.Version, currentVersion))
         {
-          OutputManager outputManager = new OutputManager(dte);
+          OutputManager outputManager = new OutputManager(mDte);
           outputManager.Show();
           outputManager.AddMessage($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
             $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
