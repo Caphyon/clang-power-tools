@@ -80,6 +80,7 @@
     <Compile Include="Convertors\BooleanToVisibilityConverter.cs" />
     <Compile Include="Convertors\ClangFormatFallbackStyleConverter.cs" />
     <Compile Include="Convertors\ClangFormatStyleConverter.cs" />
+    <Compile Include="Handlers\UIUpdater.cs" />
     <Compile Include="Options\ClangFormatPathValue.cs" />
     <Compile Include="Options\HeaderFiltersValue.cs" />
     <Compile Include="Options\Model\ClangTidyPredefinedChecksOptions.cs" />
