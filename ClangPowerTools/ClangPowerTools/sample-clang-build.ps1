@@ -134,7 +134,6 @@ Set-Variable -name kClangCompileFlags                                       -Opt
                                                     , "-Wno-unused-value"
                                                     )
 
-Set-Variable -name kVisualStudioVersion -value "2017"                       -Option Constant
 Set-Variable -name kVisualStudioSku     -value "Professional"               -Option Constant
 
 # ------------------------------------------------------------------------------------------------
@@ -214,7 +213,6 @@ if ($aDisableNameRegexMatching)
   $scriptParams += ("-aDisableNameRegexMatching")
 }
 
-$scriptParams += ("-aVisualStudioVersion", $kVisualStudioVersion)
 $scriptParams += ("-aVisualStudioSku",     $kVisualStudioSku)
 $scriptParams += ("-aTidyHeaderFilter",    ".*")
 

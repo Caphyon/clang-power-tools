@@ -85,7 +85,7 @@ Function InitializeMsBuildProjectProperties()
     }
 
     [string] $vsVer = "15.0"
-    if ($aVisualStudioVersion -eq "2015")
+    if ($global:cptVisualStudioVersion -eq "2015")
     {
         $vsVer = "14.0"
     }

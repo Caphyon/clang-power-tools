@@ -305,7 +305,7 @@ Function Get-ProjectIncludeDirectories()
 
     [string] $platformToolset = Get-ProjectPlatformToolset
 
-    if ($aVisualStudioVersion -eq "2015")
+    if ($global:cptVisualStudioVersion -eq "2015")
     {
         $returnArray += Get-VisualStudio-Includes -vsPath $vsPath
     }
