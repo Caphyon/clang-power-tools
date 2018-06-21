@@ -1,8 +1,8 @@
 ﻿using System;
-using Microsoft.VisualStudio.Shell;
 using EnvDTE80;
 using EnvDTE;
 using System.Collections.Generic;
+using Microsoft.VisualStudio.Shell;
 
 namespace ClangPowerTools
 {
@@ -24,25 +24,36 @@ namespace ClangPowerTools
     #region Properties
 
     protected int Id { get; set; }
+
     protected Guid CommandSet { get; set; }
-    protected Package Package { get; set; }
+
+    protected AsyncPackage AsyncPackage { get; set; }
+
+    protected Package Package => AsyncPackage;
+
+    protected IAsyncServiceProvider AsyncServiceProvider => AsyncPackage;
+
     protected IServiceProvider ServiceProvider => Package;
+
     protected DTE2 DTEObj { get; set; }
 
     #endregion
 
     #region Constructor
 
-    protected BasicCommand(Package aPackage, Guid aGuid, int aId)
+
+    protected BasicCommand(DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
     {
-      Package = aPackage ?? throw new ArgumentNullException("package");
+      AsyncPackage = aPackage ?? throw new ArgumentNullException("AsyncPackage");
       CommandSet = aGuid;
       Id = aId;
-
-      DTEObj = (DTE2)ServiceProvider.GetService(typeof(DTE));
+      DTEObj = aDte;
     }
 
     #endregion
 
   }
+
+
+
 }

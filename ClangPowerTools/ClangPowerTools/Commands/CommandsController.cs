@@ -2,7 +2,7 @@
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
-using System.Windows.Threading;
+using ClangPowerTools.Handlers;
 
 namespace ClangPowerTools
 {
@@ -10,14 +10,14 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private IServiceProvider mServiceProvider;
+    private IAsyncServiceProvider mServiceProvider;
     private DTE2 mDte;
 
     #endregion
 
     #region Constructor
 
-    public CommandsController(IServiceProvider aServiceProvider, DTE2 aDte)
+    public CommandsController(IAsyncServiceProvider aServiceProvider, DTE2 aDte)
     {
       mDte = aDte;
       mServiceProvider = aServiceProvider;
@@ -36,15 +36,15 @@ namespace ClangPowerTools
 
     public void AfterExecute()
     {
-      DispatcherHandler.Invoke(() =>
+      UIUpdater.Invoke(() =>
       {
         Running = false;
-      }, DispatcherPriority.Normal);
+      });
     }
 
     public void QueryCommandHandler(object sender, EventArgs e)
     {
-      DispatcherHandler.Invoke(() =>
+      UIUpdater.Invoke(() =>
       {
         //var itemsCollector = new ItemsCollector(mPackage);
         //itemsCollector.CollectSelectedFiles(mDte, ActiveWindowProperties.GetProjectItemOfActiveWindow(mDte));
@@ -69,8 +69,8 @@ namespace ClangPowerTools
           command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !Running : Running;
           command.Visible = true;
         }
-      }, DispatcherPriority.Normal);
-     
+      });
+
     }
 
     public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action)

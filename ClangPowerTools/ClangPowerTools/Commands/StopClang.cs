@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel.Design;
+using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools.Commands
 {
@@ -15,15 +17,21 @@ namespace ClangPowerTools.Commands
 
     #endregion
 
+
+    #region Constructor
+
     /// <summary>
     /// Initializes a new instance of the <see cref="StopClang"/> class.
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public StopClang(Package aPackage, Guid aGuid, int aId, CommandsController aCommandsController) 
-      : base(aCommandsController, aPackage, aGuid, aId)
+    public StopClang(CommandsController aCommandsController, IVsSolution aSolution,
+      DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
+      : base(aCommandsController, aSolution, aDte, aPackage, aGuid, aId)
     {
-      if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+      var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+
+      if (null != commandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
         var menuCommand = new OleMenuCommand(this.RunStopClangCommand, menuCommandID);
@@ -32,6 +40,11 @@ namespace ClangPowerTools.Commands
         commandService.AddCommand(menuCommand);
       }
     }
+
+    #endregion
+
+
+    #region Private Methods 
 
     /// <summary>
     /// This function is the callback used to execute the command when the menu item is clicked.
@@ -43,7 +56,8 @@ namespace ClangPowerTools.Commands
     private void RunStopClangCommand(object sender, EventArgs e)
     {
       mCommandsController.Running = false;
-      var task = System.Threading.Tasks.Task.Run(() =>
+
+      System.Threading.Tasks.Task.Run(() =>
       {
         try
         {
@@ -56,9 +70,11 @@ namespace ClangPowerTools.Commands
           mDirectoriesPath.Clear();
         }
         catch (Exception) { }
-
       });
     }
+
+    #endregion
+
 
   }
 }

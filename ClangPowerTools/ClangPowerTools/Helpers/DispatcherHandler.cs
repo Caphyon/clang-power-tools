@@ -1,6 +1,6 @@
 ﻿using EnvDTE80;
 using System;
-using System.Windows.Interop;
+using System.Windows;
 using System.Windows.Threading;
 
 namespace ClangPowerTools
@@ -18,7 +18,7 @@ namespace ClangPowerTools
 
     public static void Initialize(DTE2 aDte)
     {
-      mDispatcher = HwndSource.FromHwnd((IntPtr)aDte.MainWindow.HWnd).RootVisual.Dispatcher;
+      mDispatcher = Application.Current.Dispatcher;
     }
 
     public static void BeginInvoke(Action aAction, DispatcherPriority aPrioriry)

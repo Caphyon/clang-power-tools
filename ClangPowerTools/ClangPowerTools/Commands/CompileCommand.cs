@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.Shell;
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell.Interop;
 using EnvDTE;
+using EnvDTE80;
 
 namespace ClangPowerTools
 {
@@ -17,6 +18,7 @@ namespace ClangPowerTools
 
     #endregion
 
+
     #region Constructor
 
     /// <summary>
@@ -24,10 +26,13 @@ namespace ClangPowerTools
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public CompileCommand(Package aPackage, Guid aGuid, int aId, CommandsController aCommandsController) 
-      : base(aCommandsController, aPackage, aGuid, aId)
+    public CompileCommand(CommandsController aCommandsController, IVsSolution aSolution, 
+      DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
+        : base(aCommandsController, aSolution, aDte, aPackage, aGuid, aId)
     {
-      if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+      var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+
+      if (null != commandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
         var menuCommand = new OleMenuCommand(this.RunClangCompile, menuCommandID);
@@ -38,6 +43,8 @@ namespace ClangPowerTools
     }
 
     #endregion
+
+
 
     #region Public Methods
 
@@ -88,22 +95,25 @@ namespace ClangPowerTools
         return;
 
       mCommandsController.Running = true;
-      var task = System.Threading.Tasks.Task.Run(() =>
+
+      System.Threading.Tasks.Task.Run(() =>
       {
         try
         {
           DocumentsHandler.SaveActiveDocuments((DTE)DTEObj);
-          AutomationUtil.SaveDirtyProjects(ServiceProvider, DTEObj.Solution);
+          AutomationUtil.SaveDirtyProjects(DTEObj.Solution);
 
           CollectSelectedItems(ScriptConstants.kAcceptedFileExtensions);
           RunScript(OutputWindowConstants.kComplileCommand);
         }
         catch (Exception exception)
         {
-          VsShellUtilities.ShowMessageBox(Package, exception.Message, "Error",
+          VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
+
       }).ContinueWith(tsk => mCommandsController.AfterExecute());
+
     }
 
     #endregion
