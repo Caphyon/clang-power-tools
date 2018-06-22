@@ -13,7 +13,7 @@ Set-Variable -name "kScriptLocation"                                            
 
 Describe "Visual Studio detection" {
   # Mock script parameters
-  $aVisualStudioVersion = "2017"
+  $global:cptVisualStudioVersion = "2017"
   $aVisualStudioSku     = "Professional"
 
   It "Get-MscVer" {
@@ -34,13 +34,20 @@ Describe "Visual Studio detection" {
     [Microsoft.Win32.RegistryKey] $vs14Key = Get-Item "HKLM:SOFTWARE\Wow6432Node\Microsoft\VisualStudio\14.0"
     [bool] $vs2015isInstalled = $vs14Key -and ![string]::IsNullOrEmpty($vs14Key.GetValue("InstallDir"))
 
-    $oldMockValue = $aVisualStudioVersion
+    $oldMockValue = $global:cptVisualStudioVersion
 
     $vsPath = Get-VisualStudio-Path
     $vsPath | Should -Not -BeNullOrEmpty
 
     # Re-Mock script parameter
-    $aVisualStudioVersion = "2015"
+    $global:cptVisualStudioVersion = "2015"
+
+    # Maybe we have a VS 2017 installation with v140 toolset installed
+    [string] $vs2017ToolsetV140Path = "${Env:ProgramFiles(x86)}\Microsoft Visual Studio 14.0"
+    if (Test-Path "$vs2017ToolsetV140Path\VC\include\iostream")
+    {
+      $vs2015isInstalled = $true
+    }
 
     if ($vs2015isInstalled)
     {
@@ -53,7 +60,7 @@ Describe "Visual Studio detection" {
       { Get-VisualStudio-Path } | Should -Throw
     }
 
-    $aVisualStudioVersion = $oldMockValue
+    $global:cptVisualStudioVersion = $oldMockValue
   }
 
   It "Get-VisualStudio-Includes" {

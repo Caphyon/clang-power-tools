@@ -8,12 +8,17 @@ Set-Variable -name   kVsWhereLocation `
 
 # Default installation path of Visual Studio 2017. We'll use when VsWhere isn't available.
 Set-Variable -name   kVs15DefaultLocation `
-    -value  "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$aVisualStudioVersion\$aVisualStudioSku" #`
+    -value  "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$global:cptVisualStudioVersion\$aVisualStudioSku" #`
 #-option Constant
 
 # Registry key containing information about Visual Studio 2015 installation path.
 Set-Variable -name   kVs2015RegistryKey `
     -value  "HKLM:SOFTWARE\Wow6432Node\Microsoft\VisualStudio\14.0" #`
+#-option Constant
+
+# Default location for v140 toolset when installed as a feature of a VS 2017 installation
+Set-Variable -name   kVs2017Toolset140DiskLocation `
+    -value  "${Env:ProgramFiles(x86)}\Microsoft Visual Studio 14.0" #`
 #-option Constant
 
 Function Get-MscVer()
@@ -37,19 +42,37 @@ Function Get-VisualStudio-Includes([Parameter(Mandatory = $true)][string]  $vsPa
 
 Function Get-VisualStudio-Path()
 {
-    if ($aVisualStudioVersion -eq "2015")
+    if ($global:cptVisualStudioVersion -eq "2015")
     {
-        $installLocation = (Get-Item $kVs2015RegistryKey).GetValue("InstallDir")
-        return Canonize-Path -base $installLocation -child "..\.."
+        # try to detect full installation
+        [string] $installLocation = (Get-Item $kVs2015RegistryKey).GetValue("InstallDir")
+        if ($installLocation)
+        {
+            $installLocation = Canonize-Path -base $installLocation -child "..\.." -ignoreErrors
+        }
+        if ($installLocation)
+        {
+            return $installLocation
+        }
+
+        # we may have a VS 2017 installation with v140 toolset feature
+        [string] $iostreamLocation = Canonize-Path -base $kVs2017Toolset140DiskLocation `
+                                                   -child "VC\include\iostream" -ignoreErrors
+        if ($iostreamLocation)
+        {
+            return $kVs2017Toolset140DiskLocation
+        }
+
+        Write-Err "Visual Studio 2015 installation location could not be detected"
     }
     else
     {
         if (Test-Path $kVsWhereLocation)
         {
 
-            [string] $product = "*" 
+            [string] $product = "*"
             if (![string]::IsNullOrEmpty($aVisualStudioSku))
-            { 
+            {
               $product = "Microsoft.VisualStudio.Product.$aVisualStudioSku"
             }
 
