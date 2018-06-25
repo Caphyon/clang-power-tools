@@ -43,6 +43,8 @@
     If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used,
     e.g. "table" compiles all CPPs containing 'table'.
 
+    Note: If any headers are given then all translation units that include them will be processed.
+
 .PARAMETER aCppToIgnore
     Alias 'file-ignore'. Array of file(s) to ignore, from the matched ones.
     If empty, all already matched files are compiled.
@@ -209,6 +211,7 @@ Add-Type -TypeDefinition @"
   , "$PSScriptRoot\psClang\msbuild-expression-eval.ps1"
   , "$PSScriptRoot\psClang\msbuild-project-load.ps1"
   , "$PSScriptRoot\psClang\msbuild-project-data.ps1"
+  , "$PSScriptRoot\psClang\get-header-references.ps1"
   ) | ForEach-Object { . $_ }
 
 #-------------------------------------------------------------------------------------------------
@@ -757,6 +760,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   [string] $stdafxCpp    = Get-Project-PchCpp
   [string] $stdafxDir    = ""
   [string] $stdafxHeader = ""
+  [string] $stdafxHeaderFullPath = ""
 
   if (![string]::IsNullOrEmpty($stdafxCpp))
   {
@@ -784,28 +788,64 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   else
   {
     Write-Verbose ("PCH directory: $stdafxDir")
+
     $includeDirectories = @(Remove-PathTrailingSlash -path $stdafxDir) + $includeDirectories
+
+    $stdafxHeaderFullPath = Canonize-Path -base $stdafxDir -child $stdafxHeader -ignoreErrors
   }
 
   #-----------------------------------------------------------------------------------------------
   # FIND LIST OF CPPs TO PROCESS
 
-  [string[]] $projCpps = Get-ProjectFilesToCompile -pchCppName  $stdafxCpp
-
-  if ($projCpps.Count -gt 0 -and
-      ![string]::IsNullOrEmpty($aCppToCompile))
+  [System.Collections.Hashtable] $projCpps = @{}
+  foreach ($fileToCompile in (Get-ProjectFilesToCompile -pchCppName $stdafxCpp))
   {
-    [string[]] $filteredCpps = @()
+    if (![string]::IsNullOrEmpty($fileToCompile))
+    {
+      $projCpps[$fileToCompile] = $true
+    }
+  }
+
+  if ($projCpps.Count -gt 0 -and $aCppToCompile.Count -gt 0)
+  {
+    [System.Collections.Hashtable] $filteredCpps = @{}
+    [bool] $dirtyStdafx = $false
     foreach ($cpp in $aCppToCompile)
     {
+      if ($cpp -ieq $stdafxHeaderFullPath) 
+      {
+        # stdafx modified => compile all
+        $dirtyStdafx = $true
+        break
+      }
+
       if (![string]::IsNullOrEmpty($cpp))
       {
-        $filteredCpps += ( $projCpps |
-                           Where-Object {  IsFileMatchingName -filePath $_ `
-                                           -matchName $cpp } )
+        if ([System.IO.Path]::IsPathRooted($cpp))
+        { 
+          if ($projCpps.ContainsKey($cpp))
+          {
+            # really fast, use cache
+            $filteredCpps[$cpp] = $true
+          }
+        }
+        else
+        {
+          # take the slow road and check if it matches
+          $projCpps.Keys | Where-Object {  IsFileMatchingName -filePath $_ -matchName $cpp } | `
+                          ForEach-Object { $filteredCpps[$_] = $true }
+        }
       }
     }
-    $projCpps = $filteredCpps
+
+    if (!$dirtyStdafx)
+    {
+      $projCpps = $filteredCpps
+    }
+    else
+    {
+      Write-Verbose "PCH header has been targeted as dirty. Building entire project"
+    }
   }
   Write-Verbose ("Processing " + $projCpps.Count + " cpps")
 
@@ -813,7 +853,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # CREATE PCH IF NEED BE, ONLY FOR TWO CPPS OR MORE
 
   [string] $pchFilePath = ""
-  if ($projCpps.Count -ge 2 -and
+  if ($projCpps.Keys.Count -ge 2 -and
       ![string]::IsNullOrEmpty($stdafxDir))
   {
     # COMPILE PCH
@@ -837,7 +877,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   $clangJobs = @()
 
-  foreach ($cpp in $projCpps)
+  foreach ($cpp in $projCpps.Keys)
   {
     [string] $exeToCall = Get-ExeToCall -workloadType $workloadType
 
@@ -919,31 +959,70 @@ Write-Verbose "Scanning for project files"
 [System.IO.FileInfo[]] $projects = Get-Projects
 Write-Verbose ("Found $($projects.Count) projects")
 
+# ------------------------------------------------------------------------------------------------
+# If we get headers in the -file arg we have to detect CPPs that include that header
+
+if ($aCppToCompile.Count -gt 0)
+{
+  # We've been given particular files to compile. If headers are among them
+  # we'll find all source files that include them and tag them for processing.
+  [string[]] $headerRefs = Get-HeaderReferences -files $aCppToCompile
+  if ($headerRefs.Count -gt 0)
+  {
+    Write-Verbose-Array -name "Detected source files" -array $headerRefs
+
+    $aCppToCompile += $headerRefs
+  }
+}
+# ------------------------------------------------------------------------------------------------
+
 [System.IO.FileInfo[]] $projectsToProcess = @()
 
-if ([string]::IsNullOrEmpty($aVcxprojToCompile) -and
-    [string]::IsNullOrEmpty($aVcxprojToIgnore))
+if (!$aVcxprojToCompile -and !$aVcxprojToIgnore)
 {
-  Write-Verbose "PROCESSING ALL PROJECTS"
-  $projectsToProcess = $projects
+  $projectsToProcess = $projects # we process all projects
 }
 else
 {
-  $projectsToProcess = $projects |
+  # some filtering has to be done
+  $projectsToProcess = $projects | `
                        Where-Object {       (Should-CompileProject -vcxprojPath $_.FullName) `
                                       -and !(Should-IgnoreProject  -vcxprojPath $_.FullName ) }
-
-  if ($projectsToProcess.Count -gt 1)
-  {
-    Write-Output ("PROJECTS: `n`t" + ($projectsToProcess -join "`n`t"))
-    $projectsToProcess = $projectsToProcess
-  }
 
   if ($projectsToProcess.Count -eq 0)
   {
     Write-Err "Cannot find given project"
   }
 }
+
+if ($aCppToCompile -and $projectsToProcess.Count -gt 1)
+{
+  # We've been given particular files to compile, we can narrow down 
+  # the projects to be processed (those that include any of the particular files)
+  
+  # For obvious performance reasons, no filtering is done when there's only one project to process.
+  [System.IO.FileInfo[]] $projectsThatIncludeFiles = Get-SourceCodeIncludeProjects -projectPool $projectsToProcess `
+                                                                                   -files $aCppToCompile
+  Write-Verbose-Array -name "Detected projects" -array $projectsThatIncludeFiles
+ 
+  # some projects include files using wildcards, we won't match anything in them
+  # so when matching nothing we don't do filtering at all
+  if ($projectsThatIncludeFiles)
+  {
+    $projectsToProcess = $projectsThatIncludeFiles
+  }
+}
+
+if ($projectsToProcess.Count -eq $projects.Count)
+{
+  Write-Verbose "PROCESSING ALL PROJECTS"
+}
+else
+{
+  Write-Output ("PROJECTS: `n`t" + ($projectsToProcess -join "`n`t"))
+}
+
+# ------------------------------------------------------------------------------------------------
 
 $projectCounter = $projectsToProcess.Length;
 foreach ($project in $projectsToProcess)

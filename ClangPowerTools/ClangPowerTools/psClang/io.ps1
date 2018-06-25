@@ -26,6 +26,11 @@ Function Write-Verbose-Array($array, $name)
     $array | ForEach-Object { Write-Verbose "  $_" }
 }
 
+Function Write-Verbose-Timed([parameter(ValueFromPipeline, Mandatory = $true)][string] $msg)
+{
+    Write-Verbose "$([DateTime]::Now.ToString("[HH:mm:ss]")) $msg"
+}
+
 Function Print-InvocationArguments()
 {
     $bParams = $PSCmdlet.MyInvocation.BoundParameters
@@ -83,6 +88,20 @@ Function IsFileMatchingName( [Parameter(Mandatory = $true)][string] $filePath
     {
         return (($fileName -match $matchName) -or ($fileNameNoExt -match $matchName))
     }
+}
+
+Function FileHasExtension( [Parameter(Mandatory = $true)][string]   $filePath
+                         , [Parameter(Mandatory = $true)][string[]] $ext
+                         )
+{
+    foreach ($e in $ext)
+    {
+        if ($filePath.EndsWith($e))
+        {
+            return $true
+        }
+    }
+    return $false
 }
 
 <#

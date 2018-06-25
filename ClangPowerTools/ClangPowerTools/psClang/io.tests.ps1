@@ -53,6 +53,16 @@ Describe "File IO" {
     IsFileMatchingName -filePath $path -matchName ".*" | Should          -BeExactly $true
   }
 
+  It "FileHasExtension" {
+    FileHasExtension -filePath "c:\foo.bar" -ext 'bar' | Should -BeExactly $true
+    FileHasExtension -filePath "c:\foo.bar" -ext 'bar2' | Should -BeExactly $false
+    FileHasExtension -filePath "c:\foo.bar" -ext @('bar') | Should -BeExactly $true
+    FileHasExtension -filePath "c:\foo.bar" -ext @('bar2') | Should -BeExactly $false
+    FileHasExtension -filePath "c:\foo.bar" -ext @('bar', 'bar2') | Should -BeExactly $true
+    FileHasExtension -filePath "c:\foo.bar" -ext @('bar2', 'bar') | Should -BeExactly $true
+    FileHasExtension -filePath "c:\foo.bar" -ext @('bar2', 'bar2') | Should -BeExactly $false
+  }
+
   It "Canonize-Path" {
     $sysDrive = "$env:SystemDrive\"
     Canonize-Path -base $sysDrive -child "Windows" | Should -Be $env:SystemRoot
