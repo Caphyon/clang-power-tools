@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ClangPowerTools.Handlers;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -37,7 +38,7 @@ namespace ClangPowerTools
 
     public void AddError(TaskError aError)
     {
-      DispatcherHandler.BeginInvoke(() =>
+      UIUpdater.Invoke(() =>
       {
         mErrorWindow.SuspendRefresh();
 
@@ -49,9 +50,10 @@ namespace ClangPowerTools
       });
     }
 
+
     public void AddErrors(IEnumerable<TaskError> aErrors)
     {
-      DispatcherHandler.BeginInvoke(() =>
+      UIUpdater.Invoke(() =>
       {
         mErrorWindow.SuspendRefresh();
 
@@ -63,9 +65,10 @@ namespace ClangPowerTools
       });
     }
 
+
     public void RemoveErrors(IVsHierarchy aHierarchy)
     {
-      DispatcherHandler.BeginInvoke(() =>
+      UIUpdater.Invoke(() =>
       {
         mErrorWindow.SuspendRefresh();
         mErrorWindow.RemoveErrors(aHierarchy);
@@ -75,7 +78,7 @@ namespace ClangPowerTools
 
     public void Clear()
     {
-      DispatcherHandler.BeginInvoke(() =>
+      UIUpdater.Invoke(() =>
       {
         mErrorWindow.Clear();
       });

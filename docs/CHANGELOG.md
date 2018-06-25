@@ -1,5 +1,20 @@
 # Version History
 
+### Clang Power Tools 3.6
+*June 18, 2018*
+
+Improvements:
+
+* (Powershell Script) Automatically detect `Visual Studio SKU` when not passed as script argument
+* `Quick search` support for the `Predefined checks` option page
+
+Bugs:
+
+* Error when compiling projects without preprocessor definitions
+* Regex matching broken for `File Ignore` and `Project Ignore` filters
+* The clang-format custom path property did not persisted
+* Fix the check mechanism of the `Use custom executable file` checkbox 
+
 ### Clang Power Tools 3.5
 *June 5, 2018*
 

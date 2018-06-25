@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ClangPowerTools.DialogPages;
 using ClangPowerTools.Script;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools
 {
@@ -20,6 +22,8 @@ namespace ClangPowerTools
     protected static OutputManager mOutputManager;
     protected ClangGeneralOptionsView mGeneralOptions;
     private Commands2 mCommand;
+
+    private IVsSolution mSolution;
 
     private PowerShellWrapper mPowerShell = new PowerShellWrapper();
     private ClangCompileTidyScript mCompileTidyScriptBuilder;
@@ -43,19 +47,23 @@ namespace ClangPowerTools
 
     #endregion
 
+
     #region Constructor
 
-    public ClangCommand(CommandsController aCommandsController, Package aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
+    public ClangCommand(CommandsController aCommandsController, IVsSolution aSolution, 
+      DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
+        : base(aDte, aPackage, aGuid, aId)
     {
+      if (null == mCommandsController)
+        mCommandsController = aCommandsController;
+
+      mGeneralOptions = (ClangGeneralOptionsView)aPackage.GetDialogPage(typeof(ClangGeneralOptionsView));
+
+      mSolution = aSolution;
       mCommand = DTEObj.Commands as Commands2;
       VsEdition = DTEObj.Edition;
       mVsVersions.TryGetValue(DTEObj.Version, out string version);
       VsVersion = version;
-
-      if (null == mCommandsController)
-        mCommandsController = aCommandsController;
-
-      mGeneralOptions = (ClangGeneralOptionsView)Package.GetDialogPage(typeof(ClangGeneralOptionsView));
     }
 
     #endregion
@@ -96,7 +104,7 @@ namespace ClangPowerTools
           if (!mCommandsController.Running)
             break;
 
-          mOutputManager.Hierarchy = AutomationUtil.GetItemHierarchy(ServiceProvider, item);
+          mOutputManager.Hierarchy = AutomationUtil.GetItemHierarchy( mSolution, item);
           var process = mPowerShell.Invoke(script, mRunningProcesses);
 
           if (mOutputManager.MissingLlvm)
@@ -129,7 +137,7 @@ namespace ClangPowerTools
 
     protected IEnumerable<IItem> CollectSelectedItems(List<string> aAcceptedExtensionTypes = null)
     {
-      mItemsCollector = new ItemsCollector(Package, aAcceptedExtensionTypes);
+      mItemsCollector = new ItemsCollector(aAcceptedExtensionTypes);
       mItemsCollector.CollectSelectedFiles(DTEObj, ActiveWindowProperties.GetProjectItemOfActiveWindow(DTEObj));
       return mItemsCollector.GetItems;
     }

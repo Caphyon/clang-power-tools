@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Xml;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace ClangPowerTools
 {
@@ -33,7 +34,7 @@ namespace ClangPowerTools
   /// To get loaded into VS, the package must be referred by &lt;Asset Type="Microsoft.VisualStudio.VsPackage" ...&gt; in .vsixmanifest file.
   /// </para>
   /// </remarks>
-  [PackageRegistration(UseManagedResourcesOnly = true)]
+  [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = false)]
   [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
   [ProvideMenuResource("Menus.ctmenu", 1)]
   [Guid(RunClangPowerToolsPackage.PackageGuidString)]
@@ -43,8 +44,8 @@ namespace ClangPowerTools
   [ProvideOptionPage(typeof(ClangTidyCustomChecksOptionsView), "Clang Power Tools\\Tidy", "Custom Checks", 0, 0, true, Sort = 1)]
   [ProvideOptionPage(typeof(ClangTidyPredefinedChecksOptionsView), "Clang Power Tools\\Tidy", "Predefined Checks", 0, 0, true, Sort = 2)]
   [ProvideOptionPage(typeof(ClangFormatOptionsView), "Clang Power Tools", "Format", 0, 0, true, Sort = 4)]
-  [ProvideAutoLoad("ADFC4E64-0397-11D1-9F4E-00A0C911004F")]
-  public sealed class RunClangPowerToolsPackage : Package, IVsSolutionEvents
+  [ProvideAutoLoad("ADFC4E64-0397-11D1-9F4E-00A0C911004F", PackageAutoLoadFlags.BackgroundLoad)]
+  public sealed class RunClangPowerToolsPackage : AsyncPackage, IVsSolutionEvents
   {
     #region Members
 
@@ -59,11 +60,12 @@ namespace ClangPowerTools
     private IVsSolution mSolution;
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
+    private DTE2 mDte;
 
     #region Commands
 
     private CommandsController mCommandsController  = null;
-    private ClangCommand mCompileCmd                = null;
+    private CompileCommand mCompileCmd              = null;
     private ClangCommand mTidyCmd                   = null;
     private ClangCommand mClangFormatCmd            = null;
     private ClangCommand mStopClangCmd              = null;
@@ -94,37 +96,38 @@ namespace ClangPowerTools
     /// Initialization of the package; this method is called right after the package is sited, so this is the place
     /// where you can put all the initialization code that rely on services provided by VisualStudio.
     /// </summary>
-    protected override void Initialize()
+    protected async override System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
     {
-      base.Initialize();
-
       mRunningDocTableEvents = new RunningDocTableEvents(this);
+      mDte = await GetServiceAsync(typeof(DTE)) as DTE2;
 
       //Settings command is always visible
-      mSettingsCmd = new SettingsCommand(this, CommandSet, CommandIds.kSettingsId);
+      mSettingsCmd = new SettingsCommand(mDte, this, CommandSet, CommandIds.kSettingsId);
 
-      var dte = GetService(typeof(DTE)) as DTE2;
 
-      mBuildEvents = dte.Events.BuildEvents;
-      mCommandEvents = dte.Events.CommandEvents;
+      mBuildEvents = mDte.Events.BuildEvents;
+      mCommandEvents = mDte.Events.CommandEvents;
 
       var generalOptions = (ClangGeneralOptionsView)this.GetDialogPage(typeof(ClangGeneralOptionsView));
       if (null == generalOptions.Version || string.IsNullOrWhiteSpace(generalOptions.Version))
-        ShowToolbare(dte); // Show the toolbar on the first install
+        ShowToolbare(mDte); // Show the toolbar on the first install
+
 
       AdviseSolutionEvents();
+
+      await base.InitializeAsync(cancellationToken, progress);
     }
 
     #endregion
 
     #region Get Pointer to IVsSolutionEvents
 
-    private void AdviseSolutionEvents()
+    private async void AdviseSolutionEvents()
     {
       try
       {
         UnadviseSolutionEvents();
-        mSolution = GetService(typeof(SVsSolution)) as IVsSolution;
+        mSolution = await GetServiceAsync(typeof(SVsSolution)) as IVsSolution;
         mSolution?.AdviseSolutionEvents(this, out mHSolutionEvents);
       }
       catch (Exception)
@@ -182,27 +185,32 @@ namespace ClangPowerTools
       return VSConstants.S_OK;
     }
 
+
+    private void InitializeCommands()
+    {
+      if (null == mCompileCmd)
+        mCompileCmd = new CompileCommand(mCommandsController, mSolution, mDte, this, CommandSet, CommandIds.kCompileId);
+
+      if (null == mTidyCmd)
+        mTidyCmd = new TidyCommand(mCommandsController, mSolution, mDte, this, CommandSet, CommandIds.kTidyId);
+
+      if (null == mClangFormatCmd)
+        mClangFormatCmd = new ClangFormatCommand(mCommandsController, mSolution, mDte, this, CommandSet, CommandIds.kClangFormat);
+
+      if (null == mStopClangCmd)
+        mStopClangCmd = new StopClang(mCommandsController, mSolution, mDte, this, CommandSet, CommandIds.kStopClang);
+
+    }
+
+
     public int OnAfterOpenSolution(object aPUnkReserved, int aFNewSolution)
     {
       try
       {
-        var dte = GetService(typeof(DTE)) as DTE2;
-        mCommandsController = new CommandsController(this, dte);
+        mCommandsController = new CommandsController(this, mDte);
 
-
-        if (null == mCompileCmd)
-          mCompileCmd = new CompileCommand(this, CommandSet, CommandIds.kCompileId, mCommandsController);
-
-        if (null == mTidyCmd)
-          mTidyCmd = new TidyCommand(this, CommandSet, CommandIds.kTidyId, mCommandsController);
-
-        if (null == mClangFormatCmd)
-          mClangFormatCmd = new ClangFormatCommand(this, CommandSet, CommandIds.kClangFormat, mCommandsController);
-
-        if (null == mStopClangCmd)
-          mStopClangCmd = new StopClang(this, CommandSet, CommandIds.kStopClang, mCommandsController);
-
-        DispatcherHandler.Initialize(dte);
+        InitializeCommands();
+        
         StatusBarHandler.Initialize(this);
         ErrorManager.Initialize(this);
 
@@ -211,7 +219,7 @@ namespace ClangPowerTools
 
         if (0 != string.Compare(generalOptions.Version, currentVersion))
         {
-          OutputManager outputManager = new OutputManager(dte);
+          OutputManager outputManager = new OutputManager(mDte);
           outputManager.Show();
           outputManager.AddMessage($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
             $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");

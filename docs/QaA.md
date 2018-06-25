@@ -104,7 +104,7 @@ Eg.
 
 Yes. 
 Download and install **Clang for Windows** (LLVM pre-built binary)  
-[LLVM-5.0.1-win64](http://releases.llvm.org/5.0.1/LLVM-5.0.1-win64.exe)  
+[LLVM-6.0.0-win64](http://releases.llvm.org/6.0.0/LLVM-6.0.0-win64.exe)  
 [releases.llvm.org/download.html](http://releases.llvm.org/download.html)
 
 We will automatically load clang from the default installation path *C:\Program Files\LLVM*. If you prefer to use a different location you must manually add the **bin** folder to **PATH**.  

@@ -1,16 +1,16 @@
 ﻿using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
-using System;
 using System.Collections.Generic;
 
 namespace ClangPowerTools
 {
   public class AutomationUtil
   {
+
     #region Public Methods
 
-    public static List<IItem> GetAllProjects(IServiceProvider aServiceProvider, Solution aSolution)
+    public static List<IItem> GetAllProjects(Solution aSolution)
     {
       List<IItem> list = new List<IItem>();
       Projects projects = aSolution.Projects;
@@ -22,21 +22,21 @@ namespace ClangPowerTools
           continue;
 
         if (project.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
-          list.AddRange(GetSolutionFolderProjects(aServiceProvider, project));
+          list.AddRange(GetSolutionFolderProjects(project));
         else if (project.Kind != EnvDTE.Constants.vsProjectKindMisc)
           list.Add(new SelectedProject(project));
       }
       return list;
     }
 
-    public static IVsHierarchy GetProjectHierarchy(IServiceProvider aServiceProvider, Project aProject)
+    public static IVsHierarchy GetProjectHierarchy(IVsSolution aSolution, Project aProject)
     {
-      IVsSolution aSolution = aServiceProvider.GetService(typeof(SVsSolution)) as IVsSolution;
-      return VSConstants.S_OK == aSolution.GetProjectOfUniqueName(aProject.UniqueName, out IVsHierarchy hierarchy) ?
-        hierarchy : null;
+      return 
+        VSConstants.S_OK == aSolution.GetProjectOfUniqueName(aProject.UniqueName, out IVsHierarchy hierarchy) ?
+          hierarchy : null;
     }
 
-    public static IVsHierarchy GetItemHierarchy( IServiceProvider aServiceProvider, IItem aItem )
+    public static IVsHierarchy GetItemHierarchy(IVsSolution aSolution, IItem aItem )
     {
       Project project = null;
       if( aItem is SelectedProjectItem )
@@ -50,14 +50,14 @@ namespace ClangPowerTools
       }
       if( project != null )
       {
-        return GetProjectHierarchy( aServiceProvider, project );
+        return GetProjectHierarchy(aSolution, project );
       }
       return null;
     }
 
-    public static void SaveDirtyProjects(IServiceProvider aServiceProvider, Solution aSolution)
+    public static void SaveDirtyProjects(Solution aSolution)
     {
-      var projects = GetAllProjects(aServiceProvider, aSolution);
+      var projects = GetAllProjects(aSolution);
       if (null == projects)
         return;
 
@@ -95,7 +95,7 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private static List<IItem> GetSolutionFolderProjects(IServiceProvider aServiceProvider, Project aSolutionFolderItem)
+    private static List<IItem> GetSolutionFolderProjects(Project aSolutionFolderItem)
     {
       List<IItem> list = new List<IItem>();
 
@@ -106,7 +106,7 @@ namespace ClangPowerTools
           continue;
 
         if (subProject.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
-          list.AddRange(GetSolutionFolderProjects(aServiceProvider, subProject));
+          list.AddRange(GetSolutionFolderProjects(subProject));
         else if (subProject.Kind != EnvDTE.Constants.vsProjectKindMisc)
           list.Add(new SelectedProject(subProject));
       }

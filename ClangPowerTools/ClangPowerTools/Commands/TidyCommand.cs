@@ -6,6 +6,7 @@ using ClangPowerTools.DialogPages;
 using ClangPowerTools.SilentFile;
 using System.Linq;
 using EnvDTE;
+using EnvDTE80;
 
 namespace ClangPowerTools
 {
@@ -37,17 +38,20 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
 
-    public TidyCommand(Package aPackage, Guid aGuid, int aId, CommandsController aCommandsController) 
-      : base(aCommandsController, aPackage, aGuid, aId)
+    public TidyCommand(CommandsController aCommandsController, IVsSolution aSolution, 
+      DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId) 
+        : base(aCommandsController, aSolution, aDte, aPackage, aGuid, aId)
     {
-      mTidyOptions = (ClangTidyOptionsView)Package.GetDialogPage(typeof(ClangTidyOptionsView));
-      mTidyChecks = (ClangTidyPredefinedChecksOptionsView)Package.GetDialogPage(typeof(ClangTidyPredefinedChecksOptionsView));
-      mTidyCustomChecks = (ClangTidyCustomChecksOptionsView)Package.GetDialogPage(typeof(ClangTidyCustomChecksOptionsView));
-      mClangFormatView = (ClangFormatOptionsView)Package.GetDialogPage(typeof(ClangFormatOptionsView));
+      mTidyOptions = (ClangTidyOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyOptionsView));
+      mTidyChecks = (ClangTidyPredefinedChecksOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyPredefinedChecksOptionsView));
+      mTidyCustomChecks = (ClangTidyCustomChecksOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyCustomChecksOptionsView));
+      mClangFormatView = (ClangFormatOptionsView)AsyncPackage.GetDialogPage(typeof(ClangFormatOptionsView));
 
       mFileOpener = new FileOpener(DTEObj);
 
-      if (ServiceProvider.GetService(typeof(IMenuCommandService)) is OleMenuCommandService commandService)
+      var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
+
+      if (null != commandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
         var menuCommand = new OleMenuCommand(this.RunClangTidy, menuCommandID);
@@ -57,7 +61,9 @@ namespace ClangPowerTools
       }
     }
 
+
     #endregion
+
 
     #region Public Methods
 
@@ -104,13 +110,16 @@ namespace ClangPowerTools
     /// <param name="e">Event args.</param>
     private void RunClangTidy(object sender, EventArgs e)
     {
+      if (mCommandsController.Running)
+        return;
+
       mCommandsController.Running = true;
-      var task = System.Threading.Tasks.Task.Run(() =>
+      System.Threading.Tasks.Task.Run(() =>
       {
         try
         {
           DocumentsHandler.SaveActiveDocuments((DTE)DTEObj);
-          AutomationUtil.SaveDirtyProjects(ServiceProvider, DTEObj.Solution);
+          AutomationUtil.SaveDirtyProjects(DTEObj.Solution);
 
           CollectSelectedItems(ScriptConstants.kAcceptedFileExtensions);
 
@@ -127,15 +136,15 @@ namespace ClangPowerTools
               FilePathCollector fileCollector = new FilePathCollector();
               var filesPath = fileCollector.Collect(mItemsCollector.GetItems).ToList();
 
-              silentFileController.SilentFiles(Package, guard, filesPath);
-              silentFileController.SilentOpenFiles(Package, guard, DTEObj);
+              silentFileController.SilentFiles(AsyncPackage, guard, filesPath);
+              silentFileController.SilentOpenFiles(AsyncPackage, guard, DTEObj);
             }
             RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mTidyChecks, mTidyCustomChecks, mClangFormatView);
           }
         }
         catch (Exception exception)
         {
-          VsShellUtilities.ShowMessageBox(Package, exception.Message, "Error",
+          VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
         finally
@@ -143,6 +152,7 @@ namespace ClangPowerTools
           mForceTidyToFix = false;
         }
       }).ContinueWith(tsk => mCommandsController.AfterExecute());
+
     }
 
     #endregion

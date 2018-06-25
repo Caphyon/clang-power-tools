@@ -105,10 +105,12 @@
       Alias 'vs-ver'. Version of Visual Studio (VC++) installed and that'll be used for
       standard library include directories. E.g. 2017.
 
+      Optional. If not given, it will be inferred based on the project toolset version.
+
 .PARAMETER aVisualStudioSku
       Alias 'vs-sku'. Sku of Visual Studio (VC++) installed and that'll be used for
-      standard library include directories. E.g. Professional. 
-      
+      standard library include directories. E.g. Professional.
+
       If not given, the first detected Visual Studio SKU will be used.
 
 .NOTES
@@ -129,7 +131,7 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aSolutio
      , [alias("tidy-fix")]     [Parameter(Mandatory=$false)][string]   $aTidyFixFlags
      , [alias("header-filter")][Parameter(Mandatory=$false)][string]   $aTidyHeaderFilter
      , [alias("format-style")] [Parameter(Mandatory=$false)][string]   $aAfterTidyFixFormatStyle
-     , [alias("vs-ver")]       [Parameter(Mandatory=$true)] [string]   $aVisualStudioVersion
+     , [alias("vs-ver")]       [Parameter(Mandatory=$false)][string]   $aVisualStudioVersion = "2017"
      , [alias("vs-sku")]       [Parameter(Mandatory=$false)][string]   $aVisualStudioSku
      )
 
@@ -223,6 +225,12 @@ Add-Type -TypeDefinition @"
 
 # flag to signal when errors are encounteres during project processing
 [Boolean]                      $global:FoundErrors                  = $false
+
+# default ClangPowerTools version of visual studio to use
+[string] $global:cptDefaultVisualStudioVersion = "2017"
+
+# version of VS currently used
+[string] $global:cptVisualStudioVersion = $global:aVisualStudioVersion
 
 #-------------------------------------------------------------------------------------------------
 # Global functions
@@ -349,6 +357,12 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
                      , [Parameter(Mandatory=$true)] [string]   $stdafxHeaderName
                      , [Parameter(Mandatory=$false)][string[]] $preprocessorDefinitions)
 {
+  if (Is-CProject)
+  {
+    Write-Verbose "Skipping PCH creation for C project."
+    return ""
+  }
+
   [string] $stdafx = (Canonize-Path -base $stdafxDir -child $stdafxHeaderName)
   [string] $vcxprojShortName = [System.IO.Path]::GetFileNameWithoutExtension($global:vcxprojPath);
   [string] $stdafxPch = (Join-Path -path (Get-SourceDirectory) `
@@ -416,7 +430,7 @@ Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $prep
                                  , [Parameter(Mandatory=$true)][string]    $fileToCompile)
 {
   [string[]] $projectCompileArgs = @()
-  if (! [string]::IsNullOrEmpty($pchFilePath))
+  if (! [string]::IsNullOrEmpty($pchFilePath) -and ! $fileToCompile.EndsWith($kExtensionC))
   {
     $projectCompileArgs += @($kClangFlagIncludePch , """$pchFilePath""")
   }
@@ -514,7 +528,7 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
   $tidyArgs += $preprocessorDefinitions
   $tidyArgs += $languageFlag
 
-  if (! [string]::IsNullOrEmpty($pchFilePath))
+  if (! [string]::IsNullOrEmpty($pchFilePath) -and ! $fileToTidy.EndsWith($kExtensionC))
   {
     $tidyArgs += @($kClangFlagIncludePch , """$pchFilePath""")
   }
@@ -682,6 +696,35 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   LoadProject($vcxprojPath)
 
   #-----------------------------------------------------------------------------------------------
+  # DETECT PLATFORM TOOLSET
+
+  [string] $platformToolset = Get-ProjectPlatformToolset
+  Write-Verbose "Platform toolset: $platformToolset"
+
+  if ($platformToolset.StartsWith('v140'))
+  {
+    if ($global:cptVisualStudioVersion -ne '2015')
+    {
+      # we need to reload everything and use VS2015
+      Write-Verbose "Switching to VS2015 because of v140 toolset. Reloading project..."
+      $global:cptVisualStudioVersion = "2015"
+      Clear-Vars
+      LoadProject($vcxprojPath)
+    }
+  }
+  else
+  {
+    if ($global:cptVisualStudioVersion -ne $global:cptDefaultVisualStudioVersion)
+    {
+      # we need to reload everything and the default vs version
+      Write-Verbose "Switching to default VsVer because of toolset. Reloading project..."
+      $global:cptVisualStudioVersion = $global:cptDefaultVisualStudioVersion
+      Clear-Vars
+      LoadProject($vcxprojPath)
+    }
+  }
+
+  #-----------------------------------------------------------------------------------------------
   # FIND FORCE INCLUDES
 
   [string[]] $forceIncludeFiles = Get-ProjectForceIncludes
@@ -691,26 +734,16 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # DETECT PROJECT PREPROCESSOR DEFINITIONS
 
   [string[]] $preprocessorDefinitions = Get-ProjectPreprocessorDefines
-  if ($aVisualStudioVersion -eq "2017")
+  if ($global:cptVisualStudioVersion -eq "2017")
   {
     # [HACK] pch generation crashes on VS 15.5 because of STL library, known bug.
     # Triggered by addition of line directives to improve std::function debugging.
     # There's a definition that supresses line directives.
 
-    [string] $mscVer = Get-MscVer -visualStudioPath $vsPath
-    #if ($mscVer -eq "14.12.25827")
-    #{
-      $preprocessorDefinitions += "-D_DEBUG_FUNCTIONAL_MACHINERY"
-    #}
+    $preprocessorDefinitions += "-D_DEBUG_FUNCTIONAL_MACHINERY"
   }
 
   Write-Verbose-Array -array $preprocessorDefinitions -name "Preprocessor definitions"
-
-  #-----------------------------------------------------------------------------------------------
-  # DETECT PLATFORM TOOLSET
-
-  [string] $platformToolset = Get-ProjectPlatformToolset
-  Write-Verbose "Platform toolset: $platformToolset"
 
   #-----------------------------------------------------------------------------------------------
   # DETECT PROJECT ADDITIONAL INCLUDE DIRECTORIES AND CONSTRUCT INCLUDE PATHS

@@ -1,7 +1,10 @@
-﻿using EnvDTE;
+﻿using ClangPowerTools.Handlers;
+using EnvDTE;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.Windows.Threading;
 
 namespace ClangPowerTools
 {
@@ -18,12 +21,12 @@ namespace ClangPowerTools
     public static void Initialize(IServiceProvider aServiceProvider)
     {
       if (null == mStatusBar)
-        mStatusBar = (IVsStatusbar)aServiceProvider.GetService(typeof(SVsStatusbar));
+        mStatusBar = aServiceProvider.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
     }
 
     public static void Text(string aText, int aFreezeStatusBar)
     {
-      DispatcherHandler.BeginInvoke(() =>
+      UIUpdater.Invoke(() =>
       {
         // Make sure the status bar is not frozen
         if (VSConstants.S_OK != mStatusBar.IsFrozen(out int frozen))
@@ -46,7 +49,7 @@ namespace ClangPowerTools
 
     public static void Animation(vsStatusAnimation aAnimation, int aEnableAnimation)
     {
-      DispatcherHandler.BeginInvoke(() =>
+      UIUpdater.Invoke(() =>
       {
         // Use the standard Visual Studio icon for building.  
         object icon = (short)Microsoft.VisualStudio.Shell.Interop.Constants.SBAI_Build;
