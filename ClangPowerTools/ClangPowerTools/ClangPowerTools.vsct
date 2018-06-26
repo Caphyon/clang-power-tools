@@ -4,7 +4,10 @@
   <Extern href="stdidcmd.h" />
   <Extern href="vsshlids.h" />
   <Commands package="guidClangPowerToolsPackage">
-
+    
+    
+    <!-- Menu -->
+    
     <Menus>
 
       <!--Commands submenu-->
@@ -23,8 +26,44 @@
         </Strings>
       </Menu>
 
+
+      <!--Toolbar Drop-Down Menu-->
+      <Menu guid="guidClangPowerToolsPackageCmdSet" id="DromDownMenu" type="MenuController" priority="0x0001">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
+        <CommandFlag>DefaultDocked</CommandFlag>
+        <Strings>
+          <ButtonText>Clang Tidy</ButtonText>
+          <CommandName>Clang Power Tools</CommandName>
+        </Strings>
+      </Menu>
+
+
+
+      <!--Toolbar Drop-Down Menu-->
+      <Menu guid="guidClangPowerToolsPackageCmdSet" id="DromDownMenuFirst" type="MenuController" priority="0x0001">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownToolbarMenuGroup" />
+        <CommandFlag>DefaultDocked</CommandFlag>
+        <Strings>
+          <ButtonText>Tidy-Fix</ButtonText>
+          <CommandName>Clang Power Tools</CommandName>
+        </Strings>
+      </Menu>
+
+
+
+      <!--<Menu guid="guidClangPowerToolsPackageCmdSet" id="DromDownMenu" type="MenuController" priority="0x0001" toolbarPriorityInBand="0x0001">
+        <Strings>
+          <ButtonText>Clang Tidy</ButtonText>
+        </Strings>
+      </Menu>-->
+
+      
+      
     </Menus>
 
+    
+    <!-- Groups -->
+    
     <Groups>
 
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0000" />
@@ -35,11 +74,31 @@
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="Toolbar" />
       </Group>
 
+      
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="DromDownToolbarMenuGroup" priority="0x0000">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownMenu" />
+      </Group>
+
+
+      <!--<Group guid="guidClangPowerToolsPackageCmdSet" id="DromDownContextMenuGroup" priority="0x0001">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
+      </Group>-->
+
+      
+      <!--<Group guid="guidClangPowerToolsPackageCmdSet" id="DromDownMenuGroup2" priority="0x0000">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownMenuFirst" />
+      </Group>-->
+
+
     </Groups>
 
+    
+    <!-- Buttons -->
+    
     <Buttons>
-
+      
       <!--Context Menu Buttons-->
+      
       <Button guid="guidClangPowerToolsPackageCmdSet" id="CompileId" priority="0x0000" type="Button">
         <Icon guid="guidImageCompile" id="Compile" />
         <CommandFlag>DefaultDisabled</CommandFlag>
@@ -48,15 +107,67 @@
         </Strings>
       </Button>
 
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0001" type="Button">
+      <!--<Button guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0001" type="Button">
         <Icon guid="guidImageTidy" id="Tidy" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Tidy Code</ButtonText>
         </Strings>
-      </Button>
+      </Button>-->
 
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0002" type="Button">
+
+      <!--<Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixId" priority="0x0001" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
+        <CommandFlag>TextOnly</CommandFlag>
+        <Strings>
+          <CommandName>cmdIdSubMenuItem1</CommandName>
+          <ButtonText>Members</ButtonText>
+        </Strings>
+      </Button>-->
+
+
+      <!--<Button guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0001" type="Button">
+        <Icon guid="guidImageTidy" id="Tidy" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Tidy Code</ButtonText>
+        </Strings>
+      </Button>-->
+
+
+      <!-- Clang Tidy & Clang Tidy Fix Drop Down Context Menu-->
+
+
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0001" type="Button">
+        <Icon guid="guidImageTidy" id="Tidy" />
+        <!--<CommandFlag>DefaultDisabled</CommandFlag>-->
+        <Strings>
+          <ButtonText>Tidy Code</ButtonText>
+        </Strings>
+      </Button>
+      
+      
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixId" priority="0x0002" type="Button">
+        <Icon guid="guidImageTidy" id="Tidy" />
+        <!--<CommandFlag>DefaultDisabled</CommandFlag>-->
+        <Strings>
+          <ButtonText>Tidy-Fix</ButtonText>
+        </Strings>
+      </Button>
+      
+
+     
+      
+      
+      
+      
+      
+      
+      
+      
+      
+
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0003" type="Button">
         <Icon guid="guidImageFormat" id="Format" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
@@ -64,7 +175,7 @@
         </Strings>
       </Button>
 
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0003" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0004" type="Button">
         <Icon guid="guidImageStopClang" id="StopClang" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
@@ -72,14 +183,16 @@
         </Strings>
       </Button>
       
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0004" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0005" type="Button">
         <Icon guid="guidImageSettings" id="Settings" />
         <Strings>
           <ButtonText>Settings</ButtonText>
         </Strings>
       </Button>
 
+      
       <!--Toolbar Buttons-->
+      
       <Button guid="guidClangPowerToolsPackageCmdSet" id="CompileId" priority="0x0000" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
         <Strings>
@@ -87,28 +200,67 @@
         </Strings>
       </Button>
 
+      
+      
+      
+      
+      <!-- Clang Tidy & Clang Tidy Fix Drop Down Toolbar-->
+      
+      
+
       <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0001" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownToolbarMenuGroup" />
+        <Strings>
+          <ButtonText>Clang Tidy</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixId" priority="0x0002" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownToolbarMenuGroup" />
+        <Strings>
+          <ButtonText>Tidy-Fix</ButtonText>
+        </Strings>
+      </Button>
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <!--<Button guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0001" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
         <Strings>
           <ButtonText>Tidy Code</ButtonText>
         </Strings>
-      </Button>
+      </Button>-->
+      
+      
+      
+      
+      
+      
+      
+      
 
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0002" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0003" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
         <Strings>
           <ButtonText>Clang Format</ButtonText>
         </Strings>
       </Button>
 
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0003" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0004" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
         <Strings>
           <ButtonText>Stop Clang</ButtonText>
         </Strings>
       </Button>
       
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0004" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0005" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
         <Strings>
           <ButtonText>Settings</ButtonText>
@@ -117,6 +269,9 @@
 
     </Buttons>
 
+    
+    <!-- Bitmaps -->
+    
     <Bitmaps>
 
       <Bitmap guid="guidImages" href="Resources\Icon.png" usedList="bmpPic1" />
@@ -130,6 +285,9 @@
 
   </Commands>
 
+  
+  <!-- Commands -->
+  
   <CommandPlacements>
 
     <!-- Placement for commands.
@@ -179,24 +337,47 @@
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
     </CommandPlacement>
 
+    
+    
+    <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+
+
+
     <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0001">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
     </CommandPlacement>
 
-    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0002">
+
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="TidyFixId" priority="0x0002">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
     </CommandPlacement>
 
 
-    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0003">
+
+
+    <!-- !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! -->
+
+
+
+
+
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0003">
+      <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
+    </CommandPlacement>
+
+
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0004">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
     </CommandPlacement>
     
-    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0000">
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0005">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" />
     </CommandPlacement>
 
   </CommandPlacements>
+
+  
+  <!-- Symbols -->
 
   <Symbols>
 
@@ -209,12 +390,38 @@
       <IDSymbol name="GroupForSettings" value="0x1022" />
       <IDSymbol name="Submenu" value="0x0100" />
 
+      
+      
+
+      <IDSymbol name="DromDownMenu" value="0x0200" />
+      <IDSymbol name="DromDownMenuFirst" value="0x0201" />
+
+      
+      
+
+
       <!--Commands-->
       <IDSymbol name="CompileId" value="0x0102" />
       <IDSymbol name="TidyId" value="0x0101" />
+      <IDSymbol name="TidyFixId" value="0x0106"/>
       <IDSymbol name="ClangFormatId" value="0x0105" />
       <IDSymbol name="StopClangId" value="0x0104" />
       <IDSymbol name="SettingsId" value="0x0103" />
+
+
+
+      
+      
+      <IDSymbol name ="DromDownToolbarMenuGroup" value="0x0110"/>
+      <!--<IDSymbol name ="DromDownContextMenuGroup" value="0x0222"/>-->
+
+
+      <IDSymbol name="DromDownMenuGroup2" value="0x0111"/>
+      
+      
+      
+      
+      
 
       <!--Toolbar-->
       <IDSymbol name="Toolbar" value="0x1000" />
