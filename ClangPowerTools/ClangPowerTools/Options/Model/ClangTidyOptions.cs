@@ -16,8 +16,6 @@ namespace ClangPowerTools
 
     public bool AutoTidyOnSave { get; set; }
 
-    public bool Fix { get; set; }
-
     public bool FormatAfterTidy { get; set; }
 
     public string HeaderFilter { get; set; }
