@@ -43,13 +43,13 @@ namespace ClangPowerTools.Script
     }
 
     public void ConstructParameters(ClangGeneralOptionsView aGeneralOptions, ClangTidyOptionsView aTidyOptions, ClangTidyPredefinedChecksOptionsView aTidyChecks, 
-      ClangTidyCustomChecksOptionsView aTidyCustomChecks, ClangFormatOptionsView aClangFormatView, DTE2 aDTEObj, string aVsEdition, string aVsVersion)
+      ClangTidyCustomChecksOptionsView aTidyCustomChecks, ClangFormatOptionsView aClangFormatView, DTE2 aDTEObj, string aVsEdition, string aVsVersion, bool aTidyFixFlag = false)
     {
       mParameters = GetGeneralParameters(aGeneralOptions);
       mParameters = null != aTidyOptions ?
-        $"{mParameters} {GetTidyParameters(aTidyOptions, aTidyChecks, aTidyCustomChecks)}" : $"{mParameters} {ScriptConstants.kParallel}";
+        $"{mParameters} {GetTidyParameters(aTidyOptions, aTidyChecks, aTidyCustomChecks, aTidyFixFlag)}" : $"{mParameters} {ScriptConstants.kParallel}";
 
-      if (null != aClangFormatView && null != aTidyOptions && true == aTidyOptions.Fix && true == aTidyOptions.FormatAfterTidy)
+      if (null != aClangFormatView && null != aTidyOptions && true == aTidyFixFlag && true == aTidyOptions.FormatAfterTidy)
         mParameters = $"{mParameters} {ScriptConstants.kClangFormatStyle} {aClangFormatView.Style}";
 
       mParameters = $"{mParameters} {ScriptConstants.kVsVersion} {aVsVersion} {ScriptConstants.kVsEdition} {aVsEdition}";
@@ -96,7 +96,8 @@ namespace ClangPowerTools.Script
       return $"{parameters}";
     }
 
-    private string GetTidyParameters(ClangTidyOptionsView aTidyOptions, ClangTidyPredefinedChecksOptionsView aTidyChecks, ClangTidyCustomChecksOptionsView aTidyCustomChecks)
+    private string GetTidyParameters(ClangTidyOptionsView aTidyOptions, ClangTidyPredefinedChecksOptionsView aTidyChecks, 
+      ClangTidyCustomChecksOptionsView aTidyCustomChecks, bool aTidyFixFlag)
     {
       string parameters = string.Empty;
 
@@ -132,7 +133,7 @@ namespace ClangPowerTools.Script
       if (string.Empty != parameters)
       {
         parameters = string.Format("{0} ''{1}{2}''",
-          (true == aTidyOptions.Fix ? ScriptConstants.kTidyFix : ScriptConstants.kTidy),
+          (true == aTidyFixFlag ? ScriptConstants.kTidyFix : ScriptConstants.kTidy),
           (mUseTidyFile ? "" : "-*"),
           parameters);
       }

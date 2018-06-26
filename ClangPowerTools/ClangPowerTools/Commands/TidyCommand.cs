@@ -25,6 +25,8 @@ namespace ClangPowerTools
     private FileChangerWatcher mFileWatcher;
     private FileOpener mFileOpener;
 
+    private bool mFix = false;
+
     private bool mForceTidyToFix = false;
     private bool mSaveCommandWasGiven = false;
 
@@ -114,6 +116,13 @@ namespace ClangPowerTools
         return;
 
       mCommandsController.Running = true;
+
+      if( sender is OleMenuCommand )
+      {
+        var id = (sender as OleMenuCommand).CommandID.ID;
+        mFix = CommandIds.kTidyFixId == id;
+      }
+
       System.Threading.Tasks.Task.Run(() =>
       {
         try
@@ -129,7 +138,7 @@ namespace ClangPowerTools
 
           using (var guard = silentFileController.GetSilentFileChangerGuard())
           {
-            if (true == mTidyOptions.Fix || true == mTidyOptions.AutoTidyOnSave)
+            if (true == mFix || true == mTidyOptions.AutoTidyOnSave)
             {
               WatchFiles();
 
@@ -139,7 +148,7 @@ namespace ClangPowerTools
               silentFileController.SilentFiles(AsyncPackage, guard, filesPath);
               silentFileController.SilentOpenFiles(AsyncPackage, guard, DTEObj);
             }
-            RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mTidyChecks, mTidyCustomChecks, mClangFormatView);
+            RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mTidyChecks, mTidyCustomChecks, mClangFormatView, mFix);
           }
         }
         catch (Exception exception)

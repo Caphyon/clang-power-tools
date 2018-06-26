@@ -80,14 +80,14 @@ namespace ClangPowerTools
 
     #region Protected methods
 
-    protected void RunScript(string aCommandName, ClangTidyOptionsView mTidyOptions = null,
-      ClangTidyPredefinedChecksOptionsView mTidyChecks = null, ClangTidyCustomChecksOptionsView mTidyCustomChecks = null, ClangFormatOptionsView aClangFormatView = null)
+    protected void RunScript(string aCommandName, ClangTidyOptionsView mTidyOptions = null, ClangTidyPredefinedChecksOptionsView mTidyChecks = null, 
+      ClangTidyCustomChecksOptionsView mTidyCustomChecks = null, ClangFormatOptionsView aClangFormatView = null, bool aTidyFixFlag = false)
     {
       try
       {
         mCompileTidyScriptBuilder = new ClangCompileTidyScript();
         mCompileTidyScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
-          mTidyCustomChecks, aClangFormatView, DTEObj, VsEdition, VsVersion);
+          mTidyCustomChecks, aClangFormatView, DTEObj, VsEdition, VsVersion, aTidyFixFlag);
 
         string solutionPath = DTEObj.Solution.FullName;
 
