@@ -166,6 +166,15 @@
     <Compile Include="Options\ViewModel\ConfigurationPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Services\DTEService\EnvDTEService.cs" />
+    <Compile Include="Services\DTEService\IEnvDTEService.cs" />
+    <Compile Include="Services\DTEService\SEnvDTEService.cs" />
+    <Compile Include="Services\VsSolutionService\VsSolutionService.cs" />
+    <Compile Include="Services\VsSolutionService\IVsSolutionService.cs" />
+    <Compile Include="Services\VsSolutionService\SVsSolutionService.cs" />
+    <Compile Include="Services\VsStatusBarService\IVsStatusBarService.cs" />
+    <Compile Include="Services\VsStatusBarService\SVsStatusBarService.cs" />
+    <Compile Include="Services\VsStatusBarService\VsStatusBarService.cs" />
     <Compile Include="SettingsPathBuilder.cs" />
     <Compile Include="SilentFile\SilentFileChangerEqualityComparer.cs" />
     <Compile Include="Items\IItem.cs" />

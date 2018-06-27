@@ -1,10 +1,9 @@
 ﻿using ClangPowerTools.Handlers;
+using ClangPowerTools.Services;
 using EnvDTE;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using System;
-using System.Windows.Threading;
+using System.Threading;
 
 namespace ClangPowerTools
 {
@@ -18,10 +17,14 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public static void Initialize(IServiceProvider aServiceProvider)
+    public async static System.Threading.Tasks.Task InitializeAsync(
+      Microsoft.VisualStudio.Shell.IAsyncServiceProvider aServiceProvider, CancellationToken cancellationToken)
     {
       if (null == mStatusBar)
-        mStatusBar = aServiceProvider.GetService(typeof(SVsStatusbar)) as IVsStatusbar;
+      {
+        var vsStatusBarService = await aServiceProvider.GetServiceAsync(typeof(SVsStatusBarService)) as IVsStatusBarService;
+        mStatusBar = await vsStatusBarService.GetVsStatusBarAsync(aServiceProvider, cancellationToken);
+      }
     }
 
     public static void Text(string aText, int aFreezeStatusBar)
