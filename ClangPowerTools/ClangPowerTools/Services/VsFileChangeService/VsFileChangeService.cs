@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools.Services
 {
-  public class VsFileChangeService : SEnvDTEService, IVsFileChangeService
+  public class VsFileChangeService : SVsFileChangeService, IVsFileChangeService
   {
     #region Members
 
