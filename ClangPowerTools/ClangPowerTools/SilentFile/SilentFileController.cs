@@ -1,5 +1,6 @@
 ﻿using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,13 +12,13 @@ namespace ClangPowerTools.SilentFile
   {
     public SilentFileChangerGuard GetSilentFileChangerGuard() => new SilentFileChangerGuard();
 
-    public void SilentFiles(IServiceProvider aServiceProvider, SilentFileChangerGuard aGuard, IEnumerable<string> aFilesPath)
+    public void SilentFiles(AsyncPackage aServiceProvider, SilentFileChangerGuard aGuard, IEnumerable<string> aFilesPath)
     {
       // silent all selected files
       aGuard.AddRange(aServiceProvider, aFilesPath);
     }
 
-    public void SilentOpenFiles(IServiceProvider aServiceProvider, SilentFileChangerGuard aGuard, DTE2 aDte)
+    public void SilentOpenFiles(AsyncPackage aServiceProvider, SilentFileChangerGuard aGuard, DTE2 aDte)
     {
       // silent all open documents
       foreach (Document doc in aDte.Documents)

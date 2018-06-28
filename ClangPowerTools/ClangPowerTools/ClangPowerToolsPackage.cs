@@ -105,7 +105,8 @@ namespace ClangPowerTools
       AddService(typeof(SEnvDTEService), CreateEnvDTEServiceAsync);
       AddService(typeof(SVsSolutionService), CreateVsSolutionSerciveAsync);
       AddService(typeof(SVsStatusBarService), CreateVsStatusBarSerciveAsync);
-
+      AddService(typeof(SVsFileChangeService), CreateVsFileChangeServiceAsync);
+      AddService(typeof(SVsRunningDocumentTableService), CreateVsRunningDocumentTableAsync);
 
       // Switches to the UI thread in order to consume some services used in command initialization
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
@@ -378,8 +379,32 @@ namespace ClangPowerTools
       return service;
     }
 
+    private async Task<object> CreateVsFileChangeServiceAsync(IAsyncServiceContainer container, CancellationToken cancellationToken, Type serviceType)
+    {
+      VsFileChangeService service = null;
 
-    
+      await System.Threading.Tasks.Task.Run(() =>
+      {
+        service = new VsFileChangeService(this);
+      });
+
+      return service;
+    }
+
+
+    private async Task<object> CreateVsRunningDocumentTableAsync(IAsyncServiceContainer container, CancellationToken cancellationToken, Type serviceType)
+    {
+      VsRunningDocumentTableService service = null;
+
+      await System.Threading.Tasks.Task.Run(() =>
+      {
+        service = new VsRunningDocumentTableService(this);
+      });
+
+      return service;
+    }
+
+
     #endregion
 
 

@@ -169,6 +169,12 @@
     <Compile Include="Services\DTEService\EnvDTEService.cs" />
     <Compile Include="Services\DTEService\IEnvDTEService.cs" />
     <Compile Include="Services\DTEService\SEnvDTEService.cs" />
+    <Compile Include="Services\VsFileChangeService\VsFileChangeService.cs" />
+    <Compile Include="Services\VsFileChangeService\IVsFileChangeService.cs" />
+    <Compile Include="Services\VsFileChangeService\SVsFileChangeService.cs" />
+    <Compile Include="Services\VsRunningDocumentTableService\IVsRunningDocumentTableService.cs" />
+    <Compile Include="Services\VsRunningDocumentTableService\SVsRunningDocumentTableService.cs" />
+    <Compile Include="Services\VsRunningDocumentTableService\VsRunningDocumentTableService.cs" />
     <Compile Include="Services\VsSolutionService\VsSolutionService.cs" />
     <Compile Include="Services\VsSolutionService\IVsSolutionService.cs" />
     <Compile Include="Services\VsSolutionService\SVsSolutionService.cs" />

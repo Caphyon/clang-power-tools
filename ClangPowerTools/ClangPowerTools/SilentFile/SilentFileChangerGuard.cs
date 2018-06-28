@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.SilentFile;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 
@@ -21,7 +22,7 @@ namespace ClangPowerTools
 
     #region Public methods
 
-    public SilentFileChangerGuard(IServiceProvider aSite, string aDocument, bool aReloadDocument)
+    public SilentFileChangerGuard(AsyncPackage aSite, string aDocument, bool aReloadDocument)
       : base(aSite, aDocument, aReloadDocument) => Suspend();
 
     public void Add(SilentFileChanger aFileChanger)
@@ -30,7 +31,7 @@ namespace ClangPowerTools
       mFileChangers.Add(aFileChanger);
     }
 
-    public void AddRange(IServiceProvider aServiceProvider, IEnumerable<string> aFilesPath)
+    public void AddRange(AsyncPackage aServiceProvider, IEnumerable<string> aFilesPath)
     {
       foreach (string filePath in aFilesPath)
         this.Add(new SilentFileChanger(aServiceProvider, filePath, true));
