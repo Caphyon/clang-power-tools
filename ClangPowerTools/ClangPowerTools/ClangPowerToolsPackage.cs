@@ -101,12 +101,19 @@ namespace ClangPowerTools
     /// </summary>
     protected async override System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
     {
+
+      AsyncServiceCreatorCallback callback = await new AsyncServiceCreatorCallback(new Task<object>(this, cancellationToken), CreateService);
+
       // Add services on the background thread
-      AddService(typeof(SEnvDTEService), CreateEnvDTEServiceAsync);
-      AddService(typeof(SVsSolutionService), CreateVsSolutionSerciveAsync);
-      AddService(typeof(SVsStatusBarService), CreateVsStatusBarSerciveAsync);
-      AddService(typeof(SVsFileChangeService), CreateVsFileChangeServiceAsync);
-      AddService(typeof(SVsRunningDocumentTableService), CreateVsRunningDocumentTableAsync);
+      AddService(typeof(SEnvDTEService), callback);
+      //AddService(typeof(SVsSolutionService), callback);
+      //AddService(typeof(SVsStatusBarService), callback);
+      //AddService(typeof(SVsFileChangeService), callback);
+      //AddService(typeof(SVsRunningDocumentTableService), callback);
+
+
+      await ((IAsyncServiceContainer)this).AddService(typeof(SEnvDTEService), callback);
+
 
       // Switches to the UI thread in order to consume some services used in command initialization
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
@@ -341,68 +348,90 @@ namespace ClangPowerTools
 
     #region Create Services
 
-    private async Task<object> CreateEnvDTEServiceAsync(IAsyncServiceContainer container, CancellationToken cancellationToken, Type serviceType)
+
+    private object CreateService(IServiceContainer container, Type serviceType)
     {
-      EnvDTEService service = null;
+      if (typeof(SEnvDTEService) == serviceType)
+        return new EnvDTEService(this);
 
-      await System.Threading.Tasks.Task.Run(() =>
-     {
-       service = new EnvDTEService(this);
-     });
+      if (typeof(SVsFileChangeService) == serviceType)
+        return new VsFileChangeService(this);
 
-      return service;
+      if (typeof(SVsRunningDocumentTableService) == serviceType)
+        return new VsRunningDocumentTableService(this);
+
+      if (typeof(SVsSolutionService) == serviceType)
+        return new VsSolutionService(this);
+
+      if (typeof(SVsStatusBarService) == serviceType)
+        return new VsStatusBarService(this);
+
+      return null;
     }
 
 
-    private async Task<object> CreateVsSolutionSerciveAsync(IAsyncServiceContainer container, CancellationToken cancellationToken, Type serviceType)
-    {
-      VsSolutionService service = null;
+    //private async Task<object> CreateEnvDTEServiceAsync(IAsyncServiceContainer container, CancellationToken cancellationToken, Type serviceType)
+    //{
+    //  EnvDTEService service = null;
 
-      await System.Threading.Tasks.Task.Run(() =>
-      {
-        service = new VsSolutionService(this);
-      });
+    //  await System.Threading.Tasks.Task.Run(() =>
+    // {
+    //   service = new EnvDTEService(this);
+    // });
 
-      return service;
-    }
-
-
-    private async Task<object> CreateVsStatusBarSerciveAsync(IAsyncServiceContainer container, CancellationToken cancellationToken, Type serviceType)
-    {
-      VsStatusBarService service = null;
-
-      await System.Threading.Tasks.Task.Run(() =>
-      {
-        service = new VsStatusBarService(this);
-      });
-
-      return service;
-    }
-
-    private async Task<object> CreateVsFileChangeServiceAsync(IAsyncServiceContainer container, CancellationToken cancellationToken, Type serviceType)
-    {
-      VsFileChangeService service = null;
-
-      await System.Threading.Tasks.Task.Run(() =>
-      {
-        service = new VsFileChangeService(this);
-      });
-
-      return service;
-    }
+    //  return service;
+    //}
 
 
-    private async Task<object> CreateVsRunningDocumentTableAsync(IAsyncServiceContainer container, CancellationToken cancellationToken, Type serviceType)
-    {
-      VsRunningDocumentTableService service = null;
+    //private async Task<object> CreateVsSolutionSerciveAsync(IAsyncServiceContainer container, CancellationToken cancellationToken, Type serviceType)
+    //{
+    //  VsSolutionService service = null;
 
-      await System.Threading.Tasks.Task.Run(() =>
-      {
-        service = new VsRunningDocumentTableService(this);
-      });
+    //  await System.Threading.Tasks.Task.Run(() =>
+    //  {
+    //    service = new VsSolutionService(this);
+    //  });
 
-      return service;
-    }
+    //  return service;
+    //}
+
+
+    //private async Task<object> CreateVsStatusBarSerciveAsync(IAsyncServiceContainer container, CancellationToken cancellationToken, Type serviceType)
+    //{
+    //  VsStatusBarService service = null;
+
+    //  await System.Threading.Tasks.Task.Run(() =>
+    //  {
+    //    service = new VsStatusBarService(this);
+    //  });
+
+    //  return service;
+    //}
+
+    //private async Task<object> CreateVsFileChangeServiceAsync(IAsyncServiceContainer container, CancellationToken cancellationToken, Type serviceType)
+    //{
+    //  VsFileChangeService service = null;
+
+    //  await System.Threading.Tasks.Task.Run(() =>
+    //  {
+    //    service = new VsFileChangeService(this);
+    //  });
+
+    //  return service;
+    //}
+
+
+    //private async Task<object> CreateVsRunningDocumentTableAsync(IAsyncServiceContainer container, CancellationToken cancellationToken, Type serviceType)
+    //{
+    //  VsRunningDocumentTableService service = null;
+
+    //  await System.Threading.Tasks.Task.Run(() =>
+    //  {
+    //    service = new VsRunningDocumentTableService(this);
+    //  });
+
+    //  return service;
+    //}
 
 
     #endregion
