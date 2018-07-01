@@ -169,6 +169,8 @@
     <Compile Include="Services\DTEService\EnvDTEService.cs" />
     <Compile Include="Services\DTEService\IEnvDTEService.cs" />
     <Compile Include="Services\DTEService\SEnvDTEService.cs" />
+    <Compile Include="Services\IService.cs" />
+    <Compile Include="Services\ServiceFactory.cs" />
     <Compile Include="Services\VsFileChangeService\VsFileChangeService.cs" />
     <Compile Include="Services\VsFileChangeService\IVsFileChangeService.cs" />
     <Compile Include="Services\VsFileChangeService\SVsFileChangeService.cs" />
