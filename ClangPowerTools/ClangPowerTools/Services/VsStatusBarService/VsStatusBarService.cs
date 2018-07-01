@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools.Services
 {
-  public class VsStatusBarService : SVsStatusBarService, IVsStatusBarService
+  public class VsStatusBarService : SVsStatusBarService, IVsStatusBarService, IService
   {
     #region Members
 

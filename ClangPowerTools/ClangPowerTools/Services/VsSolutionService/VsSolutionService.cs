@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools.Services
 {
-  public class VsSolutionService : SVsSolutionService, IVsSolutionService
+  public class VsSolutionService : SVsSolutionService, IVsSolutionService, IService
   {
     #region Members
 

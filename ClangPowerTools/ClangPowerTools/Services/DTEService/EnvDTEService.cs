@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.Shell;
 
 namespace ClangPowerTools.Services
 {
-  public class EnvDTEService : SEnvDTEService, IEnvDTEService
+  public class EnvDTEService : SEnvDTEService, IEnvDTEService, IService
   {
     #region Members
 

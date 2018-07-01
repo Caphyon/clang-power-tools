@@ -101,60 +101,49 @@ namespace ClangPowerTools
     /// </summary>
     protected async override System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
     {
+      // Create the service factory instance
+      var serviceFactory = new ServiceFactory(this);
 
-      AsyncServiceCreatorCallback callback = await new AsyncServiceCreatorCallback(new Task<object>(this, cancellationToken), CreateService);
-
-      // Add services on the background thread
-      AddService(typeof(SEnvDTEService), callback);
-      //AddService(typeof(SVsSolutionService), callback);
-      //AddService(typeof(SVsStatusBarService), callback);
-      //AddService(typeof(SVsFileChangeService), callback);
-      //AddService(typeof(SVsRunningDocumentTableService), callback);
-
-
-      await ((IAsyncServiceContainer)this).AddService(typeof(SEnvDTEService), callback);
-
-
+      // Add the services on the background thread
+      AddService(typeof(SEnvDTEService), serviceFactory.CreateService);
+      AddService(typeof(SVsSolutionService), serviceFactory.CreateService);
+      AddService(typeof(SVsStatusBarService), serviceFactory.CreateService);
+      AddService(typeof(SVsFileChangeService), serviceFactory.CreateService);
+      AddService(typeof(SVsRunningDocumentTableService), serviceFactory.CreateService);
+      
       // Switches to the UI thread in order to consume some services used in command initialization
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-
 
       // Get DTE
       var dteService = await GetServiceAsync(typeof(SEnvDTEService)) as IEnvDTEService;
       mDte = await dteService.GetDTE2Async(this, cancellationToken);
 
-
       // Init running doc table events
       mRunningDocTableEvents = new RunningDocTableEvents(this);
 
-
       //Settings command is always visible
       mSettingsCmd = new SettingsCommand(mDte, this, CommandSet, CommandIds.kSettingsId);
-
 
       // Get the build and command events from DTE
       mBuildEvents = mDte.Events.BuildEvents;
       mCommandEvents = mDte.Events.CommandEvents;
 
-
       // Get the general clang option page
       var generalOptions = (ClangGeneralOptionsView)this.GetDialogPage(typeof(ClangGeneralOptionsView));
-
 
       // Detect the first install 
       if (null == generalOptions.Version || string.IsNullOrWhiteSpace(generalOptions.Version))
         ShowToolbare(mDte); // Show the toolbar on the first install
 
-
       // Access the IVsSolutionEvents 
       await AdviseSolutionEvents(cancellationToken);
-
 
       // Init the status bar
       await StatusBarHandler.InitializeAsync(this, cancellationToken);
 
       await base.InitializeAsync(cancellationToken, progress);
     }
+
 
     #endregion
 
@@ -344,98 +333,6 @@ namespace ClangPowerTools
     }
 
     #endregion
-
-
-    #region Create Services
-
-
-    private object CreateService(IServiceContainer container, Type serviceType)
-    {
-      if (typeof(SEnvDTEService) == serviceType)
-        return new EnvDTEService(this);
-
-      if (typeof(SVsFileChangeService) == serviceType)
-        return new VsFileChangeService(this);
-
-      if (typeof(SVsRunningDocumentTableService) == serviceType)
-        return new VsRunningDocumentTableService(this);
-
-      if (typeof(SVsSolutionService) == serviceType)
-        return new VsSolutionService(this);
-
-      if (typeof(SVsStatusBarService) == serviceType)
-        return new VsStatusBarService(this);
-
-      return null;
-    }
-
-
-    //private async Task<object> CreateEnvDTEServiceAsync(IAsyncServiceContainer container, CancellationToken cancellationToken, Type serviceType)
-    //{
-    //  EnvDTEService service = null;
-
-    //  await System.Threading.Tasks.Task.Run(() =>
-    // {
-    //   service = new EnvDTEService(this);
-    // });
-
-    //  return service;
-    //}
-
-
-    //private async Task<object> CreateVsSolutionSerciveAsync(IAsyncServiceContainer container, CancellationToken cancellationToken, Type serviceType)
-    //{
-    //  VsSolutionService service = null;
-
-    //  await System.Threading.Tasks.Task.Run(() =>
-    //  {
-    //    service = new VsSolutionService(this);
-    //  });
-
-    //  return service;
-    //}
-
-
-    //private async Task<object> CreateVsStatusBarSerciveAsync(IAsyncServiceContainer container, CancellationToken cancellationToken, Type serviceType)
-    //{
-    //  VsStatusBarService service = null;
-
-    //  await System.Threading.Tasks.Task.Run(() =>
-    //  {
-    //    service = new VsStatusBarService(this);
-    //  });
-
-    //  return service;
-    //}
-
-    //private async Task<object> CreateVsFileChangeServiceAsync(IAsyncServiceContainer container, CancellationToken cancellationToken, Type serviceType)
-    //{
-    //  VsFileChangeService service = null;
-
-    //  await System.Threading.Tasks.Task.Run(() =>
-    //  {
-    //    service = new VsFileChangeService(this);
-    //  });
-
-    //  return service;
-    //}
-
-
-    //private async Task<object> CreateVsRunningDocumentTableAsync(IAsyncServiceContainer container, CancellationToken cancellationToken, Type serviceType)
-    //{
-    //  VsRunningDocumentTableService service = null;
-
-    //  await System.Threading.Tasks.Task.Run(() =>
-    //  {
-    //    service = new VsRunningDocumentTableService(this);
-    //  });
-
-    //  return service;
-    //}
-
-
-    #endregion
-
 
   }
 }

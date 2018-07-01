@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools.Services
 {
-  public class VsRunningDocumentTableService : SVsRunningDocumentTableService, IVsRunningDocumentTableService
+  public class VsRunningDocumentTableService : SVsRunningDocumentTableService, IVsRunningDocumentTableService, IService
   {
     #region Members
 
