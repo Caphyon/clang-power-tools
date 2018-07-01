@@ -1,8 +1,11 @@
-﻿using Microsoft.VisualStudio;
+﻿using ClangPowerTools.Services;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using System.Threading;
 using IServiceProvider = System.IServiceProvider;
 using ShellConstants = Microsoft.VisualStudio.Shell.Interop.Constants;
 
@@ -16,7 +19,7 @@ namespace ClangPowerTools.SilentFile
     private bool mIsSuspending;
     private bool mReloadDocument;
 
-    private IServiceProvider mSite;
+    private AsyncPackage mSite;
     private IVsPersistDocData mPersistDocData = null;
     private IVsDocDataFileChangeControl mFileChangeControl;
 
@@ -34,7 +37,7 @@ namespace ClangPowerTools.SilentFile
 
     public SilentFileChanger() { }
 
-    public SilentFileChanger(IServiceProvider aSite, string aDocument, bool aReloadDocument)
+    public SilentFileChanger(AsyncPackage aSite, string aDocument, bool aReloadDocument)
     {
       mSite = aSite;
       mDocumentFileName = aDocument;
@@ -46,7 +49,7 @@ namespace ClangPowerTools.SilentFile
     #region Public methods
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
-    public void Suspend()
+    public async void Suspend()
     {
       if (mIsSuspending)
         return;
@@ -54,17 +57,22 @@ namespace ClangPowerTools.SilentFile
       mDocData = IntPtr.Zero;
       try
       {
-        IVsRunningDocumentTable rdt = mSite.GetService(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
+        var rdtService = await mSite.GetServiceAsync(typeof(SVsRunningDocumentTableService)) as IVsRunningDocumentTableService;
+        var rdt = await rdtService.GetVsRunningDocumentTableAsync(mSite, new CancellationToken());
+
         if (rdt == null)
           return;
 
         ErrorHandler.ThrowOnFailure(rdt.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_NoLock, mDocumentFileName,
           out IVsHierarchy hierarchy, out uint itemId, out mDocData, out uint docCookie));
 
+
         if ((docCookie == (uint)ShellConstants.VSDOCCOOKIE_NIL) || mDocData == IntPtr.Zero)
           return;
 
-        IVsFileChangeEx fileChange = mSite.GetService(typeof(SVsFileChangeEx)) as IVsFileChangeEx;
+        var fileChangeService = await mSite.GetServiceAsync(typeof(SVsFileChangeService)) as IVsFileChangeService;
+        var fileChange = await fileChangeService.GetVsFileChangeAsync(mSite, new CancellationToken());
+
         if (fileChange == null)
           return;
 
@@ -97,7 +105,7 @@ namespace ClangPowerTools.SilentFile
       }
     }
 
-    public void Resume()
+    public async void Resume()
     {
       if (!mIsSuspending || mPersistDocData == null)
         return;
@@ -105,7 +113,9 @@ namespace ClangPowerTools.SilentFile
       if (mPersistDocData != null && mReloadDocument)
         mPersistDocData.ReloadDocData(0);
 
-      IVsFileChangeEx fileChange = mSite.GetService(typeof(SVsFileChangeEx)) as IVsFileChangeEx;
+      var fileChangeService = await mSite.GetServiceAsync(typeof(SVsFileChangeService)) as IVsFileChangeService;
+      var fileChange = await fileChangeService.GetVsFileChangeAsync(mSite, new CancellationToken());
+
       if (fileChange == null)
         return;
 
