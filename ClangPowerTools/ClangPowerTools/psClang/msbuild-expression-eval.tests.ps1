@@ -72,6 +72,27 @@ Describe "MSBuild - Powershell Expression translation" {
     $e = '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Program Files)Program Files'
     Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
   }
+
+  It "MakeRelative() MSBuild builtin function" {
+    $SystemDrive  = $env:SystemDrive
+    $SystemRoot   = $env:SystemRoot
+    $ProgramFiles = $env:ProgramFiles
+
+    $e = "`$([MSBuild]::MakeRelative('$SystemDrive', '$SystemRoot'))"
+    Evaluate-MSBuildExpression $e | Should -BeExactly "Windows"
+
+    $e = "`$([MSBuild]::MakeRelative(`$(SystemDrive), '$SystemRoot'))"
+    Evaluate-MSBuildExpression $e | Should -BeExactly "Windows"
+
+    $e = '$([MSBuild]::MakeRelative($(SystemDrive), $(SystemRoot)\System32))'
+    Evaluate-MSBuildExpression $e | Should -BeExactly "Windows\System32"
+
+    $e = '$([MSBuild]::MakeRelative($(SystemRoot), $(SystemRoot)\System32))'
+    Evaluate-MSBuildExpression $e | Should -BeExactly "System32"
+
+    $e = '$([MSBuild]::MakeRelative($(ProgramFiles), $(SystemRoot)\System32))'
+    Evaluate-MSBuildExpression $e | Should -BeExactly "..\Windows\System32"
+  }
 }
 
 Describe "Condition evaluation" {

@@ -25,14 +25,14 @@ Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>   `
         , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'     )`
         , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?((\$.+?\))|(.+?))((|`"|')\))+"`
         ,'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
-        , ('"'                     , '""'                 ) <#TEMP#>`
+        , ("\[MSBuild\]::MakeRelative\((.+?),\s*""?'?((\$.+?\))|(.+?))((|""|')\)\))+"`
+        ,'MakePathRelative -base $1 -target "$2")'        )`
+        , ('"'                     , '""'                 )`
 )
 
-Set-Variable -name "kMsbuildConditionToPsRules" <#-option Constant#> `
-    -value   @(<# Use only double quotes #>                     `
-    ,("\'"                    , '"'                  )`
-        <# We need to escape double quotes since we will eval() the condition #> `
-        <#, ('"'                     , '""'                 )` TMP #>
+Set-Variable -name "kMsbuildConditionToPsRules" <#-option Constant#>    `
+             -value   @(<# Use only double quotes #>                    `
+                       ,("\'"                    , '"'                  )
 )
 
 
@@ -51,9 +51,9 @@ function Exists([Parameter(Mandatory = $false)][string] $path)
     return Test-Path $path
 }
 
-function GetDirNameOfFileAbove([Parameter(Mandatory = $true)][string] $startDir
-    , [Parameter(Mandatory = $true)][string] $targetFile
-)
+function GetDirNameOfFileAbove( [Parameter(Mandatory = $true)][string] $startDir
+                              , [Parameter(Mandatory = $true)][string] $targetFile
+                              )
 {
     if ($targetFile.Contains('$'))
     {
@@ -72,6 +72,16 @@ function GetDirNameOfFileAbove([Parameter(Mandatory = $true)][string] $startDir
         }
     }
     return $base
+}
+
+function MakePathRelative( [Parameter(Mandatory = $true)][string] $base
+                         , [Parameter(Mandatory = $true)][string] $target
+                         )
+{
+    Push-Location "$base\"
+    [string] $relativePath = Resolve-Path -Relative $target
+    Pop-Location
+    return $relativePath -replace '^\.\\',''
 }
 
 function GetRegValue([Parameter(Mandatory = $true)][string] $regPath)
