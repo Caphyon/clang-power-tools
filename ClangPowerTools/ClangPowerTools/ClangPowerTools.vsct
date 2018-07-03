@@ -61,7 +61,7 @@
 								<Icon guid="guidImageTidy" id="Tidy" />
 								<CommandFlag>DefaultDisabled</CommandFlag>
 								<Strings>
-										<ButtonText>Tidy Code</ButtonText>
+										<ButtonText>Tidy</ButtonText>
 								</Strings>
 						</Button>
 
