@@ -479,5 +479,14 @@ function LoadProject([string] $vcxprojPath)
 
     $global:projectFiles = @()
 
+    if ($env:CPT_LOAD_ALL -ne "1")
+    {
+        [string] $vcpkgIncludePath = "$env:LOCALAPPDATA\vcpkg\vcpkg.user.targets"
+        if (Test-Path $vcpkgIncludePath)
+        {
+            SanitizeProjectFile($vcpkgIncludePath)
+        }
+    }
+
     SanitizeProjectFile -projectFilePath $global:vcxprojPath
 }
