@@ -37,13 +37,6 @@ namespace ClangPowerTools
 
     #region Properties
 
-
-    [Category(" Tidy")]
-    [DisplayName("Fix")]
-    [Description("Automatically applies clang-tidy fixes to selected source files, affected header files and saves them to disk.")]
-    public bool Fix { get; set; }
-
-
     [Category(" Tidy")]
     [DisplayName("Format after tidy")]
     [Description("")]
@@ -93,7 +86,6 @@ namespace ClangPowerTools
       var updatedConfig = LoadFromFile(path);
 
       updatedConfig.AutoTidyOnSave = this.AutoTidyOnSave;
-      updatedConfig.Fix = this.Fix;
       updatedConfig.FormatAfterTidy = this.FormatAfterTidy;
 
       updatedConfig.HeaderFilter =
@@ -110,7 +102,6 @@ namespace ClangPowerTools
       string path = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
       var loadedConfig = LoadFromFile(path);
 
-      this.Fix = loadedConfig.Fix;
       this.AutoTidyOnSave = loadedConfig.AutoTidyOnSave;
       this.FormatAfterTidy = loadedConfig.FormatAfterTidy;
 

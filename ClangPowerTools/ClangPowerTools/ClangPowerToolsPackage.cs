@@ -223,7 +223,10 @@ namespace ClangPowerTools
         mCompileCmd = new CompileCommand(mCommandsController, mSolution, mDte, this, CommandSet, CommandIds.kCompileId);
 
       if (null == mTidyCmd)
+      {
         mTidyCmd = new TidyCommand(mCommandsController, mSolution, mDte, this, CommandSet, CommandIds.kTidyId);
+        mTidyCmd = new TidyCommand(mCommandsController, mSolution, mDte, this, CommandSet, CommandIds.kTidyFixId);
+      }
 
       if (null == mClangFormatCmd)
         mClangFormatCmd = new ClangFormatCommand(mCommandsController, mSolution, mDte, this, CommandSet, CommandIds.kClangFormat);
