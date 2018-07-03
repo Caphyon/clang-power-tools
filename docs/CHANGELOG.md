@@ -1,5 +1,23 @@
 # Version History
 
+### Clang Power Tools 3.7
+*July 3, 2018*
+
+Improvements:
+
+* Optimize loading speed of the VS Extension
+* Optimize UI responsiveness when a command is executed
+* Display a dedicated command for `Clang Tidy-Fix` action
+* (Powershell Script) `-file` script parameter now accepts header files (.H), alongside source files. 
+  This triggers compilation for all source files (.CPP) that include them.
+
+Bugs:
+
+* vcpkg package include directories not being detected
+* MSBuild::MakeRelative() property function not working
+* 'C99 was disabled in PCH file' error when compiling .C files
+* v140 projects not compiled using appropiate VS2017 toolset
+
 ### Clang Power Tools 3.6
 *June 18, 2018*
 
