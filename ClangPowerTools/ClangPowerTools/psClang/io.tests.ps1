@@ -73,6 +73,27 @@ Describe "File IO" {
     [string[]] $files = Canonize-Path -base $sysDrive -child "*" # get all children
     $files.Count | Should -BeGreaterThan 1
   }
+
+  It "Exists" {
+    [string] $winDir = $env:SystemRoot
+    Exists $winDir | should -BeExactly $true
+    Exists "$winDir\notepad.exe" | should -BeExactly $true
+    Exists "$winDir\foobar_surely_nonextant" | should -BeExactly $false
+  }
+
+  It "HasTrailingSlash" {
+    HasTrailingSlash "ab" | should -BeExactly $false
+    HasTrailingSlash "ab\" | should -BeExactly $true
+    HasTrailingSlash "ab/" | should -BeExactly $true
+    HasTrailingSlash "a/b/" | should -BeExactly $true
+  }
+
+  It "EnsureTrailingSlash" {
+    EnsureTrailingSlash "ab" | should -BeExactly "ab\"
+    EnsureTrailingSlash "ab\" | should -BeExactly "ab\"
+    EnsureTrailingSlash "ab/" | should -BeExactly "ab/"
+    EnsureTrailingSlash "a/b/" | should -BeExactly "a/b/"
+  }
 }
 
 Describe "Command IO" {

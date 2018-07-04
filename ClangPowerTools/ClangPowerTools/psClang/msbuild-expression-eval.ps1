@@ -35,22 +35,6 @@ Set-Variable -name "kMsbuildConditionToPsRules" <#-option Constant#>    `
                        ,("\'"                    , '"'                  )
 )
 
-
-function HasTrailingSlash([Parameter(Mandatory = $true)][string] $str)
-{
-    return $str.EndsWith('\') -or $str.EndsWith('/')
-}
-
-function Exists([Parameter(Mandatory = $false)][string] $path)
-{
-    if ([string]::IsNullOrEmpty($path))
-    {
-        return $false
-    }
-
-    return Test-Path $path
-}
-
 function GetDirNameOfFileAbove( [Parameter(Mandatory = $true)][string] $startDir
                               , [Parameter(Mandatory = $true)][string] $targetFile
                               )
@@ -72,16 +56,6 @@ function GetDirNameOfFileAbove( [Parameter(Mandatory = $true)][string] $startDir
         }
     }
     return $base
-}
-
-function MakePathRelative( [Parameter(Mandatory = $true)][string] $base
-                         , [Parameter(Mandatory = $true)][string] $target
-                         )
-{
-    Push-Location "$base\"
-    [string] $relativePath = Resolve-Path -Relative $target
-    Pop-Location
-    return $relativePath -replace '^\.\\',''
 }
 
 function GetRegValue([Parameter(Mandatory = $true)][string] $regPath)
