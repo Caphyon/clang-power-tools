@@ -142,6 +142,42 @@ Function Canonize-Path( [Parameter(Mandatory = $true)][string] $base
     }
 }
 
+function HasTrailingSlash([Parameter(Mandatory = $true)][string] $str)
+{
+    return $str.EndsWith('\') -or $str.EndsWith('/')
+}
+
+
+function EnsureTrailingSlash([Parameter(Mandatory = $true)][string] $str)
+{
+    [string] $ret = If (HasTrailingSlash($str)) { $str } else { "$str\" }
+    return $ret
+}
+
+function Exists([Parameter(Mandatory = $false)][string] $path)
+{
+    if ([string]::IsNullOrEmpty($path))
+    {
+        return $false
+    }
+
+    return Test-Path $path
+}
+
+function MakePathRelative( [Parameter(Mandatory = $true)][string] $base
+                         , [Parameter(Mandatory = $true)][string] $target
+                         )
+{
+    Push-Location "$base\"
+    [string] $relativePath = (Resolve-Path -Relative $target) -replace '^\.\\',''
+    Pop-Location
+    if ( (HasTrailingSlash $target) -or $target.EndsWith('.') )
+    {
+        $relativePath += '\'
+    }
+    return "$relativePath"
+}
+
 # Command IO
 # ------------------------------------------------------------------------------------------------
 Function Exists-Command([Parameter(Mandatory = $true)][string] $command)
