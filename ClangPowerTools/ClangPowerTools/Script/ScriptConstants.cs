@@ -15,6 +15,7 @@ namespace ClangPowerTools
         ".cxx",
         ".c++",
         ".cp",
+        ".h"
       };
 
     public const string kPowerShellPath = @"WindowsPowerShell\v1.0\powershell.exe";
