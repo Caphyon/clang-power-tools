@@ -230,7 +230,7 @@ Add-Type -TypeDefinition @"
 [string] $global:cptDefaultVisualStudioVersion = "2017"
 
 # version of VS currently used
-[string] $global:cptVisualStudioVersion = $global:aVisualStudioVersion
+[string] $global:cptVisualStudioVersion = $aVisualStudioVersion
 
 #-------------------------------------------------------------------------------------------------
 # Global functions
