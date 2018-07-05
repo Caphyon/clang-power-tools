@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace ClangPowerTools
 {
@@ -6,15 +7,17 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private static FileSystemWatcher mWatcher = new FileSystemWatcher();
+    private static List<FileSystemWatcher> mWatchers = new List<FileSystemWatcher>();
 
     #endregion
+
 
     #region Properties
 
     public static FileSystemEventHandler OnChanged { get; set; }
 
     #endregion
+
 
     #region Public methods
 
@@ -23,27 +26,35 @@ namespace ClangPowerTools
       if (null == aDirectoryPath || string.IsNullOrWhiteSpace(aDirectoryPath))
         return;
 
-      // Set the path property of FileSystemWatcher
-      mWatcher.Path = aDirectoryPath;
-
-      // Watch for changes in LastWrite time
-      mWatcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-           | NotifyFilters.FileName | NotifyFilters.DirectoryName;
-
-      // Watch all accepted files 
       foreach (var extension in ScriptConstants.kAcceptedFileExtensions)
-        mWatcher.Filter = $"*{extension}";
+      {
+        FileSystemWatcher newFileWatcher = new FileSystemWatcher();
 
-      //Subdirectories will be also watched.
-      mWatcher.IncludeSubdirectories = true;
+        // Set the path property of FileSystemWatcher
+        newFileWatcher.Path = aDirectoryPath;
 
-      // Watch every file in the directory for changes
-      mWatcher.Changed += OnChanged;
-      mWatcher.Deleted += OnChanged;
+        // Watch for changes in LastWrite time
+        newFileWatcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
+             | NotifyFilters.FileName | NotifyFilters.DirectoryName;
 
-      // Begin watching.
-      mWatcher.EnableRaisingEvents = true;
+        // Watch files with specific file extension
+        newFileWatcher.Filter = $"*{extension}";
+
+        //Subdirectories will be also watched.
+        newFileWatcher.IncludeSubdirectories = true;
+
+        // Watch every file in the directory for changes
+        newFileWatcher.Changed += OnChanged;
+        newFileWatcher.Deleted += OnChanged;
+
+        // Begin watching.
+        newFileWatcher.EnableRaisingEvents = true;
+
+        // Save the watcher
+        mWatchers.Add(newFileWatcher);
+      }
     }
+
 
     #endregion
 
