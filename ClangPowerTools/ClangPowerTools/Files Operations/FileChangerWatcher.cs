@@ -6,19 +6,19 @@ namespace ClangPowerTools
   {
     #region Members
 
-    FileSystemWatcher mWatcher = new FileSystemWatcher();
+    private static FileSystemWatcher mWatcher = new FileSystemWatcher();
 
     #endregion
 
     #region Properties
 
-    public FileSystemEventHandler OnChanged { get; set; }
+    public static FileSystemEventHandler OnChanged { get; set; }
 
     #endregion
 
     #region Public methods
 
-    public void Run(string aDirectoryPath)
+    public static void Run(string aDirectoryPath)
     {
       if (null == aDirectoryPath || string.IsNullOrWhiteSpace(aDirectoryPath))
         return;
@@ -30,8 +30,7 @@ namespace ClangPowerTools
       mWatcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
            | NotifyFilters.FileName | NotifyFilters.DirectoryName;
 
-      // Only watch .cpp files.
-
+      // Watch all accepted files 
       foreach (var extension in ScriptConstants.kAcceptedFileExtensions)
         mWatcher.Filter = $"*{extension}";
 
