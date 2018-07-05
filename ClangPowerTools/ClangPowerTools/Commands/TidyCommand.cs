@@ -22,9 +22,6 @@ namespace ClangPowerTools
     private ClangTidyCustomChecksOptionsView mTidyCustomChecks;
     private ClangFormatOptionsView mClangFormatView;
 
-    private FileChangerWatcher mFileWatcher;
-    private FileOpener mFileOpener;
-
     private bool mFix = false;
 
     private bool mForceTidyToFix = false;
@@ -40,8 +37,8 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
 
-    public TidyCommand(CommandsController aCommandsController, IVsSolution aSolution, 
-      DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId) 
+    public TidyCommand(CommandsController aCommandsController, IVsSolution aSolution,
+      DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aCommandsController, aSolution, aDte, aPackage, aGuid, aId)
     {
       mTidyOptions = (ClangTidyOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyOptionsView));
@@ -49,7 +46,7 @@ namespace ClangPowerTools
       mTidyCustomChecks = (ClangTidyCustomChecksOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyCustomChecksOptionsView));
       mClangFormatView = (ClangFormatOptionsView)AsyncPackage.GetDialogPage(typeof(ClangFormatOptionsView));
 
-      mFileOpener = new FileOpener(DTEObj);
+      FileOpener.Initialize(DTEObj);
 
       var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 
@@ -116,12 +113,7 @@ namespace ClangPowerTools
         return;
 
       mCommandsController.Running = true;
-
-      if( sender is OleMenuCommand )
-      {
-        var id = (sender as OleMenuCommand).CommandID.ID;
-        mFix = CommandIds.kTidyFixId == id;
-      }
+      mFix = SetTidyFixParameter(sender);
 
       System.Threading.Tasks.Task.Run(() =>
       {
@@ -132,8 +124,6 @@ namespace ClangPowerTools
 
           CollectSelectedItems(ScriptConstants.kAcceptedFileExtensions);
 
-          mFileWatcher = new FileChangerWatcher();
-          mFileOpener = new FileOpener(DTEObj);
           var silentFileController = new SilentFileController();
 
           using (var guard = silentFileController.GetSilentFileChangerGuard())
@@ -164,7 +154,17 @@ namespace ClangPowerTools
 
     }
 
+    private bool SetTidyFixParameter(object sender)
+    {
+      if (!(sender is OleMenuCommand))
+        return false;
+
+      return (sender as OleMenuCommand).CommandID.ID == CommandIds.kTidyFixId;
+    }
+
+
     #endregion
+
 
     #region Helpers
 
@@ -172,10 +172,11 @@ namespace ClangPowerTools
     {
       try
       {
-        mFileWatcher.OnChanged += mFileOpener.FileChanged;
+        FileChangerWatcher.OnChanged += FileOpener.Open;
+
         string solutionFolderPath = DTEObj.Solution.FullName
           .Substring(0, DTEObj.Solution.FullName.LastIndexOf('\\'));
-        mFileWatcher.Run(solutionFolderPath);
+        FileChangerWatcher.Run(solutionFolderPath);
       }
       catch (Exception) { }
     }
