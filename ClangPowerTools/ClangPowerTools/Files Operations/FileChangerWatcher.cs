@@ -27,34 +27,42 @@ namespace ClangPowerTools
         return;
 
       foreach (var extension in ScriptConstants.kAcceptedFileExtensions)
-      {
-        FileSystemWatcher newFileWatcher = new FileSystemWatcher();
-
-        // Set the path property of FileSystemWatcher
-        newFileWatcher.Path = aDirectoryPath;
-
-        // Watch for changes in LastWrite time
-        newFileWatcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-             | NotifyFilters.FileName | NotifyFilters.DirectoryName;
-
-        // Watch files with specific file extension
-        newFileWatcher.Filter = $"*{extension}";
-
-        //Subdirectories will be also watched.
-        newFileWatcher.IncludeSubdirectories = true;
-
-        // Watch every file in the directory for changes
-        newFileWatcher.Changed += OnChanged;
-        newFileWatcher.Deleted += OnChanged;
-
-        // Begin watching.
-        newFileWatcher.EnableRaisingEvents = true;
-
-        // Save the watcher
-        mWatchers.Add(newFileWatcher);
-      }
+        mWatchers.Add(CreateFileWatcher(aDirectoryPath, extension));
     }
 
+
+    #endregion
+
+
+    #region Private Methods
+
+
+    private static FileSystemWatcher CreateFileWatcher(string aDirectoryPath, string aExtension)
+    {
+      FileSystemWatcher fileWatcher = new FileSystemWatcher();
+
+      // Set the path property of FileSystemWatcher
+      fileWatcher.Path = aDirectoryPath;
+
+      // Watch for changes in LastWrite time
+      fileWatcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
+           | NotifyFilters.FileName | NotifyFilters.DirectoryName;
+
+      // Watch files with specific file extension
+      fileWatcher.Filter = $"*{aExtension}";
+
+      //Subdirectories will be also watched.
+      fileWatcher.IncludeSubdirectories = true;
+
+      // Watch every file in the directory for changes
+      fileWatcher.Changed += OnChanged;
+      fileWatcher.Deleted += OnChanged;
+
+      // Begin watching.
+      fileWatcher.EnableRaisingEvents = true;
+
+      return fileWatcher;
+    }
 
     #endregion
 
