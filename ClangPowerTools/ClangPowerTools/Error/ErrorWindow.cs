@@ -12,6 +12,7 @@ namespace ClangPowerTools
 
     #endregion
 
+
     #region Public Methods
 
     public void Initialize(IServiceProvider aServiceProvider)
@@ -30,15 +31,16 @@ namespace ClangPowerTools
 
     public void ResumeRefresh() => mErrorProvider.ResumeRefresh();
 
-    public void AddError(TaskError aError) => AddTask(aError);
+    public void AddError(TaskErrorModel aError) => AddTask(aError);
 
     public void RemoveErrors(IVsHierarchy aHierarchy) => RemoveTasks(aHierarchy);
 
     #endregion
 
+
     #region Private Methods
 
-    private void AddTask(TaskError aError)
+    private void AddTask(TaskErrorModel aError)
     {
       ErrorTask errorTask = new ErrorTask
       {
@@ -69,6 +71,7 @@ namespace ClangPowerTools
         }
       }
     }
+
 
     private void ErrorTaskNavigate(object sender, EventArgs e)
     {

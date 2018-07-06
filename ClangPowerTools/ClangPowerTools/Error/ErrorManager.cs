@@ -36,7 +36,7 @@ namespace ClangPowerTools
       Instance = new ErrorManager(aServiceProvider);
     }
 
-    public void AddError(TaskError aError)
+    public void AddError(TaskErrorModel aError)
     {
       UIUpdater.Invoke(() =>
       {
@@ -51,13 +51,13 @@ namespace ClangPowerTools
     }
 
 
-    public void AddErrors(IEnumerable<TaskError> aErrors)
+    public void AddErrors(IEnumerable<TaskErrorModel> aErrors)
     {
       UIUpdater.Invoke(() =>
       {
         mErrorWindow.SuspendRefresh();
 
-        foreach (TaskError error in aErrors)
+        foreach (TaskErrorModel error in aErrors)
           mErrorWindow.AddError(error);
 
         mErrorWindow.Show();

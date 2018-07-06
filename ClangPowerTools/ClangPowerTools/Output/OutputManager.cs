@@ -7,6 +7,8 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using ClangPowerTools.Handlers;
+using System.Text.RegularExpressions;
+using ClangPowerTools.Error;
 
 namespace ClangPowerTools
 {
@@ -20,10 +22,10 @@ namespace ClangPowerTools
     private int kBufferSize = 5;
     private List<string> mMessagesBuffer = new List<string>();
 
-    private ErrorParser mErrorParser = new ErrorParser();
+    private ErrorDetector mErrorParser = new ErrorDetector();
 
     private bool mMissingLlvm = false;
-    private HashSet<TaskError> mErrors = new HashSet<TaskError>();
+    private HashSet<TaskErrorModel> mErrors = new HashSet<TaskErrorModel>();
 
     private List<string> mPCHPaths = new List<string>();
 
@@ -37,7 +39,7 @@ namespace ClangPowerTools
 
     public bool EmptyBuffer => mMessagesBuffer.Count == 0;
 
-    public HashSet<TaskError> Errors => mErrors;
+    public HashSet<TaskErrorModel> Errors => mErrors;
 
     public bool HasErrors => 0 != mErrors.Count;
 
@@ -98,20 +100,28 @@ namespace ClangPowerTools
 
           // Find error messages from powershell script output
           // replace them with an error message format that VS output window knows to interpret
-          if (mErrorParser.FindErrors(text, out TaskError aError))
+          if (mErrorParser.Detect(text, out Match aMarchResult))
           {
-            aError.HierarchyItem = Hierarchy;
-            List<TaskError> errors = new List<TaskError>();
-            errors.Add(aError);
+            IBuilder<TaskErrorModel> errorBuilder = new ErrorBuilder(aMarchResult);
+            errorBuilder.Build();
+            TaskErrorModel error = errorBuilder.GetResult();
+
+            error.HierarchyItem = Hierarchy;
+            List<TaskErrorModel> errors = new List<TaskErrorModel>();
+            errors.Add(error);
 
             StringBuilder output = new StringBuilder(
-              GetOutput(ref text, aError.FullMessage));
+              GetOutput(ref text, error.FullMessage));
 
-            while (mErrorParser.FindErrors(text, out aError))
+            while (mErrorParser.Detect(text, out aMarchResult))
             {
-              aError.HierarchyItem = Hierarchy;
-              errors.Add(aError);
-              output.Append(GetOutput(ref text, aError.FullMessage));
+              errorBuilder = new ErrorBuilder(aMarchResult);
+              errorBuilder.Build();
+              error = errorBuilder.GetResult();
+
+              error.HierarchyItem = Hierarchy;
+              errors.Add(error);
+              output.Append(GetOutput(ref text, error.FullMessage));
             }
 
             AddMessage(output.ToString());
@@ -156,7 +166,7 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private void SaveErrorsMessages(List<TaskError> aErrorCollection)
+    private void SaveErrorsMessages(List<TaskErrorModel> aErrorCollection)
     {
       if (0 == aErrorCollection.Count)
         return;
@@ -171,7 +181,8 @@ namespace ClangPowerTools
 
     private string GetOutput(ref string aText, string aSearchedSubstring)
     {
-      aText = mErrorParser.Format(aText, aSearchedSubstring);
+      ErrorFormatter errorFormatter = new ErrorFormatter();
+      aText = errorFormatter.Format(aText, aSearchedSubstring);
 
       GetBeforeAndAfterSubstrings(aText, aSearchedSubstring,
         out string substringBefore, out string substringAfter);
