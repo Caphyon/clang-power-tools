@@ -3,7 +3,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools
 {
-  public class TaskError
+  public class TaskErrorModel
   {
     #region Properties
 
@@ -23,26 +23,12 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region Constructor
-
-    public TaskError(string aFilePath, int aLine, int aColumn, 
-      TaskErrorCategory aCategory, string aDescription, string aFullMessage)
-    {
-      FilePath = aFilePath;
-      Line = aLine;
-      Column = aColumn;
-      Category = aCategory;
-      Description = aDescription;
-      FullMessage = aFullMessage;
-    }
-
-    #endregion
 
     #region Public Methods
 
     public override bool Equals(object obj)
     {
-      var otherObj = obj as TaskError;
+      var otherObj = obj as TaskErrorModel;
       if (null == otherObj)
         return false;
 
