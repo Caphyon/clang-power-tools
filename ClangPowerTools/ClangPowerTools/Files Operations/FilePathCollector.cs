@@ -1,6 +1,7 @@
 ﻿using EnvDTE;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ClangPowerTools
 {
@@ -9,25 +10,12 @@ namespace ClangPowerTools
     #region Public Methods
 
     public IEnumerable<string> Collect(IEnumerable<IItem> aItems)
-    {
-      var filesPath = new List<string>();
-      try
-      {
-        foreach (var item in aItems)
-          filesPath.Add(item.GetPath());
-      }
-      catch (Exception) { }
+    => aItems.Select(item => item.GetPath());
 
-      return filesPath;
-    }
 
     public IEnumerable<string> Collect(Documents aDocuments)
-    {
-      var filesPath = new List<string>();
-      foreach (Document doc in aDocuments)
-        filesPath.Add(doc.FullName);
-      return filesPath;
-    }
+      => aDocuments.Cast<Document>().Select(doc => doc.FullName);
+
 
     public string Collect(Document aDocument) => aDocument.FullName;
 

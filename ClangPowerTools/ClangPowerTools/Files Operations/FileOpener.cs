@@ -7,21 +7,22 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private string kOpenCommand = "File.OpenFile";
-    private DTE2 mDte;
+    private static readonly string kOpenCommand = "File.OpenFile";
+    private static DTE2 mDte;
 
     #endregion
 
     #region Constructor
 
-    public FileOpener(DTE2 aDte) => mDte = aDte;
+    public static void Initialize(DTE2 aDte) => mDte = aDte;
 
     #endregion
+
 
     #region Public methods
     
     // Open the changed files in the editor
-    public void FileChanged(object source, FileSystemEventArgs e) => 
+    public static void Open(object source, FileSystemEventArgs e) => 
       mDte.ExecuteCommand(kOpenCommand, e.FullPath);
 
     #endregion
