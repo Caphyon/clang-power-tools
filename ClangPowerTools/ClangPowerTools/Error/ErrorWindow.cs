@@ -10,13 +10,6 @@ namespace ClangPowerTools
   public class ErrorWindow : ErrorListProvider
   {
 
-    #region Members
-
-    //private static ErrorListProvider mErrorListProvider = null;
-
-    #endregion
-
-
     #region Constructor
 
     /// <summary>
