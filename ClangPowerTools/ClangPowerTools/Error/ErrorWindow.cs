@@ -55,15 +55,6 @@ namespace ClangPowerTools
     }
 
 
-    private void ErrorTaskNavigate(object sender, EventArgs e)
-    {
-      ErrorTask objErrorTask = (ErrorTask)sender;
-      objErrorTask.Line += 1;
-      bool bResult = Navigate(objErrorTask, new Guid(EnvDTE.Constants.vsViewKindCode));
-      objErrorTask.Line -= 1;
-    }
-
-
     public void RemoveErrors(IVsHierarchy aHierarchy)
     {
       UIUpdater.Invoke(() =>
@@ -100,6 +91,21 @@ namespace ClangPowerTools
     {
       Clear();
     }
+
+    #endregion
+
+
+    #region Private Methods
+
+
+    private void ErrorTaskNavigate(object sender, EventArgs e)
+    {
+      ErrorTask objErrorTask = (ErrorTask)sender;
+      objErrorTask.Line += 1;
+      bool bResult = Navigate(objErrorTask, new Guid(EnvDTE.Constants.vsViewKindCode));
+      objErrorTask.Line -= 1;
+    }
+
 
     #endregion
   }
