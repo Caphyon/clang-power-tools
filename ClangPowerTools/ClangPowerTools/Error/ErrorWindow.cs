@@ -7,13 +7,15 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools
 {
-  public class ErrorWindow
+  public class ErrorWindow : ErrorListProvider
   {
+
     #region Members
 
-    private static ErrorListProvider mErrorListProvider = null;
+    //private static ErrorListProvider mErrorListProvider = null;
 
     #endregion
+
 
     #region Constructor
 
@@ -21,9 +23,8 @@ namespace ClangPowerTools
     /// Instance Constructor
     /// </summary>
     /// <param name="aServiceProvider"></param>
-    public ErrorWindow(IServiceProvider aServiceProvider)
+    public ErrorWindow(IServiceProvider aIServiceProvider) : base(aIServiceProvider)
     {
-      mErrorListProvider = new ErrorListProvider(aServiceProvider);
     }
 
     #endregion
@@ -36,7 +37,7 @@ namespace ClangPowerTools
     {
       UIUpdater.Invoke(() =>
       {
-        mErrorListProvider.SuspendRefresh();
+        SuspendRefresh();
 
         foreach (TaskErrorModel error in aErrors)
         {
@@ -52,11 +53,11 @@ namespace ClangPowerTools
             HierarchyItem = error.HierarchyItem
           };
           errorTask.Navigate += ErrorTaskNavigate;
-          mErrorListProvider.Tasks.Add(errorTask);
+          Tasks.Add(errorTask);
         }
 
-        mErrorListProvider.BringToFront();
-        mErrorListProvider.ResumeRefresh();
+        BringToFront();
+        ResumeRefresh();
       });
     }
 
@@ -65,7 +66,7 @@ namespace ClangPowerTools
     {
       ErrorTask objErrorTask = (ErrorTask)sender;
       objErrorTask.Line += 1;
-      bool bResult = mErrorListProvider.Navigate(objErrorTask, new Guid(EnvDTE.Constants.vsViewKindCode));
+      bool bResult = Navigate(objErrorTask, new Guid(EnvDTE.Constants.vsViewKindCode));
       objErrorTask.Line -= 1;
     }
 
@@ -74,21 +75,21 @@ namespace ClangPowerTools
     {
       UIUpdater.Invoke(() =>
       {
-        mErrorListProvider.SuspendRefresh();
+        SuspendRefresh();
 
-        for (int i = mErrorListProvider.Tasks.Count - 1; i >= 0; --i)
+        for (int i = Tasks.Count - 1; i >= 0; --i)
         {
-          var errorTask = mErrorListProvider.Tasks[i] as ErrorTask;
+          var errorTask = Tasks[i] as ErrorTask;
           aHierarchy.GetCanonicalName(Microsoft.VisualStudio.VSConstants.VSITEMID_ROOT, out string nameInHierarchy);
           errorTask.HierarchyItem.GetCanonicalName(Microsoft.VisualStudio.VSConstants.VSITEMID_ROOT, out string nameErrorTaskHierarchy);
           if (nameInHierarchy == nameErrorTaskHierarchy)
           {
             errorTask.Navigate -= ErrorTaskNavigate;
-            mErrorListProvider.Tasks.Remove(errorTask);
+            Tasks.Remove(errorTask);
           }
         }
 
-        mErrorListProvider.ResumeRefresh();
+        ResumeRefresh();
       });
     }
 
@@ -97,7 +98,7 @@ namespace ClangPowerTools
     {
       UIUpdater.Invoke(() =>
       {
-        mErrorListProvider.Tasks.Clear();
+        Tasks.Clear();
       });
     }
 

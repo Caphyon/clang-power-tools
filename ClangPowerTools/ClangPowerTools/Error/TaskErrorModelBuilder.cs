@@ -46,7 +46,6 @@ namespace ClangPowerTools.Error
       TaskErrorCategory category = FindErrorCategory(ref categoryAsString);
 
       string clangTidyChecker = groups[10].Value;
-
       string fullMessage = CreateFullErrorMessage(path, line, categoryAsString, clangTidyChecker, messageDescription);
 
       // Add clang prefix for error list
