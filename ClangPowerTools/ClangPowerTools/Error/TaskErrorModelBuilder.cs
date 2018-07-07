@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace ClangPowerTools.Error
 {
-  public class ErrorBuilder : IBuilder<TaskErrorModel>
+  public class TaskErrorModelBuilder : IBuilder<TaskErrorModel>
   {
     #region Members
 
@@ -15,7 +15,7 @@ namespace ClangPowerTools.Error
 
     #region Consstructor
 
-    public ErrorBuilder(Match aMatchResult)
+    public TaskErrorModelBuilder(Match aMatchResult)
     {
       mMatchResult = aMatchResult;
     }
@@ -49,7 +49,9 @@ namespace ClangPowerTools.Error
 
       string fullMessage = CreateFullErrorMessage(path, line, categoryAsString, clangTidyChecker, messageDescription);
 
-      messageDescription = messageDescription.Insert(0, ErrorParserConstants.kClangTag); // Add clang prefix for error list
+      // Add clang prefix for error list
+      messageDescription = messageDescription.Insert(0, ErrorParserConstants.kClangTag); 
+
       mError = new TaskErrorModel()
       {
         FilePath = path,
@@ -65,7 +67,7 @@ namespace ClangPowerTools.Error
     #endregion
 
 
-#region Private Methods
+    #region Private Methods
 
     private TaskErrorCategory FindErrorCategory(ref string aCategoryAsString)
     {
