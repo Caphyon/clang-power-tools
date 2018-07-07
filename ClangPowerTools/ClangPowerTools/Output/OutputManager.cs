@@ -102,7 +102,7 @@ namespace ClangPowerTools
           // replace them with an error message format that VS output window knows to interpret
           if (mErrorParser.Detect(text, out Match aMarchResult))
           {
-            IBuilder<TaskErrorModel> errorBuilder = new ErrorBuilder(aMarchResult);
+            IBuilder<TaskErrorModel> errorBuilder = new TaskErrorModelBuilder(aMarchResult);
             errorBuilder.Build();
             TaskErrorModel error = errorBuilder.GetResult();
 
@@ -115,7 +115,7 @@ namespace ClangPowerTools
 
             while (mErrorParser.Detect(text, out aMarchResult))
             {
-              errorBuilder = new ErrorBuilder(aMarchResult);
+              errorBuilder = new TaskErrorModelBuilder(aMarchResult);
               errorBuilder.Build();
               error = errorBuilder.GetResult();
 

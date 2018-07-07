@@ -37,9 +37,9 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
 
-    public TidyCommand(CommandsController aCommandsController, IVsSolution aSolution,
-      DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
-        : base(aCommandsController, aSolution, aDte, aPackage, aGuid, aId)
+    public TidyCommand(CommandsController aCommandsController, ErrorWindow aErrorWindow,
+      IVsSolution aSolution, DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
+        : base(aCommandsController, aErrorWindow, aSolution, aDte, aPackage, aGuid, aId)
     {
       mTidyOptions = (ClangTidyOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyOptionsView));
       mTidyChecks = (ClangTidyPredefinedChecksOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyPredefinedChecksOptionsView));
