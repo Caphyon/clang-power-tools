@@ -80,6 +80,9 @@
     <Compile Include="Convertors\BooleanToVisibilityConverter.cs" />
     <Compile Include="Convertors\ClangFormatFallbackStyleConverter.cs" />
     <Compile Include="Convertors\ClangFormatStyleConverter.cs" />
+    <Compile Include="Error\ErrorFormatter.cs" />
+    <Compile Include="Error\IBuilder.cs" />
+    <Compile Include="Error\TaskErrorModelBuilder.cs" />
     <Compile Include="Helpers\UIUpdater.cs" />
     <Compile Include="Options\ClangFormatPathValue.cs" />
     <Compile Include="Options\HeaderFiltersValue.cs" />
@@ -105,9 +108,9 @@
     </Compile>
     <Compile Include="Helpers\DispatcherHandler.cs" />
     <Compile Include="Helpers\DocumentsHandler.cs" />
-    <Compile Include="Error\ErrorParser.cs" />
+    <Compile Include="Error\ErrorDetector.cs" />
     <Compile Include="Error\ErrorParserConstants.cs" />
-    <Compile Include="Error\ErrorManager.cs" />
+    <Compile Include="Error\ErrorWindow.cs" />
     <Compile Include="Files Operations\FileChangerWatcher.cs" />
     <Compile Include="Files Operations\FileOpener.cs" />
     <Compile Include="Files Operations\FilePathCollector.cs" />
@@ -200,10 +203,9 @@
     </Compile>
     <Compile Include="Commands\TidyCommand.cs" />
     <Compile Include="ClangPowerToolsPackage.cs" />
-    <Compile Include="Error\ErrorWindow.cs" />
     <Compile Include="Script\ScriptBuiler.cs" />
     <Compile Include="Script\ScriptConstants.cs" />
-    <Compile Include="Error\TaskError.cs" />
+    <Compile Include="Error\TaskErrorModel.cs" />
     <Compile Include="Items\SelectedProject.cs" />
     <Compile Include="Items\SelectedProjectItem.cs" />
     <Compile Include="Options\ViewModel\ClangTidyOptionsView.cs">
@@ -217,6 +219,8 @@
     <Compile Include="Helpers\StatusBarHandler.cs" />
     <Compile Include="StringExtension.cs" />
     <Compile Include="ClangFormatPathAttribute.cs" />
+    <Compile Include="TextOperationsInterfaces\IDetector.cs" />
+    <Compile Include="TextOperationsInterfaces\ITextFormatter.cs" />
     <Compile Include="Vsix.cs" />
     <Compile Include="XmlSerializer.cs" />
   </ItemGroup>

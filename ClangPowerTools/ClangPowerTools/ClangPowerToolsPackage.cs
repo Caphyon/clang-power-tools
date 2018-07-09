@@ -64,6 +64,7 @@ namespace ClangPowerTools
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
     private DTE2 mDte;
+    private ErrorWindow mErrorWindow;
 
     #region Commands
 
@@ -93,7 +94,7 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region Package Members
+    #region Initialize Package
 
     /// <summary>
     /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -118,8 +119,8 @@ namespace ClangPowerTools
       var dteService = await GetServiceAsync(typeof(SEnvDTEService)) as IEnvDTEService;
       mDte = await dteService.GetDTE2Async(this, cancellationToken);
 
-      // Init running doc table events
       mRunningDocTableEvents = new RunningDocTableEvents(this);
+      mErrorWindow = new ErrorWindow(this);
 
       //Settings command is always visible
       mSettingsCmd = new SettingsCommand(mDte, this, CommandSet, CommandIds.kSettingsId);
@@ -196,7 +197,7 @@ namespace ClangPowerTools
     {
       aPHierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out object projectObject);
       if (projectObject is Project project)
-        ErrorManager.Instance.RemoveErrors(aPHierarchy);
+        mErrorWindow.RemoveErrors(aPHierarchy);
 
       return VSConstants.S_OK;
     }
@@ -220,19 +221,19 @@ namespace ClangPowerTools
     private void InitializeCommands()
     {
       if (null == mCompileCmd)
-        mCompileCmd = new CompileCommand(mCommandsController, mSolution, mDte, this, CommandSet, CommandIds.kCompileId);
+        mCompileCmd = new CompileCommand(mCommandsController, mErrorWindow, mSolution, mDte, this, CommandSet, CommandIds.kCompileId);
 
       if (null == mTidyCmd)
       {
-        mTidyCmd = new TidyCommand(mCommandsController, mSolution, mDte, this, CommandSet, CommandIds.kTidyId);
-        mTidyCmd = new TidyCommand(mCommandsController, mSolution, mDte, this, CommandSet, CommandIds.kTidyFixId);
+        mTidyCmd = new TidyCommand(mCommandsController, mErrorWindow, mSolution, mDte, this, CommandSet, CommandIds.kTidyId);
+        mTidyCmd = new TidyCommand(mCommandsController, mErrorWindow, mSolution, mDte, this, CommandSet, CommandIds.kTidyFixId);
       }
 
       if (null == mClangFormatCmd)
-        mClangFormatCmd = new ClangFormatCommand(mCommandsController, mSolution, mDte, this, CommandSet, CommandIds.kClangFormat);
+        mClangFormatCmd = new ClangFormatCommand(mCommandsController, mErrorWindow, mSolution, mDte, this, CommandSet, CommandIds.kClangFormat);
 
       if (null == mStopClangCmd)
-        mStopClangCmd = new StopClang(mCommandsController, mSolution, mDte, this, CommandSet, CommandIds.kStopClang);
+        mStopClangCmd = new StopClang(mCommandsController, mErrorWindow, mSolution, mDte, this, CommandSet, CommandIds.kStopClang);
 
     }
 
@@ -245,7 +246,8 @@ namespace ClangPowerTools
 
         InitializeCommands();
 
-        ErrorManager.Initialize(this);
+        //ErrorWindow errorWindow = new ErrorWindow(this);
+        //ErrorWindow.Initialize(this);
 
         var generalOptions = (ClangGeneralOptionsView)this.GetDialogPage(typeof(ClangGeneralOptionsView));
         var currentVersion = GetPackageVersion();
@@ -261,7 +263,7 @@ namespace ClangPowerTools
           generalOptions.SaveSettingsToStorage();
         }
 
-        mBuildEvents.OnBuildBegin += ErrorManager.Instance.OnBuildBegin;
+        mBuildEvents.OnBuildBegin += mErrorWindow.OnBuildBegin;
 
         mBuildEvents.OnBuildBegin += mCommandsController.OnBuildBegin;
         mBuildEvents.OnBuildDone += mCommandsController.OnBuildDone;
@@ -289,7 +291,7 @@ namespace ClangPowerTools
 
     public int OnBeforeCloseSolution(object aPUnkReserved)
     {
-      mBuildEvents.OnBuildBegin -= ErrorManager.Instance.OnBuildBegin;
+      mBuildEvents.OnBuildBegin -= mErrorWindow.OnBuildBegin;
 
       mBuildEvents.OnBuildBegin -= mCommandsController.OnBuildBegin;
       mBuildEvents.OnBuildDone -= mCommandsController.OnBuildDone;

@@ -1,84 +1,112 @@
 ﻿using System;
+using System.Collections.Generic;
+using ClangPowerTools.Handlers;
+using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools
 {
-  public class ErrorWindow
+  public class ErrorWindow : ErrorListProvider
   {
-    #region Members
 
-    private static ErrorListProvider mErrorProvider = null;
+    #region Constructor
+
+    /// <summary>
+    /// Instance Constructor
+    /// </summary>
+    /// <param name="aServiceProvider"></param>
+    public ErrorWindow(IServiceProvider aIServiceProvider) : base(aIServiceProvider)
+    {
+    }
 
     #endregion
+
 
     #region Public Methods
 
-    public void Initialize(IServiceProvider aServiceProvider)
+
+    public void AddErrors(IEnumerable<TaskErrorModel> aErrors)
     {
-      if (null == mErrorProvider)
-        mErrorProvider = new ErrorListProvider(aServiceProvider);
+      UIUpdater.Invoke(() =>
+      {
+        SuspendRefresh();
+
+        foreach (TaskErrorModel error in aErrors)
+        {
+          ErrorTask errorTask = new ErrorTask
+          {
+            ErrorCategory = error.Category,
+            Document = error.FilePath,
+            Text = error.Description,
+            Line = error.Line - 1,
+            Column = error.Column,
+            Category = TaskCategory.BuildCompile,
+            Priority = TaskPriority.High,
+            HierarchyItem = error.HierarchyItem
+          };
+          errorTask.Navigate += ErrorTaskNavigate;
+          Tasks.Add(errorTask);
+        }
+
+        BringToFront();
+        ResumeRefresh();
+      });
     }
 
-    public void Show() => mErrorProvider.Show();
 
-    public void Clear() => mErrorProvider.Tasks.Clear();
+    public void RemoveErrors(IVsHierarchy aHierarchy)
+    {
+      UIUpdater.Invoke(() =>
+      {
+        SuspendRefresh();
 
-    public bool HasErrors() => 0 != mErrorProvider.Tasks.Count;
+        for (int i = Tasks.Count - 1; i >= 0; --i)
+        {
+          var errorTask = Tasks[i] as ErrorTask;
+          aHierarchy.GetCanonicalName(Microsoft.VisualStudio.VSConstants.VSITEMID_ROOT, out string nameInHierarchy);
+          errorTask.HierarchyItem.GetCanonicalName(Microsoft.VisualStudio.VSConstants.VSITEMID_ROOT, out string nameErrorTaskHierarchy);
+          if (nameInHierarchy == nameErrorTaskHierarchy)
+          {
+            errorTask.Navigate -= ErrorTaskNavigate;
+            Tasks.Remove(errorTask);
+          }
+        }
 
-    public void SuspendRefresh() => mErrorProvider.SuspendRefresh();
+        ResumeRefresh();
+      });
+    }
 
-    public void ResumeRefresh() => mErrorProvider.ResumeRefresh();
 
-    public void AddError(TaskError aError) => AddTask(aError);
+    public void Clear()
+    {
+      UIUpdater.Invoke(() =>
+      {
+        Tasks.Clear();
+      });
+    }
 
-    public void RemoveErrors(IVsHierarchy aHierarchy) => RemoveTasks(aHierarchy);
+
+    public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action)
+    {
+      Clear();
+    }
 
     #endregion
 
+
     #region Private Methods
 
-    private void AddTask(TaskError aError)
-    {
-      ErrorTask errorTask = new ErrorTask
-      {
-        ErrorCategory = aError.Category,
-        Document = aError.FilePath,
-        Text = aError.Description,
-        Line = aError.Line - 1,
-        Column = aError.Column,
-        Category = TaskCategory.BuildCompile,
-        Priority = TaskPriority.High,
-        HierarchyItem = aError.HierarchyItem
-      };
-      errorTask.Navigate += ErrorTaskNavigate;
-      mErrorProvider.Tasks.Add(errorTask);
-    }
-
-    private void RemoveTasks(IVsHierarchy aHierarchy)
-    {
-      for (int i = mErrorProvider.Tasks.Count - 1; i >= 0; --i)
-      {
-        var errorTask = mErrorProvider.Tasks[i] as ErrorTask;
-        aHierarchy.GetCanonicalName(Microsoft.VisualStudio.VSConstants.VSITEMID_ROOT, out string nameInHierarchy);
-        errorTask.HierarchyItem.GetCanonicalName(Microsoft.VisualStudio.VSConstants.VSITEMID_ROOT, out string nameErrorTaskHierarchy);
-        if (nameInHierarchy == nameErrorTaskHierarchy)
-        {
-          errorTask.Navigate -= ErrorTaskNavigate;
-          mErrorProvider.Tasks.Remove(errorTask);
-        }
-      }
-    }
 
     private void ErrorTaskNavigate(object sender, EventArgs e)
     {
       ErrorTask objErrorTask = (ErrorTask)sender;
       objErrorTask.Line += 1;
-      bool bResult = mErrorProvider.Navigate(objErrorTask, new Guid(EnvDTE.Constants.vsViewKindCode));
+      bool bResult = Navigate(objErrorTask, new Guid(EnvDTE.Constants.vsViewKindCode));
       objErrorTask.Line -= 1;
     }
 
-    #endregion
 
+    #endregion
   }
 }

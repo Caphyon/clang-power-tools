@@ -1,32 +1,42 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using System.Text.RegularExpressions;
 
-namespace ClangPowerTools
+namespace ClangPowerTools.Error
 {
-  public class ErrorParser
+  public class TaskErrorModelBuilder : IBuilder<TaskErrorModel>
   {
     #region Members
 
-    private const string kErrorMessageRegex = @"(.\:\\[ \S+\\\/.]*[c|C|h|H|cpp|CPP|cc|CC|cxx|CXX|c++|C++|cp|CP])(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*(error|note|warning)[^s](\r\n|\r|\n| |:)*(?<=[:|\r\n|\r|\n| ])(.*?)(?=[\[|\r\n|\r|\n])(.*)";
+    private TaskErrorModel mError = null;
+    private Match mMatchResult = null;
 
     #endregion
 
-    #region Public Methods
 
-    public bool FindErrors(string aMessages, out TaskError aError)
+    #region Consstructor
+
+    public TaskErrorModelBuilder(Match aMatchResult)
     {
-      Regex regex = new Regex(kErrorMessageRegex);
-      Match matchResult = regex.Match(aMessages);
-      aError = null;
+      mMatchResult = aMatchResult;
+    }
 
-      if (!matchResult.Success)
-        return false;
 
-      var groups = matchResult.Groups;
+    #endregion
+
+
+    #region IBuilder implementation
+
+
+    public TaskErrorModel GetResult() => mError;
+
+
+    public void Build()
+    {
+      var groups = mMatchResult.Groups;
       string messageDescription = groups[9].Value;
 
       if (string.IsNullOrWhiteSpace(messageDescription))
-        return false;
+        return;
 
       string path = groups[1].Value;
       int.TryParse(groups[3].Value, out int line);
@@ -36,14 +46,27 @@ namespace ClangPowerTools
       TaskErrorCategory category = FindErrorCategory(ref categoryAsString);
 
       string clangTidyChecker = groups[10].Value;
-
       string fullMessage = CreateFullErrorMessage(path, line, categoryAsString, clangTidyChecker, messageDescription);
 
-      messageDescription = messageDescription.Insert(0, ErrorParserConstants.kClangTag); // Add clang prefix for error list
-      aError = new TaskError(path, line, column, category, messageDescription, fullMessage );
+      // Add clang prefix for error list
+      messageDescription = messageDescription.Insert(0, ErrorParserConstants.kClangTag); 
 
-      return true;
+      mError = new TaskErrorModel()
+      {
+        FilePath = path,
+        Line = line,
+        Column = column,
+        Category = category,
+        Description = messageDescription,
+        FullMessage = fullMessage
+      };
+
     }
+
+    #endregion
+
+
+    #region Private Methods
 
     private TaskErrorCategory FindErrorCategory(ref string aCategoryAsString)
     {
@@ -69,27 +92,17 @@ namespace ClangPowerTools
       return category;
     }
 
-    private string CreateFullErrorMessage(string aPath, int aLine, 
-      string aCategory, string aClangTidyChecker, string aDescription)
+
+    private string CreateFullErrorMessage(string aPath, int aLine,
+     string aCategory, string aClangTidyChecker, string aDescription)
     {
       return string.Format("{0}({1}): {2}{3}: {4}", aPath, aLine, aCategory,
         (true == string.IsNullOrWhiteSpace(aClangTidyChecker) ? string.Empty : $" {aClangTidyChecker.Trim(new char[] { ' ', '\n', '\r', '\t' })}"),
         aDescription);
     }
 
-    public string Format(string aMessages, string aReplacement)
-    {
-      Regex regex = new Regex(kErrorMessageRegex);
-      return regex.Replace(aMessages, aReplacement, 1);
-    }
-
-    public bool LlvmIsMissing(string aMessages)
-    {
-      return aMessages.Contains(ErrorParserConstants.kCompileClangMissingFromPath) ||
-        aMessages.Contains(ErrorParserConstants.kTidyClangMissingFromPath);
-    }
-
     #endregion
+
 
   }
 }

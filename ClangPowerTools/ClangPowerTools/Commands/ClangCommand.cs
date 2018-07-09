@@ -21,10 +21,11 @@ namespace ClangPowerTools
     protected List<string> mDirectoriesPath = new List<string>();
     protected static OutputManager mOutputManager;
     protected ClangGeneralOptionsView mGeneralOptions;
-    private Commands2 mCommand;
 
+    private Commands2 mCommand;
     private IVsSolution mSolution;
 
+    private ErrorWindow mErrorWindow;
     private PowerShellWrapper mPowerShell = new PowerShellWrapper();
     private ClangCompileTidyScript mCompileTidyScriptBuilder;
     private const string kVs15Version = "2017";
@@ -50,13 +51,14 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public ClangCommand(CommandsController aCommandsController, IVsSolution aSolution, 
-      DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
+    public ClangCommand(CommandsController aCommandsController, ErrorWindow aErrorWindow, 
+      IVsSolution aSolution, DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aDte, aPackage, aGuid, aId)
     {
       if (null == mCommandsController)
         mCommandsController = aCommandsController;
 
+      mErrorWindow = aErrorWindow;
       mGeneralOptions = (ClangGeneralOptionsView)aPackage.GetDialogPage(typeof(ClangGeneralOptionsView));
 
       mSolution = aSolution;
@@ -121,7 +123,7 @@ namespace ClangPowerTools
           mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
         }
         if (mOutputManager.HasErrors)
-          ErrorManager.Instance.AddErrors(mOutputManager.Errors);
+          mErrorWindow.AddErrors(mOutputManager.Errors);
 
       }
       catch (Exception)
@@ -176,7 +178,7 @@ namespace ClangPowerTools
 
     private void ClearWindows()
     {
-      ErrorManager.Instance.Clear();
+      mErrorWindow.Clear();
       mOutputManager.Clear();
       mOutputManager.Show();
     }
