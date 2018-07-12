@@ -197,8 +197,6 @@
     <Compile Include="Items\IItem.cs" />
     <Compile Include="Items\ItemsCollector.cs" />
     <Compile Include="Output\OutputWindowConstants.cs" />
-    <Compile Include="Output\OutputManager.cs" />
-    <Compile Include="Output\OutputWindow.cs" />
     <Compile Include="Script\PowerShellWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\SettingsCommand.cs" />
