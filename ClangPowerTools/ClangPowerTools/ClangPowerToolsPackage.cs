@@ -17,6 +17,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ClangPowerTools.Services;
 using System.ComponentModel.Design;
+using ClangPowerTools.Output;
 
 namespace ClangPowerTools
 {
@@ -111,7 +112,8 @@ namespace ClangPowerTools
       AddService(typeof(SVsStatusBarService), serviceFactory.CreateService);
       AddService(typeof(SVsFileChangeService), serviceFactory.CreateService);
       AddService(typeof(SVsRunningDocumentTableService), serviceFactory.CreateService);
-      
+      AddService(typeof(SVsOutputWindowService), serviceFactory.CreateService);
+
       // Switches to the UI thread in order to consume some services used in command initialization
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
@@ -254,9 +256,9 @@ namespace ClangPowerTools
 
         if (0 != string.Compare(generalOptions.Version, currentVersion))
         {
-          OutputManager outputManager = new OutputManager(mDte);
+          OutputWindowController outputManager = new OutputWindowController(mDte);
           outputManager.Show();
-          outputManager.AddMessage($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
+          outputManager.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
             $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
 
           generalOptions.Version = currentVersion;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ClangPowerTools.DialogPages;
+using ClangPowerTools.Output;
 using ClangPowerTools.Script;
 using EnvDTE;
 using EnvDTE80;
@@ -19,7 +20,7 @@ namespace ClangPowerTools
     protected FilePathCollector mFilePahtCollector;
     protected static RunningProcesses mRunningProcesses = new RunningProcesses();
     protected List<string> mDirectoriesPath = new List<string>();
-    protected static OutputManager mOutputManager;
+    protected static OutputWindowController mOutputManager;
     protected ClangGeneralOptionsView mGeneralOptions;
 
     private Commands2 mCommand;
@@ -93,10 +94,10 @@ namespace ClangPowerTools
 
         string solutionPath = DTEObj.Solution.FullName;
 
-        mOutputManager = new OutputManager(DTEObj);
+        mOutputManager = new OutputWindowController(DTEObj);
         InitPowerShell();
         ClearWindows();
-        mOutputManager.AddMessage($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
+        mOutputManager.Write($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
 
         StatusBarHandler.Status(aCommandName + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
 
@@ -111,16 +112,16 @@ namespace ClangPowerTools
 
           if (mOutputManager.MissingLlvm)
           {
-            mOutputManager.AddMessage(ErrorParserConstants.kMissingLlvmMessage);
+            mOutputManager.Write(ErrorParserConstants.kMissingLlvmMessage);
             break;
           }
         }
         if (!mOutputManager.EmptyBuffer)
-          mOutputManager.AddMessage(String.Join("\n", mOutputManager.Buffer));
+          mOutputManager.Write(String.Join("\n", mOutputManager.Buffer));
         if (!mOutputManager.MissingLlvm)
         {
           mOutputManager.Show();
-          mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
+          mOutputManager.Write($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
         }
         if (mOutputManager.HasErrors)
           mErrorWindow.AddErrors(mOutputManager.Errors);
@@ -129,7 +130,7 @@ namespace ClangPowerTools
       catch (Exception)
       {
         mOutputManager.Show();
-        mOutputManager.AddMessage($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
+        mOutputManager.Write($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
       }
       finally
       {
