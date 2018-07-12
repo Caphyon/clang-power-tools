@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.Error;
 using ClangPowerTools.Handlers;
 using EnvDTE80;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
@@ -58,11 +59,11 @@ namespace ClangPowerTools.Output
     #region Constuctor
 
 
-    public OutputWindowController(DTE2 aDte)
+    public OutputWindowController(AsyncPackage aPackage, DTE2 aDte)
     {
       mDte = aDte;
       if (null == mOutputWindowBuilder)
-        mOutputWindowBuilder = new OutputWindowBuilder(mDte);
+        mOutputWindowBuilder = new OutputWindowBuilder(aPackage);
 
       mOutputWindowBuilder.Build();
     }

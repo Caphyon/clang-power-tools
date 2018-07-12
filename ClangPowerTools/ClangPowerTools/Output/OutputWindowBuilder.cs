@@ -1,5 +1,6 @@
 ﻿using System;
 using ClangPowerTools.Error;
+using ClangPowerTools.Services;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -13,23 +14,27 @@ namespace ClangPowerTools.Output
     /// <summary>
     /// Output window model instance
     /// </summary>
-    private OutputWindowModel mOutputWindow;
+    private OutputWindowModel mOutputWindow = new OutputWindowModel();
+
 
     /// <summary>
-    /// DTE2 instance to get the VS output window elements 
+    /// Async Package will be used to get the VS output window instance
     /// </summary>
-    private DTE2 mDte;
+    private AsyncPackage mPackage;
+
 
     #endregion
 
 
     #region Constructor
 
+
     /// <summary>
     /// Instance constructor
     /// </summary>
     /// <param name="aDte"></param>
-    public OutputWindowBuilder(DTE2 aDte) => mDte = aDte;
+    public OutputWindowBuilder(AsyncPackage aPackage) => mPackage = aPackage;
+
 
     #endregion
 
@@ -39,18 +44,11 @@ namespace ClangPowerTools.Output
     /// <summary>
     /// Build the output window model;
     /// </summary>
-    public void Build()
+    public async void Build()
     {
-      if (null == mOutputWindow)
-      {
-        IServiceProvider serviceProvider =
-          new ServiceProvider(mDte as Microsoft.VisualStudio.OLE.Interop.IServiceProvider);
+        var outputWindowService = await mPackage.GetServiceAsync(typeof(SVsOutputWindowService)) as IVsOutputWindowService;
+        mOutputWindow.VsOutputWindow = await outputWindowService.GetOutputWindowAsync(mPackage, new System.Threading.CancellationToken());
 
-        mOutputWindow.VsOutputWindow = serviceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
-      }
-
-      if (null == mOutputWindow.Pane)
-      {
         Guid generalPaneGuid = mOutputWindow.PaneGuid;
         mOutputWindow.VsOutputWindow.GetPane(ref generalPaneGuid, out IVsOutputWindowPane pane);
 
@@ -61,7 +59,6 @@ namespace ClangPowerTools.Output
         }
 
         mOutputWindow.Pane = pane;
-      }
     }
 
     /// <summary>

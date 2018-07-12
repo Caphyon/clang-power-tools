@@ -256,9 +256,9 @@ namespace ClangPowerTools
 
         if (0 != string.Compare(generalOptions.Version, currentVersion))
         {
-          OutputWindowController outputManager = new OutputWindowController(mDte);
-          outputManager.Show();
-          outputManager.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
+          OutputWindowController outputController = new OutputWindowController(this, mDte);
+          outputController.Show();
+          outputController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
             $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
 
           generalOptions.Version = currentVersion;

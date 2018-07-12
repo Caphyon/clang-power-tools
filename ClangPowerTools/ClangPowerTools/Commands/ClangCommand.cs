@@ -94,7 +94,7 @@ namespace ClangPowerTools
 
         string solutionPath = DTEObj.Solution.FullName;
 
-        mOutputManager = new OutputWindowController(DTEObj);
+        mOutputManager = new OutputWindowController(AsyncPackage, DTEObj);
         InitPowerShell();
         ClearWindows();
         mOutputManager.Write($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
