@@ -161,6 +161,9 @@
     <Compile Include="Options\View\WpfPropertyGrid\PropertyTemplateSelector.cs" />
     <Compile Include="Options\View\WpfPropertyGrid\ProvideToolboxControlAttribute.cs" />
     <Compile Include="Options\View\WpfPropertyGrid\VisualTreeHelperExtension.cs" />
+    <Compile Include="Output\OutputWindowBuilder.cs" />
+    <Compile Include="Output\OutputWindowController.cs" />
+    <Compile Include="Output\OutputWindowModel.cs" />
     <Compile Include="PCHCleaner.cs" />
     <Compile Include="Helpers\ProjectConfigurationHandler.cs" />
     <Compile Include="RunningDocTableEvents.cs" />
@@ -177,6 +180,9 @@
     <Compile Include="Services\VsFileChangeService\VsFileChangeService.cs" />
     <Compile Include="Services\VsFileChangeService\IVsFileChangeService.cs" />
     <Compile Include="Services\VsFileChangeService\SVsFileChangeService.cs" />
+    <Compile Include="Services\VsOutputWindow\IVsOutputWindowService.cs" />
+    <Compile Include="Services\VsOutputWindow\SVsOutputWindowService.cs" />
+    <Compile Include="Services\VsOutputWindow\VsOutputWindowService.cs" />
     <Compile Include="Services\VsRunningDocumentTableService\IVsRunningDocumentTableService.cs" />
     <Compile Include="Services\VsRunningDocumentTableService\SVsRunningDocumentTableService.cs" />
     <Compile Include="Services\VsRunningDocumentTableService\VsRunningDocumentTableService.cs" />
