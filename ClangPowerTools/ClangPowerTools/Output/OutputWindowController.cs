@@ -15,13 +15,13 @@ namespace ClangPowerTools.Output
   {
     #region Private Members
 
+    private OutputProcessor mOutputProcessor = new OutputProcessor();
 
     private static IBuilder<OutputWindowModel> mOutputWindowBuilder;
 
 
     private DTE2 mDte = null;
 
-    private int kBufferSize = 5;
     private List<string> mMessagesBuffer = new List<string>();
 
     private ErrorDetector mErrorParser = new ErrorDetector();
@@ -104,73 +104,8 @@ namespace ClangPowerTools.Output
           return;
 
         var outputWindow = mOutputWindowBuilder.GetResult();
-        outputWindow.Pane.OutputStringThreadSafe(aMessage);
+        outputWindow.Pane.OutputStringThreadSafe(aMessage + "\n");
       });
-    }
-
-
-    #endregion
-
-
-    #region Process Data
-
-
-    private void ProcessOutput(string aMessage)
-    {
-      try
-      {
-        if (mErrorParser.LlvmIsMissing(aMessage))
-        {
-          mMissingLlvm = true;
-        }
-        else if (!mMissingLlvm)
-        {
-          string text = String.Join("\n", mMessagesBuffer) + "\n";
-
-          // Find error messages from powershell script output
-          // replace them with an error message format that VS output window knows to interpret
-          if (mErrorParser.Detect(text, out Match aMarchResult))
-          {
-            IBuilder<TaskErrorModel> errorBuilder = new TaskErrorModelBuilder(aMarchResult);
-            errorBuilder.Build();
-            TaskErrorModel error = errorBuilder.GetResult();
-
-            error.HierarchyItem = Hierarchy;
-            List<TaskErrorModel> errors = new List<TaskErrorModel>();
-            errors.Add(error);
-
-            StringBuilder output = new StringBuilder(
-              GetOutput(ref text, error.FullMessage));
-
-            while (mErrorParser.Detect(text, out aMarchResult))
-            {
-              errorBuilder = new TaskErrorModelBuilder(aMarchResult);
-              errorBuilder.Build();
-              error = errorBuilder.GetResult();
-
-              error.HierarchyItem = Hierarchy;
-              errors.Add(error);
-              output.Append(GetOutput(ref text, error.FullMessage));
-            }
-
-            Write(output.ToString());
-            output.Clear();
-
-            if (0 != mMessagesBuffer.Count)
-              mMessagesBuffer.Clear();
-
-            SaveErrorsMessages(errors);
-          }
-          else if (kBufferSize <= mMessagesBuffer.Count)
-          {
-            Write(mMessagesBuffer[0]);
-            mMessagesBuffer.RemoveAt(0);
-          }
-        }
-      }
-      catch (Exception)
-      {
-      }
     }
 
 
@@ -184,48 +119,25 @@ namespace ClangPowerTools.Output
     {
       if (null == e.Data)
         return;
-      mMessagesBuffer.Add(e.Data);
-      ProcessOutput(e.Data);
+
+      if (!mOutputProcessor.MissingLLVM)
+      {
+        mOutputProcessor.ProcessData(e.Data, Hierarchy, out string message);
+        Write(message);
+      }
     }
+
 
     public void OutputDataErrorReceived(object sender, DataReceivedEventArgs e)
     {
       if (null == e.Data)
         return;
-      mMessagesBuffer.Add(e.Data);
-      ProcessOutput(e.Data);
-    }
 
-
-    #endregion
-
-
-    #region Helper Methods
-
-
-    private void SaveErrorsMessages(List<TaskErrorModel> aErrorCollection)
-    {
-      if (0 == aErrorCollection.Count)
-        return;
-
-      foreach (var newError in aErrorCollection)
+      if (!mOutputProcessor.MissingLLVM)
       {
-        if (null == newError)
-          continue;
-        mErrors.Add(newError);
+        mOutputProcessor.ProcessData(e.Data, Hierarchy, out string message);
+        Write(message);
       }
-    }
-
-    private string GetOutput(ref string aText, string aSearchedSubstring)
-    {
-      var errorFormatter = new ErrorFormatter();
-      aText = errorFormatter.Format(aText, aSearchedSubstring);
-
-      var substringBefore = aText.SubstringBefore(aSearchedSubstring);
-      var substringAfter = aText.SubstringAfter(aSearchedSubstring);
-
-      aText = substringAfter;
-      return substringBefore + aSearchedSubstring;
     }
 
 
