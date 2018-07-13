@@ -161,6 +161,7 @@
     <Compile Include="Options\View\WpfPropertyGrid\PropertyTemplateSelector.cs" />
     <Compile Include="Options\View\WpfPropertyGrid\ProvideToolboxControlAttribute.cs" />
     <Compile Include="Options\View\WpfPropertyGrid\VisualTreeHelperExtension.cs" />
+    <Compile Include="Output\OutputProcessor.cs" />
     <Compile Include="Output\OutputWindowBuilder.cs" />
     <Compile Include="Output\OutputWindowController.cs" />
     <Compile Include="Output\OutputWindowModel.cs" />
