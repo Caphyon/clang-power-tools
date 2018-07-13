@@ -46,23 +46,24 @@ namespace ClangPowerTools.Output
     /// </summary>
     public async void Build()
     {
-        var outputWindowService = await mPackage.GetServiceAsync(typeof(SVsOutputWindowService)) as IVsOutputWindowService;
-        mOutputWindow.VsOutputWindow = await outputWindowService.GetOutputWindowAsync(mPackage, new System.Threading.CancellationToken());
 
-        Guid generalPaneGuid = mOutputWindow.PaneGuid;
-        mOutputWindow.VsOutputWindow.GetPane(ref generalPaneGuid, out IVsOutputWindowPane pane);
+      var outputWindowService = await mPackage.GetServiceAsync(typeof(SVsOutputWindowService)) as IVsOutputWindowService;
+      mOutputWindow.VsOutputWindow = await outputWindowService.GetOutputWindowAsync(mPackage, new System.Threading.CancellationToken());
 
-        if (null == pane)
-        {
-          mOutputWindow.VsOutputWindow.CreatePane(ref generalPaneGuid, OutputWindowConstants.kPaneName, 0, 1);
-          mOutputWindow.VsOutputWindow.GetPane(ref generalPaneGuid, out pane);
-        }
+      Guid generalPaneGuid = mOutputWindow.PaneGuid;
+      mOutputWindow.VsOutputWindow.GetPane(ref generalPaneGuid, out IVsOutputWindowPane pane);
 
-        mOutputWindow.Pane = pane;
+      if (null == pane)
+      {
+        mOutputWindow.VsOutputWindow.CreatePane(ref generalPaneGuid, OutputWindowConstants.kPaneName, 0, 1);
+        mOutputWindow.VsOutputWindow.GetPane(ref generalPaneGuid, out pane);
+      }
+
+      mOutputWindow.Pane = pane;
     }
 
     /// <summary>
-    /// return the output window model
+    /// Get the output window model
     /// </summary>
     /// <returns></returns>
     public OutputWindowModel GetResult() => mOutputWindow;
