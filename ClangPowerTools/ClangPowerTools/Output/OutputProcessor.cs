@@ -12,62 +12,58 @@ namespace ClangPowerTools.Output
   {
     #region Members 
 
-    private ErrorDetector mErrorParser = new ErrorDetector();
-
+    private ErrorDetector mErrorDetector = new ErrorDetector();
     private readonly int kBufferSize = 5;
 
 
     #endregion
 
-    #region Properties
 
-    public List<string> Buffer { get; private set; } = new List<string>();
-
-    public bool MissingLLVM { get; private set; } = false;
-
-    private HashSet<TaskErrorModel> mErrors = new HashSet<TaskErrorModel>();
-
-
-    #endregion
+    #region Methods
 
 
     #region Public methods
 
 
-    public void ProcessData(string aMessage, IVsHierarchy aHierarchy, out string aOutputMessage)
+    public void ProcessData(string aMessage, IVsHierarchy aHierarchy, OutputContent aOutputContent)
     {
-      aOutputMessage = string.Empty;
-      Buffer.Add(aMessage);
-
-      if (mErrorParser.LlvmIsMissing(aMessage))
+      aOutputContent.Buffer.Add(aMessage);
+      
+      if (mErrorDetector.LlvmIsMissing(aMessage))
       {
-        MissingLLVM = true;
+        aOutputContent.MissingLLVM = true;
         return;
       }
 
-      var text = String.Join("\n", Buffer) + "\n";
-      if (mErrorParser.Detect(text, out Match aMatchResult))
+      var text = String.Join("\n", aOutputContent.Buffer) + "\n";
+      if (mErrorDetector.Detect(text, out Match aMatchResult))
       {
-        GetOutputAndErrors(text, aHierarchy, out StringBuilder output, out List<TaskErrorModel> detectedErrors);
+        GetOutputAndErrors(text, aHierarchy, out StringBuilder output, out List<TaskErrorModel> aDetectedErrors);
 
-        aOutputMessage = output.ToString();
-        Buffer.Clear();
-        SaveErrorsMessages(detectedErrors);
+        aOutputContent.Message = output.ToString();
+        aOutputContent.Errors.UnionWith(aDetectedErrors);
+        aOutputContent.Buffer.Clear();
       }
-      else if (kBufferSize <= Buffer.Count)
+      else if (kBufferSize <= aOutputContent.Buffer.Count)
       {
-        aOutputMessage = Buffer[0];
-        Buffer.RemoveAt(0);
+        aOutputContent.Message = aOutputContent.Buffer[0];
+        aOutputContent.Buffer.RemoveAt(0);
       }
     }
 
+    #endregion
 
-    private void GetOutputAndErrors(string aText, IVsHierarchy aHierarchy, out StringBuilder aOutputBuilder, out List<TaskErrorModel> aDetectedErrors)
+
+    #region Private Methods
+
+
+    private void GetOutputAndErrors(string aText, IVsHierarchy aHierarchy, 
+      out StringBuilder aOutputBuilder, out List<TaskErrorModel> aDetectedErrors)
     {
       aOutputBuilder = new StringBuilder();
       aDetectedErrors = new List<TaskErrorModel>();
 
-      while (mErrorParser.Detect(aText, out Match aMatchResult))
+      while (mErrorDetector.Detect(aText, out Match aMatchResult))
       {
         aDetectedErrors.Add(GetDetectedError(aHierarchy, aMatchResult));
         aOutputBuilder.Append(GetOutput(ref aText, aDetectedErrors.Last().FullMessage));
@@ -96,24 +92,10 @@ namespace ClangPowerTools.Output
     }
 
 
-    private void SaveErrorsMessages(List<TaskErrorModel> aErrorCollection)
-    {
-      if (0 == aErrorCollection.Count)
-        return;
-
-      foreach (var newError in aErrorCollection)
-      {
-        if (null == newError)
-          continue;
-        mErrors.Add(newError);
-      }
-    }
-
-
     #endregion
 
 
-
+    #endregion
 
   }
 }
