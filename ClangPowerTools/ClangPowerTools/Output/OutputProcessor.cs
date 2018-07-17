@@ -40,13 +40,13 @@ namespace ClangPowerTools.Output
       {
         GetOutputAndErrors(text, aHierarchy, out string outputText, out List<TaskErrorModel> aDetectedErrors);
 
-        aOutputContent.Message = output.ToString();
+        aOutputContent.Text = outputText;
         aOutputContent.Errors.UnionWith(aDetectedErrors);
         aOutputContent.Buffer.Clear();
       }
       else if (kBufferSize <= aOutputContent.Buffer.Count)
       {
-        aOutputContent.Message = aOutputContent.Buffer[0];
+        aOutputContent.Text = aOutputContent.Buffer[0];
         aOutputContent.Buffer.RemoveAt(0);
       }
     }

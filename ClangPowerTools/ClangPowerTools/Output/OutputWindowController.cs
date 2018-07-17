@@ -110,7 +110,7 @@ namespace ClangPowerTools.Output
       if (!mOutputContent.MissingLLVM)
       {
         mOutputProcessor.ProcessData(e.Data, Hierarchy, mOutputContent);
-        Write(mOutputContent.Message);
+        Write(mOutputContent.Text);
       }
     }
 
@@ -123,7 +123,7 @@ namespace ClangPowerTools.Output
       if (!mOutputContent.MissingLLVM)
       {
         mOutputProcessor.ProcessData(e.Data, Hierarchy, mOutputContent);
-        Write(mOutputContent.Message);
+        Write(mOutputContent.Text);
       }
     }
 
