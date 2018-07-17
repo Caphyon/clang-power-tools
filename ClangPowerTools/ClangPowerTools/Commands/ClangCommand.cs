@@ -20,7 +20,7 @@ namespace ClangPowerTools
     protected FilePathCollector mFilePahtCollector;
     protected static RunningProcesses mRunningProcesses = new RunningProcesses();
     protected List<string> mDirectoriesPath = new List<string>();
-    protected static OutputWindowController mOutputManager;
+    protected static OutputWindowController mOutputController;
     protected ClangGeneralOptionsView mGeneralOptions;
 
     private Commands2 mCommand;
@@ -94,10 +94,10 @@ namespace ClangPowerTools
 
         string solutionPath = DTEObj.Solution.FullName;
 
-        mOutputManager = new OutputWindowController(AsyncPackage, DTEObj);
+        mOutputController = new OutputWindowController(AsyncPackage, DTEObj);
         InitPowerShell();
         ClearWindows();
-        mOutputManager.Write($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
+        mOutputController.Write($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
 
         StatusBarHandler.Status(aCommandName + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
 
@@ -107,30 +107,30 @@ namespace ClangPowerTools
           if (!mCommandsController.Running)
             break;
 
-          mOutputManager.Hierarchy = AutomationUtil.GetItemHierarchy( mSolution, item);
+          mOutputController.Hierarchy = AutomationUtil.GetItemHierarchy( mSolution, item);
           var process = mPowerShell.Invoke(script, mRunningProcesses);
 
-          if (mOutputManager.MissingLlvm)
+          if (mOutputController.MissingLlvm)
           {
-            mOutputManager.Write(ErrorParserConstants.kMissingLlvmMessage);
+            mOutputController.Write(ErrorParserConstants.kMissingLlvmMessage);
             break;
           }
         }
-        if (!mOutputManager.EmptyBuffer)
-          mOutputManager.Write(String.Join("\n", mOutputManager.Buffer));
-        if (!mOutputManager.MissingLlvm)
+        if (!mOutputController.IsBufferEmpty)
+          mOutputController.Write(String.Join("\n", mOutputController.Buffer));
+        if (!mOutputController.MissingLlvm)
         {
-          mOutputManager.Show();
-          mOutputManager.Write($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
+          mOutputController.Show();
+          mOutputController.Write($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
         }
-        if (mOutputManager.HasErrors)
-          mErrorWindow.AddErrors(mOutputManager.Errors);
+        if (mOutputController.HasErrors)
+          mErrorWindow.AddErrors(mOutputController.Errors);
 
       }
       catch (Exception)
       {
-        mOutputManager.Show();
-        mOutputManager.Write($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
+        mOutputController.Show();
+        mOutputController.Write($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
       }
       finally
       {
@@ -173,15 +173,15 @@ namespace ClangPowerTools
     private void InitPowerShell()
     {
       mPowerShell = new PowerShellWrapper();
-      mPowerShell.DataHandler += mOutputManager.OutputDataReceived;
-      mPowerShell.DataErrorHandler += mOutputManager.OutputDataErrorReceived;
+      mPowerShell.DataHandler += mOutputController.OutputDataReceived;
+      mPowerShell.DataErrorHandler += mOutputController.OutputDataErrorReceived;
     }
 
     private void ClearWindows()
     {
       mErrorWindow.Clear();
-      mOutputManager.Clear();
-      mOutputManager.Show();
+      mOutputController.Clear();
+      mOutputController.Show();
     }
 
     #endregion
