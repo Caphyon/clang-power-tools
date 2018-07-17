@@ -6,8 +6,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace ClangPowerTools.Output
 {
@@ -15,21 +13,14 @@ namespace ClangPowerTools.Output
   {
     #region Private Members
 
+
     private OutputProcessor mOutputProcessor = new OutputProcessor();
 
     private static IBuilder<OutputWindowModel> mOutputWindowBuilder;
 
+    private OutputContent mOutputContent = new OutputContent();
 
     private DTE2 mDte = null;
-
-    private List<string> mMessagesBuffer = new List<string>();
-
-    private ErrorDetector mErrorParser = new ErrorDetector();
-
-    private bool mMissingLlvm = false;
-    private HashSet<TaskErrorModel> mErrors = new HashSet<TaskErrorModel>();
-
-    private List<string> mPCHPaths = new List<string>();
 
 
     #endregion
@@ -38,17 +29,13 @@ namespace ClangPowerTools.Output
     #region Properties
 
 
-    public bool MissingLlvm => mMissingLlvm;
+    public bool MissingLlvm => mOutputContent.MissingLLVM;
 
-    public List<string> Buffer => mMessagesBuffer;
+    public bool IsBufferEmpty => 0 == mOutputContent.Buffer.Count;
+    public List<string> Buffer => mOutputContent.Buffer;
 
-    public bool EmptyBuffer => mMessagesBuffer.Count == 0;
-
-    public HashSet<TaskErrorModel> Errors => mErrors;
-
-    public bool HasErrors => 0 != mErrors.Count;
-
-    public List<string> PCHPaths => mPCHPaths;
+    public HashSet<TaskErrorModel> Errors { get; private set; } = new HashSet<TaskErrorModel>();
+    public bool HasErrors => 0 != mOutputContent.Errors.Count;
 
     public IVsHierarchy Hierarchy { get; set; }
 
@@ -120,10 +107,10 @@ namespace ClangPowerTools.Output
       if (null == e.Data)
         return;
 
-      if (!mOutputProcessor.MissingLLVM)
+      if (!mOutputContent.MissingLLVM)
       {
-        mOutputProcessor.ProcessData(e.Data, Hierarchy, out string message);
-        Write(message);
+        mOutputProcessor.ProcessData(e.Data, Hierarchy, mOutputContent);
+        Write(mOutputContent.Message);
       }
     }
 
@@ -133,10 +120,10 @@ namespace ClangPowerTools.Output
       if (null == e.Data)
         return;
 
-      if (!mOutputProcessor.MissingLLVM)
+      if (!mOutputContent.MissingLLVM)
       {
-        mOutputProcessor.ProcessData(e.Data, Hierarchy, out string message);
-        Write(message);
+        mOutputProcessor.ProcessData(e.Data, Hierarchy, mOutputContent);
+        Write(mOutputContent.Message);
       }
     }
 
