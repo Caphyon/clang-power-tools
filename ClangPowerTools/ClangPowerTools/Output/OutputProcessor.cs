@@ -38,7 +38,7 @@ namespace ClangPowerTools.Output
       var text = String.Join("\n", aOutputContent.Buffer) + "\n";
       if (mErrorDetector.Detect(text, out Match aMatchResult))
       {
-        GetOutputAndErrors(text, aHierarchy, out StringBuilder output, out List<TaskErrorModel> aDetectedErrors);
+        GetOutputAndErrors(text, aHierarchy, out string outputText, out List<TaskErrorModel> aDetectedErrors);
 
         aOutputContent.Message = output.ToString();
         aOutputContent.Errors.UnionWith(aDetectedErrors);
@@ -58,9 +58,9 @@ namespace ClangPowerTools.Output
 
 
     private void GetOutputAndErrors(string aText, IVsHierarchy aHierarchy, 
-      out StringBuilder aOutputBuilder, out List<TaskErrorModel> aDetectedErrors)
+      out string aOutputText, out List<TaskErrorModel> aDetectedErrors)
     {
-      aOutputBuilder = new StringBuilder();
+      var aOutputBuilder = new StringBuilder();
       aDetectedErrors = new List<TaskErrorModel>();
 
       while (mErrorDetector.Detect(aText, out Match aMatchResult))
@@ -68,6 +68,7 @@ namespace ClangPowerTools.Output
         aDetectedErrors.Add(GetDetectedError(aHierarchy, aMatchResult));
         aOutputBuilder.Append(GetOutput(ref aText, aDetectedErrors.Last().FullMessage));
       }
+      aOutputText = aOutputBuilder.ToString();
     }
 
 
