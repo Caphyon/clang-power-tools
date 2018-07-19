@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Error;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
@@ -25,30 +26,33 @@ namespace ClangPowerTools.Output
     #region Public methods
 
 
-    public void ProcessData(string aMessage, IVsHierarchy aHierarchy, OutputContent aOutputContent)
+    public int ProcessData(string aMessage, IVsHierarchy aHierarchy, OutputContent aOutputContent)
     {
       aOutputContent.Buffer.Add(aMessage);
       
       if (mErrorDetector.LlvmIsMissing(aMessage))
       {
         aOutputContent.MissingLLVM = true;
-        return;
+        return VSConstants.S_FALSE;
       }
 
       var text = String.Join("\n", aOutputContent.Buffer) + "\n";
       if (mErrorDetector.Detect(text, out Match aMatchResult))
       {
         GetOutputAndErrors(text, aHierarchy, out string outputText, out List<TaskErrorModel> aDetectedErrors);
-
         aOutputContent.Text = outputText;
         aOutputContent.Errors.UnionWith(aDetectedErrors);
         aOutputContent.Buffer.Clear();
+        return VSConstants.S_OK;
       }
       else if (kBufferSize <= aOutputContent.Buffer.Count)
       {
         aOutputContent.Text = aOutputContent.Buffer[0];
         aOutputContent.Buffer.RemoveAt(0);
+        return VSConstants.S_OK;
       }
+
+      return VSConstants.S_FALSE;
     }
 
     #endregion

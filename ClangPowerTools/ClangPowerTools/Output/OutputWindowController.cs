@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.Error;
 using ClangPowerTools.Handlers;
 using EnvDTE80;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
@@ -14,7 +15,7 @@ namespace ClangPowerTools.Output
     #region Private Members
 
 
-    private OutputProcessor mOutputProcessor = new OutputProcessor();
+    private static OutputProcessor mOutputProcessor = new OutputProcessor();
 
     private static IBuilder<OutputWindowModel> mOutputWindowBuilder;
 
@@ -107,11 +108,13 @@ namespace ClangPowerTools.Output
       if (null == e.Data)
         return;
 
-      if (!mOutputContent.MissingLLVM)
-      {
-        mOutputProcessor.ProcessData(e.Data, Hierarchy, mOutputContent);
-        Write(mOutputContent.Text);
-      }
+      if (mOutputContent.MissingLLVM)
+        return;
+
+      if (VSConstants.S_FALSE == mOutputProcessor.ProcessData(e.Data, Hierarchy, mOutputContent))
+        return;
+
+      Write(mOutputContent.Text);
     }
 
 
@@ -120,11 +123,13 @@ namespace ClangPowerTools.Output
       if (null == e.Data)
         return;
 
-      if (!mOutputContent.MissingLLVM)
-      {
-        mOutputProcessor.ProcessData(e.Data, Hierarchy, mOutputContent);
-        Write(mOutputContent.Text);
-      }
+      if (mOutputContent.MissingLLVM)
+        return;
+
+      if (VSConstants.S_FALSE == mOutputProcessor.ProcessData(e.Data, Hierarchy, mOutputContent))
+        return;
+
+      Write(mOutputContent.Text);
     }
 
 
@@ -132,7 +137,6 @@ namespace ClangPowerTools.Output
 
 
     #endregion
-
 
   }
 }
