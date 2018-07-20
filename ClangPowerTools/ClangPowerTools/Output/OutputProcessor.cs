@@ -26,7 +26,7 @@ namespace ClangPowerTools.Output
     #region Public methods
 
 
-    public int ProcessData(string aMessage, IVsHierarchy aHierarchy, OutputContent aOutputContent)
+    public int ProcessData(string aMessage, IVsHierarchy aHierarchy, OutputContentModel aOutputContent)
     {
       aOutputContent.Buffer.Add(aMessage);
       

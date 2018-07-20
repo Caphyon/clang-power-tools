@@ -19,7 +19,7 @@ namespace ClangPowerTools.Output
 
     private static IBuilder<OutputWindowModel> mOutputWindowBuilder;
 
-    private OutputContent mOutputContent = new OutputContent();
+    private OutputContentModel mOutputContent = new OutputContentModel();
 
     private DTE2 mDte = null;
 
