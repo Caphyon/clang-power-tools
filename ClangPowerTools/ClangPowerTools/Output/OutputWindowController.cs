@@ -35,7 +35,7 @@ namespace ClangPowerTools.Output
     public bool IsBufferEmpty => 0 == mOutputContent.Buffer.Count;
     public List<string> Buffer => mOutputContent.Buffer;
 
-    public HashSet<TaskErrorModel> Errors { get; private set; } = new HashSet<TaskErrorModel>();
+    public HashSet<TaskErrorModel> Errors => mOutputContent.Errors;
     public bool HasErrors => 0 != mOutputContent.Errors.Count;
 
     public IVsHierarchy Hierarchy { get; set; }
@@ -67,18 +67,18 @@ namespace ClangPowerTools.Output
 
     public void Clear()
     {
+      var outputWindow = mOutputWindowBuilder.GetResult();
       UIUpdater.Invoke(() =>
       {
-        var outputWindow = mOutputWindowBuilder.GetResult();
         outputWindow.Pane.Clear();
       });
     }
 
     public void Show()
     {
+      var outputWindow = mOutputWindowBuilder.GetResult();
       UIUpdater.Invoke(() =>
       {
-        var outputWindow = mOutputWindowBuilder.GetResult();
         outputWindow.Pane.Activate();
         mDte.ExecuteCommand("View.Output", string.Empty);
       });
@@ -86,12 +86,12 @@ namespace ClangPowerTools.Output
 
     public void Write(string aMessage)
     {
+      if (String.IsNullOrWhiteSpace(aMessage))
+        return;
+
+      var outputWindow = mOutputWindowBuilder.GetResult();
       UIUpdater.Invoke(() =>
       {
-        if (String.IsNullOrWhiteSpace(aMessage))
-          return;
-
-        var outputWindow = mOutputWindowBuilder.GetResult();
         outputWindow.Pane.OutputStringThreadSafe(aMessage + "\n");
       });
     }
