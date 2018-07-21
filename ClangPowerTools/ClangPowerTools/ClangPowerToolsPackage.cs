@@ -65,7 +65,7 @@ namespace ClangPowerTools
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
     private DTE2 mDte;
-    private ErrorWindow mErrorWindow;
+    private ErrorWindowController mErrorWindow;
 
     #region Commands
 
@@ -122,7 +122,7 @@ namespace ClangPowerTools
       mDte = await dteService.GetDTE2Async(this, cancellationToken);
 
       mRunningDocTableEvents = new RunningDocTableEvents(this);
-      mErrorWindow = new ErrorWindow(this);
+      mErrorWindow = new ErrorWindowController(this);
 
       //Settings command is always visible
       mSettingsCmd = new SettingsCommand(mDte, this, CommandSet, CommandIds.kSettingsId);

@@ -26,7 +26,7 @@ namespace ClangPowerTools
     private Commands2 mCommand;
     private IVsSolution mSolution;
 
-    private ErrorWindow mErrorWindow;
+    private ErrorWindowController mErrorWindow;
     private PowerShellWrapper mPowerShell = new PowerShellWrapper();
     private ClangCompileTidyScript mCompileTidyScriptBuilder;
     private const string kVs15Version = "2017";
@@ -52,7 +52,7 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public ClangCommand(CommandsController aCommandsController, ErrorWindow aErrorWindow, 
+    public ClangCommand(CommandsController aCommandsController, ErrorWindowController aErrorWindow, 
       IVsSolution aSolution, DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aDte, aPackage, aGuid, aId)
     {

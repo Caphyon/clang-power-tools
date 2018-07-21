@@ -32,7 +32,7 @@ namespace ClangPowerTools.Commands
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public ClangFormatCommand(CommandsController aCommandsController, ErrorWindow aErrorWindow, 
+    public ClangFormatCommand(CommandsController aCommandsController, ErrorWindowController aErrorWindow, 
       IVsSolution aSolution, DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aCommandsController, aErrorWindow, aSolution, aDte, aPackage, aGuid, aId)
     {

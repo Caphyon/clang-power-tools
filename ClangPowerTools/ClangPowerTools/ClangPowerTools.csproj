@@ -110,7 +110,7 @@
     <Compile Include="Helpers\DocumentsHandler.cs" />
     <Compile Include="Error\ErrorDetector.cs" />
     <Compile Include="Error\ErrorParserConstants.cs" />
-    <Compile Include="Error\ErrorWindow.cs" />
+    <Compile Include="Error\ErrorWindowController.cs" />
     <Compile Include="Files Operations\FileChangerWatcher.cs" />
     <Compile Include="Files Operations\FileOpener.cs" />
     <Compile Include="Files Operations\FilePathCollector.cs" />

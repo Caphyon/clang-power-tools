@@ -7,7 +7,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools
 {
-  public class ErrorWindow : ErrorListProvider
+  public class ErrorWindowController : ErrorListProvider
   {
 
     #region Constructor
@@ -16,7 +16,7 @@ namespace ClangPowerTools
     /// Instance Constructor
     /// </summary>
     /// <param name="aServiceProvider"></param>
-    public ErrorWindow(IServiceProvider aIServiceProvider) : base(aIServiceProvider)
+    public ErrorWindowController(IServiceProvider aIServiceProvider) : base(aIServiceProvider)
     {
     }
 
