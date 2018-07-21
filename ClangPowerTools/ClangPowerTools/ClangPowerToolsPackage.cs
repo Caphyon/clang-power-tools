@@ -17,6 +17,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ClangPowerTools.Services;
 using System.ComponentModel.Design;
+using ClangPowerTools.Output;
 
 namespace ClangPowerTools
 {
@@ -64,7 +65,7 @@ namespace ClangPowerTools
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
     private DTE2 mDte;
-    private ErrorWindow mErrorWindow;
+    private ErrorWindowController mErrorWindow;
 
     #region Commands
 
@@ -111,7 +112,8 @@ namespace ClangPowerTools
       AddService(typeof(SVsStatusBarService), serviceFactory.CreateService);
       AddService(typeof(SVsFileChangeService), serviceFactory.CreateService);
       AddService(typeof(SVsRunningDocumentTableService), serviceFactory.CreateService);
-      
+      AddService(typeof(SVsOutputWindowService), serviceFactory.CreateService);
+
       // Switches to the UI thread in order to consume some services used in command initialization
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
@@ -120,7 +122,7 @@ namespace ClangPowerTools
       mDte = await dteService.GetDTE2Async(this, cancellationToken);
 
       mRunningDocTableEvents = new RunningDocTableEvents(this);
-      mErrorWindow = new ErrorWindow(this);
+      mErrorWindow = new ErrorWindowController(this);
 
       //Settings command is always visible
       mSettingsCmd = new SettingsCommand(mDte, this, CommandSet, CommandIds.kSettingsId);
@@ -254,9 +256,9 @@ namespace ClangPowerTools
 
         if (0 != string.Compare(generalOptions.Version, currentVersion))
         {
-          OutputManager outputManager = new OutputManager(mDte);
-          outputManager.Show();
-          outputManager.AddMessage($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
+          OutputWindowController outputController = new OutputWindowController(this, mDte);
+          outputController.Show();
+          outputController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
             $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
 
           generalOptions.Version = currentVersion;

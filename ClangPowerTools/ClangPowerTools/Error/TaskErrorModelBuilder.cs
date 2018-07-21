@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System.Text.RegularExpressions;
 
 namespace ClangPowerTools.Error
@@ -9,17 +10,19 @@ namespace ClangPowerTools.Error
 
     private TaskErrorModel mError = null;
     private Match mMatchResult = null;
+    private IVsHierarchy mHierarchy;
 
     #endregion
 
 
     #region Consstructor
 
-    public TaskErrorModelBuilder(Match aMatchResult)
+
+    public TaskErrorModelBuilder(IVsHierarchy aHierarchy, Match aMatchResult)
     {
       mMatchResult = aMatchResult;
+      mHierarchy = aHierarchy;
     }
-
 
     #endregion
 
@@ -58,9 +61,9 @@ namespace ClangPowerTools.Error
         Column = column,
         Category = category,
         Description = messageDescription,
-        FullMessage = fullMessage
+        FullMessage = fullMessage,
+        HierarchyItem = mHierarchy
       };
-
     }
 
     #endregion

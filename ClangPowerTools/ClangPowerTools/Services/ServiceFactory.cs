@@ -52,17 +52,21 @@ namespace ClangPowerTools.Services
         if (typeof(SEnvDTEService) == serviceType)
           service = new EnvDTEService(mServiceProvider);
 
-        if (typeof(SVsFileChangeService) == serviceType)
+        else if (typeof(SVsFileChangeService) == serviceType)
           service = new VsFileChangeService(mServiceProvider);
 
-        if (typeof(SVsRunningDocumentTableService) == serviceType)
+        else if (typeof(SVsRunningDocumentTableService) == serviceType)
           service = new VsRunningDocumentTableService(mServiceProvider);
 
-        if (typeof(SVsSolutionService) == serviceType)
+        else if (typeof(SVsSolutionService) == serviceType)
           service = new VsSolutionService(mServiceProvider);
 
-        if (typeof(SVsStatusBarService) == serviceType)
+        else if (typeof(SVsStatusBarService) == serviceType)
           service = new VsStatusBarService(mServiceProvider);
+
+        else if (typeof(SVsOutputWindowService) == serviceType)
+          service = new VsOutputWindowService(mServiceProvider);
+
       });
 
       return service;

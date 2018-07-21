@@ -110,7 +110,7 @@
     <Compile Include="Helpers\DocumentsHandler.cs" />
     <Compile Include="Error\ErrorDetector.cs" />
     <Compile Include="Error\ErrorParserConstants.cs" />
-    <Compile Include="Error\ErrorWindow.cs" />
+    <Compile Include="Error\ErrorWindowController.cs" />
     <Compile Include="Files Operations\FileChangerWatcher.cs" />
     <Compile Include="Files Operations\FileOpener.cs" />
     <Compile Include="Files Operations\FilePathCollector.cs" />
@@ -161,6 +161,11 @@
     <Compile Include="Options\View\WpfPropertyGrid\PropertyTemplateSelector.cs" />
     <Compile Include="Options\View\WpfPropertyGrid\ProvideToolboxControlAttribute.cs" />
     <Compile Include="Options\View\WpfPropertyGrid\VisualTreeHelperExtension.cs" />
+    <Compile Include="Output\OutputContentModel.cs" />
+    <Compile Include="Output\OutputProcessor.cs" />
+    <Compile Include="Output\OutputWindowBuilder.cs" />
+    <Compile Include="Output\OutputWindowController.cs" />
+    <Compile Include="Output\OutputWindowModel.cs" />
     <Compile Include="PCHCleaner.cs" />
     <Compile Include="Helpers\ProjectConfigurationHandler.cs" />
     <Compile Include="RunningDocTableEvents.cs" />
@@ -177,6 +182,9 @@
     <Compile Include="Services\VsFileChangeService\VsFileChangeService.cs" />
     <Compile Include="Services\VsFileChangeService\IVsFileChangeService.cs" />
     <Compile Include="Services\VsFileChangeService\SVsFileChangeService.cs" />
+    <Compile Include="Services\VsOutputWindow\IVsOutputWindowService.cs" />
+    <Compile Include="Services\VsOutputWindow\SVsOutputWindowService.cs" />
+    <Compile Include="Services\VsOutputWindow\VsOutputWindowService.cs" />
     <Compile Include="Services\VsRunningDocumentTableService\IVsRunningDocumentTableService.cs" />
     <Compile Include="Services\VsRunningDocumentTableService\SVsRunningDocumentTableService.cs" />
     <Compile Include="Services\VsRunningDocumentTableService\VsRunningDocumentTableService.cs" />
@@ -191,8 +199,6 @@
     <Compile Include="Items\IItem.cs" />
     <Compile Include="Items\ItemsCollector.cs" />
     <Compile Include="Output\OutputWindowConstants.cs" />
-    <Compile Include="Output\OutputManager.cs" />
-    <Compile Include="Output\OutputWindow.cs" />
     <Compile Include="Script\PowerShellWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\SettingsCommand.cs" />
