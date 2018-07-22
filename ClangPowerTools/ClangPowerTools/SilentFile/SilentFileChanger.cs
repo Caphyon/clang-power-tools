@@ -24,8 +24,6 @@ namespace ClangPowerTools.SilentFile
     private IVsPersistDocData mPersistDocData = null;
     private IVsDocDataFileChangeControl mFileChangeControl;
 
-    private IntPtr mDocData = new IntPtr();
-
 
     #endregion
 
@@ -70,7 +68,7 @@ namespace ClangPowerTools.SilentFile
       if (mIsSuspending)
         return;
 
-      mDocData = IntPtr.Zero;
+      IntPtr docData = IntPtr.Zero;
       try
       {
         var rdtService = await mSite.GetServiceAsync(typeof(SVsRunningDocumentTableService)) as IVsRunningDocumentTableService;
@@ -80,9 +78,9 @@ namespace ClangPowerTools.SilentFile
           return;
 
         ErrorHandler.ThrowOnFailure(rdt.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_NoLock, mDocumentFileName,
-          out IVsHierarchy hierarchy, out uint itemId, out mDocData, out uint docCookie));
+          out IVsHierarchy hierarchy, out uint itemId, out docData, out uint docCookie));
 
-        if ((docCookie == (uint)ShellConstants.VSDOCCOOKIE_NIL) || mDocData == IntPtr.Zero)
+        if ((docCookie == (uint)ShellConstants.VSDOCCOOKIE_NIL) || docData == IntPtr.Zero)
           return;
 
         var fileChangeService = await mSite.GetServiceAsync(typeof(SVsFileChangeService)) as IVsFileChangeService;
@@ -93,11 +91,11 @@ namespace ClangPowerTools.SilentFile
 
         mIsSuspending = true;
         ErrorHandler.ThrowOnFailure(fileChange.IgnoreFile(0, mDocumentFileName, 1));
-        if (mDocData == IntPtr.Zero)
+        if (docData == IntPtr.Zero)
           return;
 
         mPersistDocData = null;
-        object unknown = Marshal.GetObjectForIUnknown(mDocData);
+        object unknown = Marshal.GetObjectForIUnknown(docData);
         if (!(unknown is IVsPersistDocData))
           return;
 
@@ -115,8 +113,8 @@ namespace ClangPowerTools.SilentFile
       }
       finally
       {
-        if (mDocData != IntPtr.Zero)
-          Marshal.Release(mDocData);
+        if (docData != IntPtr.Zero)
+          Marshal.Release(docData);
       }
     }
 
