@@ -7,6 +7,7 @@ namespace ClangPowerTools
   {
     #region Public methods
 
+
     public bool Equals(SilentFileChanger obj1, SilentFileChanger obj2)
     {
       if (obj2 == null && obj1 == null)
@@ -23,6 +24,7 @@ namespace ClangPowerTools
     {
       return obj.GetHashCode();
     }
+
 
     #endregion
 

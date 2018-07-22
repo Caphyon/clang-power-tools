@@ -15,6 +15,7 @@ namespace ClangPowerTools.SilentFile
   {
     #region Members
 
+
     private string mDocumentFileName;
     private bool mIsSuspending;
     private bool mReloadDocument;
@@ -25,7 +26,9 @@ namespace ClangPowerTools.SilentFile
 
     private IntPtr mDocData = new IntPtr();
 
+
     #endregion
+
 
     #region Properties
 
@@ -33,10 +36,20 @@ namespace ClangPowerTools.SilentFile
 
     #endregion
 
+
     #region Constructor
 
+    /// <summary>
+    /// Default constructor
+    /// </summary>
     public SilentFileChanger() { }
 
+    /// <summary>
+    /// Instance constructor
+    /// </summary>
+    /// <param name="aSite"></param>
+    /// <param name="aDocument"></param>
+    /// <param name="aReloadDocument"></param>
     public SilentFileChanger(AsyncPackage aSite, string aDocument, bool aReloadDocument)
     {
       mSite = aSite;
@@ -44,9 +57,12 @@ namespace ClangPowerTools.SilentFile
       mReloadDocument = aReloadDocument;
     }
 
+
     #endregion
 
+
     #region Public methods
+
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily")]
     public async void Suspend()
@@ -65,7 +81,6 @@ namespace ClangPowerTools.SilentFile
 
         ErrorHandler.ThrowOnFailure(rdt.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_NoLock, mDocumentFileName,
           out IVsHierarchy hierarchy, out uint itemId, out mDocData, out uint docCookie));
-
 
         if ((docCookie == (uint)ShellConstants.VSDOCCOOKIE_NIL) || mDocData == IntPtr.Zero)
           return;
@@ -105,6 +120,7 @@ namespace ClangPowerTools.SilentFile
       }
     }
 
+
     public async void Resume()
     {
       if (!mIsSuspending || mPersistDocData == null)
@@ -125,6 +141,7 @@ namespace ClangPowerTools.SilentFile
       if (mFileChangeControl != null)
         ErrorHandler.ThrowOnFailure(mFileChangeControl.IgnoreFileChanges(0));
     }
+
 
     #endregion
 
