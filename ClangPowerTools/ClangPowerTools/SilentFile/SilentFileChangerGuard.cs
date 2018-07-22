@@ -37,12 +37,22 @@ namespace ClangPowerTools
         this.Add(new SilentFileChanger(aServiceProvider, filePath, true));
     }
 
+
+    #endregion
+
+
+    #region IDisposable Implementation
+
+
     public void Dispose()
     {
       foreach (SilentFileChanger file in mFileChangers)
         file.Resume();
       Resume();
     }
+
+
     #endregion
+
   }
 }
