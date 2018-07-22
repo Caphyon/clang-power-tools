@@ -195,6 +195,7 @@
     <Compile Include="Services\VsStatusBarService\SVsStatusBarService.cs" />
     <Compile Include="Services\VsStatusBarService\VsStatusBarService.cs" />
     <Compile Include="SettingsPathBuilder.cs" />
+    <Compile Include="SilentFile\SilentFileChangerBuilder.cs" />
     <Compile Include="SilentFile\SilentFileChangerEqualityComparer.cs" />
     <Compile Include="Items\IItem.cs" />
     <Compile Include="Items\ItemsCollector.cs" />
@@ -221,6 +222,7 @@
     <Compile Include="Convertors\ComboBoxConstants.cs" />
     <Compile Include="Convertors\OldConvertors\ComboBoxConvertor.cs" />
     <Compile Include="Convertors\ClangTidyUseChecksFromConvertor.cs" />
+    <Compile Include="SilentFile\SilentFileChangerModel.cs" />
     <Compile Include="SilentFile\SilentFileController.cs" />
     <Compile Include="Helpers\StatusBarHandler.cs" />
     <Compile Include="StringExtension.cs" />
