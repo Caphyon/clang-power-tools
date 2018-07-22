@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace ClangPowerTools
 {
-  public class SilentFileChangerGuard : SilentFileChanger, IDisposable
+  public class SilentFileChangerGuard : IDisposable
   {
     #region Members
 
@@ -14,16 +14,18 @@ namespace ClangPowerTools
 
     #endregion
 
+
     #region Constructor
 
     public SilentFileChangerGuard() { }
 
+
     #endregion
+
 
     #region Public methods
 
-    public SilentFileChangerGuard(AsyncPackage aSite, string aDocument, bool aReloadDocument)
-      : base(aSite, aDocument, aReloadDocument) => Suspend();
+
 
     public void Add(SilentFileChanger aFileChanger)
     {
@@ -48,7 +50,6 @@ namespace ClangPowerTools
     {
       foreach (SilentFileChanger file in mFileChangers)
         file.Resume();
-      Resume();
     }
 
 
