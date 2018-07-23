@@ -223,7 +223,7 @@
     <Compile Include="Convertors\OldConvertors\ComboBoxConvertor.cs" />
     <Compile Include="Convertors\ClangTidyUseChecksFromConvertor.cs" />
     <Compile Include="SilentFile\SilentFileChangerModel.cs" />
-    <Compile Include="SilentFile\SilentFileController.cs" />
+    <Compile Include="SilentFile\SilentFileChangerController.cs" />
     <Compile Include="Helpers\StatusBarHandler.cs" />
     <Compile Include="StringExtension.cs" />
     <Compile Include="ClangFormatPathAttribute.cs" />
