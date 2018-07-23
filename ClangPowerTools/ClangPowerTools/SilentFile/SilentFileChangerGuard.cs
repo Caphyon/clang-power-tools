@@ -1,59 +1,59 @@
-﻿using ClangPowerTools.SilentFile;
-using Microsoft.VisualStudio.Shell;
-using System;
-using System.Collections.Generic;
+﻿//using ClangPowerTools.SilentFile;
+//using Microsoft.VisualStudio.Shell;
+//using System;
+//using System.Collections.Generic;
 
-namespace ClangPowerTools
-{
-  public class SilentFileChangerGuard : IDisposable
-  {
-    #region Members
+//namespace ClangPowerTools
+//{
+//  public class SilentFileChangerGuard : IDisposable
+//  {
+//    #region Members
 
-    private HashSet<SilentFileChanger> mFileChangers = 
-      new HashSet<SilentFileChanger>(new SilentFileChangerEqualityComparer());
+//    private HashSet<SilentFileChanger> mFileChangers = 
+//      new HashSet<SilentFileChanger>(new SilentFileChangerEqualityComparer());
 
-    #endregion
-
-
-    #region Constructor
-
-    public SilentFileChangerGuard() { }
+//    #endregion
 
 
-    #endregion
+//    #region Constructor
+
+//    public SilentFileChangerGuard() { }
 
 
-    #region Public methods
+//    #endregion
+
+
+//    #region Public methods
 
 
 
-    public void Add(SilentFileChanger aFileChanger)
-    {
-      aFileChanger.Suspend();
-      mFileChangers.Add(aFileChanger);
-    }
+//    public void Add(SilentFileChanger aFileChanger)
+//    {
+//      aFileChanger.Suspend();
+//      mFileChangers.Add(aFileChanger);
+//    }
 
-    public void AddRange(AsyncPackage aServiceProvider, IEnumerable<string> aFilesPath)
-    {
-      foreach (string filePath in aFilesPath)
-        this.Add(new SilentFileChanger(aServiceProvider, filePath, true));
-    }
-
-
-    #endregion
+//    public void AddRange(AsyncPackage aServiceProvider, IEnumerable<string> aFilesPath)
+//    {
+//      foreach (string filePath in aFilesPath)
+//        this.Add(new SilentFileChanger(aServiceProvider, filePath, true));
+//    }
 
 
-    #region IDisposable Implementation
+//    #endregion
 
 
-    public void Dispose()
-    {
-      foreach (SilentFileChanger file in mFileChangers)
-        file.Resume();
-    }
+//    #region IDisposable Implementation
 
 
-    #endregion
+//    public void Dispose()
+//    {
+//      foreach (SilentFileChanger file in mFileChangers)
+//        file.Resume();
+//    }
 
-  }
-}
+
+//    #endregion
+
+//  }
+//}
