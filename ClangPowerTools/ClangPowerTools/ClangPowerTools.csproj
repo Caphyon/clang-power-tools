@@ -175,6 +175,7 @@
     <Compile Include="Options\ViewModel\ConfigurationPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Script\ScriptBuilderImpl.cs" />
     <Compile Include="Services\DTEService\EnvDTEService.cs" />
     <Compile Include="Services\DTEService\IEnvDTEService.cs" />
     <Compile Include="Services\DTEService\SEnvDTEService.cs" />
