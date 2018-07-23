@@ -19,6 +19,26 @@ namespace ClangPowerTools.SilentFile
     private SilentFileChangerModel mSilentFileChangerModel;
     private AsyncPackage mSite;
     private string mDocumentFileName;
+    private bool mReloadDocumentFlag;
+
+    #endregion
+
+
+    #region Constructor
+
+
+    /// <summary>
+    /// Instance constructor
+    /// </summary>
+    /// <param name="aSite">Async package</param>
+    /// <param name="aFileName">The file path of the file for which the changes will be ignored</param>
+    /// <param name="aReloadDocument">True if the file will be reloaded. False otherwise</param>
+    public SilentFileChangerBuilder(AsyncPackage aSite, string aFileName, bool aReloadDocument)
+    {
+      mSite = aSite;
+      mDocumentFileName = aFileName;
+      mReloadDocumentFlag = aReloadDocument;
+    }
 
 
     #endregion
@@ -27,6 +47,9 @@ namespace ClangPowerTools.SilentFile
     #region IBuilder Implementation
 
 
+    /// <summary>
+    /// Create a new instance of silent file changer model
+    /// </summary>
     public async void Build()
     {
       var docData = IntPtr.Zero;
@@ -69,7 +92,8 @@ namespace ClangPowerTools.SilentFile
           DocumentFileName = mDocumentFileName,
           FileChangeControl = fileChangeControl,
           PersistDocData = persistDocData,
-          IsSuspended = true
+          IsSuspended = true,
+          ReloadDocumentFlag = mReloadDocumentFlag
         };
       }
       catch (InvalidCastException e)
@@ -83,6 +107,11 @@ namespace ClangPowerTools.SilentFile
       }
     }
 
+
+    /// <summary>
+    /// Get the silent file changer model constructed earlier
+    /// </summary>
+    /// <returns>Silent file changer model</returns>
     public SilentFileChangerModel GetResult() => mSilentFileChangerModel;
 
 
