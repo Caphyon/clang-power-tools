@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace ClangPowerTools.SilentFile
@@ -21,7 +22,7 @@ namespace ClangPowerTools.SilentFile
     /// <summary>
     /// Collection of all silent file changer models necessary when tidy-fix is executed
     /// </summary>
-    private HashSet<SilentFileChangerModel> mFileChangers =
+    private HashSet<SilentFileChangerModel> mSilentFileChangers =
           new HashSet<SilentFileChangerModel>(new SilentFileChangerEqualityComparer());
 
     /// <summary>
@@ -59,7 +60,10 @@ namespace ClangPowerTools.SilentFile
     public void SilentFiles(IEnumerable<string> aFilesPath)
     {
       foreach (var filePath in aFilesPath)
-        Silent(GetNewSilentFileChanger(filePath));
+      {
+        var silentFile = GetNewSilentFileChanger(filePath);
+        Silent(silentFile);
+      }
     }
 
 
@@ -71,7 +75,10 @@ namespace ClangPowerTools.SilentFile
     public void SilentFiles(Documents aDocuments)
     {
       foreach (Document doc in aDocuments)
-        Silent(GetNewSilentFileChanger(Path.Combine(doc.Path, doc.Name)));
+      {
+        var silentFile = GetNewSilentFileChanger(Path.Combine(doc.Path, doc.Name));
+        Silent(silentFile);
+      }
     }
 
 
@@ -82,7 +89,7 @@ namespace ClangPowerTools.SilentFile
     /// </summary>
     public void Dispose()
     {
-      foreach (var silentFileChanger in mFileChangers)
+      foreach (var silentFileChanger in mSilentFileChangers)
         Resume(silentFileChanger);
     }
 
@@ -105,7 +112,9 @@ namespace ClangPowerTools.SilentFile
     {
       IBuilder<SilentFileChangerModel> silentFileChangerBuilder = new SilentFileChangerBuilder(mAsyncPackage, aFilePath, true);
       silentFileChangerBuilder.Build();
-      return silentFileChangerBuilder.GetResult();
+      var silentFile = silentFileChangerBuilder.GetResult();
+
+      return silentFile;
     }
 
 
@@ -115,8 +124,7 @@ namespace ClangPowerTools.SilentFile
     /// <param name="aSilentFileChanger"></param>
     private void Silent(SilentFileChangerModel aSilentFileChanger)
     {
-      if (null != aSilentFileChanger.FileChangeControl)
-        ErrorHandler.ThrowOnFailure(aSilentFileChanger.FileChangeControl.IgnoreFileChanges(1));
+      mSilentFileChangers.Add(aSilentFileChanger);
     }
 
 
@@ -125,6 +133,9 @@ namespace ClangPowerTools.SilentFile
     /// </summary>
     public async void Resume(SilentFileChangerModel aSilentFileChanger)
     {
+      if (null == aSilentFileChanger)
+        return;
+
       if (!aSilentFileChanger.IsSuspended || null == aSilentFileChanger.PersistDocData)
         return;
 
