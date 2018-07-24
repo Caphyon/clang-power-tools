@@ -62,6 +62,7 @@ namespace ClangPowerTools.SilentFile
       foreach (var filePath in aFilesPath)
       {
         var silentFile = GetNewSilentFileChanger(filePath);
+        mSilentFileChangers.Add(silentFile);
         Silent(silentFile);
       }
     }
@@ -77,6 +78,7 @@ namespace ClangPowerTools.SilentFile
       foreach (Document doc in aDocuments)
       {
         var silentFile = GetNewSilentFileChanger(Path.Combine(doc.Path, doc.Name));
+        mSilentFileChangers.Add(silentFile);
         Silent(silentFile);
       }
     }
@@ -124,7 +126,8 @@ namespace ClangPowerTools.SilentFile
     /// <param name="aSilentFileChanger"></param>
     private void Silent(SilentFileChangerModel aSilentFileChanger)
     {
-      mSilentFileChangers.Add(aSilentFileChanger);
+      if (null != aSilentFileChanger.FileChangeControl)
+        ErrorHandler.ThrowOnFailure(aSilentFileChanger.FileChangeControl.IgnoreFileChanges(1));
     }
 
 

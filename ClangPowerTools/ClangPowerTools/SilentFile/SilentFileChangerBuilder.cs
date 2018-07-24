@@ -54,10 +54,6 @@ namespace ClangPowerTools.SilentFile
     {
       var docData = IntPtr.Zero;
 
-      mSilentFileChangerModel.DocumentFileName = mDocumentFileName;
-      mSilentFileChangerModel.ReloadDocumentFlag = mReloadDocumentFlag;
-      mSilentFileChangerModel.IsSuspended = true;
-
       try
       {
         var rdtService = await mSite.GetServiceAsync(typeof(SVsRunningDocumentTableService)) as IVsRunningDocumentTableService;
@@ -86,13 +82,20 @@ namespace ClangPowerTools.SilentFile
         if (!(unknown is IVsPersistDocData))
           return;
 
-        mSilentFileChangerModel.PersistDocData = (IVsPersistDocData)unknown;
-        if (!(mSilentFileChangerModel.PersistDocData is IVsDocDataFileChangeControl))
+        var persistDocData = (IVsPersistDocData)unknown;
+        if (!(persistDocData is IVsDocDataFileChangeControl))
           return;
 
-        mSilentFileChangerModel.FileChangeControl = (IVsDocDataFileChangeControl)mSilentFileChangerModel.PersistDocData;
-        if (mSilentFileChangerModel.FileChangeControl != null)
-          ErrorHandler.ThrowOnFailure(mSilentFileChangerModel.FileChangeControl.IgnoreFileChanges(1));
+        var fileChangeControl = (IVsDocDataFileChangeControl)persistDocData;
+
+        mSilentFileChangerModel = new SilentFileChangerModel()
+        {
+          FileChangeControl = fileChangeControl,
+          PersistDocData = persistDocData,
+          DocumentFileName = mDocumentFileName,
+          ReloadDocumentFlag = mReloadDocumentFlag,
+          IsSuspended = true
+        };
       }
       catch (InvalidCastException e)
       {
