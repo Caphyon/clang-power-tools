@@ -75,7 +75,7 @@ Function IsFileMatchingName( [Parameter(Mandatory = $true)][string] $filePath
 {
     if ([System.IO.Path]::IsPathRooted($matchName))
     {
-        return $filePath -ieq $matchName
+        return $filePath -match $matchName
     }
 
     [string] $fileName = (Get-FileName -path $filePath)

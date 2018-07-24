@@ -645,6 +645,25 @@ Function Run-ClangJobs([Parameter(Mandatory=$true)] $clangJobs)
 
     Push-Location $job.WorkingDirectory
 
+    [string] $clangConfigFile = [System.IO.Path]::GetTempFileName()
+
+    [string] $clangConfigContent = ""
+    if ($job.FilePath -like '*tidy*')
+    {
+      # We have to separate Clang args from Tidy args
+      $splitparams = $job.ArgumentList -split "--"
+      $clangConfigContent = $splitparams[1]
+      $job.ArgumentList = ($splitparams[0] + " -- --config $clangConfigFile")
+    }
+    else
+    {
+      # Tell Clang to take its args from a config file
+      $clangConfigContent = $job.ArgumentList
+      $job.ArgumentList = "--config $clangConfigFile"
+    }
+
+    $clangConfigContent = $clangConfigContent -replace '\\', '/' | Out-File $clangConfigFile
+
     # When PowerShell encounters errors, the first one is handled differently from consecutive ones
     # To circumvent this, do not execute the job directly, but execute it via cmd.exe
     # See also https://stackoverflow.com/a/35980675
@@ -652,6 +671,7 @@ Function Run-ClangJobs([Parameter(Mandatory=$true)] $clangJobs)
 
     $callSuccess = $LASTEXITCODE -eq 0
 
+    Remove-Item $clangConfigFile
     Pop-Location
 
     return New-Object PsObject -Prop @{ "File"    = $job.File;
@@ -812,7 +832,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
     [bool] $dirtyStdafx = $false
     foreach ($cpp in $aCppToCompile)
     {
-      if ($cpp -ieq $stdafxHeaderFullPath) 
+      if ($cpp -ieq $stdafxHeaderFullPath)
       {
         # stdafx modified => compile all
         $dirtyStdafx = $true
@@ -822,7 +842,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
       if (![string]::IsNullOrEmpty($cpp))
       {
         if ([System.IO.Path]::IsPathRooted($cpp))
-        { 
+        {
           if ($projCpps.ContainsKey($cpp))
           {
             # really fast, use cache
@@ -997,14 +1017,14 @@ else
 
 if ($aCppToCompile -and $projectsToProcess.Count -gt 1)
 {
-  # We've been given particular files to compile, we can narrow down 
+  # We've been given particular files to compile, we can narrow down
   # the projects to be processed (those that include any of the particular files)
-  
+
   # For obvious performance reasons, no filtering is done when there's only one project to process.
   [System.IO.FileInfo[]] $projectsThatIncludeFiles = Get-SourceCodeIncludeProjects -projectPool $projectsToProcess `
                                                                                    -files $aCppToCompile
   Write-Verbose-Array -name "Detected projects" -array $projectsThatIncludeFiles
- 
+
   # some projects include files using wildcards, we won't match anything in them
   # so when matching nothing we don't do filtering at all
   if ($projectsThatIncludeFiles)
