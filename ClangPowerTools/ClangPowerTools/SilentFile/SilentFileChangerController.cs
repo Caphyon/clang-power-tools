@@ -29,6 +29,7 @@ namespace ClangPowerTools.SilentFile
     /// </summary>
     private AsyncPackage mAsyncPackage;
 
+
     #endregion
 
 
@@ -47,8 +48,6 @@ namespace ClangPowerTools.SilentFile
     #region Methods
 
 
-
-
     #region Public methods
 
 
@@ -60,11 +59,7 @@ namespace ClangPowerTools.SilentFile
     public void SilentFiles(IEnumerable<string> aFilesPath)
     {
       foreach (var filePath in aFilesPath)
-      {
-        var silentFileChanger = GetNewSilentFileChanger(filePath);
-        if (null != silentFileChanger.FileChangeControl)
-          ErrorHandler.ThrowOnFailure(silentFileChanger.FileChangeControl.IgnoreFileChanges(1));
-      }
+        Silent(GetNewSilentFileChanger(filePath));
     }
 
 
@@ -76,18 +71,14 @@ namespace ClangPowerTools.SilentFile
     public void SilentFiles(Documents aDocuments)
     {
       foreach (Document doc in aDocuments)
-      {
-        var silentFileChanger = GetNewSilentFileChanger(Path.Combine(doc.Path, doc.Name));
-        if (null != silentFileChanger.FileChangeControl)
-          ErrorHandler.ThrowOnFailure(silentFileChanger.FileChangeControl.IgnoreFileChanges(1));
-      }
+        Silent(GetNewSilentFileChanger(Path.Combine(doc.Path, doc.Name)));
     }
 
 
     #region IDisposable Implementation
 
     /// <summary>
-    /// Abort the ignore changes action for all stored files
+    /// Stop ignoring the file changes for all stored files
     /// </summary>
     public void Dispose()
     {
@@ -119,7 +110,18 @@ namespace ClangPowerTools.SilentFile
 
 
     /// <summary>
-    /// Stop to ignore the changes of a specific file
+    /// Ignore all file changes of a file
+    /// </summary>
+    /// <param name="aSilentFileChanger"></param>
+    private void Silent(SilentFileChangerModel aSilentFileChanger)
+    {
+      if (null != aSilentFileChanger.FileChangeControl)
+        ErrorHandler.ThrowOnFailure(aSilentFileChanger.FileChangeControl.IgnoreFileChanges(1));
+    }
+
+
+    /// <summary>
+    /// Stop ignoring the file changes for a certain files
     /// </summary>
     public async void Resume(SilentFileChangerModel aSilentFileChanger)
     {
