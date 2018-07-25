@@ -203,8 +203,6 @@
     <Compile Include="Script\PowerShellWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\SettingsCommand.cs" />
-    <Compile Include="SilentFile\SilentFileChanger.cs" />
-    <Compile Include="SilentFile\SilentFileChangerGuard.cs" />
     <Compile Include="Options\ViewModel\ClangTidyPredefinedChecksOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
