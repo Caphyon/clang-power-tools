@@ -195,6 +195,7 @@
     <Compile Include="Services\VsStatusBarService\SVsStatusBarService.cs" />
     <Compile Include="Services\VsStatusBarService\VsStatusBarService.cs" />
     <Compile Include="SettingsPathBuilder.cs" />
+    <Compile Include="SilentFile\SilentFileChangerBuilder.cs" />
     <Compile Include="SilentFile\SilentFileChangerEqualityComparer.cs" />
     <Compile Include="Items\IItem.cs" />
     <Compile Include="Items\ItemsCollector.cs" />
@@ -202,8 +203,6 @@
     <Compile Include="Script\PowerShellWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\SettingsCommand.cs" />
-    <Compile Include="SilentFile\SilentFileChanger.cs" />
-    <Compile Include="SilentFile\SilentFileChangerGuard.cs" />
     <Compile Include="Options\ViewModel\ClangTidyPredefinedChecksOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -221,7 +220,8 @@
     <Compile Include="Convertors\ComboBoxConstants.cs" />
     <Compile Include="Convertors\OldConvertors\ComboBoxConvertor.cs" />
     <Compile Include="Convertors\ClangTidyUseChecksFromConvertor.cs" />
-    <Compile Include="SilentFile\SilentFileController.cs" />
+    <Compile Include="SilentFile\SilentFileChangerModel.cs" />
+    <Compile Include="SilentFile\SilentFileChangerController.cs" />
     <Compile Include="Helpers\StatusBarHandler.cs" />
     <Compile Include="StringExtension.cs" />
     <Compile Include="ClangFormatPathAttribute.cs" />

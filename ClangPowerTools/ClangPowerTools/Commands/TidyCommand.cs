@@ -124,9 +124,7 @@ namespace ClangPowerTools
 
           CollectSelectedItems(ScriptConstants.kAcceptedFileExtensions);
 
-          var silentFileController = new SilentFileController();
-
-          using (var guard = silentFileController.GetSilentFileChangerGuard())
+          using (var silentFileController = new SilentFileChangerController(AsyncPackage))
           {
             if (true == mFix || true == mTidyOptions.AutoTidyOnSave)
             {
@@ -135,8 +133,8 @@ namespace ClangPowerTools
               FilePathCollector fileCollector = new FilePathCollector();
               var filesPath = fileCollector.Collect(mItemsCollector.GetItems).ToList();
 
-              silentFileController.SilentFiles(AsyncPackage, guard, filesPath);
-              silentFileController.SilentOpenFiles(AsyncPackage, guard, DTEObj);
+              silentFileController.SilentFiles(filesPath);
+              silentFileController.SilentFiles(DTEObj.Documents);
             }
             RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mTidyChecks, mTidyCustomChecks, mClangFormatView, mFix);
           }

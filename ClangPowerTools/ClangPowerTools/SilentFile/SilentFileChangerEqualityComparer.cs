@@ -3,11 +3,12 @@ using System.Collections.Generic;
 
 namespace ClangPowerTools
 {
-  public class SilentFileChangerEqualityComparer : IEqualityComparer<SilentFileChanger>
+  public class SilentFileChangerEqualityComparer : IEqualityComparer<SilentFileChangerModel>
   {
     #region Public methods
 
-    public bool Equals(SilentFileChanger obj1, SilentFileChanger obj2)
+
+    public bool Equals(SilentFileChangerModel obj1, SilentFileChangerModel obj2)
     {
       if (obj2 == null && obj1 == null)
         return true;
@@ -19,10 +20,11 @@ namespace ClangPowerTools
         return false;
     }
 
-    public int GetHashCode(SilentFileChanger obj)
+    public int GetHashCode(SilentFileChangerModel obj)
     {
-      return obj.GetHashCode();
+      return obj.DocumentFileName.GetHashCode();
     }
+
 
     #endregion
 
