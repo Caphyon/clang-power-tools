@@ -16,10 +16,9 @@ namespace ClangPowerTools.SilentFile
     #region Members
 
 
-    private SilentFileChangerModel mSilentFileChangerModel = new SilentFileChangerModel();
+    private SilentFileChangerModel mSilentFileChangerModel;
     private AsyncPackage mSite;
-    private string mDocumentFileName;
-    private bool mReloadDocumentFlag;
+
 
     #endregion
 
@@ -36,8 +35,12 @@ namespace ClangPowerTools.SilentFile
     public SilentFileChangerBuilder(AsyncPackage aSite, string aFileName, bool aReloadDocument)
     {
       mSite = aSite;
-      mDocumentFileName = aFileName;
-      mReloadDocumentFlag = aReloadDocument;
+      mSilentFileChangerModel = new SilentFileChangerModel()
+      {
+        DocumentFileName = aFileName,
+        ReloadDocumentFlag = aReloadDocument,
+        IsSuspended = true
+      };
     }
 
 
@@ -53,7 +56,6 @@ namespace ClangPowerTools.SilentFile
     public async void Build()
     {
       var docData = IntPtr.Zero;
-
       try
       {
         var rdtService = await mSite.GetServiceAsync(typeof(SVsRunningDocumentTableService)) as IVsRunningDocumentTableService;
@@ -62,7 +64,7 @@ namespace ClangPowerTools.SilentFile
         if (rdt == null)
           return;
 
-        ErrorHandler.ThrowOnFailure(rdt.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_NoLock, mDocumentFileName,
+        ErrorHandler.ThrowOnFailure(rdt.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_NoLock, mSilentFileChangerModel.DocumentFileName,
           out IVsHierarchy hierarchy, out uint itemId, out docData, out uint docCookie));
 
         if ((docCookie == (uint)ShellConstants.VSDOCCOOKIE_NIL) || docData == IntPtr.Zero)
@@ -74,7 +76,7 @@ namespace ClangPowerTools.SilentFile
         if (fileChange == null)
           return;
 
-        ErrorHandler.ThrowOnFailure(fileChange.IgnoreFile(0, mDocumentFileName, 1));
+        ErrorHandler.ThrowOnFailure(fileChange.IgnoreFile(0, mSilentFileChangerModel.DocumentFileName, 1));
         if (docData == IntPtr.Zero)
           return;
 
@@ -82,20 +84,11 @@ namespace ClangPowerTools.SilentFile
         if (!(unknown is IVsPersistDocData))
           return;
 
-        var persistDocData = (IVsPersistDocData)unknown;
-        if (!(persistDocData is IVsDocDataFileChangeControl))
+        mSilentFileChangerModel.PersistDocData = (IVsPersistDocData)unknown;
+        if (!(mSilentFileChangerModel.PersistDocData is IVsDocDataFileChangeControl))
           return;
 
-        var fileChangeControl = (IVsDocDataFileChangeControl)persistDocData;
-
-        mSilentFileChangerModel = new SilentFileChangerModel()
-        {
-          FileChangeControl = fileChangeControl,
-          PersistDocData = persistDocData,
-          DocumentFileName = mDocumentFileName,
-          ReloadDocumentFlag = mReloadDocumentFlag,
-          IsSuspended = true
-        };
+        mSilentFileChangerModel.FileChangeControl = mSilentFileChangerModel.PersistDocData as IVsDocDataFileChangeControl;
       }
       catch (InvalidCastException e)
       {
