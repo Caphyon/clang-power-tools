@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using ClangPowerTools.Services.OleMenuCommandCustomService;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -63,6 +64,9 @@ namespace ClangPowerTools.Services
 
         else if (typeof(SVsOutputWindowService) == serviceType)
           service = new VsOutputWindowService(mServiceProvider);
+
+        else if (typeof(SOleMenuCommandService) == serviceType)
+          service = new OleMenuCommandServiceImpl(mServiceProvider);
 
       });
 

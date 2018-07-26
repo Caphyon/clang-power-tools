@@ -16,6 +16,7 @@ using System.Linq;
 using System.Threading;
 using ClangPowerTools.Services;
 using ClangPowerTools.Output;
+using ClangPowerTools.Services.OleMenuCommandCustomService;
 
 namespace ClangPowerTools
 {
@@ -111,6 +112,7 @@ namespace ClangPowerTools
       AddService(typeof(SVsFileChangeService), serviceFactory.CreateService);
       AddService(typeof(SVsRunningDocumentTableService), serviceFactory.CreateService);
       AddService(typeof(SVsOutputWindowService), serviceFactory.CreateService);
+      AddService(typeof(SOleMenuCommandService), serviceFactory.CreateService);
 
       // Switches to the UI thread in order to consume some services used in command initialization
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);

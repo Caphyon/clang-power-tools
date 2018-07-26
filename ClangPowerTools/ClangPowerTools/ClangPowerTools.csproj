@@ -179,6 +179,7 @@
     <Compile Include="Services\DTEService\SEnvDTEService.cs" />
     <Compile Include="Services\IService.cs" />
     <Compile Include="Services\OleMenuCommandCustomService\IOleMenuCommandService.cs" />
+    <Compile Include="Services\OleMenuCommandCustomService\OleMenuCommandServiceImpl.cs" />
     <Compile Include="Services\OleMenuCommandCustomService\SOleMenuCommandService.cs" />
     <Compile Include="Services\ServiceFactory.cs" />
     <Compile Include="Services\VsFileChangeService\VsFileChangeService.cs" />
