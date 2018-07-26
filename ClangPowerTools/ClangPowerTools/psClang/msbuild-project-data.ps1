@@ -19,6 +19,8 @@ Set-Variable -name kIncludePathsXPTargetingSDK  `
 
 Set-Variable -name kVStudioDefaultPlatformToolset -Value "v141" -option Constant
 
+Set-Variable -name kClangFlag32BitPlatform        -value "-m32" -option Constant
+
 # ------------------------------------------------------------------------------------------------
 # Xpath selectors
 
@@ -72,7 +74,6 @@ Set-Variable -name kVcxprojXpathProjectCompileAs `
 Set-Variable -name kVSDefaultWinSDK            -value '8.1'             -option Constant
 Set-Variable -name kVSDefaultWinSDK_XP         -value '7.0'             -option Constant
 Set-Variable -name kDefaultCppStd              -value "stdcpp14"        -option Constant
-
 
 # ------------------------------------------------------------------------------------------------
 Set-Variable -name kCProjectCompile         -value "CompileAsC" -option Constant
@@ -267,6 +268,11 @@ Function Get-ClangCompileFlags([Parameter(Mandatory = $false)][bool] $isCpp = $t
         [string] $cppStandard = Get-Project-CppStandard
 
         $flags = @("-std=$cppStandard") + $flags
+    }
+
+    if ($Platform -ieq "x86" -or $Platform -ieq "Win32")
+    {
+        $flags += @($kClangFlag32BitPlatform)
     }
 
     return $flags
