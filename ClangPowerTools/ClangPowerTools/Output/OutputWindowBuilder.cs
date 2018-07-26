@@ -1,7 +1,6 @@
 ﻿using System;
 using ClangPowerTools.Error;
 using ClangPowerTools.Services;
-using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 

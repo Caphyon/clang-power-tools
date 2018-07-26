@@ -1,6 +1,5 @@
 ﻿using System;
 using EnvDTE80;
-using EnvDTE;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Shell;
 

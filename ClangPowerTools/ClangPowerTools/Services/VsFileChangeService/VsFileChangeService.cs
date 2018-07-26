@@ -1,7 +1,4 @@
 ﻿using System.Threading;
-using EnvDTE;
-using EnvDTE80;
-using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools.Services

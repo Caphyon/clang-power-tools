@@ -14,9 +14,7 @@ using System.Xml;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using ClangPowerTools.Services;
-using System.ComponentModel.Design;
 using ClangPowerTools.Output;
 
 namespace ClangPowerTools
