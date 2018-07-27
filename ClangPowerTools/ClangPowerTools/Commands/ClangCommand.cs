@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Windows;
 using ClangPowerTools.DialogPages;
 using ClangPowerTools.Output;
 using ClangPowerTools.Script;
@@ -90,10 +89,6 @@ namespace ClangPowerTools
     {
       try
       {
-
-        //MessageBox.Show("AAA", "AAA");
-
-
         mCompileTidyScriptBuilder = new ClangCompileTidyScript();
         mCompileTidyScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
           mTidyCustomChecks, aClangFormatView, DTEObj, VsEdition, VsVersion, aTidyFixFlag);
@@ -102,10 +97,6 @@ namespace ClangPowerTools
         InitPowerShell();
         ClearWindows();
         mOutputWindow.Write($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
-
-
-        //MessageBox.Show("BBB", "BBB");
-
 
         StatusBarHandler.Status(aCommandName + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
 
@@ -125,10 +116,6 @@ namespace ClangPowerTools
           }
         }
 
-
-        //MessageBox.Show("CCC", "CCC");
-
-
         if (!mOutputWindow.IsBufferEmpty)
           mOutputWindow.Write(String.Join("\n", mOutputWindow.Buffer));
         if (!mOutputWindow.MissingLlvm)
@@ -136,6 +123,7 @@ namespace ClangPowerTools
           mOutputWindow.Show();
           mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
         }
+
         if (mOutputWindow.HasErrors)
           mErrorWindow.AddErrors(mOutputWindow.Errors);
 
