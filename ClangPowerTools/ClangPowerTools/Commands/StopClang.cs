@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Design;
+using ClangPowerTools.Output;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -25,9 +26,9 @@ namespace ClangPowerTools.Commands
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public StopClang(CommandsController aCommandsController, ErrorWindowController aErrorWindow,
+    public StopClang(CommandsController aCommandsController, ErrorWindowController aErrorWindow, OutputWindowController aOutputWindow,
       IVsSolution aSolution, DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
-      : base(aCommandsController, aErrorWindow, aSolution, aDte, aPackage, aGuid, aId)
+      : base(aCommandsController, aErrorWindow, aOutputWindow, aSolution, aDte, aPackage, aGuid, aId)
     {
       var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
 

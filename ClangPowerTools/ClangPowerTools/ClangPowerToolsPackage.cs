@@ -14,10 +14,9 @@ using System.Xml;
 using System.IO;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using ClangPowerTools.Services;
-using System.ComponentModel.Design;
 using ClangPowerTools.Output;
+using ClangPowerTools.Services.OleMenuCommandCustomService;
 
 namespace ClangPowerTools
 {
@@ -66,6 +65,7 @@ namespace ClangPowerTools
     private BuildEvents mBuildEvents;
     private DTE2 mDte;
     private ErrorWindowController mErrorWindow;
+    private OutputWindowController mOutputController;
 
     #region Commands
 
@@ -113,6 +113,7 @@ namespace ClangPowerTools
       AddService(typeof(SVsFileChangeService), serviceFactory.CreateService);
       AddService(typeof(SVsRunningDocumentTableService), serviceFactory.CreateService);
       AddService(typeof(SVsOutputWindowService), serviceFactory.CreateService);
+      AddService(typeof(SOleMenuCommandService), serviceFactory.CreateService);
 
       // Switches to the UI thread in order to consume some services used in command initialization
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
@@ -223,19 +224,19 @@ namespace ClangPowerTools
     private void InitializeCommands()
     {
       if (null == mCompileCmd)
-        mCompileCmd = new CompileCommand(mCommandsController, mErrorWindow, mSolution, mDte, this, CommandSet, CommandIds.kCompileId);
+        mCompileCmd = new CompileCommand(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kCompileId);
 
       if (null == mTidyCmd)
       {
-        mTidyCmd = new TidyCommand(mCommandsController, mErrorWindow, mSolution, mDte, this, CommandSet, CommandIds.kTidyId);
-        mTidyCmd = new TidyCommand(mCommandsController, mErrorWindow, mSolution, mDte, this, CommandSet, CommandIds.kTidyFixId);
+        mTidyCmd = new TidyCommand(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kTidyId);
+        mTidyCmd = new TidyCommand(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kTidyFixId);
       }
 
       if (null == mClangFormatCmd)
-        mClangFormatCmd = new ClangFormatCommand(mCommandsController, mErrorWindow, mSolution, mDte, this, CommandSet, CommandIds.kClangFormat);
+        mClangFormatCmd = new ClangFormatCommand(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kClangFormat);
 
       if (null == mStopClangCmd)
-        mStopClangCmd = new StopClang(mCommandsController, mErrorWindow, mSolution, mDte, this, CommandSet, CommandIds.kStopClang);
+        mStopClangCmd = new StopClang(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kStopClang);
 
     }
 
@@ -244,21 +245,17 @@ namespace ClangPowerTools
     {
       try
       {
+        mOutputController = new OutputWindowController(this, mDte);
         mCommandsController = new CommandsController(this, mDte);
-
         InitializeCommands();
-
-        //ErrorWindow errorWindow = new ErrorWindow(this);
-        //ErrorWindow.Initialize(this);
 
         var generalOptions = (ClangGeneralOptionsView)this.GetDialogPage(typeof(ClangGeneralOptionsView));
         var currentVersion = GetPackageVersion();
 
         if (0 != string.Compare(generalOptions.Version, currentVersion))
         {
-          OutputWindowController outputController = new OutputWindowController(this, mDte);
-          outputController.Show();
-          outputController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
+          mOutputController.Show();
+          mOutputController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
             $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
 
           generalOptions.Version = currentVersion;

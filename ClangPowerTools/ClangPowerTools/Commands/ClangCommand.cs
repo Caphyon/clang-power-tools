@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using ClangPowerTools.DialogPages;
 using ClangPowerTools.Output;
 using ClangPowerTools.Script;
@@ -20,13 +19,14 @@ namespace ClangPowerTools
     protected FilePathCollector mFilePahtCollector;
     protected static RunningProcesses mRunningProcesses = new RunningProcesses();
     protected List<string> mDirectoriesPath = new List<string>();
-    protected static OutputWindowController mOutputController;
     protected ClangGeneralOptionsView mGeneralOptions;
 
     private Commands2 mCommand;
     private IVsSolution mSolution;
 
     private ErrorWindowController mErrorWindow;
+    private OutputWindowController mOutputWindow;
+
     private PowerShellWrapper mPowerShell = new PowerShellWrapper();
     private ClangCompileTidyScript mCompileTidyScriptBuilder;
     private const string kVs15Version = "2017";
@@ -52,7 +52,7 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public ClangCommand(CommandsController aCommandsController, ErrorWindowController aErrorWindow, 
+    public ClangCommand(CommandsController aCommandsController, ErrorWindowController aErrorWindow, OutputWindowController aOutputWindow,
       IVsSolution aSolution, DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aDte, aPackage, aGuid, aId)
     {
@@ -60,6 +60,7 @@ namespace ClangPowerTools
         mCommandsController = aCommandsController;
 
       mErrorWindow = aErrorWindow;
+      mOutputWindow = aOutputWindow;
       mGeneralOptions = (ClangGeneralOptionsView)aPackage.GetDialogPage(typeof(ClangGeneralOptionsView));
 
       mSolution = aSolution;
@@ -93,11 +94,9 @@ namespace ClangPowerTools
           mTidyCustomChecks, aClangFormatView, DTEObj, VsEdition, VsVersion, aTidyFixFlag);
 
         string solutionPath = DTEObj.Solution.FullName;
-
-        mOutputController = new OutputWindowController(AsyncPackage, DTEObj);
         InitPowerShell();
         ClearWindows();
-        mOutputController.Write($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
+        mOutputWindow.Write($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
 
         StatusBarHandler.Status(aCommandName + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
 
@@ -107,30 +106,32 @@ namespace ClangPowerTools
           if (!mCommandsController.Running)
             break;
 
-          mOutputController.Hierarchy = AutomationUtil.GetItemHierarchy( mSolution, item);
+          mOutputWindow.Hierarchy = AutomationUtil.GetItemHierarchy( mSolution, item);
           var process = mPowerShell.Invoke(script, mRunningProcesses);
 
-          if (mOutputController.MissingLlvm)
+          if (mOutputWindow.MissingLlvm)
           {
-            mOutputController.Write(ErrorParserConstants.kMissingLlvmMessage);
+            mOutputWindow.Write(ErrorParserConstants.kMissingLlvmMessage);
             break;
           }
         }
-        if (!mOutputController.IsBufferEmpty)
-          mOutputController.Write(String.Join("\n", mOutputController.Buffer));
-        if (!mOutputController.MissingLlvm)
+
+        if (!mOutputWindow.IsBufferEmpty)
+          mOutputWindow.Write(String.Join("\n", mOutputWindow.Buffer));
+        if (!mOutputWindow.MissingLlvm)
         {
-          mOutputController.Show();
-          mOutputController.Write($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
+          mOutputWindow.Show();
+          mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
         }
-        if (mOutputController.HasErrors)
-          mErrorWindow.AddErrors(mOutputController.Errors);
+
+        if (mOutputWindow.HasErrors)
+          mErrorWindow.AddErrors(mOutputWindow.Errors);
 
       }
       catch (Exception)
       {
-        mOutputController.Show();
-        mOutputController.Write($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
+        mOutputWindow.Show();
+        mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
       }
       finally
       {
@@ -173,15 +174,15 @@ namespace ClangPowerTools
     private void InitPowerShell()
     {
       mPowerShell = new PowerShellWrapper();
-      mPowerShell.DataHandler += mOutputController.OutputDataReceived;
-      mPowerShell.DataErrorHandler += mOutputController.OutputDataErrorReceived;
+      mPowerShell.DataHandler += mOutputWindow.OutputDataReceived;
+      mPowerShell.DataErrorHandler += mOutputWindow.OutputDataErrorReceived;
     }
 
     private void ClearWindows()
     {
       mErrorWindow.Clear();
-      mOutputController.Clear();
-      mOutputController.Show();
+      mOutputWindow.Clear();
+      mOutputWindow.Show();
     }
 
     #endregion

@@ -2,7 +2,6 @@
 using ClangPowerTools.Options.View;
 using System;
 using System.ComponentModel;
-using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
