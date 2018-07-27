@@ -67,6 +67,7 @@ namespace ClangPowerTools.Output
 
     public void Clear()
     {
+      mOutputContent = new OutputContentModel();
       var outputWindow = mOutputWindowBuilder.GetResult();
       UIUpdater.Invoke(() =>
       {
