@@ -37,7 +37,7 @@ namespace ClangPowerTools
 
     public override int GetHashCode()
     {
-      return $"{Line.ToString()}{FilePath}{FullMessage}".GetHashCode();
+      return FullMessage.GetHashCode();
     }
 
     #endregion
