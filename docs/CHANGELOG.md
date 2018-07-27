@@ -5,7 +5,7 @@
 
 Improvements:
 
-* Improve the errors detection
+* Improved error detection
 
 Bugs:
 
