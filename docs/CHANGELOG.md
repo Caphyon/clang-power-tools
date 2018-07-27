@@ -1,5 +1,20 @@
 # Version History
 
+### Clang Power Tools 3.8
+*July 27, 2018*
+
+Improvements:
+
+* Improve the errors detection
+
+Bugs:
+
+* Projects with large number of include directories could not be compiled
+* Closed files remained closed after the clang-tidy fix command caused changes
+* Error List displayed duplicates errors
+* Output Window did not displayed the entire content
+* VS reload file mechanism for external changes remains disabled after the clang-tidy fix command
+
 ### Clang Power Tools 3.7.1
 *July 4, 2018*
 
