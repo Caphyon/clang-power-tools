@@ -45,20 +45,27 @@ namespace ClangPowerTools.Output
     /// </summary>
     public async void Build()
     {
-
-      var outputWindowService = await mPackage.GetServiceAsync(typeof(SVsOutputWindowService)) as IVsOutputWindowService;
-      mOutputWindow.VsOutputWindow = await outputWindowService.GetOutputWindowAsync(mPackage, new System.Threading.CancellationToken());
-
-      Guid generalPaneGuid = mOutputWindow.PaneGuid;
-      mOutputWindow.VsOutputWindow.GetPane(ref generalPaneGuid, out IVsOutputWindowPane pane);
-
-      if (null == pane)
+      // Get the VS Output Window 
+      if( null == mOutputWindow.VsOutputWindow )
       {
-        mOutputWindow.VsOutputWindow.CreatePane(ref generalPaneGuid, OutputWindowConstants.kPaneName, 0, 1);
-        mOutputWindow.VsOutputWindow.GetPane(ref generalPaneGuid, out pane);
+        var outputWindowService = await mPackage.GetServiceAsync(typeof(SVsOutputWindowService)) as IVsOutputWindowService;
+        mOutputWindow.VsOutputWindow = await outputWindowService.GetOutputWindowAsync(mPackage, new System.Threading.CancellationToken());
       }
+      
+      if( null == mOutputWindow.Pane )
+      {
+        // Get the Pane object
+        Guid generalPaneGuid = mOutputWindow.PaneGuid;
+        mOutputWindow.VsOutputWindow.GetPane(ref generalPaneGuid, out IVsOutputWindowPane pane);
 
-      mOutputWindow.Pane = pane;
+        // If pane does not exists, create it
+        if (null == pane)
+        {
+          mOutputWindow.VsOutputWindow.CreatePane(ref generalPaneGuid, OutputWindowConstants.kPaneName, 0, 1);
+          mOutputWindow.VsOutputWindow.GetPane(ref generalPaneGuid, out pane);
+        }
+        mOutputWindow.Pane = pane;
+      }
     }
 
     /// <summary>

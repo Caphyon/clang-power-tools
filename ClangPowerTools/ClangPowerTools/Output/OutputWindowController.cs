@@ -15,9 +15,9 @@ namespace ClangPowerTools.Output
     #region Private Members
 
 
-    private static OutputProcessor mOutputProcessor = new OutputProcessor();
+    private OutputProcessor mOutputProcessor = new OutputProcessor();
 
-    private static IBuilder<OutputWindowModel> mOutputWindowBuilder;
+    private IBuilder<OutputWindowModel> mOutputWindowBuilder;
 
     private OutputContentModel mOutputContent = new OutputContentModel();
 
