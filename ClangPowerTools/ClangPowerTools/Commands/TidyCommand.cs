@@ -7,6 +7,7 @@ using ClangPowerTools.SilentFile;
 using System.Linq;
 using EnvDTE;
 using EnvDTE80;
+using ClangPowerTools.Output;
 
 namespace ClangPowerTools
 {
@@ -37,9 +38,9 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
 
-    public TidyCommand(CommandsController aCommandsController, ErrorWindowController aErrorWindow,
+    public TidyCommand(CommandsController aCommandsController, ErrorWindowController aErrorWindow, OutputWindowController aOutputWindow,
       IVsSolution aSolution, DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
-        : base(aCommandsController, aErrorWindow, aSolution, aDte, aPackage, aGuid, aId)
+        : base(aCommandsController, aErrorWindow, aOutputWindow, aSolution, aDte, aPackage, aGuid, aId)
     {
       mTidyOptions = (ClangTidyOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyOptionsView));
       mTidyChecks = (ClangTidyPredefinedChecksOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyPredefinedChecksOptionsView));
