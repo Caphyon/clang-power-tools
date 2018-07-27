@@ -36,19 +36,19 @@ namespace ClangPowerTools.Error
     public void Build()
     {
       var groups = mMatchResult.Groups;
-      string messageDescription = groups[9].Value;
+      string messageDescription = groups[10].Value;
 
       if (string.IsNullOrWhiteSpace(messageDescription))
         return;
 
       string path = groups[1].Value;
-      int.TryParse(groups[3].Value, out int line);
-      int.TryParse(groups[5].Value, out int column);
+      int.TryParse(groups[4].Value, out int line);
+      int.TryParse(groups[6].Value, out int column);
 
-      string categoryAsString = groups[7].Value;
+      string categoryAsString = groups[8].Value;
       TaskErrorCategory category = FindErrorCategory(ref categoryAsString);
 
-      string clangTidyChecker = groups[10].Value;
+      string clangTidyChecker = groups[11].Value;
       string fullMessage = CreateFullErrorMessage(path, line, categoryAsString, clangTidyChecker, messageDescription);
 
       // Add clang prefix for error list
