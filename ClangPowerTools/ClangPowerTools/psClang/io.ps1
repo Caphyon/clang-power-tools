@@ -78,15 +78,15 @@ Function IsFileMatchingName( [Parameter(Mandatory = $true)][string] $filePath
         return $filePath -ieq $matchName
     }
 
-    [string] $fileName = (Get-FileName -path $filePath)
-    [string] $fileNameNoExt = (Get-FileName -path $filePath -noext)
     if ($aDisableNameRegexMatching)
     {
+        [string] $fileName      = (Get-FileName -path $filePath)
+        [string] $fileNameNoExt = (Get-FileName -path $filePath -noext)
         return (($fileName -eq $matchName) -or ($fileNameNoExt -eq $matchName))
     }
     else
     {
-        return (($fileName -match $matchName) -or ($fileNameNoExt -match $matchName))
+        return $filePath -match $matchName
     }
 }
 
