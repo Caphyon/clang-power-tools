@@ -57,7 +57,7 @@ Describe "MSBuild - Powershell Expression translation" {
   }
 
   It "GetDirectoryNameOfFileAbove() MSBuild builtin function" {
-    $MSBuildThisFileDirectory = $env:SystemRoot
+    [string] $MSBuildThisFileDirectory = $env:SystemRoot
 
     $e = '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), ''Program Files'')Program Files'
     Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
@@ -65,12 +65,19 @@ Describe "MSBuild - Powershell Expression translation" {
     $e = '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), "Program Files")Program Files'
     Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
 
-    $whatToFind = "Program Files"
+    [string] $whatToFind = "Program Files"
     $e = '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), ''$(whatToFind)'')Program Files'
     Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
 
     $e = '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Program Files)Program Files'
     Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
+
+    [string] $_DirectoryBuildPropsFile = "clang-build.ps1"
+    [string] $MSBuildProjectDirectory  = "$PSScriptRoot"
+    [string] $DirParent = [System.IO.Directory]::GetParent($MSBuildProjectDirectory)
+
+    $e = '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), ''$(_DirectoryBuildPropsFile)''))'
+    Evaluate-MSBuildExpression $e | Should -Be "$DirParent"
   }
 
   It "MakeRelative() MSBuild builtin function" {

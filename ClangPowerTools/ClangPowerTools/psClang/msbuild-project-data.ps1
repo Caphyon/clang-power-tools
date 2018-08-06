@@ -421,7 +421,8 @@ Function Get-ProjectPreprocessorDefines()
     [string[]] $tokens = (Select-ProjectNodes $kVcxprojXpathPreprocessorDefs).InnerText -split ";"
 
     # make sure we add the required prefix and escape double quotes
-    [string[]]$defines = ( $tokens             | `
+    [string[]]$defines = ( $tokens | `
+            ForEach-Object { $_.Trim() } | `
             Where-Object { $_ } | `
             ForEach-Object { '"' + $(($kClangDefinePrefix + $_) -replace '"', '\"') + '"' } )
 

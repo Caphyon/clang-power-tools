@@ -332,7 +332,11 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
             if (![string]::IsNullOrEmpty($path) -and (Test-Path $path))
             {
                 Write-Verbose "Property sheet: $path"
+                [string] $currentFile = $global:currentMSBuildFile
                 SanitizeProjectFile($path)
+
+                $global:currentMSBuildFile = $currentFile
+                InitializeMsBuildCurrentFileProperties -filePath $global:currentMSBuildFile
             }
             else
             {
@@ -431,6 +435,7 @@ function SanitizeProjectFile([string] $projectFilePath)
     $global:projectFiles += @($fileXml)
     $global:xpathNS = New-Object System.Xml.XmlNamespaceManager($fileXml.NameTable)
     $global:xpathNS.AddNamespace("ns", $fileXml.DocumentElement.NamespaceURI)
+    $global:currentMSBuildFile = $projectFilePath
 
     Push-Location (Get-FileDirectory -filePath $projectFilePath)
 
