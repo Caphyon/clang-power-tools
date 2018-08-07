@@ -248,6 +248,9 @@ Function Exit-Script([Parameter(Mandatory=$false)][int] $code = 0)
   # Restore working directory
   Pop-Location
 
+  # Clean global variables that we have set
+  Clear-Vars
+
   exit $code
 }
 
