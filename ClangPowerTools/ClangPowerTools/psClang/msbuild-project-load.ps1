@@ -6,8 +6,11 @@
 # translation engine (MSBUILD-POWERSHELL) for these. it relies on
 # PowerShell to evaluate these expressions. We have to inject project
 # properties in the PowerShell runtime context. We keep track of them in
-# this list, to be cleaned before the next project begins processing
-[System.Collections.ArrayList] $global:ProjectSpecificVariables     = @()
+# this list, so that each project can know to clean previous vars before loading begins.
+if (! (Test-Path variable:global:ProjectSpecificVariables))
+{
+  [System.Collections.ArrayList] $global:ProjectSpecificVariables     = @()
+}
 
 # current vcxproj and property sheets
 [xml[]]  $global:projectFiles                    = @();
@@ -43,7 +46,7 @@ Function Set-Var([parameter(Mandatory = $false)][string] $name,
 Function Clear-Vars()
 {
     Write-Verbose-Array -array $global:ProjectSpecificVariables `
-        -name "Deleting project specific variables"
+        -name "Deleting variables initialized by previous project"
 
     foreach ($var in $global:ProjectSpecificVariables)
     {
@@ -473,6 +476,9 @@ when processing a project. Accessing project nodes can be done using Select-Proj
 #>
 function LoadProject([string] $vcxprojPath)
 {
+    # Clean global variables that have been set by a previous project load
+    Clear-Vars
+
     $global:vcxprojPath = $vcxprojPath
 
     InitializeMsBuildProjectProperties
