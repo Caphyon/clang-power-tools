@@ -248,9 +248,6 @@ Function Exit-Script([Parameter(Mandatory=$false)][int] $code = 0)
   # Restore working directory
   Pop-Location
 
-  # Clean global variables that we have set
-  Clear-Vars
-
   exit $code
 }
 
@@ -715,6 +712,7 @@ Function Run-ClangJobs([Parameter(Mandatory=$true)] $clangJobs)
 Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPath
                         , [Parameter(Mandatory=$true)][WorkloadType] $workloadType)
 {
+  #-----------------------------------------------------------------------------------------------
   # Load data
   LoadProject($vcxprojPath)
 
@@ -731,7 +729,6 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
       # we need to reload everything and use VS2015
       Write-Verbose "Switching to VS2015 because of v140 toolset. Reloading project..."
       $global:cptVisualStudioVersion = "2015"
-      Clear-Vars
       LoadProject($vcxprojPath)
     }
   }
@@ -742,7 +739,6 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
       # we need to reload everything and the default vs version
       Write-Verbose "Switching to default VsVer because of toolset. Reloading project..."
       $global:cptVisualStudioVersion = $global:cptDefaultVisualStudioVersion
-      Clear-Vars
       LoadProject($vcxprojPath)
     }
   }
@@ -890,7 +886,6 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
     if ([string]::IsNullOrEmpty($pchFilePath) -and $aContinueOnError)
     {
       Write-Output "Skipping project. Reason: cannot create PCH."
-      Clear-Vars
       return
     }
   }
@@ -931,11 +926,6 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # RUN CLANG JOBS
 
   Run-ClangJobs -clangJobs $clangJobs
-
-  #-----------------------------------------------------------------------------------------------
-  # CLEAN GLOBAL VARIABLES SPECIFIC TO CURRENT PROJECT
-
-  Clear-Vars
 }
 
 #-------------------------------------------------------------------------------------------------
