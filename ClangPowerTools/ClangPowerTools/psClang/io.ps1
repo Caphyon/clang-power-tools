@@ -20,10 +20,18 @@ Function Write-Success([parameter(ValueFromPipeline, Mandatory = $true)][string]
     Write-Message -msg $msg -color Green
 }
 
+Function Write-Array($array, $name)
+{
+    Write-Output "$($name):"
+    $array | ForEach-Object { Write-Output "  $_" }
+    Write-Output "" # empty line separator
+}
+
 Function Write-Verbose-Array($array, $name)
 {
     Write-Verbose "$($name):"
     $array | ForEach-Object { Write-Verbose "  $_" }
+    Write-Verbose "" # empty line separator
 }
 
 Function Write-Verbose-Timed([parameter(ValueFromPipeline, Mandatory = $true)][string] $msg)

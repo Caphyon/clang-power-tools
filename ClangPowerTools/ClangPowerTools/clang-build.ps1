@@ -970,6 +970,7 @@ Write-Verbose "Source directory: $(Get-SourceDirectory)"
 Write-Verbose "Scanning for project files"
 
 [System.IO.FileInfo[]] $projects = Get-Projects
+[int] $initialProjectCount       = $projects.Count
 Write-Verbose ("Found $($projects.Count) projects")
 
 # ------------------------------------------------------------------------------------------------
@@ -990,6 +991,7 @@ if ($aCppToCompile.Count -gt 0)
 # ------------------------------------------------------------------------------------------------
 
 [System.IO.FileInfo[]] $projectsToProcess = @()
+[System.IO.FileInfo[]] $ignoredProjects   = @()
 
 if (!$aVcxprojToCompile -and !$aVcxprojToIgnore)
 {
@@ -998,14 +1000,25 @@ if (!$aVcxprojToCompile -and !$aVcxprojToIgnore)
 else
 {
   # some filtering has to be done
-  $projectsToProcess = $projects | `
-                       Where-Object {       (Should-CompileProject -vcxprojPath $_.FullName) `
-                                      -and !(Should-IgnoreProject  -vcxprojPath $_.FullName ) }
 
-  if ($projectsToProcess.Count -eq 0)
+  if ($aVcxprojToCompile)
   {
-    Write-Err "Cannot find given project"
+    $projects = $projects | Where-Object { Should-CompileProject -vcxprojPath $_.FullName }
+    $projectsToProcess = $projects
   }
+
+  if ($aVcxprojToIgnore)
+  {
+    $projectsToProcess = $projects | `
+                         Where-Object { !(Should-IgnoreProject  -vcxprojPath $_.FullName ) }
+
+    $ignoredProjects = ($projects | Where-Object { $projectsToProcess -notcontains $_ })
+  }
+}
+
+if ($projectsToProcess.Count -eq 0)
+{
+  Write-Err "Cannot find given project(s)"
 }
 
 if ($aCppToCompile -and $projectsToProcess.Count -gt 1)
@@ -1026,13 +1039,19 @@ if ($aCppToCompile -and $projectsToProcess.Count -gt 1)
   }
 }
 
-if ($projectsToProcess.Count -eq $projects.Count)
+if ($projectsToProcess.Count -eq $initialProjectCount)
 {
   Write-Verbose "PROCESSING ALL PROJECTS"
 }
 else
 {
-  Write-Output ("PROJECTS: `n`t" + ($projectsToProcess -join "`n`t"))
+  #Write-Output ("PROJECTS: `n`t" + ($projectsToProcess -join "`n`t"))
+  Write-Array -name "PROJECTS" -array $projectsToProcess
+
+  if ($ignoredProjects)
+  {
+    Write-Array -name "IGNORED PROJECTS" -array $ignoredProjects
+  }
 }
 
 # ------------------------------------------------------------------------------------------------
@@ -1054,8 +1073,9 @@ foreach ($project in $projectsToProcess)
      $workloadType = [WorkloadType]::TidyFix
   }
 
-  Write-Output ("`nPROJECT$(if ($projectCounter -gt 1) { " #$projectCounter" } else { } ): " + $vcxprojPath)
+  Write-Output ("PROJECT$(if ($projectCounter -gt 1) { " #$projectCounter" } else { } ): " + $vcxprojPath)
   Process-Project -vcxprojPath $vcxprojPath -workloadType $workloadType
+  Write-Output "" # empty line separator
 
   $projectCounter -= 1
 }
