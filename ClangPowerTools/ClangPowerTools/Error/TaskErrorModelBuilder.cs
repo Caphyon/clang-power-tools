@@ -48,8 +48,7 @@ namespace ClangPowerTools.Error
       string categoryAsString = groups[8].Value;
       TaskErrorCategory category = FindErrorCategory(ref categoryAsString);
 
-      string clangTidyChecker = groups[11].Value;
-      string fullMessage = CreateFullErrorMessage(path, line, categoryAsString, clangTidyChecker, messageDescription);
+      string fullMessage = CreateFullErrorMessage(path, line, categoryAsString, messageDescription);
 
       // Add clang prefix for error list
       messageDescription = messageDescription.Insert(0, ErrorParserConstants.kClangTag); 
@@ -96,12 +95,9 @@ namespace ClangPowerTools.Error
     }
 
 
-    private string CreateFullErrorMessage(string aPath, int aLine,
-     string aCategory, string aClangTidyChecker, string aDescription)
+    private string CreateFullErrorMessage(string aPath, int aLine, string aCategory, string aDescription)
     {
-      return string.Format("{0}({1}): {2}{3}: {4}", aPath, aLine, aCategory,
-        (true == string.IsNullOrWhiteSpace(aClangTidyChecker) ? string.Empty : $" {aClangTidyChecker.Trim(new char[] { ' ', '\n', '\r', '\t' })}"),
-        aDescription);
+      return $"{aPath}({aLine}): {aCategory}: {aDescription}";
     }
 
     #endregion
