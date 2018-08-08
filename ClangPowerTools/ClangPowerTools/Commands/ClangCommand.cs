@@ -89,6 +89,8 @@ namespace ClangPowerTools
     {
       try
       {
+        DTEObj.Solution.SaveAs(DTEObj.Solution.FullName);
+
         mCompileTidyScriptBuilder = new ClangCompileTidyScript();
         mCompileTidyScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
           mTidyCustomChecks, aClangFormatView, DTEObj, VsEdition, VsVersion, aTidyFixFlag);
