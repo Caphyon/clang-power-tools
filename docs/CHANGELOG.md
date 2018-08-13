@@ -1,5 +1,21 @@
 # Version History
 
+### Clang Power Tools 3.9
+*August 13, 2018*
+
+Improvements:
+
+* `Project / File to ignore` support for directory matching
+* Display names of ignored projects at beginning of log
+
+Bug fixes:
+
+* MSBuild directory properties malfunctioning in some property sheets
+* Project specific variables not cleared when compilation failed
+* Newly created projects not detected by VS Extension
+* Clang output sometimes formatted wrong in the VS Output Window
+* Crash when switching Error List between `Build Only`, `Build + IntelliSense` and `IntelliSense Only` 
+
 ### Clang Power Tools 3.8
 *July 27, 2018*
 
