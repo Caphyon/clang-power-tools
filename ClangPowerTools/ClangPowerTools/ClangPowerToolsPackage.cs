@@ -243,42 +243,7 @@ namespace ClangPowerTools
 
     public int OnAfterOpenSolution(object aPUnkReserved, int aFNewSolution)
     {
-      try
-      {
-        mOutputController = new OutputWindowController(this, mDte);
-        mCommandsController = new CommandsController(this, mDte);
-        InitializeCommands();
-
-        var generalOptions = (ClangGeneralOptionsView)this.GetDialogPage(typeof(ClangGeneralOptionsView));
-        var currentVersion = GetPackageVersion();
-
-        if (0 != string.Compare(generalOptions.Version, currentVersion))
-        {
-          mOutputController.Show();
-          mOutputController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
-            $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
-
-          generalOptions.Version = currentVersion;
-          generalOptions.SaveSettingsToStorage();
-        }
-
-        mBuildEvents.OnBuildBegin += mErrorWindow.OnBuildBegin;
-
-        mBuildEvents.OnBuildBegin += mCommandsController.OnBuildBegin;
-        mBuildEvents.OnBuildDone += mCommandsController.OnBuildDone;
-
-        mBuildEvents.OnBuildDone += mCompileCmd.OnBuildDone;
-
-        mCommandEvents.BeforeExecute += mCompileCmd.CommandEventsBeforeExecute;
-        mCommandEvents.BeforeExecute += mTidyCmd.CommandEventsBeforeExecute;
-
-        mRunningDocTableEvents.BeforeSave += mTidyCmd.OnBeforeSave;
-        mRunningDocTableEvents.BeforeSave += mClangFormatCmd.OnBeforeSave;
-      }
-      catch (Exception)
-      {
-      }
-
+      PrepareExtension();
       return VSConstants.S_OK;
     }
 
@@ -314,6 +279,42 @@ namespace ClangPowerTools
     #endregion
 
     #region Private Methods
+
+    private async void PrepareExtension()
+    {
+      mOutputController = new OutputWindowController();
+      await mOutputController.Initialize(this, mDte);
+
+      mCommandsController = new CommandsController(this, mDte);
+      InitializeCommands();
+
+      var generalOptions = (ClangGeneralOptionsView)this.GetDialogPage(typeof(ClangGeneralOptionsView));
+      var currentVersion = GetPackageVersion();
+
+      if (0 != string.Compare(generalOptions.Version, currentVersion))
+      {
+        mOutputController.Show();
+        mOutputController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
+          $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
+
+        generalOptions.Version = currentVersion;
+        generalOptions.SaveSettingsToStorage();
+      }
+
+      mBuildEvents.OnBuildBegin += mErrorWindow.OnBuildBegin;
+
+      mBuildEvents.OnBuildBegin += mCommandsController.OnBuildBegin;
+      mBuildEvents.OnBuildDone += mCommandsController.OnBuildDone;
+
+      mBuildEvents.OnBuildDone += mCompileCmd.OnBuildDone;
+
+      mCommandEvents.BeforeExecute += mCompileCmd.CommandEventsBeforeExecute;
+      mCommandEvents.BeforeExecute += mTidyCmd.CommandEventsBeforeExecute;
+
+      mRunningDocTableEvents.BeforeSave += mTidyCmd.OnBeforeSave;
+      mRunningDocTableEvents.BeforeSave += mClangFormatCmd.OnBeforeSave;
+    }
+
 
     public string GetPackageVersion()
     {
