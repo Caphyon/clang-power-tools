@@ -3,7 +3,7 @@
 ### Clang Power Tools 3.9.1
 *August 16, 2018*
 
-* Bugs:
+Bugs:
 
 * Crash when showing output window notifications
 
