@@ -81,7 +81,7 @@
     <Compile Include="Convertors\ClangFormatFallbackStyleConverter.cs" />
     <Compile Include="Convertors\ClangFormatStyleConverter.cs" />
     <Compile Include="Error\ErrorFormatter.cs" />
-    <Compile Include="Error\IBuilder.cs" />
+    <Compile Include="Builder\IBuilder.cs" />
     <Compile Include="Error\TaskErrorModelBuilder.cs" />
     <Compile Include="Helpers\UIUpdater.cs" />
     <Compile Include="Options\ClangFormatPathValue.cs" />
@@ -161,6 +161,7 @@
     <Compile Include="Options\View\WpfPropertyGrid\PropertyTemplateSelector.cs" />
     <Compile Include="Options\View\WpfPropertyGrid\ProvideToolboxControlAttribute.cs" />
     <Compile Include="Options\View\WpfPropertyGrid\VisualTreeHelperExtension.cs" />
+    <Compile Include="Builder\IAsyncBuilder.cs" />
     <Compile Include="Output\OutputContentModel.cs" />
     <Compile Include="Output\OutputProcessor.cs" />
     <Compile Include="Output\OutputWindowBuilder.cs" />

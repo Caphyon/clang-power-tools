@@ -1,4 +1,4 @@
-﻿using ClangPowerTools.Error;
+﻿using ClangPowerTools.Builder;
 using ClangPowerTools.Handlers;
 using EnvDTE80;
 using Microsoft.VisualStudio;
@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace ClangPowerTools.Output
 {
@@ -17,7 +18,7 @@ namespace ClangPowerTools.Output
 
     private OutputProcessor mOutputProcessor = new OutputProcessor();
 
-    private IBuilder<OutputWindowModel> mOutputWindowBuilder;
+    private IAsyncBuilder<OutputWindowModel> mOutputWindowBuilder;
 
     private OutputContentModel mOutputContent = new OutputContentModel();
 
@@ -44,31 +45,26 @@ namespace ClangPowerTools.Output
     #endregion
 
 
-    #region Constuctor
-
-
-    public OutputWindowController(AsyncPackage aPackage, DTE2 aDte)
-    {
-      mDte = aDte;
-      if (null == mOutputWindowBuilder)
-        mOutputWindowBuilder = new OutputWindowBuilder(aPackage);
-
-      mOutputWindowBuilder.Build();
-    }
-
-    #endregion
-
-
     #region Methods
 
 
     #region Output window operations
 
 
+    public async Task<object> Initialize(AsyncPackage aPackage, DTE2 aDte)
+    {
+      mDte = aDte;
+      if (null == mOutputWindowBuilder)
+        mOutputWindowBuilder = new OutputWindowBuilder(aPackage);
+
+      return await mOutputWindowBuilder.AsyncBuild();
+    }
+
+
     public void Clear()
     {
       mOutputContent = new OutputContentModel();
-      var outputWindow = mOutputWindowBuilder.GetResult();
+      var outputWindow = mOutputWindowBuilder.GetAsyncResult();
       UIUpdater.Invoke(() =>
       {
         outputWindow.Pane.Clear();
@@ -77,7 +73,7 @@ namespace ClangPowerTools.Output
 
     public void Show()
     {
-      var outputWindow = mOutputWindowBuilder.GetResult();
+      var outputWindow = mOutputWindowBuilder.GetAsyncResult();
       UIUpdater.Invoke(() =>
       {
         outputWindow.Pane.Activate();
@@ -90,7 +86,7 @@ namespace ClangPowerTools.Output
       if (String.IsNullOrWhiteSpace(aMessage))
         return;
 
-      var outputWindow = mOutputWindowBuilder.GetResult();
+      var outputWindow = mOutputWindowBuilder.GetAsyncResult();
       UIUpdater.Invoke(() =>
       {
         outputWindow.Pane.OutputStringThreadSafe(aMessage + "\n");
