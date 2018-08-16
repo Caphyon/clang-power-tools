@@ -1,12 +1,13 @@
 ﻿using System;
-using ClangPowerTools.Error;
+using System.Threading.Tasks;
+using ClangPowerTools.Builder;
 using ClangPowerTools.Services;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools.Output
 {
-  public class OutputWindowBuilder : IBuilder<OutputWindowModel>
+  public class OutputWindowBuilder : IAsyncBuilder<OutputWindowModel>
   {
     #region Private Members
 
@@ -38,21 +39,20 @@ namespace ClangPowerTools.Output
     #endregion
 
 
-    #region IBuilder Implementation
+    #region IAsyncBuilder Implementation
 
-    /// <summary>
-    /// Build the output window model;
-    /// </summary>
-    public async void Build()
+
+    public async Task<object> AsyncBuild()
     {
+      var outputWindowService = await mPackage.GetServiceAsync(typeof(SVsOutputWindowService)) as IVsOutputWindowService;
+
       // Get the VS Output Window 
-      if( null == mOutputWindow.VsOutputWindow )
+      if (null == mOutputWindow.VsOutputWindow)
       {
-        var outputWindowService = await mPackage.GetServiceAsync(typeof(SVsOutputWindowService)) as IVsOutputWindowService;
         mOutputWindow.VsOutputWindow = await outputWindowService.GetOutputWindowAsync(mPackage, new System.Threading.CancellationToken());
       }
-      
-      if( null == mOutputWindow.Pane )
+
+      if (null == mOutputWindow.Pane)
       {
         // Get the Pane object
         Guid generalPaneGuid = mOutputWindow.PaneGuid;
@@ -66,13 +66,13 @@ namespace ClangPowerTools.Output
         }
         mOutputWindow.Pane = pane;
       }
+      return outputWindowService;
     }
 
-    /// <summary>
-    /// Get the output window model
-    /// </summary>
-    /// <returns></returns>
-    public OutputWindowModel GetResult() => mOutputWindow;
+    public OutputWindowModel GetAsyncResult() => mOutputWindow;
+
+    //public OutputWindowModel GetAsyncResult => mOutputWindow;
+
 
     #endregion
 
