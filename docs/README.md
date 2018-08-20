@@ -1,12 +1,9 @@
 
 _Clang Power Tools_ is a **free** Visual Studio extension helping Visual Studio C++ developers leverage Clang/LLVM tools (`clang++`, `clang-tidy` and `clang-format`), in order to perform various code transformations and fixes like modernizing code to C++11/14/17 and finding subtle latent bugs with its static analyzer and CppCoreGuidelines checks.
 
-🆕 Built-in support for **[clang-format](https://clang.llvm.org/docs/ClangFormat.html)**  
-Auto-format source file on save, configurable [style options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html), file extension rules, etc.
-
 ### Download 
 
-Install this extension from [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=vs-publisher-690586.ClangPowerTools)
+Install this extension from [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=caphyon.ClangPowerTools)
 
 Works with Visual Studio 2015 / 2017
 
@@ -40,6 +37,9 @@ You can customize the tool behavior as well as the clang++ compilation flags, cl
 
 ![ClangPowerTools](images/VSSettings.png)
 
+🆕 Built-in support for **[clang-format](https://clang.llvm.org/docs/ClangFormat.html)**  
+Auto-format source file on save, configurable [style options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html), file extension rules, etc.
+
 ### PowerShell scripts (for CI / automation):
 
 - [clang-build.ps1](https://github.com/Caphyon/clang-power-tools/blob/master/ClangPowerTools/ClangPowerTools/clang-build.ps1)  
@@ -50,7 +50,7 @@ You can customize the tool behavior as well as the clang++ compilation flags, cl
 Visual Studio 2015 / 2017
 
 Download and install **Clang for Windows** (LLVM pre-built binary)  
-[LLVM-6.0.0-win64](http://releases.llvm.org/6.0.0/LLVM-6.0.0-win64.exe)  
+[LLVM-6.0.1-win64](http://releases.llvm.org/6.0.1/LLVM-6.0.1-win64.exe)  
 [releases.llvm.org/download.html](http://releases.llvm.org/download.html)
 
 We will automatically load clang from the default installation path *C:\Program Files\LLVM*. If you prefer to use a different location you must manually add the **bin** folder to **PATH**.  
