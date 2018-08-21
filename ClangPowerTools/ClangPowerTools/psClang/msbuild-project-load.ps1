@@ -31,15 +31,32 @@ Set-Variable -name "kRedundantSeparatorsReplaceRules" -option Constant `
                       , ("^;" , "")                                    `
                       )
 
-Function Set-Var([parameter(Mandatory = $false)][string] $name,
-    [parameter(Mandatory = $false)][string] $value)
+Set-Variable -name "ScriptParameterBackupValues" -value @()
+
+Function Set-Var([parameter(Mandatory = $false)][string] $name
+                ,[parameter(Mandatory = $false)][string] $value
+                ,[parameter(Mandatory = $false)][switch] $isScriptParameter
+                )
 {
     Write-Verbose "SET_VAR $($name): $value"
     Set-Variable -name $name -Value $value -Scope Global
 
-    if (!$global:ProjectSpecificVariables.Contains($name))
+    if (!$isScriptParameter -and !$global:ProjectSpecificVariables.Contains($name))
     {
         $global:ProjectSpecificVariables.Add($name) | Out-Null
+    }
+
+    if ($isScriptParameter )
+    {
+        $oldVar = Get-Variable $name
+        if ($null -ne $oldVar)
+        {
+          $global:ScriptParameterBackupValues[$name] = (Get-Variable $name).Value
+        }
+        else
+        {
+          $global:ScriptParameterBackupValues[$name] = $null
+        }
     }
 }
 
@@ -52,6 +69,14 @@ Function Clear-Vars()
     {
         Remove-Variable -name $var -scope Global -ErrorAction SilentlyContinue
     }
+
+    foreach ($varName in $global:ScriptParameterBackupValues.Keys)
+    {
+        Write-Verbose "Restoring $varName to old value $($ScriptParameterBackupValues[$varName])"
+        Set-Variable -name $varName -value $ScriptParameterBackupValues[$varName] -Scope Global
+    }
+
+    $global:ScriptParameterBackupValues.Clear()
 
     $global:ProjectSpecificVariables.Clear()
 }
