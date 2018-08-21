@@ -35,18 +35,18 @@ Set-Variable -name "ScriptParameterBackupValues" -value @()
 
 Function Set-Var([parameter(Mandatory = $false)][string] $name
                 ,[parameter(Mandatory = $false)][string] $value
-                ,[parameter(Mandatory = $false)][switch] $isScriptParameter
+                ,[parameter(Mandatory = $false)][switch] $asScriptParameter
                 )
 {
     Write-Verbose "SET_VAR $($name): $value"
     Set-Variable -name $name -Value $value -Scope Global
 
-    if (!$isScriptParameter -and !$global:ProjectSpecificVariables.Contains($name))
+    if (!$asScriptParameter -and !$global:ProjectSpecificVariables.Contains($name))
     {
         $global:ProjectSpecificVariables.Add($name) | Out-Null
     }
 
-    if ($isScriptParameter )
+    if ($asScriptParameter )
     {
         $oldVar = Get-Variable $name
         if ($null -ne $oldVar)
@@ -79,6 +79,26 @@ Function Clear-Vars()
     $global:ScriptParameterBackupValues.Clear()
 
     $global:ProjectSpecificVariables.Clear()
+}
+
+Function UpdateScriptParameter([Parameter(Mandatory = $true)][string] $paramRawLine)
+{
+   if ($paramRawLine.StartsWith('-'))
+   {
+    $paramRawLine.Remove(0, 1)
+   }
+
+  [int] $spaceSep = $paramRawLine.IndexOf(' ')
+  if ($spaceSep -gt 0) # a parameter
+  {
+    [string] $paramName = $paramRawLine.Substring(0, $spaceSep)
+    $paramValue = Invoke-Expression $paramRawLine.Substring($spaceSep)
+    Set-Var -name $paramName -value $paramValue -asScriptParameter
+  }
+  else # a switch
+  {
+    Set-Var -name $paramName -value $true -asScriptParameter
+  }
 }
 
 Function InitializeMsBuildProjectProperties()
