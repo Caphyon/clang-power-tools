@@ -53,6 +53,21 @@ Function Print-InvocationArguments()
     }
 }
 
+# Function that gets the name of a command argument when it is only known by its alias
+# For streamlining purposes, it also accepts the name itself.
+Function Get-CommandParameterName([Parameter(Mandatory = $true)][string] $command
+                                 ,[Parameter(Mandatory = $true)][string] $nameOrAlias)
+{
+  foreach ($param in ((Get-Command $command).ParameterSets[0].Parameters))
+  {
+    if ($param.Name    -eq       $nameOrAlias -or
+        $param.Aliases -contains $nameOrAlias)
+    {
+      return $param.Name
+    }
+  }
+}
+
 # File IO
 # ------------------------------------------------------------------------------------------------
 Function Remove-PathTrailingSlash([Parameter(Mandatory = $true)][string] $path)
