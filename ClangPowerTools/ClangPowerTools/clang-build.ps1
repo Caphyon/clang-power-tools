@@ -116,7 +116,7 @@
 .NOTES
     Author: Gabriel Diaconita
 #>
-param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aSolutionsPath
+param( [alias("dir")]          [Parameter(Mandatory=$false)] [string]  $aSolutionsPath
      , [alias("proj")]         [Parameter(Mandatory=$false)][string[]] $aVcxprojToCompile
      , [alias("proj-ignore")]  [Parameter(Mandatory=$false)][string[]] $aVcxprojToIgnore
      , [alias("active-config")][Parameter(Mandatory=$false)][string]   $aVcxprojConfigPlatform
@@ -125,7 +125,7 @@ param( [alias("dir")]          [Parameter(Mandatory=$true)] [string]   $aSolutio
      , [alias("parallel")]     [Parameter(Mandatory=$false)][switch]   $aUseParallelCompile
      , [alias("continue")]     [Parameter(Mandatory=$false)][switch]   $aContinueOnError
      , [alias("treat-sai")]    [Parameter(Mandatory=$false)][switch]   $aTreatAdditionalIncludesAsSystemIncludes
-     , [alias("clang-flags")]  [Parameter(Mandatory=$true)] [string[]] $aClangCompileFlags
+     , [alias("clang-flags")]  [Parameter(Mandatory=$false)] [string[]] $aClangCompileFlags
      , [alias("literal")]      [Parameter(Mandatory=$false)][switch]   $aDisableNameRegexMatching
      , [alias("tidy")]         [Parameter(Mandatory=$false)][string]   $aTidyFlags
      , [alias("tidy-fix")]     [Parameter(Mandatory=$false)][string]   $aTidyFixFlags
@@ -933,6 +933,11 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
 Clear-Host # clears console
 
+# ------------------------------------------------------------------------------------------------
+# Load param values from configuration file (if exists)
+
+Update-ParametersFromConfigFile
+
 #-------------------------------------------------------------------------------------------------
 # Print script parameters
 
@@ -988,6 +993,7 @@ if ($aCppToCompile.Count -gt 0)
     $aCppToCompile += $headerRefs
   }
 }
+
 # ------------------------------------------------------------------------------------------------
 
 [System.IO.FileInfo[]] $projectsToProcess = @()

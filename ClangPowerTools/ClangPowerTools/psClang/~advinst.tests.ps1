@@ -8,8 +8,8 @@ Describe "ai" {
    {
     Push-Location $advinstRepo
 
-    [string] $scriptLocation = Canonize-Path -base "$PSScriptRoot" -child "..\sample-clang-build.ps1"
-    &"$scriptLocation" -parallel -proj-ignore coder,lexer,msix-psf -treat-sai -file-ignore '.\.c$' 2>&1 | Out-Default
+    [string] $scriptLocation = Canonize-Path -base "$PSScriptRoot" -child "..\clang-build.ps1"
+    &"$scriptLocation" 2>&1 | Out-Default
     [int] $exitCode = $LASTEXITCODE
     Pop-Location
 

@@ -9,7 +9,12 @@
 # this list, so that each project can know to clean previous vars before loading begins.
 if (! (Test-Path variable:global:ProjectSpecificVariables))
 {
-  [System.Collections.ArrayList] $global:ProjectSpecificVariables     = @()
+  [System.Collections.ArrayList] $global:ProjectSpecificVariables    = @()
+}
+
+if (! (Test-Path variable:global:ScriptParameterBackupValues))
+{
+  [System.Collections.Hashtable] $global:ScriptParameterBackupValues = @{}
 }
 
 # current vcxproj and property sheets
@@ -31,13 +36,46 @@ Set-Variable -name "kRedundantSeparatorsReplaceRules" -option Constant `
                       , ("^;" , "")                                    `
                       )
 
-Function Set-Var([parameter(Mandatory = $false)][string] $name,
-    [parameter(Mandatory = $false)][string] $value)
-{
-    Write-Verbose "SET_VAR $($name): $value"
-    Set-Variable -name $name -Value $value -Scope Global
+Set-Variable -name "ScriptParameterBackupValues" -value @()
 
-    if (!$global:ProjectSpecificVariables.Contains($name))
+Function Set-Var([parameter(Mandatory = $false)][string] $name
+                ,[parameter(Mandatory = $false)]         $value
+                ,[parameter(Mandatory = $false)][switch] $asScriptParameter
+                )
+{
+    if ($asScriptParameter)
+    {
+        if (Test-Path "variable:$name")
+        {
+          $oldVar = Get-Variable $name
+          $oldValue = $oldVar.Value
+
+          if ($oldValue           -and
+              $oldValue.GetType() -and
+              $oldValue.GetType().ToString() -eq "System.Management.Automation.SwitchParameter")
+          {
+            $oldValue = $oldValue.ToBool()
+          }
+
+          $global:ScriptParameterBackupValues[$name] = $oldValue
+        }
+        else
+        {
+          $global:ScriptParameterBackupValues[$name] = $null
+        }
+    }
+
+    Write-Verbose "SET_VAR $($name): $value"
+    if ($asScriptParameter)
+    {
+      Set-Variable -name $name -Value $value -Scope Script
+    }
+    else
+    {
+      Set-Variable -name $name -Value $value -Scope Global
+    }
+
+    if (!$asScriptParameter -and !$global:ProjectSpecificVariables.Contains($name))
     {
         $global:ProjectSpecificVariables.Add($name) | Out-Null
     }
@@ -53,7 +91,98 @@ Function Clear-Vars()
         Remove-Variable -name $var -scope Global -ErrorAction SilentlyContinue
     }
 
+    foreach ($varName in $global:ScriptParameterBackupValues.Keys)
+    {
+        Write-Verbose "Restoring $varName to old value $($ScriptParameterBackupValues[$varName])"
+        Set-Variable -name $varName -value $ScriptParameterBackupValues[$varName]
+    }
+
+    $global:ScriptParameterBackupValues.Clear()
+
     $global:ProjectSpecificVariables.Clear()
+}
+
+Function UpdateScriptParameter([Parameter(Mandatory = $true)][string] $paramRawLine)
+{
+  if ($paramRawLine.StartsWith('-'))
+  {
+    $paramRawLine = $paramRawLine.Remove(0, 1)
+  }
+
+  [string] $paramName = $paramRawLine
+  [bool]   $isSwitch  = $false
+  $paramValue         = "" # no type specified because we don't know it yet
+
+  [int] $spaceSep = $paramRawLine.IndexOf(' ')
+  if ($spaceSep -gt 0) # a parameter
+  {
+    $paramName = $paramRawLine.Substring(0, $spaceSep)
+    $paramValue = Invoke-Expression $paramRawLine.Substring($spaceSep)
+  }
+  else # a switch
+  {
+    $isSwitch = $true
+  }
+
+  # the parameter name we detected may be an alias => translate it into the real name
+  $paramName = Get-CommandParameterName -command "$PSScriptRoot\..\clang-build.ps1" -nameOrAlias $paramName
+
+
+  if ($isSwitch)
+  {
+    Set-Var -name $paramName -value $true -asScriptParameter
+  }
+  else
+  {
+    Set-Var -name $paramName -value $paramValue -asScriptParameter
+  }
+}
+
+Function Get-ConfigFileParameters()
+{
+  [string[]] $retArgs = @()
+
+  [string] $startDir = If ([string]::IsNullOrWhiteSpace($ProjectDir)) { Get-Location } else { $ProjectDir }
+  [string] $configFile = (GetDirNameOfFileAbove -startDir $startDir -targetFile "cpt.config") + "\cpt.config"
+  if (!(Test-Path $configFile))
+  {
+      return $retArgs
+  }
+
+  [xml] $configXml = Get-Content $configFile
+  $configXpathNS= New-Object System.Xml.XmlNamespaceManager($configXml.NameTable)
+  $configXpathNS.AddNamespace("ns", $configXml.DocumentElement.NamespaceURI)
+
+  [System.Xml.XmlElement[]] $argElems = $configXml.SelectNodes("//ns:arg", $configXpathNS)
+
+  foreach ($argEl in $argElems)
+  {
+    if ($argEl.HasAttribute("Condition"))
+    {
+      [bool] $isApplicable = Evaluate-MSBuildCondition -condition $argEl.GetAttribute("Condition")
+      if (!$isApplicable)
+      {
+        continue
+      }
+    }
+    $retArgs += $argEl.InnerText
+  }
+
+  return $retArgs
+}
+
+Function Update-ParametersFromConfigFile()
+{
+  [string[]] $configParams = Get-ConfigFileParameters
+  if (!$configParams)
+  {
+      return
+  }
+
+  foreach ($paramRawLine in $configParams)
+  {
+    UpdateScriptParameter -paramRawLine $paramRawLine
+  }
 }
 
 Function InitializeMsBuildProjectProperties()
@@ -100,6 +229,8 @@ Function InitializeMsBuildProjectProperties()
     Set-Var -name "SolutionDir" -value $projectSlnDir
     [string] $projectSlnName = Get-FileName -path $projectSlnPath -noext
     Set-Var -name "SolutionName" -value $projectSlnName
+
+    Update-ParametersFromConfigFile
 }
 
 Function InitializeMsBuildCurrentFileProperties([Parameter(Mandatory = $true)][string] $filePath)
