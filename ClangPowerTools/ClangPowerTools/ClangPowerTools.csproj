@@ -171,11 +171,12 @@
     <Compile Include="Helpers\ProjectConfigurationHandler.cs" />
     <Compile Include="RunningDocTableEvents.cs" />
     <Compile Include="Script\ClangCompileTidyScript.cs" />
+    <Compile Include="Script\ClangTidyModeParametersFactory.cs" />
+    <Compile Include="Script\GenericScriptBuilder.cs" />
     <Compile Include="Script\RunningProcesses.cs" />
     <Compile Include="Options\ViewModel\ConfigurationPage.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Script\ScriptBuilderImpl.cs" />
     <Compile Include="Services\DTEService\EnvDTEService.cs" />
     <Compile Include="Services\DTEService\IEnvDTEService.cs" />
     <Compile Include="Services\DTEService\SEnvDTEService.cs" />
