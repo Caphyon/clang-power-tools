@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.Error;
+﻿using ClangPowerTools.Builder;
+using ClangPowerTools.Error;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
