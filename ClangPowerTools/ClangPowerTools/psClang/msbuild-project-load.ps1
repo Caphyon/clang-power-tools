@@ -126,6 +126,10 @@ Function UpdateScriptParameter([Parameter(Mandatory = $true)][string] $paramRawL
 
   # the parameter name we detected may be an alias => translate it into the real name
   $paramName = Get-CommandParameterName -command "$PSScriptRoot\..\clang-build.ps1" -nameOrAlias $paramName
+  if (!$paramName)
+  {
+    Fail-Script "Invalid parameter name '$paramRawLine'. Check cpt.config."
+  }
 
 
   if ($isSwitch)
