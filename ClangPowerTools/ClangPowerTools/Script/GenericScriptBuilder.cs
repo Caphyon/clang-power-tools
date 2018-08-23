@@ -172,9 +172,9 @@ namespace ClangPowerTools.Script
       var parameters = clangTidyParametersFactory.Create(
         ClangTidyUseChecksFromConvertor.ToString(mTidyOptions.UseChecksFrom), ref mUseClangTidyConfigFile);
 
-      // Get the clang tidy type(tidy / tidy-fix) with / without clang tidy config file option attached  
-      if (string.IsNullOrWhiteSpace(parameters))
-        parameters = GetClangTidyType(parameters);
+      // Append the clang tidy type(tidy / tidy-fix) with / without clang tidy config file option attached  
+      if (!string.IsNullOrWhiteSpace(parameters))
+        parameters = AppendClangTidyType(parameters);
 
       // Get the header filter option 
       if (null != mTidyOptions.HeaderFilter && !string.IsNullOrWhiteSpace(mTidyOptions.HeaderFilter.HeaderFilters))
@@ -185,11 +185,11 @@ namespace ClangPowerTools.Script
 
 
     /// <summary>
-    /// Get the clang tidy type(tidy / tidy-fix) with/ without tidy config file option attached
+    /// Append the clang tidy type(tidy / tidy-fix) with/ without tidy config file option attached
     /// </summary>
     /// <param name="aParameters"></param>
-    /// <returns>The clang tidy type with / without the clang tidy config file option attached</returns>
-    private string GetClangTidyType(string aParameters)
+    /// <returns>The <"aParameters"> value with the clang tidy type with / without the clang tidy config file option attached</returns>
+    private string AppendClangTidyType(string aParameters)
     {
       return string.Format("{0} ''{1}{2}''",
         (mTidyFixFlag ? ScriptConstants.kTidyFix : ScriptConstants.kTidy),
