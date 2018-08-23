@@ -80,6 +80,9 @@ namespace ClangPowerTools.Script
 
       // Append the Visual Studio Version and Edition
       mScript += $" {ScriptConstants.kVsVersion} {mVsVersion} {ScriptConstants.kVsEdition} {mVsEdition}";
+
+      // Append the solution path
+      mScript += $" {ScriptConstants.kDirectory} ''{mDTEObj.Solution.FullName}''";
     }
 
 
@@ -91,6 +94,7 @@ namespace ClangPowerTools.Script
 
 
     #endregion
+
 
     #endregion
 
