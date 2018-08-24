@@ -128,9 +128,15 @@ Function UpdateScriptParameter([Parameter(Mandatory = $true)][string] $paramRawL
   $paramName = Get-CommandParameterName -command "$PSScriptRoot\..\clang-build.ps1" -nameOrAlias $paramName
   if (!$paramName)
   {
-    Fail-Script "Invalid parameter name '$paramRawLine'. Check cpt.config."
-  }
+    Write-Output "OVERVIEW: Clang Power Tools: compiles or tidies up code from Visual Studio .vcxproj project files`n"
 
+    Write-Output "USAGE: clang-build.ps1 [options]`n"
+
+    Write-Output "OPTIONS: "
+    Print-CommandParameters "$PSScriptRoot\..\clang-build.ps1"
+
+    Fail-Script "Unsupported option '$paramRawLine'. Check cpt.config."
+  }
 
   if ($isSwitch)
   {
