@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Windows;
 
 namespace ClangPowerTools
 {
@@ -9,6 +10,7 @@ namespace ClangPowerTools
 
     public DataReceivedEventHandler DataErrorHandler { get; set; }
     public DataReceivedEventHandler DataHandler { get; set; }
+    public EventHandler ExitedHandler { get; set; }
 
     #endregion
 
@@ -29,8 +31,11 @@ namespace ClangPowerTools
           Arguments = aScript
         };
 
+        process.EnableRaisingEvents = true;
         process.ErrorDataReceived += DataErrorHandler;
         process.OutputDataReceived += DataHandler;
+        process.Exited += ExitedHandler;
+        process.Disposed += ExitedHandler;
 
         aRunningProcesses.Add(process);
 
@@ -45,7 +50,10 @@ namespace ClangPowerTools
       finally
       {
         process.ErrorDataReceived -= DataErrorHandler;
-        process.ErrorDataReceived -= DataHandler;
+        process.OutputDataReceived -= DataHandler;
+        process.Exited -= ExitedHandler;
+        process.EnableRaisingEvents = false;
+
       }
       return process;
     }
