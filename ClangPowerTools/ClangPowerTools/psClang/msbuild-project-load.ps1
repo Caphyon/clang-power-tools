@@ -163,7 +163,7 @@ Function Get-ConfigFileParameters()
   $configXpathNS= New-Object System.Xml.XmlNamespaceManager($configXml.NameTable)
   $configXpathNS.AddNamespace("ns", $configXml.DocumentElement.NamespaceURI)
 
-  [System.Xml.XmlElement[]] $argElems = $configXml.SelectNodes("//ns:arg", $configXpathNS)
+  [System.Xml.XmlElement[]] $argElems = $configXml.SelectNodes("//ns:option", $configXpathNS)
 
   foreach ($argEl in $argElems)
   {
