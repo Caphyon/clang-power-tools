@@ -33,10 +33,12 @@ namespace ClangPowerTools.Output
 
     public bool MissingLlvm => mOutputContent.MissingLLVM;
 
-    public bool IsBufferEmpty => 0 == mOutputContent.Buffer.Count;
     public List<string> Buffer => mOutputContent.Buffer;
 
+    public bool IsBufferEmpty => 0 == mOutputContent.Buffer.Count;
+
     public HashSet<TaskErrorModel> Errors => mOutputContent.Errors;
+
     public bool HasErrors => 0 != mOutputContent.Errors.Count;
 
     public IVsHierarchy Hierarchy { get; set; }
@@ -127,6 +129,15 @@ namespace ClangPowerTools.Output
         return;
 
       Write(mOutputContent.Text);
+    }
+
+
+    public void ClosedDataConnection(object sender, EventArgs e)
+    {
+      if (0 == Buffer.Count)
+        return;
+
+      Write(String.Join("\n", Buffer));
     }
 
 
