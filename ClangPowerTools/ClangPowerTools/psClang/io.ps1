@@ -53,6 +53,26 @@ Function Print-InvocationArguments()
     }
 }
 
+Function Print-CommandParameters([Parameter(Mandatory = $true)][string] $command)
+{
+    $params = @()
+    foreach ($param in ((Get-Command $command).ParameterSets[0].Parameters))
+    {
+        if (!$param.HelpMessage)
+        {
+            continue
+        }
+
+        $params += New-Object PsObject -Prop @{ "Option" = "-$($param.Aliases[0])"
+                                              ; "Description" = $param.HelpMessage
+                                              }
+    }
+
+   $params | Sort-Object -Property "Option" | Out-Default
+}
+
+
+
 # Function that gets the name of a command argument when it is only known by its alias
 # For streamlining purposes, it also accepts the name itself.
 Function Get-CommandParameterName([Parameter(Mandatory = $true)][string] $command
@@ -66,6 +86,7 @@ Function Get-CommandParameterName([Parameter(Mandatory = $true)][string] $comman
       return $param.Name
     }
   }
+  return ""
 }
 
 # File IO

@@ -1,5 +1,4 @@
-﻿#Requires -Version 3
-<#
+﻿<#
 .SYNOPSIS
     Compiles or tidies up code from Visual Studio .vcxproj project files.
 
@@ -116,23 +115,74 @@
 .NOTES
     Author: Gabriel Diaconita
 #>
-param( [alias("dir")]          [Parameter(Mandatory=$false)] [string]  $aSolutionsPath
-     , [alias("proj")]         [Parameter(Mandatory=$false)][string[]] $aVcxprojToCompile
-     , [alias("proj-ignore")]  [Parameter(Mandatory=$false)][string[]] $aVcxprojToIgnore
-     , [alias("active-config")][Parameter(Mandatory=$false)][string]   $aVcxprojConfigPlatform
-     , [alias("file")]         [Parameter(Mandatory=$false)][string[]] $aCppToCompile
-     , [alias("file-ignore")]  [Parameter(Mandatory=$false)][string[]] $aCppToIgnore
-     , [alias("parallel")]     [Parameter(Mandatory=$false)][switch]   $aUseParallelCompile
-     , [alias("continue")]     [Parameter(Mandatory=$false)][switch]   $aContinueOnError
-     , [alias("treat-sai")]    [Parameter(Mandatory=$false)][switch]   $aTreatAdditionalIncludesAsSystemIncludes
-     , [alias("clang-flags")]  [Parameter(Mandatory=$false)] [string[]] $aClangCompileFlags
-     , [alias("literal")]      [Parameter(Mandatory=$false)][switch]   $aDisableNameRegexMatching
-     , [alias("tidy")]         [Parameter(Mandatory=$false)][string]   $aTidyFlags
-     , [alias("tidy-fix")]     [Parameter(Mandatory=$false)][string]   $aTidyFixFlags
-     , [alias("header-filter")][Parameter(Mandatory=$false)][string]   $aTidyHeaderFilter
-     , [alias("format-style")] [Parameter(Mandatory=$false)][string]   $aAfterTidyFixFormatStyle
-     , [alias("vs-ver")]       [Parameter(Mandatory=$false)][string]   $aVisualStudioVersion = "2017"
-     , [alias("vs-sku")]       [Parameter(Mandatory=$false)][string]   $aVisualStudioSku
+#Requires -Version 3
+param( [alias("dir")]
+       [Parameter(Mandatory=$false, HelpMessage="Source directory for finding solutions; projects will be found from each sln")]
+       [string] $aSolutionsPath
+
+     , [alias("proj")]
+       [Parameter(Mandatory=$false, HelpMessage="Filter project(s) to compile/tidy")]
+       [string[]] $aVcxprojToCompile
+
+     , [alias("proj-ignore")]
+       [Parameter(Mandatory=$false, HelpMessage="Specify projects to ignore")]
+       [string[]] $aVcxprojToIgnore
+
+     , [alias("active-config")]
+       [Parameter(Mandatory=$false, HelpMessage="Config/platform to be used, e.g. Debug|Win32")]
+       [string] $aVcxprojConfigPlatform
+
+     , [alias("file")]
+       [Parameter(Mandatory=$false, HelpMessage="Filter file(s) to compile/tidy")]
+       [string[]] $aCppToCompile
+
+     , [alias("file-ignore")]
+       [Parameter(Mandatory=$false, HelpMessage="Specify file(s) to ignore")]
+       [string[]] $aCppToIgnore
+
+     , [alias("parallel")]
+       [Parameter(Mandatory=$false, HelpMessage="Compile/tidy projects in parallel")]
+       [switch]   $aUseParallelCompile
+
+     , [alias("continue")]
+       [Parameter(Mandatory=$false, HelpMessage="Allow CPT to continue after encounteringan error")]
+       [switch]   $aContinueOnError
+
+     , [alias("treat-sai")]
+       [Parameter(Mandatory=$false, HelpMessage="Treat project additional include directories as system includes")]
+       [switch]   $aTreatAdditionalIncludesAsSystemIncludes
+
+     , [alias("clang-flags")]
+       [Parameter(Mandatory=$false, HelpMessage="Specify compilation flags to CLANG")]
+       [string[]] $aClangCompileFlags
+
+     , [alias("literal")]
+       [Parameter(Mandatory=$false, HelpMessage="Disable regex matching for all paths received as script parameters")]
+       [switch]   $aDisableNameRegexMatching
+
+     , [alias("tidy")]
+       [Parameter(Mandatory=$false, HelpMessage="Specify flags to CLANG TIDY")]
+       [string]   $aTidyFlags
+
+     , [alias("tidy-fix")]
+       [Parameter(Mandatory=$false, HelpMessage="Specify flags to CLANG TIDY & FIX")]
+       [string]   $aTidyFixFlags
+
+     , [alias("header-filter")]
+       [Parameter(Mandatory=$false, HelpMessage="Enable Clang-Tidy to run on header files")]
+       [string]   $aTidyHeaderFilter
+
+     , [alias("format-style")]
+       [Parameter(Mandatory=$false, HelpMessage="Used with 'tidy-fix'; tells CLANG TIDY-FIX to also format the fixed file(s)")]
+       [string]   $aAfterTidyFixFormatStyle
+
+     , [alias("vs-ver")]
+       [Parameter(Mandatory=$false, HelpMessage="Version of Visual Studio toolset to use for loading project")]
+       [string]   $aVisualStudioVersion = "2017"
+
+     , [alias("vs-sku")]
+       [Parameter(Mandatory=$false, HelpMessage="Edition of Visual Studio toolset to use for loading project")]
+       [string]   $aVisualStudioSku
      )
 
 # System Architecture Constants
