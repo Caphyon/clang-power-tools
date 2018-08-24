@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ClangPowerTools.Builder;
 using ClangPowerTools.DialogPages;
 using ClangPowerTools.Output;
 using ClangPowerTools.Script;
@@ -7,12 +6,15 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using System;
+using System.Collections.Generic;
 
 namespace ClangPowerTools
 {
   public abstract class ClangCommand : BasicCommand
   {
     #region Members
+
 
     protected static CommandsController mCommandsController = null;
     protected ItemsCollector mItemsCollector;
@@ -28,7 +30,6 @@ namespace ClangPowerTools
     private OutputWindowController mOutputWindow;
 
     private PowerShellWrapper mPowerShell = new PowerShellWrapper();
-    private ClangCompileTidyScript mCompileTidyScriptBuilder;
     private const string kVs15Version = "2017";
     private Dictionary<string, string> mVsVersions = new Dictionary<string, string>
     {
@@ -39,18 +40,23 @@ namespace ClangPowerTools
       {"15.0", "2017"}
     };
 
+
     #endregion
 
+
     #region Properties
+
 
     protected string VsEdition { get; set; }
     protected string VsVersion { get; set; }
     protected string WorkingDirectoryPath { get; set; }
 
+
     #endregion
 
 
     #region Constructor
+
 
     public ClangCommand(CommandsController aCommandsController, ErrorWindowController aErrorWindow, OutputWindowController aOutputWindow,
       IVsSolution aSolution, DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
@@ -72,7 +78,12 @@ namespace ClangPowerTools
 
     #endregion
 
+
+    #region Methods
+
+
     #region Public Methods
+
 
     public virtual void OnBeforeSave(object sender, Document aDocument) { }
 
@@ -80,22 +91,30 @@ namespace ClangPowerTools
 
     public virtual void OnBuildDone(vsBuildScope Scope, vsBuildAction Action) { }
 
+
     #endregion
+
 
     #region Protected methods
 
-    protected void RunScript(string aCommandName, ClangTidyOptionsView mTidyOptions = null, ClangTidyPredefinedChecksOptionsView mTidyChecks = null, 
+    protected void RunScript(string aCommandName, ClangTidyOptionsView mTidyOptions = null, ClangTidyPredefinedChecksOptionsView mTidyChecks = null,
       ClangTidyCustomChecksOptionsView mTidyCustomChecks = null, ClangFormatOptionsView aClangFormatView = null, bool aTidyFixFlag = false)
     {
       try
       {
         DTEObj.Solution.SaveAs(DTEObj.Solution.FullName);
 
-        mCompileTidyScriptBuilder = new ClangCompileTidyScript();
-        mCompileTidyScriptBuilder.ConstructParameters(mGeneralOptions, mTidyOptions, mTidyChecks,
+        IBuilder<string> runModeScriptBuilder = new RunModeScriptBuilder();
+        runModeScriptBuilder.Build();
+        var runModeParameters = runModeScriptBuilder.GetResult();
+
+        IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(mGeneralOptions, mTidyOptions, mTidyChecks,
           mTidyCustomChecks, aClangFormatView, DTEObj, VsEdition, VsVersion, aTidyFixFlag);
+        genericScriptBuilder.Build();
+        var genericParameters = genericScriptBuilder.GetResult();
 
         string solutionPath = DTEObj.Solution.FullName;
+
         InitPowerShell();
         ClearWindows();
         mOutputWindow.Write($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
@@ -104,11 +123,18 @@ namespace ClangPowerTools
 
         foreach (var item in mItemsCollector.GetItems)
         {
-          var script = mCompileTidyScriptBuilder.GetScript(item, solutionPath);
           if (!mCommandsController.Running)
             break;
 
-          mOutputWindow.Hierarchy = AutomationUtil.GetItemHierarchy( mSolution, item);
+          IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item);
+          itemRelatedScriptBuilder.Build();
+          var itemRelatedParameters = itemRelatedScriptBuilder.GetResult();
+
+          // From the first parameter is removed the last character which is mandatory "'"
+          // and added to the end of the string to close the script
+          var script = $"{runModeParameters.Remove(runModeParameters.Length - 1)} {itemRelatedParameters} {genericParameters}'";
+
+          mOutputWindow.Hierarchy = AutomationUtil.GetItemHierarchy(mSolution, item);
           var process = mPowerShell.Invoke(script, mRunningProcesses);
 
           if (mOutputWindow.MissingLlvm)
@@ -118,8 +144,6 @@ namespace ClangPowerTools
           }
         }
 
-        if (!mOutputWindow.IsBufferEmpty)
-          mOutputWindow.Write(String.Join("\n", mOutputWindow.Buffer));
         if (!mOutputWindow.MissingLlvm)
         {
           mOutputWindow.Show();
@@ -128,7 +152,6 @@ namespace ClangPowerTools
 
         if (mOutputWindow.HasErrors)
           mErrorWindow.AddErrors(mOutputWindow.Errors);
-
       }
       catch (Exception)
       {
@@ -171,6 +194,7 @@ namespace ClangPowerTools
 
     #endregion
 
+
     #region Private Methods
 
     private void InitPowerShell()
@@ -178,6 +202,7 @@ namespace ClangPowerTools
       mPowerShell = new PowerShellWrapper();
       mPowerShell.DataHandler += mOutputWindow.OutputDataReceived;
       mPowerShell.DataErrorHandler += mOutputWindow.OutputDataErrorReceived;
+      mPowerShell.ExitedHandler += mOutputWindow.ClosedDataConnection;
     }
 
     private void ClearWindows()
@@ -188,6 +213,9 @@ namespace ClangPowerTools
     }
 
     #endregion
+
+    #endregion
+
 
   }
 }
