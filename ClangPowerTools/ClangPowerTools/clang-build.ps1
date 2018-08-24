@@ -988,6 +988,12 @@ Clear-Host # clears console
 
 Update-ParametersFromConfigFile
 
+# if we didn't get a location to run CPT at, use the current working directory
+if (!$aSolutionsPath)
+{
+  $aSolutionsPath = Get-Location
+}
+
 #-------------------------------------------------------------------------------------------------
 # Print script parameters
 
