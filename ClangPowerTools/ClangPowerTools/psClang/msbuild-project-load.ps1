@@ -600,14 +600,10 @@ function LoadProject([string] $vcxprojPath)
 
     $global:projectFiles = @()
 
+    SanitizeProjectFile -projectFilePath $global:vcxprojPath
+
     if ($env:CPT_LOAD_ALL -ne "1")
     {
-        [string] $vcpkgIncludePath = "$env:LOCALAPPDATA\vcpkg\vcpkg.user.targets"
-        if (Test-Path $vcpkgIncludePath)
-        {
-            SanitizeProjectFile($vcpkgIncludePath)
-        }
-
         # Tries to find a Directory.Build.props property sheet, starting from the
         # project directory, going up. When one is found, the search stops.
         # Multiple Directory.Build.props sheets are not supported.
@@ -617,7 +613,11 @@ function LoadProject([string] $vcxprojPath)
         {
             SanitizeProjectFile($directoryBuildSheetPath)
         }
-    }
 
-    SanitizeProjectFile -projectFilePath $global:vcxprojPath
+        [string] $vcpkgIncludePath = "$env:LOCALAPPDATA\vcpkg\vcpkg.user.targets"
+        if (Test-Path $vcpkgIncludePath)
+        {
+            SanitizeProjectFile($vcpkgIncludePath)
+        }
+    }
 }
