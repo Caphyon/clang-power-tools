@@ -36,8 +36,6 @@ Set-Variable -name "kRedundantSeparatorsReplaceRules" -option Constant `
                       , ("^;" , "")                                    `
                       )
 
-Set-Variable -name "ScriptParameterBackupValues" -value @()
-
 Function Set-Var([parameter(Mandatory = $false)][string] $name
                 ,[parameter(Mandatory = $false)]         $value
                 ,[parameter(Mandatory = $false)][switch] $asScriptParameter
@@ -588,35 +586,6 @@ function SanitizeProjectFile([string] $projectFilePath)
 
 <#
 .DESCRIPTION
-  Tries to find a Directory.Build.props property sheet, starting from the
-  project directories, going up. When one is found, the search stops.
-
-  Multiple Directory.Build.props sheets are not supported.
-#>
-function Get-AutoPropertySheet()
-{
-    $startPath = $global:vcxprojPath
-    while ($true)
-    {
-        $propSheetPath = Canonize-Path -base $startPath `
-            -child "Directory.Build.props" `
-            -ignoreErrors
-        if (![string]::IsNullOrEmpty($propSheetPath))
-        {
-            return $propSheetPath
-        }
-
-        $newPath = Canonize-Path -base $startPath -child ".."
-        if ($newPath -eq $startPath)
-        {
-            return ""
-        }
-        $startPath = $newPath
-    }
-}
-
-<#
-.DESCRIPTION
 Loads vcxproj and property sheets into memory. This needs to be called only once
 when processing a project. Accessing project nodes can be done using Select-ProjectNodes.
 #>
@@ -637,6 +606,16 @@ function LoadProject([string] $vcxprojPath)
         if (Test-Path $vcpkgIncludePath)
         {
             SanitizeProjectFile($vcpkgIncludePath)
+        }
+
+        # Tries to find a Directory.Build.props property sheet, starting from the
+        # project directory, going up. When one is found, the search stops.
+        # Multiple Directory.Build.props sheets are not supported.
+        [string] $directoryBuildSheetPath = (GetDirNameOfFileAboveGetDirNameOfFileAbove -startDir $ProjectDir `
+                                             -targetFile "Directory.Build.props") + "\Directory.Build.props"
+        if (Test-Path $directoryBuildSheetPath)
+        {
+            SanitizeProjectFile($directoryBuildSheetPath)
         }
     }
 
