@@ -611,7 +611,7 @@ function LoadProject([string] $vcxprojPath)
         # Tries to find a Directory.Build.props property sheet, starting from the
         # project directory, going up. When one is found, the search stops.
         # Multiple Directory.Build.props sheets are not supported.
-        [string] $directoryBuildSheetPath = (GetDirNameOfFileAboveGetDirNameOfFileAbove -startDir $ProjectDir `
+        [string] $directoryBuildSheetPath = (GetDirNameOfFileAbove -startDir $ProjectDir `
                                              -targetFile "Directory.Build.props") + "\Directory.Build.props"
         if (Test-Path $directoryBuildSheetPath)
         {
