@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.Error;
+﻿using ClangPowerTools.Builder;
+using ClangPowerTools.Error;
 using ClangPowerTools.Services;
 using EnvDTE;
 using Microsoft.VisualStudio;

@@ -170,7 +170,10 @@
     <Compile Include="PCHCleaner.cs" />
     <Compile Include="Helpers\ProjectConfigurationHandler.cs" />
     <Compile Include="RunningDocTableEvents.cs" />
-    <Compile Include="Script\ClangCompileTidyScript.cs" />
+    <Compile Include="Script\ClangTidyModeParametersFactory.cs" />
+    <Compile Include="Script\GenericScriptBuilder.cs" />
+    <Compile Include="Script\ItemRelatedScriptBuilder.cs" />
+    <Compile Include="Script\RunModeScriptBuilder.cs" />
     <Compile Include="Script\RunningProcesses.cs" />
     <Compile Include="Options\ViewModel\ConfigurationPage.cs">
       <SubType>Component</SubType>
@@ -212,7 +215,6 @@
     </Compile>
     <Compile Include="Commands\TidyCommand.cs" />
     <Compile Include="ClangPowerToolsPackage.cs" />
-    <Compile Include="Script\ScriptBuiler.cs" />
     <Compile Include="Script\ScriptConstants.cs" />
     <Compile Include="Error\TaskErrorModel.cs" />
     <Compile Include="Items\SelectedProject.cs" />
