@@ -1,4 +1,4 @@
-﻿namespace ClangPowerTools.Error
+﻿namespace ClangPowerTools.Builder
 {
   public interface IBuilder<T>
   {

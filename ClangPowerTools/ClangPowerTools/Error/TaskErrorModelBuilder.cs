@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using ClangPowerTools.Builder;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Text.RegularExpressions;
 
@@ -51,7 +52,7 @@ namespace ClangPowerTools.Error
       string fullMessage = CreateFullErrorMessage(path, line, categoryAsString, messageDescription);
 
       // Add clang prefix for error list
-      messageDescription = messageDescription.Insert(0, ErrorParserConstants.kClangTag); 
+      messageDescription = messageDescription.Insert(0, ErrorParserConstants.kClangTag);
 
       mError = new TaskErrorModel()
       {
