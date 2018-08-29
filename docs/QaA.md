@@ -11,6 +11,19 @@ Auto-format source file on save, configurable [style options](https://clang.llvm
  * `clang-tidy`   - Clang Tidy (checks, auto-fixes, modernizing code, static analysis)
  * `clang-format` - source code formating (auto format on save)
 
+### 👉 Do I need to install LLVM for Clang Power Tools to work ?
+
+Yes. 
+Download and install **Clang for Windows** (LLVM pre-built binary)  
+[releases.llvm.org/download.html](http://releases.llvm.org/download.html)
+Eg. [LLVM-6.0.1-win64](http://releases.llvm.org/6.0.1/LLVM-6.0.1-win64.exe)  
+
+We will automatically load clang from the default installation path *C:\Program Files\LLVM*. If you prefer to use a different location you must manually add the **bin** folder to **PATH**.  
+
+### 👉 What versions of LLVM are supported by Clang Power Tools ?
+
+We tested Clang Power Tools with LLVM `3.9.x`, `4.0.x`, `5.0.x`, `6.0.x` and `7.0.x`
+
 ### 👉 How to deal with warnings from system/third-party headers ?
 
 Until v2.6, we've used the `%INCLUDE%` environment variable for setting clang include directories.
@@ -100,13 +113,5 @@ Eg.
         value:           'some value'  
     ...
  
-### 👉 Do I need to install LLVM for Clang Power Tools to work ?
-
-Yes. 
-Download and install **Clang for Windows** (LLVM pre-built binary)  
-[LLVM-6.0.0-win64](http://releases.llvm.org/6.0.0/LLVM-6.0.0-win64.exe)  
-[releases.llvm.org/download.html](http://releases.llvm.org/download.html)
-
-We will automatically load clang from the default installation path *C:\Program Files\LLVM*. If you prefer to use a different location you must manually add the **bin** folder to **PATH**.  
 
  
