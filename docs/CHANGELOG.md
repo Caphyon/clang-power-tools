@@ -1,5 +1,16 @@
 # Version History
 
+### Clang Power Tools 3.9.2
+*August 29, 2018*
+
+Bugs:
+
+* Directory.Build.props global property sheet not loaded
+* Unicode project character set detection not working for some projects
+* `Output Window` does not display the entire output
+* Clang commands are not disabled when the VS build is running
+* Selecting `system include directories` did not worked for `Treat additional includes as` option
+
 ### Clang Power Tools 3.9.1
 *August 16, 2018*
 
