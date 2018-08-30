@@ -49,7 +49,7 @@ Describe "MSBuild - Powershell Expression translation" {
 
     $prop = "123"
     Evaluate-MSBuildExpression 'plaintext;"$(prop)"' | Should -BeExactly 'plaintext;"123"'
-    Evaluate-MSBuildExpression 'plaintext;''$(prop)''' | Should -BeExactly 'plaintext;''123'''
+    Evaluate-MSBuildExpression 'plaintext;''$(prop)''' | Should -BeExactly 'plaintext;"123"'
     Evaluate-MSBuildExpression 'plaintext;$(prop)-$(prop)' | Should -BeExactly 'plaintext;123-123'
 
     $TestDir = $env:ProgramFiles

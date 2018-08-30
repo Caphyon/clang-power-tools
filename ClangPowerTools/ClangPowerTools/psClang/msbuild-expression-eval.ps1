@@ -1,38 +1,39 @@
 # REQUIRES io.ps1 to be included
 
-Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>   `
-    -value    @(<# backticks are control characters in PS, replace them #>
-    ('`'                           , ''''                 )`
-        <# Temporarily replace     $( #>                   `
-        , ('\$\s*\('               , '!@#'                )`
-        <# Escape $                   #>                   `
-        , ('\$'                    , '`$'                 )`
-        <# Put back $(                #>                   `
-        , ('!@#'                   , '$('                 )`
-        <# Various operators          #>                   `
-        , ("([\s\)\'""])!="        , '$1 -ne '            )`
-        , ("([\s\)\'""])<="        , '$1 -le '            )`
-        , ("([\s\)\'""])>="        , '$1 -ge '            )`
-        , ("([\s\)\'""])=="        , '$1 -eq '            )`
-        , ("([\s\)\'""])<"         , '$1 -lt '            )`
-        , ("([\s\)\'""])>"         , '$1 -gt '            )`
-        , ("([\s\)\'""])or"        , '$1 -or '            )`
-        , ("([\s\)\'""])and"       , '$1 -and '           )`
-        <# Use only double quotes #>                       `
-        <#, ("\'"                    , '"'                  )#>`
-        , ("Exists\((.*?)\)(\s|$)"           , '(Exists($1))$2'            )`
-        , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(HasTrailingSlash($1))$2'  )`
-        , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'     )`
+Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>     `
+    -value @(                                                             `
+        <# backticks are control characters in PS, replace them #>        `
+          ('`'                               , ''''                      )`
+        <# Temporarily replace $( #>                                      `
+        , ('\$\s*\('                         , '!@#'                     )`
+        <# Escape $ #>                                                    `
+        , ('\$'                              , '`$'                      )`
+        <# Put back $( #>                                                 `
+        , ('!@#'                             , '$('                      )`
+        <# Various operators #>                                           `
+        , ("!="                              , ' -ne '                   )`
+        , ("<="                              , ' -le '                   )`
+        , (">="                              , ' -ge '                   )`
+        , ("=="                              , ' -eq '                   )`
+        , ("<"                               , ' -lt '                   )`
+        , (">"                               , ' -gt '                   )`
+        , ("([\s\)\'""])or"                  , '$1 -or '                 )`
+        , ("([\s\)\'""])and"                 , '$1 -and '                )`
+        <# Use only double quotes #>                                      `
+        , ("\'"                              , '"'                       )`
+        , ("Exists\((.*?)\)(\s|$)"           , '(Exists($1))$2'          )`
+        , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(HasTrailingSlash($1))$2')`
+        , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'   )`
         , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?((\$.+?\))|(.+?))((|`"|')\))+"`
         ,'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
         , ("\[MSBuild\]::MakeRelative\((.+?),\s*""?'?((\$.+?\))|(.+?))((|""|')\)\))+"`
-        ,'MakePathRelative -base $1 -target "$2")'        )`
-        , ('"'                     , '""'                 )`
+        ,'MakePathRelative -base $1 -target "$2")'                       )`
+        , ('"'                               , '""'                      )`
 )
 
-Set-Variable -name "kMsbuildConditionToPsRules" <#-option Constant#>    `
-             -value   @(<# Use only double quotes #>                    `
-                       ,("\'"                    , '"'                  )
+Set-Variable -name "kMsbuildConditionToPsRules" <#-option Constant#>      `
+             -value   @(<# Use only double quotes #>                      `
+                       ,("\'"                    , '"'                   )`
 )
 
 function GetDirNameOfFileAbove( [Parameter(Mandatory = $true)][string] $startDir
@@ -104,9 +105,9 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
     [int] $openParantheses = 0
     for ([int] $i = 0; $i -lt $expression.Length; $i += 1)
     {
-        if ($expression.Substring($i, 1) -eq '(')
+        if ($expression[$i] -eq '(')
         {
-            if ($i -gt 0 -and $expressionStartIndex -lt 0 -and $expression.Substring($i - 1, 1) -eq '$')
+            if ($i -gt 0 -and $expressionStartIndex -lt 0 -and $expression[$i - 1] -eq '$')
             {
                 $expressionStartIndex = $i - 1
             }
@@ -117,7 +118,7 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
             }
         }
 
-        if ($expression.Substring($i, 1) -eq ')' -and $expressionStartIndex -ge 0)
+        if ($expression[$i] -eq ')' -and $expressionStartIndex -ge 0)
         {
             $openParantheses -= 1
             if ($openParantheses -lt 0)
