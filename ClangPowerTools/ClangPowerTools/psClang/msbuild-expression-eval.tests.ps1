@@ -100,6 +100,13 @@ Describe "MSBuild - Powershell Expression translation" {
     $e = '$([MSBuild]::MakeRelative($(ProgramFiles), $(SystemRoot)\System32))'
     Evaluate-MSBuildExpression $e | Should -BeExactly "..\Windows\System32"
   }
+
+  It ".NET Method invocation" {
+    $Sys32Folder = "System32"
+    $WinDir = $env:SystemRoot
+    $e = '$([System.IO.Path]::Combine(''$(WinDir)'', ''$(Sys32Folder)''))'
+    Evaluate-MSBuildExpression $e | Should -BeExactly "$WinDir\$Sys32Folder"
+  }
 }
 
 Describe "Condition evaluation" {
