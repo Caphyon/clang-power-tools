@@ -116,13 +116,13 @@
     Author: Gabriel Diaconita
 #>
 #Requires -Version 3
-param( [alias("dir")]
-       [Parameter(Mandatory=$false, HelpMessage="Source directory for finding solutions; projects will be found from each sln")]
-       [string] $aSolutionsPath
-
-     , [alias("proj")]
+param( [alias("proj")]
        [Parameter(Mandatory=$false, HelpMessage="Filter project(s) to compile/tidy")]
        [string[]] $aVcxprojToCompile
+
+     , [alias("dir")]
+       [Parameter(Mandatory=$false, HelpMessage="Source directory for finding solutions; projects will be found from each sln")]
+       [string] $aSolutionsPath
 
      , [alias("proj-ignore")]
        [Parameter(Mandatory=$false, HelpMessage="Specify projects to ignore")]

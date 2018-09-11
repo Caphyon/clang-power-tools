@@ -49,7 +49,7 @@ Describe "MSBuild - Powershell Expression translation" {
 
     $prop = "123"
     Evaluate-MSBuildExpression 'plaintext;"$(prop)"' | Should -BeExactly 'plaintext;"123"'
-    Evaluate-MSBuildExpression 'plaintext;''$(prop)''' | Should -BeExactly 'plaintext;''123'''
+    Evaluate-MSBuildExpression 'plaintext;''$(prop)''' | Should -BeExactly 'plaintext;"123"'
     Evaluate-MSBuildExpression 'plaintext;$(prop)-$(prop)' | Should -BeExactly 'plaintext;123-123'
 
     $TestDir = $env:ProgramFiles
@@ -99,6 +99,13 @@ Describe "MSBuild - Powershell Expression translation" {
 
     $e = '$([MSBuild]::MakeRelative($(ProgramFiles), $(SystemRoot)\System32))'
     Evaluate-MSBuildExpression $e | Should -BeExactly "..\Windows\System32"
+  }
+
+  It ".NET Method invocation" {
+    $Sys32Folder = "System32"
+    $WinDir = $env:SystemRoot
+    $e = '$([System.IO.Path]::Combine(''$(WinDir)'', ''$(Sys32Folder)''))'
+    Evaluate-MSBuildExpression $e | Should -BeExactly "$WinDir\$Sys32Folder"
   }
 }
 
