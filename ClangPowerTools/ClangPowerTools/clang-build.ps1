@@ -712,7 +712,12 @@ Function Run-ClangJobs([Parameter(Mandatory=$true)] $clangJobs)
       $job.ArgumentList = "--config ""$clangConfigFile"""
     }
 
-    $clangConfigContent = $clangConfigContent -replace '\\', '\\' | Out-File $clangConfigFile
+    # escape slashes for file paths
+    # make sure escaped double quotes are not messed up
+    $clangConfigContent = $clangConfigContent -replace '\\([a-zA-Z0-9_/\-\\])', '\\$1'
+
+    # save arguments to clang config file
+    $clangConfigContent > $clangConfigFile
 
     # When PowerShell encounters errors, the first one is handled differently from consecutive ones
     # To circumvent this, do not execute the job directly, but execute it via cmd.exe
