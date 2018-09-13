@@ -1,27 +1,29 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace ClangPowerTools
 {
-  public class FileChangerWatcher
+  public class FileChangerWatcher : IDisposable
   {
     #region Members
 
-    private static List<FileSystemWatcher> mWatchers = new List<FileSystemWatcher>();
+    private List<FileSystemWatcher> mWatchers = new List<FileSystemWatcher>();
 
     #endregion
 
 
     #region Properties
 
-    public static FileSystemEventHandler OnChanged { get; set; }
+    public FileSystemEventHandler OnChanged { get; set; }
 
     #endregion
 
 
     #region Public methods
 
-    public static void Run(string aDirectoryPath)
+
+    public void Run(string aDirectoryPath)
     {
       if (null == aDirectoryPath || string.IsNullOrWhiteSpace(aDirectoryPath))
         return;
@@ -31,13 +33,25 @@ namespace ClangPowerTools
     }
 
 
+    #region IDisposable implementation
+
+
+    public void Dispose()
+    {
+      OnChanged = null;
+      mWatchers = null;
+    }
+
+    #endregion
+
+
     #endregion
 
 
     #region Private Methods
 
 
-    private static FileSystemWatcher CreateFileWatcher(string aDirectoryPath, string aExtension)
+    private FileSystemWatcher CreateFileWatcher(string aDirectoryPath, string aExtension)
     {
       FileSystemWatcher fileWatcher = new FileSystemWatcher();
 
@@ -63,6 +77,7 @@ namespace ClangPowerTools
 
       return fileWatcher;
     }
+
 
     #endregion
 
