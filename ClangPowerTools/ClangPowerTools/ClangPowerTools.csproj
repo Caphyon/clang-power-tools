@@ -274,10 +274,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="sample-clang-build.ps1">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
     <Content Include="psClang\*.ps1" Exclude="psClang\*.tests.ps1">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

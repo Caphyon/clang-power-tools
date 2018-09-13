@@ -1,13 +1,13 @@
-﻿using System;
-using System.ComponentModel.Design;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using ClangPowerTools.DialogPages;
+﻿using ClangPowerTools.DialogPages;
+using ClangPowerTools.Output;
 using ClangPowerTools.SilentFile;
-using System.Linq;
 using EnvDTE;
 using EnvDTE80;
-using ClangPowerTools.Output;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using System;
+using System.ComponentModel.Design;
+using System.Linq;
 
 namespace ClangPowerTools
 {
@@ -29,6 +29,7 @@ namespace ClangPowerTools
     private bool mSaveCommandWasGiven = false;
 
     #endregion
+
 
     #region Constructor
 
@@ -99,6 +100,7 @@ namespace ClangPowerTools
 
     #endregion
 
+
     #region Private Methods
 
     /// <summary>
@@ -127,17 +129,25 @@ namespace ClangPowerTools
 
           using (var silentFileController = new SilentFileChangerController(AsyncPackage))
           {
-            if (true == mFix || true == mTidyOptions.AutoTidyOnSave)
+            using (var fileChangerWatcher = new FileChangerWatcher())
             {
-              WatchFiles();
+              if (mFix || mTidyOptions.AutoTidyOnSave)
+              {
+                fileChangerWatcher.OnChanged += FileOpener.Open;
 
-              FilePathCollector fileCollector = new FilePathCollector();
-              var filesPath = fileCollector.Collect(mItemsCollector.GetItems).ToList();
+                string solutionFolderPath = DTEObj.Solution.FullName
+                  .Substring(0, DTEObj.Solution.FullName.LastIndexOf('\\'));
 
-              silentFileController.SilentFiles(filesPath);
-              silentFileController.SilentFiles(DTEObj.Documents);
+                fileChangerWatcher.Run(solutionFolderPath);
+
+                FilePathCollector fileCollector = new FilePathCollector();
+                var filesPath = fileCollector.Collect(mItemsCollector.GetItems).ToList();
+
+                silentFileController.SilentFiles(filesPath);
+                silentFileController.SilentFiles(DTEObj.Documents);
+              }
+              RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mTidyChecks, mTidyCustomChecks, mClangFormatView, mFix);
             }
-            RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mTidyChecks, mTidyCustomChecks, mClangFormatView, mFix);
           }
         }
         catch (Exception exception)
@@ -161,24 +171,6 @@ namespace ClangPowerTools
       return (sender as OleMenuCommand).CommandID.ID == CommandIds.kTidyFixId;
     }
 
-
-    #endregion
-
-
-    #region Helpers
-
-    private void WatchFiles()
-    {
-      try
-      {
-        FileChangerWatcher.OnChanged += FileOpener.Open;
-
-        string solutionFolderPath = DTEObj.Solution.FullName
-          .Substring(0, DTEObj.Solution.FullName.LastIndexOf('\\'));
-        FileChangerWatcher.Run(solutionFolderPath);
-      }
-      catch (Exception) { }
-    }
 
     #endregion
 
