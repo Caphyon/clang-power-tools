@@ -110,7 +110,7 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
-    private void RunClangTidy(object sender, EventArgs e)
+    private async void RunClangTidy(object sender, EventArgs e)
     {
       if (mCommandsController.Running)
         return;
@@ -118,7 +118,7 @@ namespace ClangPowerTools
       mCommandsController.Running = true;
       mFix = SetTidyFixParameter(sender);
 
-      System.Threading.Tasks.Task.Run(() =>
+      await System.Threading.Tasks.Task.Run(() =>
       {
         try
         {
@@ -159,8 +159,9 @@ namespace ClangPowerTools
         {
           mForceTidyToFix = false;
         }
-      }).ContinueWith(tsk => mCommandsController.AfterExecute());
+      });
 
+      mCommandsController.AfterExecute();
     }
 
     private bool SetTidyFixParameter(object sender)

@@ -90,14 +90,14 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
-    private void RunClangCompile(object sender, EventArgs e)
+    private async void RunClangCompile(object sender, EventArgs e)
     {
       if (mCommandsController.Running)
         return;
 
       mCommandsController.Running = true;
 
-      System.Threading.Tasks.Task.Run(() =>
+      await System.Threading.Tasks.Task.Run(() =>
       {
         try
         {
@@ -112,9 +112,9 @@ namespace ClangPowerTools
           VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
+      });
 
-      }).ContinueWith(tsk => mCommandsController.AfterExecute());
-
+      mCommandsController.AfterExecute();
     }
 
     #endregion
