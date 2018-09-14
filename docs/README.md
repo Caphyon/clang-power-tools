@@ -40,10 +40,9 @@ You can customize the tool behavior as well as the clang++ compilation flags, cl
 🆕 Built-in support for **[clang-format](https://clang.llvm.org/docs/ClangFormat.html)**  
 Auto-format source file on save, configurable [style options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html), file extension rules, etc.
 
-### PowerShell scripts (for CI / automation):
+### PowerShell script (for CI / automation):
 
 - [clang-build.ps1](https://github.com/Caphyon/clang-power-tools/blob/master/ClangPowerTools/ClangPowerTools/clang-build.ps1)  
-- [sample-clang-build.ps1](https://github.com/Caphyon/clang-power-tools/blob/master/ClangPowerTools/ClangPowerTools/sample-clang-build.ps1)
 
 ### Requirements
 
