@@ -100,22 +100,15 @@ Function Clear-Vars()
     $global:ProjectSpecificVariables.Clear()
 }
 
-Function UpdateScriptParameter([Parameter(Mandatory = $true)][string] $paramRawLine)
+Function UpdateScriptParameter([Parameter(Mandatory = $true)] [string] $paramName
+                              ,[Parameter(Mandatory = $false)][string] $paramValue)
 {
-  if ($paramRawLine.StartsWith('-'))
-  {
-    $paramRawLine = $paramRawLine.Remove(0, 1)
-  }
-
-  [string] $paramName = $paramRawLine
   [bool]   $isSwitch  = $false
-  $paramValue         = "" # no type specified because we don't know it yet
+  $evalParamValue     = "" # no type specified because we don't know it yet
 
-  [int] $spaceSep = $paramRawLine.IndexOf(' ')
-  if ($spaceSep -gt 0) # a parameter
+  if ($paramValue) # a parameter
   {
-    $paramName = $paramRawLine.Substring(0, $spaceSep)
-    $paramValue = Invoke-Expression $paramRawLine.Substring($spaceSep)
+    $evalParamValue = Invoke-Expression $paramValue # evaluate expression to get actual value
   }
   else # a switch
   {
@@ -123,8 +116,9 @@ Function UpdateScriptParameter([Parameter(Mandatory = $true)][string] $paramRawL
   }
 
   # the parameter name we detected may be an alias => translate it into the real name
-  $paramName = Get-CommandParameterName -command "$PSScriptRoot\..\clang-build.ps1" -nameOrAlias $paramName
-  if (!$paramName)
+  [string] $realParamName = Get-CommandParameterName -command "$PSScriptRoot\..\clang-build.ps1" `
+                                                     -nameOrAlias $paramName
+  if (!$realParamName)
   {
     Write-Output "OVERVIEW: Clang Power Tools: compiles or tidies up code from Visual Studio .vcxproj project files`n"
 
@@ -133,22 +127,22 @@ Function UpdateScriptParameter([Parameter(Mandatory = $true)][string] $paramRawL
     Write-Output "OPTIONS: "
     Print-CommandParameters "$PSScriptRoot\..\clang-build.ps1"
 
-    Fail-Script "Unsupported option '$paramRawLine'. Check cpt.config."
+    Fail-Script "Unsupported option '$paramName'. Check cpt.config."
   }
 
   if ($isSwitch)
   {
-    Set-Var -name $paramName -value $true -asScriptParameter
+    Set-Var -name $realParamName -value $true -asScriptParameter
   }
   else
   {
-    Set-Var -name $paramName -value $paramValue -asScriptParameter
+    Set-Var -name $realParamName -value $evalParamValue -asScriptParameter
   }
 }
 
 Function Get-ConfigFileParameters()
 {
-  [string[]] $retArgs = @()
+  [System.Collections.Hashtable] $retArgs = @{}
 
   [string] $startDir = If ([string]::IsNullOrWhiteSpace($ProjectDir)) { Get-Location } else { $ProjectDir }
   [string] $configFile = (GetDirNameOfFileAbove -startDir $startDir -targetFile "cpt.config") + "\cpt.config"
@@ -161,10 +155,15 @@ Function Get-ConfigFileParameters()
   $configXpathNS= New-Object System.Xml.XmlNamespaceManager($configXml.NameTable)
   $configXpathNS.AddNamespace("ns", $configXml.DocumentElement.NamespaceURI)
 
-  [System.Xml.XmlElement[]] $argElems = $configXml.SelectNodes("//ns:option", $configXpathNS)
+  [System.Xml.XmlElement[]] $argElems = $configXml.SelectNodes("/ns:cpt-config/*", $configXpathNS)
 
   foreach ($argEl in $argElems)
   {
+    if ($argEl.Name.StartsWith("vsx-"))
+    {
+        continue # settings for the Visual Studio Extension
+    }
+
     if ($argEl.HasAttribute("Condition"))
     {
       [bool] $isApplicable = Evaluate-MSBuildCondition -condition $argEl.GetAttribute("Condition")
@@ -173,7 +172,7 @@ Function Get-ConfigFileParameters()
         continue
       }
     }
-    $retArgs += $argEl.InnerText
+    $retArgs[$argEl.Name] = $argEl.InnerText
   }
 
   return $retArgs
@@ -181,15 +180,15 @@ Function Get-ConfigFileParameters()
 
 Function Update-ParametersFromConfigFile()
 {
-  [string[]] $configParams = Get-ConfigFileParameters
+  [System.Collections.Hashtable] $configParams = Get-ConfigFileParameters
   if (!$configParams)
   {
       return
   }
 
-  foreach ($paramRawLine in $configParams)
+  foreach ($paramName in $configParams.Keys)
   {
-    UpdateScriptParameter -paramRawLine $paramRawLine
+    UpdateScriptParameter -paramName $paramName -paramValue $configParams[$paramName]
   }
 }
 
