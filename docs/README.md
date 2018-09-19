@@ -11,7 +11,7 @@ Works with Visual Studio 2015 / 2017
 
 [Release Notes](CHANGELOG.md)
 
-How Clang Power Tools came to be [About](about.md)
+How Clang Power Tools came to be: [About](about.md)
 
 ### Features
 
