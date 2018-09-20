@@ -1,5 +1,19 @@
 # Version History
 
+### Clang Power Tools 4.0
+*September 18, 2018*
+
+Improvements:
+
+* Support for `CPT configuration files` (see sample `cpt.config` in github repository)
+
+Bugs:
+
+* Changed files are permanently open in the editor after `clang-tidy` command 
+* Crash when changing the `Show issues generated` option from Visual Studio
+* Preprocessor definitions for raw string literals containing escaped quotes not working
+* Calls to `Exists()` using single quotes not resolved correctly
+
 ### Clang Power Tools 3.9.2
 *August 29, 2018*
 
