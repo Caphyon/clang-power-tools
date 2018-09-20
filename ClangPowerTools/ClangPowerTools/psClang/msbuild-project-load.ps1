@@ -150,6 +150,7 @@ Function Get-ConfigFileParameters()
   {
       return $retArgs
   }
+  Write-Verbose "Found cpt.config in $configFile"
 
   [xml] $configXml = Get-Content $configFile
   $configXpathNS= New-Object System.Xml.XmlNamespaceManager($configXml.NameTable)
