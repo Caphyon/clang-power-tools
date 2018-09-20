@@ -988,16 +988,18 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
 Clear-Host # clears console
 
-# ------------------------------------------------------------------------------------------------
-# Load param values from configuration file (if exists)
+#-------------------------------------------------------------------------------------------------
+# If we didn't get a location to run CPT at, use the current working directory
 
-Update-ParametersFromConfigFile
-
-# if we didn't get a location to run CPT at, use the current working directory
 if (!$aSolutionsPath)
 {
   $aSolutionsPath = Get-Location
 }
+
+# ------------------------------------------------------------------------------------------------
+# Load param values from configuration file (if exists)
+
+Update-ParametersFromConfigFile
 
 #-------------------------------------------------------------------------------------------------
 # Print script parameters
