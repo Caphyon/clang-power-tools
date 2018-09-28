@@ -31,6 +31,22 @@ namespace ClangPowerTools
     #endregion
 
 
+    #region Properties
+
+
+    /// <summary>
+    /// Gets the instance of the command.
+    /// </summary>
+    public static TidyCommand Instance
+    {
+      get;
+      private set;
+    }
+
+
+    #endregion
+
+
     #region Constructor
 
     /// <summary>
@@ -39,8 +55,8 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
 
-    public TidyCommand(CommandsController aCommandsController, ErrorWindowController aErrorWindow, OutputWindowController aOutputWindow,
-      IVsSolution aSolution, DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
+    private TidyCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController, ErrorWindowController aErrorWindow, 
+      OutputWindowController aOutputWindow, IVsSolution aSolution, DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aCommandsController, aErrorWindow, aOutputWindow, aSolution, aDte, aPackage, aGuid, aId)
     {
       mTidyOptions = (ClangTidyOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyOptionsView));
@@ -50,15 +66,13 @@ namespace ClangPowerTools
 
       FileOpener.Initialize(DTEObj);
 
-      var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-
-      if (null != commandService)
+      if (null != aCommandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
         var menuCommand = new OleMenuCommand(this.RunClangTidy, menuCommandID);
-        menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
+        menuCommand.BeforeQueryStatus += mCommandsController.OnBeforeClangCommand;
         menuCommand.Enabled = true;
-        commandService.AddCommand(menuCommand);
+        aCommandService.AddCommand(menuCommand);
       }
     }
 
@@ -67,6 +81,23 @@ namespace ClangPowerTools
 
 
     #region Public Methods
+
+
+    /// <summary>
+    /// Initializes the singleton instance of the command.
+    /// </summary>
+    /// <param name="package">Owner package, not null.</param>
+    public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController, ErrorWindowController aErrorWindow, 
+      OutputWindowController aOutputWindow, IVsSolution aSolution, DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
+    {
+      // Switch to the main thread - the call to AddCommand in Command1's constructor requires
+      // the UI thread.
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
+
+      OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
+      Instance = new TidyCommand(commandService, aCommandsController, aErrorWindow, aOutputWindow, aSolution, aDte, aPackage, aGuid, aId);
+    }
+
 
     public override void OnBeforeSave(object sender, Document aDocument)
     {
@@ -110,7 +141,7 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
-    private void RunClangTidy(object sender, EventArgs e)
+    private async void RunClangTidy(object sender, EventArgs e)
     {
       if (mCommandsController.Running)
         return;
@@ -118,7 +149,7 @@ namespace ClangPowerTools
       mCommandsController.Running = true;
       mFix = SetTidyFixParameter(sender);
 
-      System.Threading.Tasks.Task.Run(() =>
+      await System.Threading.Tasks.Task.Run(() =>
       {
         try
         {
@@ -159,8 +190,9 @@ namespace ClangPowerTools
         {
           mForceTidyToFix = false;
         }
-      }).ContinueWith(tsk => mCommandsController.AfterExecute());
+      });
 
+      mCommandsController.OnAfterClangCommand();
     }
 
     private bool SetTidyFixParameter(object sender)

@@ -63,7 +63,7 @@ namespace ClangPowerTools
     /// It is called immediately after every clang command execution.
     /// Set the running state to false.
     /// </summary>
-    public void AfterExecute()
+    public void OnAfterClangCommand()
     {
       UIUpdater.Invoke(() =>
       {
@@ -76,7 +76,7 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    public void QueryCommandHandler(object sender, EventArgs e)
+    public void OnBeforeClangCommand(object sender, EventArgs e)
     {
       UIUpdater.Invoke(() =>
       {
