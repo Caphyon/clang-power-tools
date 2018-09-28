@@ -10,6 +10,22 @@ namespace ClangPowerTools
   /// </summary>
   internal sealed class SettingsCommand : BasicCommand
   {
+    #region Properties
+
+
+    /// <summary>
+    /// Gets the instance of the command.
+    /// </summary>
+    public static SettingsCommand Instance
+    {
+      get;
+      private set;
+    }
+
+
+    #endregion
+
+
     #region Constructor
 
     /// <summary>
@@ -17,18 +33,37 @@ namespace ClangPowerTools
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public SettingsCommand(DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
+    private SettingsCommand(OleMenuCommandService aCommandService, DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
       : base(aDte, aPackage, aGuid, aId)
     {
-      var commandService = ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
-
-      if (null != commandService)
+      if (null != aCommandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
         var menuItem = new MenuCommand(this.ShowSettings, menuCommandID);
-        commandService.AddCommand(menuItem);
+        aCommandService.AddCommand(menuItem);
       }
     }
+
+    #endregion
+
+
+    #region Public Methods
+
+    
+    /// <summary>
+    /// Initializes the singleton instance of the command.
+    /// </summary>
+    /// <param name="package">Owner package, not null.</param>
+    public static async System.Threading.Tasks.Task InitializeAsync(DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
+    {
+      // Switch to the main thread - the call to AddCommand in Command1's constructor requires
+      // the UI thread.
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
+
+      OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
+      Instance = new SettingsCommand(commandService, aDte, aPackage, aGuid, aId);
+    }
+
 
     #endregion
 
