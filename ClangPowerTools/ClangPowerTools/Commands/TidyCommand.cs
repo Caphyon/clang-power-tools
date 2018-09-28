@@ -56,7 +56,7 @@ namespace ClangPowerTools
       {
         var menuCommandID = new CommandID(CommandSet, Id);
         var menuCommand = new OleMenuCommand(this.RunClangTidy, menuCommandID);
-        menuCommand.BeforeQueryStatus += mCommandsController.QueryCommandHandler;
+        menuCommand.BeforeQueryStatus += mCommandsController.OnBeforeClangCommand;
         menuCommand.Enabled = true;
         commandService.AddCommand(menuCommand);
       }
@@ -161,7 +161,7 @@ namespace ClangPowerTools
         }
       });
 
-      mCommandsController.AfterExecute();
+      mCommandsController.OnAfterClangCommand();
     }
 
     private bool SetTidyFixParameter(object sender)
