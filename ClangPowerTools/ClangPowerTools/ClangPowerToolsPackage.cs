@@ -71,10 +71,10 @@ namespace ClangPowerTools
 
     private CommandsController mCommandsController = null;
     private CompileCommand mCompileCmd = null;
-    private ClangCommand mTidyCmd = null;
-    private ClangCommand mClangFormatCmd = null;
-    private ClangCommand mStopClangCmd = null;
-    private BasicCommand mSettingsCmd = null;
+    private TidyCommand mTidyCmd = null;
+    private ClangFormatCommand mClangFormatCmd = null;
+    private StopClang mStopClangCmd = null;
+    private SettingsCommand mSettingsCmd = null;
 
     #endregion
 
@@ -144,7 +144,7 @@ namespace ClangPowerTools
 
       // Init the status bar
       await StatusBarHandler.InitializeAsync(this, cancellationToken);
-
+      
       await base.InitializeAsync(cancellationToken, progress);
     }
 
@@ -221,23 +221,28 @@ namespace ClangPowerTools
     }
 
 
-    private void InitializeCommands()
+    private async System.Threading.Tasks.Task<object> InitializeCommands()
     {
-      if (null == mCompileCmd)
-        mCompileCmd = new CompileCommand(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kCompileId);
+      return await System.Threading.Tasks.Task.Run(async () =>
+     {
+       if (null == CompileCommand.Instance)
+         await CompileCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kCompileId);
 
-      if (null == mTidyCmd)
-      {
-        mTidyCmd = new TidyCommand(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kTidyId);
-        mTidyCmd = new TidyCommand(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kTidyFixId);
-      }
+       if (null == mTidyCmd)
+       {
+         mTidyCmd = new TidyCommand(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kTidyId);
+         mTidyCmd = new TidyCommand(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kTidyFixId);
+       }
 
-      if (null == mClangFormatCmd)
-        mClangFormatCmd = new ClangFormatCommand(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kClangFormat);
+       if (null == mClangFormatCmd)
+         mClangFormatCmd = new ClangFormatCommand(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kClangFormat);
 
-      if (null == mStopClangCmd)
-        mStopClangCmd = new StopClang(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kStopClang);
+       if (null == mStopClangCmd)
+         mStopClangCmd = new StopClang(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kStopClang);
 
+       return new object();
+     });
+      
     }
 
 
@@ -286,7 +291,7 @@ namespace ClangPowerTools
       await mOutputController.Initialize(this, mDte);
 
       mCommandsController = new CommandsController(this, mDte);
-      InitializeCommands();
+      await InitializeCommands();
 
       var generalOptions = (ClangGeneralOptionsView)this.GetDialogPage(typeof(ClangGeneralOptionsView));
       var currentVersion = GetPackageVersion();
