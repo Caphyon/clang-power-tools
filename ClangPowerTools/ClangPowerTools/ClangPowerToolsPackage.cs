@@ -212,7 +212,7 @@ namespace ClangPowerTools
     }
 
 
-    private async System.Threading.Tasks.Task<object> InitializeCommands()
+    private async System.Threading.Tasks.Task<object> InitializeAsyncCommands()
     {
       return await System.Threading.Tasks.Task.Run(async () =>
       {
@@ -279,10 +279,10 @@ namespace ClangPowerTools
     private async void PrepareExtension()
     {
       mOutputController = new OutputWindowController();
-      await mOutputController.Initialize(this, mDte);
+      await mOutputController.InitializeAsync(this, mDte);
 
       mCommandsController = new CommandsController(this, mDte);
-      await InitializeCommands();
+      await InitializeAsyncCommands();
 
       var generalOptions = (ClangGeneralOptionsView)this.GetDialogPage(typeof(ClangGeneralOptionsView));
       var currentVersion = GetPackageVersion();

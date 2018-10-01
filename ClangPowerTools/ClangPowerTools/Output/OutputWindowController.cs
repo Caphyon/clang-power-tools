@@ -53,7 +53,7 @@ namespace ClangPowerTools.Output
     #region Output window operations
 
 
-    public async Task<object> Initialize(AsyncPackage aPackage, DTE2 aDte)
+    public async Task<object> InitializeAsync(AsyncPackage aPackage, DTE2 aDte)
     {
       mDte = aDte;
       if (null == mOutputWindowBuilder)
