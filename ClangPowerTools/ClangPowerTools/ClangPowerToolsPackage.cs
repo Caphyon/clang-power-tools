@@ -109,9 +109,15 @@ namespace ClangPowerTools
       // Switches to the UI thread in order to consume some services used in command initialization
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-      // Get DTE
-      var dteService = await GetServiceAsync(typeof(SEnvDTEService)) as IEnvDTEService;
-      mDte = await dteService.GetDTE2Async(this, cancellationToken);
+      // Get DTE async
+      mDte = await GetServiceAsync(typeof(DTE)) as DTE2;
+
+      // Get VsOutputWindow async
+      var vsOutputWindow = await GetServiceAsync(typeof(SVsOutputWindow)) as IVsOutputWindow;
+      
+      // Initialize the commands controller
+      mOutputController = new OutputWindowController();
+      await mOutputController.InitializeAsync(this, vsOutputWindow, mDte);
 
       mRunningDocTableEvents = new RunningDocTableEvents(this);
       mErrorWindow = new ErrorWindowController(this);
@@ -151,8 +157,7 @@ namespace ClangPowerTools
         UnadviseSolutionEvents();
 
         // Get VsSolution 
-        var vsSolutionService = await GetServiceAsync(typeof(SVsSolutionService)) as IVsSolutionService;
-        mSolution = await vsSolutionService.GetVsSolutionAsync(this, cancellationToken);
+        mSolution = await GetServiceAsync(typeof(SVsSolution)) as IVsSolution;
 
         mSolution?.AdviseSolutionEvents(this, out mHSolutionEvents);
       }
@@ -278,8 +283,7 @@ namespace ClangPowerTools
 
     private async void PrepareExtension()
     {
-      mOutputController = new OutputWindowController();
-      await mOutputController.InitializeAsync(this, mDte);
+
 
       mCommandsController = new CommandsController(this, mDte);
       await InitializeAsyncCommands();

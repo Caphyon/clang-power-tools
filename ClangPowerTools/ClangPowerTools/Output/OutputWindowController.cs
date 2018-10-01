@@ -7,7 +7,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace ClangPowerTools.Output
 {
@@ -53,13 +52,13 @@ namespace ClangPowerTools.Output
     #region Output window operations
 
 
-    public async Task<object> InitializeAsync(AsyncPackage aPackage, DTE2 aDte)
+    public async System.Threading.Tasks.Task InitializeAsync(AsyncPackage aPackage, IVsOutputWindow aVsOutputWindow, DTE2 aDte)
     {
       mDte = aDte;
       if (null == mOutputWindowBuilder)
-        mOutputWindowBuilder = new OutputWindowBuilder(aPackage);
+        mOutputWindowBuilder = new OutputWindowBuilder(aPackage, aVsOutputWindow);
 
-      return await mOutputWindowBuilder.AsyncBuild();
+      await mOutputWindowBuilder.AsyncBuild();
     }
 
 

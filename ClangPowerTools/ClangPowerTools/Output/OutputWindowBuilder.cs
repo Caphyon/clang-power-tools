@@ -11,16 +11,17 @@ namespace ClangPowerTools.Output
   {
     #region Private Members
 
+
     /// <summary>
     /// Output window model instance
     /// </summary>
-    private OutputWindowModel mOutputWindow = new OutputWindowModel();
+    private OutputWindowModel mOutputWindowModel = new OutputWindowModel();
 
 
     /// <summary>
-    /// Async Package will be used to get the VS output window instance
+    /// Output window model instance
     /// </summary>
-    private AsyncPackage mPackage;
+    private AsyncPackage mAsyncPackage;
 
 
     #endregion
@@ -33,7 +34,11 @@ namespace ClangPowerTools.Output
     /// Instance constructor
     /// </summary>
     /// <param name="aDte"></param>
-    public OutputWindowBuilder(AsyncPackage aPackage) => mPackage = aPackage;
+    public OutputWindowBuilder(AsyncPackage aPackage, IVsOutputWindow aVsOutputWindow)
+    {
+      mOutputWindowModel.VsOutputWindow = aVsOutputWindow;
+      mAsyncPackage = aPackage;
+    }
 
 
     #endregion
@@ -42,34 +47,32 @@ namespace ClangPowerTools.Output
     #region IAsyncBuilder Implementation
 
 
-    public async Task<object> AsyncBuild()
+    public async System.Threading.Tasks.Task AsyncBuild()
     {
-      var outputWindowService = await mPackage.GetServiceAsync(typeof(SVsOutputWindowService)) as IVsOutputWindowService;
-
       // Get the VS Output Window 
-      if (null == mOutputWindow.VsOutputWindow)
+      if (null == mOutputWindowModel.VsOutputWindow)
       {
-        mOutputWindow.VsOutputWindow = await outputWindowService.GetOutputWindowAsync(mPackage, new System.Threading.CancellationToken());
+        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(mAsyncPackage.DisposalToken);
+        mOutputWindowModel.VsOutputWindow = await mAsyncPackage.GetServiceAsync(typeof(SVsOutputWindow)) as IVsOutputWindow;
       }
 
-      if (null == mOutputWindow.Pane)
+      if (null == mOutputWindowModel.Pane)
       {
         // Get the Pane object
-        Guid generalPaneGuid = mOutputWindow.PaneGuid;
-        mOutputWindow.VsOutputWindow.GetPane(ref generalPaneGuid, out IVsOutputWindowPane pane);
+        Guid generalPaneGuid = mOutputWindowModel.PaneGuid;
+        mOutputWindowModel.VsOutputWindow.GetPane(ref generalPaneGuid, out IVsOutputWindowPane pane);
 
         // If pane does not exists, create it
         if (null == pane)
         {
-          mOutputWindow.VsOutputWindow.CreatePane(ref generalPaneGuid, OutputWindowConstants.kPaneName, 0, 1);
-          mOutputWindow.VsOutputWindow.GetPane(ref generalPaneGuid, out pane);
+          mOutputWindowModel.VsOutputWindow.CreatePane(ref generalPaneGuid, OutputWindowConstants.kPaneName, 0, 1);
+          mOutputWindowModel.VsOutputWindow.GetPane(ref generalPaneGuid, out pane);
         }
-        mOutputWindow.Pane = pane;
+        mOutputWindowModel.Pane = pane;
       }
-      return outputWindowService;
     }
 
-    public OutputWindowModel GetAsyncResult() => mOutputWindow;
+    public OutputWindowModel GetAsyncResult() => mOutputWindowModel;
 
     //public OutputWindowModel GetAsyncResult => mOutputWindow;
 
