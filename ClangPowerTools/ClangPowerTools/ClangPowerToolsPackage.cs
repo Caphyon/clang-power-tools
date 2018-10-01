@@ -59,8 +59,8 @@ namespace ClangPowerTools
     public static readonly Guid CommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
 
     private uint mHSolutionEvents = uint.MaxValue;
-    private RunningDocTableEvents mRunningDocTableEvents;
     private IVsSolution mSolution;
+    private RunningDocTableEvents mRunningDocTableEvents;
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
     private DTE2 mDte;
@@ -123,6 +123,16 @@ namespace ClangPowerTools
       // Init the status bar
       StatusBarHandler.Initialize(vsStatusBar);
 
+      #region Get Pointer to IVsSolutionEvents
+
+      UnadviseSolutionEvents();
+      // Get VS Solution service async
+      mSolution = await GetServiceAsync(typeof(SVsSolution)) as IVsSolution;
+      AdviseSolutionEvents();
+
+      #endregion
+
+
       mRunningDocTableEvents = new RunningDocTableEvents(this);
       mErrorWindow = new ErrorWindowController(this);
 
@@ -134,34 +144,25 @@ namespace ClangPowerTools
       mCommandEvents = mDte.Events.CommandEvents;
 
       // Get the general clang option page
-      var generalOptions = (ClangGeneralOptionsView)this.GetDialogPage(typeof(ClangGeneralOptionsView));
+      var generalOptions = (ClangGeneralOptionsView)GetDialogPage(typeof(ClangGeneralOptionsView));
 
       // Detect the first install 
       if (null == generalOptions.Version || string.IsNullOrWhiteSpace(generalOptions.Version))
         ShowToolbare(mDte); // Show the toolbar on the first install
-
-      // Access the IVsSolutionEvents 
-      await AdviseSolutionEvents(cancellationToken);
-
-      
 
       await base.InitializeAsync(cancellationToken, progress);
     }
 
 
     #endregion
+  
 
     #region Get Pointer to IVsSolutionEvents
 
-    private async System.Threading.Tasks.Task AdviseSolutionEvents(CancellationToken cancellationToken)
+    private void AdviseSolutionEvents()
     {
       try
       {
-        UnadviseSolutionEvents();
-
-        // Get VsSolution 
-        mSolution = await GetServiceAsync(typeof(SVsSolution)) as IVsSolution;
-
         mSolution?.AdviseSolutionEvents(this, out mHSolutionEvents);
       }
       catch (Exception)
@@ -173,15 +174,18 @@ namespace ClangPowerTools
     {
       if (null == mSolution)
         return;
+
       if (uint.MaxValue != mHSolutionEvents)
       {
         mSolution.UnadviseSolutionEvents(mHSolutionEvents);
         mHSolutionEvents = uint.MaxValue;
       }
+
       mSolution = null;
     }
 
     #endregion
+
 
     #region IVsSolutionEvents Implementation
 
