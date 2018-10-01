@@ -1,9 +1,7 @@
 ﻿using ClangPowerTools.Handlers;
-using ClangPowerTools.Services;
 using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
-using System.Threading;
 
 namespace ClangPowerTools
 {
@@ -17,15 +15,9 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public async static System.Threading.Tasks.Task InitializeAsync(
-      Microsoft.VisualStudio.Shell.IAsyncServiceProvider aServiceProvider, CancellationToken cancellationToken)
-    {
-      if (null == mStatusBar)
-      {
-        var vsStatusBarService = await aServiceProvider.GetServiceAsync(typeof(SVsStatusBarService)) as IVsStatusBarService;
-        mStatusBar = await vsStatusBarService.GetVsStatusBarAsync(aServiceProvider, cancellationToken);
-      }
-    }
+
+    public static void Initialize(IVsStatusbar aVsStatusBar) => mStatusBar = aVsStatusBar;
+
 
     public static void Text(string aText, int aFreezeStatusBar)
     {
@@ -50,6 +42,7 @@ namespace ClangPowerTools
       });
     }
 
+
     public static void Animation(vsStatusAnimation aAnimation, int aEnableAnimation)
     {
       UIUpdater.Invoke(() =>
@@ -61,6 +54,7 @@ namespace ClangPowerTools
         mStatusBar.Animation(aEnableAnimation, ref icon);
       });
     }
+
 
     public static void Status(string aText, int aFreezeStatusBar, vsStatusAnimation aAnimation, int aEnableAnimation)
     {

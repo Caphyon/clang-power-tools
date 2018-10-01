@@ -109,15 +109,19 @@ namespace ClangPowerTools
       // Switches to the UI thread in order to consume some services used in command initialization
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-      // Get DTE async
+      // Get DTE service async
       mDte = await GetServiceAsync(typeof(DTE)) as DTE2;
 
-      // Get VsOutputWindow async
+      // Get VS Output Window service async
       var vsOutputWindow = await GetServiceAsync(typeof(SVsOutputWindow)) as IVsOutputWindow;
-      
       // Initialize the commands controller
       mOutputController = new OutputWindowController();
       await mOutputController.InitializeAsync(this, vsOutputWindow, mDte);
+
+      // Get the status bar service async
+      var vsStatusBar = await GetServiceAsync(typeof(SVsStatusbar)) as IVsStatusbar;
+      // Init the status bar
+      StatusBarHandler.Initialize(vsStatusBar);
 
       mRunningDocTableEvents = new RunningDocTableEvents(this);
       mErrorWindow = new ErrorWindowController(this);
@@ -139,8 +143,7 @@ namespace ClangPowerTools
       // Access the IVsSolutionEvents 
       await AdviseSolutionEvents(cancellationToken);
 
-      // Init the status bar
-      await StatusBarHandler.InitializeAsync(this, cancellationToken);
+      
 
       await base.InitializeAsync(cancellationToken, progress);
     }
