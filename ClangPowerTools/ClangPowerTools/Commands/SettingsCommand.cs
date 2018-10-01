@@ -56,7 +56,7 @@ namespace ClangPowerTools
     /// <param name="package">Owner package, not null.</param>
     public static async System.Threading.Tasks.Task InitializeAsync(DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
     {
-      // Switch to the main thread - the call to AddCommand in Command1's constructor requires
+      // Switch to the main thread - the call to AddCommand in SettingsCommand's constructor requires
       // the UI thread.
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
 

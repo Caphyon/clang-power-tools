@@ -312,7 +312,7 @@ namespace ClangPowerTools
     }
 
 
-    public string GetPackageVersion()
+    private string GetPackageVersion()
     {
       var assemblyPath = Assembly.GetExecutingAssembly().Location;
       assemblyPath = assemblyPath.Substring(0, assemblyPath.LastIndexOf('\\'));
@@ -325,6 +325,7 @@ namespace ClangPowerTools
 
       return identity.GetAttribute("Version");
     }
+
 
     private void ShowToolbare(DTE2 aDte)
     {
