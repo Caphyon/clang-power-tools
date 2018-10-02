@@ -1,6 +1,5 @@
 ﻿using ClangPowerTools.Builder;
 using EnvDTE;
-using System;
 
 namespace ClangPowerTools.Script
 {

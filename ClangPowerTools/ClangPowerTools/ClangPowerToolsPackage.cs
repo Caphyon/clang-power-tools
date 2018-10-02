@@ -1,8 +1,6 @@
 ﻿using ClangPowerTools.Commands;
 using ClangPowerTools.DialogPages;
 using ClangPowerTools.Output;
-using ClangPowerTools.Services;
-using ClangPowerTools.Services.OleMenuCommandCustomService;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;
@@ -94,18 +92,6 @@ namespace ClangPowerTools
     /// </summary>
     protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
     {
-      // Create the service factory instance
-      var serviceFactory = new ServiceFactory(this);
-
-      // Add the services on the background thread
-      AddService(typeof(SEnvDTEService), serviceFactory.CreateService);
-      AddService(typeof(SVsSolutionService), serviceFactory.CreateService);
-      AddService(typeof(SVsStatusBarService), serviceFactory.CreateService);
-      AddService(typeof(SVsFileChangeService), serviceFactory.CreateService);
-      AddService(typeof(SVsRunningDocumentTableService), serviceFactory.CreateService);
-      AddService(typeof(SVsOutputWindowService), serviceFactory.CreateService);
-      AddService(typeof(SOleMenuCommandService), serviceFactory.CreateService);
-
       // Switches to the UI thread in order to consume some services used in command initialization
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
@@ -122,6 +108,7 @@ namespace ClangPowerTools
       var vsStatusBar = await GetServiceAsync(typeof(SVsStatusbar)) as IVsStatusbar;
       // Init the status bar
       StatusBarHandler.Initialize(vsStatusBar);
+
 
       #region Get Pointer to IVsSolutionEvents
 

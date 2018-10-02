@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Threading.Tasks;
 using ClangPowerTools.Builder;
-using ClangPowerTools.Services;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 

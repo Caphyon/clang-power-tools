@@ -1,13 +1,10 @@
 ﻿using ClangPowerTools.Builder;
-using ClangPowerTools.Error;
-using ClangPowerTools.Services;
 using EnvDTE;
 using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 
 namespace ClangPowerTools.SilentFile
 {
@@ -24,11 +21,18 @@ namespace ClangPowerTools.SilentFile
     /// </summary>
     private HashSet<SilentFileChangerModel> mSilentFileChangers =
           new HashSet<SilentFileChangerModel>(new SilentFileChangerEqualityComparer());
+    
 
     /// <summary>
-    /// The async package instance
+    /// Vs Running Document Table service instance
     /// </summary>
-    private AsyncPackage mAsyncPackage;
+    private IVsRunningDocumentTable mVsRunningDocumentTableService;
+
+
+    /// <summary>
+    /// Vs File Change service instance
+    /// </summary>
+    private IVsFileChangeEx mVsFileChangeService;
 
 
     #endregion
@@ -40,7 +44,11 @@ namespace ClangPowerTools.SilentFile
     /// Instance Constructor
     /// </summary>
     /// <param name="aAsyncPackage"></param>
-    public SilentFileChangerController(AsyncPackage aAsyncPackage) => mAsyncPackage = aAsyncPackage;
+    public SilentFileChangerController(IVsRunningDocumentTable aVsRunningDocumentTableService, IVsFileChangeEx aVsFileChangeService)
+    {
+      mVsRunningDocumentTableService = aVsRunningDocumentTableService;
+      mVsFileChangeService = aVsFileChangeService;
+    }
 
 
     #endregion
@@ -112,7 +120,8 @@ namespace ClangPowerTools.SilentFile
     /// <param name="aFilePath">The file path of the file for which the changes will be ignored</param>
     private SilentFileChangerModel GetNewSilentFileChanger(string aFilePath)
     {
-      IBuilder<SilentFileChangerModel> silentFileChangerBuilder = new SilentFileChangerBuilder(mAsyncPackage, aFilePath, true);
+      IBuilder<SilentFileChangerModel> silentFileChangerBuilder = 
+        new SilentFileChangerBuilder(mVsRunningDocumentTableService, mVsFileChangeService, aFilePath, true);
       silentFileChangerBuilder.Build();
       var silentFile = silentFileChangerBuilder.GetResult();
 
@@ -134,7 +143,7 @@ namespace ClangPowerTools.SilentFile
     /// <summary>
     /// Stop ignoring the file changes for a certain files
     /// </summary>
-    public async void Resume(SilentFileChangerModel aSilentFileChanger)
+    public void Resume(SilentFileChangerModel aSilentFileChanger)
     {
       if (null == aSilentFileChanger)
         return;
@@ -145,15 +154,12 @@ namespace ClangPowerTools.SilentFile
       if (null != aSilentFileChanger.PersistDocData && aSilentFileChanger.ReloadDocumentFlag)
         aSilentFileChanger.PersistDocData.ReloadDocData(0);
 
-      var fileChangeService = await mAsyncPackage.GetServiceAsync(typeof(SVsFileChangeService)) as IVsFileChangeService;
-      var fileChange = await fileChangeService.GetVsFileChangeAsync(mAsyncPackage, new CancellationToken());
-
-      if (fileChange == null)
+      if (mVsFileChangeService == null)
         return;
 
       aSilentFileChanger.IsSuspended = false;
-      ErrorHandler.ThrowOnFailure(fileChange.SyncFile(aSilentFileChanger.DocumentFileName));
-      ErrorHandler.ThrowOnFailure(fileChange.IgnoreFile(0, aSilentFileChanger.DocumentFileName, 0));
+      ErrorHandler.ThrowOnFailure(mVsFileChangeService.SyncFile(aSilentFileChanger.DocumentFileName));
+      ErrorHandler.ThrowOnFailure(mVsFileChangeService.IgnoreFile(0, aSilentFileChanger.DocumentFileName, 0));
       if (aSilentFileChanger.FileChangeControl != null)
         ErrorHandler.ThrowOnFailure(aSilentFileChanger.FileChangeControl.IgnoreFileChanges(0));
     }
