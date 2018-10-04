@@ -111,15 +111,13 @@ namespace ClangPowerTools
       var vsStatusBar = await GetServiceAsync(typeof(SVsStatusbar)) as IVsStatusbar;
       VsServiceProvider.Register(typeof(SVsStatusbar), vsStatusBar);
 
-      // Init the status bar
-      StatusBarHandler.Initialize(vsStatusBar);
-
 
       #region Get Pointer to IVsSolutionEvents
 
       UnadviseSolutionEvents();
       // Get VS Solution service async
       mSolution = await GetServiceAsync(typeof(SVsSolution)) as IVsSolution;
+      VsServiceProvider.Register(typeof(SVsSolution), mSolution);
       AdviseSolutionEvents();
 
       #endregion
