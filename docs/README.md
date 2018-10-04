@@ -51,12 +51,12 @@ Auto-format source file on save, configurable [style options](https://clang.llvm
 Visual Studio 2015 / 2017
 
 Download and install **Clang for Windows** (LLVM pre-built binary)  
-[LLVM-6.0.1-win64](http://releases.llvm.org/6.0.1/LLVM-6.0.1-win64.exe)  
+[LLVM-7.0.0-win64](http://releases.llvm.org/7.0.0/LLVM-7.0.0-win64.exe)  
 [releases.llvm.org/download.html](http://releases.llvm.org/download.html)
 
 We will automatically load clang from the default installation path *C:\Program Files\LLVM*. If you prefer to use a different location you must manually add the **bin** folder to **PATH**.  
 
-Windows 7: Download and install at least [PowerShell 3.0](https://www.microsoft.com/en-us/download/details.aspx?id=34595) (already available on Windows10)  
+Windows 7: Download and install at least [PowerShell 3.0](https://www.microsoft.com/en-us/download/details.aspx?id=34595) (already available on Windows 10)  
 
 ### Tips / Q & A
 
