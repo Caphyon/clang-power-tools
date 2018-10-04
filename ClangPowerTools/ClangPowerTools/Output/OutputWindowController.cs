@@ -19,7 +19,7 @@ namespace ClangPowerTools.Output
 
     private OutputProcessor mOutputProcessor = new OutputProcessor();
 
-    private IAsyncBuilder<OutputWindowModel> mOutputWindowBuilder;
+    private IBuilder<OutputWindowModel> mOutputWindowBuilder;
 
     private OutputContentModel mOutputContent = new OutputContentModel();
    
@@ -52,19 +52,19 @@ namespace ClangPowerTools.Output
     #region Output window operations
 
 
-    public async System.Threading.Tasks.Task InitializeAsync(AsyncPackage aPackage, IVsOutputWindow aVsOutputWindow)
+    public void Initialize(AsyncPackage aPackage, IVsOutputWindow aVsOutputWindow)
     {
       if (null == mOutputWindowBuilder)
         mOutputWindowBuilder = new OutputWindowBuilder(aPackage, aVsOutputWindow);
 
-      await mOutputWindowBuilder.AsyncBuild();
+      mOutputWindowBuilder.Build();
     }
 
 
     public void Clear()
     {
       mOutputContent = new OutputContentModel();
-      var outputWindow = mOutputWindowBuilder.GetAsyncResult();
+      var outputWindow = mOutputWindowBuilder.GetResult();
       UIUpdater.Invoke(() =>
       {
         outputWindow.Pane.Clear();
@@ -73,7 +73,7 @@ namespace ClangPowerTools.Output
 
     public void Show()
     {
-      var outputWindow = mOutputWindowBuilder.GetAsyncResult();
+      var outputWindow = mOutputWindowBuilder.GetResult();
       UIUpdater.Invoke(() =>
       {
         outputWindow.Pane.Activate();
@@ -87,7 +87,7 @@ namespace ClangPowerTools.Output
       if (String.IsNullOrWhiteSpace(aMessage))
         return;
 
-      var outputWindow = mOutputWindowBuilder.GetAsyncResult();
+      var outputWindow = mOutputWindowBuilder.GetResult();
       UIUpdater.Invoke(() =>
       {
         outputWindow.Pane.OutputStringThreadSafe(aMessage + "\n");

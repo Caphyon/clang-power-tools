@@ -1,11 +1,12 @@
-﻿using System;
-using ClangPowerTools.Builder;
+﻿using ClangPowerTools.Builder;
+using ClangPowerTools.Services;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using System;
 
 namespace ClangPowerTools.Output
 {
-  public class OutputWindowBuilder : IAsyncBuilder<OutputWindowModel>
+  public class OutputWindowBuilder : IBuilder<OutputWindowModel>
   {
     #region Private Members
 
@@ -45,13 +46,13 @@ namespace ClangPowerTools.Output
     #region IAsyncBuilder Implementation
 
 
-    public async System.Threading.Tasks.Task AsyncBuild()
+    public void Build()
     {
       // Get the VS Output Window 
       if (null == mOutputWindowModel.VsOutputWindow)
       {
-        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(mAsyncPackage.DisposalToken);
-        mOutputWindowModel.VsOutputWindow = await mAsyncPackage.GetServiceAsync(typeof(SVsOutputWindow)) as IVsOutputWindow;
+        if (VsServiceProvider.TryGetService(typeof(SVsOutputWindow), out object vsOutputWindow))
+          mOutputWindowModel.VsOutputWindow = vsOutputWindow as IVsOutputWindow;
       }
 
       if (null == mOutputWindowModel.Pane)
@@ -70,10 +71,7 @@ namespace ClangPowerTools.Output
       }
     }
 
-    public OutputWindowModel GetAsyncResult() => mOutputWindowModel;
-
-    //public OutputWindowModel GetAsyncResult => mOutputWindow;
-
+    public OutputWindowModel GetResult() => mOutputWindowModel;
 
     #endregion
 

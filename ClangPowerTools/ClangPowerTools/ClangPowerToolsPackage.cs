@@ -95,10 +95,9 @@ namespace ClangPowerTools
       // Switches to the UI thread in order to consume some services used in command initialization
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-      // Get DTE service async
+      // Get DTE service async 
       var dte = await GetServiceAsync(typeof(DTE)) as DTE2;
       VsServiceProvider.Register(typeof(DTE), dte);
-
 
       // Get VS Output Window service async
       var vsOutputWindow = await GetServiceAsync(typeof(SVsOutputWindow)) as IVsOutputWindow;
@@ -106,7 +105,7 @@ namespace ClangPowerTools
 
       // Initialize the commands controller
       mOutputController = new OutputWindowController();
-      await mOutputController.InitializeAsync(this, vsOutputWindow);
+      mOutputController.Initialize(this, vsOutputWindow);
 
       // Get the status bar service async
       var vsStatusBar = await GetServiceAsync(typeof(SVsStatusbar)) as IVsStatusbar;
