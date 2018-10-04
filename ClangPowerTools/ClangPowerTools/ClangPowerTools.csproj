@@ -178,6 +178,7 @@
     <Compile Include="Options\ViewModel\ConfigurationPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Services\VsServiceProvider.cs" />
     <Compile Include="SettingsPathBuilder.cs" />
     <Compile Include="SilentFile\SilentFileChangerBuilder.cs" />
     <Compile Include="SilentFile\SilentFileChangerEqualityComparer.cs" />
@@ -428,9 +429,7 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Page Include="Options\View\ClangFormatOptionsUserControl.xaml">
       <SubType>Designer</SubType>
