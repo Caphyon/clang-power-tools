@@ -1,6 +1,8 @@
 ﻿using ClangPowerTools.Builder;
 using ClangPowerTools.Convertors;
 using ClangPowerTools.DialogPages;
+using ClangPowerTools.Services;
+using EnvDTE;
 using EnvDTE80;
 using System;
 
@@ -24,7 +26,6 @@ namespace ClangPowerTools.Script
     private ClangTidyPredefinedChecksOptionsView mTidyChecks;
     private ClangTidyCustomChecksOptionsView mTidyCustomChecks;
     private ClangFormatOptionsView mClangFormatView;
-    private DTE2 mDTEObj;
 
     private string mVsEdition;
     private string mVsVersion;
@@ -42,14 +43,13 @@ namespace ClangPowerTools.Script
     /// Instance constructor
     /// </summary>
     public GenericScriptBuilder(ClangGeneralOptionsView aGeneralOptions, ClangTidyOptionsView aTidyOptions, ClangTidyPredefinedChecksOptionsView aTidyChecks,
-      ClangTidyCustomChecksOptionsView aTidyCustomChecks, ClangFormatOptionsView aClangFormatView, DTE2 aDTEObj, string aVsEdition, string aVsVersion, bool aTidyFixFlag = false)
+      ClangTidyCustomChecksOptionsView aTidyCustomChecks, ClangFormatOptionsView aClangFormatView, string aVsEdition, string aVsVersion, bool aTidyFixFlag = false)
     {
       mGeneralOptions = aGeneralOptions;
       mTidyOptions = aTidyOptions;
       mTidyChecks = aTidyChecks;
       mTidyCustomChecks = aTidyCustomChecks;
       mClangFormatView = aClangFormatView;
-      mDTEObj = aDTEObj;
       mVsEdition = aVsEdition;
       mVsVersion = aVsVersion;
       mTidyFixFlag = aTidyFixFlag;
@@ -82,7 +82,8 @@ namespace ClangPowerTools.Script
       mScript += $" {ScriptConstants.kVsVersion} {mVsVersion} {ScriptConstants.kVsEdition} {mVsEdition}";
 
       // Append the solution path
-      mScript += $" {ScriptConstants.kDirectory} ''{mDTEObj.Solution.FullName}''";
+      if(VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+        mScript += $" {ScriptConstants.kDirectory} ''{(dte as DTE2).Solution.FullName}''";
     }
 
 

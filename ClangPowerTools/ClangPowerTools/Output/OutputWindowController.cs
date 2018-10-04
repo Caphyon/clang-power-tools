@@ -1,5 +1,7 @@
 ﻿using ClangPowerTools.Builder;
 using ClangPowerTools.Handlers;
+using ClangPowerTools.Services;
+using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -20,9 +22,7 @@ namespace ClangPowerTools.Output
     private IAsyncBuilder<OutputWindowModel> mOutputWindowBuilder;
 
     private OutputContentModel mOutputContent = new OutputContentModel();
-
-    private DTE2 mDte = null;
-
+   
 
     #endregion
 
@@ -52,9 +52,8 @@ namespace ClangPowerTools.Output
     #region Output window operations
 
 
-    public async System.Threading.Tasks.Task InitializeAsync(AsyncPackage aPackage, IVsOutputWindow aVsOutputWindow, DTE2 aDte)
+    public async System.Threading.Tasks.Task InitializeAsync(AsyncPackage aPackage, IVsOutputWindow aVsOutputWindow)
     {
-      mDte = aDte;
       if (null == mOutputWindowBuilder)
         mOutputWindowBuilder = new OutputWindowBuilder(aPackage, aVsOutputWindow);
 
@@ -78,7 +77,8 @@ namespace ClangPowerTools.Output
       UIUpdater.Invoke(() =>
       {
         outputWindow.Pane.Activate();
-        mDte.ExecuteCommand("View.Output", string.Empty);
+        if(VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+          (dte as DTE2).ExecuteCommand("View.Output", string.Empty);
       });
     }
 
