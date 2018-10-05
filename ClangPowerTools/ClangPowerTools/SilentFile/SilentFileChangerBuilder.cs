@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Builder;
+using ClangPowerTools.Services;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
@@ -13,8 +14,6 @@ namespace ClangPowerTools.SilentFile
     #region Members
 
     private SilentFileChangerModel mSilentFileChangerModel;
-    private IVsRunningDocumentTable mVsRunningDocumentTableService;
-    private IVsFileChangeEx mVsFileChangeService;
 
     #endregion
 
@@ -28,12 +27,8 @@ namespace ClangPowerTools.SilentFile
     /// <param name="aSite">Async package</param>
     /// <param name="aFileName">The file path of the file for which the changes will be ignored</param>
     /// <param name="aReloadDocument">True if the file will be reloaded. False otherwise</param>
-    public SilentFileChangerBuilder(IVsRunningDocumentTable aVsRunningDocumentTableService, 
-      IVsFileChangeEx aVsFileChangeServicestring, string aFileName, bool aReloadDocument)
+    public SilentFileChangerBuilder(string aFileName, bool aReloadDocument)
     {
-      mVsRunningDocumentTableService = aVsRunningDocumentTableService;
-      mVsFileChangeService = aVsFileChangeServicestring;
-
       mSilentFileChangerModel = new SilentFileChangerModel()
       {
         DocumentFileName = aFileName,
@@ -57,19 +52,19 @@ namespace ClangPowerTools.SilentFile
       var docData = IntPtr.Zero;
       try
       {
-        if (mVsRunningDocumentTableService == null)
+        if (!VsServiceProvider.TryGetService(typeof(SVsRunningDocumentTable), out object vsRunningDocTable) || null == vsRunningDocTable as IVsRunningDocumentTable)
           return;
 
-        ErrorHandler.ThrowOnFailure(mVsRunningDocumentTableService.FindAndLockDocument((uint)_VSRDTFLAGS.RDT_NoLock, mSilentFileChangerModel.DocumentFileName,
-          out IVsHierarchy hierarchy, out uint itemId, out docData, out uint docCookie));
+        ErrorHandler.ThrowOnFailure((vsRunningDocTable as IVsRunningDocumentTable).FindAndLockDocument((uint)_VSRDTFLAGS.RDT_NoLock, 
+          mSilentFileChangerModel.DocumentFileName, out IVsHierarchy hierarchy, out uint itemId, out docData, out uint docCookie));
 
         if ((docCookie == (uint)ShellConstants.VSDOCCOOKIE_NIL) || docData == IntPtr.Zero)
           return;
 
-        if (mVsFileChangeService == null)
+        if (!VsServiceProvider.TryGetService(typeof(SVsFileChangeEx), out object vsFileChange) || null == vsFileChange as IVsFileChangeEx)
           return;
 
-        ErrorHandler.ThrowOnFailure(mVsFileChangeService.IgnoreFile(0, mSilentFileChangerModel.DocumentFileName, 1));
+        ErrorHandler.ThrowOnFailure((vsFileChange as IVsFileChangeEx).IgnoreFile(0, mSilentFileChangerModel.DocumentFileName, 1));
         if (docData == IntPtr.Zero)
           return;
 

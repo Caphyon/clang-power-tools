@@ -111,6 +111,13 @@ namespace ClangPowerTools
       var vsStatusBar = await GetServiceAsync(typeof(SVsStatusbar)) as IVsStatusbar;
       VsServiceProvider.Register(typeof(SVsStatusbar), vsStatusBar);
 
+      // Get Vs Running Document Table service async
+      var vsRunningDocumentTable = await GetServiceAsync(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
+      VsServiceProvider.Register(typeof(SVsRunningDocumentTable), vsRunningDocumentTable);
+
+      // Get Vs File Change service async
+      var vsFileChange = await GetServiceAsync(typeof(SVsFileChangeEx)) as IVsFileChangeEx;
+      VsServiceProvider.Register(typeof(SVsFileChangeEx), vsFileChange);
 
       #region Get Pointer to IVsSolutionEvents
 

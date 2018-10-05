@@ -148,15 +148,6 @@ namespace ClangPowerTools
       mCommandsController.Running = true;
       mFix = SetTidyFixParameter(sender);
 
-      // Switch to the UI thread 
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(AsyncPackage.DisposalToken);
-
-      // Get Vs Running Document Table service async
-      var vsRunningDocumentTable = await AsyncPackage.GetServiceAsync(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
-
-      // Get Vs File Change service async
-      var vsFileChange = await AsyncPackage.GetServiceAsync(typeof(SVsFileChangeEx)) as IVsFileChangeEx;
-
       await System.Threading.Tasks.Task.Run(() =>
       {
         try
@@ -171,7 +162,7 @@ namespace ClangPowerTools
 
           CollectSelectedItems(ScriptConstants.kAcceptedFileExtensions);
 
-          using (var silentFileController = new SilentFileChangerController(vsRunningDocumentTable, vsFileChange))
+          using (var silentFileController = new SilentFileChangerController())
           {
             using (var fileChangerWatcher = new FileChangerWatcher())
             {

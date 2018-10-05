@@ -6,7 +6,6 @@ using System.Xml.Linq;
 using ClangPowerTools.DialogPages;
 using ClangPowerTools.Output;
 using EnvDTE;
-using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;

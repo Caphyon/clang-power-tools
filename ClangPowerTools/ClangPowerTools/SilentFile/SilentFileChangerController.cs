@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Builder;
+using ClangPowerTools.Services;
 using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -21,35 +22,7 @@ namespace ClangPowerTools.SilentFile
     /// </summary>
     private HashSet<SilentFileChangerModel> mSilentFileChangers =
           new HashSet<SilentFileChangerModel>(new SilentFileChangerEqualityComparer());
-    
-
-    /// <summary>
-    /// Vs Running Document Table service instance
-    /// </summary>
-    private IVsRunningDocumentTable mVsRunningDocumentTableService;
-
-
-    /// <summary>
-    /// Vs File Change service instance
-    /// </summary>
-    private IVsFileChangeEx mVsFileChangeService;
-
-
-    #endregion
-
-
-    #region Constructor 
-
-    /// <summary>
-    /// Instance Constructor
-    /// </summary>
-    /// <param name="aAsyncPackage"></param>
-    public SilentFileChangerController(IVsRunningDocumentTable aVsRunningDocumentTableService, IVsFileChangeEx aVsFileChangeService)
-    {
-      mVsRunningDocumentTableService = aVsRunningDocumentTableService;
-      mVsFileChangeService = aVsFileChangeService;
-    }
-
+   
 
     #endregion
 
@@ -121,7 +94,7 @@ namespace ClangPowerTools.SilentFile
     private SilentFileChangerModel GetNewSilentFileChanger(string aFilePath)
     {
       IBuilder<SilentFileChangerModel> silentFileChangerBuilder = 
-        new SilentFileChangerBuilder(mVsRunningDocumentTableService, mVsFileChangeService, aFilePath, true);
+        new SilentFileChangerBuilder(aFilePath, true);
       silentFileChangerBuilder.Build();
       var silentFile = silentFileChangerBuilder.GetResult();
 
@@ -154,12 +127,13 @@ namespace ClangPowerTools.SilentFile
       if (null != aSilentFileChanger.PersistDocData && aSilentFileChanger.ReloadDocumentFlag)
         aSilentFileChanger.PersistDocData.ReloadDocData(0);
 
-      if (mVsFileChangeService == null)
+      if (!VsServiceProvider.TryGetService(typeof(SVsFileChangeEx), out object vsFileChangeService) || null == vsFileChangeService as IVsFileChangeEx)
         return;
 
+      var vsFileChange = vsFileChangeService as IVsFileChangeEx;
       aSilentFileChanger.IsSuspended = false;
-      ErrorHandler.ThrowOnFailure(mVsFileChangeService.SyncFile(aSilentFileChanger.DocumentFileName));
-      ErrorHandler.ThrowOnFailure(mVsFileChangeService.IgnoreFile(0, aSilentFileChanger.DocumentFileName, 0));
+      ErrorHandler.ThrowOnFailure(vsFileChange.SyncFile(aSilentFileChanger.DocumentFileName));
+      ErrorHandler.ThrowOnFailure(vsFileChange.IgnoreFile(0, aSilentFileChanger.DocumentFileName, 0));
       if (aSilentFileChanger.FileChangeControl != null)
         ErrorHandler.ThrowOnFailure(aSilentFileChanger.FileChangeControl.IgnoreFileChanges(0));
     }
