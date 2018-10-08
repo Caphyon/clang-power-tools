@@ -1,4 +1,5 @@
-﻿using EnvDTE;
+﻿using ClangPowerTools.Services;
+using EnvDTE;
 using EnvDTE80;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,7 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public void CollectSelectedFiles(DTE2 aDte, ProjectItem aProjectItem)
+    public void CollectSelectedFiles(ProjectItem aProjectItem)
     {
       try
       {
@@ -46,7 +47,10 @@ namespace ClangPowerTools
         }
 
         // the command has been given from Solution Explorer or toolbar
-        Array selectedItems = aDte.ToolWindows.SolutionExplorer.SelectedItems as Array;
+        Array selectedItems = null;
+        if ( VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+          selectedItems = (dte as DTE2).ToolWindows.SolutionExplorer.SelectedItems as Array;
+
         if (null == selectedItems || 0 == selectedItems.Length)
           return;
 
@@ -70,6 +74,9 @@ namespace ClangPowerTools
 
     public void AddProjectItem(ProjectItem aItem)
     {
+      if (null == aItem)
+        return; 
+
       var fileExtension = Path.GetExtension(aItem.Name).ToLower();
       if ( null != mAcceptedFileExtensions && false == mAcceptedFileExtensions.Contains(fileExtension))
         return;

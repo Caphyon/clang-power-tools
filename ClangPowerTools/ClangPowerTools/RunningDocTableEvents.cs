@@ -1,4 +1,5 @@
-﻿using EnvDTE;
+﻿using ClangPowerTools.Services;
+using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -12,7 +13,6 @@ namespace ClangPowerTools
     #region Members
 
     private RunningDocumentTable mRunningDocumentTable;
-    private DTE mDte;
 
     public delegate void OnBeforeSaveHandler(object sender, Document document);
     public event OnBeforeSaveHandler BeforeSave;
@@ -25,7 +25,6 @@ namespace ClangPowerTools
     {
       try
       {
-        mDte = (DTE)Package.GetGlobalService(typeof(DTE));
         mRunningDocumentTable = new RunningDocumentTable(aPackage);
         mRunningDocumentTable.Advise(this);
       }
@@ -104,7 +103,9 @@ namespace ClangPowerTools
       try
       {
         var documentInfo = mRunningDocumentTable.GetDocumentInfo(docCookie);
-        document = mDte.Documents.Cast<Document>().FirstOrDefault(doc => doc.FullName == documentInfo.Moniker);
+
+        if( VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+          document = (dte as DTE).Documents.Cast<Document>().FirstOrDefault(doc => doc.FullName == documentInfo.Moniker);
       }
       catch (Exception)
       {

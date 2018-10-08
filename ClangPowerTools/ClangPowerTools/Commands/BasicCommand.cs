@@ -1,5 +1,4 @@
 ﻿using System;
-using EnvDTE80;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.Shell;
 
@@ -34,25 +33,19 @@ namespace ClangPowerTools
 
     protected IServiceProvider ServiceProvider => Package;
 
-    protected DTE2 DTEObj { get; set; }
-
     #endregion
 
     #region Constructor
 
-
-    protected BasicCommand(DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
+    protected BasicCommand(AsyncPackage aPackage, Guid aGuid, int aId)
     {
       AsyncPackage = aPackage ?? throw new ArgumentNullException("AsyncPackage");
       CommandSet = aGuid;
       Id = aId;
-      DTEObj = aDte;
     }
 
     #endregion
 
   }
-
-
 
 }

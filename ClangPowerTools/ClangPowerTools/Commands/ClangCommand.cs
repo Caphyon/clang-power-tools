@@ -2,6 +2,7 @@
 using ClangPowerTools.DialogPages;
 using ClangPowerTools.Output;
 using ClangPowerTools.Script;
+using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -59,8 +60,8 @@ namespace ClangPowerTools
 
 
     public ClangCommand(CommandsController aCommandsController, ErrorWindowController aErrorWindow, OutputWindowController aOutputWindow,
-      IVsSolution aSolution, DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
-        : base(aDte, aPackage, aGuid, aId)
+      IVsSolution aSolution, AsyncPackage aPackage, Guid aGuid, int aId)
+        : base(aPackage, aGuid, aId)
     {
       if (null == mCommandsController)
         mCommandsController = aCommandsController;
@@ -70,10 +71,14 @@ namespace ClangPowerTools
       mGeneralOptions = (ClangGeneralOptionsView)aPackage.GetDialogPage(typeof(ClangGeneralOptionsView));
 
       mSolution = aSolution;
-      mCommand = DTEObj.Commands as Commands2;
-      VsEdition = DTEObj.Edition;
-      mVsVersions.TryGetValue(DTEObj.Version, out string version);
-      VsVersion = version;
+      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+      {
+        var dte2 = dte as DTE2;
+        mCommand = dte2.Commands as Commands2;
+        VsEdition = dte2.Edition;
+        mVsVersions.TryGetValue(dte2.Version, out string version);
+        VsVersion = version;
+      }
     }
 
     #endregion
@@ -102,18 +107,19 @@ namespace ClangPowerTools
     {
       try
       {
-        DTEObj.Solution.SaveAs(DTEObj.Solution.FullName);
+        var dte = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
+        dte.Solution.SaveAs(dte.Solution.FullName);
 
         IBuilder<string> runModeScriptBuilder = new RunModeScriptBuilder();
         runModeScriptBuilder.Build();
         var runModeParameters = runModeScriptBuilder.GetResult();
 
         IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(mGeneralOptions, mTidyOptions, mTidyChecks,
-          mTidyCustomChecks, aClangFormatView, DTEObj, VsEdition, VsVersion, aTidyFixFlag);
+          mTidyCustomChecks, aClangFormatView, VsEdition, VsVersion, aTidyFixFlag);
         genericScriptBuilder.Build();
         var genericParameters = genericScriptBuilder.GetResult();
 
-        string solutionPath = DTEObj.Solution.FullName;
+        string solutionPath = dte.Solution.FullName;
 
         InitPowerShell();
         ClearWindows();
@@ -167,7 +173,7 @@ namespace ClangPowerTools
     protected IEnumerable<IItem> CollectSelectedItems(List<string> aAcceptedExtensionTypes = null)
     {
       mItemsCollector = new ItemsCollector(aAcceptedExtensionTypes);
-      mItemsCollector.CollectSelectedFiles(DTEObj, ActiveWindowProperties.GetProjectItemOfActiveWindow(DTEObj));
+      mItemsCollector.CollectSelectedFiles(ActiveWindowProperties.GetProjectItemOfActiveWindow());
       return mItemsCollector.GetItems;
     }
 

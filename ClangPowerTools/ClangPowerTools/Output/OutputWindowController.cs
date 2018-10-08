@@ -1,5 +1,7 @@
 ﻿using ClangPowerTools.Builder;
 using ClangPowerTools.Handlers;
+using ClangPowerTools.Services;
+using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -7,7 +9,6 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace ClangPowerTools.Output
 {
@@ -18,12 +19,10 @@ namespace ClangPowerTools.Output
 
     private OutputProcessor mOutputProcessor = new OutputProcessor();
 
-    private IAsyncBuilder<OutputWindowModel> mOutputWindowBuilder;
+    private IBuilder<OutputWindowModel> mOutputWindowBuilder;
 
     private OutputContentModel mOutputContent = new OutputContentModel();
-
-    private DTE2 mDte = null;
-
+   
 
     #endregion
 
@@ -53,20 +52,19 @@ namespace ClangPowerTools.Output
     #region Output window operations
 
 
-    public async Task<object> Initialize(AsyncPackage aPackage, DTE2 aDte)
+    public void Initialize(AsyncPackage aPackage, IVsOutputWindow aVsOutputWindow)
     {
-      mDte = aDte;
       if (null == mOutputWindowBuilder)
-        mOutputWindowBuilder = new OutputWindowBuilder(aPackage);
+        mOutputWindowBuilder = new OutputWindowBuilder(aPackage, aVsOutputWindow);
 
-      return await mOutputWindowBuilder.AsyncBuild();
+      mOutputWindowBuilder.Build();
     }
 
 
     public void Clear()
     {
       mOutputContent = new OutputContentModel();
-      var outputWindow = mOutputWindowBuilder.GetAsyncResult();
+      var outputWindow = mOutputWindowBuilder.GetResult();
       UIUpdater.Invoke(() =>
       {
         outputWindow.Pane.Clear();
@@ -75,11 +73,12 @@ namespace ClangPowerTools.Output
 
     public void Show()
     {
-      var outputWindow = mOutputWindowBuilder.GetAsyncResult();
+      var outputWindow = mOutputWindowBuilder.GetResult();
       UIUpdater.Invoke(() =>
       {
         outputWindow.Pane.Activate();
-        mDte.ExecuteCommand("View.Output", string.Empty);
+        if(VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+          (dte as DTE2).ExecuteCommand("View.Output", string.Empty);
       });
     }
 
@@ -88,7 +87,7 @@ namespace ClangPowerTools.Output
       if (String.IsNullOrWhiteSpace(aMessage))
         return;
 
-      var outputWindow = mOutputWindowBuilder.GetAsyncResult();
+      var outputWindow = mOutputWindowBuilder.GetResult();
       UIUpdater.Invoke(() =>
       {
         outputWindow.Pane.OutputStringThreadSafe(aMessage + "\n");

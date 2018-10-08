@@ -6,7 +6,6 @@ using System.Xml.Linq;
 using ClangPowerTools.DialogPages;
 using ClangPowerTools.Output;
 using EnvDTE;
-using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
@@ -51,8 +50,8 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
     private ClangFormatCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController, ErrorWindowController aErrorWindow, 
-      OutputWindowController aOutputWindow, IVsSolution aSolution, DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
-        : base(aCommandsController, aErrorWindow, aOutputWindow, aSolution, aDte, aPackage, aGuid, aId)
+      OutputWindowController aOutputWindow, IVsSolution aSolution, AsyncPackage aPackage, Guid aGuid, int aId)
+        : base(aCommandsController, aErrorWindow, aOutputWindow, aSolution, aPackage, aGuid, aId)
     {
       if (null != aCommandService)
       {
@@ -75,14 +74,14 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
     public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController, ErrorWindowController aErrorWindow,
-      OutputWindowController aOutputWindow, IVsSolution aSolution, DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
+      OutputWindowController aOutputWindow, IVsSolution aSolution, AsyncPackage aPackage, Guid aGuid, int aId)
     {
-      // Switch to the main thread - the call to AddCommand in Command1's constructor requires
+      // Switch to the main thread - the call to AddCommand in ClangFormatCommand's constructor requires
       // the UI thread.
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-      Instance = new ClangFormatCommand(commandService, aCommandsController, aErrorWindow, aOutputWindow, aSolution, aDte, aPackage, aGuid, aId);
+      Instance = new ClangFormatCommand(commandService, aCommandsController, aErrorWindow, aOutputWindow, aSolution, aPackage, aGuid, aId);
     }
 
 

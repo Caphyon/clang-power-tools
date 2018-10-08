@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.Design;
-using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 
 namespace ClangPowerTools
@@ -12,7 +11,6 @@ namespace ClangPowerTools
   {
     #region Properties
 
-
     /// <summary>
     /// Gets the instance of the command.
     /// </summary>
@@ -21,7 +19,6 @@ namespace ClangPowerTools
       get;
       private set;
     }
-
 
     #endregion
 
@@ -33,8 +30,8 @@ namespace ClangPowerTools
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    private SettingsCommand(OleMenuCommandService aCommandService, DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
-      : base(aDte, aPackage, aGuid, aId)
+    private SettingsCommand(OleMenuCommandService aCommandService, AsyncPackage aPackage, Guid aGuid, int aId)
+      : base(aPackage, aGuid, aId)
     {
       if (null != aCommandService)
       {
@@ -54,14 +51,14 @@ namespace ClangPowerTools
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async System.Threading.Tasks.Task InitializeAsync(DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
+    public static async System.Threading.Tasks.Task InitializeAsync(AsyncPackage aPackage, Guid aGuid, int aId)
     {
-      // Switch to the main thread - the call to AddCommand in Command1's constructor requires
+      // Switch to the main thread - the call to AddCommand in SettingsCommand's constructor requires
       // the UI thread.
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-      Instance = new SettingsCommand(commandService, aDte, aPackage, aGuid, aId);
+      Instance = new SettingsCommand(commandService, aPackage, aGuid, aId);
     }
 
 

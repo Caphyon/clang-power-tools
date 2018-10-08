@@ -2,7 +2,6 @@
 using ClangPowerTools.DialogPages;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
-using ClangPowerTools.Services.OleMenuCommandCustomService;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;
@@ -59,11 +58,10 @@ namespace ClangPowerTools
     public static readonly Guid CommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
 
     private uint mHSolutionEvents = uint.MaxValue;
-    private RunningDocTableEvents mRunningDocTableEvents;
     private IVsSolution mSolution;
+    private RunningDocTableEvents mRunningDocTableEvents;
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
-    private DTE2 mDte;
     private ErrorWindowController mErrorWindow;
     private OutputWindowController mOutputController;
     private CommandsController mCommandsController = null;
@@ -94,47 +92,60 @@ namespace ClangPowerTools
     /// </summary>
     protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
     {
-      // Create the service factory instance
-      var serviceFactory = new ServiceFactory(this);
-
-      // Add the services on the background thread
-      AddService(typeof(SEnvDTEService), serviceFactory.CreateService);
-      AddService(typeof(SVsSolutionService), serviceFactory.CreateService);
-      AddService(typeof(SVsStatusBarService), serviceFactory.CreateService);
-      AddService(typeof(SVsFileChangeService), serviceFactory.CreateService);
-      AddService(typeof(SVsRunningDocumentTableService), serviceFactory.CreateService);
-      AddService(typeof(SVsOutputWindowService), serviceFactory.CreateService);
-      AddService(typeof(SOleMenuCommandService), serviceFactory.CreateService);
-
       // Switches to the UI thread in order to consume some services used in command initialization
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-      // Get DTE
-      var dteService = await GetServiceAsync(typeof(SEnvDTEService)) as IEnvDTEService;
-      mDte = await dteService.GetDTE2Async(this, cancellationToken);
+      // Get DTE service async 
+      var dte = await GetServiceAsync(typeof(DTE)) as DTE2;
+      VsServiceProvider.Register(typeof(DTE), dte);
+
+      // Get VS Output Window service async
+      var vsOutputWindow = await GetServiceAsync(typeof(SVsOutputWindow)) as IVsOutputWindow;
+      VsServiceProvider.Register(typeof(SVsOutputWindow), vsOutputWindow);
+
+      // Initialize the commands controller
+      mOutputController = new OutputWindowController();
+      mOutputController.Initialize(this, vsOutputWindow);
+
+      // Get the status bar service async
+      var vsStatusBar = await GetServiceAsync(typeof(SVsStatusbar)) as IVsStatusbar;
+      VsServiceProvider.Register(typeof(SVsStatusbar), vsStatusBar);
+
+      // Get Vs Running Document Table service async
+      var vsRunningDocumentTable = await GetServiceAsync(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
+      VsServiceProvider.Register(typeof(SVsRunningDocumentTable), vsRunningDocumentTable);
+
+      // Get Vs File Change service async
+      var vsFileChange = await GetServiceAsync(typeof(SVsFileChangeEx)) as IVsFileChangeEx;
+      VsServiceProvider.Register(typeof(SVsFileChangeEx), vsFileChange);
+
+      #region Get Pointer to IVsSolutionEvents
+
+      UnadviseSolutionEvents();
+      // Get VS Solution service async
+      mSolution = await GetServiceAsync(typeof(SVsSolution)) as IVsSolution;
+      VsServiceProvider.Register(typeof(SVsSolution), mSolution);
+      AdviseSolutionEvents();
+
+      #endregion
+
 
       mRunningDocTableEvents = new RunningDocTableEvents(this);
       mErrorWindow = new ErrorWindowController(this);
 
       //Settings command is always visible
-      await SettingsCommand.InitializeAsync(mDte, this, CommandSet, CommandIds.kSettingsId);
+      await SettingsCommand.InitializeAsync(this, CommandSet, CommandIds.kSettingsId);
 
       // Get the build and command events from DTE
-      mBuildEvents = mDte.Events.BuildEvents;
-      mCommandEvents = mDte.Events.CommandEvents;
+      mBuildEvents = dte.Events.BuildEvents;
+      mCommandEvents = dte.Events.CommandEvents;
 
       // Get the general clang option page
-      var generalOptions = (ClangGeneralOptionsView)this.GetDialogPage(typeof(ClangGeneralOptionsView));
+      var generalOptions = (ClangGeneralOptionsView)GetDialogPage(typeof(ClangGeneralOptionsView));
 
       // Detect the first install 
       if (null == generalOptions.Version || string.IsNullOrWhiteSpace(generalOptions.Version))
-        ShowToolbare(mDte); // Show the toolbar on the first install
-
-      // Access the IVsSolutionEvents 
-      await AdviseSolutionEvents(cancellationToken);
-
-      // Init the status bar
-      await StatusBarHandler.InitializeAsync(this, cancellationToken);
+        ShowToolbare(); // Show the toolbar on the first install
 
       await base.InitializeAsync(cancellationToken, progress);
     }
@@ -142,18 +153,13 @@ namespace ClangPowerTools
 
     #endregion
 
+
     #region Get Pointer to IVsSolutionEvents
 
-    private async System.Threading.Tasks.Task AdviseSolutionEvents(CancellationToken cancellationToken)
+    private void AdviseSolutionEvents()
     {
       try
       {
-        UnadviseSolutionEvents();
-
-        // Get VsSolution 
-        var vsSolutionService = await GetServiceAsync(typeof(SVsSolutionService)) as IVsSolutionService;
-        mSolution = await vsSolutionService.GetVsSolutionAsync(this, cancellationToken);
-
         mSolution?.AdviseSolutionEvents(this, out mHSolutionEvents);
       }
       catch (Exception)
@@ -165,15 +171,18 @@ namespace ClangPowerTools
     {
       if (null == mSolution)
         return;
+
       if (uint.MaxValue != mHSolutionEvents)
       {
         mSolution.UnadviseSolutionEvents(mHSolutionEvents);
         mHSolutionEvents = uint.MaxValue;
       }
+
       mSolution = null;
     }
 
     #endregion
+
 
     #region IVsSolutionEvents Implementation
 
@@ -212,26 +221,26 @@ namespace ClangPowerTools
     }
 
 
-    private async System.Threading.Tasks.Task<object> InitializeCommands()
+    private async System.Threading.Tasks.Task<object> InitializeAsyncCommands()
     {
       return await System.Threading.Tasks.Task.Run(async () =>
       {
-       if (null == CompileCommand.Instance)
-         await CompileCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kCompileId);
+        if (null == CompileCommand.Instance)
+          await CompileCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, this, CommandSet, CommandIds.kCompileId);
 
-       if (null == TidyCommand.Instance)
-       {
-         await TidyCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kTidyId);
-         await TidyCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kTidyFixId);
-       }
+        if (null == TidyCommand.Instance)
+        {
+          await TidyCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, this, CommandSet, CommandIds.kTidyId);
+          await TidyCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, this, CommandSet, CommandIds.kTidyFixId);
+        }
 
-       if (null == ClangFormatCommand.Instance)
-         await ClangFormatCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kClangFormat);
+        if (null == ClangFormatCommand.Instance)
+          await ClangFormatCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, this, CommandSet, CommandIds.kClangFormat);
 
-       if (null == StopClang.Instance)
-         await StopClang.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, mDte, this, CommandSet, CommandIds.kStopClang);
+        if (null == StopClang.Instance)
+          await StopClang.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, this, CommandSet, CommandIds.kStopClang);
 
-       return new object();
+        return new object();
       });
 
     }
@@ -278,11 +287,8 @@ namespace ClangPowerTools
 
     private async void PrepareExtension()
     {
-      mOutputController = new OutputWindowController();
-      await mOutputController.Initialize(this, mDte);
-
-      mCommandsController = new CommandsController(this, mDte);
-      await InitializeCommands();
+      mCommandsController = new CommandsController(this);
+      await InitializeAsyncCommands();
 
       var generalOptions = (ClangGeneralOptionsView)this.GetDialogPage(typeof(ClangGeneralOptionsView));
       var currentVersion = GetPackageVersion();
@@ -312,7 +318,7 @@ namespace ClangPowerTools
     }
 
 
-    public string GetPackageVersion()
+    private string GetPackageVersion()
     {
       var assemblyPath = Assembly.GetExecutingAssembly().Location;
       assemblyPath = assemblyPath.Substring(0, assemblyPath.LastIndexOf('\\'));
@@ -326,11 +332,15 @@ namespace ClangPowerTools
       return identity.GetAttribute("Version");
     }
 
-    private void ShowToolbare(DTE2 aDte)
+
+    private void ShowToolbare()
     {
-      var cbs = ((CommandBars)aDte.CommandBars);
-      CommandBar cb = cbs["Clang Power Tools"];
-      cb.Visible = true;
+      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+      {
+        var cbs = ((CommandBars)(dte as DTE2).CommandBars);
+        CommandBar cb = cbs["Clang Power Tools"];
+        cb.Visible = true;
+      }
     }
 
     #endregion

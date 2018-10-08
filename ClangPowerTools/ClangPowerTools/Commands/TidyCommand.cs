@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.DialogPages;
 using ClangPowerTools.Output;
+using ClangPowerTools.Services;
 using ClangPowerTools.SilentFile;
 using EnvDTE;
 using EnvDTE80;
@@ -55,16 +56,14 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
 
-    private TidyCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController, ErrorWindowController aErrorWindow, 
-      OutputWindowController aOutputWindow, IVsSolution aSolution, DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
-        : base(aCommandsController, aErrorWindow, aOutputWindow, aSolution, aDte, aPackage, aGuid, aId)
+    private TidyCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController, ErrorWindowController aErrorWindow,
+      OutputWindowController aOutputWindow, IVsSolution aSolution, AsyncPackage aPackage, Guid aGuid, int aId)
+        : base(aCommandsController, aErrorWindow, aOutputWindow, aSolution, aPackage, aGuid, aId)
     {
       mTidyOptions = (ClangTidyOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyOptionsView));
       mTidyChecks = (ClangTidyPredefinedChecksOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyPredefinedChecksOptionsView));
       mTidyCustomChecks = (ClangTidyCustomChecksOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyCustomChecksOptionsView));
       mClangFormatView = (ClangFormatOptionsView)AsyncPackage.GetDialogPage(typeof(ClangFormatOptionsView));
-
-      FileOpener.Initialize(DTEObj);
 
       if (null != aCommandService)
       {
@@ -87,15 +86,15 @@ namespace ClangPowerTools
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController, ErrorWindowController aErrorWindow, 
-      OutputWindowController aOutputWindow, IVsSolution aSolution, DTE2 aDte, AsyncPackage aPackage, Guid aGuid, int aId)
+    public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController, ErrorWindowController aErrorWindow,
+      OutputWindowController aOutputWindow, IVsSolution aSolution, AsyncPackage aPackage, Guid aGuid, int aId)
     {
-      // Switch to the main thread - the call to AddCommand in Command1's constructor requires
+      // Switch to the main thread - the call to AddCommand in TidyCommand's constructor requires
       // the UI thread.
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-      Instance = new TidyCommand(commandService, aCommandsController, aErrorWindow, aOutputWindow, aSolution, aDte, aPackage, aGuid, aId);
+      Instance = new TidyCommand(commandService, aCommandsController, aErrorWindow, aOutputWindow, aSolution, aPackage, aGuid, aId);
     }
 
 
@@ -153,12 +152,17 @@ namespace ClangPowerTools
       {
         try
         {
-          DocumentsHandler.SaveActiveDocuments((DTE)DTEObj);
-          AutomationUtil.SaveDirtyProjects(DTEObj.Solution);
+          DocumentsHandler.SaveActiveDocuments();
+
+          if (!VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+            return;
+
+          var dte2 = dte as DTE2;
+          AutomationUtil.SaveDirtyProjects(dte2.Solution);
 
           CollectSelectedItems(ScriptConstants.kAcceptedFileExtensions);
 
-          using (var silentFileController = new SilentFileChangerController(AsyncPackage))
+          using (var silentFileController = new SilentFileChangerController())
           {
             using (var fileChangerWatcher = new FileChangerWatcher())
             {
@@ -166,8 +170,8 @@ namespace ClangPowerTools
               {
                 fileChangerWatcher.OnChanged += FileOpener.Open;
 
-                string solutionFolderPath = DTEObj.Solution.FullName
-                  .Substring(0, DTEObj.Solution.FullName.LastIndexOf('\\'));
+                string solutionFolderPath = dte2.Solution.FullName
+                  .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
 
                 fileChangerWatcher.Run(solutionFolderPath);
 
@@ -175,7 +179,7 @@ namespace ClangPowerTools
                 var filesPath = fileCollector.Collect(mItemsCollector.GetItems).ToList();
 
                 silentFileController.SilentFiles(filesPath);
-                silentFileController.SilentFiles(DTEObj.Documents);
+                silentFileController.SilentFiles(dte2.Documents);
               }
               RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mTidyChecks, mTidyCustomChecks, mClangFormatView, mFix);
             }

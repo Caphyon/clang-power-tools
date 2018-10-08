@@ -1,6 +1,6 @@
-﻿using EnvDTE;
+﻿using ClangPowerTools.Services;
+using EnvDTE;
 using EnvDTE80;
-using System;
 
 namespace ClangPowerTools
 {
@@ -8,18 +8,15 @@ namespace ClangPowerTools
   {
     #region Public Methods
 
-    public static ProjectItem GetProjectItemOfActiveWindow(DTE2 aDte)
+    public static ProjectItem GetProjectItemOfActiveWindow()
     {
-      try
+      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {
-        var activeWindow = aDte.ActiveWindow;
+        var activeWindow = (dte as DTE2).ActiveWindow;
         activeWindow.Activate();
         return activeWindow.ProjectItem;
       }
-      catch (Exception)
-      {
-        return null;
-      }
+      return null;
     }
 
     #endregion
