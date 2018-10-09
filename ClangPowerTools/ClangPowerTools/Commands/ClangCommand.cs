@@ -25,7 +25,6 @@ namespace ClangPowerTools
     protected ClangGeneralOptionsView mGeneralOptions;
 
     private Commands2 mCommand;
-    private IVsSolution mSolution;
 
     private ErrorWindowController mErrorWindow;
     private OutputWindowController mOutputWindow;
@@ -59,8 +58,8 @@ namespace ClangPowerTools
     #region Constructor
 
 
-    public ClangCommand(CommandsController aCommandsController, ErrorWindowController aErrorWindow, OutputWindowController aOutputWindow,
-      IVsSolution aSolution, AsyncPackage aPackage, Guid aGuid, int aId)
+    public ClangCommand(CommandsController aCommandsController, ErrorWindowController aErrorWindow, 
+      OutputWindowController aOutputWindow, AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aPackage, aGuid, aId)
     {
       if (null == mCommandsController)
@@ -70,7 +69,6 @@ namespace ClangPowerTools
       mOutputWindow = aOutputWindow;
       mGeneralOptions = (ClangGeneralOptionsView)aPackage.GetDialogPage(typeof(ClangGeneralOptionsView));
 
-      mSolution = aSolution;
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {
         var dte2 = dte as DTE2;
@@ -127,6 +125,9 @@ namespace ClangPowerTools
 
         StatusBarHandler.Status(aCommandName + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
 
+        VsServiceProvider.TryGetService(typeof(SVsSolution), out object vsSolutionService);
+        var vsSolution = vsSolutionService as IVsSolution;
+
         foreach (var item in mItemsCollector.GetItems)
         {
           if (!mCommandsController.Running)
@@ -140,7 +141,9 @@ namespace ClangPowerTools
           // and added to the end of the string to close the script
           var script = $"{runModeParameters.Remove(runModeParameters.Length - 1)} {itemRelatedParameters} {genericParameters}'";
 
-          mOutputWindow.Hierarchy = AutomationUtil.GetItemHierarchy(mSolution, item);
+          if(null != vsSolution)
+            mOutputWindow.Hierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
+
           var process = mPowerShell.Invoke(script, mRunningProcesses);
 
           if (mOutputWindow.MissingLlvm)

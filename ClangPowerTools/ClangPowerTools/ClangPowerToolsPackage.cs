@@ -58,7 +58,6 @@ namespace ClangPowerTools
     public static readonly Guid CommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
 
     private uint mHSolutionEvents = uint.MaxValue;
-    private IVsSolution mSolution;
     private RunningDocTableEvents mRunningDocTableEvents;
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
@@ -121,11 +120,12 @@ namespace ClangPowerTools
 
       #region Get Pointer to IVsSolutionEvents
 
-      UnadviseSolutionEvents();
       // Get VS Solution service async
-      mSolution = await GetServiceAsync(typeof(SVsSolution)) as IVsSolution;
-      VsServiceProvider.Register(typeof(SVsSolution), mSolution);
-      AdviseSolutionEvents();
+      var vsSolution = await GetServiceAsync(typeof(SVsSolution)) as IVsSolution;
+      VsServiceProvider.Register(typeof(SVsSolution), vsSolution);
+
+      UnadviseSolutionEvents(vsSolution);
+      AdviseSolutionEvents(vsSolution);
 
       #endregion
 
@@ -156,29 +156,29 @@ namespace ClangPowerTools
 
     #region Get Pointer to IVsSolutionEvents
 
-    private void AdviseSolutionEvents()
+    private void AdviseSolutionEvents(IVsSolution aVsSolution)
     {
       try
       {
-        mSolution?.AdviseSolutionEvents(this, out mHSolutionEvents);
+        aVsSolution?.AdviseSolutionEvents(this, out mHSolutionEvents);
       }
       catch (Exception)
       {
       }
     }
 
-    private void UnadviseSolutionEvents()
+    private void UnadviseSolutionEvents(IVsSolution aVsSolution) 
     {
-      if (null == mSolution)
+      if (null == aVsSolution)
         return;
 
       if (uint.MaxValue != mHSolutionEvents)
       {
-        mSolution.UnadviseSolutionEvents(mHSolutionEvents);
+        aVsSolution.UnadviseSolutionEvents(mHSolutionEvents);
         mHSolutionEvents = uint.MaxValue;
       }
 
-      mSolution = null;
+      aVsSolution = null;
     }
 
     #endregion
@@ -226,19 +226,19 @@ namespace ClangPowerTools
       return await System.Threading.Tasks.Task.Run(async () =>
       {
         if (null == CompileCommand.Instance)
-          await CompileCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, this, CommandSet, CommandIds.kCompileId);
+          await CompileCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kCompileId);
 
         if (null == TidyCommand.Instance)
         {
-          await TidyCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, this, CommandSet, CommandIds.kTidyId);
-          await TidyCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, this, CommandSet, CommandIds.kTidyFixId);
+          await TidyCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kTidyId);
+          await TidyCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kTidyFixId);
         }
 
         if (null == ClangFormatCommand.Instance)
-          await ClangFormatCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, this, CommandSet, CommandIds.kClangFormat);
+          await ClangFormatCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kClangFormat);
 
         if (null == StopClang.Instance)
-          await StopClang.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, this, CommandSet, CommandIds.kStopClang);
+          await StopClang.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kStopClang);
 
         return new object();
       });
