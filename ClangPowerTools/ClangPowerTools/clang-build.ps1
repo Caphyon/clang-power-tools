@@ -844,9 +844,19 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
     {
       $stdafxHeader = $forceIncludeFiles[0]
     }
-    else
+
+    if (!$stdafxHeader)
     {
       $stdafxHeader = Get-PchCppIncludeHeader -pchCppFile $stdafxCpp
+    }
+
+    if (!$stdafxHeader)
+    {
+      $pchNode = Select-ProjectNodes "//ns:ClCompile[@Include='$stdafxCpp']/ns:PrecompiledHeaderFile"
+      if ($pchNode)
+      {
+        $stdafxHeader = $pchNode.InnerText
+      }
     }
 
     Write-Verbose "PCH header name: $stdafxHeader"
