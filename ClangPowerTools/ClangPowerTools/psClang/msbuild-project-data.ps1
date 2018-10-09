@@ -68,6 +68,7 @@ Set-Variable -name kVcxprojXpathCppStandard `
 Set-Variable -name kVcxprojXpathProjectCompileAs `
              -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:CompileAs" `
              -option Constant
+
 # ------------------------------------------------------------------------------------------------
 # Default platform sdks and standard
 
