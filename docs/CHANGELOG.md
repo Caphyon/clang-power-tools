@@ -1,5 +1,23 @@
 # Version History
 
+### Clang Power Tools 4.1
+*October 9, 2018*
+
+Improvements:
+
+* Optimize the VS services access
+* Improve clang commands loading
+
+Bugs:
+
+* Double quotes incorrectly escaped in preprocessor definitions (v4.0 regression)
+* ..\ include directories not being correctly included (v4.0 regression)
+* Preprocessor definition characters being mistaken for comparison operators (v4.0 regression)
+* PCH detection not working when project force includes header directly at pch cpp level
+* Crash when VS services are not available
+* Clang commands registration does not always work
+* Project field from Error List sometimes is empty
+
 ### Clang Power Tools 4.0
 *September 20, 2018*
 
