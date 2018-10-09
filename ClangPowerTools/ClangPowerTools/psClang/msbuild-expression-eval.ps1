@@ -11,12 +11,12 @@ Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>     `
         <# Put back $( #>                                                 `
         , ('!@#'                             , '$('                      )`
         <# Various operators #>                                           `
-        , ("!="                              , ' -ne '                   )`
-        , ("<="                              , ' -le '                   )`
-        , (">="                              , ' -ge '                   )`
-        , ("=="                              , ' -eq '                   )`
-        , ("<"                               , ' -lt '                   )`
-        , (">"                               , ' -gt '                   )`
+        , ("([\s\)\'""])!="                  , '$1  -ne '                )`
+        , ("([\s\)\'""])<="                  , '$1  -le '                )`
+        , ("([\s\)\'""])>="                  , '$1  -ge '                )`
+        , ("([\s\)\'""])=="                  , '$1  -eq '                )`
+        , ("([\s\)\'""])<"                   , '$1 -lt '                 )`
+        , ("([\s\)\'""])>"                   , '$1 -gt '                 )`
         , ("([\s\)\'""])or"                  , '$1 -or '                 )`
         , ("([\s\)\'""])and"                 , '$1 -and '                )`
         <# Use only double quotes #>                                      `
@@ -28,12 +28,11 @@ Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>     `
         ,'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
         , ("\[MSBuild\]::MakeRelative\((.+?),\s*""?'?((\$.+?\))|(.+?))((|""|')\)\))+"`
         ,'MakePathRelative -base $1 -target "$2")'                       )`
-        , ('"'                               , '""'                      )`
 )
 
 Set-Variable -name "kMsbuildConditionToPsRules" <#-option Constant#>      `
              -value   @(<# Use only double quotes #>                      `
-                       ,("\'"                    , '"'                   )`
+                       ,("\'"                , '"'                       )`
 )
 
 function GetDirNameOfFileAbove( [Parameter(Mandatory = $true)][string] $startDir
@@ -152,10 +151,12 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
         }
     }
 
+    $expression = $expression.replace('"', '""')
     Write-Debug "Intermediate PS expression: $expression"
 
     try
     {
+
         [string] $toInvoke = "(`$s = ""$expression"")"
         if ($isCondition)
         {

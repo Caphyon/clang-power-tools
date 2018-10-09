@@ -86,19 +86,19 @@ Describe "MSBuild - Powershell Expression translation" {
     $ProgramFiles = $env:ProgramFiles
 
     $e = "`$([MSBuild]::MakeRelative('$SystemDrive', '$SystemRoot'))"
-    Evaluate-MSBuildExpression $e | Should -BeExactly "Windows"
+    Evaluate-MSBuildExpression $e | Should -Be "Windows"
 
     $e = "`$([MSBuild]::MakeRelative(`$(SystemDrive), '$SystemRoot'))"
-    Evaluate-MSBuildExpression $e | Should -BeExactly "Windows"
+    Evaluate-MSBuildExpression $e | Should -Be "Windows"
 
     $e = '$([MSBuild]::MakeRelative($(SystemDrive), $(SystemRoot)\System32))'
-    Evaluate-MSBuildExpression $e | Should -BeExactly "Windows\System32"
+    Evaluate-MSBuildExpression $e | Should -Be "Windows\System32"
 
     $e = '$([MSBuild]::MakeRelative($(SystemRoot), $(SystemRoot)\System32))'
-    Evaluate-MSBuildExpression $e | Should -BeExactly "System32"
+    Evaluate-MSBuildExpression $e | Should -Be "System32"
 
     $e = '$([MSBuild]::MakeRelative($(ProgramFiles), $(SystemRoot)\System32))'
-    Evaluate-MSBuildExpression $e | Should -BeExactly "..\Windows\System32"
+    Evaluate-MSBuildExpression $e | Should -Be "..\Windows\System32"
   }
 
   It ".NET Method invocation" {
