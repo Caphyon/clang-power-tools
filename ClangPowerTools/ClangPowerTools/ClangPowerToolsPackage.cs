@@ -226,19 +226,19 @@ namespace ClangPowerTools
       return await System.Threading.Tasks.Task.Run(async () =>
       {
         if (null == CompileCommand.Instance)
-          await CompileCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, this, CommandSet, CommandIds.kCompileId);
+          await CompileCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kCompileId);
 
         if (null == TidyCommand.Instance)
         {
-          await TidyCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, this, CommandSet, CommandIds.kTidyId);
-          await TidyCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, this, CommandSet, CommandIds.kTidyFixId);
+          await TidyCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kTidyId);
+          await TidyCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kTidyFixId);
         }
 
         if (null == ClangFormatCommand.Instance)
-          await ClangFormatCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, this, CommandSet, CommandIds.kClangFormat);
+          await ClangFormatCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kClangFormat);
 
         if (null == StopClang.Instance)
-          await StopClang.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, mSolution, this, CommandSet, CommandIds.kStopClang);
+          await StopClang.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kStopClang);
 
         return new object();
       });
