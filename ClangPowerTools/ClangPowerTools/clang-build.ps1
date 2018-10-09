@@ -714,7 +714,7 @@ Function Run-ClangJobs([Parameter(Mandatory=$true)] $clangJobs)
 
     # escape slashes for file paths
     # make sure escaped double quotes are not messed up
-    $clangConfigContent = $clangConfigContent -replace '\\([a-zA-Z0-9_/\-\\])', '\\$1'
+    $clangConfigContent = $clangConfigContent -replace '\\([^"])', '\\$1'
 
     # save arguments to clang config file
     $clangConfigContent > $clangConfigFile
