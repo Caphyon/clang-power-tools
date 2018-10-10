@@ -882,11 +882,11 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # FIND LIST OF CPPs TO PROCESS
 
   [System.Collections.Hashtable] $projCpps = @{}
-  foreach ($fileToCompile in (Get-ProjectFilesToCompile -pchCppName $stdafxCpp))
+  foreach ($fileToCompileInfo in (Get-ProjectFilesToCompile -pchCppName $stdafxCpp))
   {
-    if (![string]::IsNullOrEmpty($fileToCompile))
+    if ($fileToCompileInfo.File)
     {
-      $projCpps[$fileToCompile] = $true
+      $projCpps[$fileToCompileInfo.File] = $fileToCompileInfo
     }
   }
 
@@ -910,7 +910,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
           if ($projCpps.ContainsKey($cpp))
           {
             # really fast, use cache
-            $filteredCpps[$cpp] = $true
+            $filteredCpps[$cpp] = $projCpps[$cpp]
           }
         }
         else
@@ -964,8 +964,15 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   {
     [string] $exeToCall = Get-ExeToCall -workloadType $workloadType
 
+    [string] $finalPchPath = $pchFilePath
+    if ($projCpps[$cpp].Pch -eq [UsePch]::NotUsing)
+    {
+      $finalPchPath = ""
+      Write-Verbose "`n[PCH] Will ignore precompiled headers for $cpp`n"
+    }
+
     [string] $exeArgs   = Get-ExeCallArguments -workloadType            $workloadType `
-                                               -pchFilePath             $pchFilePath `
+                                               -pchFilePath             $finalPchPath `
                                                -preprocessorDefinitions $preprocessorDefinitions `
                                                -forceIncludeFiles       $forceIncludeFiles `
                                                -currentFile             $cpp `
