@@ -79,6 +79,15 @@ Set-Variable -name kDefaultCppStd              -value "stdcpp14"        -option 
 # ------------------------------------------------------------------------------------------------
 Set-Variable -name kCProjectCompile         -value "CompileAsC" -option Constant
 
+Add-Type -TypeDefinition @"
+  public enum UsePch
+  {
+    Use,
+    NotUsing,
+    Create
+  }
+"@
+
 Function Should-CompileProject([Parameter(Mandatory = $true)][string] $vcxprojPath)
 {
     if ($aVcxprojToCompile -eq $null)
@@ -161,22 +170,38 @@ Function Should-IgnoreFile([Parameter(Mandatory = $true)][string] $file)
 
 Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchCppName)
 {
-    [string[]] $projectEntries = Select-ProjectNodes($kVcxprojXpathCompileFiles) | `
-        Where-Object { Should-CompileFile -fileNode $_ -pchCppName $pchCppName } | `
-        Select-Object -Property "Include" -ExpandProperty "Include"
-    [string[]] $files = @()
+    [System.Xml.XmlElement[]] $projectEntries = Select-ProjectNodes($kVcxprojXpathCompileFiles) | `
+        Where-Object { Should-CompileFile -fileNode $_ -pchCppName $pchCppName }
+
+    [System.Collections.ArrayList] $files = @()
     foreach ($entry in $projectEntries)
     {
-        [string[]] $matchedFiles = Canonize-Path -base $ProjectDir -child $entry
+        [string[]] $matchedFiles = Canonize-Path -base $ProjectDir -child $entry.GetAttribute("Include")
+        [UsePch] $usePch = [UsePch]::Use
+
+        $nodePch = $entry.SelectSingleNode('ns:PrecompiledHeader', $global:xpathNS)
+        if ($nodePch -and ![string]::IsNullOrEmpty($nodePch.'#text'))
+        {
+            switch ($nodePch.'#text')
+            {
+                'NotUsing' { $usePch = [UsePch]::NotUsing }
+                'Create'   { $usePch = [UsePch]::Create   }
+            }
+        }
+
         if ($matchedFiles.Count -gt 0)
         {
-            $files += $matchedFiles
+            foreach ($file in $matchedFiles)
+            {
+                $files += New-Object PsObject -Prop @{ "File"= $file;
+                                                       "Pch" = $usePch; }
+            }
         }
     }
 
     if ($files.Count -gt 0)
     {
-        $files = $files | Where-Object { ! (Should-IgnoreFile -file $_) }
+        $files = @($files | Where-Object { ! (Should-IgnoreFile -file $_.File) })
     }
 
     return $files
