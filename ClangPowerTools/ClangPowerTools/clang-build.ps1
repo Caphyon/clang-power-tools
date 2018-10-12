@@ -777,7 +777,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   [string] $platformToolset = Get-ProjectPlatformToolset
   Write-Verbose "Platform toolset: $platformToolset"
 
-  if ($platformToolset.StartsWith('v140'))
+  if ( ([int]$platformToolset.Remove(0, 1).Replace("_xp", "")) -le 140)
   {
     if ($global:cptVisualStudioVersion -ne '2015')
     {
