@@ -140,7 +140,7 @@ namespace ClangPowerTools
         generalOptions.SaveSettingsToStorage();
       }
 
-      RegisterVsEvents();
+      RegisterToVsEvents();
 
       await base.InitializeAsync(cancellationToken, progress);
     }
@@ -309,7 +309,7 @@ namespace ClangPowerTools
     }
 
 
-    private void RegisterVsEvents()
+    private void RegisterToVsEvents()
     {
       if (null != mBuildEvents)
       {
