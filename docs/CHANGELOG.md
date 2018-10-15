@@ -1,5 +1,18 @@
 # Version History
 
+### Clang Power Tools 4.2
+*October 15, 2018*
+
+Improvements:
+
+* Support for PCH configuration at file-level
+
+Bugs: 
+
+* VS Extension is not completely registered immediately after the VS solution was loaded
+* Wrong detection of VS 2015 when VS 2013 toolset is being used
+* Parallel processing causing file corruption for Tidy Fix
+
 ### Clang Power Tools 4.1
 *October 9, 2018*
 
