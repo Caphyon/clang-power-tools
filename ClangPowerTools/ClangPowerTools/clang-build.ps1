@@ -686,7 +686,9 @@ Function Wait-ForWorkerJobSlot()
   }
 }
 
-Function Run-ClangJobs([Parameter(Mandatory=$true)] $clangJobs)
+Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
+                      , [Parameter(Mandatory=$true)][WorkloadType] $workloadType
+                      )
 {
   # Script block (lambda) for logic to be used when running a clang job.
   $jobWorkToBeDone = `
@@ -745,7 +747,9 @@ Function Run-ClangJobs([Parameter(Mandatory=$true)] $clangJobs)
     # Inform console what CPP we are processing next
     Write-Output "$($crtJobCount): $($job.File)"
 
-    if ($aUseParallelCompile)
+    # Tidy-fix can cause header corruption when run in parallel
+    # because multiple workers modify shared headers concurrently. Do not allow.
+    if ($aUseParallelCompile -and $workloadType -ne [WorkloadType]::TidyFix)
     {
       Start-Job -ScriptBlock  $jobWorkToBeDone `
                 -ArgumentList $job `
@@ -997,7 +1001,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   #-----------------------------------------------------------------------------------------------
   # RUN CLANG JOBS
 
-  Run-ClangJobs -clangJobs $clangJobs
+  Run-ClangJobs -clangJobs $clangJobs -workloadType $workloadType
 }
 
 #-------------------------------------------------------------------------------------------------
