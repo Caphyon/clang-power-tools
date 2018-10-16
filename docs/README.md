@@ -17,8 +17,9 @@ How Clang Power Tools came to be: [About](about.md)
 
 🎞️ [Video Showcase](demos.md)  
 
-**Poster CppCon 2018**  
+📜 **Poster CppCon 2018**  
 [Retrofit C++17 to large Visual Studio codebases](https://github.com/CppCon/CppCon2018/raw/master/Posters/retrofit_cpp17_to_large_visual_studio_codebases/retrofit_cpp17_to_large_visual_studio_codebases__gabriel_diaconita__cppcon_2018.pdf) by Gabriel Diaconița
+
 
 ![ClangPowerTools](images/VSDemo1.png)
 
