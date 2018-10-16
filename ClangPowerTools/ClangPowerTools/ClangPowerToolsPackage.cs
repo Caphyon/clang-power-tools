@@ -95,7 +95,6 @@ namespace ClangPowerTools
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
       await RegisterVsServices();
-      RegisterToVsEvents();
 
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
       mOutputController = new OutputWindowController();
@@ -123,6 +122,7 @@ namespace ClangPowerTools
         var dte2 = dte as DTE2;
         mBuildEvents = dte2.Events.BuildEvents;
         mCommandEvents = dte2.Events.CommandEvents;
+        RegisterToVsEvents();
       }
 
       // Get the general clang option page
