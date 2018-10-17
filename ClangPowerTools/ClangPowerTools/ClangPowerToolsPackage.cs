@@ -96,6 +96,15 @@ namespace ClangPowerTools
 
       await RegisterVsServices();
 
+      var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
+      mOutputController = new OutputWindowController();
+      mOutputController.Initialize(this, vsOutputWindow);
+      
+      mRunningDocTableEvents = new RunningDocTableEvents(this);
+      mErrorWindow = new ErrorWindowController(this);
+
+      mCommandsController = new CommandsController(this);
+
       #region Get Pointer to IVsSolutionEvents
 
       if (VsServiceProvider.TryGetService(typeof(SVsSolution), out object vsSolutionService))
@@ -107,13 +116,10 @@ namespace ClangPowerTools
 
       #endregion
 
-      mRunningDocTableEvents = new RunningDocTableEvents(this);
-      mErrorWindow = new ErrorWindowController(this);
-
+      // Get the build and command events from DTE
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {
         var dte2 = dte as DTE2;
-        // Get the build and command events from DTE
         mBuildEvents = dte2.Events.BuildEvents;
         mCommandEvents = dte2.Events.CommandEvents;
       }
@@ -124,9 +130,6 @@ namespace ClangPowerTools
       // Detect the first install 
       if (null == generalOptions.Version || string.IsNullOrWhiteSpace(generalOptions.Version))
         ShowToolbare(); // Show the toolbar on the first install
-
-      mCommandsController = new CommandsController(this);
-      await InitializeAsyncCommands();
 
       var currentVersion = GetPackageVersion();
 
@@ -140,6 +143,8 @@ namespace ClangPowerTools
         generalOptions.SaveSettingsToStorage();
       }
 
+
+      await InitializeAsyncCommands();
       RegisterToVsEvents();
 
       await base.InitializeAsync(cancellationToken, progress);
@@ -229,18 +234,25 @@ namespace ClangPowerTools
 
     public int OnBeforeCloseSolution(object aPUnkReserved)
     {
-      mBuildEvents.OnBuildBegin -= mErrorWindow.OnBuildBegin;
+      if (null != mBuildEvents)
+      {
+        mBuildEvents.OnBuildBegin -= mErrorWindow.OnBuildBegin;
+        mBuildEvents.OnBuildBegin -= mCommandsController.OnBuildBegin;
+        mBuildEvents.OnBuildDone -= mCommandsController.OnBuildDone;
+        mBuildEvents.OnBuildDone -= CompileCommand.Instance.OnBuildDone;
+      }
 
-      mBuildEvents.OnBuildBegin -= mCommandsController.OnBuildBegin;
-      mBuildEvents.OnBuildDone -= mCommandsController.OnBuildDone;
+      if (null != mCommandEvents)
+      {
+        mCommandEvents.BeforeExecute -= CompileCommand.Instance.CommandEventsBeforeExecute;
+        mCommandEvents.BeforeExecute -= TidyCommand.Instance.CommandEventsBeforeExecute;
+      }
 
-      mBuildEvents.OnBuildDone -= CompileCommand.Instance.OnBuildDone;
-
-      mCommandEvents.BeforeExecute -= CompileCommand.Instance.CommandEventsBeforeExecute;
-      mCommandEvents.BeforeExecute -= TidyCommand.Instance.CommandEventsBeforeExecute;
-
-      mRunningDocTableEvents.BeforeSave -= TidyCommand.Instance.OnBeforeSave;
-      mRunningDocTableEvents.BeforeSave -= ClangFormatCommand.Instance.OnBeforeSave;
+      if (null != mRunningDocTableEvents)
+      {
+        mRunningDocTableEvents.BeforeSave -= TidyCommand.Instance.OnBeforeSave;
+        mRunningDocTableEvents.BeforeSave -= ClangFormatCommand.Instance.OnBeforeSave;
+      }
 
       return VSConstants.S_OK;
     }
@@ -284,27 +296,23 @@ namespace ClangPowerTools
       VsServiceProvider.Register(typeof(DTE), dte);
 
       // Get VS Output Window service async
-      var vsOutputWindow = await GetServiceAsync(typeof(SVsOutputWindow)) as IVsOutputWindow;
+      var vsOutputWindow = await GetServiceAsync(typeof(SVsOutputWindow));
       VsServiceProvider.Register(typeof(SVsOutputWindow), vsOutputWindow);
-
-      // Initialize the commands controller
-      mOutputController = new OutputWindowController();
-      mOutputController.Initialize(this, vsOutputWindow);
-
+      
       // Get the status bar service async
-      var vsStatusBar = await GetServiceAsync(typeof(SVsStatusbar)) as IVsStatusbar;
+      var vsStatusBar = await GetServiceAsync(typeof(SVsStatusbar));
       VsServiceProvider.Register(typeof(SVsStatusbar), vsStatusBar);
 
       // Get Vs Running Document Table service async
-      var vsRunningDocumentTable = await GetServiceAsync(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
+      var vsRunningDocumentTable = await GetServiceAsync(typeof(SVsRunningDocumentTable));
       VsServiceProvider.Register(typeof(SVsRunningDocumentTable), vsRunningDocumentTable);
 
       // Get Vs File Change service async
-      var vsFileChange = await GetServiceAsync(typeof(SVsFileChangeEx)) as IVsFileChangeEx;
+      var vsFileChange = await GetServiceAsync(typeof(SVsFileChangeEx));
       VsServiceProvider.Register(typeof(SVsFileChangeEx), vsFileChange);
 
       // Get VS Solution service async
-      var vsSolution = await GetServiceAsync(typeof(SVsSolution)) as IVsSolution;
+      var vsSolution = await GetServiceAsync(typeof(SVsSolution));
       VsServiceProvider.Register(typeof(SVsSolution), vsSolution);
     }
 
@@ -323,6 +331,10 @@ namespace ClangPowerTools
       {
         mCommandEvents.BeforeExecute += CompileCommand.Instance.CommandEventsBeforeExecute;
         mCommandEvents.BeforeExecute += TidyCommand.Instance.CommandEventsBeforeExecute;
+      }
+
+      if(null != mRunningDocTableEvents)
+      {
         mRunningDocTableEvents.BeforeSave += TidyCommand.Instance.OnBeforeSave;
         mRunningDocTableEvents.BeforeSave += ClangFormatCommand.Instance.OnBeforeSave;
       }
