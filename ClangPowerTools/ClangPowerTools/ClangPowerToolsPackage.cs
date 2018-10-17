@@ -122,7 +122,6 @@ namespace ClangPowerTools
         var dte2 = dte as DTE2;
         mBuildEvents = dte2.Events.BuildEvents;
         mCommandEvents = dte2.Events.CommandEvents;
-        RegisterToVsEvents();
       }
 
       // Get the general clang option page
@@ -146,6 +145,7 @@ namespace ClangPowerTools
 
 
       await InitializeAsyncCommands();
+      RegisterToVsEvents();
 
       await base.InitializeAsync(cancellationToken, progress);
     }
