@@ -296,23 +296,23 @@ namespace ClangPowerTools
       VsServiceProvider.Register(typeof(DTE), dte);
 
       // Get VS Output Window service async
-      var vsOutputWindow = await GetServiceAsync(typeof(SVsOutputWindow)) as IVsOutputWindow;
+      var vsOutputWindow = await GetServiceAsync(typeof(SVsOutputWindow));
       VsServiceProvider.Register(typeof(SVsOutputWindow), vsOutputWindow);
       
       // Get the status bar service async
-      var vsStatusBar = await GetServiceAsync(typeof(SVsStatusbar)) as IVsStatusbar;
+      var vsStatusBar = await GetServiceAsync(typeof(SVsStatusbar));
       VsServiceProvider.Register(typeof(SVsStatusbar), vsStatusBar);
 
       // Get Vs Running Document Table service async
-      var vsRunningDocumentTable = await GetServiceAsync(typeof(SVsRunningDocumentTable)) as IVsRunningDocumentTable;
+      var vsRunningDocumentTable = await GetServiceAsync(typeof(SVsRunningDocumentTable));
       VsServiceProvider.Register(typeof(SVsRunningDocumentTable), vsRunningDocumentTable);
 
       // Get Vs File Change service async
-      var vsFileChange = await GetServiceAsync(typeof(SVsFileChangeEx)) as IVsFileChangeEx;
+      var vsFileChange = await GetServiceAsync(typeof(SVsFileChangeEx));
       VsServiceProvider.Register(typeof(SVsFileChangeEx), vsFileChange);
 
       // Get VS Solution service async
-      var vsSolution = await GetServiceAsync(typeof(SVsSolution)) as IVsSolution;
+      var vsSolution = await GetServiceAsync(typeof(SVsSolution));
       VsServiceProvider.Register(typeof(SVsSolution), vsSolution);
     }
 
