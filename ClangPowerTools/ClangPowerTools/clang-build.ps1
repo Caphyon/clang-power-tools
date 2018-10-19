@@ -188,12 +188,8 @@ param( [alias("proj")]
 # System Architecture Constants
 # ------------------------------------------------------------------------------------------------
 
-Set-Variable -name kLogicalCoreCount -value                                                                 `
-  (@(Get-WmiObject -class Win32_processor)  |                                                               `
-   ForEach-Object -Begin   { $coreCount = 0 }                                                               `
-                  -Process { $coreCount += ($_ | Select-Object -property       NumberOfLogicalProcessors    `
-                                                               -ExpandProperty NumberOfLogicalProcessors) } `
-                  -End     { $coreCount })                              -option Constant
+Set-Variable -name kLogicalCoreCount -value $Env:number_of_processors   -option Constant
+
 # ------------------------------------------------------------------------------------------------
 # Return Value Constants
 
