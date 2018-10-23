@@ -409,7 +409,12 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
     return ""
   }
 
-  [string] $stdafx = (Canonize-Path -base $stdafxDir -child $stdafxHeaderName)
+  [string] $stdafxSource = (Canonize-Path -base $stdafxDir -child $stdafxHeaderName)
+  [string] $stdafx = $stdafxSource + ".hpp"
+
+  Copy-Item -Path $stdafxSource -Destination $stdafx | Out-Null
+  $global:FilesToDeleteWhenScriptQuits.Add($stdafx) | Out-Null
+
   [string] $vcxprojShortName = [System.IO.Path]::GetFileNameWithoutExtension($global:vcxprojPath);
   [string] $stdafxPch = (Join-Path -path (Get-SourceDirectory) `
                                    -ChildPath "$vcxprojShortName$kExtensionClangPch")
@@ -417,14 +422,11 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
 
   $global:FilesToDeleteWhenScriptQuits.Add($stdafxPch) | Out-Null
 
-  # Suppress -Werror for PCH generation as it throws warnings quite often in code we cannot control
-  [string[]] $clangFlags = Get-ClangCompileFlags | Where-Object { $_ -ne $kClangFlagWarningIsError }
-
   [string[]] $compilationFlags = @("""$stdafx"""
                                   ,$kClangFlagEmitPch
                                   ,$kClangFlagMinusO
                                   ,"""$stdafxPch"""
-                                  ,$clangFlags
+                                  ,(Get-ClangCompileFlags)
                                   ,$kClangFlagNoUnusedArg
                                   ,$preprocessorDefinitions
                                   )
