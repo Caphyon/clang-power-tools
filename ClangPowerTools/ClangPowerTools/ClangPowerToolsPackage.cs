@@ -59,16 +59,19 @@ namespace ClangPowerTools
 
     private uint mHSolutionEvents = uint.MaxValue;
     private RunningDocTableEvents mRunningDocTableEvents;
-    private CommandEvents mCommandEvents;
-    private BuildEvents mBuildEvents;
     private ErrorWindowController mErrorWindow;
     private OutputWindowController mOutputController;
     private CommandsController mCommandsController = null;
 
+    private CommandEvents mCommandEvents;
+    private BuildEvents mBuildEvents;
+    private DTEEvents mDteEvents;
 
     #endregion
 
+
     #region Constructor
+
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TidyCommand"/> class.
@@ -83,7 +86,9 @@ namespace ClangPowerTools
 
     #endregion
 
+
     #region Initialize Package
+
 
     /// <summary>
     /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -122,6 +127,7 @@ namespace ClangPowerTools
         var dte2 = dte as DTE2;
         mBuildEvents = dte2.Events.BuildEvents;
         mCommandEvents = dte2.Events.CommandEvents;
+        mDteEvents = dte2.Events.DTEEvents;
       }
 
       // Get the general clang option page
@@ -156,6 +162,7 @@ namespace ClangPowerTools
 
     #region Get Pointer to IVsSolutionEvents
 
+
     private void AdviseSolutionEvents(IVsSolution aVsSolution)
     {
       try
@@ -185,6 +192,7 @@ namespace ClangPowerTools
 
 
     #region IVsSolutionEvents Implementation
+
 
     public int OnAfterOpenProject(IVsHierarchy aPHierarchy, int aFAdded)
     {
@@ -234,26 +242,6 @@ namespace ClangPowerTools
 
     public int OnBeforeCloseSolution(object aPUnkReserved)
     {
-      if (null != mBuildEvents)
-      {
-        mBuildEvents.OnBuildBegin -= mErrorWindow.OnBuildBegin;
-        mBuildEvents.OnBuildBegin -= mCommandsController.OnBuildBegin;
-        mBuildEvents.OnBuildDone -= mCommandsController.OnBuildDone;
-        mBuildEvents.OnBuildDone -= CompileCommand.Instance.OnBuildDone;
-      }
-
-      if (null != mCommandEvents)
-      {
-        mCommandEvents.BeforeExecute -= CompileCommand.Instance.CommandEventsBeforeExecute;
-        mCommandEvents.BeforeExecute -= TidyCommand.Instance.CommandEventsBeforeExecute;
-      }
-
-      if (null != mRunningDocTableEvents)
-      {
-        mRunningDocTableEvents.BeforeSave -= TidyCommand.Instance.OnBeforeSave;
-        mRunningDocTableEvents.BeforeSave -= ClangFormatCommand.Instance.OnBeforeSave;
-      }
-
       return VSConstants.S_OK;
     }
 
@@ -262,7 +250,9 @@ namespace ClangPowerTools
       return VSConstants.S_OK;
     }
 
+
     #endregion
+
 
     #region Private Methods
 
@@ -338,6 +328,37 @@ namespace ClangPowerTools
         mRunningDocTableEvents.BeforeSave += TidyCommand.Instance.OnBeforeSave;
         mRunningDocTableEvents.BeforeSave += ClangFormatCommand.Instance.OnBeforeSave;
       }
+
+      if (null != mDteEvents)
+        mDteEvents.OnBeginShutdown += UnregisterFromVsEvents;
+
+    }
+
+
+    private void UnregisterFromVsEvents()
+    {
+      if (null != mBuildEvents)
+      {
+        mBuildEvents.OnBuildBegin -= mErrorWindow.OnBuildBegin;
+        mBuildEvents.OnBuildBegin -= mCommandsController.OnBuildBegin;
+        mBuildEvents.OnBuildDone -= mCommandsController.OnBuildDone;
+        mBuildEvents.OnBuildDone -= CompileCommand.Instance.OnBuildDone;
+      }
+
+      if (null != mCommandEvents)
+      {
+        mCommandEvents.BeforeExecute -= CompileCommand.Instance.CommandEventsBeforeExecute;
+        mCommandEvents.BeforeExecute -= TidyCommand.Instance.CommandEventsBeforeExecute;
+      }
+
+      if (null != mRunningDocTableEvents)
+      {
+        mRunningDocTableEvents.BeforeSave -= TidyCommand.Instance.OnBeforeSave;
+        mRunningDocTableEvents.BeforeSave -= ClangFormatCommand.Instance.OnBeforeSave;
+      }
+
+      if (null != mDteEvents)
+        mDteEvents.OnBeginShutdown -= UnregisterFromVsEvents;
     }
 
 
