@@ -107,6 +107,7 @@ namespace ClangPowerTools.Commands
       FormatDocument(aDocument, option);
     }
 
+
     private void FormatDocument(Document aDocument, ClangFormatOptionsView aOptions)
     {
       mClangFormatView = aOptions;
@@ -117,7 +118,9 @@ namespace ClangPowerTools.Commands
 
     #endregion
 
+
     #region Private methods
+
 
     /// <summary>
     /// This function is the callback used to execute the command when the menu item is clicked.
@@ -206,22 +209,22 @@ namespace ClangPowerTools.Commands
       return skipFilesList.Contains(Path.GetFileName(aFilePath).ToLower());
     }
 
+
     private bool FileHasExtension(string filePath, string fileExtensions)
     {
       var extensions = fileExtensions.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
       return extensions.Contains(Path.GetExtension(filePath).ToLower());
     }
 
+
     private void FormatAllSelectedDocuments()
     {
       foreach (var item in CollectSelectedItems())
       {
-        if (!(item.GetObject() is ProjectItem))
-          return; // the selected file is not a project item
-
         var document = (item.GetObject() as ProjectItem).Document;
+
         if (null == document)
-          continue;
+          document = DocumentsHandler.GetActiveDocument();
 
         mClangFormatView = GetUserOptions();
         mDocument = document;
@@ -229,6 +232,7 @@ namespace ClangPowerTools.Commands
         RunClangFormat(new object(), new EventArgs());
       }
     }
+
 
     private string FormatEndOfFile(IWpfTextView aView, string aFilePath, out string aDirPath)
     {
@@ -246,6 +250,7 @@ namespace ClangPowerTools.Commands
       return text;
     }
 
+
     private void FindStartPositionAndLengthOfSelectedText(IWpfTextView aView, string aText, out int aStartPosition, out int aLength)
     {
       aStartPosition = aView.Selection.Start.Position.GetContainingLine().Start.Position;
@@ -256,6 +261,7 @@ namespace ClangPowerTools.Commands
       if (aStartPosition >= aText.Length && aText.Length > 0)
         aStartPosition = aText.Length - 1;
     }
+
 
     private System.Diagnostics.Process CreateProcess(string aText, int aOffset, int aLength, string aPath, string aFilePath, ClangFormatOptionsView aClangFormatView)
     {
