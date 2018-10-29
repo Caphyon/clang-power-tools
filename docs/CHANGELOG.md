@@ -1,5 +1,15 @@
 # Version History
 
+### Clang Power Tools 4.2.1
+*October 29, 2018*
+
+Bugs: 
+
+* After closing and reopening a VS Solution the clang commands did not work as expected
+* Clang-Format works just for files that are included in a VS project
+* Format after tidy option is not responding
+* VS Services are not registered in the right order
+
 ### Clang Power Tools 4.2
 *October 15, 2018*
 
