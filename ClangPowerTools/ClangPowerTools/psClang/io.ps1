@@ -117,16 +117,16 @@ Function Get-FileName( [Parameter(Mandatory = $true)][string] $path
 Function IsFileMatchingName( [Parameter(Mandatory = $true)][string] $filePath
     , [Parameter(Mandatory = $true)][string] $matchName)
 {
-    if ([System.IO.Path]::IsPathRooted($matchName))
+    if ([System.IO.Path]::IsPathRooted($matchName) -and $filePath -ieq $matchName)
     {
-        return $filePath -ieq $matchName
+        return $true
     }
 
     if ($aDisableNameRegexMatching)
     {
         [string] $fileName      = (Get-FileName -path $filePath)
         [string] $fileNameNoExt = (Get-FileName -path $filePath -noext)
-        return (($fileName -eq $matchName) -or ($fileNameNoExt -eq $matchName))
+        return (($fileName -ieq $matchName) -or ($fileNameNoExt -ieq $matchName))
     }
     else
     {
