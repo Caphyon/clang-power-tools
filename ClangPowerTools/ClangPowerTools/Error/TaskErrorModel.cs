@@ -1,25 +1,12 @@
 ﻿using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools
 {
-  public class TaskErrorModel
+  public class TaskErrorModel : ErrorTask
   {
     #region Properties
 
-    public string FilePath { get; set; }
-
-    public int Line { get; set; }
-
-    public int Column { get; set; }
-
-    public TaskErrorCategory Category { get; set; }
-
     public string FullMessage { get; set; }
-
-    public string Description { get; set; }
-
-    public IVsHierarchy HierarchyItem { get; set; }
 
     #endregion
 
@@ -37,7 +24,7 @@ namespace ClangPowerTools
 
     public override int GetHashCode()
     {
-      return FullMessage.GetHashCode();
+      return FullMessage.Replace('/', '\\').GetHashCode();
     }
 
     #endregion

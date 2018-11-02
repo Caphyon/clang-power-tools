@@ -34,19 +34,8 @@ namespace ClangPowerTools
 
         foreach (TaskErrorModel error in aErrors)
         {
-          ErrorTask errorTask = new ErrorTask
-          {
-            ErrorCategory = error.Category,
-            Document = error.FilePath,
-            Text = error.Description,
-            Line = error.Line - 1,
-            Column = error.Column,
-            Category = TaskCategory.BuildCompile,
-            Priority = TaskPriority.High,
-            HierarchyItem = error.HierarchyItem
-          };
-          errorTask.Navigate += ErrorTaskNavigate;
-          Tasks.Add(errorTask);
+          error.Navigate += ErrorTaskNavigate;
+          Tasks.Add(error);
         }
 
         BringToFront();
