@@ -56,13 +56,15 @@ namespace ClangPowerTools.Error
 
       mError = new TaskErrorModel()
       {
-        FilePath = path,
-        Line = line,
+        Document = path,
+        Line = line - 1,
         Column = column,
-        Category = category,
-        Description = messageDescription,
+        ErrorCategory = category,
+        Text = messageDescription,
         FullMessage = fullMessage,
-        HierarchyItem = mHierarchy
+        HierarchyItem = mHierarchy,
+        Category = TaskCategory.BuildCompile,
+        Priority = TaskPriority.High
       };
     }
 
