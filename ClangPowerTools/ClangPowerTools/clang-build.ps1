@@ -781,7 +781,17 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   [string] $platformToolset = Get-ProjectPlatformToolset
   Write-Verbose "Platform toolset: $platformToolset"
 
-  if ( ([int]$platformToolset.Remove(0, 1).Replace("_xp", "")) -le 140)
+  if ( ([int]$platformToolset.Remove(0, 1).Replace("_xp", "")) -le 120)
+  {
+    if ($global:cptVisualStudioVersion -ne '2013')
+    {
+      # we need to reload everything and use VS2013
+      Write-Verbose "Switching to VS2013 because of v120 toolset. Reloading project..."
+      $global:cptVisualStudioVersion = "2013"
+      LoadProject($vcxprojPath)
+    }
+  }
+  elseif ( ([int]$platformToolset.Remove(0, 1).Replace("_xp", "")) -le 140)
   {
     if ($global:cptVisualStudioVersion -ne '2015')
     {
