@@ -113,5 +113,13 @@ Eg.
         value:           'some value'  
     ...
  
+### 👉 I found a bug, How can I debug the Clang Power Tools extension ?
+
+Clone the Clang Power Tools repository, open the Solution file and build the project. 
+Right click the project and do Properties -> Debug ->
+
+1. Select Start external program, enter "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\devenv.exe"
+2. In Command Line Arguments, add "/rootsuffix Exp"
+3. Start an instance (F5) and you will be able to set breakpoints etc.
 
  
