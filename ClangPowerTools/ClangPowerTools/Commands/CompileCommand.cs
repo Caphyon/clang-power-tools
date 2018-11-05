@@ -141,7 +141,7 @@ namespace ClangPowerTools
             AutomationUtil.SaveDirtyProjects((dte as DTE2).Solution);
           }
 
-          CollectSelectedItems(ScriptConstants.kAcceptedFileExtensions);
+          CollectSelectedItems(false, ScriptConstants.kAcceptedFileExtensions);
           RunScript(OutputWindowConstants.kComplileCommand);
         }
         catch (Exception exception)
