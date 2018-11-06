@@ -173,10 +173,10 @@ namespace ClangPowerTools
       }
     }
 
-    protected IEnumerable<IItem> CollectSelectedItems(List<string> aAcceptedExtensionTypes = null)
+    protected IEnumerable<IItem> CollectSelectedItems(bool aClangFormatFlag = false, List<string> aAcceptedExtensionTypes = null)
     {
       mItemsCollector = new ItemsCollector(aAcceptedExtensionTypes);
-      mItemsCollector.CollectSelectedFiles(ActiveWindowProperties.GetProjectItemOfActiveWindow());
+      mItemsCollector.CollectSelectedFiles(ActiveWindowProperties.GetProjectItemOfActiveWindow(), aClangFormatFlag);
       return mItemsCollector.GetItems;
     }
 

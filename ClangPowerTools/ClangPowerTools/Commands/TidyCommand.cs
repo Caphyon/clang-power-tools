@@ -160,7 +160,7 @@ namespace ClangPowerTools
           var dte2 = dte as DTE2;
           AutomationUtil.SaveDirtyProjects(dte2.Solution);
 
-          CollectSelectedItems(ScriptConstants.kAcceptedFileExtensions);
+          CollectSelectedItems(false, ScriptConstants.kAcceptedFileExtensions);
 
           using (var silentFileController = new SilentFileChangerController())
           {

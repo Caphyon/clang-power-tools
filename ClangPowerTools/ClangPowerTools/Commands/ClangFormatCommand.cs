@@ -219,7 +219,7 @@ namespace ClangPowerTools.Commands
 
     private void FormatAllSelectedDocuments()
     {
-      foreach (var item in CollectSelectedItems())
+      foreach (var item in CollectSelectedItems(true))
       {
         var document = (item.GetObject() as ProjectItem).Document;
 

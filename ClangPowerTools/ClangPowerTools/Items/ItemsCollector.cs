@@ -34,13 +34,13 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public void CollectSelectedFiles(ProjectItem aProjectItem)
+    public void CollectSelectedFiles(ProjectItem aProjectItem, bool aClangFormatFlag = false)
     {
       try
       {
         // if the command has been given from tab file
         // will be just one file selected
-        if (null != aProjectItem)
+        if (null != aProjectItem && false == aClangFormatFlag)
         {
           AddProjectItem(aProjectItem);
           return;
@@ -48,7 +48,7 @@ namespace ClangPowerTools
 
         // the command has been given from Solution Explorer or toolbar
         Array selectedItems = null;
-        if ( VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+        if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
           selectedItems = (dte as DTE2).ToolWindows.SolutionExplorer.SelectedItems as Array;
 
         if (null == selectedItems || 0 == selectedItems.Length)
@@ -57,10 +57,22 @@ namespace ClangPowerTools
         foreach (UIHierarchyItem item in selectedItems)
         {
           if (item.Object is Solution)
-            GetProjectsFromSolution(item.Object as Solution);
+          {
+            var solution = item.Object as Solution;
+            if (aClangFormatFlag)
+              GetProjectItem(solution);
+            else
+              GetProjectsFromSolution(solution);
+          }
 
           else if (item.Object is Project)
-            AddProject(item.Object as Project);
+          {
+            var project = item.Object as Project;
+            if (aClangFormatFlag)
+              GetProjectItem(project);
+            else
+              AddProject(project);
+          }
 
           else if (item.Object is ProjectItem)
             GetProjectItem(item.Object as ProjectItem);
@@ -72,13 +84,14 @@ namespace ClangPowerTools
 
     }
 
+
     public void AddProjectItem(ProjectItem aItem)
     {
       if (null == aItem)
-        return; 
+        return;
 
       var fileExtension = Path.GetExtension(aItem.Name).ToLower();
-      if ( null != mAcceptedFileExtensions && false == mAcceptedFileExtensions.Contains(fileExtension))
+      if (null != mAcceptedFileExtensions && false == mAcceptedFileExtensions.Contains(fileExtension))
         return;
 
       mItems.Add(new SelectedProjectItem(aItem));
@@ -86,14 +99,18 @@ namespace ClangPowerTools
 
     #endregion
 
+
     #region Private Methods
+
 
     private void GetProjectsFromSolution(Solution aSolution)
     {
       mItems = AutomationUtil.GetAllProjects(aSolution);
     }
 
+
     private void AddProject(Project aProject) => mItems.Add(new SelectedProject(aProject));
+
 
     private void GetProjectItem(ProjectItem aProjectItem)
     {
@@ -116,6 +133,35 @@ namespace ClangPowerTools
         AddProjectItem(aProjectItem);
       }
     }
+
+
+    private void GetProjectItem(Project aProject)
+    {
+      foreach (var item in aProject.ProjectItems)
+      {
+        var projectItem = item as ProjectItem;
+        if (null == projectItem)
+          continue;
+
+        GetProjectItem(projectItem);
+      }
+    }
+
+
+    private void GetProjectItem(Solution aSolution)
+    {
+      foreach (var item in AutomationUtil.GetAllProjects(aSolution))
+      {
+        var project = (item as SelectedProject).GetObject() as Project;
+        if (null == project)
+          continue;
+
+        GetProjectItem(project);
+      }
+    }
+
+
+
 
     #endregion
 
