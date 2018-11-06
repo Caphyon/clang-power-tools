@@ -37,7 +37,7 @@ namespace ClangPowerTools.Output
         return VSConstants.S_FALSE;
       }
 
-      var text = String.Join("\n", aOutputContent.Buffer) + "\n";
+      var text = String.Join("\n", aOutputContent.Buffer.ToList()) + "\n";
       if (mErrorDetector.Detect(text, out Match aMatchResult))
       {
         GetOutputAndErrors(text, aHierarchy, out string outputText, out List<TaskErrorModel> aDetectedErrors);
