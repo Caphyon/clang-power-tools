@@ -68,7 +68,7 @@ namespace ClangPowerTools
       if (null != aCommandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
-        var menuCommand = new OleMenuCommand(this.RunClangTidy, menuCommandID);
+        var menuCommand = new OleMenuCommand(RunClangTidy, menuCommandID);
         menuCommand.BeforeQueryStatus += mCommandsController.OnBeforeClangCommand;
         menuCommand.Enabled = true;
         aCommandService.AddCommand(menuCommand);
@@ -140,7 +140,7 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
-    private async void RunClangTidy(object sender, EventArgs e)
+    private void RunClangTidy(object sender, EventArgs e)
     {
       if (mCommandsController.Running)
         return;
@@ -148,7 +148,7 @@ namespace ClangPowerTools
       mCommandsController.Running = true;
       mFix = SetTidyFixParameter(sender);
 
-      await System.Threading.Tasks.Task.Run(() =>
+      var task = System.Threading.Tasks.Task.Run(() =>
       {
         try
         {
@@ -194,9 +194,7 @@ namespace ClangPowerTools
         {
           mForceTidyToFix = false;
         }
-      });
-
-      mCommandsController.OnAfterClangCommand();
+      }).ContinueWith(tsk => mCommandsController.OnAfterClangCommand());
     }
 
     private bool SetTidyFixParameter(object sender)
