@@ -207,7 +207,6 @@ Set-Variable -name kExtensionC               -value ".c"                -option 
 # Clang-Related Constants
 
 Set-Variable -name kClangFlagSupressLINK    -value @("-fsyntax-only")   -option Constant
-Set-Variable -name kClangFlagWarningIsError -value @("-Werror")         -option Constant
 Set-Variable -name kClangFlagIncludePch     -value "-include-pch"       -option Constant
 Set-Variable -name kClangFlagEmitPch        -value "-emit-pch"          -option Constant
 Set-Variable -name kClangFlagMinusO         -value "-o"                 -option Constant
