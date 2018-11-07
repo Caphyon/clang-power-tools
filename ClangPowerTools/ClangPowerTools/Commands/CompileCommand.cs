@@ -51,7 +51,7 @@ namespace ClangPowerTools
       if (null != aCommandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
-        var menuCommand = new OleMenuCommand(this.RunClangCompile, menuCommandID);
+        var menuCommand = new OleMenuCommand(RunClangCompile, menuCommandID);
         menuCommand.BeforeQueryStatus += mCommandsController.OnBeforeClangCommand;
         menuCommand.Enabled = true;
         aCommandService.AddCommand(menuCommand);
@@ -124,14 +124,14 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
-    private async void RunClangCompile(object sender, EventArgs e)
+    private void RunClangCompile(object sender, EventArgs e)
     {
       if (mCommandsController.Running)
         return;
 
       mCommandsController.Running = true;
 
-      await System.Threading.Tasks.Task.Run(() =>
+      var task = System.Threading.Tasks.Task.Run(() =>
       {
         try
         {
@@ -149,9 +149,7 @@ namespace ClangPowerTools
           VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
-      });
-
-      mCommandsController.OnAfterClangCommand();
+      }).ContinueWith(tsk => mCommandsController.OnAfterClangCommand());
     }
 
     #endregion
