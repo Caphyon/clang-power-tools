@@ -1,5 +1,18 @@
 # Version History
 
+### Clang Power Tools 4.3
+*November 7, 2018*
+
+Improvements:
+
+* Support for apply `Clang-Format` on `VS Projects`
+* Support for apply `Clang-Format` on `VS Solution`
+
+Bugs:
+
+* Asynchronous writing in the `Output Pane` caused crashes
+* Sometimes crash when clang commands are executed
+
 ### Clang Power Tools 4.2.1
 *October 29, 2018*
 
