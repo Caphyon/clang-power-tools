@@ -55,9 +55,6 @@ Describe "File IO" {
   }
 
   It "IsFileMatchingName - no regex" {
-    # Mocking script parameter aDisableNameRegexMatching
-    [bool] $aDisableNameRegexMatching = $true
-
     $path = "$env:SystemRoot\notepad.exe"
     IsFileMatchingName -filePath $path -matchName "notepad" | Should     -BeExactly $true
     IsFileMatchingName -filePath $path -matchName "notepad.exe" | Should -BeExactly $true
@@ -67,15 +64,12 @@ Describe "File IO" {
   }
 
   It "IsFileMatchingName - with regex" {
-    # Mocking script parameter aDisableNameRegexMatching
-    [bool] $aDisableNameRegexMatching = $false
-
     $path = "$env:SystemRoot\notepad.exe"
-    IsFileMatchingName -filePath $path -matchName "notepad" | Should     -BeExactly $true
-    IsFileMatchingName -filePath $path -matchName "notepad.exe" | Should -BeExactly $true
-    IsFileMatchingName -filePath $path -matchName "notepad.ex" | Should  -BeExactly $true
-    IsFileMatchingName -filePath $path -matchName "note" | Should        -BeExactly $true
-    IsFileMatchingName -filePath $path -matchName ".*" | Should          -BeExactly $true
+    IsFileMatchingName -filePath $path -matchName ([regex]"notepad") | Should     -BeExactly $true
+    IsFileMatchingName -filePath $path -matchName ([regex]"notepad.exe") | Should -BeExactly $true
+    IsFileMatchingName -filePath $path -matchName ([regex]"notepad.ex") | Should  -BeExactly $true
+    IsFileMatchingName -filePath $path -matchName ([regex]"note") | Should        -BeExactly $true
+    IsFileMatchingName -filePath $path -matchName ([regex]".*") | Should          -BeExactly $true
   }
 
   It "FileHasExtension" {

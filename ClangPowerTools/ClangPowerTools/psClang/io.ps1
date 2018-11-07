@@ -141,24 +141,43 @@ Function Get-FileName( [Parameter(Mandatory = $false)][string] $path
 }
 
 Function IsFileMatchingName( [Parameter(Mandatory = $true)][string] $filePath
-                           , [Parameter(Mandatory = $true)][string] $matchName
-                           )
+                           , [Parameter(Mandatory = $true)] $matchName)
 {
-    if ([System.IO.Path]::IsPathRooted($matchName))
+    [string] $matchString = $matchName.ToString() # works for both strings and regex types
+    if ([System.IO.Path]::IsPathRooted($matchString))
     {
         return ($matchName.Length -le $filePath.Length) -and
                ($filePath.Substring(0, $matchName.Length) -ieq $matchName)
     }
 
-    if ($aDisableNameRegexMatching)
+    if ($matchName.GetType().Name -eq "String")
     {
         [string] $fileName      = (Get-FileName -path $filePath)
+        if ($fileName -ieq $matchString)
+        {
+            return $true
+        }
+
         [string] $fileNameNoExt = (Get-FileName -path $filePath -noext)
-        return (($fileName -ieq $matchName) -or ($fileNameNoExt -ieq $matchName))
+        if ($fileNameNoExt -ieq $matchString)
+        {
+            return $true
+        }
+
+        [string[]] $filePathTokens = $filePath.ToLower().Split('\')
+        [string[]] $matchTokens = $matchName.ToLower().Split('\')
+        for ($i = 0; $i -lt $filePathTokens.Length; $i++)
+        {
+            if (! [bool](Compare-Object $filePathTokens[$i .. ($i + $matchTokens.Length - 1)] $matchTokens) )
+            {
+                return $true
+            }
+        }
+        return $false
     }
     else
     {
-        return $filePath -match $matchName
+        return $filePath -match $matchString
     }
 }
 
