@@ -117,9 +117,9 @@ Function Get-FileName( [Parameter(Mandatory = $true)][string] $path
 Function IsFileMatchingName( [Parameter(Mandatory = $true)][string] $filePath
     , [Parameter(Mandatory = $true)][string] $matchName)
 {
-    if ([System.IO.Path]::IsPathRooted($matchName) -and $filePath -ieq $matchName)
+    if ([System.IO.Path]::IsPathRooted($matchName))
     {
-        return $true
+        return $filePath -ieq $matchName
     }
 
     if ($aDisableNameRegexMatching)
