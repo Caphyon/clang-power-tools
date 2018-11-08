@@ -1,5 +1,12 @@
 # Version History
 
+### Clang Power Tools 4.3.1
+*November 9, 2018*
+
+Bugs:
+
+* Fix bug triggering regex error when using absolute paths in command line args
+
 ### Clang Power Tools 4.3
 *November 7, 2018*
 
