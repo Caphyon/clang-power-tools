@@ -1,4 +1,6 @@
-﻿using ClangPowerTools.Handlers;
+﻿using ClangPowerTools.Commands;
+using ClangPowerTools.Handlers;
+using ClangPowerTools.Output;
 using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
@@ -14,23 +16,14 @@ namespace ClangPowerTools
   {
     #region Members
 
-    /// <summary>
-    /// Async service provider instance
-    /// </summary>
-    private IAsyncServiceProvider mServiceProvider;
+    public static readonly Guid mCommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
+
+
+    #region Commands
+
 
 
     #endregion
-
-
-    #region Constructor
-
-    /// <summary>
-    /// Instance constructor
-    /// </summary>
-    /// <param name="aServiceProvider">The async service provider instance</param>
-    /// <param name="aDte">DTE2 instance</param>
-    public CommandsController(IAsyncServiceProvider aServiceProvider) => mServiceProvider = aServiceProvider;
 
 
     #endregion
@@ -55,6 +48,65 @@ namespace ClangPowerTools
 
 
     #region Public Methods
+
+
+    public void Execute(object sender, EventArgs e)
+    {
+      if (!(sender is OleMenuCommand command))
+        return;
+
+      switch (command.CommandID.ID)
+      {
+        case CommandIds.kSettingsId:
+          SettingsCommand.Instance.ShowSettings();
+            break;
+
+        case CommandIds.kStopClang:
+          StopClang.Instance.RunStopClangCommand();
+          break;
+
+        case CommandIds.kClangFormat:
+          ClangFormatCommand.Instance.RunClangFormat();
+          break;
+
+        case CommandIds.kCompileId:
+          CompileCommand.Instance.RunClangCompile();
+          break;
+
+        case CommandIds.kTidyId:
+          TidyCommand.Instance.RunClangTidy(false);
+          break;
+
+        case CommandIds.kTidyFixId:
+          TidyCommand.Instance.RunClangTidy(true);
+          break;
+      }
+    }
+
+
+    public async System.Threading.Tasks.Task InitializeAsyncCommands(AsyncPackage aAsyncPackage, 
+      ErrorWindowController aErrorController, OutputWindowController aOutputWindowController)
+    {
+      if (null == CompileCommand.Instance)
+        await CompileCommand.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kCompileId);
+
+      if (null == TidyCommand.Instance)
+      {
+        await TidyCommand.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kTidyId);
+        await TidyCommand.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kTidyFixId);
+      }
+
+      if (null == ClangFormatCommand.Instance)
+        await ClangFormatCommand.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kClangFormat);
+
+      if (null == StopClang.Instance)
+        await StopClang.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kStopClang);
+
+      if (null == SettingsCommand.Instance)
+        await SettingsCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kSettingsId);
+    }
+
+
 
 
     /// <summary>
@@ -109,6 +161,15 @@ namespace ClangPowerTools
 
 
     #endregion
+
+
+    private bool SetTidyFixParameter(object sender)
+    {
+      if (!(sender is OleMenuCommand))
+        return false;
+
+      return (sender as OleMenuCommand).CommandID.ID == CommandIds.kTidyFixId;
+    }
 
   }
 }

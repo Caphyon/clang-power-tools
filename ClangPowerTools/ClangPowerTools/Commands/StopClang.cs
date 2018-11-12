@@ -51,7 +51,7 @@ namespace ClangPowerTools.Commands
       if (null != aCommandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
-        var menuCommand = new OleMenuCommand(this.RunStopClangCommand, menuCommandID);
+        var menuCommand = new OleMenuCommand(mCommandsController.Execute, menuCommandID);
         menuCommand.BeforeQueryStatus += mCommandsController.OnBeforeClangCommand;
         menuCommand.Enabled = true;
         aCommandService.AddCommand(menuCommand);
@@ -80,19 +80,7 @@ namespace ClangPowerTools.Commands
     }
 
 
-    #endregion
-
-
-    #region Private Methods 
-
-    /// <summary>
-    /// This function is the callback used to execute the command when the menu item is clicked.
-    /// See the constructor to see how the menu item is associated with this function using
-    /// OleMenuCommandService service and MenuCommand class.
-    /// </summary>
-    /// <param name="sender">Event sender.</param>
-    /// <param name="e">Event args.</param>
-    private void RunStopClangCommand(object sender, EventArgs e)
+    public void RunStopClangCommand()
     {
       mCommandsController.Running = false;
 
