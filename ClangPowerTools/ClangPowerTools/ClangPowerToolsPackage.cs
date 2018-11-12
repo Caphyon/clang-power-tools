@@ -55,11 +55,10 @@ namespace ClangPowerTools
     /// RunPowerShellCommandPackage GUID string.
     /// </summary>
     public const string PackageGuidString = "f564f9d3-01ae-493e-883b-18deebdb975e";
-    public static readonly Guid CommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
 
     private uint mHSolutionEvents = uint.MaxValue;
     private RunningDocTableEvents mRunningDocTableEvents;
-    private ErrorWindowController mErrorWindow;
+    private ErrorWindowController mErrorWindowController;
     private OutputWindowController mOutputController;
     private CommandsController mCommandsController = null;
 
@@ -106,9 +105,9 @@ namespace ClangPowerTools
       mOutputController.Initialize(this, vsOutputWindow);
 
       mRunningDocTableEvents = new RunningDocTableEvents(this);
-      mErrorWindow = new ErrorWindowController(this);
+      mErrorWindowController = new ErrorWindowController(this);
 
-      mCommandsController = new CommandsController(this);
+      mCommandsController = new CommandsController();
 
       #region Get Pointer to IVsSolutionEvents
 
@@ -149,7 +148,7 @@ namespace ClangPowerTools
         generalOptions.SaveSettingsToStorage();
       }
 
-      await InitializeAsyncCommands();
+      await mCommandsController.InitializeAsyncCommands(this, mErrorWindowController, mOutputController);
       RegisterToVsEvents();
 
       await base.InitializeAsync(cancellationToken, progress);
@@ -207,7 +206,7 @@ namespace ClangPowerTools
     {
       aPHierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out object projectObject);
       if (projectObject is Project project)
-        mErrorWindow.RemoveErrors(aPHierarchy);
+        mErrorWindowController.RemoveErrors(aPHierarchy);
 
       return VSConstants.S_OK;
     }
@@ -256,26 +255,26 @@ namespace ClangPowerTools
     #region Private Methods
 
 
-    private async System.Threading.Tasks.Task InitializeAsyncCommands()
-    {
-      if (null == CompileCommand.Instance)
-        await CompileCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kCompileId);
+    //private async System.Threading.Tasks.Task InitializeAsyncCommands()
+    //{
+    //  if (null == CompileCommand.Instance)
+    //    await CompileCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kCompileId);
 
-      if (null == TidyCommand.Instance)
-      {
-        await TidyCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kTidyId);
-        await TidyCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kTidyFixId);
-      }
+    //  if (null == TidyCommand.Instance)
+    //  {
+    //    await TidyCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kTidyId);
+    //    await TidyCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kTidyFixId);
+    //  }
 
-      if (null == ClangFormatCommand.Instance)
-        await ClangFormatCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kClangFormat);
+    //  if (null == ClangFormatCommand.Instance)
+    //    await ClangFormatCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kClangFormat);
 
-      if (null == StopClang.Instance)
-        await StopClang.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kStopClang);
+    //  if (null == StopClang.Instance)
+    //    await StopClang.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kStopClang);
 
-      if (null == SettingsCommand.Instance)
-        await SettingsCommand.InitializeAsync(this, CommandSet, CommandIds.kSettingsId);
-    }
+    //  if (null == SettingsCommand.Instance)
+    //    await SettingsCommand.InitializeAsync(this, CommandSet, CommandIds.kSettingsId);
+    //}
 
 
     private async System.Threading.Tasks.Task RegisterVsServices()
@@ -310,7 +309,7 @@ namespace ClangPowerTools
     {
       if (null != mBuildEvents)
       {
-        mBuildEvents.OnBuildBegin += mErrorWindow.OnBuildBegin;
+        mBuildEvents.OnBuildBegin += mErrorWindowController.OnBuildBegin;
         mBuildEvents.OnBuildBegin += mCommandsController.OnBuildBegin;
         mBuildEvents.OnBuildDone += mCommandsController.OnBuildDone;
         mBuildEvents.OnBuildDone += CompileCommand.Instance.OnBuildDone;
@@ -338,7 +337,7 @@ namespace ClangPowerTools
     {
       if (null != mBuildEvents)
       {
-        mBuildEvents.OnBuildBegin -= mErrorWindow.OnBuildBegin;
+        mBuildEvents.OnBuildBegin -= mErrorWindowController.OnBuildBegin;
         mBuildEvents.OnBuildBegin -= mCommandsController.OnBuildBegin;
         mBuildEvents.OnBuildDone -= mCommandsController.OnBuildDone;
         mBuildEvents.OnBuildDone -= CompileCommand.Instance.OnBuildDone;

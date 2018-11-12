@@ -10,7 +10,7 @@ using System;
 using System.ComponentModel.Design;
 using System.Linq;
 
-namespace ClangPowerTools
+namespace ClangPowerTools.Commands
 {
   /// <summary>
   /// Command handler
@@ -68,7 +68,7 @@ namespace ClangPowerTools
       if (null != aCommandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
-        var menuCommand = new OleMenuCommand(RunClangTidy, menuCommandID);
+        var menuCommand = new OleMenuCommand(mCommandsController.Execute, menuCommandID);
         menuCommand.BeforeQueryStatus += mCommandsController.OnBeforeClangCommand;
         menuCommand.Enabled = true;
         aCommandService.AddCommand(menuCommand);
@@ -113,7 +113,7 @@ namespace ClangPowerTools
         return;
 
       mForceTidyToFix = true;
-      RunClangTidy(new object(), new EventArgs());
+      RunClangTidy();
       mSaveCommandWasGiven = false;
     }
 
@@ -128,25 +128,14 @@ namespace ClangPowerTools
       mSaveCommandWasGiven = true;
     }
 
-    #endregion
 
-
-    #region Private Methods
-
-    /// <summary>
-    /// This function is the callback used to execute the command when the menu item is clicked.
-    /// See the constructor to see how the menu item is associated with this function using
-    /// OleMenuCommandService service and MenuCommand class.
-    /// </summary>
-    /// <param name="sender">Event sender.</param>
-    /// <param name="e">Event args.</param>
-    private void RunClangTidy(object sender, EventArgs e)
+    public void RunClangTidy(bool aTidyFix = false)
     {
       if (mCommandsController.Running)
         return;
 
       mCommandsController.Running = true;
-      mFix = SetTidyFixParameter(sender);
+      mFix = aTidyFix;
 
       var task = System.Threading.Tasks.Task.Run(() =>
       {
@@ -197,13 +186,7 @@ namespace ClangPowerTools
       }).ContinueWith(tsk => mCommandsController.OnAfterClangCommand());
     }
 
-    private bool SetTidyFixParameter(object sender)
-    {
-      if (!(sender is OleMenuCommand))
-        return false;
 
-      return (sender as OleMenuCommand).CommandID.ID == CommandIds.kTidyFixId;
-    }
 
 
     #endregion
