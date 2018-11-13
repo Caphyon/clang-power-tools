@@ -14,13 +14,6 @@ namespace ClangPowerTools.Commands
   /// </summary>
   internal sealed class CompileCommand : ClangCommand
   {
-    #region Members
-
-    private bool mExecuteCompile = false;
-
-    #endregion
-
-
     #region Properties
 
 
@@ -32,6 +25,9 @@ namespace ClangPowerTools.Commands
       get;
       private set;
     }
+
+
+    public bool VsCompileFlag { get; set; }
 
 
     #endregion
@@ -89,12 +85,12 @@ namespace ClangPowerTools.Commands
       if (0 != string.Compare("Build.Compile", commandName))
         return;
 
-      mExecuteCompile = true;
+      VsCompileFlag = true;
     }
 
     public override void OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
     {
-      if (false == mExecuteCompile)
+      if (false == VsCompileFlag)
         return;
 
       var exitCode = int.MaxValue;
@@ -104,13 +100,13 @@ namespace ClangPowerTools.Commands
       // VS compile detected errors and there is not necessary to run clang compile
       if (0 != exitCode)
       {
-        mExecuteCompile = false;
+        VsCompileFlag = false;
         return;
       }
 
       // Run clang compile after the VS compile succeeded 
       RunClangCompile();
-      mExecuteCompile = false;
+      VsCompileFlag = false;
     }
 
 

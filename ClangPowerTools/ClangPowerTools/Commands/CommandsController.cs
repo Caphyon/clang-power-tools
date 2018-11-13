@@ -19,13 +19,6 @@ namespace ClangPowerTools
     public static readonly Guid mCommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
 
 
-    #region Commands
-
-
-
-    #endregion
-
-
     #endregion
 
 
@@ -59,7 +52,7 @@ namespace ClangPowerTools
       {
         case CommandIds.kSettingsId:
           SettingsCommand.Instance.ShowSettings();
-            break;
+          break;
 
         case CommandIds.kStopClang:
           StopClang.Instance.RunStopClangCommand();
@@ -84,7 +77,7 @@ namespace ClangPowerTools
     }
 
 
-    public async System.Threading.Tasks.Task InitializeAsyncCommands(AsyncPackage aAsyncPackage, 
+    public async System.Threading.Tasks.Task InitializeAsyncCommands(AsyncPackage aAsyncPackage,
       ErrorWindowController aErrorController, OutputWindowController aOutputWindowController)
     {
       if (null == CompileCommand.Instance)
@@ -107,6 +100,7 @@ namespace ClangPowerTools
     }
 
 
+    #region Events
 
 
     /// <summary>
@@ -157,19 +151,86 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="Scope"></param>
     /// <param name="Action"></param>
-    public void OnBuildDone(vsBuildScope Scope, vsBuildAction Action) => VsBuildRunning = false;
+    public void OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
+    {
+      VsBuildRunning = false;
+      OnBuildDoneClangCompile();
+
+
+    }
+
+    #endregion
+
+
+    #region Commands Events
+
+
+    public void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
+    {
+      BeforeExecuteClangCompile(aGuid, aId);
+    }
+
+    private void BeforeExecuteClangCompile(string aGuid, int aId)
+    {
+      if (false == mGeneralOptions.ClangCompileAfterVsCompile)
+        return;
+
+      string commandName = GetCommandName(aGuid, aId);
+      if (0 != string.Compare("Build.Compile", commandName))
+        return;
+
+      CompileCommand.Instance.VsCompileFlag = true;
+    }
+
+
+    private void OnBuildDoneClangCompile()
+    {
+      if (false == CompileCommand.Instance.VsCompileFlag)
+        return;
+
+      var exitCode = int.MaxValue;
+      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+        exitCode = (dte as DTE2).Solution.SolutionBuild.LastBuildInfo;
+
+      // VS compile detected errors and there is not necessary to run clang compile
+      if (0 != exitCode)
+      {
+        CompileCommand.Instance.VsCompileFlag = false;
+        return;
+      }
+
+      // Run clang compile after the VS compile succeeded 
+      CompileCommand.Instance.RunClangCompile();
+      CompileCommand.Instance.VsCompileFlag = false;
+    }
 
 
     #endregion
 
 
-    private bool SetTidyFixParameter(object sender)
+    protected string GetCommandName(string aGuid, int aId)
     {
-      if (!(sender is OleMenuCommand))
-        return false;
+      try
+      {
+        if (null == aGuid)
+          return string.Empty;
 
-      return (sender as OleMenuCommand).CommandID.ID == CommandIds.kTidyFixId;
+        if (null == mCommand)
+          return string.Empty;
+
+        Command cmd = mCommand.Item(aGuid, aId);
+        if (null == cmd)
+          return string.Empty;
+
+        return cmd.Name;
+      }
+      catch (Exception) { }
+
+      return string.Empty;
     }
+
+
+    #endregion
 
   }
 }
