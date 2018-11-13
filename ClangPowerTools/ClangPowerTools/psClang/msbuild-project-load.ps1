@@ -79,6 +79,56 @@ Function Set-Var([parameter(Mandatory = $false)][string] $name
     }
 }
 
+Function Add-Project-Item([parameter(Mandatory = $false)][string] $name
+                         ,[parameter(Mandatory = $false)]         $value)
+{
+    if (!$value)
+    {
+        return
+    }
+
+    $itemVarName = "CPT_PROJITEM_$name"
+    if (!(Get-Variable $itemVarName -ErrorAction SilentlyContinue))
+    {
+        $itemList = New-Object System.Collections.ArrayList
+        Set-Var -name $itemVarName -value $itemList
+    }
+
+    $itemList = (Get-Variable $itemVarName).Value
+    if ($value.GetType().Name -ieq "object[]")
+    {
+        foreach ($arrayValue in $value)
+        {
+            $itemList.Add($arrayValue) | Out-Null
+        }
+    }
+    else
+    {
+        $itemList.Add($value) | Out-Null
+    }
+}
+
+Function Get-Project-Item([parameter(Mandatory = $false)][string] $name)
+{
+    $itemVarName = "CPT_PROJITEM_$name"
+    if (Get-Variable $itemVarName -ErrorAction SilentlyContinue)
+    {
+        $retStr = ""
+        foreach ($v in (Get-Variable $itemVarName).Value)
+        {
+            if ($retStr)
+            {
+                $retStr += ";"
+            }
+            $retStr += $v
+        }
+
+        return $retStr
+    }
+
+    return $null
+}
+
 Function Clear-Vars()
 {
     Write-Verbose-Array -array $global:ProjectSpecificVariables `
@@ -339,8 +389,7 @@ function Select-ProjectNodes([Parameter(Mandatory = $true)]  [string][string] $x
         return $nodes
     }
 
-    $nodes = Help:Get-ProjectFileNodes -projectFile $global:projectFiles[$fileIndex] `
-        -xpath $xpath
+    $nodes = Help:Get-ProjectFileNodes -projectFile $global:projectFiles[$fileIndex] -xpath $xpath
 
     # nothing on this level or we're dealing with an ItemGroup, go above
     if ($nodes.Count -eq 0 -or $xpath.Contains("ItemGroup"))
@@ -508,19 +557,27 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
         }
     }
 
-    if ($node.Name -ieq "ItemGroup" -and $node.GetAttribute("Label") -ieq "ProjectConfigurations")
+    if ($node.Name -ieq "ItemGroup")
     {
-        [System.Xml.XmlElement] $firstChild = $node.ChildNodes                                     | `
-            Where-Object { $_.GetType().Name -ieq "XmlElement" } | `
-            Select-Object -First 1
-        Detect-ProjectDefaultConfigPlatform $firstChild.GetAttribute("Include")
+        $childNodes = $node.ChildNodes | Where-Object { $_.GetType().Name -ieq "XmlElement" }
+        foreach ($child in $childNodes)
+        {
+            $childEvaluatedValue = Evaluate-MSBuildExpression $child.GetAttribute("Include")
+            Add-Project-Item -name $child.Name -value $childEvaluatedValue
+        }
+
+        if ($node.GetAttribute("Label") -ieq "ProjectConfigurations")
+        {
+            [System.Xml.XmlElement] $firstChild = $childNodes | Select-Object -First 1
+            Detect-ProjectDefaultConfigPlatform $firstChild.GetAttribute("Include")
+        }
     }
 
     if ($node.ParentNode.Name -ieq "PropertyGroup")
     {
         # set new property value
         [string] $propertyName = $node.Name
-        [string] $propertyValue = Evaluate-MSBuildExpression $node.InnerText
+        $propertyValue = Evaluate-MSBuildExpression $node.InnerText
 
         Set-Var -Name $propertyName -Value $propertyValue
 

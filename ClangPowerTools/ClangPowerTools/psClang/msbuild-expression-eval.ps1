@@ -28,6 +28,8 @@ Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>     `
         ,'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
         , ("\[MSBuild\]::MakeRelative\((.+?),\s*""?'?((\$.+?\))|(.+?))((|""|')\)\))+"`
         ,'MakePathRelative -base $1 -target "$2")'                       )`
+        , ('SearchOption\.', '[System.IO.SearchOption]::'                )`
+        , ("@\((.*?)\)", '$(Get-Project-Item("$1"))')`
 )
 
 Set-Variable -name "kMsbuildConditionToPsRules" <#-option Constant#>      `
@@ -151,19 +153,18 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
         }
     }
 
-    $expression = $expression.replace('"', '""')
     Write-Debug "Intermediate PS expression: $expression"
 
     try
     {
-
-        [string] $toInvoke = "(`$s = ""$expression"")"
         if ($isCondition)
         {
-            $toInvoke = "(`$s = ""`$($expression)"")"
+            $res = Invoke-Expression $expression
         }
-
-        $res = Invoke-Expression $toInvoke
+        else
+        {
+            $res = $ExecutionContext.InvokeCommand.ExpandString($expression)
+        }
     }
     catch
     {
