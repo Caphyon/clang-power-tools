@@ -1,5 +1,12 @@
 # Version History
 
+### Clang Power Tools 4.3.2
+*November 13, 2018*
+
+Bugs:
+
+* The extension does not load correctly
+
 ### Clang Power Tools 4.3.1
 *November 9, 2018*
 
