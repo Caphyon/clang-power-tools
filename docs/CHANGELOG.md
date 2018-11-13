@@ -5,7 +5,7 @@
 
 Bugs:
 
-* The extension does not load correctly
+* New extension dependencies caused crashes
 
 ### Clang Power Tools 4.3.1
 *November 9, 2018*
