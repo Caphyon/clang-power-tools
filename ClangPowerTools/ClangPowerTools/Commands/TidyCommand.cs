@@ -109,11 +109,7 @@ namespace ClangPowerTools.Commands
       if (true == mCommandsController.Running) // Clang compile/tidy command is running
         return;
 
-      if (true == mForceTidyToFix) // Clang-tidy on save is running 
-        return;
-
-      mForceTidyToFix = true;
-      RunClangTidy();
+      RunClangTidy(true);
       mSaveCommandWasGiven = false;
     }
 
@@ -178,10 +174,6 @@ namespace ClangPowerTools.Commands
         {
           VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-        }
-        finally
-        {
-          mForceTidyToFix = false;
         }
       }).ContinueWith(tsk => mCommandsController.OnAfterClangCommand());
     }
