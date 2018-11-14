@@ -24,7 +24,7 @@ namespace ClangPowerTools
     protected List<string> mDirectoriesPath = new List<string>();
     protected ClangGeneralOptionsView mGeneralOptions;
 
-    private Commands2 mCommand;
+    //private Commands2 mCommand;
 
     private ErrorWindowController mErrorWindow;
     private OutputWindowController mOutputWindow;
@@ -72,7 +72,7 @@ namespace ClangPowerTools
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {
         var dte2 = dte as DTE2;
-        mCommand = dte2.Commands as Commands2;
+        //mCommand = dte2.Commands as Commands2;
         VsEdition = dte2.Edition;
         mVsVersions.TryGetValue(dte2.Version, out string version);
         VsVersion = version;
@@ -83,19 +83,6 @@ namespace ClangPowerTools
 
 
     #region Methods
-
-
-    #region Public Methods
-
-
-    public virtual void OnBeforeSave(object sender, Document aDocument) { }
-
-    public virtual void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault) { }
-
-    public virtual void OnBuildDone(vsBuildScope Scope, vsBuildAction Action) { }
-
-
-    #endregion
 
 
     #region Protected methods
@@ -180,26 +167,6 @@ namespace ClangPowerTools
       return mItemsCollector.GetItems;
     }
 
-    protected string GetCommandName(string aGuid, int aId)
-    {
-      try
-      {
-        if (null == aGuid)
-          return string.Empty;
-
-        if (null == mCommand)
-          return string.Empty;
-
-        Command cmd = mCommand.Item(aGuid, aId);
-        if (null == cmd)
-          return string.Empty;
-
-        return cmd.Name;
-      }
-      catch (Exception) { }
-
-      return string.Empty;
-    }
 
     #endregion
 

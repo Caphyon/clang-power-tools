@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Commands;
+using ClangPowerTools.DialogPages;
 using ClangPowerTools.Handlers;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
@@ -6,6 +7,8 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
+using System.IO;
+using System.Linq;
 
 namespace ClangPowerTools
 {
@@ -17,7 +20,9 @@ namespace ClangPowerTools
     #region Members
 
     public static readonly Guid mCommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
-
+    private AsyncPackage mAsyncPackage;
+    private Commands2 mCommand;
+    private bool mSaveCommandWasGiven = false;
 
     #endregion
 
@@ -36,6 +41,22 @@ namespace ClangPowerTools
     /// </summary>
     public bool VsBuildRunning { get; set; }
 
+
+    #endregion
+
+
+    #region Constructor
+
+    public CommandsController(AsyncPackage aAsyncPackage)
+    {
+      mAsyncPackage = aAsyncPackage;
+
+      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+      {
+        var dte2 = dte as DTE2;
+        mCommand = dte2.Commands as Commands2;
+      }
+    }
 
     #endregion
 
@@ -155,31 +176,6 @@ namespace ClangPowerTools
     {
       VsBuildRunning = false;
       OnBuildDoneClangCompile();
-
-
-    }
-
-    #endregion
-
-
-    #region Commands Events
-
-
-    public void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
-    {
-      BeforeExecuteClangCompile(aGuid, aId);
-    }
-
-    private void BeforeExecuteClangCompile(string aGuid, int aId)
-    {
-      if (false == mGeneralOptions.ClangCompileAfterVsCompile)
-        return;
-
-      string commandName = GetCommandName(aGuid, aId);
-      if (0 != string.Compare("Build.Compile", commandName))
-        return;
-
-      CompileCommand.Instance.VsCompileFlag = true;
     }
 
 
@@ -202,6 +198,99 @@ namespace ClangPowerTools
       // Run clang compile after the VS compile succeeded 
       CompileCommand.Instance.RunClangCompile();
       CompileCommand.Instance.VsCompileFlag = false;
+    }
+
+
+    public void OnBeforeSave(object sender, Document aDocument)
+    {
+      BeforeSaveClangTidy();
+      BeforeSaveClangFormat(aDocument);
+    }
+
+
+    private void BeforeSaveClangTidy()
+    {
+      if (false == mSaveCommandWasGiven) // The save event was not triggered by Save File or SaveAll commands
+        return;
+
+      var tidyOption = (ClangTidyOptionsView)mAsyncPackage.GetDialogPage(typeof(ClangTidyOptionsView));
+
+      if (false == tidyOption.AutoTidyOnSave) // The clang-tidy on save option is disable 
+        return;
+
+      if (true == Running) // Clang compile/tidy command is running
+        return;
+
+      TidyCommand.Instance.RunClangTidy(true);
+      mSaveCommandWasGiven = false;
+    }
+
+    private void BeforeSaveClangFormat(Document aDocument)
+    {
+      var clangFormatOptionPage = (ClangFormatOptionsView)mAsyncPackage.GetDialogPage(typeof(ClangFormatOptionsView));
+
+      if (false == clangFormatOptionPage.EnableFormatOnSave)
+        return;
+
+      if (false == Vsix.IsDocumentDirty(aDocument))
+        return;
+
+      if (false == FileHasExtension(aDocument.FullName, clangFormatOptionPage.FileExtensions))
+        return;
+
+      if (true == SkipFile(aDocument.FullName, clangFormatOptionPage.SkipFiles))
+        return;
+
+      var option = ((ClangFormatOptionsView)mAsyncPackage.GetDialogPage(typeof(ClangFormatOptionsView))).Clone();
+      option.FallbackStyle = ClangFormatFallbackStyle.none;
+
+      ClangFormatCommand.Instance.FormatDocument(aDocument, option);
+    }
+
+    private bool SkipFile(string aFilePath, string aSkipFiles)
+    {
+      var skipFilesList = aSkipFiles.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+      return skipFilesList.Contains(Path.GetFileName(aFilePath).ToLower());
+    }
+
+    private bool FileHasExtension(string filePath, string fileExtensions)
+    {
+      var extensions = fileExtensions.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+      return extensions.Contains(Path.GetExtension(filePath).ToLower());
+    }
+
+
+
+    public void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
+    {
+      BeforeExecuteClangCompile(aGuid, aId);
+      BeforeExecuteClangTidy(aGuid, aId);
+    }
+
+    private void BeforeExecuteClangCompile(string aGuid, int aId)
+    {
+      var generalOptions = (ClangGeneralOptionsView)mAsyncPackage.GetDialogPage(typeof(ClangGeneralOptionsView));
+
+      if (null == generalOptions || false == generalOptions.ClangCompileAfterVsCompile)
+        return;
+
+      string commandName = GetCommandName(aGuid, aId);
+      if (0 != string.Compare("Build.Compile", commandName))
+        return;
+
+      CompileCommand.Instance.VsCompileFlag = true;
+    }
+
+
+    private void BeforeExecuteClangTidy(string aGuid, int aId)
+    {
+      string commandName = GetCommandName(aGuid, aId);
+      if (0 != string.Compare("File.SaveAll", commandName) &&
+        0 != string.Compare("File.SaveSelectedItems", commandName))
+      {
+        return;
+      }
+      mSaveCommandWasGiven = true;
     }
 
 

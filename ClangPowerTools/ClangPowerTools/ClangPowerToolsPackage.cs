@@ -107,7 +107,7 @@ namespace ClangPowerTools
       mRunningDocTableEvents = new RunningDocTableEvents(this);
       mErrorWindowController = new ErrorWindowController(this);
 
-      mCommandsController = new CommandsController();
+      mCommandsController = new CommandsController(this);
 
       #region Get Pointer to IVsSolutionEvents
 
@@ -255,28 +255,6 @@ namespace ClangPowerTools
     #region Private Methods
 
 
-    //private async System.Threading.Tasks.Task InitializeAsyncCommands()
-    //{
-    //  if (null == CompileCommand.Instance)
-    //    await CompileCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kCompileId);
-
-    //  if (null == TidyCommand.Instance)
-    //  {
-    //    await TidyCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kTidyId);
-    //    await TidyCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kTidyFixId);
-    //  }
-
-    //  if (null == ClangFormatCommand.Instance)
-    //    await ClangFormatCommand.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kClangFormat);
-
-    //  if (null == StopClang.Instance)
-    //    await StopClang.InitializeAsync(mCommandsController, mErrorWindow, mOutputController, this, CommandSet, CommandIds.kStopClang);
-
-    //  if (null == SettingsCommand.Instance)
-    //    await SettingsCommand.InitializeAsync(this, CommandSet, CommandIds.kSettingsId);
-    //}
-
-
     private async System.Threading.Tasks.Task RegisterVsServices()
     {
       // Get DTE service async 
@@ -312,19 +290,16 @@ namespace ClangPowerTools
         mBuildEvents.OnBuildBegin += mErrorWindowController.OnBuildBegin;
         mBuildEvents.OnBuildBegin += mCommandsController.OnBuildBegin;
         mBuildEvents.OnBuildDone += mCommandsController.OnBuildDone;
-        mBuildEvents.OnBuildDone += CompileCommand.Instance.OnBuildDone;
       }
 
       if (null != mCommandEvents)
       {
-        mCommandEvents.BeforeExecute += CompileCommand.Instance.CommandEventsBeforeExecute;
-        mCommandEvents.BeforeExecute += TidyCommand.Instance.CommandEventsBeforeExecute;
+        mCommandEvents.BeforeExecute += mCommandsController.CommandEventsBeforeExecute;
       }
 
       if (null != mRunningDocTableEvents)
       {
-        mRunningDocTableEvents.BeforeSave += TidyCommand.Instance.OnBeforeSave;
-        mRunningDocTableEvents.BeforeSave += ClangFormatCommand.Instance.OnBeforeSave;
+        mRunningDocTableEvents.BeforeSave += mCommandsController.OnBeforeSave;
       }
 
       if (null != mDteEvents)
@@ -340,19 +315,16 @@ namespace ClangPowerTools
         mBuildEvents.OnBuildBegin -= mErrorWindowController.OnBuildBegin;
         mBuildEvents.OnBuildBegin -= mCommandsController.OnBuildBegin;
         mBuildEvents.OnBuildDone -= mCommandsController.OnBuildDone;
-        mBuildEvents.OnBuildDone -= CompileCommand.Instance.OnBuildDone;
       }
 
       if (null != mCommandEvents)
       {
-        mCommandEvents.BeforeExecute -= CompileCommand.Instance.CommandEventsBeforeExecute;
-        mCommandEvents.BeforeExecute -= TidyCommand.Instance.CommandEventsBeforeExecute;
+        mCommandEvents.BeforeExecute -= mCommandsController.CommandEventsBeforeExecute;
       }
 
       if (null != mRunningDocTableEvents)
       {
-        mRunningDocTableEvents.BeforeSave -= TidyCommand.Instance.OnBeforeSave;
-        mRunningDocTableEvents.BeforeSave -= ClangFormatCommand.Instance.OnBeforeSave;
+        mRunningDocTableEvents.BeforeSave -= mCommandsController.OnBeforeSave;
       }
 
       if (null != mDteEvents)

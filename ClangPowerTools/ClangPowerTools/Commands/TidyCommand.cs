@@ -26,8 +26,6 @@ namespace ClangPowerTools.Commands
 
     private bool mFix = false;
 
-    private bool mForceTidyToFix = false;
-    private bool mSaveCommandWasGiven = false;
 
     #endregion
 
@@ -95,33 +93,6 @@ namespace ClangPowerTools.Commands
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
       Instance = new TidyCommand(commandService, aCommandsController, aErrorWindow, aOutputWindow, aPackage, aGuid, aId);
-    }
-
-
-    public override void OnBeforeSave(object sender, Document aDocument)
-    {
-      if (false == mSaveCommandWasGiven) // The save event was not triggered by Save File or SaveAll commands
-        return;
-
-      if (false == mTidyOptions.AutoTidyOnSave) // The clang-tidy on save option is disable 
-        return;
-
-      if (true == mCommandsController.Running) // Clang compile/tidy command is running
-        return;
-
-      RunClangTidy(true);
-      mSaveCommandWasGiven = false;
-    }
-
-    public override void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
-    {
-      string commandName = GetCommandName(aGuid, aId);
-      if (0 != string.Compare("File.SaveAll", commandName) &&
-        0 != string.Compare("File.SaveSelectedItems", commandName))
-      {
-        return;
-      }
-      mSaveCommandWasGiven = true;
     }
 
 
