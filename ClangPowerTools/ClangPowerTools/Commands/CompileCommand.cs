@@ -76,40 +76,6 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public override void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
-    {
-      if (false == mGeneralOptions.ClangCompileAfterVsCompile)
-        return;
-
-      string commandName = GetCommandName(aGuid, aId);
-      if (0 != string.Compare("Build.Compile", commandName))
-        return;
-
-      VsCompileFlag = true;
-    }
-
-    public override void OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
-    {
-      if (false == VsCompileFlag)
-        return;
-
-      var exitCode = int.MaxValue;
-      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
-        exitCode = (dte as DTE2).Solution.SolutionBuild.LastBuildInfo;
-
-      // VS compile detected errors and there is not necessary to run clang compile
-      if (0 != exitCode)
-      {
-        VsCompileFlag = false;
-        return;
-      }
-
-      // Run clang compile after the VS compile succeeded 
-      RunClangCompile();
-      VsCompileFlag = false;
-    }
-
-
     public void RunClangCompile()
     {
       if (mCommandsController.Running)

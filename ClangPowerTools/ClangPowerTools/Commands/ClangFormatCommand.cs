@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using System.IO;
-using System.Linq;
 using System.Xml.Linq;
 using ClangPowerTools.DialogPages;
 using ClangPowerTools.Output;
@@ -85,30 +84,8 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public override void OnBeforeSave(object sender, Document aDocument)
-    {
-      var clangFormatOptionPage = GetUserOptions();
 
-      if (false == clangFormatOptionPage.EnableFormatOnSave)
-        return;
-
-      if (false == Vsix.IsDocumentDirty(aDocument))
-        return;
-
-      if (false == FileHasExtension(aDocument.FullName, clangFormatOptionPage.FileExtensions))
-        return;
-
-      if (true == SkipFile(aDocument.FullName, clangFormatOptionPage.SkipFiles))
-        return;
-
-      var option = GetUserOptions().Clone();
-      option.FallbackStyle = ClangFormatFallbackStyle.none;
-
-      FormatDocument(aDocument, option);
-    }
-
-
-    private void FormatDocument(Document aDocument, ClangFormatOptionsView aOptions)
+    public void FormatDocument(Document aDocument, ClangFormatOptionsView aOptions)
     {
       mClangFormatView = aOptions;
       mDocument = aDocument;
@@ -189,20 +166,6 @@ namespace ClangPowerTools.Commands
 
 
     private ClangFormatOptionsView GetUserOptions() => (ClangFormatOptionsView)AsyncPackage.GetDialogPage(typeof(ClangFormatOptionsView));
-
-
-    private bool SkipFile(string aFilePath, string aSkipFiles)
-    {
-      var skipFilesList = aSkipFiles.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-      return skipFilesList.Contains(Path.GetFileName(aFilePath).ToLower());
-    }
-
-
-    private bool FileHasExtension(string filePath, string fileExtensions)
-    {
-      var extensions = fileExtensions.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-      return extensions.Contains(Path.GetExtension(filePath).ToLower());
-    }
 
 
     private void FormatAllSelectedDocuments()
