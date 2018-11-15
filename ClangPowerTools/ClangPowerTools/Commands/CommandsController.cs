@@ -213,7 +213,7 @@ namespace ClangPowerTools
       if (false == mSaveCommandWasGiven) // The save event was not triggered by Save File or SaveAll commands
         return;
 
-      var tidyOption = (ClangTidyOptionsView)mAsyncPackage.GetDialogPage(typeof(ClangTidyOptionsView));
+      var tidyOption = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
 
       if (false == tidyOption.AutoTidyOnSave) // The clang-tidy on save option is disable 
         return;
@@ -227,7 +227,7 @@ namespace ClangPowerTools
 
     private void BeforeSaveClangFormat(Document aDocument)
     {
-      var clangFormatOptionPage = (ClangFormatOptionsView)mAsyncPackage.GetDialogPage(typeof(ClangFormatOptionsView));
+      var clangFormatOptionPage = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
 
       if (false == clangFormatOptionPage.EnableFormatOnSave)
         return;
@@ -241,7 +241,7 @@ namespace ClangPowerTools
       if (true == SkipFile(aDocument.FullName, clangFormatOptionPage.SkipFiles))
         return;
 
-      var option = ((ClangFormatOptionsView)mAsyncPackage.GetDialogPage(typeof(ClangFormatOptionsView))).Clone();
+      var option = (SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView).Clone();
       option.FallbackStyle = ClangFormatFallbackStyle.none;
 
       ClangFormatCommand.Instance.FormatDocument(aDocument, option);
@@ -269,7 +269,7 @@ namespace ClangPowerTools
 
     private void BeforeExecuteClangCompile(string aGuid, int aId)
     {
-      var generalOptions = (ClangGeneralOptionsView)mAsyncPackage.GetDialogPage(typeof(ClangGeneralOptionsView));
+      var generalOptions = SettingsProvider.GetSettingsPage(typeof(ClangGeneralOptionsView)) as ClangGeneralOptionsView;
 
       if (null == generalOptions || false == generalOptions.ClangCompileAfterVsCompile)
         return;
