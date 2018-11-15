@@ -103,7 +103,9 @@ namespace ClangPowerTools
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
       mOutputController = new OutputWindowController();
       mOutputController.Initialize(this, vsOutputWindow);
-      
+
+      SettingsProvider.Initialize(this);
+
       mRunningDocTableEvents = new RunningDocTableEvents(this);
       mErrorWindowController = new ErrorWindowController(this);
 
