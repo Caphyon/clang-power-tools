@@ -180,6 +180,7 @@
     </Compile>
     <Compile Include="Services\VsServiceProvider.cs" />
     <Compile Include="SettingsPathBuilder.cs" />
+    <Compile Include="SettingsProvider.cs" />
     <Compile Include="SilentFile\SilentFileChangerBuilder.cs" />
     <Compile Include="SilentFile\SilentFileChangerEqualityComparer.cs" />
     <Compile Include="Items\IItem.cs" />

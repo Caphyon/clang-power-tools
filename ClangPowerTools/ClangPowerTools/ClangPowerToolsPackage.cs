@@ -104,6 +104,8 @@ namespace ClangPowerTools
       mOutputController = new OutputWindowController();
       mOutputController.Initialize(this, vsOutputWindow);
 
+      SettingsProvider.Initialize(this);
+
       mRunningDocTableEvents = new RunningDocTableEvents(this);
       mErrorWindowController = new ErrorWindowController(this);
 
