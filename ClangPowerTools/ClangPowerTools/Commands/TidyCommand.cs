@@ -19,11 +19,7 @@ namespace ClangPowerTools.Commands
   {
     #region Members
 
-    private ClangTidyOptionsView mTidyOptions;
-    private ClangFormatOptionsView mClangFormatView;
-
     private bool mFix = false;
-
 
     #endregion
 
@@ -56,9 +52,6 @@ namespace ClangPowerTools.Commands
       ErrorWindowController aErrorWindow, OutputWindowController aOutputWindow, AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aCommandsController, aErrorWindow, aOutputWindow, aPackage, aGuid, aId)
     {
-      mTidyOptions = (ClangTidyOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyOptionsView));
-      mClangFormatView = (ClangFormatOptionsView)AsyncPackage.GetDialogPage(typeof(ClangFormatOptionsView));
-
       if (null != aCommandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
@@ -118,7 +111,9 @@ namespace ClangPowerTools.Commands
           {
             using (var fileChangerWatcher = new FileChangerWatcher())
             {
-              if (mFix || mTidyOptions.AutoTidyOnSave)
+              var tidySettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
+
+              if (mFix || tidySettings.AutoTidyOnSave)
               {
                 fileChangerWatcher.OnChanged += FileOpener.Open;
 
@@ -133,7 +128,7 @@ namespace ClangPowerTools.Commands
                 silentFileController.SilentFiles(filesPath);
                 silentFileController.SilentFiles(dte2.Documents);
               }
-              RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mFix);
+              RunScript(CommandIds.kTidyId, mFix);
             }
           }
         }

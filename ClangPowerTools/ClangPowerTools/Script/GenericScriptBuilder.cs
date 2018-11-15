@@ -21,11 +21,10 @@ namespace ClangPowerTools.Script
     /// </summary>
     private string mScript = string.Empty;
 
-    private ClangTidyOptionsView mTidyOptions;
-
     private string mVsEdition;
     private string mVsVersion;
 
+    private int mCommandId;
     private bool mTidyFixFlag;
     private bool mUseClangTidyConfigFile;
 
@@ -38,11 +37,11 @@ namespace ClangPowerTools.Script
     /// <summary>
     /// Instance constructor
     /// </summary>
-    public GenericScriptBuilder(ClangTidyOptionsView aTidyOptions, string aVsEdition, string aVsVersion, bool aTidyFixFlag = false)
+    public GenericScriptBuilder(string aVsEdition, string aVsVersion, int aCommandId, bool aTidyFixFlag = false)
     {
-      mTidyOptions = aTidyOptions;
       mVsEdition = aVsEdition;
       mVsVersion = aVsVersion;
+      mCommandId = aCommandId;
       mTidyFixFlag = aTidyFixFlag;
       mUseClangTidyConfigFile = false;
     }
@@ -63,12 +62,13 @@ namespace ClangPowerTools.Script
     public void Build()
     {
       // Append the General parameters and Tidy parameters from option pages
-      mScript = $"{GetGeneralParameters()} {(null != mTidyOptions ? GetTidyParameters() : ScriptConstants.kParallel)}";
+      mScript = $"{GetGeneralParameters()} {( CommandIds.kTidyId == mCommandId ? GetTidyParameters() : ScriptConstants.kParallel)}";
 
       var clangFormatSettings = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
+      var tidySettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
 
       // Append the clang-format style
-      if (null != clangFormatSettings && null != mTidyOptions && mTidyFixFlag && mTidyOptions.FormatAfterTidy)
+      if (null != clangFormatSettings && null != tidySettings && mTidyFixFlag && tidySettings.FormatAfterTidy)
         mScript += $" {ScriptConstants.kClangFormatStyle} {clangFormatSettings.Style}";
 
       // Append the Visual Studio Version and Edition
@@ -164,17 +164,19 @@ namespace ClangPowerTools.Script
     /// <returns></returns>
     private string GetTidyParameters()
     {
+      var tidySettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
+
       // Get the clang tidy parameters depending on the tidy mode
       var clangTidyParametersFactory = new ClangTidyModeParametersFactory();
       var parameters = clangTidyParametersFactory.Create(
-        ClangTidyUseChecksFromConvertor.ToString(mTidyOptions.UseChecksFrom), ref mUseClangTidyConfigFile);
+        ClangTidyUseChecksFromConvertor.ToString(tidySettings.UseChecksFrom), ref mUseClangTidyConfigFile);
 
       // Append the clang tidy type(tidy / tidy-fix) with / without clang tidy config file option attached  
       if (!string.IsNullOrWhiteSpace(parameters))
         parameters = AppendClangTidyType(parameters);
 
       // Get the header filter option 
-      if (null != mTidyOptions.HeaderFilter && !string.IsNullOrWhiteSpace(mTidyOptions.HeaderFilter.HeaderFilters))
+      if (null != tidySettings.HeaderFilter && !string.IsNullOrWhiteSpace(tidySettings.HeaderFilter.HeaderFilters))
         parameters += $" {GetHeaderFilters()}";
 
       return parameters;
@@ -201,10 +203,12 @@ namespace ClangPowerTools.Script
     /// <returns>Header filter option</returns>
     private string GetHeaderFilters()
     {
+      var tidySettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
+
       return string.Format("{0} ''{1}''", ScriptConstants.kHeaderFilter, 
-        string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(mTidyOptions.HeaderFilter.HeaderFilters)) ?
-           mTidyOptions.HeaderFilter.HeaderFilters :
-           ClangTidyHeaderFiltersConvertor.ScriptEncode(mTidyOptions.HeaderFilter.HeaderFilters));
+        string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(tidySettings.HeaderFilter.HeaderFilters)) ?
+           tidySettings.HeaderFilter.HeaderFilters :
+           ClangTidyHeaderFiltersConvertor.ScriptEncode(tidySettings.HeaderFilter.HeaderFilters));
     }
 
 

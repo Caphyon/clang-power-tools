@@ -85,7 +85,7 @@ namespace ClangPowerTools
 
     #region Protected methods
 
-    protected void RunScript(string aCommandName, ClangTidyOptionsView mTidyOptions = null, bool aTidyFixFlag = false)
+    protected void RunScript(int aCommandId, bool aTidyFixFlag = false)
     {
       try
       {
@@ -96,7 +96,7 @@ namespace ClangPowerTools
         runModeScriptBuilder.Build();
         var runModeParameters = runModeScriptBuilder.GetResult();
 
-        IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(mTidyOptions, VsEdition, VsVersion, aTidyFixFlag);
+        IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(VsEdition, VsVersion, aCommandId, aTidyFixFlag);
         genericScriptBuilder.Build();
         var genericParameters = genericScriptBuilder.GetResult();
 
@@ -104,9 +104,9 @@ namespace ClangPowerTools
 
         InitPowerShell();
         ClearWindows();
-        mOutputWindow.Write($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
+        mOutputWindow.Write($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
 
-        StatusBarHandler.Status(aCommandName + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
+        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
 
         VsServiceProvider.TryGetService(typeof(SVsSolution), out object vsSolutionService);
         var vsSolution = vsSolutionService as IVsSolution;
@@ -139,7 +139,7 @@ namespace ClangPowerTools
         if (!mOutputWindow.MissingLlvm)
         {
           mOutputWindow.Show();
-          mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
+          mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
         }
 
         if (mOutputWindow.HasErrors)
@@ -148,11 +148,11 @@ namespace ClangPowerTools
       catch (Exception)
       {
         mOutputWindow.Show();
-        mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
+        mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
       }
       finally
       {
-        StatusBarHandler.Status(aCommandName + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
       }
     }
 
