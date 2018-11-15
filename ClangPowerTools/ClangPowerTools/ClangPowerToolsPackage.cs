@@ -132,7 +132,7 @@ namespace ClangPowerTools
       }
 
       // Get the general clang option page
-      var generalOptions = (ClangGeneralOptionsView)GetDialogPage(typeof(ClangGeneralOptionsView));
+      var generalSettings = SettingsProvider.GetSettingsPage(typeof(ClangGeneralOptionsView)) as ClangGeneralOptionsView;
 
       // Detect the first install 
       if (string.IsNullOrWhiteSpace(generalOptions.Version))
@@ -146,8 +146,8 @@ namespace ClangPowerTools
         mOutputController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
           $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
 
-        generalOptions.Version = currentVersion;
-        generalOptions.SaveSettingsToStorage();
+        generalSettings.Version = currentVersion;
+        generalSettings.SaveSettingsToStorage();
       }
 
       await mCommandsController.InitializeAsyncCommands(this, mErrorWindowController, mOutputController);
