@@ -94,7 +94,7 @@ namespace ClangPowerTools.Commands
           }
 
           CollectSelectedItems(false, ScriptConstants.kAcceptedFileExtensions);
-          RunScript(OutputWindowConstants.kComplileCommand);
+          RunScript(CommandIds.kCompileId);
         }
         catch (Exception exception)
         {
