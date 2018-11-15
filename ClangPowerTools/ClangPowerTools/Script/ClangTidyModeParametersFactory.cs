@@ -16,11 +16,6 @@ namespace ClangPowerTools.Script
     /// </summary>
     private ClangTidyCustomChecksOptionsView mTidyCustomChecks;
 
-    /// <summary>
-    /// The Tidy Predefined Checks option page
-    /// </summary>
-    private ClangTidyPredefinedChecksOptionsView mTidyChecks;
-
 
     #endregion
 
@@ -31,10 +26,9 @@ namespace ClangPowerTools.Script
     /// <summary>
     /// Instance constructor
     /// </summary>
-    public ClangTidyModeParametersFactory(ClangTidyCustomChecksOptionsView aTidyCustomChecks, ClangTidyPredefinedChecksOptionsView aTidyChecks)
+    public ClangTidyModeParametersFactory(ClangTidyCustomChecksOptionsView aTidyCustomChecks)
     {
       mTidyCustomChecks = aTidyCustomChecks;
-      mTidyChecks = aTidyChecks;
     }
 
 
@@ -102,8 +96,10 @@ namespace ClangPowerTools.Script
     /// <returns>The predefined checks</returns>
     private string GetTidyPredefinedChecks()
     {
+      var tidyPredefinedChecksSettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyPredefinedChecksOptionsView)) as ClangTidyPredefinedChecksOptionsView;
       var parameters = string.Empty;
-      foreach (PropertyInfo prop in mTidyChecks.GetType().GetProperties())
+
+      foreach (PropertyInfo prop in tidyPredefinedChecksSettings.GetType().GetProperties())
       {
         object[] propAttrs = prop.GetCustomAttributes(false);
         object clangCheckAttr = propAttrs.FirstOrDefault(attr => typeof(ClangCheckAttribute) == attr.GetType());
@@ -113,7 +109,7 @@ namespace ClangPowerTools.Script
           continue;
 
         DisplayNameAttribute displayNameAttr = (DisplayNameAttribute)displayNameAttrObj;
-        var value = prop.GetValue(mTidyChecks, null);
+        var value = prop.GetValue(tidyPredefinedChecksSettings, null);
         if (Boolean.TrueString != value.ToString())
           continue;
         parameters = $"{parameters},{displayNameAttr.DisplayName}";
