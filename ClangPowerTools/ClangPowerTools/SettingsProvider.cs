@@ -23,7 +23,6 @@ namespace ClangPowerTools
 
     #region Constructor
 
-
     public static void Initialize(Package aPackage)
     {
       GeneralSettings = aPackage.GetDialogPage(typeof(ClangGeneralOptionsView)) as ClangGeneralOptionsView;
