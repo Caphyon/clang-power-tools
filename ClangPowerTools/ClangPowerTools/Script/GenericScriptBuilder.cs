@@ -21,7 +21,6 @@ namespace ClangPowerTools.Script
     /// </summary>
     private string mScript = string.Empty;
 
-    private ClangGeneralOptionsView mGeneralOptions;
     private ClangTidyOptionsView mTidyOptions;
     private ClangTidyPredefinedChecksOptionsView mTidyChecks;
     private ClangTidyCustomChecksOptionsView mTidyCustomChecks;
@@ -42,10 +41,9 @@ namespace ClangPowerTools.Script
     /// <summary>
     /// Instance constructor
     /// </summary>
-    public GenericScriptBuilder(ClangGeneralOptionsView aGeneralOptions, ClangTidyOptionsView aTidyOptions, ClangTidyPredefinedChecksOptionsView aTidyChecks,
+    public GenericScriptBuilder(ClangTidyOptionsView aTidyOptions, ClangTidyPredefinedChecksOptionsView aTidyChecks,
       ClangTidyCustomChecksOptionsView aTidyCustomChecks, ClangFormatOptionsView aClangFormatView, string aVsEdition, string aVsVersion, bool aTidyFixFlag = false)
     {
-      mGeneralOptions = aGeneralOptions;
       mTidyOptions = aTidyOptions;
       mTidyChecks = aTidyChecks;
       mTidyCustomChecks = aTidyCustomChecks;
@@ -110,30 +108,31 @@ namespace ClangPowerTools.Script
     /// <returns>The parameters from General option page</returns>
     private string GetGeneralParameters()
     {
+      var generalSettings = SettingsProvider.GetSettingsPage(typeof(ClangGeneralOptionsView)) as ClangGeneralOptionsView;
       var parameters = string.Empty;
 
       // Get the Clang Flags list
-      if (!string.IsNullOrWhiteSpace(mGeneralOptions.ClangFlags))
+      if (!string.IsNullOrWhiteSpace(generalSettings.ClangFlags))
         parameters = GetClangFlags();
 
       // Get the continue when errors are detected flag 
-      if (mGeneralOptions.Continue)
+      if (generalSettings.Continue)
         parameters += $" {ScriptConstants.kContinue}";
 
       // Get the verbose mode flag 
-      if (mGeneralOptions.VerboseMode)
+      if (generalSettings.VerboseMode)
         parameters += $" {ScriptConstants.kVerboseMode}";
 
       // Get the projects to ignore list 
-      if (!string.IsNullOrWhiteSpace(mGeneralOptions.ProjectsToIgnore))
-        parameters += $" {ScriptConstants.kProjectsToIgnore} (''{TransformInPowerShellArray(mGeneralOptions.ProjectsToIgnore)}'')";
+      if (!string.IsNullOrWhiteSpace(generalSettings.ProjectsToIgnore))
+        parameters += $" {ScriptConstants.kProjectsToIgnore} (''{TransformInPowerShellArray(generalSettings.ProjectsToIgnore)}'')";
 
       // Get the files to ignore list
-      if (!string.IsNullOrWhiteSpace(mGeneralOptions.FilesToIgnore))
-        parameters += $" {ScriptConstants.kFilesToIgnore} (''{TransformInPowerShellArray(mGeneralOptions.FilesToIgnore)}'')";
+      if (!string.IsNullOrWhiteSpace(generalSettings.FilesToIgnore))
+        parameters += $" {ScriptConstants.kFilesToIgnore} (''{TransformInPowerShellArray(generalSettings.FilesToIgnore)}'')";
 
       // Get the selected Additional Includes type  
-      if (0 == string.Compare(ClangGeneralAdditionalIncludesConvertor.ToString(mGeneralOptions.AdditionalIncludes), ComboBoxConstants.kSystemIncludeDirectories))
+      if (0 == string.Compare(ClangGeneralAdditionalIncludesConvertor.ToString(generalSettings.AdditionalIncludes), ComboBoxConstants.kSystemIncludeDirectories))
         parameters += $" {ScriptConstants.kSystemIncludeDirectories}";
 
       return parameters;
@@ -146,10 +145,12 @@ namespace ClangPowerTools.Script
     /// <returns>The clang flags</returns>
     private string GetClangFlags()
     {
+      var generalSettings = SettingsProvider.GetSettingsPage(typeof(ClangGeneralOptionsView)) as ClangGeneralOptionsView;
+
       return string.Format("{0} {1}", ScriptConstants.kClangFlags,
-        mGeneralOptions.TreatWarningsAsErrors ?
-          $" (''{ScriptConstants.kTreatWarningsAsErrors}'',''{TransformInPowerShellArray(mGeneralOptions.ClangFlags)}'')" :
-          $" (''{TransformInPowerShellArray(mGeneralOptions.ClangFlags)}'')");
+        generalSettings.TreatWarningsAsErrors ?
+          $" (''{ScriptConstants.kTreatWarningsAsErrors}'',''{TransformInPowerShellArray(generalSettings.ClangFlags)}'')" :
+          $" (''{TransformInPowerShellArray(generalSettings.ClangFlags)}'')");
     }
 
 

@@ -22,7 +22,6 @@ namespace ClangPowerTools
     protected FilePathCollector mFilePahtCollector;
     protected static RunningProcesses mRunningProcesses = new RunningProcesses();
     protected List<string> mDirectoriesPath = new List<string>();
-    protected ClangGeneralOptionsView mGeneralOptions;
 
     //private Commands2 mCommand;
 
@@ -67,7 +66,6 @@ namespace ClangPowerTools
 
       mErrorWindow = aErrorWindow;
       mOutputWindow = aOutputWindow;
-      mGeneralOptions = (ClangGeneralOptionsView)aPackage.GetDialogPage(typeof(ClangGeneralOptionsView));
 
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {
@@ -99,7 +97,7 @@ namespace ClangPowerTools
         runModeScriptBuilder.Build();
         var runModeParameters = runModeScriptBuilder.GetResult();
 
-        IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(mGeneralOptions, mTidyOptions, mTidyChecks,
+        IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(mTidyOptions, mTidyChecks,
           mTidyCustomChecks, aClangFormatView, VsEdition, VsVersion, aTidyFixFlag);
         genericScriptBuilder.Build();
         var genericParameters = genericScriptBuilder.GetResult();
