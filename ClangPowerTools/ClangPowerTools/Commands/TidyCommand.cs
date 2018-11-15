@@ -20,7 +20,6 @@ namespace ClangPowerTools.Commands
     #region Members
 
     private ClangTidyOptionsView mTidyOptions;
-    private ClangTidyCustomChecksOptionsView mTidyCustomChecks;
     private ClangFormatOptionsView mClangFormatView;
 
     private bool mFix = false;
@@ -58,7 +57,6 @@ namespace ClangPowerTools.Commands
         : base(aCommandsController, aErrorWindow, aOutputWindow, aPackage, aGuid, aId)
     {
       mTidyOptions = (ClangTidyOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyOptionsView));
-      mTidyCustomChecks = (ClangTidyCustomChecksOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyCustomChecksOptionsView));
       mClangFormatView = (ClangFormatOptionsView)AsyncPackage.GetDialogPage(typeof(ClangFormatOptionsView));
 
       if (null != aCommandService)
@@ -135,7 +133,7 @@ namespace ClangPowerTools.Commands
                 silentFileController.SilentFiles(filesPath);
                 silentFileController.SilentFiles(dte2.Documents);
               }
-              RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mTidyCustomChecks, mFix);
+              RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mFix);
             }
           }
         }

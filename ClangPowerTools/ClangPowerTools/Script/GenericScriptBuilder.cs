@@ -22,7 +22,6 @@ namespace ClangPowerTools.Script
     private string mScript = string.Empty;
 
     private ClangTidyOptionsView mTidyOptions;
-    private ClangTidyCustomChecksOptionsView mTidyCustomChecks;
 
     private string mVsEdition;
     private string mVsVersion;
@@ -39,11 +38,9 @@ namespace ClangPowerTools.Script
     /// <summary>
     /// Instance constructor
     /// </summary>
-    public GenericScriptBuilder(ClangTidyOptionsView aTidyOptions,ClangTidyCustomChecksOptionsView aTidyCustomChecks, 
-      string aVsEdition, string aVsVersion, bool aTidyFixFlag = false)
+    public GenericScriptBuilder(ClangTidyOptionsView aTidyOptions, string aVsEdition, string aVsVersion, bool aTidyFixFlag = false)
     {
       mTidyOptions = aTidyOptions;
-      mTidyCustomChecks = aTidyCustomChecks;
       mVsEdition = aVsEdition;
       mVsVersion = aVsVersion;
       mTidyFixFlag = aTidyFixFlag;
@@ -168,7 +165,7 @@ namespace ClangPowerTools.Script
     private string GetTidyParameters()
     {
       // Get the clang tidy parameters depending on the tidy mode
-      var clangTidyParametersFactory = new ClangTidyModeParametersFactory(mTidyCustomChecks);
+      var clangTidyParametersFactory = new ClangTidyModeParametersFactory();
       var parameters = clangTidyParametersFactory.Create(
         ClangTidyUseChecksFromConvertor.ToString(mTidyOptions.UseChecksFrom), ref mUseClangTidyConfigFile);
 
