@@ -76,7 +76,7 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public void RunClangCompile()
+    public void RunClangCompile(int aCommandId)
     {
       if (mCommandsController.Running)
         return;
@@ -94,7 +94,7 @@ namespace ClangPowerTools.Commands
           }
 
           CollectSelectedItems(false, ScriptConstants.kAcceptedFileExtensions);
-          RunScript(CommandIds.kCompileId);
+          RunScript(aCommandId);
         }
         catch (Exception exception)
         {
