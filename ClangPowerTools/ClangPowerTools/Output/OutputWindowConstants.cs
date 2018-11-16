@@ -13,7 +13,7 @@ namespace ClangPowerTools
     {
       {CommandIds.kCompileId, "Clang Compile" },
       {CommandIds.kTidyId, "Clang Tidy" },
-      {CommandIds.kTidyFixId, "Clang Tidy" }
+      {CommandIds.kTidyFixId, "Clang Tidy-Fix" }
     };
 
     #endregion

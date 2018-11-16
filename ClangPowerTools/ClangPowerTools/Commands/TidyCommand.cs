@@ -85,7 +85,7 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public void RunClangTidy(bool aTidyFix = false)
+    public void RunClangTidy(int aCommandId, bool aTidyFix = false)
     {
       if (mCommandsController.Running)
         return;
@@ -128,7 +128,7 @@ namespace ClangPowerTools.Commands
                 silentFileController.SilentFiles(filesPath);
                 silentFileController.SilentFiles(dte2.Documents);
               }
-              RunScript(CommandIds.kTidyId, mFix);
+              RunScript(aCommandId, mFix);
             }
           }
         }
