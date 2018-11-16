@@ -62,7 +62,7 @@ namespace ClangPowerTools.Script
     public void Build()
     {
       // Append the General parameters and Tidy parameters from option pages
-      mScript = $"{GetGeneralParameters()} {( CommandIds.kTidyId == mCommandId || CommandIds.kTidyFixId == mCommandId ? GetTidyParameters() : ScriptConstants.kParallel)}";
+      mScript = $"{GetGeneralParameters()} {(CommandIds.kTidyId == mCommandId || CommandIds.kTidyFixId == mCommandId ? GetTidyParameters() : ScriptConstants.kParallel)}";
 
       var clangFormatSettings = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
       var tidySettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
@@ -75,7 +75,7 @@ namespace ClangPowerTools.Script
       mScript += $" {ScriptConstants.kVsVersion} {mVsVersion} {ScriptConstants.kVsEdition} {mVsEdition}";
 
       // Append the solution path
-      if(VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
         mScript += $" {ScriptConstants.kDirectory} ''{(dte as DTE2).Solution.FullName}''";
     }
 
@@ -205,7 +205,7 @@ namespace ClangPowerTools.Script
     {
       var tidySettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
 
-      return string.Format("{0} ''{1}''", ScriptConstants.kHeaderFilter, 
+      return string.Format("{0} ''{1}''", ScriptConstants.kHeaderFilter,
         string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(tidySettings.HeaderFilter.HeaderFilters)) ?
            tidySettings.HeaderFilter.HeaderFilters :
            ClangTidyHeaderFiltersConvertor.ScriptEncode(tidySettings.HeaderFilter.HeaderFilters));

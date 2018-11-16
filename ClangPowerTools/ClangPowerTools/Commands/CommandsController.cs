@@ -121,9 +121,6 @@ namespace ClangPowerTools
     }
 
 
-    #region Events
-
-
     /// <summary>
     /// It is called immediately after every clang command execution.
     /// Set the running state to false.
@@ -135,6 +132,40 @@ namespace ClangPowerTools
         Running = false;
       });
     }
+
+
+    #endregion
+
+
+    #region Private Methods
+
+
+    private string GetCommandName(string aGuid, int aId)
+    {
+      try
+      {
+        if (null == aGuid)
+          return string.Empty;
+
+        if (null == mCommand)
+          return string.Empty;
+
+        Command cmd = mCommand.Item(aGuid, aId);
+        if (null == cmd)
+          return string.Empty;
+
+        return cmd.Name;
+      }
+      catch (Exception) { }
+
+      return string.Empty;
+    }
+
+
+    #endregion
+
+
+    #region Events
 
 
     /// <summary>
@@ -160,12 +191,14 @@ namespace ClangPowerTools
       });
     }
 
+
     /// <summary>
     /// Set the VS running build flag to true when the VS build begin.
     /// </summary>
     /// <param name="Scope"></param>
     /// <param name="Action"></param>
     public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action) => VsBuildRunning = true;
+
 
     /// <summary>
     /// Set the VS running build flag to false when the VS build finished.
@@ -225,6 +258,7 @@ namespace ClangPowerTools
       mSaveCommandWasGiven = false;
     }
 
+
     private void BeforeSaveClangFormat(Document aDocument)
     {
       var clangFormatOptionPage = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
@@ -247,11 +281,13 @@ namespace ClangPowerTools
       ClangFormatCommand.Instance.FormatDocument(aDocument, option);
     }
 
+
     private bool SkipFile(string aFilePath, string aSkipFiles)
     {
       var skipFilesList = aSkipFiles.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
       return skipFilesList.Contains(Path.GetFileName(aFilePath).ToLower());
     }
+
 
     private bool FileHasExtension(string filePath, string fileExtensions)
     {
@@ -260,12 +296,12 @@ namespace ClangPowerTools
     }
 
 
-
     public void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
     {
       BeforeExecuteClangCompile(aGuid, aId);
       BeforeExecuteClangTidy(aGuid, aId);
     }
+
 
     private void BeforeExecuteClangCompile(string aGuid, int aId)
     {
@@ -291,31 +327,6 @@ namespace ClangPowerTools
         return;
       }
       mSaveCommandWasGiven = true;
-    }
-
-
-    #endregion
-
-
-    protected string GetCommandName(string aGuid, int aId)
-    {
-      try
-      {
-        if (null == aGuid)
-          return string.Empty;
-
-        if (null == mCommand)
-          return string.Empty;
-
-        Command cmd = mCommand.Item(aGuid, aId);
-        if (null == cmd)
-          return string.Empty;
-
-        return cmd.Name;
-      }
-      catch (Exception) { }
-
-      return string.Empty;
     }
 
 

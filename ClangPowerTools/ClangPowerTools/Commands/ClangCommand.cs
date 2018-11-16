@@ -1,5 +1,4 @@
 ﻿using ClangPowerTools.Builder;
-using ClangPowerTools.DialogPages;
 using ClangPowerTools.Output;
 using ClangPowerTools.Script;
 using ClangPowerTools.Services;
@@ -57,7 +56,7 @@ namespace ClangPowerTools
     #region Constructor
 
 
-    public ClangCommand(CommandsController aCommandsController, ErrorWindowController aErrorWindow, 
+    public ClangCommand(CommandsController aCommandsController, ErrorWindowController aErrorWindow,
       OutputWindowController aOutputWindow, AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aPackage, aGuid, aId)
     {
@@ -124,7 +123,7 @@ namespace ClangPowerTools
           // and added to the end of the string to close the script
           var script = $"{runModeParameters.Remove(runModeParameters.Length - 1)} {itemRelatedParameters} {genericParameters}'";
 
-          if(null != vsSolution)
+          if (null != vsSolution)
             mOutputWindow.Hierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
 
           var process = mPowerShell.Invoke(script, mRunningProcesses);
