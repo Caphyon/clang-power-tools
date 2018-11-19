@@ -135,11 +135,11 @@ namespace ClangPowerTools
       var generalSettings = SettingsProvider.GetSettingsPage(typeof(ClangGeneralOptionsView)) as ClangGeneralOptionsView;
 
       // Detect the first install 
-      if (string.IsNullOrWhiteSpace(generalOptions.Version))
+      if (string.IsNullOrWhiteSpace(generalSettings.Version))
         ShowToolbare(); // Show the toolbar on the first install
 
       var currentVersion = GetPackageVersion();
-      if (0 > string.Compare(generalOptions.Version, currentVersion))
+      if (0 > string.Compare(generalSettings.Version, currentVersion))
       {
         mOutputController.Clear();
         mOutputController.Show();
