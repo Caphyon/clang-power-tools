@@ -137,6 +137,18 @@ namespace ClangPowerTools
       if (string.IsNullOrWhiteSpace(generalOptions.Version))
         ShowToolbare(); // Show the toolbar on the first install
 
+      var currentVersion = GetPackageVersion();
+      if (0 > string.Compare(generalOptions.Version, currentVersion))
+      {
+        mOutputController.Clear();
+        mOutputController.Show();
+        mOutputController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
+          $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
+
+        generalOptions.Version = currentVersion;
+        generalOptions.SaveSettingsToStorage();
+      }
+
       await InitializeAsyncCommands();
       RegisterToVsEvents();
 
@@ -218,19 +230,6 @@ namespace ClangPowerTools
 
     public int OnAfterOpenSolution(object aPUnkReserved, int aFNewSolution)
     {
-      var generalOptions = (ClangGeneralOptionsView)GetDialogPage(typeof(ClangGeneralOptionsView));
-      var currentVersion = GetPackageVersion();
-
-      if (0 <= string.Compare(generalOptions.Version, currentVersion))
-        return VSConstants.S_OK;
-
-      mOutputController.Show();
-      mOutputController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
-        $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
-
-      generalOptions.Version = currentVersion;
-      generalOptions.SaveSettingsToStorage();
-
       return VSConstants.S_OK;
     }
 
