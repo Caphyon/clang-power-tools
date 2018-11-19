@@ -104,7 +104,7 @@ namespace ClangPowerTools
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
       mOutputController = new OutputWindowController();
       mOutputController.Initialize(this, vsOutputWindow);
-      
+
       mRunningDocTableEvents = new RunningDocTableEvents(this);
       mErrorWindow = new ErrorWindowController(this);
 
@@ -134,13 +134,13 @@ namespace ClangPowerTools
       var generalOptions = (ClangGeneralOptionsView)GetDialogPage(typeof(ClangGeneralOptionsView));
 
       // Detect the first install 
-      if (null == generalOptions.Version || string.IsNullOrWhiteSpace(generalOptions.Version))
+      if (string.IsNullOrWhiteSpace(generalOptions.Version))
         ShowToolbare(); // Show the toolbar on the first install
 
       var currentVersion = GetPackageVersion();
-
-      if (0 != string.Compare(generalOptions.Version, currentVersion))
+      if (0 > string.Compare(generalOptions.Version, currentVersion))
       {
+        mOutputController.Clear();
         mOutputController.Show();
         mOutputController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
           $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
@@ -148,7 +148,6 @@ namespace ClangPowerTools
         generalOptions.Version = currentVersion;
         generalOptions.SaveSettingsToStorage();
       }
-
 
       await InitializeAsyncCommands();
       RegisterToVsEvents();
@@ -288,7 +287,7 @@ namespace ClangPowerTools
       // Get VS Output Window service async
       var vsOutputWindow = await GetServiceAsync(typeof(SVsOutputWindow));
       VsServiceProvider.Register(typeof(SVsOutputWindow), vsOutputWindow);
-      
+
       // Get the status bar service async
       var vsStatusBar = await GetServiceAsync(typeof(SVsStatusbar));
       VsServiceProvider.Register(typeof(SVsStatusbar), vsStatusBar);
@@ -323,7 +322,7 @@ namespace ClangPowerTools
         mCommandEvents.BeforeExecute += TidyCommand.Instance.CommandEventsBeforeExecute;
       }
 
-      if(null != mRunningDocTableEvents)
+      if (null != mRunningDocTableEvents)
       {
         mRunningDocTableEvents.BeforeSave += TidyCommand.Instance.OnBeforeSave;
         mRunningDocTableEvents.BeforeSave += ClangFormatCommand.Instance.OnBeforeSave;
