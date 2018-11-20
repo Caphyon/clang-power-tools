@@ -25,9 +25,7 @@ namespace ClangPowerTools.Script
     private string mVsVersion;
 
     private int mCommandId;
-    private bool mTidyFixFlag;
     private bool mUseClangTidyConfigFile;
-
 
     #endregion
 
@@ -37,12 +35,11 @@ namespace ClangPowerTools.Script
     /// <summary>
     /// Instance constructor
     /// </summary>
-    public GenericScriptBuilder(string aVsEdition, string aVsVersion, int aCommandId, bool aTidyFixFlag = false)
+    public GenericScriptBuilder(string aVsEdition, string aVsVersion, int aCommandId)
     {
       mVsEdition = aVsEdition;
       mVsVersion = aVsVersion;
       mCommandId = aCommandId;
-      mTidyFixFlag = aTidyFixFlag;
       mUseClangTidyConfigFile = false;
     }
 
@@ -68,7 +65,7 @@ namespace ClangPowerTools.Script
       var tidySettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
 
       // Append the clang-format style
-      if (null != clangFormatSettings && null != tidySettings && mTidyFixFlag && tidySettings.FormatAfterTidy)
+      if (null != clangFormatSettings && null != tidySettings && CommandIds.kTidyFixId == mCommandId && tidySettings.FormatAfterTidy)
         mScript += $" {ScriptConstants.kClangFormatStyle} {clangFormatSettings.Style}";
 
       // Append the Visual Studio Version and Edition
@@ -191,7 +188,7 @@ namespace ClangPowerTools.Script
     private string AppendClangTidyType(string aParameters)
     {
       return string.Format("{0} ''{1}{2}''",
-        (mTidyFixFlag ? ScriptConstants.kTidyFix : ScriptConstants.kTidy),
+        (CommandIds.kTidyFixId == mCommandId ? ScriptConstants.kTidyFix : ScriptConstants.kTidy),
         (mUseClangTidyConfigFile ? "" : "-*"),
         aParameters);
     }

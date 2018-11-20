@@ -88,11 +88,11 @@ namespace ClangPowerTools
           break;
 
         case CommandIds.kTidyId:
-          TidyCommand.Instance.RunClangTidy(CommandIds.kTidyId, false);
+          TidyCommand.Instance.RunClangTidy(CommandIds.kTidyId);
           break;
 
         case CommandIds.kTidyFixId:
-          TidyCommand.Instance.RunClangTidy(CommandIds.kTidyFixId, true);
+          TidyCommand.Instance.RunClangTidy(CommandIds.kTidyFixId);
           break;
       }
     }
@@ -254,7 +254,7 @@ namespace ClangPowerTools
       if (true == Running) // Clang compile/tidy command is running
         return;
 
-      TidyCommand.Instance.RunClangTidy(CommandIds.kTidyFixId, true);
+      TidyCommand.Instance.RunClangTidy(CommandIds.kTidyFixId);
       mSaveCommandWasGiven = false;
     }
 

@@ -84,7 +84,7 @@ namespace ClangPowerTools
 
     #region Protected methods
 
-    protected void RunScript(int aCommandId, bool aTidyFixFlag = false)
+    protected void RunScript(int aCommandId)
     {
       try
       {
@@ -95,7 +95,7 @@ namespace ClangPowerTools
         runModeScriptBuilder.Build();
         var runModeParameters = runModeScriptBuilder.GetResult();
 
-        IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(VsEdition, VsVersion, aCommandId, aTidyFixFlag);
+        IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(VsEdition, VsVersion, aCommandId);
         genericScriptBuilder.Build();
         var genericParameters = genericScriptBuilder.GetResult();
 

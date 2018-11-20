@@ -17,15 +17,7 @@ namespace ClangPowerTools.Commands
   /// </summary>
   internal sealed class TidyCommand : ClangCommand
   {
-    #region Members
-
-    private bool mFix = false;
-
-    #endregion
-
-
     #region Properties
-
 
     /// <summary>
     /// Gets the instance of the command.
@@ -35,7 +27,6 @@ namespace ClangPowerTools.Commands
       get;
       private set;
     }
-
 
     #endregion
 
@@ -85,13 +76,12 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public void RunClangTidy(int aCommandId, bool aTidyFix = false)
+    public void RunClangTidy(int aCommandId)
     {
       if (mCommandsController.Running)
         return;
 
       mCommandsController.Running = true;
-      mFix = aTidyFix;
 
       var task = System.Threading.Tasks.Task.Run(() =>
       {
@@ -113,7 +103,7 @@ namespace ClangPowerTools.Commands
             {
               var tidySettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
 
-              if (mFix || tidySettings.AutoTidyOnSave)
+              if ( CommandIds.kTidyFixId == aCommandId || tidySettings.AutoTidyOnSave)
               {
                 fileChangerWatcher.OnChanged += FileOpener.Open;
 
@@ -128,7 +118,7 @@ namespace ClangPowerTools.Commands
                 silentFileController.SilentFiles(filesPath);
                 silentFileController.SilentFiles(dte2.Documents);
               }
-              RunScript(aCommandId, mFix);
+              RunScript(aCommandId);
             }
           }
         }
