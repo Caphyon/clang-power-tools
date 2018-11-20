@@ -157,18 +157,14 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
 
     try
     {
-        if ($isCondition)
-        {
-            $res = Invoke-Expression $expression
-        }
-        else
-        {
-            $res = $ExecutionContext.InvokeCommand.ExpandString($expression)
-        }
+        # safe-approach first, string expansion
+        $res = $ExecutionContext.InvokeCommand.ExpandString($expression)
+        # try to get actual objects, if possible
+        $res = Invoke-Expression $expression
     }
     catch
     {
-        write-debug $_.Exception.Message
+        Write-Debug $_.Exception.Message
     }
 
     Write-Debug "Evaluated expression to: $res"

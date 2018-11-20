@@ -108,19 +108,29 @@ Function Add-Project-Item([parameter(Mandatory = $false)][string] $name
     }
 }
 
-Function Get-Project-Item([parameter(Mandatory = $false)][string] $name)
+Function Get-Project-Item([parameter(Mandatory = $true)][string] $name)
 {
     $itemVarName = "CPT_PROJITEM_$name"
-    if (Get-Variable $itemVarName -ErrorAction SilentlyContinue)
+
+    $itemVar = Get-Variable $itemVarName -ErrorAction SilentlyContinue
+    if ($itemVar)
     {
         $retStr = ""
-        foreach ($v in (Get-Variable $itemVarName).Value)
+
+        if ($itemVar.Value.GetType().Name -ieq "ArrayList")
         {
-            if ($retStr)
+            foreach ($v in $itemVar.Value)
             {
-                $retStr += ";"
+                if ($retStr)
+                {
+                    $retStr += ";"
+                }
+                $retStr += $v
             }
-            $retStr += $v
+        }
+        else
+        {
+            $retStr = $itemVar.Value
         }
 
         return $retStr
