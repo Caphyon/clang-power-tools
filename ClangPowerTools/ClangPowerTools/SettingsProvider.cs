@@ -6,16 +6,28 @@ namespace ClangPowerTools
 {
   public static class SettingsProvider
   {
-    #region Members
 
-    private static Package mPackage;
+    private static ClangGeneralOptionsView GeneralSettings { get; set; }
 
-    #endregion
+    private static ClangTidyOptionsView TidySettings { get; set; }
+
+    private static ClangTidyCustomChecksOptionsView TidyCustomCheckes { get; set; }
+
+    private static ClangTidyPredefinedChecksOptionsView TidyPredefinedChecks { get; set; }
+
+    private static ClangFormatOptionsView ClangFormatSettings { get; set; }
 
 
     #region Constructor
 
-    public static void Initialize(Package aPackage) => mPackage = aPackage;
+    public static void Initialize(Package aPackage)
+    {
+      GeneralSettings = (ClangGeneralOptionsView)aPackage.GetDialogPage(typeof(ClangGeneralOptionsView));
+      TidySettings = (ClangTidyOptionsView)aPackage.GetDialogPage(typeof(ClangTidyOptionsView));
+      TidyCustomCheckes = (ClangTidyCustomChecksOptionsView)aPackage.GetDialogPage(typeof(ClangTidyCustomChecksOptionsView));
+      TidyPredefinedChecks = (ClangTidyPredefinedChecksOptionsView)aPackage.GetDialogPage(typeof(ClangTidyPredefinedChecksOptionsView));
+      ClangFormatSettings = (ClangFormatOptionsView)aPackage.GetDialogPage(typeof(ClangFormatOptionsView));
+    }
 
     #endregion
 
@@ -24,23 +36,24 @@ namespace ClangPowerTools
 
     public static DialogPage GetSettingsPage(Type aType)
     {
-      if (aType == typeof(ClangGeneralOptionsView))
-        return mPackage.GetDialogPage(typeof(ClangGeneralOptionsView)) as ClangGeneralOptionsView;
+      if (typeof(ClangGeneralOptionsView) == aType)
+        return GeneralSettings;
 
-      if (aType == typeof(ClangTidyOptionsView))
-        return mPackage.GetDialogPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
+      if (typeof(ClangTidyOptionsView) == aType)
+        return TidySettings;
 
-      if (aType == typeof(ClangTidyCustomChecksOptionsView))
-        return mPackage.GetDialogPage(typeof(ClangTidyCustomChecksOptionsView)) as ClangTidyCustomChecksOptionsView;
+      if (typeof(ClangTidyCustomChecksOptionsView) == aType)
+        return TidyCustomCheckes;
 
-      if (aType == typeof(ClangTidyPredefinedChecksOptionsView))
-        return mPackage.GetDialogPage(typeof(ClangTidyPredefinedChecksOptionsView)) as ClangTidyPredefinedChecksOptionsView;
+      if (typeof(ClangTidyPredefinedChecksOptionsView) == aType)
+        return TidyPredefinedChecks;
 
-      if (aType == typeof(ClangFormatOptionsView))
-        return mPackage.GetDialogPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
+      if (typeof(ClangFormatOptionsView) == aType)
+        return ClangFormatSettings;
 
       return null;
     }
+
 
     #endregion
 
