@@ -778,24 +778,27 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   [string] $platformToolset = Get-ProjectPlatformToolset
   Write-Verbose "Platform toolset: $platformToolset"
 
-  if ( ([int]$platformToolset.Remove(0, 1).Replace("_xp", "")) -le 140)
+  if ( $platformToolset -match "^v\d+(_xp)?$" )
   {
-    if ($global:cptVisualStudioVersion -ne '2015')
+    if ( ([int]$platformToolset.Remove(0, 1).Replace("_xp", "")) -le 140)
     {
-      # we need to reload everything and use VS2015
-      Write-Verbose "Switching to VS2015 because of v140 toolset. Reloading project..."
-      $global:cptVisualStudioVersion = "2015"
-      LoadProject($vcxprojPath)
+      if ($global:cptVisualStudioVersion -ne '2015')
+      {
+        # we need to reload everything and use VS2015
+        Write-Verbose "Switching to VS2015 because of v140 toolset. Reloading project..."
+        $global:cptVisualStudioVersion = "2015"
+        LoadProject($vcxprojPath)
+      }
     }
-  }
-  else
-  {
-    if ($global:cptVisualStudioVersion -ne $global:cptDefaultVisualStudioVersion)
+    else
     {
-      # we need to reload everything and the default vs version
-      Write-Verbose "Switching to default VsVer because of toolset. Reloading project..."
-      $global:cptVisualStudioVersion = $global:cptDefaultVisualStudioVersion
-      LoadProject($vcxprojPath)
+      if ($global:cptVisualStudioVersion -ne $global:cptDefaultVisualStudioVersion)
+      {
+        # we need to reload everything and the default vs version
+        Write-Verbose "Switching to default VsVer because of toolset. Reloading project..."
+        $global:cptVisualStudioVersion = $global:cptDefaultVisualStudioVersion
+        LoadProject($vcxprojPath)
+      }
     }
   }
 
