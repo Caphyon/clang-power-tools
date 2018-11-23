@@ -68,7 +68,7 @@ namespace ClangPowerTools
           continue;
 
         if (true == project.IsDirty)
-          project.Save(project.FullName);
+          project.Save();
       }
     }
 
