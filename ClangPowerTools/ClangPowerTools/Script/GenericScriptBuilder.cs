@@ -21,18 +21,11 @@ namespace ClangPowerTools.Script
     /// </summary>
     private string mScript = string.Empty;
 
-    private ClangGeneralOptionsView mGeneralOptions;
-    private ClangTidyOptionsView mTidyOptions;
-    private ClangTidyPredefinedChecksOptionsView mTidyChecks;
-    private ClangTidyCustomChecksOptionsView mTidyCustomChecks;
-    private ClangFormatOptionsView mClangFormatView;
-
     private string mVsEdition;
     private string mVsVersion;
 
-    private bool mTidyFixFlag;
+    private int mCommandId;
     private bool mUseClangTidyConfigFile;
-
 
     #endregion
 
@@ -42,17 +35,11 @@ namespace ClangPowerTools.Script
     /// <summary>
     /// Instance constructor
     /// </summary>
-    public GenericScriptBuilder(ClangGeneralOptionsView aGeneralOptions, ClangTidyOptionsView aTidyOptions, ClangTidyPredefinedChecksOptionsView aTidyChecks,
-      ClangTidyCustomChecksOptionsView aTidyCustomChecks, ClangFormatOptionsView aClangFormatView, string aVsEdition, string aVsVersion, bool aTidyFixFlag = false)
+    public GenericScriptBuilder(string aVsEdition, string aVsVersion, int aCommandId)
     {
-      mGeneralOptions = aGeneralOptions;
-      mTidyOptions = aTidyOptions;
-      mTidyChecks = aTidyChecks;
-      mTidyCustomChecks = aTidyCustomChecks;
-      mClangFormatView = aClangFormatView;
       mVsEdition = aVsEdition;
       mVsVersion = aVsVersion;
-      mTidyFixFlag = aTidyFixFlag;
+      mCommandId = aCommandId;
       mUseClangTidyConfigFile = false;
     }
 
@@ -72,17 +59,20 @@ namespace ClangPowerTools.Script
     public void Build()
     {
       // Append the General parameters and Tidy parameters from option pages
-      mScript = $"{GetGeneralParameters()} {(null != mTidyOptions ? GetTidyParameters() : ScriptConstants.kParallel)}";
+      mScript = $"{GetGeneralParameters()} {(CommandIds.kTidyId == mCommandId || CommandIds.kTidyFixId == mCommandId ? GetTidyParameters() : ScriptConstants.kParallel)}";
+
+      var clangFormatSettings = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
+      var tidySettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
 
       // Append the clang-format style
-      if (null != mClangFormatView && null != mTidyOptions && mTidyFixFlag && mTidyOptions.FormatAfterTidy)
-        mScript += $" {ScriptConstants.kClangFormatStyle} {mClangFormatView.Style}";
+      if (null != clangFormatSettings && null != tidySettings && CommandIds.kTidyFixId == mCommandId && tidySettings.FormatAfterTidy)
+        mScript += $" {ScriptConstants.kClangFormatStyle} {clangFormatSettings.Style}";
 
       // Append the Visual Studio Version and Edition
       mScript += $" {ScriptConstants.kVsVersion} {mVsVersion} {ScriptConstants.kVsEdition} {mVsEdition}";
 
       // Append the solution path
-      if(VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
         mScript += $" {ScriptConstants.kDirectory} ''{(dte as DTE2).Solution.FullName}''";
     }
 
@@ -110,30 +100,31 @@ namespace ClangPowerTools.Script
     /// <returns>The parameters from General option page</returns>
     private string GetGeneralParameters()
     {
+      var generalSettings = SettingsProvider.GetSettingsPage(typeof(ClangGeneralOptionsView)) as ClangGeneralOptionsView;
       var parameters = string.Empty;
 
       // Get the Clang Flags list
-      if (!string.IsNullOrWhiteSpace(mGeneralOptions.ClangFlags))
+      if (!string.IsNullOrWhiteSpace(generalSettings.ClangFlags))
         parameters = GetClangFlags();
 
       // Get the continue when errors are detected flag 
-      if (mGeneralOptions.Continue)
+      if (generalSettings.Continue)
         parameters += $" {ScriptConstants.kContinue}";
 
       // Get the verbose mode flag 
-      if (mGeneralOptions.VerboseMode)
+      if (generalSettings.VerboseMode)
         parameters += $" {ScriptConstants.kVerboseMode}";
 
       // Get the projects to ignore list 
-      if (!string.IsNullOrWhiteSpace(mGeneralOptions.ProjectsToIgnore))
-        parameters += $" {ScriptConstants.kProjectsToIgnore} (''{TransformInPowerShellArray(mGeneralOptions.ProjectsToIgnore)}'')";
+      if (!string.IsNullOrWhiteSpace(generalSettings.ProjectsToIgnore))
+        parameters += $" {ScriptConstants.kProjectsToIgnore} (''{TransformInPowerShellArray(generalSettings.ProjectsToIgnore)}'')";
 
       // Get the files to ignore list
-      if (!string.IsNullOrWhiteSpace(mGeneralOptions.FilesToIgnore))
-        parameters += $" {ScriptConstants.kFilesToIgnore} (''{TransformInPowerShellArray(mGeneralOptions.FilesToIgnore)}'')";
+      if (!string.IsNullOrWhiteSpace(generalSettings.FilesToIgnore))
+        parameters += $" {ScriptConstants.kFilesToIgnore} (''{TransformInPowerShellArray(generalSettings.FilesToIgnore)}'')";
 
       // Get the selected Additional Includes type  
-      if (0 == string.Compare(ClangGeneralAdditionalIncludesConvertor.ToString(mGeneralOptions.AdditionalIncludes), ComboBoxConstants.kSystemIncludeDirectories))
+      if (0 == string.Compare(ClangGeneralAdditionalIncludesConvertor.ToString(generalSettings.AdditionalIncludes), ComboBoxConstants.kSystemIncludeDirectories))
         parameters += $" {ScriptConstants.kSystemIncludeDirectories}";
 
       return parameters;
@@ -146,10 +137,12 @@ namespace ClangPowerTools.Script
     /// <returns>The clang flags</returns>
     private string GetClangFlags()
     {
+      var generalSettings = SettingsProvider.GetSettingsPage(typeof(ClangGeneralOptionsView)) as ClangGeneralOptionsView;
+
       return string.Format("{0} {1}", ScriptConstants.kClangFlags,
-        mGeneralOptions.TreatWarningsAsErrors ?
-          $" (''{ScriptConstants.kTreatWarningsAsErrors}'',''{TransformInPowerShellArray(mGeneralOptions.ClangFlags)}'')" :
-          $" (''{TransformInPowerShellArray(mGeneralOptions.ClangFlags)}'')");
+        generalSettings.TreatWarningsAsErrors ?
+          $" (''{ScriptConstants.kTreatWarningsAsErrors}'',''{TransformInPowerShellArray(generalSettings.ClangFlags)}'')" :
+          $" (''{TransformInPowerShellArray(generalSettings.ClangFlags)}'')");
     }
 
 
@@ -168,17 +161,19 @@ namespace ClangPowerTools.Script
     /// <returns></returns>
     private string GetTidyParameters()
     {
+      var tidySettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
+
       // Get the clang tidy parameters depending on the tidy mode
-      var clangTidyParametersFactory = new ClangTidyModeParametersFactory(mTidyCustomChecks, mTidyChecks);
+      var clangTidyParametersFactory = new ClangTidyModeParametersFactory();
       var parameters = clangTidyParametersFactory.Create(
-        ClangTidyUseChecksFromConvertor.ToString(mTidyOptions.UseChecksFrom), ref mUseClangTidyConfigFile);
+        ClangTidyUseChecksFromConvertor.ToString(tidySettings.UseChecksFrom), ref mUseClangTidyConfigFile);
 
       // Append the clang tidy type(tidy / tidy-fix) with / without clang tidy config file option attached  
       if (!string.IsNullOrWhiteSpace(parameters))
         parameters = AppendClangTidyType(parameters);
 
       // Get the header filter option 
-      if (null != mTidyOptions.HeaderFilter && !string.IsNullOrWhiteSpace(mTidyOptions.HeaderFilter.HeaderFilters))
+      if (null != tidySettings.HeaderFilter && !string.IsNullOrWhiteSpace(tidySettings.HeaderFilter.HeaderFilters))
         parameters += $" {GetHeaderFilters()}";
 
       return parameters;
@@ -193,7 +188,7 @@ namespace ClangPowerTools.Script
     private string AppendClangTidyType(string aParameters)
     {
       return string.Format("{0} ''{1}{2}''",
-        (mTidyFixFlag ? ScriptConstants.kTidyFix : ScriptConstants.kTidy),
+        (CommandIds.kTidyFixId == mCommandId ? ScriptConstants.kTidyFix : ScriptConstants.kTidy),
         (mUseClangTidyConfigFile ? "" : "-*"),
         aParameters);
     }
@@ -205,10 +200,12 @@ namespace ClangPowerTools.Script
     /// <returns>Header filter option</returns>
     private string GetHeaderFilters()
     {
-      return string.Format("{0} ''{1}''", ScriptConstants.kHeaderFilter, 
-        string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(mTidyOptions.HeaderFilter.HeaderFilters)) ?
-           mTidyOptions.HeaderFilter.HeaderFilters :
-           ClangTidyHeaderFiltersConvertor.ScriptEncode(mTidyOptions.HeaderFilter.HeaderFilters));
+      var tidySettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
+
+      return string.Format("{0} ''{1}''", ScriptConstants.kHeaderFilter,
+        string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(tidySettings.HeaderFilter.HeaderFilters)) ?
+           tidySettings.HeaderFilter.HeaderFilters :
+           ClangTidyHeaderFiltersConvertor.ScriptEncode(tidySettings.HeaderFilter.HeaderFilters));
     }
 
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using System.IO;
-using System.Linq;
 using System.Xml.Linq;
 using ClangPowerTools.DialogPages;
 using ClangPowerTools.Output;
@@ -56,7 +55,7 @@ namespace ClangPowerTools.Commands
       if (null != aCommandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
-        var menuCommand = new OleMenuCommand(RunClangFormat, menuCommandID);
+        var menuCommand = new OleMenuCommand(mCommandsController.Execute, menuCommandID);
         menuCommand.BeforeQueryStatus += mCommandsController.OnBeforeClangCommand;
         menuCommand.Enabled = true;
         aCommandService.AddCommand(menuCommand);
@@ -85,51 +84,17 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public override void OnBeforeSave(object sender, Document aDocument)
-    {
-      var clangFormatOptionPage = GetUserOptions();
 
-      if (false == clangFormatOptionPage.EnableFormatOnSave)
-        return;
-
-      if (false == Vsix.IsDocumentDirty(aDocument))
-        return;
-
-      if (false == FileHasExtension(aDocument.FullName, clangFormatOptionPage.FileExtensions))
-        return;
-
-      if (true == SkipFile(aDocument.FullName, clangFormatOptionPage.SkipFiles))
-        return;
-
-      var option = GetUserOptions().Clone();
-      option.FallbackStyle = ClangFormatFallbackStyle.none;
-
-      FormatDocument(aDocument, option);
-    }
-
-
-    private void FormatDocument(Document aDocument, ClangFormatOptionsView aOptions)
+    public void FormatDocument(Document aDocument, ClangFormatOptionsView aOptions)
     {
       mClangFormatView = aOptions;
       mDocument = aDocument;
 
-      RunClangFormat(new object(), new EventArgs());
+      RunClangFormat();
     }
 
-    #endregion
 
-
-    #region Private methods
-
-
-    /// <summary>
-    /// This function is the callback used to execute the command when the menu item is clicked.
-    /// See the constructor to see how the menu item is associated with this function using
-    /// OleMenuCommandService service and MenuCommand class.
-    /// </summary>
-    /// <param name="sender">Event sender.</param>
-    /// <param name="e">Event args.</param>
-    private void RunClangFormat(object sender, EventArgs e)
+    public void RunClangFormat()
     {
       try
       {
@@ -156,7 +121,7 @@ namespace ClangPowerTools.Commands
           // get the necessary elements for format selection
           FindStartPositionAndLengthOfSelectedText(view, text, out startPosition, out length);
           dirPath = Vsix.GetDocumentParent(view);
-          mClangFormatView = GetUserOptions();
+          mClangFormatView = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
         }
         else
         {
@@ -200,23 +165,6 @@ namespace ClangPowerTools.Commands
     }
 
 
-    private ClangFormatOptionsView GetUserOptions() => (ClangFormatOptionsView)AsyncPackage.GetDialogPage(typeof(ClangFormatOptionsView));
-
-
-    private bool SkipFile(string aFilePath, string aSkipFiles)
-    {
-      var skipFilesList = aSkipFiles.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-      return skipFilesList.Contains(Path.GetFileName(aFilePath).ToLower());
-    }
-
-
-    private bool FileHasExtension(string filePath, string fileExtensions)
-    {
-      var extensions = fileExtensions.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-      return extensions.Contains(Path.GetExtension(filePath).ToLower());
-    }
-
-
     private void FormatAllSelectedDocuments()
     {
       foreach (var item in CollectSelectedItems(true))
@@ -226,10 +174,10 @@ namespace ClangPowerTools.Commands
         if (null == document)
           document = DocumentsHandler.GetActiveDocument();
 
-        mClangFormatView = GetUserOptions();
+        mClangFormatView = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
         mDocument = document;
 
-        RunClangFormat(new object(), new EventArgs());
+        RunClangFormat();
       }
     }
 

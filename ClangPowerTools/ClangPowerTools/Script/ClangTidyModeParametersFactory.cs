@@ -6,61 +6,28 @@ using System.Reflection;
 
 namespace ClangPowerTools.Script
 {
-  internal class ClangTidyModeParametersFactory
+  public class ClangTidyModeParametersFactory
   {
-    #region Members 
-
-
-    /// <summary>
-    /// The Tidy Custom Checks option page
-    /// </summary>
-    private ClangTidyCustomChecksOptionsView mTidyCustomChecks;
-
-    /// <summary>
-    /// The Tidy Predefined Checks option page
-    /// </summary>
-    private ClangTidyPredefinedChecksOptionsView mTidyChecks;
-
-
-    #endregion
-
-
-    #region Constructor 
-
-
-    /// <summary>
-    /// Instance constructor
-    /// </summary>
-    public ClangTidyModeParametersFactory(ClangTidyCustomChecksOptionsView aTidyCustomChecks, ClangTidyPredefinedChecksOptionsView aTidyChecks)
-    {
-      mTidyCustomChecks = aTidyCustomChecks;
-      mTidyChecks = aTidyChecks;
-    }
-
-
-    #endregion
-
-
     #region Methods 
 
-    #region Public Methods
 
+    #region Public Methods
 
     /// <summary>
     /// Create the clang tidy parameters depending on the tidy mode
     /// </summary>
-    /// <param name="aWantedTidyMode">The searched tidy mode</param>
+    /// <param name="aTidyMode">The searched tidy mode</param>
     /// <param name="aUseClangTidyFileFlag">Will be set to True if the clang tidy config file will be used. Will be set to False otherwise</param>
     /// <returns>Clang tidy parameters</returns>
-    public string Create(string aWantedTidyMode, ref bool aUseClangTidyFileFlag)
+    public string Create(string aTidyMode, ref bool aUseClangTidyFileFlag)
     {
-      if (0 == string.Compare(ComboBoxConstants.kTidyFile, aWantedTidyMode))
+      if (0 == string.Compare(ComboBoxConstants.kTidyFile, aTidyMode))
         return UseClangConfigFile(ref aUseClangTidyFileFlag);
 
-      else if (0 == string.Compare(ComboBoxConstants.kCustomChecks, aWantedTidyMode))
+      else if (0 == string.Compare(ComboBoxConstants.kCustomChecks, aTidyMode))
         return GetCustomChecks();
 
-      else if (0 == string.Compare(ComboBoxConstants.kPredefinedChecks, aWantedTidyMode))
+      else if (0 == string.Compare(ComboBoxConstants.kPredefinedChecks, aTidyMode))
         return GetTidyPredefinedChecks();
 
       return string.Empty;
@@ -90,8 +57,10 @@ namespace ClangPowerTools.Script
     /// <returns></returns>
     private string GetCustomChecks()
     {
-      return !string.IsNullOrWhiteSpace(mTidyCustomChecks.TidyChecks) ?
-        $",{mTidyCustomChecks.TidyChecks.Replace(';', ',')}" :
+      var tidyCustomShecksSettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyCustomChecksOptionsView)) as ClangTidyCustomChecksOptionsView;
+
+      return !string.IsNullOrWhiteSpace(tidyCustomShecksSettings.TidyChecks) ?
+        $",{tidyCustomShecksSettings.TidyChecks.Replace(';', ',')}" :
         string.Empty;
     }
 
@@ -102,8 +71,10 @@ namespace ClangPowerTools.Script
     /// <returns>The predefined checks</returns>
     private string GetTidyPredefinedChecks()
     {
+      var tidyPredefinedChecksSettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyPredefinedChecksOptionsView)) as ClangTidyPredefinedChecksOptionsView;
       var parameters = string.Empty;
-      foreach (PropertyInfo prop in mTidyChecks.GetType().GetProperties())
+
+      foreach (PropertyInfo prop in tidyPredefinedChecksSettings.GetType().GetProperties())
       {
         object[] propAttrs = prop.GetCustomAttributes(false);
         object clangCheckAttr = propAttrs.FirstOrDefault(attr => typeof(ClangCheckAttribute) == attr.GetType());
@@ -113,7 +84,7 @@ namespace ClangPowerTools.Script
           continue;
 
         DisplayNameAttribute displayNameAttr = (DisplayNameAttribute)displayNameAttrObj;
-        var value = prop.GetValue(mTidyChecks, null);
+        var value = prop.GetValue(tidyPredefinedChecksSettings, null);
         if (Boolean.TrueString != value.ToString())
           continue;
         parameters = $"{parameters},{displayNameAttr.DisplayName}";

@@ -1,5 +1,4 @@
 ﻿using ClangPowerTools.Builder;
-using ClangPowerTools.DialogPages;
 using ClangPowerTools.Output;
 using ClangPowerTools.Script;
 using ClangPowerTools.Services;
@@ -22,9 +21,8 @@ namespace ClangPowerTools
     protected FilePathCollector mFilePahtCollector;
     protected static RunningProcesses mRunningProcesses = new RunningProcesses();
     protected List<string> mDirectoriesPath = new List<string>();
-    protected ClangGeneralOptionsView mGeneralOptions;
 
-    private Commands2 mCommand;
+    //private Commands2 mCommand;
 
     private ErrorWindowController mErrorWindow;
     private OutputWindowController mOutputWindow;
@@ -58,7 +56,7 @@ namespace ClangPowerTools
     #region Constructor
 
 
-    public ClangCommand(CommandsController aCommandsController, ErrorWindowController aErrorWindow, 
+    public ClangCommand(CommandsController aCommandsController, ErrorWindowController aErrorWindow,
       OutputWindowController aOutputWindow, AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aPackage, aGuid, aId)
     {
@@ -67,12 +65,11 @@ namespace ClangPowerTools
 
       mErrorWindow = aErrorWindow;
       mOutputWindow = aOutputWindow;
-      mGeneralOptions = (ClangGeneralOptionsView)aPackage.GetDialogPage(typeof(ClangGeneralOptionsView));
 
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {
         var dte2 = dte as DTE2;
-        mCommand = dte2.Commands as Commands2;
+        //mCommand = dte2.Commands as Commands2;
         VsEdition = dte2.Edition;
         mVsVersions.TryGetValue(dte2.Version, out string version);
         VsVersion = version;
@@ -85,23 +82,9 @@ namespace ClangPowerTools
     #region Methods
 
 
-    #region Public Methods
-
-
-    public virtual void OnBeforeSave(object sender, Document aDocument) { }
-
-    public virtual void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault) { }
-
-    public virtual void OnBuildDone(vsBuildScope Scope, vsBuildAction Action) { }
-
-
-    #endregion
-
-
     #region Protected methods
 
-    protected void RunScript(string aCommandName, ClangTidyOptionsView mTidyOptions = null, ClangTidyPredefinedChecksOptionsView mTidyChecks = null,
-      ClangTidyCustomChecksOptionsView mTidyCustomChecks = null, ClangFormatOptionsView aClangFormatView = null, bool aTidyFixFlag = false)
+    protected void RunScript(int aCommandId)
     {
       try
       {
@@ -112,8 +95,7 @@ namespace ClangPowerTools
         runModeScriptBuilder.Build();
         var runModeParameters = runModeScriptBuilder.GetResult();
 
-        IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(mGeneralOptions, mTidyOptions, mTidyChecks,
-          mTidyCustomChecks, aClangFormatView, VsEdition, VsVersion, aTidyFixFlag);
+        IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(VsEdition, VsVersion, aCommandId);
         genericScriptBuilder.Build();
         var genericParameters = genericScriptBuilder.GetResult();
 
@@ -121,9 +103,9 @@ namespace ClangPowerTools
 
         InitPowerShell();
         ClearWindows();
-        mOutputWindow.Write($"\n{OutputWindowConstants.kStart} {aCommandName}\n");
+        mOutputWindow.Write($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
 
-        StatusBarHandler.Status(aCommandName + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
+        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
 
         VsServiceProvider.TryGetService(typeof(SVsSolution), out object vsSolutionService);
         var vsSolution = vsSolutionService as IVsSolution;
@@ -141,7 +123,7 @@ namespace ClangPowerTools
           // and added to the end of the string to close the script
           var script = $"{runModeParameters.Remove(runModeParameters.Length - 1)} {itemRelatedParameters} {genericParameters}'";
 
-          if(null != vsSolution)
+          if (null != vsSolution)
             mOutputWindow.Hierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
 
           var process = mPowerShell.Invoke(script, mRunningProcesses);
@@ -156,7 +138,7 @@ namespace ClangPowerTools
         if (!mOutputWindow.MissingLlvm)
         {
           mOutputWindow.Show();
-          mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
+          mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
         }
 
         if (mOutputWindow.HasErrors)
@@ -165,11 +147,11 @@ namespace ClangPowerTools
       catch (Exception)
       {
         mOutputWindow.Show();
-        mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {aCommandName}\n");
+        mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
       }
       finally
       {
-        StatusBarHandler.Status(aCommandName + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
       }
     }
 
@@ -180,26 +162,6 @@ namespace ClangPowerTools
       return mItemsCollector.GetItems;
     }
 
-    protected string GetCommandName(string aGuid, int aId)
-    {
-      try
-      {
-        if (null == aGuid)
-          return string.Empty;
-
-        if (null == mCommand)
-          return string.Empty;
-
-        Command cmd = mCommand.Item(aGuid, aId);
-        if (null == cmd)
-          return string.Empty;
-
-        return cmd.Name;
-      }
-      catch (Exception) { }
-
-      return string.Empty;
-    }
 
     #endregion
 

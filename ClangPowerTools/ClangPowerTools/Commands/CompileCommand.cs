@@ -7,20 +7,13 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
 
-namespace ClangPowerTools
+namespace ClangPowerTools.Commands
 {
   /// <summary>
   /// Command handler
   /// </summary>
   internal sealed class CompileCommand : ClangCommand
   {
-    #region Members
-
-    private bool mExecuteCompile = false;
-
-    #endregion
-
-
     #region Properties
 
 
@@ -32,6 +25,9 @@ namespace ClangPowerTools
       get;
       private set;
     }
+
+
+    public bool VsCompileFlag { get; set; }
 
 
     #endregion
@@ -51,7 +47,7 @@ namespace ClangPowerTools
       if (null != aCommandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
-        var menuCommand = new OleMenuCommand(RunClangCompile, menuCommandID);
+        var menuCommand = new OleMenuCommand(mCommandsController.Execute, menuCommandID);
         menuCommand.BeforeQueryStatus += mCommandsController.OnBeforeClangCommand;
         menuCommand.Enabled = true;
         aCommandService.AddCommand(menuCommand);
@@ -80,51 +76,7 @@ namespace ClangPowerTools
     }
 
 
-    public override void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
-    {
-      if (false == mGeneralOptions.ClangCompileAfterVsCompile)
-        return;
-
-      string commandName = GetCommandName(aGuid, aId);
-      if (0 != string.Compare("Build.Compile", commandName))
-        return;
-
-      mExecuteCompile = true;
-    }
-
-    public override void OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
-    {
-      if (false == mExecuteCompile)
-        return;
-
-      var exitCode = int.MaxValue;
-      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
-        exitCode = (dte as DTE2).Solution.SolutionBuild.LastBuildInfo;
-
-      // VS compile detected errors and there is not necessary to run clang compile
-      if (0 != exitCode)
-      {
-        mExecuteCompile = false;
-        return;
-      }
-
-      // Run clang compile after the VS compile succeeded 
-      RunClangCompile(new object(), new EventArgs());
-      mExecuteCompile = false;
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    /// <summary>
-    /// This function is the callback used to execute the command when the menu item is clicked.
-    /// See the constructor to see how the menu item is associated with this function using
-    /// OleMenuCommandService service and MenuCommand class.
-    /// </summary>
-    /// <param name="sender">Event sender.</param>
-    /// <param name="e">Event args.</param>
-    private void RunClangCompile(object sender, EventArgs e)
+    public void RunClangCompile(int aCommandId)
     {
       if (mCommandsController.Running)
         return;
@@ -142,7 +94,7 @@ namespace ClangPowerTools
           }
 
           CollectSelectedItems(false, ScriptConstants.kAcceptedFileExtensions);
-          RunScript(OutputWindowConstants.kComplileCommand);
+          RunScript(aCommandId);
         }
         catch (Exception exception)
         {

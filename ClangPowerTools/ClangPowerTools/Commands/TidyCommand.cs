@@ -10,30 +10,14 @@ using System;
 using System.ComponentModel.Design;
 using System.Linq;
 
-namespace ClangPowerTools
+namespace ClangPowerTools.Commands
 {
   /// <summary>
   /// Command handler
   /// </summary>
   internal sealed class TidyCommand : ClangCommand
   {
-    #region Members
-
-    private ClangTidyOptionsView mTidyOptions;
-    private ClangTidyPredefinedChecksOptionsView mTidyChecks;
-    private ClangTidyCustomChecksOptionsView mTidyCustomChecks;
-    private ClangFormatOptionsView mClangFormatView;
-
-    private bool mFix = false;
-
-    private bool mForceTidyToFix = false;
-    private bool mSaveCommandWasGiven = false;
-
-    #endregion
-
-
     #region Properties
-
 
     /// <summary>
     /// Gets the instance of the command.
@@ -43,7 +27,6 @@ namespace ClangPowerTools
       get;
       private set;
     }
-
 
     #endregion
 
@@ -60,15 +43,10 @@ namespace ClangPowerTools
       ErrorWindowController aErrorWindow, OutputWindowController aOutputWindow, AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aCommandsController, aErrorWindow, aOutputWindow, aPackage, aGuid, aId)
     {
-      mTidyOptions = (ClangTidyOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyOptionsView));
-      mTidyChecks = (ClangTidyPredefinedChecksOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyPredefinedChecksOptionsView));
-      mTidyCustomChecks = (ClangTidyCustomChecksOptionsView)AsyncPackage.GetDialogPage(typeof(ClangTidyCustomChecksOptionsView));
-      mClangFormatView = (ClangFormatOptionsView)AsyncPackage.GetDialogPage(typeof(ClangFormatOptionsView));
-
       if (null != aCommandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
-        var menuCommand = new OleMenuCommand(RunClangTidy, menuCommandID);
+        var menuCommand = new OleMenuCommand(mCommandsController.Execute, menuCommandID);
         menuCommand.BeforeQueryStatus += mCommandsController.OnBeforeClangCommand;
         menuCommand.Enabled = true;
         aCommandService.AddCommand(menuCommand);
@@ -98,55 +76,12 @@ namespace ClangPowerTools
     }
 
 
-    public override void OnBeforeSave(object sender, Document aDocument)
-    {
-      if (false == mSaveCommandWasGiven) // The save event was not triggered by Save File or SaveAll commands
-        return;
-
-      if (false == mTidyOptions.AutoTidyOnSave) // The clang-tidy on save option is disable 
-        return;
-
-      if (true == mCommandsController.Running) // Clang compile/tidy command is running
-        return;
-
-      if (true == mForceTidyToFix) // Clang-tidy on save is running 
-        return;
-
-      mForceTidyToFix = true;
-      RunClangTidy(new object(), new EventArgs());
-      mSaveCommandWasGiven = false;
-    }
-
-    public override void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
-    {
-      string commandName = GetCommandName(aGuid, aId);
-      if (0 != string.Compare("File.SaveAll", commandName) &&
-        0 != string.Compare("File.SaveSelectedItems", commandName))
-      {
-        return;
-      }
-      mSaveCommandWasGiven = true;
-    }
-
-    #endregion
-
-
-    #region Private Methods
-
-    /// <summary>
-    /// This function is the callback used to execute the command when the menu item is clicked.
-    /// See the constructor to see how the menu item is associated with this function using
-    /// OleMenuCommandService service and MenuCommand class.
-    /// </summary>
-    /// <param name="sender">Event sender.</param>
-    /// <param name="e">Event args.</param>
-    private void RunClangTidy(object sender, EventArgs e)
+    public void RunClangTidy(int aCommandId)
     {
       if (mCommandsController.Running)
         return;
 
       mCommandsController.Running = true;
-      mFix = SetTidyFixParameter(sender);
 
       var task = System.Threading.Tasks.Task.Run(() =>
       {
@@ -166,7 +101,9 @@ namespace ClangPowerTools
           {
             using (var fileChangerWatcher = new FileChangerWatcher())
             {
-              if (mFix || mTidyOptions.AutoTidyOnSave)
+              var tidySettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
+
+              if ( CommandIds.kTidyFixId == aCommandId || tidySettings.AutoTidyOnSave)
               {
                 fileChangerWatcher.OnChanged += FileOpener.Open;
 
@@ -181,7 +118,7 @@ namespace ClangPowerTools
                 silentFileController.SilentFiles(filesPath);
                 silentFileController.SilentFiles(dte2.Documents);
               }
-              RunScript(OutputWindowConstants.kTidyCodeCommand, mTidyOptions, mTidyChecks, mTidyCustomChecks, mClangFormatView, mFix);
+              RunScript(aCommandId);
             }
           }
         }
@@ -190,20 +127,10 @@ namespace ClangPowerTools
           VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
-        finally
-        {
-          mForceTidyToFix = false;
-        }
       }).ContinueWith(tsk => mCommandsController.OnAfterClangCommand());
     }
 
-    private bool SetTidyFixParameter(object sender)
-    {
-      if (!(sender is OleMenuCommand))
-        return false;
 
-      return (sender as OleMenuCommand).CommandID.ID == CommandIds.kTidyFixId;
-    }
 
 
     #endregion
