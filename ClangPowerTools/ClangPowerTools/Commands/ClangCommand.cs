@@ -15,8 +15,6 @@ namespace ClangPowerTools
   {
     #region Members
 
-
-    protected static CommandsController mCommandsController = null;
     protected ItemsCollector mItemsCollector;
     protected FilePathCollector mFilePahtCollector;
     protected static RunningProcesses mRunningProcesses = new RunningProcesses();
@@ -25,7 +23,6 @@ namespace ClangPowerTools
     //private Commands2 mCommand;
 
     private ErrorWindowController mErrorWindow;
-    private OutputWindowController mOutputWindow;
 
     private const string kVs15Version = "2017";
     private Dictionary<string, string> mVsVersions = new Dictionary<string, string>
@@ -55,15 +52,10 @@ namespace ClangPowerTools
     #region Constructor
 
 
-    public ClangCommand(CommandsController aCommandsController, ErrorWindowController aErrorWindow,
-      OutputWindowController aOutputWindow, AsyncPackage aPackage, Guid aGuid, int aId)
+    public ClangCommand(ErrorWindowController aErrorWindow, AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aPackage, aGuid, aId)
     {
-      if (null == mCommandsController)
-        mCommandsController = aCommandsController;
-
       mErrorWindow = aErrorWindow;
-      mOutputWindow = aOutputWindow;
 
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {
@@ -100,8 +92,8 @@ namespace ClangPowerTools
 
         string solutionPath = dte.Solution.FullName;
 
-        ClearWindows();
-        mOutputWindow.Write($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
+        //ClearWindows();
+        //mOutputWindow.Write($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
 
         StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
 
@@ -110,9 +102,6 @@ namespace ClangPowerTools
 
         foreach (var item in mItemsCollector.GetItems)
         {
-          if (!mCommandsController.Running)
-            break;
-
           IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item);
           itemRelatedScriptBuilder.Build();
           var itemRelatedParameters = itemRelatedScriptBuilder.GetResult();
@@ -121,31 +110,31 @@ namespace ClangPowerTools
           // and added to the end of the string to close the script
           var script = $"{runModeParameters.Remove(runModeParameters.Length - 1)} {itemRelatedParameters} {genericParameters}'";
 
-          if (null != vsSolution)
-            mOutputWindow.Hierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
+          //if (null != vsSolution)
+          //  mOutputWindow.Hierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
 
           var process = PowerShellWrapper.Invoke(script, mRunningProcesses);
 
-          if (mOutputWindow.MissingLlvm)
-          {
-            mOutputWindow.Write(ErrorParserConstants.kMissingLlvmMessage);
-            break;
-          }
+          //if (mOutputWindow.MissingLlvm)
+          //{
+          //  mOutputWindow.Write(ErrorParserConstants.kMissingLlvmMessage);
+          //  break;
+          //}
         }
 
-        if (!mOutputWindow.MissingLlvm)
-        {
-          mOutputWindow.Show();
-          mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
-        }
+        //if (!mOutputWindow.MissingLlvm)
+        //{
+        //  mOutputWindow.Show();
+        //  mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
+        //}
 
-        if (mOutputWindow.HasErrors)
-          mErrorWindow.AddErrors(mOutputWindow.Errors);
+        //if (mOutputWindow.HasErrors)
+        //  mErrorWindow.AddErrors(mOutputWindow.Errors);
       }
       catch (Exception)
       {
-        mOutputWindow.Show();
-        mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
+        //mOutputWindow.Show();
+        //mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
       }
       finally
       {
@@ -166,12 +155,12 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private void ClearWindows()
-    {
-      mErrorWindow.Clear();
-      mOutputWindow.Clear();
-      mOutputWindow.Show();
-    }
+    //private void ClearWindows()
+    //{
+    //  mErrorWindow.Clear();
+    //  mOutputWindow.Clear();
+    //  mOutputWindow.Show();
+    //}
 
     #endregion
 

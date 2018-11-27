@@ -104,6 +104,10 @@ namespace ClangPowerTools
       mOutputController = new OutputWindowController();
       mOutputController.Initialize(this, vsOutputWindow);
 
+      PowerShellWrapper.DataHandler += mOutputController.OutputDataReceived;
+      PowerShellWrapper.DataErrorHandler += mOutputController.OutputDataErrorReceived;
+      PowerShellWrapper.ExitedHandler += mOutputController.ClosedDataConnection;
+
       SettingsProvider.Initialize(this);
 
       mRunningDocTableEvents = new RunningDocTableEvents(this);
@@ -152,7 +156,7 @@ namespace ClangPowerTools
         generalSettings.SaveSettingsToStorage();
       }
 
-      await mCommandsController.InitializeAsyncCommands(this, mErrorWindowController, mOutputController);
+      await mCommandsController.InitializeAsyncCommands(this, mErrorWindowController);
       RegisterToVsEvents();
 
       await base.InitializeAsync(cancellationToken, progress);
