@@ -27,7 +27,6 @@ namespace ClangPowerTools
     private ErrorWindowController mErrorWindow;
     private OutputWindowController mOutputWindow;
 
-    private PowerShellWrapper mPowerShell = new PowerShellWrapper();
     private const string kVs15Version = "2017";
     private Dictionary<string, string> mVsVersions = new Dictionary<string, string>
     {
@@ -101,7 +100,6 @@ namespace ClangPowerTools
 
         string solutionPath = dte.Solution.FullName;
 
-        InitPowerShell();
         ClearWindows();
         mOutputWindow.Write($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
 
@@ -126,7 +124,7 @@ namespace ClangPowerTools
           if (null != vsSolution)
             mOutputWindow.Hierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
 
-          var process = mPowerShell.Invoke(script, mRunningProcesses);
+          var process = PowerShellWrapper.Invoke(script, mRunningProcesses);
 
           if (mOutputWindow.MissingLlvm)
           {
@@ -167,14 +165,6 @@ namespace ClangPowerTools
 
 
     #region Private Methods
-
-    private void InitPowerShell()
-    {
-      mPowerShell = new PowerShellWrapper();
-      mPowerShell.DataHandler += mOutputWindow.OutputDataReceived;
-      mPowerShell.DataErrorHandler += mOutputWindow.OutputDataErrorReceived;
-      mPowerShell.ExitedHandler += mOutputWindow.ClosedDataConnection;
-    }
 
     private void ClearWindows()
     {

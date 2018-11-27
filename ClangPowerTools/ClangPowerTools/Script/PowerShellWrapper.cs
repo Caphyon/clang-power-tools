@@ -3,19 +3,19 @@ using System.Diagnostics;
 
 namespace ClangPowerTools
 {
-  public class PowerShellWrapper
+  public static class PowerShellWrapper
   {
     #region Properties
 
-    public DataReceivedEventHandler DataErrorHandler { get; set; }
-    public DataReceivedEventHandler DataHandler { get; set; }
-    public EventHandler ExitedHandler { get; set; }
+    public static DataReceivedEventHandler DataErrorHandler { get; set; }
+    public static DataReceivedEventHandler DataHandler { get; set; }
+    public static EventHandler ExitedHandler { get; set; }
 
     #endregion
 
     #region Public Methods
 
-    public Process Invoke(string aScript, RunningProcesses aRunningProcesses)
+    public static Process Invoke(string aScript, RunningProcesses aRunningProcesses)
     {
       Process process = new Process();
       try
