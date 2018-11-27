@@ -1,5 +1,19 @@
 # Version History
 
+### Clang Power Tools 4.4
+*November 27, 2018*
+
+Improvements:
+
+* Speed up the errors detection by sending refresh signals to the VS Error List
+* Include the new `LLVM 7.0 clang tidy checks`
+
+Bugs:
+
+* The checks from `.clang-tidy` config file are ignored
+* Clang Tidy on save does not respond after a VS Solution is reopened
+* Extension upgrade is not detected
+
 ### Clang Power Tools 4.3.2
 *November 13, 2018*
 
