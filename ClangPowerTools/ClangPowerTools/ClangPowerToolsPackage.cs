@@ -163,6 +163,8 @@ namespace ClangPowerTools
 
       await mCommandsController.InitializeAsyncCommands(this);
       mCommandsController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
+      mOutputWindowController.MissingLlvmEvent += mCommandsController.OnMissingLLVMDetected;
+
       RegisterToVsEvents();
 
       await base.InitializeAsync(cancellationToken, progress);

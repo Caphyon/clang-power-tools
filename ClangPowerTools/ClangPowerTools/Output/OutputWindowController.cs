@@ -23,7 +23,11 @@ namespace ClangPowerTools.Output
 
     private OutputContentModel mOutputContent = new OutputContentModel();
 
+    private bool mMissingLLVM;
+
     public event EventHandler<ErrorDetectedEventArgs> ErrorDetectedEvent;
+
+    public event EventHandler<MissingLlvmEventArgs> MissingLlvmEvent;
 
     #endregion
 
@@ -31,7 +35,16 @@ namespace ClangPowerTools.Output
     #region Properties
 
 
-    public bool MissingLlvm => mOutputContent.MissingLLVM;
+    public bool MissingLLVM
+    {
+      get => MissingLLVM;
+      private set
+      {
+        mMissingLLVM = value;
+        if (mMissingLLVM)
+          OnMissingLLVMDetected(new MissingLlvmEventArgs(mMissingLLVM));
+      }
+    }
 
     public List<string> Buffer => mOutputContent.Buffer;
 
@@ -168,17 +181,13 @@ namespace ClangPowerTools.Output
     }
 
 
-
+    protected virtual void OnMissingLLVMDetected(MissingLlvmEventArgs e)
+    {
+      MissingLlvmEvent?.Invoke(this, e);
+    }
 
 
     #endregion
-
-
-
-
-
-
-
 
   }
 }

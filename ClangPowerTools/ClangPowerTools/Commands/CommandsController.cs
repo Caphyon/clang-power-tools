@@ -6,7 +6,6 @@ using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.IO;
 using System.Linq;
@@ -27,10 +26,12 @@ namespace ClangPowerTools
     private Document mDocument;
     private bool mFormatAfterTidyFlag = false;
 
-    private IVsHierarchy mHierarchy;
+    //private IVsHierarchy mHierarchy;
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
 
     public event EventHandler<ClangCommandEventArgs> ClangCommandEvent;
+
+    public event EventHandler<MissingLlvmEventArgs> MissingLlvmEvent;
 
     #endregion
 
@@ -112,6 +113,9 @@ namespace ClangPowerTools
 
       CompileCommand.Instance.HierarchyDetectedEvent += OnFileHierarchyChanged;
       TidyCommand.Instance.HierarchyDetectedEvent += OnFileHierarchyChanged;
+
+      MissingLlvmEvent += CompileCommand.Instance.OnMissingLLVMDetected;
+      MissingLlvmEvent += TidyCommand.Instance.OnMissingLLVMDetected;
     }
 
 
@@ -242,6 +246,12 @@ namespace ClangPowerTools
     protected virtual void OnFileHierarchyChanged(object sender, VsHierarchyDetectedEventArgs e)
     {
       HierarchyDetectedEvent?.Invoke(this, e);
+    }
+
+
+    public virtual void OnMissingLLVMDetected(object sender, MissingLlvmEventArgs e)
+    {
+      MissingLlvmEvent?.Invoke(this, e);
     }
 
 

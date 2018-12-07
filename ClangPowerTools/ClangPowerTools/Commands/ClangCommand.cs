@@ -1,6 +1,5 @@
 ﻿using ClangPowerTools.Builder;
 using ClangPowerTools.Events;
-using ClangPowerTools.Output;
 using ClangPowerTools.Script;
 using ClangPowerTools.Services;
 using EnvDTE;
@@ -33,6 +32,7 @@ namespace ClangPowerTools
       {"15.0", "2017"}
     };
 
+    private bool mMissingLLVM = false;
     private IVsHierarchy mHierarchy;
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
 
@@ -84,6 +84,16 @@ namespace ClangPowerTools
 
     #region Methods
 
+    #region Public Methods
+
+    public virtual void OnMissingLLVMDetected(object sender, MissingLlvmEventArgs e)
+    {
+      mMissingLLVM = e.MissingLLVM;
+    }
+
+
+    #endregion
+
 
     #region Protected methods
 
@@ -103,9 +113,6 @@ namespace ClangPowerTools
         var genericParameters = genericScriptBuilder.GetResult();
 
         string solutionPath = dte.Solution.FullName;
-
-        //ClearWindows();
-        //mOutputWindow.Write($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
 
         StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
 
@@ -127,32 +134,14 @@ namespace ClangPowerTools
 
           var process = PowerShellWrapper.Invoke(script, mRunningProcesses);
 
-          //if (mOutputWindow.MissingLlvm)
-          //{
-          //  mOutputWindow.Write(ErrorParserConstants.kMissingLlvmMessage);
-          //  break;
-          //}
+          if (mMissingLLVM)
+            break;
         }
-
-        //if (!mOutputWindow.MissingLlvm)
-        //{
-        //  mOutputWindow.Show();
-        //  mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
-        //}
-
-        //if (mOutputWindow.HasErrors)
-        //  mErrorWindow.AddErrors(mOutputWindow.Errors);
-      }
-      catch (Exception)
-      {
-        //mOutputWindow.Show();
-        //mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
-      }
-      finally
-      {
         StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
       }
+      catch (Exception) { }
     }
+
 
     protected IEnumerable<IItem> CollectSelectedItems(bool aClangFormatFlag = false, List<string> aAcceptedExtensionTypes = null)
     {
@@ -173,17 +162,10 @@ namespace ClangPowerTools
       HierarchyDetectedEvent?.Invoke(this, e);
     }
 
-    //private void ClearWindows()
-    //{
-    //  mErrorWindow.Clear();
-    //  mOutputWindow.Clear();
-    //  mOutputWindow.Show();
-    //}
-
     #endregion
 
-    #endregion
 
+    #endregion
 
   }
 }
