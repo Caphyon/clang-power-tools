@@ -23,8 +23,6 @@ namespace ClangPowerTools.Output
 
     private OutputContentModel mOutputContent = new OutputContentModel();
 
-    private bool mMissingLLVM;
-
     public event EventHandler<ErrorDetectedEventArgs> ErrorDetectedEvent;
 
     public event EventHandler<MissingLlvmEventArgs> MissingLlvmEvent;
@@ -34,17 +32,6 @@ namespace ClangPowerTools.Output
 
     #region Properties
 
-
-    public bool MissingLLVM
-    {
-      get => MissingLLVM;
-      private set
-      {
-        mMissingLLVM = value;
-        if (mMissingLLVM)
-          OnMissingLLVMDetected(new MissingLlvmEventArgs(mMissingLLVM));
-      }
-    }
 
     public List<string> Buffer => mOutputContent.Buffer;
 
@@ -136,7 +123,14 @@ namespace ClangPowerTools.Output
         return;
 
       if (VSConstants.S_FALSE == mOutputProcessor.ProcessData(e.Data, Hierarchy, mOutputContent))
+      {
+        if (mOutputContent.MissingLLVM)
+        {
+          Write(new object(), new ClangCommandEventArgs(ErrorParserConstants.kMissingLlvmMessage, false));
+          OnMissingLLVMDetected(new MissingLlvmEventArgs(true));
+        }
         return;
+      }
 
       Write(mOutputContent.Text);
     }
@@ -151,7 +145,11 @@ namespace ClangPowerTools.Output
         return;
 
       if (VSConstants.S_FALSE == mOutputProcessor.ProcessData(e.Data, Hierarchy, mOutputContent))
+      {
+        if (mOutputContent.MissingLLVM)
+          OnMissingLLVMDetected(new MissingLlvmEventArgs(true));
         return;
+      }
 
       Write(mOutputContent.Text);
     }
