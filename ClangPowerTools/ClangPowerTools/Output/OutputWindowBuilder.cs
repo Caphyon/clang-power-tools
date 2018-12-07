@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Builder;
+using ClangPowerTools.Events;
 using ClangPowerTools.Services;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -72,6 +73,7 @@ namespace ClangPowerTools.Output
     }
 
     public OutputWindowModel GetResult() => mOutputWindowModel;
+
 
     #endregion
 

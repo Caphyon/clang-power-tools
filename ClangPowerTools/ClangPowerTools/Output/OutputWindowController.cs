@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Builder;
+using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
 using ClangPowerTools.Services;
 using EnvDTE;
@@ -88,10 +89,16 @@ namespace ClangPowerTools.Output
         return;
 
       var outputWindow = mOutputWindowBuilder.GetResult();
-      UIUpdater.Invoke(() =>
-      {
-        outputWindow.Pane.OutputStringThreadSafe(aMessage + "\n");
-      });
+      outputWindow.Pane.OutputStringThreadSafe(aMessage + "\n");
+    }
+
+
+    public void Write(object sender, ClangCommandEventArgs e)
+    {
+      if( e.ClearFlag )
+        Clear();
+      Show();
+      Write(e.Message);
     }
 
 
@@ -144,6 +151,13 @@ namespace ClangPowerTools.Output
 
 
     #endregion
+
+
+
+
+
+    
+
 
   }
 }

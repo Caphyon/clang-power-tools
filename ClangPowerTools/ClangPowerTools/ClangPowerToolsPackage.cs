@@ -60,7 +60,7 @@ namespace ClangPowerTools
     private RunningDocTableEvents mRunningDocTableEvents;
     private ErrorWindowController mErrorWindowController;
     private OutputWindowController mOutputController;
-    private CommandsController mCommandsController = null;
+    private CommandsController mCommandsController;
 
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
@@ -100,20 +100,28 @@ namespace ClangPowerTools
 
       await RegisterVsServices();
 
+      mCommandsController = new CommandsController(this);
+      SettingsProvider.Initialize(this);
+
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
       mOutputController = new OutputWindowController();
       mOutputController.Initialize(this, vsOutputWindow);
+
+
+
+      mCommandsController.ClangCommandEvent += mOutputController.Write;
+
+
+
+
+
 
       PowerShellWrapper.DataHandler += mOutputController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler += mOutputController.OutputDataErrorReceived;
       PowerShellWrapper.ExitedHandler += mOutputController.ClosedDataConnection;
 
-      SettingsProvider.Initialize(this);
-
       mRunningDocTableEvents = new RunningDocTableEvents(this);
       mErrorWindowController = new ErrorWindowController(this);
-
-      mCommandsController = new CommandsController(this);
 
       #region Get Pointer to IVsSolutionEvents
 
