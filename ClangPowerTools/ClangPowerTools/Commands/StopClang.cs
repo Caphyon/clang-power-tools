@@ -43,9 +43,9 @@ namespace ClangPowerTools.Commands
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    private StopClang(OleMenuCommandService aCommandService, CommandsController aCommandsController, ErrorWindowController aErrorWindow, 
+    private StopClang(OleMenuCommandService aCommandService, CommandsController aCommandsController,
       AsyncPackage aPackage, Guid aGuid, int aId)
-      : base(aErrorWindow, aPackage, aGuid, aId)
+      : base(aPackage, aGuid, aId)
     {
       if (null != aCommandService)
       {
@@ -68,14 +68,14 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
     public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController, 
-      ErrorWindowController aErrorWindow, AsyncPackage aPackage, Guid aGuid, int aId)
+      AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in StopClang's constructor requires
       // the UI thread.
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-      Instance = new StopClang(commandService, aCommandsController, aErrorWindow, aPackage, aGuid, aId);
+      Instance = new StopClang(commandService, aCommandsController, aPackage, aGuid, aId);
     }
 
 

@@ -40,8 +40,8 @@ namespace ClangPowerTools.Commands
     /// <param name="package">Owner package, not null.</param>
 
     private TidyCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController, 
-      ErrorWindowController aErrorWindow, AsyncPackage aPackage, Guid aGuid, int aId)
-        : base(aErrorWindow, aPackage, aGuid, aId)
+      AsyncPackage aPackage, Guid aGuid, int aId)
+        : base(aPackage, aGuid, aId)
     {
       if (null != aCommandService)
       {
@@ -65,14 +65,14 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
     public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController, 
-      ErrorWindowController aErrorWindow, AsyncPackage aPackage, Guid aGuid, int aId)
+      AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in TidyCommand's constructor requires
       // the UI thread.
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-      Instance = new TidyCommand(commandService, aCommandsController, aErrorWindow, aPackage, aGuid, aId);
+      Instance = new TidyCommand(commandService, aCommandsController, aPackage, aGuid, aId);
     }
 
 

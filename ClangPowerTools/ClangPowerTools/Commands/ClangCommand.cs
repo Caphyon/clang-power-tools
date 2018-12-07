@@ -22,8 +22,6 @@ namespace ClangPowerTools
 
     //private Commands2 mCommand;
 
-    private ErrorWindowController mErrorWindow;
-
     private const string kVs15Version = "2017";
     private Dictionary<string, string> mVsVersions = new Dictionary<string, string>
     {
@@ -52,10 +50,9 @@ namespace ClangPowerTools
     #region Constructor
 
 
-    public ClangCommand(ErrorWindowController aErrorWindow, AsyncPackage aPackage, Guid aGuid, int aId)
+    public ClangCommand(AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aPackage, aGuid, aId)
     {
-      mErrorWindow = aErrorWindow;
 
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {

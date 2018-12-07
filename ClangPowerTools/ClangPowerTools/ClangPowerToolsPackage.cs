@@ -104,17 +104,11 @@ namespace ClangPowerTools
       SettingsProvider.Initialize(this);
 
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
+
       mOutputController = new OutputWindowController();
       mOutputController.Initialize(this, vsOutputWindow);
 
-
-
       mCommandsController.ClangCommandEvent += mOutputController.Write;
-
-
-
-
-
 
       PowerShellWrapper.DataHandler += mOutputController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler += mOutputController.OutputDataErrorReceived;
@@ -164,7 +158,7 @@ namespace ClangPowerTools
         generalSettings.SaveSettingsToStorage();
       }
 
-      await mCommandsController.InitializeAsyncCommands(this, mErrorWindowController);
+      await mCommandsController.InitializeAsyncCommands(this);
       RegisterToVsEvents();
 
       await base.InitializeAsync(cancellationToken, progress);
