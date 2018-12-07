@@ -59,7 +59,7 @@ namespace ClangPowerTools
     private uint mHSolutionEvents = uint.MaxValue;
     private RunningDocTableEvents mRunningDocTableEvents;
     private ErrorWindowController mErrorWindowController;
-    private OutputWindowController mOutputController;
+    private OutputWindowController mOutputWindowController;
     private CommandsController mCommandsController;
 
     private CommandEvents mCommandEvents;
@@ -105,17 +105,20 @@ namespace ClangPowerTools
 
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
 
-      mOutputController = new OutputWindowController();
-      mOutputController.Initialize(this, vsOutputWindow);
+      mOutputWindowController = new OutputWindowController();
+      mOutputWindowController.Initialize(this, vsOutputWindow);
 
-      mCommandsController.ClangCommandEvent += mOutputController.Write;
+      mCommandsController.ClangCommandEvent += mOutputWindowController.Write;
 
-      PowerShellWrapper.DataHandler += mOutputController.OutputDataReceived;
-      PowerShellWrapper.DataErrorHandler += mOutputController.OutputDataErrorReceived;
-      PowerShellWrapper.ExitedHandler += mOutputController.ClosedDataConnection;
+      PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
+      PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
+      PowerShellWrapper.ExitedHandler += mOutputWindowController.ClosedDataConnection;
 
       mRunningDocTableEvents = new RunningDocTableEvents(this);
       mErrorWindowController = new ErrorWindowController(this);
+
+      mOutputWindowController.ErrorDetectedEvent += mErrorWindowController.OnErrorDetected;
+
 
       #region Get Pointer to IVsSolutionEvents
 
@@ -149,9 +152,9 @@ namespace ClangPowerTools
       var currentVersion = GetPackageVersion();
       if (0 > string.Compare(generalSettings.Version, currentVersion))
       {
-        mOutputController.Clear();
-        mOutputController.Show();
-        mOutputController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
+        mOutputWindowController.Clear();
+        mOutputWindowController.Show();
+        mOutputWindowController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
           $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
 
         generalSettings.Version = currentVersion;
@@ -159,6 +162,7 @@ namespace ClangPowerTools
       }
 
       await mCommandsController.InitializeAsyncCommands(this);
+      mCommandsController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
       RegisterToVsEvents();
 
       await base.InitializeAsync(cancellationToken, progress);

@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Builder;
+using ClangPowerTools.Events;
 using ClangPowerTools.Output;
 using ClangPowerTools.Script;
 using ClangPowerTools.Services;
@@ -32,6 +33,9 @@ namespace ClangPowerTools
       {"15.0", "2017"}
     };
 
+    private IVsHierarchy mHierarchy;
+    public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
+
 
     #endregion
 
@@ -42,6 +46,17 @@ namespace ClangPowerTools
     protected string VsEdition { get; set; }
     protected string VsVersion { get; set; }
     protected string WorkingDirectoryPath { get; set; }
+    protected IVsHierarchy ItemHierarchy
+    {
+      get => ItemHierarchy;
+      set
+      {
+        if (null == value)
+          return;
+        mHierarchy = value;
+        OnFileHierarchyChanged(new VsHierarchyDetectedEventArgs(mHierarchy));
+      }
+    }
 
 
     #endregion
@@ -107,8 +122,8 @@ namespace ClangPowerTools
           // and added to the end of the string to close the script
           var script = $"{runModeParameters.Remove(runModeParameters.Length - 1)} {itemRelatedParameters} {genericParameters}'";
 
-          //if (null != vsSolution)
-          //  mOutputWindow.Hierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
+          if (null != vsSolution)
+            ItemHierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
 
           var process = PowerShellWrapper.Invoke(script, mRunningProcesses);
 
@@ -151,6 +166,12 @@ namespace ClangPowerTools
 
 
     #region Private Methods
+
+
+    protected virtual void OnFileHierarchyChanged(VsHierarchyDetectedEventArgs e)
+    {
+      HierarchyDetectedEvent?.Invoke(this, e);
+    }
 
     //private void ClearWindows()
     //{

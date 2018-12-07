@@ -15,15 +15,15 @@ namespace ClangPowerTools.Output
 {
   public class OutputWindowController
   {
-    #region Private Members
-
+    #region Members
 
     private OutputProcessor mOutputProcessor = new OutputProcessor();
 
     private IBuilder<OutputWindowModel> mOutputWindowBuilder;
 
     private OutputContentModel mOutputContent = new OutputContentModel();
-   
+
+    public event EventHandler<ErrorDetectedEventArgs> ErrorDetectedEvent;
 
     #endregion
 
@@ -41,14 +41,13 @@ namespace ClangPowerTools.Output
 
     public bool HasErrors => 0 != mOutputContent.Errors.Count;
 
-    public IVsHierarchy Hierarchy { get; set; }
+    private IVsHierarchy Hierarchy { get; set; }
 
 
     #endregion
 
 
     #region Methods
-
 
     #region Output window operations
 
@@ -78,7 +77,7 @@ namespace ClangPowerTools.Output
       UIUpdater.Invoke(() =>
       {
         outputWindow.Pane.Activate();
-        if(VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+        if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
           (dte as DTE2).ExecuteCommand("View.Output", string.Empty);
       });
     }
@@ -95,10 +94,17 @@ namespace ClangPowerTools.Output
 
     public void Write(object sender, ClangCommandEventArgs e)
     {
-      if( e.ClearFlag )
+      if (e.ClearFlag)
         Clear();
       Show();
       Write(e.Message);
+    }
+
+    protected virtual void OnFileHierarchyChanged(object sender, VsHierarchyDetectedEventArgs e)
+    {
+      if (null == e.Hierarchy)
+        return;
+      Hierarchy = e.Hierarchy;
     }
 
 
@@ -144,19 +150,34 @@ namespace ClangPowerTools.Output
         return;
 
       Write(String.Join("\n", Buffer));
+      OnErrorDetected(new ErrorDetectedEventArgs(Errors));
     }
 
 
+    public void OnFileHierarchyDetected(object sender, VsHierarchyDetectedEventArgs e)
+    {
+      Hierarchy = e.Hierarchy;
+    }
+
     #endregion
 
 
+    protected virtual void OnErrorDetected(ErrorDetectedEventArgs e)
+    {
+      ErrorDetectedEvent?.Invoke(this, e);
+    }
+
+
+
+
+
     #endregion
 
 
 
 
 
-    
+
 
 
   }
