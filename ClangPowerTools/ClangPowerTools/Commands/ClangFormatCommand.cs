@@ -104,6 +104,9 @@ namespace ClangPowerTools.Commands
           return;
         }
 
+        if (ScriptConstants.kCMakeConfigFile == mDocument.Name.ToLower())
+          return;
+
         var view = Vsix.GetDocumentView(mDocument);
         if (view == null)
           return;
