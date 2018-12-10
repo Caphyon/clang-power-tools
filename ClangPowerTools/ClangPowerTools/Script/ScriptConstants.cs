@@ -18,6 +18,8 @@ namespace ClangPowerTools
         ".h"
       };
 
+    public const string kCMakeConfigFile = "cmakelists.txt";
+
     public const string kPowerShellPath = @"WindowsPowerShell\v1.0\powershell.exe";
     public const string kScriptBeginning = @"PowerShell.exe -ExecutionPolicy Bypass -NoProfile -Noninteractive -command '&";
     public const string kScriptName = "clang-build.ps1";
