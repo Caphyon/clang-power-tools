@@ -111,6 +111,8 @@ namespace ClangPowerTools.Commands
         if (view == null)
           return;
 
+        StatusBarHandler.Status("Clang-Format started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
+
         System.Diagnostics.Process process;
         var dirPath = string.Empty;
         var filePath = Vsix.GetDocumentPath(view);
@@ -164,6 +166,7 @@ namespace ClangPowerTools.Commands
       {
         mDocument = null;
         mClangFormatView = null;
+        StatusBarHandler.Status("Clang-Format finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
       }
     }
 
