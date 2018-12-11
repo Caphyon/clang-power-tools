@@ -161,7 +161,9 @@ namespace ClangPowerTools.Output
         return;
 
       Write(String.Join("\n", Buffer));
-      OnErrorDetected(new ErrorDetectedEventArgs(Errors));
+
+      if( 0 != Errors.Count )
+        OnErrorDetected(new ErrorDetectedEventArgs(Errors));
     }
 
 
