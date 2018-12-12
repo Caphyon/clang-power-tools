@@ -101,8 +101,8 @@ Function Get-FileDirectory([Parameter(Mandatory = $true)][string] $filePath)
     return ([System.IO.Path]::GetDirectoryName($filePath) + "\")
 }
 
-Function Get-FileName( [Parameter(Mandatory = $true)][string] $path
-    , [Parameter(Mandatory = $false)][switch] $noext)
+Function Get-FileName( [Parameter(Mandatory = $false)][string] $path
+                     , [Parameter(Mandatory = $false)][switch] $noext)
 {
     if ($noext)
     {

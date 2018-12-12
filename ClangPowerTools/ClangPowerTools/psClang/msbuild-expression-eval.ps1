@@ -28,6 +28,8 @@ Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>     `
         ,'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
         , ("\[MSBuild\]::MakeRelative\((.+?),\s*""?'?((\$.+?\))|(.+?))((|""|')\)\))+"`
         ,'MakePathRelative -base $1 -target "$2")'                       )`
+        , ('SearchOption\.', '[System.IO.SearchOption]::'                )`
+        , ("@\((.*?)\)", '$(Get-Project-Item("$1"))')`
 )
 
 Set-Variable -name "kMsbuildConditionToPsRules" <#-option Constant#>      `
@@ -151,23 +153,19 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
         }
     }
 
-    $expression = $expression.replace('"', '""')
     Write-Debug "Intermediate PS expression: $expression"
 
     try
     {
-
-        [string] $toInvoke = "(`$s = ""$expression"")"
-        if ($isCondition)
-        {
-            $toInvoke = "(`$s = ""`$($expression)"")"
-        }
-
-        $res = Invoke-Expression $toInvoke
+        # try to get actual objects, if possible
+        $res = Invoke-Expression $expression
     }
     catch
     {
-        write-debug $_.Exception.Message
+        # safe-approach first, string expansion
+        $res = $ExecutionContext.InvokeCommand.ExpandString($expression)
+
+        Write-Debug $_.Exception.Message
     }
 
     Write-Debug "Evaluated expression to: $res"
@@ -181,7 +179,7 @@ function Evaluate-MSBuildCondition([Parameter(Mandatory = $true)][string] $condi
     {
         $condition = $condition -replace $rule[0], $rule[1]
     }
-    $expression = Evaluate-MSBuildExpression -expression $condition -isCondition
+    [string] $expression = Evaluate-MSBuildExpression -expression $condition -isCondition
 
     if ($expression -ieq "true")
     {
