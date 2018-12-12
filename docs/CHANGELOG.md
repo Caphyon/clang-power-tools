@@ -1,5 +1,19 @@
 # Version History
 
+### Clang Power Tools 4.5
+*December 12, 2018*
+
+Improvements:
+
+* Status bar support for Clang Format
+* Support for expanding Project Item Groups
+
+Bugs:
+
+* Clang commands saving event caused changes on .sln level
+* Clang Format formats CMakeLists.txt file
+* [System.IO.Directory]::GetDirectories() calls not working
+
 ### Clang Power Tools 4.4
 *November 27, 2018*
 
