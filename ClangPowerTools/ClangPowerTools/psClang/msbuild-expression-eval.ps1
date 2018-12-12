@@ -157,13 +157,14 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
 
     try
     {
-        # safe-approach first, string expansion
-        $res = $ExecutionContext.InvokeCommand.ExpandString($expression)
         # try to get actual objects, if possible
         $res = Invoke-Expression $expression
     }
     catch
     {
+        # safe-approach first, string expansion
+        $res = $ExecutionContext.InvokeCommand.ExpandString($expression)
+
         Write-Debug $_.Exception.Message
     }
 
@@ -178,7 +179,7 @@ function Evaluate-MSBuildCondition([Parameter(Mandatory = $true)][string] $condi
     {
         $condition = $condition -replace $rule[0], $rule[1]
     }
-    $expression = Evaluate-MSBuildExpression -expression $condition -isCondition
+    [string] $expression = Evaluate-MSBuildExpression -expression $condition -isCondition
 
     if ($expression -ieq "true")
     {

@@ -517,12 +517,16 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
     if ($node.Name -ieq "#text" -and $node.InnerText.Length -gt 0)
     {
         # evaluate node content
-        $node.InnerText = Evaluate-MSBuildExpression $node.InnerText
+        $node.InnerText = [string](Evaluate-MSBuildExpression $node.InnerText)
     }
 
     if ($node.Name -ieq "Import")
     {
         [string] $relPath = Evaluate-MSBuildExpression $node.GetAttribute("Project")
+        if (!$relPath)
+        {
+            return
+        }
         [string[]] $paths = Canonize-Path -base (Get-Location) -child $relPath -ignoreErrors
 
         foreach ($path in $paths)
