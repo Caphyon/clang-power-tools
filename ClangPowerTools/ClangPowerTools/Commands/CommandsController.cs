@@ -29,6 +29,11 @@ namespace ClangPowerTools
 
     #region Properties
 
+    /// <summary>
+    /// Store the command id of the current running command
+    /// If no command is running then it will have a value less then 0
+    /// </summary>
+    public int CurrentCommand { get; private set; }
 
     /// <summary>
     /// Running flag for clang commands
@@ -72,26 +77,32 @@ namespace ClangPowerTools
       switch (command.CommandID.ID)
       {
         case CommandIds.kSettingsId:
+          CurrentCommand = CommandIds.kSettingsId;
           SettingsCommand.Instance.ShowSettings();
           break;
 
         case CommandIds.kStopClang:
+          CurrentCommand = CommandIds.kStopClang;
           StopClang.Instance.RunStopClangCommand();
           break;
 
         case CommandIds.kClangFormat:
+          CurrentCommand = CommandIds.kClangFormat;
           ClangFormatCommand.Instance.RunClangFormat();
           break;
 
         case CommandIds.kCompileId:
+          CurrentCommand = CommandIds.kCompileId;
           CompileCommand.Instance.RunClangCompile(CommandIds.kCompileId);
           break;
 
         case CommandIds.kTidyId:
+          CurrentCommand = CommandIds.kTidyId;
           TidyCommand.Instance.RunClangTidy(CommandIds.kTidyId);
           break;
 
         case CommandIds.kTidyFixId:
+          CurrentCommand = CommandIds.kTidyFixId;
           TidyCommand.Instance.RunClangTidy(CommandIds.kTidyFixId);
           break;
       }
@@ -262,6 +273,10 @@ namespace ClangPowerTools
     private void BeforeSaveClangFormat(Document aDocument)
     {
       var clangFormatOptionPage = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
+      var tidyOptionPage = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
+
+      if (Running && CurrentCommand == CommandIds.kTidyFixId && tidyOptionPage.AutoTidyOnSave)
+        return;
 
       if (false == clangFormatOptionPage.EnableFormatOnSave)
         return;
