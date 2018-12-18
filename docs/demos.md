@@ -2,10 +2,10 @@
 
 ## 📹 Videos
 
-### 🎞️ Official launch at CppCon 2017 (Bellevue/WA, US)
+### 🎞️ 1 year later @ CppCon 2018 (Bellevue/WA, US)
 
-“Bringing Clang-tidy Magic to Visual Studio C++ Developers”  
-[![Clang Power Tools](https://img.youtube.com/vi/Wl-9ozmxXbo/0.jpg)](https://www.youtube.com/watch?v=Wl-9ozmxXbo)
+“Better Tools in Your Clang Toolbox”  
+[![Clang Power Tools](https://img.youtube.com/vi/4X_fZkl7kkU/0.jpg)](https://www.youtube.com/watch?v=4X_fZkl7kkU)
 
 ### 🎞️ C++ Weekly with _Jason Turner_ (featuring _Clang Power Tools_)
 
@@ -24,12 +24,15 @@ Ep 104 - "Learning Modern C++": _const and constexpr_
 Ep 105 - "Learning Modern C++": _Looping and Algorithms_  
 [![Clang Power Tools](https://img.youtube.com/vi/A0-x-Djey-Q/0.jpg)](https://www.youtube.com/watch?v=A0-x-Djey-Q)
 
-
-### 🎞️ Community build-up at Meeting C++ Berlin, 2017
+### 🎞️ Community build-up @ Meeting C++ Berlin, 2017
 
 “Clang Power Tools: More Clang-tidy Magic”  
 [![Clang Power Tools](https://img.youtube.com/vi/BAkdRY9l5pI/0.jpg)](https://www.youtube.com/watch?v=BAkdRY9l5pI)
 
+### 🎞️ Official launch @ CppCon 2017 (Bellevue/WA, US)
+
+“Bringing Clang-tidy Magic to Visual Studio C++ Developers”  
+[![Clang Power Tools](https://img.youtube.com/vi/Wl-9ozmxXbo/0.jpg)](https://www.youtube.com/watch?v=Wl-9ozmxXbo)
 
 ## 🎙️ Podcasts
 
