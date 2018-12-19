@@ -152,6 +152,8 @@ namespace ClangPowerTools
       finally
       {
         StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+        foreach (var process in mRunningProcesses.GetProcesses)
+          process.Dispose();
       }
     }
 

@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.DialogPages;
-using ClangPowerTools.Output;
+﻿using ClangPowerTools.Output;
 using ClangPowerTools.Services;
 using ClangPowerTools.SilentFile;
 using EnvDTE;
@@ -9,6 +8,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
 using System.Linq;
+using System.Windows.Threading;
 
 namespace ClangPowerTools.Commands
 {
@@ -39,7 +39,7 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
 
-    private TidyCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController, 
+    private TidyCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController,
       ErrorWindowController aErrorWindow, OutputWindowController aOutputWindow, AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aCommandsController, aErrorWindow, aOutputWindow, aPackage, aGuid, aId)
     {
@@ -64,7 +64,7 @@ namespace ClangPowerTools.Commands
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController, 
+    public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController,
       ErrorWindowController aErrorWindow, OutputWindowController aOutputWindow, AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in TidyCommand's constructor requires
@@ -103,7 +103,7 @@ namespace ClangPowerTools.Commands
             {
               var tidySettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
 
-              if ( CommandIds.kTidyFixId == aCommandId || tidySettings.AutoTidyOnSave)
+              if (CommandIds.kTidyFixId == aCommandId || tidySettings.AutoTidyOnSave)
               {
                 fileChangerWatcher.OnChanged += FileOpener.Open;
 
@@ -127,11 +127,8 @@ namespace ClangPowerTools.Commands
           VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
-      }).ContinueWith(tsk => mCommandsController.OnAfterClangCommand());
+      }).ContinueWith(tsk => DispatcherHandler.Invoke(() => mCommandsController.OnAfterClangCommand(), DispatcherPriority.Background));
     }
-
-
-
 
     #endregion
 
