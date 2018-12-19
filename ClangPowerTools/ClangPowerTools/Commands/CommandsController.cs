@@ -23,6 +23,8 @@ namespace ClangPowerTools
     private AsyncPackage mAsyncPackage;
     private Commands2 mCommand;
     private bool mSaveCommandWasGiven = false;
+    private Document mDocument;
+    private bool mFormatAfterTidyFlag = false;
 
     #endregion
 
@@ -142,6 +144,13 @@ namespace ClangPowerTools
       {
         Running = false;
       });
+
+      if (null == mDocument)
+        return;
+
+      // Trigger clang format on save for current document because the clang tidy-fix with "Format after tidy" option enable finished it's execution
+      mDocument.Save();
+      mDocument = null;
     }
 
 
@@ -275,13 +284,17 @@ namespace ClangPowerTools
       var clangFormatOptionPage = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
       var tidyOptionPage = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
 
-      if (Running && CurrentCommand == CommandIds.kTidyFixId && tidyOptionPage.AutoTidyOnSave)
+      if (Running && CurrentCommand == CommandIds.kTidyFixId && tidyOptionPage.FormatAfterTidy)
+      {
+        mDocument = aDocument;
+        mFormatAfterTidyFlag = true;
         return;
+      }
 
       if (false == clangFormatOptionPage.EnableFormatOnSave)
         return;
 
-      if (false == Vsix.IsDocumentDirty(aDocument))
+      if (false == Vsix.IsDocumentDirty(aDocument) && false == mFormatAfterTidyFlag)
         return;
 
       if (false == FileHasExtension(aDocument.FullName, clangFormatOptionPage.FileExtensions))
@@ -292,7 +305,6 @@ namespace ClangPowerTools
 
       var option = (SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView).Clone();
       option.FallbackStyle = ClangFormatFallbackStyle.none;
-
       ClangFormatCommand.Instance.FormatDocument(aDocument, option);
     }
 
