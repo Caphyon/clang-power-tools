@@ -14,6 +14,7 @@ namespace ClangPowerTools
 
     #endregion
 
+
     #region Public Methods
 
     public void Add(Process aProcess) => mProcesses.Add(aProcess);

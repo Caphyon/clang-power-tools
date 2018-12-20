@@ -23,12 +23,19 @@ namespace ClangPowerTools
     private AsyncPackage mAsyncPackage;
     private Commands2 mCommand;
     private bool mSaveCommandWasGiven = false;
+    private Document mDocument;
+    private bool mFormatAfterTidyFlag = false;
 
     #endregion
 
 
     #region Properties
 
+    /// <summary>
+    /// Store the command id of the current running command
+    /// If no command is running then it will have a value less then 0
+    /// </summary>
+    public int CurrentCommand { get; private set; }
 
     /// <summary>
     /// Running flag for clang commands
@@ -72,26 +79,32 @@ namespace ClangPowerTools
       switch (command.CommandID.ID)
       {
         case CommandIds.kSettingsId:
+          CurrentCommand = CommandIds.kSettingsId;
           SettingsCommand.Instance.ShowSettings();
           break;
 
         case CommandIds.kStopClang:
+          CurrentCommand = CommandIds.kStopClang;
           StopClang.Instance.RunStopClangCommand();
           break;
 
         case CommandIds.kClangFormat:
+          CurrentCommand = CommandIds.kClangFormat;
           ClangFormatCommand.Instance.RunClangFormat();
           break;
 
         case CommandIds.kCompileId:
+          CurrentCommand = CommandIds.kCompileId;
           CompileCommand.Instance.RunClangCompile(CommandIds.kCompileId);
           break;
 
         case CommandIds.kTidyId:
+          CurrentCommand = CommandIds.kTidyId;
           TidyCommand.Instance.RunClangTidy(CommandIds.kTidyId);
           break;
 
         case CommandIds.kTidyFixId:
+          CurrentCommand = CommandIds.kTidyFixId;
           TidyCommand.Instance.RunClangTidy(CommandIds.kTidyFixId);
           break;
       }
@@ -131,6 +144,14 @@ namespace ClangPowerTools
       {
         Running = false;
       });
+
+      if (null == mDocument)
+        return;
+
+      // Trigger clang format on save for current document because the 
+      // clang tidy-fix with "Format after tidy" option enable finished it's execution
+      mDocument.Save();
+      mDocument = null;
     }
 
 
@@ -262,11 +283,19 @@ namespace ClangPowerTools
     private void BeforeSaveClangFormat(Document aDocument)
     {
       var clangFormatOptionPage = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
+      var tidyOptionPage = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
+
+      if (CurrentCommand == CommandIds.kTidyFixId && Running && tidyOptionPage.FormatAfterTidy && clangFormatOptionPage.EnableFormatOnSave)
+      {
+        mDocument = aDocument;
+        mFormatAfterTidyFlag = true;
+        return;
+      }
 
       if (false == clangFormatOptionPage.EnableFormatOnSave)
         return;
 
-      if (false == Vsix.IsDocumentDirty(aDocument))
+      if (false == Vsix.IsDocumentDirty(aDocument) && false == mFormatAfterTidyFlag)
         return;
 
       if (false == FileHasExtension(aDocument.FullName, clangFormatOptionPage.FileExtensions))
@@ -277,7 +306,6 @@ namespace ClangPowerTools
 
       var option = (SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView).Clone();
       option.FallbackStyle = ClangFormatFallbackStyle.none;
-
       ClangFormatCommand.Instance.FormatDocument(aDocument, option);
     }
 

@@ -131,6 +131,8 @@ namespace ClangPowerTools
         mDteEvents = dte2.Events.DTEEvents;
       }
 
+      DispatcherHandler.Initialize(dte as DTE2);
+
       // Get the general clang option page
       var generalSettings = SettingsProvider.GetSettingsPage(typeof(ClangGeneralOptionsView)) as ClangGeneralOptionsView;
 

@@ -1,14 +1,14 @@
-﻿using System;
-using System.ComponentModel.Design;
-using System.IO;
-using System.Xml.Linq;
-using ClangPowerTools.DialogPages;
+﻿using ClangPowerTools.DialogPages;
 using ClangPowerTools.Output;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
+using System;
+using System.ComponentModel.Design;
+using System.IO;
+using System.Xml.Linq;
 
 namespace ClangPowerTools.Commands
 {
@@ -48,7 +48,7 @@ namespace ClangPowerTools.Commands
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    private ClangFormatCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController, ErrorWindowController aErrorWindow, 
+    private ClangFormatCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController, ErrorWindowController aErrorWindow,
       OutputWindowController aOutputWindow, AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aCommandsController, aErrorWindow, aOutputWindow, aPackage, aGuid, aId)
     {
@@ -72,7 +72,7 @@ namespace ClangPowerTools.Commands
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController, 
+    public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController,
       ErrorWindowController aErrorWindow, OutputWindowController aOutputWindow, AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in ClangFormatCommand's constructor requires
