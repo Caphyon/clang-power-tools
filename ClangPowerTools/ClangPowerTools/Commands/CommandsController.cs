@@ -148,7 +148,8 @@ namespace ClangPowerTools
       if (null == mDocument)
         return;
 
-      // Trigger clang format on save for current document because the clang tidy-fix with "Format after tidy" option enable finished it's execution
+      // Trigger clang format on save for current document because the 
+      // clang tidy-fix with "Format after tidy" option enable finished it's execution
       mDocument.Save();
       mDocument = null;
     }
@@ -284,7 +285,7 @@ namespace ClangPowerTools
       var clangFormatOptionPage = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
       var tidyOptionPage = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
 
-      if (Running && CurrentCommand == CommandIds.kTidyFixId && tidyOptionPage.FormatAfterTidy)
+      if (CurrentCommand == CommandIds.kTidyFixId && Running && tidyOptionPage.FormatAfterTidy && clangFormatOptionPage.EnableFormatOnSave)
       {
         mDocument = aDocument;
         mFormatAfterTidyFlag = true;
