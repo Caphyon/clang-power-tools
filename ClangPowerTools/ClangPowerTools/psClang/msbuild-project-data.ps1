@@ -140,9 +140,26 @@ Function Should-CompileFile([Parameter(Mandatory = $false)][System.Xml.XmlNode] 
         return $false
     }
 
-    [System.Xml.XmlNode] $excluded = $fileNode.SelectSingleNode("ns:ExcludedFromBuild", $global:xpathNS)
+    [string] $innerText = "false"
+    foreach ($child in $fileNode.ChildNodes)
+    {
+        if ($child.Name -ieq "ExcludedFromBuild")
+        {
+            if ($child.HasAttribute("Condition"))
+            {
+                [bool] $isApplicable = Evaluate-MSBuildCondition -condition $child.GetAttribute("Condition")
+                if (!$isApplicable)
+                {
+                    continue
+                }
+            }
+	    Write-Verbose "IT $($child.InnerText)"
+            $innerText = $child.InnerText
+            break
+        }
+    }
 
-    if (($excluded -ne $null) -and ($excluded.InnerText -ne $null) -and ($excluded.InnerText -ieq "true"))
+    if ($innerText -ieq "true")
     {
         return $false
     }
