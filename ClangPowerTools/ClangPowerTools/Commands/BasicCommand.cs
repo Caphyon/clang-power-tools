@@ -8,7 +8,7 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private Dictionary<string, string> mVsVersions = new Dictionary<string, string>
+    private readonly Dictionary<string, string> mVsVersions = new Dictionary<string, string>
     {
       {"11.0", "2010"},
       {"12.0", "2012"},

@@ -10,8 +10,9 @@
     public const int kClangFormat   = 0x0105;
     public const int kStopClang     = 0x0104;
     public const int kSettingsId    = 0x0103;
+    public const int kIgnoreId      = 0x0107;
 
     #endregion
 
-  }
+   }
 }

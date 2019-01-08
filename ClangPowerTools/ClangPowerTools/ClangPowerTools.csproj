@@ -77,6 +77,7 @@
     <Compile Include="AutomationUtil.cs" />
     <Compile Include="ClangCheckAttribute.cs" />
     <Compile Include="Commands\ClangFormatCommand.cs" />
+    <Compile Include="Commands\IgnoreCommand.cs" />
     <Compile Include="Convertors\BooleanToVisibilityConverter.cs" />
     <Compile Include="Convertors\ClangFormatFallbackStyleConverter.cs" />
     <Compile Include="Convertors\ClangFormatStyleConverter.cs" />
@@ -233,6 +234,7 @@
     </Content>
     <Resource Include="Resources\CategorizedIcon.PNG" />
     <Resource Include="Resources\SearchIcon.PNG" />
+    <Content Include="Resources\IgnoreIcon.png" />
     <Content Include="Resources\StopCommandIcon.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

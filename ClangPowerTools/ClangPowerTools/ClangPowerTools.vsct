@@ -89,7 +89,15 @@
 								</Strings>
 						</Button>
 
-						<Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0005" type="Button">
+					<Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreId" priority="0x0005" type="Button">
+						<Icon guid="guidImageIgnore" id="Ignore" />
+						<CommandFlag>DefaultDisabled</CommandFlag>
+						<Strings>
+							<ButtonText>Ignore File</ButtonText>
+						</Strings>
+					</Button>
+
+						<Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0006" type="Button">
 								<Icon guid="guidImageSettings" id="Settings" />
 								<Strings>
 										<ButtonText>Settings</ButtonText>
@@ -135,7 +143,14 @@
 								</Strings>
 						</Button>
 
-						<Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0005" type="Button">
+					<Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreId" priority="0x0005" type="Button">
+						<Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
+						<Strings>
+							<ButtonText>Ignore File</ButtonText>
+						</Strings>
+					</Button>
+
+						<Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0006" type="Button">
 								<Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
 								<Strings>
 										<ButtonText>Settings</ButtonText>
@@ -151,6 +166,7 @@
 						<Bitmap guid="guidImageFormat" href="Resources\ClangFormatIcon.png" usedList="Format" />
 						<Bitmap guid="guidImageStopClang" href="Resources\StopCommandIcon.png" usedList="StopClang" />
 						<Bitmap guid="guidImageSettings" href="Resources\SettingsIcon.png" usedList="Settings" />
+						<Bitmap guid="guidImageIgnore" href="Resources\IgnoreIcon.png" usedList="Ignore" />
 				</Bitmaps>
 
 		</Commands>
@@ -220,7 +236,11 @@
 						<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
 				</CommandPlacement>
 
-				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0005">
+			<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="IgnoreId" priority="0x0005">
+				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
+			</CommandPlacement>
+
+				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0006">
 						<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" />
 				</CommandPlacement>
 
@@ -245,6 +265,7 @@
 						<IDSymbol name="TidyFixId" value="0x0106"/>
 						<IDSymbol name="ClangFormatId" value="0x0105" />
 						<IDSymbol name="StopClangId" value="0x0104" />
+						<IDSymbol name="IgnoreId" value="0x0107" />
 						<IDSymbol name="SettingsId" value="0x0103" />
 
 						<!--Toolbar-->
@@ -269,6 +290,10 @@
 				<GuidSymbol name="guidImageStopClang" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c700}">
 						<IDSymbol name="StopClang" value="1" />
 				</GuidSymbol>
+
+			<GuidSymbol name="guidImageIgnore" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c705}">
+				<IDSymbol name="Ignore" value="1" />
+			</GuidSymbol>
 
 				<GuidSymbol name="guidImageSettings" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70f}">
 						<IDSymbol name="Settings" value="1" />
