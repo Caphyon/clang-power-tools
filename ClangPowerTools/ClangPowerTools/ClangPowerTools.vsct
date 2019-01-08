@@ -91,10 +91,10 @@
 
 					<Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreId" priority="0x0005" type="Button">
 						<Icon guid="guidImageIgnore" id="Ignore" />
-						<CommandFlag>DefaultDisabled</CommandFlag>
-						<Strings>
-							<ButtonText>Ignore File</ButtonText>
-						</Strings>
+								<CommandFlag>DefaultDisabled</CommandFlag>
+								<Strings>
+										<ButtonText>Ignore File</ButtonText>
+								</Strings>
 					</Button>
 
 						<Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0006" type="Button">
@@ -237,7 +237,7 @@
 				</CommandPlacement>
 
 			<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="IgnoreId" priority="0x0005">
-				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
+				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" />
 			</CommandPlacement>
 
 				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0006">
