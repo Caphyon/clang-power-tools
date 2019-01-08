@@ -5,6 +5,7 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
+using System.Windows;
 
 namespace ClangPowerTools.Commands
 {
@@ -13,10 +14,7 @@ namespace ClangPowerTools.Commands
     /// </summary>
     internal sealed class IgnoreCommand : BasicCommand
     {
-        /// <summary>
-        /// Command ID.
-        /// </summary>
-        public const int CommandId = 256;
+
 
         #region Properties
 
@@ -76,9 +74,9 @@ namespace ClangPowerTools.Commands
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private void RunIgnoreCommand()
+        public void RunIgnoreCommand(int aId)
         {
-
+            MessageBox.Show("Hello World");
         }
         #endregion
     }
