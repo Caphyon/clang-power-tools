@@ -124,7 +124,7 @@ namespace ClangPowerTools
       if (!(sender is OleMenuCommand command))
         return;
 
-      if (Running)
+      if (Running && command.CommandID.ID != CommandIds.kStopClang)
         return;
 
       switch (command.CommandID.ID)
