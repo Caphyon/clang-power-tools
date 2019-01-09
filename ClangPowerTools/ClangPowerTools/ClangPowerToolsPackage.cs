@@ -108,16 +108,16 @@ namespace ClangPowerTools
       mOutputWindowController = new OutputWindowController();
       mOutputWindowController.Initialize(this, vsOutputWindow);
 
-      mCommandsController.ClangCommandMessageEvent += mOutputWindowController.Write;
+      //mCommandsController.ClangCommandMessageEvent += mOutputWindowController.Write;
 
-      PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
-      PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
-      PowerShellWrapper.ExitedHandler += mOutputWindowController.ClosedDataConnection;
+      //PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
+      //PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
+      //PowerShellWrapper.ExitedHandler += mOutputWindowController.ClosedDataConnection;
 
       mRunningDocTableEvents = new RunningDocTableEvents(this);
       mErrorWindowController = new ErrorWindowController(this);
 
-      mOutputWindowController.ErrorDetectedEvent += mErrorWindowController.OnErrorDetected;
+      //mOutputWindowController.ErrorDetectedEvent += mErrorWindowController.OnErrorDetected;
 
 
       #region Get Pointer to IVsSolutionEvents
@@ -162,8 +162,9 @@ namespace ClangPowerTools
       }
 
       await mCommandsController.InitializeAsyncCommands(this);
-      mCommandsController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
-      mOutputWindowController.MissingLlvmEvent += mCommandsController.OnMissingLLVMDetected;
+
+      //mCommandsController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
+      //mOutputWindowController.MissingLlvmEvent += mCommandsController.OnMissingLLVMDetected;
 
       RegisterToVsEvents();
 
@@ -298,6 +299,18 @@ namespace ClangPowerTools
       VsServiceProvider.Register(typeof(SVsSolution), vsSolution);
     }
 
+    private void RegisterToCPTEvents()
+    {
+      mCommandsController.ClangCommandMessageEvent += mOutputWindowController.Write;
+      mCommandsController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
+
+      mOutputWindowController.ErrorDetectedEvent += mErrorWindowController.OnErrorDetected;
+      mOutputWindowController.MissingLlvmEvent += mCommandsController.OnMissingLLVMDetected;
+
+      PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
+      PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
+      PowerShellWrapper.ExitedHandler += mOutputWindowController.ClosedDataConnection;
+    }
 
     private void RegisterToVsEvents()
     {
@@ -323,6 +336,18 @@ namespace ClangPowerTools
 
     }
 
+    private void UnregisterFromCPTEvents()
+    {
+      mCommandsController.ClangCommandMessageEvent -= mOutputWindowController.Write;
+      mCommandsController.HierarchyDetectedEvent -= mOutputWindowController.OnFileHierarchyDetected;
+
+      mOutputWindowController.ErrorDetectedEvent -= mErrorWindowController.OnErrorDetected;
+      mOutputWindowController.MissingLlvmEvent -= mCommandsController.OnMissingLLVMDetected;
+
+      PowerShellWrapper.DataHandler -= mOutputWindowController.OutputDataReceived;
+      PowerShellWrapper.DataErrorHandler -= mOutputWindowController.OutputDataErrorReceived;
+      PowerShellWrapper.ExitedHandler -= mOutputWindowController.ClosedDataConnection;
+    }
 
     private void UnregisterFromVsEvents()
     {
