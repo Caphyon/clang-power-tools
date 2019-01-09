@@ -92,7 +92,7 @@ namespace ClangPowerTools.Output
     }
 
 
-    public void Write(object sender, ClangCommandEventArgs e)
+    public void Write(object sender, ClangCommandMessageEventArgs e)
     {
       if (e.ClearFlag)
         Clear();
@@ -126,7 +126,7 @@ namespace ClangPowerTools.Output
       {
         if (mOutputContent.MissingLLVM)
         {
-          Write(new object(), new ClangCommandEventArgs(ErrorParserConstants.kMissingLlvmMessage, false));
+          Write(new object(), new ClangCommandMessageEventArgs(ErrorParserConstants.kMissingLlvmMessage, false));
           OnMissingLLVMDetected(new MissingLlvmEventArgs(true));
         }
         return;

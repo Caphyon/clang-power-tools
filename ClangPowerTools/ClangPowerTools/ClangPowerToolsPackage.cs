@@ -108,7 +108,7 @@ namespace ClangPowerTools
       mOutputWindowController = new OutputWindowController();
       mOutputWindowController.Initialize(this, vsOutputWindow);
 
-      mCommandsController.ClangCommandEvent += mOutputWindowController.Write;
+      mCommandsController.ClangCommandMessageEvent += mOutputWindowController.Write;
 
       PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;

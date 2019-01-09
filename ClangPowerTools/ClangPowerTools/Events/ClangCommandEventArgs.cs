@@ -2,13 +2,13 @@
 
 namespace ClangPowerTools.Events
 {
-  public class ClangCommandEventArgs : EventArgs
+  public class ClangCommandMessageEventArgs : EventArgs
   {
     public string Message { get; private set; }
 
     public bool ClearFlag { get; set; }
 
-    public ClangCommandEventArgs(string aMessage, bool aClear)
+    public ClangCommandMessageEventArgs(string aMessage, bool aClear)
     {
       Message = aMessage;
       ClearFlag = aClear;

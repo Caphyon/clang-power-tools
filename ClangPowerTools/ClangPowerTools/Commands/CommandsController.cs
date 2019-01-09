@@ -29,7 +29,7 @@ namespace ClangPowerTools
     //private IVsHierarchy mHierarchy;
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
 
-    public event EventHandler<ClangCommandEventArgs> ClangCommandEvent;
+    public event EventHandler<ClangCommandMessageEventArgs> ClangCommandMessageEvent;
 
     public event EventHandler<MissingLlvmEventArgs> MissingLlvmEvent;
 
@@ -226,20 +226,20 @@ namespace ClangPowerTools
     private void OnBeforeClangCommand(int aCommandId)
     {
       Running = true;
-      OnCommandTriggered(new ClangCommandEventArgs($"\nStart {OutputWindowConstants.kCommandsNames[aCommandId]}\n", true));
+      OnCommandRunning(new ClangCommandMessageEventArgs($"\nStart {OutputWindowConstants.kCommandsNames[aCommandId]}\n", true));
     }
 
 
     private void OnAfterClangCommand(int aCommandId)
     {
       Running = false;
-      OnCommandTriggered(new ClangCommandEventArgs($"\nDone {OutputWindowConstants.kCommandsNames[aCommandId]}\n", false));
+      OnCommandRunning(new ClangCommandMessageEventArgs($"\nDone {OutputWindowConstants.kCommandsNames[aCommandId]}\n", false));
     }
 
 
-    protected virtual void OnCommandTriggered(ClangCommandEventArgs e)
+    protected virtual void OnCommandRunning(ClangCommandMessageEventArgs e)
     {
-      ClangCommandEvent?.Invoke(this, e);
+      ClangCommandMessageEvent?.Invoke(this, e);
     }
 
 
