@@ -64,6 +64,28 @@
     </Grid>
   </DataTemplate>
 
+
+  <!-- ClangFormatSkip DataTemplate -->
+  <DataTemplate x:Key="ClangFormatSkipTemplate">
+    <Grid Margin="0" HorizontalAlignment ="Stretch">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" SharedSizeGroup="Key" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Border Grid.Column="0" >
+        <TextBlock Grid.Row="0" Text="{Binding DisplayName, Mode=OneTime}" VerticalAlignment="Center" Margin="2,0"/>
+      </Border>
+      <Border Grid.Column="1" Style="{x:Null}">
+        <Local:BorderedTextBox
+          DataContext="{Binding Value}"
+          Grid.Row="0"
+          PreviewMouseUp="PreviewMouseUp"
+          PreviewMouseDown="PreviewMouseDown"
+          Margin="10,2"/>
+      </Border>
+    </Grid>
+  </DataTemplate>
+
   <!-- Clang Format Path DataTemplate -->
   <DataTemplate x:Key="ClangFormatPathDataTemplate">
 

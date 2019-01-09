@@ -5,15 +5,15 @@ namespace ClangPowerTools
 {
   public class HeaderFiltersValue : INotifyPropertyChanged
   {
+    public String mHeaderFilterValue;
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
 
     public HeaderFiltersValue(string aValue)
     {
       mHeaderFilterValue = aValue;
     }
-
-    public String mHeaderFilterValue;
-
-    public event PropertyChangedEventHandler PropertyChanged;
 
     public String HeaderFilters
     {

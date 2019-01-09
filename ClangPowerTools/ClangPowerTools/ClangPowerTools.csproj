@@ -86,6 +86,7 @@
     <Compile Include="Error\TaskErrorModelBuilder.cs" />
     <Compile Include="Helpers\UIUpdater.cs" />
     <Compile Include="Options\ClangFormatPathValue.cs" />
+    <Compile Include="Options\ClangFormatSkipValue.cs" />
     <Compile Include="Options\HeaderFiltersValue.cs" />
     <Compile Include="Options\Model\ClangTidyPredefinedChecksOptions.cs" />
     <Compile Include="Options\Model\ClangTidyOptions.cs" />

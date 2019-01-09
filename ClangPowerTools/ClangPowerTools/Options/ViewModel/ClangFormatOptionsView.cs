@@ -35,7 +35,7 @@ namespace ClangPowerTools.DialogPages
     [Category("Format On Save")]
     [DisplayName("Skip files")]
     [Description("When formatting on save, clang-format will not be applied on these files.")]
-    public string SkipFiles { get; set; }
+    public ClangFormatSkipValue SkipFiles { get; set; }
 
     #endregion
 
@@ -105,8 +105,10 @@ namespace ClangPowerTools.DialogPages
         FileExtensions = string.IsNullOrEmpty(this.FileExtensions) ?
           this.FileExtensions : this.FileExtensions.Replace(" ", "").Trim(';'),
 
-        SkipFiles = string.IsNullOrEmpty(this.SkipFiles) ?
-          this.SkipFiles : this.SkipFiles.Replace(" ", "").Trim(';'),
+        //SkipFiles = string.IsNullOrEmpty(this.SkipFiles) ?
+        //  this.SkipFiles : this.SkipFiles.Replace(" ", "").Trim(';'),
+
+        SkipFilesValue = this.SkipFiles,
 
         AssumeFilename = string.IsNullOrEmpty(this.AssumeFilename) ?
           this.AssumeFilename : this.AssumeFilename.Replace(" ", "").Trim(';'),
@@ -130,8 +132,20 @@ namespace ClangPowerTools.DialogPages
       this.FileExtensions = null == loadedConfig.FileExtensions ?
         DefaultOptions.kFileExtensions : loadedConfig.FileExtensions;
 
-      this.SkipFiles = null == loadedConfig.SkipFiles ?
-        DefaultOptions.kSkipFiles : loadedConfig.SkipFiles;
+      //this.SkipFiles = null == loadedConfig.SkipFiles ?
+      //  DefaultOptions.kSkipFiles : loadedConfig.SkipFiles;
+
+
+      if (null == loadedConfig.SkipFiles)
+      {
+        this.SkipFiles = null == loadedConfig.SkipFilesValue ?
+          new ClangFormatSkipValue() : loadedConfig.SkipFilesValue;
+      }
+      else
+      {
+        this.SkipFiles = new ClangFormatSkipValue(loadedConfig.SkipFiles);
+      }
+
 
       this.AssumeFilename = loadedConfig.AssumeFilename;
 
