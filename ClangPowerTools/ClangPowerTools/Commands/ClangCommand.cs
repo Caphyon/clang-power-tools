@@ -86,7 +86,7 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public virtual void OnMissingLLVMDetected(object sender, MissingLlvmEventArgs e)
+    public void OnMissingLLVMDetected(object sender, MissingLlvmEventArgs e)
     {
       mMissingLLVM = e.MissingLLVM;
     }
