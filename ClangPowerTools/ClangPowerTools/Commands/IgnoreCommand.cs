@@ -1,11 +1,18 @@
 ﻿using ClangPowerTools.Output;
 using ClangPowerTools.Services;
+using ClangPowerTools.SilentFile;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
+using System.Linq;
+using System.Windows.Threading;
 using System.Windows;
+using ClangPowerTools.DialogPages;
+using System.Text;
+using System.Collections.Generic;
 
 namespace ClangPowerTools.Commands
 {
@@ -76,7 +83,49 @@ namespace ClangPowerTools.Commands
         /// <param name="e">Event args.</param>
         public void RunIgnoreCommand(int aId)
         {
-            MessageBox.Show("Hello World");
+            var task = System.Threading.Tasks.Task.Run(() =>
+            {
+                try
+                {
+                    List<string> documentsToIgnore = DocumentsHandler.GetDocumentsToIgnore();
+                    AddIgnoreFilesToSettings(documentsToIgnore);
+
+                }
+                catch (Exception exception)
+                {
+
+                    //throw;
+                }
+            });
+
+
+      
+        }
+
+        #endregion
+
+
+        #region Private Methods
+        /// <summary>
+        /// Create string for the settings page
+        /// </summary>
+        /// <param name="documentsToIgnore"></param>
+        /// <returns></returns>
+        private void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
+        {
+            var settings = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
+            settings.SkipFiles += "\n";
+
+            StringBuilder stringBuilder = new StringBuilder();
+            foreach (var item in documentsToIgnore)
+            {
+                stringBuilder.Append(item).Append(";");
+            }
+
+            settings.SkipFiles += stringBuilder.ToString();
+            settings.SaveSettingsToStorage();
+
+            MessageBox.Show(stringBuilder.ToString());
         }
         #endregion
     }
