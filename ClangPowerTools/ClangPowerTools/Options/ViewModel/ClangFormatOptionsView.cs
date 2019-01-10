@@ -1,17 +1,21 @@
 ﻿using ClangPowerTools.Options;
 using ClangPowerTools.Options.ViewModel;
+using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 
 namespace ClangPowerTools.DialogPages
 {
-  public class ClangFormatOptionsView : ConfigurationPage<ClangFormatOptions>
+  public class ClangFormatOptionsView : ConfigurationPage<ClangFormatOptions>, INotifyPropertyChanged
   {
     #region Members
 
     private const string kGeneralSettingsFileName     = "FormatConfiguration.config";
     private SettingsPathBuilder mSettingsPathBuilder  = new SettingsPathBuilder();
+    private string mSkipFiles;
+
+    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
 
@@ -35,7 +39,21 @@ namespace ClangPowerTools.DialogPages
     [Category("Format On Save")]
     [DisplayName("Skip files")]
     [Description("When formatting on save, clang-format will not be applied on these files.")]
-    public string SkipFiles { get; set; }
+    public string SkipFiles
+    {
+      get { return mSkipFiles; }
+      set
+      {
+        mSkipFiles = value;
+        OnPropertyChanged("SkipFiles");
+      }
+    }
+
+    private void OnPropertyChanged(string aPropName)
+    {
+      if (PropertyChanged != null)
+        PropertyChanged(this, new PropertyChangedEventArgs(aPropName));
+    }
 
     #endregion
 

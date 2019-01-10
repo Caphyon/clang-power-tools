@@ -114,7 +114,7 @@ namespace ClangPowerTools.Commands
         private void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
         {
             var settings = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
-            settings.SkipFiles += "\n";
+            settings.SkipFiles += ";";
 
             StringBuilder stringBuilder = new StringBuilder();
             foreach (var item in documentsToIgnore)

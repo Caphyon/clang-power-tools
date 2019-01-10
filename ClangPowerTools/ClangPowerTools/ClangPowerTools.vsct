@@ -143,13 +143,6 @@
 								</Strings>
 						</Button>
 
-					<Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreId" priority="0x0005" type="Button">
-						<Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
-						<Strings>
-							<ButtonText>Ignore File</ButtonText>
-						</Strings>
-					</Button>
-
 						<Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0006" type="Button">
 								<Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
 								<Strings>
