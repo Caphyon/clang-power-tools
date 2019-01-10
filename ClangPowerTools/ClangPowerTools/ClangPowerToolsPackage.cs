@@ -166,6 +166,7 @@ namespace ClangPowerTools
       //mCommandsController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
       //mOutputWindowController.MissingLlvmEvent += mCommandsController.OnMissingLLVMDetected;
 
+      RegisterToCPTEvents();
       RegisterToVsEvents();
 
       await base.InitializeAsync(cancellationToken, progress);
@@ -332,8 +333,17 @@ namespace ClangPowerTools
       }
 
       if (null != mDteEvents)
-        mDteEvents.OnBeginShutdown += UnregisterFromVsEvents;
+      {
+        mDteEvents.OnBeginShutdown += UnregisterFromEvents;
+        mDteEvents.OnBeginShutdown += UnregisterFromCPTEvents;
+      }
 
+    }
+
+    private void UnregisterFromEvents()
+    {
+      UnregisterFromCPTEvents();
+      UnregisterFromVsEvents();
     }
 
     private void UnregisterFromCPTEvents()
@@ -359,17 +369,13 @@ namespace ClangPowerTools
       }
 
       if (null != mCommandEvents)
-      {
         mCommandEvents.BeforeExecute -= mCommandsController.CommandEventsBeforeExecute;
-      }
 
       if (null != mRunningDocTableEvents)
-      {
         mRunningDocTableEvents.BeforeSave -= mCommandsController.OnBeforeSave;
-      }
 
       if (null != mDteEvents)
-        mDteEvents.OnBeginShutdown -= UnregisterFromVsEvents;
+        mDteEvents.OnBeginShutdown -= UnregisterFromEvents;
     }
 
 
