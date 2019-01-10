@@ -111,11 +111,11 @@ namespace ClangPowerTools
       if (null == SettingsCommand.Instance)
         await SettingsCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kSettingsId);
 
-      CompileCommand.Instance.HierarchyDetectedEvent += OnFileHierarchyChanged;
-      TidyCommand.Instance.HierarchyDetectedEvent += OnFileHierarchyChanged;
+      //CompileCommand.Instance.HierarchyDetectedEvent += OnFileHierarchyChanged;
+      //TidyCommand.Instance.HierarchyDetectedEvent += OnFileHierarchyChanged;
 
-      MissingLlvmEvent += CompileCommand.Instance.OnMissingLLVMDetected;
-      MissingLlvmEvent += TidyCommand.Instance.OnMissingLLVMDetected;
+      //MissingLlvmEvent += CompileCommand.Instance.OnMissingLLVMDetected;
+      //MissingLlvmEvent += TidyCommand.Instance.OnMissingLLVMDetected;
     }
 
 
@@ -237,19 +237,19 @@ namespace ClangPowerTools
     }
 
 
-    protected virtual void OnCommandRunning(ClangCommandMessageEventArgs e)
+    public void OnCommandRunning(ClangCommandMessageEventArgs e)
     {
       ClangCommandMessageEvent?.Invoke(this, e);
     }
 
 
-    protected virtual void OnFileHierarchyChanged(object sender, VsHierarchyDetectedEventArgs e)
+    public void OnFileHierarchyChanged(object sender, VsHierarchyDetectedEventArgs e)
     {
       HierarchyDetectedEvent?.Invoke(this, e);
     }
 
 
-    public virtual void OnMissingLLVMDetected(object sender, MissingLlvmEventArgs e)
+    public void OnMissingLLVMDetected(object sender, MissingLlvmEventArgs e)
     {
       MissingLlvmEvent?.Invoke(this, e);
     }

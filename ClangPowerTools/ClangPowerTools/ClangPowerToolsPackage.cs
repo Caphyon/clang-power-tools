@@ -166,8 +166,10 @@ namespace ClangPowerTools
       //mCommandsController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
       //mOutputWindowController.MissingLlvmEvent += mCommandsController.OnMissingLLVMDetected;
 
-      RegisterToCPTEvents();
-      RegisterToVsEvents();
+      //RegisterToCPTEvents();
+      //RegisterToVsEvents();
+
+      RegisterToEvents();
 
       await base.InitializeAsync(cancellationToken, progress);
     }
@@ -300,10 +302,23 @@ namespace ClangPowerTools
       VsServiceProvider.Register(typeof(SVsSolution), vsSolution);
     }
 
+
+    private void RegisterToEvents()
+    {
+      RegisterToCPTEvents();
+      RegisterToVsEvents();
+    }
+
     private void RegisterToCPTEvents()
     {
       mCommandsController.ClangCommandMessageEvent += mOutputWindowController.Write;
       mCommandsController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
+
+      mCommandsController.MissingLlvmEvent += CompileCommand.Instance.OnMissingLLVMDetected;
+      mCommandsController.MissingLlvmEvent += TidyCommand.Instance.OnMissingLLVMDetected;
+
+      CompileCommand.Instance.HierarchyDetectedEvent += mCommandsController.OnFileHierarchyChanged;
+      TidyCommand.Instance.HierarchyDetectedEvent += mCommandsController.OnFileHierarchyChanged;
 
       mOutputWindowController.ErrorDetectedEvent += mErrorWindowController.OnErrorDetected;
       mOutputWindowController.MissingLlvmEvent += mCommandsController.OnMissingLLVMDetected;
@@ -337,7 +352,6 @@ namespace ClangPowerTools
         mDteEvents.OnBeginShutdown += UnregisterFromEvents;
         mDteEvents.OnBeginShutdown += UnregisterFromCPTEvents;
       }
-
     }
 
     private void UnregisterFromEvents()
@@ -350,6 +364,12 @@ namespace ClangPowerTools
     {
       mCommandsController.ClangCommandMessageEvent -= mOutputWindowController.Write;
       mCommandsController.HierarchyDetectedEvent -= mOutputWindowController.OnFileHierarchyDetected;
+
+      mCommandsController.MissingLlvmEvent -= CompileCommand.Instance.OnMissingLLVMDetected;
+      mCommandsController.MissingLlvmEvent -= TidyCommand.Instance.OnMissingLLVMDetected;
+
+      CompileCommand.Instance.HierarchyDetectedEvent -= mCommandsController.OnFileHierarchyChanged;
+      TidyCommand.Instance.HierarchyDetectedEvent -= mCommandsController.OnFileHierarchyChanged;
 
       mOutputWindowController.ErrorDetectedEvent -= mErrorWindowController.OnErrorDetected;
       mOutputWindowController.MissingLlvmEvent -= mCommandsController.OnMissingLLVMDetected;
