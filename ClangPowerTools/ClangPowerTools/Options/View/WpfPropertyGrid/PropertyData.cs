@@ -93,6 +93,8 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       }
     }
 
+
+
     /// <summary>
     /// Category where the property is placed
     /// </summary>

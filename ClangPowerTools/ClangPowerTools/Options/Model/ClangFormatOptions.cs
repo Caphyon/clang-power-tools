@@ -15,11 +15,7 @@ namespace ClangPowerTools
 
     public string FileExtensions { get; set; }
 
-    [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
     public string SkipFiles { get; set; }
-
-    public ClangFormatSkipValue SkipFilesValue { get; set; }
-
 
     #endregion
 

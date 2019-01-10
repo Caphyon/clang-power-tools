@@ -1,7 +1,6 @@
 ﻿using System.Windows.Controls;
 using System.Windows;
 using ClangPowerTools;
-using ClangPowerTools.Options;
 
 namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
 {
@@ -45,9 +44,6 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
 
       if (true == prop.HasTextBoxAndBrowseAttribute && !prop.IsReadOnly)
         return mRes["ClangFormatPathDataTemplate"] as DataTemplate;
-
-      if (prop.PropertyType == typeof(ClangFormatSkipValue) && !prop.IsReadOnly)
-        return mRes["ClangFormatSkipTemplate"] as DataTemplate;
 
       if (prop.PropertyType == typeof(string) && !prop.IsReadOnly)
         return mRes["StringDataTemplate"] as DataTemplate;

@@ -319,7 +319,7 @@ namespace ClangPowerTools
       if (false == FileHasExtension(aDocument.FullName, clangFormatOptionPage.FileExtensions))
         return;
 
-      if (true == SkipFile(aDocument.FullName, clangFormatOptionPage.SkipFiles.Value))
+      if (true == SkipFile(aDocument.FullName, clangFormatOptionPage.SkipFiles))
         return;
 
       var option = (SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView).Clone();

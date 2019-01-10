@@ -93,10 +93,9 @@ namespace ClangPowerTools.Commands
                 }
                 catch (Exception exception)
                 {
-                //RENAME TO SKIP COMMAND
 
-                //throw;
-              }
+                    //throw;
+                }
             });
 
 
@@ -115,7 +114,7 @@ namespace ClangPowerTools.Commands
         private void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
         {
             var settings = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
-            settings.SkipFiles.Value += "\n";
+            settings.SkipFiles += "\n";
 
             StringBuilder stringBuilder = new StringBuilder();
             foreach (var item in documentsToIgnore)
@@ -123,9 +122,8 @@ namespace ClangPowerTools.Commands
                 stringBuilder.Append(item).Append(";");
             }
 
-            settings.SkipFiles.Value += stringBuilder.ToString();
+            settings.SkipFiles += stringBuilder.ToString();
             settings.SaveSettingsToStorage();
-            settings.LoadSettingsFromStorage();
 
             MessageBox.Show(stringBuilder.ToString());
         }
