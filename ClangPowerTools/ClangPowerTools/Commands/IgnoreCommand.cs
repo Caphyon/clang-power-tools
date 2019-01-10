@@ -107,7 +107,7 @@ namespace ClangPowerTools.Commands
 
     #region Private Methods
     /// <summary>
-    /// Create string for the settings page
+    /// Create ignore format string for the settings page
     /// </summary>
     /// <param name="documentsToIgnore"></param>
     /// <returns></returns>
@@ -115,22 +115,23 @@ namespace ClangPowerTools.Commands
     {
       var settings = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
       settings.SkipFiles += ";";
+      settings.SkipFiles += string.Join(";", RemoveDuplicateFiles(documentsToIgnore, settings));
+      settings.SaveSettingsToStorage();
+    }
 
-      StringBuilder stringBuilder = new StringBuilder();
+    private List<string> RemoveDuplicateFiles(List<string> documentsToIgnore, ClangFormatOptionsView settings)
+    {
+      List<string> trimmedDocumentToIgnore = new List<string>();
+
       foreach (var item in documentsToIgnore)
       {
-        stringBuilder.Append(item).Append(";");
+        if(!settings.SkipFiles.Contains(item))
+        {
+          trimmedDocumentToIgnore.Add(item);
+        }
       }
-
-      settings.SkipFiles += stringBuilder.ToString();
-      settings.SaveSettingsToStorage();
-
-      MessageBox.Show(stringBuilder.ToString());
+      return trimmedDocumentToIgnore;
     }
-    #endregion
-
-
-    #region Private Methods
     #endregion
   }
 }

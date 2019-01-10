@@ -93,7 +93,7 @@
 						<Icon guid="guidImageIgnore" id="Ignore" />
 								<CommandFlag>DefaultDisabled</CommandFlag>
 								<Strings>
-										<ButtonText>Ignore File</ButtonText>
+										<ButtonText>Ignore File At Format</ButtonText>
 								</Strings>
 					</Button>
 
