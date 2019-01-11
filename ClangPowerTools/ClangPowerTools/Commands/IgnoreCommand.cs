@@ -85,21 +85,11 @@ namespace ClangPowerTools.Commands
     {
       var task = System.Threading.Tasks.Task.Run(() =>
       {
-        try
-        {
-          List<string> documentsToIgnore = DocumentsHandler.GetDocumentsToIgnore();
-          AddIgnoreFilesToSettings(documentsToIgnore);
 
-        }
-        catch (Exception exception)
-        {
+        List<string> documentsToIgnore = DocumentsHandler.GetDocumentsToIgnore();
+        AddIgnoreFilesToSettings(documentsToIgnore);
 
-                //throw;
-              }
       });
-
-
-
     }
 
     #endregion
@@ -125,7 +115,7 @@ namespace ClangPowerTools.Commands
 
       foreach (var item in documentsToIgnore)
       {
-        if(!settings.SkipFiles.Contains(item))
+        if (!settings.SkipFiles.Contains(item))
         {
           trimmedDocumentToIgnore.Add(item);
         }
