@@ -19,7 +19,7 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  internal sealed class IgnoreCommand : BasicCommand
+  internal sealed class IgnoreFormatCommand : BasicCommand
   {
 
 
@@ -28,7 +28,7 @@ namespace ClangPowerTools.Commands
     /// <summary>
     /// Gets the instance of the command.
     /// </summary>
-    public static IgnoreCommand Instance
+    public static IgnoreFormatCommand Instance
     {
       get;
       private set;
@@ -38,12 +38,12 @@ namespace ClangPowerTools.Commands
 
     #region Constructor
     /// <summary>
-    /// Initializes a new instance of the <see cref="IgnoreCommand"/> class.
+    /// Initializes a new instance of the <see cref="IgnoreFormatCommand"/> class.
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
     /// <param name="commandService">Command service to add command to, not null.</param>
-    private IgnoreCommand(CommandsController aCommandsController, OleMenuCommandService aCommandService, AsyncPackage aPackage, Guid aGuid, int aId)
+    private IgnoreFormatCommand(CommandsController aCommandsController, OleMenuCommandService aCommandService, AsyncPackage aPackage, Guid aGuid, int aId)
       : base(aPackage, aGuid, aId)
     {
       if (null != aCommandService)
@@ -71,7 +71,7 @@ namespace ClangPowerTools.Commands
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-      Instance = new IgnoreCommand(aCommandsController, commandService, aPackage, aGuid, aId);
+      Instance = new IgnoreFormatCommand(aCommandsController, commandService, aPackage, aGuid, aId);
     }
 
     /// <summary>
@@ -81,14 +81,12 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
-    public void RunIgnoreCommand(int aId)
+    public void RunIgnoreFormatCommand(int aId)
     {
       var task = System.Threading.Tasks.Task.Run(() =>
       {
-
         List<string> documentsToIgnore = DocumentsHandler.GetDocumentsToIgnore();
         AddIgnoreFilesToSettings(documentsToIgnore);
-
       });
     }
 
@@ -104,7 +102,11 @@ namespace ClangPowerTools.Commands
     private void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
     {
       var settings = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
-      settings.SkipFiles += ";";
+
+      if (settings.SkipFiles.Length > 0)
+      {
+        settings.SkipFiles += ";";
+      }
       settings.SkipFiles += string.Join(";", RemoveDuplicateFiles(documentsToIgnore, settings));
       settings.SaveSettingsToStorage();
     }

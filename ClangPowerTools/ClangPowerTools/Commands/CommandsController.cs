@@ -108,10 +108,15 @@ namespace ClangPowerTools
           TidyCommand.Instance.RunClangTidy(CommandIds.kTidyFixId);
           break;
 
-        case CommandIds.kIgnoreId:
-           CurrentCommand = CommandIds.kIgnoreId;
-           IgnoreCommand.Instance.RunIgnoreCommand(CommandIds.kIgnoreId);
+        case CommandIds.kIgnoreFormatId:
+           CurrentCommand = CommandIds.kIgnoreFormatId;
+           IgnoreFormatCommand.Instance.RunIgnoreFormatCommand(CommandIds.kIgnoreFormatId);
            break;
+
+        case CommandIds.kIgnoreCompileId:
+          CurrentCommand = CommandIds.kIgnoreCompileId;
+          IgnoreCompileCommand.Instance.RunIgnoreCompileCommand(CommandIds.kIgnoreCompileId);
+          break;
       }
     }
 
@@ -140,9 +145,14 @@ namespace ClangPowerTools
         await StopClang.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kStopClang);
       }
 
-      if (IgnoreCommand.Instance == null)
+      if (IgnoreFormatCommand.Instance == null)
       {
-        await IgnoreCommand.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kIgnoreId);
+        await IgnoreFormatCommand.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kIgnoreFormatId);
+      }
+
+      if (IgnoreCompileCommand.Instance == null)
+      {
+        await IgnoreCompileCommand.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kIgnoreCompileId);
       }
 
       if (SettingsCommand.Instance == null)

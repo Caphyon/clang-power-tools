@@ -37,7 +37,7 @@ namespace ClangPowerTools.DialogPages
     public string FileExtensions { get; set; }
 
     [Category("Format On Save")]
-    [DisplayName("Skip files")]
+    [DisplayName("File to ignore")]
     [Description("When formatting on save, clang-format will not be applied on these files.")]
     public string SkipFiles
     {
