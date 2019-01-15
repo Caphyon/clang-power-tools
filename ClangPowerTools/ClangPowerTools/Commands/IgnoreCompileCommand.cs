@@ -21,8 +21,6 @@ namespace ClangPowerTools.Commands
   /// </summary>
   internal sealed class IgnoreCompileCommand : BasicCommand
   {
-
-
     #region Properties
 
     /// <summary>

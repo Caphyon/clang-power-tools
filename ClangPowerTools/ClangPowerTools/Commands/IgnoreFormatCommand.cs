@@ -21,8 +21,6 @@ namespace ClangPowerTools.Commands
   /// </summary>
   internal sealed class IgnoreFormatCommand : BasicCommand
   {
-
-
     #region Properties
 
     /// <summary>
