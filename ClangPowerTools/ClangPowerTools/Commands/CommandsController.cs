@@ -108,6 +108,11 @@ namespace ClangPowerTools
           TidyCommand.Instance.RunClangTidy(CommandIds.kTidyFixId);
           break;
 
+        case CommandIds.kTidyFixMenuId:
+          CurrentCommand = CommandIds.kTidyFixId;
+          TidyCommand.Instance.RunClangTidy(CommandIds.kTidyFixId);
+          break;
+
         case CommandIds.kIgnoreFormatId:
            CurrentCommand = CommandIds.kIgnoreFormatId;
            IgnoreFormatCommand.Instance.RunIgnoreFormatCommand(CommandIds.kIgnoreFormatId);
@@ -133,6 +138,7 @@ namespace ClangPowerTools
       {
         await TidyCommand.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kTidyId);
         await TidyCommand.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kTidyFixId);
+        await TidyCommand.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kTidyFixMenuId);
       }
 
       if (ClangFormatCommand.Instance == null)

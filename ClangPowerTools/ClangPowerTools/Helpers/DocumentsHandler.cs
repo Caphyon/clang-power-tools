@@ -40,8 +40,6 @@ namespace ClangPowerTools
             Document activeDocument = vsServiceProvider.ActiveDocument;
             SelectedItems selectedDocuments = vsServiceProvider.SelectedItems;
 
-            //check for null
-
             if (selectedDocuments.Count == 1 && selectedDocuments.Item(1).Name == activeDocument.Name)
             {
                 documentsToIgnore.Add(activeDocument.Name);

@@ -233,6 +233,7 @@
     </Content>
     <Resource Include="Resources\CategorizedIcon.PNG" />
     <Resource Include="Resources\SearchIcon.PNG" />
+    <Content Include="Resources\EmptyIcon.png" />
     <Content Include="Resources\IgnoreIcon.png" />
     <Content Include="Resources\StopCommandIcon.png">
       <IncludeInVSIX>true</IncludeInVSIX>
