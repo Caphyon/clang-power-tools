@@ -37,7 +37,8 @@
 				<Groups>
 						<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0000" />
 						<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0000" />
-						<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0002" />
+						<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" priority="0x0002" />
+						<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0003" />
 						<Group guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" priority="0x0000">
 								<Parent guid="guidClangPowerToolsPackageCmdSet" id="Toolbar" />
 						</Group>
@@ -64,8 +65,8 @@
 										<ButtonText>Tidy</ButtonText>
 								</Strings>
 						</Button>
-
-						<Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixId" priority="0x0002" type="Button">
+													
+						<Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" priority="0x0002" type="Button">
 								<Icon guid="guidImageTidy" id="Tidy" />
 								<CommandFlag>DefaultDisabled</CommandFlag>
 								<Strings>
@@ -73,7 +74,15 @@
 								</Strings>
 						</Button>
 
-						<Button guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0003" type="Button">
+						<Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixMenuId" priority="0x0003" type="Button">
+								<Icon guid="guidImageEmpty" id="Empty" />
+								<CommandFlag>DefaultDisabled</CommandFlag>
+								<Strings>
+										<ButtonText>Tidy-Fix</ButtonText>
+								</Strings>
+						</Button>
+
+						<Button guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0004" type="Button">
 								<Icon guid="guidImageFormat" id="Format" />
 								<CommandFlag>DefaultDisabled</CommandFlag>
 								<Strings>
@@ -81,7 +90,7 @@
 								</Strings>
 						</Button>
 
-						<Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0004" type="Button">
+						<Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0005" type="Button">
 								<Icon guid="guidImageStopClang" id="StopClang" />
 								<CommandFlag>DefaultDisabled</CommandFlag>
 								<Strings>
@@ -89,7 +98,23 @@
 								</Strings>
 						</Button>
 
-						<Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0005" type="Button">
+					<Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreCompileId" priority="0x0006" type="Button">
+						<Icon guid="guidImageIgnoreFormat" id="IgnoreFormat" />
+								<CommandFlag>DefaultDisabled</CommandFlag>
+								<Strings>
+										<ButtonText>Ignore File at Compile</ButtonText>
+								</Strings>
+					</Button>
+						
+					<Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreFormatId" priority="0x0007" type="Button">
+						<Icon guid="guidImageEmpty" id="Empty" />
+								<CommandFlag>DefaultDisabled</CommandFlag>
+								<Strings>
+										<ButtonText>Ignore File at Format</ButtonText>
+								</Strings>
+					</Button>
+					
+					<Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0008" type="Button">
 								<Icon guid="guidImageSettings" id="Settings" />
 								<Strings>
 										<ButtonText>Settings</ButtonText>
@@ -114,7 +139,7 @@
 								</Strings>
 						</Button>
 
-						<Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixId" priority="0x0002" type="Button">
+						<Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" priority="0x0002" type="Button">
 								<Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownToolbarMenuGroup" />
 								<Strings>
 										<ButtonText>Tidy-Fix</ButtonText>
@@ -151,6 +176,8 @@
 						<Bitmap guid="guidImageFormat" href="Resources\ClangFormatIcon.png" usedList="Format" />
 						<Bitmap guid="guidImageStopClang" href="Resources\StopCommandIcon.png" usedList="StopClang" />
 						<Bitmap guid="guidImageSettings" href="Resources\SettingsIcon.png" usedList="Settings" />
+						<Bitmap guid="guidImageIgnoreFormat" href="Resources\IgnoreIcon.png" usedList="IgnoreFormat" />
+						<Bitmap guid="guidImageEmpty" href="Resources\EmptyIcon.png" usedList="Empty" />
 				</Bitmaps>
 
 		</Commands>
@@ -158,7 +185,7 @@
 		<CommandPlacements>
 
 				<!-- Placement for commands.
-           The parent of a command is always a group, never a menu, context menu or toolbar.-->
+					 The parent of a command is always a group, never a menu, context menu or toolbar.-->
 
 				<!--Add the GroupForSubmenu(commands) in context menu of solution, project, folder, file and tab editor -->
 				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x08FF">
@@ -194,6 +221,10 @@
 				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0001">
 						<Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
 				</CommandPlacement>
+			
+				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" priority="0x0002">
+						<Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
+				</CommandPlacement>
 
 				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0003">
 						<Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
@@ -208,7 +239,7 @@
 						<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
 				</CommandPlacement>
 
-				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="TidyFixId" priority="0x0002">
+				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="TidyFixMenuId" priority="0x0002">
 						<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
 				</CommandPlacement>
 
@@ -220,7 +251,15 @@
 						<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
 				</CommandPlacement>
 
-				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0005">
+			  <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="IgnoreCompileId" priority="0x0005">
+				    <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
+			  </CommandPlacement>
+				
+			  <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="IgnoreFormatId" priority="0x0006">
+				    <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
+			  </CommandPlacement>
+			
+				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0007">
 						<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" />
 				</CommandPlacement>
 
@@ -235,6 +274,7 @@
 						<IDSymbol name="GroupForSubmenu" value="0x1020" />
 						<IDSymbol name="GroupForCommands" value="0x1021" />
 						<IDSymbol name="GroupForSettings" value="0x1022" />
+						<IDSymbol name="GroupForIgnore" value="0x1023" />
 						<IDSymbol name="Submenu" value="0x0100" />
 						<IDSymbol name="DromDownMenu" value="0x0200" />
 						<IDSymbol name ="DromDownToolbarMenuGroup" value="0x0110"/>
@@ -242,9 +282,12 @@
 						<!--Commands-->
 						<IDSymbol name="CompileId" value="0x0102" />
 						<IDSymbol name="TidyId" value="0x0101" />
-						<IDSymbol name="TidyFixId" value="0x0106"/>
+						<IDSymbol name="TidyFixToolbarId" value="0x0106"/>
+						<IDSymbol name="TidyFixMenuId" value="0x0109"/>
 						<IDSymbol name="ClangFormatId" value="0x0105" />
 						<IDSymbol name="StopClangId" value="0x0104" />
+						<IDSymbol name="IgnoreFormatId" value="0x0107" />
+						<IDSymbol name="IgnoreCompileId" value="0x0108" />
 						<IDSymbol name="SettingsId" value="0x0103" />
 
 						<!--Toolbar-->
@@ -269,6 +312,14 @@
 				<GuidSymbol name="guidImageStopClang" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c700}">
 						<IDSymbol name="StopClang" value="1" />
 				</GuidSymbol>
+			
+				<GuidSymbol name="guidImageIgnoreFormat" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c708}">
+				<IDSymbol name="IgnoreFormat" value="1" />
+			</GuidSymbol>
+
+			<GuidSymbol name="guidImageEmpty" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c705}">
+				<IDSymbol name="Empty" value="1" />
+			</GuidSymbol>
 
 				<GuidSymbol name="guidImageSettings" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70f}">
 						<IDSymbol name="Settings" value="1" />

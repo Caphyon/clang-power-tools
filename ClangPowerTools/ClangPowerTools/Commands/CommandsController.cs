@@ -104,8 +104,19 @@ namespace ClangPowerTools
           break;
 
         case CommandIds.kTidyFixId:
+        case CommandIds.kTidyFixMenuId:
           CurrentCommand = CommandIds.kTidyFixId;
           TidyCommand.Instance.RunClangTidy(CommandIds.kTidyFixId);
+          break;
+
+        case CommandIds.kIgnoreFormatId:
+           CurrentCommand = CommandIds.kIgnoreFormatId;
+           IgnoreFormatCommand.Instance.RunIgnoreFormatCommand(CommandIds.kIgnoreFormatId);
+           break;
+
+        case CommandIds.kIgnoreCompileId:
+          CurrentCommand = CommandIds.kIgnoreCompileId;
+          IgnoreCompileCommand.Instance.RunIgnoreCompileCommand(CommandIds.kIgnoreCompileId);
           break;
       }
     }
@@ -114,23 +125,42 @@ namespace ClangPowerTools
     public async System.Threading.Tasks.Task InitializeAsyncCommands(AsyncPackage aAsyncPackage,
       ErrorWindowController aErrorController, OutputWindowController aOutputWindowController)
     {
-      if (null == CompileCommand.Instance)
+      if (CompileCommand.Instance == null)
+      {
         await CompileCommand.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kCompileId);
+      }
 
-      if (null == TidyCommand.Instance)
+      if (TidyCommand.Instance == null)
       {
         await TidyCommand.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kTidyId);
         await TidyCommand.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kTidyFixId);
+        await TidyCommand.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kTidyFixMenuId);
       }
 
-      if (null == ClangFormatCommand.Instance)
+      if (ClangFormatCommand.Instance == null)
+      {
         await ClangFormatCommand.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kClangFormat);
+      }
 
-      if (null == StopClang.Instance)
+      if (StopClang.Instance == null)
+      {
         await StopClang.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kStopClang);
+      }
 
-      if (null == SettingsCommand.Instance)
+      if (IgnoreFormatCommand.Instance == null)
+      {
+        await IgnoreFormatCommand.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kIgnoreFormatId);
+      }
+
+      if (IgnoreCompileCommand.Instance == null)
+      {
+        await IgnoreCompileCommand.InitializeAsync(this, aErrorController, aOutputWindowController, aAsyncPackage, mCommandSet, CommandIds.kIgnoreCompileId);
+      }
+
+      if (SettingsCommand.Instance == null)
+      {
         await SettingsCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kSettingsId);
+      }
     }
 
 

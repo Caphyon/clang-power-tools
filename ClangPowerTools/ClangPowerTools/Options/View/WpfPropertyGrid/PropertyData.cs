@@ -118,6 +118,14 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       }
     }
 
+    public string Name
+    {
+      get
+      {
+        return mPropertyInfo.Name;
+      }
+    }
+
     /// <summary>
     /// The name that will be displayed in the property window
     /// </summary>
@@ -188,7 +196,7 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    protected virtual void OnPropertyChanged(string propertyName)
+    public virtual void OnPropertyChanged(string propertyName)
     {
       if (null != PropertyChanged)
         PropertyChanged(this, new PropertyChangedEventArgs(propertyName));

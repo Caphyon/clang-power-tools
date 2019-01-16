@@ -5,13 +5,16 @@ using System.Windows.Forms.Integration;
 
 namespace ClangPowerTools
 {
-  public class ClangGeneralOptionsView : ConfigurationPage<ClangOptions>
+  public class ClangGeneralOptionsView : ConfigurationPage<ClangOptions>, INotifyPropertyChanged
   {
     #region Members
 
-    private string mClangFlags                        = string.Empty;
-    private const string kGeneralSettingsFileName     = "GeneralConfiguration.config";
-    private SettingsPathBuilder mSettingsPathBuilder  = new SettingsPathBuilder();
+    private string mClangFlags = string.Empty;
+    private const string kGeneralSettingsFileName = "GeneralConfiguration.config";
+    private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
+    private string mFilesToIgnore;
+
+    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
 
@@ -23,7 +26,7 @@ namespace ClangPowerTools
     [Description("Flags given to clang++ when compiling project, alongside project - specific defines. If empty the default flags will be loaded.")]
     public string ClangFlags
     {
-      get => string.IsNullOrWhiteSpace(mClangFlags)? DefaultOptions.kClangFlags : mClangFlags;
+      get => string.IsNullOrWhiteSpace(mClangFlags) ? DefaultOptions.kClangFlags : mClangFlags;
       set => mClangFlags = value;
     }
 
@@ -31,13 +34,30 @@ namespace ClangPowerTools
     [Category("General")]
     [DisplayName("File to ignore")]
     [Description("Array of file(s) to ignore, from the matched ones. If empty, all already matched files are compiled.")]
-    public string FilesToIgnore { get; set; }
+    public string FilesToIgnore
+    {
+      get { return mFilesToIgnore; }
+      set
+      {
+        mFilesToIgnore = value;
+        OnPropertyCHanged("FilesToIgnore");
+      }
+    }
+
+    private void OnPropertyCHanged(string aPropName)
+    {
+      if (PropertyChanged != null)
+      {
+        PropertyChanged(this, new PropertyChangedEventArgs(aPropName));
+      }
+    }
 
 
     [Category("General")]
     [DisplayName("Project to ignore")]
     [Description("Array of project(s) to ignore, from the matched ones. If empty, all already matched projects are compiled.")]
     public string ProjectsToIgnore { get; set; }
+
 
 
     [Category("General")]
@@ -94,7 +114,7 @@ namespace ClangPowerTools
 
       var updatedConfig = new ClangOptions
       {
-        ClangFlagsCollection = string.IsNullOrEmpty(this.ClangFlags) ? 
+        ClangFlagsCollection = string.IsNullOrEmpty(this.ClangFlags) ?
           this.ClangFlags : this.ClangFlags.Replace(" ", "").Trim(';'),
 
         FilesToIgnoreCollection = string.IsNullOrEmpty(this.FilesToIgnore) ?
@@ -103,12 +123,12 @@ namespace ClangPowerTools
         ProjectsToIgnoreCollection = string.IsNullOrEmpty(this.ProjectsToIgnore) ?
           this.ProjectsToIgnore : this.ProjectsToIgnore.Replace(" ", "").Trim(';'),
 
-        AdditionalIncludes          = this.AdditionalIncludes,
-        TreatWarningsAsErrors       = this.TreatWarningsAsErrors,
-        Continue                    = this.Continue,
-        ClangCompileAfterVsCompile  = this.ClangCompileAfterVsCompile,
-        VerboseMode                 = this.VerboseMode,
-        Version                     = this.Version
+        AdditionalIncludes = this.AdditionalIncludes,
+        TreatWarningsAsErrors = this.TreatWarningsAsErrors,
+        Continue = this.Continue,
+        ClangCompileAfterVsCompile = this.ClangCompileAfterVsCompile,
+        VerboseMode = this.VerboseMode,
+        Version = this.Version
       };
 
       SaveToFile(path, updatedConfig);
@@ -142,11 +162,11 @@ namespace ClangPowerTools
       this.AdditionalIncludes = null == loadedConfig.AdditionalIncludes ?
         ClangGeneralAdditionalIncludes.IncludeDirectories : loadedConfig.AdditionalIncludes;
 
-      this.TreatWarningsAsErrors        = loadedConfig.TreatWarningsAsErrors;
-      this.Continue                     = loadedConfig.Continue;
-      this.ClangCompileAfterVsCompile   = loadedConfig.ClangCompileAfterVsCompile;
-      this.VerboseMode                  = loadedConfig.VerboseMode;
-      this.Version                      = loadedConfig.Version;
+      this.TreatWarningsAsErrors = loadedConfig.TreatWarningsAsErrors;
+      this.Continue = loadedConfig.Continue;
+      this.ClangCompileAfterVsCompile = loadedConfig.ClangCompileAfterVsCompile;
+      this.VerboseMode = loadedConfig.VerboseMode;
+      this.Version = loadedConfig.Version;
 
     }
 
