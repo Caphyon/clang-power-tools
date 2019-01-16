@@ -102,7 +102,7 @@
 						<Icon guid="guidImageIgnoreFormat" id="IgnoreFormat" />
 								<CommandFlag>DefaultDisabled</CommandFlag>
 								<Strings>
-										<ButtonText>Ignore at Compile</ButtonText>
+										<ButtonText>Ignore File at Compile</ButtonText>
 								</Strings>
 					</Button>
 						
@@ -110,7 +110,7 @@
 						<Icon guid="guidImageEmpty" id="Empty" />
 								<CommandFlag>DefaultDisabled</CommandFlag>
 								<Strings>
-										<ButtonText>Ignore at Format</ButtonText>
+										<ButtonText>Ignore File at Format</ButtonText>
 								</Strings>
 					</Button>
 					
