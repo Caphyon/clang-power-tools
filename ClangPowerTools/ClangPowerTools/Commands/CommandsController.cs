@@ -104,10 +104,6 @@ namespace ClangPowerTools
           break;
 
         case CommandIds.kTidyFixId:
-          CurrentCommand = CommandIds.kTidyFixId;
-          TidyCommand.Instance.RunClangTidy(CommandIds.kTidyFixId);
-          break;
-
         case CommandIds.kTidyFixMenuId:
           CurrentCommand = CommandIds.kTidyFixId;
           TidyCommand.Instance.RunClangTidy(CommandIds.kTidyFixId);
