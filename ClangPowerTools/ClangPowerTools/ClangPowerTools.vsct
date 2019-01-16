@@ -98,23 +98,23 @@
 								</Strings>
 						</Button>
 
-					<Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreFormatId" priority="0x0006" type="Button">
+					<Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreCompileId" priority="0x0006" type="Button">
 						<Icon guid="guidImageIgnoreFormat" id="IgnoreFormat" />
 								<CommandFlag>DefaultDisabled</CommandFlag>
 								<Strings>
-										<ButtonText>Ignore File at Format</ButtonText>
+										<ButtonText>Ignore at Compile</ButtonText>
 								</Strings>
 					</Button>
-					
-				<Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreCompileId" priority="0x0007" type="Button">
+						
+					<Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreFormatId" priority="0x0007" type="Button">
 						<Icon guid="guidImageEmpty" id="Empty" />
 								<CommandFlag>DefaultDisabled</CommandFlag>
 								<Strings>
-										<ButtonText>Ignore File at Compile</ButtonText>
+										<ButtonText>Ignore at Format</ButtonText>
 								</Strings>
 					</Button>
-
-						<Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0008" type="Button">
+					
+					<Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0008" type="Button">
 								<Icon guid="guidImageSettings" id="Settings" />
 								<Strings>
 										<ButtonText>Settings</ButtonText>
@@ -251,14 +251,14 @@
 						<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
 				</CommandPlacement>
 
-			<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="IgnoreFormatId" priority="0x0005">
-				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
-			</CommandPlacement>
+			  <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="IgnoreCompileId" priority="0x0005">
+				    <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
+			  </CommandPlacement>
+				
+			  <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="IgnoreFormatId" priority="0x0006">
+				    <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
+			  </CommandPlacement>
 			
-			<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="IgnoreCompileId" priority="0x0006">
-				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
-			</CommandPlacement>
-
 				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0007">
 						<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" />
 				</CommandPlacement>
