@@ -1,5 +1,19 @@
 # Version History
 
+### Clang Power Tools 4.6
+*January 17, 2019*
+
+Improvements:
+
+* Select `files to ignore` at compile and format from the Context Menu
+
+Bugs:
+
+* Wrong format applied when `clang-tidy and clang-format on save` are checked
+* Access rights of the PowerShell script caused warning messages
+* Clang Format didn't properly handle selected source
+* Crash when some options are missing from the config file
+
 ### Clang Power Tools 4.5
 *December 12, 2018*
 
