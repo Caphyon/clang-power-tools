@@ -9,8 +9,8 @@ namespace ClangPowerTools.DialogPages
   {
     #region Members
 
-    private const string kTidyOptionsFileName         = "TidyOptionsConfiguration.config";
-    private SettingsPathBuilder mSettingsPathBuilder  = new SettingsPathBuilder();
+    private const string kTidyOptionsFileName = "TidyOptionsConfiguration.config";
+    private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
 
     #endregion
 
@@ -26,7 +26,7 @@ namespace ClangPowerTools.DialogPages
       get
       {
         ElementHost elementHost = new ElementHost();
-        elementHost.Child       = new ClangTidyCustomChecksUserControl(this);
+        elementHost.Child = new ClangTidyCustomChecksUserControl(this);
         return elementHost;
       }
     }
@@ -37,10 +37,10 @@ namespace ClangPowerTools.DialogPages
 
     public override void SaveSettingsToStorage()
     {
-      string path             = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
-      var updatedConfig       = new ClangTidyOptions
+      string path = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
+      var updatedConfig = new ClangTidyOptions
       {
-        TidyChecksCollection  = string.IsNullOrEmpty(this.TidyChecks) ?
+        TidyChecksCollection = string.IsNullOrEmpty(this.TidyChecks) ?
           this.TidyChecks : this.TidyChecks.Replace(" ", "").Trim(';')
       };
 
@@ -49,13 +49,13 @@ namespace ClangPowerTools.DialogPages
 
     public override void LoadSettingsFromStorage()
     {
-      string path       = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
-      var loadedConfig  = LoadFromFile(path);
+      string path = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
+      var loadedConfig = LoadFromFile(path);
 
       if (null == loadedConfig.TidyChecks || 0 == loadedConfig.TidyChecks.Count)
-        this.TidyChecks = loadedConfig.TidyChecksCollection;
+        TidyChecks = loadedConfig.TidyChecksCollection;
       else
-        this.TidyChecks = string.Join(";", loadedConfig.TidyChecks);
+        TidyChecks = string.Join(";", loadedConfig.TidyChecks);
 
     }
 

@@ -102,23 +102,23 @@ namespace ClangPowerTools
       string path = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
       var loadedConfig = LoadFromFile(path);
 
-      this.AutoTidyOnSave = loadedConfig.AutoTidyOnSave;
-      this.FormatAfterTidy = loadedConfig.FormatAfterTidy;
+      AutoTidyOnSave = loadedConfig.AutoTidyOnSave;
+      FormatAfterTidy = loadedConfig.FormatAfterTidy;
 
       if (null == loadedConfig.HeaderFilter)
-        this.HeaderFilter = new HeaderFiltersValue(ComboBoxConstants.kDefaultHeaderFilter);
+        HeaderFilter = new HeaderFiltersValue(ComboBoxConstants.kDefaultHeaderFilter);
       else if (false == string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptDecode(loadedConfig.HeaderFilter)))
-        this.HeaderFilter = new HeaderFiltersValue(ClangTidyHeaderFiltersConvertor.ScriptDecode(loadedConfig.HeaderFilter));
+        HeaderFilter = new HeaderFiltersValue(ClangTidyHeaderFiltersConvertor.ScriptDecode(loadedConfig.HeaderFilter));
       else
-        this.HeaderFilter = new HeaderFiltersValue(loadedConfig.HeaderFilter);
+        HeaderFilter = new HeaderFiltersValue(loadedConfig.HeaderFilter);
 
       if (null == loadedConfig.TidyMode)
       {
-        this.UseChecksFrom = string.IsNullOrWhiteSpace(loadedConfig.TidyChecksCollection) ?
+        UseChecksFrom = string.IsNullOrWhiteSpace(loadedConfig.TidyChecksCollection) ?
           ClangTidyUseChecksFrom.PredefinedChecks : ClangTidyUseChecksFrom.CustomChecks;
       }
       else
-        this.UseChecksFrom = loadedConfig.TidyMode;
+        UseChecksFrom = loadedConfig.TidyMode;
 
     }
 

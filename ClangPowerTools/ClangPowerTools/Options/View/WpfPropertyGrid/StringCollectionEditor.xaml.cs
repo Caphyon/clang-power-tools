@@ -45,7 +45,7 @@ namespace ClangPowerTools.Options.View.WpfPropertyGrid
     public StringCollectionEditor(string aCollection)
     {
       InitializeComponent();
-      this.SourceInitialized += MainWindowSourceInitialized;
+      SourceInitialized += MainWindowSourceInitialized;
 
       if (true == string.IsNullOrWhiteSpace(aCollection))
         RawValue = string.Empty;
@@ -79,8 +79,8 @@ namespace ClangPowerTools.Options.View.WpfPropertyGrid
 
     private void OKButton_Click(object sender, RoutedEventArgs e)
     {
-      this.DialogResult = true;
-      this.Close();
+      DialogResult = true;
+      Close();
     }
 
     #endregion

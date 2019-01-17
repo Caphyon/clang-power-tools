@@ -142,42 +142,40 @@ namespace ClangPowerTools
       var loadedConfig = LoadFromFile(path);
 
       if (null == loadedConfig.ClangFlags || 0 == loadedConfig.ClangFlags.Count)
-        this.ClangFlags = loadedConfig.ClangFlagsCollection;
+        ClangFlags = loadedConfig.ClangFlagsCollection;
       else
-        this.ClangFlags = string.Join(";", loadedConfig.ClangFlags);
+        ClangFlags = string.Join(";", loadedConfig.ClangFlags);
 
 
       if (null == loadedConfig.FilesToIgnore || 0 == loadedConfig.FilesToIgnore.Count)
       {
         if (null == loadedConfig.FilesToIgnoreCollection)
         {
-          this.FilesToIgnore = string.Empty;
+          FilesToIgnore = string.Empty;
         }
         else
         {
-          this.FilesToIgnore = loadedConfig.FilesToIgnoreCollection;
+          FilesToIgnore = loadedConfig.FilesToIgnoreCollection;
         }
       }
       else
       { 
-        this.FilesToIgnore = string.Join(";", loadedConfig.FilesToIgnore);
+        FilesToIgnore = string.Join(";", loadedConfig.FilesToIgnore);
       }
 
       if (null == loadedConfig.ProjectsToIgnore || 0 == loadedConfig.ProjectsToIgnore.Count)
-        this.ProjectsToIgnore = loadedConfig.ProjectsToIgnoreCollection;
+        ProjectsToIgnore = loadedConfig.ProjectsToIgnoreCollection;
       else
-        this.ProjectsToIgnore = string.Join(";", loadedConfig.ProjectsToIgnore);
+        ProjectsToIgnore = string.Join(";", loadedConfig.ProjectsToIgnore);
 
-
-      this.AdditionalIncludes = null == loadedConfig.AdditionalIncludes ?
+      AdditionalIncludes = null == loadedConfig.AdditionalIncludes ?
         ClangGeneralAdditionalIncludes.IncludeDirectories : loadedConfig.AdditionalIncludes;
 
-      this.TreatWarningsAsErrors = loadedConfig.TreatWarningsAsErrors;
-      this.Continue = loadedConfig.Continue;
-      this.ClangCompileAfterVsCompile = loadedConfig.ClangCompileAfterVsCompile;
-      this.VerboseMode = loadedConfig.VerboseMode;
-      this.Version = loadedConfig.Version;
-
+      TreatWarningsAsErrors = loadedConfig.TreatWarningsAsErrors;
+      Continue = loadedConfig.Continue;
+      ClangCompileAfterVsCompile = loadedConfig.ClangCompileAfterVsCompile;
+      VerboseMode = loadedConfig.VerboseMode;
+      Version = loadedConfig.Version;
     }
 
     #endregion

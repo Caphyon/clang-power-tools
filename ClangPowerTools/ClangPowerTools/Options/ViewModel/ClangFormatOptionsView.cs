@@ -143,27 +143,27 @@ namespace ClangPowerTools.DialogPages
     {
       string path             = mSettingsPathBuilder.GetPath(kGeneralSettingsFileName);
       var loadedConfig        = LoadFromFile(path);
-      this.EnableFormatOnSave = loadedConfig.EnableFormatOnSave;
+      EnableFormatOnSave = loadedConfig.EnableFormatOnSave;
 
-      this.FileExtensions = null == loadedConfig.FileExtensions ?
+      FileExtensions = null == loadedConfig.FileExtensions ?
         DefaultOptions.kFileExtensions : loadedConfig.FileExtensions;
 
-      this.FilesToIgnore = null == loadedConfig.SkipFiles ?
+      FilesToIgnore = null == loadedConfig.SkipFiles ?
         DefaultOptions.kSkipFiles : loadedConfig.SkipFiles;
 
-      this.AssumeFilename = loadedConfig.AssumeFilename;
+      AssumeFilename = loadedConfig.AssumeFilename;
 
-      this.FallbackStyle = null == loadedConfig.FallbackStyle ?
+      FallbackStyle = null == loadedConfig.FallbackStyle ?
         ClangFormatFallbackStyle.none : loadedConfig.FallbackStyle;
 
-      this.Style = null == loadedConfig.Style ? ClangFormatStyle.file : loadedConfig.Style;
+      Style = null == loadedConfig.Style ? ClangFormatStyle.file : loadedConfig.Style;
 
-      //this.SortIncludes   = loadedConfig.SortIncludes;
+      //SortIncludes   = loadedConfig.SortIncludes;
 
       if (null == loadedConfig.ClangFormatPath)
-        this.ClangFormatPath = new ClangFormatPathValue();
+        ClangFormatPath = new ClangFormatPathValue();
       else
-        this.ClangFormatPath = loadedConfig.ClangFormatPath;
+        ClangFormatPath = loadedConfig.ClangFormatPath;
 
     }
 

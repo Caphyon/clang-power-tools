@@ -55,9 +55,9 @@ namespace ClangPowerTools.Options.View.WpfPropertyGrid
                                                        ToolboxControlsInstallerPath,
                                                        context.ComponentType.Assembly.FullName)))
       {
-        key.SetValue(string.Empty, this.name);
+        key.SetValue(string.Empty, name);
         key.SetValue("Codebase", context.CodeBase);
-        if (this.areWPFControls)
+        if (areWPFControls)
         {
           key.SetValue("WPFControls", "1");
         }
