@@ -62,9 +62,9 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
     public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController,
-      ErrorWindowController aErrorWindow, OutputWindowController aOutputWindow, AsyncPackage aPackage, Guid aGuid, int aId)
+      AsyncPackage aPackage, Guid aGuid, int aId)
     {
-      // Switch to the main thread - the call to AddCommand in StopClang's constructor requires
+      // Switch to the main thread - the call to AddCommand in IgnoreCompileCommand's constructor requires
       // the UI thread.
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
 

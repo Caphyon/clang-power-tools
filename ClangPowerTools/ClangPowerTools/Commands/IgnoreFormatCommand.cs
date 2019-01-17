@@ -62,9 +62,9 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
     public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController,
-      ErrorWindowController aErrorWindow, OutputWindowController aOutputWindow, AsyncPackage aPackage, Guid aGuid, int aId)
+      AsyncPackage aPackage, Guid aGuid, int aId)
     {
-      // Switch to the main thread - the call to AddCommand in StopClang's constructor requires
+      // Switch to the main thread - the call to AddCommand in IgnoreFormatCommand's constructor requires
       // the UI thread.
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
 
@@ -101,11 +101,11 @@ namespace ClangPowerTools.Commands
     {
       var settings = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
 
-      if (settings.SkipFiles.Length > 0)
+      if (settings.FilesToIgnore.Length > 0)
       {
-        settings.SkipFiles += ";";
+        settings.FilesToIgnore += ";";
       }
-      settings.SkipFiles += string.Join(";", RemoveDuplicateFiles(documentsToIgnore, settings));
+      settings.FilesToIgnore += string.Join(";", RemoveDuplicateFiles(documentsToIgnore, settings));
       settings.SaveSettingsToStorage();
     }
 
@@ -115,7 +115,7 @@ namespace ClangPowerTools.Commands
 
       foreach (var item in documentsToIgnore)
       {
-        if (!settings.SkipFiles.Contains(item))
+        if (!settings.FilesToIgnore.Contains(item))
         {
           trimmedDocumentToIgnore.Add(item);
         }
