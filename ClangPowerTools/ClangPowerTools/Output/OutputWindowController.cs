@@ -27,6 +27,8 @@ namespace ClangPowerTools.Output
 
     public event EventHandler<MissingLlvmEventArgs> MissingLlvmEvent;
 
+    public event EventHandler<CloseDataConnectionEventArgs> CloseDataConnectionEvent;
+
     #endregion
 
 
@@ -159,6 +161,8 @@ namespace ClangPowerTools.Output
     {
       if (0 != Buffer.Count)
         Write(String.Join("\n", Buffer));
+
+      CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
 
       if ( 0 != Errors.Count )
         OnErrorDetected(new ErrorDetectedEventArgs(Errors));
