@@ -53,7 +53,7 @@ namespace ClangPowerTools.DialogPages
       var loadedConfig = LoadFromFile(path);
 
       if (null == loadedConfig.TidyChecks || 0 == loadedConfig.TidyChecks.Count)
-        TidyChecks = loadedConfig.TidyChecksCollection;
+        TidyChecks = loadedConfig.TidyChecksCollection ?? string.Empty;
       else
         TidyChecks = string.Join(";", loadedConfig.TidyChecks);
 

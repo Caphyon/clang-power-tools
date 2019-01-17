@@ -164,11 +164,11 @@ namespace ClangPowerTools
       }
 
       if (null == loadedConfig.ProjectsToIgnore || 0 == loadedConfig.ProjectsToIgnore.Count)
-        ProjectsToIgnore = loadedConfig.ProjectsToIgnoreCollection;
+        ProjectsToIgnore = loadedConfig.ProjectsToIgnoreCollection ?? string.Empty;
       else
         ProjectsToIgnore = string.Join(";", loadedConfig.ProjectsToIgnore);
 
-      AdditionalIncludes = null == loadedConfig.AdditionalIncludes ?
+      AdditionalIncludes = null == loadedConfig.AdditionalIncludes ? 
         ClangGeneralAdditionalIncludes.IncludeDirectories : loadedConfig.AdditionalIncludes;
 
       TreatWarningsAsErrors = loadedConfig.TreatWarningsAsErrors;

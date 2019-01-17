@@ -64,7 +64,7 @@ namespace ClangPowerTools.DialogPages
     [DisplayName("Assume filename")]
     [Description("When reading from stdin, clang-format assumes this filename to look for a style config file" +
       "(with -style=file) and to determine the language.")]
-    public string AssumeFilename { get; set; }
+    public string AssumeFilename { get; set; } = string.Empty;
 
     [Category("Format Options")]
     [DisplayName("Fallback style")]
