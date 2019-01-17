@@ -33,6 +33,8 @@ namespace ClangPowerTools
 
     public event EventHandler<MissingLlvmEventArgs> MissingLlvmEvent;
 
+    public event EventHandler<ClearErrorListEventArgs> ClearErrorListEvent;
+
     #endregion
 
 
@@ -192,22 +194,27 @@ namespace ClangPowerTools
     private void OnBeforeClangCommand(int aCommandId)
     {
       Running = true;
-      OnCommandRunning(new ClangCommandMessageEventArgs($"\nStart {OutputWindowConstants.kCommandsNames[aCommandId]}\n", true));
+      OnClangCommandBegin(new ClangCommandMessageEventArgs($"\nStart {OutputWindowConstants.kCommandsNames[aCommandId]}\n", true));
+      OnClangCommandBegin(new ClearErrorListEventArgs());
     }
 
 
     private void OnAfterClangCommand(int aCommandId)
     {
       Running = false;
-      OnCommandRunning(new ClangCommandMessageEventArgs($"\nDone {OutputWindowConstants.kCommandsNames[aCommandId]}\n", false));
+      OnClangCommandBegin(new ClangCommandMessageEventArgs($"\nDone {OutputWindowConstants.kCommandsNames[aCommandId]}\n", false));
     }
 
 
-    public void OnCommandRunning(ClangCommandMessageEventArgs e)
+    private void OnClangCommandBegin(ClangCommandMessageEventArgs e)
     {
       ClangCommandMessageEvent?.Invoke(this, e);
     }
 
+    private void OnClangCommandBegin(ClearErrorListEventArgs e)
+    {
+      ClearErrorListEvent?.Invoke(this, e);
+    }
 
     public void OnFileHierarchyChanged(object sender, VsHierarchyDetectedEventArgs e)
     {

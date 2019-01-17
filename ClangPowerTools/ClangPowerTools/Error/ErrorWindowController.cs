@@ -79,6 +79,10 @@ namespace ClangPowerTools
       });
     }
 
+    public void OnClangCommandBegin(object sender, ClearErrorListEventArgs e)
+    {
+      Clear();
+    }
 
     public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action)
     {

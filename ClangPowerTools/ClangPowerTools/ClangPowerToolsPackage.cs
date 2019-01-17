@@ -314,6 +314,8 @@ namespace ClangPowerTools
       mCommandsController.ClangCommandMessageEvent += mOutputWindowController.Write;
       mCommandsController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
 
+      mCommandsController.ClearErrorListEvent += mErrorWindowController.OnClangCommandBegin;
+
       mCommandsController.MissingLlvmEvent += CompileCommand.Instance.OnMissingLLVMDetected;
       mCommandsController.MissingLlvmEvent += TidyCommand.Instance.OnMissingLLVMDetected;
 
@@ -364,6 +366,8 @@ namespace ClangPowerTools
     {
       mCommandsController.ClangCommandMessageEvent -= mOutputWindowController.Write;
       mCommandsController.HierarchyDetectedEvent -= mOutputWindowController.OnFileHierarchyDetected;
+
+      mCommandsController.ClearErrorListEvent -= mErrorWindowController.OnClangCommandBegin;
 
       mCommandsController.MissingLlvmEvent -= CompileCommand.Instance.OnMissingLLVMDetected;
       mCommandsController.MissingLlvmEvent -= TidyCommand.Instance.OnMissingLLVMDetected;

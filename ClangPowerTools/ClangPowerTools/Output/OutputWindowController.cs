@@ -157,12 +157,10 @@ namespace ClangPowerTools.Output
 
     public void ClosedDataConnection(object sender, EventArgs e)
     {
-      if (0 == Buffer.Count)
-        return;
+      if (0 != Buffer.Count)
+        Write(String.Join("\n", Buffer));
 
-      Write(String.Join("\n", Buffer));
-
-      if( 0 != Errors.Count )
+      if ( 0 != Errors.Count )
         OnErrorDetected(new ErrorDetectedEventArgs(Errors));
     }
 
