@@ -12,7 +12,7 @@ namespace ClangPowerTools
     private string mClangFlags = string.Empty;
     private const string kGeneralSettingsFileName = "GeneralConfiguration.config";
     private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
-    private string mFilesToIgnore;
+    private string mFilesToIgnore = string.Empty;
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -148,10 +148,20 @@ namespace ClangPowerTools
 
 
       if (null == loadedConfig.FilesToIgnore || 0 == loadedConfig.FilesToIgnore.Count)
-        this.FilesToIgnore = loadedConfig.FilesToIgnoreCollection;
+      {
+        if (null == loadedConfig.FilesToIgnoreCollection)
+        {
+          this.FilesToIgnore = string.Empty;
+        }
+        else
+        {
+          this.FilesToIgnore = loadedConfig.FilesToIgnoreCollection;
+        }
+      }
       else
+      { 
         this.FilesToIgnore = string.Join(";", loadedConfig.FilesToIgnore);
-
+      }
 
       if (null == loadedConfig.ProjectsToIgnore || 0 == loadedConfig.ProjectsToIgnore.Count)
         this.ProjectsToIgnore = loadedConfig.ProjectsToIgnoreCollection;
