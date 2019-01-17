@@ -1,5 +1,5 @@
 ﻿using ClangPowerTools.Builder;
-using ClangPowerTools.Output;
+using ClangPowerTools.Events;
 using ClangPowerTools.Script;
 using ClangPowerTools.Services;
 using EnvDTE;
@@ -15,8 +15,6 @@ namespace ClangPowerTools
   {
     #region Members
 
-
-    protected static CommandsController mCommandsController = null;
     protected ItemsCollector mItemsCollector;
     protected FilePathCollector mFilePahtCollector;
     protected static RunningProcesses mRunningProcesses = new RunningProcesses();
@@ -24,10 +22,6 @@ namespace ClangPowerTools
 
     //private Commands2 mCommand;
 
-    private ErrorWindowController mErrorWindow;
-    private OutputWindowController mOutputWindow;
-
-    private PowerShellWrapper mPowerShell = new PowerShellWrapper();
     private const string kVs15Version = "2017";
     private Dictionary<string, string> mVsVersions = new Dictionary<string, string>
     {
@@ -37,6 +31,10 @@ namespace ClangPowerTools
       {"14.0", "2015"},
       {"15.0", "2017"}
     };
+
+    private bool mMissingLLVM = false;
+    private IVsHierarchy mHierarchy;
+    public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
 
 
     #endregion
@@ -48,6 +46,17 @@ namespace ClangPowerTools
     protected string VsEdition { get; set; }
     protected string VsVersion { get; set; }
     protected string WorkingDirectoryPath { get; set; }
+    protected IVsHierarchy ItemHierarchy
+    {
+      get => ItemHierarchy;
+      set
+      {
+        if (null == value)
+          return;
+        mHierarchy = value;
+        OnFileHierarchyChanged(new VsHierarchyDetectedEventArgs(mHierarchy));
+      }
+    }
 
 
     #endregion
@@ -56,15 +65,9 @@ namespace ClangPowerTools
     #region Constructor
 
 
-    public ClangCommand(CommandsController aCommandsController, ErrorWindowController aErrorWindow,
-      OutputWindowController aOutputWindow, AsyncPackage aPackage, Guid aGuid, int aId)
+    public ClangCommand(AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aPackage, aGuid, aId)
     {
-      if (null == mCommandsController)
-        mCommandsController = aCommandsController;
-
-      mErrorWindow = aErrorWindow;
-      mOutputWindow = aOutputWindow;
 
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {
@@ -80,6 +83,16 @@ namespace ClangPowerTools
 
 
     #region Methods
+
+    #region Public Methods
+
+    public void OnMissingLLVMDetected(object sender, MissingLlvmEventArgs e)
+    {
+      mMissingLLVM = e.MissingLLVM;
+    }
+
+
+    #endregion
 
 
     #region Protected methods
@@ -101,10 +114,6 @@ namespace ClangPowerTools
 
         string solutionPath = dte.Solution.FullName;
 
-        InitPowerShell();
-        ClearWindows();
-        mOutputWindow.Write($"\n{OutputWindowConstants.kStart} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
-
         StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
 
         VsServiceProvider.TryGetService(typeof(SVsSolution), out object vsSolutionService);
@@ -112,9 +121,6 @@ namespace ClangPowerTools
 
         foreach (var item in mItemsCollector.GetItems)
         {
-          if (!mCommandsController.Running)
-            break;
-
           IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item);
           itemRelatedScriptBuilder.Build();
           var itemRelatedParameters = itemRelatedScriptBuilder.GetResult();
@@ -124,36 +130,18 @@ namespace ClangPowerTools
           var script = $"{runModeParameters.Remove(runModeParameters.Length - 1)} {itemRelatedParameters} {genericParameters}'";
 
           if (null != vsSolution)
-            mOutputWindow.Hierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
+            ItemHierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
 
-          var process = mPowerShell.Invoke(script, mRunningProcesses);
+          var process = PowerShellWrapper.Invoke(script, mRunningProcesses);
 
-          if (mOutputWindow.MissingLlvm)
-          {
-            mOutputWindow.Write(ErrorParserConstants.kMissingLlvmMessage);
+          if (mMissingLLVM)
             break;
-          }
         }
-
-        if (!mOutputWindow.MissingLlvm)
-        {
-          mOutputWindow.Show();
-          mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
-        }
-
-        if (mOutputWindow.HasErrors)
-          mErrorWindow.AddErrors(mOutputWindow.Errors);
-      }
-      catch (Exception)
-      {
-        mOutputWindow.Show();
-        mOutputWindow.Write($"\n{OutputWindowConstants.kDone} {OutputWindowConstants.kCommandsNames[aCommandId]}\n");
-      }
-      finally
-      {
         StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
       }
+      catch (Exception) { }
     }
+
 
     protected IEnumerable<IItem> CollectSelectedItems(bool aClangFormatFlag = false, List<string> aAcceptedExtensionTypes = null)
     {
@@ -168,25 +156,16 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private void InitPowerShell()
-    {
-      mPowerShell = new PowerShellWrapper();
-      mPowerShell.DataHandler += mOutputWindow.OutputDataReceived;
-      mPowerShell.DataErrorHandler += mOutputWindow.OutputDataErrorReceived;
-      mPowerShell.ExitedHandler += mOutputWindow.ClosedDataConnection;
-    }
 
-    private void ClearWindows()
+    protected virtual void OnFileHierarchyChanged(VsHierarchyDetectedEventArgs e)
     {
-      mErrorWindow.Clear();
-      mOutputWindow.Clear();
-      mOutputWindow.Show();
+      HierarchyDetectedEvent?.Invoke(this, e);
     }
 
     #endregion
 
-    #endregion
 
+    #endregion
 
   }
 }

@@ -41,14 +41,14 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
     private CompileCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController, 
-      ErrorWindowController aErrorWindow, OutputWindowController aOutputWindow, AsyncPackage aPackage, Guid aGuid, int aId)
-        : base(aCommandsController, aErrorWindow, aOutputWindow, aPackage, aGuid, aId)
+      AsyncPackage aPackage, Guid aGuid, int aId)
+        : base(aPackage, aGuid, aId)
     {
       if (null != aCommandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
-        var menuCommand = new OleMenuCommand(mCommandsController.Execute, menuCommandID);
-        menuCommand.BeforeQueryStatus += mCommandsController.OnBeforeClangCommand;
+        var menuCommand = new OleMenuCommand(aCommandsController.Execute, menuCommandID);
+        menuCommand.BeforeQueryStatus += aCommandsController.OnBeforeClangCommand;
         menuCommand.Enabled = true;
         aCommandService.AddCommand(menuCommand);
       }
@@ -65,25 +65,20 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
     public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController, 
-      ErrorWindowController aErrorWindow, OutputWindowController aOutputWindow, AsyncPackage aPackage, Guid aGuid, int aId)
+      AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in CompileCommand's constructor requires
       // the UI thread.
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-      Instance = new CompileCommand(commandService, aCommandsController, aErrorWindow, aOutputWindow, aPackage, aGuid, aId);
+      Instance = new CompileCommand(commandService, aCommandsController, aPackage, aGuid, aId);
     }
 
 
-    public void RunClangCompile(int aCommandId)
+    public System.Threading.Tasks.Task RunClangCompile(int aCommandId)
     {
-      if (mCommandsController.Running)
-        return;
-
-      mCommandsController.Running = true;
-
-      var task = System.Threading.Tasks.Task.Run(() =>
+      return System.Threading.Tasks.Task.Run(() =>
       {
         try
         {
@@ -101,7 +96,7 @@ namespace ClangPowerTools.Commands
           VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
             OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
-      }).ContinueWith(tsk => mCommandsController.OnAfterClangCommand());
+      });
     }
 
     #endregion

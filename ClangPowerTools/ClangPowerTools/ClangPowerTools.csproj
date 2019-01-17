@@ -85,6 +85,10 @@
     <Compile Include="Error\ErrorFormatter.cs" />
     <Compile Include="Builder\IBuilder.cs" />
     <Compile Include="Error\TaskErrorModelBuilder.cs" />
+    <Compile Include="Events\ClangCommandEventArgs.cs" />
+    <Compile Include="Events\ErrorDetectedEventArgs.cs" />
+    <Compile Include="Events\MissingLlvmEventArgs.cs" />
+    <Compile Include="Events\VsHierarchyDetectedEventArgs.cs" />
     <Compile Include="Helpers\UIUpdater.cs" />
     <Compile Include="Options\ClangFormatPathValue.cs" />
     <Compile Include="Options\HeaderFiltersValue.cs" />

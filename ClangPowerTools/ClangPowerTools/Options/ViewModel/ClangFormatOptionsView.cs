@@ -39,13 +39,13 @@ namespace ClangPowerTools.DialogPages
     [Category("Format On Save")]
     [DisplayName("File to ignore")]
     [Description("When formatting on save, clang-format will not be applied on these files.")]
-    public string SkipFiles
+    public string FilesToIgnore
     {
       get { return mSkipFiles; }
       set
       {
         mSkipFiles = value;
-        OnPropertyChanged("SkipFiles");
+        OnPropertyChanged("FilesToIgnore");
       }
     }
 
@@ -64,7 +64,7 @@ namespace ClangPowerTools.DialogPages
     [DisplayName("Assume filename")]
     [Description("When reading from stdin, clang-format assumes this filename to look for a style config file" +
       "(with -style=file) and to determine the language.")]
-    public string AssumeFilename { get; set; }
+    public string AssumeFilename { get; set; } = string.Empty;
 
     [Category("Format Options")]
     [DisplayName("Fallback style")]
@@ -123,8 +123,8 @@ namespace ClangPowerTools.DialogPages
         FileExtensions = string.IsNullOrEmpty(this.FileExtensions) ?
           this.FileExtensions : this.FileExtensions.Replace(" ", "").Trim(';'),
 
-        SkipFiles = string.IsNullOrEmpty(this.SkipFiles) ?
-          this.SkipFiles : this.SkipFiles.Replace(" ", "").Trim(';'),
+        SkipFiles = string.IsNullOrEmpty(this.FilesToIgnore) ?
+          this.FilesToIgnore : this.FilesToIgnore.Replace(" ", "").Trim(';'),
 
         AssumeFilename = string.IsNullOrEmpty(this.AssumeFilename) ?
           this.AssumeFilename : this.AssumeFilename.Replace(" ", "").Trim(';'),
@@ -143,27 +143,27 @@ namespace ClangPowerTools.DialogPages
     {
       string path             = mSettingsPathBuilder.GetPath(kGeneralSettingsFileName);
       var loadedConfig        = LoadFromFile(path);
-      this.EnableFormatOnSave = loadedConfig.EnableFormatOnSave;
+      EnableFormatOnSave = loadedConfig.EnableFormatOnSave;
 
-      this.FileExtensions = null == loadedConfig.FileExtensions ?
+      FileExtensions = null == loadedConfig.FileExtensions ?
         DefaultOptions.kFileExtensions : loadedConfig.FileExtensions;
 
-      this.SkipFiles = null == loadedConfig.SkipFiles ?
+      FilesToIgnore = null == loadedConfig.SkipFiles ?
         DefaultOptions.kSkipFiles : loadedConfig.SkipFiles;
 
-      this.AssumeFilename = loadedConfig.AssumeFilename;
+      AssumeFilename = loadedConfig.AssumeFilename;
 
-      this.FallbackStyle = null == loadedConfig.FallbackStyle ?
+      FallbackStyle = null == loadedConfig.FallbackStyle ?
         ClangFormatFallbackStyle.none : loadedConfig.FallbackStyle;
 
-      this.Style = null == loadedConfig.Style ? ClangFormatStyle.file : loadedConfig.Style;
+      Style = null == loadedConfig.Style ? ClangFormatStyle.file : loadedConfig.Style;
 
-      //this.SortIncludes   = loadedConfig.SortIncludes;
+      //SortIncludes   = loadedConfig.SortIncludes;
 
       if (null == loadedConfig.ClangFormatPath)
-        this.ClangFormatPath = new ClangFormatPathValue();
+        ClangFormatPath = new ClangFormatPathValue();
       else
-        this.ClangFormatPath = loadedConfig.ClangFormatPath;
+        ClangFormatPath = loadedConfig.ClangFormatPath;
 
     }
 

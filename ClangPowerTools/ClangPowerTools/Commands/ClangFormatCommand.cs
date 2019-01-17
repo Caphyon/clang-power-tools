@@ -48,15 +48,15 @@ namespace ClangPowerTools.Commands
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    private ClangFormatCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController, ErrorWindowController aErrorWindow,
-      OutputWindowController aOutputWindow, AsyncPackage aPackage, Guid aGuid, int aId)
-        : base(aCommandsController, aErrorWindow, aOutputWindow, aPackage, aGuid, aId)
+    private ClangFormatCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController, 
+      AsyncPackage aPackage, Guid aGuid, int aId)
+        : base(aPackage, aGuid, aId)
     {
       if (null != aCommandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
-        var menuCommand = new OleMenuCommand(mCommandsController.Execute, menuCommandID);
-        menuCommand.BeforeQueryStatus += mCommandsController.OnBeforeClangCommand;
+        var menuCommand = new OleMenuCommand(aCommandsController.Execute, menuCommandID);
+        menuCommand.BeforeQueryStatus += aCommandsController.OnBeforeClangCommand;
         menuCommand.Enabled = true;
         aCommandService.AddCommand(menuCommand);
       }
@@ -72,15 +72,15 @@ namespace ClangPowerTools.Commands
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController,
-      ErrorWindowController aErrorWindow, OutputWindowController aOutputWindow, AsyncPackage aPackage, Guid aGuid, int aId)
+    public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController, 
+      AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in ClangFormatCommand's constructor requires
       // the UI thread.
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-      Instance = new ClangFormatCommand(commandService, aCommandsController, aErrorWindow, aOutputWindow, aPackage, aGuid, aId);
+      Instance = new ClangFormatCommand(commandService, aCommandsController, aPackage, aGuid, aId);
     }
 
 

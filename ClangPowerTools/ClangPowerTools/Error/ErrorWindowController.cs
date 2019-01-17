@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using System;
 
 namespace ClangPowerTools
 {
   public class ErrorWindowController : ErrorListProvider
   {
-
     #region Constructor
 
     /// <summary>
@@ -26,20 +25,21 @@ namespace ClangPowerTools
     #region Public Methods
 
 
-    public void AddErrors(IEnumerable<TaskErrorModel> aErrors)
+    public void OnErrorDetected(object sender, ErrorDetectedEventArgs e)
     {
       UIUpdater.Invoke(() =>
       {
         SuspendRefresh();
+        Clear();
 
-        foreach (TaskErrorModel error in aErrors)
+        foreach (TaskErrorModel error in e.ErrorList)
         {
           error.Navigate += ErrorTaskNavigate;
           Tasks.Add(error);
         }
 
-        BringToFront();
         ResumeRefresh();
+        BringToFront();
       });
     }
 
@@ -54,6 +54,10 @@ namespace ClangPowerTools
         {
           var errorTask = Tasks[i] as ErrorTask;
           aHierarchy.GetCanonicalName(Microsoft.VisualStudio.VSConstants.VSITEMID_ROOT, out string nameInHierarchy);
+
+          if (null == errorTask.HierarchyItem)
+            return;
+
           errorTask.HierarchyItem.GetCanonicalName(Microsoft.VisualStudio.VSConstants.VSITEMID_ROOT, out string nameErrorTaskHierarchy);
           if (nameInHierarchy == nameErrorTaskHierarchy)
           {
@@ -86,7 +90,6 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-
     private void ErrorTaskNavigate(object sender, EventArgs e)
     {
       ErrorTask objErrorTask = (ErrorTask)sender;
@@ -95,7 +98,7 @@ namespace ClangPowerTools
       objErrorTask.Line -= 1;
     }
 
-
     #endregion
+
   }
 }
