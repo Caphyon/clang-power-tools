@@ -26,7 +26,6 @@ namespace ClangPowerTools
     private Document mDocument;
     private bool mFormatAfterTidyFlag = false;
 
-    //private IVsHierarchy mHierarchy;
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
 
     public event EventHandler<ClangCommandMessageEventArgs> ClangCommandMessageEvent;
@@ -56,20 +55,6 @@ namespace ClangPowerTools
     /// Running flag for Visual Studio build
     /// </summary>
     public bool VsBuildRunning { get; set; }
-
-
-    //private IVsHierarchy ItemHierarchy
-    //{
-    //  get => ItemHierarchy;
-    //  set
-    //  {
-    //    if (null == value)
-    //      return;
-    //    mHierarchy = value;
-    //    OnFileHierarchyChanged(new VsHierarchyDetectedEventArgs(mHierarchy));
-    //  }
-    //}
-
 
     #endregion
 
@@ -119,12 +104,6 @@ namespace ClangPowerTools
 
       if (null == SettingsCommand.Instance)
         await SettingsCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kSettingsId);
-
-      //CompileCommand.Instance.HierarchyDetectedEvent += OnFileHierarchyChanged;
-      //TidyCommand.Instance.HierarchyDetectedEvent += OnFileHierarchyChanged;
-
-      //MissingLlvmEvent += CompileCommand.Instance.OnMissingLLVMDetected;
-      //MissingLlvmEvent += TidyCommand.Instance.OnMissingLLVMDetected;
     }
 
 
@@ -156,20 +135,20 @@ namespace ClangPowerTools
         case CommandIds.kCompileId:
           OnBeforeClangCommand(CommandIds.kCompileId);
           await CompileCommand.Instance.RunClangCompile(CommandIds.kCompileId);
-          OnAfterClangCommand(CommandIds.kCompileId);
+          OnAfterClangCommand();
           break;
 
         case CommandIds.kTidyId:
           OnBeforeClangCommand(CommandIds.kTidyId);
           await TidyCommand.Instance.RunClangTidy(CommandIds.kTidyId);
-          OnAfterClangCommand(CommandIds.kTidyId);
+          OnAfterClangCommand();
           break;
 
         case CommandIds.kTidyFixId:
         case CommandIds.kTidyFixMenuId:
           OnBeforeClangCommand(CommandIds.kTidyFixId);
           await TidyCommand.Instance.RunClangTidy(CommandIds.kTidyFixId);
-          OnAfterClangCommand(CommandIds.kTidyFixId);
+          OnAfterClangCommand();
           break;
 
         case CommandIds.kIgnoreFormatId:
@@ -193,20 +172,25 @@ namespace ClangPowerTools
 
     private void OnBeforeClangCommand(int aCommandId)
     {
+      CurrentCommand = aCommandId;
       Running = true;
-      OnClangCommandBegin(new ClangCommandMessageEventArgs($"\nStart {OutputWindowConstants.kCommandsNames[aCommandId]}\n", true));
+      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nStart {OutputWindowConstants.kCommandsNames[aCommandId]}\n", true));
       OnClangCommandBegin(new ClearErrorListEventArgs());
     }
 
 
-    private void OnAfterClangCommand(int aCommandId)
+    private void OnAfterClangCommand()
     {
       Running = false;
-      OnClangCommandBegin(new ClangCommandMessageEventArgs($"\nDone {OutputWindowConstants.kCommandsNames[aCommandId]}\n", false));
+    }
+
+    public void OnCloseCommandDataConnection(object sender, CloseDataConnectionEventArgs e)
+    {
+      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nDone {OutputWindowConstants.kCommandsNames[CurrentCommand]}\n", false));
     }
 
 
-    private void OnClangCommandBegin(ClangCommandMessageEventArgs e)
+    private void OnClangCommandMessageTransfer(ClangCommandMessageEventArgs e)
     {
       ClangCommandMessageEvent?.Invoke(this, e);
     }

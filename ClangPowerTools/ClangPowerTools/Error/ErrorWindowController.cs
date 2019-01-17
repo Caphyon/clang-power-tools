@@ -30,7 +30,6 @@ namespace ClangPowerTools
       UIUpdater.Invoke(() =>
       {
         SuspendRefresh();
-        Clear();
 
         foreach (TaskErrorModel error in e.ErrorList)
         {
