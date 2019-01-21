@@ -70,7 +70,7 @@ namespace ClangPowerTools
     [DisplayName("Use custom executable file")]
     [Description("Specify a custom path for \"clang-tidy.exe\" file to run instead of the built-in one (v6.0)")]
     [ClangFormatPathAttribute(true)]
-    public ClangTidyPathValue ClangTidytPath { get; set; }
+    public ClangTidyPathValue ClangTidyPath { get; set; }
 
 
     protected override IWin32Window Window
@@ -91,17 +91,17 @@ namespace ClangPowerTools
     {
       string path = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
 
-      var updatedConfig = LoadFromFile(path);
+      ClangTidyOptions updatedConfig = LoadFromFile(path);
 
-      updatedConfig.AutoTidyOnSave = this.AutoTidyOnSave;
-      updatedConfig.FormatAfterTidy = this.FormatAfterTidy;
+      updatedConfig.AutoTidyOnSave = AutoTidyOnSave;
+      updatedConfig.FormatAfterTidy = FormatAfterTidy;
 
       updatedConfig.HeaderFilter =
-        true == string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(this.HeaderFilter.HeaderFilters)) ?
-          this.HeaderFilter.HeaderFilters : ClangTidyHeaderFiltersConvertor.ScriptEncode(this.HeaderFilter.HeaderFilters);
+        true == string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(HeaderFilter.HeaderFilters)) ?
+          HeaderFilter.HeaderFilters : ClangTidyHeaderFiltersConvertor.ScriptEncode(HeaderFilter.HeaderFilters);
 
-      updatedConfig.TidyMode = this.UseChecksFrom;
-      ClangTidytPath = this.ClangTidytPath;
+      updatedConfig.TidyMode = UseChecksFrom;
+      updatedConfig.ClangTidyPath = ClangTidyPath;
 
       SaveToFile(path, updatedConfig);
     }
@@ -109,7 +109,7 @@ namespace ClangPowerTools
     public override void LoadSettingsFromStorage()
     {
       string path = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
-      var loadedConfig = LoadFromFile(path);
+      ClangTidyOptions loadedConfig = LoadFromFile(path);
 
       AutoTidyOnSave = loadedConfig.AutoTidyOnSave;
       FormatAfterTidy = loadedConfig.FormatAfterTidy;
@@ -127,13 +127,18 @@ namespace ClangPowerTools
           ClangTidyUseChecksFrom.PredefinedChecks : ClangTidyUseChecksFrom.CustomChecks;
       }
       else
+      {
         UseChecksFrom = loadedConfig.TidyMode;
+      }
 
       if (loadedConfig.ClangTidyPath == null)
-        ClangTidytPath = new ClangTidyPathValue();
+      {
+        ClangTidyPath = new ClangTidyPathValue();
+      }
       else
-        ClangTidytPath = loadedConfig.ClangTidyPath;
-
+      {
+        ClangTidyPath = loadedConfig.ClangTidyPath;
+      }
     }
 
     #endregion

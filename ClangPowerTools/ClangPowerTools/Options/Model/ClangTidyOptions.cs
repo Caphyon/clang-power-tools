@@ -14,16 +14,15 @@ namespace ClangPowerTools
 
     public string TidyChecksCollection { get; set; }
 
-
     public bool AutoTidyOnSave { get; set; }
 
     public bool FormatAfterTidy { get; set; }
 
     public string HeaderFilter { get; set; }
 
-    public ClangTidyPathValue ClangTidyPath { get; set; }
-
     public ClangTidyUseChecksFrom? TidyMode { get; set; }
+
+    public ClangTidyPathValue ClangTidyPath { get; set; }
 
     #endregion
 
