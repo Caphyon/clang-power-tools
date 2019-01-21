@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Convertors;
+using ClangPowerTools.Options;
 using ClangPowerTools.Options.View;
 using System;
 using System.Collections.Generic;
@@ -65,6 +66,13 @@ namespace ClangPowerTools
     public ClangTidyUseChecksFrom? UseChecksFrom { get; set; }
 
 
+    [Category("Clang-Tidy")]
+    [DisplayName("Use custom executable file")]
+    [Description("Specify a custom path for \"clang-tidy.exe\" file to run instead of the built-in one (v6.0)")]
+    [ClangFormatPathAttribute(true)]
+    public ClangTidyPathValue ClangTidytPath { get; set; }
+
+
     protected override IWin32Window Window
     {
       get
@@ -93,6 +101,7 @@ namespace ClangPowerTools
           this.HeaderFilter.HeaderFilters : ClangTidyHeaderFiltersConvertor.ScriptEncode(this.HeaderFilter.HeaderFilters);
 
       updatedConfig.TidyMode = this.UseChecksFrom;
+      ClangTidytPath = this.ClangTidytPath;
 
       SaveToFile(path, updatedConfig);
     }
@@ -119,6 +128,11 @@ namespace ClangPowerTools
       }
       else
         UseChecksFrom = loadedConfig.TidyMode;
+
+      if (null == loadedConfig.ClangTidyPath)
+        ClangTidytPath = new ClangTidyPathValue();
+      else
+        ClangTidytPath = loadedConfig.ClangTidyPath;
 
     }
 

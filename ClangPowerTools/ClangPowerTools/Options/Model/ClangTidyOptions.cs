@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClangPowerTools.Options;
+using System;
 using System.Collections.Generic;
 
 namespace ClangPowerTools
@@ -19,6 +20,8 @@ namespace ClangPowerTools
     public bool FormatAfterTidy { get; set; }
 
     public string HeaderFilter { get; set; }
+
+    public ClangTidyPathValue ClangTidyPath { get; set; }
 
     public ClangTidyUseChecksFrom? TidyMode { get; set; }
 
