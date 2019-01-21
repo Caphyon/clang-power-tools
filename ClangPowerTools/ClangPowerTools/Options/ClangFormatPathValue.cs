@@ -9,18 +9,7 @@ namespace ClangPowerTools.Options
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private String mValue;
-
-    #endregion
-
-
-    #region Constructor
-
-    public ClangFormatPathValue()
-    {
-      mValue = string.Empty;
-      Enable = false;
-    }
+    private string mValue = string.Empty;
 
     #endregion
 
