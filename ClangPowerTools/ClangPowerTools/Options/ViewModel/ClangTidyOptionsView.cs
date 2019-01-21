@@ -114,14 +114,14 @@ namespace ClangPowerTools
       AutoTidyOnSave = loadedConfig.AutoTidyOnSave;
       FormatAfterTidy = loadedConfig.FormatAfterTidy;
 
-      if (null == loadedConfig.HeaderFilter)
+      if (loadedConfig.HeaderFilter == null)
         HeaderFilter = new HeaderFiltersValue(ComboBoxConstants.kDefaultHeaderFilter);
-      else if (false == string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptDecode(loadedConfig.HeaderFilter)))
+      else if (string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptDecode(loadedConfig.HeaderFilter)) == false)
         HeaderFilter = new HeaderFiltersValue(ClangTidyHeaderFiltersConvertor.ScriptDecode(loadedConfig.HeaderFilter));
       else
         HeaderFilter = new HeaderFiltersValue(loadedConfig.HeaderFilter);
 
-      if (null == loadedConfig.TidyMode)
+      if (loadedConfig.TidyMode == null)
       {
         UseChecksFrom = string.IsNullOrWhiteSpace(loadedConfig.TidyChecksCollection) ?
           ClangTidyUseChecksFrom.PredefinedChecks : ClangTidyUseChecksFrom.CustomChecks;
@@ -129,7 +129,7 @@ namespace ClangPowerTools
       else
         UseChecksFrom = loadedConfig.TidyMode;
 
-      if (null == loadedConfig.ClangTidyPath)
+      if (loadedConfig.ClangTidyPath == null)
         ClangTidytPath = new ClangTidyPathValue();
       else
         ClangTidytPath = loadedConfig.ClangTidyPath;
