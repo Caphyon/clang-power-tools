@@ -69,7 +69,7 @@ namespace ClangPowerTools
     [Category("Clang-Tidy")]
     [DisplayName("Use custom executable file")]
     [Description("Specify a custom path for \"clang-tidy.exe\" file to run instead of the built-in one (v6.0)")]
-    [ClangFormatPathAttribute(true)]
+    [ClangTidyPathAttribute(true)]
     public ClangTidyPathValue ClangTidyPath { get; set; }
 
 
