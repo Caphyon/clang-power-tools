@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="AutomationUtil.cs" />
     <Compile Include="ClangCheckAttribute.cs" />
+    <Compile Include="ClangTidyPathAttribute.cs" />
     <Compile Include="Commands\ClangFormatCommand.cs" />
     <Compile Include="Commands\IgnoreCompileCommand.cs" />
     <Compile Include="Commands\IgnoreFormatCommand.cs" />
@@ -153,8 +154,11 @@
     <Compile Include="Options\View\WpfPropertyGrid\BorderedTextBox.xaml.cs">
       <DependentUpon>BorderedTextBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowse.xaml.cs">
-      <DependentUpon>BorderedTextBoxBrowse.xaml</DependentUpon>
+    <Compile Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowseTidy.xaml.cs">
+      <DependentUpon>BorderedTextBoxBrowseTidy.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowseFormat.xaml.cs">
+      <DependentUpon>BorderedTextBoxBrowseFormat.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\View\WpfPropertyGrid\StringCollectionEditor.xaml.cs">
       <DependentUpon>StringCollectionEditor.xaml</DependentUpon>
@@ -464,7 +468,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowse.xaml">
+    <Page Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowseTidy.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowseFormat.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -7,9 +7,9 @@ namespace ClangPowerTools.Options.View.WpfPropertyGrid
   /// <summary>
   /// Interaction logic for BorderedTextBoxBrowse.xaml
   /// </summary>
-  public partial class BorderedTextBoxBrowse : TextBoxNotifaiableUserControl
+  public partial class BorderedTextBoxBrowseFormat : TextBoxNotifaiableUserControl
   {
-    public BorderedTextBoxBrowse()
+    public BorderedTextBoxBrowseFormat()
     {
       InitializeComponent();
     }
@@ -20,14 +20,10 @@ namespace ClangPowerTools.Options.View.WpfPropertyGrid
       Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
 
       // Set filter for file extension and default file extension
-      //dlg.FileName = "clang-format.exe";
-
       dlg.DefaultExt = ".exe";
       dlg.Filter = "clang-format|clang-format.exe|Executable files|*.exe|All files|*.*";
 
-      //dlg.FilterIndex = 1;
-
-      // Display OpenFileDialog by calling ShowDialog method
+   // Display OpenFileDialog by calling ShowDialog method
       Nullable<bool> result = dlg.ShowDialog();
 
       // Get the selected file name and display in a TextBox
@@ -39,8 +35,6 @@ namespace ClangPowerTools.Options.View.WpfPropertyGrid
 
         Paragraph paragraph = new Paragraph();
         paragraph.Inlines.Add(System.IO.File.ReadAllText(filename));
-        //FlowDocument document = new FlowDocument(paragraph);
-        //FlowDocReader.Document = document;
       }
     }
   }
