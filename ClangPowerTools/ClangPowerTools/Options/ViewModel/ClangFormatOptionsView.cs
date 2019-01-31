@@ -14,6 +14,7 @@ namespace ClangPowerTools.DialogPages
     private const string kGeneralSettingsFileName     = "FormatConfiguration.config";
     private SettingsPathBuilder mSettingsPathBuilder  = new SettingsPathBuilder();
     private string mSkipFiles;
+    private ClangFormatPathValue clangFormatPath;
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -51,8 +52,7 @@ namespace ClangPowerTools.DialogPages
 
     private void OnPropertyChanged(string aPropName)
     {
-      if (PropertyChanged != null)
-        PropertyChanged(this, new PropertyChangedEventArgs(aPropName));
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(aPropName));
     }
 
     #endregion
@@ -90,8 +90,18 @@ namespace ClangPowerTools.DialogPages
     [DisplayName("Use custom executable file")]
     [Description("Specify a custom path for \"clang-format.exe\" file to run instead of the built-in one (v6.0)")]
     [ClangFormatPathAttribute(true)]
-    public ClangFormatPathValue ClangFormatPath { get; set; }
-
+    public ClangFormatPathValue ClangFormatPath
+    {
+      get
+      {
+        return clangFormatPath;
+      }
+      set
+      {
+        clangFormatPath = value;
+        OnPropertyChanged("ClangFormatPath");
+      }
+    }
 
     #endregion
 

@@ -11,7 +11,7 @@ using System.Windows.Forms.Integration;
 namespace ClangPowerTools
 {
   [Serializable]
-  public class ClangTidyOptionsView : ConfigurationPage<ClangTidyOptions>
+  public class ClangTidyOptionsView : ConfigurationPage<ClangTidyOptions>, INotifyPropertyChanged
   {
 
     #region Constants
@@ -34,6 +34,9 @@ namespace ClangPowerTools
 
     private const string kTidyOptionsFileName = "TidyOptionsConfiguration.config";
     private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
+    private ClangTidyPathValue clangTidyPath;
+
+    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
 
@@ -71,7 +74,18 @@ namespace ClangPowerTools
     [DisplayName("Use custom executable file")]
     [Description("Specify a custom path for \"clang-tidy.exe\" file to run instead of the built-in one (v6.0)")]
     [ClangTidyPathAttribute(true)]
-    public ClangTidyPathValue ClangTidyPath { get; set; }
+    public ClangTidyPathValue ClangTidyPath
+    {
+      get
+      {
+        return clangTidyPath;
+      }
+      set
+      {
+        clangTidyPath = value;
+        OnPropertyChanged("ClangTidyPath");
+      }
+    }
 
 
     protected override IWin32Window Window
@@ -106,7 +120,12 @@ namespace ClangPowerTools
 
       SaveToFile(path, updatedConfig);
 
-     // SetEnvironmentVariableTidyPath();
+      SetEnvironmentVariableTidyPath();
+    }
+
+    private void OnPropertyChanged(string aPropName)
+    {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(aPropName));
     }
 
     private void SetEnvironmentVariableTidyPath()
@@ -159,7 +178,7 @@ namespace ClangPowerTools
       }
 
 
-     // SetEnvironmentVariableTidyPath();
+      SetEnvironmentVariableTidyPath();
     }
 
     #endregion

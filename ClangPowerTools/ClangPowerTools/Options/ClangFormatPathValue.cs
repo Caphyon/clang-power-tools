@@ -3,11 +3,9 @@ using System.ComponentModel;
 
 namespace ClangPowerTools.Options
 {
-  public class ClangFormatPathValue : INotifyPropertyChanged
+  public class ClangFormatPathValue
   {
     #region Members 
-
-    public event PropertyChangedEventHandler PropertyChanged;
 
     private string mValue = string.Empty;
 
@@ -27,8 +25,6 @@ namespace ClangPowerTools.Options
       set
       {
         mValue = value;
-        if (PropertyChanged != null)
-          PropertyChanged(this, new PropertyChangedEventArgs("Value"));
       }
     }
 

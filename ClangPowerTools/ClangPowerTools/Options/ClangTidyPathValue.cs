@@ -3,15 +3,16 @@ using System.ComponentModel;
 
 namespace ClangPowerTools.Options
 {
-  public class ClangTidyPathValue : INotifyPropertyChanged
+  public class ClangTidyPathValue
   {
     #region Members
-    public event PropertyChangedEventHandler PropertyChanged;
+
     private string mValue = string.Empty;
 
     #endregion
 
     #region Properties
+
     public bool Enable { get; set; } = false;
 
     public string Value
@@ -23,7 +24,6 @@ namespace ClangPowerTools.Options
       set
       {
         mValue = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
       }
     }
 
