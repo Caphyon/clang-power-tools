@@ -23,10 +23,7 @@ namespace ClangPowerTools.Options
       set
       {
         mValue = value;
-        if(PropertyChanged != null)
-        {
-          PropertyChanged(this, new PropertyChangedEventArgs("Value"));
-        }
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Value"));
       }
     }
 
