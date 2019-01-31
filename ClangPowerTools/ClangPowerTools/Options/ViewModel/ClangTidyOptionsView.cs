@@ -4,6 +4,7 @@ using ClangPowerTools.Options.View;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 
@@ -104,6 +105,23 @@ namespace ClangPowerTools
       updatedConfig.ClangTidyPath = ClangTidyPath;
 
       SaveToFile(path, updatedConfig);
+
+     // SetEnvironmentVariableTidyPath();
+    }
+
+    private void SetEnvironmentVariableTidyPath()
+    {
+      Task.Run(() =>
+     {
+       if (ClangTidyPath.Enable == true && ClangTidyPath.Value.Length > 0)
+       {
+         Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, ClangTidyPath.Value, EnvironmentVariableTarget.User);
+       }
+       else
+       {
+         Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, null, EnvironmentVariableTarget.User);
+       }
+     });
     }
 
     public override void LoadSettingsFromStorage()
@@ -139,6 +157,9 @@ namespace ClangPowerTools
       {
         ClangTidyPath = loadedConfig.ClangTidyPath;
       }
+
+
+     // SetEnvironmentVariableTidyPath();
     }
 
     #endregion
