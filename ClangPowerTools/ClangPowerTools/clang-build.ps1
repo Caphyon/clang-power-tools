@@ -229,16 +229,15 @@ Set-Variable -name kClangFlagForceInclude   -value "-include"           -option 
 Set-Variable -name kClangCompiler           -value "clang++.exe"        -option Constant
 
 # we may have a custom path for Clang-Tidy. Use it if that's the case.
-if (Test-Path $kVarEnvClangTidyPath)
+[string] $customTidyPath = [Environment]::GetEnvironmentVariable($kVarEnvClangTidyPath, "User")
+if ($customTidyPath)
 {
-  [string] $customTidyPath = (Get-Item $kVarEnvClangTidyPath).Value
   Set-Variable -name kClangTidy             -value $customTidyPath      -option Constant
 }
 else
 {
   Set-Variable -name kClangTidy             -value "clang-tidy.exe"     -option Constant
 }
-
 
 Set-Variable -name kClangTidyFlags            -value @("-quiet"
                                                       ,"--")            -option Constant
