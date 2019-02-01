@@ -1,15 +1,17 @@
 ﻿using ClangPowerTools.Convertors;
+using ClangPowerTools.Options;
 using ClangPowerTools.Options.View;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 
 namespace ClangPowerTools
 {
   [Serializable]
-  public class ClangTidyOptionsView : ConfigurationPage<ClangTidyOptions>
+  public class ClangTidyOptionsView : ConfigurationPage<ClangTidyOptions>, INotifyPropertyChanged
   {
 
     #region Constants
@@ -32,6 +34,9 @@ namespace ClangPowerTools
 
     private const string kTidyOptionsFileName = "TidyOptionsConfiguration.config";
     private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
+    private ClangTidyPathValue clangTidyPath;
+
+    public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
 
@@ -65,6 +70,24 @@ namespace ClangPowerTools
     public ClangTidyUseChecksFrom? UseChecksFrom { get; set; }
 
 
+    [Category("Clang-Tidy")]
+    [DisplayName("Use custom executable file")]
+    [Description("Specify a custom path for \"clang-tidy.exe\" file to run instead of the built-in one (v6.0)")]
+    [ClangTidyPathAttribute(true)]
+    public ClangTidyPathValue ClangTidyPath
+    {
+      get
+      {
+        return clangTidyPath;
+      }
+      set
+      {
+        clangTidyPath = value;
+        OnPropertyChanged("ClangTidyPath");
+      }
+    }
+
+
     protected override IWin32Window Window
     {
       get
@@ -83,43 +106,79 @@ namespace ClangPowerTools
     {
       string path = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
 
-      var updatedConfig = LoadFromFile(path);
+      ClangTidyOptions updatedConfig = LoadFromFile(path);
 
-      updatedConfig.AutoTidyOnSave = this.AutoTidyOnSave;
-      updatedConfig.FormatAfterTidy = this.FormatAfterTidy;
+      updatedConfig.AutoTidyOnSave = AutoTidyOnSave;
+      updatedConfig.FormatAfterTidy = FormatAfterTidy;
 
       updatedConfig.HeaderFilter =
-        true == string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(this.HeaderFilter.HeaderFilters)) ?
-          this.HeaderFilter.HeaderFilters : ClangTidyHeaderFiltersConvertor.ScriptEncode(this.HeaderFilter.HeaderFilters);
+        true == string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(HeaderFilter.HeaderFilters)) ?
+          HeaderFilter.HeaderFilters : ClangTidyHeaderFiltersConvertor.ScriptEncode(HeaderFilter.HeaderFilters);
 
-      updatedConfig.TidyMode = this.UseChecksFrom;
+      updatedConfig.TidyMode = UseChecksFrom;
+      updatedConfig.ClangTidyPath = ClangTidyPath;
 
       SaveToFile(path, updatedConfig);
+
+      SetEnvironmentVariableTidyPath();
+    }
+
+    private void OnPropertyChanged(string aPropName)
+    {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(aPropName));
+    }
+
+    private void SetEnvironmentVariableTidyPath()
+    {
+      Task.Run(() =>
+     {
+       if (ClangTidyPath.Enable == true && ClangTidyPath.Value.Length > 0)
+       {
+         Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, ClangTidyPath.Value, EnvironmentVariableTarget.User);
+       }
+       else
+       {
+         Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, null, EnvironmentVariableTarget.User);
+       }
+     });
     }
 
     public override void LoadSettingsFromStorage()
     {
       string path = mSettingsPathBuilder.GetPath(kTidyOptionsFileName);
-      var loadedConfig = LoadFromFile(path);
+      ClangTidyOptions loadedConfig = LoadFromFile(path);
 
       AutoTidyOnSave = loadedConfig.AutoTidyOnSave;
       FormatAfterTidy = loadedConfig.FormatAfterTidy;
 
-      if (null == loadedConfig.HeaderFilter)
+      if (loadedConfig.HeaderFilter == null)
         HeaderFilter = new HeaderFiltersValue(ComboBoxConstants.kDefaultHeaderFilter);
-      else if (false == string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptDecode(loadedConfig.HeaderFilter)))
+      else if (string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptDecode(loadedConfig.HeaderFilter)) == false)
         HeaderFilter = new HeaderFiltersValue(ClangTidyHeaderFiltersConvertor.ScriptDecode(loadedConfig.HeaderFilter));
       else
         HeaderFilter = new HeaderFiltersValue(loadedConfig.HeaderFilter);
 
-      if (null == loadedConfig.TidyMode)
+      if (loadedConfig.TidyMode == null)
       {
         UseChecksFrom = string.IsNullOrWhiteSpace(loadedConfig.TidyChecksCollection) ?
           ClangTidyUseChecksFrom.PredefinedChecks : ClangTidyUseChecksFrom.CustomChecks;
       }
       else
+      {
         UseChecksFrom = loadedConfig.TidyMode;
+      }
 
+      if (loadedConfig.ClangTidyPath == null)
+      {
+        ClangTidyPath = new ClangTidyPathValue();
+      }
+      else
+      {
+        ClangTidyPath = loadedConfig.ClangTidyPath;
+      }
+
+
+      SetEnvironmentVariableTidyPath();
     }
 
     #endregion

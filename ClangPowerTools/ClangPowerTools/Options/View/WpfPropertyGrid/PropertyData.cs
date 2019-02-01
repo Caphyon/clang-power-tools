@@ -73,27 +73,47 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       }
     }
 
-    
-
     /// <summary>
-    /// Check if the property has a certain attribute
+    /// Check if the property has the FormatBrowseAttribute
     /// </summary>
-    public bool HasTextBoxAndBrowseAttribute
+    public bool HasFormatBrowseAttribute
     {
       get
       {
         object[] propAttrs = mPropertyInfo.GetCustomAttributes(false);
-        object clangCheckAttr = propAttrs.FirstOrDefault(attr => typeof(ClangFormatPathAttribute) == attr.GetType());
+        object formatCheckAttr = propAttrs.FirstOrDefault(attr => typeof(ClangFormatPathAttribute) == attr.GetType());
         object displayNameAttrObj = propAttrs.FirstOrDefault(attr => typeof(DisplayNameAttribute) == attr.GetType());
 
-        if (null == clangCheckAttr || null == displayNameAttrObj)
-          return false;
 
-        return true;
+        if(formatCheckAttr != null && displayNameAttrObj != null)
+        {
+          return true;
+        }
+
+        return false;
       }
     }
 
+    /// <summary>
+    /// Check if the property has the HasTidyBrowseAttribute
+    /// </summary>
+    public bool HasTidyBrowseAttribute
+    {
+      get
+      {
+        object[] propAttrs = mPropertyInfo.GetCustomAttributes(false);
+        object tidyCheckAttr = propAttrs.FirstOrDefault(attr => typeof(ClangTidyPathAttribute) == attr.GetType());
+        object displayNameAttrObj = propAttrs.FirstOrDefault(attr => typeof(DisplayNameAttribute) == attr.GetType());
 
+
+        if (tidyCheckAttr != null && displayNameAttrObj != null)
+        {
+          return true;
+        }
+
+        return false;
+      }
+    }
 
     /// <summary>
     /// Category where the property is placed

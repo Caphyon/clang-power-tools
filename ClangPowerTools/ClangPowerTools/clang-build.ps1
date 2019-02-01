@@ -203,6 +203,12 @@ Set-Variable -name kExtensionSolution        -value ".sln"              -option 
 Set-Variable -name kExtensionClangPch        -value ".clang.pch"        -option Constant
 Set-Variable -name kExtensionC               -value ".c"                -option Constant
 
+
+# ------------------------------------------------------------------------------------------------
+# Envinroment Variables for controlling logic
+
+Set-Variable -name kVarEnvClangTidyPath     -value "CLANG_TIDY_PATH"-option Constant
+
 # ------------------------------------------------------------------------------------------------
 # Clang-Related Constants
 
@@ -220,8 +226,19 @@ Set-Variable -name kClangFlagFileIsCPP      -value "-x c++"             -option 
 Set-Variable -name kClangFlagFileIsC        -value "-x c"               -option Constant
 Set-Variable -name kClangFlagForceInclude   -value "-include"           -option Constant
 
-Set-Variable -name kClangCompiler             -value "clang++.exe"      -option Constant
-Set-Variable -name kClangTidy                 -value "clang-tidy.exe"   -option Constant
+Set-Variable -name kClangCompiler           -value "clang++.exe"        -option Constant
+
+# we may have a custom path for Clang-Tidy. Use it if that's the case.
+[string] $customTidyPath = [Environment]::GetEnvironmentVariable($kVarEnvClangTidyPath, "User")
+if ($customTidyPath)
+{
+  Set-Variable -name kClangTidy             -value $customTidyPath      -option Constant
+}
+else
+{
+  Set-Variable -name kClangTidy             -value "clang-tidy.exe"     -option Constant
+}
+
 Set-Variable -name kClangTidyFlags            -value @("-quiet"
                                                       ,"--")            -option Constant
 Set-Variable -name kClangTidyFixFlags         -value @("-quiet"

@@ -88,7 +88,43 @@
           <Label Content="Path" VerticalAlignment="Center" Margin="16 0 0 0" />
         </Border>
         <Border Grid.Column="1" Style="{x:Null}">
-          <Local1:BorderedTextBoxBrowse
+          <Local1:BorderedTextBoxBrowseFormat
+            DataContext="{Binding Value}"
+            Grid.Row="0"
+            PreviewMouseUp="PreviewMouseUp"
+            PreviewMouseDown="PreviewMouseDown" 
+            Margin="5,2" />
+        </Border>
+      </Grid>
+    </StackPanel>
+
+  </DataTemplate>
+
+  <!-- Clang Tidy Path DataTemplate -->
+  <DataTemplate x:Key="ClangTidyPathDataTemplate">
+
+    <StackPanel>
+      <Grid Height="28">
+        <CheckBox x:Name="EnableClangTidyCustomPathCheckBox" 
+                  IsChecked="{Binding Value.Enable}" 
+                  Content="{Binding DisplayName}" 
+                  HorizontalAlignment="Left" 
+                  VerticalAlignment="Stretch" 
+                  VerticalContentAlignment="Center"
+                  PreviewMouseUp="PreviewMouseUp"
+                  PreviewMouseDown="PreviewMouseDown"/>
+      </Grid>
+
+      <Grid IsEnabled="{Binding ElementName=EnableClangTidyCustomPathCheckBox, Path=IsChecked}">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" >
+          <Label Content="Path" VerticalAlignment="Center" Margin="16 0 0 0" />
+        </Border>
+        <Border Grid.Column="1" Style="{x:Null}">
+          <Local1:BorderedTextBoxBrowseTidy
             DataContext="{Binding Value}"
             Grid.Row="0"
             PreviewMouseUp="PreviewMouseUp"

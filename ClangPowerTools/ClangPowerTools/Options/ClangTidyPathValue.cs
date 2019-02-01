@@ -3,14 +3,13 @@ using System.ComponentModel;
 
 namespace ClangPowerTools.Options
 {
-  public class ClangFormatPathValue
+  public class ClangTidyPathValue
   {
-    #region Members 
+    #region Members
 
     private string mValue = string.Empty;
 
     #endregion
-
 
     #region Properties
 
@@ -29,6 +28,5 @@ namespace ClangPowerTools.Options
     }
 
     #endregion
-
   }
 }

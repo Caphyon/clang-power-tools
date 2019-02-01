@@ -42,8 +42,11 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
       if (!string.IsNullOrEmpty(editorName))
         return mRes[editorName] as DataTemplate;
 
-      if (true == prop.HasTextBoxAndBrowseAttribute && !prop.IsReadOnly)
+      if (prop.HasFormatBrowseAttribute == true && !prop.IsReadOnly)
         return mRes["ClangFormatPathDataTemplate"] as DataTemplate;
+
+      if (prop.HasTidyBrowseAttribute == true && !prop.IsReadOnly)
+        return mRes["ClangTidyPathDataTemplate"] as DataTemplate;
 
       if (prop.PropertyType == typeof(string) && !prop.IsReadOnly)
         return mRes["StringDataTemplate"] as DataTemplate;
