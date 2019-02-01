@@ -207,7 +207,7 @@ Set-Variable -name kExtensionC               -value ".c"                -option 
 # ------------------------------------------------------------------------------------------------
 # Envinroment Variables for controlling logic
 
-Set-Variable -name kVarEnvClangTidyPath     -value "env:CLANG_TIDY_PATH"-option Constant
+Set-Variable -name kVarEnvClangTidyPath     -value "CLANG_TIDY_PATH"-option Constant
 
 # ------------------------------------------------------------------------------------------------
 # Clang-Related Constants
