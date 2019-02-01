@@ -19,13 +19,13 @@ How Clang Power Tools came to be: [About](about.md)
 
 📜 **Poster CppCon 2018** - [Retrofit C++17 to large Visual Studio codebases](https://github.com/CppCon/CppCon2018/raw/master/Posters/retrofit_cpp17_to_large_visual_studio_codebases/retrofit_cpp17_to_large_visual_studio_codebases__gabriel_diaconita__cppcon_2018.pdf)  
 
-Quick tab access
+**Quick tab access**  
 ![ClangPowerTools](images/VSDemo1.png)
 
-**Toolbar menu**
+**Toolbar menu**  
 ![ClangPowerTools](images/Toolbar1.png)
 
-**File select context-menu**
+**File select context-menu**  
 ![ClangPowerTools](images/VSDemo3.PNG)
 
 The extension can be configured via the standard Visual Studio options panel.  
