@@ -19,28 +19,31 @@ How Clang Power Tools came to be: [About](about.md)
 
 📜 **Poster CppCon 2018** - [Retrofit C++17 to large Visual Studio codebases](https://github.com/CppCon/CppCon2018/raw/master/Posters/retrofit_cpp17_to_large_visual_studio_codebases/retrofit_cpp17_to_large_visual_studio_codebases__gabriel_diaconita__cppcon_2018.pdf)  
 
-
+Quick tab access
 ![ClangPowerTools](images/VSDemo1.png)
 
+**Toolbar menu**
 ![ClangPowerTools](images/Toolbar1.png)
 
+**File select context-menu**
 ![ClangPowerTools](images/VSDemo3.PNG)
-
-A list of available checks that clang-tidy can perform:  
-- [clang-tidy checks](https://clang.llvm.org/extra/clang-tidy/checks/list.html)  
-- [clang-analyzer checks](https://clang-analyzer.llvm.org/available_checks.html)
-
-![ClangPowerTools](images/VSTidyChecks.PNG)
-
-Custom clang-tidy wildcard checks:
-
-![ClangPowerTools](images/VSTidyChecksWildcard.PNG)
 
 The extension can be configured via the standard Visual Studio options panel.  
 **Tools** > **Options** > **Clang Power Tools**  
 You can customize the tool behavior as well as the clang++ compilation flags, clang-tidy checks, etc.
 
 ![ClangPowerTools](images/VSSettings.png)
+
+A list of available checks that clang-tidy can perform:  
+- [clang-tidy checks](https://clang.llvm.org/extra/clang-tidy/checks/list.html)  
+- [clang-analyzer checks](https://clang-analyzer.llvm.org/available_checks.html)
+
+**Predefined clang-tidy checks**
+![ClangPowerTools](images/VSTidyChecks.PNG)
+
+**Custom clang-tidy wildcard checks**
+
+![ClangPowerTools](images/VSTidyChecksWildcard.PNG)
 
 🆕 Built-in support for **[clang-format](https://clang.llvm.org/docs/ClangFormat.html)**  
 Auto-format source file on save, configurable [style options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html), file extension rules, etc.
