@@ -99,47 +99,45 @@ namespace ClangPowerTools
 
     protected void RunScript(int aCommandId)
     {
-      try
-      {
-        var dte = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
-        dte.Solution.SaveAs(dte.Solution.FullName);
+      var dte = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
+      dte.Solution.SaveAs(dte.Solution.FullName);
 
-        IBuilder<string> runModeScriptBuilder = new RunModeScriptBuilder();
-        runModeScriptBuilder.Build();
-        var runModeParameters = runModeScriptBuilder.GetResult();
+      IBuilder<string> runModeScriptBuilder = new RunModeScriptBuilder();
+      runModeScriptBuilder.Build();
+      var runModeParameters = runModeScriptBuilder.GetResult();
 
-        IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(VsEdition, VsVersion, aCommandId);
-        genericScriptBuilder.Build();
-        var genericParameters = genericScriptBuilder.GetResult();
+      IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(VsEdition, VsVersion, aCommandId);
+      genericScriptBuilder.Build();
+      var genericParameters = genericScriptBuilder.GetResult();
 
-        string solutionPath = dte.Solution.FullName;
+      string solutionPath = dte.Solution.FullName;
 
+      if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
         StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
 
-        VsServiceProvider.TryGetService(typeof(SVsSolution), out object vsSolutionService);
-        var vsSolution = vsSolutionService as IVsSolution;
+      VsServiceProvider.TryGetService(typeof(SVsSolution), out object vsSolutionService);
+      var vsSolution = vsSolutionService as IVsSolution;
 
-        foreach (var item in mItemsCollector.GetItems)
-        {
-          IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item);
-          itemRelatedScriptBuilder.Build();
-          var itemRelatedParameters = itemRelatedScriptBuilder.GetResult();
+      foreach (var item in mItemsCollector.GetItems)
+      {
+        IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item);
+        itemRelatedScriptBuilder.Build();
+        var itemRelatedParameters = itemRelatedScriptBuilder.GetResult();
 
-          // From the first parameter is removed the last character which is mandatory "'"
-          // and added to the end of the string to close the script
-          var script = $"{runModeParameters.Remove(runModeParameters.Length - 1)} {itemRelatedParameters} {genericParameters}'";
+        // From the first parameter is removed the last character which is mandatory "'"
+        // and added to the end of the string to close the script
+        var script = $"{runModeParameters.Remove(runModeParameters.Length - 1)} {itemRelatedParameters} {genericParameters}'";
 
-          if (null != vsSolution)
-            ItemHierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
+        if (null != vsSolution)
+          ItemHierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
 
-          var process = PowerShellWrapper.Invoke(script, mRunningProcesses);
+        var process = PowerShellWrapper.Invoke(script, mRunningProcesses);
 
-          if (mMissingLLVM)
-            break;
-        }
-        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+        if (mMissingLLVM)
+          break;
       }
-      catch (Exception) { }
+      if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
+        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
 

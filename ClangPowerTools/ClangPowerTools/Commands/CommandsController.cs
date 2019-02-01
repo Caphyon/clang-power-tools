@@ -114,51 +114,63 @@ namespace ClangPowerTools
 
       if (Running && command.CommandID.ID != CommandIds.kStopClang)
         return;
-
+      
       switch (command.CommandID.ID)
       {
         case CommandIds.kSettingsId:
-          CurrentCommand = CommandIds.kSettingsId;
-          SettingsCommand.Instance.ShowSettings();
-          break;
-
+          {
+            CurrentCommand = CommandIds.kSettingsId;
+            SettingsCommand.Instance.ShowSettings();
+            break;
+          }
         case CommandIds.kStopClang:
-          CurrentCommand = CommandIds.kStopClang;
-          StopClang.Instance.RunStopClangCommand();
-          break;
-
+          {
+            CurrentCommand = CommandIds.kStopClang;
+            StopClang.Instance.RunStopClangCommand();
+            break;
+          }
         case CommandIds.kClangFormat:
-          CurrentCommand = CommandIds.kClangFormat;
-          ClangFormatCommand.Instance.RunClangFormat();
-          break;
-
+          {
+            CurrentCommand = CommandIds.kClangFormat;
+            ClangFormatCommand.Instance.RunClangFormat();
+            break;
+          }
         case CommandIds.kCompileId:
-          OnBeforeClangCommand(CommandIds.kCompileId);
-          await CompileCommand.Instance.RunClangCompile(CommandIds.kCompileId);
-          OnAfterClangCommand();
-          break;
-
+          {
+            OnBeforeClangCommand(CommandIds.kCompileId);
+            await CompileCommand.Instance.RunClangCompile(CommandIds.kCompileId);
+            OnAfterClangCommand();
+            break;
+          }
         case CommandIds.kTidyId:
-          OnBeforeClangCommand(CommandIds.kTidyId);
-          await TidyCommand.Instance.RunClangTidy(CommandIds.kTidyId);
-          OnAfterClangCommand();
-          break;
-
+          {
+            OnBeforeClangCommand(CommandIds.kTidyId);
+            await TidyCommand.Instance.RunClangTidy(CommandIds.kTidyId);
+            OnAfterClangCommand();
+            break;
+          }
         case CommandIds.kTidyFixId:
         case CommandIds.kTidyFixMenuId:
-          OnBeforeClangCommand(CommandIds.kTidyFixId);
-          await TidyCommand.Instance.RunClangTidy(CommandIds.kTidyFixId);
-          OnAfterClangCommand();
-          break;
-
+          {
+            OnBeforeClangCommand(CommandIds.kTidyFixId);
+            await TidyCommand.Instance.RunClangTidy(CommandIds.kTidyFixId);
+            OnAfterClangCommand();
+            break;
+          }
         case CommandIds.kIgnoreFormatId:
-           CurrentCommand = CommandIds.kIgnoreFormatId;
-           IgnoreFormatCommand.Instance.RunIgnoreFormatCommand(CommandIds.kIgnoreFormatId);
-           break;
-
+          {
+            CurrentCommand = CommandIds.kIgnoreFormatId;
+            IgnoreFormatCommand.Instance.RunIgnoreFormatCommand(CommandIds.kIgnoreFormatId);
+            break;
+          }
         case CommandIds.kIgnoreCompileId:
-          CurrentCommand = CommandIds.kIgnoreCompileId;
-          IgnoreCompileCommand.Instance.RunIgnoreCompileCommand(CommandIds.kIgnoreCompileId);
+          {
+            CurrentCommand = CommandIds.kIgnoreCompileId;
+            IgnoreCompileCommand.Instance.RunIgnoreCompileCommand(CommandIds.kIgnoreCompileId);
+            break;
+          }
+
+        default:
           break;
       }
     }
@@ -174,7 +186,10 @@ namespace ClangPowerTools
     {
       CurrentCommand = aCommandId;
       Running = true;
-      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nStart {OutputWindowConstants.kCommandsNames[aCommandId]}\n", true));
+
+      if(OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
+        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nStart {OutputWindowConstants.kCommandsNames[aCommandId]}\n", true));
+
       OnClangCommandBegin(new ClearErrorListEventArgs());
     }
 
@@ -186,7 +201,8 @@ namespace ClangPowerTools
 
     public void OnCloseCommandDataConnection(object sender, CloseDataConnectionEventArgs e)
     {
-      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nDone {OutputWindowConstants.kCommandsNames[CurrentCommand]}\n", false));
+      if (OutputWindowConstants.kCommandsNames.ContainsKey(CurrentCommand))
+        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nDone {OutputWindowConstants.kCommandsNames[CurrentCommand]}\n", false));
     }
 
 
