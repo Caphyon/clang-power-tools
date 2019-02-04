@@ -1,5 +1,18 @@
 # Version History
 
+### Clang Power Tools 4.7
+*February 4, 2019*
+
+Improvements:
+
+* Support for custom Clang Tidy executable path
+
+Bugs:
+
+* The custom path for Clang Format cannot be changed after it was set
+* Output window did not display the Clang output properly
+* Unhandled exception in the status-bar caused errors
+
 ### Clang Power Tools 4.6
 *January 17, 2019*
 
