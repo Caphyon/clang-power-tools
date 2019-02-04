@@ -9,6 +9,6 @@ A tool bringing clang-tidy magic to Visual Studio C++ developers.
 
 [Release Notes](http://www.clangpowertools.com/CHANGELOG)
 
-### Q & A
+### FAQ
 
 [Frequently asked questions](http://www.clangpowertools.com/QaA)
