@@ -336,8 +336,8 @@ namespace ClangPowerTools
       if (null != mBuildEvents)
       {
         mBuildEvents.OnBuildBegin += mErrorWindowController.OnBuildBegin;
-        mBuildEvents.OnBuildBegin += mCommandsController.OnBuildBegin;
-        mBuildEvents.OnBuildDone += mCommandsController.OnBuildDone;
+        mBuildEvents.OnBuildBegin += mCommandsController.OnMSVCBuildBegin;
+        mBuildEvents.OnBuildDone += mCommandsController.OnMSVCBuildDone;
       }
 
       if (null != mCommandEvents)
@@ -390,8 +390,8 @@ namespace ClangPowerTools
       if (null != mBuildEvents)
       {
         mBuildEvents.OnBuildBegin -= mErrorWindowController.OnBuildBegin;
-        mBuildEvents.OnBuildBegin -= mCommandsController.OnBuildBegin;
-        mBuildEvents.OnBuildDone -= mCommandsController.OnBuildDone;
+        mBuildEvents.OnBuildBegin -= mCommandsController.OnMSVCBuildBegin;
+        mBuildEvents.OnBuildDone -= mCommandsController.OnMSVCBuildDone;
       }
 
       if (null != mCommandEvents)
