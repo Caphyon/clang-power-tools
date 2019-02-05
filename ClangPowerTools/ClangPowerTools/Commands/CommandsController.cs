@@ -107,7 +107,7 @@ namespace ClangPowerTools
     }
 
 
-    public async void Execute(object sender, EventArgs e)
+    public async void ExecuteAsync(object sender, EventArgs e)
     {
       if (!(sender is OleMenuCommand command))
         return;
