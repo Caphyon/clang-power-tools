@@ -193,6 +193,10 @@ namespace ClangPowerTools
       OnClangCommandBegin(new ClearErrorListEventArgs());
     }
 
+    private void OnClangCommandBegin(ClearErrorListEventArgs e)
+    {
+      ClearErrorListEvent?.Invoke(this, e);
+    }
 
     private void OnAfterClangCommand()
     {
@@ -211,10 +215,6 @@ namespace ClangPowerTools
       ClangCommandMessageEvent?.Invoke(this, e);
     }
 
-    private void OnClangCommandBegin(ClearErrorListEventArgs e)
-    {
-      ClearErrorListEvent?.Invoke(this, e);
-    }
 
     public void OnFileHierarchyChanged(object sender, VsHierarchyDetectedEventArgs e)
     {
@@ -285,7 +285,7 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="Scope"></param>
     /// <param name="Action"></param>
-    public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action) => VsBuildRunning = true;
+    public void OnMSVCBuildBegin(vsBuildScope Scope, vsBuildAction Action) => VsBuildRunning = true;
 
 
     /// <summary>
@@ -293,16 +293,16 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="Scope"></param>
     /// <param name="Action"></param>
-    public void OnBuildDone(vsBuildScope Scope, vsBuildAction Action)
+    public void OnMSVCBuildDone(vsBuildScope Scope, vsBuildAction Action)
     {
       VsBuildRunning = false;
-      OnBuildDoneClangCompile();
+      OnMSVCBuildSucceededAsync();
     }
 
 
-    private void OnBuildDoneClangCompile()
+    private async System.Threading.Tasks.Task OnMSVCBuildSucceededAsync()
     {
-      if (false == CompileCommand.Instance.VsCompileFlag)
+      if (!CompileCommand.Instance.VsCompileFlag)
         return;
 
       var exitCode = int.MaxValue;
@@ -316,9 +316,12 @@ namespace ClangPowerTools
         return;
       }
 
-      // Run clang compile after the VS compile succeeded 
-      CompileCommand.Instance.RunClangCompile(CommandIds.kCompileId);
+      // Run clang compile after the VS compile succeeded
+
+      OnBeforeClangCommand(CommandIds.kCompileId);
+      await CompileCommand.Instance.RunClangCompile(CommandIds.kCompileId);
       CompileCommand.Instance.VsCompileFlag = false;
+      OnAfterClangCommand();
     }
 
 
