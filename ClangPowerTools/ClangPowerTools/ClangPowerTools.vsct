@@ -182,6 +182,12 @@
 
 		</Commands>
 
+		 <!-- Shortcuts for commands-->
+		<KeyBindings>
+				<KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyId" 
+										key1 ="C" mod1="Control" mod2="Alt" editor="guidVSStd97"/>	
+		</KeyBindings>
+
 		<CommandPlacements>
 
 				<!-- Placement for commands.
@@ -251,13 +257,13 @@
 						<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
 				</CommandPlacement>
 
-			  <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="IgnoreCompileId" priority="0x0005">
-				    <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
-			  </CommandPlacement>
+				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="IgnoreCompileId" priority="0x0005">
+						<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
+				</CommandPlacement>
 				
-			  <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="IgnoreFormatId" priority="0x0006">
-				    <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
-			  </CommandPlacement>
+				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="IgnoreFormatId" priority="0x0006">
+						<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
+				</CommandPlacement>
 			
 				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0007">
 						<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" />
