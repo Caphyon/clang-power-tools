@@ -29,7 +29,8 @@ namespace ClangPowerTools
       {"12.0", "2012"},
       {"13.0", "2013"},
       {"14.0", "2015"},
-      {"15.0", "2017"}
+      {"15.0", "2017"},
+      {"16.0", "2019"}
     };
 
     private bool mMissingLLVM = false;
