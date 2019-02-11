@@ -184,8 +184,18 @@
 
 		 <!-- Shortcuts for commands-->
 		<KeyBindings>
-				<KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyId" 
-										key1 ="C" mod1="Control" mod2="Alt" editor="guidVSStd97"/>	
+				<KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="CompileId" editor="guidVSStd97" 
+										key1="O" mod1="ALT" />
+				<KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyId" editor="guidVSStd97"
+										key1="I" mod1="ALT" />
+				<KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" editor="guidVSStd97"
+										key1="U" mod1="ALT" />
+				<KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" editor="guidVSStd97"
+										key1="Y" mod1="ALT" />
+				<KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" editor="guidVSStd97"
+										key1="L" mod1="ALT" />
+			  <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" editor="guidVSStd97"
+						        key1="O" mod1="SHIFT" />
 		</KeyBindings>
 
 		<CommandPlacements>
