@@ -54,7 +54,7 @@
 								<Icon guid="guidImageCompile" id="Compile" />
 								<CommandFlag>DefaultDisabled</CommandFlag>
 								<Strings>
-										<ButtonText>Compile Syntax</ButtonText>
+										<ButtonText>Compile</ButtonText>
 								</Strings>
 						</Button>
 
