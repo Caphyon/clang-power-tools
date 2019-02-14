@@ -1,17 +1,21 @@
 # Tips & Frequently Asked Questions
 
-### 👉 Does Clang Power Tools support `clang-format` ?
+### 💡 Does Clang Power Tools generate object files when running the Compile command ? 
+
+No. Clang Power Tools performs only the following operations: lexical analysis, preprocessing, parsing, and semantic analysis (syntax-directed translation), by invoking `clang++ -fsyntax-only`.
+
+### 💡 Does Clang Power Tools support `clang-format` ?
 
 Yes. Starting with version 3.0 Clang Power Tools VS extension has built-in support for **[clang-format](https://clang.llvm.org/docs/ClangFormat.html)**  
 Auto-format source file on save, configurable [style options](https://clang.llvm.org/docs/ClangFormatStyleOptions.html), file extension rules, etc.
 
-### 👉 What Clang/LLVM tools are supported by Clang Power Tools workflows ?
+### 💡 What Clang/LLVM tools are supported by Clang Power Tools workflows ?
 
  * `clang++`      - Clang compile (syntax-only)
  * `clang-tidy`   - Clang Tidy (checks, auto-fixes, modernizing code, static analysis)
  * `clang-format` - source code formating (auto format on save)
 
-### 👉 Do I need to install LLVM for Clang Power Tools to work ?
+### 💡 Do I need to install LLVM for Clang Power Tools to work ?
 
 Yes. 
 Download and install **Clang for Windows** (LLVM pre-built binary)  
@@ -20,11 +24,11 @@ Eg. [LLVM-7.0.1-win64](http://releases.llvm.org/7.0.1/LLVM-7.0.1-win64.exe)
 
 We will automatically load clang from the default installation path *C:\Program Files\LLVM*. If you prefer to use a different location you must manually add the **bin** folder to **PATH**.  
 
-### 👉 What versions of LLVM are supported by Clang Power Tools ?
+### 💡 What versions of LLVM are supported by Clang Power Tools ?
 
 We tested Clang Power Tools with LLVM `3.9.x`, `4.0.x`, `5.0.x`, `6.0.x` and `7.0.x`
 
-### 👉 How to deal with warnings from system/third-party headers ?
+### 💡 How to deal with warnings from system/third-party headers ?
 
 Until v2.6, we've used the `%INCLUDE%` environment variable for setting clang include directories.
 That was equivalent to using `-isystem` for each directory. 
@@ -66,7 +70,7 @@ _Scenario:_
 Developer compiles code in Visual Studio (`/W4 /WX`) ✔️ ... push commit ... CI build pipeline .... broken **Clang** build 🔥  
 After enabling this option (from _Settings_), developers _**immediately**_ see when they compile a source file from VS if it also works in Clang. Each successful MSVC **compile** is automatically followed by a Clang compile. 
 
-### 👉 Where can I see detailed information about clang-tidy checks ?
+### 💡 Where can I see detailed information about clang-tidy checks ?
 
 A list of available checks that `clang-tidy` can perform:  
 [clang.llvm.org/extra/clang-tidy/checks/list](https://clang.llvm.org/extra/clang-tidy/checks/list.html)  
@@ -79,7 +83,7 @@ There is a setting (off by default) that enables _automatic_ `clang-tidy` (fix) 
 
 After performing `clang-tidy` on a source file **opened** in the VS editor, you can Undo the tidy changes (atomically) by hitting `Ctrl+Z`
 
-### 👉 How can I use Clang Static Analyzer ?
+### 💡 How can I use Clang Static Analyzer ?
 
 Clang Static Analyzer was included into `clang-tidy` some time ago.
 As a result, you can use Clang Power Tools to run all static analyzer checks from Clang.
@@ -88,18 +92,18 @@ Check our extension settings panel, in the Tidy sub-section, scroll to see and E
 More details here:  
 [clang-analyzer.llvm.org/available_checks](https://clang-analyzer.llvm.org/available_checks.html)
 
-### 👉 Does Clang Power Tools support automatic checking of CppCoreGuidelines ?
+### 💡 Does Clang Power Tools support automatic checking of CppCoreGuidelines ?
 
 Yes. By leveraging `clang-tidy` support for checking [CppCoreGuidelines](https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md).  
 You can use the `cppcoreguidelines-*` filter from Clang Power Tools _settings_, to select CppCoreGuidelines from the available clang-tidy [checks](https://clang.llvm.org/extra/clang-tidy/checks/list.html).
 
-### 👉 If I want to use a .clang-tidy file, where do I put that configuration file on the file system?
+### 💡 If I want to use a .clang-tidy file, where do I put that configuration file on the file system?
 
 `clang-tidy` searches for the config file starting from the given/input source file directory, going up .. until it finds a .clang-tidy file (stops at drive root). This is the standard clang-tidy lookup mechanism.  
 FYI, Clang Power Tools has a setting related to this workflow:  
 VS Options > Clang Power Tools > Tidy > Options > Use checks from: (combo-box)
 
-### 👉 How do I configure options for specific clang-tidy checks ?
+### 💡 How do I configure options for specific clang-tidy checks ?
 
 Configuration options for specific clang-tidy checks can be specified via the `.clang-tidy` configuration file.  
 Eg.  
