@@ -6,12 +6,15 @@ namespace ClangPowerTools
 {
   public static class SettingsProvider
   {
+    #region Properties
 
-    public static ClangGeneralOptionsView GeneralSettings { get; set; }
-    public static ClangTidyOptionsView TidySettings { get; set; }
-    public static ClangTidyCustomChecksOptionsView TidyCustomCheckes { get; set; }
-    public static ClangTidyPredefinedChecksOptionsView TidyPredefinedChecks { get; set; }
-    public static ClangFormatOptionsView ClangFormatSettings { get; set; }
+    public static ClangGeneralOptionsView GeneralSettings { get; private set; }
+    public static ClangTidyOptionsView TidySettings { get; private set; }
+    public static ClangTidyCustomChecksOptionsView TidyCustomCheckes { get; private set; }
+    public static ClangTidyPredefinedChecksOptionsView TidyPredefinedChecks { get; private set; }
+    public static ClangFormatOptionsView ClangFormatSettings { get; private set; }
+
+    #endregion
 
 
     #region Constructor
