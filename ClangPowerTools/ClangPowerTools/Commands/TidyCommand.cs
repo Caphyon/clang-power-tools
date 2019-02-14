@@ -96,7 +96,7 @@ namespace ClangPowerTools.Commands
           {
             using (var fileChangerWatcher = new FileChangerWatcher())
             {
-              var tidySettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyOptionsView)) as ClangTidyOptionsView;
+              var tidySettings = SettingsProvider.TidySettings;
 
               if (CommandIds.kTidyFixId == aCommandId || tidySettings.AutoTidyOnSave)
               {
