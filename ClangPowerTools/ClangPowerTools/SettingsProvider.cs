@@ -6,16 +6,15 @@ namespace ClangPowerTools
 {
   public static class SettingsProvider
   {
+    #region Properties
 
-    private static ClangGeneralOptionsView GeneralSettings { get; set; }
+    public static ClangGeneralOptionsView GeneralSettings { get; private set; }
+    public static ClangTidyOptionsView TidySettings { get; private set; }
+    public static ClangTidyCustomChecksOptionsView TidyCustomCheckes { get; private set; }
+    public static ClangTidyPredefinedChecksOptionsView TidyPredefinedChecks { get; private set; }
+    public static ClangFormatOptionsView ClangFormatSettings { get; private set; }
 
-    private static ClangTidyOptionsView TidySettings { get; set; }
-
-    private static ClangTidyCustomChecksOptionsView TidyCustomCheckes { get; set; }
-
-    private static ClangTidyPredefinedChecksOptionsView TidyPredefinedChecks { get; set; }
-
-    private static ClangFormatOptionsView ClangFormatSettings { get; set; }
+    #endregion
 
 
     #region Constructor
@@ -29,31 +28,14 @@ namespace ClangPowerTools
       ClangFormatSettings = (ClangFormatOptionsView)aPackage.GetDialogPage(typeof(ClangFormatOptionsView));
     }
 
-    #endregion
-
-
-    #region Public Methods
-
-    public static DialogPage GetSettingsPage(Type aType)
+    public static void SaveAll()
     {
-      if (typeof(ClangGeneralOptionsView) == aType)
-        return GeneralSettings;
-
-      if (typeof(ClangTidyOptionsView) == aType)
-        return TidySettings;
-
-      if (typeof(ClangTidyCustomChecksOptionsView) == aType)
-        return TidyCustomCheckes;
-
-      if (typeof(ClangTidyPredefinedChecksOptionsView) == aType)
-        return TidyPredefinedChecks;
-
-      if (typeof(ClangFormatOptionsView) == aType)
-        return ClangFormatSettings;
-
-      return null;
+      GeneralSettings.SaveSettingsToStorage();
+      TidySettings.SaveSettingsToStorage();
+      TidyCustomCheckes.SaveSettingsToStorage();
+      TidyPredefinedChecks.SaveSettingsToStorage();
+      ClangFormatSettings.SaveSettingsToStorage();
     }
-
 
     #endregion
 

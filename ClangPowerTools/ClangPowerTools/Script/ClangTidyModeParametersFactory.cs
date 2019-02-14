@@ -57,7 +57,7 @@ namespace ClangPowerTools.Script
     /// <returns></returns>
     private string GetCustomChecks()
     {
-      var tidyCustomShecksSettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyCustomChecksOptionsView)) as ClangTidyCustomChecksOptionsView;
+      var tidyCustomShecksSettings = SettingsProvider.TidyCustomCheckes;
 
       return !string.IsNullOrWhiteSpace(tidyCustomShecksSettings.TidyChecks) ?
         $",{tidyCustomShecksSettings.TidyChecks.Replace(';', ',')}" :
@@ -71,7 +71,7 @@ namespace ClangPowerTools.Script
     /// <returns>The predefined checks</returns>
     private string GetTidyPredefinedChecks()
     {
-      var tidyPredefinedChecksSettings = SettingsProvider.GetSettingsPage(typeof(ClangTidyPredefinedChecksOptionsView)) as ClangTidyPredefinedChecksOptionsView;
+      var tidyPredefinedChecksSettings = SettingsProvider.TidyPredefinedChecks;
       var parameters = string.Empty;
 
       foreach (PropertyInfo prop in tidyPredefinedChecksSettings.GetType().GetProperties())

@@ -99,7 +99,7 @@ namespace ClangPowerTools.Commands
     /// <returns></returns>
     private void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
     {
-      var settings = SettingsProvider.GetSettingsPage(typeof(ClangGeneralOptionsView)) as ClangGeneralOptionsView;
+      var settings = SettingsProvider.GeneralSettings;
 
       if (settings.FilesToIgnore.Length > 0)
       {

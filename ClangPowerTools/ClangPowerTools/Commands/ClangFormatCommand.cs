@@ -126,7 +126,7 @@ namespace ClangPowerTools.Commands
           // get the necessary elements for format selection
           FindStartPositionAndLengthOfSelectedText(view, text, out startPosition, out length);
           dirPath = Vsix.GetDocumentParent(view);
-          mClangFormatView = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
+          mClangFormatView = SettingsProvider.ClangFormatSettings;
         }
         else
         {
@@ -180,7 +180,7 @@ namespace ClangPowerTools.Commands
         if (null == document)
           document = DocumentsHandler.GetActiveDocument();
 
-        mClangFormatView = SettingsProvider.GetSettingsPage(typeof(ClangFormatOptionsView)) as ClangFormatOptionsView;
+        mClangFormatView = SettingsProvider.ClangFormatSettings;
         mDocument = document;
 
         RunClangFormat();

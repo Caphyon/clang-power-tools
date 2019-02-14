@@ -101,24 +101,14 @@ namespace ClangPowerTools
       await RegisterVsServices();
 
       mCommandsController = new CommandsController(this);
-      SettingsProvider.Initialize(this);
 
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
 
       mOutputWindowController = new OutputWindowController();
       mOutputWindowController.Initialize(this, vsOutputWindow);
 
-      //mCommandsController.ClangCommandMessageEvent += mOutputWindowController.Write;
-
-      //PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
-      //PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
-      //PowerShellWrapper.ExitedHandler += mOutputWindowController.ClosedDataConnection;
-
       mRunningDocTableEvents = new RunningDocTableEvents(this);
       mErrorWindowController = new ErrorWindowController(this);
-
-      //mOutputWindowController.ErrorDetectedEvent += mErrorWindowController.OnErrorDetected;
-
 
       #region Get Pointer to IVsSolutionEvents
 
@@ -142,8 +132,11 @@ namespace ClangPowerTools
 
       DispatcherHandler.Initialize(dte as DTE2);
 
+      SettingsProvider.Initialize(this);
+
       // Get the general clang option page
-      var generalSettings = SettingsProvider.GetSettingsPage(typeof(ClangGeneralOptionsView)) as ClangGeneralOptionsView;
+      var generalSettings = SettingsProvider.GeneralSettings;
+      //generalSettings.LoadSettingsFromStorage();
 
       // Detect the first install 
       if (string.IsNullOrWhiteSpace(generalSettings.Version))
@@ -163,13 +156,8 @@ namespace ClangPowerTools
 
       await mCommandsController.InitializeAsyncCommands(this);
 
-      //mCommandsController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
-      //mOutputWindowController.MissingLlvmEvent += mCommandsController.OnMissingLLVMDetected;
-
-      //RegisterToCPTEvents();
-      //RegisterToVsEvents();
-
       RegisterToEvents();
+      SettingsProvider.SaveAll();
 
       await base.InitializeAsync(cancellationToken, progress);
     }
