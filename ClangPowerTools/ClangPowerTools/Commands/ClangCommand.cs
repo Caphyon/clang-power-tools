@@ -100,8 +100,8 @@ namespace ClangPowerTools
 
     protected void RunScript(int aCommandId)
     {
-      var dte = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
-      dte.Solution.SaveAs(dte.Solution.FullName);
+      //var dte = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
+      //dte.Solution.SaveAs(dte.Solution.FullName);
 
       IBuilder<string> runModeScriptBuilder = new RunModeScriptBuilder();
       runModeScriptBuilder.Build();
@@ -111,6 +111,7 @@ namespace ClangPowerTools
       genericScriptBuilder.Build();
       var genericParameters = genericScriptBuilder.GetResult();
 
+      var dte = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
       string solutionPath = dte.Solution.FullName;
 
       if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
