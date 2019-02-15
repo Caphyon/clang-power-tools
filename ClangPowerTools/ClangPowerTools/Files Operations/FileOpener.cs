@@ -9,7 +9,7 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private static readonly string kOpenCommand = "File.OpenFile";
+    //private static readonly string kOpenCommand = "File.OpenFile";
 
     #endregion
 
