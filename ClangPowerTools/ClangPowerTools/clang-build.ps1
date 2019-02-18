@@ -178,7 +178,7 @@ param( [alias("proj")]
 
      , [alias("vs-ver")]
        [Parameter(Mandatory=$false, HelpMessage="Version of Visual Studio toolset to use for loading project")]
-       [string]   $aVisualStudioVersion = "2017"
+       [string]   $aVisualStudioVersion
 
      , [alias("vs-sku")]
        [Parameter(Mandatory=$false, HelpMessage="Edition of Visual Studio toolset to use for loading project")]
@@ -290,9 +290,6 @@ Add-Type -TypeDefinition @"
 
 # default ClangPowerTools version of visual studio to use
 [string] $global:cptDefaultVisualStudioVersion = "2017"
-
-# version of VS currently used
-[string] $global:cptVisualStudioVersion = $aVisualStudioVersion
 
 #-------------------------------------------------------------------------------------------------
 # Global functions
@@ -797,25 +794,48 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   if ( $platformToolset -match "^v\d+(_xp)?$" )
   {
-    if ( ([int]$platformToolset.Remove(0, 1).Replace("_xp", "")) -le 140)
+    [int] $toolsetVersion = [int]$platformToolset.Remove(0, 1).Replace("_xp", "")
+
+    [string] $desiredVisualStudioVer = ""
+
+    # start with script 'vs-ver' input parameter
+    if ($aVisualStudioVersion)
     {
-      if ($global:cptVisualStudioVersion -ne '2015')
-      {
-        # we need to reload everything and use VS2015
-        Write-Verbose "Switching to VS2015 because of v140 toolset. Reloading project..."
-        $global:cptVisualStudioVersion = "2015"
-        LoadProject($vcxprojPath)
-      }
+      Write-Verbose "Visual Studio version overriden to $aVisualStudioVersion"
+      $desiredVisualStudioVer = $aVisualStudioVersion
     }
-    else
+
+    # toolsets attached to specific Visual Studio versions
+    if ($toolsetVersion -le 140)
     {
-      if ($global:cptVisualStudioVersion -ne $global:cptDefaultVisualStudioVersion)
-      {
-        # we need to reload everything and the default vs version
-        Write-Verbose "Switching to default VsVer because of toolset. Reloading project..."
-        $global:cptVisualStudioVersion = $global:cptDefaultVisualStudioVersion
-        LoadProject($vcxprojPath)
-      }
+      Write-Verbose "Project toolset (< v140) requiring Visual Studio 2015..."
+      $desiredVisualStudioVer = "2015"
+    }
+    elseif ($toolsetVersion -eq 141)
+    {
+      Write-Verbose "Project toolset (v141) requiring Visual Studio 2017..."
+      $desiredVisualStudioVer = "2017"
+    }
+    elseif ($toolsetVersion -eq 142)
+    {
+      Write-Verbose "Project toolset (v142) requiring Visual Studio 2019..."
+      $desiredVisualStudioVer = "2019";
+    }
+
+    # fallback to default VS ver
+    if (!$desiredVisualStudioVer)
+    {
+      Write-Verbose "Using default Visual Studio version $($global:cptDefaultVisualStudioVersion)"
+      $desiredVisualStudioVer = $global:cptDefaultVisualStudioVersion
+    }
+
+    if ($global:cptVisualStudioVersion -ne $desiredVisualStudioVer)
+    {
+      #we need to reload everything and use the VS version we decided upon above
+      Write-Verbose "Reloading project..."
+
+      $global:cptVisualStudioVersion = $desiredVisualStudioVer
+      LoadProject($vcxprojPath)
     }
   }
 
@@ -1038,6 +1058,9 @@ if (!$aSolutionsPath)
 # Load param values from configuration file (if exists)
 
 Update-ParametersFromConfigFile
+
+# version of VS currently used
+$global:cptVisualStudioVersion = $aVisualStudioVersion
 
 #-------------------------------------------------------------------------------------------------
 # Print script parameters
