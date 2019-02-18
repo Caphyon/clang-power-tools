@@ -1,5 +1,18 @@
 # Version History
 
+### Clang Power Tools 4.8
+*February 18, 2019*
+
+Improvements:
+
+* Keyboard shortcut for Clang Compile
+
+Bugs:
+
+* User settings are sometimes set back to default values when closing Visual Studio
+* Compile or Tidy commands force saves the solution
+* When running Clang after the MSVC compile, Visual Studio does not switch to the Clang Power Tools log window
+
 ### Clang Power Tools 4.7
 *February 4, 2019*
 
