@@ -160,6 +160,9 @@
     <Compile Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowseFormat.xaml.cs">
       <DependentUpon>BorderedTextBoxBrowseFormat.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Options\View\WpfPropertyGrid\BorderedTextBoxExportTidy.xaml.cs">
+      <DependentUpon>BorderedTextBoxExportTidy.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Options\View\WpfPropertyGrid\StringCollectionEditor.xaml.cs">
       <DependentUpon>StringCollectionEditor.xaml</DependentUpon>
     </Compile>
@@ -464,6 +467,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowseFormat.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Options\View\WpfPropertyGrid\BorderedTextBoxExportTidy.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
