@@ -54,7 +54,7 @@
 								<Icon guid="guidImageCompile" id="Compile" />
 								<CommandFlag>DefaultDisabled</CommandFlag>
 								<Strings>
-										<ButtonText>Compile (syntax only)</ButtonText>
+										<ButtonText>Compile</ButtonText>
 								</Strings>
 						</Button>
 
@@ -182,6 +182,20 @@
 
 		</Commands>
 
+		 <!-- Shortcuts for commands-->
+		<KeyBindings>
+				<KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="CompileId" editor="guidVSStd97" 
+										key1="C" mod1="ALT" />
+		<!--<KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyId" editor="guidVSStd97"
+										key1="Y" mod1="ALT" />
+				<KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" editor="guidVSStd97"
+										key1="U" mod1="ALT" />
+				<KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" editor="guidVSStd97"
+										key1="I" mod1="ALT" />
+				<KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" editor="guidVSStd97"
+										key1="O" mod1="ALT" />-->
+		</KeyBindings>
+
 		<CommandPlacements>
 
 				<!-- Placement for commands.
@@ -251,13 +265,13 @@
 						<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
 				</CommandPlacement>
 
-			  <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="IgnoreCompileId" priority="0x0005">
-				    <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
-			  </CommandPlacement>
+				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="IgnoreCompileId" priority="0x0005">
+						<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
+				</CommandPlacement>
 				
-			  <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="IgnoreFormatId" priority="0x0006">
-				    <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
-			  </CommandPlacement>
+				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="IgnoreFormatId" priority="0x0006">
+						<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
+				</CommandPlacement>
 			
 				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0007">
 						<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" />
