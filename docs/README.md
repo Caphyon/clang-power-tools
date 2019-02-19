@@ -5,7 +5,7 @@ _Clang Power Tools_ is a **free** Visual Studio extension helping Visual Studio 
 
 Install this extension from [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=caphyon.ClangPowerTools)
 
-Works with Visual Studio 2015 / 2017
+Works with Visual Studio 2015 / 2017 / 2019
 
 ### Version History
 
@@ -54,7 +54,7 @@ Auto-format source file on save, configurable [style options](https://clang.llvm
 
 ### Requirements
 
-Visual Studio 2015 / 2017
+Visual Studio 2015 / 2017 / 2019
 
 Download and install **Clang for Windows** (LLVM pre-built binary)  
 [LLVM-7.0.1-win64](http://releases.llvm.org/7.0.1/LLVM-7.0.1-win64.exe)  
