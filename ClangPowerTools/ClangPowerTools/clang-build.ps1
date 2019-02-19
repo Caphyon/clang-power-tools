@@ -1168,8 +1168,10 @@ if ($projectsToProcess.Count -eq $initialProjectCount)
 }
 else
 {
-  #Write-Output ("PROJECTS: `n`t" + ($projectsToProcess -join "`n`t"))
-  Write-Array -name "PROJECTS" -array $projectsToProcess
+  if ($projectsToProcess.Count -gt 1)
+  {
+      Write-Array -name "PROJECTS" -array $projectsToProcess
+  }
 
   if ($ignoredProjects)
   {
