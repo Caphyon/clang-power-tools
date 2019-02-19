@@ -226,7 +226,13 @@ Function Get-ProjectHeaders()
 
 Function Is-CProject()
 {
-    [string] $compileAs = (Select-ProjectNodes($kVcxprojXpathProjectCompileAs)).InnerText
+    $projNode = Select-ProjectNodes($kVcxprojXpathProjectCompileAs)
+    if (!$projNode)
+    {
+        return $false
+    }
+
+    [string] $compileAs = $projNode.InnerText
     return $compileAs -eq $kCProjectCompile
 }
 
@@ -325,11 +331,16 @@ Function Get-ProjectPlatformToolset()
 
 Function Get-ProjectIncludeDirectories()
 {
-    [string[]] $returnArray = ($IncludePath -split ";")                                   | `
-        Where-Object { ![string]::IsNullOrWhiteSpace($_) }                                | `
-        ForEach-Object { Canonize-Path -base $ProjectDir -child $_.Trim() -ignoreErrors } | `
-        Where-Object { ![string]::IsNullOrEmpty($_) }                                     | `
-        ForEach-Object { $_ -replace '\\$', '' }
+    [string[]] $returnArray = @()
+
+    if ( (VariableExists 'IncludePath') )
+    {
+        $returnArray += ($IncludePath -split ";")                                                         | `
+                        Where-Object { ![string]::IsNullOrWhiteSpace($_) }                                | `
+                        ForEach-Object { Canonize-Path -base $ProjectDir -child $_.Trim() -ignoreErrors } | `
+                        Where-Object { ![string]::IsNullOrEmpty($_) }                                     | `
+                        ForEach-Object { $_ -replace '\\$', '' }
+    }
     if ($env:CPT_LOAD_ALL -eq '1')
     {
         return $returnArray

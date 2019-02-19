@@ -10,6 +10,24 @@ Set-Variable -name "kScriptLocation"                                            
  , "$kScriptLocation\io.ps1"
  ) | ForEach-Object { . $_ }
 
+Describe "VariableExists" {
+  VariableExists 'Foobar_VariableExists' | Should -BeExactly $false
+  $Foobar_VariableExists = 1
+  VariableExists 'Foobar_VariableExists' | Should -BeExactly $true
+  $Foobar_VariableExists = @()
+  VariableExists 'Foobar_VariableExists' | Should -BeExactly $true
+
+  Remove-Variable 'Foobar_VariableExists' | Out-Null
+  VariableExistsAndNotEmpty 'Foobar_VariableExists' | Should -BeExactly $false
+  $Foobar_VariableExists = "       "
+  VariableExists            'Foobar_VariableExists' | Should -BeExactly $true
+  VariableExistsAndNotEmpty 'Foobar_VariableExists' | Should -BeExactly $false
+  $Foobar_VariableExists = " "
+  VariableExistsAndNotEmpty 'Foobar_VariableExists' | Should -BeExactly $false
+  $Foobar_VariableExists = "1"
+  VariableExistsAndNotEmpty 'Foobar_VariableExists' | Should -BeExactly $true
+}
+
 Describe "File IO" {
   It "Remove-PathTrailingSlash" {
     Remove-PathTrailingSlash "c:\windows\" | Should -BeExactly "c:\windows"

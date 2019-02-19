@@ -395,12 +395,12 @@ function Select-ProjectNodes([Parameter(Mandatory = $true)]  [string][string] $x
         return $nodes
     }
 
-    $nodes = Help:Get-ProjectFileNodes -projectFile $global:projectFiles[$fileIndex] -xpath $xpath
+    $nodes = @(Help:Get-ProjectFileNodes -projectFile $global:projectFiles[$fileIndex] -xpath $xpath)
 
     # nothing on this level or we're dealing with an ItemGroup, go above
     if ($nodes.Count -eq 0 -or $xpath.Contains("ItemGroup"))
     {
-        [System.Xml.XmlElement[]] $upperNodes = Select-ProjectNodes -xpath $xpath -fileIndex ($fileIndex + 1)
+        [System.Xml.XmlElement[]] $upperNodes = @(Select-ProjectNodes -xpath $xpath -fileIndex ($fileIndex + 1))
         if ($upperNodes.Count -gt 0)
         {
             $nodes += $upperNodes
@@ -426,7 +426,7 @@ function Select-ProjectNodes([Parameter(Mandatory = $true)]  [string][string] $x
 
         if ($shouldInheritMore)
         {
-            [System.Xml.XmlElement[]] $inheritedNodes = Select-ProjectNodes -xpath $xpath -fileIndex ($fileIndex + 1)
+            [System.Xml.XmlElement[]] $inheritedNodes = @(Select-ProjectNodes -xpath $xpath -fileIndex ($fileIndex + 1))
             if ($inheritedNodes.Count -gt 1)
             {
                 throw "Did not expect to inherit more than one node"
