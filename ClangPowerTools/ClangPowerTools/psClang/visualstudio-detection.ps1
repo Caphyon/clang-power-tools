@@ -11,16 +11,6 @@ Set-Variable -name   kVs15DefaultLocation `
     -value  "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$global:cptVisualStudioVersion\$aVisualStudioSku" #`
 #-option Constant
 
-# Registry key containing information about Visual Studio 2015 installation path.
-Set-Variable -name   kVs2015RegistryKey `
-    -value  "HKLM:SOFTWARE\Wow6432Node\Microsoft\VisualStudio\14.0" #`
-#-option Constant
-
-# Default location for v140 toolset when installed as a feature of a VS 2017 installation
-Set-Variable -name   kVs2017Toolset140DiskLocation `
-    -value  "${Env:ProgramFiles(x86)}\Microsoft Visual Studio 14.0" #`
-#-option Constant
-
 Function Get-MscVer()
 {
     return ((Get-Item "$(Get-VisualStudio-Path)\VC\Tools\MSVC\" | Get-ChildItem) | select -last 1).Name
@@ -40,24 +30,51 @@ Function Get-VisualStudio-Includes([Parameter(Mandatory = $true)][string]  $vsPa
     )
 }
 
-Function Get-VsWhere-VisualStudio-Version([Parameter(Mandatory = $true)][string]  $vsFriendlyVer)
+Function Get-VsWhere-VisualStudio-Version()
 {
-    switch ($vsFriendlyVer)
+    switch ($global:cptVisualStudioVersion)
     {
-        "2013" { return "[13.0, 14)" }
-        "2015" { return "[14.0, 15)" }
-        "2017" { return "[15.0, 16)" }
-        "2019" { return "[16.0, 17)" }
+        "2013"  { return "[12.0, 13)" }
+        "2015"  { return "[14.0, 15)" }
+        "2017"  { return "[15.0, 16)" }
+        "2019"  { return "[16.0, 17)" }
+        default { throw "Unsupported Visual Studio version: $cptVisualStudioVersion" }
     }
-    throw "Unsupported Visual Studio version: $vsFriendlyVer"
+}
+
+Function Get-VisualStudio-VersionNumber([Parameter(Mandatory = $true)][string]  $vsYearVersion)
+{
+    switch ($vsYearVersion)
+    {
+        "2013"  { return "12.0" }
+        "2015"  { return "14.0" }
+        "2017"  { return "15.0" }
+        "2019"  { return "16.0" }
+        default { throw "Unsupported Visual Studio version: $vsYearVersion" }
+    }
+}
+
+# Newer Visual Studio versions support installing older toolset versions, for compatibility reasons.
+# Returns default instalation path of the current VS version/toolset.
+Function Get-VisualStudio-CompatiblityToolset-InstallLocation()
+{
+    return "${Env:ProgramFiles(x86)}\Microsoft Visual Studio " + (Get-VisualStudio-VersionNumber $global:cptVisualStudioVersion)
+}
+
+Function Get-VisualStudio-RegistryLocation()
+{
+    return "HKLM:SOFTWARE\Wow6432Node\Microsoft\VisualStudio\" + (Get-VisualStudio-VersionNumber $global:cptVisualStudioVersion)
 }
 
 Function Get-VisualStudio-Path()
 {
-    if ($global:cptVisualStudioVersion -eq "2015")
+    # Depending of the version of Visual Studio, we have different approaches to locating it.
+
+    if ( ([int] $global:cptVisualStudioVersion) -le 2015 )
     {
-        # try to detect full installation
-        [string] $installLocation = (Get-Item $kVs2015RegistryKey).GetValue("InstallDir")
+        # Older Visual Studio (<= 2015). VSWhere is not available.
+
+        [string] $installLocation = (Get-Item (Get-VisualStudio-RegistryLocation)).GetValue("InstallDir")
         if ($installLocation)
         {
             $installLocation = Canonize-Path -base $installLocation -child "..\.." -ignoreErrors
@@ -67,18 +84,20 @@ Function Get-VisualStudio-Path()
             return $installLocation
         }
 
-        # we may have a VS 2017 installation with v140 toolset feature
-        [string] $iostreamLocation = Canonize-Path -base $kVs2017Toolset140DiskLocation `
+        # we may have a newer VS installation with an older toolset feature installed
+        [string] $toolsetDiskLocation = (Get-VisualStudio-CompatiblityToolset-InstallLocation)
+        [string] $iostreamLocation = Canonize-Path -base toolsetDiskLocation `
                                                    -child "VC\include\iostream" -ignoreErrors
         if ($iostreamLocation)
         {
-            return $kVs2017Toolset140DiskLocation
+            return $toolsetDiskLocation
         }
 
-        Write-Err "Visual Studio 2015 installation location could not be detected"
+        Write-Err "Visual Studio $($global:cptVisualStudioVersion) installation location could not be detected"
     }
     else
     {
+        # modern Visual Studio (> 2017). Use VSWhere to locate it.
         if (Test-Path $kVsWhereLocation)
         {
 
@@ -88,7 +107,7 @@ Function Get-VisualStudio-Path()
               $product = "Microsoft.VisualStudio.Product.$aVisualStudioSku"
             }
 
-            [string] $version = Get-VsWhere-VisualStudio-Version -vsFriendlyVer $global:cptVisualStudioVersion
+            [string] $version = Get-VsWhere-VisualStudio-Version
             [string[]] $output = (& "$kVsWhereLocation" -nologo `
                                                         -property installationPath `
                                                         -products $product `
