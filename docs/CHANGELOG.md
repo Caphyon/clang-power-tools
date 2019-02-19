@@ -5,6 +5,7 @@
 
 Improvements:
 
+* **Visual Studio 2019 Preview support**
 * Keyboard shortcut for Clang Compile
 
 Bugs:
