@@ -5,11 +5,11 @@ using System.Windows.Documents;
 namespace ClangPowerTools.Options.View.WpfPropertyGrid
 {
   /// <summary>
-  /// Interaction logic for BorderedTextBoxExportTidy.xaml
+  /// Interaction logic for ButtonTidyExport.xaml
   /// </summary>
-  public partial class BorderedTextBoxExportTidy : TextBoxNotifaiableUserControl
+  public partial class ButtonTidyExport : TextBoxNotifaiableUserControl
   {
-    public BorderedTextBoxExportTidy()
+    public ButtonTidyExport()
     {
       InitializeComponent();
     }
@@ -21,7 +21,7 @@ namespace ClangPowerTools.Options.View.WpfPropertyGrid
 
       // Set the default file extension
       dlg.DefaultExt = ".clang-tidy";
-      dlg.Filter = "clang-tidy";
+      dlg.Filter = "Configuration file (.clang-tidy)|*.clang-tidy";
 
       //Display the dialog window
       bool? result = dlg.ShowDialog();
