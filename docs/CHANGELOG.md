@@ -1,10 +1,18 @@
 # Version History
 
+### Clang Power Tools 4.8.1
+*February 19, 2019*
+
+Bugs:
+
+* Fix location detection when multiple versions of Visual Studio are installed
+
 ### Clang Power Tools 4.8
 *February 18, 2019*
 
 Improvements:
 
+* **Visual Studio 2019 Preview support**
 * Keyboard shortcut for Clang Compile
 
 Bugs:
