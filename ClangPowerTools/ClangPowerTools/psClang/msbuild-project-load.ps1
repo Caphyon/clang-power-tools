@@ -284,11 +284,7 @@ Function InitializeMsBuildProjectProperties()
         Set-Var -name "UniversalCRT_IncludePath" -value "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\10.0.10240.0\ucrt"
     }
 
-    [string] $vsVer = "15.0"
-    if ($global:cptVisualStudioVersion -eq "2015")
-    {
-        $vsVer = "14.0"
-    }
+    [string] $vsVer = (Get-VisualStudio-VersionNumber $global:cptVisualStudioVersion)
     Set-Var -name "VisualStudioVersion"    -value $vsVer
     Set-Var -name "MSBuildToolsVersion"    -value $vsVer
 

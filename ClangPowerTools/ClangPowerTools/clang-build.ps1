@@ -798,41 +798,30 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
     [string] $desiredVisualStudioVer = ""
 
-    # start with script 'vs-ver' input parameter
-    if ($aVisualStudioVersion)
-    {
-      Write-Verbose "Visual Studio version overriden to $aVisualStudioVersion"
-      $desiredVisualStudioVer = $aVisualStudioVersion
-    }
-
     # toolsets attached to specific Visual Studio versions
-    if ($toolsetVersion -le 140)
+    if ($toolsetVersion -le 120)
     {
-      Write-Verbose "Project toolset (< v140) requiring Visual Studio 2015..."
+      $desiredVisualStudioVer = "2013"
+    }
+    elseif ($toolsetVersion -eq 140)
+    {
       $desiredVisualStudioVer = "2015"
     }
     elseif ($toolsetVersion -eq 141)
     {
-      Write-Verbose "Project toolset (v141) requiring Visual Studio 2017..."
       $desiredVisualStudioVer = "2017"
     }
     elseif ($toolsetVersion -eq 142)
     {
-      Write-Verbose "Project toolset (v142) requiring Visual Studio 2019..."
       $desiredVisualStudioVer = "2019";
     }
 
-    # fallback to default VS ver
-    if (!$desiredVisualStudioVer)
+    [string] $desiredVisualStudioVerNumber = (Get-VisualStudio-VersionNumber $desiredVisualStudioVer)
+    if ($VisualStudioVersion -ne $desiredVisualStudioVerNumber)
     {
-      Write-Verbose "Using default Visual Studio version $($global:cptDefaultVisualStudioVersion)"
-      $desiredVisualStudioVer = $global:cptDefaultVisualStudioVersion
-    }
-
-    if ($global:cptVisualStudioVersion -ne $desiredVisualStudioVer)
-    {
-      #we need to reload everything and use the VS version we decided upon above
-      Write-Verbose "Reloading project..."
+      # We need to reload everything and use the VS version we decided upon above
+      Write-Verbose "[ RELOAD ] Project will reload because of toolset requirements change..."
+      Write-Verbose "Current = $VisualStudioVersion. Required = $desiredVisualStudioVerNumber."
 
       $global:cptVisualStudioVersion = $desiredVisualStudioVer
       LoadProject($vcxprojPath)
@@ -1059,8 +1048,12 @@ if (!$aSolutionsPath)
 
 Update-ParametersFromConfigFile
 
-# version of VS currently used
-$global:cptVisualStudioVersion = $aVisualStudioVersion
+# ------------------------------------------------------------------------------------------------
+# Initialize the Visual Studio version variable
+
+$global:cptVisualStudioVersion = If ( $aVisualStudioVersion ) `
+                                    { $aVisualStudioVersion } Else `
+                                    { $global:cptDefaultVisualStudioVersion }
 
 #-------------------------------------------------------------------------------------------------
 # Print script parameters
