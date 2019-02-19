@@ -204,7 +204,7 @@ Function Get-ConfigFileParameters()
 {
   [System.Collections.Hashtable] $retArgs = @{}
 
-  [string] $startDir = If ([string]::IsNullOrWhiteSpace($ProjectDir)) { $aSolutionsPath } else { $ProjectDir }
+  [string] $startDir = If ( VariableExistsAndNotEmpty 'ProjectDir' )  { $ProjectDir } else { $aSolutionsPath }
   [string] $configFile = (GetDirNameOfFileAbove -startDir $startDir -targetFile "cpt.config") + "\cpt.config"
   if (!(Test-Path $configFile))
   {

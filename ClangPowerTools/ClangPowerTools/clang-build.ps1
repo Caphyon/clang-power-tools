@@ -185,6 +185,9 @@ param( [alias("proj")]
        [string]   $aVisualStudioSku
      )
 
+     Set-StrictMode -version latest
+     $ErrorActionPreference = 'Continue'
+
 # System Architecture Constants
 # ------------------------------------------------------------------------------------------------
 
