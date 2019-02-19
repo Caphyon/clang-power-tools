@@ -40,6 +40,18 @@ Function Get-VisualStudio-Includes([Parameter(Mandatory = $true)][string]  $vsPa
     )
 }
 
+Function Get-VsWhere-VisualStudio-Version([Parameter(Mandatory = $true)][string]  $vsFriendlyVer)
+{
+    switch ($vsFriendlyVer)
+    {
+        "2013" { return "[13.0, 14)" }
+        "2015" { return "[14.0, 15)" }
+        "2017" { return "[15.0, 16)" }
+        "2019" { return "[16.0, 17)" }
+    }
+    throw "Unsupported Visual Studio version: $vsFriendlyVer"
+}
+
 Function Get-VisualStudio-Path()
 {
     if ($global:cptVisualStudioVersion -eq "2015")
@@ -76,9 +88,11 @@ Function Get-VisualStudio-Path()
               $product = "Microsoft.VisualStudio.Product.$aVisualStudioSku"
             }
 
+            [string] $version = Get-VsWhere-VisualStudio-Version -vsFriendlyVer $global:cptVisualStudioVersion
             [string[]] $output = (& "$kVsWhereLocation" -nologo `
                                                         -property installationPath `
                                                         -products $product `
+                                                        -version $version `
                                                         -prerelease)
 
             # the -prerelease switch is not available on older VS2017 versions
@@ -86,10 +100,18 @@ Function Get-VisualStudio-Path()
             {
                 $output = (& "$kVsWhereLocation" -nologo `
                                                  -property installationPath `
+                                                 -version $version `
                                                  -products $product)
             }
 
-            return $output[0]
+            if (!$output)
+            {
+                throw "VsWhere could not detect Visual Studio $($global:cptVisualStudioVersion) $product."
+            }
+
+            [string] $installationPath = $output[0]
+            Write-Verbose "Detected (vswhere) VisualStudio installation path: $installationPath"
+            return $installationPath
         }
 
         if (Test-Path -Path $kVs15DefaultLocation)
@@ -97,6 +119,6 @@ Function Get-VisualStudio-Path()
             return $kVs15DefaultLocation
         }
 
-        throw "Cannot locate Visual Studio location"
+        throw "Cannot locate Visual Studio $($global:cptVisualStudioVersion)"
     }
 }
