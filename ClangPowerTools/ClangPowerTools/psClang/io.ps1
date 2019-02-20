@@ -88,6 +88,28 @@ Function Get-CommandParameterName([Parameter(Mandatory = $true)][string] $comman
   }
   return ""
 }
+Function VariableExists([Parameter(Mandatory = $true)][string] $name)
+{
+    if ( ! ( Get-Variable $name  -ErrorAction 'Ignore') )
+    {
+        return $false
+    }
+    return $true
+}
+
+Function VariableExistsAndNotEmpty([Parameter(Mandatory = $true)][string] $name)
+{
+    if ( ! (VariableExists $name) )
+    {
+        return $false
+    }
+
+    if ( [string]::IsNullOrWhiteSpace( (Get-Variable $name).Value ) )
+    {
+        return $false
+    }
+    return $true
+}
 
 # File IO
 # ------------------------------------------------------------------------------------------------

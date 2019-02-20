@@ -118,7 +118,7 @@
 #Requires -Version 3
 param( [alias("proj")]
        [Parameter(Mandatory=$false, HelpMessage="Filter project(s) to compile/tidy")]
-       [string[]] $aVcxprojToCompile
+       [string[]] $aVcxprojToCompile = @()
 
      , [alias("dir")]
        [Parameter(Mandatory=$false, HelpMessage="Source directory for finding solutions; projects will be found from each sln")]
@@ -126,7 +126,7 @@ param( [alias("proj")]
 
      , [alias("proj-ignore")]
        [Parameter(Mandatory=$false, HelpMessage="Specify projects to ignore")]
-       [string[]] $aVcxprojToIgnore
+       [string[]] $aVcxprojToIgnore = @()
 
      , [alias("active-config")]
        [Parameter(Mandatory=$false, HelpMessage="Config/platform to be used, e.g. Debug|Win32")]
@@ -134,11 +134,11 @@ param( [alias("proj")]
 
      , [alias("file")]
        [Parameter(Mandatory=$false, HelpMessage="Filter file(s) to compile/tidy")]
-       [string[]] $aCppToCompile
+       [string[]] $aCppToCompile = @()
 
      , [alias("file-ignore")]
        [Parameter(Mandatory=$false, HelpMessage="Specify file(s) to ignore")]
-       [string[]] $aCppToIgnore
+       [string[]] $aCppToIgnore = @()
 
      , [alias("parallel")]
        [Parameter(Mandatory=$false, HelpMessage="Compile/tidy projects in parallel")]
@@ -154,7 +154,7 @@ param( [alias("proj")]
 
      , [alias("clang-flags")]
        [Parameter(Mandatory=$false, HelpMessage="Specify compilation flags to CLANG")]
-       [string[]] $aClangCompileFlags
+       [string[]] $aClangCompileFlags = @()
 
      , [alias("literal")]
        [Parameter(Mandatory=$false, HelpMessage="Disable regex matching for all paths received as script parameters")]
@@ -184,6 +184,9 @@ param( [alias("proj")]
        [Parameter(Mandatory=$false, HelpMessage="Edition of Visual Studio toolset to use for loading project")]
        [string]   $aVisualStudioSku
      )
+
+     Set-StrictMode -version latest
+     $ErrorActionPreference = 'Continue'
 
 # System Architecture Constants
 # ------------------------------------------------------------------------------------------------
@@ -376,7 +379,7 @@ Function Get-Projects()
   foreach ($slnPath in $global:slnFiles.Keys)
   {
     [string[]] $solutionProjects = Get-SolutionProjects -slnPath $slnPath
-    if ($solutionProjects.Count -gt 0)
+    if ($solutionProjects -and $solutionProjects.Count -gt 0)
     {
       $projects += $solutionProjects
     }
@@ -831,7 +834,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   #-----------------------------------------------------------------------------------------------
   # FIND FORCE INCLUDES
 
-  [string[]] $forceIncludeFiles = Get-ProjectForceIncludes
+  [string[]] $forceIncludeFiles = @(Get-ProjectForceIncludes)
   Write-Verbose "Force includes: $forceIncludeFiles"
 
   #-----------------------------------------------------------------------------------------------
@@ -1098,7 +1101,7 @@ Write-Verbose ("Found $($projects.Count) projects")
 # ------------------------------------------------------------------------------------------------
 # If we get headers in the -file arg we have to detect CPPs that include that header
 
-if ($aCppToCompile.Count -gt 0)
+if ($aCppToCompile -and $aCppToCompile.Count -gt 0)
 {
   # We've been given particular files to compile. If headers are among them
   # we'll find all source files that include them and tag them for processing.

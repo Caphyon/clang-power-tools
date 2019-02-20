@@ -89,6 +89,9 @@ function GetRegValue([Parameter(Mandatory = $true)][string] $regPath)
 
 function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
 {
+    # A lot of MSBuild expressions refer uninitialized variables
+    Set-StrictMode -version 1
+
     Write-Debug "Start evaluate MSBuild expression $expression"
 
     foreach ($rule in $kMsbuildExpressionToPsRules)

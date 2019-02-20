@@ -6,11 +6,6 @@ Set-Variable -name   kVsWhereLocation `
     -value  "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" #`
 #-option Constant
 
-# Default installation path of Visual Studio 2017. We'll use when VsWhere isn't available.
-Set-Variable -name   kVs15DefaultLocation `
-    -value  "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$global:cptVisualStudioVersion\$aVisualStudioSku" #`
-#-option Constant
-
 Function Get-MscVer()
 {
     return ((Get-Item "$(Get-VisualStudio-Path)\VC\Tools\MSVC\" | Get-ChildItem) | select -last 1).Name
@@ -133,9 +128,10 @@ Function Get-VisualStudio-Path()
             return $installationPath
         }
 
-        if (Test-Path -Path $kVs15DefaultLocation)
+        [string] $kVsDefaultLocation = "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$global:cptVisualStudioVersion\$aVisualStudioSku"
+        if (Test-Path -Path $kVsDefaultLocation)
         {
-            return $kVs15DefaultLocation
+            return $kVsDefaultLocation
         }
 
         throw "Cannot locate Visual Studio $($global:cptVisualStudioVersion)"
