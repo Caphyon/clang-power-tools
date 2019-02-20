@@ -36,6 +36,8 @@ Set-Variable -name "kRedundantSeparatorsReplaceRules" -option Constant `
                       , ("^;" , "")                                    `
                       )
 
+Set-Variable -name 'kFlagCPTWork' -option Constant -Value 'IsBeingProcessedByCPT'
+
 Function Set-Var([parameter(Mandatory = $false)][string] $name
                 ,[parameter(Mandatory = $false)]         $value
                 ,[parameter(Mandatory = $false)][switch] $asScriptParameter
@@ -483,11 +485,9 @@ function Detect-ProjectDefaultConfigPlatform([string] $projectValue)
 
 function HandleChooseNode([System.Xml.XmlNode] $aChooseNode)
 {
+    # we need to change the node name so that we avoid an infinite recursion to and from SanitizeProjectFile
+    $aChooseNode.SetAttribute($kFlagCPTWork, '1') | Out-Null
     SanitizeProjectNode $aChooseNode
-    if ($aChooseNode.ChildNodes.Count -eq 0)
-    {
-        return
-    }
 
     [System.Xml.XmlElement] $selectedChild = $aChooseNode.ChildNodes | `
         Where-Object { $_.GetType().Name -eq "XmlElement" } | `
@@ -499,6 +499,7 @@ function HandleChooseNode([System.Xml.XmlNode] $aChooseNode)
     }
 
     $aChooseNode.ParentNode.RemoveChild($aChooseNode) | Out-Null
+    $aChooseNode.RemoveAttribute($kFlagCPTWork) | Out-Null
 }
 
 function SanitizeProjectNode([System.Xml.XmlNode] $node)
@@ -550,15 +551,16 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
         $node.Attributes["Include"].Value = $expandedAttr
     }
 
-    if ($node.Name -ieq "Choose")
+    if ( $node.Name -ieq "Choose" -and ! $node.HasAttribute($kFlagCPTWork) )
     {
-        HandleChooseNode $chooseChild
+        # the kFlagCPTWork attribute is added by CPT so that we don't recurse infinitely on this type of nodes
+        HandleChooseNode $node
     }
 
     if ($node.Name -ieq "Otherwise")
     {
-        [System.Xml.XmlElement[]] $siblings = $node.ParentNode.ChildNodes | `
-            Where-Object { $_.GetType().Name -ieq "XmlElement" -and $_ -ne $node }
+        [System.Xml.XmlElement[]] $siblings = @($node.ParentNode.ChildNodes | `
+            Where-Object { $_.GetType().Name -ieq "XmlElement" -and $_ -ne $node })
         if ($siblings.Count -gt 0)
         {
             # means there's a <When> element that matched
@@ -583,7 +585,7 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
         }
     }
 
-    if ($node.ParentNode.Name -ieq "PropertyGroup")
+    if ($node.ParentNode -and $node.ParentNode.Name -ieq "PropertyGroup")
     {
         # set new property value
         [string] $propertyName = $node.Name
