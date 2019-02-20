@@ -28,6 +28,13 @@ Describe "VariableExists" {
   VariableExistsAndNotEmpty 'Foobar_VariableExists' | Should -BeExactly $true
 }
 
+Describe "HasProperty" {
+  [string] $s = "abc"
+  HasProperty $s "Length"  | Should -BeExactly $true
+  HasProperty Ss "Lengthh" | SHould -BeExactly $false
+  HasProperty $s "Trim"    | Should -BeExactly $false # this is a method
+}
+
 Describe "File IO" {
   It "Remove-PathTrailingSlash" {
     Remove-PathTrailingSlash "c:\windows\" | Should -BeExactly "c:\windows"

@@ -110,6 +110,10 @@ Function VariableExistsAndNotEmpty([Parameter(Mandatory = $true)][string] $name)
     }
     return $true
 }
+function HasProperty($object, $property)
+{
+    return ($property -in $object.PSobject.Properties.Name)
+}
 
 # File IO
 # ------------------------------------------------------------------------------------------------

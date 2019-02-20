@@ -180,7 +180,8 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchC
         [UsePch] $usePch = [UsePch]::Use
 
         $nodePch = $entry.SelectSingleNode('ns:PrecompiledHeader', $global:xpathNS)
-        if ($nodePch -and ![string]::IsNullOrEmpty($nodePch.'#text'))
+        if ($nodePch -and (HasProperty $nodePch '#text') `
+                     -and ![string]::IsNullOrEmpty($nodePch.'#text'))
         {
             switch ($nodePch.'#text')
             {
