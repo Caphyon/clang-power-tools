@@ -81,9 +81,9 @@ Function detail:FindHeaderReferences( [Parameter(Mandatory = $false)] [string[]]
 
     if ($returnRefs.Count -gt 0)
     {
-        [string[]] $headersLeftToSearch = ($returnRefs | Where-Object `
-                                          { FileHasExtension -filePath $_ `
-                                                             -ext $global:headerExtensions } )
+        [string[]] $headersLeftToSearch = @($returnRefs | Where-Object `
+                                            { FileHasExtension -filePath $_ `
+                                                               -ext $global:headerExtensions } )
         if ($headersLeftToSearch.Count -gt 0)
         {
             Write-Debug "[!] Recursive reference detection in progress for: "
