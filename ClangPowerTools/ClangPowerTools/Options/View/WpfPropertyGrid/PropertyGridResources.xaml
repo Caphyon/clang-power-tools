@@ -132,15 +132,6 @@
             Margin="5,2" />
         </Border>
       </Grid>
-      <Grid Height="20">
-        <Border Grid.Column="1" Style="{x:Null}">
-          <Local1:ButtonTidyExport
-            DataContext="{Binding Value}"
-            Grid.Row="1"
-            PreviewMouseUp="PreviewMouseUp"
-            PreviewMouseDown="PreviewMouseDown" />
-        </Border>
-      </Grid>
     </StackPanel>
   </DataTemplate>
 
