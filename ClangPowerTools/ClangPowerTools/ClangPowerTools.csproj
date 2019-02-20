@@ -129,6 +129,9 @@
     </Compile>
     <Compile Include="Options\Model\ClangOptions.cs" />
     <Compile Include="Convertors\ClangTidyHeaderFiltersConvertor.cs" />
+    <Compile Include="Options\View\ButtonTidyExportControl.xaml.cs">
+      <DependentUpon>ButtonTidyExportControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Options\View\ClangFormatOptionsUserControl.xaml.cs">
       <DependentUpon>ClangFormatOptionsUserControl.xaml</DependentUpon>
     </Compile>
@@ -159,9 +162,6 @@
     </Compile>
     <Compile Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowseFormat.xaml.cs">
       <DependentUpon>BorderedTextBoxBrowseFormat.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\WpfPropertyGrid\ButtonTidyExport.xaml.cs">
-      <DependentUpon>ButtonTidyExport.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\View\WpfPropertyGrid\StringCollectionEditor.xaml.cs">
       <DependentUpon>StringCollectionEditor.xaml</DependentUpon>
@@ -430,6 +430,10 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Options\View\ButtonTidyExportControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Options\View\ClangFormatOptionsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -467,10 +471,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowseFormat.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Options\View\WpfPropertyGrid\ButtonTidyExport.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
