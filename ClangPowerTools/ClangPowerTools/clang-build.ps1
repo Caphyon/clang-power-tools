@@ -1069,6 +1069,7 @@ Print-InvocationArguments
 Write-Verbose "CPU logical core count: $kLogicalCoreCount"
 
 # If LLVM is not in PATH try to detect it automatically
+[string] $global:llvmLocation = ""
 if (! (Exists-Command($kClangCompiler)) )
 {
   foreach ($locationLLVM in $kLLVMInstallLocations)
