@@ -304,7 +304,7 @@ Function Exit-Script([Parameter(Mandatory=$false)][int] $code = 0)
   # Clean-up
   foreach ($file in $global:FilesToDeleteWhenScriptQuits)
   {
-    Remove-Item $file -ErrorAction SilentlyContinue | Out-Null
+    Remove-Item $file -ErrorAction SilentlyContinue > $null
   }
 
   # Restore working directory
@@ -428,15 +428,15 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
   [string] $stdafxSource = (Canonize-Path -base $stdafxDir -child $stdafxHeaderName)
   [string] $stdafx = $stdafxSource + ".hpp"
 
-  Copy-Item -Path $stdafxSource -Destination $stdafx | Out-Null
-  $global:FilesToDeleteWhenScriptQuits.Add($stdafx) | Out-Null
+  Copy-Item -Path $stdafxSource -Destination $stdafx > $null
+  $global:FilesToDeleteWhenScriptQuits.Add($stdafx) > $null
 
   [string] $vcxprojShortName = [System.IO.Path]::GetFileNameWithoutExtension($global:vcxprojPath);
   [string] $stdafxPch = (Join-Path -path (Get-SourceDirectory) `
                                    -ChildPath "$vcxprojShortName$kExtensionClangPch")
-  Remove-Item -Path "$stdafxPch" -ErrorAction SilentlyContinue | Out-Null
+  Remove-Item -Path "$stdafxPch" -ErrorAction SilentlyContinue > $null
 
-  $global:FilesToDeleteWhenScriptQuits.Add($stdafxPch) | Out-Null
+  $global:FilesToDeleteWhenScriptQuits.Add($stdafxPch) > $null
 
   [string[]] $compilationFlags = @("""$stdafx"""
                                   ,$kClangFlagEmitPch
@@ -651,7 +651,7 @@ Function Process-ProjectResult($compileResult)
     if (!$aContinueOnError)
     {
       # Wait for other workers to finish. They have a lock on the PCH file
-      Get-Job -state Running | Wait-Job | Remove-Job | Out-Null
+      Get-Job -state Running | Wait-Job | Remove-Job > $null
       Fail-Script
     }
 
@@ -672,11 +672,11 @@ Function Wait-AndProcessBuildJobs([switch]$any)
 
   if ($any)
   {
-    $runningJobs | Wait-Job -Any | Out-Null
+    $runningJobs | Wait-Job -Any > $null
   }
   else
   {
-    $runningJobs | Wait-Job | Out-Null
+    $runningJobs | Wait-Job > $null
   }
 
   $jobData = Get-Job -State Completed
@@ -767,7 +767,7 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
     {
       Start-Job -ScriptBlock  $jobWorkToBeDone `
                 -ArgumentList $job `
-                -ErrorAction Continue | Out-Null
+                -ErrorAction Continue > $null
     }
     else
     {

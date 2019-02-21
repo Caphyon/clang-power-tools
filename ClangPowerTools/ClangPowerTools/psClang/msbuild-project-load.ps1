@@ -77,7 +77,7 @@ Function Set-Var([parameter(Mandatory = $false)][string] $name
 
     if (!$asScriptParameter -and !$global:ProjectSpecificVariables.Contains($name))
     {
-        $global:ProjectSpecificVariables.Add($name) | Out-Null
+        $global:ProjectSpecificVariables.Add($name) > $null
     }
 }
 
@@ -101,12 +101,12 @@ Function Add-Project-Item([parameter(Mandatory = $false)][string] $name
     {
         foreach ($arrayValue in $value)
         {
-            $itemList.Add($arrayValue) | Out-Null
+            $itemList.Add($arrayValue) > $null
         }
     }
     else
     {
-        $itemList.Add($value) | Out-Null
+        $itemList.Add($value) > $null
     }
 }
 
@@ -441,7 +441,7 @@ function Select-ProjectNodes([Parameter(Mandatory = $true)]  [string][string] $x
 
         # we still could have to inherit from parents but when not loading
         # all MS prop sheets we have nothing to inherit from, delete inheritance token
-        ReplaceInheritedNodeValue -currentNode $nodeToReturn -nodeToInheritFrom $null | Out-Null
+        ReplaceInheritedNodeValue -currentNode $nodeToReturn -nodeToInheritFrom $null > $null
 
         return @($nodeToReturn)
     }
@@ -486,7 +486,7 @@ function Detect-ProjectDefaultConfigPlatform([string] $projectValue)
 function HandleChooseNode([System.Xml.XmlNode] $aChooseNode)
 {
     # we need to change the node name so that we avoid an infinite recursion to and from SanitizeProjectFile
-    $aChooseNode.SetAttribute($kFlagCPTWork, '1') | Out-Null
+    $aChooseNode.SetAttribute($kFlagCPTWork, '1') > $null
     SanitizeProjectNode $aChooseNode
 
     [System.Xml.XmlElement] $selectedChild = $aChooseNode.ChildNodes | `
@@ -495,11 +495,11 @@ function HandleChooseNode([System.Xml.XmlNode] $aChooseNode)
 
     foreach ($selectedGrandchild in $selectedChild.ChildNodes)
     {
-        $aChooseNode.ParentNode.AppendChild($selectedGrandchild.Clone()) | Out-Null
+        $aChooseNode.ParentNode.AppendChild($selectedGrandchild.Clone()) > $null
     }
 
-    $aChooseNode.ParentNode.RemoveChild($aChooseNode) | Out-Null
-    $aChooseNode.RemoveAttribute($kFlagCPTWork) | Out-Null
+    $aChooseNode.ParentNode.RemoveChild($aChooseNode) > $null
+    $aChooseNode.RemoveAttribute($kFlagCPTWork) > $null
 }
 
 function SanitizeProjectNode([System.Xml.XmlNode] $node)
@@ -614,7 +614,7 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
         }
         if (!$validChild)
         {
-            $nodesToRemove.Add($child) | out-null
+            $nodesToRemove.Add($child) > $null
             continue
         }
         else
@@ -625,7 +625,7 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
 
     foreach ($nodeToRemove in $nodesToRemove)
     {
-        $nodeToRemove.ParentNode.RemoveChild($nodeToRemove) | out-null
+        $nodeToRemove.ParentNode.RemoveChild($nodeToRemove) > $null
     }
 }
 

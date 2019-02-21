@@ -158,10 +158,11 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
 
     Write-Debug "Intermediate PS expression: $expression"
 
+    $res = $null
     try
     {
         # try to get actual objects, if possible
-        $res = Invoke-Expression $expression
+        ($res = Invoke-Expression $expression) > $null
     }
     catch
     {
