@@ -12,8 +12,17 @@
 										<ButtonText>Clang Power Tools</ButtonText>
 								</Strings>
 						</Menu>
+					
+					<!--Toolbar Drop-Down Menu  cake -->
+					<Menu guid="guidClangPowerToolsPackageToolbarCmd" id="GroupForToolbarDropDown" priority="0x0001" type="Menu">
+						<Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
+						<Strings>
+							<ButtonText>Clang Power Tools</ButtonText>
+							<CommandName>Clang Power Tools</CommandName>
+						</Strings>
+					</Menu>
 
-						<!--Toolbar menu-->
+					<!--Toolbar menu-->
 						<Menu guid="guidClangPowerToolsPackageCmdSet" id="Toolbar" type="Toolbar">
 								<CommandFlag>DefaultDocked</CommandFlag>
 								<Strings>
@@ -22,7 +31,7 @@
 								</Strings>
 						</Menu>
 
-						<!--Toolbar Drop-Down Menu-->
+						<!--Tidy Drop-Down Menu-->
 						<Menu guid="guidClangPowerToolsPackageCmdSet" id="DromDownMenu" type="MenuController" priority="0x0001">
 								<Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
 								<CommandFlag>DefaultDocked</CommandFlag>
@@ -36,6 +45,9 @@
 				
 				<Groups>
 						<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0000" />
+						<Group guid="guidClangPowerToolsPackageToolbarCmd" id="GroupToolbarMenu" priority="0x0000" >
+							<Parent guid="guidClangPowerToolsPackageToolbarCmd" id="GroupForToolbarDropDown"/> <!-- cakee -->
+						</Group>
 						<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0000" />
 						<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" priority="0x0002" />
 						<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0003" />
@@ -48,6 +60,14 @@
 				</Groups>
 
 				<Buttons>
+					
+					<!--Main Toolbar Menu Buttons  cakeee-->
+					<Button guid="guidClangPowerToolsPackageToolbarCmd" id="ExportClangTidy" priority="0x0500" type="Button">
+						<Parent guid="guidClangPowerToolsPackageToolbarCmd" id="GroupToolbarMenu" />
+						<Strings>
+							<ButtonText>Export Clang Tidy Config</ButtonText>
+						</Strings>
+					</Button>
 
 						<!--Context Menu Buttons-->
 						<Button guid="guidClangPowerToolsPackageCmdSet" id="CompileId" priority="0x0000" type="Button">
@@ -200,7 +220,7 @@
 
 				<!-- Placement for commands.
 					 The parent of a command is always a group, never a menu, context menu or toolbar.-->
-
+										
 				<!--Add the GroupForSubmenu(commands) in context menu of solution, project, folder, file and tab editor -->
 				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x08FF">
 						<!-- The parent of the group will be the solution context menu -->
@@ -280,7 +300,12 @@
 		</CommandPlacements>
 
 		<Symbols>
-
+			<!--cakee -->
+				<GuidSymbol name="guidClangPowerToolsPackageToolbarCmd" value="{ae13fea1-e0a6-4650-9a4b-1c6b5585dccd}">
+					<IDSymbol name="GroupToolbarMenu" value="0x1030" />
+					<IDSymbol name="ExportClangTidy" value="0x01032" />
+					<IDSymbol name="GroupForToolbarDropDown" value="0x1031" />
+				</GuidSymbol>
 				<GuidSymbol name="guidClangPowerToolsPackage" value="{f564f9d3-01ae-493e-883b-18deebdb975e}" />
 				<GuidSymbol name="guidClangPowerToolsPackageCmdSet" value="{498fdff5-5217-4da9-88d2-edad44ba3874}">
 
