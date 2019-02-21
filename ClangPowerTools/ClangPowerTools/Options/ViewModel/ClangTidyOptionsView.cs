@@ -34,7 +34,9 @@ namespace ClangPowerTools
 
     private const string kTidyOptionsFileName = "TidyOptionsConfiguration.config";
     private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
-    private ClangTidyPathValue clangTidyPath;
+    private ClangTidyPathValue mClangTidyPath;
+    private HeaderFiltersValue mHeaderFilters;
+    private ClangTidyUseChecksFrom? mUseChecksFrom;
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -59,7 +61,18 @@ namespace ClangPowerTools
     [Description("Regular expression matching the names of the headers to output diagnostics from or auto-fix. Diagnostics from the source file are always displayed." +
       "This option overrides the 'HeaderFilter' option in .clang-tidy file, if any.\n" +
       "\"Corresponding Header\" : output diagnostics/fix only the corresponding header (same filename) for each source file analyzed.")]
-    public HeaderFiltersValue HeaderFilter { get; set; }
+    public HeaderFiltersValue HeaderFilter
+    {
+      get
+      {
+        return mHeaderFilters;
+      }
+      set
+      {
+        mHeaderFilters = value;
+        OnPropertyChanged("HeaderFilter");
+      }
+    }
 
 
     [Category(" Tidy")]
@@ -67,7 +80,18 @@ namespace ClangPowerTools
     [Description("Tidy checks: switch between explicitly specified checks (predefined or custom) and using checks from .clang-tidy configuration files.\n" +
       "Other options are always loaded from .clang-tidy files.")]
     [TypeConverter(typeof(ClangTidyUseChecksFromConvertor))]
-    public ClangTidyUseChecksFrom? UseChecksFrom { get; set; }
+    public ClangTidyUseChecksFrom? UseChecksFrom
+    {
+      get
+      {
+        return mUseChecksFrom;
+      }
+      set
+      {
+        mUseChecksFrom = value;
+        OnPropertyChanged("UseChecksFrom");
+      }
+    }
 
 
     [Category("Clang-Tidy")]
@@ -78,11 +102,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return clangTidyPath;
+        return mClangTidyPath;
       }
       set
       {
-        clangTidyPath = value;
+        mClangTidyPath = value;
         OnPropertyChanged("ClangTidyPath");
       }
     }
@@ -99,6 +123,7 @@ namespace ClangPowerTools
     }
 
     #endregion
+
 
     #region DialogPage Save and Load implementation 
 
@@ -123,25 +148,6 @@ namespace ClangPowerTools
       SetEnvironmentVariableTidyPath();
     }
 
-    private void OnPropertyChanged(string aPropName)
-    {
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(aPropName));
-    }
-
-    private void SetEnvironmentVariableTidyPath()
-    {
-      Task.Run(() =>
-     {
-       if (ClangTidyPath.Enable == true && ClangTidyPath.Value.Length > 0)
-       {
-         Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, ClangTidyPath.Value, EnvironmentVariableTarget.User);
-       }
-       else
-       {
-         Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, null, EnvironmentVariableTarget.User);
-       }
-     });
-    }
 
     public override void LoadSettingsFromStorage()
     {
@@ -179,6 +185,33 @@ namespace ClangPowerTools
 
 
       SetEnvironmentVariableTidyPath();
+    }
+
+
+    #endregion
+
+
+    #region Private Methods
+
+    private void OnPropertyChanged(string aPropName)
+    {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(aPropName));
+    }
+
+
+    private void SetEnvironmentVariableTidyPath()
+    {
+      Task.Run(() =>
+      {
+        if (null != ClangTidyPath && ClangTidyPath.Enable == true && ClangTidyPath.Value.Length > 0)
+        {
+          Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, ClangTidyPath.Value, EnvironmentVariableTarget.User);
+        }
+        else
+        {
+          Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, null, EnvironmentVariableTarget.User);
+        }
+      });
     }
 
     #endregion
