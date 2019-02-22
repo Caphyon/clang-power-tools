@@ -135,22 +135,6 @@
     </StackPanel>
   </DataTemplate>
 
-
-  <!-- Clang export config DataTemplate --><!--
-  <DataTemplate x:Key="ClangExportConfigTemplate">
-    <StackPanel>
-      <Grid Height="20">
-        <Border Grid.Column="1" Style="{x:Null}">
-          <Local1:ButtonExportTidy
-            DataContext="{Binding Value}"
-            Grid.Row="1"
-            PreviewMouseUp="PreviewMouseUp"
-            PreviewMouseDown="PreviewMouseDown" />
-        </Border>
-      </Grid>
-    </StackPanel>
-  </DataTemplate>-->
-
   <!-- Clang Format Style DataTemplate -->
   <DataTemplate x:Key="StyleDataTemplate">
     <Grid Margin="0" HorizontalAlignment ="Stretch">
