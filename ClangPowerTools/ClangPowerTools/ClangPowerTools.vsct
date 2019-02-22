@@ -14,7 +14,7 @@
 						</Menu>
 					
 					<!--Toolbar Drop-Down Menu  cake -->
-					<Menu guid="guidClangPowerToolsPackageToolbarCmd" id="GroupForToolbarDropDown" priority="0x0001" type="Menu">
+					<Menu guid="guidClangPowerToolsPackageToolbarCmd" id="GroupForToolbarDropDown" priority="0xffff" type="Menu">
 						<Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
 						<Strings>
 							<ButtonText>Clang Power Tools</ButtonText>

@@ -129,9 +129,6 @@
     </Compile>
     <Compile Include="Options\Model\ClangOptions.cs" />
     <Compile Include="Convertors\ClangTidyHeaderFiltersConvertor.cs" />
-    <Compile Include="Options\View\ButtonTidyExportControl.xaml.cs">
-      <DependentUpon>ButtonTidyExportControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Options\View\ClangFormatOptionsUserControl.xaml.cs">
       <DependentUpon>ClangFormatOptionsUserControl.xaml</DependentUpon>
     </Compile>
@@ -430,10 +427,6 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Options\View\ButtonTidyExportControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Options\View\ClangFormatOptionsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
