@@ -62,7 +62,7 @@
 				<Buttons>
 					
 					<!--Main Toolbar Menu Buttons  cakeee-->
-					<Button guid="guidClangPowerToolsPackageToolbarCmd" id="ExportClangTidy" priority="0x0500" type="Button">
+					<Button guid="guidClangPowerToolsPackageToolbarCmd" id="TidyConfigCommandId" priority="0x0111" type="Button">
 						<Parent guid="guidClangPowerToolsPackageToolbarCmd" id="GroupToolbarMenu" />
 						<Strings>
 							<ButtonText>Export Clang Tidy Config</ButtonText>
@@ -301,9 +301,9 @@
 
 		<Symbols>
 			<!--cakee -->
-				<GuidSymbol name="guidClangPowerToolsPackageToolbarCmd" value="{ae13fea1-e0a6-4650-9a4b-1c6b5585dccd}">
+				<GuidSymbol name="guidClangPowerToolsPackageToolbarCmd" value="{a95ae60d-773b-4090-833f-745d0f846100}">
 					<IDSymbol name="GroupToolbarMenu" value="0x1030" />
-					<IDSymbol name="ExportClangTidy" value="0x01032" />
+					<IDSymbol name="TidyConfigCommandId" value="256" />
 					<IDSymbol name="GroupForToolbarDropDown" value="0x1031" />
 				</GuidSymbol>
 				<GuidSymbol name="guidClangPowerToolsPackage" value="{f564f9d3-01ae-493e-883b-18deebdb975e}" />
