@@ -274,6 +274,7 @@ Function InitializeMsBuildProjectProperties()
     Set-Var -name "ProjectName"              -value $MSBuildProjectName
     Set-Var -name "TargetName"               -value $MSBuildProjectName
 
+    Set-Var -name "UserRootDir"              -value "$LocalAppData\Microsoft\MSBuild\v4.0"
     # These would enable full project platform references parsing, experimental right now
     if ($env:CPT_LOAD_ALL -eq '1')
     {
@@ -282,7 +283,6 @@ Function InitializeMsBuildProjectProperties()
         Set-Var -name "VsInstallRoot"            -value (Get-VisualStudio-Path)
         Set-Var -name "MSBuildExtensionsPath"    -value "$(Get-VisualStudio-Path)\MSBuild"
         Set-Var -name "LocalAppData"             -value $env:LOCALAPPDATA
-        Set-Var -name "UserRootDir"              -value "$LocalAppData\Microsoft\MSBuild\v4.0"
         Set-Var -name "UniversalCRT_IncludePath" -value "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\10.0.10240.0\ucrt"
     }
 
