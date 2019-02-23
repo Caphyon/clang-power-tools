@@ -170,13 +170,13 @@ Function Should-IgnoreFile([Parameter(Mandatory = $true)][string] $file)
 
 Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchCppName)
 {
-    [System.Xml.XmlElement[]] $projectEntries = Select-ProjectNodes($kVcxprojXpathCompileFiles) | `
-        Where-Object { Should-CompileFile -fileNode $_ -pchCppName $pchCppName }
+    [System.Xml.XmlElement[]] $projectEntries = @(Select-ProjectNodes($kVcxprojXpathCompileFiles) | `
+                                                  Where-Object { Should-CompileFile -fileNode $_ -pchCppName $pchCppName })
 
     [System.Collections.ArrayList] $files = @()
     foreach ($entry in $projectEntries)
     {
-        [string[]] $matchedFiles = Canonize-Path -base $ProjectDir -child $entry.GetAttribute("Include")
+        [string[]] $matchedFiles = @(Canonize-Path -base $ProjectDir -child $entry.GetAttribute("Include"))
         [UsePch] $usePch = [UsePch]::Use
 
         $nodePch = $entry.SelectSingleNode('ns:PrecompiledHeader', $global:xpathNS)
@@ -210,13 +210,13 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchC
 
 Function Get-ProjectHeaders()
 {
-    [string[]] $headers = Select-ProjectNodes($kVcxprojXpathHeaders) | ForEach-Object {$_.Include }
+    [string[]] $headers = @(Select-ProjectNodes($kVcxprojXpathHeaders) | ForEach-Object {$_.Include })
 
     [string[]] $headerPaths = @()
 
     foreach ($headerEntry in $headers)
     {
-        [string[]] $paths = Canonize-Path -base $ProjectDir -child $headerEntry -ignoreErrors
+        [string[]] $paths = @(Canonize-Path -base $ProjectDir -child $headerEntry -ignoreErrors)
         if ($paths.Count -gt 0)
         {
             $headerPaths += $paths
@@ -465,10 +465,16 @@ Function Get-Project-PchCpp()
 #>
 Function Get-ProjectPreprocessorDefines()
 {
-    [string[]] $tokens = (Select-ProjectNodes $kVcxprojXpathPreprocessorDefs).InnerText -split ";"
+    $preprocDefNodes = Select-ProjectNodes $kVcxprojXpathPreprocessorDefs
+    if (!$preprocDefNodes)
+    {
+        return @()
+    }
+    
+    [string[]] $tokens = @($preprocDefNodes.InnerText -split ";")
 
     # make sure we add the required prefix and escape double quotes
-    [string[]]$defines = ( $tokens | `
+    [string[]]$defines = @( $tokens | `
             ForEach-Object { $_.Trim() } | `
             Where-Object { $_ } | `
             ForEach-Object { '"' + $(($kClangDefinePrefix + $_) -replace '"', '\"') + '"' } )
@@ -494,10 +500,14 @@ Function Get-ProjectPreprocessorDefines()
 
 Function Get-ProjectAdditionalIncludes()
 {
-    [string[]] $tokens = @()
 
     $data = Select-ProjectNodes $kVcxprojXpathAdditionalIncludes
-    $tokens += ($data).InnerText -split ";"
+    if (!$data)
+    {
+        return @()
+    }
+
+    [string[]] $tokens = @(($data).InnerText -split ";")
 
     foreach ($token in $tokens)
     {
@@ -536,7 +546,7 @@ Function Get-ProjectStdafxDir( [Parameter(Mandatory = $true)]  [string]   $pchHe
 {
     [string] $stdafxPath = ""
 
-    [string[]] $projectHeaders = Get-ProjectHeaders
+    [string[]] $projectHeaders = @(Get-ProjectHeaders)
     if ($projectHeaders.Count -gt 0)
     {
         # we need to use only backslashes so that we can match against file header paths
@@ -582,7 +592,7 @@ Function Get-PchCppIncludeHeader([Parameter(Mandatory = $true)][string] $pchCppF
 {
     [string] $cppPath = Canonize-Path -base $ProjectDir -child $pchCppFile
 
-    [string[]] $fileLines = Get-Content -path $cppPath
+    [string[]] $fileLines = @(Get-Content -path $cppPath)
     foreach ($line in $fileLines)
     {
         $regexMatch = [regex]::match($line, '^\s*#include\s+"(\S+)"')

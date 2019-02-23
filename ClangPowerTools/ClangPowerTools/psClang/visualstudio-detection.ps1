@@ -103,7 +103,7 @@ Function Get-VisualStudio-Path()
             }
 
             [string] $version = Get-VsWhere-VisualStudio-Version
-            [string[]] $output = (& "$kVsWhereLocation" -nologo `
+            [string[]] $output = @(& "$kVsWhereLocation" -nologo `
                                                         -property installationPath `
                                                         -products $product `
                                                         -version $version `
