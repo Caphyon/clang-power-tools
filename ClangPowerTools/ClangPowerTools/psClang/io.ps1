@@ -207,7 +207,7 @@ Function Canonize-Path( [Parameter(Mandatory = $true)][string] $base
     }
     else
     {
-        [string[]] $paths = Join-Path -Path "$base" -ChildPath "$child" -Resolve -ErrorAction $errorAction
+        [string[]] $paths = @(Join-Path -Path "$base" -ChildPath "$child" -Resolve -ErrorAction $errorAction)
         return $paths
     }
 }

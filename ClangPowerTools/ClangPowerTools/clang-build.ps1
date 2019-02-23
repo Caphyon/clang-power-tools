@@ -363,7 +363,7 @@ function Get-ProjectSolution()
 {
   foreach ($slnPath in $global:slnFiles.Keys)
   {
-    [string[]] $solutionProjectPaths = Get-SolutionProjects $slnPath
+    [string[]] $solutionProjectPaths = @(Get-SolutionProjects $slnPath)
     if ($solutionProjectPaths -and $solutionProjectPaths -contains $global:vcxprojPath)
     {
       return $slnPath
@@ -378,7 +378,7 @@ Function Get-Projects()
 
   foreach ($slnPath in $global:slnFiles.Keys)
   {
-    [string[]] $solutionProjects = Get-SolutionProjects -slnPath $slnPath
+    [string[]] $solutionProjects = @(Get-SolutionProjects -slnPath $slnPath)
     if ($solutionProjects -and $solutionProjects.Count -gt 0)
     {
       $projects += $solutionProjects
@@ -840,7 +840,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   #-----------------------------------------------------------------------------------------------
   # DETECT PROJECT PREPROCESSOR DEFINITIONS
 
-  [string[]] $preprocessorDefinitions = Get-ProjectPreprocessorDefines
+  [string[]] $preprocessorDefinitions = @(Get-ProjectPreprocessorDefines)
   if ($global:cptVisualStudioVersion -eq "2017")
   {
     # [HACK] pch generation crashes on VS 15.5 because of STL library, known bug.
@@ -855,10 +855,10 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   #-----------------------------------------------------------------------------------------------
   # DETECT PROJECT ADDITIONAL INCLUDE DIRECTORIES AND CONSTRUCT INCLUDE PATHS
 
-  [string[]] $additionalIncludeDirectories = Get-ProjectAdditionalIncludes
+  [string[]] $additionalIncludeDirectories = @(Get-ProjectAdditionalIncludes)
   Write-Verbose-Array -array $additionalIncludeDirectories -name "Additional include directories"
 
-  [string[]] $includeDirectories = Get-ProjectIncludeDirectories
+  [string[]] $includeDirectories = @(Get-ProjectIncludeDirectories)
   Write-Verbose-Array -array $includeDirectories -name "Include directories"
 
   #-----------------------------------------------------------------------------------------------
@@ -1095,7 +1095,7 @@ Remove-Job -State Completed
 Write-Verbose "Source directory: $(Get-SourceDirectory)"
 Write-Verbose "Scanning for project files"
 
-[System.IO.FileInfo[]] $projects = Get-Projects
+[System.IO.FileInfo[]] $projects = @(Get-Projects)
 [int] $initialProjectCount       = $projects.Count
 Write-Verbose ("Found $($projects.Count) projects")
 
@@ -1106,7 +1106,7 @@ if ($aCppToCompile -and $aCppToCompile.Count -gt 0)
 {
   # We've been given particular files to compile. If headers are among them
   # we'll find all source files that include them and tag them for processing.
-  [string[]] $headerRefs = Get-HeaderReferences -files $aCppToCompile
+  [string[]] $headerRefs = @(Get-HeaderReferences -files $aCppToCompile)
   if ($headerRefs.Count -gt 0)
   {
     Write-Verbose-Array -name "Detected source files" -array $headerRefs
@@ -1154,8 +1154,8 @@ if ($aCppToCompile -and $projectsToProcess.Count -gt 1)
   # the projects to be processed (those that include any of the particular files)
 
   # For obvious performance reasons, no filtering is done when there's only one project to process.
-  [System.IO.FileInfo[]] $projectsThatIncludeFiles = Get-SourceCodeIncludeProjects -projectPool $projectsToProcess `
-                                                                                   -files $aCppToCompile
+  [System.IO.FileInfo[]] $projectsThatIncludeFiles = @(Get-SourceCodeIncludeProjects -projectPool $projectsToProcess `
+                                                                                     -files $aCppToCompile)
   Write-Verbose-Array -name "Detected projects" -array $projectsThatIncludeFiles
 
   # some projects include files using wildcards, we won't match anything in them

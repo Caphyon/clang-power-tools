@@ -35,8 +35,8 @@ Function detail:FindHeaderReferences( [Parameter(Mandatory = $false)] [string[]]
     if (!$filePool)
     {
         # initialize pool of files that we look into
-        [string[]] $allFileExts = ($global:sourceExtensions + `
-                                   $global:headerExtensions) | ForEach-Object { "*.$_" }
+        [string[]] $allFileExts = @(($global:sourceExtensions + `
+                                     $global:headerExtensions) | ForEach-Object { "*.$_" })
         $filePool = Get-ChildItem -recurse -include $allFileExts
     }
 
