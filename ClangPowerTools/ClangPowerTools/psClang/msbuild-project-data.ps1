@@ -44,10 +44,6 @@ Set-Variable -name kVcxprojXpathPCH `
              -value "ns:Project/ns:ItemGroup/ns:ClCompile/ns:PrecompiledHeader[text()='Create']" `
              -option Constant
 
-Set-Variable -name kVcxprojXpathToolset `
-             -value "ns:Project/ns:PropertyGroup[@Label='Configuration']/ns:PlatformToolset" `
-             -option Constant
-
 Set-Variable -name kVcxprojXpathCppStandard `
              -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:LanguageStandard" `
              -option Constant
@@ -304,9 +300,7 @@ Function Get-ClangCompileFlags([Parameter(Mandatory = $false)][bool] $isCpp = $t
 
 Function Get-ProjectPlatformToolset()
 {
-    $propGroup = Select-ProjectNodes($kVcxprojXpathToolset)
-
-    $toolset = $propGroup.InnerText
+    $toolset = $PlatformToolset
 
     if ($toolset)
     {
