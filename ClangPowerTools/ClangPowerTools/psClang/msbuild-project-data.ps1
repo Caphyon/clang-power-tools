@@ -24,10 +24,6 @@ Set-Variable -name kClangFlag32BitPlatform        -value "-m32" -option Constant
 # ------------------------------------------------------------------------------------------------
 # Xpath selectors
 
-Set-Variable -name kVcxprojXpathPreprocessorDefs  `
-             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:PreprocessorDefinitions" `
-             -option Constant
-
 Set-Variable -name kVcxprojXpathRuntimeLibrary `
              -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:RuntimeLibrary" `
              -option Constant
@@ -461,13 +457,14 @@ Function Get-Project-PchCpp()
 #>
 Function Get-ProjectPreprocessorDefines()
 {
-    $preprocDefNodes = Select-ProjectNodes $kVcxprojXpathPreprocessorDefs
+    Set-ProjectItemContext "ClCompile"
+    $preprocDefNodes = Get-ProjectItemProperty "PreprocessorDefinitions"
     if (!$preprocDefNodes)
     {
         return @()
     }
     
-    [string[]] $tokens = @($preprocDefNodes.InnerText -split ";")
+    [string[]] $tokens = @($preprocDefNodes -split ";")
 
     # make sure we add the required prefix and escape double quotes
     [string[]]$defines = @( $tokens | `
