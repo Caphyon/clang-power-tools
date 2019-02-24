@@ -167,6 +167,8 @@ Function Clear-Vars()
     $global:ScriptParameterBackupValues.Clear()
 
     $global:ProjectSpecificVariables.Clear()
+    
+    Reset-ProjectItemContext
 }
 
 Function UpdateScriptParameter([Parameter(Mandatory = $true)] [string] $paramName

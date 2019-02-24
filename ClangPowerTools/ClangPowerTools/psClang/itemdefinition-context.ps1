@@ -3,6 +3,12 @@
 [System.Collections.Hashtable] $global:itemProperties = @{}
 [string] $global:itemPropertyNamespace = ""
 
+function Reset-ProjectItemContext()
+{
+    $global:itemProperties = @{}
+    $global:itemPropertyNamespace = ""
+}
+
 function Push-ProjectItemContext([Parameter(Mandatory = $true)][string] $name)
 {
     [string] $toAdd = ""
