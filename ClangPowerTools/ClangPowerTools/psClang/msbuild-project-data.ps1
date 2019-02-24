@@ -44,10 +44,6 @@ Set-Variable -name kVcxprojXpathPCH `
              -value "ns:Project/ns:ItemGroup/ns:ClCompile/ns:PrecompiledHeader[text()='Create']" `
              -option Constant
 
-Set-Variable -name kVcxprojXpathProjectCompileAs `
-             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:CompileAs" `
-             -option Constant
-
 # ------------------------------------------------------------------------------------------------
 # Default platform sdks and standard
 
@@ -206,13 +202,14 @@ Function Get-ProjectHeaders()
 
 Function Is-CProject()
 {
-    $projNode = Select-ProjectNodes($kVcxprojXpathProjectCompileAs)
-    if (!$projNode)
+    Set-ProjectItemContext "ClCompile"
+    $compileAs = Get-ProjectItemProperty "CompileAs"
+
+    if ($compileAs)
     {
         return $false
     }
-
-    [string] $compileAs = $projNode.InnerText
+    
     return $compileAs -eq $kCProjectCompile
 }
 
