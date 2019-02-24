@@ -836,7 +836,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # FIND FORCE INCLUDES
 
   [string[]] $forceIncludeFiles = @(Get-ProjectForceIncludes)
-  Write-Verbose "Force includes: $forceIncludeFiles"
+  Write-Verbose-Array -array $forceIncludeFiles -name "Force includes" 
 
   #-----------------------------------------------------------------------------------------------
   # DETECT PROJECT PREPROCESSOR DEFINITIONS

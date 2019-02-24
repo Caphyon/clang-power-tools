@@ -40,10 +40,6 @@ Set-Variable -name kVcxprojXpathWinPlatformVer `
              -value "ns:Project/ns:PropertyGroup/ns:WindowsTargetPlatformVersion" `
              -option Constant
 
-Set-Variable -name kVcxprojXpathForceIncludes `
-             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:ForcedIncludeFiles" `
-             -option Constant
-
 Set-Variable -name kVcxprojXpathPCH `
              -value "ns:Project/ns:ItemGroup/ns:ClCompile/ns:PrecompiledHeader[text()='Create']" `
              -option Constant
@@ -515,10 +511,11 @@ Function Get-ProjectAdditionalIncludes()
 
 Function Get-ProjectForceIncludes()
 {
-    [System.Xml.XmlElement] $forceIncludes = Select-ProjectNodes $kVcxprojXpathForceIncludes
+    Set-ProjectItemContext "ClCompile"
+    $forceIncludes = Get-ProjectItemProperty "ForcedIncludeFiles"
     if ($forceIncludes)
     {
-        return $forceIncludes.InnerText -split ";"
+        return @($forceIncludes -split ";" | Where-Object { ![string]::IsNullOrWhiteSpace($_) })
     }
 
     return $null
