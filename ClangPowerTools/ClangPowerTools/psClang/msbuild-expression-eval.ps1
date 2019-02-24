@@ -32,6 +32,7 @@ Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>     `
         ,'MakePathRelative -base $1 -target "$2")'                       )`
         , ('SearchOption\.', '[System.IO.SearchOption]::'                )`
         , ("@\((.*?)\)", '$(Get-Project-Item("$1"))'                     )`
+        , ("%\((.*?)\)", '$(Get-ProjectItemProperty("$1"))'              )`
         , ('\$\(HOME\)', '$(CPT_SHIM_HOME)'                              )`
 )
 

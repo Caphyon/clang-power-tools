@@ -277,6 +277,7 @@ Add-Type -TypeDefinition @"
   , "$PSScriptRoot\psClang\msbuild-project-load.ps1"
   , "$PSScriptRoot\psClang\msbuild-project-data.ps1"
   , "$PSScriptRoot\psClang\get-header-references.ps1"
+  , "$PSScriptRoot\psClang\itemdefinition-context.ps1"
   ) | ForEach-Object { . $_ }
 
 #-------------------------------------------------------------------------------------------------

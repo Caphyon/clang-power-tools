@@ -592,6 +592,24 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
         }
     }
 
+    if ($node.Name -ieq "ItemDefinitionGroup")
+    {
+        [System.Xml.XmlNode[]] $childNodes = $node.ChildNodes | Where-Object { $_.GetType().Name -ieq "XmlElement" }
+        foreach ($child in $childNodes)
+        {
+            Push-ProjectItemContext $child.Name
+
+            [System.Xml.XmlNode[]] $propNodes = @($child.ChildNodes | Where-Object { $_.GetType().Name -ieq "XmlElement" })
+            foreach ($propNode in $propNodes)
+            {
+                $propVal = Evaluate-MSBuildExpression $propNode.InnerText
+                Set-ProjectItemProperty $propNode.Name $propVal
+            }
+
+            Pop-ProjectItemContext
+        }
+    }
+
     if ($node.ParentNode -and $node.ParentNode.Name -ieq "PropertyGroup")
     {
         # set new property value
