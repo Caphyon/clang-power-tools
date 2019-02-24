@@ -44,11 +44,6 @@ Set-Variable -name kVcxprojXpathPCH `
              -value "ns:Project/ns:ItemGroup/ns:ClCompile/ns:PrecompiledHeader[text()='Create']" `
              -option Constant
 
-Set-Variable -name kVcxprojXpathCppStandard `
-             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:LanguageStandard" `
-             -option Constant
-
-
 Set-Variable -name kVcxprojXpathProjectCompileAs `
              -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:CompileAs" `
              -option Constant
@@ -249,33 +244,19 @@ Function Is-Project-Unicode()
 
 Function Get-Project-CppStandard()
 {
-    [string] $cachedValueVarName = "ClangPowerTools:CppStd"
-
-    [string] $cachedVar = (Get-Variable $cachedValueVarName -ErrorAction SilentlyContinue -ValueOnly)
-    if (![string]::IsNullOrEmpty($cachedVar))
-    {
-        return $cachedVar
-    }
-
-    [string] $cppStd = ""
-
-    $cppStdNode = Select-ProjectNodes($kVcxprojXpathCppStandard)
-    if ($cppStdNode)
-    {
-        $cppStd = $cppStdNode.InnerText
-    }
-    else
+    Set-ProjectItemContext "ClCompile"
+    $cppStd = Get-ProjectItemProperty "LanguageStandard"
+    if (!$cppStd)
     {
         $cppStd = $kDefaultCppStd
     }
 
     $cppStdMap = @{ 'stdcpplatest' = 'c++1z'
-        ; 'stdcpp14'               = 'c++14'
-        ; 'stdcpp17'               = 'c++17'
-    }
+                  ; 'stdcpp14'     = 'c++14'
+                  ; 'stdcpp17'     = 'c++17'
+                  }
 
     [string] $cppStdClangValue = $cppStdMap[$cppStd]
-    Set-Var -name $cachedValueVarName -value $cppStdClangValue
 
     return $cppStdClangValue
 }
