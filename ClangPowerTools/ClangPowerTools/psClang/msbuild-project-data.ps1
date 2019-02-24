@@ -24,10 +24,6 @@ Set-Variable -name kClangFlag32BitPlatform        -value "-m32" -option Constant
 # ------------------------------------------------------------------------------------------------
 # Xpath selectors
 
-Set-Variable -name kVcxprojXpathRuntimeLibrary `
-             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:RuntimeLibrary" `
-             -option Constant
-
 Set-Variable -name kVcxprojXpathHeaders `
              -value "ns:Project/ns:ItemGroup/ns:ClInclude" `
              -option Constant
@@ -209,7 +205,7 @@ Function Is-CProject()
     {
         return $false
     }
-    
+
     return $compileAs -eq $kCProjectCompile
 }
 
@@ -221,11 +217,9 @@ Function Get-Project-SDKVer()
 }
 
 Function Is-Project-MultiThreaded()
-{
-    $propGroup = Select-ProjectNodes($kVcxprojXpathRuntimeLibrary)
-
-    $runtimeLibrary = $propGroup.InnerText
-
+{    
+    Set-ProjectItemContext "ClCompile"
+    $runtimeLibrary = Get-ProjectItemProperty "RuntimeLibrary"
     return ![string]::IsNullOrEmpty($runtimeLibrary)
 }
 
