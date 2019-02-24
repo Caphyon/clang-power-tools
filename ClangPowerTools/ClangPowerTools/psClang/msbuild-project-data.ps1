@@ -225,12 +225,7 @@ Function Is-Project-MultiThreaded()
 
 Function Is-Project-Unicode()
 {
-    $propGroup = Select-ProjectNodes("ns:Project/ns:PropertyGroup[@Label='Configuration']/ns:CharacterSet")
-    if (! $propGroup)
-    {
-        return $false
-    }
-    return ($propGroup.InnerText -ieq "Unicode")
+    return $CharacterSet -ieq "Unicode"
 }
 
 Function Get-Project-CppStandard()
