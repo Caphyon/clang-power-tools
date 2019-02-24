@@ -32,10 +32,6 @@ Set-Variable -name kVcxprojXpathCompileFiles `
              -value "ns:Project/ns:ItemGroup/ns:ClCompile" `
              -option Constant
 
-Set-Variable -name kVcxprojXpathWinPlatformVer `
-             -value "ns:Project/ns:PropertyGroup/ns:WindowsTargetPlatformVersion" `
-             -option Constant
-
 Set-Variable -name kVcxprojXpathPCH `
              -value "ns:Project/ns:ItemGroup/ns:ClCompile/ns:PrecompiledHeader[text()='Create']" `
              -option Constant
@@ -211,7 +207,7 @@ Function Is-CProject()
 
 Function Get-Project-SDKVer()
 {
-    [string] $sdkVer = (Select-ProjectNodes($kVcxprojXpathWinPlatformVer)).InnerText
+    [string] $sdkVer = $WindowsTargetPlatformVersion
 
     If ([string]::IsNullOrEmpty($sdkVer)) { "" } Else { $sdkVer.Trim() }
 }
