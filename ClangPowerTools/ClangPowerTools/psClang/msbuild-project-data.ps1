@@ -28,10 +28,6 @@ Set-Variable -name kVcxprojXpathPreprocessorDefs  `
              -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:PreprocessorDefinitions" `
              -option Constant
 
-Set-Variable -name kVcxprojXpathAdditionalIncludes `
-             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:AdditionalIncludeDirectories" `
-             -option Constant
-
 Set-Variable -name kVcxprojXpathRuntimeLibrary `
              -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:RuntimeLibrary" `
              -option Constant
@@ -500,14 +496,10 @@ Function Get-ProjectPreprocessorDefines()
 
 Function Get-ProjectAdditionalIncludes()
 {
+    Set-ProjectItemContext "ClCompile"
+    $data = Get-ProjectItemProperty "AdditionalIncludeDirectories"
 
-    $data = Select-ProjectNodes $kVcxprojXpathAdditionalIncludes
-    if (!$data)
-    {
-        return @()
-    }
-
-    [string[]] $tokens = @(($data).InnerText -split ";")
+    [string[]] $tokens = @($data -split ";")
 
     foreach ($token in $tokens)
     {
