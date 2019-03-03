@@ -3,19 +3,31 @@ using System.ComponentModel;
 
 namespace ClangPowerTools
 {
-  public class HeaderFiltersValue : INotifyPropertyChanged
+  public class HeaderFiltersValue
   {
+    #region Members
+
+    private string mHeaderFilterValue;
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+
+    #endregion
+
+
+    #region Constructor
 
     public HeaderFiltersValue(string aValue)
     {
       mHeaderFilterValue = aValue;
     }
 
-    public String mHeaderFilterValue;
+    #endregion
 
-    public event PropertyChangedEventHandler PropertyChanged;
 
-    public String HeaderFilters
+    #region Properties
+
+    public string HeaderFilters
     {
       get
       {
@@ -24,9 +36,10 @@ namespace ClangPowerTools
       set
       {
         mHeaderFilterValue = value;
-        if (PropertyChanged != null)
-          PropertyChanged(this, new PropertyChangedEventArgs("HeaderFilters"));
       }
-    }    
+    }
+    
+    #endregion
+
   }
 }
