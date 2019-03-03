@@ -158,11 +158,17 @@ namespace ClangPowerTools
       FormatAfterTidy = loadedConfig.FormatAfterTidy;
 
       if (loadedConfig.HeaderFilter == null)
+      {
         HeaderFilter = new HeaderFiltersValue(ComboBoxConstants.kDefaultHeaderFilter);
+      }
       else if (string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptDecode(loadedConfig.HeaderFilter)) == false)
+      {
         HeaderFilter = new HeaderFiltersValue(ClangTidyHeaderFiltersConvertor.ScriptDecode(loadedConfig.HeaderFilter));
+      }
       else
+      {
         HeaderFilter = new HeaderFiltersValue(loadedConfig.HeaderFilter);
+      }
 
       if (loadedConfig.TidyMode == null)
       {
@@ -182,7 +188,6 @@ namespace ClangPowerTools
       {
         ClangTidyPath = loadedConfig.ClangTidyPath;
       }
-
 
       SetEnvironmentVariableTidyPath();
     }

@@ -1,10 +1,9 @@
 ﻿using ClangPowerTools.DialogPages;
 using Microsoft.VisualStudio.Shell;
-using System;
 
 namespace ClangPowerTools
 {
-  public static class SettingsProvider
+  public class SettingsProvider
   {
     #region Properties
 
@@ -19,7 +18,7 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public static void Initialize(Package aPackage)
+    public static void Initialize(AsyncPackage aPackage)
     {
       GeneralSettings = (ClangGeneralOptionsView)aPackage.GetDialogPage(typeof(ClangGeneralOptionsView));
       TidySettings = (ClangTidyOptionsView)aPackage.GetDialogPage(typeof(ClangTidyOptionsView));
@@ -27,6 +26,7 @@ namespace ClangPowerTools
       TidyPredefinedChecks = (ClangTidyPredefinedChecksOptionsView)aPackage.GetDialogPage(typeof(ClangTidyPredefinedChecksOptionsView));
       ClangFormatSettings = (ClangFormatOptionsView)aPackage.GetDialogPage(typeof(ClangFormatOptionsView));
     }
+
 
     public static void SaveAll()
     {
@@ -36,6 +36,16 @@ namespace ClangPowerTools
       TidyPredefinedChecks.SaveSettingsToStorage();
       ClangFormatSettings.SaveSettingsToStorage();
     }
+
+    public static void SaveGeneralSettings() => GeneralSettings.SaveSettingsToStorage();
+
+    public static void SaveTidySettings() => TidySettings.SaveSettingsToStorage();
+
+    public static void SaveTidyCustomChecksSettings() => TidyCustomCheckes.SaveSettingsToStorage();
+
+    public static void SaveTidyPredefinedChecksSettings() => TidyPredefinedChecks.SaveSettingsToStorage();
+
+    public static void SaveFormatSettings() => ClangFormatSettings.SaveSettingsToStorage();
 
     #endregion
 

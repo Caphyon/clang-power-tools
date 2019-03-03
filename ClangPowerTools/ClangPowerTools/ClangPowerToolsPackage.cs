@@ -36,7 +36,7 @@ namespace ClangPowerTools
   /// To get loaded into VS, the package must be referred by &lt;Asset Type="Microsoft.VisualStudio.VsPackage" ...&gt; in .vsixmanifest file.
   /// </para>
   /// </remarks>
-  [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = false)]
+  [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
   [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
   [ProvideMenuResource("Menus.ctmenu", 1)]
   [Guid(RunClangPowerToolsPackage.PackageGuidString)]
@@ -131,33 +131,26 @@ namespace ClangPowerTools
       }
 
       DispatcherHandler.Initialize(dte as DTE2);
-
       SettingsProvider.Initialize(this);
 
-      // Get the general clang option page
-      var generalSettings = SettingsProvider.GeneralSettings;
-      //generalSettings.LoadSettingsFromStorage();
-
       // Detect the first install 
-      if (string.IsNullOrWhiteSpace(generalSettings.Version))
+      if (string.IsNullOrWhiteSpace(SettingsProvider.GeneralSettings.Version))
         ShowToolbare(); // Show the toolbar on the first install
 
       var currentVersion = GetPackageVersion();
-      if (0 > string.Compare(generalSettings.Version, currentVersion))
+      if (0 > string.Compare(SettingsProvider.GeneralSettings.Version, currentVersion))
       {
         mOutputWindowController.Clear();
         mOutputWindowController.Show();
         mOutputWindowController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
           $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
 
-        generalSettings.Version = currentVersion;
-        generalSettings.SaveSettingsToStorage();
+        SettingsProvider.GeneralSettings.Version = currentVersion;
       }
+      SettingsProvider.SaveGeneralSettings();
 
       await mCommandsController.InitializeAsyncCommands(this);
-
       RegisterToEvents();
-      SettingsProvider.SaveAll();
 
       await base.InitializeAsync(cancellationToken, progress);
     }
