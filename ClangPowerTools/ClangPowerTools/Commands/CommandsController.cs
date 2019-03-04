@@ -375,7 +375,6 @@ namespace ClangPowerTools
         return;
 
       var option = SettingsProvider.ClangFormatSettings;
-      option.FallbackStyle = ClangFormatFallbackStyle.none;
       ClangFormatCommand.Instance.FormatDocument(aDocument, option);
     }
 
