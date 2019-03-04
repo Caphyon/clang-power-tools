@@ -1,5 +1,7 @@
 # REQUIRES io.ps1 to be included
 
+[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.Build.Utilities.Core")
+
 Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>     `
     -value @(                                                             `
         <# backticks are control characters in PS, replace them #>        `
