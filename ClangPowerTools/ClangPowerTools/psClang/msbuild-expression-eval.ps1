@@ -31,7 +31,8 @@ Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>     `
         , ("\[MSBuild\]::MakeRelative\((.+?),\s*""?'?((\$.+?\))|(.+?))((|""|')\)\))+"`
         ,'MakePathRelative -base $1 -target "$2")'                       )`
         , ('SearchOption\.', '[System.IO.SearchOption]::'                )`
-        , ("@\((.*?)\)", '$(Get-Project-Item("$1"))')`
+        , ("@\((.*?)\)", '$(Get-Project-Item("$1"))'                     )`
+        , ('\$\(HOME\)', '$(CPT_SHIM_HOME)'                              )`
 )
 
 Set-Variable -name "kMsbuildConditionToPsRules" <#-option Constant#>      `

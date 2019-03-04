@@ -43,6 +43,13 @@ Function Set-Var([parameter(Mandatory = $false)][string] $name
                 ,[parameter(Mandatory = $false)][switch] $asScriptParameter
                 )
 {
+    if ($name -ieq "home")
+    {
+        Write-Verbose "Shimming HOME variable"
+        # the HOME PowerShell variable is protected and we can't overwrite it
+        $name = "CPT_SHIM_HOME"
+    }
+
     if ($asScriptParameter)
     {
         if (Test-Path "variable:$name")
