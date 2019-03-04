@@ -13,10 +13,10 @@ Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>     `
         <# Put back $( #>                                                 `
         , ('!@#'                             , '$('                      )`
         <# Various operators #>                                           `
-        , ("([\s\)\'""])!="                  , '$1  -ne '                )`
-        , ("([\s\)\'""])<="                  , '$1  -le '                )`
-        , ("([\s\)\'""])>="                  , '$1  -ge '                )`
-        , ("([\s\)\'""])=="                  , '$1  -eq '                )`
+        , ("([\s\)\'""])!="                  , '$1 -ne '                 )`
+        , ("([\s\)\'""])<="                  , '$1 -le '                 )`
+        , ("([\s\)\'""])>="                  , '$1 -ge '                 )`
+        , ("([\s\)\'""])=="                  , '$1 -eq '                 )`
         , ("([\s\)\'""])<"                   , '$1 -lt '                 )`
         , ("([\s\)\'""])>"                   , '$1 -gt '                 )`
         , ("([\s\)\'""])or"                  , '$1 -or '                 )`
@@ -165,7 +165,6 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
     $res = $null
     try
     {
-        # try to get actual objects, if possible
         ($res = Invoke-Expression $expression) > $null
     }
     catch
