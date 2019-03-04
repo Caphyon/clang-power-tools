@@ -109,7 +109,6 @@ namespace ClangPowerTools
         await TidyConfigCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kITidyExportConfigId);
     }
 
-
     public async void ExecuteAsync(object sender, EventArgs e)
     {
       if (!(sender is OleMenuCommand command))
