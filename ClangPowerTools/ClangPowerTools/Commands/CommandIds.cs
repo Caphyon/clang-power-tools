@@ -13,7 +13,8 @@
     public const int kSettingsId                      = 0x0103;
     public const int kIgnoreFormatId                  = 0x0107;
     public const int kIgnoreCompileId                 = 0x0108;
-    
-    #endregion
-  }
+    public const int kITidyExportConfigId             = 0x1032;
+
+        #endregion
+    }
 }

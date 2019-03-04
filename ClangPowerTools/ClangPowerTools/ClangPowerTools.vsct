@@ -14,7 +14,7 @@
 						</Menu>
 					
 					<!--Toolbar Drop-Down Menu  cake -->
-					<Menu guid="guidClangPowerToolsPackageToolbarCmd" id="GroupForToolbarDropDown" priority="0xffff" type="Menu">
+					<Menu guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarDropDown" priority="0xffff" type="Menu">
 						<Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
 						<Strings>
 							<ButtonText>Clang Power Tools</ButtonText>
@@ -45,8 +45,8 @@
 				
 				<Groups>
 						<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0000" />
-						<Group guid="guidClangPowerToolsPackageToolbarCmd" id="GroupToolbarMenu" priority="0x0000" >
-							<Parent guid="guidClangPowerToolsPackageToolbarCmd" id="GroupForToolbarDropDown"/> <!-- cakee -->
+						<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarMenu" priority="0x0000" >
+							<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarDropDown"/> <!-- cakee -->
 						</Group>
 						<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0000" />
 						<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" priority="0x0002" />
@@ -62,12 +62,20 @@
 				<Buttons>
 					
 					<!--Main Toolbar Menu Buttons  cakeee-->
-					<Button guid="guidClangPowerToolsPackageToolbarCmd" id="TidyConfigCommandId" priority="0x0111" type="Button">
-						<Parent guid="guidClangPowerToolsPackageToolbarCmd" id="GroupToolbarMenu" />
+					<Button guid="guidClangPowerToolsPackageCmdSet" id="TidyExportConfigId" priority="0x0111" type="Button">
+						<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarMenu" />
 						<Strings>
 							<ButtonText>Export Clang Tidy Config</ButtonText>
 						</Strings>
 					</Button>
+
+          <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0112" type="Button">
+            <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarMenu" />
+            <Icon guid="guidImageSettings" id="Settings" />
+            <Strings>
+              <ButtonText>Settings</ButtonText>
+            </Strings>
+          </Button>
 
 						<!--Context Menu Buttons-->
 						<Button guid="guidClangPowerToolsPackageCmdSet" id="CompileId" priority="0x0000" type="Button">
@@ -300,15 +308,10 @@
 		</CommandPlacements>
 
 		<Symbols>
-			<!--cakee -->
-				<GuidSymbol name="guidClangPowerToolsPackageToolbarCmd" value="{a95ae60d-773b-4090-833f-745d0f846100}">
-					<IDSymbol name="GroupToolbarMenu" value="0x1030" />
-					<IDSymbol name="TidyConfigCommandId" value="256" />
-					<IDSymbol name="GroupForToolbarDropDown" value="0x1031" />
-				</GuidSymbol>
+			<!--cakee -->  
 				<GuidSymbol name="guidClangPowerToolsPackage" value="{f564f9d3-01ae-493e-883b-18deebdb975e}" />
+      
 				<GuidSymbol name="guidClangPowerToolsPackageCmdSet" value="{498fdff5-5217-4da9-88d2-edad44ba3874}">
-
 						<!--Groups and submenu-->
 						<IDSymbol name="GroupForSubmenu" value="0x1020" />
 						<IDSymbol name="GroupForCommands" value="0x1021" />
@@ -317,7 +320,9 @@
 						<IDSymbol name="Submenu" value="0x0100" />
 						<IDSymbol name="DromDownMenu" value="0x0200" />
 						<IDSymbol name ="DromDownToolbarMenuGroup" value="0x0110"/>
-
+            <IDSymbol name="GroupForToolbarMenu" value="0x1030" />
+            <IDSymbol name="GroupForToolbarDropDown" value="0x1031" />
+  
 						<!--Commands-->
 						<IDSymbol name="CompileId" value="0x0102" />
 						<IDSymbol name="TidyId" value="0x0101" />
@@ -328,6 +333,7 @@
 						<IDSymbol name="IgnoreFormatId" value="0x0107" />
 						<IDSymbol name="IgnoreCompileId" value="0x0108" />
 						<IDSymbol name="SettingsId" value="0x0103" />
+            <IDSymbol name="TidyExportConfigId" value="0x1032" />
 
 						<!--Toolbar-->
 						<IDSymbol name="Toolbar" value="0x1000" />

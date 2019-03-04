@@ -104,6 +104,9 @@ namespace ClangPowerTools
 
       if (null == SettingsCommand.Instance)
         await SettingsCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kSettingsId);
+
+      if (null == TidyConfigCommand.Instance)
+        await TidyConfigCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kITidyExportConfigId);
     }
 
 
@@ -157,6 +160,13 @@ namespace ClangPowerTools
             OnAfterClangCommand();
             break;
           }
+        case CommandIds.kITidyExportConfigId:
+          {
+            CurrentCommand = CommandIds.kITidyExportConfigId;
+            TidyConfigCommand.Instance.ExportConfig();
+            break;
+          }
+
         case CommandIds.kIgnoreFormatId:
           {
             CurrentCommand = CommandIds.kIgnoreFormatId;
@@ -169,7 +179,6 @@ namespace ClangPowerTools
             IgnoreCompileCommand.Instance.RunIgnoreCompileCommand(CommandIds.kIgnoreCompileId);
             break;
           }
-
         default:
           break;
       }
