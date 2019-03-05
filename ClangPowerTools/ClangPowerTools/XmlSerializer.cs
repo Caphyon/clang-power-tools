@@ -18,7 +18,7 @@ namespace ClangPowerTools
       }
     }
 
-    public T DeserializeFromFIle<T>(string aFilePath)
+    public T DeserializeFromFile<T>(string aFilePath)
     {
       NetSerializer serializer = new NetSerializer(typeof(T));
       using (FileStream fs = new FileStream(aFilePath, FileMode.Open))
