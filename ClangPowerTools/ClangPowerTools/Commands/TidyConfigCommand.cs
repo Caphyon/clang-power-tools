@@ -1,10 +1,13 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.Design;
 using System.Globalization;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.Win32;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
@@ -23,6 +26,10 @@ namespace ClangPowerTools.Commands
       get;
       private set;
     }
+    #endregion
+
+    #region Member Variables
+    SaveFileDialog saveFileDialog = new SaveFileDialog();
     #endregion
 
     #region Constructor
@@ -68,21 +75,38 @@ namespace ClangPowerTools.Commands
     /// <param name="e">Event args.</param>
     public void ExportConfig()
     {
-      // Create dialog window
-      Microsoft.Win32.SaveFileDialog dlg = new Microsoft.Win32.SaveFileDialog();
-
       // Set the default file extension
-      dlg.DefaultExt = ".clang-tidy";
-      dlg.Filter = "Configuration files (.clang-tidy)|*.clang-tidy";
+      saveFileDialog.DefaultExt = ".clang-tidy";
+      saveFileDialog.Filter = "Configuration files (.clang-tidy)|*.clang-tidy";
 
       //Display the dialog window
-      bool? result = dlg.ShowDialog();
+      bool? result = saveFileDialog.ShowDialog();
 
       if (result == true)
       {
-        string filename = dlg.FileName;
+        saveFileDialog.FileOk += SaveFileDialog;
       }
     }
+    #endregion
+
+    #region Private Methods
+    private void SaveFileDialog(object sender, CancelEventArgs e)
+    {
+      CreateFile();
+    }
+
+
+    private void CreateFile()
+    {
+      using (FileStream fs = new FileStream(saveFileDialog.FileName, FileMode.Create))
+      {
+        using (StreamWriter sw = new StreamWriter(fs))
+        {
+          sw.Write("Hello world!");
+        }
+      }
+    }
+
     #endregion
   }
 }

@@ -15,6 +15,6 @@
     public const int kIgnoreCompileId                 = 0x0108;
     public const int kITidyExportConfigId             = 0x1032;
 
-        #endregion
-    }
+    #endregion
+  }
 }
