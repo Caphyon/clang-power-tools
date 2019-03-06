@@ -226,8 +226,8 @@ Describe "Condition evaluation" {
 
     Set-ProjectItemProperty "foo" $defVal
     Evaluate-MSBuildExpression "%(foo)" | Should -BeExactly $defVal
-    Evaluate-MSBuildCondition "%(foo) == '$defVal'" | Should -BeExactly $true
-    Evaluate-MSBuildCondition "%(foo) != '$defVal'" | Should -BeExactly $false
+    Evaluate-MSBuildCondition "'%(foo)' == '$defVal'" | Should -BeExactly $true
+    Evaluate-MSBuildCondition "'%(foo)' != '$defVal'" | Should -BeExactly $false
 
     $P1 = "prop_value"
     Evaluate-MSBuildExpression '%(foo)|$(P1)' | Should -BeExactly "$defVal|$P1"

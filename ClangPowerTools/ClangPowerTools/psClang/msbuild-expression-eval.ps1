@@ -23,13 +23,13 @@ Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>     `
         , ("([\s\)\'""])and"                 , '$1 -and '                )`
         <# Use only double quotes #>                                      `
         , ("\'"                              , '"'                       )`
-        , ("Exists\((.*?)\)(\s|$)"           , '(Exists($1))$2'          )`
-        , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(HasTrailingSlash($1))$2')`
+        , ("Exists\((.*?)\)(\s|$)"           , '(cpt::Exists($1))$2'          )`
+        , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(cpt::HasTrailingSlash($1))$2')`
         , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'   )`
         , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?((\$.+?\))|(.+?))((|`"|')\))+"`
-        ,'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
+        ,'cpt::GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
         , ("\[MSBuild\]::MakeRelative\((.+?),\s*""?'?((\$.+?\))|(.+?))((|""|')\)\))+"`
-        ,'MakePathRelative -base $1 -target "$2")'                       )`
+        ,'cpt::MakePathRelative -base $1 -target "$2")'                       )`
         , ('SearchOption\.', '[System.IO.SearchOption]::'                )`
         , ("@\((.*?)\)", '$(Get-Project-Item("$1"))'                     )`
         , ("%\((.*?)\)", '$(Get-ProjectItemProperty("$1"))'              )`
@@ -41,7 +41,7 @@ Set-Variable -name "kMsbuildConditionToPsRules" <#-option Constant#>      `
                        ,("\'"                , '"'                       )`
 )
 
-function GetDirNameOfFileAbove( [Parameter(Mandatory = $true)][string] $startDir
+function cpt::GetDirNameOfFileAbove( [Parameter(Mandatory = $true)][string] $startDir
                               , [Parameter(Mandatory = $true)][string] $targetFile
                               )
 {
@@ -165,17 +165,25 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
 
     [string] $res = ""
 
-    if ($expression.IndexOf(']::') -ge 0)
+    if ($expression.IndexOf('::') -ge 0)
     {
-        $resInvokeResult = Invoke-Expression $expression
+        try
+        {
+            $resInvokeResult = Invoke-Expression $expression
 
-        if ($resInvokeResult -is [array])
-        {
-            $res = $resInvokeResult -join ';'
+            if ($resInvokeResult -is [array])
+            {
+                $res = $resInvokeResult -join ';'
+            }
+            else
+            {
+                $res = $resInvokeResult
+            }
         }
-        else
+        catch
         {
-            $res = $resInvokeResult
+            Write-Verbose $_.Exception.Message
+            $res = $ExecutionContext.InvokeCommand.ExpandString($expression)
         }
     }
     else

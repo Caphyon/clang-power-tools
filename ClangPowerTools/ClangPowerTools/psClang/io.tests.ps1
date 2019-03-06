@@ -101,16 +101,16 @@ Describe "File IO" {
 
   It "Exists" {
     [string] $winDir = $env:SystemRoot
-    Exists $winDir | should -BeExactly $true
-    Exists "$winDir\notepad.exe" | should -BeExactly $true
-    Exists "$winDir\foobar_surely_nonextant" | should -BeExactly $false
+    cpt::Exists $winDir | should -BeExactly $true
+    cpt::Exists "$winDir\notepad.exe" | should -BeExactly $true
+    cpt::Exists "$winDir\foobar_surely_nonextant" | should -BeExactly $false
   }
 
   It "HasTrailingSlash" {
-    HasTrailingSlash "ab" | should -BeExactly $false
-    HasTrailingSlash "ab\" | should -BeExactly $true
-    HasTrailingSlash "ab/" | should -BeExactly $true
-    HasTrailingSlash "a/b/" | should -BeExactly $true
+    cpt::HasTrailingSlash "ab" | should -BeExactly $false
+    cpt::HasTrailingSlash "ab\" | should -BeExactly $true
+    cpt::HasTrailingSlash "ab/" | should -BeExactly $true
+    cpt::HasTrailingSlash "a/b/" | should -BeExactly $true
   }
 
   It "EnsureTrailingSlash" {

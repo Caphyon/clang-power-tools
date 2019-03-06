@@ -216,7 +216,7 @@ Function Get-ConfigFileParameters()
   [System.Collections.Hashtable] $retArgs = @{}
 
   [string] $startDir = If ( VariableExistsAndNotEmpty 'ProjectDir' )  { $ProjectDir } else { $aSolutionsPath }
-  [string] $configFile = (GetDirNameOfFileAbove -startDir $startDir -targetFile "cpt.config") + "\cpt.config"
+  [string] $configFile = (cpt::GetDirNameOfFileAbove -startDir $startDir -targetFile "cpt.config") + "\cpt.config"
   if (!(Test-Path $configFile))
   {
       return $retArgs
@@ -703,7 +703,7 @@ function LoadProject([string] $vcxprojPath)
         # Tries to find a Directory.Build.props property sheet, starting from the
         # project directory, going up. When one is found, the search stops.
         # Multiple Directory.Build.props sheets are not supported.
-        [string] $directoryBuildSheetPath = (GetDirNameOfFileAbove -startDir $ProjectDir `
+        [string] $directoryBuildSheetPath = (cpt::GetDirNameOfFileAbove -startDir $ProjectDir `
                                              -targetFile "Directory.Build.props") + "\Directory.Build.props"
         if (Test-Path $directoryBuildSheetPath)
         {
