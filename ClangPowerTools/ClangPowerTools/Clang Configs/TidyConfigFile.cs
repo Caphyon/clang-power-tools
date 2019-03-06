@@ -12,12 +12,7 @@ namespace ClangPowerTools
     private StringBuilder tidyConfigOutput = new StringBuilder();
 
     // Get all the tidy settings
-    private static string customChecks = SettingsProvider.TidyCustomCheckes.TidyChecks;
     private static ClangTidyPredefinedChecksOptionsView predefinedChecksSettings = SettingsProvider.TidyPredefinedChecks;
-    private static string formatStyle = SettingsProvider.ClangFormatSettings.Style.Value.ToString();
-    private static string headerFilter = SettingsProvider.TidySettings.HeaderFilter.HeaderFilters;
-    private static bool treatWarningsAsErrors = SettingsProvider.GeneralSettings.TreatWarningsAsErrors;
-
     private int maxNameLength = 19;
 
     public StringBuilder CreateOutput()
@@ -26,6 +21,7 @@ namespace ClangPowerTools
       tidyConfigOutput.AppendLine("---");
 
       //Custom checks line
+      string customChecks = SettingsProvider.TidyCustomCheckes.TidyChecks;
       paramaterName = "Checks:";
       if (customChecks.Length < 1)
       {
@@ -38,6 +34,7 @@ namespace ClangPowerTools
 
       //Treat warnings as errors line
       paramaterName = "WarningsAsErrors:";
+      bool treatWarningsAsErrors = SettingsProvider.GeneralSettings.TreatWarningsAsErrors;
       if (!treatWarningsAsErrors)
       {
         tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, treatWarningsAsErrors));
@@ -48,6 +45,7 @@ namespace ClangPowerTools
       }
 
       //Header filter line
+      string headerFilter = SettingsProvider.TidySettings.HeaderFilter.HeaderFilters;
       paramaterName = "HeaderFilterRegex:";
       if (headerFilter.Length < 1)
       {
@@ -59,6 +57,7 @@ namespace ClangPowerTools
       }
 
       //Format style line
+      string formatStyle = SettingsProvider.ClangFormatSettings.Style.Value.ToString();
       paramaterName = "FormatStyle:";
       tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, formatStyle));
 

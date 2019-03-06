@@ -29,7 +29,7 @@ namespace ClangPowerTools.Commands
     #endregion
 
     #region Member Variables
-    SaveFileDialog saveFileDialog = new SaveFileDialog();
+    private static SaveFileDialog saveFileDialog = new SaveFileDialog();
     #endregion
 
     #region Constructor
@@ -48,6 +48,7 @@ namespace ClangPowerTools.Commands
         var menuItem = new OleMenuCommand(aCommandsController.ExecuteAsync, menuCommandID);
         aCommandService.AddCommand(menuItem);
       }
+      saveFileDialog.FileOk += SaveFileDialog;
     }
     #endregion
 
@@ -80,12 +81,7 @@ namespace ClangPowerTools.Commands
       saveFileDialog.Filter = "Configuration files (.clang-tidy)|*.clang-tidy";
 
       //Display the dialog window
-      bool? result = saveFileDialog.ShowDialog();
-
-      if (result == true)
-      {
-        saveFileDialog.FileOk += SaveFileDialog;
-      }
+      bool? result = saveFileDialog.ShowDialog();    
     }
     #endregion
 
@@ -94,7 +90,6 @@ namespace ClangPowerTools.Commands
     {
       CreateFile();
     }
-
 
     private void CreateFile()
     {
