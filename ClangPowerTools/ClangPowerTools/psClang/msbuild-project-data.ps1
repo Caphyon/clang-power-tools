@@ -137,26 +137,28 @@ Function Should-IgnoreFile([Parameter(Mandatory = $true)][string] $file)
 
 Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchCppName)
 {
- <#   [System.Xml.XmlElement[]] $projectEntries = @(Select-ProjectNodes($kVcxprojXpathCompileFiles) | `
-                                                  Where-Object { Should-CompileFile -fileNode $_ -pchCppName $pchCppName })
-
-    [System.Collections.ArrayList] $files = @()
-    foreach ($entry in $projectEntries)
+    $projectCompileItems = @(Get-Project-ItemList "ClCompile")
+    if (!$projectCompileItems)
     {
-        [string[]] $matchedFiles = @(Canonize-Path -base $ProjectDir -child $entry.GetAttribute("Include"))
-        [UsePch] $usePch = [UsePch]::Use
+        Write-Verbose "Project does not have any items to compile"
+        return @()
+    }
 
-        $nodePch = $entry.SelectSingleNode('ns:PrecompiledHeader', $global:xpathNS)
-        if ($nodePch -and (HasProperty $nodePch '#text') `
-                     -and ![string]::IsNullOrEmpty($nodePch.'#text'))
+    $files = @()
+    foreach ($item in $projectCompileItems)
+    {
+        [System.Collections.Hashtable] $itemProps = $item[1];
+        $usePch = [UsePch]::Use;
+        if ($itemsProps.ContainsKey('PrecompiledHeader'))
         {
-            switch ($nodePch.'#text')
+            switch ($itemsProps['PrecompiledHeader'])
             {
                 'NotUsing' { $usePch = [UsePch]::NotUsing }
                 'Create'   { $usePch = [UsePch]::Create   }
             }
         }
 
+        [string[]] $matchedFiles = @(Canonize-Path -base $ProjectDir -child $item[0])
         if ($matchedFiles.Count -gt 0)
         {
             foreach ($file in $matchedFiles)
@@ -165,9 +167,7 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchC
                                                        "Pch" = $usePch; }
             }
         }
-    } #>
-
-    $files = Get-Project-Item "ClCompile"
+    }
 
     if ($files.Count -gt 0)
     {
@@ -179,13 +179,15 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchC
 
 Function Get-ProjectHeaders()
 {
-    [string[]] $headers = @(Select-ProjectNodes($kVcxprojXpathHeaders) | ForEach-Object {$_.Include })
+    $projectCompileItems = @(Get-Project-ItemList "ClInclude")
 
     [string[]] $headerPaths = @()
 
-    foreach ($headerEntry in $headers)
+    foreach ($item in $projectCompileItems)
     {
-        [string[]] $paths = @(Canonize-Path -base $ProjectDir -child $headerEntry -ignoreErrors)
+        [System.Collections.Hashtable] $itemProps = $item[1];
+
+        [string[]] $paths = @(Canonize-Path -base $ProjectDir -child $item[0] -ignoreErrors)
         if ($paths.Count -gt 0)
         {
             $headerPaths += $paths
