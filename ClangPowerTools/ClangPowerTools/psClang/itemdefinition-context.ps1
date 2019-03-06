@@ -19,7 +19,7 @@ function Push-ProjectItemContext([Parameter(Mandatory = $true)][string] $name)
     $toAdd += $name
 
     $global:itemPropertyNamespace += $toAdd
-    
+
     Write-Verbose "[CONTEXT] item namespace = @($global:itemPropertyNamespace)"
 }
 
@@ -40,6 +40,11 @@ function Pop-ProjectItemContext()
 
 function Set-ProjectItemContext([Parameter(Mandatory = $true)][string] $name)
 {
+    if ( (VariableExists 'itemPropertyNameSpace') -and ($global:itemPropertyNamespace -eq $name) )
+    {
+        return
+    }
+
     $global:itemPropertyNamespace = $name
     Write-Verbose "[CONTEXT] item namespace = @($global:itemPropertyNamespace)"
 }
@@ -70,7 +75,7 @@ function Get-ProjectItemProperty([Parameter(Mandatory = $false)][string] $proper
     return $propMap[$propertyName]
 }
 
-function Set-ProjectItemProperty([Parameter(Mandatory = $true)][string] $propertyName, 
+function Set-ProjectItemProperty([Parameter(Mandatory = $true)][string] $propertyName,
                                  [Parameter(Mandatory = $true)] $value)
 {
     if (! $global:itemProperties.ContainsKey($global:itemPropertyNamespace))
@@ -87,6 +92,6 @@ function Set-ProjectItemProperty([Parameter(Mandatory = $true)][string] $propert
     {
         $propMap[$propertyName] = $value
     }
-    
+
     Write-Verbose "[CONTEXT] propSet: $propertyName = $value"
 }

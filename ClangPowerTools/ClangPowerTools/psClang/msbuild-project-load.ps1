@@ -591,6 +591,9 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
         {
             [System.Xml.XmlElement] $firstChild = $childNodes | Select-Object -First 1
             Detect-ProjectDefaultConfigPlatform $firstChild.GetAttribute("Include")
+
+            # now we can begin to evaluate directory.build.props XML element conditions, load it
+            LoadDirectoryBuildPropSheetFile
         }
     }
 
@@ -680,24 +683,8 @@ function SanitizeProjectFile([string] $projectFilePath)
     Pop-Location
 }
 
-<#
-.DESCRIPTION
-Loads vcxproj and property sheets into memory. This needs to be called only once
-when processing a project. Accessing project nodes can be done using Select-ProjectNodes.
-#>
-function LoadProject([string] $vcxprojPath)
+function LoadDirectoryBuildPropSheetFile()
 {
-    # Clean global variables that have been set by a previous project load
-    Clear-Vars
-
-    $global:vcxprojPath = $vcxprojPath
-
-    InitializeMsBuildProjectProperties
-
-    $global:projectFiles = @()
-
-    SanitizeProjectFile -projectFilePath $global:vcxprojPath
-
     if ($env:CPT_LOAD_ALL -ne "1")
     {
         # Tries to find a Directory.Build.props property sheet, starting from the
@@ -716,4 +703,23 @@ function LoadProject([string] $vcxprojPath)
             SanitizeProjectFile($vcpkgIncludePath)
         }
     }
+}
+
+<#
+.DESCRIPTION
+Loads vcxproj and property sheets into memory. This needs to be called only once
+when processing a project. Accessing project nodes can be done using Select-ProjectNodes.
+#>
+function LoadProject([string] $vcxprojPath)
+{
+    # Clean global variables that have been set by a previous project load
+    Clear-Vars
+
+    $global:vcxprojPath = $vcxprojPath
+
+    InitializeMsBuildProjectProperties
+
+    $global:projectFiles = @()
+
+    SanitizeProjectFile -projectFilePath $global:vcxprojPath
 }
