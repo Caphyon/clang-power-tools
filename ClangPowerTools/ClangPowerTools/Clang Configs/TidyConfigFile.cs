@@ -12,47 +12,78 @@ namespace ClangPowerTools
     private StringBuilder tidyConfigOutput = new StringBuilder();
 
     // Get all the tidy settings
-    private string customChecks = SettingsProvider.TidyCustomCheckes.TidyChecks;
-    private ClangTidyPredefinedChecksOptionsView tidyPredefinedChecksSettings = SettingsProvider.TidyPredefinedChecks;
-    private string predefinnedChecks = SettingsProvider.TidySettings.HeaderFilter.HeaderFilters;
-    private string formatStyle = SettingsProvider.ClangFormatSettings.Style.Value.ToString();
-    private bool treatWarningsAsErrors = SettingsProvider.GeneralSettings.TreatWarningsAsErrors;
+    private static string customChecks = SettingsProvider.TidyCustomCheckes.TidyChecks;
+    private static ClangTidyPredefinedChecksOptionsView predefinedChecksSettings = SettingsProvider.TidyPredefinedChecks;
+    private static string formatStyle = SettingsProvider.ClangFormatSettings.Style.Value.ToString();
+    private static string headerFilter = SettingsProvider.TidySettings.HeaderFilter.HeaderFilters;
+    private static bool treatWarningsAsErrors = SettingsProvider.GeneralSettings.TreatWarningsAsErrors;
 
-
-
-
-
+    private int maxNameLength = 19;
 
     public StringBuilder CreateOutput()
     {
+      string paramaterName = "";
       tidyConfigOutput.AppendLine("---");
-      if(customChecks.Length < 1)
-      {
-        customChecks = "''";
-      }
-      tidyConfigOutput.AppendLine("Checks:" + "'" + customChecks + "'");
 
-      if (!treatWarningsAsErrors)
+      //Custom checks line
+      paramaterName = "Checks:";
+      if (customChecks.Length < 1)
       {
-        tidyConfigOutput.AppendLine("WarningsAsErrors:" + "''");
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, ""));
       }
       else
       {
-        tidyConfigOutput.AppendLine("WarningsAsErrors:" + "'" + treatWarningsAsErrors.ToString() + "'" );
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, customChecks));
       }
 
-      tidyConfigOutput.AppendLine("FormatStyle:" + "'" + formatStyle + "'" );
+      //Treat warnings as errors line
+      paramaterName = "WarningsAsErrors:";
+      if (!treatWarningsAsErrors)
+      {
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, treatWarningsAsErrors));
+      }
+      else
+      {
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, treatWarningsAsErrors));
+      }
+
+      //Header filter line
+      paramaterName = "HeaderFilterRegex:";
+      if (headerFilter.Length < 1)
+      {
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, ""));
+      }
+      else
+      {
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, headerFilter));
+      }
+
+      //Format style line
+      paramaterName = "FormatStyle:";
+      tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, formatStyle));
+
+
+      GetPredefinedChecks();
 
       return tidyConfigOutput;
     }
 
+    private string CreateLine(string name, int nameLength, string value)
+    {
+      return name.PadRight(maxNameLength - nameLength + nameLength, ' ') + "'" + value + "'";
+    }
 
+    private string CreateLine(string name, int nameLength, bool value)
+    {
+      return name.PadRight(maxNameLength - nameLength + nameLength, ' ') + value.ToString().ToLower();
+    }
 
     private void GetPredefinedChecks()
     {
-      foreach (var item in tidyPredefinedChecksSettings.GetType().GetProperties())
+      StringBuilder stringBuilder = new StringBuilder("CheckOptions:");
+      foreach (var item in predefinedChecksSettings.GetType().GetProperties())
       {
-       
+       // stringBuilder.AppendLine(item.getta);
       }
     }
   }
