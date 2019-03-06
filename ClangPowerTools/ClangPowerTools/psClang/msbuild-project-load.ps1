@@ -89,7 +89,8 @@ Function Set-Var([parameter(Mandatory = $false)][string] $name
 }
 
 Function Add-Project-Item([parameter(Mandatory = $false)][string] $name
-                         ,[parameter(Mandatory = $false)]         $value)
+                         ,[parameter(Mandatory = $false)]         $value
+                         ,[parameter(Mandatory = $false)]         $properties = $null)
 {
     if (!$value)
     {
@@ -104,16 +105,16 @@ Function Add-Project-Item([parameter(Mandatory = $false)][string] $name
     }
 
     $itemList = (Get-Variable $itemVarName).Value
-    if ($value.GetType().Name -ieq "object[]")
+    if ($value -is [array])
     {
         foreach ($arrayValue in $value)
         {
-            $itemList.Add($arrayValue) > $null
+            $itemList.Add( @($arrayValue, $properties) ) > $null
         }
     }
     else
     {
-        $itemList.Add($value) > $null
+        $itemList.Add(@($value, $properties)) > $null
     }
 }
 
@@ -134,18 +135,49 @@ Function Get-Project-Item([parameter(Mandatory = $true)][string] $name)
                 {
                     $retStr += ";"
                 }
-                $retStr += $v
+                $retStr += $v[0] # index0 = item; index1 = properties
             }
         }
         else
         {
-            $retStr = $itemVar.Value
+            $retStr = $itemVar.Value[0] # index0 = item; index1 = properties
         }
 
         return $retStr
     }
 
     return $null
+}
+
+Function Get-Project-ItemList([parameter(Mandatory = $true)][string] $name)
+{
+    $retList = New-Object System.Collections.ArrayList
+
+    $itemVarName = "CPT_PROJITEM_$name"
+
+    $itemVar = Get-Variable $itemVarName -ErrorAction SilentlyContinue
+    if ($itemVar)
+    {
+        $retStr = ""
+
+        if ($itemVar.Value.GetType().Name -ieq "ArrayList")
+        {
+            foreach ($v in $itemVar.Value)
+            {
+                if ($retStr)
+                {
+                    $retStr += ";"
+                }
+                $retList.Add($v) > $null # v is a pair. index0 = item; index1 = properties
+            }
+        }
+        else
+        {
+            $retList.Add($itemVar.Value) > $null
+        }
+    }
+
+    return $retList
 }
 
 Function Clear-Vars()
@@ -581,11 +613,36 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
     if ($node.Name -ieq "ItemGroup")
     {
         $childNodes = $node.ChildNodes | Where-Object { $_.GetType().Name -ieq "XmlElement" }
+
+        [string] $oldItemContextName = Get-ProjectItemContext
         foreach ($child in $childNodes)
         {
             [string] $childEvaluatedValue = Evaluate-MSBuildExpression $child.GetAttribute("Include")
-            Add-Project-Item -name $child.Name -value $childEvaluatedValue
+            $itemProperties = @{}
+
+            Set-ProjectItemContext $child.Name
+            $contextProperties = Get-ProjectItemProperty
+            if ($contextProperties -ne $null)
+            {
+                foreach ($k in $contextProperties.Keys)
+                {
+                    $itemProperties[$k] = $contextProperties[$k]
+                }
+            }
+
+            foreach ($nodePropChild in $child.ChildNodes)
+            {
+                if ($nodePropChild.GetType().Name -ine "XmlElement")
+                {
+                    continue
+                }
+                $itemProperties[$nodePropChild.Name] = Evaluate-MSBuildExpression $nodePropChild.InnerText
+            }
+
+            Add-Project-Item -name $child.Name -value $childEvaluatedValue -properties $itemProperties
         }
+
+        Set-ProjectItemContext $oldItemContextName
 
         if ($node.GetAttribute("Label") -ieq "ProjectConfigurations")
         {

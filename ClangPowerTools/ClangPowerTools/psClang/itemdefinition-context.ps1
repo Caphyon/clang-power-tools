@@ -38,7 +38,7 @@ function Pop-ProjectItemContext()
     Write-Verbose "[CONTEXT] item namespace = @($global:itemPropertyNamespace)"
 }
 
-function Set-ProjectItemContext([Parameter(Mandatory = $true)][string] $name)
+function Set-ProjectItemContext([Parameter(Mandatory = $true)][AllowEmptyString()][string] $name)
 {
     if ( (VariableExists 'itemPropertyNameSpace') -and ($global:itemPropertyNamespace -eq $name) )
     {

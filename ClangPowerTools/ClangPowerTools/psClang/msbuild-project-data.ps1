@@ -137,7 +137,7 @@ Function Should-IgnoreFile([Parameter(Mandatory = $true)][string] $file)
 
 Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchCppName)
 {
-    [System.Xml.XmlElement[]] $projectEntries = @(Select-ProjectNodes($kVcxprojXpathCompileFiles) | `
+ <#   [System.Xml.XmlElement[]] $projectEntries = @(Select-ProjectNodes($kVcxprojXpathCompileFiles) | `
                                                   Where-Object { Should-CompileFile -fileNode $_ -pchCppName $pchCppName })
 
     [System.Collections.ArrayList] $files = @()
@@ -165,7 +165,9 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchC
                                                        "Pch" = $usePch; }
             }
         }
-    }
+    } #>
+
+    $files = Get-Project-Item "ClCompile"
 
     if ($files.Count -gt 0)
     {
@@ -213,7 +215,7 @@ Function Get-Project-SDKVer()
 }
 
 Function Is-Project-MultiThreaded()
-{    
+{
     Set-ProjectItemContext "ClCompile"
     $runtimeLibrary = Get-ProjectItemProperty "RuntimeLibrary"
     return ![string]::IsNullOrEmpty($runtimeLibrary)
@@ -416,7 +418,7 @@ Function Get-ProjectPreprocessorDefines()
     {
         return @()
     }
-    
+
     [string[]] $tokens = @($preprocDefNodes -split ";")
 
     # make sure we add the required prefix and escape double quotes

@@ -1037,7 +1037,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 #-------------------------------------------------------------------------------------------------
 # Script entry point
 
-Clear-Host # clears console
+#Clear-Host # clears console
 
 #-------------------------------------------------------------------------------------------------
 # If we didn't get a location to run CPT at, use the current working directory
