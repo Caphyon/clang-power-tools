@@ -91,6 +91,14 @@ Function Should-IgnoreFile([Parameter(Mandatory = $true)][string] $file)
         }
     }
 
+    foreach ($projIgnoreMatch in $global:cptIgnoredFilesPool)
+    {
+        if (IsFileMatchingName -filePath $file -matchName $projIgnoreMatch)
+        {
+            return $true
+        }
+    }
+
     return $false
 }
 
