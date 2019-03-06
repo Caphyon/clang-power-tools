@@ -1,6 +1,6 @@
 # REQUIRES io.ps1 to be included
 
-[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.Build.Utilities.Core")
+[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.Build.Utilities.Core") > $null
 
 Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>     `
     -value @(                                                             `
@@ -13,25 +13,26 @@ Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>     `
         <# Put back $( #>                                                 `
         , ('!@#'                             , '$('                      )`
         <# Various operators #>                                           `
-        , ("([\s\)\'""])!="                  , '$1  -ne '                )`
-        , ("([\s\)\'""])<="                  , '$1  -le '                )`
-        , ("([\s\)\'""])>="                  , '$1  -ge '                )`
-        , ("([\s\)\'""])=="                  , '$1  -eq '                )`
+        , ("([\s\)\'""])!="                  , '$1 -ne '                 )`
+        , ("([\s\)\'""])<="                  , '$1 -le '                 )`
+        , ("([\s\)\'""])>="                  , '$1 -ge '                 )`
+        , ("([\s\)\'""])=="                  , '$1 -eq '                 )`
         , ("([\s\)\'""])<"                   , '$1 -lt '                 )`
         , ("([\s\)\'""])>"                   , '$1 -gt '                 )`
         , ("([\s\)\'""])or"                  , '$1 -or '                 )`
         , ("([\s\)\'""])and"                 , '$1 -and '                )`
         <# Use only double quotes #>                                      `
         , ("\'"                              , '"'                       )`
-        , ("Exists\((.*?)\)(\s|$)"           , '(Exists($1))$2'          )`
-        , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(HasTrailingSlash($1))$2')`
+        , ("Exists\((.*?)\)(\s|$)"           , '(cpt::Exists($1))$2'          )`
+        , ("HasTrailingSlash\((.*?)\)(\s|$)" , '(cpt::HasTrailingSlash($1))$2')`
         , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'   )`
         , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?((\$.+?\))|(.+?))((|`"|')\))+"`
-        ,'GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
+        ,'cpt::GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
         , ("\[MSBuild\]::MakeRelative\((.+?),\s*""?'?((\$.+?\))|(.+?))((|""|')\)\))+"`
-        ,'MakePathRelative -base $1 -target "$2")'                       )`
+        ,'cpt::MakePathRelative -base $1 -target "$2")'                       )`
         , ('SearchOption\.', '[System.IO.SearchOption]::'                )`
         , ("@\((.*?)\)", '$(Get-Project-Item("$1"))'                     )`
+        , ("%\((.*?)\)", '$(Get-ProjectItemProperty("$1"))'              )`
         , ('\$\(HOME\)', '$(CPT_SHIM_HOME)'                              )`
 )
 
@@ -40,7 +41,7 @@ Set-Variable -name "kMsbuildConditionToPsRules" <#-option Constant#>      `
                        ,("\'"                , '"'                       )`
 )
 
-function GetDirNameOfFileAbove( [Parameter(Mandatory = $true)][string] $startDir
+function cpt::GetDirNameOfFileAbove( [Parameter(Mandatory = $true)][string] $startDir
                               , [Parameter(Mandatory = $true)][string] $targetFile
                               )
 {
@@ -145,7 +146,8 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
                 }
                 else
                 {
-                    # dealing with a more complex expression
+                    # dealing with a more complex expression, put a $ character in front
+                    # of each sub-expression token in order to have it evaluated properly
                     $content = $content -replace '(^|\s+|\$\()([a-zA-Z_][a-zA-Z0-9_]+)(\.|\)|$)', '$1$$$2$3'
                 }
 
@@ -161,18 +163,32 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
 
     Write-Debug "Intermediate PS expression: $expression"
 
-    $res = $null
-    try
-    {
-        # try to get actual objects, if possible
-        ($res = Invoke-Expression $expression) > $null
-    }
-    catch
-    {
-        # safe-approach first, string expansion
-        $res = $ExecutionContext.InvokeCommand.ExpandString($expression)
+    [string] $res = ""
 
-        Write-Debug $_.Exception.Message
+    if ($expression.IndexOf('::') -ge 0)
+    {
+        try
+        {
+            $resInvokeResult = Invoke-Expression $expression
+
+            if ($resInvokeResult -is [array])
+            {
+                $res = $resInvokeResult -join ';'
+            }
+            else
+            {
+                $res = $resInvokeResult
+            }
+        }
+        catch
+        {
+            Write-Verbose $_.Exception.Message
+            $res = $ExecutionContext.InvokeCommand.ExpandString($expression)
+        }
+    }
+    else
+    {
+        $res = $ExecutionContext.InvokeCommand.ExpandString($expression)
     }
 
     Write-Debug "Evaluated expression to: $res"

@@ -277,6 +277,7 @@ Add-Type -TypeDefinition @"
   , "$PSScriptRoot\psClang\msbuild-project-load.ps1"
   , "$PSScriptRoot\psClang\msbuild-project-data.ps1"
   , "$PSScriptRoot\psClang\get-header-references.ps1"
+  , "$PSScriptRoot\psClang\itemdefinition-context.ps1"
   ) | ForEach-Object { . $_ }
 
 #-------------------------------------------------------------------------------------------------
@@ -835,7 +836,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # FIND FORCE INCLUDES
 
   [string[]] $forceIncludeFiles = @(Get-ProjectForceIncludes)
-  Write-Verbose "Force includes: $forceIncludeFiles"
+  Write-Verbose-Array -array $forceIncludeFiles -name "Force includes" 
 
   #-----------------------------------------------------------------------------------------------
   # DETECT PROJECT PREPROCESSOR DEFINITIONS

@@ -212,7 +212,7 @@ Function Canonize-Path( [Parameter(Mandatory = $true)][string] $base
     }
 }
 
-function HasTrailingSlash([Parameter(Mandatory = $true)][string] $str)
+function cpt::HasTrailingSlash([Parameter(Mandatory = $true)][string] $str)
 {
     return $str.EndsWith('\') -or $str.EndsWith('/')
 }
@@ -220,11 +220,11 @@ function HasTrailingSlash([Parameter(Mandatory = $true)][string] $str)
 
 function EnsureTrailingSlash([Parameter(Mandatory = $true)][string] $str)
 {
-    [string] $ret = If (HasTrailingSlash($str)) { $str } else { "$str\" }
+    [string] $ret = If (cpt::HasTrailingSlash($str)) { $str } else { "$str\" }
     return $ret
 }
 
-function Exists([Parameter(Mandatory = $false)][string] $path)
+function cpt::Exists([Parameter(Mandatory = $false)][string] $path)
 {
     if ([string]::IsNullOrEmpty($path))
     {
@@ -234,14 +234,14 @@ function Exists([Parameter(Mandatory = $false)][string] $path)
     return Test-Path $path
 }
 
-function MakePathRelative( [Parameter(Mandatory = $true)][string] $base
+function cpt::MakePathRelative( [Parameter(Mandatory = $true)][string] $base
                          , [Parameter(Mandatory = $true)][string] $target
                          )
 {
     Push-Location "$base\"
     [string] $relativePath = (Resolve-Path -Relative $target) -replace '^\.\\',''
     Pop-Location
-    if ( (HasTrailingSlash $target) -or $target.EndsWith('.') )
+    if ( (cpt::HasTrailingSlash $target) -or $target.EndsWith('.') )
     {
         $relativePath += '\'
     }

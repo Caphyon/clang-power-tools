@@ -24,18 +24,6 @@ Set-Variable -name kClangFlag32BitPlatform        -value "-m32" -option Constant
 # ------------------------------------------------------------------------------------------------
 # Xpath selectors
 
-Set-Variable -name kVcxprojXpathPreprocessorDefs  `
-             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:PreprocessorDefinitions" `
-             -option Constant
-
-Set-Variable -name kVcxprojXpathAdditionalIncludes `
-             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:AdditionalIncludeDirectories" `
-             -option Constant
-
-Set-Variable -name kVcxprojXpathRuntimeLibrary `
-             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:RuntimeLibrary" `
-             -option Constant
-
 Set-Variable -name kVcxprojXpathHeaders `
              -value "ns:Project/ns:ItemGroup/ns:ClInclude" `
              -option Constant
@@ -44,29 +32,8 @@ Set-Variable -name kVcxprojXpathCompileFiles `
              -value "ns:Project/ns:ItemGroup/ns:ClCompile" `
              -option Constant
 
-Set-Variable -name kVcxprojXpathWinPlatformVer `
-             -value "ns:Project/ns:PropertyGroup/ns:WindowsTargetPlatformVersion" `
-             -option Constant
-
-Set-Variable -name kVcxprojXpathForceIncludes `
-             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:ForcedIncludeFiles" `
-             -option Constant
-
 Set-Variable -name kVcxprojXpathPCH `
              -value "ns:Project/ns:ItemGroup/ns:ClCompile/ns:PrecompiledHeader[text()='Create']" `
-             -option Constant
-
-Set-Variable -name kVcxprojXpathToolset `
-             -value "ns:Project/ns:PropertyGroup[@Label='Configuration']/ns:PlatformToolset" `
-             -option Constant
-
-Set-Variable -name kVcxprojXpathCppStandard `
-             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:LanguageStandard" `
-             -option Constant
-
-
-Set-Variable -name kVcxprojXpathProjectCompileAs `
-             -value "ns:Project/ns:ItemDefinitionGroup/ns:ClCompile/ns:CompileAs" `
              -option Constant
 
 # ------------------------------------------------------------------------------------------------
@@ -227,71 +194,51 @@ Function Get-ProjectHeaders()
 
 Function Is-CProject()
 {
-    $projNode = Select-ProjectNodes($kVcxprojXpathProjectCompileAs)
-    if (!$projNode)
+    Set-ProjectItemContext "ClCompile"
+    $compileAs = Get-ProjectItemProperty "CompileAs"
+
+    if ($compileAs)
     {
         return $false
     }
 
-    [string] $compileAs = $projNode.InnerText
     return $compileAs -eq $kCProjectCompile
 }
 
 Function Get-Project-SDKVer()
 {
-    [string] $sdkVer = (Select-ProjectNodes($kVcxprojXpathWinPlatformVer)).InnerText
+    [string] $sdkVer = $WindowsTargetPlatformVersion
 
     If ([string]::IsNullOrEmpty($sdkVer)) { "" } Else { $sdkVer.Trim() }
 }
 
 Function Is-Project-MultiThreaded()
-{
-    $propGroup = Select-ProjectNodes($kVcxprojXpathRuntimeLibrary)
-
-    $runtimeLibrary = $propGroup.InnerText
-
+{    
+    Set-ProjectItemContext "ClCompile"
+    $runtimeLibrary = Get-ProjectItemProperty "RuntimeLibrary"
     return ![string]::IsNullOrEmpty($runtimeLibrary)
 }
 
 Function Is-Project-Unicode()
 {
-    $propGroup = Select-ProjectNodes("ns:Project/ns:PropertyGroup[@Label='Configuration']/ns:CharacterSet")
-    if (! $propGroup)
-    {
-        return $false
-    }
-    return ($propGroup.InnerText -ieq "Unicode")
+    return $CharacterSet -ieq "Unicode"
 }
 
 Function Get-Project-CppStandard()
 {
-    [string] $cachedValueVarName = "ClangPowerTools:CppStd"
-
-    [string] $cachedVar = (Get-Variable $cachedValueVarName -ErrorAction SilentlyContinue -ValueOnly)
-    if (![string]::IsNullOrEmpty($cachedVar))
-    {
-        return $cachedVar
-    }
-
-    [string] $cppStd = ""
-
-    $cppStdNode = Select-ProjectNodes($kVcxprojXpathCppStandard)
-    if ($cppStdNode)
-    {
-        $cppStd = $cppStdNode.InnerText
-    }
-    else
+    Set-ProjectItemContext "ClCompile"
+    $cppStd = Get-ProjectItemProperty "LanguageStandard"
+    if (!$cppStd)
     {
         $cppStd = $kDefaultCppStd
     }
 
     $cppStdMap = @{ 'stdcpplatest' = 'c++1z'
-        ; 'stdcpp14'               = 'c++14'
-        ; 'stdcpp17'               = 'c++17'
-    }
+                  ; 'stdcpp14'     = 'c++14'
+                  ; 'stdcpp17'     = 'c++17'
+                  }
 
     [string] $cppStdClangValue = $cppStdMap[$cppStd]
-    Set-Var -name $cachedValueVarName -value $cppStdClangValue
 
     return $cppStdClangValue
 }
@@ -316,9 +263,7 @@ Function Get-ClangCompileFlags([Parameter(Mandatory = $false)][bool] $isCpp = $t
 
 Function Get-ProjectPlatformToolset()
 {
-    $propGroup = Select-ProjectNodes($kVcxprojXpathToolset)
-
-    $toolset = $propGroup.InnerText
+    $toolset = $PlatformToolset
 
     if ($toolset)
     {
@@ -465,13 +410,14 @@ Function Get-Project-PchCpp()
 #>
 Function Get-ProjectPreprocessorDefines()
 {
-    $preprocDefNodes = Select-ProjectNodes $kVcxprojXpathPreprocessorDefs
+    Set-ProjectItemContext "ClCompile"
+    $preprocDefNodes = Get-ProjectItemProperty "PreprocessorDefinitions"
     if (!$preprocDefNodes)
     {
         return @()
     }
     
-    [string[]] $tokens = @($preprocDefNodes.InnerText -split ";")
+    [string[]] $tokens = @($preprocDefNodes -split ";")
 
     # make sure we add the required prefix and escape double quotes
     [string[]]$defines = @( $tokens | `
@@ -500,14 +446,10 @@ Function Get-ProjectPreprocessorDefines()
 
 Function Get-ProjectAdditionalIncludes()
 {
+    Set-ProjectItemContext "ClCompile"
+    $data = Get-ProjectItemProperty "AdditionalIncludeDirectories"
 
-    $data = Select-ProjectNodes $kVcxprojXpathAdditionalIncludes
-    if (!$data)
-    {
-        return @()
-    }
-
-    [string[]] $tokens = @(($data).InnerText -split ";")
+    [string[]] $tokens = @($data -split ";")
 
     foreach ($token in $tokens)
     {
@@ -526,10 +468,11 @@ Function Get-ProjectAdditionalIncludes()
 
 Function Get-ProjectForceIncludes()
 {
-    [System.Xml.XmlElement] $forceIncludes = Select-ProjectNodes $kVcxprojXpathForceIncludes
+    Set-ProjectItemContext "ClCompile"
+    $forceIncludes = Get-ProjectItemProperty "ForcedIncludeFiles"
     if ($forceIncludes)
     {
-        return $forceIncludes.InnerText -split ";"
+        return @($forceIncludes -split ";" | Where-Object { ![string]::IsNullOrWhiteSpace($_) })
     }
 
     return $null

@@ -167,6 +167,8 @@ Function Clear-Vars()
     $global:ScriptParameterBackupValues.Clear()
 
     $global:ProjectSpecificVariables.Clear()
+
+    Reset-ProjectItemContext
 }
 
 Function UpdateScriptParameter([Parameter(Mandatory = $true)] [string] $paramName
@@ -214,7 +216,7 @@ Function Get-ConfigFileParameters()
   [System.Collections.Hashtable] $retArgs = @{}
 
   [string] $startDir = If ( VariableExistsAndNotEmpty 'ProjectDir' )  { $ProjectDir } else { $aSolutionsPath }
-  [string] $configFile = (GetDirNameOfFileAbove -startDir $startDir -targetFile "cpt.config") + "\cpt.config"
+  [string] $configFile = (cpt::GetDirNameOfFileAbove -startDir $startDir -targetFile "cpt.config") + "\cpt.config"
   if (!(Test-Path $configFile))
   {
       return $retArgs
@@ -521,7 +523,7 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
     if ($node.Name -ieq "#text" -and $node.InnerText.Length -gt 0)
     {
         # evaluate node content
-        $node.InnerText = [string](Evaluate-MSBuildExpression $node.InnerText)
+        $node.InnerText = Evaluate-MSBuildExpression $node.InnerText
     }
 
     if ($node.Name -ieq "Import")
@@ -581,7 +583,7 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
         $childNodes = $node.ChildNodes | Where-Object { $_.GetType().Name -ieq "XmlElement" }
         foreach ($child in $childNodes)
         {
-            $childEvaluatedValue = Evaluate-MSBuildExpression $child.GetAttribute("Include")
+            [string] $childEvaluatedValue = Evaluate-MSBuildExpression $child.GetAttribute("Include")
             Add-Project-Item -name $child.Name -value $childEvaluatedValue
         }
 
@@ -589,6 +591,27 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
         {
             [System.Xml.XmlElement] $firstChild = $childNodes | Select-Object -First 1
             Detect-ProjectDefaultConfigPlatform $firstChild.GetAttribute("Include")
+
+            # now we can begin to evaluate directory.build.props XML element conditions, load it
+            LoadDirectoryBuildPropSheetFile
+        }
+    }
+
+    if ($node.Name -ieq "ItemDefinitionGroup")
+    {
+        [System.Xml.XmlNode[]] $childNodes = $node.ChildNodes | Where-Object { $_.GetType().Name -ieq "XmlElement" }
+        foreach ($child in $childNodes)
+        {
+            Push-ProjectItemContext $child.Name
+
+            [System.Xml.XmlNode[]] $propNodes = @($child.ChildNodes | Where-Object { $_.GetType().Name -ieq "XmlElement" })
+            foreach ($propNode in $propNodes)
+            {
+                [string] $propVal = Evaluate-MSBuildExpression $propNode.InnerText
+                Set-ProjectItemProperty $propNode.Name $propVal
+            }
+
+            Pop-ProjectItemContext
         }
     }
 
@@ -596,7 +619,7 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
     {
         # set new property value
         [string] $propertyName = $node.Name
-        $propertyValue = Evaluate-MSBuildExpression $node.InnerText
+        [string] $propertyValue = Evaluate-MSBuildExpression $node.InnerText
 
         Set-Var -Name $propertyName -Value $propertyValue
 
@@ -660,6 +683,28 @@ function SanitizeProjectFile([string] $projectFilePath)
     Pop-Location
 }
 
+function LoadDirectoryBuildPropSheetFile()
+{
+    if ($env:CPT_LOAD_ALL -ne "1")
+    {
+        # Tries to find a Directory.Build.props property sheet, starting from the
+        # project directory, going up. When one is found, the search stops.
+        # Multiple Directory.Build.props sheets are not supported.
+        [string] $directoryBuildSheetPath = (cpt::GetDirNameOfFileAbove -startDir $ProjectDir `
+                                             -targetFile "Directory.Build.props") + "\Directory.Build.props"
+        if (Test-Path $directoryBuildSheetPath)
+        {
+            SanitizeProjectFile($directoryBuildSheetPath)
+        }
+
+        [string] $vcpkgIncludePath = "$env:LOCALAPPDATA\vcpkg\vcpkg.user.targets"
+        if (Test-Path $vcpkgIncludePath)
+        {
+            SanitizeProjectFile($vcpkgIncludePath)
+        }
+    }
+}
+
 <#
 .DESCRIPTION
 Loads vcxproj and property sheets into memory. This needs to be called only once
@@ -677,23 +722,4 @@ function LoadProject([string] $vcxprojPath)
     $global:projectFiles = @()
 
     SanitizeProjectFile -projectFilePath $global:vcxprojPath
-
-    if ($env:CPT_LOAD_ALL -ne "1")
-    {
-        # Tries to find a Directory.Build.props property sheet, starting from the
-        # project directory, going up. When one is found, the search stops.
-        # Multiple Directory.Build.props sheets are not supported.
-        [string] $directoryBuildSheetPath = (GetDirNameOfFileAbove -startDir $ProjectDir `
-                                             -targetFile "Directory.Build.props") + "\Directory.Build.props"
-        if (Test-Path $directoryBuildSheetPath)
-        {
-            SanitizeProjectFile($directoryBuildSheetPath)
-        }
-
-        [string] $vcpkgIncludePath = "$env:LOCALAPPDATA\vcpkg\vcpkg.user.targets"
-        if (Test-Path $vcpkgIncludePath)
-        {
-            SanitizeProjectFile($vcpkgIncludePath)
-        }
-    }
 }

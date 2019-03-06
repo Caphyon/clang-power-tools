@@ -8,6 +8,7 @@ Set-Variable -name "kScriptLocation"                                            
 
 @(
  , "$kScriptLocation\io.ps1"
+ , "$kScriptLocation\itemdefinition-context.ps1"
  , "$kScriptLocation\msbuild-expression-eval.ps1"
  ) | ForEach-Object { . $_ }
 
@@ -45,7 +46,7 @@ Describe "MSBuild - Powershell Expression translation" {
                     | Should -BeExactly     '$Foo;C:\Users\Default;..\..;..\..\third-party'
 
     $TargetName = "Test"
-    Evaluate-MSBuildExpression "%(ASDASD);`$(TargetName)" | Should -BeExactly "%(ASDASD);Test"
+    Evaluate-MSBuildExpression "%(ASDASD);`$(TargetName)" | Should -BeExactly ";Test"
 
     $prop = "123"
     Evaluate-MSBuildExpression 'plaintext;"$(prop)"' | Should -BeExactly 'plaintext;"123"'
@@ -154,23 +155,13 @@ Describe "Condition evaluation" {
     Evaluate-MSBuildCondition '$(Platform.Replace(" ", "")) and $(testB)' | Should -BeExactly $false
   }
 
-  It "Prop to Bool decay" {
-    $First = "something"
-    $Second = "else"
-
-    Evaluate-MSBuildCondition  '$(First) and $(Second)' | Should -BeExactly $true
-
-    Remove-Variable "First"
-
-    Evaluate-MSBuildCondition '$(First) and $(Second)' | Should -BeExactly $false
-  }
-
   It "Exists() MSBuild builtin function" {
 
     $WinDir = $env:SystemRoot
     Evaluate-MSBuildCondition "exists('`$(WinDir)')" | Should -BeExactly $true
     Evaluate-MSBuildCondition "1 == 1 and exists('`$(WinDir)')" | Should -BeExactly $true
     Evaluate-MSBuildCondition "exists('`$(WinDir)\System32')" | Should -BeExactly $true
+    Evaluate-MSBuildCondition "exists('`$(WinDir)\System64')" | Should -BeExactly $false
 
     $WinDir += "gibberish12345"
     Evaluate-MSBuildCondition "exists('`$(WinDir)')" | Should -BeExactly $false
@@ -228,5 +219,18 @@ Describe "Condition evaluation" {
 
     $prop = "c:\windows"
     Evaluate-MSBuildCondition "hasTrailingSlash(`$(prop))" | Should -BeExactly $false
+  }
+
+  It "Itemgroupdefinition" {
+    $defVal = "bar"
+
+    Set-ProjectItemProperty "foo" $defVal
+    Evaluate-MSBuildExpression "%(foo)" | Should -BeExactly $defVal
+    Evaluate-MSBuildCondition "'%(foo)' == '$defVal'" | Should -BeExactly $true
+    Evaluate-MSBuildCondition "'%(foo)' != '$defVal'" | Should -BeExactly $false
+
+    $P1 = "prop_value"
+    Evaluate-MSBuildExpression '%(foo)|$(P1)' | Should -BeExactly "$defVal|$P1"
+    Evaluate-MSBuildExpression '%(foo);$(P1)' | Should -BeExactly "$defVal;$P1"
   }
 }
