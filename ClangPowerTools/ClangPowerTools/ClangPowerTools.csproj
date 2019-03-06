@@ -75,6 +75,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AutomationUtil.cs" />
+    <Compile Include="Clang Configs\TidyConfigFile.cs" />
     <Compile Include="ClangCheckAttribute.cs" />
     <Compile Include="ClangTidyPathAttribute.cs" />
     <Compile Include="Commands\ClangFormatCommand.cs" />

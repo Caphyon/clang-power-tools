@@ -102,7 +102,9 @@ namespace ClangPowerTools.Commands
       {
         using (StreamWriter sw = new StreamWriter(fs))
         {
-          sw.Write("Hello world!");
+          TidyConfigFile tidyConfigFile = new TidyConfigFile();
+
+          sw.Write(tidyConfigFile.CreateOutput());
         }
       }
     }
