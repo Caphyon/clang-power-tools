@@ -22,21 +22,6 @@ Set-Variable -name kVStudioDefaultPlatformToolset -Value "v141" -option Constant
 Set-Variable -name kClangFlag32BitPlatform        -value "-m32" -option Constant
 
 # ------------------------------------------------------------------------------------------------
-# Xpath selectors
-
-Set-Variable -name kVcxprojXpathHeaders `
-             -value "ns:Project/ns:ItemGroup/ns:ClInclude" `
-             -option Constant
-
-Set-Variable -name kVcxprojXpathCompileFiles `
-             -value "ns:Project/ns:ItemGroup/ns:ClCompile" `
-             -option Constant
-
-Set-Variable -name kVcxprojXpathPCH `
-             -value "ns:Project/ns:ItemGroup/ns:ClCompile/ns:PrecompiledHeader[text()='Create']" `
-             -option Constant
-
-# ------------------------------------------------------------------------------------------------
 # Default platform sdks and standard
 
 Set-Variable -name kVSDefaultWinSDK            -value '8.1'             -option Constant
@@ -149,9 +134,9 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchC
     {
         [System.Collections.Hashtable] $itemProps = $item[1];
         $usePch = [UsePch]::Use;
-        if ($itemsProps.ContainsKey('PrecompiledHeader'))
+        if ($itemProps -ne $null -and $itemProps.ContainsKey('PrecompiledHeader'))
         {
-            switch ($itemsProps['PrecompiledHeader'])
+            switch ($itemProps['PrecompiledHeader'])
             {
                 'NotUsing' { $usePch = [UsePch]::NotUsing }
                 'Create'   { $usePch = [UsePch]::Create   }
@@ -185,8 +170,6 @@ Function Get-ProjectHeaders()
 
     foreach ($item in $projectCompileItems)
     {
-        [System.Collections.Hashtable] $itemProps = $item[1];
-
         [string[]] $paths = @(Canonize-Path -base $ProjectDir -child $item[0] -ignoreErrors)
         if ($paths.Count -gt 0)
         {
@@ -395,16 +378,29 @@ Function Get-ProjectIncludeDirectories()
 
 <#
 .DESCRIPTION
-  Retrieve directory in which the PCH CPP resides (e.g. stdafx.cpp, stdafxA.cpp)
+  Retrieve the source files which is used to create the PCH (e.g. stdafx.cpp, stdafxA.cpp)
 #>
 Function Get-Project-PchCpp()
 {
-    $pchCppRelativePath = Select-ProjectNodes($kVcxprojXpathPCH)   |
-        Select-Object -ExpandProperty ParentNode |
-        Select-Object -first 1                   |
-        Select-Object -ExpandProperty Include
+    $projectCompileItems = @(Get-Project-ItemList "ClCompile")
+    if (!$projectCompileItems)
+    {
+        Write-Verbose "Project does not have any items to compile"
+        return ""
+    }
 
-    return $pchCppRelativePath
+    $files = @()
+    foreach ($item in $projectCompileItems)
+    {
+        [System.Collections.Hashtable] $itemProps = $item[1];
+        if ($itemProps.ContainsKey('PrecompiledHeader') -and 
+            $itemProps['PrecompiledHeader'] -ieq 'Create')
+        {
+            # found PCH cpp
+            return $item[0]
+        }
+    }
+    return ""
 }
 
 

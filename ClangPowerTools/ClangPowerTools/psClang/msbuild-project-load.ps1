@@ -349,17 +349,6 @@ Function InitializeMsBuildCurrentFileProperties([Parameter(Mandatory = $true)][s
     Set-Var -name "MSBuildThisFileDirectory" -value (Get-FileDirectory -filePath $filePath)
 }
 
-<#
-.DESCRIPTION
-A wrapper over the XmlDOcument.SelectNodes function. For convenience.
-Not to be used directly. Please use Select-ProjectNodes instead.
-#>
-function Help:Get-ProjectFileNodes([xml] $projectFile, [string] $xpath)
-{
-    [System.Xml.XmlElement[]] $nodes = $projectFile.SelectNodes($xpath, $global:xpathNS)
-    return $nodes
-}
-
 function  GetNodeInheritanceToken([System.Xml.XmlNode] $node)
 {
     [string] $inheritanceToken = "%($($node.Name))";
@@ -404,93 +393,6 @@ function ReplaceInheritedNodeValue([System.Xml.XmlNode] $currentNode
     }
 
     return $currentNode.InnerText.Contains($inheritanceToken)
-}
-
-<#
-.SYNOPSIS
-Selects one or more nodes from the project.
-.DESCRIPTION
-We often need to access data from the project, e.g. additional includes, Win SDK version.
-A naive implementation would be to simply look inside the vcxproj, but that leaves out
-property sheets.
-
-This function takes care to retrieve the nodes we're searching by looking in both the .vcxproj
-and property sheets, taking care to inherit values accordingly.
-.EXAMPLE
-Give an example of how to use it
-.EXAMPLE
-Give another example of how to use it.
-.PARAMETER xpath
-XPath we want to use for searching nodes.
-.PARAMETER fileIndex
-Optional. Index of the project xml file we want to start our search in.
-0 = .vcxproj and then, recursively, all property sheets
-1 = first property sheet and then, recursively, all other property sheets
-etc.
-#>
-function Select-ProjectNodes([Parameter(Mandatory = $true)]  [string][string] $xpath
-    , [Parameter(Mandatory = $false)] [int]            $fileIndex = 0)
-{
-    [System.Xml.XmlElement[]] $nodes = @()
-
-    if ($fileIndex -ge $global:projectFiles.Count)
-    {
-        return $nodes
-    }
-
-    $nodes = @(Help:Get-ProjectFileNodes -projectFile $global:projectFiles[$fileIndex] -xpath $xpath)
-
-    # nothing on this level or we're dealing with an ItemGroup, go above
-    if ($nodes.Count -eq 0 -or $xpath.Contains("ItemGroup"))
-    {
-        [System.Xml.XmlElement[]] $upperNodes = @(Select-ProjectNodes -xpath $xpath -fileIndex ($fileIndex + 1))
-        if ($upperNodes.Count -gt 0)
-        {
-            $nodes += $upperNodes
-        }
-        return $nodes
-    }
-
-    if ($nodes[$nodes.Count - 1]."#text")
-    {
-        # we found textual settings that can be inherited. see if we should inherit
-
-        [System.Xml.XmlNode] $nodeToReturn = $nodes[$nodes.Count - 1]
-        if ($nodeToReturn.Attributes.Count -gt 0)
-        {
-            throw "Did not expect node to have attributes"
-        }
-
-        [bool] $shouldInheritMore = ![string]::IsNullOrEmpty((GetNodeInheritanceToken -node $nodeToReturn))
-        for ([int] $i = $nodes.Count - 2; ($i -ge 0) -and $shouldInheritMore; $i -= 1)
-        {
-            $shouldInheritMore = ReplaceInheritedNodeValue -currentNode $nodeToReturn -nodeToInheritFrom $nodes[$i]
-        }
-
-        if ($shouldInheritMore)
-        {
-            [System.Xml.XmlElement[]] $inheritedNodes = @(Select-ProjectNodes -xpath $xpath -fileIndex ($fileIndex + 1))
-            if ($inheritedNodes.Count -gt 1)
-            {
-                throw "Did not expect to inherit more than one node"
-            }
-            if ($inheritedNodes.Count -eq 1)
-            {
-                $shouldInheritMore = ReplaceInheritedNodeValue -currentNode $nodeToReturn -nodeToInheritFrom $inheritedNodes[0]
-            }
-        }
-
-        # we still could have to inherit from parents but when not loading
-        # all MS prop sheets we have nothing to inherit from, delete inheritance token
-        ReplaceInheritedNodeValue -currentNode $nodeToReturn -nodeToInheritFrom $null > $null
-
-        return @($nodeToReturn)
-    }
-    else
-    {
-        # return what we found
-        return $nodes
-    }
 }
 
 <#
@@ -765,7 +667,7 @@ function LoadDirectoryBuildPropSheetFile()
 <#
 .DESCRIPTION
 Loads vcxproj and property sheets into memory. This needs to be called only once
-when processing a project. Accessing project nodes can be done using Select-ProjectNodes.
+when processing a project. Accessing project data can be done using ItemGroups and Properties
 #>
 function LoadProject([string] $vcxprojPath)
 {
