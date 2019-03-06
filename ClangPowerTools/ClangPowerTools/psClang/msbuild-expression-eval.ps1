@@ -1,6 +1,6 @@
 # REQUIRES io.ps1 to be included
 
-[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.Build.Utilities.Core")
+[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.Build.Utilities.Core") > $null
 
 Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>     `
     -value @(                                                             `
@@ -146,7 +146,8 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
                 }
                 else
                 {
-                    # dealing with a more complex expression
+                    # dealing with a more complex expression, put a $ character in front
+                    # of each sub-expression token in order to have it evaluated properly
                     $content = $content -replace '(^|\s+|\$\()([a-zA-Z_][a-zA-Z0-9_]+)(\.|\)|$)', '$1$$$2$3'
                 }
 
@@ -162,17 +163,24 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
 
     Write-Debug "Intermediate PS expression: $expression"
 
-    $res = $null
-    try
-    {
-        ($res = Invoke-Expression $expression) > $null
-    }
-    catch
-    {
-        # safe-approach first, string expansion
-        $res = $ExecutionContext.InvokeCommand.ExpandString($expression)
+    [string] $res = ""
 
-        Write-Debug $_.Exception.Message
+    if ($expression.IndexOf(']::') -ge 0)
+    {
+        $resInvokeResult = Invoke-Expression $expression
+
+        if ($resInvokeResult -is [array])
+        {
+            $res = $resInvokeResult -join ';'
+        }
+        else
+        {
+            $res = $resInvokeResult
+        }
+    }
+    else
+    {
+        $res = $ExecutionContext.InvokeCommand.ExpandString($expression)
     }
 
     Write-Debug "Evaluated expression to: $res"

@@ -167,7 +167,7 @@ Function Clear-Vars()
     $global:ScriptParameterBackupValues.Clear()
 
     $global:ProjectSpecificVariables.Clear()
-    
+
     Reset-ProjectItemContext
 }
 
@@ -523,7 +523,7 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
     if ($node.Name -ieq "#text" -and $node.InnerText.Length -gt 0)
     {
         # evaluate node content
-        $node.InnerText = [string](Evaluate-MSBuildExpression $node.InnerText)
+        $node.InnerText = Evaluate-MSBuildExpression $node.InnerText
     }
 
     if ($node.Name -ieq "Import")
@@ -583,7 +583,7 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
         $childNodes = $node.ChildNodes | Where-Object { $_.GetType().Name -ieq "XmlElement" }
         foreach ($child in $childNodes)
         {
-            $childEvaluatedValue = Evaluate-MSBuildExpression $child.GetAttribute("Include")
+            [string] $childEvaluatedValue = Evaluate-MSBuildExpression $child.GetAttribute("Include")
             Add-Project-Item -name $child.Name -value $childEvaluatedValue
         }
 
@@ -604,7 +604,7 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
             [System.Xml.XmlNode[]] $propNodes = @($child.ChildNodes | Where-Object { $_.GetType().Name -ieq "XmlElement" })
             foreach ($propNode in $propNodes)
             {
-                $propVal = Evaluate-MSBuildExpression $propNode.InnerText
+                [string] $propVal = Evaluate-MSBuildExpression $propNode.InnerText
                 Set-ProjectItemProperty $propNode.Name $propVal
             }
 
@@ -616,7 +616,7 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
     {
         # set new property value
         [string] $propertyName = $node.Name
-        $propertyValue = Evaluate-MSBuildExpression $node.InnerText
+        [string] $propertyValue = Evaluate-MSBuildExpression $node.InnerText
 
         Set-Var -Name $propertyName -Value $propertyValue
 
