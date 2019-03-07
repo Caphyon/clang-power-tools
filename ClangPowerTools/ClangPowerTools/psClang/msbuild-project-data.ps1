@@ -1,12 +1,9 @@
 #-------------------------------------------------------------------------------------------------
 # PlatformToolset constants
 
-Set-Variable -name kDefinesUnicode   -value @("-DUNICODE"
-                                             ,"-D_UNICODE"
+Set-Variable -name kDefinesUnicode   -value @('"-DUNICODE"'
+                                             ,'"-D_UNICODE"'
                                              ) `
-                                     -option Constant
-
-Set-Variable -name kDefinesMultiThreaded -value @("-D_MT") `
                                      -option Constant
 
 Set-Variable -name kDefinesClangXpTargeting `
@@ -195,11 +192,24 @@ Function Get-Project-SDKVer()
     If ([string]::IsNullOrEmpty($sdkVer)) { "" } Else { $sdkVer.Trim() }
 }
 
-Function Is-Project-MultiThreaded()
+Function Get-Project-MultiThreaded-Define()
 {
     Set-ProjectItemContext "ClCompile"
-    $runtimeLibrary = Get-ProjectItemProperty "RuntimeLibrary"
-    return ![string]::IsNullOrEmpty($runtimeLibrary)
+    [string] $runtimeLibrary = Get-ProjectItemProperty "RuntimeLibrary"
+
+    # /MT or /MTd
+    if (@("MultiThreaded", "MultiThreadedDebug") -contains $runtimeLibrary)
+    {
+        return @('"-D_MT"')
+    }
+
+    # /MD or /MDd
+    if (@("MultiThreadedDLL", "MultiThreadedDebugDLL") -contains $runtimeLibrary)
+    {
+        return @('"-D_MT"', '"-D_DLL"')
+    }
+
+    return @('"-D_MT"') # default value /MT
 }
 
 Function Is-Project-Unicode()
@@ -426,10 +436,7 @@ Function Get-ProjectPreprocessorDefines()
         $defines += $kDefinesUnicode
     }
 
-    if (Is-Project-MultiThreaded)
-    {
-        $defines += $kDefinesMultiThreaded
-    }
+    $defines += @(Get-Project-MultiThreaded-Define)
 
     [string] $platformToolset = Get-ProjectPlatformToolset
     if ($platformToolset.EndsWith("xp"))
