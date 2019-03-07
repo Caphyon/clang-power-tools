@@ -394,28 +394,31 @@ function ReplaceInheritedNodeValue([System.Xml.XmlNode] $currentNode
 
 <#
 .DESCRIPTION
-   Finds the first config-platform pair in the vcxproj.
-   We'll use it for all project data retrievals.
-
-   Items for other config-platform pairs will be removed from the DOM.
-   This is needed so that our XPath selectors don't get confused when looking for data.
+   Sets the Configuration and Platform project properties so that
+   conditions can be properly evaluated.
 #>
-function Detect-ProjectDefaultConfigPlatform([string] $projectValue)
+function Detect-ProjectDefaultConfigPlatform()
 {
     [string]$configPlatformName = ""
 
     if (![string]::IsNullOrEmpty($aVcxprojConfigPlatform))
     {
+        # we have script parameters we can use to set the platform/config
         $configPlatformName = $aVcxprojConfigPlatform
     }
     else
     {
-        $configPlatformName = $projectValue
-    }
+        # detect the first platform/config pair from the project itemgroup
+        $configItems = @(Get-Project-ItemList "ProjectConfiguration")
 
-    if ([string]::IsNullOrEmpty($configPlatformName))
-    {
-        throw "Could not automatically detect a configuration platform"
+        if (!$configItems -or $configItems.Count -eq 0)
+        {
+            throw "Could not automatically detect a configuration platform"
+        }
+
+        $firstConfiguration = $configItems[0]
+
+        $configPlatformName = $firstConfiguration[0]
     }
 
     [string[]] $configAndPlatform = $configPlatformName.Split('|')
@@ -511,11 +514,14 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
 
     if ($node.Name -ieq "ItemGroup")
     {
-        $childNodes = $node.ChildNodes | Where-Object { $_.GetType().Name -ieq "XmlElement" }
-
         [string] $oldItemContextName = Get-ProjectItemContext
-        foreach ($child in $childNodes)
+        foreach ($child in $node.ChildNodes)
         {
+            if ($child.GetType().Name -ine "XmlElement")
+            {
+                continue
+            }
+
             [string] $childEvaluatedValue = Evaluate-MSBuildExpression $child.GetAttribute("Include")
             $itemProperties = @{}
 
@@ -545,8 +551,7 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
 
         if ($node.GetAttribute("Label") -ieq "ProjectConfigurations")
         {
-            [System.Xml.XmlElement] $firstChild = $childNodes | Select-Object -First 1
-            Detect-ProjectDefaultConfigPlatform $firstChild.GetAttribute("Include")
+            Detect-ProjectDefaultConfigPlatform
 
             # now we can begin to evaluate directory.build.props XML element conditions, load it
             LoadDirectoryBuildPropSheetFile
@@ -555,14 +560,22 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
 
     if ($node.Name -ieq "ItemDefinitionGroup")
     {
-        [System.Xml.XmlNode[]] $childNodes = $node.ChildNodes | Where-Object { $_.GetType().Name -ieq "XmlElement" }
-        foreach ($child in $childNodes)
+        foreach ($child in $node.ChildNodes)
         {
+            if ($child.GetType().Name -ine "XmlElement")
+            {
+                continue
+            }
+
             Push-ProjectItemContext $child.Name
 
-            [System.Xml.XmlNode[]] $propNodes = @($child.ChildNodes | Where-Object { $_.GetType().Name -ieq "XmlElement" })
-            foreach ($propNode in $propNodes)
+            foreach ($propNode in $child.ChildNodes)
             {
+                if ($propNode.GetType().Name -ine "XmlElement")
+                {
+                    continue
+                }
+
                 [string] $propVal = Evaluate-MSBuildExpression $propNode.InnerText
                 Set-ProjectItemProperty $propNode.Name $propVal
             }
