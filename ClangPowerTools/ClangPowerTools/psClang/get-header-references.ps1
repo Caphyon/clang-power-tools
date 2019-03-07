@@ -120,8 +120,8 @@ Function Get-HeaderReferences([Parameter(Mandatory = $false)][string[]] $files)
     }
 
     # we take interest only in files that reference headers
-    $files = $files | Where-Object { FileHasExtension -filePath $_ `
-                                                      -ext $global:headerExtensions }
+    $files = @($files | Where-Object { FileHasExtension -filePath $_ `
+                                                      -ext $global:headerExtensions })
 
     [string[]] $refs = @()
 
