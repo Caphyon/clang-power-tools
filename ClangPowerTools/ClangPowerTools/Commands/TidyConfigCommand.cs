@@ -82,6 +82,11 @@ namespace ClangPowerTools.Commands
 
       //Display the dialog window
       bool? result = saveFileDialog.ShowDialog();    
+
+      if(result == true)
+      {
+        saveFileDialog.FileName = Path.GetFileName(saveFileDialog.FileName);
+      }
     }
     #endregion
 
