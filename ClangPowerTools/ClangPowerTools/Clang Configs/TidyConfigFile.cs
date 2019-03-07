@@ -23,48 +23,42 @@ namespace ClangPowerTools
       //Custom checks line
       string customChecks = SettingsProvider.TidyCustomCheckes.TidyChecks;
       paramaterName = "Checks:";
-      if (customChecks.Length < 1)
-      {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, ""));
-      }
-      else
-      {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, customChecks));
-      }
+      CreateCustomChecksLine(paramaterName, customChecks);
 
       //Treat warnings as errors line
       paramaterName = "WarningsAsErrors:";
       bool treatWarningsAsErrors = SettingsProvider.GeneralSettings.TreatWarningsAsErrors;
-      if (!treatWarningsAsErrors)
-      {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, treatWarningsAsErrors));
-      }
-      else
-      {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, treatWarningsAsErrors));
-      }
+      CreateTreatWarningAsErrorsLine(paramaterName, treatWarningsAsErrors);
 
       //Header filter line
       string headerFilter = SettingsProvider.TidySettings.HeaderFilter.HeaderFilters;
       paramaterName = "HeaderFilterRegex:";
-      if (headerFilter.Length < 1)
-      {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, ""));
-      }
-      else
-      {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, headerFilter));
-      }
+      CreateHeaderFilterLine(paramaterName, headerFilter);
 
       //Format style line
       string formatStyle = SettingsProvider.ClangFormatSettings.Style.Value.ToString();
       paramaterName = "FormatStyle:";
-      tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, formatStyle));
+      CreateStyleLine(paramaterName, formatStyle);
 
-
+      // TODO
+      //Predifined checks line
       GetPredefinedChecks();
 
       return tidyConfigOutput;
+    }
+
+    private void GetPredefinedChecks()
+    {
+      StringBuilder stringBuilder = new StringBuilder("CheckOptions:");
+      foreach (var item in predefinedChecksSettings.GetType().GetProperties())
+      {
+        // stringBuilder.AppendLine(item.getta);
+      }
+    }
+
+    private void CreateStyleLine(string paramaterName, string formatStyle)
+    {
+      tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, formatStyle));
     }
 
     private string CreateLine(string name, int nameLength, string value)
@@ -77,12 +71,39 @@ namespace ClangPowerTools
       return name.PadRight(maxNameLength - nameLength + nameLength, ' ') + value.ToString().ToLower();
     }
 
-    private void GetPredefinedChecks()
+    private void CreateHeaderFilterLine(string paramaterName, string headerFilter)
     {
-      StringBuilder stringBuilder = new StringBuilder("CheckOptions:");
-      foreach (var item in predefinedChecksSettings.GetType().GetProperties())
+      if (headerFilter.Length < 1)
       {
-       // stringBuilder.AppendLine(item.getta);
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, ""));
+      }
+      else
+      {
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, headerFilter));
+      }
+    }
+
+    private void CreateTreatWarningAsErrorsLine(string paramaterName, bool treatWarningsAsErrors)
+    {
+      if (!treatWarningsAsErrors)
+      {
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, treatWarningsAsErrors));
+      }
+      else
+      {
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, treatWarningsAsErrors));
+      }
+    }
+
+    private void CreateCustomChecksLine(string paramaterName, string customChecks)
+    {
+      if (customChecks.Length < 1)
+      {
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, ""));
+      }
+      else
+      {
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, customChecks));
       }
     }
   }
