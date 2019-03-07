@@ -17,9 +17,6 @@ if (! (Test-Path variable:global:ScriptParameterBackupValues))
   [System.Collections.Hashtable] $global:ScriptParameterBackupValues = @{}
 }
 
-# current vcxproj and property sheets
-[xml[]]  $global:projectFiles                    = @();
-
 # path of current project
 [string] $global:vcxprojPath                     = "";
 
@@ -629,7 +626,6 @@ function SanitizeProjectFile([string] $projectFilePath)
     Write-Verbose "`nSanitizing $projectFilePath"
 
     [xml] $fileXml = Get-Content $projectFilePath
-    $global:projectFiles += @($fileXml)
     $global:xpathNS = New-Object System.Xml.XmlNamespaceManager($fileXml.NameTable)
     $global:xpathNS.AddNamespace("ns", $fileXml.DocumentElement.NamespaceURI)
     $global:currentMSBuildFile = $projectFilePath
@@ -677,8 +673,6 @@ function LoadProject([string] $vcxprojPath)
     $global:vcxprojPath = $vcxprojPath
 
     InitializeMsBuildProjectProperties
-
-    $global:projectFiles = @()
 
     SanitizeProjectFile -projectFilePath $global:vcxprojPath
 }
