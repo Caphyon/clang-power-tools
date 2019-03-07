@@ -9,8 +9,8 @@ Improvements:
 
 Bug fixes:
 
-* Format on save do not apply the Fallback-Style option
-* Clang Tidy settigns are set back to default values when Visual Studio is open
+* Format on save does not apply the Fallback-Style option
+* Clang Tidy settings are set back to default values when Visual Studio is open
 * Item definition groups evaluation loaded incorrectly for some projects
 * Expression expansion not working correctly for some expressions on machines with PS 3.0
 * HOME environment variable triggering error when present on machine
