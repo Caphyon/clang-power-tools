@@ -76,32 +76,6 @@ Function Should-IgnoreProject([Parameter(Mandatory = $true)][string] $vcxprojPat
     return $false
 }
 
-Function Should-CompileFile([Parameter(Mandatory = $false)][System.Xml.XmlNode] $fileNode
-    , [Parameter(Mandatory = $false)][string] $pchCppName
-)
-{
-    if ($fileNode -eq $null)
-    {
-        return $false
-    }
-
-    [string] $file = $fileNode.Include
-
-    if (($file -eq $null) -or (![string]::IsNullOrEmpty($pchCppName) -and ($file -eq $pchCppName)))
-    {
-        return $false
-    }
-
-    [System.Xml.XmlNode] $excluded = $fileNode.SelectSingleNode("ns:ExcludedFromBuild", $global:xpathNS)
-
-    if (($excluded -ne $null) -and ($excluded.InnerText -ne $null) -and ($excluded.InnerText -ieq "true"))
-    {
-        return $false
-    }
-
-    return $true
-}
-
 Function Should-IgnoreFile([Parameter(Mandatory = $true)][string] $file)
 {
     if ($aCppToIgnore -eq $null)
@@ -140,6 +114,15 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchC
             {
                 'NotUsing' { $usePch = [UsePch]::NotUsing }
                 'Create'   { $usePch = [UsePch]::Create   }
+            }
+        }
+
+        if ($itemProps -ne $null -and $itemProps.ContainsKey('ExcludedFromBuild'))
+        {
+            if ($itemProps['ExcludedFromBuild'] -ieq 'true')
+            {
+                Write-Verbose "Skipping $($item[0]) because it is excluded from build"
+                continue
             }
         }
 
@@ -393,7 +376,7 @@ Function Get-Project-PchCpp()
     foreach ($item in $projectCompileItems)
     {
         [System.Collections.Hashtable] $itemProps = $item[1];
-        if ($itemProps.ContainsKey('PrecompiledHeader') -and 
+        if ($itemProps.ContainsKey('PrecompiledHeader') -and
             $itemProps['PrecompiledHeader'] -ieq 'Create')
         {
             # found PCH cpp
