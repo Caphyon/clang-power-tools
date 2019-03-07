@@ -20,9 +20,6 @@ if (! (Test-Path variable:global:ScriptParameterBackupValues))
 # path of current project
 [string] $global:vcxprojPath                     = "";
 
-# namespace of current project vcxproj XML
-[System.Xml.XmlNamespaceManager] $global:xpathNS = $null;
-
 
 Set-Variable -name "kRedundantSeparatorsReplaceRules" -option Constant `
               -value @( <# handle multiple consecutive separators #>   `
@@ -428,7 +425,7 @@ function Detect-ProjectDefaultConfigPlatform()
 
 function HandleChooseNode([System.Xml.XmlNode] $aChooseNode)
 {
-    # we need to change the node name so that we avoid an infinite recursion to and from SanitizeProjectFile
+    # we need to change the node name so that we avoid an infinite recursion to and from ParseProjectFile
     $aChooseNode.SetAttribute($kFlagCPTWork, '1') > $null
     SanitizeProjectNode $aChooseNode
 
@@ -475,7 +472,7 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
             {
                 Write-Verbose "Property sheet: $path"
                 [string] $currentFile = $global:currentMSBuildFile
-                SanitizeProjectFile($path)
+                ParseProjectFile($path)
 
                 $global:currentMSBuildFile = $currentFile
                 InitializeMsBuildCurrentFileProperties -filePath $global:currentMSBuildFile
@@ -630,17 +627,15 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
 
 <#
 .DESCRIPTION
-   Sanitizes a project xml file, by removing config-platform pairs different from the
-   one we selected.
-   This is needed so that our XPath selectors don't get confused when looking for data.
+   Parses a project file and loads data into corresponding data structures.
+   Project elements that are conditioned will be evaluated and discarded if their
+   condition is evaluted to False.
 #>
-function SanitizeProjectFile([string] $projectFilePath)
+function ParseProjectFile([string] $projectFilePath)
 {
     Write-Verbose "`nSanitizing $projectFilePath"
 
     [xml] $fileXml = Get-Content $projectFilePath
-    $global:xpathNS = New-Object System.Xml.XmlNamespaceManager($fileXml.NameTable)
-    $global:xpathNS.AddNamespace("ns", $fileXml.DocumentElement.NamespaceURI)
     $global:currentMSBuildFile = $projectFilePath
 
     Push-Location (Get-FileDirectory -filePath $projectFilePath)
@@ -662,13 +657,13 @@ function LoadDirectoryBuildPropSheetFile()
                                              -targetFile "Directory.Build.props") + "\Directory.Build.props"
         if (Test-Path $directoryBuildSheetPath)
         {
-            SanitizeProjectFile($directoryBuildSheetPath)
+            ParseProjectFile($directoryBuildSheetPath)
         }
 
         [string] $vcpkgIncludePath = "$env:LOCALAPPDATA\vcpkg\vcpkg.user.targets"
         if (Test-Path $vcpkgIncludePath)
         {
-            SanitizeProjectFile($vcpkgIncludePath)
+            ParseProjectFile($vcpkgIncludePath)
         }
     }
 }
@@ -687,5 +682,5 @@ function LoadProject([string] $vcxprojPath)
 
     InitializeMsBuildProjectProperties
 
-    SanitizeProjectFile -projectFilePath $global:vcxprojPath
+    ParseProjectFile -projectFilePath $global:vcxprojPath
 }
