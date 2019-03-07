@@ -836,7 +836,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # FIND FORCE INCLUDES
 
   [string[]] $forceIncludeFiles = @(Get-ProjectForceIncludes)
-  Write-Verbose-Array -array $forceIncludeFiles -name "Force includes" 
+  Write-Verbose-Array -array $forceIncludeFiles -name "Force includes"
 
   #-----------------------------------------------------------------------------------------------
   # DETECT PROJECT PREPROCESSOR DEFINITIONS
@@ -1132,13 +1132,13 @@ else
   if ($aVcxprojToCompile)
   {
     $projects = $projects | Where-Object { Should-CompileProject -vcxprojPath $_.FullName }
-    $projectsToProcess = $projects
+    $projectsToProcess = @($projects)
   }
 
   if ($aVcxprojToIgnore)
   {
-    $projectsToProcess = $projects | `
-                         Where-Object { !(Should-IgnoreProject  -vcxprojPath $_.FullName ) }
+    $projectsToProcess = @($projects | `
+                         Where-Object { !(Should-IgnoreProject  -vcxprojPath $_.FullName ) })
 
     $ignoredProjects = ($projects | Where-Object { $projectsToProcess -notcontains $_ })
   }
