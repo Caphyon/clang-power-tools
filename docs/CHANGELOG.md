@@ -1,5 +1,22 @@
 # Version History
 
+### Clang Power Tools 4.9
+*March 7, 2019*
+
+Improvements:
+
+* Powershell scripts now using `strict-mode -latest` for increased safety
+
+Bug fixes:
+
+* Format on save does not apply the Fallback-Style option
+* Clang Tidy settings are set back to default values when Visual Studio is open
+* Item definition groups evaluation loaded incorrectly for some projects
+* Expression expansion not working correctly for some expressions on machines with PS 3.0
+* HOME environment variable triggering error when present on machine
+* [MSBuild]::Utilities::ToolLocationHelper was not accessible
+* Default user-specific property sheets (microsoft.cpp.user.props) not loaded automatically
+
 ### Clang Power Tools 4.8.1
 *February 19, 2019*
 
