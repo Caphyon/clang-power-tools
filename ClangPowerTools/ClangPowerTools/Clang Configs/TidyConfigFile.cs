@@ -10,9 +10,7 @@ namespace ClangPowerTools
   {
     // Create StringBuilder to be written in the .clang-tidy file
     private StringBuilder tidyConfigOutput = new StringBuilder();
-
-    // Get all the tidy settings
-    private static ClangTidyPredefinedChecksOptionsView predefinedChecksSettings = SettingsProvider.TidyPredefinedChecks;
+    // Max length used to add space padding for the paramater name in a line
     private int maxNameLength = 19;
 
     public StringBuilder CreateOutput()
@@ -40,25 +38,28 @@ namespace ClangPowerTools
       paramaterName = "FormatStyle:";
       CreateStyleLine(paramaterName, formatStyle);
 
-      // TODO
       //Predifined checks line
-      GetPredefinedChecks();
+      ClangTidyPredefinedChecksOptionsView predefinedChecksSettings = SettingsProvider.TidyPredefinedChecks;
+      paramaterName = "CheckOptions:";
+      CreatePredefinedChecksLine(paramaterName, GetPredefinedChecks(predefinedChecksSettings));
 
       return tidyConfigOutput;
     }
 
-    private void GetPredefinedChecks()
+    private string GetPredefinedChecks(ClangTidyPredefinedChecksOptionsView predefinedChecksSettings)
     {
-      StringBuilder stringBuilder = new StringBuilder("CheckOptions:");
+      StringBuilder predefinedChecks = new StringBuilder("CheckOptions:");
       foreach (var item in predefinedChecksSettings.GetType().GetProperties())
       {
-        // stringBuilder.AppendLine(item.getta);
-      }
-    }
+        string name = item.Name;
+        bool? value = item.GetValue(predefinedChecksSettings) as bool?;
 
-    private void CreateStyleLine(string paramaterName, string formatStyle)
-    {
-      tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, formatStyle));
+        if (value!= null && value == true)
+        {        
+          predefinedChecks.Append(name + "  ").Append(value).AppendLine();
+        }
+      }
+      return predefinedChecks.ToString();
     }
 
     private string CreateLine(string name, int nameLength, string value)
@@ -69,6 +70,16 @@ namespace ClangPowerTools
     private string CreateLine(string name, int nameLength, bool value)
     {
       return name.PadRight(maxNameLength - nameLength + nameLength, ' ') + value.ToString().ToLower();
+    }
+
+    private void CreateStyleLine(string paramaterName, string formatStyle)
+    {
+      tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, formatStyle));
+    }
+
+    private void CreatePredefinedChecksLine(string paramaterName, string formatStyle)
+    {
+      tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, formatStyle));
     }
 
     private void CreateHeaderFilterLine(string paramaterName, string headerFilter)
