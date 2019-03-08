@@ -1140,6 +1140,24 @@ else
     $projectsToProcess = @($projects | `
                          Where-Object { !(Should-IgnoreProject  -vcxprojPath $_.FullName ) })
 
+    # if we have a number (K) we will ignore all projects until we reach that number (N - K)
+    # useful when build finds a small problem which is fixed and we don't want to recompile all projects.
+    foreach ($projIg in $aVcxprojToIgnore)
+    {
+      if ($projIg -match '^[0-9]+$')
+      {
+        [int] $firstProjectsToIgnore = $projectsToProcess.Count - [int]$projIg
+        if ($firstProjectsToIgnore -lt 0)
+        {
+          break
+        }
+
+        $projectsToProcess = $projectsToProcess | Select-Object -last ($projectsToProcess.Count - $firstProjectsToIgnore)
+        break
+      }
+    }
+
+
     $ignoredProjects = ($projects | Where-Object { $projectsToProcess -notcontains $_ })
   }
 }
