@@ -22,21 +22,6 @@ Set-Variable -name kVStudioDefaultPlatformToolset -Value "v141" -option Constant
 Set-Variable -name kClangFlag32BitPlatform        -value "-m32" -option Constant
 
 # ------------------------------------------------------------------------------------------------
-# Xpath selectors
-
-Set-Variable -name kVcxprojXpathHeaders `
-             -value "ns:Project/ns:ItemGroup/ns:ClInclude" `
-             -option Constant
-
-Set-Variable -name kVcxprojXpathCompileFiles `
-             -value "ns:Project/ns:ItemGroup/ns:ClCompile" `
-             -option Constant
-
-Set-Variable -name kVcxprojXpathPCH `
-             -value "ns:Project/ns:ItemGroup/ns:ClCompile/ns:PrecompiledHeader[text()='Create']" `
-             -option Constant
-
-# ------------------------------------------------------------------------------------------------
 # Default platform sdks and standard
 
 Set-Variable -name kVSDefaultWinSDK            -value '8.1'             -option Constant
@@ -91,32 +76,6 @@ Function Should-IgnoreProject([Parameter(Mandatory = $true)][string] $vcxprojPat
     return $false
 }
 
-Function Should-CompileFile([Parameter(Mandatory = $false)][System.Xml.XmlNode] $fileNode
-    , [Parameter(Mandatory = $false)][string] $pchCppName
-)
-{
-    if ($fileNode -eq $null)
-    {
-        return $false
-    }
-
-    [string] $file = $fileNode.Include
-
-    if (($file -eq $null) -or (![string]::IsNullOrEmpty($pchCppName) -and ($file -eq $pchCppName)))
-    {
-        return $false
-    }
-
-    [System.Xml.XmlNode] $excluded = $fileNode.SelectSingleNode("ns:ExcludedFromBuild", $global:xpathNS)
-
-    if (($excluded -ne $null) -and ($excluded.InnerText -ne $null) -and ($excluded.InnerText -ieq "true"))
-    {
-        return $false
-    }
-
-    return $true
-}
-
 Function Should-IgnoreFile([Parameter(Mandatory = $true)][string] $file)
 {
     if ($aCppToIgnore -eq $null)
@@ -137,26 +96,42 @@ Function Should-IgnoreFile([Parameter(Mandatory = $true)][string] $file)
 
 Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchCppName)
 {
-    [System.Xml.XmlElement[]] $projectEntries = @(Select-ProjectNodes($kVcxprojXpathCompileFiles) | `
-                                                  Where-Object { Should-CompileFile -fileNode $_ -pchCppName $pchCppName })
-
-    [System.Collections.ArrayList] $files = @()
-    foreach ($entry in $projectEntries)
+    $projectCompileItems = @(Get-Project-ItemList "ClCompile")
+    if (!$projectCompileItems)
     {
-        [string[]] $matchedFiles = @(Canonize-Path -base $ProjectDir -child $entry.GetAttribute("Include"))
-        [UsePch] $usePch = [UsePch]::Use
+        Write-Verbose "Project does not have any items to compile"
+        return @()
+    }
 
-        $nodePch = $entry.SelectSingleNode('ns:PrecompiledHeader', $global:xpathNS)
-        if ($nodePch -and (HasProperty $nodePch '#text') `
-                     -and ![string]::IsNullOrEmpty($nodePch.'#text'))
+    $files = @()
+    foreach ($item in $projectCompileItems)
+    {
+        [System.Collections.Hashtable] $itemProps = $item[1];
+        $usePch = [UsePch]::Use;
+        if ($itemProps -ne $null -and $itemProps.ContainsKey('PrecompiledHeader'))
         {
-            switch ($nodePch.'#text')
+            switch ($itemProps['PrecompiledHeader'])
             {
                 'NotUsing' { $usePch = [UsePch]::NotUsing }
                 'Create'   { $usePch = [UsePch]::Create   }
             }
         }
 
+        if ($usePch -ieq 'Create')
+        {
+            continue # no point in compiling the PCH CPP
+        }
+
+        if ($itemProps -ne $null -and $itemProps.ContainsKey('ExcludedFromBuild'))
+        {
+            if ($itemProps['ExcludedFromBuild'] -ieq 'true')
+            {
+                Write-Verbose "Skipping $($item[0]) because it is excluded from build"
+                continue
+            }
+        }
+
+        [string[]] $matchedFiles = @(Canonize-Path -base $ProjectDir -child $item[0])
         if ($matchedFiles.Count -gt 0)
         {
             foreach ($file in $matchedFiles)
@@ -177,13 +152,13 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchC
 
 Function Get-ProjectHeaders()
 {
-    [string[]] $headers = @(Select-ProjectNodes($kVcxprojXpathHeaders) | ForEach-Object {$_.Include })
+    $projectCompileItems = @(Get-Project-ItemList "ClInclude")
 
     [string[]] $headerPaths = @()
 
-    foreach ($headerEntry in $headers)
+    foreach ($item in $projectCompileItems)
     {
-        [string[]] $paths = @(Canonize-Path -base $ProjectDir -child $headerEntry -ignoreErrors)
+        [string[]] $paths = @(Canonize-Path -base $ProjectDir -child $item[0] -ignoreErrors)
         if ($paths.Count -gt 0)
         {
             $headerPaths += $paths
@@ -213,7 +188,7 @@ Function Get-Project-SDKVer()
 }
 
 Function Is-Project-MultiThreaded()
-{    
+{
     Set-ProjectItemContext "ClCompile"
     $runtimeLibrary = Get-ProjectItemProperty "RuntimeLibrary"
     return ![string]::IsNullOrEmpty($runtimeLibrary)
@@ -391,16 +366,29 @@ Function Get-ProjectIncludeDirectories()
 
 <#
 .DESCRIPTION
-  Retrieve directory in which the PCH CPP resides (e.g. stdafx.cpp, stdafxA.cpp)
+  Retrieve the source files which is used to create the PCH (e.g. stdafx.cpp, stdafxA.cpp)
 #>
 Function Get-Project-PchCpp()
 {
-    $pchCppRelativePath = Select-ProjectNodes($kVcxprojXpathPCH)   |
-        Select-Object -ExpandProperty ParentNode |
-        Select-Object -first 1                   |
-        Select-Object -ExpandProperty Include
+    $projectCompileItems = @(Get-Project-ItemList "ClCompile")
+    if (!$projectCompileItems)
+    {
+        Write-Verbose "Project does not have any items to compile"
+        return ""
+    }
 
-    return $pchCppRelativePath
+    $files = @()
+    foreach ($item in $projectCompileItems)
+    {
+        [System.Collections.Hashtable] $itemProps = $item[1];
+        if ($itemProps.ContainsKey('PrecompiledHeader') -and
+            $itemProps['PrecompiledHeader'] -ieq 'Create')
+        {
+            # found PCH cpp
+            return $item[0]
+        }
+    }
+    return ""
 }
 
 
@@ -416,7 +404,7 @@ Function Get-ProjectPreprocessorDefines()
     {
         return @()
     }
-    
+
     [string[]] $tokens = @($preprocDefNodes -split ";")
 
     # make sure we add the required prefix and escape double quotes

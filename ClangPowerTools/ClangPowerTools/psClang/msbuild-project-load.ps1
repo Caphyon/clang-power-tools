@@ -17,14 +17,8 @@ if (! (Test-Path variable:global:ScriptParameterBackupValues))
   [System.Collections.Hashtable] $global:ScriptParameterBackupValues = @{}
 }
 
-# current vcxproj and property sheets
-[xml[]]  $global:projectFiles                    = @();
-
 # path of current project
 [string] $global:vcxprojPath                     = "";
-
-# namespace of current project vcxproj XML
-[System.Xml.XmlNamespaceManager] $global:xpathNS = $null;
 
 
 Set-Variable -name "kRedundantSeparatorsReplaceRules" -option Constant `
@@ -89,7 +83,8 @@ Function Set-Var([parameter(Mandatory = $false)][string] $name
 }
 
 Function Add-Project-Item([parameter(Mandatory = $false)][string] $name
-                         ,[parameter(Mandatory = $false)]         $value)
+                         ,[parameter(Mandatory = $false)]         $value
+                         ,[parameter(Mandatory = $false)]         $properties = $null)
 {
     if (!$value)
     {
@@ -104,16 +99,16 @@ Function Add-Project-Item([parameter(Mandatory = $false)][string] $name
     }
 
     $itemList = (Get-Variable $itemVarName).Value
-    if ($value.GetType().Name -ieq "object[]")
+    if ($value -is [array])
     {
         foreach ($arrayValue in $value)
         {
-            $itemList.Add($arrayValue) > $null
+            $itemList.Add( @($arrayValue, $properties) ) > $null
         }
     }
     else
     {
-        $itemList.Add($value) > $null
+        $itemList.Add(@($value, $properties)) > $null
     }
 }
 
@@ -134,18 +129,49 @@ Function Get-Project-Item([parameter(Mandatory = $true)][string] $name)
                 {
                     $retStr += ";"
                 }
-                $retStr += $v
+                $retStr += $v[0] # index0 = item; index1 = properties
             }
         }
         else
         {
-            $retStr = $itemVar.Value
+            $retStr = $itemVar.Value[0] # index0 = item; index1 = properties
         }
 
         return $retStr
     }
 
     return $null
+}
+
+Function Get-Project-ItemList([parameter(Mandatory = $true)][string] $name)
+{
+    $retList = New-Object System.Collections.ArrayList
+
+    $itemVarName = "CPT_PROJITEM_$name"
+
+    $itemVar = Get-Variable $itemVarName -ErrorAction SilentlyContinue
+    if ($itemVar)
+    {
+        $retStr = ""
+
+        if ($itemVar.Value.GetType().Name -ieq "ArrayList")
+        {
+            foreach ($v in $itemVar.Value)
+            {
+                if ($retStr)
+                {
+                    $retStr += ";"
+                }
+                $retList.Add($v) > $null # v is a pair. index0 = item; index1 = properties
+            }
+        }
+        else
+        {
+            $retList.Add($itemVar.Value) > $null
+        }
+    }
+
+    return $retList
 }
 
 Function Clear-Vars()
@@ -317,17 +343,6 @@ Function InitializeMsBuildCurrentFileProperties([Parameter(Mandatory = $true)][s
     Set-Var -name "MSBuildThisFileDirectory" -value (Get-FileDirectory -filePath $filePath)
 }
 
-<#
-.DESCRIPTION
-A wrapper over the XmlDOcument.SelectNodes function. For convenience.
-Not to be used directly. Please use Select-ProjectNodes instead.
-#>
-function Help:Get-ProjectFileNodes([xml] $projectFile, [string] $xpath)
-{
-    [System.Xml.XmlElement[]] $nodes = $projectFile.SelectNodes($xpath, $global:xpathNS)
-    return $nodes
-}
-
 function  GetNodeInheritanceToken([System.Xml.XmlNode] $node)
 {
     [string] $inheritanceToken = "%($($node.Name))";
@@ -375,116 +390,32 @@ function ReplaceInheritedNodeValue([System.Xml.XmlNode] $currentNode
 }
 
 <#
-.SYNOPSIS
-Selects one or more nodes from the project.
 .DESCRIPTION
-We often need to access data from the project, e.g. additional includes, Win SDK version.
-A naive implementation would be to simply look inside the vcxproj, but that leaves out
-property sheets.
-
-This function takes care to retrieve the nodes we're searching by looking in both the .vcxproj
-and property sheets, taking care to inherit values accordingly.
-.EXAMPLE
-Give an example of how to use it
-.EXAMPLE
-Give another example of how to use it.
-.PARAMETER xpath
-XPath we want to use for searching nodes.
-.PARAMETER fileIndex
-Optional. Index of the project xml file we want to start our search in.
-0 = .vcxproj and then, recursively, all property sheets
-1 = first property sheet and then, recursively, all other property sheets
-etc.
+   Sets the Configuration and Platform project properties so that
+   conditions can be properly evaluated.
 #>
-function Select-ProjectNodes([Parameter(Mandatory = $true)]  [string][string] $xpath
-    , [Parameter(Mandatory = $false)] [int]            $fileIndex = 0)
-{
-    [System.Xml.XmlElement[]] $nodes = @()
-
-    if ($fileIndex -ge $global:projectFiles.Count)
-    {
-        return $nodes
-    }
-
-    $nodes = @(Help:Get-ProjectFileNodes -projectFile $global:projectFiles[$fileIndex] -xpath $xpath)
-
-    # nothing on this level or we're dealing with an ItemGroup, go above
-    if ($nodes.Count -eq 0 -or $xpath.Contains("ItemGroup"))
-    {
-        [System.Xml.XmlElement[]] $upperNodes = @(Select-ProjectNodes -xpath $xpath -fileIndex ($fileIndex + 1))
-        if ($upperNodes.Count -gt 0)
-        {
-            $nodes += $upperNodes
-        }
-        return $nodes
-    }
-
-    if ($nodes[$nodes.Count - 1]."#text")
-    {
-        # we found textual settings that can be inherited. see if we should inherit
-
-        [System.Xml.XmlNode] $nodeToReturn = $nodes[$nodes.Count - 1]
-        if ($nodeToReturn.Attributes.Count -gt 0)
-        {
-            throw "Did not expect node to have attributes"
-        }
-
-        [bool] $shouldInheritMore = ![string]::IsNullOrEmpty((GetNodeInheritanceToken -node $nodeToReturn))
-        for ([int] $i = $nodes.Count - 2; ($i -ge 0) -and $shouldInheritMore; $i -= 1)
-        {
-            $shouldInheritMore = ReplaceInheritedNodeValue -currentNode $nodeToReturn -nodeToInheritFrom $nodes[$i]
-        }
-
-        if ($shouldInheritMore)
-        {
-            [System.Xml.XmlElement[]] $inheritedNodes = @(Select-ProjectNodes -xpath $xpath -fileIndex ($fileIndex + 1))
-            if ($inheritedNodes.Count -gt 1)
-            {
-                throw "Did not expect to inherit more than one node"
-            }
-            if ($inheritedNodes.Count -eq 1)
-            {
-                $shouldInheritMore = ReplaceInheritedNodeValue -currentNode $nodeToReturn -nodeToInheritFrom $inheritedNodes[0]
-            }
-        }
-
-        # we still could have to inherit from parents but when not loading
-        # all MS prop sheets we have nothing to inherit from, delete inheritance token
-        ReplaceInheritedNodeValue -currentNode $nodeToReturn -nodeToInheritFrom $null > $null
-
-        return @($nodeToReturn)
-    }
-    else
-    {
-        # return what we found
-        return $nodes
-    }
-}
-
-<#
-.DESCRIPTION
-   Finds the first config-platform pair in the vcxproj.
-   We'll use it for all project data retrievals.
-
-   Items for other config-platform pairs will be removed from the DOM.
-   This is needed so that our XPath selectors don't get confused when looking for data.
-#>
-function Detect-ProjectDefaultConfigPlatform([string] $projectValue)
+function Detect-ProjectDefaultConfigPlatform()
 {
     [string]$configPlatformName = ""
 
     if (![string]::IsNullOrEmpty($aVcxprojConfigPlatform))
     {
+        # we have script parameters we can use to set the platform/config
         $configPlatformName = $aVcxprojConfigPlatform
     }
     else
     {
-        $configPlatformName = $projectValue
-    }
+        # detect the first platform/config pair from the project itemgroup
+        $configItems = @(Get-Project-ItemList "ProjectConfiguration")
 
-    if ([string]::IsNullOrEmpty($configPlatformName))
-    {
-        throw "Could not automatically detect a configuration platform"
+        if (!$configItems -or $configItems.Count -eq 0)
+        {
+            throw "Could not automatically detect a configuration platform"
+        }
+
+        $firstConfiguration = $configItems[0]
+
+        $configPlatformName = $firstConfiguration[0]
     }
 
     [string[]] $configAndPlatform = $configPlatformName.Split('|')
@@ -494,7 +425,7 @@ function Detect-ProjectDefaultConfigPlatform([string] $projectValue)
 
 function HandleChooseNode([System.Xml.XmlNode] $aChooseNode)
 {
-    # we need to change the node name so that we avoid an infinite recursion to and from SanitizeProjectFile
+    # we need to change the node name so that we avoid an infinite recursion to and from ParseProjectFile
     $aChooseNode.SetAttribute($kFlagCPTWork, '1') > $null
     SanitizeProjectNode $aChooseNode
 
@@ -541,7 +472,7 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
             {
                 Write-Verbose "Property sheet: $path"
                 [string] $currentFile = $global:currentMSBuildFile
-                SanitizeProjectFile($path)
+                ParseProjectFile($path)
 
                 $global:currentMSBuildFile = $currentFile
                 InitializeMsBuildCurrentFileProperties -filePath $global:currentMSBuildFile
@@ -580,17 +511,44 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
 
     if ($node.Name -ieq "ItemGroup")
     {
-        $childNodes = $node.ChildNodes | Where-Object { $_.GetType().Name -ieq "XmlElement" }
-        foreach ($child in $childNodes)
+        [string] $oldItemContextName = Get-ProjectItemContext
+        foreach ($child in $node.ChildNodes)
         {
+            if ($child.GetType().Name -ine "XmlElement")
+            {
+                continue
+            }
+
             [string] $childEvaluatedValue = Evaluate-MSBuildExpression $child.GetAttribute("Include")
-            Add-Project-Item -name $child.Name -value $childEvaluatedValue
+            $itemProperties = @{}
+
+            Set-ProjectItemContext $child.Name
+            $contextProperties = Get-ProjectItemProperty
+            if ($contextProperties -ne $null)
+            {
+                foreach ($k in $contextProperties.Keys)
+                {
+                    $itemProperties[$k] = $contextProperties[$k]
+                }
+            }
+
+            foreach ($nodePropChild in $child.ChildNodes)
+            {
+                if ($nodePropChild.GetType().Name -ine "XmlElement")
+                {
+                    continue
+                }
+                $itemProperties[$nodePropChild.Name] = Evaluate-MSBuildExpression $nodePropChild.InnerText
+            }
+
+            Add-Project-Item -name $child.Name -value $childEvaluatedValue -properties $itemProperties
         }
+
+        Set-ProjectItemContext $oldItemContextName
 
         if ($node.GetAttribute("Label") -ieq "ProjectConfigurations")
         {
-            [System.Xml.XmlElement] $firstChild = $childNodes | Select-Object -First 1
-            Detect-ProjectDefaultConfigPlatform $firstChild.GetAttribute("Include")
+            Detect-ProjectDefaultConfigPlatform
 
             # now we can begin to evaluate directory.build.props XML element conditions, load it
             LoadDirectoryBuildPropSheetFile
@@ -599,14 +557,22 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
 
     if ($node.Name -ieq "ItemDefinitionGroup")
     {
-        [System.Xml.XmlNode[]] $childNodes = $node.ChildNodes | Where-Object { $_.GetType().Name -ieq "XmlElement" }
-        foreach ($child in $childNodes)
+        foreach ($child in $node.ChildNodes)
         {
+            if ($child.GetType().Name -ine "XmlElement")
+            {
+                continue
+            }
+
             Push-ProjectItemContext $child.Name
 
-            [System.Xml.XmlNode[]] $propNodes = @($child.ChildNodes | Where-Object { $_.GetType().Name -ieq "XmlElement" })
-            foreach ($propNode in $propNodes)
+            foreach ($propNode in $child.ChildNodes)
             {
+                if ($propNode.GetType().Name -ine "XmlElement")
+                {
+                    continue
+                }
+
                 [string] $propVal = Evaluate-MSBuildExpression $propNode.InnerText
                 Set-ProjectItemProperty $propNode.Name $propVal
             }
@@ -661,18 +627,15 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
 
 <#
 .DESCRIPTION
-   Sanitizes a project xml file, by removing config-platform pairs different from the
-   one we selected.
-   This is needed so that our XPath selectors don't get confused when looking for data.
+   Parses a project file and loads data into corresponding data structures.
+   Project elements that are conditioned will be evaluated and discarded if their
+   condition is evaluted to False.
 #>
-function SanitizeProjectFile([string] $projectFilePath)
+function ParseProjectFile([string] $projectFilePath)
 {
     Write-Verbose "`nSanitizing $projectFilePath"
 
     [xml] $fileXml = Get-Content $projectFilePath
-    $global:projectFiles += @($fileXml)
-    $global:xpathNS = New-Object System.Xml.XmlNamespaceManager($fileXml.NameTable)
-    $global:xpathNS.AddNamespace("ns", $fileXml.DocumentElement.NamespaceURI)
     $global:currentMSBuildFile = $projectFilePath
 
     Push-Location (Get-FileDirectory -filePath $projectFilePath)
@@ -694,13 +657,13 @@ function LoadDirectoryBuildPropSheetFile()
                                              -targetFile "Directory.Build.props") + "\Directory.Build.props"
         if (Test-Path $directoryBuildSheetPath)
         {
-            SanitizeProjectFile($directoryBuildSheetPath)
+            ParseProjectFile($directoryBuildSheetPath)
         }
 
         [string] $vcpkgIncludePath = "$env:LOCALAPPDATA\vcpkg\vcpkg.user.targets"
         if (Test-Path $vcpkgIncludePath)
         {
-            SanitizeProjectFile($vcpkgIncludePath)
+            ParseProjectFile($vcpkgIncludePath)
         }
     }
 }
@@ -708,7 +671,7 @@ function LoadDirectoryBuildPropSheetFile()
 <#
 .DESCRIPTION
 Loads vcxproj and property sheets into memory. This needs to be called only once
-when processing a project. Accessing project nodes can be done using Select-ProjectNodes.
+when processing a project. Accessing project data can be done using ItemGroups and Properties
 #>
 function LoadProject([string] $vcxprojPath)
 {
@@ -719,7 +682,5 @@ function LoadProject([string] $vcxprojPath)
 
     InitializeMsBuildProjectProperties
 
-    $global:projectFiles = @()
-
-    SanitizeProjectFile -projectFilePath $global:vcxprojPath
+    ParseProjectFile -projectFilePath $global:vcxprojPath
 }
