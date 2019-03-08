@@ -10,6 +10,7 @@ namespace ClangPowerTools
   {
     // Create StringBuilder to be written in the .clang-tidy file
     private StringBuilder tidyConfigOutput = new StringBuilder();
+
     // Max length used to add space padding for the paramater name in a line
     private int maxNameLength = 19;
 
@@ -54,8 +55,8 @@ namespace ClangPowerTools
         string name = item.Name;
         bool? value = item.GetValue(predefinedChecksSettings) as bool?;
 
-        if (value!= null && value == true)
-        {        
+        if (value != null && value == true)
+        {
           predefinedChecks.Append(name + "  ").Append(value).AppendLine();
         }
       }
