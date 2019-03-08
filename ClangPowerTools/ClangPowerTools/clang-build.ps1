@@ -295,6 +295,8 @@ Add-Type -TypeDefinition @"
 # default ClangPowerTools version of visual studio to use
 [string] $global:cptDefaultVisualStudioVersion = "2017"
 
+[string[]] $global:cptIgnoredFilesPool = @()
+
 #-------------------------------------------------------------------------------------------------
 # Global functions
 
@@ -965,6 +967,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
       Write-Verbose "PCH header has been targeted as dirty. Building entire project"
     }
   }
+
   Write-Verbose ("Processing " + $projCpps.Count + " cpps")
 
   #-----------------------------------------------------------------------------------------------
@@ -1107,12 +1110,31 @@ if ($aCppToCompile -and $aCppToCompile.Count -gt 0)
 {
   # We've been given particular files to compile. If headers are among them
   # we'll find all source files that include them and tag them for processing.
+  Write-Progress -Activity "#Include discovery" -Status "Detecting CPPs which include the specified headers..."
   [string[]] $headerRefs = @(Get-HeaderReferences -files $aCppToCompile)
+  Write-Progress -Activity "#Include discovery" -Completed
   if ($headerRefs.Count -gt 0)
   {
-    Write-Verbose-Array -name "Detected source files" -array $headerRefs
+    Write-Verbose-Array -name "Detected referenced source files to process" -array $headerRefs
 
     $aCppToCompile += $headerRefs
+  }
+}
+
+if ($aCppToIgnore -and $aCppToIgnore.Count -gt 0)
+{
+  # We've been given particular files to ignore. If headers are among them
+  # we'll find all source files that include them and tag them to be ignored.
+
+  Write-Progress -Activity "CPP Ignore Detection" -Status "Detecting CPPs which include the specified ignore-headers..."
+  [string[]] $headerRefs = @(Get-HeaderReferences -files $aCppToIgnore)
+  Write-Progress -Activity "CPP Ignore Detection" -Completed
+
+  if ($headerRefs.Count -gt 0)
+  {
+    Write-Verbose-Array -name "Detected referenced source files to ignore" -array $headerRefs
+
+    $global:cptIgnoredFilesPool += @($headerRefs)
   }
 }
 
@@ -1156,7 +1178,6 @@ else
         break
       }
     }
-
 
     $ignoredProjects = ($projects | Where-Object { $projectsToProcess -notcontains $_ })
   }

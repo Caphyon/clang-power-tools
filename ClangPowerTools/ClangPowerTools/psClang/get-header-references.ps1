@@ -18,10 +18,10 @@ Function detail:FindHeaderReferences( [Parameter(Mandatory = $false)] [string[]]
         return @()
     }
 
-    [string] $regexHeaders = ($headers | ForEach-Object { ([System.IO.FileInfo]$_).BaseName } `
+    [string] $regexHeaders = @($headers | ForEach-Object { ([System.IO.FileInfo]$_).BaseName } `
                                        | Select-Object -Unique `
                                        | Where-Object { $_ -ine "stdafx" -and $_ -ine "resource" } `
-                             ) -join '|'
+                              ) -join '|'
 
     if ($regexHeaders.Length -eq 0)
     {
@@ -121,7 +121,11 @@ Function Get-HeaderReferences([Parameter(Mandatory = $false)][string[]] $files)
 
     # we take interest only in files that reference headers
     $files = @($files | Where-Object { FileHasExtension -filePath $_ `
-                                                      -ext $global:headerExtensions })
+                                                        -ext $global:headerExtensions })
+    if ($files.Count -eq 0)
+    {
+        return @()
+    }
 
     [string[]] $refs = @()
 
@@ -130,6 +134,8 @@ Function Get-HeaderReferences([Parameter(Mandatory = $false)][string[]] $files)
         Write-Verbose-Timed "Headers changed. Detecting which source files to process..."
         $refs = detail:FindHeaderReferences -headers $files
         Write-Verbose-Timed "Finished detecting source files."
+
+        $refs = $refs | Where-Object { ! [string]::IsNullOrWhiteSpace($_) }
     }
 
     return $refs
