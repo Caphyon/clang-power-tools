@@ -844,13 +844,13 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   # DETECT PROJECT PREPROCESSOR DEFINITIONS
 
   [string[]] $preprocessorDefinitions = @(Get-ProjectPreprocessorDefines)
-  if ($global:cptVisualStudioVersion -eq "2017")
+  if ([int]$global:cptVisualStudioVersion -ge 2017)
   {
     # [HACK] pch generation crashes on VS 15.5 because of STL library, known bug.
     # Triggered by addition of line directives to improve std::function debugging.
     # There's a definition that supresses line directives.
 
-    $preprocessorDefinitions += "-D_DEBUG_FUNCTIONAL_MACHINERY"
+    $preprocessorDefinitions += '"-D_DEBUG_FUNCTIONAL_MACHINERY"'
   }
 
   Write-Verbose-Array -array $preprocessorDefinitions -name "Preprocessor definitions"
