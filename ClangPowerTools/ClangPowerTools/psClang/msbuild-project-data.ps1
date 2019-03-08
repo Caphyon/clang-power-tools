@@ -117,6 +117,11 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchC
             }
         }
 
+        if ($usePch -ieq 'Create')
+        {
+            continue # no point in compiling the PCH CPP
+        }
+
         if ($itemProps -ne $null -and $itemProps.ContainsKey('ExcludedFromBuild'))
         {
             if ($itemProps['ExcludedFromBuild'] -ieq 'true')
