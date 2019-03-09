@@ -28,6 +28,8 @@ Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>     `
         , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'   )`
         , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?((\$.+?\))|(.+?))((|`"|')\))+"`
         ,'cpt::GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
+        , ("\[MSBuild\]::GetPathOfFileAbove\(`"?(.+?)`"?,\s*`"?'?((\$.+?\))|(.+?))((|`"|')\))+"`
+        ,'cpt::GetPathOfFileAbove -startDir $2 -targetFile ''$1'')'        )`
         , ("\[MSBuild\]::MakeRelative\((.+?),\s*""?'?((\$.+?\))|(.+?))((|""|')\)\))+"`
         ,'cpt::MakePathRelative -base $1 -target "$2")'                       )`
         , ('SearchOption\.', '[System.IO.SearchOption]::'                )`
@@ -40,29 +42,6 @@ Set-Variable -name "kMsbuildConditionToPsRules" <#-option Constant#>      `
              -value   @(<# Use only double quotes #>                      `
                        ,("\'"                , '"'                       )`
 )
-
-function cpt::GetDirNameOfFileAbove( [Parameter(Mandatory = $true)][string] $startDir
-                              , [Parameter(Mandatory = $true)][string] $targetFile
-                              )
-{
-    if ($targetFile.Contains('$'))
-    {
-        $targetFile = Invoke-Expression $targetFile
-    }
-
-    [string] $base = $startDir
-    while ([string]::IsNullOrEmpty((Canonize-Path -base  $base        `
-                    -child $targetFile  `
-                    -ignoreErrors)))
-    {
-        $base = [System.IO.Path]::GetDirectoryName($base)
-        if ([string]::IsNullOrEmpty($base))
-        {
-            return ""
-        }
-    }
-    return $base
-}
 
 function GetRegValue([Parameter(Mandatory = $true)][string] $regPath)
 {
