@@ -248,6 +248,51 @@ function cpt::MakePathRelative( [Parameter(Mandatory = $true)][string] $base
     return "$relativePath"
 }
 
+
+function cpt::GetDirNameOfFileAbove( [Parameter(Mandatory = $true)][string] $startDir
+                                   , [Parameter(Mandatory = $true)][string] $targetFile
+                                   )
+{
+    if ($targetFile.Contains('$'))
+    {
+        $targetFile = Invoke-Expression $targetFile
+    }
+    if ($startDir.Contains('$'))
+    {
+        $startDir = Invoke-Expression $startDir
+    }
+
+    [string] $base = $startDir
+    while ([string]::IsNullOrEmpty((Canonize-Path -base  $base        `
+                    -child $targetFile  `
+                    -ignoreErrors)))
+    {
+        $base = [System.IO.Path]::GetDirectoryName($base)
+        if ([string]::IsNullOrEmpty($base))
+        {
+            return ""
+        }
+    }
+    return $base
+}
+
+function cpt::GetPathOfFileAbove([Parameter(Mandatory = $true)][string] $targetFile,
+                                 [Parameter(Mandatory = $true)][string] $startDir
+                                )
+{
+    if ($targetFile.Contains('$'))
+    {
+        $targetFile = Invoke-Expression $targetFile
+    }
+    
+    $base = (cpt::GetDirNameOfFileAbove -targetFile $targetFile -startDir $startDir)
+    if ([string]::IsNullOrWhiteSpace($base))
+    {
+        return ""
+    }
+    return "$(EnsureTrailingSlash $base)$targetFile"
+}
+
 # Command IO
 # ------------------------------------------------------------------------------------------------
 Function Exists-Command([Parameter(Mandatory = $true)][string] $command)

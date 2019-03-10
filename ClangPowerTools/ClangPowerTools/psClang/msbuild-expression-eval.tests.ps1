@@ -57,20 +57,39 @@ Describe "MSBuild - Powershell Expression translation" {
     Evaluate-MSBuildExpression '$(TestDir)\first\second' | Should -BeExactly "$env:ProgramFiles\first\second"
   }
 
-  It "GetDirectoryNameOfFileAbove() MSBuild builtin function" {
+  It "GetDirectoryNameOfFileAbove() / GetPathOfFileAbove() MSBuild builtin functions" {
     [string] $MSBuildThisFileDirectory = $env:SystemRoot
 
     $e = '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), ''Program Files'')Program Files'
     Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
+    $e = '$([MSBuild]::GetPathOfFileAbove(''Program Files'', $(MSBuildThisFileDirectory))'
+    Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
 
     $e = '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), "Program Files")Program Files'
+    Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
+    $e = '$([MSBuild]::GetPathOfFileAbove("Program Files", $(MSBuildThisFileDirectory))'
+    Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
+    $e = '$([MSBuild]::GetPathOfFileAbove("Program Files", ''$(MSBuildThisFileDirectory)''))'
+    Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
+
+    $e = "`$([MSBuild]::GetDirectoryNameOfFileAbove('$MSBuildThisFileDirectory', 'Program Files')Program Files"
+    Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
+    $e = "`$([MSBuild]::GetPathOfFileAbove('Program Files', '$MSBuildThisFileDirectory')"
     Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
 
     [string] $whatToFind = "Program Files"
     $e = '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), ''$(whatToFind)'')Program Files'
     Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
+    $e = '$([MSBuild]::GetPathOfFileAbove(''$(whatToFind)'', $(MSBuildThisFileDirectory))'
+    Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
 
     $e = '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildThisFileDirectory), Program Files)Program Files'
+    Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
+    $e = '$([MSBuild]::GetPathOfFileAbove(Program Files, $(MSBuildThisFileDirectory)))'
+    Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
+    $e = '$([MSBuild]::GetPathOfFileAbove(Program Files, ''$(MSBuildThisFileDirectory)''))'
+    Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
+    $e = '$([MSBuild]::GetPathOfFileAbove(''Program Files'', ''$(MSBuildThisFileDirectory)''))'
     Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
 
     [string] $_DirectoryBuildPropsFile = "clang-build.ps1"
@@ -79,6 +98,8 @@ Describe "MSBuild - Powershell Expression translation" {
 
     $e = '$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), ''$(_DirectoryBuildPropsFile)''))'
     Evaluate-MSBuildExpression $e | Should -Be "$DirParent"
+    $e = '$([MSBuild]::GetPathOfFileAbove(''$(_DirectoryBuildPropsFile)'', $(MSBuildProjectDirectory)))'
+    Evaluate-MSBuildExpression $e | Should -Be "$DirParent\$_DirectoryBuildPropsFile"
   }
 
   It "MakeRelative() MSBuild builtin function" {
