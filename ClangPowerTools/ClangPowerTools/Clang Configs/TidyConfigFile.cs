@@ -13,46 +13,45 @@ namespace ClangPowerTools
     // Create StringBuilder to be written in the .clang-tidy file
     private StringBuilder tidyConfigOutput = new StringBuilder();
 
+    //Create readonly hash or list for paramaters
+    private static readonly List<string> parameterNames = new List<string>()
+    {
+      "Checks:", "WarningsAsErrors:", "FormatAfterTidy:", "WarningsAsErrors:",
+      "HeaderFilterRegex:", "FormatStyle:", "User:"
+    };
+
     // Max length used to add space padding for the paramater name in a line
     private int maxNameLength = 19;
 
     public StringBuilder CreateOutput()
     {
-      string paramaterName = "";
       tidyConfigOutput.AppendLine("---");
 
       //Checks line
-      paramaterName = "Checks:";
-      CreateChecks(paramaterName);
+      CreateChecks(parameterNames.ElementAt(0));
 
       //Treat warnings as errors line
-      paramaterName = "WarningsAsErrors:";
       bool treatWarningsAsErrors = SettingsProvider.GeneralSettings.TreatWarningsAsErrors;
-      CreateOutputLine(paramaterName, treatWarningsAsErrors, false);
+      CreateOutputLine(parameterNames.ElementAt(1), treatWarningsAsErrors, false);
 
       //Format after tidy line
-      paramaterName = "FormatAfterTidy:";
       bool formatAfterTidy = SettingsProvider.GeneralSettings.TreatWarningsAsErrors;
-      CreateOutputLine(paramaterName, treatWarningsAsErrors, false);
+      CreateOutputLine(parameterNames.ElementAt(2), treatWarningsAsErrors, false);
 
       //Continue on error
-      paramaterName = "WarningsAsErrors:";
       bool continueOnError = SettingsProvider.GeneralSettings.TreatWarningsAsErrors;
-      CreateOutputLine(paramaterName, continueOnError, false);
+      CreateOutputLine(parameterNames.ElementAt(3), continueOnError, false);
 
       //Header filter line
       string headerFilter = SettingsProvider.TidySettings.HeaderFilter.HeaderFilters;
-      paramaterName = "HeaderFilterRegex:";
-      CreateHeaderFilterOutputLine(paramaterName, headerFilter, true);
+      CreateHeaderFilterOutputLine(parameterNames.ElementAt(4), headerFilter, true);
 
       //Format style line
       string formatStyle = SettingsProvider.ClangFormatSettings.Style.Value.ToString();
-      paramaterName = "FormatStyle:";
-      CreateOutputLine(paramaterName, formatStyle, true);
+      CreateOutputLine(parameterNames.ElementAt(5), formatStyle, true);
 
       //User line
-      paramaterName = "User:";
-      CreateOutputLine(paramaterName, Environment.UserName, false);
+      CreateOutputLine(parameterNames.ElementAt(6), Environment.UserName, false);
 
       return tidyConfigOutput;
     }
