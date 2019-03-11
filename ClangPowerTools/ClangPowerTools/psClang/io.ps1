@@ -141,11 +141,13 @@ Function Get-FileName( [Parameter(Mandatory = $false)][string] $path
 }
 
 Function IsFileMatchingName( [Parameter(Mandatory = $true)][string] $filePath
-    , [Parameter(Mandatory = $true)][string] $matchName)
+                           , [Parameter(Mandatory = $true)][string] $matchName
+                           )
 {
     if ([System.IO.Path]::IsPathRooted($matchName))
     {
-        return $filePath -ieq $matchName
+        return ($matchName.Length -le $filePath.Length) -and
+               ($filePath.Substring(0, $matchName.Length) -ieq $matchName)
     }
 
     if ($aDisableNameRegexMatching)
@@ -284,7 +286,7 @@ function cpt::GetPathOfFileAbove([Parameter(Mandatory = $true)][string] $targetF
     {
         $targetFile = Invoke-Expression $targetFile
     }
-    
+
     $base = (cpt::GetDirNameOfFileAbove -targetFile $targetFile -startDir $startDir)
     if ([string]::IsNullOrWhiteSpace($base))
     {
