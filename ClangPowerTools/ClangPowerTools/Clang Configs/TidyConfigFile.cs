@@ -28,7 +28,17 @@ namespace ClangPowerTools
       //Treat warnings as errors line
       paramaterName = "WarningsAsErrors:";
       bool treatWarningsAsErrors = SettingsProvider.GeneralSettings.TreatWarningsAsErrors;
-      CreateTreatWarningAsErrorsOutputLine(paramaterName, treatWarningsAsErrors, true);
+      CreateOutputLine(paramaterName, treatWarningsAsErrors, false);
+
+      //Format after tidy line
+      paramaterName = "FormatAfterTidy:";
+      bool formatAfterTidy = SettingsProvider.GeneralSettings.TreatWarningsAsErrors;
+      CreateOutputLine(paramaterName, treatWarningsAsErrors, false);
+
+      //Continue on error
+      paramaterName = "WarningsAsErrors:";
+      bool continueOnError = SettingsProvider.GeneralSettings.TreatWarningsAsErrors;
+      CreateOutputLine(paramaterName, continueOnError, false);
 
       //Header filter line
       string headerFilter = SettingsProvider.TidySettings.HeaderFilter.HeaderFilters;
@@ -79,6 +89,7 @@ namespace ClangPowerTools
           predefinedChecks.Append(attribute.DisplayName + ",");
         }
       }
+
       return predefinedChecks.ToString().TrimEnd(',');
     }
 
@@ -92,7 +103,7 @@ namespace ClangPowerTools
       return name.PadRight(maxNameLength - nameLength + nameLength, ' ') + value.ToString().ToLower();
     }
 
-    private void CreateOutputLine(string paramaterName, string formatStyle, bool hasQuotationMark)
+    private void CreateOutputLine<T>(string paramaterName, T formatStyle, bool hasQuotationMark)
     {
       tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, formatStyle, hasQuotationMark));
     }
@@ -113,23 +124,15 @@ namespace ClangPowerTools
     {
       if (headerFilter.Length < 1)
       {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, "", hasQuotationMark));
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, "none", false));
+      }
+      else if (headerFilter == "Corresponding Header")
+      {
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, "_", hasQuotationMark));
       }
       else
       {
         tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, headerFilter, hasQuotationMark));
-      }
-    }
-
-    private void CreateTreatWarningAsErrorsOutputLine(string paramaterName, bool treatWarningsAsErrors, bool hasQuotationMark)
-    {
-      if (!treatWarningsAsErrors)
-      {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, treatWarningsAsErrors, hasQuotationMark));
-      }
-      else
-      {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, treatWarningsAsErrors, hasQuotationMark));
       }
     }
   }
