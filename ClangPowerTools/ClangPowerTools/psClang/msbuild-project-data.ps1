@@ -28,24 +28,6 @@ Set-Variable -name kDefaultCppStd              -value "stdcpp14"        -option 
 # ------------------------------------------------------------------------------------------------
 Set-Variable -name kCProjectCompile         -value "CompileAsC" -option Constant
 
-Add-Type -TypeDefinition @"
-  public enum UsePch
-  {
-    Use,
-    NotUsing,
-    Create
-  }
-"@
-
-Add-Type -TypeDefinition @"
-  public enum CompileAs
-  {
-    NotSpecified,
-    C,
-    CPP
-  }
-"@
-
 Function Should-CompileProject([Parameter(Mandatory = $true)][string] $vcxprojPath)
 {
     if ($aVcxprojToCompile -eq $null)
@@ -108,7 +90,7 @@ Function Should-IgnoreFile([Parameter(Mandatory = $true)][string] $file)
     return $false
 }
 
-Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchCppName)
+Function Get-ProjectFilesToCompile()
 {
     $projectCompileItems = @(Get-Project-ItemList "ClCompile")
     if (!$projectCompileItems)
@@ -121,15 +103,6 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchC
     foreach ($item in $projectCompileItems)
     {
         [System.Collections.Hashtable] $itemProps = $item[1];
-        [UsePch] $usePch = [UsePch]::Use;
-        if ($itemProps -and $itemProps.ContainsKey('PrecompiledHeader'))
-        {
-            switch ($itemProps['PrecompiledHeader'])
-            {
-                'NotUsing' { $usePch = [UsePch]::NotUsing }
-                'Create'   { $usePch = [UsePch]::Create   }
-            }
-        }
 
         if ($itemProps -and $itemProps.ContainsKey('ExcludedFromBuild'))
         {
@@ -150,19 +123,7 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchC
                     continue
                 }
 
-                [CompileAs] $compileAs = [CompileAs]::NotSpecified;
-
-                if ($itemProps -ne $null -and $itemProps.ContainsKey('CompileAs'))
-                {
-                    switch ($itemProps['PrecompiledHeader'])
-                    {
-                        'CompileAsC'   { $compileAs = [CompileAs]::C   }
-                        'CompileAsCpp' { $compileAs = [CompileAs]::Cpp }
-                    }
-                }
-                
                 $files += New-Object PsObject -Prop @{ "File"       = $file
-                                                     ; "Pch"        = $usePch
                                                      ; "Properties" = $itemProps
                                                      }
             }
@@ -187,19 +148,6 @@ Function Get-ProjectHeaders()
         }
     }
     return $headerPaths
-}
-
-Function Is-CProject()
-{
-    Set-ProjectItemContext "ClCompile"
-    $compileAs = Get-ProjectItemProperty "CompileAs"
-
-    if ($compileAs)
-    {
-        return $false
-    }
-
-    return $compileAs -eq $kCProjectCompile
 }
 
 Function Get-Project-SDKVer()
