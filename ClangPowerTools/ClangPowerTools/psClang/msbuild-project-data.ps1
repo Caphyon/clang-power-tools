@@ -28,15 +28,6 @@ Set-Variable -name kDefaultCppStd              -value "stdcpp14"        -option 
 # ------------------------------------------------------------------------------------------------
 Set-Variable -name kCProjectCompile         -value "CompileAsC" -option Constant
 
-Add-Type -TypeDefinition @"
-  public enum UsePch
-  {
-    Use,
-    NotUsing,
-    Create
-  }
-"@
-
 Function Should-CompileProject([Parameter(Mandatory = $true)][string] $vcxprojPath)
 {
     if ($aVcxprojToCompile -eq $null)
@@ -99,7 +90,7 @@ Function Should-IgnoreFile([Parameter(Mandatory = $true)][string] $file)
     return $false
 }
 
-Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchCppName)
+Function Get-ProjectFilesToCompile()
 {
     $projectCompileItems = @(Get-Project-ItemList "ClCompile")
     if (!$projectCompileItems)
@@ -112,22 +103,8 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchC
     foreach ($item in $projectCompileItems)
     {
         [System.Collections.Hashtable] $itemProps = $item[1];
-        $usePch = [UsePch]::Use;
-        if ($itemProps -ne $null -and $itemProps.ContainsKey('PrecompiledHeader'))
-        {
-            switch ($itemProps['PrecompiledHeader'])
-            {
-                'NotUsing' { $usePch = [UsePch]::NotUsing }
-                'Create'   { $usePch = [UsePch]::Create   }
-            }
-        }
 
-        if ($usePch -ieq 'Create')
-        {
-            continue # no point in compiling the PCH CPP
-        }
-
-        if ($itemProps -ne $null -and $itemProps.ContainsKey('ExcludedFromBuild'))
+        if ($itemProps -and $itemProps.ContainsKey('ExcludedFromBuild'))
         {
             if ($itemProps['ExcludedFromBuild'] -ieq 'true')
             {
@@ -141,15 +118,16 @@ Function Get-ProjectFilesToCompile([Parameter(Mandatory = $false)][string] $pchC
         {
             foreach ($file in $matchedFiles)
             {
-                $files += New-Object PsObject -Prop @{ "File"= $file;
-                                                       "Pch" = $usePch; }
+                if ( (Should-IgnoreFile -file $file) )
+                {
+                    continue
+                }
+
+                $files += New-Object PsObject -Prop @{ "File"       = $file
+                                                     ; "Properties" = $itemProps
+                                                     }
             }
         }
-    }
-
-    if ($files.Count -gt 0)
-    {
-        $files = @($files | Where-Object { ! (Should-IgnoreFile -file $_.File) })
     }
 
     return $files
@@ -170,19 +148,6 @@ Function Get-ProjectHeaders()
         }
     }
     return $headerPaths
-}
-
-Function Is-CProject()
-{
-    Set-ProjectItemContext "ClCompile"
-    $compileAs = Get-ProjectItemProperty "CompileAs"
-
-    if ($compileAs)
-    {
-        return $false
-    }
-
-    return $compileAs -eq $kCProjectCompile
 }
 
 Function Get-Project-SDKVer()
@@ -381,34 +346,6 @@ Function Get-ProjectIncludeDirectories()
 
     return ( $returnArray | ForEach-Object { Remove-PathTrailingSlash -path $_ } )
 }
-
-<#
-.DESCRIPTION
-  Retrieve the source files which is used to create the PCH (e.g. stdafx.cpp, stdafxA.cpp)
-#>
-Function Get-Project-PchCpp()
-{
-    $projectCompileItems = @(Get-Project-ItemList "ClCompile")
-    if (!$projectCompileItems)
-    {
-        Write-Verbose "Project does not have any items to compile"
-        return ""
-    }
-
-    $files = @()
-    foreach ($item in $projectCompileItems)
-    {
-        [System.Collections.Hashtable] $itemProps = $item[1];
-        if ($itemProps.ContainsKey('PrecompiledHeader') -and
-            $itemProps['PrecompiledHeader'] -ieq 'Create')
-        {
-            # found PCH cpp
-            return $item[0]
-        }
-    }
-    return ""
-}
-
 
 <#
 .DESCRIPTION

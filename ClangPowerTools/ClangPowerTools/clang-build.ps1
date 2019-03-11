@@ -297,6 +297,9 @@ Add-Type -TypeDefinition @"
 
 [string[]] $global:cptIgnoredFilesPool = @()
 
+# holds file items to process and their contextual properties (inherited + locally defined)
+[System.Collections.Hashtable] $global:cptFilesToProcess = @{}
+
 #-------------------------------------------------------------------------------------------------
 # Global functions
 
@@ -416,18 +419,32 @@ Function Get-ClangIncludeDirectories( [Parameter(Mandatory=$false)][string[]] $i
   return $returnDirs
 }
 
+Function Get-ProjectFileLanguageFlag([Parameter(Mandatory=$true)] [string]   $fileFullName)
+{
+  [bool] $isCpp = $true
+  if ($fileFullName.EndsWith($kExtensionC))
+  {
+    $isCpp = $false
+  }
+
+  try
+  {
+    $isCpp = (Get-ProjectFileSetting -fileFullName $fileFullName -propertyName "CompileAs") -ine $kCProjectCompile
+  }
+  catch {}
+
+  [string] $languageFlag = If ($isCpp) { $kClangFlagFileIsCPP } else { $kClangFlagFileIsC }
+
+  return $languageFlag
+}
+
 Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
+                     , [Parameter(Mandatory=$true)] [string]   $stdafxCpp
                      , [Parameter(Mandatory=$false)][string[]] $includeDirectories
                      , [Parameter(Mandatory=$false)][string[]] $additionalIncludeDirectories
                      , [Parameter(Mandatory=$true)] [string]   $stdafxHeaderName
                      , [Parameter(Mandatory=$false)][string[]] $preprocessorDefinitions)
 {
-  if (Is-CProject)
-  {
-    Write-Verbose "Skipping PCH creation for C project."
-    return ""
-  }
-
   [string] $stdafxSource = (Canonize-Path -base $stdafxDir -child $stdafxHeaderName)
   [string] $stdafx = $stdafxSource + ".hpp"
 
@@ -441,11 +458,14 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
 
   $global:FilesToDeleteWhenScriptQuits.Add($stdafxPch) > $null
 
+  [string] $languageFlag = (Get-ProjectFileLanguageFlag -fileFullName $stdafxCpp)
+
   [string[]] $compilationFlags = @("""$stdafx"""
                                   ,$kClangFlagEmitPch
                                   ,$kClangFlagMinusO
                                   ,"""$stdafxPch"""
-                                  ,(Get-ClangCompileFlags)
+                                  ,$languageFlag
+                                  ,(Get-ClangCompileFlags -isCpp ($languageFlag -ieq $kClangFlagFileIsCPP))
                                   ,$kClangFlagNoUnusedArg
                                   ,$preprocessorDefinitions
                                   )
@@ -502,17 +522,11 @@ Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $prep
     $projectCompileArgs += @($kClangFlagIncludePch , """$pchFilePath""")
   }
 
-  $isCpp = $true
-  $languageFlag = $kClangFlagFileIsCPP
-  if ($fileToCompile.EndsWith($kExtensionC))
-  {
-    $isCpp = $false
-    $languageFlag = $kClangFlagFileIsC
-  }
+  [string] $languageFlag = (Get-ProjectFileLanguageFlag -fileFullName $fileToCompile)
 
   $projectCompileArgs += @( $languageFlag
                           , """$fileToCompile"""
-                          , @(Get-ClangCompileFlags -isCpp $isCpp)
+                          , @(Get-ClangCompileFlags -isCpp ($languageFlag -ieq $kClangFlagFileIsCPP))
                           , $kClangFlagSupressLINK
                           , $preprocessorDefinitions
                           )
@@ -582,16 +596,10 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
   $tidyArgs += Get-ClangIncludeDirectories -includeDirectories           $includeDirectories `
                                            -additionalIncludeDirectories $additionalIncludeDirectories
 
-  $isCpp = $true
-  $languageFlag = $kClangFlagFileIsCPP
-  if ($fileToTidy.EndsWith($kExtensionC))
-  {
-    $isCpp = $false
-    $languageFlag = $kClangFlagFileIsC
-  }
+  [string] $languageFlag = (Get-ProjectFileLanguageFlag -fileFullName $fileToTidy)
 
   # We reuse flags used for compilation and preprocessor definitions.
-  $tidyArgs += @(Get-ClangCompileFlags -isCpp $isCpp)
+  $tidyArgs += @(Get-ClangCompileFlags -isCpp ($languageFlag -ieq $kClangFlagFileIsCPP))
   $tidyArgs += $preprocessorDefinitions
   $tidyArgs += $languageFlag
 
@@ -785,6 +793,29 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
   Wait-AndProcessBuildJobs
 }
 
+Function Get-ProjectFileSetting( [Parameter(Mandatory=$true)] [string] $fileFullName
+                               , [Parameter(Mandatory=$true)] [string] $propertyName
+                               , [Parameter(Mandatory=$false)][string] $defaultValue)
+{
+  if (!$global:cptFilesToProcess.ContainsKey($fileFullName))
+  {
+    throw "File $aFileFullName is not in processing queue."
+  }
+
+  if ($global:cptFilesToProcess[$fileFullName].Properties -and
+      $global:cptFilesToProcess[$fileFullName].Properties.ContainsKey($propertyName))
+  {
+    return $global:cptFilesToProcess[$fileFullName].Properties[$propertyName]
+  }
+
+  if ($defaultValue -ne $null)
+  {
+    return $defaultValue
+  }
+
+  throw "Could not find $propertyName for $fileFullName. No default value specified."
+}
+
 Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPath
                         , [Parameter(Mandatory=$true)][WorkloadType] $workloadType)
 {
@@ -865,12 +896,33 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   Write-Verbose-Array -array $includeDirectories -name "Include directories"
 
   #-----------------------------------------------------------------------------------------------
+  # FIND LIST OF CPPs TO PROCESS
+
+  $global:cptFilesToProcess = @{ } # reset to empty
+
+  foreach ($fileToCompileInfo in (Get-ProjectFilesToCompile))
+  {
+    if ($fileToCompileInfo.File)
+    {
+      $global:cptFilesToProcess[$fileToCompileInfo.File] = $fileToCompileInfo
+    }
+  }
+
+  #-----------------------------------------------------------------------------------------------
   # LOCATE STDAFX.H DIRECTORY
 
-  [string] $stdafxCpp    = Get-Project-PchCpp
+  [string] $stdafxCpp    = ""
   [string] $stdafxDir    = ""
   [string] $stdafxHeader = ""
   [string] $stdafxHeaderFullPath = ""
+
+  foreach ($projCpp in $global:cptFilesToProcess.Keys)
+  {
+    if ( (Get-ProjectFileSetting -fileFullName $projCpp -propertyName 'PrecompiledHeader') -ieq 'Create')
+    {
+      $stdafxCpp = $projCpp
+    }
+  }
 
   if (![string]::IsNullOrEmpty($stdafxCpp))
   {
@@ -888,11 +940,11 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
     if (!$stdafxHeader)
     {
-      $pchNode = Select-ProjectNodes "//ns:ClCompile[@Include='$stdafxCpp']/ns:PrecompiledHeaderFile"
-      if ($pchNode)
+      try
       {
-        $stdafxHeader = $pchNode.InnerText
+        $stdafxHeader = Get-ProjectFileSetting -fileFullName $stdafxCpp -propertyName 'PrecompiledHeaderFile'
       }
+      catch {}
     }
 
     Write-Verbose "PCH header name: $stdafxHeader"
@@ -915,18 +967,9 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   }
 
   #-----------------------------------------------------------------------------------------------
-  # FIND LIST OF CPPs TO PROCESS
+  # FILTER LIST OF CPPs TO PROCESS
 
-  [System.Collections.Hashtable] $projCpps = @{}
-  foreach ($fileToCompileInfo in (Get-ProjectFilesToCompile -pchCppName $stdafxCpp))
-  {
-    if ($fileToCompileInfo.File)
-    {
-      $projCpps[$fileToCompileInfo.File] = $fileToCompileInfo
-    }
-  }
-
-  if ($projCpps.Count -gt 0 -and $aCppToCompile.Count -gt 0)
+  if ($global:cptFilesToProcess.Count -gt 0 -and $aCppToCompile.Count -gt 0)
   {
     [System.Collections.Hashtable] $filteredCpps = @{}
     [bool] $dirtyStdafx = $false
@@ -943,24 +986,24 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
       {
         if ([System.IO.Path]::IsPathRooted($cpp))
         {
-          if ($projCpps.ContainsKey($cpp))
+          if ($global:cptFilesToProcess.ContainsKey($cpp))
           {
             # really fast, use cache
-            $filteredCpps[$cpp] = $projCpps[$cpp]
+            $filteredCpps[$cpp] = $global:cptFilesToProcess[$cpp]
           }
         }
         else
         {
           # take the slow road and check if it matches
-          $projCpps.Keys | Where-Object {  IsFileMatchingName -filePath $_ -matchName $cpp } | `
-                          ForEach-Object { $filteredCpps[$_] = $true }
+          $global:cptFilesToProcess.Keys | Where-Object {  IsFileMatchingName -filePath $_ -matchName $cpp } | `
+                                           ForEach-Object { $filteredCpps[$_] = $global:cptFilesToProcess[$_] }
         }
       }
     }
 
     if (!$dirtyStdafx)
     {
-      $projCpps = $filteredCpps
+      $global:cptFilesToProcess = $filteredCpps
     }
     else
     {
@@ -968,18 +1011,19 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
     }
   }
 
-  Write-Verbose ("Processing " + $projCpps.Count + " cpps")
+  Write-Verbose ("Processing " + $global:cptFilesToProcess.Count + " cpps")
 
   #-----------------------------------------------------------------------------------------------
   # CREATE PCH IF NEED BE, ONLY FOR TWO CPPS OR MORE
 
   [string] $pchFilePath = ""
-  if ($projCpps.Keys.Count -ge 2 -and
+  if ($global:cptFilesToProcess.Keys.Count -ge 2 -and
       ![string]::IsNullOrEmpty($stdafxDir))
   {
     # COMPILE PCH
     Write-Verbose "Generating PCH..."
     $pchFilePath = Generate-Pch -stdafxDir        $stdafxDir    `
+                                -stdafxCpp        $stdafxCpp    `
                                 -stdafxHeaderName $stdafxHeader `
                                 -preprocessorDefinitions $preprocessorDefinitions `
                                 -includeDirectories $includeDirectories `
@@ -997,12 +1041,19 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   $clangJobs = @()
 
-  foreach ($cpp in $projCpps.Keys)
+  foreach ($cpp in $global:cptFilesToProcess.Keys)
   {
+    [string] $cppPchSetting = Get-ProjectFileSetting -propertyName 'PrecompiledHeader' -fileFullName $cpp -defaultValue 'Use'
+
+    if ($cppPchSetting -ieq 'Create')
+    {
+        continue # no point in compiling the PCH CPP
+    }
+
     [string] $exeToCall = Get-ExeToCall -workloadType $workloadType
 
     [string] $finalPchPath = $pchFilePath
-    if ($projCpps[$cpp].Pch -eq [UsePch]::NotUsing)
+    if ($cppPchSetting -ieq 'NotUsing')
     {
       $finalPchPath = ""
       Write-Verbose "`n[PCH] Will ignore precompiled headers for $cpp`n"
