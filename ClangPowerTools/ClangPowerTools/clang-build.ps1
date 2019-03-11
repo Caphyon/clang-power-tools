@@ -865,12 +865,34 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   Write-Verbose-Array -array $includeDirectories -name "Include directories"
 
   #-----------------------------------------------------------------------------------------------
+  # FIND LIST OF CPPs TO PROCESS
+
+  [System.Collections.ArrayList] $projCpps = @{}
+  foreach ($fileToCompileInfo in (Get-ProjectFilesToCompile -pchCppName $stdafxCpp))
+  {
+    if ($fileToCompileInfo.File)
+    {
+      $projCpps[$fileToCompileInfo.File] = $fileToCompileInfo
+    }
+  }
+
+  #-----------------------------------------------------------------------------------------------
   # LOCATE STDAFX.H DIRECTORY
 
-  [string] $stdafxCpp    = Get-Project-PchCpp
+  [string] $stdafxCpp    = ""
   [string] $stdafxDir    = ""
   [string] $stdafxHeader = ""
   [string] $stdafxHeaderFullPath = ""
+
+  foreach ($projCpp in $projCpps.Keys)
+  {
+    if ($projCpps[$projCpp].Properties -and 
+        $projCpps[$projCpp].Properties.ContainsKey('PrecompiledHeader') -and
+        $projCpps[$projCpp].Properties['PrecompiledHeader'] -ieq 'Create')
+    {
+      $stdafxCpp = $projCpp
+    }
+  }
 
   if (![string]::IsNullOrEmpty($stdafxCpp))
   {
@@ -888,10 +910,10 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
     if (!$stdafxHeader)
     {
-      $pchNode = Select-ProjectNodes "//ns:ClCompile[@Include='$stdafxCpp']/ns:PrecompiledHeaderFile"
-      if ($pchNode)
+      $pchCppFile = $projCpps[$stdafxCpp]
+      if ($pchCppFile.Properties -and $pchCppFile.Properties.ContainsKey('PrecompiledHeaderFile'))
       {
-        $stdafxHeader = $pchNode.InnerText
+        $stdafxHeader = $pchCppFile.Properties['PrecompiledHeaderFile']
       }
     }
 
@@ -915,16 +937,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
   }
 
   #-----------------------------------------------------------------------------------------------
-  # FIND LIST OF CPPs TO PROCESS
-
-  [System.Collections.Hashtable] $projCpps = @{}
-  foreach ($fileToCompileInfo in (Get-ProjectFilesToCompile -pchCppName $stdafxCpp))
-  {
-    if ($fileToCompileInfo.File)
-    {
-      $projCpps[$fileToCompileInfo.File] = $fileToCompileInfo
-    }
-  }
+  # FILTER LIST OF CPPs TO PROCESS
 
   if ($projCpps.Count -gt 0 -and $aCppToCompile.Count -gt 0)
   {
@@ -980,6 +993,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
     # COMPILE PCH
     Write-Verbose "Generating PCH..."
     $pchFilePath = Generate-Pch -stdafxDir        $stdafxDir    `
+                                -stdafxCpp        $stdafxCpp  <# XXX #>  `
                                 -stdafxHeaderName $stdafxHeader `
                                 -preprocessorDefinitions $preprocessorDefinitions `
                                 -includeDirectories $includeDirectories `
@@ -999,6 +1013,11 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   foreach ($cpp in $projCpps.Keys)
   {
+    if ($projCpps[$cpp].Pch -eq [UsePch]::Create)
+    {
+        continue # no point in compiling the PCH CPP
+    }
+
     [string] $exeToCall = Get-ExeToCall -workloadType $workloadType
 
     [string] $finalPchPath = $pchFilePath
