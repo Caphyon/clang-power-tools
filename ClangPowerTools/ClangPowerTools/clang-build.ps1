@@ -785,6 +785,29 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
   Wait-AndProcessBuildJobs
 }
 
+Function Get-ProjectFileSetting( [Parameter(Mandatory=$true)] [string] $fileFullName
+                               , [Parameter(Mandatory=$true)] [string] $propertyName
+                               , [Parameter(Mandatory=$false)][string] $defaultValue)
+{
+  if (!$global:cptFilesToProcess.ContainsKey($fileFullName))
+  {
+    throw "File $aFileFullName is not in processing queue."
+  }
+
+  if ($global:cptFilesToProcess[$fileFullName].Properties -and
+      $global:cptFilesToProcess[$fileFullName].Properties.ContainsKey($propertyName))
+  {
+    return $global:cptFilesToProcess[$fileFullName].Properties[$propertyName]
+  }
+
+  if ($defaultValue -ne $null)
+  {
+    return $defaultValue
+  }
+
+  throw "Could not find $propertyName for $fileFullName. No default value specified."
+}
+
 Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPath
                         , [Parameter(Mandatory=$true)][WorkloadType] $workloadType)
 {
@@ -886,7 +909,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   foreach ($projCpp in $projCpps.Keys)
   {
-    if ($projCpps[$projCpp].Properties -and 
+    if ($projCpps[$projCpp].Properties -and
         $projCpps[$projCpp].Properties.ContainsKey('PrecompiledHeader') -and
         $projCpps[$projCpp].Properties['PrecompiledHeader'] -ieq 'Create')
     {
