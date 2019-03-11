@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,103 +21,115 @@ namespace ClangPowerTools
       string paramaterName = "";
       tidyConfigOutput.AppendLine("---");
 
-      //Custom checks line
-      string customChecks = SettingsProvider.TidyCustomCheckes.TidyChecks;
+      //Checks line
       paramaterName = "Checks:";
-      CreateCustomChecksLine(paramaterName, customChecks);
+      CreateChecks(paramaterName);
 
       //Treat warnings as errors line
       paramaterName = "WarningsAsErrors:";
       bool treatWarningsAsErrors = SettingsProvider.GeneralSettings.TreatWarningsAsErrors;
-      CreateTreatWarningAsErrorsLine(paramaterName, treatWarningsAsErrors);
+      CreateTreatWarningAsErrorsOutputLine(paramaterName, treatWarningsAsErrors, true);
 
       //Header filter line
       string headerFilter = SettingsProvider.TidySettings.HeaderFilter.HeaderFilters;
       paramaterName = "HeaderFilterRegex:";
-      CreateHeaderFilterLine(paramaterName, headerFilter);
+      CreateHeaderFilterOutputLine(paramaterName, headerFilter, true);
 
       //Format style line
       string formatStyle = SettingsProvider.ClangFormatSettings.Style.Value.ToString();
       paramaterName = "FormatStyle:";
-      CreateStyleLine(paramaterName, formatStyle);
+      CreateOutputLine(paramaterName, formatStyle, true);
 
-      //Predifined checks line
-      ClangTidyPredefinedChecksOptionsView predefinedChecksSettings = SettingsProvider.TidyPredefinedChecks;
-      paramaterName = "CheckOptions:";
-      CreatePredefinedChecksLine(paramaterName, GetPredefinedChecks(predefinedChecksSettings));
+      //User line
+      paramaterName = "User:";
+      CreateOutputLine(paramaterName, Environment.UserName, false);
 
       return tidyConfigOutput;
     }
 
+    private void CreateChecks(string paramaterName)
+    {
+      ClangTidyUseChecksFrom clangTidyUseChecksFrom = SettingsProvider.TidySettings.UseChecksFrom.Value;
+      if (clangTidyUseChecksFrom == ClangTidyUseChecksFrom.CustomChecks)
+      {
+        CreateCustomChecksOutputLine(paramaterName, SettingsProvider.TidyCustomCheckes.TidyChecks, true);
+      }
+      else if (clangTidyUseChecksFrom == ClangTidyUseChecksFrom.PredefinedChecks)
+      {
+        CreateOutputLine(paramaterName, GetPredefinedChecks(SettingsProvider.TidyPredefinedChecks), true);
+      }
+      else
+      {
+        CreateOutputLine(paramaterName, "", true);
+      }
+    }
+
     private string GetPredefinedChecks(ClangTidyPredefinedChecksOptionsView predefinedChecksSettings)
     {
-      StringBuilder predefinedChecks = new StringBuilder("CheckOptions:");
-      foreach (var item in predefinedChecksSettings.GetType().GetProperties())
+      StringBuilder predefinedChecks = new StringBuilder();
+      PropertyInfo[] properties = predefinedChecksSettings.GetType().GetProperties();
+
+      foreach (var item in properties)
       {
-        string name = item.Name;
+        var attribute = item.GetCustomAttribute(typeof(DisplayNameAttribute)) as DisplayNameAttribute;
         bool? value = item.GetValue(predefinedChecksSettings) as bool?;
 
-        if (value != null && value == true)
+        if (value != null && value == true && attribute != null)
         {
-          predefinedChecks.Append(name + "  ").Append(value).AppendLine();
+          predefinedChecks.Append(attribute.DisplayName + ",");
         }
       }
-      return predefinedChecks.ToString();
+      return predefinedChecks.ToString().TrimEnd(',');
     }
 
-    private string CreateLine(string name, int nameLength, string value)
+    private string CreateLine<T>(string name, int nameLength, T value, bool hasQuotationMark)
     {
-      return name.PadRight(maxNameLength - nameLength + nameLength, ' ') + "'" + value + "'";
-    }
+      if (hasQuotationMark)
+      {
+        return name.PadRight(maxNameLength - nameLength + nameLength, ' ') + "'" + value + "'";
+      }
 
-    private string CreateLine(string name, int nameLength, bool value)
-    {
       return name.PadRight(maxNameLength - nameLength + nameLength, ' ') + value.ToString().ToLower();
     }
 
-    private void CreateStyleLine(string paramaterName, string formatStyle)
+    private void CreateOutputLine(string paramaterName, string formatStyle, bool hasQuotationMark)
     {
-      tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, formatStyle));
+      tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, formatStyle, hasQuotationMark));
     }
 
-    private void CreatePredefinedChecksLine(string paramaterName, string formatStyle)
-    {
-      tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, formatStyle));
-    }
-
-    private void CreateHeaderFilterLine(string paramaterName, string headerFilter)
-    {
-      if (headerFilter.Length < 1)
-      {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, ""));
-      }
-      else
-      {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, headerFilter));
-      }
-    }
-
-    private void CreateTreatWarningAsErrorsLine(string paramaterName, bool treatWarningsAsErrors)
-    {
-      if (!treatWarningsAsErrors)
-      {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, treatWarningsAsErrors));
-      }
-      else
-      {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, treatWarningsAsErrors));
-      }
-    }
-
-    private void CreateCustomChecksLine(string paramaterName, string customChecks)
+    private void CreateCustomChecksOutputLine(string paramaterName, string customChecks, bool hasQuotationMark)
     {
       if (customChecks.Length < 1)
       {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, ""));
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, "", hasQuotationMark));
       }
       else
       {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, customChecks));
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, customChecks, hasQuotationMark));
+      }
+    }
+
+    private void CreateHeaderFilterOutputLine(string paramaterName, string headerFilter, bool hasQuotationMark)
+    {
+      if (headerFilter.Length < 1)
+      {
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, "", hasQuotationMark));
+      }
+      else
+      {
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, headerFilter, hasQuotationMark));
+      }
+    }
+
+    private void CreateTreatWarningAsErrorsOutputLine(string paramaterName, bool treatWarningsAsErrors, bool hasQuotationMark)
+    {
+      if (!treatWarningsAsErrors)
+      {
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, treatWarningsAsErrors, hasQuotationMark));
+      }
+      else
+      {
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, treatWarningsAsErrors, hasQuotationMark));
       }
     }
   }
