@@ -347,8 +347,11 @@ function Load-Solutions()
    $slns = Get-ChildItem -recurse -LiteralPath "$aSolutionsPath" -Filter "*$kExtensionSolution"
    foreach ($sln in $slns)
    {
+     Write-Verbose "Caching solution file $sln"
      $slnPath = $sln.FullName
      $global:slnFiles[$slnPath] = (Get-Content $slnPath)
+     Write-Verbose "Solution full path: $slnPath"
+     Write-Verbose "Solution data length: $($global:slnFiles[$slnPath].Length)"
    }
 
    Write-Verbose-Array -array $global:slnFiles.Keys  -name "Solution file paths"
@@ -356,8 +359,18 @@ function Load-Solutions()
 
 function Get-SolutionProjects([Parameter(Mandatory=$true)][string] $slnPath)
 {
+  Write-Verbose "Retrieving project list for solution $slnPath"
   [string] $slnDirectory = Get-FileDirectory -file $slnPath
+  
+  Write-Verbose "Solution directory: $slnDirectory"
   $matches = [regex]::Matches($global:slnFiles[$slnPath], 'Project\([{}\"A-Z0-9\-]+\) = \".*?\",\s\"(.*?)\"')
+  
+  Write-Verbose "Intermediate solution project matches count: $($matches.Count)" 
+  foreach ($match in $matches)
+  {
+    Write-Verbose $match.Groups[1].Value
+  }
+
   $projectAbsolutePaths = $matches `
     | ForEach-Object { Canonize-Path -base $slnDirectory `
                                      -child $_.Groups[1].Value.Replace('"','') -ignoreErrors } `
