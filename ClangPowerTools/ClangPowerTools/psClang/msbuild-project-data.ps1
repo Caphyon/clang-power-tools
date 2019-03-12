@@ -113,7 +113,7 @@ Function Get-ProjectFilesToCompile()
             }
         }
 
-        [string[]] $matchedFiles = @(Canonize-Path -base $ProjectDir -child $item[0])
+        [string[]] $matchedFiles = @(Canonize-Path -base $ProjectDir -child $item[0] -ignoreErrors)
         if ($matchedFiles.Count -gt 0)
         {
             foreach ($file in $matchedFiles)

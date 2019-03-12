@@ -36,11 +36,9 @@ Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>     `
         , ("@\((.*?)\)", '$(Get-Project-Item("$1"))'                     )`
         , ("%\((.*?)\)", '$(Get-ProjectItemProperty("$1"))'              )`
         , ('\$\(HOME\)', '$(CPT_SHIM_HOME)'                              )`
-)
-
-Set-Variable -name "kMsbuildConditionToPsRules" <#-option Constant#>      `
-             -value   @(<# Use only double quotes #>                      `
-                       ,("\'"                , '"'                       )`
+        <# Rules for making sure the $ sign is put on correctly in expressions #> `
+        , ('\$\(([a-zA-Z_][a-zA-Z0-9_\-]+)\)', '$${$1}'                  )`
+        , ('\(([a-zA-Z_][a-zA-Z0-9_\-]+\.)', '($$$1'                     )`
 )
 
 function GetRegValue([Parameter(Mandatory = $true)][string] $regPath)
@@ -73,7 +71,7 @@ function GetRegValue([Parameter(Mandatory = $true)][string] $regPath)
 function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
 {
     # A lot of MSBuild expressions refer uninitialized variables
-    Set-StrictMode -version 1
+    Set-StrictMode -Off
 
     Write-Debug "Start evaluate MSBuild expression $expression"
 
@@ -88,86 +86,41 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
         return $expression
     }
 
-    [int] $expressionStartIndex = -1
-    [int] $openParantheses = 0
-    for ([int] $i = 0; $i -lt $expression.Length; $i += 1)
-    {
-        if ($expression[$i] -eq '(')
-        {
-            if ($i -gt 0 -and $expressionStartIndex -lt 0 -and $expression[$i - 1] -eq '$')
-            {
-                $expressionStartIndex = $i - 1
-            }
-
-            if ($expressionStartIndex -ge 0)
-            {
-                $openParantheses += 1
-            }
-        }
-
-        if ($expression[$i] -eq ')' -and $expressionStartIndex -ge 0)
-        {
-            $openParantheses -= 1
-            if ($openParantheses -lt 0)
-            {
-                throw "Parse error"
-            }
-            if ($openParantheses -eq 0)
-            {
-                [string] $content = $expression.Substring($expressionStartIndex + 2,
-                    $i - $expressionStartIndex - 2)
-                [int] $initialLength = $content.Length
-
-                if ([regex]::Match($content, "[a-zA-Z_][a-zA-Z0-9_\-]+").Value -eq $content)
-                {
-                    # we have a plain property retrieval
-                    $content = "`${$content}"
-                }
-                else
-                {
-                    # dealing with a more complex expression, put a $ character in front
-                    # of each sub-expression token in order to have it evaluated properly
-                    $content = $content -replace '(^|\s+|\$\()([a-zA-Z_][a-zA-Z0-9_]+)(\.|\)|$)', '$1$$$2$3'
-                }
-
-                $newCond = $expression.Substring(0, $expressionStartIndex + 2) +
-                $content + $expression.Substring($i)
-                $expression = $newCond
-
-                $i += ($content.Length - $initialLength)
-                $expressionStartIndex = -1
-            }
-        }
-    }
-
     Write-Debug "Intermediate PS expression: $expression"
 
     [string] $res = ""
 
-    if ($expression.IndexOf('::') -ge 0)
+    try
     {
-        try
+        if ( ($expression.IndexOf('::') -ge 0) -or $isCondition)
         {
-            $resInvokeResult = Invoke-Expression $expression
+            try
+            {
+                $resInvokeResult = Invoke-Expression $expression
 
-            if ($resInvokeResult -is [array])
-            {
-                $res = $resInvokeResult -join ';'
+                if ($resInvokeResult -is [array])
+                {
+                    $res = $resInvokeResult -join ';'
+                }
+                else
+                {
+                    $res = $resInvokeResult
+                }
             }
-            else
+            catch
             {
-                $res = $resInvokeResult
+                Write-Verbose $_.Exception.Message
+                $res = $ExecutionContext.InvokeCommand.ExpandString($expression)
             }
         }
-        catch
+        else
         {
-            Write-Verbose $_.Exception.Message
             $res = $ExecutionContext.InvokeCommand.ExpandString($expression)
         }
     }
-    else
+    catch
     {
-        $res = $ExecutionContext.InvokeCommand.ExpandString($expression)
+        Write-Verbose $_.Exception.Message
     }
 
     Write-Debug "Evaluated expression to: $res"
@@ -177,11 +130,16 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
 function Evaluate-MSBuildCondition([Parameter(Mandatory = $true)][string] $condition)
 {
     Write-Debug "Evaluating condition $condition"
-    foreach ($rule in $kMsbuildConditionToPsRules)
+
+    try
     {
-        $condition = $condition -replace $rule[0], $rule[1]
+        [string] $expression = Evaluate-MSBuildExpression -expression $condition -isCondition
     }
-    [string] $expression = Evaluate-MSBuildExpression -expression $condition -isCondition
+    catch
+    {
+        Write-Verbose $_.Exception.Message
+        return $false
+    }
 
     if ($expression -ieq "true")
     {
@@ -193,14 +151,17 @@ function Evaluate-MSBuildCondition([Parameter(Mandatory = $true)][string] $condi
         return $false
     }
 
-    [bool] $res = $false
+    $expression = $expression -replace 'False', '$false'
+    $expression = $expression -replace 'True', '$true'
+
     try
     {
-        $res = (Invoke-Expression $expression) -eq $true
+        [bool] $res = (Invoke-Expression $expression) -eq $true
     }
     catch
     {
-        Write-Debug $_.Exception.Message
+        Write-Verbose $_.Exception.Message
+        return $false
     }
     Write-Debug "Evaluated condition to $res"
 
