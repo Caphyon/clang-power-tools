@@ -16,7 +16,7 @@ namespace ClangPowerTools
     //Create readonly hash or list for paramaters
     private static readonly List<string> parameterNames = new List<string>()
     {
-      "Checks:", "WarningsAsErrors:", "FormatAfterTidy:", "WarningsAsErrors:",
+      "Checks:", "WarningsAsErrors:", "WarningsAsErrors:",
       "HeaderFilterRegex:", "FormatStyle:", "User:"
     };
 
@@ -34,24 +34,21 @@ namespace ClangPowerTools
       bool treatWarningsAsErrors = SettingsProvider.GeneralSettings.TreatWarningsAsErrors;
       CreateOutputLine(parameterNames.ElementAt(1), treatWarningsAsErrors, false);
 
-      //Format after tidy line
-      bool formatAfterTidy = SettingsProvider.GeneralSettings.TreatWarningsAsErrors;
-      CreateOutputLine(parameterNames.ElementAt(2), treatWarningsAsErrors, false);
-
-      //Continue on error
+      //Continue on error    ??????? param name
       bool continueOnError = SettingsProvider.GeneralSettings.TreatWarningsAsErrors;
-      CreateOutputLine(parameterNames.ElementAt(3), continueOnError, false);
+      var test = ScriptConstants.kContinue;
+      CreateOutputLine(parameterNames.ElementAt(2), continueOnError, false);
 
       //Header filter line
       string headerFilter = SettingsProvider.TidySettings.HeaderFilter.HeaderFilters;
-      CreateHeaderFilterOutputLine(parameterNames.ElementAt(4), headerFilter, true);
+      CreateHeaderFilterOutputLine(parameterNames.ElementAt(3), headerFilter, true);
 
       //Format style line
       string formatStyle = SettingsProvider.ClangFormatSettings.Style.Value.ToString();
-      CreateOutputLine(parameterNames.ElementAt(5), formatStyle, true);
+      CreateOutputLine(parameterNames.ElementAt(4), formatStyle, true);
 
       //User line
-      CreateOutputLine(parameterNames.ElementAt(6), Environment.UserName, false);
+      CreateOutputLine(parameterNames.ElementAt(5), Environment.UserName, false);
 
       return tidyConfigOutput;
     }
