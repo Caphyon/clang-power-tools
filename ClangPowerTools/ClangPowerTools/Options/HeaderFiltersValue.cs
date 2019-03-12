@@ -9,9 +9,6 @@ namespace ClangPowerTools
 
     private string mHeaderFilterValue;
 
-    public event PropertyChangedEventHandler PropertyChanged;
-
-
     #endregion
 
 

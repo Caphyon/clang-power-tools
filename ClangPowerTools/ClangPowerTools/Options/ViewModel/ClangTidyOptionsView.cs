@@ -206,7 +206,7 @@ namespace ClangPowerTools
 
     private void SetEnvironmentVariableTidyPath()
     {
-      Task.Run(() =>
+      var task = Task.Run(() =>
       {
         if (null != ClangTidyPath && ClangTidyPath.Enable == true && ClangTidyPath.Value.Length > 0)
         {

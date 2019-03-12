@@ -99,7 +99,7 @@ namespace ClangPowerTools
       // Switches to the UI thread in order to consume some services used in command initialization
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-      await RegisterVsServices();
+      await RegisterVsServicesAsync();
 
       mCommandsController = new CommandsController(this);
 
@@ -150,7 +150,7 @@ namespace ClangPowerTools
       }
       SettingsProvider.SaveGeneralSettings();
 
-      await mCommandsController.InitializeAsyncCommands(this);
+      await mCommandsController.InitializeCommandsAsync(this);
       RegisterToEvents();
 
       await base.InitializeAsync(cancellationToken, progress);
@@ -257,7 +257,7 @@ namespace ClangPowerTools
     #region Private Methods
 
 
-    private async System.Threading.Tasks.Task RegisterVsServices()
+    private async System.Threading.Tasks.Task RegisterVsServicesAsync()
     {
       // Get DTE service async 
       var dte = await GetServiceAsync(typeof(DTE)) as DTE2;
