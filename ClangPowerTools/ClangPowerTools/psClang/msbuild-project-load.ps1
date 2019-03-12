@@ -343,52 +343,6 @@ Function InitializeMsBuildCurrentFileProperties([Parameter(Mandatory = $true)][s
     Set-Var -name "MSBuildThisFileDirectory" -value (Get-FileDirectory -filePath $filePath)
 }
 
-function  GetNodeInheritanceToken([System.Xml.XmlNode] $node)
-{
-    [string] $inheritanceToken = "%($($node.Name))";
-    if ($node.InnerText.Contains($inheritanceToken))
-    {
-        return $inheritanceToken
-    }
-
-    return ""
-}
-
-function ReplaceInheritedNodeValue([System.Xml.XmlNode] $currentNode
-    , [System.Xml.XmlNode] $nodeToInheritFrom
-)
-{
-    [string] $inheritanceToken = GetNodeInheritanceToken($currentNode)
-    if ([string]::IsNullOrEmpty($inheritanceToken))
-    {
-        # no need to inherit
-        return $false
-    }
-
-    [string] $replaceWith = ""
-    if ($nodeToInheritFrom)
-    {
-        $replaceWith = $nodeToInheritFrom.InnerText
-    }
-
-    [string] $whatToReplace = [regex]::Escape($inheritanceToken);
-    if ([string]::IsNullOrEmpty($replaceWith))
-    {
-        # handle semicolon separators
-        [string] $escTok = [regex]::Escape($inheritanceToken)
-        $whatToReplace = "(;$escTok)|($escTok;)|($escTok)"
-    }
-
-    # replace inherited token and redundant separators
-    $replacementRules = @(, ($whatToReplace, $replaceWith)) + $kRedundantSeparatorsReplaceRules
-    foreach ($rule in $replacementRules)
-    {
-        $currentNode.InnerText = $currentNode.InnerText -replace $rule[0], $rule[1]
-    }
-
-    return $currentNode.InnerText.Contains($inheritanceToken)
-}
-
 <#
 .DESCRIPTION
    Sets the Configuration and Platform project properties so that
