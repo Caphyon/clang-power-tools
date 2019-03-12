@@ -77,6 +77,7 @@ namespace ClangPowerTools.Commands
     public void ExportConfig()
     {
       // Set the default file extension
+      saveFileDialog.FileName = ".clang-tidy";
       saveFileDialog.DefaultExt = ".clang-tidy";
       saveFileDialog.Filter = "Configuration files (.clang-tidy)|*.clang-tidy";
 

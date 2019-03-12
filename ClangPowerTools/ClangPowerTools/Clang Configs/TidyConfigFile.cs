@@ -10,10 +10,12 @@ namespace ClangPowerTools
 {
   public class TidyConfigFile
   {
+    #region Members
+
     // Create StringBuilder to be written in the .clang-tidy file
     private StringBuilder tidyConfigOutput = new StringBuilder();
 
-    //Create readonly hash or list for paramaters
+    // Readonly list for paramaters names
     private static readonly List<string> parameterNames = new List<string>()
     {
       "Checks:", "WarningsAsErrors:", "WarningsAsErrors:",
@@ -21,23 +23,24 @@ namespace ClangPowerTools
     };
 
     // Max length used to add space padding for the paramater name in a line
-    private int maxNameLength = 19;
+    private int maxNameLength = 0;
+    
+    #endregion
+
+    #region Public Methods
 
     public StringBuilder CreateOutput()
     {
+      maxNameLength = parameterNames.OrderByDescending(s => s.Length).First().Length;
+
       tidyConfigOutput.AppendLine("---");
 
       //Checks line
-      CreateChecks(parameterNames.ElementAt(0));
+      CreateChecksOutputLine(parameterNames.ElementAt(0));
 
       //Treat warnings as errors line
-      bool treatWarningsAsErrors = SettingsProvider.GeneralSettings.TreatWarningsAsErrors;
-      CreateOutputLine(parameterNames.ElementAt(1), treatWarningsAsErrors, false);
-
-      //Continue on error    ??????? param name
-      bool continueOnError = SettingsProvider.GeneralSettings.TreatWarningsAsErrors;
-      var test = ScriptConstants.kContinue;
-      CreateOutputLine(parameterNames.ElementAt(2), continueOnError, false);
+      string treatWarningsAsErrors = ScriptConstants.kTreatWarningsAsErrors;
+      CreateWarningAsErrorsOutputLine(parameterNames.ElementAt(1), treatWarningsAsErrors, true);
 
       //Header filter line
       string headerFilter = SettingsProvider.TidySettings.HeaderFilter.HeaderFilters;
@@ -53,7 +56,11 @@ namespace ClangPowerTools
       return tidyConfigOutput;
     }
 
-    private void CreateChecks(string paramaterName)
+    #endregion
+
+    #region Private Methods 
+
+    private void CreateChecksOutputLine(string paramaterName)
     {
       ClangTidyUseChecksFrom clangTidyUseChecksFrom = SettingsProvider.TidySettings.UseChecksFrom.Value;
       if (clangTidyUseChecksFrom == ClangTidyUseChecksFrom.CustomChecks)
@@ -89,14 +96,13 @@ namespace ClangPowerTools
       return predefinedChecks.ToString().TrimEnd(',');
     }
 
-    private string CreateLine<T>(string name, int nameLength, T value, bool hasQuotationMark)
+    private string CreateLine<T>(string propertyName, int nameLength, T value, bool hasQuotationMark)
     {
       if (hasQuotationMark)
       {
-        return name.PadRight(maxNameLength - nameLength + nameLength, ' ') + "'" + value + "'";
+        return $"{propertyName.PadRight(maxNameLength - nameLength + nameLength, ' ')} '{value}'";
       }
-
-      return name.PadRight(maxNameLength - nameLength + nameLength, ' ') + value.ToString().ToLower();
+      return $"{propertyName.PadRight(maxNameLength - nameLength + nameLength, ' ')} {value.ToString().ToLower()}";
     }
 
     private void CreateOutputLine<T>(string paramaterName, T formatStyle, bool hasQuotationMark)
@@ -104,11 +110,23 @@ namespace ClangPowerTools
       tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, formatStyle, hasQuotationMark));
     }
 
+    private void CreateWarningAsErrorsOutputLine(string paramaterName, string warningsAsErrors, bool hasQuotationMark)
+    {
+      if (SettingsProvider.GeneralSettings.TreatWarningsAsErrors)
+      {
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, warningsAsErrors, hasQuotationMark));
+      }
+      else
+      {
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, string.Empty, hasQuotationMark));
+      }
+    }
+
     private void CreateCustomChecksOutputLine(string paramaterName, string customChecks, bool hasQuotationMark)
     {
       if (customChecks.Length < 1)
       {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, "", hasQuotationMark));
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, string.Empty, hasQuotationMark));
       }
       else
       {
@@ -120,16 +138,18 @@ namespace ClangPowerTools
     {
       if (headerFilter.Length < 1)
       {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, "none", false));
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, ComboBoxConstants.kNone, false));
       }
-      else if (headerFilter == "Corresponding Header")
+      else if (headerFilter == ComboBoxConstants.kCorrespondingHeaderName)
       {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, "_", hasQuotationMark));
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, ComboBoxConstants.kCorrespondingHeaderValue, hasQuotationMark));
       }
       else
       {
         tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, headerFilter, hasQuotationMark));
       }
     }
+
+    #endregion
   }
 }
