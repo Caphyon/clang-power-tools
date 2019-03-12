@@ -10,7 +10,7 @@ namespace ClangPowerTools
       XmlSerializer serializer = new XmlSerializer();
 
       var config = File.Exists(aFilePath)
-        ? serializer.DeserializeFromFIle<TSettings>(aFilePath)
+        ? serializer.DeserializeFromFile<TSettings>(aFilePath)
         : new TSettings();
 
       return config;

@@ -24,7 +24,7 @@ namespace ClangPowerTools.Options.View.WpfPropertyGrid
       dlg.Filter = "clang-tidy|clang-tidy.exe|Executable files|*.exe|All files|*.*";
 
       // Display OpenFileDialog by calling ShowDialog method
-      Nullable<bool> result = dlg.ShowDialog();
+      bool? result = dlg.ShowDialog();
 
       // Get the selected file name and display in a TextBox
       if (result == true)

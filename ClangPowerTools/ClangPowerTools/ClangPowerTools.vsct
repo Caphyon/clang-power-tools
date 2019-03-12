@@ -12,8 +12,17 @@
 										<ButtonText>Clang Power Tools</ButtonText>
 								</Strings>
 						</Menu>
+					
+					<!--Top Toolbar Menu Drop-Down-->
+					<Menu guid="guidClangPowerToolsPackageCmdSet" id="GroupForTopToolbarMenu" priority="0xffff" type="Menu">
+						<Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
+						<Strings>
+							<ButtonText>Clang Power Tools</ButtonText>
+							<CommandName>Clang Power Tools</CommandName>
+						</Strings>
+					</Menu>
 
-						<!--Toolbar menu-->
+					<!--Toolbar menu-->
 						<Menu guid="guidClangPowerToolsPackageCmdSet" id="Toolbar" type="Toolbar">
 								<CommandFlag>DefaultDocked</CommandFlag>
 								<Strings>
@@ -22,7 +31,7 @@
 								</Strings>
 						</Menu>
 
-						<!--Toolbar Drop-Down Menu-->
+						<!--Tidy Drop-Down Menu-->
 						<Menu guid="guidClangPowerToolsPackageCmdSet" id="DromDownMenu" type="MenuController" priority="0x0001">
 								<Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
 								<CommandFlag>DefaultDocked</CommandFlag>
@@ -36,6 +45,9 @@
 				
 				<Groups>
 						<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0000" />
+						<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarMenu" priority="0x0000" >
+							<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForTopToolbarMenu"/>
+						</Group>
 						<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0000" />
 						<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" priority="0x0002" />
 						<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0003" />
@@ -48,6 +60,22 @@
 				</Groups>
 
 				<Buttons>
+					
+					<!--Main Toolbar Menu Buttons-->
+					<Button guid="guidClangPowerToolsPackageCmdSet" id="TidyExportConfigId" priority="0x0111" type="Button">
+						<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarMenu" />
+						<Strings>
+							<ButtonText>Export Clang Tidy Config</ButtonText>
+						</Strings>
+					</Button>
+
+          <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0112" type="Button">
+            <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarMenu" />
+            <Icon guid="guidImageSettings" id="Settings" />
+            <Strings>
+              <ButtonText>Settings</ButtonText>
+            </Strings>
+          </Button>
 
 						<!--Context Menu Buttons-->
 						<Button guid="guidClangPowerToolsPackageCmdSet" id="CompileId" priority="0x0000" type="Button">
@@ -122,7 +150,6 @@
 						</Button>
 
 						<!--Toolbar Buttons-->
-
 						<Button guid="guidClangPowerToolsPackageCmdSet" id="CompileId" priority="0x0000" type="Button">
 								<Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
 								<Strings>
@@ -131,7 +158,6 @@
 						</Button>
 
 						<!-- Clang Tidy & Clang Tidy Fix Drop Down Toolbar-->
-
 						<Button guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0001" type="Button">
 								<Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownToolbarMenuGroup" />
 								<Strings>
@@ -200,7 +226,7 @@
 
 				<!-- Placement for commands.
 					 The parent of a command is always a group, never a menu, context menu or toolbar.-->
-
+										
 				<!--Add the GroupForSubmenu(commands) in context menu of solution, project, folder, file and tab editor -->
 				<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x08FF">
 						<!-- The parent of the group will be the solution context menu -->
@@ -280,10 +306,9 @@
 		</CommandPlacements>
 
 		<Symbols>
-
 				<GuidSymbol name="guidClangPowerToolsPackage" value="{f564f9d3-01ae-493e-883b-18deebdb975e}" />
+      
 				<GuidSymbol name="guidClangPowerToolsPackageCmdSet" value="{498fdff5-5217-4da9-88d2-edad44ba3874}">
-
 						<!--Groups and submenu-->
 						<IDSymbol name="GroupForSubmenu" value="0x1020" />
 						<IDSymbol name="GroupForCommands" value="0x1021" />
@@ -292,7 +317,9 @@
 						<IDSymbol name="Submenu" value="0x0100" />
 						<IDSymbol name="DromDownMenu" value="0x0200" />
 						<IDSymbol name ="DromDownToolbarMenuGroup" value="0x0110"/>
-
+            <IDSymbol name="GroupForToolbarMenu" value="0x1030" />
+            <IDSymbol name="GroupForTopToolbarMenu" value="0x1031" />
+  
 						<!--Commands-->
 						<IDSymbol name="CompileId" value="0x0102" />
 						<IDSymbol name="TidyId" value="0x0101" />
@@ -303,6 +330,7 @@
 						<IDSymbol name="IgnoreFormatId" value="0x0107" />
 						<IDSymbol name="IgnoreCompileId" value="0x0108" />
 						<IDSymbol name="SettingsId" value="0x0103" />
+            <IDSymbol name="TidyExportConfigId" value="0x1032" />
 
 						<!--Toolbar-->
 						<IDSymbol name="Toolbar" value="0x1000" />

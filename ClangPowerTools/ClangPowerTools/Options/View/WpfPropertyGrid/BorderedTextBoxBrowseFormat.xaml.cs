@@ -23,8 +23,8 @@ namespace ClangPowerTools.Options.View.WpfPropertyGrid
       dlg.DefaultExt = ".exe";
       dlg.Filter = "clang-format|clang-format.exe|Executable files|*.exe|All files|*.*";
 
-   // Display OpenFileDialog by calling ShowDialog method
-      Nullable<bool> result = dlg.ShowDialog();
+      // Display OpenFileDialog by calling ShowDialog method
+      bool? result = dlg.ShowDialog();
 
       // Get the selected file name and display in a TextBox
       if (result == true)

@@ -80,17 +80,7 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
     {
       get
       {
-        object[] propAttrs = mPropertyInfo.GetCustomAttributes(false);
-        object formatCheckAttr = propAttrs.FirstOrDefault(attr => typeof(ClangFormatPathAttribute) == attr.GetType());
-        object displayNameAttrObj = propAttrs.FirstOrDefault(attr => typeof(DisplayNameAttribute) == attr.GetType());
-
-
-        if(formatCheckAttr != null && displayNameAttrObj != null)
-        {
-          return true;
-        }
-
-        return false;
+        return HasPropertAttribute(typeof(ClangFormatPathAttribute));
       }
     }
 
@@ -101,18 +91,26 @@ namespace Caphyon.AdvInstVSIntegration.ProjectEditor.View.WpfPropertyGrid
     {
       get
       {
-        object[] propAttrs = mPropertyInfo.GetCustomAttributes(false);
-        object tidyCheckAttr = propAttrs.FirstOrDefault(attr => typeof(ClangTidyPathAttribute) == attr.GetType());
-        object displayNameAttrObj = propAttrs.FirstOrDefault(attr => typeof(DisplayNameAttribute) == attr.GetType());
-
-
-        if (tidyCheckAttr != null && displayNameAttrObj != null)
-        {
-          return true;
-        }
-
-        return false;
+        return HasPropertAttribute(typeof(ClangTidyPathAttribute));
       }
+    }
+
+    /// <summary>
+    ///  Check if the property has a certain type
+    /// </summary>
+    private bool HasPropertAttribute(Type attribute)
+    {
+      object[] propAttrs = mPropertyInfo.GetCustomAttributes(false);
+      object checkAttr = propAttrs.FirstOrDefault(attr => attribute == attr.GetType());
+      object displayNameAttrObj = propAttrs.FirstOrDefault(attr => typeof(DisplayNameAttribute) == attr.GetType());
+
+
+      if (checkAttr != null && displayNameAttrObj != null)
+      {
+        return true;
+      }
+
+      return false;
     }
 
     /// <summary>
