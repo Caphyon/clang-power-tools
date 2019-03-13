@@ -2,9 +2,9 @@
 
 namespace ClangPowerTools.Builder
 {
-  public interface IAsyncBuilder<T>
+  public interface IBuilderAsync<T>
   {
-    Task AsyncBuild();
+    Task BuildAsync();
 
     T GetAsyncResult();
   }

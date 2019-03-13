@@ -47,7 +47,7 @@ namespace ClangPowerTools.Commands
       if (null != aCommandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
-        var menuItem = new OleMenuCommand(aCommandsController.ExecuteAsync, menuCommandID);
+        var menuItem = new OleMenuCommand(aCommandsController.Execute, menuCommandID);
         aCommandService.AddCommand(menuItem);
       }
     }

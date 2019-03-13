@@ -47,7 +47,7 @@ namespace ClangPowerTools.Commands
       if (null != aCommandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
-        var menuCommand = new OleMenuCommand(aCommandsController.ExecuteAsync, menuCommandID);
+        var menuCommand = new OleMenuCommand(aCommandsController.Execute, menuCommandID);
         menuCommand.BeforeQueryStatus += aCommandsController.OnBeforeClangCommand;
         menuCommand.Enabled = true;
         aCommandService.AddCommand(menuCommand);
@@ -76,7 +76,7 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public System.Threading.Tasks.Task RunClangCompile(int aCommandId)
+    public System.Threading.Tasks.Task RunClangCompileAsync(int aCommandId)
     {
       return System.Threading.Tasks.Task.Run(() =>
       {

@@ -1,5 +1,4 @@
 ﻿using ClangPowerTools.Commands;
-using ClangPowerTools.DialogPages;
 using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
 using ClangPowerTools.Services;
@@ -78,7 +77,7 @@ namespace ClangPowerTools
     #region Public Methods
 
 
-    public async System.Threading.Tasks.Task InitializeAsyncCommands(AsyncPackage aAsyncPackage)
+    public async System.Threading.Tasks.Task InitializeCommandsAsync(AsyncPackage aAsyncPackage)
     {
       if (null == CompileCommand.Instance)
         await CompileCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kCompileId);
@@ -109,14 +108,14 @@ namespace ClangPowerTools
         await TidyConfigCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kITidyExportConfigId);
     }
 
-    public async void ExecuteAsync(object sender, EventArgs e)
+    public async void Execute(object sender, EventArgs e)
     {
       if (!(sender is OleMenuCommand command))
         return;
 
       if (Running && command.CommandID.ID != CommandIds.kStopClang)
         return;
-      
+
       switch (command.CommandID.ID)
       {
         case CommandIds.kSettingsId:
@@ -128,7 +127,7 @@ namespace ClangPowerTools
         case CommandIds.kStopClang:
           {
             CurrentCommand = CommandIds.kStopClang;
-            StopClang.Instance.RunStopClangCommand();
+            await StopClang.Instance.RunStopClangCommandAsync();
             break;
           }
         case CommandIds.kClangFormat:
@@ -140,14 +139,14 @@ namespace ClangPowerTools
         case CommandIds.kCompileId:
           {
             OnBeforeClangCommand(CommandIds.kCompileId);
-            await CompileCommand.Instance.RunClangCompile(CommandIds.kCompileId);
+            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId);
             OnAfterClangCommand();
             break;
           }
         case CommandIds.kTidyId:
           {
             OnBeforeClangCommand(CommandIds.kTidyId);
-            await TidyCommand.Instance.RunClangTidy(CommandIds.kTidyId);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId);
             OnAfterClangCommand();
             break;
           }
@@ -155,7 +154,7 @@ namespace ClangPowerTools
         case CommandIds.kTidyFixMenuId:
           {
             OnBeforeClangCommand(CommandIds.kTidyFixId);
-            await TidyCommand.Instance.RunClangTidy(CommandIds.kTidyFixId);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId);
             OnAfterClangCommand();
             break;
           }
@@ -195,7 +194,7 @@ namespace ClangPowerTools
       CurrentCommand = aCommandId;
       Running = true;
 
-      if(OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
+      if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
         OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nStart {OutputWindowConstants.kCommandsNames[aCommandId]}\n", true));
 
       OnClangCommandBegin(new ClearErrorListEventArgs());
@@ -301,10 +300,10 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="Scope"></param>
     /// <param name="Action"></param>
-    public void OnMSVCBuildDone(vsBuildScope Scope, vsBuildAction Action)
+    public async void OnMSVCBuildDone(vsBuildScope Scope, vsBuildAction Action)
     {
       VsBuildRunning = false;
-      OnMSVCBuildSucceededAsync();
+      await OnMSVCBuildSucceededAsync();
     }
 
 
@@ -327,7 +326,7 @@ namespace ClangPowerTools
       // Run clang compile after the VS compile succeeded
 
       OnBeforeClangCommand(CommandIds.kCompileId);
-      await CompileCommand.Instance.RunClangCompile(CommandIds.kCompileId);
+      await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId);
       CompileCommand.Instance.VsCompileFlag = false;
       OnAfterClangCommand();
     }
@@ -353,7 +352,7 @@ namespace ClangPowerTools
       if (true == Running) // Clang compile/tidy command is running
         return;
 
-      TidyCommand.Instance.RunClangTidy(CommandIds.kTidyFixId);
+      TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId);
       mSaveCommandWasGiven = false;
     }
 
