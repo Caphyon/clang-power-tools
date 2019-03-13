@@ -172,7 +172,16 @@ Function IsFileMatchingName( [Parameter(Mandatory = $true)][string] $filePath
         {
             return $true
         }
-        
+
+        while (![string]::IsNullOrWhiteSpace($filePath))
+        {
+            if ($filePath.ToLower().EndsWith($matchName.ToLower()))
+            {
+                return $true
+            }
+            $filePath = [System.IO.Path]::GetDirectoryName($filePath)
+        }
+
         return $false
     }
     elseif ($matchName -is [regex])
