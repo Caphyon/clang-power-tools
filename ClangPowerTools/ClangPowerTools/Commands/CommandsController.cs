@@ -1,5 +1,4 @@
 ﻿using ClangPowerTools.Commands;
-using ClangPowerTools.DialogPages;
 using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
 using ClangPowerTools.Services;
@@ -116,7 +115,7 @@ namespace ClangPowerTools
 
       if (Running && command.CommandID.ID != CommandIds.kStopClang)
         return;
-      
+
       switch (command.CommandID.ID)
       {
         case CommandIds.kSettingsId:
@@ -195,7 +194,7 @@ namespace ClangPowerTools
       CurrentCommand = aCommandId;
       Running = true;
 
-      if(OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
+      if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
         OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nStart {OutputWindowConstants.kCommandsNames[aCommandId]}\n", true));
 
       OnClangCommandBegin(new ClearErrorListEventArgs());
@@ -301,10 +300,10 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="Scope"></param>
     /// <param name="Action"></param>
-    public void OnMSVCBuildDone(vsBuildScope Scope, vsBuildAction Action)
+    public async void OnMSVCBuildDone(vsBuildScope Scope, vsBuildAction Action)
     {
       VsBuildRunning = false;
-      OnMSVCBuildSucceededAsync();
+      await OnMSVCBuildSucceededAsync();
     }
 
 
