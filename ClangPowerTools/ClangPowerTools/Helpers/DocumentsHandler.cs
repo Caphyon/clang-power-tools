@@ -14,7 +14,7 @@ namespace ClangPowerTools
     /// <returns>Active documents</returns>
     public static Documents GetActiveDocuments()
     {
-      return VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE).do : null;
+      return VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE).Documents : null;
     }
 
     /// <summary>
