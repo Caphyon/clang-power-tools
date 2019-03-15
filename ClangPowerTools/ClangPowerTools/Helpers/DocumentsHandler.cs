@@ -62,7 +62,7 @@ namespace ClangPowerTools
         public static void SaveActiveDocuments()
         {
             var activeDocuments = GetActiveDocuments();
-            if (null != activeDocuments)
+            if (null != activeDocuments && 0 < activeDocuments.Count)
                 activeDocuments.SaveAll();
         }
 
