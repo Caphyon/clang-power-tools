@@ -141,24 +141,56 @@ Function Get-FileName( [Parameter(Mandatory = $false)][string] $path
 }
 
 Function IsFileMatchingName( [Parameter(Mandatory = $true)][string] $filePath
-                           , [Parameter(Mandatory = $true)][string] $matchName
-                           )
+                           , [Parameter(Mandatory = $true)] $matchName)
 {
-    if ([System.IO.Path]::IsPathRooted($matchName))
-    {
-        return ($matchName.Length -le $filePath.Length) -and
-               ($filePath.Substring(0, $matchName.Length) -ieq $matchName)
-    }
+    [string] $matchString = $matchName.ToString() # works for both strings and regex types
 
-    if ($aDisableNameRegexMatching)
+    if ($matchName -is [string])
     {
+        if ([System.IO.Path]::IsPathRooted($matchString))
+        {
+            if ($matchName.Length -le $filePath.Length -and
+                ($filePath.Substring(0, $matchName.Length) -ieq $matchName))
+            {
+              return true
+            }
+        }
+
         [string] $fileName      = (Get-FileName -path $filePath)
+        if ($fileName -ieq $matchString)
+        {
+            return $true
+        }
+
         [string] $fileNameNoExt = (Get-FileName -path $filePath -noext)
-        return (($fileName -ieq $matchName) -or ($fileNameNoExt -ieq $matchName))
+        if ($fileNameNoExt -ieq $matchString)
+        {
+            return $true
+        }
+
+        if ($filePath.ToLower().EndsWith($matchName.ToLower()))
+        {
+            return $true
+        }
+
+        while (![string]::IsNullOrWhiteSpace($filePath))
+        {
+            if ($filePath.ToLower().EndsWith($matchName.ToLower()))
+            {
+                return $true
+            }
+            $filePath = [System.IO.Path]::GetDirectoryName($filePath)
+        }
+
+        return $false
     }
-    else
+    elseif ($matchName -is [regex])
     {
-        return $filePath -match $matchName
+        return $filePath -match $matchString
+    }
+    else 
+    {
+        throw "Unsupported match object type $($matchName.GetType().ToString())"
     }
 }
 

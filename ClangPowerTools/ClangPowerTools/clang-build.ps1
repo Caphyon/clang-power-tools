@@ -15,8 +15,7 @@
 
 .PARAMETER aVcxprojToCompile
     Alias 'proj'. Array of project(s) to compile. If empty, all projects found in solutions are compiled.
-    If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used,
-    e.g. "msicomp" compiles all projects containing 'msicomp'.
+    Regex matching is supported, using the [regex] prefix (e.g. [regex]'.*components').
 
     Absolute disk paths to vcxproj files are accepted.
 
@@ -25,8 +24,7 @@
 .PARAMETER aVcxprojToIgnore
     Alias 'proj-ignore'. Array of project(s) to ignore, from the matched ones.
     If empty, all already matched projects are compiled.
-    If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used,
-    e.g. "msicomp" ignores projects containing 'msicomp'.
+    Regex matching is supported, using the [regex] prefix (e.g. [regex]'.*components').
 
     Can be passed as comma separated values.
 
@@ -39,16 +37,13 @@
 
 .PARAMETER aCppToCompile
     Alias 'file'. What cpp(s) to compile from the found project(s). If empty, all CPPs are compiled.
-    If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used,
-    e.g. "table" compiles all CPPs containing 'table'.
+    Regex matching is supported, using the [regex] prefix (e.g. [regex]'.*table').
 
     Note: If any headers are given then all translation units that include them will be processed.
 
 .PARAMETER aCppToIgnore
     Alias 'file-ignore'. Array of file(s) to ignore, from the matched ones.
-    If empty, all already matched files are compiled.
-    If the -literal switch is present, name is matched exactly. Otherwise, regex matching is used,
-    e.g. "table" ignores all CPPs containing 'table'.
+    Regex matching is supported, using the [regex] prefix (e.g. [regex]'.*table').
 
     Can be passed as comma separated values.
 
@@ -64,9 +59,6 @@
 .PARAMETER aClangCompileFlags
      Alias 'clang-flags'. Flags given to clang++ when compiling project,
      alongside project-specific defines.
-
-.PARAMETER aDisableNameRegexMatching
-     Alias 'literal'. Switch to take project and cpp name filters literally, not by regex matching.
 
 .PARAMETER aTidyFlags
       Alias 'tidy'. If not empty clang-tidy will be called with given flags, instead of clang++.
@@ -118,7 +110,7 @@
 #Requires -Version 3
 param( [alias("proj")]
        [Parameter(Mandatory=$false, HelpMessage="Filter project(s) to compile/tidy")]
-       [string[]] $aVcxprojToCompile = @()
+       [System.Object[]] $aVcxprojToCompile = @()
 
      , [alias("dir")]
        [Parameter(Mandatory=$false, HelpMessage="Source directory for finding solutions; projects will be found from each sln")]
@@ -126,7 +118,7 @@ param( [alias("proj")]
 
      , [alias("proj-ignore")]
        [Parameter(Mandatory=$false, HelpMessage="Specify projects to ignore")]
-       [string[]] $aVcxprojToIgnore = @()
+       [System.Object[]] $aVcxprojToIgnore = @()
 
      , [alias("active-config")]
        [Parameter(Mandatory=$false, HelpMessage="Config/platform to be used, e.g. Debug|Win32")]
@@ -134,11 +126,11 @@ param( [alias("proj")]
 
      , [alias("file")]
        [Parameter(Mandatory=$false, HelpMessage="Filter file(s) to compile/tidy")]
-       [string[]] $aCppToCompile = @()
+       [System.Object[]] $aCppToCompile = @()
 
      , [alias("file-ignore")]
        [Parameter(Mandatory=$false, HelpMessage="Specify file(s) to ignore")]
-       [string[]] $aCppToIgnore = @()
+       [System.Object[]] $aCppToIgnore = @()
 
      , [alias("parallel")]
        [Parameter(Mandatory=$false, HelpMessage="Compile/tidy projects in parallel")]
@@ -155,10 +147,6 @@ param( [alias("proj")]
      , [alias("clang-flags")]
        [Parameter(Mandatory=$false, HelpMessage="Specify compilation flags to CLANG")]
        [string[]] $aClangCompileFlags = @()
-
-     , [alias("literal")]
-       [Parameter(Mandatory=$false, HelpMessage="Disable regex matching for all paths received as script parameters")]
-       [switch]   $aDisableNameRegexMatching
 
      , [alias("tidy")]
        [Parameter(Mandatory=$false, HelpMessage="Specify flags to CLANG TIDY")]
