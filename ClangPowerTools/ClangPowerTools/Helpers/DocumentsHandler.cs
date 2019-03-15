@@ -14,8 +14,7 @@ namespace ClangPowerTools
     /// <returns>Active documents</returns>
     public static Documents GetActiveDocuments()
     {
-      return VsServiceProvider.TryGetService(typeof(DTE), out object dte) ?
-        (dte as DTE).Documents : null;
+      return VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE).do : null;
     }
 
     /// <summary>
@@ -24,8 +23,7 @@ namespace ClangPowerTools
     /// <returns>Active document</returns>
     public static Document GetActiveDocument()
     {
-      return VsServiceProvider.TryGetService(typeof(DTE), out object dte) ?
-              (dte as DTE).ActiveDocument : null;
+      return VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE).ActiveDocument : null;
     }
 
     /// <summary>
@@ -34,8 +32,7 @@ namespace ClangPowerTools
     public static List<string> GetDocumentsToIgnore()
     {
       List<string> documentsToIgnore = new List<string>();
-      DTE vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE), out object dte) ?
-          (dte as DTE) : null;
+      DTE vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE) : null;
 
       Document activeDocument = vsServiceProvider.ActiveDocument;
       SelectedItems selectedDocuments = vsServiceProvider.SelectedItems;
