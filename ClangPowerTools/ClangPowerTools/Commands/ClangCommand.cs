@@ -150,6 +150,20 @@ namespace ClangPowerTools
       return mItemsCollector.GetItems;
     }
 
+    protected async System.Threading.Tasks.Task PrepareCommmandAsync()
+    {
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+      DocumentsHandler.SaveActiveDocuments();
+
+      if (!VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+        return;
+
+      var dte2 = dte as DTE2;
+      AutomationUtil.SaveDirtyProjects((dte as DTE2).Solution);
+      CollectSelectedItems(false, ScriptConstants.kAcceptedFileExtensions);
+    }
+
 
     #endregion
 

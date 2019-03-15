@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.Output;
-using ClangPowerTools.Services;
+﻿using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -40,7 +39,7 @@ namespace ClangPowerTools.Commands
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    private CompileCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController, 
+    private CompileCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController,
       AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aPackage, aGuid, aId)
     {
@@ -64,7 +63,7 @@ namespace ClangPowerTools.Commands
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController, 
+    public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController,
       AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in CompileCommand's constructor requires
@@ -76,19 +75,14 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public System.Threading.Tasks.Task RunClangCompileAsync(int aCommandId)
+    public async System.Threading.Tasks.Task RunClangCompileAsync(int aCommandId)
     {
-      return System.Threading.Tasks.Task.Run(() =>
+      await PrepareCommmandAsync();
+
+      await System.Threading.Tasks.Task.Run(() =>
       {
         try
         {
-          if(VsServiceProvider.TryGetService(typeof(DTE), out object dte))
-          {
-            DocumentsHandler.SaveActiveDocuments();
-            AutomationUtil.SaveDirtyProjects((dte as DTE2).Solution);
-          }
-
-          CollectSelectedItems(false, ScriptConstants.kAcceptedFileExtensions);
           RunScript(aCommandId);
         }
         catch (Exception exception)

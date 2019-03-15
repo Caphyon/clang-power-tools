@@ -76,22 +76,14 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public System.Threading.Tasks.Task RunClangTidyAsync(int aCommandId)
+    public async System.Threading.Tasks.Task RunClangTidyAsync(int aCommandId)
     {
-      return System.Threading.Tasks.Task.Run(() =>
+      await PrepareCommmandAsync();
+
+      await System.Threading.Tasks.Task.Run(() =>
       {
         try
         {
-          DocumentsHandler.SaveActiveDocuments();
-
-          if (!VsServiceProvider.TryGetService(typeof(DTE), out object dte))
-            return;
-
-          var dte2 = dte as DTE2;
-          AutomationUtil.SaveDirtyProjects(dte2.Solution);
-
-          CollectSelectedItems(false, ScriptConstants.kAcceptedFileExtensions);
-
           using (var silentFileController = new SilentFileChangerController())
           {
             using (var fileChangerWatcher = new FileChangerWatcher())
@@ -102,6 +94,7 @@ namespace ClangPowerTools.Commands
               {
                 fileChangerWatcher.OnChanged += FileOpener.Open;
 
+                var dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
                 string solutionFolderPath = dte2.Solution.FullName
                   .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
 
