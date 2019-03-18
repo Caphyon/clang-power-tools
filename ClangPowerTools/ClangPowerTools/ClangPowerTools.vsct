@@ -202,8 +202,10 @@
         </Strings>
       </Button>
 
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0003" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatToolbarId" priority="0x0003" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
+        <Icon guid="guidImageFormat" id="Format" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Clang Format</ButtonText>
         </Strings>
@@ -364,9 +366,9 @@
       <IDSymbol name="TidyToolbarId" value="0x1101" />
       <IDSymbol name="TidyFixToolbarId" value="0x1102"/>
 
-
-
       <IDSymbol name="ClangFormatId" value="0x0105" />
+      <IDSymbol name="ClangFormatToolbarId" value="0x1103" />
+
       <IDSymbol name="StopClangId" value="0x0104" />
       <IDSymbol name="IgnoreFormatId" value="0x0107" />
       <IDSymbol name="IgnoreCompileId" value="0x0108" />
