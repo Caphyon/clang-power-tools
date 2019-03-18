@@ -104,7 +104,7 @@
       </Button>
       
       <!-- Clang Tidy-Fix context menu button  -->
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixMenuId" priority="0x0003" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixId" priority="0x0003" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
         <Icon guid="guidImageEmpty" id="Empty" />
         <CommandFlag>DefaultDisabled</CommandFlag>
@@ -178,7 +178,7 @@
       <!-- Clang Tidy & Clang Tidy Fix Drop Down submenu in toolbar-->
 
       <!-- Clang Tidy-Fix toolbar button  -->
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarDropDownMenuId" priority="0x0002" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" priority="0x0002" type="Button">
         <Icon guid="guidImageTidy" id="Tidy" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
@@ -186,14 +186,16 @@
         </Strings>
       </Button>
       
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0001" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyToolbarId" priority="0x0001" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownToolbarMenuGroup" />
+        <Icon guid="guidImageTidy" id="Tidy" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Tidy</ButtonText>
         </Strings>
       </Button>
 
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarDropDownMenuId" priority="0x0002" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" priority="0x0002" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownToolbarMenuGroup" />
         <Strings>
           <ButtonText>Tidy-Fix</ButtonText>
@@ -267,7 +269,7 @@
     
     <!--<KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyId" editor="guidVSStd97"
                     key1="Y" mod1="ALT" />
-        <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarDropDownMenuId" editor="guidVSStd97"
+        <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" editor="guidVSStd97"
                     key1="U" mod1="ALT" />
         <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" editor="guidVSStd97"
                     key1="I" mod1="ALT" />
@@ -357,10 +359,13 @@
       <IDSymbol name="CompileToolbarId" value="0x1100" />
 
       <IDSymbol name="TidyId" value="0x0101" />
-      
-      
-      <IDSymbol name="TidyFixToolbarDropDownMenuId" value="0x0106"/>
-      <IDSymbol name="TidyFixMenuId" value="0x0109"/>
+      <IDSymbol name="TidyFixId" value="0x0109"/>
+
+      <IDSymbol name="TidyToolbarId" value="0x1101" />
+      <IDSymbol name="TidyFixToolbarId" value="0x1102"/>
+
+
+
       <IDSymbol name="ClangFormatId" value="0x0105" />
       <IDSymbol name="StopClangId" value="0x0104" />
       <IDSymbol name="IgnoreFormatId" value="0x0107" />

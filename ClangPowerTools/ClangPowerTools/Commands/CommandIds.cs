@@ -6,7 +6,7 @@
 
     public const int kCompileId                       = 0x0102;
     public const int kTidyId                          = 0x0101;
-    public const int kTidyFixId                       = 0x0106;
+    public const int kTidyFixId                       = 0x1102;
     public const int kTidyFixMenuId                   = 0x0109;
     public const int kClangFormat                     = 0x0105;
     public const int kStopClang                       = 0x0104;
