@@ -152,7 +152,7 @@ Function IsFileMatchingName( [Parameter(Mandatory = $true)][string] $filePath
             if ($matchName.Length -le $filePath.Length -and
                 ($filePath.Substring(0, $matchName.Length) -ieq $matchName))
             {
-              return true
+              return $true
             }
         }
 
@@ -188,7 +188,7 @@ Function IsFileMatchingName( [Parameter(Mandatory = $true)][string] $filePath
     {
         return $filePath -match $matchString
     }
-    else 
+    else
     {
         throw "Unsupported match object type $($matchName.GetType().ToString())"
     }
