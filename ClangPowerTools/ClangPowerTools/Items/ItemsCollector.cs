@@ -12,7 +12,6 @@ namespace ClangPowerTools
     #region Members
 
     private List<string> mAcceptedFileExtensions = new List<string>();
-    private List<IItem> mItems = new List<IItem>();
 
     #endregion
 
@@ -27,8 +26,8 @@ namespace ClangPowerTools
 
     #region Properties
 
-    public List<IItem> GetItems => mItems;
-    public bool HaveItems => mItems.Count != 0;
+    public List<IItem> items { get; private set; } = new List<IItem>();
+    public bool haveItems => items.Count != 0;
 
     #endregion
 
@@ -84,7 +83,7 @@ namespace ClangPowerTools
       if (null != mAcceptedFileExtensions && false == mAcceptedFileExtensions.Contains(fileExtension))
         return;
 
-      mItems.Add(new SelectedProjectItem(aItem));
+      items.Add(new SelectedProjectItem(aItem));
     }
 
     #endregion
@@ -95,11 +94,11 @@ namespace ClangPowerTools
 
     private void GetProjectsFromSolution(Solution aSolution)
     {
-      mItems = AutomationUtil.GetAllProjects(aSolution);
+      items = AutomationUtil.GetAllProjects(aSolution);
     }
 
 
-    private void AddProject(Project aProject) => mItems.Add(new SelectedProject(aProject));
+    private void AddProject(Project aProject) => items.Add(new SelectedProject(aProject));
 
 
     private void GetProjectItem(ProjectItem aProjectItem)

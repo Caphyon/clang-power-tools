@@ -120,7 +120,7 @@ namespace ClangPowerTools
       VsServiceProvider.TryGetService(typeof(SVsSolution), out object vsSolutionService);
       var vsSolution = vsSolutionService as IVsSolution;
 
-      foreach (var item in mItemsCollector.GetItems)
+      foreach (var item in mItemsCollector.items)
       {
         IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item);
         itemRelatedScriptBuilder.Build();
@@ -143,11 +143,11 @@ namespace ClangPowerTools
     }
 
     //Collect files CAKE
-    protected IEnumerable<IItem> CollectSelectedItems(bool aClangFormatFlag = false, List<string> aAcceptedExtensionTypes = null)
+    protected IEnumerable<IItem> CollectItems(bool aClangFormatFlag = false, List<string> aAcceptedExtensionTypes = null)
     {
       mItemsCollector = new ItemsCollector(aAcceptedExtensionTypes);
       mItemsCollector.CollectSelectedFiles(ActiveWindowProperties.GetProjectItemOfActiveWindow(), aClangFormatFlag);
-      return mItemsCollector.GetItems;
+      return mItemsCollector.items;
     }
 
     protected async System.Threading.Tasks.Task PrepareCommmandAsync()
@@ -161,7 +161,7 @@ namespace ClangPowerTools
 
       var dte2 = dte as DTE2;
       AutomationUtil.SaveDirtyProjects((dte as DTE2).Solution);
-      CollectSelectedItems(false, ScriptConstants.kAcceptedFileExtensions);
+      CollectItems(false, ScriptConstants.kAcceptedFileExtensions);
     }
 
 
