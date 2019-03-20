@@ -27,6 +27,17 @@ namespace ClangPowerTools
     }
 
     /// <summary>
+    /// Get the elected items
+    /// </summary>
+    /// <returns></returns>
+    public static SelectedItems GetSelectedItems()
+    {
+      DTE vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE) : null;
+
+      return vsServiceProvider.SelectedItems;
+    }
+
+    /// <summary>
     /// Get the name of the active document
     /// </summary>
     public static List<string> GetDocumentsToIgnore()
@@ -62,19 +73,6 @@ namespace ClangPowerTools
       if (null != activeDocuments && 0 < activeDocuments.Count)
         activeDocuments.SaveAll();
     }
-
-    /// <summary>
-    /// Save all the active documents
-    /// </summary>
-    public static void SaveActiveDocument()
-    {
-      var activeDocument = GetActiveDocument();
-      if (null != activeDocument)
-        activeDocument.Save();
-    }
-
-
-
 
     #endregion
 

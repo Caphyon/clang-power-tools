@@ -79,10 +79,13 @@ namespace ClangPowerTools
 
     public async System.Threading.Tasks.Task InitializeCommandsAsync(AsyncPackage aAsyncPackage)
     {
-      if (null == CompileCommand.Instance)
+      if (CompileCommand.Instance == null)
+      {
         await CompileCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kCompileId);
+        await CompileCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kCompileToolbarId);
+      }
 
-      if (null == TidyCommand.Instance)
+      if (TidyCommand.Instance == null)
       {
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyId);
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyFixId);
@@ -134,6 +137,13 @@ namespace ClangPowerTools
           {
             CurrentCommand = CommandIds.kClangFormat;
             ClangFormatCommand.Instance.RunClangFormat();
+            break;
+          }
+        case CommandIds.kCompileToolbarId:
+          {
+            OnBeforeClangCommand(CommandIds.kCompileToolbarId);
+            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileToolbarId);
+            OnAfterClangCommand();
             break;
           }
         case CommandIds.kCompileId:

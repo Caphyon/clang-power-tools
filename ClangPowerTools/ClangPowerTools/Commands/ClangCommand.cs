@@ -142,7 +142,7 @@ namespace ClangPowerTools
         StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
-
+    //Collect files CAKE
     protected IEnumerable<IItem> CollectSelectedItems(bool aClangFormatFlag = false, List<string> aAcceptedExtensionTypes = null)
     {
       mItemsCollector = new ItemsCollector(aAcceptedExtensionTypes);

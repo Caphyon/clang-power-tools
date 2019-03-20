@@ -77,6 +77,7 @@ namespace ClangPowerTools.Commands
 
     public async System.Threading.Tasks.Task RunClangCompileAsync(int aCommandId)
     {
+      // CAKE change depending on command
       await PrepareCommmandAsync();
 
       await System.Threading.Tasks.Task.Run(() =>

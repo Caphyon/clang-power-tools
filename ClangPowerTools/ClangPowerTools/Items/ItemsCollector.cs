@@ -38,20 +38,10 @@ namespace ClangPowerTools
     {
       try
       {
-        // if the command has been given from tab file
-        // will be just one file selected
-        if (null != aProjectItem && false == aClangFormatFlag)
-        {
-          AddProjectItem(aProjectItem);
-          return;
-        }
+        var dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
+        Array selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
 
-        // the command has been given from Solution Explorer or toolbar
-        Array selectedItems = null;
-        if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
-          selectedItems = (dte as DTE2).ToolWindows.SolutionExplorer.SelectedItems as Array;
-
-        if (null == selectedItems || 0 == selectedItems.Length)
+        if (selectedItems == null || selectedItems.Length == 0)
           return;
 
         foreach (UIHierarchyItem item in selectedItems)
@@ -78,16 +68,16 @@ namespace ClangPowerTools
             GetProjectItem(item.Object as ProjectItem);
         }
       }
-      catch (Exception)
+      catch (Exception e)
       {
+        throw new Exception(e.Message);
       }
-
     }
 
 
     public void AddProjectItem(ProjectItem aItem)
     {
-      if (null == aItem)
+      if (aItem == null)
         return;
 
       var fileExtension = Path.GetExtension(aItem.Name).ToLower();
@@ -115,14 +105,14 @@ namespace ClangPowerTools
     private void GetProjectItem(ProjectItem aProjectItem)
     {
       // Items that contains projects
-      if (null == aProjectItem.ProjectItems)
+      if (aProjectItem.ProjectItems == null)
       {
-        if (null != aProjectItem.SubProject)
+        if (aProjectItem.SubProject != null)
           AddProject(aProjectItem.SubProject);
         return;
       }
       // Folders or filters
-      else if (0 != aProjectItem.ProjectItems.Count)
+      else if (aProjectItem.ProjectItems.Count != 0 )
       {
         foreach (ProjectItem projItem in aProjectItem.ProjectItems)
           GetProjectItem(projItem);
@@ -140,7 +130,7 @@ namespace ClangPowerTools
       foreach (var item in aProject.ProjectItems)
       {
         var projectItem = item as ProjectItem;
-        if (null == projectItem)
+        if (projectItem == null)
           continue;
 
         GetProjectItem(projectItem);
@@ -153,7 +143,7 @@ namespace ClangPowerTools
       foreach (var item in AutomationUtil.GetAllProjects(aSolution))
       {
         var project = (item as SelectedProject).GetObject() as Project;
-        if (null == project)
+        if (project == null)
           continue;
 
         GetProjectItem(project);
