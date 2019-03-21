@@ -14,13 +14,13 @@
 						</Menu>
 					
 					<!--Top Toolbar Menu Drop-Down-->
-					<Menu guid="guidClangPowerToolsPackageCmdSet" id="GroupForTopToolbarMenu" priority="0xffff" type="Menu">
+					<!--<Menu guid="guidClangPowerToolsPackageCmdSet" id="GroupForTopToolbarMenu" priority="0xffff" type="Menu">
 						<Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
 						<Strings>
 							<ButtonText>Clang Power Tools</ButtonText>
 							<CommandName>Clang Power Tools</CommandName>
 						</Strings>
-					</Menu>
+					</Menu>-->
 
 					<!--Toolbar menu-->
 						<Menu guid="guidClangPowerToolsPackageCmdSet" id="Toolbar" type="Toolbar">
