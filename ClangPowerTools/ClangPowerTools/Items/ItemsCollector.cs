@@ -33,6 +33,39 @@ namespace ClangPowerTools
 
     #region Public Methods
 
+    public void CollectActiveDocument()
+    {
+
+    }
+
+    /// <summary>
+    /// Get the name of the active document
+    /// </summary>
+    public static List<string> GetDocumentsToIgnore()
+    {
+      List<string> documentsToIgnore = new List<string>();
+      DTE vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE) : null;
+
+      Document activeDocument = vsServiceProvider.ActiveDocument;
+      SelectedItems selectedDocuments = vsServiceProvider.SelectedItems;
+
+      if (selectedDocuments.Count == 1 && selectedDocuments.Item(1).Name == activeDocument.Name)
+      {
+        documentsToIgnore.Add(activeDocument.Name);
+        return documentsToIgnore;
+      }
+
+      if (selectedDocuments.Count > 0)
+      {
+        for (int i = 1; i <= selectedDocuments.Count; i++)
+        {
+          documentsToIgnore.Add(selectedDocuments.Item(i).Name);
+        }
+      }
+      return documentsToIgnore;
+    }
+
+
     public void CollectSelectedFiles(ProjectItem aProjectItem, bool aClangFormatFlag = false)
     {
       try
