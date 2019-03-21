@@ -75,10 +75,10 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public async System.Threading.Tasks.Task RunClangCompileAsync(int aCommandId)
+    public async System.Threading.Tasks.Task RunClangCompileAsync(int aCommandId, CommandUILocation commandUILocation)
     {
       // CAKE change depending on command
-      await PrepareCommmandAsync();
+      await PrepareCommmandAsync(commandUILocation);
 
       await System.Threading.Tasks.Task.Run(() =>
       {

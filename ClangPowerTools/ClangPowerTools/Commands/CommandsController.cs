@@ -142,21 +142,21 @@ namespace ClangPowerTools
         case CommandIds.kCompileToolbarId:
           {
             OnBeforeClangCommand(CommandIds.kCompileToolbarId);
-            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileToolbarId);
+            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileToolbarId, CommandUILocation.Toolbar);
             OnAfterClangCommand();
             break;
           }
         case CommandIds.kCompileId:
           {
             OnBeforeClangCommand(CommandIds.kCompileId);
-            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId);
+            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu);
             OnAfterClangCommand();
             break;
           }
         case CommandIds.kTidyId:
           {
             OnBeforeClangCommand(CommandIds.kTidyId);
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, CommandUILocation.ContextMenu);
             OnAfterClangCommand();
             break;
           }
@@ -164,7 +164,7 @@ namespace ClangPowerTools
         case CommandIds.kTidyFixToolbarId:
           {
             OnBeforeClangCommand(CommandIds.kTidyFixId);
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu);
             OnAfterClangCommand();
             break;
           }
@@ -336,7 +336,7 @@ namespace ClangPowerTools
       // Run clang compile after the VS compile succeeded
 
       OnBeforeClangCommand(CommandIds.kCompileId);
-      await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId);
+      await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu);
       CompileCommand.Instance.VsCompileFlag = false;
       OnAfterClangCommand();
     }
@@ -362,7 +362,7 @@ namespace ClangPowerTools
       if (true == Running) // Clang compile/tidy command is running
         return;
 
-      TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId);
+      TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu);
       mSaveCommandWasGiven = false;
     }
 

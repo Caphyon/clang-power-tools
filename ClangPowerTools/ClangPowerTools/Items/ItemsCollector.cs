@@ -35,7 +35,9 @@ namespace ClangPowerTools
 
     public void CollectActiveDocument()
     {
-
+      DTE vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE) : null;
+      Document test = vsServiceProvider.ActiveDocument;
+      items.Add(test.ProjectItem.);
     }
 
     /// <summary>

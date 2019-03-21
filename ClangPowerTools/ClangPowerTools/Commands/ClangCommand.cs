@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Builder;
+using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
 using ClangPowerTools.Script;
 using ClangPowerTools.Services;
@@ -143,14 +144,24 @@ namespace ClangPowerTools
     }
 
     //Collect files CAKE
-    protected IEnumerable<IItem> CollectItems(bool aClangFormatFlag = false, List<string> aAcceptedExtensionTypes = null)
+    protected IEnumerable<IItem> CollectItems(bool aClangFormatFlag = false, List<string> aAcceptedExtensionTypes = null, CommandUILocation commandUILocation = CommandUILocation.ContextMenu)
     {
       mItemsCollector = new ItemsCollector(aAcceptedExtensionTypes);
-      mItemsCollector.CollectSelectedFiles(ActiveWindowProperties.GetProjectItemOfActiveWindow(), aClangFormatFlag);
+      switch (commandUILocation)
+      {
+        case CommandUILocation.Toolbar:
+          mItemsCollector.CollectActiveDocument();
+          break;
+        case CommandUILocation.ContextMenu:
+          mItemsCollector.CollectSelectedFiles(ActiveWindowProperties.GetProjectItemOfActiveWindow(), aClangFormatFlag);
+          break;
+        default:
+          break;
+      }
       return mItemsCollector.items;
     }
 
-    protected async System.Threading.Tasks.Task PrepareCommmandAsync()
+    protected async System.Threading.Tasks.Task PrepareCommmandAsync(CommandUILocation commandUILocation )
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -161,7 +172,7 @@ namespace ClangPowerTools
 
       var dte2 = dte as DTE2;
       AutomationUtil.SaveDirtyProjects((dte as DTE2).Solution);
-      CollectItems(false, ScriptConstants.kAcceptedFileExtensions);
+      CollectItems(false, ScriptConstants.kAcceptedFileExtensions, commandUILocation);
     }
 
 
