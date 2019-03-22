@@ -12,6 +12,7 @@ namespace ClangPowerTools
     public static readonly Dictionary<int, string> kCommandsNames = new Dictionary<int, string>
     {
       {CommandIds.kCompileId, "Clang Compile" },
+      {CommandIds.kCompileToolbarId, "Clang Compile" },
       {CommandIds.kTidyId, "Clang Tidy" },
       {CommandIds.kTidyFixId, "Clang Tidy-Fix" }
     };

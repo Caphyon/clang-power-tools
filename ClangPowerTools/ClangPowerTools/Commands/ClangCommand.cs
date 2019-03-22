@@ -147,7 +147,7 @@ namespace ClangPowerTools
       switch (commandUILocation)
       {
         case CommandUILocation.Toolbar:
-          mItemsCollector.CollectActiveDocument(aClangFormatFlag);
+          mItemsCollector.CollectActiveProjectItem(aClangFormatFlag);
           break;
         case CommandUILocation.ContextMenu:
           mItemsCollector.CollectSelectedFiles(ActiveWindowProperties.GetProjectItemOfActiveWindow(), aClangFormatFlag);

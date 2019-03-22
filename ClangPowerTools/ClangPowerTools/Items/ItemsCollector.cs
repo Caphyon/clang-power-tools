@@ -33,11 +33,11 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public void CollectActiveDocument(bool aClangFormatFlag = false)
+    public void CollectActiveProjectItem(bool aClangFormatFlag = false)
     {
       DTE vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE) : null;
-      ActiveProjectItem test = new ActiveProjectItem(vsServiceProvider.ActiveDocument);
-      items.Add(test);
+      SelectedProjectItem activeProjectItem = new SelectedProjectItem(vsServiceProvider.ActiveDocument.ProjectItem);
+      items.Add(activeProjectItem);
     }
 
     /// <summary>
@@ -67,7 +67,9 @@ namespace ClangPowerTools
       return documentsToIgnore;
     }
 
-
+    /// <summary>
+    /// Collect all selected items in the Solution explorer for commands
+    /// </summary>
     public void CollectSelectedFiles(ProjectItem aProjectItem, bool aClangFormatFlag = false)
     {
       try
