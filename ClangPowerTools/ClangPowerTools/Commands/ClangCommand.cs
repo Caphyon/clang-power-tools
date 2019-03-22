@@ -101,9 +101,6 @@ namespace ClangPowerTools
 
     protected void RunScript(int aCommandId)
     {
-      //var dte = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
-      //dte.Solution.SaveAs(dte.Solution.FullName);
-
       IBuilder<string> runModeScriptBuilder = new RunModeScriptBuilder();
       runModeScriptBuilder.Build();
       var runModeParameters = runModeScriptBuilder.GetResult();

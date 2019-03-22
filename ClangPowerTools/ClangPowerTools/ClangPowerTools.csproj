@@ -95,6 +95,7 @@
     <Compile Include="Events\MissingLlvmEventArgs.cs" />
     <Compile Include="Events\VsHierarchyDetectedEventArgs.cs" />
     <Compile Include="Helpers\UIUpdater.cs" />
+    <Compile Include="Items\ActiveProjectItem.cs" />
     <Compile Include="Options\ClangTidyPathValue.cs" />
     <Compile Include="Options\ClangFormatPathValue.cs" />
     <Compile Include="Options\HeaderFiltersValue.cs" />

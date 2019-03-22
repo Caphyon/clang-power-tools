@@ -27,7 +27,6 @@ namespace ClangPowerTools.Items
 
     public object GetObject() => document;
 
-
     public string GetPath() => document.FullName;
 
     public void Save() => document.Save("");
