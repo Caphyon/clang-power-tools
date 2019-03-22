@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EnvDTE;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,24 +9,29 @@ namespace ClangPowerTools.Items
 {
   class ActiveProjectItem : IItem
   {
-    public string GetName()
-    {
-      throw new NotImplementedException();
-    }
+    #region Members
 
-    public object GetObject()
-    {
-      throw new NotImplementedException();
-    }
+    private Document document;
 
-    public string GetPath()
-    {
-      throw new NotImplementedException();
-    }
+    #endregion
 
-    public void Save()
-    {
-      throw new NotImplementedException();
-    }
+    #region Constructor 
+
+    public ActiveProjectItem(Document activeDocument) => document = activeDocument;
+
+    #endregion
+
+    #region IItem implementaion
+
+    public string GetName() => document.Name;
+
+    public object GetObject() => document;
+
+
+    public string GetPath() => document.FullName;
+
+    public void Save() => document.Save("");
+
+    #endregion
   }
 }
