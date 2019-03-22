@@ -33,11 +33,11 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public void CollectActiveDocument()
+    public void CollectActiveDocument(bool aClangFormatFlag = false)
     {
       DTE vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE) : null;
-      Document test = vsServiceProvider.ActiveDocument;
-      items.Add(test.ProjectItem.);
+      ActiveProjectItem test = new ActiveProjectItem(vsServiceProvider.ActiveDocument);
+      items.Add(test);
     }
 
     /// <summary>

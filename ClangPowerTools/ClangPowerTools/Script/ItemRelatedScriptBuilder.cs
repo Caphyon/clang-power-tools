@@ -43,10 +43,19 @@ namespace ClangPowerTools.Script
 
     /// <summary>
     /// Create the script by gathering all the item related parameters from the environment and settings components 
+    /// CAKE
     /// </summary>
     public void Build()
     {
-      if (mItem is SelectedProjectItem)
+      if(mItem is ActiveProjectItem)
+      {
+        Document document = mItem.GetObject() as Document;
+        string containingProject = document.ProjectItem.ContainingProject.FullName;
+        mScript = $"{mScript} {ScriptConstants.kProject} ''{containingProject}'' " +
+          $"{ScriptConstants.kFile} ''{document.FullName}'' {ScriptConstants.kActiveConfiguration} " +
+          $"''{ProjectConfigurationHandler.GetConfiguration(document.ProjectItem.ContainingProject)}|{ProjectConfigurationHandler.GetPlatform(document.ProjectItem.ContainingProject)}''";
+      }
+      else if (mItem is SelectedProjectItem)
       {
         ProjectItem projectItem = mItem.GetObject() as ProjectItem;
         string containingProject = projectItem.ContainingProject.FullName;

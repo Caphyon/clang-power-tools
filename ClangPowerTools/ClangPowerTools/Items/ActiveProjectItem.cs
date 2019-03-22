@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClangPowerTools.Items
+namespace ClangPowerTools
 {
   class ActiveProjectItem : IItem
   {
