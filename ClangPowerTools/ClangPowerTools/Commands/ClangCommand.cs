@@ -86,38 +86,52 @@ namespace ClangPowerTools
 
     #region Methods
 
-    #region Public Methods
-
     public void OnMissingLLVMDetected(object sender, MissingLlvmEventArgs e)
     {
       mMissingLLVM = e.MissingLLVM;
     }
 
-
-    #endregion
-
-
-    #region Protected methods
-
     protected void RunScript(int aCommandId)
+    {
+      string runModeParameters = GetRunModeParamaters();
+      string genericParameters = GetGenericParamaters(aCommandId);
+
+      if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
+      {
+        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
+      }
+
+      if (!mMissingLLVM)
+      {
+        CreateStript(runModeParameters, genericParameters);
+      }
+
+      if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
+      {
+        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+      }
+    }
+
+    private string GetGenericParamaters(int aCommandId)
+    {
+      IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(VsEdition, VsVersion, aCommandId);
+      genericScriptBuilder.Build();
+      var genericParameters = genericScriptBuilder.GetResult();
+      return genericParameters;
+    }
+
+    private static string GetRunModeParamaters()
     {
       IBuilder<string> runModeScriptBuilder = new RunModeScriptBuilder();
       runModeScriptBuilder.Build();
       var runModeParameters = runModeScriptBuilder.GetResult();
+      return runModeParameters;
+    }
 
-      IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(VsEdition, VsVersion, aCommandId);
-      genericScriptBuilder.Build();
-      var genericParameters = genericScriptBuilder.GetResult();
-
-      var dte = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
-      string solutionPath = dte.Solution.FullName;
-
-      if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
-        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
-
+    private void CreateStript(string runModeParameters, string genericParameters)
+    {
       VsServiceProvider.TryGetService(typeof(SVsSolution), out object vsSolutionService);
       var vsSolution = vsSolutionService as IVsSolution;
-
       foreach (var item in mItemsCollector.items)
       {
         IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item);
@@ -132,12 +146,7 @@ namespace ClangPowerTools
           ItemHierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
 
         var process = PowerShellWrapper.Invoke(script, mRunningProcesses);
-
-        if (mMissingLLVM)
-          break;
       }
-      if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
-        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
     //Collect files CAKE
@@ -173,19 +182,10 @@ namespace ClangPowerTools
     }
 
 
-    #endregion
-
-
-    #region Private Methods
-
-
     protected virtual void OnFileHierarchyChanged(VsHierarchyDetectedEventArgs e)
     {
       HierarchyDetectedEvent?.Invoke(this, e);
     }
-
-    #endregion
-
 
     #endregion
 
