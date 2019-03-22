@@ -88,27 +88,41 @@ namespace ClangPowerTools
       if (TidyCommand.Instance == null)
       {
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyId);
+        await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.TidyToolbarId);
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyFixId);
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyFixToolbarId);
       }
 
-      if (null == ClangFormatCommand.Instance)
+      if (ClangFormatCommand.Instance == null)
+      {
         await ClangFormatCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kClangFormat);
+        await ClangFormatCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kClangFormatToolbarId);
+      }
 
       if (IgnoreFormatCommand.Instance == null)
+      {
         await IgnoreFormatCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kIgnoreFormatId);
+      }
 
       if (IgnoreCompileCommand.Instance == null)
+      {
         await IgnoreCompileCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kIgnoreCompileId);
+      }
 
-      if (null == StopClang.Instance)
+      if (StopClang.Instance == null)
+      {
         await StopClang.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kStopClang);
+      }
 
-      if (null == SettingsCommand.Instance)
+      if (SettingsCommand.Instance == null)
+      {
         await SettingsCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kSettingsId);
+      }
 
-      if (null == TidyConfigCommand.Instance)
+      if (TidyConfigCommand.Instance == null)
+      {
         await TidyConfigCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kITidyExportConfigId);
+      }
     }
 
     public async void Execute(object sender, EventArgs e)
@@ -134,22 +148,23 @@ namespace ClangPowerTools
             break;
           }
         case CommandIds.kClangFormat:
+        case CommandIds.kClangFormatToolbarId:
           {
-            CurrentCommand = CommandIds.kClangFormat;
-            ClangFormatCommand.Instance.RunClangFormat();
-            break;
-          }
-        case CommandIds.kCompileToolbarId:
-          {
-            OnBeforeClangCommand(CommandIds.kCompileToolbarId);
-            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileToolbarId, CommandUILocation.Toolbar);
-            OnAfterClangCommand();
+            CurrentCommand = CommandIds.kClangFormatToolbarId;
+            ClangFormatCommand.Instance.RunClangFormat(CommandUILocation.Toolbar);
             break;
           }
         case CommandIds.kCompileId:
           {
             OnBeforeClangCommand(CommandIds.kCompileId);
             await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu);
+            OnAfterClangCommand();
+            break;
+          }
+        case CommandIds.kCompileToolbarId:
+          {
+            OnBeforeClangCommand(CommandIds.kCompileToolbarId);
+            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileToolbarId, CommandUILocation.Toolbar);
             OnAfterClangCommand();
             break;
           }
