@@ -661,6 +661,7 @@ Function Get-ExeCallArguments( [Parameter(Mandatory=$false)][string]       $pchF
 Function Process-ProjectResult($compileResult)
 {
   $global:cptCurrentClangJobCounter = $compileResult.JobCounter
+  Write-Debug "Receiving results for clang job $($global:cptCurrentClangJobCounter)"
 
   if (!$compileResult.Success)
   {
@@ -778,7 +779,7 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
   {
     if (!(VariableExists 'cptCurrentClangJobCounter'))
     {
-      Write-Warning "Invalid resume state. Processing all project files"
+      Write-Warning "Can't resume. Previous state is unreliable. Processing all files..."
       $global:cptCurrentClangJobCounter = $clangJobs.Count
     }
   }
@@ -1299,12 +1300,19 @@ if (!$aResumeAfterError)
 }
 else
 {
-  if (!(VariableExists 'cptProjectCounter'))
+  if (!(VariableExists 'cptProjectCounter') -or !(VariableExists 'cptProjectsBucket'))
   {
-    Write-Warning "Invalid resume state. Processing all projects."
+    Write-Warning "Can't resume. Previous state is unreliable. Processing all projects..."
+    $global:cptProjectCounter = $projectsToProcess.Length
+  }
+  elseif ((Compare-Object $projectsToProcess $global:cptProjectsBucket))
+  {
+    Write-Warning "Can't resume. Previous state is unreliable. Processing all projects...`n`nREMINDER: Don't change arguments when adding -resume.`n`n"
     $global:cptProjectCounter = $projectsToProcess.Length
   }
 }
+
+[System.IO.FileInfo[]] $global:cptProjectsBucket = $projectsToProcess
 
 [int] $localProjectCounter = $projectsToProcess.Length;
 foreach ($project in $projectsToProcess)
