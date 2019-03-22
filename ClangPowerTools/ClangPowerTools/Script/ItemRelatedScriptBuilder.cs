@@ -52,7 +52,7 @@ namespace ClangPowerTools.Script
     {
       if (mItem is SelectedProjectItem)
       {
-        CreateScriptForSingleProjectItem();
+        CreateScriptForProjectItem();
       }
       else if (mItem is SelectedProject)
       {
@@ -67,7 +67,7 @@ namespace ClangPowerTools.Script
         $"''{ProjectConfigurationHandler.GetConfiguration(project)}|{ProjectConfigurationHandler.GetPlatform(project)}''";
     }
 
-    private void CreateScriptForSingleProjectItem()
+    private void CreateScriptForProjectItem()
     {
       ProjectItem projectItem = mItem.GetObject() as ProjectItem;
       string containingProject = projectItem.ContainingProject.FullName;
