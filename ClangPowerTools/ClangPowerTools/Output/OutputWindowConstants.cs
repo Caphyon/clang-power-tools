@@ -15,8 +15,8 @@ namespace ClangPowerTools
       {CommandIds.kCompileToolbarId, "Clang Compile"},
       {CommandIds.kTidyId, "Clang Tidy"},
       {CommandIds.TidyToolbarId, "Clang Tidy"},
-      {CommandIds.kTidyFixId, "Clang Tidy-Fix"}
-      {CommandIds.kTidyFixToolbarId, "Clang Tidy-Fix"},
+      {CommandIds.kTidyFixId, "Clang Tidy-Fix"},
+      {CommandIds.kTidyFixToolbarId, "Clang Tidy-Fix"}
     };
 
     #endregion
