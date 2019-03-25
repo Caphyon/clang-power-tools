@@ -150,7 +150,7 @@ namespace ClangPowerTools
         case CommandIds.kClangFormat:
         case CommandIds.kClangFormatToolbarId:
           {
-            CurrentCommand = CommandIds.kClangFormatToolbarId;
+            CurrentCommand = CommandIds.kClangFormat;
             ClangFormatCommand.Instance.RunClangFormat(CommandUILocation.Toolbar);
             break;
           }
@@ -163,8 +163,8 @@ namespace ClangPowerTools
           }
         case CommandIds.kCompileToolbarId:
           {
-            OnBeforeClangCommand(CommandIds.kCompileToolbarId);
-            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileToolbarId, CommandUILocation.Toolbar);
+            OnBeforeClangCommand(CommandIds.kCompileId);
+            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.Toolbar);
             OnAfterClangCommand();
             break;
           }
@@ -177,8 +177,8 @@ namespace ClangPowerTools
           }
         case CommandIds.TidyToolbarId:
           {
-            OnBeforeClangCommand(CommandIds.TidyToolbarId);
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.TidyToolbarId, CommandUILocation.Toolbar);
+            OnBeforeClangCommand(CommandIds.kTidyId);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, CommandUILocation.Toolbar);
             OnAfterClangCommand();
             break;
           }
@@ -191,7 +191,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kTidyFixToolbarId:
           {
-            OnBeforeClangCommand(CommandIds.kTidyFixToolbarId);
+            OnBeforeClangCommand(CommandIds.kTidyFixId);
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.Toolbar);
             OnAfterClangCommand();
             break;
