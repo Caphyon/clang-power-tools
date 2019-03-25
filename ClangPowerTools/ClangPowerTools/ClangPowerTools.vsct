@@ -6,6 +6,14 @@
   <Commands package="guidClangPowerToolsPackage">
 
     <Menus>
+      <!--Commands submenu-->
+      <Menu guid="guidClangPowerToolsPackageCmdSet" id="Submenu" priority="0x0000" type="Menu">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" />
+        <Strings>
+          <ButtonText>Clang Power Tools</ButtonText>
+        </Strings>
+      </Menu>
+
       <!--Top Toolbar Menu Drop-Down-->
       <Menu guid="guidClangPowerToolsPackageCmdSet" id="GroupForTopToolbarMenu" priority="0xffff" type="Menu">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
@@ -33,14 +41,7 @@
           <CommandName>Clang Power Tools</CommandName>
         </Strings>
       </Menu>
-      
-      <!-- Tab Commands submenu
-      <Menu guid="guidClangPowerToolsPackageCmdSet" id="Submenu" priority="0x0000" type="Menu">
-        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" />
-        <Strings>
-          <ButtonText>Clang Power Tools</ButtonText>
-        </Strings>
-      </Menu>-->
+
     </Menus>
     
     
@@ -64,12 +65,9 @@
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="Toolbar" />
       </Group>
 
-      <!-- Context Menu groups-->
-      
-      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0000" />
-      
-      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" priority="0x0002" />
-      
+      <!-- Context Menu groups-->      
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0000" />     
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" priority="0x0002" />     
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0003" />
       
     </Groups>
@@ -306,15 +304,14 @@
       <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE" />
     </CommandPlacement>
 
-    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0xFFFF">
-      <!-- The parent of the group will be the tab file context menu -->
-      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_EZDOCWINTAB" />
-    </CommandPlacement>
+    <!-- <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0xFFFF">
+       The parent of the group will be the tab file context menu -->
+     <!--<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_EZDOCWINTAB" /> 
+    </CommandPlacement>-->
 
-
-    <!-- Define which groups will be placed in the Clang Power Tools submenu  -->
-    <!-- By placing a group automatically each section it will be delimited by a separator -->
     
+     <!-- Define which groups will be placed in the Clang Power Tools submenu  -->
+    <!-- By placing a group automatically each section it will be delimited by a separator -->   
     <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0001">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
     </CommandPlacement>
@@ -331,17 +328,14 @@
 
   
   <!--Contains all the unique identifires and symbols declaration-->
-  
   <Symbols>
     <GuidSymbol name="guidClangPowerToolsPackage" value="{f564f9d3-01ae-493e-883b-18deebdb975e}" />
 
     
-    <!-- Define the unique identifires for commands, groups, menu and toolbar -->
-    
+    <!-- Define the unique identifires for commands, groups, menu and toolbar -->   
     <GuidSymbol name="guidClangPowerToolsPackageCmdSet" value="{498fdff5-5217-4da9-88d2-edad44ba3874}">
       
-      <!-- Define the unique identifires for groups -->
-      
+      <!-- Define the unique identifires for groups -->   
       <IDSymbol name="GroupForSubmenu" value="0x1020" />
       <IDSymbol name="GroupForCommands" value="0x1021" />
       <IDSymbol name="GroupForSettings" value="0x1022" />
@@ -375,7 +369,6 @@
       <IDSymbol name="TidyExportConfigId" value="0x1032" />
 
       <!-- Define the unique identifires for toolbar -->
-
       <IDSymbol name="Toolbar" value="0x1000" />
     </GuidSymbol>
 
@@ -392,37 +385,31 @@
     </GuidSymbol>
 
     <!-- Define clang compile image -->
-
     <GuidSymbol name="guidImageCompile" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70e}">
       <IDSymbol name="Compile" value="1" />
     </GuidSymbol>
 
     <!-- Define clang stop image -->
-
     <GuidSymbol name="guidImageStopClang" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c700}">
       <IDSymbol name="StopClang" value="1" />
     </GuidSymbol>
 
     <!-- Define clang  ignore format image -->
-
     <GuidSymbol name="guidImageIgnoreFormat" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c708}">
       <IDSymbol name="IgnoreFormat" value="1" />
     </GuidSymbol>
 
     <!-- Define empty image -->
-
     <GuidSymbol name="guidImageEmpty" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c705}">
       <IDSymbol name="Empty" value="1" />
     </GuidSymbol>
 
     <!-- Define clang settigns image -->
-
     <GuidSymbol name="guidImageSettings" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70f}">
       <IDSymbol name="Settings" value="1" />
     </GuidSymbol>
 
     <!-- Define clang format image -->
-
     <GuidSymbol name="guidImageFormat" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c71a}">
       <IDSymbol name="Format" value="1" />
     </GuidSymbol>
