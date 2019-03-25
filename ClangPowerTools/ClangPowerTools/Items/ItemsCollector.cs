@@ -35,9 +35,16 @@ namespace ClangPowerTools
 
     public void CollectActiveProjectItem(bool aClangFormatFlag = false)
     {
-      DTE vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE) : null;
-      SelectedProjectItem activeProjectItem = new SelectedProjectItem(vsServiceProvider.ActiveDocument.ProjectItem);
-      items.Add(activeProjectItem);
+      try
+      {
+        DTE vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE) : null;
+        SelectedProjectItem activeProjectItem = new SelectedProjectItem(vsServiceProvider.ActiveDocument.ProjectItem);
+        items.Add(activeProjectItem);
+      }
+      catch (Exception e)
+      {
+        throw new Exception(e.Message);
+      }
     }
 
     /// <summary>
