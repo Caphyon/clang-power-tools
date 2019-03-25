@@ -85,22 +85,22 @@ namespace ClangPowerTools.Commands
 
 
 
-    public void FormatDocument(Document aDocument, ClangFormatOptionsView aOptions)
+    public void FormatDocument(Document aDocument, ClangFormatOptionsView aOptions, CommandUILocation commandUILocation)
     {
       mClangFormatView = aOptions;
       mDocument = aDocument;
 
-      RunClangFormat();
+      RunClangFormat(commandUILocation);
     }
 
 
-    public void RunClangFormat()
+    public void RunClangFormat(CommandUILocation commandUILocation)
     {
       try
       {
-        if (null == mClangFormatView)
+        if (mClangFormatView == null)
         {
-          FormatAllSelectedDocuments();
+          FormatAllSelectedDocuments(commandUILocation);
           return;
         }
 
@@ -171,9 +171,9 @@ namespace ClangPowerTools.Commands
     }
 
 
-    private void FormatAllSelectedDocuments()
+    private void FormatAllSelectedDocuments(CommandUILocation commandUILocation)
     {
-      foreach (var item in CollectItems(true))
+      foreach (var item in CollectItems(true, ScriptConstants.kAcceptedFileExtensions, commandUILocation))
       {
         var document = (item.GetObject() as ProjectItem).Document;
 
@@ -183,7 +183,7 @@ namespace ClangPowerTools.Commands
         mClangFormatView = SettingsProvider.ClangFormatSettings;
         mDocument = document;
 
-        RunClangFormat();
+        RunClangFormat(commandUILocation);
       }
     }
 

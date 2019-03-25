@@ -407,7 +407,7 @@ namespace ClangPowerTools
         return;
 
       var option = SettingsProvider.ClangFormatSettings;
-      ClangFormatCommand.Instance.FormatDocument(aDocument, option);
+      ClangFormatCommand.Instance.FormatDocument(aDocument, option, CommandUILocation.Toolbar);
     }
 
 
