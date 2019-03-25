@@ -149,7 +149,7 @@ namespace ClangPowerTools
       }
     }
 
-    //Collect files CAKE
+    //Collect files
     protected IEnumerable<IItem> CollectItems(bool aClangFormatFlag = false, List<string> aAcceptedExtensionTypes = null, CommandUILocation commandUILocation = CommandUILocation.ContextMenu)
     {
       mItemsCollector = new ItemsCollector(aAcceptedExtensionTypes);

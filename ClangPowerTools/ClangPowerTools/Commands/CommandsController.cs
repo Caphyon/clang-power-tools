@@ -175,11 +175,24 @@ namespace ClangPowerTools
             OnAfterClangCommand();
             break;
           }
+        case CommandIds.TidyToolbarId:
+          {
+            OnBeforeClangCommand(CommandIds.TidyToolbarId);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.TidyToolbarId, CommandUILocation.Toolbar);
+            OnAfterClangCommand();
+            break;
+          }
         case CommandIds.kTidyFixId:
-        case CommandIds.kTidyFixToolbarId:
           {
             OnBeforeClangCommand(CommandIds.kTidyFixId);
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu);
+            OnAfterClangCommand();
+            break;
+          }
+        case CommandIds.kTidyFixToolbarId:
+          {
+            OnBeforeClangCommand(CommandIds.kTidyFixToolbarId);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.Toolbar);
             OnAfterClangCommand();
             break;
           }
