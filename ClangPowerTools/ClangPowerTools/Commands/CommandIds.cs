@@ -14,7 +14,7 @@
     public const int kTidyFixToolbarId                = 0x1102;
 
     public const int kClangFormat                     = 0x0105;
-    public const int kClangFormatToolbarId             = 0x1103;
+    public const int kClangFormatToolbarId            = 0x1103;
 
 
     public const int kStopClang                       = 0x0104;
