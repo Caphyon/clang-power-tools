@@ -148,6 +148,11 @@ namespace ClangPowerTools
             break;
           }
         case CommandIds.kClangFormat:
+          {
+            CurrentCommand = CommandIds.kClangFormat;
+            ClangFormatCommand.Instance.RunClangFormat(CommandUILocation.ContextMenu);
+            break;
+          }
         case CommandIds.kClangFormatToolbarId:
           {
             CurrentCommand = CommandIds.kClangFormat;
