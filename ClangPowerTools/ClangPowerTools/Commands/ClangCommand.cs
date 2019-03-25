@@ -161,8 +161,6 @@ namespace ClangPowerTools
         case CommandUILocation.ContextMenu:
           mItemsCollector.CollectSelectedFiles(ActiveWindowProperties.GetProjectItemOfActiveWindow(), aClangFormatFlag);
           break;
-        default:
-          break;
       }
       return mItemsCollector.items;
     }
