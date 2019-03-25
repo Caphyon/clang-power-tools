@@ -186,10 +186,6 @@ namespace ClangPowerTools
       }
     }
 
-
-
-
     #endregion
-
   }
 }
