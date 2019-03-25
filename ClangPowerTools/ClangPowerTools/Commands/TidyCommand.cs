@@ -76,9 +76,9 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public async System.Threading.Tasks.Task RunClangTidyAsync(int aCommandId)
+    public async System.Threading.Tasks.Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation)
     {
-      await PrepareCommmandAsync();
+      await PrepareCommmandAsync(commandUILocation);
 
       await System.Threading.Tasks.Task.Run(() =>
       {
@@ -101,7 +101,7 @@ namespace ClangPowerTools.Commands
                 fileChangerWatcher.Run(solutionFolderPath);
 
                 FilePathCollector fileCollector = new FilePathCollector();
-                var filesPath = fileCollector.Collect(mItemsCollector.GetItems).ToList();
+                var filesPath = fileCollector.Collect(mItemsCollector.items).ToList();
 
                 silentFileController.SilentFiles(filesPath);
                 silentFileController.SilentFiles(dte2.Documents);

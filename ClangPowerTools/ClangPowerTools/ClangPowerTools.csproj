@@ -78,6 +78,7 @@
     <Compile Include="ClangCheckAttribute.cs" />
     <Compile Include="ClangTidyPathAttribute.cs" />
     <Compile Include="Commands\ClangFormatCommand.cs" />
+    <Compile Include="Commands\CommandUILocation.cs" />
     <Compile Include="Commands\IgnoreCompileCommand.cs" />
     <Compile Include="Commands\IgnoreFormatCommand.cs" />
     <Compile Include="Commands\TidyConfigCommand.cs" />

@@ -36,32 +36,7 @@ namespace ClangPowerTools.Script
 
     #region Methods
 
-    #region Public Methods
-
     #region IBuilder Implementation
-
-
-    /// <summary>
-    /// Create the script by gathering all the item related parameters from the environment and settings components 
-    /// </summary>
-    public void Build()
-    {
-      if (mItem is SelectedProjectItem)
-      {
-        ProjectItem projectItem = mItem.GetObject() as ProjectItem;
-        string containingProject = projectItem.ContainingProject.FullName;
-        mScript = $"{mScript} {ScriptConstants.kProject} ''{containingProject}'' " +
-          $"{ScriptConstants.kFile} ''{projectItem.Properties.Item("FullPath").Value}'' {ScriptConstants.kActiveConfiguration} " +
-          $"''{ProjectConfigurationHandler.GetConfiguration(projectItem.ContainingProject)}|{ProjectConfigurationHandler.GetPlatform(projectItem.ContainingProject)}''";
-      }
-      else if (mItem is SelectedProject)
-      {
-        Project project = mItem.GetObject() as Project;
-        mScript = $"{mScript} {ScriptConstants.kProject} ''{project.FullName}'' {ScriptConstants.kActiveConfiguration} " +
-          $"''{ProjectConfigurationHandler.GetConfiguration(project)}|{ProjectConfigurationHandler.GetPlatform(project)}''";
-      }
-    }
-
 
     /// <summary>
     /// Get the item related script component
@@ -69,12 +44,40 @@ namespace ClangPowerTools.Script
     /// <returns>Item related script component</returns>
     public string GetResult() => mScript;
 
+    /// <summary>
+    /// Create the script by gathering all the item related parameters from the environment and settings components 
+    /// CAKE
+    /// </summary>
+    public void Build()
+    {
+      if (mItem is SelectedProjectItem)
+      {
+        CreateScriptForProjectItem();
+      }
+      else if (mItem is SelectedProject)
+      {
+        CreateScriptForProject();
+      }
+    }
+
+    private void CreateScriptForProject()
+    {
+      Project project = mItem.GetObject() as Project;
+      mScript = $"{mScript} {ScriptConstants.kProject} ''{project.FullName}'' {ScriptConstants.kActiveConfiguration} " +
+        $"''{ProjectConfigurationHandler.GetConfiguration(project)}|{ProjectConfigurationHandler.GetPlatform(project)}''";
+    }
+
+    private void CreateScriptForProjectItem()
+    {
+      ProjectItem projectItem = mItem.GetObject() as ProjectItem;
+      string containingProject = projectItem.ContainingProject.FullName;
+      mScript = $"{mScript} {ScriptConstants.kProject} ''{containingProject}'' " +
+        $"{ScriptConstants.kFile} ''{projectItem.Properties.Item("FullPath").Value}'' {ScriptConstants.kActiveConfiguration} " +
+        $"''{ProjectConfigurationHandler.GetConfiguration(projectItem.ContainingProject)}|{ProjectConfigurationHandler.GetPlatform(projectItem.ContainingProject)}''";
+    }
 
     #endregion
 
     #endregion
-
-    #endregion
-
   }
 }

@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Builder;
+using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
 using ClangPowerTools.Script;
 using ClangPowerTools.Services;
@@ -85,42 +86,53 @@ namespace ClangPowerTools
 
     #region Methods
 
-    #region Public Methods
-
     public void OnMissingLLVMDetected(object sender, MissingLlvmEventArgs e)
     {
       mMissingLLVM = e.MissingLLVM;
     }
 
-
-    #endregion
-
-
-    #region Protected methods
-
     protected void RunScript(int aCommandId)
     {
-      //var dte = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
-      //dte.Solution.SaveAs(dte.Solution.FullName);
+      string runModeParameters = GetRunModeParamaters();
+      string genericParameters = GetGenericParamaters(aCommandId);
 
-      IBuilder<string> runModeScriptBuilder = new RunModeScriptBuilder();
-      runModeScriptBuilder.Build();
-      var runModeParameters = runModeScriptBuilder.GetResult();
+      if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
+      {
+        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
+      }
 
+      if (!mMissingLLVM)
+      {
+        CreateStript(runModeParameters, genericParameters);
+      }
+
+      if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
+      {
+        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+      }
+    }
+
+    private string GetGenericParamaters(int aCommandId)
+    {
       IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(VsEdition, VsVersion, aCommandId);
       genericScriptBuilder.Build();
       var genericParameters = genericScriptBuilder.GetResult();
+      return genericParameters;
+    }
 
-      var dte = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
-      string solutionPath = dte.Solution.FullName;
+    private static string GetRunModeParamaters()
+    {
+      IBuilder<string> runModeScriptBuilder = new RunModeScriptBuilder();
+      runModeScriptBuilder.Build();
+      var runModeParameters = runModeScriptBuilder.GetResult();
+      return runModeParameters;
+    }
 
-      if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
-        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
-
+    private void CreateStript(string runModeParameters, string genericParameters)
+    {
       VsServiceProvider.TryGetService(typeof(SVsSolution), out object vsSolutionService);
       var vsSolution = vsSolutionService as IVsSolution;
-
-      foreach (var item in mItemsCollector.GetItems)
+      foreach (var item in mItemsCollector.items)
       {
         IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item);
         itemRelatedScriptBuilder.Build();
@@ -134,23 +146,26 @@ namespace ClangPowerTools
           ItemHierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
 
         var process = PowerShellWrapper.Invoke(script, mRunningProcesses);
-
-        if (mMissingLLVM)
-          break;
       }
-      if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
-        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
-
-    protected IEnumerable<IItem> CollectSelectedItems(bool aClangFormatFlag = false, List<string> aAcceptedExtensionTypes = null)
+    //Collect files
+    protected IEnumerable<IItem> CollectItems(bool aClangFormatFlag = false, List<string> aAcceptedExtensionTypes = null, CommandUILocation commandUILocation = CommandUILocation.ContextMenu)
     {
       mItemsCollector = new ItemsCollector(aAcceptedExtensionTypes);
-      mItemsCollector.CollectSelectedFiles(ActiveWindowProperties.GetProjectItemOfActiveWindow(), aClangFormatFlag);
-      return mItemsCollector.GetItems;
+      switch (commandUILocation)
+      {
+        case CommandUILocation.Toolbar:
+          mItemsCollector.CollectActiveProjectItem(aClangFormatFlag);
+          break;
+        case CommandUILocation.ContextMenu:
+          mItemsCollector.CollectSelectedFiles(ActiveWindowProperties.GetProjectItemOfActiveWindow(), aClangFormatFlag);
+          break;
+      }
+      return mItemsCollector.items;
     }
 
-    protected async System.Threading.Tasks.Task PrepareCommmandAsync()
+    protected async System.Threading.Tasks.Task PrepareCommmandAsync(CommandUILocation commandUILocation )
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -161,23 +176,14 @@ namespace ClangPowerTools
 
       var dte2 = dte as DTE2;
       AutomationUtil.SaveDirtyProjects((dte as DTE2).Solution);
-      CollectSelectedItems(false, ScriptConstants.kAcceptedFileExtensions);
+      CollectItems(false, ScriptConstants.kAcceptedFileExtensions, commandUILocation);
     }
-
-
-    #endregion
-
-
-    #region Private Methods
 
 
     protected virtual void OnFileHierarchyChanged(VsHierarchyDetectedEventArgs e)
     {
       HierarchyDetectedEvent?.Invoke(this, e);
     }
-
-    #endregion
-
 
     #endregion
 
