@@ -6,14 +6,6 @@
   <Commands package="guidClangPowerToolsPackage">
 
     <Menus>
-      <!--Commands submenu-->
-      <Menu guid="guidClangPowerToolsPackageCmdSet" id="Submenu" priority="0x0000" type="Menu">
-        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" />
-        <Strings>
-          <ButtonText>Clang Power Tools</ButtonText>
-        </Strings>
-      </Menu>
-
       <!--Top Toolbar Menu Drop-Down-->
       <Menu guid="guidClangPowerToolsPackageCmdSet" id="GroupForTopToolbarMenu" priority="0xffff" type="Menu">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
@@ -41,7 +33,14 @@
           <CommandName>Clang Power Tools</CommandName>
         </Strings>
       </Menu>
-
+      
+      <!-- Tab Commands submenu
+      <Menu guid="guidClangPowerToolsPackageCmdSet" id="Submenu" priority="0x0000" type="Menu">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" />
+        <Strings>
+          <ButtonText>Clang Power Tools</ButtonText>
+        </Strings>
+      </Menu>-->
     </Menus>
     
     
