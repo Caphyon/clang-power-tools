@@ -137,8 +137,12 @@ param( [alias("proj")]
        [switch]   $aUseParallelCompile
 
      , [alias("continue")]
-       [Parameter(Mandatory=$false, HelpMessage="Allow CPT to continue after encounteringan error")]
+       [Parameter(Mandatory=$false, HelpMessage="Allow CPT to continue immediately after encountering an error")]
        [switch]   $aContinueOnError
+
+     , [alias("resume")]
+       [Parameter(Mandatory=$false, HelpMessage="Allow CPT to resume the last session (start from last active project / file number).")]
+       [switch]   $aResumeAfterError
 
      , [alias("treat-sai")]
        [Parameter(Mandatory=$false, HelpMessage="Treat project additional include directories as system includes")]
@@ -349,11 +353,11 @@ function Get-SolutionProjects([Parameter(Mandatory=$true)][string] $slnPath)
 {
   Write-Verbose "Retrieving project list for solution $slnPath"
   [string] $slnDirectory = Get-FileDirectory -file $slnPath
-  
+
   Write-Verbose "Solution directory: $slnDirectory"
   $matches = [regex]::Matches($global:slnFiles[$slnPath], 'Project\([{}\"A-Z0-9\-]+\) = \".*?\",\s\"(.*?)\"')
-  
-  Write-Verbose "Intermediate solution project matches count: $($matches.Count)" 
+
+  Write-Verbose "Intermediate solution project matches count: $($matches.Count)"
   foreach ($match in $matches)
   {
     Write-Verbose $match.Groups[1].Value
@@ -656,6 +660,9 @@ Function Get-ExeCallArguments( [Parameter(Mandatory=$false)][string]       $pchF
 
 Function Process-ProjectResult($compileResult)
 {
+  $global:cptCurrentClangJobCounter = $compileResult.JobCounter
+  Write-Debug "Receiving results for clang job $($global:cptCurrentClangJobCounter)"
+
   if (!$compileResult.Success)
   {
     Write-Err ($compileResult.Output)
@@ -757,16 +764,45 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
     Remove-Item $clangConfigFile
     Pop-Location
 
-    return New-Object PsObject -Prop @{ "File"    = $job.File;
-                                        "Success" = $callSuccess;
-                                        "Output"  = $callOutput }
+    return New-Object PsObject -Prop @{ "File"    = $job.File
+                                      ; "Success" = $callSuccess
+                                      ; "Output"  = $callOutput
+                                      ; "JobCounter" = $job.JobCounter
+                                      }
   }
 
-  [int] $jobCount = $clangJobs.Count
-  [int] $crtJobCount = $jobCount
+  if (!$aResumeAfterError)
+  {
+    $global:cptCurrentClangJobCounter = $clangJobs.Count
+  }
+  else
+  {
+    if (!(VariableExists 'cptCurrentClangJobCounter'))
+    {
+      Write-Warning "Can't resume. Previous state is unreliable. Processing all files..."
+      $global:cptCurrentClangJobCounter = $clangJobs.Count
+    }
+    else
+    {
+      if ($global:cptCurrentClangJobCounter -gt 0)
+      {
+        Write-Output "Resuming from file #$($global:cptCurrentClangJobCounter)"
+      }
+    }
+  }
+
+  [int] $crtJobCount = $clangJobs.Count
 
   foreach ($job in $clangJobs)
   {
+    if ($global:cptCurrentClangJobCounter -ge 0 -and $crtJobCount -gt $global:cptCurrentClangJobCounter)
+    {
+      $crtJobCount--
+      continue
+    }
+
+    $job.JobCounter = $crtJobCount
+
     # Check if we must wait for background jobs to complete
     Wait-ForWorkerJobSlot
 
@@ -786,12 +822,15 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
       $compileResult = Invoke-Command -ScriptBlock  $jobWorkToBeDone `
                                       -ArgumentList $job
       Process-ProjectResult -compileResult $compileResult
+      $global:cptCurrentClangJobCounter = $compileResult.JobCounter
     }
 
     $crtJobCount -= 1
   }
 
   Wait-AndProcessBuildJobs
+
+  $global:cptCurrentClangJobCounter = -1 # stop the mechanism after one project
 }
 
 Function Get-ProjectFileSetting( [Parameter(Mandatory=$true)] [string] $fileFullName
@@ -1068,10 +1107,12 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
                                                -includeDirectories      $includeDirectories `
                                                -additionalIncludeDirectories $additionalIncludeDirectories
 
-    $newJob = New-Object PsObject -Prop @{ 'FilePath'        = $exeToCall;
-                                           'WorkingDirectory'= Get-SourceDirectory;
-                                           'ArgumentList'    = $exeArgs;
-                                           'File'            = $cpp }
+    $newJob = New-Object PsObject -Prop @{ 'FilePath'        = $exeToCall
+                                         ; 'WorkingDirectory'= Get-SourceDirectory
+                                         ; 'ArgumentList'    = $exeArgs
+                                         ; 'File'            = $cpp
+                                         ; 'JobCounter'      = 0 <# will be lazy initialized #>
+                                         }
     $clangJobs += $newJob
   }
 
@@ -1214,23 +1255,6 @@ else
     $projectsToProcess = @($projects | `
                          Where-Object { !(Should-IgnoreProject  -vcxprojPath $_.FullName ) })
 
-    # if we have a number (K) we will ignore all projects until we reach that number (N - K)
-    # useful when build finds a small problem which is fixed and we don't want to recompile all projects.
-    foreach ($projIg in $aVcxprojToIgnore)
-    {
-      if ($projIg -match '^[0-9]+$')
-      {
-        [int] $firstProjectsToIgnore = $projectsToProcess.Count - [int]$projIg
-        if ($firstProjectsToIgnore -lt 0)
-        {
-          break
-        }
-
-        $projectsToProcess = $projectsToProcess | Select-Object -last ($projectsToProcess.Count - $firstProjectsToIgnore)
-        break
-      }
-    }
-
     $ignoredProjects = ($projects | Where-Object { $projectsToProcess -notcontains $_ })
   }
 }
@@ -1277,9 +1301,39 @@ else
 
 # ------------------------------------------------------------------------------------------------
 
-$projectCounter = $projectsToProcess.Length;
+if (!$aResumeAfterError)
+{
+  $global:cptProjectCounter = $projectsToProcess.Length
+}
+else
+{
+  if (!(VariableExists 'cptProjectCounter') -or !(VariableExists 'cptProjectsBucket'))
+  {
+    Write-Warning "Can't resume. Previous state is unreliable. Processing all projects..."
+    $global:cptProjectCounter = $projectsToProcess.Length
+  }
+  elseif ((Compare-Object $projectsToProcess $global:cptProjectsBucket))
+  {
+    Write-Warning "Can't resume. Previous state is unreliable. Processing all projects...`n`nREMINDER: Don't change arguments when adding -resume.`n`n"
+    $global:cptProjectCounter = $projectsToProcess.Length
+  }
+  else
+  {
+    Write-Output "Resuming from project #$($global:cptProjectCounter)"
+  }
+}
+
+[System.IO.FileInfo[]] $global:cptProjectsBucket = $projectsToProcess
+
+[int] $localProjectCounter = $projectsToProcess.Length;
 foreach ($project in $projectsToProcess)
 {
+  if ($localProjectCounter -gt $global:cptProjectCounter)
+  {
+    $localProjectCounter--;
+    continue
+  }
+
   [string] $vcxprojPath = $project.FullName;
 
   [WorkloadType] $workloadType = [WorkloadType]::Compile
@@ -1294,11 +1348,12 @@ foreach ($project in $projectsToProcess)
      $workloadType = [WorkloadType]::TidyFix
   }
 
-  Write-Output ("PROJECT$(if ($projectCounter -gt 1) { " #$projectCounter" } else { } ): " + $vcxprojPath)
+  Write-Output ("PROJECT$(if ($localProjectCounter -gt 1) { " #$localProjectCounter" } else { } ): " + $vcxprojPath)
   Process-Project -vcxprojPath $vcxprojPath -workloadType $workloadType
   Write-Output "" # empty line separator
 
-  $projectCounter -= 1
+  $localProjectCounter -= 1
+  $global:cptProjectCounter = $localProjectCounter
 }
 
 if ($global:FoundErrors)
