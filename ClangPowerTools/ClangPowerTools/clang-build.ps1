@@ -141,7 +141,7 @@ param( [alias("proj")]
        [switch]   $aContinueOnError
 
      , [alias("resume")]
-       [Parameter(Mandatory=$false, HelpMessage="Allow CPT to resume the last session (last active project / file number).")]
+       [Parameter(Mandatory=$false, HelpMessage="Allow CPT to resume the last session (start from last active project / file number).")]
        [switch]   $aResumeAfterError
 
      , [alias("treat-sai")]
@@ -782,6 +782,13 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
       Write-Warning "Can't resume. Previous state is unreliable. Processing all files..."
       $global:cptCurrentClangJobCounter = $clangJobs.Count
     }
+    else
+    {
+      if ($global:cptCurrentClangJobCounter -gt 0)
+      {
+        Write-Output "Resuming from file #$($global:cptCurrentClangJobCounter)"
+      }
+    }
   }
 
   [int] $crtJobCount = $clangJobs.Count
@@ -1309,6 +1316,10 @@ else
   {
     Write-Warning "Can't resume. Previous state is unreliable. Processing all projects...`n`nREMINDER: Don't change arguments when adding -resume.`n`n"
     $global:cptProjectCounter = $projectsToProcess.Length
+  }
+  else
+  {
+    Write-Output "Resuming from project #$($global:cptProjectCounter)"
   }
 }
 
