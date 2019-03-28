@@ -7,6 +7,11 @@ namespace UnitTests
     [Fact]
     public void CommandFileExists()
     {
+      //Arrange
+
+      //Act
+
+      //Assert
       Assert.True(true);
     }
   }
