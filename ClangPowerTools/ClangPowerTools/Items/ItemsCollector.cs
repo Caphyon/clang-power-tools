@@ -38,8 +38,17 @@ namespace ClangPowerTools
       try
       {
         DTE vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE) : null;
-        SelectedProjectItem activeProjectItem = new SelectedProjectItem(vsServiceProvider.ActiveDocument.ProjectItem);
-        items.Add(activeProjectItem);
+        Document activeDocument = vsServiceProvider.ActiveDocument;
+
+        if (activeDocument == null)
+        {
+          CollectSelectedFiles(ActiveWindowProperties.GetProjectItemOfActiveWindow(), aClangFormatFlag);
+        }
+        else
+        {
+          SelectedProjectItem activeProjectItem = new SelectedProjectItem(activeDocument.ProjectItem);
+          items.Add(activeProjectItem);
+        }
       }
       catch (Exception e)
       {
@@ -55,22 +64,13 @@ namespace ClangPowerTools
       List<string> documentsToIgnore = new List<string>();
       DTE vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE) : null;
 
-      Document activeDocument = vsServiceProvider.ActiveDocument;
       SelectedItems selectedDocuments = vsServiceProvider.SelectedItems;
 
-      if (selectedDocuments.Count == 1 && selectedDocuments.Item(1).Name == activeDocument.Name)
+      for (int i = 1; i <= selectedDocuments.Count; i++)
       {
-        documentsToIgnore.Add(activeDocument.Name);
-        return documentsToIgnore;
+        documentsToIgnore.Add(selectedDocuments.Item(i).Name);
       }
 
-      if (selectedDocuments.Count > 0)
-      {
-        for (int i = 1; i <= selectedDocuments.Count; i++)
-        {
-          documentsToIgnore.Add(selectedDocuments.Item(i).Name);
-        }
-      }
       return documentsToIgnore;
     }
 
@@ -155,7 +155,7 @@ namespace ClangPowerTools
         return;
       }
       // Folders or filters
-      else if (aProjectItem.ProjectItems.Count != 0 )
+      else if (aProjectItem.ProjectItems.Count != 0)
       {
         foreach (ProjectItem projItem in aProjectItem.ProjectItems)
           GetProjectItem(projItem);
