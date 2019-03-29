@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27130.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClangPowerTools", "ClangPowerTools\ClangPowerTools.csproj", "{51237463-9F4D-44DE-8BC0-587384B9E8B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{C76EEC3F-A93A-4300-891C-7FA267759613}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClangPowerToolsUnitTests", "UnitTests\ClangPowerToolsUnitTests.csproj", "{C76EEC3F-A93A-4300-891C-7FA267759613}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
