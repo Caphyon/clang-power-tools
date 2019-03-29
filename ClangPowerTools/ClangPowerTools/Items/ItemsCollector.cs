@@ -38,8 +38,17 @@ namespace ClangPowerTools
       try
       {
         DTE vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE) : null;
-        SelectedProjectItem activeProjectItem = new SelectedProjectItem(vsServiceProvider.ActiveDocument.ProjectItem);
-        items.Add(activeProjectItem);
+        Document activeDocument = vsServiceProvider.ActiveDocument;
+
+        if (activeDocument == null)
+        {
+          CollectSelectedFiles(ActiveWindowProperties.GetProjectItemOfActiveWindow(), aClangFormatFlag);
+        }
+        else
+        {
+          SelectedProjectItem activeProjectItem = new SelectedProjectItem(activeDocument.ProjectItem);
+          items.Add(activeProjectItem);
+        }
       }
       catch (Exception e)
       {
@@ -155,7 +164,7 @@ namespace ClangPowerTools
         return;
       }
       // Folders or filters
-      else if (aProjectItem.ProjectItems.Count != 0 )
+      else if (aProjectItem.ProjectItems.Count != 0)
       {
         foreach (ProjectItem projItem in aProjectItem.ProjectItems)
           GetProjectItem(projItem);
