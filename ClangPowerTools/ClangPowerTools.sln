@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27130.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClangPowerTools", "ClangPowerTools\ClangPowerTools.csproj", "{51237463-9F4D-44DE-8BC0-587384B9E8B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClangPowerToolsUnitTests", "UnitTests\ClangPowerToolsUnitTests.csproj", "{C76EEC3F-A93A-4300-891C-7FA267759613}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClangPowerToolsUnitTests", "ClangPowerToolsUnitTests\ClangPowerToolsUnitTests.csproj", "{73EBB467-F741-46CF-8AEC-92290683F879}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{51237463-9F4D-44DE-8BC0-587384B9E8B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{51237463-9F4D-44DE-8BC0-587384B9E8B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{51237463-9F4D-44DE-8BC0-587384B9E8B9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C76EEC3F-A93A-4300-891C-7FA267759613}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C76EEC3F-A93A-4300-891C-7FA267759613}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C76EEC3F-A93A-4300-891C-7FA267759613}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C76EEC3F-A93A-4300-891C-7FA267759613}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73EBB467-F741-46CF-8AEC-92290683F879}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73EBB467-F741-46CF-8AEC-92290683F879}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73EBB467-F741-46CF-8AEC-92290683F879}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73EBB467-F741-46CF-8AEC-92290683F879}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
