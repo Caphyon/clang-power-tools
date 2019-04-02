@@ -5,32 +5,20 @@ namespace ClangPowerTools.Tests
   [VsTestSettings(UIThread = true)]
   public class VSVersionTests
   {
-    [VsFact(Version = "2012")]
-    public void TestMethod11()
-    {
-      Assert.Equal("11.0", UnitTestUtility.GetVsVersion());
-    }
-
-    [VsFact(Version = "2013")]
-    public void TestMethod12()
-    {
-      //  Assert.Equal("12.0", DteUtilities.GetVsVersion());
-    }
-
     [VsFact(Version = "2015")]
-    public void TestMethod14()
+    public void RunVisualStudio2015_Test()
     {
-      //Assert.Equal("14.0", DteUtilities.GetVsVersion());
+      Assert.Equal("14.0", UnitTestUtility.GetVsVersion());
     }
 
     [VsFact(Version = "2017")]
-    public void TestMethod15()
+    public void RunVisualStudio2017_Test()
     {
       Assert.Equal("15.0", UnitTestUtility.GetVsVersion());
     }
 
     [VsFact(Version = "2019")]
-    public void TestMethod16()
+    public void RunVisualStudio2019_Test()
     {
       Assert.Equal("16.0", UnitTestUtility.GetVsVersion());
     }
