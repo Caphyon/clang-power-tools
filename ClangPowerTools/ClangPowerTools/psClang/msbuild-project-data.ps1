@@ -179,7 +179,11 @@ Function Get-Project-MultiThreaded-Define()
 
 Function Is-Project-Unicode()
 {
-    return $CharacterSet -ieq "Unicode"
+    if (Get-Variable 'CharacterSet' -ErrorAction 'Ignore')
+    {
+        return $CharacterSet -ieq "Unicode"
+    }
+    return $false
 }
 
 Function Get-Project-CppStandard()
