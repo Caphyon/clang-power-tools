@@ -152,7 +152,7 @@ Function Get-ProjectHeaders()
 
 Function Get-Project-SDKVer()
 {
-    [string] $sdkVer = $WindowsTargetPlatformVersion
+    [string] $sdkVer = Get-Variable -Name 'WindowsTargetPlatformVersion' -ErrorAction 'Ignore'
 
     If ([string]::IsNullOrEmpty($sdkVer)) { "" } Else { $sdkVer.Trim() }
 }
