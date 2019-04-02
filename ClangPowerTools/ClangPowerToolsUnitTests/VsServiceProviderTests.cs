@@ -13,9 +13,6 @@ namespace ClangPowerTools.Tests
     [VsFact()]
     public void DteServiceWasRegistered_Test()
     {
-      ThreadHelper.ThrowIfNotOnUIThread();
-
-      System.Threading.Thread.Sleep(5000);
 
       DTE dte = VsServiceProvider.GetService(typeof(DTE)) as DTE;
       Assert.NotNull(dte);
