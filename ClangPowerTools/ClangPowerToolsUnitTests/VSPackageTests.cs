@@ -14,6 +14,7 @@ namespace ClangPowerTools.Tests
     [InlineData("11111111-2222-3333-4444-555555555555", false)]
     async Task LoadTestAsync(string guidString, bool expectedSuccess)
     {
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       var shell = (IVsShell7)ServiceProvider.GlobalProvider.GetService(typeof(SVsShell));
       Assumes.Present(shell);
 
