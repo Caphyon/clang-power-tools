@@ -921,7 +921,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
     # Triggered by addition of line directives to improve std::function debugging.
     # There's a definition that supresses line directives.
 
-    $preprocessorDefinitions += '"-D_DEBUG_FUNCTIONAL_MACHINERY"'
+    $preprocessorDefinitions += @('"-D_DEBUG_FUNCTIONAL_MACHINERY"')
   }
 
   Write-Verbose-Array -array $preprocessorDefinitions -name "Preprocessor definitions"
