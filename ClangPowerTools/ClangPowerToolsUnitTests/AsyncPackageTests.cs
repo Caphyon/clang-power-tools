@@ -15,7 +15,7 @@ namespace ClangPowerTools.Tests
     [VsTheory(Version = "2019")]
     [InlineData(RunClangPowerToolsPackage.PackageGuidString, true)]
     [InlineData("11111111-2222-3333-4444-555555555555", false)]
-    private async Task LoadTestAsync(string guidString, bool expectedSuccess)
+    public async Task LoadTestAsync(string guidString, bool expectedSuccess)
     {
       //Arrange
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
