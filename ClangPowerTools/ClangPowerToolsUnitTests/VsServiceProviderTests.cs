@@ -14,7 +14,7 @@ namespace ClangPowerTools.Tests
   public class VsServiceProviderTests
   {
     [VsFact(Version = "2019")]
-    public async Task DteServiceWasRegisteredAsync()
+    public async Task DteService_SuccessfulRegistrationAsync()
     {
       //Arrange
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -26,7 +26,7 @@ namespace ClangPowerTools.Tests
     }
 
     [VsFact(Version = "2019")]
-    public async Task Dte2ServiceWasRegisteredAsync()
+    public async Task Dte2Service_SuccessfulRegistrationAsync()
     {
       // Arrange
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -38,7 +38,7 @@ namespace ClangPowerTools.Tests
     }
 
     [VsFact(Version = "2019")]
-    public async Task OutputWindowServiceWasRegisteredAsync()
+    public async Task OutputWindowService_SuccessfulRegistrationAsync()
     {
       //Arrange
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -51,7 +51,7 @@ namespace ClangPowerTools.Tests
 
     // ----------------------------------------------------------------------------
     [VsFact(Version = "2019")]
-    public async Task VsStatusbarServiceWasRegisteredAsync()
+    public async Task VsStatusbarService_SuccessfulRegistrationAsync()
     {
       //Arrange
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -63,7 +63,7 @@ namespace ClangPowerTools.Tests
     }
 
     [VsFact(Version = "2019")]
-    public async Task RunningDocumentTableServiceWasRegisteredAsync()
+    public async Task RunningDocumentTableService_SuccessfulRegistrationAsync()
     {
       //Arrange
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -75,7 +75,7 @@ namespace ClangPowerTools.Tests
     }
 
     [VsFact(Version = "2019")]
-    public async Task FileChangeServiceWasRegisteredAsync()
+    public async Task FileChangeService_SuccessfulRegistrationAsync()
     {
       //Arrange
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -87,7 +87,7 @@ namespace ClangPowerTools.Tests
     }
 
     [VsFact(Version = "2019")]
-    public async Task SolutionServiceWasRegisteredAsync()
+    public async Task SolutionService_SuccessfulRegistrationAsync()
     {
       //Arrange
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
