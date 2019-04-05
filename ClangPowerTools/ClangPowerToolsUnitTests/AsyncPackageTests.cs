@@ -26,7 +26,6 @@ namespace ClangPowerTools.Tests
       if (null != commands)
         cmd = commands.Item("498fdff5-5217-4da9-88d2-edad44ba3874", 0x0102);
 
-
       Assumes.Present(shell);
 
       var guid = Guid.Parse(guidString);

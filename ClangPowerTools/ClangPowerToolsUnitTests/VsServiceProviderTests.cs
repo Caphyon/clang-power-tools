@@ -4,30 +4,43 @@ using EnvDTE80;
 using Xunit;
 using ClangPowerTools;
 using Microsoft.VisualStudio.Shell;
+using Task = System.Threading.Tasks.Task;
+using Microsoft.VisualStudio.Shell.Interop;
+using System;
 
 namespace ClangPowerTools.Tests
 {
   [VsTestSettings(UIThread = true)]
   public class VsServiceProviderTests
   {
-    [VsFact()]
-    public void DteServiceWasRegistered_Test()
+    [VsTheory(Version = "2019")]
+    [InlineData()]
+    public async Task DteServiceWasRegistered_Test()
     {
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-      DTE dte = VsServiceProvider.GetService(typeof(DTE)) as DTE;
-      Assert.NotNull(dte);
+      var guid = Guid.Parse(RunClangPowerToolsPackage.PackageGuidString);
+      var shell = (IVsShell7)ServiceProvider.GlobalProvider.GetService(typeof(SVsShell));
+      await shell.LoadPackageAsync(ref guid);
+
+      VsServiceProvider.TryGetService(typeof(DTE), out object dteService);
+      Assert.NotNull(dteService as DTE);
     }
 
 
-    //[VsFact()]
-    //public void DTEServiceIsConvertibleToDTE2_Test()
-    //{
-    //  DTE2 dte2 = null;
-    //  if (VsServiceProvider.TryGetService(typeof(DTE), out object dteObj))
-    //  {
-    //    dte2 = dteObj as DTE2;
-    //  }
-    //  Assert.NotNull(dte2);
-    //}
+    [VsTheory(Version = "2019")]
+    [InlineData()]
+    public async Task OutputWindowServiceWasRegistered_Test()
+    {
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
+      var guid = Guid.Parse(RunClangPowerToolsPackage.PackageGuidString);
+      var shell = (IVsShell7)ServiceProvider.GlobalProvider.GetService(typeof(SVsShell));
+      await shell.LoadPackageAsync(ref guid);
+
+      VsServiceProvider.TryGetService(typeof(SVsOutputWindow), out object outputWinfowService);
+      Assert.NotNull(outputWinfowService as IVsOutputWindow);
+    }
+
   }
 }
