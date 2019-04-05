@@ -25,7 +25,6 @@ namespace ClangPowerTools.Tests
       Assert.NotNull(dteService as DTE);
     }
 
-
     [VsFact(Version = "2019")]
     public async Task Dte2ServiceWasRegisteredAsync()
     {
@@ -38,7 +37,6 @@ namespace ClangPowerTools.Tests
       Assert.NotNull(dteService as DTE2);
     }
 
-
     [VsFact(Version = "2019")]
     public async Task OutputWindowServiceWasRegisteredAsync()
     {
@@ -49,6 +47,55 @@ namespace ClangPowerTools.Tests
 
       // Assert
       Assert.NotNull(outputWindowService as IVsOutputWindow);
+    }
+
+    // ----------------------------------------------------------------------------
+    [VsFact(Version = "2019")]
+    public async Task VsStatusbarServiceWasRegisteredAsync()
+    {
+      //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      await UnitTestUtility.LoadPackageAsync();
+      VsServiceProvider.TryGetService(typeof(SVsStatusbar), out object statusBarService);
+
+      // Assert
+      Assert.NotNull(statusBarService as IVsStatusbar);
+    }
+
+    [VsFact(Version = "2019")]
+    public async Task RunningDocumentTableServiceWasRegisteredAsync()
+    {
+      //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      await UnitTestUtility.LoadPackageAsync();
+      VsServiceProvider.TryGetService(typeof(SVsRunningDocumentTable), out object runningDocumentTableService);
+
+      // Assert
+      Assert.NotNull(runningDocumentTableService as IVsRunningDocumentTable);
+    }
+
+    [VsFact(Version = "2019")]
+    public async Task FileChangeServiceWasRegisteredAsync()
+    {
+      //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      await UnitTestUtility.LoadPackageAsync();
+      VsServiceProvider.TryGetService(typeof(SVsFileChangeEx), out object fileChangeService);
+
+      // Assert
+      Assert.NotNull(fileChangeService as IVsFileChangeEx);
+    }
+
+    [VsFact(Version = "2019")]
+    public async Task SolutionServiceWasRegisteredAsync()
+    {
+      //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      await UnitTestUtility.LoadPackageAsync();
+      VsServiceProvider.TryGetService(typeof(SVsSolution), out object vsSolutionService);
+
+      // Assert
+      Assert.NotNull(vsSolutionService as IVsSolution);
     }
 
   }
