@@ -12,13 +12,13 @@ namespace ClangPowerTools.Tests
     //}
 
     [VsFact(Version = "2017")]
-    public void RunVisualStudio2017_Test()
+    public void RunVisualStudio2017()
     {
       Assert.Equal("15.0", UnitTestUtility.GetVsVersion());
     }
 
     [VsFact(Version = "2019")]
-    public void RunVisualStudio2019_Test()
+    public void RunVisualStudio2019()
     {
       Assert.Equal("16.0", UnitTestUtility.GetVsVersion());
     }
