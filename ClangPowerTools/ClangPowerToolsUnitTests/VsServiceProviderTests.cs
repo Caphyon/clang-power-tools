@@ -18,33 +18,38 @@ namespace ClangPowerTools.Tests
     {
       //Arrange
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-      DTE dte = await Task.Run(() => UnitTestUtility.GetDteServiceAsync().Result);
-
-      //Act
-      Command command = dte.Commands.Item("498fdff5-5217-4da9-88d2-edad44ba3874", 0x0102);
-
-      var test = command.LocalizedName;
-      var test1 = command.ID;
-      var test2 = command.Guid;
-      var test3 = command.ToString();
-      var test4 = SettingsProvider.ClangFormatSettings.FileExtensions;
+      await UnitTestUtility.LoadPackageAsync();
+      VsServiceProvider.TryGetService(typeof(DTE), out object dteService);
 
       //Assert
-      Assert.NotNull(dte);
+      Assert.NotNull(dteService as DTE);
+    }
+
+
+    [VsFact(Version = "2019")]
+    public async Task Dte2ServiceWasRegisteredAsync()
+    {
+      // Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      await UnitTestUtility.LoadPackageAsync();
+      VsServiceProvider.TryGetService(typeof(DTE), out object dteService);
+
+      // Assert
+      Assert.NotNull(dteService as DTE2);
     }
 
 
     [VsFact(Version = "2019")]
     public async Task OutputWindowServiceWasRegisteredAsync()
     {
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
       //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      await UnitTestUtility.LoadPackageAsync();
+      VsServiceProvider.TryGetService(typeof(SVsOutputWindow), out object outputWindowService);
 
-      //Act
-
-      //Assert
-      Assert.True(true);
+      // Assert
+      Assert.NotNull(outputWindowService as IVsOutputWindow);
     }
+
   }
 }

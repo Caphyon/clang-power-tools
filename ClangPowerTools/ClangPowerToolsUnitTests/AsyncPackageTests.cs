@@ -1,4 +1,5 @@
-﻿using EnvDTE;
+﻿using ClangPowerTools.Services;
+using EnvDTE;
 using EnvDTE80;
 using Microsoft;
 using Microsoft.VisualStudio.Shell;
@@ -19,9 +20,11 @@ namespace ClangPowerTools.Tests
       //Arrange
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       IVsShell7 shell = (IVsShell7)ServiceProvider.GlobalProvider.GetService(typeof(SVsShell));
-      DTE dte = await Task.Run(() => UnitTestUtility.GetDteServiceAsync().Result);
+      await UnitTestUtility.LoadPackageAsync();
+      VsServiceProvider.TryGetService(typeof(DTE), out object dteService);
 
       //Act
+      var dte = dteService as DTE;
       Commands2 commands = dte.Commands as Commands2;
       Assumes.Present(shell);
       var guid = Guid.Parse(guidString);
