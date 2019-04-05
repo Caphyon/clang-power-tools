@@ -7,7 +7,7 @@ Set-Variable -name kDefinesUnicode   -value @('"-DUNICODE"'
                                      -option Constant
 
 Set-Variable -name kDefinesClangXpTargeting `
-             -value @("-D_USING_V110_SDK71_") `
+             -value @('"-D_USING_V110_SDK71_"') `
              -option Constant
 
 Set-Variable -name kIncludePathsXPTargetingSDK  `
@@ -353,20 +353,7 @@ Function Get-ProjectIncludeDirectories()
 #>
 Function Get-ProjectPreprocessorDefines()
 {
-    Set-ProjectItemContext "ClCompile"
-    $preprocDefNodes = Get-ProjectItemProperty "PreprocessorDefinitions"
-    if (!$preprocDefNodes)
-    {
-        return @()
-    }
-
-    [string[]] $tokens = @($preprocDefNodes -split ";")
-
-    # make sure we add the required prefix and escape double quotes
-    [string[]]$defines = @( $tokens | `
-            ForEach-Object { $_.Trim() } | `
-            Where-Object { $_ } | `
-            ForEach-Object { '"' + $(($kClangDefinePrefix + $_) -replace '"', '\"') + '"' } )
+    [string[]] $defines = @()
 
     if (Is-Project-Unicode)
     {
@@ -375,11 +362,31 @@ Function Get-ProjectPreprocessorDefines()
 
     $defines += @(Get-Project-MultiThreaded-Define)
 
+    if ( (VariableExists 'UseOfMfc') -and $UseOfMfc -ieq "Dynamic")
+    {
+        $defines += @('"-D_AFXDLL"')
+    }
+
     [string] $platformToolset = Get-ProjectPlatformToolset
     if ($platformToolset.EndsWith("xp"))
     {
         $defines += $kDefinesClangXpTargeting
     }
+
+    Set-ProjectItemContext "ClCompile"
+    $preprocDefNodes = Get-ProjectItemProperty "PreprocessorDefinitions"
+    if (!$preprocDefNodes)
+    {
+        return $defines
+    }
+
+    [string[]] $tokens = @($preprocDefNodes -split ";")
+
+    # make sure we add the required prefix and escape double quotes
+    $defines += @( $tokens | `
+                   ForEach-Object { $_.Trim() } | `
+                   Where-Object { $_ } | `
+                   ForEach-Object { '"' + $(($kClangDefinePrefix + $_) -replace '"', '\"') + '"' } )
 
     return $defines
 }
