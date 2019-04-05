@@ -12,5 +12,4 @@ namespace ClangPowerTools.Tests
       var dte = (DTE)ServiceProvider.GlobalProvider.GetService(typeof(DTE));
       return dte.Version;
     }
-  }
 }
