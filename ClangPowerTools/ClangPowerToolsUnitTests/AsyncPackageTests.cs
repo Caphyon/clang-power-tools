@@ -14,22 +14,19 @@ namespace ClangPowerTools.Tests
     [VsTheory(Version = "2019")]
     [InlineData(RunClangPowerToolsPackage.PackageGuidString, true)]
     [InlineData("11111111-2222-3333-4444-555555555555", false)]
-    async Task LoadTestAsync(string guidString, bool expectedSuccess)
+    private async Task LoadTestAsync(string guidString, bool expectedSuccess)
     {
+      //Arrange
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-      var shell = (IVsShell7)ServiceProvider.GlobalProvider.GetService(typeof(SVsShell));
-      var dte = (DTE2)ServiceProvider.GlobalProvider.GetService(typeof(DTE));
+      IVsShell7 shell = (IVsShell7)ServiceProvider.GlobalProvider.GetService(typeof(SVsShell));
+      DTE dte = await Task.Run(() => UnitTestUtility.GetDteServiceAsync().Result);
 
-      var commands = dte.Commands as Commands2;
-
-      Command cmd;
-      if (null != commands)
-        cmd = commands.Item("498fdff5-5217-4da9-88d2-edad44ba3874", 0x0102);
-
+      //Act
+      Commands2 commands = dte.Commands as Commands2;
       Assumes.Present(shell);
-
       var guid = Guid.Parse(guidString);
 
+      //Assert
       if (expectedSuccess)
         await shell.LoadPackageAsync(ref guid);
       else
