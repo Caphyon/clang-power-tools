@@ -3,7 +3,7 @@
 namespace ClangPowerTools.Tests
 {
   [VsTestSettings(UIThread = true)]
-  public class VSVersionTests
+  public class VsVersionTests
   {
     //[VsFact(Version = "2015")]
     //public void RunVisualStudio2015_Test()
