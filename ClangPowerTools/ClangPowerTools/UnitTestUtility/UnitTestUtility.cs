@@ -5,7 +5,7 @@ using Microsoft;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
-using System.Threading.Tasks;
+using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Tests
 {
@@ -18,7 +18,7 @@ namespace ClangPowerTools.Tests
       return dte.Version;
     }
 
-    public static async System.Threading.Tasks.Task LoadPackageAsync()
+    public static async Task LoadPackageAsync()
     {
       var guid = Guid.Parse(RunClangPowerToolsPackage.PackageGuidString);
       var shell = (IVsShell7)ServiceProvider.GlobalProvider.GetService(typeof(SVsShell));
