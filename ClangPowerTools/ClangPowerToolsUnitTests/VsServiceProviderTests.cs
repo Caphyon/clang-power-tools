@@ -15,7 +15,7 @@ namespace ClangPowerTools.Tests
   {
     [VsTheory(Version = "2019")]
     [InlineData()]
-    public async Task DteServiceWasRegistered_Test()
+    public async Task DteServiceWasRegistered_TestAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -24,13 +24,23 @@ namespace ClangPowerTools.Tests
       await shell.LoadPackageAsync(ref guid);
 
       VsServiceProvider.TryGetService(typeof(DTE), out object dteService);
+
+      DTE2 dte = dteService as DTE2;
+
+      Command command = dte.Commands.Item("498fdff5-5217-4da9-88d2-edad44ba3874", 0x0102);
+ 
+      string test = command.LocalizedName;
+      var test1 = command.ID;
+      var test2 = command.Guid;
+      var test3 = command.ToString();
+
       Assert.NotNull(dteService as DTE);
     }
 
 
     [VsTheory(Version = "2019")]
     [InlineData()]
-    public async Task OutputWindowServiceWasRegistered_Test()
+    public async Task OutputWindowServiceWasRegistered_TestAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 

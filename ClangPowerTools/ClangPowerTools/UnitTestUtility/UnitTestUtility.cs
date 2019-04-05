@@ -4,7 +4,7 @@ using Microsoft.VisualStudio.Shell;
 
 namespace ClangPowerTools.Tests
 {
-  public class UnitTestUtility
+  public static class UnitTestUtility
   {
     public static string GetVsVersion()
     {
