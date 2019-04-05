@@ -18,15 +18,11 @@ namespace ClangPowerTools.Tests
       return dte.Version;
     }
 
-    public static async Task<DTE> GetDteServiceAsync()
+    public static async System.Threading.Tasks.Task LoadPackageAsync()
     {
       var guid = Guid.Parse(RunClangPowerToolsPackage.PackageGuidString);
       var shell = (IVsShell7)ServiceProvider.GlobalProvider.GetService(typeof(SVsShell));
       await shell.LoadPackageAsync(ref guid);
-
-      VsServiceProvider.TryGetService(typeof(DTE), out object dteService);
-
-      return dteService as DTE;
     }
   }
 }
