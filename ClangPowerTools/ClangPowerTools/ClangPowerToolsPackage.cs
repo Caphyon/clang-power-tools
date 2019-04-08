@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.Commands;
 using ClangPowerTools.DialogPages;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
 using EnvDTE;
@@ -139,7 +140,7 @@ namespace ClangPowerTools
       if (string.IsNullOrWhiteSpace(SettingsProvider.GeneralSettings.Version))
         ShowToolbare(); // Show the toolbar on the first install
 
-      var currentVersion = GetPackageVersion();
+      var currentVersion = PackageUtility.GetVersion();
       if (0 > string.Compare(SettingsProvider.GeneralSettings.Version, currentVersion))
       {
         mOutputWindowController.Clear();
@@ -399,21 +400,6 @@ namespace ClangPowerTools
 
       if (null != mDteEvents)
         mDteEvents.OnBeginShutdown -= UnregisterFromEvents;
-    }
-
-
-    private string GetPackageVersion()
-    {
-      var assemblyPath = Assembly.GetExecutingAssembly().Location;
-      assemblyPath = assemblyPath.Substring(0, assemblyPath.LastIndexOf('\\'));
-      var manifestPath = Path.Combine(assemblyPath, "extension.vsixmanifest");
-
-      var doc = new XmlDocument();
-      doc.Load(manifestPath);
-      var metaData = doc.DocumentElement.ChildNodes.Cast<XmlElement>().First(x => x.Name == "Metadata");
-      var identity = metaData.ChildNodes.Cast<XmlElement>().First(x => x.Name == "Identity");
-
-      return identity.GetAttribute("Version");
     }
 
 
