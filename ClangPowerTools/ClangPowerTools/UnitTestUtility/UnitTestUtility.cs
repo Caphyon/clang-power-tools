@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.Services;
+﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft;
@@ -23,6 +24,11 @@ namespace ClangPowerTools.Tests
       var guid = Guid.Parse(RunClangPowerToolsPackage.PackageGuidString);
       var shell = (IVsShell7)ServiceProvider.GlobalProvider.GetService(typeof(SVsShell));
       await shell.LoadPackageAsync(ref guid);
+    }
+
+    public static string GetPackageVersion()
+    {
+      return PackageUtility.GetVersion();
     }
   }
 }
