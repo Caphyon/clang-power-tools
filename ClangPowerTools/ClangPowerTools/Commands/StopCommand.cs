@@ -11,7 +11,7 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  internal sealed class StopCommand : ClangCommand
+  public sealed class StopCommand : ClangCommand
   {
     #region Members
 

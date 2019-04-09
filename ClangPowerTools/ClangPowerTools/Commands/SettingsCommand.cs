@@ -8,7 +8,7 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  internal sealed class SettingsCommand : BasicCommand
+  public sealed class SettingsCommand : BasicCommand
   {
     #region Properties
 

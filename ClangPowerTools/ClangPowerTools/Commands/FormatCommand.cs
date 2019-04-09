@@ -15,7 +15,7 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  internal sealed class FormatCommand : ClangCommand
+  public sealed class FormatCommand : ClangCommand
   {
     #region Members
 

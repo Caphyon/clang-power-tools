@@ -14,7 +14,7 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  internal sealed class TidyCommand : ClangCommand
+  public sealed class TidyCommand : ClangCommand
   {
     #region Properties
 

@@ -9,7 +9,7 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  internal sealed class IgnoreCompileCommand : BasicCommand
+  public sealed class IgnoreCompileCommand : BasicCommand
   {
     #region Properties
 

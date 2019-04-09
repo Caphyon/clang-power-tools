@@ -9,7 +9,7 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  internal sealed class CompileCommand : ClangCommand
+  public sealed class CompileCommand : ClangCommand
   {
     #region Properties
 
