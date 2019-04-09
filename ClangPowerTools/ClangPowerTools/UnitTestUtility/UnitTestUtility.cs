@@ -50,5 +50,11 @@ namespace ClangPowerTools.Tests
     }
 
 
+    public static ClangGeneralOptionsView GetClangGeneralOptionsViewFromFile()
+    {
+      ClangGeneralOptionsView clangGeneralOptionsView = new ClangGeneralOptionsView();
+      clangGeneralOptionsView.LoadSettingsFromStorage();
+      return clangGeneralOptionsView;
+    }
   }
 }
