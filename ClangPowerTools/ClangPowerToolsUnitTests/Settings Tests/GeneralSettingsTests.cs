@@ -5,6 +5,7 @@ using ClangPowerTools.DialogPages;
 using System;
 using ClangPowerTools.Services;
 using EnvDTE;
+using EnvDTE80;
 
 namespace ClangPowerTools.Tests.Settings
 {
@@ -154,12 +155,16 @@ namespace ClangPowerTools.Tests.Settings
       var dte = dteService as DTE;
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
       Random rand = new Random();
+      Commands2 commands = dte.Commands as Commands2;
+      Command command;
 
       //Act
+      if (UnitTestUtility.GetCommandByID(commands, "498fdff5-5217-4da9-88d2-edad44ba3874", CommandIds.kSettingsId, out command))
+      {
+        dte.ExecuteCommand(command.Name);
+      }
+
       generalSettings.FilesToIgnore = rand.Next(1, 5).ToString();
-      dte.ExecuteCommand("ClangPowerTools.Commands.SettingsCommand");
-
-
       ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
 
       //Assert
