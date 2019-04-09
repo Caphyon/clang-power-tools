@@ -30,5 +30,25 @@ namespace ClangPowerTools.Tests
     {
       return PackageUtility.GetVersion();
     }
+
+    public static bool GetCommandByID(Commands2 command2, string aGuid, int aId, out Command command)
+    {
+      command = null;
+
+      if (string.IsNullOrWhiteSpace(aGuid))
+        return false;
+
+      if (null == command2)
+        return false;
+
+      command = command2.Item(aGuid, aId);
+
+      if (null == command)
+        return false;
+
+      return true;
+    }
+
+
   }
 }
