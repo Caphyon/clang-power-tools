@@ -232,6 +232,7 @@
     <Compile Include="TextOperationsInterfaces\ITextFormatter.cs" />
     <Compile Include="Helpers\Vsix.cs" />
     <Compile Include="Options\XmlSerializer.cs" />
+    <Compile Include="UnitTestUtility\CommandTestUtility.cs" />
     <Compile Include="UnitTestUtility\UnitTestUtility.cs" />
   </ItemGroup>
   <ItemGroup>

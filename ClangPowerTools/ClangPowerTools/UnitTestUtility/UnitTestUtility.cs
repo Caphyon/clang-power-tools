@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.Helpers;
+﻿using ClangPowerTools.Commands;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
@@ -47,6 +48,21 @@ namespace ClangPowerTools.Tests
         return false;
 
       return true;
+    }
+
+    public static bool RunCommand(DTE2 aDte, string aGuid)
+    {
+      Commands2 command2 = aDte.Commands as Commands2;
+
+      if (GetCommandByID(command2, aGuid, CommandIds.kSettingsId, out Command command))
+      {
+        aDte.ExecuteCommand(command.Name);
+        return true;
+      }
+      else
+      {
+        return false;
+      }
     }
 
 
