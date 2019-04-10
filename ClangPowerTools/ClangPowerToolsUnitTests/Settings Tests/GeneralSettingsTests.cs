@@ -1,11 +1,9 @@
-﻿using Xunit;
-using Microsoft.VisualStudio.Shell;
-using Task = System.Threading.Tasks.Task;
-using ClangPowerTools.DialogPages;
-using System;
-using ClangPowerTools.Services;
+﻿using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.Shell;
+using Xunit;
+using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Tests.Settings
 {
@@ -37,7 +35,32 @@ namespace ClangPowerTools.Tests.Settings
       ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
 
       //Assert
-      Assert.Equal(generalSettings.ClangCompileAfterVsCompile, generalSettingsFromFile.ClangCompileAfterVsCompile);
+      Assert.Equal(generalSettings.ClangFlags, generalSettingsFromFile.ClangFlags);
+    }
+
+    [VsFact(Version = "2019")]
+    public async Task CompileFlags_ChangeValue_CompareViewToFileAsync()
+    {
+      //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      await UnitTestUtility.LoadPackageAsync();
+      VsServiceProvider.TryGetService(typeof(DTE), out object dteService);
+      var dte = dteService as DTE;
+      ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
+      Commands2 commands = dte.Commands as Commands2;
+      Command command;
+
+      //Act
+      if (UnitTestUtility.GetCommandByID(commands, "498fdff5-5217-4da9-88d2-edad44ba3874", CommandIds.kSettingsId, out command))
+      {
+        dte.ExecuteCommand(command.Name);
+      }
+
+      generalSettings.ClangFlags = "-Wall";
+      ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
+
+      //Assert
+      Assert.Equal(generalSettings.ClangFlags, generalSettingsFromFile.ClangFlags);
     }
 
     [VsFact(Version = "2019")]
@@ -54,6 +77,39 @@ namespace ClangPowerTools.Tests.Settings
       //Assert
       Assert.Equal(generalSettings.FilesToIgnore, generalSettingsFromFile.FilesToIgnore);
     }
+
+    [VsFact(Version = "2019")]
+    public async Task FilesToIgnore_ChangeValue_CompareViewToFileAsync()
+    {
+      //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      await UnitTestUtility.LoadPackageAsync();
+      VsServiceProvider.TryGetService(typeof(DTE), out object dteService);
+      var dte = dteService as DTE;
+      ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
+      Commands2 commands = dte.Commands as Commands2;
+      Command command;
+
+      //Act
+      if (UnitTestUtility.GetCommandByID(commands, "498fdff5-5217-4da9-88d2-edad44ba3874", CommandIds.kSettingsId, out command))
+      {
+        dte.ExecuteCommand(command.Name);
+      }
+
+      generalSettings.FilesToIgnore = "test.cpp";
+      ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
+
+      //Assert
+      Assert.Equal(generalSettings.FilesToIgnore, generalSettingsFromFile.FilesToIgnore);
+    }
+
+
+
+
+
+
+
+
 
     [VsFact(Version = "2019")]
     public async Task ProjectToIgnore_CompareViewToFileAsync()
@@ -143,32 +199,6 @@ namespace ClangPowerTools.Tests.Settings
 
       //Assert
       Assert.Equal(generalSettings.VerboseMode, generalSettingsFromFile.VerboseMode);
-    }
-
-    [VsFact(Version = "2019")]
-    public async Task FilesToIgnore_ChangeValue_CompareViewToFileAsync()
-    {
-      //Arrange
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-      await UnitTestUtility.LoadPackageAsync();
-      VsServiceProvider.TryGetService(typeof(DTE), out object dteService);
-      var dte = dteService as DTE;
-      ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
-      Random rand = new Random();
-      Commands2 commands = dte.Commands as Commands2;
-      Command command;
-
-      //Act
-      if (UnitTestUtility.GetCommandByID(commands, "498fdff5-5217-4da9-88d2-edad44ba3874", CommandIds.kSettingsId, out command))
-      {
-        dte.ExecuteCommand(command.Name);
-      }
-
-      generalSettings.FilesToIgnore = rand.Next(1, 5).ToString();
-      ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
-
-      //Assert
-      Assert.Equal(generalSettings.FilesToIgnore, generalSettingsFromFile.FilesToIgnore);
     }
   }
 }
