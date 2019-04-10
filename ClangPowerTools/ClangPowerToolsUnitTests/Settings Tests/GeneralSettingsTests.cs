@@ -29,6 +29,7 @@ namespace ClangPowerTools.Tests.Settings
     public async Task CompileFlags_CompareViewToFileAsync()
     {
       //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
 
@@ -43,6 +44,7 @@ namespace ClangPowerTools.Tests.Settings
     public async Task FilesToIgnore_CompareViewToFileAsync()
     {
       //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
 
@@ -57,6 +59,7 @@ namespace ClangPowerTools.Tests.Settings
     public async Task ProjectToIgnore_CompareViewToFileAsync()
     {
       //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
 
@@ -71,6 +74,7 @@ namespace ClangPowerTools.Tests.Settings
     public async Task AdditionalIncludes_CompareViewToFileAsync()
     {
       //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
 
@@ -85,6 +89,7 @@ namespace ClangPowerTools.Tests.Settings
     public async Task TreatWarningsAsErrors_CompareViewToFileAsync()
     {
       //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
 
@@ -99,6 +104,7 @@ namespace ClangPowerTools.Tests.Settings
     public async Task ContinueOnError_CompareViewToFileAsync()
     {
       //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
 
@@ -113,6 +119,7 @@ namespace ClangPowerTools.Tests.Settings
     public async Task ClangCompileAfterVsCompile_CompareViewToFileAsync()
     {
       //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
 
@@ -127,6 +134,7 @@ namespace ClangPowerTools.Tests.Settings
     public async Task VerboseMode_CompareViewToFileAsync()
     {
       //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
 
@@ -141,6 +149,7 @@ namespace ClangPowerTools.Tests.Settings
     public async Task FilesToIgnore_ChangeValue_CompareViewToFileAsync()
     {
       //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       VsServiceProvider.TryGetService(typeof(DTE), out object dteService);
       var dte = dteService as DTE;
