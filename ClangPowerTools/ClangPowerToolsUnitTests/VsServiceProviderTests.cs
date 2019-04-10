@@ -56,6 +56,7 @@ namespace ClangPowerTools.Tests
       //Arrange
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
+
       VsServiceProvider.TryGetService(typeof(SVsStatusbar), out object statusBarService);
 
       // Assert

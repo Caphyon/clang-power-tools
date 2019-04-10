@@ -3,6 +3,7 @@ using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
 using ClangPowerTools.Script;
 using ClangPowerTools.Services;
+using ClangPowerTools.Tests;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -53,10 +54,14 @@ namespace ClangPowerTools
 
     #region Properties
 
+    public string Script { get; private set; }
 
     protected string VsEdition { get; set; }
+
     protected string VsVersion { get; set; }
+
     protected string WorkingDirectoryPath { get; set; }
+
     protected IVsHierarchy ItemHierarchy
     {
       get => ItemHierarchy;
@@ -93,7 +98,7 @@ namespace ClangPowerTools
     #endregion
 
 
-    #region Methods
+    #region Public Methods
 
     public void OnMissingLLVMDetected(object sender, MissingLlvmEventArgs e)
     {
@@ -140,14 +145,6 @@ namespace ClangPowerTools
         IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item);
         itemRelatedScriptBuilder.Build();
         var itemRelatedParameters = itemRelatedScriptBuilder.GetResult();
-
-        // From the first parameter is removed the last character which is mandatory "'"
-        // and added to the end of the string to close the script
-        var script = $"{runModeParameters.Remove(runModeParameters.Length - 1)} {itemRelatedParameters} {genericParameters}'";
-
-        if (null != vsSolution)
-          ItemHierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
-
         var process = PowerShellWrapper.Invoke(script, mRunningProcesses);
       }
 
@@ -163,6 +160,10 @@ namespace ClangPowerTools
         OnDataStreamClose(new CloseDataStreamingEventArgs(false));
       }
     }
+
+    #endregion
+
+    #region Protected Methods
 
     //Collect files
     protected IEnumerable<IItem> CollectItems(bool aClangFormatFlag = false, List<string> aAcceptedExtensionTypes = null, CommandUILocation commandUILocation = CommandUILocation.ContextMenu)
@@ -202,7 +203,6 @@ namespace ClangPowerTools
       if (!VsServiceProvider.TryGetService(typeof(DTE), out object dte))
         return;
 
-      var dte2 = dte as DTE2;
       AutomationUtil.SaveDirtyProjects((dte as DTE2).Solution);
       CollectItems(false, ScriptConstants.kAcceptedFileExtensions, commandUILocation);
     }
@@ -220,6 +220,50 @@ namespace ClangPowerTools
     protected void OnDataStreamClose(CloseDataStreamingEventArgs e)
     {
       CloseDataStreamingEvent?.Invoke(this, e);
+    }
+
+    #endregion
+
+
+    #region Private Methods
+
+    private string GetGenericParamaters(int aCommandId)
+    {
+      IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(VsEdition, VsVersion, aCommandId);
+      genericScriptBuilder.Build();
+      var genericParameters = genericScriptBuilder.GetResult();
+      return genericParameters;
+    }
+
+    private static string GetRunModeParamaters()
+    {
+      IBuilder<string> runModeScriptBuilder = new RunModeScriptBuilder();
+      runModeScriptBuilder.Build();
+      var runModeParameters = runModeScriptBuilder.GetResult();
+      return runModeParameters;
+    }
+
+    private void InvokeCommand(string runModeParameters, string genericParameters)
+    {
+      VsServiceProvider.TryGetService(typeof(SVsSolution), out object vsSolutionService);
+      var vsSolution = vsSolutionService as IVsSolution;
+      foreach (var item in mItemsCollector.items)
+      {
+        IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item);
+        itemRelatedScriptBuilder.Build();
+        var itemRelatedParameters = itemRelatedScriptBuilder.GetResult();
+
+        // From the first parameter is removed the last character which is mandatory "'"
+        // and added to the end of the string to close the script
+        Script = $"{runModeParameters.Remove(runModeParameters.Length - 1)} {itemRelatedParameters} {genericParameters}'";
+
+        CommandTestUtility.ScriptCommand = Script;
+
+        if (null != vsSolution)
+          ItemHierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
+
+        var process = PowerShellWrapper.Invoke(Script, mRunningProcesses);
+      }
     }
 
     #endregion
