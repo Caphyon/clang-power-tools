@@ -87,7 +87,7 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="documentsToIgnore"></param>
     /// <returns></returns>
-    private void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
+    public void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
     {
       var settings = SettingsProvider.GeneralSettings;
 
