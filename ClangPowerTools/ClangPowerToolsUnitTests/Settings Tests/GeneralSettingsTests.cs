@@ -44,21 +44,14 @@ namespace ClangPowerTools.Tests.Settings
       //Arrange
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
-      VsServiceProvider.TryGetService(typeof(DTE), out object dteService);
-      var dte = dteService as DTE;
+      UnitTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
-      Commands2 commands = dte.Commands as Commands2;
-      Command command;
 
       //Act
-      if (UnitTestUtility.GetCommandByID(commands, "498fdff5-5217-4da9-88d2-edad44ba3874", CommandIds.kSettingsId, out command))
-      {
-        dte.ExecuteCommand(command.Name);
-      }
-
       generalSettings.ClangFlags = "-Wall";
+      UnitTestUtility.SaveClangOptions(generalSettings);
       ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
-
+    
       //Assert
       Assert.Equal(generalSettings.ClangFlags, generalSettingsFromFile.ClangFlags);
     }
@@ -84,32 +77,17 @@ namespace ClangPowerTools.Tests.Settings
       //Arrange
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
-      VsServiceProvider.TryGetService(typeof(DTE), out object dteService);
-      var dte = dteService as DTE;
+      UnitTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
-      Commands2 commands = dte.Commands as Commands2;
-      Command command;
 
       //Act
-      if (UnitTestUtility.GetCommandByID(commands, "498fdff5-5217-4da9-88d2-edad44ba3874", CommandIds.kSettingsId, out command))
-      {
-        dte.ExecuteCommand(command.Name);
-      }
-
       generalSettings.FilesToIgnore = "test.cpp";
+      UnitTestUtility.SaveClangOptions(generalSettings);
       ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
 
       //Assert
       Assert.Equal(generalSettings.FilesToIgnore, generalSettingsFromFile.FilesToIgnore);
     }
-
-
-
-
-
-
-
-
 
     [VsFact(Version = "2019")]
     public async Task ProjectToIgnore_CompareViewToFileAsync()
