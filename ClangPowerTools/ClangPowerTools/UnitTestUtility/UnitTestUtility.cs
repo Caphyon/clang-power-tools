@@ -54,7 +54,7 @@ namespace ClangPowerTools.Tests
     {
       Commands2 command2 = aDte.Commands as Commands2;
 
-      if (GetCommandByID(command2, aGuid, CommandIds.kSettingsId, out Command command))
+      if (GetCommandByID(command2, aGuid, CommandIds.kCompileId, out Command command))
       {
         aDte.ExecuteCommand(command.Name);
         return true;
