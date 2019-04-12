@@ -62,12 +62,22 @@ namespace ClangPowerTools.Tests
       }
     }
 
+    public static void ResetClangGeneralOptionsView()
+    {
+      SettingsProvider.GeneralSettings.ResetSettings();
+    }
+
 
     public static ClangGeneralOptionsView GetClangGeneralOptionsViewFromFile()
     {
       ClangGeneralOptionsView clangGeneralOptionsView = new ClangGeneralOptionsView();
       clangGeneralOptionsView.LoadSettingsFromStorage();
       return clangGeneralOptionsView;
+    }
+
+    public static void SaveClangOptions (ClangGeneralOptionsView clangGeneralOptionsView)
+    {
+      clangGeneralOptionsView.SaveSettingsToStorage();
     }
   }
 }
