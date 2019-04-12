@@ -1,7 +1,6 @@
 ﻿using Xunit;
 using Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
-using ClangPowerTools.DialogPages;
 
 namespace ClangPowerTools.Tests.Settings
 {

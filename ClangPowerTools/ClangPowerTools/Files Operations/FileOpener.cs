@@ -1,7 +1,4 @@
-﻿using ClangPowerTools.Services;
-using EnvDTE;
-using EnvDTE80;
-using System.IO;
+﻿using System.IO;
 
 namespace ClangPowerTools
 {

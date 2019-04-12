@@ -1,7 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-
-namespace ClangPowerTools.Options
+﻿namespace ClangPowerTools.Options
 {
   public class ClangTidyPathValue
   {

@@ -1,6 +1,5 @@
 ﻿using ClangPowerTools.Options;
 using ClangPowerTools.Options.ViewModel;
-using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;

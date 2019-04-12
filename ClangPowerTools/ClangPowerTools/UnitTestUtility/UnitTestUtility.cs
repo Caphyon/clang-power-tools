@@ -1,9 +1,6 @@
-﻿using ClangPowerTools.Commands;
-using ClangPowerTools.Helpers;
-using ClangPowerTools.Services;
+﻿using ClangPowerTools.Helpers;
 using EnvDTE;
 using EnvDTE80;
-using Microsoft;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;

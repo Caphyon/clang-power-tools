@@ -1,7 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-
-namespace ClangPowerTools
+﻿namespace ClangPowerTools
 {
   public class HeaderFiltersValue
   {

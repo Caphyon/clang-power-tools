@@ -1,6 +1,5 @@
 ﻿using ClangPowerTools.Services;
 using EnvDTE;
-using System.Collections.Generic;
 
 namespace ClangPowerTools
 {

@@ -2,11 +2,9 @@
 using EnvDTE;
 using EnvDTE80;
 using Xunit;
-using ClangPowerTools;
 using Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
 using Microsoft.VisualStudio.Shell.Interop;
-using System;
 
 namespace ClangPowerTools.Tests
 {
