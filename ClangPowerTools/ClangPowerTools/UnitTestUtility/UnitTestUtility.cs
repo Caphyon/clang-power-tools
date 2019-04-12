@@ -50,11 +50,11 @@ namespace ClangPowerTools.Tests
       return true;
     }
 
-    public static bool RunCommand(DTE2 aDte, string aGuid)
+    public static bool RunCommand(DTE2 aDte, string aGuid, int aCommandId)
     {
       Commands2 command2 = aDte.Commands as Commands2;
 
-      if (GetCommandByID(command2, aGuid, CommandIds.kCompileId, out Command command))
+      if (GetCommandByID(command2, aGuid, aCommandId, out Command command))
       {
         aDte.ExecuteCommand(command.Name);
         return true;
