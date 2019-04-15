@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.Helpers;
+﻿using ClangPowerTools.DialogPages;
+using ClangPowerTools.Helpers;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -71,6 +72,27 @@ namespace ClangPowerTools.Tests
     public static ClangGeneralOptionsView GetClangGeneralOptionsViewFromFile()
     {
       ClangGeneralOptionsView clangGeneralOptionsView = new ClangGeneralOptionsView();
+      clangGeneralOptionsView.LoadSettingsFromStorage();
+      return clangGeneralOptionsView;
+    }
+
+    public static ClangTidyOptionsView GetClangTidyOptionViewFromFile()
+    {
+      ClangTidyOptionsView clangTidyOptionsView = new ClangTidyOptionsView();
+      clangTidyOptionsView.LoadSettingsFromStorage();
+      return clangTidyOptionsView;
+    }
+
+    public static ClangTidyCustomChecksOptionsView GetClangTidyCustomChecksViewFromFile()
+    {
+      ClangTidyCustomChecksOptionsView clangGeneralOptionsView = new ClangTidyCustomChecksOptionsView();
+      clangGeneralOptionsView.LoadSettingsFromStorage();
+      return clangGeneralOptionsView;
+    }
+
+    public static ClangFormatOptionsView GetClangFormatOptionsViewFromFile()
+    {
+      ClangFormatOptionsView clangGeneralOptionsView = new ClangFormatOptionsView();
       clangGeneralOptionsView.LoadSettingsFromStorage();
       return clangGeneralOptionsView;
     }
