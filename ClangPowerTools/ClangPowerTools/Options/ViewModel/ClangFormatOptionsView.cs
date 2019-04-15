@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 
-namespace ClangPowerTools.DialogPages
+namespace ClangPowerTools
 {
   public class ClangFormatOptionsView : ConfigurationPage<ClangFormatOptions>, INotifyPropertyChanged
   {
