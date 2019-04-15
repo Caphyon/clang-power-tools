@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.DialogPages;
-using ClangPowerTools.Helpers;
+﻿using ClangPowerTools.Helpers;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;

@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.DialogPages;
-using Microsoft.VisualStudio.Shell;
+﻿using Microsoft.VisualStudio.Shell;
 
 namespace ClangPowerTools
 {

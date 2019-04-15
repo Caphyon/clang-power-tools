@@ -1,5 +1,4 @@
 ﻿using ClangPowerTools.Commands;
-using ClangPowerTools.DialogPages;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
