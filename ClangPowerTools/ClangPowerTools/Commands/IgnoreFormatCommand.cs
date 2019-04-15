@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
-using ClangPowerTools.DialogPages;
 using System.Collections.Generic;
 using Task = System.Threading.Tasks.Task;
 
@@ -88,7 +87,7 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="documentsToIgnore"></param>
     /// <returns></returns>
-    private void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
+    public void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
     {
       var settings = SettingsProvider.ClangFormatSettings;
 
