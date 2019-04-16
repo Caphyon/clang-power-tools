@@ -67,7 +67,6 @@ namespace ClangPowerTools.Tests
       SettingsProvider.GeneralSettings.ResetSettings();
     }
 
-
     public static ClangGeneralOptionsView GetClangGeneralOptionsViewFromFile()
     {
       ClangGeneralOptionsView clangGeneralOptionsView = new ClangGeneralOptionsView();

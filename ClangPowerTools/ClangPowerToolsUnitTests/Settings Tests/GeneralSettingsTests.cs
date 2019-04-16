@@ -102,6 +102,24 @@ namespace ClangPowerTools.Tests.Settings
     }
 
     [VsFact(Version = "2019")]
+    public async Task ProjectToIgnore_ChangeValue_CompareViewToFileAsync()
+    {
+      //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      await UnitTestUtility.LoadPackageAsync();
+      UnitTestUtility.ResetClangGeneralOptionsView();
+      ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
+
+      //Act
+      generalSettings.ProjectsToIgnore = "TestProject";
+      UnitTestUtility.SaveClangOptions(generalSettings);
+      ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
+
+      //Assert
+      Assert.Equal(generalSettings.ProjectsToIgnore, generalSettingsFromFile.ProjectsToIgnore);
+    }
+
+    [VsFact(Version = "2019")]
     public async Task AdditionalIncludes_CompareViewToFileAsync()
     {
       //Arrange
@@ -113,7 +131,25 @@ namespace ClangPowerTools.Tests.Settings
       ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
 
       //Assert
-      Assert.Equal(generalSettings.AdditionalIncludes, generalSettingsFromFile.AdditionalIncludes);
+      Assert.Equal(generalSettings.AdditionalIncludes.Value, generalSettingsFromFile.AdditionalIncludes.Value);
+    }
+
+    [VsFact(Version = "2019")]
+    public async Task AdditionalIncludes_ChangeValue_CompareViewToFileAsync()
+    {
+      //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      await UnitTestUtility.LoadPackageAsync();
+      UnitTestUtility.ResetClangGeneralOptionsView();
+      ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
+
+      //Act
+      generalSettings.AdditionalIncludes = ClangGeneralAdditionalIncludes.SystemIncludeDirectories;
+      UnitTestUtility.SaveClangOptions(generalSettings);
+      ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
+
+      //Assert
+      Assert.Equal(generalSettings.AdditionalIncludes.Value, generalSettingsFromFile.AdditionalIncludes.Value);
     }
 
     [VsFact(Version = "2019")]
