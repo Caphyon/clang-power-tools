@@ -12,7 +12,7 @@ namespace ClangPowerTools.Tests
   {
     #region Members
 
-    private const string kFormatSettingsPath = @"C:\Users\Enache Ionut\AppData\Roaming\ClangPowerTools\ForamtConfiguration.config";
+    private const string kFormatSettingsPath = @"C:\Users\Enache Ionut\AppData\Roaming\ClangPowerTools\FormatConfiguration.config";
 
     private List<string> mFileToIgnore = new List<string>()
     {
@@ -99,9 +99,9 @@ namespace ClangPowerTools.Tests
         Assert.False(true);
 
       XmlSerializer serializer = new XmlSerializer();
-      var generalSettingsModel = serializer.DeserializeFromFile<ClangOptions>(kFormatSettingsPath);
+      var generalSettingsModel = serializer.DeserializeFromFile<ClangFormatOptions>(kFormatSettingsPath);
 
-      Assert.Equal(generalSettingsModel.FilesToIgnoreCollection, string.Join(";", mMultipleFilesToIgnore));
+      Assert.Equal(generalSettingsModel.SkipFiles, string.Join(";", mMultipleFilesToIgnore));
     }
 
 
@@ -128,9 +128,9 @@ namespace ClangPowerTools.Tests
       await UnitTestUtility.LoadPackageAsync();
 
       var expectedResult = string.Join(";", mInitialMultipleFilesToIgnore);
-      Initialize(string.Empty);
+      Initialize(expectedResult);
 
-      await IgnoreFiles(mInitialMultipleFilesToIgnore);
+      //await IgnoreFiles(mInitialMultipleFilesToIgnore);
       await IgnoreFiles(mMultipleFilesToIgnore);
 
       if (!File.Exists(kFormatSettingsPath))
@@ -138,10 +138,10 @@ namespace ClangPowerTools.Tests
 
       XmlSerializer serializer = new XmlSerializer();
 
-      var generalSettingsModel = serializer.DeserializeFromFile<ClangOptions>(kFormatSettingsPath);
+      var generalSettingsModel = serializer.DeserializeFromFile<ClangFormatOptions>(kFormatSettingsPath);
       expectedResult += ";" + string.Join(";", mMultipleFilesToIgnore);
 
-      Assert.Equal(generalSettingsModel.FilesToIgnoreCollection, expectedResult);
+      Assert.Equal(generalSettingsModel.SkipFiles, expectedResult);
     }
 
     #endregion
