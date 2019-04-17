@@ -181,13 +181,6 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public ClangFormatOptionsView Clone()
-    {
-      // Use MemberwiseClone to copy value types.
-      var clone = (ClangFormatOptionsView)MemberwiseClone();
-      return clone;
-    }
-
     public override void ResetSettings()
     {
       SettingsHandler.CopySettingsProperties(new ClangFormatOptionsView(), SettingsProvider.ClangFormatSettings);
