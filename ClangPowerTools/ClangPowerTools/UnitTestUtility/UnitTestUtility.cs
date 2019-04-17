@@ -78,16 +78,16 @@ namespace ClangPowerTools.Tests
 
     public static ClangTidyCustomChecksOptionsView GetClangTidyCustomChecksViewFromFile()
     {
-      ClangTidyCustomChecksOptionsView clangGeneralOptionsView = new ClangTidyCustomChecksOptionsView();
-      clangGeneralOptionsView.LoadSettingsFromStorage();
-      return clangGeneralOptionsView;
+      ClangTidyCustomChecksOptionsView clangTidyCustomChecksOptionsView = new ClangTidyCustomChecksOptionsView();
+      clangTidyCustomChecksOptionsView.LoadSettingsFromStorage();
+      return clangTidyCustomChecksOptionsView;
     }
 
     public static ClangFormatOptionsView GetClangFormatOptionsViewFromFile()
     {
-      ClangFormatOptionsView clangGeneralOptionsView = new ClangFormatOptionsView();
-      clangGeneralOptionsView.LoadSettingsFromStorage();
-      return clangGeneralOptionsView;
+      ClangFormatOptionsView clangFormatOptionsView = new ClangFormatOptionsView();
+      clangFormatOptionsView.LoadSettingsFromStorage();
+      return clangFormatOptionsView;
     }
 
     public static void ResetClangGeneralOptionsView()

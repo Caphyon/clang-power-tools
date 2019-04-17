@@ -19,5 +19,24 @@ namespace ClangPowerTools.Tests.Settings
       //Assert
       Assert.NotNull(clangFormatSettings);
     }
+
+    [VsFact(Version = "2019")]
+    public async Task FormatOnSave_ChangeValue_CompareViewToFileAsync()
+    {
+      //Arrange
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      await UnitTestUtility.LoadPackageAsync();
+      UnitTestUtility.ResetClangFormatOptionsView();
+      ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
+
+      //Act
+      clangFormatSettings.EnableFormatOnSave = true;
+      UnitTestUtility.SaveFormatOptions(clangFormatSettings);
+      ClangFormatOptionsView clangFormatSettingsFromFile = UnitTestUtility.GetClangFormatOptionsViewFromFile();
+
+      //Assert
+      Assert.Equal(clangFormatSettings.EnableFormatOnSave, clangFormatSettingsFromFile.EnableFormatOnSave);
+    }
+
   }
 }

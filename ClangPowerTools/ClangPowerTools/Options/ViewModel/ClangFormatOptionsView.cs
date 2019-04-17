@@ -188,6 +188,13 @@ namespace ClangPowerTools
       return clone;
     }
 
+    public override void ResetSettings()
+    {
+      SettingsHandler.CopySettingsProperties(new ClangFormatOptionsView(), SettingsProvider.ClangFormatSettings);
+      SaveSettingsToStorage();
+      LoadSettingsFromStorage();
+    }
+
     #endregion
 
   }
