@@ -6,7 +6,7 @@ namespace ClangPowerTools
   {
     #region Properties
 
-    public static ClangGeneralOptionsView GeneralSettings { get; set; }
+    public static ClangGeneralOptionsView GeneralSettings { get; private set; }
     public static ClangTidyOptionsView TidySettings { get; private set; }
     public static ClangTidyCustomChecksOptionsView TidyCustomCheckes { get; private set; }
     public static ClangTidyPredefinedChecksOptionsView TidyPredefinedChecks { get; private set; }
