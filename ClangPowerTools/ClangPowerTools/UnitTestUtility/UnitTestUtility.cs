@@ -62,11 +62,6 @@ namespace ClangPowerTools.Tests
       }
     }
 
-    public static void ResetClangGeneralOptionsView()
-    {
-      SettingsProvider.GeneralSettings.ResetSettings();
-    }
-
     public static ClangGeneralOptionsView GetClangGeneralOptionsViewFromFile()
     {
       ClangGeneralOptionsView clangGeneralOptionsView = new ClangGeneralOptionsView();
@@ -95,9 +90,24 @@ namespace ClangPowerTools.Tests
       return clangGeneralOptionsView;
     }
 
-    public static void SaveClangOptions (ClangGeneralOptionsView clangGeneralOptionsView)
+    public static void ResetClangGeneralOptionsView()
+    {
+      SettingsProvider.GeneralSettings.ResetSettings();
+    }
+
+    public static void ResetClangFormatOptionsView()
+    {
+      SettingsProvider.ClangFormatSettings.ResetSettings();
+    }
+
+    public static void SaveGeneralOptions (ClangGeneralOptionsView clangGeneralOptionsView)
     {
       clangGeneralOptionsView.SaveSettingsToStorage();
+    }
+
+    public static void SaveFormatOptions(ClangFormatOptionsView clangFormatOptionsView)
+    {
+      clangFormatOptionsView.SaveSettingsToStorage();
     }
   }
 }
