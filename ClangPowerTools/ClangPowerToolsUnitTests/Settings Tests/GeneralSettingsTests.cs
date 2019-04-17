@@ -31,7 +31,7 @@ namespace ClangPowerTools.Tests.Settings
 
       //Act
       generalSettings.ClangFlags = "-Wall";
-      UnitTestUtility.SaveClangOptions(generalSettings);
+      UnitTestUtility.SaveGeneralOptions(generalSettings);
       ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
     
       //Assert
@@ -49,7 +49,7 @@ namespace ClangPowerTools.Tests.Settings
 
       //Act
       generalSettings.FilesToIgnore = "test.cpp";
-      UnitTestUtility.SaveClangOptions(generalSettings);
+      UnitTestUtility.SaveGeneralOptions(generalSettings);
       ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
 
       //Assert
@@ -67,7 +67,7 @@ namespace ClangPowerTools.Tests.Settings
 
       //Act
       generalSettings.ProjectsToIgnore = "TestProject";
-      UnitTestUtility.SaveClangOptions(generalSettings);
+      UnitTestUtility.SaveGeneralOptions(generalSettings);
       ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
 
       //Assert
@@ -85,7 +85,7 @@ namespace ClangPowerTools.Tests.Settings
 
       //Act
       generalSettings.AdditionalIncludes = ClangGeneralAdditionalIncludes.SystemIncludeDirectories;
-      UnitTestUtility.SaveClangOptions(generalSettings);
+      UnitTestUtility.SaveGeneralOptions(generalSettings);
       ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
 
       //Assert
@@ -103,7 +103,7 @@ namespace ClangPowerTools.Tests.Settings
 
       //Act
       generalSettings.TreatWarningsAsErrors = true;
-      UnitTestUtility.SaveClangOptions(generalSettings);
+      UnitTestUtility.SaveGeneralOptions(generalSettings);
       ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
 
       //Assert
@@ -121,7 +121,7 @@ namespace ClangPowerTools.Tests.Settings
 
       //Act
       generalSettings.Continue = true;
-      UnitTestUtility.SaveClangOptions(generalSettings);
+      UnitTestUtility.SaveGeneralOptions(generalSettings);
       ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
 
       //Assert
@@ -139,7 +139,7 @@ namespace ClangPowerTools.Tests.Settings
 
       //Act
       generalSettings.ClangCompileAfterVsCompile = true;
-      UnitTestUtility.SaveClangOptions(generalSettings);
+      UnitTestUtility.SaveGeneralOptions(generalSettings);
       ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
 
       //Assert
@@ -156,7 +156,7 @@ namespace ClangPowerTools.Tests.Settings
 
       //Act
       generalSettings.VerboseMode = true;
-      UnitTestUtility.SaveClangOptions(generalSettings);
+      UnitTestUtility.SaveGeneralOptions(generalSettings);
       ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
 
       //Assert
