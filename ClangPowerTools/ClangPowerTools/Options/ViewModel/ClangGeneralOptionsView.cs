@@ -181,20 +181,9 @@ namespace ClangPowerTools
 
     public override void ResetSettings()
     {
-      CopyProperties(new ClangGeneralOptionsView(), SettingsProvider.GeneralSettings);
+      SettingsHandler.CopySettingsProperties(new ClangGeneralOptionsView(), SettingsProvider.GeneralSettings);
       SaveSettingsToStorage();
       LoadSettingsFromStorage();
-    }
-
-    public void CopyProperties(ClangGeneralOptionsView source, ClangGeneralOptionsView target)
-    {
-      foreach (PropertyInfo property in typeof(ClangGeneralOptionsView).GetProperties())
-      {
-        if (property.CanWrite)
-        {
-          property.SetValue(target, property.GetValue(source, null), null);
-        }
-      }
     }
 
     #endregion

@@ -21,6 +21,5 @@ namespace ClangPowerTools
       XmlSerializer serializer = new XmlSerializer();
       serializer.SerializeToFile(aFilePath, config);
     }
-
   }
 }

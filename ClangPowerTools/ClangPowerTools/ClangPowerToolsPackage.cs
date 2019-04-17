@@ -146,7 +146,7 @@ namespace ClangPowerTools
 
         SettingsProvider.GeneralSettings.Version = currentVersion;
       }
-      SettingsProvider.SaveGeneralSettings();
+      SettingsHandler.SaveGeneralSettings();
 
       await mCommandsController.InitializeCommandsAsync(this);
       RegisterToEvents();
