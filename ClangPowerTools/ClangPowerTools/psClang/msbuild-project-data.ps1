@@ -168,13 +168,7 @@ Function Get-Project-MultiThreaded-Define()
         return @('"-D_MT"')
     }
 
-    # /MD or /MDd
-    if (@("MultiThreadedDLL", "MultiThreadedDebugDLL") -contains $runtimeLibrary)
-    {
-        return @('"-D_MT"', '"-D_DLL"')
-    }
-
-    return @('"-D_MT"') # default value /MT
+    return @('"-D_MT"', '"-D_DLL"') # default value /MD
 }
 
 Function Is-Project-Unicode()
