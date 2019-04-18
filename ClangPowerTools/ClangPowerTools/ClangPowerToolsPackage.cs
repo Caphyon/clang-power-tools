@@ -137,7 +137,8 @@ namespace ClangPowerTools
         ShowToolbare(); // Show the toolbar on the first install
 
       var currentVersion = PackageUtility.GetVersion();
-      if (0 > string.Compare(SettingsProvider.GeneralSettings.Version, currentVersion))
+      if (!string.IsNullOrWhiteSpace(currentVersion) && 
+        0 > string.Compare(SettingsProvider.GeneralSettings.Version, currentVersion))
       {
         mOutputWindowController.Clear();
         mOutputWindowController.Show();
