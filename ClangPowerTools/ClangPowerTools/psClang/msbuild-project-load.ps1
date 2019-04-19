@@ -30,8 +30,6 @@ Set-Variable -name "kRedundantSeparatorsReplaceRules" -option Constant `
                       , ("^;" , "")                                    `
                       )
 
-Set-Variable -name 'kFlagCPTWork' -option Constant -Value 'IsBeingProcessedByCPT'
-
 Function Set-Var([parameter(Mandatory = $false)][string] $name
                 ,[parameter(Mandatory = $false)]         $value
                 ,[parameter(Mandatory = $false)][switch] $asScriptParameter
@@ -377,25 +375,6 @@ function Detect-ProjectDefaultConfigPlatform()
     Set-Var -Name "Platform"      -Value $configAndPlatform[1]
 }
 
-function HandleChooseNode([System.Xml.XmlNode] $aChooseNode)
-{
-    # we need to change the node name so that we avoid an infinite recursion to and from ParseProjectFile
-    $aChooseNode.SetAttribute($kFlagCPTWork, '1') > $null
-    SanitizeProjectNode $aChooseNode
-
-    [System.Xml.XmlElement] $selectedChild = $aChooseNode.ChildNodes | `
-        Where-Object { $_.GetType().Name -eq "XmlElement" } | `
-        Select -first 1
-
-    foreach ($selectedGrandchild in $selectedChild.ChildNodes)
-    {
-        $aChooseNode.ParentNode.AppendChild($selectedGrandchild.Clone()) > $null
-    }
-
-    $aChooseNode.ParentNode.RemoveChild($aChooseNode) > $null
-    $aChooseNode.RemoveAttribute($kFlagCPTWork) > $null
-}
-
 function SanitizeProjectNode([System.Xml.XmlNode] $node)
 {
     if ($node.Name -ieq "#comment")
@@ -443,12 +422,6 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
     {
         [string] $expandedAttr = Evaluate-MSBuildExpression $node.GetAttribute("Include")
         $node.Attributes["Include"].Value = $expandedAttr
-    }
-
-    if ( $node.Name -ieq "Choose" -and ! $node.HasAttribute($kFlagCPTWork) )
-    {
-        # the kFlagCPTWork attribute is added by CPT so that we don't recurse infinitely on this type of nodes
-        HandleChooseNode $node
     }
 
     if ($node.Name -ieq "Otherwise")
@@ -543,6 +516,11 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
 
         Set-Var -Name $propertyName -Value $propertyValue
 
+        return
+    }
+
+    if ($node.ChildNodes.Count -eq 0)
+    {
         return
     }
 
