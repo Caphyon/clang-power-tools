@@ -4,6 +4,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Tests.Settings
 {
+  [VsTestSettings(UIThread = true)]
   public class FormatSettingsTests
   {
     [VsFact(Version = "2019")]
@@ -24,7 +25,6 @@ namespace ClangPowerTools.Tests.Settings
     public async Task FormatOnSave_ChangeValue_CompareViewToFileAsync()
     {
       //Arrange
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       UnitTestUtility.ResetClangFormatOptionsView();
       ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
@@ -42,7 +42,6 @@ namespace ClangPowerTools.Tests.Settings
     public async Task FileExtensions_ChangeValue_CompareViewToFileAsync()
     {
       //Arrange
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       UnitTestUtility.ResetClangFormatOptionsView();
       ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
@@ -60,7 +59,6 @@ namespace ClangPowerTools.Tests.Settings
     public async Task FilesToIgnore_ChangeValue_CompareViewToFileAsync()
     {
       //Arrange
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       UnitTestUtility.ResetClangFormatOptionsView();
       ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
@@ -78,7 +76,6 @@ namespace ClangPowerTools.Tests.Settings
     public async Task AssumeFilename_ChangeValue_CompareViewToFileAsync()
     {
       //Arrange
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       UnitTestUtility.ResetClangFormatOptionsView();
       ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
@@ -96,7 +93,6 @@ namespace ClangPowerTools.Tests.Settings
     public async Task FallbackStyle_ChangeValue_CompareViewToFileAsync()
     {
       //Arrange
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       UnitTestUtility.ResetClangFormatOptionsView();
       ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
@@ -114,7 +110,6 @@ namespace ClangPowerTools.Tests.Settings
     public async Task FormatStyle_ChangeValue_CompareViewToFileAsync()
     {
       //Arrange
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       UnitTestUtility.ResetClangFormatOptionsView();
       ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
@@ -132,7 +127,6 @@ namespace ClangPowerTools.Tests.Settings
     public async Task CustomExecutable_ChangeValue_CompareViewToFileAsync()
     {
       //Arrange
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       UnitTestUtility.ResetClangFormatOptionsView();
       ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;

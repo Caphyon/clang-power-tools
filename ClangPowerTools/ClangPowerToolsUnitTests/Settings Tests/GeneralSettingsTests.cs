@@ -24,7 +24,6 @@ namespace ClangPowerTools.Tests.Settings
     public async Task CompileFlags_ChangeValue_CompareViewToFileAsync()
     {
       //Arrange
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       UnitTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
@@ -42,7 +41,6 @@ namespace ClangPowerTools.Tests.Settings
     public async Task FilesToIgnore_ChangeValue_CompareViewToFileAsync()
     {
       //Arrange
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       UnitTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
@@ -60,7 +58,6 @@ namespace ClangPowerTools.Tests.Settings
     public async Task ProjectToIgnore_ChangeValue_CompareViewToFileAsync()
     {
       //Arrange
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       UnitTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
@@ -78,7 +75,6 @@ namespace ClangPowerTools.Tests.Settings
     public async Task AdditionalIncludes_ChangeValue_CompareViewToFileAsync()
     {
       //Arrange
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       UnitTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
@@ -96,7 +92,6 @@ namespace ClangPowerTools.Tests.Settings
     public async Task TreatWarningsAsErrors_ChangeValue_CompareViewToFileAsync()
     {
       //Arrange
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       UnitTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
@@ -114,7 +109,6 @@ namespace ClangPowerTools.Tests.Settings
     public async Task ContinueOnError_ChangeValue_CompareViewToFileAsync()
     {
       //Arrange
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       UnitTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
@@ -132,7 +126,7 @@ namespace ClangPowerTools.Tests.Settings
     [VsFact(Version = "2019")]
     public async Task ClangCompileAfterVsCompile_ChangeValue_CompareViewToFileAsync()
     {
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      //Arrange
       await UnitTestUtility.LoadPackageAsync();
       UnitTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
@@ -149,7 +143,6 @@ namespace ClangPowerTools.Tests.Settings
     [VsFact(Version = "2019")]
     public async Task VerboseMode_ChangeValue_CompareViewToFileAsync()
     {
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
       UnitTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
