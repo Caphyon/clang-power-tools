@@ -1210,7 +1210,7 @@ if ($aCppToCompile -and $aCppToCompile.Count -gt 0)
   {
     Write-Verbose-Array -name "Detected referenced source files to process" -array $headerRefs
 
-    $aCppToCompile += $headerRefs
+    $aCppToCompile += @($headerRefs | Where-Object { ![string]::IsNullOrWhiteSpace($_) })
   }
 }
 
@@ -1227,7 +1227,7 @@ if ($aCppToIgnore -and $aCppToIgnore.Count -gt 0)
   {
     Write-Verbose-Array -name "Detected referenced source files to ignore" -array $headerRefs
 
-    $global:cptIgnoredFilesPool += @($headerRefs)
+    $global:cptIgnoredFilesPool += @($headerRefs | Where-Object { ![string]::IsNullOrWhiteSpace($_) })
   }
 }
 
