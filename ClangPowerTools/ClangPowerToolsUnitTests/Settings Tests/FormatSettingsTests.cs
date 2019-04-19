@@ -11,7 +11,6 @@ namespace ClangPowerTools.Tests.Settings
     public async Task ClangFormatOptionsView_NotNullAsync()
     {
       //Arrange
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
 
       //Act
