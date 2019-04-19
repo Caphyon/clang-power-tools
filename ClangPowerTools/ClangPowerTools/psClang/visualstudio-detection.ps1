@@ -21,8 +21,9 @@ Function Get-VisualStudio-Includes([Parameter(Mandatory = $true)][string]  $vsPa
     }
 
     return @( "$vsPath\VC\$($mscVerToken)include"
-        , "$vsPath\VC\$($mscVerToken)atlmfc\include"
-    )
+            , "$vsPath\VC\$($mscVerToken)atlmfc\include"
+            , "$vsPath\VC\Auxiliary\VS\include"
+            )
 }
 
 Function Get-VsWhere-VisualStudio-Version()
