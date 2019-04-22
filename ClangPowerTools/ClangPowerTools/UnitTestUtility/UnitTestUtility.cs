@@ -105,6 +105,11 @@ namespace ClangPowerTools.Tests
       SettingsProvider.TidySettings.ResetSettings();
     }
 
+    public static void ResetClangTidyCustomChecksOptionsView()
+    {
+      SettingsProvider.TidyCustomCheckes.ResetSettings();
+    }
+
     public static void SaveGeneralOptions (ClangGeneralOptionsView clangGeneralOptionsView)
     {
       clangGeneralOptionsView.SaveSettingsToStorage();
@@ -118,6 +123,11 @@ namespace ClangPowerTools.Tests
     public static void SaveTidyOptions(ClangTidyOptionsView clangTidyOptionsView)
     {
       clangTidyOptionsView.SaveSettingsToStorage();
+    }
+
+    public static void SaveClangTidyCustomChecksOptionsView(ClangTidyCustomChecksOptionsView clangTidyCustomChecksOptionsView)
+    {
+      clangTidyCustomChecksOptionsView.SaveSettingsToStorage();
     }
   }
 }
