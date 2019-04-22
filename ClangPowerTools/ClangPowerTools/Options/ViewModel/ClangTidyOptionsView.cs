@@ -136,9 +136,11 @@ namespace ClangPowerTools
       updatedConfig.AutoTidyOnSave = AutoTidyOnSave;
       updatedConfig.FormatAfterTidy = FormatAfterTidy;
 
-      updatedConfig.HeaderFilter =
-        true == string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(HeaderFilter.HeaderFilters)) ?
-          HeaderFilter.HeaderFilters : ClangTidyHeaderFiltersConvertor.ScriptEncode(HeaderFilter.HeaderFilters);
+      if (HeaderFilter != null)
+      {
+        updatedConfig.HeaderFilter = string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(HeaderFilter.HeaderFilters)) == true
+        ? HeaderFilter.HeaderFilters : ClangTidyHeaderFiltersConvertor.ScriptEncode(HeaderFilter.HeaderFilters);
+      }
 
       updatedConfig.TidyMode = UseChecksFrom;
       updatedConfig.ClangTidyPath = ClangTidyPath;
@@ -219,6 +221,15 @@ namespace ClangPowerTools
       });
     }
 
+    #endregion
+
+    #region Public Methods
+    public override void ResetSettings()
+    {
+      SettingsHandler.CopySettingsProperties(new ClangTidyOptionsView(), SettingsProvider.TidySettings);
+      SaveSettingsToStorage();
+      LoadSettingsFromStorage();
+    }
     #endregion
 
   }

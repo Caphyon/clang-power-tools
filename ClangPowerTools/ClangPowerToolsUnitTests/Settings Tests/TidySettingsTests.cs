@@ -29,7 +29,7 @@ namespace ClangPowerTools.Tests.Settings
       ClangTidyOptionsView tidySettings = SettingsProvider.TidySettings;
 
       tidySettings.FormatAfterTidy = true;
-      //UnitTestUtility.SaveTidyOptions(tidySettings);
+      UnitTestUtility.SaveTidyOptions(tidySettings);
       ClangTidyOptionsView clangTidySettingsFromFile = UnitTestUtility.GetClangTidyOptionViewFromFile();
 
       Assert.Equal(tidySettings.FormatAfterTidy, clangTidySettingsFromFile.FormatAfterTidy);
@@ -71,12 +71,11 @@ namespace ClangPowerTools.Tests.Settings
       ClangTidyOptionsView tidySettings = SettingsProvider.TidySettings;
 
       tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
-     //UnitTestUtility.SaveTidyOptions(tidySettings);
+      UnitTestUtility.SaveTidyOptions(tidySettings);
       ClangTidyOptionsView clangTidySettingsFromFile = UnitTestUtility.GetClangTidyOptionViewFromFile();
 
       Assert.Equal(tidySettings.UseChecksFrom, clangTidySettingsFromFile.UseChecksFrom);
     }
-
 
     [VsFact(Version = "2019")]
     public async Task CustomExecutable_ChangeValue_CompareViewToFileAsync()
