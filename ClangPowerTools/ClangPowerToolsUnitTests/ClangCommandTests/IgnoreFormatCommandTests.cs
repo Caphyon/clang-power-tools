@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using ClangPowerTools.Commands;
+using ClangPowerToolsUnitTests.Constants;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -14,25 +15,6 @@ namespace ClangPowerTools.Tests
     #region Members
 
     private const string kFormatSettingsPath = @"C:\Users\Enache Ionut\AppData\Roaming\ClangPowerTools\FormatConfiguration.config";
-
-    private List<string> mFileToIgnore = new List<string>()
-    {
-      @"DispatcherHandler.cpp",
-    };
-
-    private List<string> mMultipleFilesToIgnore = new List<string>()
-    {
-      @"DispatcherHandler.cpp",
-      @"VsServiceProviderTests.cpp",
-      @"AsyncPackageTests.cpp"
-    };
-
-    private List<string> mInitialMultipleFilesToIgnore = new List<string>()
-    {
-      @"CommandController.cpp",
-      @"Settings.cpp",
-      @"Options.cpp"
-    };
 
     private DTE2 mDte;
     private IgnoreFormatCommand mIgnoreFormatCommand;
@@ -54,9 +36,9 @@ namespace ClangPowerTools.Tests
       await UnitTestUtility.LoadPackageAsync();
       Initialize(string.Empty);
 
-      await IgnoreFiles(mFileToIgnore);
+      await IgnoreFiles(IgnoreCommand.kSingleFileToIgnore);
 
-      Assert.Equal(mFormatOptions.FilesToIgnore, string.Join(";", mFileToIgnore));
+      Assert.Equal(mFormatOptions.FilesToIgnore, string.Join(";", IgnoreCommand.kSingleFileToIgnore));
     }
 
 
@@ -68,7 +50,7 @@ namespace ClangPowerTools.Tests
       await UnitTestUtility.LoadPackageAsync();
       Initialize(string.Empty);
 
-      await IgnoreFiles(mFileToIgnore);
+      await IgnoreFiles(IgnoreCommand.kSingleFileToIgnore);
 
       if (!File.Exists(kFormatSettingsPath))
         Assert.False(true);
@@ -76,7 +58,7 @@ namespace ClangPowerTools.Tests
       XmlSerializer serializer = new XmlSerializer();
       var generalSettingsModel = serializer.DeserializeFromFile<ClangFormatOptions>(kFormatSettingsPath);
 
-      Assert.Equal(generalSettingsModel.SkipFiles, string.Join(";", mFileToIgnore));
+      Assert.Equal(generalSettingsModel.SkipFiles, string.Join(";", IgnoreCommand.kSingleFileToIgnore));
     }
 
 
@@ -88,9 +70,9 @@ namespace ClangPowerTools.Tests
       await UnitTestUtility.LoadPackageAsync();
       Initialize(string.Empty);
 
-      await IgnoreFiles(mMultipleFilesToIgnore);
+      await IgnoreFiles(IgnoreCommand.kMultipleFilesToIgnore);
 
-      Assert.Equal(mFormatOptions.FilesToIgnore, string.Join(";", mMultipleFilesToIgnore));
+      Assert.Equal(mFormatOptions.FilesToIgnore, string.Join(";", IgnoreCommand.kMultipleFilesToIgnore));
     }
 
 
@@ -102,7 +84,7 @@ namespace ClangPowerTools.Tests
       await UnitTestUtility.LoadPackageAsync();
       Initialize(string.Empty);
 
-      await IgnoreFiles(mMultipleFilesToIgnore);
+      await IgnoreFiles(IgnoreCommand.kMultipleFilesToIgnore);
 
       if (!File.Exists(kFormatSettingsPath))
         Assert.False(true);
@@ -110,7 +92,7 @@ namespace ClangPowerTools.Tests
       XmlSerializer serializer = new XmlSerializer();
       var generalSettingsModel = serializer.DeserializeFromFile<ClangFormatOptions>(kFormatSettingsPath);
 
-      Assert.Equal(generalSettingsModel.SkipFiles, string.Join(";", mMultipleFilesToIgnore));
+      Assert.Equal(generalSettingsModel.SkipFiles, string.Join(";", IgnoreCommand.kMultipleFilesToIgnore));
     }
 
 
@@ -123,12 +105,12 @@ namespace ClangPowerTools.Tests
 
       await UnitTestUtility.LoadPackageAsync();
 
-      var expectedResult = string.Join(";", mInitialMultipleFilesToIgnore);
+      var expectedResult = string.Join(";", IgnoreCommand.kStartUpMultipleFilesToIgnore);
       Initialize(expectedResult);
 
-      await IgnoreFiles(mMultipleFilesToIgnore);
+      await IgnoreFiles(IgnoreCommand.kMultipleFilesToIgnore);
 
-      expectedResult += ";" + string.Join(";", mMultipleFilesToIgnore);
+      expectedResult += ";" + string.Join(";", IgnoreCommand.kMultipleFilesToIgnore);
       Assert.Equal(mFormatOptions.FilesToIgnore, expectedResult);
     }
 
@@ -140,11 +122,11 @@ namespace ClangPowerTools.Tests
 
       await UnitTestUtility.LoadPackageAsync();
 
-      var expectedResult = string.Join(";", mInitialMultipleFilesToIgnore);
+      var expectedResult = string.Join(";", IgnoreCommand.kStartUpMultipleFilesToIgnore);
       Initialize(expectedResult);
 
       //await IgnoreFiles(mInitialMultipleFilesToIgnore);
-      await IgnoreFiles(mMultipleFilesToIgnore);
+      await IgnoreFiles(IgnoreCommand.kMultipleFilesToIgnore);
 
       if (!File.Exists(kFormatSettingsPath))
         Assert.False(true);
@@ -152,7 +134,7 @@ namespace ClangPowerTools.Tests
       XmlSerializer serializer = new XmlSerializer();
 
       var generalSettingsModel = serializer.DeserializeFromFile<ClangFormatOptions>(kFormatSettingsPath);
-      expectedResult += ";" + string.Join(";", mMultipleFilesToIgnore);
+      expectedResult += ";" + string.Join(";", IgnoreCommand.kMultipleFilesToIgnore);
 
       Assert.Equal(generalSettingsModel.SkipFiles, expectedResult);
     }

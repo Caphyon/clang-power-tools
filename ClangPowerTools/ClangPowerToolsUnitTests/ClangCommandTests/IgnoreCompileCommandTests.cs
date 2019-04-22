@@ -152,9 +152,9 @@ namespace ClangPowerTools.Tests
       mGeneralOptions.FilesToIgnore = ignoreFiles;
     }
 
-    private async System.Threading.Tasks.Task IgnoreFilesAsync(List<string> aFilesToIgnore)
+    private System.Threading.Tasks.Task IgnoreFilesAsync(List<string> aFilesToIgnore)
     {
-      await System.Threading.Tasks.Task.Run(() =>
+      return System.Threading.Tasks.Task.Run(() =>
       {
         mIgnoreCompileCommand.AddIgnoreFilesToSettings(aFilesToIgnore);
       });
