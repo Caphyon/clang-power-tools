@@ -21,7 +21,7 @@ namespace ClangPowerTools.Tests.Settings
     }
 
     [VsFact(Version = "2019")]
-    public async Task FormatAfterTidy_ChangeValue_CompareViewToFileAsync()
+    public async Task CustomChecks_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
       UnitTestUtility.ResetClangTidyOptionsView();
