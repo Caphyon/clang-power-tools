@@ -27,7 +27,7 @@ namespace ClangPowerTools
     //private Commands2 mCommand;
 
     private const string kVs15Version = "2017";
-    private Dictionary<string, string> mVsVersions = new Dictionary<string, string>
+    private readonly Dictionary<string, string> mVsVersions = new Dictionary<string, string>
     {
       {"11.0", "2010"},
       {"12.0", "2012"},
