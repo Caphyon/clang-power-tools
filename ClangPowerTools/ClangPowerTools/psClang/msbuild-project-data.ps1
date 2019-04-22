@@ -152,9 +152,17 @@ Function Get-ProjectHeaders()
 
 Function Get-Project-SDKVer()
 {
-    [string] $sdkVer = Get-Variable -Name 'WindowsTargetPlatformVersion' -ErrorAction 'Ignore'
+    if (! (VariableExists 'WindowsTargetPlatformVersion'))
+    {
+        return ""
+    }
 
-    If ([string]::IsNullOrEmpty($sdkVer)) { "" } Else { $sdkVer.Trim() }
+    if ([string]::IsNullOrEmpty($WindowsTargetPlatformVersion))
+    { 
+        return "" 
+    } 
+    
+    return $WindowsTargetPlatformVersion.Trim()
 }
 
 Function Get-Project-MultiThreaded-Define()
@@ -173,7 +181,7 @@ Function Get-Project-MultiThreaded-Define()
 
 Function Is-Project-Unicode()
 {
-    if (Get-Variable 'CharacterSet' -ErrorAction 'Ignore')
+    if (VariableExists 'CharacterSet')
     {
         return $CharacterSet -ieq "Unicode"
     }
