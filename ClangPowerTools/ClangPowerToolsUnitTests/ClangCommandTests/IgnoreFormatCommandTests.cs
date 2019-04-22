@@ -8,6 +8,7 @@ using Xunit;
 
 namespace ClangPowerTools.Tests
 {
+  [VsTestSettings(UIThread = true)]
   public class IgnoreFormatCommandTests
   {
     #region Members
@@ -48,6 +49,8 @@ namespace ClangPowerTools.Tests
     [VsFact(Version = "2019")]
     public async System.Threading.Tasks.Task SaveFilesToIgnore_EmptyState_UIAsync()
     {
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
       await UnitTestUtility.LoadPackageAsync();
       Initialize(string.Empty);
 
@@ -60,6 +63,8 @@ namespace ClangPowerTools.Tests
     [VsFact(Version = "2019")]
     public async System.Threading.Tasks.Task SaveFilesToIgnore_EmptyState_ConfigAsync()
     {
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
       await UnitTestUtility.LoadPackageAsync();
       Initialize(string.Empty);
 
@@ -78,6 +83,8 @@ namespace ClangPowerTools.Tests
     [VsFact(Version = "2019")]
     public async System.Threading.Tasks.Task SaveMultipleFilesToIgnore_EmptyState_UIAsync()
     {
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
       await UnitTestUtility.LoadPackageAsync();
       Initialize(string.Empty);
 
@@ -90,6 +97,8 @@ namespace ClangPowerTools.Tests
     [VsFact(Version = "2019")]
     public async System.Threading.Tasks.Task SaveMultipleFilesToIgnore_EmptyState_ConfigAsync()
     {
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
       await UnitTestUtility.LoadPackageAsync();
       Initialize(string.Empty);
 
@@ -110,6 +119,8 @@ namespace ClangPowerTools.Tests
     [VsFact(Version = "2019")]
     public async System.Threading.Tasks.Task SaveFilesToIgnore_NoEmptyState_UIAsync()
     {
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
       await UnitTestUtility.LoadPackageAsync();
 
       var expectedResult = string.Join(";", mInitialMultipleFilesToIgnore);
@@ -125,6 +136,8 @@ namespace ClangPowerTools.Tests
     [VsFact(Version = "2019")]
     public async System.Threading.Tasks.Task SaveFilesToIgnore_NoEmptyState_ConfigAsync()
     {
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
       await UnitTestUtility.LoadPackageAsync();
 
       var expectedResult = string.Join(";", mInitialMultipleFilesToIgnore);
