@@ -24,12 +24,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task CompileFlags_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangGeneralOptionsView();
+      SettingsTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
 
       generalSettings.ClangFlags = "-Wall";
-      UnitTestUtility.SaveGeneralOptions(generalSettings);
-      ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
+      SettingsTestUtility.SaveGeneralOptions(generalSettings);
+      ClangGeneralOptionsView generalSettingsFromFile = SettingsTestUtility.GetClangGeneralOptionsViewFromFile();
     
       Assert.Equal(generalSettings.ClangFlags, generalSettingsFromFile.ClangFlags);
     }
@@ -38,12 +38,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task FilesToIgnore_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangGeneralOptionsView();
+      SettingsTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
 
       generalSettings.FilesToIgnore = "test.cpp";
-      UnitTestUtility.SaveGeneralOptions(generalSettings);
-      ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
+      SettingsTestUtility.SaveGeneralOptions(generalSettings);
+      ClangGeneralOptionsView generalSettingsFromFile = SettingsTestUtility.GetClangGeneralOptionsViewFromFile();
 
       Assert.Equal(generalSettings.FilesToIgnore, generalSettingsFromFile.FilesToIgnore);
     }
@@ -52,12 +52,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task ProjectToIgnore_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangGeneralOptionsView();
+      SettingsTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
 
       generalSettings.ProjectsToIgnore = "TestProject";
-      UnitTestUtility.SaveGeneralOptions(generalSettings);
-      ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
+      SettingsTestUtility.SaveGeneralOptions(generalSettings);
+      ClangGeneralOptionsView generalSettingsFromFile = SettingsTestUtility.GetClangGeneralOptionsViewFromFile();
 
       Assert.Equal(generalSettings.ProjectsToIgnore, generalSettingsFromFile.ProjectsToIgnore);
     }
@@ -66,12 +66,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task AdditionalIncludes_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangGeneralOptionsView();
+      SettingsTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
 
       generalSettings.AdditionalIncludes = ClangGeneralAdditionalIncludes.SystemIncludeDirectories;
-      UnitTestUtility.SaveGeneralOptions(generalSettings);
-      ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
+      SettingsTestUtility.SaveGeneralOptions(generalSettings);
+      ClangGeneralOptionsView generalSettingsFromFile = SettingsTestUtility.GetClangGeneralOptionsViewFromFile();
 
       Assert.Equal(generalSettings.AdditionalIncludes.Value, generalSettingsFromFile.AdditionalIncludes.Value);
     }
@@ -80,12 +80,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task TreatWarningsAsErrors_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangGeneralOptionsView();
+      SettingsTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
 
       generalSettings.TreatWarningsAsErrors = true;
-      UnitTestUtility.SaveGeneralOptions(generalSettings);
-      ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
+      SettingsTestUtility.SaveGeneralOptions(generalSettings);
+      ClangGeneralOptionsView generalSettingsFromFile = SettingsTestUtility.GetClangGeneralOptionsViewFromFile();
 
       Assert.Equal(generalSettings.TreatWarningsAsErrors, generalSettingsFromFile.TreatWarningsAsErrors);
     }
@@ -94,12 +94,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task ContinueOnError_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangGeneralOptionsView();
+      SettingsTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
 
       generalSettings.Continue = true;
-      UnitTestUtility.SaveGeneralOptions(generalSettings);
-      ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
+      SettingsTestUtility.SaveGeneralOptions(generalSettings);
+      ClangGeneralOptionsView generalSettingsFromFile = SettingsTestUtility.GetClangGeneralOptionsViewFromFile();
 
       Assert.Equal(generalSettings.Continue, generalSettingsFromFile.Continue);
     }
@@ -109,12 +109,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task ClangCompileAfterVsCompile_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangGeneralOptionsView();
+      SettingsTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
 
       generalSettings.ClangCompileAfterVsCompile = true;
-      UnitTestUtility.SaveGeneralOptions(generalSettings);
-      ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
+      SettingsTestUtility.SaveGeneralOptions(generalSettings);
+      ClangGeneralOptionsView generalSettingsFromFile = SettingsTestUtility.GetClangGeneralOptionsViewFromFile();
 
       Assert.Equal(generalSettings.ClangCompileAfterVsCompile, generalSettingsFromFile.ClangCompileAfterVsCompile);
     }
@@ -123,12 +123,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task VerboseMode_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangGeneralOptionsView();
+      SettingsTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
 
       generalSettings.VerboseMode = true;
-      UnitTestUtility.SaveGeneralOptions(generalSettings);
-      ClangGeneralOptionsView generalSettingsFromFile = UnitTestUtility.GetClangGeneralOptionsViewFromFile();
+      SettingsTestUtility.SaveGeneralOptions(generalSettings);
+      ClangGeneralOptionsView generalSettingsFromFile = SettingsTestUtility.GetClangGeneralOptionsViewFromFile();
 
       Assert.Equal(generalSettings.VerboseMode, generalSettingsFromFile.VerboseMode);
     }

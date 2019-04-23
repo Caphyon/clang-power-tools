@@ -24,12 +24,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task FormatOnSave_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangFormatOptionsView();
+      SettingsTestUtility.ResetClangFormatOptionsView();
       ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
 
       clangFormatSettings.EnableFormatOnSave = true;
-      UnitTestUtility.SaveFormatOptions(clangFormatSettings);
-      ClangFormatOptionsView clangFormatSettingsFromFile = UnitTestUtility.GetClangFormatOptionsViewFromFile();
+      SettingsTestUtility.SaveFormatOptions(clangFormatSettings);
+      ClangFormatOptionsView clangFormatSettingsFromFile = SettingsTestUtility.GetClangFormatOptionsViewFromFile();
 
       Assert.Equal(clangFormatSettings.EnableFormatOnSave, clangFormatSettingsFromFile.EnableFormatOnSave);
     }
@@ -38,12 +38,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task FileExtensions_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangFormatOptionsView();
+      SettingsTestUtility.ResetClangFormatOptionsView();
       ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
 
       clangFormatSettings.FileExtensions = ".cpp";
-      UnitTestUtility.SaveFormatOptions(clangFormatSettings);
-      ClangFormatOptionsView clangFormatSettingsFromFile = UnitTestUtility.GetClangFormatOptionsViewFromFile();
+      SettingsTestUtility.SaveFormatOptions(clangFormatSettings);
+      ClangFormatOptionsView clangFormatSettingsFromFile = SettingsTestUtility.GetClangFormatOptionsViewFromFile();
 
       Assert.Equal(clangFormatSettings.FileExtensions, clangFormatSettingsFromFile.FileExtensions);
     }
@@ -52,12 +52,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task FilesToIgnore_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangFormatOptionsView();
+      SettingsTestUtility.ResetClangFormatOptionsView();
       ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
 
       clangFormatSettings.FilesToIgnore = "Test.cpp";
-      UnitTestUtility.SaveFormatOptions(clangFormatSettings);
-      ClangFormatOptionsView clangFormatSettingsFromFile = UnitTestUtility.GetClangFormatOptionsViewFromFile();
+      SettingsTestUtility.SaveFormatOptions(clangFormatSettings);
+      ClangFormatOptionsView clangFormatSettingsFromFile = SettingsTestUtility.GetClangFormatOptionsViewFromFile();
 
       Assert.Equal(clangFormatSettings.FilesToIgnore, clangFormatSettingsFromFile.FilesToIgnore);
     }
@@ -66,12 +66,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task AssumeFilename_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangFormatOptionsView();
+      SettingsTestUtility.ResetClangFormatOptionsView();
       ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
 
       clangFormatSettings.AssumeFilename = "Test";
-      UnitTestUtility.SaveFormatOptions(clangFormatSettings);
-      ClangFormatOptionsView clangFormatSettingsFromFile = UnitTestUtility.GetClangFormatOptionsViewFromFile();
+      SettingsTestUtility.SaveFormatOptions(clangFormatSettings);
+      ClangFormatOptionsView clangFormatSettingsFromFile = SettingsTestUtility.GetClangFormatOptionsViewFromFile();
 
       Assert.Equal(clangFormatSettings.AssumeFilename, clangFormatSettingsFromFile.AssumeFilename);
     }
@@ -80,12 +80,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task FallbackStyle_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangFormatOptionsView();
+      SettingsTestUtility.ResetClangFormatOptionsView();
       ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
 
       clangFormatSettings.FallbackStyle = ClangFormatFallbackStyle.Mozilla;
-      UnitTestUtility.SaveFormatOptions(clangFormatSettings);
-      ClangFormatOptionsView clangFormatSettingsFromFile = UnitTestUtility.GetClangFormatOptionsViewFromFile();
+      SettingsTestUtility.SaveFormatOptions(clangFormatSettings);
+      ClangFormatOptionsView clangFormatSettingsFromFile = SettingsTestUtility.GetClangFormatOptionsViewFromFile();
 
       Assert.Equal(clangFormatSettings.FallbackStyle, clangFormatSettingsFromFile.FallbackStyle);
     }
@@ -94,12 +94,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task FormatStyle_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangFormatOptionsView();
+      SettingsTestUtility.ResetClangFormatOptionsView();
       ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
 
       clangFormatSettings.Style = ClangFormatStyle.Mozilla;
-      UnitTestUtility.SaveFormatOptions(clangFormatSettings);
-      ClangFormatOptionsView clangFormatSettingsFromFile = UnitTestUtility.GetClangFormatOptionsViewFromFile();
+      SettingsTestUtility.SaveFormatOptions(clangFormatSettings);
+      ClangFormatOptionsView clangFormatSettingsFromFile = SettingsTestUtility.GetClangFormatOptionsViewFromFile();
 
       Assert.Equal(clangFormatSettings.Style, clangFormatSettingsFromFile.Style);
     }
@@ -108,13 +108,13 @@ namespace ClangPowerTools.Tests.Settings
     public async Task CustomExecutable_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangFormatOptionsView();
+      SettingsTestUtility.ResetClangFormatOptionsView();
       ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
 
       clangFormatSettings.ClangFormatPath.Enable = true;
       clangFormatSettings.ClangFormatPath.Value = @"D:\Test.exe";
-      UnitTestUtility.SaveFormatOptions(clangFormatSettings);
-      ClangFormatOptionsView clangFormatSettingsFromFile = UnitTestUtility.GetClangFormatOptionsViewFromFile();
+      SettingsTestUtility.SaveFormatOptions(clangFormatSettings);
+      ClangFormatOptionsView clangFormatSettingsFromFile = SettingsTestUtility.GetClangFormatOptionsViewFromFile();
 
       Assert.Equal(clangFormatSettings.ClangFormatPath.Enable, clangFormatSettingsFromFile.ClangFormatPath.Enable);
       Assert.Equal(clangFormatSettings.ClangFormatPath.Value, clangFormatSettingsFromFile.ClangFormatPath.Value);

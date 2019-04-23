@@ -24,12 +24,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task PredefinedChecks_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangTidyPredefinedChecksOptionsView();
+      SettingsTestUtility.ResetClangTidyPredefinedChecksOptionsView();
       ClangTidyPredefinedChecksOptionsView tidyPredefinedChecksOptionsView = SettingsProvider.TidyPredefinedChecks;
 
       tidyPredefinedChecksOptionsView.AbseilDurationDivision = true;
-      UnitTestUtility.SaveClangTidyPredefinedChecksOptionsView(tidyPredefinedChecksOptionsView);
-      ClangTidyPredefinedChecksOptionsView tidyCustomCheckesFromFile = UnitTestUtility.GetClangTidyPredefinedChecksOptionsView();
+      SettingsTestUtility.SaveClangTidyPredefinedChecksOptionsView(tidyPredefinedChecksOptionsView);
+      ClangTidyPredefinedChecksOptionsView tidyCustomCheckesFromFile = SettingsTestUtility.GetClangTidyPredefinedChecksOptionsView();
 
       Assert.Equal(tidyPredefinedChecksOptionsView.AbseilDurationDivision, tidyCustomCheckesFromFile.AbseilDurationDivision);
     }

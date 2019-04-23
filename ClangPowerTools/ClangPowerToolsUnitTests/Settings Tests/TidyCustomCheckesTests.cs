@@ -24,12 +24,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task CustomChecks_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangTidyCustomChecksOptionsView();
+      SettingsTestUtility.ResetClangTidyCustomChecksOptionsView();
       ClangTidyCustomChecksOptionsView tidyCustomCheckes = SettingsProvider.TidyCustomCheckes;
 
       tidyCustomCheckes.TidyChecks = "test";
-      UnitTestUtility.SaveClangTidyCustomChecksOptionsView(tidyCustomCheckes);
-      ClangTidyCustomChecksOptionsView tidyCustomCheckesFromFile = UnitTestUtility.GetClangTidyCustomChecksViewFromFile();
+      SettingsTestUtility.SaveClangTidyCustomChecksOptionsView(tidyCustomCheckes);
+      ClangTidyCustomChecksOptionsView tidyCustomCheckesFromFile = SettingsTestUtility.GetClangTidyCustomChecksViewFromFile();
 
       Assert.Equal(tidyCustomCheckes.TidyChecks, tidyCustomCheckesFromFile.TidyChecks);
     }

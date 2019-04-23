@@ -24,12 +24,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task FormatAfterTidy_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangTidyOptionsView();
+      SettingsTestUtility.ResetClangTidyOptionsView();
       ClangTidyOptionsView tidySettings = SettingsProvider.TidySettings;
 
       tidySettings.FormatAfterTidy = true;
-      UnitTestUtility.SaveTidyOptions(tidySettings);
-      ClangTidyOptionsView clangTidySettingsFromFile = UnitTestUtility.GetClangTidyOptionViewFromFile();
+      SettingsTestUtility.SaveTidyOptions(tidySettings);
+      ClangTidyOptionsView clangTidySettingsFromFile = SettingsTestUtility.GetClangTidyOptionViewFromFile();
 
       Assert.Equal(tidySettings.FormatAfterTidy, clangTidySettingsFromFile.FormatAfterTidy);
     }
@@ -38,12 +38,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task ClangTidyOnSave_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangTidyOptionsView();
+      SettingsTestUtility.ResetClangTidyOptionsView();
       ClangTidyOptionsView tidySettings = SettingsProvider.TidySettings;
 
       tidySettings.AutoTidyOnSave = true;
-      UnitTestUtility.SaveTidyOptions(tidySettings);
-      ClangTidyOptionsView clangTidySettingsFromFile = UnitTestUtility.GetClangTidyOptionViewFromFile();
+      SettingsTestUtility.SaveTidyOptions(tidySettings);
+      ClangTidyOptionsView clangTidySettingsFromFile = SettingsTestUtility.GetClangTidyOptionViewFromFile();
 
       Assert.Equal(tidySettings.AutoTidyOnSave, clangTidySettingsFromFile.AutoTidyOnSave);
     }
@@ -52,12 +52,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task HeaderFilter_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangTidyOptionsView();
+      SettingsTestUtility.ResetClangTidyOptionsView();
       ClangTidyOptionsView tidySettings = SettingsProvider.TidySettings;
 
       tidySettings.HeaderFilter.HeaderFilters = "test";
-      UnitTestUtility.SaveTidyOptions(tidySettings);
-      ClangTidyOptionsView clangTidySettingsFromFile = UnitTestUtility.GetClangTidyOptionViewFromFile();
+      SettingsTestUtility.SaveTidyOptions(tidySettings);
+      ClangTidyOptionsView clangTidySettingsFromFile = SettingsTestUtility.GetClangTidyOptionViewFromFile();
 
       Assert.Equal(tidySettings.HeaderFilter.HeaderFilters, clangTidySettingsFromFile.HeaderFilter.HeaderFilters);
     }
@@ -66,12 +66,12 @@ namespace ClangPowerTools.Tests.Settings
     public async Task ChecksFrom_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangTidyOptionsView();
+      SettingsTestUtility.ResetClangTidyOptionsView();
       ClangTidyOptionsView tidySettings = SettingsProvider.TidySettings;
 
       tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
-      UnitTestUtility.SaveTidyOptions(tidySettings);
-      ClangTidyOptionsView clangTidySettingsFromFile = UnitTestUtility.GetClangTidyOptionViewFromFile();
+      SettingsTestUtility.SaveTidyOptions(tidySettings);
+      ClangTidyOptionsView clangTidySettingsFromFile = SettingsTestUtility.GetClangTidyOptionViewFromFile();
 
       Assert.Equal(tidySettings.UseChecksFrom, clangTidySettingsFromFile.UseChecksFrom);
     }
@@ -80,13 +80,13 @@ namespace ClangPowerTools.Tests.Settings
     public async Task CustomExecutable_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangTidyOptionsView();
+      SettingsTestUtility.ResetClangTidyOptionsView();
       ClangTidyOptionsView tidySettings = SettingsProvider.TidySettings;
 
       tidySettings.ClangTidyPath.Enable = true;
       tidySettings.ClangTidyPath.Value = @"D:\Test.exe";
-      UnitTestUtility.SaveTidyOptions(tidySettings);
-      ClangTidyOptionsView clangTidySettingsFromFile = UnitTestUtility.GetClangTidyOptionViewFromFile();
+      SettingsTestUtility.SaveTidyOptions(tidySettings);
+      ClangTidyOptionsView clangTidySettingsFromFile = SettingsTestUtility.GetClangTidyOptionViewFromFile();
 
       Assert.Equal(tidySettings.ClangTidyPath.Enable, clangTidySettingsFromFile.ClangTidyPath.Enable);
       Assert.Equal(tidySettings.ClangTidyPath.Value, clangTidySettingsFromFile.ClangTidyPath.Value);
