@@ -24,7 +24,7 @@ namespace ClangPowerTools.Tests.Settings
     public async Task CustomChecks_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      UnitTestUtility.ResetClangTidyOptionsView();
+      UnitTestUtility.ResetClangTidyCustomChecksOptionsView();
       ClangTidyCustomChecksOptionsView tidyCustomCheckes = SettingsProvider.TidyCustomCheckes;
 
       tidyCustomCheckes.TidyChecks = "test";

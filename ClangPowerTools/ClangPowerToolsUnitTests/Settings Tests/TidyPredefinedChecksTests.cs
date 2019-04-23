@@ -4,13 +4,13 @@ using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Tests.Settings
 {
+  [VsTestSettings(UIThread = true)]
   public class TidyPredefinedChecksTests
   {
     [VsFact(Version = "2019")]
     public async Task ClangTidyPredefinedChecksOptionsView_NotNullAsync()
     {
       //Arrange
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       await UnitTestUtility.LoadPackageAsync();
 
       //Act
@@ -18,6 +18,20 @@ namespace ClangPowerTools.Tests.Settings
 
       //Assert
       Assert.NotNull(tidyPredefinedChecks);
+    }
+
+    [VsFact(Version = "2019")]
+    public async Task PredefinedChecks_ChangeValue_CompareViewToFileAsync()
+    {
+      await UnitTestUtility.LoadPackageAsync();
+      UnitTestUtility.ResetClangTidyPredefinedChecksOptionsView();
+      ClangTidyPredefinedChecksOptionsView tidyPredefinedChecksOptionsView = SettingsProvider.TidyPredefinedChecks;
+
+      tidyPredefinedChecksOptionsView.AbseilDurationDivision = true;
+      UnitTestUtility.SaveClangTidyPredefinedChecksOptionsView(tidyPredefinedChecksOptionsView);
+      ClangTidyPredefinedChecksOptionsView tidyCustomCheckesFromFile = UnitTestUtility.GetClangTidyPredefinedChecksOptionsView();
+
+      Assert.Equal(tidyPredefinedChecksOptionsView.AbseilDurationDivision, tidyCustomCheckesFromFile.AbseilDurationDivision);
     }
   }
 }
