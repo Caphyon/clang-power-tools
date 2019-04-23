@@ -83,6 +83,13 @@ namespace ClangPowerTools.Tests
       return clangTidyCustomChecksOptionsView;
     }
 
+    public static ClangTidyPredefinedChecksOptionsView GetClangTidyPredefinedChecksOptionsView()
+    {
+      ClangTidyPredefinedChecksOptionsView clangTidyPredefinedChecksOptionsView = new ClangTidyPredefinedChecksOptionsView();
+      clangTidyPredefinedChecksOptionsView.LoadSettingsFromStorage();
+      return clangTidyPredefinedChecksOptionsView;
+    }
+
     public static ClangFormatOptionsView GetClangFormatOptionsViewFromFile()
     {
       ClangFormatOptionsView clangFormatOptionsView = new ClangFormatOptionsView();
@@ -110,6 +117,11 @@ namespace ClangPowerTools.Tests
       SettingsProvider.TidyCustomCheckes.ResetSettings();
     }
 
+    public static void ResetClangTidyPredefinedChecksOptionsView()
+    {
+      SettingsProvider.TidyPredefinedChecks.ResetSettings();
+    }
+
     public static void SaveGeneralOptions (ClangGeneralOptionsView clangGeneralOptionsView)
     {
       clangGeneralOptionsView.SaveSettingsToStorage();
@@ -128,6 +140,11 @@ namespace ClangPowerTools.Tests
     public static void SaveClangTidyCustomChecksOptionsView(ClangTidyCustomChecksOptionsView clangTidyCustomChecksOptionsView)
     {
       clangTidyCustomChecksOptionsView.SaveSettingsToStorage();
+    }
+
+    public static void SaveClangTidyPredefinedChecksOptionsView(ClangTidyPredefinedChecksOptionsView clangTidyPredefinedChecksOptionsView)
+    {
+      clangTidyPredefinedChecksOptionsView.SaveSettingsToStorage();
     }
   }
 }
