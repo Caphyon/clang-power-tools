@@ -138,7 +138,7 @@ namespace ClangPowerTools
 
       if (HeaderFilter == null)
       {
-        HeaderFilter = new HeaderFiltersValue(ClangTidyHeaderFilters.CorrespondingHeader.ToString());
+        HeaderFilter = new HeaderFiltersValue(ComboBoxConstants.kDefaultHeaderFilter);
       }
       updatedConfig.HeaderFilter = string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(HeaderFilter.HeaderFilters)) == true
       ? HeaderFilter.HeaderFilters : ClangTidyHeaderFiltersConvertor.ScriptEncode(HeaderFilter.HeaderFilters);
