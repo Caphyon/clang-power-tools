@@ -7,7 +7,7 @@ namespace ClangPowerTools.Tests.Settings
   [VsTestSettings(UIThread = true)]
   public class FormatSettingsTests
   {
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async Task ClangFormatOptionsView_NotNullAsync()
     {
       //Arrange
@@ -20,7 +20,7 @@ namespace ClangPowerTools.Tests.Settings
       Assert.NotNull(clangFormatSettings);
     }
 
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async Task FormatOnSave_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
@@ -34,7 +34,7 @@ namespace ClangPowerTools.Tests.Settings
       Assert.Equal(clangFormatSettings.EnableFormatOnSave, clangFormatSettingsFromFile.EnableFormatOnSave);
     }
 
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async Task FileExtensions_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
@@ -48,7 +48,7 @@ namespace ClangPowerTools.Tests.Settings
       Assert.Equal(clangFormatSettings.FileExtensions, clangFormatSettingsFromFile.FileExtensions);
     }
 
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async Task FilesToIgnore_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
@@ -62,7 +62,7 @@ namespace ClangPowerTools.Tests.Settings
       Assert.Equal(clangFormatSettings.FilesToIgnore, clangFormatSettingsFromFile.FilesToIgnore);
     }
 
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async Task AssumeFilename_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
@@ -76,7 +76,7 @@ namespace ClangPowerTools.Tests.Settings
       Assert.Equal(clangFormatSettings.AssumeFilename, clangFormatSettingsFromFile.AssumeFilename);
     }
 
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async Task FallbackStyle_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
@@ -90,7 +90,7 @@ namespace ClangPowerTools.Tests.Settings
       Assert.Equal(clangFormatSettings.FallbackStyle, clangFormatSettingsFromFile.FallbackStyle);
     }
 
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async Task FormatStyle_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
@@ -104,7 +104,7 @@ namespace ClangPowerTools.Tests.Settings
       Assert.Equal(clangFormatSettings.Style, clangFormatSettingsFromFile.Style);
     }
 
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async Task CustomExecutable_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();

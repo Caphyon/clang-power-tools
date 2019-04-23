@@ -7,7 +7,7 @@ namespace ClangPowerTools.Tests.Settings
   [VsTestSettings(UIThread = true)]
   public class TidyPredefinedChecksTests
   {
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async Task ClangTidyPredefinedChecksOptionsView_NotNullAsync()
     {
       //Arrange
@@ -20,7 +20,7 @@ namespace ClangPowerTools.Tests.Settings
       Assert.NotNull(tidyPredefinedChecks);
     }
 
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async Task PredefinedChecks_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();

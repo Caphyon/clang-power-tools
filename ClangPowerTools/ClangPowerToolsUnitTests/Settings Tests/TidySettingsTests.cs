@@ -7,7 +7,7 @@ namespace ClangPowerTools.Tests.Settings
   [VsTestSettings(UIThread = true)]
   public class TidySettingsTests
   {
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async Task ClangTidyOptionsView_NotNullAsync()
     {
       //Arrange
@@ -20,7 +20,7 @@ namespace ClangPowerTools.Tests.Settings
       Assert.NotNull(tidySettings);
     }
 
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async Task FormatAfterTidy_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
@@ -34,7 +34,7 @@ namespace ClangPowerTools.Tests.Settings
       Assert.Equal(tidySettings.FormatAfterTidy, clangTidySettingsFromFile.FormatAfterTidy);
     }
 
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async Task ClangTidyOnSave_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
@@ -48,7 +48,7 @@ namespace ClangPowerTools.Tests.Settings
       Assert.Equal(tidySettings.AutoTidyOnSave, clangTidySettingsFromFile.AutoTidyOnSave);
     }
 
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async Task HeaderFilter_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
@@ -62,7 +62,7 @@ namespace ClangPowerTools.Tests.Settings
       Assert.Equal(tidySettings.HeaderFilter.HeaderFilters, clangTidySettingsFromFile.HeaderFilter.HeaderFilters);
     }
 
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async Task ChecksFrom_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
@@ -76,7 +76,7 @@ namespace ClangPowerTools.Tests.Settings
       Assert.Equal(tidySettings.UseChecksFrom, clangTidySettingsFromFile.UseChecksFrom);
     }
 
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async Task CustomExecutable_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
