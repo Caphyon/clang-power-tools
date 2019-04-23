@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualStudio.Shell;
-using Xunit;
+﻿using Xunit;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Tests.Settings
@@ -41,7 +40,7 @@ namespace ClangPowerTools.Tests.Settings
       SettingsTestUtility.ResetClangGeneralOptionsView();
       ClangGeneralOptionsView generalSettings = SettingsProvider.GeneralSettings;
 
-      generalSettings.FilesToIgnore = "test.cpp";
+      generalSettings.FilesToIgnore = "Test.cpp";
       SettingsTestUtility.SaveGeneralOptions(generalSettings);
       ClangGeneralOptionsView generalSettingsFromFile = SettingsTestUtility.GetClangGeneralOptionsViewFromFile();
 

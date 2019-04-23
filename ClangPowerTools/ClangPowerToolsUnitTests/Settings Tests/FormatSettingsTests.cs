@@ -1,5 +1,4 @@
 ﻿using Xunit;
-using Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Tests.Settings

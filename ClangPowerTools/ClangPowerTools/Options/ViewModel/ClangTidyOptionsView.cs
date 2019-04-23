@@ -136,11 +136,13 @@ namespace ClangPowerTools
       updatedConfig.AutoTidyOnSave = AutoTidyOnSave;
       updatedConfig.FormatAfterTidy = FormatAfterTidy;
 
-      if (HeaderFilter != null)
+      if (HeaderFilter == null)
       {
-        updatedConfig.HeaderFilter = string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(HeaderFilter.HeaderFilters)) == true
-        ? HeaderFilter.HeaderFilters : ClangTidyHeaderFiltersConvertor.ScriptEncode(HeaderFilter.HeaderFilters);
+        HeaderFilter = new HeaderFiltersValue(ClangTidyHeaderFilters.CorrespondingHeader.ToString());
       }
+      updatedConfig.HeaderFilter = string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(HeaderFilter.HeaderFilters)) == true
+      ? HeaderFilter.HeaderFilters : ClangTidyHeaderFiltersConvertor.ScriptEncode(HeaderFilter.HeaderFilters);
+
 
       updatedConfig.TidyMode = UseChecksFrom;
       updatedConfig.ClangTidyPath = ClangTidyPath;
