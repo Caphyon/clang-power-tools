@@ -142,9 +142,10 @@ namespace ClangPowerTools
             break;
           }
         case CommandIds.kStopClang:
-          {
+          {          
             CurrentCommand = CommandIds.kStopClang;
             await StopClang.Instance.RunStopClangCommandAsync();
+            OnAfterStopCommand();
             break;
           }
         case CommandIds.kClangFormat:
@@ -251,6 +252,11 @@ namespace ClangPowerTools
     private void OnAfterClangCommand()
     {
       Running = false;
+    }
+
+    private void OnAfterStopCommand()
+    {
+      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nStopped", false));
     }
 
     public void OnCloseCommandDataConnection(object sender, CloseDataConnectionEventArgs e)
