@@ -20,6 +20,7 @@ namespace ClangPowerTools
     protected FilePathCollector mFilePahtCollector;
     protected static RunningProcesses mRunningProcesses = new RunningProcesses();
     protected List<string> mDirectoriesPath = new List<string>();
+    private static bool stopCommand = false;
 
     //private Commands2 mCommand;
 
@@ -37,7 +38,11 @@ namespace ClangPowerTools
     private bool mMissingLLVM = false;
     private IVsHierarchy mHierarchy;
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
-
+    public bool StopCommand
+    {
+      get { return stopCommand; }
+      protected set { stopCommand = value; }
+    }
 
     #endregion
 
@@ -134,6 +139,10 @@ namespace ClangPowerTools
       var vsSolution = vsSolutionService as IVsSolution;
       foreach (var item in mItemsCollector.items)
       {
+        if (StopCommand)
+        {
+          break;
+        }
         IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item);
         itemRelatedScriptBuilder.Build();
         var itemRelatedParameters = itemRelatedScriptBuilder.GetResult();
@@ -146,6 +155,10 @@ namespace ClangPowerTools
           ItemHierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
 
         var process = PowerShellWrapper.Invoke(script, mRunningProcesses);
+      }
+      if (StopCommand)
+      {
+        StopCommand = false;
       }
     }
 
@@ -165,7 +178,7 @@ namespace ClangPowerTools
       return mItemsCollector.items;
     }
 
-    protected async System.Threading.Tasks.Task PrepareCommmandAsync(CommandUILocation commandUILocation )
+    protected async System.Threading.Tasks.Task PrepareCommmandAsync(CommandUILocation commandUILocation)
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 

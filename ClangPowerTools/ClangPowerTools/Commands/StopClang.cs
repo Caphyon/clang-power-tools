@@ -82,6 +82,7 @@ namespace ClangPowerTools.Commands
     public System.Threading.Tasks.Task RunStopClangCommandAsync()
     {
       StatusBarHandler.Status("Stopped", 2, vsStatusAnimation.vsStatusAnimationBuild, 2);
+      StopCommand = true;
       return System.Threading.Tasks.Task.Run(() =>
       {
         try
