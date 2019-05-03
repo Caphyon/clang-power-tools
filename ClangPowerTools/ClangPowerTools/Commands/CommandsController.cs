@@ -76,7 +76,6 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-
     public async System.Threading.Tasks.Task InitializeCommandsAsync(AsyncPackage aAsyncPackage)
     {
       if (CompileCommand.Instance == null)
@@ -142,7 +141,7 @@ namespace ClangPowerTools
             break;
           }
         case CommandIds.kStopClang:
-          {          
+          {
             CurrentCommand = CommandIds.kStopClang;
             await StopClang.Instance.RunStopClangCommandAsync();
             OnAfterStopCommand();
@@ -226,12 +225,10 @@ namespace ClangPowerTools
       }
     }
 
-
     #endregion
 
 
     #region Private Methods
-
 
     private void OnBeforeClangCommand(int aCommandId)
     {
@@ -262,7 +259,9 @@ namespace ClangPowerTools
     public void OnCloseCommandDataConnection(object sender, CloseDataConnectionEventArgs e)
     {
       if (OutputWindowConstants.kCommandsNames.ContainsKey(CurrentCommand))
+      {
         OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nDone {OutputWindowConstants.kCommandsNames[CurrentCommand]}\n", false));
+      }
     }
 
 
@@ -305,12 +304,10 @@ namespace ClangPowerTools
       return string.Empty;
     }
 
-
     #endregion
 
 
     #region Events
-
 
     /// <summary>
     /// It is called before every command. Update the running state.  
@@ -482,8 +479,6 @@ namespace ClangPowerTools
       mSaveCommandWasGiven = true;
     }
 
-
     #endregion
-
   }
 }
