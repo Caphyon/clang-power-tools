@@ -235,10 +235,10 @@ namespace ClangPowerTools
       CurrentCommand = aCommandId;
       Running = true;
 
-      if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
+      if (OutputWindowConstants.commandName.ContainsKey(aCommandId))
       {
-        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nStart {OutputWindowConstants.kCommandsNames[aCommandId]}\n", true));
-        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
+        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n{OutputWindowConstants.commandName[aCommandId].ToUpper()} STARTED... \n", true));
+        StatusBarHandler.Status(OutputWindowConstants.commandName[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
       }
 
       OnClangCommandBegin(new ClearErrorListEventArgs());
@@ -258,13 +258,13 @@ namespace ClangPowerTools
     {
       if (e.IsStopped)
       {
-        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nStopped", false));
-        StatusBarHandler.Status("Clang Stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nCOMMAND STOPPED", false));
+        StatusBarHandler.Status("Command stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
       }
       else
       {
-        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nDone {OutputWindowConstants.kCommandsNames[CurrentCommand]}\n", false));
-        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[CurrentCommand] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n{OutputWindowConstants.commandName[CurrentCommand].ToUpper()} FINISHED\n", false));
+        StatusBarHandler.Status(OutputWindowConstants.commandName[CurrentCommand] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
       }
     }
 
