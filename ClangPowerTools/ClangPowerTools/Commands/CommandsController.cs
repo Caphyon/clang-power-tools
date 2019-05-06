@@ -33,6 +33,7 @@ namespace ClangPowerTools
 
     public event EventHandler<ClearErrorListEventArgs> ClearErrorListEvent;
 
+
     #endregion
 
 
@@ -144,7 +145,6 @@ namespace ClangPowerTools
           {
             CurrentCommand = CommandIds.kStopClang;
             await StopClang.Instance.RunStopClangCommandAsync();
-            OnAfterStopCommand();
             break;
           }
         case CommandIds.kClangFormat:
@@ -236,7 +236,10 @@ namespace ClangPowerTools
       Running = true;
 
       if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
+      {
         OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nStart {OutputWindowConstants.kCommandsNames[aCommandId]}\n", true));
+        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
+      }
 
       OnClangCommandBegin(new ClearErrorListEventArgs());
     }
@@ -251,16 +254,17 @@ namespace ClangPowerTools
       Running = false;
     }
 
-    private void OnAfterStopCommand()
+    public void OnAfterStopCommand(object sender, CloseDataStreamingEventArgs e)
     {
-      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nStopped", false));
-    }
-
-    public void OnCloseCommandDataConnection(object sender, CloseDataConnectionEventArgs e)
-    {
-      if (OutputWindowConstants.kCommandsNames.ContainsKey(CurrentCommand))
+      if (e.IsStopped)
+      {
+        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nStopped", false));
+        StatusBarHandler.Status("Clang Stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+      }
+      else
       {
         OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nDone {OutputWindowConstants.kCommandsNames[CurrentCommand]}\n", false));
+        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[CurrentCommand] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
       }
     }
 

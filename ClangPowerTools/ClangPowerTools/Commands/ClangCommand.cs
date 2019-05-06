@@ -38,6 +38,8 @@ namespace ClangPowerTools
     private bool mMissingLLVM = false;
     private IVsHierarchy mHierarchy;
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
+    public event EventHandler<CloseDataStreamingEventArgs> CloseDataStreamingEvent;
+
     public bool StopCommand
     {
       get { return stopCommand; }
@@ -101,20 +103,10 @@ namespace ClangPowerTools
       string runModeParameters = GetRunModeParamaters();
       string genericParameters = GetGenericParamaters(aCommandId);
 
-      if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
-      {
-        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
-      }
+      if (mMissingLLVM)
+        return;
 
-      if (!mMissingLLVM)
-      {
-        CreateStript(runModeParameters, genericParameters);
-      }
-
-      if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
-      {
-        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
-      }
+      CreateStript(runModeParameters, genericParameters);
     }
 
     private string GetGenericParamaters(int aCommandId)
@@ -156,9 +148,17 @@ namespace ClangPowerTools
 
         var process = PowerShellWrapper.Invoke(script, mRunningProcesses);
       }
+
+      // Clang Done
+
       if (StopCommand)
       {
+        OnDataStreamClose(new CloseDataStreamingEventArgs(true));
         StopCommand = false;
+      }
+      else
+      {
+        OnDataStreamClose(new CloseDataStreamingEventArgs(false));
       }
     }
 
@@ -193,9 +193,14 @@ namespace ClangPowerTools
     }
 
 
-    protected virtual void OnFileHierarchyChanged(VsHierarchyDetectedEventArgs e)
+    protected void OnFileHierarchyChanged(VsHierarchyDetectedEventArgs e)
     {
       HierarchyDetectedEvent?.Invoke(this, e);
+    }
+
+    protected void OnDataStreamClose(CloseDataStreamingEventArgs e)
+    {
+      CloseDataStreamingEvent?.Invoke(this, e);
     }
 
     #endregion
