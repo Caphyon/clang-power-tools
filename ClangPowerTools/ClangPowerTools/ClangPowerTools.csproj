@@ -73,8 +73,8 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AutomationUtil.cs" />
-    <Compile Include="Clang Configs\TidyConfigFile.cs" />
+    <Compile Include="Helpers\AutomationUtil.cs" />
+    <Compile Include="Export Config\TidyConfigFile.cs" />
     <Compile Include="Attributes\ClangCheckAttribute.cs" />
     <Compile Include="Attributes\ClangTidyPathAttribute.cs" />
     <Compile Include="Commands\FormatCommand.cs" />
@@ -183,9 +183,9 @@
     <Compile Include="Output\OutputWindowBuilder.cs" />
     <Compile Include="Output\OutputWindowController.cs" />
     <Compile Include="Output\OutputWindowModel.cs" />
-    <Compile Include="PCHCleaner.cs" />
+    <Compile Include="Helpers\PCHCleaner.cs" />
     <Compile Include="Helpers\ProjectConfigurationHandler.cs" />
-    <Compile Include="RunningDocTableEvents.cs" />
+    <Compile Include="Helpers\RunningDocTableEvents.cs" />
     <Compile Include="Script\ClangTidyModeParametersFactory.cs" />
     <Compile Include="Script\GenericScriptBuilder.cs" />
     <Compile Include="Script\ItemRelatedScriptBuilder.cs" />
@@ -195,8 +195,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Services\VsServiceProvider.cs" />
-    <Compile Include="SettingsPathBuilder.cs" />
-    <Compile Include="SettingsProvider.cs" />
+    <Compile Include="Helpers\SettingsPathBuilder.cs" />
+    <Compile Include="Helpers\SettingsProvider.cs" />
     <Compile Include="SilentFile\SilentFileChangerBuilder.cs" />
     <Compile Include="SilentFile\SilentFileChangerEqualityComparer.cs" />
     <Compile Include="Items\IItem.cs" />
@@ -217,19 +217,19 @@
     <Compile Include="Options\ViewModel\ClangTidyOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ActiveWindowProperties.cs" />
+    <Compile Include="Helpers\ActiveWindowProperties.cs" />
     <Compile Include="Convertors\ComboBoxConstants.cs" />
     <Compile Include="Convertors\OldConvertors\ComboBoxConvertor.cs" />
     <Compile Include="Convertors\ClangTidyUseChecksFromConvertor.cs" />
     <Compile Include="SilentFile\SilentFileChangerModel.cs" />
     <Compile Include="SilentFile\SilentFileChangerController.cs" />
     <Compile Include="Helpers\StatusBarHandler.cs" />
-    <Compile Include="StringExtension.cs" />
+    <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Attributes\ClangFormatPathAttribute.cs" />
     <Compile Include="TextOperationsInterfaces\IDetector.cs" />
     <Compile Include="TextOperationsInterfaces\ITextFormatter.cs" />
-    <Compile Include="Vsix.cs" />
-    <Compile Include="XmlSerializer.cs" />
+    <Compile Include="Helpers\Vsix.cs" />
+    <Compile Include="Options\XmlSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="llvm\bin\clang-format.exe">
