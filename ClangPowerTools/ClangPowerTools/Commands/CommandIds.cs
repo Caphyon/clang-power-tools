@@ -8,7 +8,7 @@
     public const int kCompileToolbarId                = 0x1100;
 
     public const int kTidyId                          = 0x0101;
-    public const int TidyToolbarId                    = 0x1101;
+    public const int kTidyToolbarId                    = 0x1101;
 
     public const int kTidyFixId                       = 0x0109;
     public const int kTidyFixToolbarId                = 0x1102;

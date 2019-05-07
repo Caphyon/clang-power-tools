@@ -66,7 +66,7 @@ namespace ClangPowerTools
       if (TidyCommand.Instance == null)
       {
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyId);
-        await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.TidyToolbarId);
+        await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyToolbarId);
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyFixId);
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyFixToolbarId);
       }
@@ -157,7 +157,7 @@ namespace ClangPowerTools
             OnAfterClangCommand();
             break;
           }
-        case CommandIds.TidyToolbarId:
+        case CommandIds.kTidyToolbarId:
           {
             OnBeforeClangCommand(CommandIds.kTidyId);
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, commandUILocation);
