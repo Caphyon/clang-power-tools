@@ -102,7 +102,7 @@
     <Compile Include="Options\Model\ClangTidyPredefinedChecksOptions.cs" />
     <Compile Include="Options\Model\ClangTidyOptions.cs" />
     <Compile Include="Commands\BasicCommand.cs" />
-    <Compile Include="Commands\StopClang.cs" />
+    <Compile Include="Commands\StopCommand.cs" />
     <Compile Include="Commands\ClangCommand.cs" />
     <Compile Include="Commands\CommandIds.cs" />
     <Compile Include="Commands\CommandsController.cs" />

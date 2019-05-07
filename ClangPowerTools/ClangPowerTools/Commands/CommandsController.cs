@@ -110,9 +110,9 @@ namespace ClangPowerTools
         await IgnoreCompileCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kIgnoreCompileId);
       }
 
-      if (StopClang.Instance == null)
+      if (StopCommand.Instance == null)
       {
-        await StopClang.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kStopClang);
+        await StopCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kStopClang);
       }
 
       if (SettingsCommand.Instance == null)
@@ -145,7 +145,7 @@ namespace ClangPowerTools
         case CommandIds.kStopClang:
           {
             CurrentCommand = CommandIds.kStopClang;
-            await StopClang.Instance.RunStopClangCommandAsync();
+            await StopCommand.Instance.RunStopClangCommandAsync();
             break;
           }
         case CommandIds.kClangFormat:

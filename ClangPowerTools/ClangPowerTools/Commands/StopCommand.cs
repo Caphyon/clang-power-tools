@@ -11,7 +11,7 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  internal sealed class StopClang : ClangCommand
+  internal sealed class StopCommand : ClangCommand
   {
     #region Members
 
@@ -26,7 +26,7 @@ namespace ClangPowerTools.Commands
     /// <summary>
     /// Gets the instance of the command.
     /// </summary>
-    public static StopClang Instance
+    public static StopCommand Instance
     {
       get;
       private set;
@@ -39,11 +39,11 @@ namespace ClangPowerTools.Commands
     #region Constructor
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="StopClang"/> class.
+    /// Initializes a new instance of the <see cref="StopCommand"/> class.
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    private StopClang(OleMenuCommandService aCommandService, CommandsController aCommandsController,
+    private StopCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController,
       AsyncPackage aPackage, Guid aGuid, int aId)
       : base(aPackage, aGuid, aId)
     {
@@ -75,7 +75,7 @@ namespace ClangPowerTools.Commands
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-      Instance = new StopClang(commandService, aCommandsController, aPackage, aGuid, aId);
+      Instance = new StopCommand(commandService, aCommandsController, aPackage, aGuid, aId);
     }
 
 
