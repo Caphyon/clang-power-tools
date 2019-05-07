@@ -67,7 +67,7 @@ namespace ClangPowerTools.Commands
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController, 
+    public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController,
       AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in StopClang's constructor requires
@@ -81,6 +81,7 @@ namespace ClangPowerTools.Commands
 
     public System.Threading.Tasks.Task RunStopClangCommandAsync()
     {
+      StopCommand = true;
       return System.Threading.Tasks.Task.Run(() =>
       {
         try
@@ -93,6 +94,7 @@ namespace ClangPowerTools.Commands
             mPCHCleaner.Remove(solutionFolder);
           }
           mDirectoriesPath.Clear();
+          StatusBarHandler.Status("Stopped", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
         }
         catch (Exception) { }
       });

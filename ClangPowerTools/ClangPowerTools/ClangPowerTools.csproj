@@ -91,6 +91,7 @@
     <Compile Include="Events\ClangCommandEventArgs.cs" />
     <Compile Include="Events\CleanErrorListEventArgs.cs" />
     <Compile Include="Events\CloseDataConnectionEventArgs.cs" />
+    <Compile Include="Events\CloseDataStreamingEventArgs.cs" />
     <Compile Include="Events\ErrorDetectedEventArgs.cs" />
     <Compile Include="Events\MissingLlvmEventArgs.cs" />
     <Compile Include="Events\VsHierarchyDetectedEventArgs.cs" />

@@ -65,7 +65,7 @@ namespace ClangPowerTools.Output
         // If pane does not exists, create it
         if (null == pane)
         {
-          mOutputWindowModel.VsOutputWindow.CreatePane(ref generalPaneGuid, OutputWindowConstants.kPaneName, 0, 1);
+          mOutputWindowModel.VsOutputWindow.CreatePane(ref generalPaneGuid, OutputWindowConstants.paneName, 0, 1);
           mOutputWindowModel.VsOutputWindow.GetPane(ref generalPaneGuid, out pane);
         }
         mOutputWindowModel.Pane = pane;

@@ -33,6 +33,7 @@ namespace ClangPowerTools
 
     public event EventHandler<ClearErrorListEventArgs> ClearErrorListEvent;
 
+
     #endregion
 
 
@@ -75,7 +76,6 @@ namespace ClangPowerTools
 
 
     #region Public Methods
-
 
     public async System.Threading.Tasks.Task InitializeCommandsAsync(AsyncPackage aAsyncPackage)
     {
@@ -225,20 +225,21 @@ namespace ClangPowerTools
       }
     }
 
-
     #endregion
 
 
     #region Private Methods
-
 
     private void OnBeforeClangCommand(int aCommandId)
     {
       CurrentCommand = aCommandId;
       Running = true;
 
-      if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
-        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nStart {OutputWindowConstants.kCommandsNames[aCommandId]}\n", true));
+      if (OutputWindowConstants.commandName.ContainsKey(aCommandId))
+      {
+        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n{OutputWindowConstants.commandName[aCommandId].ToUpper()} STARTED... \n", true));
+        StatusBarHandler.Status(OutputWindowConstants.commandName[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
+      }
 
       OnClangCommandBegin(new ClearErrorListEventArgs());
     }
@@ -253,10 +254,18 @@ namespace ClangPowerTools
       Running = false;
     }
 
-    public void OnCloseCommandDataConnection(object sender, CloseDataConnectionEventArgs e)
+    public void OnAfterStopCommand(object sender, CloseDataStreamingEventArgs e)
     {
-      if (OutputWindowConstants.kCommandsNames.ContainsKey(CurrentCommand))
-        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nDone {OutputWindowConstants.kCommandsNames[CurrentCommand]}\n", false));
+      if (e.IsStopped)
+      {
+        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nCOMMAND STOPPED", false));
+        StatusBarHandler.Status("Command stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+      }
+      else
+      {
+        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n{OutputWindowConstants.commandName[CurrentCommand].ToUpper()} FINISHED\n", false));
+        StatusBarHandler.Status(OutputWindowConstants.commandName[CurrentCommand] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+      }
     }
 
 
@@ -299,12 +308,10 @@ namespace ClangPowerTools
       return string.Empty;
     }
 
-
     #endregion
 
 
     #region Events
-
 
     /// <summary>
     /// It is called before every command. Update the running state.  
@@ -476,8 +483,6 @@ namespace ClangPowerTools
       mSaveCommandWasGiven = true;
     }
 
-
     #endregion
-
   }
 }

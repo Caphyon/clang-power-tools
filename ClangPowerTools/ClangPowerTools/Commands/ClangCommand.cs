@@ -20,6 +20,7 @@ namespace ClangPowerTools
     protected FilePathCollector mFilePahtCollector;
     protected static RunningProcesses mRunningProcesses = new RunningProcesses();
     protected List<string> mDirectoriesPath = new List<string>();
+    private static bool stopCommand = false;
 
     //private Commands2 mCommand;
 
@@ -37,7 +38,13 @@ namespace ClangPowerTools
     private bool mMissingLLVM = false;
     private IVsHierarchy mHierarchy;
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
+    public event EventHandler<CloseDataStreamingEventArgs> CloseDataStreamingEvent;
 
+    public bool StopCommand
+    {
+      get { return stopCommand; }
+      protected set { stopCommand = value; }
+    }
 
     #endregion
 
@@ -96,20 +103,10 @@ namespace ClangPowerTools
       string runModeParameters = GetRunModeParamaters();
       string genericParameters = GetGenericParamaters(aCommandId);
 
-      if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
-      {
-        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
-      }
+      if (mMissingLLVM)
+        return;
 
-      if (!mMissingLLVM)
-      {
-        CreateStript(runModeParameters, genericParameters);
-      }
-
-      if (OutputWindowConstants.kCommandsNames.ContainsKey(aCommandId))
-      {
-        StatusBarHandler.Status(OutputWindowConstants.kCommandsNames[aCommandId] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
-      }
+      CreateStript(runModeParameters, genericParameters);
     }
 
     private string GetGenericParamaters(int aCommandId)
@@ -134,6 +131,10 @@ namespace ClangPowerTools
       var vsSolution = vsSolutionService as IVsSolution;
       foreach (var item in mItemsCollector.items)
       {
+        if (StopCommand)
+        {
+          break;
+        }
         IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item);
         itemRelatedScriptBuilder.Build();
         var itemRelatedParameters = itemRelatedScriptBuilder.GetResult();
@@ -146,6 +147,18 @@ namespace ClangPowerTools
           ItemHierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
 
         var process = PowerShellWrapper.Invoke(script, mRunningProcesses);
+      }
+
+      // Clang Done
+
+      if (StopCommand)
+      {
+        OnDataStreamClose(new CloseDataStreamingEventArgs(true));
+        StopCommand = false;
+      }
+      else
+      {
+        OnDataStreamClose(new CloseDataStreamingEventArgs(false));
       }
     }
 
@@ -165,7 +178,7 @@ namespace ClangPowerTools
       return mItemsCollector.items;
     }
 
-    protected async System.Threading.Tasks.Task PrepareCommmandAsync(CommandUILocation commandUILocation )
+    protected async System.Threading.Tasks.Task PrepareCommmandAsync(CommandUILocation commandUILocation)
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -180,9 +193,14 @@ namespace ClangPowerTools
     }
 
 
-    protected virtual void OnFileHierarchyChanged(VsHierarchyDetectedEventArgs e)
+    protected void OnFileHierarchyChanged(VsHierarchyDetectedEventArgs e)
     {
       HierarchyDetectedEvent?.Invoke(this, e);
+    }
+
+    protected void OnDataStreamClose(CloseDataStreamingEventArgs e)
+    {
+      CloseDataStreamingEvent?.Invoke(this, e);
     }
 
     #endregion
