@@ -75,8 +75,8 @@
   <ItemGroup>
     <Compile Include="AutomationUtil.cs" />
     <Compile Include="Clang Configs\TidyConfigFile.cs" />
-    <Compile Include="ClangCheckAttribute.cs" />
-    <Compile Include="ClangTidyPathAttribute.cs" />
+    <Compile Include="Attributes\ClangCheckAttribute.cs" />
+    <Compile Include="Attributes\ClangTidyPathAttribute.cs" />
     <Compile Include="Commands\FormatCommand.cs" />
     <Compile Include="Commands\CommandUILocation.cs" />
     <Compile Include="Commands\IgnoreCompileCommand.cs" />
@@ -225,7 +225,7 @@
     <Compile Include="SilentFile\SilentFileChangerController.cs" />
     <Compile Include="Helpers\StatusBarHandler.cs" />
     <Compile Include="StringExtension.cs" />
-    <Compile Include="ClangFormatPathAttribute.cs" />
+    <Compile Include="Attributes\ClangFormatPathAttribute.cs" />
     <Compile Include="TextOperationsInterfaces\IDetector.cs" />
     <Compile Include="TextOperationsInterfaces\ITextFormatter.cs" />
     <Compile Include="Vsix.cs" />
