@@ -15,7 +15,7 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  internal sealed class ClangFormatCommand : ClangCommand
+  internal sealed class FormatCommand : ClangCommand
   {
     #region Members
 
@@ -31,7 +31,7 @@ namespace ClangPowerTools.Commands
     /// <summary>
     /// Gets the instance of the command.
     /// </summary>
-    public static ClangFormatCommand Instance
+    public static FormatCommand Instance
     {
       get;
       private set;
@@ -44,11 +44,11 @@ namespace ClangPowerTools.Commands
     #region Constructor
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ClangFormatCommand"/> class.
+    /// Initializes a new instance of the <see cref="FormatCommand"/> class.
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    private ClangFormatCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController, 
+    private FormatCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController, 
       AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aPackage, aGuid, aId)
     {
@@ -80,7 +80,7 @@ namespace ClangPowerTools.Commands
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-      Instance = new ClangFormatCommand(commandService, aCommandsController, aPackage, aGuid, aId);
+      Instance = new FormatCommand(commandService, aCommandsController, aPackage, aGuid, aId);
     }
 
 

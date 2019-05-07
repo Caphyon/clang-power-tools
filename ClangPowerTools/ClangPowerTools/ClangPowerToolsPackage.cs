@@ -310,7 +310,7 @@ namespace ClangPowerTools
 
       CompileCommand.Instance.CloseDataStreamingEvent += mCommandsController.OnAfterStopCommand;
       TidyCommand.Instance.CloseDataStreamingEvent += mCommandsController.OnAfterStopCommand;
-      ClangFormatCommand.Instance.CloseDataStreamingEvent += mCommandsController.OnAfterStopCommand;
+      FormatCommand.Instance.CloseDataStreamingEvent += mCommandsController.OnAfterStopCommand;
 
       PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
@@ -367,7 +367,7 @@ namespace ClangPowerTools
 
       CompileCommand.Instance.CloseDataStreamingEvent -= mCommandsController.OnAfterStopCommand;
       TidyCommand.Instance.CloseDataStreamingEvent -= mCommandsController.OnAfterStopCommand;
-      ClangFormatCommand.Instance.CloseDataStreamingEvent -= mCommandsController.OnAfterStopCommand;
+      FormatCommand.Instance.CloseDataStreamingEvent -= mCommandsController.OnAfterStopCommand;
 
       PowerShellWrapper.DataHandler -= mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler -= mOutputWindowController.OutputDataErrorReceived;

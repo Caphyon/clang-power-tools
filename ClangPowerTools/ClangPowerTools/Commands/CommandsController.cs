@@ -94,10 +94,10 @@ namespace ClangPowerTools
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyFixToolbarId);
       }
 
-      if (ClangFormatCommand.Instance == null)
+      if (FormatCommand.Instance == null)
       {
-        await ClangFormatCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kClangFormat);
-        await ClangFormatCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kClangFormatToolbarId);
+        await FormatCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kClangFormat);
+        await FormatCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kClangFormatToolbarId);
       }
 
       if (IgnoreFormatCommand.Instance == null)
@@ -151,13 +151,13 @@ namespace ClangPowerTools
         case CommandIds.kClangFormat:
           {
             CurrentCommand = CommandIds.kClangFormat;
-            ClangFormatCommand.Instance.RunClangFormat(CommandUILocation.ContextMenu);
+            FormatCommand.Instance.RunClangFormat(CommandUILocation.ContextMenu);
             break;
           }
         case CommandIds.kClangFormatToolbarId:
           {
             CurrentCommand = CommandIds.kClangFormat;
-            ClangFormatCommand.Instance.RunClangFormat(CommandUILocation.Toolbar);
+            FormatCommand.Instance.RunClangFormat(CommandUILocation.Toolbar);
             break;
           }
         case CommandIds.kCompileId:
@@ -433,7 +433,7 @@ namespace ClangPowerTools
         return;
 
       var option = SettingsProvider.ClangFormatSettings;
-      ClangFormatCommand.Instance.FormatDocument(aDocument, option, CommandUILocation.Toolbar);
+      FormatCommand.Instance.FormatDocument(aDocument, option, CommandUILocation.Toolbar);
     }
 
 
