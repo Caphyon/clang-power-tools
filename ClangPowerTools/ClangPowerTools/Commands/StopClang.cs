@@ -94,7 +94,6 @@ namespace ClangPowerTools.Commands
             mPCHCleaner.Remove(solutionFolder);
           }
           mDirectoriesPath.Clear();
-          StatusBarHandler.Status("Stopped", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
         }
         catch (Exception) { }
       });
