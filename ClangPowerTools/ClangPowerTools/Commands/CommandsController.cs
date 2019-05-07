@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.IO;
 using System.Linq;
+using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools
 {
@@ -77,7 +78,7 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public async System.Threading.Tasks.Task InitializeCommandsAsync(AsyncPackage aAsyncPackage)
+    public async Task InitializeCommandsAsync(AsyncPackage aAsyncPackage)
     {
       if (CompileCommand.Instance == null)
       {

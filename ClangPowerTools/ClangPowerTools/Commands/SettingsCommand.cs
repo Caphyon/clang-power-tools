@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
+using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
 {
@@ -51,7 +52,7 @@ namespace ClangPowerTools.Commands
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController, AsyncPackage aPackage, Guid aGuid, int aId)
+    public static async Task InitializeAsync(CommandsController aCommandsController, AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in SettingsCommand's constructor requires
       // the UI thread.

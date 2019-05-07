@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.Output;
-using ClangPowerTools.Services;
+﻿using ClangPowerTools.Services;
 using ClangPowerTools.SilentFile;
 using EnvDTE;
 using EnvDTE80;
@@ -8,7 +7,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
 using System.Linq;
-using System.Windows.Threading;
+using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
 {
@@ -64,7 +63,7 @@ namespace ClangPowerTools.Commands
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController, 
+    public static async Task InitializeAsync(CommandsController aCommandsController, 
       AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in TidyCommand's constructor requires
@@ -76,7 +75,7 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public async System.Threading.Tasks.Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation)
+    public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation)
     {
       await PrepareCommmandAsync(commandUILocation);
 
