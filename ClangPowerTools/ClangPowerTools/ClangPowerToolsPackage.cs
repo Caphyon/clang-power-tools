@@ -16,6 +16,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Xml;
+using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools
 {
@@ -94,7 +95,7 @@ namespace ClangPowerTools
     /// Initialization of the package; this method is called right after the package is sited, so this is the place
     /// where you can put all the initialization code that rely on services provided by VisualStudio.
     /// </summary>
-    protected override async System.Threading.Tasks.Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
+    protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
     {
       // Switches to the UI thread in order to consume some services used in command initialization
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
@@ -257,7 +258,7 @@ namespace ClangPowerTools
     #region Private Methods
 
 
-    private async System.Threading.Tasks.Task RegisterVsServicesAsync()
+    private async Task RegisterVsServicesAsync()
     {
       // Get DTE service async 
       var dte = await GetServiceAsync(typeof(DTE)) as DTE2;
