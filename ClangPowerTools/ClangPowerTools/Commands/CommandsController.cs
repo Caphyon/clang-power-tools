@@ -138,13 +138,11 @@ namespace ClangPowerTools
       {
         case CommandIds.kSettingsId:
           {
-            CurrentCommand = CommandIds.kSettingsId;
             SettingsCommand.Instance.ShowSettings();
             break;
           }
         case CommandIds.kStopClang:
           {
-            CurrentCommand = CommandIds.kStopClang;
             await StopCommand.Instance.RunStopClangCommandAsync();
             break;
           }
