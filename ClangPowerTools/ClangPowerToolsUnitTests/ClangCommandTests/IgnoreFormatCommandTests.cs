@@ -31,13 +31,15 @@ namespace ClangPowerTools.Tests
     [VsFact(Version = "2019")]
     public async System.Threading.Tasks.Task SaveFilesToIgnore_EmptyState_UIAsync()
     {
+      //Arrange
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
       await UnitTestUtility.LoadPackageAsync();
+
+      // Act
       Initialize(string.Empty);
+      await IgnoreFilesAsync(IgnoreCommand.kSingleFileToIgnore);
 
-      await IgnoreFiles(IgnoreCommand.kSingleFileToIgnore);
-
+      // Assert
       Assert.Equal(mFormatOptions.FilesToIgnore, string.Join(";", IgnoreCommand.kSingleFileToIgnore));
     }
 
@@ -46,11 +48,10 @@ namespace ClangPowerTools.Tests
     public async System.Threading.Tasks.Task SaveFilesToIgnore_EmptyState_ConfigAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
       await UnitTestUtility.LoadPackageAsync();
-      Initialize(string.Empty);
 
-      await IgnoreFiles(IgnoreCommand.kSingleFileToIgnore);
+      Initialize(string.Empty);
+      await IgnoreFilesAsync(IgnoreCommand.kSingleFileToIgnore);
 
       if (!File.Exists(kFormatSettingsPath))
         Assert.False(true);
@@ -66,11 +67,10 @@ namespace ClangPowerTools.Tests
     public async System.Threading.Tasks.Task SaveMultipleFilesToIgnore_EmptyState_UIAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
       await UnitTestUtility.LoadPackageAsync();
-      Initialize(string.Empty);
 
-      await IgnoreFiles(IgnoreCommand.kMultipleFilesToIgnore);
+      Initialize(string.Empty);
+      await IgnoreFilesAsync(IgnoreCommand.kMultipleFilesToIgnore);
 
       Assert.Equal(mFormatOptions.FilesToIgnore, string.Join(";", IgnoreCommand.kMultipleFilesToIgnore));
     }
@@ -80,11 +80,10 @@ namespace ClangPowerTools.Tests
     public async System.Threading.Tasks.Task SaveMultipleFilesToIgnore_EmptyState_ConfigAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
       await UnitTestUtility.LoadPackageAsync();
-      Initialize(string.Empty);
 
-      await IgnoreFiles(IgnoreCommand.kMultipleFilesToIgnore);
+      Initialize(string.Empty);
+      await IgnoreFilesAsync(IgnoreCommand.kMultipleFilesToIgnore);
 
       if (!File.Exists(kFormatSettingsPath))
         Assert.False(true);
@@ -102,15 +101,13 @@ namespace ClangPowerTools.Tests
     public async System.Threading.Tasks.Task SaveFilesToIgnore_NoEmptyState_UIAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
       await UnitTestUtility.LoadPackageAsync();
 
       var expectedResult = string.Join(";", IgnoreCommand.kStartUpMultipleFilesToIgnore);
       Initialize(expectedResult);
-
-      await IgnoreFiles(IgnoreCommand.kMultipleFilesToIgnore);
-
+      await IgnoreFilesAsync(IgnoreCommand.kMultipleFilesToIgnore);
       expectedResult += ";" + string.Join(";", IgnoreCommand.kMultipleFilesToIgnore);
+
       Assert.Equal(mFormatOptions.FilesToIgnore, expectedResult);
     }
 
@@ -119,14 +116,11 @@ namespace ClangPowerTools.Tests
     public async System.Threading.Tasks.Task SaveFilesToIgnore_NoEmptyState_ConfigAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
       await UnitTestUtility.LoadPackageAsync();
 
       var expectedResult = string.Join(";", IgnoreCommand.kStartUpMultipleFilesToIgnore);
       Initialize(expectedResult);
-
-      //await IgnoreFiles(mInitialMultipleFilesToIgnore);
-      await IgnoreFiles(IgnoreCommand.kMultipleFilesToIgnore);
+      await IgnoreFilesAsync(IgnoreCommand.kMultipleFilesToIgnore);
 
       if (!File.Exists(kFormatSettingsPath))
         Assert.False(true);
@@ -146,13 +140,14 @@ namespace ClangPowerTools.Tests
 
     private void Initialize(string ignoreFiles)
     {
+      ThreadHelper.ThrowIfNotOnUIThread();
       mDte = (DTE2)ServiceProvider.GlobalProvider.GetService(typeof(DTE));
       mIgnoreFormatCommand = IgnoreFormatCommand.Instance;
       mFormatOptions = SettingsProvider.ClangFormatSettings;
       mFormatOptions.FilesToIgnore = ignoreFiles;
     }
 
-    private async System.Threading.Tasks.Task IgnoreFiles(List<string> aFilesToIgnore)
+    private async System.Threading.Tasks.Task IgnoreFilesAsync(List<string> aFilesToIgnore)
     {
       await System.Threading.Tasks.Task.Run(() =>
       {

@@ -14,7 +14,7 @@ namespace ClangPowerTools.Tests
   {
     #region Members
 
-    private const string generalSettingsPath = @"C:\Users\Enache Ionut\AppData\Roaming\ClangPowerTools\GeneralConfiguration.config";
+    private const string kGeneralSettingsPath = @"C:\Users\Enache Ionut\AppData\Roaming\ClangPowerTools\GeneralConfiguration.config";
 
     private DTE2 mDte;
     private IgnoreCompileCommand mIgnoreCompileCommand;
@@ -22,22 +22,23 @@ namespace ClangPowerTools.Tests
 
     #endregion
 
-    #region Methods
 
-    #region Public Methods
+    #region Test Methods
 
     // Empty State 
 
     [VsFact(Version = "2019")]
     public async System.Threading.Tasks.Task SaveFilesToIgnore_EmptyState_UIAsync()
     {
+      //Arrange
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
       await UnitTestUtility.LoadPackageAsync();
-      Initialize(string.Empty);
 
+      //Act
+      Initialize(string.Empty);
       await IgnoreFilesAsync(IgnoreCommand.kSingleFileToIgnore);
 
+      //Assert
       Assert.Equal(mGeneralOptions.FilesToIgnore, string.Join(";", IgnoreCommand.kSingleFileToIgnore));
     }
 
@@ -46,17 +47,16 @@ namespace ClangPowerTools.Tests
     public async System.Threading.Tasks.Task SaveFilesToIgnore_EmptyState_ConfigAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
       await UnitTestUtility.LoadPackageAsync();
-      Initialize(string.Empty);
 
+      Initialize(string.Empty);
       await IgnoreFilesAsync(IgnoreCommand.kSingleFileToIgnore);
 
-      if (!File.Exists(generalSettingsPath))
+      if (!File.Exists(kGeneralSettingsPath))
         Assert.False(true);
 
       XmlSerializer serializer = new XmlSerializer();
-      var generalSettingsModel = serializer.DeserializeFromFile<ClangOptions>(generalSettingsPath);
+      var generalSettingsModel = serializer.DeserializeFromFile<ClangOptions>(kGeneralSettingsPath);
 
       Assert.Equal(generalSettingsModel.FilesToIgnoreCollection, string.Join(";", IgnoreCommand.kSingleFileToIgnore));
     }
@@ -66,10 +66,9 @@ namespace ClangPowerTools.Tests
     public async System.Threading.Tasks.Task SaveMultipleFilesToIgnore_EmptyState_UIAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
       await UnitTestUtility.LoadPackageAsync();
-      Initialize(string.Empty);
 
+      Initialize(string.Empty);
       await IgnoreFilesAsync(IgnoreCommand.kMultipleFilesToIgnore);
 
       Assert.Equal(mGeneralOptions.FilesToIgnore, string.Join(";", IgnoreCommand.kMultipleFilesToIgnore));
@@ -80,17 +79,16 @@ namespace ClangPowerTools.Tests
     public async System.Threading.Tasks.Task SaveMultipleFilesToIgnore_EmptyState_ConfigAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
       await UnitTestUtility.LoadPackageAsync();
-      Initialize(string.Empty);
 
+      Initialize(string.Empty);
       await IgnoreFilesAsync(IgnoreCommand.kMultipleFilesToIgnore);
 
-      if (!File.Exists(generalSettingsPath))
+      if (!File.Exists(kGeneralSettingsPath))
         Assert.False(true);
 
       XmlSerializer serializer = new XmlSerializer();
-      var generalSettingsModel = serializer.DeserializeFromFile<ClangOptions>(generalSettingsPath);
+      var generalSettingsModel = serializer.DeserializeFromFile<ClangOptions>(kGeneralSettingsPath);
 
       Assert.Equal(generalSettingsModel.FilesToIgnoreCollection, string.Join(";", IgnoreCommand.kMultipleFilesToIgnore));
     }
@@ -102,15 +100,13 @@ namespace ClangPowerTools.Tests
     public async System.Threading.Tasks.Task SaveFilesToIgnore_NoEmptyState_UIAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
       await UnitTestUtility.LoadPackageAsync();
 
       var expectedResult = string.Join(";", IgnoreCommand.kStartUpMultipleFilesToIgnore);
       Initialize(expectedResult);
-
       await IgnoreFilesAsync(IgnoreCommand.kMultipleFilesToIgnore);
-
       expectedResult += ";" + string.Join(";", IgnoreCommand.kMultipleFilesToIgnore);
+
       Assert.Equal(mGeneralOptions.FilesToIgnore, expectedResult);
     }
 
@@ -119,7 +115,6 @@ namespace ClangPowerTools.Tests
     public async System.Threading.Tasks.Task SaveFilesToIgnore_NoEmptyState_ConfigAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-
       await UnitTestUtility.LoadPackageAsync();
 
       var expectedResult = string.Join(";", IgnoreCommand.kStartUpMultipleFilesToIgnore);
@@ -128,12 +123,12 @@ namespace ClangPowerTools.Tests
       await IgnoreFilesAsync(IgnoreCommand.kStartUpMultipleFilesToIgnore);
       await IgnoreFilesAsync(IgnoreCommand.kMultipleFilesToIgnore);
 
-      if (!File.Exists(generalSettingsPath))
+      if (!File.Exists(kGeneralSettingsPath))
         Assert.False(true);
 
       XmlSerializer serializer = new XmlSerializer();
 
-      var generalSettingsModel = serializer.DeserializeFromFile<ClangOptions>(generalSettingsPath);
+      var generalSettingsModel = serializer.DeserializeFromFile<ClangOptions>(kGeneralSettingsPath);
       expectedResult += ";" + string.Join(";", IgnoreCommand.kMultipleFilesToIgnore);
 
       Assert.Equal(generalSettingsModel.FilesToIgnoreCollection, expectedResult);
@@ -146,6 +141,7 @@ namespace ClangPowerTools.Tests
 
     private void Initialize(string ignoreFiles)
     {
+      ThreadHelper.ThrowIfNotOnUIThread();
       mDte = (DTE2)ServiceProvider.GlobalProvider.GetService(typeof(DTE));
       mIgnoreCompileCommand = IgnoreCompileCommand.Instance;
       mGeneralOptions = SettingsProvider.GeneralSettings;
@@ -159,9 +155,6 @@ namespace ClangPowerTools.Tests
         mIgnoreCompileCommand.AddIgnoreFilesToSettings(aFilesToIgnore);
       });
     }
-
-    #endregion
-
 
     #endregion
 

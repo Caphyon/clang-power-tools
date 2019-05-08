@@ -11,6 +11,8 @@ namespace ClangPowerTools.Tests
   [VsTestSettings(UIThread = true)]
   public class VsServiceProviderTests
   {
+    #region Test Methods
+
     [VsFact(Version = "2019")]
     public async Task DteService_SuccessfulRegistrationAsync()
     {
@@ -96,6 +98,8 @@ namespace ClangPowerTools.Tests
       // Assert
       Assert.NotNull(vsSolutionService as IVsSolution);
     }
+
+    #endregion
 
   }
 }

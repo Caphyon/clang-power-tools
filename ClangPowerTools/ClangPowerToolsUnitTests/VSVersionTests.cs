@@ -5,6 +5,8 @@ namespace ClangPowerTools.Tests
   [VsTestSettings(UIThread = true)]
   public class VsVersionTests
   {
+    #region Test Methods
+
     //[VsFact(Version = "2015")]
     //public void RunVisualStudio2015_Test()
     //{
@@ -22,5 +24,8 @@ namespace ClangPowerTools.Tests
     {
       Assert.Equal("16.0", UnitTestUtility.GetVsVersion());
     }
+
+    #endregion
+
   }
 }
