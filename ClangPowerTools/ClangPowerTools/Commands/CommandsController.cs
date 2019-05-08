@@ -238,7 +238,7 @@ namespace ClangPowerTools
 
       if (OutputWindowConstants.commandName.ContainsKey(aCommandId))
       {
-        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n{OutputWindowConstants.commandName[aCommandId].ToUpper()} STARTED... \n", true));
+        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[aCommandId].ToUpper()} STARTED ---\n", true));
         StatusBarHandler.Status(OutputWindowConstants.commandName[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
       }
 
@@ -259,12 +259,12 @@ namespace ClangPowerTools
     {
       if (e.IsStopped)
       {
-        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nCOMMAND STOPPED", false));
+        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[CurrentCommand].ToUpper()} STOPPED ---", false));
         StatusBarHandler.Status("Command stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
       }
       else
       {
-        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n{OutputWindowConstants.commandName[CurrentCommand].ToUpper()} FINISHED\n", false));
+        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[CurrentCommand].ToUpper()} FINISHED ---\n", false));
         StatusBarHandler.Status(OutputWindowConstants.commandName[CurrentCommand] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
       }
     }

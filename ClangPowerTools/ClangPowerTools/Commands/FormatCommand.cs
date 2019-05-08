@@ -48,7 +48,7 @@ namespace ClangPowerTools.Commands
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    private FormatCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController, 
+    private FormatCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController,
       AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aPackage, aGuid, aId)
     {
@@ -72,7 +72,7 @@ namespace ClangPowerTools.Commands
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async Task InitializeAsync(CommandsController aCommandsController, 
+    public static async Task InitializeAsync(CommandsController aCommandsController,
       AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in ClangFormatCommand's constructor requires
@@ -98,6 +98,19 @@ namespace ClangPowerTools.Commands
     {
       try
       {
+        /// cake
+        ItemsCollector itemsCollector = new ItemsCollector();
+
+        if (itemsCollector.haveItems)
+        {
+
+        }
+
+        else
+        {
+         // var selectedItems = itemsCollector.CollectSelectedFiles;
+        }
+
         if (mClangFormatView == null)
         {
           FormatAllSelectedDocuments(commandUILocation);

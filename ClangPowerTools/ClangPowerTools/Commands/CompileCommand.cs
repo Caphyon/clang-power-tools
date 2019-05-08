@@ -77,7 +77,7 @@ namespace ClangPowerTools.Commands
     {
       await PrepareCommmandAsync(commandUILocation);
 
-      await System.Threading.Tasks.Task.Run(() =>
+      await Task.Run(() =>
       {
         try
         {
