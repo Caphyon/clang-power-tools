@@ -82,7 +82,7 @@ namespace ClangPowerTools.Commands
     public Task RunStopClangCommandAsync()
     {
       StopCommand = true;
-      return System.Threading.Tasks.Task.Run(() =>
+      return Task.Run(() =>
       {
         try
         {
