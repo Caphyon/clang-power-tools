@@ -156,6 +156,7 @@ namespace ClangPowerTools
           {
             CurrentCommand = CommandIds.kClangFormat;
             FormatCommand.Instance.RunClangFormat(CommandUILocation.Toolbar);
+            OnAfterClangFormatCommand();
             break;
           }
         case CommandIds.kCompileId:
@@ -236,12 +237,12 @@ namespace ClangPowerTools
 
       if (OutputWindowConstants.commandName.ContainsKey(aCommandId))
       {
-        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[aCommandId].ToUpper()} STARTED ---\n", true));
-        StatusBarHandler.Status(OutputWindowConstants.commandName[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
+        DisplayStartedMessage(aCommandId, true);
       }
 
       OnClangCommandBegin(new ClearErrorListEventArgs());
     }
+
 
     private void OnClangCommandBegin(ClearErrorListEventArgs e)
     {
@@ -257,22 +258,24 @@ namespace ClangPowerTools
     {
       if (e.IsStopped)
       {
-        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[CurrentCommand].ToUpper()} STOPPED ---", false));
-        StatusBarHandler.Status("Command stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+        DisplayStoppedMessage(false);
       }
       else
       {
-        OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[CurrentCommand].ToUpper()} FINISHED ---\n", false));
-        StatusBarHandler.Status(OutputWindowConstants.commandName[CurrentCommand] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+        DisplayFinishedMessage(false);
       }
     }
 
+    public void OnAfterClangFormatCommand()
+    {
+      OnClangCommandBegin(new ClearErrorListEventArgs());
+      DisplayFinishedMessage(true);
+    }
 
     private void OnClangCommandMessageTransfer(ClangCommandMessageEventArgs e)
     {
       ClangCommandMessageEvent?.Invoke(this, e);
     }
-
 
     public void OnFileHierarchyChanged(object sender, VsHierarchyDetectedEventArgs e)
     {
@@ -285,6 +288,24 @@ namespace ClangPowerTools
       MissingLlvmEvent?.Invoke(this, e);
     }
 
+    private void DisplayStartedMessage(int aCommandId, bool clearOutput)
+    {
+      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[aCommandId].ToUpper()} STARTED ---\n", clearOutput));
+      StatusBarHandler.Status(OutputWindowConstants.commandName[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
+    }
+
+
+    private void DisplayFinishedMessage(bool clearOutput)
+    {
+      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[CurrentCommand].ToUpper()} FINISHED ---\n", clearOutput));
+      StatusBarHandler.Status(OutputWindowConstants.commandName[CurrentCommand] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+    }
+
+    private void DisplayStoppedMessage(bool clearOutput)
+    {
+      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[CurrentCommand].ToUpper()} STOPPED ---", clearOutput));
+      StatusBarHandler.Status("Command stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+    }
 
     private string GetCommandName(string aGuid, int aId)
     {

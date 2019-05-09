@@ -97,7 +97,9 @@ namespace ClangPowerTools.Output
     public void Write(object sender, ClangCommandMessageEventArgs e)
     {
       if (e.ClearFlag)
+      {
         Clear();
+      }
       Show();
       Write(e.Message);
     }
@@ -164,7 +166,7 @@ namespace ClangPowerTools.Output
 
       CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
 
-      if ( 0 != Errors.Count )
+      if (0 != Errors.Count)
         OnErrorDetected(new ErrorDetectedEventArgs(Errors));
     }
 
