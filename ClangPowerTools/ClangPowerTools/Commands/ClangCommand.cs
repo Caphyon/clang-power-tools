@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
+using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools
 {
@@ -39,6 +40,7 @@ namespace ClangPowerTools
     private IVsHierarchy mHierarchy;
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
     public event EventHandler<CloseDataStreamingEventArgs> CloseDataStreamingEvent;
+    public event EventHandler<ActiveDocumentEventArgs> ActiveDocumentEvent;
 
     public bool StopCommand
     {
@@ -170,6 +172,7 @@ namespace ClangPowerTools
       {
         case CommandUILocation.Toolbar:
           mItemsCollector.CollectActiveProjectItem(aClangFormatFlag);
+          SetActiveDocumentEvent();
           break;
         case CommandUILocation.ContextMenu:
           mItemsCollector.CollectSelectedFiles(ActiveWindowProperties.GetProjectItemOfActiveWindow(), aClangFormatFlag);
@@ -178,7 +181,19 @@ namespace ClangPowerTools
       return mItemsCollector.items;
     }
 
-    protected async System.Threading.Tasks.Task PrepareCommmandAsync(CommandUILocation commandUILocation)
+    private void SetActiveDocumentEvent()
+    {
+      if (mItemsCollector.items.Count == 0)
+      {
+        OnActiveFileCheck(new ActiveDocumentEventArgs(false));
+      }
+      else
+      {
+        OnActiveFileCheck(new ActiveDocumentEventArgs(true));
+      }
+    }
+
+    protected async Task PrepareCommmandAsync(CommandUILocation commandUILocation)
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -192,6 +207,10 @@ namespace ClangPowerTools
       CollectItems(false, ScriptConstants.kAcceptedFileExtensions, commandUILocation);
     }
 
+    protected void OnActiveFileCheck(ActiveDocumentEventArgs e)
+    {
+      ActiveDocumentEvent?.Invoke(this, e);
+    }
 
     protected void OnFileHierarchyChanged(VsHierarchyDetectedEventArgs e)
     {

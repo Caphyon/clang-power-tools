@@ -25,13 +25,11 @@ namespace ClangPowerTools
     private bool mSaveCommandWasGiven = false;
     private Document mDocument;
     private bool mFormatAfterTidyFlag = false;
+    private bool hasActiveDocument = true;
 
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
-
     public event EventHandler<ClangCommandMessageEventArgs> ClangCommandMessageEvent;
-
     public event EventHandler<MissingLlvmEventArgs> MissingLlvmEvent;
-
     public event EventHandler<ClearErrorListEventArgs> ClearErrorListEvent;
 
 
@@ -256,20 +254,37 @@ namespace ClangPowerTools
 
     public void OnAfterStopCommand(object sender, CloseDataStreamingEventArgs e)
     {
-      if (e.IsStopped)
+      if (e.IsStopped && hasActiveDocument)
       {
         DisplayStoppedMessage(false);
       }
-      else
+      else if(hasActiveDocument)
       {
         DisplayFinishedMessage(false);
       }
     }
 
+    public void OnActiveDocumentCheck(object sender, ActiveDocumentEventArgs e)
+    {
+      if (e.IsActiveDocument == false)
+      {      
+        DisplayNoActiveDocumentMessage(true);
+      }
+      hasActiveDocument = e.IsActiveDocument;
+    }
+
     public void OnAfterClangFormatCommand()
     {
       OnClangCommandBegin(new ClearErrorListEventArgs());
-      DisplayFinishedMessage(true);
+
+      if (hasActiveDocument)
+      {
+        DisplayFinishedMessage(true);
+      }
+      else
+      {
+        DisplayNoActiveDocumentMessage(true);
+      }
     }
 
     private void OnClangCommandMessageTransfer(ClangCommandMessageEventArgs e)
@@ -292,6 +307,12 @@ namespace ClangPowerTools
     {
       OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[aCommandId].ToUpper()} STARTED ---\n", clearOutput));
       StatusBarHandler.Status(OutputWindowConstants.commandName[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
+    }
+
+    private void DisplayNoActiveDocumentMessage(bool clearOutput)
+    {
+      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- Toolbar coomands can only be run on open files ---\n", clearOutput));
+      StatusBarHandler.Status("Ready", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
 
