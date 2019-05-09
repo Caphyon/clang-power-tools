@@ -40,11 +40,7 @@ namespace ClangPowerTools
         DTE vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE) : null;
         Document activeDocument = vsServiceProvider.ActiveDocument;
 
-        if (activeDocument == null)
-        {
-          CollectSelectedFiles(ActiveWindowProperties.GetProjectItemOfActiveWindow(), aClangFormatFlag);
-        }
-        else
+        if (activeDocument != null)
         {
           SelectedProjectItem activeProjectItem = new SelectedProjectItem(activeDocument.ProjectItem);
           items.Add(activeProjectItem);
