@@ -73,6 +73,7 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Events\ActiveDocumentEventArgs.cs" />
     <Compile Include="Helpers\AutomationUtil.cs" />
     <Compile Include="Export Config\TidyConfigFile.cs" />
     <Compile Include="Attributes\ClangCheckAttribute.cs" />
