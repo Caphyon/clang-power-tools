@@ -148,13 +148,14 @@ namespace ClangPowerTools
           {
             CurrentCommand = CommandIds.kClangFormat;
             FormatCommand.Instance.RunClangFormat(CommandUILocation.ContextMenu);
+            OnAfterFormatCommand();
             break;
           }
         case CommandIds.kClangFormatToolbarId:
           {
             CurrentCommand = CommandIds.kClangFormat;
             FormatCommand.Instance.RunClangFormat(CommandUILocation.Toolbar);
-            OnAfterClangFormatCommand();
+            OnAfterFormatCommand();
             break;
           }
         case CommandIds.kCompileId:
@@ -252,11 +253,20 @@ namespace ClangPowerTools
       Running = false;
     }
 
+    private void OnAfterFormatCommand()
+    {
+      if(hasActiveDocument)
+      {
+        DisplayFinishedMessage(true);
+      }
+    }
+
     public void OnAfterStopCommand(object sender, CloseDataStreamingEventArgs e)
     {
-      if (e.IsStopped && hasActiveDocument)
+      if (e.IsStopped)
       {
         DisplayStoppedMessage(false);
+
       }
       else if(hasActiveDocument)
       {
@@ -267,24 +277,10 @@ namespace ClangPowerTools
     public void OnActiveDocumentCheck(object sender, ActiveDocumentEventArgs e)
     {
       if (e.IsActiveDocument == false)
-      {      
+      {
         DisplayNoActiveDocumentMessage(true);
       }
       hasActiveDocument = e.IsActiveDocument;
-    }
-
-    public void OnAfterClangFormatCommand()
-    {
-      OnClangCommandBegin(new ClearErrorListEventArgs());
-
-      if (hasActiveDocument)
-      {
-        DisplayFinishedMessage(true);
-      }
-      else
-      {
-        DisplayNoActiveDocumentMessage(true);
-      }
     }
 
     private void OnClangCommandMessageTransfer(ClangCommandMessageEventArgs e)
