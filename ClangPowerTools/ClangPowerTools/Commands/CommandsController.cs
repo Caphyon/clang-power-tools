@@ -105,7 +105,7 @@ namespace ClangPowerTools
 
     public async void Execute(object sender, EventArgs e)
     {
-      var command = PrepareExecute(sender);
+      var command = CreateCommand(sender);
 
       if (command == null)
       {
@@ -204,7 +204,7 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private OleMenuCommand PrepareExecute(object sender)
+    private OleMenuCommand CreateCommand(object sender)
     {
       OleMenuCommand command = null;
       if ((sender is OleMenuCommand) == false)
