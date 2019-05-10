@@ -280,8 +280,14 @@ namespace ClangPowerTools
       if (e.IsStopped)
       {
         DisplayStoppedMessage(false);
+        return;
       }
-      else if (commandUILocation == CommandUILocation.ContextMenu)
+
+      if (commandUILocation == CommandUILocation.ContextMenu)
+      {
+        DisplayFinishedMessage(false);
+      }
+      else if(commandUILocation == CommandUILocation.Toolbar && isActiveDocument)
       {
         DisplayFinishedMessage(false);
       }
