@@ -308,9 +308,9 @@ namespace ClangPowerTools
       mOutputWindowController.ErrorDetectedEvent += mErrorWindowController.OnErrorDetected;
       mOutputWindowController.MissingLlvmEvent += mCommandsController.OnMissingLLVMDetected;
 
-      CompileCommand.Instance.CloseDataStreamingEvent += mCommandsController.OnAfterStopCommand;
-      TidyCommand.Instance.CloseDataStreamingEvent += mCommandsController.OnAfterStopCommand;
-      FormatCommand.Instance.CloseDataStreamingEvent += mCommandsController.OnAfterStopCommand;
+      CompileCommand.Instance.CloseDataStreamingEvent += mCommandsController.OnAfterRunCommand;
+      TidyCommand.Instance.CloseDataStreamingEvent += mCommandsController.OnAfterRunCommand;
+      FormatCommand.Instance.CloseDataStreamingEvent += mCommandsController.OnAfterRunCommand;
 
       CompileCommand.Instance.ActiveDocumentEvent += mCommandsController.OnActiveDocumentCheck;
       TidyCommand.Instance.ActiveDocumentEvent += mCommandsController.OnActiveDocumentCheck;
@@ -369,9 +369,9 @@ namespace ClangPowerTools
       mOutputWindowController.ErrorDetectedEvent -= mErrorWindowController.OnErrorDetected;
       mOutputWindowController.MissingLlvmEvent -= mCommandsController.OnMissingLLVMDetected;
 
-      CompileCommand.Instance.CloseDataStreamingEvent -= mCommandsController.OnAfterStopCommand;
-      TidyCommand.Instance.CloseDataStreamingEvent -= mCommandsController.OnAfterStopCommand;
-      FormatCommand.Instance.CloseDataStreamingEvent -= mCommandsController.OnAfterStopCommand;
+      CompileCommand.Instance.CloseDataStreamingEvent -= mCommandsController.OnAfterRunCommand;
+      TidyCommand.Instance.CloseDataStreamingEvent -= mCommandsController.OnAfterRunCommand;
+      FormatCommand.Instance.CloseDataStreamingEvent -= mCommandsController.OnAfterRunCommand;
 
       CompileCommand.Instance.ActiveDocumentEvent -= mCommandsController.OnActiveDocumentCheck;
       TidyCommand.Instance.ActiveDocumentEvent -= mCommandsController.OnActiveDocumentCheck;
