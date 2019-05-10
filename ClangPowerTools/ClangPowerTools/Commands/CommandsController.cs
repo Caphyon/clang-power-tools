@@ -307,7 +307,7 @@ namespace ClangPowerTools
 
     private void DisplayNoActiveDocumentMessage(bool clearOutput)
     {
-      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- Toolbar commands can only be run on an open file ---\n", clearOutput));
+      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nToolbar commands can only run on open files. Open a file or use the context menu commands by right-clicking in the Solution Explorer.\n", clearOutput));
       StatusBarHandler.Status("Ready", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
