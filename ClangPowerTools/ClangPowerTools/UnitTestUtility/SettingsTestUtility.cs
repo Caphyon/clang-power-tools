@@ -43,6 +43,15 @@ namespace ClangPowerTools.Tests
       return clangFormatOptionsView;
     }
 
+    public static void ResetAllSettings()
+    {
+      ResetClangFormatOptionsView();
+      ResetClangTidyCustomChecksOptionsView();
+      ResetClangTidyPredefinedChecksOptionsView();
+      ResetClangTidyOptionsView();
+      ResetClangGeneralOptionsView();
+    }
+
     public static void ResetClangGeneralOptionsView()
     {
       SettingsProvider.GeneralSettings.ResetSettings();
