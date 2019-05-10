@@ -24,39 +24,19 @@ namespace ClangPowerTools
     private Commands2 mCommand;
     private bool mSaveCommandWasGiven = false;
     private Document mDocument;
+    private CommandUILocation commandUILocation;
+    private int currentCommand;
     private bool mFormatAfterTidyFlag = false;
-    private bool hasActiveDocument = true;
+    private bool isActiveDocument = true;
+    public bool running = false;
+    public bool vsBuildRunning = false;
 
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
     public event EventHandler<ClangCommandMessageEventArgs> ClangCommandMessageEvent;
     public event EventHandler<MissingLlvmEventArgs> MissingLlvmEvent;
     public event EventHandler<ClearErrorListEventArgs> ClearErrorListEvent;
 
-
     #endregion
-
-
-    #region Properties
-
-    /// <summary>
-    /// Store the command id of the current running command
-    /// If no command is running then it will have a value less then 0
-    /// </summary>
-    public int CurrentCommand { get; private set; }
-
-    /// <summary>
-    /// Running flag for clang commands
-    /// </summary>
-    public bool Running { get; set; } = false;
-
-
-    /// <summary>
-    /// Running flag for Visual Studio build
-    /// </summary>
-    public bool VsBuildRunning { get; set; }
-
-    #endregion
-
 
     #region Constructor
 
@@ -72,7 +52,6 @@ namespace ClangPowerTools
     }
 
     #endregion
-
 
     #region Public Methods
 
@@ -126,11 +105,12 @@ namespace ClangPowerTools
 
     public async void Execute(object sender, EventArgs e)
     {
-      if (!(sender is OleMenuCommand command))
-        return;
+      var command = PrepareExecute(sender);
 
-      if (Running && command.CommandID.ID != CommandIds.kStopClang)
+      if (command == null)
+      {
         return;
+      }
 
       switch (command.CommandID.ID)
       {
@@ -146,76 +126,71 @@ namespace ClangPowerTools
           }
         case CommandIds.kClangFormat:
           {
-            CurrentCommand = CommandIds.kClangFormat;
-            FormatCommand.Instance.RunClangFormat(CommandUILocation.ContextMenu);
+            FormatCommand.Instance.RunClangFormat(commandUILocation);
             OnAfterFormatCommand();
             break;
           }
         case CommandIds.kClangFormatToolbarId:
           {
-            CurrentCommand = CommandIds.kClangFormat;
-            FormatCommand.Instance.RunClangFormat(CommandUILocation.Toolbar);
+            FormatCommand.Instance.RunClangFormat(commandUILocation);
             OnAfterFormatCommand();
             break;
           }
         case CommandIds.kCompileId:
           {
             OnBeforeClangCommand(CommandIds.kCompileId);
-            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu);
+            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, commandUILocation);
             OnAfterClangCommand();
             break;
           }
         case CommandIds.kCompileToolbarId:
           {
             OnBeforeClangCommand(CommandIds.kCompileId);
-            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.Toolbar);
+            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, commandUILocation);
             OnAfterClangCommand();
             break;
           }
         case CommandIds.kTidyId:
           {
             OnBeforeClangCommand(CommandIds.kTidyId);
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, CommandUILocation.ContextMenu);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, commandUILocation);
             OnAfterClangCommand();
             break;
           }
         case CommandIds.TidyToolbarId:
           {
             OnBeforeClangCommand(CommandIds.kTidyId);
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, CommandUILocation.Toolbar);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, commandUILocation);
             OnAfterClangCommand();
             break;
           }
         case CommandIds.kTidyFixId:
           {
             OnBeforeClangCommand(CommandIds.kTidyFixId);
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, commandUILocation);
             OnAfterClangCommand();
             break;
           }
         case CommandIds.kTidyFixToolbarId:
           {
             OnBeforeClangCommand(CommandIds.kTidyFixId);
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.Toolbar);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, commandUILocation);
             OnAfterClangCommand();
             break;
           }
         case CommandIds.kITidyExportConfigId:
           {
-            CurrentCommand = CommandIds.kITidyExportConfigId;
             TidyConfigCommand.Instance.ExportConfig();
             break;
           }
 
         case CommandIds.kIgnoreFormatId:
           {
-            CurrentCommand = CommandIds.kIgnoreFormatId;
             IgnoreFormatCommand.Instance.RunIgnoreFormatCommand(CommandIds.kIgnoreFormatId);
             break;
           }
         case CommandIds.kIgnoreCompileId:
           {
-            CurrentCommand = CommandIds.kIgnoreCompileId;
             IgnoreCompileCommand.Instance.RunIgnoreCompileCommand(CommandIds.kIgnoreCompileId);
             break;
           }
@@ -229,10 +204,49 @@ namespace ClangPowerTools
 
     #region Private Methods
 
+    private OleMenuCommand PrepareExecute(object sender)
+    {
+      OleMenuCommand command = null;
+      if ((sender is OleMenuCommand) == false)
+      {
+        return null;
+      }
+
+      command = sender as OleMenuCommand;
+
+      if (running && command.CommandID.ID != CommandIds.kStopClang)
+      {
+        return null;
+      }
+
+      if (command.CommandID.ID != CommandIds.kStopClang)
+      {
+        currentCommand = command.CommandID.ID;
+      }
+      SetCommandLocation();
+      return command;
+    }
+
+    private void SetCommandLocation()
+    {
+      switch (currentCommand)
+      {
+        case CommandIds.kClangFormatToolbarId:
+        case CommandIds.kCompileToolbarId:
+        case CommandIds.TidyToolbarId:
+        case CommandIds.kTidyFixToolbarId:
+          commandUILocation = CommandUILocation.Toolbar;
+          break;
+        default:
+          commandUILocation = CommandUILocation.ContextMenu;
+          break;
+      }
+    }
+
     private void OnBeforeClangCommand(int aCommandId)
     {
-      CurrentCommand = aCommandId;
-      Running = true;
+      currentCommand = aCommandId;
+      running = true;
 
       if (OutputWindowConstants.commandName.ContainsKey(aCommandId))
       {
@@ -250,25 +264,24 @@ namespace ClangPowerTools
 
     private void OnAfterClangCommand()
     {
-      Running = false;
+      running = false;
     }
 
     private void OnAfterFormatCommand()
     {
-      if(hasActiveDocument)
+      if (isActiveDocument)
       {
         DisplayFinishedMessage(true);
       }
     }
 
-    public void OnAfterStopCommand(object sender, CloseDataStreamingEventArgs e)
+    public void OnAfterRunCommand(object sender, CloseDataStreamingEventArgs e)
     {
       if (e.IsStopped)
       {
         DisplayStoppedMessage(false);
-
       }
-      else if(hasActiveDocument)
+      else if (commandUILocation == CommandUILocation.ContextMenu)
       {
         DisplayFinishedMessage(false);
       }
@@ -280,7 +293,7 @@ namespace ClangPowerTools
       {
         DisplayNoActiveDocumentMessage(true);
       }
-      hasActiveDocument = e.IsActiveDocument;
+      isActiveDocument = e.IsActiveDocument;
     }
 
     private void OnClangCommandMessageTransfer(ClangCommandMessageEventArgs e)
@@ -314,13 +327,13 @@ namespace ClangPowerTools
 
     private void DisplayFinishedMessage(bool clearOutput)
     {
-      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[CurrentCommand].ToUpper()} FINISHED ---\n", clearOutput));
-      StatusBarHandler.Status(OutputWindowConstants.commandName[CurrentCommand] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[currentCommand].ToUpper()} FINISHED ---\n", clearOutput));
+      StatusBarHandler.Status(OutputWindowConstants.commandName[currentCommand] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
     private void DisplayStoppedMessage(bool clearOutput)
     {
-      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[CurrentCommand].ToUpper()} STOPPED ---", clearOutput));
+      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[currentCommand].ToUpper()} STOPPED ---", clearOutput));
       StatusBarHandler.Status("Command stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
@@ -365,11 +378,11 @@ namespace ClangPowerTools
         if (VsServiceProvider.TryGetService(typeof(DTE), out object dte) && !(dte as DTE2).Solution.IsOpen)
           command.Visible = command.Enabled = false;
 
-        else if (VsBuildRunning && command.CommandID.ID != CommandIds.kSettingsId)
+        else if (vsBuildRunning && command.CommandID.ID != CommandIds.kSettingsId)
           command.Visible = command.Enabled = false;
 
         else
-          command.Visible = command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !Running : Running;
+          command.Visible = command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !running : running;
       });
     }
 
@@ -379,7 +392,7 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="Scope"></param>
     /// <param name="Action"></param>
-    public void OnMSVCBuildBegin(vsBuildScope Scope, vsBuildAction Action) => VsBuildRunning = true;
+    public void OnMSVCBuildBegin(vsBuildScope Scope, vsBuildAction Action) => vsBuildRunning = true;
 
 
     /// <summary>
@@ -389,7 +402,7 @@ namespace ClangPowerTools
     /// <param name="Action"></param>
     public async void OnMSVCBuildDone(vsBuildScope Scope, vsBuildAction Action)
     {
-      VsBuildRunning = false;
+      vsBuildRunning = false;
       await OnMSVCBuildSucceededAsync();
     }
 
@@ -436,7 +449,7 @@ namespace ClangPowerTools
       if (false == tidyOption.AutoTidyOnSave) // The clang-tidy on save option is disable 
         return;
 
-      if (true == Running) // Clang compile/tidy command is running
+      if (true == running) // Clang compile/tidy command is running
         return;
 
       TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu);
@@ -449,7 +462,7 @@ namespace ClangPowerTools
       var clangFormatOptionPage = SettingsProvider.ClangFormatSettings;
       var tidyOptionPage = SettingsProvider.TidySettings;
 
-      if (CurrentCommand == CommandIds.kTidyFixId && Running && tidyOptionPage.FormatAfterTidy && clangFormatOptionPage.EnableFormatOnSave)
+      if (currentCommand == CommandIds.kTidyFixId && running && tidyOptionPage.FormatAfterTidy && clangFormatOptionPage.EnableFormatOnSave)
       {
         mDocument = aDocument;
         mFormatAfterTidyFlag = true;
