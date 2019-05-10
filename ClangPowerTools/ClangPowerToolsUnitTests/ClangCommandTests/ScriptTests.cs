@@ -25,7 +25,7 @@ namespace ClangPowerToolsUnitTests.ClangCommandTests
 
     #region Test Methods
 
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async System.Threading.Tasks.Task CreateProjectCompileScript_UIAsync()
     {
       //Arrange
@@ -43,7 +43,7 @@ namespace ClangPowerToolsUnitTests.ClangCommandTests
     }
 
 
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async System.Threading.Tasks.Task CreateProjectTidyScript_UIAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -58,7 +58,7 @@ namespace ClangPowerToolsUnitTests.ClangCommandTests
     }
 
 
-    [VsFact(Version = "2019")]
+    [VsFact(Version = "2017-")]
     public async System.Threading.Tasks.Task CreateProjectTidyFixScript_UIAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
