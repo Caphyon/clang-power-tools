@@ -12,9 +12,13 @@ namespace ClangPowerTools
     public static readonly Dictionary<int, string> commandName = new Dictionary<int, string>
     {
       {CommandIds.kCompileId, "Clang Compile"},
+      {CommandIds.kCompileToolbarId, "Clang Compile"},
       {CommandIds.kTidyId, "Clang Tidy"},
+      {CommandIds.TidyToolbarId, "Clang Tidy"},
       {CommandIds.kTidyFixId, "Clang Tidy-Fix"},
-      {CommandIds.kClangFormat, "Clang Format"}
+      {CommandIds.kTidyFixToolbarId, "Clang Tidy-Fix"},
+      {CommandIds.kClangFormat, "Clang Format"},
+      {CommandIds.kClangFormatToolbarId, "Clang Format"}
     };
 
     #endregion
