@@ -183,7 +183,7 @@ namespace ClangPowerTools
 
     public override void ResetSettings()
     {
-      SettingsHandler.CopySettingsProperties(new ClangFormatOptionsView(), SettingsProvider.ClangFormatSettings);
+      SettingsHandler.CopySettingsProperties(SettingsProvider.ClangFormatSettings, new ClangFormatOptionsView());
       SaveSettingsToStorage();
       LoadSettingsFromStorage();
     }

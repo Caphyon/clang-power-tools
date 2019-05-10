@@ -228,7 +228,7 @@ namespace ClangPowerTools
     #region Public Methods
     public override void ResetSettings()
     {
-      SettingsHandler.CopySettingsProperties(new ClangTidyOptionsView(), SettingsProvider.TidySettings);
+      SettingsHandler.CopySettingsProperties(SettingsProvider.TidySettings, new ClangTidyOptionsView());
       SaveSettingsToStorage();
       LoadSettingsFromStorage();
     }

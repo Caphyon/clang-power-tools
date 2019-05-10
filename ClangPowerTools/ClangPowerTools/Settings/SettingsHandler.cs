@@ -24,7 +24,7 @@ namespace ClangPowerTools
 
     public static void SaveFormatSettings() => ClangFormatSettings.SaveSettingsToStorage();
 
-    public static void CopySettingsProperties<T>(T source, T target)
+    public static void CopySettingsProperties<T>(T target, T source)
     {
       Type type = source.GetType();
       foreach (PropertyInfo property in type.GetProperties())
