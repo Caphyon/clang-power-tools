@@ -105,6 +105,10 @@ namespace ClangPowerTools
       mMissingLLVM = e.MissingLLVM;
     }
 
+    #endregion
+
+    #region Protected Methods
+
     protected void RunScript(int aCommandId)
     {
       string runModeParameters = GetRunModeParamaters();
@@ -113,57 +117,8 @@ namespace ClangPowerTools
       if (mMissingLLVM)
         return;
 
-      CreateStript(runModeParameters, genericParameters);
+      InvokeCommand(runModeParameters, genericParameters);
     }
-
-    private string GetGenericParamaters(int aCommandId)
-    {
-      IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(VsEdition, VsVersion, aCommandId);
-      genericScriptBuilder.Build();
-      var genericParameters = genericScriptBuilder.GetResult();
-      return genericParameters;
-    }
-
-    private static string GetRunModeParamaters()
-    {
-      IBuilder<string> runModeScriptBuilder = new RunModeScriptBuilder();
-      runModeScriptBuilder.Build();
-      var runModeParameters = runModeScriptBuilder.GetResult();
-      return runModeParameters;
-    }
-
-    private void CreateStript(string runModeParameters, string genericParameters)
-    {
-      VsServiceProvider.TryGetService(typeof(SVsSolution), out object vsSolutionService);
-      var vsSolution = vsSolutionService as IVsSolution;
-      foreach (var item in mItemsCollector.items)
-      {
-        if (StopCommand)
-        {
-          break;
-        }
-        IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item);
-        itemRelatedScriptBuilder.Build();
-        var itemRelatedParameters = itemRelatedScriptBuilder.GetResult();
-        var process = PowerShellWrapper.Invoke(script, mRunningProcesses);
-      }
-
-      // Clang Done
-
-      if (StopCommand)
-      {
-        OnDataStreamClose(new CloseDataStreamingEventArgs(true));
-        StopCommand = false;
-      }
-      else
-      {
-        OnDataStreamClose(new CloseDataStreamingEventArgs(false));
-      }
-    }
-
-    #endregion
-
-    #region Protected Methods
 
     //Collect files
     protected IEnumerable<IItem> CollectItems(bool aClangFormatFlag = false, List<string> aAcceptedExtensionTypes = null, CommandUILocation commandUILocation = CommandUILocation.ContextMenu)
@@ -249,6 +204,11 @@ namespace ClangPowerTools
       var vsSolution = vsSolutionService as IVsSolution;
       foreach (var item in mItemsCollector.items)
       {
+        if (StopCommand)
+        {
+          break;
+        }
+
         IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item);
         itemRelatedScriptBuilder.Build();
         var itemRelatedParameters = itemRelatedScriptBuilder.GetResult();
@@ -256,13 +216,22 @@ namespace ClangPowerTools
         // From the first parameter is removed the last character which is mandatory "'"
         // and added to the end of the string to close the script
         Script = $"{runModeParameters.Remove(runModeParameters.Length - 1)} {itemRelatedParameters} {genericParameters}'";
-
         CommandTestUtility.ScriptCommand = Script;
 
         if (null != vsSolution)
           ItemHierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
 
-        var process = PowerShellWrapper.Invoke(Script, mRunningProcesses);
+        PowerShellWrapper.Invoke(Script, mRunningProcesses);
+      }
+
+      if (StopCommand)
+      {
+        OnDataStreamClose(new CloseDataStreamingEventArgs(true));
+        StopCommand = false;
+      }
+      else
+      {
+        OnDataStreamClose(new CloseDataStreamingEventArgs(false));
       }
     }
 

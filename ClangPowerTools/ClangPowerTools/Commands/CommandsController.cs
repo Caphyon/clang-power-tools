@@ -233,7 +233,7 @@ namespace ClangPowerTools
       {
         case CommandIds.kClangFormatToolbarId:
         case CommandIds.kCompileToolbarId:
-        case CommandIds.TidyToolbarId:
+        case CommandIds.kTidyToolbarId:
         case CommandIds.kTidyFixToolbarId:
           commandUILocation = CommandUILocation.Toolbar;
           break;

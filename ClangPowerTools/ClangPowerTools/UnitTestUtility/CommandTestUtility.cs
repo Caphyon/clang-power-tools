@@ -11,13 +11,13 @@ namespace ClangPowerTools.Tests
 
     public static TidyCommand Tidy { get; set; }
 
-    public static ClangFormatCommand Format { get; set; }
+    public static FormatCommand Format { get; set; }
 
     public static IgnoreFormatCommand IgnoreFormat { get; set; }
 
     public static IgnoreCompileCommand IgnoreCompile { get; set; }
 
-    public static StopClang Stop { get; set; }
+    public static StopCommand Stop { get; set; }
 
     public static SettingsCommand Settings { get; set; }
 
