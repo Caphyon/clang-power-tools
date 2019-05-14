@@ -38,7 +38,7 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
 
-    private TidyCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController, 
+    private TidyCommand(OleMenuCommandService aCommandService, CommandController aCommandsController, 
       AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aPackage, aGuid, aId)
     {
@@ -63,7 +63,7 @@ namespace ClangPowerTools.Commands
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async Task InitializeAsync(CommandsController aCommandsController, 
+    public static async Task InitializeAsync(CommandController aCommandsController, 
       AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in TidyCommand's constructor requires

@@ -39,6 +39,7 @@ namespace ClangPowerTools
 
     private bool mMissingLLVM = false;
     private IVsHierarchy mHierarchy;
+
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
     public event EventHandler<CloseDataStreamingEventArgs> CloseDataStreamingEvent;
     public event EventHandler<ActiveDocumentEventArgs> ActiveDocumentEvent;

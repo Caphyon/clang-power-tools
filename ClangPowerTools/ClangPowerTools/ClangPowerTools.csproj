@@ -107,7 +107,7 @@
     <Compile Include="Commands\StopCommand.cs" />
     <Compile Include="Commands\ClangCommand.cs" />
     <Compile Include="Commands\CommandIds.cs" />
-    <Compile Include="Commands\CommandsController.cs" />
+    <Compile Include="Commands\CommandController.cs" />
     <Compile Include="Commands\CompileCommand.cs" />
     <Compile Include="Convertors\ClangGeneralAdditionalIncludesConvertor.cs" />
     <Compile Include="Convertors\OldConvertors\FallbackStyleConvertor.cs" />

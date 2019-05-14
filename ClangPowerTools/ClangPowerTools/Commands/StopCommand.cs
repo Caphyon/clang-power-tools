@@ -43,7 +43,7 @@ namespace ClangPowerTools.Commands
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    private StopCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController,
+    private StopCommand(OleMenuCommandService aCommandService, CommandController aCommandsController,
       AsyncPackage aPackage, Guid aGuid, int aId)
       : base(aPackage, aGuid, aId)
     {
@@ -67,7 +67,7 @@ namespace ClangPowerTools.Commands
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async Task InitializeAsync(CommandsController aCommandsController,
+    public static async Task InitializeAsync(CommandController aCommandsController,
       AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in StopClang's constructor requires
