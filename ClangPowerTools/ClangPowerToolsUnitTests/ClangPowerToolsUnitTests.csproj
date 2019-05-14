@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EnvDTE80" Version="8.0.3" />
+    <PackageReference Include="Madskristensen.VisualStudio.SDK" Version="16.0.81-pre" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="VsixTesting.Xunit" Version="0.1.49-beta" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ClangPowerTools\ClangPowerTools.csproj" />
+  </ItemGroup>
+
+</Project>

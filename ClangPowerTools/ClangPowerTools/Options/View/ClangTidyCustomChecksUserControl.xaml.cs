@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.DialogPages;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Interop;
 
 namespace ClangPowerTools.Options.View

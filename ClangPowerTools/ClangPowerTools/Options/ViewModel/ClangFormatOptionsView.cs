@@ -1,11 +1,10 @@
 ﻿using ClangPowerTools.Options;
 using ClangPowerTools.Options.ViewModel;
-using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 
-namespace ClangPowerTools.DialogPages
+namespace ClangPowerTools
 {
   public class ClangFormatOptionsView : ConfigurationPage<ClangFormatOptions>, INotifyPropertyChanged
   {
@@ -182,11 +181,11 @@ namespace ClangPowerTools.DialogPages
 
     #region Public Methods
 
-    public ClangFormatOptionsView Clone()
+    public override void ResetSettings()
     {
-      // Use MemberwiseClone to copy value types.
-      var clone = (ClangFormatOptionsView)MemberwiseClone();
-      return clone;
+      SettingsHandler.CopySettingsProperties(SettingsProvider.ClangFormatSettings, new ClangFormatOptionsView());
+      SaveSettingsToStorage();
+      LoadSettingsFromStorage();
     }
 
     #endregion

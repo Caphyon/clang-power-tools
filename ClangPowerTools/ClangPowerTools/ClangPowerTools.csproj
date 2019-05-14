@@ -96,6 +96,7 @@
     <Compile Include="Events\ErrorDetectedEventArgs.cs" />
     <Compile Include="Events\MissingLlvmEventArgs.cs" />
     <Compile Include="Events\VsHierarchyDetectedEventArgs.cs" />
+    <Compile Include="Helpers\PackageUtility.cs" />
     <Compile Include="Helpers\UIUpdater.cs" />
     <Compile Include="Options\ClangTidyPathValue.cs" />
     <Compile Include="Options\ClangFormatPathValue.cs" />
@@ -106,7 +107,7 @@
     <Compile Include="Commands\StopCommand.cs" />
     <Compile Include="Commands\ClangCommand.cs" />
     <Compile Include="Commands\CommandIds.cs" />
-    <Compile Include="Commands\CommandsController.cs" />
+    <Compile Include="Commands\CommandController.cs" />
     <Compile Include="Commands\CompileCommand.cs" />
     <Compile Include="Convertors\ClangGeneralAdditionalIncludesConvertor.cs" />
     <Compile Include="Convertors\OldConvertors\FallbackStyleConvertor.cs" />
@@ -198,6 +199,7 @@
     <Compile Include="Services\VsServiceProvider.cs" />
     <Compile Include="Helpers\SettingsPathBuilder.cs" />
     <Compile Include="Helpers\SettingsProvider.cs" />
+    <Compile Include="Settings\SettingsHandler.cs" />
     <Compile Include="SilentFile\SilentFileChangerBuilder.cs" />
     <Compile Include="SilentFile\SilentFileChangerEqualityComparer.cs" />
     <Compile Include="Items\IItem.cs" />
@@ -231,6 +233,9 @@
     <Compile Include="TextOperationsInterfaces\ITextFormatter.cs" />
     <Compile Include="Helpers\Vsix.cs" />
     <Compile Include="Options\XmlSerializer.cs" />
+    <Compile Include="UnitTestUtility\CommandTestUtility.cs" />
+    <Compile Include="UnitTestUtility\SettingsTestUtility.cs" />
+    <Compile Include="UnitTestUtility\UnitTestUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="llvm\bin\clang-format.exe">
@@ -488,6 +493,7 @@
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.16.0.102\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.16.0.102\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

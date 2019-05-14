@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
 
-namespace ClangPowerTools.DialogPages
+namespace ClangPowerTools
 {
   public class ClangTidyCustomChecksOptionsView : ConfigurationPage<ClangTidyOptions>
   {
@@ -57,6 +57,13 @@ namespace ClangPowerTools.DialogPages
       else
         TidyChecks = string.Join(";", loadedConfig.TidyChecks);
 
+    }
+
+    public override void ResetSettings()
+    {
+      SettingsHandler.CopySettingsProperties(SettingsProvider.TidyCustomCheckes, new ClangTidyCustomChecksOptionsView());
+      SaveSettingsToStorage();
+      LoadSettingsFromStorage();
     }
 
     #endregion

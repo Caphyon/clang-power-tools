@@ -15,15 +15,13 @@ namespace ClangPowerTools
   /// <summary>
   /// Contains all the logic of disable and enable the clang custom commands  
   /// </summary>
-  public class CommandsController
+  public class CommandController
   {
     #region Members
 
     public static readonly Guid mCommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
-    private AsyncPackage mAsyncPackage;
     private Commands2 mCommand;
     private bool mSaveCommandWasGiven = false;
-    private Document mDocument;
     private CommandUILocation commandUILocation;
     private int currentCommand;
     private bool mFormatAfterTidyFlag = false;
@@ -40,10 +38,8 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public CommandsController(AsyncPackage aAsyncPackage)
+    public CommandController(AsyncPackage aAsyncPackage)
     {
-      mAsyncPackage = aAsyncPackage;
-
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {
         var dte2 = dte as DTE2;
@@ -66,7 +62,7 @@ namespace ClangPowerTools
       if (TidyCommand.Instance == null)
       {
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyId);
-        await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.TidyToolbarId);
+        await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyToolbarId);
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyFixId);
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyFixToolbarId);
       }
@@ -112,7 +108,12 @@ namespace ClangPowerTools
         return;
       }
 
-      switch (command.CommandID.ID)
+      await LaunchCommandAsync(command.CommandID.ID, commandUILocation);
+    }
+
+    public async Task LaunchCommandAsync(int aCommandId, CommandUILocation aCommandUILocation)
+    {
+      switch (aCommandId)
       {
         case CommandIds.kSettingsId:
           {
@@ -126,55 +127,55 @@ namespace ClangPowerTools
           }
         case CommandIds.kClangFormat:
           {
-            FormatCommand.Instance.RunClangFormat(commandUILocation);
+            FormatCommand.Instance.RunClangFormat(aCommandUILocation);
             OnAfterFormatCommand();
             break;
           }
         case CommandIds.kClangFormatToolbarId:
           {
-            FormatCommand.Instance.RunClangFormat(commandUILocation);
+            FormatCommand.Instance.RunClangFormat(aCommandUILocation);
             OnAfterFormatCommand();
             break;
           }
         case CommandIds.kCompileId:
           {
             OnBeforeClangCommand(CommandIds.kCompileId);
-            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, commandUILocation);
+            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, aCommandUILocation);
             OnAfterClangCommand();
             break;
           }
         case CommandIds.kCompileToolbarId:
           {
             OnBeforeClangCommand(CommandIds.kCompileId);
-            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, commandUILocation);
+            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, aCommandUILocation);
             OnAfterClangCommand();
             break;
           }
         case CommandIds.kTidyId:
           {
             OnBeforeClangCommand(CommandIds.kTidyId);
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, commandUILocation);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
             OnAfterClangCommand();
             break;
           }
-        case CommandIds.TidyToolbarId:
+        case CommandIds.kTidyToolbarId:
           {
             OnBeforeClangCommand(CommandIds.kTidyId);
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, commandUILocation);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
             OnAfterClangCommand();
             break;
           }
         case CommandIds.kTidyFixId:
           {
             OnBeforeClangCommand(CommandIds.kTidyFixId);
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, commandUILocation);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, aCommandUILocation);
             OnAfterClangCommand();
             break;
           }
         case CommandIds.kTidyFixToolbarId:
           {
             OnBeforeClangCommand(CommandIds.kTidyFixId);
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, commandUILocation);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, aCommandUILocation);
             OnAfterClangCommand();
             break;
           }
@@ -233,7 +234,7 @@ namespace ClangPowerTools
       {
         case CommandIds.kClangFormatToolbarId:
         case CommandIds.kCompileToolbarId:
-        case CommandIds.TidyToolbarId:
+        case CommandIds.kTidyToolbarId:
         case CommandIds.kTidyFixToolbarId:
           commandUILocation = CommandUILocation.Toolbar;
           break;
@@ -287,7 +288,7 @@ namespace ClangPowerTools
       {
         DisplayFinishedMessage(false);
       }
-      else if(commandUILocation == CommandUILocation.Toolbar && isActiveDocument)
+      else if (commandUILocation == CommandUILocation.Toolbar && isActiveDocument)
       {
         DisplayFinishedMessage(false);
       }
@@ -470,7 +471,6 @@ namespace ClangPowerTools
 
       if (currentCommand == CommandIds.kTidyFixId && running && tidyOptionPage.FormatAfterTidy && clangFormatOptionPage.EnableFormatOnSave)
       {
-        mDocument = aDocument;
         mFormatAfterTidyFlag = true;
         return;
       }

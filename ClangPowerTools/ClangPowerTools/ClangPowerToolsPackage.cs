@@ -1,7 +1,8 @@
 ﻿using ClangPowerTools.Commands;
-using ClangPowerTools.DialogPages;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
+using ClangPowerTools.Tests;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;
@@ -10,9 +11,6 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Xml;
@@ -62,7 +60,7 @@ namespace ClangPowerTools
     private RunningDocTableEvents mRunningDocTableEvents;
     private ErrorWindowController mErrorWindowController;
     private OutputWindowController mOutputWindowController;
-    private CommandsController mCommandsController;
+    private CommandController mCommandController;
 
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
@@ -102,7 +100,9 @@ namespace ClangPowerTools
 
       await RegisterVsServicesAsync();
 
-      mCommandsController = new CommandsController(this);
+      mCommandController = new CommandController(this);
+      CommandTestUtility.CommandController = mCommandController;
+
 
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
 
@@ -139,8 +139,9 @@ namespace ClangPowerTools
       if (string.IsNullOrWhiteSpace(SettingsProvider.GeneralSettings.Version))
         ShowToolbare(); // Show the toolbar on the first install
 
-      var currentVersion = GetPackageVersion();
-      if (0 > string.Compare(SettingsProvider.GeneralSettings.Version, currentVersion))
+      var currentVersion = PackageUtility.GetVersion();
+      if (!string.IsNullOrWhiteSpace(currentVersion) && 
+        0 > string.Compare(SettingsProvider.GeneralSettings.Version, currentVersion))
       {
         mOutputWindowController.Clear();
         mOutputWindowController.Show();
@@ -149,9 +150,9 @@ namespace ClangPowerTools
 
         SettingsProvider.GeneralSettings.Version = currentVersion;
       }
-      SettingsProvider.SaveGeneralSettings();
+      SettingsHandler.SaveGeneralSettings();
 
-      await mCommandsController.InitializeCommandsAsync(this);
+      await mCommandController.InitializeCommandsAsync(this);
       RegisterToEvents();
 
       await base.InitializeAsync(cancellationToken, progress);
@@ -294,27 +295,27 @@ namespace ClangPowerTools
 
     private void RegisterToCPTEvents()
     {
-      mCommandsController.ClangCommandMessageEvent += mOutputWindowController.Write;
-      mCommandsController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
+      mCommandController.ClangCommandMessageEvent += mOutputWindowController.Write;
+      mCommandController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
 
-      mCommandsController.ClearErrorListEvent += mErrorWindowController.OnClangCommandBegin;
+      mCommandController.ClearErrorListEvent += mErrorWindowController.OnClangCommandBegin;
 
-      mCommandsController.MissingLlvmEvent += CompileCommand.Instance.OnMissingLLVMDetected;
-      mCommandsController.MissingLlvmEvent += TidyCommand.Instance.OnMissingLLVMDetected;
+      mCommandController.MissingLlvmEvent += CompileCommand.Instance.OnMissingLLVMDetected;
+      mCommandController.MissingLlvmEvent += TidyCommand.Instance.OnMissingLLVMDetected;
 
-      CompileCommand.Instance.HierarchyDetectedEvent += mCommandsController.OnFileHierarchyChanged;
-      TidyCommand.Instance.HierarchyDetectedEvent += mCommandsController.OnFileHierarchyChanged;
+      CompileCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
+      TidyCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
 
       mOutputWindowController.ErrorDetectedEvent += mErrorWindowController.OnErrorDetected;
-      mOutputWindowController.MissingLlvmEvent += mCommandsController.OnMissingLLVMDetected;
+      mOutputWindowController.MissingLlvmEvent += mCommandController.OnMissingLLVMDetected;
 
-      CompileCommand.Instance.CloseDataStreamingEvent += mCommandsController.OnAfterRunCommand;
-      TidyCommand.Instance.CloseDataStreamingEvent += mCommandsController.OnAfterRunCommand;
-      FormatCommand.Instance.CloseDataStreamingEvent += mCommandsController.OnAfterRunCommand;
+      CompileCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
+      TidyCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
+      FormatCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
 
-      CompileCommand.Instance.ActiveDocumentEvent += mCommandsController.OnActiveDocumentCheck;
-      TidyCommand.Instance.ActiveDocumentEvent += mCommandsController.OnActiveDocumentCheck;
-      FormatCommand.Instance.ActiveDocumentEvent += mCommandsController.OnActiveDocumentCheck;
+      CompileCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
+      TidyCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
+      FormatCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
 
       PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
@@ -326,18 +327,18 @@ namespace ClangPowerTools
       if (null != mBuildEvents)
       {
         mBuildEvents.OnBuildBegin += mErrorWindowController.OnBuildBegin;
-        mBuildEvents.OnBuildBegin += mCommandsController.OnMSVCBuildBegin;
-        mBuildEvents.OnBuildDone += mCommandsController.OnMSVCBuildDone;
+        mBuildEvents.OnBuildBegin += mCommandController.OnMSVCBuildBegin;
+        mBuildEvents.OnBuildDone += mCommandController.OnMSVCBuildDone;
       }
 
       if (null != mCommandEvents)
       {
-        mCommandEvents.BeforeExecute += mCommandsController.CommandEventsBeforeExecute;
+        mCommandEvents.BeforeExecute += mCommandController.CommandEventsBeforeExecute;
       }
 
       if (null != mRunningDocTableEvents)
       {
-        mRunningDocTableEvents.BeforeSave += mCommandsController.OnBeforeSave;
+        mRunningDocTableEvents.BeforeSave += mCommandController.OnBeforeSave;
       }
 
       if (null != mDteEvents)
@@ -355,27 +356,27 @@ namespace ClangPowerTools
 
     private void UnregisterFromCPTEvents()
     {
-      mCommandsController.ClangCommandMessageEvent -= mOutputWindowController.Write;
-      mCommandsController.HierarchyDetectedEvent -= mOutputWindowController.OnFileHierarchyDetected;
+      mCommandController.ClangCommandMessageEvent -= mOutputWindowController.Write;
+      mCommandController.HierarchyDetectedEvent -= mOutputWindowController.OnFileHierarchyDetected;
 
-      mCommandsController.ClearErrorListEvent -= mErrorWindowController.OnClangCommandBegin;
+      mCommandController.ClearErrorListEvent -= mErrorWindowController.OnClangCommandBegin;
 
-      mCommandsController.MissingLlvmEvent -= CompileCommand.Instance.OnMissingLLVMDetected;
-      mCommandsController.MissingLlvmEvent -= TidyCommand.Instance.OnMissingLLVMDetected;
+      mCommandController.MissingLlvmEvent -= CompileCommand.Instance.OnMissingLLVMDetected;
+      mCommandController.MissingLlvmEvent -= TidyCommand.Instance.OnMissingLLVMDetected;
 
-      CompileCommand.Instance.HierarchyDetectedEvent -= mCommandsController.OnFileHierarchyChanged;
-      TidyCommand.Instance.HierarchyDetectedEvent -= mCommandsController.OnFileHierarchyChanged;
+      CompileCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
+      TidyCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
 
       mOutputWindowController.ErrorDetectedEvent -= mErrorWindowController.OnErrorDetected;
-      mOutputWindowController.MissingLlvmEvent -= mCommandsController.OnMissingLLVMDetected;
+      mOutputWindowController.MissingLlvmEvent -= mCommandController.OnMissingLLVMDetected;
 
-      CompileCommand.Instance.CloseDataStreamingEvent -= mCommandsController.OnAfterRunCommand;
-      TidyCommand.Instance.CloseDataStreamingEvent -= mCommandsController.OnAfterRunCommand;
-      FormatCommand.Instance.CloseDataStreamingEvent -= mCommandsController.OnAfterRunCommand;
+      CompileCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
+      TidyCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
+      FormatCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
 
-      CompileCommand.Instance.ActiveDocumentEvent -= mCommandsController.OnActiveDocumentCheck;
-      TidyCommand.Instance.ActiveDocumentEvent -= mCommandsController.OnActiveDocumentCheck;
-      FormatCommand.Instance.ActiveDocumentEvent -= mCommandsController.OnActiveDocumentCheck;
+      CompileCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
+      TidyCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
+      FormatCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
 
       PowerShellWrapper.DataHandler -= mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler -= mOutputWindowController.OutputDataErrorReceived;
@@ -387,33 +388,18 @@ namespace ClangPowerTools
       if (null != mBuildEvents)
       {
         mBuildEvents.OnBuildBegin -= mErrorWindowController.OnBuildBegin;
-        mBuildEvents.OnBuildBegin -= mCommandsController.OnMSVCBuildBegin;
-        mBuildEvents.OnBuildDone -= mCommandsController.OnMSVCBuildDone;
+        mBuildEvents.OnBuildBegin -= mCommandController.OnMSVCBuildBegin;
+        mBuildEvents.OnBuildDone -= mCommandController.OnMSVCBuildDone;
       }
 
       if (null != mCommandEvents)
-        mCommandEvents.BeforeExecute -= mCommandsController.CommandEventsBeforeExecute;
+        mCommandEvents.BeforeExecute -= mCommandController.CommandEventsBeforeExecute;
 
       if (null != mRunningDocTableEvents)
-        mRunningDocTableEvents.BeforeSave -= mCommandsController.OnBeforeSave;
+        mRunningDocTableEvents.BeforeSave -= mCommandController.OnBeforeSave;
 
       if (null != mDteEvents)
         mDteEvents.OnBeginShutdown -= UnregisterFromEvents;
-    }
-
-
-    private string GetPackageVersion()
-    {
-      var assemblyPath = Assembly.GetExecutingAssembly().Location;
-      assemblyPath = assemblyPath.Substring(0, assemblyPath.LastIndexOf('\\'));
-      var manifestPath = Path.Combine(assemblyPath, "extension.vsixmanifest");
-
-      var doc = new XmlDocument();
-      doc.Load(manifestPath);
-      var metaData = doc.DocumentElement.ChildNodes.Cast<XmlElement>().First(x => x.Name == "Metadata");
-      var identity = metaData.ChildNodes.Cast<XmlElement>().First(x => x.Name == "Identity");
-
-      return identity.GetAttribute("Version");
     }
 
 

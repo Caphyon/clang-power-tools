@@ -9,7 +9,7 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  internal sealed class IgnoreCompileCommand : BasicCommand
+  public sealed class IgnoreCompileCommand : BasicCommand
   {
     #region Properties
 
@@ -31,13 +31,13 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
     /// <param name="commandService">Command service to add command to, not null.</param>
-    private IgnoreCompileCommand(CommandsController aCommandsController, OleMenuCommandService aCommandService, AsyncPackage aPackage, Guid aGuid, int aId)
+    private IgnoreCompileCommand(CommandController aCommandController, OleMenuCommandService aCommandService, AsyncPackage aPackage, Guid aGuid, int aId)
       : base(aPackage, aGuid, aId)
     {
       if (null != aCommandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
-        var menuItem = new OleMenuCommand(aCommandsController.Execute, menuCommandID);
+        var menuItem = new OleMenuCommand(aCommandController.Execute, menuCommandID);
         aCommandService.AddCommand(menuItem);
       }
     }
@@ -51,7 +51,7 @@ namespace ClangPowerTools.Commands
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async Task InitializeAsync(CommandsController aCommandsController,
+    public static async Task InitializeAsync(CommandController aCommandController,
       AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in IgnoreCompileCommand's constructor requires
@@ -59,7 +59,7 @@ namespace ClangPowerTools.Commands
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-      Instance = new IgnoreCompileCommand(aCommandsController, commandService, aPackage, aGuid, aId);
+      Instance = new IgnoreCompileCommand(aCommandController, commandService, aPackage, aGuid, aId);
     }
 
     /// <summary>
@@ -87,7 +87,7 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="documentsToIgnore"></param>
     /// <returns></returns>
-    private void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
+    public void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
     {
       var settings = SettingsProvider.GeneralSettings;
 
