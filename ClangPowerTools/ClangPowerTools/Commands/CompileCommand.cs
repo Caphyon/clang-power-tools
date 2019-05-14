@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
-using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
@@ -78,7 +77,7 @@ namespace ClangPowerTools.Commands
     {
       await PrepareCommmandAsync(commandUILocation);
 
-      await System.Threading.Tasks.Task.Run(() =>
+      await Task.Run(() =>
       {
         try
         {

@@ -2,7 +2,7 @@
 
 namespace ClangPowerTools
 {
-  public class SelectedProjectItem : IItem
+  public class CurrentProjectItem : IItem
   {
     #region Members
 
@@ -12,7 +12,7 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public SelectedProjectItem(ProjectItem aProjectItem) => mProjectItem = aProjectItem;
+    public CurrentProjectItem(ProjectItem aProjectItem) => mProjectItem = aProjectItem;
 
     #endregion
 

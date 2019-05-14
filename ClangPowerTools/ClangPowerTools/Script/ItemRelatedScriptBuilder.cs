@@ -50,11 +50,11 @@ namespace ClangPowerTools.Script
     /// </summary>
     public void Build()
     {
-      if (mItem is SelectedProjectItem)
+      if (mItem is CurrentProjectItem)
       {
         CreateScriptForProjectItem();
       }
-      else if (mItem is SelectedProject)
+      else if (mItem is CurrentProject)
       {
         CreateScriptForProject();
       }

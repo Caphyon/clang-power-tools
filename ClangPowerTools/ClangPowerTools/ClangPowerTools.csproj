@@ -73,11 +73,12 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AutomationUtil.cs" />
-    <Compile Include="Clang Configs\TidyConfigFile.cs" />
-    <Compile Include="ClangCheckAttribute.cs" />
-    <Compile Include="ClangTidyPathAttribute.cs" />
-    <Compile Include="Commands\ClangFormatCommand.cs" />
+    <Compile Include="Events\ActiveDocumentEventArgs.cs" />
+    <Compile Include="Helpers\AutomationUtil.cs" />
+    <Compile Include="Export Config\TidyConfigFile.cs" />
+    <Compile Include="Attributes\ClangCheckAttribute.cs" />
+    <Compile Include="Attributes\ClangTidyPathAttribute.cs" />
+    <Compile Include="Commands\FormatCommand.cs" />
     <Compile Include="Commands\CommandUILocation.cs" />
     <Compile Include="Commands\IgnoreCompileCommand.cs" />
     <Compile Include="Commands\IgnoreFormatCommand.cs" />
@@ -102,7 +103,7 @@
     <Compile Include="Options\Model\ClangTidyPredefinedChecksOptions.cs" />
     <Compile Include="Options\Model\ClangTidyOptions.cs" />
     <Compile Include="Commands\BasicCommand.cs" />
-    <Compile Include="Commands\StopClang.cs" />
+    <Compile Include="Commands\StopCommand.cs" />
     <Compile Include="Commands\ClangCommand.cs" />
     <Compile Include="Commands\CommandIds.cs" />
     <Compile Include="Commands\CommandsController.cs" />
@@ -183,9 +184,9 @@
     <Compile Include="Output\OutputWindowBuilder.cs" />
     <Compile Include="Output\OutputWindowController.cs" />
     <Compile Include="Output\OutputWindowModel.cs" />
-    <Compile Include="PCHCleaner.cs" />
+    <Compile Include="Helpers\PCHCleaner.cs" />
     <Compile Include="Helpers\ProjectConfigurationHandler.cs" />
-    <Compile Include="RunningDocTableEvents.cs" />
+    <Compile Include="Helpers\RunningDocTableEvents.cs" />
     <Compile Include="Script\ClangTidyModeParametersFactory.cs" />
     <Compile Include="Script\GenericScriptBuilder.cs" />
     <Compile Include="Script\ItemRelatedScriptBuilder.cs" />
@@ -195,8 +196,8 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Services\VsServiceProvider.cs" />
-    <Compile Include="SettingsPathBuilder.cs" />
-    <Compile Include="SettingsProvider.cs" />
+    <Compile Include="Helpers\SettingsPathBuilder.cs" />
+    <Compile Include="Helpers\SettingsProvider.cs" />
     <Compile Include="SilentFile\SilentFileChangerBuilder.cs" />
     <Compile Include="SilentFile\SilentFileChangerEqualityComparer.cs" />
     <Compile Include="Items\IItem.cs" />
@@ -212,24 +213,24 @@
     <Compile Include="ClangPowerToolsPackage.cs" />
     <Compile Include="Script\ScriptConstants.cs" />
     <Compile Include="Error\TaskErrorModel.cs" />
-    <Compile Include="Items\SelectedProject.cs" />
-    <Compile Include="Items\SelectedProjectItem.cs" />
+    <Compile Include="Items\CurrentProject.cs" />
+    <Compile Include="Items\CurrentProjectItem.cs" />
     <Compile Include="Options\ViewModel\ClangTidyOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ActiveWindowProperties.cs" />
+    <Compile Include="Helpers\ActiveWindowProperties.cs" />
     <Compile Include="Convertors\ComboBoxConstants.cs" />
     <Compile Include="Convertors\OldConvertors\ComboBoxConvertor.cs" />
     <Compile Include="Convertors\ClangTidyUseChecksFromConvertor.cs" />
     <Compile Include="SilentFile\SilentFileChangerModel.cs" />
     <Compile Include="SilentFile\SilentFileChangerController.cs" />
     <Compile Include="Helpers\StatusBarHandler.cs" />
-    <Compile Include="StringExtension.cs" />
-    <Compile Include="ClangFormatPathAttribute.cs" />
+    <Compile Include="Extensions\StringExtension.cs" />
+    <Compile Include="Attributes\ClangFormatPathAttribute.cs" />
     <Compile Include="TextOperationsInterfaces\IDetector.cs" />
     <Compile Include="TextOperationsInterfaces\ITextFormatter.cs" />
-    <Compile Include="Vsix.cs" />
-    <Compile Include="XmlSerializer.cs" />
+    <Compile Include="Helpers\Vsix.cs" />
+    <Compile Include="Options\XmlSerializer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="llvm\bin\clang-format.exe">

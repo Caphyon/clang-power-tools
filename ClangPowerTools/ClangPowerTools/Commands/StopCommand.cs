@@ -1,17 +1,17 @@
-﻿using ClangPowerTools.Output;
-using ClangPowerTools.Services;
+﻿using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
+using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
 {
   /// <summary>
   /// Command handler
   /// </summary>
-  internal sealed class StopClang : ClangCommand
+  internal sealed class StopCommand : ClangCommand
   {
     #region Members
 
@@ -26,7 +26,7 @@ namespace ClangPowerTools.Commands
     /// <summary>
     /// Gets the instance of the command.
     /// </summary>
-    public static StopClang Instance
+    public static StopCommand Instance
     {
       get;
       private set;
@@ -39,11 +39,11 @@ namespace ClangPowerTools.Commands
     #region Constructor
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="StopClang"/> class.
+    /// Initializes a new instance of the <see cref="StopCommand"/> class.
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    private StopClang(OleMenuCommandService aCommandService, CommandsController aCommandsController,
+    private StopCommand(OleMenuCommandService aCommandService, CommandsController aCommandsController,
       AsyncPackage aPackage, Guid aGuid, int aId)
       : base(aPackage, aGuid, aId)
     {
@@ -67,7 +67,7 @@ namespace ClangPowerTools.Commands
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async System.Threading.Tasks.Task InitializeAsync(CommandsController aCommandsController,
+    public static async Task InitializeAsync(CommandsController aCommandsController,
       AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in StopClang's constructor requires
@@ -75,14 +75,14 @@ namespace ClangPowerTools.Commands
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-      Instance = new StopClang(commandService, aCommandsController, aPackage, aGuid, aId);
+      Instance = new StopCommand(commandService, aCommandsController, aPackage, aGuid, aId);
     }
 
 
-    public System.Threading.Tasks.Task RunStopClangCommandAsync()
+    public Task RunStopClangCommandAsync()
     {
       StopCommand = true;
-      return System.Threading.Tasks.Task.Run(() =>
+      return Task.Run(() =>
       {
         try
         {
@@ -94,7 +94,6 @@ namespace ClangPowerTools.Commands
             mPCHCleaner.Remove(solutionFolder);
           }
           mDirectoriesPath.Clear();
-          StatusBarHandler.Status("Stopped", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
         }
         catch (Exception) { }
       });
