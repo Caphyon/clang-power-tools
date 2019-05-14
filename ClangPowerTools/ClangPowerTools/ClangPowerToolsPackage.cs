@@ -60,7 +60,7 @@ namespace ClangPowerTools
     private RunningDocTableEvents mRunningDocTableEvents;
     private ErrorWindowController mErrorWindowController;
     private OutputWindowController mOutputWindowController;
-    private CommandController mCommandsController;
+    private CommandController mCommandController;
 
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
@@ -100,8 +100,8 @@ namespace ClangPowerTools
 
       await RegisterVsServicesAsync();
 
-      mCommandsController = new CommandController(this);
-      CommandTestUtility.CommandsController = mCommandsController;
+      mCommandController = new CommandController(this);
+      CommandTestUtility.CommandController = mCommandController;
 
 
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
@@ -152,7 +152,7 @@ namespace ClangPowerTools
       }
       SettingsHandler.SaveGeneralSettings();
 
-      await mCommandsController.InitializeCommandsAsync(this);
+      await mCommandController.InitializeCommandsAsync(this);
       RegisterToEvents();
 
       await base.InitializeAsync(cancellationToken, progress);
@@ -295,27 +295,27 @@ namespace ClangPowerTools
 
     private void RegisterToCPTEvents()
     {
-      mCommandsController.ClangCommandMessageEvent += mOutputWindowController.Write;
-      mCommandsController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
+      mCommandController.ClangCommandMessageEvent += mOutputWindowController.Write;
+      mCommandController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
 
-      mCommandsController.ClearErrorListEvent += mErrorWindowController.OnClangCommandBegin;
+      mCommandController.ClearErrorListEvent += mErrorWindowController.OnClangCommandBegin;
 
-      mCommandsController.MissingLlvmEvent += CompileCommand.Instance.OnMissingLLVMDetected;
-      mCommandsController.MissingLlvmEvent += TidyCommand.Instance.OnMissingLLVMDetected;
+      mCommandController.MissingLlvmEvent += CompileCommand.Instance.OnMissingLLVMDetected;
+      mCommandController.MissingLlvmEvent += TidyCommand.Instance.OnMissingLLVMDetected;
 
-      CompileCommand.Instance.HierarchyDetectedEvent += mCommandsController.OnFileHierarchyChanged;
-      TidyCommand.Instance.HierarchyDetectedEvent += mCommandsController.OnFileHierarchyChanged;
+      CompileCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
+      TidyCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
 
       mOutputWindowController.ErrorDetectedEvent += mErrorWindowController.OnErrorDetected;
-      mOutputWindowController.MissingLlvmEvent += mCommandsController.OnMissingLLVMDetected;
+      mOutputWindowController.MissingLlvmEvent += mCommandController.OnMissingLLVMDetected;
 
-      CompileCommand.Instance.CloseDataStreamingEvent += mCommandsController.OnAfterRunCommand;
-      TidyCommand.Instance.CloseDataStreamingEvent += mCommandsController.OnAfterRunCommand;
-      FormatCommand.Instance.CloseDataStreamingEvent += mCommandsController.OnAfterRunCommand;
+      CompileCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
+      TidyCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
+      FormatCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
 
-      CompileCommand.Instance.ActiveDocumentEvent += mCommandsController.OnActiveDocumentCheck;
-      TidyCommand.Instance.ActiveDocumentEvent += mCommandsController.OnActiveDocumentCheck;
-      FormatCommand.Instance.ActiveDocumentEvent += mCommandsController.OnActiveDocumentCheck;
+      CompileCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
+      TidyCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
+      FormatCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
 
       PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
@@ -327,18 +327,18 @@ namespace ClangPowerTools
       if (null != mBuildEvents)
       {
         mBuildEvents.OnBuildBegin += mErrorWindowController.OnBuildBegin;
-        mBuildEvents.OnBuildBegin += mCommandsController.OnMSVCBuildBegin;
-        mBuildEvents.OnBuildDone += mCommandsController.OnMSVCBuildDone;
+        mBuildEvents.OnBuildBegin += mCommandController.OnMSVCBuildBegin;
+        mBuildEvents.OnBuildDone += mCommandController.OnMSVCBuildDone;
       }
 
       if (null != mCommandEvents)
       {
-        mCommandEvents.BeforeExecute += mCommandsController.CommandEventsBeforeExecute;
+        mCommandEvents.BeforeExecute += mCommandController.CommandEventsBeforeExecute;
       }
 
       if (null != mRunningDocTableEvents)
       {
-        mRunningDocTableEvents.BeforeSave += mCommandsController.OnBeforeSave;
+        mRunningDocTableEvents.BeforeSave += mCommandController.OnBeforeSave;
       }
 
       if (null != mDteEvents)
@@ -356,27 +356,27 @@ namespace ClangPowerTools
 
     private void UnregisterFromCPTEvents()
     {
-      mCommandsController.ClangCommandMessageEvent -= mOutputWindowController.Write;
-      mCommandsController.HierarchyDetectedEvent -= mOutputWindowController.OnFileHierarchyDetected;
+      mCommandController.ClangCommandMessageEvent -= mOutputWindowController.Write;
+      mCommandController.HierarchyDetectedEvent -= mOutputWindowController.OnFileHierarchyDetected;
 
-      mCommandsController.ClearErrorListEvent -= mErrorWindowController.OnClangCommandBegin;
+      mCommandController.ClearErrorListEvent -= mErrorWindowController.OnClangCommandBegin;
 
-      mCommandsController.MissingLlvmEvent -= CompileCommand.Instance.OnMissingLLVMDetected;
-      mCommandsController.MissingLlvmEvent -= TidyCommand.Instance.OnMissingLLVMDetected;
+      mCommandController.MissingLlvmEvent -= CompileCommand.Instance.OnMissingLLVMDetected;
+      mCommandController.MissingLlvmEvent -= TidyCommand.Instance.OnMissingLLVMDetected;
 
-      CompileCommand.Instance.HierarchyDetectedEvent -= mCommandsController.OnFileHierarchyChanged;
-      TidyCommand.Instance.HierarchyDetectedEvent -= mCommandsController.OnFileHierarchyChanged;
+      CompileCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
+      TidyCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
 
       mOutputWindowController.ErrorDetectedEvent -= mErrorWindowController.OnErrorDetected;
-      mOutputWindowController.MissingLlvmEvent -= mCommandsController.OnMissingLLVMDetected;
+      mOutputWindowController.MissingLlvmEvent -= mCommandController.OnMissingLLVMDetected;
 
-      CompileCommand.Instance.CloseDataStreamingEvent -= mCommandsController.OnAfterRunCommand;
-      TidyCommand.Instance.CloseDataStreamingEvent -= mCommandsController.OnAfterRunCommand;
-      FormatCommand.Instance.CloseDataStreamingEvent -= mCommandsController.OnAfterRunCommand;
+      CompileCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
+      TidyCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
+      FormatCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
 
-      CompileCommand.Instance.ActiveDocumentEvent -= mCommandsController.OnActiveDocumentCheck;
-      TidyCommand.Instance.ActiveDocumentEvent -= mCommandsController.OnActiveDocumentCheck;
-      FormatCommand.Instance.ActiveDocumentEvent -= mCommandsController.OnActiveDocumentCheck;
+      CompileCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
+      TidyCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
+      FormatCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
 
       PowerShellWrapper.DataHandler -= mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler -= mOutputWindowController.OutputDataErrorReceived;
@@ -388,15 +388,15 @@ namespace ClangPowerTools
       if (null != mBuildEvents)
       {
         mBuildEvents.OnBuildBegin -= mErrorWindowController.OnBuildBegin;
-        mBuildEvents.OnBuildBegin -= mCommandsController.OnMSVCBuildBegin;
-        mBuildEvents.OnBuildDone -= mCommandsController.OnMSVCBuildDone;
+        mBuildEvents.OnBuildBegin -= mCommandController.OnMSVCBuildBegin;
+        mBuildEvents.OnBuildDone -= mCommandController.OnMSVCBuildDone;
       }
 
       if (null != mCommandEvents)
-        mCommandEvents.BeforeExecute -= mCommandsController.CommandEventsBeforeExecute;
+        mCommandEvents.BeforeExecute -= mCommandController.CommandEventsBeforeExecute;
 
       if (null != mRunningDocTableEvents)
-        mRunningDocTableEvents.BeforeSave -= mCommandsController.OnBeforeSave;
+        mRunningDocTableEvents.BeforeSave -= mCommandController.OnBeforeSave;
 
       if (null != mDteEvents)
         mDteEvents.OnBeginShutdown -= UnregisterFromEvents;

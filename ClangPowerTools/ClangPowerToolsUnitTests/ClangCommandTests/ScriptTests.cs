@@ -35,7 +35,7 @@ namespace ClangPowerToolsUnitTests.ClangCommandTests
       //Act
       LoadSolution();
       SettingsTestUtility.ResetClangGeneralOptionsView();
-      await CommandTestUtility.CommandsController.LaunchCommandAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu);
+      await CommandTestUtility.CommandController.LaunchCommandAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu);
       CloseSolution();
 
       //Assert
@@ -51,7 +51,7 @@ namespace ClangPowerToolsUnitTests.ClangCommandTests
 
       SettingsTestUtility.ResetAllSettings();
       LoadSolution();
-      await CommandTestUtility.CommandsController.LaunchCommandAsync(CommandIds.kTidyId, CommandUILocation.ContextMenu);
+      await CommandTestUtility.CommandController.LaunchCommandAsync(CommandIds.kTidyId, CommandUILocation.ContextMenu);
       CloseSolution();
 
       Assert.Equal(TidyCommand.Instance.Script, kTidyProjectScript);
@@ -66,7 +66,7 @@ namespace ClangPowerToolsUnitTests.ClangCommandTests
 
       SettingsTestUtility.ResetAllSettings();
       LoadSolution();
-      await CommandTestUtility.CommandsController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu);
+      await CommandTestUtility.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu);
       CloseSolution();
 
       Assert.Equal(TidyCommand.Instance.Script, kTidyFixProjectScript);

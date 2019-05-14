@@ -35,13 +35,13 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
     /// <param name="commandService">Command service to add command to, not null.</param>
-    private TidyConfigCommand(CommandController aCommandsController, OleMenuCommandService aCommandService, AsyncPackage aPackage, Guid aGuid, int aId)
+    private TidyConfigCommand(CommandController aCommandController, OleMenuCommandService aCommandService, AsyncPackage aPackage, Guid aGuid, int aId)
       : base(aPackage, aGuid, aId)
     {
       if (null != aCommandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
-        var menuItem = new OleMenuCommand(aCommandsController.Execute, menuCommandID);
+        var menuItem = new OleMenuCommand(aCommandController.Execute, menuCommandID);
         aCommandService.AddCommand(menuItem);
       }
       saveFileDialog.FileOk += SaveFileDialog;
@@ -53,14 +53,14 @@ namespace ClangPowerTools.Commands
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async Task InitializeAsync(CommandController aCommandsController, AsyncPackage aPackage, Guid aGuid, int aId)
+    public static async Task InitializeAsync(CommandController aCommandController, AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in SettingsCommand's constructor requires
       // the UI thread.
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-      Instance = new TidyConfigCommand(aCommandsController, commandService, aPackage, aGuid, aId);
+      Instance = new TidyConfigCommand(aCommandController, commandService, aPackage, aGuid, aId);
     }
 
     /// <summary>

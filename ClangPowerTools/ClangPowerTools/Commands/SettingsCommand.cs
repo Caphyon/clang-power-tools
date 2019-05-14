@@ -31,13 +31,13 @@ namespace ClangPowerTools.Commands
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    private SettingsCommand(CommandController aCommandsController, OleMenuCommandService aCommandService, AsyncPackage aPackage, Guid aGuid, int aId)
+    private SettingsCommand(CommandController aCommandController, OleMenuCommandService aCommandService, AsyncPackage aPackage, Guid aGuid, int aId)
       : base(aPackage, aGuid, aId)
     {
       if (null != aCommandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
-        var menuItem = new OleMenuCommand(aCommandsController.Execute, menuCommandID);
+        var menuItem = new OleMenuCommand(aCommandController.Execute, menuCommandID);
         aCommandService.AddCommand(menuItem);
       }
     }
@@ -52,14 +52,14 @@ namespace ClangPowerTools.Commands
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async Task InitializeAsync(CommandController aCommandsController, AsyncPackage aPackage, Guid aGuid, int aId)
+    public static async Task InitializeAsync(CommandController aCommandController, AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in SettingsCommand's constructor requires
       // the UI thread.
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-      Instance = new SettingsCommand(aCommandsController, commandService, aPackage, aGuid, aId);
+      Instance = new SettingsCommand(aCommandController, commandService, aPackage, aGuid, aId);
     }
 
 
