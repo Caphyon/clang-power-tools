@@ -25,7 +25,7 @@ namespace ClangPowerToolsUnitTests.ClangCommandTests
 
     #region Test Methods
 
-    [VsFact(Version = "2017-")]
+    [VsFact(Version = "2019")]
     public async System.Threading.Tasks.Task CreateProjectCompileScript_UIAsync()
     {
       //Arrange
@@ -35,7 +35,7 @@ namespace ClangPowerToolsUnitTests.ClangCommandTests
       //Act
       LoadSolution();
       SettingsTestUtility.ResetClangGeneralOptionsView();
-      await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.Toolbar);
+      await CommandTestUtility.CommandsController.LaunchCommandAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu);
       CloseSolution();
 
       //Assert
@@ -43,7 +43,7 @@ namespace ClangPowerToolsUnitTests.ClangCommandTests
     }
 
 
-    [VsFact(Version = "2017-")]
+    [VsFact(Version = "2019")]
     public async System.Threading.Tasks.Task CreateProjectTidyScript_UIAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -51,14 +51,14 @@ namespace ClangPowerToolsUnitTests.ClangCommandTests
 
       SettingsTestUtility.ResetAllSettings();
       LoadSolution();
-      await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, CommandUILocation.Toolbar);
+      await CommandTestUtility.CommandsController.LaunchCommandAsync(CommandIds.kTidyId, CommandUILocation.ContextMenu);
       CloseSolution();
 
       Assert.Equal(TidyCommand.Instance.Script, kTidyProjectScript);
     }
 
 
-    [VsFact(Version = "2017-")]
+    [VsFact(Version = "2019")]
     public async System.Threading.Tasks.Task CreateProjectTidyFixScript_UIAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -66,7 +66,7 @@ namespace ClangPowerToolsUnitTests.ClangCommandTests
 
       SettingsTestUtility.ResetAllSettings();
       LoadSolution();
-      await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.Toolbar);
+      await CommandTestUtility.CommandsController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu);
       CloseSolution();
 
       Assert.Equal(TidyCommand.Instance.Script, kTidyFixProjectScript);

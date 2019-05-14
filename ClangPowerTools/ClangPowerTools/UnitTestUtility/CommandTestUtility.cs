@@ -4,8 +4,9 @@ namespace ClangPowerTools.Tests
 {
   public static class CommandTestUtility
   {
-    public static string ScriptCommand { get; set; }
+    public static CommandController CommandsController { get; set; }
 
+    public static string ScriptCommand { get; set; }
 
     public static CompileCommand Compile{ get; set; }
 

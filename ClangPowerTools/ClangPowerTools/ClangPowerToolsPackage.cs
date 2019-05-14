@@ -2,6 +2,7 @@
 using ClangPowerTools.Helpers;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
+using ClangPowerTools.Tests;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;
@@ -59,7 +60,7 @@ namespace ClangPowerTools
     private RunningDocTableEvents mRunningDocTableEvents;
     private ErrorWindowController mErrorWindowController;
     private OutputWindowController mOutputWindowController;
-    private CommandsController mCommandsController;
+    private CommandController mCommandsController;
 
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
@@ -99,7 +100,9 @@ namespace ClangPowerTools
 
       await RegisterVsServicesAsync();
 
-      mCommandsController = new CommandsController(this);
+      mCommandsController = new CommandController(this);
+      CommandTestUtility.CommandsController = mCommandsController;
+
 
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
 
