@@ -27,7 +27,7 @@ namespace ClangPowerTools.Tests
 
     // Empty State 
 
-    [VsFact(Version = "2017-")]
+    [VsFact(Version = "2019")]
     public async System.Threading.Tasks.Task SaveFilesToIgnore_EmptyState_UIAsync()
     {
       //Arrange
@@ -48,7 +48,7 @@ namespace ClangPowerTools.Tests
     }
 
 
-    [VsFact(Version = "2017-")]
+    [VsFact(Version = "2019")]
     public async System.Threading.Tasks.Task SaveFilesToIgnore_EmptyState_ConfigAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -72,7 +72,7 @@ namespace ClangPowerTools.Tests
     }
 
 
-    [VsFact(Version = "2017-")]
+    [VsFact(Version = "2019")]
     public async System.Threading.Tasks.Task SaveMultipleFilesToIgnore_EmptyState_UIAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -90,7 +90,7 @@ namespace ClangPowerTools.Tests
     }
 
 
-    [VsFact(Version = "2017-")]
+    [VsFact(Version = "2019")]
     public async System.Threading.Tasks.Task SaveMultipleFilesToIgnore_EmptyState_ConfigAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -116,7 +116,7 @@ namespace ClangPowerTools.Tests
 
     // No Empty State
 
-    [VsFact(Version = "2017-")]
+    [VsFact(Version = "2019")]
     public async System.Threading.Tasks.Task SaveFilesToIgnore_NoEmptyState_UIAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
@@ -135,7 +135,7 @@ namespace ClangPowerTools.Tests
     }
 
 
-    [VsFact(Version = "2017-")]
+    [VsFact(Version = "2019")]
     public async System.Threading.Tasks.Task SaveFilesToIgnore_NoEmptyState_ConfigAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
