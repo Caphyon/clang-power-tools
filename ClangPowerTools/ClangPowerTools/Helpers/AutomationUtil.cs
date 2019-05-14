@@ -24,7 +24,7 @@ namespace ClangPowerTools
         if (project.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
           list.AddRange(GetSolutionFolderProjects(project));
         else if (project.Kind != EnvDTE.Constants.vsProjectKindMisc)
-          list.Add(new SelectedProject(project));
+          list.Add(new CurrentProject(project));
       }
       return list;
     }
@@ -39,12 +39,12 @@ namespace ClangPowerTools
     public static IVsHierarchy GetItemHierarchy(IVsSolution aSolution, IItem aItem )
     {
       Project project = null;
-      if( aItem is SelectedProjectItem )
+      if( aItem is CurrentProjectItem )
       {
         var projectItem = aItem.GetObject() as ProjectItem;
         project = projectItem.ContainingProject;
       }
-      else if( aItem is SelectedProject )
+      else if( aItem is CurrentProject )
       {
         project = aItem.GetObject() as Project;
       }
@@ -108,7 +108,7 @@ namespace ClangPowerTools
         if (subProject.Kind == EnvDTE.Constants.vsProjectKindSolutionItems)
           list.AddRange(GetSolutionFolderProjects(subProject));
         else if (subProject.Kind != EnvDTE.Constants.vsProjectKindMisc)
-          list.Add(new SelectedProject(subProject));
+          list.Add(new CurrentProject(subProject));
       }
       return list;
     }

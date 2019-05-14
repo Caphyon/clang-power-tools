@@ -42,7 +42,7 @@ namespace ClangPowerTools
 
         if (activeDocument != null)
         {
-          SelectedProjectItem activeProjectItem = new SelectedProjectItem(activeDocument.ProjectItem);
+          CurrentProjectItem activeProjectItem = new CurrentProjectItem(activeDocument.ProjectItem);
           items.Add(activeProjectItem);
         }
       }
@@ -123,7 +123,7 @@ namespace ClangPowerTools
       if (null != mAcceptedFileExtensions && false == mAcceptedFileExtensions.Contains(fileExtension))
         return;
 
-      items.Add(new SelectedProjectItem(aItem));
+      items.Add(new CurrentProjectItem(aItem));
     }
 
     #endregion
@@ -138,7 +138,7 @@ namespace ClangPowerTools
     }
 
 
-    private void AddProject(Project aProject) => items.Add(new SelectedProject(aProject));
+    private void AddProject(Project aProject) => items.Add(new CurrentProject(aProject));
 
 
     private void GetProjectItem(ProjectItem aProjectItem)
@@ -181,7 +181,7 @@ namespace ClangPowerTools
     {
       foreach (var item in AutomationUtil.GetAllProjects(aSolution))
       {
-        var project = (item as SelectedProject).GetObject() as Project;
+        var project = (item as CurrentProject).GetObject() as Project;
         if (project == null)
           continue;
 

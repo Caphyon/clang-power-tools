@@ -213,8 +213,8 @@
     <Compile Include="ClangPowerToolsPackage.cs" />
     <Compile Include="Script\ScriptConstants.cs" />
     <Compile Include="Error\TaskErrorModel.cs" />
-    <Compile Include="Items\SelectedProject.cs" />
-    <Compile Include="Items\SelectedProjectItem.cs" />
+    <Compile Include="Items\CurrentProject.cs" />
+    <Compile Include="Items\CurrentProjectItem.cs" />
     <Compile Include="Options\ViewModel\ClangTidyOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
