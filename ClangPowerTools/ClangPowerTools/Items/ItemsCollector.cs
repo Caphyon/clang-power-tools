@@ -33,7 +33,7 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public void CollectActiveProjectItem(bool aClangFormatFlag = false)
+    public void CollectActiveProjectItem()
     {
       try
       {
@@ -73,7 +73,7 @@ namespace ClangPowerTools
     /// <summary>
     /// Collect all selected items in the Solution explorer for commands
     /// </summary>
-    public void CollectSelectedFiles(ProjectItem aProjectItem, bool aClangFormatFlag = false)
+    public void CollectSelectedFiles()
     {
       try
       {
@@ -88,19 +88,13 @@ namespace ClangPowerTools
           if (item.Object is Solution)
           {
             var solution = item.Object as Solution;
-            if (aClangFormatFlag)
-              GetProjectItem(solution);
-            else
-              GetProjectsFromSolution(solution);
+            GetProjectsFromSolution(solution);
           }
 
           else if (item.Object is Project)
           {
             var project = item.Object as Project;
-            if (aClangFormatFlag)
-              GetProjectItem(project);
-            else
-              AddProject(project);
+            AddProject(project);
           }
 
           else if (item.Object is ProjectItem)
