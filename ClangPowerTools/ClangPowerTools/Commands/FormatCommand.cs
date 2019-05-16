@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
 using System.Xml.Linq;
@@ -18,7 +19,6 @@ namespace ClangPowerTools.Commands
   {
     #region Members
 
-    private ClangFormatOptionsView mClangFormatView = null;
     private Document mDocument = null;
 
     #endregion
@@ -82,27 +82,25 @@ namespace ClangPowerTools.Commands
       Instance = new FormatCommand(commandService, aCommandController, aPackage, aGuid, aId);
     }
 
-
-
-    public void FormatDocument(Document aDocument, ClangFormatOptionsView aOptions, CommandUILocation commandUILocation)
+    public void RunClangFormat(CommandUILocation commandUILocation)
     {
-      mClangFormatView = aOptions;
-      mDocument = aDocument;
+      if (CommandUILocation.ContextMenu == commandUILocation)
+      {
+        FormatAllSelectedDocuments();
+        return;
+      }
 
-      RunClangFormat(commandUILocation);
+      if (CommandUILocation.Toolbar == commandUILocation)
+      {
+        FormatActiveDocument();
+        return;
+      }
     }
 
-
-    public void RunClangFormat(CommandUILocation commandUILocation)
+    private void ExecuteFormatCommand()
     {
       try
       {
-        if (mClangFormatView == null)
-        {
-          FormatAllSelectedDocuments(commandUILocation);
-          return;
-        }
-
         if (ScriptConstants.kCMakeConfigFile == mDocument.Name.ToLower())
           return;
 
@@ -123,7 +121,6 @@ namespace ClangPowerTools.Commands
           // get the necessary elements for format selection
           FindStartPositionAndLengthOfSelectedText(view, text, out startPosition, out length);
           dirPath = Vsix.GetDocumentParent(view);
-          mClangFormatView = SettingsProvider.ClangFormatSettings;
         }
         else
         {
@@ -131,7 +128,7 @@ namespace ClangPowerTools.Commands
           text = FormatEndOfFile(view, filePath, out dirPath);
         }
 
-        process = CreateProcess(text, startPosition, length, dirPath, filePath, mClangFormatView);
+        process = CreateProcess(text, startPosition, length, dirPath, filePath, SettingsProvider.ClangFormatSettings);
 
         try
         {
@@ -162,25 +159,38 @@ namespace ClangPowerTools.Commands
       finally
       {
         mDocument = null;
-        mClangFormatView = null;
       }
     }
 
-
-    private void FormatAllSelectedDocuments(CommandUILocation commandUILocation)
+    private void FormatAllSelectedDocuments()
     {
-      foreach (var item in CollectItems(true, ScriptConstants.kAcceptedFileExtensions, commandUILocation))
+      List<Document> collectedDocuments = new List<Document>();
+      ItemsCollector itemsCollector = new ItemsCollector();
+      itemsCollector.CollectSelectedFiles();
+
+      foreach (var item in itemsCollector.items)
       {
         var document = (item.GetObject() as ProjectItem).Document;
-
-        if (null == document)
-          document = DocumentsHandler.GetActiveDocument();
-
-        mClangFormatView = SettingsProvider.ClangFormatSettings;
-        mDocument = document;
-
-        RunClangFormat(commandUILocation);
+        collectedDocuments.Add(document);
       }
+
+      foreach (Document item in collectedDocuments)
+      {
+        mDocument = item;
+        ExecuteFormatCommand();
+      }
+    }
+
+    private void FormatActiveDocument()
+    {
+      ItemsCollector itemsCollector = new ItemsCollector();
+      itemsCollector.CollectActiveProjectItem();
+
+
+      var document = (itemsCollector.items[0].GetObject() as ProjectItem).Document;
+      mDocument = document;
+
+      ExecuteFormatCommand();
     }
 
 
