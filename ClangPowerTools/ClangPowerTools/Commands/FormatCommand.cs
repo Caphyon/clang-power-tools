@@ -1,4 +1,5 @@
-﻿using EnvDTE;
+﻿using ClangPowerTools.Services;
+using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
@@ -166,11 +167,12 @@ namespace ClangPowerTools.Commands
     {
       List<Document> collectedDocuments = new List<Document>();
       ItemsCollector itemsCollector = new ItemsCollector();
+
       itemsCollector.CollectSelectedFiles();
 
       foreach (var item in itemsCollector.items)
       {
-        var document = (item.GetObject() as ProjectItem).Document;
+        var document = (item.GetObject() as ProjectItem).Open().Document;
         collectedDocuments.Add(document);
       }
 
@@ -178,6 +180,7 @@ namespace ClangPowerTools.Commands
       {
         mDocument = item;
         ExecuteFormatCommand();
+        item.Close(vsSaveChanges.vsSaveChangesYes);
       }
     }
 
