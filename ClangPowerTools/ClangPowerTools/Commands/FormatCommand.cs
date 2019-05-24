@@ -165,22 +165,15 @@ namespace ClangPowerTools.Commands
 
     private void FormatAllSelectedDocuments()
     {
-      List<Document> collectedDocuments = new List<Document>();
       ItemsCollector itemsCollector = new ItemsCollector();
-
       itemsCollector.CollectSelectedFiles();
 
       foreach (var item in itemsCollector.items)
       {
         var document = (item.GetObject() as ProjectItem).Open().Document;
-        collectedDocuments.Add(document);
-      }
-
-      foreach (Document item in collectedDocuments)
-      {
-        mDocument = item;
+        mDocument = document;
         ExecuteFormatCommand();
-        item.Close(vsSaveChanges.vsSaveChangesYes);
+        document.Close(vsSaveChanges.vsSaveChangesYes);
       }
     }
 
@@ -189,13 +182,10 @@ namespace ClangPowerTools.Commands
       ItemsCollector itemsCollector = new ItemsCollector();
       itemsCollector.CollectActiveProjectItem();
 
-
       var document = (itemsCollector.items[0].GetObject() as ProjectItem).Document;
       mDocument = document;
-
       ExecuteFormatCommand();
     }
-
 
     private string FormatEndOfFile(IWpfTextView aView, string aFilePath, out string aDirPath)
     {
