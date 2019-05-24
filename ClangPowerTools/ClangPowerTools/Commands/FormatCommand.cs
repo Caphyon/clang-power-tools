@@ -174,13 +174,9 @@ namespace ClangPowerTools.Commands
 
       foreach (var item in itemsCollector.items)
       {
-        var projectItem = item.GetObject() as ProjectItem;
-        if (projectItem == null)
-        {
-          continue;
-        }
         try
         {
+          var projectItem = item.GetObject() as ProjectItem;
           mDocument = projectItem.Open().Document;
           ExecuteFormatCommand();
           mDocument.Save();
