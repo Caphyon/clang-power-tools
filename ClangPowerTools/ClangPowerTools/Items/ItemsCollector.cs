@@ -79,32 +79,25 @@ namespace ClangPowerTools
     /// </summary>
     public void CollectSelectedItems()
     {
-      try
-      {
-        if (selectedItems == null || selectedItems.Length == 0)
-          return;
+      if (selectedItems == null || selectedItems.Length == 0)
+        return;
 
-        foreach (UIHierarchyItem item in selectedItems)
-        {
-          if (item.Object is Solution)
-          {
-            var solution = item.Object as Solution;
-            GetProjectsFromSolution(solution);
-          }
-          else if (item.Object is Project)
-          {
-            var project = item.Object as Project;
-            AddProject(project);
-          }
-          else if (item.Object is ProjectItem)
-          {
-            GetProjectItem(item.Object as ProjectItem);
-          }
-        }
-      }
-      catch (Exception e)
+      foreach (UIHierarchyItem item in selectedItems)
       {
-        throw new Exception(e.Message);
+        if (item.Object is Solution)
+        {
+          var solution = item.Object as Solution;
+          GetProjectsFromSolution(solution);
+        }
+        else if (item.Object is Project)
+        {
+          var project = item.Object as Project;
+          AddProject(project);
+        }
+        else if (item.Object is ProjectItem)
+        {
+          GetProjectItem(item.Object as ProjectItem);
+        }
       }
     }
 
@@ -113,32 +106,25 @@ namespace ClangPowerTools
     /// </summary>
     public void CollectSelectedProjectItems()
     {
-      try
-      {
-        if (selectedItems == null || selectedItems.Length == 0)
-          return;
+      if (selectedItems == null || selectedItems.Length == 0)
+        return;
 
-        foreach (UIHierarchyItem item in selectedItems)
-        {
-          if (item.Object is Solution)
-          {
-            var solution = item.Object as Solution;
-            GetProjectItem(solution);
-          }
-          else if (item.Object is Project)
-          {
-            var project = item.Object as Project;
-            GetProjectItem(project);
-          }
-          else if (item.Object is ProjectItem)
-          {
-            GetProjectItem(item.Object as ProjectItem);
-          }
-        }
-      }
-      catch (Exception e)
+      foreach (UIHierarchyItem item in selectedItems)
       {
-        throw new Exception(e.Message);
+        if (item.Object is Solution)
+        {
+          var solution = item.Object as Solution;
+          GetProjectItem(solution);
+        }
+        else if (item.Object is Project)
+        {
+          var project = item.Object as Project;
+          GetProjectItem(project);
+        }
+        else if (item.Object is ProjectItem)
+        {
+          GetProjectItem(item.Object as ProjectItem);
+        }
       }
     }
 
