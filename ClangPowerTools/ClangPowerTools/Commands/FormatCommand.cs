@@ -96,6 +96,12 @@ namespace ClangPowerTools.Commands
       }
     }
 
+    public void FormatOnSave(Document document)
+    {
+      mDocument = document;
+      ExecuteFormatCommand();
+    }
+
     private void ExecuteFormatCommand()
     {
       try
@@ -159,6 +165,12 @@ namespace ClangPowerTools.Commands
       {
         mDocument = null;
       }
+    }
+
+    private void FormatActive()
+    {
+      ItemsCollector itemsCollector = new ItemsCollector();
+      itemsCollector.CollectActiveProjectItem();
     }
 
     private void FormatAllSelectedDocuments()
