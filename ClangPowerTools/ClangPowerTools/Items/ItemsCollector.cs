@@ -128,7 +128,6 @@ namespace ClangPowerTools
       }
     }
 
-
     public void AddProjectItem(ProjectItem aItem)
     {
       if (aItem == null)
