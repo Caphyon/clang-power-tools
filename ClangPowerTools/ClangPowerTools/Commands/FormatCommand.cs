@@ -181,24 +181,11 @@ namespace ClangPowerTools.Commands
         }
         try
         {
-          var window = projectItem.Open();
-          if (window == null)
-          {
-            continue;
-          }
-          var document = window.Document;
-          mDocument = document;
+          mDocument = projectItem.Open().Document;
           ExecuteFormatCommand();
-          document.Close(vsSaveChanges.vsSaveChangesYes);
+          mDocument.Save();
         }
-        catch (Exception)
-        {
-
-         
-        }
-
-
-
+        catch (Exception) { }
       }
     }
 
