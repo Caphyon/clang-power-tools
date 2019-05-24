@@ -167,23 +167,38 @@ namespace ClangPowerTools.Commands
       }
     }
 
-    private void FormatActive()
-    {
-      ItemsCollector itemsCollector = new ItemsCollector();
-      itemsCollector.CollectActiveProjectItem();
-    }
-
     private void FormatAllSelectedDocuments()
     {
       ItemsCollector itemsCollector = new ItemsCollector();
-      itemsCollector.CollectSelectedFiles();
+      itemsCollector.CollectSelectedProjectItems();
 
       foreach (var item in itemsCollector.items)
       {
-        var document = (item.GetObject() as ProjectItem).Open().Document;
-        mDocument = document;
-        ExecuteFormatCommand();
-        document.Close(vsSaveChanges.vsSaveChangesYes);
+        var projectItem = item.GetObject() as ProjectItem;
+        if (projectItem == null)
+        {
+          continue;
+        }
+        try
+        {
+          var window = projectItem.Open();
+          if (window == null)
+          {
+            continue;
+          }
+          var document = window.Document;
+          mDocument = document;
+          ExecuteFormatCommand();
+          document.Close(vsSaveChanges.vsSaveChangesYes);
+        }
+        catch (Exception)
+        {
+
+         
+        }
+
+
+
       }
     }
 

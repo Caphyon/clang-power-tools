@@ -12,6 +12,8 @@ namespace ClangPowerTools
     #region Members
 
     private List<string> mAcceptedFileExtensions = new List<string>();
+    private DTE2 dte2;
+    private Array selectedItems;
 
     #endregion
 
@@ -20,6 +22,8 @@ namespace ClangPowerTools
     public ItemsCollector(List<string> aExtensions = null)
     {
       mAcceptedFileExtensions = aExtensions;
+      dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
+      selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
     }
 
     #endregion 
@@ -73,13 +77,10 @@ namespace ClangPowerTools
     /// <summary>
     /// Collect all selected items in the Solution explorer for commands
     /// </summary>
-    public void CollectSelectedFiles()
+    public void CollectSelectedItems()
     {
       try
       {
-        var dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
-        Array selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
-
         if (selectedItems == null || selectedItems.Length == 0)
           return;
 
@@ -90,15 +91,49 @@ namespace ClangPowerTools
             var solution = item.Object as Solution;
             GetProjectsFromSolution(solution);
           }
-
           else if (item.Object is Project)
           {
             var project = item.Object as Project;
             AddProject(project);
           }
-
           else if (item.Object is ProjectItem)
+          {
             GetProjectItem(item.Object as ProjectItem);
+          }
+        }
+      }
+      catch (Exception e)
+      {
+        throw new Exception(e.Message);
+      }
+    }
+
+    /// <summary>
+    /// Collect all selected ProjectItems
+    /// </summary>
+    public void CollectSelectedProjectItems()
+    {
+      try
+      {
+        if (selectedItems == null || selectedItems.Length == 0)
+          return;
+
+        foreach (UIHierarchyItem item in selectedItems)
+        {
+          if (item.Object is Solution)
+          {
+            var solution = item.Object as Solution;
+            GetProjectItem(solution);
+          }
+          else if (item.Object is Project)
+          {
+            var project = item.Object as Project;
+            GetProjectItem(project);
+          }
+          else if (item.Object is ProjectItem)
+          {
+            GetProjectItem(item.Object as ProjectItem);
+          }
         }
       }
       catch (Exception e)
