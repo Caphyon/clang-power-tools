@@ -184,7 +184,6 @@ namespace ClangPowerTools
             TidyConfigCommand.Instance.ExportConfig();
             break;
           }
-
         case CommandIds.kIgnoreFormatId:
           {
             IgnoreFormatCommand.Instance.RunIgnoreFormatCommand(CommandIds.kIgnoreFormatId);
@@ -487,8 +486,7 @@ namespace ClangPowerTools
       if (true == SkipFile(aDocument.FullName, clangFormatOptionPage.FilesToIgnore))
         return;
 
-      var option = SettingsProvider.ClangFormatSettings;
-      FormatCommand.Instance.FormatDocument(aDocument, option, CommandUILocation.Toolbar);
+      FormatCommand.Instance.FormatOnSave(aDocument);
     }
 
 

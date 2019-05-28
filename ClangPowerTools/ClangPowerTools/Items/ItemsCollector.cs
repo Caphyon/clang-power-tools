@@ -12,6 +12,8 @@ namespace ClangPowerTools
     #region Members
 
     private List<string> mAcceptedFileExtensions = new List<string>();
+    private DTE2 dte2;
+    private Array selectedItems;
 
     #endregion
 
@@ -20,6 +22,8 @@ namespace ClangPowerTools
     public ItemsCollector(List<string> aExtensions = null)
     {
       mAcceptedFileExtensions = aExtensions;
+      dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
+      selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
     }
 
     #endregion 
@@ -33,7 +37,7 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public void CollectActiveProjectItem(bool aClangFormatFlag = false)
+    public void CollectActiveProjectItem()
     {
       try
       {
@@ -73,46 +77,56 @@ namespace ClangPowerTools
     /// <summary>
     /// Collect all selected items in the Solution explorer for commands
     /// </summary>
-    public void CollectSelectedFiles(ProjectItem aProjectItem, bool aClangFormatFlag = false)
+    public void CollectSelectedItems()
     {
-      try
+      if (selectedItems == null || selectedItems.Length == 0)
+        return;
+
+      foreach (UIHierarchyItem item in selectedItems)
       {
-        var dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
-        Array selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
-
-        if (selectedItems == null || selectedItems.Length == 0)
-          return;
-
-        foreach (UIHierarchyItem item in selectedItems)
+        if (item.Object is Solution)
         {
-          if (item.Object is Solution)
-          {
-            var solution = item.Object as Solution;
-            if (aClangFormatFlag)
-              GetProjectItem(solution);
-            else
-              GetProjectsFromSolution(solution);
-          }
-
-          else if (item.Object is Project)
-          {
-            var project = item.Object as Project;
-            if (aClangFormatFlag)
-              GetProjectItem(project);
-            else
-              AddProject(project);
-          }
-
-          else if (item.Object is ProjectItem)
-            GetProjectItem(item.Object as ProjectItem);
+          var solution = item.Object as Solution;
+          GetProjectsFromSolution(solution);
         }
-      }
-      catch (Exception e)
-      {
-        throw new Exception(e.Message);
+        else if (item.Object is Project)
+        {
+          var project = item.Object as Project;
+          AddProject(project);
+        }
+        else if (item.Object is ProjectItem)
+        {
+          GetProjectItem(item.Object as ProjectItem);
+        }
       }
     }
 
+    /// <summary>
+    /// Collect all selected ProjectItems
+    /// </summary>
+    public void CollectSelectedProjectItems()
+    {
+      if (selectedItems == null || selectedItems.Length == 0)
+        return;
+
+      foreach (UIHierarchyItem item in selectedItems)
+      {
+        if (item.Object is Solution)
+        {
+          var solution = item.Object as Solution;
+          GetProjectItem(solution);
+        }
+        else if (item.Object is Project)
+        {
+          var project = item.Object as Project;
+          GetProjectItem(project);
+        }
+        else if (item.Object is ProjectItem)
+        {
+          GetProjectItem(item.Object as ProjectItem);
+        }
+      }
+    }
 
     public void AddProjectItem(ProjectItem aItem)
     {

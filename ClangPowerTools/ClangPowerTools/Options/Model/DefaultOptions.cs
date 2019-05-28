@@ -1,6 +1,6 @@
 ﻿namespace ClangPowerTools
 {
-  public class DefaultOptions
+  public static class DefaultOptions
   {
     public const string kClangFlags = "-Wall;-fms-compatibility-version=19.10;-Wmicrosoft;-Wno-invalid-token-paste;-Wno-unknown-pragmas;-Wno-unused-value";
     public const string kHeaderFilter = ".*";

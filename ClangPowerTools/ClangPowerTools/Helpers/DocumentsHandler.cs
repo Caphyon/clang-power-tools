@@ -1,5 +1,7 @@
 ﻿using ClangPowerTools.Services;
 using EnvDTE;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ClangPowerTools
 {
@@ -14,6 +16,20 @@ namespace ClangPowerTools
     public static Documents GetActiveDocuments()
     {
       return VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE).Documents : null;
+    }
+
+    /// <summary>
+    /// Get a list of active documents
+    /// </summary>
+    /// <returns></returns>
+    public static List<Document> GetListOfActiveDocuments()
+    {
+      List<Document> documents = new List<Document>();
+      foreach (var item in GetActiveDocuments())
+      {
+        documents.Add(item as Document);
+      }
+      return documents;
     }
 
     /// <summary>
@@ -41,9 +57,18 @@ namespace ClangPowerTools
     /// </summary>
     public static void SaveActiveDocuments()
     {
-      var activeDocuments = GetActiveDocuments();
-      if (null != activeDocuments && 0 < activeDocuments.Count)
-        activeDocuments.SaveAll();
+      GetActiveDocuments().SaveAll();
+    }
+
+    /// <summary>
+    /// Check if a document is open
+    /// </summary>
+    /// <param name="aDocument"></param>
+    /// <returns>True if the document is open, false otherwise</returns>
+    public static bool IsOpen(Document aSearchedDocument, List<Document> aDocuments)
+    {
+      Document doc = aDocuments.FirstOrDefault(currentDoc => currentDoc.FullName == aSearchedDocument.FullName);
+      return doc != null;
     }
 
     #endregion
