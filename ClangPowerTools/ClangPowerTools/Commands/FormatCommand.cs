@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
 using System.Xml.Linq;
@@ -161,16 +162,14 @@ namespace ClangPowerTools.Commands
         VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error while running clang-format",
           OLEMSGICON.OLEMSGICON_INFO, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
       }
-      finally
-      {
-        mDocument = null;
-      }
     }
 
     private void FormatAllSelectedDocuments()
     {
       ItemsCollector itemsCollector = new ItemsCollector();
       itemsCollector.CollectSelectedProjectItems();
+      List<Document> activeDocs = DocumentsHandler.GetListOfActiveDocuments();
+      Document activeDocument = DocumentsHandler.GetActiveDocument();
 
       foreach (var item in itemsCollector.items)
       {
@@ -179,9 +178,25 @@ namespace ClangPowerTools.Commands
           var projectItem = item.GetObject() as ProjectItem;
           mDocument = projectItem.Open().Document;
           ExecuteFormatCommand();
-          mDocument.Save();
+
+          if (DocumentsHandler.IsOpen(mDocument, activeDocs))
+          {
+            mDocument.Save();
+          }
+          else
+          {
+            mDocument.Close(vsSaveChanges.vsSaveChangesYes);
+          }
         }
         catch (Exception) { }
+        finally
+        {
+          mDocument = null;
+        }
+      }
+      if (activeDocument != null)
+      {
+        activeDocument.Activate();
       }
     }
 
