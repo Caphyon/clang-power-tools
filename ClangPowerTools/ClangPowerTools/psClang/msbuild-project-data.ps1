@@ -239,10 +239,9 @@ Function Get-ProjectPlatformToolset()
     }
 }
 
-Function Get-ProjectIncludeDirectories()
+Function Get-ProjectIncludesFromIncludePathVar
 {
     [string[]] $returnArray = @()
-
     if ( (VariableExists 'IncludePath') )
     {
         $returnArray += ($IncludePath -split ";")                                                         | `
@@ -251,10 +250,12 @@ Function Get-ProjectIncludeDirectories()
                         Where-Object { ![string]::IsNullOrEmpty($_) }                                     | `
                         ForEach-Object { $_ -replace '\\$', '' }
     }
-    if ($env:CPT_LOAD_ALL -eq '1')
-    {
-        return $returnArray
-    }
+    return $returnArray
+}
+
+Function Get-ProjectIncludeDirectories()
+{
+    [string[]] $returnArray = @()
 
     [string] $vsPath = Get-VisualStudio-Path
     Write-Verbose "Visual Studio location: $vsPath"
@@ -348,6 +349,15 @@ Function Get-ProjectIncludeDirectories()
         {
             $returnArray += @( "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\7.0\ucrt")
         }
+    }
+
+    if ($env:CPT_LOAD_ALL -eq '1')
+    {
+        return @(Get-ProjectIncludesFromIncludePathVar)
+    }
+    else 
+    {
+        $returnArray += @(Get-ProjectIncludesFromIncludePathVar)    
     }
 
     return ( $returnArray | ForEach-Object { Remove-PathTrailingSlash -path $_ } )
