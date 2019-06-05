@@ -260,8 +260,8 @@
 
   <!-- Shortcuts for commands-->
   <KeyBindings>
-    <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="CompileId" editor="guidVSStd97"
-                key1="C" mod1="ALT" />  
+    <!--<KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="CompileId" editor="guidVSStd97"
+                key1="C" mod1="ALT" />-->  
     
     <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="CompileToolbarId" editor="guidVSStd97"
                 key1="C" mod1="ALT" />
