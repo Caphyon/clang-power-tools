@@ -6,8 +6,10 @@
   xmlns:local="clr-namespace:ClangPowerTools.Views"
   xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  d:DesignHeight="475"
-  d:DesignWidth="824"
+  Width="824"
+  Height="485"
+  ResizeMode="NoResize"
+  WindowStartupLocation="CenterScreen"
   WindowStyle="ToolWindow"
   mc:Ignorable="d">
 
@@ -21,7 +23,7 @@
 
   <Grid>
     <Grid.Background>
-      <ImageBrush ImageSource="../Views/Background.png" Stretch="UniformToFill" />
+      <ImageBrush ImageSource="Background.png" Stretch="UniformToFill" />
     </Grid.Background>
 
     <Grid.RowDefinitions>
@@ -46,25 +48,30 @@
       Text="Login to use Clang Power Tools"
       TextAlignment="Center" />
 
+
     <TextBox
       Grid.Row="1"
       Width="430"
       Height="40"
       Margin="0,30,0,0"
+      Padding="5,0"
       HorizontalAlignment="Center"
       VerticalAlignment="Center"
       HorizontalContentAlignment="Left"
       VerticalContentAlignment="Center"
       materialDesign:HintAssist.Hint="Email"
       Background="White"
+      Cursor="Hand"
       FontFamily="SegoeUI"
-      FontSize="18" />
+      FontSize="18"
+      ForceCursor="True" />
 
-    <TextBox
+    <PasswordBox
       Grid.Row="2"
       Width="430"
       Height="40"
       Margin="0,19,0,0"
+      Padding="5,0"
       HorizontalAlignment="Center"
       VerticalAlignment="Center"
       HorizontalContentAlignment="Left"
@@ -157,31 +164,37 @@
       </Button.Style>
     </Button>
 
-    <TextBlock
+    <Button
       Grid.Row="4"
-      Width="108"
-      Height="19"
-      Margin="0,24,0,0"
+      Width="150"
+      Height="25"
+      Margin="0,24,0,5"
       HorizontalAlignment="Center"
       VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="14"
-      Foreground="#E2E2E8"
-      Text="Forgot Password?"
-      TextAlignment="Center" />
-
-    <TextBlock
-      Grid.Row="5"
-      Width="185"
-      Height="19"
-      Margin="17,59,0,12"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
+      Background="Transparent"
+      BorderThickness="0"
+      Click="ForgotPasswordButton_Click"
+      Content="Forgot Password?"
       Cursor="Hand"
       FontFamily="SegoeUI"
       FontSize="14"
-      Foreground="#E2E2E8"
-      Text="Sing up for Clang Power Tools" />
+      Foreground="#E2E2E8" />
+
+    <Button
+      Grid.Row="5"
+      Width="230"
+      Height="25"
+      Margin="10,50,0,10"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center"
+      Background="Transparent"
+      BorderThickness="0"
+      Click="SingUpButton_Click"
+      Content="Sing up for Clang Power Tools"
+      Cursor="Hand"
+      FontFamily="SegoeUI"
+      FontSize="14"
+      Foreground="#E2E2E8" />
 
   </Grid>
 

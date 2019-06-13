@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,5 +26,14 @@ namespace ClangPowerTools.Views
       InitializeComponent();
     }
 
+    private void ForgotPasswordButton_Click(object sender, RoutedEventArgs e)
+    {
+      Process.Start(new ProcessStartInfo("https://clangpowertools.com/"));
+    }
+
+    private void SingUpButton_Click(object sender, RoutedEventArgs e)
+    {
+      Process.Start(new ProcessStartInfo("https://clangpowertools.com/"));
+    }
   }
 }
