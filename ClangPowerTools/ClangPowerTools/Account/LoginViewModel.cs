@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClangPowerTools
 {
-  public class LoginController
+  public class LoginViewModel
   {
 
 
