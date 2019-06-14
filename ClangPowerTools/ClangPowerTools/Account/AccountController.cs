@@ -9,20 +9,20 @@ namespace ClangPowerTools
 {
   public class AccountController
   {
+    public static UserModel userModel = new UserModel();
+
+    #region Readonly members
     private static readonly string appId = "5d011c6a375f6b5ed9716629";
     private static readonly string url = @"https://account.clangpowertools.com";
-
-    #region Commands
     private static readonly string loginUrl = string.Concat(url, "/api/", appId, "/user/", "login");
     private static readonly string licenseUrl = string.Concat(url, "/api/", appId, "/license");
     #endregion
 
-    internal static async Task<TokenModel> ApiCallAsync(string email, string password)
+    public static async Task<TokenModel> ApiCallAsync(string email, string password)
     {
-      UserModel userModel = new UserModel(email, password);
+      userModel = new UserModel(email, password);
       string jsonObject = JsonConvert.SerializeObject(userModel);
       var content = new StringContent(jsonObject, Encoding.UTF8, "application/json");
-      TokenModel tokenModel = new TokenModel();
 
       try
       {
@@ -30,8 +30,9 @@ namespace ClangPowerTools
         {
           if (result.IsSuccessStatusCode)
           {
-            tokenModel = await result.Content.ReadAsAsync<TokenModel>();
+            TokenModel tokenModel = await result.Content.ReadAsAsync<TokenModel>();
             ApiHelper.ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenModel.Token);
+            userModel.IsActive = true;
             return tokenModel;
           }
           else
@@ -46,7 +47,7 @@ namespace ClangPowerTools
       }
     }
 
-    internal static async Task CheckLicenseAsync()
+    public static async Task CheckLicenseAsync()
     {
       try
       {
@@ -54,10 +55,11 @@ namespace ClangPowerTools
         {
           if (result.IsSuccessStatusCode)
           {
-            var test = result.Content;
+            userModel.IsActive = true;
           }
           else
           {
+            userModel.IsActive = false;
             throw new Exception(result.ReasonPhrase);
           }
         }
