@@ -10,7 +10,7 @@ namespace ClangPowerTools.Account
     {
       try
       {
-        using (HttpResponseMessage result = await ApiHelper.ApiClient.GetAsync("http://www.google.com"))
+        using (HttpResponseMessage result = await ApiUtility.ApiClient.GetAsync("http://www.google.com"))
         {
 
         }

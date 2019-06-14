@@ -3,7 +3,7 @@ using System.Net.Http.Headers;
 
 namespace ClangPowerTools
 {
-  public static class ApiHelper
+  public static class ApiUtility
   {
     public static HttpClient ApiClient { get; set; }
 

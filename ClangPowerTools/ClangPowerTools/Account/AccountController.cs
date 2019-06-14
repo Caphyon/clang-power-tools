@@ -29,12 +29,12 @@ namespace ClangPowerTools
 
       try
       {
-        using (HttpResponseMessage result = await ApiHelper.ApiClient.PostAsync(loginUrl, content))
+        using (HttpResponseMessage result = await ApiUtility.ApiClient.PostAsync(loginUrl, content))
         {
           if (result.IsSuccessStatusCode)
           {
             TokenModel tokenModel = await result.Content.ReadAsAsync<TokenModel>();
-            ApiHelper.ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenModel.Token);
+            ApiUtility.ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenModel.Token);
             userModel.IsActive = true;
             await SaveTokenAsync(tokenModel.Token);
           }
@@ -54,7 +54,7 @@ namespace ClangPowerTools
     {
       try
       {
-        using (HttpResponseMessage result = await ApiHelper.ApiClient.GetAsync(licenseUrl))
+        using (HttpResponseMessage result = await ApiUtility.ApiClient.GetAsync(licenseUrl))
         {
           if (result.IsSuccessStatusCode)
           {
