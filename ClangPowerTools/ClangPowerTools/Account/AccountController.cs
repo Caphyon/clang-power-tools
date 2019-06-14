@@ -4,12 +4,15 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace ClangPowerTools
 {
   public class AccountController
   {
     public static UserModel userModel = new UserModel();
+
+    private static SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
 
     #region Readonly members
     private static readonly string appId = "5d011c6a375f6b5ed9716629";
@@ -18,7 +21,7 @@ namespace ClangPowerTools
     private static readonly string licenseUrl = string.Concat(url, "/api/", appId, "/license");
     #endregion
 
-    public static async Task<TokenModel> ApiCallAsync(string email, string password)
+    public async Task LoginAsync(string email, string password)
     {
       userModel = new UserModel(email, password);
       string jsonObject = JsonConvert.SerializeObject(userModel);
@@ -33,7 +36,7 @@ namespace ClangPowerTools
             TokenModel tokenModel = await result.Content.ReadAsAsync<TokenModel>();
             ApiHelper.ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenModel.Token);
             userModel.IsActive = true;
-            return tokenModel;
+            await SaveTokenAsync(tokenModel.Token);
           }
           else
           {
@@ -47,7 +50,7 @@ namespace ClangPowerTools
       }
     }
 
-    public static async Task CheckLicenseAsync()
+    public async Task CheckLicenseAsync()
     {
       try
       {
@@ -62,6 +65,44 @@ namespace ClangPowerTools
             userModel.IsActive = false;
             throw new Exception(result.ReasonPhrase);
           }
+        }
+      }
+      catch (Exception)
+      {
+        throw;
+      }
+    }
+
+    public void CheckLocalLicense()
+    {
+      string filePath = settingsPathBuilder.GetPath("ctpjwt");
+      if (File.Exists(filePath))
+      {
+        userModel.IsActive = true;
+      }
+      else
+      {
+        userModel.IsActive = false;
+      }
+    }
+
+    private async Task SaveTokenAsync(string token)
+    {
+      string filePath = settingsPathBuilder.GetPath("ctpjwt");
+      StreamWriter streamWriter = new StreamWriter(filePath);
+
+      await streamWriter.WriteAsync(token);
+      File.SetAttributes(filePath, File.GetAttributes(filePath) | FileAttributes.Hidden);
+    }
+
+
+    private async Task CheckInternetConnectionAsync()
+    {
+      try
+      {
+        using (HttpResponseMessage result = await ApiHelper.ApiClient.GetAsync("http://www.google.com"))
+        {
+
         }
       }
       catch (Exception)
