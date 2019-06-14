@@ -73,9 +73,11 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Account\AccountController.cs" />
+    <Compile Include="MVVM\Controllers\AccountController.cs" />
+    <Compile Include="MVVM\ViewModels\LoginViewModel.cs" />
+    <Compile Include="Helpers\NetworkUtility.cs" />
     <Compile Include="Events\ActiveDocumentEventArgs.cs" />
-    <Compile Include="Helpers\ApiHelper.cs" />
+    <Compile Include="Helpers\ApiUtility.cs" />
     <Compile Include="Helpers\AutomationUtil.cs" />
     <Compile Include="Export Config\TidyConfigFile.cs" />
     <Compile Include="Attributes\ClangCheckAttribute.cs" />
@@ -100,8 +102,8 @@
     <Compile Include="Events\VsHierarchyDetectedEventArgs.cs" />
     <Compile Include="Helpers\PackageUtility.cs" />
     <Compile Include="Helpers\UIUpdater.cs" />
-    <Compile Include="Models\TokenModel.cs" />
-    <Compile Include="Models\UserModel.cs" />
+    <Compile Include="MVVM\Models\TokenModel.cs" />
+    <Compile Include="MVVM\Models\UserModel.cs" />
     <Compile Include="Options\ClangTidyPathValue.cs" />
     <Compile Include="Options\ClangFormatPathValue.cs" />
     <Compile Include="Options\HeaderFiltersValue.cs" />
@@ -240,7 +242,7 @@
     <Compile Include="UnitTestUtility\CommandTestUtility.cs" />
     <Compile Include="UnitTestUtility\SettingsTestUtility.cs" />
     <Compile Include="UnitTestUtility\UnitTestUtility.cs" />
-    <Compile Include="Views\LoginView.xaml.cs">
+    <Compile Include="MVVM\Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
@@ -250,7 +252,7 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>.</VSIXSubPath>
     </Content>
-    <Resource Include="Views\Background.png" />
+    <Resource Include="MVVM\Views\Background.png" />
     <Resource Include="Resources\AlphabeticalIcon.PNG" />
     <Content Include="Resources\ClangFormatIcon.png">
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -513,7 +515,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\LoginView.xaml">
+    <Page Include="MVVM\Views\LoginView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
