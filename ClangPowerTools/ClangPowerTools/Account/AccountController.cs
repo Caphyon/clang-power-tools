@@ -94,21 +94,5 @@ namespace ClangPowerTools
       await streamWriter.WriteAsync(token);
       File.SetAttributes(filePath, File.GetAttributes(filePath) | FileAttributes.Hidden);
     }
-
-
-    private async Task CheckInternetConnectionAsync()
-    {
-      try
-      {
-        using (HttpResponseMessage result = await ApiHelper.ApiClient.GetAsync("http://www.google.com"))
-        {
-
-        }
-      }
-      catch (Exception)
-      {
-        throw;
-      }
-    }
   }
 }
