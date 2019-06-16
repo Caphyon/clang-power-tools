@@ -19,9 +19,9 @@ namespace ClangPowerTools.Views
   /// <summary>
   /// Interaction logic for UserControl1.xaml
   /// </summary>
-  public partial class UserControl1 : Window
+  public partial class LoginView : Window
   {
-    public UserControl1()
+    public LoginView()
     {
       InitializeComponent();
     }
