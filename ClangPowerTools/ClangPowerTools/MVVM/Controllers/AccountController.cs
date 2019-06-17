@@ -10,16 +10,21 @@ namespace ClangPowerTools
 {
   public class AccountController
   {
-    public static UserModel userModel = new UserModel();
+    #region Members 
 
+    public static UserModel userModel = new UserModel();
     private static SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
 
-    #region Readonly members
     private static readonly string appId = "5d011c6a375f6b5ed9716629";
     private static readonly string url = @"https://account.clangpowertools.com";
     private static readonly string loginUrl = string.Concat(url, "/api/", appId, "/user/", "login");
     private static readonly string licenseUrl = string.Concat(url, "/api/", appId, "/license");
+
     #endregion
+
+    #region Public Methods
+
+    public UserModel GetUserModel() => userModel;
 
     public async Task LoginAsync(string email, string password)
     {
@@ -86,6 +91,10 @@ namespace ClangPowerTools
       }
     }
 
+    #endregion
+
+    #region Private Methods
+
     private async Task SaveTokenAsync(string token)
     {
       string filePath = settingsPathBuilder.GetPath("ctpjwt");
@@ -94,5 +103,8 @@ namespace ClangPowerTools
       await streamWriter.WriteAsync(token);
       File.SetAttributes(filePath, File.GetAttributes(filePath) | FileAttributes.Hidden);
     }
+
+    #endregion
+
   }
 }
