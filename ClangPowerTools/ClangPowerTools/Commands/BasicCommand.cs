@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Threading.Tasks;
 using ClangPowerTools.Helpers;
+using ClangPowerTools.Views;
 using Microsoft.VisualStudio.Shell;
+using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools
 {
@@ -36,7 +37,7 @@ namespace ClangPowerTools
 
     #region Methods
 
-    protected async Task<bool> HasPermissionToRunAsync()
+    protected async Task CheckPermissionToRunAsync()
     {
       var accountController = new AccountController();
       var networkAviable = await NetworkUtility.CheckInternetConnectionAsync();
@@ -50,7 +51,12 @@ namespace ClangPowerTools
         accountController.CheckLocalLicense();
       }
 
-      return accountController.GetUserModel().IsActive;
+      if (accountController.GetUserModel().IsActive == false)
+      {
+        LoginView loginView = new LoginView();
+        loginView.ShowDialog();
+      }
+      
     }
 
     #endregion
