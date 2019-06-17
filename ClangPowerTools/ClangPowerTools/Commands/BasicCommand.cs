@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading.Tasks;
+using ClangPowerTools.Helpers;
 using Microsoft.VisualStudio.Shell;
 
 namespace ClangPowerTools
@@ -28,6 +30,27 @@ namespace ClangPowerTools
       AsyncPackage = aPackage ?? throw new ArgumentNullException("AsyncPackage");
       CommandSet = aGuid;
       Id = aId;
+    }
+
+    #endregion
+
+    #region Methods
+
+    protected async Task<bool> HasPermissionToRunAsync()
+    {
+      var accountController = new AccountController();
+      var networkAviable = await NetworkUtility.CheckInternetConnectionAsync();
+
+      if(networkAviable)
+      {
+        await accountController.CheckLicenseAsync();
+      }
+      else
+      {
+        accountController.CheckLocalLicense();
+      }
+
+      return accountController.GetUserModel().IsActive;
     }
 
     #endregion
