@@ -2,22 +2,22 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace ClangPowerTools.Account
+namespace ClangPowerTools.Helpers
 {
   public class NetworkUtility
   {
-    public static async Task CheckInternetConnectionAsync()
+    public static async Task<bool> CheckInternetConnectionAsync()
     {
       try
       {
         using (HttpResponseMessage result = await ApiUtility.ApiClient.GetAsync("http://www.google.com"))
         {
-
+          return result != null;
         }
       }
       catch (Exception)
       {
-        throw;
+        return false;
       }
     }
   }
