@@ -35,32 +35,6 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region Methods
-
-    protected async Task CheckPermissionToRunAsync()
-    {
-      var accountController = new AccountController();
-      var networkAviable = await NetworkUtility.CheckInternetConnectionAsync();
-
-      if(networkAviable)
-      {
-        await accountController.CheckLicenseAsync();
-      }
-      else
-      {
-        accountController.CheckLocalLicense();
-      }
-
-      if (accountController.GetUserModel().IsActive == false)
-      {
-        LoginView loginView = new LoginView();
-        loginView.ShowDialog();
-      }
-      
-    }
-
-    #endregion
-
   }
 
 }
