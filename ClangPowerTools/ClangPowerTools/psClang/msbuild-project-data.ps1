@@ -238,6 +238,26 @@ Function Get-ProjectPlatformToolset()
         return $kVStudioDefaultPlatformToolset
     }
 }
+function Get-LatestSDKVersion()
+{
+    [string] $parentDir = "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\"
+    if (!(Test-Path $parentDir))
+    {
+        Write-Verbose "Windows 10 SDK parent directory could not be located"
+        return ""
+    }
+
+    [System.IO.DirectoryInfo[]]$subdirs = @( get-childitem -path $parentDir      | `
+                                             where { $_.Name.StartsWith("10.") } | `
+                                             sort -Descending -Property Name )
+    if ($subdirs.Count -eq 0)
+    {
+        Write-Verbose "[ERR] Could not detect latest Windows 10 SDK location"
+        return ""
+    }
+
+    return $subdirs[0].Name
+}
 
 Function Get-ProjectIncludesFromIncludePathVar
 {
@@ -296,6 +316,12 @@ Function Get-ProjectIncludeDirectories()
 
     if ((![string]::IsNullOrEmpty($sdkVer)) -and ($sdkVer.StartsWith("10")))
     {
+        if ($sdkVer -eq "10.0")
+        {
+            # Project uses the latest Win10 SDK. We have to detect its location.
+            $sdkVer = Get-LatestSDKVersion
+        }
+
         $returnArray += @("${Env:ProgramFiles(x86)}\Windows Kits\10\Include\$sdkVer\ucrt")
 
         if ($platformToolset.EndsWith("xp"))
