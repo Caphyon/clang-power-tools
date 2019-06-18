@@ -1,7 +1,9 @@
 ﻿using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
+using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.Services;
+using ClangPowerTools.Views;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -101,6 +103,16 @@ namespace ClangPowerTools
 
     public async void Execute(object sender, EventArgs e)
     {
+      LicenseController licenseController = new LicenseController();
+      var licenseActivated = await licenseController.CheckLicenseAsync();
+
+      if ( licenseActivated == false )
+      {
+        LoginView loginView = new LoginView();
+        loginView.ShowDialog();
+        return;
+      }
+
       var command = CreateCommand(sender);
 
       if (command == null)
