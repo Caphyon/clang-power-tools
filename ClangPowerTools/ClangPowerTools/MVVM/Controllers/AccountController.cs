@@ -13,7 +13,7 @@ namespace ClangPowerTools
   {
     #region Public Methods
 
-    public async Task LoginAsync(UserModel userModel)
+    public async Task<bool> LoginAsync(UserModel userModel)
     {
       StringContent content = new StringContent(SeralizeUserModel(userModel), Encoding.UTF8, "application/json");
 
@@ -25,18 +25,19 @@ namespace ClangPowerTools
           if (result.IsSuccessStatusCode)
           {
             TokenModel tokenModel = await result.Content.ReadAsAsync<TokenModel>();
-            ApiUtility.ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenModel.Token);
-            await SaveTokenAsync(tokenModel.Token);
+            ApiUtility.ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenModel.jwt);
+            SaveToken(tokenModel.jwt);
+            return true;
           }
           else
           {
-            throw new Exception(result.ReasonPhrase);
+            return false;
           }
         }
       }
       catch (Exception)
       {
-        throw;
+        return false;
       }
     }
 
@@ -52,13 +53,15 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private async Task SaveTokenAsync(string token)
+    private void SaveToken(string token)
     {
       SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
       string filePath = settingsPathBuilder.GetPath("ctpjwt");
-      StreamWriter streamWriter = new StreamWriter(filePath);
 
-      await streamWriter.WriteAsync(token);
+      using (StreamWriter streamWriter = new StreamWriter(filePath))
+      {
+        streamWriter.WriteLine(token);
+      }
       File.SetAttributes(filePath, File.GetAttributes(filePath) | FileAttributes.Hidden);
     }
 

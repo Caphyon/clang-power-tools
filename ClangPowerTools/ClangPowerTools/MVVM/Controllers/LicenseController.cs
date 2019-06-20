@@ -3,6 +3,7 @@ using ClangPowerTools.MVVM.WebApi;
 using System;
 using System.IO;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace ClangPowerTools.MVVM.Controllers
@@ -35,13 +36,25 @@ namespace ClangPowerTools.MVVM.Controllers
 
     private async Task<bool> CheckOnlineLicenseAsync()
     {
+      TokenModel tokenModel = CheckToken();
+
+      if(ApiUtility.ApiClient == null)
+      {
+        ApiUtility.InitializeApiClient();
+      }
+
+      if(tokenModel.jwt == "")
+      {
+        return false;
+      }
+
       try
       {
-        // TODO check license API code
+        ApiUtility.ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenModel.jwt);
         using (HttpResponseMessage result = await ApiUtility.ApiClient.GetAsync(WebApiUrl.licenseUrl))
         {
           if (result.IsSuccessStatusCode)
-          {
+          {      
             return true;
           }
           else
@@ -55,6 +68,24 @@ namespace ClangPowerTools.MVVM.Controllers
         return false;
       }
     }
+
+
+    private TokenModel CheckToken()
+    {
+      SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
+      string filePath = settingsPathBuilder.GetPath("ctpjwt");
+      TokenModel tokenModel = new TokenModel();
+
+      if (File.Exists(filePath))
+      {
+        using (StreamReader streamReader = new StreamReader(filePath))
+        {
+          tokenModel.jwt = streamReader.ReadLine();
+        }
+      }
+      return tokenModel;
+    }
+
 
     #endregion
   }
