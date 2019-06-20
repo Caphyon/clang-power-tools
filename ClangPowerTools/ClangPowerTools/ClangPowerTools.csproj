@@ -105,6 +105,7 @@
     <Compile Include="Helpers\UIUpdater.cs" />
     <Compile Include="MVVM\Models\TokenModel.cs" />
     <Compile Include="MVVM\Models\UserModel.cs" />
+    <Compile Include="MVVM\WebApi\WebApiUrl.cs" />
     <Compile Include="Options\ClangTidyPathValue.cs" />
     <Compile Include="Options\ClangFormatPathValue.cs" />
     <Compile Include="Options\HeaderFiltersValue.cs" />
