@@ -1,8 +1,5 @@
 ﻿using System;
-using ClangPowerTools.Helpers;
-using ClangPowerTools.Views;
 using Microsoft.VisualStudio.Shell;
-using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools
 {
