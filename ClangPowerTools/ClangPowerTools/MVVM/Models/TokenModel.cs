@@ -2,6 +2,6 @@
 {
   public class TokenModel
   {
-    public string jwt { get; set; }
+    public string jwt { get; set; } = "";
   }
 }
