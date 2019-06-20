@@ -5,42 +5,27 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using ClangPowerTools.MVVM.WebApi;
 
 namespace ClangPowerTools
 {
   public class AccountController
   {
-    #region Members 
-
-    public static UserModel userModel = new UserModel();
-    private static SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
-
-    private static readonly string appId = "5d011c6a375f6b5ed9716629";
-    private static readonly string url = @"https://account.clangpowertools.com";
-    private static readonly string loginUrl = string.Concat(url, "/api/", appId, "/user/", "login");
-    private static readonly string licenseUrl = string.Concat(url, "/api/", appId, "/license");
-
-    #endregion
-
     #region Public Methods
 
-    public UserModel GetUserModel() => userModel;
-
-    public async Task LoginAsync(string email, string password)
+    public async Task LoginAsync(UserModel userModel)
     {
-      userModel = new UserModel(email, password);
-      string jsonObject = JsonConvert.SerializeObject(userModel);
-      var content = new StringContent(jsonObject, Encoding.UTF8, "application/json");
+      StringContent content = new StringContent(SeralizeUserModel(userModel), Encoding.UTF8, "application/json");
 
       try
       {
-        using (HttpResponseMessage result = await ApiUtility.ApiClient.PostAsync(loginUrl, content))
+        using (HttpResponseMessage result = await ApiUtility.ApiClient.PostAsync(WebApiUrl.loginUrl, content))
         {
+          content.Dispose();
           if (result.IsSuccessStatusCode)
           {
             TokenModel tokenModel = await result.Content.ReadAsAsync<TokenModel>();
             ApiUtility.ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenModel.Token);
-            userModel.IsActive = true;
             await SaveTokenAsync(tokenModel.Token);
           }
           else
@@ -55,41 +40,13 @@ namespace ClangPowerTools
       }
     }
 
-    public async Task CheckLicenseAsync()
+    private string SeralizeUserModel(UserModel userModel)
     {
-      try
-      {
-        using (HttpResponseMessage result = await ApiUtility.ApiClient.GetAsync(licenseUrl))
-        {
-          if (result.IsSuccessStatusCode)
-          {
-            userModel.IsActive = true;
-          }
-          else
-          {
-            userModel.IsActive = false;
-            throw new Exception(result.ReasonPhrase);
-          }
-        }
-      }
-      catch (Exception)
-      {
-        throw;
-      }
+      string jsonObject = JsonConvert.SerializeObject(userModel);
+      userModel.Dispose();
+      return jsonObject;
     }
 
-    public void CheckLocalLicense()
-    {
-      string filePath = settingsPathBuilder.GetPath("ctpjwt");
-      if (File.Exists(filePath))
-      {
-        userModel.IsActive = true;
-      }
-      else
-      {
-        userModel.IsActive = false;
-      }
-    }
 
     #endregion
 
@@ -97,6 +54,7 @@ namespace ClangPowerTools
 
     private async Task SaveTokenAsync(string token)
     {
+      SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
       string filePath = settingsPathBuilder.GetPath("ctpjwt");
       StreamWriter streamWriter = new StreamWriter(filePath);
 

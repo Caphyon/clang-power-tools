@@ -1,4 +1,8 @@
 ﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.MVVM.WebApi;
+using System;
+using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace ClangPowerTools.MVVM.Controllers
@@ -9,22 +13,49 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public async Task<bool> CheckLicenseAsync()
     {
-      var accountController = new AccountController();
       var networkAvailable = await NetworkUtility.CheckInternetConnectionAsync();
 
       if (networkAvailable)
       {
-        await accountController.CheckLicenseAsync();
+        return await CheckOnlineLicenseAsync();
       }
       else
       {
-        accountController.CheckLocalLicense();
+        return CheckLocalLicense();
       }
+    }
 
-      return accountController.GetUserModel().IsActive;
+    private bool CheckLocalLicense()
+    {
+      SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
+      string filePath = settingsPathBuilder.GetPath("ctpjwt");
+      return File.Exists(filePath);
+    }
+
+
+    private async Task<bool> CheckOnlineLicenseAsync()
+    {
+      try
+      {
+        // TODO check license API code
+        using (HttpResponseMessage result = await ApiUtility.ApiClient.GetAsync(WebApiUrl.licenseUrl))
+        {
+          if (result.IsSuccessStatusCode)
+          {
+            return true;
+          }
+          else
+          {
+            return false;
+          }
+        }
+      }
+      catch (Exception)
+      {
+        return false;
+      }
     }
 
     #endregion
-
   }
 }

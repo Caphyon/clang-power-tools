@@ -1,13 +1,14 @@
-﻿namespace ClangPowerTools
+﻿using System;
+using System.Security;
+
+namespace ClangPowerTools
 {
-  public class UserModel
+  public class UserModel : IDisposable
   {
     #region Properties
 
     public string email { get; set; }
     public string password { get; set; }
-    public bool IsActive { get; set; } = false;
-
     #endregion
 
     #region Constructor
@@ -18,11 +19,14 @@
       this.password = password;
     }
 
-    public UserModel()
+    public UserModel() { }
+
+    public void Dispose()
     {
+      email = string.Empty;
+      password = string.Empty;
     }
 
     #endregion
-
   }
 }
