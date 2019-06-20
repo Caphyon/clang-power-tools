@@ -1,4 +1,10 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Security;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace ClangPowerTools
 {
@@ -6,8 +12,7 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private string email;
-    private string password;
+    private UserModel userModel = new UserModel();
     public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
@@ -16,24 +21,22 @@ namespace ClangPowerTools
 
     public string Email
     {
-      get { return email; }
+      get { return userModel.email; }
       set
       {
-        email = value;
+        userModel.email = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Email"));
       }
     }
 
     public string Password
     {
-      get { return password; }
+      get { return userModel.password; }
       set
       {
-        password = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Password"));
+        userModel.password = value;
       }
     }
-
     #endregion
 
   }

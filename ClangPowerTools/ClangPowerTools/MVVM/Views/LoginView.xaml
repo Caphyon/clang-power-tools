@@ -66,7 +66,8 @@
       BorderBrush="LightGray"
       BorderThickness="1"
       FontFamily="SegoeUI"
-      FontSize="16">
+      FontSize="16"
+      Text="{Binding Email}">
 
       <TextBox.Style>
         <Style xmlns:sys="clr-namespace:System;assembly=mscorlib" TargetType="TextBox">
@@ -273,6 +274,7 @@
       HorizontalContentAlignment="Center"
       VerticalContentAlignment="Center"
       Background="#FFBF31"
+      Click="LoginButton_Click"
       Content="LOG IN"
       Cursor="Hand"
       FontFamily="SegoeUI"
