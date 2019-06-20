@@ -36,10 +36,13 @@ namespace ClangPowerTools.Views
     {
       UserModel userModel = new UserModel(loginViewModel.Email, loginViewModel.Password);
       loginViewModel.Password = string.Empty;
-      await accountController.LoginAsync(userModel);
- 
-    }
 
+      bool isAccountActive = await accountController.LoginAsync(userModel);
+      if(isAccountActive)
+      {
+        Close();
+      }
+    }
 
     private void OnPasswordChanged(object sender, RoutedEventArgs e)
     {
