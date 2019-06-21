@@ -99,6 +99,11 @@ namespace ClangPowerTools
       {
         await TidyConfigCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kITidyExportConfigId);
       }
+
+      if(Logout.Instance == null)
+      {
+        await Logout.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kLogoutId);
+      }
     }
 
     public async void Execute(object sender, EventArgs e)
@@ -201,6 +206,11 @@ namespace ClangPowerTools
         case CommandIds.kIgnoreCompileId:
           {
             IgnoreCompileCommand.Instance.RunIgnoreCompileCommand(CommandIds.kIgnoreCompileId);
+            break;
+          }
+        case CommandIds.kLogoutId:
+          {
+            Logout.Instance.LogoutUser();
             break;
           }
         default:

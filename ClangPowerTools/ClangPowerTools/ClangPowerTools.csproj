@@ -74,6 +74,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Events\LicenseEventArgs.cs" />
+    <Compile Include="Commands\Logout.cs" />
     <Compile Include="MVVM\Controllers\AccountController.cs" />
     <Compile Include="MVVM\Controllers\LicenseController.cs" />
     <Compile Include="MVVM\ViewModels\LoginViewModel.cs" />
@@ -257,6 +258,7 @@
     </Content>
     <Resource Include="MVVM\Views\Background.png" />
     <Resource Include="Resources\AlphabeticalIcon.PNG" />
+    <Content Include="Resources\Logout.png" />
     <Content Include="Resources\ClangFormatIcon.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -402,6 +404,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
     <Reference Include="System.Net.Http, Version=4.2.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
