@@ -36,7 +36,8 @@ namespace ClangPowerTools
             SaveToken(tokenModel.jwt);
 
             OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(true));
-            return true;
+            string licenseResponse = await ApiUtility.ApiClient.GetStringAsync(WebApiUrl.licenseUrl);
+            return (licenseResponse.Length < 5) ? false : true;
           }
           else
           {
@@ -60,12 +61,21 @@ namespace ClangPowerTools
     {
       SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
       string filePath = settingsPathBuilder.GetPath("ctpjwt");
+      DeleteExistingToken(filePath);
 
       using (StreamWriter streamWriter = new StreamWriter(filePath))
       {
         streamWriter.WriteLine(token);
       }
       File.SetAttributes(filePath, File.GetAttributes(filePath) | FileAttributes.Hidden);
+    }
+
+    private void DeleteExistingToken(string filePath)
+    {
+      if (File.Exists(filePath))
+      {
+        File.Delete(filePath);
+      }
     }
 
     private string SeralizeUserModel(UserModel userModel)

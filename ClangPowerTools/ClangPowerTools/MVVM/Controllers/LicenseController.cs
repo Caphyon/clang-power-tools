@@ -49,12 +49,12 @@ namespace ClangPowerTools.MVVM.Controllers
     {
       TokenModel tokenModel = CheckToken();
 
-      if(ApiUtility.ApiClient == null)
+      if (ApiUtility.ApiClient == null)
       {
         ApiUtility.InitializeApiClient();
       }
 
-      if(tokenModel.jwt == "")
+      if (tokenModel.jwt == "")
       {
         return false;
       }
@@ -65,8 +65,9 @@ namespace ClangPowerTools.MVVM.Controllers
         using (HttpResponseMessage result = await ApiUtility.ApiClient.GetAsync(WebApiUrl.licenseUrl))
         {
           if (result.IsSuccessStatusCode)
-          {      
-            return true;
+          {
+            string licenseResponse = await ApiUtility.ApiClient.GetStringAsync(WebApiUrl.licenseUrl);
+            return (licenseResponse.Length < 5) ? false : true;
           }
           else
           {
