@@ -60,7 +60,8 @@
       Height="40"
       Margin="0,30,0,0"
       Padding="5,0"
-      VerticalAlignment="Stretch"
+      HorizontalAlignment="Center"
+      VerticalAlignment="Center"
       VerticalContentAlignment="Center"
       Panel.ZIndex="0"
       BorderBrush="LightGray"
@@ -181,22 +182,19 @@
       Height="40"
       Margin="0,30,0,0"
       Padding="5,0"
-      VerticalAlignment="Stretch"
+      HorizontalAlignment="Center"
+      VerticalAlignment="Center"
       VerticalContentAlignment="Center"
       Panel.ZIndex="0"
       BorderBrush="LightGray"
       BorderThickness="1"
       FontFamily="SegoeUI"
-      FontSize="16">
+      FontSize="16"
+      PasswordChanged="OnPasswordChanged"
+      Tag="False">
 
       <PasswordBox.Style>
         <Style xmlns:sys="clr-namespace:System;assembly=mscorlib" TargetType="PasswordBox">
-
-          <Style.Setters>
-            <Setter Property="Tag" Value="False" />
-            <EventSetter Event="PasswordChanged" Handler="OnPasswordChanged" />
-          </Style.Setters>
-
           <Style.Resources>
             <VisualBrush
               x:Key="GrayHelperTextBrush"

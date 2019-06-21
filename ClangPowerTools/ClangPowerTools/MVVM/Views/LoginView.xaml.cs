@@ -46,6 +46,15 @@ namespace ClangPowerTools.Views
 
     private void OnPasswordChanged(object sender, RoutedEventArgs e)
     {
+      if (string.IsNullOrWhiteSpace(PasswordTextBox.Password) == false)
+      {
+        PasswordTextBox.Tag = "True";
+      }
+      else
+      {
+        PasswordTextBox.Tag = "False";
+      }
+
       if (DataContext != null)
       {
         loginViewModel.Password = ((PasswordBox)sender).Password;
