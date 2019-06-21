@@ -14,7 +14,7 @@ namespace ClangPowerTools
   {
     #region Members
 
-    public static event EventHandler<ActiveDocumentEventArgs> OnLicenseStatusChanced;
+    public static event EventHandler<LicenseEventArgs> OnLicenseStatusChanced;
 
     #endregion
 
@@ -35,19 +35,19 @@ namespace ClangPowerTools
             ApiUtility.ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenModel.jwt);
             SaveToken(tokenModel.jwt);
 
-            OnLicenseStatusChanced.Invoke(this, new ActiveDocumentEventArgs(true));
+            OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(true));
             return true;
           }
           else
           {
-            OnLicenseStatusChanced.Invoke(this, new ActiveDocumentEventArgs(false));
+            OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(false));
             return false;
           }
         }
       }
       catch (Exception)
       {
-        OnLicenseStatusChanced.Invoke(this, new ActiveDocumentEventArgs(false));
+        OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(false));
         return false;
       }
     }

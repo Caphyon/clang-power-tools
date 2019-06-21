@@ -13,7 +13,7 @@ namespace ClangPowerTools.MVVM.Controllers
   {
     #region Members
 
-    public static event EventHandler<ActiveDocumentEventArgs> OnLicenseStatusChanced;
+    public static event EventHandler<LicenseEventArgs> OnLicenseStatusChanced;
 
     #endregion
 
@@ -33,7 +33,7 @@ namespace ClangPowerTools.MVVM.Controllers
         licenceStatus = CheckLocalLicense();
       }
 
-      OnLicenseStatusChanced.Invoke(this, new ActiveDocumentEventArgs(licenceStatus));
+      OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(licenceStatus));
       return licenceStatus;
     }
 

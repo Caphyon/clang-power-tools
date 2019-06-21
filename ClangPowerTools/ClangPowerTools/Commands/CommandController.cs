@@ -378,9 +378,9 @@ namespace ClangPowerTools
     #region Events
 
 
-    public void OnLicenseChanged(object sender, ActiveDocumentEventArgs e)
+    public void OnLicenseChanged(object sender, LicenseEventArgs e)
     {
-      activeLicense = e.IsActiveDocument;
+      activeLicense = e.IsLicenseActive;
     }
 
     /// <summary>
