@@ -32,13 +32,20 @@ namespace ClangPowerTools.Views
 
     private async void LoginButton_Click(object sender, RoutedEventArgs e)
     {
+      LoginButton.IsEnabled = false;
       UserModel userModel = new UserModel(loginViewModel.Email, loginViewModel.Password);
       loginViewModel.Password = string.Empty;
+
 
       bool isAccountActive = await accountController.LoginAsync(userModel);
       if(isAccountActive)
       {
         Close();
+      }
+      else
+      {
+        LoginButton.IsEnabled = true;
+        InvalidUserTextBlock.Visibility = Visibility.Visible;
       }
     }
 

@@ -261,6 +261,21 @@
       </PasswordBox.Style>
     </PasswordBox>
 
+    <TextBlock
+      Name="InvalidUserTextBlock"
+      Grid.Row="3"
+      Width="388"
+      Height="27"
+      Margin="0,10,0,76"
+      HorizontalAlignment="Center"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="20"
+      Foreground="Red"
+      Text="Incorrect email or password."
+      TextAlignment="Center"
+      Visibility="Hidden" />
+
     <Button
       x:Name="LoginButton"
       Grid.Row="3"
@@ -357,7 +372,7 @@
       Grid.Row="4"
       Width="108"
       Height="19"
-      Margin="0,24,0,0"
+      Margin="0,10,0,0"
       HorizontalAlignment="Center"
       VerticalAlignment="Center"
       Background="Transparent"
@@ -396,7 +411,7 @@
       Grid.Row="5"
       Width="185"
       Height="19"
-      Margin="17,50,0,12"
+      Margin="17,19,0,5"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
       Background="Transparent"
