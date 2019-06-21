@@ -6,11 +6,18 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using ClangPowerTools.MVVM.WebApi;
+using ClangPowerTools.Events;
 
 namespace ClangPowerTools
 {
   public class AccountController
   {
+    #region Members
+
+    public static event EventHandler<ActiveDocumentEventArgs> OnLicenseStatusChanced;
+
+    #endregion
+
     #region Public Methods
 
     public async Task<bool> LoginAsync(UserModel userModel)
@@ -27,27 +34,23 @@ namespace ClangPowerTools
             TokenModel tokenModel = await result.Content.ReadAsAsync<TokenModel>();
             ApiUtility.ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenModel.jwt);
             SaveToken(tokenModel.jwt);
+
+            OnLicenseStatusChanced.Invoke(this, new ActiveDocumentEventArgs(true));
             return true;
           }
           else
           {
+            OnLicenseStatusChanced.Invoke(this, new ActiveDocumentEventArgs(false));
             return false;
           }
         }
       }
       catch (Exception)
       {
+        OnLicenseStatusChanced.Invoke(this, new ActiveDocumentEventArgs(false));
         return false;
       }
     }
-
-    private string SeralizeUserModel(UserModel userModel)
-    {
-      string jsonObject = JsonConvert.SerializeObject(userModel);
-      userModel.Dispose();
-      return jsonObject;
-    }
-
 
     #endregion
 
@@ -63,6 +66,13 @@ namespace ClangPowerTools
         streamWriter.WriteLine(token);
       }
       File.SetAttributes(filePath, File.GetAttributes(filePath) | FileAttributes.Hidden);
+    }
+
+    private string SeralizeUserModel(UserModel userModel)
+    {
+      string jsonObject = JsonConvert.SerializeObject(userModel);
+      userModel.Dispose();
+      return jsonObject;
     }
 
     #endregion

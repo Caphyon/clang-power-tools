@@ -1,7 +1,6 @@
 ﻿using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
-using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.Services;
 using ClangPowerTools.Views;
 using EnvDTE;
@@ -30,6 +29,7 @@ namespace ClangPowerTools
     private bool isActiveDocument = true;
     public bool running = false;
     public bool vsBuildRunning = false;
+    public bool activeLicense = false;
 
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
     public event EventHandler<ClangCommandMessageEventArgs> ClangCommandMessageEvent;
@@ -103,10 +103,7 @@ namespace ClangPowerTools
 
     public async void Execute(object sender, EventArgs e)
     {
-      LicenseController licenseController = new LicenseController();
-      var licenseActivated = await licenseController.CheckLicenseAsync();
-
-      if ( licenseActivated == false )
+      if(activeLicense == false)
       {
         LoginView loginView = new LoginView();
         loginView.ShowDialog();
@@ -212,7 +209,6 @@ namespace ClangPowerTools
     }
 
     #endregion
-
 
     #region Private Methods
 
@@ -380,6 +376,12 @@ namespace ClangPowerTools
 
 
     #region Events
+
+
+    public void OnLicenseChanged(object sender, ActiveDocumentEventArgs e)
+    {
+      activeLicense = e.IsActiveDocument;
+    }
 
     /// <summary>
     /// It is called before every command. Update the running state.  

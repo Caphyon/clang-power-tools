@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.Helpers;
+﻿using ClangPowerTools.Events;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.WebApi;
 using System;
 using System.IO;
@@ -10,20 +11,30 @@ namespace ClangPowerTools.MVVM.Controllers
 {
   public class LicenseController
   {
+    #region Members
+
+    public static event EventHandler<ActiveDocumentEventArgs> OnLicenseStatusChanced;
+
+    #endregion
+
     #region Public Methods
 
     public async Task<bool> CheckLicenseAsync()
     {
       var networkAvailable = await NetworkUtility.CheckInternetConnectionAsync();
+      bool licenceStatus;
 
       if (networkAvailable)
       {
-        return await CheckOnlineLicenseAsync();
+        licenceStatus = await CheckOnlineLicenseAsync();
       }
       else
       {
-        return CheckLocalLicense();
+        licenceStatus = CheckLocalLicense();
       }
+
+      OnLicenseStatusChanced.Invoke(this, new ActiveDocumentEventArgs(licenceStatus));
+      return licenceStatus;
     }
 
     private bool CheckLocalLicense()

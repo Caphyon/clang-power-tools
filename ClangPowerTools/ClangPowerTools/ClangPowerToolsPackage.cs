@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.Commands;
 using ClangPowerTools.Helpers;
+using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
 using ClangPowerTools.Tests;
@@ -60,6 +61,7 @@ namespace ClangPowerTools
     private ErrorWindowController mErrorWindowController;
     private OutputWindowController mOutputWindowController;
     private CommandController mCommandController;
+    private LicenseController mLicenseController;
 
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
@@ -102,7 +104,6 @@ namespace ClangPowerTools
       mCommandController = new CommandController(this);
       CommandTestUtility.CommandController = mCommandController;
 
-
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
 
       mOutputWindowController = new OutputWindowController();
@@ -139,7 +140,7 @@ namespace ClangPowerTools
         ShowToolbare(); // Show the toolbar on the first install
 
       var currentVersion = PackageUtility.GetVersion();
-      if (!string.IsNullOrWhiteSpace(currentVersion) && 
+      if (!string.IsNullOrWhiteSpace(currentVersion) &&
         0 > string.Compare(SettingsProvider.GeneralSettings.Version, currentVersion))
       {
         mOutputWindowController.Clear();
@@ -152,11 +153,13 @@ namespace ClangPowerTools
       SettingsHandler.SaveGeneralSettings();
 
       await mCommandController.InitializeCommandsAsync(this);
+      mLicenseController = new LicenseController();
+
       RegisterToEvents();
+      await mLicenseController.CheckLicenseAsync();
 
       await base.InitializeAsync(cancellationToken, progress);
     }
-
 
     #endregion
 
@@ -257,7 +260,6 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-
     private async Task RegisterVsServicesAsync()
     {
       // Get DTE service async 
@@ -319,6 +321,9 @@ namespace ClangPowerTools
       PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
       PowerShellWrapper.ExitedHandler += mOutputWindowController.ClosedDataConnection;
+
+      AccountController.OnLicenseStatusChanced += mCommandController.OnLicenseChanged;
+      LicenseController.OnLicenseStatusChanced += mCommandController.OnLicenseChanged;
     }
 
     private void RegisterToVsEvents()
@@ -380,6 +385,9 @@ namespace ClangPowerTools
       PowerShellWrapper.DataHandler -= mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler -= mOutputWindowController.OutputDataErrorReceived;
       PowerShellWrapper.ExitedHandler -= mOutputWindowController.ClosedDataConnection;
+
+      AccountController.OnLicenseStatusChanced -= mCommandController.OnLicenseChanged;
+      LicenseController.OnLicenseStatusChanced -= mCommandController.OnLicenseChanged;
     }
 
     private void UnregisterFromVsEvents()
