@@ -1,7 +1,5 @@
-﻿using ClangPowerTools.MVVM.Controllers;
-using ClangPowerTools.MVVM.WebApi;
+﻿using ClangPowerTools.MVVM.WebApi;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
