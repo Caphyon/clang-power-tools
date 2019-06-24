@@ -34,7 +34,7 @@ namespace ClangPowerTools.Views
     {
       LoginButton.IsEnabled = false;
       UserModel userModel = new UserModel(loginViewModel.Email, loginViewModel.Password);
-      loginViewModel.Password = string.Empty;
+      InvalidUserTextBlock.Visibility = Visibility.Hidden;
 
 
       bool isAccountActive = await accountController.LoginAsync(userModel);
