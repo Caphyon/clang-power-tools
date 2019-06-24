@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 using System.IO;
 using ClangPowerTools.MVVM.WebApi;
 using ClangPowerTools.Events;
+using System.Collections.Generic;
+using ClangPowerTools.MVVM.Models;
 
-namespace ClangPowerTools
+namespace ClangPowerTools.MVVM.Controllers
 {
   public class AccountController
   {
@@ -32,12 +34,18 @@ namespace ClangPowerTools
           if (result.IsSuccessStatusCode)
           {
             TokenModel tokenModel = await result.Content.ReadAsAsync<TokenModel>();
-            ApiUtility.ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenModel.jwt);
-            SaveToken(tokenModel.jwt);
 
+            LicenseController licenseController = new LicenseController();
+            bool licenseStatus = await licenseController.CheckLicenseAsync(tokenModel);
+
+            if(licenseStatus == false)
+            {
+              return false;
+            }
+
+            SaveToken(tokenModel.jwt);
             OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(true));
-            string licenseResponse = await ApiUtility.ApiClient.GetStringAsync(WebApiUrl.licenseUrl);
-            return (licenseResponse.Length < 5) ? false : true;
+            return true;
           }
           else
           {

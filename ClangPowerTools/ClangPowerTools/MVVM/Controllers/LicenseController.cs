@@ -1,7 +1,9 @@
 ﻿using ClangPowerTools.Events;
 using ClangPowerTools.Helpers;
+using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.MVVM.WebApi;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -19,19 +21,14 @@ namespace ClangPowerTools.MVVM.Controllers
 
     #region Public Methods
 
-    public async Task<bool> CheckLicenseAsync()
+    public async Task<bool> CheckLicenseAsync(TokenModel tokenModel = null)
     {
       var networkAvailable = await NetworkUtility.CheckInternetConnectionAsync();
-      bool licenceStatus;
-
-      if (networkAvailable)
+      if(tokenModel == null)
       {
-        licenceStatus = await CheckOnlineLicenseAsync();
+        tokenModel = new TokenModel();
       }
-      else
-      {
-        licenceStatus = CheckLocalLicense();
-      }
+      bool licenceStatus = networkAvailable ? await CheckOnlineLicenseAsync(tokenModel) : CheckLocalLicense();
 
       OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(licenceStatus));
       return licenceStatus;
@@ -45,9 +42,9 @@ namespace ClangPowerTools.MVVM.Controllers
     }
 
 
-    private async Task<bool> CheckOnlineLicenseAsync()
+    private async Task<bool> CheckOnlineLicenseAsync(TokenModel tokenModel)
     {
-      TokenModel tokenModel = CheckToken();
+      tokenModel = CheckToken(tokenModel);
 
       if (ApiUtility.ApiClient == null)
       {
@@ -65,9 +62,9 @@ namespace ClangPowerTools.MVVM.Controllers
         using (HttpResponseMessage result = await ApiUtility.ApiClient.GetAsync(WebApiUrl.licenseUrl))
         {
           if (result.IsSuccessStatusCode)
-          {
-            string licenseResponse = await ApiUtility.ApiClient.GetStringAsync(WebApiUrl.licenseUrl);
-            return (licenseResponse.Length < 5) ? false : true;
+          {           
+            List<LicenseModel> licenses = await result.Content.ReadAsAsync<List<LicenseModel>>();
+            return licenses.Count > 0;
           }
           else
           {
@@ -82,11 +79,10 @@ namespace ClangPowerTools.MVVM.Controllers
     }
 
 
-    private TokenModel CheckToken()
+    private TokenModel CheckToken(TokenModel tokenModel)
     {
       SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
       string filePath = settingsPathBuilder.GetPath("ctpjwt");
-      TokenModel tokenModel = new TokenModel();
 
       if (File.Exists(filePath))
       {
