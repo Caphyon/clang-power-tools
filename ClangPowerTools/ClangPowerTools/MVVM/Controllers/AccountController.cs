@@ -25,7 +25,6 @@ namespace ClangPowerTools.MVVM.Controllers
     public async Task<bool> LoginAsync(UserModel userModel)
     {
       StringContent content = new StringContent(SeralizeUserModel(userModel), Encoding.UTF8, "application/json");
-      userModel.Dispose();
 
       try
       {
