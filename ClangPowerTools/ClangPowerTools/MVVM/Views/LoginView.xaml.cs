@@ -3,6 +3,7 @@ using ClangPowerTools.MVVM.WebApi;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace ClangPowerTools.Views
 {
@@ -13,6 +14,12 @@ namespace ClangPowerTools.Views
   {
     private LoginViewModel loginViewModel = new LoginViewModel();
     private AccountController accountController = new AccountController();
+
+    // Login button colors
+    private readonly string colorBackgroundEnabled = "#FFBF31";
+    private readonly string colorForegroundEnabled = "#000000";
+    private readonly string colorBackgroundDisabled = "#BBB6C4";
+    private readonly string colorForegroundDisabled = "#707079";
 
     public LoginView()
     {
@@ -33,21 +40,31 @@ namespace ClangPowerTools.Views
 
     private async void LoginButton_Click(object sender, RoutedEventArgs e)
     {
-      LoginButton.IsEnabled = false;
+      SetLoginButtonState(false, colorBackgroundDisabled, colorForegroundDisabled);
+
       UserModel userModel = new UserModel(loginViewModel.Email, loginViewModel.Password);
       InvalidUserTextBlock.Visibility = Visibility.Hidden;
 
-
       bool isAccountActive = await accountController.LoginAsync(userModel);
-      if(isAccountActive)
+      if (isAccountActive)
       {
         Close();
       }
       else
       {
-        LoginButton.IsEnabled = true;
+        SetLoginButtonState(true, colorBackgroundEnabled, colorForegroundEnabled);
         InvalidUserTextBlock.Visibility = Visibility.Visible;
       }
+    }
+
+    private void SetLoginButtonState(bool isEnabled, string background, string foreground)
+    {
+      Color colorBackground = (Color)ColorConverter.ConvertFromString(background);
+      Color colorForeground = (Color)ColorConverter.ConvertFromString(foreground);
+
+      LoginButton.IsEnabled = isEnabled;
+      LoginButton.Background = new SolidColorBrush(colorBackground);
+      LoginButton.Foreground = new SolidColorBrush(colorForeground);
     }
 
     private void OnPasswordChanged(object sender, RoutedEventArgs e)
