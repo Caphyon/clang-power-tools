@@ -62,13 +62,12 @@ namespace ClangPowerTools.MVVM.Controllers
         using (HttpResponseMessage result = await ApiUtility.ApiClient.GetAsync(WebApiUrl.licenseUrl))
         {
           if (result.IsSuccessStatusCode)
-          {           
-            List<LicenseModel> licenses = await result.Content.ReadAsAsync<List<LicenseModel>>();
-            return licenses.Count > 0;
+          {
+            return await CheckAllLicensesAsync(result);
           }
           else
           {
-            return false;
+            return true;
           }
         }
       }
@@ -78,6 +77,23 @@ namespace ClangPowerTools.MVVM.Controllers
       }
     }
 
+    private async Task<bool> CheckAllLicensesAsync(HttpResponseMessage result)
+    {
+      List<LicenseModel> licenses = await result.Content.ReadAsAsync<List<LicenseModel>>();
+      if (licenses.Count == 0)
+      {
+        return true;
+      }
+
+      foreach (LicenseModel item in licenses)
+      {
+        if (item.active == true)
+        {
+          return true;
+        }
+      }
+      return false;
+    }
 
     private TokenModel CheckToken(TokenModel tokenModel)
     {
@@ -93,7 +109,6 @@ namespace ClangPowerTools.MVVM.Controllers
       }
       return tokenModel;
     }
-
 
     #endregion
   }
