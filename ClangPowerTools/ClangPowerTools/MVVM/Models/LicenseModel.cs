@@ -10,6 +10,8 @@ namespace ClangPowerTools.MVVM.Models
   {
     public string _id { get; set; } = "";
 
-    public bool active = false; 
+    public bool active = false;
+
+    public string expires = "";
   }
 }

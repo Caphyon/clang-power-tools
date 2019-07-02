@@ -24,7 +24,7 @@ namespace ClangPowerTools.MVVM.Controllers
     public async Task<bool> CheckLicenseAsync(TokenModel tokenModel = null)
     {
       var networkAvailable = await NetworkUtility.CheckInternetConnectionAsync();
-      if(tokenModel == null)
+      if (tokenModel == null)
       {
         tokenModel = new TokenModel();
       }
@@ -80,6 +80,7 @@ namespace ClangPowerTools.MVVM.Controllers
     private async Task<bool> CheckAllLicensesAsync(HttpResponseMessage result)
     {
       List<LicenseModel> licenses = await result.Content.ReadAsAsync<List<LicenseModel>>();
+
       if (licenses.Count == 0)
       {
         return true;
@@ -87,12 +88,29 @@ namespace ClangPowerTools.MVVM.Controllers
 
       foreach (LicenseModel item in licenses)
       {
-        if (item.active == true)
+        if (CheckExpirationDate(item) == true)
         {
           return true;
         }
       }
       return false;
+    }
+
+    private bool CheckExpirationDate(LicenseModel license)
+    {
+      DateTime currentDate = DateTime.Now;
+      DateTime expirationDate;
+      DateTime.TryParse(license.expires, out expirationDate);
+      int compareResult = DateTime.Compare(currentDate, expirationDate);
+
+      if (compareResult < 0)
+      {
+        return true;
+      }
+      else
+      {
+        return false;
+      }
     }
 
     private TokenModel CheckToken(TokenModel tokenModel)
