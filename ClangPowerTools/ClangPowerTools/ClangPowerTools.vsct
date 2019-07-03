@@ -43,16 +43,16 @@
       </Menu>
 
     </Menus>
-    
-    
+
+
     <!-- Goups declarations -->
     <!-- All the command buttons must be placed inside of a group -->
     <Groups>
-      
+
       <!-- Submenus groups -->
-      
+
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0000" />
-      
+
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarMenu" priority="0x0000" >
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForTopToolbarMenu"/>
       </Group>
@@ -65,21 +65,21 @@
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="Toolbar" />
       </Group>
 
-      <!-- Context Menu groups-->      
-      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0000" />     
-      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" priority="0x0002" />     
+      <!-- Context Menu groups-->
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0000" />
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" priority="0x0002" />
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0003" />
-      
+
     </Groups>
-    
-    
+
+
     <!-- Commands declaration -->
     <!-- Each button coresponds to a specific custom command from VS Extension -->
     <Buttons>
 
       <!-- Context Menu buttons -->
-      
-      
+
+
       <!-- Clang Compile Context Menu button -->
       <Button guid="guidClangPowerToolsPackageCmdSet" id="CompileId" priority="0x0000" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
@@ -99,7 +99,7 @@
           <ButtonText>Tidy</ButtonText>
         </Strings>
       </Button>
-      
+
       <!-- Clang Tidy-Fix context menu button  -->
       <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixId" priority="0x0003" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
@@ -159,7 +159,7 @@
         </Strings>
       </Button>
 
-      
+
       <!-- Toolbar Buttons -->
 
       <!-- Clang Compile toolbar button -->
@@ -182,7 +182,7 @@
           <ButtonText>Tidy-Fix</ButtonText>
         </Strings>
       </Button>
-      
+
       <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyToolbarId" priority="0x0001" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownToolbarMenuGroup" />
         <Icon guid="guidImageTidy" id="Tidy" />
@@ -222,9 +222,9 @@
         </Strings>
       </Button>
 
-      
+
       <!-- Top Toolbar buttons -->
-      
+
       <!-- Export Clang Tidy Config Top Toolbar button -->
       <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyExportConfigId" priority="0x0111" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarMenu" />
@@ -241,9 +241,9 @@
           <ButtonText>Settings</ButtonText>
         </Strings>
       </Button>
-      
+
     </Buttons>
-    
+
     <!--Declare all the image resources -->
     <Bitmaps>
       <Bitmap guid="guidImages" href="Resources\Icon.png" usedList="bmpPic1" />
@@ -260,30 +260,29 @@
 
   <!-- Shortcuts for commands-->
   <KeyBindings>
-    <!--<KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="CompileId" editor="guidVSStd97"
-                key1="C" mod1="ALT" />-->  
-    
     <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="CompileToolbarId" editor="guidVSStd97"
                 key1="C" mod1="ALT" />
+
+    <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyIdToolbarId" editor="guidVSStd97"
+                    key1="T" mod1="ALT" />
     
-    <!--<KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyId" editor="guidVSStd97"
-                    key1="Y" mod1="ALT" />
-        <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" editor="guidVSStd97"
-                    key1="U" mod1="ALT" />
-        <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" editor="guidVSStd97"
-                    key1="I" mod1="ALT" />
-        <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" editor="guidVSStd97"
-                    key1="O" mod1="ALT" />-->
+    <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" editor="guidVSStd97"
+                key1="Y" mod1="ALT" />
+    
+    <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" editor="guidVSStd97"
+                key1="F" mod1="ALT" />
+    
+    <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" editor="guidVSStd97"
+                key1="S" mod1="ALT" />
   </KeyBindings>
 
-
   <!-- Placement for commands. The parent of a command is always a group, never a menu, context menu or toolbar.-->
-  
+
   <CommandPlacements>
 
     <!-- Add the Clang Power Tools submenu(the subpenu contains all the commands) 
       in context menu of solution, project, folder, file and tab editor -->
-    
+
     <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x08FF">
       <!-- The parent of the group will be the solution context menu -->
       <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE" />
@@ -306,12 +305,12 @@
 
     <!-- <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0xFFFF">
        The parent of the group will be the tab file context menu -->
-     <!--<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_EZDOCWINTAB" /> 
+    <!--<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_EZDOCWINTAB" /> 
     </CommandPlacement>-->
 
-    
-     <!-- Define which groups will be placed in the Clang Power Tools submenu  -->
-    <!-- By placing a group automatically each section it will be delimited by a separator -->   
+
+    <!-- Define which groups will be placed in the Clang Power Tools submenu  -->
+    <!-- By placing a group automatically each section it will be delimited by a separator -->
     <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0001">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
     </CommandPlacement>
@@ -326,16 +325,16 @@
 
   </CommandPlacements>
 
-  
+
   <!--Contains all the unique identifires and symbols declaration-->
   <Symbols>
     <GuidSymbol name="guidClangPowerToolsPackage" value="{f564f9d3-01ae-493e-883b-18deebdb975e}" />
 
-    
-    <!-- Define the unique identifires for commands, groups, menu and toolbar -->   
+
+    <!-- Define the unique identifires for commands, groups, menu and toolbar -->
     <GuidSymbol name="guidClangPowerToolsPackageCmdSet" value="{498fdff5-5217-4da9-88d2-edad44ba3874}">
-      
-      <!-- Define the unique identifires for groups -->   
+
+      <!-- Define the unique identifires for groups -->
       <IDSymbol name="GroupForSubmenu" value="0x1020" />
       <IDSymbol name="GroupForCommands" value="0x1021" />
       <IDSymbol name="GroupForSettings" value="0x1022" />
@@ -372,7 +371,7 @@
       <IDSymbol name="Toolbar" value="0x1000" />
     </GuidSymbol>
 
-    <!--Icon for preview image and main icon--> 
+    <!--Icon for preview image and main icon-->
     <GuidSymbol name="guidImages" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70a}">
       <IDSymbol name="bmpPic1" value="1" />
     </GuidSymbol>
