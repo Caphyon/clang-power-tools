@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.CommandBars;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -149,6 +150,7 @@ namespace ClangPowerTools
           $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
 
         SettingsProvider.GeneralSettings.Version = currentVersion;
+        System.Diagnostics.Process.Start(new ProcessStartInfo("https://clangpowertools.com/"));
       }
       SettingsHandler.SaveGeneralSettings();
 
