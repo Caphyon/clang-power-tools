@@ -14,14 +14,14 @@
         </Strings>
       </Menu>
 
-      <!--Top Toolbar Menu Drop-Down
+      <!--Top Toolbar Menu Drop-Down-->
       <Menu guid="guidClangPowerToolsPackageCmdSet" id="GroupForTopToolbarMenu" priority="0xffff" type="Menu">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
         <Strings>
           <ButtonText>Clang Power Tools</ButtonText>
           <CommandName>Clang Power Tools</CommandName>
         </Strings>
-      </Menu> -->
+      </Menu> 
 
       <!--Toolbar menu-->
       <Menu guid="guidClangPowerToolsPackageCmdSet" id="Toolbar" type="Toolbar">
@@ -242,6 +242,15 @@
         </Strings>
       </Button>
 
+      <!-- Logout Context Menu Top Toolbar button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="LogoutId" priority="0x0113" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarMenu" />
+        <Icon guid="guidImageLogout" id="Logout" />
+        <Strings>
+          <ButtonText>Logout</ButtonText>
+        </Strings>
+      </Button>
+
     </Buttons>
 
     <!--Declare all the image resources -->
@@ -254,6 +263,7 @@
       <Bitmap guid="guidImageSettings" href="Resources\SettingsIcon.png" usedList="Settings" />
       <Bitmap guid="guidImageIgnoreFormat" href="Resources\IgnoreIcon.png" usedList="IgnoreFormat" />
       <Bitmap guid="guidImageEmpty" href="Resources\EmptyIcon.png" usedList="Empty" />
+      <Bitmap guid="guidImageLogout" href="Resources\Logout.png" usedList="Logout" />
     </Bitmaps>
 
   </Commands>
@@ -303,11 +313,10 @@
       <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE" />
     </CommandPlacement>
 
-    <!-- <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0xFFFF">
-       The parent of the group will be the tab file context menu -->
-    <!--<Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_EZDOCWINTAB" /> 
-    </CommandPlacement>-->
-
+     <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0xFFFF">
+       <!--The parent of the group will be the tab file context menu--> 
+     <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_EZDOCWINTAB" /> 
+    </CommandPlacement>
 
     <!-- Define which groups will be placed in the Clang Power Tools submenu  -->
     <!-- By placing a group automatically each section it will be delimited by a separator -->
@@ -366,6 +375,7 @@
       <IDSymbol name="IgnoreCompileId" value="0x0108" />
       <IDSymbol name="SettingsId" value="0x0103" />
       <IDSymbol name="TidyExportConfigId" value="0x1032" />
+      <IDSymbol name="LogoutId" value="0x1033" />
 
       <!-- Define the unique identifires for toolbar -->
       <IDSymbol name="Toolbar" value="0x1000" />
@@ -411,6 +421,11 @@
     <!-- Define clang format image -->
     <GuidSymbol name="guidImageFormat" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c71a}">
       <IDSymbol name="Format" value="1" />
+    </GuidSymbol>  
+    
+    <!-- Define Logout image -->
+    <GuidSymbol name="guidImageLogout" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c72a}">
+      <IDSymbol name="Logout" value="1" />
     </GuidSymbol>
 
   </Symbols>

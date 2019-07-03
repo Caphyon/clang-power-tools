@@ -2,6 +2,7 @@
 using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
 using ClangPowerTools.Services;
+using ClangPowerTools.Views;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -28,6 +29,7 @@ namespace ClangPowerTools
     private bool isActiveDocument = true;
     public bool running = false;
     public bool vsBuildRunning = false;
+    public bool activeLicense = false;
 
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
     public event EventHandler<ClangCommandMessageEventArgs> ClangCommandMessageEvent;
@@ -97,10 +99,22 @@ namespace ClangPowerTools
       {
         await TidyConfigCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kITidyExportConfigId);
       }
+
+      if(Logout.Instance == null)
+      {
+        await Logout.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kLogoutId);
+      }
     }
 
     public async void Execute(object sender, EventArgs e)
     {
+      if(activeLicense == false)
+      {
+        LoginView loginView = new LoginView();
+        loginView.ShowDialog();
+        return;
+      }
+
       var command = CreateCommand(sender);
 
       if (command == null)
@@ -194,13 +208,17 @@ namespace ClangPowerTools
             IgnoreCompileCommand.Instance.RunIgnoreCompileCommand(CommandIds.kIgnoreCompileId);
             break;
           }
+        case CommandIds.kLogoutId:
+          {
+            Logout.Instance.LogoutUser();
+            break;
+          }
         default:
           break;
       }
     }
 
     #endregion
-
 
     #region Private Methods
 
@@ -368,6 +386,12 @@ namespace ClangPowerTools
 
 
     #region Events
+
+
+    public void OnLicenseChanged(object sender, LicenseEventArgs e)
+    {
+      activeLicense = e.IsLicenseActive;
+    }
 
     /// <summary>
     /// It is called before every command. Update the running state.  
