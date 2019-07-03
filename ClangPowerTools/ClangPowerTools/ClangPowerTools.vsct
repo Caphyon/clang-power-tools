@@ -263,13 +263,13 @@
     <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="CompileToolbarId" editor="guidVSStd97"
                 key1="C" mod1="ALT" />
 
-    <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyIdToolbarId" editor="guidVSStd97"
+    <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyToolbarId" editor="guidVSStd97"
                     key1="T" mod1="ALT" />
     
     <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" editor="guidVSStd97"
                 key1="Y" mod1="ALT" />
     
-    <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" editor="guidVSStd97"
+    <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatToolbarId" editor="guidVSStd97"
                 key1="F" mod1="ALT" />
     
     <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" editor="guidVSStd97"
