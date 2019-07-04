@@ -33,7 +33,7 @@ namespace ClangPowerTools.Views
       Process.Start(new ProcessStartInfo(WebApiUrl.forgotPasswordUrl));
     }
 
-    private void SingUpButton_Click(object sender, RoutedEventArgs e)
+    private void SignUpButton_Click(object sender, RoutedEventArgs e)
     {
       Process.Start(new ProcessStartInfo(WebApiUrl.signUpUrl));
     }

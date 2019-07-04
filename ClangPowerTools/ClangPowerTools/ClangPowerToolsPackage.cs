@@ -150,7 +150,7 @@ namespace ClangPowerTools
           $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
 
         SettingsProvider.GeneralSettings.Version = currentVersion;
-        System.Diagnostics.Process.Start(new ProcessStartInfo("https://clangpowertools.com/blog/"));
+        System.Diagnostics.Process.Start(new ProcessStartInfo("https://clangpowertools.com/blog/future-of-clang-power-tools.html"));
       }
       SettingsHandler.SaveGeneralSettings();
 
