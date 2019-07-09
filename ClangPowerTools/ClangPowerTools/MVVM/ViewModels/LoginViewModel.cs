@@ -33,7 +33,7 @@ namespace ClangPowerTools
       }
     }
 
-    public bool InvalidInput { get; set; } = false;
+    public bool IsInputValid { get; set; } = false;
 
     #endregion
 
@@ -50,7 +50,7 @@ namespace ClangPowerTools
         switch(name)
         {
           case "Email":
-            InvalidInput = IsEmailAddressValid(out string errorMessage);
+            IsInputValid = IsEmailAddressValid(out string errorMessage);
             result = errorMessage;
 
             break;
@@ -63,9 +63,13 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private bool IsEmailAddressValid(out string errorMessage )
+    public bool IsEmailAddressValid(out string errorMessage )
     {
       errorMessage = null;
+
+      //if (string.IsNullOrWhiteSpace(Email))
+      //  return true;
+
       var validEmailAddress = new EmailAddressAttribute().IsValid(Email);
 
       if (validEmailAddress == false)

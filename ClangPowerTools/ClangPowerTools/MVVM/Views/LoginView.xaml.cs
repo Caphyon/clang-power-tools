@@ -83,5 +83,17 @@ namespace ClangPowerTools.Views
         loginViewModel.Password = ((PasswordBox)sender).Password;
       }
     }
+
+    private void EmailTextBox_LostFocus(object sender, RoutedEventArgs e)
+    {
+      if (loginViewModel.IsEmailAddressValid(out string message) == false)
+        InvalidUserTextBlock.Visibility = Visibility.Visible;
+    }
+
+    //private void EmailTextBox_LostKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
+    //{
+    //  if (loginViewModel.IsEmailAddressValid(out string message) == false)
+    //    InvalidUserTextBlock.Visibility = Visibility.Visible;
+    //}
   }
 }
