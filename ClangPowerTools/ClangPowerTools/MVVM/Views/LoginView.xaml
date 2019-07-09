@@ -68,7 +68,7 @@
       BorderThickness="1"
       FontFamily="SegoeUI"
       FontSize="16"
-      Text="{Binding Email}">
+      Text="{Binding Email, ValidatesOnDataErrors=True, UpdateSourceTrigger=LostFocus}">
 
       <TextBox.Style>
         <Style xmlns:sys="clr-namespace:System;assembly=mscorlib" TargetType="TextBox">
