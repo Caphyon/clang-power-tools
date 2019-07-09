@@ -56,6 +56,7 @@
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0000" />
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" priority="0x0002" />
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0003" />
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForEncoding" priority="0x0004" />
 
     </Groups>
 
@@ -134,6 +135,15 @@
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Ignore at Format</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Clang Encoding Context Menu button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="EncodingId" priority="0x0009" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForEncoding" />
+        <Icon guid="guidImageEmpty" id="Empty" />
+        <Strings>
+          <ButtonText>Encoding Converter</ButtonText>
         </Strings>
       </Button>
 
@@ -217,6 +227,14 @@
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarMenu" />
         <Strings>
           <ButtonText>Export Clang Tidy Config</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Encoding Menu Top Toolbar button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="EncodingId" priority="0x0113" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarMenu" />
+        <Strings>
+          <ButtonText>Encoding Converter</ButtonText>
         </Strings>
       </Button>
 
@@ -314,7 +332,11 @@
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
     </CommandPlacement>
 
-    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0003">
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForEncoding" priority="0x0003">
+      <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
+    </CommandPlacement>
+
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0004">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
     </CommandPlacement>
 
@@ -332,6 +354,7 @@
       <!-- Define the unique identifires for groups -->
       <IDSymbol name="GroupForSubmenu" value="0x1020" />
       <IDSymbol name="GroupForCommands" value="0x1021" />
+      <IDSymbol name="GroupForEncoding" value="0x1024" />
       <IDSymbol name="GroupForSettings" value="0x1022" />
       <IDSymbol name="GroupForIgnore" value="0x1023" />
       <IDSymbol name="ToolbarGroup" value="0x1050" />
@@ -358,6 +381,7 @@
       <IDSymbol name="StopClangId" value="0x0104" />
       <IDSymbol name="IgnoreFormatId" value="0x0107" />
       <IDSymbol name="IgnoreCompileId" value="0x0108" />
+      <IDSymbol name="EncodingId" value="0x0106" />
       <IDSymbol name="SettingsId" value="0x0103" />
       <IDSymbol name="TidyExportConfigId" value="0x1032" />
       <IDSymbol name="LogoutId" value="0x1033" />
