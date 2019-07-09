@@ -213,6 +213,11 @@ namespace ClangPowerTools
             Logout.Instance.LogoutUser();
             break;
           }
+         case CommandIds.kEncodingConverterId:
+          {
+            break;
+          }
+
         default:
           break;
       }

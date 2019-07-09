@@ -83,6 +83,7 @@
     <Compile Include="MVVM\Models\LicenseModel.cs" />
     <Compile Include="MVVM\ViewModels\LoginViewModel.cs" />
     <Compile Include="Helpers\NetworkUtility.cs" />
+    <Compile Include="Commands\EncodingConverter.cs" />
     <Compile Include="Events\ActiveDocumentEventArgs.cs" />
     <Compile Include="Helpers\ApiUtility.cs" />
     <Compile Include="Helpers\AutomationUtil.cs" />
