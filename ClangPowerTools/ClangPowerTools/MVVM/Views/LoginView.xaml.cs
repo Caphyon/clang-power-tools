@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.WebApi;
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,11 +22,31 @@ namespace ClangPowerTools.Views
     private readonly string colorBackgroundDisabled = "#BBB6C4";
     private readonly string colorForegroundDisabled = "#707079";
 
+    // Validation messages
+    private readonly string invalidEmail = "The email that you have enterd is not valid.";
+    private readonly string invalidEmailOrPassword = "The email or password that you have enterd is not valid.";
+
+    // Wrong Email or Password. Please try again. or click Forgot password to reset it.
+
     public LoginView()
     {
       InitializeComponent();
       DataContext = loginViewModel;
+      loginViewModel.InvalidEmail += OnEmailValidation;
       ApiUtility.InitializeApiClient();
+    }
+
+    private void OnEmailValidation(object sender, EventArgs e)
+    {
+      if(loginViewModel.IsInputValid)
+      {
+        InvalidUserTextBlock.Visibility = Visibility.Hidden;
+      }
+      else
+      {
+        InvalidUserTextBlock.Text = invalidEmail;
+        InvalidUserTextBlock.Visibility = Visibility.Visible;
+      }
     }
 
     private void ForgotPasswordButton_Click(object sender, RoutedEventArgs e)
@@ -40,9 +61,17 @@ namespace ClangPowerTools.Views
 
     private async void LoginButton_Click(object sender, RoutedEventArgs e)
     {
+      if (string.IsNullOrWhiteSpace(loginViewModel.Email) || loginViewModel.IsInputValid == false )
+      {
+        InvalidUserTextBlock.Text = invalidEmailOrPassword;
+        InvalidUserTextBlock.Visibility = Visibility.Visible;
+        return;
+      }
+
       SetLoginButtonState(false, colorBackgroundDisabled, colorForegroundDisabled);
 
       UserModel userModel = new UserModel(loginViewModel.Email, loginViewModel.Password);
+      InvalidUserTextBlock.Text = invalidEmailOrPassword;
       InvalidUserTextBlock.Visibility = Visibility.Hidden;
 
       bool isAccountActive = await accountController.LoginAsync(userModel);
@@ -53,6 +82,7 @@ namespace ClangPowerTools.Views
       else
       {
         SetLoginButtonState(true, colorBackgroundEnabled, colorForegroundEnabled);
+        InvalidUserTextBlock.Text = invalidEmailOrPassword;
         InvalidUserTextBlock.Visibility = Visibility.Visible;
       }
     }
@@ -83,5 +113,6 @@ namespace ClangPowerTools.Views
         loginViewModel.Password = ((PasswordBox)sender).Password;
       }
     }
+
   }
 }

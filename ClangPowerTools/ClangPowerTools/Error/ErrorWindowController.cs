@@ -21,9 +21,7 @@ namespace ClangPowerTools
 
     #endregion
 
-
     #region Public Methods
-
 
     public void OnErrorDetected(object sender, ErrorDetectedEventArgs e)
     {
@@ -41,7 +39,6 @@ namespace ClangPowerTools
         BringToFront();
       });
     }
-
 
     public void RemoveErrors(IVsHierarchy aHierarchy)
     {
@@ -69,7 +66,6 @@ namespace ClangPowerTools
       });
     }
 
-
     public void Clear()
     {
       UIUpdater.Invoke(() =>
@@ -89,7 +85,6 @@ namespace ClangPowerTools
     }
 
     #endregion
-
 
     #region Private Methods
 
