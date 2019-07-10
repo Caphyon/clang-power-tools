@@ -62,7 +62,11 @@ namespace ClangPowerTools.Views
     private async void LoginButton_Click(object sender, RoutedEventArgs e)
     {
       if (string.IsNullOrWhiteSpace(loginViewModel.Email) || loginViewModel.IsInputValid == false )
+      {
+        InvalidUserTextBlock.Text = invalidEmailOrPassword;
+        InvalidUserTextBlock.Visibility = Visibility.Visible;
         return;
+      }
 
       SetLoginButtonState(false, colorBackgroundDisabled, colorForegroundDisabled);
 
