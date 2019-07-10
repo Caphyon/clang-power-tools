@@ -114,12 +114,5 @@ namespace ClangPowerTools.Views
       }
     }
 
-    //private void EmailTextBox_LostFocus(object sender, RoutedEventArgs e)
-    //{
-    //  if (loginViewModel.IsEmailAddressValid(out string message) == false)
-    //    InvalidUserTextBlock.Visibility = Visibility.Visible;
-    //}
-
-    
   }
 }
