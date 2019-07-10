@@ -220,7 +220,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kEncodingConverterId:
           {
-            EncodingConverter.Instance.RunEncodingConverter(CommandIds.kIgnoreCompileId);
+            EncodingConverter.Instance.RunEncodingConverter(CommandIds.kIgnoreCompileId, aCommandUILocation);
             break;
           }
 

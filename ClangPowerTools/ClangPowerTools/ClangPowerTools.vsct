@@ -157,7 +157,7 @@
       <!-- Clang Encoding Context Menu button -->
       <Button guid="guidClangPowerToolsPackageCmdSet" id="EncodingId" priority="0x0009" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForEncoding" />
-        <Icon guid="guidImageEmpty" id="Empty" />
+        <Icon guid="guidImageEncodingConverter" id="EncodingConverter" />
         <Strings>
           <ButtonText>Encoding Converter</ButtonText>
         </Strings>
@@ -227,8 +227,17 @@
           <ButtonText>Stop Clang</ButtonText>
         </Strings>
       </Button>
+      
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="EncodingId" priority="0x0005" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
+        <Icon guid="guidImageEmpty" id="Empty" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Encoding Converter</ButtonText>
+        </Strings>
+      </Button>
 
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0005" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0006" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
         <Strings>
           <ButtonText>Settings</ButtonText>
@@ -249,6 +258,7 @@
       <!-- Encoding Menu Top Toolbar button -->
       <Button guid="guidClangPowerToolsPackageCmdSet" id="EncodingId" priority="0x0113" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarMenu" />
+        <Icon guid="guidImageEncodingConverter" id="EncodingConverter" />
         <Strings>
           <ButtonText>Encoding Converter</ButtonText>
         </Strings>
@@ -274,9 +284,9 @@
 
       <Button guid="guidRunClangPowerToolsPackageCmdSet" id="cmdidEncodingConverter" priority="0x0100" type="Button">
         <Parent guid="guidRunClangPowerToolsPackageCmdSet" id="MyMenuGroup" />
-        <Icon guid="guidImages1" id="bmpPic1" />
+        <Icon guid="guidImageEncodingConverter" id="EncodingConverter" />
         <Strings>
-          <ButtonText>Invoke EncodingConverter</ButtonText>
+          <ButtonText>Encoding Converter</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -292,7 +302,7 @@
       <Bitmap guid="guidImageIgnoreFormat" href="Resources\IgnoreIcon.png" usedList="IgnoreFormat" />
       <Bitmap guid="guidImageEmpty" href="Resources\EmptyIcon.png" usedList="Empty" />
       <Bitmap guid="guidImageLogout" href="Resources\Logout.png" usedList="Logout" />
-      <Bitmap guid="guidImages1" href="Commands\Resources\EncodingConverter.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
+      <Bitmap guid="guidImageEncodingConverter" href="Resources\EncodingConverter.ico" usedList="EncodingConverter" />
     </Bitmaps>
 
   </Commands>
@@ -461,6 +471,11 @@
     <!-- Define Logout image -->
     <GuidSymbol name="guidImageLogout" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c72a}">
       <IDSymbol name="Logout" value="1" />
+    </GuidSymbol>
+    
+    <!-- Define encoding converter image -->
+    <GuidSymbol name="guidImageEncodingConverter" value="{ea93a1b1-d8d8-49a1-b60e-c85e19b4f56a}">
+      <IDSymbol name="EncodingConverter" value="1" />
     </GuidSymbol>
 
   

@@ -60,12 +60,16 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public async void RunEncodingConverter(int id)
+    public async void RunEncodingConverter(int id, CommandUILocation commandUILocation)
     {
       //var dte = (DTE2)await ServiceProvider.GetServiceAsync(typeof(DTE));
       //string solutionDir = Path.GetDirectoryName(dte.Solution.FullName);
-
-      var encodingConverterViewModel = new EncodingConverterViewModel(GetSelectedFile());
+      var selectedFiles = GetSelectedFile(commandUILocation);
+      if (selectedFiles == null)
+      {
+        return;
+      }
+      var encodingConverterViewModel = new EncodingConverterViewModel(selectedFiles);
       await encodingConverterViewModel.LoadData();
 
       var EncodingConverterWindow = WindowManager.CreateElementWindow(encodingConverterViewModel, Resources.EncodingConverterWindowTitle, "ClangPowerTools.MVVM.Views.EncodingConverterControl");
@@ -78,11 +82,24 @@ namespace ClangPowerTools.Commands
       EncodingConverterWindow.ShowDialog();
     }
 
-    private List<IItem> GetSelectedFile()
+    private List<IItem> GetSelectedFile(CommandUILocation commandUILocation)
     {
-      var itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
-      itemsCollector.CollectSelectedProjectItems();
-      return itemsCollector.Items;
+      if (CommandUILocation.ContextMenu == commandUILocation)
+      {
+        var itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
+        itemsCollector.CollectSelectedProjectItems();
+        return itemsCollector.Items;
+      }
+      else if (CommandUILocation.Toolbar == commandUILocation)
+      {
+        var itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
+        itemsCollector.CollectActiveProjectItem();
+        return itemsCollector.Items;
+      }
+      else
+      {
+        return null;
+      }
     }
 
     #endregion
