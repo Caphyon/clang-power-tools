@@ -98,23 +98,6 @@ namespace ClangPowerTools
       {
         await SettingsCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kSettingsId);
       }
-<<<<<<< HEAD
-=======
-
-      if (TidyConfigCommand.Instance == null)
-      {
-        await TidyConfigCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kITidyExportConfigId);
-      }
-
-      if (Logout.Instance == null)
-      {
-        await Logout.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kLogoutId);
-      }
-      if (EncodingConverter.Instance == null)
-      {
-        await EncodingConverter.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kEncodingConverterId);
-      }
->>>>>>> add encoding convertor command
     }
 
     public async void Execute(object sender, EventArgs e)

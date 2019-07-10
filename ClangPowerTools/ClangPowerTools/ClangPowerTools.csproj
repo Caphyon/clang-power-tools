@@ -244,7 +244,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Commands\Resources\EncodingConverter.png" />
     <Content Include="llvm\bin\clang-format.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -253,6 +252,8 @@
     <Resource Include="Resources\LoginBackground.png" />
     <Resource Include="Resources\CPTLogo.png" />
     <Resource Include="Resources\ClangFormatIcon.png" />
+    <Resource Include="MVVM\Views\Background.png" />
+    <Content Include="Resources\EncodingConverter.ico" />
     <Resource Include="Resources\CleanSearchIcon.PNG" />
     <Resource Include="Resources\CompileIcon.png" />
     <Resource Include="Resources\SearchIcon.PNG" />
