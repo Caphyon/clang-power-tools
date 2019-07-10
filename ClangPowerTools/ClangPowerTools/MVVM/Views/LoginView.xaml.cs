@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.WebApi;
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
@@ -25,7 +26,16 @@ namespace ClangPowerTools.Views
     {
       InitializeComponent();
       DataContext = loginViewModel;
+      loginViewModel.InvalidEmail += OnEmailValidation;
       ApiUtility.InitializeApiClient();
+    }
+
+    private void OnEmailValidation(object sender, EventArgs e)
+    {
+      if(loginViewModel.IsInputValid)
+        InvalidUserTextBlock.Visibility = Visibility.Hidden;
+      else
+        InvalidUserTextBlock.Visibility = Visibility.Visible;
     }
 
     private void ForgotPasswordButton_Click(object sender, RoutedEventArgs e)
@@ -90,10 +100,6 @@ namespace ClangPowerTools.Views
         InvalidUserTextBlock.Visibility = Visibility.Visible;
     }
 
-    //private void EmailTextBox_LostKeyboardFocus(object sender, System.Windows.Input.KeyboardFocusChangedEventArgs e)
-    //{
-    //  if (loginViewModel.IsEmailAddressValid(out string message) == false)
-    //    InvalidUserTextBlock.Visibility = Visibility.Visible;
-    //}
+    
   }
 }

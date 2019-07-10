@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace ClangPowerTools
@@ -9,6 +10,7 @@ namespace ClangPowerTools
 
     private UserModel userModel = new UserModel();
     public event PropertyChangedEventHandler PropertyChanged;
+    public event EventHandler<EventArgs> InvalidEmail;
 
     #endregion
 
@@ -47,12 +49,12 @@ namespace ClangPowerTools
       {
         string result = null;
 
-        switch(name)
+        switch (name)
         {
           case "Email":
             IsInputValid = IsEmailAddressValid(out string errorMessage);
             result = errorMessage;
-
+            InvalidEmail?.Invoke(this, new EventArgs());
             break;
         }
         return result;
@@ -63,7 +65,7 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    public bool IsEmailAddressValid(out string errorMessage )
+    public bool IsEmailAddressValid(out string errorMessage)
     {
       errorMessage = null;
 
@@ -82,8 +84,6 @@ namespace ClangPowerTools
     }
 
     #endregion
-
-
 
   }
 }
