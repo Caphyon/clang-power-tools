@@ -53,8 +53,8 @@
 
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0000" />
 
-      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarMenu" priority="0x0000" >
-        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForTopToolbarMenu"/>
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarMenu" priority="0x0000">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForTopToolbarMenu" />
       </Group>
 
       <Group guid="guidClangPowerToolsPackageCmdSet" id="DromDownToolbarMenuGroup" priority="0x0000">
@@ -71,6 +71,9 @@
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0003" />
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForEncoding" priority="0x0004" />
 
+      <Group guid="guidRunClangPowerToolsPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
+      </Group>
     </Groups>
 
 
@@ -269,6 +272,13 @@
         </Strings>
       </Button>
 
+      <Button guid="guidRunClangPowerToolsPackageCmdSet" id="cmdidEncodingConverter" priority="0x0100" type="Button">
+        <Parent guid="guidRunClangPowerToolsPackageCmdSet" id="MyMenuGroup" />
+        <Icon guid="guidImages1" id="bmpPic1" />
+        <Strings>
+          <ButtonText>Invoke EncodingConverter</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
 
     <!--Declare all the image resources -->
@@ -282,6 +292,7 @@
       <Bitmap guid="guidImageIgnoreFormat" href="Resources\IgnoreIcon.png" usedList="IgnoreFormat" />
       <Bitmap guid="guidImageEmpty" href="Resources\EmptyIcon.png" usedList="Empty" />
       <Bitmap guid="guidImageLogout" href="Resources\Logout.png" usedList="Logout" />
+      <Bitmap guid="guidImages1" href="Commands\Resources\EncodingConverter.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
     </Bitmaps>
 
   </Commands>
@@ -374,7 +385,7 @@
       <IDSymbol name="ToolbarGroup" value="0x1050" />
       <IDSymbol name="GroupForToolbarMenu" value="0x1030" />
       <IDSymbol name="GroupForTopToolbarMenu" value="0x1031" />
-      <IDSymbol name ="DromDownToolbarMenuGroup" value="0x0110"/>
+      <IDSymbol name="DromDownToolbarMenuGroup" value="0x0110" />
 
       <!-- Define the unique identifires for menus -->
       <IDSymbol name="Submenu" value="0x0100" />
@@ -385,10 +396,10 @@
       <IDSymbol name="CompileToolbarId" value="0x1100" />
 
       <IDSymbol name="TidyId" value="0x0101" />
-      <IDSymbol name="TidyFixId" value="0x0109"/>
+      <IDSymbol name="TidyFixId" value="0x0109" />
 
       <IDSymbol name="TidyToolbarId" value="0x1101" />
-      <IDSymbol name="TidyFixToolbarId" value="0x1102"/>
+      <IDSymbol name="TidyFixToolbarId" value="0x1102" />
 
       <IDSymbol name="ClangFormatId" value="0x0105" />
       <IDSymbol name="ClangFormatToolbarId" value="0x1103" />
@@ -452,6 +463,20 @@
       <IDSymbol name="Logout" value="1" />
     </GuidSymbol>
 
+  
+    <GuidSymbol value="{a6d55984-32c7-4725-bf65-16d84020c9ad}" name="guidRunClangPowerToolsPackageCmdSet">
+      <IDSymbol value="4128" name="MyMenuGroup" />
+      <IDSymbol value="256" name="cmdidEncodingConverter" />
+    </GuidSymbol>
+  
+    <GuidSymbol value="{6a93cd48-ec21-4054-a6f3-38cdbfef0ee5}" name="guidImages1">
+      <IDSymbol name="bmpPic1" value="1" />
+      <IDSymbol name="bmpPic2" value="2" />
+      <IDSymbol name="bmpPicSearch" value="3" />
+      <IDSymbol name="bmpPicX" value="4" />
+      <IDSymbol name="bmpPicArrows" value="5" />
+      <IDSymbol name="bmpPicStrikethrough" value="6" />
+    </GuidSymbol>
   </Symbols>
 
 </CommandTable>

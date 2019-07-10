@@ -104,6 +104,10 @@ namespace ClangPowerTools
       {
         await Logout.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kLogoutId);
       }
+      if (EncodingConverter.Instance == null)
+      {
+        await EncodingConverter.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kEncodingConverterId);
+      }
     }
 
     public async void Execute(object sender, EventArgs e)
@@ -202,6 +206,7 @@ namespace ClangPowerTools
           {
             IgnoreFormatCommand.Instance.RunIgnoreFormatCommand(CommandIds.kIgnoreFormatId);
             break;
+
           }
         case CommandIds.kIgnoreCompileId:
           {
@@ -213,8 +218,9 @@ namespace ClangPowerTools
             Logout.Instance.LogoutUser();
             break;
           }
-         case CommandIds.kEncodingConverterId:
+        case CommandIds.kEncodingConverterId:
           {
+            EncodingConverter.Instance.RunEncodingConverter(CommandIds.kIgnoreCompileId);
             break;
           }
 
