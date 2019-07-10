@@ -68,10 +68,6 @@ namespace ClangPowerTools
     public bool IsEmailAddressValid(out string errorMessage)
     {
       errorMessage = null;
-
-      //if (string.IsNullOrWhiteSpace(Email))
-      //  return true;
-
       var validEmailAddress = new EmailAddressAttribute().IsValid(Email);
 
       if (validEmailAddress == false)
