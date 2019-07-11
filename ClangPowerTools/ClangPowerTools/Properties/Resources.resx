@@ -120,6 +120,12 @@
   <data name="EncodingConverterWindowTitle" xml:space="preserve">
     <value>Encoding Converter</value>
   </data>
+  <data name="MultipleEncodingsSelected" xml:space="preserve">
+    <value>multiple encodings</value>
+  </data>
+  <data name="NoEncodingDetected" xml:space="preserve">
+    <value>no encoding</value>
+  </data>
   <data name="UTF8Encoding" xml:space="preserve">
     <value>Unicode (UTF-8)</value>
   </data>
