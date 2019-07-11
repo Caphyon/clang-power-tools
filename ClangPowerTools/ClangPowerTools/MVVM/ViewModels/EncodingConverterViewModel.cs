@@ -55,7 +55,18 @@ namespace ClangPowerTools.MVVM.ViewModels
         fileEncodings.Add(GetEncoding(file.GetPath()));
       }
 
-      CurrentEncodingText = string.Format("Current Encoding: {0}", fileEncodings.Count() == 1 ? fileEncodings.First().EncodingName : "multiple encodings");
+      if (!fileEncodings.Any())
+      {
+        CurrentEncodingText = string.Format("Current Encoding: {0}", Resources.NoEncodingDetected);
+      }
+      else if (fileEncodings.Count() == 1)
+      {
+        CurrentEncodingText = string.Format("Current Encoding: {0}", fileEncodings.First().EncodingName);
+      }
+      else
+      {
+        CurrentEncodingText = string.Format("Current Encoding: {0}", Resources.MultipleEncodingsSelected);
+      }
 
       InitializeEncodingList();
     }
@@ -68,12 +79,7 @@ namespace ClangPowerTools.MVVM.ViewModels
       AddEncoding(Encoding.UTF32, "UTF-32");
       AddEncoding(Encoding.Unicode, "Unicode");
       AddEncoding(Encoding.BigEndianUnicode, "Big Endian");
-      AddEncoding(Encoding.GetEncoding("utf-32BE"), "UTF-32 Big Endian");
-
-      //foreach (EncodingInfo ei in Encoding.GetEncodings())
-      //{
-      //    AddEncoding(ei.GetEncoding());
-      //}
+      //AddEncoding(Encoding.GetEncoding("utf-32BE"), "UTF-32 Big Endian");
 
       SelectedEncoding = EncodingCollection.FirstOrDefault(e => e.Encoding.EncodingName == Resources.UTF8Encoding);
     }
