@@ -155,7 +155,7 @@
       </Button>
 
       <!-- Clang Encoding Context Menu button -->
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="EncodingId" priority="0x0009" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="EncodingConverterId" priority="0x0009" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForEncoding" />
         <Icon guid="guidImageEncodingConverter" id="EncodingConverter" />
         <Strings>
@@ -228,9 +228,9 @@
         </Strings>
       </Button>
       
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="EncodingId" priority="0x0005" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="EncodingConverterToolbarId" priority="0x0005" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
-        <Icon guid="guidImageEmpty" id="Empty" />
+        <Icon guid="guidImageEncodingConverter" id="EncodingConverter" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Encoding Converter</ButtonText>
@@ -252,15 +252,6 @@
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarMenu" />
         <Strings>
           <ButtonText>Export Clang Tidy Config</ButtonText>
-        </Strings>
-      </Button>
-
-      <!-- Encoding Menu Top Toolbar button -->
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="EncodingId" priority="0x0113" type="Button">
-        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarMenu" />
-        <Icon guid="guidImageEncodingConverter" id="EncodingConverter" />
-        <Strings>
-          <ButtonText>Encoding Converter</ButtonText>
         </Strings>
       </Button>
 
@@ -417,7 +408,10 @@
       <IDSymbol name="StopClangId" value="0x0104" />
       <IDSymbol name="IgnoreFormatId" value="0x0107" />
       <IDSymbol name="IgnoreCompileId" value="0x0108" />
-      <IDSymbol name="EncodingId" value="0x0106" />
+      
+      <IDSymbol name="EncodingConverterId" value="0x0106" />
+      <IDSymbol name="EncodingConverterToolbarId" value="0x0111" />
+      
       <IDSymbol name="SettingsId" value="0x0103" />
       <IDSymbol name="TidyExportConfigId" value="0x1032" />
       <IDSymbol name="LogoutId" value="0x1033" />

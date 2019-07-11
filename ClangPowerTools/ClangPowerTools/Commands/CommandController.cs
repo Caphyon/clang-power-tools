@@ -104,9 +104,11 @@ namespace ClangPowerTools
       {
         await Logout.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kLogoutId);
       }
+
       if (EncodingConverter.Instance == null)
       {
         await EncodingConverter.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kEncodingConverterId);
+        await EncodingConverter.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kEncodingConverterToolbarId);
       }
     }
 
@@ -223,6 +225,11 @@ namespace ClangPowerTools
             EncodingConverter.Instance.RunEncodingConverter(CommandIds.kIgnoreCompileId, aCommandUILocation);
             break;
           }
+        case CommandIds.kEncodingConverterToolbarId:
+          {
+            EncodingConverter.Instance.RunEncodingConverter(CommandIds.kEncodingConverterToolbarId, aCommandUILocation);
+            break;
+          }
 
         default:
           break;
@@ -264,6 +271,7 @@ namespace ClangPowerTools
         case CommandIds.kCompileToolbarId:
         case CommandIds.kTidyToolbarId:
         case CommandIds.kTidyFixToolbarId:
+        case CommandIds.kEncodingConverterToolbarId:
           commandUILocation = CommandUILocation.Toolbar;
           break;
         default:
