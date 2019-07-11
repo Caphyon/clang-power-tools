@@ -145,6 +145,7 @@
       <Button guid="guidClangPowerToolsPackageCmdSet" id="EncodingConverterId" priority="0x0009" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForEncoding" />
         <Icon guid="guidImageEncodingConverter" id="EncodingConverter" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Encoding Converter</ButtonText>
         </Strings>

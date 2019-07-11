@@ -39,8 +39,10 @@ namespace ClangPowerTools.Commands
       if (commandService != null)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
-        var menuItem = new OleMenuCommand(commandController.Execute, menuCommandID);
-        commandService.AddCommand(menuItem);
+        var menuCommand = new OleMenuCommand(commandController.Execute, menuCommandID);
+        menuCommand.BeforeQueryStatus += commandController.OnBeforeClangCommand;
+        menuCommand.Enabled = true;
+        commandService.AddCommand(menuCommand);
       }
     }
     #endregion
