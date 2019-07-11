@@ -62,7 +62,14 @@ namespace ClangPowerTools.Commands
 
     public async void RunEncodingConverter(int id, CommandUILocation commandUILocation)
     {
-      var selectedFiles = GetSelectedFile(commandUILocation);
+
+      List<string> selectedFiles = GetSelectedFile(commandUILocation);
+
+      if (selectedFiles == null)
+      {
+        return;
+      }
+
       var dte = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
       Array selectedItems = dte.ToolWindows.SolutionExplorer.SelectedItems as Array;
       foreach (UIHierarchyItem item in selectedItems)
@@ -74,9 +81,9 @@ namespace ClangPowerTools.Commands
         }
         else if (item.Object is Project)
         {
-          //ProjectItem prjItem = item.Object as ProjectItem;
-          //string filePath = prjItem.Properties.Item("FullPath").Value.ToString();
-          //selectedFiles.AddRange(GetAllFilesWithExtension(Path.GetDirectoryName(filePath), "*.vcxproj"));
+          Project project = item.Object as Project;
+          selectedFiles.AddRange(GetAllFilesWithExtension(Path.GetDirectoryName(project.FullName), "*.sln"));
+          selectedFiles.AddRange(GetAllFilesWithExtension(Path.GetDirectoryName(project.FullName), "*.vcxproj"));
         }
       }
 
@@ -102,10 +109,6 @@ namespace ClangPowerTools.Commands
       // ChangeEncodingForFiles()
       // UTF-8 files
 
-      if (selectedFiles == null)
-      {
-        return;
-      }
       var encodingConverterViewModel = new EncodingConverterViewModel(selectedFiles);
       await encodingConverterViewModel.LoadData();
 
@@ -121,16 +124,12 @@ namespace ClangPowerTools.Commands
 
     private List<string> GetSelectedFile(CommandUILocation commandUILocation)
     {
+      var itemsList = new List<string>();
       if (commandUILocation == CommandUILocation.ContextMenu)
       {
         var itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
         itemsCollector.CollectSelectedProjectItems();
-        var itemsList = new List<string>();
-        foreach (var item in itemsCollector.Items)
-        {
-          itemsList.Add(item.GetPath());
-        }
-        return itemsList;
+        itemsCollector.Items.ForEach(i => itemsList.Add(i.GetPath()));
       }
       else if (commandUILocation == CommandUILocation.Toolbar)
       {
@@ -139,13 +138,10 @@ namespace ClangPowerTools.Commands
         //return itemsCollector.Items;
         return null;
       }
-      else
-      {
-        return null;
-      }
+      return itemsList;
     }
 
-    private List<string> GetAllFilesWithExtension(string folderPath, string extensionName )
+    private List<string> GetAllFilesWithExtension(string folderPath, string extensionName)
     {
       List<string> files = new List<string>();
       foreach (string file in Directory.GetFiles(folderPath, extensionName, SearchOption.AllDirectories))
@@ -154,7 +150,6 @@ namespace ClangPowerTools.Commands
       }
       return files;
     }
-
     #endregion
   }
 }
