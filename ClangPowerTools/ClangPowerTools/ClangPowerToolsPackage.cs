@@ -140,6 +140,12 @@ namespace ClangPowerTools
       if (string.IsNullOrWhiteSpace(SettingsProvider.GeneralSettings.Version))
         ShowToolbare(); // Show the toolbar on the first install
 
+      if (string.IsNullOrWhiteSpace(SettingsProvider.GeneralSettings.Version) ||
+          0 > string.Compare(SettingsProvider.GeneralSettings.Version, "5.0.0"))
+      {
+        System.Diagnostics.Process.Start(new ProcessStartInfo("https://clangpowertools.com/blog/future-of-clang-power-tools.html"));
+      }
+
       var currentVersion = PackageUtility.GetVersion();
       if (!string.IsNullOrWhiteSpace(currentVersion) &&
         0 > string.Compare(SettingsProvider.GeneralSettings.Version, currentVersion))
@@ -150,8 +156,8 @@ namespace ClangPowerTools
           $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
 
         SettingsProvider.GeneralSettings.Version = currentVersion;
-        System.Diagnostics.Process.Start(new ProcessStartInfo("https://clangpowertools.com/blog/future-of-clang-power-tools.html"));
       }
+
       SettingsHandler.SaveGeneralSettings();
 
       await mCommandController.InitializeCommandsAsync(this);
