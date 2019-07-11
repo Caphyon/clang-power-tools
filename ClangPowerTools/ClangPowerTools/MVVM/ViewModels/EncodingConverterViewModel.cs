@@ -15,7 +15,7 @@ namespace ClangPowerTools.MVVM.ViewModels
 {
   class EncodingConverterViewModel : INotifyPropertyChanged
   {
-    private readonly List<IItem> fileNames = new List<IItem>();
+    private readonly List<string> fileNames = new List<string>();
     private HashSet<Encoding> fileEncodings = new HashSet<Encoding>();
     private EncodingModel _selectedEncoding;
 
@@ -39,7 +39,7 @@ namespace ClangPowerTools.MVVM.ViewModels
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    public EncodingConverterViewModel(List<IItem> selectedDocuments)
+    public EncodingConverterViewModel(List<string> selectedDocuments)
     {
       fileNames = selectedDocuments;
     }
@@ -52,7 +52,7 @@ namespace ClangPowerTools.MVVM.ViewModels
 
       foreach (var file in fileNames)
       {
-        fileEncodings.Add(GetEncoding(file.GetPath()));
+        fileEncodings.Add(GetEncoding(file));
       }
 
       if (!fileEncodings.Any())
@@ -98,7 +98,7 @@ namespace ClangPowerTools.MVVM.ViewModels
     {
       foreach (var file in fileNames)
       {
-        ConvertFile(file.GetPath());
+        ConvertFile(file);
       }
 
       CancelCommandExecute();
