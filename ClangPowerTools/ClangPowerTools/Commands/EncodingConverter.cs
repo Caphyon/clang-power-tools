@@ -84,13 +84,13 @@ namespace ClangPowerTools.Commands
 
     private List<IItem> GetSelectedFile(CommandUILocation commandUILocation)
     {
-      if (CommandUILocation.ContextMenu == commandUILocation)
+      if (commandUILocation == CommandUILocation.ContextMenu)
       {
         var itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
         itemsCollector.CollectSelectedProjectItems();
         return itemsCollector.Items;
       }
-      else if (CommandUILocation.Toolbar == commandUILocation)
+      else if (commandUILocation == CommandUILocation.Toolbar)
       {
         var itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
         itemsCollector.CollectActiveProjectItem();
