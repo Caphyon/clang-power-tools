@@ -1,16 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using ClangPowerTools.MVVM.Helpers;
 using ClangPowerTools.MVVM.ViewModels;
 using ClangPowerTools.Properties;
+using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
@@ -64,9 +62,46 @@ namespace ClangPowerTools.Commands
 
     public async void RunEncodingConverter(int id, CommandUILocation commandUILocation)
     {
-      //var dte = (DTE2)await ServiceProvider.GetServiceAsync(typeof(DTE));
-      //string solutionDir = Path.GetDirectoryName(dte.Solution.FullName);
       var selectedFiles = GetSelectedFile(commandUILocation);
+      var dte = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
+      Array selectedItems = dte.ToolWindows.SolutionExplorer.SelectedItems as Array;
+      foreach (UIHierarchyItem item in selectedItems)
+      {
+        if (item.Object is Solution)
+        {
+          selectedFiles.AddRange(GetAllFilesWithExtension(Path.GetDirectoryName(dte.Solution.FullName), "*.sln"));
+          selectedFiles.AddRange(GetAllFilesWithExtension(Path.GetDirectoryName(dte.Solution.FullName), "*.vcxproj"));
+        }
+        else if (item.Object is Project)
+        {
+          //ProjectItem prjItem = item.Object as ProjectItem;
+          //string filePath = prjItem.Properties.Item("FullPath").Value.ToString();
+          //selectedFiles.AddRange(GetAllFilesWithExtension(Path.GetDirectoryName(filePath), "*.vcxproj"));
+        }
+      }
+
+      //if (solution)
+      // ChangeEncodingForSolution
+      // ChangeEncodingForProject(GetSolutionPath())
+      // ChangeEncodingForFiles()
+
+      // if(projects)
+      // ChangeEncodingForProject(GetSolutionPath())
+      // ChangeEncodingForFiles()
+
+
+      // GetSolutionPath()
+      // return the solution path
+
+      // ChangeEncodingForSolution
+      // UTF-8 solution .sln file
+
+      // ChangeEncodingForProject()
+      // UTF-8 projets vcxproj file
+
+      // ChangeEncodingForFiles()
+      // UTF-8 files
+
       if (selectedFiles == null)
       {
         return;
@@ -84,24 +119,40 @@ namespace ClangPowerTools.Commands
       EncodingConverterWindow.ShowDialog();
     }
 
-    private List<IItem> GetSelectedFile(CommandUILocation commandUILocation)
+    private List<string> GetSelectedFile(CommandUILocation commandUILocation)
     {
       if (commandUILocation == CommandUILocation.ContextMenu)
       {
         var itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
         itemsCollector.CollectSelectedProjectItems();
-        return itemsCollector.Items;
+        var itemsList = new List<string>();
+        foreach (var item in itemsCollector.Items)
+        {
+          itemsList.Add(item.GetPath());
+        }
+        return itemsList;
       }
       else if (commandUILocation == CommandUILocation.Toolbar)
       {
-        var itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
-        itemsCollector.CollectActiveProjectItem();
-        return itemsCollector.Items;
+        //var itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
+        //itemsCollector.CollectActiveProjectItem();
+        //return itemsCollector.Items;
+        return null;
       }
       else
       {
         return null;
       }
+    }
+
+    private List<string> GetAllFilesWithExtension(string folderPath, string extensionName )
+    {
+      List<string> files = new List<string>();
+      foreach (string file in Directory.GetFiles(folderPath, extensionName, SearchOption.AllDirectories))
+      {
+        files.Add(file);
+      }
+      return files;
     }
 
     #endregion
