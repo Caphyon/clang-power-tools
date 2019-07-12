@@ -8,9 +8,7 @@ using ClangPowerTools.Properties;
 using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
@@ -82,32 +80,9 @@ namespace ClangPowerTools.Commands
         else if (item.Object is Project)
         {
           Project project = item.Object as Project;
-          selectedFiles.AddRange(GetAllFilesWithExtension(Path.GetDirectoryName(project.FullName), "*.sln"));
           selectedFiles.AddRange(GetAllFilesWithExtension(Path.GetDirectoryName(project.FullName), "*.vcxproj"));
         }
       }
-
-      //if (solution)
-      // ChangeEncodingForSolution
-      // ChangeEncodingForProject(GetSolutionPath())
-      // ChangeEncodingForFiles()
-
-      // if(projects)
-      // ChangeEncodingForProject(GetSolutionPath())
-      // ChangeEncodingForFiles()
-
-
-      // GetSolutionPath()
-      // return the solution path
-
-      // ChangeEncodingForSolution
-      // UTF-8 solution .sln file
-
-      // ChangeEncodingForProject()
-      // UTF-8 projets vcxproj file
-
-      // ChangeEncodingForFiles()
-      // UTF-8 files
 
       var encodingConverterViewModel = new EncodingConverterViewModel(selectedFiles);
       await encodingConverterViewModel.LoadData();
