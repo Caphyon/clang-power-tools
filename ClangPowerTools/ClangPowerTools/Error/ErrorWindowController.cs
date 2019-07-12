@@ -36,12 +36,12 @@ namespace ClangPowerTools
         }
 
         ResumeRefresh();
-        if (!e.IsErrorWindowFocused)
+
+        if (e.IsErrorWindowFocused)
         {
-          return;
+          BringToFront();
         }
-        BringToFront();
-      }).SafeFireAndForget();
+      });
     }
 
     public void RemoveErrors(IVsHierarchy aHierarchy)
