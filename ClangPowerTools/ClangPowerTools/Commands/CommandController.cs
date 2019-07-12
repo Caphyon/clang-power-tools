@@ -430,10 +430,10 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="Scope"></param>
     /// <param name="Action"></param>
-    public async void OnMSVCBuildDone(vsBuildScope Scope, vsBuildAction Action)
+    public void OnMSVCBuildDone(vsBuildScope Scope, vsBuildAction Action)
     {
       vsBuildRunning = false;
-      await OnMSVCBuildSucceededAsync();
+      OnMSVCBuildSucceededAsync().SafeFireAndForget();
     }
 
 
