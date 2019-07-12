@@ -40,6 +40,8 @@ namespace ClangPowerTools.Output
 
     public HashSet<TaskErrorModel> Errors => mOutputContent.Errors;
 
+    public bool IsErrorWindowFocused;
+
     public bool HasErrors => 0 != mOutputContent.Errors.Count;
 
     private IVsHierarchy Hierarchy { get; set; }
@@ -160,6 +162,9 @@ namespace ClangPowerTools.Output
         Write(String.Join("\n", Buffer));
 
       CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
+
+      if (0 != Errors.Count)
+        OnErrorDetected(new ErrorDetectedEventArgs(Errors, IsErrorWindowFocused));
     }
 
     public void OnFileHierarchyDetected(object sender, VsHierarchyDetectedEventArgs e)

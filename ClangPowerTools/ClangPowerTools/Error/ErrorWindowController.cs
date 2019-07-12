@@ -36,6 +36,10 @@ namespace ClangPowerTools
         }
 
         ResumeRefresh();
+        if (!e.IsErrorWindowFocused)
+        {
+          return;
+        }
         BringToFront();
       }).SafeFireAndForget();
     }
