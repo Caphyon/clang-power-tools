@@ -482,7 +482,7 @@ namespace ClangPowerTools
       if (true == running) // Clang compile/tidy command is running
         return;
 
-      TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu);
+      TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu).SafeFireAndForget();
       mSaveCommandWasGiven = false;
     }
 
