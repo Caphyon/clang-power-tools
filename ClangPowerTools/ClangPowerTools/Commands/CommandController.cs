@@ -8,6 +8,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools
@@ -36,6 +37,7 @@ namespace ClangPowerTools
     public event EventHandler<ClearErrorListEventArgs> ClearErrorListEvent;
     public event EventHandler<EventArgs> ErrorDetectedEvent;
     public event EventHandler<HasEncodingErrorEventArgs> HasEncodingError;
+    public event EventHandler<HasEncodingErrorEventArgs> EncodingErrorEvent;
 
     #endregion
 
@@ -338,10 +340,24 @@ namespace ClangPowerTools
       ErrorDetectedEvent?.Invoke(this, e);
     }
 
+    }
+
+    public void OnEncodingErrorDetected(object sender, HasEncodingErrorEventArgs e)
+    {
+      EncodingErrorEvent?.Invoke(this, e);
+    }
     public void ShowEncodingErrorWindow()
     {
       var items = CompileCommand.Instance.ItemsCollector;
     }
+
+    private void OnEncodingError()
+    {
+      var items = CompileCommand.Instance.ItemsCollector;
+      MessageBox.Show("");
+    }
+
+
 
     public void OnActiveDocumentCheck(object sender, ActiveDocumentEventArgs e)
     {

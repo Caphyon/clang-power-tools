@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClangPowerTools.Output;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,11 +9,11 @@ namespace ClangPowerTools.Events
 {
   public class HasEncodingErrorEventArgs
   {
-    public bool HasEncodingError { get; set; }
+    public OutputContentModel Model { get; set; }
 
-    public HasEncodingErrorEventArgs(bool hasEncodingError)
+    public HasEncodingErrorEventArgs(OutputContentModel model)
     {
-      HasEncodingError = hasEncodingError;
+      Model = model;
     }
   }
 }
