@@ -115,6 +115,15 @@ namespace ClangPowerTools.Output
 
     #endregion
 
+
+    ////////////// method request{ event.invoke(mOutputContent)}
+    OutputContentModel MethodRequest()
+    {
+      //HasEncodingErrorEvent.Invoke(()=> { });
+      return mOutputContent;
+    }
+
+
     #region Data Handlers
 
     public void OutputDataReceived(object sender, DataReceivedEventArgs e)
@@ -162,6 +171,14 @@ namespace ClangPowerTools.Output
         Write(String.Join("\n", Buffer));
 
       CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
+
+      if (0 != Errors.Count)
+        OnErrorDetected(new ErrorDetectedEventArgs(Errors));
+
+      if (mOutputContent.HasEncodingError)
+      {
+        OnEncodingErrorDetected(new HasEncodingErrorEventArgs(mOutputContent));
+      }
     }
 
     public void OnFileHierarchyDetected(object sender, VsHierarchyDetectedEventArgs e)
