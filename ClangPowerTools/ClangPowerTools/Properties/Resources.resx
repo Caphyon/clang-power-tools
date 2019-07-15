@@ -126,6 +126,9 @@
   <data name="NoEncodingDetected" xml:space="preserve">
     <value>no encoding</value>
   </data>
+  <data name="UTF-16EncodingError" xml:space="preserve">
+    <value>fatal error: UTF-16</value>
+  </data>
   <data name="UTF8Encoding" xml:space="preserve">
     <value>Unicode (UTF-8)</value>
   </data>

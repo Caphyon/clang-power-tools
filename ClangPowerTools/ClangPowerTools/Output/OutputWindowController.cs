@@ -29,6 +29,8 @@ namespace ClangPowerTools.Output
 
     public event EventHandler<CloseDataConnectionEventArgs> CloseDataConnectionEvent;
 
+    public event EventHandler<HasEncodingErrorEventArgs> HasEncodingErrorEvent;
+
     #endregion
 
     #region Properties
@@ -180,6 +182,11 @@ namespace ClangPowerTools.Output
     protected virtual void OnMissingLLVMDetected(MissingLlvmEventArgs e)
     {
       MissingLlvmEvent?.Invoke(this, e);
+    }
+
+    protected virtual void OnEncodingErrorDetected(HasEncodingErrorEventArgs e)
+    {
+      HasEncodingErrorEvent?.Invoke(this, e);
     }
 
     #endregion
