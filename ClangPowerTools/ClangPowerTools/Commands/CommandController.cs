@@ -35,6 +35,7 @@ namespace ClangPowerTools
     public event EventHandler<MissingLlvmEventArgs> MissingLlvmEvent;
     public event EventHandler<ClearErrorListEventArgs> ClearErrorListEvent;
     public event EventHandler<EventArgs> ErrorDetectedEvent;
+    public event EventHandler<HasEncodingErrorEventArgs> HasEncodingError;
 
     #endregion
 
@@ -335,6 +336,11 @@ namespace ClangPowerTools
     protected void OnErrorDetected(EventArgs e)
     {
       ErrorDetectedEvent?.Invoke(this, e);
+    }
+
+    public void ShowEncodingErrorWindow()
+    {
+      var items = CompileCommand.Instance.ItemsCollector;
     }
 
     public void OnActiveDocumentCheck(object sender, ActiveDocumentEventArgs e)

@@ -10,6 +10,7 @@ namespace ClangPowerTools.Output
     public List<string> Buffer { get; set; } = new List<string>();
     public string Text { get; set; }
     public bool MissingLLVM { get; set; }
+    public bool HasEncodingError { get; set; }
 
 
     #endregion
