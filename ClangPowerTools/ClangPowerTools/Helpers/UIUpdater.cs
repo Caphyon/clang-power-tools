@@ -7,15 +7,13 @@ namespace ClangPowerTools.Handlers
   {
     #region Public Methods
 
-    public async static void BeginInvoke(Action aAction)
+    public static void BeginInvoke(Action aAction)
     {
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       aAction.BeginInvoke(aAction.EndInvoke, null);
     }
 
-    public async static void Invoke(Action aAction)
+    public static void Invoke(Action aAction)
     {
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       aAction.Invoke();
     }
 
