@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -13,9 +8,9 @@ namespace ClangPowerTools.MVVM.Helpers
 {
   class WindowManager
   {
-    public static System.Windows.Window CreateElementWindow(object viewModel, string title, string controlPath)
+    public static Window CreateElementWindow(object viewModel, string title, string controlPath)
     {
-      var window = new System.Windows.Window();
+      var window = new Window();
       window.Title = title;
       window.Background = Brushes.White;
       window.Foreground = Brushes.Black;

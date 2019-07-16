@@ -117,11 +117,6 @@ namespace ClangPowerTools.Output
 
 
     ////////////// method request{ event.invoke(mOutputContent)}
-    OutputContentModel MethodRequest()
-    {
-      //HasEncodingErrorEvent.Invoke(()=> { });
-      return mOutputContent;
-    }
 
 
     #region Data Handlers
@@ -174,11 +169,6 @@ namespace ClangPowerTools.Output
 
       if (0 != Errors.Count)
         OnErrorDetected(new ErrorDetectedEventArgs(Errors));
-
-      if (mOutputContent.HasEncodingError)
-      {
-        OnEncodingErrorDetected(new HasEncodingErrorEventArgs(mOutputContent));
-      }
     }
 
     public void OnFileHierarchyDetected(object sender, VsHierarchyDetectedEventArgs e)
@@ -201,9 +191,10 @@ namespace ClangPowerTools.Output
       MissingLlvmEvent?.Invoke(this, e);
     }
 
-    protected virtual void OnEncodingErrorDetected(HasEncodingErrorEventArgs e)
+
+    public void OnEncodingErrorDetected(object sender, EventArgs e)
     {
-      HasEncodingErrorEvent?.Invoke(this, e);
+      HasEncodingErrorEvent?.Invoke(this, new HasEncodingErrorEventArgs(mOutputContent));
     }
 
     #endregion
