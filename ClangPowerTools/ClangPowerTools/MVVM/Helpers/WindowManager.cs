@@ -15,7 +15,7 @@ namespace ClangPowerTools.MVVM.Helpers
       window.Background = Brushes.White;
       window.Foreground = Brushes.Black;
       window.SizeToContent = SizeToContent.Height;
-      window.Width = 800;
+      window.MaxWidth = 700;
       window.ResizeMode = ResizeMode.NoResize;
       window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
