@@ -134,7 +134,6 @@
     <Compile Include="Options\ViewModel\ClangTidyCustomChecksOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Helpers\DispatcherHandler.cs" />
     <Compile Include="Helpers\DocumentsHandler.cs" />
     <Compile Include="Error\ErrorDetector.cs" />
     <Compile Include="Error\ErrorParserConstants.cs" />
