@@ -1,11 +1,15 @@
 ﻿using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
+using ClangPowerTools.Handlers;
+using ClangPowerTools.MVVM.ViewModels;
+using ClangPowerTools.Properties;
 using ClangPowerTools.Services;
 using ClangPowerTools.Views;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -38,6 +42,7 @@ namespace ClangPowerTools
     public event EventHandler<EventArgs> ErrorDetectedEvent;
     public event EventHandler<HasEncodingErrorEventArgs> HasEncodingError;
     public event EventHandler<HasEncodingErrorEventArgs> EncodingErrorEvent;
+    public event EventHandler<EventArgs> HasEncodingErrorEvent;
 
     #endregion
 
@@ -340,24 +345,33 @@ namespace ClangPowerTools
       ErrorDetectedEvent?.Invoke(this, e);
     }
 
+      HasEncodingErrorEvent.Invoke(this, new EventArgs());
     }
 
     public void OnEncodingErrorDetected(object sender, HasEncodingErrorEventArgs e)
     {
-      EncodingErrorEvent?.Invoke(this, e);
-    }
-    public void ShowEncodingErrorWindow()
-    {
-      var items = CompileCommand.Instance.ItemsCollector;
-    }
+      if (!e.Model.HasEncodingError)
+      {
+        return;
+      }
 
-    private void OnEncodingError()
-    {
-      var items = CompileCommand.Instance.ItemsCollector;
-      MessageBox.Show("");
+      var itemsCollector = CompileCommand.Instance.ItemsCollector;
+      itemsCollector.CollectSelectedProjectItems();
+      HashSet<string> selectedFiles = new HashSet<string>();
+      itemsCollector.Items.ForEach(i => selectedFiles.Add(i.GetPath()));
+
+      var encodingConverterViewModel = new EncodingConverterViewModel(selectedFiles.ToList());
+      encodingConverterViewModel.LoadData();
+
+      var EncodingConverterWindow = WindowManager.CreateElementWindow(encodingConverterViewModel, Resources.EncodingConverterWindowTitle, "ClangPowerTools.MVVM.Views.EncodingConverterControl");
+
+      if (encodingConverterViewModel.CloseAction == null)
+      {
+        encodingConverterViewModel.CloseAction = () => EncodingConverterWindow.Close();
+      }
+
+      EncodingConverterWindow.ShowDialog();
     }
-
-
 
     public void OnActiveDocumentCheck(object sender, ActiveDocumentEventArgs e)
     {

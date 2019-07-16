@@ -97,6 +97,10 @@ namespace ClangPowerTools.Commands
       EncodingConverterWindow.ShowDialog();
     }
 
+
+    #endregion
+
+    #region Private Methods
     private List<string> GetSelectedFile(CommandUILocation commandUILocation)
     {
       var itemsList = new List<string>();
