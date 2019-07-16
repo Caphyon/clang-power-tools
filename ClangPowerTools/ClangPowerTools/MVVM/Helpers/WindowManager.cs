@@ -8,14 +8,14 @@ namespace ClangPowerTools.MVVM.Helpers
 {
   class WindowManager
   {
-    public static Window CreateElementWindow(object viewModel, string title, string controlPath)
+    public static System.Windows.Window CreateElementWindow(object viewModel, string title, string controlPath)
     {
       var window = new Window();
       window.Title = title;
       window.Background = Brushes.White;
       window.Foreground = Brushes.Black;
       window.SizeToContent = SizeToContent.Height;
-      window.Width = 400;
+      window.Width = 800;
       window.ResizeMode = ResizeMode.NoResize;
       window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 

@@ -20,6 +20,7 @@ namespace ClangPowerTools.MVVM.ViewModels
     private EncodingModel _selectedEncoding;
 
     public string CurrentEncodingText { get; set; }
+    public List<string> NonUTF8Files { get; set; } = new List<string>();
     public ObservableCollection<EncodingModel> EncodingCollection { get; set; }
     public ICommand CancelCommand { get; set; }
     public ICommand ConvertCommand { get; set; }
@@ -44,7 +45,7 @@ namespace ClangPowerTools.MVVM.ViewModels
       fileNames = selectedDocuments;
     }
 
-    public async Task LoadData()
+    public void LoadData()
     {
       CancelCommand = new RelayCommand(o => { CancelCommandExecute(); }, o => true);
 
@@ -52,7 +53,12 @@ namespace ClangPowerTools.MVVM.ViewModels
 
       foreach (var file in fileNames)
       {
-        fileEncodings.Add(GetEncoding(file));
+        var encodingFile = GetEncoding(file);
+        if(encodingFile.EncodingName != Encoding.UTF8.EncodingName && !file.EndsWith(".vcxproj") && !file.EndsWith(".sln"))
+        {
+          NonUTF8Files.Add(file);
+        }
+        fileEncodings.Add(encodingFile);
       }
 
       if (!fileEncodings.Any())

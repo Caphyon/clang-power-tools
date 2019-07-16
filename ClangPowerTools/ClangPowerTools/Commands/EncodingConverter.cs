@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
+using System.Windows;
 using ClangPowerTools.MVVM.Helpers;
 using ClangPowerTools.MVVM.ViewModels;
 using ClangPowerTools.Properties;
@@ -57,35 +58,42 @@ namespace ClangPowerTools.Commands
       Instance = new EncodingConverter(commandController, package, commandService, guid, id);
     }
 
-
-    public async void RunEncodingConverter(int id, CommandUILocation commandUILocation)
+    [STAThread]
+    public async Task RunEncodingConverterAsync(int id, CommandUILocation commandUILocation)
     {
-
-      List<string> selectedFiles = GetSelectedFile(commandUILocation);
-
-      if (selectedFiles == null)
+      Application.Current.Dispatcher.Invoke(() =>
       {
-        return;
-      }
+        List<string> selectedFiles = GetSelectedFile(commandUILocation);
 
-      var dte = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
-      Array selectedItems = dte.ToolWindows.SolutionExplorer.SelectedItems as Array;
-      foreach (UIHierarchyItem item in selectedItems)
-      {
-        if (item.Object is Solution)
+        if (selectedFiles == null)
         {
-          selectedFiles.AddRange(GetAllFilesWithExtension(Path.GetDirectoryName(dte.Solution.FullName), "*.sln"));
-          selectedFiles.AddRange(GetAllFilesWithExtension(Path.GetDirectoryName(dte.Solution.FullName), "*.vcxproj"));
+          return;
         }
-        else if (item.Object is Project)
-        {
-          Project project = item.Object as Project;
-          selectedFiles.AddRange(GetAllFilesWithExtension(Path.GetDirectoryName(project.FullName), "*.vcxproj"));
-        }
-      }
 
+        //var dte = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
+        //Array selectedItems = dte.ToolWindows.SolutionExplorer.SelectedItems as Array;
+        //foreach (UIHierarchyItem item in selectedItems)
+        //{
+        //  if (item.Object is Solution)
+        //  {
+        //    selectedFiles.AddRange(GetAllFilesWithExtension(Path.GetDirectoryName(dte.Solution.FullName), "*.sln"));
+        //    selectedFiles.AddRange(GetAllFilesWithExtension(Path.GetDirectoryName(dte.Solution.FullName), "*.vcxproj"));
+        //  }
+        //  else if (item.Object is Project)
+        //  {
+        //    Project project = item.Object as Project;
+        //    selectedFiles.AddRange(GetAllFilesWithExtension(Path.GetDirectoryName(project.FullName), "*.vcxproj"));
+        //  }
+        //}
+        ShowWindow(selectedFiles);
+       
+      });
+    }
+
+    public void ShowWindow(List<string> selectedFiles)
+    {
       var encodingConverterViewModel = new EncodingConverterViewModel(selectedFiles);
-      await encodingConverterViewModel.LoadData();
+      encodingConverterViewModel.LoadData();
 
       var EncodingConverterWindow = WindowManager.CreateElementWindow(encodingConverterViewModel, Resources.EncodingConverterWindowTitle, "ClangPowerTools.MVVM.Views.EncodingConverterControl");
 
