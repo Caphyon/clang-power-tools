@@ -70,6 +70,15 @@ namespace ClangPowerTools.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to encoding is not supported.
+        /// </summary>
+        internal static string EncodingError {
+            get {
+                return ResourceManager.GetString("EncodingError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to multiple encodings.
         /// </summary>
         internal static string MultipleEncodingsSelected {
@@ -84,15 +93,6 @@ namespace ClangPowerTools.Properties {
         internal static string NoEncodingDetected {
             get {
                 return ResourceManager.GetString("NoEncodingDetected", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to fatal error: UTF-16.
-        /// </summary>
-        internal static string UTF_16EncodingError {
-            get {
-                return ResourceManager.GetString("UTF-16EncodingError", resourceCulture);
             }
         }
         

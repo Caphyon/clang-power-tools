@@ -12,7 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
+using System.Windows;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools
@@ -230,14 +230,14 @@ namespace ClangPowerTools
           }
         case CommandIds.kEncodingConverterId:
           {
-            EncodingConverter.Instance.RunEncodingConverter(CommandIds.kIgnoreCompileId, aCommandUILocation);
+            await EncodingConverter.Instance.RunEncodingConverterAsync(CommandIds.kIgnoreCompileId, aCommandUILocation);
             break;
           }
-        case CommandIds.kEncodingConverterToolbarId:
-          {
-            EncodingConverter.Instance.RunEncodingConverter(CommandIds.kEncodingConverterToolbarId, aCommandUILocation);
-            break;
-          }
+        //case CommandIds.kEncodingConverterToolbarId:
+        //  {
+        //    await EncodingConverter.Instance.RunEncodingConverterAsync(CommandIds.kEncodingConverterToolbarId, aCommandUILocation);
+        //    break;
+        //  }
 
         default:
           break;
@@ -354,23 +354,21 @@ namespace ClangPowerTools
       {
         return;
       }
-
-      var itemsCollector = CompileCommand.Instance.ItemsCollector;
-      itemsCollector.CollectSelectedProjectItems();
-      HashSet<string> selectedFiles = new HashSet<string>();
-      itemsCollector.Items.ForEach(i => selectedFiles.Add(i.GetPath()));
-
-      var encodingConverterViewModel = new EncodingConverterViewModel(selectedFiles.ToList());
-      encodingConverterViewModel.LoadData();
-
-      var EncodingConverterWindow = WindowManager.CreateElementWindow(encodingConverterViewModel, Resources.EncodingConverterWindowTitle, "ClangPowerTools.MVVM.Views.EncodingConverterControl");
-
-      if (encodingConverterViewModel.CloseAction == null)
+      try
       {
-        encodingConverterViewModel.CloseAction = () => EncodingConverterWindow.Close();
+        Application.Current.Dispatcher.Invoke(new Action(() =>
+             {
+               var itemsCollector = CompileCommand.Instance.ItemsCollector;
+               itemsCollector.CollectSelectedProjectItems();
+               HashSet<string> selectedFiles = new HashSet<string>();
+               itemsCollector.Items.ForEach(i => selectedFiles.Add(i.GetPath()));
+               EncodingConverter.Instance.ShowWindow(selectedFiles.ToList());
+             }));
       }
+      catch(Exception exception)
+      {
 
-      EncodingConverterWindow.ShowDialog();
+      }
     }
 
     public void OnActiveDocumentCheck(object sender, ActiveDocumentEventArgs e)
