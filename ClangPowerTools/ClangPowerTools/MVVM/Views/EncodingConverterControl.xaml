@@ -4,20 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views"
+             xmlns:converters="clr-namespace:ClangPowerTools.Convertors"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+  
   <UserControl.Resources>
-
-    <Style x:Key="ListBox" TargetType="{x:Type ListBox}">
-      <Setter Property="Background" Value="Transparent" />
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="{x:Type ListBox}">
-            <ContentPresenter />
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
+    <converters:BooleanToVisibilityConverter  x:Key="BooleanToVisibilityConverter"/>
 
     <Style x:Key="RadioButtonList" TargetType="{x:Type ListBox}">
       <!-- ControlTemplate taken from MSDN http://msdn.microsoft.com/en-us/library/ms754242.aspx -->
@@ -75,10 +67,17 @@
 
   <Border BorderBrush="Black" Background="WhiteSmoke" BorderThickness="0.5" Height="auto" Margin="5">
     <StackPanel Margin="10" Orientation="Vertical">
-      <Label Content="{Binding CurrentEncodingText, Mode=OneTime}"/>
-      <Label Content="Do you want to change the encoding of the following files?"/>
-      <Border BorderBrush="Black" BorderThickness="0.5" Height="auto">
+      
+      <Label Content="{Binding CurrentEncodingText, Mode=OneTime}" />
+      <Label Content="Do you want to change the encoding of the following files?"
+             Visibility="{Binding Path=IsCheckBoxListVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+      
+      <Border BorderBrush="Black" 
+              BorderThickness="0.5" 
+              Height="auto"
+              Visibility="{Binding Path=IsCheckBoxListVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
         <ListBox ItemsSource="{Binding NonUTF8Files, Mode=TwoWay}"
+                 Visibility="{Binding Path=IsCheckBoxListVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                  MaxHeight="100" 
                  ScrollViewer.VerticalScrollBarVisibility="Auto">
           <ListBox.Resources>
@@ -100,7 +99,7 @@
         </ListBox>
       </Border>
 
-      <Label Content="Available encodings:"/>
+      <!--<Label Content="Available encodings:"/>
       <Border BorderBrush="Black" BorderThickness="0.5" Height="auto">
         <ListBox  Style="{StaticResource RadioButtonList}"
                   Height="auto"
@@ -108,10 +107,13 @@
                   ItemsSource="{Binding EncodingCollection}"
                   DisplayMemberPath="EncodingName" 
                   SelectedValue="{Binding SelectedEncoding}"/>
-      </Border>
+      </Border>-->
 
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 10 0 0">
-        <Button Content="Convert" Margin=" 0 0 5 0" Command="{Binding ConvertCommand}" Width="60"/>
+        <Button Content="Convert" Margin=" 0 0 5 0" 
+                Command="{Binding ConvertCommand}" Width="60"
+                Visibility="{Binding Path=IsCheckBoxListVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                />
         <Button Content="Cancel" Command="{Binding CancelCommand}" Width="60"/>
       </StackPanel>
     </StackPanel>

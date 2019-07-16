@@ -18,6 +18,7 @@ namespace ClangPowerTools.MVVM.ViewModels
     private readonly List<string> fileNames = new List<string>();
     private HashSet<Encoding> fileEncodings = new HashSet<Encoding>();
     private EncodingModel _selectedEncoding;
+    private bool _isCheckBoxListVisible = true;
 
     public string CurrentEncodingText { get; set; }
     public ObservableCollection<FileModel> NonUTF8Files { get; set; } = new ObservableCollection<FileModel>();
@@ -33,6 +34,16 @@ namespace ClangPowerTools.MVVM.ViewModels
         if (_selectedEncoding == value) return;
         _selectedEncoding = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedEncoding"));
+      }
+    }
+    public bool IsCheckBoxListVisible
+    {
+      get { return _isCheckBoxListVisible; }
+      set
+      {
+        if (_isCheckBoxListVisible == value) return;
+        _isCheckBoxListVisible = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsCheckBoxListVisible"));
       }
     }
     public Action CloseAction { get; set; }
@@ -54,11 +65,15 @@ namespace ClangPowerTools.MVVM.ViewModels
       foreach (var file in fileNames)
       {
         var encodingFile = GetEncoding(file);
-        if(encodingFile.EncodingName != Encoding.UTF8.EncodingName && !file.EndsWith(".vcxproj") && !file.EndsWith(".sln"))
+        if (encodingFile.EncodingName != Encoding.UTF8.EncodingName && !file.EndsWith(".vcxproj") && !file.EndsWith(".sln"))
         {
-          NonUTF8Files.Add(new FileModel { FileName = file, IsChecked = true}) ;
+          NonUTF8Files.Add(new FileModel { FileName = file, IsChecked = true });
         }
         fileEncodings.Add(encodingFile);
+      }
+      if(!NonUTF8Files.Any())
+      {
+          IsCheckBoxListVisible = false;
       }
 
       if (!fileEncodings.Any())
@@ -102,10 +117,12 @@ namespace ClangPowerTools.MVVM.ViewModels
 
     private void ConvertCommandExecute()
     {
-      var checkedItems = NonUTF8Files.Where(item => item.IsChecked);
-      foreach (var file in checkedItems)
+      foreach (var file in NonUTF8Files)
       {
-        ConvertFile(file.FileName);
+        if (file.IsChecked)
+        {
+          ConvertFile(file.FileName);
+        }
       }
 
       CancelCommandExecute();
