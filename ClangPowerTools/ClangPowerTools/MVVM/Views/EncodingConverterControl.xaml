@@ -73,12 +73,12 @@
 
   </UserControl.Resources>
 
-  <Border BorderBrush="Black" BorderThickness="0.5" Height="auto" Margin="5">
+  <Border BorderBrush="Black" Background="WhiteSmoke" BorderThickness="0.5" Height="auto" Margin="5">
     <StackPanel Margin="10" Orientation="Vertical">
       <Label Content="{Binding CurrentEncodingText, Mode=OneTime}"/>
       <Label Content="Do you want to change the encoding of the following files?"/>
       <Border BorderBrush="Black" BorderThickness="0.5" Height="auto">
-        <ListBox ItemsSource="{Binding NonUTF8Files}"
+        <ListBox ItemsSource="{Binding NonUTF8Files, Mode=TwoWay}"
                  MaxHeight="100" 
                  ScrollViewer.VerticalScrollBarVisibility="Auto">
           <ListBox.Resources>
@@ -90,7 +90,7 @@
                   <ControlTemplate TargetType="ListBoxItem">
                     <CheckBox Margin="5,2" 
                               Content="{Binding FileName}"
-                              IsChecked="{Binding isChecked}">
+                              IsChecked="{Binding IsChecked}">
                     </CheckBox>
                   </ControlTemplate>
                 </Setter.Value>
@@ -99,7 +99,7 @@
           </ListBox.Resources>
         </ListBox>
       </Border>
-      
+
       <Label Content="Available encodings:"/>
       <Border BorderBrush="Black" BorderThickness="0.5" Height="auto">
         <ListBox  Style="{StaticResource RadioButtonList}"
