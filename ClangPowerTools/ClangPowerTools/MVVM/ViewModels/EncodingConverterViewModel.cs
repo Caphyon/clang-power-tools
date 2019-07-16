@@ -47,9 +47,9 @@ namespace ClangPowerTools.MVVM.ViewModels
 
     public void LoadData()
     {
-      CancelCommand = new RelayCommand(o => { CancelCommandExecute(); }, o => true);
+      CancelCommand = new RelayCommand(CancelCommandExecute);
 
-      ConvertCommand = new RelayCommand(o => { ConvertCommandExecute(); }, o => true);
+      ConvertCommand = new RelayCommand(ConvertCommandExecute);
 
       foreach (var file in fileNames)
       {
