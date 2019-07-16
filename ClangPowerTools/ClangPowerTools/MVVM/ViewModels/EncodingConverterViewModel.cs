@@ -20,7 +20,7 @@ namespace ClangPowerTools.MVVM.ViewModels
     private EncodingModel _selectedEncoding;
 
     public string CurrentEncodingText { get; set; }
-    public List<string> NonUTF8Files { get; set; } = new List<string>();
+    public List<FileModel> NonUTF8Files { get; set; } = new List<FileModel>();
     public ObservableCollection<EncodingModel> EncodingCollection { get; set; }
     public ICommand CancelCommand { get; set; }
     public ICommand ConvertCommand { get; set; }
@@ -56,7 +56,7 @@ namespace ClangPowerTools.MVVM.ViewModels
         var encodingFile = GetEncoding(file);
         if(encodingFile.EncodingName != Encoding.UTF8.EncodingName && !file.EndsWith(".vcxproj") && !file.EndsWith(".sln"))
         {
-          NonUTF8Files.Add(file);
+          NonUTF8Files.Add(new FileModel { FileName = file, IsChecked = true }) ;
         }
         fileEncodings.Add(encodingFile);
       }
@@ -102,6 +102,7 @@ namespace ClangPowerTools.MVVM.ViewModels
 
     private void ConvertCommandExecute()
     {
+      //var checkedItems = NonUTF8Files.Select(item => item.IsChecked);
       foreach (var file in fileNames)
       {
         ConvertFile(file);
