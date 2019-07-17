@@ -112,12 +112,6 @@ namespace ClangPowerTools
       {
         await Logout.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kLogoutId);
       }
-
-      if (EncodingConverter.Instance == null)
-      {
-        await EncodingConverter.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kEncodingConverterId);
-        await EncodingConverter.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kEncodingConverterToolbarId);
-      }
     }
 
     public async void Execute(object sender, EventArgs e)
@@ -228,16 +222,6 @@ namespace ClangPowerTools
             Logout.Instance.LogoutUser();
             break;
           }
-        case CommandIds.kEncodingConverterId:
-          {
-            await EncodingConverter.Instance.RunEncodingConverterAsync(CommandIds.kIgnoreCompileId, aCommandUILocation);
-            break;
-          }
-        //case CommandIds.kEncodingConverterToolbarId:
-        //  {
-        //    await EncodingConverter.Instance.RunEncodingConverterAsync(CommandIds.kEncodingConverterToolbarId, aCommandUILocation);
-        //    break;
-        //  }
 
         default:
           break;
@@ -279,7 +263,6 @@ namespace ClangPowerTools
         case CommandIds.kCompileToolbarId:
         case CommandIds.kTidyToolbarId:
         case CommandIds.kTidyFixToolbarId:
-        case CommandIds.kEncodingConverterToolbarId:
           commandUILocation = CommandUILocation.Toolbar;
           break;
         default:
@@ -362,7 +345,7 @@ namespace ClangPowerTools
                itemsCollector.CollectSelectedProjectItems();
                HashSet<string> selectedFiles = new HashSet<string>();
                itemsCollector.Items.ForEach(i => selectedFiles.Add(i.GetPath()));
-               EncodingConverter.Instance.ShowWindow(selectedFiles.ToList());
+               WindowInitializer.ShowWindow(selectedFiles.ToList());
              }));
       }
       catch(Exception exception)

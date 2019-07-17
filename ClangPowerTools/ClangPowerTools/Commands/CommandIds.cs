@@ -26,9 +26,6 @@
     public const int kITidyExportConfigId = 0x1032;
     public const int kLogoutId = 0x1033;
 
-    public const int kEncodingConverterId = 0x0106;
-    public const int kEncodingConverterToolbarId = 0x0111;
-
     #endregion
   }
 }
