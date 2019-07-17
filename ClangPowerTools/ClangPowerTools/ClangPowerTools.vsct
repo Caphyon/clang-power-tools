@@ -56,7 +56,6 @@
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0000" />
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" priority="0x0002" />
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0003" />
-      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForEncoding" priority="0x0004" />
 
       <Group guid="guidRunClangPowerToolsPackageCmdSet" id="MyMenuGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
@@ -141,16 +140,6 @@
         </Strings>
       </Button>
 
-      <!-- Clang Encoding Context Menu button -->
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="EncodingConverterId" priority="0x0009" type="Button">
-        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForEncoding" />
-        <Icon guid="guidImageEncodingConverter" id="EncodingConverter" />
-        <CommandFlag>DefaultDisabled</CommandFlag>
-        <Strings>
-          <ButtonText>Encoding Converter</ButtonText>
-        </Strings>
-      </Button>
-
       <!-- Clang Settings Context Menu button -->
       <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0008" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" />
@@ -215,15 +204,6 @@
           <ButtonText>Stop Clang</ButtonText>
         </Strings>
       </Button>
-      
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="EncodingConverterToolbarId" priority="0x0005" type="Button">
-        <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
-        <Icon guid="guidImageEncodingConverter" id="EncodingConverter" />
-        <CommandFlag>DefaultDisabled</CommandFlag>
-        <Strings>
-          <ButtonText>Encoding Converter</ButtonText>
-        </Strings>
-      </Button>
 
       <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0006" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
@@ -261,13 +241,6 @@
         </Strings>
       </Button>
 
-      <Button guid="guidRunClangPowerToolsPackageCmdSet" id="cmdidEncodingConverter" priority="0x0100" type="Button">
-        <Parent guid="guidRunClangPowerToolsPackageCmdSet" id="MyMenuGroup" />
-        <Icon guid="guidImageEncodingConverter" id="EncodingConverter" />
-        <Strings>
-          <ButtonText>Encoding Converter</ButtonText>
-        </Strings>
-      </Button>
     </Buttons>
 
     <!--Declare all the image resources -->
@@ -344,10 +317,6 @@
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
     </CommandPlacement>
 
-    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForEncoding" priority="0x0003">
-      <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
-    </CommandPlacement>
-
     <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0004">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
     </CommandPlacement>
@@ -366,7 +335,6 @@
       <!-- Define the unique identifires for groups -->
       <IDSymbol name="GroupForSubmenu" value="0x1020" />
       <IDSymbol name="GroupForCommands" value="0x1021" />
-      <IDSymbol name="GroupForEncoding" value="0x1024" />
       <IDSymbol name="GroupForSettings" value="0x1022" />
       <IDSymbol name="GroupForIgnore" value="0x1023" />
       <IDSymbol name="ToolbarGroup" value="0x1050" />
@@ -392,10 +360,7 @@
 
       <IDSymbol name="StopClangId" value="0x0104" />
       <IDSymbol name="IgnoreFormatId" value="0x0107" />
-      <IDSymbol name="IgnoreCompileId" value="0x0108" />
-      
-      <IDSymbol name="EncodingConverterId" value="0x0106" />
-      <IDSymbol name="EncodingConverterToolbarId" value="0x0111" />
+      <IDSymbol name="IgnoreCompileId" value="0x0108" />   
       
       <IDSymbol name="SettingsId" value="0x0103" />
       <IDSymbol name="TidyExportConfigId" value="0x1032" />
@@ -451,16 +416,10 @@
     <GuidSymbol name="guidImageLogout" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c72a}">
       <IDSymbol name="Logout" value="1" />
     </GuidSymbol>
-    
-    <!-- Define encoding converter image -->
-    <GuidSymbol name="guidImageEncodingConverter" value="{ea93a1b1-d8d8-49a1-b60e-c85e19b4f56a}">
-      <IDSymbol name="EncodingConverter" value="1" />
-    </GuidSymbol>
 
   
     <GuidSymbol value="{a6d55984-32c7-4725-bf65-16d84020c9ad}" name="guidRunClangPowerToolsPackageCmdSet">
       <IDSymbol value="4128" name="MyMenuGroup" />
-      <IDSymbol value="256" name="cmdidEncodingConverter" />
     </GuidSymbol>
   
     <GuidSymbol value="{6a93cd48-ec21-4054-a6f3-38cdbfef0ee5}" name="guidImages1">

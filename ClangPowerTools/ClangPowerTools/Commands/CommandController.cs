@@ -244,7 +244,6 @@ namespace ClangPowerTools
         case CommandIds.kCompileToolbarId:
         case CommandIds.kTidyToolbarId:
         case CommandIds.kTidyFixToolbarId:
-        case CommandIds.kEncodingConverterToolbarId:
           commandUILocation = CommandUILocation.Toolbar;
           break;
         default:
@@ -329,7 +328,7 @@ namespace ClangPowerTools
                itemsCollector.CollectSelectedProjectItems();
                HashSet<string> selectedFiles = new HashSet<string>();
                itemsCollector.Items.ForEach(i => selectedFiles.Add(i.GetPath()));
-               EncodingConverter.Instance.ShowWindow(selectedFiles.ToList());
+               WindowInitializer.ShowWindow(selectedFiles.ToList());
              }));
       }
       catch(Exception exception)

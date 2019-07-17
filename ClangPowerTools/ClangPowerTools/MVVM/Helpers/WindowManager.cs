@@ -8,7 +8,7 @@ namespace ClangPowerTools.MVVM.Helpers
 {
   class WindowManager
   {
-    public static System.Windows.Window CreateElementWindow(object viewModel, string title, string controlPath)
+    public static Window CreateElementWindow(object viewModel, string title, string controlPath)
     {
       var window = new Window();
       window.Title = title;
@@ -18,6 +18,7 @@ namespace ClangPowerTools.MVVM.Helpers
       window.MaxWidth = 700;
       window.ResizeMode = ResizeMode.NoResize;
       window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+      //window.Icon = BitmapFrame.Create(new Uri("pack://application:,,,/ClangPowerTools;component/Resources/SearchIcon.png", UriKind.RelativeOrAbsolute));
 
       var controlAssembly = Assembly.Load("ClangPowerTools");
       var controlType = controlAssembly.GetType(controlPath);

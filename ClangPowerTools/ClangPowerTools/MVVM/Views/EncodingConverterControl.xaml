@@ -69,7 +69,7 @@
     <StackPanel Margin="10" Orientation="Vertical">
       
       <Label Content="{Binding CurrentEncodingText, Mode=OneTime}" />
-      <Label Content="Do you want to change the encoding of the following files?"
+      <Label Content="The following files are not encoded in UTF-8. Do you want to change their encoding?"
              Visibility="{Binding Path=IsCheckBoxListVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
       
       <Border BorderBrush="Black" 
