@@ -20,7 +20,7 @@ namespace ClangPowerTools.MVVM.ViewModels
     private EncodingModel _selectedEncoding;
     private bool _isCheckBoxListVisible = true;
 
-    public string CurrentEncodingText { get; set; }
+   // public string CurrentEncodingText { get; set; }
     public ObservableCollection<FileModel> NonUTF8Files { get; set; } = new ObservableCollection<FileModel>();
     public ObservableCollection<EncodingModel> EncodingCollection { get; set; }
     public ICommand CancelCommand { get; set; }
@@ -54,14 +54,12 @@ namespace ClangPowerTools.MVVM.ViewModels
     public EncodingConverterViewModel(List<string> selectedDocuments)
     {
       fileNames = selectedDocuments;
+      CancelCommand = new RelayCommand(CancelCommandExecute);
+      ConvertCommand = new RelayCommand(ConvertCommandExecute);
     }
 
     public void LoadData()
     {
-      CancelCommand = new RelayCommand(CancelCommandExecute);
-
-      ConvertCommand = new RelayCommand(ConvertCommandExecute);
-
       foreach (var file in fileNames)
       {
         var encodingFile = GetEncoding(file);
@@ -76,18 +74,18 @@ namespace ClangPowerTools.MVVM.ViewModels
           IsCheckBoxListVisible = false;
       }
 
-      if (!fileEncodings.Any())
-      {
-        CurrentEncodingText = string.Format("Current Encoding: {0}", Resources.NoEncodingDetected);
-      }
-      else if (fileEncodings.Count() == 1)
-      {
-        CurrentEncodingText = string.Format("Current Encoding: {0}", fileEncodings.First().EncodingName);
-      }
-      else
-      {
-        CurrentEncodingText = string.Format("Current Encoding: {0}", Resources.MultipleEncodingsSelected);
-      }
+      //if (!fileEncodings.Any())
+      //{
+      //  CurrentEncodingText = string.Format("Current Encoding: {0}", Resources.NoEncodingDetected);
+      //}
+      //else if (fileEncodings.Count() == 1)
+      //{
+      //  CurrentEncodingText = string.Format("Current Encoding: {0}", fileEncodings.First().EncodingName);
+      //}
+      //else
+      //{
+      //  CurrentEncodingText = string.Format("Current Encoding: {0}", Resources.MultipleEncodingsSelected);
+      //}
 
       InitializeEncodingList();
     }

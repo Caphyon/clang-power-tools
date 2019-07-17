@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace ClangPowerTools.MVVM.Helpers
 {
@@ -12,13 +12,10 @@ namespace ClangPowerTools.MVVM.Helpers
     {
       var window = new Window();
       window.Title = title;
-      window.Background = Brushes.White;
-      window.Foreground = Brushes.Black;
-      window.SizeToContent = SizeToContent.Height;
-      window.MaxWidth = 700;
+      window.SizeToContent = SizeToContent.WidthAndHeight;
       window.ResizeMode = ResizeMode.NoResize;
       window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-      //window.Icon = BitmapFrame.Create(new Uri("pack://application:,,,/ClangPowerTools;component/Resources/SearchIcon.png", UriKind.RelativeOrAbsolute));
+      window.Icon = BitmapFrame.Create(new Uri("pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico", UriKind.RelativeOrAbsolute));
 
       var controlAssembly = Assembly.Load("ClangPowerTools");
       var controlType = controlAssembly.GetType(controlPath);

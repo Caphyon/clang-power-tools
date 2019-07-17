@@ -345,7 +345,7 @@ namespace ClangPowerTools
                itemsCollector.CollectSelectedProjectItems();
                HashSet<string> selectedFiles = new HashSet<string>();
                itemsCollector.Items.ForEach(i => selectedFiles.Add(i.GetPath()));
-               WindowInitializer.ShowWindow(selectedFiles.ToList());
+               WindowInitializer.ShowEncodingErrorWindow(selectedFiles.ToList());
              }));
       }
       catch(Exception exception)

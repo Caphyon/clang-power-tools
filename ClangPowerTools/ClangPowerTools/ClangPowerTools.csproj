@@ -276,7 +276,10 @@
     </Content>
     <Resource Include="MVVM\Views\Background.png" />
     <Resource Include="Resources\AlphabeticalIcon.PNG" />
+    <Resource Include="Resources\BannersError.png" />
+    <Resource Include="Resources\ClangPowerToolsIco.ico" />
     <Content Include="Resources\EncodingConverter.ico" />
+    <Resource Include="Resources\iconError.png" />
     <Content Include="Resources\Logout.png" />
     <Content Include="Resources\ClangFormatIcon.png">
       <IncludeInVSIX>true</IncludeInVSIX>

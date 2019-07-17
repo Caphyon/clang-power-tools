@@ -79,6 +79,15 @@ namespace ClangPowerTools.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The following files are not encoded in UTF-8. Do you want to change their encoding?.
+        /// </summary>
+        internal static string EncodingErrorText {
+            get {
+                return ResourceManager.GetString("EncodingErrorText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to multiple encodings.
         /// </summary>
         internal static string MultipleEncodingsSelected {
