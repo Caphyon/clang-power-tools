@@ -133,7 +133,6 @@ namespace ClangPowerTools
         mDteEvents = dte2.Events.DTEEvents;
       }
 
-      DispatcherHandler.Initialize(dte as DTE2);
       SettingsProvider.Initialize(this);
 
       // Detect the first install 

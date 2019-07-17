@@ -1,6 +1,5 @@
 ﻿using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
-using ClangPowerTools.Handlers;
 using ClangPowerTools.Services;
 using ClangPowerTools.Views;
 using EnvDTE;
@@ -100,7 +99,7 @@ namespace ClangPowerTools
         await TidyConfigCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kITidyExportConfigId);
       }
 
-      if(Logout.Instance == null)
+      if (Logout.Instance == null)
       {
         await Logout.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kLogoutId);
       }
@@ -108,7 +107,7 @@ namespace ClangPowerTools
 
     public async void Execute(object sender, EventArgs e)
     {
-      if(activeLicense == false)
+      if (activeLicense == false)
       {
         LoginView loginView = new LoginView();
         loginView.ShowDialog();
@@ -400,22 +399,22 @@ namespace ClangPowerTools
     /// <param name="e"></param>
     public void OnBeforeClangCommand(object sender, EventArgs e)
     {
-      UIUpdater.Invoke(() =>
+      if (!(sender is OleMenuCommand command))
+        return;
+
+      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte) && !(dte as DTE2).Solution.IsOpen)
       {
-        if (!(sender is OleMenuCommand command))
-          return;
-
-        if (VsServiceProvider.TryGetService(typeof(DTE), out object dte) && !(dte as DTE2).Solution.IsOpen)
-          command.Visible = command.Enabled = false;
-
-        else if (vsBuildRunning && command.CommandID.ID != CommandIds.kSettingsId)
-          command.Visible = command.Enabled = false;
-
-        else
-          command.Visible = command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !running : running;
-      });
+        command.Visible = command.Enabled = false;
+      }
+      else if (vsBuildRunning && command.CommandID.ID != CommandIds.kSettingsId)
+      {
+        command.Visible = command.Enabled = false;
+      }
+      else
+      {
+        command.Visible = command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !running : running;
+      }
     }
-
 
     /// <summary>
     /// Set the VS running build flag to true when the VS build begin.
@@ -430,14 +429,14 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="Scope"></param>
     /// <param name="Action"></param>
-    public async void OnMSVCBuildDone(vsBuildScope Scope, vsBuildAction Action)
+    public void OnMSVCBuildDone(vsBuildScope Scope, vsBuildAction Action)
     {
       vsBuildRunning = false;
-      await OnMSVCBuildSucceededAsync();
+      OnMSVCBuildSucceededAsync().SafeFireAndForget();
     }
 
 
-    private async System.Threading.Tasks.Task OnMSVCBuildSucceededAsync()
+    private async Task OnMSVCBuildSucceededAsync()
     {
       if (!CompileCommand.Instance.VsCompileFlag)
         return;
@@ -482,7 +481,7 @@ namespace ClangPowerTools
       if (true == running) // Clang compile/tidy command is running
         return;
 
-      TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu);
+      TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu).SafeFireAndForget();
       mSaveCommandWasGiven = false;
     }
 

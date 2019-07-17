@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using System;
+using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Handlers
 {
@@ -7,19 +8,17 @@ namespace ClangPowerTools.Handlers
   {
     #region Public Methods
 
-    public async static void BeginInvoke(Action aAction)
+    public static void BeginInvoke(Action aAction)
     {
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       aAction.BeginInvoke(aAction.EndInvoke, null);
     }
 
-    public async static void Invoke(Action aAction)
+    public async static Task InvokeAsync(Action aAction)
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       aAction.Invoke();
     }
 
     #endregion
-
   }
 }
