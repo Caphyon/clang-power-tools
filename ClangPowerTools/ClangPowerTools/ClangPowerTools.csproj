@@ -255,6 +255,9 @@
     <Resource Include="Resources\ClangFormatIcon.png" />
     <Resource Include="MVVM\Views\Background.png" />
     <Content Include="Resources\EncodingConverter.ico" />
+    <Resource Include="Resources\BannersError.png" />
+    <Resource Include="Resources\iconError.png" />
+    <Content Include="Resources\Logout.png" />
     <Resource Include="Resources\CleanSearchIcon.PNG" />
     <Resource Include="Resources\CompileIcon.png" />
     <Resource Include="Resources\SearchIcon.PNG" />

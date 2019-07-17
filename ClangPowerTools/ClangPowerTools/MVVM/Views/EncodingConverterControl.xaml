@@ -4,10 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views"
+             xmlns:resources="clr-namespace:ClangPowerTools.Properties"
              xmlns:converters="clr-namespace:ClangPowerTools.Convertors"
-             mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
-  
+             Width="490"
+             d:DesignHeight="370"
+             mc:Ignorable="d" >
+
   <UserControl.Resources>
     <converters:BooleanToVisibilityConverter  x:Key="BooleanToVisibilityConverter"/>
 
@@ -65,20 +67,36 @@
 
   </UserControl.Resources>
 
-  <Border BorderBrush="Black" Background="WhiteSmoke" BorderThickness="0.5" Height="auto" Margin="5">
-    <StackPanel Margin="10" Orientation="Vertical">
-      
-      <Label Content="{Binding CurrentEncodingText, Mode=OneTime}" />
-      <Label Content="The following files are not encoded in UTF-8. Do you want to change their encoding?"
-             Visibility="{Binding Path=IsCheckBoxListVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-      
+  <StackPanel>
+
+    <Grid>
+      <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/BannersError.png"/>
+      <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/iconError.png"
+             Width="36"
+             Height="36"
+             VerticalAlignment="Top" 
+             HorizontalAlignment="Left" 
+             Margin="23,21"/>
+      <Label Content="Error"
+             FontSize="21" 
+             Foreground="White" 
+             Margin="75,20,284,26.333"/>
+    </Grid>
+
+    <StackPanel  Orientation="Vertical" Margin="23, 15">
+      <TextBlock Text="The following files are not encoded in UTF-8. Do you want to change their encoding?"
+                 FontSize="13"
+                 TextWrapping="WrapWithOverflow"
+                 Visibility="{Binding Path=IsCheckBoxListVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
       <Border BorderBrush="Black" 
               BorderThickness="0.5" 
               Height="auto"
+              Margin="0,15,0,0"
               Visibility="{Binding Path=IsCheckBoxListVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
         <ListBox ItemsSource="{Binding NonUTF8Files, Mode=TwoWay}"
                  Visibility="{Binding Path=IsCheckBoxListVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
-                 MaxHeight="100" 
+                 MaxHeight="130" 
                  ScrollViewer.VerticalScrollBarVisibility="Auto">
           <ListBox.Resources>
             <Style TargetType="ListBoxItem">
@@ -87,9 +105,10 @@
               <Setter Property="Template">
                 <Setter.Value>
                   <ControlTemplate TargetType="ListBoxItem">
-                    <CheckBox Margin="5,2" 
-                              Content="{Binding FileName}"
-                              IsChecked="{Binding IsChecked}">
+                    <CheckBox Content="{Binding FileName}"
+                              IsChecked="{Binding IsChecked}"
+                              Margin="5,3"
+                              FontSize="13">
                     </CheckBox>
                   </ControlTemplate>
                 </Setter.Value>
@@ -99,23 +118,22 @@
         </ListBox>
       </Border>
 
-      <!--<Label Content="Available encodings:"/>
-      <Border BorderBrush="Black" BorderThickness="0.5" Height="auto">
-        <ListBox  Style="{StaticResource RadioButtonList}"
-                  Height="auto"
-                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                  ItemsSource="{Binding EncodingCollection}"
-                  DisplayMemberPath="EncodingName" 
-                  SelectedValue="{Binding SelectedEncoding}"/>
-      </Border>-->
-
-      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 10 0 0">
-        <Button Content="Convert" Margin=" 0 0 5 0" 
-                Command="{Binding ConvertCommand}" Width="60"
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 15 0 0">
+        <Button Content="Convert" Margin=" 0 0 10 0" 
+                Command="{Binding ConvertCommand}"
+                Height="26"
+                Width="98"
+                FontSize="12"
+                BorderThickness="0"
                 Visibility="{Binding Path=IsCheckBoxListVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                 />
-        <Button Content="Cancel" Command="{Binding CancelCommand}" Width="60"/>
+        <Button Content="Cancel" 
+                Command="{Binding CancelCommand}" 
+                Height="26"
+                Width="98"
+                FontSize="12"
+                BorderThickness="0"/>
       </StackPanel>
     </StackPanel>
-  </Border>
+  </StackPanel>
 </UserControl>

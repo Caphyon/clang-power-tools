@@ -10,7 +10,7 @@ namespace ClangPowerTools.MVVM.Helpers
 {
   class WindowInitializer
   {
-    public static void ShowWindow(List<string> selectedFiles)
+    public static void ShowEncodingErrorWindow(List<string> selectedFiles)
     {
       var encodingConverterViewModel = new EncodingConverterViewModel(selectedFiles);
       encodingConverterViewModel.LoadData();
