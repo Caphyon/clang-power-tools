@@ -9,8 +9,9 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using ClangPowerTools.MVVM.Utils;
 
 namespace ClangPowerTools.MVVM.ViewModels
 {
@@ -22,6 +23,11 @@ namespace ClangPowerTools.MVVM.ViewModels
     public ICommand ConvertCommand { get; set; }
     public Action CloseAction { get; set; }
 
+    private ObservableCollection<FileModel> filesNotEncodedInUTF8;
+    private void OnPropertyChanged(string prop)
+    {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+    }
     public ObservableCollection<FileModel> FilesNotEncodedInUTF8
     {
       get { return filesNotEncodedInUTF8; }
@@ -29,19 +35,22 @@ namespace ClangPowerTools.MVVM.ViewModels
       {
         if (filesNotEncodedInUTF8 == value) { return; }
         filesNotEncodedInUTF8 = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FilesNotEncodedInUTF8"));
+        OnPropertyChanged("FilesNotEncodedInUTF8");
       }
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
 
+    //[NotifyPropertyChangedInvocator]
+    //protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    //{
+    //  PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    //}
+
 
     private readonly List<string> fileNames = new List<string>();
 
     private bool isConvertButtonEnabled = true;
-
-
-    private ObservableCollection<FileModel> filesNotEncodedInUTF8;
 
     public bool IsConvertButtonEnabled
     {
@@ -59,8 +68,14 @@ namespace ClangPowerTools.MVVM.ViewModels
       fileNames = selectedDocuments;
       CancelCommand = new RelayCommand(CancelCommandExecute);
       ConvertCommand = new RelayCommand(ConvertCommandExecute);
+      EventBus.Register("IsConvertButtonEnable", IsConvertButtonEnabledExecute);
       FilesNotEncodedInUTF8 = new ObservableCollection<FileModel>();
-      FilesNotEncodedInUTF8.CollectionChanged += CheckedUtf8FilesChanged;
+      //FilesNotEncodedInUTF8.CollectionChanged += CheckedUtf8FilesChanged;
+    }
+
+    private void IsConvertButtonEnabledExecute()
+    {
+      IsConvertButtonEnabled = filesNotEncodedInUTF8.Where(f=>f.IsChecked).Any();
     }
 
     public void LoadData()
@@ -73,11 +88,6 @@ namespace ClangPowerTools.MVVM.ViewModels
           FilesNotEncodedInUTF8.Add(new FileModel { FileName = file, IsChecked = true });
         }
       }
-      if (!FilesNotEncodedInUTF8.Any())
-      {
-        IsConvertButtonEnabled = false;
-      }
-
     }
 
     private void CheckedUtf8FilesChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -87,6 +97,7 @@ namespace ClangPowerTools.MVVM.ViewModels
 
     private void CancelCommandExecute()
     {
+      EventBus.Unregister("IsConvertButtonEnable", IsConvertButtonEnabledExecute);
       CloseAction?.Invoke();
     }
 
