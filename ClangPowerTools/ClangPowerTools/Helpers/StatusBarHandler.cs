@@ -13,17 +13,16 @@ namespace ClangPowerTools
 
     public static void Text(string aText, int aFreezeStatusBar)
     {
-      UIUpdater.Invoke(() =>
+      if (!VsServiceProvider.TryGetService(typeof(SVsStatusbar), out object statusBarService) || null == statusBarService as IVsStatusbar)
+        return;
+
+      var statusBar = statusBarService as IVsStatusbar;
+      // Make sure the status bar is not frozen
+      if (VSConstants.S_OK != statusBar.IsFrozen(out int frozen))
+        return;
+
+      UIUpdater.InvokeAsync(() =>
       {
-        if (!VsServiceProvider.TryGetService(typeof(SVsStatusbar), out object statusBarService) || null == statusBarService as IVsStatusbar)
-          return;
-
-        var statusBar = statusBarService as IVsStatusbar;
-
-        // Make sure the status bar is not frozen
-        if (VSConstants.S_OK != statusBar.IsFrozen(out int frozen))
-          return;
-
         if (0 != frozen)
           statusBar.FreezeOutput(0);
 
@@ -36,25 +35,27 @@ namespace ClangPowerTools
         // Clear the status bar text.
         if (0 == aFreezeStatusBar)
           statusBar.Clear();
-      });
+
+      }).SafeFireAndForget();
     }
 
 
     public static void Animation(vsStatusAnimation aAnimation, int aEnableAnimation)
     {
-      UIUpdater.Invoke(() =>
+      if (!VsServiceProvider.TryGetService(typeof(SVsStatusbar), out object statusBarService) || null == statusBarService as IVsStatusbar)
+        return;
+
+      var statusBar = statusBarService as IVsStatusbar;
+
+      // Use the standard Visual Studio icon for building.  
+      object icon = (short)Microsoft.VisualStudio.Shell.Interop.Constants.SBAI_Build;
+
+      UIUpdater.InvokeAsync(() =>
       {
-        if (!VsServiceProvider.TryGetService(typeof(SVsStatusbar), out object statusBarService) || null == statusBarService as IVsStatusbar)
-          return;
-
-        var statusBar = statusBarService as IVsStatusbar;
-
-        // Use the standard Visual Studio icon for building.  
-        object icon = (short)Microsoft.VisualStudio.Shell.Interop.Constants.SBAI_Build;
-
         // Display the icon in the Animation region.  
         statusBar.Animation(aEnableAnimation, ref icon);
-      });
+
+      }).SafeFireAndForget();
     }
 
 

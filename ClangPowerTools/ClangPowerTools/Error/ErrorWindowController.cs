@@ -25,7 +25,7 @@ namespace ClangPowerTools
 
     public void OnErrorDetected(object sender, ErrorDetectedEventArgs e)
     {
-      UIUpdater.Invoke(() =>
+      UIUpdater.InvokeAsync(() =>
       {
         SuspendRefresh();
 
@@ -37,12 +37,12 @@ namespace ClangPowerTools
 
         ResumeRefresh();
         BringToFront();
-      });
+      }).SafeFireAndForget();
     }
 
     public void RemoveErrors(IVsHierarchy aHierarchy)
     {
-      UIUpdater.Invoke(() =>
+      UIUpdater.InvokeAsync(() =>
       {
         SuspendRefresh();
 
@@ -61,17 +61,17 @@ namespace ClangPowerTools
             Tasks.Remove(errorTask);
           }
         }
-
         ResumeRefresh();
-      });
+
+      }).SafeFireAndForget();
     }
 
     public void Clear()
     {
-      UIUpdater.Invoke(() =>
+      UIUpdater.InvokeAsync(() =>
       {
         Tasks.Clear();
-      });
+      }).SafeFireAndForget();
     }
 
     public void OnClangCommandBegin(object sender, ClearErrorListEventArgs e)
