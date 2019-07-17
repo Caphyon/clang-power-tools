@@ -108,6 +108,7 @@
     <Compile Include="MVVM\ViewModels\CompilerSettingsViewModel.cs" />
     <Compile Include="MVVM\Helpers\WindowManager.cs" />
     <Compile Include="MVVM\Models\FileModel.cs" />
+    <Compile Include="MVVM\Utils\EventBus.cs" />
     <Compile Include="MVVM\ViewModels\EncodingConverterViewModel.cs" />
     <Compile Include="MVVM\ViewModels\LoginViewModel.cs" />
     <Compile Include="Helpers\NetworkUtility.cs" />
