@@ -11,7 +11,6 @@
              mc:Ignorable="d" >
 
   <UserControl.Resources>
-    <converters:BooleanToVisibilityConverter  x:Key="BooleanToVisibilityConverter"/>
 
     <Style x:Key="RadioButtonList" TargetType="{x:Type ListBox}">
       <!-- ControlTemplate taken from MSDN http://msdn.microsoft.com/en-us/library/ms754242.aspx -->
@@ -86,16 +85,13 @@
     <StackPanel  Orientation="Vertical" Margin="23, 15">
       <TextBlock Text="The following files are not encoded in UTF-8. Do you want to change their encoding?"
                  FontSize="13"
-                 TextWrapping="WrapWithOverflow"
-                 Visibility="{Binding Path=IsCheckBoxListVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                 TextWrapping="WrapWithOverflow"/>
 
       <Border BorderBrush="Black" 
               BorderThickness="0.5" 
               Height="auto"
-              Margin="0,15,0,0"
-              Visibility="{Binding Path=IsCheckBoxListVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-        <ListBox ItemsSource="{Binding NonUTF8Files, Mode=TwoWay}"
-                 Visibility="{Binding Path=IsCheckBoxListVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+              Margin="0,15,0,0">
+        <ListBox ItemsSource="{Binding FilesNotEncodedInUTF8, Mode=TwoWay}"
                  MaxHeight="130" 
                  ScrollViewer.VerticalScrollBarVisibility="Auto">
           <ListBox.Resources>
@@ -121,11 +117,11 @@
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 15 0 0">
         <Button Content="Convert" Margin=" 0 0 10 0" 
                 Command="{Binding ConvertCommand}"
+                IsEnabled="{Binding IsConvertButtonEnabled}"
                 Height="26"
                 Width="98"
                 FontSize="12"
                 BorderThickness="0"
-                Visibility="{Binding Path=IsCheckBoxListVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
                 />
         <Button Content="Cancel" 
                 Command="{Binding CancelCommand}" 

@@ -4,6 +4,7 @@ using ClangPowerTools.Properties;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -15,47 +16,51 @@ namespace ClangPowerTools.MVVM.ViewModels
 {
   class EncodingConverterViewModel : INotifyPropertyChanged
   {
-    private readonly List<string> fileNames = new List<string>();
-    private HashSet<Encoding> fileEncodings = new HashSet<Encoding>();
-    private EncodingModel _selectedEncoding;
-    private bool _isCheckBoxListVisible = true;
+    //public ObservableCollection<FileModel> NonUTF8Files { get; set; } = new ObservableCollection<FileModel>();
 
-   // public string CurrentEncodingText { get; set; }
-    public ObservableCollection<FileModel> NonUTF8Files { get; set; } = new ObservableCollection<FileModel>();
-    public ObservableCollection<EncodingModel> EncodingCollection { get; set; }
     public ICommand CancelCommand { get; set; }
     public ICommand ConvertCommand { get; set; }
-
-    public EncodingModel SelectedEncoding
-    {
-      get { return _selectedEncoding; }
-      set
-      {
-        if (_selectedEncoding == value) return;
-        _selectedEncoding = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedEncoding"));
-      }
-    }
-    public bool IsCheckBoxListVisible
-    {
-      get { return _isCheckBoxListVisible; }
-      set
-      {
-        if (_isCheckBoxListVisible == value) return;
-        _isCheckBoxListVisible = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsCheckBoxListVisible"));
-      }
-    }
     public Action CloseAction { get; set; }
 
+    public ObservableCollection<FileModel> FilesNotEncodedInUTF8
+    {
+      get { return filesNotEncodedInUTF8; }
+      set
+      {
+        if (filesNotEncodedInUTF8 == value) { return; }
+        filesNotEncodedInUTF8 = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FilesNotEncodedInUTF8"));
+      }
+    }
 
     public event PropertyChangedEventHandler PropertyChanged;
+
+
+    private readonly List<string> fileNames = new List<string>();
+
+    private bool isConvertButtonEnabled = true;
+
+
+    private ObservableCollection<FileModel> filesNotEncodedInUTF8;
+
+    public bool IsConvertButtonEnabled
+    {
+      get { return isConvertButtonEnabled; }
+      set
+      {
+        if (isConvertButtonEnabled == value) return;
+        isConvertButtonEnabled = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsConvertButtonEnabled"));
+      }
+    }
 
     public EncodingConverterViewModel(List<string> selectedDocuments)
     {
       fileNames = selectedDocuments;
       CancelCommand = new RelayCommand(CancelCommandExecute);
       ConvertCommand = new RelayCommand(ConvertCommandExecute);
+      FilesNotEncodedInUTF8 = new ObservableCollection<FileModel>();
+      FilesNotEncodedInUTF8.CollectionChanged += CheckedUtf8FilesChanged;
     }
 
     public void LoadData()
@@ -65,47 +70,19 @@ namespace ClangPowerTools.MVVM.ViewModels
         var encodingFile = GetEncoding(file);
         if (encodingFile.EncodingName != Encoding.UTF8.EncodingName && !file.EndsWith(".vcxproj") && !file.EndsWith(".sln"))
         {
-          NonUTF8Files.Add(new FileModel { FileName = file, IsChecked = true });
+          FilesNotEncodedInUTF8.Add(new FileModel { FileName = file, IsChecked = true });
         }
-        fileEncodings.Add(encodingFile);
       }
-      if(!NonUTF8Files.Any())
+      if (!FilesNotEncodedInUTF8.Any())
       {
-          IsCheckBoxListVisible = false;
+        IsConvertButtonEnabled = false;
       }
 
-      //if (!fileEncodings.Any())
-      //{
-      //  CurrentEncodingText = string.Format("Current Encoding: {0}", Resources.NoEncodingDetected);
-      //}
-      //else if (fileEncodings.Count() == 1)
-      //{
-      //  CurrentEncodingText = string.Format("Current Encoding: {0}", fileEncodings.First().EncodingName);
-      //}
-      //else
-      //{
-      //  CurrentEncodingText = string.Format("Current Encoding: {0}", Resources.MultipleEncodingsSelected);
-      //}
-
-      InitializeEncodingList();
     }
 
-    private void InitializeEncodingList()
+    private void CheckedUtf8FilesChanged(object sender, NotifyCollectionChangedEventArgs e)
     {
-      EncodingCollection = new ObservableCollection<EncodingModel>();
 
-      AddEncoding(Encoding.UTF8, "UTF-8");
-      AddEncoding(Encoding.UTF32, "UTF-32");
-      AddEncoding(Encoding.Unicode, "Unicode");
-      AddEncoding(Encoding.BigEndianUnicode, "Big Endian");
-      //AddEncoding(Encoding.GetEncoding("utf-32BE"), "UTF-32 Big Endian");
-
-      SelectedEncoding = EncodingCollection.FirstOrDefault(e => e.Encoding.EncodingName == Resources.UTF8Encoding);
-    }
-
-    private void AddEncoding(Encoding encoding, string encodingName)
-    {
-      EncodingCollection.Add(new EncodingModel { EncodingName = encodingName, Encoding = encoding });
     }
 
     private void CancelCommandExecute()
@@ -115,28 +92,22 @@ namespace ClangPowerTools.MVVM.ViewModels
 
     private void ConvertCommandExecute()
     {
-      foreach (var file in NonUTF8Files)
+      foreach (var file in FilesNotEncodedInUTF8)
       {
         if (file.IsChecked)
         {
-          ConvertFile(file.FileName);
+          ConvertFileToUTF8(file.FileName);
         }
       }
-
       CancelCommandExecute();
     }
 
-    private void ConvertFile(string file)
+    private void ConvertFileToUTF8(string file)
     {
-      if (SelectedEncoding == null || fileEncodings.Count() == 1 && SelectedEncoding.Encoding == fileEncodings.First())
-      {
-        return;
-      }
-
       StreamReader streamReader = new StreamReader(file);
       string fileContent = streamReader.ReadToEnd();
       streamReader.Close();
-      File.WriteAllText(file, fileContent, SelectedEncoding.Encoding);
+      File.WriteAllText(file, fileContent, Encoding.UTF8);
     }
 
     private Encoding GetEncoding(string fileName)

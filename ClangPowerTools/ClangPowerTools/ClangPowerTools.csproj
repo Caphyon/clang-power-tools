@@ -84,7 +84,6 @@
     <Compile Include="MVVM\Controllers\LicenseController.cs" />
     <Compile Include="MVVM\Helpers\WindowInitializer.cs" />
     <Compile Include="MVVM\Helpers\WindowManager.cs" />
-    <Compile Include="MVVM\Models\EncodingModel.cs" />
     <Compile Include="MVVM\Models\FileModel.cs" />
     <Compile Include="MVVM\Models\LicenseModel.cs" />
     <Compile Include="MVVM\ViewModels\EncodingConverterViewModel.cs" />
