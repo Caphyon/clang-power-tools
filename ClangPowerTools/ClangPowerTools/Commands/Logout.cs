@@ -1,13 +1,8 @@
 ﻿using System;
 using System.ComponentModel.Design;
-using System.Globalization;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows;
 using ClangPowerTools.Views;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands

@@ -31,7 +31,6 @@ namespace ClangPowerTools.Output
 
     #endregion
 
-
     #region Properties
 
 
@@ -48,11 +47,9 @@ namespace ClangPowerTools.Output
 
     #endregion
 
-
     #region Methods
 
     #region Output window operations
-
 
     public void Initialize(AsyncPackage aPackage, IVsOutputWindow aVsOutputWindow)
     {
@@ -62,37 +59,40 @@ namespace ClangPowerTools.Output
       mOutputWindowBuilder.Build();
     }
 
-
     public void Clear()
     {
       mOutputContent = new OutputContentModel();
       var outputWindow = mOutputWindowBuilder.GetResult();
-      UIUpdater.Invoke(() =>
+
+      UIUpdater.InvokeAsync(() =>
       {
         outputWindow.Pane.Clear();
-      });
+
+      }).SafeFireAndForget();
     }
 
     public void Show()
     {
       var outputWindow = mOutputWindowBuilder.GetResult();
-      UIUpdater.Invoke(() =>
+
+      UIUpdater.InvokeAsync(() =>
       {
         outputWindow.Pane.Activate();
         if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+        {
           (dte as DTE2).ExecuteCommand("View.Output", string.Empty);
-      });
+        }
+      }).SafeFireAndForget();
     }
 
     public void Write(string aMessage)
     {
-      if (String.IsNullOrWhiteSpace(aMessage))
+      if (string.IsNullOrWhiteSpace(aMessage))
         return;
 
       var outputWindow = mOutputWindowBuilder.GetResult();
       outputWindow.Pane.OutputStringThreadSafe(aMessage + "\n");
     }
-
 
     public void Write(object sender, ClangCommandMessageEventArgs e)
     {
@@ -111,12 +111,9 @@ namespace ClangPowerTools.Output
       Hierarchy = e.Hierarchy;
     }
 
-
     #endregion
 
-
     #region Data Handlers
-
 
     public void OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
@@ -139,7 +136,6 @@ namespace ClangPowerTools.Output
       Write(mOutputContent.Text);
     }
 
-
     public void OutputDataErrorReceived(object sender, DataReceivedEventArgs e)
     {
       if (null == e.Data)
@@ -158,7 +154,6 @@ namespace ClangPowerTools.Output
       Write(mOutputContent.Text);
     }
 
-
     public void ClosedDataConnection(object sender, EventArgs e)
     {
       if (0 != Buffer.Count)
@@ -170,7 +165,6 @@ namespace ClangPowerTools.Output
         OnErrorDetected(new ErrorDetectedEventArgs(Errors));
     }
 
-
     public void OnFileHierarchyDetected(object sender, VsHierarchyDetectedEventArgs e)
     {
       Hierarchy = e.Hierarchy;
@@ -178,18 +172,15 @@ namespace ClangPowerTools.Output
 
     #endregion
 
-
     protected virtual void OnErrorDetected(ErrorDetectedEventArgs e)
     {
       ErrorDetectedEvent?.Invoke(this, e);
     }
 
-
     protected virtual void OnMissingLLVMDetected(MissingLlvmEventArgs e)
     {
       MissingLlvmEvent?.Invoke(this, e);
     }
-
 
     #endregion
 
