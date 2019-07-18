@@ -111,6 +111,9 @@
     <Compile Include="Helpers\UIUpdater.cs" />
     <Compile Include="MVVM\Models\TokenModel.cs" />
     <Compile Include="MVVM\Models\UserModel.cs" />
+    <Compile Include="MVVM\Views\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\WebApi\WebApiUrl.cs" />
     <Compile Include="Options\ClangTidyPathValue.cs" />
     <Compile Include="Options\ClangFormatPathValue.cs" />
@@ -471,6 +474,10 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="MVVM\Views\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Options\View\ClangFormatOptionsUserControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
