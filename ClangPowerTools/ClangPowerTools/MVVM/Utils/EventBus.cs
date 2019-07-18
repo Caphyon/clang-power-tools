@@ -8,26 +8,20 @@ namespace ClangPowerTools.MVVM.Utils
 {
   public static class EventBus
   {
-    private static readonly Dictionary<object, List<Action>> Mapping = new Dictionary<object, List<Action>>();
+    private static readonly Dictionary<object, Action> Mapping = new Dictionary<object, Action>();
 
     public static void Register(object message, Action callback)
     {
-      if (Mapping.ContainsKey(message))
+      if (!Mapping.ContainsKey(message))
       {
-        //Mapping[message].Add(callback);
-      }
-      else
-      {
-        List<Action> callbacks = new List<Action>();
-        Mapping.Add(message, callbacks);
-        callbacks.Add(callback);
+        Mapping.Add(message, callback);
       }
     }
     public static void Unregister(object message, Action callback)
     {
       if (Mapping.ContainsKey(message))
       {
-        Mapping[message].Remove(callback);
+        Mapping.Remove(message);
       }
     }
 
@@ -35,7 +29,9 @@ namespace ClangPowerTools.MVVM.Utils
     {
       if (Mapping.ContainsKey(message))
       {
-        Mapping[message].ForEach(callback => callback());
+        //Action callback = Mapping[message]();
+        //callback();
+        Mapping[message]();
       }
     }
   }

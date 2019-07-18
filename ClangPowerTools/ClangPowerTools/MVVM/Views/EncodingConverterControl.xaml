@@ -6,68 +6,10 @@
              xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views"
              xmlns:resources="clr-namespace:ClangPowerTools.Properties"
              xmlns:converters="clr-namespace:ClangPowerTools.Convertors"
-             Width="490"
-             d:DesignHeight="370"
+             Width="650"
+             Height="450"
              mc:Ignorable="d" >
-
-  <UserControl.Resources>
-
-    <Style x:Key="RadioButtonList" TargetType="{x:Type ListBox}">
-      <!-- ControlTemplate taken from MSDN http://msdn.microsoft.com/en-us/library/ms754242.aspx -->
-      <Setter Property="SnapsToDevicePixels" Value="true"/>
-      <Setter Property="OverridesDefaultStyle" Value="true"/>
-      <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
-      <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
-      <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
-      <Setter Property="MinWidth" Value="120"/>
-      <Setter Property="MinHeight" Value="95"/>
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="ListBox">
-            <Border Name="Border" Background="Transparent"
-                                BorderBrush="Transparent"
-                                BorderThickness="0"
-                                CornerRadius="2">
-              <ScrollViewer Margin="0" Focusable="false">
-                <StackPanel Margin="2" IsItemsHost="True" />
-              </ScrollViewer>
-            </Border>
-            <ControlTemplate.Triggers>
-              <Trigger Property="IsEnabled" Value="false">
-                <Setter TargetName="Border" Property="Background" Value="Transparent" />
-                <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
-              </Trigger>
-              <Trigger Property="IsGrouping" Value="true">
-                <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
-              </Trigger>
-            </ControlTemplate.Triggers>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-      <Setter Property="ItemContainerStyle">
-        <Setter.Value>
-          <Style TargetType="{x:Type ListBoxItem}" >
-            <Setter Property="Margin" Value="2" />
-            <Setter Property="Template">
-              <Setter.Value>
-                <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                  <Border Name="theBorder" Background="Transparent">
-                    <RadioButton Focusable="False" IsHitTestVisible="False" IsChecked="{TemplateBinding IsSelected}">
-                      <ContentPresenter />
-                    </RadioButton>
-                  </Border>
-                </ControlTemplate>
-              </Setter.Value>
-            </Setter>
-          </Style>
-        </Setter.Value>
-      </Setter>
-    </Style>
-
-  </UserControl.Resources>
-
   <StackPanel>
-
     <Grid>
       <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/BannersError.png"/>
       <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/iconError.png"
@@ -86,13 +28,20 @@
       <TextBlock Text="The following files are not encoded in UTF-8. Do you want to change their encoding?"
                  FontSize="13"
                  TextWrapping="WrapWithOverflow"/>
+      
+      <Button Content="{Binding SelectAllButtonContent}" 
+              Command="{Binding SelectAllCommand}"
+              BorderThickness="0"
+              FontWeight="Bold"
+              Margin="0 15 0 0"
+              HorizontalAlignment="Left" 
+              Background="Transparent" />
 
       <Border BorderBrush="Black" 
               BorderThickness="0.5" 
-              Height="auto"
-              Margin="0,15,0,0">
+              Height="auto">
         <ListBox ItemsSource="{Binding FilesNotEncodedInUTF8, Mode=TwoWay}"
-                 MaxHeight="130" 
+                 Height="220" 
                  ScrollViewer.VerticalScrollBarVisibility="Auto">
           <ListBox.Resources>
             <Style TargetType="ListBoxItem">
@@ -103,8 +52,8 @@
                   <ControlTemplate TargetType="ListBoxItem">
                     <CheckBox Content="{Binding FileName}"
                               IsChecked="{Binding IsChecked}"
-                              Margin="5,3"
-                              FontSize="13">
+                              Margin="0 3"
+                              FontSize="13" IsThreeState="False">
                     </CheckBox>
                   </ControlTemplate>
                 </Setter.Value>
