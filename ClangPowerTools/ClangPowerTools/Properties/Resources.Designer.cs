@@ -97,24 +97,6 @@ namespace ClangPowerTools.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to multiple encodings.
-        /// </summary>
-        internal static string MultipleEncodingsSelected {
-            get {
-                return ResourceManager.GetString("MultipleEncodingsSelected", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to no encoding.
-        /// </summary>
-        internal static string NoEncodingDetected {
-            get {
-                return ResourceManager.GetString("NoEncodingDetected", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Select all.
         /// </summary>
         internal static string SelectAllButtonText {

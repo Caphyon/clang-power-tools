@@ -129,12 +129,6 @@
   <data name="EncodingErrorText" xml:space="preserve">
     <value>The following files are not encoded in UTF-8. Do you want to change their encoding?</value>
   </data>
-  <data name="MultipleEncodingsSelected" xml:space="preserve">
-    <value>multiple encodings</value>
-  </data>
-  <data name="NoEncodingDetected" xml:space="preserve">
-    <value>no encoding</value>
-  </data>
   <data name="SelectAllButtonText" xml:space="preserve">
     <value>Select all</value>
   </data>
