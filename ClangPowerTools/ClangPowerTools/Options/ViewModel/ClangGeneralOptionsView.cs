@@ -138,7 +138,6 @@ namespace ClangPowerTools
     {
       string path = mSettingsPathBuilder.GetPath(kGeneralSettingsFileName);
 
-      XmlSerializer serializer = new XmlSerializer();
       var loadedConfig = LoadFromFile(path);
 
       if (null == loadedConfig.ClangFlags || 0 == loadedConfig.ClangFlags.Count)
