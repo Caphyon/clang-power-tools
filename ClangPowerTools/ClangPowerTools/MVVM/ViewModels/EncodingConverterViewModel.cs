@@ -17,7 +17,7 @@ namespace ClangPowerTools.MVVM.ViewModels
 {
   class EncodingConverterViewModel : INotifyPropertyChanged
   {
-    public ICommand CancelCommand { get; set; }
+    public ICommand CloseCommand { get; set; }
     public ICommand ConvertCommand { get; set; }
 
     public ICommand SelectAllCommand { get; set; }
@@ -52,24 +52,37 @@ namespace ClangPowerTools.MVVM.ViewModels
       {
         if(isConvertButtonEnabled == value) { return; }
         isConvertButtonEnabled = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsConvertButtonEnableEvent"));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsConvertButtonEnabled"));
       }
     }
 
     public EncodingConverterViewModel(List<string> selectedDocuments)
     {
       fileNames = selectedDocuments;
-      CancelCommand = new RelayCommand(CancelCommandExecute);
+      CloseCommand = new RelayCommand(CloseCommandExecute);
       ConvertCommand = new RelayCommand(ConvertCommandExecute);
       SelectAllCommand = new RelayCommand(SelectAllCommandExecute);
-      EventBus.Register("IsConvertButtonEnableEvent", IsConvertButtonEnabledExecute);
+      EventBus.Register("EnableConvertButtonEvent", EnableConvertButtonCallback);
+      EventBus.Register("DisableConvertButtonEvent", DisableConvertButtonCallback);
+
+    }
+
+    private void DisableConvertButtonCallback()
+    {
+      IsConvertButtonEnabled = false;
+      SelectAllButtonContent = Resources.SelectAllButtonText;
+    }
+
+    private void EnableConvertButtonCallback()
+    {
+      IsConvertButtonEnabled = true;
+      SelectAllButtonContent = Resources.DeselectAllButtonText;
     }
 
     private void SelectAllCommandExecute()
     {
       if (SelectAllButtonContent == Resources.SelectAllButtonText)
       {
-        SelectAllButtonContent = Resources.DeselectAllButtonText;
         foreach (var file in FilesNotEncodedInUTF8)
         {
           file.IsChecked = true;
@@ -77,7 +90,6 @@ namespace ClangPowerTools.MVVM.ViewModels
       }
       else
       {
-        SelectAllButtonContent = Resources.SelectAllButtonText;
         foreach (var file in FilesNotEncodedInUTF8)
         {
           file.IsChecked = false;
@@ -85,23 +97,6 @@ namespace ClangPowerTools.MVVM.ViewModels
       }
     }
 
-    private void IsConvertButtonEnabledExecute()
-    {
-      if (!FilesNotEncodedInUTF8.Any())
-      {
-        return;
-      }
-      IsConvertButtonEnabled = FilesNotEncodedInUTF8.Where(f => f.IsChecked).Any();
-      if(!isConvertButtonEnabled)
-      {
-        SelectAllButtonContent = Resources.SelectAllButtonText;
-      }
-      else if(!FilesNotEncodedInUTF8.Where(f => !f.IsChecked).Any())
-      {
-        SelectAllButtonContent = Resources.DeselectAllButtonText;
-      }
-     
-    }
 
     public void LoadData()
     {
@@ -115,9 +110,10 @@ namespace ClangPowerTools.MVVM.ViewModels
       }
     }
 
-    private void CancelCommandExecute()
+    private void CloseCommandExecute()
     {
-      EventBus.Unregister("IsConvertButtonEnable", IsConvertButtonEnabledExecute);
+      EventBus.Unregister("EnableConvertButtonEvent", EnableConvertButtonCallback);
+      EventBus.Unregister("DisableConvertButtonEvent", DisableConvertButtonCallback);
       CloseAction?.Invoke();
     }
 
@@ -131,7 +127,7 @@ namespace ClangPowerTools.MVVM.ViewModels
           ConvertFileToUTF8(file.FileName);
         }
       }
-      CancelCommandExecute();
+      CloseCommandExecute();
     }
 
     private void ConvertFileToUTF8(string file)

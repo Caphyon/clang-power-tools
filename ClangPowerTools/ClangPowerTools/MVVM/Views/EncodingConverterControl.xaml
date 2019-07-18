@@ -71,8 +71,8 @@
                 FontSize="12"
                 BorderThickness="0"
                 />
-        <Button Content="Cancel" 
-                Command="{Binding CancelCommand}" 
+        <Button Content="Close" 
+                Command="{Binding CloseCommand}" 
                 Height="26"
                 Width="98"
                 FontSize="12"

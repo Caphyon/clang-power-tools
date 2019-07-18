@@ -13,6 +13,7 @@ namespace ClangPowerTools.MVVM.Models
   {
     private bool isChecked;
 
+    public static int numberOfCheckedFiles { get; set; } = 0;
     public string FileName { get; set; }
     public bool IsChecked
     {
@@ -20,10 +21,17 @@ namespace ClangPowerTools.MVVM.Models
       set
       {
         if (isChecked == value) { return; }
-
         isChecked = value;
+        if (value)
+        {
+          numberOfCheckedFiles++;
+        }
+        else
+        {
+          numberOfCheckedFiles--;
+        }
+        EventBus.Notify(numberOfCheckedFiles == 0 ? "DisableConvertButtonEvent" : "EnableConvertButtonEvent");
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsChecked"));
-        EventBus.Notify("IsConvertButtonEnableEvent");
       }
     }
 
