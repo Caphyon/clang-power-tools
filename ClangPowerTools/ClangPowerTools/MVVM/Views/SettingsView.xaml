@@ -1,5 +1,5 @@
 ﻿<Window
-  x:Class="ClangPowerTools.Views.LoginView"
+  x:Class="ClangPowerTools.Views.SettingsView"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -23,6 +23,9 @@
       <StackPanel>
         <TextBlock>Enter some text</TextBlock>
         <TextBox Name="textBox1" Width="50" />
+        <ContentControl x:Name="ActiveItem" />
+
+
       </StackPanel>
     </TabItem>
 
