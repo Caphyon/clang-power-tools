@@ -61,6 +61,15 @@ namespace ClangPowerTools.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deselect all.
+        /// </summary>
+        internal static string DeselectAllButtonText {
+            get {
+                return ResourceManager.GetString("DeselectAllButtonText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Encoding Converter.
         /// </summary>
         internal static string EncodingConverterWindowTitle {
@@ -102,6 +111,15 @@ namespace ClangPowerTools.Properties {
         internal static string NoEncodingDetected {
             get {
                 return ResourceManager.GetString("NoEncodingDetected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select all.
+        /// </summary>
+        internal static string SelectAllButtonText {
+            get {
+                return ResourceManager.GetString("SelectAllButtonText", resourceCulture);
             }
         }
         

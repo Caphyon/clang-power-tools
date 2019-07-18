@@ -28,7 +28,9 @@ namespace ClangPowerTools.Options.View
       wpfPropGrid.PropertyList.Focus();
     }
 
+    private void WpfPropGrid_Loaded(object sender, System.Windows.RoutedEventArgs e)
+    {
 
-
+    }
   }
 }
