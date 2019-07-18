@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Utils;
+using ClangPowerTools.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,10 +19,11 @@ namespace ClangPowerTools.MVVM.Models
       get { return isChecked; }
       set
       {
-        if (isChecked == value) return;
+        if (isChecked == value) { return; }
+
         isChecked = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsChecked"));
-        EventBus.Notify("IsConvertButtonEnable");
+        EventBus.Notify("IsConvertButtonEnableEvent");
       }
     }
 

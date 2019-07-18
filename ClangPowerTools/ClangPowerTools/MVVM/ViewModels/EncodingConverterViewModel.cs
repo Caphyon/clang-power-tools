@@ -52,7 +52,7 @@ namespace ClangPowerTools.MVVM.ViewModels
       {
         if(isConvertButtonEnabled == value) { return; }
         isConvertButtonEnabled = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsConvertButtonEnabled"));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsConvertButtonEnableEvent"));
       }
     }
 
@@ -62,7 +62,7 @@ namespace ClangPowerTools.MVVM.ViewModels
       CancelCommand = new RelayCommand(CancelCommandExecute);
       ConvertCommand = new RelayCommand(ConvertCommandExecute);
       SelectAllCommand = new RelayCommand(SelectAllCommandExecute);
-      EventBus.Register("IsConvertButtonEnable", IsConvertButtonEnabledExecute);
+      EventBus.Register("IsConvertButtonEnableEvent", IsConvertButtonEnabledExecute);
     }
 
     private void SelectAllCommandExecute()

@@ -34,8 +34,7 @@
               BorderThickness="0"
               FontWeight="Bold"
               Margin="0 15 0 0"
-              HorizontalAlignment="Left" 
-              Background="Transparent" />
+              HorizontalAlignment="Left"/>
 
       <Border BorderBrush="Black" 
               BorderThickness="0.5" 
