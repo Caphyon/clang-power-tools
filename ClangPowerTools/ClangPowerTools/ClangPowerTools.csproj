@@ -113,8 +113,8 @@
     <Compile Include="MVVM\Models\TokenModel.cs" />
     <Compile Include="MVVM\Models\UserModel.cs" />
     <Compile Include="MVVM\ViewModels\SettingsViewModel.cs" />
-    <Compile Include="MVVM\Views\NewGeneralOptionsView.xaml.cs">
-      <DependentUpon>NewGeneralOptionsView.xaml</DependentUpon>
+    <Compile Include="MVVM\Views\CompilerView.xaml.cs">
+      <DependentUpon>CompilerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
@@ -479,7 +479,7 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="MVVM\Views\NewGeneralOptionsView.xaml">
+    <Page Include="MVVM\Views\CompilerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

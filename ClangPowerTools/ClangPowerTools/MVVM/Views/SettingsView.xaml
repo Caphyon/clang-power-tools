@@ -17,7 +17,7 @@
     <TabItem>
       <TabItem.Header>
         <StackPanel Orientation="Horizontal">
-          <TextBlock>General</TextBlock>
+          <TextBlock>Compiler</TextBlock>
         </StackPanel>
       </TabItem.Header>
       <StackPanel>

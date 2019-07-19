@@ -18,9 +18,9 @@ namespace ClangPowerTools.Views
   /// <summary>
   /// Interaction logic for GeneralOptionsView.xaml
   /// </summary>
-  public partial class NewGeneralOptionsView : UserControl
+  public partial class CompilerSettingsView : UserControl
   {
-    public NewGeneralOptionsView()
+    public CompilerSettingsView()
     {
       InitializeComponent();
     }
