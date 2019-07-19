@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClangPowerTools.MVVM.Models
+namespace ClangPowerTools
 {
   public class GeneralOptionsModel : INotifyPropertyChanged
   {

@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace ClangPowerTools.MVVM.Views
+namespace ClangPowerTools.Views
 {
   /// <summary>
   /// Interaction logic for GeneralOptionsView.xaml
   /// </summary>
-  public partial class GeneralOptionsView : UserControl
+  public partial class NewGeneralOptionsView : UserControl
   {
-    public GeneralOptionsView()
+    public NewGeneralOptionsView()
     {
       InitializeComponent();
     }
