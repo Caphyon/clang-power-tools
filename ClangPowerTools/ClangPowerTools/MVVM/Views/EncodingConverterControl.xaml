@@ -91,6 +91,7 @@
                   VerticalAlignment="Center"
                   HorizontalAlignment="Left"/>-->
           <CheckBox IsChecked="{Binding CheckAllItems}"
+                    ToolTip="{Binding SelectAllTooltipText}"
                     Grid.Column="0" 
                     Margin="2 0"
                     VerticalAlignment="Center">

@@ -1,13 +1,17 @@
 ﻿using ClangPowerTools.MVVM.Command;
 using ClangPowerTools.MVVM.Models;
+using ClangPowerTools.Properties;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using ClangPowerTools.MVVM.Utils;
 
 namespace ClangPowerTools.MVVM.ViewModels
 {
@@ -40,6 +44,7 @@ namespace ClangPowerTools.MVVM.ViewModels
       {
         if (checkAllItems == value) { return; }
         checkAllItems = value;
+        SelectAllTooltipText = value ? Resources.SelectAllTooltipText : Resources.DeselectAllTooltipText;
         foreach (var file in FilesNotEncodedInUTF8)
         {
           file.IsChecked = value;
@@ -48,10 +53,20 @@ namespace ClangPowerTools.MVVM.ViewModels
       }
     }
 
+    public string SelectAllTooltipText
+    {
+      get { return selectAllTooltipText; }
+      set
+      {
+        if (selectAllTooltipText == value) { return; }
+        selectAllTooltipText = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectAllTooltipText"));
+      }
+    }
+
     public Action CloseAction { get; set; }
 
     public ObservableCollection<FileModel> FilesNotEncodedInUTF8 { get; set; } = new ObservableCollection<FileModel>();
-
     public IEnumerable<FileModel> FilteredFilesNotEncodedInUTF8
     {
       get
@@ -65,11 +80,14 @@ namespace ClangPowerTools.MVVM.ViewModels
       }
     }
 
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     private readonly List<string> fileNames = new List<string>();
 
     private bool isConvertButtonEnabled = true;
+
+    private string selectAllTooltipText = Resources.DeselectAllTooltipText;
 
     private bool checkAllItems = true;
 
