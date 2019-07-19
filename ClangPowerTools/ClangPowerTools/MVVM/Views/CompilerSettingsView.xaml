@@ -19,13 +19,16 @@
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
       <RowDefinition Height="*" />
       <RowDefinition Height="20" />
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="15" />
-      <ColumnDefinition Width="auto" />
+      <ColumnDefinition Width="10" />
       <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="auto" />
@@ -33,6 +36,7 @@
       <ColumnDefinition Width="20" />
     </Grid.ColumnDefinitions>
 
+    <!--  Compile flags  -->
     <TextBlock
       Grid.Row="1"
       Grid.Column="1"
@@ -46,7 +50,7 @@
     <TextBox
       Grid.Row="1"
       Grid.Column="2"
-      Width="560"
+      Width="470"
       Height="30"
       Margin="0,0,20,0"
       VerticalContentAlignment="Center"
@@ -60,6 +64,163 @@
       Height="30"
       Content="..." />
 
+    <!--  Files to ignore  -->
+    <TextBlock
+      Grid.Row="2"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="20"
+      Foreground="#E2E2E8"
+      Text="Files to ignore" />
+
+    <TextBox
+      Grid.Row="2"
+      Grid.Column="2"
+      Width="470"
+      Height="30"
+      Margin="0,0,20,0"
+      VerticalContentAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="15" />
+
+    <Button
+      Grid.Row="2"
+      Grid.Column="3"
+      Width="50"
+      Height="30"
+      Content="..." />
+
+    <!--  Projects to ignore  -->
+    <TextBlock
+      Grid.Row="3"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="20"
+      Foreground="#E2E2E8"
+      Text="Projects to ignore" />
+
+    <TextBox
+      Grid.Row="3"
+      Grid.Column="2"
+      Width="470"
+      Height="30"
+      Margin="0,0,20,0"
+      VerticalContentAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="15" />
+
+    <Button
+      Grid.Row="3"
+      Grid.Column="3"
+      Width="50"
+      Height="30"
+      Content="..." />
+
+    <!--  Additional includes  -->
+    <TextBlock
+      Grid.Row="4"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="20"
+      Foreground="#E2E2E8"
+      Text="Additional include as" />
+
+    <ComboBox
+      Grid.Row="4"
+      Grid.Column="2"
+      Height="30"
+      Margin="0,0,20,0" />
+
+
+    <!--  Warning as errors  -->
+    <TextBlock
+      Grid.Row="5"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="20"
+      Foreground="#E2E2E8"
+      Text="Warning as errors" />
+
+    <CheckBox
+      Grid.Row="5"
+      Grid.Column="2"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center">
+      <CheckBox.LayoutTransform>
+        <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+      </CheckBox.LayoutTransform>
+    </CheckBox>
+
+    <!--  Continue on error  -->
+    <TextBlock
+      Grid.Row="6"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="20"
+      Foreground="#E2E2E8"
+      Text="Continue on error" />
+
+    <CheckBox
+      Grid.Row="6"
+      Grid.Column="2"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center">
+      <CheckBox.LayoutTransform>
+        <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+      </CheckBox.LayoutTransform>
+    </CheckBox>
+
+    <!--  Clang after MSCV compile  -->
+    <TextBlock
+      Grid.Row="7"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="20"
+      Foreground="#E2E2E8"
+      Text="Clang after MSVC compile" />
+
+    <CheckBox
+      Grid.Row="7"
+      Grid.Column="2"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center">
+      <CheckBox.LayoutTransform>
+        <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+      </CheckBox.LayoutTransform>
+    </CheckBox>
+
+    <!--  Verbose mode  -->
+    <TextBlock
+      Grid.Row="8"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="20"
+      Foreground="#E2E2E8"
+      Text="Verbose mode" />
+
+    <CheckBox
+      Grid.Row="8"
+      Grid.Column="2"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center">
+      <CheckBox.LayoutTransform>
+        <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+      </CheckBox.LayoutTransform>
+    </CheckBox>
 
   </Grid>
 </UserControl>
