@@ -342,13 +342,13 @@ namespace ClangPowerTools
         Application.Current.Dispatcher.Invoke(new Action(() =>
              {
                var itemsCollector = CompileCommand.Instance.ItemsCollector;
-               itemsCollector.CollectSelectedProjectItems();
+               itemsCollector.CollectCurrentProjectItems();
                HashSet<string> selectedFiles = new HashSet<string>();
                itemsCollector.Items.ForEach(i => selectedFiles.Add(i.GetPath()));
                WindowInitializer.ShowEncodingErrorWindow(selectedFiles.ToList());
              }));
       }
-      catch(Exception exception)
+      catch (Exception exception)
       {
 
       }

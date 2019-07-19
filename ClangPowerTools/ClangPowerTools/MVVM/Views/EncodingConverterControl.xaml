@@ -27,20 +27,56 @@
     <StackPanel  Orientation="Vertical" Margin="23, 15">
       <TextBlock Text="The following files are not encoded in UTF-8. Do you want to change their encoding?"
                  FontSize="13"
+                 Margin="0 0 0 15"
                  TextWrapping="WrapWithOverflow"/>
-      
-      <Button Content="{Binding SelectAllButtonContent}" 
-              Command="{Binding SelectAllCommand}"
-              BorderThickness="0"
-              FontWeight="Bold"
-              Margin="0 15 0 0"
-              HorizontalAlignment="Left"/>
+
+      <StackPanel>
+        <Grid>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="7*"/>
+            <ColumnDefinition Width="0.7*"/>
+          </Grid.ColumnDefinitions>
+          <Grid.RowDefinitions>
+            <!--<RowDefinition Height="30"/>-->
+          </Grid.RowDefinitions>
+
+          <Button Content="{Binding SelectAllButtonContent}" 
+                  Grid.Column="0"
+                  Command="{Binding SelectAllCommand}"
+                  BorderThickness="0"
+                  FontWeight="Bold"
+                  Height="20"
+                  Width="98"
+                  VerticalAlignment="Center"
+                  HorizontalAlignment="Left"/>
+          <TextBox x:Name="FBCTextBox"
+                 Grid.Column="2"
+                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                 TextWrapping="Wrap" 
+                 Height="20"
+                  VerticalContentAlignment="Center"
+                 HorizontalAlignment="Stretch"
+                 />
+          <Button HorizontalAlignment="Right" Background="Transparent"
+                  Grid.Column="3">
+            <StackPanel>
+              <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/SearchIcon.png" 
+                     Width="17" 
+                     Height="17" />
+            </StackPanel>
+          </Button>
+        </Grid>
+
+      </StackPanel>
 
       <Border BorderBrush="Black" 
               BorderThickness="0.5" 
+            Margin="0 2 0 0"
               Height="auto">
-        <ListBox ItemsSource="{Binding FilesNotEncodedInUTF8, Mode=TwoWay}"
-                 Height="220" 
+        <ListBox ItemsSource="{Binding FilteredFilesNotEncodedInUTF8, Mode=OneWay}"
+                 Height="200" 
                  ScrollViewer.VerticalScrollBarVisibility="Auto">
           <ListBox.Resources>
             <Style TargetType="ListBoxItem">

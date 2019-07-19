@@ -22,6 +22,20 @@ namespace ClangPowerTools.MVVM.ViewModels
 
     public ICommand SelectAllCommand { get; set; }
 
+    private string searchText;
+
+    public string SearchText
+    {
+      get { return searchText; }
+      set
+      {
+        searchText = value;
+
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SearchText"));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FilteredFilesNotEncodedInUTF8"));
+      }
+    }
+
     public string SelectAllButtonContent
     {
       get { return selectAllButtonContent; }
@@ -36,6 +50,19 @@ namespace ClangPowerTools.MVVM.ViewModels
     public Action CloseAction { get; set; }
 
     public ObservableCollection<FileModel> FilesNotEncodedInUTF8 { get; set; } = new ObservableCollection<FileModel>();
+    public IEnumerable<FileModel> FilteredFilesNotEncodedInUTF8
+    {
+      get
+      {
+        if (SearchText == null)
+        {
+          return FilesNotEncodedInUTF8;
+        }
+
+        return FilesNotEncodedInUTF8.Where(x => x.FileName.ToUpper().Contains(SearchText.ToUpper()));
+      }
+    }
+
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -50,7 +77,7 @@ namespace ClangPowerTools.MVVM.ViewModels
       get { return isConvertButtonEnabled; }
       set
       {
-        if(isConvertButtonEnabled == value) { return; }
+        if (isConvertButtonEnabled == value) { return; }
         isConvertButtonEnabled = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsConvertButtonEnabled"));
       }
@@ -62,27 +89,28 @@ namespace ClangPowerTools.MVVM.ViewModels
       CloseCommand = new RelayCommand(CloseCommandExecute);
       ConvertCommand = new RelayCommand(ConvertCommandExecute);
       SelectAllCommand = new RelayCommand(SelectAllCommandExecute);
-      EventBus.Register("EnableConvertButtonEvent", EnableConvertButtonCallback);
-      EventBus.Register("DisableConvertButtonEvent", DisableConvertButtonCallback);
+      //EventBus.Register("EnableConvertButtonEvent", EnableConvertButtonCallback);
+      //EventBus.Register("DisableConvertButtonEvent", DisableConvertButtonCallback);
 
     }
 
-    private void DisableConvertButtonCallback()
-    {
-      IsConvertButtonEnabled = false;
-      SelectAllButtonContent = Resources.SelectAllButtonText;
-    }
+    //private void DisableConvertButtonCallback()
+    //{
+    //  IsConvertButtonEnabled = false;
+    //  SelectAllButtonContent = Resources.SelectAllButtonText;
+    //}
 
-    private void EnableConvertButtonCallback()
-    {
-      IsConvertButtonEnabled = true;
-      SelectAllButtonContent = Resources.DeselectAllButtonText;
-    }
+    //private void EnableConvertButtonCallback()
+    //{
+    //  IsConvertButtonEnabled = true;
+    //  SelectAllButtonContent = Resources.DeselectAllButtonText;
+    //}
 
     private void SelectAllCommandExecute()
     {
       if (SelectAllButtonContent == Resources.SelectAllButtonText)
       {
+        SelectAllButtonContent = Resources.DeselectAllButtonText;
         foreach (var file in FilesNotEncodedInUTF8)
         {
           file.IsChecked = true;
@@ -90,6 +118,7 @@ namespace ClangPowerTools.MVVM.ViewModels
       }
       else
       {
+        SelectAllButtonContent = Resources.SelectAllButtonText;
         foreach (var file in FilesNotEncodedInUTF8)
         {
           file.IsChecked = false;
@@ -112,14 +141,18 @@ namespace ClangPowerTools.MVVM.ViewModels
 
     private void CloseCommandExecute()
     {
-      EventBus.Unregister("EnableConvertButtonEvent", EnableConvertButtonCallback);
-      EventBus.Unregister("DisableConvertButtonEvent", DisableConvertButtonCallback);
+      //EventBus.Unregister("EnableConvertButtonEvent", EnableConvertButtonCallback);
+      //EventBus.Unregister("DisableConvertButtonEvent", DisableConvertButtonCallback);
       CloseAction?.Invoke();
     }
 
     private void ConvertCommandExecute()
     {
       var checkedFiles = FilesNotEncodedInUTF8.Where(f => f.IsChecked);
+      if (!checkedFiles.Any())
+      {
+        return;
+      }
       foreach (var file in checkedFiles)
       {
         if (file.IsChecked)
