@@ -5,10 +5,57 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools.Views"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  d:DesignHeight="200"
-  d:DesignWidth="200"
+  d:DesignHeight="400"
+  d:DesignWidth="800"
+  Background="Aqua"
   mc:Ignorable="d">
   <Grid>
-    <Button>Hello</Button>
+    <Grid.Background>
+      <ImageBrush ImageSource="Background.png" Stretch="UniformToFill" />
+    </Grid.Background>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="20" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="20" />
+    </Grid.RowDefinitions>
+
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="20" />
+      <ColumnDefinition Width="auto" />
+      <ColumnDefinition Width="auto" />
+      <ColumnDefinition Width="auto" />
+      <ColumnDefinition Width="auto" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="20" />
+    </Grid.ColumnDefinitions>
+
+    <TextBlock
+      Grid.Row="1"
+      Grid.Column="1"
+      FontFamily="SegoeUI"
+      FontSize="20"
+      Foreground="#E2E2E8"
+      Text="Compile flags" />
+
+    <TextBox
+      Grid.Row="1"
+      Grid.Column="2"
+      Width="200"
+      Height="40"
+      FontFamily="SegoeUI"
+      FontSize="16" />
+
+    <Button
+      Grid.Row="1"
+      Grid.Column="3"
+      Width="200"
+      Height="40"
+      Content="..." />
+
+
   </Grid>
 </UserControl>

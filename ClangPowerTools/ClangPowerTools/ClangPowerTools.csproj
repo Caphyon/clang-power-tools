@@ -78,9 +78,10 @@
     <Compile Include="Events\LicenseEventArgs.cs" />
     <Compile Include="Commands\Logout.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
+    <Compile Include="MVVM\Commands\AddDataCommand.cs" />
     <Compile Include="MVVM\Controllers\AccountController.cs" />
     <Compile Include="MVVM\Controllers\LicenseController.cs" />
-    <Compile Include="MVVM\Models\GeneralOptionsModel.cs" />
+    <Compile Include="MVVM\Models\CompilerSettingsModel.cs" />
     <Compile Include="MVVM\Models\LicenseModel.cs" />
     <Compile Include="MVVM\ViewModels\LoginViewModel.cs" />
     <Compile Include="Helpers\NetworkUtility.cs" />
@@ -113,8 +114,8 @@
     <Compile Include="MVVM\Models\TokenModel.cs" />
     <Compile Include="MVVM\Models\UserModel.cs" />
     <Compile Include="MVVM\ViewModels\SettingsViewModel.cs" />
-    <Compile Include="MVVM\Views\CompilerView.xaml.cs">
-      <DependentUpon>CompilerView.xaml</DependentUpon>
+    <Compile Include="MVVM\Views\CompilerSettingsView.xaml.cs">
+      <DependentUpon>CompilerSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
@@ -479,7 +480,7 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="MVVM\Views\CompilerView.xaml">
+    <Page Include="MVVM\Views\CompilerSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

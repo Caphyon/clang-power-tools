@@ -12,24 +12,27 @@
   WindowStartupLocation="CenterScreen"
   WindowStyle="ToolWindow"
   mc:Ignorable="d">
-  <TabControl>
 
-    <TabItem>
+  <TabControl>
+    <TabItem Padding="8" FontSize="15">
       <TabItem.Header>
         <StackPanel Orientation="Horizontal">
-          <TextBlock>Compiler</TextBlock>
+          <Image
+            Width="15"
+            Height="15"
+            Margin="3"
+            Source="../../Resources/CompileIcon.png" />
+          <TextBlock Text="Compiler" />
         </StackPanel>
       </TabItem.Header>
-      <StackPanel>
+      <Grid>
         <TextBlock>Enter some text</TextBlock>
-        <TextBox Name="textBox1" Width="50" />
-        <ContentControl x:Name="ActiveItem" />
+        <local:CompilerSettingsView />
 
-
-      </StackPanel>
+      </Grid>
     </TabItem>
 
-    <TabItem>
+    <TabItem Padding="8" FontSize="15">
       <TabItem.Header>
         <StackPanel Orientation="Horizontal">
           <TextBlock>Format</TextBlock>
@@ -40,7 +43,7 @@
       </StackPanel>
     </TabItem>
 
-    <TabItem>
+    <TabItem Padding="8" FontSize="15">
       <TabItem.Header>
         <StackPanel Orientation="Horizontal">
           <TextBlock>Tidy</TextBlock>
@@ -51,7 +54,7 @@
       </StackPanel>
     </TabItem>
 
-    <TabItem>
+    <TabItem Padding="8" FontSize="15">
       <TabItem.Header>
         <StackPanel Orientation="Horizontal">
           <TextBlock>Account</TextBlock>
