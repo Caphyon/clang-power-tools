@@ -70,14 +70,15 @@
                  TextWrapping="WrapWithOverflow"/>
 
       <StackPanel>
-        <Grid>
+        <Grid HorizontalAlignment="Left" Width="604" >
           <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="4*"/>
             <ColumnDefinition Width="3*"/>
-            <ColumnDefinition Width="auto"/>
           </Grid.ColumnDefinitions>
           <Grid.RowDefinitions>
-            <!--<RowDefinition Height="30"/>-->
+            <RowDefinition Height="21.333"/>
+            <RowDefinition Height="2.667"/>
           </Grid.RowDefinitions>
 
           <!--<Button Content="{Binding SelectAllButtonContent}" 
@@ -89,19 +90,22 @@
                   Width="98"
                   VerticalAlignment="Center"
                   HorizontalAlignment="Left"/>-->
-          <CheckBox Content="{Binding SelectAllButtonContent}" 
-                    IsChecked="{Binding CheckAllItems}"
+          <CheckBox IsChecked="{Binding CheckAllItems}"
                     Grid.Column="0" 
                     Margin="2 0"
                     VerticalAlignment="Center">
           </CheckBox>
           <TextBox x:Name="SearchTextBox"
-            Grid.Column="1"
                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                   Grid.Column="1"
+                   BorderThickness="1"
+                   BorderBrush="LightGray" 
                    Padding="0 0 30 0"
-                   Height="20"
+                   ToolTip="Type words to search for"
+                   VerticalAlignment="Stretch"  
+                   Panel.ZIndex="0"
                    VerticalContentAlignment="Center"
-                   HorizontalAlignment="Stretch">
+                   HorizontalAlignment="Stretch" Grid.ColumnSpan="2" Margin="329,0,0,0" Grid.RowSpan="2">
             <TextBox.Style>
               <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
                 <Style.Resources>
@@ -175,13 +179,14 @@
               </Style>
             </TextBox.Style>
           </TextBox>
-          <Button Grid.Column="2" Width="25" Height="25"
+
+          <Button Grid.Column="2" Width="25" Height="24"
             Style="{DynamicResource NoChromeButton}" 
             BorderThickness="1"
             VerticalAlignment="Center" 
             HorizontalAlignment="Right"  
             Command="{Binding SearchCommand}" 
-            Panel.ZIndex="1">
+            Panel.ZIndex="1" Grid.RowSpan="2">
 
             <Button.Template>
               <ControlTemplate TargetType="{x:Type Button}">
