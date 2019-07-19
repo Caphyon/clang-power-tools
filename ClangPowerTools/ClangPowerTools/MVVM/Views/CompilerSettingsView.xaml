@@ -50,7 +50,7 @@
     <TextBox
       Grid.Row="1"
       Grid.Column="2"
-      Width="470"
+      Width="450"
       Height="30"
       Margin="0,0,20,0"
       VerticalContentAlignment="Center"
@@ -78,7 +78,7 @@
     <TextBox
       Grid.Row="2"
       Grid.Column="2"
-      Width="470"
+      Width="450"
       Height="30"
       Margin="0,0,20,0"
       VerticalContentAlignment="Center"
@@ -106,7 +106,7 @@
     <TextBox
       Grid.Row="3"
       Grid.Column="2"
-      Width="470"
+      Width="450"
       Height="30"
       Margin="0,0,20,0"
       VerticalContentAlignment="Center"
