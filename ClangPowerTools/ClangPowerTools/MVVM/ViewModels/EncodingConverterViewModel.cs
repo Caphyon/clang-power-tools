@@ -20,7 +20,9 @@ namespace ClangPowerTools.MVVM.ViewModels
     public ICommand CloseCommand { get; set; }
     public ICommand ConvertCommand { get; set; }
 
-    public ICommand SelectAllCommand { get; set; }
+    public ICommand SearchCommand { get; set; }
+
+    //public ICommand SelectAllCommand { get; set; }
 
     private string searchText;
 
@@ -36,16 +38,31 @@ namespace ClangPowerTools.MVVM.ViewModels
       }
     }
 
-    public string SelectAllButtonContent
+    public bool CheckAllItems
     {
-      get { return selectAllButtonContent; }
+      get { return checkAllItems; }
       set
       {
-        if (selectAllButtonContent == value) { return; }
-        selectAllButtonContent = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectAllButtonContent"));
+        if (checkAllItems == value) { return; }
+        checkAllItems = value;
+        foreach (var file in FilesNotEncodedInUTF8)
+        {
+          file.IsChecked = value;
+        }
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CheckAllItems"));
       }
     }
+
+    //public string SelectAllButtonContent
+    //{
+    //  get { return selectAllButtonContent; }
+    //  set
+    //  {
+    //    if (selectAllButtonContent == value) { return; }
+    //    selectAllButtonContent = value;
+    //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectAllButtonContent"));
+    //  }
+    //}
 
     public Action CloseAction { get; set; }
 
@@ -70,7 +87,9 @@ namespace ClangPowerTools.MVVM.ViewModels
 
     private bool isConvertButtonEnabled = true;
 
-    private string selectAllButtonContent = Resources.DeselectAllButtonText;
+    //private string selectAllButtonContent = Resources.DeselectAllButtonText;
+
+    private bool checkAllItems = true;
 
     public bool IsConvertButtonEnabled
     {
@@ -88,10 +107,21 @@ namespace ClangPowerTools.MVVM.ViewModels
       fileNames = selectedDocuments;
       CloseCommand = new RelayCommand(CloseCommandExecute);
       ConvertCommand = new RelayCommand(ConvertCommandExecute);
-      SelectAllCommand = new RelayCommand(SelectAllCommandExecute);
+      SearchCommand = new RelayCommand(SearchCommandExecute);
+      //SelectAllCommand = new RelayCommand(SelectAllCommandExecute);
       //EventBus.Register("EnableConvertButtonEvent", EnableConvertButtonCallback);
       //EventBus.Register("DisableConvertButtonEvent", DisableConvertButtonCallback);
 
+    }
+
+    private void SearchCommandExecute()
+    {
+      if (false == string.IsNullOrWhiteSpace(SearchText))
+      {
+        SearchText = string.Empty;
+      }
+      // Put the mouse cursor inside the SearchBox by focus it
+      //SearchText.Focus();
     }
 
     //private void DisableConvertButtonCallback()
@@ -106,25 +136,25 @@ namespace ClangPowerTools.MVVM.ViewModels
     //  SelectAllButtonContent = Resources.DeselectAllButtonText;
     //}
 
-    private void SelectAllCommandExecute()
-    {
-      if (SelectAllButtonContent == Resources.SelectAllButtonText)
-      {
-        SelectAllButtonContent = Resources.DeselectAllButtonText;
-        foreach (var file in FilesNotEncodedInUTF8)
-        {
-          file.IsChecked = true;
-        }
-      }
-      else
-      {
-        SelectAllButtonContent = Resources.SelectAllButtonText;
-        foreach (var file in FilesNotEncodedInUTF8)
-        {
-          file.IsChecked = false;
-        }
-      }
-    }
+    //private void SelectAllCommandExecute()
+    //{
+    //  if (SelectAllButtonContent == Resources.SelectAllButtonText)
+    //  {
+    //    SelectAllButtonContent = Resources.DeselectAllButtonText;
+    //    foreach (var file in FilesNotEncodedInUTF8)
+    //    {
+    //      file.IsChecked = true;
+    //    }
+    //  }
+    //  else
+    //  {
+    //    SelectAllButtonContent = Resources.SelectAllButtonText;
+    //    foreach (var file in FilesNotEncodedInUTF8)
+    //    {
+    //      file.IsChecked = false;
+    //    }
+    //  }
+    //}
 
 
     public void LoadData()
