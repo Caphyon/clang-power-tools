@@ -6,7 +6,7 @@
   xmlns:local="clr-namespace:ClangPowerTools.Views"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   Title="Clang Power Tools  -  Settings"
-  Width="824"
+  Width="825"
   Height="485"
   ResizeMode="NoResize"
   WindowStartupLocation="CenterScreen"
@@ -26,9 +26,7 @@
         </StackPanel>
       </TabItem.Header>
       <Grid>
-        <TextBlock>Enter some text</TextBlock>
         <local:CompilerSettingsView />
-
       </Grid>
     </TabItem>
 
