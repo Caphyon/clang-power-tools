@@ -1,17 +1,13 @@
 ﻿using ClangPowerTools.MVVM.Command;
 using ClangPowerTools.MVVM.Models;
-using ClangPowerTools.Properties;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using ClangPowerTools.MVVM.Utils;
 
 namespace ClangPowerTools.MVVM.ViewModels
 {
@@ -22,7 +18,6 @@ namespace ClangPowerTools.MVVM.ViewModels
 
     public ICommand SearchCommand { get; set; }
 
-    //public ICommand SelectAllCommand { get; set; }
 
     private string searchText;
 
@@ -53,20 +48,10 @@ namespace ClangPowerTools.MVVM.ViewModels
       }
     }
 
-    //public string SelectAllButtonContent
-    //{
-    //  get { return selectAllButtonContent; }
-    //  set
-    //  {
-    //    if (selectAllButtonContent == value) { return; }
-    //    selectAllButtonContent = value;
-    //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectAllButtonContent"));
-    //  }
-    //}
-
     public Action CloseAction { get; set; }
 
     public ObservableCollection<FileModel> FilesNotEncodedInUTF8 { get; set; } = new ObservableCollection<FileModel>();
+
     public IEnumerable<FileModel> FilteredFilesNotEncodedInUTF8
     {
       get
@@ -80,14 +65,11 @@ namespace ClangPowerTools.MVVM.ViewModels
       }
     }
 
-
     public event PropertyChangedEventHandler PropertyChanged;
 
     private readonly List<string> fileNames = new List<string>();
 
     private bool isConvertButtonEnabled = true;
-
-    //private string selectAllButtonContent = Resources.DeselectAllButtonText;
 
     private bool checkAllItems = true;
 
