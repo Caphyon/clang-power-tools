@@ -13,8 +13,8 @@ namespace ClangPowerTools.MVVM.Helpers
       var window = new Window();
       window.Title = title;
       window.SizeToContent = SizeToContent.WidthAndHeight;
-      //window.ResizeMode = ResizeMode.NoResize;
-      //window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+      window.ResizeMode = ResizeMode.NoResize;
+      window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
       window.Icon = BitmapFrame.Create(new Uri("pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico", UriKind.RelativeOrAbsolute));
 
       var controlAssembly = Assembly.Load("ClangPowerTools");

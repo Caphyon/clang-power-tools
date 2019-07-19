@@ -156,6 +156,32 @@ namespace ClangPowerTools
       }
     }
 
+    public void CollectCurrentProjectItems()
+    {
+      if (selectedItems == null || selectedItems.Length == 0)
+        return;
+
+      foreach (UIHierarchyItem item in selectedItems)
+      {
+        if (item.Object is Solution)
+        {
+          var solution = item.Object as Solution;
+          GetProjectItem(solution);
+        }
+        else if (item.Object is Project)
+        {
+          var project = item.Object as Project;
+          GetProjectItem(project);
+        }
+        else if (item.Object is ProjectItem)
+        {
+          Project project = (item.Object as ProjectItem).ContainingProject;
+          GetProjectItem(project);
+          return;
+        }
+      }
+    }
+
     public void AddProjectItem(ProjectItem aItem)
     {
       if (aItem == null)
