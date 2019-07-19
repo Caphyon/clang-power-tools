@@ -63,9 +63,9 @@ namespace ClangPowerTools.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Deselect all.
         /// </summary>
-        internal static string DeselectAllButtonText {
+        internal static string DeselectAllTooltipText {
             get {
-                return ResourceManager.GetString("DeselectAllButtonText", resourceCulture);
+                return ResourceManager.GetString("DeselectAllTooltipText", resourceCulture);
             }
         }
         
@@ -99,9 +99,9 @@ namespace ClangPowerTools.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Select all.
         /// </summary>
-        internal static string SelectAllButtonText {
+        internal static string SelectAllTooltipText {
             get {
-                return ResourceManager.GetString("SelectAllButtonText", resourceCulture);
+                return ResourceManager.GetString("SelectAllTooltipText", resourceCulture);
             }
         }
         

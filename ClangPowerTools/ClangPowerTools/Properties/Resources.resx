@@ -117,7 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="DeselectAllButtonText" xml:space="preserve">
+  <data name="DeselectAllTooltipText" xml:space="preserve">
     <value>Deselect all</value>
   </data>
   <data name="EncodingConverterWindowTitle" xml:space="preserve">
@@ -129,7 +129,7 @@
   <data name="EncodingErrorText" xml:space="preserve">
     <value>The following files are not encoded in UTF-8. Do you want to change their encoding?</value>
   </data>
-  <data name="SelectAllButtonText" xml:space="preserve">
+  <data name="SelectAllTooltipText" xml:space="preserve">
     <value>Select all</value>
   </data>
   <data name="UTF8Encoding" xml:space="preserve">
