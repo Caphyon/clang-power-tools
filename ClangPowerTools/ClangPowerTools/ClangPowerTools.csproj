@@ -268,8 +268,9 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>.</VSIXSubPath>
     </Content>
-    <Resource Include="MVVM\Views\Background.png" />
+    <Resource Include="MVVM\Resources\Background.png" />
     <Resource Include="Resources\AlphabeticalIcon.PNG" />
+    <Resource Include="MVVM\Resources\ResourceCompileIcon.png" />
     <Content Include="Resources\Logout.png" />
     <Content Include="Resources\ClangFormatIcon.png">
       <IncludeInVSIX>true</IncludeInVSIX>

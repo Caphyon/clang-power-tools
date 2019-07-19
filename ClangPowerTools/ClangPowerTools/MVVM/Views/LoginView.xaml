@@ -15,7 +15,7 @@
 
   <Grid>
     <Grid.Background>
-      <ImageBrush ImageSource="Background.png" Stretch="UniformToFill" />
+      <ImageBrush ImageSource="/ClangPowerTools;component/MVVM/Resources/Background.png" Stretch="UniformToFill" />
     </Grid.Background>
 
     <Grid.RowDefinitions>
@@ -272,8 +272,8 @@
       FontFamily="SegoeUI"
       FontSize="14"
       Foreground="Red"
-      TextWrapping="Wrap"
       TextAlignment="Center"
+      TextWrapping="Wrap"
       Visibility="Hidden" />
 
     <Button

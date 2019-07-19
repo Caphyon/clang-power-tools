@@ -21,7 +21,7 @@
             Width="15"
             Height="15"
             Margin="3"
-            Source="../../Resources/CompileIcon.png" />
+            Source="/ClangPowerTools;component/MVVM/Resources/ResourceCompileIcon.png" />
           <TextBlock Text="Compiler" />
         </StackPanel>
       </TabItem.Header>
