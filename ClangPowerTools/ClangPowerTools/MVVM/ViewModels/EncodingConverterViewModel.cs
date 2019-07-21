@@ -44,7 +44,7 @@ namespace ClangPowerTools.MVVM.ViewModels
       {
         if (checkAllItems == value) { return; }
         checkAllItems = value;
-        SelectAllTooltipText = value ? Resources.SelectAllTooltipText : Resources.DeselectAllTooltipText;
+        SelectAllTooltipText = value ? Resources.DeselectAllTooltipText : Resources.SelectAllTooltipText;
         foreach (var file in FilesNotEncodedInUTF8)
         {
           file.IsChecked = value;

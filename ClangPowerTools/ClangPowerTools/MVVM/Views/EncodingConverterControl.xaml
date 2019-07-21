@@ -68,37 +68,26 @@
                  FontSize="13"
                  Margin="0 0 0 15"
                  TextWrapping="WrapWithOverflow"/>
-
-      <StackPanel>
-        <Grid HorizontalAlignment="Left" Width="604" >
-          <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="4*"/>
-            <ColumnDefinition Width="3*"/>
-          </Grid.ColumnDefinitions>
-          <Grid.RowDefinitions>
-            <RowDefinition Height="21.333"/>
-            <RowDefinition Height="2.667"/>
-          </Grid.RowDefinitions>
-
-          <!--<Button Content="{Binding SelectAllButtonContent}" 
-                  Grid.Column="0"
-                  Command="{Binding SelectAllCommand}"
-                  BorderThickness="0"
-                  FontWeight="Bold"
-                  Height="20"
-                  Width="98"
-                  VerticalAlignment="Center"
-                  HorizontalAlignment="Left"/>-->
-          <CheckBox IsChecked="{Binding CheckAllItems}"
+      <Border BorderBrush="Black" 
+              BorderThickness="0.5" 
+              Height="auto">
+        <StackPanel>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="auto"/>
+              <ColumnDefinition Width="4*"/>
+              <ColumnDefinition Width="3*"/>
+            </Grid.ColumnDefinitions>
+            
+            <CheckBox IsChecked="{Binding CheckAllItems}"
                     ToolTip="{Binding SelectAllTooltipText}"
                     Grid.Column="0" 
                     Margin="2 0"
                     VerticalAlignment="Center">
-          </CheckBox>
-          <TextBox x:Name="SearchTextBox"
+            </CheckBox>
+            <TextBox x:Name="SearchTextBox"
                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                   Grid.Column="1"
+                   Grid.Column="2"
                    BorderThickness="1"
                    BorderBrush="LightGray" 
                    Padding="0 0 30 0"
@@ -106,162 +95,159 @@
                    VerticalAlignment="Stretch"  
                    Panel.ZIndex="0"
                    VerticalContentAlignment="Center"
-                   HorizontalAlignment="Stretch" Grid.ColumnSpan="2" Margin="329,0,0,0" Grid.RowSpan="2">
-            <TextBox.Style>
-              <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
-                <Style.Resources>
+                   HorizontalAlignment="Stretch"
+                   Margin="2">
+              <TextBox.Style>
+                <Style TargetType="TextBox" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                  <Style.Resources>
 
-                  <VisualBrush x:Key="GrayHelperTextBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
-                    <VisualBrush.Visual>
-                      <Label Name="SearchLabel" Content="Quick Search" Foreground="Gray" />
-                    </VisualBrush.Visual>
-                  </VisualBrush>
+                    <VisualBrush x:Key="GrayHelperTextBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                      <VisualBrush.Visual>
+                        <Label Name="SearchLabel" Content="Quick Search" Foreground="Gray" />
+                      </VisualBrush.Visual>
+                    </VisualBrush>
 
-                  <VisualBrush x:Key="BlackHelperTextBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
-                    <VisualBrush.Visual>
-                      <Label Name="SearchBlackLabel" Content="Quick Search" Foreground="Black" />
-                    </VisualBrush.Visual>
-                  </VisualBrush>
+                    <VisualBrush x:Key="BlackHelperTextBrush" AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                      <VisualBrush.Visual>
+                        <Label Name="SearchBlackLabel" Content="Quick Search" Foreground="Black" />
+                      </VisualBrush.Visual>
+                    </VisualBrush>
 
-                </Style.Resources>
-                <Style.Triggers>
+                  </Style.Resources>
+                  <Style.Triggers>
 
-                  <Trigger Property="IsKeyboardFocused" Value="True">
-                    <Setter Property="Background" Value="White" />
-                  </Trigger>
+                    <Trigger Property="IsKeyboardFocused" Value="True">
+                      <Setter Property="Background" Value="White" />
+                    </Trigger>
 
-                  <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                      <Condition Property="Text" Value="{x:Null}" />
-                      <Condition Property="IsMouseOver" Value="False" />
-                      <Condition Property="IsMouseCaptured" Value="False" />
-                      <Condition Property="IsFocused" Value="False" />
-                    </MultiTrigger.Conditions>
-                    <MultiTrigger.Setters>
-                      <Setter Property="Background" Value="{StaticResource GrayHelperTextBrush}" />
-                    </MultiTrigger.Setters>
-                  </MultiTrigger>
+                    <MultiTrigger>
+                      <MultiTrigger.Conditions>
+                        <Condition Property="Text" Value="{x:Null}" />
+                        <Condition Property="IsMouseOver" Value="False" />
+                        <Condition Property="IsMouseCaptured" Value="False" />
+                        <Condition Property="IsFocused" Value="False" />
+                      </MultiTrigger.Conditions>
+                      <MultiTrigger.Setters>
+                        <Setter Property="Background" Value="{StaticResource GrayHelperTextBrush}" />
+                      </MultiTrigger.Setters>
+                    </MultiTrigger>
 
-                  <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                      <Condition Property="Text" Value="{x:Static sys:String.Empty}" />
-                      <Condition Property="IsMouseOver" Value="False" />
-                      <Condition Property="IsMouseCaptured" Value="False" />
-                      <Condition Property="IsFocused" Value="False" />
-                    </MultiTrigger.Conditions>
-                    <MultiTrigger.Setters>
-                      <Setter Property="Background" Value="{StaticResource GrayHelperTextBrush}" />
-                    </MultiTrigger.Setters>
-                  </MultiTrigger>
+                    <MultiTrigger>
+                      <MultiTrigger.Conditions>
+                        <Condition Property="Text" Value="{x:Static sys:String.Empty}" />
+                        <Condition Property="IsMouseOver" Value="False" />
+                        <Condition Property="IsMouseCaptured" Value="False" />
+                        <Condition Property="IsFocused" Value="False" />
+                      </MultiTrigger.Conditions>
+                      <MultiTrigger.Setters>
+                        <Setter Property="Background" Value="{StaticResource GrayHelperTextBrush}" />
+                      </MultiTrigger.Setters>
+                    </MultiTrigger>
 
-                  <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                      <Condition Property="Text" Value="{x:Null}" />
-                      <Condition Property="IsMouseOver" Value="True" />
-                      <Condition Property="IsFocused" Value="False" />
-                    </MultiTrigger.Conditions>
-                    <MultiTrigger.Setters>
-                      <Setter Property="Background" Value="{StaticResource BlackHelperTextBrush}" />
-                    </MultiTrigger.Setters>
-                  </MultiTrigger>
+                    <MultiTrigger>
+                      <MultiTrigger.Conditions>
+                        <Condition Property="Text" Value="{x:Null}" />
+                        <Condition Property="IsMouseOver" Value="True" />
+                        <Condition Property="IsFocused" Value="False" />
+                      </MultiTrigger.Conditions>
+                      <MultiTrigger.Setters>
+                        <Setter Property="Background" Value="{StaticResource BlackHelperTextBrush}" />
+                      </MultiTrigger.Setters>
+                    </MultiTrigger>
 
-                  <MultiTrigger>
-                    <MultiTrigger.Conditions>
-                      <Condition Property="Text" Value="{x:Static sys:String.Empty}" />
-                      <Condition Property="IsMouseOver" Value="True" />
-                      <Condition Property="IsFocused" Value="False" />
-                    </MultiTrigger.Conditions>
-                    <MultiTrigger.Setters>
-                      <Setter Property="Background" Value="{StaticResource BlackHelperTextBrush}" />
-                    </MultiTrigger.Setters>
-                  </MultiTrigger>
+                    <MultiTrigger>
+                      <MultiTrigger.Conditions>
+                        <Condition Property="Text" Value="{x:Static sys:String.Empty}" />
+                        <Condition Property="IsMouseOver" Value="True" />
+                        <Condition Property="IsFocused" Value="False" />
+                      </MultiTrigger.Conditions>
+                      <MultiTrigger.Setters>
+                        <Setter Property="Background" Value="{StaticResource BlackHelperTextBrush}" />
+                      </MultiTrigger.Setters>
+                    </MultiTrigger>
 
-                </Style.Triggers>
-              </Style>
-            </TextBox.Style>
-          </TextBox>
+                  </Style.Triggers>
+                </Style>
+              </TextBox.Style>
+            </TextBox>
 
-          <Button Grid.Column="2" Width="25" Height="24"
+            <Button Grid.Column="2" Width="17" Height="17"
+                    Margin="3"
             Style="{DynamicResource NoChromeButton}" 
             BorderThickness="1"
             VerticalAlignment="Center" 
             HorizontalAlignment="Right"  
             Command="{Binding SearchCommand}" 
-            Panel.ZIndex="1" Grid.RowSpan="2">
+            Panel.ZIndex="1" >
 
-            <Button.Template>
-              <ControlTemplate TargetType="{x:Type Button}">
-                <Border>
-                  <Grid>
-                    <ContentPresenter />
-                    <Grid x:Name="StatusPanel" Background="Black" Opacity="0"/>
-                  </Grid>
-                </Border>
-                <ControlTemplate.Triggers>
-                  <Trigger Property="IsMouseOver" Value="true">
-                    <Setter TargetName="StatusPanel" Property="Opacity" Value="0.1"/>
-                  </Trigger>
-                  <Trigger Property="IsPressed" Value="true">
-                    <Setter TargetName="StatusPanel" Property="Opacity" Value="0.3"/>
-                  </Trigger>
-                </ControlTemplate.Triggers>
-              </ControlTemplate>
-            </Button.Template>
+              <Button.Template>
+                <ControlTemplate TargetType="{x:Type Button}">
+                  <Border>
+                    <Grid>
+                      <ContentPresenter />
+                      <Grid x:Name="StatusPanel" Background="Black" Opacity="0"/>
+                    </Grid>
+                  </Border>
+                  <ControlTemplate.Triggers>
+                    <Trigger Property="IsMouseOver" Value="true">
+                      <Setter TargetName="StatusPanel" Property="Opacity" Value="0.1"/>
+                    </Trigger>
+                    <Trigger Property="IsPressed" Value="true">
+                      <Setter TargetName="StatusPanel" Property="Opacity" Value="0.3"/>
+                    </Trigger>
+                  </ControlTemplate.Triggers>
+                </ControlTemplate>
+              </Button.Template>
 
-            <Button.Content>
-              <Rectangle Height="19" Width="19" >
-                <Rectangle.Style>
-                  <Style TargetType="{x:Type Rectangle}" >
-                    <Setter Property="Fill">
-                      <Setter.Value>
-                        <ImageBrush ImageSource="pack://application:,,,/ClangPowerTools;component/Resources/CleanSearchIcon.png" />
-                      </Setter.Value>
-                    </Setter>
-                    <Style.Triggers>
-                      <DataTrigger Binding="{Binding Text.Length, ElementName=SearchTextBox}" Value="0" >
-                        <DataTrigger.Setters>
-                          <Setter Property="Fill">
-                            <Setter.Value>
-                              <ImageBrush ImageSource="pack://application:,,,/ClangPowerTools;component/Resources/SearchIcon.png" />
-                            </Setter.Value>
-                          </Setter>
-                        </DataTrigger.Setters>
-                      </DataTrigger>
-                    </Style.Triggers>
-                  </Style>
-                </Rectangle.Style>
-              </Rectangle>
-            </Button.Content>
-          </Button>
-        </Grid>
+              <Button.Content>
+                <Rectangle Height="16" Width="16" >
+                  <Rectangle.Style>
+                    <Style TargetType="{x:Type Rectangle}" >
+                      <Setter Property="Fill">
+                        <Setter.Value>
+                          <ImageBrush ImageSource="pack://application:,,,/ClangPowerTools;component/Resources/CleanSearchIcon.png" />
+                        </Setter.Value>
+                      </Setter>
+                      <Style.Triggers>
+                        <DataTrigger Binding="{Binding Text.Length, ElementName=SearchTextBox}" Value="0" >
+                          <DataTrigger.Setters>
+                            <Setter Property="Fill">
+                              <Setter.Value>
+                                <ImageBrush ImageSource="pack://application:,,,/ClangPowerTools;component/Resources/SearchIcon.png" />
+                              </Setter.Value>
+                            </Setter>
+                          </DataTrigger.Setters>
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </Rectangle.Style>
+                </Rectangle>
+              </Button.Content>
+            </Button>
+          </Grid>
 
-      </StackPanel>
-
-      <Border BorderBrush="Black" 
-              BorderThickness="0.5" 
-            Margin="0 2 0 0"
-              Height="auto">
-        <ListBox ItemsSource="{Binding FilteredFilesNotEncodedInUTF8, Mode=OneWay}"
+          <ListBox ItemsSource="{Binding FilteredFilesNotEncodedInUTF8, Mode=OneWay}"
                  Height="200" 
                  ScrollViewer.VerticalScrollBarVisibility="Auto">
-          <ListBox.Resources>
-            <Style TargetType="ListBoxItem">
-              <Setter Property="OverridesDefaultStyle" Value="true" />
-              <Setter Property="SnapsToDevicePixels" Value="true" />
-              <Setter Property="Template">
-                <Setter.Value>
-                  <ControlTemplate TargetType="ListBoxItem">
-                    <CheckBox Content="{Binding FileName}"
+            <ListBox.Resources>
+              <Style TargetType="ListBoxItem">
+                <Setter Property="OverridesDefaultStyle" Value="true" />
+                <Setter Property="SnapsToDevicePixels" Value="true" />
+                <Setter Property="Template">
+                  <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                      <CheckBox Content="{Binding FileName}"
                               IsChecked="{Binding IsChecked}"
                               Margin="0 3"
                               FontSize="13" IsThreeState="False">
-                    </CheckBox>
-                  </ControlTemplate>
-                </Setter.Value>
-              </Setter>
-            </Style>
-          </ListBox.Resources>
-        </ListBox>
+                      </CheckBox>
+                    </ControlTemplate>
+                  </Setter.Value>
+                </Setter>
+              </Style>
+            </ListBox.Resources>
+          </ListBox>
+        </StackPanel>
       </Border>
 
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 15 0 0">
