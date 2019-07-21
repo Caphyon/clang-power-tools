@@ -4,26 +4,24 @@ using ClangPowerTools.Properties;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using ClangPowerTools.MVVM.Utils;
 
 namespace ClangPowerTools.MVVM.ViewModels
 {
   class EncodingConverterViewModel : INotifyPropertyChanged
   {
+    #region Public Properties
     public ICommand CloseCommand { get; set; }
     public ICommand ConvertCommand { get; set; }
-
     public ICommand SearchCommand { get; set; }
+    public Action CloseAction { get; set; }
+    public ObservableCollection<FileModel> FilesNotEncodedInUTF8 { get; set; } = new ObservableCollection<FileModel>();
 
-
-    private string searchText;
+    public event PropertyChangedEventHandler PropertyChanged;
 
     public string SearchText
     {
@@ -63,10 +61,6 @@ namespace ClangPowerTools.MVVM.ViewModels
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectAllTooltipText"));
       }
     }
-
-    public Action CloseAction { get; set; }
-
-    public ObservableCollection<FileModel> FilesNotEncodedInUTF8 { get; set; } = new ObservableCollection<FileModel>();
     public IEnumerable<FileModel> FilteredFilesNotEncodedInUTF8
     {
       get
@@ -80,27 +74,20 @@ namespace ClangPowerTools.MVVM.ViewModels
       }
     }
 
+    #endregion
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    #region Private Properties
+
+    private string searchText;
 
     private readonly List<string> fileNames = new List<string>();
-
-    private bool isConvertButtonEnabled = true;
 
     private string selectAllTooltipText = Resources.DeselectAllTooltipText;
 
     private bool checkAllItems = true;
+    #endregion
 
-    public bool IsConvertButtonEnabled
-    {
-      get { return isConvertButtonEnabled; }
-      set
-      {
-        if (isConvertButtonEnabled == value) { return; }
-        isConvertButtonEnabled = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsConvertButtonEnabled"));
-      }
-    }
+    #region Constructor
 
     public EncodingConverterViewModel(List<string> selectedDocuments)
     {
@@ -108,55 +95,11 @@ namespace ClangPowerTools.MVVM.ViewModels
       CloseCommand = new RelayCommand(CloseCommandExecute);
       ConvertCommand = new RelayCommand(ConvertCommandExecute);
       SearchCommand = new RelayCommand(SearchCommandExecute);
-      //SelectAllCommand = new RelayCommand(SelectAllCommandExecute);
-      //EventBus.Register("EnableConvertButtonEvent", EnableConvertButtonCallback);
-      //EventBus.Register("DisableConvertButtonEvent", DisableConvertButtonCallback);
-
     }
 
-    private void SearchCommandExecute()
-    {
-      if (false == string.IsNullOrWhiteSpace(SearchText))
-      {
-        SearchText = string.Empty;
-      }
-      // Put the mouse cursor inside the SearchBox by focus it
-      //SearchText.Focus();
-    }
+    #endregion
 
-    //private void DisableConvertButtonCallback()
-    //{
-    //  IsConvertButtonEnabled = false;
-    //  SelectAllButtonContent = Resources.SelectAllButtonText;
-    //}
-
-    //private void EnableConvertButtonCallback()
-    //{
-    //  IsConvertButtonEnabled = true;
-    //  SelectAllButtonContent = Resources.DeselectAllButtonText;
-    //}
-
-    //private void SelectAllCommandExecute()
-    //{
-    //  if (SelectAllButtonContent == Resources.SelectAllButtonText)
-    //  {
-    //    SelectAllButtonContent = Resources.DeselectAllButtonText;
-    //    foreach (var file in FilesNotEncodedInUTF8)
-    //    {
-    //      file.IsChecked = true;
-    //    }
-    //  }
-    //  else
-    //  {
-    //    SelectAllButtonContent = Resources.SelectAllButtonText;
-    //    foreach (var file in FilesNotEncodedInUTF8)
-    //    {
-    //      file.IsChecked = false;
-    //    }
-    //  }
-    //}
-
-
+    #region Public Methods
     public void LoadData()
     {
       foreach (var file in fileNames)
@@ -169,10 +112,19 @@ namespace ClangPowerTools.MVVM.ViewModels
       }
     }
 
+    #endregion
+
+    #region Private Methods
+    private void SearchCommandExecute()
+    {
+      if (false == string.IsNullOrWhiteSpace(SearchText))
+      {
+        SearchText = string.Empty;
+      }
+    }
+
     private void CloseCommandExecute()
     {
-      //EventBus.Unregister("EnableConvertButtonEvent", EnableConvertButtonCallback);
-      //EventBus.Unregister("DisableConvertButtonEvent", DisableConvertButtonCallback);
       CloseAction?.Invoke();
     }
 
@@ -185,10 +137,7 @@ namespace ClangPowerTools.MVVM.ViewModels
       }
       foreach (var file in checkedFiles)
       {
-        if (file.IsChecked)
-        {
           ConvertFileToUTF8(file.FileName);
-        }
       }
       CloseCommandExecute();
     }
@@ -212,5 +161,7 @@ namespace ClangPowerTools.MVVM.ViewModels
         return reader.CurrentEncoding;
       }
     }
+
+    #endregion
   }
 }
