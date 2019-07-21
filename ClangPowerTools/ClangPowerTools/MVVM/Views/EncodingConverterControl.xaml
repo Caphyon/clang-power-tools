@@ -75,8 +75,7 @@
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="auto"/>
-              <ColumnDefinition Width="4*"/>
-              <ColumnDefinition Width="3*"/>
+              <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             
             <CheckBox IsChecked="{Binding CheckAllItems}"
@@ -87,7 +86,7 @@
             </CheckBox>
             <TextBox x:Name="SearchTextBox"
                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                   Grid.Column="2"
+                   Grid.Column="1"
                    BorderThickness="1"
                    BorderBrush="LightGray" 
                    Padding="0 0 30 0"
@@ -171,7 +170,7 @@
               </TextBox.Style>
             </TextBox>
 
-            <Button Grid.Column="2" Width="17" Height="17"
+            <Button Grid.Column="1" Width="17" Height="17"
                     Margin="3"
             Style="{DynamicResource NoChromeButton}" 
             BorderThickness="1"
