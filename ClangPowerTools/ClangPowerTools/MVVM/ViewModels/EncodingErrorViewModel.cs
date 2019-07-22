@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Input;
 
-namespace ClangPowerTools.MVVM.ViewModels
+namespace ClangPowerTools
 {
   class EncodingErrorViewModel : INotifyPropertyChanged
   {
