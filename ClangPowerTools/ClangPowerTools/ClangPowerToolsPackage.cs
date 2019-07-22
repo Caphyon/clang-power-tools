@@ -373,9 +373,6 @@ namespace ClangPowerTools
       mCommandController.ClangCommandMessageEvent += mOutputWindowController.Write;
       mCommandController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
 
-      ////mCommandController.Event += mOutputWindowController.Request;
-      //mOutputWindowController.Event += mCommandController.Method;
-
       mCommandController.HasEncodingErrorEvent += mOutputWindowController.OnEncodingErrorDetected;
       mOutputWindowController.HasEncodingErrorEvent += mCommandController.OnEncodingErrorDetected;
 
