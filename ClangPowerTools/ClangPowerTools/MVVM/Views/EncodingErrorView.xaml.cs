@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.MVVM.ViewModels;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows;
 
 namespace ClangPowerTools.MVVM.Views

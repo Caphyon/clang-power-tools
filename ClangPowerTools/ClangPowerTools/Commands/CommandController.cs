@@ -1,8 +1,5 @@
 ﻿using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
-using ClangPowerTools.Handlers;
-using ClangPowerTools.MVVM.ViewModels;
-using ClangPowerTools.Properties;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
 using ClangPowerTools.Views;
