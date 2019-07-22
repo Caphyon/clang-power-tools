@@ -17,8 +17,6 @@ namespace ClangPowerTools.MVVM.Views
       encodingConverter.LoadData();
       encodingConverter.CloseAction = () => Close();
       DataContext = encodingConverter;
-
-      ConvertButton.IsDefault = true;
     }
   }
 }
