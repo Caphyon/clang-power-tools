@@ -115,10 +115,6 @@ namespace ClangPowerTools.Output
 
     #endregion
 
-
-    ////////////// method request{ event.invoke(mOutputContent)}
-
-
     #region Data Handlers
 
     public void OutputDataReceived(object sender, DataReceivedEventArgs e)
