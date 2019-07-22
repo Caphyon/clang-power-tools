@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace ClangPowerTools.MVVM.ViewModels
 {
-  class EncodingConverterViewModel : INotifyPropertyChanged
+  class EncodingErrorViewModel : INotifyPropertyChanged
   {
     #region Public Properties
     public ICommand CloseCommand { get; set; }
@@ -89,7 +89,7 @@ namespace ClangPowerTools.MVVM.ViewModels
 
     #region Constructor
 
-    public EncodingConverterViewModel(List<string> selectedDocuments)
+    public EncodingErrorViewModel(List<string> selectedDocuments)
     {
       fileNames = selectedDocuments;
       CloseCommand = new RelayCommand(CloseCommandExecute);

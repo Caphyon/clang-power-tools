@@ -3,6 +3,7 @@ using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
 using ClangPowerTools.MVVM.ViewModels;
 using ClangPowerTools.Properties;
+using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
 using ClangPowerTools.Views;
 using EnvDTE;
@@ -345,13 +346,11 @@ namespace ClangPowerTools
                itemsCollector.CollectCurrentProjectItems();
                HashSet<string> selectedFiles = new HashSet<string>();
                itemsCollector.Items.ForEach(i => selectedFiles.Add(i.GetPath()));
-               WindowInitializer.ShowEncodingErrorWindow(selectedFiles.ToList());
+               var window = new EncodingErrorView(selectedFiles.ToList());
+               window.ShowDialog();
              }));
       }
-      catch (Exception exception)
-      {
-
-      }
+      catch (Exception){ }
     }
 
     public void OnActiveDocumentCheck(object sender, ActiveDocumentEventArgs e)

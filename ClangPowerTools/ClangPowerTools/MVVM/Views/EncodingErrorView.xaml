@@ -1,15 +1,19 @@
-﻿<UserControl x:Class="ClangPowerTools.MVVM.Views.EncodingConverterControl"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views"
-             xmlns:resources="clr-namespace:ClangPowerTools.Properties"
-             xmlns:converters="clr-namespace:ClangPowerTools.Convertors"
-             Width="650"
-             Height="450"
-             mc:Ignorable="d" >
-  <UserControl.Resources>
+﻿<Window x:Class="ClangPowerTools.MVVM.Views.EncodingErrorView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views"
+        xmlns:resources="clr-namespace:ClangPowerTools.Properties"
+        xmlns:converters="clr-namespace:ClangPowerTools.Convertors"
+        Icon ="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
+        WindowStartupLocation="CenterScreen"
+        Title="Clang Power Tools"
+        ResizeMode="NoResize"
+        Width="650"
+        Height="450" >
+  <Window.Resources>
+   
     <Style x:Key="NoChromeButton" TargetType="{x:Type Button}">
       <Setter Property="Background" Value="Transparent"/>
       <Setter Property="BorderThickness" Value="1"/>
@@ -47,8 +51,8 @@
         </DataTrigger>
       </Style.Triggers>
     </Style>
-  </UserControl.Resources>
-  <StackPanel>
+  </Window.Resources>
+ <StackPanel>
     <Grid>
       <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/BannersError.png"/>
       <Image Source="pack://application:,,,/ClangPowerTools;component/Resources/iconError.png"
@@ -75,7 +79,8 @@
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="auto"/>
-              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="3*"/>
+              <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             
             <CheckBox IsChecked="{Binding CheckAllItems}"
@@ -86,7 +91,7 @@
             </CheckBox>
             <TextBox x:Name="SearchTextBox"
                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                   Grid.Column="1"
+                   Grid.Column="2"
                    BorderThickness="1"
                    BorderBrush="LightGray" 
                    Padding="0 0 30 0"
@@ -170,7 +175,7 @@
               </TextBox.Style>
             </TextBox>
 
-            <Button Grid.Column="1" Width="17" Height="17"
+            <Button Grid.Column="2" Width="17" Height="17"
                     Margin="3"
             Style="{DynamicResource NoChromeButton}" 
             BorderThickness="1"
@@ -226,7 +231,7 @@
           </Grid>
 
           <ListBox ItemsSource="{Binding FilteredFilesNotEncodedInUTF8, Mode=OneWay}"
-                 Height="200" 
+                 Height="170" 
                  ScrollViewer.VerticalScrollBarVisibility="Auto">
             <ListBox.Resources>
               <Style TargetType="ListBoxItem">
@@ -250,8 +255,10 @@
       </Border>
 
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 15 0 0">
-        <Button Content="Convert" Margin=" 0 0 10 0" 
+        <Button x:Name="ConvertButton"
+                Content="Convert" Margin=" 0 0 10 0" 
                 Command="{Binding ConvertCommand}"
+                CommandParameter="{Binding ElementName=window}"
                 IsEnabled="{Binding IsConvertButtonEnabled}"
                 Height="26"
                 Width="98"
@@ -267,4 +274,4 @@
       </StackPanel>
     </StackPanel>
   </StackPanel>
-</UserControl>
+</Window>

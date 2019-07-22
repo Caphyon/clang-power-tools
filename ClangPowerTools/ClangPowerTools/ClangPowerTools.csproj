@@ -82,11 +82,9 @@
     <Compile Include="MVVM\Command\RelayCommand.cs" />
     <Compile Include="MVVM\Controllers\AccountController.cs" />
     <Compile Include="MVVM\Controllers\LicenseController.cs" />
-    <Compile Include="MVVM\Helpers\WindowInitializer.cs" />
-    <Compile Include="MVVM\Helpers\WindowManager.cs" />
     <Compile Include="MVVM\Models\FileModel.cs" />
     <Compile Include="MVVM\Models\LicenseModel.cs" />
-    <Compile Include="MVVM\ViewModels\EncodingConverterViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\EncodingErrorViewModel.cs" />
     <Compile Include="MVVM\ViewModels\LoginViewModel.cs" />
     <Compile Include="Helpers\NetworkUtility.cs" />
     <Compile Include="Events\ActiveDocumentEventArgs.cs" />
@@ -117,8 +115,8 @@
     <Compile Include="Helpers\UIUpdater.cs" />
     <Compile Include="MVVM\Models\TokenModel.cs" />
     <Compile Include="MVVM\Models\UserModel.cs" />
-    <Compile Include="MVVM\Views\EncodingConverterControl.xaml.cs">
-      <DependentUpon>EncodingConverterControl.xaml</DependentUpon>
+    <Compile Include="MVVM\Views\EncodingErrorView.xaml.cs">
+      <DependentUpon>EncodingErrorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\WebApi\WebApiUrl.cs" />
     <Compile Include="Options\ClangTidyPathValue.cs" />
@@ -508,7 +506,7 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="MVVM\Views\EncodingConverterControl.xaml">
+    <Page Include="MVVM\Views\EncodingErrorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
