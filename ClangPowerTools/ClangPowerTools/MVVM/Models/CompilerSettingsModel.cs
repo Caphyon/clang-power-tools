@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ClangPowerTools
 {
-  public class GeneralOptionsModel : INotifyPropertyChanged
+  public class CompilerSettingsModel : INotifyPropertyChanged
   {
     public string CompileFlags { get; set; }
     public string FilesToIgnore { get; set; }
@@ -16,7 +16,7 @@ namespace ClangPowerTools
 
     public ClangGeneralAdditionalIncludes AdditionalIncludes { get; set; }
 
-    public bool TreatWarningsAsErrors { get; set; }
+    public bool WarningsAsErrors { get; set; }
 
     public bool ContinueOnError { get; set; }
 
