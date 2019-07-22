@@ -5,7 +5,7 @@ using System.Windows;
 namespace ClangPowerTools.MVVM.Views
 {
   /// <summary>
-  /// Interaction logic for EncodingConverterControl.xaml
+  /// Interaction logic for EncodingErrorView.xaml
   /// </summary>
   public partial class EncodingErrorView : Window
   {
