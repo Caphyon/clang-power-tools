@@ -110,6 +110,7 @@
     <Compile Include="MVVM\Models\FileModel.cs" />
     <Compile Include="MVVM\Utils\EventBus.cs" />
     <Compile Include="MVVM\ViewModels\EncodingConverterViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\EncodingErrorViewModel.cs" />
     <Compile Include="MVVM\ViewModels\LoginViewModel.cs" />
     <Compile Include="Helpers\NetworkUtility.cs" />
     <Compile Include="Events\ActiveDocumentEventArgs.cs" />
@@ -165,6 +166,9 @@
       <DependentUpon>InputDataView.xaml</DependentUpon>
     <Compile Include="MVVM\Views\EncodingConverterControl.xaml.cs">
       <DependentUpon>EncodingConverterControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Views\EncodingErrorView.xaml.cs">
+      <DependentUpon>EncodingErrorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\WebApi\WebApiUrl.cs" />
     <Compile Include="MVVM\OldSettings\OldModels\ClangTidyPredefinedChecksOptions.cs" />
@@ -478,8 +482,12 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="MVVM\Views\FormatSettingsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\EncodingErrorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\Views\EncodingConverterControl.xaml">
       <SubType>Designer</SubType>
