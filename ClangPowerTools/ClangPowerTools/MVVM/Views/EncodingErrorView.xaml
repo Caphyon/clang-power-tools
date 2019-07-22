@@ -256,6 +256,7 @@
 
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 15 0 0">
         <Button x:Name="ConvertButton"
+                IsDefault="True"
                 Content="Convert" Margin=" 0 0 10 0" 
                 Command="{Binding ConvertCommand}"
                 CommandParameter="{Binding ElementName=window}"
