@@ -67,18 +67,17 @@
              Margin="75,20,284,26.333"/>
     </Grid>
 
-    <StackPanel  Orientation="Vertical" Margin="23, 15">
-      <TextBlock Text="The following files are not encoded in UTF-8. Do you want to change their encoding?"
+    <StackPanel  Orientation="Vertical" Margin="17">
+      <TextBlock Text="Unsupported encoding, byte order mark detected. To fix this issue, you need to convert the files below to UTF-8. Convert selected files?"
                  FontSize="13"
                  Margin="0 0 0 15"
                  TextWrapping="WrapWithOverflow"/>
-      <Border BorderBrush="Black" 
+      <Border BorderBrush="Black"
               BorderThickness="0.5" 
               Height="auto">
         <StackPanel>
           <Grid>
             <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="auto"/>
               <ColumnDefinition Width="3*"/>
               <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
@@ -91,11 +90,10 @@
             </CheckBox>
             <TextBox x:Name="SearchTextBox"
                    Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                   Grid.Column="2"
+                   Grid.Column="1"
                    BorderThickness="1"
                    BorderBrush="LightGray" 
                    Padding="0 0 30 0"
-                   ToolTip="Type words to search for"
                    VerticalAlignment="Stretch"  
                    Panel.ZIndex="0"
                    VerticalContentAlignment="Center"
@@ -175,7 +173,7 @@
               </TextBox.Style>
             </TextBox>
 
-            <Button Grid.Column="2" Width="17" Height="17"
+            <Button Grid.Column="1" Width="17" Height="17"
                     Margin="3"
             Style="{DynamicResource NoChromeButton}" 
             BorderThickness="1"
@@ -229,22 +227,20 @@
               </Button.Content>
             </Button>
           </Grid>
-
           <ListBox ItemsSource="{Binding FilteredFilesNotEncodedInUTF8, Mode=OneWay}"
-                 Height="170" 
-                 ScrollViewer.VerticalScrollBarVisibility="Auto">
+                 Height="150" BorderThickness="0.5"  BorderBrush="Black"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto" >
             <ListBox.Resources>
-              <Style TargetType="ListBoxItem">
+              <Style TargetType="{x:Type ListBoxItem}">
                 <Setter Property="OverridesDefaultStyle" Value="true" />
                 <Setter Property="SnapsToDevicePixels" Value="true" />
                 <Setter Property="Template">
                   <Setter.Value>
-                    <ControlTemplate TargetType="ListBoxItem">
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
                       <CheckBox Content="{Binding FileName}"
                               IsChecked="{Binding IsChecked}"
                               Margin="0 3"
-                              FontSize="13" IsThreeState="False">
-                      </CheckBox>
+                              FontSize="13" IsThreeState="False"/>
                     </ControlTemplate>
                   </Setter.Value>
                 </Setter>
@@ -254,6 +250,7 @@
         </StackPanel>
       </Border>
 
+      
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 15 0 0">
         <Button x:Name="ConvertButton"
                 IsDefault="True"
@@ -264,14 +261,14 @@
                 Height="26"
                 Width="98"
                 FontSize="12"
-                BorderThickness="0"
+                BorderThickness="1"
                 />
         <Button Content="Close" 
                 Command="{Binding CloseCommand}" 
                 Height="26"
                 Width="98"
                 FontSize="12"
-                BorderThickness="0"/>
+                BorderThickness="1"/>
       </StackPanel>
     </StackPanel>
   </StackPanel>
