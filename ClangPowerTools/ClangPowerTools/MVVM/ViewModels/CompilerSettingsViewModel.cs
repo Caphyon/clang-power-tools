@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClangPowerTools
 {
@@ -84,11 +82,42 @@ namespace ClangPowerTools
       }
     }
 
-    public bool ContinueOnError { get; set; }
+    public bool ContinueOnError
+    {
+      get
+      {
+        return compilerSettings.ContinueOnError;
+      }
+      set
+      {
+        compilerSettings.ContinueOnError = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ContinueOnError");
+      }
+    }
 
-    public bool ClangCompileAfterMSCVCompile { get; set; }
+    public bool ClangCompileAfterMSCVCompile
+    {
+      get
+      { return compilerSettings.ClangCompileAfterMSCVCompile; }
+      set
+      {
+        compilerSettings.ClangCompileAfterMSCVCompile = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClangCompileAfterMSCVCompile"));
+      }
+    }
 
-    public bool VerboseMode { get; set; }
+    public bool VerboseMode
+    {
+      get
+      {
+        return compilerSettings.VerboseMode;
+      }
+      set
+      {
+        compilerSettings.VerboseMode = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("VerboseMode"));
+      }
+    }
 
     #endregion
   }
