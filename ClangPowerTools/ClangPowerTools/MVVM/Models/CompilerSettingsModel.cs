@@ -10,23 +10,23 @@ namespace ClangPowerTools
   public class CompilerSettingsModel
   {
     #region Properties
-    public string CompileFlags { get; set; }
+    public string CompileFlags { get; set; } = string.Empty;
 
-    public string FilesToIgnore { get; set; }
+    public string FilesToIgnore { get; set; } = string.Empty;
 
-    public string ProjectToIgnore { get; set; }
+    public string ProjectToIgnore { get; set; } = string.Empty;
 
     public ClangGeneralAdditionalIncludes AdditionalIncludes { get; set; }
 
     public ClangGeneralAdditionalIncludes SelectedAdditionalInclude { get; set; } = ClangGeneralAdditionalIncludes.IncludeDirectories;
 
-    public bool WarningsAsErrors { get; set; }
+    public bool WarningsAsErrors { get; set; } = false;
 
-    public bool ContinueOnError { get; set; }
+    public bool ContinueOnError { get; set; } = false;
 
-    public bool ClangCompileAfterMSCVCompile { get; set; }
+    public bool ClangCompileAfterMSCVCompile { get; set; } = false;
 
-    public bool VerboseMode { get; set; }
+    public bool VerboseMode { get; set; } = false;
     #endregion
   }
 }
