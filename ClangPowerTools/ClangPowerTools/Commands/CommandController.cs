@@ -15,7 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Windows;
+using ClangPowerTools.Handlers;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools
@@ -323,7 +323,7 @@ namespace ClangPowerTools
       }
       try
       {
-        Application.Current.Dispatcher.Invoke(new Action(() =>
+        UIUpdater.InvokeAsync(new Action(() =>
              {
                var itemsCollector = CompileCommand.Instance.ItemsCollector;
                itemsCollector.CollectCurrentProjectItems();
@@ -331,7 +331,7 @@ namespace ClangPowerTools
                itemsCollector.Items.ForEach(i => selectedFiles.Add(i.GetPath()));
                var window = new EncodingErrorView(selectedFiles.ToList());
                window.ShowDialog();
-             }));
+             })).SafeFireAndForget();
       }
       catch (Exception){ }
     }
