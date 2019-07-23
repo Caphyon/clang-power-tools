@@ -35,5 +35,11 @@ namespace ClangPowerTools
         }
       }
     }
+
+    public static void SaveToFile(string aFilePath, object config)
+    {
+      XmlSerializer serializer = new XmlSerializer();
+      serializer.SerializeToFile(aFilePath, config);
+    }
   }
 }
