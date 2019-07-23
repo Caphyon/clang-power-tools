@@ -91,7 +91,7 @@ namespace ClangPowerTools
       set
       {
         compilerSettings.ContinueOnError = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ContinueOnError");
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ContinueOnError"));
       }
     }
 
