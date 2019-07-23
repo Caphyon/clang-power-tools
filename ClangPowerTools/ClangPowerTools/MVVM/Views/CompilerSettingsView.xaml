@@ -116,7 +116,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding ProjectToIgnore}" />
+      Text="{Binding ProjectsToIgnore}" />
 
     <Button
       Grid.Row="3"
