@@ -5,7 +5,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  d:DataContext="{d:DesignInstance local:CompilerSettingsModel,
+  d:DataContext="{d:DesignInstance local:CompilerSettingsViewModel,
                                    IsDesignTimeCreatable=True}"
   d:DesignHeight="400"
   d:DesignWidth="820"
@@ -141,7 +141,8 @@
       Grid.Column="2"
       Height="30"
       Margin="0,0,20,0"
-      Text="{Binding AdditionalIncludes}" />
+      ItemsSource="{Binding AdditionalIncludes}"
+      SelectedItem="{Binding SelectedAdditionalInclude}" />
 
 
     <!--  Warning as errors  -->

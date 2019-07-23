@@ -23,6 +23,7 @@ namespace ClangPowerTools.Views
     public CompilerSettingsView()
     {
       InitializeComponent();
+      DataContext = new CompilerSettingsViewModel();
     }
   }
 }

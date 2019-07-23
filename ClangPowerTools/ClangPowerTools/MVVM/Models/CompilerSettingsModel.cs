@@ -7,14 +7,18 @@ using System.Threading.Tasks;
 
 namespace ClangPowerTools
 {
-  public class CompilerSettingsModel : INotifyPropertyChanged
+  public class CompilerSettingsModel
   {
+    #region Properties
     public string CompileFlags { get; set; }
+
     public string FilesToIgnore { get; set; }
 
     public string ProjectToIgnore { get; set; }
 
     public ClangGeneralAdditionalIncludes AdditionalIncludes { get; set; }
+
+    public ClangGeneralAdditionalIncludes SelectedAdditionalInclude { get; set; } = ClangGeneralAdditionalIncludes.IncludeDirectories;
 
     public bool WarningsAsErrors { get; set; }
 
@@ -23,7 +27,6 @@ namespace ClangPowerTools
     public bool ClangCompileAfterMSCVCompile { get; set; }
 
     public bool VerboseMode { get; set; }
-
-    public event PropertyChangedEventHandler PropertyChanged;
+    #endregion
   }
 }
