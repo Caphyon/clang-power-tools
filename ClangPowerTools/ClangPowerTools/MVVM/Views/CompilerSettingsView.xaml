@@ -34,6 +34,7 @@
       <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="auto" />
+      <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="*" />
       <ColumnDefinition Width="20" />
     </Grid.ColumnDefinitions>
@@ -65,6 +66,7 @@
       Grid.Column="3"
       Width="50"
       Height="30"
+      Command="{Binding AddDataCommand}"
       Content="..." />
 
     <!--  Files to ignore  -->
@@ -232,6 +234,16 @@
         <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
       </CheckBox.LayoutTransform>
     </CheckBox>
+
+    <!--  Version  -->
+    <TextBlock
+      Grid.Row="10"
+      Grid.Column="4"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="12"
+      Foreground="#E2E2E8"
+      Text="{Binding Version}" />
 
   </Grid>
 </UserControl>

@@ -79,6 +79,7 @@
     <Compile Include="Commands\Logout.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
     <Compile Include="MVVM\Commands\AddDataCommand.cs" />
+    <Compile Include="MVVM\Commands\RelayCommand.cs" />
     <Compile Include="MVVM\Controllers\AccountController.cs" />
     <Compile Include="MVVM\Controllers\LicenseController.cs" />
     <Compile Include="MVVM\Models\CompilerSettingsModel.cs" />

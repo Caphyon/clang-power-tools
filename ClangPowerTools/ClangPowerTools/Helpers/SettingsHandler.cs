@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
 
 namespace ClangPowerTools
@@ -40,6 +41,14 @@ namespace ClangPowerTools
     {
       XmlSerializer serializer = new XmlSerializer();
       serializer.SerializeToFile(aFilePath, config);
+    }
+
+    public static TSettings LoadFromFile<TSettings>(string aFilePath, TSettings config) where TSettings : new()
+    {
+      XmlSerializer serializer = new XmlSerializer();
+
+      config = File.Exists(aFilePath) ? serializer.DeserializeFromFile<TSettings>(aFilePath) : new TSettings();
+      return config;
     }
   }
 }
