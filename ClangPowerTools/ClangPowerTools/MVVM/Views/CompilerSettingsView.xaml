@@ -238,10 +238,11 @@
     <!--  Version  -->
     <TextBlock
       Grid.Row="10"
-      Grid.Column="4"
+      Grid.Column="3"
+      HorizontalAlignment="Right"
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
-      FontSize="12"
+      FontSize="10"
       Foreground="#E2E2E8"
       Text="{Binding Version}" />
 

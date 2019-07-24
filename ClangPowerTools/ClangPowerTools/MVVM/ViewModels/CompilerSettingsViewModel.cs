@@ -161,11 +161,7 @@ namespace ClangPowerTools
     {
       get
       {
-        return "v" + compilerSettings.Version;
-      }
-      set
-      {
-        compilerSettings.ProjectToIgnore = value;
+        return compilerSettings.Version;
       }
     }
 

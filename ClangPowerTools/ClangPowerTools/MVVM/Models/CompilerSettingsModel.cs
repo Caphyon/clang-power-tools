@@ -25,6 +25,6 @@ namespace ClangPowerTools
 
     public bool VerboseMode { get; set; } = false;
 
-    public string Version { get; set; } = string.Empty;
+    public string Version { get; set; } = SettingsProvider.GeneralSettings.Version;
   }
 }
