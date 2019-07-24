@@ -9,7 +9,6 @@ namespace ClangPowerTools
 {
   public class CompilerSettingsModel
   {
-    #region Properties
     public string CompileFlags { get; set; } = string.Empty;
 
     public string FilesToIgnore { get; set; } = string.Empty;
@@ -27,6 +26,5 @@ namespace ClangPowerTools
     public bool VerboseMode { get; set; } = false;
 
     public string Version { get; set; } = string.Empty;
-    #endregion
   }
 }
