@@ -41,7 +41,9 @@ namespace ClangPowerTools
   [ProvideMenuResource("Menus.ctmenu", 1)]
   [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
   [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)]
-  [Guid(RunClangPowerToolsPackage.PackageGuidString)]
+  [ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string, PackageAutoLoadFlags.BackgroundLoad)]
+  [ProvideMenuResource("Menus.ctmenu", 1)]
+  [Guid(PackageGuidString)]
   public sealed class RunClangPowerToolsPackage : AsyncPackage, IVsSolutionEvents
   {
     #region Members
