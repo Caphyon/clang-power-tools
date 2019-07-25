@@ -85,7 +85,7 @@
     <Compile Include="MVVM\Models\CompilerSettingsModel.cs" />
     <Compile Include="MVVM\Models\FormatSettingsModel.cs" />
     <Compile Include="MVVM\Models\LicenseModel.cs" />
-    <Compile Include="MVVM\Models\SettingsModel.cs" />
+    <Compile Include="MVVM\CPTSettings.cs" />
     <Compile Include="MVVM\ViewModels\CompilerSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\LoginViewModel.cs" />
     <Compile Include="Helpers\NetworkUtility.cs" />
