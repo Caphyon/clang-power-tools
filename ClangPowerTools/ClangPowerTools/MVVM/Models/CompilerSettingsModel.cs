@@ -13,7 +13,7 @@ namespace ClangPowerTools
 
     public string FilesToIgnore { get; set; } = string.Empty;
 
-    public string ProjectToIgnore { get; set; } = string.Empty;
+    public string ProjectsToIgnore { get; set; } = string.Empty;
 
     public ClangGeneralAdditionalIncludes AdditionalIncludes { get; set; } = ClangGeneralAdditionalIncludes.IncludeDirectories;
 

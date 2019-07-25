@@ -128,8 +128,8 @@
     <Compile Include="Options\ClangTidyPathValue.cs" />
     <Compile Include="Options\ClangFormatPathValue.cs" />
     <Compile Include="Options\HeaderFiltersValue.cs" />
-    <Compile Include="Options\Model\ClangTidyPredefinedChecksOptions.cs" />
-    <Compile Include="Options\Model\ClangTidyOptions.cs" />
+    <Compile Include="MVVM\OldModels\ClangTidyPredefinedChecksOptions.cs" />
+    <Compile Include="MVVM\OldModels\ClangTidyOptions.cs" />
     <Compile Include="Commands\BasicCommand.cs" />
     <Compile Include="Commands\StopCommand.cs" />
     <Compile Include="Commands\ClangCommand.cs" />
@@ -139,12 +139,12 @@
     <Compile Include="Convertors\ClangGeneralAdditionalIncludesConvertor.cs" />
     <Compile Include="Convertors\OldConvertors\FallbackStyleConvertor.cs" />
     <Compile Include="Convertors\OldConvertors\StyleConvertor.cs" />
-    <Compile Include="Options\Model\ClangFormatOptions.cs" />
+    <Compile Include="MVVM\OldModels\ClangFormatOptions.cs" />
     <Compile Include="Options\UIElementsActivator.cs" />
     <Compile Include="Options\ViewModel\ClangFormatOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Options\Model\DefaultOptions.cs" />
+    <Compile Include="MVVM\OldModels\DefaultOptions.cs" />
     <Compile Include="Options\ViewModel\ClangTidyCustomChecksOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -158,7 +158,7 @@
     <Compile Include="Options\ViewModel\ClangGeneralOptionsView.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Options\Model\ClangOptions.cs" />
+    <Compile Include="MVVM\OldModels\ClangOptions.cs" />
     <Compile Include="Convertors\ClangTidyHeaderFiltersConvertor.cs" />
     <Compile Include="Options\View\ClangFormatOptionsUserControl.xaml.cs">
       <DependentUpon>ClangFormatOptionsUserControl.xaml</DependentUpon>

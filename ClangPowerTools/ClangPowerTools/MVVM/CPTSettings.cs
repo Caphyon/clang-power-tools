@@ -63,15 +63,15 @@ namespace ClangPowerTools
 
       if(File.Exists(path))
       {
-
+        ClangOptions clangOptions = new ClangOptions();
+        LoadFromFile(path, clangOptions);
       }
     }
 
-    public TSettings LoadFromFile<TSettings>(string aFilePath, TSettings config) where TSettings : new()
+    public void LoadFromFile<TSettings>(string path, TSettings config) where TSettings : new()
     {
       XmlSerializer serializer = new XmlSerializer();
-      config = serializer.DeserializeFromFile<TSettings>(aFilePath);
-      return config;
+      config = serializer.DeserializeFromFile<TSettings>(path);
     }
 
   }

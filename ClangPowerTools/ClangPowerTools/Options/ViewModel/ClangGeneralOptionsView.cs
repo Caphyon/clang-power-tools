@@ -111,18 +111,11 @@ namespace ClangPowerTools
     public override void SaveSettingsToStorage()
     {
       string path = mSettingsPathBuilder.GetPath(kGeneralSettingsFileName);
-
+      ClangFlags.Replace(" ", "").Trim(';');
+      FilesToIgnore.Replace(" ", "").Trim(';');
+      ProjectsToIgnore.Replace(" ", "").Trim(';');
       var updatedConfig = new ClangOptions
       {
-        ClangFlagsCollection = string.IsNullOrEmpty(this.ClangFlags) ?
-          this.ClangFlags : this.ClangFlags.Replace(" ", "").Trim(';'),
-
-        FilesToIgnoreCollection = string.IsNullOrEmpty(this.FilesToIgnore) ?
-          this.FilesToIgnore : this.FilesToIgnore.Replace(" ", "").Trim(';'),
-
-        ProjectsToIgnoreCollection = string.IsNullOrEmpty(this.ProjectsToIgnore) ?
-          this.ProjectsToIgnore : this.ProjectsToIgnore.Replace(" ", "").Trim(';'),
-
         AdditionalIncludes = this.AdditionalIncludes,
         TreatWarningsAsErrors = this.TreatWarningsAsErrors,
         Continue = this.Continue,
@@ -140,35 +133,35 @@ namespace ClangPowerTools
 
       var loadedConfig = LoadFromFile(path);
 
-      if (null == loadedConfig.ClangFlags || 0 == loadedConfig.ClangFlags.Count)
-        ClangFlags = loadedConfig.ClangFlagsCollection;
-      else
-        ClangFlags = string.Join(";", loadedConfig.ClangFlags);
-
-
-      if (null == loadedConfig.FilesToIgnore || 0 == loadedConfig.FilesToIgnore.Count)
+      if (null == loadedConfig.ClangFlags)
       {
-        if (null == loadedConfig.FilesToIgnoreCollection)
-        {
+        ClangFlags = string.Empty;
+      }
+      else
+      {
+        ClangFlags = string.Join(";", loadedConfig.ClangFlags);
+      }
+
+      if (null == loadedConfig.ProjectsToIgnore)
+      {
+        ProjectsToIgnore = string.Empty;
+      }
+      else
+      {
+        ProjectsToIgnore = string.Join(";", loadedConfig.ProjectsToIgnore);
+      }
+
+      if (null == loadedConfig.FilesToIgnore)
+      {
           FilesToIgnore = string.Empty;
-        }
-        else
-        {
-          FilesToIgnore = loadedConfig.FilesToIgnoreCollection;
-        }
       }
       else
       { 
         FilesToIgnore = string.Join(";", loadedConfig.FilesToIgnore);
       }
 
-      if (null == loadedConfig.ProjectsToIgnore || 0 == loadedConfig.ProjectsToIgnore.Count)
-        ProjectsToIgnore = loadedConfig.ProjectsToIgnoreCollection ?? string.Empty;
-      else
-        ProjectsToIgnore = string.Join(";", loadedConfig.ProjectsToIgnore);
-
-      AdditionalIncludes = null == loadedConfig.AdditionalIncludes ? 
-        ClangGeneralAdditionalIncludes.IncludeDirectories : loadedConfig.AdditionalIncludes;
+      AdditionalIncludes = null == loadedConfig.AdditionalIncludes ?
+      ClangGeneralAdditionalIncludes.IncludeDirectories : loadedConfig.AdditionalIncludes;
 
       TreatWarningsAsErrors = loadedConfig.TreatWarningsAsErrors;
       Continue = loadedConfig.Continue;

@@ -24,6 +24,8 @@ namespace ClangPowerTools
     {
       SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
       path = settingsPathBuilder.GetPath(GeneralSettingsFileName);
+      CPTSettings.CompilerSettings = compilerSettings;
+      CPTSettings.FormatSettings = new FormatSettingsModel();
     }
     #endregion
 
@@ -45,7 +47,9 @@ namespace ClangPowerTools
     public void OpenDataDialog()
     {
       MessageBox.Show("Hello, world!");
-      SettingsHandler.SaveToFile(path, compilerSettings);
+      //SettingsHandler.SaveToFile(path, compilerSettings);
+      CPTSettings cPTSettings = new CPTSettings();
+      cPTSettings.CheckOldSettings();
     }
 
 
@@ -79,11 +83,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return compilerSettings.ProjectToIgnore;
+        return compilerSettings.ProjectsToIgnore;
       }
       set
       {
-        compilerSettings.ProjectToIgnore = value;
+        compilerSettings.ProjectsToIgnore = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ProjectToIgnore"));
       }
     }
@@ -174,7 +178,7 @@ namespace ClangPowerTools
     {
       compilerSettings.CompileFlags.Replace(" ", "").Trim(';');
       compilerSettings.FilesToIgnore.Replace(" ", "").Trim(';');
-      compilerSettings.ProjectToIgnore.Replace(" ", "").Trim(';');
+      compilerSettings.ProjectsToIgnore.Replace(" ", "").Trim(';');
 
       SettingsHandler.SaveToFile(path, compilerSettings);
     }
