@@ -193,6 +193,10 @@ namespace ClangPowerTools
       {
         UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
       }
+      else if(UseChecksFrom == ClangTidyUseChecksFrom.TidyFile)
+      {
+        UseChecksFrom = ClangTidyUseChecksFrom.PredefinedChecks;
+      }
 
       if (loadedConfig.ClangTidyPath == null)
       {
@@ -211,10 +215,6 @@ namespace ClangPowerTools
     #region Private Methods
     private bool DoesSolutionDirectoryContainsClangTidyFile()
     {
-      if(UseChecksFrom == ClangTidyUseChecksFrom.TidyFile)
-      {
-        return false;
-      }
 
       VsServiceProvider.TryGetService(typeof(DTE), out object dte);
       var solution = (dte as DTE2).Solution;
