@@ -1,9 +1,14 @@
 ﻿using ClangPowerTools.Convertors;
 using ClangPowerTools.Options;
 using ClangPowerTools.Options.View;
+using ClangPowerTools.Services;
+using EnvDTE;
+using EnvDTE80;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.Integration;
@@ -184,6 +189,11 @@ namespace ClangPowerTools
         UseChecksFrom = loadedConfig.TidyMode;
       }
 
+      if (DoesSolutionDirectoryContainsClangTidyFile(loadedConfig))
+      {
+        loadedConfig.TidyMode = ClangTidyUseChecksFrom.TidyFile;
+      }
+
       if (loadedConfig.ClangTidyPath == null)
       {
         ClangTidyPath = new ClangTidyPathValue();
@@ -195,12 +205,30 @@ namespace ClangPowerTools
 
       SetEnvironmentVariableTidyPath();
     }
-
-
     #endregion
 
 
     #region Private Methods
+    private bool DoesSolutionDirectoryContainsClangTidyFile(ClangTidyOptions loadedConfig)
+    {
+      if(loadedConfig.TidyMode != ClangTidyUseChecksFrom.TidyFile)
+      {
+        return false;
+      }
+
+      VsServiceProvider.TryGetService(typeof(DTE), out object dte);
+      var solution = (dte as DTE2).Solution;
+
+      if (solution == null || !solution.IsOpen)
+      {
+        return false;
+      }
+
+      string file = Directory.GetFiles(Path.GetDirectoryName(solution.FullName), ".clang-tidy", SearchOption.AllDirectories)
+                    .FirstOrDefault();
+
+      return string.IsNullOrEmpty(file);
+    }
 
     private void OnPropertyChanged(string aPropName)
     {
