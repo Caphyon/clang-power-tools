@@ -189,9 +189,9 @@ namespace ClangPowerTools
         UseChecksFrom = loadedConfig.TidyMode;
       }
 
-      if (DoesSolutionDirectoryContainsClangTidyFile(loadedConfig))
+      if (DoesSolutionDirectoryContainsClangTidyFile())
       {
-        loadedConfig.TidyMode = ClangTidyUseChecksFrom.TidyFile;
+        UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
       }
 
       if (loadedConfig.ClangTidyPath == null)
@@ -209,9 +209,9 @@ namespace ClangPowerTools
 
 
     #region Private Methods
-    private bool DoesSolutionDirectoryContainsClangTidyFile(ClangTidyOptions loadedConfig)
+    private bool DoesSolutionDirectoryContainsClangTidyFile()
     {
-      if(loadedConfig.TidyMode != ClangTidyUseChecksFrom.TidyFile)
+      if(UseChecksFrom == ClangTidyUseChecksFrom.TidyFile)
       {
         return false;
       }
@@ -227,7 +227,7 @@ namespace ClangPowerTools
       string file = Directory.GetFiles(Path.GetDirectoryName(solution.FullName), ".clang-tidy", SearchOption.AllDirectories)
                     .FirstOrDefault();
 
-      return string.IsNullOrEmpty(file);
+      return file != null;
     }
 
     private void OnPropertyChanged(string aPropName)
