@@ -72,15 +72,10 @@ namespace ClangPowerTools
     /// </summary>
     public static List<string> GetDocumentsToIgnore()
     {
+      var itemsCollector = new ItemsCollector();
+      itemsCollector.CollectSelectedProjectItems();
       List<string> documentsToIgnore = new List<string>();
-      DTE vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE) : null;
-
-      SelectedItems selectedDocuments = vsServiceProvider.SelectedItems;
-
-      for (int i = 1; i <= selectedDocuments.Count; i++)
-      {
-        documentsToIgnore.Add(selectedDocuments.Item(i).Name);
-      }
+      itemsCollector.items.ForEach(i => documentsToIgnore.Add(i.GetName()));
 
       return documentsToIgnore;
     }
