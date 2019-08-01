@@ -73,7 +73,7 @@ namespace ClangPowerTools.Commands
     {
       var task = Task.Run(() =>
       {
-        List<string> documentsToIgnore = ItemsCollector.GetDocumentsToIgnore();
+        List<string> documentsToIgnore = ItemsCollector.GetFilesToIgnore();
         AddIgnoreFilesToSettings(documentsToIgnore);
       });
     }
