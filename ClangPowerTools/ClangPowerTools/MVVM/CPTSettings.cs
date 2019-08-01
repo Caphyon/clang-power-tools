@@ -13,13 +13,19 @@ namespace ClangPowerTools
     public static CompilerSettingsModel CompilerSettings { get; set; }
     public static FormatSettingsModel FormatSettings { get; set; }
 
-    private SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
-
+    private string settingsPath = string.Empty;
     private readonly string SettingsFileName = "cpt_settings.json";
     private readonly string GeneralConfigurationFileName = "GeneralConfiguration.config";
     private readonly string FormatConfigurationFileName = "FormatConfiguration.config";
     private readonly string TidyOptionsConfigurationFileName = "TidyOptionsConfiguration.config";
     private readonly string TidyPredefinedChecksConfigurationFileName = "TidyPredefinedChecksConfiguration.config";
+
+    public CPTSettings()
+    {
+      SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
+      settingsPath = settingsPathBuilder.GetPath("");
+    }
+
 
     public void SerializeSettings()
     {
@@ -27,7 +33,7 @@ namespace ClangPowerTools
       models.Add(CompilerSettings);
       models.Add(FormatSettings);
 
-      string path = settingsPathBuilder.GetPath(SettingsFileName);
+      string path = Path.Combine(settingsPath, SettingsFileName);
       using (StreamWriter file = File.CreateText(path))
       {
         JsonSerializer serializer = new JsonSerializer();
@@ -38,7 +44,7 @@ namespace ClangPowerTools
 
     public void DeserializeSettings()
     {
-      string path = settingsPathBuilder.GetPath(SettingsFileName);
+      string path = Path.Combine(settingsPath, SettingsFileName);
       using (StreamReader sw = new StreamReader(path))
       {
         string json = sw.ReadToEnd();
@@ -51,8 +57,7 @@ namespace ClangPowerTools
 
     public void CheckOldSettings()
     {
-      string path = settingsPathBuilder.GetPath(GeneralConfigurationFileName);
-
+      string path = Path.Combine(settingsPath, GeneralConfigurationFileName);
       if (File.Exists(path))
       {
         ClangOptions clangOptions = new ClangOptions();
@@ -63,11 +68,9 @@ namespace ClangPowerTools
       SerializeSettings();
     }
 
-
     public void DeleteOldSettings()
     {
-      string path = settingsPathBuilder.GetPath("");
-      string[] files = Directory.GetFiles(path, "*.config");
+      string[] files = Directory.GetFiles(settingsPath, "*.config");
       foreach (var file in files)
       {
         File.Delete(file);
