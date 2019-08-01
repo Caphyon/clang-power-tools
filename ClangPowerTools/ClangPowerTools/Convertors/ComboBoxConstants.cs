@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
+using System.ComponentModel;
+using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 namespace ClangPowerTools
@@ -40,12 +44,15 @@ namespace ClangPowerTools
   }
 
   [Serializable]
+  [JsonConverter(typeof(StringEnumConverter))]
   public enum ClangGeneralAdditionalIncludes
   {
     [XmlEnum(Name = "include directories")]
+    [EnumMember(Value = "include directories")]
     IncludeDirectories,
-    
+
     [XmlEnum(Name = "system include directories")]
+    [EnumMember(Value = "system include directories")]
     SystemIncludeDirectories
   }
 

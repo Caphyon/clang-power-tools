@@ -13,7 +13,6 @@ namespace ClangPowerTools
     public static CompilerSettingsModel CompilerSettings { get; set; }
     public static FormatSettingsModel FormatSettings { get; set; }
 
-    private string path = string.Empty;
     private SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
 
     private readonly string SettingsFileName = "cpt_settings.json";
@@ -22,32 +21,26 @@ namespace ClangPowerTools
     private readonly string TidyOptionsConfigurationFileName = "TidyOptionsConfiguration.config";
     private readonly string TidyPredefinedChecksConfigurationFileName = "TidyPredefinedChecksConfiguration.config";
 
-    public CPTSettings()
-    {
-      path = settingsPathBuilder.GetPath("cpt_settings.json");
-    }
-
-
     public void SerializeSettings()
     {
       List<object> models = new List<object>();
       models.Add(CompilerSettings);
       models.Add(FormatSettings);
 
-      using (StreamWriter file = File.CreateText(@"D:\path.json"))
+      string path = settingsPathBuilder.GetPath(SettingsFileName);
+      using (StreamWriter file = File.CreateText(path))
       {
         JsonSerializer serializer = new JsonSerializer();
         serializer.Formatting = Formatting.Indented;
         //serialize object directly into file stream
         serializer.Serialize(file, models);
       }
-
-      DeserializeSettings();
     }
 
     public void DeserializeSettings()
     {
-      using(StreamReader sw = new StreamReader(@"D:\path.json"))
+      string path = settingsPathBuilder.GetPath(SettingsFileName);
+      using (StreamReader sw = new StreamReader(path))
       {
         string json = sw.ReadToEnd();
         JsonSerializer serializer = new JsonSerializer();
@@ -59,20 +52,35 @@ namespace ClangPowerTools
 
     public void CheckOldSettings()
     {
-      path = settingsPathBuilder.GetPath(GeneralConfigurationFileName);
+      string path = settingsPathBuilder.GetPath(GeneralConfigurationFileName);
 
       if(File.Exists(path))
       {
         ClangOptions clangOptions = new ClangOptions();
-        LoadFromFile(path, clangOptions);
+        LoadFromFile(path, ref clangOptions);
+        MapClangOptionsToCompilerSettings(clangOptions);
       }
+
+      SerializeSettings();
     }
 
-    public void LoadFromFile<TSettings>(string path, TSettings config) where TSettings : new()
+    public void LoadFromFile<TSettings>(string path, ref TSettings config) where TSettings : new()
     {
       XmlSerializer serializer = new XmlSerializer();
       config = serializer.DeserializeFromFile<TSettings>(path);
     }
 
+    private void MapClangOptionsToCompilerSettings(ClangOptions clangOptions)
+    {
+      CompilerSettings.CompileFlags = clangOptions.ClangFlagsCollection;
+      CompilerSettings.FilesToIgnore = clangOptions.FilesToIgnore;
+      CompilerSettings.ProjectsToIgnore = clangOptions.ProjectsToIgnore;
+      CompilerSettings.AdditionalIncludes = clangOptions.AdditionalIncludes;
+      CompilerSettings.WarningsAsErrors = clangOptions.TreatWarningsAsErrors;
+      CompilerSettings.ContinueOnError = clangOptions.Continue;
+      CompilerSettings.ClangCompileAfterMSCVCompile = clangOptions.ClangCompileAfterVsCompile;
+      CompilerSettings.VerboseMode = clangOptions.VerboseMode;
+      CompilerSettings.Version = clangOptions.Version;
+    }
   }
 }

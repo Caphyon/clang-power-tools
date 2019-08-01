@@ -63,7 +63,7 @@ namespace ClangPowerTools
     [Category("General")]
     [DisplayName("Treat additional includes as")]
     [Description("Specify how clang interprets project additional include directories: as regular includes ( -I ) or system includes ( -isystem ).")]
-    public ClangGeneralAdditionalIncludes? AdditionalIncludes { get; set; }
+    public ClangGeneralAdditionalIncludes AdditionalIncludes { get; set; }
 
 
     [Category("General")]
