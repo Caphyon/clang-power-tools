@@ -3,6 +3,7 @@ using System;
 using System.ComponentModel.Design;
 using System.Collections.Generic;
 using Task = System.Threading.Tasks.Task;
+using System.Linq;
 
 namespace ClangPowerTools.Commands
 {
@@ -73,8 +74,10 @@ namespace ClangPowerTools.Commands
     {
       var task = Task.Run(() =>
       {
-        List<string> documentsToIgnore = ItemsCollector.GetDocumentsToIgnore();
-        AddIgnoreFilesToSettings(documentsToIgnore);
+        List<string> filesToIgnore = ItemsCollector.GetFilesToIgnore();
+        AddIgnoreFilesToSettings(filesToIgnore);
+        List<string> projectsToIgnore = ItemsCollector.GetProjectsToIgnore();
+        AddIgnoreProjectsToSettings(projectsToIgnore);
       });
     }
 
@@ -89,6 +92,10 @@ namespace ClangPowerTools.Commands
     /// <returns></returns>
     public void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
     {
+      if (!documentsToIgnore.Any())
+      {
+        return;
+      }
       var settings = SettingsProvider.GeneralSettings;
 
       if (settings.FilesToIgnore.Length > 0)
@@ -99,6 +106,22 @@ namespace ClangPowerTools.Commands
       settings.SaveSettingsToStorage();
     }
 
+    public void AddIgnoreProjectsToSettings(List<string> documentsToIgnore)
+    {
+      if(!documentsToIgnore.Any())
+      {
+        return;
+      }
+      var settings = SettingsProvider.GeneralSettings;
+
+      if (settings.ProjectsToIgnore.Length > 0)
+      {
+        settings.ProjectsToIgnore += ";";
+      }
+      settings.ProjectsToIgnore += string.Join(";", RemoveDuplicateProjects(documentsToIgnore, settings));
+      settings.SaveSettingsToStorage();
+    }
+
     private List<string> RemoveDuplicateFiles(List<string> documentsToIgnore, ClangGeneralOptionsView settings)
     {
       List<string> trimmedDocumentToIgnore = new List<string>();
@@ -106,6 +129,20 @@ namespace ClangPowerTools.Commands
       foreach (var item in documentsToIgnore)
       {
         if (!settings.FilesToIgnore.Contains(item))
+        {
+          trimmedDocumentToIgnore.Add(item);
+        }
+      }
+      return trimmedDocumentToIgnore;
+    }
+
+    private List<string> RemoveDuplicateProjects(List<string> documentsToIgnore, ClangGeneralOptionsView settings)
+    {
+      List<string> trimmedDocumentToIgnore = new List<string>();
+
+      foreach (var item in documentsToIgnore)
+      {
+        if (!settings.ProjectsToIgnore.Contains(item))
         {
           trimmedDocumentToIgnore.Add(item);
         }

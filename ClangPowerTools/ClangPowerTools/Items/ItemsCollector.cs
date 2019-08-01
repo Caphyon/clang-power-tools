@@ -59,7 +59,7 @@ namespace ClangPowerTools
     /// <summary>
     /// Get the name of the active document
     /// </summary>
-    public static List<string> GetDocumentsToIgnore()
+    public static List<string> GetFilesToIgnore()
     {
       var itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
       itemsCollector.CollectSelectedProjectItems();
@@ -67,6 +67,24 @@ namespace ClangPowerTools
       itemsCollector.items.ForEach(i => documentsToIgnore.Add(i.GetName()));
 
       return documentsToIgnore;
+    }
+
+    public static List<string> GetProjectsToIgnore()
+    {
+      List<string> projectsToIgnore = new List<string>();
+      var dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
+      var selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
+
+      foreach (UIHierarchyItem item in selectedItems)
+      {
+        if (item.Object is Project)
+        {
+          var project = item.Object as Project;
+          projectsToIgnore.Add(project.Name);
+        }
+      }
+
+      return projectsToIgnore;
     }
 
     /// <summary>

@@ -13,6 +13,7 @@ namespace ClangPowerTools
     private const string kGeneralSettingsFileName = "GeneralConfiguration.config";
     private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
     private string mFilesToIgnore = string.Empty;
+    private string projectsToIgnore;
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -56,7 +57,16 @@ namespace ClangPowerTools
     [Category("General")]
     [DisplayName("Project to ignore")]
     [Description("Array of project(s) to ignore, from the matched ones. If empty, all already matched projects are compiled.")]
-    public string ProjectsToIgnore { get; set; }
+    //public string ProjectsToIgnore { get; set; }
+    public string ProjectsToIgnore
+    {
+      get { return projectsToIgnore; }
+      set
+      {
+        projectsToIgnore = value;
+        OnPropertyCHanged("ProjectsToIgnore");
+      }
+    }
 
 
 
