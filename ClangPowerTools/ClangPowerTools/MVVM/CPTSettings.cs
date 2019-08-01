@@ -53,7 +53,7 @@ namespace ClangPowerTools
     {
       string path = settingsPathBuilder.GetPath(GeneralConfigurationFileName);
 
-      if(File.Exists(path))
+      if (File.Exists(path))
       {
         ClangOptions clangOptions = new ClangOptions();
         LoadFromFile(path, ref clangOptions);
@@ -61,6 +61,17 @@ namespace ClangPowerTools
       }
 
       SerializeSettings();
+    }
+
+
+    public void DeleteOldSettings()
+    {
+      string path = settingsPathBuilder.GetPath("");
+      string[] files = Directory.GetFiles(path, "*.config");
+      foreach (var file in files)
+      {
+        File.Delete(file);
+      }
     }
 
     public void LoadFromFile<TSettings>(string path, ref TSettings config) where TSettings : new()
