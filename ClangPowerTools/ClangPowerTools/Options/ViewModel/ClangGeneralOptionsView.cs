@@ -57,7 +57,6 @@ namespace ClangPowerTools
     [Category("General")]
     [DisplayName("Project to ignore")]
     [Description("Array of project(s) to ignore, from the matched ones. If empty, all already matched projects are compiled.")]
-    //public string ProjectsToIgnore { get; set; }
     public string ProjectsToIgnore
     {
       get { return projectsToIgnore; }
