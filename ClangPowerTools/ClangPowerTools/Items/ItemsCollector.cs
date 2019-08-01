@@ -72,7 +72,7 @@ namespace ClangPowerTools
     /// </summary>
     public static List<string> GetDocumentsToIgnore()
     {
-      var itemsCollector = new ItemsCollector();
+      var itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
       itemsCollector.CollectSelectedProjectItems();
       List<string> documentsToIgnore = new List<string>();
       itemsCollector.items.ForEach(i => documentsToIgnore.Add(i.GetName()));
