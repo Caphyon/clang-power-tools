@@ -7,6 +7,7 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Task = System.Threading.Tasks.Task;
@@ -381,6 +382,15 @@ namespace ClangPowerTools
     public void OnLicenseChanged(object sender, LicenseEventArgs e)
     {
       activeLicense = e.IsLicenseActive;
+    }
+
+    public void VisibilityOnBeforeCommand(object sender, EventArgs e)
+    {
+      if (!(sender is OleMenuCommand command))
+        return;
+      var itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
+      itemsCollector.CollectSelectedProjectItems();
+      command.Enabled = itemsCollector.haveItems;
     }
 
     /// <summary>
