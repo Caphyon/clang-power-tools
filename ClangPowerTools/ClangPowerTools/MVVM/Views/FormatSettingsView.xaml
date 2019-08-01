@@ -39,7 +39,7 @@
       <ColumnDefinition Width="20" />
     </Grid.ColumnDefinitions>
 
-    <!--  Compile flags  -->
+    <!--  File Extensions  -->
     <TextBlock
       Grid.Row="1"
       Grid.Column="1"
@@ -48,7 +48,7 @@
       FontFamily="SegoeUI"
       FontSize="20"
       Foreground="#E2E2E8"
-      Text="Compile flags" />
+      Text="File extensions" />
 
     <TextBox
       Grid.Row="1"
@@ -59,7 +59,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding CompileFlags}" />
+      Text="{Binding X}" />
 
     <Button
       Grid.Row="1"
@@ -98,7 +98,7 @@
       Height="30"
       Content="..." />
 
-    <!--  Projects to ignore  -->
+    <!--  Assume filename  -->
     <TextBlock
       Grid.Row="3"
       Grid.Column="1"
@@ -107,7 +107,7 @@
       FontFamily="SegoeUI"
       FontSize="20"
       Foreground="#E2E2E8"
-      Text="Projects to ignore" />
+      Text="Assume filename" />
 
     <TextBox
       Grid.Row="3"
@@ -118,7 +118,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding ProjectsToIgnore}" />
+      Text="{Binding x}" />
 
     <Button
       Grid.Row="3"
@@ -127,7 +127,7 @@
       Height="30"
       Content="..." />
 
-    <!--  Additional includes  -->
+    <!--  Custom executable file  -->
     <TextBlock
       Grid.Row="4"
       Grid.Column="1"
@@ -136,10 +136,58 @@
       FontFamily="SegoeUI"
       FontSize="20"
       Foreground="#E2E2E8"
-      Text="Additional include as" />
+      Text="Custom executable file" />
+
+    <TextBox
+      Grid.Row="4"
+      Grid.Column="2"
+      Width="450"
+      Height="30"
+      Margin="0,0,20,0"
+      VerticalContentAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="15"
+      Text="{Binding x}" />
+
+    <Button
+      Grid.Row="4"
+      Grid.Column="3"
+      Width="60"
+      Height="30"
+      Content="Browse" />
+
+    <!--  Fallback style  -->
+    <TextBlock
+      Grid.Row="5"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="20"
+      Foreground="#E2E2E8"
+      Text="Fallback style" />
 
     <ComboBox
-      Grid.Row="4"
+      Grid.Row="5"
+      Grid.Column="2"
+      Height="30"
+      Margin="0,0,20,0"
+      ItemsSource="{Binding AdditionalIncludes}"
+      SelectedItem="{Binding SelectedAdditionalInclude}" />
+
+    <!--  Style  -->
+    <TextBlock
+      Grid.Row="6"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="20"
+      Foreground="#E2E2E8"
+      Text="Style" />
+
+    <ComboBox
+      Grid.Row="6"
       Grid.Column="2"
       Height="30"
       Margin="0,0,20,0"
@@ -147,41 +195,19 @@
       SelectedItem="{Binding SelectedAdditionalInclude}" />
 
 
-    <!--  Warning as errors  -->
+    <!--  Format on Save  -->
     <TextBlock
-      Grid.Row="5"
+      Grid.Row="7"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
       Foreground="#E2E2E8"
-      Text="Warning as errors" />
+      Text="Format on save" />
 
     <CheckBox
-      Grid.Row="5"
-      Grid.Column="2"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      IsChecked="{Binding TreatWarningsAsErrors}">
-      <CheckBox.LayoutTransform>
-        <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
-      </CheckBox.LayoutTransform>
-    </CheckBox>
-
-    <!--  Continue on error  -->
-    <TextBlock
-      Grid.Row="6"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="20"
-      Foreground="#E2E2E8"
-      Text="Continue on error" />
-
-    <CheckBox
-      Grid.Row="6"
+      Grid.Row="7"
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
@@ -190,61 +216,6 @@
         <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
       </CheckBox.LayoutTransform>
     </CheckBox>
-
-    <!--  Clang after MSCV compile  -->
-    <TextBlock
-      Grid.Row="7"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="20"
-      Foreground="#E2E2E8"
-      Text="Clang after MSVC compile" />
-
-    <CheckBox
-      Grid.Row="7"
-      Grid.Column="2"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      IsChecked="{Binding ClangCompileAfterMSCVCompile}">
-      <CheckBox.LayoutTransform>
-        <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
-      </CheckBox.LayoutTransform>
-    </CheckBox>
-
-    <!--  Verbose mode  -->
-    <TextBlock
-      Grid.Row="8"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="20"
-      Foreground="#E2E2E8"
-      Text="Verbose mode" />
-
-    <CheckBox
-      Grid.Row="8"
-      Grid.Column="2"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      IsChecked="{Binding VerboseMode}">
-      <CheckBox.LayoutTransform>
-        <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
-      </CheckBox.LayoutTransform>
-    </CheckBox>
-
-    <!--  Version  -->
-    <TextBlock
-      Grid.Row="10"
-      Grid.Column="3"
-      HorizontalAlignment="Right"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="10"
-      Foreground="#E2E2E8"
-      Text="{Binding Version}" />
 
   </Grid>
 </UserControl>

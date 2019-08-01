@@ -278,15 +278,10 @@
     </Content>
     <Resource Include="MVVM\Resources\Background.png" />
     <Resource Include="Resources\AlphabeticalIcon.PNG" />
-    <Resource Include="MVVM\Resources\ResourceCompileIcon.png" />
     <Content Include="Resources\Logout.png" />
-    <Content Include="Resources\ClangFormatIcon.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
+    <Resource Include="Resources\ClangFormatIcon.png" />
     <Resource Include="Resources\CleanSearchIcon.PNG" />
-    <Content Include="Resources\CompileIcon.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
+    <Resource Include="Resources\CompileIcon.png" />
     <Resource Include="Resources\CategorizedIcon.PNG" />
     <Resource Include="Resources\SearchIcon.PNG" />
     <Content Include="Resources\EmptyIcon.png" />
