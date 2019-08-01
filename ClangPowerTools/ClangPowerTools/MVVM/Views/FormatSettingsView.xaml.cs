@@ -5,12 +5,12 @@ namespace ClangPowerTools.Views
   /// <summary>
   /// Interaction logic for GeneralOptionsView.xaml
   /// </summary>
-  public partial class CompilerSettingsView : UserControl
+  public partial class FormatSettingsView : UserControl
   {
-    public CompilerSettingsView()
+    public FormatSettingsView()
     {
       InitializeComponent();
-      DataContext = new CompilerSettingsViewModel();
+      DataContext = new FormatSettingsViewModel();
     }
   }
 }

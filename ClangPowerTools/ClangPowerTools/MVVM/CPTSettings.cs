@@ -32,7 +32,6 @@ namespace ClangPowerTools
       {
         JsonSerializer serializer = new JsonSerializer();
         serializer.Formatting = Formatting.Indented;
-        //serialize object directly into file stream
         serializer.Serialize(file, models);
       }
     }

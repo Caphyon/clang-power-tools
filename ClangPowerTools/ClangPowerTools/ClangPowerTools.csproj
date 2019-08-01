@@ -86,6 +86,7 @@
     <Compile Include="MVVM\Models\FormatSettingsModel.cs" />
     <Compile Include="MVVM\Models\LicenseModel.cs" />
     <Compile Include="MVVM\CPTSettings.cs" />
+    <Compile Include="MVVM\ViewModels\FormatSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\CompilerSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\LoginViewModel.cs" />
     <Compile Include="Helpers\NetworkUtility.cs" />
@@ -118,6 +119,9 @@
     <Compile Include="MVVM\Models\TokenModel.cs" />
     <Compile Include="MVVM\Models\UserModel.cs" />
     <Compile Include="MVVM\ViewModels\SettingsViewModel.cs" />
+    <Compile Include="MVVM\Views\FormatSettingsView.xaml.cs">
+      <DependentUpon>FormatSettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\Views\CompilerSettingsView.xaml.cs">
       <DependentUpon>CompilerSettingsView.xaml</DependentUpon>
     </Compile>
@@ -486,6 +490,10 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="MVVM\Views\FormatSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MVVM\Views\CompilerSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
