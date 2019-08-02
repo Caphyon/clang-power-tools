@@ -49,12 +49,17 @@
     <TabItem Padding="8" FontSize="15">
       <TabItem.Header>
         <StackPanel Orientation="Horizontal">
+          <Image
+            Width="15"
+            Height="15"
+            Margin="3"
+            Source="/ClangPowerTools;component/Resources/TidyIcon.png" />
           <TextBlock>Tidy</TextBlock>
         </StackPanel>
       </TabItem.Header>
-      <StackPanel>
-        <TextBlock>Enter some text</TextBlock>
-      </StackPanel>
+      <Grid>
+        <local:TidySettingsView />
+      </Grid>
     </TabItem>
 
     <TabItem Padding="8" FontSize="15">

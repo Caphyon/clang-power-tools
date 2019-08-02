@@ -83,9 +83,11 @@
     <Compile Include="MVVM\Controllers\AccountController.cs" />
     <Compile Include="MVVM\Controllers\LicenseController.cs" />
     <Compile Include="MVVM\Models\CompilerSettingsModel.cs" />
+    <Compile Include="MVVM\Models\TidySettingsModel.cs" />
     <Compile Include="MVVM\Models\FormatSettingsModel.cs" />
     <Compile Include="MVVM\Models\LicenseModel.cs" />
     <Compile Include="MVVM\CPTSettings.cs" />
+    <Compile Include="MVVM\ViewModels\TidySettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\FormatSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\CompilerSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\LoginViewModel.cs" />
@@ -127,6 +129,9 @@
     </Compile>
     <Compile Include="MVVM\Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Views\TidySettingsView.xaml.cs">
+      <DependentUpon>TidySettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\WebApi\WebApiUrl.cs" />
     <Compile Include="Options\ClangTidyPathValue.cs" />
@@ -299,9 +304,7 @@
     <Content Include="Resources\SettingsIcon.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Resources\TidyIcon.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
+    <Resource Include="Resources\TidyIcon.png" />
     <Content Include="psClang\*.ps1" Exclude="psClang\*.tests.ps1">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -494,6 +497,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\Views\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\TidySettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
