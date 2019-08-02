@@ -217,13 +217,11 @@ namespace ClangPowerTools
 
     public int OnAfterOpenSolution(object aPUnkReserved, int aFNewSolution)
     {
-      //if(mCommandController != null)
-      //{
-      //  if(DoesSolutionContainCppProject())
-      //  {
-      //    mCommandController.AreCommandsEnabled(false);
-      //  }
-      //}
+      if (mCommandController != null)
+      {
+        mCommandController.AreCommandsEnabled = DoesSolutionContainCppProject();
+        //mCommandController.AreCommandsEnabled(DoesSolutionContainCppProject());
+      }
       return VSConstants.S_OK;
     }
 

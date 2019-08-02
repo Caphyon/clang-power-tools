@@ -24,6 +24,7 @@ namespace ClangPowerTools
     public bool running = false;
     public bool vsBuildRunning = false;
     public bool activeLicense = false;
+    public bool AreCommandsEnabled;
 
     public static readonly Guid mCommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
 
@@ -436,13 +437,13 @@ namespace ClangPowerTools
       OnMSVCBuildSucceededAsync().SafeFireAndForget();
     }
 
-    public void AreCommandsEnabled(bool IsEnabled)
-    {
-      if (CompileCommand.Instance.menuCommand != null)
-      {
-        CompileCommand.Instance.menuCommand.Enabled = IsEnabled;
-      }
-    }
+    //public void AreCommandsEnabled(bool IsEnabled)
+    //{
+    //  if (CompileCommand.Instance.menuCommand != null)
+    //  {
+    //    CompileCommand.Instance.menuCommand.Enabled = IsEnabled;
+    //  }
+    //}
 
 
     private async Task OnMSVCBuildSucceededAsync()
