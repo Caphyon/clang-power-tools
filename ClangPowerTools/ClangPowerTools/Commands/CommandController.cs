@@ -30,6 +30,7 @@ namespace ClangPowerTools
     public bool running = false;
     public bool vsBuildRunning = false;
     public bool activeLicense = false;
+    public bool AreCommandsEnabled;
 
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
     public event EventHandler<ClangCommandMessageEventArgs> ClangCommandMessageEvent;
@@ -453,13 +454,13 @@ namespace ClangPowerTools
       OnMSVCBuildSucceededAsync().SafeFireAndForget();
     }
 
-    public void AreCommandsEnabled(bool IsEnabled)
-    {
-      if (CompileCommand.Instance.menuCommand != null)
-      {
-        CompileCommand.Instance.menuCommand.Enabled = IsEnabled;
-      }
-    }
+    //public void AreCommandsEnabled(bool IsEnabled)
+    //{
+    //  if (CompileCommand.Instance.menuCommand != null)
+    //  {
+    //    CompileCommand.Instance.menuCommand.Enabled = IsEnabled;
+    //  }
+    //}
 
 
     private async Task OnMSVCBuildSucceededAsync()
