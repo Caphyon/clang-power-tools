@@ -26,7 +26,6 @@ namespace ClangPowerTools
 
     public ClangFormatFallbackStyle? FallbackStyle { get; set; }
 
-    //public bool SortIncludes { get; set; }
 
     public ClangFormatStyle? Style { get; set; }
 
