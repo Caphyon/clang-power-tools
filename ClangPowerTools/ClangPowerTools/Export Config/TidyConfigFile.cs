@@ -46,7 +46,7 @@ namespace ClangPowerTools
       CreateHeaderFilterOutputLine(parameterNames.ElementAt(3), headerFilter, true);
 
       //Format style line
-      string formatStyle = SettingsProvider.ClangFormatSettings.Style.Value.ToString();
+      string formatStyle = SettingsProvider.ClangFormatSettings.Style.ToString();
       CreateOutputLine(parameterNames.ElementAt(4), formatStyle, true);
 
       //User line

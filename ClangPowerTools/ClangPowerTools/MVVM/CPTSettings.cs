@@ -54,15 +54,25 @@ namespace ClangPowerTools
 
     public void CheckOldSettings()
     {
-      string path = GetSettingsFilePath(settingsPath, GeneralConfigurationFileName);
-      if (File.Exists(path))
-      {
-        ClangOptions clangOptions = new ClangOptions();
-        LoadFromFile(path, ref clangOptions);
-        MapClangOptionsToCompilerSettings(clangOptions);
-      }
+      ClangOptions clangOptions = LoadOldSettingsFromFile(new ClangOptions(), GeneralConfigurationFileName);
+      MapClangOptionsToCompilerSettings(clangOptions);
+
+      ClangFormatOptions clangFormatOptions = LoadOldSettingsFromFile(new ClangFormatOptions(), FormatConfigurationFileName);
+      MapClangFormatOptionsToFormatSettings(clangFormatOptions);
+
 
       SerializeSettings();
+    }
+
+    private T LoadOldSettingsFromFile<T>(T settings, string settingsFileName) where T : new()
+    {
+      string path = GetSettingsFilePath(settingsPath, settingsFileName);
+
+      if (File.Exists(path))
+      {
+        SerializeSettings(path, ref settings);
+      }
+      return settings;
     }
 
     private void DeleteOldSettings()
@@ -76,7 +86,8 @@ namespace ClangPowerTools
 
     public void ResetSettings()
     {
-
+      CompilerSettings = new CompilerSettingsModel();
+      FormatSettings = new FormatSettingsModel();
     }
 
     private static List<object> CreateModelsList()
@@ -92,10 +103,10 @@ namespace ClangPowerTools
       return Path.Combine(path, fileName);
     }
 
-    private void LoadFromFile<TSettings>(string path, ref TSettings config) where TSettings : new()
+    private void SerializeSettings<T>(string path, ref T config) where T : new()
     {
       XmlSerializer serializer = new XmlSerializer();
-      config = serializer.DeserializeFromFile<TSettings>(path);
+      config = serializer.DeserializeFromFile<T>(path);
     }
 
     private void MapClangOptionsToCompilerSettings(ClangOptions clangOptions)
@@ -111,5 +122,15 @@ namespace ClangPowerTools
       CompilerSettings.Version = clangOptions.Version;
     }
 
+    private void MapClangFormatOptionsToFormatSettings(ClangFormatOptions clangFormat)
+    {
+      FormatSettings.FileExtensions = clangFormat.FileExtensions;
+      FormatSettings.FilesToIgnore = clangFormat.SkipFiles;
+      FormatSettings.AssumeFilename = clangFormat.AssumeFilename;
+      FormatSettings.CustomExecutable = clangFormat.ClangFormatPath.Value;
+      FormatSettings.Style = clangFormat.Style;
+      FormatSettings.FallbackStyle = clangFormat.FallbackStyle;
+      FormatSettings.FormatOnSave = clangFormat.EnableFormatOnSave;
+    }
   }
 }
