@@ -69,7 +69,7 @@ namespace ClangPowerTools
     [DisplayName("Fallback style")]
     [Description("The name of the predefined style used as a fallback in case clang-format is invoked with " +
       "-style=file, but can not find the .clang-format file to use.\nUse -fallback-style=none to skip formatting.")]
-    public ClangFormatFallbackStyle? FallbackStyle { get; set; }
+    public ClangFormatFallbackStyle FallbackStyle { get; set; }
 
     //[Category("Format Options")]
     //[DisplayName("Sort includes")]
@@ -82,7 +82,7 @@ namespace ClangPowerTools
       "style configuration from .clang-format file located in one of the parent directories of the " +
       "source file(or current directory for stdin).\nUse -style=\"{key: value, ...}\" to set specific parameters, " +
       "e.g.: -style=\"{BasedOnStyle: llvm, IndentWidth: 8}\"")]
-    public ClangFormatStyle? Style { get; set; }
+    public ClangFormatStyle Style { get; set; }
 
 
     [Category("Clang-Format")]
