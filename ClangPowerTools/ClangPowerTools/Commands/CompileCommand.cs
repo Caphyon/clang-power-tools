@@ -26,7 +26,7 @@ namespace ClangPowerTools.Commands
 
     public bool VsCompileFlag { get; set; }
 
-
+    public OleMenuCommand menuCommand { get; set; }
     #endregion
 
 
@@ -44,7 +44,7 @@ namespace ClangPowerTools.Commands
       if (null != aCommandService)
       {
         var menuCommandID = new CommandID(CommandSet, Id);
-        var menuCommand = new OleMenuCommand(aCommandController.Execute, menuCommandID);
+        menuCommand = new OleMenuCommand(aCommandController.Execute, menuCommandID);
         menuCommand.BeforeQueryStatus += aCommandController.OnBeforeClangCommand;
         menuCommand.Enabled = true;
         aCommandService.AddCommand(menuCommand);
