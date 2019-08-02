@@ -68,13 +68,5 @@
       </StackPanel>
     </TabItem>
 
-    <TabItem Header="Tab 2">
-      <!--
-        Bind TextBlock.Text to the TextBox on the first
-        TabItem.
-      -->
-      <TextBlock Text="{Binding ElementName=textBox1, Path=Text}" />
-    </TabItem>
   </TabControl>
-
 </Window>
