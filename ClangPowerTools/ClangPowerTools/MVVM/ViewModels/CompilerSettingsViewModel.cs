@@ -25,7 +25,6 @@ namespace ClangPowerTools
       SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
       path = settingsPathBuilder.GetPath(GeneralSettingsFileName);
       CPTSettings.CompilerSettings = compilerSettings;
-      CPTSettings.FormatSettings = new FormatSettingsModel();
     }
     #endregion
 
@@ -47,7 +46,6 @@ namespace ClangPowerTools
     public void OpenDataDialog()
     {
       MessageBox.Show("Hello, world!");
-      //SettingsHandler.SaveToFile(path, compilerSettings);
       CPTSettings cPTSettings = new CPTSettings();
       cPTSettings.CheckOldSettings();
     }
@@ -170,68 +168,5 @@ namespace ClangPowerTools
     }
 
     #endregion
-
-
-    #region Public Methods
-
-    public void SaveSettingsToStorage()
-    {
-      compilerSettings.CompileFlags.Replace(" ", "").Trim(';');
-      compilerSettings.FilesToIgnore.Replace(" ", "").Trim(';');
-      compilerSettings.ProjectsToIgnore.Replace(" ", "").Trim(';');
-
-      SettingsHandler.SaveToFile(path, compilerSettings);
-    }
-
-    public void LoadSettingsFromStorage()
-    {
-      SettingsHandler.LoadFromFile(path, compilerSettings);
-
-      //if (null == loadedConfig.CompileFlags || 0 == loadedConfig.CompileFlags.Count)
-      //  CompileFlags = loadedConfig.CompileFlagsCollection;
-      //else
-      //  CompileFlags = string.Join(";", loadedConfig.CompileFlags);
-
-
-      //if (null == loadedConfig.FilesToIgnore || 0 == loadedConfig.FilesToIgnore.Count)
-      //{
-      //  if (null == loadedConfig.FilesToIgnoreCollection)
-      //  {
-      //    FilesToIgnore = string.Empty;
-      //  }
-      //  else
-      //  {
-      //    FilesToIgnore = loadedConfig.FilesToIgnoreCollection;
-      //  }
-      //}
-      //else
-      //{
-      //  FilesToIgnore = string.Join(";", loadedConfig.FilesToIgnore);
-      //}
-
-      //if (null == loadedConfig.ProjectsToIgnore || 0 == loadedConfig.ProjectsToIgnore.Count)
-      //  ProjectsToIgnore = loadedConfig.ProjectsToIgnoreCollection ?? string.Empty;
-      //else
-      //  ProjectsToIgnore = string.Join(";", loadedConfig.ProjectsToIgnore);
-
-      //AdditionalIncludes = null == loadedConfig.AdditionalIncludes ?
-      //  ClangGeneralAdditionalIncludes.IncludeDirectories : loadedConfig.AdditionalIncludes;
-
-      //WarningsAsErrors = loadedConfig.WarningsAsErrors;
-      //ContinueOnError = loadedConfig.ContinueOnError;
-      //ClangCompileAfterVsCompile = loadedConfig.ClangCompileAfterVsCompile;
-      //VerboseMode = loadedConfig.VerboseMode;
-      //Version = loadedConfig.Version;
-    }
-
-    //public void ResetSettings()
-    //{
-    //  SettingsHandler.CopySettingsProperties(SettingsProvider.GeneralSettings, new ClangGeneralOptionsView());
-    //  SaveSettingsToStorage();
-    //  LoadSettingsFromStorage();
-    //}
-
-    #endregion
-
   }
 }

@@ -11,8 +11,8 @@ namespace ClangPowerTools
   public class FormatSettingsViewModel : INotifyPropertyChanged
   {
     #region Members
-    private CompilerSettingsModel compilerSettings = new CompilerSettingsModel();
-    private const string GeneralSettingsFileName = "GeneralConfiguration.config";
+    private FormatSettingsModel formatSettings = new FormatSettingsModel();
+    private const string GeneralSettingsFileName = "FormatConfiguration.config";
     private string path = string.Empty;
     private ICommand addDataCommand;
 
@@ -24,8 +24,7 @@ namespace ClangPowerTools
     {
       SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
       path = settingsPathBuilder.GetPath(GeneralSettingsFileName);
-      CPTSettings.CompilerSettings = compilerSettings;
-      CPTSettings.FormatSettings = new FormatSettingsModel();
+      CPTSettings.FormatSettings = formatSettings;
     }
     #endregion
 
@@ -47,22 +46,21 @@ namespace ClangPowerTools
     public void OpenDataDialog()
     {
       MessageBox.Show("Hello, world!");
-      //SettingsHandler.SaveToFile(path, compilerSettings);
       CPTSettings cPTSettings = new CPTSettings();
       cPTSettings.CheckOldSettings();
     }
 
 
-    public string CompileFlags
+    public string FileExtensions
     {
       get
       {
-        return string.IsNullOrWhiteSpace(compilerSettings.CompileFlags) ? DefaultOptions.kClangFlags : compilerSettings.CompileFlags;
+        return string.IsNullOrWhiteSpace(formatSettings.FileExtensions) ? DefaultOptions.kFileExtensions : formatSettings.FileExtensions;
       }
       set
       {
-        compilerSettings.CompileFlags = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CompileFlags"));
+        formatSettings.FileExtensions = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileExtensions"));
       }
     }
 
@@ -70,168 +68,89 @@ namespace ClangPowerTools
     {
       get
       {
-        return compilerSettings.FilesToIgnore;
+        return formatSettings.FilesToIgnore;
       }
       set
       {
-        compilerSettings.FilesToIgnore = value;
+        formatSettings.FilesToIgnore = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FilesToIgnore"));
       }
     }
 
-    public string ProjectsToIgnore
+    public string AssumeFilename
     {
       get
       {
-        return compilerSettings.ProjectsToIgnore;
+        return formatSettings.AssumeFilename;
       }
       set
       {
-        compilerSettings.ProjectsToIgnore = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ProjectToIgnore"));
+        formatSettings.AssumeFilename = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AssumeFilename"));
       }
     }
 
-    public IEnumerable<ClangGeneralAdditionalIncludes> AdditionalIncludes
+    public string CustomExecutable
     {
       get
       {
-        return Enum.GetValues(typeof(ClangGeneralAdditionalIncludes)).Cast<ClangGeneralAdditionalIncludes>();
-      }
-    }
-
-    public ClangGeneralAdditionalIncludes SelectedAdditionalInclude
-    {
-      get { return compilerSettings.AdditionalIncludes; }
-      set
-      {
-        compilerSettings.AdditionalIncludes = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedAdditionalInclude"));
-      }
-    }
-
-    public bool WarningsAsErrors
-    {
-      get
-      {
-        return compilerSettings.WarningsAsErrors;
-      }
-
-      set
-      {
-        compilerSettings.WarningsAsErrors = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WarningsAsErrors"));
-      }
-    }
-
-    public bool ContinueOnError
-    {
-      get
-      {
-        return compilerSettings.ContinueOnError;
+        return formatSettings.CustomExecutable;
       }
       set
       {
-        compilerSettings.ContinueOnError = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ContinueOnErrorOnError"));
+        formatSettings.CustomExecutable = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CustomExecutable"));
       }
     }
 
-    public bool ClangCompileAfterMSCVCompile
+    public IEnumerable<ClangFormatStyle> Styles
     {
       get
-      { return compilerSettings.ClangCompileAfterMSCVCompile; }
+      {
+        return Enum.GetValues(typeof(ClangFormatStyle)).Cast<ClangFormatStyle>();
+      }
+    }
+
+    public ClangFormatStyle SelectedStyle
+    {
+      get { return formatSettings.Style; }
       set
       {
-        compilerSettings.ClangCompileAfterMSCVCompile = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClangCompileAfterMSCVCompile"));
+        formatSettings.Style = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedStyle"));
       }
     }
 
-    public bool VerboseMode
+    public IEnumerable<ClangFormatFallbackStyle> FallbackStyles
     {
       get
       {
-        return compilerSettings.VerboseMode;
+        return Enum.GetValues(typeof(ClangFormatFallbackStyle)).Cast<ClangFormatFallbackStyle>();
+      }
+    }
+
+    public ClangFormatFallbackStyle SelectedFallbackStyle
+    {
+      get { return formatSettings.FallbackStyle; }
+      set
+      {
+        formatSettings.FallbackStyle = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedFallbackStyle"));
+      }
+    }
+
+    public bool FormatOnSave
+    {
+      get
+      {
+        return formatSettings.FormatOnSave;
       }
       set
       {
-        compilerSettings.VerboseMode = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("VerboseMode"));
+        formatSettings.FormatOnSave = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOnSave"));
       }
     }
-
-    public string Version
-    {
-      get
-      {
-        return compilerSettings.Version;
-      }
-    }
-
     #endregion
-
-
-    #region Public Methods
-
-    public void SaveSettingsToStorage()
-    {
-      compilerSettings.CompileFlags.Replace(" ", "").Trim(';');
-      compilerSettings.FilesToIgnore.Replace(" ", "").Trim(';');
-      compilerSettings.ProjectsToIgnore.Replace(" ", "").Trim(';');
-
-      SettingsHandler.SaveToFile(path, compilerSettings);
-    }
-
-    public void LoadSettingsFromStorage()
-    {
-      SettingsHandler.LoadFromFile(path, compilerSettings);
-
-      //if (null == loadedConfig.CompileFlags || 0 == loadedConfig.CompileFlags.Count)
-      //  CompileFlags = loadedConfig.CompileFlagsCollection;
-      //else
-      //  CompileFlags = string.Join(";", loadedConfig.CompileFlags);
-
-
-      //if (null == loadedConfig.FilesToIgnore || 0 == loadedConfig.FilesToIgnore.Count)
-      //{
-      //  if (null == loadedConfig.FilesToIgnoreCollection)
-      //  {
-      //    FilesToIgnore = string.Empty;
-      //  }
-      //  else
-      //  {
-      //    FilesToIgnore = loadedConfig.FilesToIgnoreCollection;
-      //  }
-      //}
-      //else
-      //{
-      //  FilesToIgnore = string.Join(";", loadedConfig.FilesToIgnore);
-      //}
-
-      //if (null == loadedConfig.ProjectsToIgnore || 0 == loadedConfig.ProjectsToIgnore.Count)
-      //  ProjectsToIgnore = loadedConfig.ProjectsToIgnoreCollection ?? string.Empty;
-      //else
-      //  ProjectsToIgnore = string.Join(";", loadedConfig.ProjectsToIgnore);
-
-      //AdditionalIncludes = null == loadedConfig.AdditionalIncludes ?
-      //  ClangGeneralAdditionalIncludes.IncludeDirectories : loadedConfig.AdditionalIncludes;
-
-      //WarningsAsErrors = loadedConfig.WarningsAsErrors;
-      //ContinueOnError = loadedConfig.ContinueOnError;
-      //ClangCompileAfterVsCompile = loadedConfig.ClangCompileAfterVsCompile;
-      //VerboseMode = loadedConfig.VerboseMode;
-      //Version = loadedConfig.Version;
-    }
-
-    //public void ResetSettings()
-    //{
-    //  SettingsHandler.CopySettingsProperties(SettingsProvider.GeneralSettings, new ClangGeneralOptionsView());
-    //  SaveSettingsToStorage();
-    //  LoadSettingsFromStorage();
-    //}
-
-    #endregion
-
   }
 }

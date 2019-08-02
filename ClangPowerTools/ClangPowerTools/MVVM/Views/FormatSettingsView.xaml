@@ -59,7 +59,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding X}" />
+      Text="{Binding FileExtensions}" />
 
     <Button
       Grid.Row="1"
@@ -118,7 +118,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding x}" />
+      Text="{Binding AssumeFilename}" />
 
     <Button
       Grid.Row="3"
@@ -136,7 +136,7 @@
       FontFamily="SegoeUI"
       FontSize="20"
       Foreground="#E2E2E8"
-      Text="Custom executable file" />
+      Text="Custom executable" />
 
     <TextBox
       Grid.Row="4"
@@ -147,7 +147,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding x}" />
+      Text="{Binding CustomExecutable}" />
 
     <Button
       Grid.Row="4"
@@ -156,28 +156,9 @@
       Height="30"
       Content="Browse" />
 
-    <!--  Fallback style  -->
-    <TextBlock
-      Grid.Row="5"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="20"
-      Foreground="#E2E2E8"
-      Text="Fallback style" />
-
-    <ComboBox
-      Grid.Row="5"
-      Grid.Column="2"
-      Height="30"
-      Margin="0,0,20,0"
-      ItemsSource="{Binding AdditionalIncludes}"
-      SelectedItem="{Binding SelectedAdditionalInclude}" />
-
     <!--  Style  -->
     <TextBlock
-      Grid.Row="6"
+      Grid.Row="5"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -187,13 +168,32 @@
       Text="Style" />
 
     <ComboBox
+      Grid.Row="5"
+      Grid.Column="2"
+      Height="30"
+      Margin="0,0,20,0"
+      ItemsSource="{Binding Styles}"
+      SelectedItem="{Binding SelectedStyle}" />
+
+
+    <!--  Fallback style  -->
+    <TextBlock
+      Grid.Row="6"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="20"
+      Foreground="#E2E2E8"
+      Text="Fallback style" />
+
+    <ComboBox
       Grid.Row="6"
       Grid.Column="2"
       Height="30"
       Margin="0,0,20,0"
-      ItemsSource="{Binding AdditionalIncludes}"
-      SelectedItem="{Binding SelectedAdditionalInclude}" />
-
+      ItemsSource="{Binding FallbackStyles}"
+      SelectedItem="{Binding SelectedFallbackStyle}" />
 
     <!--  Format on Save  -->
     <TextBlock
@@ -211,7 +211,7 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding ContinueOnError}">
+      IsChecked="{Binding FormatOnSave}">
       <CheckBox.LayoutTransform>
         <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
       </CheckBox.LayoutTransform>
