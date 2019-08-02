@@ -29,12 +29,9 @@ namespace ClangPowerTools
 
     public void SerializeSettings()
     {
-      List<object> models = new List<object>();
-      models.Add(CompilerSettings);
-      models.Add(FormatSettings);
+      List<object> models = CreateModelsList();
 
-      string path = Path.Combine(settingsPath, SettingsFileName);
-      using (StreamWriter file = File.CreateText(path))
+      using (StreamWriter file = File.CreateText(GetSettingsFilePath(settingsPath, SettingsFileName)))
       {
         JsonSerializer serializer = new JsonSerializer();
         serializer.Formatting = Formatting.Indented;
@@ -44,20 +41,20 @@ namespace ClangPowerTools
 
     public void DeserializeSettings()
     {
-      string path = Path.Combine(settingsPath, SettingsFileName);
-      using (StreamReader sw = new StreamReader(path))
+      using (StreamReader sw = new StreamReader(GetSettingsFilePath(settingsPath, SettingsFileName)))
       {
         string json = sw.ReadToEnd();
         JsonSerializer serializer = new JsonSerializer();
         List<object> models = JsonConvert.DeserializeObject<List<Object>>(json);
 
-        CompilerSettingsModel test = JsonConvert.DeserializeObject<CompilerSettingsModel>(models[0].ToString());
+        CompilerSettings = JsonConvert.DeserializeObject<CompilerSettingsModel>(models[0].ToString());
+        FormatSettings = JsonConvert.DeserializeObject<FormatSettingsModel>(models[1].ToString());
       }
     }
 
     public void CheckOldSettings()
     {
-      string path = Path.Combine(settingsPath, GeneralConfigurationFileName);
+      string path = GetSettingsFilePath(settingsPath, GeneralConfigurationFileName);
       if (File.Exists(path))
       {
         ClangOptions clangOptions = new ClangOptions();
@@ -65,10 +62,10 @@ namespace ClangPowerTools
         MapClangOptionsToCompilerSettings(clangOptions);
       }
 
-      SerializeSettings();
+      DeserializeSettings();
     }
 
-    public void DeleteOldSettings()
+    private void DeleteOldSettings()
     {
       string[] files = Directory.GetFiles(settingsPath, "*.config");
       foreach (var file in files)
@@ -77,7 +74,25 @@ namespace ClangPowerTools
       }
     }
 
-    public void LoadFromFile<TSettings>(string path, ref TSettings config) where TSettings : new()
+    public void ResetSettings()
+    {
+
+    }
+
+    private static List<object> CreateModelsList()
+    {
+      List<object> models = new List<object>();
+      models.Add(CompilerSettings);
+      models.Add(FormatSettings);
+      return models;
+    }
+
+    private string GetSettingsFilePath(string path, string fileName)
+    {
+      return Path.Combine(path, fileName);
+    }
+
+    private void LoadFromFile<TSettings>(string path, ref TSettings config) where TSettings : new()
     {
       XmlSerializer serializer = new XmlSerializer();
       config = serializer.DeserializeFromFile<TSettings>(path);
@@ -95,5 +110,7 @@ namespace ClangPowerTools
       CompilerSettings.VerboseMode = clangOptions.VerboseMode;
       CompilerSettings.Version = clangOptions.Version;
     }
+
+
   }
 }
