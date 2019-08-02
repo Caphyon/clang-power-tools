@@ -1,9 +1,9 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using System;
-using System.ComponentModel.Design;
 using System.Collections.Generic;
-using Task = System.Threading.Tasks.Task;
+using System.ComponentModel.Design;
 using System.Linq;
+using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
 {
@@ -74,10 +74,13 @@ namespace ClangPowerTools.Commands
     {
       var task = Task.Run(() =>
       {
-        List<string> filesToIgnore = ItemsCollector.GetFilesToIgnore();
-        AddIgnoreFilesToSettings(filesToIgnore);
         List<string> projectsToIgnore = ItemsCollector.GetProjectsToIgnore();
         AddIgnoreProjectsToSettings(projectsToIgnore);
+        if (!projectsToIgnore.Any())
+        {
+          List<string> filesToIgnore = ItemsCollector.GetFilesToIgnore();
+          AddIgnoreFilesToSettings(filesToIgnore);
+        }
       });
     }
 
@@ -108,7 +111,7 @@ namespace ClangPowerTools.Commands
 
     public void AddIgnoreProjectsToSettings(List<string> documentsToIgnore)
     {
-      if(!documentsToIgnore.Any())
+      if (!documentsToIgnore.Any())
       {
         return;
       }
