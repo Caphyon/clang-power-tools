@@ -2,9 +2,9 @@
 {
   public class FormatSettingsModel
   {
-    public string FileExtensions { get; set; } = string.Empty;
+    public string FileExtensions { get; set; } = DefaultOptions.FileExtensions;
 
-    public string FilesToIgnore { get; set; } = string.Empty;
+    public string FilesToIgnore { get; set; } = DefaultOptions.IgnoreFiles;
 
     public string AssumeFilename { get; set; } = string.Empty;
 

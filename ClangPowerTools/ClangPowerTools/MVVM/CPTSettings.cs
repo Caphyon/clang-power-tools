@@ -62,7 +62,7 @@ namespace ClangPowerTools
         MapClangOptionsToCompilerSettings(clangOptions);
       }
 
-      DeserializeSettings();
+      SerializeSettings();
     }
 
     private void DeleteOldSettings()
@@ -110,7 +110,6 @@ namespace ClangPowerTools
       CompilerSettings.VerboseMode = clangOptions.VerboseMode;
       CompilerSettings.Version = clangOptions.Version;
     }
-
 
   }
 }
