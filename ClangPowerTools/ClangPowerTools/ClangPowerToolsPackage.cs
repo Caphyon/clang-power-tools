@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools
@@ -242,6 +243,13 @@ namespace ClangPowerTools
 
     public int OnAfterOpenSolution(object aPUnkReserved, int aFNewSolution)
     {
+      //if(mCommandController != null)
+      //{
+      //  if(DoesSolutionContainCppProject())
+      //  {
+      //    mCommandController.AreCommandsEnabled(false);
+      //  }
+      //}
       return VSConstants.S_OK;
     }
 
@@ -266,7 +274,22 @@ namespace ClangPowerTools
 
 
     #region Private Methods
-
+    private bool DoesSolutionContainCppProject()
+    {
+      DTE2 dte2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
+      var solution = dte2.Solution;
+      var projects = solution.Projects;
+      foreach (var proj in solution)
+      {
+        var project = proj as Project;
+        var type = project.FullName;
+        if (type.EndsWith(".vcxproj"))
+        {
+          return true;
+        }
+      }
+      return false;
+    }
     private async Task RegisterVsServicesAsync()
     {
       // Get DTE service async 

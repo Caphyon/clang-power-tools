@@ -453,6 +453,14 @@ namespace ClangPowerTools
       OnMSVCBuildSucceededAsync().SafeFireAndForget();
     }
 
+    public void AreCommandsEnabled(bool IsEnabled)
+    {
+      if (CompileCommand.Instance.menuCommand != null)
+      {
+        CompileCommand.Instance.menuCommand.Enabled = IsEnabled;
+      }
+    }
+
 
     private async Task OnMSVCBuildSucceededAsync()
     {
