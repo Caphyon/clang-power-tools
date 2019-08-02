@@ -49,9 +49,11 @@ namespace ClangPowerTools
   [JsonConverter(typeof(StringEnumConverter))]
   public enum ClangGeneralAdditionalIncludes
   {
+    [XmlEnum(Name = "include directories")]
     [EnumMember(Value = "include directories")]
     IncludeDirectories,
 
+    [XmlEnum(Name = "system include directories")]
     [EnumMember(Value = "system include directories")]
     SystemIncludeDirectories
   }
