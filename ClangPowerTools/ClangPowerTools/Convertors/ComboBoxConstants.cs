@@ -8,38 +8,40 @@ using System.Xml.Serialization;
 namespace ClangPowerTools
 {
   [Serializable]
+  [JsonConverter(typeof(StringEnumConverter))]
   public enum ClangFormatStyle
   {
-    [XmlEnum(Name = "file")]
+    [EnumMember(Value = "file")]
     file = 0,
-    [XmlEnum(Name = "Chromium")]
+    [EnumMember(Value = "Chromium")]
     Chromium,
-    [XmlEnum(Name = "Google")]
+    [EnumMember(Value = "Google")]
     Google,
-    [XmlEnum(Name = "LLVM")]
+    [EnumMember(Value = "LLVM")]
     LLVM,
-    [XmlEnum(Name = "Mozilla")]
+    [EnumMember(Value = "Mozilla")]
     Mozilla,
-    [XmlEnum(Name = "WebKit")]
+    [EnumMember(Value = "WebKit")]
     WebKit
   }
 
   [Serializable]
+  [JsonConverter(typeof(StringEnumConverter))]
   public enum ClangFormatFallbackStyle
   {
-    [XmlEnum(Name = "none")]
+    [EnumMember(Value = "none")]
     none = 0,
-    [XmlEnum(Name = "file")]
+    [EnumMember(Value = "file")]
     file,
-    [XmlEnum(Name = "Chromium")]
+    [EnumMember(Value = "Chromium")]
     Chromium,
-    [XmlEnum(Name = "Google")]
+    [EnumMember(Value = "Google")]
     Google,
-    [XmlEnum(Name = "LLVM")]
+    [EnumMember(Value = "LLVM")]
     LLVM,
-    [XmlEnum(Name = "Mozilla")]
+    [EnumMember(Value = "Mozilla")]
     Mozilla,
-    [XmlEnum(Name = "WebKit")]
+    [EnumMember(Value = "WebKit")]
     WebKit
   }
 
@@ -47,11 +49,9 @@ namespace ClangPowerTools
   [JsonConverter(typeof(StringEnumConverter))]
   public enum ClangGeneralAdditionalIncludes
   {
-    [XmlEnum(Name = "include directories")]
     [EnumMember(Value = "include directories")]
     IncludeDirectories,
 
-    [XmlEnum(Name = "system include directories")]
     [EnumMember(Value = "system include directories")]
     SystemIncludeDirectories
   }
