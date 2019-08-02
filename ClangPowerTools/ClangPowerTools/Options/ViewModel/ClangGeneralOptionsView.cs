@@ -26,7 +26,7 @@ namespace ClangPowerTools
     [Description("Flags given to clang++ when compiling project, alongside project - specific defines. If empty the default flags will be loaded.")]
     public string ClangFlags
     {
-      get => string.IsNullOrWhiteSpace(mClangFlags) ? DefaultOptions.kClangFlags : mClangFlags;
+      get => string.IsNullOrWhiteSpace(mClangFlags) ? DefaultOptions.ClangFlags : mClangFlags;
       set => mClangFlags = value;
     }
 

@@ -155,10 +155,10 @@ namespace ClangPowerTools
       EnableFormatOnSave = loadedConfig.EnableFormatOnSave;
 
       FileExtensions = null == loadedConfig.FileExtensions ?
-        DefaultOptions.kFileExtensions : loadedConfig.FileExtensions;
+        DefaultOptions.FileExtensions : loadedConfig.FileExtensions;
 
       FilesToIgnore = null == loadedConfig.SkipFiles ?
-        DefaultOptions.kSkipFiles : loadedConfig.SkipFiles;
+        DefaultOptions.IgnoreFiles : loadedConfig.SkipFiles;
 
       AssumeFilename = loadedConfig.AssumeFilename;
 

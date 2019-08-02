@@ -55,7 +55,7 @@ namespace ClangPowerTools
     {
       get
       {
-        return string.IsNullOrWhiteSpace(compilerSettings.CompileFlags) ? DefaultOptions.kClangFlags : compilerSettings.CompileFlags;
+        return string.IsNullOrWhiteSpace(compilerSettings.CompileFlags) ? DefaultOptions.ClangFlags : compilerSettings.CompileFlags;
       }
       set
       {

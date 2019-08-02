@@ -55,7 +55,7 @@ namespace ClangPowerTools
     {
       get
       {
-        return string.IsNullOrWhiteSpace(formatSettings.FileExtensions) ? DefaultOptions.kFileExtensions : formatSettings.FileExtensions;
+        return string.IsNullOrWhiteSpace(formatSettings.FileExtensions) ? DefaultOptions.FileExtensions : formatSettings.FileExtensions;
       }
       set
       {
@@ -68,7 +68,7 @@ namespace ClangPowerTools
     {
       get
       {
-        return formatSettings.FilesToIgnore;
+        return string.IsNullOrWhiteSpace(formatSettings.FilesToIgnore) ? DefaultOptions.IgnoreFiles : formatSettings.FileExtensions;
       }
       set
       {

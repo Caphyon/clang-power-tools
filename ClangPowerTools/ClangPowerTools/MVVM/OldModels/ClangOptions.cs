@@ -23,7 +23,7 @@ namespace ClangPowerTools
 
     public string ClangFlags { get; set; } = string.Empty;
 
-    public string ClangFlagsCollection { get; set; } = DefaultOptions.kClangFlags;
+    public string ClangFlagsCollection { get; set; } = DefaultOptions.ClangFlags;
 
     public bool ClangCompileAfterVsCompile { get; set; } = false;
 
