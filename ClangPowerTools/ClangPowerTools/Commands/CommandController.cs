@@ -404,6 +404,13 @@ namespace ClangPowerTools
       if (!(sender is OleMenuCommand command))
         return;
 
+      if (!AreCommandsEnabled)
+      {
+        command.Enabled = false;
+        return;
+      }
+      command.Enabled = true;
+
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte) && !(dte as DTE2).Solution.IsOpen)
       {
         command.Visible = command.Enabled = false;
@@ -436,15 +443,6 @@ namespace ClangPowerTools
       vsBuildRunning = false;
       OnMSVCBuildSucceededAsync().SafeFireAndForget();
     }
-
-    //public void AreCommandsEnabled(bool IsEnabled)
-    //{
-    //  if (CompileCommand.Instance.menuCommand != null)
-    //  {
-    //    CompileCommand.Instance.menuCommand.Enabled = IsEnabled;
-    //  }
-    //}
-
 
     private async Task OnMSVCBuildSucceededAsync()
     {
