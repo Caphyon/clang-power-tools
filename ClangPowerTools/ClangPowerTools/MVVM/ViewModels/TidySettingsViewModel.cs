@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -144,6 +145,23 @@ namespace ClangPowerTools
         tidySettings.TidyOnSave = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyOnSave"));
       }
+    }
+    #endregion
+
+    #region Private Methods
+    private void SetEnvironmentVariableTidyPath()
+    {
+      var task = Task.Run(() =>
+      {
+        if (CustomExecutable.Length > 3)
+        {
+          Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, CustomExecutable, EnvironmentVariableTarget.User);
+        }
+        else
+        {
+          Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, null, EnvironmentVariableTarget.User);
+        }
+      });
     }
     #endregion
   }
