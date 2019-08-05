@@ -12,8 +12,6 @@ namespace ClangPowerTools
   {
     #region Members
     private CompilerSettingsModel compilerSettings = new CompilerSettingsModel();
-    private const string GeneralSettingsFileName = "GeneralConfiguration.config";
-    private string path = string.Empty;
     private ICommand addDataCommand;
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -22,8 +20,6 @@ namespace ClangPowerTools
     #region Constructors
     public CompilerSettingsViewModel()
     {
-      SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
-      path = settingsPathBuilder.GetPath(GeneralSettingsFileName);
       CPTSettings.CompilerSettings = compilerSettings;
     }
     #endregion

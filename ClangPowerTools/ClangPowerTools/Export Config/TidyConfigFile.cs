@@ -61,7 +61,7 @@ namespace ClangPowerTools
 
     private void CreateChecksOutputLine(string paramaterName)
     {
-      ClangTidyUseChecksFrom clangTidyUseChecksFrom = SettingsProvider.TidySettings.UseChecksFrom.Value;
+      ClangTidyUseChecksFrom clangTidyUseChecksFrom = SettingsProvider.TidySettings.UseChecksFrom;
       if (clangTidyUseChecksFrom == ClangTidyUseChecksFrom.CustomChecks)
       {
         CreateCustomChecksOutputLine(paramaterName, SettingsProvider.TidyCustomCheckes.TidyChecks, true);

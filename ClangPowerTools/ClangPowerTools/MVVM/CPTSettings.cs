@@ -1,10 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace ClangPowerTools
 {
@@ -12,6 +9,7 @@ namespace ClangPowerTools
   {
     public static CompilerSettingsModel CompilerSettings { get; set; }
     public static FormatSettingsModel FormatSettings { get; set; }
+    public static TidySettingsModel TidySettings { get; set; }
 
     private string settingsPath = string.Empty;
     private readonly string SettingsFileName = "cpt_settings.json";
@@ -49,6 +47,7 @@ namespace ClangPowerTools
 
         CompilerSettings = JsonConvert.DeserializeObject<CompilerSettingsModel>(models[0].ToString());
         FormatSettings = JsonConvert.DeserializeObject<FormatSettingsModel>(models[1].ToString());
+        TidySettings = JsonConvert.DeserializeObject<TidySettingsModel>(models[2].ToString());
       }
     }
 
@@ -59,6 +58,9 @@ namespace ClangPowerTools
 
       ClangFormatOptions clangFormatOptions = LoadOldSettingsFromFile(new ClangFormatOptions(), FormatConfigurationFileName);
       MapClangFormatOptionsToFormatSettings(clangFormatOptions);
+
+      ClangTidyOptions clangTidyOptions = LoadOldSettingsFromFile(new ClangTidyOptions(), TidyOptionsConfigurationFileName);
+      MapClangTidyOptionsToTidyettings(clangTidyOptions);
 
 
       SerializeSettings();
@@ -95,6 +97,7 @@ namespace ClangPowerTools
       List<object> models = new List<object>();
       models.Add(CompilerSettings);
       models.Add(FormatSettings);
+      models.Add(TidySettings);
       return models;
     }
 
@@ -131,6 +134,22 @@ namespace ClangPowerTools
       FormatSettings.Style = clangFormat.Style;
       FormatSettings.FallbackStyle = clangFormat.FallbackStyle;
       FormatSettings.FormatOnSave = clangFormat.EnableFormatOnSave;
+    }
+
+    private void MapClangTidyOptionsToTidyettings(ClangTidyOptions clangTidy)
+    {
+      TidySettings.HeaderFilter = clangTidy.HeaderFilter;
+      TidySettings.UseChecksFrom = clangTidy.TidyMode;
+      TidySettings.CustomChecks = clangTidy.TidyChecksCollection;
+      TidySettings.CustomExecutable = clangTidy.ClangTidyPath.Value;
+      TidySettings.FormatAfterTidy = clangTidy.FormatAfterTidy;
+      TidySettings.TidyOnSave = clangTidy.AutoTidyOnSave;
+    }
+
+    private void MapClangTidyPredefinedChecksOptionsToTidyettings(ClangTidyPredefinedChecksOptions clangTidy)
+    {
+
+
     }
   }
 }

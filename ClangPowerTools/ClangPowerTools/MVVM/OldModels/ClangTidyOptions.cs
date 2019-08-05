@@ -20,7 +20,7 @@ namespace ClangPowerTools
 
     public string HeaderFilter { get; set; }
 
-    public ClangTidyUseChecksFrom? TidyMode { get; set; }
+    public ClangTidyUseChecksFrom TidyMode { get; set; }
 
     public ClangTidyPathValue ClangTidyPath { get; set; }
 

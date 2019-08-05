@@ -71,15 +71,19 @@ namespace ClangPowerTools
 
 
   [Serializable]
+  [JsonConverter(typeof(StringEnumConverter))]
   public enum ClangTidyUseChecksFrom
   {
     [XmlEnum(Name = "predefined checks")]
+    [EnumMember(Value = "predefined checks")]
     PredefinedChecks,
 
     [XmlEnum(Name = "custom checks")]
+    [EnumMember(Value = "custom checks")]
     CustomChecks,
 
     [XmlEnum(Name = ".clang-tidy config file")]
+    [EnumMember(Value = ".clang-tidy config file")]
     TidyFile
   }
 

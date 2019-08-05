@@ -11,9 +11,7 @@ namespace ClangPowerTools
   public class TidySettingsViewModel : INotifyPropertyChanged
   {
     #region Members
-    private FormatSettingsModel formatSettings = new FormatSettingsModel();
-    private const string GeneralSettingsFileName = "FormatConfiguration.config";
-    private string path = string.Empty;
+    private TidySettingsModel tidySettings = new TidySettingsModel();
     private ICommand addDataCommand;
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -22,9 +20,7 @@ namespace ClangPowerTools
     #region Constructors
     public TidySettingsViewModel()
     {
-      SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
-      path = settingsPathBuilder.GetPath(GeneralSettingsFileName);
-      CPTSettings.FormatSettings = formatSettings;
+      CPTSettings.TidySettings = tidySettings;
     }
     #endregion
 
@@ -50,43 +46,63 @@ namespace ClangPowerTools
       cPTSettings.CheckOldSettings();
     }
 
-
-    public string FileExtensions
+    public string HeaderFilter
     {
       get
       {
-        return string.IsNullOrWhiteSpace(formatSettings.FileExtensions) ? DefaultOptions.FileExtensions : formatSettings.FileExtensions;
+        return tidySettings.HeaderFilter;
       }
       set
       {
-        formatSettings.FileExtensions = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileExtensions"));
+        tidySettings.HeaderFilter = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HeaderFilter"));
       }
     }
 
-    public string FilesToIgnore
+    public IEnumerable<ClangTidyUseChecksFrom> UseChecksFrom
     {
       get
       {
-        return string.IsNullOrWhiteSpace(formatSettings.FilesToIgnore) ? DefaultOptions.IgnoreFiles : formatSettings.FileExtensions;
-      }
-      set
-      {
-        formatSettings.FilesToIgnore = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FilesToIgnore"));
+        return Enum.GetValues(typeof(ClangTidyUseChecksFrom)).Cast<ClangTidyUseChecksFrom>();
       }
     }
 
-    public string AssumeFilename
+    public ClangTidyUseChecksFrom SelectedUseChecksFrom
     {
       get
       {
-        return formatSettings.AssumeFilename;
+        return tidySettings.UseChecksFrom;
       }
       set
       {
-        formatSettings.AssumeFilename = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AssumeFilename"));
+        tidySettings.UseChecksFrom = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedUseChecksFrom"));
+      }
+    }
+
+    public string PredefinedChecks
+    {
+      get
+      {
+        return tidySettings.PredefinedChecks;
+      }
+      set
+      {
+        tidySettings.PredefinedChecks = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PredefinedChecks"));
+      }
+    }
+
+    public string CustomChecks
+    {
+      get
+      {
+        return tidySettings.CustomChecks;
+      }
+      set
+      {
+        tidySettings.CustomChecks = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CustomChecks"));
       }
     }
 
@@ -94,61 +110,39 @@ namespace ClangPowerTools
     {
       get
       {
-        return formatSettings.CustomExecutable;
+        return tidySettings.CustomExecutable;
       }
       set
       {
-        formatSettings.CustomExecutable = value;
+        tidySettings.CustomExecutable = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CustomExecutable"));
       }
     }
 
-    public IEnumerable<ClangFormatStyle> Styles
+
+    public bool FormatAfterTidy
     {
       get
       {
-        return Enum.GetValues(typeof(ClangFormatStyle)).Cast<ClangFormatStyle>();
+        return tidySettings.FormatAfterTidy;
       }
-    }
-
-    public ClangFormatStyle SelectedStyle
-    {
-      get { return formatSettings.Style; }
       set
       {
-        formatSettings.Style = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedStyle"));
+        tidySettings.FormatAfterTidy = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatAfterTidy"));
       }
     }
 
-    public IEnumerable<ClangFormatFallbackStyle> FallbackStyles
+    public bool TidyOnSave
     {
       get
       {
-        return Enum.GetValues(typeof(ClangFormatFallbackStyle)).Cast<ClangFormatFallbackStyle>();
-      }
-    }
-
-    public ClangFormatFallbackStyle SelectedFallbackStyle
-    {
-      get { return formatSettings.FallbackStyle; }
-      set
-      {
-        formatSettings.FallbackStyle = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedFallbackStyle"));
-      }
-    }
-
-    public bool FormatOnSave
-    {
-      get
-      {
-        return formatSettings.FormatOnSave;
+        return tidySettings.TidyOnSave;
       }
       set
       {
-        formatSettings.FormatOnSave = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOnSave"));
+        tidySettings.TidyOnSave = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyOnSave"));
       }
     }
     #endregion

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ClangPowerTools.Options.Model
+namespace ClangPowerTools
 {
   [Serializable]
   public class ClangTidyPredefinedChecksOptions

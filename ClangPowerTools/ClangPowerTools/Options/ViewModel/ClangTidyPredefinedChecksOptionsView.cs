@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.Options.Model;
-using ClangPowerTools.Options.View;
+﻿using ClangPowerTools.Options.View;
 using System;
 using System.ComponentModel;
 using System.Reflection;

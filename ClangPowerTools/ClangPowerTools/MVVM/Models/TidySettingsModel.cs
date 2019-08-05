@@ -2,18 +2,18 @@
 {
   public class TidySettingsModel
   {
-    public string FileExtensions { get; set; } = DefaultOptions.FileExtensions;
+    public string HeaderFilter { get; set; } = DefaultOptions.HeaderFilter;
 
-    public string FilesToIgnore { get; set; } = DefaultOptions.IgnoreFiles;
+    public ClangTidyUseChecksFrom UseChecksFrom { get; set; } = ClangTidyUseChecksFrom.PredefinedChecks;
 
-    public string AssumeFilename { get; set; } = string.Empty;
+    public string PredefinedChecks { get; set; } = string.Empty;
+
+    public string CustomChecks { get; set; } = string.Empty;
 
     public string CustomExecutable { get; set; } = string.Empty;
 
-    public ClangFormatStyle Style { get; set; } = ClangFormatStyle.file;
+    public bool FormatAfterTidy { get; set; } = false;
 
-    public ClangFormatFallbackStyle FallbackStyle { get; set; } = ClangFormatFallbackStyle.none;
-
-    public bool FormatOnSave { get; set; } = false;
+    public bool TidyOnSave { get; set; } = false;
   }
 }

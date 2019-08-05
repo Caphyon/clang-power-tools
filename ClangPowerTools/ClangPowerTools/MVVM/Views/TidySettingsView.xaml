@@ -39,7 +39,7 @@
       <ColumnDefinition Width="20" />
     </Grid.ColumnDefinitions>
 
-    <!--  File Extensions  -->
+    <!--  Header Filter  -->
     <TextBlock
       Grid.Row="1"
       Grid.Column="1"
@@ -48,7 +48,7 @@
       FontFamily="SegoeUI"
       FontSize="20"
       Foreground="#E2E2E8"
-      Text="File extensions" />
+      Text="Header filter" />
 
     <TextBox
       Grid.Row="1"
@@ -59,7 +59,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding FileExtensions}" />
+      Text="{Binding HeaderFilter}" />
 
     <Button
       Grid.Row="1"
@@ -69,7 +69,7 @@
       Command="{Binding AddDataCommand}"
       Content="..." />
 
-    <!--  Files to ignore  -->
+    <!--  Fallback style  -->
     <TextBlock
       Grid.Row="2"
       Grid.Column="1"
@@ -78,10 +78,29 @@
       FontFamily="SegoeUI"
       FontSize="20"
       Foreground="#E2E2E8"
-      Text="Files to ignore" />
+      Text="Use checks from" />
+
+    <ComboBox
+      Grid.Row="2"
+      Grid.Column="2"
+      Height="30"
+      Margin="0,0,20,0"
+      ItemsSource="{Binding UseChecksFrom}"
+      SelectedItem="{Binding SelectedUseChecksFrom}" />
+
+    <!--  Predefined checks  -->
+    <TextBlock
+      Grid.Row="3"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="20"
+      Foreground="#E2E2E8"
+      Text="Predefined checks" />
 
     <TextBox
-      Grid.Row="2"
+      Grid.Row="3"
       Grid.Column="2"
       Width="450"
       Height="30"
@@ -89,28 +108,29 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding FilesToIgnore}" />
+      IsReadOnly="True"
+      Text="{Binding PredefinedChecks}" />
 
     <Button
-      Grid.Row="2"
+      Grid.Row="3"
       Grid.Column="3"
       Width="50"
       Height="30"
       Content="..." />
 
-    <!--  Assume filename  -->
+    <!--  Custom checks  -->
     <TextBlock
-      Grid.Row="3"
+      Grid.Row="4"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
       Foreground="#E2E2E8"
-      Text="Assume filename" />
+      Text="Custom checks" />
 
     <TextBox
-      Grid.Row="3"
+      Grid.Row="4"
       Grid.Column="2"
       Width="450"
       Height="30"
@@ -118,10 +138,10 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding AssumeFilename}" />
+      Text="{Binding CustomChecks}" />
 
     <Button
-      Grid.Row="3"
+      Grid.Row="4"
       Grid.Column="3"
       Width="50"
       Height="30"
@@ -129,7 +149,7 @@
 
     <!--  Custom executable file  -->
     <TextBlock
-      Grid.Row="4"
+      Grid.Row="5"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -139,7 +159,7 @@
       Text="Custom executable" />
 
     <TextBox
-      Grid.Row="4"
+      Grid.Row="5"
       Grid.Column="2"
       Width="450"
       Height="30"
@@ -150,33 +170,13 @@
       Text="{Binding CustomExecutable}" />
 
     <Button
-      Grid.Row="4"
+      Grid.Row="5"
       Grid.Column="3"
       Width="60"
       Height="30"
       Content="Browse" />
 
-    <!--  Style  -->
-    <TextBlock
-      Grid.Row="5"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="20"
-      Foreground="#E2E2E8"
-      Text="Style" />
-
-    <ComboBox
-      Grid.Row="5"
-      Grid.Column="2"
-      Height="30"
-      Margin="0,0,20,0"
-      ItemsSource="{Binding Styles}"
-      SelectedItem="{Binding SelectedStyle}" />
-
-
-    <!--  Fallback style  -->
+    <!--  Format after tidy  -->
     <TextBlock
       Grid.Row="6"
       Grid.Column="1"
@@ -185,17 +185,20 @@
       FontFamily="SegoeUI"
       FontSize="20"
       Foreground="#E2E2E8"
-      Text="Fallback style" />
+      Text="Format after Tidy" />
 
-    <ComboBox
+    <CheckBox
       Grid.Row="6"
       Grid.Column="2"
-      Height="30"
-      Margin="0,0,20,0"
-      ItemsSource="{Binding FallbackStyles}"
-      SelectedItem="{Binding SelectedFallbackStyle}" />
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center"
+      IsChecked="{Binding FormatAfterTidy}">
+      <CheckBox.LayoutTransform>
+        <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+      </CheckBox.LayoutTransform>
+    </CheckBox>
 
-    <!--  Format on Save  -->
+    <!--  Tidy on save  -->
     <TextBlock
       Grid.Row="7"
       Grid.Column="1"
@@ -204,18 +207,19 @@
       FontFamily="SegoeUI"
       FontSize="20"
       Foreground="#E2E2E8"
-      Text="Format on save" />
+      Text="Tidy on save" />
 
     <CheckBox
       Grid.Row="7"
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding FormatOnSave}">
+      IsChecked="{Binding TidyOnSave}">
       <CheckBox.LayoutTransform>
         <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
       </CheckBox.LayoutTransform>
     </CheckBox>
+
 
   </Grid>
 </UserControl>

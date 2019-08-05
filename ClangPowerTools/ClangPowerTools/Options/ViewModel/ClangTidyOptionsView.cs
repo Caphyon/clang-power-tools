@@ -36,7 +36,7 @@ namespace ClangPowerTools
     private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
     private ClangTidyPathValue mClangTidyPath;
     private HeaderFiltersValue mHeaderFilters;
-    private ClangTidyUseChecksFrom? mUseChecksFrom;
+    private ClangTidyUseChecksFrom mUseChecksFrom;
 
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -80,7 +80,7 @@ namespace ClangPowerTools
     [Description("Tidy checks: switch between explicitly specified checks (predefined or custom) and using checks from .clang-tidy configuration files.\n" +
       "Other options are always loaded from .clang-tidy files.")]
     [TypeConverter(typeof(ClangTidyUseChecksFromConvertor))]
-    public ClangTidyUseChecksFrom? UseChecksFrom
+    public ClangTidyUseChecksFrom UseChecksFrom
     {
       get
       {

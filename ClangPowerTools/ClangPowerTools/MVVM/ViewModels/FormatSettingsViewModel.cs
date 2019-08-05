@@ -12,8 +12,6 @@ namespace ClangPowerTools
   {
     #region Members
     private FormatSettingsModel formatSettings = new FormatSettingsModel();
-    private const string GeneralSettingsFileName = "FormatConfiguration.config";
-    private string path = string.Empty;
     private ICommand addDataCommand;
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -22,8 +20,6 @@ namespace ClangPowerTools
     #region Constructors
     public FormatSettingsViewModel()
     {
-      SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
-      path = settingsPathBuilder.GetPath(GeneralSettingsFileName);
       CPTSettings.FormatSettings = formatSettings;
     }
     #endregion
