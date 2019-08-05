@@ -9,7 +9,9 @@ namespace ClangPowerTools
     #region Clang Compile/Tidy constants
 
     #region Extensions Constants
+
     public const string kVcxprojExtension = ".vcxproj";
+
     #endregion
 
     public static readonly List<string> kAcceptedFileExtensions = new List<string>
