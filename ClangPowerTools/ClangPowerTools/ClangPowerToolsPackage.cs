@@ -240,7 +240,6 @@ namespace ClangPowerTools
       return VSConstants.S_OK;
     }
 
-
     #endregion
 
 
@@ -345,20 +344,21 @@ namespace ClangPowerTools
     {
       DTE2 dte2 = (DTE2) Package.GetGlobalService(typeof(DTE));
       var solution = dte2.Solution;
+
       if (solution == null)
       {
         return true;
       }
-      var projects = solution.Projects;
-      foreach (var proj in solution)
+
+      foreach (var project in solution)
       {
-        var project = proj as Project;
-        var type = project.FullName;
-        if (type.EndsWith(ScriptConstants.kVcxprojExtension))
+        var proj = (Project) project;
+        if (proj.FullName.EndsWith(ScriptConstants.kVcxprojExtension))
         {
           return false;
         }
       }
+
       return true;
     }
 
