@@ -246,7 +246,6 @@ namespace ClangPowerTools
       if (mCommandController != null)
       {
         mCommandController.AreCommandsEnabled = DoesSolutionContainCppProject();
-        //mCommandController.AreCommandsEnabled(DoesSolutionContainCppProject());
       }
       return VSConstants.S_OK;
     }
