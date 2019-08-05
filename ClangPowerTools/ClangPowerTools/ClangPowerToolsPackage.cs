@@ -101,6 +101,7 @@ namespace ClangPowerTools
       await RegisterVsServicesAsync();
 
       mCommandController = new CommandController(this);
+      mCommandController.areCommandsDisabled = SolutionDoesNotContainCppProject();
       CommandTestUtility.CommandController = mCommandController;
 
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
@@ -219,7 +220,7 @@ namespace ClangPowerTools
     {
       if (mCommandController != null)
       {
-        mCommandController.AreCommandsEnabled = DoesSolutionContainCppProject();
+        mCommandController.areCommandsDisabled = SolutionDoesNotContainCppProject();
       }
       return VSConstants.S_OK;
     }
@@ -341,20 +342,26 @@ namespace ClangPowerTools
     }
 
     private bool DoesSolutionContainCppProject()
+    private bool SolutionDoesNotContainCppProject()
     {
+      DTE2 dte = (DTE2)Package.GetGlobalService(typeof(DTE));
       DTE2 dte2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
       var solution = dte2.Solution;
+      if (solution == null)
+      {
+        return true;
+      }
       var projects = solution.Projects;
       foreach (var proj in solution)
       {
         var project = proj as Project;
         var type = project.FullName;
-        if (type.EndsWith(".vcxproj"))
+        if (type.EndsWith(ScriptConstants.kVcxprojExtension))
         {
-          return true;
+          return false;
         }
       }
-      return false;
+      return true;
     }
     private async Task RegisterVsServicesAsync()
     {

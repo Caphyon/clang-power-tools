@@ -24,7 +24,7 @@ namespace ClangPowerTools
     public bool running = false;
     public bool vsBuildRunning = false;
     public bool activeLicense = false;
-    public bool AreCommandsEnabled;
+    public bool areCommandsDisabled = false;
 
     public static readonly Guid mCommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
 
@@ -404,7 +404,7 @@ namespace ClangPowerTools
       if (!(sender is OleMenuCommand command))
         return;
 
-      if (!AreCommandsEnabled)
+      if (areCommandsDisabled)
       {
         command.Enabled = false;
         return;
