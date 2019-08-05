@@ -12,7 +12,7 @@ namespace ClangPowerTools
     public static TidySettingsModel TidySettings { get; set; }
 
     private string settingsPath = string.Empty;
-    private readonly string SettingsFileName = "cpt_settings.json";
+    private readonly string SettingsFileName = "settings.json";
     private readonly string GeneralConfigurationFileName = "GeneralConfiguration.config";
     private readonly string FormatConfigurationFileName = "FormatConfiguration.config";
     private readonly string TidyOptionsConfigurationFileName = "TidyOptionsConfiguration.config";
@@ -83,6 +83,15 @@ namespace ClangPowerTools
       foreach (var file in files)
       {
         File.Delete(file);
+      }
+    }
+
+    private void DeleteSettings()
+    {
+      string[] file = Directory.GetFiles(settingsPath, SettingsFileName);
+      if (file.Length > 0)
+      {
+        File.Delete(file[0]);
       }
     }
 
