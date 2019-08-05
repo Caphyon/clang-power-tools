@@ -30,7 +30,7 @@ namespace ClangPowerTools
     public bool running = false;
     public bool vsBuildRunning = false;
     public bool activeLicense = false;
-    public bool AreCommandsEnabled;
+    public bool areCommandsDisabled = false;
 
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
     public event EventHandler<ClangCommandMessageEventArgs> ClangCommandMessageEvent;
@@ -421,7 +421,7 @@ namespace ClangPowerTools
       if (!(sender is OleMenuCommand command))
         return;
 
-      if (!AreCommandsEnabled)
+      if (areCommandsDisabled)
       {
         command.Enabled = false;
         return;
