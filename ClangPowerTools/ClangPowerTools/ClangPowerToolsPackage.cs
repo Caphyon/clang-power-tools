@@ -15,7 +15,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools
@@ -272,10 +271,10 @@ namespace ClangPowerTools
 
 
     #region Private Methods
+
     private bool SolutionDoesNotContainCppProject()
     {
-      DTE2 dte = (DTE2)Package.GetGlobalService(typeof(DTE));
-      DTE2 dte2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
+      DTE2 dte2 = (DTE2) Package.GetGlobalService(typeof(DTE));
       var solution = dte2.Solution;
       if (solution == null)
       {
@@ -293,6 +292,7 @@ namespace ClangPowerTools
       }
       return true;
     }
+
     private async Task RegisterVsServicesAsync()
     {
       // Get DTE service async 
