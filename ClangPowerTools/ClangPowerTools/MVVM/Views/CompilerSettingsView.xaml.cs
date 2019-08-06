@@ -3,7 +3,7 @@
 namespace ClangPowerTools.Views
 {
   /// <summary>
-  /// Interaction logic for GeneralOptionsView.xaml
+  /// Interaction logic for CompilerSettingsView.xaml
   /// </summary>
   public partial class CompilerSettingsView : UserControl
   {

@@ -3,7 +3,7 @@
 namespace ClangPowerTools.Views
 {
   /// <summary>
-  /// Interaction logic for GeneralOptionsView.xaml
+  /// Interaction logic for FormatSettingsView.xaml
   /// </summary>
   public partial class FormatSettingsView : UserControl
   {
