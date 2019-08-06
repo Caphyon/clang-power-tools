@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Input;
 
 namespace ClangPowerTools
@@ -31,12 +30,12 @@ namespace ClangPowerTools
     #region Properties
     public ICommand AddDataCommand
     {
-      get => addDataCommand ?? (addDataCommand = new RelayCommand(() => OpenDataDialog(), () => CanExecute));
+      get => addDataCommand ?? (addDataCommand = new RelayCommand(() => HeaderFilter = OpenContentDialog(HeaderFilter), () => CanExecute));
     }
 
     public ICommand BrowseCommand
     {
-      get => browseCommand ?? (browseCommand = new RelayCommand(() => CustomExecutable = BrowseFile(), () => CanExecute));
+      get => browseCommand ?? (browseCommand = new RelayCommand(() => CustomExecutable = BrowseForFile(), () => CanExecute));
     }
 
     public bool CanExecute

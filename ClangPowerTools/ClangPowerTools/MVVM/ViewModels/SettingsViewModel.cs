@@ -1,4 +1,6 @@
-﻿using Microsoft.Win32;
+﻿using ClangPowerTools.Options.View.WpfPropertyGrid;
+using ClangPowerTools.Views;
+using Microsoft.Win32;
 using System.ComponentModel;
 using System.Windows.Documents;
 
@@ -6,9 +8,13 @@ namespace ClangPowerTools
 {
   public abstract class SettingsViewModel
   {
+    #region Members
     protected abstract void ReferenceSettingsHandler();
+    private string input { get; set; }
+    #endregion;
 
-    public string BrowseFile()
+    #region Methods
+    public string BrowseForFile()
     {
       // Create OpenFileDialog
       OpenFileDialog dlg = new OpenFileDialog();
@@ -31,5 +37,20 @@ namespace ClangPowerTools
       return path;
     }
 
+
+    public string OpenContentDialog(string content)
+    {
+      AddDataViewModel addDataViewModel = new AddDataViewModel(content);
+      addDataViewModel.OpenDialog();
+      string input = addDataViewModel.TextBoxInput;
+
+      if (string.IsNullOrEmpty(input))
+      {
+        return content;
+      }
+
+      return input;
+    }
+    #endregion
   }
 }
