@@ -15,14 +15,12 @@ namespace ClangPowerTools
     private ICommand okCommand;
     #endregion
 
-
     #region Constructor
     public AddDataViewModel(string content)
     {
       TextBoxInput = content;
     }
     #endregion
-
 
     #region Properties
     public string TextBoxInput
@@ -50,7 +48,6 @@ namespace ClangPowerTools
         return true;
       }
     }
-
     #endregion
 
     #region Methods
@@ -64,7 +61,6 @@ namespace ClangPowerTools
     {
       addDataView.Close();
     }
-
     #endregion
   }
 }
