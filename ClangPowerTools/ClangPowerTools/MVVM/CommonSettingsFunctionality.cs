@@ -2,7 +2,7 @@
 
 namespace ClangPowerTools
 {
-  public abstract class SettingsViewModel
+  public abstract class CommonSettingsFunctionality
   {
     #region Abstract Methods
     protected abstract void ReferenceSettingsHandler();

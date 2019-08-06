@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class TidySettingsViewModel : SettingsViewModel, INotifyPropertyChanged
+  public class TidySettingsViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
   {
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
