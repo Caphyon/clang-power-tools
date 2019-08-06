@@ -29,9 +29,9 @@ namespace ClangPowerTools
 
     public string OpenContentDialog(string content)
     {
-      AddDataViewModel addDataViewModel = new AddDataViewModel(content);
-      addDataViewModel.ShowViewDialog();
-      string input = addDataViewModel.TextBoxInput;
+      InputDataViewModel inputDataViewModel = new InputDataViewModel(content);
+      inputDataViewModel.ShowViewDialog();
+      string input = inputDataViewModel.TextBoxInput;
 
       if (string.IsNullOrEmpty(input))
       {

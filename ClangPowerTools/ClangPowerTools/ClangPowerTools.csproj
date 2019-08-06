@@ -88,7 +88,7 @@
     <Compile Include="MVVM\Models\FormatSettingsModel.cs" />
     <Compile Include="MVVM\Models\LicenseModel.cs" />
     <Compile Include="MVVM\CPTSettings.cs" />
-    <Compile Include="MVVM\ViewModels\AddDataViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\InputDataViewModel.cs" />
     <Compile Include="MVVM\ViewModels\SettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\TidySettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\FormatSettingsViewModel.cs" />
@@ -139,8 +139,8 @@
     <Compile Include="MVVM\Views\TidySettingsView.xaml.cs">
       <DependentUpon>TidySettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MVVM\Views\AddDataView.xaml.cs">
-      <DependentUpon>AddDataView.xaml</DependentUpon>
+    <Compile Include="MVVM\Views\InputDataView.xaml.cs">
+      <DependentUpon>InputDataView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\WebApi\WebApiUrl.cs" />
     <Compile Include="Options\ClangTidyPathValue.cs" />
@@ -517,7 +517,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MVVM\Views\AddDataView.xaml">
+    <Page Include="MVVM\Views\InputDataView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -5,18 +5,18 @@ using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class AddDataViewModel : INotifyPropertyChanged
+  public class InputDataViewModel : INotifyPropertyChanged
   {
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private AddDataView addDataView;
+    private InputDataView inputDataView;
     private string textBoxInput = string.Empty;
     private ICommand okCommand;
     #endregion
 
     #region Constructor
-    public AddDataViewModel(string content)
+    public InputDataViewModel(string content)
     {
       TextBoxInput = content;
     }
@@ -53,13 +53,13 @@ namespace ClangPowerTools
     #region Methods
     public void ShowViewDialog()
     {
-      addDataView = new AddDataView(this);
-      addDataView.ShowDialog();
+      inputDataView = new InputDataView(this);
+      inputDataView.ShowDialog();
     }
 
     private void ClickOKButton()
     {
-      addDataView.Close();
+      inputDataView.Close();
     }
     #endregion
   }
