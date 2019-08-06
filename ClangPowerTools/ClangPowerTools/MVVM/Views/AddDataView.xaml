@@ -50,21 +50,12 @@
           Name="OKButton"
           Width="75"
           Height="25"
-          Margin="0,0,93,10"
+          Margin="0,0,12,10"
           HorizontalAlignment="Right"
           VerticalAlignment="Bottom"
           Command="{Binding OkCommand}"
           Content="OK" />
 
-        <Button
-          Name="CancelButton"
-          Width="75"
-          Height="25"
-          Margin="0,0,12,10"
-          HorizontalAlignment="Right"
-          VerticalAlignment="Bottom"
-          Command="{Binding CancelCommand}"
-          Content="Cancel" />
       </Grid>
     </Border>
 

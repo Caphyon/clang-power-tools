@@ -13,7 +13,6 @@ namespace ClangPowerTools
     private AddDataView addDataView;
     private string textBoxInput = string.Empty;
     private ICommand okCommand;
-    private ICommand cancelCommand;
     #endregion
 
 
@@ -44,11 +43,6 @@ namespace ClangPowerTools
       get => okCommand ?? (okCommand = new RelayCommand(() => ClickOKButton(), () => CanExecute));
     }
 
-    public ICommand CancelCommand
-    {
-      get => cancelCommand ?? (cancelCommand = new RelayCommand(() => ClickCancelButton(), () => CanExecute));
-    }
-
     public bool CanExecute
     {
       get
@@ -70,13 +64,6 @@ namespace ClangPowerTools
     {
       addDataView.Close();
     }
-
-    private void ClickCancelButton()
-    {
-      textBoxInput = string.Empty;
-      addDataView.Close();
-    }
-
 
     #endregion
   }
