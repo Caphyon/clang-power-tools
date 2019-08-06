@@ -9,19 +9,21 @@ using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class TidySettingsViewModel : INotifyPropertyChanged
+  public class TidySettingsViewModel : SettingsViewModel, INotifyPropertyChanged
   {
     #region Members
+    public event PropertyChangedEventHandler PropertyChanged;
+
     private TidySettingsModel tidySettings = new TidySettingsModel();
     private ICommand addDataCommand;
+    private ICommand browseCommand;
 
-    public event PropertyChangedEventHandler PropertyChanged;
     #endregion
 
     #region Constructors
     public TidySettingsViewModel()
     {
-      CPTSettings.TidySettings = tidySettings;
+      ReferenceSettingsHandler();
     }
     #endregion
 
@@ -30,6 +32,11 @@ namespace ClangPowerTools
     public ICommand AddDataCommand
     {
       get => addDataCommand ?? (addDataCommand = new RelayCommand(() => OpenDataDialog(), () => CanExecute));
+    }
+
+    public ICommand BrowseCommand
+    {
+      get => browseCommand ?? (browseCommand = new RelayCommand(() => CustomExecutable = BrowseFile(), () => CanExecute));
     }
 
     public bool CanExecute
@@ -42,9 +49,7 @@ namespace ClangPowerTools
 
     public void OpenDataDialog()
     {
-      MessageBox.Show("Hello, world!");
-      CPTSettings cPTSettings = new CPTSettings();
-      cPTSettings.CheckOldSettings();
+
     }
 
     public string HeaderFilter
@@ -148,7 +153,7 @@ namespace ClangPowerTools
     }
     #endregion
 
-    #region Private Methods
+    #region Methods
     private void SetEnvironmentVariableTidyPath()
     {
       var task = Task.Run(() =>
@@ -162,6 +167,11 @@ namespace ClangPowerTools
           Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, null, EnvironmentVariableTarget.User);
         }
       });
+    }
+
+    protected override void ReferenceSettingsHandler()
+    {
+      CPTSettings.TidySettings = tidySettings;
     }
     #endregion
   }

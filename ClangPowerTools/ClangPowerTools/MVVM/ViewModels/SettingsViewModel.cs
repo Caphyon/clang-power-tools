@@ -1,15 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.Win32;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+using System.Windows.Documents;
 
 namespace ClangPowerTools
 {
-  public class SettingsViewModel : INotifyPropertyChanged
+  public abstract class SettingsViewModel
   {
-    public event PropertyChangedEventHandler PropertyChanged;
+    protected abstract void ReferenceSettingsHandler();
+
+    public string BrowseFile()
+    {
+      // Create OpenFileDialog
+      OpenFileDialog dlg = new OpenFileDialog();
+      string path = string.Empty;
+
+      // Set filter for file extension and default file extension
+      dlg.DefaultExt = ".exe";
+      dlg.Filter = "Executable files|*.exe";
+
+      // Display OpenFileDialog by calling ShowDialog method
+      bool? result = dlg.ShowDialog();
+
+      // Get the selected file name and 
+      if (result == true)
+      {
+        // Open document
+        string filename = dlg.FileName;
+        path = filename;
+      }
+      return path;
+    }
+
   }
 }
