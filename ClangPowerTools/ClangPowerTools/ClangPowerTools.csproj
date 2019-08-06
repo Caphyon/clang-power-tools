@@ -89,6 +89,7 @@
     <Compile Include="MVVM\Models\LicenseModel.cs" />
     <Compile Include="MVVM\CPTSettings.cs" />
     <Compile Include="MVVM\ViewModels\AddDataViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\SettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\TidySettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\FormatSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\CompilerSettingsViewModel.cs" />
@@ -122,7 +123,7 @@
     <Compile Include="Helpers\UIUpdater.cs" />
     <Compile Include="MVVM\Models\TokenModel.cs" />
     <Compile Include="MVVM\Models\UserModel.cs" />
-    <Compile Include="MVVM\ViewModels\SettingsViewModel.cs" />
+    <Compile Include="MVVM\CommonSettingsFunctionality.cs" />
     <Compile Include="MVVM\Views\FormatSettingsView.xaml.cs">
       <DependentUpon>FormatSettingsView.xaml</DependentUpon>
     </Compile>
@@ -131,6 +132,9 @@
     </Compile>
     <Compile Include="MVVM\Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Views\TidyPredefinedView.xaml.cs">
+      <DependentUpon>TidyPredefinedView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\TidySettingsView.xaml.cs">
       <DependentUpon>TidySettingsView.xaml</DependentUpon>
@@ -502,6 +506,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\Views\SettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\TidyPredefinedView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

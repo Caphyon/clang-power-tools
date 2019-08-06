@@ -51,7 +51,7 @@ namespace ClangPowerTools
     #endregion
 
     #region Methods
-    public void OpenDialog()
+    public void ShowViewDialog()
     {
       addDataView = new AddDataView(this);
       addDataView.ShowDialog();

@@ -110,8 +110,8 @@ namespace ClangPowerTools
     {
       if (activeLicense == false)
       {
-        SettingsView settingsView = new SettingsView();
-        settingsView.ShowDialog();
+        SettingsViewModel settingsViewModel = new SettingsViewModel();
+        settingsViewModel.ShowViewDialog();
         return;
       }
 
