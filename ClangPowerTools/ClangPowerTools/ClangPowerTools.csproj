@@ -83,6 +83,7 @@
     <Compile Include="MVVM\Controllers\AccountController.cs" />
     <Compile Include="MVVM\Controllers\LicenseController.cs" />
     <Compile Include="MVVM\Models\CompilerSettingsModel.cs" />
+    <Compile Include="MVVM\Models\TidyPredefinedChecks.cs" />
     <Compile Include="MVVM\Models\TidySettingsModel.cs" />
     <Compile Include="MVVM\Models\FormatSettingsModel.cs" />
     <Compile Include="MVVM\Models\LicenseModel.cs" />
