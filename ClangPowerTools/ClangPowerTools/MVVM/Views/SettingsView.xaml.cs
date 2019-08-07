@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace ClangPowerTools.Views
 { 
@@ -7,10 +8,10 @@ namespace ClangPowerTools.Views
   /// </summary>
 public partial class SettingsView : Window
   {
-    public SettingsView(SettingsViewModel settingsViewModel)
+    public SettingsView()
     {
       InitializeComponent();
-      DataContext = settingsViewModel;
+      DataContext = new SettingsViewModel(this);
     }
   }
 }

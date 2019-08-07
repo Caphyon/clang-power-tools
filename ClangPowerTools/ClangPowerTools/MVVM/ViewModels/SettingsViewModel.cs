@@ -1,9 +1,7 @@
-﻿using ClangPowerTools.Views;
+﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.Views;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace ClangPowerTools
 {
@@ -16,22 +14,20 @@ namespace ClangPowerTools
     #endregion;
 
     #region Constructors
-    public SettingsViewModel()
+    public SettingsViewModel(SettingsView settingsView)
     {
-      settingsView = new SettingsView(this);
+      this.settingsView = settingsView;
+      cptSettings.DeserializeSettings();
+      settingsView.Closed += OnClosed;
     }
     #endregion
 
-    #region Methods
-    public void ShowViewDialog()
-    {
-      cptSettings.DeserializeSettings();
-      settingsView.ShowDialog();
-    }
 
-    public void CloseViewDialog()
+    #region Methods
+    public void OnClosed(object sender, EventArgs e)
     {
       cptSettings.SerializeSettings();
+      settingsView.Closed -= OnClosed;
     }
     #endregion
   }
