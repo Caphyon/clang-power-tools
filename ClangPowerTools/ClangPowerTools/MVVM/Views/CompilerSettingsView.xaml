@@ -66,7 +66,7 @@
       Grid.Column="3"
       Width="50"
       Height="30"
-      Command="{Binding AddDataCommand}"
+      Command="{Binding CompileFlagsAddDataCommand}"
       Content="..." />
 
     <!--  Files to ignore  -->
@@ -96,6 +96,7 @@
       Grid.Column="3"
       Width="50"
       Height="30"
+      Command="{Binding FilesToIgnoreAddDataCommand}"
       Content="..." />
 
     <!--  Projects to ignore  -->
@@ -125,6 +126,7 @@
       Grid.Column="3"
       Width="50"
       Height="30"
+      Command="{Binding ProjectsToIgnoreAddDataCommand}"
       Content="..." />
 
     <!--  Additional includes  -->

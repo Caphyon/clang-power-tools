@@ -33,7 +33,6 @@ namespace ClangPowerTools
       {
         return content;
       }
-
       return input;
     }
     #endregion

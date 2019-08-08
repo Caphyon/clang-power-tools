@@ -11,7 +11,6 @@ namespace ClangPowerTools
   public class FormatSettingsViewModel : INotifyPropertyChanged
   {
     #region Members
-    private FormatSettingsModel formatSettings = new FormatSettingsModel();
     private ICommand addDataCommand;
 
     public event PropertyChangedEventHandler PropertyChanged;
@@ -41,11 +40,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return string.IsNullOrWhiteSpace(formatSettings.FileExtensions) ? DefaultOptions.FileExtensions : formatSettings.FileExtensions;
+        return string.IsNullOrWhiteSpace(SettingsModelHandler.FormatSettings.FileExtensions) ? DefaultOptions.FileExtensions : SettingsModelHandler.FormatSettings.FileExtensions;
       }
       set
       {
-        formatSettings.FileExtensions = value;
+        SettingsModelHandler.FormatSettings.FileExtensions = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileExtensions"));
       }
     }
@@ -54,11 +53,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return string.IsNullOrWhiteSpace(formatSettings.FilesToIgnore) ? DefaultOptions.IgnoreFiles : formatSettings.FileExtensions;
+        return string.IsNullOrWhiteSpace(SettingsModelHandler.FormatSettings.FilesToIgnore) ? DefaultOptions.IgnoreFiles : SettingsModelHandler.FormatSettings.FileExtensions;
       }
       set
       {
-        formatSettings.FilesToIgnore = value;
+        SettingsModelHandler.FormatSettings.FilesToIgnore = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FilesToIgnore"));
       }
     }
@@ -67,11 +66,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return formatSettings.AssumeFilename;
+        return SettingsModelHandler.FormatSettings.AssumeFilename;
       }
       set
       {
-        formatSettings.AssumeFilename = value;
+        SettingsModelHandler.FormatSettings.AssumeFilename = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AssumeFilename"));
       }
     }
@@ -80,11 +79,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return formatSettings.CustomExecutable;
+        return SettingsModelHandler.FormatSettings.CustomExecutable;
       }
       set
       {
-        formatSettings.CustomExecutable = value;
+        SettingsModelHandler.FormatSettings.CustomExecutable = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CustomExecutable"));
       }
     }
@@ -99,10 +98,10 @@ namespace ClangPowerTools
 
     public ClangFormatStyle SelectedStyle
     {
-      get { return formatSettings.Style; }
+      get { return SettingsModelHandler.FormatSettings.Style; }
       set
       {
-        formatSettings.Style = value;
+        SettingsModelHandler.FormatSettings.Style = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedStyle"));
       }
     }
@@ -117,10 +116,10 @@ namespace ClangPowerTools
 
     public ClangFormatFallbackStyle SelectedFallbackStyle
     {
-      get { return formatSettings.FallbackStyle; }
+      get { return SettingsModelHandler.FormatSettings.FallbackStyle; }
       set
       {
-        formatSettings.FallbackStyle = value;
+        SettingsModelHandler.FormatSettings.FallbackStyle = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedFallbackStyle"));
       }
     }
@@ -129,11 +128,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return formatSettings.FormatOnSave;
+        return SettingsModelHandler.FormatSettings.FormatOnSave;
       }
       set
       {
-        formatSettings.FormatOnSave = value;
+        SettingsModelHandler.FormatSettings.FormatOnSave = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOnSave"));
       }
     }

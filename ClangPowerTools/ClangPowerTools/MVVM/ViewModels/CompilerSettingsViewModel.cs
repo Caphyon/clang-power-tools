@@ -8,19 +8,32 @@ using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class CompilerSettingsViewModel : INotifyPropertyChanged
+  public class CompilerSettingsViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
   {
     #region Members
-    private ICommand addDataCommand;
-
     public event PropertyChangedEventHandler PropertyChanged;
+
+    private ICommand compileFlagsAddDataCommand;
+    private ICommand filesToIgnoreAddDataCommand;
+    private ICommand projectsToIgnoreAddDataCommand;
     #endregion
 
 
-    #region Properties
-    public ICommand AddDataCommand
+    #region Commands
+    public ICommand CompileFlagsAddDataCommand
     {
-      get => addDataCommand ?? (addDataCommand = new RelayCommand(() => OpenDataDialog(), () => CanExecute));
+      get => compileFlagsAddDataCommand ?? (compileFlagsAddDataCommand = new RelayCommand(() => CompileFlags = OpenContentDialog(CompileFlags), () => CanExecute));
+    }
+
+    public ICommand FilesToIgnoreAddDataCommand
+    {
+      get => filesToIgnoreAddDataCommand ?? (filesToIgnoreAddDataCommand = new RelayCommand(() => FilesToIgnore = OpenContentDialog(FilesToIgnore), () => CanExecute));
+    }
+
+
+    public ICommand ProjectsToIgnoreAddDataCommand
+    {
+      get => projectsToIgnoreAddDataCommand ?? (projectsToIgnoreAddDataCommand = new RelayCommand(() => ProjectsToIgnore = OpenContentDialog(ProjectsToIgnore), () => CanExecute));
     }
 
     public bool CanExecute
@@ -30,13 +43,10 @@ namespace ClangPowerTools
         return true;
       }
     }
-
-    public void OpenDataDialog()
-    {
-
-    }
+    #endregion
 
 
+    #region Properties
     public string CompileFlags
     {
       get
