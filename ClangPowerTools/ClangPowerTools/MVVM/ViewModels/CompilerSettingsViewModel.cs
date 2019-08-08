@@ -11,17 +11,9 @@ namespace ClangPowerTools
   public class CompilerSettingsViewModel : INotifyPropertyChanged
   {
     #region Members
-    private CompilerSettingsModel compilerSettings = new CompilerSettingsModel();
     private ICommand addDataCommand;
 
     public event PropertyChangedEventHandler PropertyChanged;
-    #endregion
-
-    #region Constructors
-    public CompilerSettingsViewModel()
-    {
-      CPTSettings.CompilerSettings = compilerSettings;
-    }
     #endregion
 
 
@@ -41,9 +33,7 @@ namespace ClangPowerTools
 
     public void OpenDataDialog()
     {
-      MessageBox.Show("Hello, world!");
-      CPTSettings cPTSettings = new CPTSettings();
-      cPTSettings.CheckOldSettings();
+
     }
 
 
@@ -51,11 +41,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return string.IsNullOrWhiteSpace(compilerSettings.CompileFlags) ? DefaultOptions.ClangFlags : compilerSettings.CompileFlags;
+        return string.IsNullOrWhiteSpace(SettingsModelHandler.CompilerSettings.CompileFlags) ? DefaultOptions.ClangFlags : SettingsModelHandler.CompilerSettings.CompileFlags;
       }
       set
       {
-        compilerSettings.CompileFlags = value;
+        SettingsModelHandler.CompilerSettings.CompileFlags = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CompileFlags"));
       }
     }
@@ -64,11 +54,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return compilerSettings.FilesToIgnore;
+        return SettingsModelHandler.CompilerSettings.FilesToIgnore;
       }
       set
       {
-        compilerSettings.FilesToIgnore = value;
+        SettingsModelHandler.CompilerSettings.FilesToIgnore = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FilesToIgnore"));
       }
     }
@@ -77,11 +67,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return compilerSettings.ProjectsToIgnore;
+        return SettingsModelHandler.CompilerSettings.ProjectsToIgnore;
       }
       set
       {
-        compilerSettings.ProjectsToIgnore = value;
+        SettingsModelHandler.CompilerSettings.ProjectsToIgnore = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ProjectToIgnore"));
       }
     }
@@ -96,10 +86,10 @@ namespace ClangPowerTools
 
     public ClangGeneralAdditionalIncludes SelectedAdditionalInclude
     {
-      get { return compilerSettings.AdditionalIncludes; }
+      get { return SettingsModelHandler.CompilerSettings.AdditionalIncludes; }
       set
       {
-        compilerSettings.AdditionalIncludes = value;
+        SettingsModelHandler.CompilerSettings.AdditionalIncludes = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedAdditionalInclude"));
       }
     }
@@ -108,12 +98,12 @@ namespace ClangPowerTools
     {
       get
       {
-        return compilerSettings.WarningsAsErrors;
+        return SettingsModelHandler.CompilerSettings.WarningsAsErrors;
       }
 
       set
       {
-        compilerSettings.WarningsAsErrors = value;
+        SettingsModelHandler.CompilerSettings.WarningsAsErrors = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WarningsAsErrors"));
       }
     }
@@ -122,11 +112,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return compilerSettings.ContinueOnError;
+        return SettingsModelHandler.CompilerSettings.ContinueOnError;
       }
       set
       {
-        compilerSettings.ContinueOnError = value;
+        SettingsModelHandler.CompilerSettings.ContinueOnError = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ContinueOnErrorOnError"));
       }
     }
@@ -134,10 +124,10 @@ namespace ClangPowerTools
     public bool ClangCompileAfterMSCVCompile
     {
       get
-      { return compilerSettings.ClangCompileAfterMSCVCompile; }
+      { return SettingsModelHandler.CompilerSettings.ClangCompileAfterMSCVCompile; }
       set
       {
-        compilerSettings.ClangCompileAfterMSCVCompile = value;
+        SettingsModelHandler.CompilerSettings.ClangCompileAfterMSCVCompile = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClangCompileAfterMSCVCompile"));
       }
     }
@@ -146,11 +136,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return compilerSettings.VerboseMode;
+        return SettingsModelHandler.CompilerSettings.VerboseMode;
       }
       set
       {
-        compilerSettings.VerboseMode = value;
+        SettingsModelHandler.CompilerSettings.VerboseMode = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("VerboseMode"));
       }
     }
@@ -159,7 +149,7 @@ namespace ClangPowerTools
     {
       get
       {
-        return compilerSettings.Version;
+        return SettingsModelHandler.CompilerSettings.Version;
       }
     }
 

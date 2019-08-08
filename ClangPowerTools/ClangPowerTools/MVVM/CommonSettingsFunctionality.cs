@@ -4,10 +4,6 @@ namespace ClangPowerTools
 {
   public abstract class CommonSettingsFunctionality
   {
-    #region Abstract Methods
-    protected abstract void ReferenceSettingsHandler();
-    #endregion;
-
     #region Methods
     public string BrowseForFile()
     {

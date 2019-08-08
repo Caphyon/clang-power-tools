@@ -1,7 +1,5 @@
-﻿using ClangPowerTools.MVVM.Commands;
-using ClangPowerTools.Views;
+﻿using ClangPowerTools.Views;
 using System;
-using System.Windows.Input;
 
 namespace ClangPowerTools
 {

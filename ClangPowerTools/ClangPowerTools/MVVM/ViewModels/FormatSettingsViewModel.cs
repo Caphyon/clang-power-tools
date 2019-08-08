@@ -17,14 +17,6 @@ namespace ClangPowerTools
     public event PropertyChangedEventHandler PropertyChanged;
     #endregion
 
-    #region Constructors
-    public FormatSettingsViewModel()
-    {
-      CPTSettings.FormatSettings = formatSettings;
-    }
-    #endregion
-
-
     #region Properties
     public ICommand AddDataCommand
     {
@@ -41,9 +33,7 @@ namespace ClangPowerTools
 
     public void OpenDataDialog()
     {
-      MessageBox.Show("Hello, world!");
-      CPTSettings cPTSettings = new CPTSettings();
-      cPTSettings.CheckOldSettings();
+
     }
 
 

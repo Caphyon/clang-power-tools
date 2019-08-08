@@ -16,14 +16,6 @@ namespace ClangPowerTools
     private TidySettingsModel tidySettings = new TidySettingsModel();
     private ICommand addDataCommand;
     private ICommand browseCommand;
-
-    #endregion
-
-    #region Constructors
-    public TidySettingsViewModel()
-    {
-      ReferenceSettingsHandler();
-    }
     #endregion
 
 
@@ -168,10 +160,6 @@ namespace ClangPowerTools
       });
     }
 
-    protected override void ReferenceSettingsHandler()
-    {
-      CPTSettings.TidySettings = tidySettings;
-    }
     #endregion
   }
 }
