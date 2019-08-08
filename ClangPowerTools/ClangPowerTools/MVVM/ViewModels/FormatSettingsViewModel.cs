@@ -3,25 +3,45 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows;
 using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class FormatSettingsViewModel : INotifyPropertyChanged
+  public class FormatSettingsViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
   {
     #region Members
-    private ICommand addDataCommand;
+    private ICommand fileExtensionsAddDataCommand;
+    private ICommand filesToIgnoreAddDataCommand;
+    private ICommand assumeFilenameAddDataCommand;
+    private ICommand customExecutableBrowseCommand;
 
     public event PropertyChangedEventHandler PropertyChanged;
     #endregion
 
-    #region Properties
-    public ICommand AddDataCommand
+    #region Commands
+    public ICommand FileExtensionsAddDataCommand
     {
-      get => addDataCommand ?? (addDataCommand = new RelayCommand(() => OpenDataDialog(), () => CanExecute));
+      get => fileExtensionsAddDataCommand ?? (fileExtensionsAddDataCommand = new RelayCommand(() => FileExtensions = OpenContentDialog(FileExtensions), () => CanExecute));
     }
 
+    public ICommand FilesToIgnoreAddDataCommand
+    {
+      get => filesToIgnoreAddDataCommand ?? (filesToIgnoreAddDataCommand = new RelayCommand(() => FilesToIgnore = OpenContentDialog(FilesToIgnore), () => CanExecute));
+    }
+
+    public ICommand AssumeFilenameAddDataCommand
+    {
+      get => assumeFilenameAddDataCommand ?? (assumeFilenameAddDataCommand = new RelayCommand(() => AssumeFilename = OpenContentDialog(AssumeFilename), () => CanExecute));
+    }
+
+    public ICommand CustomExecutableBrowseCommand
+    {
+      get => customExecutableBrowseCommand ?? (customExecutableBrowseCommand = new RelayCommand(() => CustomExecutable = BrowseForFile(), () => CanExecute));
+    }
+    #endregion
+
+
+    #region Properties
     public bool CanExecute
     {
       get
@@ -29,12 +49,6 @@ namespace ClangPowerTools
         return true;
       }
     }
-
-    public void OpenDataDialog()
-    {
-
-    }
-
 
     public string FileExtensions
     {
@@ -49,6 +63,7 @@ namespace ClangPowerTools
       }
     }
 
+    // TODO BUG view does not change
     public string FilesToIgnore
     {
       get

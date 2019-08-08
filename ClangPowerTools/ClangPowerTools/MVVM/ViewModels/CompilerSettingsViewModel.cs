@@ -30,12 +30,15 @@ namespace ClangPowerTools
       get => filesToIgnoreAddDataCommand ?? (filesToIgnoreAddDataCommand = new RelayCommand(() => FilesToIgnore = OpenContentDialog(FilesToIgnore), () => CanExecute));
     }
 
-
     public ICommand ProjectsToIgnoreAddDataCommand
     {
       get => projectsToIgnoreAddDataCommand ?? (projectsToIgnoreAddDataCommand = new RelayCommand(() => ProjectsToIgnore = OpenContentDialog(ProjectsToIgnore), () => CanExecute));
     }
 
+    #endregion
+
+
+    #region Properties
     public bool CanExecute
     {
       get
@@ -43,10 +46,7 @@ namespace ClangPowerTools
         return true;
       }
     }
-    #endregion
 
-
-    #region Properties
     public string CompileFlags
     {
       get

@@ -66,7 +66,7 @@
       Grid.Column="3"
       Width="50"
       Height="30"
-      Command="{Binding AddDataCommand}"
+      Command="{Binding FileExtensionsAddDataCommand}"
       Content="..." />
 
     <!--  Files to ignore  -->
@@ -96,6 +96,7 @@
       Grid.Column="3"
       Width="50"
       Height="30"
+      Command="{Binding FilesToIgnoreAddDataCommand}"
       Content="..." />
 
     <!--  Assume filename  -->
@@ -125,6 +126,7 @@
       Grid.Column="3"
       Width="50"
       Height="30"
+      Command="{Binding AssumeFilenameAddDataCommand}"
       Content="..." />
 
     <!--  Custom executable file  -->
@@ -154,6 +156,7 @@
       Grid.Column="3"
       Width="60"
       Height="30"
+      Command="{Binding CustomExecutableBrowseCommand}"
       Content="Browse" />
 
     <!--  Style  -->
