@@ -28,6 +28,10 @@ namespace ClangPowerTools.Helpers
       return solution.GetSolutionInfo(out dir, out file, out optionFile);
     }
 
+    /// <summary>
+    /// Check if any VS Solution is open
+    /// </summary>
+    /// <returns>True if any VS Solution is open. False otherwise.</returns>
     public bool IsSolutionOpen()
     {
       var solution = (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution));
@@ -36,6 +40,10 @@ namespace ClangPowerTools.Helpers
       return SolutionOpen;
     }
 
+    /// <summary>
+    /// Check if VS runs in Open Folder Mode
+    /// </summary>
+    /// <returns>True if VS runs in Open Folder Mode. False otherwise.</returns>
     public bool IsOpenFolderModeActive()
     {
       var solution = (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution));
