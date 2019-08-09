@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
 using ClangPowerTools.Views;
 using EnvDTE;
@@ -19,16 +20,11 @@ namespace ClangPowerTools
   {
     #region Members
 
-    public static readonly Guid mCommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
-    private Commands2 mCommand;
-    private bool mSaveCommandWasGiven = false;
-    private CommandUILocation commandUILocation;
-    private int currentCommand;
-    private bool mFormatAfterTidyFlag = false;
-    private bool isActiveDocument = true;
     public bool running = false;
     public bool vsBuildRunning = false;
     public bool activeLicense = false;
+
+    public static readonly Guid mCommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
 
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
     public event EventHandler<ClangCommandMessageEventArgs> ClangCommandMessageEvent;
@@ -36,12 +32,21 @@ namespace ClangPowerTools
     public event EventHandler<ClearErrorListEventArgs> ClearErrorListEvent;
     public event EventHandler<EventArgs> ErrorDetectedEvent;
 
+    private SolutionChecker solutionChecker;
+    private Commands2 mCommand;
+    private CommandUILocation commandUILocation;
+    private int currentCommand;
+    private bool mSaveCommandWasGiven = false;
+    private bool mFormatAfterTidyFlag = false;
+    private bool isActiveDocument = true;
+
     #endregion
 
     #region Constructor
 
-    public CommandController(AsyncPackage aAsyncPackage)
+    public CommandController(AsyncPackage aAsyncPackage, SolutionChecker aSolutionChecker)
     {
+      solutionChecker = aSolutionChecker;
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {
         var dte2 = dte as DTE2;
