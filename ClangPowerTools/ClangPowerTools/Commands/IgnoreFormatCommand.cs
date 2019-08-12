@@ -9,7 +9,7 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  public sealed class IgnoreFormatCommand : BasicCommand
+  public sealed class IgnoreFormatCommand : BasicCommand, IBasicIgnoreCommand<ClangFormatOptionsView>
   {
     #region Properties
 
@@ -21,8 +21,14 @@ namespace ClangPowerTools.Commands
       get;
       private set;
     }
+
     #endregion
 
+    BasicIgnoreCommand<ClangFormatOptionsView> ignoreCommand = new BasicIgnoreCommand<ClangFormatOptionsView>();
+    public void AddIgnoreFilesToSettings(List<string> documentsToIgnore, ClangFormatOptionsView settings)
+    {
+      ignoreCommand.AddIgnoreFilesToSettings(documentsToIgnore, settings);
+    }
 
     #region Constructor
     /// <summary>
@@ -71,47 +77,15 @@ namespace ClangPowerTools.Commands
     /// <param name="e">Event args.</param>
     public void RunIgnoreFormatCommand(int aId)
     {
-      var task = System.Threading.Tasks.Task.Run(() =>
+      var task = Task.Run(() =>
       {
         List<string> documentsToIgnore = ItemsCollector.GetFilesToIgnore();
-        AddIgnoreFilesToSettings(documentsToIgnore);
+        var settings = SettingsProvider.ClangFormatSettings;
+        AddIgnoreFilesToSettings(documentsToIgnore, settings);
+        settings.SaveSettingsToStorage();
       });
     }
 
-    #endregion
-
-
-    #region Private Methods
-    /// <summary>
-    /// Create ignore format string for the settings page
-    /// </summary>
-    /// <param name="documentsToIgnore"></param>
-    /// <returns></returns>
-    public void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
-    {
-      var settings = SettingsProvider.ClangFormatSettings;
-
-      if (settings.FilesToIgnore.Length > 0)
-      {
-        settings.FilesToIgnore += ";";
-      }
-      settings.FilesToIgnore += string.Join(";", RemoveDuplicateFiles(documentsToIgnore, settings));
-      settings.SaveSettingsToStorage();
-    }
-
-    private List<string> RemoveDuplicateFiles(List<string> documentsToIgnore, ClangFormatOptionsView settings)
-    {
-      List<string> trimmedDocumentToIgnore = new List<string>();
-
-      foreach (var item in documentsToIgnore)
-      {
-        if (!settings.FilesToIgnore.Contains(item))
-        {
-          trimmedDocumentToIgnore.Add(item);
-        }
-      }
-      return trimmedDocumentToIgnore;
-    }
     #endregion
   }
 }
