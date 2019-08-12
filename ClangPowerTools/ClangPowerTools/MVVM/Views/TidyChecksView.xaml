@@ -5,22 +5,29 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  Title="Tidy Checks"
+  Width="525"
+  Height="400"
   d:DataContext="{d:DesignInstance local:TidyChecksViewModel,
                                    IsDesignTimeCreatable=True}"
-  d:DesignHeight="450"
-  d:DesignWidth="800"
+  Background="WhiteSmoke"
+  ShowActivated="True"
+  ShowInTaskbar="False"
+  WindowStartupLocation="CenterScreen"
   WindowStyle="ToolWindow"
   mc:Ignorable="d">
   <Grid>
-    <ListBox ItemsSource="{Binding TidyChecksList}">
+    <ListBox ItemsSource="{Binding TidyChecksList}" SelectedItem="{Binding SelectedCheck}">
       <ListBox.ItemTemplate>
         <DataTemplate>
           <StackPanel Orientation="Horizontal">
-            <TextBlock Text="{Binding Path=Name}" />
-            <TextBlock Text="{Binding Path=IsChecked}" />
+            <TextBlock Text="{Binding Name}" />
+            <CheckBox HorizontalAlignment="Right" IsChecked="{Binding IsChecked}" />
           </StackPanel>
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>
+    <TextBlock VerticalAlignment="Bottom" Text="{Binding CheckDescription}" />
   </Grid>
+
 </Window>
