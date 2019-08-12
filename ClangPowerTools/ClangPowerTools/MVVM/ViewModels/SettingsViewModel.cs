@@ -15,8 +15,16 @@ namespace ClangPowerTools
     public SettingsViewModel(SettingsView settingsView)
     {
       this.settingsView = settingsView;
-      cptSettings.DeserializeSettings();
+      DeserializeSettings();
       settingsView.Closed += OnClosed;
+    }
+
+    private void DeserializeSettings()
+    {
+      if (cptSettings.CheckIfSettingsFileExists())
+      {
+        cptSettings.DeserializeSettings();
+      }
     }
     #endregion
 
@@ -27,6 +35,7 @@ namespace ClangPowerTools
       cptSettings.SerializeSettings();
       settingsView.Closed -= OnClosed;
     }
+
     #endregion
   }
 }

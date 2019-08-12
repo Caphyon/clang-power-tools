@@ -48,6 +48,12 @@ namespace ClangPowerTools
       }
     }
 
+    public bool CheckIfSettingsFileExists()
+    {
+      string path = GetSettingsFilePath(settingsPath, SettingsFileName);
+      return File.Exists(path);
+    }
+
     private void CheckOldSettings()
     {
       ClangOptions clangOptions = LoadOldSettingsFromFile(new ClangOptions(), GeneralConfigurationFileName);
@@ -145,8 +151,8 @@ namespace ClangPowerTools
     private void MapClangTidyOptionsToTidyettings(ClangTidyOptions clangTidy)
     {
       SettingsModelHandler.TidySettings.HeaderFilter = clangTidy.HeaderFilter;
-      SettingsModelHandler.TidySettings.UseChecksFrom = clangTidy.TidyMode;
-      SettingsModelHandler.TidySettings.CustomChecks = clangTidy.TidyChecksCollection;
+     // SettingsModelHandler.TidySettings.UseChecksFrom = clangTidy.TidyMode;
+      //SettingsModelHandler.TidySettings.CustomChecks = clangTidy.TidyChecksCollection;
       SettingsModelHandler.TidySettings.CustomExecutable = clangTidy.ClangTidyPath.Value;
       SettingsModelHandler.TidySettings.FormatAfterTidy = clangTidy.FormatAfterTidy;
       SettingsModelHandler.TidySettings.TidyOnSave = clangTidy.AutoTidyOnSave;

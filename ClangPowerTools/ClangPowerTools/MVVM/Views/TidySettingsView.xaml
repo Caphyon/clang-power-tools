@@ -88,7 +88,7 @@
       ItemsSource="{Binding UseChecksFrom}"
       SelectedItem="{Binding SelectedUseChecksFrom}" />
 
-    <!--  Predefined checks  -->
+    <!--  Checks  -->
     <TextBlock
       Grid.Row="3"
       Grid.Column="1"
@@ -97,7 +97,7 @@
       FontFamily="SegoeUI"
       FontSize="20"
       Foreground="#E2E2E8"
-      Text="Predefined checks" />
+      Text="Checks" />
 
     <TextBox
       Grid.Row="3"
@@ -108,48 +108,19 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      IsReadOnly="True"
-      Text="{Binding PredefinedChecks}" />
+      Text="{Binding Checks}" />
 
     <Button
       Grid.Row="3"
-      Grid.Column="3"
-      Width="50"
-      Height="30"
-      Content="..." />
-
-    <!--  Custom checks  -->
-    <TextBlock
-      Grid.Row="4"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="20"
-      Foreground="#E2E2E8"
-      Text="Custom checks" />
-
-    <TextBox
-      Grid.Row="4"
-      Grid.Column="2"
-      Width="450"
-      Height="30"
-      Margin="0,0,20,0"
-      VerticalContentAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="15"
-      Text="{Binding CustomChecks}" />
-
-    <Button
-      Grid.Row="4"
       Grid.Column="3"
       Width="60"
       Height="30"
+      Command="{Binding SelectCommand}"
       Content="Select" />
 
     <!--  Custom executable file  -->
     <TextBlock
-      Grid.Row="5"
+      Grid.Row="4"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -159,7 +130,7 @@
       Text="Custom executable" />
 
     <TextBox
-      Grid.Row="5"
+      Grid.Row="4"
       Grid.Column="2"
       Width="450"
       Height="30"
@@ -170,7 +141,7 @@
       Text="{Binding CustomExecutable}" />
 
     <Button
-      Grid.Row="5"
+      Grid.Row="4"
       Grid.Column="3"
       Width="60"
       Height="30"
@@ -179,7 +150,7 @@
 
     <!--  Format after tidy  -->
     <TextBlock
-      Grid.Row="6"
+      Grid.Row="5"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -189,7 +160,7 @@
       Text="Format after Tidy" />
 
     <CheckBox
-      Grid.Row="6"
+      Grid.Row="5"
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
@@ -201,7 +172,7 @@
 
     <!--  Tidy on save  -->
     <TextBlock
-      Grid.Row="7"
+      Grid.Row="6"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -211,7 +182,7 @@
       Text="Tidy on save" />
 
     <CheckBox
-      Grid.Row="7"
+      Grid.Row="6"
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"

@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,6 +16,7 @@ namespace ClangPowerTools
 
     private ICommand addDataCommand;
     private ICommand browseCommand;
+    private ICommand selectCommand;
     #endregion
 
 
@@ -29,17 +31,17 @@ namespace ClangPowerTools
       get => browseCommand ?? (browseCommand = new RelayCommand(() => CustomExecutable = BrowseForFile(), () => CanExecute));
     }
 
+    public ICommand SelectCommand
+    {
+      get => selectCommand ?? (selectCommand = new RelayCommand(() => OpenChecksWindow(), () => CanExecute));
+    }
+
     public bool CanExecute
     {
       get
       {
         return true;
       }
-    }
-
-    public void OpenDataDialog()
-    {
-
     }
 
     public string HeaderFilter
@@ -55,15 +57,15 @@ namespace ClangPowerTools
       }
     }
 
-    public IEnumerable<ClangTidyUseChecksFrom> UseChecksFrom
+    public IEnumerable<ClangTidyChecksFrom> UseChecksFrom
     {
       get
       {
-        return Enum.GetValues(typeof(ClangTidyUseChecksFrom)).Cast<ClangTidyUseChecksFrom>();
+        return Enum.GetValues(typeof(ClangTidyChecksFrom)).Cast<ClangTidyChecksFrom>();
       }
     }
 
-    public ClangTidyUseChecksFrom SelectedUseChecksFrom
+    public ClangTidyChecksFrom SelectedUseChecksFrom
     {
       get
       {
@@ -76,29 +78,16 @@ namespace ClangPowerTools
       }
     }
 
-    public string PredefinedChecks
+    public string Checks
     {
       get
       {
-        return SettingsModelHandler.TidySettings.PredefinedChecks;
+        return SettingsModelHandler.TidySettings.Checks;
       }
       set
       {
-        SettingsModelHandler.TidySettings.PredefinedChecks = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PredefinedChecks"));
-      }
-    }
-
-    public string CustomChecks
-    {
-      get
-      {
-        return SettingsModelHandler.TidySettings.CustomChecks;
-      }
-      set
-      {
-        SettingsModelHandler.TidySettings.CustomChecks = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CustomChecks"));
+        SettingsModelHandler.TidySettings.Checks = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Checks"));
       }
     }
 
@@ -114,7 +103,6 @@ namespace ClangPowerTools
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CustomExecutable"));
       }
     }
-
 
     public bool FormatAfterTidy
     {
@@ -157,6 +145,12 @@ namespace ClangPowerTools
           Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, null, EnvironmentVariableTarget.User);
         }
       });
+    }
+
+    private void OpenChecksWindow()
+    {
+      TidyChecksView tidyChecksView = new TidyChecksView();
+      tidyChecksView.ShowDialog();
     }
 
     #endregion

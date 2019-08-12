@@ -83,14 +83,16 @@
     <Compile Include="MVVM\Controllers\AccountController.cs" />
     <Compile Include="MVVM\Controllers\LicenseController.cs" />
     <Compile Include="MVVM\Models\CompilerSettingsModel.cs" />
-    <Compile Include="MVVM\Models\TidyPredefinedChecks.cs" />
+    <Compile Include="MVVM\Models\TidyCheckModel.cs" />
     <Compile Include="MVVM\Models\TidySettingsModel.cs" />
     <Compile Include="MVVM\Models\FormatSettingsModel.cs" />
     <Compile Include="MVVM\Models\LicenseModel.cs" />
     <Compile Include="MVVM\CPTSettings.cs" />
     <Compile Include="MVVM\SettingsModelHandler.cs" />
+    <Compile Include="MVVM\TidyChecks.cs" />
     <Compile Include="MVVM\ViewModels\InputDataViewModel.cs" />
     <Compile Include="MVVM\ViewModels\SettingsViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\TidyChecksViewModel.cs" />
     <Compile Include="MVVM\ViewModels\TidySettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\FormatSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\CompilerSettingsViewModel.cs" />
@@ -134,8 +136,8 @@
     <Compile Include="MVVM\Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MVVM\Views\TidyPredefinedView.xaml.cs">
-      <DependentUpon>TidyPredefinedView.xaml</DependentUpon>
+    <Compile Include="MVVM\Views\TidyChecksView.xaml.cs">
+      <DependentUpon>TidyChecksView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\TidySettingsView.xaml.cs">
       <DependentUpon>TidySettingsView.xaml</DependentUpon>
@@ -510,7 +512,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MVVM\Views\TidyPredefinedView.xaml">
+    <Page Include="MVVM\Views\TidyChecksView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

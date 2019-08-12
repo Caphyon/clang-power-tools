@@ -4,11 +4,9 @@
   {
     public string HeaderFilter { get; set; } = DefaultOptions.HeaderFilter;
 
-    public ClangTidyUseChecksFrom UseChecksFrom { get; set; } = ClangTidyUseChecksFrom.PredefinedChecks;
+    public ClangTidyChecksFrom UseChecksFrom { get; set; } = ClangTidyChecksFrom.Checks;
 
-    public string PredefinedChecks { get; set; } = string.Empty;
-
-    public string CustomChecks { get; set; } = string.Empty;
+    public string Checks { get; set; } = string.Empty;
 
     public string CustomExecutable { get; set; } = string.Empty;
 

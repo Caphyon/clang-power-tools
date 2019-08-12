@@ -87,6 +87,18 @@ namespace ClangPowerTools
     TidyFile
   }
 
+  [Serializable]
+  [JsonConverter(typeof(StringEnumConverter))]
+  public enum ClangTidyChecksFrom
+  {
+    [XmlEnum(Name = "checks")]
+    [EnumMember(Value = "checks")]
+    Checks,
+
+    [XmlEnum(Name = ".clang-tidy config file")]
+    [EnumMember(Value = ".clang-tidy config file")]
+    TidyFile
+  }
 
   public sealed class ComboBoxConstants
   {

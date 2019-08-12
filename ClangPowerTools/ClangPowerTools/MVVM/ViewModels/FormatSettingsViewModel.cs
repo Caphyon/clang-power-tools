@@ -63,12 +63,11 @@ namespace ClangPowerTools
       }
     }
 
-    // TODO BUG view does not change
     public string FilesToIgnore
     {
       get
       {
-        return string.IsNullOrWhiteSpace(SettingsModelHandler.FormatSettings.FilesToIgnore) ? DefaultOptions.IgnoreFiles : SettingsModelHandler.FormatSettings.FileExtensions;
+        return string.IsNullOrWhiteSpace(SettingsModelHandler.FormatSettings.FilesToIgnore) ? DefaultOptions.IgnoreFiles : SettingsModelHandler.FormatSettings.FilesToIgnore;
       }
       set
       {
