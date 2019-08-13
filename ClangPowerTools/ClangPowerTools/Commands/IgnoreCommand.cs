@@ -8,13 +8,19 @@ namespace ClangPowerTools.Commands
 {
   public class IgnoreCommand<T> : BasicCommand
   {
+    #region Constructor
+
     public IgnoreCommand(AsyncPackage aPackage, Guid aGuid, int aId) : base(aPackage, aGuid, aId)
     {
     }
 
+    #endregion
+
+    #region Public Methods
+
     public void AddIgnoreItemsToSettings(List<string> documentsToIgnore, T settings, string PropertyName)
     {
-      if (!documentsToIgnore.Any())
+      if (documentsToIgnore.Any() == false)
       {
         return;
       }
@@ -30,13 +36,17 @@ namespace ClangPowerTools.Commands
       ReflectionManager.SetProperty(settings, PropertyName, filesToIgnore);
     }
 
+    #endregion
+
+    #region Private Methods
+
     private List<string> RemoveDuplicateDocuments(List<string> documentsToIgnore, string filesToIgnore)
     {
       List<string> trimmedDocumentToIgnore = new List<string>();
 
       foreach (var item in documentsToIgnore)
       {
-        if (!filesToIgnore.Contains(item))
+        if (filesToIgnore.Contains(item) == false)
         {
           trimmedDocumentToIgnore.Add(item);
         }
@@ -44,6 +54,6 @@ namespace ClangPowerTools.Commands
       return trimmedDocumentToIgnore;
     }
 
-
+    #endregion
   }
 }

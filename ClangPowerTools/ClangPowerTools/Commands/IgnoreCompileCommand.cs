@@ -44,7 +44,6 @@ namespace ClangPowerTools.Commands
 
     #endregion
 
-
     #region Public Methods
 
     /// <summary>
@@ -76,7 +75,7 @@ namespace ClangPowerTools.Commands
         List<string> projectsToIgnore = ItemsCollector.GetProjectsToIgnore();
         var settings = SettingsProvider.GeneralSettings;
         AddIgnoreItemsToSettings(projectsToIgnore, settings, "ProjectsToIgnore");
-        if (!projectsToIgnore.Any())
+        if (projectsToIgnore.Any() == false)
         {
           List<string> filesToIgnore = ItemsCollector.GetFilesToIgnore();
           AddIgnoreItemsToSettings(filesToIgnore, settings, "FilesToIgnore");
