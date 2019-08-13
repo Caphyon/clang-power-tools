@@ -10,7 +10,7 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  public sealed class IgnoreCompileCommand : BasicCommand, IBasicIgnoreCommand<ClangGeneralOptionsView>
+  public sealed class IgnoreCompileCommand : BasicIgnoreCommand<ClangGeneralOptionsView>
   {
     #region Properties
 
@@ -23,13 +23,6 @@ namespace ClangPowerTools.Commands
       private set;
     }
     #endregion
-
-
-    BasicIgnoreCommand<ClangGeneralOptionsView> ignoreCommand = new BasicIgnoreCommand<ClangGeneralOptionsView>();
-    public void AddIgnoreFilesToSettings(List<string> documentsToIgnore, ClangGeneralOptionsView settings)
-    {
-      ignoreCommand.AddIgnoreFilesToSettings(documentsToIgnore, settings);
-    }
 
     #region Constructor
     /// <summary>
@@ -92,40 +85,6 @@ namespace ClangPowerTools.Commands
       });
     }
 
-    #endregion
-
-
-    #region Private Methods
-
-    public void AddIgnoreProjectsToSettings(List<string> documentsToIgnore)
-    {
-      if (!documentsToIgnore.Any())
-      {
-        return;
-      }
-      var settings = SettingsProvider.GeneralSettings;
-
-      if (settings.ProjectsToIgnore.Length > 0)
-      {
-        settings.ProjectsToIgnore += ";";
-      }
-      settings.ProjectsToIgnore += string.Join(";", RemoveDuplicateProjects(documentsToIgnore, settings));
-      settings.SaveSettingsToStorage();
-    }
-
-    private List<string> RemoveDuplicateProjects(List<string> documentsToIgnore, ClangGeneralOptionsView settings)
-    {
-      List<string> trimmedDocumentToIgnore = new List<string>();
-
-      foreach (var item in documentsToIgnore)
-      {
-        if (!settings.ProjectsToIgnore.Contains(item))
-        {
-          trimmedDocumentToIgnore.Add(item);
-        }
-      }
-      return trimmedDocumentToIgnore;
-    }
     #endregion
   }
 }
