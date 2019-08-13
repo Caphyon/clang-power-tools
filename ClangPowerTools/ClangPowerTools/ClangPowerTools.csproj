@@ -196,7 +196,7 @@
     <Compile Include="Options\View\ClangTidyOptionsUserControl.xaml.cs">
       <DependentUpon>ClangTidyOptionsUserControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Options\View\SearchBox.xaml.cs">
+    <Compile Include="MVVM\Views\SearchBox.xaml.cs">
       <DependentUpon>SearchBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Options\View\TextBoxNotifaiableUserControl.cs" />
@@ -544,7 +544,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Options\View\SearchBox.xaml">
+    <Page Include="MVVM\Views\SearchBox.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -5,6 +5,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:searchBox="clr-namespace:ClangPowerTools.Views"
   Title="Tidy Checks"
   Width="650"
   Height="500"
@@ -21,13 +22,21 @@
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
+      <RowDefinition Height="50" />
       <RowDefinition Height="380" />
       <RowDefinition Height="100" />
     </Grid.RowDefinitions>
 
+    <!--  Search  -->
+    <searchBox:SearchBox
+      Width="300"
+      Height="50"
+      HorizontalAlignment="Right" />
+
+
     <!--  Checks list  -->
     <ListBox
-      Grid.Row="0"
+      Grid.Row="1"
       Grid.Column="0"
       ItemsSource="{Binding TidyChecksList}"
       ScrollViewer.CanContentScroll="True"
@@ -58,7 +67,7 @@
 
     <!--  Check description  -->
     <TextBlock
-      Grid.Row="1"
+      Grid.Row="2"
       Grid.Column="0"
       MaxWidth="630"
       FontSize="15"

@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace ClangPowerTools.Options.View
+namespace ClangPowerTools.Views
 {
   /// <summary>
   /// Interaction logic for SearchBox.xaml
@@ -17,6 +17,7 @@ namespace ClangPowerTools.Options.View
     public SearchBox()
     {
       InitializeComponent();
+      DataContext = new TidyChecksViewModel();
     }
 
     #endregion

@@ -110,9 +110,9 @@
 
         </StackPanel>
 
-        <searchBox:SearchBox Grid.Column="2" x:Name="SearchBoxElement"
+     <!--   <searchBox:SearchBox Grid.Column="2" x:Name="SearchBoxElement"
           Visibility="{Binding Path=DataContext.ShowFilter, Converter={StaticResource booleanToVisibilityConverter}}" />
-
+-->
       </Grid>
     </Border>
 
