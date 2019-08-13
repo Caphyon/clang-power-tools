@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace ClangPowerTools.Commands
 {
-  public class IgnoreCommand<T> : BasicCommand
+  public class IgnoreCommand : BasicCommand
   {
     #region Constructor
 
@@ -18,7 +18,7 @@ namespace ClangPowerTools.Commands
 
     #region Public Methods
 
-    public void AddIgnoreItemsToSettings(List<string> documentsToIgnore, T settings, string PropertyName)
+    public void AddIgnoreItemsToSettings<T>(List<string> documentsToIgnore, T settings, string PropertyName)
     {
       if (documentsToIgnore.Any() == false)
       {
