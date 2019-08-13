@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using System;
-using System.ComponentModel.Design;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
