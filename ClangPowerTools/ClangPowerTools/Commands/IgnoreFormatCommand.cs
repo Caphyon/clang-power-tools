@@ -9,7 +9,7 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  public sealed class IgnoreFormatCommand : BasicIgnoreCommand<ClangFormatOptionsView>
+  public sealed class IgnoreFormatCommand : IgnoreCommand<ClangFormatOptionsView>
   {
     #region Properties
 
@@ -75,7 +75,7 @@ namespace ClangPowerTools.Commands
       {
         List<string> documentsToIgnore = ItemsCollector.GetFilesToIgnore();
         var settings = SettingsProvider.ClangFormatSettings;
-        AddIgnoreFilesToSettings(documentsToIgnore, settings);
+        AddIgnoreItemsToSettings(documentsToIgnore, settings, "FilesToIgnore");
         settings.SaveSettingsToStorage();
       });
     }
