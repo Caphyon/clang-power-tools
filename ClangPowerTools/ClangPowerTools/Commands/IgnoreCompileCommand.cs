@@ -10,7 +10,7 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  public sealed class IgnoreCompileCommand : BasicIgnoreCommand<ClangGeneralOptionsView>
+  public sealed class IgnoreCompileCommand : IgnoreCommand<ClangGeneralOptionsView>
   {
     #region Properties
 
@@ -74,12 +74,12 @@ namespace ClangPowerTools.Commands
       var task = Task.Run(() =>
       {
         List<string> projectsToIgnore = ItemsCollector.GetProjectsToIgnore();
-        AddIgnoreProjectsToSettings(projectsToIgnore);
+        var settings = SettingsProvider.GeneralSettings;
+        AddIgnoreItemsToSettings(projectsToIgnore, settings, "ProjectsToIgnore");
         if (!projectsToIgnore.Any())
         {
           List<string> filesToIgnore = ItemsCollector.GetFilesToIgnore();
-          var settings = SettingsProvider.GeneralSettings;
-          AddIgnoreFilesToSettings(filesToIgnore, settings);
+          AddIgnoreItemsToSettings(filesToIgnore, settings, "FilesToIgnore");
           settings.SaveSettingsToStorage();
         }
       });
