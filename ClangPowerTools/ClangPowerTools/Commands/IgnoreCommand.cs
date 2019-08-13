@@ -19,7 +19,7 @@ namespace ClangPowerTools.Commands
         return;
       }
 
-      string filesToIgnore = (string) ReflectionManager.GetProperty<T>(settings, PropertyName);
+      string filesToIgnore = (string)ReflectionManager.GetProperty<T>(settings, PropertyName);
 
       if (filesToIgnore.Length > 0)
       {

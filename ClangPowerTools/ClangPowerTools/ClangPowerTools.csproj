@@ -74,7 +74,7 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Commands\BasicIgnoreCommand.cs" />
+    <Compile Include="Commands\IgnoreCommand.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Events\LicenseEventArgs.cs" />
     <Compile Include="Commands\Logout.cs" />
