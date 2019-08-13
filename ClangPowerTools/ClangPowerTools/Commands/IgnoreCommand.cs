@@ -18,9 +18,16 @@ namespace ClangPowerTools.Commands
 
     #region Public Methods
 
-    public void AddIgnoreItemsToSettings<T>(List<string> documentsToIgnore, T settings, string PropertyName)
+    /// <summary>
+    /// the method will add to ignored files the items meant to be ignored
+    /// </summary>
+    /// <typeparam name="T">template</typeparam>
+    /// <param name="itemsToIgnore">list of items to ignore</param>
+    /// <param name="settings">settings from SettingsProvider</param>
+    /// <param name="PropertyName">name of property meant to be get and set using reflection</param>
+    public void AddItemsToIgnore<T>(List<string> itemsToIgnore, T settings, string PropertyName)
     {
-      if (documentsToIgnore.Any() == false)
+      if (itemsToIgnore.Any() == false)
       {
         return;
       }
@@ -32,7 +39,7 @@ namespace ClangPowerTools.Commands
         filesToIgnore += ";";
       }
 
-      filesToIgnore += string.Join(";", RemoveDuplicateDocuments(documentsToIgnore, filesToIgnore));
+      filesToIgnore += string.Join(";", RemoveDuplicateDocuments(itemsToIgnore, filesToIgnore));
       ReflectionManager.SetProperty(settings, PropertyName, filesToIgnore);
     }
 

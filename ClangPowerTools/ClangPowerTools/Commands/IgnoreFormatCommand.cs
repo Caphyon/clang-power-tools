@@ -75,7 +75,7 @@ namespace ClangPowerTools.Commands
       {
         List<string> documentsToIgnore = ItemsCollector.GetFilesToIgnore();
         var settings = SettingsProvider.ClangFormatSettings;
-        AddIgnoreItemsToSettings<ClangFormatOptionsView>(documentsToIgnore, settings, "FilesToIgnore");
+        AddItemsToIgnore(documentsToIgnore, settings, "FilesToIgnore");
         settings.SaveSettingsToStorage();
       });
     }
