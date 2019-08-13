@@ -6,8 +6,8 @@
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   Title="Tidy Checks"
-  Width="525"
-  Height="400"
+  Width="650"
+  Height="500"
   d:DataContext="{d:DesignInstance local:TidyChecksViewModel,
                                    IsDesignTimeCreatable=True}"
   Background="WhiteSmoke"
@@ -17,17 +17,54 @@
   WindowStyle="ToolWindow"
   mc:Ignorable="d">
   <Grid>
-    <ListBox ItemsSource="{Binding TidyChecksList}" SelectedItem="{Binding SelectedCheck}">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="380" />
+      <RowDefinition Height="100" />
+    </Grid.RowDefinitions>
+
+    <!--  Checks list  -->
+    <ListBox
+      Grid.Row="0"
+      Grid.Column="0"
+      ItemsSource="{Binding TidyChecksList}"
+      ScrollViewer.CanContentScroll="True"
+      SelectedItem="{Binding SelectedCheck}">
       <ListBox.ItemTemplate>
         <DataTemplate>
-          <StackPanel Orientation="Horizontal">
-            <TextBlock Text="{Binding Name}" />
-            <CheckBox HorizontalAlignment="Right" IsChecked="{Binding IsChecked}" />
-          </StackPanel>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="500" />
+              <ColumnDefinition Width="100" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="25" />
+            </Grid.RowDefinitions>
+            <TextBlock
+              Grid.Row="1"
+              Grid.Column="0"
+              FontSize="15"
+              Text="{Binding Name}" />
+            <CheckBox
+              Grid.Row="1"
+              Grid.Column="1"
+              IsChecked="{Binding IsChecked}" />
+          </Grid>
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>
-    <TextBlock VerticalAlignment="Bottom" Text="{Binding CheckDescription}" />
+
+    <!--  Check description  -->
+    <TextBlock
+      Grid.Row="1"
+      Grid.Column="0"
+      MaxWidth="630"
+      FontSize="15"
+      Text="{Binding CheckDescription}"
+      TextWrapping="Wrap" />
+
   </Grid>
 
 </Window>
