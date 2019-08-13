@@ -13,7 +13,7 @@ namespace ClangPowerTools
     private const string kGeneralSettingsFileName = "GeneralConfiguration.config";
     private SettingsPathBuilder mSettingsPathBuilder = new SettingsPathBuilder();
     private string mFilesToIgnore = string.Empty;
-    private string projectsToIgnore;
+    private string projectsToIgnore = string.Empty;
 
     public event PropertyChangedEventHandler PropertyChanged;
 
