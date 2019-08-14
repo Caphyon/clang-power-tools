@@ -25,6 +25,10 @@ namespace ClangPowerTools
       {
         cptSettings.DeserializeSettings();
       }
+      else if(cptSettings.CheckOldGeneralSettingsExists())
+      {
+        cptSettings.MapOldSettings();
+      }
     }
     #endregion
 

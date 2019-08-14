@@ -1,6 +1,10 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 
 namespace ClangPowerTools
 {
@@ -18,7 +22,6 @@ namespace ClangPowerTools
       SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
       settingsPath = settingsPathBuilder.GetPath("");
     }
-
 
     public void SerializeSettings()
     {
@@ -54,7 +57,13 @@ namespace ClangPowerTools
       return File.Exists(path);
     }
 
-    private void CheckOldSettings()
+    public bool CheckOldGeneralSettingsExists()
+    {
+      string path = GetSettingsFilePath(settingsPath, GeneralConfigurationFileName);
+      return File.Exists(path);
+    }
+
+    public void MapOldSettings()
     {
       ClangOptions clangOptions = LoadOldSettingsFromFile(new ClangOptions(), GeneralConfigurationFileName);
       MapClangOptionsToCompilerSettings(clangOptions);
@@ -65,6 +74,8 @@ namespace ClangPowerTools
       ClangTidyOptions clangTidyOptions = LoadOldSettingsFromFile(new ClangTidyOptions(), TidyOptionsConfigurationFileName);
       MapClangTidyOptionsToTidyettings(clangTidyOptions);
 
+      ClangTidyPredefinedChecksOptions clangTidyPredefinedChecksOptions = LoadOldSettingsFromFile(new ClangTidyPredefinedChecksOptions(), TidyPredefinedChecksConfigurationFileName);
+      MapTidyPredefinedChecksToTidyettings(clangTidyPredefinedChecksOptions);
 
       SerializeSettings();
     }
@@ -151,17 +162,42 @@ namespace ClangPowerTools
     private void MapClangTidyOptionsToTidyettings(ClangTidyOptions clangTidy)
     {
       SettingsModelHandler.TidySettings.HeaderFilter = clangTidy.HeaderFilter;
-     // SettingsModelHandler.TidySettings.UseChecksFrom = clangTidy.TidyMode;
-      //SettingsModelHandler.TidySettings.CustomChecks = clangTidy.TidyChecksCollection;
+      SettingsModelHandler.TidySettings.Checks = clangTidy.TidyChecksCollection;
       SettingsModelHandler.TidySettings.CustomExecutable = clangTidy.ClangTidyPath.Value;
       SettingsModelHandler.TidySettings.FormatAfterTidy = clangTidy.FormatAfterTidy;
       SettingsModelHandler.TidySettings.TidyOnSave = clangTidy.AutoTidyOnSave;
     }
 
-    private void MapClangTidyPredefinedChecksOptionsToTidyettings(ClangTidyPredefinedChecksOptions clangTidy)
+    private void MapTidyPredefinedChecksToTidyettings(ClangTidyPredefinedChecksOptions clangTidyPredefinedChecksOptions)
     {
+      PropertyInfo[] properties = typeof(ClangTidyPredefinedChecksOptions).GetProperties();
 
+      foreach (PropertyInfo propertyInfo in properties)
+      {
+        bool isChecked = (bool)propertyInfo.GetValue(new ClangTidyPredefinedChecksOptions(), null);
 
+        if (isChecked)
+        {
+          SettingsModelHandler.TidySettings.Checks += string.Concat(FormatTidyCheckName(propertyInfo.Name), ";");
+        }
+      }
+    }
+
+    private string FormatTidyCheckName(string name)
+    {
+      StringBuilder stringBuilder = new StringBuilder();
+
+      stringBuilder.Append(name[0]);
+      for (int i = 1; i < name.Length; i++)
+      {
+        if(Char.IsUpper(name[i]))
+        {
+          stringBuilder.Append(name[i]).Append("-");
+        }
+        stringBuilder.Append(name[i]);
+      }
+
+      return stringBuilder.ToString().ToLower();
     }
   }
 }
