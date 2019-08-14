@@ -50,7 +50,6 @@ namespace ClangPowerTools
     }
     #endregion
 
-   // TODO remove and use only view
     #region Methods
     public void ShowViewDialog()
     {

@@ -167,7 +167,7 @@ namespace ClangPowerTools
     {
       StringBuilder stringBuilder = new StringBuilder();
 
-      foreach (TidyCheckModel item in TidyChecks.checks)
+      foreach (TidyCheckModel item in TidyChecks.Checks)
       {
         if (item.IsChecked)
         {
