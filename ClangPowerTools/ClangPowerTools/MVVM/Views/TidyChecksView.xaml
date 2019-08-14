@@ -28,7 +28,7 @@
     </Grid.RowDefinitions>
 
     <!--  Search  -->
-    <searchBox:SearchBox
+    <searchBox:SearchBoxView
       Width="300"
       Height="50"
       HorizontalAlignment="Right" />

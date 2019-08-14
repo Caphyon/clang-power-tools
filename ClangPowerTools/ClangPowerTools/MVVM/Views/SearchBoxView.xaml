@@ -1,5 +1,5 @@
 ﻿<a:UserControl
-  x:Class="ClangPowerTools.Views.SearchBox"
+  x:Class="ClangPowerTools.Views.SearchBoxView"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:a="http://schemas.microsoft.com/xps/2005/06"

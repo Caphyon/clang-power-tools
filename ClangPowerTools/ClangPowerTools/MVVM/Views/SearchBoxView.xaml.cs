@@ -5,16 +5,16 @@ using System.Windows.Input;
 namespace ClangPowerTools.Views
 {
   /// <summary>
-  /// Interaction logic for SearchBox.xaml
+  /// Interaction logic for SearchBoxView.xaml
   /// </summary>
-  public partial class SearchBox : UserControl
+  public partial class SearchBoxView : UserControl
   {
     #region Cosntructor
 
     /// <summary>
     /// Default constructor
     /// </summary>
-    public SearchBox()
+    public SearchBoxView()
     {
       InitializeComponent();
       DataContext = new TidyChecksViewModel();
