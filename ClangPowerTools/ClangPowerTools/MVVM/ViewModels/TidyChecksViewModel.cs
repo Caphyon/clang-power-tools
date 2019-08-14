@@ -1,13 +1,10 @@
-﻿using ClangPowerTools.Views;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace ClangPowerTools
 {
-  class TidyChecksViewModel: INotifyPropertyChanged
+  class TidyChecksViewModel : INotifyPropertyChanged
   {
-    // public static List<TidyCheckModel> TidyChecksList { get; set; } = TidyChecks.predefinedChecks;
-
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -15,11 +12,12 @@ namespace ClangPowerTools
     private TidyCheckModel selectedCheck = new TidyCheckModel();
     #endregion
 
+    #region Properties
     public List<TidyCheckModel> TidyChecksList
     {
       get
       {
-        return TidyChecks.checks; ;
+        return TidyChecks.checks;
       }
       set
       {
@@ -54,5 +52,6 @@ namespace ClangPowerTools
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedCheck"));
       }
     }
+    #endregion
   }
 }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -14,12 +15,13 @@ namespace ClangPowerTools
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
 
+    private TidyChecksView tidyChecksView;
     private ICommand addDataCommand;
     private ICommand browseCommand;
     private ICommand selectCommand;
     #endregion
 
-
+ 
     #region Properties
     public ICommand AddDataCommand
     {
@@ -147,10 +149,32 @@ namespace ClangPowerTools
       });
     }
 
+    public void OnClosed(object sender, EventArgs e)
+    {
+      Checks = GetSelectedChecks();
+      tidyChecksView.Closed -= OnClosed;
+    }
+
     private void OpenChecksWindow()
     {
-      TidyChecksView tidyChecksView = new TidyChecksView();
+      tidyChecksView = new TidyChecksView();
+      tidyChecksView.Closed += OnClosed;
       tidyChecksView.ShowDialog();
+
+    }
+
+    private string GetSelectedChecks()
+    {
+      StringBuilder stringBuilder = new StringBuilder();
+
+      foreach (TidyCheckModel item in TidyChecks.checks)
+      {
+        if (item.IsChecked)
+        {
+          stringBuilder.Append(item.Name).Append(";");
+        }
+      }
+      return stringBuilder.ToString();
     }
 
     #endregion

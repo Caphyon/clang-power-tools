@@ -7,7 +7,7 @@ namespace ClangPowerTools.Views
   /// <summary>
   /// Interaction logic for SearchBox.xaml
   /// </summary>
-  public partial class SearchBox : UserControl //, INotifyPropertyChanged
+  public partial class SearchBox : UserControl
   {
     #region Cosntructor
 
