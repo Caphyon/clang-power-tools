@@ -15,21 +15,21 @@ namespace ClangPowerTools.MVVM.Command
       remove { CommandManager.RequerySuggested -= value; }
     }
 
-    private readonly Action _action;
+    private readonly Action action;
 
-    private Func<bool> _canExecute;
+    private Func<bool> canExecute;
     public RelayCommand(Action action, Func<bool> canExecute = null)
     {
-      _action = action;
-      _canExecute = canExecute;
+      this.action = action;
+      this.canExecute = canExecute;
     }
     public bool CanExecute(object parameter)
     {
-      return _canExecute == null ? true : _canExecute.Invoke();
+      return canExecute == null ? true : canExecute.Invoke();
     }
     public void Execute(object parameter)
     {
-      _action.Invoke();
+      action.Invoke();
     }
   }
 }
