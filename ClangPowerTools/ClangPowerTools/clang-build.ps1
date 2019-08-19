@@ -1058,7 +1058,7 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   [string] $pchFilePath = ""
   if ($global:cptFilesToProcess.Keys.Count -ge 2 -and
-      ![string]::IsNullOrEmpty($stdafxDir))
+      ![string]::IsNullOrEmpty($stdafxDir) -and $workloadType -ne [WorkloadType]::TidyFix)
   {
     # COMPILE PCH
     Write-Verbose "Generating PCH..."
