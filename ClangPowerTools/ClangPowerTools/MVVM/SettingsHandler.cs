@@ -75,8 +75,6 @@ namespace ClangPowerTools
 
       ClangTidyPredefinedChecksOptions clangTidyPredefinedChecksOptions = LoadOldSettingsFromFile(new ClangTidyPredefinedChecksOptions(), TidyPredefinedChecksConfigurationFileName);
       MapTidyPredefinedChecksToTidyettings(clangTidyPredefinedChecksOptions);
-
-      SaveSettings();
     }
 
     private T LoadOldSettingsFromFile<T>(T settings, string settingsFileName) where T : new()
@@ -90,7 +88,7 @@ namespace ClangPowerTools
       return settings;
     }
 
-    private void DeleteOldSettings()
+    public void DeleteOldSettings()
     {
       string[] files = Directory.GetFiles(settingsPath, "*.config");
       foreach (var file in files)
@@ -99,7 +97,7 @@ namespace ClangPowerTools
       }
     }
 
-    private void DeleteSettings()
+    public void DeleteSettings()
     {
       string[] file = Directory.GetFiles(settingsPath, SettingsFileName);
       if (file.Length > 0)

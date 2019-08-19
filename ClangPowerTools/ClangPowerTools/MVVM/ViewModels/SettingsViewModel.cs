@@ -15,11 +15,11 @@ namespace ClangPowerTools
     public SettingsViewModel(SettingsView settingsView)
     {
       this.settingsView = settingsView;
-      DeserializeSettings();
+      LoadSettings();
       settingsView.Closed += OnClosed;
     }
 
-    private void DeserializeSettings()
+    private void LoadSettings()
     {
       if (cptSettings.CheckIfSettingsFileExists())
       {
@@ -28,6 +28,8 @@ namespace ClangPowerTools
       else if(cptSettings.CheckOldGeneralSettingsExists())
       {
         cptSettings.MapOldSettings();
+        cptSettings.SaveSettings();
+        cptSettings.DeleteOldSettings();
       }
     }
     #endregion
