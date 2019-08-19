@@ -421,15 +421,7 @@
     <GuidSymbol value="{a6d55984-32c7-4725-bf65-16d84020c9ad}" name="guidRunClangPowerToolsPackageCmdSet">
       <IDSymbol value="4128" name="MyMenuGroup" />
     </GuidSymbol>
-  
-    <GuidSymbol value="{6a93cd48-ec21-4054-a6f3-38cdbfef0ee5}" name="guidImages1">
-      <IDSymbol name="bmpPic1" value="1" />
-      <IDSymbol name="bmpPic2" value="2" />
-      <IDSymbol name="bmpPicSearch" value="3" />
-      <IDSymbol name="bmpPicX" value="4" />
-      <IDSymbol name="bmpPicArrows" value="5" />
-      <IDSymbol name="bmpPicStrikethrough" value="6" />
-    </GuidSymbol>
+
   </Symbols>
 
 </CommandTable>
