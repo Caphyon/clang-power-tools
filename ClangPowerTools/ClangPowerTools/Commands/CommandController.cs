@@ -481,9 +481,9 @@ namespace ClangPowerTools
       if (false == mSaveCommandWasGiven) // The save event was not triggered by Save File or SaveAll commands
         return;
 
-      var tidyOption = SettingsProvider.TidySettings;
+      TidySettingsModel tidySettings = SettingsModelHandler.TidySettings;
 
-      if (false == tidyOption.AutoTidyOnSave) // The clang-tidy on save option is disable 
+      if (false == tidySettings.TidyOnSave) // The clang-tidy on save option is disable 
         return;
 
       if (true == running) // Clang compile/tidy command is running
@@ -499,25 +499,25 @@ namespace ClangPowerTools
 
     private void BeforeSaveClangFormat(Document aDocument)
     {
-      var clangFormatOptionPage = SettingsProvider.ClangFormatSettings;
-      var tidyOptionPage = SettingsProvider.TidySettings;
+      FormatSettingsModel formatSettings = SettingsModelHandler.FormatSettings;
+      TidySettingsModel tidySettings = SettingsModelHandler.TidySettings;
 
-      if (currentCommand == CommandIds.kTidyFixId && running && tidyOptionPage.FormatAfterTidy && clangFormatOptionPage.EnableFormatOnSave)
+      if (currentCommand == CommandIds.kTidyFixId && running && tidySettings.FormatAfterTidy && formatSettings.FormatOnSave)
       {
         mFormatAfterTidyFlag = true;
         return;
       }
 
-      if (false == clangFormatOptionPage.EnableFormatOnSave)
+      if (false == formatSettings.FormatOnSave)
         return;
 
       if (false == Vsix.IsDocumentDirty(aDocument) && false == mFormatAfterTidyFlag)
         return;
 
-      if (false == FileHasExtension(aDocument.FullName, clangFormatOptionPage.FileExtensions))
+      if (false == FileHasExtension(aDocument.FullName, formatSettings.FileExtensions))
         return;
 
-      if (true == SkipFile(aDocument.FullName, clangFormatOptionPage.FilesToIgnore))
+      if (true == SkipFile(aDocument.FullName, formatSettings.FilesToIgnore))
         return;
 
       FormatCommand.Instance.FormatOnSave(aDocument);
@@ -547,9 +547,9 @@ namespace ClangPowerTools
 
     private void BeforeExecuteClangCompile(string aGuid, int aId)
     {
-      var generalOptions = SettingsProvider.GeneralSettings;
+      var compilerSettings = SettingsModelHandler.CompilerSettings; 
 
-      if (null == generalOptions || false == generalOptions.ClangCompileAfterVsCompile)
+      if (compilerSettings.ClangCompileAfterMSCVCompile == false)
         return;
 
       string commandName = GetCommandName(aGuid, aId);

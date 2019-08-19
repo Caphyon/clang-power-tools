@@ -87,9 +87,9 @@ namespace ClangPowerTools.Commands
           {
             using (var fileChangerWatcher = new FileChangerWatcher())
             {
-              var tidySettings = SettingsProvider.TidySettings;
+              TidySettingsModel tidySettings = SettingsModelHandler.TidySettings;
 
-              if (CommandIds.kTidyFixId == aCommandId || tidySettings.AutoTidyOnSave)
+              if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
               {
                 fileChangerWatcher.OnChanged += FileOpener.Open;
 

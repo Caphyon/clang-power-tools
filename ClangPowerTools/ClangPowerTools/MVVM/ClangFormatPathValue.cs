@@ -1,4 +1,4 @@
-﻿namespace ClangPowerTools.Options
+﻿namespace ClangPowerTools
 {
   public class ClangFormatPathValue
   {

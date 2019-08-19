@@ -60,12 +60,12 @@ namespace ClangPowerTools.Script
       // Append the General parameters and Tidy parameters from option pages
       mScript = $"{GetGeneralParameters()} {(CommandIds.kTidyId == mCommandId || CommandIds.kTidyFixId == mCommandId ? GetTidyParameters() : ScriptConstants.kParallel)}";
 
-      var clangFormatSettings = SettingsProvider.ClangFormatSettings;
-      var tidySettings = SettingsProvider.TidySettings;
+      FormatSettingsModel formatSettings = SettingsModelHandler.FormatSettings;
+      TidySettingsModel tidySettings = SettingsModelHandler.TidySettings;
 
       // Append the clang-format style
-      if (null != clangFormatSettings && null != tidySettings && CommandIds.kTidyFixId == mCommandId && tidySettings.FormatAfterTidy)
-        mScript += $" {ScriptConstants.kClangFormatStyle} {clangFormatSettings.Style}";
+      if (null != formatSettings && null != tidySettings && CommandIds.kTidyFixId == mCommandId && tidySettings.FormatAfterTidy)
+        mScript += $" {ScriptConstants.kClangFormatStyle} {formatSettings.Style}";
 
       // Append the Visual Studio Version and Edition
       mScript += $" {ScriptConstants.kVsVersion} {mVsVersion} {ScriptConstants.kVsEdition} {mVsEdition}";
@@ -99,31 +99,31 @@ namespace ClangPowerTools.Script
     /// <returns>The parameters from General option page</returns>
     private string GetGeneralParameters()
     {
-      var generalSettings = SettingsProvider.GeneralSettings;
+      var compilerSettings = SettingsModelHandler.CompilerSettings;
       var parameters = string.Empty;
 
       // Get the Clang Flags list
-      if (!string.IsNullOrWhiteSpace(generalSettings.ClangFlags))
+      if (!string.IsNullOrWhiteSpace(compilerSettings.CompileFlags))
         parameters = GetClangFlags();
 
       // Get the continue when errors are detected flag 
-      if (generalSettings.Continue)
+      if (compilerSettings.ContinueOnError)
         parameters += $" {ScriptConstants.kContinue}";
 
       // Get the verbose mode flag 
-      if (generalSettings.VerboseMode)
+      if (compilerSettings.VerboseMode)
         parameters += $" {ScriptConstants.kVerboseMode}";
 
       // Get the projects to ignore list 
-      if (!string.IsNullOrWhiteSpace(generalSettings.ProjectsToIgnore))
-        parameters += $" {ScriptConstants.kProjectsToIgnore} (''{TransformInPowerShellArray(generalSettings.ProjectsToIgnore)}'')";
+      if (!string.IsNullOrWhiteSpace(compilerSettings.ProjectsToIgnore))
+        parameters += $" {ScriptConstants.kProjectsToIgnore} (''{TransformInPowerShellArray(compilerSettings.ProjectsToIgnore)}'')";
 
       // Get the files to ignore list
-      if (!string.IsNullOrWhiteSpace(generalSettings.FilesToIgnore))
-        parameters += $" {ScriptConstants.kFilesToIgnore} (''{TransformInPowerShellArray(generalSettings.FilesToIgnore)}'')";
+      if (!string.IsNullOrWhiteSpace(compilerSettings.FilesToIgnore))
+        parameters += $" {ScriptConstants.kFilesToIgnore} (''{TransformInPowerShellArray(compilerSettings.FilesToIgnore)}'')";
 
       // Get the selected Additional Includes type  
-      if (0 == string.Compare(ClangGeneralAdditionalIncludesConvertor.ToString(generalSettings.AdditionalIncludes), ComboBoxConstants.kSystemIncludeDirectories))
+      if (0 == string.Compare(ClangGeneralAdditionalIncludesConvertor.ToString(compilerSettings.AdditionalIncludes), ComboBoxConstants.kSystemIncludeDirectories))
         parameters += $" {ScriptConstants.kSystemIncludeDirectories}";
 
       return parameters;
@@ -136,12 +136,12 @@ namespace ClangPowerTools.Script
     /// <returns>The clang flags</returns>
     private string GetClangFlags()
     {
-      var generalSettings = SettingsProvider.GeneralSettings;
+      var compilerSettings = SettingsModelHandler.CompilerSettings;
 
       return string.Format("{0} {1}", ScriptConstants.kClangFlags,
-        generalSettings.TreatWarningsAsErrors ?
-          $" (''{ScriptConstants.kTreatWarningsAsErrors}'',''{TransformInPowerShellArray(generalSettings.ClangFlags)}'')" :
-          $" (''{TransformInPowerShellArray(generalSettings.ClangFlags)}'')");
+        compilerSettings.WarningsAsErrors ?
+          $" (''{ScriptConstants.kTreatWarningsAsErrors}'',''{TransformInPowerShellArray(compilerSettings.CompileFlags)}'')" :
+          $" (''{TransformInPowerShellArray(compilerSettings.CompileFlags)}'')");
     }
 
 
@@ -160,7 +160,7 @@ namespace ClangPowerTools.Script
     /// <returns></returns>
     private string GetTidyParameters()
     {
-      var tidySettings = SettingsProvider.TidySettings;
+      TidySettingsModel tidySettings = SettingsModelHandler.TidySettings;
 
       // Get the clang tidy parameters depending on the tidy mode
       var clangTidyParametersFactory = new ClangTidyModeParametersFactory();
@@ -172,7 +172,7 @@ namespace ClangPowerTools.Script
         parameters = AppendClangTidyType(parameters);
 
       // Get the header filter option 
-      if (null != tidySettings.HeaderFilter && !string.IsNullOrWhiteSpace(tidySettings.HeaderFilter.HeaderFilters))
+      if (null != tidySettings.HeaderFilter && !string.IsNullOrWhiteSpace(tidySettings.HeaderFilter))
         parameters += $" {GetHeaderFilters()}";
 
       return parameters;
@@ -199,12 +199,12 @@ namespace ClangPowerTools.Script
     /// <returns>Header filter option</returns>
     private string GetHeaderFilters()
     {
-      var tidySettings = SettingsProvider.TidySettings;
+      TidySettingsModel tidySettings = SettingsModelHandler.TidySettings;
 
       return string.Format("{0} ''{1}''", ScriptConstants.kHeaderFilter,
-        string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(tidySettings.HeaderFilter.HeaderFilters)) ?
-           tidySettings.HeaderFilter.HeaderFilters :
-           ClangTidyHeaderFiltersConvertor.ScriptEncode(tidySettings.HeaderFilter.HeaderFilters));
+        string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(tidySettings.HeaderFilter)) ?
+           tidySettings.HeaderFilter :
+           ClangTidyHeaderFiltersConvertor.ScriptEncode(tidySettings.HeaderFilter));
     }
 
 

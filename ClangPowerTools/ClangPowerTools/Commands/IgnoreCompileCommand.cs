@@ -89,23 +89,23 @@ namespace ClangPowerTools.Commands
     /// <returns></returns>
     public void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
     {
-      var settings = SettingsProvider.GeneralSettings;
+      var settings = SettingsModelHandler.CompilerSettings;
 
       if (settings.FilesToIgnore.Length > 0)
       {
         settings.FilesToIgnore += ";";
       }
-      settings.FilesToIgnore += string.Join(";", RemoveDuplicateFiles(documentsToIgnore, settings));
-      settings.SaveSettingsToStorage();
+      settings.FilesToIgnore += string.Join(";", RemoveDuplicateFiles(documentsToIgnore));
     }
 
-    private List<string> RemoveDuplicateFiles(List<string> documentsToIgnore, ClangGeneralOptionsView settings)
+    private List<string> RemoveDuplicateFiles(List<string> documentsToIgnore)
     {
       List<string> trimmedDocumentToIgnore = new List<string>();
+      string filesToIgnore = SettingsModelHandler.CompilerSettings.FilesToIgnore;
 
       foreach (var item in documentsToIgnore)
       {
-        if (!settings.FilesToIgnore.Contains(item))
+        if (!filesToIgnore.Contains(item))
         {
           trimmedDocumentToIgnore.Add(item);
         }

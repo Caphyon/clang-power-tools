@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Design;
+using ClangPowerTools.Views;
 using Microsoft.VisualStudio.Shell;
 using Task = System.Threading.Tasks.Task;
 
@@ -65,7 +66,8 @@ namespace ClangPowerTools.Commands
 
     public void ShowSettings()
     {
-      AsyncPackage.ShowOptionPage(typeof(ClangGeneralOptionsView));
+      SettingsView settingsView = new SettingsView();
+      settingsView.ShowDialog();
     }
 
 

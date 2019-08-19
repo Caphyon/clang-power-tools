@@ -1,5 +1,6 @@
 ﻿namespace ClangPowerTools.Tests
 {
+  /*
   public static class SettingsTestUtility
   {
     public static ClangGeneralOptionsView GetClangGeneralOptionsViewFromFile()
@@ -95,5 +96,5 @@
     {
       clangTidyPredefinedChecksOptionsView.SaveSettingsToStorage();
     }
-  }
+  }*/
 }

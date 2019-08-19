@@ -9,12 +9,11 @@ namespace ClangPowerTools.Convertors
   {
     #region Members
 
-    private static readonly Dictionary<ClangTidyUseChecksFrom?, string> mClangTidyUseChecksFromEnumToString =
-      new Dictionary<ClangTidyUseChecksFrom?, string>
+    private static readonly Dictionary<ClangTidyChecksFrom?, string> mClangTidyUseChecksFromEnumToString =
+      new Dictionary<ClangTidyChecksFrom?, string>
       {
-            {ClangTidyUseChecksFrom.PredefinedChecks, ComboBoxConstants.kPredefinedChecks},
-            {ClangTidyUseChecksFrom.CustomChecks, ComboBoxConstants.kCustomChecks },
-            {ClangTidyUseChecksFrom.TidyFile, ComboBoxConstants.kTidyFile }
+            {ClangTidyChecksFrom.Checks, ComboBoxConstants.kCustomChecks },
+            {ClangTidyChecksFrom.TidyFile, ComboBoxConstants.kTidyFile }
       };
 
     private static readonly Dictionary<string, ClangTidyUseChecksFrom?> mClangTidyUseChecksFromStringToEnum =
@@ -28,9 +27,9 @@ namespace ClangPowerTools.Convertors
     #endregion
 
 
-    #region Publci Methods
+    #region Public Methods
 
-    public static string ToString(ClangTidyUseChecksFrom? aChecksFrom)
+    public static string ToString(ClangTidyChecksFrom? aChecksFrom)
       => mClangTidyUseChecksFromEnumToString[aChecksFrom];
 
     public static ClangTidyUseChecksFrom? FromString(string aChecksFrom)
@@ -43,7 +42,7 @@ namespace ClangPowerTools.Convertors
 
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-      ClangTidyUseChecksFrom checksFrom = (ClangTidyUseChecksFrom)value;
+      ClangTidyChecksFrom checksFrom = (ClangTidyChecksFrom)value;
       return ToString(checksFrom);
     }
 

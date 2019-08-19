@@ -42,11 +42,11 @@ namespace ClangPowerTools
       CreateWarningAsErrorsOutputLine(parameterNames.ElementAt(1), treatWarningsAsErrors, true);
 
       //Header filter line
-      string headerFilter = SettingsProvider.TidySettings.HeaderFilter.HeaderFilters;
+      string headerFilter = SettingsModelHandler.TidySettings.HeaderFilter;
       CreateHeaderFilterOutputLine(parameterNames.ElementAt(3), headerFilter, true);
 
       //Format style line
-      string formatStyle = SettingsProvider.ClangFormatSettings.Style.ToString();
+      string formatStyle = SettingsModelHandler.FormatSettings.Style.ToString();
       CreateOutputLine(parameterNames.ElementAt(4), formatStyle, true);
 
       //User line
@@ -61,38 +61,15 @@ namespace ClangPowerTools
 
     private void CreateChecksOutputLine(string paramaterName)
     {
-      ClangTidyUseChecksFrom clangTidyUseChecksFrom = SettingsProvider.TidySettings.UseChecksFrom;
-      if (clangTidyUseChecksFrom == ClangTidyUseChecksFrom.CustomChecks)
+      ClangTidyChecksFrom clangTidyUseChecksFrom = SettingsModelHandler.TidySettings.UseChecksFrom;
+      if (clangTidyUseChecksFrom == ClangTidyChecksFrom.Checks)
       {
-        CreateCustomChecksOutputLine(paramaterName, SettingsProvider.TidyCustomCheckes.TidyChecks, true);
-      }
-      else if (clangTidyUseChecksFrom == ClangTidyUseChecksFrom.PredefinedChecks)
-      {
-        CreateOutputLine(paramaterName, GetPredefinedChecks(SettingsProvider.TidyPredefinedChecks), true);
+        CreateCustomChecksOutputLine(paramaterName, SettingsModelHandler.TidySettings.Checks, true);
       }
       else
       {
         CreateOutputLine(paramaterName, "", true);
       }
-    }
-
-    private string GetPredefinedChecks(ClangTidyPredefinedChecksOptionsView predefinedChecksSettings)
-    {
-      StringBuilder predefinedChecks = new StringBuilder();
-      PropertyInfo[] properties = predefinedChecksSettings.GetType().GetProperties();
-
-      foreach (var item in properties)
-      {
-        var attribute = item.GetCustomAttribute(typeof(DisplayNameAttribute)) as DisplayNameAttribute;
-        bool? value = item.GetValue(predefinedChecksSettings) as bool?;
-
-        if (value != null && value == true && attribute != null)
-        {
-          predefinedChecks.Append(attribute.DisplayName + ",");
-        }
-      }
-
-      return predefinedChecks.ToString().TrimEnd(',');
     }
 
     private string CreateLine<T>(string propertyName, int nameLength, T value, bool hasQuotationMark)
@@ -111,7 +88,7 @@ namespace ClangPowerTools
 
     private void CreateWarningAsErrorsOutputLine(string paramaterName, string warningsAsErrors, bool hasQuotationMark)
     {
-      if (SettingsProvider.GeneralSettings.TreatWarningsAsErrors)
+      if (SettingsModelHandler.CompilerSettings.WarningsAsErrors)
       {
         tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, warningsAsErrors, hasQuotationMark));
       }

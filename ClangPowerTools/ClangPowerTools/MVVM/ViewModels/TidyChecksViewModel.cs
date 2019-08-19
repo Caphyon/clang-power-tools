@@ -17,11 +17,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return TidyChecks.checks;
+        return TidyChecks.Checks;
       }
       set
       {
-        TidyChecks.checks = value;
+        TidyChecks.Checks = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyChecksList"));
       }
     }

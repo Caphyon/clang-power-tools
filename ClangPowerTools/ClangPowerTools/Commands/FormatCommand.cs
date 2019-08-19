@@ -134,7 +134,7 @@ namespace ClangPowerTools.Commands
           text = FormatEndOfFile(view, filePath, out dirPath);
         }
 
-        process = CreateProcess(text, startPosition, length, dirPath, filePath, SettingsProvider.ClangFormatSettings);
+        process = CreateProcess(text, startPosition, length, dirPath, filePath);
 
         try
         {
@@ -239,8 +239,9 @@ namespace ClangPowerTools.Commands
     }
 
 
-    private System.Diagnostics.Process CreateProcess(string aText, int aOffset, int aLength, string aPath, string aFilePath, ClangFormatOptionsView aClangFormatView)
+    private System.Diagnostics.Process CreateProcess(string aText, int aOffset, int aLength, string aPath, string aFilePath)
     {
+      FormatSettingsModel formatSettings = SettingsModelHandler.FormatSettings;
       string vsixPath = Path.GetDirectoryName(
         typeof(RunClangPowerToolsPackage).Assembly.Location);
 
@@ -251,16 +252,16 @@ namespace ClangPowerTools.Commands
       process.StartInfo.RedirectStandardOutput = true;
       process.StartInfo.RedirectStandardError = true;
       process.StartInfo.FileName =
-        true == (null != aClangFormatView.ClangFormatPath && aClangFormatView.ClangFormatPath.Enable && !string.IsNullOrWhiteSpace(aClangFormatView.ClangFormatPath.Value)) ?
-          aClangFormatView.ClangFormatPath.Value : Path.Combine(vsixPath, ScriptConstants.kClangFormat);
+        true == (string.IsNullOrWhiteSpace(formatSettings.CustomExecutable)) ?
+          formatSettings.CustomExecutable : Path.Combine(vsixPath, ScriptConstants.kClangFormat);
 
       process.StartInfo.Arguments = " -offset " + aOffset +
                                     " -length " + aLength +
                                     " -output-replacements-xml " +
-                                    $" {ScriptConstants.kStyle} \"{aClangFormatView.Style}\"" +
-                                    $" {ScriptConstants.kFallbackStyle} \"{aClangFormatView.FallbackStyle}\"";
+                                    $" {ScriptConstants.kStyle} \"{formatSettings.Style}\"" +
+                                    $" {ScriptConstants.kFallbackStyle} \"{formatSettings.FallbackStyle}\"";
 
-      var assumeFilename = aClangFormatView.AssumeFilename;
+      var assumeFilename = formatSettings.AssumeFilename;
       if (string.IsNullOrEmpty(assumeFilename))
         assumeFilename = aFilePath;
       if (!string.IsNullOrEmpty(assumeFilename))

@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text;
 
@@ -190,7 +189,7 @@ namespace ClangPowerTools
       stringBuilder.Append(name[0]);
       for (int i = 1; i < name.Length; i++)
       {
-        if(Char.IsUpper(name[i]))
+        if (Char.IsUpper(name[i]))
         {
           stringBuilder.Append(name[i]).Append("-");
         }
