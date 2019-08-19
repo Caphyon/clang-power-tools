@@ -79,19 +79,19 @@
     <Compile Include="Commands\Logout.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
     <Compile Include="MVVM\Commands\AddDataCommand.cs" />
-    <Compile Include="MVVM\ClangFormatPathValue.cs" />
-    <Compile Include="MVVM\ClangTidyPathValue.cs" />
+    <Compile Include="MVVM\OldSettings\ClangFormatPathValue.cs" />
+    <Compile Include="MVVM\OldSettings\ClangTidyPathValue.cs" />
     <Compile Include="MVVM\Commands\RelayCommand.cs" />
     <Compile Include="MVVM\Controllers\AccountController.cs" />
     <Compile Include="MVVM\Controllers\LicenseController.cs" />
-    <Compile Include="MVVM\HeaderFiltersValue.cs" />
+    <Compile Include="MVVM\OldSettings\HeaderFiltersValue.cs" />
     <Compile Include="MVVM\Models\CompilerSettingsModel.cs" />
     <Compile Include="MVVM\Models\TidyCheckModel.cs" />
     <Compile Include="MVVM\Models\TidySettingsModel.cs" />
     <Compile Include="MVVM\Models\FormatSettingsModel.cs" />
     <Compile Include="MVVM\Models\LicenseModel.cs" />
-    <Compile Include="MVVM\CPTSettings.cs" />
-    <Compile Include="MVVM\SettingsModelHandler.cs" />
+    <Compile Include="MVVM\SettingsHandler.cs" />
+    <Compile Include="MVVM\SettingsModelProvider.cs" />
     <Compile Include="MVVM\TidyChecks.cs" />
     <Compile Include="MVVM\ViewModels\InputDataViewModel.cs" />
     <Compile Include="MVVM\ViewModels\SettingsViewModel.cs" />
@@ -149,8 +149,8 @@
       <DependentUpon>InputDataView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\WebApi\WebApiUrl.cs" />
-    <Compile Include="MVVM\OldModels\ClangTidyPredefinedChecksOptions.cs" />
-    <Compile Include="MVVM\OldModels\ClangTidyOptions.cs" />
+    <Compile Include="MVVM\OldSettings\OldModels\ClangTidyPredefinedChecksOptions.cs" />
+    <Compile Include="MVVM\OldSettings\OldModels\ClangTidyOptions.cs" />
     <Compile Include="Commands\BasicCommand.cs" />
     <Compile Include="Commands\StopCommand.cs" />
     <Compile Include="Commands\ClangCommand.cs" />
@@ -158,8 +158,8 @@
     <Compile Include="Commands\CommandController.cs" />
     <Compile Include="Commands\CompileCommand.cs" />
     <Compile Include="Convertors\ClangGeneralAdditionalIncludesConvertor.cs" />
-    <Compile Include="MVVM\OldModels\ClangFormatOptions.cs" />
-    <Compile Include="MVVM\OldModels\DefaultOptions.cs" />
+    <Compile Include="MVVM\OldSettings\OldModels\ClangFormatOptions.cs" />
+    <Compile Include="MVVM\OldSettings\OldModels\DefaultOptions.cs" />
     <Compile Include="Helpers\DocumentsHandler.cs" />
     <Compile Include="Error\ErrorDetector.cs" />
     <Compile Include="Error\ErrorParserConstants.cs" />
@@ -167,7 +167,7 @@
     <Compile Include="Files Operations\FileChangerWatcher.cs" />
     <Compile Include="Files Operations\FileOpener.cs" />
     <Compile Include="Files Operations\FilePathCollector.cs" />
-    <Compile Include="MVVM\OldModels\ClangOptions.cs" />
+    <Compile Include="MVVM\OldSettings\OldModels\ClangOptions.cs" />
     <Compile Include="Convertors\ClangTidyHeaderFiltersConvertor.cs" />
     <Compile Include="MVVM\Views\SearchBoxView.xaml.cs">
       <DependentUpon>SearchBoxView.xaml</DependentUpon>
