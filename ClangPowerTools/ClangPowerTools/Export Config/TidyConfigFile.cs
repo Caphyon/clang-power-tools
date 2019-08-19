@@ -42,11 +42,11 @@ namespace ClangPowerTools
       CreateWarningAsErrorsOutputLine(parameterNames.ElementAt(1), treatWarningsAsErrors, true);
 
       //Header filter line
-      string headerFilter = SettingsModelHandler.TidySettings.HeaderFilter;
+      string headerFilter = SettingsModelProvider.TidySettings.HeaderFilter;
       CreateHeaderFilterOutputLine(parameterNames.ElementAt(3), headerFilter, true);
 
       //Format style line
-      string formatStyle = SettingsModelHandler.FormatSettings.Style.ToString();
+      string formatStyle = SettingsModelProvider.FormatSettings.Style.ToString();
       CreateOutputLine(parameterNames.ElementAt(4), formatStyle, true);
 
       //User line
@@ -61,10 +61,10 @@ namespace ClangPowerTools
 
     private void CreateChecksOutputLine(string paramaterName)
     {
-      ClangTidyChecksFrom clangTidyUseChecksFrom = SettingsModelHandler.TidySettings.UseChecksFrom;
+      ClangTidyChecksFrom clangTidyUseChecksFrom = SettingsModelProvider.TidySettings.UseChecksFrom;
       if (clangTidyUseChecksFrom == ClangTidyChecksFrom.Checks)
       {
-        CreateCustomChecksOutputLine(paramaterName, SettingsModelHandler.TidySettings.Checks, true);
+        CreateCustomChecksOutputLine(paramaterName, SettingsModelProvider.TidySettings.Checks, true);
       }
       else
       {
@@ -88,7 +88,7 @@ namespace ClangPowerTools
 
     private void CreateWarningAsErrorsOutputLine(string paramaterName, string warningsAsErrors, bool hasQuotationMark)
     {
-      if (SettingsModelHandler.CompilerSettings.WarningsAsErrors)
+      if (SettingsModelProvider.CompilerSettings.WarningsAsErrors)
       {
         tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, warningsAsErrors, hasQuotationMark));
       }

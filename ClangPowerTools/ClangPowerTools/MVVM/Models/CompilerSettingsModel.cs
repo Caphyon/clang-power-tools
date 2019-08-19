@@ -18,6 +18,6 @@
 
     public bool VerboseMode { get; set; } = false;
 
-    public string Version { get; set; } = "5.0.0";
+    public string Version { get; set; } = string.Empty;
   }
 }

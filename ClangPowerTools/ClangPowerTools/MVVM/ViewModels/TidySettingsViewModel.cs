@@ -50,11 +50,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return SettingsModelHandler.TidySettings.HeaderFilter;
+        return SettingsModelProvider.TidySettings.HeaderFilter;
       }
       set
       {
-        SettingsModelHandler.TidySettings.HeaderFilter = value;
+        SettingsModelProvider.TidySettings.HeaderFilter = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HeaderFilter"));
       }
     }
@@ -71,11 +71,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return SettingsModelHandler.TidySettings.UseChecksFrom;
+        return SettingsModelProvider.TidySettings.UseChecksFrom;
       }
       set
       {
-        SettingsModelHandler.TidySettings.UseChecksFrom = value;
+        SettingsModelProvider.TidySettings.UseChecksFrom = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedUseChecksFrom"));
       }
     }
@@ -84,11 +84,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return SettingsModelHandler.TidySettings.Checks;
+        return SettingsModelProvider.TidySettings.Checks;
       }
       set
       {
-        SettingsModelHandler.TidySettings.Checks = value;
+        SettingsModelProvider.TidySettings.Checks = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Checks"));
       }
     }
@@ -97,11 +97,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return SettingsModelHandler.TidySettings.CustomExecutable;
+        return SettingsModelProvider.TidySettings.CustomExecutable;
       }
       set
       {
-        SettingsModelHandler.TidySettings.CustomExecutable = value;
+        SettingsModelProvider.TidySettings.CustomExecutable = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CustomExecutable"));
       }
     }
@@ -110,11 +110,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return SettingsModelHandler.TidySettings.FormatAfterTidy;
+        return SettingsModelProvider.TidySettings.FormatAfterTidy;
       }
       set
       {
-        SettingsModelHandler.TidySettings.FormatAfterTidy = value;
+        SettingsModelProvider.TidySettings.FormatAfterTidy = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatAfterTidy"));
       }
     }
@@ -123,11 +123,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return SettingsModelHandler.TidySettings.TidyOnSave;
+        return SettingsModelProvider.TidySettings.TidyOnSave;
       }
       set
       {
-        SettingsModelHandler.TidySettings.TidyOnSave = value;
+        SettingsModelProvider.TidySettings.TidyOnSave = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyOnSave"));
       }
     }

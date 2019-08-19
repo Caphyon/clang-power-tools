@@ -87,7 +87,7 @@ namespace ClangPowerTools.Commands
           {
             using (var fileChangerWatcher = new FileChangerWatcher())
             {
-              TidySettingsModel tidySettings = SettingsModelHandler.TidySettings;
+              TidySettingsModel tidySettings = SettingsModelProvider.TidySettings;
 
               if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
               {
