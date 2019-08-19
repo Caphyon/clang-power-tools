@@ -252,7 +252,7 @@ namespace ClangPowerTools.Commands
       process.StartInfo.RedirectStandardOutput = true;
       process.StartInfo.RedirectStandardError = true;
       process.StartInfo.FileName =
-        true == (string.IsNullOrWhiteSpace(formatSettings.CustomExecutable)) ?
+        true == (string.IsNullOrWhiteSpace(formatSettings.CustomExecutable) == false) ?
           formatSettings.CustomExecutable : Path.Combine(vsixPath, ScriptConstants.kClangFormat);
 
       process.StartInfo.Arguments = " -offset " + aOffset +
