@@ -339,11 +339,7 @@ namespace ClangPowerTools
       {
         UIUpdater.InvokeAsync(new Action(() =>
              {
-               var itemsCollector = CompileCommand.Instance.ItemsCollector;
-               itemsCollector.CollectCurrentProjectItems();
-               HashSet<string> selectedFiles = new HashSet<string>();
-               itemsCollector.Items.ForEach(i => selectedFiles.Add(i.GetPath()));
-               var window = new EncodingErrorView(selectedFiles.ToList());
+               var window = new EncodingErrorView(GetSelectedFiles());
                window.ShowDialog();
              })).SafeFireAndForget();
       }
@@ -419,6 +415,15 @@ namespace ClangPowerTools
       catch (Exception) { }
 
       return string.Empty;
+    }
+
+    private List<string> GetSelectedFiles()
+    {
+      var itemsCollector = CompileCommand.Instance.ItemsCollector;
+      itemsCollector.CollectCurrentProjectItems();
+      HashSet<string> selectedFiles = new HashSet<string>();
+      itemsCollector.Items.ForEach(i => selectedFiles.Add(i.GetPath()));
+      return selectedFiles.ToList();
     }
 
     #endregion
