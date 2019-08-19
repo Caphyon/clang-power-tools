@@ -403,8 +403,10 @@ namespace ClangPowerTools
 
     public void VisibilityOnBeforeCommand(object sender, EventArgs e)
     {
-      if (!(sender is OleMenuCommand command))
+      if (sender is OleMenuCommand == false)
         return;
+      var command = (OleMenuCommand)sender;
+
       var itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
       itemsCollector.CollectSelectedProjectItems();
       command.Enabled = itemsCollector.haveItems;
