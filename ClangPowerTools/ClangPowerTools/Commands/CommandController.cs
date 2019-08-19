@@ -34,6 +34,7 @@ namespace ClangPowerTools
     public event EventHandler<ClangCommandMessageEventArgs> ClangCommandMessageEvent;
     public event EventHandler<MissingLlvmEventArgs> MissingLlvmEvent;
     public event EventHandler<ClearErrorListEventArgs> ClearErrorListEvent;
+    public event EventHandler<EventArgs> ErrorDetectedEvent;
 
     #endregion
 
@@ -308,6 +309,13 @@ namespace ClangPowerTools
       {
         DisplayFinishedMessage(false);
       }
+
+      OnErrorDetected(new EventArgs());
+    }
+
+    protected void OnErrorDetected(EventArgs e)
+    {
+      ErrorDetectedEvent?.Invoke(this, e);
     }
 
     public void OnActiveDocumentCheck(object sender, ActiveDocumentEventArgs e)

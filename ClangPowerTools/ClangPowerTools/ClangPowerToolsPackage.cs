@@ -314,6 +314,7 @@ namespace ClangPowerTools
       CompileCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
       TidyCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
 
+      mCommandController.ErrorDetectedEvent += mOutputWindowController.OnErrorDetected;
       mOutputWindowController.ErrorDetectedEvent += mErrorWindowController.OnErrorDetected;
       mOutputWindowController.MissingLlvmEvent += mCommandController.OnMissingLLVMDetected;
 
@@ -331,6 +332,7 @@ namespace ClangPowerTools
 
       AccountController.OnLicenseStatusChanced += mCommandController.OnLicenseChanged;
       LicenseController.OnLicenseStatusChanced += mCommandController.OnLicenseChanged;
+
     }
 
     private void RegisterToVsEvents()
@@ -378,6 +380,7 @@ namespace ClangPowerTools
       CompileCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
       TidyCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
 
+      mCommandController.ErrorDetectedEvent -= mOutputWindowController.OnErrorDetected;
       mOutputWindowController.ErrorDetectedEvent -= mErrorWindowController.OnErrorDetected;
       mOutputWindowController.MissingLlvmEvent -= mCommandController.OnMissingLLVMDetected;
 
@@ -395,6 +398,7 @@ namespace ClangPowerTools
 
       AccountController.OnLicenseStatusChanced -= mCommandController.OnLicenseChanged;
       LicenseController.OnLicenseStatusChanced -= mCommandController.OnLicenseChanged;
+
     }
 
     private void UnregisterFromVsEvents()

@@ -160,9 +160,6 @@ namespace ClangPowerTools.Output
         Write(String.Join("\n", Buffer));
 
       CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
-
-      if (0 != Errors.Count)
-        OnErrorDetected(new ErrorDetectedEventArgs(Errors));
     }
 
     public void OnFileHierarchyDetected(object sender, VsHierarchyDetectedEventArgs e)
@@ -172,9 +169,9 @@ namespace ClangPowerTools.Output
 
     #endregion
 
-    protected virtual void OnErrorDetected(ErrorDetectedEventArgs e)
+    public void OnErrorDetected(object sender, EventArgs e)
     {
-      ErrorDetectedEvent?.Invoke(this, e);
+      ErrorDetectedEvent?.Invoke(this, new ErrorDetectedEventArgs(Errors));
     }
 
     protected virtual void OnMissingLLVMDetected(MissingLlvmEventArgs e)
