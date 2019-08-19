@@ -79,6 +79,7 @@
     <Compile Include="Commands\Logout.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
     <Compile Include="MVVM\Commands\AddDataCommand.cs" />
+    <Compile Include="MVVM\ClangFormatPathValue.cs" />
     <Compile Include="MVVM\Commands\RelayCommand.cs" />
     <Compile Include="MVVM\Controllers\AccountController.cs" />
     <Compile Include="MVVM\Controllers\LicenseController.cs" />
@@ -146,9 +147,6 @@
       <DependentUpon>InputDataView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\WebApi\WebApiUrl.cs" />
-    <Compile Include="Options\ClangTidyPathValue.cs" />
-    <Compile Include="Options\ClangFormatPathValue.cs" />
-    <Compile Include="Options\HeaderFiltersValue.cs" />
     <Compile Include="MVVM\OldModels\ClangTidyPredefinedChecksOptions.cs" />
     <Compile Include="MVVM\OldModels\ClangTidyOptions.cs" />
     <Compile Include="Commands\BasicCommand.cs" />
@@ -161,14 +159,7 @@
     <Compile Include="Convertors\OldConvertors\FallbackStyleConvertor.cs" />
     <Compile Include="Convertors\OldConvertors\StyleConvertor.cs" />
     <Compile Include="MVVM\OldModels\ClangFormatOptions.cs" />
-    <Compile Include="Options\UIElementsActivator.cs" />
-    <Compile Include="Options\ViewModel\ClangFormatOptionsView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="MVVM\OldModels\DefaultOptions.cs" />
-    <Compile Include="Options\ViewModel\ClangTidyCustomChecksOptionsView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Helpers\DocumentsHandler.cs" />
     <Compile Include="Error\ErrorDetector.cs" />
     <Compile Include="Error\ErrorParserConstants.cs" />
@@ -176,56 +167,11 @@
     <Compile Include="Files Operations\FileChangerWatcher.cs" />
     <Compile Include="Files Operations\FileOpener.cs" />
     <Compile Include="Files Operations\FilePathCollector.cs" />
-    <Compile Include="Options\ViewModel\ClangGeneralOptionsView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="MVVM\OldModels\ClangOptions.cs" />
     <Compile Include="Convertors\ClangTidyHeaderFiltersConvertor.cs" />
-    <Compile Include="Options\View\ClangFormatOptionsUserControl.xaml.cs">
-      <DependentUpon>ClangFormatOptionsUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\ClangGeneralOptionsUserControl.xaml.cs">
-      <DependentUpon>ClangGeneralOptionsUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\ClangTidyPredefinedChecksOptionsUserControl.xaml.cs">
-      <DependentUpon>ClangTidyPredefinedChecksOptionsUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\ClangTidyCustomChecksUserControl.xaml.cs">
-      <DependentUpon>ClangTidyCustomChecksUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\ClangTidyOptionsUserControl.xaml.cs">
-      <DependentUpon>ClangTidyOptionsUserControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MVVM\Views\SearchBoxView.xaml.cs">
       <DependentUpon>SearchBoxView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Options\View\TextBoxNotifaiableUserControl.cs" />
-    <Compile Include="Options\View\WpfPropertyGrid\BorderedComboBox.xaml.cs">
-      <DependentUpon>BorderedComboBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\WpfPropertyGrid\BorderedTextBox.xaml.cs">
-      <DependentUpon>BorderedTextBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowseTidy.xaml.cs">
-      <DependentUpon>BorderedTextBoxBrowseTidy.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowseFormat.xaml.cs">
-      <DependentUpon>BorderedTextBoxBrowseFormat.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\WpfPropertyGrid\StringCollectionEditor.xaml.cs">
-      <DependentUpon>StringCollectionEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\WpfPropertyGrid\PropertyCollection.cs" />
-    <Compile Include="Options\View\WpfPropertyGrid\PropertyData.cs" />
-    <Compile Include="Options\View\WpfPropertyGrid\PropertyGrid.xaml.cs">
-      <DependentUpon>PropertyGrid.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\WpfPropertyGrid\PropertyGridResources.xaml.cs">
-      <DependentUpon>PropertyGridResources.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\WpfPropertyGrid\PropertyTemplateSelector.cs" />
-    <Compile Include="Options\View\WpfPropertyGrid\ProvideToolboxControlAttribute.cs" />
-    <Compile Include="Options\View\WpfPropertyGrid\VisualTreeHelperExtension.cs" />
     <Compile Include="Builder\IAsyncBuilder.cs" />
     <Compile Include="Output\OutputContentModel.cs" />
     <Compile Include="Output\OutputProcessor.cs" />
@@ -240,13 +186,8 @@
     <Compile Include="Script\ItemRelatedScriptBuilder.cs" />
     <Compile Include="Script\RunModeScriptBuilder.cs" />
     <Compile Include="Script\RunningProcesses.cs" />
-    <Compile Include="Options\ViewModel\ConfigurationPage.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Services\VsServiceProvider.cs" />
     <Compile Include="Helpers\SettingsPathBuilder.cs" />
-    <Compile Include="Helpers\SettingsProvider.cs" />
-    <Compile Include="Helpers\SettingsHandler.cs" />
     <Compile Include="SilentFile\SilentFileChangerBuilder.cs" />
     <Compile Include="SilentFile\SilentFileChangerEqualityComparer.cs" />
     <Compile Include="Items\IItem.cs" />
@@ -255,18 +196,12 @@
     <Compile Include="Script\PowerShellWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\SettingsCommand.cs" />
-    <Compile Include="Options\ViewModel\ClangTidyPredefinedChecksOptionsView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Commands\TidyCommand.cs" />
     <Compile Include="ClangPowerToolsPackage.cs" />
     <Compile Include="Script\ScriptConstants.cs" />
     <Compile Include="Error\TaskErrorModel.cs" />
     <Compile Include="Items\CurrentProject.cs" />
     <Compile Include="Items\CurrentProjectItem.cs" />
-    <Compile Include="Options\ViewModel\ClangTidyOptionsView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Helpers\ActiveWindowProperties.cs" />
     <Compile Include="Convertors\ComboBoxConstants.cs" />
     <Compile Include="Convertors\OldConvertors\ComboBoxConvertor.cs" />
@@ -279,7 +214,7 @@
     <Compile Include="TextOperationsInterfaces\IDetector.cs" />
     <Compile Include="TextOperationsInterfaces\ITextFormatter.cs" />
     <Compile Include="Helpers\Vsix.cs" />
-    <Compile Include="Options\XmlSerializer.cs" />
+    <Compile Include="MVVM\XmlSerializer.cs" />
     <Compile Include="UnitTestUtility\CommandTestUtility.cs" />
     <Compile Include="UnitTestUtility\SettingsTestUtility.cs" />
     <Compile Include="UnitTestUtility\UnitTestUtility.cs" />
@@ -524,57 +459,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Options\View\ClangFormatOptionsUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Options\View\ClangGeneralOptionsUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Options\View\ClangTidyPredefinedChecksOptionsUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Options\View\ClangTidyCustomChecksUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Options\View\ClangTidyOptionsUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MVVM\Views\SearchBoxView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Options\View\WpfPropertyGrid\BorderedComboBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Options\View\WpfPropertyGrid\BorderedTextBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowseTidy.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowseFormat.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Options\View\WpfPropertyGrid\StringCollectionEditor.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Options\View\WpfPropertyGrid\PropertyGrid.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Options\View\WpfPropertyGrid\PropertyGridResources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="MVVM\Views\LoginView.xaml">
       <SubType>Designer</SubType>
