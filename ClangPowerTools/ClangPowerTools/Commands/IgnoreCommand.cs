@@ -32,7 +32,7 @@ namespace ClangPowerTools.Commands
         return;
       }
 
-      string filesToIgnore = (string)ReflectionManager.GetProperty<T>(settings, PropertyName);
+      string filesToIgnore = (string)GetSetProperty.Get<T>(settings, PropertyName);
 
       if (filesToIgnore.Length > 0)
       {
@@ -40,7 +40,7 @@ namespace ClangPowerTools.Commands
       }
 
       filesToIgnore += string.Join(";", RemoveDuplicateDocuments(itemsToIgnore, filesToIgnore));
-      ReflectionManager.SetProperty(settings, PropertyName, filesToIgnore);
+      GetSetProperty.Set(settings, PropertyName, filesToIgnore);
     }
 
     #endregion
