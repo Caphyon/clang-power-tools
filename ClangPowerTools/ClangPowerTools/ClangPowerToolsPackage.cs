@@ -273,7 +273,7 @@ namespace ClangPowerTools
 
     private bool SolutionDoesNotContainCppProject()
     {
-      DTE2 dte2 = (DTE2) Package.GetGlobalService(typeof(DTE));
+      DTE2 dte2 = (DTE2)VsServiceProvider.GetService(typeof(DTE));
       var solution = dte2.Solution;
 
       if (solution == null)
@@ -283,7 +283,7 @@ namespace ClangPowerTools
 
       foreach (var project in solution)
       {
-        var proj = (Project) project;
+        var proj = (Project)project;
         if (proj.FullName.EndsWith(ScriptConstants.kVcxprojExtension))
         {
           return false;
