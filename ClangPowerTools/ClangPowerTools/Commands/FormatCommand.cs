@@ -95,6 +95,12 @@ namespace ClangPowerTools.Commands
       }
     }
 
+    private void FormatActiveDocument()
+    {
+      mDocument = DocumentHandler.GetActiveDocument();
+      ExecuteFormatCommand();
+    }
+
     public void FormatOnSave(Document document)
     {
       mDocument = document;
@@ -195,12 +201,6 @@ namespace ClangPowerTools.Commands
       {
         activeDocument.Activate();
       }
-    }
-
-    private void FormatActiveDocument()
-    {
-      mDocument = DocumentHandler.GetActiveDocument();
-      ExecuteFormatCommand();
     }
 
     private string FormatEndOfFile(IWpfTextView aView, string aFilePath, out string aDirPath)
