@@ -15,17 +15,17 @@ namespace ClangPowerTools
     public SettingsViewModel(SettingsView settingsView)
     {
       this.settingsView = settingsView;
-      LoadSettings();
+      InitializeSettings();
       settingsView.Closed += OnClosed;
     }
 
-    private void LoadSettings()
+    private void InitializeSettings()
     {
-      if (cptSettings.CheckIfSettingsFileExists())
+      if (cptSettings.SettingsFileExists())
       {
         cptSettings.LoadSettings();
       }
-      else if(cptSettings.CheckOldGeneralSettingsExists())
+      else if(cptSettings.OldGeneralSettingsExists())
       {
         cptSettings.MapOldSettings();
         cptSettings.SaveSettings();

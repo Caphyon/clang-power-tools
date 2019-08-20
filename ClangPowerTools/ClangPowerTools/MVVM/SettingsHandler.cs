@@ -50,13 +50,13 @@ namespace ClangPowerTools
       }
     }
 
-    public bool CheckIfSettingsFileExists()
+    public bool SettingsFileExists()
     {
       string path = GetSettingsFilePath(settingsPath, SettingsFileName);
       return File.Exists(path);
     }
 
-    public bool CheckOldGeneralSettingsExists()
+    public bool OldGeneralSettingsExists()
     {
       string path = GetSettingsFilePath(settingsPath, GeneralConfigurationFileName);
       return File.Exists(path);
