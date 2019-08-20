@@ -111,7 +111,6 @@ namespace ClangPowerTools
       }
 
       var command = CreateCommand(sender);
-
       if (command == null)
       {
         return;

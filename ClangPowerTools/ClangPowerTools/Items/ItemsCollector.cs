@@ -12,7 +12,6 @@ namespace ClangPowerTools
     #region Members
 
     private List<string> mAcceptedFileExtensions = new List<string>();
-    private DTE2 dte2;
     private Array selectedItems;
 
     #endregion
@@ -22,7 +21,7 @@ namespace ClangPowerTools
     public ItemsCollector(List<string> aExtensions = null)
     {
       mAcceptedFileExtensions = aExtensions;
-      dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
+      var dte2 = (DTE2)VsServiceProvider.GetService(typeof(DTE));
       selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
     }
 
@@ -30,8 +29,8 @@ namespace ClangPowerTools
 
     #region Properties
 
-    public List<IItem> items { get; private set; } = new List<IItem>();
-    public bool haveItems => items.Count != 0;
+    public List<IItem> Items { get; private set; } = new List<IItem>();
+    public bool HaveItems => Items.Count != 0;
 
     #endregion
 
@@ -47,7 +46,7 @@ namespace ClangPowerTools
         if (activeDocument != null)
         {
           CurrentProjectItem activeProjectItem = new CurrentProjectItem(activeDocument.ProjectItem);
-          items.Add(activeProjectItem);
+          Items.Add(activeProjectItem);
         }
       }
       catch (Exception e)
@@ -137,7 +136,7 @@ namespace ClangPowerTools
       if (null != mAcceptedFileExtensions && false == mAcceptedFileExtensions.Contains(fileExtension))
         return;
 
-      items.Add(new CurrentProjectItem(aItem));
+      Items.Add(new CurrentProjectItem(aItem));
     }
 
     #endregion
@@ -148,11 +147,11 @@ namespace ClangPowerTools
 
     private void GetProjectsFromSolution(Solution aSolution)
     {
-      items = AutomationUtil.GetAllProjects(aSolution);
+      Items = AutomationUtil.GetAllProjects(aSolution);
     }
 
 
-    private void AddProject(Project aProject) => items.Add(new CurrentProject(aProject));
+    private void AddProject(Project aProject) => Items.Add(new CurrentProject(aProject));
 
 
     private void GetProjectItem(ProjectItem aProjectItem)

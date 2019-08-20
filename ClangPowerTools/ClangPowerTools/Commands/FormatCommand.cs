@@ -87,13 +87,10 @@ namespace ClangPowerTools.Commands
       if (CommandUILocation.ContextMenu == commandUILocation)
       {
         FormatAllSelectedDocuments();
-        return;
       }
-
-      if (CommandUILocation.Toolbar == commandUILocation)
+      else // format command is called from toolbar (CommandUILocation.Toolbar == commandUILocation)
       {
         FormatActiveDocument();
-        return;
       }
     }
 
@@ -171,7 +168,7 @@ namespace ClangPowerTools.Commands
       List<Document> activeDocs = DocumentsHandler.GetListOfActiveDocuments();
       Document activeDocument = DocumentsHandler.GetActiveDocument();
 
-      foreach (var item in itemsCollector.items)
+      foreach (var item in itemsCollector.Items)
       {
         try
         {
@@ -205,7 +202,7 @@ namespace ClangPowerTools.Commands
       ItemsCollector itemsCollector = new ItemsCollector();
       itemsCollector.CollectActiveProjectItem();
 
-      var document = (itemsCollector.items[0].GetObject() as ProjectItem).Document;
+      var document = (itemsCollector.Items[0].GetObject() as ProjectItem).Document;
       mDocument = document;
       ExecuteFormatCommand();
     }
