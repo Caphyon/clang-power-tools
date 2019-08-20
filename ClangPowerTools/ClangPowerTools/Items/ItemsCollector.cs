@@ -40,14 +40,13 @@ namespace ClangPowerTools
     {
       try
       {
-        DTE vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE) : null;
-        Document activeDocument = vsServiceProvider.ActiveDocument;
+        DTE dte = (DTE)VsServiceProvider.GetService(typeof(DTE));
+        Document activeDocument = dte.ActiveDocument;
 
-        if (activeDocument != null)
-        {
-          CurrentProjectItem activeProjectItem = new CurrentProjectItem(activeDocument.ProjectItem);
-          Items.Add(activeProjectItem);
-        }
+        if (activeDocument == null)
+          return;
+
+        Items.Add(new CurrentProjectItem(activeDocument.ProjectItem));
       }
       catch (Exception e)
       {
