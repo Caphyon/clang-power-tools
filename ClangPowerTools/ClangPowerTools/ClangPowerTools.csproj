@@ -93,6 +93,7 @@
     <Compile Include="MVVM\SettingsHandler.cs" />
     <Compile Include="MVVM\SettingsModelProvider.cs" />
     <Compile Include="MVVM\TidyChecks.cs" />
+    <Compile Include="MVVM\ViewModels\GeneralSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\InputDataViewModel.cs" />
     <Compile Include="MVVM\ViewModels\SettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\TidyChecksViewModel.cs" />
@@ -111,7 +112,6 @@
     <Compile Include="Commands\CommandUILocation.cs" />
     <Compile Include="Commands\IgnoreCompileCommand.cs" />
     <Compile Include="Commands\IgnoreFormatCommand.cs" />
-    <Compile Include="Commands\TidyConfigCommand.cs" />
     <Compile Include="Convertors\BooleanToVisibilityConverter.cs" />
     <Compile Include="Convertors\ClangFormatFallbackStyleConverter.cs" />
     <Compile Include="Convertors\ClangFormatStyleConverter.cs" />
@@ -135,6 +135,9 @@
     </Compile>
     <Compile Include="MVVM\Views\CompilerSettingsView.xaml.cs">
       <DependentUpon>CompilerSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Views\GeneralSettingsView.xaml.cs">
+      <DependentUpon>GeneralSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
@@ -439,6 +442,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="MVVM\Views\CompilerSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\GeneralSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

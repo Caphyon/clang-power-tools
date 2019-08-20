@@ -94,16 +94,6 @@ namespace ClangPowerTools
       {
         await SettingsCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kSettingsId);
       }
-
-      if (TidyConfigCommand.Instance == null)
-      {
-        await TidyConfigCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kITidyExportConfigId);
-      }
-
-      if (Logout.Instance == null)
-      {
-        await Logout.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kLogoutId);
-      }
     }
 
     public async void Execute(object sender, EventArgs e)
@@ -193,11 +183,6 @@ namespace ClangPowerTools
             OnAfterClangCommand();
             break;
           }
-        case CommandIds.kITidyExportConfigId:
-          {
-            TidyConfigCommand.Instance.ExportConfig();
-            break;
-          }
         case CommandIds.kIgnoreFormatId:
           {
             IgnoreFormatCommand.Instance.RunIgnoreFormatCommand(CommandIds.kIgnoreFormatId);
@@ -206,11 +191,6 @@ namespace ClangPowerTools
         case CommandIds.kIgnoreCompileId:
           {
             IgnoreCompileCommand.Instance.RunIgnoreCompileCommand(CommandIds.kIgnoreCompileId);
-            break;
-          }
-        case CommandIds.kLogoutId:
-          {
-            Logout.Instance.LogoutUser();
             break;
           }
         default:
