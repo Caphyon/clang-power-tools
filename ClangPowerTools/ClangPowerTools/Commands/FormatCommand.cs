@@ -199,7 +199,7 @@ namespace ClangPowerTools.Commands
 
     private void FormatActiveDocument()
     {
-      //mDocument = DocumentHandler.
+      mDocument = DocumentHandler.GetActiveDocument();
       ExecuteFormatCommand();
     }
 
