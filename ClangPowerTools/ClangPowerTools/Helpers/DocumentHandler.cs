@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace ClangPowerTools
 {
-  public class DocumentsHandler
+  public class DocumentHandler
   {
     #region Public Methods
 

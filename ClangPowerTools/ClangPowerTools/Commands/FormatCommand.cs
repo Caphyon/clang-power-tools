@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
 using System.Xml.Linq;
+using ClangPowerTools;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
@@ -111,7 +112,6 @@ namespace ClangPowerTools.Commands
         if (view == null)
           return;
 
-        System.Diagnostics.Process process;
         var dirPath = string.Empty;
         var filePath = Vsix.GetDocumentPath(view);
         var text = view.TextBuffer.CurrentSnapshot.GetText();
@@ -165,8 +165,8 @@ namespace ClangPowerTools.Commands
     {
       ItemsCollector itemsCollector = new ItemsCollector();
       itemsCollector.CollectSelectedProjectItems();
-      List<Document> activeDocs = DocumentsHandler.GetListOfActiveDocuments();
-      Document activeDocument = DocumentsHandler.GetActiveDocument();
+      List<Document> activeDocs = DocumentHandler.GetListOfActiveDocuments();
+      Document activeDocument = DocumentHandler.GetActiveDocument();
 
       foreach (var item in itemsCollector.Items)
       {
@@ -176,7 +176,7 @@ namespace ClangPowerTools.Commands
           mDocument = projectItem.Open().Document;
           ExecuteFormatCommand();
 
-          if (DocumentsHandler.IsOpen(mDocument, activeDocs))
+          if (DocumentHandler.IsOpen(mDocument, activeDocs))
           {
             mDocument.Save();
           }
@@ -199,11 +199,7 @@ namespace ClangPowerTools.Commands
 
     private void FormatActiveDocument()
     {
-      ItemsCollector itemsCollector = new ItemsCollector();
-      itemsCollector.CollectActiveProjectItem();
-
-      var document = (itemsCollector.Items[0].GetObject() as ProjectItem).Document;
-      mDocument = document;
+      //mDocument = DocumentHandler.
       ExecuteFormatCommand();
     }
 

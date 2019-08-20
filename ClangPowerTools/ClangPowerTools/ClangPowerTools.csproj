@@ -164,7 +164,14 @@
     <Compile Include="Convertors\ClangGeneralAdditionalIncludesConvertor.cs" />
     <Compile Include="MVVM\OldSettings\OldModels\ClangFormatOptions.cs" />
     <Compile Include="MVVM\OldSettings\OldModels\DefaultOptions.cs" />
-    <Compile Include="Helpers\DocumentsHandler.cs" />
+    <Compile Include="Convertors\OldConvertors\FallbackStyleConvertor.cs" />
+    <Compile Include="Convertors\OldConvertors\StyleConvertor.cs" />
+    <Compile Include="Options\Model\ClangFormatOptions.cs" />
+    <Compile Include="Options\UIElementsActivator.cs" />
+    <Compile Include="Options\ViewModel\ClangFormatOptionsView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Helpers\DocumentHandler.cs" />
     <Compile Include="Error\ErrorDetector.cs" />
     <Compile Include="Error\ErrorParserConstants.cs" />
     <Compile Include="Error\ErrorWindowController.cs" />

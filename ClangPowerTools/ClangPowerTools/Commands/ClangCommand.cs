@@ -154,7 +154,7 @@ namespace ClangPowerTools
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-      DocumentsHandler.SaveActiveDocuments();
+      DocumentHandler.SaveActiveDocuments();
 
       if (!VsServiceProvider.TryGetService(typeof(DTE), out object dte))
         return;
