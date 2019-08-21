@@ -36,7 +36,7 @@ namespace ClangPowerTools
 
     public ICommand CustomExecutableBrowseCommand
     {
-      get => customExecutableBrowseCommand ?? (customExecutableBrowseCommand = new RelayCommand(() => CustomExecutable = BrowseForFile(), () => CanExecute));
+      get => customExecutableBrowseCommand ?? (customExecutableBrowseCommand = new RelayCommand(() => CustomExecutable = BrowseForFile(".exe", "Executable files|*.exe"), () => CanExecute));
     }
     #endregion
 

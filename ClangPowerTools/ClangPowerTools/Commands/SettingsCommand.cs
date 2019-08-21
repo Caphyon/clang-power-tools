@@ -48,7 +48,7 @@ namespace ClangPowerTools.Commands
 
     #region Public Methods
 
-    
+
     /// <summary>
     /// Initializes the singleton instance of the command.
     /// </summary>

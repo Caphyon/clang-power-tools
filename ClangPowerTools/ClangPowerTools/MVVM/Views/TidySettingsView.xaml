@@ -191,6 +191,15 @@
       </CheckBox.LayoutTransform>
     </CheckBox>
 
+    <!--  Export tidy config  -->
+    <Button
+      Grid.Row="7"
+      Grid.Column="2"
+      Width="120"
+      Height="30"
+      Command="{Binding ExportTidyConfigCommand}"
+      Content="Export Tidy Config" />
+
 
   </Grid>
 </UserControl>

@@ -10,6 +10,7 @@ namespace ClangPowerTools.Views
     public GeneralSettingsView()
     {
       InitializeComponent();
+      DataContext = new GeneralSettingsViewModel();
     }
   }
 }

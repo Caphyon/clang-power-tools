@@ -65,12 +65,12 @@
     <TabItem Padding="8" FontSize="15">
       <TabItem.Header>
         <StackPanel Orientation="Horizontal">
-          <TextBlock>Account</TextBlock>
+          <TextBlock>General</TextBlock>
         </StackPanel>
       </TabItem.Header>
-      <StackPanel>
-        <TextBlock>Enter some text</TextBlock>
-      </StackPanel>
+      <Grid>
+        <local:GeneralSettingsView />
+      </Grid>
     </TabItem>
 
   </TabControl>

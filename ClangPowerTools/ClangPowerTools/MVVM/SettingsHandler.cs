@@ -9,6 +9,15 @@ namespace ClangPowerTools
 {
   public class SettingsHandler
   {
+    public string SettingsPath
+    {
+      get
+      {
+        return settingsPath;
+      }
+      private set { }
+    }
+
     private string settingsPath = string.Empty;
     private readonly string SettingsFileName = "settings.json";
     private readonly string GeneralConfigurationFileName = "GeneralConfiguration.config";
@@ -22,11 +31,11 @@ namespace ClangPowerTools
       settingsPath = settingsPathBuilder.GetPath("");
     }
 
-    public void SaveSettings()
+    public void SaveSettings(string path)
     {
       List<object> models = CreateModelsList();
 
-      using (StreamWriter file = File.CreateText(GetSettingsFilePath(settingsPath, SettingsFileName)))
+      using (StreamWriter file = File.CreateText(GetSettingsFilePath(path, SettingsFileName)))
       {
         JsonSerializer serializer = new JsonSerializer();
         serializer.Formatting = Formatting.Indented;
@@ -34,9 +43,9 @@ namespace ClangPowerTools
       }
     }
 
-    public void LoadSettings()
+    public void LoadSettings(string path)
     {
-      using (StreamReader sw = new StreamReader(GetSettingsFilePath(settingsPath, SettingsFileName)))
+      using (StreamReader sw = new StreamReader(GetSettingsFilePath(path, SettingsFileName)))
       {
         string json = sw.ReadToEnd();
         JsonSerializer serializer = new JsonSerializer();

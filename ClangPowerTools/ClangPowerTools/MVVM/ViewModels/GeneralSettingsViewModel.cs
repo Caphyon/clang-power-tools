@@ -1,26 +1,36 @@
 ﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.Views;
-using Microsoft.Win32;
-using System.ComponentModel;
 using System.IO;
 using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class GeneralSettingsViewModel : INotifyPropertyChanged
+  public class GeneralSettingsViewModel : CommonSettingsFunctionality
   {
     #region Members
-    private ICommand logoutCommand;
-    private SaveFileDialog saveFileDialog = new SaveFileDialog();
+    private SettingsHandler cptSettings = new SettingsHandler();
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    private ICommand logoutCommand;
+    private ICommand exportSettingsCommand;
+    private ICommand importSettingsCommand;
     #endregion
 
     #region Commands
     public ICommand LogoutCommand
     {
-      get => logoutCommand ?? (logoutCommand = new RelayCommand(() => LogoutUser(), () => CanExecute));
+      get => logoutCommand ?? (logoutCommand = new RelayCommand(() => Logout(), () => CanExecute));
     }
+
+    public ICommand ExportSettingsCommand
+    {
+      get => logoutCommand ?? (exportSettingsCommand = new RelayCommand(() => ExportSettings(), () => CanExecute));
+    }
+
+    public ICommand ImportSettingssCommand
+    {
+      get => logoutCommand ?? (importSettingsCommand = new RelayCommand(() => ImportSettings(), () => CanExecute));
+    }
+
     #endregion
 
     #region Properties
@@ -35,7 +45,7 @@ namespace ClangPowerTools
 
 
     #region Methods
-    public void LogoutUser()
+    private void Logout()
     {
       var settingsPathBuilder = new SettingsPathBuilder();
       string path = settingsPathBuilder.GetPath("ctpjwt");
@@ -47,42 +57,16 @@ namespace ClangPowerTools
 
       LoginView loginView = new LoginView();
       loginView.ShowDialog();
-
     }
 
-    public void ExportConfig()
+    private void ExportSettings()
     {
-      // Set the default file extension
-      saveFileDialog.FileName = ".clang-tidy";
-      saveFileDialog.DefaultExt = ".clang-tidy";
-      saveFileDialog.Filter = "Configuration files (.clang-tidy)|*.clang-tidy";
-
-      //Display the dialog window
-      bool? result = saveFileDialog.ShowDialog();
-
-      if (result == true)
-      {
-        saveFileDialog.FileName = Path.GetFileName(saveFileDialog.FileName);
-      }
+     // cptSettings.
     }
 
-
-    private void SaveFileDialog(object sender, CancelEventArgs e)
+    private void ImportSettings()
     {
-      CreateFile();
-    }
 
-    private void CreateFile()
-    {
-      using (FileStream fs = new FileStream(saveFileDialog.FileName, FileMode.Create))
-      {
-        using (StreamWriter sw = new StreamWriter(fs))
-        {
-          TidyConfigFile tidyConfigFile = new TidyConfigFile();
-
-          sw.Write(tidyConfigFile.CreateOutput());
-        }
-      }
     }
 
     #endregion

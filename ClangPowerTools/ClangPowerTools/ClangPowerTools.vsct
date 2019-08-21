@@ -14,15 +14,6 @@
         </Strings>
       </Menu>
 
-      <!--Top Toolbar Menu Drop-Down-->
-      <Menu guid="guidClangPowerToolsPackageCmdSet" id="GroupForTopToolbarMenu" priority="0xffff" type="Menu">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
-        <Strings>
-          <ButtonText>Clang Power Tools</ButtonText>
-          <CommandName>Clang Power Tools</CommandName>
-        </Strings>
-      </Menu> 
-
       <!--Toolbar menu-->
       <Menu guid="guidClangPowerToolsPackageCmdSet" id="Toolbar" type="Toolbar">
         <CommandFlag>DefaultDocked</CommandFlag>
@@ -52,10 +43,6 @@
       <!-- Submenus groups -->
 
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0000" />
-
-      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForToolbarMenu" priority="0x0000" >
-        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForTopToolbarMenu"/>
-      </Group>
 
       <Group guid="guidClangPowerToolsPackageCmdSet" id="DromDownToolbarMenuGroup" priority="0x0000">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownMenu" />
@@ -350,7 +337,6 @@
       <IDSymbol name="GroupForIgnore" value="0x1023" />
       <IDSymbol name="ToolbarGroup" value="0x1050" />
       <IDSymbol name="GroupForToolbarMenu" value="0x1030" />
-      <IDSymbol name="GroupForTopToolbarMenu" value="0x1031" />
       <IDSymbol name ="DromDownToolbarMenuGroup" value="0x0110"/>
 
       <!-- Define the unique identifires for menus -->

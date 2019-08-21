@@ -19,9 +19,10 @@ namespace ClangPowerTools
     private ICommand addDataCommand;
     private ICommand browseCommand;
     private ICommand selectCommand;
+    private ICommand exportTidyConfigCommand;
     #endregion
 
- 
+
     #region Properties
     public ICommand AddDataCommand
     {
@@ -30,12 +31,17 @@ namespace ClangPowerTools
 
     public ICommand BrowseCommand
     {
-      get => browseCommand ?? (browseCommand = new RelayCommand(() => CustomExecutable = BrowseForFile(), () => CanExecute));
+      get => browseCommand ?? (browseCommand = new RelayCommand(() => CustomExecutable = BrowseForFile(".exe", "Executable files|*.exe"), () => CanExecute));
     }
 
     public ICommand SelectCommand
     {
       get => selectCommand ?? (selectCommand = new RelayCommand(() => OpenChecksWindow(), () => CanExecute));
+    }
+
+    public ICommand ExportTidyConfigCommand
+    {
+      get => exportTidyConfigCommand ?? (exportTidyConfigCommand = new RelayCommand(() => ExportTidyConfig(), () => CanExecute));
     }
 
     public bool CanExecute
@@ -136,6 +142,8 @@ namespace ClangPowerTools
     #region Methods
     private void SetEnvironmentVariableTidyPath()
     {
+      // TODO use method
+
       var task = Task.Run(() =>
       {
         if (CustomExecutable.Length > 3)
@@ -149,7 +157,22 @@ namespace ClangPowerTools
       });
     }
 
-    public void OnClosed(object sender, EventArgs e)
+    private void ExportTidyConfig()
+    {
+      TidyConfigFile tidyConfigFile = new TidyConfigFile();
+      string path = string.Empty;
+      string fileName = ".clang-tidy";
+      string defaultExt = ".clang-tidy";
+      string filter = "Configuration files (.clang-tidy)|*.clang-tidy";
+
+      path = SaveFile(fileName, defaultExt, filter);
+      if (string.IsNullOrEmpty(path) == false)
+      {
+        WriteContentToFile(path, tidyConfigFile.CreateOutput().ToString());
+      }
+    }
+
+    private void OnClosed(object sender, EventArgs e)
     {
       Checks = GetSelectedChecks();
       tidyChecksView.Closed -= OnClosed;

@@ -3,8 +3,10 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-  xmlns:local="clr-namespace:ClangPowerTools.Views"
+  xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  d:DataContext="{d:DesignInstance local:GeneralSettingsViewModel,
+                                   IsDesignTimeCreatable=True}"
   d:DesignHeight="400"
   d:DesignWidth="820"
   mc:Ignorable="d">
@@ -37,27 +39,33 @@
     </Grid.ColumnDefinitions>
 
 
-    <!--  Tidy on save  -->
-    <TextBlock
-      Grid.Row="6"
+    <!--  Export Settings  -->
+    <Button
+      Grid.Row="1"
       Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="20"
-      Foreground="#E2E2E8"
-      Text="Tidy on save" />
+      Width="120"
+      Height="30"
+      Command="{Binding CustomExecutableBrowseCommand}"
+      Content="Export Settings" />
 
-    <CheckBox
-      Grid.Row="6"
-      Grid.Column="2"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      IsChecked="{Binding TidyOnSave}">
-      <CheckBox.LayoutTransform>
-        <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
-      </CheckBox.LayoutTransform>
-    </CheckBox>
+    <!--  Import Settings  -->
+    <Button
+      Grid.Row="2"
+      Grid.Column="1"
+      Width="120"
+      Height="30"
+      Command="{Binding CustomExecutableBrowseCommand}"
+      Content="Import Settings" />
+
+
+    <!--  Logout  -->
+    <Button
+      Grid.Row="3"
+      Grid.Column="1"
+      Width="60"
+      Height="30"
+      Command="{Binding LogoutCommand}"
+      Content="Logout" />
 
 
   </Grid>
