@@ -250,9 +250,7 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\SettingsIcon.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
+    <Resource Include="Resources\SettingsIcon.png" />
     <Resource Include="Resources\TidyIcon.png" />
     <Content Include="psClang\*.ps1" Exclude="psClang\*.tests.ps1">
       <IncludeInVSIX>true</IncludeInVSIX>
