@@ -61,12 +61,17 @@ namespace ClangPowerTools
 
     private void ExportSettings()
     {
-     // cptSettings.
+      string path = SaveFile("settings", ".json", "Settings files (.json)|*.json");
+      if (string.IsNullOrEmpty(path) == false)
+      {
+        cptSettings.SaveSettings(path);
+      }
     }
 
     private void ImportSettings()
     {
-
+      string path = OpenFile("settings",".json", "Executable files|*.exe");
+      cptSettings.LoadSettings(path);
     }
 
     #endregion

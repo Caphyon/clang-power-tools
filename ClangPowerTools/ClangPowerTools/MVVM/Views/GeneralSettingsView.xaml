@@ -45,7 +45,7 @@
       Grid.Column="1"
       Width="120"
       Height="30"
-      Command="{Binding CustomExecutableBrowseCommand}"
+      Command="{Binding ExportSettingsCommand}"
       Content="Export Settings" />
 
     <!--  Import Settings  -->
@@ -54,7 +54,7 @@
       Grid.Column="1"
       Width="120"
       Height="30"
-      Command="{Binding CustomExecutableBrowseCommand}"
+      Command="{Binding ImportSettingssCommand}"
       Content="Import Settings" />
 
 

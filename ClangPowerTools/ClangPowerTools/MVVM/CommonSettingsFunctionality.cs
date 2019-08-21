@@ -6,19 +6,20 @@ namespace ClangPowerTools
   public abstract class CommonSettingsFunctionality
   {
     #region Public Methods
-    protected string BrowseForFile(string defaultExt, string filter)
+    protected string OpenFile(string fileName, string defaultExt, string filter)
     {
-      OpenFileDialog dlg = new OpenFileDialog();
+      OpenFileDialog openFileDialog = new OpenFileDialog();
       string path = string.Empty;
 
-      dlg.DefaultExt = defaultExt;
-      dlg.Filter = filter;
+      openFileDialog.FileName = fileName;
+      openFileDialog.DefaultExt = defaultExt;
+      openFileDialog.Filter = filter;
 
-      bool? result = dlg.ShowDialog();
+      bool? result = openFileDialog.ShowDialog();
 
       if (result == true)
       {
-        string filename = dlg.FileName;
+        string filename = openFileDialog.FileName;
         path = filename;
       }
       return path;

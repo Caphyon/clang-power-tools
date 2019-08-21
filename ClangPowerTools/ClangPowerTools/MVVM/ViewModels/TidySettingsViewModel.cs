@@ -31,7 +31,7 @@ namespace ClangPowerTools
 
     public ICommand BrowseCommand
     {
-      get => browseCommand ?? (browseCommand = new RelayCommand(() => CustomExecutable = BrowseForFile(".exe", "Executable files|*.exe"), () => CanExecute));
+      get => browseCommand ?? (browseCommand = new RelayCommand(() => CustomExecutable = OpenFile(string.Empty, ".exe", "Executable files|*.exe"), () => CanExecute));
     }
 
     public ICommand SelectCommand
@@ -160,12 +160,11 @@ namespace ClangPowerTools
     private void ExportTidyConfig()
     {
       TidyConfigFile tidyConfigFile = new TidyConfigFile();
-      string path = string.Empty;
       string fileName = ".clang-tidy";
       string defaultExt = ".clang-tidy";
       string filter = "Configuration files (.clang-tidy)|*.clang-tidy";
 
-      path = SaveFile(fileName, defaultExt, filter);
+      string path = SaveFile(fileName, defaultExt, filter);
       if (string.IsNullOrEmpty(path) == false)
       {
         WriteContentToFile(path, tidyConfigFile.CreateOutput().ToString());
