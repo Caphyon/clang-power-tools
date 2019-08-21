@@ -34,7 +34,7 @@ namespace ClangPowerTools
 
     public ICommand ResetSettingsCommand
     {
-      get => resetSettingsCommand ?? (importSettingsCommand = new RelayCommand(() => ResetSettings(), () => CanExecute));
+      get => resetSettingsCommand ?? (resetSettingsCommand = new RelayCommand(() => ResetSettings(), () => CanExecute));
     }
 
     #endregion
@@ -87,7 +87,6 @@ namespace ClangPowerTools
     {
       cptSettings.ResetSettings();
     }
-
 
     #endregion
   }

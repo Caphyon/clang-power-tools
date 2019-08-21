@@ -4,6 +4,7 @@ namespace ClangPowerTools
 {
   public static class TidyChecks
   {
+    // TODO handle reset
     public static List<TidyCheckModel> Checks { get; set; } = new List<TidyCheckModel>
   {
     new TidyCheckModel{Name = "abseil-duration-addition", Description = "Check for cases where addition should be performed in the absl::Time domain. When adding two values, and one is known to be an absl::Time, we can infer that the other should be interpreted as an absl::Duration of a similar scale, and make that inference explicit.", IsChecked = false },

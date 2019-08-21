@@ -65,13 +65,40 @@ namespace ClangPowerTools
       return File.Exists(path);
     }
 
-    public bool OldGeneralSettingsExists()
+    public void HandleOldSettings()
+    {
+      if (OldGeneralSettingsExists())
+      {
+        MapOldSettings();
+        SaveSettings();
+        DeleteOldSettings();
+      }
+    }
+
+    public void DeleteSettings()
+    {
+      string[] file = Directory.GetFiles(settingsPath, SettingsFileName);
+      if (file.Length > 0)
+      {
+        File.Delete(file[0]);
+      }
+    }
+
+    public void ResetSettings()
+    {
+      SettingsModelProvider.CompilerSettings = new CompilerSettingsModel();
+      SettingsModelProvider.FormatSettings = new FormatSettingsModel();
+      SettingsModelProvider.TidySettings = new TidySettingsModel();
+      SaveSettings();
+    }
+
+    private bool OldGeneralSettingsExists()
     {
       string path = GetSettingsFilePath(settingsPath, GeneralConfigurationFileName);
       return File.Exists(path);
     }
 
-    public void MapOldSettings()
+    private void MapOldSettings()
     {
       ClangOptions clangOptions = LoadOldSettingsFromFile(new ClangOptions(), GeneralConfigurationFileName);
       MapClangOptionsToCompilerSettings(clangOptions);
@@ -97,29 +124,13 @@ namespace ClangPowerTools
       return settings;
     }
 
-    public void DeleteOldSettings()
+    private void DeleteOldSettings()
     {
       string[] files = Directory.GetFiles(settingsPath, "*.config");
       foreach (var file in files)
       {
         File.Delete(file);
       }
-    }
-
-    public void DeleteSettings()
-    {
-      string[] file = Directory.GetFiles(settingsPath, SettingsFileName);
-      if (file.Length > 0)
-      {
-        File.Delete(file[0]);
-      }
-    }
-
-    public void ResetSettings()
-    {
-      SettingsModelProvider.CompilerSettings = new CompilerSettingsModel();
-      SettingsModelProvider.FormatSettings = new FormatSettingsModel();
-      SettingsModelProvider.TidySettings = new TidySettingsModel();
     }
 
     private static List<object> CreateModelsList()

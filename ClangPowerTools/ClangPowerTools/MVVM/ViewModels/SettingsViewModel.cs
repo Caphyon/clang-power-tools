@@ -25,11 +25,9 @@ namespace ClangPowerTools
       {
         cptSettings.LoadSettings();
       }
-      else if(cptSettings.OldGeneralSettingsExists())
+      else 
       {
-        cptSettings.MapOldSettings();
-        cptSettings.SaveSettings();
-        cptSettings.DeleteOldSettings();
+        cptSettings.HandleOldSettings();
       }
     }
     #endregion
