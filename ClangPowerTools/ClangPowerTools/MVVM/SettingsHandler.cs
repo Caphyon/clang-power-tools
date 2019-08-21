@@ -9,15 +9,6 @@ namespace ClangPowerTools
 {
   public class SettingsHandler
   {
-    public string SettingsPath
-    {
-      get
-      {
-        return settingsPath;
-      }
-      private set { }
-    }
-
     private string settingsPath = string.Empty;
     private readonly string SettingsFileName = "settings.json";
     private readonly string GeneralConfigurationFileName = "GeneralConfiguration.config";
@@ -30,33 +21,42 @@ namespace ClangPowerTools
       SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
       settingsPath = settingsPathBuilder.GetPath("");
     }
-
+    /// <summary>
+    /// Save settings at a custom path
+    /// </summary>
+    /// <param name="path"></param>
     public void SaveSettings(string path)
     {
       List<object> models = CreateModelsList();
-
-      using (StreamWriter file = File.CreateText(GetSettingsFilePath(path, SettingsFileName)))
-      {
-        JsonSerializer serializer = new JsonSerializer();
-        serializer.Formatting = Formatting.Indented;
-        serializer.Serialize(file, models);
-      }
+      SerializeSettings(models, path);
     }
 
+    /// <summary>
+    /// Save settings at the predefined path
+    /// </summary>
+    public void SaveSettings()
+    {
+      List<object> models = CreateModelsList();
+      string path = GetSettingsFilePath(settingsPath, SettingsFileName);
+      SerializeSettings(models, path);
+    }
+
+    /// <summary>
+    /// Load settings from a custom path
+    /// </summary>
+    /// <param name="path"></param>
     public void LoadSettings(string path)
     {
-      using (StreamReader sw = new StreamReader(GetSettingsFilePath(path, SettingsFileName)))
-      {
-        string json = sw.ReadToEnd();
-        JsonSerializer serializer = new JsonSerializer();
-        List<object> models = JsonConvert.DeserializeObject<List<object>>(json);
+      DeserializeSettings(path);
+    }
 
-        //TODO handle error deserialization
-
-        SettingsModelProvider.CompilerSettings = JsonConvert.DeserializeObject<CompilerSettingsModel>(models[0].ToString());
-        SettingsModelProvider.FormatSettings = JsonConvert.DeserializeObject<FormatSettingsModel>(models[1].ToString());
-        SettingsModelProvider.TidySettings = JsonConvert.DeserializeObject<TidySettingsModel>(models[2].ToString());
-      }
+    /// <summary>
+    /// Load settings from the predefined path
+    /// </summary>
+    public void LoadSettings()
+    {
+      string path = GetSettingsFilePath(settingsPath, SettingsFileName);
+      DeserializeSettings(path);
     }
 
     public bool SettingsFileExists()
@@ -119,6 +119,7 @@ namespace ClangPowerTools
     {
       SettingsModelProvider.CompilerSettings = new CompilerSettingsModel();
       SettingsModelProvider.FormatSettings = new FormatSettingsModel();
+      SettingsModelProvider.TidySettings = new TidySettingsModel();
     }
 
     private static List<object> CreateModelsList()
@@ -128,6 +129,32 @@ namespace ClangPowerTools
       models.Add(SettingsModelProvider.FormatSettings);
       models.Add(SettingsModelProvider.TidySettings);
       return models;
+    }
+
+    private void SerializeSettings(List<object> models, string path)
+    {
+      using (StreamWriter file = File.CreateText(path))
+      {
+        JsonSerializer serializer = new JsonSerializer();
+        serializer.Formatting = Formatting.Indented;
+        serializer.Serialize(file, models);
+      }
+    }
+
+    private void DeserializeSettings(string path)
+    {
+      using (StreamReader sw = new StreamReader(path))
+      {
+        string json = sw.ReadToEnd();
+        JsonSerializer serializer = new JsonSerializer();
+        List<object> models = JsonConvert.DeserializeObject<List<object>>(json);
+
+        //TODO handle error deserialization
+
+        SettingsModelProvider.CompilerSettings = JsonConvert.DeserializeObject<CompilerSettingsModel>(models[0].ToString());
+        SettingsModelProvider.FormatSettings = JsonConvert.DeserializeObject<FormatSettingsModel>(models[1].ToString());
+        SettingsModelProvider.TidySettings = JsonConvert.DeserializeObject<TidySettingsModel>(models[2].ToString());
+      }
     }
 
     private string GetSettingsFilePath(string path, string fileName)

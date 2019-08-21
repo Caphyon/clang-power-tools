@@ -23,12 +23,12 @@ namespace ClangPowerTools
     {
       if (cptSettings.SettingsFileExists())
       {
-        cptSettings.LoadSettings(cptSettings.SettingsPath);
+        cptSettings.LoadSettings();
       }
       else if(cptSettings.OldGeneralSettingsExists())
       {
         cptSettings.MapOldSettings();
-        cptSettings.SaveSettings(cptSettings.SettingsPath);
+        cptSettings.SaveSettings();
         cptSettings.DeleteOldSettings();
       }
     }
@@ -38,7 +38,7 @@ namespace ClangPowerTools
     #region Methods
     public void OnClosed(object sender, EventArgs e)
     {
-      cptSettings.SaveSettings(cptSettings.SettingsPath);
+      cptSettings.SaveSettings();
       settingsView.Closed -= OnClosed;
     }
 

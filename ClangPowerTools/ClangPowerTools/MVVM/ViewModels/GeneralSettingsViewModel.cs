@@ -13,6 +13,7 @@ namespace ClangPowerTools
     private ICommand logoutCommand;
     private ICommand exportSettingsCommand;
     private ICommand importSettingsCommand;
+    private ICommand resetSettingsCommand;
     #endregion
 
     #region Commands
@@ -23,12 +24,17 @@ namespace ClangPowerTools
 
     public ICommand ExportSettingsCommand
     {
-      get => logoutCommand ?? (exportSettingsCommand = new RelayCommand(() => ExportSettings(), () => CanExecute));
+      get => exportSettingsCommand ?? (exportSettingsCommand = new RelayCommand(() => ExportSettings(), () => CanExecute));
     }
 
     public ICommand ImportSettingssCommand
     {
-      get => logoutCommand ?? (importSettingsCommand = new RelayCommand(() => ImportSettings(), () => CanExecute));
+      get => importSettingsCommand ?? (importSettingsCommand = new RelayCommand(() => ImportSettings(), () => CanExecute));
+    }
+
+    public ICommand ResetSettingsCommand
+    {
+      get => resetSettingsCommand ?? (importSettingsCommand = new RelayCommand(() => ResetSettings(), () => CanExecute));
     }
 
     #endregion
@@ -70,9 +76,18 @@ namespace ClangPowerTools
 
     private void ImportSettings()
     {
-      string path = OpenFile("settings",".json", "Executable files|*.exe");
-      cptSettings.LoadSettings(path);
+      string path = OpenFile("settings", ".json", "Settings files (.json)|*.json");
+      if (string.IsNullOrEmpty(path) == false)
+      {
+        cptSettings.LoadSettings(path);
+      }
     }
+
+    private void ResetSettings()
+    {
+      cptSettings.ResetSettings();
+    }
+
 
     #endregion
   }

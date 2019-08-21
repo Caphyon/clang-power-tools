@@ -57,10 +57,19 @@
       Command="{Binding ImportSettingssCommand}"
       Content="Import Settings" />
 
+    <!--  Reset Settings  -->
+    <Button
+      Grid.Row="3"
+      Grid.Column="1"
+      Width="120"
+      Height="30"
+      Command="{Binding ResetSettingsCommand}"
+      Content="Reset Settings" />
+
 
     <!--  Logout  -->
     <Button
-      Grid.Row="3"
+      Grid.Row="4"
       Grid.Column="1"
       Width="60"
       Height="30"
