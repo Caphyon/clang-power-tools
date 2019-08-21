@@ -1,11 +1,13 @@
-﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.Items;
+using ClangPowerTools.Commands;
 using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace ClangPowerTools
 {
@@ -100,6 +102,18 @@ namespace ClangPowerTools
       }
 
       return projectsToIgnore;
+    }
+
+    /// <summary>
+    /// Get selected files to encode
+    /// </summary>
+    public static List<string> GetDocumentsToEncode()
+    {
+        var itemsCollector = CompileCommand.Instance.ItemsCollector;
+        itemsCollector.CollectCurrentProjectItems();
+        HashSet<string> selectedFiles = new HashSet<string>();
+        itemsCollector.Items.ForEach(i => selectedFiles.Add(i.GetPath()));
+        return selectedFiles.ToList();
     }
 
     /// <summary>
