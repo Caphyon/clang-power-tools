@@ -12,26 +12,29 @@ namespace ClangPowerTools.Helpers
   public class SolutionManager
   {
 
-    public static bool CheckIfSolutionDoesNotContainCppProject()
+    public static bool ContainsCppProject()
     {
       DTE2 dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
       Solution solution = dte.Solution;
 
       if (solution == null)
       {
-        return true;
+        return false;
       }
 
+      return AnyCppProject(solution);
+    }
+
+    public static bool AnyCppProject(Solution solution)
+    {
       foreach (var project in solution)
       {
-        var proj = (Project)project;
-        if (IsCppProject(proj))
+        if (IsCppProject((Project)project))
         {
-          return false;
+          return true;
         }
       }
-
-      return true;
+      return false;
     }
 
     public static bool IsCppProject(Project project)

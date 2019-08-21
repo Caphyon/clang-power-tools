@@ -104,7 +104,7 @@ namespace ClangPowerTools
       await RegisterVsServicesAsync();
 
       mCommandController = new CommandController(this);
-      mCommandController.areCommandsDisabled = SolutionManager.CheckIfSolutionDoesNotContainCppProject();
+      mCommandController.areCommandsDisabled = SolutionManager.ContainsCppProject() == false;
       CommandTestUtility.CommandController = mCommandController;
 
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;

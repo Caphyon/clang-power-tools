@@ -493,9 +493,9 @@ namespace ClangPowerTools
 
     public void OnOpenedSolution()
     {
-      areCommandsDisabled = SolutionManager.CheckIfSolutionDoesNotContainCppProject();
+      areCommandsDisabled = SolutionManager.ContainsCppProject() == false;
     }
-   
+
     public void OnBeforeSave(object sender, Document aDocument)
     {
       BeforeSaveClangTidy();
