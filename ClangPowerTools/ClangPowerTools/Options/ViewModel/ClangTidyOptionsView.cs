@@ -213,13 +213,14 @@ namespace ClangPowerTools
 
 
     #region Private Methods
+
     private bool DoesSolutionDirectoryContainsClangTidyFile()
     {
 
       VsServiceProvider.TryGetService(typeof(DTE), out object dte);
       var solution = (dte as DTE2).Solution;
 
-      if (solution == null || !solution.IsOpen)
+      if (solution == null || solution.IsOpen == false)
       {
         return false;
       }
