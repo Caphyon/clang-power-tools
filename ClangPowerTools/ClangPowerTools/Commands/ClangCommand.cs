@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.Builder;
 using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.Script;
 using ClangPowerTools.Services;
 using ClangPowerTools.Tests;
@@ -201,8 +202,9 @@ namespace ClangPowerTools
 
     private void InvokeCommand(string runModeParameters, string genericParameters)
     {
-      VsServiceProvider.TryGetService(typeof(SVsSolution), out object vsSolutionService);
-      var vsSolution = vsSolutionService as IVsSolution;
+      var vsSolution = SolutionInfo.IsOpenFolderModeActive() == false ?
+        (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution)) : null;
+
       foreach (var item in mItemsCollector.Items)
       {
         if (StopCommand)
@@ -219,8 +221,7 @@ namespace ClangPowerTools
         Script = $"{runModeParameters.Remove(runModeParameters.Length - 1)} {itemRelatedParameters} {genericParameters}'";
         CommandTestUtility.ScriptCommand = Script;
 
-        if (null != vsSolution)
-          ItemHierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
+        ItemHierarchy = vsSolution != null ? AutomationUtil.GetItemHierarchy(vsSolution, item) : null;
 
         PowerShellWrapper.Invoke(Script, mRunningProcesses);
       }

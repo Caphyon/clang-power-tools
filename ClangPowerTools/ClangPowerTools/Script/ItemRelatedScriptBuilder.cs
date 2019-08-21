@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Builder;
+using ClangPowerTools.Helpers;
 using EnvDTE;
 
 namespace ClangPowerTools.Script
@@ -50,21 +51,21 @@ namespace ClangPowerTools.Script
     /// </summary>
     public void Build()
     {
-      if (mItem is CurrentProjectItem)
+      if(SolutionInfo.OpenFolderModeActive)
       {
-        CreateScriptForProjectItem();
+        CreateScriptForOpenFolderProjectItem();
       }
-      else if (mItem is CurrentProject)
+      else
       {
-        CreateScriptForProject();
+        if (mItem is CurrentProjectItem)
+        {
+          CreateScriptForProjectItem();
+        }
+        else if (mItem is CurrentProject)
+        {
+          CreateScriptForProject();
+        }
       }
-    }
-
-    private void CreateScriptForProject()
-    {
-      Project project = mItem.GetObject() as Project;
-      mScript = $"{mScript} {ScriptConstants.kProject} ''{project.FullName}'' {ScriptConstants.kActiveConfiguration} " +
-        $"''{ProjectConfigurationHandler.GetConfiguration(project)}|{ProjectConfigurationHandler.GetPlatform(project)}''";
     }
 
     private void CreateScriptForProjectItem()
@@ -75,6 +76,22 @@ namespace ClangPowerTools.Script
         $"{ScriptConstants.kFile} ''{projectItem.Properties.Item("FullPath").Value}'' {ScriptConstants.kActiveConfiguration} " +
         $"''{ProjectConfigurationHandler.GetConfiguration(projectItem.ContainingProject)}|{ProjectConfigurationHandler.GetPlatform(projectItem.ContainingProject)}''";
     }
+
+    private void CreateScriptForOpenFolderProjectItem()
+    {
+      var document = DocumentHandler.GetActiveDocument();
+
+      mScript = $"{mScript} " +
+        $"{ScriptConstants.kFile} ''{document.FullName}'' ";
+    }
+
+    private void CreateScriptForProject()
+    {
+      Project project = mItem.GetObject() as Project;
+      mScript = $"{mScript} {ScriptConstants.kProject} ''{project.FullName}'' {ScriptConstants.kActiveConfiguration} " +
+        $"''{ProjectConfigurationHandler.GetConfiguration(project)}|{ProjectConfigurationHandler.GetPlatform(project)}''";
+    }
+
 
     #endregion
 

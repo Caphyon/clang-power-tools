@@ -32,7 +32,6 @@ namespace ClangPowerTools
     public event EventHandler<ClearErrorListEventArgs> ClearErrorListEvent;
     public event EventHandler<EventArgs> ErrorDetectedEvent;
 
-    private SolutionChecker solutionChecker;
     private Commands2 mCommand;
     private CommandUILocation commandUILocation;
     private int currentCommand;
@@ -44,13 +43,12 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public CommandController(AsyncPackage aAsyncPackage, SolutionChecker aSolutionChecker)
+    public CommandController(AsyncPackage aAsyncPackage)
     {
-      solutionChecker = aSolutionChecker;
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {
-        var dte2 = dte as DTE2;
-        mCommand = dte2.Commands as Commands2;
+        var dte2 = (DTE2)dte;
+        mCommand = (Commands2)dte2.Commands;
       }
     }
 
@@ -115,111 +113,10 @@ namespace ClangPowerTools
       {
         return;
       }
-
-      if(solutionChecker.IsOpenFolderModeActive() == false)
-      {
-        await LaunchVsSolutionModeCommandAsync(command.CommandID.ID, commandUILocation);
-      }
-      else
-      {
-        await LaunchOpenFolderModeCommandAsync(command.CommandID.ID, commandUILocation);
-      }
+      await LaunchCommandAsync(command.CommandID.ID, commandUILocation);
     }
 
-    public async Task LaunchVsSolutionModeCommandAsync(int aCommandId, CommandUILocation aCommandUILocation)
-    {
-      switch (aCommandId)
-      {
-        case CommandIds.kSettingsId:
-          {
-            SettingsCommand.Instance.ShowSettings();
-            break;
-          }
-        case CommandIds.kStopClang:
-          {
-            await StopCommand.Instance.RunStopClangCommandAsync();
-            break;
-          }
-        case CommandIds.kClangFormat:
-          {
-            FormatCommand.Instance.RunClangFormat(aCommandUILocation);
-            OnAfterFormatCommand();
-            break;
-          }
-        case CommandIds.kClangFormatToolbarId:
-          {
-            FormatCommand.Instance.RunClangFormat(aCommandUILocation);
-            OnAfterFormatCommand();
-            break;
-          }
-        case CommandIds.kCompileId:
-          {
-            OnBeforeClangCommand(CommandIds.kCompileId);
-            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, aCommandUILocation);
-            OnAfterClangCommand();
-            break;
-          }
-        case CommandIds.kCompileToolbarId:
-          {
-            OnBeforeClangCommand(CommandIds.kCompileId);
-            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, aCommandUILocation);
-            OnAfterClangCommand();
-            break;
-          }
-        case CommandIds.kTidyId:
-          {
-            OnBeforeClangCommand(CommandIds.kTidyId);
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
-            OnAfterClangCommand();
-            break;
-          }
-        case CommandIds.kTidyToolbarId:
-          {
-            OnBeforeClangCommand(CommandIds.kTidyId);
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
-            OnAfterClangCommand();
-            break;
-          }
-        case CommandIds.kTidyFixId:
-          {
-            OnBeforeClangCommand(CommandIds.kTidyFixId);
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, aCommandUILocation);
-            OnAfterClangCommand();
-            break;
-          }
-        case CommandIds.kTidyFixToolbarId:
-          {
-            OnBeforeClangCommand(CommandIds.kTidyFixId);
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, aCommandUILocation);
-            OnAfterClangCommand();
-            break;
-          }
-        case CommandIds.kITidyExportConfigId:
-          {
-            TidyConfigCommand.Instance.ExportConfig();
-            break;
-          }
-        case CommandIds.kIgnoreFormatId:
-          {
-            IgnoreFormatCommand.Instance.RunIgnoreFormatCommand(CommandIds.kIgnoreFormatId);
-            break;
-          }
-        case CommandIds.kIgnoreCompileId:
-          {
-            IgnoreCompileCommand.Instance.RunIgnoreCompileCommand(CommandIds.kIgnoreCompileId);
-            break;
-          }
-        case CommandIds.kLogoutId:
-          {
-            Logout.Instance.LogoutUser();
-            break;
-          }
-        default:
-          break;
-      }
-    }
-
-    public async Task LaunchOpenFolderModeCommandAsync(int aCommandId, CommandUILocation aCommandUILocation)
+    public async Task LaunchCommandAsync(int aCommandId, CommandUILocation aCommandUILocation)
     {
       switch (aCommandId)
       {
@@ -349,6 +246,10 @@ namespace ClangPowerTools
     {
       currentCommand = aCommandId;
       running = true;
+
+      //
+      // Initialize the class which will take care of CMake project building
+      //
 
       if (OutputWindowConstants.commandName.ContainsKey(aCommandId))
       {

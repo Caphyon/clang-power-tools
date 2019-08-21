@@ -59,7 +59,6 @@ namespace ClangPowerTools
     private OutputWindowController mOutputWindowController;
     private CommandController mCommandController;
     private LicenseController mLicenseController;
-    private SolutionChecker solutionChecker = new SolutionChecker();
 
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
@@ -99,7 +98,7 @@ namespace ClangPowerTools
 
       await RegisterVsServicesAsync();
 
-      mCommandController = new CommandController(this, solutionChecker);
+      mCommandController = new CommandController(this);
       CommandTestUtility.CommandController = mCommandController;
 
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
@@ -215,7 +214,6 @@ namespace ClangPowerTools
 
     public int OnAfterOpenSolution(object aPUnkReserved, int aFNewSolution)
     {
-      solutionChecker.SolutionOpen = true;
       return VSConstants.S_OK;
     }
 
@@ -232,7 +230,6 @@ namespace ClangPowerTools
 
     public int OnAfterCloseSolution(object aPUnkReserved)
     {
-      solutionChecker.SolutionOpen = false;
       return VSConstants.S_OK;
     }
 
