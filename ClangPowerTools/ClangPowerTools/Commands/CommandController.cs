@@ -335,15 +335,20 @@ namespace ClangPowerTools
       {
         return;
       }
+      DisplayErrorWindow();
+    }
+
+    private void DisplayErrorWindow()
+    {
       try
       {
         UIUpdater.InvokeAsync(new Action(() =>
-             {
-               var window = new EncodingErrorView(GetSelectedFiles());
-               window.ShowDialog();
-             })).SafeFireAndForget();
+        {
+          var window = new EncodingErrorView(ItemsCollector.GetDocumentsToEncode());
+          window.ShowDialog();
+        })).SafeFireAndForget();
       }
-      catch (Exception){ }
+      catch (Exception) { }
     }
 
     public void OnActiveDocumentCheck(object sender, ActiveDocumentEventArgs e)
@@ -415,15 +420,6 @@ namespace ClangPowerTools
       catch (Exception) { }
 
       return string.Empty;
-    }
-
-    private List<string> GetSelectedFiles()
-    {
-      var itemsCollector = CompileCommand.Instance.ItemsCollector;
-      itemsCollector.CollectCurrentProjectItems();
-      HashSet<string> selectedFiles = new HashSet<string>();
-      itemsCollector.Items.ForEach(i => selectedFiles.Add(i.GetPath()));
-      return selectedFiles.ToList();
     }
 
     #endregion
