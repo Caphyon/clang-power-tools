@@ -428,7 +428,6 @@ namespace ClangPowerTools
         command.Enabled = false;
         return;
       }
-      command.Enabled = true;
 
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte) && !(dte as DTE2).Solution.IsOpen)
       {
