@@ -6,13 +6,9 @@ namespace ClangPowerTools
   {
     #region Constants
 
+    public const string kCppProjectGuid = "{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}";
+
     #region Clang Compile/Tidy constants
-
-    #region Extensions Constants
-
-    public const string kVcxprojExtension = ".vcxproj";
-
-    #endregion
 
     public static readonly List<string> kAcceptedFileExtensions = new List<string>
       { ".c",
