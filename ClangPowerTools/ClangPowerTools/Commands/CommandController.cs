@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
 using ClangPowerTools.Views;
 using EnvDTE;
@@ -443,6 +444,11 @@ namespace ClangPowerTools
       }
     }
 
+    public void OnAddedSolution(Project Project)
+    {
+      areCommandsDisabled = SolutionManager.IsCppProject(Project) == false;
+    }
+
     /// <summary>
     /// Set the VS running build flag to true when the VS build begin.
     /// </summary>
@@ -486,7 +492,11 @@ namespace ClangPowerTools
       OnAfterClangCommand();
     }
 
-
+    public void OnOpenedSolution()
+    {
+      areCommandsDisabled = SolutionManager.CheckIfSolutionDoesNotContainCppProject();
+    }
+   
     public void OnBeforeSave(object sender, Document aDocument)
     {
       BeforeSaveClangTidy();

@@ -67,6 +67,7 @@ namespace ClangPowerTools
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
     private DTEEvents mDteEvents;
+    private SolutionEvents mSolutionEvents;
 
     #endregion
 
@@ -103,7 +104,7 @@ namespace ClangPowerTools
       await RegisterVsServicesAsync();
 
       mCommandController = new CommandController(this);
-      mCommandController.areCommandsDisabled = SolutionDoesNotContainCppProject();
+      mCommandController.areCommandsDisabled = SolutionManager.CheckIfSolutionDoesNotContainCppProject();
       CommandTestUtility.CommandController = mCommandController;
 
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
@@ -132,6 +133,7 @@ namespace ClangPowerTools
         mBuildEvents = dte2.Events.BuildEvents;
         mCommandEvents = dte2.Events.CommandEvents;
         mDteEvents = dte2.Events.DTEEvents;
+        mSolutionEvents = dte2.Events.SolutionEvents;
       }
 
       SettingsProvider.Initialize(this);
@@ -243,10 +245,6 @@ namespace ClangPowerTools
 
     public int OnAfterOpenSolution(object aPUnkReserved, int aFNewSolution)
     {
-      if (mCommandController != null)
-      {
-        mCommandController.areCommandsDisabled = SolutionDoesNotContainCppProject();
-      }
       return VSConstants.S_OK;
     }
 
@@ -270,28 +268,6 @@ namespace ClangPowerTools
 
 
     #region Private Methods
-
-    private bool SolutionDoesNotContainCppProject()
-    {
-      DTE2 dte2 = (DTE2)VsServiceProvider.GetService(typeof(DTE));
-      var solution = dte2.Solution;
-
-      if (solution == null)
-      {
-        return true;
-      }
-
-      foreach (var project in solution)
-      {
-        var proj = (Project)project;
-        if (proj.FullName.EndsWith(ScriptConstants.kVcxprojExtension))
-        {
-          return false;
-        }
-      }
-
-      return true;
-    }
 
     private async Task RegisterVsServicesAsync()
     {
@@ -385,6 +361,12 @@ namespace ClangPowerTools
         mDteEvents.OnBeginShutdown += UnregisterFromEvents;
         mDteEvents.OnBeginShutdown += UnregisterFromCPTEvents;
       }
+
+      if (null != mSolutionEvents)
+      {
+        mSolutionEvents.Opened += mCommandController.OnOpenedSolution;
+        mSolutionEvents.ProjectAdded += mCommandController.OnAddedSolution;
+      }
     }
 
     private void UnregisterFromEvents()
@@ -444,6 +426,12 @@ namespace ClangPowerTools
 
       if (null != mDteEvents)
         mDteEvents.OnBeginShutdown -= UnregisterFromEvents;
+
+      if (null != mSolutionEvents)
+      {
+        mSolutionEvents.Opened -= mCommandController.OnOpenedSolution;
+        mSolutionEvents.ProjectAdded -= mCommandController.OnAddedSolution;
+      }
     }
 
 
