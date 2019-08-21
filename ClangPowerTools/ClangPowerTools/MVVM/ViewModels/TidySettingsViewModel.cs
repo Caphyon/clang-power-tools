@@ -15,6 +15,7 @@ namespace ClangPowerTools
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
 
+    private TidySettingsModel tidySettingsModel;
     private TidyChecksView tidyChecksView;
     private ICommand addDataCommand;
     private ICommand browseCommand;
@@ -22,6 +23,12 @@ namespace ClangPowerTools
     private ICommand exportTidyConfigCommand;
     #endregion
 
+    #region Constructor
+    public TidySettingsViewModel()
+    {
+      tidySettingsModel = SettingsModelProvider.TidySettings;
+    }
+    #endregion
 
     #region Properties
     public ICommand AddDataCommand
@@ -56,11 +63,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return SettingsModelProvider.TidySettings.HeaderFilter;
+        return tidySettingsModel.HeaderFilter;
       }
       set
       {
-        SettingsModelProvider.TidySettings.HeaderFilter = value;
+        tidySettingsModel.HeaderFilter = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HeaderFilter"));
       }
     }
@@ -77,11 +84,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return SettingsModelProvider.TidySettings.UseChecksFrom;
+        return tidySettingsModel.UseChecksFrom;
       }
       set
       {
-        SettingsModelProvider.TidySettings.UseChecksFrom = value;
+        tidySettingsModel.UseChecksFrom = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedUseChecksFrom"));
       }
     }
@@ -90,11 +97,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return SettingsModelProvider.TidySettings.Checks;
+        return tidySettingsModel.Checks;
       }
       set
       {
-        SettingsModelProvider.TidySettings.Checks = value;
+        tidySettingsModel.Checks = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Checks"));
       }
     }
@@ -103,11 +110,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return SettingsModelProvider.TidySettings.CustomExecutable;
+        return tidySettingsModel.CustomExecutable;
       }
       set
       {
-        SettingsModelProvider.TidySettings.CustomExecutable = value;
+        tidySettingsModel.CustomExecutable = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CustomExecutable"));
       }
     }
@@ -116,11 +123,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return SettingsModelProvider.TidySettings.FormatAfterTidy;
+        return tidySettingsModel.FormatAfterTidy;
       }
       set
       {
-        SettingsModelProvider.TidySettings.FormatAfterTidy = value;
+        tidySettingsModel.FormatAfterTidy = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatAfterTidy"));
       }
     }
@@ -129,11 +136,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return SettingsModelProvider.TidySettings.TidyOnSave;
+        return tidySettingsModel.TidyOnSave;
       }
       set
       {
-        SettingsModelProvider.TidySettings.TidyOnSave = value;
+        tidySettingsModel.TidyOnSave = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyOnSave"));
       }
     }

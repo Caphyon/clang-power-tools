@@ -10,12 +10,20 @@ namespace ClangPowerTools
   public class FormatSettingsViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
   {
     #region Members
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    private FormatSettingsModel formatSettingsModel;
     private ICommand fileExtensionsAddDataCommand;
     private ICommand filesToIgnoreAddDataCommand;
     private ICommand assumeFilenameAddDataCommand;
     private ICommand customExecutableBrowseCommand;
+    #endregion
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    #region Constructor
+    public FormatSettingsViewModel()
+    {
+      formatSettingsModel = SettingsModelProvider.FormatSettings;
+    }
     #endregion
 
     #region Commands
@@ -54,11 +62,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return string.IsNullOrWhiteSpace(SettingsModelProvider.FormatSettings.FileExtensions) ? DefaultOptions.FileExtensions : SettingsModelProvider.FormatSettings.FileExtensions;
+        return string.IsNullOrWhiteSpace(formatSettingsModel.FileExtensions) ? DefaultOptions.FileExtensions : formatSettingsModel.FileExtensions;
       }
       set
       {
-        SettingsModelProvider.FormatSettings.FileExtensions = value;
+        formatSettingsModel.FileExtensions = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileExtensions"));
       }
     }
@@ -67,11 +75,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return string.IsNullOrWhiteSpace(SettingsModelProvider.FormatSettings.FilesToIgnore) ? DefaultOptions.IgnoreFiles : SettingsModelProvider.FormatSettings.FilesToIgnore;
+        return string.IsNullOrWhiteSpace(formatSettingsModel.FilesToIgnore) ? DefaultOptions.IgnoreFiles : formatSettingsModel.FilesToIgnore;
       }
       set
       {
-        SettingsModelProvider.FormatSettings.FilesToIgnore = value;
+        formatSettingsModel.FilesToIgnore = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FilesToIgnore"));
       }
     }
@@ -80,11 +88,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return SettingsModelProvider.FormatSettings.AssumeFilename;
+        return formatSettingsModel.AssumeFilename;
       }
       set
       {
-        SettingsModelProvider.FormatSettings.AssumeFilename = value;
+        formatSettingsModel.AssumeFilename = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AssumeFilename"));
       }
     }
@@ -93,11 +101,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return SettingsModelProvider.FormatSettings.CustomExecutable;
+        return formatSettingsModel.CustomExecutable;
       }
       set
       {
-        SettingsModelProvider.FormatSettings.CustomExecutable = value;
+        formatSettingsModel.CustomExecutable = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CustomExecutable"));
       }
     }
@@ -112,10 +120,10 @@ namespace ClangPowerTools
 
     public ClangFormatStyle SelectedStyle
     {
-      get { return SettingsModelProvider.FormatSettings.Style; }
+      get { return formatSettingsModel.Style; }
       set
       {
-        SettingsModelProvider.FormatSettings.Style = value;
+        formatSettingsModel.Style = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedStyle"));
       }
     }
@@ -130,10 +138,10 @@ namespace ClangPowerTools
 
     public ClangFormatFallbackStyle SelectedFallbackStyle
     {
-      get { return SettingsModelProvider.FormatSettings.FallbackStyle; }
+      get { return formatSettingsModel.FallbackStyle; }
       set
       {
-        SettingsModelProvider.FormatSettings.FallbackStyle = value;
+        formatSettingsModel.FallbackStyle = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedFallbackStyle"));
       }
     }
@@ -142,11 +150,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return SettingsModelProvider.FormatSettings.FormatOnSave;
+        return formatSettingsModel.FormatOnSave;
       }
       set
       {
-        SettingsModelProvider.FormatSettings.FormatOnSave = value;
+        formatSettingsModel.FormatOnSave = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOnSave"));
       }
     }
