@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.Services;
+﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.Services;
 using ClangPowerTools.SilentFile;
 using EnvDTE;
 using EnvDTE80;
@@ -94,8 +95,9 @@ namespace ClangPowerTools.Commands
                 fileChangerWatcher.OnChanged += FileOpener.Open;
 
                 var dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
-                string solutionFolderPath = dte2.Solution.FullName
-                  .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
+                string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
+                  dte2.Solution.FullName : dte2.Solution.FullName
+                                            .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
 
                 fileChangerWatcher.Run(solutionFolderPath);
 
