@@ -22,6 +22,7 @@ namespace ClangPowerTools
     #region Constructor
     public FormatSettingsViewModel()
     {
+      ViewModelProvider.FormatSettingsViewModel = this;
       formatSettingsModel = SettingsModelProvider.FormatSettings;
     }
     #endregion

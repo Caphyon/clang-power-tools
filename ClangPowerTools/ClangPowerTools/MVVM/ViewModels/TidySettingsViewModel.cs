@@ -26,6 +26,7 @@ namespace ClangPowerTools
     #region Constructor
     public TidySettingsViewModel()
     {
+      ViewModelProvider.TidySettingsViewModel = this;
       tidySettingsModel = SettingsModelProvider.TidySettings;
     }
     #endregion

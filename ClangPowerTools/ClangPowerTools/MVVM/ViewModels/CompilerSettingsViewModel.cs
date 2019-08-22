@@ -22,6 +22,7 @@ namespace ClangPowerTools
     #region Constructor
     public CompilerSettingsViewModel()
     {
+      ViewModelProvider.CompilerSettingsViewModel = this;
       compilerSettingsModel = SettingsModelProvider.CompilerSettings;
     }
     #endregion
