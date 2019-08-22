@@ -268,6 +268,37 @@ namespace ClangPowerTools
 
     #endregion
 
+    #region IVsSolutionEvents7 Implementation
+
+    public void OnAfterOpenFolder(string folderPath)
+    {
+      if (mCommandController != null)
+      {
+        mCommandController.areCommandsDisabled = SolutionInfo.IsOpenFolderModeActive() == false;
+      }
+    }
+
+    public void OnBeforeCloseFolder(string folderPath)
+    {
+
+    }
+
+    public void OnQueryCloseFolder(string folderPath, ref int pfCancel)
+    {
+
+    }
+
+    public void OnAfterCloseFolder(string folderPath)
+    {
+
+    }
+
+    public void OnAfterLoadAllDeferredProjects()
+    {
+
+    }
+
+    #endregion
 
     #region Private Methods
 
@@ -445,38 +476,6 @@ namespace ClangPowerTools
         cb.Visible = true;
       }
     }
-
-    #region IVsSolutionEvents7 Implementation
-
-    public void OnAfterOpenFolder(string folderPath)
-    {
-      if (mCommandController != null)
-      {
-        mCommandController.areCommandsDisabled = SolutionInfo.IsOpenFolderModeActive() == false;
-      }
-    }
-
-    public void OnBeforeCloseFolder(string folderPath)
-    {
-
-    }
-
-    public void OnQueryCloseFolder(string folderPath, ref int pfCancel)
-    {
-
-    }
-
-    public void OnAfterCloseFolder(string folderPath)
-    {
-
-    }
-
-    public void OnAfterLoadAllDeferredProjects()
-    {
-
-    }
-
-    #endregion
 
     #endregion
 
