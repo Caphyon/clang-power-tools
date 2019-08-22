@@ -1,6 +1,6 @@
-﻿using ClangPowerTools.Commands;
+﻿using ClangPowerTools.CMake;
+using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
-using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
 using ClangPowerTools.Views;
 using EnvDTE;
@@ -247,10 +247,6 @@ namespace ClangPowerTools
       currentCommand = aCommandId;
       running = true;
 
-      //
-      // Initialize the class which will take care of CMake project building
-      //
-
       if (OutputWindowConstants.commandName.ContainsKey(aCommandId))
       {
         DisplayStartedMessage(aCommandId, true);
@@ -268,6 +264,8 @@ namespace ClangPowerTools
     private void OnAfterClangCommand()
     {
       running = false;
+      var cMakeBuilder = new CMakeBuilder();
+      cMakeBuilder.ClearBuildCashe();
     }
 
     private void OnAfterFormatCommand()
