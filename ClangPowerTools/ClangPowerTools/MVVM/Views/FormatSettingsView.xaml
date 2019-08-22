@@ -58,7 +58,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding FileExtensions}" />
+      Text="{Binding FormatModel.FileExtensions}" />
 
     <Button
       Grid.Row="1"
@@ -88,7 +88,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding FilesToIgnore}" />
+      Text="{Binding FormatModel.FilesToIgnore}" />
 
     <Button
       Grid.Row="2"
@@ -118,7 +118,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding AssumeFilename}" />
+      Text="{Binding FormatModel.AssumeFilename}" />
 
     <Button
       Grid.Row="3"
@@ -148,7 +148,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding CustomExecutable}" />
+      Text="{Binding FormatModel.CustomExecutable}" />
 
     <Button
       Grid.Row="4"
@@ -174,8 +174,8 @@
       Grid.Column="2"
       Height="30"
       Margin="0,0,20,0"
-      ItemsSource="{Binding Styles}"
-      SelectedItem="{Binding SelectedStyle}" />
+      ItemsSource="{Binding StyleItems}"
+      SelectedItem="{Binding FormatModel.Style}" />
 
 
     <!--  Fallback style  -->
@@ -194,8 +194,8 @@
       Grid.Column="2"
       Height="30"
       Margin="0,0,20,0"
-      ItemsSource="{Binding FallbackStyles}"
-      SelectedItem="{Binding SelectedFallbackStyle}" />
+      ItemsSource="{Binding FallBackStyleItems}"
+      SelectedItem="{Binding FormatModel.FallbackStyle}" />
 
     <!--  Format on Save  -->
     <TextBlock
@@ -213,7 +213,7 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding FormatOnSave}">
+      IsChecked="{Binding FormatModel.FormatOnSave}">
       <CheckBox.LayoutTransform>
         <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
       </CheckBox.LayoutTransform>

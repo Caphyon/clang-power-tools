@@ -12,38 +12,26 @@ namespace ClangPowerTools
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
 
+    private CompilerSettingsModel compilerModel;
     private ICommand compileFlagsAddDataCommand;
     private ICommand filesToIgnoreAddDataCommand;
     private ICommand projectsToIgnoreAddDataCommand;
     #endregion
 
-    #region Constructor
-    public CompilerSettingsViewModel()
-    {
-      SettingsViewModelProvider.CompilerSettingsViewModel = this;
-    }
-    #endregion
-
-    #region Commands
-    public ICommand CompileFlagsAddDataCommand
-    {
-      get => compileFlagsAddDataCommand ?? (compileFlagsAddDataCommand = new RelayCommand(() => CompileFlags = OpenContentDialog(CompileFlags), () => CanExecute));
-    }
-
-    public ICommand FilesToIgnoreAddDataCommand
-    {
-      get => filesToIgnoreAddDataCommand ?? (filesToIgnoreAddDataCommand = new RelayCommand(() => FilesToIgnore = OpenContentDialog(FilesToIgnore), () => CanExecute));
-    }
-
-    public ICommand ProjectsToIgnoreAddDataCommand
-    {
-      get => projectsToIgnoreAddDataCommand ?? (projectsToIgnoreAddDataCommand = new RelayCommand(() => ProjectsToIgnore = OpenContentDialog(ProjectsToIgnore), () => CanExecute));
-    }
-
-    #endregion
-
-
     #region Properties
+    public CompilerSettingsModel CompilerModel
+    {
+      get
+      {
+        return compilerModel;
+      }
+      set
+      {
+        compilerModel = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CompilerModel"));
+      }
+    }
+
     public bool CanExecute
     {
       get
@@ -52,120 +40,39 @@ namespace ClangPowerTools
       }
     }
 
-    public string CompileFlags
-    {
-      get
-      {
-        return string.IsNullOrWhiteSpace(SettingsModelProvider.CompilerSettings.CompileFlags) ? DefaultOptions.ClangFlags : SettingsModelProvider.CompilerSettings.CompileFlags;
-      }
-      set
-      {
-        SettingsModelProvider.CompilerSettings.CompileFlags = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CompileFlags"));
-      }
-    }
-
-    public string FilesToIgnore
-    {
-      get
-      {
-        return SettingsModelProvider.CompilerSettings.FilesToIgnore;
-      }
-      set
-      {
-        SettingsModelProvider.CompilerSettings.FilesToIgnore = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FilesToIgnore"));
-      }
-    }
-
-    public string ProjectsToIgnore
-    {
-      get
-      {
-        return SettingsModelProvider.CompilerSettings.ProjectsToIgnore;
-      }
-      set
-      {
-        SettingsModelProvider.CompilerSettings.ProjectsToIgnore = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ProjectToIgnore"));
-      }
-    }
-
-    public IEnumerable<ClangGeneralAdditionalIncludes> AdditionalIncludes
+    public IEnumerable<ClangGeneralAdditionalIncludes> AdditionalIncludesItems
     {
       get
       {
         return Enum.GetValues(typeof(ClangGeneralAdditionalIncludes)).Cast<ClangGeneralAdditionalIncludes>();
       }
     }
+    #endregion
 
-    public ClangGeneralAdditionalIncludes SelectedAdditionalInclude
+    #region Constructor
+    public CompilerSettingsViewModel()
     {
-      get { return SettingsModelProvider.CompilerSettings.AdditionalIncludes; }
-      set
-      {
-        SettingsModelProvider.CompilerSettings.AdditionalIncludes = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedAdditionalInclude"));
-      }
+      compilerModel = new CompilerSettingsModel();
+      SettingsViewModelProvider.CompilerSettingsViewModel = this;
+    }
+    #endregion
+
+
+
+    #region Commands
+    public ICommand CompileFlagsAddDataCommand
+    {
+      get => compileFlagsAddDataCommand ?? (compileFlagsAddDataCommand = new RelayCommand(() => CompilerModel.CompileFlags = OpenContentDialog(CompilerModel.CompileFlags), () => CanExecute));
     }
 
-    public bool WarningsAsErrors
+    public ICommand FilesToIgnoreAddDataCommand
     {
-      get
-      {
-        return SettingsModelProvider.CompilerSettings.WarningsAsErrors;
-      }
-
-      set
-      {
-        SettingsModelProvider.CompilerSettings.WarningsAsErrors = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WarningsAsErrors"));
-      }
+      get => filesToIgnoreAddDataCommand ?? (filesToIgnoreAddDataCommand = new RelayCommand(() => CompilerModel.FilesToIgnore = OpenContentDialog(CompilerModel.FilesToIgnore), () => CanExecute));
     }
 
-    public bool ContinueOnError
+    public ICommand ProjectsToIgnoreAddDataCommand
     {
-      get
-      {
-        return SettingsModelProvider.CompilerSettings.ContinueOnError;
-      }
-      set
-      {
-        SettingsModelProvider.CompilerSettings.ContinueOnError = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ContinueOnErrorOnError"));
-      }
-    }
-
-    public bool ClangCompileAfterMSCVCompile
-    {
-      get
-      { return SettingsModelProvider.CompilerSettings.ClangCompileAfterMSCVCompile; }
-      set
-      {
-        SettingsModelProvider.CompilerSettings.ClangCompileAfterMSCVCompile = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ClangCompileAfterMSCVCompile"));
-      }
-    }
-
-    public bool VerboseMode
-    {
-      get
-      {
-        return SettingsModelProvider.CompilerSettings.VerboseMode;
-      }
-      set
-      {
-        SettingsModelProvider.CompilerSettings.VerboseMode = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("VerboseMode"));
-      }
-    }
-
-    public string Version
-    {
-      get
-      {
-        return SettingsModelProvider.CompilerSettings.Version;
-      }
+      get => projectsToIgnoreAddDataCommand ?? (projectsToIgnoreAddDataCommand = new RelayCommand(() => CompilerModel.ProjectsToIgnore = OpenContentDialog(CompilerModel.ProjectsToIgnore), () => CanExecute));
     }
 
     #endregion

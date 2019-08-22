@@ -8,14 +8,9 @@ namespace ClangPowerTools
 {
   public class SettingsViewModelProvider
   {
-    public static CompilerSettingsViewModel CompilerSettingsViewModel { get; set; }
-    public static FormatSettingsViewModel FormatSettingsViewModel { get; set; }
-    public static TidySettingsViewModel TidySettingsViewModel { get; set; }
+    public static CompilerSettingsViewModel CompilerSettingsViewModel { get; set; } = new CompilerSettingsViewModel();
+    public static FormatSettingsViewModel FormatSettingsViewModel { get; set; } = new FormatSettingsViewModel();
+    public static TidySettingsViewModel TidySettingsViewModel { get; set; } = new TidySettingsViewModel();
 
-
-    public void RefreshCompilerSettingsViewModel()
-    {
-      CompilerSettingsViewModel.WarningsAsErrors = SettingsModelProvider.CompilerSettings.WarningsAsErrors;
-    }
   }
 }

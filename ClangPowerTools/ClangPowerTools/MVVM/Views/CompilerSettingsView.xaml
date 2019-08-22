@@ -58,7 +58,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding CompileFlags}" />
+      Text="{Binding CompilerModel.CompileFlags}" />
 
     <Button
       Grid.Row="1"
@@ -88,7 +88,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding FilesToIgnore}" />
+      Text="{Binding CompilerModel.FilesToIgnore}" />
 
     <Button
       Grid.Row="2"
@@ -118,7 +118,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding ProjectsToIgnore}" />
+      Text="{Binding CompilerModel.ProjectsToIgnore}" />
 
     <Button
       Grid.Row="3"
@@ -144,8 +144,8 @@
       Grid.Column="2"
       Height="30"
       Margin="0,0,20,0"
-      ItemsSource="{Binding AdditionalIncludes}"
-      SelectedItem="{Binding SelectedAdditionalInclude}" />
+      ItemsSource="{Binding AdditionalIncludesItems}"
+      SelectedItem="{Binding CompilerModel.AdditionalIncludes}" />
 
 
     <!--  Warning as errors  -->
@@ -164,7 +164,7 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding WarningsAsErrors}">
+      IsChecked="{Binding CompilerModel.WarningsAsErrors}">
       <CheckBox.LayoutTransform>
         <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
       </CheckBox.LayoutTransform>
@@ -186,7 +186,7 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding ContinueOnError}">
+      IsChecked="{Binding CompilerModel.ContinueOnError}">
       <CheckBox.LayoutTransform>
         <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
       </CheckBox.LayoutTransform>
@@ -208,7 +208,7 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding ClangCompileAfterMSCVCompile}">
+      IsChecked="{Binding CompilerModel.ClangCompileAfterMSCVCompile}">
       <CheckBox.LayoutTransform>
         <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
       </CheckBox.LayoutTransform>
@@ -230,7 +230,7 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding VerboseMode}">
+      IsChecked="{Binding CompilerModel.VerboseMode}">
       <CheckBox.LayoutTransform>
         <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
       </CheckBox.LayoutTransform>
@@ -245,7 +245,7 @@
       FontFamily="SegoeUI"
       FontSize="10"
       Foreground="#E2E2E8"
-      Text="{Binding Version}" />
+      Text="{Binding CompilerModel.Version}" />
 
   </Grid>
 </UserControl>

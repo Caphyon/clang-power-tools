@@ -2,7 +2,7 @@
 {
   public class CompilerSettingsModel
   {
-    public string CompileFlags { get; set; } = string.Empty;
+    public string CompileFlags { get; set; } = DefaultOptions.ClangFlags;
 
     public string FilesToIgnore { get; set; } = string.Empty;
 

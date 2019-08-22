@@ -15,6 +15,7 @@ namespace ClangPowerTools
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
 
+    private TidySettingsModel tidyModel;
     private TidyChecksView tidyChecksView;
     private ICommand addDataCommand;
     private ICommand browseCommand;
@@ -22,22 +23,56 @@ namespace ClangPowerTools
     private ICommand exportTidyConfigCommand;
     #endregion
 
+    #region Properties
+    public TidySettingsModel TidyModel
+    {
+      get
+      {
+        return tidyModel;
+      }
+      set
+      {
+        tidyModel = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyModel"));
+      }
+    }
+
+    public bool CanExecute
+    {
+      get
+      {
+        return true;
+      }
+    }
+
+
+    public IEnumerable<ClangTidyChecksFrom> UseChecksFromItems
+    {
+      get
+      {
+        return Enum.GetValues(typeof(ClangTidyChecksFrom)).Cast<ClangTidyChecksFrom>();
+      }
+    }
+
+    #endregion
+
     #region Constructor
     public TidySettingsViewModel()
     {
+      tidyModel = new TidySettingsModel();
       SettingsViewModelProvider.TidySettingsViewModel = this;
     }
     #endregion
 
-    #region Properties
+    #region Commands
     public ICommand AddDataCommand
     {
-      get => addDataCommand ?? (addDataCommand = new RelayCommand(() => HeaderFilter = OpenContentDialog(HeaderFilter), () => CanExecute));
+      get => addDataCommand ?? (addDataCommand = new RelayCommand(() => TidyModel.HeaderFilter = OpenContentDialog(TidyModel.HeaderFilter), () => CanExecute));
     }
 
     public ICommand BrowseCommand
     {
-      get => browseCommand ?? (browseCommand = new RelayCommand(() => CustomExecutable = OpenFile(string.Empty, ".exe", "Executable files|*.exe"), () => CanExecute));
+      get => browseCommand ?? (browseCommand = new RelayCommand(() => TidyModel.CustomExecutable = OpenFile(string.Empty, ".exe", "Executable files|*.exe"), () => CanExecute));
     }
 
     public ICommand SelectCommand
@@ -50,99 +85,6 @@ namespace ClangPowerTools
       get => exportTidyConfigCommand ?? (exportTidyConfigCommand = new RelayCommand(() => ExportTidyConfig(), () => CanExecute));
     }
 
-    public bool CanExecute
-    {
-      get
-      {
-        return true;
-      }
-    }
-
-    public string HeaderFilter
-    {
-      get
-      {
-        return SettingsModelProvider.TidySettings.HeaderFilter;
-      }
-      set
-      {
-        SettingsModelProvider.TidySettings.HeaderFilter = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HeaderFilter"));
-      }
-    }
-
-    public IEnumerable<ClangTidyChecksFrom> UseChecksFrom
-    {
-      get
-      {
-        return Enum.GetValues(typeof(ClangTidyChecksFrom)).Cast<ClangTidyChecksFrom>();
-      }
-    }
-
-    public ClangTidyChecksFrom SelectedUseChecksFrom
-    {
-      get
-      {
-        return SettingsModelProvider.TidySettings.UseChecksFrom;
-      }
-      set
-      {
-        SettingsModelProvider.TidySettings.UseChecksFrom = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedUseChecksFrom"));
-      }
-    }
-
-    public string Checks
-    {
-      get
-      {
-        return SettingsModelProvider.TidySettings.Checks;
-      }
-      set
-      {
-        SettingsModelProvider.TidySettings.Checks = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Checks"));
-      }
-    }
-
-    public string CustomExecutable
-    {
-      get
-      {
-        return SettingsModelProvider.TidySettings.CustomExecutable;
-      }
-      set
-      {
-        SettingsModelProvider.TidySettings.CustomExecutable = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CustomExecutable"));
-      }
-    }
-
-    public bool FormatAfterTidy
-    {
-      get
-      {
-        return SettingsModelProvider.TidySettings.FormatAfterTidy;
-      }
-      set
-      {
-        SettingsModelProvider.TidySettings.FormatAfterTidy = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatAfterTidy"));
-      }
-    }
-
-    public bool TidyOnSave
-    {
-      get
-      {
-        return SettingsModelProvider.TidySettings.TidyOnSave;
-      }
-      set
-      {
-        SettingsModelProvider.TidySettings.TidyOnSave = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyOnSave"));
-      }
-    }
     #endregion
 
     #region Methods
@@ -152,9 +94,9 @@ namespace ClangPowerTools
 
       var task = Task.Run(() =>
       {
-        if (CustomExecutable.Length > 3)
+        if (TidyModel.CustomExecutable.Length > 3)
         {
-          Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, CustomExecutable, EnvironmentVariableTarget.User);
+          Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, TidyModel.CustomExecutable, EnvironmentVariableTarget.User);
         }
         else
         {
@@ -179,7 +121,7 @@ namespace ClangPowerTools
 
     private void OnClosed(object sender, EventArgs e)
     {
-      Checks = GetSelectedChecks();
+      TidyModel.Checks = GetSelectedChecks();
       tidyChecksView.Closed -= OnClosed;
     }
 

@@ -58,7 +58,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding HeaderFilter}" />
+      Text="{Binding TidyModel.HeaderFilter}" />
 
     <Button
       Grid.Row="1"
@@ -84,8 +84,8 @@
       Grid.Column="2"
       Height="30"
       Margin="0,0,20,0"
-      ItemsSource="{Binding UseChecksFrom}"
-      SelectedItem="{Binding SelectedUseChecksFrom}" />
+      ItemsSource="{Binding UseChecksFromItems}"
+      SelectedItem="{Binding TidyModel.UseChecksFrom}" />
 
     <!--  Checks  -->
     <TextBlock
@@ -107,7 +107,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding Checks}" />
+      Text="{Binding TidyModel.Checks}" />
 
     <Button
       Grid.Row="3"
@@ -137,7 +137,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding CustomExecutable}" />
+      Text="{Binding TidyModel.CustomExecutable}" />
 
     <Button
       Grid.Row="4"
@@ -163,7 +163,7 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding FormatAfterTidy}">
+      IsChecked="{Binding TidyModel.FormatAfterTidy}">
       <CheckBox.LayoutTransform>
         <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
       </CheckBox.LayoutTransform>
@@ -185,7 +185,7 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding TidyOnSave}">
+      IsChecked="{Binding TidyModel.TidyOnSave}">
       <CheckBox.LayoutTransform>
         <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
       </CheckBox.LayoutTransform>

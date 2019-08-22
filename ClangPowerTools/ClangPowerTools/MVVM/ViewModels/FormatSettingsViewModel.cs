@@ -12,43 +12,28 @@ namespace ClangPowerTools
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
 
+    private FormatSettingsModel formatModel;
     private ICommand fileExtensionsAddDataCommand;
     private ICommand filesToIgnoreAddDataCommand;
     private ICommand assumeFilenameAddDataCommand;
     private ICommand customExecutableBrowseCommand;
     #endregion
 
-    #region Constructor
-    public FormatSettingsViewModel()
-    {
-      SettingsViewModelProvider.FormatSettingsViewModel = this;
-    }
-    #endregion
-
-    #region Commands
-    public ICommand FileExtensionsAddDataCommand
-    {
-      get => fileExtensionsAddDataCommand ?? (fileExtensionsAddDataCommand = new RelayCommand(() => FileExtensions = OpenContentDialog(FileExtensions), () => CanExecute));
-    }
-
-    public ICommand FilesToIgnoreAddDataCommand
-    {
-      get => filesToIgnoreAddDataCommand ?? (filesToIgnoreAddDataCommand = new RelayCommand(() => FilesToIgnore = OpenContentDialog(FilesToIgnore), () => CanExecute));
-    }
-
-    public ICommand AssumeFilenameAddDataCommand
-    {
-      get => assumeFilenameAddDataCommand ?? (assumeFilenameAddDataCommand = new RelayCommand(() => AssumeFilename = OpenContentDialog(AssumeFilename), () => CanExecute));
-    }
-
-    public ICommand CustomExecutableBrowseCommand
-    {
-      get => customExecutableBrowseCommand ?? (customExecutableBrowseCommand = new RelayCommand(() => CustomExecutable = OpenFile(string.Empty, ".exe", "Executable files|*.exe"), () => CanExecute));
-    }
-    #endregion
-
-
     #region Properties
+    public FormatSettingsModel FormatModel
+    {
+      get
+      {
+        return formatModel;
+      }
+      set
+      {
+        formatModel = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatModel"));
+      }
+    }
+
+
     public bool CanExecute
     {
       get
@@ -56,60 +41,16 @@ namespace ClangPowerTools
         return true;
       }
     }
+    #endregion
 
-    public string FileExtensions
+    #region Constructor
+    public FormatSettingsViewModel()
     {
-      get
-      {
-        return string.IsNullOrWhiteSpace(SettingsModelProvider.FormatSettings.FileExtensions) ? DefaultOptions.FileExtensions : SettingsModelProvider.FormatSettings.FileExtensions;
-      }
-      set
-      {
-        SettingsModelProvider.FormatSettings.FileExtensions = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileExtensions"));
-      }
+      formatModel = new FormatSettingsModel();
+      SettingsViewModelProvider.FormatSettingsViewModel = this;
     }
 
-    public string FilesToIgnore
-    {
-      get
-      {
-        return string.IsNullOrWhiteSpace(SettingsModelProvider.FormatSettings.FilesToIgnore) ? DefaultOptions.IgnoreFiles : SettingsModelProvider.FormatSettings.FilesToIgnore;
-      }
-      set
-      {
-        SettingsModelProvider.FormatSettings.FilesToIgnore = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FilesToIgnore"));
-      }
-    }
-
-    public string AssumeFilename
-    {
-      get
-      {
-        return SettingsModelProvider.FormatSettings.AssumeFilename;
-      }
-      set
-      {
-        SettingsModelProvider.FormatSettings.AssumeFilename = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AssumeFilename"));
-      }
-    }
-
-    public string CustomExecutable
-    {
-      get
-      {
-        return SettingsModelProvider.FormatSettings.CustomExecutable;
-      }
-      set
-      {
-        SettingsModelProvider.FormatSettings.CustomExecutable = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CustomExecutable"));
-      }
-    }
-
-    public IEnumerable<ClangFormatStyle> Styles
+    public IEnumerable<ClangFormatStyle> StyleItems
     {
       get
       {
@@ -117,17 +58,7 @@ namespace ClangPowerTools
       }
     }
 
-    public ClangFormatStyle SelectedStyle
-    {
-      get { return SettingsModelProvider.FormatSettings.Style; }
-      set
-      {
-        SettingsModelProvider.FormatSettings.Style = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedStyle"));
-      }
-    }
-
-    public IEnumerable<ClangFormatFallbackStyle> FallbackStyles
+    public IEnumerable<ClangFormatFallbackStyle> FallBackStyleItems
     {
       get
       {
@@ -135,28 +66,32 @@ namespace ClangPowerTools
       }
     }
 
-    public ClangFormatFallbackStyle SelectedFallbackStyle
+
+  #endregion
+
+  #region Commands
+  public ICommand FileExtensionsAddDataCommand
     {
-      get { return SettingsModelProvider.FormatSettings.FallbackStyle; }
-      set
-      {
-        SettingsModelProvider.FormatSettings.FallbackStyle = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedFallbackStyle"));
-      }
+      get => fileExtensionsAddDataCommand ?? (fileExtensionsAddDataCommand = new RelayCommand(() => FormatModel.FileExtensions = OpenContentDialog(FormatModel.FileExtensions), () => CanExecute));
     }
 
-    public bool FormatOnSave
+    public ICommand FilesToIgnoreAddDataCommand
     {
-      get
-      {
-        return SettingsModelProvider.FormatSettings.FormatOnSave;
-      }
-      set
-      {
-        SettingsModelProvider.FormatSettings.FormatOnSave = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOnSave"));
-      }
+      get => filesToIgnoreAddDataCommand ?? (filesToIgnoreAddDataCommand = new RelayCommand(() => FormatModel.FilesToIgnore = OpenContentDialog(FormatModel.FilesToIgnore), () => CanExecute));
+    }
+
+    public ICommand AssumeFilenameAddDataCommand
+    {
+      get => assumeFilenameAddDataCommand ?? (assumeFilenameAddDataCommand = new RelayCommand(() => FormatModel.AssumeFilename = OpenContentDialog(FormatModel.AssumeFilename), () => CanExecute));
+    }
+
+    public ICommand CustomExecutableBrowseCommand
+    {
+      get => customExecutableBrowseCommand ?? (customExecutableBrowseCommand = new RelayCommand(() => FormatModel.CustomExecutable = OpenFile(string.Empty, ".exe", "Executable files|*.exe"), () => CanExecute));
     }
     #endregion
+
+
+
   }
 }

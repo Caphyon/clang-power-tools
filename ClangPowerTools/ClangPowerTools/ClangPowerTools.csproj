@@ -91,7 +91,6 @@
     <Compile Include="MVVM\Models\FormatSettingsModel.cs" />
     <Compile Include="MVVM\Models\LicenseModel.cs" />
     <Compile Include="MVVM\SettingsHandler.cs" />
-    <Compile Include="MVVM\Providers\SettingsModelProvider.cs" />
     <Compile Include="MVVM\TidyChecks.cs" />
     <Compile Include="MVVM\Providers\SettingsViewModelProvider.cs" />
     <Compile Include="MVVM\ViewModels\GeneralSettingsViewModel.cs" />

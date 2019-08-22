@@ -6,7 +6,7 @@ namespace ClangPowerTools
   public class SettingsViewModel
   {
     #region Members
-    private SettingsHandler cptSettings = new SettingsHandler();
+    private SettingsHandler settingsHandler = new SettingsHandler();
     private SettingsView settingsView;
 
     #endregion;
@@ -21,13 +21,13 @@ namespace ClangPowerTools
 
     private void InitializeSettings()
     {
-      if (cptSettings.SettingsFileExists())
+      if (settingsHandler.SettingsFileExists())
       {
-        cptSettings.LoadSettings();
+        settingsHandler.LoadSettings();
       }
       else 
       {
-        cptSettings.ImportOldSettings();
+        settingsHandler.ImportOldSettings();
       }
     }
     #endregion
@@ -36,7 +36,7 @@ namespace ClangPowerTools
     #region Methods
     public void OnClosed(object sender, EventArgs e)
     {
-      cptSettings.SaveSettings();
+      settingsHandler.SaveSettings();
       settingsView.Closed -= OnClosed;
     }
 

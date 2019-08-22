@@ -89,7 +89,7 @@ namespace ClangPowerTools.Commands
     /// <returns></returns>
     public void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
     {
-      FormatSettingsModel formatSettings = SettingsModelProvider.FormatSettings;
+      FormatSettingsModel formatSettings = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel;
 
       if (formatSettings.FilesToIgnore.Length > 0)
       {
@@ -100,7 +100,7 @@ namespace ClangPowerTools.Commands
 
     private List<string> RemoveDuplicateFiles(List<string> documentsToIgnore)
     {
-      FormatSettingsModel formatSettings = SettingsModelProvider.FormatSettings;
+      FormatSettingsModel formatSettings = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel;
       List<string> trimmedDocumentToIgnore = new List<string>();
 
       foreach (var item in documentsToIgnore)

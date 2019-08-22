@@ -127,26 +127,27 @@ namespace ClangPowerTools
         mDteEvents = dte2.Events.DTEEvents;
       }
 
+      string version = SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel.Version;
       // Detect the first install 
-      if (string.IsNullOrWhiteSpace(SettingsModelProvider.CompilerSettings.Version))
+      if (string.IsNullOrWhiteSpace(version))
         ShowToolbare(); // Show the toolbar on the first install
 
-      if (string.IsNullOrWhiteSpace(SettingsModelProvider.CompilerSettings.Version) ||
-          0 > string.Compare(SettingsModelProvider.CompilerSettings.Version, "5.0.0"))
-      {
-        System.Diagnostics.Process.Start(new ProcessStartInfo("https://clangpowertools.com/blog/future-of-clang-power-tools.html"));
+      if (string.IsNullOrWhiteSpace(version) ||
+          0 > string.Compare(version, "5.0.0"))
+      { // TODO remove comment for website
+        //System.Diagnostics.Process.Start(new ProcessStartInfo("https://clangpowertools.com/blog/future-of-clang-power-tools.html"));
       }
 
       var currentVersion = PackageUtility.GetVersion();
       if (!string.IsNullOrWhiteSpace(currentVersion) &&
-        0 > string.Compare(SettingsModelProvider.CompilerSettings.Version, currentVersion))
+        0 > string.Compare(version, currentVersion))
       {
         mOutputWindowController.Clear();
         mOutputWindowController.Show();
         mOutputWindowController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
           $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
 
-        SettingsModelProvider.CompilerSettings.Version = currentVersion;
+        SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel.Version = currentVersion;
       }
 
       await mCommandController.InitializeCommandsAsync(this);

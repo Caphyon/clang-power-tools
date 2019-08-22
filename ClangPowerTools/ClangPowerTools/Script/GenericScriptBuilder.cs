@@ -60,8 +60,8 @@ namespace ClangPowerTools.Script
       // Append the General parameters and Tidy parameters from option pages
       mScript = $"{GetGeneralParameters()} {(CommandIds.kTidyId == mCommandId || CommandIds.kTidyFixId == mCommandId ? GetTidyParameters() : ScriptConstants.kParallel)}";
 
-      FormatSettingsModel formatSettings = SettingsModelProvider.FormatSettings;
-      TidySettingsModel tidySettings = SettingsModelProvider.TidySettings;
+      FormatSettingsModel formatSettings = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel;
+      TidySettingsModel tidySettings = SettingsViewModelProvider.TidySettingsViewModel.TidyModel;
 
       // Append the clang-format style
       if (null != formatSettings && null != tidySettings && CommandIds.kTidyFixId == mCommandId && tidySettings.FormatAfterTidy)
@@ -99,7 +99,7 @@ namespace ClangPowerTools.Script
     /// <returns>The parameters from General option page</returns>
     private string GetGeneralParameters()
     {
-      var compilerSettings = SettingsModelProvider.CompilerSettings;
+      var compilerSettings = SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel;
       var parameters = string.Empty;
 
       // Get the Clang Flags list
@@ -136,7 +136,7 @@ namespace ClangPowerTools.Script
     /// <returns>The clang flags</returns>
     private string GetClangFlags()
     {
-      var compilerSettings = SettingsModelProvider.CompilerSettings;
+      var compilerSettings = SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel;
 
       return string.Format("{0} {1}", ScriptConstants.kClangFlags,
         compilerSettings.WarningsAsErrors ?
@@ -160,7 +160,7 @@ namespace ClangPowerTools.Script
     /// <returns></returns>
     private string GetTidyParameters()
     {
-      TidySettingsModel tidySettings = SettingsModelProvider.TidySettings;
+      TidySettingsModel tidySettings = SettingsViewModelProvider.TidySettingsViewModel.TidyModel;
 
       // Get the clang tidy parameters depending on the tidy mode
       var clangTidyParametersFactory = new ClangTidyModeParametersFactory();
@@ -199,7 +199,7 @@ namespace ClangPowerTools.Script
     /// <returns>Header filter option</returns>
     private string GetHeaderFilters()
     {
-      TidySettingsModel tidySettings = SettingsModelProvider.TidySettings;
+      TidySettingsModel tidySettings = SettingsViewModelProvider.TidySettingsViewModel.TidyModel;
 
       return string.Format("{0} ''{1}''", ScriptConstants.kHeaderFilter,
         string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(tidySettings.HeaderFilter)) ?

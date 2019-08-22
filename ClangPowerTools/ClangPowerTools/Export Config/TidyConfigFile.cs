@@ -13,6 +13,9 @@ namespace ClangPowerTools
 
     // Create StringBuilder to be written in the .clang-tidy file
     private StringBuilder tidyConfigOutput = new StringBuilder();
+    private CompilerSettingsModel compilerSettingsModel = SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel;
+    private FormatSettingsModel formatSettingsModel = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel;
+    private TidySettingsModel tidySettingsModel = SettingsViewModelProvider.TidySettingsViewModel.TidyModel;
 
     // Readonly list for paramaters names
     private static readonly List<string> parameterNames = new List<string>()
@@ -42,11 +45,11 @@ namespace ClangPowerTools
       CreateWarningAsErrorsOutputLine(parameterNames.ElementAt(1), treatWarningsAsErrors, true);
 
       //Header filter line
-      string headerFilter = SettingsModelProvider.TidySettings.HeaderFilter;
+      string headerFilter = tidySettingsModel.HeaderFilter;
       CreateHeaderFilterOutputLine(parameterNames.ElementAt(3), headerFilter, true);
 
       //Format style line
-      string formatStyle = SettingsModelProvider.FormatSettings.Style.ToString();
+      string formatStyle = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel.Style.ToString();
       CreateOutputLine(parameterNames.ElementAt(4), formatStyle, true);
 
       //User line
@@ -61,10 +64,12 @@ namespace ClangPowerTools
 
     private void CreateChecksOutputLine(string paramaterName)
     {
-      ClangTidyChecksFrom clangTidyUseChecksFrom = SettingsModelProvider.TidySettings.UseChecksFrom;
+      TidySettingsModel tidySettings = SettingsViewModelProvider.TidySettingsViewModel.TidyModel;
+
+      ClangTidyChecksFrom clangTidyUseChecksFrom = tidySettings.UseChecksFrom;
       if (clangTidyUseChecksFrom == ClangTidyChecksFrom.Checks)
       {
-        CreateCustomChecksOutputLine(paramaterName, SettingsModelProvider.TidySettings.Checks, true);
+        CreateCustomChecksOutputLine(paramaterName, tidySettings.Checks, true);
       }
       else
       {
@@ -88,7 +93,7 @@ namespace ClangPowerTools
 
     private void CreateWarningAsErrorsOutputLine(string paramaterName, string warningsAsErrors, bool hasQuotationMark)
     {
-      if (SettingsModelProvider.CompilerSettings.WarningsAsErrors)
+      if (compilerSettingsModel.WarningsAsErrors)
       {
         tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, warningsAsErrors, hasQuotationMark));
       }
