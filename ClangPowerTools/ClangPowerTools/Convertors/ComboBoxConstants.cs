@@ -6,6 +6,7 @@ using System.Xml.Serialization;
 
 namespace ClangPowerTools
 {
+  // TODO fix serialization names
   [Serializable]
   [JsonConverter(typeof(StringEnumConverter))]
   public enum ClangFormatStyle
