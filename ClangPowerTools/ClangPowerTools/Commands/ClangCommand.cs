@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Builder;
+using ClangPowerTools.CMake;
 using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
 using ClangPowerTools.Helpers;
@@ -119,7 +120,12 @@ namespace ClangPowerTools
       if (mMissingLLVM)
         return;
 
+      CMakeBuilder cMakeBuilder = new CMakeBuilder();
+      cMakeBuilder.Build();
+
       InvokeCommand(runModeParameters, genericParameters);
+
+      cMakeBuilder.ClearBuildCashe();
     }
 
     //Collect files
