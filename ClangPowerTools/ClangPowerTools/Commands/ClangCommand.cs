@@ -65,7 +65,7 @@ namespace ClangPowerTools
 
     protected IVsHierarchy ItemHierarchy
     {
-      get => ItemHierarchy;
+      get => mHierarchy;
       set
       {
         if (null == value)
