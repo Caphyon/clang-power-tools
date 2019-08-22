@@ -101,7 +101,7 @@ namespace ClangPowerTools
       await RegisterVsServicesAsync();
 
       mCommandController = new CommandController(this);
-      mCommandController.areCommandsDisabled = SolutionInfo.ContainsCppProject() == false;
+
       CommandTestUtility.CommandController = mCommandController;
 
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
@@ -525,7 +525,6 @@ namespace ClangPowerTools
       }
     }
 
-
     private void ShowToolbare()
     {
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
@@ -535,6 +534,38 @@ namespace ClangPowerTools
         cb.Visible = true;
       }
     }
+
+    #region IVsSolutionEvents7 Implementation
+
+    public void OnAfterOpenFolder(string folderPath)
+    {
+      if (mCommandController != null)
+      {
+        mCommandController.areCommandsDisabled = SolutionInfo.IsOpenFolderModeActive() == false;
+      }
+    }
+
+    public void OnBeforeCloseFolder(string folderPath)
+    {
+
+    }
+
+    public void OnQueryCloseFolder(string folderPath, ref int pfCancel)
+    {
+
+    }
+
+    public void OnAfterCloseFolder(string folderPath)
+    {
+
+    }
+
+    public void OnAfterLoadAllDeferredProjects()
+    {
+
+    }
+
+    #endregion
 
     #endregion
 

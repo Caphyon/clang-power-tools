@@ -431,6 +431,12 @@ namespace ClangPowerTools
       areCommandsDisabled = SolutionInfo.IsCppProject(Project) == false;
     }
 
+    public void OnOpenedSolution()
+    {
+      areCommandsDisabled = SolutionInfo.ContainsCppProject() == false;
+    }
+
+
     /// <summary>
     /// Set the VS running build flag to true when the VS build begin.
     /// </summary>
@@ -472,11 +478,6 @@ namespace ClangPowerTools
       await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu);
       CompileCommand.Instance.VsCompileFlag = false;
       OnAfterClangCommand();
-    }
-
-    public void OnOpenedSolution()
-    {
-      areCommandsDisabled = SolutionInfo.ContainsCppProject() == false;
     }
 
     public void OnBeforeSave(object sender, Document aDocument)
