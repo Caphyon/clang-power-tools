@@ -27,7 +27,7 @@ namespace ClangPowerTools
       }
       else 
       {
-        cptSettings.HandleOldSettings();
+        cptSettings.ImportOldSettings();
       }
     }
     #endregion

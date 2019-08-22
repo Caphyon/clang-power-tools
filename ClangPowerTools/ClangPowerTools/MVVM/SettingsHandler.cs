@@ -29,6 +29,7 @@ namespace ClangPowerTools
       formatSettingsModel = SettingsModelProvider.FormatSettings;
       tidySettingsModel = SettingsModelProvider.TidySettings;
     }
+
     /// <summary>
     /// Save settings at a custom path
     /// </summary>
@@ -73,7 +74,7 @@ namespace ClangPowerTools
       return File.Exists(path);
     }
 
-    public void HandleOldSettings()
+    public void ImportOldSettings()
     {
       if (OldGeneralSettingsExists())
       {
