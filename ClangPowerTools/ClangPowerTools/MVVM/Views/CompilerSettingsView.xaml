@@ -164,7 +164,7 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding TreatWarningsAsErrors}">
+      IsChecked="{Binding WarningsAsErrors}">
       <CheckBox.LayoutTransform>
         <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
       </CheckBox.LayoutTransform>

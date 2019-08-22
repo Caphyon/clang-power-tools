@@ -93,7 +93,7 @@
     <Compile Include="MVVM\SettingsHandler.cs" />
     <Compile Include="MVVM\Providers\SettingsModelProvider.cs" />
     <Compile Include="MVVM\TidyChecks.cs" />
-    <Compile Include="MVVM\Providers\ViewModelProvider.cs" />
+    <Compile Include="MVVM\Providers\SettingsViewModelProvider.cs" />
     <Compile Include="MVVM\ViewModels\GeneralSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\InputDataViewModel.cs" />
     <Compile Include="MVVM\ViewModels\SettingsViewModel.cs" />
