@@ -1,4 +1,6 @@
 ﻿using ClangPowerTools.Services;
+using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 
 namespace ClangPowerTools.Helpers
@@ -50,6 +52,36 @@ namespace ClangPowerTools.Helpers
       solution.GetProperty((int)__VSPROPID7.VSPROPID_IsInOpenFolderMode, out object folderMode);
       OpenFolderModeActive = (bool)folderMode;
       return OpenFolderModeActive;
+    }
+
+    public static bool ContainsCppProject()
+    {
+      DTE2 dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
+      Solution solution = dte.Solution;
+
+      if (solution == null)
+      {
+        return false;
+      }
+
+      return AnyCppProject(solution);
+    }
+
+    public static bool AnyCppProject(Solution solution)
+    {
+      foreach (var project in solution)
+      {
+        if (IsCppProject((Project)project))
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    public static bool IsCppProject(Project project)
+    {
+      return project.Kind.Equals(ScriptConstants.kCppProjectGuid);
     }
 
     #endregion

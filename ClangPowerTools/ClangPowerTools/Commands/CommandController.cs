@@ -445,7 +445,7 @@ namespace ClangPowerTools
 
     public void OnAddedSolution(Project Project)
     {
-      areCommandsDisabled = SolutionManager.IsCppProject(Project) == false;
+      areCommandsDisabled = SolutionInfo.IsCppProject(Project) == false;
     }
 
     /// <summary>
@@ -493,7 +493,7 @@ namespace ClangPowerTools
 
     public void OnOpenedSolution()
     {
-      areCommandsDisabled = SolutionManager.ContainsCppProject() == false;
+      areCommandsDisabled = SolutionInfo.ContainsCppProject() == false;
     }
 
     public void OnBeforeSave(object sender, Document aDocument)
