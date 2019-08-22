@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Convertors;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.Options;
 using ClangPowerTools.Options.View;
 using ClangPowerTools.Services;
@@ -189,7 +190,7 @@ namespace ClangPowerTools
         UseChecksFrom = loadedConfig.TidyMode;
       }
 
-      if (DoesSolutionDirectoryContainsClangTidyFile())
+      if (SolutionInfo.ContainsFile(".clang-tidy"))
       {
         UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
       }
@@ -213,23 +214,6 @@ namespace ClangPowerTools
 
 
     #region Private Methods
-
-    private bool DoesSolutionDirectoryContainsClangTidyFile()
-    {
-
-      VsServiceProvider.TryGetService(typeof(DTE), out object dte);
-      var solution = (dte as DTE2).Solution;
-
-      if (solution == null || solution.IsOpen == false)
-      {
-        return false;
-      }
-
-      string file = Directory.GetFiles(Path.GetDirectoryName(solution.FullName), ".clang-tidy", SearchOption.AllDirectories)
-                    .FirstOrDefault();
-
-      return file != null;
-    }
 
     private void OnPropertyChanged(string aPropName)
     {

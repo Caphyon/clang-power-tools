@@ -1,5 +1,9 @@
 ﻿using ClangPowerTools.Services;
+using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
+using System.IO;
+using System.Linq;
 
 namespace ClangPowerTools.Helpers
 {
@@ -50,6 +54,23 @@ namespace ClangPowerTools.Helpers
       solution.GetProperty((int)__VSPROPID7.VSPROPID_IsInOpenFolderMode, out object folderMode);
       OpenFolderModeActive = (bool)folderMode;
       return OpenFolderModeActive;
+    }
+
+    public static bool ContainsFile(string fileName)
+    {
+
+      VsServiceProvider.TryGetService(typeof(DTE), out object dte);
+      var solution = (dte as DTE2).Solution;
+
+      if (solution == null || solution.IsOpen == false)
+      {
+        return false;
+      }
+
+      string file = Directory.GetFiles(Path.GetDirectoryName(solution.FullName), fileName, SearchOption.AllDirectories)
+                    .FirstOrDefault();
+
+      return file != null;
     }
 
     #endregion
