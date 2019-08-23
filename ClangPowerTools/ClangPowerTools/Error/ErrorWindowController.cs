@@ -41,7 +41,7 @@ namespace ClangPowerTools
         {
           BringToFront();
         }
-      });
+      }).SafeFireAndForget();
     }
 
     public void RemoveErrors(IVsHierarchy aHierarchy)
