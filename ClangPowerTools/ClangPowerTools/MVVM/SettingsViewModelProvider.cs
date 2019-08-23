@@ -11,6 +11,5 @@ namespace ClangPowerTools
     public static CompilerSettingsViewModel CompilerSettingsViewModel { get; set; } = new CompilerSettingsViewModel();
     public static FormatSettingsViewModel FormatSettingsViewModel { get; set; } = new FormatSettingsViewModel();
     public static TidySettingsViewModel TidySettingsViewModel { get; set; } = new TidySettingsViewModel();
-
   }
 }

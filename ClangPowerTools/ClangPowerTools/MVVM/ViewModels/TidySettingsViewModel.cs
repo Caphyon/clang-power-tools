@@ -147,7 +147,6 @@ namespace ClangPowerTools
       tidyChecksView = new TidyChecksView();
       tidyChecksView.Closed += OnClosed;
       tidyChecksView.ShowDialog();
-
     }
 
     private string GetSelectedChecks()

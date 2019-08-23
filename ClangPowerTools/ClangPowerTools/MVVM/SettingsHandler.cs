@@ -239,7 +239,6 @@ namespace ClangPowerTools
       }
     }
 
-
     private string FormatTidyCheckName(string name)
     {
       StringBuilder stringBuilder = new StringBuilder();
