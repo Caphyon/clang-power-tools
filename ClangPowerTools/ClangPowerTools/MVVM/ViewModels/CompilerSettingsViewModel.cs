@@ -62,19 +62,39 @@ namespace ClangPowerTools
     #region Commands
     public ICommand CompileFlagsAddDataCommand
     {
-      get => compileFlagsAddDataCommand ?? (compileFlagsAddDataCommand = new RelayCommand(() => CompilerModel.CompileFlags = OpenContentDialog(CompilerModel.CompileFlags), () => CanExecute));
+      get => compileFlagsAddDataCommand ?? (compileFlagsAddDataCommand = new RelayCommand(() => UpdateCompileFlags(), () => CanExecute));
     }
 
     public ICommand FilesToIgnoreAddDataCommand
     {
-      get => filesToIgnoreAddDataCommand ?? (filesToIgnoreAddDataCommand = new RelayCommand(() => CompilerModel.FilesToIgnore = OpenContentDialog(CompilerModel.FilesToIgnore), () => CanExecute));
+      get => filesToIgnoreAddDataCommand ?? (filesToIgnoreAddDataCommand = new RelayCommand(() => UpdateFilesToIgnore(), () => CanExecute));
     }
 
     public ICommand ProjectsToIgnoreAddDataCommand
     {
-      get => projectsToIgnoreAddDataCommand ?? (projectsToIgnoreAddDataCommand = new RelayCommand(() => CompilerModel.ProjectsToIgnore = OpenContentDialog(CompilerModel.ProjectsToIgnore), () => CanExecute));
+      get => projectsToIgnoreAddDataCommand ?? (projectsToIgnoreAddDataCommand = new RelayCommand(() => UpdateProjectsToIgnore(), () => CanExecute));
+    }
+    #endregion
+
+    #region Methods
+    private void UpdateCompileFlags()
+    {
+      compilerModel.CompileFlags = OpenContentDialog(compilerModel.CompileFlags);
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CompilerModel"));
     }
 
-    #endregion
+    private void UpdateFilesToIgnore()
+    {
+      compilerModel.FilesToIgnore = OpenContentDialog(compilerModel.FilesToIgnore);
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CompilerModel"));
+    }
+
+    private void UpdateProjectsToIgnore()
+    {
+      compilerModel.ProjectsToIgnore = OpenContentDialog(compilerModel.ProjectsToIgnore);
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CompilerModel"));
+    }
+    #endregion;
+
   }
 }

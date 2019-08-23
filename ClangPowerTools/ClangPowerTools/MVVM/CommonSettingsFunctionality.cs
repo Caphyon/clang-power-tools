@@ -3,7 +3,7 @@ using System.IO;
 
 namespace ClangPowerTools
 {
-  public abstract class CommonSettingsFunctionality
+  public class CommonSettingsFunctionality
   {
     #region Public Methods
     protected string OpenFile(string fileName, string defaultExt, string filter)
@@ -35,6 +35,7 @@ namespace ClangPowerTools
       {
         return content;
       }
+
       return input;
     }
 

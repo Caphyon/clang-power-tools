@@ -67,17 +67,17 @@ namespace ClangPowerTools
     #region Commands
     public ICommand AddDataCommand
     {
-      get => addDataCommand ?? (addDataCommand = new RelayCommand(() => TidyModel.HeaderFilter = OpenContentDialog(TidyModel.HeaderFilter), () => CanExecute));
+      get => addDataCommand ?? (addDataCommand = new RelayCommand(() => UpdateHeaderFilter(), () => CanExecute));
     }
 
     public ICommand BrowseCommand
     {
-      get => browseCommand ?? (browseCommand = new RelayCommand(() => TidyModel.CustomExecutable = OpenFile(string.Empty, ".exe", "Executable files|*.exe"), () => CanExecute));
+      get => browseCommand ?? (browseCommand = new RelayCommand(() => UpdateCustomExecutable(), () => CanExecute));
     }
 
     public ICommand SelectCommand
     {
-      get => selectCommand ?? (selectCommand = new RelayCommand(() => OpenChecksWindow(), () => CanExecute));
+      get => selectCommand ?? (selectCommand = new RelayCommand(() => UpdateChecks(), () => CanExecute));
     }
 
     public ICommand ExportTidyConfigCommand
@@ -88,6 +88,25 @@ namespace ClangPowerTools
     #endregion
 
     #region Methods
+    private void UpdateHeaderFilter()
+    {
+      tidyModel.HeaderFilter = OpenContentDialog(tidyModel.HeaderFilter);
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyModel"));
+    }
+
+    private void UpdateCustomExecutable()
+    {
+      tidyModel.CustomExecutable = OpenFile(string.Empty, ".exe", "Executable files|*.exe");
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyModel"));
+      //SetEnvironmentVariableTidyPath();
+    }
+
+    private void UpdateChecks()
+    {
+      OpenChecksWindow();
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyModel"));
+    }
+
     private void SetEnvironmentVariableTidyPath()
     {
       // TODO use method
@@ -96,7 +115,7 @@ namespace ClangPowerTools
       {
         if (TidyModel.CustomExecutable.Length > 3)
         {
-          Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, TidyModel.CustomExecutable, EnvironmentVariableTarget.User);
+          Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, tidyModel.CustomExecutable, EnvironmentVariableTarget.User);
         }
         else
         {

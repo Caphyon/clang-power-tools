@@ -59,7 +59,6 @@
       FontFamily="SegoeUI"
       FontSize="15"
       Text="{Binding CompilerModel.CompileFlags}" />
-
     <Button
       Grid.Row="1"
       Grid.Column="3"
