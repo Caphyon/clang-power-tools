@@ -45,7 +45,6 @@ namespace ClangPowerTools
       }
     }
 
-
     public IEnumerable<ClangTidyChecksFrom> UseChecksFromItems
     {
       get
@@ -53,7 +52,6 @@ namespace ClangPowerTools
         return Enum.GetValues(typeof(ClangTidyChecksFrom)).Cast<ClangTidyChecksFrom>();
       }
     }
-
     #endregion
 
     #region Constructor

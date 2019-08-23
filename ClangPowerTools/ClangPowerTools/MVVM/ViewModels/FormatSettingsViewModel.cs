@@ -65,33 +65,55 @@ namespace ClangPowerTools
         return Enum.GetValues(typeof(ClangFormatFallbackStyle)).Cast<ClangFormatFallbackStyle>();
       }
     }
-
-
   #endregion
 
   #region Commands
   public ICommand FileExtensionsAddDataCommand
     {
-      get => fileExtensionsAddDataCommand ?? (fileExtensionsAddDataCommand = new RelayCommand(() => FormatModel.FileExtensions = OpenContentDialog(FormatModel.FileExtensions), () => CanExecute));
+      get => fileExtensionsAddDataCommand ?? (fileExtensionsAddDataCommand = new RelayCommand(() => UpdateFileExtensions(), () => CanExecute));
     }
 
     public ICommand FilesToIgnoreAddDataCommand
     {
-      get => filesToIgnoreAddDataCommand ?? (filesToIgnoreAddDataCommand = new RelayCommand(() => FormatModel.FilesToIgnore = OpenContentDialog(FormatModel.FilesToIgnore), () => CanExecute));
+      get => filesToIgnoreAddDataCommand ?? (filesToIgnoreAddDataCommand = new RelayCommand(() => UpdateFilesToIgnore(), () => CanExecute));
     }
 
     public ICommand AssumeFilenameAddDataCommand
     {
-      get => assumeFilenameAddDataCommand ?? (assumeFilenameAddDataCommand = new RelayCommand(() => FormatModel.AssumeFilename = OpenContentDialog(FormatModel.AssumeFilename), () => CanExecute));
+      get => assumeFilenameAddDataCommand ?? (assumeFilenameAddDataCommand = new RelayCommand(() => UpdateAssumeFilename(), () => CanExecute));
     }
 
     public ICommand CustomExecutableBrowseCommand
     {
-      get => customExecutableBrowseCommand ?? (customExecutableBrowseCommand = new RelayCommand(() => FormatModel.CustomExecutable = OpenFile(string.Empty, ".exe", "Executable files|*.exe"), () => CanExecute));
+      get => customExecutableBrowseCommand ?? (customExecutableBrowseCommand = new RelayCommand(() => UpdateCustomExecutable(), () => CanExecute));
     }
     #endregion
 
+    #region Methods
+    private void UpdateFileExtensions()
+    {
+      formatModel.FileExtensions = OpenContentDialog(formatModel.FileExtensions);
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatModel"));
+    }
 
+    private void UpdateFilesToIgnore()
+    {
+      formatModel.FilesToIgnore = OpenContentDialog(formatModel.FilesToIgnore);
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatModel"));
+    }
 
+    private void UpdateAssumeFilename()
+    {
+      formatModel.AssumeFilename = OpenContentDialog(formatModel.AssumeFilename);
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatModel"));
+    }
+
+    private void UpdateCustomExecutable()
+    {
+      formatModel.CustomExecutable = OpenFile(string.Empty, ".exe", "Executable files|*.exe");
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatModel"));
+    }
+
+    #endregion
   }
 }
