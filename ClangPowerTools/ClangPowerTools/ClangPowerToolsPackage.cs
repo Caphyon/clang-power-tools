@@ -308,7 +308,7 @@ namespace ClangPowerTools
 
     public void OnAfterOpenFolder(string folderPath)
     {
-      if (mCommandController != null)
+      if (mCommandController != null && mCommandController.areCommandsDisabled == true)
       {
         mCommandController.areCommandsDisabled = SolutionInfo.IsOpenFolderModeActive() == false;
       }
