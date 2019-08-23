@@ -190,7 +190,7 @@ namespace ClangPowerTools
         UseChecksFrom = loadedConfig.TidyMode;
       }
 
-      if (SolutionInfo.ContainsFile(".clang-tidy"))
+      if (SolutionInfo.ContainsFile(ScriptConstants.kTidyFile))
       {
         UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
       }
