@@ -74,11 +74,11 @@ namespace ClangPowerTools.Commands
       {
         List<string> projectsToIgnore = ItemsCollector.GetProjectsToIgnore();
         var settings = SettingsProvider.GeneralSettings;
-        AddItemsToIgnore<ClangGeneralOptionsView>(projectsToIgnore, settings, "ProjectsToIgnore");
+        AddItemsToIgnore(projectsToIgnore, settings, "ProjectsToIgnore");
         if (projectsToIgnore.Any() == false)
         {
           List<string> filesToIgnore = ItemsCollector.GetFilesToIgnore();
-          AddItemsToIgnore<ClangGeneralOptionsView>(filesToIgnore, settings, "FilesToIgnore");
+          AddItemsToIgnore(filesToIgnore, settings, "FilesToIgnore");
           settings.SaveSettingsToStorage();
         }
       });
