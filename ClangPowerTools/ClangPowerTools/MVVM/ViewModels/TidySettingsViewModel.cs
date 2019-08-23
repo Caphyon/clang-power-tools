@@ -17,9 +17,9 @@ namespace ClangPowerTools
 
     private TidySettingsModel tidyModel;
     private TidyChecksView tidyChecksView;
-    private ICommand addDataCommand;
-    private ICommand browseCommand;
-    private ICommand selectCommand;
+    private ICommand headerFilterAddDataCommand;
+    private ICommand customExecutableBrowseCommand;
+    private ICommand checksSelectCommand;
     private ICommand exportTidyConfigCommand;
     #endregion
 
@@ -65,19 +65,19 @@ namespace ClangPowerTools
     #endregion
 
     #region Commands
-    public ICommand AddDataCommand
+    public ICommand HeaderFilterAddDataCommand
     {
-      get => addDataCommand ?? (addDataCommand = new RelayCommand(() => UpdateHeaderFilter(), () => CanExecute));
+      get => headerFilterAddDataCommand ?? (headerFilterAddDataCommand = new RelayCommand(() => UpdateHeaderFilter(), () => CanExecute));
     }
 
-    public ICommand BrowseCommand
+    public ICommand CustomExecutableBrowseCommand
     {
-      get => browseCommand ?? (browseCommand = new RelayCommand(() => UpdateCustomExecutable(), () => CanExecute));
+      get => customExecutableBrowseCommand ?? (customExecutableBrowseCommand = new RelayCommand(() => UpdateCustomExecutable(), () => CanExecute));
     }
 
-    public ICommand SelectCommand
+    public ICommand ChecksSelectCommand
     {
-      get => selectCommand ?? (selectCommand = new RelayCommand(() => UpdateChecks(), () => CanExecute));
+      get => checksSelectCommand ?? (checksSelectCommand = new RelayCommand(() => UpdateChecks(), () => CanExecute));
     }
 
     public ICommand ExportTidyConfigCommand
