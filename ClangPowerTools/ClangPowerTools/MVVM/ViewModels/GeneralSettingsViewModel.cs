@@ -8,13 +8,37 @@ namespace ClangPowerTools
   public class GeneralSettingsViewModel : CommonSettingsFunctionality
   {
     #region Members
-    private SettingsHandler cptSettings = new SettingsHandler();
-
+    private SettingsHandler settingsHandler = new SettingsHandler();
+    private GeneralSettingsModel generalSettingsModel = new GeneralSettingsModel();
     private ICommand logoutCommand;
     private ICommand exportSettingsCommand;
     private ICommand importSettingsCommand;
     private ICommand resetSettingsCommand;
     #endregion
+
+
+    #region Properties
+    public bool CanExecute
+    {
+      get
+      {
+        return true;
+      }
+    }
+
+    public GeneralSettingsModel GeneralSettingsModel
+    {
+      get
+      {
+        return generalSettingsModel;
+      }
+      set
+      {
+        generalSettingsModel = value;
+      }
+    }
+    #endregion
+
 
     #region Commands
     public ICommand LogoutCommand
@@ -36,27 +60,7 @@ namespace ClangPowerTools
     {
       get => resetSettingsCommand ?? (resetSettingsCommand = new RelayCommand(() => ResetSettings(), () => CanExecute));
     }
-
     #endregion
-
-    #region Properties
-    public bool CanExecute
-    {
-      get
-      {
-        return true;
-      }
-    }
-
-    public string Version
-    {
-      get
-      {
-        return SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel.Version;
-      }
-    }
-    #endregion
-
 
     #region Methods
     private void Logout()
@@ -78,7 +82,7 @@ namespace ClangPowerTools
       string path = SaveFile("settings", ".json", "Settings files (.json)|*.json");
       if (string.IsNullOrEmpty(path) == false)
       {
-        cptSettings.SaveSettings(path);
+        settingsHandler.SaveSettings(path);
       }
     }
 
@@ -87,13 +91,13 @@ namespace ClangPowerTools
       string path = OpenFile("settings", ".json", "Settings files (.json)|*.json");
       if (string.IsNullOrEmpty(path) == false)
       {
-        cptSettings.LoadSettings(path);
+        settingsHandler.LoadSettings(path);
       }
     }
 
     private void ResetSettings()
     {
-      cptSettings.ResetSettings();
+      settingsHandler.ResetSettings();
     }
 
     #endregion

@@ -21,7 +21,21 @@ namespace ClangPowerTools
     {
       SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
       settingsPath = settingsPathBuilder.GetPath("");
+    }
 
+    /// <summary>
+    /// Load settings or import old settings
+    /// </summary>
+    public void InitializeSettings()
+    {
+      if (SettingsFileExists())
+      {
+        LoadSettings();
+      }
+      else
+      {
+        ImportOldSettings();
+      }
     }
 
     /// <summary>
@@ -68,7 +82,15 @@ namespace ClangPowerTools
       return File.Exists(path);
     }
 
-    public void ImportOldSettings()
+    public void ResetSettings()
+    {
+      SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel = new CompilerSettingsModel();
+      SettingsViewModelProvider.FormatSettingsViewModel.FormatModel = new FormatSettingsModel();
+      SettingsViewModelProvider.TidySettingsViewModel.TidyModel = new TidySettingsModel();
+      SaveSettings();
+    }
+
+    private void ImportOldSettings()
     {
       if (OldGeneralSettingsExists())
       {
@@ -76,23 +98,6 @@ namespace ClangPowerTools
         SaveSettings();
         DeleteOldSettings();
       }
-    }
-
-    public void DeleteSettings()
-    {
-      string[] file = Directory.GetFiles(settingsPath, SettingsFileName);
-      if (file.Length > 0)
-      {
-        File.Delete(file[0]);
-      }
-    }
-
-    public void ResetSettings()
-    {
-      SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel = new CompilerSettingsModel();
-      SettingsViewModelProvider.FormatSettingsViewModel.FormatModel = new FormatSettingsModel();
-      SettingsViewModelProvider.TidySettingsViewModel.TidyModel = new TidySettingsModel();
-      SaveSettings();
     }
 
     private bool OldGeneralSettingsExists()
@@ -104,13 +109,13 @@ namespace ClangPowerTools
     private void MapOldSettings()
     {
       ClangOptions clangOptions = LoadOldSettingsFromFile(new ClangOptions(), GeneralConfigurationFileName);
-      MapClangOptionsToCompilerSettings(clangOptions);
+      MapClangOptionsToSettings(clangOptions);
 
       ClangFormatOptions clangFormatOptions = LoadOldSettingsFromFile(new ClangFormatOptions(), FormatConfigurationFileName);
-      MapClangFormatOptionsToFormatSettings(clangFormatOptions);
+      MapClangFormatOptionsToSettings(clangFormatOptions);
 
       ClangTidyOptions clangTidyOptions = LoadOldSettingsFromFile(new ClangTidyOptions(), TidyOptionsConfigurationFileName);
-      MapClangTidyOptionsToTidyettings(clangTidyOptions);
+      MapClangTidyOptionsToSettings(clangTidyOptions);
 
       ClangTidyPredefinedChecksOptions clangTidyPredefinedChecksOptions = LoadOldSettingsFromFile(new ClangTidyPredefinedChecksOptions(), TidyPredefinedChecksConfigurationFileName);
       MapTidyPredefinedChecksToTidyettings(clangTidyPredefinedChecksOptions);
@@ -142,6 +147,7 @@ namespace ClangPowerTools
       models.Add(SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel);
       models.Add(SettingsViewModelProvider.FormatSettingsViewModel.FormatModel);
       models.Add(SettingsViewModelProvider.TidySettingsViewModel.TidyModel);
+      models.Add(SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel);
       return models;
     }
 
@@ -168,6 +174,7 @@ namespace ClangPowerTools
         SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel = JsonConvert.DeserializeObject<CompilerSettingsModel>(models[0].ToString());
         SettingsViewModelProvider.FormatSettingsViewModel.FormatModel = JsonConvert.DeserializeObject<FormatSettingsModel>(models[1].ToString());
         SettingsViewModelProvider.TidySettingsViewModel.TidyModel = JsonConvert.DeserializeObject<TidySettingsModel>(models[2].ToString());
+        SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel = JsonConvert.DeserializeObject<GeneralSettingsModel>(models[3].ToString());
       }
     }
 
@@ -182,9 +189,11 @@ namespace ClangPowerTools
       config = serializer.DeserializeFromFile<T>(path);
     }
 
-    private void MapClangOptionsToCompilerSettings(ClangOptions clangOptions)
+    private void MapClangOptionsToSettings(ClangOptions clangOptions)
     {
       CompilerSettingsModel compilerSettingsModel = new CompilerSettingsModel();
+      GeneralSettingsModel generalSettingsModel = new GeneralSettingsModel();
+
       compilerSettingsModel.CompileFlags = clangOptions.ClangFlagsCollection;
       compilerSettingsModel.FilesToIgnore = clangOptions.FilesToIgnore;
       compilerSettingsModel.ProjectsToIgnore = clangOptions.ProjectsToIgnore;
@@ -193,12 +202,13 @@ namespace ClangPowerTools
       compilerSettingsModel.ContinueOnError = clangOptions.Continue;
       compilerSettingsModel.ClangCompileAfterMSCVCompile = clangOptions.ClangCompileAfterVsCompile;
       compilerSettingsModel.VerboseMode = clangOptions.VerboseMode;
-      compilerSettingsModel.Version = clangOptions.Version;
+      generalSettingsModel.Version = clangOptions.Version;
 
+      SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel = generalSettingsModel;
       SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel = compilerSettingsModel;
     }
 
-    private void MapClangFormatOptionsToFormatSettings(ClangFormatOptions clangFormat)
+    private void MapClangFormatOptionsToSettings(ClangFormatOptions clangFormat)
     {
       FormatSettingsModel formatSettingsModel = new FormatSettingsModel();
       formatSettingsModel.FileExtensions = clangFormat.FileExtensions;
@@ -212,7 +222,7 @@ namespace ClangPowerTools
       SettingsViewModelProvider.FormatSettingsViewModel.FormatModel = formatSettingsModel;
     }
 
-    private void MapClangTidyOptionsToTidyettings(ClangTidyOptions clangTidy)
+    private void MapClangTidyOptionsToSettings(ClangTidyOptions clangTidy)
     {
       TidySettingsModel tidySettingsModel = new TidySettingsModel();
       tidySettingsModel.HeaderFilter = clangTidy.HeaderFilter;

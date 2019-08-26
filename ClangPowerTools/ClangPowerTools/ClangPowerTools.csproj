@@ -79,6 +79,7 @@
     <Compile Include="Commands\Logout.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
     <Compile Include="MVVM\Commands\AddDataCommand.cs" />
+    <Compile Include="MVVM\Models\GeneralSettingsModel.cs" />
     <Compile Include="MVVM\OldSettings\ClangFormatPathValue.cs" />
     <Compile Include="MVVM\OldSettings\ClangTidyPathValue.cs" />
     <Compile Include="MVVM\Commands\RelayCommand.cs" />

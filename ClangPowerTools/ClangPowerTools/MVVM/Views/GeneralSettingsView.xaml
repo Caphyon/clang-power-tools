@@ -73,11 +73,11 @@
     <TextBlock
       Grid.Row="5"
       Grid.Column="0"
-      Margin="0,88,92,2"
-      HorizontalAlignment="Right"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Bottom"
       FontFamily="SegoeUI"
       FontSize="10"
-      Text="{Binding Version}" />
+      Text="{Binding GeneralSettingsModel.Version}" />
 
     <!--  CPT logo image  -->
     <Image

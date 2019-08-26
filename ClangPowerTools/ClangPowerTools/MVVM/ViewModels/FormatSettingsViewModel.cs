@@ -12,7 +12,7 @@ namespace ClangPowerTools
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private FormatSettingsModel formatModel;
+    private FormatSettingsModel formatModel = new FormatSettingsModel();
     private ICommand fileExtensionsAddDataCommand;
     private ICommand filesToIgnoreAddDataCommand;
     private ICommand assumeFilenameAddDataCommand;
@@ -33,20 +33,12 @@ namespace ClangPowerTools
       }
     }
 
-
     public bool CanExecute
     {
       get
       {
         return true;
       }
-    }
-    #endregion
-
-    #region Constructor
-    public FormatSettingsViewModel()
-    {
-      formatModel = new FormatSettingsModel();
     }
 
     public IEnumerable<ClangFormatStyle> StyleItems
@@ -64,10 +56,10 @@ namespace ClangPowerTools
         return Enum.GetValues(typeof(ClangFormatFallbackStyle)).Cast<ClangFormatFallbackStyle>();
       }
     }
-  #endregion
+    #endregion
 
-  #region Commands
-  public ICommand FileExtensionsAddDataCommand
+    #region Commands
+    public ICommand FileExtensionsAddDataCommand
     {
       get => fileExtensionsAddDataCommand ?? (fileExtensionsAddDataCommand = new RelayCommand(() => UpdateFileExtensions(), () => CanExecute));
     }

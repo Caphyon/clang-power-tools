@@ -12,7 +12,7 @@ namespace ClangPowerTools
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private CompilerSettingsModel compilerModel;
+    private CompilerSettingsModel compilerModel = new CompilerSettingsModel();
     private ICommand compileFlagsAddDataCommand;
     private ICommand filesToIgnoreAddDataCommand;
     private ICommand projectsToIgnoreAddDataCommand;
@@ -48,15 +48,6 @@ namespace ClangPowerTools
       }
     }
     #endregion
-
-    #region Constructor
-    public CompilerSettingsViewModel()
-    {
-      compilerModel = new CompilerSettingsModel();
-    }
-    #endregion
-
-
 
     #region Commands
     public ICommand CompileFlagsAddDataCommand

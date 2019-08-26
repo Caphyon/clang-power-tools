@@ -15,20 +15,8 @@ namespace ClangPowerTools
     public SettingsViewModel(SettingsView settingsView)
     {
       this.settingsView = settingsView;
-      InitializeSettings();
+      settingsHandler.InitializeSettings();
       settingsView.Closed += OnClosed;
-    }
-
-    private void InitializeSettings()
-    {
-      if (settingsHandler.SettingsFileExists())
-      {
-        settingsHandler.LoadSettings();
-      }
-      else 
-      {
-        settingsHandler.ImportOldSettings();
-      }
     }
     #endregion
 
@@ -39,7 +27,6 @@ namespace ClangPowerTools
       settingsHandler.SaveSettings();
       settingsView.Closed -= OnClosed;
     }
-
 
     #endregion
   }

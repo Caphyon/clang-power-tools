@@ -127,28 +127,7 @@ namespace ClangPowerTools
         mDteEvents = dte2.Events.DTEEvents;
       }
 
-      string version = SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel.Version;
-      // Detect the first install 
-      if (string.IsNullOrWhiteSpace(version))
-        ShowToolbare(); // Show the toolbar on the first install
-
-      if (string.IsNullOrWhiteSpace(version) ||
-          0 > string.Compare(version, "5.0.0"))
-      { // TODO remove comment for website
-        //System.Diagnostics.Process.Start(new ProcessStartInfo("https://clangpowertools.com/blog/future-of-clang-power-tools.html"));
-      }
-
-      var currentVersion = PackageUtility.GetVersion();
-      if (!string.IsNullOrWhiteSpace(currentVersion) &&
-        0 > string.Compare(version, currentVersion))
-      {
-        mOutputWindowController.Clear();
-        mOutputWindowController.Show();
-        mOutputWindowController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
-          $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
-
-        SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel.Version = currentVersion;
-      }
+      InitializeSettings();
 
       await mCommandController.InitializeCommandsAsync(this);
       mLicenseController = new LicenseController();
@@ -257,6 +236,35 @@ namespace ClangPowerTools
 
 
     #region Private Methods
+    private void InitializeSettings()
+    {
+      SettingsHandler settingsHandler = new SettingsHandler();
+      settingsHandler.InitializeSettings();
+
+      string version =  SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version;
+      // Detect the first install 
+      if (string.IsNullOrWhiteSpace(version))
+      {
+        // Show the toolbar on the first install
+        ShowToolbare(); 
+      }
+
+      if (string.IsNullOrWhiteSpace(version))
+      {
+        System.Diagnostics.Process.Start(new ProcessStartInfo("https://clangpowertools.com/blog/future-of-clang-power-tools.html"));
+      }
+
+      var currentVersion = PackageUtility.GetVersion();
+      if (string.IsNullOrWhiteSpace(currentVersion) == false && string.Compare(version, currentVersion) > 0)
+      {
+        mOutputWindowController.Clear();
+        mOutputWindowController.Show();
+        mOutputWindowController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
+          $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
+
+        SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version = currentVersion;
+      }
+    }
 
     private async Task RegisterVsServicesAsync()
     {

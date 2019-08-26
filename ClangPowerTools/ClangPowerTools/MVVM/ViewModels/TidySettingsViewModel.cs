@@ -15,7 +15,7 @@ namespace ClangPowerTools
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private TidySettingsModel tidyModel;
+    private TidySettingsModel tidyModel = new TidySettingsModel();
     private TidyChecksView tidyChecksView;
     private ICommand headerFilterAddDataCommand;
     private ICommand customExecutableBrowseCommand;
@@ -54,12 +54,6 @@ namespace ClangPowerTools
     }
     #endregion
 
-    #region Constructor
-    public TidySettingsViewModel()
-    {
-      tidyModel = new TidySettingsModel();
-    }
-    #endregion
 
     #region Commands
     public ICommand HeaderFilterAddDataCommand
