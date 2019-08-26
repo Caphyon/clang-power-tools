@@ -82,6 +82,7 @@
     <Compile Include="MVVM\OldSettings\ClangFormatPathValue.cs" />
     <Compile Include="MVVM\OldSettings\ClangTidyPathValue.cs" />
     <Compile Include="MVVM\Commands\RelayCommand.cs" />
+    <Compile Include="Items\CurrentDocument.cs" />
     <Compile Include="MVVM\Controllers\AccountController.cs" />
     <Compile Include="MVVM\Controllers\LicenseController.cs" />
     <Compile Include="MVVM\OldSettings\HeaderFiltersValue.cs" />
