@@ -230,8 +230,9 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>.</VSIXSubPath>
     </Content>
-    <Resource Include="MVVM\Resources\Background.png" />
+    <Resource Include="Resources\LoginBackground.png" />
     <Resource Include="Resources\AlphabeticalIcon.PNG" />
+    <Resource Include="Resources\LogoCPT.png" />
     <Content Include="Resources\Logout.png" />
     <Resource Include="Resources\ClangFormatIcon.png" />
     <Resource Include="Resources\CleanSearchIcon.PNG" />
@@ -240,6 +241,7 @@
     <Resource Include="Resources\SearchIcon.PNG" />
     <Content Include="Resources\EmptyIcon.png" />
     <Content Include="Resources\IgnoreIcon.png" />
+    <Resource Include="Resources\SettingsBackground.png" />
     <Content Include="Resources\StopCommandIcon.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
