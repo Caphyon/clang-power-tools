@@ -86,6 +86,7 @@
     <Compile Include="MVVM\Commands\RelayCommand.cs" />
     <Compile Include="Items\CurrentDocument.cs" />
     <Compile Include="Helpers\ReflectionManager.cs" />
+    <Compile Include="Helpers\GetSetProperty.cs" />
     <Compile Include="MVVM\Controllers\AccountController.cs" />
     <Compile Include="MVVM\Controllers\LicenseController.cs" />
     <Compile Include="MVVM\OldSettings\HeaderFiltersValue.cs" />
