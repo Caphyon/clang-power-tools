@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 
@@ -24,7 +25,7 @@ namespace ClangPowerTools
         {
           return tidyChecksList;
         }
-        return tidyChecksList.Where(e => e.Name.Contains(checkSearch)).ToList();
+        return tidyChecksList.Where(e => e.Name.Contains(checkSearch, StringComparison.OrdinalIgnoreCase)).ToList();
       }
     }
 

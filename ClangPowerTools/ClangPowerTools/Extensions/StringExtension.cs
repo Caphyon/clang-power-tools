@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 
 namespace ClangPowerTools
 {
@@ -32,6 +33,18 @@ namespace ClangPowerTools
         return string.Empty; //No such substring
 
       return aText.Substring(0, index);
+    }
+
+    /// <summary>
+    /// String comparison using IndexOf
+    /// </summary>
+    /// <param name="paragrah"></param>
+    /// <param name="word"></param>
+    /// <param name="comp"></param>
+    /// <returns></returns>
+    public static bool Contains(this string paragrah, string word, StringComparison comp)
+    {
+      return paragrah?.IndexOf(word, comp) >= 0;
     }
 
     #endregion
