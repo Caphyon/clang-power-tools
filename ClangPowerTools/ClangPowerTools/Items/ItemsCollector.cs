@@ -1,4 +1,6 @@
-﻿using ClangPowerTools.Services;
+﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.Items;
+using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
 using System;
@@ -36,6 +38,7 @@ namespace ClangPowerTools
 
     #region Public Methods
 
+    // TODO : Refactor this method. Generics can be a solution.
     public void CollectActiveProjectItem()
     {
       try
@@ -46,7 +49,17 @@ namespace ClangPowerTools
         if (activeDocument == null)
           return;
 
-        Items.Add(new CurrentProjectItem(activeDocument.ProjectItem));
+        IItem item = null;
+        if (SolutionInfo.IsOpenFolderModeActive())
+        {
+          item = new CurrentDocument(activeDocument);
+        }
+        else
+        {
+          item = new CurrentProjectItem(activeDocument.ProjectItem);
+        }
+
+        Items.Add(item);
       }
       catch (Exception e)
       {
