@@ -14,7 +14,7 @@
 
     public bool ContinueOnError { get; set; } = false;
 
-    public bool ClangCompileAfterMSCVCompile { get; set; } = false;
+    public bool ClangAfterMSVC { get; set; } = false;
 
     public bool VerboseMode { get; set; } = false;
 

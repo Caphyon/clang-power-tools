@@ -529,7 +529,7 @@ namespace ClangPowerTools
     {
       var compilerSettings = SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel; 
 
-      if (compilerSettings.ClangCompileAfterMSCVCompile == false)
+      if (compilerSettings.ClangAfterMSVC == false)
         return;
 
       string commandName = GetCommandName(aGuid, aId);

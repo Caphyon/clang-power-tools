@@ -6,7 +6,6 @@ using System.Xml.Serialization;
 
 namespace ClangPowerTools
 {
-  // TODO fix serialization names
   [Serializable]
   [JsonConverter(typeof(StringEnumConverter))]
   public enum ClangFormatStyle
@@ -50,11 +49,11 @@ namespace ClangPowerTools
   public enum ClangGeneralAdditionalIncludes
   {
     [XmlEnum(Name = "include directories")]
-    [EnumMember(Value = "include directories")]
+    [EnumMember(Value = "IncludeDirectories")]
     IncludeDirectories,
 
     [XmlEnum(Name = "system include directories")]
-    [EnumMember(Value = "system include directories")]
+    [EnumMember(Value = "SystemIncludeDirectories")]
     SystemIncludeDirectories
   }
 
@@ -75,15 +74,15 @@ namespace ClangPowerTools
   public enum ClangTidyUseChecksFrom
   {
     [XmlEnum(Name = "predefined checks")]
-    [EnumMember(Value = "predefined checks")]
+    [EnumMember(Value = "PredefinedChecks")]
     PredefinedChecks,
 
     [XmlEnum(Name = "custom checks")]
-    [EnumMember(Value = "custom checks")]
+    [EnumMember(Value = "CustomChecks")]
     CustomChecks,
 
     [XmlEnum(Name = ".clang-tidy config file")]
-    [EnumMember(Value = ".clang-tidy config file")]
+    [EnumMember(Value = "TidyFile")]
     TidyFile
   }
 
@@ -92,11 +91,11 @@ namespace ClangPowerTools
   public enum ClangTidyChecksFrom
   {
     [XmlEnum(Name = "checks")]
-    [EnumMember(Value = "checks")]
+    [EnumMember(Value = "Checks")]
     Checks,
 
     [XmlEnum(Name = ".clang-tidy config file")]
-    [EnumMember(Value = ".clang-tidy config file")]
+    [EnumMember(Value = "TidyFile")]
     TidyFile
   }
 

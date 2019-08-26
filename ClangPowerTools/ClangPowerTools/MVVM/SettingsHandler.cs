@@ -206,7 +206,7 @@ namespace ClangPowerTools
       compilerSettingsModel.AdditionalIncludes = clangOptions.AdditionalIncludes;
       compilerSettingsModel.WarningsAsErrors = clangOptions.TreatWarningsAsErrors;
       compilerSettingsModel.ContinueOnError = clangOptions.Continue;
-      compilerSettingsModel.ClangCompileAfterMSCVCompile = clangOptions.ClangCompileAfterVsCompile;
+      compilerSettingsModel.ClangAfterMSVC = clangOptions.ClangCompileAfterVsCompile;
       compilerSettingsModel.VerboseMode = clangOptions.VerboseMode;
       generalSettingsModel.Version = clangOptions.Version;
 
