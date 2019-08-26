@@ -10,6 +10,12 @@ namespace ClangPowerTools.Items
 
     #endregion
 
+    #region Constructor
+
+    public CurrentDocument(Document aDocument) => mDocument = aDocument;
+
+    #endregion
+
     #region IItem implementation
 
     public string GetName() => mDocument.Name;
