@@ -15,81 +15,74 @@
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
     <Grid.RowDefinitions>
-      <RowDefinition Height="20" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
+      <RowDefinition Height="60" />
+      <RowDefinition Height="60" />
+      <RowDefinition Height="60" />
+      <RowDefinition Height="60" />
+      <RowDefinition Height="60" />
       <RowDefinition Height="*" />
-      <RowDefinition Height="20" />
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="10" />
-      <ColumnDefinition Width="auto" />
-      <ColumnDefinition Width="auto" />
-      <ColumnDefinition Width="auto" />
-      <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="*" />
-      <ColumnDefinition Width="20" />
     </Grid.ColumnDefinitions>
 
 
     <!--  Export Settings  -->
     <Button
       Grid.Row="1"
-      Grid.Column="1"
-      Width="120"
-      Height="30"
+      Grid.Column="0"
+      Width="180"
+      Height="40"
       Command="{Binding ExportSettingsCommand}"
-      Content="Export Settings" />
+      Content="Export Settings"
+      FontSize="16" />
 
     <!--  Import Settings  -->
     <Button
       Grid.Row="2"
-      Grid.Column="1"
-      Width="120"
-      Height="30"
+      Grid.Column="0"
+      Width="180"
+      Height="40"
       Command="{Binding ImportSettingssCommand}"
-      Content="Import Settings" />
+      Content="Import Settings"
+      FontSize="16" />
 
     <!--  Reset Settings  -->
     <Button
       Grid.Row="3"
-      Grid.Column="1"
-      Width="120"
-      Height="30"
+      Grid.Column="0"
+      Width="180"
+      Height="40"
       Command="{Binding ResetSettingsCommand}"
-      Content="Reset Settings" />
+      Content="Reset Settings"
+      FontSize="16" />
 
 
     <!--  Logout  -->
     <Button
       Grid.Row="4"
-      Grid.Column="1"
-      Width="60"
-      Height="30"
+      Grid.Column="0"
+      Width="180"
+      Height="40"
       Command="{Binding LogoutCommand}"
-      Content="Logout" />
+      Content="Logout"
+      FontSize="16" />
 
     <!--  Version  -->
     <TextBlock
       Grid.Row="5"
-      Grid.Column="2"
+      Grid.Column="0"
+      Margin="0,88,92,2"
       HorizontalAlignment="Right"
-      VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="10"
       Text="{Binding Version}" />
 
     <!--  CPT logo image  -->
     <Image
-      Grid.Row="9"
-      Grid.Column="3"
+      Grid.Row="5"
+      Grid.Column="0"
       Width="92"
       Height="35"
       HorizontalAlignment="Right"

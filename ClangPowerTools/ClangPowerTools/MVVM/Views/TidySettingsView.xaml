@@ -22,8 +22,6 @@
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
@@ -188,10 +186,11 @@
     <Button
       Grid.Row="7"
       Grid.Column="2"
-      Width="120"
-      Height="30"
+      Width="180"
+      Height="40"
       Command="{Binding ExportTidyConfigCommand}"
-      Content="Export Tidy Config" />
+      Content="Export Tidy Config"
+      FontSize="16" />
 
     <!--  CPT logo image  -->
     <Image
