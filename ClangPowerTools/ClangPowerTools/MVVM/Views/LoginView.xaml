@@ -15,7 +15,7 @@
 
   <Grid>
     <Grid.Background>
-      <ImageBrush ImageSource="/ClangPowerTools;component/MVVM/Resources/Background.png" Stretch="UniformToFill" />
+      <ImageBrush ImageSource="/ClangPowerTools;component/Resources/LoginBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
 
     <Grid.RowDefinitions>

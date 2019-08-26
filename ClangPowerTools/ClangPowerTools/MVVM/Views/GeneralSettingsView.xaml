@@ -12,7 +12,7 @@
   mc:Ignorable="d">
   <Grid>
     <Grid.Background>
-      <ImageBrush ImageSource="/ClangPowerTools;component/MVVM/Resources/Background.png" Stretch="UniformToFill" />
+      <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
     <Grid.RowDefinitions>
       <RowDefinition Height="20" />
@@ -76,7 +76,28 @@
       Command="{Binding LogoutCommand}"
       Content="Logout" />
 
+    <!--  Version  -->
+    <TextBlock
+      Grid.Row="5"
+      Grid.Column="2"
+      HorizontalAlignment="Right"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="10"
+      Text="{Binding Version}" />
+
+    <!--  CPT logo image  -->
+    <Image
+      Grid.Row="9"
+      Grid.Column="3"
+      Width="92"
+      Height="35"
+      HorizontalAlignment="Right"
+      VerticalAlignment="Bottom"
+      Source="/ClangPowerTools;component/Resources/LogoCPT.png" />
+
 
   </Grid>
+
 </UserControl>
 

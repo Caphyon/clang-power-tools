@@ -12,7 +12,7 @@
   mc:Ignorable="d">
   <Grid>
     <Grid.Background>
-      <ImageBrush ImageSource="/ClangPowerTools;component/MVVM/Resources/Background.png" Stretch="UniformToFill" />
+      <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
     <Grid.RowDefinitions>
       <RowDefinition Height="20" />
@@ -25,17 +25,13 @@
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="*" />
-      <RowDefinition Height="20" />
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="10" />
       <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="auto" />
-      <ColumnDefinition Width="auto" />
-      <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="*" />
-      <ColumnDefinition Width="20" />
     </Grid.ColumnDefinitions>
 
     <!--  Header Filter  -->
@@ -46,7 +42,6 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Foreground="#E2E2E8"
       Text="Header filter" />
 
     <TextBox
@@ -65,6 +60,7 @@
       Grid.Column="3"
       Width="50"
       Height="30"
+      HorizontalAlignment="Left"
       Command="{Binding HeaderFilterAddDataCommand}"
       Content="..." />
 
@@ -76,7 +72,6 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Foreground="#E2E2E8"
       Text="Use checks from" />
 
     <ComboBox
@@ -95,7 +90,6 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Foreground="#E2E2E8"
       Text="Checks" />
 
     <TextBox
@@ -114,6 +108,7 @@
       Grid.Column="3"
       Width="60"
       Height="30"
+      HorizontalAlignment="Left"
       Command="{Binding ChecksSelectCommand}"
       Content="Select" />
 
@@ -125,7 +120,6 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Foreground="#E2E2E8"
       Text="Custom executable" />
 
     <TextBox
@@ -144,6 +138,7 @@
       Grid.Column="3"
       Width="60"
       Height="30"
+      HorizontalAlignment="Left"
       Command="{Binding CustomExecutableBrowseCommand}"
       Content="Browse" />
 
@@ -155,7 +150,6 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Foreground="#E2E2E8"
       Text="Format after Tidy" />
 
     <CheckBox
@@ -177,7 +171,6 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Foreground="#E2E2E8"
       Text="Tidy on save" />
 
     <CheckBox
@@ -200,6 +193,15 @@
       Command="{Binding ExportTidyConfigCommand}"
       Content="Export Tidy Config" />
 
+    <!--  CPT logo image  -->
+    <Image
+      Grid.Row="9"
+      Grid.Column="3"
+      Width="92"
+      Height="35"
+      HorizontalAlignment="Right"
+      VerticalAlignment="Bottom"
+      Source="/ClangPowerTools;component/Resources/LogoCPT.png" />
 
   </Grid>
 </UserControl>

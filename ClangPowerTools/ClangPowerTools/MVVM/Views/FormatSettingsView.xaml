@@ -12,7 +12,7 @@
   mc:Ignorable="d">
   <Grid>
     <Grid.Background>
-      <ImageBrush ImageSource="/ClangPowerTools;component/MVVM/Resources/Background.png" Stretch="UniformToFill" />
+      <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
     <Grid.RowDefinitions>
       <RowDefinition Height="20" />
@@ -23,19 +23,14 @@
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
       <RowDefinition Height="*" />
-      <RowDefinition Height="20" />
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="10" />
       <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="auto" />
-      <ColumnDefinition Width="auto" />
-      <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="*" />
-      <ColumnDefinition Width="20" />
     </Grid.ColumnDefinitions>
 
     <!--  File Extensions  -->
@@ -46,7 +41,6 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Foreground="#E2E2E8"
       Text="File extensions" />
 
     <TextBox
@@ -65,6 +59,7 @@
       Grid.Column="3"
       Width="50"
       Height="30"
+      HorizontalAlignment="Left"
       Command="{Binding FileExtensionsAddDataCommand}"
       Content="..." />
 
@@ -76,7 +71,6 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Foreground="#E2E2E8"
       Text="Files to ignore" />
 
     <TextBox
@@ -95,6 +89,7 @@
       Grid.Column="3"
       Width="50"
       Height="30"
+      HorizontalAlignment="Left"
       Command="{Binding FilesToIgnoreAddDataCommand}"
       Content="..." />
 
@@ -106,7 +101,6 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Foreground="#E2E2E8"
       Text="Assume filename" />
 
     <TextBox
@@ -125,6 +119,7 @@
       Grid.Column="3"
       Width="50"
       Height="30"
+      HorizontalAlignment="Left"
       Command="{Binding AssumeFilenameAddDataCommand}"
       Content="..." />
 
@@ -136,7 +131,6 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Foreground="#E2E2E8"
       Text="Custom executable" />
 
     <TextBox
@@ -155,6 +149,7 @@
       Grid.Column="3"
       Width="60"
       Height="30"
+      HorizontalAlignment="Left"
       Command="{Binding CustomExecutableBrowseCommand}"
       Content="Browse" />
 
@@ -166,7 +161,6 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Foreground="#E2E2E8"
       Text="Style" />
 
     <ComboBox
@@ -186,7 +180,6 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Foreground="#E2E2E8"
       Text="Fallback style" />
 
     <ComboBox
@@ -205,7 +198,6 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Foreground="#E2E2E8"
       Text="Format on save" />
 
     <CheckBox
@@ -218,6 +210,16 @@
         <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
       </CheckBox.LayoutTransform>
     </CheckBox>
+
+    <!--  CPT logo image  -->
+    <Image
+      Grid.Row="9"
+      Grid.Column="3"
+      Width="92"
+      Height="35"
+      HorizontalAlignment="Right"
+      VerticalAlignment="Bottom"
+      Source="/ClangPowerTools;component/Resources/LogoCPT.png" />
 
   </Grid>
 </UserControl>

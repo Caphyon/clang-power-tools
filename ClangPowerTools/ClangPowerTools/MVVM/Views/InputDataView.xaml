@@ -34,7 +34,7 @@
       Grid.Row="0"
       Grid.ColumnSpan="2"
       Margin="10,5,10,5">
-      Enter the input strings (one per line)
+      Use &quot;;&quot; to separate your input strings
     </Label>
 
     <TextBox

@@ -47,6 +47,14 @@ namespace ClangPowerTools
         return true;
       }
     }
+
+    public string Version
+    {
+      get
+      {
+        return SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel.Version;
+      }
+    }
     #endregion
 
 
