@@ -4,7 +4,10 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:a="http://schemas.microsoft.com/xps/2005/06"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  d:DataContext="{d:DesignInstance local:TidySettingsViewModel,
+                                   IsDesignTimeCreatable=True}"
   d:DesignHeight="450"
   d:DesignWidth="800"
   mc:Ignorable="d">
@@ -71,8 +74,7 @@
       Panel.ZIndex="0"
       BorderBrush="LightGray"
       BorderThickness="1"
-      GotFocus="SearchBox_GotFocus"
-      Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+      Text="{Binding CheckSearch, UpdateSourceTrigger=PropertyChanged}"
       ToolTip="Type words to search for">
       <!--  GotMouseCapture="SearchBox_GotMouseCapture"  -->
 
@@ -172,7 +174,6 @@
       VerticalAlignment="Center"
       Panel.ZIndex="1"
       BorderThickness="1"
-      Click="Search_Click"
       Style="{DynamicResource NoChromeButton}">
 
       <Button.Template>

@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace ClangPowerTools
 {
-  class TidyChecksViewModel : INotifyPropertyChanged
+  public class TidyChecksViewModel : INotifyPropertyChanged
   {
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
 
     private string checkDescription = string.Empty;
+    private string checkSearch = string.Empty;
     private TidyCheckModel selectedCheck = new TidyCheckModel();
+    private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>(TidyChecks.Checks);
     #endregion
 
     #region Properties
@@ -17,11 +20,24 @@ namespace ClangPowerTools
     {
       get
       {
-        return TidyChecks.Checks;
+        if (string.IsNullOrEmpty(checkSearch))
+        {
+          return tidyChecksList;
+        }
+        return tidyChecksList.Where(e => e.Name.Contains(checkSearch)).ToList();
+      }
+    }
+
+    public string CheckSearch
+    {
+      get
+      {
+        return checkSearch;
       }
       set
       {
-        TidyChecks.Checks = value;
+        checkSearch = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CheckSearch"));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyChecksList"));
       }
     }
@@ -48,8 +64,11 @@ namespace ClangPowerTools
       set
       {
         selectedCheck = value;
-        CheckDescription = "Description: " + selectedCheck.Description;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedCheck"));
+        if (selectedCheck != null)
+        {
+          CheckDescription = "Description: " + selectedCheck.Description;
+          PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedCheck"));
+        }
       }
     }
     #endregion

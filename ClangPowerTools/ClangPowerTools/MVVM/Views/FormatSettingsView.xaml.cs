@@ -10,7 +10,7 @@ namespace ClangPowerTools.Views
     public FormatSettingsView()
     {
       InitializeComponent();
-      DataContext = new FormatSettingsViewModel();
+      DataContext = SettingsViewModelProvider.FormatSettingsViewModel;
     }
   }
 }

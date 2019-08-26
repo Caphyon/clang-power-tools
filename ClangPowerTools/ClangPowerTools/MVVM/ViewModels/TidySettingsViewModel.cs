@@ -58,7 +58,6 @@ namespace ClangPowerTools
     public TidySettingsViewModel()
     {
       tidyModel = new TidySettingsModel();
-      SettingsViewModelProvider.TidySettingsViewModel = this;
     }
     #endregion
 

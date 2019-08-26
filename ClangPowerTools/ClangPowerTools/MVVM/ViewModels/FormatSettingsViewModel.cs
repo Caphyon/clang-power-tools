@@ -47,7 +47,6 @@ namespace ClangPowerTools
     public FormatSettingsViewModel()
     {
       formatModel = new FormatSettingsModel();
-      SettingsViewModelProvider.FormatSettingsViewModel = this;
     }
 
     public IEnumerable<ClangFormatStyle> StyleItems

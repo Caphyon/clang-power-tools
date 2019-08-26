@@ -53,7 +53,6 @@ namespace ClangPowerTools
     public CompilerSettingsViewModel()
     {
       compilerModel = new CompilerSettingsModel();
-      SettingsViewModelProvider.CompilerSettingsViewModel = this;
     }
     #endregion
 

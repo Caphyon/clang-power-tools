@@ -12,6 +12,7 @@
   d:DataContext="{d:DesignInstance local:TidyChecksViewModel,
                                    IsDesignTimeCreatable=True}"
   Background="WhiteSmoke"
+  ResizeMode="NoResize"
   ShowActivated="True"
   ShowInTaskbar="False"
   WindowStartupLocation="CenterScreen"

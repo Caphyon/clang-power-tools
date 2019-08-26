@@ -10,7 +10,7 @@ namespace ClangPowerTools.Views
     public TidySettingsView()
     {
       InitializeComponent();
-      DataContext = new TidySettingsViewModel();
+      DataContext = SettingsViewModelProvider.TidySettingsViewModel;
     }
   }
 }
