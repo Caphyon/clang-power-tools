@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 
 namespace ClangPowerTools
 {
@@ -167,14 +168,19 @@ namespace ClangPowerTools
       {
         string json = sw.ReadToEnd();
         JsonSerializer serializer = new JsonSerializer();
-        List<object> models = JsonConvert.DeserializeObject<List<object>>(json);
 
-        //TODO handle error deserialization
-
-        SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel = JsonConvert.DeserializeObject<CompilerSettingsModel>(models[0].ToString());
-        SettingsViewModelProvider.FormatSettingsViewModel.FormatModel = JsonConvert.DeserializeObject<FormatSettingsModel>(models[1].ToString());
-        SettingsViewModelProvider.TidySettingsViewModel.TidyModel = JsonConvert.DeserializeObject<TidySettingsModel>(models[2].ToString());
-        SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel = JsonConvert.DeserializeObject<GeneralSettingsModel>(models[3].ToString());
+        try
+        {
+          List<object> models = JsonConvert.DeserializeObject<List<object>>(json);
+          SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel = JsonConvert.DeserializeObject<CompilerSettingsModel>(models[0].ToString());
+          SettingsViewModelProvider.FormatSettingsViewModel.FormatModel = JsonConvert.DeserializeObject<FormatSettingsModel>(models[1].ToString());
+          SettingsViewModelProvider.TidySettingsViewModel.TidyModel = JsonConvert.DeserializeObject<TidySettingsModel>(models[2].ToString());
+          SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel = JsonConvert.DeserializeObject<GeneralSettingsModel>(models[3].ToString());
+        }
+        catch (JsonException e)
+        {
+          MessageBox.Show(e.Message, "Cannot Load Clang Power Tools Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
       }
     }
 

@@ -89,7 +89,7 @@ namespace ClangPowerTools
     {
       tidyModel.CustomExecutable = OpenFile(string.Empty, ".exe", "Executable files|*.exe");
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyModel"));
-      //SetEnvironmentVariableTidyPath();
+      SetEnvironmentVariableTidyPath();
     }
 
     private void UpdateChecks()
@@ -100,8 +100,6 @@ namespace ClangPowerTools
 
     private void SetEnvironmentVariableTidyPath()
     {
-      // TODO use method
-
       var task = Task.Run(() =>
       {
         if (TidyModel.CustomExecutable.Length > 3)

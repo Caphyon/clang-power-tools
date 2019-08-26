@@ -17,6 +17,8 @@ namespace ClangPowerTools
     #endregion
 
     #region Properties
+
+    // TODO search TidyViewModel and check if found
     public List<TidyCheckModel> TidyChecksList
     {
       get
