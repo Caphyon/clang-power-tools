@@ -2,8 +2,15 @@
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ClangPowerTools.MVVM.Helpers;
+using ClangPowerTools.MVVM.ViewModels;
+using ClangPowerTools.Properties;
+using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
@@ -17,14 +24,12 @@ namespace ClangPowerTools.Commands
   {
     #region Properties
 
-    /// <summary>
-    /// Gets the instance of the command.
-    /// </summary>
     public static EncodingConverter Instance
     {
       get;
       private set;
     }
+
     #endregion
 
     #region Constructor
@@ -55,22 +60,31 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public void RunEncodingConverter(int id)
+    public async void RunEncodingConverter(int id)
     {
+      //var dte = (DTE2)await ServiceProvider.GetServiceAsync(typeof(DTE));
+      //string solutionDir = Path.GetDirectoryName(dte.Solution.FullName);
 
+      var encodingConverterViewModel = new EncodingConverterViewModel(GetSelectedFile());
+      await encodingConverterViewModel.LoadData();
+
+      var EncodingConverterWindow = WindowManager.CreateElementWindow(encodingConverterViewModel, Resources.EncodingConverterWindowTitle, "ClangPowerTools.MVVM.Views.EncodingConverterControl");
+
+      if (encodingConverterViewModel.CloseAction == null)
+      {
+        encodingConverterViewModel.CloseAction = () => EncodingConverterWindow.Close();
+      }
+
+      EncodingConverterWindow.ShowDialog();
     }
 
-    /// <summary>
-    /// This function is the callback used to execute the command when the menu item is clicked.
-    /// See the constructor to see how the menu item is associated with this function using
-    /// OleMenuCommandService service and MenuCommand class.
-    /// </summary>
-    /// <param name="sender">Event sender.</param>
-    /// <param name="e">Event args.</param>
-    //private void Execute(object sender, EventArgs e)
-    //{
+    private List<IItem> GetSelectedFile()
+    {
+      var itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
+      itemsCollector.CollectSelectedProjectItems();
+      return itemsCollector.Items;
+    }
 
-    //}
     #endregion
   }
 }
