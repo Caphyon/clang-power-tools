@@ -135,12 +135,12 @@ namespace ClangPowerTools
           mItemsCollector.CollectSelectedItems();
           break;
       }
-      return mItemsCollector.items;
+      return mItemsCollector.Items;
     }
 
     private void SetActiveDocumentEvent()
     {
-      if (mItemsCollector.items.Count == 0)
+      if (mItemsCollector.Items.Count == 0)
       {
         OnActiveFileCheck(new ActiveDocumentEventArgs(false));
       }
@@ -203,7 +203,7 @@ namespace ClangPowerTools
     {
       VsServiceProvider.TryGetService(typeof(SVsSolution), out object vsSolutionService);
       var vsSolution = vsSolutionService as IVsSolution;
-      foreach (var item in mItemsCollector.items)
+      foreach (var item in mItemsCollector.Items)
       {
         if (StopCommand)
         {

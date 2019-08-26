@@ -30,8 +30,8 @@ namespace ClangPowerTools
 
     #region Properties
 
-    public List<IItem> items { get; private set; } = new List<IItem>();
-    public bool haveItems => items.Count != 0;
+    public List<IItem> Items { get; private set; } = new List<IItem>();
+    public bool HaveItems => Items.Count != 0;
 
     #endregion
 
@@ -47,7 +47,7 @@ namespace ClangPowerTools
         if (activeDocument != null)
         {
           CurrentProjectItem activeProjectItem = new CurrentProjectItem(activeDocument.ProjectItem);
-          items.Add(activeProjectItem);
+          Items.Add(activeProjectItem);
         }
       }
       catch (Exception e)
@@ -137,7 +137,7 @@ namespace ClangPowerTools
       if (null != mAcceptedFileExtensions && false == mAcceptedFileExtensions.Contains(fileExtension))
         return;
 
-      items.Add(new CurrentProjectItem(aItem));
+      Items.Add(new CurrentProjectItem(aItem));
     }
 
     #endregion
@@ -148,11 +148,11 @@ namespace ClangPowerTools
 
     private void GetProjectsFromSolution(Solution aSolution)
     {
-      items = AutomationUtil.GetAllProjects(aSolution);
+      Items = AutomationUtil.GetAllProjects(aSolution);
     }
 
 
-    private void AddProject(Project aProject) => items.Add(new CurrentProject(aProject));
+    private void AddProject(Project aProject) => Items.Add(new CurrentProject(aProject));
 
 
     private void GetProjectItem(ProjectItem aProjectItem)

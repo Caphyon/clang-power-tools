@@ -100,7 +100,7 @@ namespace ClangPowerTools.Commands
                 fileChangerWatcher.Run(solutionFolderPath);
 
                 FilePathCollector fileCollector = new FilePathCollector();
-                var filesPath = fileCollector.Collect(mItemsCollector.items).ToList();
+                var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
 
                 silentFileController.SilentFiles(filesPath);
                 silentFileController.SilentFiles(dte2.Documents);
