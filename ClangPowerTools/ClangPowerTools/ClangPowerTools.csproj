@@ -80,6 +80,7 @@
     <Compile Include="Events\LicenseEventArgs.cs" />
     <Compile Include="Commands\Logout.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
+    <Compile Include="Helpers\ReflectionManager.cs" />
     <Compile Include="MVVM\Controllers\AccountController.cs" />
     <Compile Include="MVVM\Controllers\LicenseController.cs" />
     <Compile Include="MVVM\Models\LicenseModel.cs" />
