@@ -1,13 +1,16 @@
 ﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.Views;
+using System.ComponentModel;
 using System.IO;
 using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class GeneralSettingsViewModel : CommonSettingsFunctionality
+  public class GeneralSettingsViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
   {
     #region Members
+    public event PropertyChangedEventHandler PropertyChanged;
+
     private SettingsHandler settingsHandler = new SettingsHandler();
     private GeneralSettingsModel generalSettingsModel = new GeneralSettingsModel();
     private ICommand logoutCommand;
@@ -35,6 +38,7 @@ namespace ClangPowerTools
       set
       {
         generalSettingsModel = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GeneralSettingsModel"));
       }
     }
     #endregion

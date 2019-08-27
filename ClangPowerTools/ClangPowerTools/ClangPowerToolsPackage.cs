@@ -255,7 +255,7 @@ namespace ClangPowerTools
       }
 
       var currentVersion = PackageUtility.GetVersion();
-      if (string.IsNullOrWhiteSpace(currentVersion) == false && string.Compare(version, currentVersion) > 0)
+      if (string.IsNullOrWhiteSpace(currentVersion) == false && 0 > string.Compare(version, currentVersion))
       {
         mOutputWindowController.Clear();
         mOutputWindowController.Show();
@@ -263,6 +263,7 @@ namespace ClangPowerTools
           $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
 
         SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version = currentVersion;
+        settingsHandler.SaveSettings();
       }
     }
 

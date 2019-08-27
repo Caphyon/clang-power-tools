@@ -15,7 +15,7 @@ namespace ClangPowerTools
     public SettingsViewModel(SettingsView settingsView)
     {
       this.settingsView = settingsView;
-      settingsHandler.InitializeSettings();
+      settingsHandler.LoadSettings();
       settingsView.Closed += OnClosed;
     }
     #endregion
