@@ -22,6 +22,7 @@
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
@@ -80,7 +81,7 @@
       ItemsSource="{Binding UseChecksFromItems}"
       SelectedItem="{Binding TidyModel.UseChecksFrom}" />
 
-    <!--  Checks  -->
+    <!--  Predefined Checks  -->
     <TextBlock
       Grid.Row="3"
       Grid.Column="1"
@@ -88,7 +89,7 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Checks" />
+      Text="Predefined Checks" />
 
     <TextBox
       Grid.Row="3"
@@ -99,7 +100,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding TidyModel.Checks}" />
+      Text="{Binding TidyModel.PredefinedChecks}" />
 
     <Button
       Grid.Row="3"
@@ -107,12 +108,43 @@
       Width="60"
       Height="30"
       HorizontalAlignment="Left"
-      Command="{Binding ChecksSelectCommand}"
+      Command="{Binding PredefinedChecksSelectCommand}"
       Content="Select" />
+
+    <!--  Custom Filter  -->
+    <TextBlock
+      Grid.Row="4"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="20"
+      Text="Custom Checks" />
+
+    <TextBox
+      Grid.Row="4"
+      Grid.Column="2"
+      Width="450"
+      Height="30"
+      Margin="0,0,20,0"
+      VerticalContentAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="15"
+      Text="{Binding TidyModel.CustomChecks}" />
+
+    <Button
+      Grid.Row="4"
+      Grid.Column="3"
+      Width="50"
+      Height="30"
+      HorizontalAlignment="Left"
+      Command="{Binding CustomChecksAddDataCommand}"
+      Content="..." />
+
 
     <!--  Custom executable file  -->
     <TextBlock
-      Grid.Row="4"
+      Grid.Row="5"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -121,7 +153,7 @@
       Text="Custom executable" />
 
     <TextBox
-      Grid.Row="4"
+      Grid.Row="5"
       Grid.Column="2"
       Width="450"
       Height="30"
@@ -132,7 +164,7 @@
       Text="{Binding TidyModel.CustomExecutable}" />
 
     <Button
-      Grid.Row="4"
+      Grid.Row="5"
       Grid.Column="3"
       Width="60"
       Height="30"
@@ -142,7 +174,7 @@
 
     <!--  Format after tidy  -->
     <TextBlock
-      Grid.Row="5"
+      Grid.Row="6"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -151,7 +183,7 @@
       Text="Format after Tidy" />
 
     <CheckBox
-      Grid.Row="5"
+      Grid.Row="6"
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
@@ -163,7 +195,7 @@
 
     <!--  Tidy on save  -->
     <TextBlock
-      Grid.Row="6"
+      Grid.Row="7"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -172,7 +204,7 @@
       Text="Tidy on save" />
 
     <CheckBox
-      Grid.Row="6"
+      Grid.Row="7"
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
@@ -184,7 +216,7 @@
 
     <!--  Export tidy config  -->
     <Button
-      Grid.Row="7"
+      Grid.Row="8"
       Grid.Column="2"
       Width="180"
       Height="40"

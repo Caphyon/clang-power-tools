@@ -53,7 +53,7 @@ namespace ClangPowerTools.Script
     /// <returns></returns>
     private string GetChecks()
     {
-      string tidyChecks = SettingsViewModelProvider.TidySettingsViewModel.TidyModel.Checks;
+      string tidyChecks = SettingsViewModelProvider.TidySettingsViewModel.TidyModel.PredefinedChecks;
 
       return !string.IsNullOrWhiteSpace(tidyChecks) ?
         $",{tidyChecks.Replace(';', ',')}" :

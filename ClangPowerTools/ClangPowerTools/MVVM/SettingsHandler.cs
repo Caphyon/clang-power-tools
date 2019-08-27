@@ -232,7 +232,7 @@ namespace ClangPowerTools
     {
       TidySettingsModel tidySettingsModel = new TidySettingsModel();
       tidySettingsModel.HeaderFilter = clangTidy.HeaderFilter;
-      tidySettingsModel.Checks = clangTidy.TidyChecksCollection;
+      tidySettingsModel.CustomChecks = clangTidy.TidyChecksCollection;
       tidySettingsModel.CustomExecutable = clangTidy.ClangTidyPath.Value;
       tidySettingsModel.FormatAfterTidy = clangTidy.FormatAfterTidy;
       tidySettingsModel.TidyOnSave = clangTidy.AutoTidyOnSave;
@@ -250,7 +250,7 @@ namespace ClangPowerTools
 
         if (isChecked)
         {
-          SettingsViewModelProvider.TidySettingsViewModel.TidyModel.Checks += string.Concat(FormatTidyCheckName(propertyInfo.Name), ";");
+          SettingsViewModelProvider.TidySettingsViewModel.TidyModel.PredefinedChecks += string.Concat(FormatTidyCheckName(propertyInfo.Name), ";");
         }
       }
     }

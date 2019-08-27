@@ -66,10 +66,10 @@ namespace ClangPowerTools
     {
       TidySettingsModel tidySettings = SettingsViewModelProvider.TidySettingsViewModel.TidyModel;
 
-      ClangTidyChecksFrom clangTidyUseChecksFrom = tidySettings.UseChecksFrom;
-      if (clangTidyUseChecksFrom == ClangTidyChecksFrom.Checks)
+      ClangTidyUseChecksFrom clangTidyUseChecksFrom = tidySettings.UseChecksFrom;
+      if (clangTidyUseChecksFrom == ClangTidyUseChecksFrom.CustomChecks)
       {
-        CreateCustomChecksOutputLine(paramaterName, tidySettings.Checks, true);
+        CreateCustomChecksOutputLine(paramaterName, tidySettings.PredefinedChecks, true);
       }
       else
       {

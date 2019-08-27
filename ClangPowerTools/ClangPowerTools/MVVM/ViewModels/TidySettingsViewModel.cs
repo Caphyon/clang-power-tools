@@ -19,7 +19,8 @@ namespace ClangPowerTools
     private TidyChecksView tidyChecksView;
     private ICommand headerFilterAddDataCommand;
     private ICommand customExecutableBrowseCommand;
-    private ICommand checksSelectCommand;
+    private ICommand predefinedChecksSelectCommand;
+    private ICommand customChecksAddDataCommand;
     private ICommand exportTidyConfigCommand;
     #endregion
 
@@ -45,11 +46,11 @@ namespace ClangPowerTools
       }
     }
 
-    public IEnumerable<ClangTidyChecksFrom> UseChecksFromItems
+    public IEnumerable<ClangTidyUseChecksFrom> UseChecksFromItems
     {
       get
       {
-        return Enum.GetValues(typeof(ClangTidyChecksFrom)).Cast<ClangTidyChecksFrom>();
+        return Enum.GetValues(typeof(ClangTidyUseChecksFrom)).Cast<ClangTidyUseChecksFrom>();
       }
     }
     #endregion
@@ -66,9 +67,14 @@ namespace ClangPowerTools
       get => customExecutableBrowseCommand ?? (customExecutableBrowseCommand = new RelayCommand(() => UpdateCustomExecutable(), () => CanExecute));
     }
 
-    public ICommand ChecksSelectCommand
+    public ICommand PredefinedChecksSelectCommand
     {
-      get => checksSelectCommand ?? (checksSelectCommand = new RelayCommand(() => UpdateChecks(), () => CanExecute));
+      get => predefinedChecksSelectCommand ?? (predefinedChecksSelectCommand = new RelayCommand(() => UpdatePredefinedChecks(), () => CanExecute));
+    }
+
+    public ICommand CustomChecksAddDataCommand
+    {
+      get => customChecksAddDataCommand ?? (customChecksAddDataCommand = new RelayCommand(() => UpdateCustomChecks(), () => CanExecute));
     }
 
     public ICommand ExportTidyConfigCommand
@@ -85,6 +91,12 @@ namespace ClangPowerTools
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyModel"));
     }
 
+    private void UpdateCustomChecks()
+    {
+      tidyModel.CustomChecks = OpenContentDialog(tidyModel.CustomChecks);
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyModel"));
+    }
+
     private void UpdateCustomExecutable()
     {
       tidyModel.CustomExecutable = OpenFile(string.Empty, ".exe", "Executable files|*.exe");
@@ -92,7 +104,7 @@ namespace ClangPowerTools
       SetEnvironmentVariableTidyPath();
     }
 
-    private void UpdateChecks()
+    private void UpdatePredefinedChecks()
     {
       OpenChecksWindow();
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyModel"));
@@ -129,7 +141,7 @@ namespace ClangPowerTools
 
     private void OnClosed(object sender, EventArgs e)
     {
-      TidyModel.Checks = GetSelectedChecks();
+      TidyModel.PredefinedChecks = GetSelectedChecks();
       tidyChecksView.Closed -= OnClosed;
     }
 
