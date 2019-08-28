@@ -33,9 +33,40 @@
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
-    <!--  Header Filter  -->
+    <!--  Custom executable file  -->
     <TextBlock
       Grid.Row="1"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="20"
+      Text="Custom executable" />
+
+    <TextBox
+      Grid.Row="1"
+      Grid.Column="2"
+      Width="450"
+      Height="30"
+      Margin="0,0,20,0"
+      VerticalContentAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="15"
+      Text="{Binding TidyModel.CustomExecutable}" />
+
+    <Button
+      Grid.Row="1"
+      Grid.Column="3"
+      Width="60"
+      Height="30"
+      HorizontalAlignment="Left"
+      Command="{Binding CustomExecutableBrowseCommand}"
+      Content="Browse" />
+
+
+    <!--  Header Filter  -->
+    <TextBlock
+      Grid.Row="2"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -44,7 +75,7 @@
       Text="Header filter" />
 
     <TextBox
-      Grid.Row="1"
+      Grid.Row="2"
       Grid.Column="2"
       Width="450"
       Height="30"
@@ -55,17 +86,17 @@
       Text="{Binding TidyModel.HeaderFilter}" />
 
     <Button
-      Grid.Row="1"
+      Grid.Row="2"
       Grid.Column="3"
-      Width="50"
+      Width="60"
       Height="30"
       HorizontalAlignment="Left"
       Command="{Binding HeaderFilterAddDataCommand}"
       Content="..." />
 
-    <!--  Fallback style  -->
+    <!--  Use checks from  -->
     <TextBlock
-      Grid.Row="2"
+      Grid.Row="3"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -74,44 +105,15 @@
       Text="Use checks from" />
 
     <ComboBox
-      Grid.Row="2"
+      Grid.Row="3"
       Grid.Column="2"
       Height="30"
       Margin="0,0,20,0"
       ItemsSource="{Binding UseChecksFromItems}"
       SelectedItem="{Binding TidyModel.UseChecksFrom}" />
 
-    <!--  Predefined Checks  -->
-    <TextBlock
-      Grid.Row="3"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="20"
-      Text="Predefined Checks" />
 
-    <TextBox
-      Grid.Row="3"
-      Grid.Column="2"
-      Width="450"
-      Height="30"
-      Margin="0,0,20,0"
-      VerticalContentAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="15"
-      Text="{Binding TidyModel.PredefinedChecks}" />
-
-    <Button
-      Grid.Row="3"
-      Grid.Column="3"
-      Width="60"
-      Height="30"
-      HorizontalAlignment="Left"
-      Command="{Binding PredefinedChecksSelectCommand}"
-      Content="Select" />
-
-    <!--  Custom Filter  -->
+    <!--  Custom checks  -->
     <TextBlock
       Grid.Row="4"
       Grid.Column="1"
@@ -135,14 +137,13 @@
     <Button
       Grid.Row="4"
       Grid.Column="3"
-      Width="50"
+      Width="60"
       Height="30"
       HorizontalAlignment="Left"
       Command="{Binding CustomChecksAddDataCommand}"
       Content="..." />
 
-
-    <!--  Custom executable file  -->
+    <!--  Predefined Checks  -->
     <TextBlock
       Grid.Row="5"
       Grid.Column="1"
@@ -150,27 +151,17 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Custom executable" />
-
-    <TextBox
-      Grid.Row="5"
-      Grid.Column="2"
-      Width="450"
-      Height="30"
-      Margin="0,0,20,0"
-      VerticalContentAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="15"
-      Text="{Binding TidyModel.CustomExecutable}" />
+      Text="Predefined Checks" />
 
     <Button
       Grid.Row="5"
-      Grid.Column="3"
+      Grid.Column="2"
       Width="60"
       Height="30"
       HorizontalAlignment="Left"
-      Command="{Binding CustomExecutableBrowseCommand}"
-      Content="Browse" />
+      Command="{Binding PredefinedChecksSelectCommand}"
+      Content="Select" />
+
 
     <!--  Format after tidy  -->
     <TextBlock

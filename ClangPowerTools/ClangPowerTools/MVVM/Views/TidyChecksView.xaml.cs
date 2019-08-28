@@ -10,6 +10,8 @@ namespace ClangPowerTools.Views
     public TidyChecksView()
     {
       InitializeComponent();
+      TidyChecksViewModel tidyChecksViewModel = SettingsViewModelProvider.TidyChecksViewModel;
+      tidyChecksViewModel.TidyChecksView = this;
       DataContext = SettingsViewModelProvider.TidyChecksViewModel;
     }
   }

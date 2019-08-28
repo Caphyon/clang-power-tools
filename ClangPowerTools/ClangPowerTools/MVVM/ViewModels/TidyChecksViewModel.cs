@@ -1,8 +1,10 @@
 ﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
 
 namespace ClangPowerTools
@@ -13,12 +15,26 @@ namespace ClangPowerTools
     public event PropertyChangedEventHandler PropertyChanged;
 
     private string checkSearch = string.Empty;
+    private TidyChecksView tidyChecksView;
     private TidyCheckModel selectedCheck = new TidyCheckModel();
-    private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>(TidyChecks.Checks);
+    private List<TidyCheckModel> selectedChecks = new List<TidyCheckModel>();
+    private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>();
     private ICommand okCommand;
     #endregion
 
     #region Properties
+    public TidyChecksView TidyChecksView
+    {
+      get
+      {
+        return tidyChecksView;
+      }
+      set
+      {
+        tidyChecksView = value;
+      }
+    }
+
     public List<TidyCheckModel> TidyChecksList
     {
       get
@@ -28,6 +44,34 @@ namespace ClangPowerTools
           return tidyChecksList;
         }
         return tidyChecksList.Where(e => e.Name.Contains(checkSearch, StringComparison.OrdinalIgnoreCase)).ToList();
+      }
+    }
+
+    public TidyChecksViewModel()
+    {
+      InitializeChecks();
+    }
+
+    private void InitializeChecks()
+    {
+      string predefinedChecks = SettingsViewModelProvider.TidySettingsViewModel.TidyModel.PredefinedChecks;
+
+      if (string.IsNullOrEmpty(predefinedChecks))
+      {
+        tidyChecksList = new List<TidyCheckModel>(TidyChecks.Checks);
+      }
+      else
+      {
+        tidyChecksList = new List<TidyCheckModel>(TidyChecksClean.Checks);
+        TickPredefinedChecks();
+      }
+    }
+
+    public List<TidyCheckModel> SelectedChecks
+    {
+      get
+      {
+        return tidyChecksList.Where(e => e.IsChecked == true).ToList();
       }
     }
 
@@ -67,18 +111,39 @@ namespace ClangPowerTools
     }
     #endregion
 
+
     #region Commands
     public ICommand OkCommand
     {
-      get => okCommand ?? (okCommand = new RelayCommand(() => UpdateSelectedCommands(), () => CanExecute));
+      get => okCommand ?? (okCommand = new RelayCommand(() => UpdateSelectedChecksCommand(), () => CanExecute));
     }
     #endregion
 
-    #region Methods
-    private void UpdateSelectedCommands()
-    {
 
+    #region Methods
+    private void UpdateSelectedChecksCommand()
+    {
+      TidyChecksView.Close();
     }
+
+    private void TickPredefinedChecks()
+    {
+      string input = SettingsViewModelProvider.TidySettingsViewModel.TidyModel.PredefinedChecks;
+      input = Regex.Replace(input, @"\s+", "");
+      List<string> checkNames = input.Split(';').ToList();
+
+      foreach (string check in checkNames)
+      {
+        foreach (TidyCheckModel tidyModel in tidyChecksList)
+        {
+          if (string.Equals(check, tidyModel.Name, StringComparison.OrdinalIgnoreCase))
+          {
+            tidyModel.IsChecked = true;
+          }
+        }
+      }
+    }
+
     #endregion
   }
 }

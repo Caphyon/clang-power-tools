@@ -155,9 +155,9 @@ namespace ClangPowerTools
     private string GetSelectedChecks()
     {
       StringBuilder stringBuilder = new StringBuilder();
-      List<TidyCheckModel> tidyChecksList = TidyChecks.Checks;
+      List<TidyCheckModel> selectedChecks = SettingsViewModelProvider.TidyChecksViewModel.SelectedChecks;
 
-      foreach (TidyCheckModel item in tidyChecksList)
+      foreach (TidyCheckModel item in selectedChecks)
       {
         if (item.IsChecked)
         {
