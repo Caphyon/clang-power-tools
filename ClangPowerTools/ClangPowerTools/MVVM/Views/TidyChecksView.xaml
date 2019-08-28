@@ -57,8 +57,16 @@
               Grid.Column="0"
               FontSize="15"
               Text="{Binding Name}"
-              TextWrapping="Wrap"
-              ToolTip="{Binding Description}" />
+              TextWrapping="Wrap">
+              <TextBlock.ToolTip>
+                <ToolTip>
+                  <TextBlock
+                    Width="400"
+                    Text="{Binding Description}"
+                    TextWrapping="Wrap" />
+                </ToolTip>
+              </TextBlock.ToolTip>
+            </TextBlock>
             <CheckBox
               Grid.Row="1"
               Grid.Column="1"
