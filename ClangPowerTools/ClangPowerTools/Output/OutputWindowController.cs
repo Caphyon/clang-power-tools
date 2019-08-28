@@ -164,7 +164,7 @@ namespace ClangPowerTools.Output
       CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
 
       if (0 != Errors.Count)
-        OnErrorDetected(new ErrorDetectedEventArgs(Errors, IsErrorWindowFocused));
+        OnErrorDetected(this, new EventArgs());
     }
 
     public void OnFileHierarchyDetected(object sender, VsHierarchyDetectedEventArgs e)
@@ -176,7 +176,7 @@ namespace ClangPowerTools.Output
 
     public void OnErrorDetected(object sender, EventArgs e)
     {
-      ErrorDetectedEvent?.Invoke(this, new ErrorDetectedEventArgs(Errors));
+      ErrorDetectedEvent?.Invoke(this, new ErrorDetectedEventArgs(Errors, IsErrorWindowFocused));
     }
 
     protected virtual void OnMissingLLVMDetected(MissingLlvmEventArgs e)
