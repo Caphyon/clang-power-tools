@@ -265,6 +265,8 @@ namespace ClangPowerTools
         SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version = currentVersion;
         settingsHandler.SaveSettings();
       }
+
+      settingsHandler.LoadSettings();
     }
 
     private async Task RegisterVsServicesAsync()

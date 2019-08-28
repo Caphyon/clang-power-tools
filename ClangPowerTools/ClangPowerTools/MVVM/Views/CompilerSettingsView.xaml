@@ -199,7 +199,7 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding CompilerModel.ClangCompileAfterMSCVCompile}">
+      IsChecked="{Binding CompilerModel.ClangAfterMSVC}">
       <CheckBox.LayoutTransform>
         <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
       </CheckBox.LayoutTransform>

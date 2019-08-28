@@ -89,13 +89,15 @@ namespace ClangPowerTools.Commands
     /// <returns></returns>
     public void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
     {
-      FormatSettingsModel formatSettings = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel;
+      string filesToIgnore = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel.FilesToIgnore;
 
-      if (formatSettings.FilesToIgnore.Length > 0)
+      if (filesToIgnore.Length > 0)
       {
-        formatSettings.FilesToIgnore += ";";
+        filesToIgnore += ";";
       }
-      formatSettings.FilesToIgnore += string.Join(";", RemoveDuplicateFiles(documentsToIgnore));
+      filesToIgnore += string.Join(";", RemoveDuplicateFiles(documentsToIgnore));
+
+      SettingsViewModelProvider.FormatSettingsViewModel.FormatModel.FilesToIgnore = filesToIgnore;
     }
 
     private List<string> RemoveDuplicateFiles(List<string> documentsToIgnore)
