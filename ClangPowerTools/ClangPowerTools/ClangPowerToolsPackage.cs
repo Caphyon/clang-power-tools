@@ -64,7 +64,6 @@ namespace ClangPowerTools
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
     private DTEEvents mDteEvents;
-    private SolutionEvents mSolutionEvents;
 
     #endregion
 
@@ -130,7 +129,6 @@ namespace ClangPowerTools
         mBuildEvents = dte2.Events.BuildEvents;
         mCommandEvents = dte2.Events.CommandEvents;
         mDteEvents = dte2.Events.DTEEvents;
-        mSolutionEvents = dte2.Events.SolutionEvents;
       }
 
       mSettingsHandler = new SettingsHandler();
@@ -483,12 +481,6 @@ namespace ClangPowerTools
         mDteEvents.OnBeginShutdown += UnregisterFromEvents;
         mDteEvents.OnBeginShutdown += UnregisterFromCPTEvents;
       }
-
-      if (null != mSolutionEvents)
-      {
-        mSolutionEvents.Opened += mCommandController.OnOpenedSolution;
-        mSolutionEvents.ProjectAdded += mCommandController.OnAddedSolution;
-      }
     }
 
     private void UnregisterFromEvents()
@@ -548,12 +540,6 @@ namespace ClangPowerTools
 
       if (null != mDteEvents)
         mDteEvents.OnBeginShutdown -= UnregisterFromEvents;
-
-      if (null != mSolutionEvents)
-      {
-        mSolutionEvents.Opened -= mCommandController.OnOpenedSolution;
-        mSolutionEvents.ProjectAdded -= mCommandController.OnAddedSolution;
-      }
     }
 
     private void ShowToolbare()

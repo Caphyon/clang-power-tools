@@ -1,4 +1,8 @@
-﻿using ClangPowerTools.Services;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -83,6 +87,66 @@ namespace ClangPowerTools.Helpers
     public static bool IsCppProject(Project project)
     {
       return project.Kind.Equals(ScriptConstants.kCppProjectGuid);
+    }
+
+    internal static bool AreContextMenuCommandsEnabled()
+    {
+      if (IsOpenFolderModeActive())
+      {
+        return true;
+      }
+
+      ItemsCollector itemCollector = new ItemsCollector();
+      itemCollector.CollectSelectedItems();
+      List<string> selectedItems = new List<string>();
+      if (itemCollector.haveItems == false)
+      {
+        return false;
+      }
+      itemCollector.items.ForEach(i => selectedItems.Add(i.GetName()));
+
+      if (selectedItems.Count == 0)
+      {
+        return false;
+      }
+
+      var extensions = ScriptConstants.kAcceptedFileExtensions;
+      extensions.Add(".vcxproj");
+
+      foreach (var item in selectedItems)
+      {
+        var fileExtension = Path.GetExtension(item).ToLower();
+        if (extensions.Contains(fileExtension))
+        {
+          return true;
+        }
+      }
+
+      return false;
+
+    }
+
+    internal static bool AreToolbarCommandsEnabled()
+    {
+      if (IsOpenFolderModeActive())
+      {
+        return true;
+      }
+
+      ItemsCollector itemCollector = new ItemsCollector();
+      itemCollector.CollectActiveProjectItem();
+      List<string> selectedItems = new List<string>();
+
+      if (itemCollector.haveItems == false)
+      {
+        return false;
+      }
+
+      itemCollector.items.ForEach(i => selectedItems.Add(i.GetName()));
+
+      var fileExtension = Path.GetExtension(selectedItems.FirstOrDefault()).ToLower();
+      return ScriptConstants.kAcceptedFileExtensions.Contains(fileExtension);
+
     }
 
     #endregion

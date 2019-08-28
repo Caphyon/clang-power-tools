@@ -24,7 +24,6 @@ namespace ClangPowerTools
     public bool running = false;
     public bool vsBuildRunning = false;
     public bool activeLicense = false;
-    public bool areCommandsDisabled = false;
 
     public static readonly Guid mCommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
 
@@ -406,11 +405,20 @@ namespace ClangPowerTools
       if (!(sender is OleMenuCommand command))
         return;
 
-      if (areCommandsDisabled)
+      if (IsAToolbarCommand(command))
+      {
+        if(SolutionInfo.AreToolbarCommandsEnabled() == false)
+        {
+          command.Enabled = false;
+          return;
+        }
+      }
+      else if (SolutionInfo.AreContextMenuCommandsEnabled() == false)
       {
         command.Enabled = false;
         return;
       }
+
 
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte) && !(dte as DTE2).Solution.IsOpen)
       {
@@ -424,16 +432,6 @@ namespace ClangPowerTools
       {
         command.Visible = command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !running : running;
       }
-    }
-
-    public void OnAddedSolution(Project Project)
-    {
-      areCommandsDisabled = SolutionInfo.IsCppProject(Project) == false;
-    }
-
-    public void OnOpenedSolution()
-    {
-      areCommandsDisabled = SolutionInfo.ContainsCppProject() == false;
     }
 
 
@@ -580,6 +578,12 @@ namespace ClangPowerTools
         return;
       }
       mSaveCommandWasGiven = true;
+    }
+
+    private bool IsAToolbarCommand(OleMenuCommand command)
+    {
+      return command.CommandID.ID == CommandIds.kCompileToolbarId || command.CommandID.ID == CommandIds.kClangFormatToolbarId ||
+        command.CommandID.ID == CommandIds.kTidyToolbarId || command.CommandID.ID == CommandIds.kTidyFixToolbarId;
     }
 
     #endregion
