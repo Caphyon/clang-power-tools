@@ -50,7 +50,7 @@ namespace ClangPowerTools
   [ProvideMenuResource("Menus.ctmenu", 1)]
   [Guid(RunClangPowerToolsPackage.PackageGuidString)]
 
-  public sealed class RunClangPowerToolsPackage : AsyncPackage, IVsSolutionEvents, IVsSolutionEvents7
+  public sealed class RunClangPowerToolsPackage : AsyncPackage, IVsSolutionEvents
   {
     #region Members
 
@@ -69,7 +69,6 @@ namespace ClangPowerTools
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
     private DTEEvents mDteEvents;
-    private SolutionEvents mSolutionEvents;
 
     #endregion
 
@@ -135,7 +134,6 @@ namespace ClangPowerTools
         mBuildEvents = dte2.Events.BuildEvents;
         mCommandEvents = dte2.Events.CommandEvents;
         mDteEvents = dte2.Events.DTEEvents;
-        mSolutionEvents = dte2.Events.SolutionEvents;
       }
 
       SettingsProvider.Initialize(this);
@@ -268,37 +266,6 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region IVsSolutionEvents7 Implementation
-
-    public void OnAfterOpenFolder(string folderPath)
-    {
-      if (mCommandController != null && mCommandController.areCommandsDisabled == true)
-      {
-        mCommandController.areCommandsDisabled = SolutionInfo.IsOpenFolderModeActive() == false;
-      }
-    }
-
-    public void OnBeforeCloseFolder(string folderPath)
-    {
-
-    }
-
-    public void OnQueryCloseFolder(string folderPath, ref int pfCancel)
-    {
-
-    }
-
-    public void OnAfterCloseFolder(string folderPath)
-    {
-
-    }
-
-    public void OnAfterLoadAllDeferredProjects()
-    {
-
-    }
-
-    #endregion
 
     #region Private Methods
 
@@ -394,12 +361,6 @@ namespace ClangPowerTools
         mDteEvents.OnBeginShutdown += UnregisterFromEvents;
         mDteEvents.OnBeginShutdown += UnregisterFromCPTEvents;
       }
-
-      if (null != mSolutionEvents)
-      {
-        mSolutionEvents.Opened += mCommandController.OnOpenedSolution;
-        mSolutionEvents.ProjectAdded += mCommandController.OnAddedSolution;
-      }
     }
 
     private void UnregisterFromEvents()
@@ -459,12 +420,6 @@ namespace ClangPowerTools
 
       if (null != mDteEvents)
         mDteEvents.OnBeginShutdown -= UnregisterFromEvents;
-
-      if (null != mSolutionEvents)
-      {
-        mSolutionEvents.Opened -= mCommandController.OnOpenedSolution;
-        mSolutionEvents.ProjectAdded -= mCommandController.OnAddedSolution;
-      }
     }
 
     private void ShowToolbare()
