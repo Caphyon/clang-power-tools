@@ -1,7 +1,9 @@
-﻿using System;
+﻿using ClangPowerTools.MVVM.Commands;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Input;
 
 namespace ClangPowerTools
 {
@@ -10,10 +12,10 @@ namespace ClangPowerTools
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private string checkDescription = string.Empty;
     private string checkSearch = string.Empty;
     private TidyCheckModel selectedCheck = new TidyCheckModel();
     private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>(TidyChecks.Checks);
+    private ICommand okCommand;
     #endregion
 
     #region Properties
@@ -43,19 +45,6 @@ namespace ClangPowerTools
       }
     }
 
-    public string CheckDescription
-    {
-      get
-      {
-        return checkDescription;
-      }
-      set
-      {
-        checkDescription = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CheckDescription"));
-      }
-    }
-
     public TidyCheckModel SelectedCheck
     {
       get
@@ -65,12 +54,30 @@ namespace ClangPowerTools
       set
       {
         selectedCheck = value;
-        if (selectedCheck != null)
-        {
-          CheckDescription = "Description: " + selectedCheck.Description;
-          PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedCheck"));
-        }
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedCheck"));
       }
+    }
+
+    public bool CanExecute
+    {
+      get
+      {
+        return true;
+      }
+    }
+    #endregion
+
+    #region Commands
+    public ICommand OkCommand
+    {
+      get => okCommand ?? (okCommand = new RelayCommand(() => UpdateSelectedCommands(), () => CanExecute));
+    }
+    #endregion
+
+    #region Methods
+    private void UpdateSelectedCommands()
+    {
+
     }
     #endregion
   }

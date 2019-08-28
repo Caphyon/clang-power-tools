@@ -8,7 +8,7 @@
   xmlns:searchBox="clr-namespace:ClangPowerTools.Views"
   Title="Tidy Checks"
   Width="650"
-  Height="520"
+  Height="630"
   d:DataContext="{d:DesignInstance local:TidyChecksViewModel,
                                    IsDesignTimeCreatable=True}"
   Background="WhiteSmoke"
@@ -24,8 +24,8 @@
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="30" />
-      <RowDefinition Height="380" />
-      <RowDefinition Height="100" />
+      <RowDefinition Height="500" />
+      <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
     <!--  Search  -->
@@ -56,24 +56,28 @@
               Grid.Row="1"
               Grid.Column="0"
               FontSize="15"
-              Text="{Binding Name}" />
+              Text="{Binding Name}"
+              TextWrapping="Wrap"
+              ToolTip="{Binding Description}" />
             <CheckBox
               Grid.Row="1"
               Grid.Column="1"
+              HorizontalAlignment="Right"
               IsChecked="{Binding IsChecked}" />
           </Grid>
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>
 
-    <!--  Check description  -->
-    <TextBlock
+    <!--  Export tidy config  -->
+    <Button
       Grid.Row="2"
       Grid.Column="0"
-      MaxWidth="630"
-      FontSize="15"
-      Text="{Binding CheckDescription}"
-      TextWrapping="Wrap" />
+      Width="120"
+      Height="40"
+      Command="{Binding OkCommand}"
+      Content="OK"
+      FontSize="16" />
 
   </Grid>
 

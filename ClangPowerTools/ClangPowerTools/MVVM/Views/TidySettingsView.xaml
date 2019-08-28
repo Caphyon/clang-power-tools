@@ -220,6 +220,8 @@
       Grid.Column="2"
       Width="180"
       Height="40"
+      HorizontalAlignment="Center"
+      VerticalAlignment="Top"
       Command="{Binding ExportTidyConfigCommand}"
       Content="Export Tidy Config"
       FontSize="16" />
