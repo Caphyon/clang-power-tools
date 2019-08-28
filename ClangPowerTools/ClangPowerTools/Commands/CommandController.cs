@@ -324,8 +324,6 @@ namespace ClangPowerTools
     protected void OnErrorDetected(EventArgs e)
     {
       ErrorDetectedEvent?.Invoke(this, e);
-    }
-
       HasEncodingErrorEvent.Invoke(this, new EventArgs());
     }
 
