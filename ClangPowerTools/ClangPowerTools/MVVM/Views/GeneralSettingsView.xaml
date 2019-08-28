@@ -73,21 +73,12 @@
     <TextBlock
       Grid.Row="5"
       Grid.Column="0"
-      HorizontalAlignment="Left"
+      HorizontalAlignment="Right"
       VerticalAlignment="Bottom"
       FontFamily="SegoeUI"
       FontSize="10"
       Text="{Binding GeneralSettingsModel.Version}" />
 
-    <!--  CPT logo image  -->
-    <Image
-      Grid.Row="5"
-      Grid.Column="0"
-      Width="92"
-      Height="35"
-      HorizontalAlignment="Right"
-      VerticalAlignment="Bottom"
-      Source="/ClangPowerTools;component/Resources/LogoCPT.png" />
 
 
   </Grid>

@@ -217,15 +217,5 @@
       Content="Export Tidy Config"
       FontSize="16" />
 
-    <!--  CPT logo image  -->
-    <Image
-      Grid.Row="9"
-      Grid.Column="3"
-      Width="92"
-      Height="35"
-      HorizontalAlignment="Right"
-      VerticalAlignment="Bottom"
-      Source="/ClangPowerTools;component/Resources/LogoCPT.png" />
-
   </Grid>
 </UserControl>

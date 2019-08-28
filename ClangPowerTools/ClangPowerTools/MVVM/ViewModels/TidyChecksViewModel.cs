@@ -15,25 +15,13 @@ namespace ClangPowerTools
     public event PropertyChangedEventHandler PropertyChanged;
 
     private string checkSearch = string.Empty;
-    private TidyChecksView tidyChecksView;
     private TidyCheckModel selectedCheck = new TidyCheckModel();
-    private List<TidyCheckModel> selectedChecks = new List<TidyCheckModel>();
     private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>();
     private ICommand okCommand;
     #endregion
 
     #region Properties
-    public TidyChecksView TidyChecksView
-    {
-      get
-      {
-        return tidyChecksView;
-      }
-      set
-      {
-        tidyChecksView = value;
-      }
-    }
+    public TidyChecksView TidyChecksView { get; set; }
 
     public List<TidyCheckModel> TidyChecksList
     {
