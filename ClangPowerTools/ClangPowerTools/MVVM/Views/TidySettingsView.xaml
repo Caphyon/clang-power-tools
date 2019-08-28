@@ -23,6 +23,7 @@
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
@@ -156,16 +157,36 @@
     <Button
       Grid.Row="5"
       Grid.Column="2"
-      Width="60"
+      Width="80"
       Height="30"
       HorizontalAlignment="Left"
       Command="{Binding PredefinedChecksSelectCommand}"
       Content="Select" />
 
+    <!--  Export tidy config  -->
+    <TextBlock
+      Grid.Row="6"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="20"
+      Text="Tidy file config" />
+
+
+    <Button
+      Grid.Row="6"
+      Grid.Column="2"
+      Width="80"
+      Height="30"
+      HorizontalAlignment="Left"
+      Command="{Binding ExportTidyConfigCommand}"
+      Content="Export" />
+
 
     <!--  Format after tidy  -->
     <TextBlock
-      Grid.Row="6"
+      Grid.Row="7"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -174,7 +195,7 @@
       Text="Format after Tidy" />
 
     <CheckBox
-      Grid.Row="6"
+      Grid.Row="7"
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
@@ -186,7 +207,7 @@
 
     <!--  Tidy on save  -->
     <TextBlock
-      Grid.Row="7"
+      Grid.Row="8"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -195,7 +216,7 @@
       Text="Tidy on save" />
 
     <CheckBox
-      Grid.Row="7"
+      Grid.Row="8"
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
@@ -205,17 +226,7 @@
       </CheckBox.LayoutTransform>
     </CheckBox>
 
-    <!--  Export tidy config  -->
-    <Button
-      Grid.Row="8"
-      Grid.Column="2"
-      Width="180"
-      Height="40"
-      HorizontalAlignment="Center"
-      VerticalAlignment="Top"
-      Command="{Binding ExportTidyConfigCommand}"
-      Content="Export Tidy Config"
-      FontSize="16" />
+
 
   </Grid>
 </UserControl>
