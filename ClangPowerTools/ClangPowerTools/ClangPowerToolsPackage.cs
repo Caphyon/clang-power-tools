@@ -249,7 +249,7 @@ namespace ClangPowerTools
         ShowToolbare(); 
       }
 
-      if (string.IsNullOrWhiteSpace(version))
+      if (string.IsNullOrWhiteSpace(version) || 0 > string.Compare(version, "5.0.0"))
       {
         System.Diagnostics.Process.Start(new ProcessStartInfo("https://clangpowertools.com/blog/future-of-clang-power-tools.html"));
       }
@@ -265,8 +265,6 @@ namespace ClangPowerTools
         SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version = currentVersion;
         settingsHandler.SaveSettings();
       }
-
-      settingsHandler.LoadSettings();
     }
 
     private async Task RegisterVsServicesAsync()
