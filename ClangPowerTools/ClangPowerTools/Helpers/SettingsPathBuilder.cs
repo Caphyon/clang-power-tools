@@ -7,7 +7,7 @@ namespace ClangPowerTools
   {
     #region Constants
 
-    private const string kFolderName = "ClangPowerTools";
+    private const string folderName = "ClangPowerTools";
 
     #endregion
 
@@ -18,7 +18,7 @@ namespace ClangPowerTools
     private string GetFolderPath()
     {
       string folderPath = Path.Combine
-        (Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), kFolderName);
+        (Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), folderName);
       if (!Directory.Exists(folderPath))
         Directory.CreateDirectory(folderPath);
       return folderPath;

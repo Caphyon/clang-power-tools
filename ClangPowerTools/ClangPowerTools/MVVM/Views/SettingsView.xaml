@@ -1,0 +1,82 @@
+﻿<Window
+  x:Class="ClangPowerTools.Views.SettingsView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:ClangPowerTools.Views"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  Title="Clang Power Tools  -  Settings"
+  Width="825"
+  Height="485"
+  ResizeMode="NoResize"
+  WindowStartupLocation="CenterScreen"
+  WindowStyle="ToolWindow"
+  mc:Ignorable="d">
+
+  <TabControl>
+    <TabItem Padding="8" FontSize="15">
+      <TabItem.Header>
+        <StackPanel Orientation="Horizontal">
+          <Image
+            Width="15"
+            Height="15"
+            Margin="3"
+            Source="/ClangPowerTools;component/Resources/CompileIcon.png" />
+          <TextBlock Width="65" Text="Compiler" />
+        </StackPanel>
+      </TabItem.Header>
+      <Grid>
+        <local:CompilerSettingsView />
+      </Grid>
+    </TabItem>
+
+    <TabItem Padding="8" FontSize="15">
+      <TabItem.Header>
+        <StackPanel Orientation="Horizontal">
+          <Image
+            Width="15"
+            Height="15"
+            Margin="3"
+            Source="/ClangPowerTools;component/Resources/TidyIcon.png" />
+          <TextBlock Width="65" Text="Tidy" />
+        </StackPanel>
+      </TabItem.Header>
+      <Grid>
+        <local:TidySettingsView />
+      </Grid>
+    </TabItem>
+
+    <TabItem Padding="8" FontSize="15">
+      <TabItem.Header>
+        <StackPanel Orientation="Horizontal">
+          <Image
+            Width="15"
+            Height="15"
+            Margin="3"
+            Source="/ClangPowerTools;component/Resources/ClangFormatIcon.png" />
+          <TextBlock Width="65" Text="Format" />
+        </StackPanel>
+      </TabItem.Header>
+      <Grid>
+        <local:FormatSettingsView />
+      </Grid>
+    </TabItem>
+
+    <TabItem Padding="8" FontSize="15">
+      <TabItem.Header>
+        <StackPanel Orientation="Horizontal">
+          <Image
+            Width="15"
+            Height="15"
+            Margin="3"
+            Source="/ClangPowerTools;component/Resources/SettingsIcon.png" />
+          <TextBlock Width="65" Text="General" />
+        </StackPanel>
+      </TabItem.Header>
+      <Grid>
+        <local:GeneralSettingsView />
+      </Grid>
+    </TabItem>
+
+  </TabControl>
+</Window>

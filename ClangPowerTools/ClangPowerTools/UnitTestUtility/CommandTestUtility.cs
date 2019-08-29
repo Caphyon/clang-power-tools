@@ -21,8 +21,5 @@ namespace ClangPowerTools.Tests
     public static StopCommand Stop { get; set; }
 
     public static SettingsCommand Settings { get; set; }
-
-    public static TidyConfigCommand TidyConfig { get; set; }
-
   }
 }

@@ -94,16 +94,6 @@ namespace ClangPowerTools
       {
         await SettingsCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kSettingsId);
       }
-
-      if (TidyConfigCommand.Instance == null)
-      {
-        await TidyConfigCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kITidyExportConfigId);
-      }
-
-      if (Logout.Instance == null)
-      {
-        await Logout.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kLogoutId);
-      }
     }
 
     public async void Execute(object sender, EventArgs e)
@@ -193,11 +183,6 @@ namespace ClangPowerTools
             OnAfterClangCommand();
             break;
           }
-        case CommandIds.kITidyExportConfigId:
-          {
-            TidyConfigCommand.Instance.ExportConfig();
-            break;
-          }
         case CommandIds.kIgnoreFormatId:
           {
             IgnoreFormatCommand.Instance.RunIgnoreFormatCommand(CommandIds.kIgnoreFormatId);
@@ -206,11 +191,6 @@ namespace ClangPowerTools
         case CommandIds.kIgnoreCompileId:
           {
             IgnoreCompileCommand.Instance.RunIgnoreCompileCommand(CommandIds.kIgnoreCompileId);
-            break;
-          }
-        case CommandIds.kLogoutId:
-          {
-            Logout.Instance.LogoutUser();
             break;
           }
         default:
@@ -481,9 +461,9 @@ namespace ClangPowerTools
       if (false == mSaveCommandWasGiven) // The save event was not triggered by Save File or SaveAll commands
         return;
 
-      var tidyOption = SettingsProvider.TidySettings;
+      TidySettingsModel tidySettings = SettingsViewModelProvider.TidySettingsViewModel.TidyModel;
 
-      if (false == tidyOption.AutoTidyOnSave) // The clang-tidy on save option is disable 
+      if (false == tidySettings.TidyOnSave) // The clang-tidy on save option is disable 
         return;
 
       if (true == running) // Clang compile/tidy command is running
@@ -499,25 +479,25 @@ namespace ClangPowerTools
 
     private void BeforeSaveClangFormat(Document aDocument)
     {
-      var clangFormatOptionPage = SettingsProvider.ClangFormatSettings;
-      var tidyOptionPage = SettingsProvider.TidySettings;
+      FormatSettingsModel formatSettings = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel;
+      TidySettingsModel tidySettings = SettingsViewModelProvider.TidySettingsViewModel.TidyModel;
 
-      if (currentCommand == CommandIds.kTidyFixId && running && tidyOptionPage.FormatAfterTidy && clangFormatOptionPage.EnableFormatOnSave)
+      if (currentCommand == CommandIds.kTidyFixId && running && tidySettings.FormatAfterTidy && formatSettings.FormatOnSave)
       {
         mFormatAfterTidyFlag = true;
         return;
       }
 
-      if (false == clangFormatOptionPage.EnableFormatOnSave)
+      if (false == formatSettings.FormatOnSave)
         return;
 
       if (false == Vsix.IsDocumentDirty(aDocument) && false == mFormatAfterTidyFlag)
         return;
 
-      if (false == FileHasExtension(aDocument.FullName, clangFormatOptionPage.FileExtensions))
+      if (false == FileHasExtension(aDocument.FullName, formatSettings.FileExtensions))
         return;
 
-      if (true == SkipFile(aDocument.FullName, clangFormatOptionPage.FilesToIgnore))
+      if (true == SkipFile(aDocument.FullName, formatSettings.FilesToIgnore))
         return;
 
       FormatCommand.Instance.FormatOnSave(aDocument);
@@ -547,9 +527,9 @@ namespace ClangPowerTools
 
     private void BeforeExecuteClangCompile(string aGuid, int aId)
     {
-      var generalOptions = SettingsProvider.GeneralSettings;
+      var compilerSettings = SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel; 
 
-      if (null == generalOptions || false == generalOptions.ClangCompileAfterVsCompile)
+      if (compilerSettings.ClangAfterMSVC == false)
         return;
 
       string commandName = GetCommandName(aGuid, aId);

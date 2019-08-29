@@ -40,13 +40,7 @@ namespace ClangPowerTools
   [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
   [ProvideMenuResource("Menus.ctmenu", 1)]
   [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
-  [ProvideOptionPage(typeof(ClangGeneralOptionsView), "Clang Power Tools", "General", 0, 0, true)]
-  [ProvideOptionPage(typeof(ClangTidyOptionsView), "Clang Power Tools\\Tidy", "Options", 0, 0, true, Sort = 0)]
-  [ProvideOptionPage(typeof(ClangTidyCustomChecksOptionsView), "Clang Power Tools\\Tidy", "Custom Checks", 0, 0, true, Sort = 1)]
-  [ProvideOptionPage(typeof(ClangTidyPredefinedChecksOptionsView), "Clang Power Tools\\Tidy", "Predefined Checks", 0, 0, true, Sort = 2)]
-  [ProvideOptionPage(typeof(ClangFormatOptionsView), "Clang Power Tools", "Format", 0, 0, true, Sort = 4)]
   [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)]
-  [ProvideMenuResource("Menus.ctmenu", 1)]
   [Guid(RunClangPowerToolsPackage.PackageGuidString)]
   public sealed class RunClangPowerToolsPackage : AsyncPackage, IVsSolutionEvents
   {
@@ -133,31 +127,7 @@ namespace ClangPowerTools
         mDteEvents = dte2.Events.DTEEvents;
       }
 
-      SettingsProvider.Initialize(this);
-
-      // Detect the first install 
-      if (string.IsNullOrWhiteSpace(SettingsProvider.GeneralSettings.Version))
-        ShowToolbare(); // Show the toolbar on the first install
-
-      if (string.IsNullOrWhiteSpace(SettingsProvider.GeneralSettings.Version) ||
-          0 > string.Compare(SettingsProvider.GeneralSettings.Version, "5.0.0"))
-      {
-        System.Diagnostics.Process.Start(new ProcessStartInfo("https://clangpowertools.com/blog/future-of-clang-power-tools.html"));
-      }
-
-      var currentVersion = PackageUtility.GetVersion();
-      if (!string.IsNullOrWhiteSpace(currentVersion) &&
-        0 > string.Compare(SettingsProvider.GeneralSettings.Version, currentVersion))
-      {
-        mOutputWindowController.Clear();
-        mOutputWindowController.Show();
-        mOutputWindowController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
-          $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
-
-        SettingsProvider.GeneralSettings.Version = currentVersion;
-      }
-
-      SettingsHandler.SaveGeneralSettings();
+      InitializeSettings();
 
       await mCommandController.InitializeCommandsAsync(this);
       mLicenseController = new LicenseController();
@@ -266,6 +236,36 @@ namespace ClangPowerTools
 
 
     #region Private Methods
+    private void InitializeSettings()
+    {
+      SettingsHandler settingsHandler = new SettingsHandler();
+      settingsHandler.InitializeSettings();
+
+      string version =  SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version;
+      // Detect the first install 
+      if (string.IsNullOrWhiteSpace(version))
+      {
+        // Show the toolbar on the first install
+        ShowToolbare(); 
+      }
+
+      if (string.IsNullOrWhiteSpace(version) || 0 > string.Compare(version, "5.0.0"))
+      {
+        System.Diagnostics.Process.Start(new ProcessStartInfo("https://clangpowertools.com/blog/future-of-clang-power-tools.html"));
+      }
+
+      var currentVersion = PackageUtility.GetVersion();
+      if (string.IsNullOrWhiteSpace(currentVersion) == false && 0 > string.Compare(version, currentVersion))
+      {
+        mOutputWindowController.Clear();
+        mOutputWindowController.Show();
+        mOutputWindowController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
+          $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
+
+        SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version = currentVersion;
+        settingsHandler.SaveSettings();
+      }
+    }
 
     private async Task RegisterVsServicesAsync()
     {

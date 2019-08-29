@@ -1,79 +1,78 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
+using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
 namespace ClangPowerTools
 {
   [Serializable]
+  [JsonConverter(typeof(StringEnumConverter))]
   public enum ClangFormatStyle
   {
-    [XmlEnum(Name = "file")]
+    [EnumMember(Value = "file")]
     file = 0,
-    [XmlEnum(Name = "Chromium")]
+    [EnumMember(Value = "Chromium")]
     Chromium,
-    [XmlEnum(Name = "Google")]
+    [EnumMember(Value = "Google")]
     Google,
-    [XmlEnum(Name = "LLVM")]
+    [EnumMember(Value = "LLVM")]
     LLVM,
-    [XmlEnum(Name = "Mozilla")]
+    [EnumMember(Value = "Mozilla")]
     Mozilla,
-    [XmlEnum(Name = "WebKit")]
+    [EnumMember(Value = "WebKit")]
     WebKit
   }
 
   [Serializable]
+  [JsonConverter(typeof(StringEnumConverter))]
   public enum ClangFormatFallbackStyle
   {
-    [XmlEnum(Name = "none")]
+    [EnumMember(Value = "none")]
     none = 0,
-    [XmlEnum(Name = "file")]
+    [EnumMember(Value = "file")]
     file,
-    [XmlEnum(Name = "Chromium")]
+    [EnumMember(Value = "Chromium")]
     Chromium,
-    [XmlEnum(Name = "Google")]
+    [EnumMember(Value = "Google")]
     Google,
-    [XmlEnum(Name = "LLVM")]
+    [EnumMember(Value = "LLVM")]
     LLVM,
-    [XmlEnum(Name = "Mozilla")]
+    [EnumMember(Value = "Mozilla")]
     Mozilla,
-    [XmlEnum(Name = "WebKit")]
+    [EnumMember(Value = "WebKit")]
     WebKit
   }
 
   [Serializable]
+  [JsonConverter(typeof(StringEnumConverter))]
   public enum ClangGeneralAdditionalIncludes
   {
     [XmlEnum(Name = "include directories")]
+    [EnumMember(Value = "IncludeDirectories")]
     IncludeDirectories,
-    
+
     [XmlEnum(Name = "system include directories")]
+    [EnumMember(Value = "SystemIncludeDirectories")]
     SystemIncludeDirectories
   }
 
-
-  [Serializable] 
-  public enum ClangTidyHeaderFilters
-  {
-    [XmlEnum(Name = ".*")]
-    DefaultHeaderFilter,
-
-    [XmlEnum(Name = "_")]
-    CorrespondingHeader
-  }
-
-
   [Serializable]
+  [JsonConverter(typeof(StringEnumConverter))]
   public enum ClangTidyUseChecksFrom
   {
     [XmlEnum(Name = "predefined checks")]
+    [EnumMember(Value = "PredefinedChecks")]
     PredefinedChecks,
 
     [XmlEnum(Name = "custom checks")]
+    [EnumMember(Value = "CustomChecks")]
     CustomChecks,
 
     [XmlEnum(Name = ".clang-tidy config file")]
+    [EnumMember(Value = "TidyFile")]
     TidyFile
   }
-
 
   public sealed class ComboBoxConstants
   {

@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 
 namespace ClangPowerTools
@@ -13,6 +11,9 @@ namespace ClangPowerTools
 
     // Create StringBuilder to be written in the .clang-tidy file
     private StringBuilder tidyConfigOutput = new StringBuilder();
+    private CompilerSettingsModel compilerSettingsModel = SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel;
+    private FormatSettingsModel formatSettingsModel = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel;
+    private TidySettingsModel tidySettingsModel = SettingsViewModelProvider.TidySettingsViewModel.TidyModel;
 
     // Readonly list for paramaters names
     private static readonly List<string> parameterNames = new List<string>()
@@ -42,11 +43,11 @@ namespace ClangPowerTools
       CreateWarningAsErrorsOutputLine(parameterNames.ElementAt(1), treatWarningsAsErrors, true);
 
       //Header filter line
-      string headerFilter = SettingsProvider.TidySettings.HeaderFilter.HeaderFilters;
+      string headerFilter = tidySettingsModel.HeaderFilter;
       CreateHeaderFilterOutputLine(parameterNames.ElementAt(3), headerFilter, true);
 
       //Format style line
-      string formatStyle = SettingsProvider.ClangFormatSettings.Style.Value.ToString();
+      string formatStyle = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel.Style.ToString();
       CreateOutputLine(parameterNames.ElementAt(4), formatStyle, true);
 
       //User line
@@ -61,38 +62,17 @@ namespace ClangPowerTools
 
     private void CreateChecksOutputLine(string paramaterName)
     {
-      ClangTidyUseChecksFrom clangTidyUseChecksFrom = SettingsProvider.TidySettings.UseChecksFrom.Value;
+      TidySettingsModel tidySettings = SettingsViewModelProvider.TidySettingsViewModel.TidyModel;
+
+      ClangTidyUseChecksFrom clangTidyUseChecksFrom = tidySettings.UseChecksFrom;
       if (clangTidyUseChecksFrom == ClangTidyUseChecksFrom.CustomChecks)
       {
-        CreateCustomChecksOutputLine(paramaterName, SettingsProvider.TidyCustomCheckes.TidyChecks, true);
-      }
-      else if (clangTidyUseChecksFrom == ClangTidyUseChecksFrom.PredefinedChecks)
-      {
-        CreateOutputLine(paramaterName, GetPredefinedChecks(SettingsProvider.TidyPredefinedChecks), true);
+        CreateCustomChecksOutputLine(paramaterName, tidySettings.PredefinedChecks, true);
       }
       else
       {
         CreateOutputLine(paramaterName, "", true);
       }
-    }
-
-    private string GetPredefinedChecks(ClangTidyPredefinedChecksOptionsView predefinedChecksSettings)
-    {
-      StringBuilder predefinedChecks = new StringBuilder();
-      PropertyInfo[] properties = predefinedChecksSettings.GetType().GetProperties();
-
-      foreach (var item in properties)
-      {
-        var attribute = item.GetCustomAttribute(typeof(DisplayNameAttribute)) as DisplayNameAttribute;
-        bool? value = item.GetValue(predefinedChecksSettings) as bool?;
-
-        if (value != null && value == true && attribute != null)
-        {
-          predefinedChecks.Append(attribute.DisplayName + ",");
-        }
-      }
-
-      return predefinedChecks.ToString().TrimEnd(',');
     }
 
     private string CreateLine<T>(string propertyName, int nameLength, T value, bool hasQuotationMark)
@@ -111,7 +91,7 @@ namespace ClangPowerTools
 
     private void CreateWarningAsErrorsOutputLine(string paramaterName, string warningsAsErrors, bool hasQuotationMark)
     {
-      if (SettingsProvider.GeneralSettings.TreatWarningsAsErrors)
+      if (compilerSettingsModel.WarningsAsErrors)
       {
         tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, warningsAsErrors, hasQuotationMark));
       }

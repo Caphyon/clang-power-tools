@@ -1,9 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-
-namespace ClangPowerTools.Script
+﻿namespace ClangPowerTools.Script
 {
   public class ClangTidyModeParametersFactory
   {
@@ -24,10 +19,7 @@ namespace ClangPowerTools.Script
         return UseClangConfigFile(ref aUseClangTidyFileFlag);
 
       else if (0 == string.Compare(ComboBoxConstants.kCustomChecks, aTidyMode))
-        return GetCustomChecks();
-
-      else if (0 == string.Compare(ComboBoxConstants.kPredefinedChecks, aTidyMode))
-        return GetTidyPredefinedChecks();
+        return GetChecks();
 
       return string.Empty;
     }
@@ -54,44 +46,14 @@ namespace ClangPowerTools.Script
     /// Get the clang tidy parameters from the Custom Checks option page
     /// </summary>
     /// <returns></returns>
-    private string GetCustomChecks()
+    private string GetChecks()
     {
-      var tidyCustomShecksSettings = SettingsProvider.TidyCustomCheckes;
+      string tidyChecks = SettingsViewModelProvider.TidySettingsViewModel.TidyModel.PredefinedChecks;
 
-      return !string.IsNullOrWhiteSpace(tidyCustomShecksSettings.TidyChecks) ?
-        $",{tidyCustomShecksSettings.TidyChecks.Replace(';', ',')}" :
+      return !string.IsNullOrWhiteSpace(tidyChecks) ?
+        $",{tidyChecks.Replace(';', ',')}" :
         string.Empty;
     }
-
-
-    /// <summary>
-    /// Get the clang tidy parameters from the Predefined Checks option page
-    /// </summary>
-    /// <returns>The predefined checks</returns>
-    private string GetTidyPredefinedChecks()
-    {
-      var tidyPredefinedChecksSettings = SettingsProvider.TidyPredefinedChecks;
-      var parameters = string.Empty;
-
-      foreach (PropertyInfo prop in tidyPredefinedChecksSettings.GetType().GetProperties())
-      {
-        object[] propAttrs = prop.GetCustomAttributes(false);
-        object clangCheckAttr = propAttrs.FirstOrDefault(attr => typeof(ClangCheckAttribute) == attr.GetType());
-        object displayNameAttrObj = propAttrs.FirstOrDefault(attr => typeof(DisplayNameAttribute) == attr.GetType());
-
-        if (null == clangCheckAttr || null == displayNameAttrObj)
-          continue;
-
-        DisplayNameAttribute displayNameAttr = (DisplayNameAttribute)displayNameAttrObj;
-        var value = prop.GetValue(tidyPredefinedChecksSettings, null);
-        if (Boolean.TrueString != value.ToString())
-          continue;
-        parameters = $"{parameters},{displayNameAttr.DisplayName}";
-      }
-
-      return parameters;
-    }
-
 
     #endregion
 

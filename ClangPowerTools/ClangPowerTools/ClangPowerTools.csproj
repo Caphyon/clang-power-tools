@@ -76,11 +76,31 @@
   <ItemGroup>
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Events\LicenseEventArgs.cs" />
-    <Compile Include="Commands\Logout.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
+    <Compile Include="MVVM\Models\GeneralSettingsModel.cs" />
+    <Compile Include="MVVM\OldSettings\ClangFormatPathValue.cs" />
+    <Compile Include="MVVM\OldSettings\ClangTidyPathValue.cs" />
+    <Compile Include="MVVM\Commands\RelayCommand.cs" />
     <Compile Include="MVVM\Controllers\AccountController.cs" />
     <Compile Include="MVVM\Controllers\LicenseController.cs" />
+    <Compile Include="MVVM\OldSettings\HeaderFiltersValue.cs" />
+    <Compile Include="MVVM\Models\CompilerSettingsModel.cs" />
+    <Compile Include="MVVM\Models\TidyCheckModel.cs" />
+    <Compile Include="MVVM\Models\TidySettingsModel.cs" />
+    <Compile Include="MVVM\Models\FormatSettingsModel.cs" />
     <Compile Include="MVVM\Models\LicenseModel.cs" />
+    <Compile Include="MVVM\SettingsHandler.cs" />
+    <Compile Include="MVVM\SettingsTooltips.cs" />
+    <Compile Include="MVVM\TidyChecksClean.cs" />
+    <Compile Include="MVVM\TidyChecks.cs" />
+    <Compile Include="MVVM\SettingsViewModelProvider.cs" />
+    <Compile Include="MVVM\ViewModels\GeneralSettingsViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\InputDataViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\SettingsViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\TidyChecksViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\TidySettingsViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\FormatSettingsViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\CompilerSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\LoginViewModel.cs" />
     <Compile Include="Helpers\NetworkUtility.cs" />
     <Compile Include="Events\ActiveDocumentEventArgs.cs" />
@@ -93,7 +113,6 @@
     <Compile Include="Commands\CommandUILocation.cs" />
     <Compile Include="Commands\IgnoreCompileCommand.cs" />
     <Compile Include="Commands\IgnoreFormatCommand.cs" />
-    <Compile Include="Commands\TidyConfigCommand.cs" />
     <Compile Include="Convertors\BooleanToVisibilityConverter.cs" />
     <Compile Include="Convertors\ClangFormatFallbackStyleConverter.cs" />
     <Compile Include="Convertors\ClangFormatStyleConverter.cs" />
@@ -111,12 +130,31 @@
     <Compile Include="Helpers\UIUpdater.cs" />
     <Compile Include="MVVM\Models\TokenModel.cs" />
     <Compile Include="MVVM\Models\UserModel.cs" />
+    <Compile Include="MVVM\CommonSettingsFunctionality.cs" />
+    <Compile Include="MVVM\Views\FormatSettingsView.xaml.cs">
+      <DependentUpon>FormatSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Views\CompilerSettingsView.xaml.cs">
+      <DependentUpon>CompilerSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Views\GeneralSettingsView.xaml.cs">
+      <DependentUpon>GeneralSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Views\SettingsView.xaml.cs">
+      <DependentUpon>SettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Views\TidyChecksView.xaml.cs">
+      <DependentUpon>TidyChecksView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Views\TidySettingsView.xaml.cs">
+      <DependentUpon>TidySettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Views\InputDataView.xaml.cs">
+      <DependentUpon>InputDataView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\WebApi\WebApiUrl.cs" />
-    <Compile Include="Options\ClangTidyPathValue.cs" />
-    <Compile Include="Options\ClangFormatPathValue.cs" />
-    <Compile Include="Options\HeaderFiltersValue.cs" />
-    <Compile Include="Options\Model\ClangTidyPredefinedChecksOptions.cs" />
-    <Compile Include="Options\Model\ClangTidyOptions.cs" />
+    <Compile Include="MVVM\OldSettings\OldModels\ClangTidyPredefinedChecksOptions.cs" />
+    <Compile Include="MVVM\OldSettings\OldModels\ClangTidyOptions.cs" />
     <Compile Include="Commands\BasicCommand.cs" />
     <Compile Include="Commands\StopCommand.cs" />
     <Compile Include="Commands\ClangCommand.cs" />
@@ -124,17 +162,8 @@
     <Compile Include="Commands\CommandController.cs" />
     <Compile Include="Commands\CompileCommand.cs" />
     <Compile Include="Convertors\ClangGeneralAdditionalIncludesConvertor.cs" />
-    <Compile Include="Convertors\OldConvertors\FallbackStyleConvertor.cs" />
-    <Compile Include="Convertors\OldConvertors\StyleConvertor.cs" />
-    <Compile Include="Options\Model\ClangFormatOptions.cs" />
-    <Compile Include="Options\UIElementsActivator.cs" />
-    <Compile Include="Options\ViewModel\ClangFormatOptionsView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Options\Model\DefaultOptions.cs" />
-    <Compile Include="Options\ViewModel\ClangTidyCustomChecksOptionsView.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="MVVM\OldSettings\OldModels\ClangFormatOptions.cs" />
+    <Compile Include="MVVM\OldSettings\OldModels\DefaultOptions.cs" />
     <Compile Include="Helpers\DocumentsHandler.cs" />
     <Compile Include="Error\ErrorDetector.cs" />
     <Compile Include="Error\ErrorParserConstants.cs" />
@@ -142,56 +171,11 @@
     <Compile Include="Files Operations\FileChangerWatcher.cs" />
     <Compile Include="Files Operations\FileOpener.cs" />
     <Compile Include="Files Operations\FilePathCollector.cs" />
-    <Compile Include="Options\ViewModel\ClangGeneralOptionsView.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Options\Model\ClangOptions.cs" />
+    <Compile Include="MVVM\OldSettings\OldModels\ClangOptions.cs" />
     <Compile Include="Convertors\ClangTidyHeaderFiltersConvertor.cs" />
-    <Compile Include="Options\View\ClangFormatOptionsUserControl.xaml.cs">
-      <DependentUpon>ClangFormatOptionsUserControl.xaml</DependentUpon>
+    <Compile Include="MVVM\Views\SearchBoxView.xaml.cs">
+      <DependentUpon>SearchBoxView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Options\View\ClangGeneralOptionsUserControl.xaml.cs">
-      <DependentUpon>ClangGeneralOptionsUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\ClangTidyPredefinedChecksOptionsUserControl.xaml.cs">
-      <DependentUpon>ClangTidyPredefinedChecksOptionsUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\ClangTidyCustomChecksUserControl.xaml.cs">
-      <DependentUpon>ClangTidyCustomChecksUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\ClangTidyOptionsUserControl.xaml.cs">
-      <DependentUpon>ClangTidyOptionsUserControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\SearchBox.xaml.cs">
-      <DependentUpon>SearchBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\TextBoxNotifaiableUserControl.cs" />
-    <Compile Include="Options\View\WpfPropertyGrid\BorderedComboBox.xaml.cs">
-      <DependentUpon>BorderedComboBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\WpfPropertyGrid\BorderedTextBox.xaml.cs">
-      <DependentUpon>BorderedTextBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowseTidy.xaml.cs">
-      <DependentUpon>BorderedTextBoxBrowseTidy.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowseFormat.xaml.cs">
-      <DependentUpon>BorderedTextBoxBrowseFormat.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\WpfPropertyGrid\StringCollectionEditor.xaml.cs">
-      <DependentUpon>StringCollectionEditor.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\WpfPropertyGrid\PropertyCollection.cs" />
-    <Compile Include="Options\View\WpfPropertyGrid\PropertyData.cs" />
-    <Compile Include="Options\View\WpfPropertyGrid\PropertyGrid.xaml.cs">
-      <DependentUpon>PropertyGrid.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\WpfPropertyGrid\PropertyGridResources.xaml.cs">
-      <DependentUpon>PropertyGridResources.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Options\View\WpfPropertyGrid\PropertyTemplateSelector.cs" />
-    <Compile Include="Options\View\WpfPropertyGrid\ProvideToolboxControlAttribute.cs" />
-    <Compile Include="Options\View\WpfPropertyGrid\VisualTreeHelperExtension.cs" />
     <Compile Include="Builder\IAsyncBuilder.cs" />
     <Compile Include="Output\OutputContentModel.cs" />
     <Compile Include="Output\OutputProcessor.cs" />
@@ -206,13 +190,8 @@
     <Compile Include="Script\ItemRelatedScriptBuilder.cs" />
     <Compile Include="Script\RunModeScriptBuilder.cs" />
     <Compile Include="Script\RunningProcesses.cs" />
-    <Compile Include="Options\ViewModel\ConfigurationPage.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Services\VsServiceProvider.cs" />
     <Compile Include="Helpers\SettingsPathBuilder.cs" />
-    <Compile Include="Helpers\SettingsProvider.cs" />
-    <Compile Include="Settings\SettingsHandler.cs" />
     <Compile Include="SilentFile\SilentFileChangerBuilder.cs" />
     <Compile Include="SilentFile\SilentFileChangerEqualityComparer.cs" />
     <Compile Include="Items\IItem.cs" />
@@ -221,21 +200,14 @@
     <Compile Include="Script\PowerShellWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Commands\SettingsCommand.cs" />
-    <Compile Include="Options\ViewModel\ClangTidyPredefinedChecksOptionsView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Commands\TidyCommand.cs" />
     <Compile Include="ClangPowerToolsPackage.cs" />
     <Compile Include="Script\ScriptConstants.cs" />
     <Compile Include="Error\TaskErrorModel.cs" />
     <Compile Include="Items\CurrentProject.cs" />
     <Compile Include="Items\CurrentProjectItem.cs" />
-    <Compile Include="Options\ViewModel\ClangTidyOptionsView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="Helpers\ActiveWindowProperties.cs" />
     <Compile Include="Convertors\ComboBoxConstants.cs" />
-    <Compile Include="Convertors\OldConvertors\ComboBoxConvertor.cs" />
     <Compile Include="Convertors\ClangTidyUseChecksFromConvertor.cs" />
     <Compile Include="SilentFile\SilentFileChangerModel.cs" />
     <Compile Include="SilentFile\SilentFileChangerController.cs" />
@@ -245,7 +217,7 @@
     <Compile Include="TextOperationsInterfaces\IDetector.cs" />
     <Compile Include="TextOperationsInterfaces\ITextFormatter.cs" />
     <Compile Include="Helpers\Vsix.cs" />
-    <Compile Include="Options\XmlSerializer.cs" />
+    <Compile Include="MVVM\XmlSerializer.cs" />
     <Compile Include="UnitTestUtility\CommandTestUtility.cs" />
     <Compile Include="UnitTestUtility\SettingsTestUtility.cs" />
     <Compile Include="UnitTestUtility\UnitTestUtility.cs" />
@@ -259,20 +231,18 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>.</VSIXSubPath>
     </Content>
-    <Resource Include="MVVM\Views\Background.png" />
+    <Resource Include="Resources\LoginBackground.png" />
     <Resource Include="Resources\AlphabeticalIcon.PNG" />
+    <Resource Include="Resources\LogoCPT.png" />
     <Content Include="Resources\Logout.png" />
-    <Content Include="Resources\ClangFormatIcon.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
+    <Resource Include="Resources\ClangFormatIcon.png" />
     <Resource Include="Resources\CleanSearchIcon.PNG" />
-    <Content Include="Resources\CompileIcon.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
+    <Resource Include="Resources\CompileIcon.png" />
     <Resource Include="Resources\CategorizedIcon.PNG" />
     <Resource Include="Resources\SearchIcon.PNG" />
     <Content Include="Resources\EmptyIcon.png" />
     <Content Include="Resources\IgnoreIcon.png" />
+    <Resource Include="Resources\SettingsBackground.png" />
     <Content Include="Resources\StopCommandIcon.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -283,12 +253,8 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Resources\SettingsIcon.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="Resources\TidyIcon.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
+    <Resource Include="Resources\SettingsIcon.png" />
+    <Resource Include="Resources\TidyIcon.png" />
     <Content Include="psClang\*.ps1" Exclude="psClang\*.tests.ps1">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -424,6 +390,7 @@
     <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard1.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
@@ -471,57 +438,37 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Options\View\ClangFormatOptionsUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Options\View\ClangGeneralOptionsUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Options\View\ClangTidyPredefinedChecksOptionsUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Options\View\ClangTidyCustomChecksUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Options\View\ClangTidyOptionsUserControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Options\View\SearchBox.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Options\View\WpfPropertyGrid\BorderedComboBox.xaml">
+    <Page Include="MVVM\Views\FormatSettingsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Options\View\WpfPropertyGrid\BorderedTextBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowseTidy.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Options\View\WpfPropertyGrid\BorderedTextBoxBrowseFormat.xaml">
+    <Page Include="MVVM\Views\CompilerSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Options\View\WpfPropertyGrid\StringCollectionEditor.xaml">
+    <Page Include="MVVM\Views\GeneralSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Options\View\WpfPropertyGrid\PropertyGrid.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="MVVM\Views\SettingsView.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Options\View\WpfPropertyGrid\PropertyGridResources.xaml">
-      <Generator>MSBuild:Compile</Generator>
+    <Page Include="MVVM\Views\TidyChecksView.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\TidySettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\InputDataView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\SearchBoxView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\Views\LoginView.xaml">
       <SubType>Designer</SubType>

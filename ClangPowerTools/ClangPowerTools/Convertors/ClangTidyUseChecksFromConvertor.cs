@@ -12,7 +12,7 @@ namespace ClangPowerTools.Convertors
     private static readonly Dictionary<ClangTidyUseChecksFrom?, string> mClangTidyUseChecksFromEnumToString =
       new Dictionary<ClangTidyUseChecksFrom?, string>
       {
-            {ClangTidyUseChecksFrom.PredefinedChecks, ComboBoxConstants.kPredefinedChecks},
+            {ClangTidyUseChecksFrom.PredefinedChecks, ComboBoxConstants.kPredefinedChecks },
             {ClangTidyUseChecksFrom.CustomChecks, ComboBoxConstants.kCustomChecks },
             {ClangTidyUseChecksFrom.TidyFile, ComboBoxConstants.kTidyFile }
       };
@@ -28,7 +28,7 @@ namespace ClangPowerTools.Convertors
     #endregion
 
 
-    #region Publci Methods
+    #region Public Methods
 
     public static string ToString(ClangTidyUseChecksFrom? aChecksFrom)
       => mClangTidyUseChecksFromEnumToString[aChecksFrom];

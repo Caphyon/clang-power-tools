@@ -71,7 +71,7 @@ namespace ClangPowerTools.Commands
     /// <param name="e">Event args.</param>
     public void RunIgnoreFormatCommand(int aId)
     {
-      var task = System.Threading.Tasks.Task.Run(() =>
+      var task = Task.Run(() =>
       {
         List<string> documentsToIgnore = ItemsCollector.GetDocumentsToIgnore();
         AddIgnoreFilesToSettings(documentsToIgnore);
@@ -89,23 +89,25 @@ namespace ClangPowerTools.Commands
     /// <returns></returns>
     public void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
     {
-      var settings = SettingsProvider.ClangFormatSettings;
+      string filesToIgnore = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel.FilesToIgnore;
 
-      if (settings.FilesToIgnore.Length > 0)
+      if (filesToIgnore.Length > 0)
       {
-        settings.FilesToIgnore += ";";
+        filesToIgnore += ";";
       }
-      settings.FilesToIgnore += string.Join(";", RemoveDuplicateFiles(documentsToIgnore, settings));
-      settings.SaveSettingsToStorage();
+      filesToIgnore += string.Join(";", RemoveDuplicateFiles(documentsToIgnore));
+
+      SettingsViewModelProvider.FormatSettingsViewModel.FormatModel.FilesToIgnore = filesToIgnore;
     }
 
-    private List<string> RemoveDuplicateFiles(List<string> documentsToIgnore, ClangFormatOptionsView settings)
+    private List<string> RemoveDuplicateFiles(List<string> documentsToIgnore)
     {
+      FormatSettingsModel formatSettings = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel;
       List<string> trimmedDocumentToIgnore = new List<string>();
 
       foreach (var item in documentsToIgnore)
       {
-        if (!settings.FilesToIgnore.Contains(item))
+        if (formatSettings.FilesToIgnore.Contains(item) == false)
         {
           trimmedDocumentToIgnore.Add(item);
         }
