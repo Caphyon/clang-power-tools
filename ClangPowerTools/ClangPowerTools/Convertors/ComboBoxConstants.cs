@@ -57,18 +57,6 @@ namespace ClangPowerTools
     SystemIncludeDirectories
   }
 
-
-  [Serializable]
-  public enum ClangTidyHeaderFilters
-  {
-    [XmlEnum(Name = ".*")]
-    DefaultHeaderFilter,
-
-    [XmlEnum(Name = "_")]
-    CorrespondingHeader
-  }
-
-
   [Serializable]
   [JsonConverter(typeof(StringEnumConverter))]
   public enum ClangTidyUseChecksFrom

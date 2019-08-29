@@ -163,9 +163,8 @@ namespace ClangPowerTools.Script
       TidySettingsModel tidySettings = SettingsViewModelProvider.TidySettingsViewModel.TidyModel;
 
       // Get the clang tidy parameters depending on the tidy mode
-      var clangTidyParametersFactory = new ClangTidyModeParametersFactory();
-      var parameters = clangTidyParametersFactory.Create(
-        ClangTidyUseChecksFromConvertor.ToString(tidySettings.UseChecksFrom), ref mUseClangTidyConfigFile);
+      var parameters = GetTidyChecks(tidySettings);
+
 
       // Append the clang tidy type(tidy / tidy-fix) with / without clang tidy config file option attached  
       if (!string.IsNullOrWhiteSpace(parameters))
@@ -186,9 +185,8 @@ namespace ClangPowerTools.Script
     /// <returns>The <"aParameters"> value with the clang tidy type with / without the clang tidy config file option attached</returns>
     private string AppendClangTidyType(string aParameters)
     {
-      return string.Format("{0} ''{1}{2}''",
+      return string.Format("{0} ''{1}''",
         (CommandIds.kTidyFixId == mCommandId ? ScriptConstants.kTidyFix : ScriptConstants.kTidy),
-        (mUseClangTidyConfigFile ? "" : "-*"),
         aParameters);
     }
 
@@ -207,6 +205,24 @@ namespace ClangPowerTools.Script
            ClangTidyHeaderFiltersConvertor.ScriptEncode(tidySettings.HeaderFilter));
     }
 
+
+    private string GetTidyChecks(TidySettingsModel tidyModel)
+    {
+      ClangTidyUseChecksFrom useChecksFrom = tidyModel.UseChecksFrom;
+
+      if(useChecksFrom == ClangTidyUseChecksFrom.CustomChecks)
+      {
+        return ScriptConstants.kTidyCheckFirstElement + tidyModel.CustomChecks.Replace(';', ',').TrimEnd(',');
+      }
+      else if (useChecksFrom == ClangTidyUseChecksFrom.PredefinedChecks)
+      {
+        return ScriptConstants.kTidyCheckFirstElement + tidyModel.PredefinedChecks.Replace(';', ',').TrimEnd(',') ;
+      }
+      else
+      {
+        return ScriptConstants.kTidyFile;
+      }
+    }
 
     #endregion
 
