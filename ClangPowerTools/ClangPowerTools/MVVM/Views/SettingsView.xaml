@@ -22,7 +22,7 @@
             Height="15"
             Margin="3"
             Source="/ClangPowerTools;component/Resources/CompileIcon.png" />
-          <TextBlock Text="Compiler" />
+          <TextBlock Width="65" Text="Compiler" />
         </StackPanel>
       </TabItem.Header>
       <Grid>
@@ -37,24 +37,8 @@
             Width="15"
             Height="15"
             Margin="3"
-            Source="/ClangPowerTools;component/Resources/ClangFormatIcon.png" />
-          <TextBlock>Format</TextBlock>
-        </StackPanel>
-      </TabItem.Header>
-      <Grid>
-        <local:FormatSettingsView />
-      </Grid>
-    </TabItem>
-
-    <TabItem Padding="8" FontSize="15">
-      <TabItem.Header>
-        <StackPanel Orientation="Horizontal">
-          <Image
-            Width="15"
-            Height="15"
-            Margin="3"
             Source="/ClangPowerTools;component/Resources/TidyIcon.png" />
-          <TextBlock>Tidy</TextBlock>
+          <TextBlock Width="65" Text="Tidy" />
         </StackPanel>
       </TabItem.Header>
       <Grid>
@@ -69,8 +53,24 @@
             Width="15"
             Height="15"
             Margin="3"
+            Source="/ClangPowerTools;component/Resources/ClangFormatIcon.png" />
+          <TextBlock Width="65" Text="Format" />
+        </StackPanel>
+      </TabItem.Header>
+      <Grid>
+        <local:FormatSettingsView />
+      </Grid>
+    </TabItem>
+
+    <TabItem Padding="8" FontSize="15">
+      <TabItem.Header>
+        <StackPanel Orientation="Horizontal">
+          <Image
+            Width="15"
+            Height="15"
+            Margin="3"
             Source="/ClangPowerTools;component/Resources/SettingsIcon.png" />
-          <TextBlock>General</TextBlock>
+          <TextBlock Width="65" Text="General" />
         </StackPanel>
       </TabItem.Header>
       <Grid>
