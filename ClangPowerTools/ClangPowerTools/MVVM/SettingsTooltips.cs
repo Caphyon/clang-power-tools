@@ -34,7 +34,7 @@
     #region Format
 
     public string FileExtensions { get; } = "When formatting on save, clang-format will be applied only to files with these extensions.";
-    public string FilesToIgnoreFromat { get; } = "When formatting on save, clang-format will not be applied on these files.";
+    public string FilesToIgnoreFormat { get; } = "When formatting on save, clang-format will not be applied on these files.";
     public string AssumeFilename { get; } = "When reading from stdin, clang-format assumes this filename to look for a style config file (with -style=file) and to determine the language.";
     public string CustomExecutableFormat { get; } = "Specify a custom path for \"clang-format.exe\" file to run instead of the built-in one (v8.0)";
 

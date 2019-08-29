@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.MVVM.Commands;
+﻿using ClangPowerTools.MVVM;
+using ClangPowerTools.MVVM.Commands;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -56,6 +57,9 @@ namespace ClangPowerTools
         return Enum.GetValues(typeof(ClangFormatFallbackStyle)).Cast<ClangFormatFallbackStyle>();
       }
     }
+
+    public SettingsTooltips Tooltip { get; } = new SettingsTooltips();
+
     #endregion
 
     #region Commands

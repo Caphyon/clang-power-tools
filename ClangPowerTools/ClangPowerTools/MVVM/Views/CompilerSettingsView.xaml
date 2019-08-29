@@ -42,7 +42,16 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Compile flags" />
+      Text="Compile flags">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.CompileFlags}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
 
     <TextBox
       Grid.Row="1"
@@ -54,6 +63,9 @@
       FontFamily="SegoeUI"
       FontSize="15"
       Text="{Binding CompilerModel.CompileFlags}" />
+
+
+
     <Button
       Grid.Row="1"
       Grid.Column="3"
@@ -71,7 +83,16 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Files to ignore" />
+      Text="Files to ignore">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.FilesToIgnoreCompile}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
 
     <TextBox
       Grid.Row="2"
@@ -101,7 +122,16 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Projects to ignore" />
+      Text="Projects to ignore">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.ProjectsToIgnore}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
 
     <TextBox
       Grid.Row="3"
@@ -131,7 +161,16 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Additional include as" />
+      Text="Additional include as">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.AdditionalIncludes}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
 
     <ComboBox
       Grid.Row="4"
@@ -150,7 +189,16 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Warning as errors" />
+      Text="Warning as errors">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.WarningsAsErrors}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
 
     <CheckBox
       Grid.Row="5"
@@ -171,7 +219,16 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Continue on error" />
+      Text="Continue on error">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.ContinueOnError}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
 
     <CheckBox
       Grid.Row="6"
@@ -192,7 +249,16 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Clang after MSVC" />
+      Text="Clang after MSVC">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.ClangAfterMSVC}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
 
     <CheckBox
       Grid.Row="7"
@@ -213,7 +279,16 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Verbose mode" />
+      Text="Verbose mode">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.VerboseMode}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
 
     <CheckBox
       Grid.Row="8"
