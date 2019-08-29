@@ -75,7 +75,17 @@
       FontSize="20"
       Text="Header filter" />
 
-    <TextBox
+
+    <ComboBox
+      Grid.Row="2"
+      Grid.Column="2"
+      Height="30"
+      Margin="0,0,20,0"
+      IsEditable="True"
+      ItemsSource="{Binding HeaderFilters}"
+      SelectedItem="{Binding SelectedHeaderFilter}" />
+
+    <!--  <TextBox
       Grid.Row="2"
       Grid.Column="2"
       Width="450"
@@ -84,7 +94,7 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding TidyModel.HeaderFilter}" />
+      Text="{Binding TidyModel.HeaderFilter}" />-->
 
     <Button
       Grid.Row="2"
