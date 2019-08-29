@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.MVVM.Commands;
+﻿using ClangPowerTools.MVVM;
+using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
@@ -76,6 +77,9 @@ namespace ClangPowerTools
         return Enum.GetValues(typeof(ClangTidyUseChecksFrom)).Cast<ClangTidyUseChecksFrom>();
       }
     }
+
+    public SettingsTooltips Tooltip { get; } = new SettingsTooltips();
+
     #endregion
 
     #region Constructor

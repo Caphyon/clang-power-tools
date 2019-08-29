@@ -97,6 +97,7 @@ namespace ClangPowerTools
         return true;
       }
     }
+
     #endregion
 
 

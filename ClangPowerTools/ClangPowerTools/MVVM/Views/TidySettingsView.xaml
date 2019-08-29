@@ -42,7 +42,16 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Custom executable" />
+      Text="Custom executable">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.CustomExecutableTidy}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
 
     <TextBox
       Grid.Row="1"
@@ -73,7 +82,16 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Header filter" />
+      Text="Header filter">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.HeaderFilter}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
 
 
     <ComboBox
@@ -103,7 +121,16 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Use checks from" />
+      Text="Use checks from">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.UseChecksFrom}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
 
     <ComboBox
       Grid.Row="3"
@@ -122,7 +149,16 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Custom Checks" />
+      Text="Custom Checks">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.CustomChecks}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
 
     <TextBox
       Grid.Row="4"
@@ -152,7 +188,16 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Predefined Checks" />
+      Text="Predefined Checks">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.PredefinedChecks}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
 
     <Button
       Grid.Row="5"
@@ -172,7 +217,16 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Format after Tidy" />
+      Text="Format after Tidy">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.FormatAfterTidy}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
 
     <CheckBox
       Grid.Row="6"
@@ -193,7 +247,16 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Tidy on save" />
+      Text="Tidy on save">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.TidyOnSave}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
 
     <CheckBox
       Grid.Row="7"
@@ -216,7 +279,16 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Tidy file config" />
+      Text="Tidy file config">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.TidyFileConfig}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
 
 
     <Button
