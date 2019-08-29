@@ -123,7 +123,9 @@ namespace ClangPowerTools
     private void UpdateHeaderFilter()
     {
       tidyModel.HeaderFilter = OpenContentDialog(tidyModel.HeaderFilter);
+      HeaderFilter = tidyModel.HeaderFilter;
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyModel"));
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HeaderFilter"));
     }
 
     private void UpdateCustomChecks()
