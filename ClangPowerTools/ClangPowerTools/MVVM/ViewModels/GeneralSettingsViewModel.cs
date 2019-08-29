@@ -2,6 +2,7 @@
 using ClangPowerTools.Views;
 using System.ComponentModel;
 using System.IO;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace ClangPowerTools
@@ -87,6 +88,7 @@ namespace ClangPowerTools
       if (string.IsNullOrEmpty(path) == false)
       {
         settingsHandler.SaveSettings(path);
+        ShowCommandInformationMessage("Information", "Clang Power Tools settings exported at the selected location.");
       }
     }
 
@@ -96,14 +98,21 @@ namespace ClangPowerTools
       if (string.IsNullOrEmpty(path) == false)
       {
         settingsHandler.LoadSettings(path);
+        ShowCommandInformationMessage("Information", "Clang Power Tools settings imported.");
       }
     }
 
     private void ResetSettings()
     {
       settingsHandler.ResetSettings();
+      ShowCommandInformationMessage("Information", "All Clang Power Tools settings were reset to default values.");
     }
 
+
+    private void ShowCommandInformationMessage(string title, string message)
+    {
+      MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+    }
     #endregion
   }
 }
