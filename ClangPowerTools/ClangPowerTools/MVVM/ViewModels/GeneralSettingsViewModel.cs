@@ -108,7 +108,6 @@ namespace ClangPowerTools
       ShowCommandInformationMessage("Information", "All Clang Power Tools settings were reset to default values.");
     }
 
-
     private void ShowCommandInformationMessage(string title, string message)
     {
       MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);

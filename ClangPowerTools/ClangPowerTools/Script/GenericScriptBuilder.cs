@@ -91,7 +91,6 @@ namespace ClangPowerTools.Script
 
     #region Private Methods
 
-
     /// <summary>
     /// Get the parameters from the General option page
     /// </summary>
@@ -204,7 +203,6 @@ namespace ClangPowerTools.Script
            tidySettings.HeaderFilter :
            ClangTidyHeaderFiltersConvertor.ScriptEncode(tidySettings.HeaderFilter));
     }
-
 
     private string GetTidyChecks(TidySettingsModel tidyModel)
     {
