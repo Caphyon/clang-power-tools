@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ClangPowerTools
+﻿namespace ClangPowerTools
 {
   public class ClangOptions
   {

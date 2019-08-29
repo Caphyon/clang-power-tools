@@ -1,9 +1,4 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-
-namespace ClangPowerTools.Script
+﻿namespace ClangPowerTools.Script
 {
   public class ClangTidyModeParametersFactory
   {
