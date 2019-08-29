@@ -17,6 +17,7 @@ namespace ClangPowerTools
 
     private TidySettingsModel tidyModel = new TidySettingsModel();
     private TidyChecksView tidyChecksView;
+    private string selectedHeaderFilter = string.Empty;
     private ICommand headerFilterAddDataCommand;
     private ICommand customExecutableBrowseCommand;
     private ICommand predefinedChecksSelectCommand;
@@ -38,6 +39,31 @@ namespace ClangPowerTools
       }
     }
 
+    public List<string> HeaderFilters { get; set; }
+
+    public string SelectedHeaderFilter
+    {
+      get
+      {
+        return selectedHeaderFilter;
+      }
+      set
+      {
+        selectedHeaderFilter = value;
+        if (selectedHeaderFilter == ComboBoxConstants.kCorrespondingHeaderName)
+        {
+          tidyModel.HeaderFilter = ComboBoxConstants.kCorrespondingHeaderValue;
+        }
+        else
+        {
+          tidyModel.HeaderFilter = selectedHeaderFilter;
+        }
+
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedHeaderFilter"));
+      }
+    }
+
+
     public bool CanExecute
     {
       get
@@ -52,6 +78,14 @@ namespace ClangPowerTools
       {
         return Enum.GetValues(typeof(ClangTidyUseChecksFrom)).Cast<ClangTidyUseChecksFrom>();
       }
+    }
+    #endregion
+
+    #region Constructor
+    public TidySettingsViewModel()
+    {
+      HeaderFilters = new List<string>() { tidyModel.HeaderFilter, ComboBoxConstants.kCorrespondingHeaderName };
+      selectedHeaderFilter = tidyModel.HeaderFilter;
     }
     #endregion
 
