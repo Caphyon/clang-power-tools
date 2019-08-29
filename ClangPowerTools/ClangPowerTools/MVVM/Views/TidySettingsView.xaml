@@ -34,7 +34,7 @@
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
-    <!--  Custom executable file  -->
+    <!--  Use checks from  -->
     <TextBlock
       Grid.Row="1"
       Grid.Column="1"
@@ -42,19 +42,76 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Custom executable">
+      Text="Use checks from">
       <TextBlock.ToolTip>
         <ToolTip>
           <TextBlock
             Width="400"
-            Text="{Binding Tooltip.CustomExecutableTidy}"
+            Text="{Binding Tooltip.UseChecksFrom}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
+
+    <ComboBox
+      Grid.Row="1"
+      Grid.Column="2"
+      Height="30"
+      Margin="0,0,20,0"
+      ItemsSource="{Binding UseChecksFromItems}"
+      SelectedItem="{Binding TidyModel.UseChecksFrom}" />
+
+
+    <!--  Predefined Checks  -->
+    <TextBlock
+      Grid.Row="2"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="20"
+      Text="Predefined Checks">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.PredefinedChecks}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
+
+    <Button
+      Grid.Row="2"
+      Grid.Column="2"
+      Width="80"
+      Height="30"
+      HorizontalAlignment="Left"
+      Command="{Binding PredefinedChecksSelectCommand}"
+      Content="Select" />
+
+
+    <!--  Custom checks  -->
+    <TextBlock
+      Grid.Row="3"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="20"
+      Text="Custom Checks">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.CustomChecks}"
             TextWrapping="Wrap" />
         </ToolTip>
       </TextBlock.ToolTip>
     </TextBlock>
 
     <TextBox
-      Grid.Row="1"
+      Grid.Row="3"
       Grid.Column="2"
       Width="450"
       Height="30"
@@ -62,21 +119,21 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding TidyModel.CustomExecutable}" />
+      Text="{Binding TidyModel.CustomChecks}" />
 
     <Button
-      Grid.Row="1"
+      Grid.Row="3"
       Grid.Column="3"
       Width="60"
       Height="30"
       HorizontalAlignment="Left"
-      Command="{Binding CustomExecutableBrowseCommand}"
-      Content="Browse" />
+      Command="{Binding CustomChecksAddDataCommand}"
+      Content="..." />
 
 
     <!--  Header Filter  -->
     <TextBlock
-      Grid.Row="2"
+      Grid.Row="4"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -95,7 +152,7 @@
 
 
     <ComboBox
-      Grid.Row="2"
+      Grid.Row="4"
       Grid.Column="2"
       Height="30"
       Margin="0,0,20,0"
@@ -105,7 +162,7 @@
 
 
     <Button
-      Grid.Row="2"
+      Grid.Row="4"
       Grid.Column="3"
       Width="60"
       Height="30"
@@ -113,55 +170,29 @@
       Command="{Binding HeaderFilterAddDataCommand}"
       Content="..." />
 
-    <!--  Use checks from  -->
+
+
+    <!--  Custom executable file  -->
     <TextBlock
-      Grid.Row="3"
+      Grid.Row="5"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="20"
-      Text="Use checks from">
+      Text="Custom executable">
       <TextBlock.ToolTip>
         <ToolTip>
           <TextBlock
             Width="400"
-            Text="{Binding Tooltip.UseChecksFrom}"
-            TextWrapping="Wrap" />
-        </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
-
-    <ComboBox
-      Grid.Row="3"
-      Grid.Column="2"
-      Height="30"
-      Margin="0,0,20,0"
-      ItemsSource="{Binding UseChecksFromItems}"
-      SelectedItem="{Binding TidyModel.UseChecksFrom}" />
-
-
-    <!--  Custom checks  -->
-    <TextBlock
-      Grid.Row="4"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="20"
-      Text="Custom Checks">
-      <TextBlock.ToolTip>
-        <ToolTip>
-          <TextBlock
-            Width="400"
-            Text="{Binding Tooltip.CustomChecks}"
+            Text="{Binding Tooltip.CustomExecutableTidy}"
             TextWrapping="Wrap" />
         </ToolTip>
       </TextBlock.ToolTip>
     </TextBlock>
 
     <TextBox
-      Grid.Row="4"
+      Grid.Row="5"
       Grid.Column="2"
       Width="450"
       Height="30"
@@ -169,44 +200,16 @@
       VerticalContentAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="15"
-      Text="{Binding TidyModel.CustomChecks}" />
+      Text="{Binding TidyModel.CustomExecutable}" />
 
     <Button
-      Grid.Row="4"
+      Grid.Row="5"
       Grid.Column="3"
       Width="60"
       Height="30"
       HorizontalAlignment="Left"
-      Command="{Binding CustomChecksAddDataCommand}"
-      Content="..." />
-
-    <!--  Predefined Checks  -->
-    <TextBlock
-      Grid.Row="5"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="20"
-      Text="Predefined Checks">
-      <TextBlock.ToolTip>
-        <ToolTip>
-          <TextBlock
-            Width="400"
-            Text="{Binding Tooltip.PredefinedChecks}"
-            TextWrapping="Wrap" />
-        </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
-
-    <Button
-      Grid.Row="5"
-      Grid.Column="2"
-      Width="80"
-      Height="30"
-      HorizontalAlignment="Left"
-      Command="{Binding PredefinedChecksSelectCommand}"
-      Content="Select" />
+      Command="{Binding CustomExecutableBrowseCommand}"
+      Content="Browse" />
 
 
     <!--  Format after tidy  -->
