@@ -87,14 +87,17 @@ namespace ClangPowerTools.Commands
       if (CommandUILocation.ContextMenu == commandUILocation)
       {
         FormatAllSelectedDocuments();
-        return;
       }
-
-      if (CommandUILocation.Toolbar == commandUILocation)
+      else // format command is called from toolbar (CommandUILocation.Toolbar == commandUILocation)
       {
         FormatActiveDocument();
-        return;
       }
+    }
+
+    private void FormatActiveDocument()
+    {
+      mDocument = DocumentHandler.GetActiveDocument();
+      ExecuteFormatCommand();
     }
 
     public void FormatOnSave(Document document)
@@ -114,7 +117,6 @@ namespace ClangPowerTools.Commands
         if (view == null)
           return;
 
-        System.Diagnostics.Process process;
         var dirPath = string.Empty;
         var filePath = Vsix.GetDocumentPath(view);
         var text = view.TextBuffer.CurrentSnapshot.GetText();
@@ -134,7 +136,7 @@ namespace ClangPowerTools.Commands
           text = FormatEndOfFile(view, filePath, out dirPath);
         }
 
-        process = CreateProcess(text, startPosition, length, dirPath, filePath);
+        var process = CreateProcess(text, startPosition, length, dirPath, filePath);
 
         try
         {
@@ -168,10 +170,10 @@ namespace ClangPowerTools.Commands
     {
       ItemsCollector itemsCollector = new ItemsCollector();
       itemsCollector.CollectSelectedProjectItems();
-      List<Document> activeDocs = DocumentsHandler.GetListOfActiveDocuments();
-      Document activeDocument = DocumentsHandler.GetActiveDocument();
+      List<Document> activeDocs = DocumentHandler.GetListOfActiveDocuments();
+      Document activeDocument = DocumentHandler.GetActiveDocument();
 
-      foreach (var item in itemsCollector.items)
+      foreach (var item in itemsCollector.Items)
       {
         try
         {
@@ -179,7 +181,7 @@ namespace ClangPowerTools.Commands
           mDocument = projectItem.Open().Document;
           ExecuteFormatCommand();
 
-          if (DocumentsHandler.IsOpen(mDocument, activeDocs))
+          if (DocumentHandler.IsOpen(mDocument, activeDocs))
           {
             mDocument.Save();
           }
@@ -198,16 +200,6 @@ namespace ClangPowerTools.Commands
       {
         activeDocument.Activate();
       }
-    }
-
-    private void FormatActiveDocument()
-    {
-      ItemsCollector itemsCollector = new ItemsCollector();
-      itemsCollector.CollectActiveProjectItem();
-
-      var document = (itemsCollector.items[0].GetObject() as ProjectItem).Document;
-      mDocument = document;
-      ExecuteFormatCommand();
     }
 
     private string FormatEndOfFile(IWpfTextView aView, string aFilePath, out string aDirPath)

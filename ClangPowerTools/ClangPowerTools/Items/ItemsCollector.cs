@@ -1,4 +1,6 @@
-﻿using ClangPowerTools.Services;
+﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.Items;
+using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
 using System;
@@ -12,7 +14,6 @@ namespace ClangPowerTools
     #region Members
 
     private List<string> mAcceptedFileExtensions = new List<string>();
-    private DTE2 dte2;
     private Array selectedItems;
 
     #endregion
@@ -22,7 +23,7 @@ namespace ClangPowerTools
     public ItemsCollector(List<string> aExtensions = null)
     {
       mAcceptedFileExtensions = aExtensions;
-      dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
+      var dte2 = (DTE2)VsServiceProvider.GetService(typeof(DTE));
       selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
     }
 
@@ -30,25 +31,35 @@ namespace ClangPowerTools
 
     #region Properties
 
-    public List<IItem> items { get; private set; } = new List<IItem>();
-    public bool haveItems => items.Count != 0;
+    public List<IItem> Items { get; private set; } = new List<IItem>();
+    public bool HaveItems => Items.Count != 0;
 
     #endregion
 
     #region Public Methods
 
+    // TODO : Refactor this method. Generics can be a solution.
     public void CollectActiveProjectItem()
     {
       try
       {
-        DTE vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE) : null;
-        Document activeDocument = vsServiceProvider.ActiveDocument;
+        DTE dte = (DTE)VsServiceProvider.GetService(typeof(DTE));
+        Document activeDocument = dte.ActiveDocument;
 
-        if (activeDocument != null)
+        if (activeDocument == null)
+          return;
+
+        IItem item = null;
+        if (SolutionInfo.IsOpenFolderModeActive())
         {
-          CurrentProjectItem activeProjectItem = new CurrentProjectItem(activeDocument.ProjectItem);
-          items.Add(activeProjectItem);
+          item = new CurrentDocument(activeDocument);
         }
+        else
+        {
+          item = new CurrentProjectItem(activeDocument.ProjectItem);
+        }
+
+        Items.Add(item);
       }
       catch (Exception e)
       {
@@ -137,7 +148,7 @@ namespace ClangPowerTools
       if (null != mAcceptedFileExtensions && false == mAcceptedFileExtensions.Contains(fileExtension))
         return;
 
-      items.Add(new CurrentProjectItem(aItem));
+      Items.Add(new CurrentProjectItem(aItem));
     }
 
     #endregion
@@ -148,11 +159,11 @@ namespace ClangPowerTools
 
     private void GetProjectsFromSolution(Solution aSolution)
     {
-      items = AutomationUtil.GetAllProjects(aSolution);
+      Items = AutomationUtil.GetAllProjects(aSolution);
     }
 
 
-    private void AddProject(Project aProject) => items.Add(new CurrentProject(aProject));
+    private void AddProject(Project aProject) => Items.Add(new CurrentProject(aProject));
 
 
     private void GetProjectItem(ProjectItem aProjectItem)

@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.Commands;
+﻿using ClangPowerTools.CMake;
+using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
 using ClangPowerTools.Services;
 using ClangPowerTools.Views;
@@ -19,22 +20,24 @@ namespace ClangPowerTools
   {
     #region Members
 
-    public static readonly Guid mCommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
-    private Commands2 mCommand;
-    private bool mSaveCommandWasGiven = false;
-    private CommandUILocation commandUILocation;
-    private int currentCommand;
-    private bool mFormatAfterTidyFlag = false;
-    private bool isActiveDocument = true;
     public bool running = false;
     public bool vsBuildRunning = false;
     public bool activeLicense = false;
+
+    public static readonly Guid mCommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
 
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
     public event EventHandler<ClangCommandMessageEventArgs> ClangCommandMessageEvent;
     public event EventHandler<MissingLlvmEventArgs> MissingLlvmEvent;
     public event EventHandler<ClearErrorListEventArgs> ClearErrorListEvent;
     public event EventHandler<EventArgs> ErrorDetectedEvent;
+
+    private Commands2 mCommand;
+    private CommandUILocation commandUILocation;
+    private int currentCommand;
+    private bool mSaveCommandWasGiven = false;
+    private bool mFormatAfterTidyFlag = false;
+    private bool isActiveDocument = true;
 
     #endregion
 
@@ -44,8 +47,8 @@ namespace ClangPowerTools
     {
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {
-        var dte2 = dte as DTE2;
-        mCommand = dte2.Commands as Commands2;
+        var dte2 = (DTE2)dte;
+        mCommand = (Commands2)dte2.Commands;
       }
     }
 
@@ -106,12 +109,10 @@ namespace ClangPowerTools
       }
 
       var command = CreateCommand(sender);
-
       if (command == null)
       {
         return;
       }
-
       await LaunchCommandAsync(command.CommandID.ID, commandUILocation);
     }
 
@@ -263,6 +264,8 @@ namespace ClangPowerTools
     private void OnAfterClangCommand()
     {
       running = false;
+      var cMakeBuilder = new CMakeBuilder();
+      cMakeBuilder.ClearBuildCashe();
     }
 
     private void OnAfterFormatCommand()

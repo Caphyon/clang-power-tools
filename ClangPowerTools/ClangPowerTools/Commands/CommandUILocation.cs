@@ -1,4 +1,8 @@
 ﻿namespace ClangPowerTools.Commands
 {
-  public enum CommandUILocation { Toolbar, ContextMenu };
+  public enum CommandUILocation
+  {
+    Toolbar,
+    ContextMenu
+  };
 }

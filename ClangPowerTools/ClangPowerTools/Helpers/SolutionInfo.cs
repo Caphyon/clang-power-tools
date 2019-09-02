@@ -48,7 +48,8 @@ namespace ClangPowerTools.Helpers
     {
       var solution = (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution));
       solution.GetProperty((int)__VSPROPID7.VSPROPID_IsInOpenFolderMode, out object folderMode);
-      OpenFolderModeActive = (bool)folderMode;
+
+      OpenFolderModeActive = folderMode == null ? false : (bool)folderMode;
       return OpenFolderModeActive;
     }
 

@@ -9,7 +9,7 @@ namespace ClangPowerTools
     #region Public Methods
 
     public IEnumerable<string> Collect(IEnumerable<IItem> aItems)
-    => aItems.Select(item => item.GetPath());
+      => aItems.Select(item => item.GetPath());
 
 
     public IEnumerable<string> Collect(Documents aDocuments)

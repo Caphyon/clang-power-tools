@@ -1,6 +1,8 @@
 ﻿using ClangPowerTools.Builder;
+using ClangPowerTools.CMake;
 using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.Script;
 using ClangPowerTools.Services;
 using ClangPowerTools.Tests;
@@ -118,7 +120,12 @@ namespace ClangPowerTools
       if (mMissingLLVM)
         return;
 
+      CMakeBuilder cMakeBuilder = new CMakeBuilder();
+      cMakeBuilder.Build();
+
       InvokeCommand(runModeParameters, genericParameters);
+
+      cMakeBuilder.ClearBuildCashe();
     }
 
     //Collect files
@@ -135,12 +142,12 @@ namespace ClangPowerTools
           mItemsCollector.CollectSelectedItems();
           break;
       }
-      return mItemsCollector.items;
+      return mItemsCollector.Items;
     }
 
     private void SetActiveDocumentEvent()
     {
-      if (mItemsCollector.items.Count == 0)
+      if (mItemsCollector.Items.Count == 0)
       {
         OnActiveFileCheck(new ActiveDocumentEventArgs(false));
       }
@@ -154,7 +161,7 @@ namespace ClangPowerTools
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
-      DocumentsHandler.SaveActiveDocuments();
+      DocumentHandler.SaveActiveDocuments();
 
       if (!VsServiceProvider.TryGetService(typeof(DTE), out object dte))
         return;
@@ -201,9 +208,10 @@ namespace ClangPowerTools
 
     private void InvokeCommand(string runModeParameters, string genericParameters)
     {
-      VsServiceProvider.TryGetService(typeof(SVsSolution), out object vsSolutionService);
-      var vsSolution = vsSolutionService as IVsSolution;
-      foreach (var item in mItemsCollector.items)
+      var vsSolution = SolutionInfo.IsOpenFolderModeActive() == false ?
+        (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution)) : null;
+
+      foreach (var item in mItemsCollector.Items)
       {
         if (StopCommand)
         {
@@ -219,8 +227,7 @@ namespace ClangPowerTools
         Script = $"{runModeParameters.Remove(runModeParameters.Length - 1)} {itemRelatedParameters} {genericParameters}'";
         CommandTestUtility.ScriptCommand = Script;
 
-        if (null != vsSolution)
-          ItemHierarchy = AutomationUtil.GetItemHierarchy(vsSolution as IVsSolution, item);
+        ItemHierarchy = vsSolution != null ? AutomationUtil.GetItemHierarchy(vsSolution, item) : null;
 
         PowerShellWrapper.Invoke(Script, mRunningProcesses);
       }

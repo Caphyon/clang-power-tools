@@ -74,6 +74,7 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CMake\CMakeBuilder.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Events\LicenseEventArgs.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
@@ -81,6 +82,7 @@
     <Compile Include="MVVM\OldSettings\ClangFormatPathValue.cs" />
     <Compile Include="MVVM\OldSettings\ClangTidyPathValue.cs" />
     <Compile Include="MVVM\Commands\RelayCommand.cs" />
+    <Compile Include="Items\CurrentDocument.cs" />
     <Compile Include="MVVM\Controllers\AccountController.cs" />
     <Compile Include="MVVM\Controllers\LicenseController.cs" />
     <Compile Include="MVVM\OldSettings\HeaderFiltersValue.cs" />
@@ -164,7 +166,7 @@
     <Compile Include="Convertors\ClangGeneralAdditionalIncludesConvertor.cs" />
     <Compile Include="MVVM\OldSettings\OldModels\ClangFormatOptions.cs" />
     <Compile Include="MVVM\OldSettings\OldModels\DefaultOptions.cs" />
-    <Compile Include="Helpers\DocumentsHandler.cs" />
+    <Compile Include="Helpers\DocumentHandler.cs" />
     <Compile Include="Error\ErrorDetector.cs" />
     <Compile Include="Error\ErrorParserConstants.cs" />
     <Compile Include="Error\ErrorWindowController.cs" />
