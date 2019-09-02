@@ -266,6 +266,8 @@ namespace ClangPowerTools
 
         SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version = currentVersion;
         settingsHandler.SaveSettings();
+
+        // ------ Display the Release Notes view ------
       }
     }
 
