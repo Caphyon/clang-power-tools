@@ -24,7 +24,6 @@ namespace ClangPowerTools.Script
     private string mVsVersion;
 
     private int mCommandId;
-    private bool mUseClangTidyConfigFile;
 
     #endregion
 
@@ -39,7 +38,6 @@ namespace ClangPowerTools.Script
       mVsEdition = aVsEdition;
       mVsVersion = aVsVersion;
       mCommandId = aCommandId;
-      mUseClangTidyConfigFile = false;
     }
 
     #endregion

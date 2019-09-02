@@ -136,7 +136,7 @@ namespace ClangPowerTools.Commands
           text = FormatEndOfFile(view, filePath, out dirPath);
         }
 
-        process = CreateProcess(text, startPosition, length, dirPath, filePath);
+        var process = CreateProcess(text, startPosition, length, dirPath, filePath);
 
         try
         {
