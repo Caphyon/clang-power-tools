@@ -142,6 +142,9 @@
     <Compile Include="MVVM\Views\GeneralSettingsView.xaml.cs">
       <DependentUpon>GeneralSettingsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MVVM\Views\ReleaseNotesView.xaml.cs">
+      <DependentUpon>ReleaseNotesView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
@@ -236,6 +239,7 @@
     <Resource Include="Resources\LoginBackground.png" />
     <Resource Include="Resources\AlphabeticalIcon.PNG" />
     <Resource Include="Resources\LogoCPT.png" />
+    <Resource Include="Resources\iconRockUpdate.png" />
     <Content Include="Resources\Logout.png" />
     <Resource Include="Resources\ClangFormatIcon.png" />
     <Resource Include="Resources\CleanSearchIcon.PNG" />
@@ -449,6 +453,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\Views\GeneralSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\ReleaseNotesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
