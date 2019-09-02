@@ -176,16 +176,26 @@ namespace ClangPowerTools
         try
         {
           List<object> models = JsonConvert.DeserializeObject<List<object>>(json);
-          SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel = JsonConvert.DeserializeObject<CompilerSettingsModel>(models[0].ToString());
-          SettingsViewModelProvider.FormatSettingsViewModel.FormatModel = JsonConvert.DeserializeObject<FormatSettingsModel>(models[1].ToString());
-          SettingsViewModelProvider.TidySettingsViewModel.TidyModel = JsonConvert.DeserializeObject<TidySettingsModel>(models[2].ToString());
-          SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel = JsonConvert.DeserializeObject<GeneralSettingsModel>(models[3].ToString());
+          CompilerSettingsModel compilerModel = JsonConvert.DeserializeObject<CompilerSettingsModel>(models[0].ToString());
+          FormatSettingsModel formatModel = JsonConvert.DeserializeObject<FormatSettingsModel>(models[1].ToString());
+          TidySettingsModel tidyModel = JsonConvert.DeserializeObject<TidySettingsModel>(models[2].ToString());
+          GeneralSettingsModel generalModel = JsonConvert.DeserializeObject<GeneralSettingsModel>(models[3].ToString());
+
+          SetSettingsModels(compilerModel, formatModel, tidyModel, generalModel);
         }
-        catch (JsonException e)
+        catch (Exception e)
         {
           MessageBox.Show(e.Message, "Cannot Load Clang Power Tools Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
       }
+    }
+
+    private void SetSettingsModels(CompilerSettingsModel compilerModel, FormatSettingsModel formatModel, TidySettingsModel tidyModel, GeneralSettingsModel generalModel)
+    {
+      SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel = compilerModel;
+      SettingsViewModelProvider.FormatSettingsViewModel.FormatModel = formatModel;
+      SettingsViewModelProvider.TidySettingsViewModel.TidyModel = tidyModel;
+      SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel = generalModel;
     }
 
     private string GetSettingsFilePath(string path, string fileName)
