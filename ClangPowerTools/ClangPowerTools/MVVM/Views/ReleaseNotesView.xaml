@@ -5,138 +5,194 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  Title="Release Notes"
-  d:DesignHeight="660"
-  d:DesignWidth="504"
+  Title="Clang Power Tools - Release Notes"
+  Width="550"
+  Height="710"
+  ResizeMode="NoResize"
+  WindowStartupLocation="CenterScreen"
+  WindowStyle="ToolWindow"
   mc:Ignorable="d">
 
-  <Grid>
+  <StackPanel>
 
-    <Grid.Background>
-      <ImageBrush ImageSource="/Resources/ReleaseNotesBackground.png" />
-    </Grid.Background>
+    <Grid>
 
-    <Grid.RowDefinitions>
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
-      <RowDefinition />
-    </Grid.RowDefinitions>
+      <Grid.Background>
+        <ImageBrush ImageSource="/ClangPowerTools;component/Resources/ReleaseNotesBackground.png" />
+      </Grid.Background>
 
-    <Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="400" />
+      </Grid.RowDefinitions>
 
-      <ColumnDefinition Width="35" />
-      <ColumnDefinition />
-      <ColumnDefinition Width="35" />
-
-    </Grid.ColumnDefinitions>
-
-    <Image
-      Grid.Row="0"
-      Grid.Column="1"
-      Width="90"
-      Height="90"
-      Margin="0,15,0,0"
-      Source="/Resources/Icon.png" />
-
-    <TextBlock
-      Grid.Row="1"
-      Grid.Column="1"
-      HorizontalAlignment="Center"
-      FontSize="36"
-      Text="You're up to date!" />
-
-    <TextBlock
-      Grid.Row="2"
-      Grid.Column="1"
-      HorizontalAlignment="Center"
-      FontSize="15"
-      Foreground="#3A3B40"
-      Text="version 5.1" />
-
-    <TextBlock
-      Grid.Row="3"
-      Grid.Column="1"
-      Margin="0,35,0,0"
-      HorizontalAlignment="Left"
-      FontSize="22"
-      Text="New Features" />
-
-    <TextBlock
-      Grid.Row="4"
-      Grid.Column="1"
-      Margin="10,5,0,0"
-      HorizontalAlignment="Left"
-      FontSize="15"
-      Text="Export clang-tidy config file so you can use it the way you like it."
-      TextWrapping="Wrap" />
-
-
-    <TextBlock
-      Grid.Row="5"
-      Grid.Column="1"
-      Margin="0,35,0,0"
-      HorizontalAlignment="Left"
-      FontSize="22"
-      Text="Improvements" />
-
-    <TextBlock
-      Grid.Row="6"
-      Grid.Column="1"
-      Margin="10,5,0,0"
-      HorizontalAlignment="Left"
-      FontSize="15"
-      Text="In a world of slowbalisation, our account validation is working blazing fast."
-      TextWrapping="Wrap" />
-
-    <TextBlock
-      Grid.Row="7"
-      Grid.Column="1"
-      Margin="0,35,0,0"
-      HorizontalAlignment="Left"
-      FontSize="22"
-      Text="Improvements" />
-
-    <TextBlock
-      Grid.Row="8"
-      Grid.Column="1"
-      Margin="10,5,0,0"
-      HorizontalAlignment="Left"
-      FontSize="15"
-      Text="Compile shortcut didn't run the command on the proper file. Now it does."
-      TextWrapping="Wrap" />
-
-    <Rectangle
-      Grid.Row="9"
-      Grid.Column="0"
-      Margin="0,60,0,0"
-      Fill="#272E58" />
-
-    <Rectangle
-      Grid.Row="9"
-      Grid.Column="2"
-      Margin="0,60,0,0"
-      Fill="#272E58" />
-
-    <Grid
-      Grid.Row="9"
-      Grid.Column="1"
-      Margin="0,60,0,0"
-      Background="#272E58">
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="2*" />
+
+        <ColumnDefinition Width="35" />
         <ColumnDefinition />
+        <ColumnDefinition Width="35" />
+
       </Grid.ColumnDefinitions>
+
+      <Image
+        Grid.Row="0"
+        Grid.Column="1"
+        Width="100"
+        Height="100"
+        Margin="0,5,0,0"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Source="/ClangPowerTools;component/Resources/CPTLogo.png" />
+
+      <TextBlock
+        Grid.Row="1"
+        Grid.Column="1"
+        HorizontalAlignment="Center"
+        FontSize="36"
+        Text="You're up to date!" />
+
+      <TextBlock
+        Grid.Row="2"
+        Grid.Column="1"
+        HorizontalAlignment="Center"
+        FontSize="15"
+        Foreground="#3A3B40"
+        Text="version 5.1" />
+
+      <ListView
+        Grid.Row="3"
+        Grid.Column="1"
+        Height="380"
+        Margin="0,20,0,0"
+        Background="Transparent"
+        Focusable="False"
+        ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+        <ListView.ItemContainerStyle>
+          <Style TargetType="{x:Type ListViewItem}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+              <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                  <ContentPresenter />
+                </ControlTemplate>
+              </Setter.Value>
+            </Setter>
+          </Style>
+        </ListView.ItemContainerStyle>
+
+        <!--  What's New  -->
+        <TextBlock
+          HorizontalAlignment="Left"
+          FontSize="22"
+          Text="What's New" />
+
+        <TextBlock
+          Margin="10,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="&#x2022; CMake support for open file"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="10,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="&#x2022; Complete UI redesign"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="10,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="&#x2022; Export/Import settings configuration"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="10,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="&#x2022; Settings are now saved in a JSON format"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="10,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="&#x2022; Export .clang-tidy config file"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="10,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="&#x2022; Improve the email and password validation"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="10,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="&#x2022; Offline support"
+          TextWrapping="Wrap" />
+
+
+        <!--  Bug Fixes  -->
+        <TextBlock
+          Margin="0,35,0,0"
+          HorizontalAlignment="Left"
+          FontSize="22"
+          Text="Bug Fixes" />
+
+        <TextBlock
+          Margin="10,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="&#x2022; Crash on Visual Studio 2015"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="10,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="&#x2022; Crash when Tidy on save is active"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="10,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="&#x2022; Calibrate focus between Error List and Output window"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="10,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="&#x2022; Clang compile warnings detection"
+          TextWrapping="Wrap" />
+
+      </ListView>
+    </Grid>
+
+    <Grid Margin="0,20,0,0" Background="#272E58">
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="35" />
+        <ColumnDefinition />
+        <ColumnDefinition Width="35" />
+      </Grid.ColumnDefinitions>
+
+      <Grid.RowDefinitions>
+        <RowDefinition Height="90" />
+      </Grid.RowDefinitions>
+
 
       <TextBlock
         Grid.Row="0"
-        Grid.Column="0"
+        Grid.Column="1"
         Margin="0,10,0,0"
         HorizontalAlignment="Left"
         FontSize="15"
@@ -145,12 +201,12 @@
 
       <TextBlock
         Grid.Row="0"
-        Grid.Column="0"
+        Grid.Column="1"
         Margin="0,35,0,0"
         HorizontalAlignment="Left"
         FontSize="12"
         Foreground="White"
-        Text="We offer a Commercial Use license just perfect for your whole team."
+        Text="We offer a Commercial Use License just perfect for your team."
         TextWrapping="Wrap" />
 
       <Button
@@ -158,8 +214,10 @@
         Width="110"
         Height="38"
         HorizontalAlignment="Right"
+        VerticalAlignment="Center"
         Background="#FFBF31"
         BorderThickness="0"
+        Click="Button_Click"
         Content="UPGRADE"
         FontSize="16"
         FontWeight="Bold"
@@ -167,7 +225,7 @@
 
     </Grid>
 
+  </StackPanel>
 
 
-  </Grid>
 </Window>
