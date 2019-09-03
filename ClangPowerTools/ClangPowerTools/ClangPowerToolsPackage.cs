@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Commands;
+using ClangPowerTools.Handlers;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.Views;
@@ -45,7 +46,7 @@ namespace ClangPowerTools
   [ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string, PackageAutoLoadFlags.BackgroundLoad)]
   [ProvideMenuResource("Menus.ctmenu", 1)]
   [Guid(PackageGuidString)]
-  public sealed class RunClangPowerToolsPackage : AsyncPackage, IVsSolutionEvents
+  public sealed class RunClangPowerToolsPackage : AsyncPackage, IVsSolutionEvents, IVsSolutionLoadEvents, IVsSolutionEvents7
   {
     #region Members
 
@@ -129,8 +130,6 @@ namespace ClangPowerTools
         mCommandEvents = dte2.Events.CommandEvents;
         mDteEvents = dte2.Events.DTEEvents;
       }
-
-      InitializeSettings();
 
       await mCommandController.InitializeCommandsAsync(this);
       mLicenseController = new LicenseController();
@@ -238,18 +237,83 @@ namespace ClangPowerTools
     #endregion
 
 
+    #region IVsSolutionLoadEvents implementation
+
+
+    public int OnBeforeOpenSolution(string pszSolutionFilename)
+    {
+      return VSConstants.S_OK;
+    }
+
+    public int OnBeforeBackgroundSolutionLoadBegins()
+    {
+      return VSConstants.S_OK;
+    }
+
+    public int OnQueryBackgroundLoadProjectBatch(out bool pfShouldDelayLoadToNextIdle)
+    {
+      pfShouldDelayLoadToNextIdle = false;
+      return VSConstants.S_OK;
+    }
+
+    public int OnBeforeLoadProjectBatch(bool fIsBackgroundIdleBatch)
+    {
+      return VSConstants.S_OK;
+    }
+
+    public int OnAfterLoadProjectBatch(bool fIsBackgroundIdleBatch)
+    {
+      return VSConstants.S_OK;
+    }
+
+    public int OnAfterBackgroundSolutionLoadComplete()
+    {
+      InitializeSettings();
+      return VSConstants.S_OK;
+    }
+
+    #endregion
+
+
+    #region IVsSolution7 implementation
+
+    public void OnAfterOpenFolder(string folderPath)
+    {
+      InitializeSettings();
+    }
+
+    public void OnBeforeCloseFolder(string folderPath)
+    {
+    }
+
+    public void OnQueryCloseFolder(string folderPath, ref int pfCancel)
+    {
+    }
+
+    public void OnAfterCloseFolder(string folderPath)
+    {
+    }
+
+    public void OnAfterLoadAllDeferredProjects()
+    {
+    }
+
+    #endregion
+
+
     #region Private Methods
+
     private void InitializeSettings()
     {
       SettingsHandler settingsHandler = new SettingsHandler();
       settingsHandler.InitializeSettings();
 
-      string version =  SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version;
+      string version = SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version;
       // Detect the first install 
       if (string.IsNullOrWhiteSpace(version))
       {
         // Show the toolbar on the first install
-        ShowToolbare(); 
+        ShowToolbare();
       }
 
       if (string.IsNullOrWhiteSpace(version) || 0 > string.Compare(version, "5.0.0"))
