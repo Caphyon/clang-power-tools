@@ -171,7 +171,10 @@ namespace ClangPowerTools.Output
 
     public void OnErrorDetected(object sender, EventArgs e)
     {
-      ErrorDetectedEvent?.Invoke(this, new ErrorDetectedEventArgs(Errors));
+      if( Errors.Count > 0 )
+      {
+        ErrorDetectedEvent?.Invoke(this, new ErrorDetectedEventArgs(Errors));
+      }
     }
 
     protected virtual void OnMissingLLVMDetected(MissingLlvmEventArgs e)
