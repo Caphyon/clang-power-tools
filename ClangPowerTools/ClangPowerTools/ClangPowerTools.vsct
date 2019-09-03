@@ -257,19 +257,19 @@
   <!-- Shortcuts for commands-->
   <KeyBindings>
     <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="CompileToolbarId" editor="guidVSStd97"
-                key1="C" mod1="ALT" />
+                key1="U" mod1="ALT" />
 
     <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyToolbarId" editor="guidVSStd97"
-                    key1="T" mod1="ALT" />
+                    key1="Y" mod1="ALT" />
     
     <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" editor="guidVSStd97"
-                key1="Y" mod1="ALT" />
+                key1="X" mod1="ALT" />
     
     <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatToolbarId" editor="guidVSStd97"
-                key1="F" mod1="ALT" />
+                key1="M" mod1="ALT" />
     
     <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" editor="guidVSStd97"
-                key1="S" mod1="ALT" />
+                key1="O" mod1="ALT" />
   </KeyBindings>
 
   <!-- Placement for commands. The parent of a command is always a group, never a menu, context menu or toolbar.-->
