@@ -1,5 +1,4 @@
 ﻿using ClangPowerTools.Commands;
-using ClangPowerTools.Handlers;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.Views;
@@ -13,7 +12,6 @@ using Microsoft.VisualStudio.CommandBars;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -310,11 +308,10 @@ namespace ClangPowerTools
     {
       string version = SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version;
       ShowToolbar(version);
-      OpenBlogPost(version);
-      UpgradeVersion(version);
+      UpdateVersion(version);
     }
 
-    private void UpgradeVersion(string version)
+    private void UpdateVersion(string version)
     {
       var currentVersion = PackageUtility.GetVersion();
       if (string.IsNullOrWhiteSpace(currentVersion) == false && 0 > string.Compare(version, currentVersion))
@@ -324,14 +321,6 @@ namespace ClangPowerTools
 
         ReleaseNotesView releaseNotesView = new ReleaseNotesView();
         releaseNotesView.ShowDialog();
-      }
-    }
-
-    private static void OpenBlogPost(string version)
-    {
-      if (string.IsNullOrWhiteSpace(version) || 0 > string.Compare(version, "5.0.0"))
-      {
-        System.Diagnostics.Process.Start(new ProcessStartInfo("https://clangpowertools.com/blog/future-of-clang-power-tools.html"));
       }
     }
 
