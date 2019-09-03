@@ -61,6 +61,7 @@ namespace ClangPowerTools
     private OutputWindowController mOutputWindowController;
     private CommandController mCommandController;
     private LicenseController mLicenseController;
+    private SettingsHandler settingsHandler = new SettingsHandler();
 
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
@@ -130,6 +131,8 @@ namespace ClangPowerTools
         mCommandEvents = dte2.Events.CommandEvents;
         mDteEvents = dte2.Events.DTEEvents;
       }
+
+      settingsHandler.InitializeSettings();
 
       await mCommandController.InitializeCommandsAsync(this);
       mLicenseController = new LicenseController();
@@ -268,7 +271,7 @@ namespace ClangPowerTools
 
     public int OnAfterBackgroundSolutionLoadComplete()
     {
-      InitializeSettings();
+      VersionHandler();
       return VSConstants.S_OK;
     }
 
@@ -279,7 +282,7 @@ namespace ClangPowerTools
 
     public void OnAfterOpenFolder(string folderPath)
     {
-      InitializeSettings();
+      VersionHandler();
     }
 
     public void OnBeforeCloseFolder(string folderPath)
@@ -303,24 +306,16 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private void InitializeSettings()
+    private void VersionHandler()
     {
-      SettingsHandler settingsHandler = new SettingsHandler();
-      settingsHandler.InitializeSettings();
-
       string version = SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version;
-      // Detect the first install 
-      if (string.IsNullOrWhiteSpace(version))
-      {
-        // Show the toolbar on the first install
-        ShowToolbare();
-      }
+      ShowToolbar(version);
+      OpenBlogPost(version);
+      UpgradeVersion(version);
+    }
 
-      if (string.IsNullOrWhiteSpace(version) || 0 > string.Compare(version, "5.0.0"))
-      {
-        System.Diagnostics.Process.Start(new ProcessStartInfo("https://clangpowertools.com/blog/future-of-clang-power-tools.html"));
-      }
-
+    private void UpgradeVersion(string version)
+    {
       var currentVersion = PackageUtility.GetVersion();
       if (string.IsNullOrWhiteSpace(currentVersion) == false && 0 > string.Compare(version, currentVersion))
       {
@@ -329,6 +324,24 @@ namespace ClangPowerTools
 
         ReleaseNotesView releaseNotesView = new ReleaseNotesView();
         releaseNotesView.ShowDialog();
+      }
+    }
+
+    private static void OpenBlogPost(string version)
+    {
+      if (string.IsNullOrWhiteSpace(version) || 0 > string.Compare(version, "5.0.0"))
+      {
+        System.Diagnostics.Process.Start(new ProcessStartInfo("https://clangpowertools.com/blog/future-of-clang-power-tools.html"));
+      }
+    }
+
+    private void ShowToolbar(string version)
+    {
+      // Detect the first install 
+      if (string.IsNullOrWhiteSpace(version))
+      {
+        // Show the toolbar on the first install
+        ShowToolbare();
       }
     }
 
