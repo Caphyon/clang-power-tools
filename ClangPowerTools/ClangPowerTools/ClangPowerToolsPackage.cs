@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.Commands;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Controllers;
+using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
 using ClangPowerTools.Tests;
@@ -259,15 +260,11 @@ namespace ClangPowerTools
       var currentVersion = PackageUtility.GetVersion();
       if (string.IsNullOrWhiteSpace(currentVersion) == false && 0 > string.Compare(version, currentVersion))
       {
-        mOutputWindowController.Clear();
-        mOutputWindowController.Show();
-        mOutputWindowController.Write($"🎉\tClang Power Tools was upgraded to v{currentVersion}\n" +
-          $"\tCheck out what's new at http://www.clangpowertools.com/CHANGELOG");
-
         SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version = currentVersion;
         settingsHandler.SaveSettings();
 
-        // ------ Display the Release Notes view ------
+        ReleaseNotesView releaseNotesView = new ReleaseNotesView();
+        releaseNotesView.ShowDialog();
       }
     }
 
