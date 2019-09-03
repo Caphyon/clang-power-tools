@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ClangPowerTools
@@ -29,14 +30,17 @@ namespace ClangPowerTools
     /// </summary>
     public void InitializeSettings()
     {
-      if (SettingsFileExists())
-      {
-        LoadSettings();
-      }
-      else
-      {
-        ImportOldSettings();
-      }
+      _ = Task.Run(() =>
+       {
+         if (SettingsFileExists())
+         {
+           LoadSettings();
+         }
+         else
+         {
+           ImportOldSettings();
+         }
+       });
     }
 
     /// <summary>
