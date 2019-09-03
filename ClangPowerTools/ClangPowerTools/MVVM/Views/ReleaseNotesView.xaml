@@ -26,39 +26,37 @@
         <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />
         <RowDefinition Height="400" />
+        <RowDefinition Height="20" />
       </Grid.RowDefinitions>
 
       <Grid.ColumnDefinitions>
 
         <ColumnDefinition Width="35" />
-        <ColumnDefinition Width="12*" />
-        <ColumnDefinition Width="67*" />
+        <ColumnDefinition />
         <ColumnDefinition Width="35" />
 
       </Grid.ColumnDefinitions>
 
       <Image
         Grid.Row="0"
-        Grid.Column="2"
+        Grid.Column="1"
         Width="100"
         Height="100"
-        Margin="115.461,5,187,0"
+        Margin="0,5,0,0"
         HorizontalAlignment="Center"
         VerticalAlignment="Center"
         Source="/ClangPowerTools;component/Resources/CPTLogo.png" />
 
       <TextBlock
         Grid.Row="1"
-        Grid.Column="2"
-        Margin="20.461,0,92,0"
+        Grid.Column="1"
         HorizontalAlignment="Center"
         FontSize="36"
         Text="Clang Power Tools" />
 
       <TextBlock
         Grid.Row="2"
-        Grid.Column="2"
-        Margin="129.461,0,201,0"
+        Grid.Column="1"
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
@@ -67,7 +65,6 @@
       <ListView
         Grid.Row="3"
         Grid.Column="1"
-        Grid.ColumnSpan="2"
         Height="380"
         Margin="0,20,0,0"
         Background="Transparent"
@@ -181,7 +178,7 @@
       </ListView>
     </Grid>
 
-    <Grid Margin="0,20,0,0" Background="#272E58">
+    <Grid Background="#272E58">
 
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="35" />
