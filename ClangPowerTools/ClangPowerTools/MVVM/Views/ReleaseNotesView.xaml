@@ -5,7 +5,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  Title="Clang Power Tools - Release Notes"
+  Title="Release Notes"
   Width="550"
   Height="710"
   ResizeMode="NoResize"
@@ -31,31 +31,34 @@
       <Grid.ColumnDefinitions>
 
         <ColumnDefinition Width="35" />
-        <ColumnDefinition />
+        <ColumnDefinition Width="12*" />
+        <ColumnDefinition Width="67*" />
         <ColumnDefinition Width="35" />
 
       </Grid.ColumnDefinitions>
 
       <Image
         Grid.Row="0"
-        Grid.Column="1"
+        Grid.Column="2"
         Width="100"
         Height="100"
-        Margin="0,5,0,0"
+        Margin="115.461,5,187,0"
         HorizontalAlignment="Center"
         VerticalAlignment="Center"
         Source="/ClangPowerTools;component/Resources/CPTLogo.png" />
 
       <TextBlock
         Grid.Row="1"
-        Grid.Column="1"
+        Grid.Column="2"
+        Margin="20.461,0,92,0"
         HorizontalAlignment="Center"
         FontSize="36"
-        Text="You're up to date!" />
+        Text="Clang Power Tools" />
 
       <TextBlock
         Grid.Row="2"
-        Grid.Column="1"
+        Grid.Column="2"
+        Margin="129.461,0,201,0"
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
@@ -64,6 +67,7 @@
       <ListView
         Grid.Row="3"
         Grid.Column="1"
+        Grid.ColumnSpan="2"
         Height="380"
         Margin="0,20,0,0"
         Background="Transparent"
