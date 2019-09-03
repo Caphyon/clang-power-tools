@@ -250,7 +250,6 @@
       <Bitmap guid="guidImageSettings" href="Resources\SettingsIcon.png" usedList="Settings" />
       <Bitmap guid="guidImageIgnoreFormat" href="Resources\IgnoreIcon.png" usedList="IgnoreFormat" />
       <Bitmap guid="guidImageEmpty" href="Resources\EmptyIcon.png" usedList="Empty" />
-      <Bitmap guid="guidImageLogout" href="Resources\Logout.png" usedList="Logout" />
     </Bitmaps>
 
   </Commands>

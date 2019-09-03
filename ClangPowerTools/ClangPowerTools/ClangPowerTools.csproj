@@ -237,21 +237,16 @@
       <VSIXSubPath>.</VSIXSubPath>
     </Content>
     <Resource Include="Resources\LoginBackground.png" />
-    <Resource Include="Resources\AlphabeticalIcon.PNG" />
-    <Resource Include="Resources\LogoCPT.png" />
-    <Resource Include="Resources\iconRockUpdate.png" />
-    <Content Include="Resources\Logout.png" />
+    <Resource Include="Resources\CPTLogo.png" />
     <Resource Include="Resources\ClangFormatIcon.png" />
     <Resource Include="Resources\CleanSearchIcon.PNG" />
     <Resource Include="Resources\CompileIcon.png" />
-    <Resource Include="Resources\CategorizedIcon.PNG" />
     <Resource Include="Resources\SearchIcon.PNG" />
     <Content Include="Resources\EmptyIcon.png" />
-    <Content Include="Resources\IgnoreIcon.png" />
+    <Resource Include="Resources\IgnoreIcon.png" />
     <Resource Include="Resources\SettingsBackground.png" />
-    <Content Include="Resources\StopCommandIcon.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
+    <Resource Include="Resources\ReleaseNotesBackground.png" />
+    <Resource Include="Resources\StopCommandIcon.png" />
     <Content Include="Resources\Icon.png">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
