@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ClangPowerTools
@@ -29,14 +30,17 @@ namespace ClangPowerTools
     /// </summary>
     public void InitializeSettings()
     {
-      if (SettingsFileExists())
-      {
-        LoadSettings();
-      }
-      else
-      {
-        ImportOldSettings();
-      }
+      _ = Task.Run(() =>
+       {
+         if (SettingsFileExists())
+         {
+           LoadSettings();
+         }
+         else
+         {
+           ImportOldSettings();
+         }
+       });
     }
 
     /// <summary>
@@ -203,7 +207,6 @@ namespace ClangPowerTools
       compilerSettingsModel.CompileFlags = clangOptions.ClangFlagsCollection;
       compilerSettingsModel.FilesToIgnore = clangOptions.FilesToIgnore;
       compilerSettingsModel.ProjectsToIgnore = clangOptions.ProjectsToIgnore;
-      compilerSettingsModel.AdditionalIncludes = clangOptions.AdditionalIncludes;
       compilerSettingsModel.WarningsAsErrors = clangOptions.TreatWarningsAsErrors;
       compilerSettingsModel.ContinueOnError = clangOptions.Continue;
       compilerSettingsModel.ClangAfterMSVC = clangOptions.ClangCompileAfterVsCompile;

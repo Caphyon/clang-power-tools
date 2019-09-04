@@ -12,7 +12,6 @@ using Microsoft.VisualStudio.CommandBars;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -45,7 +44,7 @@ namespace ClangPowerTools
   [ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string, PackageAutoLoadFlags.BackgroundLoad)]
   [ProvideMenuResource("Menus.ctmenu", 1)]
   [Guid(PackageGuidString)]
-  public sealed class RunClangPowerToolsPackage : AsyncPackage, IVsSolutionEvents
+  public sealed class RunClangPowerToolsPackage : AsyncPackage, IVsSolutionEvents, IVsSolutionLoadEvents, IVsSolutionEvents7
   {
     #region Members
 
@@ -60,6 +59,7 @@ namespace ClangPowerTools
     private OutputWindowController mOutputWindowController;
     private CommandController mCommandController;
     private LicenseController mLicenseController;
+    private SettingsHandler mSettingsHandler;
 
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
@@ -130,7 +130,8 @@ namespace ClangPowerTools
         mDteEvents = dte2.Events.DTEEvents;
       }
 
-      InitializeSettings();
+      mSettingsHandler = new SettingsHandler();
+      mSettingsHandler.InitializeSettings();
 
       await mCommandController.InitializeCommandsAsync(this);
       mLicenseController = new LicenseController();
@@ -238,33 +239,99 @@ namespace ClangPowerTools
     #endregion
 
 
-    #region Private Methods
-    private void InitializeSettings()
+    #region IVsSolutionLoadEvents implementation
+
+
+    public int OnBeforeOpenSolution(string pszSolutionFilename)
     {
-      SettingsHandler settingsHandler = new SettingsHandler();
-      settingsHandler.InitializeSettings();
+      return VSConstants.S_OK;
+    }
 
-      string version =  SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version;
-      // Detect the first install 
-      if (string.IsNullOrWhiteSpace(version))
-      {
-        // Show the toolbar on the first install
-        ShowToolbare(); 
-      }
+    public int OnBeforeBackgroundSolutionLoadBegins()
+    {
+      return VSConstants.S_OK;
+    }
 
-      if (string.IsNullOrWhiteSpace(version) || 0 > string.Compare(version, "5.0.0"))
-      {
-        System.Diagnostics.Process.Start(new ProcessStartInfo("https://clangpowertools.com/blog/future-of-clang-power-tools.html"));
-      }
+    public int OnQueryBackgroundLoadProjectBatch(out bool pfShouldDelayLoadToNextIdle)
+    {
+      pfShouldDelayLoadToNextIdle = false;
+      return VSConstants.S_OK;
+    }
 
+    public int OnBeforeLoadProjectBatch(bool fIsBackgroundIdleBatch)
+    {
+      return VSConstants.S_OK;
+    }
+
+    public int OnAfterLoadProjectBatch(bool fIsBackgroundIdleBatch)
+    {
+      return VSConstants.S_OK;
+    }
+
+    public int OnAfterBackgroundSolutionLoadComplete()
+    {
+      VersionHandler();
+      return VSConstants.S_OK;
+    }
+
+    #endregion
+
+
+    #region IVsSolution7 implementation
+
+    public void OnAfterOpenFolder(string folderPath)
+    {
+      VersionHandler();
+    }
+
+    public void OnBeforeCloseFolder(string folderPath)
+    {
+    }
+
+    public void OnQueryCloseFolder(string folderPath, ref int pfCancel)
+    {
+    }
+
+    public void OnAfterCloseFolder(string folderPath)
+    {
+    }
+
+    public void OnAfterLoadAllDeferredProjects()
+    {
+    }
+
+    #endregion
+
+
+    #region Private Methods
+
+    private void VersionHandler()
+    {
+        string version = SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version;
+        ShowToolbar(version);
+        UpdateVersion(version);
+    }
+
+    private void UpdateVersion(string version)
+    {
       var currentVersion = PackageUtility.GetVersion();
       if (string.IsNullOrWhiteSpace(currentVersion) == false && 0 > string.Compare(version, currentVersion))
       {
         SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version = currentVersion;
-        settingsHandler.SaveSettings();
+        mSettingsHandler.SaveSettings();
 
         ReleaseNotesView releaseNotesView = new ReleaseNotesView();
-        releaseNotesView.ShowDialog();
+        releaseNotesView.Show();
+      }
+    }
+
+    private void ShowToolbar(string version)
+    {
+      // Detect the first install 
+      if (string.IsNullOrWhiteSpace(version))
+      {
+        // Show the toolbar on the first install
+        ShowToolbare();
       }
     }
 

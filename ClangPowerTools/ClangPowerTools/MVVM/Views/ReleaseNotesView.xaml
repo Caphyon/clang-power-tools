@@ -5,15 +5,28 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  Title="Clang Power Tools - Release Notes"
+  Title="Release Notes"
   Width="550"
-  Height="710"
+  Height="720"
   ResizeMode="NoResize"
   WindowStartupLocation="CenterScreen"
   WindowStyle="ToolWindow"
   mc:Ignorable="d">
 
   <StackPanel>
+
+    <StackPanel.Resources>
+      <Style TargetType="{x:Type Hyperlink}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Foreground" Value="#FFFAA8B4" />
+        <Setter Property="TextBlock.TextDecorations" Value="{x:Null}" />
+        <Style.Triggers>
+          <Trigger Property="IsMouseOver" Value="True">
+            <Setter Property="Foreground" Value="#FFFAD4DB" />
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+    </StackPanel.Resources>
 
     <Grid>
 
@@ -25,7 +38,8 @@
         <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />
         <RowDefinition Height="Auto" />
-        <RowDefinition Height="400" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="20" />
       </Grid.RowDefinitions>
 
       <Grid.ColumnDefinitions>
@@ -39,8 +53,8 @@
       <Image
         Grid.Row="0"
         Grid.Column="1"
-        Width="100"
-        Height="100"
+        Width="70"
+        Height="70"
         Margin="0,5,0,0"
         HorizontalAlignment="Center"
         VerticalAlignment="Center"
@@ -50,8 +64,8 @@
         Grid.Row="1"
         Grid.Column="1"
         HorizontalAlignment="Center"
-        FontSize="36"
-        Text="You're up to date!" />
+        FontSize="32"
+        Text="Clang Power Tools" />
 
       <TextBlock
         Grid.Row="2"
@@ -64,7 +78,7 @@
       <ListView
         Grid.Row="3"
         Grid.Column="1"
-        Height="380"
+        Height="420"
         Margin="0,20,0,0"
         Background="Transparent"
         Focusable="False"
@@ -85,54 +99,55 @@
 
         <!--  What's New  -->
         <TextBlock
+          Margin="5,5,0,0"
           HorizontalAlignment="Left"
           FontSize="22"
           Text="What's New" />
 
         <TextBlock
-          Margin="10,5,0,0"
+          Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
           Text="&#x2022; CMake support for open file"
           TextWrapping="Wrap" />
 
         <TextBlock
-          Margin="10,5,0,0"
+          Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
           Text="&#x2022; Complete UI redesign"
           TextWrapping="Wrap" />
 
         <TextBlock
-          Margin="10,5,0,0"
+          Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
           Text="&#x2022; Export/Import settings configuration"
           TextWrapping="Wrap" />
 
         <TextBlock
-          Margin="10,5,0,0"
+          Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="&#x2022; Settings are now saved in a JSON format"
+          Text="&#x2022; Settings are now saved as JSON"
           TextWrapping="Wrap" />
 
         <TextBlock
-          Margin="10,5,0,0"
+          Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="&#x2022; Export .clang-tidy config file"
+          Text="&#x2022; Support to export .clang-tidy config file"
           TextWrapping="Wrap" />
 
         <TextBlock
-          Margin="10,5,0,0"
+          Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
           Text="&#x2022; Improve the email and password validation"
           TextWrapping="Wrap" />
 
         <TextBlock
-          Margin="10,5,0,0"
+          Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
           Text="&#x2022; Offline support"
@@ -141,34 +156,41 @@
 
         <!--  Bug Fixes  -->
         <TextBlock
-          Margin="0,35,0,0"
+          Margin="5,35,0,0"
           HorizontalAlignment="Left"
           FontSize="22"
           Text="Bug Fixes" />
 
         <TextBlock
-          Margin="10,5,0,0"
+          Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="&#x2022; Crash on Visual Studio 2015"
+          Text="&#x2022; Crash on Visual Studio 2019 when running clang commands"
           TextWrapping="Wrap" />
 
         <TextBlock
-          Margin="10,5,0,0"
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="&#x2022; Crash on Visual Studio 2015 when running clang-tidy"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
           Text="&#x2022; Crash when Tidy on save is active"
           TextWrapping="Wrap" />
 
         <TextBlock
-          Margin="10,5,0,0"
+          Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
           Text="&#x2022; Calibrate focus between Error List and Output window"
           TextWrapping="Wrap" />
 
         <TextBlock
-          Margin="10,5,0,0"
+          Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
           Text="&#x2022; Clang compile warnings detection"
@@ -177,7 +199,7 @@
       </ListView>
     </Grid>
 
-    <Grid Margin="0,20,0,0" Background="#272E58">
+    <Grid Background="#272E58">
 
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="35" />
@@ -186,7 +208,8 @@
       </Grid.ColumnDefinitions>
 
       <Grid.RowDefinitions>
-        <RowDefinition Height="90" />
+        <RowDefinition Height="60" />
+        <RowDefinition Height="40" />
       </Grid.RowDefinitions>
 
 
@@ -209,12 +232,23 @@
         Text="We offer a Commercial Use License just perfect for your team."
         TextWrapping="Wrap" />
 
+      <TextBlock
+        Grid.Row="1"
+        Grid.Column="1"
+        HorizontalAlignment="Left"
+        VerticalAlignment="Top">
+        <Hyperlink NavigateUri="https://clangpowertools.com/blog/future-of-clang-power-tools.html" RequestNavigate="Hyperlink_Navigate">
+          The future of Clang Power Tools
+        </Hyperlink>
+      </TextBlock>
+
       <Button
         Grid.Column="1"
         Width="110"
         Height="38"
+        Margin="0,15,0,0"
         HorizontalAlignment="Right"
-        VerticalAlignment="Center"
+        VerticalAlignment="Top"
         Background="#FFBF31"
         BorderThickness="0"
         Click="Button_Click"

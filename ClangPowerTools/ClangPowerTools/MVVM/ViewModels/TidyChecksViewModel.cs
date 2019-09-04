@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Input;
 
@@ -38,6 +39,7 @@ namespace ClangPowerTools
     public TidyChecksViewModel()
     {
       InitializeChecks();
+      SettingsViewModelProvider.TidySettingsViewModel.TidyModel.PredefinedChecks = GetSelectedChecks();
     }
 
     private void InitializeChecks()
@@ -52,14 +54,6 @@ namespace ClangPowerTools
       {
         tidyChecksList = new List<TidyCheckModel>(TidyChecksClean.Checks);
         TickPredefinedChecks();
-      }
-    }
-
-    public List<TidyCheckModel> SelectedChecks
-    {
-      get
-      {
-        return tidyChecksList.Where(e => e.IsChecked == true).ToList();
       }
     }
 
@@ -110,6 +104,20 @@ namespace ClangPowerTools
 
 
     #region Methods
+    public string GetSelectedChecks()
+    {
+      StringBuilder stringBuilder = new StringBuilder();
+
+      foreach (TidyCheckModel item in TidyChecksList)
+      {
+        if (item.IsChecked)
+        {
+          stringBuilder.Append(item.Name).Append(";");
+        }
+      }
+      return stringBuilder.ToString();
+    }
+
     private void UpdateSelectedChecksCommand()
     {
       TidyChecksView.Close();
