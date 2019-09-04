@@ -321,7 +321,7 @@ namespace ClangPowerTools
         mSettingsHandler.SaveSettings();
 
         ReleaseNotesView releaseNotesView = new ReleaseNotesView();
-        releaseNotesView.ShowDialog();
+        releaseNotesView.Show();
       }
     }
 
