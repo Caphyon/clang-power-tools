@@ -129,14 +129,14 @@
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="&#x2022; Settings are now saved in a JSON format"
+          Text="&#x2022; Settings are now saved as JSON"
           TextWrapping="Wrap" />
 
         <TextBlock
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="&#x2022; Export .clang-tidy config file"
+          Text="&#x2022; Support to export .clang-tidy config file"
           TextWrapping="Wrap" />
 
         <TextBlock
@@ -165,7 +165,14 @@
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="&#x2022; Crash on Visual Studio 2015"
+          Text="&#x2022; Crash on Visual Studio 2019 when running clang commands"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="&#x2022; Crash on Visual Studio 2015 when running clang-tidy"
           TextWrapping="Wrap" />
 
         <TextBlock
