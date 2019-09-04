@@ -5,7 +5,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -60,7 +59,7 @@ namespace ClangPowerTools
           tidyModel.HeaderFilter = value;
         }
       }
-    }      
+    }
 
     public bool CanExecute
     {
@@ -86,7 +85,7 @@ namespace ClangPowerTools
     public TidySettingsViewModel()
     {
       HeaderFilters = new List<string>() { tidyModel.HeaderFilter, ComboBoxConstants.kCorrespondingHeaderName };
-      headerFilter = tidyModel.HeaderFilter;    
+      headerFilter = tidyModel.HeaderFilter;
     }
     #endregion
 
@@ -178,7 +177,7 @@ namespace ClangPowerTools
 
     private void OnClosed(object sender, EventArgs e)
     {
-      TidyModel.PredefinedChecks = GetSelectedChecks();
+      TidyModel.PredefinedChecks = SettingsViewModelProvider.TidyChecksViewModel.GetSelectedChecks();
       tidyChecksView.Closed -= OnClosed;
     }
 
@@ -187,21 +186,6 @@ namespace ClangPowerTools
       tidyChecksView = new TidyChecksView();
       tidyChecksView.Closed += OnClosed;
       tidyChecksView.ShowDialog();
-    }
-
-    private string GetSelectedChecks()
-    {
-      StringBuilder stringBuilder = new StringBuilder();
-      List<TidyCheckModel> selectedChecks = SettingsViewModelProvider.TidyChecksViewModel.SelectedChecks;
-
-      foreach (TidyCheckModel item in selectedChecks)
-      {
-        if (item.IsChecked)
-        {
-          stringBuilder.Append(item.Name).Append(";");
-        }
-      }
-      return stringBuilder.ToString();
     }
 
     #endregion
