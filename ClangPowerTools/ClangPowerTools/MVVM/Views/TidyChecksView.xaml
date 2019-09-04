@@ -55,7 +55,7 @@
             <TextBlock
               Grid.Row="1"
               Grid.Column="0"
-              FontSize="15"
+              FontSize="14"
               Text="{Binding Name}"
               TextWrapping="Wrap">
               <TextBlock.ToolTip>
@@ -81,11 +81,11 @@
     <Button
       Grid.Row="2"
       Grid.Column="0"
-      Width="120"
-      Height="40"
+      Width="100"
+      Height="30"
       Command="{Binding OkCommand}"
       Content="OK"
-      FontSize="16" />
+      FontSize="14" />
 
   </Grid>
 
