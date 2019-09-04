@@ -7,8 +7,8 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   d:DataContext="{d:DesignInstance local:TidySettingsViewModel,
                                    IsDesignTimeCreatable=True}"
-  d:DesignHeight="400"
-  d:DesignWidth="820"
+  d:DesignHeight="350"
+  d:DesignWidth="770"
   mc:Ignorable="d">
   <Grid>
     <Grid.Background>
@@ -29,7 +29,7 @@
 
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="10" />
-      <ColumnDefinition Width="205" />
+      <ColumnDefinition Width="180" />
       <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
@@ -41,7 +41,7 @@
       Padding="10"
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
-      FontSize="20"
+      FontSize="16"
       Text="Use checks from">
       <TextBlock.ToolTip>
         <ToolTip>
@@ -69,7 +69,7 @@
       Padding="10"
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
-      FontSize="20"
+      FontSize="16"
       Text="Predefined Checks">
       <TextBlock.ToolTip>
         <ToolTip>
@@ -88,7 +88,8 @@
       Height="30"
       HorizontalAlignment="Left"
       Command="{Binding PredefinedChecksSelectCommand}"
-      Content="Select" />
+      Content="Select"
+      FontSize="14" />
 
 
     <!--  Custom checks  -->
@@ -98,7 +99,7 @@
       Padding="10"
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
-      FontSize="20"
+      FontSize="16"
       Text="Custom Checks">
       <TextBlock.ToolTip>
         <ToolTip>
@@ -138,7 +139,7 @@
       Padding="10"
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
-      FontSize="20"
+      FontSize="16"
       Text="Header filter">
       <TextBlock.ToolTip>
         <ToolTip>
@@ -179,7 +180,7 @@
       Padding="10"
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
-      FontSize="20"
+      FontSize="16"
       Text="Custom executable">
       <TextBlock.ToolTip>
         <ToolTip>
@@ -209,7 +210,8 @@
       Height="30"
       HorizontalAlignment="Left"
       Command="{Binding CustomExecutableBrowseCommand}"
-      Content="Browse" />
+      Content="Browse"
+      FontSize="14" />
 
 
     <!--  Format after tidy  -->
@@ -219,7 +221,7 @@
       Padding="10"
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
-      FontSize="20"
+      FontSize="16"
       Text="Format after Tidy">
       <TextBlock.ToolTip>
         <ToolTip>
@@ -238,7 +240,7 @@
       VerticalAlignment="Center"
       IsChecked="{Binding TidyModel.FormatAfterTidy}">
       <CheckBox.LayoutTransform>
-        <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+        <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
       </CheckBox.LayoutTransform>
     </CheckBox>
 
@@ -249,7 +251,7 @@
       Padding="10"
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
-      FontSize="20"
+      FontSize="16"
       Text="Tidy on save">
       <TextBlock.ToolTip>
         <ToolTip>
@@ -268,7 +270,7 @@
       VerticalAlignment="Center"
       IsChecked="{Binding TidyModel.TidyOnSave}">
       <CheckBox.LayoutTransform>
-        <ScaleTransform ScaleX="1.5" ScaleY="1.5" />
+        <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
       </CheckBox.LayoutTransform>
     </CheckBox>
 
@@ -281,7 +283,7 @@
       Padding="10"
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
-      FontSize="20"
+      FontSize="16"
       Text="Tidy file config">
       <TextBlock.ToolTip>
         <ToolTip>
@@ -301,7 +303,8 @@
       Height="30"
       HorizontalAlignment="Left"
       Command="{Binding ExportTidyConfigCommand}"
-      Content="Export" />
+      Content="Export"
+      FontSize="14" />
 
   </Grid>
 </UserControl>
