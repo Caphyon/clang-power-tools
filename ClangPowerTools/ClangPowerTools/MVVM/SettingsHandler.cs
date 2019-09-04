@@ -207,7 +207,6 @@ namespace ClangPowerTools
       compilerSettingsModel.CompileFlags = clangOptions.ClangFlagsCollection;
       compilerSettingsModel.FilesToIgnore = clangOptions.FilesToIgnore;
       compilerSettingsModel.ProjectsToIgnore = clangOptions.ProjectsToIgnore;
-      compilerSettingsModel.AdditionalIncludes = clangOptions.AdditionalIncludes;
       compilerSettingsModel.WarningsAsErrors = clangOptions.TreatWarningsAsErrors;
       compilerSettingsModel.ContinueOnError = clangOptions.Continue;
       compilerSettingsModel.ClangAfterMSVC = clangOptions.ClangCompileAfterVsCompile;
