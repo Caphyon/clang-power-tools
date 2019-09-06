@@ -39,12 +39,12 @@ namespace ClangPowerTools
     public TidyChecksViewModel()
     {
       InitializeChecks();
-      SettingsViewModelProvider.TidySettingsViewModel.TidyModel.PredefinedChecks = GetSelectedChecks();
+      SettingsProvider.TidySettingsViewModel.TidyModel.PredefinedChecks = GetSelectedChecks();
     }
 
     private void InitializeChecks()
     {
-      string predefinedChecks = SettingsViewModelProvider.TidySettingsViewModel.TidyModel.PredefinedChecks;
+      string predefinedChecks = SettingsProvider.TidySettingsViewModel.TidyModel.PredefinedChecks;
 
       if (string.IsNullOrEmpty(predefinedChecks))
       {
@@ -125,7 +125,7 @@ namespace ClangPowerTools
 
     private void TickPredefinedChecks()
     {
-      string input = SettingsViewModelProvider.TidySettingsViewModel.TidyModel.PredefinedChecks;
+      string input = SettingsProvider.TidySettingsViewModel.TidyModel.PredefinedChecks;
       input = Regex.Replace(input, @"\s+", "");
       List<string> checkNames = input.Split(';').ToList();
 

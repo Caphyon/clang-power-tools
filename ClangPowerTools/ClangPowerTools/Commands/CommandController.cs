@@ -517,7 +517,7 @@ namespace ClangPowerTools
       if (false == mSaveCommandWasGiven) // The save event was not triggered by Save File or SaveAll commands
         return;
 
-      TidySettingsModel tidySettings = SettingsViewModelProvider.TidySettingsViewModel.TidyModel;
+      TidySettingsModel tidySettings = SettingsProvider.TidySettingsViewModel.TidyModel;
 
       if (false == tidySettings.TidyOnSave) // The clang-tidy on save option is disable 
         return;
@@ -535,8 +535,8 @@ namespace ClangPowerTools
 
     private void BeforeSaveClangFormat(Document aDocument)
     {
-      FormatSettingsModel formatSettings = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel;
-      TidySettingsModel tidySettings = SettingsViewModelProvider.TidySettingsViewModel.TidyModel;
+      FormatSettingsModel formatSettings = SettingsProvider.FormatSettingsViewModel.FormatModel;
+      TidySettingsModel tidySettings = SettingsProvider.TidySettingsViewModel.TidyModel;
 
       if (currentCommand == CommandIds.kTidyFixId && running && tidySettings.FormatAfterTidy && formatSettings.FormatOnSave)
       {
@@ -583,7 +583,7 @@ namespace ClangPowerTools
 
     private void BeforeExecuteClangCompile(string aGuid, int aId)
     {
-      var compilerSettings = SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel; 
+      var compilerSettings = SettingsProvider.CompilerSettingsViewModel.CompilerModel; 
 
       if (compilerSettings.ClangAfterMSVC == false)
         return;

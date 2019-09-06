@@ -15,7 +15,7 @@ namespace ClangPowerTools.Views
     public SearchBoxView()
     {
       InitializeComponent();
-      DataContext = SettingsViewModelProvider.TidyChecksViewModel;
+      DataContext = SettingsProvider.TidyChecksViewModel;
     }
 
     #endregion

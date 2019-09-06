@@ -1,6 +1,6 @@
 ﻿namespace ClangPowerTools
 {
-  public static class SettingsViewModelProvider
+  public static class SettingsProvider
   {
     public static CompilerSettingsViewModel CompilerSettingsViewModel { get; set; } = new CompilerSettingsViewModel();
     public static FormatSettingsViewModel FormatSettingsViewModel { get; set; } = new FormatSettingsViewModel();

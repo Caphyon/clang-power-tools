@@ -77,7 +77,7 @@ namespace ClangPowerTools.Commands
         ItemsCollector itemsCollector = new ItemsCollector();
         List<string> projectsToIgnore = itemsCollector.GetProjectsToIgnore();   
         
-        CompilerSettingsModel settingsModel = SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel;
+        CompilerSettingsModel settingsModel = SettingsProvider.CompilerSettingsViewModel.CompilerModel;
         AddItemsToIgnore(projectsToIgnore, settingsModel, "ProjectsToIgnore");
         if (projectsToIgnore.Any() == false)
         {

@@ -306,9 +306,9 @@ namespace ClangPowerTools
 
     private void VersionHandler()
     {
-      string version = SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version;
-      ShowToolbar(version);
-      UpdateVersion(version);
+        string version = SettingsProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version;
+        ShowToolbar(version);
+        UpdateVersion(version);
     }
 
     private void UpdateVersion(string version)
@@ -316,7 +316,7 @@ namespace ClangPowerTools
       var currentVersion = PackageUtility.GetVersion();
       if (string.IsNullOrWhiteSpace(currentVersion) == false && 0 > string.Compare(version, currentVersion))
       {
-        SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version = currentVersion;
+        SettingsProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version = currentVersion;
         mSettingsHandler.SaveSettings();
 
         ReleaseNotesView releaseNotesView = new ReleaseNotesView();
