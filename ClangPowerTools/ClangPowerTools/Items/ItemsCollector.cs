@@ -22,6 +22,11 @@ namespace ClangPowerTools
 
     public ItemsCollector(List<string> aExtensions = null)
     {
+      if(aExtensions == null)
+      {
+        aExtensions = ScriptConstants.kAcceptedFileExtensions;
+      }
+
       mAcceptedFileExtensions = aExtensions;
       var dte2 = (DTE2)VsServiceProvider.GetService(typeof(DTE));
       selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
@@ -70,21 +75,20 @@ namespace ClangPowerTools
     /// <summary>
     /// Get the name of the active document
     /// </summary>
-    public static List<string> GetFilesToIgnore()
+    public List<string> GetFilesToIgnore()
     {
-      var itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
-      itemsCollector.CollectSelectedProjectItems();
+      CollectSelectedProjectItems();
       List<string> documentsToIgnore = new List<string>();
-      itemsCollector.items.ForEach(i => documentsToIgnore.Add(i.GetName()));
+      Items.ForEach(i => documentsToIgnore.Add(i.GetName()));
 
       return documentsToIgnore;
     }
 
-    public static List<string> GetProjectsToIgnore()
+    public List<string> GetProjectsToIgnore()
     {
       List<string> projectsToIgnore = new List<string>();
-      var dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
-      var selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
+      DTE2 dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
+      Array selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
 
       foreach (UIHierarchyItem item in selectedItems)
       {
