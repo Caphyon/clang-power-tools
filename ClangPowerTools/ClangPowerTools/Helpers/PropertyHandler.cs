@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace ClangPowerTools.Helpers
 {
-  public static class GetSetProperty
+  public static class PropertyHandler
   {
     /// <summary>
     /// Method get values of specified property of an object
