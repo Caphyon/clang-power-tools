@@ -75,7 +75,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CMake\CMakeBuilder.cs" />
-    <Compile Include="Commands\BasicIgnoreCommand.cs" />
     <Compile Include="Commands\IgnoreCommand.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Events\LicenseEventArgs.cs" />
