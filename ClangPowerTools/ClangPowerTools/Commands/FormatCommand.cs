@@ -168,7 +168,7 @@ namespace ClangPowerTools.Commands
 
     private void FormatAllSelectedDocuments()
     {
-      ItemsCollector itemsCollector = new ItemsCollector();
+      ItemsCollector itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
       itemsCollector.CollectSelectedProjectItems();
       List<Document> activeDocs = DocumentHandler.GetListOfActiveDocuments();
       Document activeDocument = DocumentHandler.GetActiveDocument();
