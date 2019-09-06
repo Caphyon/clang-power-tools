@@ -68,18 +68,21 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
-    public void RunIgnoreCompileCommand(int aId)
+    public void RunIgnoreCompileCommand()
     {
-      var task = Task.Run(() =>
+      _ = Task.Run(() =>
       {
-        List<string> projectsToIgnore = ItemsCollector.GetProjectsToIgnore();
-        var settings = SettingsProvider.GeneralSettings;
-        AddItemsToIgnore(projectsToIgnore, settings, "ProjectsToIgnore");
+        SettingsHandler settingsHandler = new SettingsHandler();
+        ItemsCollector itemsCollector = new ItemsCollector();
+        List<string> projectsToIgnore = itemsCollector.GetProjectsToIgnore();       
+        CompilerSettingsModel settingsModel = SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel;
+
+        AddItemsToIgnore(projectsToIgnore, settingsModel, "ProjectsToIgnore");
         if (projectsToIgnore.Any() == false)
         {
-          List<string> filesToIgnore = ItemsCollector.GetFilesToIgnore();
-          AddItemsToIgnore(filesToIgnore, settings, "FilesToIgnore");
-          settings.SaveSettingsToStorage();
+          List<string> filesToIgnore = itemsCollector.GetFilesToIgnore();
+          AddItemsToIgnore(filesToIgnore, settingsModel, "FilesToIgnore");
+          settingsHandler.SaveSettings();
         }
       });
     }

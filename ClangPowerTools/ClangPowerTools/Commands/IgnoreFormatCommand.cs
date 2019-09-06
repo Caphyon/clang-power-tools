@@ -69,14 +69,17 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
-    public void RunIgnoreFormatCommand(int aId)
+    public void RunIgnoreFormatCommand()
     {
-      var task = Task.Run(() =>
+      _ = Task.Run(() =>
       {
-        List<string> documentsToIgnore = ItemsCollector.GetFilesToIgnore();
-        var settings = SettingsProvider.ClangFormatSettings;
+        ItemsCollector itemsCollector = new ItemsCollector();
+        List<string> documentsToIgnore = itemsCollector.GetFilesToIgnore();
+        SettingsHandler settingsHandler = new SettingsHandler();
+
+        FormatSettingsModel settings = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel;
         AddItemsToIgnore(documentsToIgnore, settings, "FilesToIgnore");
-        settings.SaveSettingsToStorage();
+        settingsHandler.SaveSettings();
       });
     }
 
