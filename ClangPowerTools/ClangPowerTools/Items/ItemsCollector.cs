@@ -13,7 +13,7 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private List<string> mAcceptedFileExtensions = new List<string>();
+    private List<string> mAcceptedFileExtensions;
     private Array selectedItems;
 
     #endregion
@@ -24,7 +24,7 @@ namespace ClangPowerTools
     {
       if(aExtensions == null)
       {
-        aExtensions = ScriptConstants.kAcceptedFileExtensions;
+        mAcceptedFileExtensions = new List<string>(ScriptConstants.kAcceptedFileExtensions);
       }
 
       mAcceptedFileExtensions = aExtensions;
@@ -79,7 +79,7 @@ namespace ClangPowerTools
     {
       CollectSelectedProjectItems();
       List<string> documentsToIgnore = new List<string>();
-      Items.ForEach(i => documentsToIgnore.Add(i.GetName()));
+      Items.ForEach(e => documentsToIgnore.Add(e.GetName()));
 
       return documentsToIgnore;
     }
