@@ -17,5 +17,35 @@
     {
       CompilerSettingsViewModel.CompilerModel = compilerSettingsModel;
     }
+
+    public FormatSettingsModel GetFormatSettingsModel()
+    {
+      return FormatSettingsViewModel.FormatModel;
+    }
+
+    public void SetFormatSettingsModel(FormatSettingsModel FormatSettingsModel)
+    {
+      FormatSettingsViewModel.FormatModel = FormatSettingsModel;
+    }
+
+    public TidySettingsModel GetTidySettingsModel()
+    {
+      return TidySettingsViewModel.TidyModel;
+    }
+
+    public void SetTidySettingsModel(TidySettingsModel tidySettingsModel)
+    {
+      TidySettingsViewModel.TidyModel = tidySettingsModel;
+    }
+
+    public GeneralSettingsModel GetGeneralSettingsModel()
+    {
+      return GeneralSettingsViewModel.GeneralSettingsModel;
+    }
+
+    public void SetGeneralSettingsModel(GeneralSettingsModel generalSettingsModel)
+    {
+       GeneralSettingsViewModel.GeneralSettingsModel = generalSettingsModel;
+    }
   }
 }
