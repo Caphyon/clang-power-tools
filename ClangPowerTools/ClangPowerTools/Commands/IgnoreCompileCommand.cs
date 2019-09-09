@@ -1,7 +1,8 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using System;
-using System.ComponentModel.Design;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Linq;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
@@ -9,7 +10,7 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  public sealed class IgnoreCompileCommand : BasicCommand
+  public sealed class IgnoreCompileCommand : IgnoreCommand
   {
     #region Properties
 
@@ -22,7 +23,6 @@ namespace ClangPowerTools.Commands
       private set;
     }
     #endregion
-
 
     #region Constructor
     /// <summary>
@@ -43,7 +43,6 @@ namespace ClangPowerTools.Commands
     }
 
     #endregion
-
 
     #region Public Methods
 
@@ -69,51 +68,25 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
-    public void RunIgnoreCompileCommand(int aId)
+    public void RunIgnoreCompileCommand()
     {
-      var task = Task.Run(() =>
+      _ = Task.Run(() =>
       {
-        List<string> documentsToIgnore = ItemsCollector.GetDocumentsToIgnore();
-        AddIgnoreFilesToSettings(documentsToIgnore);
+        SettingsHandler settingsHandler = new SettingsHandler();
+        ItemsCollector itemsCollector = new ItemsCollector();
+        List<string> projectsToIgnore = itemsCollector.GetProjectsToIgnore();   
+        
+        CompilerSettingsModel settingsModel = SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel;
+        AddItemsToIgnore(projectsToIgnore, settingsModel, "ProjectsToIgnore");
+        if (projectsToIgnore.Any() == false)
+        {
+          List<string> filesToIgnore = itemsCollector.GetFilesToIgnore();
+          AddItemsToIgnore(filesToIgnore, settingsModel, "FilesToIgnore");
+          settingsHandler.SaveSettings();
+        }
       });
     }
 
-    #endregion
-
-
-    #region Private Methods
-    /// <summary>
-    /// Create ignore format string for the settings page
-    /// </summary>
-    /// <param name="documentsToIgnore"></param>
-    /// <returns></returns>
-    public void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
-    {
-      string filesToIgnore = SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel.FilesToIgnore;
-
-      if (filesToIgnore.Length > 0)
-      {
-        filesToIgnore += ";";
-      }
-      filesToIgnore += string.Join(";", RemoveDuplicateFiles(documentsToIgnore));
-
-      SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel.FilesToIgnore = filesToIgnore;
-    }
-
-    private List<string> RemoveDuplicateFiles(List<string> documentsToIgnore)
-    {
-      List<string> trimmedDocumentToIgnore = new List<string>();
-      string filesToIgnore = SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel.FilesToIgnore;
-
-      foreach (var item in documentsToIgnore)
-      {
-        if (!filesToIgnore.Contains(item))
-        {
-          trimmedDocumentToIgnore.Add(item);
-        }
-      }
-      return trimmedDocumentToIgnore;
-    }
     #endregion
   }
 }

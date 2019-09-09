@@ -186,12 +186,12 @@ namespace ClangPowerTools
           }
         case CommandIds.kIgnoreFormatId:
           {
-            IgnoreFormatCommand.Instance.RunIgnoreFormatCommand(CommandIds.kIgnoreFormatId);
+            IgnoreFormatCommand.Instance.RunIgnoreFormatCommand();
             break;
           }
         case CommandIds.kIgnoreCompileId:
           {
-            IgnoreCompileCommand.Instance.RunIgnoreCompileCommand(CommandIds.kIgnoreCompileId);
+            IgnoreCompileCommand.Instance.RunIgnoreCompileCommand();
             break;
           }
         default:

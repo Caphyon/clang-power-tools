@@ -13,7 +13,7 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private List<string> mAcceptedFileExtensions = new List<string>();
+    private List<string> mAcceptedFileExtensions;
     private Array selectedItems;
 
     #endregion
@@ -22,6 +22,11 @@ namespace ClangPowerTools
 
     public ItemsCollector(List<string> aExtensions = null)
     {
+      if(aExtensions == null)
+      {
+        mAcceptedFileExtensions = new List<string>(ScriptConstants.kAcceptedFileExtensions);
+      }
+
       mAcceptedFileExtensions = aExtensions;
       var dte2 = (DTE2)VsServiceProvider.GetService(typeof(DTE));
       selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
@@ -70,19 +75,31 @@ namespace ClangPowerTools
     /// <summary>
     /// Get the name of the active document
     /// </summary>
-    public static List<string> GetDocumentsToIgnore()
+    public List<string> GetFilesToIgnore()
     {
+      CollectSelectedProjectItems();
       List<string> documentsToIgnore = new List<string>();
-      DTE vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE) : null;
-
-      SelectedItems selectedDocuments = vsServiceProvider.SelectedItems;
-
-      for (int i = 1; i <= selectedDocuments.Count; i++)
-      {
-        documentsToIgnore.Add(selectedDocuments.Item(i).Name);
-      }
+      Items.ForEach(e => documentsToIgnore.Add(e.GetName()));
 
       return documentsToIgnore;
+    }
+
+    public List<string> GetProjectsToIgnore()
+    {
+      List<string> projectsToIgnore = new List<string>();
+      DTE2 dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
+      Array selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
+
+      foreach (UIHierarchyItem item in selectedItems)
+      {
+        if (item.Object is Project)
+        {
+          var project = item.Object as Project;
+          projectsToIgnore.Add(project.Name);
+        }
+      }
+
+      return projectsToIgnore;
     }
 
     /// <summary>

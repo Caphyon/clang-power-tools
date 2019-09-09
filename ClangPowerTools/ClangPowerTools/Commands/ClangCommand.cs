@@ -129,7 +129,7 @@ namespace ClangPowerTools
     }
 
     //Collect files
-    protected IEnumerable<IItem> CollectItems(List<string> aAcceptedExtensionTypes = null, CommandUILocation commandUILocation = CommandUILocation.ContextMenu)
+    protected IEnumerable<IItem> CollectItemsDependingOnCommandLocation(List<string> aAcceptedExtensionTypes = null, CommandUILocation commandUILocation = CommandUILocation.ContextMenu)
     {
       mItemsCollector = new ItemsCollector(aAcceptedExtensionTypes);
       switch (commandUILocation)
@@ -167,7 +167,7 @@ namespace ClangPowerTools
         return;
 
       AutomationUtil.SaveDirtyProjects((dte as DTE2).Solution);
-      CollectItems(ScriptConstants.kAcceptedFileExtensions, commandUILocation);
+      CollectItemsDependingOnCommandLocation(ScriptConstants.kAcceptedFileExtensions, commandUILocation);
     }
 
     protected void OnActiveFileCheck(ActiveDocumentEventArgs e)

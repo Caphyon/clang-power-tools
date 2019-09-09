@@ -75,6 +75,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CMake\CMakeBuilder.cs" />
+    <Compile Include="Commands\IgnoreCommand.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Events\LicenseEventArgs.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="MVVM\OldSettings\ClangTidyPathValue.cs" />
     <Compile Include="MVVM\Commands\RelayCommand.cs" />
     <Compile Include="Items\CurrentDocument.cs" />
+    <Compile Include="Helpers\PropertyHandler.cs" />
     <Compile Include="MVVM\Controllers\AccountController.cs" />
     <Compile Include="MVVM\Controllers\LicenseController.cs" />
     <Compile Include="MVVM\OldSettings\HeaderFiltersValue.cs" />

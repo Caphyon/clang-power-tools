@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.Shell;
 using System;
-using System.ComponentModel.Design;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
@@ -9,7 +9,7 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  public sealed class IgnoreFormatCommand : BasicCommand
+  public sealed class IgnoreFormatCommand : IgnoreCommand
   {
     #region Properties
 
@@ -21,8 +21,8 @@ namespace ClangPowerTools.Commands
       get;
       private set;
     }
-    #endregion
 
+    #endregion
 
     #region Constructor
     /// <summary>
@@ -69,51 +69,20 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
-    public void RunIgnoreFormatCommand(int aId)
+    public void RunIgnoreFormatCommand()
     {
-      var task = Task.Run(() =>
+      _ = Task.Run(() =>
       {
-        List<string> documentsToIgnore = ItemsCollector.GetDocumentsToIgnore();
-        AddIgnoreFilesToSettings(documentsToIgnore);
+        ItemsCollector itemsCollector = new ItemsCollector();
+        List<string> documentsToIgnore = itemsCollector.GetFilesToIgnore();
+        SettingsHandler settingsHandler = new SettingsHandler();
+
+        FormatSettingsModel settings = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel;
+        AddItemsToIgnore(documentsToIgnore, settings, "FilesToIgnore");
+        settingsHandler.SaveSettings();
       });
     }
 
-    #endregion
-
-
-    #region Private Methods
-    /// <summary>
-    /// Create ignore format string for the settings page
-    /// </summary>
-    /// <param name="documentsToIgnore"></param>
-    /// <returns></returns>
-    public void AddIgnoreFilesToSettings(List<string> documentsToIgnore)
-    {
-      string filesToIgnore = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel.FilesToIgnore;
-
-      if (filesToIgnore.Length > 0)
-      {
-        filesToIgnore += ";";
-      }
-      filesToIgnore += string.Join(";", RemoveDuplicateFiles(documentsToIgnore));
-
-      SettingsViewModelProvider.FormatSettingsViewModel.FormatModel.FilesToIgnore = filesToIgnore;
-    }
-
-    private List<string> RemoveDuplicateFiles(List<string> documentsToIgnore)
-    {
-      FormatSettingsModel formatSettings = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel;
-      List<string> trimmedDocumentToIgnore = new List<string>();
-
-      foreach (var item in documentsToIgnore)
-      {
-        if (formatSettings.FilesToIgnore.Contains(item) == false)
-        {
-          trimmedDocumentToIgnore.Add(item);
-        }
-      }
-      return trimmedDocumentToIgnore;
-    }
     #endregion
   }
 }
