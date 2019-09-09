@@ -245,7 +245,7 @@
 
     <!--Declare all the image resources -->
    <Bitmaps>
-      <Bitmap guid="guidImages" href="Resources\Icon.png" usedList="bmpPic1" />
+      <Bitmap guid="guidImages" href="Resources\CPTLogo.png" usedList="bmpPic1" />
       <Bitmap guid="guidImageTidy" href="Resources\TidyIcon.png" usedList="Tidy" />
       <Bitmap guid="guidImageCompile" href="Resources\CompileIcon.png" usedList="Compile" />
       <Bitmap guid="guidImageFormat" href="Resources\ClangFormatIcon.png" usedList="Format" />

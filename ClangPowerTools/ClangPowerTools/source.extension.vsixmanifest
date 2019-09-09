@@ -9,7 +9,7 @@
         <GettingStartedGuide>http://www.clangpowertools.com</GettingStartedGuide>
         <ReleaseNotes>http://www.clangpowertools.com/CHANGELOG</ReleaseNotes>
         <Icon>Resources\Icon.png</Icon>
-        <PreviewImage>Resources\Icon.png</PreviewImage>
+        <PreviewImage>Resources\CPTLogo.png</PreviewImage>
         <Tags>clang;clang-tidy;clang-format;compile;modernize;CoreGuidelines;static analysis;tidy;C++;cpp;analyze</Tags>
     </Metadata>
     <Installation>
