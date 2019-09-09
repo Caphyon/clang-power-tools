@@ -3,8 +3,6 @@ using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.Handlers;
-using ClangPowerTools.MVVM.ViewModels;
-using ClangPowerTools.Properties;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
 using ClangPowerTools.Views;
@@ -12,10 +10,8 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using ClangPowerTools.Handlers;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools
