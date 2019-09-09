@@ -77,6 +77,7 @@
     <Compile Include="CMake\CMakeBuilder.cs" />
     <Compile Include="Commands\IgnoreCommand.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
+    <Compile Include="Events\HasEncodingErrorEventArgs.cs" />
     <Compile Include="Events\LicenseEventArgs.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
     <Compile Include="MVVM\Models\GeneralSettingsModel.cs" />
@@ -105,6 +106,8 @@
     <Compile Include="MVVM\ViewModels\TidySettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\FormatSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\CompilerSettingsViewModel.cs" />
+    <Compile Include="MVVM\Models\FileModel.cs" />
+    <Compile Include="MVVM\ViewModels\EncodingErrorViewModel.cs" />
     <Compile Include="MVVM\ViewModels\LoginViewModel.cs" />
     <Compile Include="Helpers\NetworkUtility.cs" />
     <Compile Include="Events\ActiveDocumentEventArgs.cs" />
@@ -159,6 +162,9 @@
     <Compile Include="MVVM\Views\InputDataView.xaml.cs">
       <DependentUpon>InputDataView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MVVM\Views\EncodingErrorView.xaml.cs">
+      <DependentUpon>EncodingErrorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\WebApi\WebApiUrl.cs" />
     <Compile Include="MVVM\OldSettings\OldModels\ClangTidyPredefinedChecksOptions.cs" />
     <Compile Include="MVVM\OldSettings\OldModels\ClangTidyOptions.cs" />
@@ -192,6 +198,11 @@
     <Compile Include="Helpers\PCHCleaner.cs" />
     <Compile Include="Helpers\ProjectConfigurationHandler.cs" />
     <Compile Include="Helpers\RunningDocTableEvents.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Script\ClangTidyModeParametersFactory.cs" />
     <Compile Include="Script\GenericScriptBuilder.cs" />
     <Compile Include="Script\ItemRelatedScriptBuilder.cs" />
@@ -241,6 +252,9 @@
     <Resource Include="Resources\LoginBackground.png" />
     <Resource Include="Resources\CPTLogo.png" />
     <Resource Include="Resources\ClangFormatIcon.png" />
+    <Content Include="Resources\EncodingConverter.ico" />
+    <Resource Include="Resources\BannersError.png" />
+    <Resource Include="Resources\iconError.png" />
     <Resource Include="Resources\CleanSearchIcon.PNG" />
     <Resource Include="Resources\CompileIcon.png" />
     <Resource Include="Resources\SearchIcon.PNG" />
@@ -275,6 +289,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="CommonServiceLocator, Version=2.0.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommonServiceLocator.2.0.2\lib\net45\CommonServiceLocator.dll</HintPath>
+    </Reference>
     <Reference Include="envdte, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>..\packages\VSSDK.DTE.7.0.4\lib\net20\envdte.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -299,6 +316,15 @@
       <HintPath>..\packages\VSSDK.DTE.9.9.0.4\lib\net20\envdte90a.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight, Version=5.4.1.0, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Extras, Version=5.4.1.0, Culture=neutral, PublicKeyToken=669f0b5e8f868abf, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Extras.dll</HintPath>
+    </Reference>
+    <Reference Include="GalaSoft.MvvmLight.Platform, Version=5.4.1.0, Culture=neutral, PublicKeyToken=5f873c45e98af8a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\GalaSoft.MvvmLight.Platform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
@@ -401,6 +427,9 @@
       <HintPath>..\packages\System.Threading.Thread.4.3.0\lib\net46\System.Threading.Thread.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
@@ -414,6 +443,10 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>VSPackage</ManifestResourceName>
@@ -444,6 +477,10 @@
     <Page Include="MVVM\Views\FormatSettingsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MVVM\Views\EncodingErrorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\Views\CompilerSettingsView.xaml">
       <SubType>Designer</SubType>

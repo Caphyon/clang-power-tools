@@ -1,11 +1,13 @@
-﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.Items;
+using ClangPowerTools.Commands;
 using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace ClangPowerTools
 {
@@ -103,6 +105,18 @@ namespace ClangPowerTools
     }
 
     /// <summary>
+    /// Get selected files to encode
+    /// </summary>
+    public static List<string> GetDocumentsToEncode()
+    {
+        var itemsCollector = CompileCommand.Instance.ItemsCollector;
+        itemsCollector.CollectCurrentProjectItems();
+        HashSet<string> selectedFiles = new HashSet<string>();
+        itemsCollector.Items.ForEach(i => selectedFiles.Add(i.GetPath()));
+        return selectedFiles.ToList();
+    }
+
+    /// <summary>
     /// Collect all selected items in the Solution explorer for commands
     /// </summary>
     public void CollectSelectedItems()
@@ -152,6 +166,32 @@ namespace ClangPowerTools
         else if (item.Object is ProjectItem)
         {
           GetProjectItem(item.Object as ProjectItem);
+        }
+      }
+    }
+
+    public void CollectCurrentProjectItems()
+    {
+      if (selectedItems == null || selectedItems.Length == 0)
+        return;
+
+      foreach (UIHierarchyItem item in selectedItems)
+      {
+        if (item.Object is Solution)
+        {
+          var solution = item.Object as Solution;
+          GetProjectItem(solution);
+        }
+        else if (item.Object is Project)
+        {
+          var project = item.Object as Project;
+          GetProjectItem(project);
+        }
+        else if (item.Object is ProjectItem)
+        {
+          Project project = (item.Object as ProjectItem).ContainingProject;
+          GetProjectItem(project);
+          return;
         }
       }
     }

@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.TextOperationsInterfaces;
+﻿using ClangPowerTools.Properties;
+using ClangPowerTools.TextOperationsInterfaces;
 using System.Text.RegularExpressions;
 
 namespace ClangPowerTools
@@ -22,13 +23,16 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-
     public bool LlvmIsMissing(string aMessages)
     {
       return aMessages.Contains(ErrorParserConstants.kCompileClangMissingFromPath) ||
         aMessages.Contains(ErrorParserConstants.kTidyClangMissingFromPath);
     }
 
+    public bool HasEncodingError(string message)
+    {
+      return message.Contains(Resources.EncodingError);
+    }
     #endregion
 
   }

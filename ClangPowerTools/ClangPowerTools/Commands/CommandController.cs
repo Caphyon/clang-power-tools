@@ -2,6 +2,8 @@
 using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
 using ClangPowerTools.Helpers;
+using ClangPowerTools.Handlers;
+using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
 using ClangPowerTools.Views;
 using EnvDTE;
@@ -32,6 +34,7 @@ namespace ClangPowerTools
     public event EventHandler<MissingLlvmEventArgs> MissingLlvmEvent;
     public event EventHandler<ClearErrorListEventArgs> ClearErrorListEvent;
     public event EventHandler<EventArgs> ErrorDetectedEvent;
+    public event EventHandler<EventArgs> HasEncodingErrorEvent;
 
     private Commands2 mCommand;
     private CommandUILocation commandUILocation;
@@ -189,6 +192,7 @@ namespace ClangPowerTools
           {
             IgnoreFormatCommand.Instance.RunIgnoreFormatCommand();
             break;
+
           }
         case CommandIds.kIgnoreCompileId:
           {
@@ -300,6 +304,29 @@ namespace ClangPowerTools
     protected void OnErrorDetected(EventArgs e)
     {
       ErrorDetectedEvent?.Invoke(this, e);
+      HasEncodingErrorEvent.Invoke(this, new EventArgs());
+    }
+
+    public void OnEncodingErrorDetected(object sender, HasEncodingErrorEventArgs e)
+    {
+      if (!e.Model.HasEncodingError)
+      {
+        return;
+      }
+      DisplayErrorWindow();
+    }
+
+    private void DisplayErrorWindow()
+    {
+      try
+      {
+        UIUpdater.InvokeAsync(new Action(() =>
+        {
+          var window = new EncodingErrorView(ItemsCollector.GetDocumentsToEncode());
+          window.ShowDialog();
+        })).SafeFireAndForget();
+      }
+      catch (Exception) { }
     }
 
     public void OnActiveDocumentCheck(object sender, ActiveDocumentEventArgs e)

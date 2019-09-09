@@ -57,6 +57,9 @@
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" priority="0x0002" />
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0003" />
 
+      <Group guid="guidRunClangPowerToolsPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
+      </Group>
     </Groups>
 
 
@@ -202,7 +205,7 @@
         </Strings>
       </Button>
 
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0005" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0006" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
         <Strings>
           <ButtonText>Settings</ButtonText>
@@ -241,7 +244,7 @@
     </Buttons>
 
     <!--Declare all the image resources -->
-    <Bitmaps>
+   <Bitmaps>
       <Bitmap guid="guidImages" href="Resources\Icon.png" usedList="bmpPic1" />
       <Bitmap guid="guidImageTidy" href="Resources\TidyIcon.png" usedList="Tidy" />
       <Bitmap guid="guidImageCompile" href="Resources\CompileIcon.png" usedList="Compile" />
@@ -314,7 +317,7 @@
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
     </CommandPlacement>
 
-    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0003">
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0004">
       <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
     </CommandPlacement>
 
@@ -347,17 +350,18 @@
       <IDSymbol name="CompileToolbarId" value="0x1100" />
 
       <IDSymbol name="TidyId" value="0x0101" />
-      <IDSymbol name="TidyFixId" value="0x0109"/>
+      <IDSymbol name="TidyFixId" value="0x0109" />
 
       <IDSymbol name="TidyToolbarId" value="0x1101" />
-      <IDSymbol name="TidyFixToolbarId" value="0x1102"/>
+      <IDSymbol name="TidyFixToolbarId" value="0x1102" />
 
       <IDSymbol name="ClangFormatId" value="0x0105" />
       <IDSymbol name="ClangFormatToolbarId" value="0x1103" />
 
       <IDSymbol name="StopClangId" value="0x0104" />
       <IDSymbol name="IgnoreFormatId" value="0x0107" />
-      <IDSymbol name="IgnoreCompileId" value="0x0108" />
+      <IDSymbol name="IgnoreCompileId" value="0x0108" />   
+      
       <IDSymbol name="SettingsId" value="0x0103" />
       <IDSymbol name="TidyExportConfigId" value="0x1032" />
       <IDSymbol name="LogoutId" value="0x1033" />
@@ -411,6 +415,11 @@
     <!-- Define Logout image -->
     <GuidSymbol name="guidImageLogout" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c72a}">
       <IDSymbol name="Logout" value="1" />
+    </GuidSymbol>
+
+  
+    <GuidSymbol value="{a6d55984-32c7-4725-bf65-16d84020c9ad}" name="guidRunClangPowerToolsPackageCmdSet">
+      <IDSymbol value="4128" name="MyMenuGroup" />
     </GuidSymbol>
 
   </Symbols>

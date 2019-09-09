@@ -23,6 +23,7 @@ namespace ClangPowerTools.Commands
       private set;
     }
 
+    public ItemsCollector ItemsCollector => mItemsCollector;
 
     public bool VsCompileFlag { get; set; }
 

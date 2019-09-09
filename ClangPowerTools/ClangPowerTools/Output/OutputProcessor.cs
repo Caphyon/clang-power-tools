@@ -37,6 +37,11 @@ namespace ClangPowerTools.Output
         return VSConstants.S_FALSE;
       }
 
+      if (mErrorDetector.HasEncodingError(aMessage))
+      {
+        aOutputContent.HasEncodingError = true;
+      }
+
       var text = String.Join("\n", aOutputContent.Buffer.ToList()) + "\n";
       if (mErrorDetector.Detect(text, out Match aMatchResult))
       {
@@ -60,7 +65,6 @@ namespace ClangPowerTools.Output
 
 
     #region Private Methods
-
 
     private void GetOutputAndErrors(string aText, IVsHierarchy aHierarchy, 
       out string aOutputText, out List<TaskErrorModel> aDetectedErrors)

@@ -29,6 +29,8 @@ namespace ClangPowerTools.Output
 
     public event EventHandler<CloseDataConnectionEventArgs> CloseDataConnectionEvent;
 
+    public event EventHandler<HasEncodingErrorEventArgs> HasEncodingErrorEvent;
+
     #endregion
 
     #region Properties
@@ -160,6 +162,8 @@ namespace ClangPowerTools.Output
         Write(String.Join("\n", Buffer));
 
       CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
+
+      OnErrorDetected(this, e);
     }
 
     public void OnFileHierarchyDetected(object sender, VsHierarchyDetectedEventArgs e)
@@ -180,6 +184,12 @@ namespace ClangPowerTools.Output
     protected virtual void OnMissingLLVMDetected(MissingLlvmEventArgs e)
     {
       MissingLlvmEvent?.Invoke(this, e);
+    }
+
+
+    public void OnEncodingErrorDetected(object sender, EventArgs e)
+    {
+      HasEncodingErrorEvent?.Invoke(this, new HasEncodingErrorEventArgs(mOutputContent));
     }
 
     #endregion
