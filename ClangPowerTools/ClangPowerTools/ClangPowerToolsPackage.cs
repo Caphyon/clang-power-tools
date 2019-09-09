@@ -100,6 +100,7 @@ namespace ClangPowerTools
       await RegisterVsServicesAsync();
 
       mCommandController = new CommandController(this);
+
       CommandTestUtility.CommandController = mCommandController;
 
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
@@ -235,7 +236,6 @@ namespace ClangPowerTools
       return VSConstants.S_OK;
     }
 
-
     #endregion
 
 
@@ -302,14 +302,13 @@ namespace ClangPowerTools
 
     #endregion
 
-
     #region Private Methods
 
     private void VersionHandler()
     {
-        string version = SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version;
-        ShowToolbar(version);
-        UpdateVersion(version);
+      string version = SettingsViewModelProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version;
+      ShowToolbar(version);
+      UpdateVersion(version);
     }
 
     private void UpdateVersion(string version)
@@ -487,7 +486,6 @@ namespace ClangPowerTools
       if (null != mDteEvents)
         mDteEvents.OnBeginShutdown -= UnregisterFromEvents;
     }
-
 
     private void ShowToolbare()
     {

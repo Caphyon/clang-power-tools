@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.CMake;
 using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
 using ClangPowerTools.Views;
 using EnvDTE;
@@ -383,6 +384,17 @@ namespace ClangPowerTools
       activeLicense = e.IsLicenseActive;
     }
 
+    public void VisibilityOnBeforeCommand(object sender, EventArgs e)
+    {
+      if (sender is OleMenuCommand == false)
+        return;
+      var command = (OleMenuCommand)sender;
+
+      var itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
+      itemsCollector.CollectSelectedProjectItems();
+      command.Enabled = itemsCollector.HaveItems;
+    }
+
     /// <summary>
     /// It is called before every command. Update the running state.  
     /// </summary>
@@ -392,6 +404,21 @@ namespace ClangPowerTools
     {
       if (!(sender is OleMenuCommand command))
         return;
+
+      if (IsAToolbarCommand(command))
+      {
+        if(SolutionInfo.AreToolbarCommandsEnabled() == false)
+        {
+          command.Enabled = false;
+          return;
+        }
+      }
+      else if (SolutionInfo.AreContextMenuCommandsEnabled() == false)
+      {
+        command.Enabled = false;
+        return;
+      }
+
 
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte) && !(dte as DTE2).Solution.IsOpen)
       {
@@ -406,6 +433,7 @@ namespace ClangPowerTools
         command.Visible = command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !running : running;
       }
     }
+
 
     /// <summary>
     /// Set the VS running build flag to true when the VS build begin.
@@ -425,7 +453,6 @@ namespace ClangPowerTools
       vsBuildRunning = false;
       OnMSVCBuildSucceededAsync().SafeFireAndForget();
     }
-
 
     private async Task OnMSVCBuildSucceededAsync()
     {
@@ -450,7 +477,6 @@ namespace ClangPowerTools
       CompileCommand.Instance.VsCompileFlag = false;
       OnAfterClangCommand();
     }
-
 
     public void OnBeforeSave(object sender, Document aDocument)
     {
@@ -552,6 +578,12 @@ namespace ClangPowerTools
         return;
       }
       mSaveCommandWasGiven = true;
+    }
+
+    private bool IsAToolbarCommand(OleMenuCommand command)
+    {
+      return command.CommandID.ID == CommandIds.kCompileToolbarId || command.CommandID.ID == CommandIds.kClangFormatToolbarId ||
+        command.CommandID.ID == CommandIds.kTidyToolbarId || command.CommandID.ID == CommandIds.kTidyFixToolbarId;
     }
 
     #endregion

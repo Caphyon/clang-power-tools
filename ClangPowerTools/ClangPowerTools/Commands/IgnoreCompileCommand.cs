@@ -38,6 +38,7 @@ namespace ClangPowerTools.Commands
       {
         var menuCommandID = new CommandID(CommandSet, Id);
         var menuItem = new OleMenuCommand(aCommandController.Execute, menuCommandID);
+        menuItem.BeforeQueryStatus += aCommandController.VisibilityOnBeforeCommand;
         aCommandService.AddCommand(menuItem);
       }
     }

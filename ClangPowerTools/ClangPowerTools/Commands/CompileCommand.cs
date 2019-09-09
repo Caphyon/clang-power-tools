@@ -26,7 +26,6 @@ namespace ClangPowerTools.Commands
 
     public bool VsCompileFlag { get; set; }
 
-
     #endregion
 
 
