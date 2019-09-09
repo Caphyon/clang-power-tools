@@ -38,8 +38,6 @@ namespace ClangPowerTools
     public event EventHandler<MissingLlvmEventArgs> MissingLlvmEvent;
     public event EventHandler<ClearErrorListEventArgs> ClearErrorListEvent;
     public event EventHandler<EventArgs> ErrorDetectedEvent;
-    public event EventHandler<HasEncodingErrorEventArgs> HasEncodingError;
-    public event EventHandler<HasEncodingErrorEventArgs> EncodingErrorEvent;
     public event EventHandler<EventArgs> HasEncodingErrorEvent;
 
     private Commands2 mCommand;

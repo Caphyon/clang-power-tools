@@ -163,8 +163,7 @@ namespace ClangPowerTools.Output
 
       CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
 
-      if (0 != Errors.Count)
-        OnErrorDetected(new ErrorDetectedEventArgs(Errors));
+      OnErrorDetected(this, e);
     }
 
     public void OnFileHierarchyDetected(object sender, VsHierarchyDetectedEventArgs e)

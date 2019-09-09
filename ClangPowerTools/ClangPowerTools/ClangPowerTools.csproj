@@ -106,10 +106,7 @@
     <Compile Include="MVVM\ViewModels\TidySettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\FormatSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\CompilerSettingsViewModel.cs" />
-    <Compile Include="MVVM\Helpers\WindowManager.cs" />
     <Compile Include="MVVM\Models\FileModel.cs" />
-    <Compile Include="MVVM\Utils\EventBus.cs" />
-    <Compile Include="MVVM\ViewModels\EncodingConverterViewModel.cs" />
     <Compile Include="MVVM\ViewModels\EncodingErrorViewModel.cs" />
     <Compile Include="MVVM\ViewModels\LoginViewModel.cs" />
     <Compile Include="Helpers\NetworkUtility.cs" />
@@ -164,8 +161,6 @@
     </Compile>
     <Compile Include="MVVM\Views\InputDataView.xaml.cs">
       <DependentUpon>InputDataView.xaml</DependentUpon>
-    <Compile Include="MVVM\Views\EncodingConverterControl.xaml.cs">
-      <DependentUpon>EncodingConverterControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\EncodingErrorView.xaml.cs">
       <DependentUpon>EncodingErrorView.xaml</DependentUpon>
@@ -257,11 +252,9 @@
     <Resource Include="Resources\LoginBackground.png" />
     <Resource Include="Resources\CPTLogo.png" />
     <Resource Include="Resources\ClangFormatIcon.png" />
-    <Resource Include="MVVM\Views\Background.png" />
     <Content Include="Resources\EncodingConverter.ico" />
     <Resource Include="Resources\BannersError.png" />
     <Resource Include="Resources\iconError.png" />
-    <Content Include="Resources\Logout.png" />
     <Resource Include="Resources\CleanSearchIcon.PNG" />
     <Resource Include="Resources\CompileIcon.png" />
     <Resource Include="Resources\SearchIcon.PNG" />
@@ -482,14 +475,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="MVVM\Views\FormatSettingsView.xaml">
-      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="MVVM\Views\EncodingErrorView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MVVM\Views\EncodingConverterControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

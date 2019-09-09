@@ -1,4 +1,4 @@
-﻿using ClangPowerTools.MVVM.Command;
+﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.Properties;
 using System;
