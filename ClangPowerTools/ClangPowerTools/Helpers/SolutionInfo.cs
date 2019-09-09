@@ -99,11 +99,11 @@ namespace ClangPowerTools.Helpers
       ItemsCollector itemCollector = new ItemsCollector();
       itemCollector.CollectSelectedItems();
       List<string> selectedItems = new List<string>();
-      if (itemCollector.haveItems == false)
+      if (itemCollector.HaveItems == false)
       {
         return false;
       }
-      itemCollector.items.ForEach(i => selectedItems.Add(i.GetName()));
+      itemCollector.Items.ForEach(i => selectedItems.Add(i.GetName()));
 
       if (selectedItems.Count == 0)
       {
@@ -137,12 +137,12 @@ namespace ClangPowerTools.Helpers
       itemCollector.CollectActiveProjectItem();
       List<string> selectedItems = new List<string>();
 
-      if (itemCollector.haveItems == false)
+      if (itemCollector.HaveItems == false)
       {
         return false;
       }
 
-      itemCollector.items.ForEach(i => selectedItems.Add(i.GetName()));
+      itemCollector.Items.ForEach(i => selectedItems.Add(i.GetName()));
 
       var fileExtension = Path.GetExtension(selectedItems.FirstOrDefault()).ToLower();
       return ScriptConstants.kAcceptedFileExtensions.Contains(fileExtension);

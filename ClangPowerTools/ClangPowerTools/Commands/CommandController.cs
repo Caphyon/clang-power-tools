@@ -392,7 +392,7 @@ namespace ClangPowerTools
 
       var itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
       itemsCollector.CollectSelectedProjectItems();
-      command.Enabled = itemsCollector.haveItems;
+      command.Enabled = itemsCollector.HaveItems;
     }
 
     /// <summary>
