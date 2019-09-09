@@ -332,172 +332,172 @@ namespace ClangPowerTools
         // Show the toolbar on the first install
         ShowToolbare();
       }
-  }
-
-  private async Task RegisterVsServicesAsync()
-  {
-    // Get DTE service async 
-    var dte = await GetServiceAsync(typeof(DTE)) as DTE2;
-    VsServiceProvider.Register(typeof(DTE), dte);
-
-    // Get VS Output Window service async
-    var vsOutputWindow = await GetServiceAsync(typeof(SVsOutputWindow));
-    VsServiceProvider.Register(typeof(SVsOutputWindow), vsOutputWindow);
-
-    // Get the status bar service async
-    var vsStatusBar = await GetServiceAsync(typeof(SVsStatusbar));
-    VsServiceProvider.Register(typeof(SVsStatusbar), vsStatusBar);
-
-    // Get Vs Running Document Table service async
-    var vsRunningDocumentTable = await GetServiceAsync(typeof(SVsRunningDocumentTable));
-    VsServiceProvider.Register(typeof(SVsRunningDocumentTable), vsRunningDocumentTable);
-
-    // Get Vs File Change service async
-    var vsFileChange = await GetServiceAsync(typeof(SVsFileChangeEx));
-    VsServiceProvider.Register(typeof(SVsFileChangeEx), vsFileChange);
-
-    // Get VS Solution service async
-    var vsSolution = await GetServiceAsync(typeof(SVsSolution));
-    VsServiceProvider.Register(typeof(SVsSolution), vsSolution);
-  }
-
-
-  private void RegisterToEvents()
-  {
-    RegisterToCPTEvents();
-    RegisterToVsEvents();
-  }
-
-  private void RegisterToCPTEvents()
-  {
-    mCommandController.ClangCommandMessageEvent += mOutputWindowController.Write;
-    mCommandController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
-
-    mCommandController.ClearErrorListEvent += mErrorWindowController.OnClangCommandBegin;
-
-    mCommandController.MissingLlvmEvent += CompileCommand.Instance.OnMissingLLVMDetected;
-    mCommandController.MissingLlvmEvent += TidyCommand.Instance.OnMissingLLVMDetected;
-
-    CompileCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
-    TidyCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
-
-    mCommandController.ErrorDetectedEvent += mOutputWindowController.OnErrorDetected;
-    mOutputWindowController.ErrorDetectedEvent += mErrorWindowController.OnErrorDetected;
-    mOutputWindowController.MissingLlvmEvent += mCommandController.OnMissingLLVMDetected;
-
-    CompileCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
-    TidyCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
-    FormatCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
-
-    CompileCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
-    TidyCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
-    FormatCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
-
-    PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
-    PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
-    PowerShellWrapper.ExitedHandler += mOutputWindowController.ClosedDataConnection;
-
-    AccountController.OnLicenseStatusChanced += mCommandController.OnLicenseChanged;
-    LicenseController.OnLicenseStatusChanced += mCommandController.OnLicenseChanged;
-
-  }
-
-  private void RegisterToVsEvents()
-  {
-    if (null != mBuildEvents)
-    {
-      mBuildEvents.OnBuildBegin += mErrorWindowController.OnBuildBegin;
-      mBuildEvents.OnBuildBegin += mCommandController.OnMSVCBuildBegin;
-      mBuildEvents.OnBuildDone += mCommandController.OnMSVCBuildDone;
     }
 
-    if (null != mCommandEvents)
+    private async Task RegisterVsServicesAsync()
     {
-      mCommandEvents.BeforeExecute += mCommandController.CommandEventsBeforeExecute;
+      // Get DTE service async 
+      var dte = await GetServiceAsync(typeof(DTE)) as DTE2;
+      VsServiceProvider.Register(typeof(DTE), dte);
+
+      // Get VS Output Window service async
+      var vsOutputWindow = await GetServiceAsync(typeof(SVsOutputWindow));
+      VsServiceProvider.Register(typeof(SVsOutputWindow), vsOutputWindow);
+
+      // Get the status bar service async
+      var vsStatusBar = await GetServiceAsync(typeof(SVsStatusbar));
+      VsServiceProvider.Register(typeof(SVsStatusbar), vsStatusBar);
+
+      // Get Vs Running Document Table service async
+      var vsRunningDocumentTable = await GetServiceAsync(typeof(SVsRunningDocumentTable));
+      VsServiceProvider.Register(typeof(SVsRunningDocumentTable), vsRunningDocumentTable);
+
+      // Get Vs File Change service async
+      var vsFileChange = await GetServiceAsync(typeof(SVsFileChangeEx));
+      VsServiceProvider.Register(typeof(SVsFileChangeEx), vsFileChange);
+
+      // Get VS Solution service async
+      var vsSolution = await GetServiceAsync(typeof(SVsSolution));
+      VsServiceProvider.Register(typeof(SVsSolution), vsSolution);
     }
 
-    if (null != mRunningDocTableEvents)
+
+    private void RegisterToEvents()
     {
-      mRunningDocTableEvents.BeforeSave += mCommandController.OnBeforeSave;
+      RegisterToCPTEvents();
+      RegisterToVsEvents();
     }
 
-    if (null != mDteEvents)
+    private void RegisterToCPTEvents()
     {
-      mDteEvents.OnBeginShutdown += UnregisterFromEvents;
-      mDteEvents.OnBeginShutdown += UnregisterFromCPTEvents;
-    }
-  }
+      mCommandController.ClangCommandMessageEvent += mOutputWindowController.Write;
+      mCommandController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
 
-  private void UnregisterFromEvents()
-  {
-    UnregisterFromCPTEvents();
-    UnregisterFromVsEvents();
-  }
+      mCommandController.ClearErrorListEvent += mErrorWindowController.OnClangCommandBegin;
 
-  private void UnregisterFromCPTEvents()
-  {
-    mCommandController.ClangCommandMessageEvent -= mOutputWindowController.Write;
-    mCommandController.HierarchyDetectedEvent -= mOutputWindowController.OnFileHierarchyDetected;
+      mCommandController.MissingLlvmEvent += CompileCommand.Instance.OnMissingLLVMDetected;
+      mCommandController.MissingLlvmEvent += TidyCommand.Instance.OnMissingLLVMDetected;
 
-    mCommandController.ClearErrorListEvent -= mErrorWindowController.OnClangCommandBegin;
+      CompileCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
+      TidyCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
 
-    mCommandController.MissingLlvmEvent -= CompileCommand.Instance.OnMissingLLVMDetected;
-    mCommandController.MissingLlvmEvent -= TidyCommand.Instance.OnMissingLLVMDetected;
+      mCommandController.ErrorDetectedEvent += mOutputWindowController.OnErrorDetected;
+      mOutputWindowController.ErrorDetectedEvent += mErrorWindowController.OnErrorDetected;
+      mOutputWindowController.MissingLlvmEvent += mCommandController.OnMissingLLVMDetected;
 
-    CompileCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
-    TidyCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
+      CompileCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
+      TidyCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
+      FormatCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
 
-    mCommandController.ErrorDetectedEvent -= mOutputWindowController.OnErrorDetected;
-    mOutputWindowController.ErrorDetectedEvent -= mErrorWindowController.OnErrorDetected;
-    mOutputWindowController.MissingLlvmEvent -= mCommandController.OnMissingLLVMDetected;
+      CompileCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
+      TidyCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
+      FormatCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
 
-    CompileCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
-    TidyCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
-    FormatCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
+      PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
+      PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
+      PowerShellWrapper.ExitedHandler += mOutputWindowController.ClosedDataConnection;
 
-    CompileCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
-    TidyCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
-    FormatCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
+      AccountController.OnLicenseStatusChanced += mCommandController.OnLicenseChanged;
+      LicenseController.OnLicenseStatusChanced += mCommandController.OnLicenseChanged;
 
-    PowerShellWrapper.DataHandler -= mOutputWindowController.OutputDataReceived;
-    PowerShellWrapper.DataErrorHandler -= mOutputWindowController.OutputDataErrorReceived;
-    PowerShellWrapper.ExitedHandler -= mOutputWindowController.ClosedDataConnection;
-
-    AccountController.OnLicenseStatusChanced -= mCommandController.OnLicenseChanged;
-    LicenseController.OnLicenseStatusChanced -= mCommandController.OnLicenseChanged;
-
-  }
-
-  private void UnregisterFromVsEvents()
-  {
-    if (null != mBuildEvents)
-    {
-      mBuildEvents.OnBuildBegin -= mErrorWindowController.OnBuildBegin;
-      mBuildEvents.OnBuildBegin -= mCommandController.OnMSVCBuildBegin;
-      mBuildEvents.OnBuildDone -= mCommandController.OnMSVCBuildDone;
     }
 
-    if (null != mCommandEvents)
-      mCommandEvents.BeforeExecute -= mCommandController.CommandEventsBeforeExecute;
-
-    if (null != mRunningDocTableEvents)
-      mRunningDocTableEvents.BeforeSave -= mCommandController.OnBeforeSave;
-
-    if (null != mDteEvents)
-      mDteEvents.OnBeginShutdown -= UnregisterFromEvents;
-  }
-
-  private void ShowToolbare()
-  {
-    if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+    private void RegisterToVsEvents()
     {
-      var cbs = ((CommandBars)(dte as DTE2).CommandBars);
-      CommandBar cb = cbs["Clang Power Tools"];
-      cb.Visible = true;
+      if (null != mBuildEvents)
+      {
+        mBuildEvents.OnBuildBegin += mErrorWindowController.OnBuildBegin;
+        mBuildEvents.OnBuildBegin += mCommandController.OnMSVCBuildBegin;
+        mBuildEvents.OnBuildDone += mCommandController.OnMSVCBuildDone;
+      }
+
+      if (null != mCommandEvents)
+      {
+        mCommandEvents.BeforeExecute += mCommandController.CommandEventsBeforeExecute;
+      }
+
+      if (null != mRunningDocTableEvents)
+      {
+        mRunningDocTableEvents.BeforeSave += mCommandController.OnBeforeSave;
+      }
+
+      if (null != mDteEvents)
+      {
+        mDteEvents.OnBeginShutdown += UnregisterFromEvents;
+        mDteEvents.OnBeginShutdown += UnregisterFromCPTEvents;
+      }
     }
+
+    private void UnregisterFromEvents()
+    {
+      UnregisterFromCPTEvents();
+      UnregisterFromVsEvents();
+    }
+
+    private void UnregisterFromCPTEvents()
+    {
+      mCommandController.ClangCommandMessageEvent -= mOutputWindowController.Write;
+      mCommandController.HierarchyDetectedEvent -= mOutputWindowController.OnFileHierarchyDetected;
+
+      mCommandController.ClearErrorListEvent -= mErrorWindowController.OnClangCommandBegin;
+
+      mCommandController.MissingLlvmEvent -= CompileCommand.Instance.OnMissingLLVMDetected;
+      mCommandController.MissingLlvmEvent -= TidyCommand.Instance.OnMissingLLVMDetected;
+
+      CompileCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
+      TidyCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
+
+      mCommandController.ErrorDetectedEvent -= mOutputWindowController.OnErrorDetected;
+      mOutputWindowController.ErrorDetectedEvent -= mErrorWindowController.OnErrorDetected;
+      mOutputWindowController.MissingLlvmEvent -= mCommandController.OnMissingLLVMDetected;
+
+      CompileCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
+      TidyCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
+      FormatCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
+
+      CompileCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
+      TidyCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
+      FormatCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
+
+      PowerShellWrapper.DataHandler -= mOutputWindowController.OutputDataReceived;
+      PowerShellWrapper.DataErrorHandler -= mOutputWindowController.OutputDataErrorReceived;
+      PowerShellWrapper.ExitedHandler -= mOutputWindowController.ClosedDataConnection;
+
+      AccountController.OnLicenseStatusChanced -= mCommandController.OnLicenseChanged;
+      LicenseController.OnLicenseStatusChanced -= mCommandController.OnLicenseChanged;
+
+    }
+
+    private void UnregisterFromVsEvents()
+    {
+      if (null != mBuildEvents)
+      {
+        mBuildEvents.OnBuildBegin -= mErrorWindowController.OnBuildBegin;
+        mBuildEvents.OnBuildBegin -= mCommandController.OnMSVCBuildBegin;
+        mBuildEvents.OnBuildDone -= mCommandController.OnMSVCBuildDone;
+      }
+
+      if (null != mCommandEvents)
+        mCommandEvents.BeforeExecute -= mCommandController.CommandEventsBeforeExecute;
+
+      if (null != mRunningDocTableEvents)
+        mRunningDocTableEvents.BeforeSave -= mCommandController.OnBeforeSave;
+
+      if (null != mDteEvents)
+        mDteEvents.OnBeginShutdown -= UnregisterFromEvents;
+    }
+
+    private void ShowToolbare()
+    {
+      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+      {
+        var cbs = ((CommandBars)(dte as DTE2).CommandBars);
+        CommandBar cb = cbs["Clang Power Tools"];
+        cb.Visible = true;
+      }
+    }
+
+    #endregion
+
   }
-
-  #endregion
-
-}
 }
