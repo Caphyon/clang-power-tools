@@ -254,7 +254,9 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Resource Include="Resources\ClangFormatIcon.png" />
-    <Content Include="Resources\ClangPowerToolsIco.ico" />
+    <Resource Include="Resources\ClangPowerToolsIco.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Content Include="Resources\EncodingConverter.ico" />
     <Resource Include="Resources\BannersError.png" />
     <Resource Include="Resources\iconError.png" />
