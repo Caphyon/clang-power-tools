@@ -9,7 +9,7 @@ namespace ClangPowerTools.MVVM.Controllers
 
     private readonly RegistryUtility registryUtility;
 
-    private readonly string registerName = @"Software\Caphyon\cpt";
+    private readonly string registryName = @"Software\Caphyon\cpt";
     private readonly string keyName = "trial";
     private readonly int days = -1;
 
@@ -17,21 +17,23 @@ namespace ClangPowerTools.MVVM.Controllers
 
     #region Constructor
 
-    public FreeTrialController() => registryUtility = new RegistryUtility(registerName);
+    public FreeTrialController() => registryUtility = new RegistryUtility(registryName);
 
     #endregion
 
     #region Public Methods
 
-    public bool Start() => registryUtility.WriteRegistryKey(keyName, DateTime.Now.ToString());
+    public bool Start() => registryUtility.WriteKey(keyName, DateTime.Now.ToString());
 
     public bool IsActive()
     {
-      var freeTrialStartTimeAsString = registryUtility.ReadRegistryKey(keyName);
+      var freeTrialStartTimeAsString = registryUtility.ReadKey(keyName);
       var freeTrialStartTime = DateTime.Parse(freeTrialStartTimeAsString);
 
       return DateTime.Now.Subtract(freeTrialStartTime).Days <= days;
     }
+
+    public bool WasEverInTrial() => registryUtility.Exists(registryName);
 
     #endregion
 
