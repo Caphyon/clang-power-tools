@@ -326,6 +326,13 @@ namespace ClangPowerTools
 
         mSettingsHandler.SaveSettings();
 
+        FreeTrialController freeTrialController = new FreeTrialController();
+        if(freeTrialController.WasEverInTrial() == false)
+        {
+          //TODO - display product versions. If you display the product versions you still need to show release notes? 
+          // To much pop-ups? 
+        }
+
         ReleaseNotesView releaseNotesView = new ReleaseNotesView();
         releaseNotesView.Show();
       }
