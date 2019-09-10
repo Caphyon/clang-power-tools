@@ -5,12 +5,13 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools.Views"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  Title="Clang Power Tools  -  Settings"
+  Title="Settings"
   Width="760"
   Height="430"
+  Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
   WindowStartupLocation="CenterScreen"
-  WindowStyle="ToolWindow"
+  WindowStyle="ThreeDBorderWindow"
   mc:Ignorable="d">
 
   <TabControl>
