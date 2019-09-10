@@ -13,6 +13,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Task = System.Threading.Tasks.Task;
+using ClangPowerTools.MVVM.Controllers;
 
 namespace ClangPowerTools
 {
@@ -106,7 +107,9 @@ namespace ClangPowerTools
 
     public async void Execute(object sender, EventArgs e)
     {
-      if (activeLicense == false)
+      FreeTrialController freeTrialController = new FreeTrialController();
+
+      if (freeTrialController.IsActive() == false && activeLicense == false)
       {
         LoginView loginView = new LoginView();
         loginView.ShowDialog();
