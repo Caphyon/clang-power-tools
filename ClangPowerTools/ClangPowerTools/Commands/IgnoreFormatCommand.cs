@@ -74,7 +74,9 @@ namespace ClangPowerTools.Commands
     {
       _ = Task.Run(() =>
       {
-        string filesToIgnore = SettingsProvider.FormatSettingsViewModel.FormatModel.FilesToIgnore;
+        SettingsProvider settingsProvider = new SettingsProvider();
+        FormatSettingsModel formatSettingsModel = settingsProvider.GetFormatSettingsModel();
+        string filesToIgnore = formatSettingsModel.FilesToIgnore;
 
         if (filesToIgnore.Length > 0)
         {
@@ -82,7 +84,7 @@ namespace ClangPowerTools.Commands
           List<string> documentsToIgnore = itemsCollector.GetFilesToIgnore();
           SettingsHandler settingsHandler = new SettingsHandler();
 
-          FormatSettingsModel settings = SettingsProvider.FormatSettingsViewModel.FormatModel;
+          FormatSettingsModel settings = formatSettingsModel;
           AddItemsToIgnore(documentsToIgnore, settings, "FilesToIgnore");
           settingsHandler.SaveSettings();
         }

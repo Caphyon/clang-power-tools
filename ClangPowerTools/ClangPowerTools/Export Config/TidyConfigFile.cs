@@ -11,9 +11,17 @@ namespace ClangPowerTools
 
     // Create StringBuilder to be written in the .clang-tidy file
     private StringBuilder tidyConfigOutput = new StringBuilder();
-    private CompilerSettingsModel compilerSettingsModel = SettingsProvider.CompilerSettingsViewModel.CompilerModel;
-    private FormatSettingsModel formatSettingsModel = SettingsProvider.FormatSettingsViewModel.FormatModel;
-    private TidySettingsModel tidySettingsModel = SettingsProvider.TidySettingsViewModel.TidyModel;
+    private SettingsProvider settingsProvider = new SettingsProvider();
+    private CompilerSettingsModel compilerSettingsModel;
+    private TidySettingsModel tidySettingsModel;
+    private FormatSettingsModel formatSettingsModel;
+
+    public TidyConfigFile()
+    {
+      compilerSettingsModel = settingsProvider.GetCompilerSettingsModel();
+      tidySettingsModel = settingsProvider.GetTidySettingsModel();
+      formatSettingsModel = settingsProvider.GetFormatSettingsModel();
+  }
 
     // Readonly list for paramaters names
     private static readonly List<string> parameterNames = new List<string>()
@@ -47,7 +55,7 @@ namespace ClangPowerTools
       CreateHeaderFilterOutputLine(parameterNames.ElementAt(3), headerFilter, true);
 
       //Format style line
-      string formatStyle = SettingsProvider.FormatSettingsViewModel.FormatModel.Style.ToString();
+      string formatStyle = formatSettingsModel.Style.ToString();
       CreateOutputLine(parameterNames.ElementAt(4), formatStyle, true);
 
       //User line
@@ -62,7 +70,7 @@ namespace ClangPowerTools
 
     private void CreateChecksOutputLine(string paramaterName)
     {
-      TidySettingsModel tidySettings = SettingsProvider.TidySettingsViewModel.TidyModel;
+      TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
 
       ClangTidyUseChecksFrom clangTidyUseChecksFrom = tidySettings.UseChecksFrom;
       if (clangTidyUseChecksFrom == ClangTidyUseChecksFrom.CustomChecks)

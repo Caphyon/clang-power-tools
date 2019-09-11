@@ -60,6 +60,7 @@ namespace ClangPowerTools
     private CommandController mCommandController;
     private LicenseController mLicenseController;
     private SettingsHandler mSettingsHandler;
+    private SettingsProvider mSettingsProvider = new SettingsProvider();
 
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
@@ -306,17 +307,21 @@ namespace ClangPowerTools
 
     private void VersionHandler()
     {
-        string version = SettingsProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version;
-        ShowToolbar(version);
-        UpdateVersion(version);
+      string version = mSettingsProvider.GetGeneralSettingsModel().Version;
+      ShowToolbar(version);
+      UpdateVersion(version);
     }
 
     private void UpdateVersion(string version)
     {
-      var currentVersion = PackageUtility.GetVersion();
+      GeneralSettingsModel generalSettingsModel = mSettingsProvider.GetGeneralSettingsModel();
+
+      string currentVersion = PackageUtility.GetVersion();
       if (string.IsNullOrWhiteSpace(currentVersion) == false && 0 > string.Compare(version, currentVersion))
       {
-        SettingsProvider.GeneralSettingsViewModel.GeneralSettingsModel.Version = currentVersion;
+        generalSettingsModel.Version = currentVersion;
+        mSettingsProvider.SetGeneralSettingsModel(generalSettingsModel);
+
         mSettingsHandler.SaveSettings();
 
         ReleaseNotesView releaseNotesView = new ReleaseNotesView();
