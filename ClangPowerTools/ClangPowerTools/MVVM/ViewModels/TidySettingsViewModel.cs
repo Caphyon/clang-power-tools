@@ -184,6 +184,7 @@ namespace ClangPowerTools
     private void OpenChecksWindow()
     {
       tidyChecksView = new TidyChecksView();
+      SettingsProvider.TidyChecksViewModel.TidyChecksView = tidyChecksView;
       tidyChecksView.Closed += OnClosed;
       tidyChecksView.ShowDialog();
     }
