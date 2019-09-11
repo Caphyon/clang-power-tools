@@ -259,7 +259,6 @@
     <Resource Include="Resources\ClangPowerToolsIco.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
-    <Content Include="Resources\EncodingConverter.ico" />
     <Resource Include="Resources\BannersError.png" />
     <Resource Include="Resources\iconError.png" />
     <Resource Include="Resources\CleanSearchIcon.PNG" />
@@ -270,6 +269,9 @@
     <Resource Include="Resources\SettingsBackground.png" />
     <Resource Include="Resources\ReleaseNotesBackground.png" />
     <Resource Include="Resources\StopCommandIcon.png" />
+    <Resource Include="Resources\iconCommercial.png" />
+    <Resource Include="Resources\iconFreeTrial.png" />
+    <Resource Include="Resources\iconPersonal.png" />
     <Content Include="Resources\LICENSE.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
