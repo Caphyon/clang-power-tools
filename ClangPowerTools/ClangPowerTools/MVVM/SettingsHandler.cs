@@ -12,6 +12,7 @@ namespace ClangPowerTools
   public class SettingsHandler
   {
     private string settingsPath = string.Empty;
+    private SettingsProvider settingsProvider = new SettingsProvider();
 
     private readonly string SettingsFileName = "settings.json";
     private readonly string GeneralConfigurationFileName = "GeneralConfiguration.config";
@@ -89,9 +90,10 @@ namespace ClangPowerTools
 
     public void ResetSettings()
     {
-      SettingsProvider.CompilerSettingsViewModel.CompilerModel = new CompilerSettingsModel();
-      SettingsProvider.FormatSettingsViewModel.FormatModel = new FormatSettingsModel();
-      SettingsProvider.TidySettingsViewModel.TidyModel = new TidySettingsModel();
+      settingsProvider.SetCompilerSettingsModel(new CompilerSettingsModel());
+      settingsProvider.SetFormatSettingsModel(new FormatSettingsModel());
+      settingsProvider.SetTidySettingsModel(new TidySettingsModel());
+
       SaveSettings();
     }
 
@@ -149,10 +151,10 @@ namespace ClangPowerTools
     private List<object> CreateModelsList()
     {
       List<object> models = new List<object>();
-      models.Add(SettingsProvider.CompilerSettingsViewModel.CompilerModel);
-      models.Add(SettingsProvider.FormatSettingsViewModel.FormatModel);
-      models.Add(SettingsProvider.TidySettingsViewModel.TidyModel);
-      models.Add(SettingsProvider.GeneralSettingsViewModel.GeneralSettingsModel);
+      models.Add(settingsProvider.GetCompilerSettingsModel());
+      models.Add(settingsProvider.GetFormatSettingsModel());
+      models.Add(settingsProvider.GetTidySettingsModel());
+      models.Add(settingsProvider.GetGeneralSettingsModel());
       return models;
     }
 
@@ -192,10 +194,10 @@ namespace ClangPowerTools
 
     private void SetSettingsModels(CompilerSettingsModel compilerModel, FormatSettingsModel formatModel, TidySettingsModel tidyModel, GeneralSettingsModel generalModel)
     {
-      SettingsProvider.CompilerSettingsViewModel.CompilerModel = compilerModel;
-      SettingsProvider.FormatSettingsViewModel.FormatModel = formatModel;
-      SettingsProvider.TidySettingsViewModel.TidyModel = tidyModel;
-      SettingsProvider.GeneralSettingsViewModel.GeneralSettingsModel = generalModel;
+      settingsProvider.SetCompilerSettingsModel(compilerModel);
+      settingsProvider.SetFormatSettingsModel(formatModel);
+      settingsProvider.SetTidySettingsModel(tidyModel);
+      settingsProvider.SetGeneralSettingsModel(generalModel);
     }
 
     private string GetSettingsFilePath(string path, string fileName)
@@ -223,8 +225,8 @@ namespace ClangPowerTools
       compilerSettingsModel.VerboseMode = clangOptions.VerboseMode;
       generalSettingsModel.Version = clangOptions.Version;
 
-      SettingsProvider.GeneralSettingsViewModel.GeneralSettingsModel = generalSettingsModel;
-      SettingsProvider.CompilerSettingsViewModel.CompilerModel = compilerSettingsModel;
+      settingsProvider.SetCompilerSettingsModel(compilerSettingsModel);
+      settingsProvider.SetGeneralSettingsModel(generalSettingsModel);
     }
 
     private void MapClangFormatOptionsToSettings(ClangFormatOptions clangFormat)
@@ -238,7 +240,7 @@ namespace ClangPowerTools
       formatSettingsModel.FallbackStyle = clangFormat.FallbackStyle;
       formatSettingsModel.FormatOnSave = clangFormat.EnableFormatOnSave;
 
-      SettingsProvider.FormatSettingsViewModel.FormatModel = formatSettingsModel;
+      settingsProvider.SetFormatSettingsModel(formatSettingsModel);
     }
 
     private void MapClangTidyOptionsToSettings(ClangTidyOptions clangTidy)
@@ -250,22 +252,26 @@ namespace ClangPowerTools
       tidySettingsModel.FormatAfterTidy = clangTidy.FormatAfterTidy;
       tidySettingsModel.TidyOnSave = clangTidy.AutoTidyOnSave;
 
-      SettingsProvider.TidySettingsViewModel.TidyModel = tidySettingsModel;
+      settingsProvider.SetTidySettingsModel(tidySettingsModel);
     }
 
     private void MapTidyPredefinedChecksToTidyettings(ClangTidyPredefinedChecksOptions clangTidyPredefinedChecksOptions)
     {
       PropertyInfo[] properties = typeof(ClangTidyPredefinedChecksOptions).GetProperties();
+      TidySettingsModel tidySettingsModel = settingsProvider.GetTidySettingsModel();
 
       foreach (PropertyInfo propertyInfo in properties)
       {
-        bool isChecked = (bool)propertyInfo.GetValue(new ClangTidyPredefinedChecksOptions(), null);
+        bool isChecked = (bool)propertyInfo.GetValue(clangTidyPredefinedChecksOptions, null);
 
         if (isChecked)
         {
-          SettingsProvider.TidySettingsViewModel.TidyModel.PredefinedChecks += string.Concat(FormatTidyCheckName(propertyInfo.Name), ";");
+          tidySettingsModel.PredefinedChecks += string.Concat(FormatTidyCheckName(propertyInfo.Name), ";");
         }
       }
+      settingsProvider.SetTidySettingsModel(tidySettingsModel);
+
+      settingsProvider.SetTidySettingsModel(tidySettingsModel);
     }
 
     private string FormatTidyCheckName(string name)
