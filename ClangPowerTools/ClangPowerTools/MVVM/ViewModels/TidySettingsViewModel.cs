@@ -177,13 +177,14 @@ namespace ClangPowerTools
 
     private void OnClosed(object sender, EventArgs e)
     {
-      TidyModel.PredefinedChecks = SettingsViewModelProvider.TidyChecksViewModel.GetSelectedChecks();
+      TidyModel.PredefinedChecks = SettingsProvider.TidyChecksViewModel.GetSelectedChecks();
       tidyChecksView.Closed -= OnClosed;
     }
 
     private void OpenChecksWindow()
     {
       tidyChecksView = new TidyChecksView();
+      SettingsProvider.TidyChecksViewModel.TidyChecksView = tidyChecksView;
       tidyChecksView.Closed += OnClosed;
       tidyChecksView.ShowDialog();
     }

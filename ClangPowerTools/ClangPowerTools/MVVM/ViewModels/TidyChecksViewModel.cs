@@ -16,13 +16,25 @@ namespace ClangPowerTools
     public event PropertyChangedEventHandler PropertyChanged;
 
     private string checkSearch = string.Empty;
+    private TidyChecksView tidyChecksView = new TidyChecksView();
+    private SettingsProvider settingsProvider = new SettingsProvider();
     private TidyCheckModel selectedCheck = new TidyCheckModel();
     private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>();
     private ICommand okCommand;
     #endregion
 
     #region Properties
-    public TidyChecksView TidyChecksView { get; set; }
+    public TidyChecksView TidyChecksView
+    { get
+      {
+        return tidyChecksView;
+      }
+      set
+      {
+        InitializeChecks();
+        tidyChecksView = value;
+      }
+    }
 
     public List<TidyCheckModel> TidyChecksList
     {
@@ -33,27 +45,6 @@ namespace ClangPowerTools
           return tidyChecksList;
         }
         return tidyChecksList.Where(e => e.Name.Contains(checkSearch, StringComparison.OrdinalIgnoreCase)).ToList();
-      }
-    }
-
-    public TidyChecksViewModel()
-    {
-      InitializeChecks();
-      SettingsViewModelProvider.TidySettingsViewModel.TidyModel.PredefinedChecks = GetSelectedChecks();
-    }
-
-    private void InitializeChecks()
-    {
-      string predefinedChecks = SettingsViewModelProvider.TidySettingsViewModel.TidyModel.PredefinedChecks;
-
-      if (string.IsNullOrEmpty(predefinedChecks))
-      {
-        tidyChecksList = new List<TidyCheckModel>(TidyChecks.Checks);
-      }
-      else
-      {
-        tidyChecksList = new List<TidyCheckModel>(TidyChecksClean.Checks);
-        TickPredefinedChecks();
       }
     }
 
@@ -125,8 +116,9 @@ namespace ClangPowerTools
 
     private void TickPredefinedChecks()
     {
-      string input = SettingsViewModelProvider.TidySettingsViewModel.TidyModel.PredefinedChecks;
+      string input = settingsProvider.GetTidySettingsModel().PredefinedChecks;
       input = Regex.Replace(input, @"\s+", "");
+      input = input.Remove(input.Length - 1, 1);
       List<string> checkNames = input.Split(';').ToList();
 
       foreach (string check in checkNames)
@@ -140,6 +132,22 @@ namespace ClangPowerTools
         }
       }
     }
+
+    private void InitializeChecks()
+    {
+      string predefinedChecks = settingsProvider.GetTidySettingsModel().PredefinedChecks;
+
+      if (string.IsNullOrEmpty(predefinedChecks))
+      {
+        tidyChecksList = new List<TidyCheckModel>(TidyChecks.Checks);
+      }
+      else
+      {
+        tidyChecksList = new List<TidyCheckModel>(TidyChecksClean.Checks);
+        TickPredefinedChecks();
+      }
+    }
+
 
     #endregion
   }

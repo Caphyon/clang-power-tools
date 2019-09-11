@@ -36,6 +36,7 @@ namespace ClangPowerTools
     public event EventHandler<EventArgs> ErrorDetectedEvent;
     public event EventHandler<EventArgs> HasEncodingErrorEvent;
 
+    private SettingsProvider settingsProvider = new SettingsProvider();
     private Commands2 mCommand;
     private CommandUILocation commandUILocation;
     private int currentCommand;
@@ -517,7 +518,7 @@ namespace ClangPowerTools
       if (false == mSaveCommandWasGiven) // The save event was not triggered by Save File or SaveAll commands
         return;
 
-      TidySettingsModel tidySettings = SettingsViewModelProvider.TidySettingsViewModel.TidyModel;
+      TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
 
       if (false == tidySettings.TidyOnSave) // The clang-tidy on save option is disable 
         return;
@@ -535,8 +536,8 @@ namespace ClangPowerTools
 
     private void BeforeSaveClangFormat(Document aDocument)
     {
-      FormatSettingsModel formatSettings = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel;
-      TidySettingsModel tidySettings = SettingsViewModelProvider.TidySettingsViewModel.TidyModel;
+      FormatSettingsModel formatSettings = settingsProvider.GetFormatSettingsModel();
+      TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
 
       if (currentCommand == CommandIds.kTidyFixId && running && tidySettings.FormatAfterTidy && formatSettings.FormatOnSave)
       {
@@ -583,7 +584,7 @@ namespace ClangPowerTools
 
     private void BeforeExecuteClangCompile(string aGuid, int aId)
     {
-      var compilerSettings = SettingsViewModelProvider.CompilerSettingsViewModel.CompilerModel; 
+      CompilerSettingsModel compilerSettings = settingsProvider.GetCompilerSettingsModel(); 
 
       if (compilerSettings.ClangAfterMSVC == false)
         return;

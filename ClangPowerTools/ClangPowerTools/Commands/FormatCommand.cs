@@ -233,7 +233,8 @@ namespace ClangPowerTools.Commands
 
     private System.Diagnostics.Process CreateProcess(string aText, int aOffset, int aLength, string aPath, string aFilePath)
     {
-      FormatSettingsModel formatSettings = SettingsViewModelProvider.FormatSettingsViewModel.FormatModel;
+      SettingsProvider settingsProvider = new SettingsProvider();
+      FormatSettingsModel formatSettings = settingsProvider.GetFormatSettingsModel();
       string vsixPath = Path.GetDirectoryName(
         typeof(RunClangPowerToolsPackage).Assembly.Location);
 

@@ -80,7 +80,7 @@ namespace ClangPowerTools.Commands
     {
       await PrepareCommmandAsync(commandUILocation);
 
-      await System.Threading.Tasks.Task.Run(() =>
+      await Task.Run(() =>
       {
         try
         {
@@ -88,7 +88,8 @@ namespace ClangPowerTools.Commands
           {
             using (var fileChangerWatcher = new FileChangerWatcher())
             {
-              TidySettingsModel tidySettings = SettingsViewModelProvider.TidySettingsViewModel.TidyModel;
+              SettingsProvider settingsProvider = new SettingsProvider();
+              TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
 
               if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
               {
