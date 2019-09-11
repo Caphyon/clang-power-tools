@@ -60,7 +60,7 @@ namespace ClangPowerTools
     private CommandController mCommandController;
     private LicenseController mLicenseController;
     private SettingsHandler mSettingsHandler;
-    private SettingsProvider mSettingsProvider = new SettingsProvider();
+    private SettingsProvider mSettingsProvider;
 
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
@@ -137,6 +137,8 @@ namespace ClangPowerTools
 
       await mCommandController.InitializeCommandsAsync(this);
       mLicenseController = new LicenseController();
+
+      mSettingsProvider = new SettingsProvider();
 
       RegisterToEvents();
       await mLicenseController.CheckLicenseAsync();
