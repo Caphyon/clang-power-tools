@@ -269,7 +269,6 @@ namespace ClangPowerTools
           tidySettingsModel.PredefinedChecks += string.Concat(FormatTidyCheckName(propertyInfo.Name), ";");
         }
       }
-      settingsProvider.SetTidySettingsModel(tidySettingsModel);
 
       settingsProvider.SetTidySettingsModel(tidySettingsModel);
     }
@@ -283,9 +282,12 @@ namespace ClangPowerTools
       {
         if (Char.IsUpper(name[i]))
         {
-          stringBuilder.Append(name[i]).Append("-");
+          stringBuilder.Append("-").Append(name[i]);
         }
-        stringBuilder.Append(name[i]);
+        else
+        {
+          stringBuilder.Append(name[i]);
+        }
       }
 
       return stringBuilder.ToString().ToLower();
