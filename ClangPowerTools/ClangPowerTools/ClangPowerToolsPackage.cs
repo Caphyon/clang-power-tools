@@ -329,6 +329,8 @@ namespace ClangPowerTools
         FreeTrialController freeTrialController = new FreeTrialController();
         if(freeTrialController.WasEverInTrial() == false)
         {
+          LicenseView licenseView = new LicenseView();
+          licenseView.Show();
           //TODO - display product versions. If you display the product versions you still need to show release notes? 
           // To much pop-ups? 
         }
