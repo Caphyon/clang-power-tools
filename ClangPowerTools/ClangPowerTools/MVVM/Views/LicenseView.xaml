@@ -63,7 +63,7 @@
         HorizontalAlignment="Center"
         Background="Transparent"
         BorderThickness="0"
-        Click="FreeLicenceButton_Click">
+        Command="{Binding PersonalLicense}">
         <Button.Content>
 
           <Grid Width="240" Height="152">
@@ -211,7 +211,7 @@
         HorizontalAlignment="Center"
         Background="Transparent"
         BorderThickness="0"
-        Click="TrialLicenceButton_Click">
+        Command="{Binding TrialLicense}">
         <Button.Content>
 
           <Grid Width="240" Height="152">
@@ -290,7 +290,7 @@
       FontFamily="SegoeUI"
       FontSize="14"
       Foreground="#E2E2E8">
-      <Hyperlink NavigateUri="https://clangpowertools.com/blog/future-of-clang-power-tools.html" RequestNavigate="Hyperlink_RequestNavigate">
+      <Hyperlink Command="{Binding SignIn}">
         Already registered? Sign In
       </Hyperlink>
     </TextBlock>

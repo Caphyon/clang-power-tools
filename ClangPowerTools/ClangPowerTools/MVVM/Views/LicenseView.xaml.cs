@@ -16,25 +16,5 @@ namespace ClangPowerTools.MVVM.Views
       DataContext = new LicenseViewModel(this);
     }
 
-    private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
-    {
-      LoginView loginView = new LoginView();
-      loginView.Show();
-      this.Close();
-    }
-
-    private void FreeLicenceButton_Click(object sender, RoutedEventArgs e)
-    {
-      LoginView loginView = new LoginView();
-      loginView.Show();
-      this.Close();
-    }
-
-    private void TrialLicenceButton_Click(object sender, RoutedEventArgs e)
-    {
-      FreeTrialController freeTrialController = new FreeTrialController();
-      freeTrialController.Start();
-      this.Close();
-    }
   }
 }
