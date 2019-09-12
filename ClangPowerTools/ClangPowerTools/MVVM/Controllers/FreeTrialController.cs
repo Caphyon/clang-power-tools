@@ -27,6 +27,11 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public bool IsActive()
     {
+      if(WasEverInTrial() == false)
+      {
+        return false;
+      }
+
       var freeTrialStartTimeAsString = registryUtility.ReadKey(keyName);
       var freeTrialStartTime = DateTime.Parse(freeTrialStartTimeAsString);
 
