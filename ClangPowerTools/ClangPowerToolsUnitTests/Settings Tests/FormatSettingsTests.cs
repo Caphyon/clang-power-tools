@@ -6,117 +6,150 @@ namespace ClangPowerTools.Tests.Settings
   [VsTestSettings(UIThread = true)]
   public class FormatSettingsTests
   {
-    [VsFact(Version = "2017-")]
+    [VsFact(Version = "2019-")]
     public async Task ClangFormatOptionsView_NotNullAsync()
     {
       //Arrange
       await UnitTestUtility.LoadPackageAsync();
 
       //Act
-      ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
-
+      SettingsProvider settingsProvider = new SettingsProvider();
+ 
       //Assert
-      Assert.NotNull(clangFormatSettings);
+      Assert.NotNull(settingsProvider.GetFormatSettingsModel());
     }
 
-    [VsFact(Version = "2017-")]
+    [VsFact(Version = "2019-")]
     public async Task FormatOnSave_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      SettingsTestUtility.ResetClangFormatOptionsView();
-      ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
+      SettingsHandler settingsHandler = new SettingsHandler();
+      SettingsProvider settingsProvider = new SettingsProvider();
+      FormatSettingsModel formatSettingsModel = new FormatSettingsModel
+      {
+        FormatOnSave = true
+      };
 
-      clangFormatSettings.EnableFormatOnSave = true;
-      SettingsTestUtility.SaveFormatOptions(clangFormatSettings);
-      ClangFormatOptionsView clangFormatSettingsFromFile = SettingsTestUtility.GetClangFormatOptionsViewFromFile();
+      settingsProvider.SetFormatSettingsModel(formatSettingsModel);
+      settingsHandler.SaveSettings();
+      settingsHandler.ResetSettings();
+      settingsHandler.LoadSettings();
 
-      Assert.Equal(clangFormatSettings.EnableFormatOnSave, clangFormatSettingsFromFile.EnableFormatOnSave);
+      Assert.Equal(formatSettingsModel.FormatOnSave, settingsProvider.GetFormatSettingsModel().FormatOnSave);
     }
 
-    [VsFact(Version = "2017-")]
+    [VsFact(Version = "2019-")]
     public async Task FileExtensions_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      SettingsTestUtility.ResetClangFormatOptionsView();
-      ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
+      SettingsHandler settingsHandler = new SettingsHandler();
+      SettingsProvider settingsProvider = new SettingsProvider();
+      FormatSettingsModel formatSettingsModel = new FormatSettingsModel
+      {
+        FileExtensions = ".cpp"
+      };
 
-      clangFormatSettings.FileExtensions = ".cpp";
-      SettingsTestUtility.SaveFormatOptions(clangFormatSettings);
-      ClangFormatOptionsView clangFormatSettingsFromFile = SettingsTestUtility.GetClangFormatOptionsViewFromFile();
+      settingsProvider.SetFormatSettingsModel(formatSettingsModel);
+      settingsHandler.SaveSettings();
+      settingsHandler.ResetSettings();
+      settingsHandler.LoadSettings();
 
-      Assert.Equal(clangFormatSettings.FileExtensions, clangFormatSettingsFromFile.FileExtensions);
+      Assert.Equal(formatSettingsModel.FileExtensions, settingsProvider.GetFormatSettingsModel().FileExtensions);
     }
 
-    [VsFact(Version = "2017-")]
+    [VsFact(Version = "2019-")]
     public async Task FilesToIgnore_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      SettingsTestUtility.ResetClangFormatOptionsView();
-      ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
+      SettingsHandler settingsHandler = new SettingsHandler();
+      SettingsProvider settingsProvider = new SettingsProvider();
+      FormatSettingsModel formatSettingsModel = new FormatSettingsModel
+      {
+        FilesToIgnore = "Test.cpp"
+    };
 
-      clangFormatSettings.FilesToIgnore = "Test.cpp";
-      SettingsTestUtility.SaveFormatOptions(clangFormatSettings);
-      ClangFormatOptionsView clangFormatSettingsFromFile = SettingsTestUtility.GetClangFormatOptionsViewFromFile();
+      settingsProvider.SetFormatSettingsModel(formatSettingsModel);
+      settingsHandler.SaveSettings();
+      settingsHandler.ResetSettings();
+      settingsHandler.LoadSettings();
 
-      Assert.Equal(clangFormatSettings.FilesToIgnore, clangFormatSettingsFromFile.FilesToIgnore);
+      Assert.Equal(formatSettingsModel.FilesToIgnore, settingsProvider.GetFormatSettingsModel().FilesToIgnore);
     }
 
-    [VsFact(Version = "2017-")]
+    [VsFact(Version = "2019-")]
     public async Task AssumeFilename_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      SettingsTestUtility.ResetClangFormatOptionsView();
-      ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
+      SettingsHandler settingsHandler = new SettingsHandler();
+      SettingsProvider settingsProvider = new SettingsProvider();
+      FormatSettingsModel formatSettingsModel = new FormatSettingsModel
+      {
+        AssumeFilename = "Test"
+      };
 
-      clangFormatSettings.AssumeFilename = "Test";
-      SettingsTestUtility.SaveFormatOptions(clangFormatSettings);
-      ClangFormatOptionsView clangFormatSettingsFromFile = SettingsTestUtility.GetClangFormatOptionsViewFromFile();
+      settingsProvider.SetFormatSettingsModel(formatSettingsModel);
+      settingsHandler.SaveSettings();
+      settingsHandler.ResetSettings();
+      settingsHandler.LoadSettings();
 
-      Assert.Equal(clangFormatSettings.AssumeFilename, clangFormatSettingsFromFile.AssumeFilename);
+      Assert.Equal(formatSettingsModel.AssumeFilename, settingsProvider.GetFormatSettingsModel().AssumeFilename);
     }
 
-    [VsFact(Version = "2017-")]
+    [VsFact(Version = "2019-")]
     public async Task FallbackStyle_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      SettingsTestUtility.ResetClangFormatOptionsView();
-      ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
+      SettingsHandler settingsHandler = new SettingsHandler();
+      SettingsProvider settingsProvider = new SettingsProvider();
+      FormatSettingsModel formatSettingsModel = new FormatSettingsModel
+      {
+        FallbackStyle = ClangFormatFallbackStyle.Mozilla
+      };
 
-      clangFormatSettings.FallbackStyle = ClangFormatFallbackStyle.Mozilla;
-      SettingsTestUtility.SaveFormatOptions(clangFormatSettings);
-      ClangFormatOptionsView clangFormatSettingsFromFile = SettingsTestUtility.GetClangFormatOptionsViewFromFile();
+      settingsProvider.SetFormatSettingsModel(formatSettingsModel);
+      settingsHandler.SaveSettings();
+      settingsHandler.ResetSettings();
+      settingsHandler.LoadSettings();
 
-      Assert.Equal(clangFormatSettings.FallbackStyle, clangFormatSettingsFromFile.FallbackStyle);
+      Assert.Equal(formatSettingsModel.FallbackStyle, settingsProvider.GetFormatSettingsModel().FallbackStyle);
     }
 
-    [VsFact(Version = "2017-")]
+    [VsFact(Version = "2019-")]
     public async Task FormatStyle_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      SettingsTestUtility.ResetClangFormatOptionsView();
-      ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
+      SettingsHandler settingsHandler = new SettingsHandler();
+      SettingsProvider settingsProvider = new SettingsProvider();
+      FormatSettingsModel formatSettingsModel = new FormatSettingsModel
+      {
+        Style = ClangFormatStyle.Mozilla
+      };
 
-      clangFormatSettings.Style = ClangFormatStyle.Mozilla;
-      SettingsTestUtility.SaveFormatOptions(clangFormatSettings);
-      ClangFormatOptionsView clangFormatSettingsFromFile = SettingsTestUtility.GetClangFormatOptionsViewFromFile();
+      settingsProvider.SetFormatSettingsModel(formatSettingsModel);
+      settingsHandler.SaveSettings();
+      settingsHandler.ResetSettings();
+      settingsHandler.LoadSettings();
 
-      Assert.Equal(clangFormatSettings.Style, clangFormatSettingsFromFile.Style);
+      Assert.Equal(formatSettingsModel.Style, settingsProvider.GetFormatSettingsModel().Style);
     }
 
-    [VsFact(Version = "2017-")]
+    [VsFact(Version = "2019-")]
     public async Task CustomExecutable_ChangeValue_CompareViewToFileAsync()
     {
       await UnitTestUtility.LoadPackageAsync();
-      SettingsTestUtility.ResetClangFormatOptionsView();
-      ClangFormatOptionsView clangFormatSettings = SettingsProvider.ClangFormatSettings;
+      SettingsHandler settingsHandler = new SettingsHandler();
+      SettingsProvider settingsProvider = new SettingsProvider();
+      FormatSettingsModel formatSettingsModel = new FormatSettingsModel
+      {
+        CustomExecutable = @"D:\Test.exe"
+    };
 
-      clangFormatSettings.ClangFormatPath.Enable = true;
-      clangFormatSettings.ClangFormatPath.Value = @"D:\Test.exe";
-      SettingsTestUtility.SaveFormatOptions(clangFormatSettings);
-      ClangFormatOptionsView clangFormatSettingsFromFile = SettingsTestUtility.GetClangFormatOptionsViewFromFile();
+      settingsProvider.SetFormatSettingsModel(formatSettingsModel);
+      settingsHandler.SaveSettings();
+      settingsHandler.ResetSettings();
+      settingsHandler.LoadSettings();
 
-      Assert.Equal(clangFormatSettings.ClangFormatPath.Enable, clangFormatSettingsFromFile.ClangFormatPath.Enable);
-      Assert.Equal(clangFormatSettings.ClangFormatPath.Value, clangFormatSettingsFromFile.ClangFormatPath.Value);
+      Assert.Equal(formatSettingsModel.CustomExecutable, settingsProvider.GetFormatSettingsModel().CustomExecutable);
     }
   }
 }
