@@ -1,6 +1,5 @@
 ﻿using ClangPowerTools.Commands;
 using ClangPowerTools.Helpers;
-using ClangPowerTools.MVVM;
 using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Output;

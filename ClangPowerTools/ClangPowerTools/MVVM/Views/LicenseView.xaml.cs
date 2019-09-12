@@ -1,7 +1,4 @@
-﻿using ClangPowerTools.MVVM.Controllers;
-using ClangPowerTools.Views;
-using System.Windows;
-using System.Windows.Navigation;
+﻿using System.Windows;
 
 namespace ClangPowerTools.MVVM.Views
 {

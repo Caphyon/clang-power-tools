@@ -5,7 +5,6 @@ using ClangPowerTools.Helpers;
 using ClangPowerTools.Handlers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
-using ClangPowerTools.Views;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
