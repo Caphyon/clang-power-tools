@@ -2,7 +2,6 @@
 using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.MVVM.WebApi;
-using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
@@ -18,9 +17,8 @@ namespace ClangPowerTools
     #region Members
 
     public event PropertyChangedEventHandler PropertyChanged;
-    public event EventHandler<EventArgs> InvalidEmail;
 
-    private AccountController accountController = new AccountController();
+    private readonly AccountController accountController = new AccountController();
     private UserModel userModel = new UserModel();
     private LoginView loginView;
 
@@ -118,7 +116,7 @@ namespace ClangPowerTools
           case "Email":
             IsInputValid = IsEmailAddressValid(out string errorMessage);
             result = errorMessage;
-            InvalidEmail?.Invoke(this, new EventArgs());
+            OnEmailValidation();
             break;
         }
         return result;
@@ -128,20 +126,6 @@ namespace ClangPowerTools
     #endregion
 
     #region Public Methods
-
-    public bool IsEmailAddressValid(out string errorMessage)
-    {
-      errorMessage = null;
-      var validEmailAddress = new EmailAddressAttribute().IsValid(Email);
-
-      if (validEmailAddress == false)
-      {
-        errorMessage = "Email address is required";
-        return false;
-      }
-
-      return true;
-    }
 
     public void ForgotPasswordAction()
     {
@@ -185,6 +169,20 @@ namespace ClangPowerTools
 
     #region Private Methods
 
+    private bool IsEmailAddressValid(out string errorMessage)
+    {
+      errorMessage = null;
+      var validEmailAddress = new EmailAddressAttribute().IsValid(Email);
+
+      if (validEmailAddress == false)
+      {
+        errorMessage = "Email address is required";
+        return false;
+      }
+
+      return true;
+    }
+
     private void SetLoginButtonState(bool isEnabled, string background, string foreground)
     {
       Color colorBackground = (Color)ColorConverter.ConvertFromString(background);
@@ -193,6 +191,19 @@ namespace ClangPowerTools
       loginView.LoginButton.IsEnabled = isEnabled;
       loginView.LoginButton.Background = new SolidColorBrush(colorBackground);
       loginView.LoginButton.Foreground = new SolidColorBrush(colorForeground);
+    }
+
+    private void OnEmailValidation()
+    {
+      if (IsInputValid)
+      {
+        loginView.InvalidUserTextBlock.Visibility = Visibility.Hidden;
+      }
+      else
+      {
+        loginView.InvalidUserTextBlock.Text = invalidEmail;
+        loginView.InvalidUserTextBlock.Visibility = Visibility.Visible;
+      }
     }
 
     #endregion
