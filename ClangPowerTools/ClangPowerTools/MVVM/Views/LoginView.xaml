@@ -303,7 +303,7 @@
       HorizontalContentAlignment="Center"
       VerticalContentAlignment="Center"
       Background="#FFBF31"
-      Click="LoginButton_Click"
+      Command="{Binding SignIn}"
       Content="LOG IN"
       Cursor="Hand"
       FontFamily="SegoeUI"

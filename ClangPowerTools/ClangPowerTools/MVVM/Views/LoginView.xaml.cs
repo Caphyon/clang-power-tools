@@ -31,7 +31,7 @@ namespace ClangPowerTools.MVVM.Views
     public LoginView()
     {
       InitializeComponent();
-      DataContext = loginViewModel;
+      DataContext = new LoginViewModel(this);
       loginViewModel.InvalidEmail += OnEmailValidation;
       ApiUtility.InitializeApiClient();
     }
@@ -49,43 +49,43 @@ namespace ClangPowerTools.MVVM.Views
       }
     }
 
-    private async void LoginButton_Click(object sender, RoutedEventArgs e)
-    {
-      if (string.IsNullOrWhiteSpace(loginViewModel.Email) || loginViewModel.IsInputValid == false )
-      {
-        InvalidUserTextBlock.Text = invalidEmailOrPassword;
-        InvalidUserTextBlock.Visibility = Visibility.Visible;
-        return;
-      }
+    //private async void LoginButton_Click(object sender, RoutedEventArgs e)
+    //{
+    //  if (string.IsNullOrWhiteSpace(loginViewModel.Email) || loginViewModel.IsInputValid == false )
+    //  {
+    //    InvalidUserTextBlock.Text = invalidEmailOrPassword;
+    //    InvalidUserTextBlock.Visibility = Visibility.Visible;
+    //    return;
+    //  }
 
-      SetLoginButtonState(false, colorBackgroundDisabled, colorForegroundDisabled);
+    //  SetLoginButtonState(false, colorBackgroundDisabled, colorForegroundDisabled);
 
-      UserModel userModel = new UserModel(loginViewModel.Email, loginViewModel.Password);
-      InvalidUserTextBlock.Text = invalidEmailOrPassword;
-      InvalidUserTextBlock.Visibility = Visibility.Hidden;
+    //  UserModel userModel = new UserModel(loginViewModel.Email, loginViewModel.Password);
+    //  InvalidUserTextBlock.Text = invalidEmailOrPassword;
+    //  InvalidUserTextBlock.Visibility = Visibility.Hidden;
 
-      bool isAccountActive = await accountController.LoginAsync(userModel);
-      if (isAccountActive)
-      {
-        Close();
-      }
-      else
-      {
-        SetLoginButtonState(true, colorBackgroundEnabled, colorForegroundEnabled);
-        InvalidUserTextBlock.Text = invalidEmailOrPassword;
-        InvalidUserTextBlock.Visibility = Visibility.Visible;
-      }
-    }
+    //  bool isAccountActive = await accountController.LoginAsync(userModel);
+    //  if (isAccountActive)
+    //  {
+    //    Close();
+    //  }
+    //  else
+    //  {
+    //    SetLoginButtonState(true, colorBackgroundEnabled, colorForegroundEnabled);
+    //    InvalidUserTextBlock.Text = invalidEmailOrPassword;
+    //    InvalidUserTextBlock.Visibility = Visibility.Visible;
+    //  }
+    //}
 
-    private void SetLoginButtonState(bool isEnabled, string background, string foreground)
-    {
-      Color colorBackground = (Color)ColorConverter.ConvertFromString(background);
-      Color colorForeground = (Color)ColorConverter.ConvertFromString(foreground);
+    //private void SetLoginButtonState(bool isEnabled, string background, string foreground)
+    //{
+    //  Color colorBackground = (Color)ColorConverter.ConvertFromString(background);
+    //  Color colorForeground = (Color)ColorConverter.ConvertFromString(foreground);
 
-      LoginButton.IsEnabled = isEnabled;
-      LoginButton.Background = new SolidColorBrush(colorBackground);
-      LoginButton.Foreground = new SolidColorBrush(colorForeground);
-    }
+    //  LoginButton.IsEnabled = isEnabled;
+    //  LoginButton.Background = new SolidColorBrush(colorBackground);
+    //  LoginButton.Foreground = new SolidColorBrush(colorForeground);
+    //}
 
     private void OnPasswordChanged(object sender, RoutedEventArgs e)
     {
