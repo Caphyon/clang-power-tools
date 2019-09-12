@@ -6,7 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace ClangPowerTools.Views
+namespace ClangPowerTools.MVVM.Views
 {
   /// <summary>
   /// Interaction logic for UserControl1.xaml
@@ -47,16 +47,6 @@ namespace ClangPowerTools.Views
         InvalidUserTextBlock.Text = invalidEmail;
         InvalidUserTextBlock.Visibility = Visibility.Visible;
       }
-    }
-
-    private void ForgotPasswordButton_Click(object sender, RoutedEventArgs e)
-    {
-      Process.Start(new ProcessStartInfo(WebApiUrl.forgotPasswordUrl));
-    }
-
-    private void SignUpButton_Click(object sender, RoutedEventArgs e)
-    {
-      Process.Start(new ProcessStartInfo(WebApiUrl.signUpUrl));
     }
 
     private async void LoginButton_Click(object sender, RoutedEventArgs e)

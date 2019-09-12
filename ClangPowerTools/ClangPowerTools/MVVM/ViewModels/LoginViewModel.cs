@@ -1,6 +1,10 @@
-﻿using System;
+﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.WebApi;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using System.Windows.Input;
 
 namespace ClangPowerTools
 {
@@ -11,6 +15,9 @@ namespace ClangPowerTools
     private UserModel userModel = new UserModel();
     public event PropertyChangedEventHandler PropertyChanged;
     public event EventHandler<EventArgs> InvalidEmail;
+
+    private ICommand forgotPasswordCommand;
+    private ICommand signUpCommand;
 
     #endregion
 
@@ -37,7 +44,37 @@ namespace ClangPowerTools
 
     public bool IsInputValid { get; set; } = false;
 
+    public bool CanExecute
+    {
+      get
+      {
+        return true;
+      }
+    }
+
     #endregion
+
+    #region Constructor
+
+    public LoginViewModel() { }
+
+    #endregion
+
+    #region Commands
+
+    public ICommand ForgotPassword
+    {
+      get => forgotPasswordCommand = new RelayCommand(() => ForgotPasswordAction(), () => CanExecute);
+    }
+
+    public ICommand SignUp
+    {
+      get => signUpCommand = new RelayCommand(() => SignUpAction(), () => CanExecute);
+    }
+
+
+    #endregion
+
 
     #region IDataErrorInfo Interface
 
@@ -63,7 +100,7 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region Private Methods
+    #region Methods
 
     public bool IsEmailAddressValid(out string errorMessage)
     {
@@ -77,6 +114,16 @@ namespace ClangPowerTools
       }
 
       return true;
+    }
+
+    public void ForgotPasswordAction()
+    {
+      Process.Start(new ProcessStartInfo(WebApiUrl.forgotPasswordUrl));
+    }
+
+    public void SignUpAction()
+    {
+      Process.Start(new ProcessStartInfo(WebApiUrl.signUpUrl));
     }
 
     #endregion
