@@ -331,12 +331,12 @@ namespace ClangPowerTools
         {
           LicenseView licenseView = new LicenseView();
           licenseView.Show();
-          //TODO - display product versions. If you display the product versions you still need to show release notes? 
-          // To much pop-ups? 
         }
-
-        ReleaseNotesView releaseNotesView = new ReleaseNotesView();
-        releaseNotesView.Show();
+        else
+        {
+          ReleaseNotesView releaseNotesView = new ReleaseNotesView();
+          releaseNotesView.Show();
+        }
       }
     }
 
