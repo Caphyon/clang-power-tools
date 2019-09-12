@@ -3,11 +3,13 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-  xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views"
+  xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   Title="Welcome"
   Width="844"
   Height="470"
+  d:DataContext="{d:DesignInstance local:LicenseViewModel,
+                                   IsDesignTimeCreatable=True}"
   Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
   WindowStartupLocation="CenterScreen"
@@ -153,7 +155,7 @@
         HorizontalAlignment="Center"
         Background="Transparent"
         BorderThickness="0"
-        Click="CommercialLicenceButton_Click">
+        Command="{Binding CommercialLicense}">
         <Button.Content>
 
           <Grid Width="240" Height="152">

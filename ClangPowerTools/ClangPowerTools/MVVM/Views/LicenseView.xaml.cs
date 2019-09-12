@@ -1,6 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.Views;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Navigation;
 
@@ -14,18 +13,11 @@ namespace ClangPowerTools.MVVM.Views
     public LicenseView()
     {
       InitializeComponent();
+      DataContext = new LicenseViewModel(this);
     }
 
     private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
     {
-      LoginView loginView = new LoginView();
-      loginView.Show();
-      this.Close();
-    }
-
-    private void CommercialLicenceButton_Click(object sender, RoutedEventArgs e)
-    {
-      Process.Start(new ProcessStartInfo("https://clangpowertools.com/download.html#pricing"));
       LoginView loginView = new LoginView();
       loginView.Show();
       this.Close();

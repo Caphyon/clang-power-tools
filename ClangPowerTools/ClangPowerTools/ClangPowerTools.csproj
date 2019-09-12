@@ -103,6 +103,7 @@
     <Compile Include="MVVM\SettingsProvider.cs" />
     <Compile Include="MVVM\ViewModels\GeneralSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\InputDataViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\LicenseViewModel.cs" />
     <Compile Include="MVVM\ViewModels\SettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\TidyChecksViewModel.cs" />
     <Compile Include="MVVM\ViewModels\TidySettingsViewModel.cs" />
