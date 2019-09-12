@@ -54,15 +54,6 @@
         <ColumnDefinition Width="Auto" />
       </Grid.ColumnDefinitions>
 
-      <!--<Rectangle
-        Grid.Column="0"
-        Width="240"
-        Height="152"
-        Margin="30,61,0,0"
-        HorizontalAlignment="Center"
-        Fill="#C383E0"
-        Opacity="0.15" />-->
-
       <Button
         Name="FreeLicenceButton"
         Grid.Column="0"
@@ -137,15 +128,6 @@
 
       </Button>
 
-      <!--<Rectangle
-        Grid.Column="1"
-        Width="240"
-        Height="152"
-        Margin="20,61,0,0"
-        HorizontalAlignment="Center"
-        Fill="#C383E0"
-        Opacity="0.30" />-->
-
       <Button
         Name="CommercialLicenceButton"
         Grid.Column="1"
@@ -219,16 +201,6 @@
         </Button.Template>
 
       </Button>
-
-
-      <!--<Rectangle
-        Grid.Column="2"
-        Width="240"
-        Height="152"
-        Margin="20,61,32,0"
-        HorizontalAlignment="Center"
-        Fill="#C383E0"
-        Opacity="0.1" />-->
 
       <Button
         Name="TrialLicenceButton"
