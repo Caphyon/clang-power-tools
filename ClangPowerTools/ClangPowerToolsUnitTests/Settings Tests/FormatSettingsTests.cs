@@ -7,22 +7,21 @@ namespace ClangPowerTools.Tests.Settings
   public class FormatSettingsTests
   {
     [VsFact(Version = "2019-")]
-    public async Task ClangFormatOptionsView_NotNullAsync()
+    public void ClangFormatOptionsView_NotNull()
     {
       //Arrange
-      await UnitTestUtility.LoadPackageAsync();
+      SettingsProvider settingsProvider = new SettingsProvider();
 
       //Act
-      SettingsProvider settingsProvider = new SettingsProvider();
- 
+      CompilerSettingsModel compilerSettingsModel = settingsProvider.GetCompilerSettingsModel();
+
       //Assert
-      Assert.NotNull(settingsProvider.GetFormatSettingsModel());
+      Assert.NotNull(compilerSettingsModel);
     }
 
     [VsFact(Version = "2019-")]
-    public async Task FormatOnSave_ChangeValue_CompareViewToFileAsync()
-    {
-      await UnitTestUtility.LoadPackageAsync();
+    public void FormatOnSave_ChangeValue_CompareViewToFile()
+    {  
       SettingsHandler settingsHandler = new SettingsHandler();
       SettingsProvider settingsProvider = new SettingsProvider();
       FormatSettingsModel formatSettingsModel = new FormatSettingsModel
@@ -39,9 +38,9 @@ namespace ClangPowerTools.Tests.Settings
     }
 
     [VsFact(Version = "2019-")]
-    public async Task FileExtensions_ChangeValue_CompareViewToFileAsync()
+    public void FileExtensions_ChangeValue_CompareViewToFile()
     {
-      await UnitTestUtility.LoadPackageAsync();
+   
       SettingsHandler settingsHandler = new SettingsHandler();
       SettingsProvider settingsProvider = new SettingsProvider();
       FormatSettingsModel formatSettingsModel = new FormatSettingsModel
@@ -58,9 +57,9 @@ namespace ClangPowerTools.Tests.Settings
     }
 
     [VsFact(Version = "2019-")]
-    public async Task FilesToIgnore_ChangeValue_CompareViewToFileAsync()
+    public void FilesToIgnore_ChangeValue_CompareViewToFile()
     {
-      await UnitTestUtility.LoadPackageAsync();
+   
       SettingsHandler settingsHandler = new SettingsHandler();
       SettingsProvider settingsProvider = new SettingsProvider();
       FormatSettingsModel formatSettingsModel = new FormatSettingsModel
@@ -77,9 +76,9 @@ namespace ClangPowerTools.Tests.Settings
     }
 
     [VsFact(Version = "2019-")]
-    public async Task AssumeFilename_ChangeValue_CompareViewToFileAsync()
+    public void AssumeFilename_ChangeValue_CompareViewToFile()
     {
-      await UnitTestUtility.LoadPackageAsync();
+   
       SettingsHandler settingsHandler = new SettingsHandler();
       SettingsProvider settingsProvider = new SettingsProvider();
       FormatSettingsModel formatSettingsModel = new FormatSettingsModel
@@ -96,9 +95,9 @@ namespace ClangPowerTools.Tests.Settings
     }
 
     [VsFact(Version = "2019-")]
-    public async Task FallbackStyle_ChangeValue_CompareViewToFileAsync()
+    public void FallbackStyle_ChangeValue_CompareViewToFile()
     {
-      await UnitTestUtility.LoadPackageAsync();
+   
       SettingsHandler settingsHandler = new SettingsHandler();
       SettingsProvider settingsProvider = new SettingsProvider();
       FormatSettingsModel formatSettingsModel = new FormatSettingsModel
@@ -115,9 +114,9 @@ namespace ClangPowerTools.Tests.Settings
     }
 
     [VsFact(Version = "2019-")]
-    public async Task FormatStyle_ChangeValue_CompareViewToFileAsync()
+    public void FormatStyle_ChangeValue_CompareViewToFile()
     {
-      await UnitTestUtility.LoadPackageAsync();
+   
       SettingsHandler settingsHandler = new SettingsHandler();
       SettingsProvider settingsProvider = new SettingsProvider();
       FormatSettingsModel formatSettingsModel = new FormatSettingsModel
@@ -134,9 +133,9 @@ namespace ClangPowerTools.Tests.Settings
     }
 
     [VsFact(Version = "2019-")]
-    public async Task CustomExecutable_ChangeValue_CompareViewToFileAsync()
+    public void CustomExecutable_ChangeValue_CompareViewToFile()
     {
-      await UnitTestUtility.LoadPackageAsync();
+   
       SettingsHandler settingsHandler = new SettingsHandler();
       SettingsProvider settingsProvider = new SettingsProvider();
       FormatSettingsModel formatSettingsModel = new FormatSettingsModel
