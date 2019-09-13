@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.Views;
+using System;
 using System.Diagnostics;
 using System.Windows.Input;
 
@@ -14,7 +15,9 @@ namespace ClangPowerTools
     private ICommand personalLicenseCommand;
     private ICommand trialLicenseCommand;
     private ICommand signInCommand;
+
     private readonly LicenseView licenseView;
+    private FreeTrialController freeTrialController = new FreeTrialController();
 
     #endregion
 
@@ -69,6 +72,7 @@ namespace ClangPowerTools
 
     public void CommercialLicenceExecute()
     {
+      freeTrialController.Start("9/12/2018 7:52:51 PM");
       Process.Start(new ProcessStartInfo("https://clangpowertools.com/download.html#pricing"));
       LoginView loginView = new LoginView();
       loginView.Show();
@@ -77,6 +81,7 @@ namespace ClangPowerTools
 
     public void PersonalLicenceExecute()
     {
+      freeTrialController.Start("9/12/2018 7:52:51 PM");
       LoginView loginView = new LoginView();
       loginView.Show();
       licenseView.Close();
@@ -84,7 +89,6 @@ namespace ClangPowerTools
 
     public void TrialLicenceExecute()
     {
-      FreeTrialController freeTrialController = new FreeTrialController();
       freeTrialController.Start();
       licenseView.Close();
     }

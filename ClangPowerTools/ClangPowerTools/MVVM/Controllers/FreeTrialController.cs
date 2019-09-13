@@ -25,6 +25,8 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public bool Start() => registryUtility.WriteKey(keyName, DateTime.Now.ToString());
 
+    public bool Start(string date) => registryUtility.WriteKey(keyName, date);
+
     public bool IsActive()
     {
       if(WasEverInTrial() == false)
