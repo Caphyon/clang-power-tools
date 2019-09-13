@@ -1,94 +1,111 @@
 ﻿using Xunit;
-using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Tests.Settings
 {
   [VsTestSettings(UIThread = true)]
   public class TidySettingsTests
   {
-    [VsFact(Version = "2017-")]
-    public async Task ClangTidyOptionsView_NotNullAsync()
+    [VsFact(Version = "2019-")]
+    public void TidySettings_NotNull()
     {
       //Arrange
-      await UnitTestUtility.LoadPackageAsync();
+      SettingsProvider settingsProvider = new SettingsProvider();
 
       //Act
-      ClangTidyOptionsView tidySettings = SettingsProvider.TidySettings;
+      TidySettingsModel tidySettingsModel = settingsProvider.GetTidySettingsModel();
 
       //Assert
-      Assert.NotNull(tidySettings);
+      Assert.NotNull(tidySettingsModel);
     }
 
-    [VsFact(Version = "2017-")]
-    public async Task FormatAfterTidy_ChangeValue_CompareViewToFileAsync()
+    [VsFact(Version = "2019-")]
+    public void FormatAfterTidy_ChangeValue_CompareViewToFile()
     {
-      await UnitTestUtility.LoadPackageAsync();
-      SettingsTestUtility.ResetClangTidyOptionsView();
-      ClangTidyOptionsView tidySettings = SettingsProvider.TidySettings;
+      SettingsHandler settingsHandler = new SettingsHandler();
+      SettingsProvider settingsProvider = new SettingsProvider();
+      TidySettingsModel tidySettingsModel = new TidySettingsModel
+      {
+        FormatAfterTidy = true
+      };
 
-      tidySettings.FormatAfterTidy = true;
-      SettingsTestUtility.SaveTidyOptions(tidySettings);
-      ClangTidyOptionsView clangTidySettingsFromFile = SettingsTestUtility.GetClangTidyOptionViewFromFile();
+      settingsProvider.SetTidySettingsModel(tidySettingsModel);
+      settingsHandler.SaveSettings();
+      settingsHandler.ResetSettings();
+      settingsHandler.LoadSettings();
 
-      Assert.Equal(tidySettings.FormatAfterTidy, clangTidySettingsFromFile.FormatAfterTidy);
+      Assert.Equal(tidySettingsModel.FormatAfterTidy, settingsProvider.GetTidySettingsModel().FormatAfterTidy);
     }
 
-    [VsFact(Version = "2017-")]
-    public async Task ClangTidyOnSave_ChangeValue_CompareViewToFileAsync()
+    [VsFact(Version = "2019-")]
+    public void ClangTidyOnSave_ChangeValue_CompareViewToFile()
     {
-      await UnitTestUtility.LoadPackageAsync();
-      SettingsTestUtility.ResetClangTidyOptionsView();
-      ClangTidyOptionsView tidySettings = SettingsProvider.TidySettings;
+      SettingsHandler settingsHandler = new SettingsHandler();
+      SettingsProvider settingsProvider = new SettingsProvider();
+      TidySettingsModel tidySettingsModel = new TidySettingsModel
+      {
+        TidyOnSave = true
+      };
 
-      tidySettings.AutoTidyOnSave = true;
-      SettingsTestUtility.SaveTidyOptions(tidySettings);
-      ClangTidyOptionsView clangTidySettingsFromFile = SettingsTestUtility.GetClangTidyOptionViewFromFile();
+      settingsProvider.SetTidySettingsModel(tidySettingsModel);
+      settingsHandler.SaveSettings();
+      settingsHandler.ResetSettings();
+      settingsHandler.LoadSettings();
 
-      Assert.Equal(tidySettings.AutoTidyOnSave, clangTidySettingsFromFile.AutoTidyOnSave);
+      Assert.Equal(tidySettingsModel.TidyOnSave, settingsProvider.GetTidySettingsModel().TidyOnSave);
     }
 
-    [VsFact(Version = "2017-")]
-    public async Task HeaderFilter_ChangeValue_CompareViewToFileAsync()
+    [VsFact(Version = "2019-")]
+    public void HeaderFilter_ChangeValue_CompareViewToFile()
     {
-      await UnitTestUtility.LoadPackageAsync();
-      SettingsTestUtility.ResetClangTidyOptionsView();
-      ClangTidyOptionsView tidySettings = SettingsProvider.TidySettings;
+      SettingsHandler settingsHandler = new SettingsHandler();
+      SettingsProvider settingsProvider = new SettingsProvider();
+      TidySettingsModel tidySettingsModel = new TidySettingsModel
+      {
+        HeaderFilter = "test"
+      };
 
-      tidySettings.HeaderFilter.HeaderFilters = "test";
-      SettingsTestUtility.SaveTidyOptions(tidySettings);
-      ClangTidyOptionsView clangTidySettingsFromFile = SettingsTestUtility.GetClangTidyOptionViewFromFile();
+      settingsProvider.SetTidySettingsModel(tidySettingsModel);
+      settingsHandler.SaveSettings();
+      settingsHandler.ResetSettings();
+      settingsHandler.LoadSettings();
 
-      Assert.Equal(tidySettings.HeaderFilter.HeaderFilters, clangTidySettingsFromFile.HeaderFilter.HeaderFilters);
+      Assert.Equal(tidySettingsModel.HeaderFilter, settingsProvider.GetTidySettingsModel().HeaderFilter);
     }
 
-    [VsFact(Version = "2017-")]
-    public async Task ChecksFrom_ChangeValue_CompareViewToFileAsync()
+    [VsFact(Version = "2019-")]
+    public void ChecksFrom_ChangeValue_CompareViewToFile()
     {
-      await UnitTestUtility.LoadPackageAsync();
-      SettingsTestUtility.ResetClangTidyOptionsView();
-      ClangTidyOptionsView tidySettings = SettingsProvider.TidySettings;
+      SettingsHandler settingsHandler = new SettingsHandler();
+      SettingsProvider settingsProvider = new SettingsProvider();
+      TidySettingsModel tidySettingsModel = new TidySettingsModel
+      {
+        UseChecksFrom = ClangTidyUseChecksFrom.TidyFile
+      };
 
-      tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
-      SettingsTestUtility.SaveTidyOptions(tidySettings);
-      ClangTidyOptionsView clangTidySettingsFromFile = SettingsTestUtility.GetClangTidyOptionViewFromFile();
+      settingsProvider.SetTidySettingsModel(tidySettingsModel);
+      settingsHandler.SaveSettings();
+      settingsHandler.ResetSettings();
+      settingsHandler.LoadSettings();
 
-      Assert.Equal(tidySettings.UseChecksFrom, clangTidySettingsFromFile.UseChecksFrom);
+      Assert.Equal(tidySettingsModel.UseChecksFrom, settingsProvider.GetTidySettingsModel().UseChecksFrom);
     }
 
-    [VsFact(Version = "2017-")]
-    public async Task CustomExecutable_ChangeValue_CompareViewToFileAsync()
+    [VsFact(Version = "2019-")]
+    public void CustomExecutable_ChangeValue_CompareViewToFile()
     {
-      await UnitTestUtility.LoadPackageAsync();
-      SettingsTestUtility.ResetClangTidyOptionsView();
-      ClangTidyOptionsView tidySettings = SettingsProvider.TidySettings;
+      SettingsHandler settingsHandler = new SettingsHandler();
+      SettingsProvider settingsProvider = new SettingsProvider();
+      TidySettingsModel tidySettingsModel = new TidySettingsModel
+      {
+        CustomExecutable = @"D:\Test.exe"
+      };
 
-      tidySettings.ClangTidyPath.Enable = true;
-      tidySettings.ClangTidyPath.Value = @"D:\Test.exe";
-      SettingsTestUtility.SaveTidyOptions(tidySettings);
-      ClangTidyOptionsView clangTidySettingsFromFile = SettingsTestUtility.GetClangTidyOptionViewFromFile();
+      settingsProvider.SetTidySettingsModel(tidySettingsModel);
+      settingsHandler.SaveSettings();
+      settingsHandler.ResetSettings();
+      settingsHandler.LoadSettings();
 
-      Assert.Equal(tidySettings.ClangTidyPath.Enable, clangTidySettingsFromFile.ClangTidyPath.Enable);
-      Assert.Equal(tidySettings.ClangTidyPath.Value, clangTidySettingsFromFile.ClangTidyPath.Value);
+      Assert.Equal(tidySettingsModel.CustomExecutable, settingsProvider.GetTidySettingsModel().CustomExecutable);
     }
   }
 }
