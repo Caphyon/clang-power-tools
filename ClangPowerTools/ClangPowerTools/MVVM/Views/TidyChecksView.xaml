@@ -24,8 +24,8 @@
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="30" />
-      <RowDefinition Height="500" />
       <RowDefinition Height="*" />
+      <RowDefinition Height="30" />
     </Grid.RowDefinitions>
 
     <!--  Search  -->
@@ -76,16 +76,6 @@
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>
-
-    <!--  Export tidy config  -->
-    <Button
-      Grid.Row="2"
-      Grid.Column="0"
-      Width="100"
-      Height="30"
-      Command="{Binding OkCommand}"
-      Content="OK"
-      FontSize="14" />
 
   </Grid>
 

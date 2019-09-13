@@ -13,6 +13,7 @@ namespace ClangPowerTools
   public class TidyChecksViewModel : INotifyPropertyChanged
   {
     #region Members
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     private string checkSearch = string.Empty;
@@ -20,12 +21,14 @@ namespace ClangPowerTools
     private SettingsProvider settingsProvider = new SettingsProvider();
     private TidyCheckModel selectedCheck = new TidyCheckModel();
     private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>();
-    private ICommand okCommand;
+    
     #endregion
 
     #region Properties
+
     public TidyChecksView TidyChecksView
-    { get
+    {
+      get
       {
         return tidyChecksView;
       }
@@ -75,26 +78,10 @@ namespace ClangPowerTools
       }
     }
 
-    public bool CanExecute
-    {
-      get
-      {
-        return true;
-      }
-    }
-
     #endregion
-
-
-    #region Commands
-    public ICommand OkCommand
-    {
-      get => okCommand ?? (okCommand = new RelayCommand(() => UpdateSelectedChecksCommand(), () => CanExecute));
-    }
-    #endregion
-
 
     #region Methods
+
     public string GetSelectedChecks()
     {
       StringBuilder stringBuilder = new StringBuilder();
@@ -107,11 +94,6 @@ namespace ClangPowerTools
         }
       }
       return stringBuilder.ToString();
-    }
-
-    private void UpdateSelectedChecksCommand()
-    {
-      TidyChecksView.Close();
     }
 
     private void TickPredefinedChecks()
@@ -147,7 +129,6 @@ namespace ClangPowerTools
         TickPredefinedChecks();
       }
     }
-
 
     #endregion
   }
