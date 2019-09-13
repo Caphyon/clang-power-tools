@@ -257,9 +257,7 @@
       <VSIXSubPath>.</VSIXSubPath>
     </Content>
     <Resource Include="Resources\LoginBackground.png" />
-    <Content Include="Resources\CPTLogo.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
+    <Resource Include="Resources\CPTLogo.png" />
     <Resource Include="Resources\ClangFormatIcon.png" />
     <Resource Include="Resources\ClangPowerToolsIco.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -269,6 +267,10 @@
     <Resource Include="Resources\CleanSearchIcon.PNG" />
     <Resource Include="Resources\CompileIcon.png" />
     <Resource Include="Resources\SearchIcon.PNG" />
+    <Content Include="Resources\CPTLogoManageExtensionVS.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\EmptyIcon.png" />
     <Resource Include="Resources\IgnoreIcon.png" />
     <Resource Include="Resources\SettingsBackground.png" />

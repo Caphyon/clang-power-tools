@@ -8,8 +8,8 @@
         <License>Resources\LICENSE.txt</License>
         <GettingStartedGuide>http://www.clangpowertools.com</GettingStartedGuide>
         <ReleaseNotes>http://www.clangpowertools.com/CHANGELOG</ReleaseNotes>
-        <Icon>Resources\Icon.png</Icon>
-        <PreviewImage>Resources\CPTLogo.png</PreviewImage>
+        <Icon>Resources\CPTLogoManageExtensionVS.png</Icon>
+        <PreviewImage>Resources\CPTLogoManageExtensionVS.png</PreviewImage>
         <Tags>clang;clang-tidy;clang-format;compile;modernize;CoreGuidelines;static analysis;tidy;C++;cpp;analyze</Tags>
     </Metadata>
     <Installation>
