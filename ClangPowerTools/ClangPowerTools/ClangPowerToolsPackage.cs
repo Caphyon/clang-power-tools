@@ -331,7 +331,7 @@ namespace ClangPowerTools
 
         if ( licenseController.CheckLocalLicense() )
         {
-          freeTrialController.Start("9/12/2018 7:52:51 PM");
+          freeTrialController.MarkAsExpired();
         }
 
         if (freeTrialController.WasEverInTrial() == false)

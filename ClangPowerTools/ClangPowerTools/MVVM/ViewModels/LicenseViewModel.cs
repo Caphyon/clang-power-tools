@@ -72,7 +72,7 @@ namespace ClangPowerTools
 
     public void CommercialLicenceExecute()
     {
-      freeTrialController.Start("9/12/2018 7:52:51 PM");
+      freeTrialController.MarkAsExpired();
       Process.Start(new ProcessStartInfo("https://clangpowertools.com/download.html#pricing"));
       LoginView loginView = new LoginView();
       loginView.Show();
@@ -81,7 +81,7 @@ namespace ClangPowerTools
 
     public void PersonalLicenceExecute()
     {
-      freeTrialController.Start("9/12/2018 7:52:51 PM");
+      freeTrialController.MarkAsExpired();
       LoginView loginView = new LoginView();
       loginView.Show();
       licenseView.Close();

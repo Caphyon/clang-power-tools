@@ -11,7 +11,8 @@ namespace ClangPowerTools.MVVM.Controllers
 
     private readonly string registryName = @"Software\Caphyon\cpt";
     private readonly string keyName = "trial";
-    private readonly int days = 7;
+    private readonly int trialDays = 7;
+    private readonly string expiredDate = "9/12/2018 7:52:51 PM";
 
     #endregion
 
@@ -25,7 +26,7 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public bool Start() => registryUtility.WriteKey(keyName, DateTime.Now.ToString());
 
-    public bool Start(string date) => registryUtility.WriteKey(keyName, date);
+    public bool MarkAsExpired() => registryUtility.WriteKey(keyName, expiredDate);
 
     public bool IsActive()
     {
@@ -37,7 +38,7 @@ namespace ClangPowerTools.MVVM.Controllers
       var freeTrialStartTimeAsString = registryUtility.ReadKey(keyName);
       var freeTrialStartTime = DateTime.Parse(freeTrialStartTimeAsString);
 
-      return DateTime.Now.Subtract(freeTrialStartTime).Days <= days;
+      return DateTime.Now.Subtract(freeTrialStartTime).Days <= trialDays;
     }
 
     public bool WasEverInTrial() => registryUtility.Exists(registryName);
