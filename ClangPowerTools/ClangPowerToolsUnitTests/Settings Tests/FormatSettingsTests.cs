@@ -1,5 +1,4 @@
 ﻿using Xunit;
-using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Tests.Settings
 {
@@ -7,21 +6,21 @@ namespace ClangPowerTools.Tests.Settings
   public class FormatSettingsTests
   {
     [VsFact(Version = "2019-")]
-    public void ClangFormatOptionsView_NotNull()
+    public void FormatSettings_NotNull()
     {
       //Arrange
       SettingsProvider settingsProvider = new SettingsProvider();
 
       //Act
-      CompilerSettingsModel compilerSettingsModel = settingsProvider.GetCompilerSettingsModel();
+      FormatSettingsModel formatSettingsModel = settingsProvider.GetFormatSettingsModel();
 
       //Assert
-      Assert.NotNull(compilerSettingsModel);
+      Assert.NotNull(formatSettingsModel);
     }
 
     [VsFact(Version = "2019-")]
     public void FormatOnSave_ChangeValue_CompareViewToFile()
-    {  
+    {
       SettingsHandler settingsHandler = new SettingsHandler();
       SettingsProvider settingsProvider = new SettingsProvider();
       FormatSettingsModel formatSettingsModel = new FormatSettingsModel
@@ -40,7 +39,7 @@ namespace ClangPowerTools.Tests.Settings
     [VsFact(Version = "2019-")]
     public void FileExtensions_ChangeValue_CompareViewToFile()
     {
-   
+
       SettingsHandler settingsHandler = new SettingsHandler();
       SettingsProvider settingsProvider = new SettingsProvider();
       FormatSettingsModel formatSettingsModel = new FormatSettingsModel
@@ -59,13 +58,13 @@ namespace ClangPowerTools.Tests.Settings
     [VsFact(Version = "2019-")]
     public void FilesToIgnore_ChangeValue_CompareViewToFile()
     {
-   
+
       SettingsHandler settingsHandler = new SettingsHandler();
       SettingsProvider settingsProvider = new SettingsProvider();
       FormatSettingsModel formatSettingsModel = new FormatSettingsModel
       {
         FilesToIgnore = "Test.cpp"
-    };
+      };
 
       settingsProvider.SetFormatSettingsModel(formatSettingsModel);
       settingsHandler.SaveSettings();
@@ -78,7 +77,7 @@ namespace ClangPowerTools.Tests.Settings
     [VsFact(Version = "2019-")]
     public void AssumeFilename_ChangeValue_CompareViewToFile()
     {
-   
+
       SettingsHandler settingsHandler = new SettingsHandler();
       SettingsProvider settingsProvider = new SettingsProvider();
       FormatSettingsModel formatSettingsModel = new FormatSettingsModel
@@ -97,7 +96,7 @@ namespace ClangPowerTools.Tests.Settings
     [VsFact(Version = "2019-")]
     public void FallbackStyle_ChangeValue_CompareViewToFile()
     {
-   
+
       SettingsHandler settingsHandler = new SettingsHandler();
       SettingsProvider settingsProvider = new SettingsProvider();
       FormatSettingsModel formatSettingsModel = new FormatSettingsModel
@@ -116,7 +115,7 @@ namespace ClangPowerTools.Tests.Settings
     [VsFact(Version = "2019-")]
     public void FormatStyle_ChangeValue_CompareViewToFile()
     {
-   
+
       SettingsHandler settingsHandler = new SettingsHandler();
       SettingsProvider settingsProvider = new SettingsProvider();
       FormatSettingsModel formatSettingsModel = new FormatSettingsModel
@@ -135,13 +134,13 @@ namespace ClangPowerTools.Tests.Settings
     [VsFact(Version = "2019-")]
     public void CustomExecutable_ChangeValue_CompareViewToFile()
     {
-   
+
       SettingsHandler settingsHandler = new SettingsHandler();
       SettingsProvider settingsProvider = new SettingsProvider();
       FormatSettingsModel formatSettingsModel = new FormatSettingsModel
       {
         CustomExecutable = @"D:\Test.exe"
-    };
+      };
 
       settingsProvider.SetFormatSettingsModel(formatSettingsModel);
       settingsHandler.SaveSettings();
