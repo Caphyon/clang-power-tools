@@ -108,6 +108,13 @@ namespace ClangPowerTools
     {
       FreeTrialController freeTrialController = new FreeTrialController();
 
+      if (freeTrialController.WasEverInTrial() == false && activeLicense == false)
+      {
+        LicenseView licenseView = new LicenseView();
+        licenseView.ShowDialog();
+        return;
+      }
+
       if (freeTrialController.IsActive() == false && activeLicense == false)
       {
         LoginView loginView = new LoginView();

@@ -328,22 +328,13 @@ namespace ClangPowerTools
 
         FreeTrialController freeTrialController = new FreeTrialController();
         LicenseController licenseController = new LicenseController();
-
-        if ( licenseController.CheckLocalLicense() )
+        if (licenseController.CheckLocalLicense())
         {
           freeTrialController.MarkAsExpired();
         }
 
-        if (freeTrialController.WasEverInTrial() == false)
-        {
-          LicenseView licenseView = new LicenseView();
-          licenseView.Show();
-        }
-        else
-        {
-          ReleaseNotesView releaseNotesView = new ReleaseNotesView();
-          releaseNotesView.Show();
-        }
+        ReleaseNotesView releaseNotesView = new ReleaseNotesView();
+        releaseNotesView.Show();
       }
     }
 
