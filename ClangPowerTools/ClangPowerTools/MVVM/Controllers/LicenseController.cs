@@ -16,7 +16,7 @@ namespace ClangPowerTools.MVVM.Controllers
     #region Members
 
     public static event EventHandler<LicenseEventArgs> OnLicenseStatusChanced;
-
+    private readonly string fileName = "ctpjwt";
     #endregion
 
     #region Public Methods
@@ -34,10 +34,10 @@ namespace ClangPowerTools.MVVM.Controllers
       return licenceStatus;
     }
 
-    private bool CheckLocalLicense()
+    public bool CheckLocalLicense()
     {
       SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
-      string filePath = settingsPathBuilder.GetPath("ctpjwt");
+      string filePath = settingsPathBuilder.GetPath(fileName);
       return File.Exists(filePath);
     }
 
