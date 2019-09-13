@@ -3,11 +3,13 @@
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-  xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views"
+  xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   Title="Release Notes"
   Width="550"
   Height="720"
+  d:DataContext="{d:DesignInstance local:ReleaseNotesViewModel,
+                                   IsDesignTimeCreatable=True}"
   ResizeMode="NoResize"
   WindowStartupLocation="CenterScreen"
   WindowStyle="ToolWindow"
@@ -237,7 +239,7 @@
         Grid.Column="1"
         HorizontalAlignment="Left"
         VerticalAlignment="Top">
-        <Hyperlink NavigateUri="https://clangpowertools.com/blog/future-of-clang-power-tools.html" RequestNavigate="Hyperlink_Navigate">
+        <Hyperlink Command="{Binding OpenBlog}">
           The future of Clang Power Tools
         </Hyperlink>
       </TextBlock>
@@ -251,7 +253,7 @@
         VerticalAlignment="Top"
         Background="#FFBF31"
         BorderThickness="0"
-        Click="Button_Click"
+        Command="{Binding Upgrade}"
         Content="UPGRADE"
         FontSize="16"
         FontWeight="Bold"
