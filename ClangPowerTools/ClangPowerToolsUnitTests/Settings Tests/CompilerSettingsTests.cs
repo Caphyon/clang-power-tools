@@ -9,10 +9,10 @@ namespace ClangPowerTools.Tests.Settings
     public void CompilerSettings_NotNull()
     {
       //Arrange
-      SettingsProvider settingsProvider = new SettingsProvider();
+      var settingsProvider = new SettingsProvider();
 
       //Act
-      CompilerSettingsModel compilerSettingsModel = settingsProvider.GetCompilerSettingsModel();
+      var compilerSettingsModel = settingsProvider.GetCompilerSettingsModel();
 
       //Assert
       Assert.NotNull(compilerSettingsModel);
@@ -21,9 +21,9 @@ namespace ClangPowerTools.Tests.Settings
     [VsFact(Version = "2019-")]
     public void CompileFlags_ChangeValue_CompareViewToFile()
     {
-      SettingsHandler settingsHandler = new SettingsHandler();
-      SettingsProvider settingsProvider = new SettingsProvider();
-      CompilerSettingsModel compilerSettingsModel = new CompilerSettingsModel
+      var settingsHandler = new SettingsHandler();
+      var settingsProvider = new SettingsProvider();
+      var compilerSettingsModel = new CompilerSettingsModel
       {
         CompileFlags = "-Wall"
       };
@@ -39,9 +39,9 @@ namespace ClangPowerTools.Tests.Settings
     [VsFact(Version = "2019-")]
     public void FilesToIgnore_ChangeValue_CompareViewToFile()
     {
-      SettingsHandler settingsHandler = new SettingsHandler();
-      SettingsProvider settingsProvider = new SettingsProvider();
-      CompilerSettingsModel compilerSettingsModel = new CompilerSettingsModel
+      var settingsHandler = new SettingsHandler();
+      var settingsProvider = new SettingsProvider();
+      var compilerSettingsModel = new CompilerSettingsModel
       {
         FilesToIgnore = "Test.cpp"
       };
@@ -57,9 +57,9 @@ namespace ClangPowerTools.Tests.Settings
     [VsFact(Version = "2019-")]
     public void ProjectToIgnore_ChangeValue_CompareViewToFile()
     {
-      SettingsHandler settingsHandler = new SettingsHandler();
-      SettingsProvider settingsProvider = new SettingsProvider();
-      CompilerSettingsModel compilerSettingsModel = new CompilerSettingsModel
+      var settingsHandler = new SettingsHandler();
+      var settingsProvider = new SettingsProvider();
+      var compilerSettingsModel = new CompilerSettingsModel
       {
         ProjectsToIgnore = "TestProject"
       };
@@ -75,9 +75,9 @@ namespace ClangPowerTools.Tests.Settings
     [VsFact(Version = "2019-")]
     public void AdditionalIncludes_ChangeValue_CompareViewToFile()
     {
-      SettingsHandler settingsHandler = new SettingsHandler();
-      SettingsProvider settingsProvider = new SettingsProvider();
-      CompilerSettingsModel compilerSettingsModel = new CompilerSettingsModel
+      var settingsHandler = new SettingsHandler();
+      var settingsProvider = new SettingsProvider();
+      var compilerSettingsModel = new CompilerSettingsModel
       {
         AdditionalIncludes = ClangGeneralAdditionalIncludes.SystemIncludeDirectories
       };
@@ -93,9 +93,9 @@ namespace ClangPowerTools.Tests.Settings
     [VsFact(Version = "2019-")]
     public void TreatWarningsAsErrors_ChangeValue_CompareViewToFile()
     {
-      SettingsHandler settingsHandler = new SettingsHandler();
-      SettingsProvider settingsProvider = new SettingsProvider();
-      CompilerSettingsModel compilerSettingsModel = new CompilerSettingsModel
+      var settingsHandler = new SettingsHandler();
+      var settingsProvider = new SettingsProvider();
+      var compilerSettingsModel = new CompilerSettingsModel
       {
         WarningsAsErrors = true
       };
@@ -111,9 +111,9 @@ namespace ClangPowerTools.Tests.Settings
     [VsFact(Version = "2019-")]
     public void ContinueOnError_ChangeValue_CompareViewToFile()
     {
-      SettingsHandler settingsHandler = new SettingsHandler();
-      SettingsProvider settingsProvider = new SettingsProvider();
-      CompilerSettingsModel compilerSettingsModel = new CompilerSettingsModel
+      var settingsHandler = new SettingsHandler();
+      var settingsProvider = new SettingsProvider();
+      var compilerSettingsModel = new CompilerSettingsModel
       {
         ContinueOnError = true
       };
@@ -129,9 +129,9 @@ namespace ClangPowerTools.Tests.Settings
     [VsFact(Version = "2019-")]
     public void ClangCompileAfterVsCompile_ChangeValue_CompareViewToFile()
     {
-      SettingsHandler settingsHandler = new SettingsHandler();
-      SettingsProvider settingsProvider = new SettingsProvider();
-      CompilerSettingsModel compilerSettingsModel = new CompilerSettingsModel
+      var settingsHandler = new SettingsHandler();
+      var settingsProvider = new SettingsProvider();
+      var compilerSettingsModel = new CompilerSettingsModel
       {
         ClangAfterMSVC = true
       };
@@ -147,9 +147,9 @@ namespace ClangPowerTools.Tests.Settings
     [VsFact(Version = "2019-")]
     public void VerboseMode_ChangeValue_CompareViewToFile()
     {
-      SettingsHandler settingsHandler = new SettingsHandler();
-      SettingsProvider settingsProvider = new SettingsProvider();
-      CompilerSettingsModel compilerSettingsModel = new CompilerSettingsModel
+      var settingsHandler = new SettingsHandler();
+      var settingsProvider = new SettingsProvider();
+      var compilerSettingsModel = new CompilerSettingsModel
       {
         VerboseMode = true
       };

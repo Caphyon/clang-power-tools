@@ -9,10 +9,10 @@ namespace ClangPowerTools.Tests.Settings
     public void FormatSettings_NotNull()
     {
       //Arrange
-      SettingsProvider settingsProvider = new SettingsProvider();
+      var settingsProvider = new SettingsProvider();
 
       //Act
-      FormatSettingsModel formatSettingsModel = settingsProvider.GetFormatSettingsModel();
+      var formatSettingsModel = settingsProvider.GetFormatSettingsModel();
 
       //Assert
       Assert.NotNull(formatSettingsModel);
@@ -21,9 +21,9 @@ namespace ClangPowerTools.Tests.Settings
     [VsFact(Version = "2019-")]
     public void FormatOnSave_ChangeValue_CompareViewToFile()
     {
-      SettingsHandler settingsHandler = new SettingsHandler();
-      SettingsProvider settingsProvider = new SettingsProvider();
-      FormatSettingsModel formatSettingsModel = new FormatSettingsModel
+      var settingsHandler = new SettingsHandler();
+      var settingsProvider = new SettingsProvider();
+      var formatSettingsModel = new FormatSettingsModel
       {
         FormatOnSave = true
       };
@@ -40,9 +40,9 @@ namespace ClangPowerTools.Tests.Settings
     public void FileExtensions_ChangeValue_CompareViewToFile()
     {
 
-      SettingsHandler settingsHandler = new SettingsHandler();
-      SettingsProvider settingsProvider = new SettingsProvider();
-      FormatSettingsModel formatSettingsModel = new FormatSettingsModel
+      var settingsHandler = new SettingsHandler();
+      var settingsProvider = new SettingsProvider();
+      var formatSettingsModel = new FormatSettingsModel
       {
         FileExtensions = ".cpp"
       };
@@ -59,9 +59,9 @@ namespace ClangPowerTools.Tests.Settings
     public void FilesToIgnore_ChangeValue_CompareViewToFile()
     {
 
-      SettingsHandler settingsHandler = new SettingsHandler();
-      SettingsProvider settingsProvider = new SettingsProvider();
-      FormatSettingsModel formatSettingsModel = new FormatSettingsModel
+      var settingsHandler = new SettingsHandler();
+      var settingsProvider = new SettingsProvider();
+      var formatSettingsModel = new FormatSettingsModel
       {
         FilesToIgnore = "Test.cpp"
       };
@@ -78,9 +78,9 @@ namespace ClangPowerTools.Tests.Settings
     public void AssumeFilename_ChangeValue_CompareViewToFile()
     {
 
-      SettingsHandler settingsHandler = new SettingsHandler();
-      SettingsProvider settingsProvider = new SettingsProvider();
-      FormatSettingsModel formatSettingsModel = new FormatSettingsModel
+      var settingsHandler = new SettingsHandler();
+      var settingsProvider = new SettingsProvider();
+      var formatSettingsModel = new FormatSettingsModel
       {
         AssumeFilename = "Test"
       };
@@ -97,9 +97,9 @@ namespace ClangPowerTools.Tests.Settings
     public void FallbackStyle_ChangeValue_CompareViewToFile()
     {
 
-      SettingsHandler settingsHandler = new SettingsHandler();
-      SettingsProvider settingsProvider = new SettingsProvider();
-      FormatSettingsModel formatSettingsModel = new FormatSettingsModel
+      var settingsHandler = new SettingsHandler();
+      var settingsProvider = new SettingsProvider();
+      var formatSettingsModel = new FormatSettingsModel
       {
         FallbackStyle = ClangFormatFallbackStyle.Mozilla
       };
@@ -116,9 +116,9 @@ namespace ClangPowerTools.Tests.Settings
     public void FormatStyle_ChangeValue_CompareViewToFile()
     {
 
-      SettingsHandler settingsHandler = new SettingsHandler();
-      SettingsProvider settingsProvider = new SettingsProvider();
-      FormatSettingsModel formatSettingsModel = new FormatSettingsModel
+      var settingsHandler = new SettingsHandler();
+      var settingsProvider = new SettingsProvider();
+      var formatSettingsModel = new FormatSettingsModel
       {
         Style = ClangFormatStyle.Mozilla
       };
@@ -135,9 +135,9 @@ namespace ClangPowerTools.Tests.Settings
     public void CustomExecutable_ChangeValue_CompareViewToFile()
     {
 
-      SettingsHandler settingsHandler = new SettingsHandler();
-      SettingsProvider settingsProvider = new SettingsProvider();
-      FormatSettingsModel formatSettingsModel = new FormatSettingsModel
+      var settingsHandler = new SettingsHandler();
+      var settingsProvider = new SettingsProvider();
+      var formatSettingsModel = new FormatSettingsModel
       {
         CustomExecutable = @"D:\Test.exe"
       };
