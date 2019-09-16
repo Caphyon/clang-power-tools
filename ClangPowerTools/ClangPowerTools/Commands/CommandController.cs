@@ -5,7 +5,6 @@ using ClangPowerTools.Helpers;
 using ClangPowerTools.Handlers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
-using ClangPowerTools.Views;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -13,6 +12,7 @@ using System;
 using System.IO;
 using System.Linq;
 using Task = System.Threading.Tasks.Task;
+using ClangPowerTools.MVVM.Controllers;
 
 namespace ClangPowerTools
 {
@@ -106,7 +106,16 @@ namespace ClangPowerTools
 
     public async void Execute(object sender, EventArgs e)
     {
-      if (activeLicense == false)
+      FreeTrialController freeTrialController = new FreeTrialController();
+
+      if (freeTrialController.WasEverInTrial() == false && activeLicense == false)
+      {
+        LicenseView licenseView = new LicenseView();
+        licenseView.ShowDialog();
+        return;
+      }
+
+      if (freeTrialController.IsActive() == false && activeLicense == false)
       {
         LoginView loginView = new LoginView();
         loginView.ShowDialog();

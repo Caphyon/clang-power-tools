@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-using System.Windows;
-using System.Windows.Navigation;
+﻿using System.Windows;
 
 namespace ClangPowerTools.MVVM.Views
 {
@@ -12,17 +10,8 @@ namespace ClangPowerTools.MVVM.Views
     public ReleaseNotesView()
     {
       InitializeComponent();
+      DataContext = new ReleaseNotesViewModel();
     }
 
-    private void Button_Click(object sender, RoutedEventArgs e)
-    {
-      Process.Start(new ProcessStartInfo("https://clangpowertools.com/download.html#pricing"));
-    }
-
-    private void Hyperlink_Navigate(object sender, RequestNavigateEventArgs e)
-    {
-      Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
-      e.Handled = true;
-    }
   }
 }

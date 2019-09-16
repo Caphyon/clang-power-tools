@@ -326,6 +326,13 @@ namespace ClangPowerTools
 
         mSettingsHandler.SaveSettings();
 
+        FreeTrialController freeTrialController = new FreeTrialController();
+        LicenseController licenseController = new LicenseController();
+        if (licenseController.CheckLocalLicense())
+        {
+          freeTrialController.MarkAsExpired();
+        }
+
         ReleaseNotesView releaseNotesView = new ReleaseNotesView();
         releaseNotesView.Show();
       }
