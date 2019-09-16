@@ -1,12 +1,10 @@
-﻿using ClangPowerTools.MVVM.Commands;
-using ClangPowerTools.Views;
+﻿using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Input;
 
 namespace ClangPowerTools
 {
@@ -21,7 +19,7 @@ namespace ClangPowerTools
     private SettingsProvider settingsProvider = new SettingsProvider();
     private TidyCheckModel selectedCheck = new TidyCheckModel();
     private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>();
-    
+
     #endregion
 
     #region Properties
@@ -34,9 +32,15 @@ namespace ClangPowerTools
       }
       set
       {
-        InitializeChecks();
         tidyChecksView = value;
       }
+    }
+
+    public TidyChecksViewModel()
+    {
+      InitializeChecks();
+      TidySettingsModel tidySettingsModel = settingsProvider.GetTidySettingsModel();
+      tidySettingsModel.PredefinedChecks = GetSelectedChecks();
     }
 
     public List<TidyCheckModel> TidyChecksList
