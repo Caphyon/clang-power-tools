@@ -1,4 +1,6 @@
-﻿using Xunit;
+﻿using System.Collections.Generic;
+using System.Text;
+using Xunit;
 
 namespace ClangPowerTools.Tests.Settings
 {
@@ -113,9 +115,21 @@ namespace ClangPowerTools.Tests.Settings
     {
       var settingsHandler = new SettingsHandler();
       var settingsProvider = new SettingsProvider();
+      var tidyPredefinedChecks = new List<TidyCheckModel>(TidyChecksClean.Checks);
+      var checks = new StringBuilder();
+
+      tidyPredefinedChecks[0].IsChecked = true;
+      foreach (TidyCheckModel item in tidyPredefinedChecks)
+      {
+        if (item.IsChecked)
+        {
+          checks.Append(item.Name).Append(";");
+        }
+      }
+
       var tidySettingsModel = new TidySettingsModel
       {
-        CustomExecutable = @"D:\Test.exe"
+        PredefinedChecks = checks.ToString()
       };
 
       settingsProvider.SetTidySettingsModel(tidySettingsModel);
@@ -123,7 +137,7 @@ namespace ClangPowerTools.Tests.Settings
       settingsHandler.ResetSettings();
       settingsHandler.LoadSettings();
 
-      Assert.Equal(tidySettingsModel.CustomExecutable, settingsProvider.GetTidySettingsModel().CustomExecutable);
+      Assert.Equal(tidySettingsModel.PredefinedChecks, settingsProvider.GetTidySettingsModel().PredefinedChecks);
     }
 
     [VsFact(Version = "2019-")]
