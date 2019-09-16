@@ -75,7 +75,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 5.1" />
+        Text="version 5.2" />
 
       <ListView
         Grid.Row="3"
@@ -110,51 +110,36 @@
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="&#x2022; CMake support for open file"
+          Text="&#x2022; 14-days free trial support"
           TextWrapping="Wrap" />
 
         <TextBlock
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="&#x2022; Complete UI redesign"
+          Text="&#x2022; Now you can ignore an entire project at clang compile time"
           TextWrapping="Wrap" />
 
         <TextBlock
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="&#x2022; Export/Import settings configuration"
+          Text="&#x2022; Ignore folder support for compile and format commands"
           TextWrapping="Wrap" />
 
         <TextBlock
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="&#x2022; Settings are now saved as JSON"
+          Text="&#x2022; Possibility to convert incompatible clang encoding files to UTF-8"
           TextWrapping="Wrap" />
 
         <TextBlock
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="&#x2022; Support to export .clang-tidy config file"
+          Text="&#x2022; Commands are now disabled for unrelated C++ projects"
           TextWrapping="Wrap" />
-
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="&#x2022; Improve the email and password validation"
-          TextWrapping="Wrap" />
-
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="&#x2022; Offline support"
-          TextWrapping="Wrap" />
-
 
         <!--  Bug Fixes  -->
         <TextBlock
@@ -167,35 +152,21 @@
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="&#x2022; Crash on Visual Studio 2019 when running clang commands"
+          Text="&#x2022; Handle corrupt JSON config file"
           TextWrapping="Wrap" />
 
         <TextBlock
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="&#x2022; Crash on Visual Studio 2015 when running clang-tidy"
+          Text="&#x2022; Fix import for tidy predefined checks"
           TextWrapping="Wrap" />
 
         <TextBlock
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="&#x2022; Crash when Tidy on save is active"
-          TextWrapping="Wrap" />
-
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="&#x2022; Calibrate focus between Error List and Output window"
-          TextWrapping="Wrap" />
-
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="&#x2022; Clang compile warnings detection"
+          Text="&#x2022; UI uniformization for predefined checks view"
           TextWrapping="Wrap" />
 
       </ListView>
