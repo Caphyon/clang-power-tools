@@ -31,17 +31,14 @@ namespace ClangPowerTools
     /// </summary>
     public void InitializeSettings()
     {
-      _ = Task.Run(() =>
-       {
-         if (SettingsFileExists())
-         {
-           LoadSettings();
-         }
-         else
-         {
-           ImportOldSettings();
-         }
-       });
+      if (SettingsFileExists())
+      {
+        LoadSettings();
+      }
+      else
+      {
+        ImportOldSettings();
+      }
     }
 
     /// <summary>
