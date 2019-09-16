@@ -11,8 +11,8 @@ namespace ClangPowerTools.MVVM.Controllers
 
     private readonly string registryName = @"Software\Caphyon\Cpt";
     private readonly string keyName = "Trial";
-    private readonly int trialDays = 7;
-    private readonly string expiredDate = "9/12/2018 7:52:51 PM";
+    private readonly int trialDays = 14;
+    private readonly string expiredDate = "9/12/2002 7:52:51 PM";
 
     #endregion
 
