@@ -5,7 +5,7 @@
     public static CompilerSettingsViewModel CompilerSettingsViewModel { get; } = new CompilerSettingsViewModel();
     public static FormatSettingsViewModel FormatSettingsViewModel { get; } = new FormatSettingsViewModel();
     public static TidySettingsViewModel TidySettingsViewModel { get; } = new TidySettingsViewModel();
-    public static TidyChecksViewModel TidyChecksViewModel { get; set; } = new TidyChecksViewModel();
+    public static TidyChecksViewModel TidyChecksViewModel { get; } = new TidyChecksViewModel();
     public static GeneralSettingsViewModel GeneralSettingsViewModel { get; } = new GeneralSettingsViewModel();
 
     public CompilerSettingsModel GetCompilerSettingsModel()

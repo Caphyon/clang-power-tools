@@ -32,6 +32,7 @@ namespace ClangPowerTools
       }
       set
       {
+        InitializeChecks();
         tidyChecksView = value;
       }
     }
@@ -39,8 +40,6 @@ namespace ClangPowerTools
     public TidyChecksViewModel()
     {
       InitializeChecks();
-      var tidySettingsModel = settingsProvider.GetTidySettingsModel();
-      tidySettingsModel.PredefinedChecks = GetSelectedChecks();
     }
 
     public List<TidyCheckModel> TidyChecksList
@@ -90,7 +89,7 @@ namespace ClangPowerTools
     {
       var stringBuilder = new StringBuilder();
 
-      foreach (TidyCheckModel item in TidyChecksList)
+      foreach (TidyCheckModel item in tidyChecksList)
       {
         if (item.IsChecked)
         {
@@ -125,11 +124,13 @@ namespace ClangPowerTools
 
       if (string.IsNullOrEmpty(predefinedChecks))
       {
-        tidyChecksList = new List<TidyCheckModel>(TidyChecks.Checks);
+        var tidyChecks = new TidyChecks();
+        tidyChecksList = new List<TidyCheckModel>(tidyChecks.Checks);
       }
       else
       {
-        tidyChecksList = new List<TidyCheckModel>(TidyChecksClean.Checks);
+        var tidyChecksClean = new TidyChecksClean();
+        tidyChecksList = new List<TidyCheckModel>(tidyChecksClean.Checks);
         TickPredefinedChecks();
       }
     }

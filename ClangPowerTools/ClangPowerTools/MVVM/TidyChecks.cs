@@ -2,9 +2,9 @@
 
 namespace ClangPowerTools
 {
-  public static class TidyChecks
+  public class TidyChecks
   {
-    public static List<TidyCheckModel> Checks { get; set; } = new List<TidyCheckModel>
+    public List<TidyCheckModel> Checks { get; set; } = new List<TidyCheckModel>
   {
     new TidyCheckModel{Name = "abseil-duration-addition", Description = "Check for cases where addition should be performed in the absl::Time domain. When adding two values, and one is known to be an absl::Time, we can infer that the other should be interpreted as an absl::Duration of a similar scale, and make that inference explicit.", IsChecked = false },
     new TidyCheckModel{Name = "abseil-duration-comparison", Description = "Checks for comparisons which should be in the absl::Duration domain instead of the floating point or integer domains.", IsChecked = false },

@@ -115,7 +115,9 @@ namespace ClangPowerTools.Tests.Settings
     {
       var settingsHandler = new SettingsHandler();
       var settingsProvider = new SettingsProvider();
-      var tidyPredefinedChecks = new List<TidyCheckModel>(TidyChecksClean.Checks);
+
+      var tidyChecks = new TidyChecks();
+      var tidyPredefinedChecks = new List<TidyCheckModel>(tidyChecks.Checks);
       var checks = new StringBuilder();
 
       tidyPredefinedChecks[0].IsChecked = true;
