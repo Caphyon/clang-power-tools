@@ -1,6 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Views;
-using ClangPowerTools.MVVM.WebApi;
 using System.Diagnostics;
 using System.Windows.Input;
 
@@ -10,9 +9,11 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private readonly TrialExpiredView trialExpiredView;
-    private ICommand createAccountCommand;
+    private ICommand commercialLicenseCommand;
+    private ICommand personalLicenseCommand;
     private ICommand signInCommand;
+
+    private readonly TrialExpiredView trialExpiredView;
 
     #endregion
 
@@ -26,9 +27,9 @@ namespace ClangPowerTools
       }
     }
 
-    #endregion
+    #region Constructor
 
-    #region Constructor 
+    public TrialExpiredViewModel() { }
 
     public TrialExpiredViewModel(TrialExpiredView view)
     {
@@ -37,35 +38,52 @@ namespace ClangPowerTools
 
     #endregion
 
+    #endregion
+
     #region Commands
 
-    public ICommand CreateAccount
+    public ICommand CommercialLicense
     {
-      get => createAccountCommand ?? (createAccountCommand = new RelayCommand(() => CreatAccountAction(), () => CanExecute));
+      get => commercialLicenseCommand ?? (commercialLicenseCommand = new RelayCommand(() => CommercialLicenceExecute(), () => CanExecute));
+    }
+
+    public ICommand PersonalLicense
+    {
+      get => personalLicenseCommand ?? (personalLicenseCommand = new RelayCommand(() => PersonalLicenceExecute(), () => CanExecute));
     }
 
     public ICommand SignIn
     {
-      get => signInCommand ?? (signInCommand = new RelayCommand(() => SignInAction(), () => CanExecute));
+      get => signInCommand ?? (signInCommand = new RelayCommand(() => PersonalLicenceExecute(), () => CanExecute));
+    }
+
+    #endregion
+
+    #region Methods
+
+    public void CommercialLicenceExecute()
+    {
+      Process.Start(new ProcessStartInfo("https://clangpowertools.com/download.html#pricing"));
+      ShowLoginView();
+    }
+
+    public void PersonalLicenceExecute()
+    {
+      ShowLoginView();
     }
 
     #endregion
 
     #region Private Methods
 
-    private void CreatAccountAction()
-    {
-      Process.Start(new ProcessStartInfo(WebApiUrl.signUpUrl));
-    }
-
-    private void SignInAction()
+    public void ShowLoginView()
     {
       trialExpiredView.Close();
-      var loginView = new LoginView();
+      LoginView loginView = new LoginView();
       loginView.ShowDialog();
     }
 
     #endregion
+
   }
 }
-;

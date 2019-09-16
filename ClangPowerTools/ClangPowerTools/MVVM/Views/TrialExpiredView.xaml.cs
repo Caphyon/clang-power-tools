@@ -3,7 +3,7 @@
 namespace ClangPowerTools.MVVM.Views
 {
   /// <summary>
-  /// Interaction logic for TrialExpiredView.xaml
+  /// Interaction logic for License.xaml
   /// </summary>
   public partial class TrialExpiredView : Window
   {
@@ -12,5 +12,6 @@ namespace ClangPowerTools.MVVM.Views
       InitializeComponent();
       DataContext = new TrialExpiredViewModel(this);
     }
+
   }
 }

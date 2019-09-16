@@ -152,6 +152,9 @@
     <Compile Include="MVVM\Views\GeneralSettingsView.xaml.cs">
       <DependentUpon>GeneralSettingsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MVVM\Views\TrialExpiredView.xaml.cs">
+      <DependentUpon>TrialExpiredView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\Views\LicenseView.xaml.cs">
       <DependentUpon>LicenseView.xaml</DependentUpon>
     </Compile>
@@ -172,9 +175,6 @@
     </Compile>
     <Compile Include="MVVM\Views\EncodingErrorView.xaml.cs">
       <DependentUpon>EncodingErrorView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="MVVM\Views\TrialExpiredView.xaml.cs">
-      <DependentUpon>TrialExpiredView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\WebApi\WebApiUrl.cs" />
     <Compile Include="MVVM\OldSettings\OldModels\ClangTidyPredefinedChecksOptions.cs" />
@@ -506,6 +506,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MVVM\Views\TrialExpiredView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MVVM\Views\LicenseView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -535,10 +539,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\Views\LoginView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MVVM\Views\TrialExpiredView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
