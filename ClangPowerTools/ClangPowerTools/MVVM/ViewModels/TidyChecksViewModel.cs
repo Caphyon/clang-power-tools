@@ -39,7 +39,7 @@ namespace ClangPowerTools
     public TidyChecksViewModel()
     {
       InitializeChecks();
-      TidySettingsModel tidySettingsModel = settingsProvider.GetTidySettingsModel();
+      var tidySettingsModel = settingsProvider.GetTidySettingsModel();
       tidySettingsModel.PredefinedChecks = GetSelectedChecks();
     }
 
@@ -88,7 +88,7 @@ namespace ClangPowerTools
 
     public string GetSelectedChecks()
     {
-      StringBuilder stringBuilder = new StringBuilder();
+      var stringBuilder = new StringBuilder();
 
       foreach (TidyCheckModel item in TidyChecksList)
       {
@@ -105,7 +105,7 @@ namespace ClangPowerTools
       string input = settingsProvider.GetTidySettingsModel().PredefinedChecks;
       input = Regex.Replace(input, @"\s+", "");
       input = input.Remove(input.Length - 1, 1);
-      List<string> checkNames = input.Split(';').ToList();
+      var checkNames = input.Split(';').ToList();
 
       foreach (string check in checkNames)
       {
