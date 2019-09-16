@@ -93,8 +93,6 @@ namespace ClangPowerTools
       settingsProvider.SetCompilerSettingsModel(new CompilerSettingsModel());
       settingsProvider.SetFormatSettingsModel(new FormatSettingsModel());
       settingsProvider.SetTidySettingsModel(new TidySettingsModel());
-
-      SaveSettings();
     }
 
     private void ImportOldSettings()

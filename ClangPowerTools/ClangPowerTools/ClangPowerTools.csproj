@@ -237,7 +237,6 @@
     <Compile Include="Helpers\Vsix.cs" />
     <Compile Include="MVVM\XmlSerializer.cs" />
     <Compile Include="UnitTestUtility\CommandTestUtility.cs" />
-    <Compile Include="UnitTestUtility\SettingsTestUtility.cs" />
     <Compile Include="UnitTestUtility\UnitTestUtility.cs" />
     <Compile Include="MVVM\Views\LoginView.xaml.cs">
       <DependentUpon>LoginView.xaml</DependentUpon>
