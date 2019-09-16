@@ -156,6 +156,8 @@ namespace ClangPowerTools
       if (isAccountActive)
       {
         loginView.Close();
+        FreeTrialController freeTrialController = new FreeTrialController();
+        freeTrialController.MarkAsExpired();
       }
       else
       {

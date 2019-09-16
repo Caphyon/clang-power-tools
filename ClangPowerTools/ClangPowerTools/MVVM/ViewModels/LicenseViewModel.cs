@@ -17,7 +17,6 @@ namespace ClangPowerTools
     private ICommand signInCommand;
 
     private readonly LicenseView licenseView;
-    private FreeTrialController freeTrialController = new FreeTrialController();
 
     #endregion
 
@@ -55,7 +54,7 @@ namespace ClangPowerTools
     {
       get => personalLicenseCommand ?? (personalLicenseCommand = new RelayCommand(() => PersonalLicenceExecute(), () => CanExecute));
     }
-    
+
     public ICommand TrialLicense
     {
       get => trialLicenseCommand ?? (trialLicenseCommand = new RelayCommand(() => TrialLicenceExecute(), () => CanExecute));
@@ -72,25 +71,31 @@ namespace ClangPowerTools
 
     public void CommercialLicenceExecute()
     {
-      freeTrialController.MarkAsExpired();
       Process.Start(new ProcessStartInfo("https://clangpowertools.com/download.html#pricing"));
-      LoginView loginView = new LoginView();
-      loginView.Show();
-      licenseView.Close();
+      ShowLoginView();
     }
 
     public void PersonalLicenceExecute()
     {
-      freeTrialController.MarkAsExpired();
-      LoginView loginView = new LoginView();
-      loginView.Show();
-      licenseView.Close();
+      ShowLoginView();
     }
 
     public void TrialLicenceExecute()
     {
+      FreeTrialController freeTrialController = new FreeTrialController();
       freeTrialController.Start();
       licenseView.Close();
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    public void ShowLoginView()
+    {
+      licenseView.Close();
+      LoginView loginView = new LoginView();
+      loginView.ShowDialog();
     }
 
     #endregion
