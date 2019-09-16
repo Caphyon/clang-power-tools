@@ -10,6 +10,7 @@ namespace ClangPowerTools
   {
     #region Members
 
+    private readonly TrialExpiredView trialExpiredView;
     private ICommand createAccountCommand;
     private ICommand signInCommand;
 
@@ -27,29 +28,39 @@ namespace ClangPowerTools
 
     #endregion
 
+    #region Constructor 
+
+    public TrialExpiredViewModel(TrialExpiredView view)
+    {
+      trialExpiredView = view;
+    }
+
+    #endregion
+
     #region Commands
 
     public ICommand CreateAccount
     {
-      get => createAccountCommand ?? (createAccountCommand = new RelayCommand(() => CreatAccount(), () => CanExecute));
+      get => createAccountCommand ?? (createAccountCommand = new RelayCommand(() => CreatAccountAction(), () => CanExecute));
     }
 
     public ICommand SignIn
     {
-      get => signInCommand ?? (signInCommand = new RelayCommand(() => SignIn(), () => CanExecute));
+      get => signInCommand ?? (signInCommand = new RelayCommand(() => SignInAction(), () => CanExecute));
     }
 
     #endregion
 
     #region Private Methods
 
-    private void CreatAccount()
+    private void CreatAccountAction()
     {
       Process.Start(new ProcessStartInfo(WebApiUrl.signUpUrl));
     }
 
-    private void SignIn()
+    private void SignInAction()
     {
+      trialExpiredView.Close();
       var loginView = new LoginView();
       loginView.ShowDialog();
     }

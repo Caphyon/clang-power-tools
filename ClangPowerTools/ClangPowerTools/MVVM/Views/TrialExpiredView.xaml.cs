@@ -10,7 +10,7 @@ namespace ClangPowerTools.MVVM.Views
     public TrialExpiredView()
     {
       InitializeComponent();
-      DataContext = new TrialExpiredViewModel();
+      DataContext = new TrialExpiredViewModel(this);
     }
   }
 }

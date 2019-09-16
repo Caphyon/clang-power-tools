@@ -117,8 +117,8 @@ namespace ClangPowerTools
 
       if (freeTrialController.IsActive() == false && activeLicense == false)
       {
-        LoginView loginView = new LoginView();
-        loginView.ShowDialog();
+        TrialExpiredView trialExpiredView = new TrialExpiredView();
+        trialExpiredView.ShowDialog();
         return;
       }
 
