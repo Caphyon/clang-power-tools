@@ -239,7 +239,7 @@
               HorizontalAlignment="Center"
               FontSize="18"
               Foreground="#C6C6D5"
-              Text="7-day Free Trial" />
+              Text="14-day Free Trial" />
 
             <TextBlock
               Grid.Row="2"
