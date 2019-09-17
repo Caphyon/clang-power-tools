@@ -9,8 +9,8 @@ namespace ClangPowerTools.MVVM.Controllers
 
     private readonly RegistryUtility registryUtility;
 
-    private readonly string registryName = @"Software\Caphyon\Cpt";
-    private readonly string keyName = "Trial";
+    private readonly string registryName = @"Software\Caphyon\Clang Power Tools";
+    private readonly string keyName = "DateTimeT";
     private readonly int trialDays = 14;
     private readonly string expiredDate = "9/12/2002 7:52:51 PM";
 

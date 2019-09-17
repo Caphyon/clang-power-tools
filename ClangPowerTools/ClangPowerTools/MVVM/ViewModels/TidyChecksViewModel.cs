@@ -1,12 +1,10 @@
-﻿using ClangPowerTools.MVVM.Commands;
-using ClangPowerTools.Views;
+﻿using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Input;
 
 namespace ClangPowerTools
 {
@@ -21,7 +19,7 @@ namespace ClangPowerTools
     private SettingsProvider settingsProvider = new SettingsProvider();
     private TidyCheckModel selectedCheck = new TidyCheckModel();
     private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>();
-    
+
     #endregion
 
     #region Properties
@@ -37,6 +35,11 @@ namespace ClangPowerTools
         InitializeChecks();
         tidyChecksView = value;
       }
+    }
+
+    public TidyChecksViewModel()
+    {
+      InitializeChecks();
     }
 
     public List<TidyCheckModel> TidyChecksList
@@ -84,9 +87,9 @@ namespace ClangPowerTools
 
     public string GetSelectedChecks()
     {
-      StringBuilder stringBuilder = new StringBuilder();
+      var stringBuilder = new StringBuilder();
 
-      foreach (TidyCheckModel item in TidyChecksList)
+      foreach (TidyCheckModel item in tidyChecksList)
       {
         if (item.IsChecked)
         {
@@ -101,7 +104,7 @@ namespace ClangPowerTools
       string input = settingsProvider.GetTidySettingsModel().PredefinedChecks;
       input = Regex.Replace(input, @"\s+", "");
       input = input.Remove(input.Length - 1, 1);
-      List<string> checkNames = input.Split(';').ToList();
+      var checkNames = input.Split(';').ToList();
 
       foreach (string check in checkNames)
       {
@@ -121,11 +124,13 @@ namespace ClangPowerTools
 
       if (string.IsNullOrEmpty(predefinedChecks))
       {
-        tidyChecksList = new List<TidyCheckModel>(TidyChecks.Checks);
+        var tidyChecks = new TidyChecks();
+        tidyChecksList = new List<TidyCheckModel>(tidyChecks.Checks);
       }
       else
       {
-        tidyChecksList = new List<TidyCheckModel>(TidyChecksClean.Checks);
+        var tidyChecksClean = new TidyChecksClean();
+        tidyChecksList = new List<TidyCheckModel>(tidyChecksClean.Checks);
         TickPredefinedChecks();
       }
     }
