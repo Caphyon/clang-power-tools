@@ -24,7 +24,7 @@ namespace ClangPowerTools
 
     private ICommand forgotPasswordCommand;
     private ICommand signUpCommand;
-    private ICommand signInCommand;
+    private ICommand logInCommand;
 
     // Validation messages
     private readonly string invalidEmail = "The email that you have enterd is not valid.";
@@ -94,9 +94,9 @@ namespace ClangPowerTools
       get => signUpCommand ?? (signUpCommand = new RelayCommand(() => SignUpAction(), () => CanExecute));
     }
 
-    public ICommand SignIn
+    public ICommand LogIn
     {
-      get => signInCommand ?? (signInCommand = new RelayCommand(() => SignInActionAsync().SafeFireAndForget(), () => CanExecute));
+      get => logInCommand ?? (logInCommand = new RelayCommand(() => SignInActionAsync().SafeFireAndForget(), () => CanExecute));
     }
 
     #endregion
