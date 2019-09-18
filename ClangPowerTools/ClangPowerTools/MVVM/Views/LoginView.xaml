@@ -303,7 +303,7 @@
       HorizontalContentAlignment="Center"
       VerticalContentAlignment="Center"
       Background="#FFBF31"
-      Command="{Binding SignIn}"
+      Command="{Binding LogIn}"
       Content="LOG IN"
       Cursor="Hand"
       FontFamily="SegoeUI"
@@ -413,7 +413,7 @@
       FontFamily="SegoeUI"
       FontSize="14"
       Foreground="#E2E2E8">
-      <Hyperlink Command="{Binding SignIn}">
+      <Hyperlink Command="{Binding SignUp}">
         Sign up for Clang Power Tools
       </Hyperlink>
     </TextBlock>
