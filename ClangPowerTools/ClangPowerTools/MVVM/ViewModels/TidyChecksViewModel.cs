@@ -32,14 +32,8 @@ namespace ClangPowerTools
 
       var settingsProvider = new SettingsProvider();
       tidyModel = settingsProvider.GetTidySettingsModel();
+      tidyModel.PredefinedChecks = GetSelectedChecks();
 
-      InitializeChecks();
-    }
-
-    public TidyChecksViewModel()
-    {
-      var settingsProvider = new SettingsProvider();
-      tidyModel = settingsProvider.GetTidySettingsModel();
       InitializeChecks();
     }
 
