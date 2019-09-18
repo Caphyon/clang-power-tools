@@ -75,7 +75,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 5.2" />
+        Text="version 5.2.1" />
 
       <ListView
         Grid.Row="3"
@@ -167,6 +167,13 @@
           HorizontalAlignment="Left"
           FontSize="15"
           Text="&#x2022; UI uniformization for predefined checks view"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="&#x2022; Sign up not working from account window"
           TextWrapping="Wrap" />
 
       </ListView>
