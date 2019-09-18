@@ -13,11 +13,21 @@ namespace ClangPowerTools
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private FormatSettingsModel formatModel = new FormatSettingsModel();
+    private FormatSettingsModel formatModel;
     private ICommand fileExtensionsAddDataCommand;
     private ICommand filesToIgnoreAddDataCommand;
     private ICommand assumeFilenameAddDataCommand;
     private ICommand customExecutableBrowseCommand;
+    #endregion
+
+    #region Constructor
+
+    public FormatSettingsViewModel()
+    {
+      var settingsProvider = new SettingsProvider();
+      formatModel = settingsProvider.GetFormatSettingsModel();
+    }
+
     #endregion
 
     #region Properties

@@ -13,10 +13,20 @@ namespace ClangPowerTools
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private CompilerSettingsModel compilerModel = new CompilerSettingsModel();
+    private CompilerSettingsModel compilerModel;
     private ICommand compileFlagsAddDataCommand;
     private ICommand filesToIgnoreAddDataCommand;
     private ICommand projectsToIgnoreAddDataCommand;
+    #endregion
+
+    #region Constructor
+
+    public CompilerSettingsViewModel()
+    {
+      var settingsProvider = new SettingsProvider();
+      compilerModel = settingsProvider.GetCompilerSettingsModel();
+    }
+
     #endregion
 
     #region Properties

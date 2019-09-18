@@ -15,12 +15,36 @@ namespace ClangPowerTools
     public event PropertyChangedEventHandler PropertyChanged;
 
     private string checkSearch = string.Empty;
-    private TidyChecksView tidyChecksView = new TidyChecksView();
+    private TidySettingsModel tidyModel;
+    private TidyChecksView tidyChecksView;
     private SettingsProvider settingsProvider = new SettingsProvider();
     private TidyCheckModel selectedCheck = new TidyCheckModel();
     private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>();
 
     #endregion
+
+    #region Constructor
+
+    public TidyChecksViewModel(TidyChecksView view)
+    {
+      tidyChecksView = view;
+      tidyChecksView.Closed += OnClosed;
+
+      var settingsProvider = new SettingsProvider();
+      tidyModel = settingsProvider.GetTidySettingsModel();
+
+      InitializeChecks();
+    }
+
+    public TidyChecksViewModel()
+    {
+      var settingsProvider = new SettingsProvider();
+      tidyModel = settingsProvider.GetTidySettingsModel();
+      InitializeChecks();
+    }
+
+    #endregion
+
 
     #region Properties
 
@@ -35,11 +59,6 @@ namespace ClangPowerTools
         InitializeChecks();
         tidyChecksView = value;
       }
-    }
-
-    public TidyChecksViewModel()
-    {
-      InitializeChecks();
     }
 
     public List<TidyCheckModel> TidyChecksList
@@ -133,6 +152,12 @@ namespace ClangPowerTools
         tidyChecksList = new List<TidyCheckModel>(tidyChecksClean.Checks);
         TickPredefinedChecks();
       }
+    }
+
+    private void OnClosed(object sender, EventArgs e)
+    {
+      tidyModel.PredefinedChecks = GetSelectedChecks();
+      tidyChecksView.Closed -= OnClosed;
     }
 
     #endregion
