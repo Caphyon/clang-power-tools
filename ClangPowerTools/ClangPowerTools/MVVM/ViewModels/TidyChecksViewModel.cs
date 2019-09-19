@@ -1,10 +1,12 @@
-﻿using ClangPowerTools.Views;
+﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Input;
 
 namespace ClangPowerTools
 {
@@ -20,6 +22,7 @@ namespace ClangPowerTools
     private SettingsProvider settingsProvider = new SettingsProvider();
     private TidyCheckModel selectedCheck = new TidyCheckModel();
     private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>();
+    private ICommand resetSearchCommand;
 
     #endregion
 
@@ -93,7 +96,24 @@ namespace ClangPowerTools
       }
     }
 
+    public bool CanExecute
+    {
+      get
+      {
+        return true;
+      }
+    }
+
     #endregion
+
+    #region Commands
+    public ICommand ResetSearchCommand
+    {
+      get => resetSearchCommand ?? (resetSearchCommand = new RelayCommand(() => ResetSearchField(), () => CanExecute));
+    }
+
+    #endregion
+
 
     #region Methods
 
@@ -153,6 +173,11 @@ namespace ClangPowerTools
     {
       tidyModel.PredefinedChecks = GetSelectedChecks();
       tidyChecksView.Closed -= OnClosed;
+    }
+
+    private void ResetSearchField()
+    {
+      CheckSearch = string.Empty;
     }
 
     #endregion
