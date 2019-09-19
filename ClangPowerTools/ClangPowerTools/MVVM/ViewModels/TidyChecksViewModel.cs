@@ -27,12 +27,11 @@ namespace ClangPowerTools
 
     public TidyChecksViewModel(TidyChecksView view)
     {
-      tidyChecksView = view;
-      tidyChecksView.Closed += OnClosed;
-
       var settingsProvider = new SettingsProvider();
       tidyModel = settingsProvider.GetTidySettingsModel();
-      tidyModel.PredefinedChecks = GetSelectedChecks();
+
+      tidyChecksView = view;
+      tidyChecksView.Closed += OnClosed;
 
       InitializeChecks();
     }
@@ -100,16 +99,18 @@ namespace ClangPowerTools
 
     public string GetSelectedChecks()
     {
-      var stringBuilder = new StringBuilder();
+      var checks = new StringBuilder();
 
       foreach (TidyCheckModel item in tidyChecksList)
       {
         if (item.IsChecked)
         {
-          stringBuilder.Append(item.Name).Append(";");
+          checks.Append(item.Name).Append(";");
         }
       }
-      return stringBuilder.ToString();
+
+      checks.Length--;
+      return checks.ToString();
     }
 
     private void TickPredefinedChecks()
