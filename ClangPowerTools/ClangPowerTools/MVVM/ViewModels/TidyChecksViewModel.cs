@@ -1,10 +1,12 @@
-﻿using ClangPowerTools.Views;
+﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows.Input;
 
 namespace ClangPowerTools
 {
@@ -15,12 +17,30 @@ namespace ClangPowerTools
     public event PropertyChangedEventHandler PropertyChanged;
 
     private string checkSearch = string.Empty;
-    private TidyChecksView tidyChecksView = new TidyChecksView();
+    private TidySettingsModel tidyModel;
+    private TidyChecksView tidyChecksView;
     private SettingsProvider settingsProvider = new SettingsProvider();
     private TidyCheckModel selectedCheck = new TidyCheckModel();
     private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>();
+    private ICommand resetSearchCommand;
 
     #endregion
+
+    #region Constructor
+
+    public TidyChecksViewModel(TidyChecksView view)
+    {
+      var settingsProvider = new SettingsProvider();
+      tidyModel = settingsProvider.GetTidySettingsModel();
+
+      tidyChecksView = view;
+      tidyChecksView.Closed += OnClosed;
+
+      InitializeChecks();
+    }
+
+    #endregion
+
 
     #region Properties
 
@@ -35,11 +55,6 @@ namespace ClangPowerTools
         InitializeChecks();
         tidyChecksView = value;
       }
-    }
-
-    public TidyChecksViewModel()
-    {
-      InitializeChecks();
     }
 
     public List<TidyCheckModel> TidyChecksList
@@ -81,22 +96,41 @@ namespace ClangPowerTools
       }
     }
 
+    public bool CanExecute
+    {
+      get
+      {
+        return true;
+      }
+    }
+
     #endregion
+
+    #region Commands
+    public ICommand ResetSearchCommand
+    {
+      get => resetSearchCommand ?? (resetSearchCommand = new RelayCommand(() => ResetSearchField(), () => CanExecute));
+    }
+
+    #endregion
+
 
     #region Methods
 
     public string GetSelectedChecks()
     {
-      var stringBuilder = new StringBuilder();
+      var checks = new StringBuilder();
 
       foreach (TidyCheckModel item in tidyChecksList)
       {
         if (item.IsChecked)
         {
-          stringBuilder.Append(item.Name).Append(";");
+          checks.Append(item.Name).Append(";");
         }
       }
-      return stringBuilder.ToString();
+
+      checks.Length--;
+      return checks.ToString();
     }
 
     private void TickPredefinedChecks()
@@ -133,6 +167,17 @@ namespace ClangPowerTools
         tidyChecksList = new List<TidyCheckModel>(tidyChecksClean.Checks);
         TickPredefinedChecks();
       }
+    }
+
+    private void OnClosed(object sender, EventArgs e)
+    {
+      tidyModel.PredefinedChecks = GetSelectedChecks();
+      tidyChecksView.Closed -= OnClosed;
+    }
+
+    private void ResetSearchField()
+    {
+      CheckSearch = string.Empty;
     }
 
     #endregion

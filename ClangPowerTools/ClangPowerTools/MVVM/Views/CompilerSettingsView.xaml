@@ -189,7 +189,7 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="16"
-      Text="Warning as errors">
+      Text="Warnings as errors">
       <TextBlock.ToolTip>
         <ToolTip>
           <TextBlock

@@ -15,14 +15,25 @@ namespace ClangPowerTools
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private TidySettingsModel tidyModel = new TidySettingsModel();
-    private TidyChecksView tidyChecksView;
+    private TidySettingsModel tidyModel;
     private string headerFilter = string.Empty;
     private ICommand headerFilterAddDataCommand;
     private ICommand customExecutableBrowseCommand;
     private ICommand predefinedChecksSelectCommand;
     private ICommand customChecksAddDataCommand;
     private ICommand exportTidyConfigCommand;
+    #endregion
+
+    #region Constructor
+
+    public TidySettingsViewModel()
+    {
+      var settingsProvider = new SettingsProvider();
+      tidyModel = settingsProvider.GetTidySettingsModel();
+      HeaderFilters = new List<string>() { tidyModel.HeaderFilter, ComboBoxConstants.kCorrespondingHeaderName };
+      headerFilter = tidyModel.HeaderFilter;
+    }
+
     #endregion
 
     #region Properties
@@ -79,14 +90,6 @@ namespace ClangPowerTools
 
     public SettingsTooltips Tooltip { get; } = new SettingsTooltips();
 
-    #endregion
-
-    #region Constructor
-    public TidySettingsViewModel()
-    {
-      HeaderFilters = new List<string>() { tidyModel.HeaderFilter, ComboBoxConstants.kCorrespondingHeaderName };
-      headerFilter = tidyModel.HeaderFilter;
-    }
     #endregion
 
 
@@ -175,17 +178,9 @@ namespace ClangPowerTools
       }
     }
 
-    private void OnClosed(object sender, EventArgs e)
-    {
-      TidyModel.PredefinedChecks = SettingsProvider.TidyChecksViewModel.GetSelectedChecks();
-      tidyChecksView.Closed -= OnClosed;
-    }
-
     private void OpenChecksWindow()
     {
-      tidyChecksView = new TidyChecksView();
-      SettingsProvider.TidyChecksViewModel.TidyChecksView = tidyChecksView;
-      tidyChecksView.Closed += OnClosed;
+      var tidyChecksView = new TidyChecksView();
       tidyChecksView.ShowDialog();
     }
 

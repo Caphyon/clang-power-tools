@@ -13,11 +13,21 @@ namespace ClangPowerTools
     public event PropertyChangedEventHandler PropertyChanged;
 
     private SettingsHandler settingsHandler = new SettingsHandler();
-    private GeneralSettingsModel generalSettingsModel = new GeneralSettingsModel();
+    private GeneralSettingsModel generalSettingsModel;
     private ICommand logoutCommand;
     private ICommand exportSettingsCommand;
     private ICommand importSettingsCommand;
     private ICommand resetSettingsCommand;
+    #endregion
+
+    #region Constructor
+
+    public GeneralSettingsViewModel()
+    {
+      var settingsProvider = new SettingsProvider();
+      generalSettingsModel = settingsProvider.GetGeneralSettingsModel();
+    }
+
     #endregion
 
 

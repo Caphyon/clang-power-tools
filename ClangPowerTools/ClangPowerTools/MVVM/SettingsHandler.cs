@@ -20,12 +20,15 @@ namespace ClangPowerTools
     private readonly string TidyOptionsConfigurationFileName = "TidyOptionsConfiguration.config";
     private readonly string TidyPredefinedChecksConfigurationFileName = "TidyPredefinedChecksConfiguration.config";
 
+    #region Constructor
     public SettingsHandler()
     {
       SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
       settingsPath = settingsPathBuilder.GetPath("");
     }
+    #endregion
 
+    #region Public Methods 
     /// <summary>
     /// Load settings or import old settings
     /// </summary>
@@ -35,9 +38,13 @@ namespace ClangPowerTools
       {
         LoadSettings();
       }
-      else
+      else if(OldGeneralSettingsExists())
       {
         ImportOldSettings();
+      }
+      else
+      {
+        CreateDeaultSettings();
       }
     }
 
@@ -87,19 +94,44 @@ namespace ClangPowerTools
 
     public void ResetSettings()
     {
+      CreateDeaultSettings();
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private void CreateDeaultSettings()
+    {
       settingsProvider.SetCompilerSettingsModel(new CompilerSettingsModel());
       settingsProvider.SetFormatSettingsModel(new FormatSettingsModel());
       settingsProvider.SetTidySettingsModel(new TidySettingsModel());
+
+      SetDefaultTidyPredefindedChecks();
+    }
+
+    private void SetDefaultTidyPredefindedChecks()
+    {
+      var checks = new StringBuilder();
+      var tidyCheckModel = new TidyChecks();
+      var tidyModel = settingsProvider.GetTidySettingsModel();
+
+      foreach (TidyCheckModel item in tidyCheckModel.Checks)
+      {
+        if (item.IsChecked)
+        {
+          checks.Append(item.Name).Append(";");
+        }
+      }
+      checks.Length--;
+      tidyModel.PredefinedChecks = checks.ToString();
     }
 
     private void ImportOldSettings()
     {
-      if (OldGeneralSettingsExists())
-      {
         MapOldSettings();
         SaveSettings();
         DeleteOldSettings();
-      }
     }
 
     private bool OldGeneralSettingsExists()
@@ -287,5 +319,7 @@ namespace ClangPowerTools
 
       return stringBuilder.ToString().ToLower();
     }
+    #endregion
+
   }
 }

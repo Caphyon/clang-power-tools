@@ -2,50 +2,49 @@
 {
   public class SettingsProvider
   {
-    public static CompilerSettingsViewModel CompilerSettingsViewModel { get; } = new CompilerSettingsViewModel();
-    public static FormatSettingsViewModel FormatSettingsViewModel { get; } = new FormatSettingsViewModel();
-    public static TidySettingsViewModel TidySettingsViewModel { get; } = new TidySettingsViewModel();
-    public static TidyChecksViewModel TidyChecksViewModel { get; } = new TidyChecksViewModel();
-    public static GeneralSettingsViewModel GeneralSettingsViewModel { get; } = new GeneralSettingsViewModel();
+    private static CompilerSettingsModel compilerSettingsModel = new CompilerSettingsModel();
+    private static FormatSettingsModel formatSettingsModel = new FormatSettingsModel();
+    private static TidySettingsModel tidySettingsModel = new TidySettingsModel();
+    private static GeneralSettingsModel generalSettingsModel = new GeneralSettingsModel();
 
     public CompilerSettingsModel GetCompilerSettingsModel()
     {
-      return CompilerSettingsViewModel.CompilerModel;
-    }
-
-    public void SetCompilerSettingsModel(CompilerSettingsModel compilerSettingsModel)
-    {
-      CompilerSettingsViewModel.CompilerModel = compilerSettingsModel;
+      return compilerSettingsModel;
     }
 
     public FormatSettingsModel GetFormatSettingsModel()
     {
-      return FormatSettingsViewModel.FormatModel;
-    }
-
-    public void SetFormatSettingsModel(FormatSettingsModel FormatSettingsModel)
-    {
-      FormatSettingsViewModel.FormatModel = FormatSettingsModel;
+      return formatSettingsModel;
     }
 
     public TidySettingsModel GetTidySettingsModel()
     {
-      return TidySettingsViewModel.TidyModel;
-    }
-
-    public void SetTidySettingsModel(TidySettingsModel tidySettingsModel)
-    {
-      TidySettingsViewModel.TidyModel = tidySettingsModel;
+      return tidySettingsModel;
     }
 
     public GeneralSettingsModel GetGeneralSettingsModel()
     {
-      return GeneralSettingsViewModel.GeneralSettingsModel;
+      return generalSettingsModel;
     }
 
-    public void SetGeneralSettingsModel(GeneralSettingsModel generalSettingsModel)
+    public void SetCompilerSettingsModel(CompilerSettingsModel model)
     {
-      GeneralSettingsViewModel.GeneralSettingsModel = generalSettingsModel;
+      compilerSettingsModel = model;
+    }
+
+    public void SetFormatSettingsModel(FormatSettingsModel model)
+    {
+      formatSettingsModel = model;
+    }
+
+    public void SetTidySettingsModel(TidySettingsModel model)
+    {
+      tidySettingsModel = model;
+    }
+
+    public void SetGeneralSettingsModel(GeneralSettingsModel model)
+    {
+      generalSettingsModel = model;
     }
   }
 }
