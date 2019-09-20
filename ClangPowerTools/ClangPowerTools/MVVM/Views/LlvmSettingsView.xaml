@@ -5,7 +5,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  d:DataContext="{d:DesignInstance local:GeneralSettingsViewModel,
+  d:DataContext="{d:DesignInstance local:LlvmSettingsViewModel,
                                    IsDesignTimeCreatable=True}"
   d:DesignHeight="350"
   d:DesignWidth="770"
@@ -44,7 +44,7 @@
       Grid.Column="0"
       Width="180"
       Height="40"
-      Command="{Binding DeleteLlvmVersion}"
+      Command="{Binding DeleteCommand}"
       Content="Delete"
       FontSize="16" />
 
@@ -58,6 +58,15 @@
       Content="Stop"
       FontSize="16" />
 
+    <ProgressBar
+      Grid.Row="4"
+      Grid.Column="0"
+      Width="100"
+      Height="20"
+      Foreground="Green"
+      Maximum="{Binding LlvmModel.MaxProgress}"
+      Minimum="{Binding LlvmModel.MinProgress}"
+      Value="{Binding LlvmModel.DownloadProgress}" />
 
   </Grid>
 
