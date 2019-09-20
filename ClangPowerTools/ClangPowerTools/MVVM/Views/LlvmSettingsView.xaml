@@ -28,7 +28,7 @@
     </Grid.ColumnDefinitions>
 
 
-    <!--  Export Settings  -->
+    <!--  Download LLVM  -->
     <Button
       Grid.Row="1"
       Grid.Column="0"
@@ -38,7 +38,7 @@
       Content="Download"
       FontSize="16" />
 
-    <!--  Import Settings  -->
+    <!--  Delete LLVM  -->
     <Button
       Grid.Row="2"
       Grid.Column="0"
@@ -48,7 +48,7 @@
       Content="Delete"
       FontSize="16" />
 
-    <!--  Import Settings  -->
+    <!--  Stop LLM download  -->
     <Button
       Grid.Row="3"
       Grid.Column="0"
@@ -69,6 +69,5 @@
       Value="{Binding LlvmModel.DownloadProgress}" />
 
   </Grid>
-
 </UserControl>
 
