@@ -85,6 +85,7 @@
     <Compile Include="Helpers\SolutionInfo.cs" />
     <Compile Include="MVVM\Controllers\FreeTrialController.cs" />
     <Compile Include="MVVM\Models\GeneralSettingsModel.cs" />
+    <Compile Include="MVVM\Models\LlvmSettingsModel.cs" />
     <Compile Include="MVVM\OldSettings\ClangFormatPathValue.cs" />
     <Compile Include="MVVM\OldSettings\ClangTidyPathValue.cs" />
     <Compile Include="MVVM\Commands\RelayCommand.cs" />
@@ -106,6 +107,7 @@
     <Compile Include="MVVM\ViewModels\GeneralSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\InputDataViewModel.cs" />
     <Compile Include="MVVM\ViewModels\LicenseViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\LlvmSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\ReleaseNotesViewModel.cs" />
     <Compile Include="MVVM\ViewModels\SettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\TidyChecksViewModel.cs" />
