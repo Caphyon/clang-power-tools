@@ -34,8 +34,8 @@
       Grid.Column="0"
       Width="180"
       Height="40"
-      Command="{Binding ExportSettingsCommand}"
-      Content="Export Settings"
+      Command="{Binding DownloadCommand}"
+      Content="Download"
       FontSize="16" />
 
     <!--  Import Settings  -->
@@ -44,8 +44,18 @@
       Grid.Column="0"
       Width="180"
       Height="40"
-      Command="{Binding ImportSettingssCommand}"
-      Content="Import Settings"
+      Command="{Binding DeleteLlvmVersion}"
+      Content="Delete"
+      FontSize="16" />
+
+    <!--  Import Settings  -->
+    <Button
+      Grid.Row="3"
+      Grid.Column="0"
+      Width="180"
+      Height="40"
+      Command="{Binding StopCommand}"
+      Content="Stop"
       FontSize="16" />
 
 

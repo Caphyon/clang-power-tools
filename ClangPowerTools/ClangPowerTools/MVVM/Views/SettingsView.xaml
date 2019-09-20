@@ -70,6 +70,22 @@
             Width="15"
             Height="15"
             Margin="3"
+            Source="/ClangPowerTools;component/Resources/TidyIcon.png" />
+          <TextBlock Width="65" Text="LLVM" />
+        </StackPanel>
+      </TabItem.Header>
+      <Grid>
+        <local:LlvmSettingsView />
+      </Grid>
+    </TabItem>
+
+    <TabItem Padding="8" FontSize="15">
+      <TabItem.Header>
+        <StackPanel Orientation="Horizontal">
+          <Image
+            Width="15"
+            Height="15"
+            Margin="3"
             Source="/ClangPowerTools;component/Resources/SettingsIcon.png" />
           <TextBlock Width="65" Text="General" />
         </StackPanel>
