@@ -19,6 +19,7 @@ namespace ClangPowerTools
     private const string processFileName = "cmd.exe";
     private const string processVerb = "runas";
 
+    Process process;
     private string executableName = "test.exe";
     private string destinationFile;
     private string appdDataPath;
@@ -75,8 +76,9 @@ namespace ClangPowerTools
 
     public ICommand StopCommand
     {
-      get => stopCommand ?? (stopCommand = new RelayCommand(() => _ = StopDownloadAsync(), () => CanExecute));
+      get => stopCommand ?? (stopCommand = new RelayCommand(() => StopDownload(), () => CanExecute));
     }
+
 
     #endregion
 
@@ -89,53 +91,50 @@ namespace ClangPowerTools
         client.DownloadFileAsync(new Uri("https://github.com/llvm/llvm-project/releases/download/llvmorg-8.0.1/LLVM-8.0.1-win32.exe"), destinationFile);
       }
     }
-
-    private void DeleteLlvmVersion(string version)
-    {
-
-    }
-
     private void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
     {
       llvmModel.DownloadProgress = e.ProgressPercentage;
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LlvmModel"));
     }
 
-    private async Task StopDownloadAsync()
+
+    private void InstallLlVmVersion()
     {
       var startInfoArguments = string.Concat(arguments, " ", destinationFile, " ", exeParameters, appdDataPath, "\\Folder");
-      var installed = await InstallLlVmVersionAsync(startInfoArguments);
-    }
 
-    private Task<int> InstallLlVmVersionAsync(string startInfoArguments)
-    {
-      var tcs = new TaskCompletionSource<int>();
       try
       {
-        using (var process = new Process())
-        {
-          process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-          process.StartInfo.FileName = processFileName;
-          process.StartInfo.Arguments = startInfoArguments;
-          process.StartInfo.Verb = processVerb;
-          process.EnableRaisingEvents = true;
-
-          process.Exited += (sender, args) =>
-          {
-            tcs.SetResult(process.ExitCode);
-            process.Dispose();
-          };
-
-          process.Start();
-        }
+        process = new Process();
+        process.StartInfo.FileName = processFileName;
+        process.StartInfo.Arguments = startInfoArguments;
+        process.StartInfo.Verb = processVerb;
+        process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+        process.EnableRaisingEvents = true;
+        process.Exited += new EventHandler(ProcessExited);
+        process.Start();
       }
       catch (Exception e)
       {
 
         MessageBox.Show(e.Message, "Installation Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
+    }
 
-      return tcs.Task;
+    private void ProcessExited(object sender, EventArgs e)
+    {
+      process.Dispose();
+    }
+
+
+    private void DeleteLlvmVersion(string version)
+    {
+
+    }
+
+
+    private void StopDownload()
+    {
+
     }
     #endregion
   }
