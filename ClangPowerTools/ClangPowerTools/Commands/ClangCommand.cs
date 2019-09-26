@@ -114,8 +114,8 @@ namespace ClangPowerTools
 
     protected void RunScript(int aCommandId)
     {
-      string runModeParameters = GetRunModeParamaters();
-      string genericParameters = GetGenericParamaters(aCommandId);
+      string runModeParameters = ScriptGenerator.GetRunModeParamaters();
+      string genericParameters = ScriptGenerator.GetGenericParamaters(aCommandId, VsEdition, VsVersion);
 
       if (mMissingLLVM)
         return;
@@ -190,22 +190,6 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private string GetGenericParamaters(int aCommandId)
-    {
-      IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(VsEdition, VsVersion, aCommandId);
-      genericScriptBuilder.Build();
-      var genericParameters = genericScriptBuilder.GetResult();
-      return genericParameters;
-    }
-
-    private static string GetRunModeParamaters()
-    {
-      IBuilder<string> runModeScriptBuilder = new RunModeScriptBuilder();
-      runModeScriptBuilder.Build();
-      var runModeParameters = runModeScriptBuilder.GetResult();
-      return runModeParameters;
-    }
-
     private void InvokeCommand(string runModeParameters, string genericParameters)
     {
       var vsSolution = SolutionInfo.IsOpenFolderModeActive() == false ?
@@ -218,13 +202,11 @@ namespace ClangPowerTools
           break;
         }
 
-        IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item);
-        itemRelatedScriptBuilder.Build();
-        var itemRelatedParameters = itemRelatedScriptBuilder.GetResult();
+        var itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item);
 
         // From the first parameter is removed the last character which is mandatory "'"
         // and added to the end of the string to close the script
-        Script = $"{runModeParameters.Remove(runModeParameters.Length - 1)} {itemRelatedParameters} {genericParameters}'";
+        Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
         CommandTestUtility.ScriptCommand = Script;
 
         ItemHierarchy = vsSolution != null ? AutomationUtil.GetItemHierarchy(vsSolution, item) : null;
