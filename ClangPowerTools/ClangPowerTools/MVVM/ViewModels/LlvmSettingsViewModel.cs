@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.MVVM.Commands;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Net;
@@ -19,7 +20,8 @@ namespace ClangPowerTools
     private const string processFileName = "cmd.exe";
     private const string processVerb = "runas";
 
-    Process process;
+    private Process process;
+    private List<LlvmModel> llvms;
     private string executableName = "test.exe";
     private string destinationFile;
     private string appdDataPath;
@@ -33,6 +35,7 @@ namespace ClangPowerTools
     #region Constructor
     public LlvmSettingsViewModel()
     {
+      IntitializeView();
       var settingsPathBuilder = new SettingsPathBuilder();
       appdDataPath = settingsPathBuilder.GetPath("");
       destinationFile = string.Concat(appdDataPath, "\\", executableName);
@@ -40,19 +43,21 @@ namespace ClangPowerTools
     #endregion
 
     #region Properties
-    public LlvmSettingsModel LlvmModel
+
+    public List<LlvmModel> Llvms
     {
       get
       {
-        return llvmModel;
+        return llvms;
       }
+
       set
       {
-        llvmModel = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LlvmModel"));
+        llvms = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Llvms"));
       }
-    }
 
+    }
 
     public bool CanExecute
     {
@@ -88,13 +93,20 @@ namespace ClangPowerTools
       using (var client = new WebClient())
       {
         client.DownloadProgressChanged += DownloadProgressChanged;
+        client.DownloadFileCompleted += DownloadFileCompleted;
         client.DownloadFileAsync(new Uri("https://github.com/llvm/llvm-project/releases/download/llvmorg-8.0.1/LLVM-8.0.1-win32.exe"), destinationFile);
       }
     }
+
+    private void DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+    {
+      InstallLlVmVersion();
+    } 
+
     private void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
     {
       llvmModel.DownloadProgress = e.ProgressPercentage;
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LlvmModel"));
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Llvms"));
     }
 
 
@@ -135,6 +147,28 @@ namespace ClangPowerTools
     private void StopDownload()
     {
 
+    }
+
+    private void IntitializeView()
+    {
+      llvms = new List<LlvmModel>();
+
+      foreach (var version in LlvmVersions.Versions)
+      {
+        var llvmModel = new LlvmModel()
+        {
+          Name = version,
+          IsInstalled = false,
+          IsSelected = false,          
+        };
+
+        llvms.Add(llvmModel);
+      }
+    }
+
+    private bool CheckVersionOnDisk()
+    {
+      return false;
     }
     #endregion
   }
