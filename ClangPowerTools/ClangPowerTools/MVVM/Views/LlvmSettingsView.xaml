@@ -10,7 +10,8 @@
   d:DesignHeight="350"
   d:DesignWidth="770"
   mc:Ignorable="d">
-  <Grid Name="test">
+
+  <Grid>
     <Grid.Background>
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
@@ -31,7 +32,9 @@
       Grid.Column="0"
       Background="Transparent"
       ItemsSource="{Binding Llvms}"
-      ScrollViewer.CanContentScroll="True">
+      ScrollViewer.CanContentScroll="True"
+      SelectedItem="{Binding SelectedLlvm}">
+
       <ListBox.ItemTemplate>
         <DataTemplate>
           <Grid>
@@ -55,9 +58,9 @@
               Width="100"
               Height="20"
               Foreground="Green"
-              Maximum="{Binding MaxProgress}"
-              Minimum="{Binding MinProgress}"
-              Value="{Binding DownloadProgress}" />
+              Maximum="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SelectedLlvm.MaxProgress}"
+              Minimum="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SelectedLlvm.MinProgress}"
+              Value="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SelectedLlvm.DownloadProgress}" />
             <Button
               Grid.Column="3"
               Width="40"

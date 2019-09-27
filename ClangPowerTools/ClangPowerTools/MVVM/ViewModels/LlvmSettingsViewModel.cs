@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Net;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 
@@ -25,7 +24,7 @@ namespace ClangPowerTools
     private string executableName = "test.exe";
     private string destinationFile;
     private string appdDataPath;
-    private LlvmSettingsModel llvmModel = new LlvmSettingsModel();
+    private LlvmModel llvmModel = new LlvmModel();
     private ICommand dowloadCommand;
     private ICommand deleteCommand;
     private ICommand stopCommand;
@@ -57,6 +56,19 @@ namespace ClangPowerTools
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Llvms"));
       }
 
+    }
+
+    public LlvmModel SelectedLlvm
+    {
+      get
+      {
+        return llvmModel;
+      }
+      set
+      {
+        llvmModel = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedLlvm"));
+      }
     }
 
     public bool CanExecute
@@ -101,12 +113,12 @@ namespace ClangPowerTools
     private void DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
     {
       InstallLlVmVersion();
-    } 
+    }
 
     private void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
     {
       llvmModel.DownloadProgress = e.ProgressPercentage;
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Llvms"));
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedLlvm"));
     }
 
 
@@ -159,7 +171,7 @@ namespace ClangPowerTools
         {
           Name = version,
           IsInstalled = false,
-          IsSelected = false,          
+          IsSelected = false,
         };
 
         llvms.Add(llvmModel);
