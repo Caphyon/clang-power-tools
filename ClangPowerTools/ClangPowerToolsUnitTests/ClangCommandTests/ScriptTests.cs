@@ -53,8 +53,8 @@ namespace ClangPowerTools.Tests.ClangCommandTests
       var settingsHandler = new SettingsHandler();
 
       //Act
-      settingsHandler.ResetSettings();
       LoadSolution();
+      settingsHandler.ResetSettings();
 
       GetVisualStudioInfo(out string edition, out string version, out IItem item, true);
       var compileOnFileScriptTestResult = CreateScript(CommandIds.kCompileId, edition, version, item);
@@ -73,8 +73,8 @@ namespace ClangPowerTools.Tests.ClangCommandTests
       var settingsHandler = new SettingsHandler();
 
       //Act
-      settingsHandler.ResetSettings();
       LoadSolution();
+      settingsHandler.ResetSettings();
 
       GetVisualStudioInfo(out string edition, out string version, out IItem item, true);
       var tidyOnFileScriptTestResult = CreateScript(CommandIds.kTidyId, edition, version, item);
@@ -85,7 +85,6 @@ namespace ClangPowerTools.Tests.ClangCommandTests
       Assert.Equal(tidyOnFileScriptTestResult, tidyOnFileExpectedResult);
     }
 
-
     [VsFact(Version = "2019")]
     public async Task TidyFixOnFile_CreateScript_Async()
     {
@@ -95,8 +94,8 @@ namespace ClangPowerTools.Tests.ClangCommandTests
       var settingsHandler = new SettingsHandler();
 
       //Act
-      settingsHandler.ResetSettings();
       LoadSolution();
+      settingsHandler.ResetSettings();
 
       GetVisualStudioInfo(out string edition, out string version, out IItem item, true);
       var tidyFixOnFileScriptTestResult = CreateScript(CommandIds.kTidyFixId, edition, version, item);
@@ -119,8 +118,8 @@ namespace ClangPowerTools.Tests.ClangCommandTests
       var settingsHandler = new SettingsHandler();
 
       //Act
-      settingsHandler.ResetSettings();
       LoadSolution();
+      settingsHandler.ResetSettings();
 
       GetVisualStudioInfo(out string edition, out string version, out IItem item, false);
       var compileOnProjectScriptTestResult = CreateScript(CommandIds.kCompileId, edition, version, item);
@@ -139,8 +138,8 @@ namespace ClangPowerTools.Tests.ClangCommandTests
       var settingsHandler = new SettingsHandler();
 
       //Act
-      settingsHandler.ResetSettings();
       LoadSolution();
+      settingsHandler.ResetSettings();
 
       GetVisualStudioInfo(out string edition, out string version, out IItem item, false);
       var tidyOnProjectScriptTestResult = CreateScript(CommandIds.kTidyId, edition, version, item);
@@ -160,8 +159,8 @@ namespace ClangPowerTools.Tests.ClangCommandTests
       var settingsHandler = new SettingsHandler();
 
       //Act
-      settingsHandler.ResetSettings();
       LoadSolution();
+      settingsHandler.ResetSettings();
 
       GetVisualStudioInfo(out string edition, out string version, out IItem item, false);
       var tidyFixOnProjectScriptTestResult = CreateScript(CommandIds.kTidyFixId, edition, version, item);
@@ -181,7 +180,9 @@ namespace ClangPowerTools.Tests.ClangCommandTests
     private void LoadSolution()
     {
       ThreadHelper.ThrowIfNotOnUIThread();
-      var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
+      var dte = (DTE2)ServiceProvider.GlobalProvider.GetService(typeof(DTE));
+      Assumes.Present(dte);
+
       dte.Solution.Open(solutionPath);
 
       var build = dte.Solution.SolutionBuild;
@@ -191,7 +192,9 @@ namespace ClangPowerTools.Tests.ClangCommandTests
     private void CloseSolution()
     {
       ThreadHelper.ThrowIfNotOnUIThread();
-      var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
+      var dte = (DTE2)ServiceProvider.GlobalProvider.GetService(typeof(DTE));
+      Assumes.Present(dte);
+
       dte.Solution.Close();
     }
 
