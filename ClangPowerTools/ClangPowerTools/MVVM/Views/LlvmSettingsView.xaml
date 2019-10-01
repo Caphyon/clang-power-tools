@@ -55,9 +55,7 @@
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="20" />
               <ColumnDefinition Width="400" />
-              <ColumnDefinition Width="150" />
-              <ColumnDefinition Width="100" />
-              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="220" />
               <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -66,27 +64,60 @@
             <TextBlock
               Grid.Column="1"
               Padding="0,0,200,0"
-              Text="{Binding Name}" />
-            <ProgressBar
-              Grid.Column="2"
-              Width="100"
-              Height="20"
-              Foreground="Green"
-              Maximum="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SelectedLlvm.MaxProgress}"
-              Minimum="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SelectedLlvm.MinProgress}"
-              Value="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SelectedLlvm.DownloadProgress}" />
+              Text="{Binding Version, StringFormat='LLVM {0}'}" />
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+              <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                  <Setter Property="Visibility" Value="Visible" />
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsInstalled}" Value="True">
+                      <Setter Property="Visibility" Value="Hidden" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </StackPanel.Style>
+              <ProgressBar
+                Width="100"
+                Height="20"
+                Margin="0,0,20,0"
+                Foreground="Green"
+                Maximum="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SelectedLlvm.MaxProgress}"
+                Minimum="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SelectedLlvm.MinProgress}"
+                Value="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SelectedLlvm.DownloadProgress}" />
+              <Button
+                Width="40"
+                Height="30"
+                Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.DownloadCommand}"
+                Content="D"
+                FontSize="16" />
+            </StackPanel>
+
             <Button
-              Grid.Column="3"
+              Grid.Column="2"
               Width="40"
               Height="30"
-              Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.DownloadCommand}"
-              Content="D"
-              FontSize="16" />
+              Command="{Binding UninstallCommand}"
+              Content="U"
+              FontSize="16">
+              <Button.Style>
+                <Style TargetType="Button">
+                  <Setter Property="Visibility" Value="Hidden" />
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsInstalled}" Value="True">
+                      <Setter Property="Visibility" Value="Visible" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </Button.Style>
+            </Button>
+
             <CheckBox
+              x:Name="Test"
               Grid.Column="4"
               HorizontalAlignment="Right"
               IsChecked="{Binding IsSelected}" />
           </Grid>
+
         </DataTemplate>
       </ListView.ItemTemplate>
     </ListView>
