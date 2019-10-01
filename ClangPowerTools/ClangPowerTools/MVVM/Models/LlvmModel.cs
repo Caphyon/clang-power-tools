@@ -2,7 +2,7 @@
 {
   public class LlvmModel
   {
-    public string Name { get; set; }
+    public string Version { get; set; }
 
     public bool IsInstalled { get; set; }
 
