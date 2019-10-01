@@ -329,6 +329,12 @@ Function InitializeMsBuildProjectProperties()
     [string] $projectSlnName = Get-FileName -path $projectSlnPath -noext
     Set-Var -name "SolutionName" -value $projectSlnName
 
+    # pre-initialize Configuration and Platform properties
+    if (![string]::IsNullOrEmpty($aVcxprojConfigPlatform))
+    {
+        Detect-ProjectDefaultConfigPlatform
+    }
+
     Update-ParametersFromConfigFile
 }
 
