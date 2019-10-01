@@ -2,11 +2,11 @@
 {
   public class LlvmModel
   {
-    public string Version { get; set; }
+    public string Version { get; set; } = string.Empty;
 
-    public bool IsInstalled { get; set; }
+    public bool IsInstalled { get; set; } = false;
 
-    public bool IsSelected { get; set; }
+    public bool IsSelected { get; set; } = false;
 
     public int DownloadProgress { get; set; } = 0;
 
