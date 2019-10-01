@@ -72,9 +72,14 @@ namespace ClangPowerTools.Script
     {
       ProjectItem projectItem = mItem.GetObject() as ProjectItem;
       string containingProject = projectItem.ContainingProject.FullName;
+
+      var filePath = projectItem.Properties.Item("FullPath").Value;
+      var configuration = ProjectConfigurationHandler.GetConfiguration(projectItem.ContainingProject);
+      var platform = ProjectConfigurationHandler.GetPlatform(projectItem.ContainingProject);
+
       mScript = $"{mScript} {ScriptConstants.kProject} ''{containingProject}'' " +
-        $"{ScriptConstants.kFile} ''{projectItem.Properties.Item("FullPath").Value}'' {ScriptConstants.kActiveConfiguration} " +
-        $"''{ProjectConfigurationHandler.GetConfiguration(projectItem.ContainingProject)}|{ProjectConfigurationHandler.GetPlatform(projectItem.ContainingProject)}''";
+        $"{ScriptConstants.kFile} ''{filePath}'' {ScriptConstants.kActiveConfiguration} " +
+        $"''{configuration}|{platform}''";
     }
 
     private void CreateScriptForOpenFolderProjectItem()
