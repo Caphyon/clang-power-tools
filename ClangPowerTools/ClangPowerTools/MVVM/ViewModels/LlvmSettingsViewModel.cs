@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Net;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -18,15 +19,15 @@ namespace ClangPowerTools
     private const string arguments = @"/C reg delete HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\LLVM /f &";
     private const string processFileName = "cmd.exe";
     private const string processVerb = "runas";
+    private const string uri = @"http://releases.llvm.org";
 
     private Process process;
     private List<LlvmModel> llvms;
-    private string executableName = "test.exe";
-    private string destinationFile;
+    private LlvmModel llvmModel;
+    private string executableName = "LLVM";
     private string appdDataPath;
-    private LlvmModel llvmModel = new LlvmModel();
     private ICommand dowloadCommand;
-    private ICommand deleteCommand;
+    private ICommand uninstallCommand;
     private ICommand stopCommand;
 
     #endregion
@@ -34,10 +35,10 @@ namespace ClangPowerTools
     #region Constructor
     public LlvmSettingsViewModel()
     {
-      IntitializeView();
+      llvmModel = new LlvmModel();
       var settingsPathBuilder = new SettingsPathBuilder();
       appdDataPath = settingsPathBuilder.GetPath("");
-      destinationFile = string.Concat(appdDataPath, "\\", executableName);
+      IntitializeView();
     }
     #endregion
 
@@ -83,12 +84,12 @@ namespace ClangPowerTools
     #region Commands
     public ICommand DownloadCommand
     {
-      get => dowloadCommand ?? (dowloadCommand = new RelayCommand(() => DownloadLlvmVersion(), () => CanExecute));
+      get => dowloadCommand ?? (dowloadCommand = new RelayCommand(() => DownloadLlvmVersion(SelectedLlvm.Version), () => CanExecute));
     }
 
-    public ICommand DeleteCommand
+    public ICommand UninstallCommand
     {
-      get => deleteCommand ?? (deleteCommand = new RelayCommand(() => DeleteLlvmVersion("8.0.0"), () => CanExecute));
+      get => uninstallCommand ?? (uninstallCommand = new RelayCommand(() => DeleteLlvmVersion("8.0.0"), () => CanExecute));
     }
 
     public ICommand StopCommand
@@ -100,19 +101,24 @@ namespace ClangPowerTools
     #endregion
 
     #region Methods
-    private void DownloadLlvmVersion()
+    private void DownloadLlvmVersion(string version)
     {
-      using (var client = new WebClient())
-      {
-        client.DownloadProgressChanged += DownloadProgressChanged;
-        client.DownloadFileCompleted += DownloadFileCompleted;
-        client.DownloadFileAsync(new Uri("https://github.com/llvm/llvm-project/releases/download/llvmorg-8.0.1/LLVM-8.0.1-win32.exe"), destinationFile);
-      }
+      CreateVersionFolder(version);
+
+      var executablePath = string.Concat(GetLlVmVersionPath(version), "\\", executableName, version, ".exe");
+      var finalUri = string.Concat(uri, "/", version, "/", executableName, "-", version, "-win64.exe");
+
+      //using (var client = new WebClient())
+      //{
+      //  client.DownloadProgressChanged += DownloadProgressChanged;
+      //  client.DownloadFileCompleted += DownloadFileCompleted;
+      //  client.DownloadFileAsync(new Uri(finalUri), executablePath);
+      //}
     }
 
     private void DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
     {
-      InstallLlVmVersion();
+      InstallLlVmVersion(SelectedLlvm.Version);
     }
 
     private void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
@@ -122,9 +128,10 @@ namespace ClangPowerTools
     }
 
 
-    private void InstallLlVmVersion()
+    private void InstallLlVmVersion(string version)
     {
-      var startInfoArguments = string.Concat(arguments, " ", destinationFile, " ", exeParameters, appdDataPath, "\\Folder");
+      var executablePath = GetLlVmVersionPath(version);
+      var startInfoArguments = string.Concat(arguments, " ", executablePath, " ", exeParameters);
 
       try
       {
@@ -155,10 +162,21 @@ namespace ClangPowerTools
 
     }
 
-
     private void StopDownload()
     {
 
+    }
+
+    private string GetLlVmVersionPath(string version)
+    {
+      var folderName = string.Concat(executableName, version);
+      return Path.Combine(appdDataPath, executableName, folderName);
+    }
+
+    private void CreateVersionFolder(string version)
+    {
+      var path = GetLlVmVersionPath(version);
+      Directory.CreateDirectory(path);
     }
 
     private void IntitializeView()
@@ -169,8 +187,8 @@ namespace ClangPowerTools
       {
         var llvmModel = new LlvmModel()
         {
-          Name = version,
-          IsInstalled = false,
+          Version = version,
+          IsInstalled = CheckVersionOnDisk(version),
           IsSelected = false,
         };
 
@@ -178,8 +196,11 @@ namespace ClangPowerTools
       }
     }
 
-    private bool CheckVersionOnDisk()
+    private bool CheckVersionOnDisk(string version)
     {
+      var path = Path.Combine(appdDataPath, version);
+      if (Directory.Exists(path)) return true;
+
       return false;
     }
     #endregion
