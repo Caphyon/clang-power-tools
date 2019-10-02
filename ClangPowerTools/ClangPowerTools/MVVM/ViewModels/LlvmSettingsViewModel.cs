@@ -26,8 +26,8 @@ namespace ClangPowerTools
 
     private Process process;
     private ObservableCollection<LlvmModel> llvms;
-    private LlvmModel llvmModel;
-    CancellationTokenSource cancellationToken = new CancellationTokenSource();
+    private LlvmModel selectedLlvm = new LlvmModel();
+    private CancellationTokenSource cancellationToken = new CancellationTokenSource();
     private string appdDataPath;
     private ICommand dowloadCommand;
     private ICommand uninstallCommand;
@@ -38,7 +38,6 @@ namespace ClangPowerTools
     #region Constructor
     public LlvmSettingsViewModel()
     {
-      llvmModel = new LlvmModel();
       var settingsPathBuilder = new SettingsPathBuilder();
       appdDataPath = settingsPathBuilder.GetPath("");
       IntitializeView();
@@ -66,11 +65,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return llvmModel;
+        return selectedLlvm;
       }
       set
       {
-        llvmModel = value;
+        selectedLlvm = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedLlvm"));
       }
     }
@@ -134,7 +133,7 @@ namespace ClangPowerTools
 
     private void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
     {
-      llvmModel.DownloadProgress = e.ProgressPercentage;
+      selectedLlvm.DownloadProgress = e.ProgressPercentage;
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedLlvm"));
     }
 
@@ -176,6 +175,8 @@ namespace ClangPowerTools
     private void CancelDownload()
     {
       cancellationToken.Cancel();
+      process.Kill();
+      process.Dispose();
       DeleteLlvmVersion("Add version here");
     }
 
