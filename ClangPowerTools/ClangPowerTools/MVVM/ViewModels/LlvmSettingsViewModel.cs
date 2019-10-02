@@ -1,10 +1,12 @@
 ﻿using ClangPowerTools.MVVM.Commands;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Input;
 
@@ -20,15 +22,16 @@ namespace ClangPowerTools
     private const string processFileName = "cmd.exe";
     private const string processVerb = "runas";
     private const string uri = @"http://releases.llvm.org";
+    private const string executableName = "LLVM";
 
     private Process process;
-    private List<LlvmModel> llvms;
+    private ObservableCollection<LlvmModel> llvms;
     private LlvmModel llvmModel;
-    private string executableName = "LLVM";
+    CancellationTokenSource cancellationToken = new CancellationTokenSource();
     private string appdDataPath;
     private ICommand dowloadCommand;
     private ICommand uninstallCommand;
-    private ICommand stopCommand;
+    private ICommand cancelCommand;
 
     #endregion
 
@@ -44,7 +47,7 @@ namespace ClangPowerTools
 
     #region Properties
 
-    public List<LlvmModel> Llvms
+    public ObservableCollection<LlvmModel> Llvms
     {
       get
       {
@@ -92,9 +95,9 @@ namespace ClangPowerTools
       get => uninstallCommand ?? (uninstallCommand = new RelayCommand(() => DeleteLlvmVersion("8.0.0"), () => CanExecute));
     }
 
-    public ICommand StopCommand
+    public ICommand CancelCommand
     {
-      get => stopCommand ?? (stopCommand = new RelayCommand(() => StopDownload(), () => CanExecute));
+      get => cancelCommand ?? (cancelCommand = new RelayCommand(() => CancelDownload(), () => CanExecute));
     }
 
 
@@ -108,17 +111,25 @@ namespace ClangPowerTools
       var executablePath = string.Concat(GetLlVmVersionPath(version), "\\", executableName, version, ".exe");
       var finalUri = string.Concat(uri, "/", version, "/", executableName, "-", version, "-win64.exe");
 
-      //using (var client = new WebClient())
-      //{
-      //  client.DownloadProgressChanged += DownloadProgressChanged;
-      //  client.DownloadFileCompleted += DownloadFileCompleted;
-      //  client.DownloadFileAsync(new Uri(finalUri), executablePath);
-      //}
+      using (var client = new WebClient())
+      {
+        client.DownloadProgressChanged += DownloadProgressChanged;
+        client.DownloadFileCompleted += DownloadFileCompleted;
+        cancellationToken.Token.Register(client.CancelAsync);
+        client.DownloadFileAsync(new Uri(finalUri), executablePath);
+      }
     }
 
     private void DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
     {
-      InstallLlVmVersion(SelectedLlvm.Version);
+      if (cancellationToken.IsCancellationRequested == false)
+      {
+        InstallLlVmVersion(SelectedLlvm.Version);
+      }
+      else
+      {
+        cancellationToken.Dispose();
+      }
     }
 
     private void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
@@ -162,9 +173,10 @@ namespace ClangPowerTools
 
     }
 
-    private void StopDownload()
+    private void CancelDownload()
     {
-
+      cancellationToken.Cancel();
+      DeleteLlvmVersion("Add version here");
     }
 
     private string GetLlVmVersionPath(string version)
@@ -181,7 +193,7 @@ namespace ClangPowerTools
 
     private void IntitializeView()
     {
-      llvms = new List<LlvmModel>();
+      llvms = new ObservableCollection<LlvmModel>();
 
       foreach (var version in LlvmVersions.Versions)
       {
