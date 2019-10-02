@@ -26,15 +26,17 @@
     </Grid.ColumnDefinitions>
 
 
-    <!--  Checks list  -->
+    <!--  Versions  -->
     <ListView
+      x:Name="VersionsList"
       Grid.Row="1"
       Grid.Column="0"
       Background="Transparent"
       Focusable="False"
       ItemsSource="{Binding Llvms}"
       ScrollViewer.CanContentScroll="True"
-      SelectedItem="{Binding SelectedLlvm}">
+      SelectedItem="{Binding SelectedLlvm}"
+      SelectionMode="Single">
 
       <ListView.ItemContainerStyle>
         <Style TargetType="{x:Type ListViewItem}">
@@ -61,17 +63,43 @@
             <Grid.RowDefinitions>
               <RowDefinition Height="25" />
             </Grid.RowDefinitions>
+
+            <!--  Version name and action  -->
             <TextBlock
               Grid.Column="1"
               Padding="0,0,200,0"
               Text="{Binding Version, StringFormat='LLVM {0}'}" />
-            <StackPanel Grid.Column="2" Orientation="Horizontal">
-              <StackPanel.Style>
-                <Style TargetType="StackPanel">
+            <ToggleButton
+              Grid.Column="2"
+              Width="40"
+              Height="30"
+              Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.DownloadCommand}"
+              Content="D"
+              FontSize="16"
+              IsChecked="{Binding IsDownloading}">
+              <ToggleButton.Style>
+                <Style TargetType="ToggleButton">
                   <Setter Property="Visibility" Value="Visible" />
                   <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsInstalled}" Value="True">
+                    <DataTrigger Binding="{Binding IsDownloading}" Value="True">
                       <Setter Property="Visibility" Value="Hidden" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </ToggleButton.Style>
+            </ToggleButton>
+
+            <!--  Download in progress  -->
+            <StackPanel
+              x:Name="DownloadInProgress"
+              Grid.Column="2"
+              Orientation="Horizontal">
+              <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                  <Setter Property="Visibility" Value="Hidden" />
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsDownloading}" Value="True">
+                      <Setter Property="Visibility" Value="Visible" />
                     </DataTrigger>
                   </Style.Triggers>
                 </Style>
@@ -81,17 +109,18 @@
                 Height="20"
                 Margin="0,0,20,0"
                 Foreground="Green"
-                Maximum="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SelectedLlvm.MaxProgress}"
-                Minimum="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SelectedLlvm.MinProgress}"
+                Maximum="{Binding MaxProgress}"
+                Minimum="{Binding MinProgress}"
                 Value="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SelectedLlvm.DownloadProgress}" />
               <Button
                 Width="40"
                 Height="30"
-                Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.DownloadCommand}"
-                Content="D"
+                Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.CancelCommand}"
+                Content="S"
                 FontSize="16" />
             </StackPanel>
 
+            <!--
             <Button
               Grid.Column="2"
               Width="40"
@@ -110,68 +139,12 @@
                 </Style>
               </Button.Style>
             </Button>
+            -->
 
-            <CheckBox
-              x:Name="Test"
-              Grid.Column="4"
-              HorizontalAlignment="Right"
-              IsChecked="{Binding IsSelected}" />
           </Grid>
-
         </DataTemplate>
       </ListView.ItemTemplate>
     </ListView>
-
-    <Button
-      Grid.Row="2"
-      Grid.Column="0"
-      Width="180"
-      Height="40"
-      Command="{Binding DeleteCommand}"
-      Content="Delete"
-      FontSize="16"
-      Visibility="Hidden" />
-
-
-    <!--  Download LLVM
-    <Button
-      Grid.Row="1"
-      Grid.Column="0"
-      Width="180"
-      Height="40"
-      Command="{Binding DownloadCommand}"
-      Content="Download"
-      FontSize="16" />
-
-
-    <Button
-      Grid.Row="2"
-      Grid.Column="0"
-      Width="180"
-      Height="40"
-      Command="{Binding DeleteCommand}"
-      Content="Delete"
-      FontSize="16" />
-
-
-    <Button
-      Grid.Row="3"
-      Grid.Column="0"
-      Width="180"
-      Height="40"
-      Command="{Binding StopCommand}"
-      Content="Stop"
-      FontSize="16" />
-
-    <ProgressBar
-      Grid.Row="4"
-      Grid.Column="0"
-      Width="100"
-      Height="20"
-      Foreground="Green"
-      Maximum="{Binding LlvmModel.MaxProgress}"
-      Minimum="{Binding LlvmModel.MinProgress}"
-      Value="{Binding LlvmModel.DownloadProgress}" />-->
   </Grid>
 </UserControl>
 

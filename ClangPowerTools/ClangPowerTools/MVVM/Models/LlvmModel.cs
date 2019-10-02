@@ -6,7 +6,11 @@
 
     public bool IsInstalled { get; set; } = false;
 
+    public bool IsDownloading { get; set; } = false;
+
     public bool IsSelected { get; set; } = false;
+
+    public bool Cancel { get; set; } = false;
 
     public int DownloadProgress { get; set; } = 0;
 
