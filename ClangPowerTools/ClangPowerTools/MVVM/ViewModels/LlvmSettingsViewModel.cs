@@ -129,6 +129,8 @@ namespace ClangPowerTools
       else if (cancellationToken.IsCancellationRequested == true)
       {
         cancellationToken.Dispose();
+        cancellationToken = new CancellationTokenSource();
+        DeleteLlvmVersion(selectedLlvm.Version);
       }
     }
 
@@ -179,7 +181,6 @@ namespace ClangPowerTools
       cancellationToken.Cancel();
       //process.Kill();
       //process.Dispose();
-      DeleteLlvmVersion(selectedLlvm.Version);
     }
 
     private string GetLlVmVersionPath(string version)
