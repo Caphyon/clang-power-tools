@@ -28,8 +28,8 @@ namespace ClangPowerTools
     private ObservableCollection<LlvmModel> llvms;
     private LlvmModel selectedLlvm = new LlvmModel();
     private CancellationTokenSource cancellationToken = new CancellationTokenSource();
+    private bool canDownload = true;
     private string appdDataPath;
-    private ICommand dowloadCommand;
     private ICommand uninstallCommand;
     private ICommand cancelCommand;
 
@@ -61,19 +61,6 @@ namespace ClangPowerTools
 
     }
 
-    public LlvmModel SelectedLlvm
-    {
-      get
-      {
-        return selectedLlvm;
-      }
-      set
-      {
-        selectedLlvm = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedLlvm"));
-      }
-    }
-
     public bool CanExecute
     {
       get
@@ -84,11 +71,6 @@ namespace ClangPowerTools
     #endregion
 
     #region Commands
-    public ICommand DownloadCommand
-    {
-      get => dowloadCommand ?? (dowloadCommand = new RelayCommand(() => DownloadLlvmVersion(SelectedLlvm.Version), () => CanExecute));
-    }
-
     public ICommand UninstallCommand
     {
       get => uninstallCommand ?? (uninstallCommand = new RelayCommand(() => DeleteLlvmVersion("8.0.0"), () => CanExecute));
@@ -103,6 +85,25 @@ namespace ClangPowerTools
     #endregion
 
     #region Methods
+    public void SetSelectedElement(int elementIndex)
+    {
+      if (canDownload)
+      {
+        selectedLlvm = llvms[elementIndex];
+        selectedLlvm.IsDownloading = true;
+        canDownload = false;
+        DownloadLlvmVersion(selectedLlvm.Version);
+      }
+      else if (selectedLlvm.IsDownloading && selectedLlvm == llvms[elementIndex])
+      {
+        canDownload = true;
+        selectedLlvm.DownloadProgress = 0;
+        selectedLlvm.IsDownloading = false;
+        CancelDownload();
+      }
+
+    }
+
     private void DownloadLlvmVersion(string version)
     {
       CreateVersionFolder(version);
@@ -123,9 +124,9 @@ namespace ClangPowerTools
     {
       if (cancellationToken.IsCancellationRequested == false)
       {
-        InstallLlVmVersion(SelectedLlvm.Version);
+        InstallLlVmVersion(selectedLlvm.Version);
       }
-      else
+      else if (cancellationToken.IsCancellationRequested == true)
       {
         cancellationToken.Dispose();
       }
@@ -169,15 +170,16 @@ namespace ClangPowerTools
 
     private void DeleteLlvmVersion(string version)
     {
-
+      var path = GetLlVmVersionPath(version);
+      Directory.Delete(path, true);
     }
 
     private void CancelDownload()
     {
       cancellationToken.Cancel();
-      process.Kill();
-      process.Dispose();
-      DeleteLlvmVersion("Add version here");
+      //process.Kill();
+      //process.Dispose();
+      DeleteLlvmVersion(selectedLlvm.Version);
     }
 
     private string GetLlVmVersionPath(string version)
