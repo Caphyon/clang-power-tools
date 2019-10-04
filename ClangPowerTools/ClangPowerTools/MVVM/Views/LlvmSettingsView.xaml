@@ -35,7 +35,6 @@
       Focusable="False"
       ItemsSource="{Binding Llvms}"
       ScrollViewer.CanContentScroll="True"
-      SelectedItem="{Binding SelectedLlvm}"
       SelectionMode="Single">
 
       <ListView.ItemContainerStyle>
@@ -69,25 +68,27 @@
               Grid.Column="1"
               Padding="0,0,200,0"
               Text="{Binding Version, StringFormat='LLVM {0}'}" />
-            <ToggleButton
+            <Button
               Grid.Column="2"
               Width="40"
               Height="30"
-              Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.DownloadCommand}"
+              Click="SetIndex"
               Content="D"
-              FontSize="16"
-              IsChecked="{Binding IsDownloading}">
-              <ToggleButton.Style>
-                <Style TargetType="ToggleButton">
+              FontSize="16">
+              <Button.Style>
+                <Style TargetType="Button">
                   <Setter Property="Visibility" Value="Visible" />
                   <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsDownloading}" Value="True">
+                    <MultiDataTrigger>
+                      <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsDownloading}" Value="True" />
+                      </MultiDataTrigger.Conditions>
                       <Setter Property="Visibility" Value="Hidden" />
-                    </DataTrigger>
+                    </MultiDataTrigger>
                   </Style.Triggers>
                 </Style>
-              </ToggleButton.Style>
-            </ToggleButton>
+              </Button.Style>
+            </Button>
 
             <!--  Download in progress  -->
             <StackPanel
@@ -98,9 +99,12 @@
                 <Style TargetType="StackPanel">
                   <Setter Property="Visibility" Value="Hidden" />
                   <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsDownloading}" Value="True">
+                    <MultiDataTrigger>
+                      <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsDownloading}" Value="True" />
+                      </MultiDataTrigger.Conditions>
                       <Setter Property="Visibility" Value="Visible" />
-                    </DataTrigger>
+                    </MultiDataTrigger>
                   </Style.Triggers>
                 </Style>
               </StackPanel.Style>
@@ -111,11 +115,12 @@
                 Foreground="Green"
                 Maximum="{Binding MaxProgress}"
                 Minimum="{Binding MinProgress}"
-                Value="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.SelectedLlvm.DownloadProgress}" />
+                Value="{Binding DownloadProgress}" />
               <Button
+                x:Name="CancelDownloadButton"
                 Width="40"
                 Height="30"
-                Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl}, Path=DataContext.CancelCommand}"
+                Click="SetIndex"
                 Content="S"
                 FontSize="16" />
             </StackPanel>
