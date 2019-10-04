@@ -25,11 +25,12 @@
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
     <Grid.RowDefinitions>
-      <RowDefinition Height="40" />
-      <RowDefinition Height="60" />
-      <RowDefinition Height="60" />
-      <RowDefinition Height="60" />
-      <RowDefinition Height="60" />
+      <RowDefinition Height="30" />
+      <RowDefinition Height="50" />
+      <RowDefinition Height="50" />
+      <RowDefinition Height="50" />
+      <RowDefinition Height="50" />
+      <RowDefinition Height="50" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
@@ -99,9 +100,20 @@
       </Button.Content>
     </Button>
 
+    <!--  Upgrade  -->
+    <Button
+      Grid.Row="5"
+      Grid.Column="0"
+      Width="180"
+      Height="40"
+      Background="#FFFFC05E"
+      Command="{Binding LogoutCommand}"
+      Content="Upgrade"
+      FontSize="16" />
+
     <!--  Version  -->
     <TextBlock
-      Grid.Row="5"
+      Grid.Row="6"
       Grid.Column="0"
       HorizontalAlignment="Right"
       VerticalAlignment="Bottom"

@@ -29,6 +29,9 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
