@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace ClangPowerTools.Views
 {
@@ -7,10 +8,19 @@ namespace ClangPowerTools.Views
   /// </summary>
   public partial class LlvmSettingsView : UserControl
   {
+    private readonly LlvmSettingsViewModel dataContext = new LlvmSettingsViewModel();
+
     public LlvmSettingsView()
     {
       InitializeComponent();
-      DataContext = new LlvmSettingsViewModel();
+      DataContext = dataContext;
+    }
+
+    private void SetIndex(object sender, RoutedEventArgs e)
+    {
+      var element = (sender as FrameworkElement).DataContext;
+      var elementIndex = VersionsList.Items.IndexOf(element);
+      dataContext.SetSelectedElement(elementIndex);
     }
   }
 }
