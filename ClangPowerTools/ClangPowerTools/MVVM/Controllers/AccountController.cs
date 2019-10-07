@@ -51,15 +51,15 @@ namespace ClangPowerTools.MVVM.Controllers
       }
     }
 
+    #endregion
+
+    #region Private Methods
+
     public async Task<HttpResponseMessage> GetUserAccountHttpRestulAsync(UserModel userModel)
     {
       using StringContent content = new StringContent(SeralizeUserModel(userModel), Encoding.UTF8, "application/json");
       return await ApiUtility.ApiClient.PostAsync(WebApiUrl.loginUrl, content);
     }
-
-    #endregion
-
-    #region Private Methods
 
     private void SaveToken(string token)
     {
