@@ -72,7 +72,7 @@
               Grid.Column="2"
               Width="40"
               Height="30"
-              Click="SetIndex"
+              Click="DownloadButton"
               Content="D"
               FontSize="16">
               <Button.Style>
@@ -82,6 +82,7 @@
                     <MultiDataTrigger>
                       <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding IsDownloading}" Value="True" />
+                        <Condition Binding="{Binding IsInstalled}" Value="False" />
                       </MultiDataTrigger.Conditions>
                       <Setter Property="Visibility" Value="Hidden" />
                     </MultiDataTrigger>
@@ -89,12 +90,27 @@
                 </Style>
               </Button.Style>
             </Button>
+            <Button
+              Grid.Column="2"
+              Width="40"
+              Height="30"
+              Click="UninstallButton"
+              Content="U"
+              FontSize="16">
+              <Button.Style>
+                <Style TargetType="Button">
+                  <Setter Property="Visibility" Value="Hidden" />
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsInstalled}" Value="True">
+                      <Setter Property="Visibility" Value="Visible" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </Button.Style>
+            </Button>
 
             <!--  Download in progress  -->
-            <StackPanel
-              x:Name="DownloadInProgress"
-              Grid.Column="2"
-              Orientation="Horizontal">
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
               <StackPanel.Style>
                 <Style TargetType="StackPanel">
                   <Setter Property="Visibility" Value="Hidden" />
@@ -102,6 +118,7 @@
                     <MultiDataTrigger>
                       <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding IsDownloading}" Value="True" />
+                        <Condition Binding="{Binding IsInstalled}" Value="False" />
                       </MultiDataTrigger.Conditions>
                       <Setter Property="Visibility" Value="Visible" />
                     </MultiDataTrigger>
@@ -117,34 +134,12 @@
                 Minimum="{Binding MinProgress}"
                 Value="{Binding DownloadProgress}" />
               <Button
-                x:Name="CancelDownloadButton"
                 Width="40"
                 Height="30"
-                Click="SetIndex"
+                Click="CancelButton"
                 Content="S"
                 FontSize="16" />
             </StackPanel>
-
-            <!--
-            <Button
-              Grid.Column="2"
-              Width="40"
-              Height="30"
-              Command="{Binding UninstallCommand}"
-              Content="U"
-              FontSize="16">
-              <Button.Style>
-                <Style TargetType="Button">
-                  <Setter Property="Visibility" Value="Hidden" />
-                  <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsInstalled}" Value="True">
-                      <Setter Property="Visibility" Value="Visible" />
-                    </DataTrigger>
-                  </Style.Triggers>
-                </Style>
-              </Button.Style>
-            </Button>
-            -->
 
           </Grid>
         </DataTemplate>
