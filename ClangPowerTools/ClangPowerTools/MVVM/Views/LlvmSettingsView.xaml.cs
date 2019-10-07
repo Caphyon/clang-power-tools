@@ -16,11 +16,28 @@ namespace ClangPowerTools.Views
       DataContext = dataContext;
     }
 
-    private void SetIndex(object sender, RoutedEventArgs e)
+    private void DownloadButton(object sender, RoutedEventArgs e)
     {
-      var element = (sender as FrameworkElement).DataContext;
-      var elementIndex = VersionsList.Items.IndexOf(element);
-      dataContext.SetSelectedElement(elementIndex);
+      var elementIndex = GetElementIndex(sender as FrameworkElement);
+      dataContext.DownloadCommand(elementIndex);
+    }
+
+    private void CancelButton(object sender, RoutedEventArgs e)
+    {
+      var elementIndex = GetElementIndex(sender as FrameworkElement);
+      dataContext.CancelCommand(elementIndex);
+    }
+
+    private void UninstallButton(object sender, RoutedEventArgs e)
+    {
+      var elementIndex = GetElementIndex(sender as FrameworkElement);
+      dataContext.UninstallCommand(elementIndex);
+    }
+
+    private int GetElementIndex(FrameworkElement frameworkElement)
+    {
+      var element = frameworkElement.DataContext;
+      return VersionsList.Items.IndexOf(element);
     }
   }
 }
