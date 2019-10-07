@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using Task = System.Threading.Tasks.Task;
 using ClangPowerTools.MVVM.Controllers;
+using System.Net.Http;
 
 namespace ClangPowerTools
 {
@@ -104,19 +105,33 @@ namespace ClangPowerTools
 
     public async void Execute(object sender, EventArgs e)
     {
-      FreeTrialController freeTrialController = new FreeTrialController();
-
-      if (freeTrialController.WasEverInTrial() == false && activeLicense == false)
+      var freeTrialController = new FreeTrialController();
+      var licenseController = new LicenseController();
+      
+      bool activeAccount = (await licenseController.CheckUserTokenHttpResultAsync(new TokenModel())).IsSuccessStatusCode;
+      bool tokenExists = licenseController.TokenExists(new TokenModel(), out TokenModel newToken);
+      
+      // First app install - choose license
+      if (freeTrialController.WasEverInTrial() == false && activeAccount == false)
       {
         LicenseView licenseView = new LicenseView();
         licenseView.ShowDialog();
         return;
       }
 
-      if (freeTrialController.IsActive() == false && activeLicense == false)
+      // Trial expired
+      if (freeTrialController.IsActive() == false && activeAccount == false && tokenExists == false)
       {
         TrialExpiredView trialExpiredView = new TrialExpiredView();
         trialExpiredView.ShowDialog();
+        return;
+      }
+
+      // Session Expired
+      if (freeTrialController.IsActive() == false && activeAccount == false && tokenExists)
+      {
+        LoginView loginView = new LoginView();
+        loginView.ShowDialog();
         return;
       }
 
