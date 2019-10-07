@@ -21,34 +21,30 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public async Task<bool> LoginAsync(UserModel userModel)
     {
-      StringContent content = new StringContent(SeralizeUserModel(userModel), Encoding.UTF8, "application/json");
-
       try
       {
-        using (HttpResponseMessage result = await ApiUtility.ApiClient.PostAsync(WebApiUrl.loginUrl, content))
+        HttpResponseMessage userAccoutHttpRestul = await GetUserAccountHttpRestulAsync(userModel);
+
+        if (userAccoutHttpRestul.IsSuccessStatusCode)
         {
-          content.Dispose();
-          if (result.IsSuccessStatusCode)
+          TokenModel tokenModel = await userAccoutHttpRestul.Content.ReadAsAsync<TokenModel>();
+
+          LicenseController licenseController = new LicenseController();
+          bool licenseStatus = await licenseController.CheckLicenseAsync(tokenModel);
+
+          if (licenseStatus == false)
           {
-            TokenModel tokenModel = await result.Content.ReadAsAsync<TokenModel>();
-
-            LicenseController licenseController = new LicenseController();
-            bool licenseStatus = await licenseController.CheckLicenseAsync(tokenModel);
-
-            if (licenseStatus == false)
-            {
-              return false;
-            }
-
-            SaveToken(tokenModel.jwt);
-            OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(true));
-            return true;
-          }
-          else
-          {
-            OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(false));
             return false;
           }
+
+          SaveToken(tokenModel.jwt);
+          OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(true));
+          return true;
+        }
+        else
+        {
+          OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(false));
+          return false;
         }
       }
       catch (Exception)
@@ -56,6 +52,12 @@ namespace ClangPowerTools.MVVM.Controllers
         OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(false));
         return false;
       }
+    }
+
+    public async Task<HttpResponseMessage> GetUserAccountHttpRestulAsync(UserModel userModel)
+    {
+      using StringContent content = new StringContent(SeralizeUserModel(userModel), Encoding.UTF8, "application/json");
+      return await ApiUtility.ApiClient.PostAsync(WebApiUrl.loginUrl, content);
     }
 
     #endregion
