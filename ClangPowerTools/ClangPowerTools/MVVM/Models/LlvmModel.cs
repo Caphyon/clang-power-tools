@@ -8,16 +8,28 @@ namespace ClangPowerTools
     public event PropertyChangedEventHandler PropertyChanged;
 
     private bool isDownloading = false;
+    private bool isInstalled = false;
     private int downloadProgress = 0;
     #endregion
 
     #region Properties
     public string Version { get; set; } = string.Empty;
 
-    public bool IsInstalled { get; set; } = false;
-
     public bool IsSelected { get; set; } = false;
 
+    public bool IsInstalled
+    {
+      get
+      {
+        return isInstalled;
+      }
+
+      set
+      {
+        isInstalled = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsInstalled"));
+      }
+    }
 
     public bool IsDownloading
     {
