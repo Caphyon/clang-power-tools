@@ -26,10 +26,7 @@ namespace ClangPowerTools.MVVM.Controllers
     public async Task<bool> CheckLicenseAsync(TokenModel tokenModel = null)
     {
       var networkAvailable = await NetworkUtility.CheckInternetConnectionAsync();
-      if (tokenModel == null)
-      {
-        tokenModel = new TokenModel();
-      }
+      tokenModel ??= new TokenModel();
 
       bool licenceStatus = networkAvailable ? await CheckOnlineLicenseAsync(tokenModel) : CheckLocalLicense();
 
@@ -56,10 +53,10 @@ namespace ClangPowerTools.MVVM.Controllers
 
       try
       {
-        ApiUtility.ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1ZDFhMGQ2MTRjZmRhYTc5YTU0ODc3MjciLCJpYXQiOjE1Njg4MTY5OTMsImV4cCI6MTU2ODkwMzM5M30.sj6U05vJl3Q0vwkOghz2qMi5w2sm3mxab51Oyi3rQoI");
+        ApiUtility.ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenModel.jwt);
         using HttpResponseMessage result = await ApiUtility.ApiClient.GetAsync(WebApiUrl.licenseUrl);
         
-        return result.IsSuccessStatusCode ? await CheckAllUserLicensesAsync(result) : true;
+        return result.IsSuccessStatusCode ? await CheckAllUserLicensesAsync(result) : false;
       }
       catch (Exception)
       {
