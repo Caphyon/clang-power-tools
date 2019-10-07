@@ -70,15 +70,15 @@ namespace ClangPowerTools.MVVM.Controllers
       return await ApiUtility.ApiClient.GetAsync(WebApiUrl.licenseUrl);
     }
 
-    #endregion
-
-    #region Private Methods
-
     public bool TokenExists(TokenModel token, out TokenModel newToken)
     {
       newToken = CheckToken(token);
       return newToken != null && string.IsNullOrWhiteSpace(newToken.jwt) == false;
     }
+
+    #endregion
+
+    #region Private Methods
 
     private async Task<bool> CheckAllUserLicensesAsync(HttpResponseMessage result)
     {
