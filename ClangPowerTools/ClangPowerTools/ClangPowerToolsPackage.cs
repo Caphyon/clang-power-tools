@@ -17,7 +17,6 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools
