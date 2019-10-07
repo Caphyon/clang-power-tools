@@ -29,10 +29,7 @@ namespace ClangPowerTools.MVVM.Controllers
         {
           TokenModel tokenModel = await userAccoutHttpRestul.Content.ReadAsAsync<TokenModel>();
 
-          LicenseController licenseController = new LicenseController();
-          bool licenseStatus = await licenseController.CheckLicenseAsync(tokenModel);
-
-          if (licenseStatus == false)
+          if (string.IsNullOrWhiteSpace(tokenModel.jwt))
           {
             return false;
           }
@@ -66,14 +63,12 @@ namespace ClangPowerTools.MVVM.Controllers
 
     private void SaveToken(string token)
     {
-      SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
+      var settingsPathBuilder = new SettingsPathBuilder();
       string filePath = settingsPathBuilder.GetPath("ctpjwt");
       DeleteExistingToken(filePath);
 
-      using (StreamWriter streamWriter = new StreamWriter(filePath))
-      {
-        streamWriter.WriteLine(token);
-      }
+      using var streamWriter = new StreamWriter(filePath);
+      streamWriter.WriteLine(token);
       File.SetAttributes(filePath, File.GetAttributes(filePath) | FileAttributes.Hidden);
     }
 
