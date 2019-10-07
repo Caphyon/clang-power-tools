@@ -44,19 +44,14 @@ namespace ClangPowerTools.MVVM.Controllers
     public async Task<bool> CheckOnlineLicenseAsync(TokenModel tokenModel = null)
     {
       if (TokenExists(tokenModel, out TokenModel newToken) == false)
-        return false;
-
-      if (ApiUtility.ApiClient == null)
       {
-        ApiUtility.InitializeApiClient();
+        return false;
       }
 
       try
       {
-        ApiUtility.ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", tokenModel.jwt);
-        using HttpResponseMessage result = await ApiUtility.ApiClient.GetAsync(WebApiUrl.licenseUrl);
-        
-        return result.IsSuccessStatusCode ? await CheckAllUserLicensesAsync(result) : false;
+        HttpResponseMessage userTokenHttpResult = await CheckUserTokenHttpResultAsync(newToken);
+        return userTokenHttpResult.IsSuccessStatusCode ? await CheckAllUserLicensesAsync(userTokenHttpResult) : false;
       }
       catch (Exception)
       {
@@ -64,11 +59,22 @@ namespace ClangPowerTools.MVVM.Controllers
       }
     }
 
+    public async Task<HttpResponseMessage> CheckUserTokenHttpResultAsync(TokenModel token)
+    {
+      if (ApiUtility.ApiClient == null)
+      {
+        ApiUtility.InitializeApiClient();
+      }
+
+      ApiUtility.ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.jwt);
+      return await ApiUtility.ApiClient.GetAsync(WebApiUrl.licenseUrl);
+    }
+
     #endregion
 
     #region Private Methods
 
-    private bool TokenExists(TokenModel token, out TokenModel newToken)
+    public bool TokenExists(TokenModel token, out TokenModel newToken)
     {
       newToken = CheckToken(token);
       return newToken != null && string.IsNullOrWhiteSpace(newToken.jwt) == false;
