@@ -20,7 +20,7 @@ namespace ClangPowerTools
     {
       this.settingsView = settingsView;
       settingsView.Closed += OnClosed;
-      SetFooterVisibilityAsync();
+      _ = SetFooterVisibilityAsync();
     }
 
     #endregion
