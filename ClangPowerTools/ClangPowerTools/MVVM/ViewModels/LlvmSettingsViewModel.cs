@@ -17,7 +17,8 @@ namespace ClangPowerTools
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private const string exeParameters = "/S /D=";
+    private const string installExeParameters = "/S /D=";
+    private const string uninstallExeParameters = "/S";
     private const string arguments = @"/C reg delete HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\LLVM /f &";
     private const string processFileName = "cmd.exe";
     private const string processVerb = "runas";
@@ -96,9 +97,11 @@ namespace ClangPowerTools
     public void UninstallCommand(int elementIndex)
     {
       selectedLlvm = llvms[elementIndex];
-      if (canDownload == false && selectedLlvm.IsInstalled)
+      if (canDownload == true && selectedLlvm.IsInstalled)
+      {
+        canDownload = false;
         UninstallLlvmVersion(selectedLlvm.Version);
-    
+      }
     }
 
     #endregion
@@ -148,7 +151,7 @@ namespace ClangPowerTools
     {
       var llVmVersionPath = GetLlVmVersionPath(version);
       var executablePath = GetLlvmExecutablePath(version, llvm + version);
-      var startInfoArguments = string.Concat(arguments, " ", executablePath, " ", exeParameters, llVmVersionPath);
+      var startInfoArguments = string.Concat(arguments, " ", executablePath, " ", installExeParameters, llVmVersionPath);
 
       try
       {
@@ -158,7 +161,7 @@ namespace ClangPowerTools
         process.StartInfo.Verb = processVerb;
         process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
         process.EnableRaisingEvents = true;
-        process.Exited += new EventHandler(ProcessExited);
+        process.Exited += new EventHandler(InstallProcessExited);
         process.Start();
       }
       catch (Exception e)
@@ -168,7 +171,7 @@ namespace ClangPowerTools
       }
     }
 
-    private void ProcessExited(object sender, EventArgs e)
+    private void InstallProcessExited(object sender, EventArgs e)
     {
       selectedLlvm.IsInstalled = true;
       canDownload = true;
@@ -177,7 +180,30 @@ namespace ClangPowerTools
 
     private void UninstallLlvmVersion(string version)
     {
-      //uninstall command
+      var executablePath = GetLlvmExecutablePath(version, uninstall);
+
+      try
+      {
+        process = new Process();
+        process.StartInfo.FileName = executablePath;
+        process.StartInfo.Arguments = uninstallExeParameters;
+        process.StartInfo.Verb = processVerb;
+        process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+        process.EnableRaisingEvents = true;
+        process.Exited += new EventHandler(UninstallProcessExited);
+        process.Start();
+      }
+      catch (Exception e)
+      {
+
+        MessageBox.Show(e.Message, "Uninstall Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+    }
+
+    private void UninstallProcessExited(object sender, EventArgs e)
+    {
+      canDownload = true;
+      process.Dispose();
     }
 
     private void DeleteLlvmVersion(string version)
@@ -200,8 +226,8 @@ namespace ClangPowerTools
 
     private string GetLlvmExecutablePath(string version, string executableName)
     {
-      var folderName = string.Concat(llvm, version);
-      return string.Concat(folderName, "\\", executableName, ".exe");
+      var path = GetLlVmVersionPath(version);
+      return string.Concat(path, "\\", executableName, ".exe");
     }
 
 
