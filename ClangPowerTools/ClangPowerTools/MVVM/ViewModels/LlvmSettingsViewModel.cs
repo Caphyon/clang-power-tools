@@ -203,7 +203,10 @@ namespace ClangPowerTools
     private void UninstallProcessExited(object sender, EventArgs e)
     {
       canDownload = true;
+      selectedLlvm.IsInstalled = false;
+      selectedLlvm.IsDownloading = false;
       process.Dispose();
+      DeleteLlvmVersion(selectedLlvm.Version);
     }
 
     private void DeleteLlvmVersion(string version)
