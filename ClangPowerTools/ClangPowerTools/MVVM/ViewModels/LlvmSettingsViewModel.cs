@@ -185,7 +185,7 @@ namespace ClangPowerTools
 
     private void UninstallLlvmVersion(string version)
     {
-      if (CheckVersionOnDisk(version) == false)
+      if (DoesVersionExistOnDisk(version) == false)
       {
         DeleteLlvmVersion(version);
         return;
@@ -257,7 +257,7 @@ namespace ClangPowerTools
         var llvmModel = new LlvmModel()
         {
           Version = version,
-          IsInstalled = CheckVersionOnDisk(version),
+          IsInstalled = DoesVersionExistOnDisk(version),
           IsSelected = false,
         };
 
@@ -265,7 +265,7 @@ namespace ClangPowerTools
       }
     }
 
-    private bool CheckVersionOnDisk(string version)
+    private bool DoesVersionExistOnDisk(string version)
     {
       var executablePath = GetLlvmExecutablePath(version, uninstall);
       return File.Exists(executablePath);
