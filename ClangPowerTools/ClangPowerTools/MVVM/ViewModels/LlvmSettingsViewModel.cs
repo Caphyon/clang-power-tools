@@ -29,8 +29,8 @@ namespace ClangPowerTools
     private Process process;
     private List<LlvmModel> llvms;
     private LlvmModel selectedLlvm = new LlvmModel();
-    private CancellationTokenSource cancellationToken = new CancellationTokenSource();
-    private bool canDownload = true;
+    private CancellationTokenSource downloadCancellationToken = new CancellationTokenSource();
+    private bool canUseCommand = true;
     private string appdDataPath;
 
     #endregion
@@ -67,9 +67,9 @@ namespace ClangPowerTools
     #region Commands
     public void DownloadCommand(int elementIndex)
     {
-      if (canDownload)
+      if (canUseCommand)
       {
-        canDownload = false;
+        canUseCommand = false;
         selectedLlvm = llvms[elementIndex];
         selectedLlvm.IsDownloading = true;
         DownloadLlvmVersion(selectedLlvm.Version);
@@ -80,20 +80,19 @@ namespace ClangPowerTools
     {
       if (selectedLlvm.IsDownloading)
       {
-        canDownload = true;
+        canUseCommand = true;
         selectedLlvm.DownloadProgress = 0;
         selectedLlvm.IsDownloading = false;
-        cancellationToken.Cancel();
-        ForceCloseProcessIfRequired(selectedLlvm.Version);
+        downloadCancellationToken.Cancel();
       }
     }
 
     public void UninstallCommand(int elementIndex)
     {
-      selectedLlvm = llvms[elementIndex];
-      if (canDownload == true && selectedLlvm.IsInstalled)
+      if (canUseCommand)
       {
-        canDownload = false;
+        canUseCommand = false;
+        selectedLlvm = llvms[elementIndex];
         UninstallLlvmVersion(selectedLlvm.Version);
       }
     }
@@ -115,24 +114,26 @@ namespace ClangPowerTools
       {
         client.DownloadProgressChanged += DownloadProgressChanged;
         client.DownloadFileCompleted += DownloadFileCompleted;
-        cancellationToken.Token.Register(client.CancelAsync);
+        downloadCancellationToken.Token.Register(client.CancelAsync);
         client.DownloadFileAsync(new Uri(finalUri), executablePath);
       }
     }
 
     private void DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
     {
-      if (cancellationToken.IsCancellationRequested)
+      if (downloadCancellationToken.IsCancellationRequested)
       {
         DeleteLlvmVersion(selectedLlvm.Version);
       }
       else
       {
+        selectedLlvm.IsInstalling = true;
+        selectedLlvm.IsDownloading = false;
         InstallLlVmVersion(selectedLlvm.Version);
       }
 
-      cancellationToken.Dispose();
-      cancellationToken = new CancellationTokenSource();
+      downloadCancellationToken.Dispose();
+      downloadCancellationToken = new CancellationTokenSource();
     }
 
 
@@ -151,34 +152,40 @@ namespace ClangPowerTools
 
       try
       {
-        using (var process = new Process())
-        {
-          process.StartInfo.FileName = processFileName;
-          process.StartInfo.Arguments = startInfoArguments;
-          process.StartInfo.Verb = processVerb;
-          process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-          process.EnableRaisingEvents = true;
-          process.Exited += new EventHandler(InstallProcessExited);
-          process.Start();
-        }
+        process = new Process();
+        process.StartInfo.FileName = processFileName;
+        process.StartInfo.Arguments = startInfoArguments;
+        process.StartInfo.Verb = processVerb;
+        process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+        process.EnableRaisingEvents = true;
+        process.Exited += new EventHandler(InstallProcessExited);
+        process.Start();
+
       }
       catch (Exception e)
       {
-
+        SetInstallCommandState();
+        DeleteLlvmVersion(selectedLlvm.Version);
         MessageBox.Show(e.Message, "Installation Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
     private void InstallProcessExited(object sender, EventArgs e)
     {
+      process.Close();
+      SetInstallCommandState();
+    }
+
+    private void SetInstallCommandState()
+    {
       selectedLlvm.IsInstalled = true;
-      canDownload = true;
+      selectedLlvm.IsInstalling = false;
+      canUseCommand = true;
     }
 
     private void UninstallLlvmVersion(string version)
     {
-      var executablePath = GetLlvmExecutablePath(version, uninstall);
-      if (Directory.Exists(executablePath) == false)
+      if (CheckVersionOnDisk(version) == false)
       {
         DeleteLlvmVersion(version);
         return;
@@ -186,37 +193,41 @@ namespace ClangPowerTools
 
       try
       {
-        using (var process = new Process())
-        {
-          process.StartInfo.FileName = executablePath;
-          process.StartInfo.Arguments = uninstallExeParameters;
-          process.StartInfo.Verb = processVerb;
-          process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-          process.EnableRaisingEvents = true;
-          process.Exited += new EventHandler(UninstallProcessExited);
-          process.Start();
-        }
+        process = new Process();
+        process.StartInfo.FileName = GetLlvmExecutablePath(version, uninstall);
+        process.StartInfo.Arguments = uninstallExeParameters;
+        process.StartInfo.Verb = processVerb;
+        process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+        process.EnableRaisingEvents = true;
+        process.Exited += new EventHandler(UninstallProcessExited);
+        process.Start();
       }
       catch (Exception e)
       {
-
+        SetUninstallCommandState();
         MessageBox.Show(e.Message, "Uninstall Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
     private void UninstallProcessExited(object sender, EventArgs e)
     {
+      process.Close();
       DeleteLlvmVersion(selectedLlvm.Version);
     }
 
     private void DeleteLlvmVersion(string version)
     {
-      canDownload = true;
-      selectedLlvm.IsInstalled = false;
-      selectedLlvm.IsDownloading = false;
+      SetUninstallCommandState();
 
       var path = GetLlVmVersionPath(version);
       Directory.Delete(path, true);
+    }
+
+    private void SetUninstallCommandState()
+    {
+      canUseCommand = true;
+      selectedLlvm.IsInstalled = false;
+      selectedLlvm.IsDownloading = false;
     }
 
     private string GetLlVmVersionPath(string version)
@@ -254,22 +265,10 @@ namespace ClangPowerTools
       }
     }
 
-    private void ForceCloseProcessIfRequired(string version)
-    {
-      var executablePath = GetLlvmExecutablePath(version, llvm+version);
-      if (File.Exists(executablePath))
-      {
-        process.Kill();
-        process.Dispose();
-      }
-    }
-
     private bool CheckVersionOnDisk(string version)
     {
-      var path = GetLlVmVersionPath(version);
-      if (Directory.Exists(path)) return true;
-
-      return false;
+      var executablePath = GetLlvmExecutablePath(version, uninstall);
+      return File.Exists(executablePath);
     }
     #endregion
   }
