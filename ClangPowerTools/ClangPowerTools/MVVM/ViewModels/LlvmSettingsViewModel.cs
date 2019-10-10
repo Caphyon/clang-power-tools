@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.MVVM.Commands;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -8,7 +7,6 @@ using System.IO;
 using System.Net;
 using System.Threading;
 using System.Windows.Forms;
-using System.Windows.Input;
 
 namespace ClangPowerTools
 {
@@ -27,11 +25,13 @@ namespace ClangPowerTools
     private const string uninstall = "Uninstall";
 
     private Process process;
-    private List<LlvmModel> llvms;
+    private SettingsProvider settingsProvider = new SettingsProvider();
+    private List<LlvmModel> llvms = new List<LlvmModel>();
     private LlvmModel selectedLlvm = new LlvmModel();
     private CancellationTokenSource downloadCancellationToken = new CancellationTokenSource();
     private bool canUseCommand = true;
-    private string appdDataPath;
+    private string appdDataPath = string.Empty;
+    private string versionUsed = string.Empty;
 
     #endregion
 
@@ -58,7 +58,24 @@ namespace ClangPowerTools
         llvms = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Llvms"));
       }
+    }
 
+    public ObservableCollection<string> InstalledLlvms { get; set; } = new ObservableCollection<string>();
+
+    public string VersionUsed
+    {
+      get
+      {
+        return versionUsed;
+      }
+
+      set
+      {
+        versionUsed = value;
+        var compilerModel = settingsProvider.GetCompilerSettingsModel();
+        compilerModel.LlvmVersion = versionUsed;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("VersionUsed"));
+      }
     }
 
     #endregion
@@ -103,6 +120,27 @@ namespace ClangPowerTools
 
     #region Private Methods
 
+    private void IntitializeView()
+    {
+      foreach (var version in LlvmVersions.Versions)
+      {
+        var llvmModel = new LlvmModel()
+        {
+          Version = version,
+          IsInstalled = IsVersionExeOnDisk(version, uninstall),
+        };
+
+        if (llvmModel.IsInstalled)
+        {
+          InstalledLlvms.Add(llvmModel.Version);
+        }
+
+        llvms.Add(llvmModel);
+      }
+
+      VersionUsed = settingsProvider.GetCompilerSettingsModel().LlvmVersion;
+    }
+
     private void DownloadLlvmVersion(string version)
     {
       CreateVersionFolder(version);
@@ -119,11 +157,13 @@ namespace ClangPowerTools
       }
     }
 
+
     private void DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
     {
-      if (downloadCancellationToken.IsCancellationRequested)
+      if (downloadCancellationToken.IsCancellationRequested || selectedLlvm.DownloadProgress != selectedLlvm.MaxProgress)
       {
         DeleteLlvmVersion(selectedLlvm.Version);
+        MessageBox.Show("The download process has stopped.", "Download Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
       }
       else
       {
@@ -132,6 +172,7 @@ namespace ClangPowerTools
         InstallLlVmVersion(selectedLlvm.Version);
       }
 
+      selectedLlvm.DownloadProgress = 0;
       downloadCancellationToken.Dispose();
       downloadCancellationToken = new CancellationTokenSource();
     }
@@ -174,6 +215,20 @@ namespace ClangPowerTools
     {
       process.Close();
       SetInstallCommandState();
+#pragma warning disable VSTHRD001 // Avoid legacy thread switching APIs
+      System.Windows.Application.Current.Dispatcher.Invoke(
+#pragma warning restore VSTHRD001 // Avoid legacy thread switching APIs
+        new Action(() =>
+                {
+                  for (int i = 0; i < InstalledLlvms.Count; i++)
+                  {
+                    if (string.CompareOrdinal(selectedLlvm.Version, InstalledLlvms[i]) > 0)
+                    {
+                      InstalledLlvms.Insert(i, selectedLlvm.Version);
+                      break;
+                    }
+                  }
+                }));
     }
 
     private void SetInstallCommandState()
@@ -185,7 +240,7 @@ namespace ClangPowerTools
 
     private void UninstallLlvmVersion(string version)
     {
-      if (DoesVersionExistOnDisk(version) == false)
+      if (IsVersionExeOnDisk(version, uninstall) == false)
       {
         DeleteLlvmVersion(version);
         return;
@@ -248,26 +303,9 @@ namespace ClangPowerTools
       Directory.CreateDirectory(path);
     }
 
-    private void IntitializeView()
+    private bool IsVersionExeOnDisk(string version, string name)
     {
-      llvms = new List<LlvmModel>();
-
-      foreach (var version in LlvmVersions.Versions)
-      {
-        var llvmModel = new LlvmModel()
-        {
-          Version = version,
-          IsInstalled = DoesVersionExistOnDisk(version),
-          IsSelected = false,
-        };
-
-        llvms.Add(llvmModel);
-      }
-    }
-
-    private bool DoesVersionExistOnDisk(string version)
-    {
-      var executablePath = GetLlvmExecutablePath(version, uninstall);
+      var executablePath = GetLlvmExecutablePath(version, name);
       return File.Exists(executablePath);
     }
     #endregion
