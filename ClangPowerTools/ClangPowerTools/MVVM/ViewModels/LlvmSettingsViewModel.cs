@@ -29,9 +29,9 @@ namespace ClangPowerTools
     private List<LlvmModel> llvms = new List<LlvmModel>();
     private LlvmModel selectedLlvm = new LlvmModel();
     private CancellationTokenSource downloadCancellationToken = new CancellationTokenSource();
-    private bool canUseCommand = true;
     private string appdDataPath = string.Empty;
     private string versionUsed = string.Empty;
+    private bool canUseCommand = true;
 
     #endregion
 
@@ -219,16 +219,21 @@ namespace ClangPowerTools
       System.Windows.Application.Current.Dispatcher.Invoke(
 #pragma warning restore VSTHRD001 // Avoid legacy thread switching APIs
         new Action(() =>
-                {
-                  for (int i = 0; i < InstalledLlvms.Count; i++)
-                  {
-                    if (string.CompareOrdinal(selectedLlvm.Version, InstalledLlvms[i]) > 0)
-                    {
-                      InstalledLlvms.Insert(i, selectedLlvm.Version);
-                      break;
-                    }
-                  }
-                }));
+        {
+          InsertVersionToInstalledLlvms();
+        }));
+    }
+
+    private void InsertVersionToInstalledLlvms()
+    {
+      for (int i = 0; i < InstalledLlvms.Count; i++)
+      {
+        if (string.CompareOrdinal(selectedLlvm.Version, InstalledLlvms[i]) > 0)
+        {
+          InstalledLlvms.Insert(i, selectedLlvm.Version);
+          break;
+        }
+      }
     }
 
     private void SetInstallCommandState()
