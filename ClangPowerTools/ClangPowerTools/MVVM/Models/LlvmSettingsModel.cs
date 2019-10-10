@@ -2,7 +2,7 @@
 
 namespace ClangPowerTools
 {
-  public class LlvmModel : INotifyPropertyChanged
+  public class LlvmSettingsModel : INotifyPropertyChanged
   {
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;

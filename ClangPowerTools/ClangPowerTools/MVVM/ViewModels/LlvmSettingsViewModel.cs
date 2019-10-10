@@ -26,8 +26,8 @@ namespace ClangPowerTools
 
     private Process process;
     private SettingsProvider settingsProvider = new SettingsProvider();
-    private List<LlvmModel> llvms = new List<LlvmModel>();
-    private LlvmModel selectedLlvm = new LlvmModel();
+    private List<LlvmSettingsModel> llvms = new List<LlvmSettingsModel>();
+    private LlvmSettingsModel selectedLlvm = new LlvmSettingsModel();
     private CancellationTokenSource downloadCancellationToken = new CancellationTokenSource();
     private string appdDataPath = string.Empty;
     private string versionUsed = string.Empty;
@@ -46,7 +46,7 @@ namespace ClangPowerTools
 
     #region Properties
 
-    public List<LlvmModel> Llvms
+    public List<LlvmSettingsModel> Llvms
     {
       get
       {
@@ -124,7 +124,7 @@ namespace ClangPowerTools
     {
       foreach (var version in LlvmVersions.Versions)
       {
-        var llvmModel = new LlvmModel()
+        var llvmModel = new LlvmSettingsModel()
         {
           Version = version,
           IsInstalled = IsVersionExeOnDisk(version, uninstall),
