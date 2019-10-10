@@ -17,8 +17,8 @@
     </Grid.Background>
     <Grid.RowDefinitions>
       <RowDefinition Height="5" />
-      <RowDefinition Height="*" />
-      <RowDefinition Height="5" />
+      <RowDefinition Height="250" />
+      <RowDefinition Height="100" />
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
@@ -170,6 +170,23 @@
         </DataTemplate>
       </ListView.ItemTemplate>
     </ListView>
+
+    <!--  Version used  -->
+    <StackPanel
+      Grid.Row="2"
+      Grid.Column="1"
+      Orientation="Horizontal">
+      <Label
+        Width="80"
+        Height="30"
+        Content="Use LLVM" />
+      <ComboBox
+        Width="250"
+        Height="30"
+        ItemsSource="{Binding InstalledLlvms}"
+        SelectedItem="{Binding VersionUsed}" />
+    </StackPanel>
+
   </Grid>
 </UserControl>
 
