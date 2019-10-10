@@ -86,7 +86,7 @@
     <Compile Include="MVVM\Controllers\FreeTrialController.cs" />
     <Compile Include="MVVM\LlvmVersions.cs" />
     <Compile Include="MVVM\Models\GeneralSettingsModel.cs" />
-    <Compile Include="MVVM\Models\LlvmModel.cs" />
+    <Compile Include="MVVM\Models\LlvmSettingsModel.cs" />
     <Compile Include="MVVM\OldSettings\ClangFormatPathValue.cs" />
     <Compile Include="MVVM\OldSettings\ClangTidyPathValue.cs" />
     <Compile Include="MVVM\Commands\RelayCommand.cs" />
