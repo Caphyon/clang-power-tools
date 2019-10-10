@@ -54,7 +54,7 @@ namespace ClangPowerTools
         process.OutputDataReceived -= DataHandler;
         process.Exited -= ExitedHandler;
         process.EnableRaisingEvents = false;
-
+        process.Close();
       }
       return process;
     }
@@ -66,11 +66,23 @@ namespace ClangPowerTools
     private static string CreatePathEnvironmentVariable()
     {
       var path = Environment.GetEnvironmentVariable("Path");
+      
       var paths = path.Split(';').ToList();
       paths.RemoveAt(paths.Count - 1);
       paths.RemoveAll(ContainLlvm);
-      paths.Add("C:\\Users\\horatiu.prica\\AppData\\Roaming\\ClangPowerTools\\LLVM\\LLVM9.0.0\\bin");
+      paths.Add(GetUsedLlvmVersionPath());
+
       return String.Join(";", paths);
+    }
+
+
+    private static string GetUsedLlvmVersionPath()
+    {
+      var settingsPathBuilder = new SettingsPathBuilder();
+      var settingsProvider = new SettingsProvider();
+      var llvmVersion = settingsProvider.GetCompilerSettingsModel().LlvmVersion;
+
+      return settingsPathBuilder.GetLlvmBinPath(llvmVersion);
     }
 
     private static bool ContainLlvm(string input)
