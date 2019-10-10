@@ -16,8 +16,6 @@ namespace ClangPowerTools
     #region Properties
     public string Version { get; set; } = string.Empty;
 
-    public bool IsSelected { get; set; } = false;
-
     public bool IsInstalled
     {
       get
