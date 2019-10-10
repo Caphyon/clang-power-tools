@@ -29,7 +29,7 @@ namespace ClangPowerTools
     private List<LlvmSettingsModel> llvms = new List<LlvmSettingsModel>();
     private LlvmSettingsModel selectedLlvm = new LlvmSettingsModel();
     private CancellationTokenSource downloadCancellationToken = new CancellationTokenSource();
-    private string appdDataPath = string.Empty;
+    private SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
     private string versionUsed = string.Empty;
     private bool canUseCommand = true;
 
@@ -38,8 +38,6 @@ namespace ClangPowerTools
     #region Constructor
     public LlvmSettingsViewModel()
     {
-      var settingsPathBuilder = new SettingsPathBuilder();
-      appdDataPath = settingsPathBuilder.GetPath("");
       IntitializeView();
     }
     #endregion
@@ -145,7 +143,7 @@ namespace ClangPowerTools
     {
       CreateVersionFolder(version);
 
-      var executablePath = GetLlvmExecutablePath(version, llvm + version);
+      var executablePath = settingsPathBuilder.GetLlvmExecutablePath(version, llvm + version);
       var finalUri = string.Concat(uri, "/", version, "/", llvm, "-", version, "-win64.exe");
 
       using (var client = new WebClient())
@@ -187,8 +185,8 @@ namespace ClangPowerTools
 
     private void InstallLlVmVersion(string version)
     {
-      var llVmVersionPath = GetLlVmVersionPath(version);
-      var executablePath = GetLlvmExecutablePath(version, llvm + version);
+      var llVmVersionPath = settingsPathBuilder.GetLlvmPath(version);
+      var executablePath = settingsPathBuilder.GetLlvmExecutablePath(version, llvm + version);
       var startInfoArguments = string.Concat(arguments, " ", executablePath, " ", installExeParameters, llVmVersionPath);
 
       try
@@ -254,7 +252,7 @@ namespace ClangPowerTools
       try
       {
         process = new Process();
-        process.StartInfo.FileName = GetLlvmExecutablePath(version, uninstall);
+        process.StartInfo.FileName = settingsPathBuilder.GetLlvmExecutablePath(version, uninstall);
         process.StartInfo.Arguments = uninstallExeParameters;
         process.StartInfo.Verb = processVerb;
         process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
@@ -279,7 +277,7 @@ namespace ClangPowerTools
     {
       SetUninstallCommandState();
 
-      var path = GetLlVmVersionPath(version);
+      var path = settingsPathBuilder.GetLlvmPath(version);
       Directory.Delete(path, true);
     }
 
@@ -290,27 +288,15 @@ namespace ClangPowerTools
       selectedLlvm.IsDownloading = false;
     }
 
-    private string GetLlVmVersionPath(string version)
-    {
-      var folderName = string.Concat(llvm, version);
-      return Path.Combine(appdDataPath, llvm, folderName);
-    }
-
-    private string GetLlvmExecutablePath(string version, string executableName)
-    {
-      var path = GetLlVmVersionPath(version);
-      return string.Concat(path, "\\", executableName, ".exe");
-    }
-
     private void CreateVersionFolder(string version)
     {
-      var path = GetLlVmVersionPath(version);
+      var path = settingsPathBuilder.GetLlvmPath(version);
       Directory.CreateDirectory(path);
     }
 
     private bool IsVersionExeOnDisk(string version, string name)
     {
-      var executablePath = GetLlvmExecutablePath(version, name);
+      var executablePath = settingsPathBuilder.GetLlvmExecutablePath(version, name);
       return File.Exists(executablePath);
     }
     #endregion
