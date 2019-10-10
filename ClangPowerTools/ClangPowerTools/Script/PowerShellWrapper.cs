@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 
 namespace ClangPowerTools
 {
@@ -27,8 +28,9 @@ namespace ClangPowerTools
           RedirectStandardOutput = true,
           CreateNoWindow = true,
           UseShellExecute = false,
-          Arguments = aScript
+          Arguments = aScript,
         };
+        process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
 
         process.EnableRaisingEvents = true;
         process.ErrorDataReceived += DataErrorHandler;
@@ -57,6 +59,24 @@ namespace ClangPowerTools
       return process;
     }
 
+    #endregion
+
+
+    #region Private Methods
+    private static string CreatePathEnvironmentVariable()
+    {
+      var path = Environment.GetEnvironmentVariable("Path");
+      var paths = path.Split(';').ToList();
+      paths.RemoveAt(paths.Count - 1);
+      paths.RemoveAll(ContainLlvm);
+      paths.Add("C:\\Users\\horatiu.prica\\AppData\\Roaming\\ClangPowerTools\\LLVM\\LLVM9.0.0\\bin");
+      return String.Join(";", paths);
+    }
+
+    private static bool ContainLlvm(string input)
+    {
+      return input.ToLower().Contains("llvm");
+    }
     #endregion
 
   }
