@@ -18,5 +18,6 @@
 
     public bool VerboseMode { get; set; } = false;
 
+    public string LlvmVersion { get; set; } = string.Empty;
   }
 }
