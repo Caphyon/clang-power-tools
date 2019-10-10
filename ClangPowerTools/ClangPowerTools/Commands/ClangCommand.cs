@@ -117,6 +117,7 @@ namespace ClangPowerTools
       string runModeParameters = ScriptGenerator.GetRunModeParamaters();
       string genericParameters = ScriptGenerator.GetGenericParamaters(aCommandId, VsEdition, VsVersion);
 
+      //TODO remove this it stops the check
       if (mMissingLLVM)
         return;
 
