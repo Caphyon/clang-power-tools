@@ -160,6 +160,7 @@ namespace ClangPowerTools
     {
       if (downloadCancellationToken.IsCancellationRequested || selectedLlvm.DownloadProgress != selectedLlvm.MaxProgress)
       {
+        SetUninstallCommandState();
         DeleteLlvmVersion(selectedLlvm.Version);
         MessageBox.Show("The download process has stopped.", "Download Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
       }
@@ -212,6 +213,8 @@ namespace ClangPowerTools
     private void InstallProcessExited(object sender, EventArgs e)
     {
       process.Close();
+      var exeName = string.Concat("LLVM", selectedLlvm.Version, ".exe");
+      DeleteExe(selectedLlvm.Version, exeName);
       SetInstallCommandState();
 #pragma warning disable VSTHRD001 // Avoid legacy thread switching APIs
       System.Windows.Application.Current.Dispatcher.Invoke(
@@ -224,6 +227,12 @@ namespace ClangPowerTools
 
     private void InsertVersionToInstalledLlvms()
     {
+      if (InstalledLlvms.Count == 0)
+      {
+        InstalledLlvms.Add(selectedLlvm.Version);
+        return;
+      }
+
       for (int i = 0; i < InstalledLlvms.Count; i++)
       {
         if (string.CompareOrdinal(selectedLlvm.Version, InstalledLlvms[i]) > 0)
@@ -245,6 +254,7 @@ namespace ClangPowerTools
     {
       if (IsVersionExeOnDisk(version, uninstall) == false)
       {
+        SetUninstallCommandState();
         DeleteLlvmVersion(version);
         return;
       }
@@ -270,15 +280,20 @@ namespace ClangPowerTools
     private void UninstallProcessExited(object sender, EventArgs e)
     {
       process.Close();
+      SetUninstallCommandState();
       DeleteLlvmVersion(selectedLlvm.Version);
     }
 
     private void DeleteLlvmVersion(string version)
     {
-      SetUninstallCommandState();
-
       var path = settingsPathBuilder.GetLlvmPath(version);
       Directory.Delete(path, true);
+    }
+
+    private void DeleteExe(string version, string exeName)
+    {
+      var path = Path.Combine(settingsPathBuilder.GetLlvmPath(version), exeName);
+      File.Delete(path);
     }
 
     private void SetUninstallCommandState()
