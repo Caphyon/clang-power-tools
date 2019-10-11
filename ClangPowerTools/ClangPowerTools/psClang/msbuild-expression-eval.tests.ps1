@@ -72,6 +72,10 @@ Describe "MSBuild - Powershell Expression translation" {
     $e = '$([MSBuild]::GetPathOfFileAbove("Program Files", ''$(MSBuildThisFileDirectory)''))'
     Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
 
+    [string] $MSBuildThisFileDirectory2 = $MSBuildThisFileDirectory + "\System32"
+    $e = '$([MSBuild]::GetPathOfFileAbove(''Program Files'', "$(MSBuildThisFileDirectory2)../"))'
+    Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
+
     $e = "`$([MSBuild]::GetDirectoryNameOfFileAbove('$MSBuildThisFileDirectory', 'Program Files')Program Files"
     Evaluate-MSBuildExpression $e | Should -BeExactly $env:ProgramFiles
     $e = "`$([MSBuild]::GetPathOfFileAbove('Program Files', '$MSBuildThisFileDirectory')"

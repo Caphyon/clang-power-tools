@@ -28,8 +28,8 @@ Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>     `
         , ("(\`$\()(Registry:)(.*?)(\))"     , '$$(GetRegValue("$3"))'   )`
         , ("\[MSBuild\]::GetDirectoryNameOfFileAbove\((.+?),\s*`"?'?((\$.+?\))|(.+?))((|`"|')\))+"`
         ,'cpt::GetDirNameOfFileAbove -startDir $1 -targetFile ''$2'')'        )`
-        , ("\[MSBuild\]::GetPathOfFileAbove\(`"?(.+?)`"?,\s*`"?'?((\$.+?\))|(.+?))((|`"|')\))+"`
-        ,'cpt::GetPathOfFileAbove -startDir $2 -targetFile ''$1'')'        )`
+        , ("\(\[MSBuild\]::GetPathOfFileAbove\(`"?(.+?)`"?,\s*((`"(.+)`"\)+)|((\$\(.+?\))\)*))"`
+        ,'(cpt::GetPathOfFileAbove -startDir "$4$6" -targetFile ''$1'')'    )`
         , ("\[MSBuild\]::MakeRelative\((.+?),\s*""?'?((\$.+?\))|(.+?))((|""|')\)\))+"`
         ,'cpt::MakePathRelative -base $1 -target "$2")'                       )`
         , ('SearchOption\.', '[System.IO.SearchOption]::'                )`
