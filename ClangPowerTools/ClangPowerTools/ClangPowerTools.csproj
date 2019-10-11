@@ -84,6 +84,7 @@
     <Compile Include="Helpers\ScriptGenerator.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
     <Compile Include="MVVM\Controllers\FreeTrialController.cs" />
+    <Compile Include="MVVM\Controllers\LlvmController.cs" />
     <Compile Include="MVVM\LlvmVersions.cs" />
     <Compile Include="MVVM\Models\GeneralSettingsModel.cs" />
     <Compile Include="MVVM\Models\LlvmSettingsModel.cs" />
