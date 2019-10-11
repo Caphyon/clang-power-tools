@@ -25,12 +25,12 @@ namespace ClangPowerTools
     private const string uninstall = "Uninstall";
 
     private Process process;
+    private CompilerSettingsModel compilerModel = new CompilerSettingsModel();
     private SettingsProvider settingsProvider = new SettingsProvider();
     private List<LlvmSettingsModel> llvms = new List<LlvmSettingsModel>();
     private LlvmSettingsModel selectedLlvm = new LlvmSettingsModel();
     private CancellationTokenSource downloadCancellationToken = new CancellationTokenSource();
     private SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
-    private string versionUsed = string.Empty;
     private bool canUseCommand = true;
 
     #endregion
@@ -64,14 +64,12 @@ namespace ClangPowerTools
     {
       get
       {
-        return versionUsed;
+        return compilerModel.LlvmVersion;
       }
 
       set
       {
-        versionUsed = value;
-        var compilerModel = settingsProvider.GetCompilerSettingsModel();
-        compilerModel.LlvmVersion = versionUsed;
+        compilerModel.LlvmVersion = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("VersionUsed"));
       }
     }
@@ -115,7 +113,6 @@ namespace ClangPowerTools
     #endregion
 
 
-
     #region Private Methods
 
     private void IntitializeView()
@@ -136,7 +133,16 @@ namespace ClangPowerTools
         llvms.Add(llvmModel);
       }
 
-      VersionUsed = settingsProvider.GetCompilerSettingsModel().LlvmVersion;
+      compilerModel = settingsProvider.GetCompilerSettingsModel();
+      ResetCompilerModelLlvmVersion();
+    }
+
+    private void ResetCompilerModelLlvmVersion()
+    {
+      if (InstalledLlvms.Count == 0)
+      {
+        VersionUsed = string.Empty;
+      }
     }
 
     private void DownloadLlvmVersion(string version)
@@ -281,6 +287,15 @@ namespace ClangPowerTools
     {
       process.Close();
       SetUninstallCommandState();
+      ResetCompilerModelLlvmVersion();
+
+#pragma warning disable VSTHRD001 // Avoid legacy thread switching APIs
+      System.Windows.Application.Current.Dispatcher.Invoke(
+#pragma warning restore VSTHRD001 // Avoid legacy thread switching APIs
+        new Action(() =>
+        {
+          InstalledLlvms.Remove(selectedLlvm.Version);
+        }));
       DeleteLlvmVersion(selectedLlvm.Version);
     }
 
