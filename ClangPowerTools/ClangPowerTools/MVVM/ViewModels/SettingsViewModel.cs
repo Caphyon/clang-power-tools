@@ -1,7 +1,6 @@
-﻿using ClangPowerTools.MVVM.Controllers;
+﻿using ClangPowerTools.Helpers;
 using ClangPowerTools.Views;
 using System;
-using System.Threading.Tasks;
 
 namespace ClangPowerTools
 {
@@ -16,12 +15,18 @@ namespace ClangPowerTools
 
     #region Constructors
 
-    public SettingsViewModel(SettingsView settingsView)
+    public SettingsViewModel(SettingsView settingsView, bool activeLicense = false)
     {
       this.settingsView = settingsView;
       settingsView.Closed += OnClosed;
-      _ = SetFooterVisibilityAsync();
+      ActiveLicense = LicenseInfo.Active;
     }
+
+    #endregion
+
+    #region Properties
+
+    public bool ActiveLicense { get; private set; }
 
     #endregion
 
@@ -31,23 +36,6 @@ namespace ClangPowerTools
     {
       settingsHandler.SaveSettings();
       settingsView.Closed -= OnClosed;
-    }
-
-    public async Task SetFooterVisibilityAsync()
-    {
-      LicenseController licenseController = new LicenseController();
-
-      if (await licenseController.CheckOnlineLicenseAsync() == true)
-      {
-        settingsView.SupportGrid.Visibility = System.Windows.Visibility.Visible;
-        settingsView.UpgradeGrid.Visibility = System.Windows.Visibility.Hidden;
-      }
-      else
-      {
-        settingsView.SupportGrid.Visibility = System.Windows.Visibility.Hidden;
-        settingsView.UpgradeGrid.Visibility = System.Windows.Visibility.Visible;
-      }
-
     }
 
     #endregion

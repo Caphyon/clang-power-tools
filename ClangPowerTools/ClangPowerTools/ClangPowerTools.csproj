@@ -86,6 +86,7 @@
     <Compile Include="Events\LicenseEventArgs.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\JoinUtility.cs" />
+    <Compile Include="Helpers\LicenseInfo.cs" />
     <Compile Include="Helpers\RegistryUtility.cs" />
     <Compile Include="Helpers\ScriptGenerator.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />

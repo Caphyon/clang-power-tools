@@ -93,8 +93,17 @@
     <Grid
       x:Name="UpgradeGrid"
       Grid.Row="1"
-      Background="#272E58"
-      Visibility="Hidden">
+      Background="#272E58">
+      <Grid.Style>
+        <Style TargetType="Grid">
+          <Setter Property="Visibility" Value="Hidden" />
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding ActiveLicense}" Value="False">
+              <Setter Property="Visibility" Value="Visible" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Grid.Style>
 
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="35" />
@@ -140,8 +149,18 @@
     <Grid
       x:Name="SupportGrid"
       Grid.Row="1"
-      Background="#272E58"
-      Visibility="Visible">
+      Background="#272E58">
+
+      <Grid.Style>
+        <Style TargetType="Grid">
+          <Setter Property="Visibility" Value="Visible" />
+          <Style.Triggers>
+            <DataTrigger Binding="{Binding ActiveLicense}" Value="False">
+              <Setter Property="Visibility" Value="Hidden" />
+            </DataTrigger>
+          </Style.Triggers>
+        </Style>
+      </Grid.Style>
 
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="35" />
