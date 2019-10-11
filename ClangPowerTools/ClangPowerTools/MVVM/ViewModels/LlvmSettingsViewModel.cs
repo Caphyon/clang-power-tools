@@ -162,7 +162,7 @@ namespace ClangPowerTools
       {
         SetUninstallCommandState();
         DeleteLlvmVersion(selectedLlvm.Version);
-        MessageBox.Show("The download process has stopped.", "Download Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        MessageBox.Show("The download process has stopped.", "Download", MessageBoxButtons.OK, MessageBoxIcon.Warning);
       }
       else
       {
