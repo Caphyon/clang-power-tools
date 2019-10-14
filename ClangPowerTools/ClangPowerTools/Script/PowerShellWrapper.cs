@@ -66,22 +66,23 @@ namespace ClangPowerTools
     private static string CreatePathEnvironmentVariable()
     {
       var path = Environment.GetEnvironmentVariable("Path");
+      var settingsProvider = new SettingsProvider();
+      var llvmVersion = settingsProvider.GetCompilerSettingsModel().LlvmVersion;
+
+      if (string.IsNullOrEmpty(llvmVersion)) return path;
 
       var paths = path.Split(';').ToList();
       paths.RemoveAt(paths.Count - 1);
       paths.RemoveAll(ContainsLlvm);
-      paths.Add(GetUsedLlvmVersionPath());
+      paths.Add(GetUsedLlvmVersionPath(llvmVersion));
 
       return String.Join(";", paths);
     }
 
 
-    private static string GetUsedLlvmVersionPath()
+    private static string GetUsedLlvmVersionPath(string llvmVersion)
     {
-      var settingsPathBuilder = new SettingsPathBuilder();
-      var settingsProvider = new SettingsProvider();
-      var llvmVersion = settingsProvider.GetCompilerSettingsModel().LlvmVersion;
-
+      var settingsPathBuilder = new SettingsPathBuilder();      
       return settingsPathBuilder.GetLlvmBinPath(llvmVersion);
     }
 
