@@ -77,7 +77,7 @@ namespace ClangPowerTools
         canUseCommand = false;
         llvmController.llvmModel = llvms[elementIndex];
         llvmController.llvmModel.IsDownloading = true;
-        llvmController.DownloadLlvmVersion(llvmController.llvmModel.Version, DownloadProgressChanged);
+        llvmController.Download(llvmController.llvmModel.Version, DownloadProgressChanged);
       }
     }
 
@@ -98,7 +98,7 @@ namespace ClangPowerTools
       {
         canUseCommand = false;
         llvmController.llvmModel = llvms[elementIndex];
-        llvmController.UninstallLlvmVersion(llvmController.llvmModel.Version);
+        llvmController.Uninstall(llvmController.llvmModel.Version);
       }
     }
 
@@ -130,7 +130,7 @@ namespace ClangPowerTools
 
     public void UninstallFinished(object sender, EventArgs e)
     {
-      ResetCompilerModelLlvmVersion();
+      ResetVersionUsedIfRequired();
 #pragma warning disable VSTHRD001 // Avoid legacy thread switching APIs
       System.Windows.Application.Current.Dispatcher.Invoke(
 #pragma warning restore VSTHRD001 // Avoid legacy thread switching APIs
@@ -164,7 +164,7 @@ namespace ClangPowerTools
       }
 
       compilerModel = settingsProvider.GetCompilerSettingsModel();
-      ResetCompilerModelLlvmVersion();
+      ResetVersionUsedIfRequired();
     }
 
     private void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
@@ -173,7 +173,7 @@ namespace ClangPowerTools
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedLlvm"));
     }
 
-    private void ResetCompilerModelLlvmVersion()
+    private void ResetVersionUsedIfRequired()
     {
       if (InstalledLlvms.Count == 0)
       {
