@@ -14,6 +14,7 @@ namespace ClangPowerTools.MVVM.Controllers
   {
     #region Members
     public LlvmSettingsModel llvmModel = new LlvmSettingsModel();
+    public CancellationTokenSource downloadCancellationToken = new CancellationTokenSource();
     public delegate void SetInstallCommandState();
     public delegate void SetUninstallCommandState();
     public SetInstallCommandState setInstallCommandState;
@@ -31,7 +32,7 @@ namespace ClangPowerTools.MVVM.Controllers
     private const string uninstall = "Uninstall";
 
     private Process process;
-    private CancellationTokenSource downloadCancellationToken = new CancellationTokenSource();
+ 
     private readonly SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
     private readonly FileSystem fileSystem = new FileSystem();
     private string bitOperatingSystem = string.Empty;
@@ -119,6 +120,10 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public void DownloadCompleted(object sender, AsyncCompletedEventArgs e)
     {
+      llvmModel.DownloadProgress = 0;
+      downloadCancellationToken.Dispose();
+      downloadCancellationToken = new CancellationTokenSource();
+
       if (downloadCancellationToken.IsCancellationRequested || llvmModel.DownloadProgress != llvmModel.MaxProgress)
       {
         setUninstallCommandState();
@@ -131,10 +136,6 @@ namespace ClangPowerTools.MVVM.Controllers
         llvmModel.IsDownloading = false;
         Install(llvmModel.Version);
       }
-
-      llvmModel.DownloadProgress = 0;
-      downloadCancellationToken.Dispose();
-      downloadCancellationToken = new CancellationTokenSource();
     }
 
     #endregion

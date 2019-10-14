@@ -17,7 +17,6 @@ namespace ClangPowerTools
     private CompilerSettingsModel compilerModel = new CompilerSettingsModel();
     private SettingsProvider settingsProvider = new SettingsProvider();
     private List<LlvmSettingsModel> llvms = new List<LlvmSettingsModel>();
-    private CancellationTokenSource downloadCancellationToken = new CancellationTokenSource();
     private bool canUseCommand = true;
     private const string uninstall = "Uninstall";
 
@@ -88,7 +87,7 @@ namespace ClangPowerTools
         canUseCommand = true;
         llvmController.llvmModel.DownloadProgress = 0;
         llvmController.llvmModel.IsDownloading = false;
-        downloadCancellationToken.Cancel();
+        llvmController.downloadCancellationToken.Cancel();
       }
     }
 
