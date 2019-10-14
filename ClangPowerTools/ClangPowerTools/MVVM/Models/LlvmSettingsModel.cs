@@ -5,15 +5,18 @@ namespace ClangPowerTools
   public class LlvmSettingsModel : INotifyPropertyChanged
   {
     #region Members
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     private bool isDownloading = false;
     private bool isInstalling = false;
     private bool isInstalled = false;
     private int downloadProgress = 0;
+    
     #endregion
 
     #region Properties
+    
     public string Version { get; set; } = string.Empty;
 
     public bool IsInstalled
@@ -75,6 +78,7 @@ namespace ClangPowerTools
     public int MinProgress { get; set; } = 0;
 
     public int MaxProgress { get; set; } = 100;
+    
     #endregion Properties
   }
 }

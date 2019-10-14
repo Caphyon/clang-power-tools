@@ -24,8 +24,7 @@ namespace ClangPowerTools.Views
 
     private void CancelButton(object sender, RoutedEventArgs e)
     {
-      var elementIndex = GetElementIndex(sender as FrameworkElement);
-      dataContext.CancelCommand(elementIndex);
+      dataContext.CancelCommand();
     }
 
     private void UninstallButton(object sender, RoutedEventArgs e)

@@ -13,14 +13,14 @@ namespace ClangPowerTools.MVVM.Controllers
   public class LlvmController : IDownload, IInstall
   {
     #region Members
+
     public LlvmSettingsModel llvmModel = new LlvmSettingsModel();
     public CancellationTokenSource downloadCancellationToken = new CancellationTokenSource();
+    
     public delegate void SetInstallCommandState();
     public delegate void SetUninstallCommandState();
     public SetInstallCommandState setInstallCommandState;
     public SetUninstallCommandState setUninstallCommandState;
-    public EventHandler InstallFinished { get; set; }
-    public EventHandler UninstallFinished { get; set; }
 
     private const string installExeParameters = "/S /D=";
     private const string uninstallExeParameters = "/S";
@@ -32,14 +32,23 @@ namespace ClangPowerTools.MVVM.Controllers
     private const string uninstall = "Uninstall";
 
     private Process process;
- 
+    private string bitOperatingSystem = string.Empty;
     private readonly SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
     private readonly FileSystem fileSystem = new FileSystem();
-    private string bitOperatingSystem = string.Empty;
+
+    #endregion
+
+
+    #region Properties
+
+    public EventHandler InstallFinished { get; set; }
+    public EventHandler UninstallFinished { get; set; }
+
     #endregion
 
 
     #region Public Methods
+
     public void Download(string version, DownloadProgressChangedEventHandler method)
     {
       CreateDirectory(version);
@@ -120,10 +129,6 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public void DownloadCompleted(object sender, AsyncCompletedEventArgs e)
     {
-      llvmModel.DownloadProgress = 0;
-      downloadCancellationToken.Dispose();
-      downloadCancellationToken = new CancellationTokenSource();
-
       if (downloadCancellationToken.IsCancellationRequested || llvmModel.DownloadProgress != llvmModel.MaxProgress)
       {
         setUninstallCommandState();
@@ -136,6 +141,10 @@ namespace ClangPowerTools.MVVM.Controllers
         llvmModel.IsDownloading = false;
         Install(llvmModel.Version);
       }
+
+      llvmModel.DownloadProgress = 0;
+      downloadCancellationToken.Dispose();
+      downloadCancellationToken = new CancellationTokenSource();
     }
 
     #endregion
@@ -153,8 +162,8 @@ namespace ClangPowerTools.MVVM.Controllers
     private void UninstallProcessExited(object sender, EventArgs e)
     {
       process.Close();
-      setUninstallCommandState();
       DeleteDirectory(llvmModel.Version);
+      setUninstallCommandState();
     }
 
     private void CreateDirectory(string version)
@@ -178,16 +187,7 @@ namespace ClangPowerTools.MVVM.Controllers
 
     private string GetOperatingSystemParamaters()
     {
-      if (Environment.Is64BitOperatingSystem)
-      {
-        bitOperatingSystem = "-win64.exe";
-      }
-      else
-      {
-        bitOperatingSystem = "-win32.exe";
-      }
-
-      return bitOperatingSystem;
+      return Environment.Is64BitOperatingSystem ? bitOperatingSystem = "-win64.exe" : bitOperatingSystem = "-win32.exe";
     }
 
     #endregion

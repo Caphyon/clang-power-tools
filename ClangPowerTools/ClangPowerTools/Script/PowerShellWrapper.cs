@@ -66,10 +66,10 @@ namespace ClangPowerTools
     private static string CreatePathEnvironmentVariable()
     {
       var path = Environment.GetEnvironmentVariable("Path");
-      
+
       var paths = path.Split(';').ToList();
       paths.RemoveAt(paths.Count - 1);
-      paths.RemoveAll(ContainLlvm);
+      paths.RemoveAll(ContainsLlvm);
       paths.Add(GetUsedLlvmVersionPath());
 
       return String.Join(";", paths);
@@ -85,7 +85,7 @@ namespace ClangPowerTools
       return settingsPathBuilder.GetLlvmBinPath(llvmVersion);
     }
 
-    private static bool ContainLlvm(string input)
+    private static bool ContainsLlvm(string input)
     {
       return input.ToLower().Contains("llvm");
     }

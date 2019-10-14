@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.MVVM.Controllers;
+﻿using ClangPowerTools.Handlers;
+using ClangPowerTools.MVVM.Controllers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,9 +12,10 @@ namespace ClangPowerTools
   public class LlvmSettingsViewModel : INotifyPropertyChanged
   {
     #region Members
+
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private LlvmController llvmController = new LlvmController();
+    private readonly LlvmController llvmController = new LlvmController();
     private CompilerSettingsModel compilerModel = new CompilerSettingsModel();
     private SettingsProvider settingsProvider = new SettingsProvider();
     private List<LlvmSettingsModel> llvms = new List<LlvmSettingsModel>();
@@ -23,6 +25,7 @@ namespace ClangPowerTools
     #endregion
 
     #region Constructor
+
     public LlvmSettingsViewModel()
     {
       llvmController.setInstallCommandState = SetInstallCommandState;
@@ -69,43 +72,41 @@ namespace ClangPowerTools
 
 
     #region Public Methods
+
     public void DownloadCommand(int elementIndex)
     {
-      if (canUseCommand)
-      {
-        canUseCommand = false;
-        llvmController.llvmModel = llvms[elementIndex];
-        llvmController.llvmModel.IsDownloading = true;
-        llvmController.Download(llvmController.llvmModel.Version, DownloadProgressChanged);
-      }
+      if (canUseCommand == false) return;
+
+      canUseCommand = false;
+      llvmController.llvmModel = llvms[elementIndex];
+      llvmController.llvmModel.IsDownloading = true;
+      llvmController.Download(llvmController.llvmModel.Version, DownloadProgressChanged);
     }
 
-    public void CancelCommand(int elementIndex)
+    public void CancelCommand()
     {
-      if (llvmController.llvmModel.IsDownloading)
-      {
-        canUseCommand = true;
-        llvmController.llvmModel.DownloadProgress = 0;
-        llvmController.llvmModel.IsDownloading = false;
-        llvmController.downloadCancellationToken.Cancel();
-      }
+      if (llvmController.llvmModel.IsDownloading == false) return;
+
+      canUseCommand = true;
+      llvmController.llvmModel.DownloadProgress = 0;
+      llvmController.llvmModel.IsDownloading = false;
+      llvmController.downloadCancellationToken.Cancel();
     }
 
     public void UninstallCommand(int elementIndex)
     {
-      if (canUseCommand)
-      {
-        canUseCommand = false;
-        llvmController.llvmModel = llvms[elementIndex];
-        llvmController.Uninstall(llvmController.llvmModel.Version);
-      }
+      if (canUseCommand == false) return;
+
+      canUseCommand = false;
+      llvmController.llvmModel = llvms[elementIndex];
+      llvmController.Uninstall(llvmController.llvmModel.Version);
     }
 
     public void SetInstallCommandState()
     {
+      canUseCommand = true;
       llvmController.llvmModel.IsInstalled = true;
       llvmController.llvmModel.IsInstalling = false;
-      canUseCommand = true;
     }
 
     public void SetUninstallCommandState()
@@ -117,26 +118,17 @@ namespace ClangPowerTools
 
     public void InstallFinished(object sender, EventArgs e)
     {
-#pragma warning disable VSTHRD001 // Avoid legacy thread switching APIs
-      System.Windows.Application.Current.Dispatcher.Invoke(
-#pragma warning restore VSTHRD001 // Avoid legacy thread switching APIs
-        new Action(() =>
-        {
-          InsertVersionToInstalledLlvms();
-        }));
+      UIUpdater.InvokeAsync(InsertVersionToInstalledLlvms).SafeFireAndForget();
     }
 
 
     public void UninstallFinished(object sender, EventArgs e)
     {
       ResetVersionUsedIfRequired();
-#pragma warning disable VSTHRD001 // Avoid legacy thread switching APIs
-      System.Windows.Application.Current.Dispatcher.Invoke(
-#pragma warning restore VSTHRD001 // Avoid legacy thread switching APIs
-        new Action(() =>
-        {
-          InstalledLlvms.Remove(llvmController.llvmModel.Version);
-        }));
+      UIUpdater.InvokeAsync(new Action(() =>
+      {
+        InstalledLlvms.Remove(llvmController.llvmModel.Version);
+      })).SafeFireAndForget();
     }
 
     #endregion
