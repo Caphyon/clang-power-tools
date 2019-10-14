@@ -79,12 +79,15 @@
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Events\HasEncodingErrorEventArgs.cs" />
     <Compile Include="Events\LicenseEventArgs.cs" />
+    <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\JoinUtility.cs" />
     <Compile Include="Helpers\RegistryUtility.cs" />
     <Compile Include="Helpers\ScriptGenerator.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
     <Compile Include="MVVM\Controllers\FreeTrialController.cs" />
     <Compile Include="MVVM\Controllers\LlvmController.cs" />
+    <Compile Include="MVVM\Interfaces\IDownload.cs" />
+    <Compile Include="MVVM\Interfaces\IInstall.cs" />
     <Compile Include="MVVM\LlvmVersions.cs" />
     <Compile Include="MVVM\Models\GeneralSettingsModel.cs" />
     <Compile Include="MVVM\Models\LlvmSettingsModel.cs" />
