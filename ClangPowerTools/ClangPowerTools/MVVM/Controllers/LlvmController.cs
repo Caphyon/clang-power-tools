@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.MVVM.Constants;
 using ClangPowerTools.MVVM.Interfaces;
 using System;
 using System.ComponentModel;
@@ -22,17 +23,7 @@ namespace ClangPowerTools.MVVM.Controllers
     public SetInstallCommandState setInstallCommandState;
     public SetUninstallCommandState setUninstallCommandState;
 
-    private const string installExeParameters = "/S /D=";
-    private const string uninstallExeParameters = "/S";
-    private const string arguments = @"/C reg delete HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\LLVM /f &";
-    private const string processFileName = "cmd.exe";
-    private const string processVerb = "runas";
-    private const string llvmReleasesUri = @"http://releases.llvm.org";
-    private const string llvm = "LLVM";
-    private const string uninstall = "Uninstall";
-
     private Process process;
-    private string bitOperatingSystem = string.Empty;
     private readonly SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
     private readonly FileSystem fileSystem = new FileSystem();
 
@@ -53,8 +44,8 @@ namespace ClangPowerTools.MVVM.Controllers
     {
       CreateDirectory(version);
 
-      var executablePath = settingsPathBuilder.GetLlvmExecutablePath(version, llvm + version);
-      var uri = string.Concat(llvmReleasesUri, "/", version, "/", llvm, "-", version, GetOperatingSystemParamaters());
+      var executablePath = settingsPathBuilder.GetLlvmExecutablePath(version, LlvmConstants.Llvm + version);
+      var uri = string.Concat(LlvmConstants.LlvmReleasesUri, "/", version, "/", LlvmConstants.Llvm, "-", version, GetOperatingSystemParamaters());
 
       using (var client = new WebClient())
       {
@@ -68,15 +59,15 @@ namespace ClangPowerTools.MVVM.Controllers
     public void Install(string version)
     {
       var llVmVersionPath = settingsPathBuilder.GetLlvmPath(version);
-      var executablePath = settingsPathBuilder.GetLlvmExecutablePath(version, llvm + version);
-      var startInfoArguments = string.Concat(arguments, " ", executablePath, " ", installExeParameters, llVmVersionPath);
+      var executablePath = settingsPathBuilder.GetLlvmExecutablePath(version, LlvmConstants.Llvm + version);
+      var startInfoArguments = string.Concat(LlvmConstants.Arguments, " ", executablePath, " ", LlvmConstants.InstallExeParameters, llVmVersionPath);
 
       try
       {
         process = new Process();
-        process.StartInfo.FileName = processFileName;
+        process.StartInfo.FileName = LlvmConstants.ProcessFileName;
         process.StartInfo.Arguments = startInfoArguments;
-        process.StartInfo.Verb = processVerb;
+        process.StartInfo.Verb = LlvmConstants.ProcessVerb;
         process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
         process.EnableRaisingEvents = true;
         process.Exited += new EventHandler(InstallProcessExited);
@@ -95,7 +86,7 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public void Uninstall(string version)
     {
-      if (IsVersionExeOnDisk(version, uninstall) == false)
+      if (IsVersionExeOnDisk(version, LlvmConstants.Uninstall) == false)
       {
         setUninstallCommandState();
         DeleteDirectory(version);
@@ -105,9 +96,9 @@ namespace ClangPowerTools.MVVM.Controllers
       try
       {
         process = new Process();
-        process.StartInfo.FileName = settingsPathBuilder.GetLlvmExecutablePath(version, uninstall);
-        process.StartInfo.Arguments = uninstallExeParameters;
-        process.StartInfo.Verb = processVerb;
+        process.StartInfo.FileName = settingsPathBuilder.GetLlvmExecutablePath(version, LlvmConstants.Uninstall);
+        process.StartInfo.Arguments = LlvmConstants.UninstallExeParameters;
+        process.StartInfo.Verb = LlvmConstants.ProcessVerb;
         process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
         process.EnableRaisingEvents = true;
         process.Exited += new EventHandler(UninstallProcessExited);
@@ -180,14 +171,14 @@ namespace ClangPowerTools.MVVM.Controllers
 
     private void DeleteFile(string version)
     {
-      var exeName = string.Concat(llvm, llvmModel.Version, ".exe");
+      var exeName = string.Concat(LlvmConstants.Llvm, llvmModel.Version, ".exe");
       var path = Path.Combine(settingsPathBuilder.GetLlvmPath(version), exeName);
       fileSystem.DeleteFile(path);
     }
 
     private string GetOperatingSystemParamaters()
     {
-      return Environment.Is64BitOperatingSystem ? bitOperatingSystem = "-win64.exe" : bitOperatingSystem = "-win32.exe";
+      return Environment.Is64BitOperatingSystem ? LlvmConstants.Os64Paramater : LlvmConstants.Os32Paramater;
     }
 
     #endregion
