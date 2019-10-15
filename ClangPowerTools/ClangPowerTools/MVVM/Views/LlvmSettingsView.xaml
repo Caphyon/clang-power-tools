@@ -106,7 +106,7 @@
               Padding="0,0,200,0"
               VerticalAlignment="Center"
               Text="{Binding Version, StringFormat='LLVM {0}'}" />
-            <!--  Install button  -->
+            <!--  Install/Download button  -->
             <Button
               Grid.Column="2"
               Width="80"
@@ -166,7 +166,7 @@
                     <Setter.Value>
                       <ControlTemplate TargetType="Button">
                         <TextBlock>
-                          <Hyperlink>
+                          <Hyperlink Style="{StaticResource HyperlinkStyle}">
                             <Run Text="{TemplateBinding Content}" />
                           </Hyperlink>
                         </TextBlock>
@@ -240,7 +240,7 @@
                       <Setter.Value>
                         <ControlTemplate TargetType="Button">
                           <TextBlock>
-                            <Hyperlink>
+                            <Hyperlink Style="{StaticResource HyperlinkStyle}">
                               <Run Text="{TemplateBinding Content}" />
                             </Hyperlink>
                           </TextBlock>
