@@ -11,18 +11,71 @@
   d:DesignWidth="770"
   mc:Ignorable="d">
 
+  <!--  User control static resources  -->
+  <UserControl.Resources>
+    <Style x:Key="HyperLinkButtonStyle" TargetType="Button">
+      <Setter Property="Focusable" Value="False" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <TextBlock>
+              <Hyperlink>
+                <Run Text="{TemplateBinding Content}" />
+              </Hyperlink>
+            </TextBlock>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type Hyperlink}">
+      <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+      <Setter Property="Foreground" Value="#FFFAA8B4" />
+      <Setter Property="TextBlock.TextDecorations" Value="{x:Null}" />
+      <Style.Triggers>
+        <Trigger Property="IsMouseOver" Value="True">
+          <Setter Property="Foreground" Value="#FFFAD4DB" />
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type Label}">
+      <Setter Property="FontFamily" Value="Segoe UI" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="FontSize" Value="15" />
+    </Style>
+
+    <Style TargetType="{x:Type ListView}">
+      <Setter Property="FontFamily" Value="Segoe UI" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="FontSize" Value="15" />
+    </Style>
+
+    <Style x:Key="ProgressBarStyle" TargetType="ProgressBar">
+      <Setter Property="Width" Value="475" />
+      <Setter Property="Height" Value="6" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="Background" Value="#BCBAC1" />
+      <Setter Property="Foreground" Value="#852012" />
+      <Setter Property="Margin" Value="0,0,20,0" />
+    </Style>
+  </UserControl.Resources>
+
   <Grid>
     <Grid.Background>
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
     <Grid.RowDefinitions>
-      <RowDefinition Height="5" />
-      <RowDefinition Height="250" />
-      <RowDefinition Height="100" />
+      <RowDefinition Height="15" />
+      <RowDefinition Height="280" />
+      <RowDefinition Height="55" />
+      <RowDefinition Height="15" />
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="10" />
+      <ColumnDefinition Width="710" />
+      <ColumnDefinition Width="10" />
     </Grid.ColumnDefinitions>
 
 
@@ -30,9 +83,9 @@
     <ListView
       x:Name="VersionsList"
       Grid.Row="1"
-      Grid.Column="0"
-      Background="Transparent"
-      Focusable="False"
+      Grid.Column="1"
+      Background="White"
+      Focusable="True"
       ItemsSource="{Binding Llvms}"
       ScrollViewer.CanContentScroll="True"
       SelectionMode="Single">
@@ -54,29 +107,31 @@
         <DataTemplate>
           <Grid>
             <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="20" />
-              <ColumnDefinition Width="400" />
-              <ColumnDefinition Width="220" />
-              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="10" />
+              <ColumnDefinition Width="90" />
+              <ColumnDefinition Width="580" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-              <RowDefinition Height="25" />
+              <RowDefinition Height="38" />
             </Grid.RowDefinitions>
 
             <!--  Version name and action  -->
             <TextBlock
               Grid.Column="1"
               Padding="0,0,200,0"
+              VerticalAlignment="Center"
               Text="{Binding Version, StringFormat='LLVM {0}'}" />
             <Button
               Grid.Column="2"
-              Width="40"
-              Height="30"
+              Width="80"
+              Height="20"
+              Margin="490,0,0,0"
               Click="DownloadButton"
-              Content="D"
-              FontSize="16">
+              Content="Download"
+              FontSize="13">
               <Button.Style>
                 <Style TargetType="Button">
+                  <Setter Property="Focusable" Value="False" />
                   <Setter Property="Visibility" Value="Visible" />
                   <Style.Triggers>
                     <MultiDataTrigger>
@@ -95,11 +150,13 @@
             </Button>
             <Button
               Grid.Column="2"
-              Width="40"
-              Height="30"
+              Width="80"
+              Height="20"
+              Margin="490,0,0,0"
+              VerticalAlignment="Center"
               Click="UninstallButton"
-              Content="U"
-              FontSize="16">
+              Content="Uninstall"
+              FontSize="13">
               <Button.Style>
                 <Style TargetType="Button">
                   <Setter Property="Visibility" Value="Hidden" />
@@ -124,13 +181,12 @@
                   </Style.Triggers>
                 </Style>
               </StackPanel.Style>
-              <ProgressBar
-                Width="100"
-                Height="20"
-                Margin="0,0,20,0"
-                Foreground="Green"
-                IsIndeterminate="True" />
-              <TextBlock FontSize="16" Text="Installing" />
+              <ProgressBar IsIndeterminate="True" Style="{StaticResource ProgressBarStyle}" />
+              <TextBlock
+                Grid.Column="3"
+                VerticalAlignment="Center"
+                FontSize="13"
+                Text="Installing" />
             </StackPanel>
 
             <!--  Download in progress  -->
@@ -151,21 +207,18 @@
                 </Style>
               </StackPanel.Style>
               <ProgressBar
-                Width="100"
-                Height="20"
-                Margin="0,0,20,0"
-                Foreground="Green"
                 Maximum="{Binding MaxProgress}"
                 Minimum="{Binding MinProgress}"
+                Style="{StaticResource ProgressBarStyle}"
                 Value="{Binding DownloadProgress}" />
               <Button
-                Width="40"
-                Height="30"
+                Width="80"
+                Height="20"
+                VerticalAlignment="Center"
                 Click="CancelButton"
-                Content="S"
-                FontSize="16" />
+                Content="Stop"
+                FontSize="13" />
             </StackPanel>
-
           </Grid>
         </DataTemplate>
       </ListView.ItemTemplate>
@@ -181,7 +234,7 @@
         Height="30"
         Content="Use LLVM" />
       <ComboBox
-        Width="250"
+        Width="150"
         Height="30"
         ItemsSource="{Binding InstalledLlvms}"
         SelectedItem="{Binding VersionUsed}" />
