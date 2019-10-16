@@ -19,7 +19,6 @@ namespace ClangPowerTools
     private CompilerSettingsModel compilerModel = new CompilerSettingsModel();
     private SettingsProvider settingsProvider = new SettingsProvider();
     private List<LlvmSettingsModel> llvms = new List<LlvmSettingsModel>();
-    private bool canUseCommand = true;
     private const string uninstall = "Uninstall";
 
     #endregion
@@ -75,9 +74,7 @@ namespace ClangPowerTools
 
     public void DownloadCommand(int elementIndex)
     {
-      if (canUseCommand == false) return;
-
-      canUseCommand = false;
+      DisableButtons(elementIndex);
       llvmController.llvmModel = llvms[elementIndex];
       llvmController.llvmModel.IsDownloading = true;
       llvmController.Download(llvmController.llvmModel.Version, DownloadProgressChanged);
@@ -85,9 +82,7 @@ namespace ClangPowerTools
 
     public void CancelCommand()
     {
-      if (llvmController.llvmModel.IsDownloading == false) return;
-
-      canUseCommand = true;
+      ResetButtonsState();
       llvmController.llvmModel.DownloadProgress = 0;
       llvmController.llvmModel.IsDownloading = false;
       llvmController.downloadCancellationToken.Cancel();
@@ -95,29 +90,27 @@ namespace ClangPowerTools
 
     public void UninstallCommand(int elementIndex)
     {
-      if (canUseCommand == false) return;
-
-      canUseCommand = false;
+      DisableButtons(elementIndex);
       llvmController.llvmModel = llvms[elementIndex];
       llvmController.Uninstall(llvmController.llvmModel.Version);
     }
 
     public void SetInstallCommandState()
     {
-      canUseCommand = true;
       llvmController.llvmModel.IsInstalled = true;
       llvmController.llvmModel.IsInstalling = false;
     }
 
     public void SetUninstallCommandState()
     {
-      canUseCommand = true;
       llvmController.llvmModel.IsInstalled = false;
       llvmController.llvmModel.IsDownloading = false;
     }
 
+
     public void InstallFinished(object sender, EventArgs e)
     {
+      ResetButtonsState();
       UIUpdater.InvokeAsync(InsertVersionToInstalledLlvms).SafeFireAndForget();
     }
 
@@ -125,6 +118,7 @@ namespace ClangPowerTools
     public void UninstallFinished(object sender, EventArgs e)
     {
       ResetVersionUsedIfRequired();
+      ResetButtonsState();
       UIUpdater.InvokeAsync(new Action(() =>
       {
         InstalledLlvms.Remove(llvmController.llvmModel.Version);
@@ -188,6 +182,19 @@ namespace ClangPowerTools
           break;
         }
       }
+    }
+
+    private void DisableButtons(int elementIndex)
+    {
+      for (int i = 0; i < llvms.Count; i++)
+      {
+        if (i != elementIndex) llvms[i].CanExecuteCommand = false;
+      }
+    }
+
+    private void ResetButtonsState()
+    {
+      foreach (var item in llvms) item.CanExecuteCommand = true;
     }
 
     #endregion

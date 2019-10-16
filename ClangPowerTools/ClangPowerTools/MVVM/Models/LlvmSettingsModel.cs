@@ -11,6 +11,7 @@ namespace ClangPowerTools
     private bool isDownloading = false;
     private bool isInstalling = false;
     private bool isInstalled = false;
+    private bool canExecuteCommand = true;
     private int downloadProgress = 0;
     
     #endregion
@@ -58,6 +59,20 @@ namespace ClangPowerTools
       {
         isDownloading = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsDownloading"));
+      }
+    }
+
+    public bool CanExecuteCommand
+    {
+      get
+      {
+        return canExecuteCommand;
+      }
+
+      set
+      {
+        canExecuteCommand = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CanExecuteCommand"));
       }
     }
 

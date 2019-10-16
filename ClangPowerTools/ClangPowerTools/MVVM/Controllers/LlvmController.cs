@@ -70,8 +70,8 @@ namespace ClangPowerTools.MVVM.Controllers
         process.StartInfo.Verb = LlvmConstants.ProcessVerb;
         process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
         process.EnableRaisingEvents = true;
-        process.Exited += new EventHandler(InstallProcessExited);
-        process.Exited += new EventHandler(InstallFinished);
+        process.Exited += InstallProcessExited;
+        process.Exited += InstallFinished;
         process.Start();
 
       }
@@ -101,8 +101,8 @@ namespace ClangPowerTools.MVVM.Controllers
         process.StartInfo.Verb = LlvmConstants.ProcessVerb;
         process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
         process.EnableRaisingEvents = true;
-        process.Exited += new EventHandler(UninstallProcessExited);
-        process.Exited += new EventHandler(UninstallFinished);
+        process.Exited += UninstallProcessExited;
+        process.Exited += UninstallFinished;
         process.Start();
       }
       catch (Exception e)
