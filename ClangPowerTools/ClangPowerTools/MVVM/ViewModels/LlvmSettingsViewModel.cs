@@ -29,6 +29,7 @@ namespace ClangPowerTools
     {
       llvmController.InstallFinished = InstallFinished;
       llvmController.UninstallFinished = UninstallFinished;
+      llvmController.OperationCanceledHandler += OperationCanceled;
       WindowClosed += llvmController.SettingsWindowClosed;
       IntitializeView();
     }
@@ -94,14 +95,17 @@ namespace ClangPowerTools
       llvmController.Uninstall(llvmController.llvmModel.Version);
     }
 
-    public void InstallFinished(object sender, EventArgs e)
+    #endregion
+
+    #region Private Methods
+    private void InstallFinished(object sender, EventArgs e)
     {
       ResetButtonsState();
       UIUpdater.InvokeAsync(InsertVersionToInstalledLlvms).SafeFireAndForget();
     }
 
 
-    public void UninstallFinished(object sender, EventArgs e)
+    private void UninstallFinished(object sender, EventArgs e)
     {
       ResetVersionUsedIfRequired();
       ResetButtonsState();
@@ -111,10 +115,10 @@ namespace ClangPowerTools
       })).SafeFireAndForget();
     }
 
-    #endregion
-
-
-    #region Private Methods
+    private void OperationCanceled(object sender, EventArgs e)
+    {
+      ResetButtonsState();
+    }
 
     private void IntitializeView()
     {
