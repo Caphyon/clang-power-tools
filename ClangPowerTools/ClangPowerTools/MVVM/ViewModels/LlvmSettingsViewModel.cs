@@ -69,7 +69,6 @@ namespace ClangPowerTools
 
     #endregion
 
-
     #region Public Methods
 
     public void DownloadCommand(int elementIndex)
@@ -98,6 +97,7 @@ namespace ClangPowerTools
     #endregion
 
     #region Private Methods
+
     private void InstallFinished(object sender, EventArgs e)
     {
       ResetButtonsState();

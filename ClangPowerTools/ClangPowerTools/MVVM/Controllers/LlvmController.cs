@@ -29,11 +29,10 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public EventHandler InstallFinished { get; set; }
     public EventHandler UninstallFinished { get; set; }
-    public CancelEventHandler SettingsWindowClosed { get; set; }
     public EventHandler OperationCanceledHandler { get; set; }
+    public CancelEventHandler SettingsWindowClosed { get; set; }
 
     #endregion
-
 
     #region Constructor
 
@@ -43,7 +42,6 @@ namespace ClangPowerTools.MVVM.Controllers
     }
 
     #endregion
-
 
     #region Public Methods
 
@@ -145,7 +143,6 @@ namespace ClangPowerTools.MVVM.Controllers
     }
 
     #endregion
-
 
     #region Private Methods
 
