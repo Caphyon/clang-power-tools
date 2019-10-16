@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net;
-using System.Threading;
 
 namespace ClangPowerTools
 {
@@ -14,10 +13,11 @@ namespace ClangPowerTools
     #region Members
 
     public event PropertyChangedEventHandler PropertyChanged;
+    public CancelEventHandler WindowClosed;
 
     private readonly LlvmController llvmController = new LlvmController();
+    private readonly SettingsProvider settingsProvider = new SettingsProvider();
     private CompilerSettingsModel compilerModel = new CompilerSettingsModel();
-    private SettingsProvider settingsProvider = new SettingsProvider();
     private List<LlvmSettingsModel> llvms = new List<LlvmSettingsModel>();
     private const string uninstall = "Uninstall";
 
@@ -27,10 +27,9 @@ namespace ClangPowerTools
 
     public LlvmSettingsViewModel()
     {
-      llvmController.setInstallCommandState = SetInstallCommandState;
-      llvmController.setUninstallCommandState = SetUninstallCommandState;
       llvmController.InstallFinished = InstallFinished;
       llvmController.UninstallFinished = UninstallFinished;
+      WindowClosed += llvmController.SettingsWindowClosed;
       IntitializeView();
     }
     #endregion
@@ -94,19 +93,6 @@ namespace ClangPowerTools
       llvmController.llvmModel = llvms[elementIndex];
       llvmController.Uninstall(llvmController.llvmModel.Version);
     }
-
-    public void SetInstallCommandState()
-    {
-      llvmController.llvmModel.IsInstalled = true;
-      llvmController.llvmModel.IsInstalling = false;
-    }
-
-    public void SetUninstallCommandState()
-    {
-      llvmController.llvmModel.IsInstalled = false;
-      llvmController.llvmModel.IsDownloading = false;
-    }
-
 
     public void InstallFinished(object sender, EventArgs e)
     {

@@ -17,11 +17,6 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public LlvmSettingsModel llvmModel = new LlvmSettingsModel();
     public CancellationTokenSource downloadCancellationToken = new CancellationTokenSource();
-    
-    public delegate void SetInstallCommandState();
-    public delegate void SetUninstallCommandState();
-    public SetInstallCommandState setInstallCommandState;
-    public SetUninstallCommandState setUninstallCommandState;
 
     private Process process;
     private readonly SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
@@ -34,6 +29,17 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public EventHandler InstallFinished { get; set; }
     public EventHandler UninstallFinished { get; set; }
+    public CancelEventHandler SettingsWindowClosed { get; set; }
+
+    #endregion
+
+
+    #region Constructor
+
+    public LlvmController()
+    {
+      SettingsWindowClosed += WindowClosed;
+    }
 
     #endregion
 
@@ -42,17 +48,25 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public void Download(string version, DownloadProgressChangedEventHandler method)
     {
-      CreateDirectory(version);
+      CreateVersionDirectory(version);
 
       var executablePath = settingsPathBuilder.GetLlvmExecutablePath(version, LlvmConstants.Llvm + version);
       var uri = string.Concat(LlvmConstants.LlvmReleasesUri, "/", version, "/", LlvmConstants.Llvm, "-", version, GetOperatingSystemParamaters());
 
-      using (var client = new WebClient())
+      try
       {
-        client.DownloadProgressChanged += method;
-        client.DownloadFileCompleted += DownloadCompleted;
-        downloadCancellationToken.Token.Register(client.CancelAsync);
-        client.DownloadFileAsync(new Uri(uri), executablePath);
+        using (var client = new WebClient())
+        {
+          client.DownloadProgressChanged += method;
+          client.DownloadFileCompleted += DownloadCompleted;
+          downloadCancellationToken.Token.Register(client.CancelAsync);
+          client.DownloadFileAsync(new Uri(uri), executablePath);
+        }
+      }
+      catch (Exception)
+      {
+        DefaultState();
+        DownloadCanceled();
       }
     }
 
@@ -77,19 +91,17 @@ namespace ClangPowerTools.MVVM.Controllers
       }
       catch (Exception e)
       {
-        setInstallCommandState();
-        process.Kill();
-        DeleteDirectory(llvmModel.Version);
+        llvmModel.IsInstalling = false;
+        DeleteLlvmDirectory(llvmModel.Version);
         MessageBox.Show(e.Message, "Installation Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
     public void Uninstall(string version)
     {
-      if (IsVersionExeOnDisk(version, LlvmConstants.Uninstall) == false)
+      if (DoesUninstallExist(version) == false)
       {
-        setUninstallCommandState();
-        DeleteDirectory(version);
+        DeleteLlvmDirectory(version);
         return;
       }
 
@@ -107,7 +119,7 @@ namespace ClangPowerTools.MVVM.Controllers
       }
       catch (Exception e)
       {
-        setUninstallCommandState();
+        InstallFinishedState();
         MessageBox.Show(e.Message, "Uninstall Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
@@ -122,20 +134,12 @@ namespace ClangPowerTools.MVVM.Controllers
     {
       if (downloadCancellationToken.IsCancellationRequested || llvmModel.DownloadProgress != llvmModel.MaxProgress)
       {
-        setUninstallCommandState();
-        DeleteDirectory(llvmModel.Version);
-        MessageBox.Show("The download process has stopped.", "Download", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        DownloadCanceled();
       }
       else
       {
-        llvmModel.IsInstalling = true;
-        llvmModel.IsDownloading = false;
-        Install(llvmModel.Version);
+        BeginInstallation();
       }
-
-      llvmModel.DownloadProgress = 0;
-      downloadCancellationToken.Dispose();
-      downloadCancellationToken = new CancellationTokenSource();
     }
 
     #endregion
@@ -143,37 +147,92 @@ namespace ClangPowerTools.MVVM.Controllers
 
     #region Private Methods
 
+    private void InstallFinishedState()
+    {
+      llvmModel.IsInstalled = true;
+      llvmModel.IsInstalling = false;
+    }
+
+    private void InstallingState()
+    {
+      llvmModel.IsInstalling = true;
+      llvmModel.IsDownloading = false;
+    }
+
+    private void DefaultState()
+    {
+      llvmModel.IsInstalled = false;
+      llvmModel.IsDownloading = false;
+    }
+
+    private void DownloadCanceled()
+    {
+      DeleteLlvmDirectory(llvmModel.Version);
+      DefaultState();
+      ResetDownloadProgressState();
+      MessageBox.Show("The download process has stopped.", "LLVM Download", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+    }
+
+    private void BeginInstallation()
+    {
+      InstallingState();
+      ResetDownloadProgressState();
+      Install(llvmModel.Version);
+    }
+
+
+    private void ResetDownloadProgressState()
+    {
+      llvmModel.DownloadProgress = 0;
+      downloadCancellationToken.Dispose();
+      downloadCancellationToken = new CancellationTokenSource();
+    }
+
     private void InstallProcessExited(object sender, EventArgs e)
     {
       process.Close();
-      DeleteFile(llvmModel.Version);
-      setInstallCommandState();
+      DeleteInstallerFile(llvmModel.Version);
+      InstallFinishedState();
     }
 
     private void UninstallProcessExited(object sender, EventArgs e)
     {
       process.Close();
-      DeleteDirectory(llvmModel.Version);
-      setUninstallCommandState();
+      DeleteLlvmDirectory(llvmModel.Version);
+      DefaultState();
     }
 
-    private void CreateDirectory(string version)
+    private void WindowClosed(object sender, EventArgs e)
+    {
+      if (llvmModel.DownloadProgress > 0 && llvmModel.DownloadProgress != llvmModel.MaxProgress)
+      {
+        downloadCancellationToken.Cancel();
+      }
+      SettingsWindowClosed -= WindowClosed;
+    }
+
+    private void CreateVersionDirectory(string version)
     {
       var path = settingsPathBuilder.GetLlvmPath(version);
       fileSystem.CreateDirectory(path);
     }
 
-    private void DeleteDirectory(string version)
+    private void DeleteLlvmDirectory(string version)
     {
       var path = settingsPathBuilder.GetLlvmPath(version);
       fileSystem.DeleteDirectory(path);
     }
 
-    private void DeleteFile(string version)
+    private void DeleteInstallerFile(string version)
     {
       var exeName = string.Concat(LlvmConstants.Llvm, llvmModel.Version, ".exe");
       var path = Path.Combine(settingsPathBuilder.GetLlvmPath(version), exeName);
       fileSystem.DeleteFile(path);
+    }
+
+    private bool DoesUninstallExist(string version)
+    {
+      return IsVersionExeOnDisk(version, LlvmConstants.Uninstall);
     }
 
     private string GetOperatingSystemParamaters()

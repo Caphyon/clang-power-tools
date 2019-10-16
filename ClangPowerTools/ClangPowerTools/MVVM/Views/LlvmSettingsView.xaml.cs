@@ -8,35 +8,42 @@ namespace ClangPowerTools.Views
   /// </summary>
   public partial class LlvmSettingsView : UserControl
   {
-    private readonly LlvmSettingsViewModel dataContext = new LlvmSettingsViewModel();
+    private readonly LlvmSettingsViewModel llvmSettingsViewModel = new LlvmSettingsViewModel();
 
     public LlvmSettingsView()
     {
+      DataContext = llvmSettingsViewModel;
       InitializeComponent();
-      DataContext = dataContext;
+      this.Loaded += LlvmSettingsViewLoaded;
     }
 
     private void DownloadButton(object sender, RoutedEventArgs e)
     {
       var elementIndex = GetElementIndex(sender as FrameworkElement);
-      dataContext.DownloadCommand(elementIndex);
+      llvmSettingsViewModel.DownloadCommand(elementIndex);
     }
 
     private void CancelButton(object sender, RoutedEventArgs e)
     {
-      dataContext.CancelCommand();
+      llvmSettingsViewModel.CancelCommand();
     }
 
     private void UninstallButton(object sender, RoutedEventArgs e)
     {
       var elementIndex = GetElementIndex(sender as FrameworkElement);
-      dataContext.UninstallCommand(elementIndex);
+      llvmSettingsViewModel.UninstallCommand(elementIndex);
     }
 
     private int GetElementIndex(FrameworkElement frameworkElement)
     {
       var element = frameworkElement.DataContext;
       return VersionsList.Items.IndexOf(element);
+    }
+
+    private void LlvmSettingsViewLoaded(object sender, RoutedEventArgs e)
+    {
+      Window window = Window.GetWindow(this);
+      window.Closing += llvmSettingsViewModel.WindowClosed;
     }
   }
 }
