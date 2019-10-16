@@ -17,6 +17,9 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public LlvmSettingsModel llvmModel = new LlvmSettingsModel();
     public CancellationTokenSource downloadCancellationToken = new CancellationTokenSource();
+    
+    public delegate void OnOperationCanceled();
+    public event OnOperationCanceled onOperationCanceldEvent;
 
     private Process process;
     private readonly SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
@@ -29,7 +32,6 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public EventHandler InstallFinished { get; set; }
     public EventHandler UninstallFinished { get; set; }
-    public EventHandler OperationCanceledHandler { get; set; }
     public CancelEventHandler SettingsWindowClosed { get; set; }
 
     #endregion
@@ -90,7 +92,7 @@ namespace ClangPowerTools.MVVM.Controllers
       catch (Exception e)
       {
         DefaultState();
-        OnOperationCanceled(EventArgs.Empty);
+        onOperationCanceldEvent();
         DeleteLlvmDirectory(llvmModel.Version);
         MessageBox.Show(e.Message, "Installation Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
@@ -119,7 +121,7 @@ namespace ClangPowerTools.MVVM.Controllers
       catch (Exception e)
       {
         InstallFinishedState();
-        OnOperationCanceled(EventArgs.Empty);
+        onOperationCanceldEvent();
         MessageBox.Show(e.Message, "Uninstall Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
@@ -168,7 +170,7 @@ namespace ClangPowerTools.MVVM.Controllers
     private void DownloadCanceled()
     {
       DefaultState();
-      OnOperationCanceled(EventArgs.Empty);
+      onOperationCanceldEvent();
       DeleteLlvmDirectory(llvmModel.Version);
       ResetDownloadProgressState();
       MessageBox.Show("The download process has stopped.", "LLVM Download", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -179,11 +181,6 @@ namespace ClangPowerTools.MVVM.Controllers
       InstallingState();
       ResetDownloadProgressState();
       Install(llvmModel.Version);
-    }
-
-    private void OnOperationCanceled(EventArgs e)
-    {
-      OperationCanceledHandler?.Invoke(this, e);
     }
 
     private void ResetDownloadProgressState()

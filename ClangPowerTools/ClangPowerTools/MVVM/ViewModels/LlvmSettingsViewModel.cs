@@ -29,7 +29,7 @@ namespace ClangPowerTools
     {
       llvmController.InstallFinished = InstallFinished;
       llvmController.UninstallFinished = UninstallFinished;
-      llvmController.OperationCanceledHandler += OperationCanceled;
+      llvmController.onOperationCanceldEvent += OperationCanceled;
       WindowClosed += llvmController.SettingsWindowClosed;
       IntitializeView();
     }
@@ -115,7 +115,7 @@ namespace ClangPowerTools
       })).SafeFireAndForget();
     }
 
-    private void OperationCanceled(object sender, EventArgs e)
+    private void OperationCanceled()
     {
       ResetButtonsState();
     }
