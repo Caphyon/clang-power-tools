@@ -483,6 +483,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Resources\SettingsLLVM.png" />
     <Content Include="Resources\RunPowerShellCommandPackage.ico">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

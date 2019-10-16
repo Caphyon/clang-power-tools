@@ -70,7 +70,7 @@
             Width="15"
             Height="15"
             Margin="3"
-            Source="/ClangPowerTools;component/Resources/TidyIcon.png" />
+            Source="/ClangPowerTools;component/Resources/SettingsLLVM.png" />
           <TextBlock Width="65" Text="LLVM" />
         </StackPanel>
       </TabItem.Header>

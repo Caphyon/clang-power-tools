@@ -32,7 +32,7 @@
       <Setter Property="VerticalAlignment" Value="Center" />
       <Setter Property="Background" Value="#BCBAC1" />
       <Setter Property="Foreground" Value="#852012" />
-      <Setter Property="Margin" Value="0,0,20,0" />
+      <Setter Property="Margin" Value="0,0,15,0" />
     </Style>
 
     <Style x:Key="HyperlinkStyle" TargetType="Hyperlink">
@@ -55,7 +55,7 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="15" />
       <RowDefinition Height="280" />
-      <RowDefinition Height="55" />
+      <RowDefinition Height="45" />
       <RowDefinition Height="15" />
     </Grid.RowDefinitions>
 
@@ -198,6 +198,8 @@
               <ProgressBar IsIndeterminate="True" Style="{StaticResource ProgressBarStyle}" />
               <TextBlock
                 Grid.Column="3"
+                Width="80"
+                Height="20"
                 VerticalAlignment="Center"
                 FontSize="13"
                 Text="Installing" />
