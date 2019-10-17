@@ -158,20 +158,15 @@ namespace ClangPowerTools
 
     private void InsertVersionToInstalledLlvms()
     {
-      if (InstalledLlvms.Count == 0)
-      {
-        InstalledLlvms.Add(llvmController.llvmModel.Version);
-        return;
-      }
-
       for (int i = 0; i < InstalledLlvms.Count; i++)
       {
         if (string.CompareOrdinal(llvmController.llvmModel.Version, InstalledLlvms[i]) > 0)
         {
           InstalledLlvms.Insert(i, llvmController.llvmModel.Version);
-          break;
+          return;
         }
       }
+      InstalledLlvms.Add(llvmController.llvmModel.Version);
     }
 
     private void DisableButtons(int elementIndex)
