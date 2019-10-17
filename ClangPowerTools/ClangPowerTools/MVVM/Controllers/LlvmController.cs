@@ -74,7 +74,7 @@ namespace ClangPowerTools.MVVM.Controllers
     {
       var llVmVersionPath = settingsPathBuilder.GetLlvmPath(version);
       var executablePath = settingsPathBuilder.GetLlvmExecutablePath(version, LlvmConstants.Llvm + version);
-      var startInfoArguments = string.Concat(LlvmConstants.Arguments, " ", executablePath, " ", LlvmConstants.InstallExeParameters, llVmVersionPath);
+      var startInfoArguments = string.Concat(LlvmConstants.Arguments, " ", "\"",executablePath, "\"", " ", LlvmConstants.InstallExeParameters, llVmVersionPath);
 
       try
       {
