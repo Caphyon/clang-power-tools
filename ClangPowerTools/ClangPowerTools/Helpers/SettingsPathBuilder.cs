@@ -42,8 +42,10 @@ namespace ClangPowerTools
     {
       string folderPath = Path.Combine
         (Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), folderName);
+      
       if (!Directory.Exists(folderPath))
         Directory.CreateDirectory(folderPath);
+      
       return folderPath;
     }
 

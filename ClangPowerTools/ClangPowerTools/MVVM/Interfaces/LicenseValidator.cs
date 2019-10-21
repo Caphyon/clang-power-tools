@@ -1,19 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace ClangPowerTools.MVVM.Interfaces
 {
   public abstract class LicenseValidator : ILicense
   {
+    #region Members
+
+    private readonly string fileName = "ctpjwt";
+
+    #endregion
+
+    #region ILicense Implementation
+
     public string GetToken()
     {
       SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
-      string filePath = settingsPathBuilder.GetPath("ctpjwt");
+      string filePath = settingsPathBuilder.GetPath(fileName);
 
       if (File.Exists(filePath) == false)
         return string.Empty;
@@ -25,6 +27,8 @@ namespace ClangPowerTools.MVVM.Interfaces
     }
 
     public abstract bool Validate();
+
+    #endregion
 
   }
 }
