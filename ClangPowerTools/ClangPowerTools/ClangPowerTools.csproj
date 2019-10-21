@@ -99,7 +99,7 @@
     <Compile Include="MVVM\LlvmVersions.cs" />
     <Compile Include="MVVM\Interfaces\IAccountValidator.cs" />
     <Compile Include="MVVM\Interfaces\ILicense.cs" />
-    <Compile Include="MVVM\Interfaces\ILicenseValidator.cs" />
+    <Compile Include="MVVM\Interfaces\LicenseValidator.cs" />
     <Compile Include="MVVM\LicenseValidation\CommercialLicenseValidator.cs" />
     <Compile Include="MVVM\LicenseValidation\LicenseInfo.cs" />
     <Compile Include="MVVM\LicenseValidation\LicenseProvider.cs" />

@@ -38,5 +38,6 @@ namespace ClangPowerTools.MVVM.Controllers
       }
 
     #endregion
+    }
   }
 }
