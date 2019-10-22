@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 
 namespace ClangPowerTools
 {
@@ -27,8 +28,9 @@ namespace ClangPowerTools
           RedirectStandardOutput = true,
           CreateNoWindow = true,
           UseShellExecute = false,
-          Arguments = aScript
+          Arguments = aScript,
         };
+        process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
 
         process.EnableRaisingEvents = true;
         process.ErrorDataReceived += DataErrorHandler;
@@ -52,11 +54,42 @@ namespace ClangPowerTools
         process.OutputDataReceived -= DataHandler;
         process.Exited -= ExitedHandler;
         process.EnableRaisingEvents = false;
-
+        process.Close();
       }
       return process;
     }
 
+    #endregion
+
+
+    #region Private Methods
+    private static string CreatePathEnvironmentVariable()
+    {
+      var path = Environment.GetEnvironmentVariable("Path");
+      var settingsProvider = new SettingsProvider();
+      var llvmVersion = settingsProvider.GetCompilerSettingsModel().LlvmVersion;
+
+      if (string.IsNullOrEmpty(llvmVersion)) return path;
+
+      var paths = path.Split(';').ToList();
+      paths.RemoveAt(paths.Count - 1);
+      paths.RemoveAll(ContainsLlvm);
+      paths.Add(GetUsedLlvmVersionPath(llvmVersion));
+
+      return String.Join(";", paths);
+    }
+
+
+    private static string GetUsedLlvmVersionPath(string llvmVersion)
+    {
+      var settingsPathBuilder = new SettingsPathBuilder();      
+      return settingsPathBuilder.GetLlvmBinPath(llvmVersion);
+    }
+
+    private static bool ContainsLlvm(string input)
+    {
+      return input.ToLower().Contains("llvm");
+    }
     #endregion
 
   }

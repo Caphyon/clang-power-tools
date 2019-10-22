@@ -117,9 +117,6 @@ namespace ClangPowerTools
       string runModeParameters = ScriptGenerator.GetRunModeParamaters();
       string genericParameters = ScriptGenerator.GetGenericParamaters(aCommandId, VsEdition, VsVersion);
 
-      if (mMissingLLVM)
-        return;
-
       CMakeBuilder cMakeBuilder = new CMakeBuilder();
       cMakeBuilder.Build();
 
