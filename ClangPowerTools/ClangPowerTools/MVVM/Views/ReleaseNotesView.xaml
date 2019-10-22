@@ -110,36 +110,16 @@
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="&#x2022; 14-days free trial support"
+          Text="• Install and choose LLVM version directly from Settings"
           TextWrapping="Wrap" />
 
         <TextBlock
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="&#x2022; Now you can ignore an entire project at clang compile time"
+          Text="• Pre-initialize configuration and platform properties"
           TextWrapping="Wrap" />
 
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="&#x2022; Ignore folder support for compile and format commands"
-          TextWrapping="Wrap" />
-
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="&#x2022; Possibility to convert incompatible clang encoding files to UTF-8"
-          TextWrapping="Wrap" />
-
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="&#x2022; Commands are now disabled for unrelated C++ projects"
-          TextWrapping="Wrap" />
 
         <!--  Bug Fixes  -->
         <TextBlock
@@ -152,28 +132,14 @@
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="&#x2022; Handle corrupt JSON config file"
+          Text="• Fix predefined checks"
           TextWrapping="Wrap" />
 
         <TextBlock
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="&#x2022; Fix import for tidy predefined checks"
-          TextWrapping="Wrap" />
-
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="&#x2022; UI uniformization for predefined checks view"
-          TextWrapping="Wrap" />
-
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="&#x2022; Sign up not working from account window"
+          Text="• GetPathOfFileAbove didn't function properly in some cases"
           TextWrapping="Wrap" />
 
       </ListView>
