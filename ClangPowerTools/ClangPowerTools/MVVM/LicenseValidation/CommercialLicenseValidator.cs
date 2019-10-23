@@ -11,9 +11,9 @@ using System.Threading.Tasks;
 namespace ClangPowerTools.MVVM.LicenseValidation
 {
   /// <summary>
-  /// Contains the logic for the user license verification.
+  /// Contains the logic for the commercial license verification
   /// </summary>
-  public class CommercialLicenseValidator : LocalLicenseValidator, ILicenseValidator
+  public class CommercialLicenseValidator : LicenseValidator
   {
     #region ILicenseValidator Implementation
 
@@ -21,7 +21,7 @@ namespace ClangPowerTools.MVVM.LicenseValidation
     /// Verify if the user license is active.
     /// </summary>
     /// <returns>True if the user license is active. False otherwise.</returns>
-    public async Task<bool> ValidateAsync()
+    public override async Task<bool> ValidateAsync()
     {
       var token = GetToken();
       try
