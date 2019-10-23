@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Interfaces;
+using System.Threading.Tasks;
 
 namespace ClangPowerTools.MVVM.LicenseValidation
 {
@@ -6,7 +7,14 @@ namespace ClangPowerTools.MVVM.LicenseValidation
   {
     #region ILicense Implementation
 
-    public override bool Validate() => string.IsNullOrWhiteSpace(GetToken()) == false;
+    /// <summary>
+    /// Check the if the user license from the disk is active.
+    /// </summary>
+    /// <returns>True if the license is active. False otherwise</returns>
+    public override Task<bool> ValidateAsync()
+    {
+      return Task.FromResult(string.IsNullOrWhiteSpace(GetToken()) == false);
+    }
 
     #endregion
 
