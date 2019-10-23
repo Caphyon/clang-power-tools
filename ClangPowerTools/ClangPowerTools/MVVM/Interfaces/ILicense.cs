@@ -1,18 +1,16 @@
-﻿using ClangPowerTools.MVVM.LicenseValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace ClangPowerTools.MVVM.Interfaces
 {
+  /// <summary>
+  /// Contains license validation and token retrival main behavior
+  /// </summary>
   public interface ILicense
   {
     /// <summary>
-    /// Check if the user license is valid
+    /// Check if the user license is active
     /// </summary>
-    /// <returns>True if the license is valid. False otherwise</returns>
+    /// <returns>True if the license is active. False otherwise</returns>
     Task<bool> ValidateAsync();
 
     /// <summary>
