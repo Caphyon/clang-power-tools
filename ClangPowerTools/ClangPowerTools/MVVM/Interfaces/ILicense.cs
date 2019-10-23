@@ -9,8 +9,16 @@ namespace ClangPowerTools.MVVM.Interfaces
 {
   public interface ILicense
   {
-    bool Validate();
+    /// <summary>
+    /// Check if the user license is valid
+    /// </summary>
+    /// <returns>True if the license is valid. False otherwise</returns>
+    Task<bool> ValidateAsync();
 
+    /// <summary>
+    /// Get the user license token value
+    /// </summary>
+    /// <returns>User license token value</returns>
     string GetToken();
   }
 }
