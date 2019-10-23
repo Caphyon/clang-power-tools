@@ -13,6 +13,15 @@
   WindowStartupLocation="CenterScreen"
   WindowStyle="ThreeDBorderWindow"
   mc:Ignorable="d">
+
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Styles/AppResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="*" />
@@ -79,6 +88,22 @@
               Width="15"
               Height="15"
               Margin="3"
+              Source="/ClangPowerTools;component/Resources/SettingsLLVM.png" />
+            <TextBlock Width="65" Text="LLVM" />
+          </StackPanel>
+        </TabItem.Header>
+        <Grid>
+          <local:LlvmSettingsView />
+        </Grid>
+      </TabItem>
+
+      <TabItem Padding="8" FontSize="15">
+        <TabItem.Header>
+          <StackPanel Orientation="Horizontal">
+            <Image
+              Width="15"
+              Height="15"
+              Margin="3"
               Source="/ClangPowerTools;component/Resources/SettingsIcon.png" />
             <TextBlock Width="65" Text="General" />
           </StackPanel>
@@ -87,7 +112,6 @@
           <local:GeneralSettingsView />
         </Grid>
       </TabItem>
-
     </TabControl>
 
     <Grid
@@ -209,97 +233,7 @@
         Foreground="Black" />
 
     </Grid>
-
+    
   </Grid>
 
-  <Window.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="Styles/AppResources.xaml" />
-      </ResourceDictionary.MergedDictionaries>
-    </ResourceDictionary>
-  </Window.Resources>
-
-  <TabControl>
-    <TabItem Padding="8" FontSize="15">
-      <TabItem.Header>
-        <StackPanel Orientation="Horizontal">
-          <Image
-            Width="15"
-            Height="15"
-            Margin="3"
-            Source="/ClangPowerTools;component/Resources/CompileIcon.png" />
-          <TextBlock Width="65" Text="Compiler" />
-        </StackPanel>
-      </TabItem.Header>
-      <Grid>
-        <local:CompilerSettingsView />
-      </Grid>
-    </TabItem>
-
-    <TabItem Padding="8" FontSize="15">
-      <TabItem.Header>
-        <StackPanel Orientation="Horizontal">
-          <Image
-            Width="15"
-            Height="15"
-            Margin="3"
-            Source="/ClangPowerTools;component/Resources/TidyIcon.png" />
-          <TextBlock Width="65" Text="Tidy" />
-        </StackPanel>
-      </TabItem.Header>
-      <Grid>
-        <local:TidySettingsView />
-      </Grid>
-    </TabItem>
-
-    <TabItem Padding="8" FontSize="15">
-      <TabItem.Header>
-        <StackPanel Orientation="Horizontal">
-          <Image
-            Width="15"
-            Height="15"
-            Margin="3"
-            Source="/ClangPowerTools;component/Resources/ClangFormatIcon.png" />
-          <TextBlock Width="65" Text="Format" />
-        </StackPanel>
-      </TabItem.Header>
-      <Grid>
-        <local:FormatSettingsView />
-      </Grid>
-    </TabItem>
-
-    <TabItem Padding="8" FontSize="15">
-      <TabItem.Header>
-        <StackPanel Orientation="Horizontal">
-          <Image
-            Width="15"
-            Height="15"
-            Margin="3"
-            Source="/ClangPowerTools;component/Resources/SettingsLLVM.png" />
-          <TextBlock Width="65" Text="LLVM" />
-        </StackPanel>
-      </TabItem.Header>
-      <Grid>
-        <local:LlvmSettingsView />
-      </Grid>
-    </TabItem>
-
-    <TabItem Padding="8" FontSize="15">
-      <TabItem.Header>
-        <StackPanel Orientation="Horizontal">
-          <Image
-            Width="15"
-            Height="15"
-            Margin="3"
-            Source="/ClangPowerTools;component/Resources/SettingsIcon.png" />
-          <TextBlock Width="65" Text="General" />
-        </StackPanel>
-      </TabItem.Header>
-      <Grid>
-        <local:GeneralSettingsView />
-      </Grid>
-    </TabItem>
-
-  </TabControl>
 </Window>

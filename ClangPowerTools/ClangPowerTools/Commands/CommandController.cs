@@ -107,8 +107,8 @@ namespace ClangPowerTools
       var freeTrialController = new FreeTrialController();
       var licenseController = new LicenseController();
 
-      bool tokenExists = licenseController.TokenExists(new TokenModel(), out TokenModel newToken);
-      bool activeAccount = (await licenseController.CheckUserTokenHttpResultAsync(newToken)).IsSuccessStatusCode;
+      bool tokenExists = true; // licenseController.TokenExists(new TokenModel(), out TokenModel newToken);
+      bool activeAccount = true; // (await licenseController.CheckUserTokenHttpResultAsync(newToken)).IsSuccessStatusCode;
       
       // First app install - choose license
       if (freeTrialController.WasEverInTrial() == false && activeAccount == false)

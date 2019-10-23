@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ClangPowerTools.MVVM.LicenseValidation
 {
-  public class PersonalLicenseValidator : LocalLicenseValidator, ILicenseValidator
+  public class PersonalLicenseValidator : LocalLicenseValidator
   {
     public async Task<bool> ValidateAsync()
     {
