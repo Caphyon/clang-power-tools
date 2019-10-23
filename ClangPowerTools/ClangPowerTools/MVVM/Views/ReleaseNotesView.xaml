@@ -139,6 +139,13 @@
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
+          Text="• Clear button doesn't work for predefined checks search"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
           Text="• GetPathOfFileAbove didn't function properly in some cases"
           TextWrapping="Wrap" />
 
