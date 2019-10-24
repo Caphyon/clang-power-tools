@@ -8,6 +8,7 @@
   Title="Clang Power Tools"
   Width="650"
   Height="450"
+  Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
   WindowStartupLocation="CenterScreen"
   mc:Ignorable="d">
