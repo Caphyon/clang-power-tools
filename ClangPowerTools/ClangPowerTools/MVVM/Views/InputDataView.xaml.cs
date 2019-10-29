@@ -11,6 +11,7 @@ namespace ClangPowerTools.Views
     {
       InitializeComponent();
       DataContext = inputDataViewModel;
+      Owner = SettingsProvider.SettingsView;
     }
   }
 }

@@ -15,7 +15,6 @@
   ResizeMode="NoResize"
   ShowActivated="True"
   ShowInTaskbar="False"
-  Topmost="True"
   WindowStartupLocation="CenterScreen"
   WindowStyle="ToolWindow"
   mc:Ignorable="d">

@@ -11,6 +11,7 @@ namespace ClangPowerTools.Views
     {
       InitializeComponent();
       DataContext = new TidyChecksViewModel(this);
+      Owner = SettingsProvider.SettingsView;
     }
   }
 }
