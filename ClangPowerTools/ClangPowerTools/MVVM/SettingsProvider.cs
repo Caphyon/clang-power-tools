@@ -1,4 +1,6 @@
-﻿namespace ClangPowerTools
+﻿using ClangPowerTools.Views;
+
+namespace ClangPowerTools
 {
   public class SettingsProvider
   {
@@ -6,6 +8,8 @@
     private static FormatSettingsModel formatSettingsModel = new FormatSettingsModel();
     private static TidySettingsModel tidySettingsModel = new TidySettingsModel();
     private static GeneralSettingsModel generalSettingsModel = new GeneralSettingsModel();
+
+    public static SettingsView SettingsView { get; set; }
 
     public CompilerSettingsModel GetCompilerSettingsModel()
     {
