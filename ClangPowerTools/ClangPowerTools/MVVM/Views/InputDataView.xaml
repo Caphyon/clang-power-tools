@@ -7,14 +7,13 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   Title="Settings Input"
   Width="525"
-  Height="500"
+  Height="400"
   d:DataContext="{d:DesignInstance local:InputDataViewModel,
                                    IsDesignTimeCreatable=True}"
   d:DesignHeight="250"
   d:DesignWidth="300"
   Background="WhiteSmoke"
   ShowInTaskbar="False"
-  Topmost="True"
   WindowStartupLocation="CenterScreen"
   WindowStyle="ToolWindow"
   mc:Ignorable="d">
