@@ -5,6 +5,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:views="clr-namespace:ClangPowerTools.MVVM.Views"
   d:DataContext="{d:DesignInstance local:CompilerSettingsViewModel,
                                    IsDesignTimeCreatable=True}"
   d:DesignHeight="350"
@@ -172,16 +173,23 @@
       </TextBlock.ToolTip>
     </TextBlock>
 
-    <ComboBox
+    <!--<ComboBox
       Grid.Row="4"
       Grid.Column="2"
       Height="30"
       Margin="0,0,20,0"
       ItemsSource="{Binding AdditionalIncludesItems}"
-      SelectedItem="{Binding CompilerModel.AdditionalIncludes}" />
+      SelectedItem="{Binding CompilerModel.AdditionalIncludes}" />-->
 
+    <views:ToggleSwitch
+      Grid.Row="4"
+      Grid.Column="2"
+      Width="35"
+      Height="20"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center" />
 
-    <!--  Warning as errors  -->
+    <!--  Warning as ece  -->
     <TextBlock
       Grid.Row="5"
       Grid.Column="1"
@@ -200,7 +208,7 @@
       </TextBlock.ToolTip>
     </TextBlock>
 
-    <CheckBox
+    <!--<CheckBox
       Grid.Row="5"
       Grid.Column="2"
       HorizontalAlignment="Left"
@@ -209,7 +217,15 @@
       <CheckBox.LayoutTransform>
         <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
       </CheckBox.LayoutTransform>
-    </CheckBox>
+    </CheckBox>-->
+
+    <views:ToggleSwitch
+      Grid.Row="5"
+      Grid.Column="2"
+      Width="35"
+      Height="20"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center" />
 
     <!--  Continue on error  -->
     <TextBlock
@@ -230,7 +246,7 @@
       </TextBlock.ToolTip>
     </TextBlock>
 
-    <CheckBox
+    <!--<CheckBox
       Grid.Row="6"
       Grid.Column="2"
       HorizontalAlignment="Left"
@@ -239,7 +255,15 @@
       <CheckBox.LayoutTransform>
         <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
       </CheckBox.LayoutTransform>
-    </CheckBox>
+    </CheckBox>-->
+
+    <views:ToggleSwitch
+      Grid.Row="6"
+      Grid.Column="2"
+      Width="35"
+      Height="20"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center" />
 
     <!--  Clang after MSCV compile  -->
     <TextBlock
@@ -260,7 +284,7 @@
       </TextBlock.ToolTip>
     </TextBlock>
 
-    <CheckBox
+    <!--<CheckBox
       Grid.Row="7"
       Grid.Column="2"
       HorizontalAlignment="Left"
@@ -269,7 +293,15 @@
       <CheckBox.LayoutTransform>
         <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
       </CheckBox.LayoutTransform>
-    </CheckBox>
+    </CheckBox>-->
+
+    <views:ToggleSwitch
+      Grid.Row="7"
+      Grid.Column="2"
+      Width="35"
+      Height="20"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center" />
 
     <!--  Verbose mode  -->
     <TextBlock
@@ -290,7 +322,7 @@
       </TextBlock.ToolTip>
     </TextBlock>
 
-    <CheckBox
+    <!--<CheckBox
       Grid.Row="8"
       Grid.Column="2"
       HorizontalAlignment="Left"
@@ -299,7 +331,15 @@
       <CheckBox.LayoutTransform>
         <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
       </CheckBox.LayoutTransform>
-    </CheckBox>
+    </CheckBox>-->
+
+    <views:ToggleSwitch
+      Grid.Row="8"
+      Grid.Column="2"
+      Width="35"
+      Height="20"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center" />
 
   </Grid>
 </UserControl>

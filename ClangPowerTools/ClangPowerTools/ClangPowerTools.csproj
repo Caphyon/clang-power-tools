@@ -165,6 +165,9 @@
     <Compile Include="MVVM\Views\LlvmSettingsView.xaml.cs">
       <DependentUpon>LlvmSettingsView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MVVM\Views\ToggleSwitch.xaml.cs">
+      <DependentUpon>ToggleSwitch.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\Views\TrialExpiredView.xaml.cs">
       <DependentUpon>TrialExpiredView.xaml</DependentUpon>
     </Compile>
@@ -521,6 +524,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\Views\LlvmSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\ToggleSwitch.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
