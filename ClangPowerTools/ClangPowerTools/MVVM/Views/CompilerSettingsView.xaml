@@ -13,12 +13,12 @@
   mc:Ignorable="d">
 
   <UserControl.Resources>
-    <Style x:Key="ToggleSwitchStyle" TargetType="CheckBox">
+    <Style x:Key="ToggleSwitchStyle" TargetType="ToggleButton">
       <Style.Triggers>
         <Trigger Property="IsChecked" Value="false">
           <Setter Property="Template">
             <Setter.Value>
-              <ControlTemplate TargetType="CheckBox">
+              <ControlTemplate TargetType="ToggleButton">
                 <Viewbox Margin="0" HorizontalAlignment="Right">
                   <Grid
                     Width="100"
@@ -297,7 +297,7 @@
       </TextBlock.ToolTip>
     </TextBlock>
 
-    <CheckBox
+    <ToggleButton
       Grid.Row="5"
       Grid.Column="2"
       Width="35"
