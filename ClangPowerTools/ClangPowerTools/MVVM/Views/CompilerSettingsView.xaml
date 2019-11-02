@@ -13,84 +13,91 @@
   mc:Ignorable="d">
 
   <UserControl.Resources>
-    <Style x:Key="ToggleSwitchOff" TargetType="CheckBox">
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="CheckBox">
-            <Viewbox Margin="0" HorizontalAlignment="Right">
-              <Grid
-                Width="100"
-                Height="60"
-                Margin="0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top">
+    <Style x:Key="ToggleSwitchStyle" TargetType="CheckBox">
+      <Style.Triggers>
+        <Trigger Property="IsChecked" Value="false">
+          <Setter Property="Template">
+            <Setter.Value>
+              <ControlTemplate TargetType="CheckBox">
+                <Viewbox Margin="0" HorizontalAlignment="Right">
+                  <Grid
+                    Width="100"
+                    Height="60"
+                    Margin="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top">
 
-                <Rectangle
-                  x:Name="Back"
-                  Width="96"
-                  Height="56"
-                  Margin="2,2,0,0"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Top"
-                  Fill="#A0A0A0"
-                  RadiusX="30"
-                  RadiusY="30" />
+                    <Rectangle
+                      x:Name="Back"
+                      Width="96"
+                      Height="56"
+                      Margin="2,2,0,0"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Top"
+                      Fill="#A0A0A0"
+                      RadiusX="30"
+                      RadiusY="30" />
 
-                <Ellipse
-                  x:Name="Dot"
-                  Width="50"
-                  Height="50"
-                  Margin="-39,0,0,0"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center"
-                  Fill="White" />
+                    <Ellipse
+                      x:Name="Dot"
+                      Width="50"
+                      Height="50"
+                      Margin="-39,0,0,0"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Fill="White" />
 
-              </Grid>
-            </Viewbox>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
+                    <ContentPresenter />
+
+                  </Grid>
+                </Viewbox>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+        </Trigger>
+
+        <Trigger Property="IsChecked" Value="true">
+          <Setter Property="Template">
+            <Setter.Value>
+              <ControlTemplate TargetType="CheckBox">
+                <Viewbox Margin="0" HorizontalAlignment="Right">
+                  <Grid
+                    Width="100"
+                    Height="60"
+                    Margin="0"
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Top">
+
+                    <Rectangle
+                      x:Name="Back"
+                      Width="96"
+                      Height="56"
+                      Margin="2,2,0,0"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Top"
+                      Fill="#9E005A"
+                      RadiusX="30"
+                      RadiusY="30" />
+
+                    <Ellipse
+                      x:Name="Dot"
+                      Width="50"
+                      Height="50"
+                      Margin="0,0,-39,0"
+                      HorizontalAlignment="Center"
+                      VerticalAlignment="Center"
+                      Fill="White" />
+
+                    <ContentPresenter />
+
+                  </Grid>
+                </Viewbox>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+        </Trigger>
+      </Style.Triggers>
     </Style>
-
-    <Style x:Key="ToggleSwitchOn" TargetType="CheckBox">
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="CheckBox">
-            <Viewbox Margin="0" HorizontalAlignment="Right">
-              <Grid
-                Width="100"
-                Height="60"
-                Margin="0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top">
-
-                <Rectangle
-                  x:Name="Back"
-                  Width="96"
-                  Height="56"
-                  Margin="2,2,0,0"
-                  HorizontalAlignment="Left"
-                  VerticalAlignment="Top"
-                  Fill="#9E005A"
-                  RadiusX="30"
-                  RadiusY="30" />
-
-                <Ellipse
-                  x:Name="Dot"
-                  Width="50"
-                  Height="50"
-                  Margin="0,0,-39,0"
-                  HorizontalAlignment="Center"
-                  VerticalAlignment="Center"
-                  Fill="White" />
-
-              </Grid>
-            </Viewbox>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
-
 
   </UserControl.Resources>
 
@@ -298,7 +305,7 @@
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
       IsChecked="{Binding CompilerModel.WarningsAsErrors}"
-      Style="{StaticResource ToggleSwitchOff}" />
+      Style="{StaticResource ToggleSwitchStyle}" />
 
     <!--<views:ToggleSwitch
       Grid.Row="5"
