@@ -11,6 +11,96 @@
   d:DesignHeight="350"
   d:DesignWidth="770"
   mc:Ignorable="d">
+
+  <UserControl.Resources>
+    <Style x:Key="ToggleSwitchOff" TargetType="CheckBox">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="CheckBox">
+            <Viewbox Margin="0" HorizontalAlignment="Right">
+              <Grid
+                Width="100"
+                Height="60"
+                Margin="0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top">
+
+                <Rectangle
+                  x:Name="Back"
+                  Width="96"
+                  Height="56"
+                  Margin="2,2,0,0"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top"
+                  Fill="#A0A0A0"
+                  RadiusX="30"
+                  RadiusY="30" />
+
+                <Ellipse
+                  x:Name="Dot"
+                  Width="50"
+                  Height="50"
+                  Margin="-39,0,0,0"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Fill="White" />
+
+              </Grid>
+            </Viewbox>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+    <Style x:Key="ToggleSwitchOn" TargetType="CheckBox">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="CheckBox">
+            <Viewbox Margin="0" HorizontalAlignment="Right">
+              <Grid
+                Width="100"
+                Height="60"
+                Margin="0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top">
+
+                <Rectangle
+                  x:Name="Back"
+                  Width="96"
+                  Height="56"
+                  Margin="2,2,0,0"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top"
+                  Fill="#9E005A"
+                  RadiusX="30"
+                  RadiusY="30" />
+
+                <Ellipse
+                  x:Name="Dot"
+                  Width="50"
+                  Height="50"
+                  Margin="0,0,-39,0"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Fill="White" />
+
+              </Grid>
+            </Viewbox>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
+
+
+  </UserControl.Resources>
+
+  <!--<Style.Triggers>
+    <Trigger Property="IsChecked" Value="False">
+      <Setter Property="Style" Value="{ToggleSwitch}" />
+    </Trigger>
+
+  </Style.Triggers>-->
+
   <Grid>
     <Grid.Background>
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
@@ -173,21 +263,13 @@
       </TextBlock.ToolTip>
     </TextBlock>
 
-    <!--<ComboBox
+    <ComboBox
       Grid.Row="4"
       Grid.Column="2"
       Height="30"
       Margin="0,0,20,0"
       ItemsSource="{Binding AdditionalIncludesItems}"
-      SelectedItem="{Binding CompilerModel.AdditionalIncludes}" />-->
-
-    <views:ToggleSwitch
-      Grid.Row="4"
-      Grid.Column="2"
-      Width="35"
-      Height="20"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center" />
+      SelectedItem="{Binding CompilerModel.AdditionalIncludes}" />
 
     <!--  Warning as ece  -->
     <TextBlock
@@ -208,24 +290,23 @@
       </TextBlock.ToolTip>
     </TextBlock>
 
-    <!--<CheckBox
-      Grid.Row="5"
-      Grid.Column="2"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      IsChecked="{Binding CompilerModel.WarningsAsErrors}">
-      <CheckBox.LayoutTransform>
-        <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
-      </CheckBox.LayoutTransform>
-    </CheckBox>-->
-
-    <views:ToggleSwitch
+    <CheckBox
       Grid.Row="5"
       Grid.Column="2"
       Width="35"
       Height="20"
       HorizontalAlignment="Left"
-      VerticalAlignment="Center" />
+      VerticalAlignment="Center"
+      IsChecked="{Binding CompilerModel.WarningsAsErrors}"
+      Style="{StaticResource ToggleSwitchOff}" />
+
+    <!--<views:ToggleSwitch
+      Grid.Row="5"
+      Grid.Column="2"
+      Width="35"
+      Height="20"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center" />-->
 
     <!--  Continue on error  -->
     <TextBlock
