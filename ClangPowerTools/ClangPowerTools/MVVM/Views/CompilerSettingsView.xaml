@@ -13,100 +13,61 @@
   mc:Ignorable="d">
 
   <UserControl.Resources>
-    <Style x:Key="ToggleSwitchStyle" TargetType="ToggleButton">
-      <Style.Triggers>
-        <Trigger Property="IsChecked" Value="false">
-          <Setter Property="Template">
-            <Setter.Value>
-              <ControlTemplate TargetType="ToggleButton">
-                <Viewbox Margin="0" HorizontalAlignment="Right">
-                  <Grid
-                    Width="100"
-                    Height="60"
-                    Margin="0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top">
+    <Style x:Key="ToggleSwitchWindows10Style" TargetType="ToggleButton">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="ToggleButton">
+            <Viewbox Margin="0" HorizontalAlignment="Right">
 
-                    <Rectangle
-                      x:Name="Back"
-                      Width="96"
-                      Height="56"
-                      Margin="2,2,0,0"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Top"
-                      Fill="#A0A0A0"
-                      RadiusX="30"
-                      RadiusY="30" />
+              <Grid
+                Width="100"
+                Height="60"
+                Margin="0"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top">
 
-                    <Ellipse
-                      x:Name="Dot"
-                      Width="50"
-                      Height="50"
-                      Margin="-39,0,0,0"
-                      HorizontalAlignment="Center"
-                      VerticalAlignment="Center"
-                      Fill="White" />
+                <Rectangle
+                  x:Name="BackgroundToggleSwitch"
+                  Width="96"
+                  Height="56"
+                  Margin="2,2,0,0"
+                  HorizontalAlignment="Left"
+                  VerticalAlignment="Top"
+                  Fill="#A0A0A0"
+                  RadiusX="30"
+                  RadiusY="30" />
 
-                    <ContentPresenter />
+                <Ellipse
+                  x:Name="DotToggleSwitch"
+                  Width="50"
+                  Height="50"
+                  Margin="0,0,0,0"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center"
+                  Fill="White" />
 
-                  </Grid>
-                </Viewbox>
-              </ControlTemplate>
-            </Setter.Value>
-          </Setter>
-        </Trigger>
+                <ContentPresenter />
 
-        <Trigger Property="IsChecked" Value="true">
-          <Setter Property="Template">
-            <Setter.Value>
-              <ControlTemplate TargetType="CheckBox">
-                <Viewbox Margin="0" HorizontalAlignment="Right">
-                  <Grid
-                    Width="100"
-                    Height="60"
-                    Margin="0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top">
+              </Grid>
+            </Viewbox>
 
-                    <Rectangle
-                      x:Name="Back"
-                      Width="96"
-                      Height="56"
-                      Margin="2,2,0,0"
-                      HorizontalAlignment="Left"
-                      VerticalAlignment="Top"
-                      Fill="#9E005A"
-                      RadiusX="30"
-                      RadiusY="30" />
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsChecked" Value="false">
+                <Setter TargetName="BackgroundToggleSwitch" Property="Fill" Value="#A0A0A0" />
+                <Setter TargetName="DotToggleSwitch" Property="Margin" Value="-39,0,0,0" />
+              </Trigger>
 
-                    <Ellipse
-                      x:Name="Dot"
-                      Width="50"
-                      Height="50"
-                      Margin="0,0,-39,0"
-                      HorizontalAlignment="Center"
-                      VerticalAlignment="Center"
-                      Fill="White" />
+              <Trigger Property="IsChecked" Value="true">
+                <Setter TargetName="BackgroundToggleSwitch" Property="Fill" Value="#9E005A" />
+                <Setter TargetName="DotToggleSwitch" Property="Margin" Value="0,0,-39,0" />
+              </Trigger>
+            </ControlTemplate.Triggers>
 
-                    <ContentPresenter />
-
-                  </Grid>
-                </Viewbox>
-              </ControlTemplate>
-            </Setter.Value>
-          </Setter>
-        </Trigger>
-      </Style.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
     </Style>
-
   </UserControl.Resources>
-
-  <!--<Style.Triggers>
-    <Trigger Property="IsChecked" Value="False">
-      <Setter Property="Style" Value="{ToggleSwitch}" />
-    </Trigger>
-
-  </Style.Triggers>-->
 
   <Grid>
     <Grid.Background>
@@ -161,8 +122,6 @@
       FontFamily="SegoeUI"
       FontSize="15"
       Text="{Binding CompilerModel.CompileFlags}" />
-
-
 
     <Button
       Grid.Row="1"
@@ -278,7 +237,7 @@
       ItemsSource="{Binding AdditionalIncludesItems}"
       SelectedItem="{Binding CompilerModel.AdditionalIncludes}" />
 
-    <!--  Warning as ece  -->
+    <!--  Warning as errors  -->
     <TextBlock
       Grid.Row="5"
       Grid.Column="1"
@@ -305,15 +264,7 @@
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
       IsChecked="{Binding CompilerModel.WarningsAsErrors}"
-      Style="{StaticResource ToggleSwitchStyle}" />
-
-    <!--<views:ToggleSwitch
-      Grid.Row="5"
-      Grid.Column="2"
-      Width="35"
-      Height="20"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center" />-->
+      Style="{StaticResource ToggleSwitchWindows10Style}" />
 
     <!--  Continue on error  -->
     <TextBlock
