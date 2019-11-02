@@ -18,6 +18,15 @@
   WindowStartupLocation="CenterScreen"
   WindowStyle="ToolWindow"
   mc:Ignorable="d">
+
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Styles/AppResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*" />
@@ -45,6 +54,7 @@
       <ListBox.ItemTemplate>
         <DataTemplate>
           <Grid>
+
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="500" />
               <ColumnDefinition Width="100" />
@@ -52,6 +62,7 @@
             <Grid.RowDefinitions>
               <RowDefinition Height="25" />
             </Grid.RowDefinitions>
+
             <TextBlock
               Grid.Row="1"
               Grid.Column="0"
@@ -67,11 +78,15 @@
                 </ToolTip>
               </TextBlock.ToolTip>
             </TextBlock>
-            <CheckBox
+
+            <ToggleButton
               Grid.Row="1"
               Grid.Column="1"
+              Width="35"
+              Height="20"
               HorizontalAlignment="Right"
               IsChecked="{Binding IsChecked}" />
+
           </Grid>
         </DataTemplate>
       </ListBox.ItemTemplate>
