@@ -10,6 +10,15 @@
   d:DesignHeight="350"
   d:DesignWidth="770"
   mc:Ignorable="d">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Styles/AppResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
   <Grid>
     <Grid.Background>
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
@@ -233,16 +242,14 @@
       </TextBlock.ToolTip>
     </TextBlock>
 
-    <CheckBox
+    <ToggleButton
       Grid.Row="6"
       Grid.Column="2"
+      Width="35"
+      Height="20"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding TidyModel.FormatAfterTidy}">
-      <CheckBox.LayoutTransform>
-        <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
-      </CheckBox.LayoutTransform>
-    </CheckBox>
+      IsChecked="{Binding TidyModel.FormatAfterTidy}" />
 
     <!--  Tidy on save  -->
     <TextBlock
@@ -263,18 +270,14 @@
       </TextBlock.ToolTip>
     </TextBlock>
 
-    <CheckBox
+    <ToggleButton
       Grid.Row="7"
       Grid.Column="2"
+      Width="35"
+      Height="20"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding TidyModel.TidyOnSave}">
-      <CheckBox.LayoutTransform>
-        <ScaleTransform ScaleX="1.2" ScaleY="1.2" />
-      </CheckBox.LayoutTransform>
-    </CheckBox>
-
-
+      IsChecked="{Binding TidyModel.TidyOnSave}" />
 
     <!--  Export tidy config  -->
     <TextBlock

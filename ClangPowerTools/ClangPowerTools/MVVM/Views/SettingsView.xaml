@@ -14,6 +14,14 @@
   WindowStyle="ThreeDBorderWindow"
   mc:Ignorable="d">
 
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Styles/AppResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+
   <TabControl>
     <TabItem Padding="8" FontSize="15">
       <TabItem.Header>
