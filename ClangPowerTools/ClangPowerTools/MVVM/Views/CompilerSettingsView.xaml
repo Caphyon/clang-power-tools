@@ -210,8 +210,6 @@
     <ToggleButton
       Grid.Row="5"
       Grid.Column="2"
-      Width="35"
-      Height="20"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
       IsChecked="{Binding CompilerModel.WarningsAsErrors}" />
@@ -238,8 +236,6 @@
     <ToggleButton
       Grid.Row="6"
       Grid.Column="2"
-      Width="35"
-      Height="20"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
       IsChecked="{Binding CompilerModel.ContinueOnError}" />
@@ -266,8 +262,6 @@
     <ToggleButton
       Grid.Row="7"
       Grid.Column="2"
-      Width="35"
-      Height="20"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
       IsChecked="{Binding CompilerModel.ClangAfterMSVC}" />
@@ -294,8 +288,6 @@
     <ToggleButton
       Grid.Row="8"
       Grid.Column="2"
-      Width="35"
-      Height="20"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
       IsChecked="{Binding CompilerModel.VerboseMode}" />

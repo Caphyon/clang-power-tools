@@ -82,8 +82,6 @@
             <ToggleButton
               Grid.Row="1"
               Grid.Column="1"
-              Width="35"
-              Height="20"
               HorizontalAlignment="Right"
               IsChecked="{Binding IsChecked}" />
 
