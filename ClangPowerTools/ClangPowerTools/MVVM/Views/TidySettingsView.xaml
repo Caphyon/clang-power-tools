@@ -245,8 +245,6 @@
     <ToggleButton
       Grid.Row="6"
       Grid.Column="2"
-      Width="35"
-      Height="20"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
       IsChecked="{Binding TidyModel.FormatAfterTidy}" />
@@ -273,8 +271,6 @@
     <ToggleButton
       Grid.Row="7"
       Grid.Column="2"
-      Width="35"
-      Height="20"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
       IsChecked="{Binding TidyModel.TidyOnSave}" />
