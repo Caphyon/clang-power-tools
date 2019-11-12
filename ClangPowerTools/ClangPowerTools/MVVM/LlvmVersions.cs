@@ -7,6 +7,7 @@ namespace ClangPowerTools
     public static List<string> Versions { get; } = new List<string>
     {
       "9.0.0",
+      "8.0.1",
       "8.0.0",
       "7.1.0",
       "7.0.1",
