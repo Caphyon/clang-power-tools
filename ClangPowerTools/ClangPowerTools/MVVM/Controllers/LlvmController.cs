@@ -22,6 +22,7 @@ namespace ClangPowerTools.MVVM.Controllers
     public event OnOperationCanceled onOperationCanceldEvent;
 
     private Process process;
+    private readonly string versionAlternateUri = "8.0.1";
     private readonly SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
     private readonly FileSystem fileSystem = new FileSystem();
 
@@ -55,7 +56,7 @@ namespace ClangPowerTools.MVVM.Controllers
       var executablePath = settingsPathBuilder.GetLlvmExecutablePath(version, LlvmConstants.Llvm + version);
       var uri = string.Empty;
 
-      if(version == "8.0.1")
+      if(version == versionAlternateUri)
       {
         uri = llvmUri.GetGitHubUri(version);
       }
