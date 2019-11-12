@@ -51,8 +51,19 @@ namespace ClangPowerTools.MVVM.Controllers
     {
       CreateVersionDirectory(version);
 
+      var llvmUri = new LlvmUri();
       var executablePath = settingsPathBuilder.GetLlvmExecutablePath(version, LlvmConstants.Llvm + version);
-      var uri = string.Concat(LlvmConstants.LlvmReleasesUri, "/", version, "/", LlvmConstants.Llvm, "-", version, GetOperatingSystemParamaters());
+      var uri = string.Empty;
+
+      if(version == "8.0.1")
+      {
+        uri = llvmUri.GetGitHubUri(version);
+      }
+      else
+      {
+        uri = llvmUri.GetDefaultUri(version);
+      }
+
 
       try
       {
@@ -235,11 +246,6 @@ namespace ClangPowerTools.MVVM.Controllers
     private bool DoesUninstallExist(string version)
     {
       return IsVersionExeOnDisk(version, LlvmConstants.Uninstall);
-    }
-
-    private string GetOperatingSystemParamaters()
-    {
-      return Environment.Is64BitOperatingSystem ? LlvmConstants.Os64Paramater : LlvmConstants.Os32Paramater;
     }
 
     #endregion
