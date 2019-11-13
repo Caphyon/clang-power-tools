@@ -22,6 +22,7 @@ namespace ClangPowerTools.MVVM.Controllers
     public event OnOperationCanceled onOperationCanceldEvent;
 
     private Process process;
+    private readonly string versionAlternateUri = "8.0.1";
     private readonly SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
     private readonly FileSystem fileSystem = new FileSystem();
 
@@ -51,8 +52,19 @@ namespace ClangPowerTools.MVVM.Controllers
     {
       CreateVersionDirectory(version);
 
+      var llvmUri = new LlvmUri();
       var executablePath = settingsPathBuilder.GetLlvmExecutablePath(version, LlvmConstants.Llvm + version);
-      var uri = string.Concat(LlvmConstants.LlvmReleasesUri, "/", version, "/", LlvmConstants.Llvm, "-", version, GetOperatingSystemParamaters());
+      var uri = string.Empty;
+
+      if(version == versionAlternateUri)
+      {
+        uri = llvmUri.GetGitHubUri(version);
+      }
+      else
+      {
+        uri = llvmUri.GetDefaultUri(version);
+      }
+
 
       try
       {
@@ -235,11 +247,6 @@ namespace ClangPowerTools.MVVM.Controllers
     private bool DoesUninstallExist(string version)
     {
       return IsVersionExeOnDisk(version, LlvmConstants.Uninstall);
-    }
-
-    private string GetOperatingSystemParamaters()
-    {
-      return Environment.Is64BitOperatingSystem ? LlvmConstants.Os64Paramater : LlvmConstants.Os32Paramater;
     }
 
     #endregion
