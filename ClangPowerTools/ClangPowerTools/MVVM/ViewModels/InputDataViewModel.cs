@@ -23,7 +23,7 @@ namespace ClangPowerTools
     #endregion
 
     #region Properties
-    public ObservableCollection<string> Inputs = new ObservableCollection<string>();
+    public ObservableCollection<string> Inputs { get; set; } = new ObservableCollection<string>();
 
     public ICommand OkCommand
     {
