@@ -2,15 +2,14 @@
 using ClangPowerTools.Views;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class InputDataViewModel : INotifyPropertyChanged
+  public class InputDataViewModel
   {
     #region Members
-    public event PropertyChangedEventHandler PropertyChanged;
-
     private InputDataView inputDataView;
     private ICommand okCommand;
     #endregion
@@ -18,12 +17,12 @@ namespace ClangPowerTools
     #region Constructor
     public InputDataViewModel(string content)
     {
-      //TextBoxInput = content;
+      Inputs = new ObservableCollection<string>(content.Split(';').ToList());
     }
     #endregion
 
     #region Properties
-    public ObservableCollection<string> Inputs { get; set; } = new ObservableCollection<string>();
+    public ObservableCollection<string> Inputs { get; set; }
 
     public ICommand OkCommand
     {
