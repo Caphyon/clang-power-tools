@@ -13,6 +13,7 @@
   d:DesignHeight="250"
   d:DesignWidth="300"
   Background="WhiteSmoke"
+  Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ShowInTaskbar="False"
   WindowStartupLocation="CenterScreen"
   mc:Ignorable="d">
