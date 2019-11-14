@@ -15,12 +15,56 @@
   Background="WhiteSmoke"
   ShowInTaskbar="False"
   WindowStartupLocation="CenterScreen"
-  WindowStyle="ToolWindow"
   mc:Ignorable="d">
+
+  <!--  User control static resources  -->
+  <Window.Resources>
+
+    <Style TargetType="{x:Type Label}">
+      <Setter Property="FontFamily" Value="Segoe UI" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="FontSize" Value="15" />
+    </Style>
+
+    <Style TargetType="{x:Type ListView}">
+      <Setter Property="FontFamily" Value="Segoe UI" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="FontSize" Value="15" />
+    </Style>
+
+    <Style x:Key="ProgressBarStyle" TargetType="ProgressBar">
+      <Setter Property="Width" Value="475" />
+      <Setter Property="Height" Value="6" />
+      <Setter Property="VerticalAlignment" Value="Center" />
+      <Setter Property="Background" Value="#BCBAC1" />
+      <Setter Property="Foreground" Value="#852012" />
+      <Setter Property="Margin" Value="0,0,15,0" />
+    </Style>
+
+    <Style x:Key="HyperlinkStyle" TargetType="Hyperlink">
+      <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+      <Setter Property="Foreground" Value="#852012" />
+      <Setter Property="TextBlock.TextDecorations" Value="{x:Null}" />
+      <Style.Triggers>
+        <Trigger Property="IsMouseOver" Value="True">
+          <Setter Property="Foreground" Value="#FFBF8880" />
+          <Setter Property="TextBlock.TextDecorations" Value="Underline" />
+        </Trigger>
+        <DataTrigger Binding="{Binding CanExecuteCommand}" Value="False">
+          <Setter Property="Foreground" Value="#BCBAC1" />
+        </DataTrigger>
+      </Style.Triggers>
+    </Style>
+  </Window.Resources>
+
+
+  <!--  Main grid  -->
   <Grid>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="91*" />
-      <ColumnDefinition Width="426*" />
+      <ColumnDefinition Width="15" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="15" />
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
@@ -29,34 +73,73 @@
       <RowDefinition Height="45" />
     </Grid.RowDefinitions>
 
-    <Label
+
+    <!--  Input field  -->
+    <TextBox
       Grid.Row="0"
       Grid.ColumnSpan="2"
-      Margin="10,5,10,5">
-      Use &quot;;&quot; to separate your input strings
-    </Label>
+      Margin="10,5,10,5" />
 
-    <TextBox
-      Name="TextBoxInput"
+    <Button
+      Grid.Row="0"
+      Grid.Column="2"
+      Content="Add" />
+
+
+    <!--  Inputs  -->
+    <ListView
+      x:Name="VersionsList"
       Grid.Row="1"
-      Grid.ColumnSpan="2"
-      Margin="15,0,15,0"
-      AcceptsReturn="True"
-      HorizontalScrollBarVisibility="Visible"
-      Text="{Binding TextBoxInput}"
-      VerticalScrollBarVisibility="Visible" />
+      Grid.ColumnSpan="3"
+      Background="White"
+      Focusable="True"
+      ItemsSource="{Binding Inputs}"
+      ScrollViewer.CanContentScroll="True"
+      SelectionMode="Single">
 
-    <GridSplitter
-      Grid.Row="2"
-      Grid.ColumnSpan="2"
-      Height="4"
-      HorizontalAlignment="Stretch"
-      Panel.ZIndex="100"
-      ResizeDirection="Rows" />
+      <ListView.ItemContainerStyle>
+        <Style TargetType="ListViewItem">
+          <Setter Property="Background" Value="Transparent" />
+          <Setter Property="BorderBrush" Value="WhiteSmoke" />
+          <Setter Property="BorderThickness" Value="2" />
+          <Setter Property="Focusable" Value="False" />
+        </Style>
+      </ListView.ItemContainerStyle>
+
+      <ListView.ItemTemplate>
+        <DataTemplate>
+          <Grid>
+
+            <!--  Version name and action  -->
+            <TextBlock
+              Grid.Column="1"
+              Padding="0,0,200,0"
+              VerticalAlignment="Center"
+              Text="{Binding Version, StringFormat='LLVM {0}'}" />
+            <!--  Download button  -->
+            <Button
+              Grid.Column="2"
+              Width="80"
+              Height="20"
+              Margin="490,0,0,0"
+              Content="Edit"
+              FontSize="13" />
+            <Button
+              Grid.Column="2"
+              Width="80"
+              Height="20"
+              Margin="490,0,0,0"
+              Content="Edit"
+              FontSize="13" />
+
+          </Grid>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+    </ListView>
 
     <Border
       Grid.Row="3"
-      Grid.ColumnSpan="2"
+      Grid.Column="2"
       BorderThickness="1">
       <Grid>
         <Button
