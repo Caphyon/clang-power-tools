@@ -29,7 +29,8 @@ namespace ClangPowerTools
     {
       InputDataViewModel inputDataViewModel = new InputDataViewModel(content);
       inputDataViewModel.ShowViewDialog();
-      string input = inputDataViewModel.TextBoxInput;
+      string input = string.Empty;
+      //TODO input = inputDataViewModel.TextBoxInput;
 
       if (string.IsNullOrEmpty(input))
       {
