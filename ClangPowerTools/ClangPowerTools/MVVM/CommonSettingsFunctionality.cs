@@ -5,7 +5,8 @@ namespace ClangPowerTools
 {
   public class CommonSettingsFunctionality
   {
-    #region Public Methods
+    #region Methods
+
     protected string OpenFile(string fileName, string defaultExt, string filter)
     {
       OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -30,7 +31,7 @@ namespace ClangPowerTools
       InputDataViewModel inputDataViewModel = new InputDataViewModel(content);
       inputDataViewModel.ShowViewDialog();
       string input = string.Join(";",  inputDataViewModel.Inputs);
-      //TODO check last ;
+      //TODO check last ; and get string from model
 
       return input;
     }
@@ -66,6 +67,7 @@ namespace ClangPowerTools
         }
       }
     }
+
     #endregion
   }
 }
