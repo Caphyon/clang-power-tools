@@ -77,7 +77,7 @@
       Grid.Row="0"
       Grid.ColumnSpan="2"
       Margin="10,5,10,5"
-      Text="{Binding Input}" />
+      Text="{Binding InputToAdd}" />
     <Button
       Grid.Row="0"
       Grid.Column="2"
@@ -108,25 +108,19 @@
         <DataTemplate>
           <Grid>
             <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="350" />
-              <ColumnDefinition Width="60" />
+              <ColumnDefinition Width="410" />
               <ColumnDefinition Width="60" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
               <RowDefinition Height="38" />
             </Grid.RowDefinitions>
-            <!--  Version name and action  -->
-            <TextBlock
+            <TextBox
+              x:Name="InputField"
               Grid.Column="0"
               VerticalAlignment="Center"
-              Text="{Binding BindsDirectlyToSource=True}" />
-            <!--  Download button  -->
-            <Button
-              Grid.Column="1"
-              Width="50"
-              Height="20"
-              Content="Edit"
-              FontSize="13" />
+              BorderThickness="0"
+              IsReadOnly="{Binding IsReadOnly}"
+              Text="{Binding InputData}" />
             <Button
               Grid.Column="2"
               Width="50"

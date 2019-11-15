@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.Views;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -10,37 +11,42 @@ namespace ClangPowerTools
   public class InputDataViewModel : INotifyPropertyChanged
   {
     #region Members
+
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private string input;
+    private string inputToAdd;
     private InputDataView inputDataView;
     private ICommand addCommand;
+
     #endregion
 
     #region Constructor
+
     public InputDataViewModel(string content)
     {
-      Inputs = new ObservableCollection<string>(content.Split(';').ToList());
+      CreateInputsCollection(content);
     }
 
     public InputDataViewModel() { }
+
     #endregion
 
     #region Properties
-    public string Input
+
+    public string InputToAdd
     {
       get
       {
-        return input;
+        return inputToAdd;
       }
       set
       {
-        input = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Input"));
+        inputToAdd = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InputToAdd"));
       }
     }
 
-    public ObservableCollection<string> Inputs { get; set; }
+    public ObservableCollection<InputDataModel> Inputs { get; set; } = new ObservableCollection<InputDataModel>();
 
     public ICommand AddCommand
     {
@@ -54,9 +60,11 @@ namespace ClangPowerTools
         return true;
       }
     }
+
     #endregion
 
     #region Methods
+
     public void ShowViewDialog()
     {
       inputDataView = new InputDataView(this);
@@ -71,9 +79,19 @@ namespace ClangPowerTools
 
     private void AddInput()
     {
-      if (string.IsNullOrEmpty(input) == false)
-        Inputs.Add(input);
+      if (string.IsNullOrEmpty(inputToAdd) == false)
+        Inputs.Add(new InputDataModel(inputToAdd));
     }
+
+    private void CreateInputsCollection(string content)
+    {
+      var splitContent = content.Split(';').ToList();
+      foreach (var item in splitContent)
+      {
+        Inputs.Add(new InputDataModel(item));
+      }
+    }
+
     #endregion
   }
 }
