@@ -32,11 +32,6 @@ namespace ClangPowerTools
       string input = string.Join(";",  inputDataViewModel.Inputs);
       //TODO check last ;
 
-      if (string.IsNullOrEmpty(input))
-      {
-        return content;
-      }
-
       return input;
     }
 
