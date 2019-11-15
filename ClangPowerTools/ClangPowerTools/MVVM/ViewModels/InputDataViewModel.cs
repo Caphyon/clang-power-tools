@@ -7,11 +7,14 @@ using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class InputDataViewModel
+  public class InputDataViewModel : INotifyPropertyChanged
   {
     #region Members
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    private string input;
     private InputDataView inputDataView;
-    private ICommand okCommand;
+    private ICommand addCommand;
     #endregion
 
     #region Constructor
@@ -19,14 +22,29 @@ namespace ClangPowerTools
     {
       Inputs = new ObservableCollection<string>(content.Split(';').ToList());
     }
+
+    public InputDataViewModel() { }
     #endregion
 
     #region Properties
+    public string Input
+    {
+      get
+      {
+        return input;
+      }
+      set
+      {
+        input = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Input"));
+      }
+    }
+
     public ObservableCollection<string> Inputs { get; set; }
 
-    public ICommand OkCommand
+    public ICommand AddCommand
     {
-      get => okCommand ?? (okCommand = new RelayCommand(() => ClickOKButton(), () => CanExecute));
+      get => addCommand ?? (addCommand = new RelayCommand(() => AddInput(), () => CanExecute));
     }
 
     public bool CanExecute
@@ -45,9 +63,16 @@ namespace ClangPowerTools
       inputDataView.ShowDialog();
     }
 
-    private void ClickOKButton()
+    public void DeleteInput(int index)
     {
-      inputDataView.Close();
+      if (index >= 0)
+        Inputs.RemoveAt(index);
+    }
+
+    private void AddInput()
+    {
+      if (string.IsNullOrEmpty(input) == false)
+        Inputs.Add(input);
     }
     #endregion
   }

@@ -76,19 +76,21 @@
     <TextBox
       Grid.Row="0"
       Grid.ColumnSpan="2"
-      Margin="10,5,10,5" />
+      Margin="10,5,10,5"
+      Text="{Binding Input}" />
     <Button
       Grid.Row="0"
       Grid.Column="2"
+      Command="{Binding AddCommand}"
       Content="Add" />
 
     <!--  Inputs  -->
     <ListView
+      x:Name="InputsList"
       Grid.Row="1"
       Grid.Column="1"
       Grid.ColumnSpan="2"
       Background="White"
-      Focusable="True"
       ItemsSource="{Binding Inputs}"
       ScrollViewer.CanContentScroll="True"
       SelectionMode="Single">
@@ -97,8 +99,8 @@
         <Style TargetType="ListViewItem">
           <Setter Property="Background" Value="Transparent" />
           <Setter Property="BorderBrush" Value="WhiteSmoke" />
-          <Setter Property="BorderThickness" Value="2" />
-          <Setter Property="Focusable" Value="False" />
+          <Setter Property="BorderThickness" Value="1" />
+          <Setter Property="Focusable" Value="True" />
         </Style>
       </ListView.ItemContainerStyle>
 
@@ -129,6 +131,7 @@
               Grid.Column="2"
               Width="50"
               Height="20"
+              Click="DeleteButton"
               Content="Delete"
               FontSize="13" />
           </Grid>
