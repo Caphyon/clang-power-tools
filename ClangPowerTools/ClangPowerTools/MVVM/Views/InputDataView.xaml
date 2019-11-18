@@ -13,7 +13,7 @@
   d:DesignHeight="250"
   d:DesignWidth="300"
   Background="WhiteSmoke"
-  Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
+  Icon="/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ShowInTaskbar="False"
   WindowStartupLocation="CenterScreen"
   mc:Ignorable="d">
@@ -67,7 +67,35 @@
       Margin="14,15,5,10"
       VerticalContentAlignment="Center"
       FontSize="15"
-      Text="{Binding InputToAdd}" />
+      Text="{Binding InputToAdd}">
+      <TextBox.Style>
+        <Style xmlns:sys="clr-namespace:System;assembly=mscorlib" TargetType="TextBox">
+          <Style.Resources>
+            <VisualBrush
+              x:Key="CueBannerBrush"
+              AlignmentX="Left"
+              AlignmentY="Center"
+              Stretch="None">
+              <VisualBrush.Visual>
+                <Label Content="Add your input" Foreground="LightGray" />
+              </VisualBrush.Visual>
+            </VisualBrush>
+          </Style.Resources>
+          <Style.Triggers>
+            <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+              <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+            </Trigger>
+            <Trigger Property="Text" Value="{x:Null}">
+              <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+            </Trigger>
+            <Trigger Property="IsKeyboardFocused" Value="True">
+              <Setter Property="Background" Value="White" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </TextBox.Style>
+    </TextBox>
+
     <Button
       Grid.Row="0"
       Grid.Column="2"
