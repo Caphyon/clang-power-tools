@@ -14,6 +14,7 @@ namespace ClangPowerTools
 
     public event PropertyChangedEventHandler PropertyChanged;
 
+    private ObservableCollection<InputDataModel> inputs = new ObservableCollection<InputDataModel>();
     private string inputToAdd;
     private InputDataView inputDataView;
     private ICommand addCommand;
@@ -46,7 +47,12 @@ namespace ClangPowerTools
       }
     }
 
-    public ObservableCollection<InputDataModel> Inputs { get; set; } = new ObservableCollection<InputDataModel>();
+    public ObservableCollection<InputDataModel> Inputs
+    {
+      get { return inputs }
+      set { inputs = value; }
+    }
+
 
     public ICommand AddCommand
     {
@@ -74,13 +80,13 @@ namespace ClangPowerTools
     public void DeleteInput(int index)
     {
       if (index >= 0)
-        Inputs.RemoveAt(index);
+        inputs.RemoveAt(index);
     }
 
     private void AddInput()
     {
       if (string.IsNullOrEmpty(inputToAdd) == false)
-        Inputs.Add(new InputDataModel(inputToAdd));
+        inputs.Add(new InputDataModel(inputToAdd));
     }
 
     private void CreateInputsCollection(string content)
@@ -88,7 +94,7 @@ namespace ClangPowerTools
       var splitContent = content.Split(';').ToList();
       foreach (var item in splitContent)
       {
-        Inputs.Add(new InputDataModel(item));
+        inputs.Add(new InputDataModel(item));
       }
     }
 
