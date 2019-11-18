@@ -49,7 +49,7 @@ namespace ClangPowerTools
 
     public ObservableCollection<InputDataModel> Inputs
     {
-      get { return inputs }
+      get { return inputs; }
       set { inputs = value; }
     }
 

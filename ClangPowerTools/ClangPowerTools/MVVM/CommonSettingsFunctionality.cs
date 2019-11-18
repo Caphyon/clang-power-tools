@@ -77,7 +77,8 @@ namespace ClangPowerTools
 
       foreach (var item in models)
       {
-        sb.Append(item.InputData).Append(";");
+        if (string.IsNullOrWhiteSpace(item.InputData) == false)
+          sb.Append(item.InputData).Append(";");
       }
       sb.Length--;
 
