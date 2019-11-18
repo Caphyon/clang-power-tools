@@ -285,6 +285,7 @@
     <Resource Include="Resources\CleanSearchIcon.PNG" />
     <Resource Include="Resources\CompileIcon.png" />
     <Resource Include="Resources\SearchIcon.PNG" />
+    <Resource Include="Resources\AddInput.png" />
     <Content Include="Resources\CPTLogoManageExtensionVS.png">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -486,6 +487,8 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\SettingsLLVM.png" />
+    <Resource Include="Resources\RemoveInputHover.png" />
+    <Resource Include="Resources\RemoveInputIdle.png" />
     <Content Include="Resources\RunPowerShellCommandPackage.ico">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
