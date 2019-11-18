@@ -33,29 +33,22 @@
       <Setter Property="FontSize" Value="15" />
     </Style>
 
-    <Style x:Key="ProgressBarStyle" TargetType="ProgressBar">
-      <Setter Property="Width" Value="475" />
-      <Setter Property="Height" Value="6" />
-      <Setter Property="VerticalAlignment" Value="Center" />
-      <Setter Property="Background" Value="#BCBAC1" />
-      <Setter Property="Foreground" Value="#852012" />
-      <Setter Property="Margin" Value="0,0,15,0" />
+
+    <Style x:Key="MyButtonStyle" TargetType="Button">
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Grid Background="{TemplateBinding Background}">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Grid>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
     </Style>
 
-    <Style x:Key="HyperlinkStyle" TargetType="Hyperlink">
-      <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-      <Setter Property="Foreground" Value="#852012" />
-      <Setter Property="TextBlock.TextDecorations" Value="{x:Null}" />
-      <Style.Triggers>
-        <Trigger Property="IsMouseOver" Value="True">
-          <Setter Property="Foreground" Value="#FFBF8880" />
-          <Setter Property="TextBlock.TextDecorations" Value="Underline" />
-        </Trigger>
-        <DataTrigger Binding="{Binding CanExecuteCommand}" Value="False">
-          <Setter Property="Foreground" Value="#BCBAC1" />
-        </DataTrigger>
-      </Style.Triggers>
-    </Style>
+    <ImageBrush x:Key="add_input" ImageSource="/ClangPowerTools;component/Resources/AddInput.png" />
+    <ImageBrush x:Key="remove_normal" ImageSource="/ClangPowerTools;component/Resources/RemoveInputIdle.png" />
+    <ImageBrush x:Key="remove_hover" ImageSource="/ClangPowerTools;component/Resources/RemoveInputHover.png" />
   </Window.Resources>
 
   <!--  Main grid  -->
@@ -76,13 +69,35 @@
     <TextBox
       Grid.Row="0"
       Grid.ColumnSpan="2"
-      Margin="10,5,10,5"
+      Height="32"
+      Margin="14,5,0,5"
       Text="{Binding InputToAdd}" />
     <Button
       Grid.Row="0"
       Grid.Column="2"
-      Command="{Binding AddCommand}"
-      Content="Add" />
+      Width="56"
+      Height="32"
+      Command="{Binding AddCommand}">
+      <Button.Style>
+        <Style TargetType="{x:Type Button}">
+          <Setter Property="Background" Value="{StaticResource add_input}" />
+          <Setter Property="Template">
+            <Setter.Value>
+              <ControlTemplate TargetType="Button">
+                <Grid Background="{TemplateBinding Background}">
+                  <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Grid>
+              </ControlTemplate>
+            </Setter.Value>
+          </Setter>
+          <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+              <Setter Property="Background" Value="Red" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </Button.Style>
+    </Button>
 
     <!--  Inputs  -->
     <ListView
@@ -123,16 +138,34 @@
               Text="{Binding InputData}" />
             <Button
               Grid.Column="2"
-              Width="50"
+              Width="20"
               Height="20"
-              Click="DeleteButton"
-              Content="Delete"
-              FontSize="13" />
+              BorderThickness="0"
+              Click="DeleteButton">
+              <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                  <Setter Property="Background" Value="{StaticResource remove_normal}" />
+                  <Setter Property="Template">
+                    <Setter.Value>
+                      <ControlTemplate TargetType="Button">
+                        <Grid Background="{TemplateBinding Background}">
+                          <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Grid>
+                      </ControlTemplate>
+                    </Setter.Value>
+                  </Setter>
+                  <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                      <Setter Property="Background" Value="{StaticResource remove_hover}" />
+                    </Trigger>
+                  </Style.Triggers>
+                </Style>
+              </Button.Style>
+            </Button>
           </Grid>
         </DataTemplate>
       </ListView.ItemTemplate>
     </ListView>
-
   </Grid>
 </Window>
 
