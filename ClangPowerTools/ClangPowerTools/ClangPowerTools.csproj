@@ -285,7 +285,8 @@
     <Resource Include="Resources\CleanSearchIcon.PNG" />
     <Resource Include="Resources\CompileIcon.png" />
     <Resource Include="Resources\SearchIcon.PNG" />
-    <Resource Include="Resources\AddInput.png" />
+    <Resource Include="Resources\AddInputIdle.png" />
+    <Resource Include="Resources\AddInputHover.png" />
     <Content Include="Resources\CPTLogoManageExtensionVS.png">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
