@@ -86,7 +86,10 @@ namespace ClangPowerTools
     private void AddInput()
     {
       if (string.IsNullOrEmpty(inputToAdd) == false)
+      {
         inputs.Add(new InputDataModel(inputToAdd));
+        InputToAdd = string.Empty;
+      }
     }
 
     private void CreateInputsCollection(string content)
