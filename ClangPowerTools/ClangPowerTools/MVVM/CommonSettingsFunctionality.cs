@@ -80,7 +80,9 @@ namespace ClangPowerTools
         if (string.IsNullOrWhiteSpace(item.InputData) == false)
           sb.Append(item.InputData).Append(";");
       }
-      sb.Length--;
+
+      if (sb.Length > 0)
+        sb.Length--;
 
       return sb.ToString();
     }
