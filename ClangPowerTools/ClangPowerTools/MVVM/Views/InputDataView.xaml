@@ -77,7 +77,7 @@
               AlignmentY="Center"
               Stretch="None">
               <VisualBrush.Visual>
-                <Label Content="Add your input" Foreground="LightGray" />
+                <Label Content="Add your input" Foreground="Gray" />
               </VisualBrush.Visual>
             </VisualBrush>
           </Style.Resources>
