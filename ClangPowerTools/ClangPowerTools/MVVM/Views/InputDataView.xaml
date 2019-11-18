@@ -5,7 +5,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  Title="Settings Input"
+  Title="Input"
   Width="525"
   Height="400"
   d:DataContext="{d:DesignInstance local:InputDataViewModel,
@@ -24,7 +24,7 @@
     <Style TargetType="{x:Type Label}">
       <Setter Property="FontFamily" Value="Segoe UI" />
       <Setter Property="FontWeight" Value="SemiBold" />
-      <Setter Property="FontSize" Value="15" />
+      <Setter Property="FontSize" Value="13" />
     </Style>
 
     <Style TargetType="{x:Type ListView}">
@@ -55,7 +55,7 @@
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="15" />
-      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="420" />
       <ColumnDefinition Width="*" />
       <ColumnDefinition Width="15" />
     </Grid.ColumnDefinitions>
@@ -70,13 +70,16 @@
       Grid.Row="0"
       Grid.ColumnSpan="2"
       Height="32"
-      Margin="14,5,0,5"
+      Margin="14,15,5,10"
+      VerticalContentAlignment="Center"
+      FontSize="15"
       Text="{Binding InputToAdd}" />
     <Button
       Grid.Row="0"
       Grid.Column="2"
       Width="56"
       Height="32"
+      Margin="0,5,0,0"
       Command="{Binding AddCommand}">
       <Button.Style>
         <Style TargetType="{x:Type Button}">
@@ -123,23 +126,24 @@
         <DataTemplate>
           <Grid>
             <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="410" />
-              <ColumnDefinition Width="60" />
+              <ColumnDefinition Width="400" />
+              <ColumnDefinition Width="45" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
               <RowDefinition Height="38" />
             </Grid.RowDefinitions>
             <TextBox
               x:Name="InputField"
-              Grid.Column="0"
               VerticalAlignment="Center"
               BorderThickness="0"
+              FontSize="13"
               IsReadOnly="{Binding IsReadOnly}"
               Text="{Binding InputData}" />
             <Button
               Grid.Column="2"
               Width="20"
               Height="20"
+              Margin="5,0,0,0"
               BorderThickness="0"
               Click="DeleteButton">
               <Button.Style>
