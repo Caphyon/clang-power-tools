@@ -1,5 +1,9 @@
-﻿using Microsoft.Win32;
+﻿using ClangPowerTools.MVVM.Models;
+using Microsoft.Win32;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace ClangPowerTools
 {
@@ -24,16 +28,6 @@ namespace ClangPowerTools
         path = filename;
       }
       return path;
-    }
-
-    protected string OpenContentDialog(string content)
-    {
-      InputDataViewModel inputDataViewModel = new InputDataViewModel(content);
-      inputDataViewModel.ShowViewDialog();
-      string input = string.Join(";",  inputDataViewModel.Inputs);
-      //TODO check last ; and get string from model
-
-      return input;
     }
 
     protected string SaveFile(string fileName, string defaultExt, string filter)
@@ -66,6 +60,28 @@ namespace ClangPowerTools
           sw.Write(content);
         }
       }
+    }
+
+    protected string OpenContentDialog(string content)
+    {
+      InputDataViewModel inputDataViewModel = new InputDataViewModel(content);
+      inputDataViewModel.ShowViewDialog();
+      string input = CreateInput(inputDataViewModel.Inputs.ToList());
+
+      return input;
+    }
+
+    private string CreateInput(List<InputDataModel> models)
+    {
+      StringBuilder sb = new StringBuilder();
+
+      foreach (var item in models)
+      {
+        sb.Append(item.InputData).Append(";");
+      }
+      sb.Length--;
+
+      return sb.ToString();
     }
 
     #endregion
