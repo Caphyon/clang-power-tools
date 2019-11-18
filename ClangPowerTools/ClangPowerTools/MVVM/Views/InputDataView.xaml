@@ -21,18 +21,11 @@
   <!--  User control static resources  -->
   <Window.Resources>
 
-    <Style TargetType="{x:Type Label}">
+    <Style TargetType="{x:Type ListView}">
       <Setter Property="FontFamily" Value="Segoe UI" />
       <Setter Property="FontWeight" Value="SemiBold" />
       <Setter Property="FontSize" Value="13" />
     </Style>
-
-    <Style TargetType="{x:Type ListView}">
-      <Setter Property="FontFamily" Value="Segoe UI" />
-      <Setter Property="FontWeight" Value="SemiBold" />
-      <Setter Property="FontSize" Value="15" />
-    </Style>
-
 
     <Style x:Key="MyButtonStyle" TargetType="Button">
       <Setter Property="Template">
@@ -46,8 +39,9 @@
       </Setter>
     </Style>
 
-    <ImageBrush x:Key="add_input" ImageSource="/ClangPowerTools;component/Resources/AddInput.png" />
-    <ImageBrush x:Key="remove_normal" ImageSource="/ClangPowerTools;component/Resources/RemoveInputIdle.png" />
+    <ImageBrush x:Key="add_input" ImageSource="/ClangPowerTools;component/Resources/AddInputIdle.png" />
+    <ImageBrush x:Key="add_input_hover" ImageSource="/ClangPowerTools;component/Resources/AddInputHover.png" />
+    <ImageBrush x:Key="remove" ImageSource="/ClangPowerTools;component/Resources/RemoveInputIdle.png" />
     <ImageBrush x:Key="remove_hover" ImageSource="/ClangPowerTools;component/Resources/RemoveInputHover.png" />
   </Window.Resources>
 
@@ -95,7 +89,7 @@
           </Setter>
           <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-              <Setter Property="Background" Value="Red" />
+              <Setter Property="Background" Value="{StaticResource add_input_hover}" />
             </Trigger>
           </Style.Triggers>
         </Style>
@@ -136,7 +130,6 @@
               x:Name="InputField"
               VerticalAlignment="Center"
               BorderThickness="0"
-              FontSize="13"
               IsReadOnly="{Binding IsReadOnly}"
               Text="{Binding InputData}" />
             <Button
@@ -148,7 +141,7 @@
               Click="DeleteButton">
               <Button.Style>
                 <Style TargetType="{x:Type Button}">
-                  <Setter Property="Background" Value="{StaticResource remove_normal}" />
+                  <Setter Property="Background" Value="{StaticResource remove}" />
                   <Setter Property="Template">
                     <Setter.Value>
                       <ControlTemplate TargetType="Button">
@@ -172,4 +165,3 @@
     </ListView>
   </Grid>
 </Window>
-
