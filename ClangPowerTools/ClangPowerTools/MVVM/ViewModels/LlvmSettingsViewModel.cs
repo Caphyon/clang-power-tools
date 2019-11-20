@@ -101,6 +101,7 @@ namespace ClangPowerTools
     private void InstallFinished(object sender, EventArgs e)
     {
       ResetButtonsState();
+      VersionUsed = llvmController.llvmModel.Version;
       UIUpdater.InvokeAsync(InsertVersionToInstalledLlvms).SafeFireAndForget();
     }
 
@@ -112,6 +113,10 @@ namespace ClangPowerTools
       UIUpdater.InvokeAsync(new Action(() =>
       {
         InstalledLlvms.Remove(llvmController.llvmModel.Version);
+        if (InstalledLlvms.Count > 0 && InstalledLlvms.Contains(VersionUsed) == false)
+        {
+          VersionUsed = InstalledLlvms[0];
+        }
       })).SafeFireAndForget();
     }
 
@@ -145,7 +150,6 @@ namespace ClangPowerTools
     private void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
     {
       llvmController.llvmModel.DownloadProgress = e.ProgressPercentage;
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedLlvm"));
     }
 
     private void ResetVersionUsedIfRequired()
@@ -179,7 +183,8 @@ namespace ClangPowerTools
 
     private void ResetButtonsState()
     {
-      foreach (var item in llvms) item.CanExecuteCommand = true;
+      foreach (var item in llvms) 
+        item.CanExecuteCommand = true;
     }
 
     #endregion
