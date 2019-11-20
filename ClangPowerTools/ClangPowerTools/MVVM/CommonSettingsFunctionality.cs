@@ -1,11 +1,16 @@
-﻿using Microsoft.Win32;
+﻿using ClangPowerTools.MVVM.Models;
+using Microsoft.Win32;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 
 namespace ClangPowerTools
 {
   public class CommonSettingsFunctionality
   {
-    #region Public Methods
+    #region Methods
+
     protected string OpenFile(string fileName, string defaultExt, string filter)
     {
       OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -23,20 +28,6 @@ namespace ClangPowerTools
         path = filename;
       }
       return path;
-    }
-
-    protected string OpenContentDialog(string content)
-    {
-      InputDataViewModel inputDataViewModel = new InputDataViewModel(content);
-      inputDataViewModel.ShowViewDialog();
-      string input = inputDataViewModel.TextBoxInput;
-
-      if (string.IsNullOrEmpty(input))
-      {
-        return content;
-      }
-
-      return input;
     }
 
     protected string SaveFile(string fileName, string defaultExt, string filter)
@@ -70,6 +61,32 @@ namespace ClangPowerTools
         }
       }
     }
+
+    protected string OpenContentDialog(string content)
+    {
+      InputDataViewModel inputDataViewModel = new InputDataViewModel(content);
+      inputDataViewModel.ShowViewDialog();
+      string input = CreateInput(inputDataViewModel.Inputs.ToList());
+
+      return input;
+    }
+
+    private string CreateInput(List<InputDataModel> models)
+    {
+      StringBuilder sb = new StringBuilder();
+
+      foreach (var item in models)
+      {
+        if (string.IsNullOrWhiteSpace(item.InputData) == false)
+          sb.Append(item.InputData).Append(";");
+      }
+
+      if (sb.Length > 0)
+        sb.Length--;
+
+      return sb.ToString();
+    }
+
     #endregion
   }
 }

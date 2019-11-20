@@ -84,7 +84,7 @@
         <Style TargetType="ListViewItem">
           <Setter Property="Background" Value="Transparent" />
           <Setter Property="BorderBrush" Value="WhiteSmoke" />
-          <Setter Property="BorderThickness" Value="2" />
+          <Setter Property="BorderThickness" Value="1" />
           <Setter Property="Focusable" Value="False" />
         </Style>
       </ListView.ItemContainerStyle>

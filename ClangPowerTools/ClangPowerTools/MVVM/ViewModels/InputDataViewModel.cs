@@ -1,6 +1,9 @@
 ﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.Views;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Input;
 
 namespace ClangPowerTools
@@ -8,37 +11,47 @@ namespace ClangPowerTools
   public class InputDataViewModel : INotifyPropertyChanged
   {
     #region Members
+
     public event PropertyChangedEventHandler PropertyChanged;
 
+    private string inputToAdd;
     private InputDataView inputDataView;
-    private string textBoxInput = string.Empty;
-    private ICommand okCommand;
+    private ICommand addCommand;
+
     #endregion
 
     #region Constructor
+
     public InputDataViewModel(string content)
     {
-      TextBoxInput = content;
+      CreateInputsCollection(content);
     }
+
+    public InputDataViewModel() { }
+
     #endregion
 
     #region Properties
-    public string TextBoxInput
+
+    public string InputToAdd
     {
       get
       {
-        return textBoxInput;
+        return inputToAdd;
       }
       set
       {
-        textBoxInput = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TextBoxInput"));
+        inputToAdd = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InputToAdd"));
       }
     }
 
-    public ICommand OkCommand
+    public ObservableCollection<InputDataModel> Inputs { get; set; } = new ObservableCollection<InputDataModel>();
+
+
+    public ICommand AddCommand
     {
-      get => okCommand ?? (okCommand = new RelayCommand(() => ClickOKButton(), () => CanExecute));
+      get => addCommand ?? (addCommand = new RelayCommand(() => AddInput(), () => CanExecute));
     }
 
     public bool CanExecute
@@ -48,19 +61,43 @@ namespace ClangPowerTools
         return true;
       }
     }
+
     #endregion
 
     #region Methods
+
     public void ShowViewDialog()
     {
       inputDataView = new InputDataView(this);
       inputDataView.ShowDialog();
     }
 
-    private void ClickOKButton()
+    public void DeleteInput(int index)
     {
-      inputDataView.Close();
+      if (index >= 0)
+        Inputs.RemoveAt(index);
     }
+
+    private void AddInput()
+    {
+      if (string.IsNullOrEmpty(inputToAdd) == false)
+      {
+        Inputs.Add(new InputDataModel(inputToAdd));
+        InputToAdd = string.Empty;
+      }
+    }
+
+    private void CreateInputsCollection(string content)
+    {
+      if (string.IsNullOrWhiteSpace(content)) return;
+
+      var splitContent = content.Split(';').ToList();
+      foreach (var item in splitContent)
+      {
+        Inputs.Add(new InputDataModel(item));
+      }
+    }
+
     #endregion
   }
 }
