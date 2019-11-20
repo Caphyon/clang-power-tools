@@ -101,6 +101,7 @@ namespace ClangPowerTools
     private void InstallFinished(object sender, EventArgs e)
     {
       ResetButtonsState();
+      VersionUsed = llvmController.llvmModel.Version;
       UIUpdater.InvokeAsync(InsertVersionToInstalledLlvms).SafeFireAndForget();
     }
 
