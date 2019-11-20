@@ -7,11 +7,10 @@ namespace ClangPowerTools.Views
   /// </summary>
   public partial class InputDataView : Window
   {
-    private InputDataViewModel inputDataViewModel = new InputDataViewModel();
+    private readonly InputDataViewModel inputDataViewModel = new InputDataViewModel();
     public InputDataView(InputDataViewModel inputDataViewModel)
     {
       InitializeComponent();
-      //TODO might remove inputDataViewModel paramater from constructor
       this.inputDataViewModel = inputDataViewModel;
       DataContext = inputDataViewModel;
       Owner = SettingsProvider.SettingsView;
