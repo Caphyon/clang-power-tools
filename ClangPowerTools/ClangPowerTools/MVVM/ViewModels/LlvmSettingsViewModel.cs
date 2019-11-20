@@ -146,7 +146,6 @@ namespace ClangPowerTools
     private void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
     {
       llvmController.llvmModel.DownloadProgress = e.ProgressPercentage;
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedLlvm"));
     }
 
     private void ResetVersionUsedIfRequired()
