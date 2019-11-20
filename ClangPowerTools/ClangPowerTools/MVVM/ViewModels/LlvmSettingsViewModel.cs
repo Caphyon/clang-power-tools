@@ -113,6 +113,10 @@ namespace ClangPowerTools
       UIUpdater.InvokeAsync(new Action(() =>
       {
         InstalledLlvms.Remove(llvmController.llvmModel.Version);
+        if (InstalledLlvms.Count > 0 && InstalledLlvms.Contains(VersionUsed) == false)
+        {
+          VersionUsed = InstalledLlvms[0];
+        }
       })).SafeFireAndForget();
     }
 
@@ -179,7 +183,8 @@ namespace ClangPowerTools
 
     private void ResetButtonsState()
     {
-      foreach (var item in llvms) item.CanExecuteCommand = true;
+      foreach (var item in llvms) 
+        item.CanExecuteCommand = true;
     }
 
     #endregion
