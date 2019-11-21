@@ -1,4 +1,8 @@
-﻿using System.ComponentModel.Composition;
+﻿using System.Collections.Generic;
+using System.ComponentModel.Composition;
+using System.Linq;
+using ClangPowerTools.Error;
+using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
@@ -34,7 +38,9 @@ namespace ClangPowerTools.Squiggle
     {
       // Only provide highlighting on the top-level buffer
       if (textView.TextBuffer != buffer)
+      {
         return null;
+      }
 
       return new HighlightWordTagger(buffer) as ITagger<T>;
     }

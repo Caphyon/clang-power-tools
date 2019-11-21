@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Builder;
+using ClangPowerTools.Error;
 using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
 using ClangPowerTools.Services;
@@ -10,6 +11,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace ClangPowerTools.Output
 {
@@ -177,6 +179,7 @@ namespace ClangPowerTools.Output
     {
       if( Errors.Count > 0 )
       {
+        TaskErrorViewModel.Errors = Errors.ToList();
         ErrorDetectedEvent?.Invoke(this, new ErrorDetectedEventArgs(Errors));
       }
     }
