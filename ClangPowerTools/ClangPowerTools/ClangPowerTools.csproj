@@ -258,6 +258,12 @@
     <Compile Include="Helpers\StatusBarHandler.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Attributes\ClangFormatPathAttribute.cs" />
+    <Compile Include="Squiggle\EditorClassifier1.cs" />
+    <Compile Include="Squiggle\EditorClassifier1ClassificationDefinition.cs" />
+    <Compile Include="Squiggle\EditorClassifier1Format.cs" />
+    <Compile Include="Squiggle\EditorClassifier1Provider.cs" />
+    <Compile Include="Squiggle\HighlightWordTagger.cs" />
+    <Compile Include="Squiggle\HighlightWordTaggerProvider.cs" />
     <Compile Include="TextOperationsInterfaces\IDetector.cs" />
     <Compile Include="TextOperationsInterfaces\ITextFormatter.cs" />
     <Compile Include="Helpers\Vsix.cs" />
@@ -437,8 +443,10 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
