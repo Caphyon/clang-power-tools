@@ -20,7 +20,6 @@
 
   <!--  User control static resources  -->
   <Window.Resources>
-
     <Style TargetType="{x:Type ListView}">
       <Setter Property="FontFamily" Value="Segoe UI" />
       <Setter Property="FontWeight" Value="SemiBold" />
