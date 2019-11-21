@@ -258,6 +258,7 @@
     <Compile Include="Helpers\StatusBarHandler.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Attributes\ClangFormatPathAttribute.cs" />
+    <Compile Include="Squiggle\HighlightWordTag.cs" />
     <Compile Include="Squiggle\HighlightWordTagger.cs" />
     <Compile Include="Squiggle\HighlightWordTaggerProvider.cs" />
     <Compile Include="TextOperationsInterfaces\IDetector.cs" />

@@ -9,48 +9,30 @@ using Microsoft.VisualStudio.Text.Tagging;
 namespace ClangPowerTools.Squiggle
 {
 
-  public class HighlightWordTag : ErrorTag
-  {
-    public HighlightWordTag() : base("error", "This is a tooltip error") { }
-  }
-
   /// <summary>
   /// This tagger will provide tags for every word in the buffer that
   /// matches the word currently under the cursor.
   /// </summary>
   public class HighlightWordTagger : ITagger<HighlightWordTag>
   {
-    private ITextView View { get; set; }
+    public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
+
+    #region Properties
 
     private ITextBuffer SourceBuffer { get; set; }
 
-    private ITextSearchService TextSearchService { get; set; }
+    #endregion
 
-    private ITextStructureNavigator TextStructureNavigator { get; set; }
+    #region Constructor
 
-    private object updateLock = new object();
-
-    // The current set of words to highlight
-    private NormalizedSnapshotSpanCollection WordSpans { get; set; }
-    private SnapshotSpan? CurrentWord { get; set; }
-
-    // The current request, from the last cursor movement or view render
-    private SnapshotPoint RequestedPoint { get; set; }
-
-    public HighlightWordTagger(ITextView view, ITextBuffer sourceBuffer, ITextSearchService textSearchService,
-                               ITextStructureNavigator textStructureNavigator)
+    public HighlightWordTagger(ITextBuffer sourceBuffer)
     {
-      View = view;
       SourceBuffer = sourceBuffer;
-      TextSearchService = textSearchService;
-      TextStructureNavigator = textStructureNavigator;
-
-      WordSpans = new NormalizedSnapshotSpanCollection();
-      CurrentWord = null;
     }
 
+    #endregion
 
-    #region ITagger<HighlightWordTag> Members
+    #region ITagger<HighlightWordTag> Implementation
 
     /// <summary>
     /// Find every instance of CurrentWord in the given span
@@ -66,7 +48,6 @@ namespace ClangPowerTools.Squiggle
       if (highlightLine > lines.Count)
         yield break;
 
-
       --highlightLine;
 
       --column;
@@ -78,14 +59,10 @@ namespace ClangPowerTools.Squiggle
         highlightLine = 0;
 
       var currentLine = SourceBuffer.CurrentSnapshot.GetLineFromLineNumber(highlightLine);
-
       var text = currentLine.GetText().TrimEnd();
-
-
 
       if (column >= text.Length)
         column = text.Length - 1;
-
 
       if (column - 1 >= 0 && column + 1 < text.Length)
       {
@@ -97,20 +74,16 @@ namespace ClangPowerTools.Squiggle
         }
       }
 
-
       for (int i = 0; i < highlightLine; i++)
         characterCount += lines[i].GetText().Length;
-
 
       if (string.IsNullOrWhiteSpace(text))
         yield break;
 
       if (column >= text.Length)
         yield break;
-
       
       var start = characterCount + column + highlightLine + highlightLine + 1;
-
       if (start < 0)
         start = 0;
 
@@ -131,7 +104,6 @@ namespace ClangPowerTools.Squiggle
         --start;
       }
 
-
       var length = 0;
       for (int i = column - iterations + 1; i < text.Length; ++i)
       {
@@ -141,25 +113,12 @@ namespace ClangPowerTools.Squiggle
         ++length;
       }
 
-      //var startPoint = characterCount + highlightLine + 1;
       var startPoint = start;
-
-      if (startPoint >= SourceBuffer.CurrentSnapshot.GetText().Length)
-      {
-        startPoint = SourceBuffer.CurrentSnapshot.GetText().Length - 1;
-      }
-
-      //var highlightLength = currentLine.Length + 1;
       var highlightLength = length;
-
       var snapshotSpan = new SnapshotSpan(SourceBuffer.CurrentSnapshot, startPoint, highlightLength);
 
       yield return new TagSpan<HighlightWordTag>(snapshotSpan, new HighlightWordTag());
     }
-
-    public bool ok = false;
-
-    public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
     #endregion
   }

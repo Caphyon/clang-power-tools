@@ -36,10 +36,7 @@ namespace ClangPowerTools.Squiggle
       if (textView.TextBuffer != buffer)
         return null;
 
-      ITextStructureNavigator textStructureNavigator =
-          TextStructureNavigatorSelector.GetTextStructureNavigator(buffer);
-
-      return new HighlightWordTagger(textView, buffer, TextSearchService, textStructureNavigator) as ITagger<T>;
+      return new HighlightWordTagger(buffer) as ITagger<T>;
     }
 
     #endregion
