@@ -258,10 +258,6 @@
     <Compile Include="Helpers\StatusBarHandler.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Attributes\ClangFormatPathAttribute.cs" />
-    <Compile Include="Squiggle\EditorClassifier1.cs" />
-    <Compile Include="Squiggle\EditorClassifier1ClassificationDefinition.cs" />
-    <Compile Include="Squiggle\EditorClassifier1Format.cs" />
-    <Compile Include="Squiggle\EditorClassifier1Provider.cs" />
     <Compile Include="Squiggle\HighlightWordTagger.cs" />
     <Compile Include="Squiggle\HighlightWordTaggerProvider.cs" />
     <Compile Include="TextOperationsInterfaces\IDetector.cs" />
