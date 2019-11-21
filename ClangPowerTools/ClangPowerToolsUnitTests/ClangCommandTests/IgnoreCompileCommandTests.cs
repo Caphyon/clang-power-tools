@@ -1,12 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using ClangPowerTools.Commands;
-using ClangPowerToolsUnitTests.Constants;
-using EnvDTE;
+﻿using ClangPowerTools.Commands;
 using EnvDTE80;
-using Microsoft.VisualStudio.Shell;
 using Xunit;
-using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Tests
 {

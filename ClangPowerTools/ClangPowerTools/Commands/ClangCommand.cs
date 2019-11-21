@@ -1,9 +1,7 @@
-﻿using ClangPowerTools.Builder;
-using ClangPowerTools.CMake;
+﻿using ClangPowerTools.CMake;
 using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
 using ClangPowerTools.Helpers;
-using ClangPowerTools.Script;
 using ClangPowerTools.Services;
 using ClangPowerTools.Tests;
 using EnvDTE;

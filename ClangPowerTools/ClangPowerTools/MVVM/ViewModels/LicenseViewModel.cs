@@ -1,7 +1,6 @@
 ﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.Views;
-using System;
 using System.Diagnostics;
 using System.Windows.Input;
 
