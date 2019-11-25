@@ -92,8 +92,10 @@ namespace ClangPowerTools
     {
       ErrorTask objErrorTask = (ErrorTask)sender;
       objErrorTask.Line += 1;
+      objErrorTask.Column += 1;
       bool bResult = Navigate(objErrorTask, new Guid(EnvDTE.Constants.vsViewKindCode));
       objErrorTask.Line -= 1;
+      objErrorTask.Column -= 1;
     }
 
     #endregion

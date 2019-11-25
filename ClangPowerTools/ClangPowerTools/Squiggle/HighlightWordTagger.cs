@@ -59,8 +59,6 @@ namespace ClangPowerTools.Squiggle
         if (highlightLine > lines.Count)
           yield break;
 
-        --column;
-
         if (column < 0)
           column = 0;
 
