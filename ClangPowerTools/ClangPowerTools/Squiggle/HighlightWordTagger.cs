@@ -57,7 +57,7 @@ namespace ClangPowerTools.Squiggle
         var lines = SourceBuffer.CurrentSnapshot.Lines.ToList();
 
         if (highlightLine > lines.Count)
-          yield break;
+          continue;
 
         if (column < 0)
           column = 0;
@@ -76,7 +76,9 @@ namespace ClangPowerTools.Squiggle
           if (text[column - 1] == ' ' && text[column] != ' ' && text[column + 1] == ' ')
           {
             var snapshotSpanForOneElement = new SnapshotSpan(SourceBuffer.CurrentSnapshot, column, 1);
-            yield return new TagSpan<HighlightWordTag>(snapshotSpanForOneElement, new HighlightWordTag("error", error.FullMessage));
+            var squiggleTag = new HighlightWordTag("error", error.Text);
+            SquiggleViewModel.Squiggles.Add(squiggleTag);
+            yield return new TagSpan<HighlightWordTag>(snapshotSpanForOneElement, squiggleTag);
             continue;
           }
         }
@@ -85,10 +87,10 @@ namespace ClangPowerTools.Squiggle
           characterCount += lines[i].GetText().Length;
 
         if (string.IsNullOrWhiteSpace(text))
-          yield break;
+          continue;
 
         if (column >= text.Length)
-          yield break;
+          continue;
 
         var start = characterCount + column + highlightLine + highlightLine + 1;
         if (start < 0)
@@ -124,7 +126,10 @@ namespace ClangPowerTools.Squiggle
         var highlightLength = length;
         var snapshotSpan = new SnapshotSpan(SourceBuffer.CurrentSnapshot, startPoint, highlightLength);
 
-        yield return new TagSpan<HighlightWordTag>(snapshotSpan, new HighlightWordTag("error", error.Text));
+        var squiggle = new HighlightWordTag("error", error.Text);
+        SquiggleViewModel.Squiggles.Add(squiggle);
+
+        yield return new TagSpan<HighlightWordTag>(snapshotSpan, squiggle);
       }
 
     }

@@ -262,6 +262,7 @@
     <Compile Include="Squiggle\HighlightWordTag.cs" />
     <Compile Include="Squiggle\HighlightWordTagger.cs" />
     <Compile Include="Squiggle\HighlightWordTaggerProvider.cs" />
+    <Compile Include="Squiggle\SquiggleViewModel.cs" />
     <Compile Include="TextOperationsInterfaces\IDetector.cs" />
     <Compile Include="TextOperationsInterfaces\ITextFormatter.cs" />
     <Compile Include="Helpers\Vsix.cs" />
