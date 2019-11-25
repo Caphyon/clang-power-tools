@@ -59,8 +59,6 @@ namespace ClangPowerTools.Squiggle
         if (highlightLine > lines.Count)
           yield break;
 
-        --highlightLine;
-
         --column;
 
         if (column < 0)
@@ -81,7 +79,7 @@ namespace ClangPowerTools.Squiggle
           {
             var snapshotSpanForOneElement = new SnapshotSpan(SourceBuffer.CurrentSnapshot, column, 1);
             yield return new TagSpan<HighlightWordTag>(snapshotSpanForOneElement, new HighlightWordTag("error", error.FullMessage));
-            yield break;
+            continue;
           }
         }
 
