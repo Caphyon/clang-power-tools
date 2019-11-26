@@ -79,12 +79,8 @@ namespace ClangPowerTools
     public void OnClangCommandBegin(object sender, ClearErrorListEventArgs e)
     {
       Clear();
-      
-      if(SquiggleViewModel.Squiggles != null)
-        SquiggleViewModel.Squiggles.Clear();
-      
-      if(TaskErrorViewModel.Errors != null)
-        TaskErrorViewModel.Errors.Clear();
+      SquiggleViewModel.Squiggles.Clear();
+      TaskErrorViewModel.Errors.Clear();
     }
 
     public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action)

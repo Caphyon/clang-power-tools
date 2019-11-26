@@ -36,7 +36,11 @@ namespace ClangPowerTools.Squiggle
     /// <returns> Returns a HighlightWordTagger instance</returns>
     public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag
     {
-      // Only provide highlighting on the top-level buffer
+      if (TaskErrorViewModel.Errors == null || TaskErrorViewModel.Errors.Count == 0)
+      {
+        return null;
+      }
+
       if (textView.TextBuffer != buffer)
       {
         return null;
