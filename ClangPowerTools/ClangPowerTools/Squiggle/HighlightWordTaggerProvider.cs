@@ -1,8 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
-using ClangPowerTools.Error;
-using Microsoft.VisualStudio.Shell;
+﻿using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
@@ -36,10 +32,7 @@ namespace ClangPowerTools.Squiggle
     /// <returns> Returns a HighlightWordTagger instance</returns>
     public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag
     {
-      if (TaskErrorViewModel.Errors == null || TaskErrorViewModel.Errors.Count == 0)
-      {
-        return null;
-      }
+
 
       if (textView.TextBuffer != buffer)
       {

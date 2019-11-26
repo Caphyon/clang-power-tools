@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using ClangPowerTools.Error;
+using ClangPowerTools.Services;
+using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Text.Tagging;
 
 namespace ClangPowerTools.Squiggle
@@ -18,10 +19,9 @@ namespace ClangPowerTools.Squiggle
   {
     #region Members
 
-
-    private readonly TaskErrorModel error;
-
     private ITextBuffer SourceBuffer { get; set; }
+
+    private Document activeDocument;
 
     public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
@@ -32,6 +32,8 @@ namespace ClangPowerTools.Squiggle
     public HighlightWordTagger(ITextBuffer sourceBuffer)
     {
       SourceBuffer = sourceBuffer;
+      var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
+      activeDocument = dte.ActiveDocument;
     }
 
     #endregion
@@ -45,37 +47,29 @@ namespace ClangPowerTools.Squiggle
     public IEnumerable<ITagSpan<HighlightWordTag>> GetTags(NormalizedSnapshotSpanCollection spans)
     {
       if (TaskErrorViewModel.Errors == null || TaskErrorViewModel.Errors.Count == 0)
-      {
         yield break;
-      }
 
-      foreach (var error in TaskErrorViewModel.Errors)
+      var errors = TaskErrorViewModel.Errors.Where(err => err.Document != activeDocument.Name);
+
+      foreach (var error in errors)
       {
-        var column = error.Column;
-        var highlightLine = error.Line;
-        var characterCount = 0;
-        var lines = SourceBuffer.CurrentSnapshot.Lines.ToList();
+        var bufferLines = SourceBuffer.CurrentSnapshot.Lines.ToList();
 
-        if (highlightLine > lines.Count)
-          continue;
+        error.Line = error.Line.ForceInRange(0, bufferLines.Count - 1);
 
-        if (column < 0)
-          column = 0;
-
-        if (highlightLine < 0)
-          highlightLine = 0;
-
-        var currentLine = SourceBuffer.CurrentSnapshot.GetLineFromLineNumber(highlightLine);
+        var currentLine = SourceBuffer.CurrentSnapshot.GetLineFromLineNumber(error.Line);
         var text = currentLine.GetText().TrimEnd();
 
-        if (column >= text.Length)
-          column = text.Length - 1;
+        if (string.IsNullOrWhiteSpace(text))
+          continue;
 
-        if (column - 1 >= 0 && column + 1 < text.Length)
+        error.Column = error.Column.ForceInRange(0, text.Length - 1);
+
+        if (error.Column - 1 >= 0 && error.Column + 1 < text.Length)
         {
-          if (text[column - 1] == ' ' && text[column] != ' ' && text[column + 1] == ' ')
+          if (text[error.Column - 1] == ' ' && text[error.Column] != ' ' && text[error.Column + 1] == ' ')
           {
-            var snapshotSpanForOneElement = new SnapshotSpan(SourceBuffer.CurrentSnapshot, column, 1);
+            var snapshotSpanForOneElement = new SnapshotSpan(SourceBuffer.CurrentSnapshot, error.Column, 1);
             var squiggleTag = new HighlightWordTag("error", error.Text);
             SquiggleViewModel.Squiggles.Add(squiggleTag);
             yield return new TagSpan<HighlightWordTag>(snapshotSpanForOneElement, squiggleTag);
@@ -83,48 +77,9 @@ namespace ClangPowerTools.Squiggle
           }
         }
 
-        for (int i = 0; i < highlightLine; i++)
-          characterCount += lines[i].GetText().Length;
+        GetSquiggleValues(error, bufferLines, text, error.Column, out int start, out int length);
 
-        if (string.IsNullOrWhiteSpace(text))
-          continue;
-
-        if (column >= text.Length)
-          continue;
-
-        var start = characterCount + column + highlightLine + highlightLine + 1;
-        if (start < 0)
-          start = 0;
-
-        if (start >= SourceBuffer.CurrentSnapshot.GetText().Length)
-        {
-          start = SourceBuffer.CurrentSnapshot.GetText().Length - 1;
-        }
-
-        var iterations = 0;
-        for (int i = column; i >= 0; --i)
-        {
-          if (text[i] == ' ' || text[i] == '\n' || text[i] == '\r')
-          {
-            break;
-          }
-
-          ++iterations;
-          --start;
-        }
-
-        var length = 0;
-        for (int i = column - iterations + 1; i < text.Length; ++i)
-        {
-          if (text[i] == ' ')
-            break;
-
-          ++length;
-        }
-
-        var startPoint = start;
-        var highlightLength = length;
-        var snapshotSpan = new SnapshotSpan(SourceBuffer.CurrentSnapshot, startPoint, highlightLength);
+        var snapshotSpan = new SnapshotSpan(SourceBuffer.CurrentSnapshot, start, length);
 
         var squiggle = new HighlightWordTag("error", error.Text);
         SquiggleViewModel.Squiggles.Add(squiggle);
@@ -134,7 +89,60 @@ namespace ClangPowerTools.Squiggle
 
     }
 
+    private int LengthUntilGivenPosition(TaskErrorModel error, List<ITextSnapshotLine> lines)
+    {
+      var count = 0;
+      for (var i = 0; i<error.Line; ++i)
+      {
+        count += lines[i].GetText().Length;
+      }
+
+      return count + error.Column + (error.Line * 2) + 1;
+    }
+
+    private int FindTheBeginning(string text, int start, int iterationValue, out int stepsBack)
+    {
+      stepsBack = 0;
+      for (int i = iterationValue; i >= 0; --i)
+      {
+        if (text[i] == ' ' || text[i] == '\n' || text[i] == '\r')
+        {
+          break;
+        }
+
+        ++stepsBack;
+        --start;
+      }
+
+      return start;
+    }
+
+    private int FindLength(string text, int start)
+    {
+      var length = 0;
+      for (int i = start; i < text.Length; ++i)
+      {
+        if (text[i] == ' ')
+          break;
+
+        ++length;
+      }
+
+      return length;
+    }
+
+    private void GetSquiggleValues(TaskErrorModel error, List<ITextSnapshotLine> lines, 
+      string text, int column, out int start, out int length)
+    {
+      start = LengthUntilGivenPosition(error, lines);
+      start = start.ForceInRange(0, SourceBuffer.CurrentSnapshot.GetText().Length - 1);
+      start = FindTheBeginning(text, start, column, out int stepsBack);
+      
+      length = FindLength(text, error.Column - stepsBack + 1);
+    }
+
     #endregion
   }
+
 
 }

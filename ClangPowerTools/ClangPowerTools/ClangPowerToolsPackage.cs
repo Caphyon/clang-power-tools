@@ -1,9 +1,11 @@
 ﻿using ClangPowerTools.Commands;
+using ClangPowerTools.Error;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
+using ClangPowerTools.Squiggle;
 using ClangPowerTools.Tests;
 using EnvDTE;
 using EnvDTE80;
@@ -99,6 +101,9 @@ namespace ClangPowerTools
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
       await RegisterVsServicesAsync();
+
+      TaskErrorViewModel.Errors.Clear();
+      SquiggleViewModel.Squiggles.Clear();
 
       mCommandController = new CommandController(this);
 
