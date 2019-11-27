@@ -4,6 +4,6 @@ namespace ClangPowerTools.Squiggle
 {
   public static class SquiggleViewModel
   {
-    public static List<HighlightWordTag> Squiggles { get; set; } = new List<HighlightWordTag>();
+    public static List<SquiggleErrorTag> Squiggles { get; set; } = new List<SquiggleErrorTag>();
   }
 }

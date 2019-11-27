@@ -15,7 +15,7 @@ namespace ClangPowerTools.Squiggle
   /// This tagger will provide tags for every word in the buffer that
   /// matches the word currently under the cursor.
   /// </summary>
-  public class HighlightWordTagger : ITagger<HighlightWordTag>
+  public class SquiggleErrorTagger : ITagger<SquiggleErrorTag>
   {
     #region Members
 
@@ -29,7 +29,7 @@ namespace ClangPowerTools.Squiggle
 
     #region Constructor
 
-    public HighlightWordTagger(ITextBuffer sourceBuffer)
+    public SquiggleErrorTagger(ITextBuffer sourceBuffer)
     {
       SourceBuffer = sourceBuffer;
       var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
@@ -44,49 +44,47 @@ namespace ClangPowerTools.Squiggle
     /// Find every instance of CurrentWord in the given span
     /// </summary>
     /// <param name="spans">A read-only span of text to be searched for instances of CurrentWord</param>
-    public IEnumerable<ITagSpan<HighlightWordTag>> GetTags(NormalizedSnapshotSpanCollection spans)
+    public IEnumerable<ITagSpan<SquiggleErrorTag>> GetTags(NormalizedSnapshotSpanCollection spans)
     {
       if (TaskErrorViewModel.Errors == null || TaskErrorViewModel.Errors.Count == 0)
         yield break;
 
       var errors = TaskErrorViewModel.Errors.Where(err => err.Document != activeDocument.Name);
-
       foreach (var error in errors)
       {
         var bufferLines = SourceBuffer.CurrentSnapshot.Lines.ToList();
-
         error.Line = error.Line.ForceInRange(0, bufferLines.Count - 1);
 
         var currentLine = SourceBuffer.CurrentSnapshot.GetLineFromLineNumber(error.Line);
-        var text = currentLine.GetText().TrimEnd();
+        var currentLineText = currentLine.GetText().TrimEnd();
 
-        if (string.IsNullOrWhiteSpace(text))
+        if (string.IsNullOrWhiteSpace(currentLineText))
           continue;
 
-        error.Column = error.Column.ForceInRange(0, text.Length - 1);
+        error.Column = error.Column.ForceInRange(0, currentLineText.Length - 1);
 
-        if (error.Column - 1 >= 0 && error.Column + 1 < text.Length)
+        if (error.Column - 1 >= 0 && error.Column + 1 < currentLineText.Length)
         {
-          if (text[error.Column - 1] == ' ' && text[error.Column] != ' ' && text[error.Column + 1] == ' ')
+          if (currentLineText[error.Column - 1] == ' ' && currentLineText[error.Column] != ' ' && currentLineText[error.Column + 1] == ' ')
           {
-            var snapshotSpanForOneElement = new SnapshotSpan(SourceBuffer.CurrentSnapshot, error.Column, 1);
-            var squiggleTag = new HighlightWordTag("error", error.Text);
-            SquiggleViewModel.Squiggles.Add(squiggleTag);
-            yield return new TagSpan<HighlightWordTag>(snapshotSpanForOneElement, squiggleTag);
+            yield return CreateTagSpan(error.Column, 1, error.Text);
             continue;
           }
         }
 
-        GetSquiggleValues(error, bufferLines, text, error.Column, out int start, out int length);
-
-        var snapshotSpan = new SnapshotSpan(SourceBuffer.CurrentSnapshot, start, length);
-
-        var squiggle = new HighlightWordTag("error", error.Text);
-        SquiggleViewModel.Squiggles.Add(squiggle);
-
-        yield return new TagSpan<HighlightWordTag>(snapshotSpan, squiggle);
+        GetSquiggleValues(error, bufferLines, currentLineText, error.Column, out int start, out int length);
+        
+        yield return CreateTagSpan(start, length, error.Text);
       }
+    }
 
+    private TagSpan<SquiggleErrorTag> CreateTagSpan(int start, int length, string tooltip )
+    {
+      var snapshotSpan = new SnapshotSpan(SourceBuffer.CurrentSnapshot, start, length);
+      var squiggle = new SquiggleErrorTag("error", tooltip);
+      SquiggleViewModel.Squiggles.Add(squiggle);
+
+      return new TagSpan<SquiggleErrorTag>(snapshotSpan, squiggle);
     }
 
     private int LengthUntilGivenPosition(TaskErrorModel error, List<ITextSnapshotLine> lines)
@@ -109,7 +107,6 @@ namespace ClangPowerTools.Squiggle
         {
           break;
         }
-
         ++stepsBack;
         --start;
       }

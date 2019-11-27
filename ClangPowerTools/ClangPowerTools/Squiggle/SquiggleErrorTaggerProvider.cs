@@ -12,8 +12,8 @@ namespace ClangPowerTools.Squiggle
   /// </summary>
   [Export(typeof(IViewTaggerProvider))]
   [ContentType("text")]
-  [TagType(typeof(HighlightWordTag))]
-  public class HighlightWordTaggerProvider : IViewTaggerProvider
+  [TagType(typeof(SquiggleErrorTag))]
+  public class SquiggleErrorTaggerProvider : IViewTaggerProvider
   {
     #region ITaggerProvider Members
 
@@ -32,14 +32,12 @@ namespace ClangPowerTools.Squiggle
     /// <returns> Returns a HighlightWordTagger instance</returns>
     public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag
     {
-
-
       if (textView.TextBuffer != buffer)
       {
         return null;
       }
 
-      return new HighlightWordTagger(buffer) as ITagger<T>;
+      return new SquiggleErrorTagger(buffer) as ITagger<T>;
     }
 
     #endregion
