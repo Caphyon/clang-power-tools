@@ -1,5 +1,7 @@
-﻿using ClangPowerTools.Events;
+﻿using ClangPowerTools.Error;
+using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
+using ClangPowerTools.Squiggle;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -77,6 +79,8 @@ namespace ClangPowerTools
     public void OnClangCommandBegin(object sender, ClearErrorListEventArgs e)
     {
       Clear();
+      SquiggleViewModel.Squiggles.Clear();
+      TaskErrorViewModel.Errors.Clear();
     }
 
     public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action)
@@ -92,8 +96,10 @@ namespace ClangPowerTools
     {
       ErrorTask objErrorTask = (ErrorTask)sender;
       objErrorTask.Line += 1;
+      objErrorTask.Column += 1;
       bool bResult = Navigate(objErrorTask, new Guid(EnvDTE.Constants.vsViewKindCode));
       objErrorTask.Line -= 1;
+      objErrorTask.Column -= 1;
     }
 
     #endregion

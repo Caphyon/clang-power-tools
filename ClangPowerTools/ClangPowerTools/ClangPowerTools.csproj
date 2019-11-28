@@ -76,6 +76,7 @@
   <ItemGroup>
     <Compile Include="CMake\CMakeBuilder.cs" />
     <Compile Include="Commands\IgnoreCommand.cs" />
+    <Compile Include="Error\TaskErrorViewModel.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Events\HasEncodingErrorEventArgs.cs" />
     <Compile Include="Events\LicenseEventArgs.cs" />
@@ -258,6 +259,11 @@
     <Compile Include="Helpers\StatusBarHandler.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="Attributes\ClangFormatPathAttribute.cs" />
+    <Compile Include="Squiggle\SquiggleErrorTag.cs" />
+    <Compile Include="Squiggle\SquiggleErrorTagger.cs" />
+    <Compile Include="Squiggle\SquiggleErrorTaggerProvider.cs" />
+    <Compile Include="Extensions\IntExtension.cs" />
+    <Compile Include="Squiggle\SquiggleViewModel.cs" />
     <Compile Include="TextOperationsInterfaces\IDetector.cs" />
     <Compile Include="TextOperationsInterfaces\ITextFormatter.cs" />
     <Compile Include="Helpers\Vsix.cs" />
@@ -437,8 +443,10 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />

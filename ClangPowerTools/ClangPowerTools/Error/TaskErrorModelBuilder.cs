@@ -58,7 +58,7 @@ namespace ClangPowerTools.Error
       {
         Document = path,
         Line = line - 1,
-        Column = column,
+        Column = column - 1,
         ErrorCategory = category,
         Text = messageDescription,
         FullMessage = fullMessage,
