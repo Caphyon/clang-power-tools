@@ -21,8 +21,6 @@ namespace ClangPowerTools.Squiggle
 
     private ITextBuffer SourceBuffer { get; set; }
 
-    private Document activeDocument;
-
     public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
     #endregion
@@ -32,8 +30,6 @@ namespace ClangPowerTools.Squiggle
     public SquiggleErrorTagger(ITextBuffer sourceBuffer)
     {
       SourceBuffer = sourceBuffer;
-      var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
-      activeDocument = dte.ActiveDocument;
     }
 
     #endregion
@@ -48,6 +44,9 @@ namespace ClangPowerTools.Squiggle
     {
       if (TaskErrorViewModel.Errors == null || TaskErrorViewModel.Errors.Count == 0)
         yield break;
+
+      var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
+      var activeDocument = dte.ActiveDocument;
 
       var errors = TaskErrorViewModel.Errors.Where(err => err.Document != activeDocument.Name);
       foreach (var error in errors)
