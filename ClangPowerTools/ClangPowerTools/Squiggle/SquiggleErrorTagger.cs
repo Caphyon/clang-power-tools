@@ -19,6 +19,8 @@ namespace ClangPowerTools.Squiggle
   {
     #region Members
 
+    private readonly string squiggleType = "other error";
+
     private ITextBuffer SourceBuffer { get; set; }
 
     public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
@@ -79,8 +81,8 @@ namespace ClangPowerTools.Squiggle
 
     private TagSpan<SquiggleErrorTag> CreateTagSpan(int start, int length, string tooltip )
     {
-      var snapshotSpan = new SnapshotSpan(SourceBuffer.CurrentSnapshot, start, length);
-      var squiggle = new SquiggleErrorTag("error", tooltip);
+      var snapshotSpan = new SnapshotSpan(SourceBuffer.CurrentSnapshot, start, length+100);
+      var squiggle = new SquiggleErrorTag(squiggleType, tooltip);
       SquiggleViewModel.Squiggles.Add(squiggle);
 
       return new TagSpan<SquiggleErrorTag>(snapshotSpan, squiggle);
