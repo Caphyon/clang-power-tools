@@ -81,7 +81,7 @@ namespace ClangPowerTools.Squiggle
 
     private TagSpan<SquiggleErrorTag> CreateTagSpan(int start, int length, string tooltip )
     {
-      var snapshotSpan = new SnapshotSpan(SourceBuffer.CurrentSnapshot, start, length+100);
+      var snapshotSpan = new SnapshotSpan(SourceBuffer.CurrentSnapshot, start, length);
       var squiggle = new SquiggleErrorTag(squiggleType, tooltip);
       SquiggleViewModel.Squiggles.Add(squiggle);
 
