@@ -8,6 +8,7 @@
   Title="Release Notes"
   Width="550"
   Height="720"
+  Topmost="True"
   d:DataContext="{d:DesignInstance local:ReleaseNotesViewModel,
                                    IsDesignTimeCreatable=True}"
   ResizeMode="NoResize"
