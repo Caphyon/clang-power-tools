@@ -75,7 +75,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 5.3" />
+        Text="version 5.4" />
 
       <ListView
         Grid.Row="3"
@@ -110,14 +110,28 @@
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="• Side-by-side LLVM installation and selection directly from Settings"
+          Text="• Clang errors after compilation are highlighted using squiggles"
           TextWrapping="Wrap" />
 
         <TextBlock
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="• Pre-initialize configuration and platform properties"
+          Text="• LLVM version is automatically set as active after installation"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="• Completely redesigned input data window"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="• Small UI improvements"
           TextWrapping="Wrap" />
 
 
@@ -132,21 +146,21 @@
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="• Fix predefined checks initialization"
+          Text="• Clang-tidy flags are missing"
           TextWrapping="Wrap" />
 
         <TextBlock
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="• Clear button doesn't work for predefined checks search"
+          Text="• Alt+tab locks up Visual Studio while in the input data window"
           TextWrapping="Wrap" />
 
         <TextBlock
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="• GetPathOfFileAbove didn't function properly in some cases"
+          Text="• LLVM version 8.0.1 is missing from the download list"
           TextWrapping="Wrap" />
 
       </ListView>
