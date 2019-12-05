@@ -9,8 +9,6 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
-using System.IO;
-using System.Linq;
 using Task = System.Threading.Tasks.Task;
 using ClangPowerTools.MVVM.Controllers;
 
@@ -554,35 +552,8 @@ namespace ClangPowerTools
         return;
       }
 
-      if (false == formatSettings.FormatOnSave)
-        return;
-
-      if (false == Vsix.IsDocumentDirty(aDocument) && false == mFormatAfterTidyFlag)
-        return;
-
-      if (false == FileHasExtension(aDocument.FullName, formatSettings.FileExtensions))
-        return;
-
-      if (true == SkipFile(aDocument.FullName, formatSettings.FilesToIgnore))
-        return;
-
-      FormatCommand.Instance.FormatOnSave(aDocument);
+      FormatCommand.Instance.FormatOnSave(aDocument, mFormatAfterTidyFlag);
     }
-
-
-    private bool SkipFile(string aFilePath, string aSkipFiles)
-    {
-      var skipFilesList = aSkipFiles.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-      return skipFilesList.Contains(Path.GetFileName(aFilePath).ToLower());
-    }
-
-
-    private bool FileHasExtension(string filePath, string fileExtensions)
-    {
-      var extensions = fileExtensions.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-      return extensions.Contains(Path.GetExtension(filePath).ToLower());
-    }
-
 
     public void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
     {

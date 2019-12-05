@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
+using System.Linq;
 using System.Xml.Linq;
 using Task = System.Threading.Tasks.Task;
 
@@ -20,6 +21,7 @@ namespace ClangPowerTools.Commands
     #region Members
 
     private Document mDocument = null;
+    private bool mFormatAfterTidyFlag = false;
 
     #endregion
 
@@ -100,22 +102,24 @@ namespace ClangPowerTools.Commands
       ExecuteFormatCommand();
     }
 
-    public void FormatOnSave(Document document)
+    public void FormatOnSave(Document document, bool formatAfterTidyFlag)
     {
+      mFormatAfterTidyFlag = formatAfterTidyFlag;
       mDocument = document;
       ExecuteFormatCommand();
     }
+
+    
+
 
     private void ExecuteFormatCommand()
     {
       try
       {
-        if (ScriptConstants.kCMakeConfigFile == mDocument.Name.ToLower())
+        if (ValidExecution(out IWpfTextView view) == false)
           return;
 
-        var view = Vsix.GetDocumentView(mDocument);
-        if (view == null)
-          return;
+        
 
         var dirPath = string.Empty;
         var filePath = Vsix.GetDocumentPath(view);
@@ -165,6 +169,50 @@ namespace ClangPowerTools.Commands
           OLEMSGICON.OLEMSGICON_INFO, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
       }
     }
+
+    #region Validation
+
+    private bool ValidExecution(out IWpfTextView view)
+    {
+      SettingsProvider settingsProvider = new SettingsProvider();
+      FormatSettingsModel formatSettings = settingsProvider.GetFormatSettingsModel();
+      TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
+
+      view = Vsix.GetDocumentView(mDocument);
+      if (view == null)
+        return false;
+
+      if (false == formatSettings.FormatOnSave)
+        return false;
+
+      if (false == Vsix.IsDocumentDirty(mDocument) && false == mFormatAfterTidyFlag)
+        return false;
+
+      if (false == FileHasExtension(mDocument.FullName, formatSettings.FileExtensions))
+        return false;
+
+      if (true == SkipFile(mDocument.FullName, formatSettings.FilesToIgnore))
+        return false;
+
+      if (ScriptConstants.kCMakeConfigFile == mDocument.Name.ToLower())
+        return false;
+
+      return true;
+    }
+
+    private bool FileHasExtension(string filePath, string fileExtensions)
+    {
+      var extensions = fileExtensions.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+      return extensions.Contains(Path.GetExtension(filePath).ToLower());
+    }
+
+    private bool SkipFile(string aFilePath, string aSkipFiles)
+    {
+      var skipFilesList = aSkipFiles.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+      return skipFilesList.Contains(Path.GetFileName(aFilePath).ToLower());
+    }
+
+    #endregion
 
     private void FormatAllSelectedDocuments()
     {
