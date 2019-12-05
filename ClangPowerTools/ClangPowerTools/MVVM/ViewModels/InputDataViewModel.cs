@@ -80,7 +80,7 @@ namespace ClangPowerTools
 
     private void AddInput()
     {
-      if (string.IsNullOrEmpty(inputToAdd) == false)
+      if (string.IsNullOrWhiteSpace(inputToAdd) == false)
       {
         Inputs.Add(new InputDataModel(inputToAdd));
         InputToAdd = string.Empty;
