@@ -17,9 +17,7 @@ namespace ClangPowerTools
     /// Instance Constructor
     /// </summary>
     /// <param name="aServiceProvider"></param>
-    public ErrorWindowController(IServiceProvider aIServiceProvider) : base(aIServiceProvider)
-    {
-    }
+    public ErrorWindowController(IServiceProvider aIServiceProvider) : base(aIServiceProvider) { }
 
     #endregion
 
@@ -38,7 +36,12 @@ namespace ClangPowerTools
         }
 
         ResumeRefresh();
-        BringToFront();
+
+        if(new SettingsProvider().GetCompilerSettingsModel().ShowErrorList)
+        {
+          BringToFront();
+        }
+
       }).SafeFireAndForget();
     }
 
