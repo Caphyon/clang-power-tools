@@ -26,22 +26,18 @@
       <Setter Property="FontSize" Value="13" />
     </Style>
 
-    <Style x:Key="MyButtonStyle" TargetType="Button">
-      <Setter Property="Template">
-        <Setter.Value>
-          <ControlTemplate TargetType="Button">
-            <Grid Background="{TemplateBinding Background}">
-              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-            </Grid>
-          </ControlTemplate>
-        </Setter.Value>
-      </Setter>
-    </Style>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Styles/AppResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+
 
     <BitmapImage x:Key="add_input" UriSource="/ClangPowerTools;component/Resources/AddInput.png" />
     <ImageBrush x:Key="remove" ImageSource="/ClangPowerTools;component/Resources/RemoveInputIdle.png" />
     <ImageBrush x:Key="remove_hover" ImageSource="/ClangPowerTools;component/Resources/RemoveInputHover.png" />
   </Window.Resources>
+
 
   <!--  Main grid  -->
   <Grid>
@@ -124,6 +120,8 @@
         <Image Source="{StaticResource add_input}" />
       </Button.Content>
     </Button>
+
+    <Button Style="{StaticResource ButtonStyle}" />
 
     <!--  Inputs  -->
     <ListView
