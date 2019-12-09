@@ -38,8 +38,7 @@
       </Setter>
     </Style>
 
-    <ImageBrush x:Key="add_input" ImageSource="/ClangPowerTools;component/Resources/AddInputIdle.png" />
-    <ImageBrush x:Key="add_input_hover" ImageSource="/ClangPowerTools;component/Resources/AddInputHover.png" />
+    <BitmapImage x:Key="add_input" UriSource="/ClangPowerTools;component/Resources/AddInput.png" />
     <ImageBrush x:Key="remove" ImageSource="/ClangPowerTools;component/Resources/RemoveInputIdle.png" />
     <ImageBrush x:Key="remove_hover" ImageSource="/ClangPowerTools;component/Resources/RemoveInputHover.png" />
   </Window.Resources>
@@ -104,7 +103,7 @@
       Command="{Binding AddCommand}">
       <Button.Style>
         <Style TargetType="{x:Type Button}">
-          <Setter Property="Background" Value="{StaticResource add_input}" />
+          <Setter Property="Background" Value="#9E005A" />
           <Setter Property="Template">
             <Setter.Value>
               <ControlTemplate TargetType="Button">
@@ -116,11 +115,14 @@
           </Setter>
           <Style.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-              <Setter Property="Background" Value="{StaticResource add_input_hover}" />
+              <Setter Property="Background" Value="#c70071" />
             </Trigger>
           </Style.Triggers>
         </Style>
       </Button.Style>
+      <Button.Content>
+        <Image Source="{StaticResource add_input}" />
+      </Button.Content>
     </Button>
 
     <!--  Inputs  -->
