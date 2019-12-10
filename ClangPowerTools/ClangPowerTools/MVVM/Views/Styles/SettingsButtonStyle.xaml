@@ -9,8 +9,8 @@
 
   <Style x:Key="SettingsButton" TargetType="Button">
     <Setter Property="Background" Value="#9E005A" />
-    <Setter Property="Height" Value="32" />
-    <Setter Property="Width" Value="56" />
+    <Setter Property="Height" Value="30" />
+    <Setter Property="Width" Value="50" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Button">
