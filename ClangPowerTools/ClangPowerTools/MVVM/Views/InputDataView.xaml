@@ -20,24 +20,23 @@
 
   <!--  User control static resources  -->
   <Window.Resources>
-    <Style TargetType="{x:Type ListView}">
-      <Setter Property="FontFamily" Value="Segoe UI" />
-      <Setter Property="FontWeight" Value="SemiBold" />
-      <Setter Property="FontSize" Value="13" />
-    </Style>
-
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Styles/AppResources.xaml" />
+        <ResourceDictionary>
+          <Style TargetType="{x:Type ListView}">
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="13" />
+          </Style>
+
+          <BitmapImage x:Key="AddInputImage" UriSource="/ClangPowerTools;component/Resources/AddInput.png" />
+          <ImageBrush x:Key="RemoveImage" ImageSource="/ClangPowerTools;component/Resources/RemoveInputIdle.png" />
+          <ImageBrush x:Key="RemoverHoverImage" ImageSource="/ClangPowerTools;component/Resources/RemoveInputHover.png" />
+        </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
-
-
-    <BitmapImage x:Key="add_input" UriSource="/ClangPowerTools;component/Resources/AddInput.png" />
-    <ImageBrush x:Key="remove" ImageSource="/ClangPowerTools;component/Resources/RemoveInputIdle.png" />
-    <ImageBrush x:Key="remove_hover" ImageSource="/ClangPowerTools;component/Resources/RemoveInputHover.png" />
   </Window.Resources>
-
 
   <!--  Main grid  -->
   <Grid>
@@ -93,35 +92,13 @@
     <Button
       Grid.Row="0"
       Grid.Column="2"
-      Width="56"
-      Height="32"
       Margin="0,5,0,0"
-      Command="{Binding AddCommand}">
-      <Button.Style>
-        <Style TargetType="{x:Type Button}">
-          <Setter Property="Background" Value="#9E005A" />
-          <Setter Property="Template">
-            <Setter.Value>
-              <ControlTemplate TargetType="Button">
-                <Grid Background="{TemplateBinding Background}">
-                  <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                </Grid>
-              </ControlTemplate>
-            </Setter.Value>
-          </Setter>
-          <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-              <Setter Property="Background" Value="#c70071" />
-            </Trigger>
-          </Style.Triggers>
-        </Style>
-      </Button.Style>
+      Command="{Binding AddCommand}"
+      Style="{StaticResource SettingsButton}">
       <Button.Content>
-        <Image Source="{StaticResource add_input}" />
+        <Image Source="{StaticResource AddInputImage}" />
       </Button.Content>
     </Button>
-
-    <Button Style="{StaticResource ButtonStyle}" />
 
     <!--  Inputs  -->
     <ListView
@@ -169,7 +146,7 @@
               Click="DeleteButton">
               <Button.Style>
                 <Style TargetType="{x:Type Button}">
-                  <Setter Property="Background" Value="{StaticResource remove}" />
+                  <Setter Property="Background" Value="{StaticResource RemoveImage}" />
                   <Setter Property="Template">
                     <Setter.Value>
                       <ControlTemplate TargetType="Button">
@@ -181,7 +158,7 @@
                   </Setter>
                   <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
-                      <Setter Property="Background" Value="{StaticResource remove_hover}" />
+                      <Setter Property="Background" Value="{StaticResource RemoverHoverImage}" />
                     </Trigger>
                   </Style.Triggers>
                 </Style>
