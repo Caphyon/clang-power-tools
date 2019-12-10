@@ -11,6 +11,7 @@
   d:DesignWidth="770"
   mc:Ignorable="d">
 
+  <!--  Static resources  -->
   <UserControl.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
@@ -97,8 +98,13 @@
       Height="30"
       HorizontalAlignment="Left"
       Command="{Binding PredefinedChecksSelectCommand}"
-      Content="Select"
-      FontSize="14" />
+      FontSize="14"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}">
+      <Button.Content>
+        Select
+      </Button.Content>
+    </Button>
 
 
     <!--  Custom checks  -->
@@ -134,11 +140,13 @@
     <Button
       Grid.Row="3"
       Grid.Column="3"
-      Width="60"
-      Height="30"
       HorizontalAlignment="Left"
       Command="{Binding CustomChecksAddDataCommand}"
-      Content="..." />
+      Style="{StaticResource SettingsButton}">
+      <Button.Content>
+        <Image Source="{StaticResource AddInputImage}" />
+      </Button.Content>
+    </Button>
 
 
     <!--  Header Filter  -->
@@ -174,11 +182,13 @@
     <Button
       Grid.Row="4"
       Grid.Column="3"
-      Width="60"
-      Height="30"
       HorizontalAlignment="Left"
       Command="{Binding HeaderFilterAddDataCommand}"
-      Content="..." />
+      Style="{StaticResource SettingsButton}">
+      <Button.Content>
+        <Image Source="{StaticResource AddInputImage}" />
+      </Button.Content>
+    </Button>
 
 
 
@@ -215,12 +225,13 @@
     <Button
       Grid.Row="5"
       Grid.Column="3"
-      Width="60"
-      Height="30"
       HorizontalAlignment="Left"
       Command="{Binding CustomExecutableBrowseCommand}"
-      Content="Browse"
-      FontSize="14" />
+      Style="{StaticResource SettingsButton}">
+      <Button.Content>
+        <Image Source="{StaticResource BrowseImage}" />
+      </Button.Content>
+    </Button>
 
 
     <!--  Format after tidy  -->
@@ -302,8 +313,13 @@
       Height="30"
       HorizontalAlignment="Left"
       Command="{Binding ExportTidyConfigCommand}"
-      Content="Export"
-      FontSize="14" />
+      FontSize="14"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}">
+      <Button.Content>
+        Export
+      </Button.Content>
+    </Button>
 
   </Grid>
 </UserControl>

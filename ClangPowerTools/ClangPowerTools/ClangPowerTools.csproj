@@ -291,8 +291,8 @@
     <Resource Include="Resources\CleanSearchIcon.PNG" />
     <Resource Include="Resources\CompileIcon.png" />
     <Resource Include="Resources\SearchIcon.PNG" />
-    <Resource Include="Resources\AddInputIdle.png" />
-    <Resource Include="Resources\AddInputHover.png" />
+    <Resource Include="Resources\AddInput.png" />
+    <Resource Include="Resources\Browse.png" />
     <Content Include="Resources\CPTLogoManageExtensionVS.png">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -540,6 +540,9 @@
     </Page>
     <Page Include="MVVM\Views\Styles\AppResources.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\Styles\SettingsButtonStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\Views\Styles\ToggleStyle.xaml">
