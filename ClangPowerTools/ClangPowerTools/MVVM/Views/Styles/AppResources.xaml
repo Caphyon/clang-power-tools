@@ -9,7 +9,7 @@
 
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="ToggleStyle.xaml" />
-    <ResourceDictionary Source="ButtonStyle.xaml" />
+    <ResourceDictionary Source="SettingsButtonStyle.xaml" />
   </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>
