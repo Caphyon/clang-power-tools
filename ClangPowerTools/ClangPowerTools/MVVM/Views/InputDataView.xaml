@@ -56,7 +56,7 @@
     <TextBox
       Grid.Row="0"
       Grid.ColumnSpan="2"
-      Height="32"
+      Height="30"
       Margin="15,15,5,10"
       VerticalContentAlignment="Center"
       FontSize="15"

@@ -10,6 +10,16 @@
   d:DesignHeight="375"
   d:DesignWidth="770"
   mc:Ignorable="d">
+
+  <!--  Static resources  -->
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Styles/AppResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
   <Grid>
     <Grid.Background>
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
@@ -35,8 +45,13 @@
       Width="180"
       Height="40"
       Command="{Binding ExportSettingsCommand}"
-      Content="Export Settings"
-      FontSize="16" />
+      FontSize="16"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}">
+      <Button.Content>
+        Export Settings
+      </Button.Content>
+    </Button>
 
     <!--  Import Settings  -->
     <Button
@@ -45,8 +60,13 @@
       Width="180"
       Height="40"
       Command="{Binding ImportSettingssCommand}"
-      Content="Import Settings"
-      FontSize="16" />
+      FontSize="16"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}">
+      <Button.Content>
+        Import Settings
+      </Button.Content>
+    </Button>
 
     <!--  Reset Settings  -->
     <Button
@@ -55,8 +75,13 @@
       Width="180"
       Height="40"
       Command="{Binding ResetSettingsCommand}"
-      Content="Reset Settings"
-      FontSize="16" />
+      FontSize="16"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}">
+      <Button.Content>
+        Reset Settings
+      </Button.Content>
+    </Button>
 
 
     <!--  Logout  -->
@@ -66,8 +91,13 @@
       Width="180"
       Height="40"
       Command="{Binding LogoutCommand}"
-      Content="Logout"
-      FontSize="16" />
+      FontSize="16"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}">
+      <Button.Content>
+        Logout
+      </Button.Content>
+    </Button>
 
     <!--  Version  -->
     <TextBlock
