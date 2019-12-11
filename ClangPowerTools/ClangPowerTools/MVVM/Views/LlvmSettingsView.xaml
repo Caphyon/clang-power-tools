@@ -56,15 +56,15 @@
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
     <Grid.RowDefinitions>
-      <RowDefinition Height="15" />
-      <RowDefinition Height="280" />
-      <RowDefinition Height="45" />
-      <RowDefinition Height="15" />
+      <RowDefinition Height="10" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="10" />
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="10" />
-      <ColumnDefinition Width="710" />
+      <ColumnDefinition Width="*" />
       <ColumnDefinition Width="10" />
     </Grid.ColumnDefinitions>
 
@@ -272,6 +272,7 @@
     <StackPanel
       Grid.Row="2"
       Grid.Column="1"
+      Margin="0,5,0,5"
       Orientation="Horizontal">
       <Label
         Width="80"
