@@ -57,8 +57,8 @@
     </Grid.Background>
     <Grid.RowDefinitions>
       <RowDefinition Height="10" />
-      <RowDefinition Height="10*" />
-      <RowDefinition Height="1.5*" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="auto" />
       <RowDefinition Height="10" />
     </Grid.RowDefinitions>
 
@@ -272,6 +272,7 @@
     <StackPanel
       Grid.Row="2"
       Grid.Column="1"
+      Margin="0,5,0,5"
       Orientation="Horizontal">
       <Label
         Width="80"
