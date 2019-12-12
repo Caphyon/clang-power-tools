@@ -18,5 +18,16 @@ namespace ClangPowerTools.Helpers
     {
       if (File.Exists(path)) File.Delete(path);
     }
+
+    public static bool DoesFileExist(string path, string fileName)
+    {
+      var filePath = string.Concat(path, "\\", fileName);
+      return File.Exists(filePath);
+    }
+
+    public static string CreateFullFileName(string path, string fileName)
+    {
+      return string.Concat(path, "\\", fileName);
+    }
   }
 }
