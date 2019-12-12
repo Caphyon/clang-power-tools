@@ -1,4 +1,7 @@
-﻿using EnvDTE;
+﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.Services;
+using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
@@ -66,7 +69,7 @@ namespace ClangPowerTools.Commands
     #endregion
 
 
-    #region Public methods
+    #region Methods
 
 
     /// <summary>
@@ -109,17 +112,12 @@ namespace ClangPowerTools.Commands
       ExecuteFormatCommand();
     }
 
-    
-
-
     private void ExecuteFormatCommand()
     {
       try
       {
         if (ValidExecution(out IWpfTextView view) == false)
           return;
-
-        
 
         var dirPath = string.Empty;
         var filePath = Vsix.GetDocumentPath(view);
@@ -176,17 +174,14 @@ namespace ClangPowerTools.Commands
     {
       SettingsProvider settingsProvider = new SettingsProvider();
       FormatSettingsModel formatSettings = settingsProvider.GetFormatSettingsModel();
-      TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
 
       view = Vsix.GetDocumentView(mDocument);
       if (view == null)
         return false;
 
-      if (false == formatSettings.FormatOnSave)
-        return false;
-
-      if (false == Vsix.IsDocumentDirty(mDocument) && false == mFormatAfterTidyFlag)
-        return false;
+      // TODO fix condition
+      //if (false == Vsix.IsDocumentDirty(mDocument) && false == mFormatAfterTidyFlag)
+      //  return false;
 
       if (false == FileHasExtension(mDocument.FullName, formatSettings.FileExtensions))
         return false;
@@ -197,7 +192,44 @@ namespace ClangPowerTools.Commands
       if (ScriptConstants.kCMakeConfigFile == mDocument.Name.ToLower())
         return false;
 
+      if (IsFileFormatSelected(formatSettings))
+      {
+        var filePath = Vsix.GetDocumentParent(view);
+        if (DoesClangFormatFileExist(filePath) == false) return false;
+      }
+
       return true;
+    }
+
+    private bool IsFileFormatSelected(FormatSettingsModel formatSettings)
+    {
+      return formatSettings.Style == ClangFormatStyle.file;
+    }
+
+    private bool DoesClangFormatFileExist(string filePath)
+    {
+      var solutionPath = string.Empty;
+      var fileName = ".clang-format";
+
+      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+      {
+        solutionPath = (dte as DTE2).Solution.FullName;
+        solutionPath = solutionPath.Substring(0, solutionPath.LastIndexOf('\\'));
+      }
+
+      var pathLength = filePath.Length - solutionPath.Length;
+      var pathElements = filePath.Substring(solutionPath.Length, pathLength).Split('\\');
+
+      var path = solutionPath;
+      if (FileSystem.DoesFileExist(path, fileName)) return true;
+
+      foreach (var item in pathElements)
+      {
+        path = FileSystem.CreateFullFileName(path, item);
+        if (FileSystem.DoesFileExist(path, fileName)) return true;
+      }
+
+      return false;
     }
 
     private bool FileHasExtension(string filePath, string fileExtensions)
