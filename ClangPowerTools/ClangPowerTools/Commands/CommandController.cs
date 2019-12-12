@@ -552,6 +552,9 @@ namespace ClangPowerTools
         return;
       }
 
+      if (false == formatSettings.FormatOnSave)
+        return;
+
       FormatCommand.Instance.FormatOnSave(aDocument, mFormatAfterTidyFlag);
     }
 
