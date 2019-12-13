@@ -411,6 +411,7 @@ namespace ClangPowerTools
       TidyCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       // TODO active document is not triggered because it is called on the main thread (must refactor)
       //FormatCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
+      FormatCommand.Instance.FormatEvent += mCommandController.OnAfterFormatCommand;
 
       CompileCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
       TidyCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;

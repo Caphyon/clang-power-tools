@@ -145,13 +145,11 @@ namespace ClangPowerTools
         case CommandIds.kClangFormat:
           {
             FormatCommand.Instance.RunClangFormat(aCommandUILocation);
-            OnAfterFormatCommand();
             break;
           }
         case CommandIds.kClangFormatToolbarId:
           {
             FormatCommand.Instance.RunClangFormat(aCommandUILocation);
-            OnAfterFormatCommand();
             break;
           }
         case CommandIds.kCompileId:
@@ -281,11 +279,15 @@ namespace ClangPowerTools
       cMakeBuilder.ClearBuildCashe();
     }
 
-    private void OnAfterFormatCommand()
+    public void OnAfterFormatCommand(object sender, FormatCommandEventArgs e)
     {
-      if (isActiveDocument)
+      if(e.CanFormat)
       {
         DisplayFinishedMessage(true);
+      }
+      else
+      {
+        DisplayCannotFormatMessage(true);
       }
     }
 
@@ -374,7 +376,6 @@ namespace ClangPowerTools
       StatusBarHandler.Status("Ready", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
-
     private void DisplayFinishedMessage(bool clearOutput)
     {
       OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[currentCommand].ToUpper()} FINISHED ---\n", clearOutput));
@@ -386,6 +387,13 @@ namespace ClangPowerTools
       OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[currentCommand].ToUpper()} STOPPED ---", clearOutput));
       StatusBarHandler.Status("Command stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
+
+    private void DisplayCannotFormatMessage(bool clearOutput)
+    {
+      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- ERROR ---\n  File not found", clearOutput));
+      StatusBarHandler.Status(OutputWindowConstants.commandName[currentCommand] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+    }
+
 
     private string GetCommandName(string aGuid, int aId)
     {
@@ -442,7 +450,7 @@ namespace ClangPowerTools
 
       if (IsAToolbarCommand(command))
       {
-        if(SolutionInfo.AreToolbarCommandsEnabled() == false)
+        if (SolutionInfo.AreToolbarCommandsEnabled() == false)
         {
           command.Enabled = false;
           return;
@@ -555,6 +563,9 @@ namespace ClangPowerTools
       if (false == formatSettings.FormatOnSave)
         return;
 
+      if (false == Vsix.IsDocumentDirty(aDocument) && false == mFormatAfterTidyFlag)
+        return;
+
       FormatCommand.Instance.FormatOnSave(aDocument, mFormatAfterTidyFlag);
     }
 
@@ -567,7 +578,7 @@ namespace ClangPowerTools
 
     private void BeforeExecuteClangCompile(string aGuid, int aId)
     {
-      CompilerSettingsModel compilerSettings = settingsProvider.GetCompilerSettingsModel(); 
+      CompilerSettingsModel compilerSettings = settingsProvider.GetCompilerSettingsModel();
 
       if (compilerSettings.ClangAfterMSVC == false)
         return;

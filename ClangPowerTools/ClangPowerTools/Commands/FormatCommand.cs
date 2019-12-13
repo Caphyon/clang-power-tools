@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.Helpers;
+﻿using ClangPowerTools.Events;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
@@ -22,6 +23,7 @@ namespace ClangPowerTools.Commands
   public sealed class FormatCommand : ClangCommand
   {
     #region Members
+    public event EventHandler<FormatCommandEventArgs> FormatEvent;
 
     private Document mDocument = null;
     private bool mFormatAfterTidyFlag = false;
@@ -93,7 +95,7 @@ namespace ClangPowerTools.Commands
       {
         FormatAllSelectedDocuments();
       }
-      else // format command is called from toolbar (CommandUILocation.Toolbar == commandUILocation)
+      else
       {
         FormatActiveDocument();
       }
@@ -166,6 +168,8 @@ namespace ClangPowerTools.Commands
         VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error while running clang-format",
           OLEMSGICON.OLEMSGICON_INFO, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
       }
+
+      OnFormatFile(new FormatCommandEventArgs() { CanFormat = true });
     }
 
     #region Validation
@@ -179,10 +183,6 @@ namespace ClangPowerTools.Commands
       if (view == null)
         return false;
 
-      // TODO fix condition
-      //if (false == Vsix.IsDocumentDirty(mDocument) && false == mFormatAfterTidyFlag)
-      //  return false;
-
       if (false == FileHasExtension(mDocument.FullName, formatSettings.FileExtensions))
         return false;
 
@@ -195,10 +195,19 @@ namespace ClangPowerTools.Commands
       if (IsFileFormatSelected(formatSettings))
       {
         var filePath = Vsix.GetDocumentParent(view);
-        if (DoesClangFormatFileExist(filePath) == false) return false;
+        if (DoesClangFormatFileExist(filePath) == false)
+        {
+          OnFormatFile(new FormatCommandEventArgs() { CanFormat = false });
+          return false;
+        }
       }
 
       return true;
+    }
+
+    private void OnFormatFile(FormatCommandEventArgs e)
+    {
+      FormatEvent?.Invoke(this, e);
     }
 
     private bool IsFileFormatSelected(FormatSettingsModel formatSettings)
