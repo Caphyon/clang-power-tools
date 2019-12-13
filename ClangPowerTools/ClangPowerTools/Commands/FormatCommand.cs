@@ -217,25 +217,21 @@ namespace ClangPowerTools.Commands
 
     private bool DoesClangFormatFileExist(string filePath)
     {
-      var solutionPath = string.Empty;
       var fileName = ".clang-format";
 
-      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+      while (string.IsNullOrEmpty(filePath) == false)
       {
-        solutionPath = (dte as DTE2).Solution.FullName;
-        solutionPath = solutionPath.Substring(0, solutionPath.LastIndexOf('\\'));
-      }
+        if (FileSystem.DoesFileExist(filePath, fileName)) return true;
+        
+        if(filePath.Contains("\\"))
+        {
+          filePath = filePath.Remove(filePath.LastIndexOf("\\"));
+        }
+        else
+        {
+          return false;
+        }
 
-      var pathLength = filePath.Length - solutionPath.Length;
-      var pathElements = filePath.Substring(solutionPath.Length, pathLength).Split('\\');
-
-      var path = solutionPath;
-      if (FileSystem.DoesFileExist(path, fileName)) return true;
-
-      foreach (var item in pathElements)
-      {
-        path = FileSystem.CreateFullFileName(path, item);
-        if (FileSystem.DoesFileExist(path, fileName)) return true;
       }
 
       return false;
