@@ -409,14 +409,10 @@ namespace ClangPowerTools
 
       CompileCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       TidyCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
-      // TODO active document is not triggered because it is called on the main thread (must refactor)
-      //FormatCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       FormatCommand.Instance.FormatEvent += mCommandController.OnAfterFormatCommand;
 
       CompileCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
       TidyCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
-      // TODO active document is not triggered because it is called on the main thread (must refactor)
-      //FormatCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
 
       PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
@@ -481,11 +477,10 @@ namespace ClangPowerTools
 
       CompileCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
       TidyCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
-      FormatCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
+      FormatCommand.Instance.FormatEvent -= mCommandController.OnAfterFormatCommand;
 
       CompileCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
       TidyCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
-      FormatCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
 
       PowerShellWrapper.DataHandler -= mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler -= mOutputWindowController.OutputDataErrorReceived;
