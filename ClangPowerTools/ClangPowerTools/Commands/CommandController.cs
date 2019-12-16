@@ -390,7 +390,7 @@ namespace ClangPowerTools
 
     private void DisplayCannotFormatMessage(bool clearOutput)
     {
-      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- ERROR ---\n  File not found", clearOutput));
+      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- ERROR ---\nFormat config file not found.\nCreate the config file and place it the solution folder or select one of the predefined format styles from Settings.", clearOutput));
       StatusBarHandler.Status(OutputWindowConstants.commandName[currentCommand] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
@@ -566,7 +566,7 @@ namespace ClangPowerTools
       if (false == Vsix.IsDocumentDirty(aDocument) && false == mFormatAfterTidyFlag)
         return;
 
-      FormatCommand.Instance.FormatOnSave(aDocument, mFormatAfterTidyFlag);
+      FormatCommand.Instance.FormatOnSave(aDocument);
     }
 
     public void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)

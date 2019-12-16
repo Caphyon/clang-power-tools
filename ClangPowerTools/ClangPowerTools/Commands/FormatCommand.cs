@@ -26,7 +26,7 @@ namespace ClangPowerTools.Commands
     public event EventHandler<FormatCommandEventArgs> FormatEvent;
 
     private Document mDocument = null;
-    private bool mFormatAfterTidyFlag = false;
+    private readonly string configFileName = ".clang-format";
 
     #endregion
 
@@ -107,9 +107,8 @@ namespace ClangPowerTools.Commands
       ExecuteFormatCommand();
     }
 
-    public void FormatOnSave(Document document, bool formatAfterTidyFlag)
+    public void FormatOnSave(Document document)
     {
-      mFormatAfterTidyFlag = formatAfterTidyFlag;
       mDocument = document;
       ExecuteFormatCommand();
     }
@@ -201,7 +200,6 @@ namespace ClangPowerTools.Commands
           return false;
         }
       }
-
       return true;
     }
 
@@ -217,21 +215,15 @@ namespace ClangPowerTools.Commands
 
     private bool DoesClangFormatFileExist(string filePath)
     {
-      var fileName = ".clang-format";
-
       while (string.IsNullOrEmpty(filePath) == false)
       {
-        if (FileSystem.DoesFileExist(filePath, fileName)) return true;
-        
-        if(filePath.Contains("\\"))
-        {
-          filePath = filePath.Remove(filePath.LastIndexOf("\\"));
-        }
-        else
-        {
-          return false;
-        }
+        if (FileSystem.DoesFileExist(filePath, configFileName)) return true;
+        var index = filePath.LastIndexOf("\\");
 
+        if (index > 0)
+          filePath = filePath.Remove(index);
+        else
+          return false;
       }
 
       return false;
