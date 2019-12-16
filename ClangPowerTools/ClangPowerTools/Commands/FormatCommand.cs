@@ -1,4 +1,8 @@
-﻿using EnvDTE;
+﻿using ClangPowerTools.Events;
+using ClangPowerTools.Helpers;
+using ClangPowerTools.Services;
+using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
@@ -19,9 +23,10 @@ namespace ClangPowerTools.Commands
   public sealed class FormatCommand : ClangCommand
   {
     #region Members
+    public event EventHandler<FormatCommandEventArgs> FormatEvent;
 
     private Document mDocument = null;
-    private bool mFormatAfterTidyFlag = false;
+    private readonly string configFileName = ".clang-format";
 
     #endregion
 
@@ -66,7 +71,7 @@ namespace ClangPowerTools.Commands
     #endregion
 
 
-    #region Public methods
+    #region Methods
 
 
     /// <summary>
@@ -90,7 +95,7 @@ namespace ClangPowerTools.Commands
       {
         FormatAllSelectedDocuments();
       }
-      else // format command is called from toolbar (CommandUILocation.Toolbar == commandUILocation)
+      else
       {
         FormatActiveDocument();
       }
@@ -102,15 +107,11 @@ namespace ClangPowerTools.Commands
       ExecuteFormatCommand();
     }
 
-    public void FormatOnSave(Document document, bool formatAfterTidyFlag)
+    public void FormatOnSave(Document document)
     {
-      mFormatAfterTidyFlag = formatAfterTidyFlag;
       mDocument = document;
       ExecuteFormatCommand();
     }
-
-    
-
 
     private void ExecuteFormatCommand()
     {
@@ -118,8 +119,6 @@ namespace ClangPowerTools.Commands
       {
         if (ValidExecution(out IWpfTextView view) == false)
           return;
-
-        
 
         var dirPath = string.Empty;
         var filePath = Vsix.GetDocumentPath(view);
@@ -168,6 +167,8 @@ namespace ClangPowerTools.Commands
         VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error while running clang-format",
           OLEMSGICON.OLEMSGICON_INFO, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
       }
+
+      OnFormatFile(new FormatCommandEventArgs() { CanFormat = true });
     }
 
     #region Validation
@@ -176,16 +177,9 @@ namespace ClangPowerTools.Commands
     {
       SettingsProvider settingsProvider = new SettingsProvider();
       FormatSettingsModel formatSettings = settingsProvider.GetFormatSettingsModel();
-      TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
 
       view = Vsix.GetDocumentView(mDocument);
       if (view == null)
-        return false;
-
-      if (false == formatSettings.FormatOnSave)
-        return false;
-
-      if (false == Vsix.IsDocumentDirty(mDocument) && false == mFormatAfterTidyFlag)
         return false;
 
       if (false == FileHasExtension(mDocument.FullName, formatSettings.FileExtensions))
@@ -197,7 +191,42 @@ namespace ClangPowerTools.Commands
       if (ScriptConstants.kCMakeConfigFile == mDocument.Name.ToLower())
         return false;
 
+      if (IsFileFormatSelected(formatSettings))
+      {
+        var filePath = Vsix.GetDocumentParent(view);
+        if (DoesClangFormatFileExist(filePath) == false)
+        {
+          OnFormatFile(new FormatCommandEventArgs() { CanFormat = false });
+          return false;
+        }
+      }
       return true;
+    }
+
+    private void OnFormatFile(FormatCommandEventArgs e)
+    {
+      FormatEvent?.Invoke(this, e);
+    }
+
+    private bool IsFileFormatSelected(FormatSettingsModel formatSettings)
+    {
+      return formatSettings.Style == ClangFormatStyle.file;
+    }
+
+    private bool DoesClangFormatFileExist(string filePath)
+    {
+      while (string.IsNullOrEmpty(filePath) == false)
+      {
+        if (FileSystem.DoesFileExist(filePath, configFileName)) return true;
+        var index = filePath.LastIndexOf("\\");
+
+        if (index > 0)
+          filePath = filePath.Remove(index);
+        else
+          return false;
+      }
+
+      return false;
     }
 
     private bool FileHasExtension(string filePath, string fileExtensions)

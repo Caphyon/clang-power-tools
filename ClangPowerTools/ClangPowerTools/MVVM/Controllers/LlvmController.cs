@@ -24,7 +24,6 @@ namespace ClangPowerTools.MVVM.Controllers
     private Process process;
     private readonly string versionAlternateUri = "8.0.1";
     private readonly SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
-    private readonly FileSystem fileSystem = new FileSystem();
 
     #endregion
 
@@ -228,20 +227,20 @@ namespace ClangPowerTools.MVVM.Controllers
     private void CreateVersionDirectory(string version)
     {
       var path = settingsPathBuilder.GetLlvmPath(version);
-      fileSystem.CreateDirectory(path);
+      FileSystem.CreateDirectory(path);
     }
 
     private void DeleteLlvmDirectory(string version)
     {
       var path = settingsPathBuilder.GetLlvmPath(version);
-      fileSystem.DeleteDirectory(path);
+      FileSystem.DeleteDirectory(path);
     }
 
     private void DeleteInstallerFile(string version)
     {
       var exeName = string.Concat(LlvmConstants.Llvm, llvmModel.Version, ".exe");
       var path = Path.Combine(settingsPathBuilder.GetLlvmPath(version), exeName);
-      fileSystem.DeleteFile(path);
+      FileSystem.DeleteFile(path);
     }
 
     private bool DoesUninstallExist(string version)
