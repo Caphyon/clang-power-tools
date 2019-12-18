@@ -8,10 +8,10 @@
   Title="Release Notes"
   Width="550"
   Height="720"
-  Topmost="True"
   d:DataContext="{d:DesignInstance local:ReleaseNotesViewModel,
                                    IsDesignTimeCreatable=True}"
   ResizeMode="NoResize"
+  Topmost="True"
   WindowStartupLocation="CenterScreen"
   WindowStyle="ToolWindow"
   mc:Ignorable="d">
@@ -76,7 +76,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 5.4" />
+        Text="version 5.5" />
 
       <ListView
         Grid.Row="3"
@@ -111,28 +111,14 @@
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="• Clang errors after compilation are highlighted using squiggles"
+          Text="• Settings option to always show Error List if clang compile/tidy finishes with errors"
           TextWrapping="Wrap" />
 
         <TextBlock
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="• LLVM version is automatically set as active after installation"
-          TextWrapping="Wrap" />
-
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="• Completely redesigned input data window"
-          TextWrapping="Wrap" />
-
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="• Small UI improvements"
+          Text="• Redesign UI buttons"
           TextWrapping="Wrap" />
 
 
@@ -147,23 +133,15 @@
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="• Clang-tidy flags are missing"
+          Text="• The format command runs on ignored files"
           TextWrapping="Wrap" />
 
         <TextBlock
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="• Alt+tab locks up Visual Studio while in the input data window"
+          Text="• No feedback when .clang-format  config file is missing"
           TextWrapping="Wrap" />
-
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="• LLVM version 8.0.1 is missing from the download list"
-          TextWrapping="Wrap" />
-
       </ListView>
     </Grid>
 
