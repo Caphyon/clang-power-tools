@@ -173,7 +173,7 @@
               HorizontalAlignment="Center"
               FontSize="14"
               Foreground="White"
-              Text="From $29/team/month" />
+              Text="From $6/team/month" />
 
           </Grid>
         </Button.Content>
