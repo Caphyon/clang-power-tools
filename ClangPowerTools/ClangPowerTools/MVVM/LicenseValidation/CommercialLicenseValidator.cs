@@ -32,7 +32,7 @@ namespace ClangPowerTools.MVVM.LicenseValidation
           return false;
 
         List<LicenseModel> licenses = await userTokenHttpResponse.Content.ReadAsAsync<List<LicenseModel>>();
-        return VerifyLicense(licenses);
+        return licenses.Count > 0 ? VerifyLicense(licenses) : false;
       }
       catch (Exception)
       {
@@ -76,7 +76,7 @@ namespace ClangPowerTools.MVVM.LicenseValidation
     private bool CheckExpirationDate(string expirationDate)
     {
       DateTime.TryParse(expirationDate, out DateTime expirationDateTime);
-      return DateTime.Compare(DateTime.Now, expirationDateTime) < 0;
+      return DateTime.Compare(DateTime.Now, expirationDateTime) > 0;
     }
 
     #endregion

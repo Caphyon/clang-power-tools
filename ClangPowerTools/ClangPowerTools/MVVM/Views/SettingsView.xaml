@@ -7,7 +7,7 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   Title="Settings"
   Width="760"
-  Height="480"
+  Height="510"
   Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
   WindowStartupLocation="CenterScreen"
@@ -177,10 +177,10 @@
 
       <Grid.Style>
         <Style TargetType="Grid">
-          <Setter Property="Visibility" Value="Visible" />
+          <Setter Property="Visibility" Value="Hidden" />
           <Style.Triggers>
-            <DataTrigger Binding="{Binding ActiveLicense}" Value="False">
-              <Setter Property="Visibility" Value="Hidden" />
+            <DataTrigger Binding="{Binding ActiveLicense}" Value="True">
+              <Setter Property="Visibility" Value="Visible" />
             </DataTrigger>
           </Style.Triggers>
         </Style>
@@ -233,7 +233,7 @@
         Foreground="Black" />
 
     </Grid>
-    
+
   </Grid>
 
 </Window>

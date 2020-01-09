@@ -86,7 +86,6 @@
     <Compile Include="Events\LicenseEventArgs.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\JoinUtility.cs" />
-    <Compile Include="Helpers\LicenseInfo.cs" />
     <Compile Include="Helpers\RegistryUtility.cs" />
     <Compile Include="Helpers\ScriptGenerator.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
@@ -99,7 +98,7 @@
     <Compile Include="MVVM\LlvmVersions.cs" />
     <Compile Include="MVVM\Interfaces\IAccountValidator.cs" />
     <Compile Include="MVVM\Interfaces\ILicense.cs" />
-    <Compile Include="MVVM\Interfaces\LicenseValidator.cs" />
+    <Compile Include="MVVM\LicenseValidation\LicenseValidator.cs" />
     <Compile Include="MVVM\LicenseValidation\CommercialLicenseValidator.cs" />
     <Compile Include="MVVM\LicenseValidation\LicenseInfo.cs" />
     <Compile Include="MVVM\LicenseValidation\LicenseProvider.cs" />

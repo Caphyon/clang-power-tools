@@ -148,7 +148,7 @@ namespace ClangPowerTools
       {
         case CommandIds.kSettingsId:
           {
-            SettingsCommand.Instance.ShowSettings();
+            await SettingsCommand.Instance.ShowSettingsAsync();
             break;
           }
         case CommandIds.kStopClang:

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using ClangPowerTools.MVVM.LicenseValidation;
+using System.Windows;
 
 namespace ClangPowerTools.Views
 {
@@ -7,10 +8,10 @@ namespace ClangPowerTools.Views
   /// </summary>
   public partial class SettingsView : Window
   {
-    public SettingsView()
+    public SettingsView(bool activeLicense)
     {
       InitializeComponent();
-      DataContext = new SettingsViewModel(this);
+      DataContext = new SettingsViewModel(this, activeLicense);
 
       SettingsProvider.SettingsView = this;
     }

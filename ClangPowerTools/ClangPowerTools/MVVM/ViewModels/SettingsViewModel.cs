@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.Views;
 using System;
 
@@ -11,15 +12,15 @@ namespace ClangPowerTools
     private readonly SettingsHandler settingsHandler = new SettingsHandler();
     private readonly SettingsView settingsView;
 
-    #endregion;
+    #endregion
 
     #region Constructors
 
-    public SettingsViewModel(SettingsView settingsView, bool activeLicense = false)
+    public SettingsViewModel(SettingsView settingsView, bool activeLicense)
     {
       this.settingsView = settingsView;
       settingsView.Closed += OnClosed;
-      ActiveLicense = LicenseInfo.Active;
+      ActiveLicense = activeLicense;
     }
 
     #endregion
