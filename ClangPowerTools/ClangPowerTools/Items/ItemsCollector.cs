@@ -14,23 +14,16 @@ namespace ClangPowerTools
   public class ItemsCollector
   {
     #region Members
-
-    private List<string> mAcceptedFileExtensions;
     private Array selectedItems;
+    private DTE2 dte2;
 
     #endregion
 
     #region Constructor
 
-    public ItemsCollector(List<string> aExtensions = null)
+    public ItemsCollector()
     {
-      if(aExtensions == null)
-      {
-        mAcceptedFileExtensions = new List<string>(ScriptConstants.kAcceptedFileExtensions);
-      }
-
-      mAcceptedFileExtensions = aExtensions;
-      var dte2 = (DTE2)VsServiceProvider.GetService(typeof(DTE));
+      dte2 = (DTE2)VsServiceProvider.GetService(typeof(DTE));
       selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
     }
 
@@ -88,7 +81,6 @@ namespace ClangPowerTools
     public List<string> GetProjectsToIgnore()
     {
       List<string> projectsToIgnore = new List<string>();
-      DTE2 dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
       Array selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
 
       foreach (UIHierarchyItem item in selectedItems)
@@ -201,7 +193,7 @@ namespace ClangPowerTools
         return;
 
       var fileExtension = Path.GetExtension(aItem.Name).ToLower();
-      if (null != mAcceptedFileExtensions && false == mAcceptedFileExtensions.Contains(fileExtension))
+      if (null != ScriptConstants.kAcceptedFileExtensions && false == ScriptConstants.kAcceptedFileExtensions.Contains(fileExtension))
         return;
 
       Items.Add(new CurrentProjectItem(aItem));
