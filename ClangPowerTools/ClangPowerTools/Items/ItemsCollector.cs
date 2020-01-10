@@ -14,8 +14,8 @@ namespace ClangPowerTools
   public class ItemsCollector
   {
     #region Members
-    private Array selectedItems;
-    private DTE2 dte2;
+    private readonly Array selectedItems;
+    private readonly DTE2 dte2;
 
     #endregion
 
