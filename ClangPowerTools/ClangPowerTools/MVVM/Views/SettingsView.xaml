@@ -7,7 +7,7 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   Title="Settings"
   Width="760"
-  Height="510"
+  Height="{Binding Heigth, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
   Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
   WindowStartupLocation="CenterScreen"
@@ -25,7 +25,7 @@
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="*" />
-      <RowDefinition Height="50" />
+      <RowDefinition Height="Auto" />
     </Grid.RowDefinitions>
 
     <Grid.Background>
@@ -115,15 +115,15 @@
     </TabControl>
 
     <Grid
-      x:Name="UpgradeGrid"
+      x:Name="UpgradeFooter"
       Grid.Row="1"
       Background="#272E58">
       <Grid.Style>
         <Style TargetType="Grid">
-          <Setter Property="Visibility" Value="Hidden" />
+          <Setter Property="Visibility" Value="Visible" />
           <Style.Triggers>
-            <DataTrigger Binding="{Binding ActiveLicense}" Value="False">
-              <Setter Property="Visibility" Value="Visible" />
+            <DataTrigger Binding="{Binding ActiveLicense}" Value="True">
+              <Setter Property="Visibility" Value="Collapsed" />
             </DataTrigger>
           </Style.Triggers>
         </Style>
@@ -146,7 +146,7 @@
       <TextBlock
         Grid.Row="0"
         Grid.Column="1"
-        Margin="0,30,0,0"
+        Margin="0,30,0,10"
         HorizontalAlignment="Left"
         FontSize="12"
         Foreground="White"
@@ -164,70 +164,6 @@
         BorderThickness="0"
         Command="{Binding Upgrade}"
         Content="UPGRADE"
-        FontSize="16"
-        FontWeight="Bold"
-        Foreground="Black" />
-
-    </Grid>
-
-    <Grid
-      x:Name="SupportGrid"
-      Grid.Row="1"
-      Background="#272E58">
-
-      <Grid.Style>
-        <Style TargetType="Grid">
-          <Setter Property="Visibility" Value="Hidden" />
-          <Style.Triggers>
-            <DataTrigger Binding="{Binding ActiveLicense}" Value="True">
-              <Setter Property="Visibility" Value="Visible" />
-            </DataTrigger>
-          </Style.Triggers>
-        </Style>
-      </Grid.Style>
-
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="35" />
-        <ColumnDefinition />
-        <ColumnDefinition Width="35" />
-      </Grid.ColumnDefinitions>
-
-      <TextBlock
-        Grid.Column="1"
-        Margin="0,5,0,0"
-        HorizontalAlignment="Left"
-        FontSize="15"
-        Foreground="White"
-        Text="Having issues?" />
-
-      <!--  Text="Everyting you want to know about out product and services. We're here to help"  -->
-
-      <!--  If you need support regarding Clang Power Tools, please let us know  -->
-
-      <!--  We're here to help, just fill out the form from our  and we'll get back to you as soon as we can.  -->
-
-
-      <TextBlock
-        Grid.Row="0"
-        Grid.Column="1"
-        Margin="0,30,0,0"
-        HorizontalAlignment="Left"
-        FontSize="11"
-        Foreground="White"
-        Text="Everyting you want to know about our product and services. We're here to help."
-        TextWrapping="Wrap" />
-
-      <Button
-        Grid.Column="1"
-        Width="110"
-        Height="30"
-        Margin="0,10,0,0"
-        HorizontalAlignment="Right"
-        VerticalAlignment="Top"
-        Background="#FFBF31"
-        BorderThickness="0"
-        Command="{Binding Upgrade}"
-        Content="SUPPORT"
         FontSize="16"
         FontWeight="Bold"
         Foreground="Black" />
