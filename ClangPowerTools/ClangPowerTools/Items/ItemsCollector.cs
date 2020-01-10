@@ -45,14 +45,13 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    // TODO : Refactor this method. Generics can be a solution.
     public void CollectActiveProjectItem()
     {
       try
       {
         DTE dte = (DTE)VsServiceProvider.GetService(typeof(DTE));
         Document activeDocument = dte.ActiveDocument;
-
+  
         if (activeDocument == null)
           return;
 
