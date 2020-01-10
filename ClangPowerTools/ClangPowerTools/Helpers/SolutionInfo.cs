@@ -131,16 +131,14 @@ namespace ClangPowerTools.Helpers
 
       ItemsCollector itemCollector = new ItemsCollector();
       itemCollector.CollectActiveProjectItem();
-      List<string> selectedItems = new List<string>();
+      string activeItem = itemCollector.Items[0].GetName().ToLower();
 
       if (itemCollector.HaveItems == false)
       {
         return false;
       }
 
-      itemCollector.Items.ForEach(e => selectedItems.Add(e.GetName().ToLower()));
-
-      var fileExtension = Path.GetExtension(selectedItems.FirstOrDefault());
+      var fileExtension = Path.GetExtension(activeItem);
       return ScriptConstants.kAcceptedFileExtensions.Contains(fileExtension);
     }
 
