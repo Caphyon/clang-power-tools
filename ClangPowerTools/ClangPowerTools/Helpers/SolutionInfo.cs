@@ -109,7 +109,6 @@ namespace ClangPowerTools.Helpers
         return false;
       }
 
-
       foreach (var item in selectedItems)
       {
         var fileExtension = Path.GetExtension(item).ToLower();
