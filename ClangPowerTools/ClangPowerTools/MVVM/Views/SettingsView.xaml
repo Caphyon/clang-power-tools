@@ -2,6 +2,7 @@
   x:Class="ClangPowerTools.Views.SettingsView"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:ClangPowerTools.MVVM.Views.Components"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools.Views"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -114,61 +115,7 @@
       </TabItem>
     </TabControl>
 
-    <Grid
-      x:Name="UpgradeFooter"
-      Grid.Row="1"
-      Background="#272E58">
-      <Grid.Style>
-        <Style TargetType="Grid">
-          <Setter Property="Visibility" Value="Visible" />
-          <Style.Triggers>
-            <DataTrigger Binding="{Binding ActiveLicense}" Value="True">
-              <Setter Property="Visibility" Value="Collapsed" />
-            </DataTrigger>
-          </Style.Triggers>
-        </Style>
-      </Grid.Style>
-
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="35" />
-        <ColumnDefinition />
-        <ColumnDefinition Width="35" />
-      </Grid.ColumnDefinitions>
-
-      <TextBlock
-        Grid.Column="1"
-        Margin="0,5,0,0"
-        HorizontalAlignment="Left"
-        FontSize="15"
-        Foreground="White"
-        Text="Using Clang Power Tools commercially?" />
-
-      <TextBlock
-        Grid.Row="0"
-        Grid.Column="1"
-        Margin="0,30,0,10"
-        HorizontalAlignment="Left"
-        FontSize="12"
-        Foreground="White"
-        Text="We offer a Commercial Use License just perfect for your team."
-        TextWrapping="Wrap" />
-
-      <Button
-        Grid.Column="1"
-        Width="110"
-        Height="30"
-        Margin="0,10,0,0"
-        HorizontalAlignment="Right"
-        VerticalAlignment="Top"
-        Background="#FFBF31"
-        BorderThickness="0"
-        Command="{Binding Upgrade}"
-        Content="UPGRADE"
-        FontSize="16"
-        FontWeight="Bold"
-        Foreground="Black" />
-
-    </Grid>
+    <controls:BuyNowFooter Grid.Row="1" />
 
   </Grid>
 

@@ -43,7 +43,7 @@ namespace ClangPowerTools
 
     private void UpgradeAction()
     {
-      Process.Start(new ProcessStartInfo("https://clangpowertools.com/download.html#pricing"));
+      Process.Start(new ProcessStartInfo("https://clangpowertools.com/download.html"));
     }
 
     private void OpenBlogAction()

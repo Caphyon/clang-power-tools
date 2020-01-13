@@ -1,7 +1,10 @@
 ﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.Views;
 using System;
+using System.Diagnostics;
+using System.Windows.Input;
 
 namespace ClangPowerTools
 {
@@ -9,11 +12,13 @@ namespace ClangPowerTools
   {
     #region Members
 
+    private ICommand upgradeCommand;
+
     private readonly SettingsHandler settingsHandler = new SettingsHandler();
     private readonly SettingsView settingsView;
 
     private const int COMMERCIAL_LICENSE_HEIGTH = 460;
-    private const int PERSONAL_LICENSE_HEIGTH = 510;
+    private const int PERSONAL_LICENSE_HEIGTH = 530;
 
     #endregion
 
@@ -35,14 +40,36 @@ namespace ClangPowerTools
 
     public int Heigth { get; set; }
 
+    public bool CanExecute
+    {
+      get
+      {
+        return true;
+      }
+    }
+
+    public ICommand Upgrade
+    {
+      get => upgradeCommand ?? (upgradeCommand = new RelayCommand(() => UpgradeAction(), () => CanExecute));
+    }
+
     #endregion
 
-    #region Methods
+    #region Public Methods
 
     public void OnClosed(object sender, EventArgs e)
     {
       settingsHandler.SaveSettings();
       settingsView.Closed -= OnClosed;
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private void UpgradeAction()
+    {
+      Process.Start(new ProcessStartInfo("https://clangpowertools.com/download.html"));
     }
 
     #endregion
