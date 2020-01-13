@@ -14,23 +14,16 @@ namespace ClangPowerTools
   public class ItemsCollector
   {
     #region Members
-
-    private List<string> mAcceptedFileExtensions;
-    private Array selectedItems;
+    private readonly Array selectedItems;
+    private readonly DTE2 dte2;
 
     #endregion
 
     #region Constructor
 
-    public ItemsCollector(List<string> aExtensions = null)
+    public ItemsCollector()
     {
-      if(aExtensions == null)
-      {
-        mAcceptedFileExtensions = new List<string>(ScriptConstants.kAcceptedFileExtensions);
-      }
-
-      mAcceptedFileExtensions = aExtensions;
-      var dte2 = (DTE2)VsServiceProvider.GetService(typeof(DTE));
+      dte2 = (DTE2)VsServiceProvider.GetService(typeof(DTE));
       selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
     }
 
@@ -45,7 +38,6 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    // TODO : Refactor this method. Generics can be a solution.
     public void CollectActiveProjectItem()
     {
       try
@@ -53,20 +45,21 @@ namespace ClangPowerTools
         DTE dte = (DTE)VsServiceProvider.GetService(typeof(DTE));
         Document activeDocument = dte.ActiveDocument;
 
-        if (activeDocument == null)
-          return;
-
+        if (activeDocument == null) return;
+ 
         IItem item = null;
+        var projectName = activeDocument.ProjectItem.ContainingProject.FullName;
+        
         if (SolutionInfo.IsOpenFolderModeActive())
         {
           item = new CurrentDocument(activeDocument);
+          Items.Add(item);
         }
-        else
+        else if (string.IsNullOrWhiteSpace(projectName) == false)
         {
           item = new CurrentProjectItem(activeDocument.ProjectItem);
+          Items.Add(item);
         }
-
-        Items.Add(item);
       }
       catch (Exception e)
       {
@@ -89,7 +82,6 @@ namespace ClangPowerTools
     public List<string> GetProjectsToIgnore()
     {
       List<string> projectsToIgnore = new List<string>();
-      DTE2 dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
       Array selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
 
       foreach (UIHierarchyItem item in selectedItems)
@@ -202,7 +194,7 @@ namespace ClangPowerTools
         return;
 
       var fileExtension = Path.GetExtension(aItem.Name).ToLower();
-      if (null != mAcceptedFileExtensions && false == mAcceptedFileExtensions.Contains(fileExtension))
+      if (null != ScriptConstants.kAcceptedFileExtensions && false == ScriptConstants.kAcceptedFileExtensions.Contains(fileExtension))
         return;
 
       Items.Add(new CurrentProjectItem(aItem));
@@ -245,7 +237,6 @@ namespace ClangPowerTools
       }
     }
 
-
     private void GetProjectItem(Project aProject)
     {
       foreach (var item in aProject.ProjectItems)
@@ -257,7 +248,6 @@ namespace ClangPowerTools
         GetProjectItem(projectItem);
       }
     }
-
 
     private void GetProjectItem(Solution aSolution)
     {

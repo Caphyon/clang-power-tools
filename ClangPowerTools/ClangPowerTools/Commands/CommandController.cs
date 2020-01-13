@@ -433,7 +433,7 @@ namespace ClangPowerTools
         return;
       var command = (OleMenuCommand)sender;
 
-      var itemsCollector = new ItemsCollector(ScriptConstants.kAcceptedFileExtensions);
+      var itemsCollector = new ItemsCollector();
       itemsCollector.CollectSelectedProjectItems();
       command.Enabled = itemsCollector.HaveItems;
     }

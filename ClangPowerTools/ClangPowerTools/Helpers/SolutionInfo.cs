@@ -102,27 +102,23 @@ namespace ClangPowerTools.Helpers
       {
         return false;
       }
-      itemCollector.Items.ForEach(i => selectedItems.Add(i.GetName()));
+      itemCollector.Items.ForEach(e => selectedItems.Add(e.GetName()));
 
       if (selectedItems.Count == 0)
       {
         return false;
       }
 
-      var extensions = ScriptConstants.kAcceptedFileExtensions;
-      extensions.Add(".vcxproj");
-
       foreach (var item in selectedItems)
       {
         var fileExtension = Path.GetExtension(item).ToLower();
-        if (extensions.Contains(fileExtension))
+        if (ScriptConstants.kAcceptedFileExtensions.Contains(fileExtension))
         {
           return true;
         }
       }
 
       return false;
-
     }
 
     internal static bool AreToolbarCommandsEnabled()
@@ -134,18 +130,15 @@ namespace ClangPowerTools.Helpers
 
       ItemsCollector itemCollector = new ItemsCollector();
       itemCollector.CollectActiveProjectItem();
-      List<string> selectedItems = new List<string>();
 
       if (itemCollector.HaveItems == false)
       {
         return false;
       }
 
-      itemCollector.Items.ForEach(i => selectedItems.Add(i.GetName()));
-
-      var fileExtension = Path.GetExtension(selectedItems.FirstOrDefault()).ToLower();
+      string activeItem = itemCollector.Items[0].GetName().ToLower();
+      var fileExtension = Path.GetExtension(activeItem);
       return ScriptConstants.kAcceptedFileExtensions.Contains(fileExtension);
-
     }
 
     #endregion

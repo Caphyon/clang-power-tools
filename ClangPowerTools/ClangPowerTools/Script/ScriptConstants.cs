@@ -17,7 +17,8 @@ namespace ClangPowerTools
         ".cxx",
         ".c++",
         ".cp",
-        ".h"
+        ".h",
+        ".vcxproj"
       };
 
     public const string kCMakeConfigFile = "cmakelists.txt";
