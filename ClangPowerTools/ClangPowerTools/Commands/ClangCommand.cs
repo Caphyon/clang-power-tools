@@ -23,10 +23,6 @@ namespace ClangPowerTools
     protected static RunningProcesses mRunningProcesses = new RunningProcesses();
     protected List<string> mDirectoriesPath = new List<string>();
     private static bool stopCommand = false;
-
-    //private Commands2 mCommand;
-
-    private const string kVs15Version = "2017";
     private readonly Dictionary<string, string> mVsVersions = new Dictionary<string, string>
     {
       {"11.0", "2010"},
@@ -89,7 +85,6 @@ namespace ClangPowerTools
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {
         var dte2 = dte as DTE2;
-        //mCommand = dte2.Commands as Commands2;
         VsEdition = dte2.Edition;
         mVsVersions.TryGetValue(dte2.Version, out string version);
         VsVersion = version;
