@@ -75,19 +75,14 @@ namespace ClangPowerTools.Commands
       _ = Task.Run(() =>
       {
         SettingsProvider settingsProvider = new SettingsProvider();
-        FormatSettingsModel formatSettingsModel = settingsProvider.GetFormatSettingsModel();
-        string filesToIgnore = formatSettingsModel.FilesToIgnore;
+        ItemsCollector itemsCollector = new ItemsCollector();
+        SettingsHandler settingsHandler = new SettingsHandler();
 
-        if (filesToIgnore.Length > 0)
-        {
-          ItemsCollector itemsCollector = new ItemsCollector();
-          List<string> documentsToIgnore = itemsCollector.GetFilesToIgnore();
-          SettingsHandler settingsHandler = new SettingsHandler();
+        FormatSettingsModel settings = settingsProvider.GetFormatSettingsModel();
+        List<string> documentsToIgnore = itemsCollector.GetFilesToIgnore();
 
-          FormatSettingsModel settings = formatSettingsModel;
-          AddItemsToIgnore(documentsToIgnore, settings, "FilesToIgnore");
-          settingsHandler.SaveSettings();
-        }
+        AddItemsToIgnore(documentsToIgnore, settings, "FilesToIgnore");
+        settingsHandler.SaveSettings();
       });
     }
 
