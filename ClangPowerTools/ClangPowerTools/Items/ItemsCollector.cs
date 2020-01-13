@@ -44,21 +44,22 @@ namespace ClangPowerTools
       {
         DTE dte = (DTE)VsServiceProvider.GetService(typeof(DTE));
         Document activeDocument = dte.ActiveDocument;
-  
-        if (activeDocument == null)
-          return;
 
+        if (activeDocument == null) return;
+ 
         IItem item = null;
+        var projectName = activeDocument.ProjectItem.ContainingProject.FullName;
+        
         if (SolutionInfo.IsOpenFolderModeActive())
         {
           item = new CurrentDocument(activeDocument);
+          Items.Add(item);
         }
-        else
+        else if (string.IsNullOrWhiteSpace(projectName) == false)
         {
           item = new CurrentProjectItem(activeDocument.ProjectItem);
+          Items.Add(item);
         }
-
-        Items.Add(item);
       }
       catch (Exception e)
       {
@@ -236,7 +237,6 @@ namespace ClangPowerTools
       }
     }
 
-
     private void GetProjectItem(Project aProject)
     {
       foreach (var item in aProject.ProjectItems)
@@ -248,7 +248,6 @@ namespace ClangPowerTools
         GetProjectItem(projectItem);
       }
     }
-
 
     private void GetProjectItem(Solution aSolution)
     {
