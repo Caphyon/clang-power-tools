@@ -1,6 +1,4 @@
-﻿using ClangPowerTools.Helpers;
-using ClangPowerTools.MVVM.Commands;
-using ClangPowerTools.MVVM.LicenseValidation;
+﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.Views;
 using System;
 using System.Diagnostics;

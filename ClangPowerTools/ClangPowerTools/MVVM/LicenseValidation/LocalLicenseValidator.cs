@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.MVVM.Interfaces;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace ClangPowerTools.MVVM.LicenseValidation
 {
@@ -13,7 +12,7 @@ namespace ClangPowerTools.MVVM.LicenseValidation
     /// <returns>True if the license is active. False otherwise</returns>
     public override Task<bool> ValidateAsync()
     {
-      return Task.FromResult(string.IsNullOrWhiteSpace(GetToken()) == false);
+      return Task.FromResult(GetToken(out _));
     }
 
     #endregion

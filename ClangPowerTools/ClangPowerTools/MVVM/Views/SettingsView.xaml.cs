@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.MVVM.LicenseValidation;
-using System.Windows;
+﻿using System.Windows;
 
 namespace ClangPowerTools.Views
 {
