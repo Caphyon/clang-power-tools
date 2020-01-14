@@ -281,7 +281,8 @@ namespace ClangPowerTools
 
     public void OnAfterFormatCommand(object sender, FormatCommandEventArgs e)
     {
-      if(e.CanFormat)
+      currentCommand = CommandIds.kClangFormat;
+      if (e.CanFormat)
       {
         DisplayFinishedMessage(true);
       }
@@ -391,7 +392,7 @@ namespace ClangPowerTools
     private void DisplayCannotFormatMessage(bool clearOutput)
     {
       OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- ERROR ---\nFormat config file not found.\nCreate the config file and place it the solution folder or select one of the predefined format styles from Settings.", clearOutput));
-      StatusBarHandler.Status(OutputWindowConstants.commandName[currentCommand] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+      StatusBarHandler.Status("Command stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
 
