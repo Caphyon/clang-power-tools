@@ -17,6 +17,6 @@ namespace ClangPowerTools.MVVM.Interfaces
     /// Get the user license token value
     /// </summary>
     /// <returns>User license token value</returns>
-    string GetToken();
+    bool GetToken(out string jwt);
   }
 }
