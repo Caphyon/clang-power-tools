@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using Task = System.Threading.Tasks.Task;
 using ClangPowerTools.MVVM.Controllers;
+using ClangPowerTools.MVVM.LicenseValidation;
 
 namespace ClangPowerTools
 {
@@ -105,10 +106,10 @@ namespace ClangPowerTools
     public async void Execute(object sender, EventArgs e)
     {
       var freeTrialController = new FreeTrialController();
-      var licenseController = new LicenseController();
+      //var licenseController = new LicenseController();
 
-      bool tokenExists = true; // licenseController.TokenExists(new TokenModel(), out TokenModel newToken);
-      bool activeAccount = true; // (await licenseController.CheckUserTokenHttpResultAsync(newToken)).IsSuccessStatusCode;
+      bool tokenExists = await new LocalLicenseValidator().ValidateAsync();
+      bool activeAccount = await new PersonalLicenseValidator().ValidateAsync();
       
       // First app install - choose license
       if (freeTrialController.WasEverInTrial() == false && activeAccount == false)
@@ -127,7 +128,7 @@ namespace ClangPowerTools
       }
 
       // Session Expired
-      if (freeTrialController.IsActive() == false && activeAccount == false && tokenExists)
+      if (freeTrialController.IsActive() == false && activeAccount == false && tokenExists == true)
       {
         LoginView loginView = new LoginView();
         loginView.ShowDialog();
