@@ -67,9 +67,9 @@ namespace ClangPowerTools.Commands
 
     public async Task ShowSettingsAsync()
     {
-      bool acticeLicense = await new CommercialLicenseValidator().ValidateAsync();
+      bool activeLicense = await new CommercialLicenseValidator().ValidateAsync();
 
-      SettingsView settingsView = new SettingsView(acticeLicense);
+      SettingsView settingsView = new SettingsView(activeLicense);
       settingsView.ShowDialog();
     }
 

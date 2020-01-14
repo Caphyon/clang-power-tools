@@ -1,11 +1,8 @@
-﻿using ClangPowerTools.MVVM.Interfaces;
-using ClangPowerTools.MVVM.Models;
-using ClangPowerTools.MVVM.WebApi;
+﻿using ClangPowerTools.MVVM.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace ClangPowerTools.MVVM.LicenseValidation
@@ -13,7 +10,7 @@ namespace ClangPowerTools.MVVM.LicenseValidation
   /// <summary>
   /// Contains the logic for the commercial license verification
   /// </summary>
-  public class CommercialLicenseValidator : LicenseValidator
+  public class CommercialLicenseValidator : PersonalLicenseValidator
   {
     #region ILicenseValidator Implementation
 
@@ -23,15 +20,17 @@ namespace ClangPowerTools.MVVM.LicenseValidation
     /// <returns>True if the user license is active. False otherwise.</returns>
     public override async Task<bool> ValidateAsync()
     {
-      var token = GetToken();
       try
       {
-        HttpResponseMessage userTokenHttpResponse = await GetTokenHttpResponseAsync(token);
-
-        if (userTokenHttpResponse.IsSuccessStatusCode == false)
+        if (GetToken(out string token) == false)
           return false;
 
-        List<LicenseModel> licenses = await userTokenHttpResponse.Content.ReadAsAsync<List<LicenseModel>>();
+        KeyValuePair<bool, HttpResponseMessage> httpResponse = await CheckUserAccountAsync(token);
+
+        if (httpResponse.Key == false)
+          return false;
+
+        List<LicenseModel> licenses = await httpResponse.Value.Content.ReadAsAsync<List<LicenseModel>>();
         return licenses.Count > 0 ? VerifyLicense(licenses) : false;
       }
       catch (Exception)
@@ -43,20 +42,6 @@ namespace ClangPowerTools.MVVM.LicenseValidation
     #endregion
 
     #region Private Methods
-
-    /// <summary>
-    /// Get the HTTP server response for user token
-    /// </summary>
-    /// <param name="token">The user license token</param>
-    /// <returns>The HTTP server response for the given token</returns>
-    private async Task<HttpResponseMessage> GetTokenHttpResponseAsync(string token)
-    {
-      if (ApiUtility.ApiClient == null)
-        ApiUtility.InitializeApiClient();
-
-      ApiUtility.ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-      return await ApiUtility.ApiClient.GetAsync(WebApiUrl.licenseUrl);
-    }
 
     /// <summary>
     /// Verify if at least one of the user licenses is active. 
