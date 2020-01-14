@@ -1,7 +1,8 @@
-﻿using System.IO;
+﻿using ClangPowerTools.MVVM.Interfaces;
+using System.IO;
 using System.Threading.Tasks;
 
-namespace ClangPowerTools.MVVM.Interfaces
+namespace ClangPowerTools.MVVM.LicenseValidation
 {
   /// <summary>
   /// Contains the logic of token retrival letting license validation logic
@@ -24,7 +25,7 @@ namespace ClangPowerTools.MVVM.Interfaces
     /// Get the license token path
     /// </summary>
     /// <returns>License token path if the file exists. Empty string otherwise.</returns>
-    public string GetTokenPath()
+    private string GetTokenPath()
     {
       SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
       string filePath = settingsPathBuilder.GetPath(fileName);
@@ -36,16 +37,24 @@ namespace ClangPowerTools.MVVM.Interfaces
     /// Get the content of the license token
     /// </summary>
     /// <returns>Content of license token</returns>
-    public string GetToken()
+
+    /// <summary>
+    /// Get the content of the license token
+    /// </summary>
+    /// <param name="jwt">Content of license token</param>
+    /// <returns>True if the content of license token was succesfully extracted. False otherwise</returns>
+    public bool GetToken(out string jwt)
     {
+      jwt = null;
       var filePath = GetTokenPath();
+      
       if (string.IsNullOrWhiteSpace(filePath))
-        return string.Empty;
+        return false;
 
       using var streamReader = new StreamReader(filePath);
-      var jwt = streamReader.ReadLine();
+      jwt = streamReader.ReadLine();
 
-      return jwt;
+      return string.IsNullOrWhiteSpace(jwt) == false;
     }
 
     /// <summary>
