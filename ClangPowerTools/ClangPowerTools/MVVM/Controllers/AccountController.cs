@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Events;
+using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.MVVM.WebApi;
 using Newtonsoft.Json;
 using System;
@@ -21,6 +22,7 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public async Task<bool> LoginAsync(UserModel userModel)
     {
+      bool tokenExist = await new LocalLicenseValidator().ValidateAsync();
       try
       {
         HttpResponseMessage userAccoutHttpRestul = await GetUserAccountHttpRestulAsync(userModel);
@@ -35,18 +37,18 @@ namespace ClangPowerTools.MVVM.Controllers
           }
 
           SaveToken(tokenModel.jwt);
-          OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(true));
+          OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(true, tokenExist));
           return true;
         }
         else
         {
-          OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(false));
+          OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(false, tokenExist));
           return false;
         }
       }
       catch (Exception)
       {
-        OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(false));
+        OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(false, tokenExist));
         return false;
       }
     }

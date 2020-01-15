@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.Events;
 using ClangPowerTools.Helpers;
+using ClangPowerTools.MVVM.LicenseValidation;
 using System;
 using System.Threading.Tasks;
 
@@ -10,7 +11,6 @@ namespace ClangPowerTools.MVVM.Controllers
     #region Members
 
     public static event EventHandler<LicenseEventArgs> OnLicenseStatusChanced;
-    private readonly string fileName = "ctpjwt";
 
     #endregion
 
@@ -19,18 +19,12 @@ namespace ClangPowerTools.MVVM.Controllers
     public async Task<bool> CheckLicenseAsync()
     {
       bool networkConnection = await NetworkUtility.CheckInternetConnectionAsync();
-      return true;
 
-      //var token = GetToken();
-      //try
-      //{
-      //  HttpResponseMessage userTokenHttpResponse = await GetTokenHttpResponseAsync(token);
-      //  if (userTokenHttpResponse.IsSuccessStatusCode == false)
-      //    return false;
+      bool tokenExists = await new LocalLicenseValidator().ValidateAsync();
+      bool licenseStatus = networkConnection ? await new PersonalLicenseValidator().ValidateAsync() : tokenExists;
 
-      //  List<LicenseModel> licenses = await userTokenHttpResponse.Content.ReadAsAsync<List<LicenseModel>>();
-      //}
-
+      OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(licenseStatus, tokenExists));
+      return licenseStatus;
     }
 
     #endregion
