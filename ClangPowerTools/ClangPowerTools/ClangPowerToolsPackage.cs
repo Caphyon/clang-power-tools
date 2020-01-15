@@ -333,10 +333,8 @@ namespace ClangPowerTools
         FreeTrialController freeTrialController = new FreeTrialController();
         bool activeLicense = await new LocalLicenseValidator().ValidateAsync();
 
-        if (activeLicense == false)
-        {
+        if (activeLicense)
           freeTrialController.MarkAsExpired();
-        }
 
         ReleaseNotesView releaseNotesView = new ReleaseNotesView();
         releaseNotesView.Show();
