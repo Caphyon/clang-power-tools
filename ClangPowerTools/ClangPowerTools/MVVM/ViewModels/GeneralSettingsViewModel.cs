@@ -10,14 +10,17 @@ namespace ClangPowerTools
   public class GeneralSettingsViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
   {
     #region Members
+
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private SettingsHandler settingsHandler = new SettingsHandler();
+    private readonly SettingsHandler settingsHandler = new SettingsHandler();
     private GeneralSettingsModel generalSettingsModel;
+
     private ICommand logoutCommand;
     private ICommand exportSettingsCommand;
     private ICommand importSettingsCommand;
     private ICommand resetSettingsCommand;
+
     #endregion
 
     #region Constructor
@@ -32,6 +35,7 @@ namespace ClangPowerTools
 
 
     #region Properties
+
     public bool CanExecute
     {
       get
@@ -52,10 +56,11 @@ namespace ClangPowerTools
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GeneralSettingsModel"));
       }
     }
+
     #endregion
 
-
     #region Commands
+
     public ICommand LogoutCommand
     {
       get => logoutCommand ?? (logoutCommand = new RelayCommand(() => Logout(), () => CanExecute));
@@ -75,9 +80,11 @@ namespace ClangPowerTools
     {
       get => resetSettingsCommand ?? (resetSettingsCommand = new RelayCommand(() => ResetSettings(), () => CanExecute));
     }
+
     #endregion
 
     #region Methods
+
     private void Logout()
     {
       var settingsPathBuilder = new SettingsPathBuilder();
@@ -122,6 +129,7 @@ namespace ClangPowerTools
     {
       MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
+
     #endregion
   }
 }
