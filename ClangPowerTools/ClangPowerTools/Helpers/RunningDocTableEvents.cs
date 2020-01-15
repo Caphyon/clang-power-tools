@@ -89,7 +89,7 @@ namespace ClangPowerTools
       }
       catch (Exception e)     
       {
-        MessageBox.Show("Error while running clang-format. " + e.Message, "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show("Error while running clang command on save. " + e.Message, "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
       
       return VSConstants.S_OK;
