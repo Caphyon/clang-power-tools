@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace ClangPowerTools
 {
@@ -84,10 +85,11 @@ namespace ClangPowerTools
         if (null == document)
           return VSConstants.S_OK;
 
-        BeforeSave(this, FindDocumentByCookie(docCookie));
+        BeforeSave(this, document);
       }
-      catch (Exception)
+      catch (Exception e)     
       {
+        MessageBox.Show("Error while running clang command on save. " + e.Message, "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
       
       return VSConstants.S_OK;
