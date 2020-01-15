@@ -49,7 +49,7 @@ namespace ClangPowerTools.Helpers
       }
     }
 
-    public bool Exists(string registryName) => Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryName) != null;
+    public bool Exists() => Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryName) != null;
 
     #endregion
 
