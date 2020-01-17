@@ -101,28 +101,6 @@
           </Style>
         </ListView.ItemContainerStyle>
 
-        <!--  What's New  -->
-        <TextBlock
-          Margin="5,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="22"
-          Text="What's New" />
-
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="• Settings option to always show Error List if clang compile/tidy finishes with errors"
-          TextWrapping="Wrap" />
-
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="• Redesign UI buttons"
-          TextWrapping="Wrap" />
-
-
         <!--  Bug Fixes  -->
         <TextBlock
           Margin="5,35,0,0"
@@ -134,14 +112,28 @@
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="• The format command runs on ignored files"
+          Text="• Format on save doesn't work when the config file is missing"
           TextWrapping="Wrap" />
 
         <TextBlock
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="• No feedback when .clang-format  config file is missing"
+          Text="• Adding files to ignore list from context menu doesn't work"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="• Crash when running clang commands for files without a Visual Studio Solution"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="• Logging out doesn't refresh the UI"
           TextWrapping="Wrap" />
       </ListView>
     </Grid>
