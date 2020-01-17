@@ -77,7 +77,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 5.5" />
+        Text="version 5.5.1" />
 
       <ListView
         Grid.Row="3"
