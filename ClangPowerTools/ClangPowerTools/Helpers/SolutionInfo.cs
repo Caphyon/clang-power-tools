@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;

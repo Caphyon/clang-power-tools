@@ -19,16 +19,6 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region Properties
-
-    public bool CanExecute
-    {
-      get
-      {
-        return true;
-      }
-    }
-
     #region Constructor
 
     public LicenseViewModel() { }
@@ -39,6 +29,16 @@ namespace ClangPowerTools
     }
 
     #endregion
+
+    #region Properties
+
+    public bool CanExecute
+    {
+      get
+      {
+        return true;
+      }
+    }
 
     #endregion
 

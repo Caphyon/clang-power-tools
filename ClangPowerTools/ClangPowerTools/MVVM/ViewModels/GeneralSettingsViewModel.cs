@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Views;
+using ClangPowerTools.Views;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
@@ -90,11 +91,10 @@ namespace ClangPowerTools
       var settingsPathBuilder = new SettingsPathBuilder();
       string path = settingsPathBuilder.GetPath("ctpjwt");
 
-      if (File.Exists(path) == true)
-      {
+      if (File.Exists(path))
         File.Delete(path);
-      }
 
+      SettingsProvider.SettingsView.Close();
       LoginView loginView = new LoginView();
       loginView.ShowDialog();
     }
