@@ -25,11 +25,11 @@
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
     <Grid.RowDefinitions>
-      <RowDefinition Height="40" />
-      <RowDefinition Height="60" />
-      <RowDefinition Height="60" />
-      <RowDefinition Height="60" />
-      <RowDefinition Height="60" />
+      <RowDefinition Height="70" />
+      <RowDefinition Height="50" />
+      <RowDefinition Height="50" />
+      <RowDefinition Height="50" />
+      <RowDefinition Height="50" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
@@ -108,8 +108,6 @@
       FontFamily="SegoeUI"
       FontSize="10"
       Text="{Binding GeneralSettingsModel.Version}" />
-
-
 
   </Grid>
 

@@ -2,6 +2,7 @@
 using ClangPowerTools.Error;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Controllers;
+using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
@@ -60,7 +61,6 @@ namespace ClangPowerTools
     private ErrorWindowController mErrorWindowController;
     private OutputWindowController mOutputWindowController;
     private CommandController mCommandController;
-    private LicenseController mLicenseController;
     private SettingsHandler mSettingsHandler;
     private SettingsProvider mSettingsProvider;
 
@@ -141,11 +141,11 @@ namespace ClangPowerTools
       mSettingsHandler.InitializeSettings();
 
       await mCommandController.InitializeCommandsAsync(this);
-      mLicenseController = new LicenseController();
-
       mSettingsProvider = new SettingsProvider();
 
       RegisterToEvents();
+      
+      LicenseController mLicenseController = new LicenseController();
       await mLicenseController.CheckLicenseAsync();
 
       await base.InitializeAsync(cancellationToken, progress);
@@ -316,10 +316,10 @@ namespace ClangPowerTools
     {
       string version = mSettingsProvider.GetGeneralSettingsModel().Version;
       ShowToolbar(version);
-      UpdateVersion(version);
+      UpdateVersionAsync(version).SafeFireAndForget();
     }
 
-    private void UpdateVersion(string version)
+    private async Task UpdateVersionAsync(string version)
     {
       GeneralSettingsModel generalSettingsModel = mSettingsProvider.GetGeneralSettingsModel();
 
@@ -328,15 +328,13 @@ namespace ClangPowerTools
       {
         generalSettingsModel.Version = currentVersion;
         mSettingsProvider.SetGeneralSettingsModel(generalSettingsModel);
-
         mSettingsHandler.SaveSettings();
 
         FreeTrialController freeTrialController = new FreeTrialController();
-        LicenseController licenseController = new LicenseController();
-        if (licenseController.CheckLocalLicense())
-        {
+        bool activeLicense = await new LocalLicenseValidator().ValidateAsync();
+
+        if (activeLicense)
           freeTrialController.MarkAsExpired();
-        }
 
         ReleaseNotesView releaseNotesView = new ReleaseNotesView();
         releaseNotesView.Show();

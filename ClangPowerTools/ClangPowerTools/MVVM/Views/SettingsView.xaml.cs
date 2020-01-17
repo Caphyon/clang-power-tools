@@ -7,10 +7,10 @@ namespace ClangPowerTools.Views
   /// </summary>
   public partial class SettingsView : Window
   {
-    public SettingsView()
+    public SettingsView(bool activeLicense)
     {
       InitializeComponent();
-      DataContext = new SettingsViewModel(this);
+      DataContext = new SettingsViewModel(this, activeLicense);
 
       SettingsProvider.SettingsView = this;
     }

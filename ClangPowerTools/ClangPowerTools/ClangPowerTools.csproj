@@ -29,6 +29,9 @@
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <PropertyGroup>
     <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
@@ -93,6 +96,16 @@
     <Compile Include="MVVM\Interfaces\IInstall.cs" />
     <Compile Include="MVVM\LlvmUri.cs" />
     <Compile Include="MVVM\LlvmVersions.cs" />
+    <Compile Include="MVVM\Interfaces\IAccountValidator.cs" />
+    <Compile Include="MVVM\Interfaces\ILicense.cs" />
+    <Compile Include="MVVM\LicenseValidation\LicenseValidator.cs" />
+    <Compile Include="MVVM\LicenseValidation\CommercialLicenseValidator.cs" />
+    <Compile Include="MVVM\LicenseValidation\LicenseInfo.cs" />
+    <Compile Include="MVVM\LicenseValidation\LicenseProvider.cs" />
+    <Compile Include="MVVM\LicenseValidation\LicenseState.cs" />
+    <Compile Include="MVVM\LicenseValidation\LicenseType.cs" />
+    <Compile Include="MVVM\LicenseValidation\LocalLicenseValidator.cs" />
+    <Compile Include="MVVM\LicenseValidation\PersonalLicenseValidator.cs" />
     <Compile Include="MVVM\Models\GeneralSettingsModel.cs" />
     <Compile Include="MVVM\Models\InputDataModel.cs" />
     <Compile Include="MVVM\Models\LlvmSettingsModel.cs" />
@@ -157,6 +170,9 @@
     <Compile Include="MVVM\Models\UserModel.cs" />
     <Compile Include="MVVM\CommonSettingsFunctionality.cs" />
     <Compile Include="MVVM\ViewModels\TrialExpiredViewModel.cs" />
+    <Compile Include="MVVM\Views\Components\BuyNowFooter.xaml.cs">
+      <DependentUpon>BuyNowFooter.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\Views\FormatSettingsView.xaml.cs">
       <DependentUpon>FormatSettingsView.xaml</DependentUpon>
     </Compile>
@@ -519,6 +535,10 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="MVVM\Views\Components\BuyNowFooter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MVVM\Views\FormatSettingsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -547,6 +567,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\Views\Styles\ToggleStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\Styles\YellowButtonStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Events;
+using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.MVVM.WebApi;
 using Newtonsoft.Json;
 using System;
@@ -21,39 +22,33 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public async Task<bool> LoginAsync(UserModel userModel)
     {
-      StringContent content = new StringContent(SeralizeUserModel(userModel), Encoding.UTF8, "application/json");
-
+      bool tokenExist = await new LocalLicenseValidator().ValidateAsync();
       try
       {
-        using (HttpResponseMessage result = await ApiUtility.ApiClient.PostAsync(WebApiUrl.loginUrl, content))
+        HttpResponseMessage userAccoutHttpRestul = await GetUserAccountHttpRestulAsync(userModel);
+
+        if (userAccoutHttpRestul.IsSuccessStatusCode)
         {
-          content.Dispose();
-          if (result.IsSuccessStatusCode)
+          TokenModel tokenModel = await userAccoutHttpRestul.Content.ReadAsAsync<TokenModel>();
+
+          if (string.IsNullOrWhiteSpace(tokenModel.jwt))
           {
-            TokenModel tokenModel = await result.Content.ReadAsAsync<TokenModel>();
-
-            LicenseController licenseController = new LicenseController();
-            bool licenseStatus = await licenseController.CheckLicenseAsync(tokenModel);
-
-            if (licenseStatus == false)
-            {
-              return false;
-            }
-
-            SaveToken(tokenModel.jwt);
-            OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(true));
-            return true;
-          }
-          else
-          {
-            OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(false));
             return false;
           }
+
+          SaveToken(tokenModel.jwt);
+          OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(true, tokenExist));
+          return true;
+        }
+        else
+        {
+          OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(false, tokenExist));
+          return false;
         }
       }
       catch (Exception)
       {
-        OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(false));
+        OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(false, tokenExist));
         return false;
       }
     }
@@ -62,16 +57,20 @@ namespace ClangPowerTools.MVVM.Controllers
 
     #region Private Methods
 
+    public async Task<HttpResponseMessage> GetUserAccountHttpRestulAsync(UserModel userModel)
+    {
+      using StringContent content = new StringContent(SeralizeUserModel(userModel), Encoding.UTF8, "application/json");
+      return await ApiUtility.ApiClient.PostAsync(WebApiUrl.loginUrl, content);
+    }
+
     private void SaveToken(string token)
     {
-      SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
+      var settingsPathBuilder = new SettingsPathBuilder();
       string filePath = settingsPathBuilder.GetPath("ctpjwt");
       DeleteExistingToken(filePath);
 
-      using (StreamWriter streamWriter = new StreamWriter(filePath))
-      {
-        streamWriter.WriteLine(token);
-      }
+      using var streamWriter = new StreamWriter(filePath);
+      streamWriter.WriteLine(token);
       File.SetAttributes(filePath, File.GetAttributes(filePath) | FileAttributes.Hidden);
     }
 

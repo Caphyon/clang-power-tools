@@ -23,7 +23,8 @@ namespace ClangPowerTools
 
     public bool running = false;
     public bool vsBuildRunning = false;
-    public bool activeLicense = false;
+    public bool activeAccount = false;
+    public bool tokenExists = false;
 
     public static readonly Guid mCommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
 
@@ -104,19 +105,29 @@ namespace ClangPowerTools
 
     public async void Execute(object sender, EventArgs e)
     {
-      FreeTrialController freeTrialController = new FreeTrialController();
+      var freeTrialController = new FreeTrialController();
 
-      if (freeTrialController.WasEverInTrial() == false && activeLicense == false)
+      // First app install - choose license
+      if (freeTrialController.WasEverInTrial() == false && activeAccount == false)
       {
         LicenseView licenseView = new LicenseView();
         licenseView.ShowDialog();
         return;
       }
 
-      if (freeTrialController.IsActive() == false && activeLicense == false)
+      // Trial expired
+      if (freeTrialController.IsActive() == false && activeAccount == false && tokenExists == false)
       {
         TrialExpiredView trialExpiredView = new TrialExpiredView();
         trialExpiredView.ShowDialog();
+        return;
+      }
+
+      // Session Expired
+      if (freeTrialController.IsActive() == false && activeAccount == false && tokenExists == true)
+      {
+        LoginView loginView = new LoginView();
+        loginView.ShowDialog();
         return;
       }
 
@@ -134,7 +145,7 @@ namespace ClangPowerTools
       {
         case CommandIds.kSettingsId:
           {
-            SettingsCommand.Instance.ShowSettings();
+            await SettingsCommand.Instance.ShowSettingsAsync();
             break;
           }
         case CommandIds.kStopClang:
@@ -425,7 +436,8 @@ namespace ClangPowerTools
 
     public void OnLicenseChanged(object sender, LicenseEventArgs e)
     {
-      activeLicense = e.IsLicenseActive;
+      activeAccount = e.IsLicenseActive;
+      tokenExists = e.TokenExists;
     }
 
     public void VisibilityOnBeforeCommand(object sender, EventArgs e)

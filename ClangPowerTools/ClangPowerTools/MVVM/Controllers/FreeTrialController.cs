@@ -30,18 +30,20 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public bool IsActive()
     {
-      if(WasEverInTrial() == false)
-      {
+      if (WasEverInTrial() == false)
         return false;
-      }
 
       var freeTrialStartTimeAsString = registryUtility.ReadKey(keyName);
+      if (string.IsNullOrWhiteSpace(freeTrialStartTimeAsString))
+        return false;
+
       var freeTrialStartTime = DateTime.Parse(freeTrialStartTimeAsString);
 
       return DateTime.Now.Subtract(freeTrialStartTime).Days <= trialDays;
     }
 
-    public bool WasEverInTrial() => registryUtility.Exists(registryName);
+    public bool WasEverInTrial() => registryUtility.Exists() &&
+                                    !string.IsNullOrWhiteSpace(registryUtility.ReadKey(keyName));
 
     #endregion
 
