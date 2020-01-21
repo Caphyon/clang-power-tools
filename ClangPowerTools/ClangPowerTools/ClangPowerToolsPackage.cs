@@ -412,6 +412,9 @@ namespace ClangPowerTools
       CompileCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
       TidyCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
 
+      CompileCommand.Instance.IgnoredItemsEvent += mCommandController.OnItemIgnore;
+      TidyCommand.Instance.IgnoredItemsEvent += mCommandController.OnItemIgnore;
+
       PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
       PowerShellWrapper.ExitedHandler += mOutputWindowController.ClosedDataConnection;

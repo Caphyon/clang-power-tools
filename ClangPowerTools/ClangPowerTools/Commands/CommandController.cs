@@ -440,6 +440,11 @@ namespace ClangPowerTools
       tokenExists = e.TokenExists;
     }
 
+    internal void OnItemIgnore(object sender, ClangCommandMessageEventArgs e)
+    {
+      ClangCommandMessageEvent?.Invoke(this, e);
+    }
+
     public void VisibilityOnBeforeCommand(object sender, EventArgs e)
     {
       if (sender is OleMenuCommand == false)
