@@ -197,7 +197,7 @@ Function Get-Project-CppStandard()
         $cppStd = $kDefaultCppStd
     }
 
-    $cppStdMap = @{ 'stdcpplatest' = 'c++1z'
+    $cppStdMap = @{ 'stdcpplatest' = 'c++2a'
                   ; 'stdcpp14'     = 'c++14'
                   ; 'stdcpp17'     = 'c++17'
                   }
