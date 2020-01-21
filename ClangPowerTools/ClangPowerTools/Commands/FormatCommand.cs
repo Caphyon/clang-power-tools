@@ -166,7 +166,10 @@ namespace ClangPowerTools.Commands
           OLEMSGICON.OLEMSGICON_INFO, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
       }
 
-      OnFormatFile(new FormatCommandEventArgs() { CanFormat = true });
+      OnFormatFile(new FormatCommandEventArgs()
+      {
+        CanFormat = true,
+      });
     }
 
     #region Validation
@@ -181,10 +184,28 @@ namespace ClangPowerTools.Commands
         return false;
 
       if (false == FileHasExtension(mDocument.FullName, formatSettings.FileExtensions))
+      {
+        OnFormatFile(new FormatCommandEventArgs() 
+        { 
+          CanFormat = false,
+          IgnoreExtension = true,
+          IgnoreFile = false,
+          FileName = mDocument.Name
+        });
         return false;
+      }
 
       if (true == SkipFile(mDocument.FullName, formatSettings.FilesToIgnore))
+      {
+        OnFormatFile(new FormatCommandEventArgs() 
+        { 
+          CanFormat = false, 
+          IgnoreExtension = false,
+          IgnoreFile = true,
+          FileName = mDocument.Name
+        });
         return false;
+      }
 
       if (ScriptConstants.kCMakeConfigFile == mDocument.Name.ToLower())
         return false;
@@ -194,7 +215,12 @@ namespace ClangPowerTools.Commands
         var filePath = Vsix.GetDocumentParent(view);
         if (DoesClangFormatFileExist(filePath) == false)
         {
-          OnFormatFile(new FormatCommandEventArgs() { CanFormat = false });
+          OnFormatFile(new FormatCommandEventArgs() 
+          { 
+            CanFormat = false, 
+            IgnoreExtension = false, 
+            IgnoreFile = false 
+          });
           return false;
         }
       }

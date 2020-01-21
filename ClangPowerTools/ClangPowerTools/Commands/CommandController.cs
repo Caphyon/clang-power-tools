@@ -25,6 +25,7 @@ namespace ClangPowerTools
     public bool vsBuildRunning = false;
     public bool activeAccount = false;
     public bool tokenExists = false;
+    public bool clearOutputOnFormat = false;
 
     public static readonly Guid mCommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
 
@@ -155,11 +156,13 @@ namespace ClangPowerTools
           }
         case CommandIds.kClangFormat:
           {
+            clearOutputOnFormat = true;
             FormatCommand.Instance.RunClangFormat(aCommandUILocation);
             break;
           }
         case CommandIds.kClangFormatToolbarId:
           {
+            clearOutputOnFormat = true;
             FormatCommand.Instance.RunClangFormat(aCommandUILocation);
             break;
           }
@@ -295,11 +298,25 @@ namespace ClangPowerTools
       currentCommand = CommandIds.kClangFormat;
       if (e.CanFormat)
       {
-        DisplayFinishedMessage(true);
+        DisplayFinishedMessage(clearOutputOnFormat);
+        return;
+      }
+      else if (e.IgnoreExtension)
+      {
+        clearOutputOnFormat = false;
+        DisplayCannotFormatMessage(clearOutputOnFormat, 
+          $"Cannot use clang-format on {e.FileName}. To enable clang-format, please add the file extension .... {e.FileName} from the ignore list using Clang Power Tools settings.");
+      }
+      else if (e.IgnoreFile)
+      {
+        clearOutputOnFormat = false;
+        DisplayCannotFormatMessage(clearOutputOnFormat, 
+          $"Cannot use clang-format on {e.FileName}. To enable clang-format, please remove the {e.FileName} from the ignore list using Clang Power Tools settings.");
       }
       else
       {
-        DisplayCannotFormatMessage(true);
+        DisplayCannotFormatMessage(true,
+          $"\n--- ERROR ---\nFormat config file not found.\nCreate the config file and place it the solution folder or select one of the predefined format styles from Settings.");
       }
     }
 
@@ -370,7 +387,6 @@ namespace ClangPowerTools
       HierarchyDetectedEvent?.Invoke(this, e);
     }
 
-
     public void OnMissingLLVMDetected(object sender, MissingLlvmEventArgs e)
     {
       MissingLlvmEvent?.Invoke(this, e);
@@ -400,9 +416,9 @@ namespace ClangPowerTools
       StatusBarHandler.Status("Command stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
-    private void DisplayCannotFormatMessage(bool clearOutput)
+    private void DisplayCannotFormatMessage(bool clearOutput, string message)
     {
-      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- ERROR ---\nFormat config file not found.\nCreate the config file and place it the solution folder or select one of the predefined format styles from Settings.", clearOutput));
+      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs(message, clearOutput));
       StatusBarHandler.Status("Command stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
