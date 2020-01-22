@@ -197,7 +197,7 @@ namespace ClangPowerTools
 
         if (IgnoreItem(item, out string fileType))
         {
-          OnIgnoreItem(new ClangCommandMessageEventArgs($"Cannot use Clang on {fileType}. To enable Clang, please remove the {fileType} from the ignore list using Clang Power Tools settings.", false));
+          OnIgnoreItem(new ClangCommandMessageEventArgs($"Cannot use clang-compile on {fileType}. To enable clang-compile remove the {fileType} from Clang Power Tools settings -> Compiler -> Files/Projects to ignore.", false));
           continue;
         }
 
@@ -232,7 +232,7 @@ namespace ClangPowerTools
         ProjectItem projectItem = item.GetObject() as ProjectItem;
         CompilerSettingsModel compilerSettings = new SettingsProvider().GetCompilerSettingsModel();
         var fileName = projectItem.Name;
-        fileType = $"File \"{fileName}\"";
+        fileType = $"file \"{fileName}\"";
         return compilerSettings.FilesToIgnore.Contains(fileName);
       }
       else if (item is CurrentProject)
@@ -240,7 +240,7 @@ namespace ClangPowerTools
         Project project = item.GetObject() as Project;
         CompilerSettingsModel compilerSettings = new SettingsProvider().GetCompilerSettingsModel();
         var projName = project.Name;
-        fileType = $"Project \"{projName}\"";
+        fileType = $"project \"{projName}\"";
         return compilerSettings.FilesToIgnore.Contains(projName);
       }
 
