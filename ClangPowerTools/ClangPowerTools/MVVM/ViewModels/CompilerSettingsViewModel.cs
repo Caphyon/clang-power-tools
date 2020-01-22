@@ -11,12 +11,15 @@ namespace ClangPowerTools
   public class CompilerSettingsViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
   {
     #region Members
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     private CompilerSettingsModel compilerModel;
+    
     private ICommand compileFlagsAddDataCommand;
     private ICommand filesToIgnoreAddDataCommand;
     private ICommand projectsToIgnoreAddDataCommand;
+    
     #endregion
 
     #region Constructor
