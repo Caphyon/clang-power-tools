@@ -23,6 +23,8 @@ namespace ClangPowerTools.Commands
     #region Members
     public event EventHandler<FormatCommandEventArgs> FormatEvent;
 
+    private bool clearOutput = false;
+    private bool singleSelectionError = false;
     private Document mDocument = null;
     private readonly string configFileName = ".clang-format";
 
@@ -89,13 +91,17 @@ namespace ClangPowerTools.Commands
 
     public void RunClangFormat(CommandUILocation commandUILocation)
     {
+      clearOutput = true;
+
       if (CommandUILocation.ContextMenu == commandUILocation)
       {
         FormatAllSelectedDocuments();
+        OnFormatFile(new FormatCommandEventArgs() { CanFormat = true, Clear = clearOutput });
       }
       else
       {
         FormatActiveDocument();
+        OnFormatFile(new FormatCommandEventArgs() { CanFormat = true, Clear = clearOutput });
       }
     }
 
@@ -107,8 +113,11 @@ namespace ClangPowerTools.Commands
 
     public void FormatOnSave(Document document)
     {
+      clearOutput = true;
       mDocument = document;
       ExecuteFormatCommand();
+
+      OnFormatFile(new FormatCommandEventArgs() { CanFormat = true, Clear = clearOutput });
     }
 
     private void ExecuteFormatCommand()
@@ -165,11 +174,6 @@ namespace ClangPowerTools.Commands
         VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error while running clang-format",
           OLEMSGICON.OLEMSGICON_INFO, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
       }
-
-      OnFormatFile(new FormatCommandEventArgs()
-      {
-        CanFormat = true,
-      });
     }
 
     #region Validation
@@ -183,47 +187,64 @@ namespace ClangPowerTools.Commands
       if (view == null)
         return false;
 
-      if (false == FileHasExtension(mDocument.FullName, formatSettings.FileExtensions))
+      if (IsFileFormatSelected(formatSettings))
       {
-        OnFormatFile(new FormatCommandEventArgs() 
-        { 
+        var filePath = Vsix.GetDocumentParent(view);
+        if (DoesClangFormatFileExist(filePath) == false)
+        {
+          OnFormatFile(new FormatCommandEventArgs()
+          {
+            CanFormat = false,
+            IgnoreExtension = false,
+            IgnoreFile = false,
+            Clear = clearOutput
+          });
+
+          if (clearOutput)
+            clearOutput = false;
+
+          return false;
+        }
+      }
+
+      if (FileHasExtension(mDocument.FullName, formatSettings.FileExtensions) == false)
+      {
+        OnFormatFile(new FormatCommandEventArgs()
+        {
           CanFormat = false,
           IgnoreExtension = true,
           IgnoreFile = false,
-          FileName = mDocument.Name
+          FileName = mDocument.Name,
+          Clear = clearOutput
         });
+
+        if (clearOutput)
+          clearOutput = false;
+
         return false;
       }
 
-      if (true == SkipFile(mDocument.FullName, formatSettings.FilesToIgnore))
+      if (SkipFile(mDocument.FullName, formatSettings.FilesToIgnore))
       {
-        OnFormatFile(new FormatCommandEventArgs() 
-        { 
-          CanFormat = false, 
+        OnFormatFile(new FormatCommandEventArgs()
+        {
+          CanFormat = false,
           IgnoreExtension = false,
           IgnoreFile = true,
-          FileName = mDocument.Name
+          FileName = mDocument.Name,
+          Clear = clearOutput
         });
+
+        if (clearOutput)
+          clearOutput = false;
+
         return false;
       }
 
       if (ScriptConstants.kCMakeConfigFile == mDocument.Name.ToLower())
         return false;
 
-      if (IsFileFormatSelected(formatSettings))
-      {
-        var filePath = Vsix.GetDocumentParent(view);
-        if (DoesClangFormatFileExist(filePath) == false)
-        {
-          OnFormatFile(new FormatCommandEventArgs() 
-          { 
-            CanFormat = false, 
-            IgnoreExtension = false, 
-            IgnoreFile = false 
-          });
-          return false;
-        }
-      }
+      
       return true;
     }
 

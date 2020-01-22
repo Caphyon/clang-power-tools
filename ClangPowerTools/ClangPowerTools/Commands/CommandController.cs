@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using Task = System.Threading.Tasks.Task;
 using ClangPowerTools.MVVM.Controllers;
+using System.IO;
 
 namespace ClangPowerTools
 {
@@ -298,25 +299,23 @@ namespace ClangPowerTools
       currentCommand = CommandIds.kClangFormat;
       if (e.CanFormat)
       {
-        DisplayFinishedMessage(clearOutputOnFormat);
+        DisplayFinishedMessage(e.Clear);
         return;
       }
       else if (e.IgnoreExtension)
       {
-        clearOutputOnFormat = false;
-        DisplayCannotFormatMessage(clearOutputOnFormat, 
-          $"Cannot use clang-format on {e.FileName}. To enable clang-format, please add the file extension .... {e.FileName} from the ignore list using Clang Power Tools settings.");
+        DisplayCannotFormatMessage(e.Clear, 
+          $"\n--- WARNING ---\nCannot use clang-format on \"{e.FileName}\".\nTo enable clang-format add the \"{Path.GetExtension(e.FileName)}\" extension to Clang Power Tools settings -> Format -> File extensions");
       }
       else if (e.IgnoreFile)
       {
-        clearOutputOnFormat = false;
-        DisplayCannotFormatMessage(clearOutputOnFormat, 
-          $"Cannot use clang-format on {e.FileName}. To enable clang-format, please remove the {e.FileName} from the ignore list using Clang Power Tools settings.");
+        DisplayCannotFormatMessage(e.Clear, 
+          $"\n--- WARNING ---\nCannot use clang-format on \"{e.FileName}\".\nTo enable clang-format remove \"{e.FileName}\" from Clang Power Tools settings -> Format -> Files to ignore.");
       }
       else
       {
-        DisplayCannotFormatMessage(true,
-          $"\n--- ERROR ---\nFormat config file not found.\nCreate the config file and place it the solution folder or select one of the predefined format styles from Settings.");
+        DisplayCannotFormatMessage(e.Clear,
+          $"\n--- ERROR ---\nFormat config file not found.\nCreate the config file and place it the solution folder or select one of the predefined format styles from Clang Power Tools settings -> Format -> Style.");
       }
     }
 

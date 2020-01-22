@@ -7,7 +7,7 @@ namespace ClangPowerTools.Events
     public bool CanFormat { get; set; }
     public bool IgnoreFile { get; set; }
     public bool IgnoreExtension { get; set; }
+    public bool Clear{ get; set; }
     public string FileName { get; set; }
-
   }
 }
