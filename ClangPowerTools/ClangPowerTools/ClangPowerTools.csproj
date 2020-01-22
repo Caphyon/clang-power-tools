@@ -95,6 +95,7 @@
     <Compile Include="MVVM\Controllers\FreeTrialController.cs" />
     <Compile Include="MVVM\Controllers\LlvmController.cs" />
     <Compile Include="MVVM\Interfaces\IDownload.cs" />
+    <Compile Include="MVVM\Interfaces\IFormatOption.cs" />
     <Compile Include="MVVM\Interfaces\IInstall.cs" />
     <Compile Include="MVVM\LlvmUri.cs" />
     <Compile Include="MVVM\Constants\LlvmVersions.cs" />
@@ -108,6 +109,7 @@
     <Compile Include="MVVM\LicenseValidation\LicenseType.cs" />
     <Compile Include="MVVM\LicenseValidation\LocalLicenseValidator.cs" />
     <Compile Include="MVVM\LicenseValidation\PersonalLicenseValidator.cs" />
+    <Compile Include="MVVM\Models\FormatStyleModel.cs" />
     <Compile Include="MVVM\Models\GeneralSettingsModel.cs" />
     <Compile Include="MVVM\Models\InputDataModel.cs" />
     <Compile Include="MVVM\Models\LlvmSettingsModel.cs" />
