@@ -315,7 +315,7 @@
       Width="80"
       Height="30"
       HorizontalAlignment="Left"
-      Command="{Binding ExportTidyConfigCommand}"
+      Command="{Binding CreateFormatFileCommand}"
       FontSize="14"
       Foreground="White"
       Style="{StaticResource SettingsButton}">
