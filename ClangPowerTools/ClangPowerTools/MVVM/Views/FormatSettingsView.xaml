@@ -33,6 +33,7 @@
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
@@ -287,6 +288,41 @@
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
       IsChecked="{Binding FormatModel.FormatOnSave}" />
+
+    <!--  Create format file  -->
+    <TextBlock
+      Grid.Row="8"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="16"
+      Text="Format file">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.CreateFormatFile}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
+
+
+    <Button
+      Grid.Row="8"
+      Grid.Column="2"
+      Width="80"
+      Height="30"
+      HorizontalAlignment="Left"
+      Command="{Binding ExportTidyConfigCommand}"
+      FontSize="14"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}">
+      <Button.Content>
+        Create
+      </Button.Content>
+    </Button>
 
   </Grid>
 </UserControl>
