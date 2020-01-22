@@ -175,6 +175,9 @@
     <Compile Include="MVVM\Views\Components\BuyNowFooter.xaml.cs">
       <DependentUpon>BuyNowFooter.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MVVM\Views\FormatFileCreationView.xaml.cs">
+      <DependentUpon>FormatFileCreationView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\Views\FormatSettingsView.xaml.cs">
       <DependentUpon>FormatSettingsView.xaml</DependentUpon>
     </Compile>
@@ -540,6 +543,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="MVVM\Views\Components\BuyNowFooter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\FormatFileCreationView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
