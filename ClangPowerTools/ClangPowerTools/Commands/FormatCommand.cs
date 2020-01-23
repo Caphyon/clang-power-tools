@@ -24,7 +24,6 @@ namespace ClangPowerTools.Commands
     public event EventHandler<FormatCommandEventArgs> FormatEvent;
 
     private bool clearOutput = false;
-    private bool singleSelectionError = false;
     private Document mDocument = null;
     private readonly string configFileName = ".clang-format";
 

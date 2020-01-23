@@ -299,7 +299,7 @@ namespace ClangPowerTools
       currentCommand = CommandIds.kClangFormat;
       if (e.CanFormat)
       {
-        DisplayFinishedMessage(e.Clear);
+        StatusBarHandler.Status(OutputWindowConstants.commandName[currentCommand] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
         return;
       }
       else if (e.IgnoreExtension)
