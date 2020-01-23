@@ -21,7 +21,46 @@
   </Window.Resources>
 
   <Grid>
-    <ListView />
+    <ListBox ItemsSource="{Binding ToggleFormatOptions}">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <Grid>
+
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="500" />
+              <ColumnDefinition Width="100" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="25" />
+            </Grid.RowDefinitions>
+
+            <TextBlock
+              Grid.Row="1"
+              Grid.Column="0"
+              FontSize="14"
+              Text="{Binding Name}"
+              TextWrapping="Wrap">
+              <TextBlock.ToolTip>
+                <ToolTip>
+                  <TextBlock
+                    Width="400"
+                    Text="{Binding Description}"
+                    TextWrapping="Wrap" />
+                </ToolTip>
+              </TextBlock.ToolTip>
+            </TextBlock>
+
+            <ToggleButton
+              Grid.Row="1"
+              Grid.Column="1"
+              HorizontalAlignment="Right"
+              IsChecked="{Binding IsEnabled}" />
+
+          </Grid>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
 
   </Grid>
 </Window>

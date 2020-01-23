@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Interfaces;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace ClangPowerTools
@@ -11,10 +12,26 @@ namespace ClangPowerTools
 
     #endregion
 
+    #region Constructor
+
+    public FormatOptionsViewModel()
+    {
+
+    }
+
+    #endregion
 
     #region Properties
 
-    public IFormatOption MyProperty { get; set; }
+    public List<IFormatOption> ToggleFormatOptions
+    {
+      get
+      {
+        return FormatOptions.FormatOptionsList;
+      }
+    }
+
+ 
 
     #endregion
   }
