@@ -9,5 +9,7 @@ namespace ClangPowerTools.MVVM.Interfaces
   interface IFormatOption
   {
     public string Name { get; set; }
+
+    public string Description { get; set; }
   }
 }
