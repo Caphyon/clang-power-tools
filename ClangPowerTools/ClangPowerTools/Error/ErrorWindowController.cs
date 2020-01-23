@@ -79,7 +79,7 @@ namespace ClangPowerTools
       }).SafeFireAndForget();
     }
 
-    public void OnClangCommandBegin(object sender, ClearErrorListEventArgs e)
+    public void OnClangCommandBegin(object sender, ClearEventArgs e)
     {
       Clear();
       SquiggleViewModel.Squiggles.Clear();

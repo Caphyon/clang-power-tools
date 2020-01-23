@@ -90,17 +90,18 @@ namespace ClangPowerTools.Commands
 
     public void RunClangFormat(CommandUILocation commandUILocation)
     {
+      if(clearOutput == false)
+        OnFormatFile(new FormatCommandEventArgs() { CanFormat = true, Clear = clearOutput });
+
       clearOutput = true;
 
       if (CommandUILocation.ContextMenu == commandUILocation)
       {
         FormatAllSelectedDocuments();
-        OnFormatFile(new FormatCommandEventArgs() { CanFormat = true, Clear = clearOutput });
       }
       else
       {
         FormatActiveDocument();
-        OnFormatFile(new FormatCommandEventArgs() { CanFormat = true, Clear = clearOutput });
       }
     }
 
@@ -115,8 +116,6 @@ namespace ClangPowerTools.Commands
       clearOutput = true;
       mDocument = document;
       ExecuteFormatCommand();
-
-      OnFormatFile(new FormatCommandEventArgs() { CanFormat = true, Clear = clearOutput });
     }
 
     private void ExecuteFormatCommand()

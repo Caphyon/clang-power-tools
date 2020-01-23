@@ -388,11 +388,10 @@ namespace ClangPowerTools
     private void RegisterToCPTEvents()
     {
       mCommandController.ClangCommandMessageEvent += mOutputWindowController.Write;
-      mCommandController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
+      mCommandController.ClearOutputWindowEvent += mOutputWindowController.ClearPanel;
 
       mCommandController.HasEncodingErrorEvent += mOutputWindowController.OnEncodingErrorDetected;
       mOutputWindowController.HasEncodingErrorEvent += mCommandController.OnEncodingErrorDetected;
-
       mCommandController.ClearErrorListEvent += mErrorWindowController.OnClangCommandBegin;
 
       mCommandController.MissingLlvmEvent += CompileCommand.Instance.OnMissingLLVMDetected;

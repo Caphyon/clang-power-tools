@@ -63,6 +63,8 @@ namespace ClangPowerTools.Output
       mOutputWindowBuilder.Build();
     }
 
+    public void ClearPanel(object sender, ClearEventArgs e) => Clear();
+
     public void Clear()
     {
       mOutputContent = new OutputContentModel();

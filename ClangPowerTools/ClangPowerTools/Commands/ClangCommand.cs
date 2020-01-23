@@ -197,7 +197,7 @@ namespace ClangPowerTools
 
         if (IgnoreItem(item, out string fileType))
         {
-          OnIgnoreItem(new ClangCommandMessageEventArgs($"Cannot use clang-compile on {fileType}. To enable clang-compile remove the {fileType} from Clang Power Tools settings -> Compiler -> Files/Projects to ignore.", false));
+          OnIgnoreItem(new ClangCommandMessageEventArgs($"Cannot use clang-compile on ignored files.\nTo enable clang-compile remove the {fileType} from Clang Power Tools settings -> Compiler -> Files/Projects to ignore.", false));
           continue;
         }
 
