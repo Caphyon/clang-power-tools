@@ -109,7 +109,8 @@
     <Compile Include="MVVM\LicenseValidation\LicenseType.cs" />
     <Compile Include="MVVM\LicenseValidation\LocalLicenseValidator.cs" />
     <Compile Include="MVVM\LicenseValidation\PersonalLicenseValidator.cs" />
-    <Compile Include="MVVM\Models\FormatStyleModel.cs" />
+    <Compile Include="MVVM\Models\FormatOptionModel.cs" />
+    <Compile Include="MVVM\Models\FormatOptionToggleModel.cs" />
     <Compile Include="MVVM\Models\GeneralSettingsModel.cs" />
     <Compile Include="MVVM\Models\InputDataModel.cs" />
     <Compile Include="MVVM\Models\LlvmSettingsModel.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="MVVM\TidyChecksClean.cs" />
     <Compile Include="MVVM\TidyChecks.cs" />
     <Compile Include="MVVM\SettingsProvider.cs" />
+    <Compile Include="MVVM\ViewModels\FormatOptionsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\GeneralSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\InputDataViewModel.cs" />
     <Compile Include="MVVM\ViewModels\LicenseViewModel.cs" />
@@ -177,8 +179,8 @@
     <Compile Include="MVVM\Views\Components\BuyNowFooter.xaml.cs">
       <DependentUpon>BuyNowFooter.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MVVM\Views\FormatFileCreationView.xaml.cs">
-      <DependentUpon>FormatFileCreationView.xaml</DependentUpon>
+    <Compile Include="MVVM\Views\FormatOptionsView.xaml.cs">
+      <DependentUpon>FormatOptionsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\FormatSettingsView.xaml.cs">
       <DependentUpon>FormatSettingsView.xaml</DependentUpon>
@@ -548,7 +550,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MVVM\Views\FormatFileCreationView.xaml">
+    <Page Include="MVVM\Views\FormatOptionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

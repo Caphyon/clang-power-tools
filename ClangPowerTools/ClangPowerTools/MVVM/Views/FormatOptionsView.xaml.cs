@@ -5,11 +5,12 @@ namespace ClangPowerTools.MVVM.Views
   /// <summary>
   /// Interaction logic for FormatFileCreationView.xaml
   /// </summary>
-  public partial class FormatFileCreationView : Window
+  public partial class FormatOptionsView : Window
   {
-    public FormatFileCreationView()
+    public FormatOptionsView()
     {
       InitializeComponent();
+      DataContext = new FormatOptionsViewModel();
     }
   }
 }

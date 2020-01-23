@@ -129,7 +129,7 @@ namespace ClangPowerTools
 
     private void OpenCreateFormatFileWindow()
     {
-      var formatFileWindow = new FormatFileCreationView();
+      var formatFileWindow = new FormatOptionsView();
       formatFileWindow.ShowDialog();
     }
 

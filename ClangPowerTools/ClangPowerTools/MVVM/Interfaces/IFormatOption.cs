@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClangPowerTools.MVVM.Interfaces
 {
-  interface IFormatOption
+  public interface IFormatOption
   {
     public string Name { get; set; }
 
