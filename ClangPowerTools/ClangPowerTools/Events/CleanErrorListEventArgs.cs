@@ -2,8 +2,8 @@
 
 namespace ClangPowerTools.Events
 {
-  public class ClearErrorListEventArgs : EventArgs
+  public class ClearEventArgs : EventArgs
   {
-    public ClearErrorListEventArgs() { }
+    public ClearEventArgs() { }
   }
 }
