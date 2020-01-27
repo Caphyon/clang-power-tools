@@ -17,11 +17,14 @@
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Styles/AppResources.xaml" />
       </ResourceDictionary.MergedDictionaries>
+      <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </ResourceDictionary>
   </Window.Resources>
 
+
+
   <Grid>
-    <ListBox ItemsSource="{Binding ToggleFormatOptions}">
+    <ListBox Name="Test" ItemsSource="{Binding ToggleFormatOptions}">
       <ListBox.ItemTemplate>
         <DataTemplate>
           <Grid>
@@ -35,26 +38,32 @@
             </Grid.RowDefinitions>
 
             <TextBlock
-              Grid.Row="1"
               Grid.Column="0"
               FontSize="14"
               Text="{Binding Name}"
               TextWrapping="Wrap">
               <TextBlock.ToolTip>
                 <ToolTip>
-                  <TextBlock
-                    Width="400"
-                    Text="{Binding Description}"
-                    TextWrapping="Wrap" />
+                  <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
                 </ToolTip>
               </TextBlock.ToolTip>
             </TextBlock>
 
-            <ToggleButton
-              Grid.Row="1"
+            <TextBox
+              x:Name="InputText"
               Grid.Column="1"
+              Width="80"
               HorizontalAlignment="Right"
-              IsChecked="{Binding IsEnabled}" />
+              Text="{Binding Input}"
+              Visibility="{Binding Path=IsTextBox, Converter={StaticResource BoolToVis}}" />
+
+            <ToggleButton
+              x:Name="InputToggle"
+              Grid.Column="1"
+              Width="80"
+              HorizontalAlignment="Right"
+              IsChecked="{Binding IsEnabled}"
+              Visibility="{Binding Path=IsToogleButton, Converter={StaticResource BoolToVis}}" />
 
           </Grid>
         </DataTemplate>
