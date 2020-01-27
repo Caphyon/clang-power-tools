@@ -1,4 +1,4 @@
-﻿namespace ClangPowerTools.MVVM.LicenseValidation
+﻿namespace ClangPowerTools.MVVM.Constants
 {
   public enum LicenseType
   {

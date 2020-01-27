@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.MVVM.Models;
+﻿using ClangPowerTools.MVVM.Constants;
+using ClangPowerTools.MVVM.Models;
 using System;
 
 namespace ClangPowerTools.MVVM.LicenseValidation

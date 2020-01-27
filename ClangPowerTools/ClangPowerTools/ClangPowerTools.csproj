@@ -106,8 +106,8 @@
     <Compile Include="MVVM\LicenseValidation\CommercialLicenseValidator.cs" />
     <Compile Include="MVVM\LicenseValidation\LicenseInfo.cs" />
     <Compile Include="MVVM\LicenseValidation\LicenseProvider.cs" />
-    <Compile Include="MVVM\LicenseValidation\LicenseState.cs" />
-    <Compile Include="MVVM\LicenseValidation\LicenseType.cs" />
+    <Compile Include="MVVM\Constants\LicenseState.cs" />
+    <Compile Include="MVVM\Constants\LicenseType.cs" />
     <Compile Include="MVVM\LicenseValidation\LocalLicenseValidator.cs" />
     <Compile Include="MVVM\LicenseValidation\PersonalLicenseValidator.cs" />
     <Compile Include="MVVM\Models\FormatOptionModel.cs" />
