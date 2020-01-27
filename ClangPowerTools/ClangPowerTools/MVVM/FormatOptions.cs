@@ -8,7 +8,7 @@ namespace ClangPowerTools
   {
     public static List<IFormatOption> FormatOptionsList = new List<IFormatOption>()
     {
-      new FormatOptionModel{ Name = "test", Description = "xxxxxxxx", Input = string.Empty},
+      new FormatOptionModel{ Name = "test", Description = "xxxxxxxx", Input = "InputTest"},
       new FormatOptionToggleModel{Name = "toggleTest", Description = "yyyyy", IsEnabled=false}
     };
   }
