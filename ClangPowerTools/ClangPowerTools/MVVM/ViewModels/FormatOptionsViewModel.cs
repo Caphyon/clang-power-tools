@@ -1,6 +1,9 @@
-﻿using ClangPowerTools.MVVM.Interfaces;
+﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Windows.Input;
 
 namespace ClangPowerTools
 {
@@ -9,6 +12,9 @@ namespace ClangPowerTools
     #region Members
 
     public event PropertyChangedEventHandler PropertyChanged;
+
+    private ICommand createFormatFileCommand;
+    private IFormatOption _selectedOption;
 
     #endregion
 
@@ -23,15 +29,62 @@ namespace ClangPowerTools
 
     #region Properties
 
-    public List<IFormatOption> ToggleFormatOptions
+    public List<IFormatOption> FormatOptions
     {
       get
       {
-        return FormatOptions.FormatOptionsList;
+        return FormatOptionsData.FormatOptions;
       }
     }
 
- 
+    public IFormatOption SelectedOption
+    {
+      get
+      {
+        return _selectedOption;
+      }
+      set
+      {
+        _selectedOption = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedOption"));
+      }
+    }
+
+    public bool CanExecute
+    {
+      get
+      {
+        return true;
+      }
+    }
+
+    #endregion
+
+
+    #region Commands
+
+    public ICommand CreateFormatFileCommand
+    {
+      get => createFormatFileCommand ?? (createFormatFileCommand = new RelayCommand(() => CreateFormatFile(), () => CanExecute));
+    }
+
+    #endregion
+
+
+    #region Methods
+
+    private void CreateFormatFile()
+    {
+      string fileName = ".clang-format";
+      string defaultExt = ".clang-format";
+      string filter = "Configuration files (.clang-format)|*.clang-format";
+
+      string path = SaveFile(fileName, defaultExt, filter);
+      if (string.IsNullOrEmpty(path) == false)
+      {
+        WriteContentToFile(path, "create file"); //tidyConfigFile.CreateOutput().ToString())
+      }
+    }
 
     #endregion
   }
