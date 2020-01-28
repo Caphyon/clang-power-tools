@@ -5,10 +5,11 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  Width="700"
+  Height="450"
   d:DataContext="{d:DesignInstance local:FormatOptionsViewModel,
                                    IsDesignTimeCreatable=True}"
-  d:DesignHeight="450"
-  d:DesignWidth="800"
+  ResizeMode="NoResize"
   mc:Ignorable="d">
 
   <!--  Static resources  -->
@@ -22,54 +23,106 @@
   </Window.Resources>
 
 
+  <StackPanel Orientation="Vertical">
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="10" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="10" />
+      </Grid.RowDefinitions>
 
-  <Grid>
-    <ListBox Name="Test" ItemsSource="{Binding ToggleFormatOptions}">
-      <ListBox.ItemTemplate>
-        <DataTemplate>
-          <Grid>
-
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="500" />
-              <ColumnDefinition Width="100" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-              <RowDefinition Height="25" />
-            </Grid.RowDefinitions>
-
-            <TextBlock
-              Grid.Column="0"
-              FontSize="14"
-              Text="{Binding Name}"
-              TextWrapping="Wrap">
-              <TextBlock.ToolTip>
-                <ToolTip>
-                  <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
-                </ToolTip>
-              </TextBlock.ToolTip>
-            </TextBlock>
-
-            <TextBox
-              x:Name="InputText"
-              Grid.Column="1"
-              Width="80"
-              HorizontalAlignment="Right"
-              Text="{Binding Input}"
-              Visibility="{Binding Path=IsTextBox, Converter={StaticResource BoolToVis}}" />
-
-            <ToggleButton
-              x:Name="InputToggle"
-              Grid.Column="1"
-              Width="80"
-              HorizontalAlignment="Right"
-              IsChecked="{Binding IsEnabled}"
-              Visibility="{Binding Path=IsToogleButton, Converter={StaticResource BoolToVis}}" />
-
-          </Grid>
-        </DataTemplate>
-      </ListBox.ItemTemplate>
-    </ListBox>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="10" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="auto" />
+        <ColumnDefinition Width="10" />
+      </Grid.ColumnDefinitions>
 
 
-  </Grid>
+      <Grid Grid.Row="1" Grid.Column="1">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" />
+          <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!--  Format options  -->
+        <ListView
+          Name="FormatOptions"
+          Grid.Row="0"
+          Grid.Column="0"
+          ItemsSource="{Binding FormatOptions}"
+          SelectedItem="{Binding SelectedOption}"
+          SelectionMode="Single">
+          <ListView.ItemTemplate>
+            <DataTemplate>
+              <Grid>
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="200" />
+                  <ColumnDefinition Width="100" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                  <RowDefinition Height="25" />
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                  Grid.Column="0"
+                  FontSize="14"
+                  Text="{Binding Name}"
+                  TextWrapping="Wrap">
+                  <TextBlock.ToolTip>
+                    <ToolTip>
+                      <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+                    </ToolTip>
+                  </TextBlock.ToolTip>
+                </TextBlock>
+
+                <TextBox
+                  x:Name="InputText"
+                  Grid.Column="1"
+                  Width="80"
+                  HorizontalAlignment="Right"
+                  Text="{Binding Input}"
+                  Visibility="{Binding Path=HasTextBox, Converter={StaticResource BoolToVis}}" />
+
+                <ToggleButton
+                  x:Name="InputToggle"
+                  Grid.Column="1"
+                  Width="80"
+                  HorizontalAlignment="Right"
+                  IsChecked="{Binding IsEnabled}"
+                  Visibility="{Binding Path=HasToogleButton, Converter={StaticResource BoolToVis}}" />
+
+              </Grid>
+            </DataTemplate>
+          </ListView.ItemTemplate>
+        </ListView>
+
+        <!--  Option description  -->
+        <TextBlock
+          Grid.Row="0"
+          Grid.Column="1"
+          FontSize="14"
+          Text="{Binding SelectedOption.Description}" />
+      </Grid>
+
+    </Grid>
+
+    <Button
+      Width="100"
+      Height="30"
+      Command="{Binding CreateFormatFileCommand}"
+      FontSize="14"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}">
+      <Button.Content>
+        Create file
+      </Button.Content>
+    </Button>
+  </StackPanel>
 </Window>
