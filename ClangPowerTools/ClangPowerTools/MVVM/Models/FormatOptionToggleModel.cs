@@ -7,7 +7,7 @@ namespace ClangPowerTools.MVVM.Models
     public string Name { get; set; }
     public string Description { get; set; }
     public bool IsEnabled { get; set; } = false;
-    public bool IsToogleButton { get; set; } = true;
-    public bool IsTextBox { get; set; } = false;
+    public bool HasToogleButton { get; } = true;
+    public bool HasTextBox { get; } = false;
   }
 }
