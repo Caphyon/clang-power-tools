@@ -110,9 +110,51 @@
           FontSize="14"
           Text="{Binding SelectedOption.Description}" />
       </Grid>
+    </Grid>
+
+    <!--  Predefined styles  -->
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="10" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="10" />
+      </Grid.RowDefinitions>
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="10" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="10" />
+      </Grid.ColumnDefinitions>
+      <TextBlock
+        Grid.Row="1"
+        Grid.Column="1"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Predefined styles">
+        <TextBlock.ToolTip>
+          <ToolTip>
+            <TextBlock
+              Width="400"
+              Text="{Binding Tooltip.AdditionalIncludes}"
+              TextWrapping="Wrap" />
+          </ToolTip>
+        </TextBlock.ToolTip>
+      </TextBlock>
+
+      <ComboBox
+        Grid.Row="1"
+        Grid.Column="2"
+        Height="30"
+        Margin="0,0,20,0"
+        ItemsSource="{Binding PredefinedStyles}"
+        SelectedItem="{Binding SelectedPredefinedStyle}" />
 
     </Grid>
 
+    <!--  Create file button  -->
     <Button
       Width="100"
       Height="30"

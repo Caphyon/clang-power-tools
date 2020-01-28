@@ -3,6 +3,7 @@ using ClangPowerTools.MVVM.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Input;
 
 namespace ClangPowerTools
@@ -49,6 +50,16 @@ namespace ClangPowerTools
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedOption"));
       }
     }
+
+    public IEnumerable<ClangFormatStyle> PredefinedStyles
+    {
+      get
+      {
+        return Enum.GetValues(typeof(ClangFormatStyle)).Cast<ClangFormatStyle>();
+      }
+    }
+
+    public ClangFormatStyle SelectedPredefinedStyle { get; set; } = ClangFormatStyle.file;
 
     public bool CanExecute
     {
