@@ -133,7 +133,7 @@
     <Compile Include="MVVM\TidyChecksClean.cs" />
     <Compile Include="MVVM\TidyChecks.cs" />
     <Compile Include="MVVM\SettingsProvider.cs" />
-    <Compile Include="MVVM\ViewModels\FormatOptionsViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\FormatStyleOptionsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\GeneralSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\InputDataViewModel.cs" />
     <Compile Include="MVVM\ViewModels\LicenseViewModel.cs" />

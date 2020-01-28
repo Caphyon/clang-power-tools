@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class FormatOptionsViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
+  public class FormatStyleOptionsViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
   {
     #region Members
 
@@ -21,7 +21,7 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public FormatOptionsViewModel()
+    public FormatStyleOptionsViewModel()
     {
 
     }

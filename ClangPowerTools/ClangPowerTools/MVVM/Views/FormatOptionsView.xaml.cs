@@ -10,7 +10,7 @@ namespace ClangPowerTools.MVVM.Views
     public FormatOptionsView()
     {
       InitializeComponent();
-      DataContext = new FormatOptionsViewModel();
+      DataContext = new FormatStyleOptionsViewModel();
     }
   }
 }
