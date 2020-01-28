@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace ClangPowerTools
 {
-  public class FormatOptions
+  public class FormatOptionsData
   {
-    public static List<IFormatOption> FormatOptionsList = new List<IFormatOption>()
+    public static List<IFormatOption> FormatOptions = new List<IFormatOption>()
     {
       new FormatOptionModel{ Name = "test", Description = "xxxxxxxx", Input = "InputTest"},
       new FormatOptionToggleModel{Name = "toggleTest", Description = "yyyyy", IsEnabled=false}
