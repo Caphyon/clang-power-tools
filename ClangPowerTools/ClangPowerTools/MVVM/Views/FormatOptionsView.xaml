@@ -113,7 +113,22 @@
           Grid.Row="0"
           Grid.Column="1"
           FontSize="14"
+          Text="{Binding SelectedOption.Name}" />
+
+        <TextBlock
+          Grid.Row="0"
+          Grid.Column="1"
+          FontSize="14">
+          <Run Text="{Binding SelectedOption.Name}" />
+          <Run Text="(" /><Run Background="#FFCDCDCD" Text="{Binding SelectedOption.Paramater}" /><Run Text=")" />
+        </TextBlock>
+
+        <TextBlock
+          Grid.Row="1"
+          Grid.Column="1"
+          FontSize="14"
           Text="{Binding SelectedOption.Description}" />
+
       </Grid>
     </Grid>
 

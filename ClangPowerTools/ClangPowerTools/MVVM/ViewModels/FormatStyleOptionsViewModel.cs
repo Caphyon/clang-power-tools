@@ -1,9 +1,11 @@
 ﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Interfaces;
+using ClangPowerTools.MVVM.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Windows.Input;
 
 namespace ClangPowerTools
@@ -23,7 +25,7 @@ namespace ClangPowerTools
 
     public FormatStyleOptionsViewModel()
     {
-
+      _selectedOption = FormatOptions.First();
     }
 
     #endregion
@@ -93,8 +95,33 @@ namespace ClangPowerTools
       string path = SaveFile(fileName, defaultExt, filter);
       if (string.IsNullOrEmpty(path) == false)
       {
-        WriteContentToFile(path, "create file"); //tidyConfigFile.CreateOutput().ToString())
+        WriteContentToFile(path, CreateOutput().ToString());
       }
+    }
+
+    private StringBuilder CreateOutput()
+    {
+      var output = new StringBuilder();
+      output.AppendLine("---");
+
+      foreach (var item in FormatOptionsData.FormatOptions)
+      {
+        var styleOption = string.Empty;
+        if (item is FormatOptionToggleModel)
+        {
+          var option = item as FormatOptionToggleModel;
+          styleOption = string.Concat(option.Name, ": ", option.IsEnabled.ToString().ToLower());
+        }
+        else if (item is FormatOptionModel)
+        {
+          var option = item as FormatOptionModel;
+          styleOption = string.Concat(option.Name, ": ", option.Input);
+        }
+
+        output.AppendLine(styleOption);
+      }
+
+      return output;
     }
 
     #endregion
