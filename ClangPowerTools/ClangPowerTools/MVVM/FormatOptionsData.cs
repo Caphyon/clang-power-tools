@@ -8,8 +8,8 @@ namespace ClangPowerTools
   {
     public static List<IFormatOption> FormatOptions = new List<IFormatOption>()
     {
-      new FormatOptionModel{ Name = "test", Description = "xxxxxxxx", Input = "InputTest"},
-      new FormatOptionToggleModel{Name = "toggleTest", Description = "yyyyy", IsEnabled=false}
+      new FormatOptionModel{ Name = "AccessModifierOffset", Paramater = "int", Description = "The extra indent or outdent of access modifiers, e.g. public:.", Input = "InputTest"},
+      new FormatOptionToggleModel{Name = "toggleTest", Paramater = "bool", Description = "yyyyy", IsEnabled=false}
     };
   }
 }
