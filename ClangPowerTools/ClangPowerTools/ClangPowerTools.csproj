@@ -82,6 +82,7 @@
     <Compile Include="Commands\IgnoreCommand.cs" />
     <Compile Include="Error\TaskErrorViewModel.cs" />
     <Compile Include="Events\FormatCommandEventArgs.cs" />
+    <Compile Include="Export Config\FormatOptionFile.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Events\HasEncodingErrorEventArgs.cs" />
     <Compile Include="Events\LicenseEventArgs.cs" />

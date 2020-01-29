@@ -171,8 +171,9 @@
         Margin="0,0,20,0"
         ItemsSource="{Binding PredefinedStyles}"
         SelectedItem="{Binding SelectedPredefinedStyle}" />
-
     </Grid>
+    
+    
 
     <!--  Create file button  -->
     <Button
