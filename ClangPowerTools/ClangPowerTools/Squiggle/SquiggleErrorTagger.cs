@@ -21,6 +21,9 @@ namespace ClangPowerTools.Squiggle
 
     private readonly string squiggleType = "other error";
 
+    private int line;
+    private int column;
+
     private ITextBuffer SourceBuffer { get; set; }
 
     public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
@@ -50,30 +53,34 @@ namespace ClangPowerTools.Squiggle
       var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
       var activeDocument = dte.ActiveDocument;
 
-      var errors = TaskErrorViewModel.Errors.Where(err => err.Document != activeDocument.Name);
-      foreach (var error in errors)
-      {
-        var bufferLines = SourceBuffer.CurrentSnapshot.Lines.ToList();
-        error.Line = error.Line.ForceInRange(0, bufferLines.Count - 1);
+      SquiggleViewModel.Squiggles.Clear();
 
-        var currentLine = SourceBuffer.CurrentSnapshot.GetLineFromLineNumber(error.Line);
+      foreach (var error in TaskErrorViewModel.Errors)
+      {
+        if (error.Document != activeDocument.FullName)
+          continue;
+
+        var bufferLines = SourceBuffer.CurrentSnapshot.Lines.ToList();
+        line = error.Line.ForceInRange(0, bufferLines.Count - 1);
+
+        var currentLine = SourceBuffer.CurrentSnapshot.GetLineFromLineNumber(line);
         var currentLineText = currentLine.GetText().TrimEnd();
 
         if (string.IsNullOrWhiteSpace(currentLineText))
           continue;
 
-        error.Column = error.Column.ForceInRange(0, currentLineText.Length - 1);
+        column = error.Column.ForceInRange(0, currentLineText.Length - 1);
 
-        if (error.Column - 1 >= 0 && error.Column + 1 < currentLineText.Length)
+        if (column - 1 >= 0 && column + 1 < currentLineText.Length)
         {
-          if (currentLineText[error.Column - 1] == ' ' && currentLineText[error.Column] != ' ' && currentLineText[error.Column + 1] == ' ')
+          if (currentLineText[column - 1] == ' ' && currentLineText[column] != ' ' && currentLineText[column + 1] == ' ')
           {
-            yield return CreateTagSpan(error.Column, 1, error.Text);
+            yield return CreateTagSpan(column, 1, error.Text);
             continue;
           }
         }
 
-        GetSquiggleValues(error, bufferLines, currentLineText, error.Column, out int start, out int length);
+        GetSquiggleValues(bufferLines, currentLineText, out int start, out int length);
         
         yield return CreateTagSpan(start, length, error.Text);
       }
@@ -88,15 +95,15 @@ namespace ClangPowerTools.Squiggle
       return new TagSpan<SquiggleErrorTag>(snapshotSpan, squiggle);
     }
 
-    private int LengthUntilGivenPosition(TaskErrorModel error, List<ITextSnapshotLine> lines)
+    private int LengthUntilGivenPosition(List<ITextSnapshotLine> lines)
     {
       var count = 0;
-      for (var i = 0; i<error.Line; ++i)
+      for (var i = 0; i<line; ++i)
       {
         count += lines[i].GetText().Length;
       }
 
-      return count + error.Column + (error.Line * 2) + 1;
+      return count + column + (line * 2) + 1;
     }
 
     private int FindTheBeginning(string text, int start, int iterationValue, out int stepsBack)
@@ -129,14 +136,14 @@ namespace ClangPowerTools.Squiggle
       return length;
     }
 
-    private void GetSquiggleValues(TaskErrorModel error, List<ITextSnapshotLine> lines, 
-      string text, int column, out int start, out int length)
+    private void GetSquiggleValues(List<ITextSnapshotLine> lines, 
+      string text, out int start, out int length)
     {
-      start = LengthUntilGivenPosition(error, lines);
+      start = LengthUntilGivenPosition(lines);
       start = start.ForceInRange(0, SourceBuffer.CurrentSnapshot.GetText().Length - 1);
       start = FindTheBeginning(text, start, column, out int stepsBack);
       
-      length = FindLength(text, error.Column - stepsBack + 1);
+      length = FindLength(text, column - stepsBack + 1);
     }
 
     #endregion
