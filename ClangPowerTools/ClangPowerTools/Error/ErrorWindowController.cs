@@ -6,6 +6,7 @@ using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using ClangPowerTools.Commands;
 
 namespace ClangPowerTools
 {
@@ -25,6 +26,9 @@ namespace ClangPowerTools
 
     public void OnErrorDetected(object sender, ErrorDetectedEventArgs e)
     {
+      if (BackgroundTidyCommand.backgroundRun)
+        return;
+
       UIUpdater.InvokeAsync(() =>
       {
         SuspendRefresh();

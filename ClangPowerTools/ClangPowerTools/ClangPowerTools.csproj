@@ -78,6 +78,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CMake\CMakeBuilder.cs" />
+    <Compile Include="Commands\BackgroundTidyCommand.cs" />
     <Compile Include="Commands\IgnoreCommand.cs" />
     <Compile Include="Error\TaskErrorViewModel.cs" />
     <Compile Include="Events\FormatCommandEventArgs.cs" />

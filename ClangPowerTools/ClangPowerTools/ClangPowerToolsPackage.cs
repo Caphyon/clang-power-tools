@@ -440,6 +440,7 @@ namespace ClangPowerTools
       if (null != mRunningDocTableEvents)
       {
         mRunningDocTableEvents.BeforeSave += mCommandController.OnBeforeSave;
+        mRunningDocTableEvents.BeforeActiveDocumentChange += mCommandController.OnBeforeActiveDocumentChange;
       }
 
       if (null != mDteEvents)

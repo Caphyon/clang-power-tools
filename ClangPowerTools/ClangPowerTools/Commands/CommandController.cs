@@ -12,6 +12,7 @@ using System;
 using Task = System.Threading.Tasks.Task;
 using ClangPowerTools.MVVM.Controllers;
 using System.IO;
+using ClangPowerTools.Error;
 
 namespace ClangPowerTools
 {
@@ -27,6 +28,7 @@ namespace ClangPowerTools
     public bool activeAccount = false;
     public bool tokenExists = false;
     public bool clearOutputOnFormat = false;
+    public bool backgroundRunning = false;
 
     public static readonly Guid mCommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
 
@@ -322,6 +324,9 @@ namespace ClangPowerTools
 
     public void OnAfterRunCommand(object sender, CloseDataStreamingEventArgs e)
     {
+      if (backgroundRunning)
+        return;
+
       if (e.IsStopped)
       {
         DisplayStoppedMessage(false);
@@ -634,6 +639,22 @@ namespace ClangPowerTools
         return;
       }
       mSaveCommandWasGiven = true;
+    }
+
+    public void OnBeforeActiveDocumentChange(object sender, Document document)
+    {
+      if (running)
+        return;
+
+      TaskErrorViewModel.Errors.Clear();
+      backgroundRunning = true;
+
+      _ = Task.Run(async () =>
+        {
+          var backgroundTidyCommand = new BackgroundTidyCommand(document);
+          await backgroundTidyCommand.RunClangTidyAsync();
+          backgroundRunning = false;
+        });
     }
 
     private bool IsAToolbarCommand(OleMenuCommand command)

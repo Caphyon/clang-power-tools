@@ -76,9 +76,17 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation)
+    public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)
     {
-      await PrepareCommmandAsync(commandUILocation);
+      if (BackgroundTidyCommand.backgroundRun)
+      {
+        mItemsCollector = new ItemsCollector();
+        mItemsCollector.SetItem(document);
+      }
+      else
+      {
+        await PrepareCommmandAsync(commandUILocation);
+      }
 
       await Task.Run(() =>
       {

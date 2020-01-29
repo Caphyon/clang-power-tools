@@ -38,6 +38,16 @@ namespace ClangPowerTools
 
     #region Public Methods
 
+    public void SetItem(Document document)
+    {
+      var projectName = document.ProjectItem.ContainingProject.FullName;
+      if (string.IsNullOrWhiteSpace(projectName))
+        return;
+
+      IItem item = new CurrentProjectItem(document.ProjectItem);
+      Items.Add(item);
+    }
+
     public void CollectActiveProjectItem()
     {
       try

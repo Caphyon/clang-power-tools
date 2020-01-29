@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Builder;
+using ClangPowerTools.Commands;
 using ClangPowerTools.Error;
 using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
@@ -133,7 +134,10 @@ namespace ClangPowerTools.Output
       {
         if (mOutputContent.MissingLLVM)
         {
-          Write(new object(), new ClangCommandMessageEventArgs(ErrorParserConstants.kMissingLlvmMessage, false));
+          if(BackgroundTidyCommand.backgroundRun == false)
+          {
+            Write(new object(), new ClangCommandMessageEventArgs(ErrorParserConstants.kMissingLlvmMessage, false));
+          }
           OnMissingLLVMDetected(new MissingLlvmEventArgs(true));
         }
         return;

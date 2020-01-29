@@ -204,7 +204,7 @@ namespace ClangPowerTools
         var itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item);
 
         // From the first parameter is removed the last character which is mandatory "'"
-        // and added to the end of the string to close the script
+        // and added to the end of the string to close the script escaping command
         Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
         CommandTestUtility.ScriptCommand = Script;
 
