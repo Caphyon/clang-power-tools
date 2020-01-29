@@ -10,8 +10,6 @@
   Height="400"
   d:DataContext="{d:DesignInstance local:InputDataViewModel,
                                    IsDesignTimeCreatable=True}"
-  d:DesignHeight="250"
-  d:DesignWidth="300"
   Background="WhiteSmoke"
   Icon="/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ShowInTaskbar="False"

@@ -11,6 +11,7 @@ namespace ClangPowerTools.MVVM.Views
     {
       InitializeComponent();
       DataContext = new FormatStyleOptionsViewModel();
+      Owner = SettingsProvider.SettingsView;
     }
   }
 }

@@ -5,11 +5,16 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  Title="Format Style Options"
   Width="700"
   Height="450"
   d:DataContext="{d:DesignInstance local:FormatStyleOptionsViewModel,
                                    IsDesignTimeCreatable=True}"
+  Background="WhiteSmoke"
+  Icon="/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
+  ShowInTaskbar="False"
+  WindowStartupLocation="CenterScreen"
   mc:Ignorable="d">
 
   <!--  Static resources  -->
