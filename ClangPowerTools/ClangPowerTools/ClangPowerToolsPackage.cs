@@ -103,7 +103,6 @@ namespace ClangPowerTools
       await RegisterVsServicesAsync();
 
       TaskErrorViewModel.Errors.Clear();
-      SquiggleViewModel.Squiggles.Clear();
 
       mCommandController = new CommandController(this);
 

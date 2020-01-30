@@ -86,7 +86,6 @@ namespace ClangPowerTools
     public void OnClangCommandBegin(object sender, ClearEventArgs e)
     {
       Clear();
-      SquiggleViewModel.Squiggles.Clear();
       TaskErrorViewModel.Errors.Clear();
     }
 

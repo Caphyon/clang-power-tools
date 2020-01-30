@@ -53,8 +53,6 @@ namespace ClangPowerTools.Squiggle
       var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
       var activeDocument = dte.ActiveDocument;
 
-      SquiggleViewModel.Squiggles.Clear();
-
       foreach (var error in TaskErrorViewModel.Errors)
       {
         if (error.Document != activeDocument.FullName)
@@ -90,7 +88,6 @@ namespace ClangPowerTools.Squiggle
     {
       var snapshotSpan = new SnapshotSpan(SourceBuffer.CurrentSnapshot, start, length);
       var squiggle = new SquiggleErrorTag(squiggleType, tooltip);
-      SquiggleViewModel.Squiggles.Add(squiggle);
 
       return new TagSpan<SquiggleErrorTag>(snapshotSpan, squiggle);
     }
