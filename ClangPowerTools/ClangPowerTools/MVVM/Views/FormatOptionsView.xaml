@@ -27,7 +27,6 @@
     </ResourceDictionary>
   </Window.Resources>
 
-
   <StackPanel Orientation="Vertical">
     <Grid>
       <Grid.RowDefinitions>
@@ -172,8 +171,6 @@
         ItemsSource="{Binding PredefinedStyles}"
         SelectedItem="{Binding SelectedPredefinedStyle}" />
     </Grid>
-    
-    
 
     <!--  Create file button  -->
     <Button
@@ -187,5 +184,24 @@
         Create file
       </Button.Content>
     </Button>
+
+    <!--  Code editor  -->
+    <RichTextBox
+      Name="CodeEditor"
+      Width="500"
+      Height="200"
+      Background="Black"
+      Foreground="White">
+      <RichTextBox.Resources>
+        <Style TargetType="{x:Type Paragraph}">
+          <Setter Property="Margin" Value="0" />
+        </Style>
+      </RichTextBox.Resources>
+      <FlowDocument Name="Test">
+        <Paragraph>
+          <Run Text="{Binding CodeEditorText}" />
+        </Paragraph>
+      </FlowDocument>
+    </RichTextBox>
   </StackPanel>
 </Window>

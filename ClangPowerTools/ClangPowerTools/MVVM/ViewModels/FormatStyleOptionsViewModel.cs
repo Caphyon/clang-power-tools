@@ -1,10 +1,14 @@
 ﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.Constants;
 using ClangPowerTools.MVVM.Interfaces;
+using ClangPowerTools.MVVM.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace ClangPowerTools
 {
@@ -14,16 +18,19 @@ namespace ClangPowerTools
 
     public event PropertyChangedEventHandler PropertyChanged;
 
+    private FormatOptionsView formatOptionsView;
     private ICommand createFormatFileCommand;
-    private IFormatOption _selectedOption;
+    private IFormatOption selectedOption;
+    private string codeEditorText;
 
     #endregion
 
     #region Constructor
 
-    public FormatStyleOptionsViewModel()
+    public FormatStyleOptionsViewModel(FormatOptionsView formatOptionsView)
     {
-      _selectedOption = FormatOptions.First();
+      selectedOption = FormatOptions.First();
+      this.formatOptionsView = formatOptionsView;
     }
 
     #endregion
@@ -42,11 +49,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return _selectedOption;
+        return selectedOption;
       }
       set
       {
-        _selectedOption = value;
+        selectedOption = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedOption"));
       }
     }
@@ -60,6 +67,18 @@ namespace ClangPowerTools
     }
 
     public ClangFormatStyle SelectedPredefinedStyle { get; set; } = ClangFormatStyle.file;
+
+    public string CodeEditorText
+    {
+      get
+      {
+        return codeEditorText;
+      }
+      set
+      {
+        codeEditorText = value;
+      }
+    }
 
     public bool CanExecute
     {
@@ -96,6 +115,28 @@ namespace ClangPowerTools
         WriteContentToFile(path, FormatOptionFile.CreateOutput().ToString());
       }
     }
+
+
+    private void HighlightText()
+    {
+      if (string.IsNullOrEmpty(codeEditorText)) return;
+
+      var index = codeEditorText.LastIndexOf(' ');
+      var word = codeEditorText.Substring(index, codeEditorText.Length - 1);
+
+      if (CPPKeywords.keywords.Contains(word))
+      {
+        Run run = new Run(word);
+        run.Foreground = Brushes.Red;
+        TextRange textRange = new TextRange(formatOptionsView.CodeEditor.Document.ContentEnd, formatOptionsView.CodeEditor.Document.ContentEnd);
+
+      }
+      else
+      {
+
+      }
+    }
+
 
     #endregion
   }
