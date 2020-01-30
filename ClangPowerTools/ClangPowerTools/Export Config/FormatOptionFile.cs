@@ -8,6 +8,7 @@ namespace ClangPowerTools
     public static StringBuilder CreateOutput()
     {
       var output = new StringBuilder();
+      output.AppendLine("# Clang Power Tools - Configurable Format Style Options");
       output.AppendLine("---");
 
       foreach (var item in FormatOptionsData.FormatOptions)
