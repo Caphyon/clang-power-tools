@@ -6,7 +6,6 @@ using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
-using ClangPowerTools.Squiggle;
 using ClangPowerTools.Tests;
 using EnvDTE;
 using EnvDTE80;

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.Composition;
+﻿using System.Collections.Generic;
+using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
@@ -37,7 +38,10 @@ namespace ClangPowerTools.Squiggle
         return null;
       }
 
-      return new SquiggleErrorTagger(buffer) as ITagger<T>;
+      SquigglesFactory squigglesFactory = new SquigglesFactory(buffer);
+      IEnumerable<SquiggleModel> squiggles = squigglesFactory.Create();
+      
+      return new SquiggleErrorTagger(squiggles) as ITagger<T>;
     }
 
     #endregion

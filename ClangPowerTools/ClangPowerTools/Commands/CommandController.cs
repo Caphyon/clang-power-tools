@@ -11,7 +11,6 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using Task = System.Threading.Tasks.Task;
 using ClangPowerTools.MVVM.Controllers;
-using System.IO;
 using ClangPowerTools.Error;
 
 namespace ClangPowerTools
