@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 
 namespace ClangPowerTools.MVVM.Views
 {
@@ -7,11 +8,20 @@ namespace ClangPowerTools.MVVM.Views
   /// </summary>
   public partial class FormatOptionsView : Window
   {
+    private FormatStyleOptionsViewModel formatStyleOptionsViewModel;
+
+
     public FormatOptionsView()
     {
       InitializeComponent();
-      DataContext = new FormatStyleOptionsViewModel(this);
+      formatStyleOptionsViewModel = new FormatStyleOptionsViewModel(this);
+      DataContext = formatStyleOptionsViewModel;
       Owner = SettingsProvider.SettingsView;
+    }
+
+    private void CodeEditor_TextChanged(object sender, TextChangedEventArgs e)
+    {
+      formatStyleOptionsViewModel.HighlightText();
     }
   }
 }

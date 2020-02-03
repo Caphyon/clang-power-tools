@@ -191,17 +191,13 @@
       Width="500"
       Height="200"
       Background="Black"
-      Foreground="White">
+      Foreground="White"
+      TextChanged="CodeEditor_TextChanged">
       <RichTextBox.Resources>
         <Style TargetType="{x:Type Paragraph}">
           <Setter Property="Margin" Value="0" />
         </Style>
       </RichTextBox.Resources>
-      <FlowDocument Name="Test">
-        <Paragraph>
-          <Run Text="{Binding CodeEditorText}" />
-        </Paragraph>
-      </FlowDocument>
     </RichTextBox>
   </StackPanel>
 </Window>
