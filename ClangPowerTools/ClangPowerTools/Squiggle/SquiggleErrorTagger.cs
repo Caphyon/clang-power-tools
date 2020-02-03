@@ -47,17 +47,17 @@ namespace ClangPowerTools.Squiggle
     /// <param name="spans">A read-only span of text to be searched for instances of CurrentWord</param>
     public IEnumerable<ITagSpan<SquiggleErrorTag>> GetTags(NormalizedSnapshotSpanCollection spans)
     {
-      if (TaskErrorViewModel.Errors == null || TaskErrorViewModel.Errors.Count == 0)
+      if (TaskErrorViewModel.FileErrorsPair == null || TaskErrorViewModel.FileErrorsPair.Count == 0)
         yield break;
 
       var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
       var activeDocument = dte.ActiveDocument;
 
-      foreach (var error in TaskErrorViewModel.Errors)
-      {
-        if (error.Document != activeDocument.FullName)
-          continue;
+      if(TaskErrorViewModel.FileErrorsPair.ContainsKey(activeDocument.FullName) == false)
+        yield break;
 
+      foreach (var error in TaskErrorViewModel.FileErrorsPair[activeDocument.FullName])
+      {
         var bufferLines = SourceBuffer.CurrentSnapshot.Lines.ToList();
         line = error.Line.ForceInRange(0, bufferLines.Count - 1);
 
@@ -79,7 +79,7 @@ namespace ClangPowerTools.Squiggle
         }
 
         GetSquiggleValues(bufferLines, currentLineText, out int start, out int length);
-        
+
         yield return CreateTagSpan(start, length, error.Text);
       }
     }

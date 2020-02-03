@@ -103,6 +103,7 @@ namespace ClangPowerTools
       await RegisterVsServicesAsync();
 
       TaskErrorViewModel.Errors.Clear();
+      TaskErrorViewModel.FileErrorsPair.Clear();
 
       mCommandController = new CommandController(this);
 

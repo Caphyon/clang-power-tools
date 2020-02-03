@@ -44,7 +44,7 @@ namespace ClangPowerTools
     public bool StopCommand
     {
       get { return stopCommand; }
-      protected set { stopCommand = value; }
+      set { stopCommand = value; }
     }
 
     #endregion

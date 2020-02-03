@@ -186,6 +186,20 @@ namespace ClangPowerTools.Output
       if( Errors.Count > 0 )
       {
         TaskErrorViewModel.Errors = Errors.ToList();
+        
+        TaskErrorViewModel.FileErrorsPair = new Dictionary<string, List<TaskErrorModel>>();
+        foreach(var error in TaskErrorViewModel.Errors)
+        {
+          if (TaskErrorViewModel.FileErrorsPair.ContainsKey(error.Document))
+          {
+            TaskErrorViewModel.FileErrorsPair[error.Document].Add(error);
+          }
+          else
+          {
+            TaskErrorViewModel.FileErrorsPair.Add(error.Document, new List<TaskErrorModel>() { error});
+          }
+        }
+
         ErrorDetectedEvent?.Invoke(this, new ErrorDetectedEventArgs(Errors));
       }
     }

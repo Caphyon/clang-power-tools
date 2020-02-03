@@ -643,16 +643,22 @@ namespace ClangPowerTools
 
     public void OnBeforeActiveDocumentChange(object sender, Document document)
     {
-      if (running)
-        return;
-
-      TaskErrorViewModel.Errors.Clear();
-      backgroundRunning = true;
-
       _ = Task.Run(async () =>
         {
+          if (running)
+            return;
+
+          TaskErrorViewModel.Errors.Clear();
+          TaskErrorViewModel.FileErrorsPair.Clear();
+
+          backgroundRunning = true;
+          StopCommand.Instance.StopCommand = true;
+          await StopCommand.Instance.RunStopClangCommandAsync();
+          StopCommand.Instance.StopCommand = false;
+
           var backgroundTidyCommand = new BackgroundTidyCommand(document);
           await backgroundTidyCommand.RunClangTidyAsync();
+
           backgroundRunning = false;
         });
     }

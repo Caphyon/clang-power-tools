@@ -87,6 +87,7 @@ namespace ClangPowerTools
     {
       Clear();
       TaskErrorViewModel.Errors.Clear();
+      TaskErrorViewModel.FileErrorsPair.Clear();
     }
 
     public void OnBuildBegin(vsBuildScope Scope, vsBuildAction Action)
