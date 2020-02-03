@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace ClangPowerTools
@@ -47,6 +48,25 @@ namespace ClangPowerTools
       return paragrah?.IndexOf(word, comp) >= 0;
     }
 
+
+    /// <summary>
+    /// Get all indexes of a value
+    /// </summary>
+    /// <param name="str"></param>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static IEnumerable<int> AllIndexesOf(this string str, string value)
+    {
+      if (String.IsNullOrEmpty(value))
+        throw new ArgumentException("the string to find may not be empty", "value");
+      for (int index = 0; ; index += value.Length)
+      {
+        index = str.IndexOf(value, index);
+        if (index == -1)
+          break;
+        yield return index;
+      }
+    }
     #endregion
 
   }
