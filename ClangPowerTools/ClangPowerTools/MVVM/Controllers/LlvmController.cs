@@ -2,6 +2,7 @@
 using ClangPowerTools.MVVM.Constants;
 using ClangPowerTools.MVVM.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -17,12 +18,11 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public LlvmSettingsModel llvmModel = new LlvmSettingsModel();
     public CancellationTokenSource downloadCancellationToken = new CancellationTokenSource();
-    
+
     public delegate void OnOperationCanceled();
     public event OnOperationCanceled onOperationCanceldEvent;
 
     private Process process;
-    private readonly string versionAlternateUri = "8.0.1";
     private readonly SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
 
     #endregion
@@ -55,7 +55,7 @@ namespace ClangPowerTools.MVVM.Controllers
       var executablePath = settingsPathBuilder.GetLlvmExecutablePath(version, LlvmConstants.Llvm + version);
       var uri = string.Empty;
 
-      if(version == versionAlternateUri)
+      if (LlvmVersionsAlternate.VersionAlternateUri.Contains(version))
       {
         uri = llvmUri.GetGitHubUri(version);
       }
@@ -85,7 +85,7 @@ namespace ClangPowerTools.MVVM.Controllers
     {
       var llVmVersionPath = settingsPathBuilder.GetLlvmPath(version);
       var executablePath = settingsPathBuilder.GetLlvmExecutablePath(version, LlvmConstants.Llvm + version);
-      var startInfoArguments = string.Concat(LlvmConstants.Arguments, " ", "\"",executablePath, "\"", " ", LlvmConstants.InstallExeParameters, llVmVersionPath);
+      var startInfoArguments = string.Concat(LlvmConstants.Arguments, " ", "\"", executablePath, "\"", " ", LlvmConstants.InstallExeParameters, llVmVersionPath);
 
       try
       {

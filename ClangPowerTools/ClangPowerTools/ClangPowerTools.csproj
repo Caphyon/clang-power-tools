@@ -90,12 +90,13 @@
     <Compile Include="Helpers\ScriptGenerator.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
     <Compile Include="MVVM\Constants\LlvmConstants.cs" />
+    <Compile Include="MVVM\Constants\LlvmVersionsAlternate.cs" />
     <Compile Include="MVVM\Controllers\FreeTrialController.cs" />
     <Compile Include="MVVM\Controllers\LlvmController.cs" />
     <Compile Include="MVVM\Interfaces\IDownload.cs" />
     <Compile Include="MVVM\Interfaces\IInstall.cs" />
     <Compile Include="MVVM\LlvmUri.cs" />
-    <Compile Include="MVVM\LlvmVersions.cs" />
+    <Compile Include="MVVM\Constants\LlvmVersions.cs" />
     <Compile Include="MVVM\Interfaces\IAccountValidator.cs" />
     <Compile Include="MVVM\Interfaces\ILicense.cs" />
     <Compile Include="MVVM\LicenseValidation\LicenseValidator.cs" />
