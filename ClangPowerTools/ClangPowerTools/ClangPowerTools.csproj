@@ -132,6 +132,7 @@
     <Compile Include="MVVM\Models\LicenseModel.cs" />
     <Compile Include="MVVM\SettingsHandler.cs" />
     <Compile Include="MVVM\SettingsTooltips.cs" />
+    <Compile Include="MVVM\TextManipulation.cs" />
     <Compile Include="MVVM\TidyChecksClean.cs" />
     <Compile Include="MVVM\TidyChecks.cs" />
     <Compile Include="MVVM\SettingsProvider.cs" />

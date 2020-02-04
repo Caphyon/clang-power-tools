@@ -21,7 +21,6 @@ namespace ClangPowerTools
     private FormatOptionsView formatOptionsView;
     private ICommand createFormatFileCommand;
     private IFormatOption selectedOption;
-    private string codeEditorText;
 
     #endregion
 
@@ -68,17 +67,6 @@ namespace ClangPowerTools
 
     public ClangFormatStyle SelectedPredefinedStyle { get; set; } = ClangFormatStyle.file;
 
-    public string CodeEditorText
-    {
-      get
-      {
-        return codeEditorText;
-      }
-      set
-      {
-        codeEditorText = value;
-      }
-    }
 
     public bool CanExecute
     {
@@ -103,6 +91,8 @@ namespace ClangPowerTools
 
     #region Methods
 
+
+
     private void CreateFormatFile()
     {
       string fileName = ".clang-format";
@@ -117,27 +107,18 @@ namespace ClangPowerTools
     }
 
 
-    private void HighlightText()
+    public void HighlightText()
     {
-      if (string.IsNullOrEmpty(codeEditorText)) return;
+      var document = formatOptionsView.CodeEditor.Document;
 
-      var index = codeEditorText.LastIndexOf(' ');
-      var word = codeEditorText.Substring(index, codeEditorText.Length - 1);
-
-      if (CPPKeywords.keywords.Contains(word))
+      foreach (var keyword in CPPKeywords.keywords)
       {
-        Run run = new Run(word);
-        run.Foreground = Brushes.Red;
-        TextRange textRange = new TextRange(formatOptionsView.CodeEditor.Document.ContentEnd, formatOptionsView.CodeEditor.Document.ContentEnd);
-
+        TextManipulation.FromTextPointer(document.ContentStart, document.ContentEnd, keyword, Brushes.Red);
       }
-      else
-      {
-
-      }
+      TextRange tr = new TextRange(document.ContentEnd, document.ContentEnd);
+      tr.Text = "X";
+      tr.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.White);
     }
-
-
     #endregion
   }
 }
