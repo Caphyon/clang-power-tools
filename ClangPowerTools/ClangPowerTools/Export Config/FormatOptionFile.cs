@@ -10,6 +10,7 @@ namespace ClangPowerTools
       var output = new StringBuilder();
       output.AppendLine("# Created with Clang Power Tools - Configurable Format Style Options");
       output.AppendLine("---");
+      output.AppendLine("Language: Cpp");
 
       foreach (var item in FormatOptionsData.FormatOptions)
       {
