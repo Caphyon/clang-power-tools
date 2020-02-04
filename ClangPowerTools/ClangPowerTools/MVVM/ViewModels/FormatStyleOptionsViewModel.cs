@@ -115,9 +115,9 @@ namespace ClangPowerTools
       {
         TextManipulation.FromTextPointer(document.ContentStart, document.ContentEnd, keyword, Brushes.Red);
       }
-      TextRange tr = new TextRange(document.ContentEnd, document.ContentEnd);
-      tr.Text = "X";
-      tr.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.White);
+      //TextRange tr = new TextRange(document.ContentEnd, document.ContentEnd);
+      //tr.Text = "X";
+      //tr.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.White);
     }
     #endregion
   }
