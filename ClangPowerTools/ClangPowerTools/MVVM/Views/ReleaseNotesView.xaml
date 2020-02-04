@@ -101,7 +101,7 @@
           </Style>
         </ListView.ItemContainerStyle>
 
-        <!--  Bug Fixes  -->
+        <!--  What's new  -->
         <TextBlock
           Margin="5,35,0,0"
           HorizontalAlignment="Left"
