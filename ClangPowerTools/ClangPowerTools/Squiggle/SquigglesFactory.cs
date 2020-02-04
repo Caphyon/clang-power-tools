@@ -42,8 +42,13 @@ namespace ClangPowerTools.Squiggle
       if (TaskErrorViewModel.FileErrorsPair.ContainsKey(activeDocument.FullName) == false)
         yield break;
 
+      int count = 100;
+
       foreach (var error in TaskErrorViewModel.FileErrorsPair[activeDocument.FullName])
       {
+        if (--count <= 0)
+          yield break;
+
         var bufferLines = SourceBuffer.CurrentSnapshot.Lines.ToList();
         line = error.Line.ForceInRange(0, bufferLines.Count - 1);
 
