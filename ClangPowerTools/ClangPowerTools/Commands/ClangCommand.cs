@@ -227,6 +227,10 @@ namespace ClangPowerTools
     private bool IgnoreItem(IItem item, out string fileType)
     {
       fileType = string.Empty;
+
+      if (BackgroundTidyCommand.backgroundRun)
+        return false;
+
       if (item is CurrentProjectItem)
       {
         ProjectItem projectItem = item.GetObject() as ProjectItem;
