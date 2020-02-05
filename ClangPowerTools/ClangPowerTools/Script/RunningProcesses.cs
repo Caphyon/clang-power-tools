@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Management;
+using System.Windows.Forms;
 
 namespace ClangPowerTools
 {
@@ -21,14 +22,10 @@ namespace ClangPowerTools
 
     public void Kill()
     {
-      foreach (var process in mProcesses)
-      {
-        if (process.HasExited)
-          continue;
+      if (mProcesses.Count <= 0)
+        return;
 
-        KillProcessAndChildren(process.Id);
-        process.Dispose();
-      }
+      mProcesses.ForEach(process => process.Dispose());
       mProcesses.Clear();
     }
 
@@ -62,7 +59,10 @@ namespace ClangPowerTools
         Process proc = Process.GetProcessById(aPid);
         proc.Kill();
       }
-      catch (ArgumentException) { } // The process has already exited.
+      catch (ArgumentException e)
+      {
+        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      } // The process has already exited.
     }
 
     #endregion
