@@ -13,6 +13,7 @@ using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
 using Task = System.Threading.Tasks.Task;
+using Process = System.Diagnostics.Process;
 
 namespace ClangPowerTools.Commands
 {
@@ -119,6 +120,31 @@ namespace ClangPowerTools.Commands
       ExecuteFormatCommand();
     }
 
+    public static string RunFormatProcess(string dirPath, string filePath, string text, int startPosition, int length)
+    {
+      var process = CreateProcess(text, startPosition, length, dirPath, filePath);
+
+      try
+      {
+        process.Start();
+      }
+      catch (Exception exception)
+      {
+        throw new Exception(
+            $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
+      }
+
+      process.StandardInput.Write(text);
+      process.StandardInput.Close();
+
+      var output = process.StandardOutput.ReadToEnd();
+      process.WaitForExit();
+
+      if (0 != process.ExitCode)
+        throw new Exception(process.StandardError.ReadToEnd());
+      return output;
+    }
+
     private void ExecuteFormatCommand()
     {
       try
@@ -145,26 +171,7 @@ namespace ClangPowerTools.Commands
           text = FormatEndOfFile(view, filePath, out dirPath);
         }
 
-        var process = CreateProcess(text, startPosition, length, dirPath, filePath);
-
-        try
-        {
-          process.Start();
-        }
-        catch (Exception exception)
-        {
-          throw new Exception(
-              $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
-        }
-
-        process.StandardInput.Write(text);
-        process.StandardInput.Close();
-
-        var output = process.StandardOutput.ReadToEnd();
-        process.WaitForExit();
-
-        if (0 != process.ExitCode)
-          throw new Exception(process.StandardError.ReadToEnd());
+        string output = RunFormatProcess(dirPath, filePath, text, startPosition, length);
 
         ApplyClangFormat(output, view);
       }
@@ -174,6 +181,7 @@ namespace ClangPowerTools.Commands
           OLEMSGICON.OLEMSGICON_INFO, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
       }
     }
+
 
     #region Validation
 
@@ -355,14 +363,14 @@ namespace ClangPowerTools.Commands
     }
 
 
-    private System.Diagnostics.Process CreateProcess(string aText, int aOffset, int aLength, string aPath, string aFilePath)
+    private static Process CreateProcess(string aText, int aOffset, int aLength, string aPath, string aFilePath)
     {
       SettingsProvider settingsProvider = new SettingsProvider();
       FormatSettingsModel formatSettings = settingsProvider.GetFormatSettingsModel();
       string vsixPath = Path.GetDirectoryName(
         typeof(RunClangPowerToolsPackage).Assembly.Location);
 
-      System.Diagnostics.Process process = new System.Diagnostics.Process();
+      Process process = new Process();
       process.StartInfo.UseShellExecute = false;
       process.StartInfo.CreateNoWindow = true;
       process.StartInfo.RedirectStandardInput = true;
