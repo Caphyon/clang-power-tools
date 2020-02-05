@@ -185,6 +185,19 @@
       </Button.Content>
     </Button>
 
+    <!--  Format button  -->
+    <Button
+      Width="100"
+      Height="30"
+      Command="{Binding FormatCodeCommand}"
+      FontSize="14"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}">
+      <Button.Content>
+        Format
+      </Button.Content>
+    </Button>
+
     <!--  Code editor  -->
     <RichTextBox
       Name="CodeEditor"
