@@ -39,7 +39,7 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
 
-    private TidyCommand(OleMenuCommandService aCommandService, CommandController aCommandController, 
+    private TidyCommand(OleMenuCommandService aCommandService, CommandController aCommandController,
       AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aPackage, aGuid, aId)
     {
@@ -63,7 +63,7 @@ namespace ClangPowerTools.Commands
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async Task InitializeAsync(CommandController aCommandController, 
+    public static async Task InitializeAsync(CommandController aCommandController,
       AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in TidyCommand's constructor requires
@@ -91,33 +91,30 @@ namespace ClangPowerTools.Commands
       {
         try
         {
-          using (var silentFileController = new SilentFileChangerController())
+          using var silentFileController = new SilentFileChangerController();
+          using var fileChangerWatcher = new FileChangerWatcher();
+
+          SettingsProvider settingsProvider = new SettingsProvider();
+          TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
+
+          if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
           {
-            using (var fileChangerWatcher = new FileChangerWatcher())
-            {
-              SettingsProvider settingsProvider = new SettingsProvider();
-              TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
+            fileChangerWatcher.OnChanged += FileOpener.Open;
 
-              if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
-              {
-                fileChangerWatcher.OnChanged += FileOpener.Open;
+            var dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
+            string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
+              dte2.Solution.FullName : dte2.Solution.FullName
+                                        .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
 
-                var dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
-                string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
-                  dte2.Solution.FullName : dte2.Solution.FullName
-                                            .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
+            fileChangerWatcher.Run(solutionFolderPath);
 
-                fileChangerWatcher.Run(solutionFolderPath);
+            FilePathCollector fileCollector = new FilePathCollector();
+            var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
 
-                FilePathCollector fileCollector = new FilePathCollector();
-                var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
-
-                silentFileController.SilentFiles(filesPath);
-                silentFileController.SilentFiles(dte2.Documents);
-              }
-              RunScript(aCommandId);
-            }
+            silentFileController.SilentFiles(filesPath);
+            silentFileController.SilentFiles(dte2.Documents);
           }
+          RunScript(aCommandId);
         }
         catch (Exception exception)
         {
@@ -126,8 +123,8 @@ namespace ClangPowerTools.Commands
         }
       });
     }
-
-    #endregion
-
   }
+
+  #endregion
+
 }

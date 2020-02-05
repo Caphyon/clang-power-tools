@@ -42,7 +42,7 @@ namespace ClangPowerTools.Squiggle
       if (TaskErrorViewModel.FileErrorsPair.ContainsKey(activeDocument.FullName) == false)
         yield break;
 
-      int count = 100;
+      int count = 50;
 
       foreach (var error in TaskErrorViewModel.FileErrorsPair[activeDocument.FullName])
       {
