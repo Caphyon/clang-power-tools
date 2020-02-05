@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace ClangPowerTools
 {
@@ -73,6 +74,7 @@ namespace ClangPowerTools
       }
       catch (Exception e)
       {
+        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         throw new Exception(e.Message);
       }
     }

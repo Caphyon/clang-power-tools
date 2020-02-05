@@ -12,6 +12,7 @@ using System;
 using Task = System.Threading.Tasks.Task;
 using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.Error;
+using System.Windows.Forms;
 
 namespace ClangPowerTools
 {
@@ -369,7 +370,10 @@ namespace ClangPowerTools
           window.ShowDialog();
         })).SafeFireAndForget();
       }
-      catch (Exception) { }
+      catch (Exception e)
+      {
+        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
     }
 
     public void OnActiveDocumentCheck(object sender, ActiveDocumentEventArgs e)
@@ -443,7 +447,10 @@ namespace ClangPowerTools
 
         return cmd.Name;
       }
-      catch (Exception) { }
+      catch (Exception e)
+      {
+        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
 
       return string.Empty;
     }

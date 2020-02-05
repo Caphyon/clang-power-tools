@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using System.Xml.Linq;
 using Task = System.Threading.Tasks.Task;
 
@@ -310,7 +311,10 @@ namespace ClangPowerTools.Commands
             mDocument.Close(vsSaveChanges.vsSaveChangesYes);
           }
         }
-        catch (Exception) { }
+        catch (Exception e) 
+        {
+          MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
         finally
         {
           mDocument = null;

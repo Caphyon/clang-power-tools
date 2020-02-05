@@ -32,10 +32,10 @@ namespace ClangPowerTools
         mRunningDocumentTable = new RunningDocumentTable(aPackage);
         mRunningDocumentTable.Advise(this);
       }
-      catch (Exception)
+      catch (Exception e)
       {
+        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
-     
     }
 
     #endregion
@@ -124,8 +124,9 @@ namespace ClangPowerTools
         if( VsServiceProvider.TryGetService(typeof(DTE), out object dte))
           document = (dte as DTE).Documents.Cast<Document>().FirstOrDefault(doc => doc.FullName == documentInfo.Moniker);
       }
-      catch (Exception)
+      catch (Exception e)
       {
+        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
 
       return document;

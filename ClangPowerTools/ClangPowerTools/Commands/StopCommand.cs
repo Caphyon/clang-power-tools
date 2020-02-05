@@ -4,6 +4,7 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
+using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
@@ -94,7 +95,10 @@ namespace ClangPowerTools.Commands
           }
           mDirectoriesPath.Clear();
         }
-        catch (Exception) { }
+        catch (Exception e) 
+        {
+          MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
       });
     }
 

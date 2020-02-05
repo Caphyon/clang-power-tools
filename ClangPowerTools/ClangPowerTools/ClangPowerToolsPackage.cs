@@ -17,6 +17,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools
@@ -162,8 +163,9 @@ namespace ClangPowerTools
       {
         aVsSolution?.AdviseSolutionEvents(this, out mHSolutionEvents);
       }
-      catch (Exception)
+      catch (Exception e)
       {
+        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
