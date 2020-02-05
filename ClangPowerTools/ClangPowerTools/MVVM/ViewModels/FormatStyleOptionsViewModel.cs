@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.MVVM.Commands;
+﻿using ClangPowerTools.Commands;
+using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Constants;
 using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Views;
@@ -20,7 +21,9 @@ namespace ClangPowerTools
 
     private FormatOptionsView formatOptionsView;
     private ICommand createFormatFileCommand;
+    private ICommand formatCodeCommand;
     private IFormatOption selectedOption;
+
 
     #endregion
 
@@ -86,6 +89,11 @@ namespace ClangPowerTools
       get => createFormatFileCommand ?? (createFormatFileCommand = new RelayCommand(() => CreateFormatFile(), () => CanExecute));
     }
 
+    public ICommand FormatCodeCommand
+    {
+      get => formatCodeCommand ?? (formatCodeCommand = new RelayCommand(() => RunFormat(), () => CanExecute));
+    }
+
     #endregion
 
 
@@ -104,6 +112,14 @@ namespace ClangPowerTools
       {
         WriteContentToFile(path, FormatOptionFile.CreateOutput().ToString());
       }
+    }
+
+    private void RunFormat()
+    {
+      var document = formatOptionsView.CodeEditor.Document;
+      var text = new TextRange(document.ContentStart, document.ContentEnd).Text;
+      var formatCommand = FormatCommand.RunFormatProcess("","", text, 0, text.Length);
+
     }
 
 
