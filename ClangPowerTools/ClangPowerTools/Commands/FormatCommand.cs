@@ -12,8 +12,8 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml.Linq;
-using Task = System.Threading.Tasks.Task;
 using Process = System.Diagnostics.Process;
+using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
 {
@@ -92,7 +92,7 @@ namespace ClangPowerTools.Commands
 
     public void RunClangFormat(CommandUILocation commandUILocation)
     {
-      if(clearOutput == false)
+      if (clearOutput == false)
         OnFormatFile(new FormatCommandEventArgs() { CanFormat = true, Clear = clearOutput });
 
       clearOutput = true;
@@ -120,7 +120,7 @@ namespace ClangPowerTools.Commands
       ExecuteFormatCommand();
     }
 
-    public static string RunFormatProcess(string dirPath, string filePath, string text, int startPosition, int length)
+    public string RunFormatProcess(string dirPath, string filePath, string text, int startPosition, int length)
     {
       var process = CreateProcess(text, startPosition, length, dirPath, filePath);
 
@@ -251,7 +251,7 @@ namespace ClangPowerTools.Commands
       if (ScriptConstants.kCMakeConfigFile == mDocument.Name.ToLower())
         return false;
 
-      
+
       return true;
     }
 
@@ -363,7 +363,7 @@ namespace ClangPowerTools.Commands
     }
 
 
-    private static Process CreateProcess(string aText, int aOffset, int aLength, string aPath, string aFilePath)
+    private Process CreateProcess(string aText, int aOffset, int aLength, string aPath, string aFilePath)
     {
       var settingsProvider = new SettingsProvider();
       var formatSettings = settingsProvider.GetFormatSettingsModel();
