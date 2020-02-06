@@ -1,15 +1,16 @@
-﻿using ClangPowerTools.Commands;
-using ClangPowerTools.MVVM.Commands;
+﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Constants;
 using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using Process = System.Diagnostics.Process;
 
 namespace ClangPowerTools
 {
@@ -23,8 +24,7 @@ namespace ClangPowerTools
     private ICommand createFormatFileCommand;
     private ICommand formatCodeCommand;
     private IFormatOption selectedOption;
-
-
+    private readonly SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
     #endregion
 
     #region Constructor
@@ -118,9 +118,31 @@ namespace ClangPowerTools
     {
       var document = formatOptionsView.CodeEditor.Document;
       var text = new TextRange(document.ContentStart, document.ContentEnd).Text;
-      var formatCommand = FormatCommand.RunFormatProcess("","", text, 0, text.Length);
 
+      var tempFile = CreateTempCppFile(text);
+      FormatFileOutsideProject(settingsPathBuilder.GetPath(""), tempFile);
+      DeleteTempFile(tempFile);
     }
+
+    public static void FormatFileOutsideProject(string path, string filePath)
+    {
+      string vsixPath = Path.GetDirectoryName(
+        typeof(RunClangPowerToolsPackage).Assembly.Location);
+
+      Process process = new Process();
+      process.StartInfo.UseShellExecute = false;
+      process.StartInfo.CreateNoWindow = true;
+      process.StartInfo.RedirectStandardInput = true;
+      process.StartInfo.RedirectStandardOutput = true;
+      process.StartInfo.RedirectStandardError = true;
+      process.StartInfo.FileName = Path.Combine(vsixPath, ScriptConstants.kClangFormat);
+      process.StartInfo.WorkingDirectory = path;
+      process.StartInfo.Arguments = $"-i \"{Path.GetFullPath(filePath)}\"";
+
+      process.Start();
+      process.WaitForExit();
+    }
+
 
 
     public void HighlightText()
@@ -135,6 +157,27 @@ namespace ClangPowerTools
       //tr.Text = "X";
       //tr.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.White);
     }
+
+
+
+    private string CreateTempCppFile(string content)
+    {
+      string tempFile = Path.Combine(settingsPathBuilder.GetPath(""), "FormatTemp.cpp");
+
+      using (FileStream fs = new FileStream(tempFile, FileMode.OpenOrCreate))
+      {
+        using StreamWriter sw = new StreamWriter(fs);
+        sw.Write(content);
+      }
+
+      return tempFile;
+    }
+
+    private void DeleteTempFile(string tempFile)
+    {
+      File.Delete(tempFile);
+    }
+
     #endregion
   }
 }
