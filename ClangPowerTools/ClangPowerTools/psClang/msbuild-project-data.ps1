@@ -227,11 +227,9 @@ Function Get-ClangCompileFlags([Parameter(Mandatory = $false)][bool] $isCpp = $t
 
 Function Get-ProjectPlatformToolset()
 {
-    $toolset = $PlatformToolset
-
-    if ($toolset)
+    if (VariableExists 'PlatformToolset')
     {
-        return $toolset
+        return $PlatformToolset
     }
     else
     {
