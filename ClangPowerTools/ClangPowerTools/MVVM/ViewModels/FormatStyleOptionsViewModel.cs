@@ -118,10 +118,15 @@ namespace ClangPowerTools
     {
       var document = formatOptionsView.CodeEditor.Document;
       var text = new TextRange(document.ContentStart, document.ContentEnd).Text;
+      string filePath = Path.Combine(settingsPathBuilder.GetPath(""), "FormatTemp.cpp");
 
-      var tempFile = CreateTempCppFile(text);
-      FormatFileOutsideProject(settingsPathBuilder.GetPath(""), tempFile);
-      DeleteTempFile(tempFile);
+      CreateTempCppFile(text, filePath);
+      FormatFileOutsideProject(settingsPathBuilder.GetPath(""), filePath);
+      var content = ReadFile(filePath);
+      document.Blocks.Clear();
+      document.Blocks.Add(new Paragraph(new Run(content)));
+
+      DeleteTempFile(filePath);
     }
 
     public static void FormatFileOutsideProject(string path, string filePath)
@@ -160,22 +165,31 @@ namespace ClangPowerTools
 
 
 
-    private string CreateTempCppFile(string content)
+    private void CreateTempCppFile(string content, string filePath)
     {
-      string tempFile = Path.Combine(settingsPathBuilder.GetPath(""), "FormatTemp.cpp");
-
-      using (FileStream fs = new FileStream(tempFile, FileMode.OpenOrCreate))
+      using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
       {
         using StreamWriter sw = new StreamWriter(fs);
         sw.Write(content);
       }
-
-      return tempFile;
     }
 
     private void DeleteTempFile(string tempFile)
     {
       File.Delete(tempFile);
+    }
+
+
+    private string ReadFile(string filePath)
+    {
+      var content = string.Empty;
+      using (FileStream fs = new FileStream(filePath, FileMode.Open))
+      {
+        using StreamReader sw = new StreamReader(fs);
+        content = sw.ReadToEnd();
+      }
+
+      return content;
     }
 
     #endregion
