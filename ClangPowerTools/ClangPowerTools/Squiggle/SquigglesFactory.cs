@@ -39,6 +39,9 @@ namespace ClangPowerTools.Squiggle
       var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
       var activeDocument = dte.ActiveDocument;
 
+      if (activeDocument == null)
+        yield break;
+
       if (TaskErrorViewModel.FileErrorsPair.ContainsKey(activeDocument.FullName) == false)
         yield break;
 
