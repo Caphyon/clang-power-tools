@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -119,17 +120,19 @@ namespace ClangPowerTools
       var document = formatOptionsView.CodeEditor.Document;
       var text = new TextRange(document.ContentStart, document.ContentEnd).Text;
       string filePath = Path.Combine(settingsPathBuilder.GetPath(""), "FormatTemp.cpp");
+      string formatFilePath = Path.Combine(settingsPathBuilder.GetPath(""), ".clang-format");
 
-      CreateTempCppFile(text, filePath);
-      FormatFileOutsideProject(settingsPathBuilder.GetPath(""), filePath);
-      var content = ReadFile(filePath);
+
+      //WriteContentToFile(formatFilePath, FormatOptionFile.CreateOutput().ToString());
+      //CreateTempCppFile(text, filePath);
+      var content = FormatFileOutsideProject(settingsPathBuilder.GetPath(""), filePath);
+      //DeleteTempFile(filePath);
+
       document.Blocks.Clear();
-      document.Blocks.Add(new Paragraph(new Run(content)));
-
-      DeleteTempFile(filePath);
+      document.Blocks.Add(new Paragraph(new Run(content)));  
     }
 
-    public static void FormatFileOutsideProject(string path, string filePath)
+    public static string FormatFileOutsideProject(string path, string filePath)
     {
       string vsixPath = Path.GetDirectoryName(
         typeof(RunClangPowerToolsPackage).Assembly.Location);
@@ -139,13 +142,23 @@ namespace ClangPowerTools
       process.StartInfo.CreateNoWindow = true;
       process.StartInfo.RedirectStandardInput = true;
       process.StartInfo.RedirectStandardOutput = true;
+      process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
       process.StartInfo.RedirectStandardError = true;
       process.StartInfo.FileName = Path.Combine(vsixPath, ScriptConstants.kClangFormat);
       process.StartInfo.WorkingDirectory = path;
-      process.StartInfo.Arguments = $"-i \"{Path.GetFullPath(filePath)}\"";
+      process.StartInfo.Arguments = $"-style=file \"{Path.GetFullPath(filePath)}\"";
 
       process.Start();
+
+
+      //process.StandardInput.Write(text);
+     // process.StandardInput.Close();
+
+      var output = process.StandardOutput.ReadToEnd();
       process.WaitForExit();
+
+
+      return output;
     }
 
 
@@ -179,18 +192,6 @@ namespace ClangPowerTools
       File.Delete(tempFile);
     }
 
-
-    private string ReadFile(string filePath)
-    {
-      var content = string.Empty;
-      using (FileStream fs = new FileStream(filePath, FileMode.Open))
-      {
-        using StreamReader sw = new StreamReader(fs);
-        content = sw.ReadToEnd();
-      }
-
-      return content;
-    }
 
     #endregion
   }
