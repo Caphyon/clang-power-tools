@@ -27,6 +27,7 @@
     </ResourceDictionary>
   </Window.Resources>
 
+
   <StackPanel Orientation="Vertical">
     <Grid>
       <Grid.RowDefinitions>
@@ -204,6 +205,8 @@
       Width="500"
       Height="200"
       Background="Black"
+      FontFamily="Courier New"
+      FontSize="14"
       Foreground="White"
       TextChanged="CodeEditor_TextChanged">
       <RichTextBox.Resources>
