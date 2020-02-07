@@ -123,10 +123,11 @@ namespace ClangPowerTools
       string formatFilePath = Path.Combine(settingsPathBuilder.GetPath(""), ".clang-format");
 
 
-      //WriteContentToFile(formatFilePath, FormatOptionFile.CreateOutput().ToString());
-      //CreateTempCppFile(text, filePath);
+      WriteContentToFile(formatFilePath, FormatOptionFile.CreateOutput().ToString());
+      CreateTempCppFile(text, filePath);
       var content = FormatFileOutsideProject(settingsPathBuilder.GetPath(""), filePath);
-      //DeleteTempFile(filePath);
+      //DeleteFile(filePath);
+      //DeleteFile(formatFilePath);
 
       document.Blocks.Clear();
       document.Blocks.Add(new Paragraph(new Run(content)));  
@@ -187,9 +188,12 @@ namespace ClangPowerTools
       }
     }
 
-    private void DeleteTempFile(string tempFile)
+    private void DeleteFile(string path)
     {
-      File.Delete(tempFile);
+      if(File.Exists(path))
+      {
+        File.Delete(path);
+      }
     }
 
 
