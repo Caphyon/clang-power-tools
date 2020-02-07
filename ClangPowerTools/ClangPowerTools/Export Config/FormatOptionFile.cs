@@ -23,6 +23,7 @@ namespace ClangPowerTools
         else if (item is FormatOptionModel)
         {
           var option = item as FormatOptionModel;
+          if (string.IsNullOrEmpty(option.Input)) continue;
           styleOption = string.Concat(option.Name, ": ", option.Input);
         }
 
