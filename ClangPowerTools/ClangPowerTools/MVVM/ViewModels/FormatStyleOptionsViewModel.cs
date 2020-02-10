@@ -126,8 +126,8 @@ namespace ClangPowerTools
       WriteContentToFile(formatFilePath, FormatOptionFile.CreateOutput().ToString());
       CreateTempCppFile(text, filePath);
       var content = FormatFileOutsideProject(settingsPathBuilder.GetPath(""), filePath);
-      //DeleteFile(filePath);
-      //DeleteFile(formatFilePath);
+      DeleteFile(filePath);
+      DeleteFile(formatFilePath);
 
       document.Blocks.Clear();
       document.Blocks.Add(new Paragraph(new Run(content)));  
