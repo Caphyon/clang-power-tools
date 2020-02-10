@@ -8,7 +8,7 @@ namespace ClangPowerTools.MVVM.Views
   /// </summary>
   public partial class FormatOptionsView : Window
   {
-    private FormatStyleOptionsViewModel formatStyleOptionsViewModel;
+    private readonly FormatStyleOptionsViewModel formatStyleOptionsViewModel;
 
 
     public FormatOptionsView()
@@ -21,7 +21,7 @@ namespace ClangPowerTools.MVVM.Views
 
     private void CodeEditor_TextChanged(object sender, TextChangedEventArgs e)
     {
-      formatStyleOptionsViewModel.HighlightText();
+       formatStyleOptionsViewModel.HighlightText();
     }
   }
 }
