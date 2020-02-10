@@ -157,15 +157,11 @@ namespace ClangPowerTools
       return output;
     }
 
-
-
     public void HighlightText()
     {
       var document = formatOptionsView.CodeEditor.Document;
       TextManipulation.HighlightKeywords(document.ContentStart, document.ContentEnd, CPPKeywords.keywords, Brushes.Red);
     }
-
-
 
     private void CreateTempCppFile(string content, string filePath)
     {
