@@ -282,7 +282,7 @@
     <Compile Include="Items\CurrentProject.cs" />
     <Compile Include="Items\CurrentProjectItem.cs" />
     <Compile Include="Helpers\ActiveWindowProperties.cs" />
-    <Compile Include="Convertors\ComboBoxConstants.cs" />
+    <Compile Include="MVVM\Constants\ComboBoxConstants.cs" />
     <Compile Include="Convertors\ClangTidyUseChecksFromConvertor.cs" />
     <Compile Include="SilentFile\SilentFileChangerModel.cs" />
     <Compile Include="SilentFile\SilentFileChangerController.cs" />
