@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Documents;
 using System.Windows.Media;
 
@@ -16,12 +17,10 @@ namespace ClangPowerTools
     /// <param name="endPointer">Endpoint where to look</param>
     /// <param name="keyword">This is the string you want to manipulate</param>
     /// <param name="foreground">The new foreground</param>
-    /// <param name="newString">The New String (if you want to replace, can be null)</param>
-    public static void FromTextPointer(TextPointer startPointer, TextPointer endPointer, string keyword, Brush foreground)
+    public static void HighlightKeywords(TextPointer startPointer, TextPointer endPointer, HashSet<string> keywords, Brush foreground)
     {
       if (startPointer == null) throw new ArgumentNullException(nameof(startPointer));
       if (endPointer == null) throw new ArgumentNullException(nameof(endPointer));
-      if (string.IsNullOrEmpty(keyword)) throw new ArgumentNullException(keyword);
 
       TextRange text = new TextRange(startPointer, endPointer);
       TextPointer position = text.Start.GetInsertionPosition(LogicalDirection.Forward);
@@ -35,8 +34,16 @@ namespace ClangPowerTools
           continue;
         }
 
-        int index = textInRun.IndexOf(keyword);
+        ChangeTextColor(keywords, foreground, text, position, textInRun);
+        position = position.GetNextContextPosition(LogicalDirection.Forward);
+      }
+    }
 
+    private static void ChangeTextColor(HashSet<string> keywords, Brush foreground, TextRange text, TextPointer position, string textInRun)
+    {
+      foreach (var keyword in keywords)
+      {
+        int index = textInRun.IndexOf(keyword);
         if (index != -1 && CheckForSpaceAfterKeyword(textInRun, keyword, index))
         {
           TextRange selection = CreateSelection(position, keyword.Length, index);
@@ -50,8 +57,6 @@ namespace ClangPowerTools
             selection.ApplyPropertyValue(TextElement.ForegroundProperty, foreground);
           }
         }
-
-        position = position.GetNextContextPosition(LogicalDirection.Forward);
       }
     }
 
@@ -60,10 +65,10 @@ namespace ClangPowerTools
       int keywordLength = keyword.Length;
 
       if (index + keywordLength > text.Length - 1) return false;
-      var characterToCheck = text[index + keywordLength];
 
+      var characterToCheck = text[index + keywordLength];
       if (characterToCheck == ' ' || characterToCheck == '/') return true;
-   
+
       return false;
     }
 

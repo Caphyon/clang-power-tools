@@ -150,14 +150,9 @@ namespace ClangPowerTools
       process.StartInfo.Arguments = $"-style=file \"{Path.GetFullPath(filePath)}\"";
 
       process.Start();
-
-
-      //process.StandardInput.Write(text);
-     // process.StandardInput.Close();
-
       var output = process.StandardOutput.ReadToEnd();
       process.WaitForExit();
-
+      process.Close();
 
       return output;
     }
@@ -167,14 +162,7 @@ namespace ClangPowerTools
     public void HighlightText()
     {
       var document = formatOptionsView.CodeEditor.Document;
-
-      foreach (var keyword in CPPKeywords.keywords)
-      {
-        TextManipulation.FromTextPointer(document.ContentStart, document.ContentEnd, keyword, Brushes.Red);
-      }
-      //TextRange tr = new TextRange(document.ContentEnd, document.ContentEnd);
-      //tr.Text = "X";
-      //tr.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.White);
+      TextManipulation.HighlightKeywords(document.ContentStart, document.ContentEnd, CPPKeywords.keywords, Brushes.Red);
     }
 
 
