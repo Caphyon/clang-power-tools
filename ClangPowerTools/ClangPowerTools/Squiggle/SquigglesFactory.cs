@@ -18,6 +18,8 @@ namespace ClangPowerTools.Squiggle
     private int line;
     private int column;
 
+    private const int rangeArea = 100;
+
     #endregion
 
     #region Constuctor
@@ -42,15 +44,23 @@ namespace ClangPowerTools.Squiggle
       if (activeDocument == null)
         yield break;
 
+      TextSelection textSelection = (TextSelection) dte.ActiveWindow.Selection;
+      if (textSelection == null)
+        yield break;
+
+      var currentLineNumber = textSelection.CurrentLine;
+
       if (TaskErrorViewModel.FileErrorsPair.ContainsKey(activeDocument.FullName) == false)
         yield break;
 
-      int count = 50;
-
       foreach (var error in TaskErrorViewModel.FileErrorsPair[activeDocument.FullName])
       {
-        if (--count <= 0)
-          yield break;
+        var min = currentLineNumber - rangeArea <= 1 ? 1 : currentLineNumber - rangeArea;
+        var max = currentLineNumber + rangeArea >= SourceBuffer.CurrentSnapshot.GetText().Length ?
+          SourceBuffer.CurrentSnapshot.GetText().Length - 1 : currentLineNumber + rangeArea;
+
+        if (error.Line < min || error.Line > max)
+          continue;
 
         var bufferLines = SourceBuffer.CurrentSnapshot.Lines.ToList();
         line = error.Line.ForceInRange(0, bufferLines.Count - 1);
