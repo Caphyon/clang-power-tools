@@ -13,6 +13,7 @@ using Task = System.Threading.Tasks.Task;
 using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.Error;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace ClangPowerTools
 {
@@ -28,13 +29,11 @@ namespace ClangPowerTools
     public bool activeAccount = false;
     public bool tokenExists = false;
     public bool clearOutputOnFormat = false;
-    public bool backgroundRunning = false;
 
     public static readonly Guid mCommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
 
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
     public event EventHandler<ClangCommandMessageEventArgs> ClangCommandMessageEvent;
-    public event EventHandler<MissingLlvmEventArgs> MissingLlvmEvent;
     public event EventHandler<ClearEventArgs> ClearErrorListEvent;
     public event EventHandler<ClearEventArgs> ClearOutputWindowEvent;
     public event EventHandler<EventArgs> ErrorDetectedEvent;
@@ -47,6 +46,7 @@ namespace ClangPowerTools
     private bool mSaveCommandWasGiven = false;
     private bool mFormatAfterTidyFlag = false;
     private bool isActiveDocument = true;
+    static readonly SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
     #endregion
 
@@ -324,8 +324,11 @@ namespace ClangPowerTools
 
     public void OnAfterRunCommand(object sender, CloseDataStreamingEventArgs e)
     {
-      if (backgroundRunning)
+      if (BackgroundTidyCommand.Running)
+      {
+        OnErrorDetected(new EventArgs());
         return;
+      }
 
       if (e.IsStopped)
       {
@@ -348,7 +351,9 @@ namespace ClangPowerTools
     protected void OnErrorDetected(EventArgs e)
     {
       ErrorDetectedEvent?.Invoke(this, e);
-      HasEncodingErrorEvent.Invoke(this, new EventArgs());
+
+      if (BackgroundTidyCommand.Running == false)
+        HasEncodingErrorEvent.Invoke(this, new EventArgs());
     }
 
     public void OnEncodingErrorDetected(object sender, HasEncodingErrorEventArgs e)
@@ -393,11 +398,6 @@ namespace ClangPowerTools
     public void OnFileHierarchyChanged(object sender, VsHierarchyDetectedEventArgs e)
     {
       HierarchyDetectedEvent?.Invoke(this, e);
-    }
-
-    public void OnMissingLLVMDetected(object sender, MissingLlvmEventArgs e)
-    {
-      MissingLlvmEvent?.Invoke(this, e);
     }
 
     private void DisplayStartedMessage(int aCommandId, bool clearOutput)
@@ -649,23 +649,24 @@ namespace ClangPowerTools
 
     public void OnBeforeActiveDocumentChange(object sender, Document document)
     {
+      if (running)
+        return;
+
       _ = Task.Run(async () =>
         {
-          if (running)
-            return;
+          await semaphoreSlim.WaitAsync();
+          try
+          {
+            TaskErrorViewModel.Errors.Clear();
+            TaskErrorViewModel.FileErrorsPair.Clear();
 
-          TaskErrorViewModel.Errors.Clear();
-          TaskErrorViewModel.FileErrorsPair.Clear();
-
-          backgroundRunning = true;
-          StopCommand.Instance.StopCommand = true;
-          await StopCommand.Instance.RunStopClangCommandAsync();
-          StopCommand.Instance.StopCommand = false;
-
-          var backgroundTidyCommand = new BackgroundTidyCommand(document);
-          await backgroundTidyCommand.RunClangTidyAsync();
-
-          backgroundRunning = false;
+            var backgroundTidyCommand = new BackgroundTidyCommand(document);
+            await backgroundTidyCommand.RunClangTidyAsync();
+          }
+          finally
+          {
+            semaphoreSlim.Release();
+          }
         });
     }
 

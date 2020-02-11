@@ -10,6 +10,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
+using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools
@@ -17,10 +18,11 @@ namespace ClangPowerTools
   public abstract class ClangCommand : BasicCommand
   {
     #region Members
+    
+    public static RunningProcesses runningProcesses = new RunningProcesses();
 
     protected ItemsCollector mItemsCollector;
     protected FilePathCollector mFilePahtCollector;
-    protected static RunningProcesses mRunningProcesses = new RunningProcesses();
     protected List<string> mDirectoriesPath = new List<string>();
     private static bool stopCommand = false;
     private readonly Dictionary<string, string> mVsVersions = new Dictionary<string, string>
@@ -33,7 +35,6 @@ namespace ClangPowerTools
       {"16.0", "2019"}
     };
 
-    private bool mMissingLLVM = false;
     private IVsHierarchy mHierarchy;
 
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
@@ -46,6 +47,8 @@ namespace ClangPowerTools
       get { return stopCommand; }
       set { stopCommand = value; }
     }
+
+    public RunningProcesses GetClangProcesses => runningProcesses;
 
     #endregion
 
@@ -90,16 +93,6 @@ namespace ClangPowerTools
         mVsVersions.TryGetValue(dte2.Version, out string version);
         VsVersion = version;
       }
-    }
-
-    #endregion
-
-
-    #region Public Methods
-
-    public void OnMissingLLVMDetected(object sender, MissingLlvmEventArgs e)
-    {
-      mMissingLLVM = e.MissingLLVM;
     }
 
     #endregion
@@ -190,37 +183,58 @@ namespace ClangPowerTools
       var vsSolution = SolutionInfo.IsOpenFolderModeActive() == false ?
         (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution)) : null;
 
-      foreach (var item in mItemsCollector.Items)
+      try
       {
-        if (StopCommand)
-          break;
-
-        if (IgnoreItem(item, out string fileType))
+        foreach (var item in mItemsCollector.Items)
         {
-          OnIgnoreItem(new ClangCommandMessageEventArgs($"Cannot use clang-compile on ignored files.\nTo enable clang-compile remove the {fileType} from Clang Power Tools settings -> Compiler -> Files/Projects to ignore.", false));
-          continue;
+          if (StopCommand)
+            break;
+
+          if (IgnoreItem(item, out string fileType))
+          {
+            OnIgnoreItem(new ClangCommandMessageEventArgs($"Cannot use clang-compile on ignored files.\nTo enable clang-compile remove the {fileType} from Clang Power Tools settings -> Compiler -> Files/Projects to ignore.", false));
+            continue;
+          }
+
+          var itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item);
+
+          // From the first parameter is removed the last character which is mandatory "'"
+          // and added to the end of the string to close the script escaping command
+          Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
+          CommandTestUtility.ScriptCommand = Script;
+
+          ItemHierarchy = vsSolution != null ? AutomationUtil.GetItemHierarchy(vsSolution, item) : null;
+
+          PowerShellWrapper.Invoke(Script, runningProcesses);
         }
-
-        var itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item);
-
-        // From the first parameter is removed the last character which is mandatory "'"
-        // and added to the end of the string to close the script escaping command
-        Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
-        CommandTestUtility.ScriptCommand = Script;
-
-        ItemHierarchy = vsSolution != null ? AutomationUtil.GetItemHierarchy(vsSolution, item) : null;
-
-        PowerShellWrapper.Invoke(Script, mRunningProcesses);
+      }
+      catch (Exception e)
+      {
+        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
 
       if (StopCommand)
       {
-        OnDataStreamClose(new CloseDataStreamingEventArgs(true));
-        StopCommand = false;
+        try
+        {
+          OnDataStreamClose(new CloseDataStreamingEventArgs(true));
+          StopCommand = false;
+        }
+        catch (Exception e)
+        {
+          MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
       }
       else
       {
-        OnDataStreamClose(new CloseDataStreamingEventArgs(false));
+        try
+        {
+          OnDataStreamClose(new CloseDataStreamingEventArgs(false));
+        }
+        catch (Exception e)
+        {
+          MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
       }
     }
 
@@ -228,7 +242,7 @@ namespace ClangPowerTools
     {
       fileType = string.Empty;
 
-      if (BackgroundTidyCommand.backgroundRun)
+      if (BackgroundTidyCommand.Running)
         return false;
 
       if (item is CurrentProjectItem)

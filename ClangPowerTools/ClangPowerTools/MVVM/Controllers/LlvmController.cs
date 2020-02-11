@@ -2,7 +2,6 @@
 using ClangPowerTools.MVVM.Constants;
 using ClangPowerTools.MVVM.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;

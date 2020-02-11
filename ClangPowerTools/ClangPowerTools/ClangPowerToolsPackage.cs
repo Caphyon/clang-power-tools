@@ -391,19 +391,18 @@ namespace ClangPowerTools
       mCommandController.ClangCommandMessageEvent += mOutputWindowController.Write;
       mCommandController.ClearOutputWindowEvent += mOutputWindowController.ClearPanel;
 
+      mCommandController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
+
       mCommandController.HasEncodingErrorEvent += mOutputWindowController.OnEncodingErrorDetected;
       mOutputWindowController.HasEncodingErrorEvent += mCommandController.OnEncodingErrorDetected;
-      mCommandController.ClearErrorListEvent += mErrorWindowController.OnClangCommandBegin;
 
-      mCommandController.MissingLlvmEvent += CompileCommand.Instance.OnMissingLLVMDetected;
-      mCommandController.MissingLlvmEvent += TidyCommand.Instance.OnMissingLLVMDetected;
+      mCommandController.ClearErrorListEvent += mErrorWindowController.OnClangCommandBegin;
 
       CompileCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
       TidyCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
 
       mCommandController.ErrorDetectedEvent += mOutputWindowController.OnErrorDetected;
       mOutputWindowController.ErrorDetectedEvent += mErrorWindowController.OnErrorDetected;
-      mOutputWindowController.MissingLlvmEvent += mCommandController.OnMissingLLVMDetected;
 
       CompileCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       TidyCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
@@ -460,6 +459,8 @@ namespace ClangPowerTools
     private void UnregisterFromCPTEvents()
     {
       mCommandController.ClangCommandMessageEvent -= mOutputWindowController.Write;
+      mCommandController.ClearOutputWindowEvent -= mOutputWindowController.ClearPanel;
+
       mCommandController.HierarchyDetectedEvent -= mOutputWindowController.OnFileHierarchyDetected;
 
       mCommandController.HasEncodingErrorEvent -= mOutputWindowController.OnEncodingErrorDetected;
@@ -467,15 +468,11 @@ namespace ClangPowerTools
 
       mCommandController.ClearErrorListEvent -= mErrorWindowController.OnClangCommandBegin;
 
-      mCommandController.MissingLlvmEvent -= CompileCommand.Instance.OnMissingLLVMDetected;
-      mCommandController.MissingLlvmEvent -= TidyCommand.Instance.OnMissingLLVMDetected;
-
       CompileCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
       TidyCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
 
       mCommandController.ErrorDetectedEvent -= mOutputWindowController.OnErrorDetected;
       mOutputWindowController.ErrorDetectedEvent -= mErrorWindowController.OnErrorDetected;
-      mOutputWindowController.MissingLlvmEvent -= mCommandController.OnMissingLLVMDetected;
 
       CompileCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
       TidyCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;

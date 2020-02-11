@@ -86,7 +86,7 @@ namespace ClangPowerTools.Commands
       {
         try
         {
-          mRunningProcesses.Kill();
+          runningProcesses.Kill();
           if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
           {
             string solutionPath = (dte as DTE2).Solution.FullName;

@@ -11,27 +11,28 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private List<Process> mProcesses = new List<Process>();
+    private readonly List<Process> processes = new List<Process>();
 
     #endregion
 
-
     #region Public Methods
 
-    public void Add(Process aProcess) => mProcesses.Add(aProcess);
+    public void Add(Process aProcess) => processes.Add(aProcess);
+
+    public bool Running() => processes.Count > 0;
 
     public void Kill()
     {
-      if (mProcesses.Count <= 0)
+      if (processes.Count <= 0)
         return;
 
-      mProcesses.ForEach(process => process.Dispose());
-      mProcesses.Clear();
+      processes.ForEach(process => process.Dispose());
+      processes.Clear();
     }
 
     public void KillById(int aId)
     {
-      var procees = mProcesses.FirstOrDefault(p => p.Id == aId);
+      var procees = processes.FirstOrDefault(p => p.Id == aId);
       if (null == procees)
         return;
       procees.Kill();

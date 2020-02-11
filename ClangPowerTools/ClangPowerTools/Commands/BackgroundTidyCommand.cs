@@ -7,7 +7,8 @@ namespace ClangPowerTools.Commands
   {
     #region Members
 
-    public static bool backgroundRun = false;
+    public static bool Running { get; set; } = false;
+
     private readonly Document document;
 
     #endregion
@@ -25,11 +26,10 @@ namespace ClangPowerTools.Commands
 
     public async Task RunClangTidyAsync()
     {
-      backgroundRun = true;
+      Running = true;
       await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, CommandUILocation.Toolbar, document);
-      backgroundRun = false;
+      Running = false;
     }
-
 
     #endregion
   }

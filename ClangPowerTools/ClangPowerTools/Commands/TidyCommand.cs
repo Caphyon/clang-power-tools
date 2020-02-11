@@ -17,6 +17,8 @@ namespace ClangPowerTools.Commands
   /// </summary>
   public sealed class TidyCommand : ClangCommand
   {
+    private object mutex = new object();
+
     #region Properties
 
     /// <summary>
@@ -77,7 +79,7 @@ namespace ClangPowerTools.Commands
 
     public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)
     {
-      if (BackgroundTidyCommand.backgroundRun)
+      if (BackgroundTidyCommand.Running)
       {
         mItemsCollector = new ItemsCollector();
         mItemsCollector.SetItem(document);
@@ -89,37 +91,41 @@ namespace ClangPowerTools.Commands
 
       await Task.Run(() =>
       {
-        try
+        lock (mutex)
         {
-          using var silentFileController = new SilentFileChangerController();
-          using var fileChangerWatcher = new FileChangerWatcher();
-
-          SettingsProvider settingsProvider = new SettingsProvider();
-          TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
-
-          if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
+          try
           {
-            fileChangerWatcher.OnChanged += FileOpener.Open;
+            using var silentFileController = new SilentFileChangerController();
+            using var fileChangerWatcher = new FileChangerWatcher();
 
-            var dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
-            string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
-              dte2.Solution.FullName : dte2.Solution.FullName
-                                        .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
+            SettingsProvider settingsProvider = new SettingsProvider();
+            TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
 
-            fileChangerWatcher.Run(solutionFolderPath);
+            if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
+            {
+              fileChangerWatcher.OnChanged += FileOpener.Open;
 
-            FilePathCollector fileCollector = new FilePathCollector();
-            var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
+              var dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
+              string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
+                dte2.Solution.FullName : dte2.Solution.FullName
+                                          .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
 
-            silentFileController.SilentFiles(filesPath);
-            silentFileController.SilentFiles(dte2.Documents);
+              fileChangerWatcher.Run(solutionFolderPath);
+
+              FilePathCollector fileCollector = new FilePathCollector();
+              var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
+
+              silentFileController.SilentFiles(filesPath);
+              silentFileController.SilentFiles(dte2.Documents);
+            }
+
+            RunScript(aCommandId);
           }
-          RunScript(aCommandId);
-        }
-        catch (Exception exception)
-        {
-          VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
-            OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+          catch (Exception exception)
+          {
+            VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
+              OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+          }
         }
       });
     }
