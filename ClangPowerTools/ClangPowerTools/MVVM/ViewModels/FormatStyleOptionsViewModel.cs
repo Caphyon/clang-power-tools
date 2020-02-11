@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -157,10 +158,10 @@ namespace ClangPowerTools
       return output;
     }
 
-    public void HighlightText()
+    public async Task HighlightTextAsync()
     {
       var document = formatOptionsView.CodeEditor.Document;
-      TextManipulation.HighlightKeywords(document.ContentStart, document.ContentEnd, CPPKeywords.keywords, Brushes.Red);
+      TextManipulation.HighlightKeywordsAsync(document.ContentStart, document.ContentEnd, CPPKeywords.keywords, Brushes.Red);
     }
 
     private void CreateTempCppFile(string content, string filePath)

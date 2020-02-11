@@ -208,6 +208,7 @@
       FontFamily="Courier New"
       FontSize="14"
       Foreground="White"
+      PreviewKeyDown="CodeEditor_PreviewKeyDown"
       TextChanged="CodeEditor_TextChanged">
       <RichTextBox.Resources>
         <Style TargetType="{x:Type Paragraph}">

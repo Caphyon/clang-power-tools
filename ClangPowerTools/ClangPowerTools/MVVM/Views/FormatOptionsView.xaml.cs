@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ClangPowerTools.MVVM.Views
 {
@@ -9,7 +10,7 @@ namespace ClangPowerTools.MVVM.Views
   public partial class FormatOptionsView : Window
   {
     private readonly FormatStyleOptionsViewModel formatStyleOptionsViewModel;
-
+    private bool isPasteCommand = false;
 
     public FormatOptionsView()
     {
@@ -21,7 +22,21 @@ namespace ClangPowerTools.MVVM.Views
 
     private void CodeEditor_TextChanged(object sender, TextChangedEventArgs e)
     {
-       formatStyleOptionsViewModel.HighlightText();
+      if (isPasteCommand)
+      {
+        isPasteCommand = false;
+        CodeEditor.SelectAll();
+        CodeEditor.Selection.ClearAllProperties();
+      }
+      formatStyleOptionsViewModel.HighlightTextAsync().SafeFireAndForget();
+    }
+
+    private void CodeEditor_PreviewKeyDown(object sender, KeyEventArgs e)
+    {
+      if (e.Key == Key.V && Keyboard.Modifiers == ModifierKeys.Control)
+      {
+        isPasteCommand = true;
+      }
     }
   }
 }

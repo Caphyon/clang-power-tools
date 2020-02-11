@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows.Media;
 
@@ -17,26 +18,26 @@ namespace ClangPowerTools
     /// <param name="endPointer">Endpoint where to look</param>
     /// <param name="keyword">This is the string you want to manipulate</param>
     /// <param name="foreground">The new foreground</param>
-    public static void HighlightKeywords(TextPointer startPointer, TextPointer endPointer, HashSet<string> keywords, Brush foreground)
+    public static void HighlightKeywordsAsync(TextPointer startPointer, TextPointer endPointer, HashSet<string> keywords, Brush foreground)
     {
-      if (startPointer == null) throw new ArgumentNullException(nameof(startPointer));
-      if (endPointer == null) throw new ArgumentNullException(nameof(endPointer));
+        if (startPointer == null) throw new ArgumentNullException(nameof(startPointer));
+        if (endPointer == null) throw new ArgumentNullException(nameof(endPointer));
 
-      TextRange text = new TextRange(startPointer, endPointer);
-      TextPointer position = text.Start.GetInsertionPosition(LogicalDirection.Forward);
-      while (position != null)
-      {
-        string textInRun = position.GetTextInRun(LogicalDirection.Forward);
-
-        if (string.IsNullOrWhiteSpace(textInRun))
+        TextRange text = new TextRange(startPointer, endPointer);
+        TextPointer position = text.Start.GetInsertionPosition(LogicalDirection.Forward);
+        while (position != null)
         {
-          position = position.GetNextContextPosition(LogicalDirection.Forward);
-          continue;
-        }
+          string textInRun = position.GetTextInRun(LogicalDirection.Forward);
 
-        ChangeTextColor(keywords, foreground, text, position, textInRun);
-        position = position.GetNextContextPosition(LogicalDirection.Forward);
-      }
+          if (string.IsNullOrWhiteSpace(textInRun))
+          {
+            position = position.GetNextContextPosition(LogicalDirection.Forward);
+            continue;
+          }
+
+          ChangeTextColor(keywords, foreground, text, position, textInRun);
+          position = position.GetNextContextPosition(LogicalDirection.Forward);
+        }
     }
 
     private static void ChangeTextColor(HashSet<string> keywords, Brush foreground, TextRange text, TextPointer position, string textInRun)
@@ -47,15 +48,7 @@ namespace ClangPowerTools
         if (index != -1 && CheckForSpaceAfterKeyword(textInRun, keyword, index))
         {
           TextRange selection = CreateSelection(position, keyword.Length, index);
-
-          if (keyword == " " || text.Text == string.Empty)
-          {
-            selection.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.White);
-          }
-          else
-          {
-            selection.ApplyPropertyValue(TextElement.ForegroundProperty, foreground);
-          }
+          selection.ApplyPropertyValue(TextElement.ForegroundProperty, foreground);
         }
       }
     }
