@@ -40,6 +40,12 @@ namespace ClangPowerTools
         }
     }
 
+    public static void ReplaceAllTextInFlowDocument(FlowDocument document, string text)
+    {
+      TextRange textRange = new TextRange(document.ContentStart, document.ContentEnd);
+      textRange.Text = text;
+    }
+
     private static void ChangeTextColor(HashSet<string> keywords, Brush foreground, TextRange text, TextPointer position, string textInRun)
     {
       foreach (var keyword in keywords)
