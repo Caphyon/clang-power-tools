@@ -158,10 +158,18 @@ namespace ClangPowerTools
       return output;
     }
 
-    public async Task HighlightTextAsync()
+    public void HighlightText()
     {
       var document = formatOptionsView.CodeEditor.Document;
-      TextManipulation.HighlightKeywordsAsync(document.ContentStart, document.ContentEnd, CPPKeywords.keywords, Brushes.Red);
+      TextManipulation.HighlightKeywords(document.ContentStart, document.ContentEnd, CPPKeywords.keywords, Brushes.Red);
+    }
+
+    public void RestCodeEditorFormat()
+    {
+      formatOptionsView.CodeEditor.SelectAll();
+      formatOptionsView.CodeEditor.Selection.ClearAllProperties();
+      formatOptionsView.CodeEditor.Selection.ApplyPropertyValue(TextElement.FontSizeProperty, 14.0);
+      formatOptionsView.CodeEditor.Selection.ApplyPropertyValue(TextElement.FontFamilyProperty, "Courier New");
     }
 
     private void CreateTempCppFile(string content, string filePath)

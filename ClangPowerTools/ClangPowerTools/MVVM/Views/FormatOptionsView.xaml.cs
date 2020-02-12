@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace ClangPowerTools.MVVM.Views
@@ -25,10 +26,10 @@ namespace ClangPowerTools.MVVM.Views
       if (isPasteCommand)
       {
         isPasteCommand = false;
-        CodeEditor.SelectAll();
-        CodeEditor.Selection.ClearAllProperties();
+        formatStyleOptionsViewModel.RestCodeEditorFormat();
+        return;
       }
-      formatStyleOptionsViewModel.HighlightTextAsync().SafeFireAndForget();
+      //formatStyleOptionsViewModel.HighlightText();
     }
 
     private void CodeEditor_PreviewKeyDown(object sender, KeyEventArgs e)

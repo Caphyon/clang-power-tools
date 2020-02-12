@@ -18,7 +18,7 @@ namespace ClangPowerTools
     /// <param name="endPointer">Endpoint where to look</param>
     /// <param name="keyword">This is the string you want to manipulate</param>
     /// <param name="foreground">The new foreground</param>
-    public static void HighlightKeywordsAsync(TextPointer startPointer, TextPointer endPointer, HashSet<string> keywords, Brush foreground)
+    public static void HighlightKeywords(TextPointer startPointer, TextPointer endPointer, HashSet<string> keywords, Brush foreground)
     {
         if (startPointer == null) throw new ArgumentNullException(nameof(startPointer));
         if (endPointer == null) throw new ArgumentNullException(nameof(endPointer));
