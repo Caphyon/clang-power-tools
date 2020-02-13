@@ -13,7 +13,7 @@
   Background="WhiteSmoke"
   Icon="/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
-  ShowInTaskbar="False"
+  ShowInTaskbar="true"
   WindowStartupLocation="CenterScreen"
   mc:Ignorable="d">
 
@@ -27,14 +27,28 @@
     </ResourceDictionary>
   </Window.Resources>
 
-  <StackPanel Margin="10,10,10,10" Orientation="Horizontal">
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="10" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="10" />
+    </Grid.RowDefinitions>
+
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="10" />
+      <ColumnDefinition Width="auto" />
+      <ColumnDefinition Width="10" />
+      <ColumnDefinition Width="auto" />
+      <ColumnDefinition Width="10" />
+    </Grid.ColumnDefinitions>
     <!--  Parent grid containing the two secondary grids  -->
     <Grid Grid.Row="1" Grid.Column="1">
       <Grid>
         <Grid.RowDefinitions>
-          <RowDefinition Height="*" />
-          <RowDefinition Height="30" />
-          <RowDefinition Height="*" />
+          <RowDefinition Height="auto" />
+          <RowDefinition Height="auto" />
+          <RowDefinition Height="auto" />
+          <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -44,6 +58,7 @@
         <!--  Format options  -->
         <ListView
           Name="FormatOptions"
+          Grid.Row="0"
           Width="350"
           Height="300"
           ItemsSource="{Binding FormatOptions}"
@@ -96,11 +111,13 @@
         <!--  Option description  -->
         <TextBlock
           Grid.Row="1"
+          Margin="0,20,0,0"
           FontSize="14"
           Text="{Binding SelectedOption.Name}" />
 
         <TextBlock
           Grid.Row="1"
+          Margin="0,20,0,0"
           FontSize="14"
           TextWrapping="Wrap">
           <Run Text="{Binding SelectedOption.Name}" />
@@ -110,9 +127,16 @@
         <TextBlock
           Grid.Row="2"
           Grid.Column="0"
+          Margin="0,20,0,0"
           FontSize="14"
           Text="{Binding SelectedOption.Description}"
           TextWrapping="Wrap" />
+
+        <TextBlock
+          Grid.Row="3"
+          Grid.Column="0"
+          Margin="0,20,0,0"
+          HorizontalAlignment="Center"><Hyperlink Command="{Binding OpenClangFormatUriCommand}">Learn more about Clang Format Style Options</Hyperlink></TextBlock>
       </Grid>
     </Grid>
 
@@ -158,20 +182,30 @@
     </Grid>-->
 
     <!--  Code editor  -->
-    <StackPanel
-      Grid.Row="1"
-      Grid.Column="2"
-      Orientation="Vertical">
+
+    <Grid Grid.Row="1" Grid.Column="3">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+      </Grid.RowDefinitions>
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="auto" />
+      </Grid.ColumnDefinitions>
+
+
       <RichTextBox
         Name="CodeEditor"
-        Width="600"
+        Grid.Row="0"
+        Width="590"
         Height="640"
         Background="Black"
         FontFamily="Courier New"
         FontSize="14"
         Foreground="White"
         PreviewKeyDown="CodeEditor_PreviewKeyDown"
-        TextChanged="CodeEditor_TextChanged">
+        TextChanged="CodeEditor_TextChanged"
+        VerticalScrollBarVisibility="Auto">
         <RichTextBox.Resources>
           <Style TargetType="{x:Type Paragraph}">
             <Setter Property="Margin" Value="0" />
@@ -180,7 +214,7 @@
       </RichTextBox>
 
       <!--  Create file button  -->
-      <Grid>
+      <Grid Grid.Row="1">
         <Grid.RowDefinitions>
           <RowDefinition Height="20" />
           <RowDefinition Height="*" />
@@ -221,6 +255,6 @@
           </Button.Content>
         </Button>
       </Grid>
-    </StackPanel>
-  </StackPanel>
+    </Grid>
+  </Grid>
 </Window>

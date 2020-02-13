@@ -5,10 +5,10 @@ using ClangPowerTools.MVVM.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -22,9 +22,10 @@ namespace ClangPowerTools
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private FormatOptionsView formatOptionsView;
+    private readonly FormatOptionsView formatOptionsView;
     private ICommand createFormatFileCommand;
     private ICommand formatCodeCommand;
+    private ICommand openUri;
     private IFormatOption selectedOption;
     private readonly SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
     #endregion
@@ -96,11 +97,21 @@ namespace ClangPowerTools
       get => formatCodeCommand ?? (formatCodeCommand = new RelayCommand(() => RunFormat(), () => CanExecute));
     }
 
+    public ICommand OpenClangFormatUriCommand
+    {
+      get => openUri ?? (openUri = new RelayCommand(() => OpenUri("https://clang.llvm.org/docs/ClangFormatStyleOptions.html"), () => CanExecute));
+    }
+
     #endregion
 
 
     #region Methods
 
+
+    private void OpenUri(string uri)
+    {
+      Process.Start(new ProcessStartInfo(uri));
+    }
 
 
     private void CreateFormatFile()
@@ -125,10 +136,10 @@ namespace ClangPowerTools
 
       WriteContentToFile(formatFilePath, FormatOptionFile.CreateOutput().ToString());
       CreateTempCppFile(text, filePath);
-      
+
       var content = FormatFileOutsideProject(settingsPathBuilder.GetPath(""), filePath);
       TextManipulation.ReplaceAllTextInFlowDocument(formatOptionsView.CodeEditor.Document, content);
-      
+
       DeleteFile(filePath);
       DeleteFile(formatFilePath);
     }
@@ -160,7 +171,7 @@ namespace ClangPowerTools
     public void HighlightText()
     {
       var document = formatOptionsView.CodeEditor.Document;
-      TextManipulation.HighlightKeywords(document.ContentStart, document.ContentEnd, CPPKeywords.keywords,  new SolidColorBrush(Color.FromRgb(239,153,142)));
+      TextManipulation.HighlightKeywords(document.ContentStart, document.ContentEnd, CPPKeywords.keywords, new SolidColorBrush(Color.FromRgb(239, 153, 142)));
     }
 
     public void RestCodeEditorFormat()
@@ -182,7 +193,7 @@ namespace ClangPowerTools
 
     private void DeleteFile(string path)
     {
-      if(File.Exists(path))
+      if (File.Exists(path))
       {
         File.Delete(path);
       }

@@ -18,7 +18,6 @@ namespace ClangPowerTools.MVVM.Views
       InitializeComponent();
       formatStyleOptionsViewModel = new FormatStyleOptionsViewModel(this);
       DataContext = formatStyleOptionsViewModel;
-      Owner = SettingsProvider.SettingsView;
     }
 
     private void CodeEditor_TextChanged(object sender, TextChangedEventArgs e)

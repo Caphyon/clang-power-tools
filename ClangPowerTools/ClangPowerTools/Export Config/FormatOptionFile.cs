@@ -8,7 +8,7 @@ namespace ClangPowerTools
     public static StringBuilder CreateOutput()
     {
       var output = new StringBuilder();
-      output.AppendLine("# Created with Clang Power Tools - Configurable Format Style Options");
+      output.AppendLine("# Configurable Format Style Options - Created with Clang Power Tools");
       output.AppendLine("---");
       output.AppendLine("Language: Cpp");
 
