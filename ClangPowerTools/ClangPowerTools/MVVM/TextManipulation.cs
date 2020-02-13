@@ -11,13 +11,6 @@ namespace ClangPowerTools
   /// </summary>
   public class TextManipulation
   {
-    /// <summary>
-    /// Is manipulating a specific string inside of a TextPointer Range
-    /// </summary>
-    /// <param name="startPointer">Starting point where to look</param>
-    /// <param name="endPointer">Endpoint where to look</param>
-    /// <param name="keyword">This is the string you want to manipulate</param>
-    /// <param name="foreground">The new foreground</param>
     public static void HighlightKeywords(TextPointer startPointer, TextPointer endPointer, HashSet<string> keywords, Brush foreground)
     {
         if (startPointer == null) throw new ArgumentNullException(nameof(startPointer));
