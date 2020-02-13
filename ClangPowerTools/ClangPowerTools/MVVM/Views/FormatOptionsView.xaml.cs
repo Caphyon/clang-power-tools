@@ -29,7 +29,7 @@ namespace ClangPowerTools.MVVM.Views
         formatStyleOptionsViewModel.RestCodeEditorFormat();
         return;
       }
-      //formatStyleOptionsViewModel.HighlightText();
+      formatStyleOptionsViewModel.HighlightText();
     }
 
     private void CodeEditor_PreviewKeyDown(object sender, KeyEventArgs e)

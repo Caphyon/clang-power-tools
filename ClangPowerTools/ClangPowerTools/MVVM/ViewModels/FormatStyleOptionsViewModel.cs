@@ -160,7 +160,7 @@ namespace ClangPowerTools
     public void HighlightText()
     {
       var document = formatOptionsView.CodeEditor.Document;
-      TextManipulation.HighlightKeywords(document.ContentStart, document.ContentEnd, CPPKeywords.keywords, Brushes.Red);
+      TextManipulation.HighlightKeywords(document.ContentStart, document.ContentEnd, CPPKeywords.keywords,  new SolidColorBrush(Color.FromRgb(239,153,142)));
     }
 
     public void RestCodeEditorFormat()
