@@ -18,6 +18,7 @@ namespace ClangPowerTools.MVVM.Views
       InitializeComponent();
       formatStyleOptionsViewModel = new FormatStyleOptionsViewModel(this);
       DataContext = formatStyleOptionsViewModel;
+      TextManipulation.ReplaceAllTextInFlowDocument(CodeEditor.Document, "//Add your code here");
     }
 
     private void CodeEditor_TextChanged(object sender, TextChangedEventArgs e)
