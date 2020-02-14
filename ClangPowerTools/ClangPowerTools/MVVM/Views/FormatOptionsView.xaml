@@ -6,7 +6,7 @@
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   Title="Format Style Options"
-  Width="1100"
+  Width="1020"
   Height="750"
   d:DataContext="{d:DesignInstance local:FormatStyleOptionsViewModel,
                                    IsDesignTimeCreatable=True}"
@@ -52,7 +52,7 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="360" />
+          <ColumnDefinition Width="380" />
         </Grid.ColumnDefinitions>
 
         <!--  Format options  -->
