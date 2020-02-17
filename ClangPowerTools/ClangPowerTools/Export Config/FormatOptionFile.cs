@@ -29,6 +29,8 @@ namespace ClangPowerTools
 
         output.AppendLine(styleOption);
       }
+      output.AppendLine("...");
+
 
       return output;
     }
