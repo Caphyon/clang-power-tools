@@ -74,6 +74,17 @@ namespace ClangPowerTools
     TidyFile
   }
 
+  [Serializable]
+  public enum ToggleValues
+  {
+    [XmlEnum(Name = "true")]
+    [EnumMember(Value = "true")]
+    True,
+    [XmlEnum(Name = "false")]
+    [EnumMember(Value = "false")]
+    False
+  }
+
   public sealed class ComboBoxConstants
   {
     #region Constants

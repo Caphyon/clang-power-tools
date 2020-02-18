@@ -9,7 +9,7 @@ namespace ClangPowerTools.MVVM.Models
     public string Description { get; set; }
     public string Paramater { get; set; } = string.Empty;
     public string Input { get; set; } = string.Empty;
-    public ObservableCollection<string> BooleanComboboxValues { get; set; } = new ObservableCollection<string>() { "true", "false" };
+    public ToggleValues BooleanCombobox { get; set; } 
     public bool HasBooleanCombobox { get; } = false;
     public bool HasInputTextBox { get; } = true;
     public bool IsEnabled { get; set; } = false;

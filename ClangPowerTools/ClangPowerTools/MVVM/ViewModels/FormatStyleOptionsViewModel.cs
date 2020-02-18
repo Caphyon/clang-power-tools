@@ -1,9 +1,11 @@
 ﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Constants;
 using ClangPowerTools.MVVM.Interfaces;
+using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.MVVM.Views;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -68,6 +70,14 @@ namespace ClangPowerTools
       get
       {
         return Enum.GetValues(typeof(ClangFormatStyle)).Cast<ClangFormatStyle>();
+      }
+    }
+
+    public IEnumerable<ToggleValues> BooleanComboboxValues
+    {
+      get
+      {
+        return Enum.GetValues(typeof(ToggleValues)).Cast<ToggleValues>();
       }
     }
 

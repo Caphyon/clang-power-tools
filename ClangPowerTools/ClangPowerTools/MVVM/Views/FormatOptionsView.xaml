@@ -101,7 +101,8 @@
                         Grid.Column="1"
                         Width="80"
                         HorizontalAlignment="Right"
-                        ItemsSource="{Binding BooleanComboboxValues}"
+                        ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.BooleanComboboxValues}"
+                        SelectedItem="{Binding BooleanCombobox}"
                         Visibility="{Binding Path=HasBooleanCombobox, Converter={StaticResource BoolToVis}}" />
                     </Grid>
                   </DataTemplate>
