@@ -83,7 +83,7 @@
                   </DataTemplate>
                 </GridViewColumn.CellTemplate>
               </GridViewColumn>
-              <GridViewColumn Width="auto" Header="Option Value">
+              <GridViewColumn Width="auto" Header="Value">
                 <GridViewColumn.CellTemplate>
                   <DataTemplate>
                     <Grid>
