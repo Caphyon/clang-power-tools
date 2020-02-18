@@ -141,7 +141,7 @@ namespace ClangPowerTools
       string filePath = Path.Combine(settingsPathBuilder.GetPath(""), "FormatTemp.cpp");
       string formatFilePath = Path.Combine(settingsPathBuilder.GetPath(""), ".clang-format");
 
-      if (CheckOptionsEnabled()) return;
+      if (CheckOptionsEnabled() == false) return;
       WriteContentToFile(formatFilePath, FormatOptionFile.CreateOutput().ToString());
       CreateTempCppFile(text, filePath);
 

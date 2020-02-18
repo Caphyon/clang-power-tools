@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace ClangPowerTools.MVVM.Views
@@ -18,7 +17,7 @@ namespace ClangPowerTools.MVVM.Views
       InitializeComponent();
       formatStyleViewModel = new FormatStyleViewModel(this);
       DataContext = formatStyleViewModel;
-      TextManipulation.ReplaceAllTextInFlowDocument(CodeEditor.Document, "//Add your code here");
+      TextManipulation.ReplaceAllTextInFlowDocument(CodeEditor.Document, "// Add your code here");
     }
 
     private void CodeEditor_TextChanged(object sender, TextChangedEventArgs e)
