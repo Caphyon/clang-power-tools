@@ -21,7 +21,7 @@ namespace ClangPowerTools
           if (item is FormatOptionToggleModel)
           {
             var option = item as FormatOptionToggleModel;
-            styleOption = string.Concat(option.Name, ": ", option.IsEnabled.ToString().ToLower());
+            styleOption = string.Concat(option.Name, ": ", option.BooleanCombobox.ToString().ToLower());
           }
           else if (item is FormatOptionModel)
           {
