@@ -96,7 +96,6 @@
                         FontSize="12"
                         Text="{Binding Input}"
                         Visibility="{Binding Path=HasInputTextBox, Converter={StaticResource BoolToVis}}" />
-
                       <ComboBox
                         x:Name="BooleanCombobox"
                         Grid.Column="1"
@@ -129,14 +128,8 @@
           Grid.Row="1"
           Margin="0,20,0,0"
           FontSize="14"
-          Text="{Binding SelectedOption.Name}" />
-
-        <TextBlock
-          Grid.Row="1"
-          Margin="0,20,0,0"
-          FontSize="14"
           TextWrapping="Wrap">
-          <Run Text="{Binding SelectedOption.Name}" />
+          <Run FontWeight="Bold" Text="{Binding SelectedOption.Name}" />
           <Run Text="(" /><Run Background="#FFCDCDCD" Text="{Binding SelectedOption.Paramater}" /><Run Text=")" />
         </TextBlock>
 
