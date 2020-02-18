@@ -11,6 +11,7 @@ namespace ClangPowerTools
       output.AppendLine("# Configurable Format Style Options - Created with Clang Power Tools");
       output.AppendLine("---");
       output.AppendLine("Language: Cpp");
+      output.AppendLine("# BasedOnStyle:  LLVM");
 
       foreach (var item in FormatOptionsData.FormatOptions)
       {
