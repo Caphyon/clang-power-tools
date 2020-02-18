@@ -1,11 +1,9 @@
 ﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Constants;
 using ClangPowerTools.MVVM.Interfaces;
-using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.MVVM.Views;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -123,7 +121,6 @@ namespace ClangPowerTools
       Process.Start(new ProcessStartInfo(uri));
     }
 
-
     private void CreateFormatFile()
     {
       string fileName = ".clang-format";
@@ -144,14 +141,24 @@ namespace ClangPowerTools
       string filePath = Path.Combine(settingsPathBuilder.GetPath(""), "FormatTemp.cpp");
       string formatFilePath = Path.Combine(settingsPathBuilder.GetPath(""), ".clang-format");
 
+      if (CheckOptionsEnabled()) return;
       WriteContentToFile(formatFilePath, FormatOptionFile.CreateOutput().ToString());
       CreateTempCppFile(text, filePath);
 
       var content = FormatFileOutsideProject(settingsPathBuilder.GetPath(""), filePath);
       TextManipulation.ReplaceAllTextInFlowDocument(formatOptionsView.CodeEditor.Document, content);
 
-      //DeleteFile(filePath);
+      DeleteFile(filePath);
       //DeleteFile(formatFilePath);
+    }
+
+    private bool CheckOptionsEnabled()
+    {
+      foreach (var item in FormatOptionsData.FormatOptions)
+      {
+        if (item.IsEnabled) return true;
+      }
+      return false;
     }
 
     public static string FormatFileOutsideProject(string path, string filePath)
