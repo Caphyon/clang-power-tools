@@ -6,7 +6,7 @@
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   Title="Format Style Options"
-  Width="1020"
+  Width="1100"
   Height="750"
   d:DataContext="{d:DesignInstance local:FormatStyleOptionsViewModel,
                                    IsDesignTimeCreatable=True}"
@@ -52,61 +52,76 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="380" />
+          <ColumnDefinition Width="460" />
         </Grid.ColumnDefinitions>
 
         <!--  Format options  -->
         <ListView
           Name="FormatOptions"
           Grid.Row="0"
-          Width="380"
+          Width="461"
           Height="400"
           ItemsSource="{Binding FormatOptions}"
           SelectedItem="{Binding SelectedOption}"
           SelectionMode="Single">
-          <ListView.ItemTemplate>
-            <DataTemplate>
-              <Grid>
-                <Grid.ColumnDefinitions>
-                  <ColumnDefinition Width="260" />
-                  <ColumnDefinition Width="85" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                  <RowDefinition Height="25" />
-                </Grid.RowDefinitions>
+          <ListView.View>
+            <GridView>
+              <GridViewColumn Width="auto" Header="Name">
+                <GridViewColumn.CellTemplate>
+                  <DataTemplate>
+                    <TextBlock
+                      Grid.Column="0"
+                      FontSize="12"
+                      Text="{Binding Name}"
+                      TextWrapping="Wrap">
+                      <TextBlock.ToolTip>
+                        <ToolTip>
+                          <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
+                        </ToolTip>
+                      </TextBlock.ToolTip>
+                    </TextBlock>
+                  </DataTemplate>
+                </GridViewColumn.CellTemplate>
+              </GridViewColumn>
+              <GridViewColumn Width="auto" Header="Option Value">
+                <GridViewColumn.CellTemplate>
+                  <DataTemplate>
+                    <Grid>
+                      <TextBox
+                        x:Name="InputText"
+                        Grid.Column="1"
+                        Width="80"
+                        Height="18"
+                        HorizontalAlignment="Right"
+                        FontSize="12"
+                        Text="{Binding Input}"
+                        Visibility="{Binding Path=HasInputTextBox, Converter={StaticResource BoolToVis}}" />
 
-                <TextBlock
-                  Grid.Column="0"
-                  FontSize="12"
-                  Text="{Binding Name}"
-                  TextWrapping="Wrap">
-                  <TextBlock.ToolTip>
-                    <ToolTip>
-                      <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
-                    </ToolTip>
-                  </TextBlock.ToolTip>
-                </TextBlock>
-
-                <TextBox
-                  x:Name="InputText"
-                  Grid.Column="1"
-                  Width="80"
-                  Height="18"
-                  HorizontalAlignment="Right"
-                  FontSize="12"
-                  Text="{Binding Input}"
-                  Visibility="{Binding Path=HasTextBox, Converter={StaticResource BoolToVis}}" />
-
-                <ToggleButton
-                  x:Name="InputToggle"
-                  Grid.Column="1"
-                  Width="80"
-                  HorizontalAlignment="Right"
-                  IsChecked="{Binding IsEnabled}"
-                  Visibility="{Binding Path=HasToogleButton, Converter={StaticResource BoolToVis}}" />
-              </Grid>
-            </DataTemplate>
-          </ListView.ItemTemplate>
+                      <ComboBox
+                        x:Name="BooleanCombobox"
+                        Grid.Column="1"
+                        Width="80"
+                        HorizontalAlignment="Right"
+                        ItemsSource="{Binding BooleanComboboxValues}"
+                        Visibility="{Binding Path=HasBooleanCombobox, Converter={StaticResource BoolToVis}}" />
+                    </Grid>
+                  </DataTemplate>
+                </GridViewColumn.CellTemplate>
+              </GridViewColumn>
+              <GridViewColumn Width="auto" Header="Enable Option">
+                <GridViewColumn.CellTemplate>
+                  <DataTemplate>
+                    <ToggleButton
+                      x:Name="EnableOption"
+                      Grid.Column="2"
+                      Width="80"
+                      HorizontalAlignment="Right"
+                      IsChecked="{Binding IsEnabled}" />
+                  </DataTemplate>
+                </GridViewColumn.CellTemplate>
+              </GridViewColumn>
+            </GridView>
+          </ListView.View>
         </ListView>
 
         <!--  Option description  -->
@@ -199,7 +214,7 @@
       <RichTextBox
         Name="CodeEditor"
         Grid.Row="0"
-        Width="590"
+        Width="595"
         Height="640"
         Background="Black"
         ContextMenu="{x:Null}"
