@@ -8,27 +8,30 @@ namespace ClangPowerTools
     public static StringBuilder CreateOutput()
     {
       var output = new StringBuilder();
-      output.AppendLine("# Configurable Format Style Options - Created with Clang Power Tools");
+      output.AppendLine("# Format Style Options - Created with Clang Power Tools");
       output.AppendLine("---");
       output.AppendLine("Language: Cpp");
       output.AppendLine("# BasedOnStyle:  LLVM");
 
       foreach (var item in FormatOptionsData.FormatOptions)
       {
-        var styleOption = string.Empty;
-        if (item is FormatOptionToggleModel)
+        if (item.IsEnabled)
         {
-          var option = item as FormatOptionToggleModel;
-          styleOption = string.Concat(option.Name, ": ", option.IsEnabled.ToString().ToLower());
-        }
-        else if (item is FormatOptionModel)
-        {
-          var option = item as FormatOptionModel;
-          if (string.IsNullOrEmpty(option.Input)) continue;
-          styleOption = string.Concat(option.Name, ": ", option.Input);
-        }
+          var styleOption = string.Empty;
+          if (item is FormatOptionToggleModel)
+          {
+            var option = item as FormatOptionToggleModel;
+            styleOption = string.Concat(option.Name, ": ", option.IsEnabled.ToString().ToLower());
+          }
+          else if (item is FormatOptionModel)
+          {
+            var option = item as FormatOptionModel;
+            if (string.IsNullOrEmpty(option.Input)) continue;
+            styleOption = string.Concat(option.Name, ": ", option.Input);
+          }
 
-        output.AppendLine(styleOption);
+          output.AppendLine(styleOption);
+        }
       }
       output.AppendLine("...");
 
