@@ -18,7 +18,7 @@ using Process = System.Diagnostics.Process;
 
 namespace ClangPowerTools
 {
-  public class FormatStyleOptionsViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
+  public class FormatStyleViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
   {
     #region Members
 
@@ -34,7 +34,7 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public FormatStyleOptionsViewModel(FormatOptionsView formatOptionsView)
+    public FormatStyleViewModel(FormatOptionsView formatOptionsView)
     {
       selectedOption = FormatOptions.First();
       this.formatOptionsView = formatOptionsView;
@@ -150,8 +150,8 @@ namespace ClangPowerTools
       var content = FormatFileOutsideProject(settingsPathBuilder.GetPath(""), filePath);
       TextManipulation.ReplaceAllTextInFlowDocument(formatOptionsView.CodeEditor.Document, content);
 
-      DeleteFile(filePath);
-      DeleteFile(formatFilePath);
+      //DeleteFile(filePath);
+      //DeleteFile(formatFilePath);
     }
 
     public static string FormatFileOutsideProject(string path, string filePath)

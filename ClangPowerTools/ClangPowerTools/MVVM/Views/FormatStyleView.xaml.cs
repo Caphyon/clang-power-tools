@@ -10,14 +10,14 @@ namespace ClangPowerTools.MVVM.Views
   /// </summary>
   public partial class FormatOptionsView : Window
   {
-    private readonly FormatStyleOptionsViewModel formatStyleOptionsViewModel;
+    private readonly FormatStyleViewModel formatStyleViewModel;
     private bool isPasteCommand = false;
 
     public FormatOptionsView()
     {
       InitializeComponent();
-      formatStyleOptionsViewModel = new FormatStyleOptionsViewModel(this);
-      DataContext = formatStyleOptionsViewModel;
+      formatStyleViewModel = new FormatStyleViewModel(this);
+      DataContext = formatStyleViewModel;
       TextManipulation.ReplaceAllTextInFlowDocument(CodeEditor.Document, "//Add your code here");
     }
 
@@ -26,10 +26,10 @@ namespace ClangPowerTools.MVVM.Views
       if (isPasteCommand)
       {
         isPasteCommand = false;
-        formatStyleOptionsViewModel.RestCodeEditorFormat();
+        formatStyleViewModel.RestCodeEditorFormat();
         return;
       }
-      formatStyleOptionsViewModel.HighlightText();
+      formatStyleViewModel.HighlightText();
     }
 
     private void CodeEditor_PreviewKeyDown(object sender, KeyEventArgs e)

@@ -183,8 +183,8 @@
     <Compile Include="MVVM\Views\Components\BuyNowFooter.xaml.cs">
       <DependentUpon>BuyNowFooter.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MVVM\Views\FormatOptionsView.xaml.cs">
-      <DependentUpon>FormatOptionsView.xaml</DependentUpon>
+    <Compile Include="MVVM\Views\FormatStyleView.xaml.cs">
+      <DependentUpon>FormatStyleView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\FormatSettingsView.xaml.cs">
       <DependentUpon>FormatSettingsView.xaml</DependentUpon>
@@ -554,7 +554,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MVVM\Views\FormatOptionsView.xaml">
+    <Page Include="MVVM\Views\FormatStyleView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -8,7 +8,7 @@
   Title="Format Style Options"
   Width="1100"
   Height="750"
-  d:DataContext="{d:DesignInstance local:FormatStyleOptionsViewModel,
+  d:DataContext="{d:DesignInstance local:FormatStyleViewModel,
                                    IsDesignTimeCreatable=True}"
   Background="WhiteSmoke"
   Icon="/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
