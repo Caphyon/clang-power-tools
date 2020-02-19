@@ -6,7 +6,7 @@ namespace ClangPowerTools
 {
   public class FormatOptionsData
   {
-    public static List<IFormatOption> FormatOptions = new List<IFormatOption>()
+    public List<IFormatOption> FormatOptions = new List<IFormatOption>()
     {
       new FormatOptionModel{ Name = "AccessModifierOffset", Paramater = "int", Description = "The extra indent or outdent of access modifiers, e.g. \"public:\"", Input = "-2"},
       new FormatOptionModel{Name = "AlignAfterOpenBracket", Paramater = "BracketAlignmentStyle", Description = "If \"true\", horizontally aligns arguments after an open bracket.\r\nThis applies to round brackets (parentheses), angle brackets and square brackets.\r\nPossible values:\r\n- BAS_Align (in configuration: Align) Align parameters on the open bracket, e.g.:\r\n- BAS_DontAlign (in configuration: DontAlign) Don’t align, instead use ContinuationIndentWidth, e.g.:\r\n- BAS_AlwaysBreak (in configuration: AlwaysBreak) Always break after an open bracket, if the parameters don’t fit on a single line, e.g.:", Input="Align"},

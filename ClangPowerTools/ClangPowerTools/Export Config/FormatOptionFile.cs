@@ -1,11 +1,13 @@
-﻿using ClangPowerTools.MVVM.Models;
+﻿using ClangPowerTools.MVVM.Interfaces;
+using ClangPowerTools.MVVM.Models;
+using System.Collections.Generic;
 using System.Text;
 
 namespace ClangPowerTools
 {
   public class FormatOptionFile
   {
-    public static StringBuilder CreateOutput()
+    public static StringBuilder CreateOutput(List<IFormatOption> formatOptions)
     {
       var output = new StringBuilder();
       output.AppendLine("# Format Style Options - Created with Clang Power Tools");
@@ -13,7 +15,7 @@ namespace ClangPowerTools
       output.AppendLine("Language: Cpp");
       output.AppendLine("# BasedOnStyle:  LLVM");
 
-      foreach (var item in FormatOptionsData.FormatOptions)
+      foreach (var item in formatOptions)
       {
         if (item.IsEnabled)
         {

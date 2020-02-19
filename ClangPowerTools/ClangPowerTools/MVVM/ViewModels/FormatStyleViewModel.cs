@@ -1,6 +1,5 @@
 ﻿using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Commands;
-using ClangPowerTools.MVVM.Constants;
 using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Views;
 using System;
@@ -10,9 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using Process = System.Diagnostics.Process;
 
 namespace ClangPowerTools
@@ -23,12 +20,14 @@ namespace ClangPowerTools
 
     public event PropertyChangedEventHandler PropertyChanged;
 
+    private readonly SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
     private readonly FormatOptionsView formatOptionsView;
     private ICommand createFormatFileCommand;
     private ICommand formatCodeCommand;
+    private ICommand resetCommand;
     private ICommand openUri;
     private IFormatOption selectedOption;
-    private readonly SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
+    List<IFormatOption> formatOptions = new FormatOptionsData().FormatOptions;
     #endregion
 
     #region Constructor
@@ -47,7 +46,13 @@ namespace ClangPowerTools
     {
       get
       {
-        return FormatOptionsData.FormatOptions;
+        return formatOptions;
+      }
+      set
+      {
+        formatOptions = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
+        RunFormat();
       }
     }
 
@@ -111,6 +116,12 @@ namespace ClangPowerTools
       get => openUri ?? (openUri = new RelayCommand(() => OpenUri("https://clang.llvm.org/docs/ClangFormatStyleOptions.html"), () => CanExecute));
     }
 
+    public ICommand ResetCommand
+    {
+      get => resetCommand ?? (resetCommand = new RelayCommand(() => ResetOptions(), () => CanExecute));
+    }
+
+
     #endregion
 
 
@@ -122,6 +133,11 @@ namespace ClangPowerTools
       Process.Start(new ProcessStartInfo(uri));
     }
 
+    private void ResetOptions()
+    {
+      FormatOptions = new FormatOptionsData().FormatOptions;
+    }
+
     private void CreateFormatFile()
     {
       string fileName = ".clang-format";
@@ -131,22 +147,21 @@ namespace ClangPowerTools
       string path = SaveFile(fileName, defaultExt, filter);
       if (string.IsNullOrEmpty(path) == false)
       {
-        WriteContentToFile(path, FormatOptionFile.CreateOutput().ToString());
+        WriteContentToFile(path, FormatOptionFile.CreateOutput(formatOptions).ToString());
       }
     }
 
     private void RunFormat()
     {
-      var document = formatOptionsView.CodeEditor.Document;
-      var text = new TextRange(document.ContentStart, document.ContentEnd).Text;
+      var text = formatOptionsView.CodeEditor.Text;
       string filePath = Path.Combine(settingsPathBuilder.GetPath(""), "FormatTemp.cpp");
       string formatFilePath = Path.Combine(settingsPathBuilder.GetPath(""), ".clang-format");
 
-      WriteContentToFile(formatFilePath, FormatOptionFile.CreateOutput().ToString());
+      WriteContentToFile(formatFilePath, FormatOptionFile.CreateOutput(formatOptions).ToString());
       WriteContentToFile(filePath, text);
 
       var content = FormatFileOutsideProject(settingsPathBuilder.GetPath(""), filePath);
-      TextManipulation.ReplaceAllTextInFlowDocument(formatOptionsView.CodeEditor.Document, content);
+      formatOptionsView.CodeEditor.Text = content;
 
       FileSystem.DeleteFile(filePath);
       FileSystem.DeleteFile(formatFilePath);
@@ -174,20 +189,6 @@ namespace ClangPowerTools
       process.Close();
 
       return output;
-    }
-
-    public void HighlightText()
-    {
-      var document = formatOptionsView.CodeEditor.Document;
-      TextManipulation.HighlightKeywords(document.ContentStart, document.ContentEnd, CPPKeywords.keywords, new SolidColorBrush(Color.FromRgb(239, 153, 142)));
-    }
-
-    public void RestCodeEditorFormat()
-    {
-      formatOptionsView.CodeEditor.SelectAll();
-      formatOptionsView.CodeEditor.Selection.ClearAllProperties();
-      formatOptionsView.CodeEditor.Selection.ApplyPropertyValue(TextElement.FontSizeProperty, 14.0);
-      formatOptionsView.CodeEditor.Selection.ApplyPropertyValue(TextElement.FontFamilyProperty, "Courier New");
     }
 
     #endregion
