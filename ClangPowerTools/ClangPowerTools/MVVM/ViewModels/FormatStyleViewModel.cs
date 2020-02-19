@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.MVVM.Commands;
+﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Constants;
 using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Views;
@@ -141,24 +142,14 @@ namespace ClangPowerTools
       string filePath = Path.Combine(settingsPathBuilder.GetPath(""), "FormatTemp.cpp");
       string formatFilePath = Path.Combine(settingsPathBuilder.GetPath(""), ".clang-format");
 
-      if (CheckOptionsEnabled() == false) return;
       WriteContentToFile(formatFilePath, FormatOptionFile.CreateOutput().ToString());
-      CreateTempCppFile(text, filePath);
+      WriteContentToFile(filePath, text);
 
       var content = FormatFileOutsideProject(settingsPathBuilder.GetPath(""), filePath);
       TextManipulation.ReplaceAllTextInFlowDocument(formatOptionsView.CodeEditor.Document, content);
 
-      DeleteFile(filePath);
-      //DeleteFile(formatFilePath);
-    }
-
-    private bool CheckOptionsEnabled()
-    {
-      foreach (var item in FormatOptionsData.FormatOptions)
-      {
-        if (item.IsEnabled) return true;
-      }
-      return false;
+      FileSystem.DeleteFile(filePath);
+      FileSystem.DeleteFile(formatFilePath);
     }
 
     public static string FormatFileOutsideProject(string path, string filePath)
@@ -198,24 +189,6 @@ namespace ClangPowerTools
       formatOptionsView.CodeEditor.Selection.ApplyPropertyValue(TextElement.FontSizeProperty, 14.0);
       formatOptionsView.CodeEditor.Selection.ApplyPropertyValue(TextElement.FontFamilyProperty, "Courier New");
     }
-
-    private void CreateTempCppFile(string content, string filePath)
-    {
-      using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate))
-      {
-        using StreamWriter sw = new StreamWriter(fs);
-        sw.Write(content);
-      }
-    }
-
-    private void DeleteFile(string path)
-    {
-      if (File.Exists(path))
-      {
-        File.Delete(path);
-      }
-    }
-
 
     #endregion
   }
