@@ -20,6 +20,8 @@ namespace ClangPowerTools.Squiggle
 
     private const int rangeArea = 100;
 
+    public static List<SquiggleModel> Squiggles { get; set; } = new List<SquiggleModel>();
+
     #endregion
 
     #region Constuctor
@@ -33,34 +35,37 @@ namespace ClangPowerTools.Squiggle
 
     #region Public Methods
 
-    public IEnumerable<SquiggleModel> Create()
+    public void Create()
     {
       if (TaskErrorViewModel.FileErrorsPair == null || TaskErrorViewModel.FileErrorsPair.Count == 0)
-        yield break;
+        return;
 
       var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
       var activeDocument = dte.ActiveDocument;
 
       if (activeDocument == null)
-        yield break;
+        return;
+
+      if (dte.ActiveWindow.Selection is TextSelection == false)
+        return;
 
       TextSelection textSelection = (TextSelection) dte.ActiveWindow.Selection;
       if (textSelection == null)
-        yield break;
+        return;
 
       var currentLineNumber = textSelection.CurrentLine;
 
       if (TaskErrorViewModel.FileErrorsPair.ContainsKey(activeDocument.FullName) == false)
-        yield break;
+        return;
 
       foreach (var error in TaskErrorViewModel.FileErrorsPair[activeDocument.FullName])
       {
-        var min = currentLineNumber - rangeArea <= 1 ? 1 : currentLineNumber - rangeArea;
-        var max = currentLineNumber + rangeArea >= SourceBuffer.CurrentSnapshot.GetText().Length ?
-          SourceBuffer.CurrentSnapshot.GetText().Length - 1 : currentLineNumber + rangeArea;
+        //var min = currentLineNumber - rangeArea <= 1 ? 1 : currentLineNumber - rangeArea;
+        //var max = currentLineNumber + rangeArea >= SourceBuffer.CurrentSnapshot.GetText().Length ?
+        //  SourceBuffer.CurrentSnapshot.GetText().Length - 1 : currentLineNumber + rangeArea;
 
-        if (error.Line < min || error.Line > max)
-          continue;
+        //if (error.Line < min || error.Line > max)
+        //  continue;
 
         var bufferLines = SourceBuffer.CurrentSnapshot.Lines.ToList();
         line = error.Line.ForceInRange(0, bufferLines.Count - 1);
@@ -77,14 +82,14 @@ namespace ClangPowerTools.Squiggle
         {
           if (currentLineText[column - 1] == ' ' && currentLineText[column] != ' ' && currentLineText[column + 1] == ' ')
           {
-            yield return CreateTagSpan(column, 1, error.Text);
+            Squiggles.Add(CreateTagSpan(column, 1, error.Text));
             continue;
           }
         }
 
         GetSquiggleValues(bufferLines, currentLineText, out int start, out int length);
 
-        yield return CreateTagSpan(start, length, error.Text);
+        Squiggles.Add(CreateTagSpan(start, length, error.Text));
       }
     }
 

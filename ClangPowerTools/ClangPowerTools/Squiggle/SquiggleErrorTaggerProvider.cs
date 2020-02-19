@@ -38,10 +38,13 @@ namespace ClangPowerTools.Squiggle
         return null;
       }
 
-      SquigglesFactory squigglesFactory = new SquigglesFactory(buffer);
-      IEnumerable<SquiggleModel> squiggles = squigglesFactory.Create();
+      ITextStructureNavigator textStructureNavigator =
+                TextStructureNavigatorSelector.GetTextStructureNavigator(buffer);
+
+      //SquigglesFactory squigglesFactory = new SquigglesFactory(buffer);
+      //IEnumerable<SquiggleModel> squiggles = squigglesFactory.Create();
       
-      return new SquiggleErrorTagger(squiggles) as ITagger<T>;
+      return new SquiggleErrorTagger(textView, buffer, TextSearchService, textStructureNavigator) as ITagger<T>;
     }
 
     #endregion
