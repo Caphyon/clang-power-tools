@@ -26,6 +26,7 @@ namespace ClangPowerTools.MVVM.Views
       {
         isPasteCommand = false;
         formatStyleViewModel.RestCodeEditorFormat();
+        formatStyleViewModel.HighlightText();
         return;
       }
       formatStyleViewModel.HighlightText();
