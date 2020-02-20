@@ -8,13 +8,10 @@ using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Editor;
-using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Text.Tagging;
 
 namespace ClangPowerTools.Squiggle
 {
-
   /// <summary>
   /// This tagger will provide tags for every word in the buffer that
   /// matches the word currently under the cursor.
@@ -25,83 +22,26 @@ namespace ClangPowerTools.Squiggle
 
     public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
-
-    private bool layoutChanged = false;
-
-
-
-    private ITextView View { get; set; }
-    private ITextSearchService TextSearchService { get; set; }
-    private ITextStructureNavigator TextStructureNavigator { get; set; }
-    private object updateLock = new object();
-
-    // The current set of words to highlight
-    private NormalizedSnapshotSpanCollection WordSpans { get; set; }
-    private SnapshotSpan? CurrentWord { get; set; }
-
-    // The current request, from the last cursor movement or view render
-    private SnapshotPoint RequestedPoint { get; set; }
-
-
-
-
-
-    private readonly string squiggleType = "other error";
-
-    private ITextBuffer SourceBuffer { get; set; }
     private int line;
     private int column;
-
-    private const int rangeArea = 100;
-
+    private readonly string squiggleType = "other error";
+    
+    private ITextBuffer SourceBuffer { get; set; }
     private ConcurrentQueue<SquiggleModel> Squiggles { get; set; } = new ConcurrentQueue<SquiggleModel>();
+    
+    private object updateLock = new object();
 
 
     #endregion
 
     #region Constructor
 
-    public SquiggleErrorTagger(ITextView view, ITextBuffer sourceBuffer, ITextSearchService textSearchService,
-      ITextStructureNavigator textStructureNavigator)
+    public SquiggleErrorTagger(ITextBuffer sourceBuffer)
     {
-      View = view;
       SourceBuffer = sourceBuffer;
-      TextSearchService = textSearchService;
-      TextStructureNavigator = textStructureNavigator;
-
-      WordSpans = new NormalizedSnapshotSpanCollection();
-      CurrentWord = null;
-
-      // Subscribe to both change events in the view - any time the view is updated
-      // or the caret is moved, we refresh our list of highlighted words.
-      // View.Caret.PositionChanged += CaretPositionChanged;
-      View.LayoutChanged += ViewLayoutChanged;
     }
 
     #endregion
-
-
-    #region Event Handlers
-
-    /// <summary>
-    /// Force an update if the view layout changes
-    /// </summary>
-    /// 
-
-    private void ViewLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
-    {
-      // If a new snapshot wasn't generated, then skip this layout
-
-      if (e.NewViewState.EditSnapshot != e.OldViewState.EditSnapshot)
-      {
-        layoutChanged = true;
-      }
-
-    }
-
-
-    #endregion
-
 
     #region ITagger<HighlightWordTag> Implementation
 
@@ -124,34 +64,13 @@ namespace ClangPowerTools.Squiggle
       if (tempEvent == null)
         yield break;
 
-
-      //if (layoutChanged == false)
-      //  yield break;
-
       foreach (var errorSquiggle in Squiggles)
       {
         yield return new TagSpan<SquiggleErrorTag>(errorSquiggle.Snapshout, errorSquiggle.Squiggle);
       }
-
-      //while(Squiggles.TryDequeue(out SquiggleModel squiggle))
-      //{
-      //  yield return new TagSpan<SquiggleErrorTag>(squiggle.Snapshout, squiggle.Squiggle);
-      //}
-
-      layoutChanged = false;
     }
 
     #endregion
-
-
-
-
-
-
-
-
-
-
 
     #region Public Methods
 
@@ -182,13 +101,6 @@ namespace ClangPowerTools.Squiggle
 
       foreach (var error in TaskErrorViewModel.FileErrorsPair[activeDocument.FullName])
       {
-        //var min = currentLineNumber - rangeArea <= 1 ? 1 : currentLineNumber - rangeArea;
-        //var max = currentLineNumber + rangeArea >= SourceBuffer.CurrentSnapshot.GetText().Length ?
-        //  SourceBuffer.CurrentSnapshot.GetText().Length - 1 : currentLineNumber + rangeArea;
-
-        //if (error.Line < min || error.Line > max)
-        //  continue;
-
         var bufferLines = SourceBuffer.CurrentSnapshot.Lines.ToList();
         line = error.Line.ForceInRange(0, bufferLines.Count - 1);
 
@@ -219,18 +131,11 @@ namespace ClangPowerTools.Squiggle
           Squiggles.Enqueue(CreateTagSpan(start, length, error.Text));
         });
       }
-
     }
 
     #endregion
 
     #region Private Methods
-
-    private void Update(object threadContext)
-    {
-
-    }
-
 
     private SquiggleModel CreateTagSpan(int start, int length, string tooltip)
     {
@@ -238,10 +143,6 @@ namespace ClangPowerTools.Squiggle
       {
         var snapshotSpan = new SnapshotSpan(SourceBuffer.CurrentSnapshot, start, length);
         var squiggle = new SquiggleErrorTag(squiggleType, tooltip);
-
-        //var tempEvent = TagsChanged;
-        //if (tempEvent != null)
-        //  tempEvent(this, new SnapshotSpanEventArgs(new SnapshotSpan(SourceBuffer.CurrentSnapshot, 0, SourceBuffer.CurrentSnapshot.Length)));
 
         return new SquiggleModel()
         {

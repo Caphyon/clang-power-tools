@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel.Composition;
+﻿using System.ComponentModel.Composition;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
@@ -19,9 +18,6 @@ namespace ClangPowerTools.Squiggle
     #region ITaggerProvider Members
 
     [Import]
-    internal ITextSearchService TextSearchService { get; set; }
-
-    [Import]
     internal ITextStructureNavigatorSelectorService TextStructureNavigatorSelector { get; set; }
 
     /// <summary>
@@ -39,12 +35,9 @@ namespace ClangPowerTools.Squiggle
       }
 
       ITextStructureNavigator textStructureNavigator =
-                TextStructureNavigatorSelector.GetTextStructureNavigator(buffer);
+        TextStructureNavigatorSelector.GetTextStructureNavigator(buffer);
 
-      //SquigglesFactory squigglesFactory = new SquigglesFactory(buffer);
-      //IEnumerable<SquiggleModel> squiggles = squigglesFactory.Create();
-
-      return new SquiggleErrorTagger(textView, buffer, TextSearchService, textStructureNavigator) as ITagger<T>;
+      return new SquiggleErrorTagger(buffer) as ITagger<T>;
     }
 
     #endregion
