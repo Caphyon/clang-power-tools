@@ -1,17 +1,50 @@
 ﻿using ClangPowerTools.MVVM.Interfaces;
-using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace ClangPowerTools.MVVM.Models
 {
-  public class FormatOptionModel : IFormatOption
+  public class FormatOptionModel : IFormatOption, INotifyPropertyChanged
   {
-    public string Name { get; set; }
-    public string Description { get; set; }
+
+    #region Members
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    private bool isEnabled = true;
+
+    #endregion
+
+    #region Properties
+    public string Name { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
     public string Paramater { get; set; } = string.Empty;
-    public string Input { get; set; } = string.Empty;
-    public ToggleValues BooleanCombobox { get; set; } 
-    public bool HasBooleanCombobox { get; } = false;
-    public bool HasInputTextBox { get; } = true;
-    public bool IsEnabled { get; set; } = false;
+
+    public bool IsEnabled
+    {
+      get
+      {
+        return isEnabled;
+      }
+      set
+      {
+        isEnabled = value;
+        OnPropertyChanged("IsEnabled");
+      }
+    }
+
+    public bool HasBooleanCombobox { get; set; } = false;
+    public bool HasInputTextBox { get; set; } = false;
+
+    #endregion
+
+
+    #region Methods
+
+    public virtual void OnPropertyChanged(string propertyName)
+    {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
+    #endregion
   }
 }

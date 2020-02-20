@@ -1,16 +1,29 @@
-﻿using ClangPowerTools.MVVM.Interfaces;
-using System.Collections.ObjectModel;
-
-namespace ClangPowerTools.MVVM.Models
+﻿namespace ClangPowerTools.MVVM.Models
 {
-  class FormatOptionToggleModel : IFormatOption
+  public class FormatOptionToggleModel : FormatOptionModel
   {
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public string Paramater { get; set; } = string.Empty;
-    public ToggleValues BooleanCombobox { get; set; }
-    public bool HasBooleanCombobox { get; } = true;
-    public bool HasInputTextBox { get; } = false;
-    public bool IsEnabled { get; set; } = false;
+    private ToggleValues booleanComboboxValue = ToggleValues.False;
+
+
+    public FormatOptionToggleModel()
+    {
+      HasBooleanCombobox = true;
+    }
+
+    public ToggleValues BooleanCombobox
+    {
+      get
+      {
+        return booleanComboboxValue;
+      }
+      set
+      {
+        booleanComboboxValue = value;
+        if (IsEnabled == false) 
+          IsEnabled = true;
+
+        OnPropertyChanged("BooleanCombobox");
+      }
+    }
   }
 }
