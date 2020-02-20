@@ -20,22 +20,24 @@ namespace ClangPowerTools
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private readonly SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
+    private readonly SettingsPathBuilder settingsPathBuilder;
     private readonly FormatOptionsView formatOptionsView;
+    private FormatOptionsData formatOptionsData;
     private ICommand createFormatFileCommand;
     private ICommand formatCodeCommand;
     private ICommand resetCommand;
     private ICommand openUri;
     private IFormatOption selectedOption;
-    List<IFormatOption> formatOptions = new FormatOptionsData().FormatOptions;
+    List<IFormatOption> formatOptions;
     #endregion
 
     #region Constructor
 
     public FormatStyleViewModel(FormatOptionsView formatOptionsView)
     {
-      selectedOption = FormatOptions.First();
+      settingsPathBuilder = new SettingsPathBuilder();
       this.formatOptionsView = formatOptionsView;
+      InitializeStyleOptions();
     }
 
     #endregion
@@ -127,6 +129,13 @@ namespace ClangPowerTools
 
     #region Methods
 
+    private void InitializeStyleOptions()
+    {
+      formatOptionsData = new FormatOptionsData();
+      formatOptions = formatOptionsData.FormatOptions;
+      formatOptionsData.DisableAllOptions();
+      selectedOption = formatOptions.First();
+    }
 
     private void OpenUri(string uri)
     {
@@ -135,7 +144,8 @@ namespace ClangPowerTools
 
     private void ResetOptions()
     {
-      FormatOptions = new FormatOptionsData().FormatOptions;
+      InitializeStyleOptions();
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
     }
 
     private void CreateFormatFile()

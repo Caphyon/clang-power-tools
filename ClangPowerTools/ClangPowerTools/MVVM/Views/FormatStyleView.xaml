@@ -73,13 +73,7 @@
                       Grid.Column="0"
                       FontSize="12"
                       Text="{Binding Name}"
-                      TextWrapping="Wrap">
-                      <TextBlock.ToolTip>
-                        <ToolTip>
-                          <TextBlock Text="{Binding Description}" TextWrapping="Wrap" />
-                        </ToolTip>
-                      </TextBlock.ToolTip>
-                    </TextBlock>
+                      TextWrapping="Wrap" />
                   </DataTemplate>
                 </GridViewColumn.CellTemplate>
               </GridViewColumn>
@@ -94,7 +88,7 @@
                         Height="18"
                         HorizontalAlignment="Right"
                         FontSize="12"
-                        Text="{Binding Input}"
+                        Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}"
                         Visibility="{Binding Path=HasInputTextBox, Converter={StaticResource BoolToVis}}" />
                       <ComboBox
                         x:Name="BooleanCombobox"
@@ -233,8 +227,10 @@
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="*" />
           <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
+        <!--  Export button  -->
         <Button
           Grid.Row="1"
           Grid.Column="0"
@@ -249,8 +245,7 @@
           </Button.Content>
         </Button>
 
-
-        <!--  Format button  -->
+        <!--  Reset button  -->
         <Button
           Grid.Row="1"
           Grid.Column="1"
@@ -261,7 +256,22 @@
           Foreground="White"
           Style="{StaticResource SettingsButton}">
           <Button.Content>
-            Reset
+            Reset Options
+          </Button.Content>
+        </Button>
+
+        <!--  Format button  -->
+        <Button
+          Grid.Row="1"
+          Grid.Column="2"
+          Width="100"
+          Height="30"
+          Command="{Binding FormatCodeCommand}"
+          FontSize="14"
+          Foreground="White"
+          Style="{StaticResource SettingsButton}">
+          <Button.Content>
+            Format
           </Button.Content>
         </Button>
       </Grid>
