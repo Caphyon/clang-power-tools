@@ -43,7 +43,7 @@ namespace ClangPowerTools.Squiggle
 
       //SquigglesFactory squigglesFactory = new SquigglesFactory(buffer);
       //IEnumerable<SquiggleModel> squiggles = squigglesFactory.Create();
-      
+
       return new SquiggleErrorTagger(textView, buffer, TextSearchService, textStructureNavigator) as ITagger<T>;
     }
 

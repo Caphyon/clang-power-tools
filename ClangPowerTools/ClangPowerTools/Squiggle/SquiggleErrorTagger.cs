@@ -111,10 +111,11 @@ namespace ClangPowerTools.Squiggle
     /// <param name="spans">A read-only span of text to be searched for instances of CurrentWord</param>
     public IEnumerable<ITagSpan<SquiggleErrorTag>> GetTags(NormalizedSnapshotSpanCollection spans)
     {
-      ThreadPool.QueueUserWorkItem(Create);
-
       if (Squiggles == null || Squiggles.Count() == 0)
+      {
+        Create();
         yield break;
+      }
 
       if (spans.Count == 0)
         yield break;
@@ -154,9 +155,8 @@ namespace ClangPowerTools.Squiggle
 
     #region Public Methods
 
-    private void Create(object threadContext)
+    private void Create()
     {
-
       if (TaskErrorViewModel.FileErrorsPair == null || TaskErrorViewModel.FileErrorsPair.Count == 0)
         return;
 
@@ -178,42 +178,46 @@ namespace ClangPowerTools.Squiggle
       if (TaskErrorViewModel.FileErrorsPair.ContainsKey(activeDocument.FullName) == false)
         return;
 
-      lock (updateLock)
+
+
+      foreach (var error in TaskErrorViewModel.FileErrorsPair[activeDocument.FullName])
       {
+        //var min = currentLineNumber - rangeArea <= 1 ? 1 : currentLineNumber - rangeArea;
+        //var max = currentLineNumber + rangeArea >= SourceBuffer.CurrentSnapshot.GetText().Length ?
+        //  SourceBuffer.CurrentSnapshot.GetText().Length - 1 : currentLineNumber + rangeArea;
 
-        foreach (var error in TaskErrorViewModel.FileErrorsPair[activeDocument.FullName])
+        //if (error.Line < min || error.Line > max)
+        //  continue;
+
+        var bufferLines = SourceBuffer.CurrentSnapshot.Lines.ToList();
+        line = error.Line.ForceInRange(0, bufferLines.Count - 1);
+
+        var currentLine = SourceBuffer.CurrentSnapshot.GetLineFromLineNumber(line);
+        var currentLineText = currentLine.GetText().TrimEnd();
+
+        if (string.IsNullOrWhiteSpace(currentLineText))
+          continue;
+
+        column = error.Column.ForceInRange(0, currentLineText.Length - 1);
+
+        if (column - 1 >= 0 && column + 1 < currentLineText.Length)
         {
-          //var min = currentLineNumber - rangeArea <= 1 ? 1 : currentLineNumber - rangeArea;
-          //var max = currentLineNumber + rangeArea >= SourceBuffer.CurrentSnapshot.GetText().Length ?
-          //  SourceBuffer.CurrentSnapshot.GetText().Length - 1 : currentLineNumber + rangeArea;
-
-          //if (error.Line < min || error.Line > max)
-          //  continue;
-
-          var bufferLines = SourceBuffer.CurrentSnapshot.Lines.ToList();
-          line = error.Line.ForceInRange(0, bufferLines.Count - 1);
-
-          var currentLine = SourceBuffer.CurrentSnapshot.GetLineFromLineNumber(line);
-          var currentLineText = currentLine.GetText().TrimEnd();
-
-          if (string.IsNullOrWhiteSpace(currentLineText))
-            continue;
-
-          column = error.Column.ForceInRange(0, currentLineText.Length - 1);
-
-          if (column - 1 >= 0 && column + 1 < currentLineText.Length)
+          if (currentLineText[column - 1] == ' ' && currentLineText[column] != ' ' && currentLineText[column + 1] == ' ')
           {
-            if (currentLineText[column - 1] == ' ' && currentLineText[column] != ' ' && currentLineText[column + 1] == ' ')
+            ThreadPool.QueueUserWorkItem((object threadContext) =>
             {
               Squiggles.Enqueue(CreateTagSpan(column, 1, error.Text));
-              continue;
-            }
+            });
+            continue;
           }
-
-          GetSquiggleValues(bufferLines, currentLineText, out int start, out int length);
-
-          Squiggles.Enqueue(CreateTagSpan(start, length, error.Text));
         }
+
+        GetSquiggleValues(bufferLines, currentLineText, out int start, out int length);
+
+        ThreadPool.QueueUserWorkItem((object threadContext) =>
+        {
+          Squiggles.Enqueue(CreateTagSpan(start, length, error.Text));
+        });
       }
 
     }
@@ -222,16 +226,29 @@ namespace ClangPowerTools.Squiggle
 
     #region Private Methods
 
+    private void Update(object threadContext)
+    {
+
+    }
+
+
     private SquiggleModel CreateTagSpan(int start, int length, string tooltip)
     {
-      var snapshotSpan = new SnapshotSpan(SourceBuffer.CurrentSnapshot, start, length);
-      var squiggle = new SquiggleErrorTag(squiggleType, tooltip);
-
-      return new SquiggleModel()
+      lock (updateLock)
       {
-        Snapshout = snapshotSpan,
-        Squiggle = squiggle
-      };
+        var snapshotSpan = new SnapshotSpan(SourceBuffer.CurrentSnapshot, start, length);
+        var squiggle = new SquiggleErrorTag(squiggleType, tooltip);
+
+        //var tempEvent = TagsChanged;
+        //if (tempEvent != null)
+        //  tempEvent(this, new SnapshotSpanEventArgs(new SnapshotSpan(SourceBuffer.CurrentSnapshot, 0, SourceBuffer.CurrentSnapshot.Length)));
+
+        return new SquiggleModel()
+        {
+          Snapshout = snapshotSpan,
+          Squiggle = squiggle
+        };
+      }
     }
 
     private int LengthUntilGivenPosition(List<ITextSnapshotLine> lines)

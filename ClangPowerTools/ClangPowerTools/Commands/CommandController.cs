@@ -652,6 +652,16 @@ namespace ClangPowerTools
       if (running)
         return;
 
+      //ThreadPool.QueueUserWorkItem((object threadContext) =>
+      //{
+      //  TaskErrorViewModel.Errors.Clear();
+      //  TaskErrorViewModel.FileErrorsPair.Clear();
+
+      //  var backgroundTidyCommand = new BackgroundTidyCommand(document);
+      //  backgroundTidyCommand.RunClangTidyAsync().SafeFireAndForget();
+
+      //});
+
       _ = Task.Run(async () =>
         {
           await semaphoreSlim.WaitAsync();
@@ -659,6 +669,10 @@ namespace ClangPowerTools
           {
             TaskErrorViewModel.Errors.Clear();
             TaskErrorViewModel.FileErrorsPair.Clear();
+
+            //StopCommand.Instance.StopCommand = true;
+            //await StopCommand.Instance.RunStopClangCommandAsync();
+            //StopCommand.Instance.StopCommand = false;
 
             var backgroundTidyCommand = new BackgroundTidyCommand(document);
             await backgroundTidyCommand.RunClangTidyAsync();
