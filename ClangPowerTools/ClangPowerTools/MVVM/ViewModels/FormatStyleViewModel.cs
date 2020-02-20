@@ -23,12 +23,14 @@ namespace ClangPowerTools
     private readonly SettingsPathBuilder settingsPathBuilder;
     private readonly FormatOptionsView formatOptionsView;
     private FormatOptionsData formatOptionsData;
+    private ICommand selctCodeFileCommand;
     private ICommand createFormatFileCommand;
     private ICommand formatCodeCommand;
     private ICommand resetCommand;
     private ICommand openUri;
     private IFormatOption selectedOption;
-    List<IFormatOption> formatStyleOptions;
+    private List<IFormatOption> formatStyleOptions;
+    public const string FileExtensionsSelectFile = "Code files (*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx;*.h;*.h;*.h)|*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx";
     #endregion
 
     #region Constructor
@@ -124,6 +126,11 @@ namespace ClangPowerTools
     }
 
 
+    public ICommand SelctCodeFileCommand
+    {
+      get => selctCodeFileCommand ?? (selctCodeFileCommand = new RelayCommand(() => ReadCodeFromFile(), () => CanExecute));
+    }
+
     #endregion
 
 
@@ -140,6 +147,14 @@ namespace ClangPowerTools
     private void OpenUri(string uri)
     {
       Process.Start(new ProcessStartInfo(uri));
+    }
+
+    private void ReadCodeFromFile()
+    {
+      var filePath = OpenFile(string.Empty, ".cpp", FileExtensionsSelectFile);
+
+      if (File.Exists(filePath))
+        formatOptionsView.CodeEditor.Text = File.ReadAllText(filePath);
     }
 
     private void ResetOptions()
