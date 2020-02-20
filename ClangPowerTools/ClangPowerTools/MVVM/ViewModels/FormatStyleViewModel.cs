@@ -28,7 +28,7 @@ namespace ClangPowerTools
     private ICommand resetCommand;
     private ICommand openUri;
     private IFormatOption selectedOption;
-    List<IFormatOption> formatOptions;
+    List<IFormatOption> formatStyleOptions;
     #endregion
 
     #region Constructor
@@ -48,11 +48,11 @@ namespace ClangPowerTools
     {
       get
       {
-        return formatOptions;
+        return formatStyleOptions;
       }
       set
       {
-        formatOptions = value;
+        formatStyleOptions = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
         RunFormat();
       }
@@ -132,9 +132,9 @@ namespace ClangPowerTools
     private void InitializeStyleOptions()
     {
       formatOptionsData = new FormatOptionsData();
-      formatOptions = formatOptionsData.FormatOptions;
+      formatStyleOptions = formatOptionsData.FormatOptions;
       formatOptionsData.DisableAllOptions();
-      selectedOption = formatOptions.First();
+      selectedOption = formatStyleOptions.First();
     }
 
     private void OpenUri(string uri)
@@ -157,17 +157,19 @@ namespace ClangPowerTools
       string path = SaveFile(fileName, defaultExt, filter);
       if (string.IsNullOrEmpty(path) == false)
       {
-        WriteContentToFile(path, FormatOptionFile.CreateOutput(formatOptions).ToString());
+        WriteContentToFile(path, FormatOptionFile.CreateOutput(formatStyleOptions).ToString());
       }
     }
 
     private void RunFormat()
     {
+      if (CheckIfAnyOptionEnabled() == false) return;
+
       var text = formatOptionsView.CodeEditor.Text;
       string filePath = Path.Combine(settingsPathBuilder.GetPath(""), "FormatTemp.cpp");
       string formatFilePath = Path.Combine(settingsPathBuilder.GetPath(""), ".clang-format");
 
-      WriteContentToFile(formatFilePath, FormatOptionFile.CreateOutput(formatOptions).ToString());
+      WriteContentToFile(formatFilePath, FormatOptionFile.CreateOutput(formatStyleOptions).ToString());
       WriteContentToFile(filePath, text);
 
       var content = FormatFileOutsideProject(settingsPathBuilder.GetPath(""), filePath);
@@ -177,7 +179,7 @@ namespace ClangPowerTools
       FileSystem.DeleteFile(formatFilePath);
     }
 
-    public static string FormatFileOutsideProject(string path, string filePath)
+    private static string FormatFileOutsideProject(string path, string filePath)
     {
       string vsixPath = Path.GetDirectoryName(
         typeof(RunClangPowerToolsPackage).Assembly.Location);
@@ -199,6 +201,16 @@ namespace ClangPowerTools
       process.Close();
 
       return output;
+    }
+
+    private bool CheckIfAnyOptionEnabled()
+    {
+      foreach (var item in formatStyleOptions)
+      {
+        if (item.IsEnabled == true) return true;
+      }
+
+      return false;
     }
 
     #endregion
