@@ -30,12 +30,7 @@ namespace ClangPowerTools.Squiggle
     public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag
     {
       if (textView.TextBuffer != buffer)
-      {
         return null;
-      }
-
-      ITextStructureNavigator textStructureNavigator =
-        TextStructureNavigatorSelector.GetTextStructureNavigator(buffer);
 
       return new SquiggleErrorTagger(buffer) as ITagger<T>;
     }
