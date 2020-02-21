@@ -2,12 +2,22 @@
 {
   public class FormatOptionInputModel : FormatOptionModel
   {
+    #region Members
+
     private string input = string.Empty;
+
+    #endregion
+
+    #region Constructor
 
     public FormatOptionInputModel()
     {
       HasInputTextBox = true;
     }
+
+    #endregion
+
+    #region Properties
 
     public string Input
     {
@@ -24,5 +34,7 @@
         OnPropertyChanged("Input");
       }
     }
+
+    #endregion
   }
 }

@@ -2,13 +2,23 @@
 {
   public class FormatOptionToggleModel : FormatOptionModel
   {
+    #region Members
+
     private ToggleValues booleanComboboxValue = ToggleValues.False;
 
+    #endregion
+
+    #region Constructor
 
     public FormatOptionToggleModel()
     {
       HasBooleanCombobox = true;
     }
+
+    #endregion
+
+
+    #region Properties
 
     public ToggleValues BooleanCombobox
     {
@@ -25,5 +35,7 @@
         OnPropertyChanged("BooleanCombobox");
       }
     }
+
+    #endregion
   }
 }
