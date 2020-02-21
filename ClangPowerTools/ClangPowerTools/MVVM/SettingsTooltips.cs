@@ -12,6 +12,7 @@
     public string ClangAfterMSVC { get; } = "Automatically run Clang compile on the current source file, after successful MSVC compilation.";
     public string VerboseMode { get; } = "Enables verbose logging for diagnostic purposes.";
     public string ShowErrorList { get; } = "Always show Error List if Clang compile/tidy finishes with errors.";
+    public string ShowSquiggles { get; } = "Squiggles Tooltip.";
 
     #endregion
 

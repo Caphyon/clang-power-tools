@@ -8,7 +8,7 @@
   xmlns:views="clr-namespace:ClangPowerTools.MVVM.Views"
   d:DataContext="{d:DesignInstance local:CompilerSettingsViewModel,
                                    IsDesignTimeCreatable=True}"
-  d:DesignHeight="375"
+  d:DesignHeight="420"
   d:DesignWidth="770"
   mc:Ignorable="d">
 
@@ -28,6 +28,7 @@
     </Grid.Background>
     <Grid.RowDefinitions>
       <RowDefinition Height="20" />
+      <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
@@ -275,7 +276,7 @@
       VerticalAlignment="Center"
       IsChecked="{Binding CompilerModel.ClangAfterMSVC}" />
 
-    <!--  Verbose mode  -->
+    <!--  Show Error List  -->
     <TextBlock
       Grid.Row="8"
       Grid.Column="1"
@@ -301,9 +302,36 @@
       VerticalAlignment="Center"
       IsChecked="{Binding CompilerModel.ShowErrorList}" />
 
-    <!--  Verbose mode  -->
+
+    <!--  Show Squiggles  -->
     <TextBlock
       Grid.Row="9"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="16"
+      Text="Show squiggles">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.ShowSquiggles}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
+
+    <ToggleButton
+      Grid.Row="9"
+      Grid.Column="2"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center"
+      IsChecked="{Binding CompilerModel.ShowSquiggles}" />
+
+    <!--  Verbose mode  -->
+    <TextBlock
+      Grid.Row="10"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -321,7 +349,7 @@
     </TextBlock>
 
     <ToggleButton
-      Grid.Row="9"
+      Grid.Row="10"
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
