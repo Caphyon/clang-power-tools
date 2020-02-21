@@ -138,9 +138,8 @@ namespace ClangPowerTools
 
       var command = CreateCommand(sender);
       if (command == null)
-      {
         return;
-      }
+
       await LaunchCommandAsync(command.CommandID.ID, commandUILocation);
     }
 
@@ -248,21 +247,15 @@ namespace ClangPowerTools
     {
       OleMenuCommand command = null;
       if ((sender is OleMenuCommand) == false)
-      {
         return null;
-      }
 
       command = sender as OleMenuCommand;
-
       if (running && command.CommandID.ID != CommandIds.kStopClang)
-      {
         return null;
-      }
 
       if (command.CommandID.ID != CommandIds.kStopClang)
-      {
         currentCommand = command.CommandID.ID;
-      }
+
       SetCommandLocation();
       return command;
     }
@@ -670,7 +663,7 @@ namespace ClangPowerTools
 
     public void OnBeforeActiveDocumentChange(object sender, Document document)
     {
-      if (running)
+      if (running || vsBuildRunning)
         return;
 
       _ = Task.Run(async () =>
