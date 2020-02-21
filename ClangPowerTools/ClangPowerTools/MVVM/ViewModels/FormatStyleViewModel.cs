@@ -138,11 +138,11 @@ namespace ClangPowerTools
     private void InitializeStyleOptions()
     {
       formatOptionsData = new FormatOptionsData(true);
+      formatStyleOptions = formatOptionsData.FormatOptions;
+      
       formatOptionsData.Initializing = false;
       formatOptionsData.DisableAllOptions();
-
-      formatStyleOptions = formatOptionsData.FormatOptions;    
-      selectedOption = formatStyleOptions.First();
+      SelectedOption = formatStyleOptions.First();
     }
 
     private void OpenUri(string uri)
@@ -214,6 +214,7 @@ namespace ClangPowerTools
 
       process.Start();
       var output = process.StandardOutput.ReadToEnd();
+      if (string.IsNullOrWhiteSpace(output)) output = process.StandardError.ReadToEnd();
       process.WaitForExit();
       process.Close();
 
