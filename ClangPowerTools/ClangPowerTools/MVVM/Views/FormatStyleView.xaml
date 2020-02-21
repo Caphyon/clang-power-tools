@@ -113,7 +113,7 @@
                       x:Name="EnableOption"
                       Grid.Column="2"
                       Width="80"
-                      HorizontalAlignment="Right"
+                      Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.FormatCodeCommand}"
                       IsChecked="{Binding IsEnabled}" />
                   </DataTemplate>
                 </GridViewColumn.CellTemplate>
@@ -219,7 +219,11 @@
                 Height="15"
                 Margin="3"
                 Source="/ClangPowerTools;component/Resources/CompileIcon.png" />
-              <TextBlock Width="65" Text="Input" />
+              <TextBlock
+                Width="65"
+                FontSize="16"
+                FontWeight="DemiBold"
+                Text="Input" />
             </StackPanel>
           </TabItem.Header>
           <TextBox
@@ -246,7 +250,11 @@
                 Height="15"
                 Margin="3"
                 Source="/ClangPowerTools;component/Resources/CompileIcon.png" />
-              <TextBlock Width="65" Text="Output" />
+              <TextBlock
+                Width="65"
+                FontSize="16"
+                FontWeight="DemiBold"
+                Text="Output" />
             </StackPanel>
           </TabItem.Header>
           <TextBox
@@ -280,6 +288,20 @@
           Width="150"
           Height="30"
           Margin="20,0,0,0"
+          Command="{Binding ResetCommand}"
+          FontSize="14"
+          Foreground="White"
+          Style="{StaticResource SettingsButton}">
+          <Button.Content>
+            Reset Options
+          </Button.Content>
+        </Button>
+
+        <!--  Reset button  -->
+        <Button
+          Width="150"
+          Height="30"
+          Margin="20,0,0,0"
           Command="{Binding CreateFormatFileCommand}"
           FontSize="14"
           Foreground="White"
@@ -289,17 +311,17 @@
           </Button.Content>
         </Button>
 
-        <!--  Reset button  -->
+        <!--  Select file button  -->
         <Button
           Width="150"
           Height="30"
           Margin="20,0,0,0"
-          Command="{Binding ResetCommand}"
+          Command="{Binding SelctCodeFileCommand}"
           FontSize="14"
           Foreground="White"
           Style="{StaticResource SettingsButton}">
           <Button.Content>
-            Reset Options
+            Select Code File
           </Button.Content>
         </Button>
 
@@ -317,20 +339,6 @@
             Format
           </Button.Content>
         </Button>-->
-
-        <!--  Select file button  -->
-        <Button
-          Width="150"
-          Height="30"
-          Margin="20,0,0,0"
-          Command="{Binding SelctCodeFileCommand}"
-          FontSize="14"
-          Foreground="White"
-          Style="{StaticResource SettingsButton}">
-          <Button.Content>
-            Select Code File
-          </Button.Content>
-        </Button>
       </StackPanel>
     </Grid>
   </Grid>
