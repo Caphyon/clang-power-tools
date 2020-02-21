@@ -1,80 +1,41 @@
-﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using ClangPowerTools.Error;
+﻿using ClangPowerTools.Error;
 using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Text;
-using Microsoft.VisualStudio.Text.Tagging;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ClangPowerTools.Squiggle
 {
-  /// <summary>
-  /// This tagger will provide tags for every word in the buffer that
-  /// matches the word currently under the cursor.
-  /// </summary>
-  public class SquiggleErrorTagger : ITagger<SquiggleErrorTag>
+  public class SquigglesFactory
   {
     #region Members
 
-    public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
-
-    private int line;
-    private int column;
     private readonly string squiggleType = "other error";
 
     private ITextBuffer SourceBuffer { get; set; }
-    private ConcurrentQueue<SquiggleModel> Squiggles { get; set; } = new ConcurrentQueue<SquiggleModel>();
+    private int line;
+    private int column;
 
-    private object updateLock = new object();
+    private const int rangeArea = 100;
 
+    public static List<SquiggleModel> Squiggles { get; set; } = new List<SquiggleModel>();
 
     #endregion
 
-    #region Constructor
+    #region Constuctor
 
-    public SquiggleErrorTagger(ITextBuffer sourceBuffer)
+    public SquigglesFactory(ITextBuffer sourceBuffer)
     {
       SourceBuffer = sourceBuffer;
     }
 
     #endregion
 
-    #region ITagger<HighlightWordTag> Implementation
-
-    /// <summary>
-    /// Find every instance of CurrentWord in the given span
-    /// </summary>
-    /// <param name="spans">A read-only span of text to be searched for instances of CurrentWord</param>
-    public IEnumerable<ITagSpan<SquiggleErrorTag>> GetTags(NormalizedSnapshotSpanCollection spans)
-    {
-      if (Squiggles == null || Squiggles.Count() == 0)
-      {
-        Create();
-        yield break;
-      }
-
-      if (spans.Count == 0)
-        yield break;
-
-      var tempEvent = TagsChanged;
-      if (tempEvent == null)
-        yield break;
-
-      foreach (var errorSquiggle in Squiggles)
-      {
-        yield return new TagSpan<SquiggleErrorTag>(errorSquiggle.Snapshout, errorSquiggle.Squiggle);
-      }
-    }
-
-    #endregion
-
     #region Public Methods
 
-    private void Create()
+    public void Create()
     {
       if (TaskErrorViewModel.FileErrorsPair == null || TaskErrorViewModel.FileErrorsPair.Count == 0)
         return;
@@ -88,7 +49,7 @@ namespace ClangPowerTools.Squiggle
       if (dte.ActiveWindow.Selection is TextSelection == false)
         return;
 
-      TextSelection textSelection = (TextSelection)dte.ActiveWindow.Selection;
+      TextSelection textSelection = (TextSelection) dte.ActiveWindow.Selection;
       if (textSelection == null)
         return;
 
@@ -99,6 +60,13 @@ namespace ClangPowerTools.Squiggle
 
       foreach (var error in TaskErrorViewModel.FileErrorsPair[activeDocument.FullName])
       {
+        //var min = currentLineNumber - rangeArea <= 1 ? 1 : currentLineNumber - rangeArea;
+        //var max = currentLineNumber + rangeArea >= SourceBuffer.CurrentSnapshot.GetText().Length ?
+        //  SourceBuffer.CurrentSnapshot.GetText().Length - 1 : currentLineNumber + rangeArea;
+
+        //if (error.Line < min || error.Line > max)
+        //  continue;
+
         var bufferLines = SourceBuffer.CurrentSnapshot.Lines.ToList();
         line = error.Line.ForceInRange(0, bufferLines.Count - 1);
 
@@ -114,20 +82,14 @@ namespace ClangPowerTools.Squiggle
         {
           if (currentLineText[column - 1] == ' ' && currentLineText[column] != ' ' && currentLineText[column + 1] == ' ')
           {
-            ThreadPool.QueueUserWorkItem((object threadContext) =>
-            {
-              Squiggles.Enqueue(CreateTagSpan(column, 1, error.Text));
-            });
+            Squiggles.Add(CreateTagSpan(column, 1, error.Text));
             continue;
           }
         }
 
         GetSquiggleValues(bufferLines, currentLineText, out int start, out int length);
 
-        ThreadPool.QueueUserWorkItem((object threadContext) =>
-        {
-          Squiggles.Enqueue(CreateTagSpan(start, length, error.Text));
-        });
+        Squiggles.Add(CreateTagSpan(start, length, error.Text));
       }
     }
 
@@ -197,9 +159,8 @@ namespace ClangPowerTools.Squiggle
 
       length = FindLength(text, column - stepsBack + 1);
     }
-
+    
     #endregion
 
   }
-
 }

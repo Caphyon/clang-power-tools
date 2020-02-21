@@ -91,5 +91,6 @@ namespace ClangPowerTools
     {
       return GetTextDocument(view)?.FilePath;
     }
+
   }
 }

@@ -11,7 +11,9 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using Task = System.Threading.Tasks.Task;
 using ClangPowerTools.MVVM.Controllers;
-using System.IO;
+using ClangPowerTools.Error;
+using System.Windows.Forms;
+using System.Threading;
 
 namespace ClangPowerTools
 {
@@ -32,7 +34,6 @@ namespace ClangPowerTools
 
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
     public event EventHandler<ClangCommandMessageEventArgs> ClangCommandMessageEvent;
-    public event EventHandler<MissingLlvmEventArgs> MissingLlvmEvent;
     public event EventHandler<ClearEventArgs> ClearErrorListEvent;
     public event EventHandler<ClearEventArgs> ClearOutputWindowEvent;
     public event EventHandler<EventArgs> ErrorDetectedEvent;
@@ -45,6 +46,7 @@ namespace ClangPowerTools
     private bool mSaveCommandWasGiven = false;
     private bool mFormatAfterTidyFlag = false;
     private bool isActiveDocument = true;
+    static readonly SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
 
     #endregion
 
@@ -136,9 +138,8 @@ namespace ClangPowerTools
 
       var command = CreateCommand(sender);
       if (command == null)
-      {
         return;
-      }
+
       await LaunchCommandAsync(command.CommandID.ID, commandUILocation);
     }
 
@@ -171,6 +172,8 @@ namespace ClangPowerTools
         case CommandIds.kCompileId:
           {
             OnBeforeClangCommand(CommandIds.kCompileId);
+            await StopBackgroundRunnersAsync();
+
             await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, aCommandUILocation);
             OnAfterClangCommand();
             break;
@@ -178,6 +181,8 @@ namespace ClangPowerTools
         case CommandIds.kCompileToolbarId:
           {
             OnBeforeClangCommand(CommandIds.kCompileId);
+            await StopBackgroundRunnersAsync();
+
             await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, aCommandUILocation);
             OnAfterClangCommand();
             break;
@@ -185,6 +190,8 @@ namespace ClangPowerTools
         case CommandIds.kTidyId:
           {
             OnBeforeClangCommand(CommandIds.kTidyId);
+            await StopBackgroundRunnersAsync();
+
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
             OnAfterClangCommand();
             break;
@@ -192,6 +199,8 @@ namespace ClangPowerTools
         case CommandIds.kTidyToolbarId:
           {
             OnBeforeClangCommand(CommandIds.kTidyId);
+            await StopBackgroundRunnersAsync();
+
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
             OnAfterClangCommand();
             break;
@@ -199,6 +208,8 @@ namespace ClangPowerTools
         case CommandIds.kTidyFixId:
           {
             OnBeforeClangCommand(CommandIds.kTidyFixId);
+            await StopBackgroundRunnersAsync();
+
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, aCommandUILocation);
             OnAfterClangCommand();
             break;
@@ -206,6 +217,8 @@ namespace ClangPowerTools
         case CommandIds.kTidyFixToolbarId:
           {
             OnBeforeClangCommand(CommandIds.kTidyFixId);
+            await StopBackgroundRunnersAsync();
+
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, aCommandUILocation);
             OnAfterClangCommand();
             break;
@@ -234,21 +247,15 @@ namespace ClangPowerTools
     {
       OleMenuCommand command = null;
       if ((sender is OleMenuCommand) == false)
-      {
         return null;
-      }
 
       command = sender as OleMenuCommand;
-
       if (running && command.CommandID.ID != CommandIds.kStopClang)
-      {
         return null;
-      }
 
       if (command.CommandID.ID != CommandIds.kStopClang)
-      {
         currentCommand = command.CommandID.ID;
-      }
+
       SetCommandLocation();
       return command;
     }
@@ -267,6 +274,12 @@ namespace ClangPowerTools
           commandUILocation = CommandUILocation.ContextMenu;
           break;
       }
+    }
+
+    private async Task StopBackgroundRunnersAsync()
+    {
+      await StopCommand.Instance.RunStopClangCommandAsync();
+      BackgroundTidyCommand.Running = false;
     }
 
     private void OnBeforeClangCommand(int aCommandId)
@@ -322,6 +335,12 @@ namespace ClangPowerTools
 
     public void OnAfterRunCommand(object sender, CloseDataStreamingEventArgs e)
     {
+      if (BackgroundTidyCommand.Running)
+      {
+        OnErrorDetected(new EventArgs());
+        return;
+      }
+
       if (e.IsStopped)
       {
         DisplayStoppedMessage(false);
@@ -343,7 +362,9 @@ namespace ClangPowerTools
     protected void OnErrorDetected(EventArgs e)
     {
       ErrorDetectedEvent?.Invoke(this, e);
-      HasEncodingErrorEvent.Invoke(this, new EventArgs());
+
+      if (BackgroundTidyCommand.Running == false)
+        HasEncodingErrorEvent.Invoke(this, new EventArgs());
     }
 
     public void OnEncodingErrorDetected(object sender, HasEncodingErrorEventArgs e)
@@ -365,7 +386,10 @@ namespace ClangPowerTools
           window.ShowDialog();
         })).SafeFireAndForget();
       }
-      catch (Exception) { }
+      catch (Exception e)
+      {
+        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
     }
 
     public void OnActiveDocumentCheck(object sender, ActiveDocumentEventArgs e)
@@ -385,11 +409,6 @@ namespace ClangPowerTools
     public void OnFileHierarchyChanged(object sender, VsHierarchyDetectedEventArgs e)
     {
       HierarchyDetectedEvent?.Invoke(this, e);
-    }
-
-    public void OnMissingLLVMDetected(object sender, MissingLlvmEventArgs e)
-    {
-      MissingLlvmEvent?.Invoke(this, e);
     }
 
     private void DisplayStartedMessage(int aCommandId, bool clearOutput)
@@ -439,7 +458,10 @@ namespace ClangPowerTools
 
         return cmd.Name;
       }
-      catch (Exception) { }
+      catch (Exception e)
+      {
+        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
 
       return string.Empty;
     }
@@ -557,12 +579,11 @@ namespace ClangPowerTools
 
     public void OnBeforeSave(object sender, Document aDocument)
     {
-      BeforeSaveClangTidy();
+      BeforeSaveClangTidy(aDocument);
       BeforeSaveClangFormat(aDocument);
     }
 
-
-    private void BeforeSaveClangTidy()
+    private void BeforeSaveClangTidy(Document document)
     {
       if (false == mSaveCommandWasGiven) // The save event was not triggered by Save File or SaveAll commands
         return;
@@ -570,7 +591,10 @@ namespace ClangPowerTools
       TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
 
       if (false == tidySettings.TidyOnSave) // The clang-tidy on save option is disable 
+      {
+        OnBeforeActiveDocumentChange(new object(), document);
         return;
+      }
 
       if (true == running) // Clang compile/tidy command is running
         return;
@@ -634,6 +658,33 @@ namespace ClangPowerTools
         return;
       }
       mSaveCommandWasGiven = true;
+    }
+
+    public void OnBeforeActiveDocumentChange(object sender, Document document)
+    {
+      CompilerSettingsModel compilerSettings = settingsProvider.GetCompilerSettingsModel();
+      if (compilerSettings.ShowSquiggles == false)
+        return;
+
+      if (running || vsBuildRunning)
+        return;
+
+      _ = Task.Run(async () =>
+        {
+          await semaphoreSlim.WaitAsync();
+          try
+          {
+            TaskErrorViewModel.Errors.Clear();
+            TaskErrorViewModel.FileErrorsPair.Clear();
+
+            var backgroundTidyCommand = new BackgroundTidyCommand(document);
+            await backgroundTidyCommand.RunClangTidyAsync();
+          }
+          finally
+          {
+            semaphoreSlim.Release();
+          }
+        });
     }
 
     private bool IsAToolbarCommand(OleMenuCommand command)

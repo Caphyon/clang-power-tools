@@ -2,8 +2,8 @@
 
 namespace ClangPowerTools.Squiggle
 {
-  public static class SquiggleViewModel
+  public class SquiggleViewModel
   {
-    public static List<SquiggleErrorTag> Squiggles { get; set; } = new List<SquiggleErrorTag>();
+    public IEnumerable<SquiggleModel> Squiggles { get; set; }
   }
 }

@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Builder;
+using ClangPowerTools.Commands;
 using ClangPowerTools.Error;
 using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
@@ -26,8 +27,6 @@ namespace ClangPowerTools.Output
     private OutputContentModel mOutputContent = new OutputContentModel();
 
     public event EventHandler<ErrorDetectedEventArgs> ErrorDetectedEvent;
-
-    public event EventHandler<MissingLlvmEventArgs> MissingLlvmEvent;
 
     public event EventHandler<CloseDataConnectionEventArgs> CloseDataConnectionEvent;
 
@@ -93,6 +92,9 @@ namespace ClangPowerTools.Output
 
     public void Write(string aMessage)
     {
+      if (BackgroundTidyCommand.Running)
+        return;
+
       if (string.IsNullOrWhiteSpace(aMessage))
         return;
 
@@ -102,6 +104,9 @@ namespace ClangPowerTools.Output
 
     public void Write(object sender, ClangCommandMessageEventArgs e)
     {
+      if (BackgroundTidyCommand.Running)
+        return;
+
       if (e.ClearFlag)
       {
         Clear();
@@ -123,6 +128,9 @@ namespace ClangPowerTools.Output
 
     public void OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
+      //if (BackgroundTidyCommand.backgroundRun)
+      //  return;
+
       if (null == e.Data)
         return;
 
@@ -134,7 +142,6 @@ namespace ClangPowerTools.Output
         if (mOutputContent.MissingLLVM)
         {
           Write(new object(), new ClangCommandMessageEventArgs(ErrorParserConstants.kMissingLlvmMessage, false));
-          OnMissingLLVMDetected(new MissingLlvmEventArgs(true));
         }
         return;
       }
@@ -151,11 +158,7 @@ namespace ClangPowerTools.Output
         return;
 
       if (VSConstants.S_FALSE == mOutputProcessor.ProcessData(e.Data, Hierarchy, mOutputContent))
-      {
-        if (mOutputContent.MissingLLVM)
-          OnMissingLLVMDetected(new MissingLlvmEventArgs(true));
         return;
-      }
 
       Write(mOutputContent.Text);
     }
@@ -179,18 +182,27 @@ namespace ClangPowerTools.Output
 
     public void OnErrorDetected(object sender, EventArgs e)
     {
-      if( Errors.Count > 0 )
+      if (Errors.Count > 0)
       {
         TaskErrorViewModel.Errors = Errors.ToList();
-        ErrorDetectedEvent?.Invoke(this, new ErrorDetectedEventArgs(Errors));
+
+        TaskErrorViewModel.FileErrorsPair = new Dictionary<string, List<TaskErrorModel>>();
+        foreach (var error in TaskErrorViewModel.Errors)
+        {
+          if (TaskErrorViewModel.FileErrorsPair.ContainsKey(error.Document))
+          {
+            TaskErrorViewModel.FileErrorsPair[error.Document].Add(error);
+          }
+          else
+          {
+            TaskErrorViewModel.FileErrorsPair.Add(error.Document, new List<TaskErrorModel>() { error });
+          }
+        }
+
+        if (BackgroundTidyCommand.Running == false)
+          ErrorDetectedEvent?.Invoke(this, new ErrorDetectedEventArgs(Errors));
       }
     }
-
-    protected virtual void OnMissingLLVMDetected(MissingLlvmEventArgs e)
-    {
-      MissingLlvmEvent?.Invoke(this, e);
-    }
-
 
     public void OnEncodingErrorDetected(object sender, EventArgs e)
     {

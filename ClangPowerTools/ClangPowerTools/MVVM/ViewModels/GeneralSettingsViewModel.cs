@@ -1,6 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Views;
-using ClangPowerTools.Views;
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;

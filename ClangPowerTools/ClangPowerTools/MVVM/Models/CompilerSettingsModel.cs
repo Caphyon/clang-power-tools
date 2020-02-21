@@ -21,5 +21,7 @@
     public string LlvmVersion { get; set; } = string.Empty;
 
     public bool ShowErrorList { get; set; } = true;
+
+    public bool ShowSquiggles { get; set; } = true;
   }
 }

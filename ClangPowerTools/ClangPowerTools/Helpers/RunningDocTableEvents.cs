@@ -16,7 +16,10 @@ namespace ClangPowerTools
     private RunningDocumentTable mRunningDocumentTable;
 
     public delegate void OnBeforeSaveHandler(object sender, Document document);
+    public delegate void OnBeforeActiveDocumentChange(object sender, Document document);
+
     public event OnBeforeSaveHandler BeforeSave;
+    public event OnBeforeActiveDocumentChange BeforeActiveDocumentChange;
 
     #endregion
 
@@ -29,10 +32,10 @@ namespace ClangPowerTools
         mRunningDocumentTable = new RunningDocumentTable(aPackage);
         mRunningDocumentTable.Advise(this);
       }
-      catch (Exception)
+      catch (Exception e)
       {
+        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
-     
     }
 
     #endregion
@@ -66,6 +69,18 @@ namespace ClangPowerTools
 
     public int OnBeforeDocumentWindowShow(uint docCookie, int fFirstShow, IVsWindowFrame pFrame)
     {
+      if (fFirstShow == 0)
+        return VSConstants.S_OK;
+
+      if (null == BeforeActiveDocumentChange)
+        return VSConstants.S_OK;
+
+      var document = FindDocumentByCookie(docCookie);
+      if (null == document)
+        return VSConstants.S_OK;
+
+      BeforeActiveDocumentChange(this, document);
+
       return VSConstants.S_OK;
     }
 
@@ -109,8 +124,9 @@ namespace ClangPowerTools
         if( VsServiceProvider.TryGetService(typeof(DTE), out object dte))
           document = (dte as DTE).Documents.Cast<Document>().FirstOrDefault(doc => doc.FullName == documentInfo.Moniker);
       }
-      catch (Exception)
+      catch (Exception e)
       {
+        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
 
       return document;

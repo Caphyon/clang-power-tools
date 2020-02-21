@@ -17,6 +17,8 @@ namespace ClangPowerTools.Commands
   /// </summary>
   public sealed class TidyCommand : ClangCommand
   {
+    private object mutex = new object();
+
     #region Properties
 
     /// <summary>
@@ -39,7 +41,7 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
 
-    private TidyCommand(OleMenuCommandService aCommandService, CommandController aCommandController, 
+    private TidyCommand(OleMenuCommandService aCommandService, CommandController aCommandController,
       AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aPackage, aGuid, aId)
     {
@@ -59,12 +61,11 @@ namespace ClangPowerTools.Commands
 
     #region Public Methods
 
-
     /// <summary>
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async Task InitializeAsync(CommandController aCommandController, 
+    public static async Task InitializeAsync(CommandController aCommandController,
       AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in TidyCommand's constructor requires
@@ -76,51 +77,60 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation)
+    public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)
     {
-      await PrepareCommmandAsync(commandUILocation);
+      if (BackgroundTidyCommand.Running)
+      {
+        mItemsCollector = new ItemsCollector();
+        mItemsCollector.SetItem(document);
+      }
+      else
+      {
+        await PrepareCommmandAsync(commandUILocation);
+      }
 
       await Task.Run(() =>
       {
-        try
+        lock (mutex)
         {
-          using (var silentFileController = new SilentFileChangerController())
+          try
           {
-            using (var fileChangerWatcher = new FileChangerWatcher())
+            using var silentFileController = new SilentFileChangerController();
+            using var fileChangerWatcher = new FileChangerWatcher();
+
+            SettingsProvider settingsProvider = new SettingsProvider();
+            TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
+
+            if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
             {
-              SettingsProvider settingsProvider = new SettingsProvider();
-              TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
+              fileChangerWatcher.OnChanged += FileOpener.Open;
 
-              if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
-              {
-                fileChangerWatcher.OnChanged += FileOpener.Open;
+              var dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
+              string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
+                dte2.Solution.FullName : dte2.Solution.FullName
+                                          .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
 
-                var dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
-                string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
-                  dte2.Solution.FullName : dte2.Solution.FullName
-                                            .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
+              fileChangerWatcher.Run(solutionFolderPath);
 
-                fileChangerWatcher.Run(solutionFolderPath);
+              FilePathCollector fileCollector = new FilePathCollector();
+              var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
 
-                FilePathCollector fileCollector = new FilePathCollector();
-                var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
-
-                silentFileController.SilentFiles(filesPath);
-                silentFileController.SilentFiles(dte2.Documents);
-              }
-              RunScript(aCommandId);
+              silentFileController.SilentFiles(filesPath);
+              silentFileController.SilentFiles(dte2.Documents);
             }
+
+            RunScript(aCommandId);
           }
-        }
-        catch (Exception exception)
-        {
-          VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
-            OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+          catch (Exception exception)
+          {
+            VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
+              OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+          }
         }
       });
     }
-
-    #endregion
-
   }
+
+  #endregion
+
 }

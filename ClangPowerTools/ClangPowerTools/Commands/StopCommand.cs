@@ -4,6 +4,7 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
+using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
@@ -81,12 +82,11 @@ namespace ClangPowerTools.Commands
 
     public Task RunStopClangCommandAsync()
     {
-      StopCommand = true;
       return Task.Run(() =>
       {
         try
         {
-          mRunningProcesses.Kill();
+          runningProcesses.Kill();
           if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
           {
             string solutionPath = (dte as DTE2).Solution.FullName;
@@ -95,7 +95,10 @@ namespace ClangPowerTools.Commands
           }
           mDirectoriesPath.Clear();
         }
-        catch (Exception) { }
+        catch (Exception e) 
+        {
+          MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
       });
     }
 

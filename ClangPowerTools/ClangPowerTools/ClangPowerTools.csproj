@@ -78,6 +78,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CMake\CMakeBuilder.cs" />
+    <Compile Include="Commands\BackgroundTidyCommand.cs" />
     <Compile Include="Commands\IgnoreCommand.cs" />
     <Compile Include="Error\TaskErrorViewModel.cs" />
     <Compile Include="Events\FormatCommandEventArgs.cs" />
@@ -281,6 +282,8 @@
     <Compile Include="Squiggle\SquiggleErrorTagger.cs" />
     <Compile Include="Squiggle\SquiggleErrorTaggerProvider.cs" />
     <Compile Include="Extensions\IntExtension.cs" />
+    <Compile Include="Squiggle\SquiggleModel.cs" />
+    <Compile Include="Squiggle\SquigglesFactory.cs" />
     <Compile Include="Squiggle\SquiggleViewModel.cs" />
     <Compile Include="TextOperationsInterfaces\IDetector.cs" />
     <Compile Include="TextOperationsInterfaces\ITextFormatter.cs" />

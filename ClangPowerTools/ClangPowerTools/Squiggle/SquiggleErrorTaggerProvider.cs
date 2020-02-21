@@ -18,9 +18,6 @@ namespace ClangPowerTools.Squiggle
     #region ITaggerProvider Members
 
     [Import]
-    internal ITextSearchService TextSearchService { get; set; }
-
-    [Import]
     internal ITextStructureNavigatorSelectorService TextStructureNavigatorSelector { get; set; }
 
     /// <summary>
@@ -33,9 +30,7 @@ namespace ClangPowerTools.Squiggle
     public ITagger<T> CreateTagger<T>(ITextView textView, ITextBuffer buffer) where T : ITag
     {
       if (textView.TextBuffer != buffer)
-      {
         return null;
-      }
 
       return new SquiggleErrorTagger(buffer) as ITagger<T>;
     }

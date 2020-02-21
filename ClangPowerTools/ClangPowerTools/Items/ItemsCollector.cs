@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace ClangPowerTools
 {
@@ -38,6 +39,19 @@ namespace ClangPowerTools
 
     #region Public Methods
 
+    public void SetItem(Document document)
+    {
+      if (document == null)
+        return;
+
+      var projectName = document.ProjectItem.ContainingProject.FullName;
+      if (string.IsNullOrWhiteSpace(projectName))
+        return;
+
+      IItem item = new CurrentProjectItem(document.ProjectItem);
+      Items.Add(item);
+    }
+
     public void CollectActiveProjectItem()
     {
       try
@@ -63,6 +77,7 @@ namespace ClangPowerTools
       }
       catch (Exception e)
       {
+        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         throw new Exception(e.Message);
       }
     }

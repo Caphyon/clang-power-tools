@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Management;
+using System.Windows.Forms;
 
 namespace ClangPowerTools
 {
@@ -10,31 +11,28 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private List<Process> mProcesses = new List<Process>();
+    private readonly List<Process> processes = new List<Process>();
 
     #endregion
 
-
     #region Public Methods
 
-    public void Add(Process aProcess) => mProcesses.Add(aProcess);
+    public void Add(Process aProcess) => processes.Add(aProcess);
+
+    public bool Running() => processes.Count > 0;
 
     public void Kill()
     {
-      foreach (var process in mProcesses)
-      {
-        if (process.HasExited)
-          continue;
+      if (processes.Count <= 0)
+        return;
 
-        KillProcessAndChildren(process.Id);
-        process.Dispose();
-      }
-      mProcesses.Clear();
+      processes.ForEach(process => process.Dispose());
+      processes.Clear();
     }
 
     public void KillById(int aId)
     {
-      var procees = mProcesses.FirstOrDefault(p => p.Id == aId);
+      var procees = processes.FirstOrDefault(p => p.Id == aId);
       if (null == procees)
         return;
       procees.Kill();
@@ -62,7 +60,10 @@ namespace ClangPowerTools
         Process proc = Process.GetProcessById(aPid);
         proc.Kill();
       }
-      catch (ArgumentException) { } // The process has already exited.
+      catch (ArgumentException e)
+      {
+        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      } // The process has already exited.
     }
 
     #endregion
