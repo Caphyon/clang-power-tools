@@ -297,7 +297,7 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="16"
-      Text="Format file">
+      Text="Format style editor">
       <TextBlock.ToolTip>
         <ToolTip>
           <TextBlock
