@@ -224,26 +224,18 @@
         VerticalScrollBarVisibility="Auto" />
 
       <!--  Buttons  -->
-      <Grid Grid.Row="1">
-        <Grid.RowDefinitions>
-          <RowDefinition Height="20" />
-          <RowDefinition Height="*" />
-          <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-
-        <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="*" />
-        </Grid.ColumnDefinitions>
+      <StackPanel
+        Grid.Row="1"
+        Margin="0,20,0,0"
+        HorizontalAlignment="Center"
+        VerticalAlignment="Top"
+        Orientation="Horizontal">
 
         <!--  Export button  -->
         <Button
-          Grid.Row="1"
-          Grid.Column="0"
           Width="150"
           Height="30"
+          Margin="20,0,0,0"
           Command="{Binding CreateFormatFileCommand}"
           FontSize="14"
           Foreground="White"
@@ -255,10 +247,9 @@
 
         <!--  Reset button  -->
         <Button
-          Grid.Row="1"
-          Grid.Column="1"
-          Width="100"
+          Width="150"
           Height="30"
+          Margin="20,0,0,0"
           Command="{Binding ResetCommand}"
           FontSize="14"
           Foreground="White"
@@ -268,7 +259,7 @@
           </Button.Content>
         </Button>
 
-        <!--  Format button  -->
+        <!--  Format button
         <Button
           Grid.Row="1"
           Grid.Column="2"
@@ -281,14 +272,13 @@
           <Button.Content>
             Format
           </Button.Content>
-        </Button>
+        </Button>-->
 
         <!--  Select file button  -->
         <Button
-          Grid.Row="1"
-          Grid.Column="3"
-          Width="100"
+          Width="150"
           Height="30"
+          Margin="20,0,0,0"
           Command="{Binding SelctCodeFileCommand}"
           FontSize="14"
           Foreground="White"
@@ -297,7 +287,7 @@
             Select Code File
           </Button.Content>
         </Button>
-      </Grid>
+      </StackPanel>
     </Grid>
   </Grid>
 </Window>
