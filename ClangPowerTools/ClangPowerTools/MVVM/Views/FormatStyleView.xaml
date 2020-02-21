@@ -91,6 +91,7 @@
                         HorizontalAlignment="Right"
                         FontSize="12"
                         Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}"
+                        TextChanged="RunFormat_TextChanged"
                         Visibility="{Binding Path=HasInputTextBox, Converter={StaticResource BoolToVis}}" />
                       <ComboBox
                         x:Name="BooleanCombobox"
@@ -99,6 +100,7 @@
                         HorizontalAlignment="Right"
                         ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.BooleanComboboxValues}"
                         SelectedItem="{Binding BooleanCombobox}"
+                        SelectionChanged="RunFormat_SelectionChanged"
                         Visibility="{Binding Path=HasBooleanCombobox, Converter={StaticResource BoolToVis}}" />
                     </Grid>
                   </DataTemplate>
@@ -232,6 +234,7 @@
             FontSize="14"
             Foreground="White"
             HorizontalScrollBarVisibility="Auto"
+            TextChanged="RunFormat_TextChanged"
             TextWrapping="NoWrap"
             VerticalScrollBarVisibility="Auto" />
         </TabItem>

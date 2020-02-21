@@ -17,5 +17,15 @@ namespace ClangPowerTools.MVVM.Views
       DataContext = formatStyleViewModel;
       CodeEditor.Text = "// Add your code here";
     }
+
+    private void RunFormat_TextChanged(object sender, TextChangedEventArgs e)
+    {
+      formatStyleViewModel.RunFormat();
+    }
+
+    private void RunFormat_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      formatStyleViewModel.RunFormat();
+    }
   }
 }

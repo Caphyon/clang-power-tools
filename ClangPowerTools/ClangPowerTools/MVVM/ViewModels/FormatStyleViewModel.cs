@@ -56,7 +56,6 @@ namespace ClangPowerTools
       {
         formatStyleOptions = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
-        RunFormat();
       }
     }
 
@@ -138,9 +137,11 @@ namespace ClangPowerTools
 
     private void InitializeStyleOptions()
     {
-      formatOptionsData = new FormatOptionsData();
-      formatStyleOptions = formatOptionsData.FormatOptions;
+      formatOptionsData = new FormatOptionsData(true);
+      formatOptionsData.Initializing = false;
       formatOptionsData.DisableAllOptions();
+
+      formatStyleOptions = formatOptionsData.FormatOptions;    
       selectedOption = formatStyleOptions.First();
     }
 
@@ -176,9 +177,10 @@ namespace ClangPowerTools
       }
     }
 
-    private void RunFormat()
+    public void RunFormat()
     {
       if (CheckIfAnyOptionEnabled() == false) return;
+      if (formatOptionsData.Initializing) return;
 
       var text = formatOptionsView.CodeEditor.Text;
       string filePath = Path.Combine(settingsPathBuilder.GetPath(""), "FormatTemp.cpp");
