@@ -25,10 +25,10 @@ namespace ClangPowerTools.Squiggle
     private int line;
     private int column;
     private readonly string squiggleType = "other error";
-    
+
     private ITextBuffer SourceBuffer { get; set; }
     private ConcurrentQueue<SquiggleModel> Squiggles { get; set; } = new ConcurrentQueue<SquiggleModel>();
-    
+
     private object updateLock = new object();
 
 
@@ -97,8 +97,6 @@ namespace ClangPowerTools.Squiggle
       if (TaskErrorViewModel.FileErrorsPair.ContainsKey(activeDocument.FullName) == false)
         return;
 
-
-
       foreach (var error in TaskErrorViewModel.FileErrorsPair[activeDocument.FullName])
       {
         var bufferLines = SourceBuffer.CurrentSnapshot.Lines.ToList();
@@ -139,17 +137,14 @@ namespace ClangPowerTools.Squiggle
 
     private SquiggleModel CreateTagSpan(int start, int length, string tooltip)
     {
-      lock (updateLock)
-      {
-        var snapshotSpan = new SnapshotSpan(SourceBuffer.CurrentSnapshot, start, length);
-        var squiggle = new SquiggleErrorTag(squiggleType, tooltip);
+      var snapshotSpan = new SnapshotSpan(SourceBuffer.CurrentSnapshot, start, length);
+      var squiggle = new SquiggleErrorTag(squiggleType, tooltip);
 
-        return new SquiggleModel()
-        {
-          Snapshout = snapshotSpan,
-          Squiggle = squiggle
-        };
-      }
+      return new SquiggleModel()
+      {
+        Snapshout = snapshotSpan,
+        Squiggle = squiggle
+      };
     }
 
     private int LengthUntilGivenPosition(List<ITextSnapshotLine> lines)

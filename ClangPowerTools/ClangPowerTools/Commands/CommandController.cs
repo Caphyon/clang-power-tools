@@ -583,7 +583,6 @@ namespace ClangPowerTools
       BeforeSaveClangFormat(aDocument);
     }
 
-
     private void BeforeSaveClangTidy(Document document)
     {
       if (false == mSaveCommandWasGiven) // The save event was not triggered by Save File or SaveAll commands
