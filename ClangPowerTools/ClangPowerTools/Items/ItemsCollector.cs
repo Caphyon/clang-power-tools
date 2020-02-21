@@ -41,6 +41,9 @@ namespace ClangPowerTools
 
     public void SetItem(Document document)
     {
+      if (document == null)
+        return;
+
       var projectName = document.ProjectItem.ContainingProject.FullName;
       if (string.IsNullOrWhiteSpace(projectName))
         return;
