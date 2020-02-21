@@ -207,20 +207,62 @@
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
 
-      <TextBox
-        Name="CodeEditor"
-        Grid.Row="0"
-        MinWidth="595"
-        MinHeight="640"
-        AcceptsReturn="True"
-        AcceptsTab="True"
-        Background="Black"
-        FontFamily="Courier New"
-        FontSize="14"
-        Foreground="White"
-        HorizontalScrollBarVisibility="Auto"
-        TextWrapping="NoWrap"
-        VerticalScrollBarVisibility="Auto" />
+
+      <TabControl Grid.Row="0">
+        <TabItem Padding="8" FontSize="15">
+          <TabItem.Header>
+            <StackPanel Orientation="Horizontal">
+              <Image
+                Width="15"
+                Height="15"
+                Margin="3"
+                Source="/ClangPowerTools;component/Resources/CompileIcon.png" />
+              <TextBlock Width="65" Text="Input" />
+            </StackPanel>
+          </TabItem.Header>
+          <TextBox
+            Name="CodeEditor"
+            Grid.Row="0"
+            MinWidth="595"
+            MinHeight="640"
+            AcceptsReturn="True"
+            AcceptsTab="True"
+            Background="Black"
+            FontFamily="Courier New"
+            FontSize="14"
+            Foreground="White"
+            HorizontalScrollBarVisibility="Auto"
+            TextWrapping="NoWrap"
+            VerticalScrollBarVisibility="Auto" />
+        </TabItem>
+        <TabItem Padding="8" FontSize="15">
+          <TabItem.Header>
+            <StackPanel Orientation="Horizontal">
+              <Image
+                Width="15"
+                Height="15"
+                Margin="3"
+                Source="/ClangPowerTools;component/Resources/CompileIcon.png" />
+              <TextBlock Width="65" Text="Output" />
+            </StackPanel>
+          </TabItem.Header>
+          <TextBox
+            Name="CodeEditorReadOnly"
+            Grid.Row="0"
+            MinWidth="595"
+            MinHeight="640"
+            AcceptsReturn="True"
+            AcceptsTab="True"
+            Background="DimGray"
+            FontFamily="Courier New"
+            FontSize="14"
+            Foreground="White"
+            HorizontalScrollBarVisibility="Auto"
+            IsReadOnly="True"
+            TextWrapping="NoWrap"
+            VerticalScrollBarVisibility="Auto" />
+        </TabItem>
+      </TabControl>
 
       <!--  Buttons  -->
       <StackPanel

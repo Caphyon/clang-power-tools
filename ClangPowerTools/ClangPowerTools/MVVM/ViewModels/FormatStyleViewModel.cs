@@ -188,7 +188,7 @@ namespace ClangPowerTools
       WriteContentToFile(filePath, text);
 
       var content = FormatFileOutsideProject(settingsPathBuilder.GetPath(""), filePath);
-      formatOptionsView.CodeEditor.Text = content;
+      formatOptionsView.CodeEditorReadOnly.Text = content;
 
       FileSystem.DeleteFile(filePath);
       FileSystem.DeleteFile(formatFilePath);
