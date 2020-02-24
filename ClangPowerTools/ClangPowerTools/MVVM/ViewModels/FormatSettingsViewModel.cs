@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.MVVM;
 using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,6 +19,7 @@ namespace ClangPowerTools
     private ICommand filesToIgnoreAddDataCommand;
     private ICommand assumeFilenameAddDataCommand;
     private ICommand customExecutableBrowseCommand;
+    private ICommand createformatFileCommand;
     #endregion
 
     #region Constructor
@@ -92,6 +94,12 @@ namespace ClangPowerTools
     {
       get => customExecutableBrowseCommand ?? (customExecutableBrowseCommand = new RelayCommand(() => UpdateCustomExecutable(), () => CanExecute));
     }
+
+    public ICommand CreateFormatFileCommand
+    {
+      get => createformatFileCommand ?? (createformatFileCommand = new RelayCommand(() => OpenCreateFormatFileWindow(), () => CanExecute));
+    }
+
     #endregion
 
     #region Methods
@@ -117,6 +125,13 @@ namespace ClangPowerTools
     {
       formatModel.CustomExecutable = OpenFile(string.Empty, ".exe", "Executable files|*.exe");
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatModel"));
+    }
+
+    private void OpenCreateFormatFileWindow()
+    {
+      SettingsProvider.SettingsView.Close();
+      var formatFileWindow = new FormatOptionsView();
+      formatFileWindow.ShowDialog();
     }
 
     #endregion

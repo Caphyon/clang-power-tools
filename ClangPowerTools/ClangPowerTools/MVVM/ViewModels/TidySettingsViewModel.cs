@@ -22,6 +22,7 @@ namespace ClangPowerTools
     private ICommand predefinedChecksSelectCommand;
     private ICommand customChecksAddDataCommand;
     private ICommand exportTidyConfigCommand;
+
     #endregion
 
     #region Constructor

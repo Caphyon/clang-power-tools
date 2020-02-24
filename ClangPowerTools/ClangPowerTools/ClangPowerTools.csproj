@@ -82,6 +82,7 @@
     <Compile Include="Commands\IgnoreCommand.cs" />
     <Compile Include="Error\TaskErrorViewModel.cs" />
     <Compile Include="Events\FormatCommandEventArgs.cs" />
+    <Compile Include="Export Config\FormatOptionFile.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Events\HasEncodingErrorEventArgs.cs" />
     <Compile Include="Events\LicenseEventArgs.cs" />
@@ -90,11 +91,14 @@
     <Compile Include="Helpers\RegistryUtility.cs" />
     <Compile Include="Helpers\ScriptGenerator.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
+    <Compile Include="MVVM\Constants\CPPKeywords.cs" />
     <Compile Include="MVVM\Constants\LlvmConstants.cs" />
     <Compile Include="MVVM\Constants\LlvmVersionsAlternate.cs" />
     <Compile Include="MVVM\Controllers\FreeTrialController.cs" />
     <Compile Include="MVVM\Controllers\LlvmController.cs" />
+    <Compile Include="MVVM\FormatOptionsData.cs" />
     <Compile Include="MVVM\Interfaces\IDownload.cs" />
+    <Compile Include="MVVM\Interfaces\IFormatOption.cs" />
     <Compile Include="MVVM\Interfaces\IInstall.cs" />
     <Compile Include="MVVM\LlvmUri.cs" />
     <Compile Include="MVVM\Constants\LlvmVersions.cs" />
@@ -104,10 +108,13 @@
     <Compile Include="MVVM\LicenseValidation\CommercialLicenseValidator.cs" />
     <Compile Include="MVVM\LicenseValidation\LicenseInfo.cs" />
     <Compile Include="MVVM\LicenseValidation\LicenseProvider.cs" />
-    <Compile Include="MVVM\LicenseValidation\LicenseState.cs" />
-    <Compile Include="MVVM\LicenseValidation\LicenseType.cs" />
+    <Compile Include="MVVM\Constants\LicenseState.cs" />
+    <Compile Include="MVVM\Constants\LicenseType.cs" />
     <Compile Include="MVVM\LicenseValidation\LocalLicenseValidator.cs" />
     <Compile Include="MVVM\LicenseValidation\PersonalLicenseValidator.cs" />
+    <Compile Include="MVVM\Models\FormatOptionInputModel.cs" />
+    <Compile Include="MVVM\Models\FormatOptionModel.cs" />
+    <Compile Include="MVVM\Models\FormatOptionToggleModel.cs" />
     <Compile Include="MVVM\Models\GeneralSettingsModel.cs" />
     <Compile Include="MVVM\Models\InputDataModel.cs" />
     <Compile Include="MVVM\Models\LlvmSettingsModel.cs" />
@@ -126,9 +133,11 @@
     <Compile Include="MVVM\Models\LicenseModel.cs" />
     <Compile Include="MVVM\SettingsHandler.cs" />
     <Compile Include="MVVM\SettingsTooltips.cs" />
+    <Compile Include="MVVM\TextManipulation.cs" />
     <Compile Include="MVVM\TidyChecksClean.cs" />
     <Compile Include="MVVM\TidyChecks.cs" />
     <Compile Include="MVVM\SettingsProvider.cs" />
+    <Compile Include="MVVM\ViewModels\FormatStyleViewModel.cs" />
     <Compile Include="MVVM\ViewModels\GeneralSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\InputDataViewModel.cs" />
     <Compile Include="MVVM\ViewModels\LicenseViewModel.cs" />
@@ -174,6 +183,9 @@
     <Compile Include="MVVM\ViewModels\TrialExpiredViewModel.cs" />
     <Compile Include="MVVM\Views\Components\BuyNowFooter.xaml.cs">
       <DependentUpon>BuyNowFooter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Views\FormatStyleView.xaml.cs">
+      <DependentUpon>FormatStyleView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\FormatSettingsView.xaml.cs">
       <DependentUpon>FormatSettingsView.xaml</DependentUpon>
@@ -271,7 +283,7 @@
     <Compile Include="Items\CurrentProject.cs" />
     <Compile Include="Items\CurrentProjectItem.cs" />
     <Compile Include="Helpers\ActiveWindowProperties.cs" />
-    <Compile Include="Convertors\ComboBoxConstants.cs" />
+    <Compile Include="MVVM\Constants\ComboBoxConstants.cs" />
     <Compile Include="Convertors\ClangTidyUseChecksFromConvertor.cs" />
     <Compile Include="SilentFile\SilentFileChangerModel.cs" />
     <Compile Include="SilentFile\SilentFileChangerController.cs" />
@@ -326,6 +338,7 @@
     <Resource Include="Resources\iconCommercial.png" />
     <Resource Include="Resources\iconFreeTrial.png" />
     <Resource Include="Resources\iconPersonal.png" />
+    <Resource Include="Resources\Input.png" />
     <Content Include="Resources\LICENSE.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -519,6 +532,7 @@
     <Resource Include="Resources\SettingsLLVM.png" />
     <Resource Include="Resources\RemoveInputHover.png" />
     <Resource Include="Resources\RemoveInputIdle.png" />
+    <Resource Include="Resources\Output.png" />
     <Content Include="Resources\RunPowerShellCommandPackage.ico">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -540,6 +554,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="MVVM\Views\Components\BuyNowFooter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\FormatStyleView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
