@@ -74,6 +74,7 @@
                     <TextBlock
                       Grid.Column="0"
                       FontSize="12"
+                      Foreground="Black"
                       Text="{Binding Name}"
                       TextWrapping="Wrap" />
                   </DataTemplate>
