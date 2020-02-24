@@ -123,21 +123,27 @@
         </ListView>
 
         <!--  Option description  -->
-        <TextBlock
+        <RichTextBox
           Grid.Row="1"
           MaxWidth="480"
           Margin="0,20,0,0"
           HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
           FontSize="14"
-          TextWrapping="Wrap">
-          <Run FontWeight="Bold" Text="{Binding SelectedOption.Name}" />
-          <Run Text="(" /><Run Background="#FFCDCDCD" Text="{Binding SelectedOption.Paramater}" /><Run Text=")" />
-        </TextBlock>
+          IsReadOnly="True">
+          <FlowDocument>
+            <Paragraph>
+              <Run FontWeight="Bold" Text="{Binding SelectedOption.Name}" />
+              <Run Text="(" /><Run Background="#FFCDCDCD" Text="{Binding SelectedOption.Paramater}" /><Run Text=")" />
+            </Paragraph>
+          </FlowDocument>
+        </RichTextBox>
 
         <TextBox
           Grid.Row="2"
           Grid.Column="0"
-          MaxWidth="480"
+          MaxWidth="460"
           HorizontalAlignment="Left"
           Background="Transparent"
           BorderThickness="0"
@@ -149,7 +155,7 @@
         <TextBlock
           Grid.Row="3"
           Grid.Column="0"
-          MaxWidth="480"
+          MaxWidth="460"
           Margin="0,20,0,0"
           HorizontalAlignment="Center"
           FontSize="12"><Hyperlink Command="{Binding OpenClangFormatUriCommand}">Learn more about Clang Format Style Options</Hyperlink></TextBlock>
@@ -218,7 +224,7 @@
                 Width="15"
                 Height="15"
                 Margin="3"
-                Source="/ClangPowerTools;component/Resources/CompileIcon.png" />
+                Source="/ClangPowerTools;component/Resources/Input.png" />
               <TextBlock
                 Width="65"
                 FontSize="16"
@@ -249,7 +255,7 @@
                 Width="15"
                 Height="15"
                 Margin="3"
-                Source="/ClangPowerTools;component/Resources/CompileIcon.png" />
+                Source="/ClangPowerTools;component/Resources/Output.png" />
               <TextBlock
                 Width="65"
                 FontSize="16"

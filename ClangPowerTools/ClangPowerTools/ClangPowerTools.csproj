@@ -338,6 +338,7 @@
     <Resource Include="Resources\iconCommercial.png" />
     <Resource Include="Resources\iconFreeTrial.png" />
     <Resource Include="Resources\iconPersonal.png" />
+    <Resource Include="Resources\Input.png" />
     <Content Include="Resources\LICENSE.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -531,6 +532,7 @@
     <Resource Include="Resources\SettingsLLVM.png" />
     <Resource Include="Resources\RemoveInputHover.png" />
     <Resource Include="Resources\RemoveInputIdle.png" />
+    <Resource Include="Resources\Output.png" />
     <Content Include="Resources\RunPowerShellCommandPackage.ico">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
