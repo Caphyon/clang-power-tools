@@ -308,7 +308,6 @@
       </TextBlock.ToolTip>
     </TextBlock>
 
-
     <Button
       Grid.Row="8"
       Grid.Column="2"
@@ -320,7 +319,7 @@
       Foreground="White"
       Style="{StaticResource SettingsButton}">
       <Button.Content>
-        Create
+        Open
       </Button.Content>
     </Button>
 
