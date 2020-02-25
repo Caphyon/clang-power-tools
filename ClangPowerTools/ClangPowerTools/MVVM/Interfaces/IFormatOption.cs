@@ -1,6 +1,4 @@
-﻿using System.Collections.ObjectModel;
-
-namespace ClangPowerTools.MVVM.Interfaces
+﻿namespace ClangPowerTools.MVVM.Interfaces
 {
   public interface IFormatOption
   {
