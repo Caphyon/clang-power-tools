@@ -128,9 +128,6 @@ namespace ClangPowerTools.Output
 
     public void OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
-      //if (BackgroundTidyCommand.backgroundRun)
-      //  return;
-
       if (null == e.Data)
         return;
 
@@ -167,7 +164,7 @@ namespace ClangPowerTools.Output
     {
       if (0 != Buffer.Count)
         Write(String.Join("\n", Buffer));
-
+      
       CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
 
       OnErrorDetected(this, e);

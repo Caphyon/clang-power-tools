@@ -45,7 +45,7 @@ namespace ClangPowerTools
 
     protected static bool StopCommandActivated { get; set; } = false;
 
-    protected static bool DisplayStopedCommand { get; set; } = false;
+    protected bool DisplayLog { get; set; }
 
     protected static object mutex = new object();
 
@@ -211,9 +211,12 @@ namespace ClangPowerTools
           PowerShellWrapper.Invoke(Script, runningProcesses);
         }
 
+        if (DisplayLog == false)
+          return;
+
         if (StopCommandActivated)
         {
-          OnDataStreamClose(new CloseDataStreamingEventArgs(DisplayStopedCommand));
+          OnDataStreamClose(new CloseDataStreamingEventArgs(DisplayLog));
           StopCommandActivated = false;
         }
         else

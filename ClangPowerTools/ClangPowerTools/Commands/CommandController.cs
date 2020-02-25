@@ -171,8 +171,8 @@ namespace ClangPowerTools
           }
         case CommandIds.kCompileId:
           {
-            OnBeforeClangCommand(CommandIds.kCompileId);
             await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kCompileId);
 
             await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, aCommandUILocation);
             OnAfterClangCommand();
@@ -180,8 +180,8 @@ namespace ClangPowerTools
           }
         case CommandIds.kCompileToolbarId:
           {
-            OnBeforeClangCommand(CommandIds.kCompileId);
             await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kCompileId);
 
             await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, aCommandUILocation);
             OnAfterClangCommand();
@@ -189,8 +189,8 @@ namespace ClangPowerTools
           }
         case CommandIds.kTidyId:
           {
-            OnBeforeClangCommand(CommandIds.kTidyId);
             await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kTidyId);
 
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
             OnAfterClangCommand();
@@ -198,8 +198,8 @@ namespace ClangPowerTools
           }
         case CommandIds.kTidyToolbarId:
           {
-            OnBeforeClangCommand(CommandIds.kTidyId);
             await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kTidyId);
 
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
             OnAfterClangCommand();
@@ -207,8 +207,8 @@ namespace ClangPowerTools
           }
         case CommandIds.kTidyFixId:
           {
-            OnBeforeClangCommand(CommandIds.kTidyFixId);
             await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kTidyFixId);
 
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, aCommandUILocation);
             OnAfterClangCommand();
@@ -216,8 +216,8 @@ namespace ClangPowerTools
           }
         case CommandIds.kTidyFixToolbarId:
           {
-            OnBeforeClangCommand(CommandIds.kTidyFixId);
             await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kTidyFixId);
 
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, aCommandUILocation);
             OnAfterClangCommand();
@@ -287,17 +287,16 @@ namespace ClangPowerTools
       currentCommand = aCommandId;
       running = true;
 
-      if (OutputWindowConstants.commandName.ContainsKey(aCommandId))
-      {
-        DisplayStartedMessage(aCommandId, true);
-      }
-
       OnClangCommandBegin(new ClearEventArgs());
+
+      if (OutputWindowConstants.commandName.ContainsKey(aCommandId))
+        DisplayStartedMessage(aCommandId, true);
     }
 
 
     private void OnClangCommandBegin(ClearEventArgs e)
     {
+      ClearOutputWindowEvent?.Invoke(this, e);
       ClearErrorListEvent?.Invoke(this, e);
     }
 

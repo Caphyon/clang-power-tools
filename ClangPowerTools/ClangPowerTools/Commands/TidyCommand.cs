@@ -79,13 +79,13 @@ namespace ClangPowerTools.Commands
     {
       if (BackgroundTidyCommand.Running)
       {
-        DisplayStopedCommand = false;
+        DisplayLog = false;
         mItemsCollector = new ItemsCollector();
         mItemsCollector.SetItem(document);
       }
       else
       {
-        DisplayStopedCommand = true;
+        DisplayLog = true;
         await PrepareCommmandAsync(commandUILocation);
       }
 

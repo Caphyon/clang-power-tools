@@ -32,12 +32,15 @@ namespace ClangPowerTools
           Arguments = aScript,
         };
         process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
-               
-        process.EnableRaisingEvents = true;
-        process.ErrorDataReceived += DataErrorHandler;
-        process.OutputDataReceived += DataHandler;
-        process.Exited += ExitedHandler;
-        process.Disposed += ExitedHandler;
+
+         if (BackgroundTidyCommand.Running == false)
+        {
+          process.EnableRaisingEvents = true;
+          process.ErrorDataReceived += DataErrorHandler;
+          process.OutputDataReceived += DataHandler;
+          process.Exited += ExitedHandler;
+          process.Disposed += ExitedHandler;
+        }
 
         process.Start();
 
@@ -50,10 +53,15 @@ namespace ClangPowerTools
       }
       catch (Exception e)
       {
-        process.ErrorDataReceived -= DataErrorHandler;
-        process.OutputDataReceived -= DataHandler;
-        process.Exited -= ExitedHandler;
-        process.EnableRaisingEvents = false;
+        if (BackgroundTidyCommand.Running == false)
+        {
+          process.EnableRaisingEvents = false;
+          process.ErrorDataReceived -= DataErrorHandler;
+          process.OutputDataReceived -= DataHandler;
+          process.Exited -= ExitedHandler;
+          process.Disposed -= ExitedHandler;
+        }
+
         process.Close();
 
         throw e;
@@ -83,7 +91,7 @@ namespace ClangPowerTools
 
     private static string GetUsedLlvmVersionPath(string llvmVersion)
     {
-      var settingsPathBuilder = new SettingsPathBuilder();      
+      var settingsPathBuilder = new SettingsPathBuilder();
       return settingsPathBuilder.GetLlvmBinPath(llvmVersion);
     }
 

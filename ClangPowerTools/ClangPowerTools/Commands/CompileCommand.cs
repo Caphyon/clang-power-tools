@@ -82,7 +82,7 @@ namespace ClangPowerTools.Commands
         {
           try
           {
-            DisplayStopedCommand = true;
+            DisplayLog = true;
             RunScript(aCommandId);
           }
           catch (Exception exception)
