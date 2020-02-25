@@ -77,7 +77,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 5.5.3" />
+        Text="version 5.6" />
 
       <ListView
         Grid.Row="3"
@@ -112,7 +112,7 @@
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="• LLVM 9.0.1"
+          Text="• Clang Style Options editor to create and customize clang-format"
           TextWrapping="Wrap" />
 
         <!--  Bug Fixes  -->
@@ -126,47 +126,17 @@
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="• Visual Studio editor focus is lost when using clang-format on save"
+          Text="• Squiggles don't work properly on large files"
           TextWrapping="Wrap" />
 
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="• No feedback when running Clang commands on ignored files or projects"
-          TextWrapping="Wrap" />
 
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="• Format on save doesn't work when the config file is missing"
-          TextWrapping="Wrap" />
-
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="• Adding files to ignore list from context menu doesn't work"
-          TextWrapping="Wrap" />
-
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="• Crash when running clang commands for files without a Visual Studio Solution"
-          TextWrapping="Wrap" />
-
-        <TextBlock
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          FontSize="15"
-          Text="• Logging out doesn't refresh the UI"
-          TextWrapping="Wrap" />
       </ListView>
     </Grid>
 
-    <controls:BuyNowFooter Padding="0,0,0,15" Background="#272E58" />
+    <controls:BuyNowFooter
+      Padding="0,0,0,15"
+      Background="#272E58"
+      Loaded="BuyNowFooter_Loaded" />
 
   </StackPanel>
 
