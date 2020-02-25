@@ -1,7 +1,7 @@
-﻿using System;
+﻿using ClangPowerTools.Commands;
+using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace ClangPowerTools
 {
@@ -17,7 +17,7 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public static Process Invoke(string aScript, RunningProcesses aRunningProcesses)
+    public static void Invoke(string aScript, RunningProcesses runningProcesses)
     {
       Process process = new Process();
       try
@@ -32,33 +32,32 @@ namespace ClangPowerTools
           Arguments = aScript,
         };
         process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
-
+               
         process.EnableRaisingEvents = true;
         process.ErrorDataReceived += DataErrorHandler;
         process.OutputDataReceived += DataHandler;
         process.Exited += ExitedHandler;
         process.Disposed += ExitedHandler;
 
-        aRunningProcesses.Add(process);
-
         process.Start();
+
         process.BeginErrorReadLine();
         process.BeginOutputReadLine();
+
+        runningProcesses.Add(process, BackgroundTidyCommand.Running);
+
         process.WaitForExit();
       }
       catch (Exception e)
-      {
-        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-      }
-      finally
       {
         process.ErrorDataReceived -= DataErrorHandler;
         process.OutputDataReceived -= DataHandler;
         process.Exited -= ExitedHandler;
         process.EnableRaisingEvents = false;
         process.Close();
+
+        throw e;
       }
-      return process;
     }
 
     #endregion

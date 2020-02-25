@@ -17,8 +17,6 @@ namespace ClangPowerTools.Commands
   /// </summary>
   public sealed class TidyCommand : ClangCommand
   {
-    private object mutex = new object();
-
     #region Properties
 
     /// <summary>
@@ -81,11 +79,13 @@ namespace ClangPowerTools.Commands
     {
       if (BackgroundTidyCommand.Running)
       {
+        DisplayStopedCommand = false;
         mItemsCollector = new ItemsCollector();
         mItemsCollector.SetItem(document);
       }
       else
       {
+        DisplayStopedCommand = true;
         await PrepareCommmandAsync(commandUILocation);
       }
 

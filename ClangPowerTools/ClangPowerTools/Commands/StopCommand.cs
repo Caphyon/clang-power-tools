@@ -80,13 +80,14 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public Task RunStopClangCommandAsync()
+    public Task RunStopClangCommandAsync(bool background)
     {
       return Task.Run(() =>
       {
         try
         {
-          runningProcesses.Kill();
+          StopCommandActivated = true;
+          runningProcesses.Kill(background);
           if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
           {
             string solutionPath = (dte as DTE2).Solution.FullName;
@@ -94,6 +95,7 @@ namespace ClangPowerTools.Commands
             mPCHCleaner.Remove(solutionFolder);
           }
           mDirectoriesPath.Clear();
+          StopCommandActivated = false;
         }
         catch (Exception e) 
         {

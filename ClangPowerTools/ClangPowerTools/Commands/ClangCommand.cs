@@ -18,13 +18,12 @@ namespace ClangPowerTools
   public abstract class ClangCommand : BasicCommand
   {
     #region Members
-    
+
     public static RunningProcesses runningProcesses = new RunningProcesses();
 
     protected ItemsCollector mItemsCollector;
     protected FilePathCollector mFilePahtCollector;
     protected List<string> mDirectoriesPath = new List<string>();
-    private static bool stopCommand = false;
     private readonly Dictionary<string, string> mVsVersions = new Dictionary<string, string>
     {
       {"11.0", "2010"},
@@ -37,16 +36,18 @@ namespace ClangPowerTools
 
     private IVsHierarchy mHierarchy;
 
+    // private object 
+
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
     public event EventHandler<CloseDataStreamingEventArgs> CloseDataStreamingEvent;
     public event EventHandler<ActiveDocumentEventArgs> ActiveDocumentEvent;
     public event EventHandler<ClangCommandMessageEventArgs> IgnoredItemsEvent;
 
-    public bool StopCommand
-    {
-      get { return stopCommand; }
-      set { stopCommand = value; }
-    }
+    protected static bool StopCommandActivated { get; set; } = false;
+
+    protected static bool DisplayStopedCommand { get; set; } = false;
+
+    protected static object mutex = new object();
 
     public RunningProcesses GetClangProcesses => runningProcesses;
 
@@ -99,10 +100,12 @@ namespace ClangPowerTools
 
     #region Protected Methods
 
+
     protected void RunScript(int aCommandId)
     {
       string runModeParameters = ScriptGenerator.GetRunModeParamaters();
       string genericParameters = ScriptGenerator.GetGenericParamaters(aCommandId, VsEdition, VsVersion);
+
 
       CMakeBuilder cMakeBuilder = new CMakeBuilder();
       cMakeBuilder.Build();
@@ -187,7 +190,7 @@ namespace ClangPowerTools
       {
         foreach (var item in mItemsCollector.Items)
         {
-          if (StopCommand)
+          if (StopCommandActivated)
             break;
 
           if (IgnoreItem(item, out string fileType))
@@ -207,34 +210,20 @@ namespace ClangPowerTools
 
           PowerShellWrapper.Invoke(Script, runningProcesses);
         }
+
+        if (StopCommandActivated)
+        {
+          OnDataStreamClose(new CloseDataStreamingEventArgs(DisplayStopedCommand));
+          StopCommandActivated = false;
+        }
+        else
+        {
+          OnDataStreamClose(new CloseDataStreamingEventArgs(false));
+        }
       }
       catch (Exception e)
       {
         MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-      }
-
-      if (StopCommand)
-      {
-        try
-        {
-          OnDataStreamClose(new CloseDataStreamingEventArgs(true));
-          StopCommand = false;
-        }
-        catch (Exception e)
-        {
-          MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      else
-      {
-        try
-        {
-          OnDataStreamClose(new CloseDataStreamingEventArgs(false));
-        }
-        catch (Exception e)
-        {
-          MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
       }
     }
 

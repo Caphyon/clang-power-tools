@@ -11,28 +11,39 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private readonly List<Process> processes = new List<Process>();
+    private readonly static List<Process> commandProcesses = new List<Process>();
+    private readonly static List<Process> backgroundCommandProcesses = new List<Process>();
 
     #endregion
 
     #region Public Methods
 
-    public void Add(Process aProcess) => processes.Add(aProcess);
-
-    public bool Running() => processes.Count > 0;
-
-    public void Kill()
+    public void Add(Process aProcess, bool background)
     {
-      if (processes.Count <= 0)
-        return;
+      if (background)
+        backgroundCommandProcesses.Add(aProcess);
+      else
+        commandProcesses.Add(aProcess);
+    }
 
-      processes.ForEach(process => process.Dispose());
-      processes.Clear();
+    public void Kill(bool background)
+    {
+      var processes = GetProcesses(background);
+
+      foreach (var process in processes)
+      {
+        if (process.HasExited || process.Responding == false)
+          continue;
+
+        KillProcessAndChildren(process.Id);
+      }
+
+      Clear(processes);
     }
 
     public void KillById(int aId)
     {
-      var procees = processes.FirstOrDefault(p => p.Id == aId);
+      var procees = commandProcesses.FirstOrDefault(p => p.Id == aId);
       if (null == procees)
         return;
       procees.Kill();
@@ -42,12 +53,24 @@ namespace ClangPowerTools
 
     #region Private Methods
 
+    private List<Process> GetProcesses(bool background)
+    {
+      return background ? backgroundCommandProcesses : commandProcesses;
+    }
+
+    private void Clear(List<Process> processes)
+    {
+      processes.ForEach(process => process.Close());
+      processes.Clear();
+    }
+
     private static void KillProcessAndChildren(int aPid)
     {
       // Cannot close 'system idle process'
       if (aPid == 0)
         return;
 
+      Process proc = new Process();
       try
       {
         ManagementObjectSearcher searcher = new ManagementObjectSearcher
@@ -57,13 +80,14 @@ namespace ClangPowerTools
         foreach (ManagementObject mo in moc)
           KillProcessAndChildren(Convert.ToInt32(mo["ProcessID"]));
 
-        Process proc = Process.GetProcessById(aPid);
+        proc = Process.GetProcessById(aPid);
         proc.Kill();
       }
       catch (ArgumentException e)
       {
-        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-      } // The process has already exited.
+        // The process has already exited.
+        proc.Close();
+      }
     }
 
     #endregion

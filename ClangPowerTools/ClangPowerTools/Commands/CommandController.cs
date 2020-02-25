@@ -154,7 +154,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kStopClang:
           {
-            await StopCommand.Instance.RunStopClangCommandAsync();
+            await StopCommand.Instance.RunStopClangCommandAsync(false);
             break;
           }
         case CommandIds.kClangFormat:
@@ -278,7 +278,7 @@ namespace ClangPowerTools
 
     private async Task StopBackgroundRunnersAsync()
     {
-      await StopCommand.Instance.RunStopClangCommandAsync();
+      await StopCommand.Instance.RunStopClangCommandAsync(true);
       BackgroundTidyCommand.Running = false;
     }
 
