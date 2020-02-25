@@ -661,8 +661,7 @@ namespace ClangPowerTools
 
     public void OnBeforeActiveDocumentChange(object sender, Document document)
     {
-      CompilerSettingsModel compilerSettings = settingsProvider.GetCompilerSettingsModel();
-      if (compilerSettings.ShowSquiggles == false)
+      if (settingsProvider.GetCompilerSettingsModel().ShowSquiggles == false)
         return;
 
       if (running || vsBuildRunning)

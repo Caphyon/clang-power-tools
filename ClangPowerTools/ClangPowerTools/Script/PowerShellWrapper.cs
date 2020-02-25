@@ -42,12 +42,12 @@ namespace ClangPowerTools
           process.Disposed += ExitedHandler;
         }
 
+        runningProcesses.Add(process, BackgroundTidyCommand.Running);
+
         process.Start();
 
         process.BeginErrorReadLine();
         process.BeginOutputReadLine();
-
-        runningProcesses.Add(process, BackgroundTidyCommand.Running);
 
         process.WaitForExit();
       }
