@@ -112,7 +112,14 @@
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="• Clang Style Options editor to create and customize clang-format"
+          Text="• Clang Style Options Editor to create and customize clang-format file"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="• Clang-tidy IntelliSense shows squiggles automatically "
           TextWrapping="Wrap" />
 
         <!--  Bug Fixes  -->
@@ -127,6 +134,20 @@
           HorizontalAlignment="Left"
           FontSize="15"
           Text="• Squiggles don't work properly on large files"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="• Closing the active file after running a command may cause a crash"
+          TextWrapping="Wrap" />
+
+        <TextBlock
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="• Stop command crash in certain scenarios"
           TextWrapping="Wrap" />
 
 
