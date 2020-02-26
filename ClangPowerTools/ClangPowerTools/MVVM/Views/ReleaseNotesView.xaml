@@ -147,9 +147,15 @@
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="• Stop command crash in certain scenarios"
+          Text="• Stop command doesn't work after using its shortcut"
           TextWrapping="Wrap" />
 
+        <TextBlock
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          FontSize="15"
+          Text="• Stop command crash in certain scenarios"
+          TextWrapping="Wrap" />
 
       </ListView>
     </Grid>
