@@ -309,27 +309,27 @@ namespace ClangPowerTools
 
     public void OnAfterFormatCommand(object sender, FormatCommandEventArgs e)
     {
-      currentCommand = CommandIds.kClangFormat;
-      if (e.CanFormat)
-      {
-        //ClearOutputWindowEvent?.Invoke(this, new ClearEventArgs());
-        //StatusBarHandler.Status(OutputWindowConstants.commandName[currentCommand] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
-      }
-      else if (e.IgnoreExtension)
-      {
-        DisplayCannotFormatMessage(e.Clear,
-          $"\n--- WARNING ---\nCannot use clang-format on unspecified file types.\nTo enable clang-format add the \"{Path.GetExtension(e.FileName)}\" extension to Clang Power Tools settings -> Format -> File extensions");
-      }
-      else if (e.IgnoreFile)
-      {
-        DisplayCannotFormatMessage(e.Clear,
-          $"\n--- WARNING ---\nCannot use clang-format on ignored files.\nTo enable clang-format remove \"{e.FileName}\" from Clang Power Tools settings -> Format -> Files to ignore.");
-      }
-      else
-      {
-        DisplayCannotFormatMessage(e.Clear,
-          $"\n--- ERROR ---\nFormat config file not found.\nCreate the config file and place it in the solution folder or select one of the predefined format styles from Clang Power Tools settings -> Format -> Style.");
-      }
+      //currentCommand = CommandIds.kClangFormat;
+      //if (e.CanFormat)
+      //{
+      //  ClearOutputWindowEvent?.Invoke(this, new ClearEventArgs());
+      //  StatusBarHandler.Status(OutputWindowConstants.commandName[currentCommand] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+      //}
+      //else if (e.IgnoreExtension)
+      //{
+      //  DisplayCannotFormatMessage(e.Clear,
+      //    $"\n--- WARNING ---\nCannot use clang-format on unspecified file types.\nTo enable clang-format add the \"{Path.GetExtension(e.FileName)}\" extension to Clang Power Tools settings -> Format -> File extensions");
+      //}
+      //else if (e.IgnoreFile)
+      //{
+      //  DisplayCannotFormatMessage(e.Clear,
+      //    $"\n--- WARNING ---\nCannot use clang-format on ignored files.\nTo enable clang-format remove \"{e.FileName}\" from Clang Power Tools settings -> Format -> Files to ignore.");
+      //}
+      //else
+      //{
+      //  DisplayCannotFormatMessage(e.Clear,
+      //    $"\n--- ERROR ---\nFormat config file not found.\nCreate the config file and place it in the solution folder or select one of the predefined format styles from Clang Power Tools settings -> Format -> Style.");
+      //}
     }
 
     public void OnAfterRunCommand(object sender, CloseDataStreamingEventArgs e)
