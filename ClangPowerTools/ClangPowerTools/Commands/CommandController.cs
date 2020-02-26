@@ -444,6 +444,9 @@ namespace ClangPowerTools
         if (null == mCommand)
           return string.Empty;
 
+        if (CommandIds.ids.Contains(aId) == false)
+          return string.Empty;
+
         Command cmd = mCommand.Item(aGuid, aId);
         if (null == cmd)
           return string.Empty;

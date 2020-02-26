@@ -1,8 +1,28 @@
-﻿namespace ClangPowerTools
+﻿using System.Collections.Generic;
+
+namespace ClangPowerTools
 {
   public class CommandIds
   {
     #region Constants
+
+    public static readonly HashSet<int> ids = new HashSet<int>()
+    {
+      0x0102,
+      0x1100,
+      0x0101,
+      0x1101,
+      0x0109,
+      0x1102,
+      0x0105,
+      0x1103,
+      0x0104,
+      0x0103,
+      0x0107,
+      0x0108,
+      0x1032,
+      0x1033
+    };
 
     public const int kCompileId = 0x0102;
     public const int kCompileToolbarId = 0x1100;

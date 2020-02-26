@@ -154,10 +154,7 @@
       </ListView>
     </Grid>
 
-    <controls:BuyNowFooter
-      Padding="0,0,0,15"
-      Background="#272E58"
-      Loaded="BuyNowFooter_Loaded" />
+    <controls:BuyNowFooter Padding="0,0,0,15" Background="#272E58" />
 
   </StackPanel>
 
