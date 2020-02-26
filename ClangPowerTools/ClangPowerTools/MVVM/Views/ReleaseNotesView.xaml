@@ -112,7 +112,7 @@
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           FontSize="15"
-          Text="• Clang Style Options Editor to create and customize clang-format file"
+          Text="• Clang Style Options Editor to create and customize clang-format files"
           TextWrapping="Wrap" />
 
         <TextBlock
