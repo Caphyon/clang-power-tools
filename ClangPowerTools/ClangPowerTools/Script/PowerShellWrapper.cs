@@ -1,7 +1,7 @@
-﻿using System;
+﻿using ClangPowerTools.Commands;
+using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace ClangPowerTools
 {
@@ -17,7 +17,7 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public static Process Invoke(string aScript, RunningProcesses aRunningProcesses)
+    public static void Invoke(string aScript, RunningProcesses runningProcesses)
     {
       Process process = new Process();
       try
@@ -39,26 +39,27 @@ namespace ClangPowerTools
         process.Exited += ExitedHandler;
         process.Disposed += ExitedHandler;
 
-        aRunningProcesses.Add(process);
+        runningProcesses.Add(process, BackgroundTidyCommand.Running);
 
         process.Start();
+
         process.BeginErrorReadLine();
         process.BeginOutputReadLine();
+
         process.WaitForExit();
       }
       catch (Exception e)
       {
-        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-      }
-      finally
-      {
+        process.EnableRaisingEvents = false;
         process.ErrorDataReceived -= DataErrorHandler;
         process.OutputDataReceived -= DataHandler;
         process.Exited -= ExitedHandler;
-        process.EnableRaisingEvents = false;
+        process.Disposed -= ExitedHandler;
+
         process.Close();
+
+        throw e;
       }
-      return process;
     }
 
     #endregion
@@ -84,7 +85,7 @@ namespace ClangPowerTools
 
     private static string GetUsedLlvmVersionPath(string llvmVersion)
     {
-      var settingsPathBuilder = new SettingsPathBuilder();      
+      var settingsPathBuilder = new SettingsPathBuilder();
       return settingsPathBuilder.GetLlvmBinPath(llvmVersion);
     }
 

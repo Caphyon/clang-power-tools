@@ -154,7 +154,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kStopClang:
           {
-            await StopCommand.Instance.RunStopClangCommandAsync();
+            await StopCommand.Instance.RunStopClangCommandAsync(false);
             break;
           }
         case CommandIds.kClangFormat:
@@ -171,8 +171,8 @@ namespace ClangPowerTools
           }
         case CommandIds.kCompileId:
           {
-            OnBeforeClangCommand(CommandIds.kCompileId);
             await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kCompileId);
 
             await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, aCommandUILocation);
             OnAfterClangCommand();
@@ -180,8 +180,8 @@ namespace ClangPowerTools
           }
         case CommandIds.kCompileToolbarId:
           {
-            OnBeforeClangCommand(CommandIds.kCompileId);
             await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kCompileId);
 
             await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, aCommandUILocation);
             OnAfterClangCommand();
@@ -189,8 +189,8 @@ namespace ClangPowerTools
           }
         case CommandIds.kTidyId:
           {
-            OnBeforeClangCommand(CommandIds.kTidyId);
             await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kTidyId);
 
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
             OnAfterClangCommand();
@@ -198,8 +198,8 @@ namespace ClangPowerTools
           }
         case CommandIds.kTidyToolbarId:
           {
-            OnBeforeClangCommand(CommandIds.kTidyId);
             await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kTidyId);
 
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
             OnAfterClangCommand();
@@ -207,8 +207,8 @@ namespace ClangPowerTools
           }
         case CommandIds.kTidyFixId:
           {
-            OnBeforeClangCommand(CommandIds.kTidyFixId);
             await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kTidyFixId);
 
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, aCommandUILocation);
             OnAfterClangCommand();
@@ -216,8 +216,8 @@ namespace ClangPowerTools
           }
         case CommandIds.kTidyFixToolbarId:
           {
-            OnBeforeClangCommand(CommandIds.kTidyFixId);
             await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kTidyFixId);
 
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, aCommandUILocation);
             OnAfterClangCommand();
@@ -278,7 +278,7 @@ namespace ClangPowerTools
 
     private async Task StopBackgroundRunnersAsync()
     {
-      await StopCommand.Instance.RunStopClangCommandAsync();
+      await StopCommand.Instance.RunStopClangCommandAsync(true);
       BackgroundTidyCommand.Running = false;
     }
 
@@ -287,17 +287,16 @@ namespace ClangPowerTools
       currentCommand = aCommandId;
       running = true;
 
-      if (OutputWindowConstants.commandName.ContainsKey(aCommandId))
-      {
-        DisplayStartedMessage(aCommandId, true);
-      }
-
       OnClangCommandBegin(new ClearEventArgs());
+
+      if (OutputWindowConstants.commandName.ContainsKey(aCommandId))
+        DisplayStartedMessage(aCommandId, true);
     }
 
 
     private void OnClangCommandBegin(ClearEventArgs e)
     {
+      ClearOutputWindowEvent?.Invoke(this, e);
       ClearErrorListEvent?.Invoke(this, e);
     }
 
@@ -347,14 +346,7 @@ namespace ClangPowerTools
         return;
       }
 
-      if (commandUILocation == CommandUILocation.ContextMenu)
-      {
-        DisplayFinishedMessage(false);
-      }
-      else if (commandUILocation == CommandUILocation.Toolbar && isActiveDocument)
-      {
-        DisplayFinishedMessage(false);
-      }
+      DisplayFinishedMessage(false);
 
       OnErrorDetected(new EventArgs());
     }
@@ -662,8 +654,7 @@ namespace ClangPowerTools
 
     public void OnBeforeActiveDocumentChange(object sender, Document document)
     {
-      CompilerSettingsModel compilerSettings = settingsProvider.GetCompilerSettingsModel();
-      if (compilerSettings.ShowSquiggles == false)
+      if (settingsProvider.GetCompilerSettingsModel().ShowSquiggles == false)
         return;
 
       if (running || vsBuildRunning)

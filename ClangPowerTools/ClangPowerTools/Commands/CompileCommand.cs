@@ -78,15 +78,20 @@ namespace ClangPowerTools.Commands
 
       await Task.Run(() =>
       {
-        try
+        lock (mutex)
         {
-          RunScript(aCommandId);
+          try
+          {
+            DisplayLog = true;
+            RunScript(aCommandId);
+          }
+          catch (Exception exception)
+          {
+            VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
+              OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+          }
         }
-        catch (Exception exception)
-        {
-          VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
-            OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-        }
+
       });
     }
 
