@@ -33,14 +33,11 @@ namespace ClangPowerTools
         };
         process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
 
-         if (BackgroundTidyCommand.Running == false)
-        {
-          process.EnableRaisingEvents = true;
-          process.ErrorDataReceived += DataErrorHandler;
-          process.OutputDataReceived += DataHandler;
-          process.Exited += ExitedHandler;
-          process.Disposed += ExitedHandler;
-        }
+        process.EnableRaisingEvents = true;
+        process.ErrorDataReceived += DataErrorHandler;
+        process.OutputDataReceived += DataHandler;
+        process.Exited += ExitedHandler;
+        process.Disposed += ExitedHandler;
 
         runningProcesses.Add(process, BackgroundTidyCommand.Running);
 
@@ -53,14 +50,11 @@ namespace ClangPowerTools
       }
       catch (Exception e)
       {
-        if (BackgroundTidyCommand.Running == false)
-        {
-          process.EnableRaisingEvents = false;
-          process.ErrorDataReceived -= DataErrorHandler;
-          process.OutputDataReceived -= DataHandler;
-          process.Exited -= ExitedHandler;
-          process.Disposed -= ExitedHandler;
-        }
+        process.EnableRaisingEvents = false;
+        process.ErrorDataReceived -= DataErrorHandler;
+        process.OutputDataReceived -= DataHandler;
+        process.Exited -= ExitedHandler;
+        process.Disposed -= ExitedHandler;
 
         process.Close();
 

@@ -346,14 +346,7 @@ namespace ClangPowerTools
         return;
       }
 
-      if (commandUILocation == CommandUILocation.ContextMenu)
-      {
-        DisplayFinishedMessage(false);
-      }
-      else if (commandUILocation == CommandUILocation.Toolbar && isActiveDocument)
-      {
-        DisplayFinishedMessage(false);
-      }
+      DisplayFinishedMessage(false);
 
       OnErrorDetected(new EventArgs());
     }

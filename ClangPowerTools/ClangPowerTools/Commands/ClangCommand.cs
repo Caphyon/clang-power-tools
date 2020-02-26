@@ -216,10 +216,10 @@ namespace ClangPowerTools
 
         if (StopCommandActivated)
         {
-          OnDataStreamClose(new CloseDataStreamingEventArgs(DisplayLog));
+          OnDataStreamClose(new CloseDataStreamingEventArgs(true));
           StopCommandActivated = false;
         }
-        else
+        else if(BackgroundTidyCommand.Running == false)
         {
           OnDataStreamClose(new CloseDataStreamingEventArgs(false));
         }
