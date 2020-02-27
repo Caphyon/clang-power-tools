@@ -59,7 +59,8 @@ namespace ClangPowerTools
         DTE dte = (DTE)VsServiceProvider.GetService(typeof(DTE));
         Document activeDocument = dte.ActiveDocument;
 
-        if (activeDocument == null) return;
+        if (activeDocument == null || activeDocument.ProjectItem == null) 
+          return;
  
         IItem item = null;
         var projectName = activeDocument.ProjectItem.ContainingProject.FullName;
