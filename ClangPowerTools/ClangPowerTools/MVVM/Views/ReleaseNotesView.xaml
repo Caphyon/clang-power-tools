@@ -11,6 +11,7 @@
   Height="720"
   d:DataContext="{d:DesignInstance local:ReleaseNotesViewModel,
                                    IsDesignTimeCreatable=True}"
+  Icon="/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
   Topmost="True"
   WindowStartupLocation="CenterScreen"
@@ -102,58 +103,82 @@
         </ListView.ItemContainerStyle>
 
         <!--  What's new  -->
-        <TextBlock
+        <TextBox
           Margin="5,35,0,0"
           HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
           FontSize="22"
+          IsReadOnly="True"
           Text="What's New" />
 
-        <TextBlock
+        <TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
           FontSize="15"
+          IsReadOnly="True"
           Text="• Clang Style Options Editor to create and customize clang-format files"
           TextWrapping="Wrap" />
 
-        <TextBlock
+        <TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
           FontSize="15"
+          IsReadOnly="True"
           Text="• Clang-tidy IntelliSense shows squiggles automatically "
           TextWrapping="Wrap" />
 
         <!--  Bug Fixes  -->
-        <TextBlock
+        <TextBox
           Margin="5,35,0,0"
           HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
           FontSize="22"
+          IsReadOnly="True"
           Text="Bug Fixes" />
 
-        <TextBlock
+        <TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
           FontSize="15"
+          IsReadOnly="True"
           Text="• Squiggles don't work properly on large files"
           TextWrapping="Wrap" />
 
-        <TextBlock
+        <TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
           FontSize="15"
+          IsReadOnly="True"
           Text="• Closing the active file after running a command may cause a crash"
           TextWrapping="Wrap" />
 
-        <TextBlock
+        <TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
           FontSize="15"
+          IsReadOnly="True"
           Text="• Stop command doesn't work after using its shortcut"
           TextWrapping="Wrap" />
 
-        <TextBlock
+        <TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
           FontSize="15"
+          IsReadOnly="True"
           Text="• Stop command crash in certain scenarios"
           TextWrapping="Wrap" />
 
