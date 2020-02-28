@@ -91,6 +91,10 @@ namespace ClangPowerTools.Commands
           if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
           {
             string solutionPath = (dte as DTE2).Solution.FullName;
+
+            if (string.IsNullOrWhiteSpace(solutionPath))
+              return;
+
             string solutionFolder = solutionPath.Substring(0, solutionPath.LastIndexOf('\\'));
             mPCHCleaner.Remove(solutionFolder);
           }
