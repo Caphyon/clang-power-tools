@@ -78,6 +78,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="CMake\CMakeBuilder.cs" />
+    <Compile Include="Commands\BackgroundClangTidy\BackgroundClangTidy.cs" />
+    <Compile Include="Commands\BackgroundClangTidy\DataProcessor.cs" />
+    <Compile Include="Commands\BackgroundClangTidy\PowerShellWrapperBackground.cs" />
     <Compile Include="Commands\BackgroundTidyCommand.cs" />
     <Compile Include="Commands\IgnoreCommand.cs" />
     <Compile Include="Error\TaskErrorViewModel.cs" />

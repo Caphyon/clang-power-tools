@@ -10,11 +10,11 @@ namespace ClangPowerTools
     #region IDetector Implementation
 
 
-    public bool Detect(string aText, out Match aMatchResult)
+    public bool Detect(string text, out Match matchResult)
     {
       Regex regex = new Regex(ErrorParserConstants.kErrorMessageRegex);
-      aMatchResult = regex.Match(aText);
-      return aMatchResult.Success;
+      matchResult = regex.Match(text);
+      return matchResult.Success;
     }
 
 
