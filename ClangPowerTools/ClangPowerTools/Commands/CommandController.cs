@@ -550,7 +550,8 @@ namespace ClangPowerTools
 
     private async Task OnMSVCBuildSucceededAsync()
     {
-      if (!CompileCommand.Instance.VsCompileFlag)
+      var runClang = settingsProvider.GetCompilerSettingsModel().ClangAfterMSVC;
+      if (runClang == false)
         return;
 
       var exitCode = int.MaxValue;
@@ -558,9 +559,8 @@ namespace ClangPowerTools
         exitCode = (dte as DTE2).Solution.SolutionBuild.LastBuildInfo;
 
       // VS compile detected errors and there is not necessary to run clang compile
-      if (0 != exitCode)
+      if (exitCode != 0)
       {
-        CompileCommand.Instance.VsCompileFlag = false;
         return;
       }
 
@@ -568,7 +568,6 @@ namespace ClangPowerTools
 
       OnBeforeClangCommand(CommandIds.kCompileId);
       await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu);
-      CompileCommand.Instance.VsCompileFlag = false;
       OnAfterClangCommand();
     }
 
@@ -639,8 +638,6 @@ namespace ClangPowerTools
       string commandName = GetCommandName(aGuid, aId);
       if (0 != string.Compare("Build.Compile", commandName))
         return;
-
-      CompileCommand.Instance.VsCompileFlag = true;
     }
 
 

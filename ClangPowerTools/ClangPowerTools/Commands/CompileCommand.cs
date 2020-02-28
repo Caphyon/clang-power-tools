@@ -25,8 +25,6 @@ namespace ClangPowerTools.Commands
 
     public ItemsCollector ItemsCollector => mItemsCollector;
 
-    public bool VsCompileFlag { get; set; }
-
     #endregion
 
 
