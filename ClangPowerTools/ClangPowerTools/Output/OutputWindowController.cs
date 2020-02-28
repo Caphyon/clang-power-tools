@@ -162,7 +162,7 @@ namespace ClangPowerTools.Output
 
     public void ClosedDataConnection(object sender, EventArgs e)
     {
-      if (0 != Buffer.Count)
+      if (0 != Buffer.Count && BackgroundTidyCommand.Running == false)
         Write(String.Join("\n", Buffer));
       
       CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
