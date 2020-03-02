@@ -210,7 +210,7 @@ namespace ClangPowerTools
 
           PowerShellWrapper.Invoke(Script, runningProcesses);
         }
-
+        
         if (DisplayLog == false)
           return;
 

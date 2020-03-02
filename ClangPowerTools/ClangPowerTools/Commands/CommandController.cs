@@ -15,6 +15,7 @@ using ClangPowerTools.Error;
 using System.Windows.Forms;
 using System.Threading;
 using System.IO;
+using ClangPowerTools.Commands.BackgroundTidy;
 
 namespace ClangPowerTools
 {
@@ -47,7 +48,9 @@ namespace ClangPowerTools
     private bool mSaveCommandWasGiven = false;
     private bool mFormatAfterTidyFlag = false;
     private bool isActiveDocument = true;
-    static readonly SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
+
+    private static readonly SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
+    private readonly object mutex = new object();
 
     #endregion
 
@@ -280,7 +283,7 @@ namespace ClangPowerTools
     private async Task StopBackgroundRunnersAsync()
     {
       await StopCommand.Instance.RunStopClangCommandAsync(true);
-      BackgroundTidyCommand.Running = false;
+      // BackgroundTidyCommand.Running = false;
     }
 
     private void OnBeforeClangCommand(int aCommandId)
@@ -346,7 +349,7 @@ namespace ClangPowerTools
         return;
       }
 
-      DisplayFinishedMessage(false) ;
+      DisplayFinishedMessage(false);
 
       OnErrorDetected(new EventArgs());
     }
@@ -573,28 +576,31 @@ namespace ClangPowerTools
 
     public void OnBeforeSave(object sender, Document aDocument)
     {
-      BeforeSaveClangTidy(aDocument);
+      BeforeSaveClangTidyAsync(aDocument).SafeFireAndForget();
       BeforeSaveClangFormat(aDocument);
     }
 
-    private void BeforeSaveClangTidy(Document document)
+    private async Task BeforeSaveClangTidyAsync(Document document)
     {
-      if (false == mSaveCommandWasGiven) // The save event was not triggered by Save File or SaveAll commands
+      OnBeforeActiveDocumentChange(new object(), document);
+
+      // The save event was not triggered by Save File or SaveAll commands
+      if (false == mSaveCommandWasGiven) 
         return;
 
       TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
 
-      if (false == tidySettings.TidyOnSave) // The clang-tidy on save option is disable 
-      {
-        OnBeforeActiveDocumentChange(new object(), document);
-        return;
-      }
-
-      if (true == running) // Clang compile/tidy command is running
+      // The clang-tidy on save option is disable
+      if (false == tidySettings.TidyOnSave)  
         return;
 
+      // Clang compile/tidy command is running
+      if (true == running) 
+        return;
+
+      await StopBackgroundRunnersAsync();
       OnBeforeClangCommand(CommandIds.kTidyFixId);
-      TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu).SafeFireAndForget();
+      await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu);
       OnAfterClangCommand();
 
       mSaveCommandWasGiven = false;
@@ -660,20 +666,21 @@ namespace ClangPowerTools
       if (running || vsBuildRunning)
         return;
 
-      _ = Task.Run(async () =>
+      _ = Task.Run(() =>
         {
-          await semaphoreSlim.WaitAsync();
-          try
+          lock (mutex)
           {
-            TaskErrorViewModel.Errors.Clear();
-            TaskErrorViewModel.FileErrorsPair.Clear();
+            try
+            {
+              TaskErrorViewModel.FileErrorsPair.Clear();
 
-            var backgroundTidyCommand = new BackgroundTidyCommand(document);
-            await backgroundTidyCommand.RunClangTidyAsync();
-          }
-          finally
-          {
-            semaphoreSlim.Release();
+              using BackgroundTidy backgroundTidyCommand = new BackgroundTidy();
+              backgroundTidyCommand.Run(document, CommandIds.kTidyId);
+            }
+            catch(Exception e)
+            {
+              MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
           }
         });
     }
