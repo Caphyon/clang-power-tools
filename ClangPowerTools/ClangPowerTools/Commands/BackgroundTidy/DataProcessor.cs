@@ -11,7 +11,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace ClangPowerTools.Commands.BackgroundClangTidy
+namespace ClangPowerTools.Commands.BackgroundTidy
 {
   public class DataProcessor
   {
@@ -47,7 +47,7 @@ namespace ClangPowerTools.Commands.BackgroundClangTidy
         return;
 
       TaskErrorViewModel.FileErrorsPair = new Dictionary<string, List<TaskErrorModel>>();
-      foreach (var error in TaskErrorViewModel.Errors)
+      foreach (var error in outputContent.Errors)
       {
         if (TaskErrorViewModel.FileErrorsPair.ContainsKey(error.Document))
         {
@@ -104,7 +104,15 @@ namespace ClangPowerTools.Commands.BackgroundClangTidy
       while (errorDetector.Detect(text, out Match aMatchResult))
       {
         detectedErrors.Add(GetDetectedError(hierarchy, aMatchResult));
+        GetOutput(ref text, detectedErrors.Last().FullMessage);
       }
+    }
+
+    private void GetOutput(ref string aText, string aSearchedSubstring)
+    {
+      var errorFormatter = new ErrorFormatter();
+      aText = errorFormatter.Format(aText, aSearchedSubstring);
+      aText = aText.SubstringAfter(aSearchedSubstring);
     }
 
     private TaskErrorModel GetDetectedError(IVsHierarchy aHierarchy, Match aMarchResult)
