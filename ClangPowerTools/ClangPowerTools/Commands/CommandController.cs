@@ -49,7 +49,6 @@ namespace ClangPowerTools
     private bool mFormatAfterTidyFlag = false;
     private bool isActiveDocument = true;
 
-    private static readonly SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
     private readonly object mutex = new object();
 
     #endregion
@@ -283,7 +282,6 @@ namespace ClangPowerTools
     private async Task StopBackgroundRunnersAsync()
     {
       await StopCommand.Instance.RunStopClangCommandAsync(true);
-      // BackgroundTidyCommand.Running = false;
     }
 
     private void OnBeforeClangCommand(int aCommandId)
@@ -337,12 +335,6 @@ namespace ClangPowerTools
 
     public void OnAfterRunCommand(object sender, CloseDataStreamingEventArgs e)
     {
-      if (BackgroundTidyCommand.Running)
-      {
-        OnErrorDetected(new EventArgs());
-        return;
-      }
-
       if (e.IsStopped)
       {
         DisplayStoppedMessage(false);
@@ -357,9 +349,7 @@ namespace ClangPowerTools
     protected void OnErrorDetected(EventArgs e)
     {
       ErrorDetectedEvent?.Invoke(this, e);
-
-      if (BackgroundTidyCommand.Running == false)
-        HasEncodingErrorEvent.Invoke(this, new EventArgs());
+      HasEncodingErrorEvent.Invoke(this, new EventArgs());
     }
 
     public void OnEncodingErrorDetected(object sender, HasEncodingErrorEventArgs e)
@@ -585,17 +575,17 @@ namespace ClangPowerTools
       OnBeforeActiveDocumentChange(new object(), document);
 
       // The save event was not triggered by Save File or SaveAll commands
-      if (false == mSaveCommandWasGiven) 
+      if (false == mSaveCommandWasGiven)
         return;
 
       TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
 
       // The clang-tidy on save option is disable
-      if (false == tidySettings.TidyOnSave)  
+      if (false == tidySettings.TidyOnSave)
         return;
 
       // Clang compile/tidy command is running
-      if (true == running) 
+      if (true == running)
         return;
 
       await StopBackgroundRunnersAsync();
@@ -650,8 +640,7 @@ namespace ClangPowerTools
     private void BeforeExecuteClangTidy(string aGuid, int aId)
     {
       string commandName = GetCommandName(aGuid, aId);
-      if (0 != string.Compare("File.SaveAll", commandName) &&
-        0 != string.Compare("File.SaveSelectedItems", commandName))
+      if (0 != string.Compare("File.SaveAll", commandName) && 0 != string.Compare("File.SaveSelectedItems", commandName))
       {
         return;
       }
@@ -677,7 +666,7 @@ namespace ClangPowerTools
               using BackgroundTidy backgroundTidyCommand = new BackgroundTidy();
               backgroundTidyCommand.Run(document, CommandIds.kTidyId);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
               MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }

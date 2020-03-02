@@ -92,9 +92,6 @@ namespace ClangPowerTools.Output
 
     public void Write(string aMessage)
     {
-      if (BackgroundTidyCommand.Running)
-        return;
-
       if (string.IsNullOrWhiteSpace(aMessage))
         return;
 
@@ -104,9 +101,6 @@ namespace ClangPowerTools.Output
 
     public void Write(object sender, ClangCommandMessageEventArgs e)
     {
-      if (BackgroundTidyCommand.Running)
-        return;
-
       if (e.ClearFlag)
       {
         Clear();
@@ -162,9 +156,9 @@ namespace ClangPowerTools.Output
 
     public void ClosedDataConnection(object sender, EventArgs e)
     {
-      if (0 != Buffer.Count && BackgroundTidyCommand.Running == false)
+      if (0 != Buffer.Count)
         Write(String.Join("\n", Buffer));
-      
+
       CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
 
       OnErrorDetected(this, e);
@@ -196,8 +190,7 @@ namespace ClangPowerTools.Output
           }
         }
 
-        if (BackgroundTidyCommand.Running == false)
-          ErrorDetectedEvent?.Invoke(this, new ErrorDetectedEventArgs(Errors));
+        ErrorDetectedEvent?.Invoke(this, new ErrorDetectedEventArgs(Errors));
       }
     }
 

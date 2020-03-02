@@ -103,7 +103,7 @@ namespace ClangPowerTools
         proc = Process.GetProcessById(aPid);
         proc.Kill();
       }
-      catch (ArgumentException e)
+      catch (Exception)
       {
         // The process has already exited.
         proc.Close();
