@@ -35,7 +35,7 @@ namespace ClangPowerTools.Commands.BackgroundClangTidy
       if (null == e.Data)
         return;
 
-      if (outputContent.MissingLLVM)
+      if (outputContent.MissingLLVM || outputContent.HasEncodingError)
         return;
 
       Process(e.Data);
@@ -87,7 +87,7 @@ namespace ClangPowerTools.Commands.BackgroundClangTidy
       var text = String.Join("\n", outputContent.Buffer.ToList()) + "\n";
       if (errorDetector.Detect(text, out _))
       {
-        GetOutputAndErrors(text, null, out List<TaskErrorModel> aDetectedErrors);
+        GetErrors(text, null, out List<TaskErrorModel> aDetectedErrors);
         outputContent.Errors.UnionWith(aDetectedErrors);
         outputContent.Buffer.Clear();
       }
@@ -97,7 +97,7 @@ namespace ClangPowerTools.Commands.BackgroundClangTidy
       }
     }
 
-    private void GetOutputAndErrors(string text, IVsHierarchy hierarchy, out List<TaskErrorModel> detectedErrors)
+    private void GetErrors(string text, IVsHierarchy hierarchy, out List<TaskErrorModel> detectedErrors)
     {
       detectedErrors = new List<TaskErrorModel>();
 
@@ -112,18 +112,6 @@ namespace ClangPowerTools.Commands.BackgroundClangTidy
       IBuilder<TaskErrorModel> errorBuilder = new TaskErrorModelBuilder(aHierarchy, aMarchResult);
       errorBuilder.Build();
       return errorBuilder.GetResult();
-    }
-
-    private string GetOutput(ref string aText, string aSearchedSubstring)
-    {
-      var errorFormatter = new ErrorFormatter();
-      aText = errorFormatter.Format(aText, aSearchedSubstring);
-
-      var substringBefore = aText.SubstringBefore(aSearchedSubstring);
-      var substringAfter = aText.SubstringAfter(aSearchedSubstring);
-
-      aText = substringAfter;
-      return substringBefore + aSearchedSubstring;
     }
 
     #endregion
