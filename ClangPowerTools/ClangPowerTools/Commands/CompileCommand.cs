@@ -23,8 +23,6 @@ namespace ClangPowerTools.Commands
       private set;
     }
 
-    public ItemsCollector ItemsCollector => mItemsCollector;
-
     #endregion
 
 

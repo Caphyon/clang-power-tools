@@ -367,7 +367,8 @@ namespace ClangPowerTools
       {
         UIUpdater.InvokeAsync(new Action(() =>
         {
-          var window = new EncodingErrorView(ItemsCollector.GetDocumentsToEncode());
+          var itemsCollector = new ItemsCollector();
+          var window = new EncodingErrorView(itemsCollector.GetDocumentsToEncode());
           window.ShowDialog();
         })).SafeFireAndForget();
       }
