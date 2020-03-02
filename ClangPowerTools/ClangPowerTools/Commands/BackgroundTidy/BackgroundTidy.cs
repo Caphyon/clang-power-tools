@@ -11,10 +11,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace ClangPowerTools.Commands.BackgroundClangTidy
+namespace ClangPowerTools.Commands.BackgroundTidy
 {
-  public class BackgroundClangTidy
+  public class BackgroundTidy : IDisposable
   {
+    #region Members
+
+    private readonly DataProcessor dataProcessor = new DataProcessor();
+    private readonly PowerShellWrapperBackground powerShell = new PowerShellWrapperBackground();
 
     private readonly Dictionary<string, string> mVsVersions = new Dictionary<string, string>
     {
@@ -26,7 +30,28 @@ namespace ClangPowerTools.Commands.BackgroundClangTidy
       {"16.0", "2019"}
     };
 
-    public async Task RunAsync(Document document, int commandId)
+    #endregion
+
+
+    #region Constructor
+
+    public BackgroundTidy()
+    {
+      powerShell.DataHandler += dataProcessor.ReceiveData;
+      powerShell.DataErrorHandler += dataProcessor.ReceiveData;
+      powerShell.ExitedHandler += dataProcessor.ClosedDataConnection;
+    }
+
+    public void Dispose()
+    {
+      powerShell.DataHandler -= dataProcessor.ReceiveData;
+      powerShell.DataErrorHandler -= dataProcessor.ReceiveData;
+      powerShell.ExitedHandler -= dataProcessor.ClosedDataConnection;
+    }
+
+    #endregion
+
+    public void Run(Document document, int commandId)
     {
       try
       {
@@ -74,38 +99,11 @@ namespace ClangPowerTools.Commands.BackgroundClangTidy
 
         #region PowerShell Invocation
 
-        DataProcessor dataProcessor = new DataProcessor();
-        PowerShellWrapperBackground powerShell = new PowerShellWrapperBackground();
+        powerShell.Invoke(psScript, new RunningProcesses(true));
 
-        powerShell.DataHandler += dataProcessor.ReceiveData;
-        powerShell.DataErrorHandler += dataProcessor.ReceiveData;
-        powerShell.ExitedHandler += dataProcessor.ClosedDataConnection;
-
-        //TODO -> store de process in such a way that it can offer access to the stop command
-
-        //powerShell.Invoke(psScript, );
-
-
-        powerShell.DataHandler -= dataProcessor.ReceiveData;
-        powerShell.DataErrorHandler -= dataProcessor.ReceiveData;
-        powerShell.ExitedHandler -= dataProcessor.ClosedDataConnection;
+        
 
         #endregion
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         cMakeBuilder.ClearBuildCashe();
 
