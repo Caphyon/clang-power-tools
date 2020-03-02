@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClangPowerTools.Commands.BackgroundClangTidy
+namespace ClangPowerTools.Commands.BackgroundTidy
 {
   public class PowerShellWrapperBackground
   {
