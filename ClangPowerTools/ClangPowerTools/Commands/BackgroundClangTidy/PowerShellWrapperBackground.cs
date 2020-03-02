@@ -41,7 +41,7 @@ namespace ClangPowerTools.Commands.BackgroundClangTidy
         process.Exited += ExitedHandler;
         process.Disposed += ExitedHandler;
 
-        runningProcesses.Add(process, BackgroundTidyCommand.Running);
+        runningProcesses.Add(process);
 
         process.Start();
 
