@@ -156,7 +156,7 @@ namespace ClangPowerTools
       {
         if (TidyModel.CustomExecutable.Length > 3)
         {
-          Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, tidyModel.CustomExecutable, EnvironmentVariableTarget.User);
+          Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, $"\"{tidyModel.CustomExecutable}\"", EnvironmentVariableTarget.User);
         }
         else
         {
