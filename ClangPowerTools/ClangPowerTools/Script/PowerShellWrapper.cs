@@ -33,6 +33,11 @@ namespace ClangPowerTools
         };
         process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
 
+        var customTidyExecutable = GetCustomTidyPath();
+
+        if (string.IsNullOrWhiteSpace(customTidyExecutable) == false)
+          process.StartInfo.EnvironmentVariables[ScriptConstants.kEnvrionmentTidyPath] = customTidyExecutable;
+
         process.EnableRaisingEvents = true;
         process.ErrorDataReceived += DataErrorHandler;
         process.OutputDataReceived += DataHandler;
@@ -80,6 +85,14 @@ namespace ClangPowerTools
       paths.Add(GetUsedLlvmVersionPath(llvmVersion));
 
       return String.Join(";", paths);
+    }
+
+    private static string GetCustomTidyPath()
+    {
+      var settingsProvider = new SettingsProvider();
+      var executablePath = settingsProvider.GetTidySettingsModel().CustomExecutable;
+
+      return string.IsNullOrWhiteSpace(executablePath) == false ? executablePath : string.Empty;
     }
 
 
