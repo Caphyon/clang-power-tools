@@ -177,8 +177,17 @@ param( [alias("proj")]
        [string]   $aVisualStudioSku
      )
 
-     Set-StrictMode -version latest
-     $ErrorActionPreference = 'Continue'
+Set-StrictMode -version latest
+$ErrorActionPreference = 'Continue'
+
+@( "$PSScriptRoot\psClang\io.ps1"
+ , "$PSScriptRoot\psClang\visualstudio-detection.ps1"
+ , "$PSScriptRoot\psClang\msbuild-expression-eval.ps1"
+ , "$PSScriptRoot\psClang\msbuild-project-load.ps1"
+ , "$PSScriptRoot\psClang\msbuild-project-data.ps1"
+ , "$PSScriptRoot\psClang\get-header-references.ps1"
+ , "$PSScriptRoot\psClang\itemdefinition-context.ps1"
+ ) | ForEach-Object { . $_ }
 
 # System Architecture Constants
 # ------------------------------------------------------------------------------------------------
@@ -224,8 +233,8 @@ Set-Variable -name kClangFlagForceInclude   -value "-include"           -option 
 Set-Variable -name kClangCompiler           -value "clang++.exe"        -option Constant
 
 # we may have a custom path for Clang-Tidy. Use it if that's the case.
-[string] $customTidyPath = [Environment]::GetEnvironmentVariable($kVarEnvClangTidyPath, "User")
-if ($customTidyPath)
+[string] $customTidyPath = (Get-QuotedPath -path ([Environment]::GetEnvironmentVariable($kVarEnvClangTidyPath)))
+if (![string]::IsNullOrWhiteSpace($customTidyPath))
 {
   Set-Variable -name kClangTidy             -value $customTidyPath      -option Constant
 }
@@ -262,15 +271,6 @@ Add-Type -TypeDefinition @"
     TidyFix
   }
 "@
-
- @( "$PSScriptRoot\psClang\io.ps1"
-  , "$PSScriptRoot\psClang\visualstudio-detection.ps1"
-  , "$PSScriptRoot\psClang\msbuild-expression-eval.ps1"
-  , "$PSScriptRoot\psClang\msbuild-project-load.ps1"
-  , "$PSScriptRoot\psClang\msbuild-project-data.ps1"
-  , "$PSScriptRoot\psClang\get-header-references.ps1"
-  , "$PSScriptRoot\psClang\itemdefinition-context.ps1"
-  ) | ForEach-Object { . $_ }
 
 #-------------------------------------------------------------------------------------------------
 # Global variables
@@ -407,17 +407,17 @@ Function Get-ClangIncludeDirectories( [Parameter(Mandatory=$false)][string[]] $i
 
   foreach ($includeDir in $includeDirectories)
   {
-    $returnDirs += "-isystem""$includeDir"""
+    $returnDirs += ("-isystem" + (Get-QuotedPath $includeDir))
   }
   foreach ($includeDir in $additionalIncludeDirectories)
   {
     if ($aTreatAdditionalIncludesAsSystemIncludes)
     {
-      $returnDirs += "-isystem""$includeDir"""
+      $returnDirs += ("-isystem" + (Get-QuotedPath $includeDir))
     }
     else
     {
-      $returnDirs += "-I""$includeDir"""
+      $returnDirs += ("-I"+ (Get-QuotedPath $includeDir))
     }
   }
 
@@ -465,10 +465,10 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
 
   [string] $languageFlag = (Get-ProjectFileLanguageFlag -fileFullName $stdafxCpp)
 
-  [string[]] $compilationFlags = @("""$stdafx"""
+  [string[]] $compilationFlags = @((Get-QuotedPath $stdafx)
                                   ,$kClangFlagEmitPch
                                   ,$kClangFlagMinusO
-                                  ,"""$stdafxPch"""
+                                  ,(Get-QuotedPath $stdafxPch)
                                   ,$languageFlag
                                   ,(Get-ClangCompileFlags -isCpp ($languageFlag -ieq $kClangFlagFileIsCPP))
                                   ,$kClangFlagNoUnusedArg
@@ -481,7 +481,12 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
   # Remove empty arguments from the list because Start-Process will complain
   $compilationFlags = $compilationFlags | Where-Object { $_ } | Select -Unique
 
-  Write-Verbose "INVOKE: ""$($global:llvmLocation)\$kClangCompiler"" $compilationFlags"
+  [string] $exeToCallVerbosePath  = $kClangCompiler
+  if (![string]::IsNullOrWhiteSpace($global:llvmLocation))
+  {
+    $exeToCallVerbosePath = "$($global:llvmLocation)\$exeToCallVerbosePath"
+  }
+  Write-Verbose "INVOKE: $exeToCallVerbosePath $compilationFlags"
 
   [System.Diagnostics.Process] $processInfo = Start-Process -FilePath $kClangCompiler `
                                                             -ArgumentList $compilationFlags `
@@ -524,13 +529,13 @@ Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $prep
   [string[]] $projectCompileArgs = @()
   if (! [string]::IsNullOrEmpty($pchFilePath) -and ! $fileToCompile.EndsWith($kExtensionC))
   {
-    $projectCompileArgs += @($kClangFlagIncludePch , """$pchFilePath""")
+    $projectCompileArgs += @($kClangFlagIncludePch , (Get-QuotedPath $pchFilePath))
   }
 
   [string] $languageFlag = (Get-ProjectFileLanguageFlag -fileFullName $fileToCompile)
 
   $projectCompileArgs += @( $languageFlag
-                          , """$fileToCompile"""
+                          , (Get-QuotedPath $fileToCompile)
                           , @(Get-ClangCompileFlags -isCpp ($languageFlag -ieq $kClangFlagFileIsCPP))
                           , $kClangFlagSupressLINK
                           , $preprocessorDefinitions
@@ -560,7 +565,7 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
                               , [Parameter(Mandatory=$false)][string]  $pchFilePath
                               , [Parameter(Mandatory=$false)][switch]  $fix)
 {
-  [string[]] $tidyArgs = @("""$fileToTidy""")
+  [string[]] $tidyArgs = @((Get-QuotedPath $fileToTidy))
   if ($fix -and $aTidyFixFlags -ne $kClangTidyUseFile)
   {
     $tidyArgs += "$kClangTidyFlagChecks$aTidyFixFlags"
@@ -610,7 +615,7 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
 
   if (! [string]::IsNullOrEmpty($pchFilePath) -and ! $fileToTidy.EndsWith($kExtensionC))
   {
-    $tidyArgs += @($kClangFlagIncludePch , """$pchFilePath""")
+    $tidyArgs += @($kClangFlagIncludePch , (Get-QuotedPath $pchFilePath))
   }
 
   if ($forceIncludeFiles)
@@ -757,7 +762,8 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
     # When PowerShell encounters errors, the first one is handled differently from consecutive ones
     # To circumvent this, do not execute the job directly, but execute it via cmd.exe
     # See also https://stackoverflow.com/a/35980675
-    $callOutput = cmd /c $job.FilePath $job.ArgumentList.Split(' ') '2>&1' | Out-String
+    
+    $callOutput = cmd /c "$($job.FilePath) $($job.ArgumentList) 2>&1" | Out-String
 
     $callSuccess = $LASTEXITCODE -eq 0
 
@@ -1121,7 +1127,12 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   if ($clangJobs.Count -ge 1)
   {
-    Write-Verbose "INVOKE: ""$($global:llvmLocation)\$exeToCall"" $($clangJobs[0].ArgumentList)"
+    [string] $exeToCallVerbosePath  = $exeToCall
+    if (![string]::IsNullOrWhiteSpace($global:llvmLocation))
+    {
+      $exeToCallVerbosePath = "$($global:llvmLocation)\$exeToCallVerbosePath"
+    }
+    Write-Verbose "INVOKE: $exeToCallVerbosePath $($clangJobs[0].ArgumentList)"
   }
 
   #-----------------------------------------------------------------------------------------------

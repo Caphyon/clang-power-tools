@@ -117,6 +117,23 @@ function HasProperty($object, $property)
 
 # File IO
 # ------------------------------------------------------------------------------------------------
+Function Get-QuotedPath([Parameter(Mandatory = $false)][string] $path)
+{
+    if ([string]::IsNullOrWhiteSpace($path))
+    {
+        return $path
+    }
+
+    [string] $returnPath = $path
+
+    if (!$path.StartsWith('"'))
+    {
+        $returnPath = """$path"""
+    }
+
+    return $returnPath
+}
+
 Function Remove-PathTrailingSlash([Parameter(Mandatory = $true)][string] $path)
 {
     return $path -replace '\\$', ''
