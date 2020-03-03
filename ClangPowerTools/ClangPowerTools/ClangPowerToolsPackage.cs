@@ -148,6 +148,8 @@ namespace ClangPowerTools
       LicenseController mLicenseController = new LicenseController();
       await mLicenseController.CheckLicenseAsync();
 
+      DeleteTidyEnvironmentVariable();
+
       await base.InitializeAsync(cancellationToken, progress);
     }
 
@@ -312,6 +314,11 @@ namespace ClangPowerTools
     #endregion
 
     #region Private Methods
+
+    private void DeleteTidyEnvironmentVariable()
+    {
+      Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, null, EnvironmentVariableTarget.User);
+    }
 
     private void VersionHandler()
     {

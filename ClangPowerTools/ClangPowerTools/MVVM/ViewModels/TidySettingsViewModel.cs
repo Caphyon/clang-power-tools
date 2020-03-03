@@ -141,28 +141,12 @@ namespace ClangPowerTools
     {
       tidyModel.CustomExecutable = OpenFile(string.Empty, ".exe", "Executable files|*.exe");
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyModel"));
-      SetEnvironmentVariableTidyPath();
     }
 
     private void UpdatePredefinedChecks()
     {
       OpenChecksWindow();
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyModel"));
-    }
-
-    private void SetEnvironmentVariableTidyPath()
-    {
-      var task = Task.Run(() =>
-      {
-        if (TidyModel.CustomExecutable.Length > 3)
-        {
-          Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, tidyModel.CustomExecutable, EnvironmentVariableTarget.User);
-        }
-        else
-        {
-          Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, null, EnvironmentVariableTarget.User);
-        }
-      });
     }
 
     private void ExportTidyConfig()

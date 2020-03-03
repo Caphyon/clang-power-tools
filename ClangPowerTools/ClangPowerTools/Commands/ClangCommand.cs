@@ -45,8 +45,6 @@ namespace ClangPowerTools
 
     protected static bool StopCommandActivated { get; set; } = false;
 
-    protected bool DisplayLog { get; set; }
-
     protected static object mutex = new object();
 
     public RunningProcesses GetClangProcesses => runningProcesses;
@@ -210,16 +208,13 @@ namespace ClangPowerTools
 
           PowerShellWrapper.Invoke(Script, runningProcesses);
         }
-
-        if (DisplayLog == false)
-          return;
-
+        
         if (StopCommandActivated)
         {
           OnDataStreamClose(new CloseDataStreamingEventArgs(true));
           StopCommandActivated = false;
         }
-        else if(BackgroundTidyCommand.Running == false)
+        else
         {
           OnDataStreamClose(new CloseDataStreamingEventArgs(false));
         }
@@ -233,9 +228,6 @@ namespace ClangPowerTools
     private bool IgnoreItem(IItem item, out string fileType)
     {
       fileType = string.Empty;
-
-      if (BackgroundTidyCommand.Running)
-        return false;
 
       if (item is CurrentProjectItem)
       {

@@ -12,12 +12,32 @@ namespace ClangPowerTools
 
     private readonly static List<Process> commandProcesses = new List<Process>();
     private readonly static List<Process> backgroundCommandProcesses = new List<Process>();
+    private readonly bool backgroundProcess = false;
 
     #endregion
 
+
+    #region Constructor 
+
+    public RunningProcesses(bool background = false)
+    {
+      backgroundProcess = background;
+    }
+
+    #endregion
+
+
     #region Public Methods
 
-    public void Add(Process aProcess, bool background)
+    public void Add(Process aProcess)
+    {
+      if (backgroundProcess)
+        backgroundCommandProcesses.Add(aProcess);
+      else
+        commandProcesses.Add(aProcess);
+    }
+
+    public void Add(Process aProcess, bool background = false)
     {
       if (background)
         backgroundCommandProcesses.Add(aProcess);
@@ -49,6 +69,7 @@ namespace ClangPowerTools
     }
 
     #endregion
+
 
     #region Private Methods
 
@@ -82,7 +103,7 @@ namespace ClangPowerTools
         proc = Process.GetProcessById(aPid);
         proc.Kill();
       }
-      catch (ArgumentException e)
+      catch (Exception)
       {
         // The process has already exited.
         proc.Close();
