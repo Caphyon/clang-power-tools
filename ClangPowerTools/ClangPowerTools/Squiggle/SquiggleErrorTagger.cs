@@ -29,9 +29,6 @@ namespace ClangPowerTools.Squiggle
     private ITextBuffer SourceBuffer { get; set; }
     private ConcurrentQueue<SquiggleModel> Squiggles { get; set; } = new ConcurrentQueue<SquiggleModel>();
 
-    private object updateLock = new object();
-
-
     #endregion
 
     #region Constructor
@@ -57,7 +54,7 @@ namespace ClangPowerTools.Squiggle
 
       if (Squiggles == null || Squiggles.Count() == 0)
       {
-        Create();
+        CreateSquiggles();
         yield break;
       }
 
@@ -78,7 +75,7 @@ namespace ClangPowerTools.Squiggle
 
     #region Public Methods
 
-    private void Create()
+    private void CreateSquiggles()
     {
       if (TaskErrorViewModel.FileErrorsPair == null || TaskErrorViewModel.FileErrorsPair.Count == 0)
         return;

@@ -86,7 +86,9 @@ namespace ClangPowerTools.Commands
       {
         try
         {
-          StopCommandActivated = true;
+          if(background == false)
+            StopCommandActivated = true;
+          
           runningProcesses.Kill(background);
           if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
           {
@@ -99,7 +101,6 @@ namespace ClangPowerTools.Commands
             mPCHCleaner.Remove(solutionFolder);
           }
           mDirectoriesPath.Clear();
-          StopCommandActivated = false;
         }
         catch (Exception e) 
         {
