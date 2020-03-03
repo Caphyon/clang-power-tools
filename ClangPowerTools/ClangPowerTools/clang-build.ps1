@@ -407,17 +407,17 @@ Function Get-ClangIncludeDirectories( [Parameter(Mandatory=$false)][string[]] $i
 
   foreach ($includeDir in $includeDirectories)
   {
-    $returnDirs += "-isystem""$includeDir"""
+    $returnDirs += ("-isystem" + (Get-QuotedPath $includeDir))
   }
   foreach ($includeDir in $additionalIncludeDirectories)
   {
     if ($aTreatAdditionalIncludesAsSystemIncludes)
     {
-      $returnDirs += "-isystem""$includeDir"""
+      $returnDirs += ("-isystem" + (Get-QuotedPath $includeDir))
     }
     else
     {
-      $returnDirs += "-I""$includeDir"""
+      $returnDirs += ("-I"+ (Get-QuotedPath $includeDir))
     }
   }
 
@@ -465,10 +465,10 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
 
   [string] $languageFlag = (Get-ProjectFileLanguageFlag -fileFullName $stdafxCpp)
 
-  [string[]] $compilationFlags = @("""$stdafx"""
+  [string[]] $compilationFlags = @((Get-QuotedPath $stdafx)
                                   ,$kClangFlagEmitPch
                                   ,$kClangFlagMinusO
-                                  ,"""$stdafxPch"""
+                                  ,(Get-QuotedPath $stdafxPch)
                                   ,$languageFlag
                                   ,(Get-ClangCompileFlags -isCpp ($languageFlag -ieq $kClangFlagFileIsCPP))
                                   ,$kClangFlagNoUnusedArg
@@ -529,13 +529,13 @@ Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $prep
   [string[]] $projectCompileArgs = @()
   if (! [string]::IsNullOrEmpty($pchFilePath) -and ! $fileToCompile.EndsWith($kExtensionC))
   {
-    $projectCompileArgs += @($kClangFlagIncludePch , """$pchFilePath""")
+    $projectCompileArgs += @($kClangFlagIncludePch , (Get-QuotedPath $pchFilePath))
   }
 
   [string] $languageFlag = (Get-ProjectFileLanguageFlag -fileFullName $fileToCompile)
 
   $projectCompileArgs += @( $languageFlag
-                          , """$fileToCompile"""
+                          , (Get-QuotedPath $fileToCompile)
                           , @(Get-ClangCompileFlags -isCpp ($languageFlag -ieq $kClangFlagFileIsCPP))
                           , $kClangFlagSupressLINK
                           , $preprocessorDefinitions
@@ -565,7 +565,7 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
                               , [Parameter(Mandatory=$false)][string]  $pchFilePath
                               , [Parameter(Mandatory=$false)][switch]  $fix)
 {
-  [string[]] $tidyArgs = @("""$fileToTidy""")
+  [string[]] $tidyArgs = @((Get-QuotedPath $fileToTidy))
   if ($fix -and $aTidyFixFlags -ne $kClangTidyUseFile)
   {
     $tidyArgs += "$kClangTidyFlagChecks$aTidyFixFlags"
@@ -615,7 +615,7 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
 
   if (! [string]::IsNullOrEmpty($pchFilePath) -and ! $fileToTidy.EndsWith($kExtensionC))
   {
-    $tidyArgs += @($kClangFlagIncludePch , """$pchFilePath""")
+    $tidyArgs += @($kClangFlagIncludePch , (Get-QuotedPath $pchFilePath))
   }
 
   if ($forceIncludeFiles)
