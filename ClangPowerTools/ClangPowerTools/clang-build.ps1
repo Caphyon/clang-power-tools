@@ -177,8 +177,17 @@ param( [alias("proj")]
        [string]   $aVisualStudioSku
      )
 
-     Set-StrictMode -version latest
-     $ErrorActionPreference = 'Continue'
+Set-StrictMode -version latest
+$ErrorActionPreference = 'Continue'
+
+@( "$PSScriptRoot\psClang\io.ps1"
+ , "$PSScriptRoot\psClang\visualstudio-detection.ps1"
+ , "$PSScriptRoot\psClang\msbuild-expression-eval.ps1"
+ , "$PSScriptRoot\psClang\msbuild-project-load.ps1"
+ , "$PSScriptRoot\psClang\msbuild-project-data.ps1"
+ , "$PSScriptRoot\psClang\get-header-references.ps1"
+ , "$PSScriptRoot\psClang\itemdefinition-context.ps1"
+ ) | ForEach-Object { . $_ }
 
 # System Architecture Constants
 # ------------------------------------------------------------------------------------------------
@@ -224,8 +233,8 @@ Set-Variable -name kClangFlagForceInclude   -value "-include"           -option 
 Set-Variable -name kClangCompiler           -value "clang++.exe"        -option Constant
 
 # we may have a custom path for Clang-Tidy. Use it if that's the case.
-[string] $customTidyPath = [Environment]::GetEnvironmentVariable($kVarEnvClangTidyPath, "User")
-if ($customTidyPath)
+[string] $customTidyPath = (Get-QuotedPath -path ([Environment]::GetEnvironmentVariable($kVarEnvClangTidyPath)))
+if (![string]::IsNullOrWhiteSpace($customTidyPath))
 {
   Set-Variable -name kClangTidy             -value $customTidyPath      -option Constant
 }
@@ -262,15 +271,6 @@ Add-Type -TypeDefinition @"
     TidyFix
   }
 "@
-
- @( "$PSScriptRoot\psClang\io.ps1"
-  , "$PSScriptRoot\psClang\visualstudio-detection.ps1"
-  , "$PSScriptRoot\psClang\msbuild-expression-eval.ps1"
-  , "$PSScriptRoot\psClang\msbuild-project-load.ps1"
-  , "$PSScriptRoot\psClang\msbuild-project-data.ps1"
-  , "$PSScriptRoot\psClang\get-header-references.ps1"
-  , "$PSScriptRoot\psClang\itemdefinition-context.ps1"
-  ) | ForEach-Object { . $_ }
 
 #-------------------------------------------------------------------------------------------------
 # Global variables
@@ -481,7 +481,12 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
   # Remove empty arguments from the list because Start-Process will complain
   $compilationFlags = $compilationFlags | Where-Object { $_ } | Select -Unique
 
-  Write-Verbose "INVOKE: ""$($global:llvmLocation)\$kClangCompiler"" $compilationFlags"
+  [string] $exeToCallVerbosePath  = $kClangCompiler
+  if (![string]::IsNullOrWhiteSpace($global:llvmLocation))
+  {
+    $exeToCallVerbosePath = "$($global:llvmLocation)\$exeToCallVerbosePath"
+  }
+  Write-Verbose "INVOKE: $exeToCallVerbosePath $compilationFlags"
 
   [System.Diagnostics.Process] $processInfo = Start-Process -FilePath $kClangCompiler `
                                                             -ArgumentList $compilationFlags `
@@ -1121,7 +1126,12 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   if ($clangJobs.Count -ge 1)
   {
-    Write-Verbose "INVOKE: ""$($global:llvmLocation)\$exeToCall"" $($clangJobs[0].ArgumentList)"
+    [string] $exeToCallVerbosePath  = $exeToCall
+    if (![string]::IsNullOrWhiteSpace($global:llvmLocation))
+    {
+      $exeToCallVerbosePath = "$($global:llvmLocation)\$exeToCallVerbosePath"
+    }
+    Write-Verbose "INVOKE: $exeToCallVerbosePath $($clangJobs[0].ArgumentList)"
   }
 
   #-----------------------------------------------------------------------------------------------
