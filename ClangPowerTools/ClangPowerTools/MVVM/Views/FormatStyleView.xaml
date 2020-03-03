@@ -74,6 +74,7 @@
                     <TextBlock
                       Grid.Column="0"
                       FontSize="12"
+                      Foreground="Black"
                       Text="{Binding Name}"
                       TextWrapping="Wrap" />
                   </DataTemplate>
@@ -143,14 +144,15 @@
         <TextBox
           Grid.Row="2"
           Grid.Column="0"
-          MaxWidth="460"
+          Width="460"
           HorizontalAlignment="Left"
           Background="Transparent"
           BorderThickness="0"
           FontSize="12"
           IsReadOnly="True"
           Text="{Binding SelectedOption.Description}"
-          TextWrapping="Wrap" />
+          TextWrapping="Wrap"
+          VerticalScrollBarVisibility="Auto" />
 
         <TextBlock
           Grid.Row="3"

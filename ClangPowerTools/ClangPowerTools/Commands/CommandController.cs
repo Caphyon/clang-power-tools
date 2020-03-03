@@ -14,6 +14,8 @@ using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.Error;
 using System.Windows.Forms;
 using System.Threading;
+using System.IO;
+using ClangPowerTools.Commands.BackgroundTidy;
 
 namespace ClangPowerTools
 {
@@ -46,7 +48,8 @@ namespace ClangPowerTools
     private bool mSaveCommandWasGiven = false;
     private bool mFormatAfterTidyFlag = false;
     private bool isActiveDocument = true;
-    static readonly SemaphoreSlim semaphoreSlim = new SemaphoreSlim(1, 1);
+
+    private readonly object mutex = new object();
 
     #endregion
 
@@ -279,7 +282,6 @@ namespace ClangPowerTools
     private async Task StopBackgroundRunnersAsync()
     {
       await StopCommand.Instance.RunStopClangCommandAsync(true);
-      BackgroundTidyCommand.Running = false;
     }
 
     private void OnBeforeClangCommand(int aCommandId)
@@ -296,7 +298,6 @@ namespace ClangPowerTools
 
     private void OnClangCommandBegin(ClearEventArgs e)
     {
-      ClearOutputWindowEvent?.Invoke(this, e);
       ClearErrorListEvent?.Invoke(this, e);
     }
 
@@ -309,7 +310,7 @@ namespace ClangPowerTools
 
     public void OnAfterFormatCommand(object sender, FormatCommandEventArgs e)
     {
-      currentCommand = CommandIds.kClangFormat;
+      //currentCommand = CommandIds.kClangFormat;
       //if (e.CanFormat)
       //{
       //  ClearOutputWindowEvent?.Invoke(this, new ClearEventArgs());
@@ -317,12 +318,12 @@ namespace ClangPowerTools
       //}
       //else if (e.IgnoreExtension)
       //{
-      //  DisplayCannotFormatMessage(e.Clear, 
+      //  DisplayCannotFormatMessage(e.Clear,
       //    $"\n--- WARNING ---\nCannot use clang-format on unspecified file types.\nTo enable clang-format add the \"{Path.GetExtension(e.FileName)}\" extension to Clang Power Tools settings -> Format -> File extensions");
       //}
       //else if (e.IgnoreFile)
       //{
-      //  DisplayCannotFormatMessage(e.Clear, 
+      //  DisplayCannotFormatMessage(e.Clear,
       //    $"\n--- WARNING ---\nCannot use clang-format on ignored files.\nTo enable clang-format remove \"{e.FileName}\" from Clang Power Tools settings -> Format -> Files to ignore.");
       //}
       //else
@@ -334,12 +335,6 @@ namespace ClangPowerTools
 
     public void OnAfterRunCommand(object sender, CloseDataStreamingEventArgs e)
     {
-      if (BackgroundTidyCommand.Running)
-      {
-        OnErrorDetected(new EventArgs());
-        return;
-      }
-
       if (e.IsStopped)
       {
         DisplayStoppedMessage(false);
@@ -354,9 +349,7 @@ namespace ClangPowerTools
     protected void OnErrorDetected(EventArgs e)
     {
       ErrorDetectedEvent?.Invoke(this, e);
-
-      if (BackgroundTidyCommand.Running == false)
-        HasEncodingErrorEvent.Invoke(this, new EventArgs());
+      HasEncodingErrorEvent.Invoke(this, new EventArgs());
     }
 
     public void OnEncodingErrorDetected(object sender, HasEncodingErrorEventArgs e)
@@ -374,7 +367,8 @@ namespace ClangPowerTools
       {
         UIUpdater.InvokeAsync(new Action(() =>
         {
-          var window = new EncodingErrorView(ItemsCollector.GetDocumentsToEncode());
+          var itemsCollector = new ItemsCollector();
+          var window = new EncodingErrorView(itemsCollector.GetDocumentsToEncode());
           window.ShowDialog();
         })).SafeFireAndForget();
       }
@@ -442,6 +436,9 @@ namespace ClangPowerTools
           return string.Empty;
 
         if (null == mCommand)
+          return string.Empty;
+
+        if (CommandIds.ids.Contains(aId) == false)
           return string.Empty;
 
         Command cmd = mCommand.Item(aGuid, aId);
@@ -547,7 +544,8 @@ namespace ClangPowerTools
 
     private async Task OnMSVCBuildSucceededAsync()
     {
-      if (!CompileCommand.Instance.VsCompileFlag)
+      var runClang = settingsProvider.GetCompilerSettingsModel().ClangAfterMSVC;
+      if (runClang == false)
         return;
 
       var exitCode = int.MaxValue;
@@ -555,9 +553,8 @@ namespace ClangPowerTools
         exitCode = (dte as DTE2).Solution.SolutionBuild.LastBuildInfo;
 
       // VS compile detected errors and there is not necessary to run clang compile
-      if (0 != exitCode)
+      if (exitCode != 0)
       {
-        CompileCommand.Instance.VsCompileFlag = false;
         return;
       }
 
@@ -565,34 +562,36 @@ namespace ClangPowerTools
 
       OnBeforeClangCommand(CommandIds.kCompileId);
       await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu);
-      CompileCommand.Instance.VsCompileFlag = false;
       OnAfterClangCommand();
     }
 
     public void OnBeforeSave(object sender, Document aDocument)
     {
-      BeforeSaveClangTidy(aDocument);
+      BeforeSaveClangTidyAsync(aDocument).SafeFireAndForget();
       BeforeSaveClangFormat(aDocument);
     }
 
-    private void BeforeSaveClangTidy(Document document)
+    private async Task BeforeSaveClangTidyAsync(Document document)
     {
-      if (false == mSaveCommandWasGiven) // The save event was not triggered by Save File or SaveAll commands
+      OnBeforeActiveDocumentChange(new object(), document);
+
+      // The save event was not triggered by Save File or SaveAll commands
+      if (false == mSaveCommandWasGiven)
         return;
 
       TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
 
-      if (false == tidySettings.TidyOnSave) // The clang-tidy on save option is disable 
-      {
-        OnBeforeActiveDocumentChange(new object(), document);
-        return;
-      }
-
-      if (true == running) // Clang compile/tidy command is running
+      // The clang-tidy on save option is disable
+      if (false == tidySettings.TidyOnSave)
         return;
 
+      // Clang compile/tidy command is running
+      if (true == running)
+        return;
+
+      await StopBackgroundRunnersAsync();
       OnBeforeClangCommand(CommandIds.kTidyFixId);
-      TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu).SafeFireAndForget();
+      await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu);
       OnAfterClangCommand();
 
       mSaveCommandWasGiven = false;
@@ -636,16 +635,13 @@ namespace ClangPowerTools
       string commandName = GetCommandName(aGuid, aId);
       if (0 != string.Compare("Build.Compile", commandName))
         return;
-
-      CompileCommand.Instance.VsCompileFlag = true;
     }
 
 
     private void BeforeExecuteClangTidy(string aGuid, int aId)
     {
       string commandName = GetCommandName(aGuid, aId);
-      if (0 != string.Compare("File.SaveAll", commandName) &&
-        0 != string.Compare("File.SaveSelectedItems", commandName))
+      if (0 != string.Compare("File.SaveAll", commandName) && 0 != string.Compare("File.SaveSelectedItems", commandName))
       {
         return;
       }
@@ -660,20 +656,21 @@ namespace ClangPowerTools
       if (running || vsBuildRunning)
         return;
 
-      _ = Task.Run(async () =>
+      _ = Task.Run(() =>
         {
-          await semaphoreSlim.WaitAsync();
-          try
+          lock (mutex)
           {
-            TaskErrorViewModel.Errors.Clear();
-            TaskErrorViewModel.FileErrorsPair.Clear();
+            try
+            {
+              TaskErrorViewModel.FileErrorsPair.Clear();
 
-            var backgroundTidyCommand = new BackgroundTidyCommand(document);
-            await backgroundTidyCommand.RunClangTidyAsync();
-          }
-          finally
-          {
-            semaphoreSlim.Release();
+              using BackgroundTidy backgroundTidyCommand = new BackgroundTidy();
+              backgroundTidyCommand.Run(document, CommandIds.kTidyId);
+            }
+            catch (Exception e)
+            {
+              MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
           }
         });
     }

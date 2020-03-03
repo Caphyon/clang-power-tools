@@ -201,7 +201,7 @@ namespace ClangPowerTools
       string vsixPath = Path.GetDirectoryName(
         typeof(RunClangPowerToolsPackage).Assembly.Location);
 
-      Process process = new Process();
+      var process = new Process();
       process.StartInfo.UseShellExecute = false;
       process.StartInfo.CreateNoWindow = true;
       process.StartInfo.RedirectStandardInput = true;

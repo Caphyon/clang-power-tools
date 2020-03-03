@@ -86,16 +86,21 @@ namespace ClangPowerTools.Commands
       {
         try
         {
-          StopCommandActivated = true;
+          if(background == false)
+            StopCommandActivated = true;
+          
           runningProcesses.Kill(background);
           if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
           {
             string solutionPath = (dte as DTE2).Solution.FullName;
+
+            if (string.IsNullOrWhiteSpace(solutionPath))
+              return;
+
             string solutionFolder = solutionPath.Substring(0, solutionPath.LastIndexOf('\\'));
             mPCHCleaner.Remove(solutionFolder);
           }
           mDirectoriesPath.Clear();
-          StopCommandActivated = false;
         }
         catch (Exception e) 
         {

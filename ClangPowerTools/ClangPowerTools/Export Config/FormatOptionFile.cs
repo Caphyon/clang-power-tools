@@ -13,7 +13,7 @@ namespace ClangPowerTools
       output.AppendLine("# Format Style Options - Created with Clang Power Tools");
       output.AppendLine("---");
       output.AppendLine("Language: Cpp");
-      output.AppendLine("# BasedOnStyle:  LLVM");
+      output.AppendLine("# BasedOnStyle: LLVM");
 
       foreach (var item in formatOptions)
       {

@@ -12,6 +12,5 @@ namespace ClangPowerTools.MVVM.Views
       InitializeComponent();
       DataContext = new ReleaseNotesViewModel();
     }
-
   }
 }

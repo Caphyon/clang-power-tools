@@ -23,10 +23,6 @@ namespace ClangPowerTools.Commands
       private set;
     }
 
-    public ItemsCollector ItemsCollector => mItemsCollector;
-
-    public bool VsCompileFlag { get; set; }
-
     #endregion
 
 
@@ -82,7 +78,6 @@ namespace ClangPowerTools.Commands
         {
           try
           {
-            DisplayLog = true;
             RunScript(aCommandId);
           }
           catch (Exception exception)

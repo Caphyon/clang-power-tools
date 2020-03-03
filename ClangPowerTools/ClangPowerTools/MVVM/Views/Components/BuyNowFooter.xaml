@@ -51,7 +51,7 @@
       HorizontalAlignment="Left"
       FontSize="12"
       Foreground="White"
-      Text="Clang Power Tools for your commercial projects with plans starting from $6 a month, cancel anytime."
+      Text="Clang Power Tools for your commercial projects with plans for any team size, cancel anytime."
       TextWrapping="Wrap" />
 
     <Button

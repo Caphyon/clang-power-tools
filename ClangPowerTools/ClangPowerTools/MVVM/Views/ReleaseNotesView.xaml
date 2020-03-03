@@ -11,10 +11,10 @@
   Height="720"
   d:DataContext="{d:DesignInstance local:ReleaseNotesViewModel,
                                    IsDesignTimeCreatable=True}"
+  Icon="/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
   Topmost="True"
   WindowStartupLocation="CenterScreen"
-  WindowStyle="ToolWindow"
   mc:Ignorable="d">
 
   <StackPanel>
@@ -77,7 +77,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 5.5.3" />
+        Text="version 5.6" />
 
       <ListView
         Grid.Row="3"
@@ -102,67 +102,105 @@
         </ListView.ItemContainerStyle>
 
         <!--  What's new  -->
-        <TextBlock
+        <TextBox
           Margin="5,35,0,0"
           HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
           FontSize="22"
+          IsReadOnly="True"
           Text="What's New" />
 
-        <TextBlock
+        <TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
           FontSize="15"
-          Text="• LLVM 9.0.1"
+          IsReadOnly="True"
+          Text="• Clang Style Options Editor to create and customize clang-format files"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Clang-tidy IntelliSense shows squiggles automatically "
           TextWrapping="Wrap" />
 
         <!--  Bug Fixes  -->
-        <TextBlock
+        <TextBox
           Margin="5,35,0,0"
           HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
           FontSize="22"
+          IsReadOnly="True"
           Text="Bug Fixes" />
 
-        <TextBlock
+        <TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
           FontSize="15"
-          Text="• Visual Studio editor focus is lost when using clang-format on save"
+          IsReadOnly="True"
+          Text="• Squiggles don't work properly on large files"
           TextWrapping="Wrap" />
 
-        <TextBlock
+        <TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
           FontSize="15"
-          Text="• No feedback when running Clang commands on ignored files or projects"
+          IsReadOnly="True"
+          Text="• Closing the active file after running a command may cause a crash"
           TextWrapping="Wrap" />
 
-        <TextBlock
+        <TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
           FontSize="15"
-          Text="• Format on save doesn't work when the config file is missing"
+          IsReadOnly="True"
+          Text="• Stop command doesn't work after using its shortcut"
           TextWrapping="Wrap" />
 
-        <TextBlock
+        <TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
           FontSize="15"
-          Text="• Adding files to ignore list from context menu doesn't work"
+          IsReadOnly="True"
+          Text="• Stop command crash in certain scenarios"
           TextWrapping="Wrap" />
 
-        <TextBlock
+        <TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
           FontSize="15"
-          Text="• Crash when running clang commands for files without a Visual Studio Solution"
+          IsReadOnly="True"
+          Text="• Custom tidy executable path containing white spaces doesn't work"
           TextWrapping="Wrap" />
 
-        <TextBlock
+        <TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
           FontSize="15"
-          Text="• Logging out doesn't refresh the UI"
+          IsReadOnly="True"
+          Text="• Clang doesn't run after MSVC successfully compiles"
           TextWrapping="Wrap" />
+
       </ListView>
     </Grid>
 

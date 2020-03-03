@@ -1,23 +1,25 @@
-﻿using ClangPowerTools.Commands;
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ClangPowerTools
+namespace ClangPowerTools.Commands.BackgroundTidy
 {
-  public static class PowerShellWrapper
+  public class PowerShellWrapperBackground
   {
     #region Properties
 
-    public static DataReceivedEventHandler DataErrorHandler { get; set; }
-    public static DataReceivedEventHandler DataHandler { get; set; }
-    public static EventHandler ExitedHandler { get; set; }
+    public DataReceivedEventHandler DataErrorHandler { get; set; }
+    public DataReceivedEventHandler DataHandler { get; set; }
+    public EventHandler ExitedHandler { get; set; }
 
     #endregion
 
     #region Public Methods
 
-    public static void Invoke(string aScript, RunningProcesses runningProcesses)
+    public void Invoke(string script, RunningProcesses runningProcesses)
     {
       Process process = new Process();
       try
@@ -29,14 +31,9 @@ namespace ClangPowerTools
           RedirectStandardOutput = true,
           CreateNoWindow = true,
           UseShellExecute = false,
-          Arguments = aScript,
+          Arguments = script,
         };
         process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
-
-        var customTidyExecutable = GetCustomTidyPath();
-
-        if (string.IsNullOrWhiteSpace(customTidyExecutable) == false)
-          process.StartInfo.EnvironmentVariables[ScriptConstants.kEnvrionmentTidyPath] = customTidyExecutable;
 
         process.EnableRaisingEvents = true;
         process.ErrorDataReceived += DataErrorHandler;
@@ -71,7 +68,7 @@ namespace ClangPowerTools
 
 
     #region Private Methods
-    private static string CreatePathEnvironmentVariable()
+    private string CreatePathEnvironmentVariable()
     {
       var path = Environment.GetEnvironmentVariable("Path");
       var settingsProvider = new SettingsProvider();
@@ -85,14 +82,6 @@ namespace ClangPowerTools
       paths.Add(GetUsedLlvmVersionPath(llvmVersion));
 
       return String.Join(";", paths);
-    }
-
-    private static string GetCustomTidyPath()
-    {
-      var settingsProvider = new SettingsProvider();
-      var executablePath = settingsProvider.GetTidySettingsModel().CustomExecutable;
-
-      return string.IsNullOrWhiteSpace(executablePath) == false ? executablePath : string.Empty;
     }
 
 
@@ -110,4 +99,3 @@ namespace ClangPowerTools
 
   }
 }
-

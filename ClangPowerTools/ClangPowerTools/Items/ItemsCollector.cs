@@ -59,7 +59,8 @@ namespace ClangPowerTools
         DTE dte = (DTE)VsServiceProvider.GetService(typeof(DTE));
         Document activeDocument = dte.ActiveDocument;
 
-        if (activeDocument == null) return;
+        if (activeDocument == null || activeDocument.ProjectItem == null) 
+          return;
  
         IItem item = null;
         var projectName = activeDocument.ProjectItem.ContainingProject.FullName;
@@ -114,12 +115,11 @@ namespace ClangPowerTools
     /// <summary>
     /// Get selected files to encode
     /// </summary>
-    public static List<string> GetDocumentsToEncode()
+    public List<string> GetDocumentsToEncode()
     {
-        var itemsCollector = CompileCommand.Instance.ItemsCollector;
-        itemsCollector.CollectCurrentProjectItems();
+        CollectCurrentProjectItems();
         HashSet<string> selectedFiles = new HashSet<string>();
-        itemsCollector.Items.ForEach(i => selectedFiles.Add(i.GetPath()));
+        Items.ForEach(i => selectedFiles.Add(i.GetPath()));
         return selectedFiles.ToList();
     }
 
