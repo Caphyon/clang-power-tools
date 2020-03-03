@@ -181,6 +181,26 @@
           Text="• Stop command crash in certain scenarios"
           TextWrapping="Wrap" />
 
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Custom tidy executable path containing white spaces doesn't work"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Clang doesn't run after MSVC successfully compiles"
+          TextWrapping="Wrap" />
+
       </ListView>
     </Grid>
 
