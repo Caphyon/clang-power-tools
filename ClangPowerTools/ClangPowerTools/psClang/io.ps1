@@ -117,7 +117,7 @@ function HasProperty($object, $property)
 
 # File IO
 # ------------------------------------------------------------------------------------------------
-Function Get-QuotedPath([Parameter(Mandatory = $true)][string] $path)
+Function Get-QuotedPath([Parameter(Mandatory = $false)][string] $path)
 {
     if ([string]::IsNullOrWhiteSpace($path))
     {

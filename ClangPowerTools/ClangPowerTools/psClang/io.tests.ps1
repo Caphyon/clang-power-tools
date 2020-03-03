@@ -36,6 +36,17 @@ Describe "HasProperty" {
 }
 
 Describe "File IO" {
+
+  It "Get-QuotedPath" {
+   Get-QuotedPath ''       | Should -BeExactly ''
+   Get-QuotedPath '    '   | Should -BeExactly '    '
+   Get-QuotedPath '   '    | Should -BeExactly '   '
+   Get-QuotedPath 'test'   | Should -BeExactly '"test"'
+   Get-QuotedPath '"test"' | Should -BeExactly '"test"'
+   Get-QuotedPath 'c:\some file'   | Should -BeExactly '"c:\some file"'
+   Get-QuotedPath '"c:\some file"' | Should -BeExactly '"c:\some file"'
+  }
+
   It "Remove-PathTrailingSlash" {
     Remove-PathTrailingSlash "c:\windows\" | Should -BeExactly "c:\windows"
     Remove-PathTrailingSlash "c:\windows" | Should -BeExactly "c:\windows"
