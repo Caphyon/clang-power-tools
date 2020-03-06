@@ -545,7 +545,7 @@ namespace ClangPowerTools
     private async Task OnMSVCBuildSucceededAsync()
     {
       var runClang = settingsProvider.GetCompilerSettingsModel().ClangAfterMSVC;
-      if (runClang == false)
+      if (runClang == false || SolutionInfo.ContainsCppProject() == false)
         return;
 
       var exitCode = int.MaxValue;
