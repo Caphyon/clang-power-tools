@@ -54,7 +54,7 @@ namespace ClangPowerTools.Commands.BackgroundTidy
       {
         #region Create currnet project item 
 
-        if (document == null)
+        if (document == null || document.ProjectItem == null)
           return;
 
         var projectName = document.ProjectItem.ContainingProject.FullName;
