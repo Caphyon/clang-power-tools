@@ -1,21 +1,19 @@
 ﻿using ClangPowerTools.CMake;
 using ClangPowerTools.Commands;
+using ClangPowerTools.Commands.BackgroundTidy;
+using ClangPowerTools.Error;
 using ClangPowerTools.Events;
-using ClangPowerTools.Helpers;
 using ClangPowerTools.Handlers;
+using ClangPowerTools.Helpers;
+using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
-using Task = System.Threading.Tasks.Task;
-using ClangPowerTools.MVVM.Controllers;
-using ClangPowerTools.Error;
 using System.Windows.Forms;
-using System.Threading;
-using System.IO;
-using ClangPowerTools.Commands.BackgroundTidy;
+using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools
 {
@@ -545,7 +543,7 @@ namespace ClangPowerTools
     private async Task OnMSVCBuildSucceededAsync()
     {
       var runClang = settingsProvider.GetCompilerSettingsModel().ClangAfterMSVC;
-      if (runClang == false)
+      if (runClang == false || SolutionInfo.ContainsCppProject() == false)
         return;
 
       var exitCode = int.MaxValue;

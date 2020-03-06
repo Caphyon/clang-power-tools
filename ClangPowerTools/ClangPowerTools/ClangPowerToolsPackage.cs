@@ -355,7 +355,7 @@ namespace ClangPowerTools
       if (string.IsNullOrWhiteSpace(version))
       {
         // Show the toolbar on the first install
-        ShowToolbare();
+        ShowToolbar();
       }
     }
 
@@ -516,7 +516,7 @@ namespace ClangPowerTools
         mDteEvents.OnBeginShutdown -= UnregisterFromEvents;
     }
 
-    private void ShowToolbare()
+    private void ShowToolbar()
     {
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {
