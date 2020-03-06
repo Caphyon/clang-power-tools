@@ -56,7 +56,20 @@ namespace ClangPowerTools
       try
       {
         DTE dte = (DTE)VsServiceProvider.GetService(typeof(DTE));
-        Document activeDocument = dte.ActiveDocument;
+
+        if (dte == null)
+          return;
+
+        // TODO - dte.ActiveDocument is not initialized when package manager is open
+        Document activeDocument = null;
+        try
+        {
+          activeDocument = dte.ActiveDocument;
+        }
+        catch(Exception)
+        {
+          return;
+        }
 
         if (activeDocument == null || activeDocument.ProjectItem == null) 
           return;
