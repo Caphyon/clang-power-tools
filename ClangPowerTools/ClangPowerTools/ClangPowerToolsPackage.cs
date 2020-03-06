@@ -443,26 +443,16 @@ namespace ClangPowerTools
       }
 
       if (null != mCommandEvents)
-      {
         mCommandEvents.BeforeExecute += mCommandController.CommandEventsBeforeExecute;
-      }
 
       if (null != mRunningDocTableEvents)
-      {
         mRunningDocTableEvents.BeforeSave += mCommandController.OnBeforeSave;
-        mRunningDocTableEvents.BeforeActiveDocumentChange += mCommandController.OnBeforeActiveDocumentChange;
-      }
 
       if (null != mDteEvents)
-      {
         mDteEvents.OnBeginShutdown += UnregisterFromEvents;
-        mDteEvents.OnBeginShutdown += UnregisterFromCPTEvents;
-      }
 
       if (windowEvents != null)
-      {
         windowEvents.WindowActivated += mCommandController.OnWindowActivated;
-      }
     }
 
     private void UnregisterFromEvents()
@@ -515,21 +505,13 @@ namespace ClangPowerTools
       }
 
       if (null != mCommandEvents)
-      {
         mCommandEvents.BeforeExecute -= mCommandController.CommandEventsBeforeExecute;
-      }
 
       if (null != mRunningDocTableEvents)
-      {
         mRunningDocTableEvents.BeforeSave -= mCommandController.OnBeforeSave;
-        mRunningDocTableEvents.BeforeActiveDocumentChange -= mCommandController.OnBeforeActiveDocumentChange;
-      }
 
       if (null != mDteEvents)
-      {
         mDteEvents.OnBeginShutdown -= UnregisterFromEvents;
-        mDteEvents.OnBeginShutdown -= UnregisterFromCPTEvents;
-      }
 
       if (windowEvents != null)
         windowEvents.WindowActivated -= mCommandController.OnWindowActivated;
