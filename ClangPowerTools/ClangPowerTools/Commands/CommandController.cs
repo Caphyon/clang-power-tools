@@ -13,7 +13,7 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Windows.Forms;
-using ClangPowerTools.Commands.BackgroundTidy;
+using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools
 {
@@ -670,9 +670,6 @@ namespace ClangPowerTools
             try
             {
               TaskErrorViewModel.FileErrorsPair.Clear();
-
-              StopCommand.Instance.RunStopClangCommandAsync(false).SafeFireAndForget();
-
               using BackgroundTidy backgroundTidyCommand = new BackgroundTidy();
               backgroundTidyCommand.Run(document, CommandIds.kTidyId);
             }

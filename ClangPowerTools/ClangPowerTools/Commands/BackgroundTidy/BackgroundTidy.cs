@@ -17,8 +17,6 @@ namespace ClangPowerTools.Commands.BackgroundTidy
     private readonly DataProcessor dataProcessor = new DataProcessor();
     private readonly PowerShellWrapperBackground powerShell = new PowerShellWrapperBackground();
 
-    private readonly static object mutex = new object();
-
     private readonly Dictionary<string, string> mVsVersions = new Dictionary<string, string>
     {
       {"11.0", "2010"},
@@ -52,65 +50,62 @@ namespace ClangPowerTools.Commands.BackgroundTidy
 
     public void Run(Document document, int commandId)
     {
-      lock (mutex)
+      try
       {
-        try
-        {
-          #region Create currnet project item 
+        #region Create currnet project item 
 
-          if (document == null)
-            return;
+        if (document == null)
+          return;
 
-          var projectName = document.ProjectItem.ContainingProject.FullName;
-          if (string.IsNullOrWhiteSpace(projectName))
-            return;
+        var projectName = document.ProjectItem.ContainingProject.FullName;
+        if (string.IsNullOrWhiteSpace(projectName))
+          return;
 
-          IItem item = new CurrentProjectItem(document.ProjectItem);
+        IItem item = new CurrentProjectItem(document.ProjectItem);
 
-          #endregion
+        #endregion
 
 
-          #region Get VS edition and version
+        #region Get VS edition and version
 
-          var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
+        var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
 
-          var vsEdition = dte.Edition;
-          mVsVersions.TryGetValue(dte.Version, out string vsVersion);
+        var vsEdition = dte.Edition;
+        mVsVersions.TryGetValue(dte.Version, out string vsVersion);
 
-          #endregion
-
-
-          #region Generate powershell script
-
-          string runModeParameters = ScriptGenerator.GetRunModeParamaters();
-          string genericParameters = ScriptGenerator.GetGenericParamaters(commandId, vsEdition, vsVersion);
-
-          CMakeBuilder cMakeBuilder = new CMakeBuilder();
-          cMakeBuilder.Build();
-
-          var vsSolution = SolutionInfo.IsOpenFolderModeActive() == false ?
-            (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution)) : null;
-
-          var itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item);
-
-          var psScript = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
-
-          #endregion
+        #endregion
 
 
-          #region PowerShell Invocation
+        #region Generate powershell script
 
-          powerShell.Invoke(psScript, new RunningProcesses(true));
+        string runModeParameters = ScriptGenerator.GetRunModeParamaters();
+        string genericParameters = ScriptGenerator.GetGenericParamaters(commandId, vsEdition, vsVersion);
 
-          #endregion
+        CMakeBuilder cMakeBuilder = new CMakeBuilder();
+        cMakeBuilder.Build();
 
-          cMakeBuilder.ClearBuildCashe();
+        var vsSolution = SolutionInfo.IsOpenFolderModeActive() == false ?
+          (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution)) : null;
 
-        }
-        catch (Exception e)
-        {
-          MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
+        var itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item);
+
+        var psScript = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
+
+        #endregion
+
+
+        #region PowerShell Invocation
+
+        powerShell.Invoke(psScript, new RunningProcesses(true));
+
+        #endregion
+
+        cMakeBuilder.ClearBuildCashe();
+
+      }
+      catch (Exception e)
+      {
+        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
 
     }
