@@ -6,9 +6,6 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ClangPowerTools.Commands.BackgroundTidy
@@ -101,8 +98,6 @@ namespace ClangPowerTools.Commands.BackgroundTidy
 
         powerShell.Invoke(psScript, new RunningProcesses(true));
 
-        
-
         #endregion
 
         cMakeBuilder.ClearBuildCashe();
@@ -112,8 +107,6 @@ namespace ClangPowerTools.Commands.BackgroundTidy
       {
         MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
-
-
 
     }
   }

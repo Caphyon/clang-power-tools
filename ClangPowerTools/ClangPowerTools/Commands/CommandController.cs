@@ -571,7 +571,7 @@ namespace ClangPowerTools
 
     private async Task BeforeSaveClangTidyAsync(Document document)
     {
-      OnBeforeActiveDocumentChange(new object(), document);
+      // OnBeforeActiveDocumentChange(new object(), document);
 
       // The save event was not triggered by Save File or SaveAll commands
       if (false == mSaveCommandWasGiven)
@@ -646,8 +646,12 @@ namespace ClangPowerTools
       mSaveCommandWasGiven = true;
     }
 
-    public void OnBeforeActiveDocumentChange(object sender, Document document)
+    public void OnWindowActivated(Window GotFocus, Window LostFocus)
     {
+      Document document = GotFocus.Document;
+      if (document == null)
+        return;
+
       if (settingsProvider.GetCompilerSettingsModel().ShowSquiggles == false)
         return;
 
@@ -655,22 +659,21 @@ namespace ClangPowerTools
         return;
 
       _ = Task.Run(() =>
+      {
+        lock (mutex)
         {
-          lock (mutex)
+          try
           {
-            try
-            {
-              TaskErrorViewModel.FileErrorsPair.Clear();
-
-              using BackgroundTidy backgroundTidyCommand = new BackgroundTidy();
-              backgroundTidyCommand.Run(document, CommandIds.kTidyId);
-            }
-            catch (Exception e)
-            {
-              MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            TaskErrorViewModel.FileErrorsPair.Clear();
+            using BackgroundTidy backgroundTidyCommand = new BackgroundTidy();
+            backgroundTidyCommand.Run(document, CommandIds.kTidyId);
           }
-        });
+          catch (Exception e)
+          {
+            MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          }
+        }
+      });
     }
 
     private bool IsAToolbarCommand(OleMenuCommand command)

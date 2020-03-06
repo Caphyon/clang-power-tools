@@ -67,6 +67,7 @@ namespace ClangPowerTools
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
     private DTEEvents mDteEvents;
+    private WindowEvents windowEvents;
 
     #endregion
 
@@ -132,9 +133,11 @@ namespace ClangPowerTools
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {
         var dte2 = dte as DTE2;
+
         mBuildEvents = dte2.Events.BuildEvents;
         mCommandEvents = dte2.Events.CommandEvents;
         mDteEvents = dte2.Events.DTEEvents;
+        windowEvents = dte2.Events.WindowEvents;
       }
 
       mSettingsHandler = new SettingsHandler();
@@ -144,7 +147,7 @@ namespace ClangPowerTools
       mSettingsProvider = new SettingsProvider();
 
       RegisterToEvents();
-      
+
       LicenseController mLicenseController = new LicenseController();
       await mLicenseController.CheckLicenseAsync();
 
@@ -440,21 +443,16 @@ namespace ClangPowerTools
       }
 
       if (null != mCommandEvents)
-      {
         mCommandEvents.BeforeExecute += mCommandController.CommandEventsBeforeExecute;
-      }
 
       if (null != mRunningDocTableEvents)
-      {
         mRunningDocTableEvents.BeforeSave += mCommandController.OnBeforeSave;
-        mRunningDocTableEvents.BeforeActiveDocumentChange += mCommandController.OnBeforeActiveDocumentChange;
-      }
 
       if (null != mDteEvents)
-      {
         mDteEvents.OnBeginShutdown += UnregisterFromEvents;
-        mDteEvents.OnBeginShutdown += UnregisterFromCPTEvents;
-      }
+
+      if (windowEvents != null)
+        windowEvents.WindowActivated += mCommandController.OnWindowActivated;
     }
 
     private void UnregisterFromEvents()
@@ -514,6 +512,9 @@ namespace ClangPowerTools
 
       if (null != mDteEvents)
         mDteEvents.OnBeginShutdown -= UnregisterFromEvents;
+
+      if (windowEvents != null)
+        windowEvents.WindowActivated -= mCommandController.OnWindowActivated;
     }
 
     private void ShowToolbar()
