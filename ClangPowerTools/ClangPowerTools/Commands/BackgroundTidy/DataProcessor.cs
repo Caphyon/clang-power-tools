@@ -1,15 +1,12 @@
 ﻿using ClangPowerTools.Builder;
 using ClangPowerTools.Error;
 using ClangPowerTools.Output;
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace ClangPowerTools.Commands.BackgroundTidy
 {

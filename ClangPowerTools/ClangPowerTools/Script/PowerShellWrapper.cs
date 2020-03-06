@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.Commands;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 

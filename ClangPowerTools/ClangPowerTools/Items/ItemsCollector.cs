@@ -1,6 +1,5 @@
 using ClangPowerTools.Helpers;
 using ClangPowerTools.Items;
-using ClangPowerTools.Commands;
 using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;

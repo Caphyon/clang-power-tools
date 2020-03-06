@@ -6,9 +6,6 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ClangPowerTools.Commands.BackgroundTidy
@@ -19,6 +16,8 @@ namespace ClangPowerTools.Commands.BackgroundTidy
 
     private readonly DataProcessor dataProcessor = new DataProcessor();
     private readonly PowerShellWrapperBackground powerShell = new PowerShellWrapperBackground();
+
+    private readonly static object mutex = new object();
 
     private readonly Dictionary<string, string> mVsVersions = new Dictionary<string, string>
     {
@@ -53,67 +52,66 @@ namespace ClangPowerTools.Commands.BackgroundTidy
 
     public void Run(Document document, int commandId)
     {
-      try
+      lock (mutex)
       {
-        #region Create currnet project item 
+        try
+        {
+          #region Create currnet project item 
 
-        if (document == null)
-          return;
+          if (document == null)
+            return;
 
-        var projectName = document.ProjectItem.ContainingProject.FullName;
-        if (string.IsNullOrWhiteSpace(projectName))
-          return;
+          var projectName = document.ProjectItem.ContainingProject.FullName;
+          if (string.IsNullOrWhiteSpace(projectName))
+            return;
 
-        IItem item = new CurrentProjectItem(document.ProjectItem);
+          IItem item = new CurrentProjectItem(document.ProjectItem);
 
-        #endregion
-
-
-        #region Get VS edition and version
-
-        var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
-
-        var vsEdition = dte.Edition;
-        mVsVersions.TryGetValue(dte.Version, out string vsVersion);
-
-        #endregion
+          #endregion
 
 
-        #region Generate powershell script
+          #region Get VS edition and version
 
-        string runModeParameters = ScriptGenerator.GetRunModeParamaters();
-        string genericParameters = ScriptGenerator.GetGenericParamaters(commandId, vsEdition, vsVersion);
+          var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
 
-        CMakeBuilder cMakeBuilder = new CMakeBuilder();
-        cMakeBuilder.Build();
+          var vsEdition = dte.Edition;
+          mVsVersions.TryGetValue(dte.Version, out string vsVersion);
 
-        var vsSolution = SolutionInfo.IsOpenFolderModeActive() == false ?
-          (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution)) : null;
-
-        var itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item);
-
-        var psScript = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
-
-        #endregion
+          #endregion
 
 
-        #region PowerShell Invocation
+          #region Generate powershell script
 
-        powerShell.Invoke(psScript, new RunningProcesses(true));
+          string runModeParameters = ScriptGenerator.GetRunModeParamaters();
+          string genericParameters = ScriptGenerator.GetGenericParamaters(commandId, vsEdition, vsVersion);
 
-        
+          CMakeBuilder cMakeBuilder = new CMakeBuilder();
+          cMakeBuilder.Build();
 
-        #endregion
+          var vsSolution = SolutionInfo.IsOpenFolderModeActive() == false ?
+            (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution)) : null;
 
-        cMakeBuilder.ClearBuildCashe();
+          var itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item);
 
+          var psScript = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
+
+          #endregion
+
+
+          #region PowerShell Invocation
+
+          powerShell.Invoke(psScript, new RunningProcesses(true));
+
+          #endregion
+
+          cMakeBuilder.ClearBuildCashe();
+
+        }
+        catch (Exception e)
+        {
+          MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
       }
-      catch (Exception e)
-      {
-        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-      }
-
-
 
     }
   }

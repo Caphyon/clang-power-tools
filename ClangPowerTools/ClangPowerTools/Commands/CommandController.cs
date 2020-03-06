@@ -13,7 +13,7 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Windows.Forms;
-using Task = System.Threading.Tasks.Task;
+using ClangPowerTools.Commands.BackgroundTidy;
 
 namespace ClangPowerTools
 {
@@ -571,7 +571,7 @@ namespace ClangPowerTools
 
     private async Task BeforeSaveClangTidyAsync(Document document)
     {
-      OnBeforeActiveDocumentChange(new object(), document);
+      // OnBeforeActiveDocumentChange(new object(), document);
 
       // The save event was not triggered by Save File or SaveAll commands
       if (false == mSaveCommandWasGiven)
@@ -646,6 +646,15 @@ namespace ClangPowerTools
       mSaveCommandWasGiven = true;
     }
 
+    public void OnWindowActivated(Window GotFocus, Window LostFocus)
+    {
+      Document document = GotFocus.Document;
+      if (document == null)
+        return;
+
+      OnBeforeActiveDocumentChange(new object(), document);
+    }
+
     public void OnBeforeActiveDocumentChange(object sender, Document document)
     {
       if (settingsProvider.GetCompilerSettingsModel().ShowSquiggles == false)
@@ -661,6 +670,8 @@ namespace ClangPowerTools
             try
             {
               TaskErrorViewModel.FileErrorsPair.Clear();
+
+              StopCommand.Instance.RunStopClangCommandAsync(false).SafeFireAndForget();
 
               using BackgroundTidy backgroundTidyCommand = new BackgroundTidy();
               backgroundTidyCommand.Run(document, CommandIds.kTidyId);

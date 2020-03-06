@@ -1,5 +1,4 @@
 ﻿using ClangPowerTools.Builder;
-using ClangPowerTools.Commands;
 using ClangPowerTools.Error;
 using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
