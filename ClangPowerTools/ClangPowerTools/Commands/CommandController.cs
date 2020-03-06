@@ -652,11 +652,6 @@ namespace ClangPowerTools
       if (document == null)
         return;
 
-      OnBeforeActiveDocumentChange(new object(), document);
-    }
-
-    public void OnBeforeActiveDocumentChange(object sender, Document document)
-    {
       if (settingsProvider.GetCompilerSettingsModel().ShowSquiggles == false)
         return;
 
@@ -664,21 +659,21 @@ namespace ClangPowerTools
         return;
 
       _ = Task.Run(() =>
+      {
+        lock (mutex)
         {
-          lock (mutex)
+          try
           {
-            try
-            {
-              TaskErrorViewModel.FileErrorsPair.Clear();
-              using BackgroundTidy backgroundTidyCommand = new BackgroundTidy();
-              backgroundTidyCommand.Run(document, CommandIds.kTidyId);
-            }
-            catch (Exception e)
-            {
-              MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            TaskErrorViewModel.FileErrorsPair.Clear();
+            using BackgroundTidy backgroundTidyCommand = new BackgroundTidy();
+            backgroundTidyCommand.Run(document, CommandIds.kTidyId);
           }
-        });
+          catch (Exception e)
+          {
+            MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          }
+        }
+      });
     }
 
     private bool IsAToolbarCommand(OleMenuCommand command)
