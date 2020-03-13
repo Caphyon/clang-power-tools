@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace ClangPowerTools
@@ -160,6 +161,8 @@ namespace ClangPowerTools
       {
         WriteContentToFile(path, tidyConfigFile.CreateOutput().ToString());
       }
+
+      MessageBox.Show(".clang-tidy file exported at the selected location.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 
     private void OpenChecksWindow()
