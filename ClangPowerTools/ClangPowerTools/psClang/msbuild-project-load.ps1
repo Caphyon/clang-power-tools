@@ -410,11 +410,7 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
             if (![string]::IsNullOrEmpty($path) -and (Test-Path $path))
             {
                 Write-Verbose "Property sheet: $path"
-                [string] $currentFile = $global:currentMSBuildFile
                 ParseProjectFile($path)
-
-                $global:currentMSBuildFile = $currentFile
-                InitializeMsBuildCurrentFileProperties -filePath $global:currentMSBuildFile
             }
             else
             {
@@ -571,6 +567,13 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
 #>
 function ParseProjectFile([string] $projectFilePath)
 {
+    # keep current file path, we'll need to restore it
+    [string] $currentFile = ""
+    if (VariableExistsAndNotEmpty 'global:currentMSBuildFile')
+    {
+        $currentFile = $global:currentMSBuildFile
+    }
+
     Write-Verbose "`nSanitizing $projectFilePath"
 
     [xml] $fileXml = Get-Content $projectFilePath
@@ -582,6 +585,13 @@ function ParseProjectFile([string] $projectFilePath)
     SanitizeProjectNode($fileXml.Project)
 
     Pop-Location
+    
+    # restore previous path
+    if (![string]::IsNullOrWhiteSpace(($currentFile)))
+    {
+        $global:currentMSBuildFile = $currentFile
+        InitializeMsBuildCurrentFileProperties -filePath $global:currentMSBuildFile
+    }
 }
 
 function LoadDirectoryBuildPropSheetFile()
