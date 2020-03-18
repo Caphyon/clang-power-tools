@@ -48,6 +48,7 @@
       <Grid>
         <Grid.RowDefinitions>
           <RowDefinition Height="*" />
+          <RowDefinition Height="35" />
           <RowDefinition Height="50" />
           <RowDefinition Height="125" />
           <RowDefinition Height="50" />
@@ -123,9 +124,41 @@
           </ListView.View>
         </ListView>
 
+        <!--  Styles  -->
+        <StackPanel
+          Grid.Row="1"
+          HorizontalAlignment="Center"
+          Orientation="Horizontal">
+          <TextBlock
+            Padding="10"
+            VerticalAlignment="Center"
+            FontFamily="SegoeUI"
+            FontSize="14"
+            FontWeight="Bold"
+            Text="Styles">
+            <TextBlock.ToolTip>
+              <ToolTip>
+                <TextBlock
+                  Width="400"
+                  Text="Tooltip"
+                  TextWrapping="Wrap" />
+              </ToolTip>
+            </TextBlock.ToolTip>
+          </TextBlock>
+
+          <ComboBox
+            Grid.Row="1"
+            Grid.Column="2"
+            Width="200"
+            Height="25"
+            Margin="5,5,5,5"
+            ItemsSource="{Binding PredefinedStyles}"
+            SelectedItem="{Binding SelectedPredefinedStyle}" />
+        </StackPanel>
+
         <!--  Option description  -->
         <RichTextBox
-          Grid.Row="1"
+          Grid.Row="2"
           MaxWidth="480"
           Margin="0,20,0,0"
           HorizontalAlignment="Left"
@@ -142,7 +175,7 @@
         </RichTextBox>
 
         <TextBox
-          Grid.Row="2"
+          Grid.Row="3"
           Grid.Column="0"
           Width="460"
           HorizontalAlignment="Left"
@@ -155,7 +188,7 @@
           VerticalScrollBarVisibility="Auto" />
 
         <TextBlock
-          Grid.Row="3"
+          Grid.Row="4"
           Grid.Column="0"
           MaxWidth="460"
           Margin="0,20,0,0"
@@ -163,48 +196,6 @@
           FontSize="12"><Hyperlink Command="{Binding OpenClangFormatUriCommand}">Learn more about Clang Format Style Options</Hyperlink></TextBlock>
       </Grid>
     </Grid>
-
-    <!--  Predefined styles
-    <Grid>
-      <Grid.RowDefinitions>
-        <RowDefinition Height="10" />
-        <RowDefinition Height="*" />
-        <RowDefinition Height="10" />
-      </Grid.RowDefinitions>
-
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="10" />
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="10" />
-      </Grid.ColumnDefinitions>
-      <TextBlock
-        Grid.Row="1"
-        Grid.Column="1"
-        Padding="10"
-        VerticalAlignment="Center"
-        FontFamily="SegoeUI"
-        FontSize="16"
-        Text="Predefined styles">
-        <TextBlock.ToolTip>
-          <ToolTip>
-            <TextBlock
-              Width="400"
-              Text="{Binding Tooltip.AdditionalIncludes}"
-              TextWrapping="Wrap" />
-          </ToolTip>
-        </TextBlock.ToolTip>
-      </TextBlock>
-
-      <ComboBox
-        Grid.Row="1"
-        Grid.Column="2"
-        Height="30"
-        Margin="0,0,20,0"
-        ItemsSource="{Binding PredefinedStyles}"
-        SelectedItem="{Binding SelectedPredefinedStyle}" />
-    </Grid>-->
-
 
     <!--  Code editor  -->
     <Grid Grid.Row="1" Grid.Column="3">
