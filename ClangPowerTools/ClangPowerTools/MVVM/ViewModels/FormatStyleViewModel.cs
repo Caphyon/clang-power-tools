@@ -72,11 +72,11 @@ namespace ClangPowerTools
       }
     }
 
-    public IEnumerable<ClangFormatStyle> PredefinedStyles
+    public IEnumerable<EditorStyles> Styles
     {
       get
       {
-        return Enum.GetValues(typeof(ClangFormatStyle)).Cast<ClangFormatStyle>();
+        return Enum.GetValues(typeof(EditorStyles)).Cast<EditorStyles>();
       }
     }
 
@@ -88,7 +88,7 @@ namespace ClangPowerTools
       }
     }
 
-    public ClangFormatStyle SelectedPredefinedStyle { get; set; } = ClangFormatStyle.file;
+    public EditorStyles SelectedStyle { get; set; } = EditorStyles.Custom;
 
 
     public bool CanExecute

@@ -5,7 +5,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  Title="Format Style Editor"
+  Title="Clang-Format Editor"
   Width="1100"
   Height="750"
   MinWidth="1100"
@@ -152,8 +152,8 @@
             Width="200"
             Height="25"
             Margin="5,5,5,5"
-            ItemsSource="{Binding PredefinedStyles}"
-            SelectedItem="{Binding SelectedPredefinedStyle}" />
+            ItemsSource="{Binding Styles}"
+            SelectedItem="{Binding SelectedStyle}" />
         </StackPanel>
 
         <!--  Option description  -->
