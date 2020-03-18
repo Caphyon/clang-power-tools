@@ -4,18 +4,15 @@ using System.Collections.Generic;
 
 namespace ClangPowerTools
 {
-  public class FormatOptionsData
+  public class FormatOptionsGoogleData : FormatOptionsData
   {
-    public FormatOptionsData(bool initializing)
+    public FormatOptionsGoogleData(bool initializing) :base(initializing)
     {
       Initializing = initializing;
     }
-
-    public bool Initializing { get; set; } = true;
-
-    public List<IFormatOption> FormatOptions = new List<IFormatOption>()
+    public new List<IFormatOption> FormatOptions = new List<IFormatOption>()
     {
-      new FormatOptionInputModel{ Name = "AccessModifierOffset", Paramater = "int", Description = "The extra indent or outdent of access modifiers, e.g. \"public:\"", Input = "-2" },
+      new FormatOptionInputModel{ Name = "AccessModifierOffset", Paramater = "int", Description = "The extra indent or outdent of access modifiers, e.g. \"public:\"", Input = "-5" },
       new FormatOptionInputModel{ Name = "AlignAfterOpenBracket", Paramater = "BracketAlignmentStyle", Description = "If \"true\", horizontally aligns arguments after an open bracket.\r\nThis applies to round brackets (parentheses), angle brackets and square brackets.\r\nPossible values:\r\n- BAS_Align (in configuration: Align) Align parameters on the open bracket, e.g.:\r\n- BAS_DontAlign (in configuration: DontAlign) Don’t align, instead use ContinuationIndentWidth, e.g.:\r\n- BAS_AlwaysBreak (in configuration: AlwaysBreak) Always break after an open bracket, if the parameters don’t fit on a single line, e.g.:", Input="Align" },
       new FormatOptionToggleModel{ Name = "AlignConsecutiveMacros", Paramater = "bool", Description = "If \"true\", aligns consecutive C/C++ preprocessor macros.", BooleanCombobox = ToggleValues.False },
       new FormatOptionToggleModel{ Name = "AlignConsecutiveAssignments", Paramater = "bool", Description = "If \"true\", aligns consecutive assignments.", BooleanCombobox = ToggleValues.False },
@@ -104,13 +101,5 @@ namespace ClangPowerTools
       new FormatOptionInputModel{ Name = "TabWidth", Paramater = "unsigned", Description = "The number of columns used for tab stops.", Input = "8"},
       new FormatOptionInputModel{ Name = "UseTab", Paramater = "UseTabStyle", Description = "The way to use tab characters in the resulting file.\r\nPossible values:\r\n- UT_Never (in configuration: Never) Never use tab.\r\n- UT_ForIndentation (in configuration: ForIndentation) Use tabs only for indentation.\r\n- UT_ForContinuationAndIndentation (in configuration: ForContinuationAndIndentation) Use tabs only for line continuation and indentation.\r\n- UT_Always (in configuration: Always) Use tabs whenever we need to fill whitespace that spans at least from one tab stop to the next on", Input = "Never"}
     };
-
-    public void DisableAllOptions()
-    {
-      foreach (var item in FormatOptions)
-      {
-        item.IsEnabled = false;
-      }
-    }
   }
 }
