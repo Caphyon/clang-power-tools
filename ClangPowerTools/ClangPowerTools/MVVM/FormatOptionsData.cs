@@ -6,13 +6,7 @@ namespace ClangPowerTools
 {
   public class FormatOptionsData
   {
-    public FormatOptionsData(bool initializing)
-    {
-      Initializing = initializing;
-    }
-
-    public bool Initializing { get; set; } = true;
-
+    // TODO maybe make static
     public List<IFormatOption> FormatOptions = new List<IFormatOption>()
     {
       new FormatOptionInputModel{ Name = "AccessModifierOffset", Paramater = "int", Description = "The extra indent or outdent of access modifiers, e.g. \"public:\"", Input = "-2" },

@@ -112,7 +112,7 @@ namespace ClangPowerTools
         {
           NameColumnWidth = nameColumnWidthMax;
           EnableOptionColumnWidth = "0";
-          FormatOptions = new FormatOptionsGoogleData(true).FormatOptions;
+          FormatOptions = new FormatOptionsGoogleData().FormatOptions;
           SelectedOption = formatStyleOptions.First();
           isCustomStyle = false;
         }
@@ -191,10 +191,9 @@ namespace ClangPowerTools
 
     private void InitializeStyleOptions()
     {
-      formatOptionsData = new FormatOptionsData(true);
+      formatOptionsData = new FormatOptionsData();
       formatStyleOptions = formatOptionsData.FormatOptions;
 
-      formatOptionsData.Initializing = false;
       formatOptionsData.DisableAllOptions();
       SelectedOption = formatStyleOptions.First();
     }
@@ -227,27 +226,26 @@ namespace ClangPowerTools
       string path = SaveFile(fileName, defaultExt, filter);
       if (string.IsNullOrEmpty(path) == false)
       {
-        WriteContentToFile(path, FormatOptionFile.CreateOutput(formatStyleOptions).ToString());
+        WriteContentToFile(path, FormatOptionFile.CreateOutput(formatStyleOptions, SelectedStyle).ToString());
       }
     }
 
     public void RunFormat()
     {
       if (CheckIfAnyOptionEnabled() == false) return;
-      if (formatOptionsData.Initializing) return;
 
       var text = formatOptionsView.CodeEditor.Text;
       string filePath = Path.Combine(settingsPathBuilder.GetPath(""), "FormatTemp.cpp");
       string formatFilePath = Path.Combine(settingsPathBuilder.GetPath(""), ".clang-format");
 
-      WriteContentToFile(formatFilePath, FormatOptionFile.CreateOutput(formatStyleOptions).ToString());
+      WriteContentToFile(formatFilePath, FormatOptionFile.CreateOutput(formatStyleOptions, SelectedStyle).ToString());
       WriteContentToFile(filePath, text);
 
       var content = FormatFileOutsideProject(settingsPathBuilder.GetPath(""), filePath);
       formatOptionsView.CodeEditorReadOnly.Text = content;
 
-      FileSystem.DeleteFile(filePath);
-      FileSystem.DeleteFile(formatFilePath);
+      //FileSystem.DeleteFile(filePath);
+      //FileSystem.DeleteFile(formatFilePath);
     }
 
     private static string FormatFileOutsideProject(string path, string filePath)
