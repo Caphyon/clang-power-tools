@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,13 +8,34 @@ namespace ClangPowerTools
 {
   public class FormatOptionFile
   {
-    public static StringBuilder CreateOutput(List<IFormatOption> formatOptions)
+    public static StringBuilder CreateOutput(List<IFormatOption> formatOptions, EditorStyles style)
     {
       var output = new StringBuilder();
       output.AppendLine("# Format Style Options - Created with Clang Power Tools");
       output.AppendLine("---");
       output.AppendLine("Language: Cpp");
-      output.AppendLine("# BasedOnStyle: LLVM");
+
+      switch (style)
+      {
+        case EditorStyles.LLVM:
+          output.AppendLine("BasedOnStyle: LLVM");
+          break;
+        case EditorStyles.Google:
+          output.AppendLine("BasedOnStyle: Google");
+          break;
+        case EditorStyles.Chromium:
+          output.AppendLine("BasedOnStyle: Google");
+          break;
+        case EditorStyles.Mozilla:
+          output.AppendLine("BasedOnStyle: Google");
+          break;
+        case EditorStyles.WebKit:
+          output.AppendLine("BasedOnStyle: Google");
+          break;
+        case EditorStyles.Microsoft:
+          output.AppendLine("BasedOnStyle: Google");
+          break;
+      } 
 
       foreach (var item in formatOptions)
       {
