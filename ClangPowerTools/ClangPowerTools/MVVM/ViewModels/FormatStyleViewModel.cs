@@ -30,6 +30,11 @@ namespace ClangPowerTools
     private ICommand openUri;
     private IFormatOption selectedOption;
     private List<IFormatOption> formatStyleOptions;
+    private EditorStyles editorStyles = EditorStyles.Custom;
+    private bool isCustomStyle = true;
+    private string nameColumnWidth;
+    private const string autoSize = "auto";
+    private const string nameColumnWidthMax = "340";
     public const string FileExtensionsSelectFile = "Code files (*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx;*.h;*.h;*.h)|*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx";
     #endregion
 
@@ -88,8 +93,57 @@ namespace ClangPowerTools
       }
     }
 
-    public EditorStyles SelectedStyle { get; set; } = EditorStyles.Custom;
+    public EditorStyles SelectedStyle
+    {
+      get 
+      { 
+        return editorStyles; 
+      }
+      set 
+      { 
+        editorStyles = value; 
+        if(editorStyles == EditorStyles.Custom)
+        {
+          isCustomStyle = true;
+          NameColumnWidth = autoSize;
+          EnableOptionColumnWidth = autoSize;
+        }
+        else
+        {
+          NameColumnWidth = nameColumnWidthMax;
+          EnableOptionColumnWidth = "0";
+          FormatOptions = new FormatOptionsGoogleData(false).FormatOptions;
+          SelectedOption = formatStyleOptions.First();
+          isCustomStyle = false;
+        }
+      }
+    }
 
+    public string NameColumnWidth
+    {
+      get
+      {
+        return nameColumnWidth;
+      }
+      set
+      {
+        nameColumnWidth = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("NameColumnWidth"));
+      }
+    }
+
+    public string EnableOptionColumnWidth
+    {
+      get
+      {
+        return nameColumnWidth;
+      }
+      set
+      {
+        nameColumnWidth = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("EnableOptionColumnWidth"));
+      }
+    }
 
     public bool CanExecute
     {
@@ -139,7 +193,7 @@ namespace ClangPowerTools
     {
       formatOptionsData = new FormatOptionsData(true);
       formatStyleOptions = formatOptionsData.FormatOptions;
-      
+
       formatOptionsData.Initializing = false;
       formatOptionsData.DisableAllOptions();
       SelectedOption = formatStyleOptions.First();

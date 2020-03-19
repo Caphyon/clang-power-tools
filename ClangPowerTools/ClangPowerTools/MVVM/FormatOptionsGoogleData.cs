@@ -6,7 +6,7 @@ namespace ClangPowerTools
 {
   public class FormatOptionsGoogleData : FormatOptionsData
   {
-    public FormatOptionsGoogleData(bool initializing) :base(initializing)
+    public FormatOptionsGoogleData(bool initializing) : base(initializing)
     {
       Initializing = initializing;
     }

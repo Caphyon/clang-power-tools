@@ -69,7 +69,12 @@
           SelectionMode="Single">
           <ListView.View>
             <GridView>
-              <GridViewColumn Width="auto" Header="Name">
+              <GridView.ColumnHeaderContainerStyle>
+                <Style TargetType="{x:Type GridViewColumnHeader}">
+                  <Setter Property="IsEnabled" Value="False" />
+                </Style>
+              </GridView.ColumnHeaderContainerStyle>
+              <GridViewColumn Width="{Binding NameColumnWidth}" Header="Name">
                 <GridViewColumn.CellTemplate>
                   <DataTemplate>
                     <TextBlock
@@ -108,7 +113,7 @@
                   </DataTemplate>
                 </GridViewColumn.CellTemplate>
               </GridViewColumn>
-              <GridViewColumn Width="auto" Header="Enable Option">
+              <GridViewColumn Width="{Binding EnableOptionColumnWidth}" Header="Enable Option">
                 <GridViewColumn.CellTemplate>
                   <DataTemplate>
                     <ToggleButton
@@ -135,7 +140,7 @@
             FontFamily="SegoeUI"
             FontSize="14"
             FontWeight="Bold"
-            Text="Styles">
+            Text="Select Style">
             <TextBlock.ToolTip>
               <ToolTip>
                 <TextBlock
