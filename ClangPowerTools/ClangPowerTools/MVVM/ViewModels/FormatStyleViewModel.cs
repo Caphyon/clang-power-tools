@@ -112,7 +112,7 @@ namespace ClangPowerTools
         {
           NameColumnWidth = nameColumnWidthMax;
           EnableOptionColumnWidth = "0";
-          FormatOptions = new FormatOptionsGoogleData(false).FormatOptions;
+          FormatOptions = new FormatOptionsGoogleData(true).FormatOptions;
           SelectedOption = formatStyleOptions.First();
           isCustomStyle = false;
         }
