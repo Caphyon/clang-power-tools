@@ -8,7 +8,7 @@ namespace ClangPowerTools
   {
     public new List<IFormatOption> FormatOptions = new List<IFormatOption>()
     {
-      new FormatOptionInputModel{ Name = "AccessModifierOffset", Paramater = "int", Description = "The extra indent or outdent of access modifiers, e.g. \"public:\"", Input = "-5" },
+      new FormatOptionInputModel{ Name = "AccessModifierOffset", Paramater = "int", Description = "The extra indent or outdent of access modifiers, e.g. \"public:\"", Input = "-1" },
       new FormatOptionInputModel{ Name = "AlignAfterOpenBracket", Paramater = "BracketAlignmentStyle", Description = "If \"true\", horizontally aligns arguments after an open bracket.\r\nThis applies to round brackets (parentheses), angle brackets and square brackets.\r\nPossible values:\r\n- BAS_Align (in configuration: Align) Align parameters on the open bracket, e.g.:\r\n- BAS_DontAlign (in configuration: DontAlign) Don’t align, instead use ContinuationIndentWidth, e.g.:\r\n- BAS_AlwaysBreak (in configuration: AlwaysBreak) Always break after an open bracket, if the parameters don’t fit on a single line, e.g.:", Input="Align" },
       new FormatOptionToggleModel{ Name = "AlignConsecutiveMacros", Paramater = "bool", Description = "If \"true\", aligns consecutive C/C++ preprocessor macros.", BooleanCombobox = ToggleValues.False },
       new FormatOptionToggleModel{ Name = "AlignConsecutiveAssignments", Paramater = "bool", Description = "If \"true\", aligns consecutive assignments.", BooleanCombobox = ToggleValues.False },

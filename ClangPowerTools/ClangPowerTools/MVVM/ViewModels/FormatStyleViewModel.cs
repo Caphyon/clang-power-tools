@@ -20,6 +20,7 @@ namespace ClangPowerTools
 
     public event PropertyChangedEventHandler PropertyChanged;
 
+    //TODO add each style as a member var
     private readonly SettingsPathBuilder settingsPathBuilder;
     private readonly FormatOptionsView formatOptionsView;
     private FormatOptionsData formatOptionsData;
@@ -105,6 +106,8 @@ namespace ClangPowerTools
         {
           NameColumnWidth = autoSize;
           EnableOptionColumnWidth = autoSize;
+          FormatOptions = new FormatOptionsData().FormatOptions;
+          SelectedOption = formatStyleOptions.First();
         }
         else
         {
