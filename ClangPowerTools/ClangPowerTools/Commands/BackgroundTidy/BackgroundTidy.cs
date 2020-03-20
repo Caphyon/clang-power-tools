@@ -105,7 +105,7 @@ namespace ClangPowerTools.Commands.BackgroundTidy
       }
       catch (Exception e)
       {
-        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
 
     }
