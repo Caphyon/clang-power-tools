@@ -31,7 +31,6 @@ namespace ClangPowerTools
     private IFormatOption selectedOption;
     private List<IFormatOption> formatStyleOptions;
     private EditorStyles editorStyles = EditorStyles.Custom;
-    private bool isCustomStyle = true;
     private string nameColumnWidth;
     private const string autoSize = "auto";
     private const string nameColumnWidthMax = "340";
@@ -104,7 +103,6 @@ namespace ClangPowerTools
         editorStyles = value; 
         if(editorStyles == EditorStyles.Custom)
         {
-          isCustomStyle = true;
           NameColumnWidth = autoSize;
           EnableOptionColumnWidth = autoSize;
         }
@@ -114,10 +112,10 @@ namespace ClangPowerTools
           EnableOptionColumnWidth = "0";
           FormatOptions = new FormatOptionsGoogleData().FormatOptions;
           SelectedOption = formatStyleOptions.First();
-          isCustomStyle = false;
         }
+        RunFormat();
       }
-    }
+  }
 
     public string NameColumnWidth
     {

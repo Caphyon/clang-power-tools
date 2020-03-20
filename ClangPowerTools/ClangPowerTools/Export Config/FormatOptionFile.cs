@@ -10,6 +10,7 @@ namespace ClangPowerTools
   {
     public static StringBuilder CreateOutput(List<IFormatOption> formatOptions, EditorStyles style)
     {
+      List<IFormatOption> options;
       var output = new StringBuilder();
       output.AppendLine("# Format Style Options - Created with Clang Power Tools");
       output.AppendLine("---");
@@ -22,21 +23,60 @@ namespace ClangPowerTools
           break;
         case EditorStyles.Google:
           output.AppendLine("BasedOnStyle: Google");
+          options = CompareFormatOptions(formatOptions, new FormatOptionsGoogleData().FormatOptions);
+          AddActiveOptionToFile(options, output);
           break;
         case EditorStyles.Chromium:
-          output.AppendLine("BasedOnStyle: Google");
+          output.AppendLine("BasedOnStyle: Chromium");
           break;
         case EditorStyles.Mozilla:
-          output.AppendLine("BasedOnStyle: Google");
+          output.AppendLine("BasedOnStyle: Mozilla");
           break;
         case EditorStyles.WebKit:
-          output.AppendLine("BasedOnStyle: Google");
+          output.AppendLine("BasedOnStyle: WebKit");
           break;
         case EditorStyles.Microsoft:
-          output.AppendLine("BasedOnStyle: Google");
+          output.AppendLine("BasedOnStyle: Microsoft");
           break;
-      } 
+        default:
+          AddActiveOptionToFile(formatOptions, output);
+          break;
+      }
 
+      output.AppendLine("...");
+
+      return output;
+    }
+
+    private static List<IFormatOption> CompareFormatOptions(List<IFormatOption> currentOptions, List<IFormatOption> defaultOptions)
+    {
+
+      for (int i = 0; i < currentOptions.Count; i++)
+      {
+        if (currentOptions[i] is FormatOptionToggleModel)
+        {
+          var currentOption = currentOptions[i] as FormatOptionToggleModel;
+          var defaultOption = defaultOptions[i] as FormatOptionToggleModel;
+          if (currentOption.BooleanCombobox ==  defaultOption.BooleanCombobox)
+          {
+            currentOptions[i].IsEnabled = false;
+          }
+        }
+        else if (currentOptions[i] is FormatOptionInputModel)
+        {
+          var currentOption = currentOptions[i] as FormatOptionInputModel;
+          var defaultOption = defaultOptions[i] as FormatOptionInputModel;
+          if (string.Compare(currentOption.Input, defaultOption.Input) == 0 || string.IsNullOrEmpty(currentOption.Input))
+          {
+            currentOptions[i].IsEnabled = false;
+          }
+        }
+      }
+      return currentOptions;
+    }
+
+    private static void AddActiveOptionToFile(List<IFormatOption> formatOptions, StringBuilder output)
+    {
       foreach (var item in formatOptions)
       {
         if (item.IsEnabled)
@@ -57,10 +97,6 @@ namespace ClangPowerTools
           output.AppendLine(styleOption);
         }
       }
-      output.AppendLine("...");
-
-
-      return output;
     }
   }
 }
