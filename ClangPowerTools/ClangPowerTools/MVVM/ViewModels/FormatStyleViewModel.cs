@@ -21,9 +21,12 @@ namespace ClangPowerTools
     public event PropertyChangedEventHandler PropertyChanged;
 
     //TODO add each style as a member var
+    private FormatOptionsData customOptionsData = new FormatOptionsData();
+    private FormatOptionsData llvmOptionsData = new FormatOptionsData();
+    private FormatOptionsGoogleData googleOptionsData = new FormatOptionsGoogleData();
+
     private readonly SettingsPathBuilder settingsPathBuilder;
     private readonly FormatOptionsView formatOptionsView;
-    private FormatOptionsData formatOptionsData;
     private ICommand selctCodeFileCommand;
     private ICommand createFormatFileCommand;
     private ICommand formatCodeCommand;
@@ -31,7 +34,7 @@ namespace ClangPowerTools
     private ICommand openUri;
     private IFormatOption selectedOption;
     private List<IFormatOption> formatStyleOptions;
-    private EditorStyles editorStyles = EditorStyles.Custom;
+    private EditorStyles editorStyle = EditorStyles.Custom;
     private string nameColumnWidth;
     private const string autoSize = "auto";
     private const string nameColumnWidthMax = "340";
@@ -44,7 +47,7 @@ namespace ClangPowerTools
     {
       settingsPathBuilder = new SettingsPathBuilder();
       this.formatOptionsView = formatOptionsView;
-      InitializeStyleOptions();
+      InitializeStyleOptions(customOptionsData);
     }
 
     #endregion
@@ -97,28 +100,45 @@ namespace ClangPowerTools
     {
       get 
       { 
-        return editorStyles; 
+        return editorStyle; 
       }
       set 
       { 
-        editorStyles = value; 
-        if(editorStyles == EditorStyles.Custom)
+        editorStyle = value;
+        switch (editorStyle)
         {
-          NameColumnWidth = autoSize;
-          EnableOptionColumnWidth = autoSize;
-          FormatOptions = new FormatOptionsData().FormatOptions;
-          SelectedOption = formatStyleOptions.First();
+          case EditorStyles.Custom:
+            SetStyleControls(autoSize, autoSize, customOptionsData.FormatOptions);
+            break;
+          case EditorStyles.LLVM:
+            SetStyleControls(nameColumnWidthMax, "0", llvmOptionsData.FormatOptions);
+            break;
+          case EditorStyles.Google:
+            SetStyleControls(nameColumnWidthMax, "0", googleOptionsData.FormatOptions);
+            break;
+          case EditorStyles.Chromium:
+            break;
+          case EditorStyles.Mozilla:
+            break;
+          case EditorStyles.WebKit:
+            break;
+          case EditorStyles.Microsoft:
+            break;
+          default:
+            break;
         }
-        else
-        {
-          NameColumnWidth = nameColumnWidthMax;
-          EnableOptionColumnWidth = "0";
-          FormatOptions = new FormatOptionsGoogleData().FormatOptions;
-          SelectedOption = formatStyleOptions.First();
-        }
+
+        SelectedOption = formatStyleOptions.First();
         RunFormat();
       }
   }
+
+    private void SetStyleControls(string nameColumnWidth, string enableOptionColumnWidth, List<IFormatOption> options)
+    {
+      NameColumnWidth = nameColumnWidth;
+      EnableOptionColumnWidth = enableOptionColumnWidth;
+      FormatOptions = options;
+    }
 
     public string NameColumnWidth
     {
@@ -190,11 +210,9 @@ namespace ClangPowerTools
 
     #region Methods
 
-    private void InitializeStyleOptions()
+    private void InitializeStyleOptions(FormatOptionsData formatOptionsData)
     {
-      formatOptionsData = new FormatOptionsData();
       formatStyleOptions = formatOptionsData.FormatOptions;
-
       formatOptionsData.DisableAllOptions();
       SelectedOption = formatStyleOptions.First();
     }
@@ -214,7 +232,14 @@ namespace ClangPowerTools
 
     private void ResetOptions()
     {
-      InitializeStyleOptions();
+      customOptionsData = new FormatOptionsData();
+      llvmOptionsData = new FormatOptionsData();
+      googleOptionsData = new FormatOptionsGoogleData();
+      
+      InitializeStyleOptions(customOptionsData);
+      SelectedStyle = EditorStyles.Custom;
+      
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedStyle"));
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
     }
 
@@ -245,8 +270,8 @@ namespace ClangPowerTools
       var content = FormatFileOutsideProject(settingsPathBuilder.GetPath(""), filePath);
       formatOptionsView.CodeEditorReadOnly.Text = content;
 
-      //FileSystem.DeleteFile(filePath);
-      //FileSystem.DeleteFile(formatFilePath);
+      FileSystem.DeleteFile(filePath);
+      FileSystem.DeleteFile(formatFilePath);
     }
 
     private static string FormatFileOutsideProject(string path, string filePath)
