@@ -23,6 +23,10 @@ namespace ClangPowerTools
     private FormatOptionsData customOptionsData = new FormatOptionsData();
     private FormatOptionsData llvmOptionsData = new FormatOptionsData();
     private FormatOptionsGoogleData googleOptionsData = new FormatOptionsGoogleData();
+    private FormatOptionsChromiumData chromiumOptionsData = new FormatOptionsChromiumData();
+    private FormatOptionsMozillaData mozillaOptionsData = new FormatOptionsMozillaData();
+    private FormatOptionsWebKitData webkitOptionsData = new FormatOptionsWebKitData();
+    private FormatOptionsMicrosoftData microsoftOptionsData = new FormatOptionsMicrosoftData();
 
     private readonly SettingsPathBuilder settingsPathBuilder;
     private readonly FormatOptionsView formatOptionsView;
@@ -97,12 +101,12 @@ namespace ClangPowerTools
 
     public EditorStyles SelectedStyle
     {
-      get 
-      { 
-        return editorStyle; 
+      get
+      {
+        return editorStyle;
       }
-      set 
-      { 
+      set
+      {
         editorStyle = value;
         switch (editorStyle)
         {
@@ -116,21 +120,23 @@ namespace ClangPowerTools
             SetStyleControls(nameColumnWidthMax, "0", googleOptionsData.FormatOptions);
             break;
           case EditorStyles.Chromium:
+            SetStyleControls(nameColumnWidthMax, "0", chromiumOptionsData.FormatOptions);
             break;
           case EditorStyles.Mozilla:
+            SetStyleControls(nameColumnWidthMax, "0", mozillaOptionsData.FormatOptions);
             break;
           case EditorStyles.WebKit:
+            SetStyleControls(nameColumnWidthMax, "0", webkitOptionsData.FormatOptions);
             break;
           case EditorStyles.Microsoft:
-            break;
-          default:
+            SetStyleControls(nameColumnWidthMax, "0", microsoftOptionsData.FormatOptions);
             break;
         }
 
         SelectedOption = formatStyleOptions.First();
         RunFormat();
       }
-  }
+    }
 
     private void SetStyleControls(string nameColumnWidth, string enableOptionColumnWidth, List<IFormatOption> options)
     {
@@ -234,10 +240,14 @@ namespace ClangPowerTools
       customOptionsData = new FormatOptionsData();
       llvmOptionsData = new FormatOptionsData();
       googleOptionsData = new FormatOptionsGoogleData();
-      
+      chromiumOptionsData = new FormatOptionsChromiumData();
+      mozillaOptionsData = new FormatOptionsMozillaData();
+      webkitOptionsData = new FormatOptionsWebKitData();
+      microsoftOptionsData = new FormatOptionsMicrosoftData();
+
       InitializeStyleOptions(customOptionsData);
       SelectedStyle = EditorStyles.Custom;
-      
+
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedStyle"));
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
     }

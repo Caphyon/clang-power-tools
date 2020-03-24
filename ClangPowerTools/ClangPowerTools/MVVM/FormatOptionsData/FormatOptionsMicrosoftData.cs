@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ClangPowerTools
 {
-  public class FormatOptionsMicrosofttData : FormatOptionsData
+  public class FormatOptionsMicrosoftData : FormatOptionsData
   {
     public new List<IFormatOption> FormatOptions = new List<IFormatOption>()
     {
