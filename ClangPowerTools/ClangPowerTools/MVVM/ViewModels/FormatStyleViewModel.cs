@@ -29,7 +29,7 @@ namespace ClangPowerTools
     private FormatOptionsMicrosoftData microsoftOptionsData = new FormatOptionsMicrosoftData();
 
     private readonly SettingsPathBuilder settingsPathBuilder;
-    private readonly FormatOptionsView formatOptionsView;
+    private readonly FormatEditorView formatOptionsView;
     private ICommand selctCodeFileCommand;
     private ICommand createFormatFileCommand;
     private ICommand formatCodeCommand;
@@ -46,7 +46,7 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public FormatStyleViewModel(FormatOptionsView formatOptionsView)
+    public FormatStyleViewModel(FormatEditorView formatOptionsView)
     {
       settingsPathBuilder = new SettingsPathBuilder();
       this.formatOptionsView = formatOptionsView;
