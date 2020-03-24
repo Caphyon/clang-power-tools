@@ -98,8 +98,12 @@
     <Compile Include="MVVM\Constants\LlvmVersionsAlternate.cs" />
     <Compile Include="MVVM\Controllers\FreeTrialController.cs" />
     <Compile Include="MVVM\Controllers\LlvmController.cs" />
-    <Compile Include="MVVM\FormatOptionsGoogleData.cs" />
-    <Compile Include="MVVM\FormatOptionsData.cs" />
+    <Compile Include="MVVM\FormatOptionsData\FormatOptionsMicrosoftData.cs" />
+    <Compile Include="MVVM\FormatOptionsData\FormatOptionsWebKitData.cs" />
+    <Compile Include="MVVM\FormatOptionsData\FormatOptionsMozillaData.cs" />
+    <Compile Include="MVVM\FormatOptionsData\FormatOptionsChromiumData.cs" />
+    <Compile Include="MVVM\FormatOptionsData\FormatOptionsGoogleData.cs" />
+    <Compile Include="MVVM\FormatOptionsData\FormatOptionsData.cs" />
     <Compile Include="MVVM\Interfaces\IDownload.cs" />
     <Compile Include="MVVM\Interfaces\IFormatOption.cs" />
     <Compile Include="MVVM\Interfaces\IInstall.cs" />

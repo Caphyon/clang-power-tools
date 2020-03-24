@@ -20,7 +20,6 @@ namespace ClangPowerTools
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    //TODO add each style as a member var
     private FormatOptionsData customOptionsData = new FormatOptionsData();
     private FormatOptionsData llvmOptionsData = new FormatOptionsData();
     private FormatOptionsGoogleData googleOptionsData = new FormatOptionsGoogleData();
