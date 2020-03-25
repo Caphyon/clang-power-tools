@@ -109,6 +109,13 @@
                         SelectedItem="{Binding BooleanCombobox}"
                         SelectionChanged="RunFormat_SelectionChanged"
                         Visibility="{Binding Path=HasBooleanCombobox, Converter={StaticResource BoolToVis}}" />
+                      <Button
+                        Grid.Column="1"
+                        Width="80"
+                        Height="20"
+                        HorizontalAlignment="Right"
+                        Content="Add Input"
+                        Visibility="{Binding Path=HasMultipleInputTextBox, Converter={StaticResource BoolToVis}}" />
                     </Grid>
                   </DataTemplate>
                 </GridViewColumn.CellTemplate>

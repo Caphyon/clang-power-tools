@@ -34,9 +34,9 @@ namespace ClangPowerTools.MVVM.Models
 
     public bool HasBooleanCombobox { get; set; } = false;
     public bool HasInputTextBox { get; set; } = false;
+    public bool HasMultipleInputTextBox { get; set; } = false;
 
     #endregion
-
 
     #region Methods
 

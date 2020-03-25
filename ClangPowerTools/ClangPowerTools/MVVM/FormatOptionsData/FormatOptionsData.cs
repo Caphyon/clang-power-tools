@@ -30,6 +30,12 @@ namespace ClangPowerTools
       new FormatOptionInputModel{ Name = "AlwaysBreakTemplateDeclarations", Paramater = "BreakTemplateDeclarationsStyle", Description = "The template declaration breaking style to use.\r\nPossible values:\r\n- BTDS_No (in configuration: No) Do not force break before declaration. PenaltyBreakTemplateDeclaration is taken into account\r\n- BTDS_MultiLine (in configuration: MultiLine) Force break after template declaration only when the following declaration spans multiple lines\r\n- BTDS_Yes (in configuration: Yes) Always break after template declaration.", Input = "MultiLine" },
       new FormatOptionToggleModel{ Name = "BinPackArguments", Paramater = "bool", Description = "If \"false\", a function declaration’s or function definition’s parameters will either all be on the same line or will have one line each.", BooleanCombobox = ToggleValues.True },
       new FormatOptionToggleModel{ Name = "BinPackParameters", Paramater = "bool", Description = "If \"false\", a function declaration’s or function definition’s parameters will either all be on the same line or will have one line each.", BooleanCombobox = ToggleValues.True },
+
+
+      new FormatOptionMultipleInputModel{ Name = "BraceWrapping", Paramater = "BraceWrappingFlags", Description = "test.", MultipleInput = "None" },
+
+
+
       new FormatOptionInputModel{ Name = "BreakBeforeBinaryOperators", Paramater = "BinaryOperatorStyle", Description = "The way to wrap binary operators.\r\nPossible values:\r\n- BOS_None (in configuration: None) Break after operators.\r\n- BOS_NonAssignment (in configuration: NonAssignment) Break before operators that aren’t assignments.\r\n- BOS_All (in configuration: All) Break before operators.", Input = "None" },
       new FormatOptionInputModel{ Name = "BreakBeforeBraces ", Paramater = "BraceBreakingStyle", Description = "- BS_Attach (in configuration: Attach) Always attach braces to surrounding context.\r\n- BS_Linux (in configuration: Linux) Like Attach, but break before braces on function, namespace and class definitions.\r\n- BS_Stroustrup (in configuration: Stroustrup) Like Attach, but break before function definitions.\r\n- BS_Allman (in configuration: Allman) Always break before braces.", Input = "Attach" },
       new FormatOptionToggleModel{ Name = "BreakBeforeInheritanceComma", Paramater = "bool", Description = "If \"true\",  in the class inheritance expression clang-format will break before : and , if there is multiple inheritance.", BooleanCombobox = ToggleValues.False },

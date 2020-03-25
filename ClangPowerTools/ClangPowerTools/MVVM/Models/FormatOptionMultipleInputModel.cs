@@ -12,7 +12,7 @@
 
     public FormatOptionMultipleInputModel()
     {
-      HasInputTextBox = true;
+      HasMultipleInputTextBox = true;
     }
 
     #endregion
