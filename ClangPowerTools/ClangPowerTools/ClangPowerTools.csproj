@@ -84,7 +84,7 @@
     <Compile Include="Commands\IgnoreCommand.cs" />
     <Compile Include="Error\TaskErrorViewModel.cs" />
     <Compile Include="Events\FormatCommandEventArgs.cs" />
-    <Compile Include="Export Config\FormatOptionFile.cs" />
+    <Compile Include="Export Config\ClangFormatFile.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Events\HasEncodingErrorEventArgs.cs" />
     <Compile Include="Events\LicenseEventArgs.cs" />
@@ -145,9 +145,10 @@
     <Compile Include="MVVM\TidyChecksClean.cs" />
     <Compile Include="MVVM\TidyChecks.cs" />
     <Compile Include="MVVM\SettingsProvider.cs" />
-    <Compile Include="MVVM\ViewModels\FormatStyleViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\FormatEditorViewModel.cs" />
     <Compile Include="MVVM\ViewModels\GeneralSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\InputDataViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\InputFormatStylesViewModel.cs" />
     <Compile Include="MVVM\ViewModels\LicenseViewModel.cs" />
     <Compile Include="MVVM\ViewModels\LlvmSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\ReleaseNotesViewModel.cs" />
@@ -203,6 +204,9 @@
     </Compile>
     <Compile Include="MVVM\Views\GeneralSettingsView.xaml.cs">
       <DependentUpon>GeneralSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Views\InputFormatStylesView.xaml.cs">
+      <DependentUpon>InputFormatStylesView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\LlvmSettingsView.xaml.cs">
       <DependentUpon>LlvmSettingsView.xaml</DependentUpon>
@@ -582,6 +586,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\Views\GeneralSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\InputFormatStylesView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

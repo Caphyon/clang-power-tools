@@ -8,12 +8,12 @@ namespace ClangPowerTools.MVVM.Views
   /// </summary>
   public partial class FormatEditorView : Window
   {
-    private readonly FormatStyleViewModel formatStyleViewModel;
+    private readonly FormatEditorViewModel formatStyleViewModel;
 
     public FormatEditorView()
     {
       InitializeComponent();
-      formatStyleViewModel = new FormatStyleViewModel(this);
+      formatStyleViewModel = new FormatEditorViewModel(this);
       DataContext = formatStyleViewModel;
       CodeEditor.Text = "// --- Clang Power Tools - Format Style Editor ---\r\n//\r\n// Add your code here\r\n//\r\n// Format is run automatically on your code after \r\n// enabling any of the style options\r\n//\r\n// Check the Output tab to see your formatted code";
       CodeEditorReadOnly.Text = "// Your formatted code will be displayed here";

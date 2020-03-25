@@ -10,7 +10,7 @@
   Height="750"
   MinWidth="1100"
   MinHeight="750"
-  d:DataContext="{d:DesignInstance local:FormatStyleViewModel,
+  d:DataContext="{d:DesignInstance local:FormatEditorViewModel,
                                    IsDesignTimeCreatable=True}"
   Background="WhiteSmoke"
   Icon="/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"

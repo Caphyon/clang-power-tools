@@ -14,7 +14,7 @@ using Process = System.Diagnostics.Process;
 
 namespace ClangPowerTools
 {
-  public class FormatStyleViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
+  public class FormatEditorViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
   {
     #region Members
 
@@ -46,7 +46,7 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public FormatStyleViewModel(FormatEditorView formatOptionsView)
+    public FormatEditorViewModel(FormatEditorView formatOptionsView)
     {
       settingsPathBuilder = new SettingsPathBuilder();
       this.formatOptionsView = formatOptionsView;
