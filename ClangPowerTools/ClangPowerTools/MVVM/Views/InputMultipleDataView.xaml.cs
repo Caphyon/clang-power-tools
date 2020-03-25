@@ -5,12 +5,12 @@ namespace ClangPowerTools.Views
   /// <summary>
   /// Interaction logic for InputFormatStylesView.xaml
   /// </summary>
-  public partial class InputFormatStylesView : Window
+  public partial class InputMultipleDataView : Window
   {
-    public InputFormatStylesView()
+    public InputMultipleDataView()
     {
       InitializeComponent();
-      DataContext = new InputFormatStylesView();
+      DataContext = new InputMultipleDataViewModel();
     }
   }
 }

@@ -2,6 +2,7 @@
 using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Views;
+using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -35,6 +36,8 @@ namespace ClangPowerTools
     private ICommand formatCodeCommand;
     private ICommand resetCommand;
     private ICommand openUri;
+    private ICommand openMultipleInputCommand;
+    
     private IFormatOption selectedOption;
     private List<IFormatOption> formatStyleOptions;
     private EditorStyles editorStyle = EditorStyles.Custom;
@@ -210,6 +213,11 @@ namespace ClangPowerTools
       get => selctCodeFileCommand ?? (selctCodeFileCommand = new RelayCommand(() => ReadCodeFromFile(), () => CanExecute));
     }
 
+    public ICommand OpenMultipleInputCommand
+    {
+      get => openMultipleInputCommand ?? (openMultipleInputCommand = new RelayCommand(() => OpenInputDataView(), () => CanExecute));
+    }
+
     #endregion
 
 
@@ -220,6 +228,12 @@ namespace ClangPowerTools
       formatStyleOptions = formatOptionsData.FormatOptions;
       formatOptionsData.DisableAllOptions();
       SelectedOption = formatStyleOptions.First();
+    }
+
+    private void OpenInputDataView()
+    {
+      InputMultipleDataView inputMultipleDataView = new InputMultipleDataView();
+      inputMultipleDataView.Show();
     }
 
     private void OpenUri(string uri)

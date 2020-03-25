@@ -114,6 +114,7 @@
                         Width="80"
                         Height="20"
                         HorizontalAlignment="Right"
+                        Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OpenMultipleInputCommand}"
                         Content="Add Input"
                         Visibility="{Binding Path=HasMultipleInputTextBox, Converter={StaticResource BoolToVis}}" />
                     </Grid>

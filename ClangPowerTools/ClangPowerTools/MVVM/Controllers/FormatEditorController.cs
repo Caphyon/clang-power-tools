@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ClangPowerTools
-{ 
-  public class InputFormatStylesViewModel
+namespace ClangPowerTools.MVVM.Controllers
+{
+  public class FormatEditorController
   {
 
   }

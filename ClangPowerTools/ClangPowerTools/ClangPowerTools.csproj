@@ -96,6 +96,7 @@
     <Compile Include="MVVM\Constants\CPPKeywords.cs" />
     <Compile Include="MVVM\Constants\LlvmConstants.cs" />
     <Compile Include="MVVM\Constants\LlvmVersionsAlternate.cs" />
+    <Compile Include="MVVM\Controllers\FormatEditorController.cs" />
     <Compile Include="MVVM\Controllers\FreeTrialController.cs" />
     <Compile Include="MVVM\Controllers\LlvmController.cs" />
     <Compile Include="MVVM\FormatOptionsData\FormatOptionsMicrosoftData.cs" />
@@ -148,7 +149,7 @@
     <Compile Include="MVVM\ViewModels\FormatEditorViewModel.cs" />
     <Compile Include="MVVM\ViewModels\GeneralSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\InputDataViewModel.cs" />
-    <Compile Include="MVVM\ViewModels\InputFormatStylesViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\InputMultipleDataViewModel.cs" />
     <Compile Include="MVVM\ViewModels\LicenseViewModel.cs" />
     <Compile Include="MVVM\ViewModels\LlvmSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\ReleaseNotesViewModel.cs" />
@@ -205,8 +206,8 @@
     <Compile Include="MVVM\Views\GeneralSettingsView.xaml.cs">
       <DependentUpon>GeneralSettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MVVM\Views\InputFormatStylesView.xaml.cs">
-      <DependentUpon>InputFormatStylesView.xaml</DependentUpon>
+    <Compile Include="MVVM\Views\InputMultipleDataView.xaml.cs">
+      <DependentUpon>InputMultipleDataView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\LlvmSettingsView.xaml.cs">
       <DependentUpon>LlvmSettingsView.xaml</DependentUpon>
@@ -589,7 +590,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MVVM\Views\InputFormatStylesView.xaml">
+    <Page Include="MVVM\Views\InputMultipleDataView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
