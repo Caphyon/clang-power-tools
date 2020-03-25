@@ -37,6 +37,7 @@
       FontFamily="Courier New"
       FontSize="14"
       HorizontalScrollBarVisibility="Auto"
+      Text="{Binding Input}"
       TextWrapping="NoWrap"
       VerticalScrollBarVisibility="Auto" />
   </Grid>
