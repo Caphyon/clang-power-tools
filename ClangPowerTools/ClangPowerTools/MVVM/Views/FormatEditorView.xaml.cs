@@ -29,5 +29,12 @@ namespace ClangPowerTools.MVVM.Views
     {
       formatStyleViewModel.RunFormat();
     }
+
+    private void ModifyInputButton_Click(object sender, RoutedEventArgs e)
+    {
+      object clicked = (e.OriginalSource as FrameworkElement).DataContext;
+      var selectedItem = FormatOptions.ItemContainerGenerator.ContainerFromItem(clicked) as ListViewItem;
+      selectedItem.IsSelected = true;
+    }
   }
 }

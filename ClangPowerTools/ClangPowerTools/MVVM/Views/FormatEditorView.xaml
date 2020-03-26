@@ -114,6 +114,7 @@
                         Width="80"
                         Height="20"
                         HorizontalAlignment="Right"
+                        Click="ModifyInputButton_Click"
                         Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OpenMultipleInputCommand}"
                         Content="Modify Input"
                         FontSize="12"
