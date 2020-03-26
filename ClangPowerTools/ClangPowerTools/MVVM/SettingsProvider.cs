@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.Views;
+﻿using ClangPowerTools.MVVM.Views;
+using ClangPowerTools.Views;
 
 namespace ClangPowerTools
 {
@@ -10,6 +11,8 @@ namespace ClangPowerTools
     private static GeneralSettingsModel generalSettingsModel = new GeneralSettingsModel();
 
     public static SettingsView SettingsView { get; set; }
+
+    public static FormatEditorView FormatEditorView { get; set; }
 
     public CompilerSettingsModel GetCompilerSettingsModel()
     {
