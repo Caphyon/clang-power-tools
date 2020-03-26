@@ -34,6 +34,7 @@ namespace ClangPowerTools.MVVM.Views
     {
       object clicked = (e.OriginalSource as FrameworkElement).DataContext;
       var selectedItem = FormatOptions.ItemContainerGenerator.ContainerFromItem(clicked) as ListViewItem;
+      if (selectedItem == null) return;
       selectedItem.IsSelected = true;
     }
   }
