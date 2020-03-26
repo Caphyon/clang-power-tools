@@ -1,6 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Models;
-using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -20,6 +19,8 @@ namespace ClangPowerTools
       {
         case EditorStyles.LLVM:
           output.AppendLine("BasedOnStyle: LLVM");
+          options = CompareFormatOptions(formatOptions, new FormatOptionsData().FormatOptions);
+          AddActiveOptionToFile(options, output);
           break;
         case EditorStyles.Google:
           output.AppendLine("BasedOnStyle: Google");
@@ -28,15 +29,23 @@ namespace ClangPowerTools
           break;
         case EditorStyles.Chromium:
           output.AppendLine("BasedOnStyle: Chromium");
+          options = CompareFormatOptions(formatOptions, new FormatOptionsChromiumData().FormatOptions);
+          AddActiveOptionToFile(options, output);
           break;
         case EditorStyles.Mozilla:
           output.AppendLine("BasedOnStyle: Mozilla");
+          options = CompareFormatOptions(formatOptions, new FormatOptionsMozillaData().FormatOptions);
+          AddActiveOptionToFile(options, output);
           break;
         case EditorStyles.WebKit:
           output.AppendLine("BasedOnStyle: WebKit");
+          options = CompareFormatOptions(formatOptions, new FormatOptionsWebKitData().FormatOptions);
+          AddActiveOptionToFile(options, output);
           break;
         case EditorStyles.Microsoft:
           output.AppendLine("BasedOnStyle: Microsoft");
+          options = CompareFormatOptions(formatOptions, new FormatOptionsMicrosoftData().FormatOptions);
+          AddActiveOptionToFile(options, output);
           break;
         default:
           AddActiveOptionToFile(formatOptions, output);
@@ -57,7 +66,7 @@ namespace ClangPowerTools
         {
           var currentOption = currentOptions[i] as FormatOptionToggleModel;
           var defaultOption = defaultOptions[i] as FormatOptionToggleModel;
-          if (currentOption.BooleanCombobox ==  defaultOption.BooleanCombobox)
+          if (currentOption.BooleanCombobox == defaultOption.BooleanCombobox)
           {
             currentOptions[i].IsEnabled = false;
           }
@@ -67,6 +76,15 @@ namespace ClangPowerTools
           var currentOption = currentOptions[i] as FormatOptionInputModel;
           var defaultOption = defaultOptions[i] as FormatOptionInputModel;
           if (string.Compare(currentOption.Input, defaultOption.Input) == 0 || string.IsNullOrEmpty(currentOption.Input))
+          {
+            currentOptions[i].IsEnabled = false;
+          }
+        }
+        else if (currentOptions[i] is FormatOptionMultipleInputModel)
+        {
+          var currentOption = currentOptions[i] as FormatOptionMultipleInputModel;
+          var defaultOption = defaultOptions[i] as FormatOptionMultipleInputModel;
+          if (string.Compare(currentOption.MultipleInput, defaultOption.MultipleInput) == 0 || string.IsNullOrEmpty(currentOption.MultipleInput))
           {
             currentOptions[i].IsEnabled = false;
           }
@@ -92,6 +110,12 @@ namespace ClangPowerTools
             var option = item as FormatOptionInputModel;
             if (string.IsNullOrEmpty(option.Input)) continue;
             styleOption = string.Concat(option.Name, ": ", option.Input);
+          }
+          else if (item is FormatOptionMultipleInputModel)
+          {
+            var option = item as FormatOptionMultipleInputModel;
+            if (string.IsNullOrEmpty(option.MultipleInput)) continue;
+            styleOption = string.Concat(option.Name, ": \r\n", option.MultipleInput);
           }
 
           output.AppendLine(styleOption);
