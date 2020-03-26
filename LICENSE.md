@@ -3,12 +3,12 @@
 Caphyon SRL
 Open Source License
 
-Copyright (c) 2017-2019 Caphyon SRL
+Copyright (c) 2017-2020 Caphyon SRL
 All rights reserved.
 
 Developed by:
 
-Caphyon SRL
+[Caphyon SRL](https://caphyon.com)
 
 http://clangpowertools.com
 
