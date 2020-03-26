@@ -18,19 +18,21 @@ namespace ClangPowerTools
     #endregion
 
 
+    #region Constructor 
+
+    public InputMultipleDataViewModel(string input)
+    {
+      this.input = input;
+    }
+
+    #endregion
+
     #region Properties
 
     public string Input
     {
-      get
-      {
-        return input;
-      }
-      set
-      {
-        input = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Input"));
-      }
+      get => input;
+      set => input = value;
     }
 
     #endregion

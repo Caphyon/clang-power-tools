@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Interfaces;
+using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Views;
 using System;
@@ -31,6 +32,7 @@ namespace ClangPowerTools
 
     private readonly SettingsPathBuilder settingsPathBuilder;
     private readonly FormatEditorView formatOptionsView;
+    private InputMultipleDataView inputMultipleDataView;
     private ICommand selctCodeFileCommand;
     private ICommand createFormatFileCommand;
     private ICommand formatCodeCommand;
@@ -232,8 +234,24 @@ namespace ClangPowerTools
 
     private void OpenInputDataView()
     {
-      InputMultipleDataView inputMultipleDataView = new InputMultipleDataView();
+      var multipleInputModel = selectedOption as FormatOptionMultipleInputModel;
+
+      if (multipleInputModel == null) return;
+      inputMultipleDataView = new InputMultipleDataView(multipleInputModel.MultipleInput);
+
+      inputMultipleDataView.Closed += CloseInputDataView;
       inputMultipleDataView.Show();
+    }
+
+    private void CloseInputDataView(object sender, EventArgs e)
+    {
+      if (selectedOption is FormatOptionMultipleInputModel multipleInputModel 
+       && inputMultipleDataView.DataContext is InputMultipleDataViewModel inputMultipleDataViewModel)
+      {
+        multipleInputModel.MultipleInput = inputMultipleDataViewModel.Input;
+      }
+
+      inputMultipleDataView.Closed -= CloseInputDataView;
     }
 
     private void OpenUri(string uri)
