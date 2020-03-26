@@ -7,10 +7,11 @@ namespace ClangPowerTools.Views
   /// </summary>
   public partial class InputMultipleDataView : Window
   {
-    public InputMultipleDataView()
+    public InputMultipleDataView(string input)
     {
       InitializeComponent();
-      DataContext = new InputMultipleDataViewModel();
+      DataContext = new InputMultipleDataViewModel(input); ;
+      Owner = SettingsProvider.FormatEditorView;
     }
   }
 }
