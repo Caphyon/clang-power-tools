@@ -6,11 +6,52 @@ Set-Variable -name   kVsWhereLocation `
     -value  "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" #`
 #-option Constant
 
-Function Get-MscVer()
+Function Convert-MSVCFolderName2Toolset([Parameter(Mandatory = $true)][string] $internalVer)
 {
-    return ((Get-Item "$(Get-VisualStudio-Path)\VC\Tools\MSVC\" | Get-ChildItem) | select -last 1).Name
+    # https://en.wikipedia.org/wiki/Microsoft_Visual_C%2B%2B#Internal_version_numbering
+    $internalVer = $internalVer.Replace('.', '');
+
+    return $internalVer.Substring(0, 3);
 }
 
+Function Convert-PlatformToolset2VsVer([Parameter(Mandatory = $true)][string] $toolset)
+{
+    switch ($toolset)
+    {
+        "141" { "2017" }
+        "142" { "2019" }
+    }
+}
+
+Function Get-VisualStudioToolsets()
+{
+    $toolsetFolders = (Get-Item "$(Get-VisualStudio-Path)\VC\Tools\MSVC\" | Get-ChildItem)
+    [string[]] $toolsets = @()
+
+    foreach ($folder in $toolsetFolders)
+    {
+        $toolsets += @(Convert-MSVCFolderName2Toolset -internalVer $folder.Name)
+    }
+
+    return ($toolsets | Where-Object { ![string]::IsNullOrWhiteSpace($_) } | Select-Object -Unique)
+}
+
+Function Get-MscVer()
+{
+    [string[]] $mscVerFolders = ((Get-Item "$(Get-VisualStudio-Path)\VC\Tools\MSVC\" | Get-ChildItem).Name | Sort-Object -Descending)
+    foreach ($mscVerFolderName in $mscVerFolders)
+    {
+        # get the latest toolset (mscver) that matches our target Visual Studio version
+
+        [string] $platformToolset = Convert-MSVCFolderName2Toolset $mscVerFolderName
+        [string] $vsTargetVer = Convert-PlatformToolset2VsVer $platformToolset
+        if ($vsTargetVer -eq $global:cptVisualStudioVersion)
+        {
+            return $mscVerFolderName
+        }
+    }
+}
+ 
 Function Get-VisualStudio-Includes([Parameter(Mandatory = $true)][string]  $vsPath,
     [Parameter(Mandatory = $false)][string] $mscVer)
 {

@@ -902,12 +902,22 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
     [string] $desiredVisualStudioVerNumber = (Get-VisualStudio-VersionNumber $desiredVisualStudioVer)
     if ($VisualStudioVersion -ne $desiredVisualStudioVerNumber)
     {
-      # We need to reload everything and use the VS version we decided upon above
-      Write-Verbose "[ RELOAD ] Project will reload because of toolset requirements change..."
-      Write-Verbose "Current = $VisualStudioVersion. Required = $desiredVisualStudioVerNumber."
+      [string[]] $supportedVsToolsets = Get-VisualStudioToolsets
 
-      $global:cptVisualStudioVersion = $desiredVisualStudioVer
-      LoadProject($vcxprojPath)
+      if ($supportedVsToolsets -notcontains $toolsetVersion)
+      {
+        # We need to reload everything and use the VS version we decided upon above
+        Write-Verbose "[ RELOAD ] Project will reload because of toolset requirements change..."
+        Write-Verbose "Current = $VisualStudioVersion. Required = $desiredVisualStudioVerNumber."
+
+        $global:cptVisualStudioVersion = $desiredVisualStudioVer
+        LoadProject($vcxprojPath)
+      }
+      else 
+      {
+        Write-Verbose "[ INFO ] Detected project using older toolset ($toolsetVersion)"
+        Write-Verbose "Loading using Visual Studio $VisualStudioVersion"
+      }
     }
   }
 
