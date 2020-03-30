@@ -59,7 +59,7 @@ namespace ClangPowerTools
 
     private static List<IFormatOption> CompareFormatOptions(List<IFormatOption> currentOptions, List<IFormatOption> defaultOptions)
     {
-
+      var optionsToInclude = new List<IFormatOption>();
       for (int i = 0; i < currentOptions.Count; i++)
       {
         if (currentOptions[i] is FormatOptionToggleModel)
@@ -68,7 +68,7 @@ namespace ClangPowerTools
           var defaultOption = defaultOptions[i] as FormatOptionToggleModel;
           if (currentOption.BooleanCombobox == defaultOption.BooleanCombobox)
           {
-            currentOptions[i].IsEnabled = false;
+            continue;
           }
         }
         else if (currentOptions[i] is FormatOptionInputModel)
@@ -77,7 +77,7 @@ namespace ClangPowerTools
           var defaultOption = defaultOptions[i] as FormatOptionInputModel;
           if (string.Compare(currentOption.Input, defaultOption.Input) == 0 || string.IsNullOrEmpty(currentOption.Input))
           {
-            currentOptions[i].IsEnabled = false;
+            continue;
           }
         }
         else if (currentOptions[i] is FormatOptionMultipleInputModel)
@@ -86,11 +86,14 @@ namespace ClangPowerTools
           var defaultOption = defaultOptions[i] as FormatOptionMultipleInputModel;
           if (string.Compare(currentOption.MultipleInput, defaultOption.MultipleInput) == 0 || string.IsNullOrEmpty(currentOption.MultipleInput))
           {
-            currentOptions[i].IsEnabled = false;
+            continue;
           }
         }
+
+        optionsToInclude.Add(currentOptions[i]);
       }
-      return currentOptions;
+
+      return optionsToInclude;
     }
 
     private static void AddActiveOptionToFile(List<IFormatOption> formatOptions, StringBuilder output)
