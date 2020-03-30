@@ -27,8 +27,8 @@ namespace ClangPowerTools
     private ICommand logInCommand;
 
     // Validation messages
-    private readonly string invalidEmail = "The email that you have enterd is not valid.";
-    private readonly string invalidEmailOrPassword = "The email or password that you have enterd is not valid.";
+    private readonly string invalidEmail = "The email that you have entered is not valid.";
+    private readonly string invalidEmailOrPassword = "The email or password that you have entered is not valid.";
 
     // Login button colors
     private readonly string colorBackgroundEnabled = "#FFBF31";
