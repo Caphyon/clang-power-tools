@@ -268,7 +268,7 @@ namespace ClangPowerTools
       if (droppedFiles == null || droppedFiles.Length != 1)
         return false;
 
-      if (!ScriptConstants.kAcceptedFileExtensions.Contains(Path.GetExtension(droppedFile)))
+      if (!ScriptConstants.kAcceptedFileExtensions.Contains(Path.GetExtension(droppedFiles[0])))
         return false;
 
       droppedFile = droppedFiles[0];
