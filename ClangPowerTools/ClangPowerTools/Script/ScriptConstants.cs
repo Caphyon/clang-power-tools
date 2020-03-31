@@ -18,6 +18,11 @@ namespace ClangPowerTools
         ".c++",
         ".cp",
         ".h",
+        ".hh",
+        ".hpp",
+        ".hxx",
+        ".tli",
+        ".tlh",
         ".vcxproj"
       };
 
