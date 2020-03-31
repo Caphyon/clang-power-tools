@@ -97,6 +97,7 @@
                         Height="18"
                         HorizontalAlignment="Right"
                         FontSize="12"
+                        GotFocus="ModifyFocus"
                         Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}"
                         TextChanged="RunFormat_TextChanged"
                         Visibility="{Binding Path=HasInputTextBox, Converter={StaticResource BoolToVis}}" />
@@ -114,7 +115,7 @@
                         Width="80"
                         Height="20"
                         HorizontalAlignment="Right"
-                        Click="ModifyInputButton_Click"
+                        Click="ModifyFocus"
                         Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OpenMultipleInputCommand}"
                         Content="Modify Input"
                         FontSize="12"
@@ -130,6 +131,7 @@
                       x:Name="EnableOption"
                       Grid.Column="2"
                       Width="80"
+                      Checked="ModifyFocus"
                       Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.FormatCodeCommand}"
                       IsChecked="{Binding IsEnabled}" />
                   </DataTemplate>
