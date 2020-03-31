@@ -1,5 +1,5 @@
-﻿using ClangPowerTools.Helpers;
-using ClangPowerTools.MVVM.Commands;
+﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.MVVM.Views;
@@ -10,7 +10,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows.Input;
 using Process = System.Diagnostics.Process;
 
@@ -22,15 +21,7 @@ namespace ClangPowerTools
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private FormatOptionsData customOptionsData = new FormatOptionsData();
-    private FormatOptionsData llvmOptionsData = new FormatOptionsData();
-    private FormatOptionsGoogleData googleOptionsData = new FormatOptionsGoogleData();
-    private FormatOptionsChromiumData chromiumOptionsData = new FormatOptionsChromiumData();
-    private FormatOptionsMozillaData mozillaOptionsData = new FormatOptionsMozillaData();
-    private FormatOptionsWebKitData webkitOptionsData = new FormatOptionsWebKitData();
-    private FormatOptionsMicrosoftData microsoftOptionsData = new FormatOptionsMicrosoftData();
-
-    private readonly SettingsPathBuilder settingsPathBuilder;
+    private readonly FormatEditorController formatEditorController = new FormatEditorController();
     private readonly FormatEditorView formatOptionsView;
     private InputMultipleDataView inputMultipleDataView;
     private ICommand selctCodeFileCommand;
@@ -39,7 +30,7 @@ namespace ClangPowerTools
     private ICommand resetCommand;
     private ICommand openUri;
     private ICommand openMultipleInputCommand;
-    
+
     private IFormatOption selectedOption;
     private List<IFormatOption> formatStyleOptions;
     private EditorStyles editorStyle = EditorStyles.Custom;
@@ -53,9 +44,8 @@ namespace ClangPowerTools
 
     public FormatEditorViewModel(FormatEditorView formatOptionsView)
     {
-      settingsPathBuilder = new SettingsPathBuilder();
       this.formatOptionsView = formatOptionsView;
-      InitializeStyleOptions(customOptionsData);
+      InitializeStyleOptions(FormatOptionsProvider.CustomOptionsData);
     }
 
     #endregion
@@ -113,41 +103,11 @@ namespace ClangPowerTools
       set
       {
         editorStyle = value;
-        switch (editorStyle)
-        {
-          case EditorStyles.Custom:
-            SetStyleControls(autoSize, autoSize, customOptionsData.FormatOptions);
-            break;
-          case EditorStyles.LLVM:
-            SetStyleControls(nameColumnWidthMax, "0", llvmOptionsData.FormatOptions);
-            break;
-          case EditorStyles.Google:
-            SetStyleControls(nameColumnWidthMax, "0", googleOptionsData.FormatOptions);
-            break;
-          case EditorStyles.Chromium:
-            SetStyleControls(nameColumnWidthMax, "0", chromiumOptionsData.FormatOptions);
-            break;
-          case EditorStyles.Mozilla:
-            SetStyleControls(nameColumnWidthMax, "0", mozillaOptionsData.FormatOptions);
-            break;
-          case EditorStyles.WebKit:
-            SetStyleControls(nameColumnWidthMax, "0", webkitOptionsData.FormatOptions);
-            break;
-          case EditorStyles.Microsoft:
-            SetStyleControls(nameColumnWidthMax, "0", microsoftOptionsData.FormatOptions);
-            break;
-        }
+        ChangeControlsDependingOnStyle();
 
         SelectedOption = formatStyleOptions.First();
         RunFormat();
       }
-    }
-
-    private void SetStyleControls(string nameColumnWidth, string enableOptionColumnWidth, List<IFormatOption> options)
-    {
-      NameColumnWidth = nameColumnWidth;
-      EnableOptionColumnWidth = enableOptionColumnWidth;
-      FormatOptions = options;
     }
 
     public string NameColumnWidth
@@ -232,11 +192,44 @@ namespace ClangPowerTools
       SelectedOption = formatStyleOptions.First();
     }
 
+    private void ChangeControlsDependingOnStyle()
+    {
+      switch (editorStyle)
+      {
+        case EditorStyles.Custom:
+          SetStyleControls(autoSize, autoSize, FormatOptionsProvider.CustomOptionsData.FormatOptions);
+          break;
+        case EditorStyles.LLVM:
+          SetStyleControls(nameColumnWidthMax, "0", FormatOptionsProvider.LlvmOptionsData.FormatOptions);
+          break;
+        case EditorStyles.Google:
+          SetStyleControls(nameColumnWidthMax, "0", FormatOptionsProvider.GoogleOptionsData.FormatOptions);
+          break;
+        case EditorStyles.Chromium:
+          SetStyleControls(nameColumnWidthMax, "0", FormatOptionsProvider.ChromiumOptionsData.FormatOptions);
+          break;
+        case EditorStyles.Mozilla:
+          SetStyleControls(nameColumnWidthMax, "0", FormatOptionsProvider.MozillaOptionsData.FormatOptions);
+          break;
+        case EditorStyles.WebKit:
+          SetStyleControls(nameColumnWidthMax, "0", FormatOptionsProvider.WebkitOptionsData.FormatOptions);
+          break;
+        case EditorStyles.Microsoft:
+          SetStyleControls(nameColumnWidthMax, "0", FormatOptionsProvider.MicrosoftOptionsData.FormatOptions);
+          break;
+      }
+    }
+
+    private void SetStyleControls(string nameColumnWidth, string enableOptionColumnWidth, List<IFormatOption> options)
+    {
+      NameColumnWidth = nameColumnWidth;
+      EnableOptionColumnWidth = enableOptionColumnWidth;
+      FormatOptions = options;
+    }
+
     private void OpenInputDataView()
     {
-      var multipleInputModel = selectedOption as FormatOptionMultipleInputModel;
-
-      if (multipleInputModel == null) return;
+      if (!(selectedOption is FormatOptionMultipleInputModel multipleInputModel)) return;
       inputMultipleDataView = new InputMultipleDataView(multipleInputModel.MultipleInput);
 
       inputMultipleDataView.Closed += CloseInputDataView;
@@ -245,7 +238,7 @@ namespace ClangPowerTools
 
     private void CloseInputDataView(object sender, EventArgs e)
     {
-      if (selectedOption is FormatOptionMultipleInputModel multipleInputModel 
+      if (selectedOption is FormatOptionMultipleInputModel multipleInputModel
        && inputMultipleDataView.DataContext is InputMultipleDataViewModel inputMultipleDataViewModel)
       {
         multipleInputModel.MultipleInput = inputMultipleDataViewModel.Input;
@@ -269,15 +262,8 @@ namespace ClangPowerTools
 
     private void ResetOptions()
     {
-      customOptionsData = new FormatOptionsData();
-      llvmOptionsData = new FormatOptionsData();
-      googleOptionsData = new FormatOptionsGoogleData();
-      chromiumOptionsData = new FormatOptionsChromiumData();
-      mozillaOptionsData = new FormatOptionsMozillaData();
-      webkitOptionsData = new FormatOptionsWebKitData();
-      microsoftOptionsData = new FormatOptionsMicrosoftData();
-
-      InitializeStyleOptions(customOptionsData);
+      FormatOptionsProvider.ResetOptions();
+      InitializeStyleOptions(FormatOptionsProvider.CustomOptionsData);
       SelectedStyle = EditorStyles.Custom;
 
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedStyle"));
@@ -302,43 +288,10 @@ namespace ClangPowerTools
       if (CheckIfAnyOptionEnabled() == false) return;
 
       var text = formatOptionsView.CodeEditor.Text;
-      string filePath = Path.Combine(settingsPathBuilder.GetPath(""), "FormatTemp.cpp");
-      string formatFilePath = Path.Combine(settingsPathBuilder.GetPath(""), ".clang-format");
-
-      WriteContentToFile(formatFilePath, FormatOptionFile.CreateOutput(formatStyleOptions, SelectedStyle).ToString());
-      WriteContentToFile(filePath, text);
-
-      var content = FormatFileOutsideProject(settingsPathBuilder.GetPath(""), filePath);
-      formatOptionsView.CodeEditorReadOnly.Text = content;
-
-      FileSystem.DeleteFile(filePath);
-      FileSystem.DeleteFile(formatFilePath);
+      var formattedText = formatEditorController.FormatText(text, formatStyleOptions, SelectedStyle);
+      formatOptionsView.CodeEditorReadOnly.Text = formattedText;
     }
 
-    private static string FormatFileOutsideProject(string path, string filePath)
-    {
-      string vsixPath = Path.GetDirectoryName(
-        typeof(RunClangPowerToolsPackage).Assembly.Location);
-
-      var process = new Process();
-      process.StartInfo.UseShellExecute = false;
-      process.StartInfo.CreateNoWindow = true;
-      process.StartInfo.RedirectStandardInput = true;
-      process.StartInfo.RedirectStandardOutput = true;
-      process.StartInfo.StandardOutputEncoding = Encoding.UTF8;
-      process.StartInfo.RedirectStandardError = true;
-      process.StartInfo.FileName = Path.Combine(vsixPath, ScriptConstants.kClangFormat);
-      process.StartInfo.WorkingDirectory = path;
-      process.StartInfo.Arguments = $"-style=file \"{Path.GetFullPath(filePath)}\"";
-
-      process.Start();
-      var output = process.StandardOutput.ReadToEnd();
-      if (string.IsNullOrWhiteSpace(output)) output = process.StandardError.ReadToEnd();
-      process.WaitForExit();
-      process.Close();
-
-      return output;
-    }
 
     private bool CheckIfAnyOptionEnabled()
     {
@@ -346,7 +299,6 @@ namespace ClangPowerTools
       {
         if (item.IsEnabled == true) return true;
       }
-
       return false;
     }
 
