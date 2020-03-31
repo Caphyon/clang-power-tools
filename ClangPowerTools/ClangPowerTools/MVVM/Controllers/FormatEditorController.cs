@@ -40,8 +40,8 @@ namespace ClangPowerTools.MVVM.Controllers
       string vsixPath = Path.GetDirectoryName(typeof(RunClangPowerToolsPackage).Assembly.Location);
       string output = string.Empty;
 
-      if (String.IsNullOrEmpty(vsixPath) || String.IsNullOrWhiteSpace(directoryPath)
-        || String.IsNullOrEmpty(filePath)) return string.Empty;
+      if (String.IsNullOrWhiteSpace(vsixPath) || String.IsNullOrWhiteSpace(directoryPath)
+        || String.IsNullOrWhiteSpace(filePath)) return string.Empty;
 
       try
       {
