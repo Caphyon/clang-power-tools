@@ -251,14 +251,7 @@ namespace ClangPowerTools
 
     private void OpenUri(string uri)
     {
-      try
-      {
-        Process.Start(new ProcessStartInfo(uri));
-      }
-      catch (Exception)
-      {
-
-      }
+      Process.Start(new ProcessStartInfo(uri));
     }
 
     private void ReadCodeFromFile()
@@ -300,7 +293,6 @@ namespace ClangPowerTools
       var formattedText = formatEditorController.FormatText(text, formatStyleOptions, SelectedStyle);
       formatOptionsView.CodeEditorReadOnly.Text = formattedText;
     }
-
 
     private void EditorLoaded(object sender, EventArgs e)
     {
