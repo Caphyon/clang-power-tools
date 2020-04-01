@@ -170,7 +170,6 @@ namespace ClangPowerTools
       get => resetCommand ?? (resetCommand = new RelayCommand(() => ResetOptions(), () => CanExecute));
     }
 
-
     public ICommand SelctCodeFileCommand
     {
       get => selctCodeFileCommand ?? (selctCodeFileCommand = new RelayCommand(() => ReadCodeFromFile(), () => CanExecute));
@@ -250,7 +249,14 @@ namespace ClangPowerTools
 
     private void OpenUri(string uri)
     {
-      Process.Start(new ProcessStartInfo(uri));
+      try
+      {
+        Process.Start(new ProcessStartInfo(uri));
+      }
+      catch (Exception)
+      {
+
+      }
     }
 
     private void ReadCodeFromFile()

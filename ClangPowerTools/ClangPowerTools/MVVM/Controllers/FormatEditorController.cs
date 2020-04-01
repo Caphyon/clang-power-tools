@@ -41,7 +41,10 @@ namespace ClangPowerTools.MVVM.Controllers
       string output = string.Empty;
 
       if (String.IsNullOrWhiteSpace(vsixPath) || String.IsNullOrWhiteSpace(directoryPath)
-        || String.IsNullOrWhiteSpace(filePath)) return string.Empty;
+        || String.IsNullOrWhiteSpace(filePath))
+      {
+        return string.Empty;
+      }
 
       try
       {
@@ -58,7 +61,10 @@ namespace ClangPowerTools.MVVM.Controllers
 
         process.Start();
         output = process.StandardOutput.ReadToEnd();
-        if (string.IsNullOrWhiteSpace(output)) output = process.StandardError.ReadToEnd();
+        if (string.IsNullOrWhiteSpace(output))
+        {
+          output = process.StandardError.ReadToEnd();
+        }
         process.WaitForExit();
         process.Close();
       }
