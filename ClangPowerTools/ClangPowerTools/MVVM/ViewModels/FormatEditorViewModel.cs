@@ -34,6 +34,7 @@ namespace ClangPowerTools
     private IFormatOption selectedOption;
     private List<IFormatOption> formatStyleOptions;
     private EditorStyles editorStyle = EditorStyles.Custom;
+    private bool windowLoaded = false;
     private string nameColumnWidth;
     private const string autoSize = "auto";
     private const string nameColumnWidthMax = "340";
@@ -44,6 +45,7 @@ namespace ClangPowerTools
 
     public FormatEditorViewModel(FormatEditorView formatOptionsView)
     {
+      formatOptionsView.Loaded += EditorLoaded;
       this.formatOptionsView = formatOptionsView;
       formatEditorController = new FormatEditorController();
       InitializeStyleOptions(FormatOptionsProvider.CustomOptionsData);
@@ -292,7 +294,7 @@ namespace ClangPowerTools
 
     public void RunFormat()
     {
-      if (CheckIfAnyOptionEnabled() == false) return;
+      if (windowLoaded == false) return;
 
       var text = formatOptionsView.CodeEditor.Text;
       var formattedText = formatEditorController.FormatText(text, formatStyleOptions, SelectedStyle);
@@ -300,13 +302,10 @@ namespace ClangPowerTools
     }
 
 
-    private bool CheckIfAnyOptionEnabled()
+    private void EditorLoaded(object sender, EventArgs e)
     {
-      foreach (var item in formatStyleOptions)
-      {
-        if (item.IsEnabled == true) return true;
-      }
-      return false;
+      windowLoaded = true;
+      formatOptionsView.Loaded -= EditorLoaded;
     }
 
     #endregion

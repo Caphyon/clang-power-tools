@@ -10,7 +10,7 @@ namespace ClangPowerTools.MVVM.Views
   {
     private readonly FormatEditorViewModel formatStyleViewModel;
 
-    private const string inputWindowDefaulText = "// --- Clang Power Tools - Format Style Editor ---\r\n//\r\n// Add your code here\r\n//\r\n// Format is run automatically on your code after \r\n// enabling any of the style options\r\n//\r\n// Check the Output tab to see your formatted code";
+    private const string inputWindowDefaulText = "// --- Clang Power Tools - Format Style Editor ---\r\n//\r\n// Add your code here\r\n//\r\n// Format is run automatically \r\n//\r\n// Check the OUTPUT tab to see your formatted code";
     private const string putputWindowDefaulText = "// Your formatted code will be displayed here";
 
     public FormatEditorView()
