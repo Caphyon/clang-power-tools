@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.MVVM.Models;
+﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.MVVM.Models;
 using Microsoft.Win32;
 using System.Collections.Generic;
 using System.IO;
@@ -53,13 +54,7 @@ namespace ClangPowerTools
 
     protected void WriteContentToFile(string path, string content)
     {
-      using (FileStream fs = new FileStream(path, FileMode.Create))
-      {
-        using (StreamWriter sw = new StreamWriter(fs))
-        {
-          sw.Write(content);
-        }
-      }
+      FileSystem.WriteContentToFile(path, content);
     }
 
     protected string OpenContentDialog(string content)

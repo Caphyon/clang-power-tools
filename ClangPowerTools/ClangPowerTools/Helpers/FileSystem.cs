@@ -25,6 +25,13 @@ namespace ClangPowerTools.Helpers
       return File.Exists(filePath);
     }
 
+    public static void WriteContentToFile(string path, string content)
+    {
+      using FileStream fs = new FileStream(path, FileMode.Create);
+      using StreamWriter sw = new StreamWriter(fs);
+      sw.Write(content);
+    }
+
     public static string CreateFullFileName(string path, string fileName)
     {
       return string.Concat(path, "\\", fileName);
