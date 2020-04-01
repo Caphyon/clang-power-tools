@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using Process = System.Diagnostics.Process;
 
@@ -36,9 +37,11 @@ namespace ClangPowerTools
     private EditorStyles editorStyle = EditorStyles.Custom;
     private bool windowLoaded = false;
     private string nameColumnWidth;
+    private string droppedFile;
     private const string autoSize = "auto";
     private const string nameColumnWidthMax = "340";
     public const string FileExtensionsSelectFile = "Code files (*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx;)|*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx";
+    
     #endregion
 
     #region Constructor
@@ -187,6 +190,28 @@ namespace ClangPowerTools
 
     #region Methods
 
+    #region Public Methods
+
+    public void PreviewDragOver(DragEventArgs e)
+    {
+      e.Handled = DropFileValidation(e, out string filePath);
+      droppedFile = filePath;
+    }
+
+    public void PreviewDrop(DragEventArgs e)
+    {
+      if (droppedFile == null)
+        return;
+
+      using StreamReader streamReader = new StreamReader(droppedFile);
+      formatOptionsView.CodeEditor.Text = streamReader.ReadToEnd();
+    }
+
+    #endregion
+
+
+    #region Private Methods
+
     private void InitializeStyleOptions(FormatOptionsData formatOptionsData)
     {
       formatStyleOptions = formatOptionsData.FormatOptions;
@@ -299,6 +324,27 @@ namespace ClangPowerTools
       windowLoaded = true;
       formatOptionsView.Loaded -= EditorLoaded;
     }
+
+    private bool DropFileValidation(DragEventArgs e, out string droppedFile)
+    {
+      droppedFile = null;
+      string[] droppedFiles = null;
+      if (e.Data.GetDataPresent(DataFormats.FileDrop))
+      {
+        droppedFiles = e.Data.GetData(DataFormats.FileDrop, true) as string[];
+      }
+
+      if (droppedFiles == null || droppedFiles.Length != 1)
+        return false;
+
+      if (!ScriptConstants.kAcceptedFileExtensions.Contains(Path.GetExtension(droppedFiles[0])))
+        return false;
+
+      droppedFile = droppedFiles[0];
+      return true;
+    }
+
+    #endregion
 
     #endregion
   }
