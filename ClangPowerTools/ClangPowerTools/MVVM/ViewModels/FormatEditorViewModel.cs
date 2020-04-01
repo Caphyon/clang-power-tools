@@ -21,7 +21,7 @@ namespace ClangPowerTools
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private readonly FormatEditorController formatEditorController = new FormatEditorController();
+    private readonly FormatEditorController formatEditorController;
     private readonly FormatEditorView formatOptionsView;
     private InputMultipleDataView inputMultipleDataView;
     private ICommand selctCodeFileCommand;
@@ -37,7 +37,7 @@ namespace ClangPowerTools
     private string nameColumnWidth;
     private const string autoSize = "auto";
     private const string nameColumnWidthMax = "340";
-    public const string FileExtensionsSelectFile = "Code files (*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx;*.h;*.h;*.h)|*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx";
+    public const string FileExtensionsSelectFile = "Code files (*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx;)|*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx";
     #endregion
 
     #region Constructor
@@ -45,6 +45,7 @@ namespace ClangPowerTools
     public FormatEditorViewModel(FormatEditorView formatOptionsView)
     {
       this.formatOptionsView = formatOptionsView;
+      formatEditorController = new FormatEditorController();
       InitializeStyleOptions(FormatOptionsProvider.CustomOptionsData);
     }
 
