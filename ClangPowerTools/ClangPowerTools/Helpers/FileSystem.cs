@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Windows.Forms;
 
 namespace ClangPowerTools.Helpers
 {
@@ -11,12 +13,32 @@ namespace ClangPowerTools.Helpers
 
     public static void DeleteDirectory(string path)
     {
-      if (Directory.Exists(path)) Directory.Delete(path, true);
+      if (Directory.Exists(path))
+      {
+        try
+        {
+          Directory.Delete(path, true);
+        }
+        catch (Exception e)
+        {
+          MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+      }
     }
 
     public static void DeleteFile(string path)
     {
-      if (File.Exists(path)) File.Delete(path);
+      if (File.Exists(path))
+      {
+        try
+        {
+          File.Delete(path);
+        }
+        catch (Exception e)
+        {
+          MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+      }
     }
 
     public static bool DoesFileExist(string path, string fileName)
