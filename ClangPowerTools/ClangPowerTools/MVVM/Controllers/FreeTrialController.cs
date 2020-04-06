@@ -24,16 +24,16 @@ namespace ClangPowerTools.MVVM.Controllers
 
     #region Public Methods
 
-    public bool Start() => registryUtility.WriteKey(keyName, DateTime.Now.ToString());
+    public bool Start() => registryUtility.WriteCurrentUserKey(keyName, DateTime.Now.ToString());
 
-    public bool MarkAsExpired() => registryUtility.WriteKey(keyName, expiredDate);
+    public bool MarkAsExpired() => registryUtility.WriteCurrentUserKey(keyName, expiredDate);
 
     public bool IsActive()
     {
       if (WasEverInTrial() == false)
         return false;
 
-      var freeTrialStartTimeAsString = registryUtility.ReadKey(keyName);
+      var freeTrialStartTimeAsString = registryUtility.ReadCurrentUserdKey(keyName);
       if (string.IsNullOrWhiteSpace(freeTrialStartTimeAsString))
         return false;
 
@@ -43,7 +43,7 @@ namespace ClangPowerTools.MVVM.Controllers
     }
 
     public bool WasEverInTrial() => registryUtility.Exists() &&
-                                    !string.IsNullOrWhiteSpace(registryUtility.ReadKey(keyName));
+                                    !string.IsNullOrWhiteSpace(registryUtility.ReadCurrentUserdKey(keyName));
 
     #endregion
 

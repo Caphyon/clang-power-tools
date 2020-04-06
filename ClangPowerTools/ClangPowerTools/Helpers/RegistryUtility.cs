@@ -12,19 +12,19 @@ namespace ClangPowerTools.Helpers
 
     #region Constructor
 
-    public RegistryUtility(string name) => registryName = name;
+    public RegistryUtility(string registryName) => this.registryName = registryName;
 
     #endregion
 
     #region Public Methods
 
-    public string ReadKey(string keyName)
+
+    public string ReadLocalMachineKey(string keyName)
     {
       try
       {
-        var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryName);
+        using var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(registryName);
         var keyValue = key.GetValue(keyName).ToString();
-        key.Close();
         return keyValue;
       }
       catch (Exception)
@@ -33,14 +33,26 @@ namespace ClangPowerTools.Helpers
       }
     }
 
-    public bool WriteKey(string keyName, string keyValue)
+    public string ReadCurrentUserdKey(string keyName)
     {
       try
       {
-        var key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(registryName);
-        key.SetValue(keyName, keyValue);
-        key.Close();
+        using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryName);
+        var keyValue = key.GetValue(keyName).ToString();
+        return keyValue;
+      }
+      catch (Exception)
+      {
+        return null;
+      }
+    }
 
+    public bool WriteCurrentUserKey(string keyName, string keyValue)
+    {
+      try
+      {
+        using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryName);
+        key.SetValue(keyName, keyValue);
         return true;
       }
       catch (Exception)
