@@ -11,6 +11,7 @@ namespace ClangPowerTools
     private bool isDownloading = false;
     private bool isInstalling = false;
     private bool isInstalled = false;
+    private bool hasPreviouslyIntalledLlvm = false;
     private bool canExecuteCommand = true;
     private int downloadProgress = 0;
     
@@ -93,7 +94,23 @@ namespace ClangPowerTools
     public int MinProgress { get; set; } = 0;
 
     public int MaxProgress { get; set; } = 100;
-    
+
+    public string CustomInstallationPath { get; set; } = string.Empty;
+
+    public bool HasPreviouslyIntalledLlvm
+    {
+      get
+      {
+        return hasPreviouslyIntalledLlvm;
+      }
+      set
+      {
+        hasPreviouslyIntalledLlvm = value;
+        // TODO might be unacessary
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("HasPreviouslyIntalledLlvm"));
+      }
+    }
+
     #endregion Properties
   }
 }
