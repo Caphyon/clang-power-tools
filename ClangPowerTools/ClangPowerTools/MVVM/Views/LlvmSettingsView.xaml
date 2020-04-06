@@ -138,6 +138,7 @@
                       <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding IsDownloading}" Value="True" />
                         <Condition Binding="{Binding IsInstalled}" Value="False" />
+                        <Condition Binding="{Binding HasPreviouslyIntalledLlvm}" Value="false" />
                       </MultiDataTrigger.Conditions>
                       <Setter Property="Visibility" Value="Hidden" />
                     </MultiDataTrigger>
@@ -154,6 +155,27 @@
                 </Style>
               </Button.Style>
             </Button>
+
+            <!--  Already installed LLVM  -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+              <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                  <Setter Property="Visibility" Value="Hidden" />
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding HasPreviouslyIntalledLlvm}" Value="True">
+                      <Setter Property="Visibility" Value="Visible" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </StackPanel.Style>
+              <TextBlock
+                Grid.Column="3"
+                Width="80"
+                Height="20"
+                VerticalAlignment="Center"
+                FontSize="13"
+                Text="test" />
+            </StackPanel>
 
             <!--  Uninstall button  -->
             <Button
