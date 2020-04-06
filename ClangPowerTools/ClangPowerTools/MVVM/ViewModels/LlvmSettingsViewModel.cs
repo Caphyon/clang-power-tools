@@ -29,7 +29,7 @@ namespace ClangPowerTools
     {
       llvmController.InstallFinished = InstallFinished;
       llvmController.UninstallFinished = UninstallFinished;
-      llvmController.onOperationCanceldEvent += OperationCanceled;
+      llvmController.OnOperationCanceldEvent += OperationCanceled;
       WindowClosed += llvmController.SettingsWindowClosed;
       IntitializeView();
     }
@@ -144,7 +144,17 @@ namespace ClangPowerTools
       }
 
       compilerModel = settingsProvider.GetCompilerSettingsModel();
+      SetPreinstalledLllvm();
       ResetVersionUsedIfRequired();
+    }
+
+    private void SetPreinstalledLllvm()
+    {
+      if (InstalledLlvms.Count > 0) return;
+
+      var path = llvmController.GetPreviouslyIntalledLlvmPath();
+      var version =  llvmController.GetPreviouslyIntalledLlvmVersion();
+
     }
 
     private void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
