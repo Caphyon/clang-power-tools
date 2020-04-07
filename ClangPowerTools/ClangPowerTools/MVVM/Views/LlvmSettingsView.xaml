@@ -95,7 +95,7 @@
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="10" />
               <ColumnDefinition Width="90" />
-              <ColumnDefinition Width="570" />
+              <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
               <RowDefinition Height="38" />
@@ -104,7 +104,6 @@
             <!--  Version name and action  -->
             <TextBlock
               Grid.Column="1"
-              Padding="0,0,200,0"
               VerticalAlignment="Center"
               Text="{Binding Version, StringFormat='LLVM {0}'}" />
             <!--  Download button  -->
@@ -138,11 +137,13 @@
                       <MultiDataTrigger.Conditions>
                         <Condition Binding="{Binding IsDownloading}" Value="True" />
                         <Condition Binding="{Binding IsInstalled}" Value="False" />
-                        <Condition Binding="{Binding HasPreviouslyIntalledLlvm}" Value="false" />
                       </MultiDataTrigger.Conditions>
                       <Setter Property="Visibility" Value="Hidden" />
                     </MultiDataTrigger>
                     <DataTrigger Binding="{Binding IsInstalling}" Value="True">
+                      <Setter Property="Visibility" Value="Hidden" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding HasPreviouslyIntalledLlvm}" Value="True">
                       <Setter Property="Visibility" Value="Hidden" />
                     </DataTrigger>
                     <DataTrigger Binding="{Binding IsInstalled}" Value="True">
@@ -157,9 +158,15 @@
             </Button>
 
             <!--  Already installed LLVM  -->
-            <StackPanel Grid.Column="2" Orientation="Horizontal">
-              <StackPanel.Style>
-                <Style TargetType="StackPanel">
+            <TextBlock
+              Grid.Column="2"
+              Height="20"
+              HorizontalAlignment="Right"
+              FontSize="13"
+              Text="{Binding CustomInstallationPath}">
+              <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                  <Setter Property="Foreground" Value="#BCBAC1" />
                   <Setter Property="Visibility" Value="Hidden" />
                   <Style.Triggers>
                     <DataTrigger Binding="{Binding HasPreviouslyIntalledLlvm}" Value="True">
@@ -167,15 +174,9 @@
                     </DataTrigger>
                   </Style.Triggers>
                 </Style>
-              </StackPanel.Style>
-              <TextBlock
-                Grid.Column="3"
-                Width="80"
-                Height="20"
-                VerticalAlignment="Center"
-                FontSize="13"
-                Text="test" />
-            </StackPanel>
+
+              </TextBlock.Style>
+            </TextBlock>
 
             <!--  Uninstall button  -->
             <Button
