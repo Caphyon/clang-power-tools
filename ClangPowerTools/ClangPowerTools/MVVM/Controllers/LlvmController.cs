@@ -15,7 +15,7 @@ namespace ClangPowerTools.MVVM.Controllers
   {
     #region Members
 
-    public LlvmSettingsModel llvmModel = new LlvmSettingsModel();
+    public LlvmModel llvmModel = new LlvmModel();
     public CancellationTokenSource downloadCancellationToken = new CancellationTokenSource();
 
     public delegate void OnOperationCanceled();
@@ -87,7 +87,6 @@ namespace ClangPowerTools.MVVM.Controllers
       {
         uri = llvmUri.GetDefaultUri(version);
       }
-
 
       try
       {

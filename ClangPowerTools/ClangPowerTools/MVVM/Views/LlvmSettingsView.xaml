@@ -163,7 +163,7 @@
               Height="20"
               HorizontalAlignment="Right"
               FontSize="13"
-              Text="{Binding CustomInstallationPath}">
+              Text="{Binding PreinstalledLlvmPath}">
               <TextBlock.Style>
                 <Style TargetType="TextBlock">
                   <Setter Property="Foreground" Value="#BCBAC1" />

@@ -74,7 +74,7 @@ namespace ClangPowerTools
     {
       var path = Environment.GetEnvironmentVariable("Path");
       var settingsProvider = new SettingsProvider();
-      var llvmVersion = settingsProvider.GetCompilerSettingsModel().LlvmVersion;
+      var llvmVersion = settingsProvider.GetLlvmSettingsModel().LlvmVersion;
 
       if (string.IsNullOrEmpty(llvmVersion)) return path;
 

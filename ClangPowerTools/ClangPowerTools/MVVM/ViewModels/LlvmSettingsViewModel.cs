@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Net;
 
 namespace ClangPowerTools
@@ -18,8 +17,8 @@ namespace ClangPowerTools
 
     private readonly LlvmController llvmController = new LlvmController();
     private readonly SettingsProvider settingsProvider = new SettingsProvider();
-    private CompilerSettingsModel compilerModel = new CompilerSettingsModel();
-    private List<LlvmSettingsModel> llvms = new List<LlvmSettingsModel>();
+    private List<LlvmModel> llvms = new List<LlvmModel>();
+    private LlvmSettingsModel llvmSettingsModel = new LlvmSettingsModel();
     private const string uninstall = "Uninstall";
 
     #endregion
@@ -38,7 +37,7 @@ namespace ClangPowerTools
 
     #region Properties
 
-    public List<LlvmSettingsModel> Llvms
+    public List<LlvmModel> Llvms
     {
       get
       {
@@ -58,12 +57,12 @@ namespace ClangPowerTools
     {
       get
       {
-        return compilerModel.LlvmVersion;
+        return llvmSettingsModel.LlvmVersion;
       }
 
       set
       {
-        compilerModel.LlvmVersion = value;
+        llvmSettingsModel.LlvmVersion = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("VersionUsed"));
       }
     }
@@ -130,7 +129,7 @@ namespace ClangPowerTools
     {
       foreach (var version in LlvmVersions.Versions)
       {
-        var llvmModel = new LlvmSettingsModel()
+        var llvmModel = new LlvmModel()
         {
           Version = version,
           IsInstalled = llvmController.IsVersionExeOnDisk(version, uninstall),
@@ -144,7 +143,7 @@ namespace ClangPowerTools
         llvms.Add(llvmModel);
       }
 
-      compilerModel = settingsProvider.GetCompilerSettingsModel();
+      llvmSettingsModel = settingsProvider.GetLlvmSettingsModel();
       SetPreinstalledLllvm();
       ResetVersionUsedIfRequired();
     }
@@ -154,11 +153,16 @@ namespace ClangPowerTools
       if (InstalledLlvms.Count > 0) return;
 
       var path = llvmController.GetPreviouslyIntalledLlvmPath();
-      var version =  llvmController.GetPreviouslyIntalledLlvmVersion();
+      var version = llvmController.GetPreviouslyIntalledLlvmVersion();
 
-      var llvm = llvms.Find(e => e.Version == version);
-      llvm.HasPreviouslyIntalledLlvm = true;
-      llvm.CustomInstallationPath = path;
+      //TODO check path and version for null
+
+      var llvmModel = llvms.Find(e => e.Version == version);
+      llvmModel.HasPreviouslyIntalledLlvm = true;
+      llvmModel.PreinstalledLlvmPath = path;
+
+      var llvmSettingsModel = settingsProvider.GetLlvmSettingsModel();
+      llvmSettingsModel.PreinstalledLlvmPath = path;
 
       InstalledLlvms.Add(version);
     }
@@ -199,7 +203,7 @@ namespace ClangPowerTools
 
     private void ResetButtonsState()
     {
-      foreach (var item in llvms) 
+      foreach (var item in llvms)
         item.CanExecuteCommand = true;
     }
 
