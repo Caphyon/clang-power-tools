@@ -103,7 +103,7 @@ namespace ClangPowerTools.Commands.BackgroundTidy
         cMakeBuilder.ClearBuildCashe();
 
       }
-      catch (Exception e)
+      catch (Exception)
       {
         //MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
