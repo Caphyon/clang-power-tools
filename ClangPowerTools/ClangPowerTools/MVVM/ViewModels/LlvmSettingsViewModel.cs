@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Net;
 
 namespace ClangPowerTools
@@ -155,6 +156,11 @@ namespace ClangPowerTools
       var path = llvmController.GetPreviouslyIntalledLlvmPath();
       var version =  llvmController.GetPreviouslyIntalledLlvmVersion();
 
+      var llvm = llvms.Find(e => e.Version == version);
+      llvm.HasPreviouslyIntalledLlvm = true;
+      llvm.CustomInstallationPath = path;
+
+      InstalledLlvms.Add(version);
     }
 
     private void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
