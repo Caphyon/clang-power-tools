@@ -143,7 +143,7 @@
                     <DataTrigger Binding="{Binding IsInstalling}" Value="True">
                       <Setter Property="Visibility" Value="Hidden" />
                     </DataTrigger>
-                    <DataTrigger Binding="{Binding HasPreviouslyIntalledLlvm}" Value="True">
+                    <DataTrigger Binding="{Binding HasPreinstalledLlvm}" Value="True">
                       <Setter Property="Visibility" Value="Hidden" />
                     </DataTrigger>
                     <DataTrigger Binding="{Binding IsInstalled}" Value="True">

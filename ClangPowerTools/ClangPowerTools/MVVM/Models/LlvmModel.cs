@@ -8,11 +8,11 @@ namespace ClangPowerTools
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private readonly LlvmSettingsModel llvmModel = new LlvmSettingsModel();
+    private readonly SettingsProvider settingsProvider = new SettingsProvider();
     private bool isDownloading = false;
     private bool isInstalling = false;
     private bool isInstalled = false;
-    private bool HasPreinstalledLlvm = false;
+    private bool hasPreinstalledLlvm = false;
     private bool canExecuteCommand = true;
     private int downloadProgress = 0;
     
@@ -24,11 +24,12 @@ namespace ClangPowerTools
     { 
       get
       {
-        return llvmModel.LlvmVersion;
+        return settingsProvider.GetLlvmSettingsModel().LlvmVersion;   
       }
       set
       {
-        llvmModel.LlvmVersion = value;
+        // TODO fix 
+        var test =  value;
       }   
     } 
 
@@ -107,17 +108,25 @@ namespace ClangPowerTools
 
     public int MaxProgress { get; set; } = 100;
 
-    public string PreinstalledLlvmPath { get; set; } = string.Empty;
+    public string PreinstalledLlvmPath 
+    { 
+      get
+      {
 
-    public bool HasPreviouslyIntalledLlvm
+      }
+      
+      set; 
+    } 
+
+    public bool HasPreinstalledLlvm
     {
       get
       {
-        return HasPreinstalledLlvm;
+        return hasPreinstalledLlvm;
       }
       set
       {
-        HasPreinstalledLlvm = value;
+        hasPreinstalledLlvm = value;
       }
     }
 

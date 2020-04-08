@@ -158,7 +158,7 @@ namespace ClangPowerTools
       //TODO check path and version for null
 
       var llvmModel = llvms.Find(e => e.Version == version);
-      llvmModel.HasPreviouslyIntalledLlvm = true;
+      llvmModel.HasPreinstalledLlvm = true;
       llvmModel.PreinstalledLlvmPath = path;
 
       var llvmSettingsModel = settingsProvider.GetLlvmSettingsModel();
