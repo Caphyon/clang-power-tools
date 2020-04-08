@@ -169,7 +169,7 @@
                   <Setter Property="Foreground" Value="#BCBAC1" />
                   <Setter Property="Visibility" Value="Hidden" />
                   <Style.Triggers>
-                    <DataTrigger Binding="{Binding HasPreviouslyIntalledLlvm}" Value="True">
+                    <DataTrigger Binding="{Binding HasPreinstalledLlvm}" Value="True">
                       <Setter Property="Visibility" Value="Visible" />
                     </DataTrigger>
                   </Style.Triggers>
