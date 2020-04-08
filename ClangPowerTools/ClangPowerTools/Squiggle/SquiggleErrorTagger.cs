@@ -117,7 +117,9 @@ namespace ClangPowerTools.Squiggle
           {
             ThreadPool.QueueUserWorkItem((object threadContext) =>
             {
-              Squiggles.Enqueue(CreateTagSpan(column, 1, error.Text));
+              var tagSpan = CreateTagSpan(column, 1, error.Text);
+              if(tagSpan != null)
+                Squiggles.Enqueue(tagSpan);
             });
             continue;
           }
@@ -127,7 +129,9 @@ namespace ClangPowerTools.Squiggle
 
         ThreadPool.QueueUserWorkItem((object threadContext) =>
         {
-          Squiggles.Enqueue(CreateTagSpan(start, length, error.Text));
+          var tagSpan = CreateTagSpan(start, length, error.Text);
+          if(tagSpan != null)
+            Squiggles.Enqueue(tagSpan);
         });
       }
     }
@@ -138,14 +142,21 @@ namespace ClangPowerTools.Squiggle
 
     private SquiggleModel CreateTagSpan(int start, int length, string tooltip)
     {
-      var snapshotSpan = new SnapshotSpan(SourceBuffer.CurrentSnapshot, start, length);
-      var squiggle = new SquiggleErrorTag(squiggleType, tooltip);
-
-      return new SquiggleModel()
+      try
       {
-        Snapshout = snapshotSpan,
-        Squiggle = squiggle
-      };
+        var snapshotSpan = new SnapshotSpan(SourceBuffer.CurrentSnapshot, start, length);
+        var squiggle = new SquiggleErrorTag(squiggleType, tooltip);
+
+        return new SquiggleModel()
+        {
+          Snapshout = snapshotSpan,
+          Squiggle = squiggle
+        };
+      }
+      catch (Exception)
+      {
+        return null;
+      }
     }
 
     private int LengthUntilGivenPosition(List<ITextSnapshotLine> lines)
