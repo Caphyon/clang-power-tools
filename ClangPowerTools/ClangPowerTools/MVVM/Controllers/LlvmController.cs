@@ -51,17 +51,17 @@ namespace ClangPowerTools.MVVM.Controllers
 
     #region Public Methods
 
-    public string GetPreviouslyIntalledLlvmPath()
+    public string GetLlvmPathFromRegistry()
     {
       var registryUtility = new RegistryUtility(registryLlvm);
       var path = registryUtility.ReadLocalMachineKey(keyInstallPath);
 
       if (path == null) return string.Empty;
 
-      return path;
+      return Path.Combine(path, "bin");
     }
 
-    public string GetPreviouslyIntalledLlvmVersion()
+    public string GetVersionFromRegistry()
     {
       var registryUtility = new RegistryUtility(registryLlvmUninstall);
       var version = registryUtility.ReadLocalMachineKey(keyDisplayVersion);

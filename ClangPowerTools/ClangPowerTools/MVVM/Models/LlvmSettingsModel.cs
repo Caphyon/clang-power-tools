@@ -8,7 +8,9 @@ namespace ClangPowerTools
 {
   public class LlvmSettingsModel
   {
-    public string LlvmVersion { get; set; } = string.Empty;
+    public string LlvmSelectedVersion { get; set; } = string.Empty;
+
+    public string PreinstalledLlvmVersion { get; set; } = string.Empty;
 
     public string PreinstalledLlvmPath { get; set; } = string.Empty;
   }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Net;
 
 namespace ClangPowerTools
@@ -18,7 +19,7 @@ namespace ClangPowerTools
     private readonly LlvmController llvmController = new LlvmController();
     private readonly SettingsProvider settingsProvider = new SettingsProvider();
     private List<LlvmModel> llvms = new List<LlvmModel>();
-    private LlvmSettingsModel llvmSettingsModel = new LlvmSettingsModel();
+    private readonly LlvmSettingsModel llvmSettingsModel = new LlvmSettingsModel();
     private const string uninstall = "Uninstall";
 
     #endregion
@@ -31,6 +32,7 @@ namespace ClangPowerTools
       llvmController.UninstallFinished = UninstallFinished;
       llvmController.OnOperationCanceldEvent += OperationCanceled;
       WindowClosed += llvmController.SettingsWindowClosed;
+      llvmSettingsModel = settingsProvider.GetLlvmSettingsModel();
       IntitializeView();
     }
     #endregion
@@ -57,12 +59,12 @@ namespace ClangPowerTools
     {
       get
       {
-        return llvmSettingsModel.LlvmVersion;
+        return llvmSettingsModel.LlvmSelectedVersion;
       }
 
       set
       {
-        llvmSettingsModel.LlvmVersion = value;
+        llvmSettingsModel.LlvmSelectedVersion = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("VersionUsed"));
       }
     }
@@ -142,29 +144,53 @@ namespace ClangPowerTools
 
         llvms.Add(llvmModel);
       }
-
-      llvmSettingsModel = settingsProvider.GetLlvmSettingsModel();
       SetPreinstalledLllvm();
       ResetVersionUsedIfRequired();
     }
 
     private void SetPreinstalledLllvm()
     {
-      if (InstalledLlvms.Count > 0) return;
+      // TODO refactor
+      if (Directory.Exists(llvmSettingsModel.PreinstalledLlvmPath) == false)
+      {
+        llvmSettingsModel.PreinstalledLlvmPath = string.Empty;
+        return;
+      }
 
-      var path = llvmController.GetPreviouslyIntalledLlvmPath();
-      var version = llvmController.GetPreviouslyIntalledLlvmVersion();
+      SetPathAndVersion(out string path, out string version);
+      if (string.IsNullOrWhiteSpace(path) || string.IsNullOrWhiteSpace(version)) return;
 
-      //TODO check path and version for null
+      if (string.IsNullOrWhiteSpace(llvmSettingsModel.PreinstalledLlvmVersion))
+      {
+        llvmSettingsModel.PreinstalledLlvmVersion = version;
 
-      var llvmModel = llvms.Find(e => e.Version == version);
-      llvmModel.HasPreinstalledLlvm = true;
-      llvmModel.PreinstalledLlvmPath = path;
+        var llvmModel = llvms.Find(e => e.Version == version);
+        llvmModel.HasPreinstalledLlvm = true;
+        llvmModel.PreinstalledLlvmPath = path;
+      }
+      else
+      {
+        var llvmModel = llvms.Find(e => e.Version == llvmSettingsModel.PreinstalledLlvmVersion);
+        llvmModel.HasPreinstalledLlvm = true;
+        llvmModel.PreinstalledLlvmPath = llvmSettingsModel.PreinstalledLlvmPath;
+      }
 
-      var llvmSettingsModel = settingsProvider.GetLlvmSettingsModel();
-      llvmSettingsModel.PreinstalledLlvmPath = path;
+      InstalledLlvms.Add(llvmSettingsModel.PreinstalledLlvmVersion);
+    }
 
-      InstalledLlvms.Add(version);
+    private void SetPathAndVersion(out string path, out string version)
+    {
+      if (InstalledLlvms.Count == 0)
+      {
+        path = llvmController.GetLlvmPathFromRegistry();
+        version = llvmController.GetVersionFromRegistry();
+        llvmSettingsModel.LlvmSelectedVersion = version;
+      }
+      else
+      {
+        path = llvmSettingsModel.PreinstalledLlvmPath;
+        version = llvmSettingsModel.LlvmSelectedVersion;
+      }
     }
 
     private void DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
