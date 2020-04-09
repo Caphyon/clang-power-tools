@@ -19,7 +19,6 @@ namespace ClangPowerTools
     private readonly LlvmController llvmController = new LlvmController();
     private readonly SettingsProvider settingsProvider = new SettingsProvider();
     private List<LlvmModel> llvms = new List<LlvmModel>();
-    private readonly LlvmSettingsModel llvmSettingsModel = new LlvmSettingsModel();
     private const string uninstall = "Uninstall";
 
     #endregion
@@ -32,7 +31,6 @@ namespace ClangPowerTools
       llvmController.UninstallFinished = UninstallFinished;
       llvmController.OnOperationCanceldEvent += OperationCanceled;
       WindowClosed += llvmController.SettingsWindowClosed;
-      llvmSettingsModel = settingsProvider.GetLlvmSettingsModel();
       IntitializeView();
     }
     #endregion
@@ -59,12 +57,12 @@ namespace ClangPowerTools
     {
       get
       {
-        return llvmSettingsModel.LlvmSelectedVersion;
+        return SettingsProvider.LlvmSettingsModel.LlvmSelectedVersion;
       }
 
       set
       {
-        llvmSettingsModel.LlvmSelectedVersion = value;
+        SettingsProvider.LlvmSettingsModel.LlvmSelectedVersion = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("VersionUsed"));
       }
     }
@@ -150,6 +148,7 @@ namespace ClangPowerTools
 
     private void SetPreinstalledLllvm()
     {
+      var llvmSettingsModel = SettingsProvider.LlvmSettingsModel;
       if (Directory.Exists(llvmSettingsModel.PreinstalledLlvmPath) == false)
       {
         llvmSettingsModel.PreinstalledLlvmPath = string.Empty;
@@ -165,6 +164,7 @@ namespace ClangPowerTools
 
     private void SetPathAndVersion(string path, string version)
     {
+      var llvmSettingsModel = SettingsProvider.LlvmSettingsModel;
       if (string.IsNullOrWhiteSpace(llvmSettingsModel.PreinstalledLlvmVersion))
       {
         llvmSettingsModel.PreinstalledLlvmVersion = version;
@@ -183,6 +183,7 @@ namespace ClangPowerTools
 
     private void GetPathAndVersion(out string path, out string version)
     {
+      var llvmSettingsModel = SettingsProvider.LlvmSettingsModel;
       if (InstalledLlvms.Count == 0)
       {
         path = llvmController.GetLlvmPathFromRegistry();

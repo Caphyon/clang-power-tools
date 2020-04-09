@@ -26,8 +26,7 @@ namespace ClangPowerTools
 
     public FormatSettingsViewModel()
     {
-      var settingsProvider = new SettingsProvider();
-      formatModel = settingsProvider.GetFormatSettingsModel();
+      formatModel = SettingsProvider.FormatSettingsModel;
     }
 
     #endregion

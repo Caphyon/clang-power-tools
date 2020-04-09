@@ -5,45 +5,44 @@ namespace ClangPowerTools
 {
   public class SettingsProvider
   {
+    #region Properties 
+
     public static CompilerSettingsModel CompilerSettingsModel { get; set; } = new CompilerSettingsModel();
     public static FormatSettingsModel FormatSettingsModel { get; set; } = new FormatSettingsModel();
     public static TidySettingsModel TidySettingsModel { get; set; } = new TidySettingsModel();
-    private static GeneralSettingsModel generalSettingsModel = new GeneralSettingsModel();
-    private static LlvmSettingsModel llvmSettingsModel = new LlvmSettingsModel();
-    private static LlvmModel preinstalledLlvm = new LlvmModel();
-
+    public static GeneralSettingsModel GeneralSettingsModel { get; set; } = new GeneralSettingsModel();
+    public static LlvmSettingsModel LlvmSettingsModel { get; set; } = new LlvmSettingsModel();
+    public static LlvmModel PreinstalledLlvm { get; set; } = new LlvmModel();
     public static SettingsView SettingsView { get; set; }
-
     public static FormatEditorView FormatEditorView { get; set; }
 
-    public GeneralSettingsModel GetGeneralSettingsModel()
+    public SettingsProvider Instance
     {
-      return generalSettingsModel;
+      get
+      {
+        return instance;
+      }
     }
 
-    public LlvmSettingsModel GetLlvmSettingsModel()
+    #endregion
+
+    #region Members
+
+    private static readonly SettingsProvider instance = new SettingsProvider();
+
+    #endregion
+
+    #region Constructor
+
+    static SettingsProvider()
     {
-      return llvmSettingsModel;
     }
 
-    public LlvmModel GetPreinstalledLLvmModel()
+    private SettingsProvider()
     {
-      return preinstalledLlvm;
     }
 
-    public void SetGeneralSettingsModel(GeneralSettingsModel model)
-    {
-      generalSettingsModel = model;
-    }
+    #endregion
 
-    public void SetLlvmSettingsModel(LlvmSettingsModel model)
-    {
-      llvmSettingsModel = model;
-    }
-
-    public void SetPreinstalledLLvmModel(LlvmModel model)
-    {
-       preinstalledLlvm = model;
-    }
   }
 }

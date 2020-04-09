@@ -27,8 +27,7 @@ namespace ClangPowerTools
 
     public GeneralSettingsViewModel()
     {
-      var settingsProvider = new SettingsProvider();
-      generalSettingsModel = settingsProvider.GetGeneralSettingsModel();
+      generalSettingsModel = SettingsProvider.GeneralSettingsModel;
     }
 
     #endregion

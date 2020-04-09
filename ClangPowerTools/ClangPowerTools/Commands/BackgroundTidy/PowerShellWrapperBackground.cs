@@ -69,8 +69,8 @@ namespace ClangPowerTools.Commands.BackgroundTidy
     {
       var path = Environment.GetEnvironmentVariable("Path");
       var settingsProvider = new SettingsProvider();
-      var llvmModel = settingsProvider.GetLlvmSettingsModel();
-      var preinstalled = settingsProvider.GetPreinstalledLLvmModel();
+      var llvmModel = SettingsProvider.LlvmSettingsModel;
+      var preinstalledLlvm = SettingsProvider.PreinstalledLlvm;
 
       if (string.IsNullOrEmpty(llvmModel.LlvmSelectedVersion)) return path;
 
@@ -79,7 +79,7 @@ namespace ClangPowerTools.Commands.BackgroundTidy
       paths.RemoveAll(ContainsLlvm);
 
       if (string.IsNullOrWhiteSpace(llvmModel.PreinstalledLlvmPath) == false
-        && preinstalled.Version == llvmModel.LlvmSelectedVersion)
+        && preinstalledLlvm.Version == llvmModel.LlvmSelectedVersion)
       {
         paths.Add(llvmModel.PreinstalledLlvmPath);
       }

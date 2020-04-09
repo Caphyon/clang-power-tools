@@ -48,8 +48,7 @@
     /// <returns></returns>
     private string GetChecks()
     {
-      SettingsProvider settingsProvider = new SettingsProvider();
-      string tidyChecks = settingsProvider.GetTidySettingsModel().PredefinedChecks;
+      string tidyChecks = SettingsProvider.TidySettingsModel.PredefinedChecks;
 
       return !string.IsNullOrWhiteSpace(tidyChecks) ?
         $",{tidyChecks.Replace(';', ',')}" :

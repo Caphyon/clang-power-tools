@@ -131,8 +131,7 @@ namespace ClangPowerTools
         hasPreinstalledLlvm = value;
         if (hasPreinstalledLlvm)
         {
-          var settingsProvider = new SettingsProvider();
-          settingsProvider.SetPreinstalledLLvmModel(this);
+          SettingsProvider.PreinstalledLlvm = this;
         }
       }
     }

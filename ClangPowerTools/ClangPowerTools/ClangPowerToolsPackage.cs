@@ -325,20 +325,19 @@ namespace ClangPowerTools
 
     private void VersionHandler()
     {
-      string version = mSettingsProvider.GetGeneralSettingsModel().Version;
+      string version = SettingsProvider.GeneralSettingsModel.Version;
       ShowToolbar(version);
       UpdateVersionAsync(version).SafeFireAndForget();
     }
 
     private async Task UpdateVersionAsync(string version)
     {
-      GeneralSettingsModel generalSettingsModel = mSettingsProvider.GetGeneralSettingsModel();
+      var generalSettingsModel = SettingsProvider.GeneralSettingsModel;
 
       string currentVersion = PackageUtility.GetVersion();
       if (string.IsNullOrWhiteSpace(currentVersion) == false && 0 > string.Compare(version, currentVersion))
       {
         generalSettingsModel.Version = currentVersion;
-        mSettingsProvider.SetGeneralSettingsModel(generalSettingsModel);
         mSettingsHandler.SaveSettings();
 
         FreeTrialController freeTrialController = new FreeTrialController();

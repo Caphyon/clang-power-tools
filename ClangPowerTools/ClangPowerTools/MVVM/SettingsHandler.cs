@@ -18,7 +18,7 @@ namespace ClangPowerTools
     private const string FormatConfigurationFileName = "FormatConfiguration.config";
     private const string TidyOptionsConfigurationFileName = "TidyOptionsConfiguration.config";
     private const string TidyPredefinedChecksConfigurationFileName = "TidyPredefinedChecksConfiguration.config";
-    private const int MinJsonElements =  5 ;
+    private const int MinJsonElements = 5;
 
     #region Constructor
     public SettingsHandler()
@@ -106,7 +106,7 @@ namespace ClangPowerTools
       SettingsProvider.CompilerSettingsModel = new CompilerSettingsModel();
       SettingsProvider.FormatSettingsModel = new FormatSettingsModel();
       SettingsProvider.TidySettingsModel = new TidySettingsModel();
-      settingsProvider.SetLlvmSettingsModel(new LlvmSettingsModel());
+      SettingsProvider.LlvmSettingsModel = new LlvmSettingsModel();
 
       SetDefaultTidyPredefindedChecks();
     }
@@ -183,8 +183,8 @@ namespace ClangPowerTools
         SettingsProvider.CompilerSettingsModel,
         SettingsProvider.FormatSettingsModel,
         SettingsProvider.TidySettingsModel,
-        settingsProvider.GetGeneralSettingsModel(),
-        settingsProvider.GetLlvmSettingsModel(),
+        SettingsProvider.GeneralSettingsModel,
+        SettingsProvider.LlvmSettingsModel,
       };
       return models;
     }
@@ -238,8 +238,8 @@ namespace ClangPowerTools
       SettingsProvider.CompilerSettingsModel = compilerModel;
       SettingsProvider.FormatSettingsModel = formatModel;
       SettingsProvider.TidySettingsModel = tidyModel;
-      settingsProvider.SetGeneralSettingsModel(generalModel);
-      settingsProvider.SetLlvmSettingsModel(llvmModel);
+      SettingsProvider.GeneralSettingsModel = generalModel;
+      SettingsProvider.LlvmSettingsModel = llvmModel;
     }
 
     private string GetSettingsFilePath(string path, string fileName)
@@ -269,7 +269,7 @@ namespace ClangPowerTools
 
 
       SettingsProvider.CompilerSettingsModel = compilerSettingsModel;
-      settingsProvider.SetGeneralSettingsModel(generalSettingsModel);
+      SettingsProvider.GeneralSettingsModel = generalSettingsModel;
     }
 
     private void MapClangFormatOptionsToSettings(ClangFormatOptions clangFormat)
