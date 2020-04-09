@@ -105,7 +105,7 @@ namespace ClangPowerTools
     {
       SettingsProvider.CompilerSettingsModel = new CompilerSettingsModel();
       SettingsProvider.FormatSettingsModel = new FormatSettingsModel();
-      settingsProvider.SetTidySettingsModel(new TidySettingsModel());
+      SettingsProvider.TidySettingsModel = new TidySettingsModel();
       settingsProvider.SetLlvmSettingsModel(new LlvmSettingsModel());
 
       SetDefaultTidyPredefindedChecks();
@@ -237,7 +237,7 @@ namespace ClangPowerTools
     {
       SettingsProvider.CompilerSettingsModel = compilerModel;
       SettingsProvider.FormatSettingsModel = formatModel;
-      settingsProvider.SetTidySettingsModel(tidyModel);
+      SettingsProvider.TidySettingsModel = tidyModel;
       settingsProvider.SetGeneralSettingsModel(generalModel);
       settingsProvider.SetLlvmSettingsModel(llvmModel);
     }
@@ -295,7 +295,7 @@ namespace ClangPowerTools
       tidySettingsModel.FormatAfterTidy = clangTidy.FormatAfterTidy;
       tidySettingsModel.TidyOnSave = clangTidy.AutoTidyOnSave;
 
-      settingsProvider.SetTidySettingsModel(tidySettingsModel);
+      SettingsProvider.TidySettingsModel = tidySettingsModel;
     }
 
     private void MapTidyPredefinedChecksToTidyettings(ClangTidyPredefinedChecksOptions clangTidyPredefinedChecksOptions)
@@ -313,7 +313,7 @@ namespace ClangPowerTools
         }
       }
 
-      settingsProvider.SetTidySettingsModel(tidySettingsModel);
+      SettingsProvider.TidySettingsModel = tidySettingsModel;
     }
 
     private string FormatTidyCheckName(string name)

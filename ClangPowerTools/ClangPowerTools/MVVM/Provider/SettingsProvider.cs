@@ -31,11 +31,6 @@ namespace ClangPowerTools
       return preinstalledLlvm;
     }
 
-    public void SetTidySettingsModel(TidySettingsModel model)
-    {
-      TidySettingsModel = model;
-    }
-
     public void SetGeneralSettingsModel(GeneralSettingsModel model)
     {
       generalSettingsModel = model;
