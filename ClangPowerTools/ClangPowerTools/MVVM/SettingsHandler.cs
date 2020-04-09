@@ -104,7 +104,7 @@ namespace ClangPowerTools
     private void CreateDeaultSettings()
     {
       SettingsProvider.CompilerSettingsModel = new CompilerSettingsModel();
-      settingsProvider.SetFormatSettingsModel(new FormatSettingsModel());
+      SettingsProvider.FormatSettingsModel = new FormatSettingsModel();
       settingsProvider.SetTidySettingsModel(new TidySettingsModel());
       settingsProvider.SetLlvmSettingsModel(new LlvmSettingsModel());
 
@@ -181,7 +181,7 @@ namespace ClangPowerTools
       List<object> models = new List<object>
       {
         SettingsProvider.CompilerSettingsModel,
-        settingsProvider.GetFormatSettingsModel(),
+        SettingsProvider.FormatSettingsModel,
         settingsProvider.GetTidySettingsModel(),
         settingsProvider.GetGeneralSettingsModel(),
         settingsProvider.GetLlvmSettingsModel(),
@@ -236,7 +236,7 @@ namespace ClangPowerTools
     private void SetSettingsModels(CompilerSettingsModel compilerModel, FormatSettingsModel formatModel, TidySettingsModel tidyModel, GeneralSettingsModel generalModel, LlvmSettingsModel llvmModel)
     {
       SettingsProvider.CompilerSettingsModel = compilerModel;
-      settingsProvider.SetFormatSettingsModel(formatModel);
+      SettingsProvider.FormatSettingsModel = formatModel;
       settingsProvider.SetTidySettingsModel(tidyModel);
       settingsProvider.SetGeneralSettingsModel(generalModel);
       settingsProvider.SetLlvmSettingsModel(llvmModel);
@@ -283,7 +283,7 @@ namespace ClangPowerTools
       formatSettingsModel.FallbackStyle = clangFormat.FallbackStyle;
       formatSettingsModel.FormatOnSave = clangFormat.EnableFormatOnSave;
 
-      settingsProvider.SetFormatSettingsModel(formatSettingsModel);
+      SettingsProvider.FormatSettingsModel = formatSettingsModel;
     }
 
     private void MapClangTidyOptionsToSettings(ClangTidyOptions clangTidy)

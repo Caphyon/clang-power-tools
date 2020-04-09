@@ -37,11 +37,6 @@ namespace ClangPowerTools
       return preinstalledLlvm;
     }
 
-    public void SetFormatSettingsModel(FormatSettingsModel model)
-    {
-      FormatSettingsModel = model;
-    }
-
     public void SetTidySettingsModel(TidySettingsModel model)
     {
       tidySettingsModel = model;

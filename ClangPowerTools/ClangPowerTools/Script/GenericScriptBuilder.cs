@@ -57,7 +57,7 @@ namespace ClangPowerTools.Script
       // Append the General parameters and Tidy parameters from option pages
       mScript = $"{GetGeneralParameters()} {(CommandIds.kTidyId == mCommandId || CommandIds.kTidyFixId == mCommandId ? GetTidyParameters() : ScriptConstants.kParallel)}";
 
-      FormatSettingsModel formatSettings = settingsProvider.GetFormatSettingsModel();
+      var formatSettings = SettingsProvider.FormatSettingsModel;
       TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
 
       // Append the clang-format style
