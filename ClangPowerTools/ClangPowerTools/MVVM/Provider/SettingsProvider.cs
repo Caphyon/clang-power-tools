@@ -5,8 +5,8 @@ namespace ClangPowerTools
 {
   public class SettingsProvider
   {
-    private static CompilerSettingsModel compilerSettingsModel = new CompilerSettingsModel();
-    private static FormatSettingsModel formatSettingsModel = new FormatSettingsModel();
+    public static CompilerSettingsModel CompilerSettingsModel { get; set; } = new CompilerSettingsModel();
+    public static FormatSettingsModel FormatSettingsModel { get; set; } = new FormatSettingsModel();
     private static TidySettingsModel tidySettingsModel = new TidySettingsModel();
     private static GeneralSettingsModel generalSettingsModel = new GeneralSettingsModel();
     private static LlvmSettingsModel llvmSettingsModel = new LlvmSettingsModel();
@@ -16,15 +16,6 @@ namespace ClangPowerTools
 
     public static FormatEditorView FormatEditorView { get; set; }
 
-    public CompilerSettingsModel GetCompilerSettingsModel()
-    {
-      return compilerSettingsModel;
-    }
-
-    public FormatSettingsModel GetFormatSettingsModel()
-    {
-      return formatSettingsModel;
-    }
 
     public TidySettingsModel GetTidySettingsModel()
     {
@@ -46,14 +37,9 @@ namespace ClangPowerTools
       return preinstalledLlvm;
     }
 
-    public void SetCompilerSettingsModel(CompilerSettingsModel model)
-    {
-      compilerSettingsModel = model;
-    }
-
     public void SetFormatSettingsModel(FormatSettingsModel model)
     {
-      formatSettingsModel = model;
+      FormatSettingsModel = model;
     }
 
     public void SetTidySettingsModel(TidySettingsModel model)

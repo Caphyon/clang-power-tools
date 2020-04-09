@@ -73,12 +73,12 @@ namespace ClangPowerTools.Commands
     {
       _ = Task.Run(() =>
       {
-        SettingsHandler settingsHandler = new SettingsHandler();
-        SettingsProvider settingsProvider = new SettingsProvider();
-        ItemsCollector itemsCollector = new ItemsCollector();
+        var settingsHandler = new SettingsHandler();
+        var settingsProvider = new SettingsProvider();
+        var itemsCollector = new ItemsCollector();
         List<string> projectsToIgnore = itemsCollector.GetProjectsToIgnore();
 
-        CompilerSettingsModel settingsModel = settingsProvider.GetCompilerSettingsModel();
+        var settingsModel = SettingsProvider.CompilerSettingsModel;
         AddItemsToIgnore(projectsToIgnore, settingsModel, "ProjectsToIgnore");
         if (projectsToIgnore.Any() == false)
         {

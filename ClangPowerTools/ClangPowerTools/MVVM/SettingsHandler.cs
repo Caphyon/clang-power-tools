@@ -103,7 +103,7 @@ namespace ClangPowerTools
 
     private void CreateDeaultSettings()
     {
-      settingsProvider.SetCompilerSettingsModel(new CompilerSettingsModel());
+      SettingsProvider.CompilerSettingsModel = new CompilerSettingsModel();
       settingsProvider.SetFormatSettingsModel(new FormatSettingsModel());
       settingsProvider.SetTidySettingsModel(new TidySettingsModel());
       settingsProvider.SetLlvmSettingsModel(new LlvmSettingsModel());
@@ -180,7 +180,7 @@ namespace ClangPowerTools
     {
       List<object> models = new List<object>
       {
-        settingsProvider.GetCompilerSettingsModel(),
+        SettingsProvider.CompilerSettingsModel,
         settingsProvider.GetFormatSettingsModel(),
         settingsProvider.GetTidySettingsModel(),
         settingsProvider.GetGeneralSettingsModel(),
@@ -235,7 +235,7 @@ namespace ClangPowerTools
 
     private void SetSettingsModels(CompilerSettingsModel compilerModel, FormatSettingsModel formatModel, TidySettingsModel tidyModel, GeneralSettingsModel generalModel, LlvmSettingsModel llvmModel)
     {
-      settingsProvider.SetCompilerSettingsModel(compilerModel);
+      SettingsProvider.CompilerSettingsModel = compilerModel;
       settingsProvider.SetFormatSettingsModel(formatModel);
       settingsProvider.SetTidySettingsModel(tidyModel);
       settingsProvider.SetGeneralSettingsModel(generalModel);
@@ -255,8 +255,8 @@ namespace ClangPowerTools
 
     private void MapClangOptionsToSettings(ClangOptions clangOptions)
     {
-      CompilerSettingsModel compilerSettingsModel = new CompilerSettingsModel();
-      GeneralSettingsModel generalSettingsModel = new GeneralSettingsModel();
+      var compilerSettingsModel = new CompilerSettingsModel();
+      var generalSettingsModel = new GeneralSettingsModel();
 
       compilerSettingsModel.CompileFlags = clangOptions.ClangFlagsCollection;
       compilerSettingsModel.FilesToIgnore = clangOptions.FilesToIgnore;
@@ -267,7 +267,8 @@ namespace ClangPowerTools
       compilerSettingsModel.VerboseMode = clangOptions.VerboseMode;
       generalSettingsModel.Version = clangOptions.Version;
 
-      settingsProvider.SetCompilerSettingsModel(compilerSettingsModel);
+
+      SettingsProvider.CompilerSettingsModel = compilerSettingsModel;
       settingsProvider.SetGeneralSettingsModel(generalSettingsModel);
     }
 

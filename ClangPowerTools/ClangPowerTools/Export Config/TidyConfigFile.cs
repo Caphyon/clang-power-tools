@@ -18,9 +18,9 @@ namespace ClangPowerTools
 
     public TidyConfigFile()
     {
-      compilerSettingsModel = settingsProvider.GetCompilerSettingsModel();
+      compilerSettingsModel = SettingsProvider.CompilerSettingsModel;
       tidySettingsModel = settingsProvider.GetTidySettingsModel();
-      formatSettingsModel = settingsProvider.GetFormatSettingsModel();
+      formatSettingsModel = SettingsProvider.FormatSettingsModel;
   }
 
     // Readonly list for paramaters names

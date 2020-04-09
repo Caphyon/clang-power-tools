@@ -542,7 +542,7 @@ namespace ClangPowerTools
 
     private async Task OnMSVCBuildSucceededAsync()
     {
-      var runClang = settingsProvider.GetCompilerSettingsModel().ClangAfterMSVC;
+      var runClang = SettingsProvider.CompilerSettingsModel.ClangAfterMSVC;
       if (runClang == false || SolutionInfo.ContainsCppProject() == false)
         return;
 
@@ -598,7 +598,7 @@ namespace ClangPowerTools
 
     private void BeforeSaveClangFormat(Document aDocument)
     {
-      FormatSettingsModel formatSettings = settingsProvider.GetFormatSettingsModel();
+      var formatSettings = SettingsProvider.FormatSettingsModel;
       TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
 
       if (currentCommand == CommandIds.kTidyFixId && running && tidySettings.FormatAfterTidy && formatSettings.FormatOnSave)
@@ -625,7 +625,7 @@ namespace ClangPowerTools
 
     private void BeforeExecuteClangCompile(string aGuid, int aId)
     {
-      CompilerSettingsModel compilerSettings = settingsProvider.GetCompilerSettingsModel();
+      var compilerSettings = SettingsProvider.CompilerSettingsModel;
 
       if (compilerSettings.ClangAfterMSVC == false)
         return;
@@ -652,7 +652,7 @@ namespace ClangPowerTools
       if (document == null)
         return;
 
-      if (settingsProvider.GetCompilerSettingsModel().ShowSquiggles == false)
+      if (SettingsProvider.CompilerSettingsModel.ShowSquiggles == false)
         return;
 
       if (running || vsBuildRunning)

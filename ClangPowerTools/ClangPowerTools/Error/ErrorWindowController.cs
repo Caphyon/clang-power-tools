@@ -36,7 +36,7 @@ namespace ClangPowerTools
 
         ResumeRefresh();
 
-        if(new SettingsProvider().GetCompilerSettingsModel().ShowErrorList)
+        if(SettingsProvider.CompilerSettingsModel.ShowErrorList)
         {
           BringToFront();
         }

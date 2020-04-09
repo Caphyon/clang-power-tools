@@ -48,8 +48,7 @@ namespace ClangPowerTools.Squiggle
     /// <param name="spans">A read-only span of text to be searched for instances of CurrentWord</param>
     public IEnumerable<ITagSpan<SquiggleErrorTag>> GetTags(NormalizedSnapshotSpanCollection spans)
     {
-      var settingsProvider = new SettingsProvider();
-      if (settingsProvider.GetCompilerSettingsModel().ShowSquiggles == false)
+      if (SettingsProvider.CompilerSettingsModel.ShowSquiggles == false)
         yield break;
 
       if (Squiggles == null || Squiggles.Count() == 0)

@@ -95,7 +95,7 @@ namespace ClangPowerTools.Script
     /// <returns>The parameters from General option page</returns>
     private string GetGeneralParameters()
     {
-      CompilerSettingsModel compilerSettings = settingsProvider.GetCompilerSettingsModel();
+      var compilerSettings = SettingsProvider.CompilerSettingsModel;
       var parameters = string.Empty;
 
       // Get the Clang Flags list
@@ -132,7 +132,7 @@ namespace ClangPowerTools.Script
     /// <returns>The clang flags</returns>
     private string GetClangFlags()
     {
-      CompilerSettingsModel compilerSettings = settingsProvider.GetCompilerSettingsModel();
+      var compilerSettings = SettingsProvider.CompilerSettingsModel;
 
       return string.Format("{0} {1}", ScriptConstants.kClangFlags,
         compilerSettings.WarningsAsErrors ?
