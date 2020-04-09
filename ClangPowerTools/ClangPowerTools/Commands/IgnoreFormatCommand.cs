@@ -74,7 +74,6 @@ namespace ClangPowerTools.Commands
     {
       _ = Task.Run(() =>
       {
-        SettingsProvider settingsProvider = new SettingsProvider();
         ItemsCollector itemsCollector = new ItemsCollector();
         SettingsHandler settingsHandler = new SettingsHandler();
 

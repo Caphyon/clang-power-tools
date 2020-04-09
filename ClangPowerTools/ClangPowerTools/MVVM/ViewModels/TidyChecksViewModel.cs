@@ -19,7 +19,6 @@ namespace ClangPowerTools
     private string checkSearch = string.Empty;
     private TidySettingsModel tidyModel;
     private TidyChecksView tidyChecksView;
-    private SettingsProvider settingsProvider = new SettingsProvider();
     private TidyCheckModel selectedCheck = new TidyCheckModel();
     private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>();
     private ICommand resetSearchCommand;

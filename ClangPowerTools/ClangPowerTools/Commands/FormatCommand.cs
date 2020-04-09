@@ -364,7 +364,6 @@ namespace ClangPowerTools.Commands
 
     private Process CreateProcess(string aText, int aOffset, int aLength, string aPath, string aFilePath)
     {
-      var settingsProvider = new SettingsProvider();
       var formatSettings = SettingsProvider.FormatSettingsModel;
       string vsixPath = Path.GetDirectoryName(
         typeof(RunClangPowerToolsPackage).Assembly.Location);

@@ -17,7 +17,6 @@ namespace ClangPowerTools
     public CancelEventHandler WindowClosed;
 
     private readonly LlvmController llvmController = new LlvmController();
-    private readonly SettingsProvider settingsProvider = new SettingsProvider();
     private List<LlvmModel> llvms = new List<LlvmModel>();
     private const string uninstall = "Uninstall";
 

@@ -11,7 +11,6 @@ namespace ClangPowerTools
 
     // Create StringBuilder to be written in the .clang-tidy file
     private StringBuilder tidyConfigOutput = new StringBuilder();
-    private SettingsProvider settingsProvider = new SettingsProvider();
     private CompilerSettingsModel compilerSettingsModel;
     private TidySettingsModel tidySettingsModel;
     private FormatSettingsModel formatSettingsModel;

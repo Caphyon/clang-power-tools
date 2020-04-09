@@ -39,7 +39,6 @@ namespace ClangPowerTools
     public event EventHandler<EventArgs> ErrorDetectedEvent;
     public event EventHandler<EventArgs> HasEncodingErrorEvent;
 
-    private readonly SettingsProvider settingsProvider = new SettingsProvider();
     private readonly Commands2 mCommand;
     private CommandUILocation commandUILocation;
     private int currentCommand;

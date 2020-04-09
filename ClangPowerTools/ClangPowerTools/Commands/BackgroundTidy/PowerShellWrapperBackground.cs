@@ -68,7 +68,6 @@ namespace ClangPowerTools.Commands.BackgroundTidy
     private string CreatePathEnvironmentVariable()
     {
       var path = Environment.GetEnvironmentVariable("Path");
-      var settingsProvider = new SettingsProvider();
       var llvmModel = SettingsProvider.LlvmSettingsModel;
       var preinstalledLlvm = SettingsProvider.PreinstalledLlvm;
 

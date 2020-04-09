@@ -74,7 +74,6 @@ namespace ClangPowerTools.Commands
       _ = Task.Run(() =>
       {
         var settingsHandler = new SettingsHandler();
-        var settingsProvider = new SettingsProvider();
         var itemsCollector = new ItemsCollector();
         List<string> projectsToIgnore = itemsCollector.GetProjectsToIgnore();
 

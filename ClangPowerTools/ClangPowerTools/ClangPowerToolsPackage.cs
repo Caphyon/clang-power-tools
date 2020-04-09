@@ -144,7 +144,6 @@ namespace ClangPowerTools
       mSettingsHandler.InitializeSettings();
 
       await mCommandController.InitializeCommandsAsync(this);
-      mSettingsProvider = new SettingsProvider();
 
       RegisterToEvents();
 

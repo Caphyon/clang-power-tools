@@ -11,7 +11,6 @@ namespace ClangPowerTools
   public class SettingsHandler
   {
     private readonly string settingsPath = string.Empty;
-    private readonly SettingsProvider settingsProvider = new SettingsProvider();
 
     private const string SettingsFileName = "settings.json";
     private const string GeneralConfigurationFileName = "GeneralConfiguration.config";

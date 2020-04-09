@@ -23,7 +23,6 @@ namespace ClangPowerTools.Script
     private string mVsEdition;
     private string mVsVersion;
     private int mCommandId;
-    private SettingsProvider settingsProvider = new SettingsProvider();
     #endregion
 
 
