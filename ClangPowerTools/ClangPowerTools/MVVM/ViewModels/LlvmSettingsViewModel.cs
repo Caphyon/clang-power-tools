@@ -150,16 +150,21 @@ namespace ClangPowerTools
 
     private void SetPreinstalledLllvm()
     {
-      // TODO refactor
       if (Directory.Exists(llvmSettingsModel.PreinstalledLlvmPath) == false)
       {
         llvmSettingsModel.PreinstalledLlvmPath = string.Empty;
         return;
       }
 
-      SetPathAndVersion(out string path, out string version);
+      GetPathAndVersion(out string path, out string version);
       if (string.IsNullOrWhiteSpace(path) || string.IsNullOrWhiteSpace(version)) return;
+      SetPathAndVersion(path, version);
 
+      InstalledLlvms.Add(llvmSettingsModel.PreinstalledLlvmVersion);
+    }
+
+    private void SetPathAndVersion(string path, string version)
+    {
       if (string.IsNullOrWhiteSpace(llvmSettingsModel.PreinstalledLlvmVersion))
       {
         llvmSettingsModel.PreinstalledLlvmVersion = version;
@@ -174,11 +179,9 @@ namespace ClangPowerTools
         llvmModel.HasPreinstalledLlvm = true;
         llvmModel.PreinstalledLlvmPath = llvmSettingsModel.PreinstalledLlvmPath;
       }
-
-      InstalledLlvms.Add(llvmSettingsModel.PreinstalledLlvmVersion);
     }
 
-    private void SetPathAndVersion(out string path, out string version)
+    private void GetPathAndVersion(out string path, out string version)
     {
       if (InstalledLlvms.Count == 0)
       {
