@@ -9,6 +9,9 @@ namespace ClangPowerTools.Views
   {
     public SettingsView(bool activeLicense)
     {
+      var settingsHandler = new SettingsHandler();
+      settingsHandler.LoadSettings();
+
       InitializeComponent();
       DataContext = new SettingsViewModel(this, activeLicense);
 
