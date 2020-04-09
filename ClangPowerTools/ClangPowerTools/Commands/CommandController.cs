@@ -577,7 +577,7 @@ namespace ClangPowerTools
       if (false == mSaveCommandWasGiven)
         return;
 
-      TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
+      var tidySettings = SettingsProvider.TidySettingsModel;
 
       // The clang-tidy on save option is disable
       if (false == tidySettings.TidyOnSave)
@@ -599,7 +599,7 @@ namespace ClangPowerTools
     private void BeforeSaveClangFormat(Document aDocument)
     {
       var formatSettings = SettingsProvider.FormatSettingsModel;
-      TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
+      var tidySettings = SettingsProvider.TidySettingsModel;
 
       if (currentCommand == CommandIds.kTidyFixId && running && tidySettings.FormatAfterTidy && formatSettings.FormatOnSave)
       {

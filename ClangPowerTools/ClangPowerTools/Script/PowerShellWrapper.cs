@@ -98,8 +98,7 @@ namespace ClangPowerTools
 
     private static string GetCustomTidyPath()
     {
-      var settingsProvider = new SettingsProvider();
-      var executablePath = settingsProvider.GetTidySettingsModel().CustomExecutable;
+      var executablePath = SettingsProvider.TidySettingsModel.CustomExecutable;
 
       return string.IsNullOrWhiteSpace(executablePath) == false ? executablePath : string.Empty;
     }

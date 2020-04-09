@@ -7,7 +7,7 @@ namespace ClangPowerTools
   {
     public static CompilerSettingsModel CompilerSettingsModel { get; set; } = new CompilerSettingsModel();
     public static FormatSettingsModel FormatSettingsModel { get; set; } = new FormatSettingsModel();
-    private static TidySettingsModel tidySettingsModel = new TidySettingsModel();
+    public static TidySettingsModel TidySettingsModel { get; set; } = new TidySettingsModel();
     private static GeneralSettingsModel generalSettingsModel = new GeneralSettingsModel();
     private static LlvmSettingsModel llvmSettingsModel = new LlvmSettingsModel();
     private static LlvmModel preinstalledLlvm = new LlvmModel();
@@ -15,12 +15,6 @@ namespace ClangPowerTools
     public static SettingsView SettingsView { get; set; }
 
     public static FormatEditorView FormatEditorView { get; set; }
-
-
-    public TidySettingsModel GetTidySettingsModel()
-    {
-      return tidySettingsModel;
-    }
 
     public GeneralSettingsModel GetGeneralSettingsModel()
     {
@@ -39,7 +33,7 @@ namespace ClangPowerTools
 
     public void SetTidySettingsModel(TidySettingsModel model)
     {
-      tidySettingsModel = model;
+      TidySettingsModel = model;
     }
 
     public void SetGeneralSettingsModel(GeneralSettingsModel model)

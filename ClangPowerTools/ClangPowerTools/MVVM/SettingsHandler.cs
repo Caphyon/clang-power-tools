@@ -115,7 +115,7 @@ namespace ClangPowerTools
     {
       var checks = new StringBuilder();
       var tidyCheckModel = new TidyChecks();
-      var tidyModel = settingsProvider.GetTidySettingsModel();
+      var tidyModel = SettingsProvider.TidySettingsModel;
 
       foreach (TidyCheckModel item in tidyCheckModel.Checks)
       {
@@ -182,7 +182,7 @@ namespace ClangPowerTools
       {
         SettingsProvider.CompilerSettingsModel,
         SettingsProvider.FormatSettingsModel,
-        settingsProvider.GetTidySettingsModel(),
+        SettingsProvider.TidySettingsModel,
         settingsProvider.GetGeneralSettingsModel(),
         settingsProvider.GetLlvmSettingsModel(),
       };
@@ -301,7 +301,7 @@ namespace ClangPowerTools
     private void MapTidyPredefinedChecksToTidyettings(ClangTidyPredefinedChecksOptions clangTidyPredefinedChecksOptions)
     {
       PropertyInfo[] properties = typeof(ClangTidyPredefinedChecksOptions).GetProperties();
-      TidySettingsModel tidySettingsModel = settingsProvider.GetTidySettingsModel();
+      var tidySettingsModel = SettingsProvider.TidySettingsModel;
 
       foreach (PropertyInfo propertyInfo in properties)
       {

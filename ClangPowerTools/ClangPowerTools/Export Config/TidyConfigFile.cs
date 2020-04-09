@@ -19,7 +19,7 @@ namespace ClangPowerTools
     public TidyConfigFile()
     {
       compilerSettingsModel = SettingsProvider.CompilerSettingsModel;
-      tidySettingsModel = settingsProvider.GetTidySettingsModel();
+      tidySettingsModel = SettingsProvider.TidySettingsModel;
       formatSettingsModel = SettingsProvider.FormatSettingsModel;
   }
 
@@ -70,7 +70,7 @@ namespace ClangPowerTools
 
     private void CreateChecksOutputLine(string paramaterName)
     {
-      TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
+      var tidySettings = SettingsProvider.TidySettingsModel;
 
       ClangTidyUseChecksFrom clangTidyUseChecksFrom = tidySettings.UseChecksFrom;
       if (clangTidyUseChecksFrom == ClangTidyUseChecksFrom.CustomChecks)
