@@ -34,6 +34,8 @@ namespace ClangPowerTools
 
     #region Constructor
 
+    // Explicit static constructor to tell C# compiler
+    // not to mark type as beforefieldinit
     static SettingsProvider()
     {
     }
