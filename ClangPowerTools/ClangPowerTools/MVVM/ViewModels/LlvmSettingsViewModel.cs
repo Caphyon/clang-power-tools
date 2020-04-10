@@ -141,12 +141,12 @@ namespace ClangPowerTools
 
         llvms.Add(llvmModel);
       }
-      SetPreinstalledLllvm();
+      SetPreinstalledLlvm();
       SetSelectedVersionIfEmpty();
       ResetVersionUsedIfRequired();
     }
 
-    private void SetPreinstalledLllvm()
+    private void SetPreinstalledLlvm()
     {
       var llvmSettingsModel = SettingsProvider.LlvmSettingsModel;
 
@@ -154,12 +154,7 @@ namespace ClangPowerTools
       if (string.IsNullOrWhiteSpace(path) || string.IsNullOrWhiteSpace(version)) return;
 
       SetPathAndVersion(path, version);
-      if (Directory.Exists(llvmSettingsModel.PreinstalledLlvmPath) == false)
-      {
-        llvmSettingsModel.PreinstalledLlvmPath = string.Empty;
-        llvmSettingsModel.PreinstalledLlvmVersion = string.Empty;
-        return;
-      }
+      if (llvmSettingsModel.PreinstalledLlvmVersion == string.Empty) return;
 
       InstalledLlvms.Add(llvmSettingsModel.PreinstalledLlvmVersion);
     }
@@ -167,10 +162,11 @@ namespace ClangPowerTools
     private void SetPathAndVersion(string path, string version)
     {
       var settingsProviderLlvmModel = SettingsProvider.LlvmSettingsModel;
+      var llvmModel = new LlvmModel();
       if (string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmVersion)
         || string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmPath))
       {
-        var llvmModel = llvms.Find(e => e.Version == version);
+        llvmModel = llvms.Find(e => e.Version == version);
         llvmModel.HasPreinstalledLlvm = true;
         llvmModel.PreinstalledLlvmPath = path;
 
@@ -179,14 +175,23 @@ namespace ClangPowerTools
       }
       else
       {
-        var llvmModel = llvms.Find(e => e.Version == settingsProviderLlvmModel.PreinstalledLlvmVersion);
+        llvmModel = llvms.Find(e => e.Version == settingsProviderLlvmModel.PreinstalledLlvmVersion);
         llvmModel.HasPreinstalledLlvm = true;
         llvmModel.PreinstalledLlvmPath = settingsProviderLlvmModel.PreinstalledLlvmPath;
+      }
+
+      if (Directory.Exists(settingsProviderLlvmModel.PreinstalledLlvmPath) == false)
+      {
+        settingsProviderLlvmModel.PreinstalledLlvmPath = string.Empty;
+        settingsProviderLlvmModel.PreinstalledLlvmVersion = string.Empty;
+        llvmModel.HasPreinstalledLlvm = false;
       }
     }
 
     private void GetPathAndVersion(out string path, out string version)
     {
+      path = string.Empty;
+      version = string.Empty;
       var llvmSettingsModel = SettingsProvider.LlvmSettingsModel;
       if (InstalledLlvms.Count == 0)
       {
@@ -194,10 +199,10 @@ namespace ClangPowerTools
         version = llvmController.GetVersionFromRegistry();
         llvmSettingsModel.LlvmSelectedVersion = version;
       }
-      else
+      if (path == string.Empty || version == string.Empty)
       {
         path = llvmSettingsModel.PreinstalledLlvmPath;
-        version = llvmSettingsModel.LlvmSelectedVersion;
+        version = llvmSettingsModel.PreinstalledLlvmVersion;
       }
     }
 
@@ -208,14 +213,12 @@ namespace ClangPowerTools
 
     private void SetSelectedVersionIfEmpty()
     {
-      
-      if(string.IsNullOrWhiteSpace(VersionUsed))
+      if (string.IsNullOrWhiteSpace(VersionUsed))
       {
-        if (llvms.Count > 0)
-          VersionUsed = llvms[0].Version;
+        if (InstalledLlvms.Count > 0)
+          VersionUsed = InstalledLlvms[0];
       }
     }
-
 
     private void ResetVersionUsedIfRequired()
     {
