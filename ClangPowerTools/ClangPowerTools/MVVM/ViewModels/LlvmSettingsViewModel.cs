@@ -148,35 +148,39 @@ namespace ClangPowerTools
     private void SetPreinstalledLllvm()
     {
       var llvmSettingsModel = SettingsProvider.LlvmSettingsModel;
-      if (Directory.Exists(llvmSettingsModel.PreinstalledLlvmPath) == false)
-      {
-        llvmSettingsModel.PreinstalledLlvmPath = string.Empty;
-        return;
-      }
 
       GetPathAndVersion(out string path, out string version);
       if (string.IsNullOrWhiteSpace(path) || string.IsNullOrWhiteSpace(version)) return;
+
       SetPathAndVersion(path, version);
+      if (Directory.Exists(llvmSettingsModel.PreinstalledLlvmPath) == false)
+      {
+        llvmSettingsModel.PreinstalledLlvmPath = string.Empty;
+        llvmSettingsModel.PreinstalledLlvmVersion = string.Empty;
+        return;
+      }
 
       InstalledLlvms.Add(llvmSettingsModel.PreinstalledLlvmVersion);
     }
 
     private void SetPathAndVersion(string path, string version)
     {
-      var llvmSettingsModel = SettingsProvider.LlvmSettingsModel;
-      if (string.IsNullOrWhiteSpace(llvmSettingsModel.PreinstalledLlvmVersion))
+      var settingsProviderLlvmModel = SettingsProvider.LlvmSettingsModel;
+      if (string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmVersion)
+        || string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmPath))
       {
-        llvmSettingsModel.PreinstalledLlvmVersion = version;
-
         var llvmModel = llvms.Find(e => e.Version == version);
         llvmModel.HasPreinstalledLlvm = true;
         llvmModel.PreinstalledLlvmPath = path;
+
+        settingsProviderLlvmModel.PreinstalledLlvmVersion = version;
+        settingsProviderLlvmModel.PreinstalledLlvmPath = path;
       }
       else
       {
-        var llvmModel = llvms.Find(e => e.Version == llvmSettingsModel.PreinstalledLlvmVersion);
+        var llvmModel = llvms.Find(e => e.Version == settingsProviderLlvmModel.PreinstalledLlvmVersion);
         llvmModel.HasPreinstalledLlvm = true;
-        llvmModel.PreinstalledLlvmPath = llvmSettingsModel.PreinstalledLlvmPath;
+        llvmModel.PreinstalledLlvmPath = settingsProviderLlvmModel.PreinstalledLlvmPath;
       }
     }
 
