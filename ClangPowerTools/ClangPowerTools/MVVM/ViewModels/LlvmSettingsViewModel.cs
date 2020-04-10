@@ -142,6 +142,7 @@ namespace ClangPowerTools
         llvms.Add(llvmModel);
       }
       SetPreinstalledLllvm();
+      SetSelectedVersionIfEmpty();
       ResetVersionUsedIfRequired();
     }
 
@@ -204,6 +205,17 @@ namespace ClangPowerTools
     {
       llvmController.llvmModel.DownloadProgress = e.ProgressPercentage;
     }
+
+    private void SetSelectedVersionIfEmpty()
+    {
+      
+      if(string.IsNullOrWhiteSpace(VersionUsed))
+      {
+        if (llvms.Count > 0)
+          VersionUsed = llvms[0].Version;
+      }
+    }
+
 
     private void ResetVersionUsedIfRequired()
     {
