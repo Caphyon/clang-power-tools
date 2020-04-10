@@ -24,6 +24,7 @@ namespace ClangPowerTools.Helpers
       try
       {
         using var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(registryName);
+        if (key == null) return null;
         var keyValue = key.GetValue(keyName).ToString();
         return keyValue;
       }
