@@ -95,7 +95,7 @@
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="10" />
               <ColumnDefinition Width="90" />
-              <ColumnDefinition Width="570" />
+              <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
               <RowDefinition Height="38" />
@@ -104,7 +104,6 @@
             <!--  Version name and action  -->
             <TextBlock
               Grid.Column="1"
-              Padding="0,0,200,0"
               VerticalAlignment="Center"
               Text="{Binding Version, StringFormat='LLVM {0}'}" />
             <!--  Download button  -->
@@ -144,6 +143,9 @@
                     <DataTrigger Binding="{Binding IsInstalling}" Value="True">
                       <Setter Property="Visibility" Value="Hidden" />
                     </DataTrigger>
+                    <DataTrigger Binding="{Binding HasPreinstalledLlvm}" Value="True">
+                      <Setter Property="Visibility" Value="Hidden" />
+                    </DataTrigger>
                     <DataTrigger Binding="{Binding IsInstalled}" Value="True">
                       <Setter Property="Visibility" Value="Hidden" />
                     </DataTrigger>
@@ -154,6 +156,27 @@
                 </Style>
               </Button.Style>
             </Button>
+
+            <!--  Already installed LLVM  -->
+            <TextBlock
+              Grid.Column="2"
+              Height="20"
+              HorizontalAlignment="Right"
+              FontSize="13"
+              Text="{Binding PreinstalledLlvmPath}">
+              <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                  <Setter Property="Foreground" Value="#BCBAC1" />
+                  <Setter Property="Visibility" Value="Hidden" />
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding HasPreinstalledLlvm}" Value="True">
+                      <Setter Property="Visibility" Value="Visible" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+
+              </TextBlock.Style>
+            </TextBlock>
 
             <!--  Uninstall button  -->
             <Button

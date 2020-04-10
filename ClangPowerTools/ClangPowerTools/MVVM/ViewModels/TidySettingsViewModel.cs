@@ -29,8 +29,7 @@ namespace ClangPowerTools
 
     public TidySettingsViewModel()
     {
-      var settingsProvider = new SettingsProvider();
-      tidyModel = settingsProvider.GetTidySettingsModel();
+      tidyModel = SettingsProvider.TidySettingsModel;
       HeaderFilters = new List<string>() { tidyModel.HeaderFilter, ComboBoxConstants.kCorrespondingHeaderName };
       headerFilter = tidyModel.HeaderFilter;
     }

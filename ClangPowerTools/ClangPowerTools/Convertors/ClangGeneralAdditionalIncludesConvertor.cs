@@ -33,8 +33,6 @@ namespace ClangPowerTools.Convertors
     public static ClangGeneralAdditionalIncludes? FromString(string aAdditionalIncludes)
       => mAdditionalIncludesStringToEnum[aAdditionalIncludes];
 
-
-
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
       ClangGeneralAdditionalIncludes additionalIncludes = (ClangGeneralAdditionalIncludes)value;

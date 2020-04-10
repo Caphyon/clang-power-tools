@@ -39,7 +39,6 @@ namespace ClangPowerTools
     public event EventHandler<EventArgs> ErrorDetectedEvent;
     public event EventHandler<EventArgs> HasEncodingErrorEvent;
 
-    private readonly SettingsProvider settingsProvider = new SettingsProvider();
     private readonly Commands2 mCommand;
     private CommandUILocation commandUILocation;
     private int currentCommand;
@@ -542,7 +541,7 @@ namespace ClangPowerTools
 
     private async Task OnMSVCBuildSucceededAsync()
     {
-      var runClang = settingsProvider.GetCompilerSettingsModel().ClangAfterMSVC;
+      var runClang = SettingsProvider.CompilerSettingsModel.ClangAfterMSVC;
       if (runClang == false || SolutionInfo.ContainsCppProject() == false)
         return;
 
@@ -577,7 +576,7 @@ namespace ClangPowerTools
       if (false == mSaveCommandWasGiven)
         return;
 
-      TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
+      var tidySettings = SettingsProvider.TidySettingsModel;
 
       // The clang-tidy on save option is disable
       if (false == tidySettings.TidyOnSave)
@@ -598,8 +597,8 @@ namespace ClangPowerTools
 
     private void BeforeSaveClangFormat(Document aDocument)
     {
-      FormatSettingsModel formatSettings = settingsProvider.GetFormatSettingsModel();
-      TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
+      var formatSettings = SettingsProvider.FormatSettingsModel;
+      var tidySettings = SettingsProvider.TidySettingsModel;
 
       if (currentCommand == CommandIds.kTidyFixId && running && tidySettings.FormatAfterTidy && formatSettings.FormatOnSave)
       {
@@ -625,7 +624,7 @@ namespace ClangPowerTools
 
     private void BeforeExecuteClangCompile(string aGuid, int aId)
     {
-      CompilerSettingsModel compilerSettings = settingsProvider.GetCompilerSettingsModel();
+      var compilerSettings = SettingsProvider.CompilerSettingsModel;
 
       if (compilerSettings.ClangAfterMSVC == false)
         return;
@@ -652,7 +651,7 @@ namespace ClangPowerTools
       if (document == null)
         return;
 
-      if (settingsProvider.GetCompilerSettingsModel().ShowSquiggles == false)
+      if (SettingsProvider.CompilerSettingsModel.ShowSquiggles == false)
         return;
 
       if (running || vsBuildRunning)

@@ -36,8 +36,5 @@ namespace ClangPowerTools
     }
 
     #endregion
-
-
-
   }
 }

@@ -5,53 +5,46 @@ namespace ClangPowerTools
 {
   public class SettingsProvider
   {
-    private static CompilerSettingsModel compilerSettingsModel = new CompilerSettingsModel();
-    private static FormatSettingsModel formatSettingsModel = new FormatSettingsModel();
-    private static TidySettingsModel tidySettingsModel = new TidySettingsModel();
-    private static GeneralSettingsModel generalSettingsModel = new GeneralSettingsModel();
+    #region Properties 
 
+    public static CompilerSettingsModel CompilerSettingsModel { get; set; } = new CompilerSettingsModel();
+    public static FormatSettingsModel FormatSettingsModel { get; set; } = new FormatSettingsModel();
+    public static TidySettingsModel TidySettingsModel { get; set; } = new TidySettingsModel();
+    public static GeneralSettingsModel GeneralSettingsModel { get; set; } = new GeneralSettingsModel();
+    public static LlvmSettingsModel LlvmSettingsModel { get; set; } = new LlvmSettingsModel();
+    public static LlvmModel PreinstalledLlvm { get; set; } = new LlvmModel();
     public static SettingsView SettingsView { get; set; }
-
     public static FormatEditorView FormatEditorView { get; set; }
 
-    public CompilerSettingsModel GetCompilerSettingsModel()
+    public SettingsProvider Instance
     {
-      return compilerSettingsModel;
+      get
+      {
+        return instance;
+      }
     }
 
-    public FormatSettingsModel GetFormatSettingsModel()
+    #endregion
+
+    #region Members
+
+    private static readonly SettingsProvider instance = new SettingsProvider();
+
+    #endregion
+
+    #region Constructor
+
+    // Explicit static constructor to tell C# compiler
+    // not to mark type as beforefieldinit
+    static SettingsProvider()
     {
-      return formatSettingsModel;
     }
 
-    public TidySettingsModel GetTidySettingsModel()
+    private SettingsProvider()
     {
-      return tidySettingsModel;
     }
 
-    public GeneralSettingsModel GetGeneralSettingsModel()
-    {
-      return generalSettingsModel;
-    }
+    #endregion
 
-    public void SetCompilerSettingsModel(CompilerSettingsModel model)
-    {
-      compilerSettingsModel = model;
-    }
-
-    public void SetFormatSettingsModel(FormatSettingsModel model)
-    {
-      formatSettingsModel = model;
-    }
-
-    public void SetTidySettingsModel(TidySettingsModel model)
-    {
-      tidySettingsModel = model;
-    }
-
-    public void SetGeneralSettingsModel(GeneralSettingsModel model)
-    {
-      generalSettingsModel = model;
-    }
   }
 }

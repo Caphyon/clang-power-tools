@@ -19,7 +19,6 @@ namespace ClangPowerTools
     private string checkSearch = string.Empty;
     private TidySettingsModel tidyModel;
     private TidyChecksView tidyChecksView;
-    private SettingsProvider settingsProvider = new SettingsProvider();
     private TidyCheckModel selectedCheck = new TidyCheckModel();
     private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>();
     private ICommand resetSearchCommand;
@@ -30,8 +29,7 @@ namespace ClangPowerTools
 
     public TidyChecksViewModel(TidyChecksView view)
     {
-      var settingsProvider = new SettingsProvider();
-      tidyModel = settingsProvider.GetTidySettingsModel();
+      tidyModel = SettingsProvider.TidySettingsModel;
 
       tidyChecksView = view;
       tidyChecksView.Closed += OnClosed;
@@ -135,7 +133,7 @@ namespace ClangPowerTools
 
     private void TickPredefinedChecks()
     {
-      string input = settingsProvider.GetTidySettingsModel().PredefinedChecks;
+      string input = SettingsProvider.TidySettingsModel.PredefinedChecks;
       input = Regex.Replace(input, @"\s+", "");
       input = input.Remove(input.Length - 1, 1);
       var checkNames = input.Split(';').ToList();
@@ -154,7 +152,7 @@ namespace ClangPowerTools
 
     private void InitializeChecks()
     {
-      string predefinedChecks = settingsProvider.GetTidySettingsModel().PredefinedChecks;
+      string predefinedChecks = SettingsProvider.TidySettingsModel.PredefinedChecks;
 
       if (string.IsNullOrEmpty(predefinedChecks))
       {

@@ -11,16 +11,15 @@ namespace ClangPowerTools
 
     // Create StringBuilder to be written in the .clang-tidy file
     private StringBuilder tidyConfigOutput = new StringBuilder();
-    private SettingsProvider settingsProvider = new SettingsProvider();
     private CompilerSettingsModel compilerSettingsModel;
     private TidySettingsModel tidySettingsModel;
     private FormatSettingsModel formatSettingsModel;
 
     public TidyConfigFile()
     {
-      compilerSettingsModel = settingsProvider.GetCompilerSettingsModel();
-      tidySettingsModel = settingsProvider.GetTidySettingsModel();
-      formatSettingsModel = settingsProvider.GetFormatSettingsModel();
+      compilerSettingsModel = SettingsProvider.CompilerSettingsModel;
+      tidySettingsModel = SettingsProvider.TidySettingsModel;
+      formatSettingsModel = SettingsProvider.FormatSettingsModel;
   }
 
     // Readonly list for paramaters names
@@ -70,7 +69,7 @@ namespace ClangPowerTools
 
     private void CreateChecksOutputLine(string paramaterName)
     {
-      TidySettingsModel tidySettings = settingsProvider.GetTidySettingsModel();
+      var tidySettings = SettingsProvider.TidySettingsModel;
 
       ClangTidyUseChecksFrom clangTidyUseChecksFrom = tidySettings.UseChecksFrom;
       if (clangTidyUseChecksFrom == ClangTidyUseChecksFrom.CustomChecks)

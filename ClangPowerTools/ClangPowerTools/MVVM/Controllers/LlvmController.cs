@@ -15,14 +15,19 @@ namespace ClangPowerTools.MVVM.Controllers
   {
     #region Members
 
-    public LlvmSettingsModel llvmModel = new LlvmSettingsModel();
+    public LlvmModel llvmModel = new LlvmModel();
     public CancellationTokenSource downloadCancellationToken = new CancellationTokenSource();
 
     public delegate void OnOperationCanceled();
-    public event OnOperationCanceled onOperationCanceldEvent;
+    public event OnOperationCanceled OnOperationCanceldEvent;
 
     private Process process;
     private readonly SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
+    
+    private const string registryLlvmUninstall = @"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\LLVM";
+    private const string keyDisplayVersion = "DisplayVersion";
+    private const string registryLlvm = @"SOFTWARE\WOW6432Node\LLVM\LLVM";
+    private const string keyInstallPath = "";
 
     #endregion
 
@@ -46,6 +51,26 @@ namespace ClangPowerTools.MVVM.Controllers
 
     #region Public Methods
 
+    public string GetLlvmPathFromRegistry()
+    {
+      var registryUtility = new RegistryUtility(registryLlvm);
+      var path = registryUtility.ReadLocalMachineKey(keyInstallPath);
+
+      if (path == null) return string.Empty;
+
+      return Path.Combine(path, "bin");
+    }
+
+    public string GetVersionFromRegistry()
+    {
+      var registryUtility = new RegistryUtility(registryLlvmUninstall);
+      var version = registryUtility.ReadLocalMachineKey(keyDisplayVersion);
+
+      if (version == null) return string.Empty;
+
+      return version;
+    }
+
     public void Download(string version, DownloadProgressChangedEventHandler method)
     {
       CreateVersionDirectory(version);
@@ -63,16 +88,13 @@ namespace ClangPowerTools.MVVM.Controllers
         uri = llvmUri.GetDefaultUri(version);
       }
 
-
       try
       {
-        using (var client = new WebClient())
-        {
-          client.DownloadProgressChanged += method;
-          client.DownloadFileCompleted += DownloadCompleted;
-          downloadCancellationToken.Token.Register(client.CancelAsync);
-          client.DownloadFileAsync(new Uri(uri), executablePath);
-        }
+        using var client = new WebClient();
+        client.DownloadProgressChanged += method;
+        client.DownloadFileCompleted += DownloadCompleted;
+        downloadCancellationToken.Token.Register(client.CancelAsync);
+        client.DownloadFileAsync(new Uri(uri), executablePath);
       }
       catch (Exception)
       {
@@ -102,7 +124,7 @@ namespace ClangPowerTools.MVVM.Controllers
       catch (Exception e)
       {
         DefaultState();
-        onOperationCanceldEvent();
+        OnOperationCanceldEvent();
         DeleteLlvmDirectory(llvmModel.Version);
         MessageBox.Show(e.Message, "Installation Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
@@ -131,7 +153,7 @@ namespace ClangPowerTools.MVVM.Controllers
       catch (Exception e)
       {
         InstallFinishedState();
-        onOperationCanceldEvent();
+        OnOperationCanceldEvent();
         MessageBox.Show(e.Message, "Uninstall Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
@@ -180,7 +202,7 @@ namespace ClangPowerTools.MVVM.Controllers
     private void DownloadCanceled()
     {
       DefaultState();
-      onOperationCanceldEvent();
+      OnOperationCanceldEvent();
       DeleteLlvmDirectory(llvmModel.Version);
       ResetDownloadProgressState();
       MessageBox.Show("The download process has stopped.", "LLVM Download", MessageBoxButtons.OK, MessageBoxIcon.Warning);

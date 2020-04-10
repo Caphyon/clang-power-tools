@@ -232,7 +232,7 @@ namespace ClangPowerTools
       if (item is CurrentProjectItem)
       {
         ProjectItem projectItem = item.GetObject() as ProjectItem;
-        CompilerSettingsModel compilerSettings = new SettingsProvider().GetCompilerSettingsModel();
+        var compilerSettings = SettingsProvider.CompilerSettingsModel;
         var fileName = projectItem.Name;
         fileType = $"file \"{fileName}\"";
         return compilerSettings.FilesToIgnore.Contains(fileName);
@@ -240,7 +240,7 @@ namespace ClangPowerTools
       else if (item is CurrentProject)
       {
         Project project = item.GetObject() as Project;
-        CompilerSettingsModel compilerSettings = new SettingsProvider().GetCompilerSettingsModel();
+        CompilerSettingsModel compilerSettings = SettingsProvider.CompilerSettingsModel;
         var projName = project.Name;
         fileType = $"project \"{projName}\"";
         return compilerSettings.FilesToIgnore.Contains(projName);

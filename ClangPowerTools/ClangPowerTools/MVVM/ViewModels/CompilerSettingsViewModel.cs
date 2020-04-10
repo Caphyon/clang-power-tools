@@ -26,8 +26,7 @@ namespace ClangPowerTools
 
     public CompilerSettingsViewModel()
     {
-      var settingsProvider = new SettingsProvider();
-      compilerModel = settingsProvider.GetCompilerSettingsModel();
+      compilerModel = SettingsProvider.CompilerSettingsModel;
     }
 
     #endregion
