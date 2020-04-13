@@ -525,8 +525,11 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="Scope"></param>
     /// <param name="Action"></param>
-    public void OnMSVCBuildBegin(vsBuildScope Scope, vsBuildAction Action) => vsBuildRunning = true;
-
+    public void OnMSVCBuildBegin(vsBuildScope Scope, vsBuildAction Action)
+    {
+      vsBuildRunning = true;
+      StopBackgroundRunnersAsync().SafeFireAndForget();
+    }
 
     /// <summary>
     /// Set the VS running build flag to false when the VS build finished.
