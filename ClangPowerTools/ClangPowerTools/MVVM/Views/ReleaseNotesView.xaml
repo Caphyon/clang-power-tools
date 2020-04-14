@@ -77,7 +77,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 5.7" />
+        Text="version 5.8" />
 
       <ListView
         Grid.Row="3"
@@ -118,7 +118,27 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Support for LLVM 10.0"
+          Text="• Predefined Style customization in the Clang-Format Editor"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Drag and drop file functionality in the Clang-Format Editor Input "
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Detect preinstalled LLVM in custom location"
           TextWrapping="Wrap" />
 
 
@@ -139,7 +159,17 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Enable usage of Visual Studio 2017 toolsets from within Visual Studio 2019"
+          Text="• Background Tidy still runs when a Visual Studio build process is active"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Visual Studio crash when background Tidy runs of very large files"
           TextWrapping="Wrap" />
 
       </ListView>
