@@ -128,7 +128,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Drag and drop file functionality in the Clang-Format Editor Input "
+          Text="• Drag and drop file functionality in the Clang-Format Editor Input"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -138,7 +138,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Detect preinstalled LLVM in custom location"
+          Text="• Detect preinstalled LLVM in a custom location"
           TextWrapping="Wrap" />
 
 
@@ -169,7 +169,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Visual Studio crash when background Tidy runs of very large files"
+          Text="• Visual Studio crash when background Tidy runs on huge files"
           TextWrapping="Wrap" />
 
       </ListView>
