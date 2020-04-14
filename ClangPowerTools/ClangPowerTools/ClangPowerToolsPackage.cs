@@ -62,7 +62,6 @@ namespace ClangPowerTools
     private OutputWindowController mOutputWindowController;
     private CommandController mCommandController;
     private SettingsHandler mSettingsHandler;
-    private SettingsProvider mSettingsProvider;
 
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;

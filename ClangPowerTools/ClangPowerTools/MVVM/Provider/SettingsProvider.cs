@@ -12,7 +12,6 @@ namespace ClangPowerTools
     public static TidySettingsModel TidySettingsModel { get; set; } = new TidySettingsModel();
     public static GeneralSettingsModel GeneralSettingsModel { get; set; } = new GeneralSettingsModel();
     public static LlvmSettingsModel LlvmSettingsModel { get; set; } = new LlvmSettingsModel();
-    public static LlvmModel PreinstalledLlvm { get; set; } = new LlvmModel();
     public static SettingsView SettingsView { get; set; }
     public static FormatEditorView FormatEditorView { get; set; }
 

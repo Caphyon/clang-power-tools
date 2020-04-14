@@ -129,10 +129,6 @@ namespace ClangPowerTools
       set
       {
         hasPreinstalledLlvm = value;
-        if (hasPreinstalledLlvm)
-        {
-          SettingsProvider.PreinstalledLlvm = this;
-        }
       }
     }
 

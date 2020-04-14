@@ -141,6 +141,7 @@
     <Compile Include="MVVM\Models\TidySettingsModel.cs" />
     <Compile Include="MVVM\Models\FormatSettingsModel.cs" />
     <Compile Include="MVVM\Models\LicenseModel.cs" />
+    <Compile Include="MVVM\PreinstalledLlvm.cs" />
     <Compile Include="MVVM\Provider\FormatOptionsProvider.cs" />
     <Compile Include="MVVM\SettingsHandler.cs" />
     <Compile Include="MVVM\SettingsTooltips.cs" />
