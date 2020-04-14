@@ -31,8 +31,6 @@ namespace ClangPowerTools
       llvmController.UninstallFinished = UninstallFinished;
       llvmController.OnOperationCanceldEvent += OperationCanceled;
       WindowClosed += llvmController.SettingsWindowClosed;
-
-      preinstalledLlvm = new PreinstalledLlvm(Llvms, InstalledLlvms);
       IntitializeView();
     }
     #endregion
@@ -144,7 +142,10 @@ namespace ClangPowerTools
 
         llvms.Add(llvmModel);
       }
+
+      preinstalledLlvm = new PreinstalledLlvm(Llvms, InstalledLlvms);
       preinstalledLlvm.SetPreinstalledLlvm();
+
       SetSelectedVersionIfEmpty();
       ResetVersionUsedIfRequired();
     }

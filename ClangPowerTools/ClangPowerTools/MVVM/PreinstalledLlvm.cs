@@ -60,6 +60,12 @@ namespace ClangPowerTools
 
       if (Directory.Exists(settingsProviderLlvmModel.PreinstalledLlvmPath) == false)
       {
+        if (settingsProviderLlvmModel.PreinstalledLlvmVersion
+          == settingsProviderLlvmModel.LlvmSelectedVersion)
+        {
+          settingsProviderLlvmModel.LlvmSelectedVersion = string.Empty;
+        }
+
         settingsProviderLlvmModel.PreinstalledLlvmPath = string.Empty;
         settingsProviderLlvmModel.PreinstalledLlvmVersion = string.Empty;
         llvmModel.HasPreinstalledLlvm = false;
