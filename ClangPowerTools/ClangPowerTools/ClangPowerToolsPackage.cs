@@ -141,7 +141,6 @@ namespace ClangPowerTools
 
       mSettingsHandler = new SettingsHandler();
       mSettingsHandler.InitializeSettings();
-      VersionHandler();
 
       await mCommandController.InitializeCommandsAsync(this);
 
@@ -283,6 +282,7 @@ namespace ClangPowerTools
 
     public int OnAfterBackgroundSolutionLoadComplete()
     {
+      VersionHandler();
       return VSConstants.S_OK;
     }
 
@@ -293,7 +293,7 @@ namespace ClangPowerTools
 
     public void OnAfterOpenFolder(string folderPath)
     {
-    
+      VersionHandler();
     }
 
     public void OnBeforeCloseFolder(string folderPath)
@@ -338,13 +338,13 @@ namespace ClangPowerTools
         generalSettingsModel.Version = currentVersion;
         mSettingsHandler.SaveSettings();
 
-        FreeTrialController freeTrialController = new FreeTrialController();
+        var freeTrialController = new FreeTrialController();
         bool activeLicense = await new LocalLicenseValidator().ValidateAsync();
 
         if (activeLicense)
           freeTrialController.MarkAsExpired();
 
-        ReleaseNotesView releaseNotesView = new ReleaseNotesView();
+        var releaseNotesView = new ReleaseNotesView();
         releaseNotesView.Show();
       }
     }
