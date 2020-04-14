@@ -141,12 +141,13 @@ namespace ClangPowerTools
 
       mSettingsHandler = new SettingsHandler();
       mSettingsHandler.InitializeSettings();
+      VersionHandler();
 
       await mCommandController.InitializeCommandsAsync(this);
 
       RegisterToEvents();
 
-      LicenseController mLicenseController = new LicenseController();
+      var mLicenseController = new LicenseController();
       await mLicenseController.CheckLicenseAsync();
 
       DeleteTidyEnvironmentVariable();
@@ -282,7 +283,6 @@ namespace ClangPowerTools
 
     public int OnAfterBackgroundSolutionLoadComplete()
     {
-      VersionHandler();
       return VSConstants.S_OK;
     }
 
@@ -293,7 +293,7 @@ namespace ClangPowerTools
 
     public void OnAfterOpenFolder(string folderPath)
     {
-      VersionHandler();
+    
     }
 
     public void OnBeforeCloseFolder(string folderPath)
