@@ -12,6 +12,7 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
+using System.IO;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
@@ -658,6 +659,9 @@ namespace ClangPowerTools
         return;
 
       if (running || vsBuildRunning)
+        return;
+
+      if (!ScriptConstants.kAcceptedFileExtensions.Contains(Path.GetExtension(document.FullName)))
         return;
 
       _ = Task.Run(() =>
