@@ -61,7 +61,6 @@ namespace ClangPowerTools
     private ErrorWindowController mErrorWindowController;
     private OutputWindowController mOutputWindowController;
     private CommandController mCommandController;
-    private SettingsHandler mSettingsHandler;
 
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
@@ -100,13 +99,9 @@ namespace ClangPowerTools
       // Switches to the UI thread in order to consume some services used in command initialization
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-      await RegisterVsServicesAsync();
-
-      TaskErrorViewModel.Errors.Clear();
-      TaskErrorViewModel.FileErrorsPair.Clear();
+      await RegisterVsServicesAsync();  
 
       mCommandController = new CommandController(this);
-
       CommandTestUtility.CommandController = mCommandController;
 
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
@@ -128,7 +123,7 @@ namespace ClangPowerTools
 
       #endregion
 
-      // Get the build and command events from DTE
+      // Get-Set the build and command events from DTE
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {
         var dte2 = dte as DTE2;
@@ -139,17 +134,12 @@ namespace ClangPowerTools
         windowEvents = dte2.Events.WindowEvents;
       }
 
-      mSettingsHandler = new SettingsHandler();
-      mSettingsHandler.InitializeSettings();
+      var settingsHandler = new SettingsHandler();
+      settingsHandler.InitializeSettings();
 
       await mCommandController.InitializeCommandsAsync(this);
 
       RegisterToEvents();
-
-      var mLicenseController = new LicenseController();
-      await mLicenseController.CheckLicenseAsync();
-
-      DeleteTidyEnvironmentVariable();
 
       await base.InitializeAsync(cancellationToken, progress);
     }
@@ -282,7 +272,6 @@ namespace ClangPowerTools
 
     public int OnAfterBackgroundSolutionLoadComplete()
     {
-      VersionHandler();
       return VSConstants.S_OK;
     }
 
@@ -293,7 +282,6 @@ namespace ClangPowerTools
 
     public void OnAfterOpenFolder(string folderPath)
     {
-      VersionHandler();
     }
 
     public void OnBeforeCloseFolder(string folderPath)
@@ -315,49 +303,6 @@ namespace ClangPowerTools
     #endregion
 
     #region Private Methods
-
-    private void DeleteTidyEnvironmentVariable()
-    {
-      Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, null, EnvironmentVariableTarget.User);
-    }
-
-    private void VersionHandler()
-    {
-      string version = SettingsProvider.GeneralSettingsModel.Version;
-      ShowToolbar(version);
-      UpdateVersionAsync(version).SafeFireAndForget();
-    }
-
-    private async Task UpdateVersionAsync(string version)
-    {
-      var generalSettingsModel = SettingsProvider.GeneralSettingsModel;
-
-      string currentVersion = PackageUtility.GetVersion();
-      if (string.IsNullOrWhiteSpace(currentVersion) == false && 0 > string.Compare(version, currentVersion))
-      {
-        generalSettingsModel.Version = currentVersion;
-        mSettingsHandler.SaveSettings();
-
-        var freeTrialController = new FreeTrialController();
-        bool activeLicense = await new LocalLicenseValidator().ValidateAsync();
-
-        if (activeLicense)
-          freeTrialController.MarkAsExpired();
-
-        var releaseNotesView = new ReleaseNotesView();
-        releaseNotesView.Show();
-      }
-    }
-
-    private void ShowToolbar(string version)
-    {
-      // Detect the first install 
-      if (string.IsNullOrWhiteSpace(version))
-      {
-        // Show the toolbar on the first install
-        ShowToolbar();
-      }
-    }
 
     private async Task RegisterVsServicesAsync()
     {
@@ -512,16 +457,6 @@ namespace ClangPowerTools
 
       if (windowEvents != null)
         windowEvents.WindowActivated -= mCommandController.OnWindowActivated;
-    }
-
-    private void ShowToolbar()
-    {
-      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
-      {
-        var cbs = ((CommandBars)(dte as DTE2).CommandBars);
-        CommandBar cb = cbs["Clang Power Tools"];
-        cb.Visible = true;
-      }
     }
 
     #endregion

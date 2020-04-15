@@ -6,10 +6,12 @@ using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Controllers;
+using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.CommandBars;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.IO;
@@ -46,6 +48,8 @@ namespace ClangPowerTools
     private bool mSaveCommandWasGiven = false;
     private bool mFormatAfterTidyFlag = false;
     private bool isActiveDocument = true;
+
+    private bool initializationComplete = false;
 
     private readonly object mutex = new object();
 
@@ -280,6 +284,11 @@ namespace ClangPowerTools
     private async Task StopBackgroundRunnersAsync()
     {
       await StopCommand.Instance.RunStopClangCommandAsync(true);
+    }
+
+    private void StopBackgroundRunners()
+    {
+      StopCommand.Instance.StopClangCommand(true);
     }
 
     private void OnBeforeClangCommand(int aCommandId)
@@ -529,7 +538,6 @@ namespace ClangPowerTools
     public void OnMSVCBuildBegin(vsBuildScope Scope, vsBuildAction Action)
     {
       vsBuildRunning = true;
-      StopBackgroundRunnersAsync().SafeFireAndForget();
     }
 
     /// <summary>
@@ -568,6 +576,8 @@ namespace ClangPowerTools
 
     public void OnBeforeSave(object sender, Document aDocument)
     {
+      StopBackgroundRunners();
+
       BeforeSaveClangTidyAsync(aDocument).SafeFireAndForget();
       BeforeSaveClangFormat(aDocument);
     }
@@ -651,6 +661,17 @@ namespace ClangPowerTools
 
     public void OnWindowActivated(Window GotFocus, Window LostFocus)
     {
+      if(initializationComplete == false)
+      {
+        var mLicenseController = new LicenseController();
+        mLicenseController.CheckLicenseAsync().SafeFireAndForget();
+
+        string version = SettingsProvider.GeneralSettingsModel.Version;
+        ShowToolbar(version);
+        UpdateVersionAsync(version).SafeFireAndForget();
+        initializationComplete = true;
+      }
+
       if (SettingsProvider.CompilerSettingsModel.ShowSquiggles == false)
         return;
 
@@ -680,6 +701,44 @@ namespace ClangPowerTools
           }
         }
       });
+    }
+
+    private async Task UpdateVersionAsync(string version)
+    {
+      var generalSettingsModel = SettingsProvider.GeneralSettingsModel;
+
+      string currentVersion = PackageUtility.GetVersion();
+      if (string.IsNullOrWhiteSpace(currentVersion) == false && 0 > string.Compare(version, currentVersion))
+      {
+        generalSettingsModel.Version = currentVersion;
+
+        var settingsHandler = new SettingsHandler();
+        settingsHandler.SaveSettings();
+
+        var freeTrialController = new FreeTrialController();
+        bool activeLicense = await new LocalLicenseValidator().ValidateAsync();
+
+        if (activeLicense)
+          freeTrialController.MarkAsExpired();
+
+        var releaseNotesView = new ReleaseNotesView();
+        releaseNotesView.Show();
+      }
+    }
+
+    private void ShowToolbar(string version)
+    {
+      // Detect the first install 
+      if (!string.IsNullOrWhiteSpace(version))
+        return;
+      
+      // Show the toolbar on the first install
+      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+      {
+        var cbs = ((CommandBars)(dte as DTE2).CommandBars);
+        CommandBar cb = cbs["Clang Power Tools"];
+        cb.Visible = true;
+      }
     }
 
     private bool IsAToolbarCommand(OleMenuCommand command)
