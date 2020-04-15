@@ -137,7 +137,6 @@ namespace ClangPowerTools
       var settingsHandler = new SettingsHandler();
       settingsHandler.InitializeSettings();
 
-
       var mLicenseController = new LicenseController();
       mLicenseController.CheckLicenseAsync().SafeFireAndForget();
 
@@ -331,7 +330,6 @@ namespace ClangPowerTools
           freeTrialController.MarkAsExpired();
 
         ReleaseNotesView.WasShown = false;
-
       }
     }
 

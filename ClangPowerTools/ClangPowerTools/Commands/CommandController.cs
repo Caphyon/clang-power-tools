@@ -656,7 +656,7 @@ namespace ClangPowerTools
 
     public void OnWindowActivated(Window GotFocus, Window LostFocus)
     {
-      if(ReleaseNotesView.WasShown == false)
+      if (ReleaseNotesView.WasShown == false)
       {
         var releaseNotesView = new ReleaseNotesView(true);
         releaseNotesView.Show();
