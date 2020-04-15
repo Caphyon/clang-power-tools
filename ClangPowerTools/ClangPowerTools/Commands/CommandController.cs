@@ -651,14 +651,14 @@ namespace ClangPowerTools
 
     public void OnWindowActivated(Window GotFocus, Window LostFocus)
     {
-      Document document = GotFocus.Document;
-      if (document == null)
-        return;
-
       if (SettingsProvider.CompilerSettingsModel.ShowSquiggles == false)
         return;
 
       if (running || vsBuildRunning)
+        return;
+
+      Document document = GotFocus.Document;
+      if (document == null)
         return;
 
       if (!ScriptConstants.kAcceptedFileExtensions.Contains(Path.GetExtension(document.FullName)))
