@@ -99,7 +99,7 @@
       </Button.Content>
     </Button>
 
-    <!--  Version
+    <!--  Version  -->
     <TextBlock
       Grid.Row="5"
       Grid.Column="0"
@@ -108,7 +108,7 @@
       FontFamily="SegoeUI"
       FontSize="10"
       Text="{Binding GeneralSettingsModel.Version}" />
-    -->
+
   </Grid>
 
 </UserControl>
