@@ -6,12 +6,10 @@ using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Controllers;
-using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
-using Microsoft.VisualStudio.CommandBars;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.IO;
@@ -29,7 +27,7 @@ namespace ClangPowerTools
 
     public bool running = false;
     public bool vsBuildRunning = false;
-    public bool activeAccount = false;
+    public bool activeAccount = true;
     public bool tokenExists = false;
     public bool clearOutputOnFormat = false;
 
@@ -48,8 +46,6 @@ namespace ClangPowerTools
     private bool mSaveCommandWasGiven = false;
     private bool mFormatAfterTidyFlag = false;
     private bool isActiveDocument = true;
-
-    private bool initializationComplete = false;
 
     private readonly object mutex = new object();
 
@@ -250,11 +246,10 @@ namespace ClangPowerTools
 
     private OleMenuCommand CreateCommand(object sender)
     {
-      OleMenuCommand command = null;
       if ((sender is OleMenuCommand) == false)
         return null;
 
-      command = sender as OleMenuCommand;
+      OleMenuCommand command = sender as OleMenuCommand;
       if (running && command.CommandID.ID != CommandIds.kStopClang)
         return null;
 
@@ -661,15 +656,10 @@ namespace ClangPowerTools
 
     public void OnWindowActivated(Window GotFocus, Window LostFocus)
     {
-      if(initializationComplete == false)
+      if(ReleaseNotesView.WasShown == false)
       {
-        var mLicenseController = new LicenseController();
-        mLicenseController.CheckLicenseAsync().SafeFireAndForget();
-
-        string version = SettingsProvider.GeneralSettingsModel.Version;
-        ShowToolbar(version);
-        UpdateVersionAsync(version).SafeFireAndForget();
-        initializationComplete = true;
+        var releaseNotesView = new ReleaseNotesView(true);
+        releaseNotesView.Show();
       }
 
       if (SettingsProvider.CompilerSettingsModel.ShowSquiggles == false)
@@ -701,44 +691,6 @@ namespace ClangPowerTools
           }
         }
       });
-    }
-
-    private async Task UpdateVersionAsync(string version)
-    {
-      var generalSettingsModel = SettingsProvider.GeneralSettingsModel;
-
-      string currentVersion = PackageUtility.GetVersion();
-      if (string.IsNullOrWhiteSpace(currentVersion) == false && 0 > string.Compare(version, currentVersion))
-      {
-        generalSettingsModel.Version = currentVersion;
-
-        var settingsHandler = new SettingsHandler();
-        settingsHandler.SaveSettings();
-
-        var freeTrialController = new FreeTrialController();
-        bool activeLicense = await new LocalLicenseValidator().ValidateAsync();
-
-        if (activeLicense)
-          freeTrialController.MarkAsExpired();
-
-        var releaseNotesView = new ReleaseNotesView();
-        releaseNotesView.Show();
-      }
-    }
-
-    private void ShowToolbar(string version)
-    {
-      // Detect the first install 
-      if (!string.IsNullOrWhiteSpace(version))
-        return;
-      
-      // Show the toolbar on the first install
-      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
-      {
-        var cbs = ((CommandBars)(dte as DTE2).CommandBars);
-        CommandBar cb = cbs["Clang Power Tools"];
-        cb.Visible = true;
-      }
     }
 
     private bool IsAToolbarCommand(OleMenuCommand command)

@@ -137,6 +137,14 @@ namespace ClangPowerTools
       var settingsHandler = new SettingsHandler();
       settingsHandler.InitializeSettings();
 
+
+      var mLicenseController = new LicenseController();
+      mLicenseController.CheckLicenseAsync().SafeFireAndForget();
+
+      string version = SettingsProvider.GeneralSettingsModel.Version;
+      ShowToolbar(version);
+      UpdateVersionAsync(version).SafeFireAndForget();
+
       await mCommandController.InitializeCommandsAsync(this);
 
       RegisterToEvents();
@@ -303,6 +311,45 @@ namespace ClangPowerTools
     #endregion
 
     #region Private Methods
+
+    private async Task UpdateVersionAsync(string version)
+    {
+      var generalSettingsModel = SettingsProvider.GeneralSettingsModel;
+
+      string currentVersion = PackageUtility.GetVersion();
+      if (string.IsNullOrWhiteSpace(currentVersion) == false && 0 > string.Compare(version, currentVersion))
+      {
+        generalSettingsModel.Version = currentVersion;
+
+        var settingsHandler = new SettingsHandler();
+        settingsHandler.SaveSettings();
+
+        var freeTrialController = new FreeTrialController();
+        bool activeLicense = await new LocalLicenseValidator().ValidateAsync();
+
+        if (activeLicense)
+          freeTrialController.MarkAsExpired();
+
+        ReleaseNotesView.WasShown = false;
+
+      }
+    }
+
+    private void ShowToolbar(string version)
+    {
+      // Detect the first install 
+      if (!string.IsNullOrWhiteSpace(version))
+        return;
+
+      // Show the toolbar on the first install
+      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+      {
+        var cbs = ((CommandBars)(dte as DTE2).CommandBars);
+        CommandBar cb = cbs["Clang Power Tools"];
+        cb.Visible = true;
+      }
+    }
+
 
     private async Task RegisterVsServicesAsync()
     {
