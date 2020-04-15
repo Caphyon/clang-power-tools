@@ -80,33 +80,41 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public Task RunStopClangCommandAsync(bool background)
+    public Task RunStopClangCommandAsync(bool backgroundRunners)
     {
       return Task.Run(() =>
       {
-        try
-        {
-          if(background == false)
-            StopCommandActivated = true;
-          
-          runningProcesses.Kill(background);
-          if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
-          {
-            string solutionPath = (dte as DTE2).Solution.FullName;
-
-            if (string.IsNullOrWhiteSpace(solutionPath))
-              return;
-
-            string solutionFolder = solutionPath.Substring(0, solutionPath.LastIndexOf('\\'));
-            mPCHCleaner.Remove(solutionFolder);
-          }
-          mDirectoriesPath.Clear();
-        }
-        catch (Exception e) 
-        {
-          MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
+        StopClangCommand(backgroundRunners);
       });
+    }
+
+    public void StopClangCommand(bool backgroundRunners)
+    {
+      try
+      {
+        if (backgroundRunners == false)
+          StopCommandActivated = true;
+
+        if (runningProcesses.Exists(backgroundRunners) == false)
+          return;
+
+        runningProcesses.Kill(backgroundRunners);
+        if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+        {
+          string solutionPath = (dte as DTE2).Solution.FullName;
+
+          if (string.IsNullOrWhiteSpace(solutionPath))
+            return;
+
+          string solutionFolder = solutionPath.Substring(0, solutionPath.LastIndexOf('\\'));
+          mPCHCleaner.Remove(solutionFolder);
+        }
+        mDirectoriesPath.Clear();
+      }
+      catch (Exception e)
+      {
+        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
     }
 
     #endregion
