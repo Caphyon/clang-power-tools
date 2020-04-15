@@ -141,6 +141,7 @@
       <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0008" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" />
         <Icon guid="guidImageSettings" id="Settings" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Settings</ButtonText>
         </Strings>
@@ -204,6 +205,7 @@
 
       <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0006" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Settings</ButtonText>
         </Strings>
