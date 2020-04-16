@@ -141,6 +141,26 @@
           Text="• Detect preinstalled LLVM in a custom location"
           TextWrapping="Wrap" />
 
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Startup performance improvements"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Tidy IntelliSense performance improvements"
+          TextWrapping="Wrap" />
+
 
         <!--  Bug Fixes  -->
         <TextBox
@@ -170,6 +190,16 @@
           FontSize="15"
           IsReadOnly="True"
           Text="• Visual Studio crash when background Tidy runs on huge files"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Version is not modified in General settings"
           TextWrapping="Wrap" />
 
       </ListView>
