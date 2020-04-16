@@ -46,6 +46,7 @@ namespace ClangPowerTools
     private bool mSaveCommandWasGiven = false;
     private bool mFormatAfterTidyFlag = false;
     private bool isActiveDocument = true;
+    private string oldActiveDocumentName = null;
 
     private readonly object mutex = new object();
 
@@ -672,6 +673,10 @@ namespace ClangPowerTools
       if (document == null)
         return;
 
+      if (!string.IsNullOrEmpty(oldActiveDocumentName) && oldActiveDocumentName == document.FullName)
+        return;
+
+      oldActiveDocumentName = document.FullName;
       if (!ScriptConstants.kAcceptedFileExtensions.Contains(Path.GetExtension(document.FullName)))
         return;
 
