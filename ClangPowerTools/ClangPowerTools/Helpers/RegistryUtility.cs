@@ -39,7 +39,7 @@ namespace ClangPowerTools.Helpers
       try
       {
         using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryName);
-        var keyValue = key.GetValue(keyName).ToString();
+        var keyValue = key.GetValue(keyName)?.ToString();
         return keyValue;
       }
       catch (Exception)
@@ -52,7 +52,7 @@ namespace ClangPowerTools.Helpers
     {
       try
       {
-        using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryName);
+        using var key = Microsoft.Win32.Registry.CurrentUser.CreateSubKey(registryName);
         key.SetValue(keyName, keyValue);
         return true;
       }

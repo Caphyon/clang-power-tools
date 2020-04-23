@@ -36,11 +36,6 @@ namespace ClangPowerTools.MVVM.LicenseValidation
     /// <summary>
     /// Get the content of the license token
     /// </summary>
-    /// <returns>Content of license token</returns>
-
-    /// <summary>
-    /// Get the content of the license token
-    /// </summary>
     /// <param name="jwt">Content of license token</param>
     /// <returns>True if the content of license token was succesfully extracted. False otherwise</returns>
     public bool GetToken(out string jwt)

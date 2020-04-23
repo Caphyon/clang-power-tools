@@ -273,7 +273,7 @@ namespace ClangPowerTools
 
     private void MapClangFormatOptionsToSettings(ClangFormatOptions clangFormat)
     {
-      FormatSettingsModel formatSettingsModel = new FormatSettingsModel();
+      var formatSettingsModel = new FormatSettingsModel();
       formatSettingsModel.FileExtensions = clangFormat.FileExtensions;
       formatSettingsModel.FilesToIgnore = clangFormat.SkipFiles;
       formatSettingsModel.AssumeFilename = clangFormat.AssumeFilename;
@@ -287,7 +287,7 @@ namespace ClangPowerTools
 
     private void MapClangTidyOptionsToSettings(ClangTidyOptions clangTidy)
     {
-      TidySettingsModel tidySettingsModel = new TidySettingsModel();
+      var tidySettingsModel = new TidySettingsModel();
       tidySettingsModel.HeaderFilter = clangTidy.HeaderFilter;
       tidySettingsModel.CustomChecks = clangTidy.TidyChecksCollection;
       tidySettingsModel.CustomExecutable = clangTidy.ClangTidyPath.Value;

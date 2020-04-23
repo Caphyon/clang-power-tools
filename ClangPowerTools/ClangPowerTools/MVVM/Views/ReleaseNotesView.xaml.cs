@@ -7,8 +7,11 @@ namespace ClangPowerTools.MVVM.Views
   /// </summary>
   public partial class ReleaseNotesView : Window
   {
-    public ReleaseNotesView()
+    public static bool WasShown { get; set; } = true;
+
+    public ReleaseNotesView(bool wasShown)
     {
+      WasShown = wasShown;
       InitializeComponent();
       DataContext = new ReleaseNotesViewModel();
     }

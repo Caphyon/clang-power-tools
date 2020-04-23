@@ -61,8 +61,6 @@ namespace ClangPowerTools
     private ErrorWindowController mErrorWindowController;
     private OutputWindowController mOutputWindowController;
     private CommandController mCommandController;
-    private SettingsHandler mSettingsHandler;
-    private SettingsProvider mSettingsProvider;
 
     private CommandEvents mCommandEvents;
     private BuildEvents mBuildEvents;
@@ -101,13 +99,9 @@ namespace ClangPowerTools
       // Switches to the UI thread in order to consume some services used in command initialization
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-      await RegisterVsServicesAsync();
-
-      TaskErrorViewModel.Errors.Clear();
-      TaskErrorViewModel.FileErrorsPair.Clear();
+      await RegisterVsServicesAsync();  
 
       mCommandController = new CommandController(this);
-
       CommandTestUtility.CommandController = mCommandController;
 
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
@@ -129,7 +123,7 @@ namespace ClangPowerTools
 
       #endregion
 
-      // Get the build and command events from DTE
+      // Get-Set the build and command events from DTE
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {
         var dte2 = dte as DTE2;
@@ -140,17 +134,19 @@ namespace ClangPowerTools
         windowEvents = dte2.Events.WindowEvents;
       }
 
-      mSettingsHandler = new SettingsHandler();
-      mSettingsHandler.InitializeSettings();
+      var settingsHandler = new SettingsHandler();
+      settingsHandler.InitializeSettings();
+
+      var mLicenseController = new LicenseController();
+      mLicenseController.CheckLicenseAsync().SafeFireAndForget();
+
+      string version = SettingsProvider.GeneralSettingsModel.Version;
+      ShowToolbar(version);
+      UpdateVersionAsync(version).SafeFireAndForget();
 
       await mCommandController.InitializeCommandsAsync(this);
 
       RegisterToEvents();
-
-      LicenseController mLicenseController = new LicenseController();
-      await mLicenseController.CheckLicenseAsync();
-
-      DeleteTidyEnvironmentVariable();
 
       await base.InitializeAsync(cancellationToken, progress);
     }
@@ -283,7 +279,6 @@ namespace ClangPowerTools
 
     public int OnAfterBackgroundSolutionLoadComplete()
     {
-      VersionHandler();
       return VSConstants.S_OK;
     }
 
@@ -294,7 +289,6 @@ namespace ClangPowerTools
 
     public void OnAfterOpenFolder(string folderPath)
     {
-      VersionHandler();
     }
 
     public void OnBeforeCloseFolder(string folderPath)
@@ -317,18 +311,6 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private void DeleteTidyEnvironmentVariable()
-    {
-      Environment.SetEnvironmentVariable(ScriptConstants.kEnvrionmentTidyPath, null, EnvironmentVariableTarget.User);
-    }
-
-    private void VersionHandler()
-    {
-      string version = SettingsProvider.GeneralSettingsModel.Version;
-      ShowToolbar(version);
-      UpdateVersionAsync(version).SafeFireAndForget();
-    }
-
     private async Task UpdateVersionAsync(string version)
     {
       var generalSettingsModel = SettingsProvider.GeneralSettingsModel;
@@ -337,28 +319,35 @@ namespace ClangPowerTools
       if (string.IsNullOrWhiteSpace(currentVersion) == false && 0 > string.Compare(version, currentVersion))
       {
         generalSettingsModel.Version = currentVersion;
-        mSettingsHandler.SaveSettings();
 
-        FreeTrialController freeTrialController = new FreeTrialController();
+        var settingsHandler = new SettingsHandler();
+        settingsHandler.SaveSettings();
+
+        var freeTrialController = new FreeTrialController();
         bool activeLicense = await new LocalLicenseValidator().ValidateAsync();
 
         if (activeLicense)
           freeTrialController.MarkAsExpired();
 
-        ReleaseNotesView releaseNotesView = new ReleaseNotesView();
-        releaseNotesView.Show();
+        ReleaseNotesView.WasShown = false;
       }
     }
 
     private void ShowToolbar(string version)
     {
       // Detect the first install 
-      if (string.IsNullOrWhiteSpace(version))
+      if (!string.IsNullOrWhiteSpace(version))
+        return;
+
+      // Show the toolbar on the first install
+      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
       {
-        // Show the toolbar on the first install
-        ShowToolbar();
+        var cbs = ((CommandBars)(dte as DTE2).CommandBars);
+        CommandBar cb = cbs["Clang Power Tools"];
+        cb.Visible = true;
       }
     }
+
 
     private async Task RegisterVsServicesAsync()
     {
@@ -513,16 +502,6 @@ namespace ClangPowerTools
 
       if (windowEvents != null)
         windowEvents.WindowActivated -= mCommandController.OnWindowActivated;
-    }
-
-    private void ShowToolbar()
-    {
-      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
-      {
-        var cbs = ((CommandBars)(dte as DTE2).CommandBars);
-        CommandBar cb = cbs["Clang Power Tools"];
-        cb.Visible = true;
-      }
     }
 
     #endregion

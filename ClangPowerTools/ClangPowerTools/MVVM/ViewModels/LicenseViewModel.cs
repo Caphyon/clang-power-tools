@@ -81,7 +81,7 @@ namespace ClangPowerTools
 
     public void TrialLicenceExecute()
     {
-      FreeTrialController freeTrialController = new FreeTrialController();
+      var freeTrialController = new FreeTrialController();
       freeTrialController.Start();
       licenseView.Close();
     }

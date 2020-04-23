@@ -45,6 +45,12 @@ namespace ClangPowerTools
         commandProcesses.Add(aProcess);
     }
 
+    public bool Exists(bool backgroundRunners)
+    {
+      return backgroundRunners ?
+        backgroundCommandProcesses.Count != 0 : commandProcesses.Count != 0;
+    }
+
     public void Kill(bool background)
     {
       var processes = GetProcesses(background);

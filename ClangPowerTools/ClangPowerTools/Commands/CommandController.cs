@@ -12,6 +12,7 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
+using System.IO;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
@@ -26,7 +27,7 @@ namespace ClangPowerTools
 
     public bool running = false;
     public bool vsBuildRunning = false;
-    public bool activeAccount = false;
+    public bool activeAccount = true;
     public bool tokenExists = false;
     public bool clearOutputOnFormat = false;
 
@@ -45,6 +46,7 @@ namespace ClangPowerTools
     private bool mSaveCommandWasGiven = false;
     private bool mFormatAfterTidyFlag = false;
     private bool isActiveDocument = true;
+    private string oldActiveDocumentName = null;
 
     private readonly object mutex = new object();
 
@@ -245,11 +247,10 @@ namespace ClangPowerTools
 
     private OleMenuCommand CreateCommand(object sender)
     {
-      OleMenuCommand command = null;
       if ((sender is OleMenuCommand) == false)
         return null;
 
-      command = sender as OleMenuCommand;
+      OleMenuCommand command = sender as OleMenuCommand;
       if (running && command.CommandID.ID != CommandIds.kStopClang)
         return null;
 
@@ -279,6 +280,11 @@ namespace ClangPowerTools
     private async Task StopBackgroundRunnersAsync()
     {
       await StopCommand.Instance.RunStopClangCommandAsync(true);
+    }
+
+    private void StopBackgroundRunners()
+    {
+      StopCommand.Instance.StopClangCommand(true);
     }
 
     private void OnBeforeClangCommand(int aCommandId)
@@ -528,7 +534,6 @@ namespace ClangPowerTools
     public void OnMSVCBuildBegin(vsBuildScope Scope, vsBuildAction Action)
     {
       vsBuildRunning = true;
-      StopBackgroundRunnersAsync().SafeFireAndForget();
     }
 
     /// <summary>
@@ -567,6 +572,8 @@ namespace ClangPowerTools
 
     public void OnBeforeSave(object sender, Document aDocument)
     {
+      StopBackgroundRunners();
+
       BeforeSaveClangTidyAsync(aDocument).SafeFireAndForget();
       BeforeSaveClangFormat(aDocument);
     }
@@ -650,14 +657,27 @@ namespace ClangPowerTools
 
     public void OnWindowActivated(Window GotFocus, Window LostFocus)
     {
-      Document document = GotFocus.Document;
-      if (document == null)
-        return;
+      if (ReleaseNotesView.WasShown == false)
+      {
+        var releaseNotesView = new ReleaseNotesView(true);
+        releaseNotesView.Show();
+      }
 
       if (SettingsProvider.CompilerSettingsModel.ShowSquiggles == false)
         return;
 
       if (running || vsBuildRunning)
+        return;
+
+      Document document = GotFocus.Document;
+      if (document == null)
+        return;
+
+      if (!string.IsNullOrEmpty(oldActiveDocumentName) && oldActiveDocumentName == document.FullName)
+        return;
+
+      oldActiveDocumentName = document.FullName;
+      if (!ScriptConstants.kAcceptedFileExtensions.Contains(Path.GetExtension(document.FullName)))
         return;
 
       _ = Task.Run(() =>
