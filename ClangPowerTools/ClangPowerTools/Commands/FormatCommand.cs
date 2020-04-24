@@ -244,6 +244,8 @@ namespace ClangPowerTools.Commands
         if (clearOutput)
           clearOutput = false;
 
+        OnIgnoreItem(new ClangCommandMessageEventArgs($"\nCannot use clang-format on ignored files.\nTo enable clang-format remove the {mDocument.Name} from Clang Power Tools Settings -> Format -> Files to ignore.", false));
+
         return false;
       }
 
@@ -318,7 +320,7 @@ namespace ClangPowerTools.Commands
             mDocument.Close(vsSaveChanges.vsSaveChangesYes);
           }
         }
-        catch (Exception e) 
+        catch (Exception e)
         {
           MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
