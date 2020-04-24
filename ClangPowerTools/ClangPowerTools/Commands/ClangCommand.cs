@@ -193,7 +193,7 @@ namespace ClangPowerTools
 
           if (IgnoreItem(item, out string fileType))
           {
-            OnIgnoreItem(new ClangCommandMessageEventArgs($"Cannot use clang-compile on ignored files.\nTo enable clang-compile remove the {fileType} from Clang Power Tools settings -> Compiler -> Files/Projects to ignore.", false));
+            OnIgnoreItem(new ClangCommandMessageEventArgs($"Cannot use clang compile/tidy on ignored files.\nTo enable clang compile/tidy remove the {fileType} from Clang Power Tools settings -> Compiler -> Files/Projects to ignore.", false));
             continue;
           }
 
@@ -208,7 +208,7 @@ namespace ClangPowerTools
 
           PowerShellWrapper.Invoke(Script, runningProcesses);
         }
-        
+
         if (StopCommandActivated)
         {
           OnDataStreamClose(new CloseDataStreamingEventArgs(true));

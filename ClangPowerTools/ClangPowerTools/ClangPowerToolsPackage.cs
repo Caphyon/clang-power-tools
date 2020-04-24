@@ -1,5 +1,4 @@
 ﻿using ClangPowerTools.Commands;
-using ClangPowerTools.Error;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.LicenseValidation;
@@ -99,7 +98,7 @@ namespace ClangPowerTools
       // Switches to the UI thread in order to consume some services used in command initialization
       await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-      await RegisterVsServicesAsync();  
+      await RegisterVsServicesAsync();
 
       mCommandController = new CommandController(this);
       CommandTestUtility.CommandController = mCommandController;
@@ -472,6 +471,9 @@ namespace ClangPowerTools
 
       CompileCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
       TidyCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
+
+      CompileCommand.Instance.IgnoredItemsEvent -= mCommandController.OnItemIgnore;
+      TidyCommand.Instance.IgnoredItemsEvent -= mCommandController.OnItemIgnore;
 
       PowerShellWrapper.DataHandler -= mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler -= mOutputWindowController.OutputDataErrorReceived;
