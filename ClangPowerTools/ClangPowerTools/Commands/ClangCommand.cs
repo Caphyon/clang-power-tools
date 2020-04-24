@@ -2,6 +2,7 @@
 using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
 using ClangPowerTools.Helpers;
+using ClangPowerTools.IgnoreActions;
 using ClangPowerTools.Services;
 using ClangPowerTools.Tests;
 using EnvDTE;
@@ -41,6 +42,7 @@ namespace ClangPowerTools
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
     public event EventHandler<CloseDataStreamingEventArgs> CloseDataStreamingEvent;
     public event EventHandler<ActiveDocumentEventArgs> ActiveDocumentEvent;
+
     public event EventHandler<ClangCommandMessageEventArgs> IgnoredItemsEvent;
 
     protected static bool StopCommandActivated { get; set; } = false;
@@ -191,9 +193,11 @@ namespace ClangPowerTools
           if (StopCommandActivated)
             break;
 
-          if (IgnoreItem(item, out string fileType))
+          var ignoreItem = new IgnoreItem();
+
+          if (ignoreItem.Check(item))
           {
-            OnIgnoreItem(new ClangCommandMessageEventArgs($"Cannot use clang compile/tidy on ignored files.\nTo enable clang compile/tidy remove the {fileType} from Clang Power Tools settings -> Compiler -> Files/Projects to ignore.", false));
+            OnIgnoreItem(new ClangCommandMessageEventArgs(ignoreItem.IgnoreCompileOrTidyMessage, false));
             continue;
           }
 
@@ -223,30 +227,6 @@ namespace ClangPowerTools
       {
         MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
-    }
-
-    private bool IgnoreItem(IItem item, out string fileType)
-    {
-      fileType = string.Empty;
-
-      if (item is CurrentProjectItem)
-      {
-        ProjectItem projectItem = item.GetObject() as ProjectItem;
-        var compilerSettings = SettingsProvider.CompilerSettingsModel;
-        var fileName = projectItem.Name;
-        fileType = $"file \"{fileName}\"";
-        return compilerSettings.FilesToIgnore.Contains(fileName);
-      }
-      else if (item is CurrentProject)
-      {
-        Project project = item.GetObject() as Project;
-        CompilerSettingsModel compilerSettings = SettingsProvider.CompilerSettingsModel;
-        var projName = project.Name;
-        fileType = $"project \"{projName}\"";
-        return compilerSettings.FilesToIgnore.Contains(projName);
-      }
-
-      return false;
     }
 
     #endregion

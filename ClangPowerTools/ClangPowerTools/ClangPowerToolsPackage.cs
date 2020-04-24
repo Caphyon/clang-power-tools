@@ -409,6 +409,7 @@ namespace ClangPowerTools
 
       CompileCommand.Instance.IgnoredItemsEvent += mCommandController.OnItemIgnore;
       TidyCommand.Instance.IgnoredItemsEvent += mCommandController.OnItemIgnore;
+      FormatCommand.Instance.IgnoredItemsEvent += mCommandController.OnItemIgnore;
 
       PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
@@ -474,6 +475,7 @@ namespace ClangPowerTools
 
       CompileCommand.Instance.IgnoredItemsEvent -= mCommandController.OnItemIgnore;
       TidyCommand.Instance.IgnoredItemsEvent -= mCommandController.OnItemIgnore;
+      FormatCommand.Instance.IgnoredItemsEvent -= mCommandController.OnItemIgnore;
 
       PowerShellWrapper.DataHandler -= mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler -= mOutputWindowController.OutputDataErrorReceived;

@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.Events;
 using ClangPowerTools.Helpers;
+using ClangPowerTools.IgnoreActions;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -230,7 +231,9 @@ namespace ClangPowerTools.Commands
         return false;
       }
 
-      if (SkipFile(mDocument.FullName, formatSettings.FilesToIgnore))
+      var ignoreItem = new IgnoreItem();
+
+      if (ignoreItem.Check(mDocument))
       {
         OnFormatFile(new FormatCommandEventArgs()
         {
@@ -243,6 +246,8 @@ namespace ClangPowerTools.Commands
 
         if (clearOutput)
           clearOutput = false;
+
+        OnIgnoreItem(new ClangCommandMessageEventArgs(ignoreItem.IgnoreFormatMessage, false));
 
         return false;
       }
@@ -286,12 +291,6 @@ namespace ClangPowerTools.Commands
       return extensions.Contains(Path.GetExtension(filePath).ToLower());
     }
 
-    private bool SkipFile(string aFilePath, string aSkipFiles)
-    {
-      var skipFilesList = aSkipFiles.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-      return skipFilesList.Contains(Path.GetFileName(aFilePath).ToLower());
-    }
-
     #endregion
 
     private void FormatAllSelectedDocuments()
@@ -318,7 +317,7 @@ namespace ClangPowerTools.Commands
             mDocument.Close(vsSaveChanges.vsSaveChangesYes);
           }
         }
-        catch (Exception e) 
+        catch (Exception e)
         {
           MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
