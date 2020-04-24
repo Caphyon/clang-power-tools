@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.Events;
 using ClangPowerTools.Helpers;
+using ClangPowerTools.IgnoreActions;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -230,7 +231,9 @@ namespace ClangPowerTools.Commands
         return false;
       }
 
-      if (SkipFile(mDocument.FullName, formatSettings.FilesToIgnore))
+      var ignoreItem = new IgnoreItem();
+
+      if (ignoreItem.Check(mDocument))
       {
         OnFormatFile(new FormatCommandEventArgs()
         {
@@ -244,7 +247,7 @@ namespace ClangPowerTools.Commands
         if (clearOutput)
           clearOutput = false;
 
-        OnIgnoreItem(new ClangCommandMessageEventArgs($"\nCannot use clang-format on ignored files.\nTo enable clang-format remove the {mDocument.Name} from Clang Power Tools Settings -> Format -> Files to ignore.", false));
+        OnIgnoreItem(new ClangCommandMessageEventArgs(ignoreItem.IgnoreFormatMessage, false));
 
         return false;
       }
@@ -286,12 +289,6 @@ namespace ClangPowerTools.Commands
     {
       var extensions = fileExtensions.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
       return extensions.Contains(Path.GetExtension(filePath).ToLower());
-    }
-
-    private bool SkipFile(string aFilePath, string aSkipFiles)
-    {
-      var skipFilesList = aSkipFiles.ToLower().Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
-      return skipFilesList.Contains(Path.GetFileName(aFilePath).ToLower());
     }
 
     #endregion
