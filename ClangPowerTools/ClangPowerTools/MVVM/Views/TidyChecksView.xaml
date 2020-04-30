@@ -37,8 +37,26 @@
       <RowDefinition Height="30" />
     </Grid.RowDefinitions>
 
+
+    <!--  Select all checkbox  -->
+
+    <CheckBox
+      x:Name="SelectAllCheckBox"
+      Grid.Row="0"
+      Margin="5,0,0,0"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center" />
+
+    <Label
+      Grid.Row="0"
+      Margin="20,0,0,0"
+      HorizontalAlignment="Left"
+      Content="Select All" />
+
+
     <!--  Search  -->
     <searchBox:SearchBoxView
+      Grid.Row="0"
       Width="250"
       Height="30"
       Margin="0,0,20,0"
