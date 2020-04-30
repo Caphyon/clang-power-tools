@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ClangPowerTools
@@ -33,6 +34,12 @@ namespace ClangPowerTools
 
       tidyChecksView = view;
       tidyChecksView.Closed += OnClosed;
+
+      tidyChecksView.SelectAllCheckBox.Checked +=
+        (object sender, RoutedEventArgs e) => SelectOrDeselectAll(true);
+
+      tidyChecksView.SelectAllCheckBox.Unchecked +=
+        (object sender, RoutedEventArgs e) => SelectOrDeselectAll(false);
 
       InitializeChecks();
     }
@@ -115,7 +122,9 @@ namespace ClangPowerTools
 
     #region Methods
 
-    public string GetSelectedChecks()
+    private void SelectOrDeselectAll(bool value) => TidyChecksList.ForEach(c => c.IsChecked = value);
+
+    private string GetSelectedChecks()
     {
       var checks = new StringBuilder();
 
@@ -127,7 +136,9 @@ namespace ClangPowerTools
         }
       }
 
-      checks.Length--;
+      if (checks.Length != 0)
+        checks.Length--;
+
       return checks.ToString();
     }
 
