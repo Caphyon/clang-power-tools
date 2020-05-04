@@ -23,6 +23,7 @@ namespace ClangPowerTools
     private TidyCheckModel selectedCheck = new TidyCheckModel();
     private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>();
     private ICommand resetSearchCommand;
+    //private bool selectAllFlag = false;
 
     #endregion
 
@@ -36,10 +37,18 @@ namespace ClangPowerTools
       tidyChecksView.Closed += OnClosed;
 
       tidyChecksView.SelectAllCheckBox.Checked +=
-        (object sender, RoutedEventArgs e) => SelectOrDeselectAll(true);
+        (object sender, RoutedEventArgs e) =>
+          {
+            //selectAllFlag = true;
+            SelectOrDeselectAll(true);
+          };
 
       tidyChecksView.SelectAllCheckBox.Unchecked +=
-        (object sender, RoutedEventArgs e) => SelectOrDeselectAll(false);
+        (object sender, RoutedEventArgs e) =>
+          {
+            //selectAllFlag = false;
+            SelectOrDeselectAll(false);
+          };
 
       InitializeChecks();
     }
@@ -66,12 +75,39 @@ namespace ClangPowerTools
     {
       get
       {
-        if (string.IsNullOrEmpty(checkSearch))
-        {
-          return tidyChecksList;
-        }
-        return tidyChecksList.Where(e => e.Name.Contains(checkSearch, StringComparison.OrdinalIgnoreCase)).ToList();
+        List<TidyCheckModel> checks = string.IsNullOrEmpty(checkSearch) ? tidyChecksList :
+          tidyChecksList.Where(e => e.Name.Contains(checkSearch, StringComparison.OrdinalIgnoreCase)).ToList();
+
+        CheckSelectAllButton(checks);
+
+        return checks;
       }
+    }
+
+    private void SelectOrDeselectAll(bool value)
+    {
+      var checks = string.IsNullOrEmpty(checkSearch) ? tidyChecksList :
+          tidyChecksList.Where(e => e.Name.Contains(checkSearch, StringComparison.OrdinalIgnoreCase)).ToList();
+
+      for (int i = 0; i < checks.Count; ++i)
+      {
+        checks[i].IsChecked = value;
+      }
+
+      //checks.ForEach(c => c.IsChecked = value);
+
+    }
+
+    private void CheckSelectAllButton(IEnumerable<TidyCheckModel> checks)
+    {
+      if (tidyChecksView.SelectAllCheckBox.IsChecked == false && !checks.Any(c => c.IsChecked == false))
+      {
+        tidyChecksView.SelectAllCheckBox.IsChecked = true;
+        //selectAllFlag = true;
+      }
+      else
+        tidyChecksView.SelectAllCheckBox.IsChecked = false;
+
     }
 
     public string CheckSearch
@@ -122,7 +158,7 @@ namespace ClangPowerTools
 
     #region Methods
 
-    private void SelectOrDeselectAll(bool value) => TidyChecksList.ForEach(c => c.IsChecked = value);
+
 
     private string GetSelectedChecks()
     {
@@ -176,6 +212,8 @@ namespace ClangPowerTools
         tidyChecksList = new List<TidyCheckModel>(tidyChecksClean.Checks);
         TickPredefinedChecks();
       }
+
+      CheckSelectAllButton(tidyChecksList);
     }
 
     private void OnClosed(object sender, EventArgs e)
