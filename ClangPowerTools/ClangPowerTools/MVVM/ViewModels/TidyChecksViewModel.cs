@@ -23,6 +23,8 @@ namespace ClangPowerTools
     private TidyCheckModel selectedCheck = new TidyCheckModel();
     private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>();
     private ICommand resetSearchCommand;
+    private bool skipCheckUpdate = false;
+
     //private bool selectAllFlag = false;
 
     #endregion
@@ -86,6 +88,15 @@ namespace ClangPowerTools
 
     private void SelectOrDeselectAll(bool value)
     {
+      // Skip the update when search filter is changed
+      if (skipCheckUpdate)
+      {
+        skipCheckUpdate = false;
+        return;
+      }
+
+      skipCheckUpdate = false;
+
       var checks = string.IsNullOrEmpty(checkSearch) ? tidyChecksList :
           tidyChecksList.Where(e => e.Name.Contains(checkSearch, StringComparison.OrdinalIgnoreCase)).ToList();
 
@@ -93,21 +104,21 @@ namespace ClangPowerTools
       {
         checks[i].IsChecked = value;
       }
-
-      //checks.ForEach(c => c.IsChecked = value);
-
     }
 
     private void CheckSelectAllButton(IEnumerable<TidyCheckModel> checks)
     {
       if (tidyChecksView.SelectAllCheckBox.IsChecked == false && !checks.Any(c => c.IsChecked == false))
       {
+        skipCheckUpdate = true;
         tidyChecksView.SelectAllCheckBox.IsChecked = true;
-        //selectAllFlag = true;
       }
-      else
-        tidyChecksView.SelectAllCheckBox.IsChecked = false;
 
+      if (tidyChecksView.SelectAllCheckBox.IsChecked == true && checks.Any(c => c.IsChecked == false))
+      {
+        skipCheckUpdate = true;
+        tidyChecksView.SelectAllCheckBox.IsChecked = false;
+      }
     }
 
     public string CheckSearch
@@ -157,8 +168,6 @@ namespace ClangPowerTools
 
 
     #region Methods
-
-
 
     private string GetSelectedChecks()
     {
