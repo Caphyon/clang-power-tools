@@ -155,6 +155,9 @@ namespace ClangPowerTools.Output
 
     public void ClosedDataConnection(object sender, EventArgs e)
     {
+      if (Buffer.Count != 0 && mOutputContent.MissingLLVM == false)
+        Write(String.Join("\n", Buffer));
+
       CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
       OnErrorDetected(this, e);
     }
