@@ -121,6 +121,16 @@
           Text="• Feedback message when running Format on ignored files"
           TextWrapping="Wrap" />
 
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Detect if the .clang-format is missing when using file style"
+          TextWrapping="Wrap" />
+
 
         <!--  Bug Fixes  -->
         <TextBox
