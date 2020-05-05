@@ -103,7 +103,7 @@
         <Icon guid="guidImageFormat" id="Format" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
-          <ButtonText>Clang Format</ButtonText>
+          <ButtonText>Format</ButtonText>
         </Strings>
       </Button>
 
@@ -113,7 +113,7 @@
         <Icon guid="guidImageStopClang" id="StopClang" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
-          <ButtonText>Stop Clang</ButtonText>
+          <ButtonText>Stop</ButtonText>
         </Strings>
       </Button>
 
@@ -192,14 +192,14 @@
         <Icon guid="guidImageFormat" id="Format" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
-          <ButtonText>Clang Format</ButtonText>
+          <ButtonText>Format</ButtonText>
         </Strings>
       </Button>
 
       <Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0004" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
         <Strings>
-          <ButtonText>Stop Clang</ButtonText>
+          <ButtonText>Stop</ButtonText>
         </Strings>
       </Button>
 
