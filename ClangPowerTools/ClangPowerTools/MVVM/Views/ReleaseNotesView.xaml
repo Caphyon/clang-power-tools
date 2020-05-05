@@ -149,7 +149,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• The export confirmation dialog appears even when cancelling the operation"
+          Text="• The export confirmation dialog appears even when canceling the operation"
           TextWrapping="Wrap" />
 
         <TextBox
