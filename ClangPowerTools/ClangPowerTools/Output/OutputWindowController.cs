@@ -19,11 +19,11 @@ namespace ClangPowerTools.Output
   {
     #region Members
 
-    private OutputProcessor mOutputProcessor = new OutputProcessor();
+    private readonly OutputProcessor outputProcessor = new OutputProcessor();
 
-    private IBuilder<OutputWindowModel> mOutputWindowBuilder;
+    private IBuilder<OutputWindowModel> outputWindowBuilder;
 
-    private OutputContentModel mOutputContent = new OutputContentModel();
+    private OutputContentModel outputContent = new OutputContentModel();
 
     public event EventHandler<ErrorDetectedEventArgs> ErrorDetectedEvent;
 
@@ -36,13 +36,13 @@ namespace ClangPowerTools.Output
     #region Properties
 
 
-    public List<string> Buffer => mOutputContent.Buffer;
+    public List<string> Buffer => outputContent.Buffer;
 
-    public bool IsBufferEmpty => 0 == mOutputContent.Buffer.Count;
+    public bool IsBufferEmpty => 0 == outputContent.Buffer.Count;
 
-    public HashSet<TaskErrorModel> Errors => mOutputContent.Errors;
+    public HashSet<TaskErrorModel> Errors => outputContent.Errors;
 
-    public bool HasErrors => 0 != mOutputContent.Errors.Count;
+    public bool HasErrors => 0 != outputContent.Errors.Count;
 
     private IVsHierarchy Hierarchy { get; set; }
 
@@ -55,18 +55,18 @@ namespace ClangPowerTools.Output
 
     public void Initialize(AsyncPackage aPackage, IVsOutputWindow aVsOutputWindow)
     {
-      if (null == mOutputWindowBuilder)
-        mOutputWindowBuilder = new OutputWindowBuilder(aPackage, aVsOutputWindow);
+      if (null == outputWindowBuilder)
+        outputWindowBuilder = new OutputWindowBuilder(aPackage, aVsOutputWindow);
 
-      mOutputWindowBuilder.Build();
+      outputWindowBuilder.Build();
     }
 
     public void ClearPanel(object sender, ClearEventArgs e) => Clear();
 
     public void Clear()
     {
-      mOutputContent = new OutputContentModel();
-      var outputWindow = mOutputWindowBuilder.GetResult();
+      outputContent = new OutputContentModel();
+      var outputWindow = outputWindowBuilder.GetResult();
 
       UIUpdater.InvokeAsync(() =>
       {
@@ -77,7 +77,7 @@ namespace ClangPowerTools.Output
 
     public void Show()
     {
-      var outputWindow = mOutputWindowBuilder.GetResult();
+      var outputWindow = outputWindowBuilder.GetResult();
 
       UIUpdater.InvokeAsync(() =>
       {
@@ -94,7 +94,7 @@ namespace ClangPowerTools.Output
       if (string.IsNullOrWhiteSpace(aMessage))
         return;
 
-      var outputWindow = mOutputWindowBuilder.GetResult();
+      var outputWindow = outputWindowBuilder.GetResult();
       outputWindow.Pane.OutputStringThreadSafe(aMessage + "\n");
     }
 
@@ -124,19 +124,19 @@ namespace ClangPowerTools.Output
       if (null == e.Data)
         return;
 
-      if (mOutputContent.MissingLLVM)
+      if (outputContent.MissingLLVM)
         return;
 
-      if (VSConstants.S_FALSE == mOutputProcessor.ProcessData(e.Data, Hierarchy, mOutputContent))
+      if (VSConstants.S_FALSE == outputProcessor.ProcessData(e.Data, Hierarchy, outputContent))
       {
-        if (mOutputContent.MissingLLVM)
+        if (outputContent.MissingLLVM)
         {
           Write(new object(), new ClangCommandMessageEventArgs(ErrorParserConstants.kMissingLlvmMessage, false));
         }
         return;
       }
 
-      Write(mOutputContent.Text);
+      Write(outputContent.Text);
     }
 
     public void OutputDataErrorReceived(object sender, DataReceivedEventArgs e)
@@ -144,18 +144,18 @@ namespace ClangPowerTools.Output
       if (null == e.Data)
         return;
 
-      if (mOutputContent.MissingLLVM)
+      if (outputContent.MissingLLVM)
         return;
 
-      if (VSConstants.S_FALSE == mOutputProcessor.ProcessData(e.Data, Hierarchy, mOutputContent))
+      if (VSConstants.S_FALSE == outputProcessor.ProcessData(e.Data, Hierarchy, outputContent))
         return;
 
-      Write(mOutputContent.Text);
+      Write(outputContent.Text);
     }
 
     public void ClosedDataConnection(object sender, EventArgs e)
     {
-      if (Buffer.Count != 0 && mOutputContent.MissingLLVM == false)
+      if (Buffer.Count != 0 && outputContent.MissingLLVM == false)
         Write(String.Join("\n", Buffer));
 
       CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
@@ -194,7 +194,7 @@ namespace ClangPowerTools.Output
 
     public void OnEncodingErrorDetected(object sender, EventArgs e)
     {
-      HasEncodingErrorEvent?.Invoke(this, new HasEncodingErrorEventArgs(mOutputContent));
+      HasEncodingErrorEvent?.Invoke(this, new HasEncodingErrorEventArgs(outputContent));
     }
 
     #endregion
