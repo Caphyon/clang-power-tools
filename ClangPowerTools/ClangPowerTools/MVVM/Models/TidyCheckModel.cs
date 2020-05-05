@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using ClangPowerTools.MVVM;
+using System.ComponentModel;
 
 namespace ClangPowerTools
 {
@@ -26,6 +27,14 @@ namespace ClangPowerTools
       }
       set
       {
+        if (!CollectionElementsCounter.IsEmpty())
+        {
+          if (value)
+            CollectionElementsCounter.Add();
+          else
+            CollectionElementsCounter.Remove();
+        }
+
         isChecked = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsChecked"));
       }

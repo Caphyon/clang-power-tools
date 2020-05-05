@@ -1,4 +1,6 @@
-﻿using ClangPowerTools.MVVM.Commands;
+﻿using ClangPowerTools.Events;
+using ClangPowerTools.MVVM;
+using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
@@ -25,8 +27,6 @@ namespace ClangPowerTools
     private ICommand resetSearchCommand;
     private bool skipCheckUpdate = false;
 
-    //private bool selectAllFlag = false;
-
     #endregion
 
     #region Constructor
@@ -39,18 +39,10 @@ namespace ClangPowerTools
       tidyChecksView.Closed += OnClosed;
 
       tidyChecksView.SelectAllCheckBox.Checked +=
-        (object sender, RoutedEventArgs e) =>
-          {
-            //selectAllFlag = true;
-            SelectOrDeselectAll(true);
-          };
+        (object sender, RoutedEventArgs e) => { SelectOrDeselectAll(true); };
 
       tidyChecksView.SelectAllCheckBox.Unchecked +=
-        (object sender, RoutedEventArgs e) =>
-          {
-            //selectAllFlag = false;
-            SelectOrDeselectAll(false);
-          };
+        (object sender, RoutedEventArgs e) => { SelectOrDeselectAll(false); };
 
       InitializeChecks();
     }
@@ -80,46 +72,16 @@ namespace ClangPowerTools
         List<TidyCheckModel> checks = string.IsNullOrEmpty(checkSearch) ? tidyChecksList :
           tidyChecksList.Where(e => e.Name.Contains(checkSearch, StringComparison.OrdinalIgnoreCase)).ToList();
 
+        CollectionElementsCounter.Initialize(tidyChecksList);
+        CollectionElementsCounter.ButtonStateEvent += CheckSelectAllButton;
+
         CheckSelectAllButton(checks);
 
         return checks;
       }
     }
 
-    private void SelectOrDeselectAll(bool value)
-    {
-      // Skip the update when search filter is changed
-      if (skipCheckUpdate)
-      {
-        skipCheckUpdate = false;
-        return;
-      }
 
-      skipCheckUpdate = false;
-
-      var checks = string.IsNullOrEmpty(checkSearch) ? tidyChecksList :
-          tidyChecksList.Where(e => e.Name.Contains(checkSearch, StringComparison.OrdinalIgnoreCase)).ToList();
-
-      for (int i = 0; i < checks.Count; ++i)
-      {
-        checks[i].IsChecked = value;
-      }
-    }
-
-    private void CheckSelectAllButton(IEnumerable<TidyCheckModel> checks)
-    {
-      if (tidyChecksView.SelectAllCheckBox.IsChecked == false && !checks.Any(c => c.IsChecked == false))
-      {
-        skipCheckUpdate = true;
-        tidyChecksView.SelectAllCheckBox.IsChecked = true;
-      }
-
-      if (tidyChecksView.SelectAllCheckBox.IsChecked == true && checks.Any(c => c.IsChecked == false))
-      {
-        skipCheckUpdate = true;
-        tidyChecksView.SelectAllCheckBox.IsChecked = false;
-      }
-    }
 
     public string CheckSearch
     {
@@ -158,7 +120,9 @@ namespace ClangPowerTools
 
     #endregion
 
+
     #region Commands
+
     public ICommand ResetSearchCommand
     {
       get => resetSearchCommand ?? (resetSearchCommand = new RelayCommand(() => ResetSearchField(), () => CanExecute));
@@ -223,6 +187,45 @@ namespace ClangPowerTools
       }
 
       CheckSelectAllButton(tidyChecksList);
+    }
+
+    private void SelectOrDeselectAll(bool value)
+    {
+      if (skipCheckUpdate)
+      {
+        skipCheckUpdate = false;
+        return;
+      }
+
+      skipCheckUpdate = false;
+
+      var checks = string.IsNullOrEmpty(checkSearch) ? tidyChecksList :
+          tidyChecksList.Where(e => e.Name.Contains(checkSearch, StringComparison.OrdinalIgnoreCase)).ToList();
+
+      for (int i = 0; i < checks.Count; ++i)
+      {
+        checks[i].IsChecked = value;
+      }
+    }
+
+    private void CheckSelectAllButton(IEnumerable<TidyCheckModel> checks)
+    {
+      if (tidyChecksView.SelectAllCheckBox.IsChecked == false && !checks.Any(c => c.IsChecked == false))
+      {
+        skipCheckUpdate = true;
+        tidyChecksView.SelectAllCheckBox.IsChecked = true;
+      }
+      else if (tidyChecksView.SelectAllCheckBox.IsChecked == true && checks.Any(c => c.IsChecked == false))
+      {
+        skipCheckUpdate = true;
+        tidyChecksView.SelectAllCheckBox.IsChecked = false;
+      }
+    }
+
+    private void CheckSelectAllButton(object sender, BoolEventArgs e)
+    {
+      skipCheckUpdate = true;
+      tidyChecksView.SelectAllCheckBox.IsChecked = e.Value;
     }
 
     private void OnClosed(object sender, EventArgs e)
