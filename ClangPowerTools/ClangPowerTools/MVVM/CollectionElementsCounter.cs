@@ -15,25 +15,25 @@ namespace ClangPowerTools.MVVM
 
     public static event EventHandler<BoolEventArgs> ButtonStateEvent;
 
+    public static bool Skip { get; set; }
+
     #endregion
 
 
-    #region Constructor
+    #region Methods
 
     public static void Initialize(IEnumerable<TidyCheckModel> collection)
     {
+      Skip = false;
+      count = 0;
       length = collection.Count();
       foreach (var item in collection)
       {
         if (item.IsChecked)
           ++count;
       }
+      full = count == length;
     }
-
-    #endregion
-
-
-    #region Methods
 
     public static void Add()
     {
