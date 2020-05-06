@@ -1,5 +1,4 @@
 ﻿using ClangPowerTools.Events;
-using ClangPowerTools.MVVM;
 using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.Views;
 using System;
@@ -25,9 +24,10 @@ namespace ClangPowerTools
     private TidyCheckModel selectedCheck = new TidyCheckModel();
     private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>();
     private ICommand resetSearchCommand;
-    private bool skipCheckUpdate = false;
 
-    private bool skipSkip = false;
+    //private bool skipCheckUpdate = false;
+
+    //private bool skipSkip = false;
 
     #endregion
 
@@ -74,11 +74,11 @@ namespace ClangPowerTools
         List<TidyCheckModel> checks = string.IsNullOrEmpty(checkSearch) ? tidyChecksList :
           tidyChecksList.Where(e => e.Name.Contains(checkSearch, StringComparison.OrdinalIgnoreCase)).ToList();
 
-        skipSkip = false;
-        CollectionElementsCounter.Initialize(checks);
-        CollectionElementsCounter.ButtonStateEvent += CheckSelectAllButton;
+        //skipSkip = false;
+        //CollectionElementsCounter.Initialize(checks);
+        //CollectionElementsCounter.ButtonStateEvent += CheckSelectAllButton;
 
-        CheckSelectAllButton(checks);
+        //CheckSelectAllButton(checks);
 
         return checks;
       }
@@ -192,14 +192,14 @@ namespace ClangPowerTools
 
     private void SelectOrDeselectAll(bool value)
     {
-      if (skipCheckUpdate)
-      {
-        skipCheckUpdate = false;
-        return;
-      }
+      //if (skipCheckUpdate)
+      //{
+      //  skipCheckUpdate = false;
+      //  return;
+      //}
 
-      CollectionElementsCounter.Skip = true;
-      skipCheckUpdate = false;
+      //CollectionElementsCounter.Skip = true;
+      //skipCheckUpdate = false;
 
       var checks = string.IsNullOrEmpty(checkSearch) ? tidyChecksList :
           tidyChecksList.Where(e => e.Name.Contains(checkSearch, StringComparison.OrdinalIgnoreCase)).ToList();
@@ -210,7 +210,7 @@ namespace ClangPowerTools
         checks[i].IsChecked = value;
       }
 
-      CollectionElementsCounter.Skip = false;
+      //CollectionElementsCounter.Skip = false;
     }
 
     private void CheckSelectAllButton(IEnumerable<TidyCheckModel> checks)
@@ -221,27 +221,30 @@ namespace ClangPowerTools
       //  tidyChecksView.SelectAllCheckBox.IsChecked = false;
       //}
       //else 
-      if (tidyChecksView.SelectAllCheckBox.IsChecked == false && !checks.Any(c => c.IsChecked == false))
-      {
-        skipCheckUpdate = true;
-        tidyChecksView.SelectAllCheckBox.IsChecked = true;
-      }
-      else if (tidyChecksView.SelectAllCheckBox.IsChecked == true && checks.Any(c => c.IsChecked == false))
-      {
-        skipCheckUpdate = true;
-        tidyChecksView.SelectAllCheckBox.IsChecked = false;
-      }
+
+
+      //if (tidyChecksView.SelectAllCheckBox.IsChecked == false && !checks.Any(c => c.IsChecked == false))
+      //{
+      //  skipCheckUpdate = true;
+      //  tidyChecksView.SelectAllCheckBox.IsChecked = true;
+      //}
+      //else if (tidyChecksView.SelectAllCheckBox.IsChecked == true && checks.Any(c => c.IsChecked == false))
+      //{
+      //  skipCheckUpdate = true;
+      //  tidyChecksView.SelectAllCheckBox.IsChecked = false;
+      //}
     }
 
     private void CheckSelectAllButton(object sender, BoolEventArgs e)
     {
-      if (skipSkip)
-      {
-        return;
-      }
+      //if (skipSkip)
+      //{
+      //  return;
+      //}
 
-      skipSkip = false;
-      skipCheckUpdate = true;
+      //skipSkip = false;
+      //skipCheckUpdate = true;
+
       tidyChecksView.SelectAllCheckBox.IsChecked = e.Value;
     }
 
@@ -250,7 +253,7 @@ namespace ClangPowerTools
       tidyModel.PredefinedChecks = GetSelectedChecks();
       tidyChecksView.Closed -= OnClosed;
 
-      CollectionElementsCounter.ButtonStateEvent -= CheckSelectAllButton;
+      //CollectionElementsCounter.ButtonStateEvent -= CheckSelectAllButton;
     }
 
     private void ResetSearchField()
