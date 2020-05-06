@@ -43,7 +43,7 @@ namespace ClangPowerTools
       {
         // Check event is triggered before Click event. 
         // IsChecked property will already have the new value when the Click event will happend 
-        SelectOrDeselectAll(tidyChecksView.SelectAllCheckBox.IsChecked == true ? true : false);
+        EnableDisableAllChecks(tidyChecksView.SelectAllCheckBox.IsChecked == true ? true : false);
       };
 
       InitializeChecks();
@@ -74,8 +74,9 @@ namespace ClangPowerTools
         List<TidyCheckModel> checks = string.IsNullOrEmpty(checkSearch) ? tidyChecksList :
           tidyChecksList.Where(e => e.Name.Contains(checkSearch, StringComparison.OrdinalIgnoreCase)).ToList();
 
+        // Always keep the current list of checks under surveillance
         CollectionElementsCounter.Initialize(checks);
-        CollectionElementsCounter.ButtonStateEvent += CheckSelectAllButton;
+        CollectionElementsCounter.ButtonStateEvent += SetStateForEnableDisableAllButton;
 
         SetStateForEnableDisableAllButton(checks);
 
@@ -186,49 +187,58 @@ namespace ClangPowerTools
         TickPredefinedChecks();
       }
 
+      // Set the toggle button state on the first loading of tidy checks list
       SetStateForEnableDisableAllButton(tidyChecksList);
     }
 
-    private void SelectOrDeselectAll(bool value)
+    /// <summary>
+    /// Enable or disable all the tidy checks from the current tidy checks list 
+    /// </summary>
+    /// <param name="value">True to enable all tidy checks. False to disable all tidy checks</param>
+    private void EnableDisableAllChecks(bool value)
     {
+      // get all checks from current view considering the search filter
       var checks = string.IsNullOrEmpty(checkSearch) ? tidyChecksList :
           tidyChecksList.Where(e => e.Name.Contains(checkSearch, StringComparison.OrdinalIgnoreCase)).ToList();
 
-
+      // set just the current collection of checks
       for (int i = 0; i < checks.Count; ++i)
-      {
         checks[i].IsChecked = value;
-      }
     }
 
     /// <summary>
-    /// Set the state for Enable/Disable All button
+    /// Set the state for Enable/Disable All toggle button
     /// </summary>
     /// <param name="checks">Tidy checks collection</param>
     private void SetStateForEnableDisableAllButton(IEnumerable<TidyCheckModel> checks)
     {
       // to avoid enter in the second condition the first one must be split in two if statements
-      // uncheck the Enable All button if the retured list of checks has 0 elements
+      // uncheck the Enable All toggle button if the retured list of checks has 0 elements
       if (checks.Count() == 0)
       {
         if (tidyChecksView.SelectAllCheckBox.IsChecked == true)
           tidyChecksView.SelectAllCheckBox.IsChecked = false;
       }
 
-      // check the Enable All button if all the checks from the current view are enabled
+      // check the Enable All toggle button if all the checks from the current view are enabled
       else if (tidyChecksView.SelectAllCheckBox.IsChecked == false && !checks.Any(c => c.IsChecked == false))
       {
         tidyChecksView.SelectAllCheckBox.IsChecked = true;
       }
 
-      // uncheck the Enable All button if any check from the list is disabled
+      // uncheck the Enable All toggle button if any check from the list is disabled
       else if (tidyChecksView.SelectAllCheckBox.IsChecked == true && checks.Any(c => c.IsChecked == false))
       {
         tidyChecksView.SelectAllCheckBox.IsChecked = false;
       }
     }
 
-    private void CheckSelectAllButton(object sender, BoolEventArgs e)
+    /// <summary>
+    /// Set the state for Enable/Disable All toggle button
+    /// </summary>
+    /// <param name="sender">Value is NULL. Event is triggered from a static object which has no this value.</param>
+    /// <param name="e">Contains the state of the toggle button</param>
+    private void SetStateForEnableDisableAllButton(object sender, BoolEventArgs e)
     {
       tidyChecksView.SelectAllCheckBox.IsChecked = e.Value;
     }
@@ -238,7 +248,7 @@ namespace ClangPowerTools
       tidyModel.PredefinedChecks = GetSelectedChecks();
       tidyChecksView.Closed -= OnClosed;
 
-      CollectionElementsCounter.ButtonStateEvent -= CheckSelectAllButton;
+      CollectionElementsCounter.ButtonStateEvent -= SetStateForEnableDisableAllButton;
     }
 
     private void ResetSearchField()
