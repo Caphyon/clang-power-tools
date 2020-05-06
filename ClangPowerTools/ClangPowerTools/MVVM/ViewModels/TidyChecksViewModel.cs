@@ -25,7 +25,7 @@ namespace ClangPowerTools
     private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>();
     private ICommand resetSearchCommand;
 
-    //private bool skipCheckUpdate = false;
+    private bool skipCheckUpdate = false;
 
     //private bool skipSkip = false;
 
@@ -40,11 +40,14 @@ namespace ClangPowerTools
       tidyChecksView = view;
       tidyChecksView.Closed += OnClosed;
 
-      tidyChecksView.SelectAllCheckBox.Checked +=
-        (object sender, RoutedEventArgs e) => { SelectOrDeselectAll(true); };
-
-      tidyChecksView.SelectAllCheckBox.Unchecked +=
-        (object sender, RoutedEventArgs e) => { SelectOrDeselectAll(false); };
+      // Click event is used because the Check value is changed many time from the code
+      // In this way we don't need to make more checks to see from where the Check event was triggered 
+      tidyChecksView.SelectAllCheckBox.Click += (object sender, RoutedEventArgs e) =>
+      {
+        // Check event is triggered before Click event. 
+        // IsChecked property will already have the new value when the Click event will happend 
+        SelectOrDeselectAll(tidyChecksView.SelectAllCheckBox.IsChecked == true ? true : false);
+      };
 
       InitializeChecks();
     }
@@ -192,15 +195,6 @@ namespace ClangPowerTools
 
     private void SelectOrDeselectAll(bool value)
     {
-      //if (skipCheckUpdate)
-      //{
-      //  skipCheckUpdate = false;
-      //  return;
-      //}
-
-      //CollectionElementsCounter.Skip = true;
-      //skipCheckUpdate = false;
-
       var checks = string.IsNullOrEmpty(checkSearch) ? tidyChecksList :
           tidyChecksList.Where(e => e.Name.Contains(checkSearch, StringComparison.OrdinalIgnoreCase)).ToList();
 
@@ -209,8 +203,6 @@ namespace ClangPowerTools
       {
         checks[i].IsChecked = value;
       }
-
-      //CollectionElementsCounter.Skip = false;
     }
 
     private void CheckSelectAllButton(IEnumerable<TidyCheckModel> checks)
@@ -223,16 +215,14 @@ namespace ClangPowerTools
       //else 
 
 
-      //if (tidyChecksView.SelectAllCheckBox.IsChecked == false && !checks.Any(c => c.IsChecked == false))
-      //{
-      //  skipCheckUpdate = true;
-      //  tidyChecksView.SelectAllCheckBox.IsChecked = true;
-      //}
-      //else if (tidyChecksView.SelectAllCheckBox.IsChecked == true && checks.Any(c => c.IsChecked == false))
-      //{
-      //  skipCheckUpdate = true;
-      //  tidyChecksView.SelectAllCheckBox.IsChecked = false;
-      //}
+      if (tidyChecksView.SelectAllCheckBox.IsChecked == false && !checks.Any(c => c.IsChecked == false))
+      {
+        tidyChecksView.SelectAllCheckBox.IsChecked = true;
+      }
+      else if (tidyChecksView.SelectAllCheckBox.IsChecked == true && checks.Any(c => c.IsChecked == false))
+      {
+        tidyChecksView.SelectAllCheckBox.IsChecked = false;
+      }
     }
 
     private void CheckSelectAllButton(object sender, BoolEventArgs e)
