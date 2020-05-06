@@ -27,6 +27,7 @@ namespace ClangPowerTools
       }
       set
       {
+        // Take in consideration every change of the state if the collection is not empty
         if (!CollectionElementsCounter.IsEmpty())
         {
           if (value)
