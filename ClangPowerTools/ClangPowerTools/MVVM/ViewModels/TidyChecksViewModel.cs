@@ -76,7 +76,7 @@ namespace ClangPowerTools
 
         // Always keep the current list of checks under surveillance
         CollectionElementsCounter.Initialize(checks);
-        CollectionElementsCounter.ButtonStateEvent += SetStateForEnableDisableAllButton;
+        CollectionElementsCounter.StateEvent += SetStateForEnableDisableAllButton;
 
         SetStateForEnableDisableAllButton(checks);
 
@@ -248,7 +248,7 @@ namespace ClangPowerTools
       tidyModel.PredefinedChecks = GetSelectedChecks();
       tidyChecksView.Closed -= OnClosed;
 
-      CollectionElementsCounter.ButtonStateEvent -= SetStateForEnableDisableAllButton;
+      CollectionElementsCounter.StateEvent -= SetStateForEnableDisableAllButton;
     }
 
     private void ResetSearchField()
