@@ -77,7 +77,7 @@ namespace ClangPowerTools
         CollectionElementsCounter.Initialize(checks);
         CollectionElementsCounter.ButtonStateEvent += CheckSelectAllButton;
 
-        CheckSelectAllButton(checks);
+        SetStateForEnableDisableAllButton(checks);
 
         return checks;
       }
@@ -186,7 +186,7 @@ namespace ClangPowerTools
         TickPredefinedChecks();
       }
 
-      CheckSelectAllButton(tidyChecksList);
+      SetStateForEnableDisableAllButton(tidyChecksList);
     }
 
     private void SelectOrDeselectAll(bool value)
@@ -201,12 +201,27 @@ namespace ClangPowerTools
       }
     }
 
-    private void CheckSelectAllButton(IEnumerable<TidyCheckModel> checks)
+    /// <summary>
+    /// Set the state for Enable/Disable All button
+    /// </summary>
+    /// <param name="checks">Tidy checks collection</param>
+    private void SetStateForEnableDisableAllButton(IEnumerable<TidyCheckModel> checks)
     {
-      if (tidyChecksView.SelectAllCheckBox.IsChecked == false && !checks.Any(c => c.IsChecked == false))
+      // to avoid enter in the second condition the first one must be split in two if statements
+      // uncheck the Enable All button if the retured list of checks has 0 elements
+      if (checks.Count() == 0)
+      {
+        if (tidyChecksView.SelectAllCheckBox.IsChecked == true)
+          tidyChecksView.SelectAllCheckBox.IsChecked = false;
+      }
+
+      // check the Enable All button if all the checks from the current view are enabled
+      else if (tidyChecksView.SelectAllCheckBox.IsChecked == false && !checks.Any(c => c.IsChecked == false))
       {
         tidyChecksView.SelectAllCheckBox.IsChecked = true;
       }
+
+      // uncheck the Enable All button if any check from the list is disabled
       else if (tidyChecksView.SelectAllCheckBox.IsChecked == true && checks.Any(c => c.IsChecked == false))
       {
         tidyChecksView.SelectAllCheckBox.IsChecked = false;
