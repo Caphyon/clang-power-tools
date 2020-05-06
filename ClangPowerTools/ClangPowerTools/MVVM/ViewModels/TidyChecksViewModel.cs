@@ -81,7 +81,7 @@ namespace ClangPowerTools
         //CollectionElementsCounter.Initialize(checks);
         //CollectionElementsCounter.ButtonStateEvent += CheckSelectAllButton;
 
-        //CheckSelectAllButton(checks);
+        CheckSelectAllButton(checks);
 
         return checks;
       }
