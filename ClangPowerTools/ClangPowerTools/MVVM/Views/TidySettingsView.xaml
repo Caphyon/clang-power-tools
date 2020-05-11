@@ -258,7 +258,8 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding TidyModel.FormatAfterTidy}" />
+      IsChecked="{Binding TidyModel.FormatAfterTidy}"
+      Tag="On" />
 
     <!--  Tidy on save  -->
     <TextBlock
@@ -284,7 +285,8 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding TidyModel.TidyOnSave}" />
+      IsChecked="{Binding TidyModel.TidyOnSave}"
+      Tag="On" />
 
     <!--  Export tidy config  -->
     <TextBlock

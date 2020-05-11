@@ -287,7 +287,8 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding FormatModel.FormatOnSave}" />
+      IsChecked="{Binding FormatModel.FormatOnSave}"
+      Tag="On" />
 
     <!--  Create format file  -->
     <TextBlock

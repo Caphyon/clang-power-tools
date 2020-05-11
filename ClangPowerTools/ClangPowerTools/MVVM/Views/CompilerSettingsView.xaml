@@ -222,7 +222,8 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding CompilerModel.WarningsAsErrors}" />
+      IsChecked="{Binding CompilerModel.WarningsAsErrors}"
+      Tag="On" />
 
     <!--  Continue on error  -->
     <TextBlock
@@ -248,7 +249,8 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding CompilerModel.ContinueOnError}" />
+      IsChecked="{Binding CompilerModel.ContinueOnError}"
+      Tag="On" />
 
     <!--  Clang after MSCV compile  -->
     <TextBlock
@@ -274,7 +276,8 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding CompilerModel.ClangAfterMSVC}" />
+      IsChecked="{Binding CompilerModel.ClangAfterMSVC}"
+      Tag="On" />
 
     <!--  Show Error List  -->
     <TextBlock
@@ -300,7 +303,8 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding CompilerModel.ShowErrorList}" />
+      IsChecked="{Binding CompilerModel.ShowErrorList}"
+      Tag="On" />
 
 
     <!--  Show Squiggles  -->
@@ -327,7 +331,8 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding CompilerModel.ShowSquiggles}" />
+      IsChecked="{Binding CompilerModel.ShowSquiggles}"
+      Tag="On" />
 
     <!--  Verbose mode  -->
     <TextBlock
@@ -353,7 +358,8 @@
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
-      IsChecked="{Binding CompilerModel.VerboseMode}" />
+      IsChecked="{Binding CompilerModel.VerboseMode}"
+      Tag="On" />
 
   </Grid>
 </UserControl>

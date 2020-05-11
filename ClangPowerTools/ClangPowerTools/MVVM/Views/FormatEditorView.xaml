@@ -133,7 +133,8 @@
                       Width="80"
                       Checked="ModifyFocus"
                       Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.FormatCodeCommand}"
-                      IsChecked="{Binding IsEnabled}" />
+                      IsChecked="{Binding IsEnabled}"
+                      Tag="On" />
                   </DataTemplate>
                 </GridViewColumn.CellTemplate>
               </GridViewColumn>
