@@ -39,11 +39,11 @@ namespace ClangPowerTools
 
       // Click event is used because the Check value is changed many time from the code
       // In this way we don't need to make more checks to see from where the Check event was triggered 
-      tidyChecksView.SelectAllCheckBox.Click += (object sender, RoutedEventArgs e) =>
+      tidyChecksView.EnableDisableButton.Click += (object sender, RoutedEventArgs e) =>
       {
         // Check event is triggered before Click event. 
         // IsChecked property will already have the new value when the Click event will happend 
-        EnableDisableAllChecks(tidyChecksView.SelectAllCheckBox.IsChecked == true ? true : false);
+        EnableDisableAllChecks(tidyChecksView.EnableDisableButton.IsChecked == true ? true : false);
       };
 
       InitializeChecks();
@@ -216,20 +216,20 @@ namespace ClangPowerTools
       // uncheck the Enable All toggle button if the retured list of checks has 0 elements
       if (checks.Count() == 0)
       {
-        if (tidyChecksView.SelectAllCheckBox.IsChecked == true)
-          tidyChecksView.SelectAllCheckBox.IsChecked = false;
+        if (tidyChecksView.EnableDisableButton.IsChecked == true)
+          tidyChecksView.EnableDisableButton.IsChecked = false;
       }
 
       // check the Enable All toggle button if all the checks from the current view are enabled
-      else if (tidyChecksView.SelectAllCheckBox.IsChecked == false && !checks.Any(c => c.IsChecked == false))
+      else if (tidyChecksView.EnableDisableButton.IsChecked == false && !checks.Any(c => c.IsChecked == false))
       {
-        tidyChecksView.SelectAllCheckBox.IsChecked = true;
+        tidyChecksView.EnableDisableButton.IsChecked = true;
       }
 
       // uncheck the Enable All toggle button if any check from the list is disabled
-      else if (tidyChecksView.SelectAllCheckBox.IsChecked == true && checks.Any(c => c.IsChecked == false))
+      else if (tidyChecksView.EnableDisableButton.IsChecked == true && checks.Any(c => c.IsChecked == false))
       {
-        tidyChecksView.SelectAllCheckBox.IsChecked = false;
+        tidyChecksView.EnableDisableButton.IsChecked = false;
       }
     }
 
@@ -240,7 +240,7 @@ namespace ClangPowerTools
     /// <param name="e">Contains the state of the toggle button</param>
     private void SetStateForEnableDisableAllButton(object sender, BoolEventArgs e)
     {
-      tidyChecksView.SelectAllCheckBox.IsChecked = e.Value;
+      tidyChecksView.EnableDisableButton.IsChecked = e.Value;
     }
 
     private void OnClosed(object sender, EventArgs e)
