@@ -58,9 +58,9 @@
     <ToggleButton
       x:Name="EnableDisableButton"
       Grid.Row="0"
-      Width="125"
+      Width="120"
       Height="20"
-      Margin="0,0,3,0"
+      Margin="0,0,8,0"
       HorizontalAlignment="right"
       VerticalAlignment="Center"
       Tag="Enable" />
@@ -104,7 +104,7 @@
             <ToggleButton
               Grid.Row="1"
               Grid.Column="1"
-              Width="125"
+              Width="120"
               Height="20"
               HorizontalAlignment="Right"
               IsChecked="{Binding IsChecked}"
