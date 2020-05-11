@@ -194,23 +194,21 @@ namespace ClangPowerTools.Commands
       if (view == null)
         return false;
 
-      if (IsFileFormatSelected(formatSettings))
+      if (IsFileStyleSelected(formatSettings))
       {
-        var filePath = Vsix.GetDocumentParent(view);
-        if (DoesClangFormatFileExist(filePath) == false)
+        var fileToFormatPath = Vsix.GetDocumentParent(view);
+        if (DoesClangFormatFileExist(fileToFormatPath) == false)
         {
           OnFormatFile(new FormatCommandEventArgs()
           {
-            CanFormat = false,
-            IgnoreExtension = false,
-            IgnoreFile = false,
-            Clear = clearOutput
+            Clear = clearOutput,
+            FormatConfigFound = false
           });
 
           if (clearOutput)
             clearOutput = false;
 
-          return false;
+          return false;       
         }
       }
 
@@ -218,9 +216,7 @@ namespace ClangPowerTools.Commands
       {
         OnFormatFile(new FormatCommandEventArgs()
         {
-          CanFormat = false,
           IgnoreExtension = true,
-          IgnoreFile = false,
           FileName = mDocument.Name,
           Clear = clearOutput
         });
@@ -237,8 +233,6 @@ namespace ClangPowerTools.Commands
       {
         OnFormatFile(new FormatCommandEventArgs()
         {
-          CanFormat = false,
-          IgnoreExtension = false,
           IgnoreFile = true,
           FileName = mDocument.Name,
           Clear = clearOutput
@@ -264,7 +258,7 @@ namespace ClangPowerTools.Commands
       FormatEvent?.Invoke(this, e);
     }
 
-    private bool IsFileFormatSelected(FormatSettingsModel formatSettings)
+    private bool IsFileStyleSelected(FormatSettingsModel formatSettings)
     {
       return formatSettings.Style == ClangFormatStyle.file;
     }
