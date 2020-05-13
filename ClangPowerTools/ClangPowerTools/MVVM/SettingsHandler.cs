@@ -41,10 +41,6 @@ namespace ClangPowerTools
       {
         ImportOldSettings();
       }
-      else
-      {
-        CreateDeaultSettings();
-      }
     }
 
     /// <summary>
@@ -73,7 +69,14 @@ namespace ClangPowerTools
     /// <param name="path"></param>
     public void LoadSettings(string path)
     {
-      DeserializeSettings(path);
+      if (SettingsFileExists())
+      {
+        DeserializeSettings(path);
+      }
+      else
+      {
+        CreateDeaultSettings();
+      }
     }
 
     /// <summary>
@@ -82,7 +85,14 @@ namespace ClangPowerTools
     public void LoadSettings()
     {
       string path = GetSettingsFilePath(settingsPath, SettingsFileName);
-      DeserializeSettings(path);
+      if (File.Exists(path))
+      {
+        DeserializeSettings(path);
+      }
+      else
+      {
+        CreateDeaultSettings();
+      }
     }
 
     public bool SettingsFileExists()
