@@ -41,6 +41,10 @@ namespace ClangPowerTools
       {
         ImportOldSettings();
       }
+      else
+      {
+        CreateDeaultSettings();
+      }
     }
 
     /// <summary>

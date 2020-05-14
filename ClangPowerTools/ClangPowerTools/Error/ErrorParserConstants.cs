@@ -7,7 +7,7 @@
     public const string kClangTag                     = "Clang Power Tools : ";
     public const string kCompileClangMissingFromPath  = "'clang++.exe' is not recognized";
     public const string kTidyClangMissingFromPath     = "'clang-tidy.exe' is not recognized";
-    public const string kMissingLlvmMessage           = "\n\nDid you forget to set-up LLVM?\n\nPlease follow these steps:\n- Go to Clang Power Tools Settings. \n- Select what LLVM version you want to download and install.";
+    public const string kMissingLlvmMessage           = "\n\nDid you forget to set-up LLVM?\n\nPlease follow these steps:\n- Go to Clang Power Tools Settings. \n- Select what LLVM version you want to use or install.";
     public const string kErrorTag                     = "error";
     public const string kWarningTag                   = "warning";
     public const string kMessageTag                   = "message";
