@@ -172,6 +172,16 @@
           Text="• Crash when config file is missing"
           TextWrapping="Wrap" />
 
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Predefined tidy checks are not initialized"
+          TextWrapping="Wrap" />
+
       </ListView>
     </Grid>
 
