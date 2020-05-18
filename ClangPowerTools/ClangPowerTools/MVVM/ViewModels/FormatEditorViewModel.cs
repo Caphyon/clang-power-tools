@@ -31,7 +31,9 @@ namespace ClangPowerTools
     private ICommand resetCommand;
     private ICommand openUri;
     private ICommand openMultipleInputCommand;
+    private ICommand resetSearchCommand;
 
+    private string checkSearch = string.Empty;
     private IFormatOption selectedOption;
     private List<IFormatOption> formatStyleOptions;
     private EditorStyles editorStyle = EditorStyles.Custom;
@@ -62,11 +64,29 @@ namespace ClangPowerTools
     {
       get
       {
-        return formatStyleOptions;
+        if (string.IsNullOrEmpty(checkSearch))
+        {
+          return formatStyleOptions;
+        }
+        return formatStyleOptions.Where(e => e.Name.Contains(checkSearch, StringComparison.OrdinalIgnoreCase)).ToList();
       }
       set
       {
         formatStyleOptions = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
+      }
+    }
+
+    public string CheckSearch
+    {
+      get
+      {
+        return checkSearch;
+      }
+      set
+      {
+        checkSearch = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CheckSearch"));
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
       }
     }
@@ -185,10 +205,13 @@ namespace ClangPowerTools
       get => openMultipleInputCommand ?? (openMultipleInputCommand = new RelayCommand(() => OpenInputDataView(), () => CanExecute));
     }
 
+    public ICommand ResetSearchCommand
+    {
+      get => resetSearchCommand ?? (resetSearchCommand = new RelayCommand(() => ResetSearchField(), () => CanExecute));
+    }
+
     #endregion
 
-
-    #region Methods
 
     #region Public Methods
 
@@ -205,6 +228,15 @@ namespace ClangPowerTools
 
       using StreamReader streamReader = new StreamReader(droppedFile);
       formatOptionsView.CodeEditor.Text = streamReader.ReadToEnd();
+    }
+
+    public void RunFormat()
+    {
+      if (windowLoaded == false) return;
+
+      var text = formatOptionsView.CodeEditor.Text;
+      var formattedText = formatEditorController.FormatText(text, formatStyleOptions, SelectedStyle);
+      formatOptionsView.CodeEditorReadOnly.Text = formattedText;
     }
 
     #endregion
@@ -310,15 +342,6 @@ namespace ClangPowerTools
       }
     }
 
-    public void RunFormat()
-    {
-      if (windowLoaded == false) return;
-
-      var text = formatOptionsView.CodeEditor.Text;
-      var formattedText = formatEditorController.FormatText(text, formatStyleOptions, SelectedStyle);
-      formatOptionsView.CodeEditorReadOnly.Text = formattedText;
-    }
-
     private void EditorLoaded(object sender, EventArgs e)
     {
       windowLoaded = true;
@@ -344,7 +367,10 @@ namespace ClangPowerTools
       return true;
     }
 
-    #endregion
+    private void ResetSearchField()
+    {
+      CheckSearch = string.Empty;
+    }
 
     #endregion
   }
