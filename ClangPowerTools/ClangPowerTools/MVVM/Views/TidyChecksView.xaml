@@ -34,7 +34,7 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="30" />
       <RowDefinition Height="*" />
-      <RowDefinition Height="30" />
+      <RowDefinition Height="40" />
     </Grid.RowDefinitions>
 
 
@@ -107,13 +107,26 @@
               Width="120"
               Height="20"
               HorizontalAlignment="Right"
-              IsChecked="{Binding IsChecked}"
+              IsChecked="{Binding IsChecked, Mode=TwoWay}"
               Tag="On" />
 
           </Grid>
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>
+
+    <Button
+      Grid.Row="2"
+      Grid.Column="2"
+      Width="110"
+      Height="30"
+      Margin="5,0,0,0"
+      HorizontalAlignment="Left"
+      Command="{Binding DefaultChecks}"
+      Content="Default Checks"
+      FontSize="14"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}" />
 
   </Grid>
 
