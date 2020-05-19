@@ -7,39 +7,35 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   mc:Ignorable="d">
 
-
   <Style TargetType="ToggleButton">
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="ToggleButton">
-          <Viewbox
-            Width="70"
-            Height="20"
-            HorizontalAlignment="Left">
+          <Viewbox HorizontalAlignment="Left">
 
             <Grid HorizontalAlignment="Left" VerticalAlignment="Center">
 
               <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition Width="100" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
 
               <Rectangle
                 x:Name="BackgroundToggleSwitch"
                 Grid.Column="0"
-                Width="100"
-                Height="50"
+                Width="40"
+                Height="20"
                 HorizontalAlignment="center"
                 VerticalAlignment="center"
                 Fill="#A0A0A0"
-                RadiusX="25"
-                RadiusY="25" />
+                RadiusX="10"
+                RadiusY="10" />
 
               <Ellipse
                 x:Name="DotToggleSwitch"
                 Grid.Column="0"
-                Width="30"
-                Height="30"
+                Width="13"
+                Height="13"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Center"
                 Fill="White" />
@@ -47,10 +43,10 @@
               <TextBlock
                 Name="StateToggleSwitch"
                 Grid.Column="1"
-                Margin="25,0,0,0"
+                Margin="5,0,0,0"
                 VerticalAlignment="Center"
                 FontFamily="SegoeUI"
-                FontSize="40"
+                FontSize="16"
                 Text="Off" />
 
               <ContentPresenter />
@@ -59,19 +55,106 @@
           </Viewbox>
 
           <ControlTemplate.Triggers>
-            <Trigger Property="IsChecked" Value="false">
-              <Setter TargetName="BackgroundToggleSwitch" Property="Fill" Value="#A0A0A0" />
-              <Setter TargetName="DotToggleSwitch" Property="Margin" Value="-45,0,0,0" />
-              <Setter TargetName="StateToggleSwitch" Property="Text" Value="Off" />
-            </Trigger>
 
-            <Trigger Property="IsChecked" Value="true">
-              <Setter TargetName="BackgroundToggleSwitch" Property="Fill" Value="#9E005A" />
-              <Setter TargetName="DotToggleSwitch" Property="Margin" Value="0,0,-45,0" />
-              <Setter TargetName="StateToggleSwitch" Property="Text" Value="On" />
-            </Trigger>
+            <!--  On/Off Switch  -->
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsChecked" Value="false" />
+                <Condition Property="Tag" Value="On" />
+              </MultiTrigger.Conditions>
+              <MultiTrigger.Setters>
+                <Setter TargetName="BackgroundToggleSwitch" Property="Fill" Value="#A0A0A0" />
+                <Setter TargetName="DotToggleSwitch" Property="Margin" Value="-20,0,0,0" />
+                <Setter TargetName="StateToggleSwitch" Property="Text" Value="Off" />
+              </MultiTrigger.Setters>
+            </MultiTrigger>
+
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsChecked" Value="false" />
+                <Condition Property="Tag" Value="Off" />
+              </MultiTrigger.Conditions>
+              <MultiTrigger.Setters>
+                <Setter TargetName="BackgroundToggleSwitch" Property="Fill" Value="#A0A0A0" />
+                <Setter TargetName="DotToggleSwitch" Property="Margin" Value="-20,0,0,0" />
+                <Setter TargetName="StateToggleSwitch" Property="Text" Value="Off" />
+              </MultiTrigger.Setters>
+            </MultiTrigger>
+
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsChecked" Value="true" />
+                <Condition Property="Tag" Value="On" />
+              </MultiTrigger.Conditions>
+              <MultiTrigger.Setters>
+                <Setter TargetName="BackgroundToggleSwitch" Property="Fill" Value="#9E005A" />
+                <Setter TargetName="DotToggleSwitch" Property="Margin" Value="0,0,-20,0" />
+                <Setter TargetName="StateToggleSwitch" Property="Text" Value="On" />
+              </MultiTrigger.Setters>
+            </MultiTrigger>
+
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsChecked" Value="true" />
+                <Condition Property="Tag" Value="Off" />
+              </MultiTrigger.Conditions>
+              <MultiTrigger.Setters>
+                <Setter TargetName="BackgroundToggleSwitch" Property="Fill" Value="#9E005A" />
+                <Setter TargetName="DotToggleSwitch" Property="Margin" Value="0,0,-20,0" />
+                <Setter TargetName="StateToggleSwitch" Property="Text" Value="On" />
+              </MultiTrigger.Setters>
+            </MultiTrigger>
+
+
+            <!--  Enable All/Disable All Switch  -->
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsChecked" Value="false" />
+                <Condition Property="Tag" Value="Enable" />
+              </MultiTrigger.Conditions>
+              <MultiTrigger.Setters>
+                <Setter TargetName="BackgroundToggleSwitch" Property="Fill" Value="#A0A0A0" />
+                <Setter TargetName="DotToggleSwitch" Property="Margin" Value="-20,0,0,0" />
+                <Setter TargetName="StateToggleSwitch" Property="Text" Value="Enable All" />
+              </MultiTrigger.Setters>
+            </MultiTrigger>
+
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsChecked" Value="false" />
+                <Condition Property="Tag" Value="Disable" />
+              </MultiTrigger.Conditions>
+              <MultiTrigger.Setters>
+                <Setter TargetName="BackgroundToggleSwitch" Property="Fill" Value="#A0A0A0" />
+                <Setter TargetName="DotToggleSwitch" Property="Margin" Value="-20,0,0,0" />
+                <Setter TargetName="StateToggleSwitch" Property="Text" Value="Enable All" />
+              </MultiTrigger.Setters>
+            </MultiTrigger>
+
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsChecked" Value="true" />
+                <Condition Property="Tag" Value="Enable" />
+              </MultiTrigger.Conditions>
+              <MultiTrigger.Setters>
+                <Setter TargetName="BackgroundToggleSwitch" Property="Fill" Value="#9E005A" />
+                <Setter TargetName="DotToggleSwitch" Property="Margin" Value="0,0,-20,0" />
+                <Setter TargetName="StateToggleSwitch" Property="Text" Value="Disable All" />
+              </MultiTrigger.Setters>
+            </MultiTrigger>
+
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsChecked" Value="true" />
+                <Condition Property="Tag" Value="Disable" />
+              </MultiTrigger.Conditions>
+              <MultiTrigger.Setters>
+                <Setter TargetName="BackgroundToggleSwitch" Property="Fill" Value="#9E005A" />
+                <Setter TargetName="DotToggleSwitch" Property="Margin" Value="0,0,-20,0" />
+                <Setter TargetName="StateToggleSwitch" Property="Text" Value="Disable All" />
+              </MultiTrigger.Setters>
+            </MultiTrigger>
           </ControlTemplate.Triggers>
-
         </ControlTemplate>
       </Setter.Value>
     </Setter>

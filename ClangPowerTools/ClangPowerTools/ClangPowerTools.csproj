@@ -83,6 +83,7 @@
     <Compile Include="Commands\BackgroundTidy\PowerShellWrapperBackground.cs" />
     <Compile Include="Commands\IgnoreCommand.cs" />
     <Compile Include="Error\TaskErrorViewModel.cs" />
+    <Compile Include="Events\BoolEventArgs.cs" />
     <Compile Include="Events\FormatCommandEventArgs.cs" />
     <Compile Include="Export Config\ClangFormatFile.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
@@ -150,6 +151,7 @@
     <Compile Include="MVVM\TidyChecksClean.cs" />
     <Compile Include="MVVM\TidyChecks.cs" />
     <Compile Include="MVVM\Provider\SettingsProvider.cs" />
+    <Compile Include="MVVM\CollectionElementsCounter.cs" />
     <Compile Include="MVVM\ViewModels\FormatEditorViewModel.cs" />
     <Compile Include="MVVM\ViewModels\GeneralSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\InputDataViewModel.cs" />

@@ -34,15 +34,36 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="30" />
       <RowDefinition Height="*" />
-      <RowDefinition Height="30" />
+      <RowDefinition Height="40" />
     </Grid.RowDefinitions>
+
+
+    <!--  Select all checkbox  -->
+
+    <!--<CheckBox
+      x:Name="SelectAllCheckBox"
+      Grid.Row="0"
+      Margin="5,0,0,0"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center" />-->
 
     <!--  Search  -->
     <searchBox:SearchBoxView
-      Width="300"
+      Grid.Row="0"
+      Width="250"
       Height="30"
-      HorizontalAlignment="Right" />
+      Margin="5,0,0,0"
+      HorizontalAlignment="left" />
 
+    <ToggleButton
+      x:Name="EnableDisableButton"
+      Grid.Row="0"
+      Width="120"
+      Height="20"
+      Margin="0,0,8,0"
+      HorizontalAlignment="right"
+      VerticalAlignment="Center"
+      Tag="Enable" />
 
     <!--  Checks list  -->
     <ListBox
@@ -50,6 +71,7 @@
       Grid.Column="0"
       ItemsSource="{Binding TidyChecksList}"
       ScrollViewer.CanContentScroll="True"
+      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
       SelectedItem="{Binding SelectedCheck}">
       <ListBox.ItemTemplate>
         <DataTemplate>
@@ -57,7 +79,7 @@
 
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="500" />
-              <ColumnDefinition Width="100" />
+              <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
               <RowDefinition Height="25" />
@@ -82,13 +104,29 @@
             <ToggleButton
               Grid.Row="1"
               Grid.Column="1"
+              Width="120"
+              Height="20"
               HorizontalAlignment="Right"
-              IsChecked="{Binding IsChecked}" />
+              IsChecked="{Binding IsChecked, Mode=TwoWay}"
+              Tag="On" />
 
           </Grid>
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>
+
+    <Button
+      Grid.Row="2"
+      Grid.Column="2"
+      Width="110"
+      Height="30"
+      Margin="5,0,0,0"
+      HorizontalAlignment="Left"
+      Command="{Binding DefaultChecks}"
+      Content="Default Checks"
+      FontSize="14"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}" />
 
   </Grid>
 
