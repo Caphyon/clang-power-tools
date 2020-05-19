@@ -146,9 +146,6 @@ namespace ClangPowerTools
         }
       }
 
-      if (checks.Length != 0)
-        checks.Length--;
-
       return checks.ToString();
     }
 
