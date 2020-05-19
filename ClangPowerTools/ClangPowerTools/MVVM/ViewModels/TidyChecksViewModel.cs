@@ -25,6 +25,7 @@ namespace ClangPowerTools
     private TidyCheckModel selectedCheck = new TidyCheckModel();
     private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>();
     private ICommand resetSearchCommand;
+    private ICommand defaultChecks;
 
     #endregion
 
@@ -129,29 +130,23 @@ namespace ClangPowerTools
       get => resetSearchCommand ?? (resetSearchCommand = new RelayCommand(() => ResetSearchField(), () => CanExecute));
     }
 
+    public ICommand DefaultChecks
+    {
+      get => defaultChecks ?? (defaultChecks = new RelayCommand(() => SetDefaultChecks(), () => CanExecute));
+    }
+
     #endregion
 
 
     #region Methods
 
-    private string GetSelectedChecks()
-    {
-      var checks = new StringBuilder();
-
-      foreach (TidyCheckModel item in tidyChecksList)
-      {
-        if (item.IsChecked)
-        {
-          checks.Append(item.Name).Append(";");
-        }
-      }
-
-      return checks.ToString();
-    }
-
     private void TickPredefinedChecks()
     {
       string input = SettingsProvider.TidySettingsModel.PredefinedChecks;
+
+      if (string.IsNullOrWhiteSpace(input))
+        return;
+
       input = Regex.Replace(input, @"\s+", "");
       input = input.Remove(input.Length - 1, 1);
       var checkNames = input.Split(';').ToList();
@@ -172,17 +167,9 @@ namespace ClangPowerTools
     {
       string predefinedChecks = SettingsProvider.TidySettingsModel.PredefinedChecks;
 
-      if (string.IsNullOrEmpty(predefinedChecks))
-      {
-        var tidyChecks = new TidyChecks();
-        tidyChecksList = new List<TidyCheckModel>(tidyChecks.Checks);
-      }
-      else
-      {
-        var tidyChecksClean = new TidyChecksClean();
-        tidyChecksList = new List<TidyCheckModel>(tidyChecksClean.Checks);
-        TickPredefinedChecks();
-      }
+      var tidyChecksClean = new TidyChecksClean();
+      tidyChecksList = new List<TidyCheckModel>(tidyChecksClean.Checks);
+      TickPredefinedChecks();
 
       // Set the toggle button state on the first loading of tidy checks list
       SetStateForEnableDisableAllButton(tidyChecksList);
@@ -248,9 +235,33 @@ namespace ClangPowerTools
       CollectionElementsCounter.StateEvent -= SetStateForEnableDisableAllButton;
     }
 
+    private string GetSelectedChecks()
+    {
+      var checks = new StringBuilder();
+
+      foreach (TidyCheckModel item in tidyChecksList)
+      {
+        if (item.IsChecked)
+        {
+          checks.Append(item.Name).Append(";");
+        }
+      }
+
+      return checks.ToString();
+    }
+
     private void ResetSearchField()
     {
       CheckSearch = string.Empty;
+    }
+
+    private void SetDefaultChecks()
+    {
+      var tidyChecks = new TidyChecks();
+      for (int index = 0; index < tidyChecks.Checks.Count; ++index)
+      {
+        tidyChecksList[index].IsChecked = tidyChecks.Checks[index].IsChecked;
+      }
     }
 
     #endregion
