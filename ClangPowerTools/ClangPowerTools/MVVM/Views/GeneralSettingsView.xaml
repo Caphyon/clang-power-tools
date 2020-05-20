@@ -25,7 +25,7 @@
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
     <Grid.RowDefinitions>
-      <RowDefinition Height="70" />
+      <RowDefinition Height="100" />
       <RowDefinition Height="50" />
       <RowDefinition Height="50" />
       <RowDefinition Height="50" />
