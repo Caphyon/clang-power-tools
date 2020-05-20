@@ -15,8 +15,8 @@ namespace ClangPowerTools
     private readonly SettingsHandler settingsHandler = new SettingsHandler();
     private readonly SettingsView settingsView;
 
-    private const int COMMERCIAL_LICENSE_HEIGTH = 500;
-    private const int PERSONAL_LICENSE_HEIGTH = 555;
+    private const int COMMERCIAL_LICENSE_HEIGTH = 535;
+    private const int PERSONAL_LICENSE_HEIGTH = 595;
 
     #endregion
 

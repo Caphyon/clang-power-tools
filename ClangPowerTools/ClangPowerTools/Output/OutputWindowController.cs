@@ -77,6 +77,9 @@ namespace ClangPowerTools.Output
 
     public void Show()
     {
+      if (!SettingsProvider.CompilerSettingsModel.ShowOutputWindow)
+        return;
+
       var outputWindow = outputWindowBuilder.GetResult();
 
       UIUpdater.InvokeAsync(() =>

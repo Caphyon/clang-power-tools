@@ -8,7 +8,7 @@
   xmlns:views="clr-namespace:ClangPowerTools.MVVM.Views"
   d:DataContext="{d:DesignInstance local:CompilerSettingsViewModel,
                                    IsDesignTimeCreatable=True}"
-  d:DesignHeight="420"
+  d:DesignHeight="460"
   d:DesignWidth="770"
   mc:Ignorable="d">
 
@@ -28,6 +28,7 @@
     </Grid.Background>
     <Grid.RowDefinitions>
       <RowDefinition Height="20" />
+      <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
@@ -306,10 +307,36 @@
       IsChecked="{Binding CompilerModel.ShowErrorList}"
       Tag="On" />
 
+    <!--  Show Output Window List  -->
+    <TextBlock
+      Grid.Row="9"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="16"
+      Text="Show Output Window">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.ShowOutputWindow}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
+
+    <ToggleButton
+      Grid.Row="9"
+      Grid.Column="2"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center"
+      IsChecked="{Binding CompilerModel.ShowOutputWindow}"
+      Tag="On" />
 
     <!--  Show Squiggles  -->
     <TextBlock
-      Grid.Row="9"
+      Grid.Row="10"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -327,7 +354,7 @@
     </TextBlock>
 
     <ToggleButton
-      Grid.Row="9"
+      Grid.Row="10"
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
@@ -336,7 +363,7 @@
 
     <!--  Verbose mode  -->
     <TextBlock
-      Grid.Row="10"
+      Grid.Row="11"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -354,7 +381,7 @@
     </TextBlock>
 
     <ToggleButton
-      Grid.Row="10"
+      Grid.Row="11"
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
