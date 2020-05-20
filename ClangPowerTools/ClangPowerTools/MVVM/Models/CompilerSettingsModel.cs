@@ -20,6 +20,8 @@
 
     public bool ShowErrorList { get; set; } = true;
 
+    public bool ShowOutputWindow { get; set; } = true;
+
     public bool ShowSquiggles { get; set; } = true;
   }
 }
