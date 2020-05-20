@@ -6,11 +6,11 @@ using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Process = System.Diagnostics.Process;
@@ -37,6 +37,7 @@ namespace ClangPowerTools
     private string checkSearch = string.Empty;
     private IFormatOption selectedOption;
     private List<IFormatOption> formatStyleOptions;
+    private List<IFormatOption> searchResultFormatStyleOptions;
     private EditorStyles editorStyle = EditorStyles.Custom;
     private bool windowLoaded = false;
     private string nameColumnWidth;
@@ -44,7 +45,7 @@ namespace ClangPowerTools
     private const string autoSize = "auto";
     private const string nameColumnWidthMax = "340";
     public const string FileExtensionsSelectFile = "Code files (*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx;)|*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx";
-    
+
     #endregion
 
     #region Constructor
@@ -69,7 +70,7 @@ namespace ClangPowerTools
         {
           return formatStyleOptions;
         }
-        return formatStyleOptions.Where(e => e.Name.Contains(checkSearch, StringComparison.OrdinalIgnoreCase)).ToList();
+        return searchResultFormatStyleOptions;
       }
       set
       {
@@ -87,8 +88,8 @@ namespace ClangPowerTools
       set
       {
         checkSearch = value;
+        FindFormatStyleOptionsAsync(checkSearch).SafeFireAndForget();
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CheckSearch"));
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
       }
     }
 
@@ -125,6 +126,7 @@ namespace ClangPowerTools
     {
       get
       {
+        FindFormatStyleOptionsAsync(checkSearch).SafeFireAndForget();
         return editorStyle;
       }
       set
@@ -368,6 +370,17 @@ namespace ClangPowerTools
     private void ResetSearchField()
     {
       CheckSearch = string.Empty;
+    }
+
+    private async Task FindFormatStyleOptionsAsync(string search)
+    {
+      if (string.IsNullOrWhiteSpace(search)) return;
+
+      await Task.Run(() =>
+    {
+      searchResultFormatStyleOptions = formatStyleOptions.Where(e => e.Name.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
+    });
     }
 
     #endregion
