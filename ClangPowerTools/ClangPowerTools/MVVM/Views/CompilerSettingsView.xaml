@@ -315,7 +315,7 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="16"
-      Text="Show Output window">
+      Text="Show Output Window">
       <TextBlock.ToolTip>
         <ToolTip>
           <TextBlock
