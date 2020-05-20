@@ -6,6 +6,7 @@ using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -64,7 +65,7 @@ namespace ClangPowerTools
     {
       get
       {
-        if (string.IsNullOrEmpty(checkSearch))
+        if (string.IsNullOrWhiteSpace(checkSearch))
         {
           return formatStyleOptions;
         }
@@ -131,7 +132,6 @@ namespace ClangPowerTools
         editorStyle = value;
         ChangeControlsDependingOnStyle();
 
-        SelectedOption = formatStyleOptions.First();
         RunFormat();
       }
     }
