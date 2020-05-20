@@ -223,8 +223,7 @@ namespace ClangPowerTools
 
     public void PreviewDrop(DragEventArgs e)
     {
-      if (droppedFile == null)
-        return;
+      if (droppedFile == null) return;
 
       using StreamReader streamReader = new StreamReader(droppedFile);
       formatOptionsView.CodeEditor.Text = streamReader.ReadToEnd();
@@ -248,7 +247,6 @@ namespace ClangPowerTools
     {
       formatStyleOptions = formatOptionsData.FormatOptions;
       formatOptionsData.DisableAllOptions();
-      SelectedOption = formatStyleOptions.First();
     }
 
     private void ChangeControlsDependingOnStyle()
