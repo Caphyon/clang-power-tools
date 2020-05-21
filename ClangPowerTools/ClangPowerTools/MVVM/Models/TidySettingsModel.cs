@@ -12,6 +12,8 @@
 
     public string CustomExecutable { get; set; } = string.Empty;
 
+    public bool DetectClangTidyFile { get; set; } = true;
+
     public bool FormatAfterTidy { get; set; } = false;
 
     public bool TidyOnSave { get; set; } = false;

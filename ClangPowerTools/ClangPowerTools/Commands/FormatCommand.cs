@@ -197,7 +197,7 @@ namespace ClangPowerTools.Commands
       if (IsFileStyleSelected(formatSettings))
       {
         var fileToFormatPath = Vsix.GetDocumentParent(view);
-        if (DoesClangFormatFileExist(fileToFormatPath) == false)
+        if (FileSystem.SearchAllTopDirectories(fileToFormatPath, FileSystem.ConfigClangFormatFileName) == false)
         {
           OnFormatFile(new FormatCommandEventArgs()
           {
@@ -261,22 +261,6 @@ namespace ClangPowerTools.Commands
     private bool IsFileStyleSelected(FormatSettingsModel formatSettings)
     {
       return formatSettings.Style == ClangFormatStyle.file;
-    }
-
-    private bool DoesClangFormatFileExist(string filePath)
-    {
-      while (string.IsNullOrEmpty(filePath) == false)
-      {
-        if (FileSystem.DoesFileExist(filePath, configFileName)) return true;
-        var index = filePath.LastIndexOf("\\");
-
-        if (index > 0)
-          filePath = filePath.Remove(index);
-        else
-          return false;
-      }
-
-      return false;
     }
 
     private bool FileHasExtension(string filePath, string fileExtensions)
