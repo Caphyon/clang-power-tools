@@ -242,7 +242,7 @@
       VerticalAlignment="Center"
       FontFamily="SegoeUI"
       FontSize="16"
-      Text="Detect .clangTidy file">
+      Text="Detect .clang-tidy file">
       <TextBlock.ToolTip>
         <ToolTip>
           <TextBlock
