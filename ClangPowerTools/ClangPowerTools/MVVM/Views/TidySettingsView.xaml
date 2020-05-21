@@ -34,6 +34,7 @@
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
@@ -233,10 +234,36 @@
       </Button.Content>
     </Button>
 
+    <!--  Auto Detect .clang-tidy file  -->
+    <TextBlock
+      Grid.Row="6"
+      Grid.Column="1"
+      Padding="10"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="16"
+      Text="Detect .clangTidy file">
+      <TextBlock.ToolTip>
+        <ToolTip>
+          <TextBlock
+            Width="400"
+            Text="{Binding Tooltip.DetectClangTidyFile}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </TextBlock.ToolTip>
+    </TextBlock>
+
+    <ToggleButton
+      Grid.Row="6"
+      Grid.Column="2"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center"
+      IsChecked="{Binding TidyModel.DetectClangTidyFile}"
+      Tag="On" />
 
     <!--  Format after tidy  -->
     <TextBlock
-      Grid.Row="6"
+      Grid.Row="7"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -254,7 +281,7 @@
     </TextBlock>
 
     <ToggleButton
-      Grid.Row="6"
+      Grid.Row="7"
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
@@ -263,7 +290,7 @@
 
     <!--  Tidy on save  -->
     <TextBlock
-      Grid.Row="7"
+      Grid.Row="8"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -281,7 +308,7 @@
     </TextBlock>
 
     <ToggleButton
-      Grid.Row="7"
+      Grid.Row="8"
       Grid.Column="2"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
@@ -290,7 +317,7 @@
 
     <!--  Export tidy config  -->
     <TextBlock
-      Grid.Row="8"
+      Grid.Row="9"
       Grid.Column="1"
       Padding="10"
       VerticalAlignment="Center"
@@ -307,9 +334,8 @@
       </TextBlock.ToolTip>
     </TextBlock>
 
-
     <Button
-      Grid.Row="8"
+      Grid.Row="9"
       Grid.Column="2"
       Width="80"
       Height="30"
