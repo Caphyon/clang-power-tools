@@ -108,13 +108,13 @@ namespace ClangPowerTools.Commands
               silentFileController.SilentFiles(dte2.Documents);
             }
 
-            if (mItemsCollector.HaveItems)
+            if (tidySettings.DetectClangTidyFile && mItemsCollector.HaveItems)
             {
               // Check for .clang-tidy congif file
               if (FileSystem.SearchAllTopDirectories(mItemsCollector.Items[0].GetPath(), FileSystem.ConfigClangTidyFileName))
-                SettingsProvider.TidySettingsModel.UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
+                tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
               else
-                SettingsProvider.TidySettingsModel.UseChecksFrom = ClangTidyUseChecksFrom.PredefinedChecks;
+                tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.PredefinedChecks;
 
               var settingsHandlder = new SettingsHandler();
               settingsHandlder.SaveSettings();
