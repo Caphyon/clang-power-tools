@@ -6,6 +6,34 @@ namespace ClangPowerTools.Helpers
 {
   public static class FileSystem
   {
+    #region Properties
+
+    public static string ConfigClangFormatFileName { get; } = ".clang-format";
+
+    public static string ConfigClangTidyFileName { get; } = ".clang-tidy";
+
+    #endregion
+
+
+    #region Methods
+
+    public static bool SearchAllTopDirectories(string filePath, string searchedFileName)
+    {
+      while (string.IsNullOrEmpty(filePath) == false)
+      {
+        if (FileSystem.DoesFileExist(filePath, searchedFileName))
+          return true;
+
+        var index = filePath.LastIndexOf("\\");
+        if (index > 0)
+          filePath = filePath.Remove(index);
+        else
+          return false;
+      }
+
+      return false;
+    }
+
     public static void CreateDirectory(string path)
     {
       if (Directory.Exists(path) == false) Directory.CreateDirectory(path);
@@ -58,5 +86,8 @@ namespace ClangPowerTools.Helpers
     {
       return string.Concat(path, "\\", fileName);
     }
+
+    #endregion
+
   }
 }
