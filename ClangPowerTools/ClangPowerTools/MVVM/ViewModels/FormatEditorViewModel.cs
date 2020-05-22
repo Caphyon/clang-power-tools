@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using Process = System.Diagnostics.Process;
 
 namespace ClangPowerTools
@@ -256,7 +257,7 @@ namespace ClangPowerTools
       switch (editorStyle)
       {
         case EditorStyles.Custom:
-          SetStyleControls(autoSize, autoSize, FormatOptionsProvider.CustomOptionsData.FormatOptions);
+          SetStyleControls("260", "80", FormatOptionsProvider.CustomOptionsData.FormatOptions);
           break;
         case EditorStyles.LLVM:
           SetStyleControls(nameColumnWidthMax, "0", FormatOptionsProvider.LlvmOptionsData.FormatOptions);
@@ -370,16 +371,21 @@ namespace ClangPowerTools
     private void ResetSearchField()
     {
       CheckSearch = string.Empty;
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
     }
 
     private async Task FindFormatStyleOptionsAsync(string search)
     {
-      if (string.IsNullOrWhiteSpace(search)) return;
-
       await Task.Run(() =>
     {
+      if (string.IsNullOrWhiteSpace(checkSearch)) return;
+
       searchResultFormatStyleOptions = formatStyleOptions.Where(e => e.Name.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
       SelectedOption = searchResultFormatStyleOptions.FirstOrDefault();
+      //if (searchResultFormatStyleOptions.Count == 0)
+      //{
+      //  SelectedOption.Description = "result not foud";
+      //}
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
     });
     }
