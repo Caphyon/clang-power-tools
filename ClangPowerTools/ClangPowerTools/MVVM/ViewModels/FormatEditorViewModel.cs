@@ -379,6 +379,7 @@ namespace ClangPowerTools
       await Task.Run(() =>
     {
       searchResultFormatStyleOptions = formatStyleOptions.Where(e => e.Name.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+      SelectedOption = searchResultFormatStyleOptions.FirstOrDefault();
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
     });
     }
