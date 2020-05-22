@@ -40,7 +40,7 @@
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="10" />
       <ColumnDefinition Width="auto" />
-      <ColumnDefinition Width="10" />
+      <ColumnDefinition Width="5" />
       <ColumnDefinition Width="*" />
       <ColumnDefinition Width="10" />
     </Grid.ColumnDefinitions>
@@ -71,7 +71,7 @@
         <ListView
           Name="FormatOptions"
           Grid.Row="1"
-          MaxWidth="500"
+          Width="465"
           HorizontalAlignment="Left"
           ItemsSource="{Binding FormatOptions}"
           SelectedItem="{Binding SelectedOption}"
@@ -88,6 +88,7 @@
                   <DataTemplate>
                     <TextBlock
                       Grid.Column="0"
+                      Width="250"
                       FontSize="12"
                       Foreground="Black"
                       Text="{Binding Name}"
