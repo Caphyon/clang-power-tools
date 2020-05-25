@@ -192,7 +192,8 @@
           Background="Transparent"
           BorderThickness="0"
           FontSize="14"
-          IsReadOnly="True">
+          IsReadOnly="True"
+          Visibility="{Binding Path=ShowOptionDescription, Converter={StaticResource BoolToVis}}">
           <FlowDocument>
             <Paragraph>
               <Run FontWeight="DemiBold" Text="{Binding SelectedOption.Name}" />

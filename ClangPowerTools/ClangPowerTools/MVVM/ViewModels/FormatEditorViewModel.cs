@@ -13,7 +13,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Navigation;
 using Process = System.Diagnostics.Process;
 
 namespace ClangPowerTools
@@ -36,6 +35,7 @@ namespace ClangPowerTools
     private ICommand resetSearchCommand;
 
     private string checkSearch = string.Empty;
+    private bool showOptionDescription = true;
     private IFormatOption selectedOption;
     private List<IFormatOption> formatStyleOptions;
     private List<IFormatOption> searchResultFormatStyleOptions;
@@ -43,7 +43,6 @@ namespace ClangPowerTools
     private bool windowLoaded = false;
     private string nameColumnWidth;
     private string droppedFile;
-    private const string autoSize = "auto";
     private const string nameColumnWidthMax = "340";
     public const string FileExtensionsSelectFile = "Code files (*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx;)|*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx";
 
@@ -170,6 +169,19 @@ namespace ClangPowerTools
       get
       {
         return true;
+      }
+    }
+
+    public bool ShowOptionDescription
+    {
+      get
+      {
+        return showOptionDescription;
+      }
+      set
+      {
+        showOptionDescription = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShowOptionDescription"));
       }
     }
 
@@ -371,6 +383,7 @@ namespace ClangPowerTools
     private void ResetSearchField()
     {
       CheckSearch = string.Empty;
+      ShowOptionDescription = true;
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
     }
 
@@ -382,10 +395,14 @@ namespace ClangPowerTools
 
       searchResultFormatStyleOptions = formatStyleOptions.Where(e => e.Name.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
       SelectedOption = searchResultFormatStyleOptions.FirstOrDefault();
-      //if (searchResultFormatStyleOptions.Count == 0)
-      //{
-      //  SelectedOption.Description = "result not foud";
-      //}
+      if (searchResultFormatStyleOptions.Count == 0)
+      {
+        ShowOptionDescription = false;
+      }
+      else
+      {
+        ShowOptionDescription = true;
+      }
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
     });
     }
