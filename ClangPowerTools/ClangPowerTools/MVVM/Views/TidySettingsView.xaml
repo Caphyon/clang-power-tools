@@ -99,14 +99,10 @@
       Height="30"
       HorizontalAlignment="Left"
       Command="{Binding PredefinedChecksSelectCommand}"
+      Content="Select"
       FontSize="14"
       Foreground="White"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        Select
-      </Button.Content>
-    </Button>
-
+      Style="{StaticResource SettingsButton}" />
 
     <!--  Custom checks  -->
     <TextBlock
