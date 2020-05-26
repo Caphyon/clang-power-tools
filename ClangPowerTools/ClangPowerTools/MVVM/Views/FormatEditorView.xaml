@@ -63,7 +63,7 @@
         <!--  Search  -->
         <searchBox:SearchBoxView
           Grid.Row="0"
-          Width="300"
+          Width="265"
           Height="30"
           HorizontalAlignment="Left" />
 
