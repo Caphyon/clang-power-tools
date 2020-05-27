@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using ClangPowerTools.MVVM.Models;
+using System;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace ClangPowerTools.MVVM.Views
@@ -11,7 +13,7 @@ namespace ClangPowerTools.MVVM.Views
     private readonly FormatEditorViewModel formatEditorViewModel;
 
     private const string inputWindowDefaulText = "// --- Clang Power Tools - Format Style Editor ---\r\n//\r\n// Add your code here\r\n//\r\n// Format is run automatically \r\n//\r\n// Check the OUTPUT tab to see your formatted code";
-    private const string putputWindowDefaulText = "// Your formatted code will be displayed here";
+    private const string outputWindowDefaulText = "// Your formatted code will be displayed here";
 
     public FormatEditorView()
     {
@@ -19,33 +21,44 @@ namespace ClangPowerTools.MVVM.Views
       formatEditorViewModel = new FormatEditorViewModel(this);
       DataContext = formatEditorViewModel;
       CodeEditor.Text = inputWindowDefaulText;
-      CodeEditorReadOnly.Text = putputWindowDefaulText;
+      CodeEditorReadOnly.Text = outputWindowDefaulText;
     }
 
     private void RunFormat_TextChanged(object sender, TextChangedEventArgs e)
     {
-      object interactable = (e.OriginalSource as FrameworkElement).DataContext;
-      ChangeSelectedItem(interactable);
+      if (EnableSelectedTidyCheck(sender) == false) return;
       formatEditorViewModel.RunFormat();
     }
 
-    private void RunFormat_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void RunFormat_Editor(object sender, EventArgs e)
     {
-      object interactable = (e.OriginalSource as FrameworkElement).DataContext;
-      ChangeSelectedItem(interactable);
       formatEditorViewModel.RunFormat();
     }
 
-    private void ModifyFocus(object sender, RoutedEventArgs e)
+    private void BooleanCombobox_DropDownClosed(object sender, EventArgs e)
     {
-      object interactable = (e.OriginalSource as FrameworkElement).DataContext;
-      ChangeSelectedItem(interactable);
+      if (EnableSelectedTidyCheck(sender) == false) return;
+      formatEditorViewModel.RunFormat();
     }
 
-    private void ChangeSelectedItem(object interactable)
+    private void EnableTidyCheck(object sender, RoutedEventArgs e)
     {
-      if (!(FormatOptions.ItemContainerGenerator.ContainerFromItem(interactable) is ListViewItem selectedItem)) return;
-      selectedItem.IsSelected = true;
+      if (EnableSelectedTidyCheck(sender) == false) return;
+    }
+
+    private void OpenMultipleInput(object sender, RoutedEventArgs e)
+    {
+      var element = (sender as FrameworkElement).DataContext;
+      if (element == null) return;
+      formatEditorViewModel.OpenMultipleInput(FormatOptions.Items.IndexOf(element));      
+    }
+
+    private bool EnableSelectedTidyCheck(object sender)
+    {
+      if (!(sender is ListViewItem tidyCheck)) return false;
+      
+      tidyCheck.IsSelected = true;      
+      return true;
     }
 
     private void CodeEditor_PreviewDragOver(object sender, DragEventArgs e)
@@ -57,6 +70,5 @@ namespace ClangPowerTools.MVVM.Views
     {
       formatEditorViewModel.PreviewDrop(e);
     }
-
   }
 }

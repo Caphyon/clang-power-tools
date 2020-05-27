@@ -75,7 +75,8 @@
           HorizontalAlignment="Left"
           ItemsSource="{Binding FormatOptions}"
           SelectedItem="{Binding SelectedOption}"
-          SelectionMode="Single">
+          SelectionMode="Single"
+          VirtualizingStackPanel.IsVirtualizing="False">
           <ListView.View>
             <GridView>
               <GridView.ColumnHeaderContainerStyle>
@@ -107,7 +108,6 @@
                         Height="18"
                         HorizontalAlignment="Right"
                         FontSize="12"
-                        GotFocus="ModifyFocus"
                         Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}"
                         TextChanged="RunFormat_TextChanged"
                         Visibility="{Binding Path=HasInputTextBox, Converter={StaticResource BoolToVis}}" />
@@ -116,17 +116,16 @@
                         Grid.Column="1"
                         Width="80"
                         HorizontalAlignment="Right"
+                        DropDownClosed="BooleanCombobox_DropDownClosed"
                         ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.BooleanComboboxValues}"
                         SelectedItem="{Binding BooleanCombobox}"
-                        SelectionChanged="RunFormat_SelectionChanged"
                         Visibility="{Binding Path=HasBooleanCombobox, Converter={StaticResource BoolToVis}}" />
                       <Button
                         Grid.Column="1"
                         Width="80"
                         Height="20"
                         HorizontalAlignment="Right"
-                        Click="ModifyFocus"
-                        Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OpenMultipleInputCommand}"
+                        Click="OpenMultipleInput"
                         Content="Modify Input"
                         FontSize="12"
                         Visibility="{Binding Path=HasMultipleInputTextBox, Converter={StaticResource BoolToVis}}" />
@@ -140,7 +139,6 @@
                     <ToggleButton
                       x:Name="EnableOption"
                       Grid.Column="2"
-                      Checked="ModifyFocus"
                       Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.FormatCodeCommand}"
                       IsChecked="{Binding IsEnabled}"
                       Tag="On" />
@@ -268,7 +266,7 @@
             HorizontalScrollBarVisibility="Auto"
             PreviewDragOver="CodeEditor_PreviewDragOver"
             PreviewDrop="CodeEditor_PreviewDrop"
-            TextChanged="RunFormat_TextChanged"
+            TextChanged="RunFormat_Editor"
             TextWrapping="NoWrap"
             VerticalScrollBarVisibility="Auto" />
         </TabItem>

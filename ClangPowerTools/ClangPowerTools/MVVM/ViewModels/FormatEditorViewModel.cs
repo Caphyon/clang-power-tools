@@ -215,11 +215,6 @@ namespace ClangPowerTools
       get => selctCodeFileCommand ?? (selctCodeFileCommand = new RelayCommand(() => ReadCodeFromFile(), () => CanExecute));
     }
 
-    public ICommand OpenMultipleInputCommand
-    {
-      get => openMultipleInputCommand ?? (openMultipleInputCommand = new RelayCommand(() => OpenInputDataView(), () => CanExecute));
-    }
-
     public ICommand ResetSearchCommand
     {
       get => resetSearchCommand ?? (resetSearchCommand = new RelayCommand(() => ResetSearchField(), () => CanExecute));
@@ -251,6 +246,17 @@ namespace ClangPowerTools
       var text = formatOptionsView.CodeEditor.Text;
       var formattedText = formatEditorController.FormatText(text, formatStyleOptions, SelectedStyle);
       formatOptionsView.CodeEditorReadOnly.Text = formattedText;
+    }
+
+    public void OpenMultipleInput(int index)
+    {
+      if (windowLoaded == false) return;
+      if (!(FormatOptions[index] is FormatOptionMultipleInputModel element)) return;
+
+      SelectedOption = element;
+      SelectedOption.IsEnabled = true;
+
+      OpenInputDataView();
     }
 
     #endregion
@@ -334,6 +340,7 @@ namespace ClangPowerTools
 
     private void ResetOptions()
     {
+      if (windowLoaded == false) return;
       FormatOptionsProvider.ResetOptions();
       InitializeStyleOptions(FormatOptionsProvider.CustomOptionsData);
       SelectedStyle = EditorStyles.Custom;
