@@ -108,7 +108,7 @@
                         Height="18"
                         HorizontalAlignment="Right"
                         FontSize="12"
-                        Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding Input, UpdateSourceTrigger=PropertyChanged, Delay=200}"
                         TextChanged="RunFormat_TextChanged"
                         Visibility="{Binding Path=HasInputTextBox, Converter={StaticResource BoolToVis}}" />
                       <ComboBox
