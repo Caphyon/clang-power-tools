@@ -31,7 +31,6 @@ namespace ClangPowerTools
     private ICommand formatCodeCommand;
     private ICommand resetCommand;
     private ICommand openUri;
-    private ICommand openMultipleInputCommand;
     private ICommand resetSearchCommand;
 
     private string checkSearch = string.Empty;
@@ -242,9 +241,10 @@ namespace ClangPowerTools
     public void RunFormat()
     {
       if (windowLoaded == false) return;
+      if (IsAnyOptionEnabled() == false) return;
 
       var text = formatOptionsView.CodeEditor.Text;
-      var formattedText = formatEditorController.FormatText(text, formatStyleOptions, SelectedStyle);
+      var formattedText = formatEditorController.FormatText(text, formatStyleOptions, editorStyle);
       formatOptionsView.CodeEditorReadOnly.Text = formattedText;
     }
 
@@ -324,6 +324,7 @@ namespace ClangPowerTools
         multipleInputModel.MultipleInput = inputMultipleDataViewModel.Input;
       }
 
+      RunFormat();
       inputMultipleDataView.Closed -= CloseInputDataView;
     }
 
@@ -360,7 +361,7 @@ namespace ClangPowerTools
       string path = SaveFile(fileName, defaultExt, filter);
       if (string.IsNullOrEmpty(path) == false)
       {
-        WriteContentToFile(path, FormatOptionFile.CreateOutput(formatStyleOptions, SelectedStyle).ToString());
+        WriteContentToFile(path, FormatOptionFile.CreateOutput(formatStyleOptions, editorStyle).ToString());
       }
     }
 
@@ -414,6 +415,15 @@ namespace ClangPowerTools
       }
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
     });
+    }
+
+    private bool IsAnyOptionEnabled()
+    {
+      foreach (var item in formatStyleOptions)
+      {
+        if (item.IsEnabled) return true;
+      }
+      return false;
     }
 
     #endregion
