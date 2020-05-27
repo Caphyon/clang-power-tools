@@ -268,6 +268,7 @@ namespace ClangPowerTools
     {
       formatStyleOptions = formatOptionsData.FormatOptions;
       formatOptionsData.DisableAllOptions();
+      SelectedOption = FormatOptions.FirstOrDefault();
     }
 
     private void ChangeControlsDependingOnStyle()
@@ -303,6 +304,7 @@ namespace ClangPowerTools
       NameColumnWidth = nameColumnWidth;
       EnableOptionColumnWidth = enableOptionColumnWidth;
       FormatOptions = options;
+      SelectedOption = FormatOptions.FirstOrDefault();
     }
 
     private void OpenInputDataView()
