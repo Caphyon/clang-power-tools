@@ -34,7 +34,7 @@ namespace ClangPowerTools.MVVM.Views
       formatEditorViewModel.RunFormat();
     }
 
-    private void BooleanCombobox_DropDownClosed(object sender, EventArgs e)
+    private void RunFormat_DropDownClosed(object sender, EventArgs e)
     {
       formatEditorViewModel.RunFormat();
     }
