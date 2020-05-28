@@ -10,18 +10,32 @@ namespace ClangPowerTools
   {
     #region Members
 
-    public static FormatOptionsData CustomOptionsData = new FormatOptionsData();
-    public static FormatOptionsData LlvmOptionsData = new FormatOptionsData();
-    public static FormatOptionsGoogleData GoogleOptionsData = new FormatOptionsGoogleData();
-    public static FormatOptionsChromiumData ChromiumOptionsData = new FormatOptionsChromiumData();
-    public static FormatOptionsMozillaData MozillaOptionsData = new FormatOptionsMozillaData();
-    public static FormatOptionsWebKitData WebkitOptionsData = new FormatOptionsWebKitData();
-    public static FormatOptionsMicrosoftData MicrosoftOptionsData = new FormatOptionsMicrosoftData();
+    public static FormatOptionsData CustomOptionsData;
+    public static FormatOptionsData LlvmOptionsData;
+    public static FormatOptionsGoogleData GoogleOptionsData;
+    public static FormatOptionsChromiumData ChromiumOptionsData;
+    public static FormatOptionsMozillaData MozillaOptionsData;
+    public static FormatOptionsWebKitData WebkitOptionsData;
+    public static FormatOptionsMicrosoftData MicrosoftOptionsData;
+
+    #endregion
+
+    #region Constructor
+
+    static FormatOptionsProvider()
+    {
+      InitializeFormatData();
+    }
 
     #endregion
 
     #region Methods
     public static void ResetOptions()
+    {
+      InitializeFormatData();
+    }
+
+    private static void InitializeFormatData()
     {
       CustomOptionsData = new FormatOptionsData();
       LlvmOptionsData = new FormatOptionsData();

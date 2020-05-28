@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using Process = System.Diagnostics.Process;
@@ -30,18 +31,20 @@ namespace ClangPowerTools
     private ICommand formatCodeCommand;
     private ICommand resetCommand;
     private ICommand openUri;
-    private ICommand openMultipleInputCommand;
+    private ICommand resetSearchCommand;
 
+    private string checkSearch = string.Empty;
+    private bool showOptionDescription = true;
     private IFormatOption selectedOption;
     private List<IFormatOption> formatStyleOptions;
+    private List<IFormatOption> searchResultFormatStyleOptions;
     private EditorStyles editorStyle = EditorStyles.Custom;
     private bool windowLoaded = false;
     private string nameColumnWidth;
     private string droppedFile;
-    private const string autoSize = "auto";
     private const string nameColumnWidthMax = "340";
     public const string FileExtensionsSelectFile = "Code files (*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx;)|*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx";
-    
+
     #endregion
 
     #region Constructor
@@ -62,12 +65,30 @@ namespace ClangPowerTools
     {
       get
       {
-        return formatStyleOptions;
+        if (string.IsNullOrWhiteSpace(checkSearch))
+        {
+          return formatStyleOptions;
+        }
+        return searchResultFormatStyleOptions;
       }
       set
       {
         formatStyleOptions = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
+      }
+    }
+
+    public string CheckSearch
+    {
+      get
+      {
+        return checkSearch;
+      }
+      set
+      {
+        checkSearch = value;
+        FindFormatStyleOptionsAsync(checkSearch).SafeFireAndForget();
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CheckSearch"));
       }
     }
 
@@ -104,6 +125,7 @@ namespace ClangPowerTools
     {
       get
       {
+        FindFormatStyleOptionsAsync(checkSearch).SafeFireAndForget();
         return editorStyle;
       }
       set
@@ -111,7 +133,6 @@ namespace ClangPowerTools
         editorStyle = value;
         ChangeControlsDependingOnStyle();
 
-        SelectedOption = formatStyleOptions.First();
         RunFormat();
       }
     }
@@ -150,6 +171,19 @@ namespace ClangPowerTools
       }
     }
 
+    public bool ShowOptionDescription
+    {
+      get
+      {
+        return showOptionDescription;
+      }
+      set
+      {
+        showOptionDescription = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ShowOptionDescription"));
+      }
+    }
+
     #endregion
 
 
@@ -180,15 +214,13 @@ namespace ClangPowerTools
       get => selctCodeFileCommand ?? (selctCodeFileCommand = new RelayCommand(() => ReadCodeFromFile(), () => CanExecute));
     }
 
-    public ICommand OpenMultipleInputCommand
+    public ICommand ResetSearchCommand
     {
-      get => openMultipleInputCommand ?? (openMultipleInputCommand = new RelayCommand(() => OpenInputDataView(), () => CanExecute));
+      get => resetSearchCommand ?? (resetSearchCommand = new RelayCommand(() => ResetSearchField(), () => CanExecute));
     }
 
     #endregion
 
-
-    #region Methods
 
     #region Public Methods
 
@@ -200,11 +232,31 @@ namespace ClangPowerTools
 
     public void PreviewDrop(DragEventArgs e)
     {
-      if (droppedFile == null)
-        return;
+      if (droppedFile == null) return;
 
       using StreamReader streamReader = new StreamReader(droppedFile);
       formatOptionsView.CodeEditor.Text = streamReader.ReadToEnd();
+    }
+
+    public void RunFormat()
+    {
+      if (windowLoaded == false) return;
+      if (IsAnyOptionEnabled() == false) return;
+
+      var text = formatOptionsView.CodeEditor.Text;
+      var formattedText = formatEditorController.FormatText(text, formatStyleOptions, editorStyle);
+      formatOptionsView.CodeEditorReadOnly.Text = formattedText;
+    }
+
+    public void OpenMultipleInput(int index)
+    {
+      if (windowLoaded == false) return;
+      if (!(FormatOptions[index] is FormatOptionMultipleInputModel element)) return;
+
+      SelectedOption = element;
+      SelectedOption.IsEnabled = true;
+
+      OpenInputDataView();
     }
 
     #endregion
@@ -216,7 +268,7 @@ namespace ClangPowerTools
     {
       formatStyleOptions = formatOptionsData.FormatOptions;
       formatOptionsData.DisableAllOptions();
-      SelectedOption = formatStyleOptions.First();
+      SelectedOption = FormatOptions.FirstOrDefault();
     }
 
     private void ChangeControlsDependingOnStyle()
@@ -224,7 +276,7 @@ namespace ClangPowerTools
       switch (editorStyle)
       {
         case EditorStyles.Custom:
-          SetStyleControls(autoSize, autoSize, FormatOptionsProvider.CustomOptionsData.FormatOptions);
+          SetStyleControls("260", "80", FormatOptionsProvider.CustomOptionsData.FormatOptions);
           break;
         case EditorStyles.LLVM:
           SetStyleControls(nameColumnWidthMax, "0", FormatOptionsProvider.LlvmOptionsData.FormatOptions);
@@ -252,6 +304,7 @@ namespace ClangPowerTools
       NameColumnWidth = nameColumnWidth;
       EnableOptionColumnWidth = enableOptionColumnWidth;
       FormatOptions = options;
+      SelectedOption = FormatOptions.FirstOrDefault();
     }
 
     private void OpenInputDataView()
@@ -271,6 +324,7 @@ namespace ClangPowerTools
         multipleInputModel.MultipleInput = inputMultipleDataViewModel.Input;
       }
 
+      RunFormat();
       inputMultipleDataView.Closed -= CloseInputDataView;
     }
 
@@ -289,6 +343,7 @@ namespace ClangPowerTools
 
     private void ResetOptions()
     {
+      if (windowLoaded == false) return;
       FormatOptionsProvider.ResetOptions();
       InitializeStyleOptions(FormatOptionsProvider.CustomOptionsData);
       SelectedStyle = EditorStyles.Custom;
@@ -306,17 +361,8 @@ namespace ClangPowerTools
       string path = SaveFile(fileName, defaultExt, filter);
       if (string.IsNullOrEmpty(path) == false)
       {
-        WriteContentToFile(path, FormatOptionFile.CreateOutput(formatStyleOptions, SelectedStyle).ToString());
+        WriteContentToFile(path, FormatOptionFile.CreateOutput(formatStyleOptions, editorStyle).ToString());
       }
-    }
-
-    public void RunFormat()
-    {
-      if (windowLoaded == false) return;
-
-      var text = formatOptionsView.CodeEditor.Text;
-      var formattedText = formatEditorController.FormatText(text, formatStyleOptions, SelectedStyle);
-      formatOptionsView.CodeEditorReadOnly.Text = formattedText;
     }
 
     private void EditorLoaded(object sender, EventArgs e)
@@ -344,7 +390,41 @@ namespace ClangPowerTools
       return true;
     }
 
-    #endregion
+    private void ResetSearchField()
+    {
+      CheckSearch = string.Empty;
+      ShowOptionDescription = true;
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
+    }
+
+    private async Task FindFormatStyleOptionsAsync(string search)
+    {
+      await Task.Run(() =>
+    {
+      if (string.IsNullOrWhiteSpace(checkSearch)) return;
+
+      searchResultFormatStyleOptions = formatStyleOptions.Where(e => e.Name.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
+      SelectedOption = searchResultFormatStyleOptions.FirstOrDefault();
+      if (searchResultFormatStyleOptions.Count == 0)
+      {
+        ShowOptionDescription = false;
+      }
+      else
+      {
+        ShowOptionDescription = true;
+      }
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
+    });
+    }
+
+    private bool IsAnyOptionEnabled()
+    {
+      foreach (var item in formatStyleOptions)
+      {
+        if (item.IsEnabled) return true;
+      }
+      return false;
+    }
 
     #endregion
   }

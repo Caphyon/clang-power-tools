@@ -5,6 +5,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:searchBox="clr-namespace:ClangPowerTools.Views"
   Title="Clang-Format Editor"
   Width="1100"
   Height="750"
@@ -39,7 +40,7 @@
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="10" />
       <ColumnDefinition Width="auto" />
-      <ColumnDefinition Width="10" />
+      <ColumnDefinition Width="5" />
       <ColumnDefinition Width="*" />
       <ColumnDefinition Width="10" />
     </Grid.ColumnDefinitions>
@@ -47,6 +48,7 @@
     <Grid Grid.Row="1" Grid.Column="1">
       <Grid>
         <Grid.RowDefinitions>
+          <RowDefinition Height="30" />
           <RowDefinition Height="*" />
           <RowDefinition Height="35" />
           <RowDefinition Height="50" />
@@ -58,15 +60,23 @@
           <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
+        <!--  Search  -->
+        <searchBox:SearchBoxView
+          Grid.Row="0"
+          Width="265"
+          Height="30"
+          HorizontalAlignment="Left" />
+
         <!--  Format options  -->
         <ListView
           Name="FormatOptions"
-          Grid.Row="0"
-          MaxWidth="500"
+          Grid.Row="1"
+          Width="465"
           HorizontalAlignment="Left"
           ItemsSource="{Binding FormatOptions}"
           SelectedItem="{Binding SelectedOption}"
-          SelectionMode="Single">
+          SelectionMode="Single"
+          VirtualizingStackPanel.IsVirtualizing="False">
           <ListView.View>
             <GridView>
               <GridView.ColumnHeaderContainerStyle>
@@ -79,6 +89,7 @@
                   <DataTemplate>
                     <TextBlock
                       Grid.Column="0"
+                      Width="250"
                       FontSize="12"
                       Foreground="Black"
                       Text="{Binding Name}"
@@ -97,8 +108,7 @@
                         Height="18"
                         HorizontalAlignment="Right"
                         FontSize="12"
-                        GotFocus="ModifyFocus"
-                        Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}"
+                        Text="{Binding Input, UpdateSourceTrigger=PropertyChanged, Delay=200}"
                         TextChanged="RunFormat_TextChanged"
                         Visibility="{Binding Path=HasInputTextBox, Converter={StaticResource BoolToVis}}" />
                       <ComboBox
@@ -106,17 +116,16 @@
                         Grid.Column="1"
                         Width="80"
                         HorizontalAlignment="Right"
+                        DropDownClosed="RunFormat_DropDownClosed"
                         ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.BooleanComboboxValues}"
                         SelectedItem="{Binding BooleanCombobox}"
-                        SelectionChanged="RunFormat_SelectionChanged"
                         Visibility="{Binding Path=HasBooleanCombobox, Converter={StaticResource BoolToVis}}" />
                       <Button
                         Grid.Column="1"
                         Width="80"
                         Height="20"
                         HorizontalAlignment="Right"
-                        Click="ModifyFocus"
-                        Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.OpenMultipleInputCommand}"
+                        Click="OpenMultipleInput"
                         Content="Modify Input"
                         FontSize="12"
                         Visibility="{Binding Path=HasMultipleInputTextBox, Converter={StaticResource BoolToVis}}" />
@@ -130,7 +139,6 @@
                     <ToggleButton
                       x:Name="EnableOption"
                       Grid.Column="2"
-                      Checked="ModifyFocus"
                       Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.FormatCodeCommand}"
                       IsChecked="{Binding IsEnabled}"
                       Tag="On" />
@@ -143,7 +151,7 @@
 
         <!--  Styles  -->
         <StackPanel
-          Grid.Row="1"
+          Grid.Row="2"
           HorizontalAlignment="Center"
           Orientation="Horizontal">
           <TextBlock
@@ -164,7 +172,7 @@
           </TextBlock>
 
           <ComboBox
-            Grid.Row="1"
+            Grid.Row="2"
             Grid.Column="2"
             Width="200"
             Height="25"
@@ -175,14 +183,15 @@
 
         <!--  Option description  -->
         <RichTextBox
-          Grid.Row="2"
+          Grid.Row="3"
           MaxWidth="480"
           Margin="0,20,0,0"
           HorizontalAlignment="Left"
           Background="Transparent"
           BorderThickness="0"
           FontSize="14"
-          IsReadOnly="True">
+          IsReadOnly="True"
+          Visibility="{Binding Path=ShowOptionDescription, Converter={StaticResource BoolToVis}}">
           <FlowDocument>
             <Paragraph>
               <Run FontWeight="DemiBold" Text="{Binding SelectedOption.Name}" />
@@ -192,7 +201,7 @@
         </RichTextBox>
 
         <TextBox
-          Grid.Row="3"
+          Grid.Row="4"
           Grid.Column="0"
           Width="460"
           HorizontalAlignment="Left"
@@ -205,7 +214,7 @@
           VerticalScrollBarVisibility="Auto" />
 
         <TextBlock
-          Grid.Row="4"
+          Grid.Row="5"
           Grid.Column="0"
           MaxWidth="460"
           Margin="0,20,0,0"
@@ -257,7 +266,7 @@
             HorizontalScrollBarVisibility="Auto"
             PreviewDragOver="CodeEditor_PreviewDragOver"
             PreviewDrop="CodeEditor_PreviewDrop"
-            TextChanged="RunFormat_TextChanged"
+            TextChanged="RunFormat_Editor"
             TextWrapping="NoWrap"
             VerticalScrollBarVisibility="Auto" />
         </TabItem>

@@ -74,7 +74,7 @@
       Panel.ZIndex="0"
       BorderBrush="LightGray"
       BorderThickness="1"
-      Text="{Binding CheckSearch, UpdateSourceTrigger=PropertyChanged}"
+      Text="{Binding CheckSearch, UpdateSourceTrigger=PropertyChanged, Delay=300}"
       ToolTip="Type words to search for">
       <!--  GotMouseCapture="SearchBox_GotMouseCapture"  -->
 
