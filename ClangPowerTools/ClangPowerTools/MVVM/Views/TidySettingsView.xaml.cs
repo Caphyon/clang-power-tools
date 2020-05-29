@@ -12,5 +12,11 @@ namespace ClangPowerTools.Views
       InitializeComponent();
       DataContext = new TidySettingsViewModel();
     }
+
+    private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      SelectPredefinedChecksButton.IsEnabled =
+        UseCheckFromComboBox.SelectedItem.ToString() == ClangTidyUseChecksFrom.PredefinedChecks.ToString();
+    }
   }
 }

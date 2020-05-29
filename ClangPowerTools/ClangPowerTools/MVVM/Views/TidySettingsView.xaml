@@ -65,13 +65,14 @@
     </TextBlock>
 
     <ComboBox
+      x:Name="UseCheckFromComboBox"
       Grid.Row="1"
       Grid.Column="2"
       Height="30"
       Margin="0,0,20,0"
       ItemsSource="{Binding UseChecksFromItems}"
-      SelectedItem="{Binding TidyModel.UseChecksFrom}" />
-
+      SelectedItem="{Binding TidyModel.UseChecksFrom}"
+      SelectionChanged="ComboBox_SelectionChanged" />
 
     <!--  Predefined Checks  -->
     <TextBlock
@@ -93,20 +94,17 @@
     </TextBlock>
 
     <Button
+      x:Name="SelectPredefinedChecksButton"
       Grid.Row="2"
       Grid.Column="2"
       Width="80"
       Height="30"
       HorizontalAlignment="Left"
       Command="{Binding PredefinedChecksSelectCommand}"
+      Content="Select"
       FontSize="14"
       Foreground="White"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        Select
-      </Button.Content>
-    </Button>
-
+      Style="{StaticResource SettingsButton}" />
 
     <!--  Custom checks  -->
     <TextBlock
