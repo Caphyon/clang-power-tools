@@ -150,7 +150,7 @@ namespace ClangPowerTools
 
     private void ExportTidyConfig()
     {
-      TidyConfigFile tidyConfigFile = new TidyConfigFile();
+      var tidyConfigFile = new TidyConfigFile();
       string fileName = ".clang-tidy";
       string defaultExt = ".clang-tidy";
       string filter = "Configuration files (.clang-tidy)|*.clang-tidy";
