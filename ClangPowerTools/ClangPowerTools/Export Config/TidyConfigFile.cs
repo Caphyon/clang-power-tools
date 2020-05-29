@@ -10,10 +10,10 @@ namespace ClangPowerTools
     #region Members
 
     // Create StringBuilder to be written in the .clang-tidy file
-    private StringBuilder tidyConfigOutput = new StringBuilder();
-    private CompilerSettingsModel compilerSettingsModel;
-    private TidySettingsModel tidySettingsModel;
-    private FormatSettingsModel formatSettingsModel;
+    private readonly StringBuilder tidyConfigOutput = new StringBuilder();
+    private readonly CompilerSettingsModel compilerSettingsModel;
+    private readonly TidySettingsModel tidySettingsModel;
+    private readonly FormatSettingsModel formatSettingsModel;
 
     public TidyConfigFile()
     {
