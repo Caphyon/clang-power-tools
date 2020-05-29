@@ -70,15 +70,19 @@ namespace ClangPowerTools
     private void CreateChecksOutputLine(string paramaterName)
     {
       var tidySettings = SettingsProvider.TidySettingsModel;
-
       ClangTidyUseChecksFrom clangTidyUseChecksFrom = tidySettings.UseChecksFrom;
-      if (clangTidyUseChecksFrom == ClangTidyUseChecksFrom.CustomChecks)
+
+      switch (clangTidyUseChecksFrom)
       {
-        CreateCustomChecksOutputLine(paramaterName, tidySettings.PredefinedChecks, true);
-      }
-      else
-      {
-        CreateOutputLine(paramaterName, "", true);
+        case ClangTidyUseChecksFrom.PredefinedChecks:
+          CreateChecksOutputLine(paramaterName, tidySettings.PredefinedChecks, true);
+          break;
+        case ClangTidyUseChecksFrom.CustomChecks:
+          CreateChecksOutputLine(paramaterName, tidySettings.CustomChecks, true);
+          break;
+        default:
+          CreateOutputLine(paramaterName, "", true);
+          break;
       }
     }
 
@@ -108,7 +112,7 @@ namespace ClangPowerTools
       }
     }
 
-    private void CreateCustomChecksOutputLine(string paramaterName, string customChecks, bool hasQuotationMark)
+    private void CreateChecksOutputLine(string paramaterName, string customChecks, bool hasQuotationMark)
     {
       if (customChecks.Length < 1)
       {
