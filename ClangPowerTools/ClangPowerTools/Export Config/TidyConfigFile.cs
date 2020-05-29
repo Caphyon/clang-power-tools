@@ -78,6 +78,7 @@ namespace ClangPowerTools
           CreateChecksOutputLine(paramaterName, tidySettings.PredefinedChecks, true);
           break;
         case ClangTidyUseChecksFrom.CustomChecks:
+        case ClangTidyUseChecksFrom.TidyFile:
           CreateChecksOutputLine(paramaterName, tidySettings.CustomChecks, true);
           break;
         default:
