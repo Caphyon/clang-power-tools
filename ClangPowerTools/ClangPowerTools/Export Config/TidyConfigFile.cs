@@ -75,11 +75,13 @@ namespace ClangPowerTools
       switch (clangTidyUseChecksFrom)
       {
         case ClangTidyUseChecksFrom.PredefinedChecks:
-          CreateChecksOutputLine(paramaterName, tidySettings.PredefinedChecks, true);
+          var predefinedChecks = tidySettings.PredefinedChecks.Replace(';',',').TrimEnd(','); ;
+          CreateChecksOutputLine(paramaterName, predefinedChecks, true);
           break;
         case ClangTidyUseChecksFrom.CustomChecks:
         case ClangTidyUseChecksFrom.TidyFile:
-          CreateChecksOutputLine(paramaterName, tidySettings.CustomChecks, true);
+          var customChecks = tidySettings.CustomChecks.Replace(';', ',').TrimEnd(',');
+          CreateChecksOutputLine(paramaterName, customChecks, true);
           break;
         default:
           CreateOutputLine(paramaterName, "", true);
