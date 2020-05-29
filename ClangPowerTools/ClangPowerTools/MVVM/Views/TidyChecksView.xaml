@@ -63,7 +63,8 @@
       Margin="0,0,8,0"
       HorizontalAlignment="right"
       VerticalAlignment="Center"
-      Tag="Enable" />
+      Tag="Enable"
+      Visibility="Hidden" />
 
     <!--  Checks list  -->
     <ListBox

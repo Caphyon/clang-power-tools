@@ -10,10 +10,10 @@ namespace ClangPowerTools
     #region Members
 
     // Create StringBuilder to be written in the .clang-tidy file
-    private StringBuilder tidyConfigOutput = new StringBuilder();
-    private CompilerSettingsModel compilerSettingsModel;
-    private TidySettingsModel tidySettingsModel;
-    private FormatSettingsModel formatSettingsModel;
+    private readonly StringBuilder tidyConfigOutput = new StringBuilder();
+    private readonly CompilerSettingsModel compilerSettingsModel;
+    private readonly TidySettingsModel tidySettingsModel;
+    private readonly FormatSettingsModel formatSettingsModel;
 
     public TidyConfigFile()
     {
@@ -70,15 +70,22 @@ namespace ClangPowerTools
     private void CreateChecksOutputLine(string paramaterName)
     {
       var tidySettings = SettingsProvider.TidySettingsModel;
-
       ClangTidyUseChecksFrom clangTidyUseChecksFrom = tidySettings.UseChecksFrom;
-      if (clangTidyUseChecksFrom == ClangTidyUseChecksFrom.CustomChecks)
+
+      switch (clangTidyUseChecksFrom)
       {
-        CreateCustomChecksOutputLine(paramaterName, tidySettings.PredefinedChecks, true);
-      }
-      else
-      {
-        CreateOutputLine(paramaterName, "", true);
+        case ClangTidyUseChecksFrom.PredefinedChecks:
+          var predefinedChecks = tidySettings.PredefinedChecks.Replace(';',',').TrimEnd(','); ;
+          CreateChecksOutputLine(paramaterName, predefinedChecks, true);
+          break;
+        case ClangTidyUseChecksFrom.CustomChecks:
+        case ClangTidyUseChecksFrom.TidyFile:
+          var customChecks = tidySettings.CustomChecks.Replace(';', ',').TrimEnd(',');
+          CreateChecksOutputLine(paramaterName, customChecks, true);
+          break;
+        default:
+          CreateOutputLine(paramaterName, "", true);
+          break;
       }
     }
 
@@ -108,7 +115,7 @@ namespace ClangPowerTools
       }
     }
 
-    private void CreateCustomChecksOutputLine(string paramaterName, string customChecks, bool hasQuotationMark)
+    private void CreateChecksOutputLine(string paramaterName, string customChecks, bool hasQuotationMark)
     {
       if (customChecks.Length < 1)
       {
