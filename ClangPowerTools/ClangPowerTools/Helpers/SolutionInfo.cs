@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using ClangPowerTools.Services;
+﻿using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
+using System.Collections.Generic;
+using System.IO;
 
 namespace ClangPowerTools.Helpers
 {
@@ -87,7 +87,7 @@ namespace ClangPowerTools.Helpers
       return project.Kind.Equals(ScriptConstants.kCppProjectGuid);
     }
 
-    internal static bool AreContextMenuCommandsEnabled()
+    public static bool AreContextMenuCommandsEnabled()
     {
       if (IsOpenFolderModeActive())
       {
@@ -120,7 +120,7 @@ namespace ClangPowerTools.Helpers
       return false;
     }
 
-    internal static bool AreToolbarCommandsEnabled()
+    public static bool AreToolbarCommandsEnabled()
     {
       if (IsOpenFolderModeActive())
       {
@@ -138,6 +138,15 @@ namespace ClangPowerTools.Helpers
       string activeItem = itemCollector.Items[0].GetName().ToLower();
       var fileExtension = Path.GetExtension(activeItem);
       return ScriptConstants.kAcceptedFileExtensions.Contains(fileExtension);
+    }
+
+    public static bool IsActiveDocumentWithoutSolution()
+    {
+      var document = DocumentHandler.GetActiveDocument();
+      if (document == null || string.IsNullOrWhiteSpace(document.FullName))
+        return false;
+
+      return true;
     }
 
     #endregion
