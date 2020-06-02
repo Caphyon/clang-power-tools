@@ -317,7 +317,7 @@ namespace ClangPowerTools
       {
         DisplayCannotFormatMessage(e.Clear,
       $"\n--- ERROR ---\nFormat config file not found.\nCreate the config file and place it in the solution folder or select one of the predefined format styles from Clang Power Tools settings -> Format -> Style.");
-      }  
+      }
     }
 
     public void OnAfterRunCommand(object sender, CloseDataStreamingEventArgs e)
@@ -482,7 +482,13 @@ namespace ClangPowerTools
 
       if (IsAToolbarCommand(command))
       {
-        if (SolutionInfo.AreToolbarCommandsEnabled() == false)
+        if (command.CommandID.ID == CommandIds.kClangFormatToolbarId &&
+          SolutionInfo.IsActiveDocumentWithoutSolution())
+        {
+          command.Enabled = true;
+          return;
+        }
+        else if (SolutionInfo.AreToolbarCommandsEnabled() == false)
         {
           command.Enabled = false;
           return;
@@ -493,7 +499,6 @@ namespace ClangPowerTools
         command.Enabled = false;
         return;
       }
-
 
       if (VsServiceProvider.TryGetService(typeof(DTE), out object dte) && !(dte as DTE2).Solution.IsOpen)
       {
