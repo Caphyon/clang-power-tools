@@ -44,7 +44,6 @@ namespace ClangPowerTools.Services
     /// <returns>True if the service was registered before. False otherwise</returns>
     public static bool TryGetService(Type aType, out object aService)
     {
-      aService = null;
       return mServices.TryGetValue(aType, out aService);
     }
 
