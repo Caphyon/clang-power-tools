@@ -483,7 +483,7 @@ namespace ClangPowerTools
       if (IsAToolbarCommand(command))
       {
         if (command.CommandID.ID == CommandIds.kClangFormatToolbarId &&
-          SolutionInfo.IsActiveDocumentWithoutSolution())
+          SolutionInfo.ActiveDocumentValidation())
         {
           command.Enabled = true;
           return;

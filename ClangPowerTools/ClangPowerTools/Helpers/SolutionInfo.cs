@@ -140,7 +140,7 @@ namespace ClangPowerTools.Helpers
       return ScriptConstants.kAcceptedFileExtensions.Contains(fileExtension);
     }
 
-    public static bool IsActiveDocumentWithoutSolution()
+    public static bool ActiveDocumentValidation()
     {
       var document = DocumentHandler.GetActiveDocument();
       if (document == null || string.IsNullOrWhiteSpace(document.FullName))
