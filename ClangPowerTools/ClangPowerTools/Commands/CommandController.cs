@@ -482,15 +482,16 @@ namespace ClangPowerTools
 
       if (IsAToolbarCommand(command))
       {
-        if (command.CommandID.ID == CommandIds.kClangFormatToolbarId &&
-          SolutionInfo.ActiveDocumentValidation())
+        if (SolutionInfo.AreToolbarCommandsEnabled() == false)
         {
-          command.Enabled = true;
-          return;
-        }
-        else if (SolutionInfo.AreToolbarCommandsEnabled() == false)
-        {
-          command.Enabled = false;
+          if (command.CommandID.ID == CommandIds.kClangFormatToolbarId && SolutionInfo.ActiveDocumentValidation())
+          {
+            command.Enabled = true;
+          }
+          else
+          {
+            command.Enabled = false;
+          }
           return;
         }
       }
