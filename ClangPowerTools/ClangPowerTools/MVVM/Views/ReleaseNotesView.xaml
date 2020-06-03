@@ -128,7 +128,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Auto-detect Clang-Tidy config file"
+          Text="• Detect .clang-tidy configuration file when any Tidy command is launched"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -158,7 +158,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Option to enable only the recommended default Clang-Tidy flags"
+          Text="• Option to enable only the recommended default Clang-Tidy checks"
           TextWrapping="Wrap" />
 
 
@@ -199,7 +199,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Export Tidy file doesn't include flags"
+          Text="• Export Tidy file doesn't include checks"
           TextWrapping="Wrap" />
 
         <TextBox
