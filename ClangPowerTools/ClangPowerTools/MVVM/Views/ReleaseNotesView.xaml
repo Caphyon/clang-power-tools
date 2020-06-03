@@ -118,7 +118,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Feedback message when running Format on ignored files"
+          Text="• Search functionality in the Clang-Format editor"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -128,7 +128,37 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Detect if the .clang-format is missing when using file style"
+          Text="• Auto-detect Clang-Tidy config file"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Enable only the recommended default Clang-Tidy flags"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Option to display the output window after running a command"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Run Clang-Format on files that don't belong to the opened project"
           TextWrapping="Wrap" />
 
 
@@ -149,7 +179,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• The export confirmation dialog appears even when canceling the operation"
+          Text="• Focus changes to the error output  after running a command"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -159,7 +189,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Missing LLVM message is not displayed properly"
+          Text="• Crash when deselecting all Tidy checks"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -169,7 +199,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Crash when config file is missing"
+          Text="• Export Tidy file doesn't include flags"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -179,7 +209,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Predefined tidy checks are not initialized"
+          Text="• Select button is active even when PredefinedChecks is not selected"
           TextWrapping="Wrap" />
 
       </ListView>
