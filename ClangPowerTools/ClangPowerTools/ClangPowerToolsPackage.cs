@@ -343,6 +343,7 @@ namespace ClangPowerTools
       {
         var cbs = ((CommandBars)(dte as DTE2).CommandBars);
         CommandBar cb = cbs["Clang Power Tools"];
+        cb.Enabled = true;
         cb.Visible = true;
       }
     }
