@@ -138,16 +138,6 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Enable only the recommended default Clang-Tidy flags"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
           Text="• Option to display the output window after running a command"
           TextWrapping="Wrap" />
 
@@ -159,6 +149,16 @@
           FontSize="15"
           IsReadOnly="True"
           Text="• Run Clang-Format on files that don't belong to the opened project"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Option to enable only the recommended default Clang-Tidy flags"
           TextWrapping="Wrap" />
 
 
