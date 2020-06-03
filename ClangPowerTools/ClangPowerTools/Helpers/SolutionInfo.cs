@@ -146,7 +146,8 @@ namespace ClangPowerTools.Helpers
       if (document == null || string.IsNullOrWhiteSpace(document.FullName))
         return false;
 
-      return true;
+      var extensionDocument = Path.GetExtension(document.FullName);
+      return ScriptConstants.kAcceptedFileExtensions.Contains(extensionDocument);
     }
 
     #endregion
