@@ -415,6 +415,11 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
             else
             {
                 Write-Verbose "Could not find property sheet $relPath"
+                if ($relPath -like "\Microsoft.Cpp.props")
+                {
+                    # now we can begin to evaluate directory.build.props XML element conditions, load it
+                    LoadDirectoryBuildPropSheetFile
+                }
             }
         }
     }
@@ -478,9 +483,6 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
         if ($node.GetAttribute("Label") -ieq "ProjectConfigurations")
         {
             Detect-ProjectDefaultConfigPlatform
-
-            # now we can begin to evaluate directory.build.props XML element conditions, load it
-            LoadDirectoryBuildPropSheetFile
         }
     }
 
