@@ -71,6 +71,15 @@ namespace ClangPowerTools
       return doc != null;
     }
 
+    public static void FocusActiveDocument()
+    {
+      var document = GetActiveDocument();
+      if (document == null)
+        return;
+
+      document.Activate();
+    }
+
     #endregion
 
   }
