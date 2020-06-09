@@ -8,7 +8,7 @@ using System;
 
 namespace ClangPowerTools
 {
-    public class ErrorWindowController : ErrorListProvider
+  public class ErrorWindowController : ErrorListProvider
   {
     #region Constructor
 
@@ -36,9 +36,10 @@ namespace ClangPowerTools
 
         ResumeRefresh();
 
-        if(SettingsProvider.CompilerSettingsModel.ShowErrorList)
+        if (SettingsProvider.CompilerSettingsModel.ShowErrorList)
         {
           BringToFront();
+          DocumentHandler.FocusActiveDocument();
         }
 
       }).SafeFireAndForget();
