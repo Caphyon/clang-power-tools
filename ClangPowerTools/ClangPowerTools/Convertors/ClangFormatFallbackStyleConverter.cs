@@ -7,11 +7,10 @@ namespace ClangPowerTools.Convertors
 {
   public class ClangFormatFallbackStyleConverter : IValueConverter
   {
-    private static Dictionary<ClangFormatFallbackStyle?, string> fallbackStyleDisplay = 
+    private static Dictionary<ClangFormatFallbackStyle?, string> fallbackStyleDisplay =
       new Dictionary<ClangFormatFallbackStyle?, string>()
       {
         { ClangFormatFallbackStyle.none, "none" },
-        { ClangFormatFallbackStyle.file, "file" },
         { ClangFormatFallbackStyle.Chromium, "Chromium" },
         { ClangFormatFallbackStyle.Google, "Google" },
         { ClangFormatFallbackStyle.LLVM, "LLVM" },
