@@ -228,12 +228,14 @@
     </TextBlock>
 
     <ComboBox
+      x:Name="StyleComboBox"
       Grid.Row="5"
       Grid.Column="2"
       Height="30"
       Margin="0,0,20,0"
       ItemsSource="{Binding StyleItems}"
-      SelectedItem="{Binding FormatModel.Style}" />
+      SelectedItem="{Binding FormatModel.Style}"
+      SelectionChanged="ComboBox_SelectionChanged" />
 
 
     <!--  Fallback style  -->
@@ -256,6 +258,7 @@
     </TextBlock>
 
     <ComboBox
+      x:Name="FallbackStyleComboBox"
       Grid.Row="6"
       Grid.Column="2"
       Height="30"

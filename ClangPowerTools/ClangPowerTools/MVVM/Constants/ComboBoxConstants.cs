@@ -41,8 +41,6 @@ namespace ClangPowerTools
   {
     [EnumMember(Value = "none")]
     none = 0,
-    [EnumMember(Value = "file")]
-    file,
     [EnumMember(Value = "Chromium")]
     Chromium,
     [EnumMember(Value = "Google")]
