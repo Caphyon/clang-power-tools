@@ -197,7 +197,7 @@ namespace ClangPowerTools.Commands
       if (IsFileStyleSelected(formatSettings))
       {
         var fileToFormatPath = Vsix.GetDocumentParent(view);
-        if (FileSystem.SearchAllTopDirectories(fileToFormatPath, FileSystem.ConfigClangFormatFileName) == false)
+        if (!FileSystem.SearchAllTopDirectories(fileToFormatPath, FileSystem.ConfigClangFormatFileTypes))
         {
           OnFormatFile(new FormatCommandEventArgs()
           {
@@ -208,7 +208,7 @@ namespace ClangPowerTools.Commands
           if (clearOutput)
             clearOutput = false;
 
-          return false;       
+          return false;
         }
       }
 
