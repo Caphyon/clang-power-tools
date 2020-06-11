@@ -363,10 +363,30 @@ function Get-SolutionProjects([Parameter(Mandatory=$true)][string] $slnPath)
     Write-Verbose $match.Groups[1].Value
   }
 
-  $projectAbsolutePaths = $matches `
-    | ForEach-Object { Canonize-Path -base $slnDirectory `
-                                     -child $_.Groups[1].Value.Replace('"','') -ignoreErrors } `
-    | Where-Object { ! [string]::IsNullOrEmpty($_) -and $_.EndsWith($kExtensionVcxproj) }
+  [string[]] $projectAbsolutePaths = @()
+  foreach ($projPathMatch in $matches)
+  {
+    [string] $matchValue = $projPathMatch.Groups[1].Value.Replace('"','')
+    if ([string]::IsNullOrWhiteSpace($matchValue))
+    {
+      continue
+    }
+
+    $projExpandedPath = [Environment]::ExpandEnvironmentVariables($matchValue)
+    if ( ! $projExpandedPath.EndsWith($kExtensionVcxproj))
+    {
+      continue
+    }
+
+    if ( ! (Test-Path -LiteralPath $projExpandedPath))
+    {
+      # probably a relative path
+      $projExpandedPath = Canonize-Path -base $slnDirectory -child $projExpandedPath -ignoreErrors
+    }
+
+    $projectAbsolutePaths += @($projExpandedPath)
+  }
+  Write-Verbose-Array -array $projectAbsolutePaths -name "Resolved project paths for solution $slnPath"
   return $projectAbsolutePaths
 }
 
