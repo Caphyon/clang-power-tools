@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
@@ -8,9 +9,10 @@ namespace ClangPowerTools.Helpers
   {
     #region Properties
 
-    public static string ConfigClangFormatFileName { get; } = ".clang-format";
-
-    public static string ConfigClangFormatWindowsTypeFileName { get; } = "_clang-format";
+    public static List<string> ConfigClangFormatFileTypes = new List<string>
+      { ".clang-format",
+        "_clang-format"
+      };
 
     public static string ConfigClangTidyFileName { get; } = ".clang-tidy";
 
@@ -35,6 +37,27 @@ namespace ClangPowerTools.Helpers
 
       return false;
     }
+
+    public static bool SearchAllTopDirectories(string filePath, IEnumerable<string> searchedFiles)
+    {
+      while (string.IsNullOrEmpty(filePath) == false)
+      {
+        foreach (var file in searchedFiles)
+        {
+          if (FileSystem.DoesFileExist(filePath, file))
+            return true;
+        }
+
+        var index = filePath.LastIndexOf("\\");
+        if (index > 0)
+          filePath = filePath.Remove(index);
+        else
+          return false;
+      }
+
+      return false;
+    }
+
 
     public static void CreateDirectory(string path)
     {

@@ -197,8 +197,7 @@ namespace ClangPowerTools.Commands
       if (IsFileStyleSelected(formatSettings))
       {
         var fileToFormatPath = Vsix.GetDocumentParent(view);
-        if (FileSystem.SearchAllTopDirectories(fileToFormatPath, FileSystem.ConfigClangFormatFileName) == false &&
-          FileSystem.SearchAllTopDirectories(fileToFormatPath, FileSystem.ConfigClangFormatWindowsTypeFileName) == false)
+        if (!FileSystem.SearchAllTopDirectories(fileToFormatPath, FileSystem.ConfigClangFormatFileTypes))
         {
           OnFormatFile(new FormatCommandEventArgs()
           {
