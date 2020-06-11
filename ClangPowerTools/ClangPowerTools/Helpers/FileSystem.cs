@@ -10,6 +10,8 @@ namespace ClangPowerTools.Helpers
 
     public static string ConfigClangFormatFileName { get; } = ".clang-format";
 
+    public static string ConfigClangFormatWindowsTypeFileName { get; } = "_clang-format";
+
     public static string ConfigClangTidyFileName { get; } = ".clang-tidy";
 
     #endregion
