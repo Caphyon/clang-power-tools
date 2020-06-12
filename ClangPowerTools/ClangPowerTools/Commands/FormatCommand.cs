@@ -249,6 +249,10 @@ namespace ClangPowerTools.Commands
       if (ScriptConstants.kCMakeConfigFile == mDocument.Name.ToLower())
         return false;
 
+      OnFormatFile(new FormatCommandEventArgs()
+      {
+        Clear = true
+      });
 
       return true;
     }

@@ -318,6 +318,10 @@ namespace ClangPowerTools
         DisplayCannotFormatMessage(e.Clear,
       $"\n--- ERROR ---\nFormat config file not found.\nCreate the config file and place it in the solution folder or select one of the predefined format styles from Clang Power Tools settings -> Format -> Style.");
       }
+      else if (e.Clear)
+      {
+        ClearOutputWindowEvent.Invoke(this, new ClearEventArgs());
+      }
     }
 
     public void OnAfterRunCommand(object sender, CloseDataStreamingEventArgs e)
