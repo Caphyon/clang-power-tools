@@ -68,12 +68,14 @@
 
     <!--  Checks list  -->
     <ListBox
+      x:Name="TidyChecksListBox"
       Grid.Row="1"
       Grid.Column="0"
       ItemsSource="{Binding TidyChecksList}"
       ScrollViewer.CanContentScroll="True"
       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-      SelectedItem="{Binding SelectedCheck}">
+      SelectedItem="{Binding SelectedCheck}"
+      SelectionMode="Extended">
       <ListBox.ItemTemplate>
         <DataTemplate>
           <Grid>
@@ -108,8 +110,10 @@
               Width="120"
               Height="20"
               HorizontalAlignment="Right"
+              Checked="ToggleButton_Checked"
               IsChecked="{Binding IsChecked, Mode=TwoWay}"
-              Tag="On" />
+              Tag="On"
+              Unchecked="ToggleButton_Unchecked" />
 
           </Grid>
         </DataTemplate>

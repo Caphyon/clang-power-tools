@@ -140,6 +140,19 @@ namespace ClangPowerTools
 
     #region Methods
 
+    public void MultipleStateChange(bool checkValue)
+    {
+      if (tidyChecksView.TidyChecksListBox.SelectedItems.Count <= 1)
+        return;
+
+      foreach (var item in tidyChecksView.TidyChecksListBox.SelectedItems)
+      {
+        var model = (TidyCheckModel)item;
+        if (model.IsChecked != checkValue)
+          model.IsChecked = checkValue;
+      }
+    }
+
     private void TickPredefinedChecks()
     {
       string input = SettingsProvider.TidySettingsModel.PredefinedChecks;
