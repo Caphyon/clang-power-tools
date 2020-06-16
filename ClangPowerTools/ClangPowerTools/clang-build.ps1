@@ -378,12 +378,9 @@ function Get-SolutionProjects([Parameter(Mandatory=$true)][string] $slnPath)
       continue
     }
 
-    if ( ! (Test-Path -LiteralPath $projExpandedPath))
-    {
-      # probably a relative path
-      $projExpandedPath = Canonize-Path -base $slnDirectory -child $projExpandedPath -ignoreErrors
-    }
-
+    # canonize-path is smart enough to figure out if this is a relative path or not
+    $projExpandedPath = Canonize-Path -base $slnDirectory -child $projExpandedPath -ignoreErrors
+  
     $projectAbsolutePaths += @($projExpandedPath)
   }
   Write-Verbose-Array -array $projectAbsolutePaths -name "Resolved project paths for solution $slnPath"
