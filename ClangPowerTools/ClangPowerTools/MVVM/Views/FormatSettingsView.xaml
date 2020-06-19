@@ -39,293 +39,274 @@
 
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="10" />
-      <ColumnDefinition Width="180" />
       <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
     <!--  File Extensions  -->
-    <TextBlock
-      Grid.Row="1"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="File extensions">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="1" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.FileExtensions}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <TextBox
-      Grid.Row="1"
-      Grid.Column="2"
-      Width="450"
-      Height="30"
-      Margin="0,0,20,0"
-      VerticalContentAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="15"
-      Text="{Binding FormatModel.FileExtensions}" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="File extensions" />
 
-    <Button
-      Grid.Row="1"
-      Grid.Column="3"
-      HorizontalAlignment="Left"
-      Command="{Binding FileExtensionsAddDataCommand}"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        <Image Source="{StaticResource AddInputImage}" />
-      </Button.Content>
-    </Button>
+      <TextBox
+        Width="450"
+        Height="30"
+        Margin="0,0,20,0"
+        VerticalContentAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Text="{Binding FormatModel.FileExtensions}" />
+
+      <Button
+        HorizontalAlignment="Left"
+        Command="{Binding FileExtensionsAddDataCommand}"
+        Style="{StaticResource SettingsButton}">
+        <Button.Content>
+          <Image Source="{StaticResource AddInputImage}" />
+        </Button.Content>
+      </Button>
+    </WrapPanel>
+
 
     <!--  Files to ignore  -->
-    <TextBlock
-      Grid.Row="2"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Files to ignore">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="2" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.FilesToIgnoreFormat}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <TextBox
-      Grid.Row="2"
-      Grid.Column="2"
-      Width="450"
-      Height="30"
-      Margin="0,0,20,0"
-      VerticalContentAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="15"
-      Text="{Binding FormatModel.FilesToIgnore}" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Files to ignore" />
 
-    <Button
-      Grid.Row="2"
-      Grid.Column="3"
-      HorizontalAlignment="Left"
-      Command="{Binding FilesToIgnoreAddDataCommand}"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        <Image Source="{StaticResource AddInputImage}" />
-      </Button.Content>
-    </Button>
+      <TextBox
+        Width="450"
+        Height="30"
+        Margin="0,0,20,0"
+        VerticalContentAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Text="{Binding FormatModel.FilesToIgnore}" />
+
+      <Button
+        HorizontalAlignment="Left"
+        Command="{Binding FilesToIgnoreAddDataCommand}"
+        Style="{StaticResource SettingsButton}">
+        <Button.Content>
+          <Image Source="{StaticResource AddInputImage}" />
+        </Button.Content>
+      </Button>
+    </WrapPanel>
 
     <!--  Assume filename  -->
-    <TextBlock
-      Grid.Row="3"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Assume filename">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="3" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.AssumeFilename}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <TextBox
-      Grid.Row="3"
-      Grid.Column="2"
-      Width="450"
-      Height="30"
-      Margin="0,0,20,0"
-      VerticalContentAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="15"
-      Text="{Binding FormatModel.AssumeFilename}" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Assume filename" />
 
-    <Button
-      Grid.Row="3"
-      Grid.Column="3"
-      HorizontalAlignment="Left"
-      Command="{Binding AssumeFilenameAddDataCommand}"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        <Image Source="{StaticResource AddInputImage}" />
-      </Button.Content>
-    </Button>
+      <TextBox
+        Width="450"
+        Height="30"
+        Margin="0,0,20,0"
+        VerticalContentAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Text="{Binding FormatModel.AssumeFilename}" />
+
+      <Button
+        HorizontalAlignment="Left"
+        Command="{Binding AssumeFilenameAddDataCommand}"
+        Style="{StaticResource SettingsButton}">
+        <Button.Content>
+          <Image Source="{StaticResource AddInputImage}" />
+        </Button.Content>
+      </Button>
+    </WrapPanel>
 
     <!--  Custom executable file  -->
-    <TextBlock
-      Grid.Row="4"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Custom executable">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="4" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.CustomExecutableFormat}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <TextBox
-      Grid.Row="4"
-      Grid.Column="2"
-      Width="450"
-      Height="30"
-      Margin="0,0,20,0"
-      VerticalContentAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="15"
-      Text="{Binding FormatModel.CustomExecutable}" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Custom executable" />
 
-    <Button
-      Grid.Row="4"
-      Grid.Column="3"
-      HorizontalAlignment="Left"
-      Command="{Binding CustomExecutableBrowseCommand}"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        <Image Source="{StaticResource BrowseImage}" />
-      </Button.Content>
-    </Button>
+      <TextBox
+        Width="450"
+        Height="30"
+        Margin="0,0,20,0"
+        VerticalContentAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Text="{Binding FormatModel.CustomExecutable}" />
+
+      <Button
+        HorizontalAlignment="Left"
+        Command="{Binding CustomExecutableBrowseCommand}"
+        Style="{StaticResource SettingsButton}">
+        <Button.Content>
+          <Image Source="{StaticResource BrowseImage}" />
+        </Button.Content>
+      </Button>
+    </WrapPanel>
 
     <!--  Style  -->
-    <TextBlock
-      Grid.Row="5"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Style">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="5" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.Style}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <ComboBox
-      x:Name="StyleComboBox"
-      Grid.Row="5"
-      Grid.Column="2"
-      Height="30"
-      Margin="0,0,20,0"
-      ItemsSource="{Binding StyleItems}"
-      SelectedItem="{Binding FormatModel.Style}"
-      SelectionChanged="ComboBox_SelectionChanged" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Style" />
+
+      <ComboBox
+        x:Name="StyleComboBox"
+        Height="30"
+        Margin="0,0,20,0"
+        ItemsSource="{Binding StyleItems}"
+        SelectedItem="{Binding FormatModel.Style}"
+        SelectionChanged="ComboBox_SelectionChanged" />
+    </WrapPanel>
 
 
     <!--  Fallback style  -->
-    <TextBlock
-      Grid.Row="6"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Fallback style">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="6" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.FallbackStyle}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <ComboBox
-      x:Name="FallbackStyleComboBox"
-      Grid.Row="6"
-      Grid.Column="2"
-      Height="30"
-      Margin="0,0,20,0"
-      ItemsSource="{Binding FallBackStyleItems}"
-      SelectedItem="{Binding FormatModel.FallbackStyle}" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Fallback style" />
+
+      <ComboBox
+        x:Name="FallbackStyleComboBox"
+        Height="30"
+        Margin="0,0,20,0"
+        ItemsSource="{Binding FallBackStyleItems}"
+        SelectedItem="{Binding FormatModel.FallbackStyle}" />
+    </WrapPanel>
 
     <!--  Format on Save  -->
-    <TextBlock
-      Grid.Row="7"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Format on save">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="7" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.FormatOnSave}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <ToggleButton
-      Grid.Row="7"
-      Grid.Column="2"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      IsChecked="{Binding FormatModel.FormatOnSave}"
-      Tag="On" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Format on save" />
+
+      <ToggleButton
+        HorizontalAlignment="Left"
+        VerticalAlignment="Center"
+        IsChecked="{Binding FormatModel.FormatOnSave}"
+        Tag="On" />
+    </WrapPanel>
 
     <!--  Create format file  -->
-    <TextBlock
-      Grid.Row="8"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Clang-Format editor">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="8" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.CreateFormatFile}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <Button
-      Grid.Row="8"
-      Grid.Column="2"
-      Width="80"
-      Height="30"
-      HorizontalAlignment="Left"
-      Command="{Binding CreateFormatFileCommand}"
-      FontSize="14"
-      Foreground="White"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        Open
-      </Button.Content>
-    </Button>
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Clang-Format editor" />
+
+      <Button
+        Width="80"
+        Height="30"
+        HorizontalAlignment="Left"
+        Command="{Binding CreateFormatFileCommand}"
+        Content="Open"
+        FontSize="14"
+        Foreground="White"
+        Style="{StaticResource SettingsButton}" />
+    </WrapPanel>
 
   </Grid>
 </UserControl>
