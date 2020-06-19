@@ -44,349 +44,331 @@
 
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="10" />
-      <ColumnDefinition Width="180" />
       <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
     <!--  Compile flags  -->
-    <TextBlock
-      Grid.Row="1"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Compile flags">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="1" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.CompileFlags}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <TextBox
-      Grid.Row="1"
-      Grid.Column="2"
-      Width="450"
-      Height="30"
-      Margin="0,0,20,0"
-      VerticalContentAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="15"
-      Text="{Binding CompilerModel.CompileFlags}" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Compile flags" />
 
-    <Button
-      Grid.Row="1"
-      Grid.Column="3"
-      HorizontalAlignment="Left"
-      Command="{Binding CompileFlagsAddDataCommand}"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        <Image Source="{StaticResource AddInputImage}" />
-      </Button.Content>
-    </Button>
+      <TextBox
+        Width="450"
+        Height="30"
+        Margin="0,0,20,0"
+        VerticalContentAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Text="{Binding CompilerModel.CompileFlags}" />
+
+      <Button
+        HorizontalAlignment="Left"
+        Command="{Binding CompileFlagsAddDataCommand}"
+        Style="{StaticResource SettingsButton}">
+        <Button.Content>
+          <Image Source="{StaticResource AddInputImage}" />
+        </Button.Content>
+      </Button>
+    </WrapPanel>
 
     <!--  Files to ignore  -->
-    <TextBlock
-      Grid.Row="2"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Files to ignore">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="2" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.FilesToIgnoreCompile}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <TextBox
-      Grid.Row="2"
-      Grid.Column="2"
-      Width="450"
-      Height="30"
-      Margin="0,0,20,0"
-      VerticalContentAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="15"
-      Text="{Binding CompilerModel.FilesToIgnore}" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Files to ignore" />
 
-    <Button
-      Grid.Row="2"
-      Grid.Column="3"
-      HorizontalAlignment="Left"
-      Command="{Binding FilesToIgnoreAddDataCommand}"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        <Image Source="{StaticResource AddInputImage}" />
-      </Button.Content>
-    </Button>
+      <TextBox
+        Width="450"
+        Height="30"
+        Margin="0,0,20,0"
+        VerticalContentAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Text="{Binding CompilerModel.FilesToIgnore}" />
+
+      <Button
+        HorizontalAlignment="Left"
+        Command="{Binding FilesToIgnoreAddDataCommand}"
+        Style="{StaticResource SettingsButton}">
+        <Button.Content>
+          <Image Source="{StaticResource AddInputImage}" />
+        </Button.Content>
+      </Button>
+    </WrapPanel>
 
     <!--  Projects to ignore  -->
-    <TextBlock
-      Grid.Row="3"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Projects to ignore">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="3" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.ProjectsToIgnore}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <TextBox
-      Grid.Row="3"
-      Grid.Column="2"
-      Width="450"
-      Height="30"
-      Margin="0,0,20,0"
-      VerticalContentAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="15"
-      Text="{Binding CompilerModel.ProjectsToIgnore}" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Projects to ignore" />
 
-    <Button
-      Grid.Row="3"
-      Grid.Column="3"
-      HorizontalAlignment="Left"
-      Command="{Binding ProjectsToIgnoreAddDataCommand}"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        <Image Source="{StaticResource AddInputImage}" />
-      </Button.Content>
-    </Button>
+      <TextBox
+        Width="450"
+        Height="30"
+        Margin="0,0,20,0"
+        VerticalContentAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Text="{Binding CompilerModel.ProjectsToIgnore}" />
+
+      <Button
+        HorizontalAlignment="Left"
+        Command="{Binding ProjectsToIgnoreAddDataCommand}"
+        Style="{StaticResource SettingsButton}">
+        <Button.Content>
+          <Image Source="{StaticResource AddInputImage}" />
+        </Button.Content>
+      </Button>
+    </WrapPanel>
 
     <!--  Additional includes  -->
-    <TextBlock
-      Grid.Row="4"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Additional include as">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="4" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.AdditionalIncludes}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <ComboBox
-      Grid.Row="4"
-      Grid.Column="2"
-      Height="30"
-      Margin="0,0,20,0"
-      ItemsSource="{Binding AdditionalIncludesItems}"
-      SelectedItem="{Binding CompilerModel.AdditionalIncludes}" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Additional include as" />
+
+      <ComboBox
+        Height="30"
+        Margin="0,0,20,0"
+        ItemsSource="{Binding AdditionalIncludesItems}"
+        SelectedItem="{Binding CompilerModel.AdditionalIncludes}" />
+    </WrapPanel>
 
     <!--  Warning as errors  -->
-    <TextBlock
-      Grid.Row="5"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Warnings as errors">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="5" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.WarningsAsErrors}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <ToggleButton
-      Grid.Row="5"
-      Grid.Column="2"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      IsChecked="{Binding CompilerModel.WarningsAsErrors}"
-      Tag="On" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Warnings as errors" />
+
+      <ToggleButton
+        HorizontalAlignment="Left"
+        VerticalAlignment="Center"
+        IsChecked="{Binding CompilerModel.WarningsAsErrors}"
+        Tag="On" />
+    </WrapPanel>
 
     <!--  Continue on error  -->
-    <TextBlock
-      Grid.Row="6"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Continue on error">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="6" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.ContinueOnError}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <ToggleButton
-      Grid.Row="6"
-      Grid.Column="2"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      IsChecked="{Binding CompilerModel.ContinueOnError}"
-      Tag="On" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Continue on error" />
+
+      <ToggleButton
+        HorizontalAlignment="Left"
+        VerticalAlignment="Center"
+        IsChecked="{Binding CompilerModel.ContinueOnError}"
+        Tag="On" />
+    </WrapPanel>
 
     <!--  Clang after MSCV compile  -->
-    <TextBlock
-      Grid.Row="7"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Clang after MSVC">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="7" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.ClangAfterMSVC}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <ToggleButton
-      Grid.Row="7"
-      Grid.Column="2"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      IsChecked="{Binding CompilerModel.ClangAfterMSVC}"
-      Tag="On" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Clang after MSVC" />
+
+      <ToggleButton
+        HorizontalAlignment="Left"
+        VerticalAlignment="Center"
+        IsChecked="{Binding CompilerModel.ClangAfterMSVC}"
+        Tag="On" />
+    </WrapPanel>
 
     <!--  Show Error List  -->
-    <TextBlock
-      Grid.Row="8"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Show Error List">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="8" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.ShowErrorList}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <ToggleButton
-      Grid.Row="8"
-      Grid.Column="2"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      IsChecked="{Binding CompilerModel.ShowErrorList}"
-      Tag="On" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Show Error List" />
+
+      <ToggleButton
+        HorizontalAlignment="Left"
+        VerticalAlignment="Center"
+        IsChecked="{Binding CompilerModel.ShowErrorList}"
+        Tag="On" />
+    </WrapPanel>
 
     <!--  Show Output Window List  -->
-    <TextBlock
-      Grid.Row="9"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Show Output Window">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="9" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.ShowOutputWindow}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <ToggleButton
-      Grid.Row="9"
-      Grid.Column="2"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      IsChecked="{Binding CompilerModel.ShowOutputWindow}"
-      Tag="On" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Show Output Window" />
+
+      <ToggleButton
+        HorizontalAlignment="Left"
+        VerticalAlignment="Center"
+        IsChecked="{Binding CompilerModel.ShowOutputWindow}"
+        Tag="On" />
+    </WrapPanel>
 
     <!--  Show Squiggles  -->
-    <TextBlock
-      Grid.Row="10"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Show squiggles">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="10" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.ShowSquiggles}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <ToggleButton
-      Grid.Row="10"
-      Grid.Column="2"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      IsChecked="{Binding CompilerModel.ShowSquiggles}"
-      Tag="On" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Show squiggles" />
+
+      <ToggleButton
+        HorizontalAlignment="Left"
+        VerticalAlignment="Center"
+        IsChecked="{Binding CompilerModel.ShowSquiggles}"
+        Tag="On" />
+    </WrapPanel>
 
     <!--  Verbose mode  -->
-    <TextBlock
-      Grid.Row="11"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Verbose mode">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="11" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.VerboseMode}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <ToggleButton
-      Grid.Row="11"
-      Grid.Column="2"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      IsChecked="{Binding CompilerModel.VerboseMode}"
-      Tag="On" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Verbose mode" />
+
+      <ToggleButton
+        HorizontalAlignment="Left"
+        VerticalAlignment="Center"
+        IsChecked="{Binding CompilerModel.VerboseMode}"
+        Tag="On" />
+    </WrapPanel>
 
   </Grid>
 </UserControl>

@@ -40,312 +40,289 @@
 
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="10" />
-      <ColumnDefinition Width="180" />
       <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
     <!--  Use checks from  -->
-    <TextBlock
-      Grid.Row="1"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Use checks from">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="1" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.UseChecksFrom}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <ComboBox
-      x:Name="UseCheckFromComboBox"
-      Grid.Row="1"
-      Grid.Column="2"
-      Height="30"
-      Margin="0,0,20,0"
-      ItemsSource="{Binding UseChecksFromItems}"
-      SelectedItem="{Binding TidyModel.UseChecksFrom}"
-      SelectionChanged="ComboBox_SelectionChanged" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Use checks from" />
+
+      <ComboBox
+        x:Name="UseCheckFromComboBox"
+        Height="30"
+        Margin="0,0,20,0"
+        ItemsSource="{Binding UseChecksFromItems}"
+        SelectedItem="{Binding TidyModel.UseChecksFrom}"
+        SelectionChanged="ComboBox_SelectionChanged" />
+    </WrapPanel>
 
     <!--  Predefined Checks  -->
-    <TextBlock
-      Grid.Row="2"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Predefined Checks">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="2" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.PredefinedChecks}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <Button
-      x:Name="SelectPredefinedChecksButton"
-      Grid.Row="2"
-      Grid.Column="2"
-      Width="80"
-      Height="30"
-      HorizontalAlignment="Left"
-      Command="{Binding PredefinedChecksSelectCommand}"
-      Content="Select"
-      FontSize="14"
-      Foreground="White"
-      Style="{StaticResource SettingsButton}" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Predefined Checks" />
+
+      <Button
+        x:Name="SelectPredefinedChecksButton"
+        Width="80"
+        Height="30"
+        HorizontalAlignment="Left"
+        Command="{Binding PredefinedChecksSelectCommand}"
+        Content="Select"
+        FontSize="14"
+        Foreground="White"
+        Style="{StaticResource SettingsButton}" />
+    </WrapPanel>
 
     <!--  Custom checks  -->
-    <TextBlock
-      Grid.Row="3"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Custom Checks">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="3" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.CustomChecks}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <TextBox
-      Grid.Row="3"
-      Grid.Column="2"
-      Width="450"
-      Height="30"
-      Margin="0,0,20,0"
-      VerticalContentAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="15"
-      Text="{Binding TidyModel.CustomChecks}" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Custom Checks" />
 
-    <Button
-      Grid.Row="3"
-      Grid.Column="3"
-      HorizontalAlignment="Left"
-      Command="{Binding CustomChecksAddDataCommand}"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        <Image Source="{StaticResource AddInputImage}" />
-      </Button.Content>
-    </Button>
+      <TextBox
+        Width="450"
+        Height="30"
+        Margin="0,0,20,0"
+        VerticalContentAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Text="{Binding TidyModel.CustomChecks}" />
 
+      <Button
+        HorizontalAlignment="Left"
+        Command="{Binding CustomChecksAddDataCommand}"
+        Style="{StaticResource SettingsButton}">
+        <Button.Content>
+          <Image Source="{StaticResource AddInputImage}" />
+        </Button.Content>
+      </Button>
+    </WrapPanel>
 
     <!--  Header Filter  -->
-    <TextBlock
-      Grid.Row="4"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Header filter">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="4" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.HeaderFilter}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Header filter" />
 
-    <ComboBox
-      Grid.Row="4"
-      Grid.Column="2"
-      Height="30"
-      Margin="0,0,20,0"
-      IsEditable="True"
-      ItemsSource="{Binding HeaderFilters}"
-      Text="{Binding HeaderFilter}" />
+      <ComboBox
+        Width="450"
+        Height="30"
+        Margin="0,0,20,0"
+        IsEditable="True"
+        ItemsSource="{Binding HeaderFilters}"
+        Text="{Binding HeaderFilter}" />
 
-
-    <Button
-      Grid.Row="4"
-      Grid.Column="3"
-      HorizontalAlignment="Left"
-      Command="{Binding HeaderFilterAddDataCommand}"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        <Image Source="{StaticResource AddInputImage}" />
-      </Button.Content>
-    </Button>
-
-
+      <Button
+        HorizontalAlignment="Left"
+        Command="{Binding HeaderFilterAddDataCommand}"
+        Style="{StaticResource SettingsButton}">
+        <Button.Content>
+          <Image Source="{StaticResource AddInputImage}" />
+        </Button.Content>
+      </Button>
+    </WrapPanel>
 
     <!--  Custom executable file  -->
-    <TextBlock
-      Grid.Row="5"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Custom executable">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="5" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.CustomExecutableTidy}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <TextBox
-      Grid.Row="5"
-      Grid.Column="2"
-      Width="450"
-      Height="30"
-      Margin="0,0,20,0"
-      VerticalContentAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="15"
-      Text="{Binding TidyModel.CustomExecutable}" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Custom executable" />
 
-    <Button
-      Grid.Row="5"
-      Grid.Column="3"
-      HorizontalAlignment="Left"
-      Command="{Binding CustomExecutableBrowseCommand}"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        <Image Source="{StaticResource BrowseImage}" />
-      </Button.Content>
-    </Button>
+      <TextBox
+        Width="450"
+        Height="30"
+        Margin="0,0,20,0"
+        VerticalContentAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Text="{Binding TidyModel.CustomExecutable}" />
+
+      <Button
+        HorizontalAlignment="Left"
+        Command="{Binding CustomExecutableBrowseCommand}"
+        Style="{StaticResource SettingsButton}">
+        <Button.Content>
+          <Image Source="{StaticResource BrowseImage}" />
+        </Button.Content>
+      </Button>
+    </WrapPanel>
 
     <!--  Auto Detect .clang-tidy file  -->
-    <TextBlock
-      Grid.Row="6"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Detect .clang-tidy file">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="6" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.DetectClangTidyFile}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <ToggleButton
-      Grid.Row="6"
-      Grid.Column="2"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      IsChecked="{Binding TidyModel.DetectClangTidyFile}"
-      Tag="On" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Detect .clang-tidy file" />
+
+      <ToggleButton
+        HorizontalAlignment="Left"
+        VerticalAlignment="Center"
+        IsChecked="{Binding TidyModel.DetectClangTidyFile}"
+        Tag="On" />
+    </WrapPanel>
 
     <!--  Format after tidy  -->
-    <TextBlock
-      Grid.Row="7"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Format after Tidy">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="7" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.FormatAfterTidy}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <ToggleButton
-      Grid.Row="7"
-      Grid.Column="2"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      IsChecked="{Binding TidyModel.FormatAfterTidy}"
-      Tag="On" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Format after Tidy" />
+
+      <ToggleButton
+        HorizontalAlignment="Left"
+        VerticalAlignment="Center"
+        IsChecked="{Binding TidyModel.FormatAfterTidy}"
+        Tag="On" />
+    </WrapPanel>
 
     <!--  Tidy on save  -->
-    <TextBlock
-      Grid.Row="8"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Tidy on save">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="8" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.TidyOnSave}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <ToggleButton
-      Grid.Row="8"
-      Grid.Column="2"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      IsChecked="{Binding TidyModel.TidyOnSave}"
-      Tag="On" />
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Tidy on save" />
+
+      <ToggleButton
+        HorizontalAlignment="Left"
+        VerticalAlignment="Center"
+        IsChecked="{Binding TidyModel.TidyOnSave}"
+        Tag="On" />
+    </WrapPanel>
 
     <!--  Export tidy config  -->
-    <TextBlock
-      Grid.Row="9"
-      Grid.Column="1"
-      Padding="10"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Tidy file config">
-      <TextBlock.ToolTip>
+    <WrapPanel Grid.Row="9" Grid.Column="1">
+      <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
-            Width="400"
+            MaxWidth="400"
             Text="{Binding Tooltip.TidyFileConfig}"
             TextWrapping="Wrap" />
         </ToolTip>
-      </TextBlock.ToolTip>
-    </TextBlock>
+      </WrapPanel.ToolTip>
 
-    <Button
-      Grid.Row="9"
-      Grid.Column="2"
-      Width="80"
-      Height="30"
-      HorizontalAlignment="Left"
-      Command="{Binding ExportTidyConfigCommand}"
-      FontSize="14"
-      Foreground="White"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        Export
-      </Button.Content>
-    </Button>
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Tidy file config" />
+
+      <Button
+        Width="80"
+        Height="30"
+        HorizontalAlignment="Left"
+        Command="{Binding ExportTidyConfigCommand}"
+        Content="Export"
+        FontSize="14"
+        Foreground="White"
+        Style="{StaticResource SettingsButton}" />
+    </WrapPanel>
 
   </Grid>
 </UserControl>
