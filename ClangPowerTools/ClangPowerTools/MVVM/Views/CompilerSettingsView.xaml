@@ -49,10 +49,15 @@
     </Grid.ColumnDefinitions>
 
     <!--  Compile flags  -->
-    <WrapPanel
-      Grid.Row="1"
-      Grid.Column="1"
-      ToolTip="{Binding Tooltip.CompileFlags}">
+    <WrapPanel Grid.Row="1" Grid.Column="1">
+      <WrapPanel.ToolTip>
+        <ToolTip>
+          <TextBlock
+            MaxWidth="400"
+            Text="{Binding Tooltip.CompileFlags}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </WrapPanel.ToolTip>
 
       <TextBlock
         Width="180"
@@ -82,10 +87,16 @@
     </WrapPanel>
 
     <!--  Files to ignore  -->
-    <WrapPanel
-      Grid.Row="2"
-      Grid.Column="1"
-      ToolTip="{Binding Tooltip.FilesToIgnoreCompile}">
+    <WrapPanel Grid.Row="2" Grid.Column="1">
+      <WrapPanel.ToolTip>
+        <ToolTip>
+          <TextBlock
+            MaxWidth="400"
+            Text="{Binding Tooltip.FilesToIgnoreCompile}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </WrapPanel.ToolTip>
+
       <TextBlock
         Width="180"
         Padding="10"
@@ -114,10 +125,16 @@
     </WrapPanel>
 
     <!--  Projects to ignore  -->
-    <WrapPanel
-      Grid.Row="3"
-      Grid.Column="1"
-      ToolTip="{Binding Tooltip.ProjectsToIgnore}">
+    <WrapPanel Grid.Row="3" Grid.Column="1">
+      <WrapPanel.ToolTip>
+        <ToolTip>
+          <TextBlock
+            MaxWidth="400"
+            Text="{Binding Tooltip.ProjectsToIgnore}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </WrapPanel.ToolTip>
+
       <TextBlock
         Width="180"
         Padding="10"
@@ -146,10 +163,16 @@
     </WrapPanel>
 
     <!--  Additional includes  -->
-    <WrapPanel
-      Grid.Row="4"
-      Grid.Column="1"
-      ToolTip="{Binding Tooltip.AdditionalIncludes}">
+    <WrapPanel Grid.Row="4" Grid.Column="1">
+      <WrapPanel.ToolTip>
+        <ToolTip>
+          <TextBlock
+            MaxWidth="400"
+            Text="{Binding Tooltip.AdditionalIncludes}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </WrapPanel.ToolTip>
+
       <TextBlock
         Width="180"
         Padding="10"
@@ -166,10 +189,16 @@
     </WrapPanel>
 
     <!--  Warning as errors  -->
-    <WrapPanel
-      Grid.Row="5"
-      Grid.Column="1"
-      ToolTip="{Binding Tooltip.WarningsAsErrors}">
+    <WrapPanel Grid.Row="5" Grid.Column="1">
+      <WrapPanel.ToolTip>
+        <ToolTip>
+          <TextBlock
+            MaxWidth="400"
+            Text="{Binding Tooltip.WarningsAsErrors}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </WrapPanel.ToolTip>
+
       <TextBlock
         Width="180"
         Padding="10"
@@ -186,10 +215,16 @@
     </WrapPanel>
 
     <!--  Continue on error  -->
-    <WrapPanel
-      Grid.Row="6"
-      Grid.Column="1"
-      ToolTip="{Binding Tooltip.ContinueOnError}">
+    <WrapPanel Grid.Row="6" Grid.Column="1">
+      <WrapPanel.ToolTip>
+        <ToolTip>
+          <TextBlock
+            MaxWidth="400"
+            Text="{Binding Tooltip.ContinueOnError}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </WrapPanel.ToolTip>
+
       <TextBlock
         Width="180"
         Padding="10"
@@ -206,10 +241,16 @@
     </WrapPanel>
 
     <!--  Clang after MSCV compile  -->
-    <WrapPanel
-      Grid.Row="7"
-      Grid.Column="1"
-      ToolTip="{Binding Tooltip.ClangAfterMSVC}">
+    <WrapPanel Grid.Row="7" Grid.Column="1">
+      <WrapPanel.ToolTip>
+        <ToolTip>
+          <TextBlock
+            MaxWidth="400"
+            Text="{Binding Tooltip.ClangAfterMSVC}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </WrapPanel.ToolTip>
+
       <TextBlock
         Width="180"
         Padding="10"
@@ -226,10 +267,16 @@
     </WrapPanel>
 
     <!--  Show Error List  -->
-    <WrapPanel
-      Grid.Row="8"
-      Grid.Column="1"
-      ToolTip="{Binding Tooltip.ShowErrorList}">
+    <WrapPanel Grid.Row="8" Grid.Column="1">
+      <WrapPanel.ToolTip>
+        <ToolTip>
+          <TextBlock
+            MaxWidth="400"
+            Text="{Binding Tooltip.ShowErrorList}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </WrapPanel.ToolTip>
+
       <TextBlock
         Width="180"
         Padding="10"
@@ -246,10 +293,16 @@
     </WrapPanel>
 
     <!--  Show Output Window List  -->
-    <WrapPanel
-      Grid.Row="9"
-      Grid.Column="1"
-      ToolTip="{Binding Tooltip.ShowOutputWindow}">
+    <WrapPanel Grid.Row="9" Grid.Column="1">
+      <WrapPanel.ToolTip>
+        <ToolTip>
+          <TextBlock
+            MaxWidth="400"
+            Text="{Binding Tooltip.ShowOutputWindow}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </WrapPanel.ToolTip>
+
       <TextBlock
         Width="180"
         Padding="10"
@@ -266,10 +319,16 @@
     </WrapPanel>
 
     <!--  Show Squiggles  -->
-    <WrapPanel
-      Grid.Row="10"
-      Grid.Column="1"
-      ToolTip="{Binding Tooltip.ShowSquiggles}">
+    <WrapPanel Grid.Row="10" Grid.Column="1">
+      <WrapPanel.ToolTip>
+        <ToolTip>
+          <TextBlock
+            MaxWidth="400"
+            Text="{Binding Tooltip.ShowSquiggles}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </WrapPanel.ToolTip>
+
       <TextBlock
         Width="180"
         Padding="10"
@@ -286,10 +345,16 @@
     </WrapPanel>
 
     <!--  Verbose mode  -->
-    <WrapPanel
-      Grid.Row="11"
-      Grid.Column="1"
-      ToolTip="{Binding Tooltip.VerboseMode}">
+    <WrapPanel Grid.Row="11" Grid.Column="1">
+      <WrapPanel.ToolTip>
+        <ToolTip>
+          <TextBlock
+            MaxWidth="400"
+            Text="{Binding Tooltip.VerboseMode}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </WrapPanel.ToolTip>
+
       <TextBlock
         Width="180"
         Padding="10"
