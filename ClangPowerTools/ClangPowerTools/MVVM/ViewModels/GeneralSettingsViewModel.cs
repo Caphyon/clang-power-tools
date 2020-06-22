@@ -62,17 +62,17 @@ namespace ClangPowerTools
 
     public ICommand LogoutCommand
     {
-      get => logoutCommand ?? (logoutCommand = new RelayCommand(() => Logout(), () => CanExecute));
+      get => logoutCommand ??= new RelayCommand(() => Logout(), () => CanExecute);
     }
 
     public ICommand ExportSettingsCommand
     {
-      get => exportSettingsCommand ?? (exportSettingsCommand = new RelayCommand(() => ExportSettings(), () => CanExecute));
+      get => exportSettingsCommand ??= new RelayCommand(() => ExportSettings(), () => CanExecute);
     }
 
     public ICommand ImportSettingssCommand
     {
-      get => importSettingsCommand ?? (importSettingsCommand = new RelayCommand(() => ImportSettings(), () => CanExecute));
+      get => importSettingsCommand ??= new RelayCommand(() => ImportSettings(), () => CanExecute);
     }
 
     public ICommand ResetSettingsCommand
