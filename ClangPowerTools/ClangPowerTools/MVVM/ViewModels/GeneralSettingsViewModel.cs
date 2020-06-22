@@ -77,7 +77,7 @@ namespace ClangPowerTools
 
     public ICommand ResetSettingsCommand
     {
-      get => resetSettingsCommand ?? (resetSettingsCommand = new RelayCommand(() => ResetSettings(), () => CanExecute));
+      get => resetSettingsCommand ??= new RelayCommand(() => ResetSettings(), () => CanExecute);
     }
 
     #endregion
