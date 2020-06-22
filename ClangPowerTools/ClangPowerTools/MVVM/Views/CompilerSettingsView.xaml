@@ -182,6 +182,7 @@
         Text="Additional include as" />
 
       <ComboBox
+        Width="450"
         Height="30"
         Margin="0,0,20,0"
         ItemsSource="{Binding AdditionalIncludesItems}"

@@ -10,6 +10,7 @@
   <ResourceDictionary.MergedDictionaries>
     <ResourceDictionary Source="ToggleStyle.xaml" />
     <ResourceDictionary Source="SettingsButtonStyle.xaml" />
+    <ResourceDictionary Source="SettingsComboBoxStyle.xaml" />
     <ResourceDictionary Source="YellowButtonStyle.xaml" />
     <ResourceDictionary>
       <BitmapImage x:Key="AddInputImage" UriSource="/ClangPowerTools;component/Resources/AddInput.png" />
