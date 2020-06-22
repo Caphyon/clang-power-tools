@@ -11,7 +11,7 @@ namespace ClangPowerTools
   public class SettingsHandler
   {
     #region Members
-    public static event Action ResetSettingsView;
+    public static Action ResetSettingsView;
 
     private readonly string settingsPath = string.Empty;
     private const string SettingsFileName = "settings.json";
