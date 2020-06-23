@@ -219,7 +219,7 @@
           MaxWidth="460"
           Margin="0,20,0,0"
           HorizontalAlignment="Center"
-          FontSize="12"><Hyperlink Command="{Binding OpenClangFormatUriCommand}">Learn more about Clang Format Style Options</Hyperlink></TextBlock>
+          FontSize="12"><Hyperlink Command="{Binding OpenClangFormatUriCommand}">Getting started with Clang-Format Style Options</Hyperlink></TextBlock>
       </Grid>
     </Grid>
 

@@ -12,18 +12,17 @@ namespace ClangPowerTools.Views
     {
       InitializeComponent();
       DataContext = new FormatSettingsViewModel();
-      SettingsHandler.ResetSettingsView += ResetView;    
+      SettingsHandler.ResetSettingsView += ResetView;
     }
 
-  public void ResetView()
-  {
-    DataContext = new FormatSettingsViewModel();
-  }
+    public void ResetView()
+    {
+      DataContext = new FormatSettingsViewModel();
+    }
 
-  private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
       FallbackStyleComboBox.IsEnabled = StyleComboBox.SelectedItem.ToString() == ComboBoxConstants.kFile;
     }
-
   }
 }

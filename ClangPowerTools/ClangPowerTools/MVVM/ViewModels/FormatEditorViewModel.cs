@@ -191,32 +191,32 @@ namespace ClangPowerTools
 
     public ICommand CreateFormatFileCommand
     {
-      get => createFormatFileCommand ?? (createFormatFileCommand = new RelayCommand(() => CreateFormatFile(), () => CanExecute));
+      get => createFormatFileCommand ??= new RelayCommand(() => CreateFormatFile(), () => CanExecute);
     }
 
     public ICommand FormatCodeCommand
     {
-      get => formatCodeCommand ?? (formatCodeCommand = new RelayCommand(() => RunFormat(), () => CanExecute));
+      get => formatCodeCommand ??= new RelayCommand(() => RunFormat(), () => CanExecute);
     }
 
     public ICommand OpenClangFormatUriCommand
     {
-      get => openUri ?? (openUri = new RelayCommand(() => OpenUri("https://clang.llvm.org/docs/ClangFormatStyleOptions.html"), () => CanExecute));
+      get => openUri ??= new RelayCommand(() => OpenUri("https://clangpowertools.com/blog/getting-started-with-clang-format-style-options.html"), () => CanExecute);
     }
 
     public ICommand ResetCommand
     {
-      get => resetCommand ?? (resetCommand = new RelayCommand(() => ResetOptions(), () => CanExecute));
+      get => resetCommand ??= new RelayCommand(() => ResetOptions(), () => CanExecute);
     }
 
     public ICommand SelctCodeFileCommand
     {
-      get => selctCodeFileCommand ?? (selctCodeFileCommand = new RelayCommand(() => ReadCodeFromFile(), () => CanExecute));
+      get => selctCodeFileCommand ??= new RelayCommand(() => ReadCodeFromFile(), () => CanExecute);
     }
 
     public ICommand ResetSearchCommand
     {
-      get => resetSearchCommand ?? (resetSearchCommand = new RelayCommand(() => ResetSearchField(), () => CanExecute));
+      get => resetSearchCommand ??= new RelayCommand(() => ResetSearchField(), () => CanExecute);
     }
 
     #endregion
