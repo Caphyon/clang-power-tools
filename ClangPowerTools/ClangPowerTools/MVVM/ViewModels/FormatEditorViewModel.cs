@@ -201,7 +201,7 @@ namespace ClangPowerTools
 
     public ICommand OpenClangFormatUriCommand
     {
-      get => openUri ?? (openUri = new RelayCommand(() => OpenUri("https://clang.llvm.org/docs/ClangFormatStyleOptions.html"), () => CanExecute));
+      get => openUri ?? (openUri = new RelayCommand(() => OpenUri("https://clangpowertools.com/blog/getting-started-with-clang-format-style-options.html"), () => CanExecute));
     }
 
     public ICommand ResetCommand
