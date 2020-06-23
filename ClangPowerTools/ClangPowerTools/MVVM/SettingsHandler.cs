@@ -10,19 +10,22 @@ namespace ClangPowerTools
 {
   public class SettingsHandler
   {
-    private readonly string settingsPath = string.Empty;
+    #region Members
+    public static Action ResetSettingsView;
 
+    private readonly string settingsPath = string.Empty;
     private const string SettingsFileName = "settings.json";
     private const string GeneralConfigurationFileName = "GeneralConfiguration.config";
     private const string FormatConfigurationFileName = "FormatConfiguration.config";
     private const string TidyOptionsConfigurationFileName = "TidyOptionsConfiguration.config";
     private const string TidyPredefinedChecksConfigurationFileName = "TidyPredefinedChecksConfiguration.config";
     private const int MinJsonElements = 5;
+    #endregion
 
     #region Constructor
     public SettingsHandler()
     {
-      SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
+      var settingsPathBuilder = new SettingsPathBuilder();
       settingsPath = settingsPathBuilder.GetPath("");
     }
     #endregion
@@ -108,6 +111,8 @@ namespace ClangPowerTools
     public void ResetSettings()
     {
       CreateDeaultSettings();
+
+      ResetSettingsView?.Invoke();
     }
 
     #endregion

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using ClangPowerTools.MVVM.Interfaces;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace ClangPowerTools.Views
@@ -6,15 +7,22 @@ namespace ClangPowerTools.Views
   /// <summary>
   /// Interaction logic for LlvmSettingsView.xaml
   /// </summary>
-  public partial class LlvmSettingsView : UserControl
+  public partial class LlvmSettingsView : UserControl, IView
   {
-    private readonly LlvmSettingsViewModel llvmSettingsViewModel = new LlvmSettingsViewModel();
+    private LlvmSettingsViewModel llvmSettingsViewModel = new LlvmSettingsViewModel();
 
     public LlvmSettingsView()
     {
       DataContext = llvmSettingsViewModel;
       InitializeComponent();
       this.Loaded += LlvmSettingsViewLoaded;
+      SettingsHandler.ResetSettingsView += ResetView;
+    }
+
+    public void ResetView()
+    {
+      llvmSettingsViewModel = new LlvmSettingsViewModel();
+      DataContext = llvmSettingsViewModel;
     }
 
     private void DownloadButton(object sender, RoutedEventArgs e)

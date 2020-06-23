@@ -1,15 +1,22 @@
-﻿using System.Windows.Controls;
+﻿using ClangPowerTools.MVVM.Interfaces;
+using System.Windows.Controls;
 
 namespace ClangPowerTools.Views
 {
   /// <summary>
   /// Interaction logic for TidySettingsView.xaml
   /// </summary>
-  public partial class TidySettingsView : UserControl
+  public partial class TidySettingsView : UserControl, IView
   {
     public TidySettingsView()
     {
       InitializeComponent();
+      DataContext = new TidySettingsViewModel();
+      SettingsHandler.ResetSettingsView += ResetView;
+    }
+
+    public void ResetView()
+    {
       DataContext = new TidySettingsViewModel();
     }
 
