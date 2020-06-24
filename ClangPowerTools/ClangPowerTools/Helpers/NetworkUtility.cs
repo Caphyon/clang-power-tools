@@ -12,10 +12,8 @@ namespace ClangPowerTools.Helpers
 
       try
       {
-        using (HttpResponseMessage result = await ApiUtility.ApiClient.GetAsync("https://www.google.com"))
-        {
-          return result != null;
-        }
+        using HttpResponseMessage result = await ApiUtility.ApiClient.GetAsync("https://www.google.com");
+        return result != null;
       }
       catch (Exception)
       {
