@@ -209,45 +209,41 @@ namespace ClangPowerTools
 
     private void SerializeSettings(List<object> models, string path)
     {
-      using (StreamWriter file = File.CreateText(path))
-      {
-        JsonSerializer serializer = new JsonSerializer();
-        serializer.Formatting = Formatting.Indented;
-        serializer.Serialize(file, models);
-      }
+      using StreamWriter file = File.CreateText(path);
+      JsonSerializer serializer = new JsonSerializer();
+      serializer.Formatting = Formatting.Indented;
+      serializer.Serialize(file, models);
     }
 
     private void DeserializeSettings(string path)
     {
-      using (StreamReader sw = new StreamReader(path))
+      using StreamReader sw = new StreamReader(path);
+      string json = sw.ReadToEnd();
+      var serializer = new JsonSerializer();
+
+      try
       {
-        string json = sw.ReadToEnd();
-        var serializer = new JsonSerializer();
+        var models = JsonConvert.DeserializeObject<List<object>>(json);
+        var compilerModel = JsonConvert.DeserializeObject<CompilerSettingsModel>(models[0].ToString());
+        var formatModel = JsonConvert.DeserializeObject<FormatSettingsModel>(models[1].ToString());
+        var tidyModel = JsonConvert.DeserializeObject<TidySettingsModel>(models[2].ToString());
+        var generalModel = JsonConvert.DeserializeObject<GeneralSettingsModel>(models[3].ToString());
 
-        try
+        LlvmSettingsModel llvmModel;
+        if (models.Count >= MinJsonElements)
         {
-          var models = JsonConvert.DeserializeObject<List<object>>(json);
-          var compilerModel = JsonConvert.DeserializeObject<CompilerSettingsModel>(models[0].ToString());
-          var formatModel = JsonConvert.DeserializeObject<FormatSettingsModel>(models[1].ToString());
-          var tidyModel = JsonConvert.DeserializeObject<TidySettingsModel>(models[2].ToString());
-          var generalModel = JsonConvert.DeserializeObject<GeneralSettingsModel>(models[3].ToString());
-
-          LlvmSettingsModel llvmModel;
-          if (models.Count >= MinJsonElements)
-          {
-            llvmModel = JsonConvert.DeserializeObject<LlvmSettingsModel>(models[4].ToString());
-          }
-          else
-          {
-            llvmModel = new LlvmSettingsModel();
-          }
-
-          SetSettingsModels(compilerModel, formatModel, tidyModel, generalModel, llvmModel);
+          llvmModel = JsonConvert.DeserializeObject<LlvmSettingsModel>(models[4].ToString());
         }
-        catch (Exception e)
+        else
         {
-          MessageBox.Show(e.Message, "Cannot Load Clang Power Tools Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          llvmModel = new LlvmSettingsModel();
         }
+
+        SetSettingsModels(compilerModel, formatModel, tidyModel, generalModel, llvmModel);
+      }
+      catch (Exception e)
+      {
+        MessageBox.Show(e.Message, "Cannot Load Clang Power Tools Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
@@ -340,9 +336,9 @@ namespace ClangPowerTools
 
     private string FormatTidyCheckName(string name)
     {
-      StringBuilder stringBuilder = new StringBuilder();
-
+      var stringBuilder = new StringBuilder();
       stringBuilder.Append(name[0]);
+
       for (int i = 1; i < name.Length; i++)
       {
         if (Char.IsUpper(name[i]))
@@ -357,6 +353,7 @@ namespace ClangPowerTools
 
       return stringBuilder.ToString().ToLower();
     }
+
     #endregion
 
   }
