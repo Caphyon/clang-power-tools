@@ -60,7 +60,7 @@
       Foreground="White"
       Style="{StaticResource SettingsButton}">
       <Button.Content>
-        Upload Settings
+        Upload
       </Button.Content>
     </Button>
 
@@ -75,7 +75,7 @@
       Foreground="White"
       Style="{StaticResource SettingsButton}">
       <Button.Content>
-        Download Settings
+        Download
       </Button.Content>
     </Button>
 
