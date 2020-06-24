@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.Views;
 using System.ComponentModel;
 using System.IO;
@@ -134,12 +135,12 @@ namespace ClangPowerTools
 
     private void UploadSettings()
     {
-
+      var settingsController = new SettingsApi();
     }
 
     private void DownloadSettings()
     {
-
+      var settingsController = new SettingsApi();
     }
 
     #endregion

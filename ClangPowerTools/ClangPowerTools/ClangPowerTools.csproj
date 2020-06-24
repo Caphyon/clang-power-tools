@@ -101,7 +101,7 @@
     <Compile Include="MVVM\Controllers\FormatEditorController.cs" />
     <Compile Include="MVVM\Controllers\FreeTrialController.cs" />
     <Compile Include="MVVM\Controllers\LlvmController.cs" />
-    <Compile Include="MVVM\Controllers\SettingsController.cs" />
+    <Compile Include="Helpers\SettingsApi.cs" />
     <Compile Include="MVVM\FormatOptionsData\FormatOptionsMicrosoftData.cs" />
     <Compile Include="MVVM\FormatOptionsData\FormatOptionsWebKitData.cs" />
     <Compile Include="MVVM\FormatOptionsData\FormatOptionsMozillaData.cs" />

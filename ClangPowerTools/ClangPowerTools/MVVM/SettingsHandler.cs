@@ -292,26 +292,30 @@ namespace ClangPowerTools
 
     private void MapClangFormatOptionsToSettings(ClangFormatOptions clangFormat)
     {
-      var formatSettingsModel = new FormatSettingsModel();
-      formatSettingsModel.FileExtensions = clangFormat.FileExtensions;
-      formatSettingsModel.FilesToIgnore = clangFormat.SkipFiles;
-      formatSettingsModel.AssumeFilename = clangFormat.AssumeFilename;
-      formatSettingsModel.CustomExecutable = clangFormat.ClangFormatPath.Value;
-      formatSettingsModel.Style = clangFormat.Style;
-      formatSettingsModel.FallbackStyle = clangFormat.FallbackStyle;
-      formatSettingsModel.FormatOnSave = clangFormat.EnableFormatOnSave;
+      var formatSettingsModel = new FormatSettingsModel
+      {
+        FileExtensions = clangFormat.FileExtensions,
+        FilesToIgnore = clangFormat.SkipFiles,
+        AssumeFilename = clangFormat.AssumeFilename,
+        CustomExecutable = clangFormat.ClangFormatPath.Value,
+        Style = clangFormat.Style,
+        FallbackStyle = clangFormat.FallbackStyle,
+        FormatOnSave = clangFormat.EnableFormatOnSave
+      };
 
       SettingsProvider.FormatSettingsModel = formatSettingsModel;
     }
 
     private void MapClangTidyOptionsToSettings(ClangTidyOptions clangTidy)
     {
-      var tidySettingsModel = new TidySettingsModel();
-      tidySettingsModel.HeaderFilter = clangTidy.HeaderFilter;
-      tidySettingsModel.CustomChecks = clangTidy.TidyChecksCollection;
-      tidySettingsModel.CustomExecutable = clangTidy.ClangTidyPath.Value;
-      tidySettingsModel.FormatAfterTidy = clangTidy.FormatAfterTidy;
-      tidySettingsModel.TidyOnSave = clangTidy.AutoTidyOnSave;
+      var tidySettingsModel = new TidySettingsModel
+      {
+        HeaderFilter = clangTidy.HeaderFilter,
+        CustomChecks = clangTidy.TidyChecksCollection,
+        CustomExecutable = clangTidy.ClangTidyPath.Value,
+        FormatAfterTidy = clangTidy.FormatAfterTidy,
+        TidyOnSave = clangTidy.AutoTidyOnSave
+      };
 
       SettingsProvider.TidySettingsModel = tidySettingsModel;
     }
