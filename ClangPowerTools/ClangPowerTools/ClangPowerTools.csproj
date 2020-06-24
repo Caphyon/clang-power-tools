@@ -101,6 +101,7 @@
     <Compile Include="MVVM\Controllers\FormatEditorController.cs" />
     <Compile Include="MVVM\Controllers\FreeTrialController.cs" />
     <Compile Include="MVVM\Controllers\LlvmController.cs" />
+    <Compile Include="MVVM\Controllers\SettingsController.cs" />
     <Compile Include="MVVM\FormatOptionsData\FormatOptionsMicrosoftData.cs" />
     <Compile Include="MVVM\FormatOptionsData\FormatOptionsWebKitData.cs" />
     <Compile Include="MVVM\FormatOptionsData\FormatOptionsMozillaData.cs" />
@@ -115,7 +116,7 @@
     <Compile Include="MVVM\Constants\LlvmVersions.cs" />
     <Compile Include="MVVM\Interfaces\IAccountValidator.cs" />
     <Compile Include="MVVM\Interfaces\ILicense.cs" />
-    <Compile Include="MVVM\LicenseValidation\LicenseValidator.cs" />
+    <Compile Include="MVVM\LicenseValidation\Token.cs" />
     <Compile Include="MVVM\LicenseValidation\CommercialLicenseValidator.cs" />
     <Compile Include="MVVM\LicenseValidation\LicenseInfo.cs" />
     <Compile Include="MVVM\LicenseValidation\LicenseProvider.cs" />

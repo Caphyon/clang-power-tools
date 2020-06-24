@@ -13,10 +13,5 @@ namespace ClangPowerTools.MVVM.Interfaces
     /// <returns>True if the license is active. False otherwise</returns>
     Task<bool> ValidateAsync();
 
-    /// <summary>
-    /// Get the user license token value
-    /// </summary>
-    /// <returns>User license token value</returns>
-    bool GetToken(out string jwt);
   }
 }

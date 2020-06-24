@@ -18,20 +18,21 @@ namespace ClangPowerTools.MVVM.LicenseValidation
     /// Verify if the user license is active.
     /// </summary>
     /// <returns>True if the user license is active. False otherwise.</returns>
-    public override async Task<bool> ValidateAsync()
+    public new async Task<bool> ValidateAsync()
     {
       try
       {
-        if (GetToken(out string token) == false)
+        var token = new Token();
+        if (token.GetToken(out string jwt) == false)
           return false;
 
-        KeyValuePair<bool, HttpResponseMessage> httpResponse = await CheckUserAccountAsync(token);
+        KeyValuePair<bool, HttpResponseMessage> httpResponse = await CheckUserAccountAsync(jwt);
 
         if (httpResponse.Key == false)
           return false;
 
         List<LicenseModel> licenses = await httpResponse.Value.Content.ReadAsAsync<List<LicenseModel>>();
-        return licenses.Count > 0 ? VerifyLicense(licenses) : false;
+        return licenses.Count > 0 && VerifyLicense(licenses);
       }
       catch (Exception)
       {

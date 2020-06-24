@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.MVVM.WebApi;
+﻿using ClangPowerTools.MVVM.Interfaces;
+using ClangPowerTools.MVVM.WebApi;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -7,16 +8,17 @@ using System.Threading.Tasks;
 
 namespace ClangPowerTools.MVVM.LicenseValidation
 {
-  public class PersonalLicenseValidator : LicenseValidator
+  public class PersonalLicenseValidator : ILicense
   {
-    public override async Task<bool> ValidateAsync()
+    public async Task<bool> ValidateAsync()
     {
       try
       {
-        if (GetToken(out string token) == false)
+        var token = new Token();
+        if (token.GetToken(out string jwt) == false)
           return false;
 
-        KeyValuePair<bool, HttpResponseMessage> httpResponse = await CheckUserAccountAsync(token);
+        KeyValuePair<bool, HttpResponseMessage> httpResponse = await CheckUserAccountAsync(jwt);
         return httpResponse.Key;
       }
       catch (Exception)

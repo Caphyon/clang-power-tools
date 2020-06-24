@@ -1,14 +1,8 @@
-﻿using ClangPowerTools.MVVM.Interfaces;
-using System.IO;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace ClangPowerTools.MVVM.LicenseValidation
 {
-  /// <summary>
-  /// Contains the logic of token retrival letting license validation logic
-  /// to be implemented in the extended classes.
-  /// </summary>
-  public abstract class LicenseValidator : ILicense
+  public class Token
   {
     #region Members
 
@@ -27,7 +21,7 @@ namespace ClangPowerTools.MVVM.LicenseValidation
     /// <returns>License token path if the file exists. Empty string otherwise.</returns>
     private string GetTokenPath()
     {
-      SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
+      var settingsPathBuilder = new SettingsPathBuilder();
       string filePath = settingsPathBuilder.GetPath(fileName);
 
       return File.Exists(filePath) == true ? filePath : string.Empty;
@@ -42,7 +36,7 @@ namespace ClangPowerTools.MVVM.LicenseValidation
     {
       jwt = null;
       var filePath = GetTokenPath();
-      
+
       if (string.IsNullOrWhiteSpace(filePath))
         return false;
 
@@ -51,12 +45,6 @@ namespace ClangPowerTools.MVVM.LicenseValidation
 
       return string.IsNullOrWhiteSpace(jwt) == false;
     }
-
-    /// <summary>
-    /// Check if the user license is active
-    /// </summary>
-    /// <returns>True if the license is active. False otherwise</returns>
-    public abstract Task<bool> ValidateAsync();
 
     #endregion
 
