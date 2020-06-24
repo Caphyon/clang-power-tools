@@ -8,7 +8,7 @@ namespace ClangPowerTools.Helpers
   {
     public static async Task<bool> CheckInternetConnectionAsync()
     {
-      CheckApiClient();
+      ApiUtility.InitializeApiClient();
 
       try
       {
@@ -20,14 +20,6 @@ namespace ClangPowerTools.Helpers
       catch (Exception)
       {
         return false;
-      }
-    }
-
-    private static void CheckApiClient()
-    {
-      if (ApiUtility.ApiClient == null)
-      {
-        ApiUtility.InitializeApiClient();
       }
     }
   }

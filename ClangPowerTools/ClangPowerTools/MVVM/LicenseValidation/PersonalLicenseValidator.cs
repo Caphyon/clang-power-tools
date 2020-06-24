@@ -33,8 +33,7 @@ namespace ClangPowerTools.MVVM.LicenseValidation
     /// Otherwise status code is false</returns>
     protected async Task<KeyValuePair<bool, HttpResponseMessage>> CheckUserAccountAsync(string token)
     {
-      if (ApiUtility.ApiClient == null)
-        ApiUtility.InitializeApiClient();
+      ApiUtility.InitializeApiClient();
 
       ApiUtility.ApiClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
       HttpResponseMessage userTokenHttpResponse = await ApiUtility.ApiClient.GetAsync(WebApiUrl.licenseUrl);

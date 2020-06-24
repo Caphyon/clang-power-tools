@@ -9,6 +9,8 @@ namespace ClangPowerTools
 
     public static void InitializeApiClient()
     {
+      if (ApiClient != null) return;
+
       ApiClient = new HttpClient();
       ApiClient.DefaultRequestHeaders.Accept.Clear();
       ApiClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
