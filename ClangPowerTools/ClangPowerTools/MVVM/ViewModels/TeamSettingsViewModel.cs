@@ -7,7 +7,7 @@ using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class GeneralSettingsViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
+  public class TeamSettingsViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
   {
     #region Members
 
@@ -25,7 +25,7 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public GeneralSettingsViewModel()
+    public TeamSettingsViewModel()
     {
       generalSettingsModel = SettingsProvider.GeneralSettingsModel;
     }

@@ -154,7 +154,7 @@
     <Compile Include="MVVM\Provider\SettingsProvider.cs" />
     <Compile Include="MVVM\CollectionElementsCounter.cs" />
     <Compile Include="MVVM\ViewModels\FormatEditorViewModel.cs" />
-    <Compile Include="MVVM\ViewModels\GeneralSettingsViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\TeamSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\InputDataViewModel.cs" />
     <Compile Include="MVVM\ViewModels\InputMultipleDataViewModel.cs" />
     <Compile Include="MVVM\ViewModels\LicenseViewModel.cs" />
@@ -210,8 +210,8 @@
     <Compile Include="MVVM\Views\CompilerSettingsView.xaml.cs">
       <DependentUpon>CompilerSettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MVVM\Views\GeneralSettingsView.xaml.cs">
-      <DependentUpon>GeneralSettingsView.xaml</DependentUpon>
+    <Compile Include="MVVM\Views\TeamSettingsView.xaml.cs">
+      <DependentUpon>TeamSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\InputMultipleDataView.xaml.cs">
       <DependentUpon>InputMultipleDataView.xaml</DependentUpon>
@@ -593,7 +593,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MVVM\Views\GeneralSettingsView.xaml">
+    <Page Include="MVVM\Views\TeamSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
