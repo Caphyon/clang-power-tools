@@ -35,13 +35,54 @@
 
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
+
+    <!--  Cloud Team Settings  -->
+    <TextBlock
+      Grid.Row="1"
+      Grid.Column="0"
+      Width="180"
+      Height="40"
+      HorizontalAlignment="Center"
+      FontSize="16"
+      Text="Cloud Team Settings" />
+
+    <!--  Upload Settings  -->
+    <Button
+      Grid.Row="2"
+      Grid.Column="0"
+      Width="180"
+      Height="40"
+      Command="{Binding UploadSettingsCommand}"
+      FontSize="16"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}">
+      <Button.Content>
+        Upload Settings
+      </Button.Content>
+    </Button>
+
+    <!--  Download Settings  -->
+    <Button
+      Grid.Row="3"
+      Grid.Column="0"
+      Width="180"
+      Height="40"
+      Command="{Binding DownloadSettingssCommand}"
+      FontSize="16"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}">
+      <Button.Content>
+        Download Settings
+      </Button.Content>
+    </Button>
 
     <!--  Export Settings  -->
     <Button
       Grid.Row="1"
-      Grid.Column="0"
+      Grid.Column="1"
       Width="180"
       Height="40"
       Command="{Binding ExportSettingsCommand}"
@@ -56,7 +97,7 @@
     <!--  Import Settings  -->
     <Button
       Grid.Row="2"
-      Grid.Column="0"
+      Grid.Column="1"
       Width="180"
       Height="40"
       Command="{Binding ImportSettingssCommand}"
@@ -71,7 +112,7 @@
     <!--  Reset Settings  -->
     <Button
       Grid.Row="3"
-      Grid.Column="0"
+      Grid.Column="1"
       Width="180"
       Height="40"
       Command="{Binding ResetSettingsCommand}"
@@ -82,32 +123,6 @@
         Reset Settings
       </Button.Content>
     </Button>
-
-
-    <!--  Logout  -->
-    <Button
-      Grid.Row="4"
-      Grid.Column="0"
-      Width="180"
-      Height="40"
-      Command="{Binding LogoutCommand}"
-      FontSize="16"
-      Foreground="White"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        Logout
-      </Button.Content>
-    </Button>
-
-    <!--  Version  -->
-    <TextBlock
-      Grid.Row="5"
-      Grid.Column="0"
-      HorizontalAlignment="Right"
-      VerticalAlignment="Bottom"
-      FontFamily="SegoeUI"
-      FontSize="10"
-      Text="{Binding GeneralSettingsModel.Version}" />
 
   </Grid>
 
