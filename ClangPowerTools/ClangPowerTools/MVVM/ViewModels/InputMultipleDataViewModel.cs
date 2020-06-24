@@ -1,17 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ClangPowerTools
-{ 
-  public class InputMultipleDataViewModel :INotifyPropertyChanged
+﻿namespace ClangPowerTools
+{
+  public class InputMultipleDataViewModel
   {
-    #region Members
-
-    public event PropertyChangedEventHandler PropertyChanged;
+    #region Members;
 
     private string input;
 
