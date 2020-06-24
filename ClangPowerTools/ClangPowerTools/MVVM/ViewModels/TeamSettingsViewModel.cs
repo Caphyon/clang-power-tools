@@ -20,15 +20,8 @@ namespace ClangPowerTools
     private ICommand exportSettingsCommand;
     private ICommand importSettingsCommand;
     private ICommand resetSettingsCommand;
-
-    #endregion
-
-    #region Constructor
-
-    public TeamSettingsViewModel()
-    {
-      generalSettingsModel = SettingsProvider.GeneralSettingsModel;
-    }
+    private ICommand uploadSettingsCommand;
+    private ICommand downloadSettingsCommand;
 
     #endregion
 
@@ -80,6 +73,17 @@ namespace ClangPowerTools
       get => resetSettingsCommand ??= new RelayCommand(() => ResetSettings(), () => CanExecute);
     }
 
+    public ICommand UploadSettingsCommand
+    {
+      get => uploadSettingsCommand ??= new RelayCommand(() => UploadSettings(), () => CanExecute);
+    }
+
+    public ICommand DownloadSettingsCommand
+    {
+      get => downloadSettingsCommand ??= new RelayCommand(() => DownloadSettings(), () => CanExecute);
+    }
+
+
     #endregion
 
     #region Methods
@@ -126,6 +130,16 @@ namespace ClangPowerTools
     private void ShowCommandInformationMessage(string title, string message)
     {
       MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+    }
+
+    private void UploadSettings()
+    {
+
+    }
+
+    private void DownloadSettings()
+    {
+
     }
 
     #endregion
