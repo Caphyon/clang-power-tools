@@ -20,7 +20,7 @@ namespace ClangPowerTools
       compilerSettingsModel = SettingsProvider.CompilerSettingsModel;
       tidySettingsModel = SettingsProvider.TidySettingsModel;
       formatSettingsModel = SettingsProvider.FormatSettingsModel;
-  }
+    }
 
     // Readonly list for paramaters names
     private static readonly List<string> parameterNames = new List<string>()
@@ -31,7 +31,9 @@ namespace ClangPowerTools
 
     // Max length used to add space padding for the paramater name in a line
     private int maxNameLength = 0;
-    
+    private readonly string NO_CHECKS_ACTIVE = "-*";
+
+
     #endregion
 
     #region Public Methods
@@ -75,7 +77,7 @@ namespace ClangPowerTools
       switch (clangTidyUseChecksFrom)
       {
         case ClangTidyUseChecksFrom.PredefinedChecks:
-          var predefinedChecks = tidySettings.PredefinedChecks.Replace(';',',').TrimEnd(','); ;
+          var predefinedChecks = tidySettings.PredefinedChecks.Replace(';', ',').TrimEnd(',');
           CreateChecksOutputLine(paramaterName, predefinedChecks, true);
           break;
         case ClangTidyUseChecksFrom.CustomChecks:
@@ -119,11 +121,11 @@ namespace ClangPowerTools
     {
       if (customChecks.Length < 1)
       {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, string.Empty, hasQuotationMark));
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, NO_CHECKS_ACTIVE, hasQuotationMark));
       }
       else
       {
-        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, customChecks, hasQuotationMark));
+        tidyConfigOutput.AppendLine(CreateLine(paramaterName, paramaterName.Length, $"{NO_CHECKS_ACTIVE},{customChecks}", hasQuotationMark));
       }
     }
 
