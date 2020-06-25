@@ -35,19 +35,22 @@
 
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="50" />
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
 
-    <!--  Cloud Team Settings  -->
+    <!--  Cloud Settings  -->
     <TextBlock
       Grid.Row="1"
       Grid.Column="0"
       Width="180"
-      Height="40"
+      Height="30"
       HorizontalAlignment="Center"
-      FontSize="16"
-      Text="Cloud Team Settings" />
+      FontSize="20"
+      FontWeight="DemiBold"
+      Text="Cloud Settings"
+      TextAlignment="Center" />
 
     <!--  Upload Settings  -->
     <Button
@@ -79,10 +82,19 @@
       </Button.Content>
     </Button>
 
+    <!--  Section separator  -->
+    <Rectangle
+      Grid.RowSpan="6"
+      Grid.Column="1"
+      Width="10"
+      HorizontalAlignment="Stretch"
+      Fill="#9E005A"
+      Opacity=".5" />
+
     <!--  Export Settings  -->
     <Button
       Grid.Row="1"
-      Grid.Column="1"
+      Grid.Column="2"
       Width="180"
       Height="40"
       Command="{Binding ExportSettingsCommand}"
@@ -97,7 +109,7 @@
     <!--  Import Settings  -->
     <Button
       Grid.Row="2"
-      Grid.Column="1"
+      Grid.Column="2"
       Width="180"
       Height="40"
       Command="{Binding ImportSettingssCommand}"
@@ -112,7 +124,7 @@
     <!--  Reset Settings  -->
     <Button
       Grid.Row="3"
-      Grid.Column="1"
+      Grid.Column="2"
       Width="180"
       Height="40"
       Command="{Binding ResetSettingsCommand}"
