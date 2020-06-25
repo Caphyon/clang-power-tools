@@ -5,8 +5,8 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  d:DesignHeight="450"
-  d:DesignWidth="800"
+  d:DesignHeight="460"
+  d:DesignWidth="770"
   mc:Ignorable="d">
 
   <!--  Static resources  -->
@@ -22,5 +22,114 @@
     <Grid.Background>
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="20" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="10" />
+      <ColumnDefinition Width="auto" />
+    </Grid.ColumnDefinitions>
+
+    <StackPanel
+      Grid.Row="1"
+      Grid.Column="1"
+      Orientation="Horizontal">
+      <Ellipse
+        Width="80"
+        Height="80"
+        Margin="10,0">
+        <Ellipse.Fill>
+          <ImageBrush
+            AlignmentX="Center"
+            AlignmentY="Center"
+            ImageSource="{StaticResource AddInputImage}" />
+        </Ellipse.Fill>
+      </Ellipse>
+      <Grid>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="auto" />
+          <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <TextBlock
+          Grid.Row="0"
+          Width="180"
+          Padding="10"
+          VerticalAlignment="Center"
+          FontFamily="SegoeUI"
+          FontSize="16"
+          Text="User Name" />
+        <TextBlock
+          Grid.Row="1"
+          Width="180"
+          Padding="10"
+          VerticalAlignment="Center"
+          FontFamily="SegoeUI"
+          FontSize="16"
+          Text="Email" />
+      </Grid>
+    </StackPanel>
+
+    <TextBlock
+      Grid.Row="2"
+      Grid.Column="1"
+      Width="180"
+      Margin="0,40,0,0"
+      Padding="10"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="16"
+      Text="License Type" />
+
+    <TextBlock
+      Grid.Row="3"
+      Grid.Column="1"
+      Width="180"
+      Padding="10"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="16"
+      Text="Expiration date" />
+
+    <TextBlock
+      Grid.Row="4"
+      Grid.Column="1"
+      Width="180"
+      Padding="10"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center"
+      FontFamily="SegoeUI"
+      FontSize="16"
+      Text="Version 6.1" />
+
+    <Button
+      Grid.Row="5"
+      Grid.Column="1"
+      Width="130"
+      HorizontalAlignment="Left"
+      Command="{Binding CompileFlagsAddDataCommand}"
+      Style="{StaticResource SettingsButton}">
+      <Button.Content>
+        <StackPanel Orientation="Horizontal">
+          <Image Source="{StaticResource AddInputImage}" />
+          <TextBlock
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            FontFamily="SegoeUI"
+            FontSize="20"
+            Foreground="White"
+            Text="Logout" />
+        </StackPanel>
+      </Button.Content>
+    </Button>
+
   </Grid>
 </UserControl>
