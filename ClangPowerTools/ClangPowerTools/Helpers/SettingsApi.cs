@@ -27,7 +27,6 @@ namespace ClangPowerTools
       ApiUtility.InitializeApiClient();
       if (await NetworkUtility.CheckInternetConnectionAsync() == false) return;
 
-
       HttpResponseMessage httpResponseMessage = await GetSettingsAsync();
       if (httpResponseMessage.IsSuccessStatusCode)
       {
@@ -35,6 +34,20 @@ namespace ClangPowerTools
         string json = await httpResponseMessage.Content.ReadAsStringAsync();
         settingsHandler.LoadCloudSettings(json);
       }
+    }
+
+    public async Task<bool> CloudSaveExistsAsync()
+    {
+      ApiUtility.InitializeApiClient();
+      if (await NetworkUtility.CheckInternetConnectionAsync() == false) return false;
+
+      HttpResponseMessage httpResponseMessage = await GetSettingsAsync();
+      if (httpResponseMessage.IsSuccessStatusCode)
+      {
+        return true;
+      }
+
+      return false;
     }
 
     #endregion
@@ -64,6 +77,5 @@ namespace ClangPowerTools
     }
 
     #endregion
-
   }
 }

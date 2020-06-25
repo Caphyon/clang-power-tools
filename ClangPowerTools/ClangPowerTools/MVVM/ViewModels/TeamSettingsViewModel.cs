@@ -2,6 +2,7 @@
 using ClangPowerTools.MVVM.Views;
 using System.ComponentModel;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 
@@ -75,12 +76,12 @@ namespace ClangPowerTools
 
     public ICommand UploadSettingsCommand
     {
-      get => uploadSettingsCommand ??= new RelayCommand(() => UploadSettings(), () => CanExecute);
+      get => uploadSettingsCommand ??= new RelayCommand(() => UploadCloudSettingsAsync().SafeFireAndForget(), () => CanExecute);
     }
 
     public ICommand DownloadSettingsCommand
     {
-      get => downloadSettingsCommand ??= new RelayCommand(() => DownloadSettings(), () => CanExecute);
+      get => downloadSettingsCommand ??= new RelayCommand(() => DownloadCloudSettingsAsync().SafeFireAndForget(), () => CanExecute);
     }
 
 
@@ -132,16 +133,47 @@ namespace ClangPowerTools
       MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 
-    private void UploadSettings()
+    private bool ShowWarningMessage(string title, string message)
     {
-      var settingsApi = new SettingsApi();
-      settingsApi.UploadSettingsAsync().SafeFireAndForget();
+      DialogResult dialogResult = MessageBox.Show(message, title, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+      return DialogResult.Yes == dialogResult;
     }
 
-    private void DownloadSettings()
+    private async Task UploadCloudSettingsAsync()
     {
       var settingsApi = new SettingsApi();
-      settingsApi.DownloadSettingsAsync().SafeFireAndForget();
+      bool cloudSaveExist = await settingsApi.CloudSaveExistsAsync();
+
+      if (cloudSaveExist)
+      {
+        bool runCommand = ShowWarningMessage("Warning", "Overwrite cloud save settings?");
+        if (runCommand)
+        {
+          await settingsApi.UploadSettingsAsync();
+        }
+      }
+      else
+      {
+        await settingsApi.UploadSettingsAsync();
+      }
+    }
+    private async Task DownloadCloudSettingsAsync()
+    {
+      var settingsApi = new SettingsApi();
+      bool cloudSaveExist = await settingsApi.CloudSaveExistsAsync();
+
+      if (cloudSaveExist)
+      {
+        bool runCommand = ShowWarningMessage("Warning", "Overwrite local settings?");
+        if (runCommand)
+        {
+          await settingsApi.DownloadSettingsAsync();
+        }
+      }
+      else
+      {
+        ShowCommandInformationMessage("Information", "No settings cloud save found.");
+      }
     }
 
     #endregion
