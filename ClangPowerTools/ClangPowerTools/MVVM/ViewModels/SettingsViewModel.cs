@@ -59,7 +59,7 @@ namespace ClangPowerTools
     {
       settingsHandler.SaveSettings();
       settingsView.Closed -= OnClosed;
-      SettingsHandler.ResetSettingsView = null;
+      SettingsHandler.RefreshSettingsView = null;
     }
 
     #endregion

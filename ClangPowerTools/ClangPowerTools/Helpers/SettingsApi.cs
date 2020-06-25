@@ -32,7 +32,8 @@ namespace ClangPowerTools
       if (httpResponseMessage.IsSuccessStatusCode)
       {
         var settingsHandler = new SettingsHandler();
-        settingsHandler.SaveSettings();
+        string json = await httpResponseMessage.Content.ReadAsStringAsync();
+        settingsHandler.LoadCloudSettings(json);
       }
     }
 

@@ -12,7 +12,7 @@ namespace ClangPowerTools.Views
     {
       InitializeComponent();
       DataContext = new CompilerSettingsViewModel();
-      SettingsHandler.ResetSettingsView += ResetView;
+      SettingsHandler.RefreshSettingsView += ResetView;
     }
 
     public void ResetView()

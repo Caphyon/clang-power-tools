@@ -11,7 +11,7 @@ namespace ClangPowerTools
   public class SettingsHandler
   {
     #region Members
-    public static Action ResetSettingsView;
+    public static Action RefreshSettingsView;
 
     private readonly string settingsPath = string.Empty;
     private const string SettingsFileName = "settings.json";
@@ -78,7 +78,8 @@ namespace ClangPowerTools
     {
       if (File.Exists(path))
       {
-        DeserializeSettings(path);
+        string json = ReadSettingsFile(path);
+        DeserializeSettings(json);
       }
     }
 
@@ -90,7 +91,8 @@ namespace ClangPowerTools
       string path = GetSettingsFilePath(settingsPath, SettingsFileName);
       if (File.Exists(path))
       {
-        DeserializeSettings(path);
+        string json = ReadSettingsFile(path);
+        DeserializeSettings(json);
       }
       else
       {
@@ -107,9 +109,22 @@ namespace ClangPowerTools
     public void ResetSettings()
     {
       CreateDeaultSettings();
-
-      ResetSettingsView?.Invoke();
+      RefreshSettingsView?.Invoke();
     }
+
+    public string GetSettingsAsJson()
+    {
+      List<object> models = CreateModelsList();
+      return JsonConvert.SerializeObject(models);
+    }
+
+    public void LoadCloudSettings(string json)
+    {
+      DeserializeSettings(json);
+      SaveSettings();
+      RefreshSettingsView?.Invoke();
+    }
+
 
     #endregion
 
@@ -206,17 +221,15 @@ namespace ClangPowerTools
     private void SerializeSettings(List<object> models, string path)
     {
       using StreamWriter file = File.CreateText(path);
-      JsonSerializer serializer = new JsonSerializer();
-      serializer.Formatting = Formatting.Indented;
+      var serializer = new JsonSerializer
+      {
+        Formatting = Formatting.Indented
+      };
       serializer.Serialize(file, models);
     }
 
-    private void DeserializeSettings(string path)
+    private void DeserializeSettings(string json)
     {
-      using StreamReader sw = new StreamReader(path);
-      string json = sw.ReadToEnd();
-      var serializer = new JsonSerializer();
-
       try
       {
         var models = JsonConvert.DeserializeObject<List<object>>(json);
@@ -241,6 +254,12 @@ namespace ClangPowerTools
       {
         MessageBox.Show(e.Message, "Cannot Load Clang Power Tools Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
+    }
+
+    private string ReadSettingsFile(string path)
+    {
+      using StreamReader sw = new StreamReader(path);
+      return sw.ReadToEnd();
     }
 
     private void SetSettingsModels(CompilerSettingsModel compilerModel, FormatSettingsModel formatModel, TidySettingsModel tidyModel, GeneralSettingsModel generalModel, LlvmSettingsModel llvmModel)
