@@ -126,7 +126,7 @@
           </StackPanel>
         </TabItem.Header>
         <Grid>
-          <local:GeneralSettingsView />
+          <local:AccountView />
         </Grid>
       </TabItem>
     </TabControl>
