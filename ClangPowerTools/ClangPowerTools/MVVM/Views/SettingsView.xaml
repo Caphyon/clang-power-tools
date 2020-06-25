@@ -106,11 +106,11 @@
               Height="15"
               Margin="3"
               Source="/ClangPowerTools;component/Resources/SettingsIcon.png" />
-            <TextBlock Width="65" Text="General" />
+            <TextBlock Width="65" Text="Team" />
           </StackPanel>
         </TabItem.Header>
         <Grid>
-          <local:GeneralSettingsView />
+          <local:TeamSettingsView />
         </Grid>
       </TabItem>
     </TabControl>

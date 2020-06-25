@@ -9,5 +9,7 @@
     public static readonly string licenseUrl = string.Concat(url, "/api/", appId, "/license");
     public static readonly string forgotPasswordUrl = string.Concat(url, "/api/", appId, "/user/", "forgot-password");
     public static readonly string signUpUrl = string.Concat(url, "/api/", appId, "/user/", "register");
+
+    public static readonly string settingsConfig = string.Concat(url, "/api/", appId, "/config");
   }
 }

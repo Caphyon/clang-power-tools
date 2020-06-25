@@ -11,7 +11,7 @@ namespace ClangPowerTools
   public class SettingsHandler
   {
     #region Members
-    public static Action ResetSettingsView;
+    public static Action RefreshSettingsView;
 
     private readonly string settingsPath = string.Empty;
     private const string SettingsFileName = "settings.json";
@@ -76,13 +76,10 @@ namespace ClangPowerTools
     /// <param name="path"></param>
     public void LoadSettings(string path)
     {
-      if (SettingsFileExists())
+      if (File.Exists(path))
       {
-        DeserializeSettings(path);
-      }
-      else
-      {
-        CreateDeaultSettings();
+        string json = ReadSettingsFile(path);
+        DeserializeSettings(json);
       }
     }
 
@@ -94,7 +91,8 @@ namespace ClangPowerTools
       string path = GetSettingsFilePath(settingsPath, SettingsFileName);
       if (File.Exists(path))
       {
-        DeserializeSettings(path);
+        string json = ReadSettingsFile(path);
+        DeserializeSettings(json);
       }
       else
       {
@@ -111,9 +109,22 @@ namespace ClangPowerTools
     public void ResetSettings()
     {
       CreateDeaultSettings();
-
-      ResetSettingsView?.Invoke();
+      RefreshSettingsView?.Invoke();
     }
+
+    public string GetSettingsAsJson()
+    {
+      List<object> models = CreateModelsList();
+      return JsonConvert.SerializeObject(models);
+    }
+
+    public void LoadCloudSettings(string json)
+    {
+      DeserializeSettings(json);
+      SaveSettings();
+      RefreshSettingsView?.Invoke();
+    }
+
 
     #endregion
 
@@ -209,46 +220,46 @@ namespace ClangPowerTools
 
     private void SerializeSettings(List<object> models, string path)
     {
-      using (StreamWriter file = File.CreateText(path))
+      using StreamWriter file = File.CreateText(path);
+      var serializer = new JsonSerializer
       {
-        JsonSerializer serializer = new JsonSerializer();
-        serializer.Formatting = Formatting.Indented;
-        serializer.Serialize(file, models);
+        Formatting = Formatting.Indented
+      };
+      serializer.Serialize(file, models);
+    }
+
+    private void DeserializeSettings(string json)
+    {
+      try
+      {
+        var models = JsonConvert.DeserializeObject<List<object>>(json);
+        var compilerModel = JsonConvert.DeserializeObject<CompilerSettingsModel>(models[0].ToString());
+        var formatModel = JsonConvert.DeserializeObject<FormatSettingsModel>(models[1].ToString());
+        var tidyModel = JsonConvert.DeserializeObject<TidySettingsModel>(models[2].ToString());
+        var generalModel = JsonConvert.DeserializeObject<GeneralSettingsModel>(models[3].ToString());
+
+        LlvmSettingsModel llvmModel;
+        if (models.Count >= MinJsonElements)
+        {
+          llvmModel = JsonConvert.DeserializeObject<LlvmSettingsModel>(models[4].ToString());
+        }
+        else
+        {
+          llvmModel = new LlvmSettingsModel();
+        }
+
+        SetSettingsModels(compilerModel, formatModel, tidyModel, generalModel, llvmModel);
+      }
+      catch (Exception e)
+      {
+        MessageBox.Show(e.Message, "Cannot Load Clang Power Tools Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
-    private void DeserializeSettings(string path)
+    private string ReadSettingsFile(string path)
     {
-      using (StreamReader sw = new StreamReader(path))
-      {
-        string json = sw.ReadToEnd();
-        var serializer = new JsonSerializer();
-
-        try
-        {
-          var models = JsonConvert.DeserializeObject<List<object>>(json);
-          var compilerModel = JsonConvert.DeserializeObject<CompilerSettingsModel>(models[0].ToString());
-          var formatModel = JsonConvert.DeserializeObject<FormatSettingsModel>(models[1].ToString());
-          var tidyModel = JsonConvert.DeserializeObject<TidySettingsModel>(models[2].ToString());
-          var generalModel = JsonConvert.DeserializeObject<GeneralSettingsModel>(models[3].ToString());
-
-          LlvmSettingsModel llvmModel;
-          if (models.Count >= MinJsonElements)
-          {
-            llvmModel = JsonConvert.DeserializeObject<LlvmSettingsModel>(models[4].ToString());
-          }
-          else
-          {
-            llvmModel = new LlvmSettingsModel();
-          }
-
-          SetSettingsModels(compilerModel, formatModel, tidyModel, generalModel, llvmModel);
-        }
-        catch (Exception e)
-        {
-          MessageBox.Show(e.Message, "Cannot Load Clang Power Tools Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
+      using StreamReader sw = new StreamReader(path);
+      return sw.ReadToEnd();
     }
 
     private void SetSettingsModels(CompilerSettingsModel compilerModel, FormatSettingsModel formatModel, TidySettingsModel tidyModel, GeneralSettingsModel generalModel, LlvmSettingsModel llvmModel)
@@ -292,26 +303,30 @@ namespace ClangPowerTools
 
     private void MapClangFormatOptionsToSettings(ClangFormatOptions clangFormat)
     {
-      var formatSettingsModel = new FormatSettingsModel();
-      formatSettingsModel.FileExtensions = clangFormat.FileExtensions;
-      formatSettingsModel.FilesToIgnore = clangFormat.SkipFiles;
-      formatSettingsModel.AssumeFilename = clangFormat.AssumeFilename;
-      formatSettingsModel.CustomExecutable = clangFormat.ClangFormatPath.Value;
-      formatSettingsModel.Style = clangFormat.Style;
-      formatSettingsModel.FallbackStyle = clangFormat.FallbackStyle;
-      formatSettingsModel.FormatOnSave = clangFormat.EnableFormatOnSave;
+      var formatSettingsModel = new FormatSettingsModel
+      {
+        FileExtensions = clangFormat.FileExtensions,
+        FilesToIgnore = clangFormat.SkipFiles,
+        AssumeFilename = clangFormat.AssumeFilename,
+        CustomExecutable = clangFormat.ClangFormatPath.Value,
+        Style = clangFormat.Style,
+        FallbackStyle = clangFormat.FallbackStyle,
+        FormatOnSave = clangFormat.EnableFormatOnSave
+      };
 
       SettingsProvider.FormatSettingsModel = formatSettingsModel;
     }
 
     private void MapClangTidyOptionsToSettings(ClangTidyOptions clangTidy)
     {
-      var tidySettingsModel = new TidySettingsModel();
-      tidySettingsModel.HeaderFilter = clangTidy.HeaderFilter;
-      tidySettingsModel.CustomChecks = clangTidy.TidyChecksCollection;
-      tidySettingsModel.CustomExecutable = clangTidy.ClangTidyPath.Value;
-      tidySettingsModel.FormatAfterTidy = clangTidy.FormatAfterTidy;
-      tidySettingsModel.TidyOnSave = clangTidy.AutoTidyOnSave;
+      var tidySettingsModel = new TidySettingsModel
+      {
+        HeaderFilter = clangTidy.HeaderFilter,
+        CustomChecks = clangTidy.TidyChecksCollection,
+        CustomExecutable = clangTidy.ClangTidyPath.Value,
+        FormatAfterTidy = clangTidy.FormatAfterTidy,
+        TidyOnSave = clangTidy.AutoTidyOnSave
+      };
 
       SettingsProvider.TidySettingsModel = tidySettingsModel;
     }
@@ -336,9 +351,9 @@ namespace ClangPowerTools
 
     private string FormatTidyCheckName(string name)
     {
-      StringBuilder stringBuilder = new StringBuilder();
-
+      var stringBuilder = new StringBuilder();
       stringBuilder.Append(name[0]);
+
       for (int i = 1; i < name.Length; i++)
       {
         if (Char.IsUpper(name[i]))
@@ -353,6 +368,7 @@ namespace ClangPowerTools
 
       return stringBuilder.ToString().ToLower();
     }
+
     #endregion
 
   }

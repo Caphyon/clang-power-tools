@@ -16,7 +16,7 @@ namespace ClangPowerTools.Views
       DataContext = llvmSettingsViewModel;
       InitializeComponent();
       this.Loaded += LlvmSettingsViewLoaded;
-      SettingsHandler.ResetSettingsView += ResetView;
+      SettingsHandler.RefreshSettingsView += ResetView;
     }
 
     public void ResetView()

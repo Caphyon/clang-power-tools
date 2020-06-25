@@ -28,7 +28,6 @@ namespace ClangPowerTools.Commands
 
     private bool clearOutput = false;
     private Document mDocument = null;
-    private readonly string configFileName = ".clang-format";
 
     #endregion
 

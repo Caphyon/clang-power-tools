@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using ClangPowerTools.MVVM.Interfaces;
+using System.Threading.Tasks;
 
 namespace ClangPowerTools.MVVM.LicenseValidation
 {
-  public class LocalLicenseValidator : LicenseValidator
+  public class LocalLicenseValidator : ILicense
   {
     #region ILicense Implementation
 
@@ -10,9 +11,10 @@ namespace ClangPowerTools.MVVM.LicenseValidation
     /// Check the if the user license from the disk is active.
     /// </summary>
     /// <returns>True if the license is active. False otherwise</returns>
-    public override Task<bool> ValidateAsync()
+    public Task<bool> ValidateAsync()
     {
-      return Task.FromResult(GetToken(out _));
+      var token = new Token();
+      return Task.FromResult(token.GetToken(out _));
     }
 
     #endregion
