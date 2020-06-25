@@ -84,7 +84,6 @@ namespace ClangPowerTools
       get => downloadSettingsCommand ??= new RelayCommand(() => DownloadCloudSettingsAsync().SafeFireAndForget(), () => CanExecute);
     }
 
-
     #endregion
 
     #region Methods
@@ -108,7 +107,8 @@ namespace ClangPowerTools
       if (string.IsNullOrEmpty(path) == false)
       {
         settingsHandler.SaveSettings(path);
-        ShowCommandInformationMessage("Information", "Clang Power Tools settings exported at the selected location.");
+        MessageBox.Show("Settings exported at the selected location.", "Clang Power Tools Settings",
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
       }
     }
 
@@ -118,19 +118,16 @@ namespace ClangPowerTools
       if (string.IsNullOrEmpty(path) == false)
       {
         settingsHandler.LoadSettings(path);
-        ShowCommandInformationMessage("Information", "Clang Power Tools settings imported.");
+        MessageBox.Show("Settings imported.", "Clang Power Tools Settings",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
       }
     }
 
     private void ResetSettings()
     {
       settingsHandler.ResetSettings();
-      ShowCommandInformationMessage("Information", "All Clang Power Tools settings were reset to default values.");
-    }
-
-    private void ShowCommandInformationMessage(string title, string message)
-    {
-      MessageBox.Show(message, title, MessageBoxButtons.OK, MessageBoxIcon.Information);
+      MessageBox.Show("Settings were reset to default values.", "Clang Power Tools Settings",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 
     private bool ShowWarningMessage(string title, string message)
@@ -146,7 +143,7 @@ namespace ClangPowerTools
 
       if (cloudSaveExist)
       {
-        bool runCommand = ShowWarningMessage("Warning", "Overwrite cloud save settings?");
+        bool runCommand = ShowWarningMessage("Clang Power Tools Settings", "Overwrite cloud settings?");
         if (runCommand)
         {
           await settingsApi.UploadSettingsAsync();
@@ -157,6 +154,7 @@ namespace ClangPowerTools
         await settingsApi.UploadSettingsAsync();
       }
     }
+
     private async Task DownloadCloudSettingsAsync()
     {
       var settingsApi = new SettingsApi();
@@ -164,15 +162,18 @@ namespace ClangPowerTools
 
       if (cloudSaveExist)
       {
-        bool runCommand = ShowWarningMessage("Warning", "Overwrite local settings?");
+        bool runCommand = ShowWarningMessage("Clang Power Tools Settings", "Overwrite local settings?");
         if (runCommand)
         {
           await settingsApi.DownloadSettingsAsync();
+          MessageBox.Show("Settings downloaded.", "Clang Power Tools Settings",
+              MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
       }
       else
       {
-        ShowCommandInformationMessage("Information", "No settings cloud save found.");
+        MessageBox.Show("No cloud settings found.", "Clang Power Tools Settings",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
       }
     }
 
