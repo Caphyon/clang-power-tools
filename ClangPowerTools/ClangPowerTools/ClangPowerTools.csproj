@@ -199,6 +199,9 @@
     <Compile Include="MVVM\Models\UserModel.cs" />
     <Compile Include="MVVM\CommonSettingsFunctionality.cs" />
     <Compile Include="MVVM\ViewModels\TrialExpiredViewModel.cs" />
+    <Compile Include="MVVM\Views\AccountView.xaml.cs">
+      <DependentUpon>AccountView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\Views\Components\BuyNowFooter.xaml.cs">
       <DependentUpon>BuyNowFooter.xaml</DependentUpon>
     </Compile>
@@ -575,6 +578,10 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="MVVM\Views\AccountView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MVVM\Views\Components\BuyNowFooter.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
