@@ -76,13 +76,9 @@ namespace ClangPowerTools
     /// <param name="path"></param>
     public void LoadSettings(string path)
     {
-      if (SettingsFileExists())
+      if (File.Exists(path))
       {
         DeserializeSettings(path);
-      }
-      else
-      {
-        CreateDeaultSettings();
       }
     }
 
