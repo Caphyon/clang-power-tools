@@ -13,6 +13,16 @@ namespace ClangPowerTools
     #endregion
 
 
+    #region Constructor
+
+    public AccountViewModel()
+    {
+      accountModel = SettingsProvider.AccountModel;
+    }
+
+    #endregion
+
+
     #region Properties
 
     public AccountModel AccountModel
