@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using ClangPowerTools.MVVM.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -137,6 +138,7 @@ namespace ClangPowerTools
       SettingsProvider.FormatSettingsModel = new FormatSettingsModel();
       SettingsProvider.TidySettingsModel = new TidySettingsModel();
       SettingsProvider.LlvmSettingsModel = new LlvmSettingsModel();
+      SettingsProvider.AccountModel = new AccountViewModel();
 
       SetDefaultTidyPredefindedChecks();
     }
@@ -239,6 +241,10 @@ namespace ClangPowerTools
         var tidyModel = JsonConvert.DeserializeObject<TidySettingsModel>(models[2].ToString());
         var generalModel = JsonConvert.DeserializeObject<GeneralSettingsModel>(models[3].ToString());
 
+        // TODO : Get AccountModel
+        var accountModel = new AccountModel();
+
+
         LlvmSettingsModel llvmModel;
         if (models.Count >= MinJsonElements)
         {
@@ -249,7 +255,7 @@ namespace ClangPowerTools
           llvmModel = new LlvmSettingsModel();
         }
 
-        SetSettingsModels(compilerModel, formatModel, tidyModel, generalModel, llvmModel);
+        SetSettingsModels(compilerModel, formatModel, tidyModel, generalModel, llvmModel, accountModel);
       }
       catch (Exception e)
       {
@@ -263,13 +269,15 @@ namespace ClangPowerTools
       return sw.ReadToEnd();
     }
 
-    private void SetSettingsModels(CompilerSettingsModel compilerModel, FormatSettingsModel formatModel, TidySettingsModel tidyModel, GeneralSettingsModel generalModel, LlvmSettingsModel llvmModel)
+    private void SetSettingsModels(CompilerSettingsModel compilerModel, FormatSettingsModel formatModel, TidySettingsModel tidyModel,
+      GeneralSettingsModel generalModel, LlvmSettingsModel llvmModel, AccountModel accountModel)
     {
       SettingsProvider.CompilerSettingsModel = compilerModel;
       SettingsProvider.FormatSettingsModel = formatModel;
       SettingsProvider.TidySettingsModel = tidyModel;
       SettingsProvider.GeneralSettingsModel = generalModel;
       SettingsProvider.LlvmSettingsModel = llvmModel;
+      SettingsProvider.AccountModel = accountModel;
     }
 
     private string GetSettingsFilePath(string path, string fileName)
