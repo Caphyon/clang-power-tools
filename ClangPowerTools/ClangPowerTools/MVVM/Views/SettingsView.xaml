@@ -105,7 +105,7 @@
               Width="16"
               Height="16"
               Margin="3"
-              Source="/ClangPowerTools;component/Resources/SettingsIcon.png" />
+              Source="/ClangPowerTools;component/Resources/TeamIcon.png" />
             <TextBlock Width="65" Text="Team" />
           </StackPanel>
         </TabItem.Header>
