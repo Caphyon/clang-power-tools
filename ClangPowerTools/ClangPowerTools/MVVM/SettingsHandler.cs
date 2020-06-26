@@ -80,6 +80,7 @@ namespace ClangPowerTools
       {
         string json = ReadSettingsFile(path);
         DeserializeSettings(json);
+        RefreshSettingsView?.Invoke();
       }
     }
 
