@@ -38,8 +38,8 @@
         <TabItem.Header>
           <StackPanel Orientation="Horizontal">
             <Image
-              Width="15"
-              Height="15"
+              Width="16"
+              Height="16"
               Margin="3"
               Source="/ClangPowerTools;component/Resources/CompileIcon.png" />
             <TextBlock Width="65" Text="Compiler" />
@@ -54,8 +54,8 @@
         <TabItem.Header>
           <StackPanel Orientation="Horizontal">
             <Image
-              Width="15"
-              Height="15"
+              Width="16"
+              Height="16"
               Margin="3"
               Source="/ClangPowerTools;component/Resources/TidyIcon.png" />
             <TextBlock Width="65" Text="Tidy" />
@@ -70,8 +70,8 @@
         <TabItem.Header>
           <StackPanel Orientation="Horizontal">
             <Image
-              Width="15"
-              Height="15"
+              Width="16"
+              Height="16"
               Margin="3"
               Source="/ClangPowerTools;component/Resources/ClangFormatIcon.png" />
             <TextBlock Width="65" Text="Format" />
@@ -86,8 +86,8 @@
         <TabItem.Header>
           <StackPanel Orientation="Horizontal">
             <Image
-              Width="15"
-              Height="15"
+              Width="16"
+              Height="16"
               Margin="3"
               Source="/ClangPowerTools;component/Resources/SettingsLLVM.png" />
             <TextBlock Width="65" Text="LLVM" />
@@ -102,8 +102,8 @@
         <TabItem.Header>
           <StackPanel Orientation="Horizontal">
             <Image
-              Width="15"
-              Height="15"
+              Width="16"
+              Height="16"
               Margin="3"
               Source="/ClangPowerTools;component/Resources/SettingsIcon.png" />
             <TextBlock Width="65" Text="Team" />
