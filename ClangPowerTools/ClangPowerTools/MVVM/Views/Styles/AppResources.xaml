@@ -15,6 +15,7 @@
     <ResourceDictionary>
       <BitmapImage x:Key="AddInputImage" UriSource="/ClangPowerTools;component/Resources/AddInput.png" />
       <BitmapImage x:Key="BrowseImage" UriSource="/ClangPowerTools;component/Resources/Browse.png" />
+      <BitmapImage x:Key="AccountProfileIcon" UriSource="/ClangPowerTools;component/Resources/AccountIcon.png" />
     </ResourceDictionary>
   </ResourceDictionary.MergedDictionaries>
 
