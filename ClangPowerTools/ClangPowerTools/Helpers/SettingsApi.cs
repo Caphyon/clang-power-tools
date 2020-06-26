@@ -10,11 +10,19 @@ namespace ClangPowerTools
 {
   public class SettingsApi
   {
+    #region Constructor
+
+    public SettingsApi()
+    {
+      ApiUtility.InitializeApiClient();
+    }
+
+    #endregion
+
     #region Public Methods
 
     public async Task UploadSettingsAsync()
     {
-      ApiUtility.InitializeApiClient();
       if (await NetworkUtility.CheckInternetConnectionAsync() == false) return;
 
       var settingsHandler = new SettingsHandler();
@@ -24,7 +32,6 @@ namespace ClangPowerTools
 
     public async Task DownloadSettingsAsync()
     {
-      ApiUtility.InitializeApiClient();
       if (await NetworkUtility.CheckInternetConnectionAsync() == false) return;
 
       HttpResponseMessage httpResponseMessage = await GetSettingsAsync();
@@ -38,7 +45,6 @@ namespace ClangPowerTools
 
     public async Task<bool> CloudSaveExistsAsync()
     {
-      ApiUtility.InitializeApiClient();
       if (await NetworkUtility.CheckInternetConnectionAsync() == false) return false;
 
       HttpResponseMessage httpResponseMessage = await GetSettingsAsync();
