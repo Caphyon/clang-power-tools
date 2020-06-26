@@ -107,7 +107,7 @@ namespace ClangPowerTools
       if (string.IsNullOrEmpty(path) == false)
       {
         settingsHandler.SaveSettings(path);
-        MessageBox.Show("Settings exported at the selected location.", "Clang Power Tools Settings",
+        MessageBox.Show("Settings exported.", "Clang Power Tools",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
       }
     }
@@ -118,7 +118,7 @@ namespace ClangPowerTools
       if (string.IsNullOrEmpty(path) == false)
       {
         settingsHandler.LoadSettings(path);
-        MessageBox.Show("Settings imported.", "Clang Power Tools Settings",
+        MessageBox.Show("Settings imported.", "Clang Power Tools",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
       }
     }
@@ -126,7 +126,7 @@ namespace ClangPowerTools
     private void ResetSettings()
     {
       settingsHandler.ResetSettings();
-      MessageBox.Show("Settings were reset to default values.", "Clang Power Tools Settings",
+      MessageBox.Show("Settings were reset to their default values.", "Clang Power Tools",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 
@@ -143,7 +143,7 @@ namespace ClangPowerTools
 
       if (cloudSaveExist)
       {
-        bool runCommand = ShowWarningMessage("Clang Power Tools Settings", "Overwrite cloud settings?");
+        bool runCommand = ShowWarningMessage("Clang Power Tools", "Cloud settings found.\r\nDo you want to overwrite them?");
         if (runCommand)
         {
           await settingsApi.UploadSettingsAsync();
@@ -162,17 +162,17 @@ namespace ClangPowerTools
 
       if (cloudSaveExist)
       {
-        bool runCommand = ShowWarningMessage("Clang Power Tools Settings", "Overwrite local settings?");
+        bool runCommand = ShowWarningMessage("Clang Power Tools", "Cloud settings found.\r\nDo you want to overwrite your local settings?");
         if (runCommand)
         {
           await settingsApi.DownloadSettingsAsync();
-          MessageBox.Show("Settings downloaded.", "Clang Power Tools Settings",
+          MessageBox.Show("Cloud settings downloaded.", "Clang Power Tools",
               MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
       }
       else
       {
-        MessageBox.Show("No cloud settings found.", "Clang Power Tools Settings",
+        MessageBox.Show("No cloud settings found.", "Clang Power Tools",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
       }
     }
