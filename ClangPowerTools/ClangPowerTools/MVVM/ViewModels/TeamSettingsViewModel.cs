@@ -1,5 +1,7 @@
 ﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.MVVM.Views;
+using Microsoft.VisualStudio.Threading;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
@@ -26,6 +28,14 @@ namespace ClangPowerTools
 
     #endregion
 
+    #region Constructor
+
+    public TeamSettingsViewModel()
+    {
+      CanUseCloudAsync().SafeFireAndForget();
+    }
+
+    #endregion
 
     #region Properties
 
@@ -36,6 +46,8 @@ namespace ClangPowerTools
         return true;
       }
     }
+
+    public bool CanUseCloud { get; set; } = false;
 
     public GeneralSettingsModel GeneralSettingsModel
     {
@@ -107,7 +119,7 @@ namespace ClangPowerTools
       if (string.IsNullOrEmpty(path) == false)
       {
         settingsHandler.SaveSettings(path);
-        MessageBox.Show("Settings exported at the selected location.", "Clang Power Tools Settings",
+        MessageBox.Show("Settings exported.", "Clang Power Tools",
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
       }
     }
@@ -118,7 +130,7 @@ namespace ClangPowerTools
       if (string.IsNullOrEmpty(path) == false)
       {
         settingsHandler.LoadSettings(path);
-        MessageBox.Show("Settings imported.", "Clang Power Tools Settings",
+        MessageBox.Show("Settings imported.", "Clang Power Tools",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
       }
     }
@@ -126,7 +138,7 @@ namespace ClangPowerTools
     private void ResetSettings()
     {
       settingsHandler.ResetSettings();
-      MessageBox.Show("Settings were reset to default values.", "Clang Power Tools Settings",
+      MessageBox.Show("Settings were reset to their default values.", "Clang Power Tools",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 
@@ -138,12 +150,18 @@ namespace ClangPowerTools
 
     private async Task UploadCloudSettingsAsync()
     {
+      if (CanUseCloud == false)
+      {
+        NoCloudFunctionalityMessage();
+        return;
+      }
+
       var settingsApi = new SettingsApi();
       bool cloudSaveExist = await settingsApi.CloudSaveExistsAsync();
 
       if (cloudSaveExist)
       {
-        bool runCommand = ShowWarningMessage("Clang Power Tools Settings", "Overwrite cloud settings?");
+        bool runCommand = ShowWarningMessage("Clang Power Tools", "Cloud settings found.\r\nDo you want to overwrite them?");
         if (runCommand)
         {
           await settingsApi.UploadSettingsAsync();
@@ -157,24 +175,42 @@ namespace ClangPowerTools
 
     private async Task DownloadCloudSettingsAsync()
     {
+      if (CanUseCloud == false)
+      {
+        NoCloudFunctionalityMessage();
+        return;
+      }
+
       var settingsApi = new SettingsApi();
       bool cloudSaveExist = await settingsApi.CloudSaveExistsAsync();
 
       if (cloudSaveExist)
       {
-        bool runCommand = ShowWarningMessage("Clang Power Tools Settings", "Overwrite local settings?");
+        bool runCommand = ShowWarningMessage("Clang Power Tools", "Cloud settings found.\r\nDo you want to overwrite your local settings?");
         if (runCommand)
         {
           await settingsApi.DownloadSettingsAsync();
-          MessageBox.Show("Settings downloaded.", "Clang Power Tools Settings",
+          MessageBox.Show("Cloud settings downloaded.", "Clang Power Tools",
               MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
       }
       else
       {
-        MessageBox.Show("No cloud settings found.", "Clang Power Tools Settings",
+        MessageBox.Show("No cloud settings found.", "Clang Power Tools",
                         MessageBoxButtons.OK, MessageBoxIcon.Warning);
       }
+    }
+
+    private void NoCloudFunctionalityMessage()
+    {
+      MessageBox.Show("Cloud settings can only be used if you have a Commercial License.",
+                      "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+    }
+
+    private async Task CanUseCloudAsync()
+    {
+      // TODO refactor and use stored values, don't need to check twice
+      CanUseCloud = await new CommercialLicenseValidator().ValidateAsync();
     }
 
     #endregion

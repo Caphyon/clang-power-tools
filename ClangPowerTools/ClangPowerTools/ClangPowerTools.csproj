@@ -334,6 +334,7 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>.</VSIXSubPath>
     </Content>
+    <Resource Include="Resources\TeamIcon.png" />
     <Resource Include="Resources\LoginBackground.png" />
     <Resource Include="Resources\CPTLogo.png" />
     <Resource Include="Resources\ClangFormatIcon.png" />
