@@ -154,6 +154,7 @@
     <Compile Include="MVVM\TidyChecks.cs" />
     <Compile Include="MVVM\Provider\SettingsProvider.cs" />
     <Compile Include="MVVM\CollectionElementsCounter.cs" />
+    <Compile Include="MVVM\ViewModels\AccountViewModel.cs" />
     <Compile Include="MVVM\ViewModels\FormatEditorViewModel.cs" />
     <Compile Include="MVVM\ViewModels\TeamSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\InputDataViewModel.cs" />
@@ -351,6 +352,7 @@
     <Resource Include="Resources\SearchIcon.PNG" />
     <Resource Include="Resources\AddInput.png" />
     <Resource Include="Resources\Browse.png" />
+    <Resource Include="Resources\AccountIcon.png" />
     <Content Include="Resources\CPTLogoManageExtensionVS.png">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
