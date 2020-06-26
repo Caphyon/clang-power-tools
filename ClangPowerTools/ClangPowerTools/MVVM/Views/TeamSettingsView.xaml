@@ -26,7 +26,7 @@
     </Grid.Background>
     <Grid.RowDefinitions>
       <RowDefinition Height="100" />
-      <RowDefinition Height="50" />
+      <RowDefinition Height="30" />
       <RowDefinition Height="50" />
       <RowDefinition Height="50" />
       <RowDefinition Height="50" />
@@ -35,7 +35,7 @@
 
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="*" />
-      <ColumnDefinition Width="50" />
+      <ColumnDefinition Width="5" />
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
@@ -44,10 +44,8 @@
     <TextBlock
       Grid.Row="1"
       Grid.Column="0"
-      Width="180"
-      Height="30"
       HorizontalAlignment="Center"
-      FontSize="20"
+      FontSize="22"
       FontWeight="DemiBold"
       Text="Cloud Settings"
       TextAlignment="Center" />
@@ -56,85 +54,82 @@
     <Button
       Grid.Row="2"
       Grid.Column="0"
-      Width="180"
-      Height="40"
+      Width="100"
+      Height="35"
       Command="{Binding UploadSettingsCommand}"
-      FontSize="16"
+      Content="Upload"
+      FontSize="14"
       Foreground="White"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        Upload
-      </Button.Content>
-    </Button>
+      Style="{StaticResource SettingsButton}" />
 
     <!--  Download Settings  -->
     <Button
       Grid.Row="3"
       Grid.Column="0"
-      Width="180"
-      Height="40"
+      Width="100"
+      Height="35"
       Command="{Binding DownloadSettingsCommand}"
-      FontSize="16"
+      Content="Download"
+      FontSize="14"
       Foreground="White"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        Download
-      </Button.Content>
-    </Button>
+      Style="{StaticResource SettingsButton}" />
 
     <!--  Section separator  -->
     <Rectangle
       Grid.RowSpan="6"
       Grid.Column="1"
-      Width="10"
+      Width="1.4"
       HorizontalAlignment="Stretch"
       Fill="#9E005A"
       Opacity=".5" />
 
-    <!--  Export Settings  -->
-    <Button
+    <!--  Cloud Settings  -->
+    <TextBlock
       Grid.Row="1"
       Grid.Column="2"
-      Width="180"
-      Height="40"
-      Command="{Binding ExportSettingsCommand}"
-      FontSize="16"
-      Foreground="White"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        Export Settings
-      </Button.Content>
-    </Button>
+      HorizontalAlignment="Center"
+      FontSize="22"
+      FontWeight="DemiBold"
+      Text="Local Settings"
+      TextAlignment="Center" />
 
-    <!--  Import Settings  -->
+    <!--  Export Settings  -->
     <Button
       Grid.Row="2"
       Grid.Column="2"
-      Width="180"
-      Height="40"
-      Command="{Binding ImportSettingssCommand}"
-      FontSize="16"
+      Width="100"
+      Height="35"
+      Command="{Binding ExportSettingsCommand}"
+      Content="Export"
+      FontSize="14"
       Foreground="White"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        Import Settings
-      </Button.Content>
-    </Button>
+      Style="{StaticResource SettingsButton}" />
 
-    <!--  Reset Settings  -->
+
+    <!--  Import Settings  -->
     <Button
       Grid.Row="3"
       Grid.Column="2"
-      Width="180"
-      Height="40"
-      Command="{Binding ResetSettingsCommand}"
-      FontSize="16"
+      Width="100"
+      Height="35"
+      Command="{Binding ImportSettingssCommand}"
+      Content="Import"
+      FontSize="14"
       Foreground="White"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        Reset Settings
-      </Button.Content>
-    </Button>
+      Style="{StaticResource SettingsButton}" />
+
+
+    <!--  Reset Settings  -->
+    <Button
+      Grid.Row="4"
+      Grid.Column="2"
+      Width="100"
+      Height="35"
+      Command="{Binding ResetSettingsCommand}"
+      Content="Reset"
+      FontSize="14"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}" />
 
   </Grid>
 
