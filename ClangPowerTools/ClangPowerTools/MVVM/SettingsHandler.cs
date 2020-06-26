@@ -138,7 +138,7 @@ namespace ClangPowerTools
       SettingsProvider.FormatSettingsModel = new FormatSettingsModel();
       SettingsProvider.TidySettingsModel = new TidySettingsModel();
       SettingsProvider.LlvmSettingsModel = new LlvmSettingsModel();
-      SettingsProvider.AccountModel = new AccountViewModel();
+      SettingsProvider.AccountModel = new AccountModel();
 
       SetDefaultTidyPredefindedChecks();
     }

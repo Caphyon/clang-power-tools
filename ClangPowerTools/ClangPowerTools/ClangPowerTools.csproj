@@ -124,6 +124,7 @@
     <Compile Include="MVVM\Constants\LicenseType.cs" />
     <Compile Include="MVVM\LicenseValidation\LocalLicenseValidator.cs" />
     <Compile Include="MVVM\LicenseValidation\PersonalLicenseValidator.cs" />
+    <Compile Include="MVVM\Models\AccountModel.cs" />
     <Compile Include="MVVM\Models\FormatOptionInputModel.cs" />
     <Compile Include="MVVM\Models\FormatOptionModel.cs" />
     <Compile Include="MVVM\Models\FormatOptionMultipleInputModel.cs" />
