@@ -112,6 +112,7 @@
     <Compile Include="MVVM\Interfaces\IFormatOption.cs" />
     <Compile Include="MVVM\Interfaces\IInstall.cs" />
     <Compile Include="MVVM\Interfaces\IView.cs" />
+    <Compile Include="MVVM\LicenseValidation\LicenseTypes.cs" />
     <Compile Include="MVVM\LlvmUri.cs" />
     <Compile Include="MVVM\Constants\LlvmVersions.cs" />
     <Compile Include="MVVM\Interfaces\IAccountValidator.cs" />
