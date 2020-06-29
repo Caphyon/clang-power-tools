@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ClangPowerTools
@@ -49,7 +50,28 @@ namespace ClangPowerTools
       {
         CreateDeaultSettings();
       }
+
     }
+
+    public async Task InitializeAccountSettingsAsync()
+    {
+      var settingsApi = new SettingsApi();
+      var accountDetailsJson = await settingsApi.GetUserAccountDetailsJsonAsync();
+
+      SettingsProvider.AccountModel = new AccountModel();
+      if (string.IsNullOrWhiteSpace(accountDetailsJson))
+        return;
+
+      var accountModel = DeserializeUserAccountDetails(accountDetailsJson);
+      if (accountModel == null)
+        return;
+
+      // TODO : update the model View with "accountModel" data object
+
+
+
+    }
+
 
     /// <summary>
     /// Save settings at a custom path
@@ -128,6 +150,14 @@ namespace ClangPowerTools
     }
 
 
+    public AccountModel DeserializeUserAccountDetails(string json)
+    {
+      var models = JsonConvert.DeserializeObject<List<object>>(json);
+      var accountModel = JsonConvert.DeserializeObject<AccountModel>(models[0].ToString());
+
+      return accountModel;
+    }
+
     #endregion
 
     #region Private Methods
@@ -138,7 +168,6 @@ namespace ClangPowerTools
       SettingsProvider.FormatSettingsModel = new FormatSettingsModel();
       SettingsProvider.TidySettingsModel = new TidySettingsModel();
       SettingsProvider.LlvmSettingsModel = new LlvmSettingsModel();
-      SettingsProvider.AccountModel = new AccountModel();
 
       SetDefaultTidyPredefindedChecks();
     }
@@ -241,10 +270,6 @@ namespace ClangPowerTools
         var tidyModel = JsonConvert.DeserializeObject<TidySettingsModel>(models[2].ToString());
         var generalModel = JsonConvert.DeserializeObject<GeneralSettingsModel>(models[3].ToString());
 
-        // TODO : Get AccountModel
-        var accountModel = new AccountModel();
-
-
         LlvmSettingsModel llvmModel;
         if (models.Count >= MinJsonElements)
         {
@@ -255,7 +280,7 @@ namespace ClangPowerTools
           llvmModel = new LlvmSettingsModel();
         }
 
-        SetSettingsModels(compilerModel, formatModel, tidyModel, generalModel, llvmModel, accountModel);
+        SetSettingsModels(compilerModel, formatModel, tidyModel, generalModel, llvmModel);
       }
       catch (Exception e)
       {
@@ -269,15 +294,14 @@ namespace ClangPowerTools
       return sw.ReadToEnd();
     }
 
-    private void SetSettingsModels(CompilerSettingsModel compilerModel, FormatSettingsModel formatModel, TidySettingsModel tidyModel,
-      GeneralSettingsModel generalModel, LlvmSettingsModel llvmModel, AccountModel accountModel)
+    private void SetSettingsModels(CompilerSettingsModel compilerModel, FormatSettingsModel formatModel,
+      TidySettingsModel tidyModel, GeneralSettingsModel generalModel, LlvmSettingsModel llvmModel)
     {
       SettingsProvider.CompilerSettingsModel = compilerModel;
       SettingsProvider.FormatSettingsModel = formatModel;
       SettingsProvider.TidySettingsModel = tidyModel;
       SettingsProvider.GeneralSettingsModel = generalModel;
       SettingsProvider.LlvmSettingsModel = llvmModel;
-      SettingsProvider.AccountModel = accountModel;
     }
 
     private string GetSettingsFilePath(string path, string fileName)
