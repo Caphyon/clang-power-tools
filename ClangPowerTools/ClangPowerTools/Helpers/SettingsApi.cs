@@ -56,6 +56,18 @@ namespace ClangPowerTools
       return false;
     }
 
+    public async Task<string> GetUserAccountDetailsJsonAsync()
+    {
+      if (await NetworkUtility.CheckInternetConnectionAsync() == false)
+        return null;
+
+      HttpResponseMessage httpResponseMessage = await GetSettingsAsync();
+      if (!httpResponseMessage.IsSuccessStatusCode)
+        return null;
+
+      return await httpResponseMessage.Content.ReadAsStringAsync();
+    }
+
     #endregion
 
     #region Private Methods
@@ -69,6 +81,13 @@ namespace ClangPowerTools
     }
 
     private async Task<HttpResponseMessage> GetSettingsAsync()
+    {
+      SetAuthenticationHeader();
+
+      return await ApiUtility.ApiClient.GetAsync(WebApiUrl.settingsConfig);
+    }
+
+    private async Task<HttpResponseMessage> GetUserAccountDetailsAsync()
     {
       SetAuthenticationHeader();
 
