@@ -356,8 +356,8 @@
     <Resource Include="Resources\SearchIcon.PNG" />
     <Resource Include="Resources\AddInput.png" />
     <Resource Include="Resources\Browse.png" />
-    <Resource Include="Resources\AccountIcon.png" />
     <Resource Include="Resources\ClangSplitBackground.png" />
+    <Resource Include="Resources\AccountAvatarIcon.png" />
     <Content Include="Resources\CPTLogoManageExtensionVS.png">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -565,6 +565,7 @@
     <Resource Include="Resources\RemoveInputHover.png" />
     <Resource Include="Resources\RemoveInputIdle.png" />
     <Resource Include="Resources\Output.png" />
+    <Resource Include="Resources\LogoutIcon.png" />
     <Content Include="Resources\RunPowerShellCommandPackage.ico">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

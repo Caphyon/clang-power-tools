@@ -25,136 +25,160 @@
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
     <Grid.RowDefinitions>
-      <RowDefinition Height="20" />
+      <RowDefinition Height="50" />
+      <RowDefinition Height="66" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="135" />
       <RowDefinition Height="auto" />
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="10" />
+      <ColumnDefinition Width="57" />
+      <ColumnDefinition Width="66" />
       <ColumnDefinition Width="auto" />
     </Grid.ColumnDefinitions>
 
+    <Ellipse Grid.Row="1" Grid.Column="1">
+      <Ellipse.Fill>
+        <ImageBrush
+          AlignmentX="Center"
+          AlignmentY="Center"
+          ImageSource="{StaticResource AccountAvatarIcon}" />
+      </Ellipse.Fill>
+    </Ellipse>
+
     <StackPanel
       Grid.Row="1"
-      Grid.Column="1"
-      Orientation="Horizontal">
-      <Ellipse
-        Width="80"
-        Height="80"
-        Margin="10,0">
-        <Ellipse.Fill>
-          <ImageBrush
-            AlignmentX="Center"
-            AlignmentY="Center"
-            ImageSource="{StaticResource AccountProfileIcon}" />
-        </Ellipse.Fill>
-      </Ellipse>
-      <Grid>
-        <Grid.RowDefinitions>
-          <RowDefinition Height="auto" />
-          <RowDefinition Height="auto" />
-        </Grid.RowDefinitions>
-        <TextBlock
-          Grid.Row="0"
-          Width="180"
-          Padding="10"
-          VerticalAlignment="Center"
-          FontFamily="SegoeUI"
-          FontSize="16"
-          Text="User Name" />
-        <TextBlock
-          Grid.Row="1"
-          Width="180"
-          Padding="10"
-          VerticalAlignment="Center"
-          FontFamily="SegoeUI"
-          FontSize="16"
-          Text="Email" />
-      </Grid>
+      Grid.Column="2"
+      Margin="21,0,0,0"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center">
+      <TextBlock
+        Grid.Row="0"
+        Width="180"
+        Margin="0,0,0,6"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="20"
+        Text="John Doe" />
+
+      <TextBlock
+        Grid.Row="1"
+        Width="180"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Foreground="#333333"
+        Text="johndoe@doe.com" />
     </StackPanel>
 
-    <Separator
+    <Grid
       Grid.Row="2"
-      Grid.Column="1"
-      Width="670"
-      Margin="20,20"
-      Background="#9E005A" />
+      Grid.Column="2"
+      Margin="21,46,0,0"
+      VerticalAlignment="Center">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="auto" />
+        <ColumnDefinition Width="auto" />
+      </Grid.ColumnDefinitions>
 
-    <TextBlock
+      <TextBlock
+        Grid.Row="0"
+        Grid.Column="0"
+        Margin="0,0,0,10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        FontWeight="SemiBold"
+        Text="License type" />
+
+      <TextBlock
+        Grid.Row="0"
+        Grid.Column="1"
+        Margin="30,0,0,0"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Foreground="#333333"
+        Text="Commercial" />
+
+      <TextBlock
+        Grid.Row="1"
+        Grid.Column="0"
+        Margin="0,0,0,6"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        FontWeight="SemiBold"
+        Text="Expiration date" />
+
+      <TextBlock
+        Grid.Row="1"
+        Grid.Column="1"
+        Margin="30,0,0,0"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Foreground="#333333"
+        Text="October 1st, 2020" />
+    </Grid>
+
+    <StackPanel
       Grid.Row="3"
-      Grid.Column="1"
-      Width="180"
-      Padding="10"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="License Type" />
+      Grid.Column="2"
+      Margin="21,40,0,0"
+      Orientation="Horizontal">
+      <TextBlock
+        Grid.Row="1"
+        Grid.Column="0"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        FontWeight="SemiBold"
+        Text="Version number" />
 
-    <TextBlock
-      Grid.Row="4"
-      Grid.Column="1"
-      Width="180"
-      Padding="10"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Expiration date" />
-
-    <Separator
-      Grid.Row="5"
-      Grid.Column="1"
-      Width="670"
-      Margin="0,20"
-      Background="#9E005A" />
-
-    <TextBlock
-      Grid.Row="6"
-      Grid.Column="1"
-      Width="180"
-      Padding="10"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      FontFamily="SegoeUI"
-      FontSize="16"
-      Text="Version 6.1" />
-
-    <Separator
-      Grid.Row="7"
-      Grid.Column="1"
-      Width="670"
-      Margin="0,20"
-      Background="#9E005A" />
+      <TextBlock
+        Grid.Row="1"
+        Grid.Column="1"
+        Margin="30,0,0,0"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Foreground="#333333"
+        Text="6.1" />
+    </StackPanel>
 
     <Button
-      Grid.Row="8"
-      Grid.Column="1"
-      Width="130"
-      Height="40"
-      Margin="10,0,0,0"
+      Grid.Row="4"
+      Grid.Column="2"
+      Width="70"
+      Height="20"
+      Margin="21,50,0,0"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
+      Background="Transparent"
       Command="{Binding CompileFlagsAddDataCommand}"
       Style="{StaticResource SettingsButton}">
       <Button.Content>
+
         <StackPanel Orientation="Horizontal">
-          <Image Source="{StaticResource AccountProfileIcon}" />
+          <Image
+            Width="17"
+            Height="25"
+            VerticalAlignment="Center"
+            Source="{StaticResource LogoutIcon}" />
           <TextBlock
+            Margin="3,0,0,0"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
             FontFamily="SegoeUI"
-            FontSize="16"
-            Foreground="White"
-            Text="Logout" />
+            FontSize="15"
+            Foreground="#9E005A"
+            Text="Log out" />
         </StackPanel>
       </Button.Content>
     </Button>
