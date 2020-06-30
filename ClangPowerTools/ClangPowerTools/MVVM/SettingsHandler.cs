@@ -56,14 +56,14 @@ namespace ClangPowerTools
     public async Task InitializeAccountSettingsAsync()
     {
       var settingsApi = new SettingsApi();
-      var accountDetailsJson = await settingsApi.GetUserAccountDetailsJsonAsync();
+      var accountDetailsJson = await settingsApi.GetUserAccountProfileJsonAsync();
 
       SettingsProvider.AccountModel = new AccountModel();
       if (string.IsNullOrWhiteSpace(accountDetailsJson))
         return;
 
-      var accountModel = DeserializeUserAccountDetails(accountDetailsJson);
-      if (accountModel == null)
+      var accountApiModel = DeserializeUserAccountDetails(accountDetailsJson);
+      if (accountApiModel == null)
         return;
 
       // TODO : update the model View with "accountModel" data object
@@ -150,12 +150,10 @@ namespace ClangPowerTools
     }
 
 
-    public AccountModel DeserializeUserAccountDetails(string json)
+    public AccoutApiModel DeserializeUserAccountDetails(string json)
     {
-      var models = JsonConvert.DeserializeObject<List<object>>(json);
-      var accountModel = JsonConvert.DeserializeObject<AccountModel>(models[0].ToString());
-
-      return accountModel;
+      var accoutApiModel = JsonConvert.DeserializeObject<AccoutApiModel>(json);
+      return accoutApiModel;
     }
 
     #endregion

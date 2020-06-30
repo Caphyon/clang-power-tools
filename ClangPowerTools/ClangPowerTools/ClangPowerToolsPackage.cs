@@ -135,7 +135,7 @@ namespace ClangPowerTools
 
       var settingsHandler = new SettingsHandler();
       settingsHandler.InitializeSettings();
-      settingsHandler.InitializeAccountSettingsAsync();
+      await settingsHandler.InitializeAccountSettingsAsync();
 
       var mLicenseController = new LicenseController();
       mLicenseController.CheckLicenseAsync().SafeFireAndForget();
