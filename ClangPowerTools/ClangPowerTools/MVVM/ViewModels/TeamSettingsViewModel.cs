@@ -1,9 +1,7 @@
 ﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.LicenseValidation;
-using ClangPowerTools.MVVM.Views;
 using Microsoft.VisualStudio.Threading;
 using System.ComponentModel;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -19,7 +17,6 @@ namespace ClangPowerTools
     private readonly SettingsHandler settingsHandler = new SettingsHandler();
     private GeneralSettingsModel generalSettingsModel;
 
-    private ICommand logoutCommand;
     private ICommand exportSettingsCommand;
     private ICommand importSettingsCommand;
     private ICommand resetSettingsCommand;
@@ -66,10 +63,6 @@ namespace ClangPowerTools
 
     #region Commands
 
-    public ICommand LogoutCommand
-    {
-      get => logoutCommand ??= new RelayCommand(() => Logout(), () => CanExecute);
-    }
 
     public ICommand ExportSettingsCommand
     {
@@ -99,19 +92,6 @@ namespace ClangPowerTools
     #endregion
 
     #region Methods
-
-    private void Logout()
-    {
-      var settingsPathBuilder = new SettingsPathBuilder();
-      string path = settingsPathBuilder.GetPath("ctpjwt");
-
-      if (File.Exists(path))
-        File.Delete(path);
-
-      SettingsProvider.SettingsView.Close();
-      LoginView loginView = new LoginView();
-      loginView.ShowDialog();
-    }
 
     private void ExportSettings()
     {

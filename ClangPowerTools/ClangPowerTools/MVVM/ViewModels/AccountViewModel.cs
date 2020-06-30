@@ -1,5 +1,9 @@
-﻿using ClangPowerTools.MVVM.Models;
+﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.Models;
+using ClangPowerTools.MVVM.Views;
 using System.ComponentModel;
+using System.IO;
+using System.Windows.Input;
 
 namespace ClangPowerTools
 {
@@ -8,6 +12,9 @@ namespace ClangPowerTools
     #region Members
 
     private AccountModel accountModel;
+
+    private ICommand logoutCommand;
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     #endregion
@@ -49,10 +56,30 @@ namespace ClangPowerTools
     #endregion
 
 
+    #region Commands
+
+    public ICommand LogoutCommand
+    {
+      get => logoutCommand ??= new RelayCommand(() => Logout(), () => CanExecute);
+    }
+
+    #endregion
+
+
     #region Methods
 
+    private void Logout()
+    {
+      var settingsPathBuilder = new SettingsPathBuilder();
+      string path = settingsPathBuilder.GetPath("ctpjwt");
 
+      if (File.Exists(path))
+        File.Delete(path);
 
+      SettingsProvider.SettingsView.Close();
+      LoginView loginView = new LoginView();
+      loginView.ShowDialog();
+    }
 
     #endregion
   }

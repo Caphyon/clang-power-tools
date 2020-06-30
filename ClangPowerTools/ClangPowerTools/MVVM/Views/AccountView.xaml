@@ -25,7 +25,7 @@
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
     <Grid.RowDefinitions>
-      <RowDefinition Height="50" />
+      <RowDefinition Height="60" />
       <RowDefinition Height="66" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
@@ -161,10 +161,9 @@
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
       Background="Transparent"
-      Command="{Binding CompileFlagsAddDataCommand}"
+      Command="{Binding LogoutCommand}"
       Style="{StaticResource SettingsButton}">
       <Button.Content>
-
         <StackPanel Orientation="Horizontal">
           <Image
             Width="17"

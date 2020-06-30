@@ -10,6 +10,7 @@ namespace ClangPowerTools.Views
     public AccountView()
     {
       InitializeComponent();
+      DataContext = new AccountViewModel();
     }
   }
 }
