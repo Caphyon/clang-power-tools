@@ -340,6 +340,8 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>.</VSIXSubPath>
     </Content>
+    <Resource Include="Resources\CloudIcon.png" />
+    <Resource Include="Resources\StorageIcon.png" />
     <Resource Include="Resources\TeamIcon.png" />
     <Resource Include="Resources\LoginBackground.png" />
     <Resource Include="Resources\CPTLogo.png" />
@@ -355,6 +357,7 @@
     <Resource Include="Resources\AddInput.png" />
     <Resource Include="Resources\Browse.png" />
     <Resource Include="Resources\AccountIcon.png" />
+    <Resource Include="Resources\ClangSplitBackground.png" />
     <Content Include="Resources\CPTLogoManageExtensionVS.png">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
