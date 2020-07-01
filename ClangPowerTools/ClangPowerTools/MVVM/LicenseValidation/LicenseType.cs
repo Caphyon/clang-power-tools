@@ -1,6 +1,6 @@
 ﻿namespace ClangPowerTools.MVVM.LicenseValidation
 {
-  public enum LicenseTypes
+  public enum LicenseType
   {
     Commercial,
     Personal,
