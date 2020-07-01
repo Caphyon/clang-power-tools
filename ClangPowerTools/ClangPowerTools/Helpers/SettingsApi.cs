@@ -58,10 +58,16 @@ namespace ClangPowerTools
 
     public async Task<string> GetUserAccountProfileJsonAsync()
     {
-      if (await NetworkUtility.CheckInternetConnectionAsync() == false)
+      HttpResponseMessage httpResponseMessage = await GetUserProfileDetailsAsync();
+      if (!httpResponseMessage.IsSuccessStatusCode)
         return null;
 
-      HttpResponseMessage httpResponseMessage = await GetUserProfileDetailsAsync();
+      return await httpResponseMessage.Content.ReadAsStringAsync();
+    }
+
+    public async Task<string> GetLicenseDetailsJsonAsync()
+    {
+      HttpResponseMessage httpResponseMessage = await GetLicenseDetailsAsync();
       if (!httpResponseMessage.IsSuccessStatusCode)
         return null;
 
@@ -92,6 +98,13 @@ namespace ClangPowerTools
       SetAuthenticationHeader();
 
       return await ApiUtility.ApiClient.GetAsync(WebApiUrl.userProfile);
+    }
+
+    private async Task<HttpResponseMessage> GetLicenseDetailsAsync()
+    {
+      SetAuthenticationHeader();
+
+      return await ApiUtility.ApiClient.GetAsync(WebApiUrl.licenseUrl);
     }
 
     private static void SetAuthenticationHeader()
