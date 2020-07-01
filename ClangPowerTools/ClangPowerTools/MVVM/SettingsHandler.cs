@@ -106,6 +106,9 @@ namespace ClangPowerTools
       List<object> models = CreateModelsList();
       string path = GetSettingsFilePath(settingsPath, SettingsFileName);
       SerializeSettings(models, path);
+
+      string userProfilePath = GetSettingsFilePath(settingsPath, UserProfileFileName);
+      SerializeSettings(SettingsProvider.AccountModel, userProfilePath);
     }
 
     /// <summary>
@@ -280,6 +283,16 @@ namespace ClangPowerTools
       serializer.Serialize(file, models);
     }
 
+    private void SerializeSettings(object models, string path)
+    {
+      using StreamWriter file = File.CreateText(path);
+      var serializer = new JsonSerializer
+      {
+        Formatting = Formatting.Indented
+      };
+      serializer.Serialize(file, models);
+    }
+
     private void DeserializeSettings(string json)
     {
       try
@@ -427,7 +440,7 @@ namespace ClangPowerTools
     /// <returns>The loaded user profile model</returns>
     private AccountModel LoadLocalAccountSettings()
     {
-      var path = Path.Combine(settingsPath, UserProfileFileName);
+      var path = GetSettingsFilePath(settingsPath, UserProfileFileName);
       if (!File.Exists(path))
         return null;
 
