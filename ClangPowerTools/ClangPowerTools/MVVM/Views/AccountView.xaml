@@ -55,21 +55,19 @@
       VerticalAlignment="Center">
       <TextBlock
         Grid.Row="0"
-        Width="180"
         Margin="0,0,0,6"
         VerticalAlignment="Center"
         FontFamily="SegoeUI"
         FontSize="20"
-        Text="John Doe" />
+        Text="{Binding AccountModel.UserName}" />
 
       <TextBlock
         Grid.Row="1"
-        Width="180"
         VerticalAlignment="Center"
         FontFamily="SegoeUI"
         FontSize="15"
         Foreground="#333333"
-        Text="johndoe@doe.com" />
+        Text="{Binding AccountModel.Email}" />
     </StackPanel>
 
     <Grid
@@ -104,7 +102,7 @@
         FontFamily="SegoeUI"
         FontSize="15"
         Foreground="#333333"
-        Text="Commercial" />
+        Text="{Binding AccountModel.LicenseType}" />
 
       <TextBlock
         Grid.Row="1"
@@ -124,7 +122,7 @@
         FontFamily="SegoeUI"
         FontSize="15"
         Foreground="#333333"
-        Text="October 1st, 2020" />
+        Text="{Binding AccountModel.LicenseExpirationDate}" />
     </Grid>
 
     <StackPanel
@@ -149,7 +147,7 @@
         FontFamily="SegoeUI"
         FontSize="15"
         Foreground="#333333"
-        Text="6.1" />
+        Text="{Binding AccountModel.Version}" />
     </StackPanel>
 
     <Button
