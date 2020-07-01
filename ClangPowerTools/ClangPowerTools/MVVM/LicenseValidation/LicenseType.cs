@@ -4,6 +4,7 @@
   {
     Commercial,
     Personal,
-    Trial
+    Trial,
+    NoLicense
   }
 }
