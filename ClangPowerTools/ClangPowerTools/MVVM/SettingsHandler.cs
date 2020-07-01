@@ -1,4 +1,7 @@
-﻿using ClangPowerTools.MVVM.Models;
+﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.MVVM.Controllers;
+using ClangPowerTools.MVVM.LicenseValidation;
+using ClangPowerTools.MVVM.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -55,10 +58,14 @@ namespace ClangPowerTools
 
     public async Task InitializeAccountSettingsAsync()
     {
+      SettingsProvider.AccountModel = new AccountModel();
+
+      if (await NetworkUtility.CheckInternetConnectionAsync() == false)
+        return;
+
       var settingsApi = new SettingsApi();
       var accountDetailsJson = await settingsApi.GetUserAccountProfileJsonAsync();
 
-      SettingsProvider.AccountModel = new AccountModel();
       if (string.IsNullOrWhiteSpace(accountDetailsJson))
         return;
 
@@ -66,10 +73,27 @@ namespace ClangPowerTools
       if (accountApiModel == null)
         return;
 
-      // TODO : update the model View with "accountModel" data object
+      LicenseType licenseType = await new LicenseController().GetUserLicenseTypeAsync();
 
+      var licenseDetailsJson = await settingsApi.GetLicenseDetailsJsonAsync();
+      if (string.IsNullOrWhiteSpace(licenseDetailsJson))
+        return;
 
+      var expirationDate = !string.IsNullOrWhiteSpace(licenseDetailsJson) ?
+        DeserializeLicenseDetails(licenseDetailsJson).expires : string.Empty;
 
+      SettingsProvider.AccountModel = new AccountModel
+      {
+        UserName = $"{accountApiModel.firstname} {accountApiModel.lastname}",
+        Email = accountApiModel.email,
+        LicenseType = licenseType,
+
+        // TODO : throw exception if the string param cannot be converted to a valid date
+        LicenseExpirationDate = DateTime.Parse(expirationDate),
+
+        // TODO : refactor all the version related code
+        Version = "6.1"
+      };
     }
 
 
@@ -150,10 +174,16 @@ namespace ClangPowerTools
     }
 
 
-    public AccoutApiModel DeserializeUserAccountDetails(string json)
+    private AccoutApiModel DeserializeUserAccountDetails(string json)
     {
       var accoutApiModel = JsonConvert.DeserializeObject<AccoutApiModel>(json);
       return accoutApiModel;
+    }
+
+    private LicenseModel DeserializeLicenseDetails(string json)
+    {
+      var userLicenseCollection = JsonConvert.DeserializeObject<List<LicenseModel>>(json);
+      return userLicenseCollection[0];
     }
 
     #endregion
@@ -326,7 +356,6 @@ namespace ClangPowerTools
       compilerSettingsModel.ClangAfterMSVC = clangOptions.ClangCompileAfterVsCompile;
       compilerSettingsModel.VerboseMode = clangOptions.VerboseMode;
       generalSettingsModel.Version = clangOptions.Version;
-
 
       SettingsProvider.CompilerSettingsModel = compilerSettingsModel;
       SettingsProvider.GeneralSettingsModel = generalSettingsModel;
