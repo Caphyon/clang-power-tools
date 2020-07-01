@@ -18,6 +18,8 @@ namespace ClangPowerTools
     Google,
     [EnumMember(Value = "LLVM")]
     LLVM,
+    [EnumMember(Value = "Microsoft")]
+    Microsoft,
     [EnumMember(Value = "Mozilla")]
     Mozilla,
     [EnumMember(Value = "WebKit")]
@@ -30,9 +32,9 @@ namespace ClangPowerTools
     LLVM,
     Google,
     Chromium,
+    Microsoft,
     Mozilla,
     WebKit,
-    Microsoft
   }
 
   [Serializable]
@@ -47,6 +49,8 @@ namespace ClangPowerTools
     Google,
     [EnumMember(Value = "LLVM")]
     LLVM,
+    [EnumMember(Value = "Microsoft")]
+    Microsoft,
     [EnumMember(Value = "Mozilla")]
     Mozilla,
     [EnumMember(Value = "WebKit")]
