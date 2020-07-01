@@ -25,15 +25,6 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region Constructor
-
-    public TeamSettingsViewModel()
-    {
-      CanUseCloudAsync().SafeFireAndForget();
-    }
-
-    #endregion
-
     #region Properties
 
     public bool CanExecute
@@ -44,7 +35,13 @@ namespace ClangPowerTools
       }
     }
 
-    public bool CanUseCloud { get; set; } = false;
+    public bool CanUseCloud
+    {
+      get
+      {
+        return SettingsProvider.AccountModel.LicenseType == LicenseType.Commercial;
+      }
+    }
 
     public GeneralSettingsModel GeneralSettingsModel
     {
@@ -185,12 +182,6 @@ namespace ClangPowerTools
     {
       MessageBox.Show("Cloud settings can only be used if you have a Commercial License.",
                       "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-    }
-
-    private async Task CanUseCloudAsync()
-    {
-      // TODO refactor and use stored values, don't need to check twice
-      CanUseCloud = await new CommercialLicenseValidator().ValidateAsync();
     }
 
     #endregion
