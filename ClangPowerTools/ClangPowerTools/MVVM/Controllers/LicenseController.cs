@@ -35,7 +35,10 @@ namespace ClangPowerTools.MVVM.Controllers
       if (await new PersonalLicenseValidator().ValidateAsync())
         return LicenseType.Personal;
 
-      return LicenseType.Trial;
+      if (new FreeTrialController().IsActive())
+        return LicenseType.Trial;
+
+      return LicenseType.NoLicense;
     }
 
     #endregion
