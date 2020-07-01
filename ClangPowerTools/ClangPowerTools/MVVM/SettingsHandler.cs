@@ -20,6 +20,7 @@ namespace ClangPowerTools
 
     private readonly string settingsPath = string.Empty;
     private const string SettingsFileName = "settings.json";
+    private const string UserProfileFileName = "userProfile.json";
     private const string GeneralConfigurationFileName = "GeneralConfiguration.config";
     private const string FormatConfigurationFileName = "FormatConfiguration.config";
     private const string TidyOptionsConfigurationFileName = "TidyOptionsConfiguration.config";
@@ -59,43 +60,33 @@ namespace ClangPowerTools
     public async Task InitializeAccountSettingsAsync()
     {
       SettingsProvider.AccountModel = new AccountModel();
+      AccountModel loadedAccountModel = null;
 
-      if (await NetworkUtility.CheckInternetConnectionAsync() == false)
+      var networkConnected = await NetworkUtility.CheckInternetConnectionAsync();
+
+      if (networkConnected)
+      {
+        loadedAccountModel = await LoadServerAccountSettingsAsync();
+      }
+      else if (!networkConnected || loadedAccountModel == null)
+      {
+        loadedAccountModel = LoadLocalAccountSettings();
+      }
+
+      if (loadedAccountModel == null)
         return;
-
-      var settingsApi = new SettingsApi();
-      var accountDetailsJson = await settingsApi.GetUserAccountProfileJsonAsync();
-
-      if (string.IsNullOrWhiteSpace(accountDetailsJson))
-        return;
-
-      var accountApiModel = DeserializeUserAccountDetails(accountDetailsJson);
-      if (accountApiModel == null)
-        return;
-
-      LicenseType licenseType = await new LicenseController().GetUserLicenseTypeAsync();
-
-      var licenseDetailsJson = await settingsApi.GetLicenseDetailsJsonAsync();
-      if (string.IsNullOrWhiteSpace(licenseDetailsJson))
-        return;
-
-      var expirationDate = !string.IsNullOrWhiteSpace(licenseDetailsJson) ?
-        DeserializeLicenseDetails(licenseDetailsJson).expires : string.Empty;
 
       SettingsProvider.AccountModel = new AccountModel
       {
-        UserName = $"{accountApiModel.firstname} {accountApiModel.lastname}",
-        Email = accountApiModel.email,
-        LicenseType = licenseType,
-
-        // TODO : throw exception if the string param cannot be converted to a valid date
-        LicenseExpirationDate = DateTime.Parse(expirationDate),
-
-        // TODO : refactor all the version related code
-        Version = "6.1"
+        UserName = loadedAccountModel.UserName,
+        Email = loadedAccountModel.Email,
+        LicenseType = loadedAccountModel.LicenseType,
+        LicenseExpirationDate = loadedAccountModel.LicenseExpirationDate,
+        Version = loadedAccountModel.Version
       };
-    }
 
+      RefreshSettingsView?.Invoke();
+    }
 
     /// <summary>
     /// Save settings at a custom path
@@ -187,6 +178,7 @@ namespace ClangPowerTools
     }
 
     #endregion
+
 
     #region Private Methods
 
@@ -346,7 +338,7 @@ namespace ClangPowerTools
     private void MapClangOptionsToSettings(ClangOptions clangOptions)
     {
       var compilerSettingsModel = new CompilerSettingsModel();
-      var generalSettingsModel = new GeneralSettingsModel();
+      var accountModel = new AccountModel();
 
       compilerSettingsModel.CompileFlags = clangOptions.ClangFlagsCollection;
       compilerSettingsModel.FilesToIgnore = clangOptions.FilesToIgnore;
@@ -355,10 +347,10 @@ namespace ClangPowerTools
       compilerSettingsModel.ContinueOnError = clangOptions.Continue;
       compilerSettingsModel.ClangAfterMSVC = clangOptions.ClangCompileAfterVsCompile;
       compilerSettingsModel.VerboseMode = clangOptions.VerboseMode;
-      generalSettingsModel.Version = clangOptions.Version;
+      accountModel.Version = clangOptions.Version;
 
       SettingsProvider.CompilerSettingsModel = compilerSettingsModel;
-      SettingsProvider.GeneralSettingsModel = generalSettingsModel;
+      SettingsProvider.AccountModel = accountModel;
     }
 
     private void MapClangFormatOptionsToSettings(ClangFormatOptions clangFormat)
@@ -427,6 +419,71 @@ namespace ClangPowerTools
       }
 
       return stringBuilder.ToString().ToLower();
+    }
+
+    /// <summary>
+    /// Load the user profile data from the local file
+    /// </summary>
+    /// <returns>The loaded user profile model</returns>
+    private AccountModel LoadLocalAccountSettings()
+    {
+      var path = Path.Combine(settingsPath, UserProfileFileName);
+      if (!File.Exists(path))
+        return null;
+
+      var json = ReadSettingsFile(path);
+      var accountModel = JsonConvert.DeserializeObject<AccountModel>(json);
+
+      return accountModel;
+    }
+
+    /// <summary>
+    /// Load the user profile data from the server
+    /// </summary>
+    /// <returns>The loaded user profile model</returns>
+    private async Task<AccountModel> LoadServerAccountSettingsAsync()
+    {
+      var settingsApi = new SettingsApi();
+
+      // User profile
+      var accountDetailsJson = await settingsApi.GetUserAccountProfileJsonAsync();
+
+      if (string.IsNullOrWhiteSpace(accountDetailsJson))
+        return null;
+
+      var accountApiModel = DeserializeUserAccountDetails(accountDetailsJson);
+      if (accountApiModel == null)
+        return null;
+
+      // License type
+      LicenseType licenseType = await new LicenseController().GetUserLicenseTypeAsync();
+
+      // License expiration date
+      var expirationDate = string.Empty;
+      var licenseDetailsJson = await settingsApi.GetLicenseDetailsJsonAsync();
+      if (!string.IsNullOrWhiteSpace(licenseDetailsJson))
+      {
+        expirationDate = !string.IsNullOrWhiteSpace(licenseDetailsJson) ?
+        DeserializeLicenseDetails(licenseDetailsJson).expires : string.Empty;
+      }
+
+      // Version from file
+      var localAccountModel = LoadLocalAccountSettings();
+
+      // Create the complete Account model object
+      var accountModel = new AccountModel
+      {
+        UserName = $"{accountApiModel.firstname} {accountApiModel.lastname}",
+        Email = accountApiModel.email,
+        LicenseType = licenseType,
+
+        // TODO : throw exception if the string param cannot be converted to a valid date
+        LicenseExpirationDate = DateTime.Parse(expirationDate),
+
+        Version = localAccountModel == null ? string.Empty : localAccountModel.Version
+      };
+
+      return accountModel;
     }
 
     #endregion
