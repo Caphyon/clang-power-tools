@@ -54,7 +54,6 @@ namespace ClangPowerTools
       {
         CreateDeaultSettings();
       }
-
     }
 
     public async Task InitializeAccountSettingsAsync()
@@ -489,10 +488,7 @@ namespace ClangPowerTools
         UserName = $"{accountApiModel.firstname} {accountApiModel.lastname}",
         Email = accountApiModel.email,
         LicenseType = licenseType,
-
-        // TODO : throw exception if the string param cannot be converted to a valid date
-        LicenseExpirationDate = DateTime.Parse(expirationDate),
-
+        LicenseExpirationDate = DateTime.Parse(expirationDate).ToString("MMMM dd yyyy"),
         Version = localAccountModel == null ? string.Empty : localAccountModel.Version
       };
 
