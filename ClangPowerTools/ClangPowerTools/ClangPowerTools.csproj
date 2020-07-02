@@ -359,6 +359,7 @@
     <Resource Include="Resources\Browse.png" />
     <Resource Include="Resources\ClangSplitBackground.png" />
     <Resource Include="Resources\AccountAvatarIcon.png" />
+    <Resource Include="Resources\AccountIcon.png" />
     <Content Include="Resources\CPTLogoManageExtensionVS.png">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
