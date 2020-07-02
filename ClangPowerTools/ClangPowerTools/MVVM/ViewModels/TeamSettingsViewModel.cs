@@ -1,18 +1,16 @@
 ﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.LicenseValidation;
 using Microsoft.VisualStudio.Threading;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class TeamSettingsViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
+  public class TeamSettingsViewModel : CommonSettingsFunctionality
   {
     #region Members
 
-    public event PropertyChangedEventHandler PropertyChanged;
     private readonly SettingsHandler settingsHandler = new SettingsHandler();
 
     private ICommand exportSettingsCommand;
