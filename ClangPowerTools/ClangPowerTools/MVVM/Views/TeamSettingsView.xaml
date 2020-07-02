@@ -22,10 +22,11 @@
 
   <Grid>
     <Grid.Background>
-      <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
+      <ImageBrush ImageSource="/ClangPowerTools;component/Resources/ClangSplitBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
     <Grid.RowDefinitions>
-      <RowDefinition Height="100" />
+      <RowDefinition Height="50" />
+      <RowDefinition Height="70" />
       <RowDefinition Height="30" />
       <RowDefinition Height="50" />
       <RowDefinition Height="50" />
@@ -41,20 +42,27 @@
 
 
     <!--  Cloud Settings  -->
-    <TextBlock
+    <Image
       Grid.Row="1"
       Grid.Column="0"
+      Width="48"
+      Height="48"
+      Source="/ClangPowerTools;component/Resources/CloudIcon.png" />
+
+    <TextBlock
+      Grid.Row="2"
+      Grid.Column="0"
       HorizontalAlignment="Center"
-      FontSize="22"
-      FontWeight="DemiBold"
+      FontSize="20"
+      Foreground="White"
       Text="Cloud Settings"
       TextAlignment="Center" />
 
     <!--  Upload Settings  -->
     <Button
-      Grid.Row="2"
+      Grid.Row="3"
       Grid.Column="0"
-      Width="100"
+      Width="158"
       Height="35"
       Command="{Binding UploadSettingsCommand}"
       Content="Upload"
@@ -64,9 +72,9 @@
 
     <!--  Download Settings  -->
     <Button
-      Grid.Row="3"
+      Grid.Row="4"
       Grid.Column="0"
-      Width="100"
+      Width="158"
       Height="35"
       Command="{Binding DownloadSettingsCommand}"
       Content="Download"
@@ -74,30 +82,28 @@
       Foreground="White"
       Style="{StaticResource SettingsButton}" />
 
-    <!--  Section separator  -->
-    <Rectangle
-      Grid.RowSpan="6"
-      Grid.Column="1"
-      Width="1.4"
-      HorizontalAlignment="Stretch"
-      Fill="#9E005A"
-      Opacity=".5" />
 
-    <!--  Cloud Settings  -->
-    <TextBlock
+    <!--  Local Settings  -->
+    <Image
       Grid.Row="1"
       Grid.Column="2"
+      Width="48"
+      Height="48"
+      Source="/ClangPowerTools;component/Resources/StorageIcon.png" />
+
+    <TextBlock
+      Grid.Row="2"
+      Grid.Column="2"
       HorizontalAlignment="Center"
-      FontSize="22"
-      FontWeight="DemiBold"
+      FontSize="20"
       Text="Local Settings"
       TextAlignment="Center" />
 
     <!--  Export Settings  -->
     <Button
-      Grid.Row="2"
+      Grid.Row="3"
       Grid.Column="2"
-      Width="100"
+      Width="158"
       Height="35"
       Command="{Binding ExportSettingsCommand}"
       Content="Export"
@@ -108,9 +114,9 @@
 
     <!--  Import Settings  -->
     <Button
-      Grid.Row="3"
+      Grid.Row="4"
       Grid.Column="2"
-      Width="100"
+      Width="158"
       Height="35"
       Command="{Binding ImportSettingssCommand}"
       Content="Import"
@@ -121,9 +127,9 @@
 
     <!--  Reset Settings  -->
     <Button
-      Grid.Row="4"
+      Grid.Row="5"
       Grid.Column="2"
-      Width="100"
+      Width="158"
       Height="35"
       Command="{Binding ResetSettingsCommand}"
       Content="Reset"

@@ -147,7 +147,7 @@ namespace ClangPowerTools.Helpers
         return false;
 
       var extensionDocument = Path.GetExtension(document.FullName);
-      return ScriptConstants.kAcceptedFileExtensions.Contains(extensionDocument);
+      return ScriptConstants.kExtendedAcceptedFileExtensions.Contains(extensionDocument);
     }
 
     #endregion

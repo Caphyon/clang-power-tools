@@ -21,7 +21,7 @@ namespace ClangPowerTools.MVVM.LicenseValidation
     /// <summary>
     /// Active license type: Commercial, Personal, Trial
     /// </summary>
-    public LicenseType Type { get; private set; }
+    public Constants.LicenseType Type { get; private set; }
 
     #endregion
 
@@ -51,7 +51,7 @@ namespace ClangPowerTools.MVVM.LicenseValidation
       // Trial version is ignored at this moment
 
       Type = string.IsNullOrWhiteSpace(LicenseModel.expires) ?
-        LicenseType.Personal : LicenseType.Commercial;
+        Constants.LicenseType.Personal : Constants.LicenseType.Commercial;
     }
 
     #endregion

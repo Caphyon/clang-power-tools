@@ -1,9 +1,7 @@
 ﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.LicenseValidation;
-using ClangPowerTools.MVVM.Views;
 using Microsoft.VisualStudio.Threading;
 using System.ComponentModel;
-using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -15,25 +13,13 @@ namespace ClangPowerTools
     #region Members
 
     public event PropertyChangedEventHandler PropertyChanged;
-
     private readonly SettingsHandler settingsHandler = new SettingsHandler();
-    private GeneralSettingsModel generalSettingsModel;
 
-    private ICommand logoutCommand;
     private ICommand exportSettingsCommand;
     private ICommand importSettingsCommand;
     private ICommand resetSettingsCommand;
     private ICommand uploadSettingsCommand;
     private ICommand downloadSettingsCommand;
-
-    #endregion
-
-    #region Constructor
-
-    public TeamSettingsViewModel()
-    {
-      CanUseCloudAsync().SafeFireAndForget();
-    }
 
     #endregion
 
@@ -47,18 +33,11 @@ namespace ClangPowerTools
       }
     }
 
-    public bool CanUseCloud { get; set; } = false;
-
-    public GeneralSettingsModel GeneralSettingsModel
+    public bool CanUseCloud
     {
       get
       {
-        return generalSettingsModel;
-      }
-      set
-      {
-        generalSettingsModel = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GeneralSettingsModel"));
+        return SettingsProvider.AccountModel.LicenseType == LicenseType.Commercial;
       }
     }
 
@@ -66,10 +45,6 @@ namespace ClangPowerTools
 
     #region Commands
 
-    public ICommand LogoutCommand
-    {
-      get => logoutCommand ??= new RelayCommand(() => Logout(), () => CanExecute);
-    }
 
     public ICommand ExportSettingsCommand
     {
@@ -99,19 +74,6 @@ namespace ClangPowerTools
     #endregion
 
     #region Methods
-
-    private void Logout()
-    {
-      var settingsPathBuilder = new SettingsPathBuilder();
-      string path = settingsPathBuilder.GetPath("ctpjwt");
-
-      if (File.Exists(path))
-        File.Delete(path);
-
-      SettingsProvider.SettingsView.Close();
-      LoginView loginView = new LoginView();
-      loginView.ShowDialog();
-    }
 
     private void ExportSettings()
     {
@@ -205,12 +167,6 @@ namespace ClangPowerTools
     {
       MessageBox.Show("Cloud settings can only be used if you have a Commercial License.",
                       "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-    }
-
-    private async Task CanUseCloudAsync()
-    {
-      // TODO refactor and use stored values, don't need to check twice
-      CanUseCloud = await new CommercialLicenseValidator().ValidateAsync();
     }
 
     #endregion

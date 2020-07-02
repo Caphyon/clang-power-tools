@@ -27,6 +27,20 @@ namespace ClangPowerTools.MVVM.Controllers
       return licenseStatus;
     }
 
+    public async Task<LicenseType> GetUserLicenseTypeAsync()
+    {
+      if (await new CommercialLicenseValidator().ValidateAsync())
+        return LicenseType.Commercial;
+
+      if (await new PersonalLicenseValidator().ValidateAsync())
+        return LicenseType.Personal;
+
+      if (new FreeTrialController().IsActive())
+        return LicenseType.Trial;
+
+      return LicenseType.NoLicense;
+    }
+
     #endregion
 
   }

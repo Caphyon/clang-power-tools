@@ -26,6 +26,23 @@ namespace ClangPowerTools
         ".vcxproj"
       };
 
+    public static readonly List<string> kExtendedAcceptedFileExtensions = new List<string>
+      { ".c",
+        ".cpp",
+        ".cc",
+        ".cxx",
+        ".c++",
+        ".cp",
+        ".cs",
+        ".h",
+        ".hh",
+        ".hpp",
+        ".hxx",
+        ".tli",
+        ".tlh",
+        ".vcxproj"
+      };
+
     public const string kCMakeConfigFile = "cmakelists.txt";
 
     public const string kPowerShellPath = @"WindowsPowerShell\v1.0\powershell.exe";
@@ -51,8 +68,8 @@ namespace ClangPowerTools
 
     public const string kClangFlags = "-clang-flags";
     public const string kIncludeDirectores = "-include-dirs";
-    public const string kProjectsToIgnore = "-proj-ignore"; 
-    public const string kFilesToIgnore = "-file-ignore"; 
+    public const string kProjectsToIgnore = "-proj-ignore";
+    public const string kFilesToIgnore = "-file-ignore";
 
     public const string kVsVersion = "-vs-ver";
     public const string kVsEdition = "-vs-sku";

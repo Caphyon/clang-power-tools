@@ -113,6 +113,22 @@
           <local:TeamSettingsView />
         </Grid>
       </TabItem>
+
+      <TabItem Padding="8" FontSize="15">
+        <TabItem.Header>
+          <StackPanel Orientation="Horizontal">
+            <Image
+              Width="15"
+              Height="15"
+              Margin="3"
+              Source="/ClangPowerTools;component/Resources/AccountIcon.png" />
+            <TextBlock Width="65" Text="Account" />
+          </StackPanel>
+        </TabItem.Header>
+        <Grid>
+          <local:AccountView />
+        </Grid>
+      </TabItem>
     </TabControl>
 
     <controls:BuyNowFooter Grid.Row="1" />

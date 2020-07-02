@@ -1,9 +1,14 @@
-﻿using Newtonsoft.Json;
+﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.MVVM.Controllers;
+using ClangPowerTools.MVVM.LicenseValidation;
+using ClangPowerTools.MVVM.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ClangPowerTools
@@ -15,6 +20,7 @@ namespace ClangPowerTools
 
     private readonly string settingsPath = string.Empty;
     private const string SettingsFileName = "settings.json";
+    private const string UserProfileFileName = "userProfile.json";
     private const string GeneralConfigurationFileName = "GeneralConfiguration.config";
     private const string FormatConfigurationFileName = "FormatConfiguration.config";
     private const string TidyOptionsConfigurationFileName = "TidyOptionsConfiguration.config";
@@ -50,6 +56,34 @@ namespace ClangPowerTools
       }
     }
 
+    public async Task InitializeAccountSettingsAsync()
+    {
+      SettingsProvider.AccountModel = new AccountModel();
+      AccountModel loadedAccountModel = null;
+
+      var networkConnected = await NetworkUtility.CheckInternetConnectionAsync();
+
+      if (networkConnected)
+      {
+        loadedAccountModel = await LoadServerAccountSettingsAsync();
+      }
+      else if (!networkConnected || loadedAccountModel == null)
+      {
+        loadedAccountModel = LoadLocalAccountSettings();
+      }
+
+      if (loadedAccountModel == null)
+        return;
+
+      SettingsProvider.AccountModel = new AccountModel
+      {
+        UserName = loadedAccountModel.UserName,
+        Email = loadedAccountModel.Email,
+        LicenseType = loadedAccountModel.LicenseType,
+        LicenseExpirationDate = loadedAccountModel.LicenseExpirationDate,
+      };
+    }
+
     /// <summary>
     /// Save settings at a custom path
     /// </summary>
@@ -68,6 +102,9 @@ namespace ClangPowerTools
       List<object> models = CreateModelsList();
       string path = GetSettingsFilePath(settingsPath, SettingsFileName);
       SerializeSettings(models, path);
+
+      string userProfilePath = GetSettingsFilePath(settingsPath, UserProfileFileName);
+      SerializeSettings(SettingsProvider.AccountModel, userProfilePath);
     }
 
     /// <summary>
@@ -127,7 +164,20 @@ namespace ClangPowerTools
     }
 
 
+    private AccoutApiModel DeserializeUserAccountDetails(string json)
+    {
+      var accoutApiModel = JsonConvert.DeserializeObject<AccoutApiModel>(json);
+      return accoutApiModel;
+    }
+
+    private LicenseModel DeserializeLicenseDetails(string json)
+    {
+      var userLicenseCollection = JsonConvert.DeserializeObject<List<LicenseModel>>(json);
+      return userLicenseCollection[0];
+    }
+
     #endregion
+
 
     #region Private Methods
 
@@ -229,6 +279,29 @@ namespace ClangPowerTools
       serializer.Serialize(file, models);
     }
 
+    private void SerializeSettings(object models, string path)
+    {
+      // Remove the hidden attribute of the file in order to overwrite it
+      FileInfo fileInfo;
+      if (File.Exists(path))
+      {
+        fileInfo = new FileInfo(path);
+        fileInfo.Attributes &= ~FileAttributes.Hidden;
+      }
+
+      // Overwrite the file
+      using StreamWriter file = new StreamWriter(path);
+      var serializer = new JsonSerializer
+      {
+        Formatting = Formatting.Indented
+      };
+      serializer.Serialize(file, models);
+
+      // Set back the hidden attribute
+      fileInfo = new FileInfo(path);
+      fileInfo.Attributes |= FileAttributes.Hidden;
+    }
+
     private void DeserializeSettings(string json)
     {
       try
@@ -263,7 +336,8 @@ namespace ClangPowerTools
       return sw.ReadToEnd();
     }
 
-    private void SetSettingsModels(CompilerSettingsModel compilerModel, FormatSettingsModel formatModel, TidySettingsModel tidyModel, GeneralSettingsModel generalModel, LlvmSettingsModel llvmModel)
+    private void SetSettingsModels(CompilerSettingsModel compilerModel, FormatSettingsModel formatModel,
+      TidySettingsModel tidyModel, GeneralSettingsModel generalModel, LlvmSettingsModel llvmModel)
     {
       SettingsProvider.CompilerSettingsModel = compilerModel;
       SettingsProvider.FormatSettingsModel = formatModel;
@@ -296,7 +370,6 @@ namespace ClangPowerTools
       compilerSettingsModel.ClangAfterMSVC = clangOptions.ClangCompileAfterVsCompile;
       compilerSettingsModel.VerboseMode = clangOptions.VerboseMode;
       generalSettingsModel.Version = clangOptions.Version;
-
 
       SettingsProvider.CompilerSettingsModel = compilerSettingsModel;
       SettingsProvider.GeneralSettingsModel = generalSettingsModel;
@@ -368,6 +441,67 @@ namespace ClangPowerTools
       }
 
       return stringBuilder.ToString().ToLower();
+    }
+
+    /// <summary>
+    /// Load the user profile data from the local file
+    /// </summary>
+    /// <returns>The loaded user profile model</returns>
+    private AccountModel LoadLocalAccountSettings()
+    {
+      var path = GetSettingsFilePath(settingsPath, UserProfileFileName);
+      if (!File.Exists(path))
+        return null;
+
+      var json = ReadSettingsFile(path);
+      var accountModel = JsonConvert.DeserializeObject<AccountModel>(json);
+
+      return accountModel;
+    }
+
+    /// <summary>
+    /// Load the user profile data from the server
+    /// </summary>
+    /// <returns>The loaded user profile model</returns>
+    private async Task<AccountModel> LoadServerAccountSettingsAsync()
+    {
+      var settingsApi = new SettingsApi();
+
+      // User profile
+      var accountDetailsJson = await settingsApi.GetUserAccountProfileJsonAsync();
+
+      if (string.IsNullOrWhiteSpace(accountDetailsJson))
+        return null;
+
+      var accountApiModel = DeserializeUserAccountDetails(accountDetailsJson);
+      if (accountApiModel == null)
+        return null;
+
+      // License type
+      LicenseType licenseType = await new LicenseController().GetUserLicenseTypeAsync();
+
+      // License expiration date
+      var expirationDate = string.Empty;
+      var licenseDetailsJson = await settingsApi.GetLicenseDetailsJsonAsync();
+      if (!string.IsNullOrWhiteSpace(licenseDetailsJson))
+      {
+        expirationDate = !string.IsNullOrWhiteSpace(licenseDetailsJson) ?
+        DeserializeLicenseDetails(licenseDetailsJson).expires : string.Empty;
+      }
+
+      // Version from file
+      var localAccountModel = LoadLocalAccountSettings();
+
+      // Create the complete Account model object
+      var accountModel = new AccountModel
+      {
+        UserName = $"{accountApiModel.firstname} {accountApiModel.lastname}",
+        Email = accountApiModel.email,
+        LicenseType = licenseType,
+        LicenseExpirationDate = DateTime.Parse(expirationDate).ToString("MMMM dd yyyy"),
+      };
+
+      return accountModel;
     }
 
     #endregion
