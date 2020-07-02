@@ -12,6 +12,7 @@ namespace ClangPowerTools
     #region Members
 
     private AccountModel accountModel;
+    private GeneralSettingsModel generalModel;
 
     private ICommand logoutCommand;
 
@@ -25,6 +26,7 @@ namespace ClangPowerTools
     public AccountViewModel()
     {
       accountModel = SettingsProvider.AccountModel;
+      generalModel = SettingsProvider.GeneralSettingsModel;
     }
 
     #endregion
@@ -42,6 +44,19 @@ namespace ClangPowerTools
       {
         accountModel = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AccountModel"));
+      }
+    }
+
+    public GeneralSettingsModel GeneralSettingsModel
+    {
+      get
+      {
+        return generalModel;
+      }
+      set
+      {
+        generalModel = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GeneralSettingsModel"));
       }
     }
 

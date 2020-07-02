@@ -13,9 +13,7 @@ namespace ClangPowerTools
     #region Members
 
     public event PropertyChangedEventHandler PropertyChanged;
-
     private readonly SettingsHandler settingsHandler = new SettingsHandler();
-    private GeneralSettingsModel generalSettingsModel;
 
     private ICommand exportSettingsCommand;
     private ICommand importSettingsCommand;
@@ -40,19 +38,6 @@ namespace ClangPowerTools
       get
       {
         return SettingsProvider.AccountModel.LicenseType == LicenseType.Commercial;
-      }
-    }
-
-    public GeneralSettingsModel GeneralSettingsModel
-    {
-      get
-      {
-        return generalSettingsModel;
-      }
-      set
-      {
-        generalSettingsModel = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GeneralSettingsModel"));
       }
     }
 
