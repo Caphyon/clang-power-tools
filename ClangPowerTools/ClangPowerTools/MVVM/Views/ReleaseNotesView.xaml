@@ -103,7 +103,7 @@
 
         <!--  What's new  -->
         <TextBox
-          Margin="5,35,0,0"
+          Margin="5,20,0,0"
           HorizontalAlignment="Left"
           Background="Transparent"
           BorderThickness="0"
@@ -118,7 +118,57 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Search functionality in the Clang-Format editor"
+          Text="• Team Cloud Settings - a faster way to store and share your configuration"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Quick access to your profile information from the settings panel"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Clang-Format can be used to format C# files"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Microsoft style integration for Clang-Format"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Possibility to select multiples Clang-Tidy predefined checks at once"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Clang-Format can be configured using the '_clang-format' file"
           TextWrapping="Wrap" />
 
 
@@ -142,7 +192,57 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Directory.Build.Props is ignored when it contains the PlatformConfigurations node"
+          Text="• Exported Clang Tidy checks do not disable the default ones"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Reset Settings does not refresh the panels; it requires a window reload"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Tooltip information is shown just over the option name"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• The output window is not cleared after running Clang-Format"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Fallback style is enabled for all the Clang-Format Style options"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Editor focus is lost when displaying a log message"
           TextWrapping="Wrap" />
 
       </ListView>
