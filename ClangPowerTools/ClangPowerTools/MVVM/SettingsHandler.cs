@@ -281,13 +281,25 @@ namespace ClangPowerTools
 
     private void SerializeSettings(object models, string path)
     {
-      using StreamWriter file = File.CreateText(path);
+      // Remove the hidden attribute of the file in order to overwrite it
+      FileInfo fileInfo;
+      if (File.Exists(path))
+      {
+        fileInfo = new FileInfo(path);
+        fileInfo.Attributes &= ~FileAttributes.Hidden;
+      }
+
+      // Overwrite the file
+      using StreamWriter file = new StreamWriter(path);
       var serializer = new JsonSerializer
       {
         Formatting = Formatting.Indented
       };
       serializer.Serialize(file, models);
-      File.SetAttributes(path, File.GetAttributes(path) | FileAttributes.Hidden);
+
+      // Set back the hidden attribute
+      fileInfo = new FileInfo(path);
+      fileInfo.Attributes |= FileAttributes.Hidden;
     }
 
     private void DeserializeSettings(string json)
