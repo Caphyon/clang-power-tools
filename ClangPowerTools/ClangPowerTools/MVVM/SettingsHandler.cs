@@ -287,6 +287,7 @@ namespace ClangPowerTools
         Formatting = Formatting.Indented
       };
       serializer.Serialize(file, models);
+      File.SetAttributes(path, File.GetAttributes(path) | FileAttributes.Hidden);
     }
 
     private void DeserializeSettings(string json)
