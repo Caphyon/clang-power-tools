@@ -147,7 +147,7 @@
         FontFamily="SegoeUI"
         FontSize="15"
         Foreground="#333333"
-        Text="{Binding AccountModel.Version}" />
+        Text="{Binding GeneralSettingsModel.Version}" />
     </StackPanel>
 
     <Button
