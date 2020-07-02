@@ -12,8 +12,6 @@ namespace ClangPowerTools.MVVM.Models
     public LicenseType LicenseType { get; set; }
     public string LicenseExpirationDate { get; set; }
 
-    public string Version { get; set; }
-
     #endregion
 
   }
