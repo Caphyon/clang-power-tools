@@ -140,7 +140,7 @@ namespace ClangPowerTools
       var mLicenseController = new LicenseController();
       mLicenseController.CheckLicenseAsync().SafeFireAndForget();
 
-      string version = SettingsProvider.AccountModel.Version;
+      string version = SettingsProvider.GeneralSettingsModel.Version;
       ShowToolbar(version);
       UpdateVersionAsync(version).SafeFireAndForget();
 
@@ -313,12 +313,12 @@ namespace ClangPowerTools
 
     private async Task UpdateVersionAsync(string version)
     {
-      var accountModel = SettingsProvider.AccountModel;
+      var generalSettingsModel = SettingsProvider.GeneralSettingsModel;
 
       string currentVersion = PackageUtility.GetVersion();
       if (string.IsNullOrWhiteSpace(currentVersion) == false && 0 > string.Compare(version, currentVersion))
       {
-        accountModel.Version = currentVersion;
+        generalSettingsModel.Version = currentVersion;
 
         var settingsHandler = new SettingsHandler();
         settingsHandler.SaveSettings();

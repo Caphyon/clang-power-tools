@@ -81,10 +81,7 @@ namespace ClangPowerTools
         Email = loadedAccountModel.Email,
         LicenseType = loadedAccountModel.LicenseType,
         LicenseExpirationDate = loadedAccountModel.LicenseExpirationDate,
-        Version = loadedAccountModel.Version
       };
-
-      RefreshSettingsView?.Invoke();
     }
 
     /// <summary>
@@ -350,7 +347,7 @@ namespace ClangPowerTools
     private void MapClangOptionsToSettings(ClangOptions clangOptions)
     {
       var compilerSettingsModel = new CompilerSettingsModel();
-      var accountModel = new AccountModel();
+      var generalSettingsModel = new GeneralSettingsModel();
 
       compilerSettingsModel.CompileFlags = clangOptions.ClangFlagsCollection;
       compilerSettingsModel.FilesToIgnore = clangOptions.FilesToIgnore;
@@ -359,10 +356,10 @@ namespace ClangPowerTools
       compilerSettingsModel.ContinueOnError = clangOptions.Continue;
       compilerSettingsModel.ClangAfterMSVC = clangOptions.ClangCompileAfterVsCompile;
       compilerSettingsModel.VerboseMode = clangOptions.VerboseMode;
-      accountModel.Version = clangOptions.Version;
+      generalSettingsModel.Version = clangOptions.Version;
 
       SettingsProvider.CompilerSettingsModel = compilerSettingsModel;
-      SettingsProvider.AccountModel = accountModel;
+      SettingsProvider.GeneralSettingsModel = generalSettingsModel;
     }
 
     private void MapClangFormatOptionsToSettings(ClangFormatOptions clangFormat)
@@ -489,7 +486,6 @@ namespace ClangPowerTools
         Email = accountApiModel.email,
         LicenseType = licenseType,
         LicenseExpirationDate = DateTime.Parse(expirationDate).ToString("MMMM dd yyyy"),
-        Version = localAccountModel == null ? string.Empty : localAccountModel.Version
       };
 
       return accountModel;
