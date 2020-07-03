@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Controllers;
+using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.MVVM.Views;
 using System.Diagnostics;
 using System.Windows.Input;
@@ -83,6 +84,9 @@ namespace ClangPowerTools
     {
       var freeTrialController = new FreeTrialController();
       freeTrialController.Start();
+
+      SettingsProvider.AccountModel.LicenseType = LicenseType.Trial;
+
       licenseView.Close();
     }
 
