@@ -1,31 +1,12 @@
-﻿using ClangPowerTools.Events;
-using ClangPowerTools.Helpers;
-using ClangPowerTools.MVVM.LicenseValidation;
-using System;
+﻿using ClangPowerTools.MVVM.LicenseValidation;
 using System.Threading.Tasks;
 
 namespace ClangPowerTools.MVVM.Controllers
 {
   public class LicenseController
   {
-    #region Members
-
-    public static event EventHandler<LicenseEventArgs> OnLicenseStatusChanced;
-
-    #endregion
 
     #region Public Methods
-
-    public async Task<bool> CheckLicenseAsync()
-    {
-      bool networkConnection = await NetworkUtility.CheckInternetConnectionAsync();
-
-      bool tokenExists = await new LocalLicenseValidator().ValidateAsync();
-      bool licenseStatus = networkConnection ? await new PersonalLicenseValidator().ValidateAsync() : tokenExists;
-
-      OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(licenseStatus, tokenExists));
-      return licenseStatus;
-    }
 
     public async Task<LicenseType> GetUserLicenseTypeAsync()
     {
@@ -37,6 +18,9 @@ namespace ClangPowerTools.MVVM.Controllers
 
       if (new FreeTrialController().IsActive())
         return LicenseType.Trial;
+
+      if (await new LocalLicenseValidator().ValidateAsync())
+        return LicenseType.SessionExpired;
 
       return LicenseType.NoLicense;
     }
