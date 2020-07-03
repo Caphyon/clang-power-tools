@@ -137,9 +137,6 @@ namespace ClangPowerTools
       settingsHandler.InitializeSettings();
       await settingsHandler.InitializeAccountSettingsAsync();
 
-      var mLicenseController = new LicenseController();
-      mLicenseController.CheckLicenseAsync().SafeFireAndForget();
-
       string version = SettingsProvider.GeneralSettingsModel.Version;
       ShowToolbar(version);
       UpdateVersionAsync(version).SafeFireAndForget();
@@ -416,10 +413,6 @@ namespace ClangPowerTools
       PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
       PowerShellWrapper.ExitedHandler += mOutputWindowController.ClosedDataConnection;
-
-      AccountController.OnLicenseStatusChanced += mCommandController.OnLicenseChanged;
-      LicenseController.OnLicenseStatusChanced += mCommandController.OnLicenseChanged;
-
     }
 
     private void RegisterToVsEvents()
@@ -482,10 +475,6 @@ namespace ClangPowerTools
       PowerShellWrapper.DataHandler -= mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler -= mOutputWindowController.OutputDataErrorReceived;
       PowerShellWrapper.ExitedHandler -= mOutputWindowController.ClosedDataConnection;
-
-      AccountController.OnLicenseStatusChanced -= mCommandController.OnLicenseChanged;
-      LicenseController.OnLicenseStatusChanced -= mCommandController.OnLicenseChanged;
-
     }
 
     private void UnregisterFromVsEvents()

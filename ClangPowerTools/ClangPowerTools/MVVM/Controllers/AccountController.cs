@@ -1,6 +1,4 @@
-﻿using ClangPowerTools.Events;
-using ClangPowerTools.MVVM.LicenseValidation;
-using ClangPowerTools.MVVM.WebApi;
+﻿using ClangPowerTools.MVVM.WebApi;
 using Newtonsoft.Json;
 using System;
 using System.IO;
@@ -12,17 +10,10 @@ namespace ClangPowerTools.MVVM.Controllers
 {
   public class AccountController
   {
-    #region Members
-
-    public static event EventHandler<LicenseEventArgs> OnLicenseStatusChanced;
-
-    #endregion
-
     #region Public Methods
 
     public async Task<bool> LoginAsync(UserModel userModel)
     {
-      bool tokenExist = await new LocalLicenseValidator().ValidateAsync();
       try
       {
         HttpResponseMessage userAccoutHttpRestul = await GetUserAccountHttpRestulAsync(userModel);
@@ -32,23 +23,18 @@ namespace ClangPowerTools.MVVM.Controllers
           TokenModel tokenModel = await userAccoutHttpRestul.Content.ReadAsAsync<TokenModel>();
 
           if (string.IsNullOrWhiteSpace(tokenModel.jwt))
-          {
             return false;
-          }
 
           SaveToken(tokenModel.jwt);
-          OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(true, tokenExist));
           return true;
         }
         else
         {
-          OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(false, tokenExist));
           return false;
         }
       }
       catch (Exception)
       {
-        OnLicenseStatusChanced.Invoke(this, new LicenseEventArgs(false, tokenExist));
         return false;
       }
     }
@@ -57,7 +43,7 @@ namespace ClangPowerTools.MVVM.Controllers
 
     #region Private Methods
 
-    public async Task<HttpResponseMessage> GetUserAccountHttpRestulAsync(UserModel userModel)
+    private async Task<HttpResponseMessage> GetUserAccountHttpRestulAsync(UserModel userModel)
     {
       using StringContent content = new StringContent(SeralizeUserModel(userModel), Encoding.UTF8, "application/json");
       return await ApiUtility.ApiClient.PostAsync(WebApiUrl.loginUrl, content);
