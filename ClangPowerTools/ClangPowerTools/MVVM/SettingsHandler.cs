@@ -164,9 +164,9 @@ namespace ClangPowerTools
     }
 
 
-    private AccoutApiModel DeserializeUserAccountDetails(string json)
+    private AccountApiModel DeserializeUserAccountDetails(string json)
     {
-      var accoutApiModel = JsonConvert.DeserializeObject<AccoutApiModel>(json);
+      var accoutApiModel = JsonConvert.DeserializeObject<AccountApiModel>(json);
       return accoutApiModel;
     }
 
@@ -469,28 +469,16 @@ namespace ClangPowerTools
 
       // User profile
       var accountDetailsJson = await settingsApi.GetUserAccountProfileJsonAsync();
-
-      if (string.IsNullOrWhiteSpace(accountDetailsJson))
-        return null;
-
-      var accountApiModel = DeserializeUserAccountDetails(accountDetailsJson);
-      if (accountApiModel == null)
-        return null;
+      var accountApiModel = !string.IsNullOrWhiteSpace(accountDetailsJson) ?
+        DeserializeUserAccountDetails(accountDetailsJson) : new AccountApiModel();
 
       // License type
       LicenseType licenseType = await new LicenseController().GetUserLicenseTypeAsync();
 
       // License expiration date
-      var expirationDate = string.Empty;
       var licenseDetailsJson = await settingsApi.GetLicenseDetailsJsonAsync();
-      if (!string.IsNullOrWhiteSpace(licenseDetailsJson))
-      {
-        expirationDate = !string.IsNullOrWhiteSpace(licenseDetailsJson) ?
+      var expirationDate = !string.IsNullOrWhiteSpace(licenseDetailsJson) ?
         DeserializeLicenseDetails(licenseDetailsJson).expires : string.Empty;
-      }
-
-      // Version from file
-      var localAccountModel = LoadLocalAccountSettings();
 
       // Create the complete Account model object
       var accountModel = new AccountModel
@@ -498,7 +486,8 @@ namespace ClangPowerTools
         UserName = $"{accountApiModel.firstname} {accountApiModel.lastname}",
         Email = accountApiModel.email,
         LicenseType = licenseType,
-        LicenseExpirationDate = DateTime.Parse(expirationDate).ToString("MMMM dd yyyy"),
+        LicenseExpirationDate = !string.IsNullOrWhiteSpace(expirationDate) ?
+          DateTime.Parse(expirationDate).ToString("MMMM dd yyyy") : string.Empty
       };
 
       return accountModel;
