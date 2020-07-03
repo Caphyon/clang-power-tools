@@ -160,7 +160,8 @@ namespace ClangPowerTools
         FreeTrialController freeTrialController = new FreeTrialController();
         freeTrialController.MarkAsExpired();
 
-        SettingsProvider.AccountModel.LicenseType = await new LicenseController().GetUserLicenseTypeAsync();
+        SettingsHandler settingsHandler = new SettingsHandler();
+        await settingsHandler.LicenseInfoUpdateAsync();
       }
       else
       {
