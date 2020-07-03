@@ -17,8 +17,10 @@
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Styles/AppResources.xaml" />
       </ResourceDictionary.MergedDictionaries>
+      <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </ResourceDictionary>
   </UserControl.Resources>
+
 
   <Grid>
     <Grid.Background>
@@ -160,7 +162,8 @@
       VerticalAlignment="Center"
       Background="Transparent"
       Command="{Binding LogoutCommand}"
-      Style="{StaticResource SettingsButton}">
+      Style="{StaticResource SettingsButton}"
+      Visibility="{Binding Path=DisplayLogout, Converter={StaticResource BoolToVis}}">
       <Button.Content>
         <StackPanel Orientation="Horizontal">
           <Image
@@ -176,6 +179,38 @@
             FontSize="15"
             Foreground="#9E005A"
             Text="Log out" />
+        </StackPanel>
+      </Button.Content>
+    </Button>
+
+    <Button
+      Grid.Row="4"
+      Grid.Column="2"
+      Grid.ColumnSpan="2"
+      Width="120"
+      Height="20"
+      Margin="21,50,0,0"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center"
+      Background="Transparent"
+      Command="{Binding LogoutCommand}"
+      Style="{StaticResource SettingsButton}"
+      Visibility="{Binding Path=DisplayCreateAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
+      <Button.Content>
+        <StackPanel Orientation="Horizontal">
+          <Image
+            Width="17"
+            Height="25"
+            VerticalAlignment="Center"
+            Source="{StaticResource LogoutIcon}" />
+          <TextBlock
+            Margin="3,0,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            FontFamily="SegoeUI"
+            FontSize="15"
+            Foreground="#9E005A"
+            Text="Create Account" />
         </StackPanel>
       </Button.Content>
     </Button>

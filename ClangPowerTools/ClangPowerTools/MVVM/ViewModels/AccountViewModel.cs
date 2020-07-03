@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.MVVM.Views;
 using System.ComponentModel;
@@ -38,6 +39,7 @@ namespace ClangPowerTools
     {
       get
       {
+        SetAccountNameInTrial();
         return accountModel;
       }
       set
@@ -68,6 +70,10 @@ namespace ClangPowerTools
       }
     }
 
+    public bool DisplayLogout { get; set; }
+
+    public bool DisplayCreateAccount { get; set; }
+
     #endregion
 
 
@@ -91,9 +97,27 @@ namespace ClangPowerTools
       if (File.Exists(path))
         File.Delete(path);
 
+      SettingsProvider.AccountModel.LicenseType = LicenseType.SessionExpired;
       SettingsProvider.SettingsView.Close();
+
       LoginView loginView = new LoginView();
       loginView.ShowDialog();
+    }
+
+
+    private void SetAccountNameInTrial()
+    {
+      if (accountModel.LicenseType == LicenseType.Trial)
+      {
+        accountModel.UserName = "Trial Account";
+        DisplayCreateAccount = true;
+        DisplayLogout = false;
+      }
+      else
+      {
+        DisplayCreateAccount = false;
+        DisplayLogout = true;
+      }
     }
 
     #endregion
