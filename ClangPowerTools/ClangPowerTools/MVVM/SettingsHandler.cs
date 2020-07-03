@@ -180,6 +180,14 @@ namespace ClangPowerTools
       }
     }
 
+    public async Task UserProfileInfoUpdateAsync()
+    {
+      var accountModel = await GetUserProfileAsync();
+
+      SettingsProvider.AccountModel.UserName = $"{accountModel.firstname} {accountModel.lastname}";
+      SettingsProvider.AccountModel.Email = accountModel.email;
+    }
+
     public string GetTrialLicenseExpirationDate()
     {
       var expirationDate = new FreeTrialController().GetExpirationDateAsString();
@@ -477,12 +485,8 @@ namespace ClangPowerTools
     /// <returns>The loaded user profile model</returns>
     private async Task<AccountModel> LoadServerAccountSettingsAsync()
     {
-      var settingsApi = new SettingsApi();
-
       // User profile
-      var accountDetailsJson = await settingsApi.GetUserAccountProfileJsonAsync();
-      var accountApiModel = !string.IsNullOrWhiteSpace(accountDetailsJson) ?
-        DeserializeUserAccountDetails(accountDetailsJson) : new AccountApiModel();
+      var accountApiModel = await GetUserProfileAsync();
 
       // License
       KeyValuePair<LicenseType, string> licenseInfo = await GetLicenseInfoAsync();
@@ -498,6 +502,19 @@ namespace ClangPowerTools
       };
 
       return accountModel;
+    }
+
+    /// <summary>
+    /// Get the user profile information from the server
+    /// </summary>
+    /// <returns>User profile data as a model object</returns>
+    private async Task<AccountApiModel> GetUserProfileAsync()
+    {
+      var settingsApi = new SettingsApi();
+      var accountDetailsJson = await settingsApi.GetUserProfileJsonAsync();
+
+      return !string.IsNullOrWhiteSpace(accountDetailsJson) ?
+        DeserializeUserAccountDetails(accountDetailsJson) : new AccountApiModel();
     }
 
     /// <summary>
