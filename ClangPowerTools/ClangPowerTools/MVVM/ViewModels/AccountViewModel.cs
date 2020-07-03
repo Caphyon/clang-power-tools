@@ -93,7 +93,9 @@ namespace ClangPowerTools
       if (File.Exists(path))
         File.Delete(path);
 
+      SettingsProvider.AccountModel.LicenseType = LicenseType.SessionExpired;
       SettingsProvider.SettingsView.Close();
+
       LoginView loginView = new LoginView();
       loginView.ShowDialog();
     }
