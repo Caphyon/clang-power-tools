@@ -156,8 +156,11 @@ namespace ClangPowerTools
       if (isAccountActive)
       {
         loginView.Close();
+
         FreeTrialController freeTrialController = new FreeTrialController();
         freeTrialController.MarkAsExpired();
+
+        SettingsProvider.AccountModel.LicenseType = await new LicenseController().GetUserLicenseTypeAsync();
       }
       else
       {
