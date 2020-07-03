@@ -28,12 +28,33 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public bool MarkAsExpired() => registryUtility.WriteCurrentUserKey(keyName, expiredDate);
 
-    public bool IsActive()
+    public string GetStartTime()
     {
       if (WasEverInTrial() == false)
-        return false;
+        return string.Empty;
 
-      var freeTrialStartTimeAsString = registryUtility.ReadCurrentUserdKey(keyName);
+      return registryUtility.ReadCurrentUserdKey(keyName);
+    }
+
+    public string GetExpirationDateAsString()
+    {
+      var freeTrialStartTimeAsString = GetStartTime();
+      if (string.IsNullOrWhiteSpace(freeTrialStartTimeAsString))
+        return string.Empty;
+
+      if (WasEverInTrial() == false)
+        return string.Empty;
+
+      var freeTrialStartTime = DateTime.Parse(freeTrialStartTimeAsString);
+      var expirationDate = freeTrialStartTime.AddDays(trialDays);
+
+      return expirationDate.ToString();
+    }
+
+    public bool IsActive()
+    {
+      var freeTrialStartTimeAsString = GetStartTime();
+
       if (string.IsNullOrWhiteSpace(freeTrialStartTimeAsString))
         return false;
 
