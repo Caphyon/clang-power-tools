@@ -168,8 +168,24 @@ namespace ClangPowerTools
       KeyValuePair<LicenseType, string> licenseInfo = await GetLicenseInfoAsync();
 
       SettingsProvider.AccountModel.LicenseType = licenseInfo.Key;
-      SettingsProvider.AccountModel.LicenseExpirationDate = !string.IsNullOrWhiteSpace(licenseInfo.Value) ?
-        DateTime.Parse(licenseInfo.Value).ToString("MMMM dd yyyy") : string.Empty;
+
+      if (licenseInfo.Key == LicenseType.Trial)
+      {
+        SettingsProvider.AccountModel.LicenseExpirationDate = GetTrialLicenseExpirationDate();
+      }
+      else
+      {
+        SettingsProvider.AccountModel.LicenseExpirationDate = !string.IsNullOrWhiteSpace(licenseInfo.Value) ?
+          DateTime.Parse(licenseInfo.Value).ToString("MMMM dd yyyy") : "Never";
+      }
+    }
+
+    public string GetTrialLicenseExpirationDate()
+    {
+      var expirationDate = new FreeTrialController().GetExpirationDateAsString();
+
+      return !string.IsNullOrWhiteSpace(expirationDate) ?
+        DateTime.Parse(expirationDate).ToString("MMMM dd yyyy") : string.Empty;
     }
 
     #endregion
@@ -478,7 +494,7 @@ namespace ClangPowerTools
         Email = accountApiModel.email,
         LicenseType = licenseInfo.Key,
         LicenseExpirationDate = !string.IsNullOrWhiteSpace(licenseInfo.Value) ?
-          DateTime.Parse(licenseInfo.Value).ToString("MMMM dd yyyy") : string.Empty
+          DateTime.Parse(licenseInfo.Value).ToString("MMMM dd yyyy") : "Never"
       };
 
       return accountModel;
