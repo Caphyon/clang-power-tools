@@ -86,6 +86,7 @@ namespace ClangPowerTools
       freeTrialController.Start();
 
       SettingsProvider.AccountModel.LicenseType = LicenseType.Trial;
+      SettingsProvider.AccountModel.LicenseExpirationDate = new SettingsHandler().GetTrialLicenseExpirationDate();
 
       licenseView.Close();
     }
