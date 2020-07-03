@@ -88,7 +88,6 @@
     <Compile Include="Export Config\ClangFormatFile.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Events\HasEncodingErrorEventArgs.cs" />
-    <Compile Include="Events\LicenseEventArgs.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\JoinUtility.cs" />
     <Compile Include="Helpers\RegistryUtility.cs" />
