@@ -6,6 +6,7 @@ using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Controllers;
+using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
 using EnvDTE;
@@ -115,7 +116,7 @@ namespace ClangPowerTools
       var freeTrialController = new FreeTrialController();
 
       // First app install - choose license
-      if (freeTrialController.WasEverInTrial() == false && activeAccount == false)
+      if (SettingsProvider.AccountModel.LicenseType == LicenseType.NoLicense)
       {
         LicenseView licenseView = new LicenseView();
         licenseView.ShowDialog();
@@ -123,7 +124,7 @@ namespace ClangPowerTools
       }
 
       // Trial expired
-      if (freeTrialController.IsActive() == false && activeAccount == false && tokenExists == false)
+      if (freeTrialController.IsActive() == false && SettingsProvider.AccountModel.LicenseType == LicenseType.Trial)
       {
         TrialExpiredView trialExpiredView = new TrialExpiredView();
         trialExpiredView.ShowDialog();
@@ -131,7 +132,7 @@ namespace ClangPowerTools
       }
 
       // Session Expired
-      if (freeTrialController.IsActive() == false && activeAccount == false && tokenExists == true)
+      if (SettingsProvider.AccountModel.LicenseType == LicenseType.NoLicense && tokenExists == true)
       {
         LoginView loginView = new LoginView();
         loginView.ShowDialog();
