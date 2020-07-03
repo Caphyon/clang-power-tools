@@ -70,6 +70,10 @@ namespace ClangPowerTools
       }
     }
 
+    public bool DisplayLogout { get; set; }
+
+    public bool DisplayCreateAccount { get; set; }
+
     #endregion
 
 
@@ -106,6 +110,13 @@ namespace ClangPowerTools
       if (accountModel.LicenseType == LicenseType.Trial)
       {
         accountModel.UserName = "Trial Account";
+        DisplayCreateAccount = true;
+        DisplayLogout = false;
+      }
+      else
+      {
+        DisplayCreateAccount = false;
+        DisplayLogout = true;
       }
     }
 
