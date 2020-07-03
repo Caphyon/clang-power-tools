@@ -163,17 +163,13 @@ namespace ClangPowerTools
       RefreshSettingsView?.Invoke();
     }
 
-
-    private AccountApiModel DeserializeUserAccountDetails(string json)
+    public async Task LicenseInfoUpdateAsync()
     {
-      var accoutApiModel = JsonConvert.DeserializeObject<AccountApiModel>(json);
-      return accoutApiModel;
-    }
+      KeyValuePair<LicenseType, string> licenseInfo = await GetLicenseInfoAsync();
 
-    private LicenseModel DeserializeLicenseDetails(string json)
-    {
-      var userLicenseCollection = JsonConvert.DeserializeObject<List<LicenseModel>>(json);
-      return userLicenseCollection[0];
+      SettingsProvider.AccountModel.LicenseType = licenseInfo.Key;
+      SettingsProvider.AccountModel.LicenseExpirationDate = !string.IsNullOrWhiteSpace(licenseInfo.Value) ?
+        DateTime.Parse(licenseInfo.Value).ToString("MMMM dd yyyy") : string.Empty;
     }
 
     #endregion
@@ -472,25 +468,53 @@ namespace ClangPowerTools
       var accountApiModel = !string.IsNullOrWhiteSpace(accountDetailsJson) ?
         DeserializeUserAccountDetails(accountDetailsJson) : new AccountApiModel();
 
-      // License type
-      LicenseType licenseType = await new LicenseController().GetUserLicenseTypeAsync();
-
-      // License expiration date
-      var licenseDetailsJson = await settingsApi.GetLicenseDetailsJsonAsync();
-      var expirationDate = !string.IsNullOrWhiteSpace(licenseDetailsJson) ?
-        DeserializeLicenseDetails(licenseDetailsJson).expires : string.Empty;
+      // License
+      KeyValuePair<LicenseType, string> licenseInfo = await GetLicenseInfoAsync();
 
       // Create the complete Account model object
       var accountModel = new AccountModel
       {
         UserName = $"{accountApiModel.firstname} {accountApiModel.lastname}",
         Email = accountApiModel.email,
-        LicenseType = licenseType,
-        LicenseExpirationDate = !string.IsNullOrWhiteSpace(expirationDate) ?
-          DateTime.Parse(expirationDate).ToString("MMMM dd yyyy") : string.Empty
+        LicenseType = licenseInfo.Key,
+        LicenseExpirationDate = !string.IsNullOrWhiteSpace(licenseInfo.Value) ?
+          DateTime.Parse(licenseInfo.Value).ToString("MMMM dd yyyy") : string.Empty
       };
 
       return accountModel;
+    }
+
+    /// <summary>
+    /// Get the user license type and the expiration date
+    /// </summary>
+    /// <returns>A KeyValuePair with the license type as the key and license expiration date as the value</returns>
+    private async Task<KeyValuePair<LicenseType, string>> GetLicenseInfoAsync()
+    {
+      // License type
+      LicenseType licenseType = await new LicenseController().GetUserLicenseTypeAsync();
+
+      // License expiration date
+      var settingsApi = new SettingsApi();
+      var licenseDetailsJson = await settingsApi.GetLicenseDetailsJsonAsync();
+      // check for invalid return type after license request
+      // check the length because personal license will return "[]" - empty json array 
+      var expirationDate = !string.IsNullOrWhiteSpace(licenseDetailsJson) && licenseDetailsJson.Length > 3 ?
+        DeserializeLicenseDetails(licenseDetailsJson).expires : string.Empty;
+
+      return new KeyValuePair<LicenseType, string>(licenseType, expirationDate);
+    }
+
+
+    private AccountApiModel DeserializeUserAccountDetails(string json)
+    {
+      var accoutApiModel = JsonConvert.DeserializeObject<AccountApiModel>(json);
+      return accoutApiModel;
+    }
+
+    private LicenseModel DeserializeLicenseDetails(string json)
+    {
+      var userLicenseCollection = JsonConvert.DeserializeObject<List<LicenseModel>>(json);
+      return userLicenseCollection[0];
     }
 
     #endregion
