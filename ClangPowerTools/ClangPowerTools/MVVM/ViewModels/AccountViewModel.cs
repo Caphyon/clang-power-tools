@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.MVVM.Views;
 using System.ComponentModel;
@@ -38,6 +39,7 @@ namespace ClangPowerTools
     {
       get
       {
+        SetAccountNameInTrial();
         return accountModel;
       }
       set
@@ -94,6 +96,15 @@ namespace ClangPowerTools
       SettingsProvider.SettingsView.Close();
       LoginView loginView = new LoginView();
       loginView.ShowDialog();
+    }
+
+
+    private void SetAccountNameInTrial()
+    {
+      if (accountModel.LicenseType == LicenseType.Trial)
+      {
+        accountModel.UserName = "Trial Account";
+      }
     }
 
     #endregion
