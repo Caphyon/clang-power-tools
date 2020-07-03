@@ -6,6 +6,7 @@ using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Controllers;
+using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
 using EnvDTE;
@@ -27,7 +28,6 @@ namespace ClangPowerTools
 
     public bool running = false;
     public bool vsBuildRunning = false;
-    public bool activeAccount = true;
     public bool tokenExists = false;
     public bool clearOutputOnFormat = false;
 
@@ -45,12 +45,12 @@ namespace ClangPowerTools
     private int currentCommand;
     private bool mSaveCommandWasGiven = false;
     private bool mFormatAfterTidyFlag = false;
-    private bool isActiveDocument = true;
     private string oldActiveDocumentName = null;
 
     private readonly object mutex = new object();
 
     #endregion
+
 
     #region Constructor
 
@@ -64,6 +64,7 @@ namespace ClangPowerTools
     }
 
     #endregion
+
 
     #region Public Methods
 
@@ -115,7 +116,7 @@ namespace ClangPowerTools
       var freeTrialController = new FreeTrialController();
 
       // First app install - choose license
-      if (freeTrialController.WasEverInTrial() == false && activeAccount == false)
+      if (SettingsProvider.AccountModel.LicenseType == LicenseType.NoLicense)
       {
         LicenseView licenseView = new LicenseView();
         licenseView.ShowDialog();
@@ -123,7 +124,7 @@ namespace ClangPowerTools
       }
 
       // Trial expired
-      if (freeTrialController.IsActive() == false && activeAccount == false && tokenExists == false)
+      if (SettingsProvider.AccountModel.LicenseType == LicenseType.Trial && freeTrialController.IsActive() == false)
       {
         TrialExpiredView trialExpiredView = new TrialExpiredView();
         trialExpiredView.ShowDialog();
@@ -131,7 +132,7 @@ namespace ClangPowerTools
       }
 
       // Session Expired
-      if (freeTrialController.IsActive() == false && activeAccount == false && tokenExists == true)
+      if (SettingsProvider.AccountModel.LicenseType == LicenseType.SessionExpired)
       {
         LoginView loginView = new LoginView();
         loginView.ShowDialog();
@@ -375,7 +376,6 @@ namespace ClangPowerTools
       {
         DisplayNoActiveDocumentMessage(true);
       }
-      isActiveDocument = e.IsActiveDocument;
     }
 
     private void OnClangCommandMessageTransfer(ClangCommandMessageEventArgs e)
@@ -451,13 +451,6 @@ namespace ClangPowerTools
 
     #region Events
 
-
-    public void OnLicenseChanged(object sender, LicenseEventArgs e)
-    {
-      activeAccount = e.IsLicenseActive;
-      tokenExists = e.TokenExists;
-    }
-
     internal void OnItemIgnore(object sender, ClangCommandMessageEventArgs e)
     {
       ClangCommandMessageEvent?.Invoke(this, e);
@@ -518,7 +511,6 @@ namespace ClangPowerTools
         command.Visible = command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !running : running;
       }
     }
-
 
     /// <summary>
     /// Set the VS running build flag to true when the VS build begin.

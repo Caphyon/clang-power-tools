@@ -18,6 +18,9 @@ namespace ClangPowerTools.MVVM.LicenseValidation
     [EnumMember(Value = "Trial")]
     Trial,
 
+    [EnumMember(Value = "SessionExpired")]
+    SessionExpired,
+
     [EnumMember(Value = "NoLicense")]
     NoLicense
   }

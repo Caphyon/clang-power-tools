@@ -56,7 +56,7 @@ namespace ClangPowerTools
       return false;
     }
 
-    public async Task<string> GetUserAccountProfileJsonAsync()
+    public async Task<string> GetUserProfileJsonAsync()
     {
       HttpResponseMessage httpResponseMessage = await GetUserProfileDetailsAsync();
       if (!httpResponseMessage.IsSuccessStatusCode)

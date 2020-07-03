@@ -162,6 +162,7 @@ namespace ClangPowerTools
 
         SettingsHandler settingsHandler = new SettingsHandler();
         await settingsHandler.LicenseInfoUpdateAsync();
+        await settingsHandler.UserProfileInfoUpdateAsync();
       }
       else
       {
