@@ -126,7 +126,8 @@ namespace ClangPowerTools
       }
       catch (Exception e)
       {
-        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //TODO find solution for DTE not intialized correctly sometimes
+       // MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
 
       return document;
