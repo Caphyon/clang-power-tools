@@ -77,7 +77,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 6.0.1" />
+        Text="version 6.1" />
 
       <ListView
         Grid.Row="3"
@@ -103,7 +103,7 @@
 
         <!--  What's new  -->
         <TextBox
-          Margin="5,35,0,0"
+          Margin="5,20,0,0"
           HorizontalAlignment="Left"
           Background="Transparent"
           BorderThickness="0"
@@ -118,7 +118,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Search functionality in the Clang-Format editor"
+          Text="• Team Cloud Settings - a faster way to store and share your configuration"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -128,7 +128,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Detect .clang-tidy configuration file when any Tidy command is launched"
+          Text="• Quick access to your profile information from the settings panel"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -138,7 +138,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Option to display the output window after running a command"
+          Text="• Clang-Format can be used to format C# files"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -148,7 +148,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Run Clang-Format on files that don't belong to the opened project"
+          Text="• Microsoft style integration for Clang-Format"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -158,8 +158,21 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Option to enable only the recommended default Clang-Tidy checks"
+          Text="• Possibility to select multiples Clang-Tidy predefined checks at once"
           TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Clang-Format can be configured using the '_clang-format' file"
+          TextWrapping="Wrap" />
+
+
+
 
 
         <!--  Bug Fixes  -->
@@ -179,7 +192,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Directory.Build.Props is ignored when it contains the PlatformConfigurations node"
+          Text="• Exported Clang Tidy checks do not disable the default ones"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -189,7 +202,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Focus changes to the error output  after running a command"
+          Text="• Reset Settings does not refresh the panels; it requires a window reload"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -199,7 +212,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Crash when deselecting all Tidy checks"
+          Text="• Tooltip information is shown just over the option name"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -209,7 +222,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Export Tidy file doesn't include checks"
+          Text="• The output window is not cleared after running Clang-Format"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -219,7 +232,17 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Select button is active even when PredefinedChecks is not selected"
+          Text="• Fallback style is enabled for all the Clang-Format Style options"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Editor focus is lost when displaying a log message"
           TextWrapping="Wrap" />
 
       </ListView>
