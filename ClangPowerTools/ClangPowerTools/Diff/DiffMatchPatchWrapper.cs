@@ -50,7 +50,6 @@ namespace ClangPowerTools
 
     #region Methods
 
-
     /// <summary>
     /// An array of differences is computed which describe the transformation of text1 into text2. 
     /// Each difference is an array of Diff objects. The first element specifies if it is an insertion (1), 
@@ -59,6 +58,18 @@ namespace ClangPowerTools
     public void Diff(string text1, string text2)
     {
       diffs = diffMatchPatch.diff_main(text1, text2);
+    }
+
+    /// <summary>
+    /// A diff of two unrelated texts can be filled with coincidental matches. 
+    /// For example, the diff of "mouse" and "sofas" is [(-1, "m"), (1, "s"), (0, "o"), (-1, "u"), (1, "fa"), (0, "s"), (-1, "e")]. 
+    /// While this is the optimum diff, it is difficult for humans to understand. Semantic cleanup rewrites the diff, expanding it into a more intelligible format. 
+    /// The above example would become: [(-1, "mouse"), (1, "sofas")]. If a diff is to be human-readable, it should be passed to diff_cleanupSemantic
+    /// </summary>
+    public void CleanupSemantic()
+    {
+      if (diffs == null) return;
+      diffMatchPatch.diff_cleanupSemantic(diffs);
     }
 
     /// <summary>
@@ -71,6 +82,7 @@ namespace ClangPowerTools
       if (diffs == null) return -1;
       return diffMatchPatch.diff_levenshtein(diffs);
     }
+
 
     #endregion
 
