@@ -107,7 +107,7 @@ namespace ClangPowerTools
     /// Takes a diff array and returns a pretty HTML sequence.
     /// </summary>
     /// <returns>Html page as string or string.Empty if the Diff(text1, text2) was not run previously</returns>
-    public string DiffPrettyHtml()
+    public string DiffAsHtml()
     {
       if (diffs == null) return string.Empty;
       return diffMatchPatch.diff_prettyHtml(diffs);
