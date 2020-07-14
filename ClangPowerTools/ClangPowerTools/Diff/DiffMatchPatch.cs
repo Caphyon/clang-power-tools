@@ -23,7 +23,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace ClnagPowerTools.DiffMatchPatch
+namespace Google.DiffMatchPatch
 {
   internal static class CompatibilityExtensions
   {
