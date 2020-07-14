@@ -1,4 +1,4 @@
-﻿using Google.DiffMatchPatch;
+﻿using Compare.DiffMatchPatch;
 using System.Collections.Generic;
 
 namespace ClangPowerTools
