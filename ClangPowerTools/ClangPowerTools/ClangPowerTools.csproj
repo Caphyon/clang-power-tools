@@ -82,6 +82,8 @@
     <Compile Include="Commands\BackgroundTidy\DataProcessor.cs" />
     <Compile Include="Commands\BackgroundTidy\PowerShellWrapperBackground.cs" />
     <Compile Include="Commands\IgnoreCommand.cs" />
+    <Compile Include="Diff\DiffMatchPatch.cs" />
+    <Compile Include="Diff\DiffMatchPatchWrapper.cs" />
     <Compile Include="Error\TaskErrorViewModel.cs" />
     <Compile Include="Events\BoolEventArgs.cs" />
     <Compile Include="Events\FormatCommandEventArgs.cs" />
@@ -530,6 +532,7 @@
     <Reference Include="System.Threading.Thread, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Thread.4.3.0\lib\net46\System.Threading.Thread.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\MvvmLightLibs.5.4.1.1\lib\net45\System.Windows.Interactivity.dll</HintPath>
