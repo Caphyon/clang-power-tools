@@ -83,8 +83,8 @@
     <Compile Include="Commands\BackgroundTidy\PowerShellWrapperBackground.cs" />
     <Compile Include="Commands\IgnoreCommand.cs" />
     <Compile Include="Commands\JsonCompilationDatabaseCommand.cs" />
-    <Compile Include="Diff\DiffMatchPatch.cs" />
-    <Compile Include="Diff\DiffMatchPatchWrapper.cs" />
+    <Compile Include="Compare\DiffMatchPatch.cs" />
+    <Compile Include="Compare\DiffMatchPatchWrapper.cs" />
     <Compile Include="Error\TaskErrorViewModel.cs" />
     <Compile Include="Events\BoolEventArgs.cs" />
     <Compile Include="Events\FormatCommandEventArgs.cs" />
