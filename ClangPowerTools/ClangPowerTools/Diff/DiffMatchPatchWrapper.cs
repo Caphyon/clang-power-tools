@@ -60,12 +60,15 @@ namespace ClangPowerTools
       diffs = diffMatchPatch.diff_main(text1, text2);
     }
 
+
     /// <summary>
     /// A diff of two unrelated texts can be filled with coincidental matches. 
-    /// For example, the diff of "mouse" and "sofas" is [(-1, "m"), (1, "s"), (0, "o"), (-1, "u"), (1, "fa"), (0, "s"), (-1, "e")]. 
-    /// While this is the optimum diff, it is difficult for humans to understand. Semantic cleanup rewrites the diff, expanding it into a more intelligible format. 
-    /// The above example would become: [(-1, "mouse"), (1, "sofas")]. If a diff is to be human-readable, it should be passed to diff_cleanupSemantic
     /// </summary>
+    /* For example, the diff of "mouse" and "sofas" is [(-1, "m"), (1, "s"), (0, "o"), (-1, "u"), (1, "fa"), (0, "s"), (-1, "e")]. 
+    While this is the optimum diff, it is difficult for humans to understand. Semantic cleanup rewrites the diff, expanding it into 
+    a more intelligible format. The above example would become: [(-1, "mouse"), (1, "sofas")]. If a diff is to be human-readable, it 
+    should be passed to diff_cleanupSemantic */
+
     public void CleanupSemantic()
     {
       if (diffs == null) return;
@@ -73,13 +76,14 @@ namespace ClangPowerTools
     }
 
     /// <summary>
-    /// This function is similar to diff_cleanupSemantic, except that instead of optimising a diff to be human-readable, it optimises the diff to be efficient for machine processing. 
-    /// The results of both cleanup types are often the same. <br/>
-    /// The efficiency cleanup is based on the observation that a diff made up of large numbers of small diffs edits may take longer to process (in downstream applications) or take more 
-    /// capacity to store or transmit than a smaller number of larger diffs. The diff_match_patch.Diff_EditCost property sets what the cost of handling a new edit is in terms of handling 
-    /// extra characters in an existing edit. The default value is 4, which means if expanding the length of a diff by three characters can eliminate one edit, then that optimisation will 
-    /// reduce the total costs.
+    /// This function is similar to diff_cleanupSemantic, except that instead of optimising a diff to be human-readable, it optimises 
+    /// the diff to be efficient for machine processing. 
     /// </summary>
+    /* The results of both cleanup types are often the same. The efficiency cleanup is based on the observation that a diff made up of 
+    large numbers of small diffs edits may take longer to process (in downstream applications) or take more capacity to store or transmit than a 
+    smaller number of larger diffs. The diff_match_patch.Diff_EditCost property sets what the cost of handling a new edit is in terms of handling 
+    extra characters in an existing edit. The default value is 4, which means if expanding the length of a diff by three characters can eliminate 
+    one edit, then that optimisation will reduce the total costs. */
     public void CleanupEfficiency()
     {
       if (diffs == null) return;
@@ -90,7 +94,7 @@ namespace ClangPowerTools
     /// Given a diff, measure its Levenshtein distance in terms of the number of inserted, deleted or substituted characters. 
     /// The minimum distance is 0 which means equality, the maximum distance is the length of the longer string.
     /// </summary>
-    /// <returns>It returns -1 if the diffs are null</returns>
+    /// <returns>Number of changes or -1 if the diffs are null</returns>
     public int DiffLevenshtein()
     {
       if (diffs == null) return -1;
@@ -99,16 +103,13 @@ namespace ClangPowerTools
 
 
     /// <summary>
-    /// Takes a diff array and returns a pretty HTML sequence. This function is mainly intended as an example from which to 
-    /// write ones own display functions
+    /// Takes a diff array and returns a pretty HTML sequence.
     /// </summary>
-    /// <returns></returns>
     public string DiffPrettyHtml()
     {
       if (diffs == null) return string.Empty;
       return diffMatchPatch.diff_prettyHtml(diffs);
     }
-
 
     #endregion
 
