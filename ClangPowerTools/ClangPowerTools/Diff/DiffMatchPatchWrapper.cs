@@ -73,6 +73,20 @@ namespace ClangPowerTools
     }
 
     /// <summary>
+    /// This function is similar to diff_cleanupSemantic, except that instead of optimising a diff to be human-readable, it optimises the diff to be efficient for machine processing. 
+    /// The results of both cleanup types are often the same. <br/>
+    /// The efficiency cleanup is based on the observation that a diff made up of large numbers of small diffs edits may take longer to process (in downstream applications) or take more 
+    /// capacity to store or transmit than a smaller number of larger diffs. The diff_match_patch.Diff_EditCost property sets what the cost of handling a new edit is in terms of handling 
+    /// extra characters in an existing edit. The default value is 4, which means if expanding the length of a diff by three characters can eliminate one edit, then that optimisation will 
+    /// reduce the total costs.
+    /// </summary>
+    public void CleanupEfficiency()
+    {
+      if (diffs == null) return;
+      diffMatchPatch.diff_cleanupEfficiency(diffs);
+    }
+
+    /// <summary>
     /// Given a diff, measure its Levenshtein distance in terms of the number of inserted, deleted or substituted characters. 
     /// The minimum distance is 0 which means equality, the maximum distance is the length of the longer string.
     /// </summary>
