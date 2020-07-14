@@ -56,7 +56,6 @@ namespace ClangPowerTools
     #region Public Methods
 
     /// <summary>
-    /// 
     /// An array of differences is computed which describe the transformation of text1 into text2. 
     /// Each difference is an array of Diff objects. The first element specifies if it is an insertion (1), 
     /// a deletion (-1) or an equality (0). The second element specifies the affected text.
@@ -68,11 +67,10 @@ namespace ClangPowerTools
     }
 
     /// <summary>
-    /// A diff of two unrelated texts can be filled with coincidental matches. 
+    /// A semantic cleanup rewrites the diff, expanding it into a more human-readable format.
     /// </summary>
     /* For example, the diff of "mouse" and "sofas" is [(-1, "m"), (1, "s"), (0, "o"), (-1, "u"), (1, "fa"), (0, "s"), (-1, "e")]. 
-    While this is the optimum diff, it is difficult for humans to understand. Semantic cleanup rewrites the diff, expanding it into 
-    a more intelligible format. The above example would become: [(-1, "mouse"), (1, "sofas")]. If a diff is to be human-readable, it 
+    While this is the optimum diff, it is difficult for humans to understand. The above example would become: [(-1, "mouse"), (1, "sofas")]. If a diff is to be human-readable, it 
     should be passed to diff_cleanupSemantic */
     public void CleanupSemantic()
     {
@@ -81,8 +79,7 @@ namespace ClangPowerTools
     }
 
     /// <summary>
-    /// This function is similar to diff_cleanupSemantic, except that instead of optimising a diff to be human-readable,
-    /// it optimises the diff to be efficient for machine processing. 
+    /// A cleanup rewrites the diff, it optimises the diff to be efficient for machine processing. 
     /// </summary>
     /* The results of both cleanup types are often the same. The efficiency cleanup is based on the observation that a diff made up of 
     large numbers of small diffs edits may take longer to process (in downstream applications) or take more capacity to store or transmit than a 
@@ -99,7 +96,7 @@ namespace ClangPowerTools
     /// Given a diff, measure its Levenshtein distance in terms of the number of inserted, deleted or substituted characters. 
     /// The minimum distance is 0 which means equality, the maximum distance is the length of the longer string.
     /// </summary>
-    /// <returns>Number of changes or -1 if the diffs are null</returns>
+    /// <returns>Number of changes or -1 if the Diff(text1, text2) was not run previously</returns>
     public int DiffLevenshtein()
     {
       if (diffs == null) return -1;
@@ -109,6 +106,7 @@ namespace ClangPowerTools
     /// <summary>
     /// Takes a diff array and returns a pretty HTML sequence.
     /// </summary>
+    /// <returns>Html page as string or string.Empty if the Diff(text1, text2) was not run previously</returns>
     public string DiffPrettyHtml()
     {
       if (diffs == null) return string.Empty;
