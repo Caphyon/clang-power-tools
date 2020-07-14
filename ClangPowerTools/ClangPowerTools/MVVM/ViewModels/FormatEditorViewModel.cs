@@ -58,6 +58,12 @@ namespace ClangPowerTools
       InitializeStyleOptions(FormatOptionsProvider.CustomOptionsData);
     }
 
+    //Empty constructor used for XAML IntelliSense
+    public FormatEditorViewModel()
+    {
+
+    }
+
     #endregion
 
     #region Properties
