@@ -1,0 +1,25 @@
+﻿<Window
+  x:Class="ClangPowerTools.MVVM.Views.DiffWindow"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:ClangPowerTools"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  Title="Diff"
+  Width="1100"
+  Height="750"
+  MinWidth="1100"
+  MinHeight="750"
+  d:DataContext="{d:DesignInstance local:DiffViewModel,
+                                   IsDesignTimeCreatable=True}"
+  Background="WhiteSmoke"
+  Icon="/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
+  ResizeMode="CanResize"
+  ShowInTaskbar="true"
+  WindowStartupLocation="CenterScreen"
+  mc:Ignorable="d">
+
+  <Grid>
+    <WebBrowser Name="MyWebBrowser" />
+  </Grid>
+</Window>
