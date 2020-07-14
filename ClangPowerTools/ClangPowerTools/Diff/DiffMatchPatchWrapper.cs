@@ -98,6 +98,18 @@ namespace ClangPowerTools
     }
 
 
+    /// <summary>
+    /// Takes a diff array and returns a pretty HTML sequence. This function is mainly intended as an example from which to 
+    /// write ones own display functions
+    /// </summary>
+    /// <returns></returns>
+    public string DiffPrettyHtml()
+    {
+      if (diffs == null) return string.Empty;
+      return diffMatchPatch.diff_prettyHtml(diffs);
+    }
+
+
     #endregion
 
   }
