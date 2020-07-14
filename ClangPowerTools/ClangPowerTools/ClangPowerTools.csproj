@@ -155,6 +155,7 @@
     <Compile Include="MVVM\Provider\SettingsProvider.cs" />
     <Compile Include="MVVM\CollectionElementsCounter.cs" />
     <Compile Include="MVVM\ViewModels\AccountViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\DiffViewModel.cs" />
     <Compile Include="MVVM\ViewModels\FormatEditorViewModel.cs" />
     <Compile Include="MVVM\ViewModels\TeamSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\InputDataViewModel.cs" />
@@ -205,6 +206,9 @@
     </Compile>
     <Compile Include="MVVM\Views\Components\BuyNowFooter.xaml.cs">
       <DependentUpon>BuyNowFooter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Views\DiffWindow.xaml.cs">
+      <DependentUpon>DiffWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\FormatEditorView.xaml.cs">
       <DependentUpon>FormatEditorView.xaml</DependentUpon>
@@ -591,6 +595,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="MVVM\Views\Components\BuyNowFooter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\DiffWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
