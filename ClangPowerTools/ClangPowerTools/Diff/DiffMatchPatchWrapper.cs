@@ -10,6 +10,14 @@ namespace ClangPowerTools
     private readonly DiffMatchPatch diffMatchPatch;
     private List<Diff> diffs;
 
+    // DiffMatchPatch defaults
+    private readonly float diffTimeout = 1.0f;
+    private readonly short diffEditCost = 4;
+    private readonly float matchThreshold = 0.5f;
+    private readonly int matchDistance = 1000;
+    private readonly float patchDeleteThreshold = 0.5f;
+    private readonly short patchMargin = 4;
+
     #endregion
 
     #region Constructors
@@ -35,31 +43,29 @@ namespace ClangPowerTools
     /// <param name="patchMargin">Chunk size for context length.</param>
     public DiffMatchPatchWrapper(float diffTimeout, short diffEditCost, float matchThreshold, int matchDistance, float patchDeleteThreshold, short patchMargin)
     {
-      diffMatchPatch = new DiffMatchPatch
-      {
-        Diff_Timeout = diffTimeout,
-        Diff_EditCost = diffEditCost,
-        Match_Threshold = matchThreshold,
-        Match_Distance = matchDistance,
-        Patch_DeleteThreshold = patchDeleteThreshold,
-        Patch_Margin = patchMargin
-      };
+      this.diffTimeout = diffTimeout;
+      this.diffEditCost = diffEditCost;
+      this.matchThreshold = matchThreshold;
+      this.matchDistance = matchDistance;
+      this.patchDeleteThreshold = patchDeleteThreshold;
+      this.patchMargin = patchMargin;
     }
 
     #endregion
 
-    #region Methods
+    #region Public Methods
 
     /// <summary>
+    /// 
     /// An array of differences is computed which describe the transformation of text1 into text2. 
     /// Each difference is an array of Diff objects. The first element specifies if it is an insertion (1), 
     /// a deletion (-1) or an equality (0). The second element specifies the affected text.
     /// </summary>
     public void Diff(string text1, string text2)
     {
+      DiffMatchPatch diffMatchPatch = CreateDiffMatchPatch();
       diffs = diffMatchPatch.diff_main(text1, text2);
     }
-
 
     /// <summary>
     /// A diff of two unrelated texts can be filled with coincidental matches. 
@@ -68,7 +74,6 @@ namespace ClangPowerTools
     While this is the optimum diff, it is difficult for humans to understand. Semantic cleanup rewrites the diff, expanding it into 
     a more intelligible format. The above example would become: [(-1, "mouse"), (1, "sofas")]. If a diff is to be human-readable, it 
     should be passed to diff_cleanupSemantic */
-
     public void CleanupSemantic()
     {
       if (diffs == null) return;
@@ -76,8 +81,8 @@ namespace ClangPowerTools
     }
 
     /// <summary>
-    /// This function is similar to diff_cleanupSemantic, except that instead of optimising a diff to be human-readable, it optimises 
-    /// the diff to be efficient for machine processing. 
+    /// This function is similar to diff_cleanupSemantic, except that instead of optimising a diff to be human-readable,
+    /// it optimises the diff to be efficient for machine processing. 
     /// </summary>
     /* The results of both cleanup types are often the same. The efficiency cleanup is based on the observation that a diff made up of 
     large numbers of small diffs edits may take longer to process (in downstream applications) or take more capacity to store or transmit than a 
@@ -101,7 +106,6 @@ namespace ClangPowerTools
       return diffMatchPatch.diff_levenshtein(diffs);
     }
 
-
     /// <summary>
     /// Takes a diff array and returns a pretty HTML sequence.
     /// </summary>
@@ -109,6 +113,23 @@ namespace ClangPowerTools
     {
       if (diffs == null) return string.Empty;
       return diffMatchPatch.diff_prettyHtml(diffs);
+    }
+
+    #endregion
+
+    #region Private Methods
+
+    private DiffMatchPatch CreateDiffMatchPatch()
+    {
+      return new DiffMatchPatch
+      {
+        Diff_Timeout = diffTimeout,
+        Diff_EditCost = diffEditCost,
+        Match_Threshold = matchThreshold,
+        Match_Distance = matchDistance,
+        Patch_DeleteThreshold = patchDeleteThreshold,
+        Patch_Margin = patchMargin
+      };
     }
 
     #endregion
