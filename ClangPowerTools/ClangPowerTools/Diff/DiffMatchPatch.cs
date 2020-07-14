@@ -23,7 +23,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace DiffMatchPatch
+namespace ClnagPowerTools.DiffMatchPatch
 {
   internal static class CompatibilityExtensions
   {
