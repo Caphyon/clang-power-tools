@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.MVVM.Models;
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -43,7 +42,7 @@ namespace ClangPowerTools.MVVM.Views
     {
       var element = (sender as FrameworkElement).DataContext;
       if (element == null) return;
-      formatEditorViewModel.OpenMultipleInput(FormatOptions.Items.IndexOf(element));      
+      formatEditorViewModel.OpenMultipleInput(FormatOptions.Items.IndexOf(element));
     }
 
     private void CodeEditor_PreviewDragOver(object sender, DragEventArgs e)
