@@ -8,6 +8,7 @@ namespace ClangPowerTools
     #region Members
 
     private readonly DiffMatchPatch diffMatchPatch;
+    private List<Diff> diffs;
 
     #endregion
 
@@ -50,9 +51,25 @@ namespace ClangPowerTools
     #region Methods
 
 
-    public List<Diff> Diff(string text1, string text2)
+    /// <summary>
+    /// An array of differences is computed which describe the transformation of text1 into text2. 
+    /// Each difference is an array of Diff objects. The first element specifies if it is an insertion (1), 
+    /// a deletion (-1) or an equality (0). The second element specifies the affected text.
+    /// </summary>
+    public void Diff(string text1, string text2)
     {
-      return diffMatchPatch.diff_main(text1, text2);
+      diffs = diffMatchPatch.diff_main(text1, text2);
+    }
+
+    /// <summary>
+    /// Given a diff, measure its Levenshtein distance in terms of the number of inserted, deleted or substituted characters. 
+    /// The minimum distance is 0 which means equality, the maximum distance is the length of the longer string.
+    /// </summary>
+    /// <returns>It returns -1 if the diffs are null</returns>
+    public int DiffLevenshtein()
+    {
+      if (diffs == null) return -1;
+      return diffMatchPatch.diff_levenshtein(diffs);
     }
 
     #endregion
