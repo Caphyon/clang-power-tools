@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web;
 
 namespace DiffMatchPatch
 {
@@ -194,7 +195,7 @@ namespace DiffMatchPatch
             break;
         }
 
-        text.Append(diff_match_patch.encodeURI(aDiff.text)).Append("\n");
+        text.Append(DiffMatchPatch.encodeURI(aDiff.text)).Append("\n");
       }
       return text.ToString();
     }
@@ -205,7 +206,7 @@ namespace DiffMatchPatch
    * Class containing the diff, match and patch methods.
    * Also Contains the behaviour settings.
    */
-  public class diff_match_patch
+  public class DiffMatchPatch
   {
     // Defaults.
     // Set these on your diff_match_patch instance to override the defaults.
