@@ -311,7 +311,7 @@
         VerticalAlignment="Top"
         Orientation="Horizontal">
 
-        <!--  Export button  -->
+        <!--  Reset button  -->
         <Button
           Width="150"
           Height="30"
@@ -325,7 +325,7 @@
           </Button.Content>
         </Button>
 
-        <!--  Reset button  -->
+        <!--  Export button  -->
         <Button
           Width="150"
           Height="30"
@@ -350,6 +350,20 @@
           Style="{StaticResource SettingsButton}">
           <Button.Content>
             Select Code File
+          </Button.Content>
+        </Button>
+
+        <!--  Automatically Create Config button  -->
+        <Button
+          Width="50"
+          Height="30"
+          Margin="20,0,0,0"
+          Command="{Binding AutomaticallyCreateConfig}"
+          FontSize="14"
+          Foreground="White"
+          Style="{StaticResource SettingsButton}">
+          <Button.Content>
+            Create Config
           </Button.Content>
         </Button>
 

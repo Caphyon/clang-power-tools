@@ -32,6 +32,7 @@ namespace ClangPowerTools
     private ICommand resetCommand;
     private ICommand openUri;
     private ICommand resetSearchCommand;
+    private ICommand automaticallyCreateConfig;
 
     private string checkSearch = string.Empty;
     private bool showOptionDescription = true;
@@ -219,6 +220,11 @@ namespace ClangPowerTools
       get => resetSearchCommand ??= new RelayCommand(() => ResetSearchField(), () => CanExecute);
     }
 
+    public ICommand AutomaticallyCreateConfig
+    {
+      get => automaticallyCreateConfig ??= new RelayCommand(() => CreateConfigUsingCompare(), () => CanExecute);
+    }
+
     #endregion
 
 
@@ -363,6 +369,14 @@ namespace ClangPowerTools
       {
         WriteContentToFile(path, FormatOptionFile.CreateOutput(formatStyleOptions, editorStyle).ToString());
       }
+    }
+
+    private void CreateConfigUsingCompare()
+    {
+      var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
+      diffMatchPatchWrapper.Diff(formatOptionsView.CodeEditor.Text, formatOptionsView.CodeEditorReadOnly.Text);
+      var test = diffMatchPatchWrapper.DiffLevenshtein();
+
     }
 
     private void EditorLoaded(object sender, EventArgs e)
