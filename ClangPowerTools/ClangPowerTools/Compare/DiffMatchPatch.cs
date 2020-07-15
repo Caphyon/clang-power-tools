@@ -1552,7 +1552,7 @@ namespace Compare.DiffMatchPatch
       foreach (Diff aDiff in diffs)
       {
         string text = aDiff.text.Replace("&", "&amp;").Replace("<", "&lt;")
-          .Replace(">", "&gt;").Replace("\n", "&para;<br>");
+          .Replace(">", "&gt;").Replace("\n", "<br>");
         switch (aDiff.operation)
         {
           case Operation.INSERT:
