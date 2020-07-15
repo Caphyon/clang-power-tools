@@ -20,6 +20,6 @@
   mc:Ignorable="d">
 
   <Grid>
-    <WebBrowser Name="MyWebBrowser" />
+    <WebBrowser Name="MyWebBrowser"/>
   </Grid>
 </Window>

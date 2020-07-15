@@ -380,11 +380,13 @@ namespace ClangPowerTools
     private void CreateConfigUsingCompare()
     {
       var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
-      diffMatchPatchWrapper.Diff(formatOptionsView.CodeEditor.Text.Replace("\r\n", ""), formatOptionsView.CodeEditorReadOnly.Text.Replace("\r\n", ""));
-      var diffLev = diffMatchPatchWrapper.DiffLevenshtein();
+      diffMatchPatchWrapper.Diff(formatOptionsView.CodeEditor.Text, formatOptionsView.CodeEditorReadOnly.Text);
+      diffMatchPatchWrapper.CleanupSemantic();
+
+      //var diffLev = diffMatchPatchWrapper.DiffLevenshtein();
       var html = diffMatchPatchWrapper.DiffAsHtml();
 
-      var diffWindow = new DiffWindow(html.Replace("\r\n", ""));
+      var diffWindow = new DiffWindow(html);
       diffWindow.Show();
     }
 
