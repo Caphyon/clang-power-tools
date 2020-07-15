@@ -23,13 +23,14 @@ namespace ClangPowerTools.MVVM.Views
       CodeEditorReadOnly.Text = outputWindowDefaulText;
     }
 
-    private void RunFormat_TextChanged(object sender, TextChangedEventArgs e)
+    private void RunFormat_TextBoxChanged(object sender, TextChangedEventArgs e)
     {
       formatEditorViewModel.RunFormat();
     }
 
     private void RunFormat_Editor(object sender, EventArgs e)
     {
+      if (formatEditorViewModel.IsAnyOptionEnabled() == false) return;
       formatEditorViewModel.RunFormat();
     }
 
