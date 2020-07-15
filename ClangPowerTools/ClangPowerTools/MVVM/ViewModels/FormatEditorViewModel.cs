@@ -253,7 +253,6 @@ namespace ClangPowerTools
     public void RunFormat()
     {
       if (windowLoaded == false) return;
-      if (IsAnyOptionEnabled() == false) return;
 
       var text = formatOptionsView.CodeEditor.Text;
       var formattedText = formatEditorController.FormatText(text, formatStyleOptions, editorStyle);
@@ -269,6 +268,15 @@ namespace ClangPowerTools
       SelectedOption.IsEnabled = true;
 
       OpenInputDataView();
+    }
+
+    public bool IsAnyOptionEnabled()
+    {
+      foreach (var item in formatStyleOptions)
+      {
+        if (item.IsEnabled) return true;
+      }
+      return false;
     }
 
     #endregion
@@ -440,15 +448,6 @@ namespace ClangPowerTools
       }
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
     });
-    }
-
-    private bool IsAnyOptionEnabled()
-    {
-      foreach (var item in formatStyleOptions)
-      {
-        if (item.IsEnabled) return true;
-      }
-      return false;
     }
 
     #endregion

@@ -109,7 +109,7 @@
                         HorizontalAlignment="Right"
                         FontSize="12"
                         Text="{Binding Input, UpdateSourceTrigger=PropertyChanged, Delay=200}"
-                        TextChanged="RunFormat_TextChanged"
+                        TextChanged="RunFormat_TextBoxChanged"
                         Visibility="{Binding Path=HasInputTextBox, Converter={StaticResource BoolToVis}}" />
                       <ComboBox
                         x:Name="BooleanCombobox"
