@@ -15,6 +15,12 @@
 
     }
 
+    //Empty constructor used for XAML IntelliSense
+    public DiffViewModel()
+    {
+
+    }
+
     #endregion
   }
 }
