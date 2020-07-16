@@ -9,15 +9,9 @@ namespace ClangPowerTools.MVVM.Views
   {
     public DiffWindow(string html)
     {
-      DataContext = new DiffViewModel(html);
+      DataContext = new DiffViewModel();
       InitializeComponent();
       MyWebBrowser.NavigateToString(html);
-    }
-
-    //Empty constructor used for XAML IntelliSense
-    public DiffWindow()
-    {
-
     }
   }
 }
