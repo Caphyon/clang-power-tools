@@ -387,15 +387,8 @@ namespace ClangPowerTools
 
     private void CreateConfigUsingCompare()
     {
-      var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
-      diffMatchPatchWrapper.Diff(formatOptionsView.CodeEditor.Text, formatOptionsView.CodeEditorReadOnly.Text);
-      diffMatchPatchWrapper.CleanupSemantic();
-
-      //var diffLev = diffMatchPatchWrapper.DiffLevenshtein();
-      var html = diffMatchPatchWrapper.DiffAsHtml();
-
-      var diffWindow = new DiffWindow(html);
-      diffWindow.Show();
+      var diffController = new DiffController();
+      diffController.CreateConfigUsingCompare(formatOptionsView.CodeEditor.Text, formatOptionsView.CodeEditorReadOnly.Text);
     }
 
     private void EditorLoaded(object sender, EventArgs e)
