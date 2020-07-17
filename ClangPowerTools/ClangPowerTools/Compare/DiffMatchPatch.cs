@@ -1549,6 +1549,7 @@ namespace Compare.DiffMatchPatch
     public string diff_prettyHtml(List<Diff> diffs)
     {
       StringBuilder html = new StringBuilder();
+      html.Append("<pre>");
       foreach (Diff aDiff in diffs)
       {
         string text = aDiff.text.Replace("&", "&amp;").Replace("<", "&lt;")
@@ -1568,6 +1569,7 @@ namespace Compare.DiffMatchPatch
             break;
         }
       }
+      html.Append("</pre>");
       return html.ToString();
     }
 
