@@ -10,11 +10,6 @@
 
     #region Constructor 
 
-    public DiffViewModel(string html)
-    {
-
-    }
-
     //Empty constructor used for XAML IntelliSense
     public DiffViewModel()
     {

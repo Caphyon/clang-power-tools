@@ -7,9 +7,9 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 
-namespace ClangPowerTools.MVVM.Controllers
+namespace ClangPowerTools
 {
-  public class FormatEditorController
+  public class Formatter
   {
     #region Members
 
