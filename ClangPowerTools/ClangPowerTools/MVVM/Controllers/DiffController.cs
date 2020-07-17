@@ -4,6 +4,21 @@ namespace ClangPowerTools.MVVM.Controllers
 {
   public class DiffController
   {
+    #region Members
+
+    Formatter formatter;
+
+    #endregion
+
+
+    #region Constructor
+
+    public DiffController(Formatter formatter)
+    {
+      // TODO use to renamed class FormatEditorController => 
+    }
+
+    #endregion
 
     #region Methods
 

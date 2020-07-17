@@ -23,7 +23,7 @@ namespace ClangPowerTools
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private readonly FormatEditorController formatEditorController;
+    private readonly Formatter formatter;
     private readonly FormatEditorView formatOptionsView;
     private InputMultipleDataView inputMultipleDataView;
     private ICommand selctCodeFileCommand;
@@ -54,7 +54,7 @@ namespace ClangPowerTools
     {
       formatOptionsView.Loaded += EditorLoaded;
       this.formatOptionsView = formatOptionsView;
-      formatEditorController = new FormatEditorController();
+      formatter = new Formatter();
       InitializeStyleOptions(FormatOptionsProvider.CustomOptionsData);
     }
 
@@ -255,7 +255,7 @@ namespace ClangPowerTools
       if (windowLoaded == false) return;
 
       var text = formatOptionsView.CodeEditor.Text;
-      var formattedText = formatEditorController.FormatText(text, formatStyleOptions, editorStyle);
+      var formattedText = formatter.FormatText(text, formatStyleOptions, editorStyle);
       formatOptionsView.CodeEditorReadOnly.Text = formattedText;
     }
 
@@ -387,7 +387,7 @@ namespace ClangPowerTools
 
     private void CreateConfigUsingCompare()
     {
-      var diffController = new DiffController();
+      var diffController = new DiffController(formatter);
       diffController.CreateConfigUsingCompare(formatOptionsView.CodeEditor.Text, formatOptionsView.CodeEditorReadOnly.Text);
     }
 
