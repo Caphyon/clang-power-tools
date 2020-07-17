@@ -228,7 +228,7 @@ namespace ClangPowerTools
 
     public ICommand AutomaticallyCreateConfig
     {
-      get => automaticallyCreateConfig ??= new RelayCommand(() => CreateConfigUsingCompare(), () => CanExecute);
+      get => automaticallyCreateConfig ??= new RelayCommand(() => CreateConfigUsingDiff(), () => CanExecute);
     }
 
     #endregion
@@ -385,10 +385,10 @@ namespace ClangPowerTools
       }
     }
 
-    private void CreateConfigUsingCompare()
+    private void CreateConfigUsingDiff()
     {
-      var diffController = new DiffController(formatter);
-      diffController.CreateConfigUsingCompare(formatOptionsView.CodeEditor.Text, formatOptionsView.CodeEditorReadOnly.Text);
+      var diffController = new DiffController();
+      diffController.CreateConfigUsingDiff(formatOptionsView.CodeEditor.Text);
     }
 
     private void EditorLoaded(object sender, EventArgs e)
