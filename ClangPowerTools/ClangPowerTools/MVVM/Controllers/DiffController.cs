@@ -36,7 +36,7 @@ namespace ClangPowerTools.MVVM.Controllers
 
       var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
       diffMatchPatchWrapper.Diff(editorInput, formattedText);
-      //diffMatchPatchWrapper.CleanupSemantic();
+      diffMatchPatchWrapper.CleanupSemantic();
 
 
       var styleName = Enum.GetName(typeof(EditorStyles), matchedStyle);
@@ -54,9 +54,6 @@ namespace ClangPowerTools.MVVM.Controllers
         var formattedText = formatter.FormatText(text, style.Value, style.Key);
         diffMatchPatchWrapper.Diff(text, formattedText);
         //diffMatchPatchWrapper.CleanupEfficiency();
-        //diffMatchPatchWrapper.CleanupSemantic();
-        //var html = diffMatchPatchWrapper.DiffAsHtml() + "<br><br>";
-        //ShowHtmlDiff(html);
 
         levenshteinDiffs.Add(diffMatchPatchWrapper.DiffLevenshtein());
       }
