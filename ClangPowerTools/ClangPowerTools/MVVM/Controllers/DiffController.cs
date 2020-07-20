@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Interfaces;
+using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.MVVM.Views;
 using System;
 using System.Collections.Generic;
@@ -10,8 +11,13 @@ namespace ClangPowerTools.MVVM.Controllers
   {
     #region Members
 
-    private Formatter formatter;
+    private readonly Formatter formatter;
     private readonly Dictionary<EditorStyles, List<IFormatOption>> styles;
+
+    private EditorStyles formatStyle;
+    private List<IFormatOption> formatOptions;
+    private string editorInput;
+    private int levenshtein;
 
     #endregion
 
@@ -26,41 +32,47 @@ namespace ClangPowerTools.MVVM.Controllers
 
     #endregion
 
-    #region Methods
+    #region Public Methods
 
-    public void CreateConfigUsingDiff(string editorInput)
+    public void FindStyleFromDiff(string text)
     {
-      var (matchedStyle, matchedOptions) = GetClosestMatchingStyle(editorInput);
+      var (matchedStyle, matchedOptions, minLevenshtein) = GetClosestDefaultStyle(text);
 
-      var formattedText = formatter.FormatText(editorInput, matchedOptions, matchedStyle);
+      formatStyle = matchedStyle;
+      formatOptions = matchedOptions;
+      editorInput = text;
+      levenshtein = minLevenshtein;
 
-      var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
-      diffMatchPatchWrapper.Diff(editorInput, formattedText);
-      diffMatchPatchWrapper.CleanupSemantic();
+      foreach (var item in formatOptions)
+      {
+        CheckFormatOption(item);
+      }
 
+      ShowHtmlAfterDiff();
 
-      var styleName = Enum.GetName(typeof(EditorStyles), matchedStyle);
-      var html = diffMatchPatchWrapper.DiffAsHtml() + "<br><br>" + styleName;
-      ShowHtmlDiff(html);
+      //return (EditorStyles matchedStyle, List<IFormatOption> matchedOptions)
     }
 
-    (EditorStyles matchedStyle, List<IFormatOption> matchedOptions) GetClosestMatchingStyle(string text)
+    #endregion
+
+    #region Private Methods
+
+    private (EditorStyles matchedStyle, List<IFormatOption> matchedOptions, int levenshteinDiffs) GetClosestDefaultStyle(string input)
     {
       var levenshteinDiffs = new List<int>();
 
       foreach (var style in styles)
       {
         var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
-        var formattedText = formatter.FormatText(text, style.Value, style.Key);
-        diffMatchPatchWrapper.Diff(text, formattedText);
-        //diffMatchPatchWrapper.CleanupEfficiency();
+        var formattedText = formatter.FormatText(input, style.Value, style.Key);
+        diffMatchPatchWrapper.Diff(input, formattedText);
 
         levenshteinDiffs.Add(diffMatchPatchWrapper.DiffLevenshtein());
       }
 
-      var index = GetSmallestLevenshtein(levenshteinDiffs);
-      var matchedStyle = styles.ElementAt(index);
-      return (matchedStyle.Key, matchedStyle.Value);
+      var minLevenshtein = GetSmallestLevenshtein(levenshteinDiffs);
+      var matchedStyle = styles.ElementAt(minLevenshtein);
+      return (matchedStyle.Key, matchedStyle.Value, minLevenshtein);
     }
 
     private int GetSmallestLevenshtein(List<int> levenshteinDiffs)
@@ -69,11 +81,56 @@ namespace ClangPowerTools.MVVM.Controllers
       return levenshteinDiffs.IndexOf(minLevenshtein);
     }
 
-    private void ShowHtmlDiff(string html)
+    private int CheckFormatOption(IFormatOption formatOption)
     {
-      var diffWindow = new DiffWindow(html);
-      diffWindow.Show();
+      switch (formatOption)
+      {
+        case FormatOptionToggleModel modelToggle:
+          if (modelToggle.BooleanCombobox == ToggleValues.True)
+          {
+            CheckOptionToggleLevenshtein(modelToggle, ToggleValues.True, ToggleValues.False);
+          }
+          else if (modelToggle.BooleanCombobox == ToggleValues.False)
+          {
+            CheckOptionToggleLevenshtein(modelToggle, ToggleValues.False, ToggleValues.True);
+          }
+          break;
+
+        case FormatOptionInputModel modelInput:
+          break;
+        //case FormatOptionMultipleInputModel modelMultipleInput:
+        //  break;
+        default:
+          break;
+      }
+
+      return 0;
     }
+
+    private void CheckOptionToggleLevenshtein(FormatOptionToggleModel modelToggle, ToggleValues current, ToggleValues modified)
+    {
+      modelToggle.BooleanCombobox = modified;
+      int levenshteinAfterChange = GetLevenshteinAfterOptionChange();
+      if (levenshteinAfterChange < levenshtein)
+      {
+        levenshtein = levenshteinAfterChange;
+      }
+      else
+      {
+        modelToggle.BooleanCombobox = current;
+      }
+    }
+
+    private int GetLevenshteinAfterOptionChange()
+    {
+      var formattedText = formatter.FormatText(editorInput, formatOptions, formatStyle);
+
+      var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
+      diffMatchPatchWrapper.Diff(editorInput, formattedText);
+
+      return diffMatchPatchWrapper.DiffLevenshtein();
+    }
+
 
     private Dictionary<EditorStyles, List<IFormatOption>> CreateStyles()
     {
@@ -88,6 +145,21 @@ namespace ClangPowerTools.MVVM.Controllers
       };
 
       return groupedStyles;
+    }
+
+    private void ShowHtmlAfterDiff()
+    {
+      var formattedText = formatter.FormatText(editorInput, formatOptions, formatStyle);
+      var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
+      diffMatchPatchWrapper.Diff(editorInput, formattedText);
+      diffMatchPatchWrapper.CleanupSemantic();
+
+
+      var styleName = Enum.GetName(typeof(EditorStyles), formatStyle);
+      var html = diffMatchPatchWrapper.DiffAsHtml() + "<br><br>" + styleName;
+
+      var diffWindow = new DiffWindow(html);
+      diffWindow.Show();
     }
 
     #endregion
