@@ -388,7 +388,7 @@ namespace ClangPowerTools
     private void CreateConfigUsingDiff()
     {
       var diffController = new DiffController();
-      diffController.CreateConfigUsingDiff(formatOptionsView.CodeEditor.Text);
+      diffController.FindStyleFromDiff(formatOptionsView.CodeEditor.Text);
     }
 
     private void EditorLoaded(object sender, EventArgs e)
