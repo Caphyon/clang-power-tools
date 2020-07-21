@@ -43,7 +43,7 @@ namespace ClangPowerTools.MVVM.Controllers
 
       foreach (var option in formatOptions)
       {
-        IncludeFormatOption(option);
+        SetFormatOption(option);
       }
 
       ShowHtmlAfterDiff();
@@ -79,7 +79,7 @@ namespace ClangPowerTools.MVVM.Controllers
       return levenshteinDiffs.IndexOf(minLevenshtein);
     }
 
-    private void IncludeFormatOption(IFormatOption formatOption)
+    private void SetFormatOption(IFormatOption formatOption)
     {
       switch (formatOption)
       {
@@ -94,6 +94,7 @@ namespace ClangPowerTools.MVVM.Controllers
       }
     }
 
+    // Set all possible values to the OptionToggle and e use Levenshtein Diff to set the best value
     private void SetOptionToggle(FormatOptionToggleModel modelToggle)
     {
       var previousInput = modelToggle.BooleanCombobox;
@@ -116,6 +117,7 @@ namespace ClangPowerTools.MVVM.Controllers
       }
     }
 
+    // Set all possible values to the OptionInput and use Levenshtein Diff to set the best value
     private void SetOptionInput(FormatOptionInputModel inputModel)
     {
       if (FormatOptionsInputValues.inputValues.ContainsKey(inputModel.Name) == false) return;
