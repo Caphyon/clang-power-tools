@@ -17,7 +17,6 @@ namespace ClangPowerTools.MVVM.Controllers
     private EditorStyles formatStyle;
     private List<IFormatOption> formatOptions;
     private string editorInput;
-    private int levenshtein;
 
     #endregion
 
@@ -36,12 +35,11 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public void FindStyleFromDiff(string text)
     {
-      var (matchedStyle, matchedOptions, minLevenshtein) = GetClosestDefaultStyle(text);
+      editorInput = text;
 
+      var (matchedStyle, matchedOptions) = GetClosestDefaultStyle(text);
       formatStyle = matchedStyle;
       formatOptions = matchedOptions;
-      editorInput = text;
-      levenshtein = minLevenshtein;
 
       foreach (var item in formatOptions)
       {
@@ -57,7 +55,7 @@ namespace ClangPowerTools.MVVM.Controllers
 
     #region Private Methods
 
-    private (EditorStyles matchedStyle, List<IFormatOption> matchedOptions, int levenshteinDiffs) GetClosestDefaultStyle(string input)
+    private (EditorStyles matchedStyle, List<IFormatOption> matchedOptions) GetClosestDefaultStyle(string input)
     {
       var levenshteinDiffs = new List<int>();
 
@@ -72,7 +70,7 @@ namespace ClangPowerTools.MVVM.Controllers
 
       var minLevenshtein = GetSmallestLevenshtein(levenshteinDiffs);
       var matchedStyle = styles.ElementAt(minLevenshtein);
-      return (matchedStyle.Key, matchedStyle.Value, minLevenshtein);
+      return (matchedStyle.Key, matchedStyle.Value);
     }
 
     private int GetSmallestLevenshtein(List<int> levenshteinDiffs)
@@ -81,19 +79,12 @@ namespace ClangPowerTools.MVVM.Controllers
       return levenshteinDiffs.IndexOf(minLevenshtein);
     }
 
-    private int CheckFormatOption(IFormatOption formatOption)
+    private void CheckFormatOption(IFormatOption formatOption)
     {
       switch (formatOption)
       {
         case FormatOptionToggleModel toggleModel:
-          if (toggleModel.BooleanCombobox == ToggleValues.True)
-          {
-            CheckOptionToggleLevenshtein(toggleModel, ToggleValues.True, ToggleValues.False);
-          }
-          else if (toggleModel.BooleanCombobox == ToggleValues.False)
-          {
-            CheckOptionToggleLevenshtein(toggleModel, ToggleValues.False, ToggleValues.True);
-          }
+          CheckOptionToggleLevenshtein(toggleModel);
           break;
 
         case FormatOptionInputModel inputModel:
@@ -102,43 +93,53 @@ namespace ClangPowerTools.MVVM.Controllers
         default:
           break;
       }
-
-      return 0;
     }
 
-    private void CheckOptionToggleLevenshtein(FormatOptionToggleModel modelToggle, ToggleValues current, ToggleValues modified)
+    private void CheckOptionToggleLevenshtein(FormatOptionToggleModel modelToggle)
     {
-      modelToggle.BooleanCombobox = modified;
-      int levenshteinAfterChange = GetLevenshteinAfterOptionChange();
-      if (levenshteinAfterChange < levenshtein)
+      var previousInput = modelToggle.BooleanCombobox;
+      Dictionary<ToggleValues, int> inputValuesLevenshtein = new Dictionary<ToggleValues, int>();
+
+      modelToggle.BooleanCombobox = ToggleValues.False;
+      inputValuesLevenshtein.Add(ToggleValues.False, GetLevenshteinAfterOptionChange());
+
+      modelToggle.BooleanCombobox = ToggleValues.True;
+      inputValuesLevenshtein.Add(ToggleValues.True, GetLevenshteinAfterOptionChange());
+
+      var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
+      if (inputValue.Value == inputValuesLevenshtein[previousInput])
       {
-        levenshtein = levenshteinAfterChange;
+        modelToggle.BooleanCombobox = previousInput;
       }
       else
       {
-        modelToggle.BooleanCombobox = current;
+        modelToggle.BooleanCombobox = inputValue.Key;
       }
     }
 
     private void CheckOptionInputLevenshtein(FormatOptionInputModel inputModel)
     {
       if (FormatOptionsInputValues.inputValues.ContainsKey(inputModel.Name) == false) return;
-      var inputValues = FormatOptionsInputValues.inputValues[inputModel.Name];
+
+      string[] inputValues = FormatOptionsInputValues.inputValues[inputModel.Name];
       var previousInput = inputModel.Input;
+
+      Dictionary<string, int> inputValuesLevenshtein = new Dictionary<string, int>();
 
       foreach (var item in inputValues)
       {
         inputModel.Input = item;
+        inputValuesLevenshtein.Add(item, GetLevenshteinAfterOptionChange());
+      }
 
-        int levenshteinAfterChange = GetLevenshteinAfterOptionChange();
-        if (levenshteinAfterChange < levenshtein)
-        {
-          levenshtein = levenshteinAfterChange;
-        }
-        else
-        {
-          inputModel.Input = previousInput;
-        }
+      var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
+      if (inputValue.Value == inputValuesLevenshtein[previousInput])
+      {
+        inputModel.Input = previousInput;
+      }
+      else
+      {
+        inputModel.Input = inputValue.Key;
       }
     }
 
@@ -151,7 +152,6 @@ namespace ClangPowerTools.MVVM.Controllers
 
       return diffMatchPatchWrapper.DiffLevenshtein();
     }
-
 
     private Dictionary<EditorStyles, List<IFormatOption>> CreateStyles()
     {
