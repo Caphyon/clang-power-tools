@@ -33,7 +33,7 @@ namespace ClangPowerTools.MVVM.Controllers
 
     #region Public Methods
 
-    public void FindStyleFromDiff(string text)
+    public void GetFormatOptions(string text)
     {
       editorInput = text;
 
@@ -84,17 +84,17 @@ namespace ClangPowerTools.MVVM.Controllers
       switch (formatOption)
       {
         case FormatOptionToggleModel toggleModel:
-          IncludeOptionToggle(toggleModel);
+          SetOptionToggle(toggleModel);
           break;
         case FormatOptionInputModel inputModel:
-          IncludeOptionInput(inputModel);
+          SetOptionInput(inputModel);
           break;
         default:
           break;
       }
     }
 
-    private void IncludeOptionToggle(FormatOptionToggleModel modelToggle)
+    private void SetOptionToggle(FormatOptionToggleModel modelToggle)
     {
       var previousInput = modelToggle.BooleanCombobox;
       Dictionary<ToggleValues, int> inputValuesLevenshtein = new Dictionary<ToggleValues, int>();
@@ -116,7 +116,7 @@ namespace ClangPowerTools.MVVM.Controllers
       }
     }
 
-    private void IncludeOptionInput(FormatOptionInputModel inputModel)
+    private void SetOptionInput(FormatOptionInputModel inputModel)
     {
       if (FormatOptionsInputValues.inputValues.ContainsKey(inputModel.Name) == false) return;
 
