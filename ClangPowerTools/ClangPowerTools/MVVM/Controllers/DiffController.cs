@@ -85,21 +85,20 @@ namespace ClangPowerTools.MVVM.Controllers
     {
       switch (formatOption)
       {
-        case FormatOptionToggleModel modelToggle:
-          if (modelToggle.BooleanCombobox == ToggleValues.True)
+        case FormatOptionToggleModel toggleModel:
+          if (toggleModel.BooleanCombobox == ToggleValues.True)
           {
-            CheckOptionToggleLevenshtein(modelToggle, ToggleValues.True, ToggleValues.False);
+            CheckOptionToggleLevenshtein(toggleModel, ToggleValues.True, ToggleValues.False);
           }
-          else if (modelToggle.BooleanCombobox == ToggleValues.False)
+          else if (toggleModel.BooleanCombobox == ToggleValues.False)
           {
-            CheckOptionToggleLevenshtein(modelToggle, ToggleValues.False, ToggleValues.True);
+            CheckOptionToggleLevenshtein(toggleModel, ToggleValues.False, ToggleValues.True);
           }
           break;
 
-        case FormatOptionInputModel modelInput:
+        case FormatOptionInputModel inputModel:
+          CheckOptionInputLevenshtein(inputModel);
           break;
-        //case FormatOptionMultipleInputModel modelMultipleInput:
-        //  break;
         default:
           break;
       }
@@ -118,6 +117,28 @@ namespace ClangPowerTools.MVVM.Controllers
       else
       {
         modelToggle.BooleanCombobox = current;
+      }
+    }
+
+    private void CheckOptionInputLevenshtein(FormatOptionInputModel inputModel)
+    {
+      if (FormatOptionsInputValues.inputValues.ContainsKey(inputModel.Name) == false) return;
+      var inputValues = FormatOptionsInputValues.inputValues[inputModel.Name];
+      var previousInput = inputModel.Input;
+
+      foreach (var item in inputValues)
+      {
+        inputModel.Input = item;
+
+        int levenshteinAfterChange = GetLevenshteinAfterOptionChange();
+        if (levenshteinAfterChange < levenshtein)
+        {
+          levenshtein = levenshteinAfterChange;
+        }
+        else
+        {
+          inputModel.Input = previousInput;
+        }
       }
     }
 
