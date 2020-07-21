@@ -41,9 +41,9 @@ namespace ClangPowerTools.MVVM.Controllers
       formatStyle = matchedStyle;
       formatOptions = matchedOptions;
 
-      foreach (var item in formatOptions)
+      foreach (var option in formatOptions)
       {
-        CheckFormatOption(item);
+        IncludeFormatOption(option);
       }
 
       ShowHtmlAfterDiff();
@@ -79,23 +79,22 @@ namespace ClangPowerTools.MVVM.Controllers
       return levenshteinDiffs.IndexOf(minLevenshtein);
     }
 
-    private void CheckFormatOption(IFormatOption formatOption)
+    private void IncludeFormatOption(IFormatOption formatOption)
     {
       switch (formatOption)
       {
         case FormatOptionToggleModel toggleModel:
-          CheckOptionToggleLevenshtein(toggleModel);
+          IncludeOptionToggle(toggleModel);
           break;
-
         case FormatOptionInputModel inputModel:
-          CheckOptionInputLevenshtein(inputModel);
+          IncludeOptionInput(inputModel);
           break;
         default:
           break;
       }
     }
 
-    private void CheckOptionToggleLevenshtein(FormatOptionToggleModel modelToggle)
+    private void IncludeOptionToggle(FormatOptionToggleModel modelToggle)
     {
       var previousInput = modelToggle.BooleanCombobox;
       Dictionary<ToggleValues, int> inputValuesLevenshtein = new Dictionary<ToggleValues, int>();
@@ -117,7 +116,7 @@ namespace ClangPowerTools.MVVM.Controllers
       }
     }
 
-    private void CheckOptionInputLevenshtein(FormatOptionInputModel inputModel)
+    private void IncludeOptionInput(FormatOptionInputModel inputModel)
     {
       if (FormatOptionsInputValues.inputValues.ContainsKey(inputModel.Name) == false) return;
 
