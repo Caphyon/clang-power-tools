@@ -1557,11 +1557,11 @@ namespace Compare.DiffMatchPatch
         switch (aDiff.operation)
         {
           case Operation.INSERT:
-            html.Append("<ins style=\"background:#e6ffe6;\">").Append(text)
+            html.Append("<ins style=\"background:#e6ffe6;text-decoration:none\">").Append(text)
                 .Append("</ins>");
             break;
           case Operation.DELETE:
-            html.Append("<del style=\"background:#ffe6e6;\">").Append(text)
+            html.Append("<del style=\"background:#ffe6e6;text-decoration:none\">").Append(text)
                 .Append("</del>");
             break;
           case Operation.EQUAL:
