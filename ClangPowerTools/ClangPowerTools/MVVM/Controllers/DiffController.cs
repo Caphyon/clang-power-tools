@@ -94,7 +94,10 @@ namespace ClangPowerTools.MVVM.Controllers
       }
     }
 
-    // Set all possible values to the OptionToggle and e use Levenshtein Diff to set the best value
+    /// <summary>
+    /// Set all possible values to the OptionToggle and e use Levenshtein Diff to find the best one
+    /// </summary>
+    /// <param name="modelToggle"></param>
     private void SetOptionToggle(FormatOptionToggleModel modelToggle)
     {
       var previousInput = modelToggle.BooleanCombobox;
@@ -117,7 +120,10 @@ namespace ClangPowerTools.MVVM.Controllers
       }
     }
 
-    // Set all possible values to the OptionInput and use Levenshtein Diff to set the best value
+    /// <summary>
+    /// Set all possible values to the OptionInput and use Levenshtein Diff to find best one
+    /// </summary>
+    /// <param name="inputModel"></param>
     private void SetOptionInput(FormatOptionInputModel inputModel)
     {
       if (FormatOptionsInputValues.inputValues.ContainsKey(inputModel.Name) == false) return;
