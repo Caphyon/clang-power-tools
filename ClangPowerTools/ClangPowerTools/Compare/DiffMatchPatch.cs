@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 
+using ClangPowerTools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -1550,10 +1551,53 @@ namespace Compare.DiffMatchPatch
     {
       StringBuilder html = new StringBuilder();
       html.Append("<pre>");
+
+      int lineNumber = 1;
+      int WHITESPACES_NUMBER = 10;
+
+      bool firstIteration = true;
+
       foreach (Diff aDiff in diffs)
       {
-        string text = aDiff.text.Replace("&", "&amp;").Replace("<", "&lt;")
-          .Replace(">", "&gt;").Replace("\n", "<br>");
+        // white spaces for line alignment
+        var textWhiteSpaces = string.Empty;
+
+        // text to append only at the beginning of the first line of text
+        var textBegin = string.Empty;
+
+        // first line of text
+        if (firstIteration)
+        {
+          // calculate the number of whitespaces taking in consideration the current line number
+          for (int i = 0; i < WHITESPACES_NUMBER - lineNumber.ToString().Length; ++i, textWhiteSpaces += "&nbsp;") ;
+
+          // line number for first line of code
+          textBegin = $"<label style=\"background=#D3D3D3\">{lineNumber++}</label>";
+          firstIteration = false;
+        }
+
+        var text = $"{textBegin}{textWhiteSpaces}{aDiff.text.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;")}";
+
+        // for each end of line detected
+        while (text.Contains("\n"))
+        {
+          // get the text before and after it
+          var textBefore = text.SubstringBefore("\n");
+          var textAfter = text.SubstringAfter("\n");
+
+          // calculate the number of whitespaces taking in consideration the current line number
+          textWhiteSpaces = string.Empty;
+          for (int i = 0; i < WHITESPACES_NUMBER - lineNumber.ToString().Length; ++i, textWhiteSpaces += "&nbsp;") ;
+
+          // append all the computed strings in the right order and replace the end line
+          // 1. text before the end line 
+          // 2. replace the end line \n with the equivalent <br> HTML tag
+          // 3. line number using the HTML <label> tag
+          // 4. number of necessary whitespaces for alignment
+          // 5. text after the end line
+          text = $"{textBefore}<br><label style=\"background=#D3D3D3\">{lineNumber++}</label>{textWhiteSpaces}{textAfter}";
+        }
+
         switch (aDiff.operation)
         {
           case Operation.INSERT:
