@@ -24,7 +24,7 @@ namespace ClangPowerTools
     public event PropertyChangedEventHandler PropertyChanged;
 
     private readonly Formatter formatter;
-    private readonly FormatEditorView formatOptionsView;
+    private readonly FormatEditorView formatEditorView;
     private InputMultipleDataView inputMultipleDataView;
     private ICommand selctCodeFileCommand;
     private ICommand createFormatFileCommand;
@@ -50,10 +50,10 @@ namespace ClangPowerTools
 
     #region Constructor
 
-    public FormatEditorViewModel(FormatEditorView formatOptionsView)
+    public FormatEditorViewModel(FormatEditorView formatEditorView)
     {
-      formatOptionsView.Loaded += EditorLoaded;
-      this.formatOptionsView = formatOptionsView;
+      formatEditorView.Loaded += EditorLoaded;
+      this.formatEditorView = formatEditorView;
       formatter = new Formatter();
       InitializeStyleOptions(FormatOptionsProvider.CustomOptionsData);
     }
@@ -247,16 +247,16 @@ namespace ClangPowerTools
       if (droppedFile == null) return;
 
       using StreamReader streamReader = new StreamReader(droppedFile);
-      formatOptionsView.CodeEditor.Text = streamReader.ReadToEnd();
+      formatEditorView.CodeEditor.Text = streamReader.ReadToEnd();
     }
 
     public void RunFormat()
     {
       if (windowLoaded == false) return;
 
-      var text = formatOptionsView.CodeEditor.Text;
+      var text = formatEditorView.CodeEditor.Text;
       var formattedText = formatter.FormatText(text, formatStyleOptions, editorStyle);
-      formatOptionsView.CodeEditorReadOnly.Text = formattedText;
+      formatEditorView.CodeEditorReadOnly.Text = formattedText;
     }
 
     public void OpenMultipleInput(int index)
@@ -358,7 +358,7 @@ namespace ClangPowerTools
       var filePath = OpenFile(string.Empty, ".cpp", FileExtensionsSelectFile);
 
       if (File.Exists(filePath))
-        formatOptionsView.CodeEditor.Text = File.ReadAllText(filePath);
+        formatEditorView.CodeEditor.Text = File.ReadAllText(filePath);
     }
 
     private void ResetOptions()
@@ -387,14 +387,20 @@ namespace ClangPowerTools
 
     private void CreateConfigUsingDiff()
     {
+      var loadingView = new LoadingView
+      {
+        Owner = formatEditorView
+      };
+      loadingView.Show();
+
       var diffController = new DiffController();
-      diffController.GetFormatOptions(formatOptionsView.CodeEditor.Text);
+      diffController.GetFormatOptionsAsync(formatEditorView.CodeEditor.Text, loadingView).SafeFireAndForget();
     }
 
     private void EditorLoaded(object sender, EventArgs e)
     {
       windowLoaded = true;
-      formatOptionsView.Loaded -= EditorLoaded;
+      formatEditorView.Loaded -= EditorLoaded;
     }
 
     private bool DropFileValidation(DragEventArgs e, out string droppedFile)

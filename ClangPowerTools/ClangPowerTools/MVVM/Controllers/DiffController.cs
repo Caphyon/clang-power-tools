@@ -4,6 +4,7 @@ using ClangPowerTools.MVVM.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ClangPowerTools.MVVM.Controllers
 {
@@ -33,7 +34,7 @@ namespace ClangPowerTools.MVVM.Controllers
 
     #region Public Methods
 
-    public void GetFormatOptions(string text)
+    public async Task GetFormatOptionsAsync(string text, LoadingView loadingView)
     {
       editorInput = text;
 
@@ -43,9 +44,10 @@ namespace ClangPowerTools.MVVM.Controllers
 
       foreach (var option in formatOptions)
       {
-        SetFormatOption(option);
+        await SetFormatOptionAsync(option);
       }
 
+      loadingView.Close();
       ShowHtmlAfterDiff();
 
       //return (EditorStyles matchedStyle, List<IFormatOption> matchedOptions)
@@ -79,19 +81,22 @@ namespace ClangPowerTools.MVVM.Controllers
       return levenshteinDiffs.IndexOf(minLevenshtein);
     }
 
-    private void SetFormatOption(IFormatOption formatOption)
+    private Task SetFormatOptionAsync(IFormatOption formatOption)
     {
-      switch (formatOption)
+      return Task.Run(() =>
       {
-        case FormatOptionToggleModel toggleModel:
-          SetOptionToggle(toggleModel);
-          break;
-        case FormatOptionInputModel inputModel:
-          SetOptionInput(inputModel);
-          break;
-        default:
-          break;
-      }
+        switch (formatOption)
+        {
+          case FormatOptionToggleModel toggleModel:
+            SetOptionToggle(toggleModel);
+            break;
+          case FormatOptionInputModel inputModel:
+            SetOptionInput(inputModel);
+            break;
+          default:
+            break;
+        }
+      });
     }
 
     /// <summary>
