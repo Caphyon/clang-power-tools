@@ -18,7 +18,7 @@ namespace ClangPowerTools
       { "BreakBeforeBraces", new string[]{ "Attach", "Linux", "Stroustrup", "Allman" }},
       { "BreakInheritanceList", new string[]{ "BeforeColon", "BeforeComma", "AfterColon" }},
       { "BreakConstructorInitializers", new string[]{ "BeforeColon", "BeforeComma", "AfterColon" }},
-      { "ColumnLimit", new string[]{ "0", "60", "80", "100", "120" }},
+      { "ColumnLimit", new string[]{ "20", "60", "80", "100", "120" }},
       { "ConstructorInitializerIndentWidth", new string[]{ "2","4", "6" }},
       { "ContinuationIndentWidth", new string[]{ "2", "4", "6" }},
       { "IncludeBlocks", new string[]{ "Preserve", "Merge", "Regroup" }},
