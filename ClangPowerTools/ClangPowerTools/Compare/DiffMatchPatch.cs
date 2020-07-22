@@ -1553,14 +1553,16 @@ namespace Compare.DiffMatchPatch
       html.Append("<pre>");
 
       int lineNumber = 1;
-      int WHITESPACES_NUMBER = 10;
+
+      // whitespaces after the line number for text alignment
+      var WHITESPACES_AFTER_LINE_NUMBER = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 
       bool firstIteration = true;
 
       foreach (Diff aDiff in diffs)
       {
-        // white spaces for line alignment
-        var textWhiteSpaces = string.Empty;
+        var text = aDiff.text.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
+        var numberOfLines = text.Count(ch => ch == '\n');
 
         // text to append only at the beginning of the first line of text
         var textBegin = string.Empty;
@@ -1568,15 +1570,12 @@ namespace Compare.DiffMatchPatch
         // first line of text
         if (firstIteration)
         {
-          // calculate the number of whitespaces taking in consideration the current line number
-          for (int i = 0; i < WHITESPACES_NUMBER - lineNumber.ToString().Length; ++i, textWhiteSpaces += "&nbsp;") ;
-
           // line number for first line of code
-          textBegin = $"<label style=\"background=#D3D3D3\">{lineNumber++}</label>";
+          textBegin = $"<label style=\"background=#D3D3D3; width=50px; text-align:right;\">{lineNumber++}</label>";
           firstIteration = false;
         }
 
-        var text = $"{textBegin}{textWhiteSpaces}{aDiff.text.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;")}";
+        text = $"{textBegin}{WHITESPACES_AFTER_LINE_NUMBER}{text}";
 
         // for each end of line detected
         while (text.Contains("\n"))
@@ -1585,17 +1584,13 @@ namespace Compare.DiffMatchPatch
           var textBefore = text.SubstringBefore("\n");
           var textAfter = text.SubstringAfter("\n");
 
-          // calculate the number of whitespaces taking in consideration the current line number
-          textWhiteSpaces = string.Empty;
-          for (int i = 0; i < WHITESPACES_NUMBER - lineNumber.ToString().Length; ++i, textWhiteSpaces += "&nbsp;") ;
-
           // append all the computed strings in the right order and replace the end line
           // 1. text before the end line 
           // 2. replace the end line \n with the equivalent <br> HTML tag
           // 3. line number using the HTML <label> tag
           // 4. number of necessary whitespaces for alignment
           // 5. text after the end line
-          text = $"{textBefore}<br><label style=\"background=#D3D3D3\">{lineNumber++}</label>{textWhiteSpaces}{textAfter}";
+          text = $"{textBefore}<br><label style=\"background=#D3D3D3; width=50px; text-align:right;\">{lineNumber++}</label>{WHITESPACES_AFTER_LINE_NUMBER}{textAfter}";
         }
 
         switch (aDiff.operation)
