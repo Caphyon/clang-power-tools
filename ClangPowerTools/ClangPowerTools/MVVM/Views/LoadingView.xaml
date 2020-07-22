@@ -46,7 +46,7 @@
       HorizontalAlignment="Center"
       FontSize="15"
       FontWeight="DemiBold"
-      Text="Detecting Clang-Format Flags" />
+      Text="Detecting Clang-Format Style" />
     <ProgressBar
       Grid.Row="2"
       Grid.Column="1"
