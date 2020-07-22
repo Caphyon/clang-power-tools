@@ -12,7 +12,7 @@ namespace ClangPowerTools.MVVM.Controllers
   {
     #region Members
 
-    private readonly Formatter formatter;
+    private readonly StyleFormatter formatter;
     private readonly Dictionary<EditorStyles, List<IFormatOption>> styles;
 
     private EditorStyles formatStyle;
@@ -26,7 +26,7 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public DiffController()
     {
-      formatter = new Formatter();
+      formatter = new StyleFormatter();
       styles = CreateStyles();
     }
 
