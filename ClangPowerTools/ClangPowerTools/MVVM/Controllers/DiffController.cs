@@ -34,7 +34,7 @@ namespace ClangPowerTools.MVVM.Controllers
 
     #region Public Methods
 
-    public async Task GetFormatOptionsAsync(string text, LoadingView loadingView)
+    public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> GetFormatOptionsAsync(string text, LoadingView loadingView)
     {
       editorInput = text;
 
@@ -50,7 +50,7 @@ namespace ClangPowerTools.MVVM.Controllers
       loadingView.Close();
       ShowHtmlAfterDiff();
 
-      //return (EditorStyles matchedStyle, List<IFormatOption> matchedOptions)
+      return (matchedStyle, matchedOptions);
     }
 
     #endregion

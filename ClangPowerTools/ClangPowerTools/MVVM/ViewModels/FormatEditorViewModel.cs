@@ -94,7 +94,7 @@ namespace ClangPowerTools
       set
       {
         checkSearch = value;
-        FindFormatStyleOptionsAsync(checkSearch).SafeFireAndForget();
+        FindFormatOptionsAsync(checkSearch).SafeFireAndForget();
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CheckSearch"));
       }
     }
@@ -132,13 +132,14 @@ namespace ClangPowerTools
     {
       get
       {
-        FindFormatStyleOptionsAsync(checkSearch).SafeFireAndForget();
+        FindFormatOptionsAsync(checkSearch).SafeFireAndForget();
         return editorStyle;
       }
       set
       {
         editorStyle = value;
         ChangeControlsDependingOnStyle();
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedStyle"));
 
         RunFormat();
       }
@@ -228,7 +229,7 @@ namespace ClangPowerTools
 
     public ICommand AutomaticallyCreateConfig
     {
-      get => automaticallyCreateConfig ??= new RelayCommand(() => CreateConfigUsingDiff(), () => CanExecute);
+      get => automaticallyCreateConfig ??= new RelayCommand(() => GetMatchingStyleOptionsAsync().SafeFireAndForget(), () => CanExecute);
     }
 
     #endregion
@@ -385,7 +386,7 @@ namespace ClangPowerTools
       }
     }
 
-    private void CreateConfigUsingDiff()
+    private async Task GetMatchingStyleOptionsAsync()
     {
       var loadingView = new LoadingView
       {
@@ -394,7 +395,12 @@ namespace ClangPowerTools
       loadingView.Show();
 
       var diffController = new DiffController();
-      diffController.GetFormatOptionsAsync(formatEditorView.CodeEditor.Text, loadingView).SafeFireAndForget();
+      var (matchedStyle, matchedOptions) = await diffController.GetFormatOptionsAsync(formatEditorView.CodeEditor.Text, loadingView);
+
+      SelectedStyle = matchedStyle;
+      FormatOptions = matchedOptions;
+
+      SetStyleControls(nameColumnWidthMax, "0", matchedOptions);
     }
 
     private void EditorLoaded(object sender, EventArgs e)
@@ -429,7 +435,7 @@ namespace ClangPowerTools
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
     }
 
-    private async Task FindFormatStyleOptionsAsync(string search)
+    private async Task FindFormatOptionsAsync(string search)
     {
       await Task.Run(() =>
     {

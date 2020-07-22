@@ -73,7 +73,7 @@
           Grid.Row="1"
           Width="465"
           HorizontalAlignment="Left"
-          ItemsSource="{Binding FormatOptions}"
+          ItemsSource="{Binding FormatOptions, Mode=TwoWay}"
           SelectedItem="{Binding SelectedOption}"
           SelectionMode="Single"
           VirtualizingStackPanel.IsVirtualizing="False">
@@ -178,7 +178,7 @@
             Height="25"
             Margin="0,5,0,5"
             ItemsSource="{Binding Styles}"
-            SelectedItem="{Binding SelectedStyle}" />
+            SelectedItem="{Binding SelectedStyle, Mode=TwoWay}" />
         </StackPanel>
 
         <!--  Option description  -->
