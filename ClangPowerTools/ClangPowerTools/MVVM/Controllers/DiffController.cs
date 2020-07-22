@@ -38,19 +38,22 @@ namespace ClangPowerTools.MVVM.Controllers
     {
       editorInput = text;
 
-      var (matchedStyle, matchedOptions) = GetClosestDefaultStyle(text);
-      formatStyle = matchedStyle;
-      formatOptions = matchedOptions;
-
-      foreach (var option in formatOptions)
+      await Task.Run(() =>
       {
-        await SetFormatOptionAsync(option);
-      }
+        var (matchedStyle, matchedOptions) = GetClosestDefaultStyle(text);
+        formatStyle = matchedStyle;
+        formatOptions = matchedOptions;
+
+        foreach (var option in formatOptions)
+        {
+          SetFormatOption(option);
+        }
+      });
 
       loadingView.Close();
       ShowHtmlAfterDiff();
 
-      return (matchedStyle, matchedOptions);
+      return (formatStyle, formatOptions);
     }
 
     #endregion
@@ -81,22 +84,19 @@ namespace ClangPowerTools.MVVM.Controllers
       return levenshteinDiffs.IndexOf(minLevenshtein);
     }
 
-    private Task SetFormatOptionAsync(IFormatOption formatOption)
+    private void SetFormatOption(IFormatOption formatOption)
     {
-      return Task.Run(() =>
+      switch (formatOption)
       {
-        switch (formatOption)
-        {
-          case FormatOptionToggleModel toggleModel:
-            SetOptionToggle(toggleModel);
-            break;
-          case FormatOptionInputModel inputModel:
-            SetOptionInput(inputModel);
-            break;
-          default:
-            break;
-        }
-      });
+        case FormatOptionToggleModel toggleModel:
+          SetOptionToggle(toggleModel);
+          break;
+        case FormatOptionInputModel inputModel:
+          SetOptionInput(inputModel);
+          break;
+        default:
+          break;
+      }
     }
 
     /// <summary>
@@ -186,7 +186,6 @@ namespace ClangPowerTools.MVVM.Controllers
       var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
       diffMatchPatchWrapper.Diff(editorInput, formattedText);
       diffMatchPatchWrapper.CleanupSemantic();
-
 
       var styleName = Enum.GetName(typeof(EditorStyles), formatStyle);
       var html = diffMatchPatchWrapper.DiffAsHtml() + "<br><br>" + styleName;
