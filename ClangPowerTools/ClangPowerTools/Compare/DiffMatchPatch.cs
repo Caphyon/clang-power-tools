@@ -1542,6 +1542,46 @@ namespace Compare.DiffMatchPatch
       return last_chars2 + (loc - last_chars1);
     }
 
+    private int GetLineNumberWidth(List<Diff> diffs)
+    {
+      int numberOfLines = 0;
+      foreach (Diff diff in diffs)
+      {
+        numberOfLines += diff.text.Count(ch => ch == '\n');
+      }
+
+      int numberOfLinesLength = numberOfLines.ToString().Length;
+      int lineNumberLabelWidth = 0;
+      switch (numberOfLinesLength)
+      {
+        case 1:
+        case 2:
+          lineNumberLabelWidth = 25;
+          break;
+        case 3:
+        case 4:
+          lineNumberLabelWidth = 35;
+          break;
+        case 5:
+        case 6:
+          lineNumberLabelWidth = 45;
+          break;
+        case 7:
+        case 8:
+          lineNumberLabelWidth = 55;
+          break;
+        case 9:
+        case 10:
+          lineNumberLabelWidth = 65;
+          break;
+        default:
+          break;
+      }
+
+      return lineNumberLabelWidth;
+    }
+
+
     /**
      * Convert a Diff list into a pretty HTML report.
      * @param diffs List of Diff objects.
@@ -1558,11 +1598,11 @@ namespace Compare.DiffMatchPatch
       var WHITESPACES_AFTER_LINE_NUMBER = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 
       bool firstIteration = true;
+      int lineNumberLabelWidth = GetLineNumberWidth(diffs);
 
       foreach (Diff aDiff in diffs)
       {
         var text = aDiff.text.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
-        var numberOfLines = text.Count(ch => ch == '\n');
 
         // text to append only at the beginning of the first line of text
         var textBegin = string.Empty;
@@ -1571,7 +1611,7 @@ namespace Compare.DiffMatchPatch
         if (firstIteration)
         {
           // line number for first line of code
-          textBegin = $"<label style=\"background=#D3D3D3; width=50px; text-align:right;\">{lineNumber++}</label>";
+          textBegin = $"<label style=\"background=#D3D3D3; width={lineNumberLabelWidth}px; text-align:right; padding-right:5px;\">{lineNumber++}</label>";
           firstIteration = false;
         }
 
@@ -1590,7 +1630,7 @@ namespace Compare.DiffMatchPatch
           // 3. line number using the HTML <label> tag
           // 4. number of necessary whitespaces for alignment
           // 5. text after the end line
-          text = $"{textBefore}<br><label style=\"background=#D3D3D3; width=50px; text-align:right;\">{lineNumber++}</label>{WHITESPACES_AFTER_LINE_NUMBER}{textAfter}";
+          text = $"{textBefore}<br><label style=\"background=#D3D3D3; width={lineNumberLabelWidth}px; text-align:right;  padding-right:5px;\">{lineNumber++}</label>{WHITESPACES_AFTER_LINE_NUMBER}{textAfter}";
         }
 
         switch (aDiff.operation)
