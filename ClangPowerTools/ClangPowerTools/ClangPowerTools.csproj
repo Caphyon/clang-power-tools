@@ -105,7 +105,7 @@
     <Compile Include="MVVM\Constants\LlvmVersionsAlternate.cs" />
     <Compile Include="MVVM\Controllers\DiffController.cs" />
     <Compile Include="MVVM\FormatData\FormatOptionsInputValues.cs" />
-    <Compile Include="MVVM\Formatter.cs" />
+    <Compile Include="MVVM\StyleFormatter.cs" />
     <Compile Include="MVVM\Controllers\FreeTrialController.cs" />
     <Compile Include="MVVM\Controllers\LlvmController.cs" />
     <Compile Include="Helpers\SettingsApi.cs" />

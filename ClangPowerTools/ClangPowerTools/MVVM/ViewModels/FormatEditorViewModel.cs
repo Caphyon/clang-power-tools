@@ -23,7 +23,7 @@ namespace ClangPowerTools
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private readonly Formatter formatter;
+    private readonly StyleFormatter formatter;
     private readonly FormatEditorView formatEditorView;
     private InputMultipleDataView inputMultipleDataView;
     private ICommand selctCodeFileCommand;
@@ -54,7 +54,7 @@ namespace ClangPowerTools
     {
       formatEditorView.Loaded += EditorLoaded;
       this.formatEditorView = formatEditorView;
-      formatter = new Formatter();
+      formatter = new StyleFormatter();
       InitializeStyleOptions(FormatOptionsProvider.CustomOptionsData);
     }
 

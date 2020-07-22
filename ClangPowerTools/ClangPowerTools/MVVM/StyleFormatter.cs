@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace ClangPowerTools
 {
-  public class Formatter
+  public class StyleFormatter
   {
     #region Members
 
