@@ -397,10 +397,11 @@ namespace ClangPowerTools
       var diffController = new DiffController();
       var (matchedStyle, matchedOptions) = await diffController.GetFormatOptionsAsync(formatEditorView.CodeEditor.Text, loadingView);
 
-      SelectedStyle = matchedStyle;
-      FormatOptions = matchedOptions;
 
+      // TODO fix style change using SettingsProvider ChangeControlsDependingOnStyle(bool matchStyleProvided)
+      SelectedStyle = matchedStyle;
       SetStyleControls(nameColumnWidthMax, "0", matchedOptions);
+      RunFormat();
     }
 
     private void EditorLoaded(object sender, EventArgs e)
