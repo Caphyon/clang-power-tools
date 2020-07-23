@@ -5,13 +5,12 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  Title="Creating"
   Width="600"
-  Height="100"
+  Height="120"
   Background="WhiteSmoke"
   ResizeMode="NoResize"
   WindowStartupLocation="CenterScreen"
-  WindowStyle="None"
+  WindowStyle="ToolWindow"
   mc:Ignorable="d">
 
   <Window.Resources>
