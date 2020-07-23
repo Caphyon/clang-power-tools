@@ -403,13 +403,15 @@ namespace ClangPowerTools
         return;
       }
 
-      await diffController.ShowHtmlAfterDiffAsync();
+      // TODO could refactor not to run format twice
+      SetEditorStyleOptions(matchedStyle, matchedOptions);
+
+      var formatOptionFile = FormatOptionFile.CreateOutput(formatStyleOptions, editorStyle).ToString();
+
+      await diffController.ShowHtmlAfterDiffAsync(formatOptionFile);
 
       loadingView.Close();
       formatEditorView.IsEnabled = true;
-
-      // TODO could refactor not to run format twice
-      SetEditorStyleOptions(matchedStyle, matchedOptions);
     }
 
     private void SetEditorStyleOptions(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)
