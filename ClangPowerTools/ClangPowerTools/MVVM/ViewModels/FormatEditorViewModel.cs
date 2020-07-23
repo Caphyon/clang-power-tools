@@ -409,6 +409,11 @@ namespace ClangPowerTools
       formatEditorView.IsEnabled = true;
 
       // TODO could refactor not to run format twice
+      SetEditorStyleOptions(matchedStyle, matchedOptions);
+    }
+
+    private void SetEditorStyleOptions(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)
+    {
       SelectedStyle = matchedStyle;
       SetStyleControls(nameColumnWidthMax, "0", matchedOptions);
       RunFormat();
