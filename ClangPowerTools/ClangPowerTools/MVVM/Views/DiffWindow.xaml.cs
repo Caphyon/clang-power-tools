@@ -12,6 +12,7 @@ namespace ClangPowerTools.MVVM.Views
       DataContext = new DiffViewModel();
       InitializeComponent();
       MyWebBrowser.NavigateToString(html);
+      FormatOptions.Text = formatOptionFile;
     }
   }
 }
