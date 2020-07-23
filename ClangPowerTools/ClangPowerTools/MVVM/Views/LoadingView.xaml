@@ -27,10 +27,11 @@
 
   <Grid>
     <Grid.RowDefinitions>
+      <RowDefinition Height="5" />
+      <RowDefinition Height="20" />
       <RowDefinition Height="20" />
       <RowDefinition Height="30" />
-      <RowDefinition Height="10" />
-      <RowDefinition Height="10" />
+      <RowDefinition Height="5" />
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
@@ -51,5 +52,13 @@
       Grid.Column="1"
       IsIndeterminate="True"
       Style="{StaticResource ProgressBarStyle}" />
+
+    <TextBlock
+      Grid.Row="3"
+      Grid.Column="1"
+      HorizontalAlignment="Center"
+      Foreground="Gray"
+      Text="Process will take a while depending on file size.&#x0a;                     (10.000 lines ~2 minutes)"
+      TextWrapping="WrapWithOverflow" />
   </Grid>
 </Window>
