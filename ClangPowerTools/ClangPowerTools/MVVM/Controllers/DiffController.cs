@@ -12,6 +12,9 @@ namespace ClangPowerTools.MVVM.Controllers
   {
     #region Members
 
+    public EventHandler ClosedWindow;
+
+    private bool windowClosed;
     private readonly StyleFormatter formatter;
     private readonly Dictionary<EditorStyles, List<IFormatOption>> styles;
 
@@ -28,12 +31,25 @@ namespace ClangPowerTools.MVVM.Controllers
     {
       formatter = new StyleFormatter();
       styles = CreateStyles();
+      ClosedWindow += CloseLoadingView;
+      windowClosed = false;
+    }
+
+    private void CloseLoadingView(object sender, EventArgs e)
+    {
+      windowClosed = true;
+      ClosedWindow -= CloseLoadingView;
     }
 
     #endregion
 
     #region Public Methods
 
+    /// <summary>
+    /// Get the found EditorStyle and FormatOptions
+    /// </summary>
+    /// <param name="text"></param>
+    /// <returns></returns>
     public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> GetFormatOptionsAsync(string text)
     {
       editorInput = text;
@@ -46,6 +62,7 @@ namespace ClangPowerTools.MVVM.Controllers
 
         foreach (var option in formatOptions)
         {
+          if (windowClosed) return;
           SetFormatOption(option);
         }
       });
@@ -159,6 +176,7 @@ namespace ClangPowerTools.MVVM.Controllers
 
       foreach (var item in inputValues)
       {
+        if (windowClosed) return;
         inputModel.Input = item;
         inputValuesLevenshtein.Add(item, GetLevenshteinAfterOptionChange());
       }

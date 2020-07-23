@@ -32,7 +32,7 @@ namespace ClangPowerTools
     private ICommand resetCommand;
     private ICommand openUri;
     private ICommand resetSearchCommand;
-    private ICommand automaticallyCreateConfig;
+    private ICommand detectFormatStyle;
 
     private string checkSearch = string.Empty;
     private bool showOptionDescription = true;
@@ -227,9 +227,9 @@ namespace ClangPowerTools
       get => resetSearchCommand ??= new RelayCommand(() => ResetSearchField(), () => CanExecute);
     }
 
-    public ICommand AutomaticallyCreateConfig
+    public ICommand DetectFormatStyle
     {
-      get => automaticallyCreateConfig ??= new RelayCommand(() => DetectStyleOptionsAsync().SafeFireAndForget(), () => CanExecute);
+      get => detectFormatStyle ??= new RelayCommand(() => DetectStyleOptionsAsync().SafeFireAndForget(), () => CanExecute);
     }
 
     #endregion
@@ -388,21 +388,27 @@ namespace ClangPowerTools
 
     private async Task DetectStyleOptionsAsync()
     {
-      var loadingView = new LoadingView
-      {
-        Owner = formatEditorView
-      };
+      var loadingView = new LoadingView();
+      loadingView.Owner = formatEditorView;
       loadingView.Show();
       formatEditorView.IsEnabled = false;
 
       var diffController = new DiffController();
+      loadingView.Closed += diffController.ClosedWindow;
       var (matchedStyle, matchedOptions) = await diffController.GetFormatOptionsAsync(formatEditorView.CodeEditor.Text);
+
+      if (loadingView.IsLoaded == false)
+      {
+        formatEditorView.IsEnabled = true;
+        return;
+      }
+
       await diffController.ShowHtmlAfterDiffAsync();
 
       loadingView.Close();
       formatEditorView.IsEnabled = true;
 
-      // TODO fix style change using SettingsProvider ChangeControlsDependingOnStyle(bool matchStyleProvided)
+      // TODO could refactor not to run format twice
       SelectedStyle = matchedStyle;
       SetStyleControls(nameColumnWidthMax, "0", matchedOptions);
       RunFormat();
