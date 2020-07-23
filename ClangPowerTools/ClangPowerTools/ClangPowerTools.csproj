@@ -225,8 +225,8 @@
     <Compile Include="MVVM\Views\CompilerSettingsView.xaml.cs">
       <DependentUpon>CompilerSettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MVVM\Views\LoadingView.xaml.cs">
-      <DependentUpon>LoadingView.xaml</DependentUpon>
+    <Compile Include="MVVM\Views\DetectingView.xaml.cs">
+      <DependentUpon>DetectingView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\TeamSettingsView.xaml.cs">
       <DependentUpon>TeamSettingsView.xaml</DependentUpon>
@@ -631,7 +631,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MVVM\Views\LoadingView.xaml">
+    <Page Include="MVVM\Views\DetectingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

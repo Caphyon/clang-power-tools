@@ -5,9 +5,9 @@ namespace ClangPowerTools.MVVM.Views
   /// <summary>
   /// Interaction logic for LoadingView.xaml
   /// </summary>
-  public partial class LoadingView : Window
+  public partial class DetectingView : Window
   {
-    public LoadingView()
+    public DetectingView()
     {
       InitializeComponent();
     }
