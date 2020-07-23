@@ -50,9 +50,29 @@ namespace ClangPowerTools.MVVM.Controllers
         }
       });
 
-      ShowHtmlAfterDiff();
-
       return (formatStyle, formatOptions);
+    }
+
+    /// <summary>
+    /// Display the diffs in an html format after GetFormatOptionsAsync
+    /// </summary>
+    /// <returns></returns>
+    public async Task ShowHtmlAfterDiffAsync()
+    {
+      string html = string.Empty;
+      await Task.Run(() =>
+      {
+        var formattedText = formatter.FormatText(editorInput, formatOptions, formatStyle);
+        var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
+        diffMatchPatchWrapper.Diff(editorInput, formattedText);
+        diffMatchPatchWrapper.CleanupSemantic();
+
+        var styleName = Enum.GetName(typeof(EditorStyles), formatStyle);
+        html = diffMatchPatchWrapper.DiffAsHtml() + "<br><br>" + styleName;
+      });
+
+      var diffWindow = new DiffWindow(html);
+      diffWindow.Show();
     }
 
     #endregion
@@ -177,20 +197,6 @@ namespace ClangPowerTools.MVVM.Controllers
       };
 
       return groupedStyles;
-    }
-
-    private void ShowHtmlAfterDiff()
-    {
-      var formattedText = formatter.FormatText(editorInput, formatOptions, formatStyle);
-      var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
-      diffMatchPatchWrapper.Diff(editorInput, formattedText);
-      diffMatchPatchWrapper.CleanupSemantic();
-
-      var styleName = Enum.GetName(typeof(EditorStyles), formatStyle);
-      var html = diffMatchPatchWrapper.DiffAsHtml() + "<br><br>" + styleName;
-
-      var diffWindow = new DiffWindow(html);
-      diffWindow.Show();
     }
 
     #endregion
