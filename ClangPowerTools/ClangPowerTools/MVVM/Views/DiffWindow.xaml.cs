@@ -7,7 +7,7 @@ namespace ClangPowerTools.MVVM.Views
   /// </summary>
   public partial class DiffWindow : Window
   {
-    public DiffWindow(string html)
+    public DiffWindow(string html, string formatOptionFile)
     {
       DataContext = new DiffViewModel();
       InitializeComponent();

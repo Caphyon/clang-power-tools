@@ -74,7 +74,7 @@ namespace ClangPowerTools.MVVM.Controllers
     /// Display the diffs in an html format after GetFormatOptionsAsync
     /// </summary>
     /// <returns></returns>
-    public async Task ShowHtmlAfterDiffAsync()
+    public async Task ShowHtmlAfterDiffAsync(string formatOptionFile)
     {
       string html = string.Empty;
       await Task.Run(() =>
@@ -88,7 +88,7 @@ namespace ClangPowerTools.MVVM.Controllers
         html = diffMatchPatchWrapper.DiffAsHtml() + "<br><br>" + styleName;
       });
 
-      var diffWindow = new DiffWindow(html);
+      var diffWindow = new DiffWindow(html, formatOptionFile);
       diffWindow.Show();
     }
 
