@@ -393,10 +393,11 @@ namespace ClangPowerTools
         Owner = formatEditorView
       };
       loadingView.Show();
+      formatEditorView.IsEnabled = false;
 
       var diffController = new DiffController();
       var (matchedStyle, matchedOptions) = await diffController.GetFormatOptionsAsync(formatEditorView.CodeEditor.Text, loadingView);
-
+      formatEditorView.IsEnabled = true;
 
       // TODO fix style change using SettingsProvider ChangeControlsDependingOnStyle(bool matchStyleProvided)
       SelectedStyle = matchedStyle;
