@@ -396,7 +396,9 @@ namespace ClangPowerTools
       formatEditorView.IsEnabled = false;
 
       var diffController = new DiffController();
-      var (matchedStyle, matchedOptions) = await diffController.GetFormatOptionsAsync(formatEditorView.CodeEditor.Text, loadingView);
+      var (matchedStyle, matchedOptions) = await diffController.GetFormatOptionsAsync(formatEditorView.CodeEditor.Text);
+
+      loadingView.Close();
       formatEditorView.IsEnabled = true;
 
       // TODO fix style change using SettingsProvider ChangeControlsDependingOnStyle(bool matchStyleProvided)
