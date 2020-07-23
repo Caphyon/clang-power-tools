@@ -317,13 +317,10 @@
           Height="30"
           Margin="20,0,0,0"
           Command="{Binding ResetCommand}"
+          Content="Reset Options"
           FontSize="14"
           Foreground="White"
-          Style="{StaticResource SettingsButton}">
-          <Button.Content>
-            Reset Options
-          </Button.Content>
-        </Button>
+          Style="{StaticResource SettingsButton}" />
 
         <!--  Export button  -->
         <Button
@@ -331,13 +328,10 @@
           Height="30"
           Margin="20,0,0,0"
           Command="{Binding CreateFormatFileCommand}"
+          Content="Export .clang-format"
           FontSize="14"
           Foreground="White"
-          Style="{StaticResource SettingsButton}">
-          <Button.Content>
-            Export .clang-format
-          </Button.Content>
-        </Button>
+          Style="{StaticResource SettingsButton}" />
 
         <!--  Select file button  -->
         <Button
@@ -345,27 +339,10 @@
           Height="30"
           Margin="20,0,0,0"
           Command="{Binding SelctCodeFileCommand}"
+          Content="Select Code File"
           FontSize="14"
           Foreground="White"
-          Style="{StaticResource SettingsButton}">
-          <Button.Content>
-            Select Code File
-          </Button.Content>
-        </Button>
-
-        <!--  Automatically Create Config button  -->
-        <Button
-          Width="50"
-          Height="30"
-          Margin="20,0,0,0"
-          Command="{Binding AutomaticallyCreateConfig}"
-          FontSize="14"
-          Foreground="White"
-          Style="{StaticResource SettingsButton}">
-          <Button.Content>
-            Create Config
-          </Button.Content>
-        </Button>
+          Style="{StaticResource SettingsButton}" />
 
         <!--  Format button
         <Button
@@ -382,6 +359,18 @@
           </Button.Content>
         </Button>-->
       </StackPanel>
+
+      <!--  Detect Clang-Format style  -->
+      <Button
+        Grid.Row="2"
+        Width="250"
+        Height="30"
+        Margin="20,0,0,0"
+        Command="{Binding DetectFormatStyle}"
+        Content="Detect Format Style"
+        FontSize="14"
+        Foreground="White"
+        Style="{StaticResource SettingsButton}" />
     </Grid>
   </Grid>
 </Window>
