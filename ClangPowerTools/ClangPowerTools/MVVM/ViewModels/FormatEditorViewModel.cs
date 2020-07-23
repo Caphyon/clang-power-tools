@@ -229,7 +229,7 @@ namespace ClangPowerTools
 
     public ICommand AutomaticallyCreateConfig
     {
-      get => automaticallyCreateConfig ??= new RelayCommand(() => GetMatchingStyleOptionsAsync().SafeFireAndForget(), () => CanExecute);
+      get => automaticallyCreateConfig ??= new RelayCommand(() => DetectStyleOptionsAsync().SafeFireAndForget(), () => CanExecute);
     }
 
     #endregion
@@ -386,7 +386,7 @@ namespace ClangPowerTools
       }
     }
 
-    private async Task GetMatchingStyleOptionsAsync()
+    private async Task DetectStyleOptionsAsync()
     {
       var loadingView = new LoadingView
       {
@@ -397,6 +397,7 @@ namespace ClangPowerTools
 
       var diffController = new DiffController();
       var (matchedStyle, matchedOptions) = await diffController.GetFormatOptionsAsync(formatEditorView.CodeEditor.Text);
+      await diffController.ShowHtmlAfterDiffAsync();
 
       loadingView.Close();
       formatEditorView.IsEnabled = true;
