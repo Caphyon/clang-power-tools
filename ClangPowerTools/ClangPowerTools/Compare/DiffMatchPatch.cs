@@ -1574,6 +1574,18 @@ namespace Compare.DiffMatchPatch
         case 10:
           lineNumberLabelWidth = 65;
           break;
+        case 11:
+        case 12:
+          lineNumberLabelWidth = 75;
+          break;
+        case 13:
+        case 14:
+          lineNumberLabelWidth = 85;
+          break;
+        case 15:
+        case 16:
+          lineNumberLabelWidth = 95;
+          break;
         default:
           break;
       }
