@@ -21,18 +21,20 @@ namespace ClangPowerTools.MVVM.Controllers
     private EditorStyles formatStyle;
     private List<IFormatOption> formatOptions;
     private string editorInput;
+    private Action CreateFormatFile;
 
     #endregion
 
 
     #region Constructor
 
-    public DiffController()
+    public DiffController(Action CreateFormatFile)
     {
       formatter = new StyleFormatter();
       styles = CreateStyles();
       ClosedWindow += CloseLoadingView;
       windowClosed = false;
+      this.CreateFormatFile = CreateFormatFile;
     }
 
     private void CloseLoadingView(object sender, EventArgs e)
@@ -88,7 +90,7 @@ namespace ClangPowerTools.MVVM.Controllers
         html = diffMatchPatchWrapper.DiffAsHtml() + "<br><br>" + styleName;
       });
 
-      var diffWindow = new DiffWindow(html, formatOptionFile);
+      var diffWindow = new DiffWindow(html, formatOptionFile, CreateFormatFile);
       diffWindow.Show();
     }
 

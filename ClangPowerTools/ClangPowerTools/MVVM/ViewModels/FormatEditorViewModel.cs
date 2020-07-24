@@ -393,7 +393,7 @@ namespace ClangPowerTools
       loadingView.Show();
       formatEditorView.IsEnabled = false;
 
-      var diffController = new DiffController();
+      var diffController = new DiffController(CreateFormatFile);
       loadingView.Closed += diffController.ClosedWindow;
       var (matchedStyle, matchedOptions) = await diffController.GetFormatOptionsAsync(formatEditorView.CodeEditor.Text);
 
