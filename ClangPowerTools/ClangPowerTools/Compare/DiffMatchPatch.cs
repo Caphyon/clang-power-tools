@@ -1574,6 +1574,18 @@ namespace Compare.DiffMatchPatch
         case 10:
           lineNumberLabelWidth = 65;
           break;
+        case 11:
+        case 12:
+          lineNumberLabelWidth = 75;
+          break;
+        case 13:
+        case 14:
+          lineNumberLabelWidth = 85;
+          break;
+        case 15:
+        case 16:
+          lineNumberLabelWidth = 95;
+          break;
         default:
           break;
       }
@@ -1594,9 +1606,6 @@ namespace Compare.DiffMatchPatch
 
       int lineNumber = 1;
 
-      // whitespaces after the line number for text alignment
-      var WHITESPACES_AFTER_LINE_NUMBER = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-
       bool firstIteration = true;
       int lineNumberLabelWidth = GetLineNumberWidth(diffs);
 
@@ -1611,11 +1620,11 @@ namespace Compare.DiffMatchPatch
         if (firstIteration)
         {
           // line number for first line of code
-          textBegin = $"<label style=\"background=#D3D3D3; width={lineNumberLabelWidth}px; text-align:right; padding-right:5px;\">{lineNumber++}</label>";
+          textBegin = $"<label style=\"background=#D3D3D3; width={lineNumberLabelWidth}px; text-align:right; padding-right:5px; margin-right: 30px;\">{lineNumber++}</label>";
           firstIteration = false;
         }
 
-        text = $"{textBegin}{WHITESPACES_AFTER_LINE_NUMBER}{text}";
+        text = $"{textBegin}{text}";
 
         // for each end of line detected
         while (text.Contains("\n"))
@@ -1628,9 +1637,8 @@ namespace Compare.DiffMatchPatch
           // 1. text before the end line 
           // 2. replace the end line \n with the equivalent <br> HTML tag
           // 3. line number using the HTML <label> tag
-          // 4. number of necessary whitespaces for alignment
-          // 5. text after the end line
-          text = $"{textBefore}<br><label style=\"background=#D3D3D3; width={lineNumberLabelWidth}px; text-align:right;  padding-right:5px;\">{lineNumber++}</label>{WHITESPACES_AFTER_LINE_NUMBER}{textAfter}";
+          // 4. text after the end line
+          text = $"{textBefore}<br><label style=\"background=#D3D3D3; width={lineNumberLabelWidth}px; text-align:right;  padding-right:5px; margin-right: 30px;\">{lineNumber++}</label>{textAfter}";
         }
 
         switch (aDiff.operation)
