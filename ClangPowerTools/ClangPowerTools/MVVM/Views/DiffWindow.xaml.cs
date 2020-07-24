@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 
 namespace ClangPowerTools.MVVM.Views
 {
@@ -7,12 +8,10 @@ namespace ClangPowerTools.MVVM.Views
   /// </summary>
   public partial class DiffWindow : Window
   {
-    public DiffWindow(string html, string formatOptionFile)
+    public DiffWindow(string html, string formatOptionFile, Action exportFormatOptionFile)
     {
-      DataContext = new DiffViewModel();
       InitializeComponent();
-      MyWebBrowser.NavigateToString(html);
-      FormatOptions.Text = formatOptionFile;
+      DataContext = new DiffViewModel(this, html, formatOptionFile, exportFormatOptionFile);
     }
   }
 }
