@@ -75,6 +75,15 @@ namespace ClangPowerTools
       return new String(chars);
     }
 
+
+    public static string TrimEnd(this string input, string substring)
+    {
+      if (input.EndsWith(substring))
+        input = input.Substring(0, input.LastIndexOf(substring));
+
+      return input;
+    }
+
     #endregion
 
   }
