@@ -39,7 +39,7 @@ namespace ClangPowerTools
     private IFormatOption selectedOption;
     private List<IFormatOption> formatStyleOptions;
     private List<IFormatOption> searchResultFormatStyleOptions;
-    private EditorStyles editorStyle = EditorStyles.Custom;
+    private EditorStyles selectedStyle = EditorStyles.Custom;
     private bool windowLoaded = false;
     private string nameColumnWidth;
     private string droppedFile;
@@ -133,11 +133,11 @@ namespace ClangPowerTools
       get
       {
         FindFormatOptionsAsync(checkSearch).SafeFireAndForget();
-        return editorStyle;
+        return selectedStyle;
       }
       set
       {
-        editorStyle = value;
+        selectedStyle = value;
         ChangeControlsDependingOnStyle();
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedStyle"));
 
@@ -256,7 +256,7 @@ namespace ClangPowerTools
       if (windowLoaded == false) return;
 
       var text = formatEditorView.CodeEditor.Text;
-      var formattedText = formatter.FormatText(text, formatStyleOptions, editorStyle);
+      var formattedText = formatter.FormatText(text, formatStyleOptions, selectedStyle);
       formatEditorView.CodeEditorReadOnly.Text = formattedText;
     }
 
@@ -294,7 +294,7 @@ namespace ClangPowerTools
 
     private void ChangeControlsDependingOnStyle()
     {
-      switch (editorStyle)
+      switch (selectedStyle)
       {
         case EditorStyles.Custom:
           SetStyleControls("260", "80", FormatOptionsProvider.CustomOptionsData.FormatOptions);
@@ -382,7 +382,7 @@ namespace ClangPowerTools
       string path = SaveFile(fileName, defaultExt, filter);
       if (string.IsNullOrEmpty(path) == false)
       {
-        WriteContentToFile(path, FormatOptionFile.CreateOutput(formatStyleOptions, editorStyle).ToString());
+        WriteContentToFile(path, FormatOptionFile.CreateOutput(formatStyleOptions, selectedStyle).ToString());
       }
     }
 
@@ -403,10 +403,9 @@ namespace ClangPowerTools
         return;
       }
 
-      // TODO could refactor not to run format twice
       SetEditorStyleOptions(matchedStyle, matchedOptions);
 
-      var formatOptionFile = FormatOptionFile.CreateOutput(formatStyleOptions, editorStyle).ToString();
+      var formatOptionFile = FormatOptionFile.CreateOutput(formatStyleOptions, selectedStyle).ToString();
 
       await diffController.ShowHtmlAfterDiffAsync(formatOptionFile);
 
@@ -416,7 +415,8 @@ namespace ClangPowerTools
 
     private void SetEditorStyleOptions(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)
     {
-      SelectedStyle = matchedStyle;
+      selectedStyle = matchedStyle;
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedStyle"));
       SetStyleControls(nameColumnWidthMax, "0", matchedOptions);
       RunFormat();
     }
@@ -439,7 +439,7 @@ namespace ClangPowerTools
       if (droppedFiles == null || droppedFiles.Length != 1)
         return false;
 
-      if (!ScriptConstants.kAcceptedFileExtensions.Contains(Path.GetExtension(droppedFiles[0])))
+      if (ScriptConstants.kAcceptedFileExtensions.Contains(Path.GetExtension(droppedFiles[0])) == false)
         return false;
 
       droppedFile = droppedFiles[0];
