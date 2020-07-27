@@ -461,14 +461,8 @@ namespace ClangPowerTools
 
       searchResultFormatStyleOptions = formatStyleOptions.Where(e => e.Name.Contains(search, StringComparison.OrdinalIgnoreCase)).ToList();
       SelectedOption = searchResultFormatStyleOptions.FirstOrDefault();
-      if (searchResultFormatStyleOptions.Count == 0)
-      {
-        ShowOptionDescription = false;
-      }
-      else
-      {
-        ShowOptionDescription = true;
-      }
+      ShowOptionDescription = searchResultFormatStyleOptions.Count != 0;
+
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
     });
     }

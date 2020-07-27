@@ -100,30 +100,27 @@ namespace ClangPowerTools
     {
       foreach (var item in formatOptions)
       {
-        if (item.IsEnabled)
-        {
-          var styleOption = string.Empty;
-          if (item is FormatOptionToggleModel)
-          {
-            var option = item as FormatOptionToggleModel;
-            styleOption = string.Concat(option.Name, ": ", option.BooleanCombobox.ToString().ToLower());
-          }
-          else if (item is FormatOptionInputModel)
-          {
-            var option = item as FormatOptionInputModel;
-            if (string.IsNullOrEmpty(option.Input)) continue;
-            styleOption = string.Concat(option.Name, ": ", option.Input);
-          }
-          else if (item is FormatOptionMultipleInputModel)
-          {
-            var option = item as FormatOptionMultipleInputModel;
-            if (string.IsNullOrEmpty(option.MultipleInput)) continue;
-            styleOption = string.Concat(option.Name, ": \r\n", option.MultipleInput);
-          }
+        if (item.IsEnabled == false) continue;
 
-          output.AppendLine(styleOption);
+        var styleOption = string.Empty;
+        switch (item)
+        {
+          case FormatOptionToggleModel option:
+            styleOption = string.Concat(option.Name, ": ", option.BooleanCombobox.ToString().ToLower());
+            break;
+          case FormatOptionInputModel option when string.IsNullOrEmpty(option.Input) == false:
+            styleOption = string.Concat(option.Name, ": ", option.Input);
+            break;
+          case FormatOptionMultipleInputModel option when string.IsNullOrEmpty(option.MultipleInput) == false:
+            styleOption = string.Concat(option.Name, ": \r\n", option.MultipleInput);
+            break;
+          default:
+            break;
         }
+
+        output.AppendLine(styleOption);
       }
     }
   }
 }
+
