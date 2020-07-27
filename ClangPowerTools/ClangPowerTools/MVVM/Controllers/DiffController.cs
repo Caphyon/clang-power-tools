@@ -85,9 +85,7 @@ namespace ClangPowerTools.MVVM.Controllers
         var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
         diffMatchPatchWrapper.Diff(editorInput, formattedText);
         diffMatchPatchWrapper.CleanupSemantic();
-
-        var styleName = Enum.GetName(typeof(EditorStyles), formatStyle);
-        html = diffMatchPatchWrapper.DiffAsHtml() + "<br><br>" + styleName;
+        html = diffMatchPatchWrapper.DiffAsHtml();
       });
 
       var diffWindow = new DiffWindow(html, formatOptionFile, CreateFormatFile);
