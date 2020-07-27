@@ -69,6 +69,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         FontWeight="DemiBold"
+        Foreground="#9E005A"
         Text="Detected Clang-Format Style Options"
         TextWrapping="Wrap" />
 
