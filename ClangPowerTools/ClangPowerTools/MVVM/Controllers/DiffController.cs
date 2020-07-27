@@ -21,7 +21,7 @@ namespace ClangPowerTools.MVVM.Controllers
     private EditorStyles formatStyle;
     private List<IFormatOption> formatOptions;
     private string editorInput;
-    private Action CreateFormatFile;
+    private readonly Action CreateFormatFile;
 
     #endregion
 
@@ -111,12 +111,12 @@ namespace ClangPowerTools.MVVM.Controllers
         levenshteinDiffs.Add(diffMatchPatchWrapper.DiffLevenshtein());
       }
 
-      var minLevenshtein = GetSmallestLevenshtein(levenshteinDiffs);
+      var minLevenshtein = GetIndexOfSmallestLevenshtein(levenshteinDiffs);
       var matchedStyle = styles.ElementAt(minLevenshtein);
       return (matchedStyle.Key, matchedStyle.Value);
     }
 
-    private int GetSmallestLevenshtein(List<int> levenshteinDiffs)
+    private int GetIndexOfSmallestLevenshtein(List<int> levenshteinDiffs)
     {
       var minLevenshtein = levenshteinDiffs.Min();
       return levenshteinDiffs.IndexOf(minLevenshtein);
@@ -153,14 +153,9 @@ namespace ClangPowerTools.MVVM.Controllers
       inputValuesLevenshtein.Add(ToggleValues.True, GetLevenshteinAfterOptionChange());
 
       var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
-      if (inputValue.Value == inputValuesLevenshtein[previousInput])
-      {
-        modelToggle.BooleanCombobox = previousInput;
-      }
-      else
-      {
-        modelToggle.BooleanCombobox = inputValue.Key;
-      }
+
+      modelToggle.BooleanCombobox = inputValue.Value == inputValuesLevenshtein[previousInput] ?
+                                    previousInput : inputValue.Key;
     }
 
     /// <summary>
