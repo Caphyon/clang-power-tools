@@ -87,7 +87,7 @@
     <Compile Include="Error\TaskErrorViewModel.cs" />
     <Compile Include="Events\BoolEventArgs.cs" />
     <Compile Include="Events\FormatCommandEventArgs.cs" />
-    <Compile Include="Export Config\ClangFormatFile.cs" />
+    <Compile Include="Export Config\FormatOptionFile.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Events\HasEncodingErrorEventArgs.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
