@@ -18,6 +18,7 @@
   ResizeMode="CanResize"
   ShowInTaskbar="true"
   WindowStartupLocation="CenterScreen"
+  WindowState="Maximized"
   mc:Ignorable="d">
 
   <!--  Static resources  -->
@@ -304,18 +305,30 @@
       </TabControl>
 
       <!--  Buttons  -->
-      <StackPanel
-        Grid.Row="1"
-        Margin="0,20,0,0"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Top"
-        Orientation="Horizontal">
+      <Grid Grid.Row="1">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="20" />
+          <RowDefinition Height="auto" />
+          <RowDefinition Height="20" />
+          <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="150" />
+          <ColumnDefinition Width="20" />
+          <ColumnDefinition Width="150" />
+          <ColumnDefinition Width="20" />
+          <ColumnDefinition Width="150" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
         <!--  Reset button  -->
         <Button
+          Grid.Row="1"
+          Grid.Column="1"
           Width="150"
           Height="30"
-          Margin="20,0,0,0"
           Command="{Binding ResetCommand}"
           Content="Reset Options"
           FontSize="14"
@@ -324,9 +337,9 @@
 
         <!--  Export button  -->
         <Button
+          Grid.Row="1"
+          Grid.Column="3"
           Width="150"
-          Height="30"
-          Margin="20,0,0,0"
           Command="{Binding CreateFormatFileCommand}"
           Content="Export .clang-format"
           FontSize="14"
@@ -335,42 +348,31 @@
 
         <!--  Select file button  -->
         <Button
+          Grid.Row="1"
+          Grid.Column="5"
           Width="150"
           Height="30"
-          Margin="20,0,0,0"
           Command="{Binding SelctCodeFileCommand}"
           Content="Select Code File"
           FontSize="14"
           Foreground="White"
           Style="{StaticResource SettingsButton}" />
 
-        <!--  Format button
+        <!--  Detect Clang-Format style  -->
         <Button
-          Grid.Row="1"
-          Grid.Column="2"
-          Width="100"
+          Grid.Row="3"
+          Grid.ColumnSpan="7"
+          Width="250"
           Height="30"
-          Command="{Binding FormatCodeCommand}"
+          HorizontalAlignment="Center"
+          Command="{Binding DetectFormatStyle}"
+          Content="Detect Format Style"
           FontSize="14"
           Foreground="White"
-          Style="{StaticResource SettingsButton}">
-          <Button.Content>
-            Format
-          </Button.Content>
-        </Button>-->
-      </StackPanel>
+          Style="{StaticResource SettingsButton}" />
 
-      <!--  Detect Clang-Format style  -->
-      <Button
-        Grid.Row="2"
-        Width="250"
-        Height="30"
-        Margin="20,0,0,0"
-        Command="{Binding DetectFormatStyle}"
-        Content="Detect Format Style"
-        FontSize="14"
-        Foreground="White"
-        Style="{StaticResource SettingsButton}" />
+      </Grid>
+
     </Grid>
   </Grid>
 </Window>

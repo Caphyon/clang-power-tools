@@ -62,7 +62,7 @@ namespace ClangPowerTools
     {
       var lines = formatOptionFile.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
       var sb = new StringBuilder();
-      for (int i = 2; i < lines.Length; i++)
+      for (int i = 2; i < lines.Length - 1; i++)
       {
         sb.AppendLine(lines[i]);
       }
