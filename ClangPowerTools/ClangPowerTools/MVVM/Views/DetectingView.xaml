@@ -39,6 +39,7 @@
       <ColumnDefinition Width="10" />
     </Grid.ColumnDefinitions>
 
+    <!--  Detecting style progress  -->
     <TextBlock
       Grid.Row="1"
       Grid.Column="1"
@@ -57,7 +58,7 @@
       Grid.Column="1"
       HorizontalAlignment="Center"
       Foreground="Gray"
-      Text="Process will take a while depending on file size.&#x0a;                     (10 000 lines ~2 minutes)"
+      Text="Process will take some time depending on file size&#x0a;                     (10 000 lines ~2 minutes)"
       TextWrapping="WrapWithOverflow" />
   </Grid>
 </Window>
