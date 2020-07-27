@@ -5,7 +5,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  Title="File Diff"
+  Title="Code Diff"
   MinWidth="900"
   MinHeight="750"
   d:DataContext="{d:DesignInstance local:DiffViewModel,
@@ -50,22 +50,50 @@
       Grid.Column="1" />
 
     <!--  Detected Format Options  -->
-    <StackPanel
-      Grid.Row="1"
-      Grid.Column="3"
-      Orientation="Vertical">
-      <TextBox
-        Name="FormatOptions"
-        Width="280"
-        Background="Transparent"
-        BorderThickness="0"
+    <Grid Grid.Row="1" Grid.Column="3">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="10" />
+        <RowDefinition Height="25" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="50" />
+      </Grid.RowDefinitions>
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="280" />
+      </Grid.ColumnDefinitions>
+
+      <!--  Title  -->
+      <TextBlock
+        Grid.Row="1"
+        Grid.Column="0"
+        HorizontalAlignment="Center"
+        FontSize="15"
         FontWeight="DemiBold"
-        IsReadOnly="True"
-        Text="{Binding FormatOptionFile}"
+        Text="Detected Clang-Format Style Options"
         TextWrapping="Wrap" />
+
+      <!--  Format Options  -->
+      <Border
+        Grid.Row="2"
+        Grid.Column="0"
+        BorderBrush="#9E005A"
+        BorderThickness="1">
+        <TextBox
+          Name="FormatOptions"
+          Width="300"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="12"
+          IsReadOnly="True"
+          Text="{Binding FormatOptionFile}"
+          TextWrapping="Wrap"
+          VerticalScrollBarVisibility="Auto" />
+      </Border>
 
       <!--  Export button  -->
       <Button
+        Grid.Row="3"
+        Grid.Column="0"
         Width="150"
         Height="30"
         Margin="20,0,0,0"
@@ -74,6 +102,7 @@
         FontSize="14"
         Foreground="White"
         Style="{StaticResource SettingsButton}" />
-    </StackPanel>
+    </Grid>
+
   </Grid>
 </Window>
