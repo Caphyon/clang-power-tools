@@ -388,8 +388,10 @@ namespace ClangPowerTools
 
     private async Task DetectStyleOptionsAsync()
     {
-      var loadingView = new DetectingView();
-      loadingView.Owner = formatEditorView;
+      var loadingView = new DetectingView
+      {
+        Owner = formatEditorView
+      };
       loadingView.Show();
       formatEditorView.IsEnabled = false;
 
