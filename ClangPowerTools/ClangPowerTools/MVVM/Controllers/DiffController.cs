@@ -142,7 +142,7 @@ namespace ClangPowerTools.MVVM.Controllers
     private void SetOptionToggle(FormatOptionToggleModel modelToggle)
     {
       var previousInput = modelToggle.BooleanCombobox;
-      Dictionary<ToggleValues, int> inputValuesLevenshtein = new Dictionary<ToggleValues, int>();
+      var inputValuesLevenshtein = new Dictionary<ToggleValues, int>();
 
       modelToggle.BooleanCombobox = ToggleValues.False;
       inputValuesLevenshtein.Add(ToggleValues.False, GetLevenshteinAfterOptionChange());
@@ -167,7 +167,7 @@ namespace ClangPowerTools.MVVM.Controllers
       string[] inputValues = FormatOptionsInputValues.inputValues[inputModel.Name];
       var previousInput = inputModel.Input;
 
-      Dictionary<string, int> inputValuesLevenshtein = new Dictionary<string, int>();
+      var inputValuesLevenshtein = new Dictionary<string, int>();
 
       foreach (var item in inputValues)
       {
@@ -177,14 +177,9 @@ namespace ClangPowerTools.MVVM.Controllers
       }
 
       var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
-      if (inputValue.Value == inputValuesLevenshtein[previousInput])
-      {
-        inputModel.Input = previousInput;
-      }
-      else
-      {
-        inputModel.Input = inputValue.Key;
-      }
+
+      inputModel.Input = inputValue.Value == inputValuesLevenshtein[previousInput] ?
+                         previousInput : inputValue.Key;
     }
 
     private int GetLevenshteinAfterOptionChange()
