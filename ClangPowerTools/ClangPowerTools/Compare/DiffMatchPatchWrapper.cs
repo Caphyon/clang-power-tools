@@ -135,7 +135,7 @@ namespace ClangPowerTools
         var containsEqualOperation = localdiffs.Any(e => e.operation == Operation.EQUAL);
         if (containsEqualOperation == false && inputLines.Count != outputLines.Count)
         {
-          outputLines.Insert(index, new string(' ', 100) + "\r\n");
+          outputLines.Insert(index, new string(' ', 200) + "\r\n");
           Run run = new Run(outputLines[index]);
           run.Background = Brushes.IndianRed;
           paragraph.Inlines.Add(run);
