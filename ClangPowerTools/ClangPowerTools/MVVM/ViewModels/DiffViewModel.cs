@@ -2,6 +2,7 @@
 using ClangPowerTools.MVVM.Views;
 using System;
 using System.Text;
+using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace ClangPowerTools
@@ -32,9 +33,11 @@ namespace ClangPowerTools
 
     #region Constructor 
 
-    public DiffViewModel(DiffWindow diffWindow, string html, string formatOptionFile, Action CreateFormatFile)
+    public DiffViewModel(DiffWindow diffWindow, FlowDocument diffText, string formatOptionFile, Action CreateFormatFile)
     {
-      diffWindow.MyWebBrowser.NavigateToString(html);
+      //diffWindow.MyWebBrowser.NavigateToString(html);
+      diffWindow.Cake.Document = diffText;
+      //DiffText = html;
       FormatOptionFile = CleanOptionFile(formatOptionFile);
       this.CreateFormatFile = CreateFormatFile;
     }

@@ -1,5 +1,10 @@
 ﻿using Compare.DiffMatchPatch;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows.Documents;
+using System.Windows.Media;
 
 namespace ClangPowerTools
 {
@@ -7,13 +12,13 @@ namespace ClangPowerTools
   {
     #region Members
 
-    private readonly DiffMatchPatch diffMatchPatch;
+    private DiffMatchPatch diffMatchPatch;
     private List<Diff> diffs;
 
     // DiffMatchPatch defaults
     private readonly float diffTimeout = 1.0f;
     private readonly short diffEditCost = 4;
-    private readonly float matchThreshold = 0.5f;
+    private readonly float matchThreshold = 0.8f;
     private readonly int matchDistance = 1000;
     private readonly float patchDeleteThreshold = 0.5f;
     private readonly short patchMargin = 4;
@@ -107,11 +112,96 @@ namespace ClangPowerTools
     /// Takes a diff array and returns a pretty HTML sequence.
     /// </summary>
     /// <returns>Html page as string or string.Empty if the Diff(text1, text2) was not run previously</returns>
-    public string DiffAsHtml()
+    public string DiffAsHtml(string editorInput, string editorOutput)
     {
-      if (diffs == null) return string.Empty;
-      return diffMatchPatch.diff_prettyHtml(diffs);
+      var html = new StringBuilder();
+
+      html.Append("<pre>");
+      foreach (Diff aDiff in diffs)
+      {
+        string text = aDiff.text.Replace("&", "&amp;").Replace("<", "&lt;")
+               .Replace(">", "&gt;").Replace("\r\n", "<br>");
+        switch (aDiff.operation)
+        {
+          case Operation.INSERT:
+            html.Append("<ins style=\"background:#e6ffe6;\">").Append(text)
+                .Append("</ins>");
+            break;
+          case Operation.DELETE:
+
+            html.Append("<del style=\"background:#ffe6e6;\">").Append(text)
+                .Append("</del>");
+            break;
+          case Operation.EQUAL:
+            html.Append("<span>").Append(text).Append("</span>");
+            break;
+        }
+      }
+      html.Append("</pre>");
+
+      return html.ToString();
     }
+
+    public FlowDocument DiffAsFlowDocument(string editorInput, string editorOutput)
+    {
+      var diffText = new FlowDocument();
+      var paragraph = new Paragraph();
+
+      var inputLines = editorInput.Split(new[] { "\r\n" }, StringSplitOptions.None).ToList();
+      var outputLines = editorOutput.Split(new[] { "\r\n" }, StringSplitOptions.None).ToList();
+      var inputLinesLength = editorInput.Length;
+      var outputLinesLength = editorOutput.Length;
+      List<Diff> localdiffs = new List<Diff>();
+
+      var index = 0;
+
+      while (inputLines.Count != index)
+      {
+        diffMatchPatch = new DiffMatchPatch();
+        localdiffs = diffMatchPatch.diff_main(inputLines[index], outputLines[index]);
+
+        var containsEqual = localdiffs.Any(e => e.operation == Operation.EQUAL);
+        if (containsEqual == false)
+        {
+          outputLines.Insert(index, "                                                \r\n");
+          Run run = new Run(outputLines[index]);
+          run.Background = Brushes.IndianRed;
+          paragraph.Inlines.Add(run);
+          index++;
+          continue;
+        }
+
+        foreach (Diff aDiff in localdiffs)
+        {
+          var text = aDiff.text;
+
+          Run run = new Run();
+          switch (aDiff.operation)
+          {
+            case Operation.INSERT:
+              run.Text = text;
+              run.Background = Brushes.LightGreen;
+              paragraph.Inlines.Add(run);
+              break;
+            case Operation.DELETE:
+              run.Text = text;
+              run.Background = Brushes.LightPink;
+              paragraph.Inlines.Add(run);
+              break;
+            case Operation.EQUAL:
+              run.Text = text;
+              paragraph.Inlines.Add(run);
+              break;
+          }
+        }
+        paragraph.Inlines.Add("\r\n");
+        index++;
+      }
+
+      diffText.Blocks.Add(paragraph);
+      return diffText;
+    }
+
 
     #endregion
 
