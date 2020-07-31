@@ -131,14 +131,24 @@ namespace ClangPowerTools
       {
         diffMatchPatch = new DiffMatchPatch();
         localdiffs = diffMatchPatch.diff_main(inputLines[index], outputLines[index]);
+        diffMatchPatch.diff_cleanupSemantic(localdiffs);
+
+        string lineNumber = string.Concat(new string(' ', 4), (index + 1).ToString(), " ");
+        Run lineNumberRun = new Run(lineNumber)
+        {
+          Background = (Brush)new BrushConverter().ConvertFrom("#D3D3D3")
+        };
+        paragraph.Inlines.Add(lineNumberRun);
 
         var containsEqualOperation = localdiffs.Any(e => e.operation == Operation.EQUAL);
         if (containsEqualOperation == false && inputLines.Count != outputLines.Count)
         {
           outputLines.Insert(index, new string(' ', 200) + "\r\n");
-          Run run = new Run(outputLines[index]);
-          run.Background = Brushes.IndianRed;
-          paragraph.Inlines.Add(run);
+          Run textRun = new Run(outputLines[index])
+          {
+            Background = Brushes.IndianRed
+          };
+          paragraph.Inlines.Add(textRun);
           index++;
           continue;
         }
