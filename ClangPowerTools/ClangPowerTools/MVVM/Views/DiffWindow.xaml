@@ -55,7 +55,6 @@
       x:Name="Cake"
       Grid.Row="1"
       Grid.Column="1"
-      Background="LightGray"
       IsReadOnly="True" />
 
     <!--  Detected Format Options  -->
