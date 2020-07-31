@@ -43,11 +43,20 @@
       <ColumnDefinition Width="10" />
     </Grid.ColumnDefinitions>
 
-    <!--  Diff html  -->
+    <!--  Diff html
     <WebBrowser
       Name="MyWebBrowser"
       Grid.Row="1"
-      Grid.Column="1" />
+      Grid.Column="1" />-->
+
+    <!--  Diff flow document  -->
+
+    <RichTextBox
+      x:Name="Cake"
+      Grid.Row="1"
+      Grid.Column="1"
+      Background="LightGray"
+      IsReadOnly="True" />
 
     <!--  Detected Format Options  -->
     <Grid Grid.Row="1" Grid.Column="3">
