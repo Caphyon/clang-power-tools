@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 
 namespace ClangPowerTools.MVVM.Controllers
 {
@@ -78,18 +79,16 @@ namespace ClangPowerTools.MVVM.Controllers
     /// <returns></returns>
     public async Task ShowHtmlAfterDiffAsync(string formatOptionFile)
     {
-      string html = string.Empty;
+      string editorOutput = string.Empty;
+      var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
       await Task.Run(() =>
       {
-        var formattedText = formatter.FormatText(editorInput, formatOptions, formatStyle);
-        var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
-        diffMatchPatchWrapper.Diff(editorInput, formattedText);
+        editorOutput = formatter.FormatText(editorInput, formatOptions, formatStyle);
+        diffMatchPatchWrapper.Diff(editorInput, editorOutput);
         diffMatchPatchWrapper.CleanupSemantic();
-        html = diffMatchPatchWrapper.DiffAsHtml();
       });
 
-      var diffWindow = new DiffWindow(html, formatOptionFile, CreateFormatFile);
-      diffWindow.Show();
+      DisplayDiffWindow(formatOptionFile, editorOutput, diffMatchPatchWrapper);
     }
 
     #endregion
@@ -190,6 +189,13 @@ namespace ClangPowerTools.MVVM.Controllers
       diffMatchPatchWrapper.Diff(editorInput, formattedText);
 
       return diffMatchPatchWrapper.DiffLevenshtein();
+    }
+
+    private void DisplayDiffWindow(string formatOptionFile, string editorOutput, DiffMatchPatchWrapper diffMatchPatchWrapper)
+    {
+      FlowDocument diffText = diffMatchPatchWrapper.DiffAsFlowDocument(editorInput, editorOutput);
+      var diffWindow = new DiffWindow(diffText, formatOptionFile, CreateFormatFile);
+      diffWindow.Show();
     }
 
     private Dictionary<EditorStyles, List<IFormatOption>> CreateStyles()
