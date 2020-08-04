@@ -5,7 +5,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   Width="600"
-  Height="120"
+  Height="140"
   Background="WhiteSmoke"
   ResizeMode="NoResize"
   WindowStartupLocation="CenterScreen"
@@ -67,7 +67,7 @@
       Grid.Column="1"
       HorizontalAlignment="Center"
       Foreground="Gray"
-      Text="Using code samples may result in detecting more format flags"
+      Text="Using larger code samples may result in detecting more format flags"
       TextWrapping="WrapWithOverflow" />
   </Grid>
 </Window>

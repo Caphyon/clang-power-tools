@@ -57,6 +57,15 @@ namespace ClangPowerTools
 
     #endregion
 
+    #region Enum
+
+    private enum LineChanges
+    {
+      HASCHANGES, NOCHANGES, NEWLINE
+    }
+
+    #endregion
+
     #region Public Methods
 
     /// <summary>
@@ -108,7 +117,7 @@ namespace ClangPowerTools
     }
 
     /// <summary>
-    /// Takes a diff array and returns a pretty HTML sequence.
+    /// Takes a diff array and returns a HTML sequence.
     /// </summary>
     /// <returns>Html page as string or string.Empty if the Diff(text1, text2) was not run previously</returns>
     public string DiffAsHtml()
@@ -117,77 +126,166 @@ namespace ClangPowerTools
       return diffMatchPatch.diff_prettyHtml(diffs);
     }
 
+    /// <summary>
+    /// Takes a diff array and returns a FlowDocument.
+    /// </summary>
+    /// <param name="editorInput">The input from the Format Editor</param>
+    /// <param name="editorOutput">The output from the Format Editor</param>
+    /// <returns></returns>
     public FlowDocument DiffAsFlowDocument(string editorInput, string editorOutput)
     {
-      var diffText = new FlowDocument();
-      var paragraph = new Paragraph();
-      var localdiffs = new List<Diff>();
+      var inputLines = editorInput.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+      var outputLines = editorOutput.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+      var isOutputLonger = inputLines.Count < outputLines.Count;
 
-      var inputLines = editorInput.Split(new[] { "\r\n" }, StringSplitOptions.None).ToList();
-      var outputLines = editorOutput.Split(new[] { "\r\n" }, StringSplitOptions.None).ToList();
-
-      var index = 0;
-      while (inputLines.Count != index)
-      {
-        diffMatchPatch = new DiffMatchPatch();
-        localdiffs = diffMatchPatch.diff_main(inputLines[index], outputLines[index]);
-        diffMatchPatch.diff_cleanupSemantic(localdiffs);
-
-        string lineNumber = string.Concat(new string(' ', 4), (index + 1).ToString(), " ");
-        Run lineNumberRun = new Run(lineNumber)
-        {
-          Background = (Brush)new BrushConverter().ConvertFrom("#D3D3D3")
-        };
-        paragraph.Inlines.Add(lineNumberRun);
-
-        var containsEqualOperation = localdiffs.Any(e => e.operation == Operation.EQUAL);
-        if (containsEqualOperation == false && inputLines.Count != outputLines.Count)
-        {
-          outputLines.Insert(index, new string(' ', 200) + "\r\n");
-          Run textRun = new Run(outputLines[index])
-          {
-            Background = Brushes.IndianRed
-          };
-          paragraph.Inlines.Add(textRun);
-          index++;
-          continue;
-        }
-
-        foreach (Diff aDiff in localdiffs)
-        {
-          var text = aDiff.text;
-
-          Run run = new Run();
-          switch (aDiff.operation)
-          {
-            case Operation.INSERT:
-              run.Text = text;
-              run.Background = Brushes.LightGreen;
-              paragraph.Inlines.Add(run);
-              break;
-            case Operation.DELETE:
-              run.Text = text;
-              run.Background = Brushes.LightPink;
-              paragraph.Inlines.Add(run);
-              break;
-            case Operation.EQUAL:
-              run.Text = text;
-              paragraph.Inlines.Add(run);
-              break;
-          }
-        }
-        paragraph.Inlines.Add("\r\n");
-        index++;
-      }
-
-      diffText.Blocks.Add(paragraph);
-      return diffText;
+      return CreateFlowDocumentAfterDiff(inputLines, outputLines, isOutputLonger);
     }
-
 
     #endregion
 
     #region Private Methods
+
+    private FlowDocument CreateFlowDocumentAfterDiff(List<string> inputLines, List<string> outputLines, bool isOutputLonger)
+    {
+      var diffText = new FlowDocument();
+      var paragraphInput = new Paragraph();
+      var paragraphOutput = new Paragraph();
+      var lineDiffs = new List<Diff>();
+      var inputOperationLines = new List<(string, LineChanges)>();
+      var outputOperationLines = new List<(string, LineChanges)>();
+
+      var lineCount = isOutputLonger ? inputLines.Count : outputLines.Count;
+      var index = 0;
+
+
+      while (lineCount != index)
+      {
+        lineDiffs = GetLineDiffs(inputLines[index], outputLines[index]);
+
+        if (lineDiffs.Count > 0)
+        {
+          var containsEqualOperation = lineDiffs.Any(e => e.operation == Operation.EQUAL);
+          if (containsEqualOperation == false && inputLines.Count > outputLines.Count)
+          {
+            outputLines.Insert(index, new string(' ', 200) + Environment.NewLine);
+            inputOperationLines.Add((inputLines[index], LineChanges.HASCHANGES));
+            outputOperationLines.Add((outputLines[index], LineChanges.NEWLINE));
+            index++;
+            continue;
+          }
+          else if (containsEqualOperation == false && inputLines.Count < outputLines.Count)
+          {
+            inputLines.Insert(index, new string(' ', 200) + Environment.NewLine);
+            outputOperationLines.Add((outputLines[index], LineChanges.HASCHANGES));
+            inputOperationLines.Add((inputLines[index], LineChanges.NEWLINE));
+            index++;
+            continue;
+          }
+        }
+
+        var containsChanges = lineDiffs.Any(e => e.operation != Operation.EQUAL);
+        if (containsChanges)
+        {
+          inputOperationLines.Add((inputLines[index], LineChanges.HASCHANGES));
+          outputOperationLines.Add((inputLines[index], LineChanges.HASCHANGES));
+        }
+        else
+        {
+          inputOperationLines.Add((inputLines[index], LineChanges.NOCHANGES));
+          outputOperationLines.Add((inputLines[index], LineChanges.NOCHANGES));
+        }
+        index++;
+      }
+
+      CreateDiffParagraph(paragraphInput, inputOperationLines);
+      CreateDiffParagraph(paragraphOutput, outputOperationLines);
+
+      diffText.Blocks.Add(paragraphInput);
+      diffText.Blocks.Add(paragraphOutput);
+      return diffText;
+    }
+
+    private void CreateDiffParagraph(Paragraph paragraph, List<(string, LineChanges)> operationLines)
+    {
+      for (int i = 0; i < operationLines.Count; i++)
+      {
+        var run = new Run();
+        switch (operationLines[i].Item2)
+        {
+          case LineChanges.NOCHANGES:
+            run.Text = operationLines[i].Item1;
+            paragraph.Inlines.Add(run);
+            paragraph.Inlines.Add(Environment.NewLine);
+            break;
+          case LineChanges.HASCHANGES:
+            run.Text = operationLines[i].Item1;
+            run.Background = Brushes.Yellow;
+            paragraph.Inlines.Add(run);
+            paragraph.Inlines.Add(Environment.NewLine);
+            break;
+          case LineChanges.NEWLINE:
+            run.Text = operationLines[i].Item1;
+            run.Background = (Brush)new BrushConverter().ConvertFrom("#D3D3D3");
+            paragraph.Inlines.Add(run);
+            paragraph.Inlines.Add(Environment.NewLine);
+            break;
+        }
+        AddLineNumbersToParagraph(paragraph, i + 1, operationLines.Count);
+      }
+    }
+
+    private List<Diff> GetLineDiffs(string inputLine, string outputLine)
+    {
+      diffMatchPatch = new DiffMatchPatch();
+      List<Diff> lineDiffs = diffMatchPatch.diff_main(inputLine, outputLine);
+      diffMatchPatch.diff_cleanupSemantic(lineDiffs);
+      return lineDiffs;
+    }
+
+    private void ColorTextDependingOnOperation(Paragraph paragraph, List<Diff> localdiffs)
+    {
+      foreach (Diff aDiff in localdiffs)
+      {
+        var text = aDiff.text;
+        var run = new Run();
+
+        switch (aDiff.operation)
+        {
+          case Operation.INSERT:
+            run.Text = text;
+            run.Background = Brushes.LightGreen;
+            paragraph.Inlines.Add(run);
+            break;
+          case Operation.DELETE:
+            run.Text = text;
+            run.Background = Brushes.LightPink;
+            paragraph.Inlines.Add(run);
+            break;
+          case Operation.EQUAL:
+            run.Text = text;
+            paragraph.Inlines.Add(run);
+            break;
+        }
+      }
+      paragraph.Inlines.Add(Environment.NewLine);
+    }
+
+
+    private void AddLineNumbersToParagraph(Paragraph paragraph, int currentLine, int numberOfLines)
+    {
+      int numberOfSpaces = CalculateNumberOfSpaces(numberOfLines) - CalculateNumberOfSpaces(currentLine) + 4;
+      var lineNumber = string.Concat(new string(' ', numberOfSpaces), (currentLine).ToString(), " ");
+      var lineNumberRun = new Run(lineNumber)
+      {
+        Background = (Brush)new BrushConverter().ConvertFrom("#D3D3D3")
+      };
+      paragraph.Inlines.Add(lineNumberRun);
+    }
+
+    private int CalculateNumberOfSpaces(int numberOfLines)
+    {
+      return (int)Math.Floor(Math.Log10(numberOfLines) + 1);
+    }
 
     private DiffMatchPatch CreateDiffMatchPatch()
     {
