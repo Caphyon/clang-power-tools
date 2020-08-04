@@ -59,7 +59,7 @@
       Grid.Column="1"
       HorizontalAlignment="Center"
       Foreground="Gray"
-      Text="Process will take some time depending on file size (10 000 lines ~2 minutes)"
+      Text="Process will take some time depending on size (10 000 lines ~2 minutes)"
       TextWrapping="WrapWithOverflow" />
 
     <TextBlock
@@ -67,7 +67,7 @@
       Grid.Column="1"
       HorizontalAlignment="Center"
       Foreground="Gray"
-      Text="Using larger files may result in detecting more format flags"
+      Text="Using code samples may result in detecting more format flags"
       TextWrapping="WrapWithOverflow" />
   </Grid>
 </Window>
