@@ -151,8 +151,8 @@ namespace ClangPowerTools
       var paragraphInput = new Paragraph();
       var paragraphOutput = new Paragraph();
       var lineDiffs = new List<Diff>();
-      var inputOperationLines = new List<(string, LineChanges)>();
-      var outputOperationLines = new List<(string, LineChanges)>();
+      var inputOperationLines = new List<(object, LineChanges)>();
+      var outputOperationLines = new List<(object, LineChanges)>();
 
       var lineCount = inputLines.Count < outputLines.Count ? inputLines.Count : outputLines.Count;
       var index = 0;
@@ -193,7 +193,7 @@ namespace ClangPowerTools
         if (containsChanges)
         {
           inputOperationLines.Add((inputLines[index], LineChanges.HASCHANGES));
-          outputOperationLines.Add((outputLines[index], LineChanges.HASCHANGES));
+          outputOperationLines.Add((new List<Diff>(lineDiffs), LineChanges.HASCHANGES));
         }
         else
         {
@@ -203,8 +203,8 @@ namespace ClangPowerTools
         index++;
       }
 
-      CreateDiffParagraph(paragraphInput, inputOperationLines);
-      CreateDiffParagraph(paragraphOutput, outputOperationLines);
+      CreateInputDiffParagraph(paragraphInput, inputOperationLines);
+      CreateOutputDiffParagraph(paragraphOutput, outputOperationLines);
 
       var diffInput = new FlowDocument();
       var diffOutput = new FlowDocument();
@@ -213,7 +213,7 @@ namespace ClangPowerTools
       return (diffInput, diffOutput);
     }
 
-    private void CreateDiffParagraph(Paragraph paragraph, List<(string, LineChanges)> operationLines)
+    private void CreateInputDiffParagraph(Paragraph paragraph, List<(object, LineChanges)> operationLines)
     {
       for (int i = 0; i < operationLines.Count; i++)
       {
@@ -223,24 +223,51 @@ namespace ClangPowerTools
         switch (operationLines[i].Item2)
         {
           case LineChanges.NOCHANGES:
-            run.Text = operationLines[i].Item1;
+            run.Text = (string)operationLines[i].Item1;
             paragraph.Inlines.Add(run);
             paragraph.Inlines.Add(Environment.NewLine);
             break;
           case LineChanges.HASCHANGES:
-            run.Text = AddPadding(operationLines[i].Item1, LineWith, false);
+            run.Text = AddPadding((string)operationLines[i].Item1, LineWith, false);
             run.Background = Brushes.Yellow;
             paragraph.Inlines.Add(run);
             paragraph.Inlines.Add(Environment.NewLine);
             break;
           case LineChanges.NEWLINE:
-            run.Text = AddPadding(operationLines[i].Item1, LineWith, true);
+            run.Text = AddPadding((string)operationLines[i].Item1, LineWith, true);
             run.Background = (Brush)new BrushConverter().ConvertFrom("#D3D3D3");
             paragraph.Inlines.Add(run);
             break;
         }
       }
     }
+
+    private void CreateOutputDiffParagraph(Paragraph paragraph, List<(object, LineChanges)> operationLines)
+    {
+      for (int i = 0; i < operationLines.Count; i++)
+      {
+        AddLineNumbersToParagraph(paragraph, i + 1, operationLines.Count);
+
+        var run = new Run();
+        switch (operationLines[i].Item2)
+        {
+          case LineChanges.NOCHANGES:
+            run.Text = (string)operationLines[i].Item1;
+            paragraph.Inlines.Add(run);
+            paragraph.Inlines.Add(Environment.NewLine);
+            break;
+          case LineChanges.HASCHANGES:
+            ColorTextDependingOnOperation(paragraph, (List<Diff>)operationLines[i].Item1);
+            break;
+          case LineChanges.NEWLINE:
+            run.Text = AddPadding((string)operationLines[i].Item1, LineWith, true);
+            run.Background = (Brush)new BrushConverter().ConvertFrom("#D3D3D3");
+            paragraph.Inlines.Add(run);
+            break;
+        }
+      }
+    }
+
 
     private string AddPadding(string text, int targetPadding, bool isNewLine)
     {
