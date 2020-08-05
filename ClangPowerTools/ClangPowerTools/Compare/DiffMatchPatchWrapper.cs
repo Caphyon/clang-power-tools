@@ -22,6 +22,8 @@ namespace ClangPowerTools
     private readonly float patchDeleteThreshold = 0.5f;
     private readonly short patchMargin = 4;
 
+    private const int LineWith = 1000;
+
     #endregion
 
     #region Constructors
@@ -132,32 +134,28 @@ namespace ClangPowerTools
     /// <param name="editorInput">The input from the Format Editor</param>
     /// <param name="editorOutput">The output from the Format Editor</param>
     /// <returns></returns>
-    public (FlowDocument, FlowDocument) DiffAsFlowDocument(string editorInput, string editorOutput)
+    public (FlowDocument, FlowDocument) DiffAsFlowDocuments(string editorInput, string editorOutput)
     {
       var inputLines = editorInput.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
       var outputLines = editorOutput.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
-      var isOutputLonger = inputLines.Count < outputLines.Count;
 
-      return CreateFlowDocumentAfterDiff(inputLines, outputLines, isOutputLonger);
+      return CreateFlowDocumentsAfterDiff(inputLines, outputLines);
     }
 
     #endregion
 
     #region Private Methods
 
-    private (FlowDocument, FlowDocument) CreateFlowDocumentAfterDiff(List<string> inputLines, List<string> outputLines, bool isOutputLonger)
+    private (FlowDocument, FlowDocument) CreateFlowDocumentsAfterDiff(List<string> inputLines, List<string> outputLines)
     {
-      var diffInput = new FlowDocument();
-      var diffOutput = new FlowDocument();
       var paragraphInput = new Paragraph();
       var paragraphOutput = new Paragraph();
       var lineDiffs = new List<Diff>();
       var inputOperationLines = new List<(string, LineChanges)>();
       var outputOperationLines = new List<(string, LineChanges)>();
 
-      var lineCount = isOutputLonger ? inputLines.Count : outputLines.Count;
+      var lineCount = inputLines.Count < outputLines.Count ? inputLines.Count : outputLines.Count;
       var index = 0;
-
 
       while (lineCount != index)
       {
@@ -175,7 +173,7 @@ namespace ClangPowerTools
           var containsEqualOperation = lineDiffs.Any(e => e.operation == Operation.EQUAL);
           if (containsEqualOperation == false && inputLines.Count > outputLines.Count)
           {
-            outputLines.Insert(index, new string(' ', 200) + Environment.NewLine);
+            outputLines.Insert(index, Environment.NewLine);
             inputOperationLines.Add((inputLines[index], LineChanges.HASCHANGES));
             outputOperationLines.Add((outputLines[index], LineChanges.NEWLINE));
             index++;
@@ -183,7 +181,7 @@ namespace ClangPowerTools
           }
           else if (containsEqualOperation == false && inputLines.Count < outputLines.Count)
           {
-            inputLines.Insert(index, new string(' ', 200) + Environment.NewLine);
+            inputLines.Insert(index, Environment.NewLine);
             outputOperationLines.Add((outputLines[index], LineChanges.HASCHANGES));
             inputOperationLines.Add((inputLines[index], LineChanges.NEWLINE));
             index++;
@@ -208,6 +206,8 @@ namespace ClangPowerTools
       CreateDiffParagraph(paragraphInput, inputOperationLines);
       CreateDiffParagraph(paragraphOutput, outputOperationLines);
 
+      var diffInput = new FlowDocument();
+      var diffOutput = new FlowDocument();
       diffInput.Blocks.Add(paragraphInput);
       diffOutput.Blocks.Add(paragraphOutput);
       return (diffInput, diffOutput);
@@ -217,6 +217,8 @@ namespace ClangPowerTools
     {
       for (int i = 0; i < operationLines.Count; i++)
       {
+        AddLineNumbersToParagraph(paragraph, i + 1, operationLines.Count);
+
         var run = new Run();
         switch (operationLines[i].Item2)
         {
@@ -226,19 +228,28 @@ namespace ClangPowerTools
             paragraph.Inlines.Add(Environment.NewLine);
             break;
           case LineChanges.HASCHANGES:
-            run.Text = operationLines[i].Item1;
+            run.Text = AddPadding(operationLines[i].Item1, LineWith, false);
             run.Background = Brushes.Yellow;
             paragraph.Inlines.Add(run);
             paragraph.Inlines.Add(Environment.NewLine);
             break;
           case LineChanges.NEWLINE:
-            run.Text = operationLines[i].Item1;
+            run.Text = AddPadding(operationLines[i].Item1, LineWith, true);
             run.Background = (Brush)new BrushConverter().ConvertFrom("#D3D3D3");
             paragraph.Inlines.Add(run);
             break;
         }
-        AddLineNumbersToParagraph(paragraph, i + 1, operationLines.Count);
       }
+    }
+
+    private string AddPadding(string text, int targetPadding, bool isNewLine)
+    {
+      var paddingCount = targetPadding - text.Length;
+      if (isNewLine)
+      {
+        return new string(' ', paddingCount) + text;
+      }
+      return text + new string(' ', paddingCount);
     }
 
     private List<Diff> GetLineDiffs(string inputLine, string outputLine)
@@ -277,11 +288,10 @@ namespace ClangPowerTools
       paragraph.Inlines.Add(Environment.NewLine);
     }
 
-
-    private void AddLineNumbersToParagraph(Paragraph paragraph, int currentLine, int numberOfLines)
+    private void AddLineNumbersToParagraph(Paragraph paragraph, int currentLineNumber, int numberOfLines)
     {
-      int numberOfSpaces = CalculateNumberOfSpaces(numberOfLines) - CalculateNumberOfSpaces(currentLine) + 4;
-      var lineNumber = string.Concat(new string(' ', numberOfSpaces), (currentLine).ToString(), " ");
+      int numberOfSpaces = CalculateNumberOfSpaces(numberOfLines) - CalculateNumberOfSpaces(currentLineNumber) + 4;
+      var lineNumber = string.Concat(new string(' ', numberOfSpaces), (currentLineNumber).ToString(), " ");
       var lineNumberRun = new Run(lineNumber)
       {
         Background = (Brush)new BrushConverter().ConvertFrom("#D3D3D3")
