@@ -193,8 +193,8 @@ namespace ClangPowerTools.MVVM.Controllers
 
     private void DisplayDiffWindow(string formatOptionFile, string editorOutput, DiffMatchPatchWrapper diffMatchPatchWrapper)
     {
-      FlowDocument diffText = diffMatchPatchWrapper.DiffAsFlowDocument(editorInput, editorOutput);
-      var diffWindow = new DiffWindow(diffText, formatOptionFile, CreateFormatFile);
+      (FlowDocument diffInput, FlowDocument diffOutput) = diffMatchPatchWrapper.DiffAsFlowDocument(editorInput, editorOutput);
+      var diffWindow = new DiffWindow(diffInput, diffOutput, formatOptionFile, CreateFormatFile);
       diffWindow.Show();
     }
 
