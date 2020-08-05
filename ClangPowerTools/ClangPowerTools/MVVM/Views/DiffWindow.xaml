@@ -38,27 +38,33 @@
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="10" />
       <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="*" />
       <ColumnDefinition Width="5" />
       <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="10" />
     </Grid.ColumnDefinitions>
 
-    <!--  Diff html
-    <WebBrowser
-      Name="MyWebBrowser"
-      Grid.Row="1"
-      Grid.Column="1" />-->
 
     <!--  Diff flow document  -->
-
     <RichTextBox
-      x:Name="Cake"
+      x:Name="DiffInput"
       Grid.Row="1"
       Grid.Column="1"
-      IsReadOnly="True" />
+      HorizontalScrollBarVisibility="Auto"
+      IsReadOnly="True"
+      VerticalScrollBarVisibility="Auto" />
+
+    <RichTextBox
+      x:Name="DiffOutput"
+      Grid.Row="1"
+      Grid.Column="2"
+      HorizontalScrollBarVisibility="Auto"
+      IsReadOnly="True"
+      VerticalScrollBarVisibility="Auto" />
+
 
     <!--  Detected Format Options  -->
-    <Grid Grid.Row="1" Grid.Column="3">
+    <Grid Grid.Row="1" Grid.Column="4">
       <Grid.RowDefinitions>
         <RowDefinition Height="10" />
         <RowDefinition Height="25" />
