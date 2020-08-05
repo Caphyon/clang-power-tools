@@ -9,10 +9,10 @@ namespace ClangPowerTools.MVVM.Views
   /// </summary>
   public partial class DiffWindow : Window
   {
-    public DiffWindow(FlowDocument diffText, string formatOptionFile, Action exportFormatOptionFile)
+    public DiffWindow(FlowDocument diffInput, FlowDocument diffOutput, string formatOptionFile, Action exportFormatOptionFile)
     {
       InitializeComponent();
-      DataContext = new DiffViewModel(this, diffText, formatOptionFile, exportFormatOptionFile);
+      DataContext = new DiffViewModel(this, diffInput, diffOutput, formatOptionFile, exportFormatOptionFile);
     }
   }
 }

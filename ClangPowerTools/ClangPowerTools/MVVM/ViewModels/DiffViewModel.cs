@@ -13,6 +13,7 @@ namespace ClangPowerTools
 
     private ICommand createFormatFileCommand;
     private readonly Action CreateFormatFile;
+    private const int PageWith = 1000;
 
     #endregion
 
@@ -33,11 +34,12 @@ namespace ClangPowerTools
 
     #region Constructor 
 
-    public DiffViewModel(DiffWindow diffWindow, FlowDocument diffText, string formatOptionFile, Action CreateFormatFile)
+    public DiffViewModel(DiffWindow diffWindow, FlowDocument diffInput, FlowDocument diffOutput, string formatOptionFile, Action CreateFormatFile)
     {
-      //diffWindow.MyWebBrowser.NavigateToString(html);
-      diffWindow.Cake.Document = diffText;
-      //DiffText = html;
+      diffInput.PageWidth = PageWith;
+      diffOutput.PageWidth = PageWith;
+      diffWindow.DiffInput.Document = diffInput;
+      diffWindow.DiffOutput.Document = diffOutput;
       FormatOptionFile = CleanOptionFile(formatOptionFile);
       this.CreateFormatFile = CreateFormatFile;
     }

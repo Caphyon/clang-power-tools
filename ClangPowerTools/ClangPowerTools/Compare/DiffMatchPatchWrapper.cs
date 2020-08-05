@@ -132,7 +132,7 @@ namespace ClangPowerTools
     /// <param name="editorInput">The input from the Format Editor</param>
     /// <param name="editorOutput">The output from the Format Editor</param>
     /// <returns></returns>
-    public FlowDocument DiffAsFlowDocument(string editorInput, string editorOutput)
+    public (FlowDocument, FlowDocument) DiffAsFlowDocument(string editorInput, string editorOutput)
     {
       var inputLines = editorInput.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
       var outputLines = editorOutput.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
@@ -145,9 +145,10 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private FlowDocument CreateFlowDocumentAfterDiff(List<string> inputLines, List<string> outputLines, bool isOutputLonger)
+    private (FlowDocument, FlowDocument) CreateFlowDocumentAfterDiff(List<string> inputLines, List<string> outputLines, bool isOutputLonger)
     {
-      var diffText = new FlowDocument();
+      var diffInput = new FlowDocument();
+      var diffOutput = new FlowDocument();
       var paragraphInput = new Paragraph();
       var paragraphOutput = new Paragraph();
       var lineDiffs = new List<Diff>();
@@ -160,7 +161,14 @@ namespace ClangPowerTools
 
       while (lineCount != index)
       {
-        lineDiffs = GetLineDiffs(inputLines[index], outputLines[index]);
+        if (inputLines.Count != outputLines.Count)
+        {
+          lineDiffs = GetLineDiffs(inputLines[index].Trim(' '), outputLines[index].Trim(' '));
+        }
+        else
+        {
+          lineDiffs = GetLineDiffs(inputLines[index], outputLines[index]);
+        }
 
         if (lineDiffs.Count > 0)
         {
@@ -187,12 +195,12 @@ namespace ClangPowerTools
         if (containsChanges)
         {
           inputOperationLines.Add((inputLines[index], LineChanges.HASCHANGES));
-          outputOperationLines.Add((inputLines[index], LineChanges.HASCHANGES));
+          outputOperationLines.Add((outputLines[index], LineChanges.HASCHANGES));
         }
         else
         {
           inputOperationLines.Add((inputLines[index], LineChanges.NOCHANGES));
-          outputOperationLines.Add((inputLines[index], LineChanges.NOCHANGES));
+          outputOperationLines.Add((outputLines[index], LineChanges.NOCHANGES));
         }
         index++;
       }
@@ -200,9 +208,9 @@ namespace ClangPowerTools
       CreateDiffParagraph(paragraphInput, inputOperationLines);
       CreateDiffParagraph(paragraphOutput, outputOperationLines);
 
-      diffText.Blocks.Add(paragraphInput);
-      diffText.Blocks.Add(paragraphOutput);
-      return diffText;
+      diffInput.Blocks.Add(paragraphInput);
+      diffOutput.Blocks.Add(paragraphOutput);
+      return (diffInput, diffOutput);
     }
 
     private void CreateDiffParagraph(Paragraph paragraph, List<(string, LineChanges)> operationLines)
@@ -227,7 +235,6 @@ namespace ClangPowerTools
             run.Text = operationLines[i].Item1;
             run.Background = (Brush)new BrushConverter().ConvertFrom("#D3D3D3");
             paragraph.Inlines.Add(run);
-            paragraph.Inlines.Add(Environment.NewLine);
             break;
         }
         AddLineNumbersToParagraph(paragraph, i + 1, operationLines.Count);
