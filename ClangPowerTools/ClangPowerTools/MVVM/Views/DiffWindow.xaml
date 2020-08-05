@@ -44,7 +44,6 @@
       <ColumnDefinition Width="10" />
     </Grid.ColumnDefinitions>
 
-
     <!--  Diff flow document  -->
     <RichTextBox
       x:Name="DiffInput"
@@ -52,6 +51,7 @@
       Grid.Column="1"
       HorizontalScrollBarVisibility="Auto"
       IsReadOnly="True"
+      ScrollViewer.ScrollChanged="Diff_ScrollChanged"
       VerticalScrollBarVisibility="Auto" />
 
     <RichTextBox
@@ -60,8 +60,8 @@
       Grid.Column="2"
       HorizontalScrollBarVisibility="Auto"
       IsReadOnly="True"
+      ScrollViewer.ScrollChanged="Diff_ScrollChanged"
       VerticalScrollBarVisibility="Auto" />
-
 
     <!--  Detected Format Options  -->
     <Grid Grid.Row="1" Grid.Column="4">
