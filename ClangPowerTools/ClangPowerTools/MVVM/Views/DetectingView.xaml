@@ -67,7 +67,7 @@
       Grid.Column="1"
       HorizontalAlignment="Center"
       Foreground="Gray"
-      Text="Using larger code samples may result in detecting more format flags"
+      Text="Larger code samples may result in detecting more format flags"
       TextWrapping="WrapWithOverflow" />
   </Grid>
 </Window>
