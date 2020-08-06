@@ -148,9 +148,9 @@ namespace ClangPowerTools
 
     private (FlowDocument, FlowDocument) CreateFlowDocumentsAfterDiff(List<string> inputLines, List<string> outputLines)
     {
+      var lineDiffs = new List<Diff>();
       var paragraphInput = new Paragraph();
       var paragraphOutput = new Paragraph();
-      var lineDiffs = new List<Diff>();
       var inputOperationLines = new List<(object, LineChanges)>();
       var outputOperationLines = new List<(object, LineChanges)>();
 
@@ -217,7 +217,7 @@ namespace ClangPowerTools
     {
       for (int i = 0; i < operationLines.Count; i++)
       {
-        AddLineNumbersToParagraph(paragraph, i + 1, operationLines.Count);
+        AddLineNumberToParagraphLine(paragraph, i + 1, operationLines.Count);
 
         var run = new Run();
         switch (operationLines[i].Item2)
@@ -246,7 +246,7 @@ namespace ClangPowerTools
     {
       for (int i = 0; i < operationLines.Count; i++)
       {
-        AddLineNumbersToParagraph(paragraph, i + 1, operationLines.Count);
+        AddLineNumberToParagraphLine(paragraph, i + 1, operationLines.Count);
 
         var run = new Run();
         switch (operationLines[i].Item2)
@@ -315,7 +315,7 @@ namespace ClangPowerTools
       paragraph.Inlines.Add(Environment.NewLine);
     }
 
-    private void AddLineNumbersToParagraph(Paragraph paragraph, int currentLineNumber, int numberOfLines)
+    private void AddLineNumberToParagraphLine(Paragraph paragraph, int currentLineNumber, int numberOfLines)
     {
       int numberOfSpaces = CalculateNumberOfSpaces(numberOfLines) - CalculateNumberOfSpaces(currentLineNumber) + 4;
       var lineNumber = string.Concat(new string(' ', numberOfSpaces), (currentLineNumber).ToString(), " ");
