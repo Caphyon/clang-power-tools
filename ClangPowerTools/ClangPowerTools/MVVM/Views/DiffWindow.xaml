@@ -5,7 +5,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  Title="Code Diff"
+  Title="Format Style Diff"
   MinWidth="900"
   MinHeight="750"
   d:DataContext="{d:DesignInstance local:DiffViewModel,
@@ -30,41 +30,89 @@
 
   <Grid>
     <Grid.RowDefinitions>
-      <RowDefinition Height="10" />
+      <RowDefinition Height="5" />
       <RowDefinition Height="*" />
-      <RowDefinition Height="10" />
+      <RowDefinition Height="5" />
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="10" />
-      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="5" />
       <ColumnDefinition Width="*" />
       <ColumnDefinition Width="5" />
       <ColumnDefinition Width="auto" />
-      <ColumnDefinition Width="10" />
+      <ColumnDefinition Width="5" />
     </Grid.ColumnDefinitions>
 
     <!--  Diff flow document  -->
-    <RichTextBox
-      x:Name="DiffInput"
-      Grid.Row="1"
-      Grid.Column="1"
-      HorizontalScrollBarVisibility="Auto"
-      IsReadOnly="True"
-      ScrollViewer.ScrollChanged="Diff_ScrollChanged"
-      VerticalScrollBarVisibility="Auto" />
+    <Grid Grid.Row="1" Grid.Column="1">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="25" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
 
-    <RichTextBox
-      x:Name="DiffOutput"
-      Grid.Row="1"
-      Grid.Column="2"
-      HorizontalScrollBarVisibility="Auto"
-      IsReadOnly="True"
-      ScrollViewer.ScrollChanged="Diff_ScrollChanged"
-      VerticalScrollBarVisibility="Auto" />
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+
+      <!--  Input Diff  -->
+      <StackPanel
+        Grid.Row="0"
+        Grid.Column="0"
+        HorizontalAlignment="Center"
+        Orientation="Horizontal">
+        <Image
+          Width="15"
+          Height="15"
+          Margin="3"
+          Source="/ClangPowerTools;component/Resources/Input.png" />
+        <TextBlock
+          Width="65"
+          FontSize="16"
+          FontWeight="DemiBold"
+          Text="Input" />
+      </StackPanel>
+
+      <RichTextBox
+        x:Name="DiffInput"
+        Grid.Row="1"
+        Grid.Column="0"
+        HorizontalScrollBarVisibility="Auto"
+        IsReadOnly="True"
+        ScrollViewer.ScrollChanged="Diff_ScrollChanged"
+        VerticalScrollBarVisibility="Auto" />
+
+      <!--  Output Diff  -->
+      <StackPanel
+        Grid.Row="0"
+        Grid.Column="1"
+        HorizontalAlignment="Center"
+        Orientation="Horizontal">
+        <Image
+          Width="15"
+          Height="15"
+          Margin="3"
+          Source="/ClangPowerTools;component/Resources/Output.png" />
+        <TextBlock
+          Width="65"
+          FontSize="16"
+          FontWeight="DemiBold"
+          Text="Output" />
+      </StackPanel>
+
+      <RichTextBox
+        x:Name="DiffOutput"
+        Grid.Row="1"
+        Grid.Column="1"
+        HorizontalScrollBarVisibility="Auto"
+        IsReadOnly="True"
+        ScrollViewer.ScrollChanged="Diff_ScrollChanged"
+        VerticalScrollBarVisibility="Auto" />
+
+    </Grid>
 
     <!--  Detected Format Options  -->
-    <Grid Grid.Row="1" Grid.Column="4">
+    <Grid Grid.Row="1" Grid.Column="3">
       <Grid.RowDefinitions>
         <RowDefinition Height="10" />
         <RowDefinition Height="25" />
