@@ -148,12 +148,21 @@ namespace ClangPowerTools
 
     private (FlowDocument, FlowDocument) CreateFlowDocumentsAfterDiff(List<string> inputLines, List<string> outputLines)
     {
-      var lineDiffs = new List<Diff>();
       var paragraphInput = new Paragraph();
       var paragraphOutput = new Paragraph();
-      var inputOperationLines = new List<(object, LineChanges)>();
-      var outputOperationLines = new List<(object, LineChanges)>();
+      var inputOperationPerLine = new List<(object, LineChanges)>();
+      var outputOperationPerLine = new List<(object, LineChanges)>();
 
+      DetectOperationPerLine(inputLines, outputLines, inputOperationPerLine, outputOperationPerLine);
+      CreateInputDiffParagraph(paragraphInput, inputOperationPerLine);
+      CreateOutputDiffParagraph(paragraphOutput, outputOperationPerLine);
+
+      return CreateFlowDocuments(paragraphInput, paragraphOutput);
+    }
+
+    private void DetectOperationPerLine(List<string> inputLines, List<string> outputLines, List<(object, LineChanges)> inputOperationPerLine, List<(object, LineChanges)> outputOperationPerLine)
+    {
+      var lineDiffs = new List<Diff>();
       var lineCount = inputLines.Count < outputLines.Count ? inputLines.Count : outputLines.Count;
       var index = 0;
 
@@ -174,16 +183,16 @@ namespace ClangPowerTools
           if (containsEqualOperation == false && inputLines.Count > outputLines.Count)
           {
             outputLines.Insert(index, Environment.NewLine);
-            inputOperationLines.Add((inputLines[index], LineChanges.HASCHANGES));
-            outputOperationLines.Add((outputLines[index], LineChanges.NEWLINE));
+            inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
+            outputOperationPerLine.Add((outputLines[index], LineChanges.NEWLINE));
             index++;
             continue;
           }
           else if (containsEqualOperation == false && inputLines.Count < outputLines.Count)
           {
             inputLines.Insert(index, Environment.NewLine);
-            outputOperationLines.Add((outputLines[index], LineChanges.HASCHANGES));
-            inputOperationLines.Add((inputLines[index], LineChanges.NEWLINE));
+            outputOperationPerLine.Add((outputLines[index], LineChanges.HASCHANGES));
+            inputOperationPerLine.Add((inputLines[index], LineChanges.NEWLINE));
             index++;
             continue;
           }
@@ -192,25 +201,16 @@ namespace ClangPowerTools
         var containsChanges = lineDiffs.Any(e => e.operation != Operation.EQUAL);
         if (containsChanges)
         {
-          inputOperationLines.Add((inputLines[index], LineChanges.HASCHANGES));
-          outputOperationLines.Add((new List<Diff>(lineDiffs), LineChanges.HASCHANGES));
+          inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
+          outputOperationPerLine.Add((new List<Diff>(lineDiffs), LineChanges.HASCHANGES));
         }
         else
         {
-          inputOperationLines.Add((inputLines[index], LineChanges.NOCHANGES));
-          outputOperationLines.Add((outputLines[index], LineChanges.NOCHANGES));
+          inputOperationPerLine.Add((inputLines[index], LineChanges.NOCHANGES));
+          outputOperationPerLine.Add((outputLines[index], LineChanges.NOCHANGES));
         }
         index++;
       }
-
-      CreateInputDiffParagraph(paragraphInput, inputOperationLines);
-      CreateOutputDiffParagraph(paragraphOutput, outputOperationLines);
-
-      var diffInput = new FlowDocument();
-      var diffOutput = new FlowDocument();
-      diffInput.Blocks.Add(paragraphInput);
-      diffOutput.Blocks.Add(paragraphOutput);
-      return (diffInput, diffOutput);
     }
 
     private void CreateInputDiffParagraph(Paragraph paragraph, List<(object, LineChanges)> operationLines)
@@ -268,6 +268,14 @@ namespace ClangPowerTools
       }
     }
 
+    private (FlowDocument, FlowDocument) CreateFlowDocuments(Paragraph paragraphInput, Paragraph paragraphOutput)
+    {
+      var diffInput = new FlowDocument();
+      var diffOutput = new FlowDocument();
+      diffInput.Blocks.Add(paragraphInput);
+      diffOutput.Blocks.Add(paragraphOutput);
+      return (diffInput, diffOutput);
+    }
 
     private string AddPadding(string text, int targetPadding, bool isNewLine)
     {
@@ -345,6 +353,5 @@ namespace ClangPowerTools
     }
 
     #endregion
-
   }
 }
