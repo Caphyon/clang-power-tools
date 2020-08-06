@@ -170,11 +170,11 @@ namespace ClangPowerTools
       {
         if (inputLines.Count != outputLines.Count)
         {
-          lineDiffs = GetLineDiffs(inputLines[index].Trim(' '), outputLines[index].Trim(' '));
+          lineDiffs = GetLineDiff(inputLines[index].Trim(' '), outputLines[index].Trim(' '));
         }
         else
         {
-          lineDiffs = GetLineDiffs(inputLines[index], outputLines[index]);
+          lineDiffs = GetLineDiff(inputLines[index], outputLines[index]);
         }
 
         if (lineDiffs.Count > 0)
@@ -257,7 +257,17 @@ namespace ClangPowerTools
             paragraph.Inlines.Add(Environment.NewLine);
             break;
           case LineChanges.HASCHANGES:
-            ColorTextDependingOnOperation(paragraph, (List<Diff>)operationLines[i].Item1);
+            if (operationLines[i].Item1 is List<Diff> list)
+            {
+              ColorTextDependingOnOperation(paragraph, list);
+            }
+            else
+            {
+              run.Text = AddPadding((string)operationLines[i].Item1, LineWith, false);
+              run.Background = Brushes.Orange;
+              paragraph.Inlines.Add(run);
+              paragraph.Inlines.Add(Environment.NewLine);
+            }
             break;
           case LineChanges.NEWLINE:
             run.Text = AddPadding((string)operationLines[i].Item1, LineWith, true);
@@ -287,7 +297,7 @@ namespace ClangPowerTools
       return text + new string(' ', paddingCount);
     }
 
-    private List<Diff> GetLineDiffs(string inputLine, string outputLine)
+    private List<Diff> GetLineDiff(string inputLine, string outputLine)
     {
       diffMatchPatch = new DiffMatchPatch();
       List<Diff> lineDiffs = diffMatchPatch.diff_main(inputLine, outputLine);
