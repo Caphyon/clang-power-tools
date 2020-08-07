@@ -63,7 +63,7 @@ namespace ClangPowerTools
 
     private enum LineChanges
     {
-      HASCHANGES, NOCHANGES, NEWLINE
+      NONE, HASCHANGES, NOCHANGES, NEWLINE
     }
 
     #endregion
@@ -162,25 +162,20 @@ namespace ClangPowerTools
 
     private void DetectOperationPerLine(List<string> inputLines, List<string> outputLines, List<(object, LineChanges)> inputOperationPerLine, List<(object, LineChanges)> outputOperationPerLine)
     {
-      var lineDiffs = new List<Diff>();
       var lineCount = inputLines.Count < outputLines.Count ? inputLines.Count : outputLines.Count;
       var index = 0;
 
       while (lineCount != index)
       {
-        if (inputLines.Count != outputLines.Count)
-        {
-          lineDiffs = GetLineDiff(inputLines[index].Trim(' '), outputLines[index].Trim(' '));
-        }
-        else
-        {
-          lineDiffs = GetLineDiff(inputLines[index], outputLines[index]);
-        }
+        var lineDiffs = GetLineDiff(inputLines[index], outputLines[index]);
 
-        if (lineDiffs.Count > 0)
+        if (lineDiffs.Count > 0 && inputLines.Count != outputLines.Count)
         {
+          var lastOperationDelete = lineDiffs.Last().operation == Operation.DELETE;
+          var checkEmptySpaceEqual = lineDiffs.First().operation == Operation.EQUAL && string.IsNullOrWhiteSpace(lineDiffs.First().text) && lineDiffs.Count > 1;
           var containsEqualOperation = lineDiffs.Any(e => e.operation == Operation.EQUAL);
-          if (containsEqualOperation == false && inputLines.Count > outputLines.Count)
+
+          if ((containsEqualOperation == false || checkEmptySpaceEqual || lastOperationDelete) && inputLines.Count > outputLines.Count)
           {
             outputLines.Insert(index, Environment.NewLine);
             inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
@@ -188,11 +183,11 @@ namespace ClangPowerTools
             index++;
             continue;
           }
-          else if (containsEqualOperation == false && inputLines.Count < outputLines.Count)
+          else if ((containsEqualOperation == false || checkEmptySpaceEqual || lastOperationDelete) && inputLines.Count < outputLines.Count)
           {
             inputLines.Insert(index, Environment.NewLine);
             outputOperationPerLine.Add((outputLines[index], LineChanges.HASCHANGES));
-            inputOperationPerLine.Add((inputLines[index], LineChanges.NEWLINE));
+            inputOperationPerLine.Add((inputLines[index + 1], LineChanges.NEWLINE));
             index++;
             continue;
           }
