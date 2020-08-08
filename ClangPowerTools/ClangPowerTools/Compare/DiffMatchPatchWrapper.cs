@@ -162,54 +162,41 @@ namespace ClangPowerTools
 
     private void DetectOperationPerLine(List<string> inputLines, List<string> outputLines, List<(object, LineChanges)> inputOperationPerLine, List<(object, LineChanges)> outputOperationPerLine)
     {
-      var lineCount = inputLines.Count < outputLines.Count ? inputLines.Count : outputLines.Count;
+      var lineCount = inputLines.Count < outputLines.Count ? outputLines.Count : inputLines.Count;
       var index = 0;
 
       while (lineCount != index)
       {
         var lineDiffs = GetLineDiff(inputLines[index], outputLines[index]);
 
-        bool hasLineDelete = false;
-        bool hasLineInsert = false;
-        if (lineDiffs.Count > 0 && lineDiffs.Last().operation != Operation.EQUAL && inputLines.Count != outputLines.Count)
+        if (lineDiffs.Count > 1 && inputLines.Count != outputLines.Count
+          && index + 1 <= lineCount && lineDiffs.Last().operation != Operation.EQUAL)
         {
-          var twoLineDiff = GetLineDiff(inputLines[index] + Environment.NewLine + inputLines[index + 1] + Environment.NewLine,
-                                         outputLines[index] + Environment.NewLine + outputLines[index + 1] + Environment.NewLine);
-          foreach (var item in twoLineDiff)
+          var inputNextLine = inputLines[index + 1];
+          var outputNextLine = outputLines[index + 1];
+
+          var inspertOutputNewline = lineDiffs.Any(e => e.operation != Operation.EQUAL && e.text.Trim(' ') == inputNextLine.Trim(' '));
+          var inspertInputNewline = lineDiffs.Any(e => e.operation != Operation.EQUAL && e.text.Trim(' ') == outputNextLine.Trim(' '));
+
+          if (inspertOutputNewline)
           {
-            if (item.operation == Operation.DELETE && item.text.Contains(Environment.NewLine))
-              hasLineDelete = true;
-            if (item.operation == Operation.INSERT && item.text.Contains(Environment.NewLine))
-              hasLineInsert = true;
+            outputLines.Insert(index + 1, Environment.NewLine);
+            inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
+            inputOperationPerLine.Add((inputLines[index + 1], LineChanges.HASCHANGES));
+            outputOperationPerLine.Add((outputLines[index], LineChanges.HASCHANGES));
+            outputOperationPerLine.Add((outputLines[index + 1], LineChanges.NEWLINE));
+            index += 2;
+            continue;
           }
-        }
-
-        if (lineDiffs.Count > 0 && inputLines.Count != outputLines.Count)
-        {
-          var checkEmptySpaceEqual = lineDiffs.First().operation == Operation.EQUAL && string.IsNullOrWhiteSpace(lineDiffs.First().text) && lineDiffs.Count > 1;
-          var containsEqualOperation = lineDiffs.Any(e => e.operation == Operation.EQUAL);
-
-          if (inputLines.Count != outputLines.Count && (containsEqualOperation == false || checkEmptySpaceEqual || hasLineDelete))
+          else if (inspertInputNewline)
           {
-            if (lineDiffs.Last().operation == Operation.INSERT && hasLineInsert)
-            {
-              inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
-              outputOperationPerLine.Add((outputLines[index], LineChanges.HASCHANGES));
-
-              outputLines.Insert(index + 1, Environment.NewLine);
-              inputOperationPerLine.Add((inputLines[index + 1], LineChanges.HASCHANGES));
-              outputOperationPerLine.Add((outputLines[index + 1], LineChanges.NEWLINE));
-              index += 2;
-              continue;
-            }
-            else if (lineDiffs.Last().operation == Operation.DELETE && hasLineDelete)
-            {
-              inputLines.Insert(index, Environment.NewLine);
-              inputOperationPerLine.Add((inputLines[index], LineChanges.NEWLINE));
-              outputOperationPerLine.Add((outputLines[index], LineChanges.HASCHANGES));
-              index++;
-              continue;
-            }
+            inputLines.Insert(index + 1, Environment.NewLine);
+            outputOperationPerLine.Add((outputLines[index], LineChanges.HASCHANGES));
+            outputOperationPerLine.Add((outputLines[index + 1], LineChanges.HASCHANGES));
+            inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
+            inputOperationPerLine.Add((inputLines[index + 1], LineChanges.NEWLINE));
+            index += 2;
+            continue;
           }
         }
 
@@ -234,6 +221,7 @@ namespace ClangPowerTools
         }
 
         index++;
+        lineCount = inputLines.Count < outputLines.Count ? outputLines.Count : inputLines.Count;
       }
     }
 
