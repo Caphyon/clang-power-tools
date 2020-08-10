@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using System.Windows.Media;
 
@@ -175,10 +176,12 @@ namespace ClangPowerTools
           var inputNextLine = inputLines[index + 1];
           var outputNextLine = outputLines[index + 1];
 
-          var inspertOutputNewline = lineDiffs.Any(e => e.operation != Operation.EQUAL && e.text.Trim(' ') == inputNextLine.Trim(' '));
-          var inspertInputNewline = lineDiffs.Any(e => e.operation != Operation.EQUAL && e.text.Trim(' ') == outputNextLine.Trim(' '));
+          var insertOutputNewline = lineDiffs.Any(e => e.operation != Operation.EQUAL &&
+                                             Regex.Replace(e.text, @"\s+", "") == Regex.Replace(inputNextLine, @"\s+", ""));
+          var insertInputNewline = lineDiffs.Any(e => e.operation != Operation.EQUAL &&
+                                             Regex.Replace(e.text, @"\s+", "") == Regex.Replace(outputNextLine, @"\s+", ""));
 
-          if (inspertOutputNewline)
+          if (insertOutputNewline)
           {
             outputLines.Insert(index + 1, Environment.NewLine);
             inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
@@ -188,7 +191,7 @@ namespace ClangPowerTools
             index += 2;
             continue;
           }
-          else if (inspertInputNewline)
+          else if (insertInputNewline)
           {
             inputLines.Insert(index + 1, Environment.NewLine);
             outputOperationPerLine.Add((outputLines[index], LineChanges.HASCHANGES));
@@ -206,11 +209,11 @@ namespace ClangPowerTools
           if (inputLines.Count != outputLines.Count)
           {
             inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
-            outputOperationPerLine.Add((outputLines[index], LineChanges.HASCHANGES));
+            outputOperationPerLine.Add((new List<Diff>(lineDiffs), LineChanges.HASCHANGES));
           }
           else
           {
-            inputOperationPerLine.Add((new List<Diff>(lineDiffs), LineChanges.HASCHANGES));
+            inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
             outputOperationPerLine.Add((new List<Diff>(lineDiffs), LineChanges.HASCHANGES));
           }
         }
