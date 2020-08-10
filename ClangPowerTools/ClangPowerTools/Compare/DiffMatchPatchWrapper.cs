@@ -163,13 +163,14 @@ namespace ClangPowerTools
 
     private void DetectOperationPerLine(List<string> inputLines, List<string> outputLines, List<(object, LineChanges)> inputOperationPerLine, List<(object, LineChanges)> outputOperationPerLine)
     {
-      var lineCount = inputLines.Count < outputLines.Count ? outputLines.Count : inputLines.Count;
+      var lineCount = GetLargestLinesCount(inputLines, outputLines);
       var index = 0;
 
       while (lineCount != index)
       {
         var lineDiffs = GetLineDiff(inputLines[index], outputLines[index]);
 
+        // Handle new line(\r\n)  scenario until both inputLines and outputLines are equal
         if (lineDiffs.Count > 1 && inputLines.Count != outputLines.Count
           && index + 1 <= lineCount && lineDiffs.Last().operation != Operation.EQUAL)
         {
@@ -183,22 +184,12 @@ namespace ClangPowerTools
 
           if (insertOutputNewline)
           {
-            outputLines.Insert(index + 1, Environment.NewLine);
-            inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
-            inputOperationPerLine.Add((inputLines[index + 1], LineChanges.HASCHANGES));
-            outputOperationPerLine.Add((outputLines[index], LineChanges.HASCHANGES));
-            outputOperationPerLine.Add((outputLines[index + 1], LineChanges.NEWLINE));
-            index += 2;
+            NewLineDiffOperation(inputLines, outputLines, outputOperationPerLine, inputOperationPerLine, ref index);
             continue;
           }
           else if (insertInputNewline)
           {
-            inputLines.Insert(index + 1, Environment.NewLine);
-            outputOperationPerLine.Add((outputLines[index], LineChanges.HASCHANGES));
-            outputOperationPerLine.Add((outputLines[index + 1], LineChanges.HASCHANGES));
-            inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
-            inputOperationPerLine.Add((inputLines[index + 1], LineChanges.NEWLINE));
-            index += 2;
+            NewLineDiffOperation(outputLines, inputLines, inputOperationPerLine, outputOperationPerLine, ref index);
             continue;
           }
         }
@@ -216,8 +207,24 @@ namespace ClangPowerTools
         }
 
         index++;
-        lineCount = inputLines.Count < outputLines.Count ? outputLines.Count : inputLines.Count;
+        lineCount = GetLargestLinesCount(inputLines, outputLines);
       }
+    }
+
+    // Set operations per line after finding a new line(\r\n) diff
+    private void NewLineDiffOperation(List<string> fewerLines, List<string> moreLines, List<(object, LineChanges)> fewerOperationPerLine, List<(object, LineChanges)> moreOperationPerLine, ref int index)
+    {
+      moreLines.Insert(index + 1, Environment.NewLine);
+      moreOperationPerLine.Add((fewerLines[index], LineChanges.HASCHANGES));
+      moreOperationPerLine.Add((fewerLines[index + 1], LineChanges.HASCHANGES));
+      fewerOperationPerLine.Add((moreLines[index], LineChanges.HASCHANGES));
+      fewerOperationPerLine.Add((moreLines[index + 1], LineChanges.NEWLINE));
+      index += 2;
+    }
+
+    private int GetLargestLinesCount(List<string> inputLines, List<string> outputLines)
+    {
+      return inputLines.Count < outputLines.Count ? outputLines.Count : inputLines.Count;
     }
 
     private void CreateDiffParagraph(Paragraph paragraph, List<(object, LineChanges)> operationLines, Brush lineDiffColor)
@@ -313,7 +320,7 @@ namespace ClangPowerTools
 
     private void AddLineNumberToParagraphLine(Paragraph paragraph, int currentLineNumber, int numberOfLines, int paddingLeft)
     {
-      // A number occupies two '  ' not ' ' in a Run
+      // A digit occupies two '  ' not ' ' in a Run
       int numberOfSpaces = (LengthOfNumber(numberOfLines) - LengthOfNumber(currentLineNumber) + paddingLeft) * 2;
       var lineNumber = string.Concat(new string(' ', numberOfSpaces), (currentLineNumber).ToString(), " ");
       var lineNumberRun = new Run(lineNumber)
