@@ -224,7 +224,7 @@ namespace ClangPowerTools
     {
       for (int i = 0; i < operationLines.Count; i++)
       {
-        AddLineNumberToParagraphLine(paragraph, i + 1, operationLines.Count);
+        AddLineNumberToParagraphLine(paragraph, i + 1, operationLines.Count, 2);
 
         var run = new Run();
         switch (operationLines[i].Item2)
@@ -311,9 +311,10 @@ namespace ClangPowerTools
       paragraph.Inlines.Add(Environment.NewLine);
     }
 
-    private void AddLineNumberToParagraphLine(Paragraph paragraph, int currentLineNumber, int numberOfLines)
+    private void AddLineNumberToParagraphLine(Paragraph paragraph, int currentLineNumber, int numberOfLines, int paddingLeft)
     {
-      int numberOfSpaces = CalculateNumberOfSpaces(numberOfLines) - CalculateNumberOfSpaces(currentLineNumber) + 4;
+      // A number occupies two '  ' not ' ' in a Run
+      int numberOfSpaces = (LengthOfNumber(numberOfLines) - LengthOfNumber(currentLineNumber) + paddingLeft) * 2;
       var lineNumber = string.Concat(new string(' ', numberOfSpaces), (currentLineNumber).ToString(), " ");
       var lineNumberRun = new Run(lineNumber)
       {
@@ -322,7 +323,7 @@ namespace ClangPowerTools
       paragraph.Inlines.Add(lineNumberRun);
     }
 
-    private int CalculateNumberOfSpaces(int numberOfLines)
+    private int LengthOfNumber(int numberOfLines)
     {
       return (int)Math.Floor(Math.Log10(numberOfLines) + 1);
     }
