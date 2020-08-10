@@ -155,8 +155,8 @@ namespace ClangPowerTools
       var outputOperationPerLine = new List<(object, LineChanges)>();
 
       DetectOperationPerLine(inputLines, outputLines, inputOperationPerLine, outputOperationPerLine);
-      CreateInputDiffParagraph(paragraphInput, inputOperationPerLine);
-      CreateOutputDiffParagraph(paragraphOutput, outputOperationPerLine);
+      CreateDiffParagraph(paragraphInput, inputOperationPerLine, Brushes.Orange);
+      CreateDiffParagraph(paragraphOutput, outputOperationPerLine, Brushes.Yellow);
 
       return CreateFlowDocuments(paragraphInput, paragraphOutput);
     }
@@ -206,16 +206,8 @@ namespace ClangPowerTools
         var containsChanges = lineDiffs.Any(e => e.operation != Operation.EQUAL);
         if (containsChanges)
         {
-          if (inputLines.Count != outputLines.Count)
-          {
-            inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
-            outputOperationPerLine.Add((new List<Diff>(lineDiffs), LineChanges.HASCHANGES));
-          }
-          else
-          {
-            inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
-            outputOperationPerLine.Add((new List<Diff>(lineDiffs), LineChanges.HASCHANGES));
-          }
+          inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
+          outputOperationPerLine.Add((new List<Diff>(lineDiffs), LineChanges.HASCHANGES));
         }
         else
         {
@@ -228,7 +220,7 @@ namespace ClangPowerTools
       }
     }
 
-    private void CreateInputDiffParagraph(Paragraph paragraph, List<(object, LineChanges)> operationLines)
+    private void CreateDiffParagraph(Paragraph paragraph, List<(object, LineChanges)> operationLines, Brush lineDiffColor)
     {
       for (int i = 0; i < operationLines.Count; i++)
       {
@@ -250,43 +242,7 @@ namespace ClangPowerTools
             else
             {
               run.Text = AddPadding((string)operationLines[i].Item1, LineWith, false);
-              run.Background = Brushes.Orange;
-              paragraph.Inlines.Add(run);
-              paragraph.Inlines.Add(Environment.NewLine);
-            }
-            break;
-          case LineChanges.NEWLINE:
-            run.Text = AddPadding((string)operationLines[i].Item1, LineWith, true);
-            run.Background = (Brush)new BrushConverter().ConvertFrom("#D3D3D3");
-            paragraph.Inlines.Add(run);
-            break;
-        }
-      }
-    }
-
-    private void CreateOutputDiffParagraph(Paragraph paragraph, List<(object, LineChanges)> operationLines)
-    {
-      for (int i = 0; i < operationLines.Count; i++)
-      {
-        AddLineNumberToParagraphLine(paragraph, i + 1, operationLines.Count);
-
-        var run = new Run();
-        switch (operationLines[i].Item2)
-        {
-          case LineChanges.NOCHANGES:
-            run.Text = (string)operationLines[i].Item1;
-            paragraph.Inlines.Add(run);
-            paragraph.Inlines.Add(Environment.NewLine);
-            break;
-          case LineChanges.HASCHANGES:
-            if (operationLines[i].Item1 is List<Diff> list)
-            {
-              ColorTextDependingOnOperation(paragraph, list);
-            }
-            else
-            {
-              run.Text = AddPadding((string)operationLines[i].Item1, LineWith, false);
-              run.Background = Brushes.Yellow;
+              run.Background = lineDiffColor;
               paragraph.Inlines.Add(run);
               paragraph.Inlines.Add(Environment.NewLine);
             }
