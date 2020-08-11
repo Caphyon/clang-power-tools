@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using System.Windows.Media;
 
@@ -178,9 +177,9 @@ namespace ClangPowerTools
           var outputNextLine = outputLines[index + 1];
 
           var insertOutputNewline = lineDiffs.Any(e => e.operation != Operation.EQUAL &&
-                                             Regex.Replace(e.text, @"\s+", "") == Regex.Replace(inputNextLine, @"\s+", ""));
+                                             e.text.Replace(" ", string.Empty) == inputNextLine.Replace(" ", string.Empty));
           var insertInputNewline = lineDiffs.Any(e => e.operation != Operation.EQUAL &&
-                                             Regex.Replace(e.text, @"\s+", "") == Regex.Replace(outputNextLine, @"\s+", ""));
+                                              e.text.Replace(" ", string.Empty) == outputNextLine.Replace(" ", string.Empty));
 
           if (insertOutputNewline)
           {
