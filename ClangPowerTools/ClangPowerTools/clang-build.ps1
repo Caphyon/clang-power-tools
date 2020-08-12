@@ -175,6 +175,10 @@ param( [alias("proj")]
      , [alias("vs-sku")]
        [Parameter(Mandatory=$false, HelpMessage="Edition of Visual Studio toolset to use for loading project")]
        [string]   $aVisualStudioSku
+       
+     , [alias("export-jsondb")]
+       [Parameter(Mandatory=$false, HelpMessage="Switch to generate a JSON compilation database file, in the current working directory")]
+       [switch]   $aExportJsonDB
      )
 
 Set-StrictMode -version latest
@@ -187,6 +191,7 @@ $ErrorActionPreference = 'Continue'
  , "$PSScriptRoot\psClang\msbuild-project-data.ps1"
  , "$PSScriptRoot\psClang\get-header-references.ps1"
  , "$PSScriptRoot\psClang\itemdefinition-context.ps1"
+ , "$PSScriptRoot\psClang\jsondb-export.ps1"
  ) | ForEach-Object { . $_ }
 
 # System Architecture Constants
@@ -1104,10 +1109,14 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   #-----------------------------------------------------------------------------------------------
   # CREATE PCH IF NEED BE, ONLY FOR TWO CPPS OR MORE
+  #
+  # JSON Compilation Database file will outlive this execution run, while the PCH is temporary 
+  # so we disable PCH creation for that case as well.
 
   [string] $pchFilePath = ""
   if ($global:cptFilesToProcess.Keys.Count -ge 2 -and
-      ![string]::IsNullOrEmpty($stdafxDir) -and $workloadType -ne [WorkloadType]::TidyFix)
+      ![string]::IsNullOrEmpty($stdafxDir) -and $workloadType -ne [WorkloadType]::TidyFix -and
+      !$aExportJsonDB)
   {
     # COMPILE PCH
     Write-Verbose "Generating PCH..."
@@ -1180,8 +1189,25 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
 
   #-----------------------------------------------------------------------------------------------
   # RUN CLANG JOBS
-
-  Run-ClangJobs -clangJobs $clangJobs -workloadType $workloadType
+  
+  if ($aExportJsonDB)
+  {
+   foreach ($job in $clangJobs)
+   {
+     [string] $clangToolPath = $job.FilePath
+     if (Exists-Command $clangToolPath)
+     {
+       # see precisely what path the tool has, to prevent ambiguities.
+       $clangToolPath = (Get-Command $job.FilePath).Source
+     }
+     [string] $clangCommand = """$clangToolPath"" $($job.ArgumentList)"
+     JsonDB-Push -directory $job.WorkingDirectory -file $job.File -command $clangCommand
+   }
+  }
+  else 
+  {
+    Run-ClangJobs -clangJobs $clangJobs -workloadType $workloadType
+  }
 }
 
 #-------------------------------------------------------------------------------------------------
@@ -1233,6 +1259,12 @@ if (! (Exists-Command($kClangCompiler)) )
       break
     }
   }
+}
+
+# initialize JSON compilation db support, if required
+if ($aExportJsonDB) 
+{ 
+  JsonDB-Init 
 }
 
 Push-Location (Get-SourceDirectory)
@@ -1408,6 +1440,11 @@ foreach ($project in $projectsToProcess)
 
   $localProjectCounter -= 1
   $global:cptProjectCounter = $localProjectCounter
+}
+
+if ($aExportJsonDB) 
+{ 
+  JsonDB-Finalize
 }
 
 if ($global:FoundErrors)
