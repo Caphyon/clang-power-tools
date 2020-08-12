@@ -14,21 +14,17 @@
   ResizeMode="NoResize"
   WindowStartupLocation="CenterScreen"
   mc:Ignorable="d">
+
+  <!--  Static resources  -->
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Styles/AppResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+
   <Grid>
-
-    <Grid.Resources>
-      <Style TargetType="{x:Type Hyperlink}">
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="Foreground" Value="#E2E2E8" />
-        <Setter Property="TextBlock.TextDecorations" Value="{x:Null}" />
-        <Style.Triggers>
-          <Trigger Property="IsMouseOver" Value="True">
-            <Setter Property="Foreground" Value="White" />
-          </Trigger>
-        </Style.Triggers>
-      </Style>
-    </Grid.Resources>
-
     <Grid.Background>
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/LoginBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
@@ -290,7 +286,7 @@
       FontFamily="SegoeUI"
       FontSize="14"
       Foreground="#E2E2E8">
-      <Hyperlink Command="{Binding SignIn}">
+      <Hyperlink Command="{Binding SignIn}" Style="{StaticResource HyperlinkStyle}">
         Already registered? Sign In
       </Hyperlink>
     </TextBlock>
