@@ -12,6 +12,7 @@
     <ResourceDictionary Source="SettingsButtonStyle.xaml" />
     <ResourceDictionary Source="SettingsComboBoxStyle.xaml" />
     <ResourceDictionary Source="YellowButtonStyle.xaml" />
+    <ResourceDictionary Source="HyperlinkStyle.xaml" />
     <ResourceDictionary>
       <BitmapImage x:Key="AddInputImage" UriSource="/ClangPowerTools;component/Resources/AddInput.png" />
       <BitmapImage x:Key="BrowseImage" UriSource="/ClangPowerTools;component/Resources/Browse.png" />
