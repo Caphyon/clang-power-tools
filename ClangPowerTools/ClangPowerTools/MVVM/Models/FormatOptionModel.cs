@@ -35,12 +35,13 @@ namespace ClangPowerTools.MVVM.Models
     public bool HasBooleanCombobox { get; set; } = false;
     public bool HasInputTextBox { get; set; } = false;
     public bool HasMultipleInputTextBox { get; set; } = false;
+    public bool HasMultipleToggle { get; set; } = false;
 
     #endregion
 
     #region Methods
 
-    public virtual void OnPropertyChanged(string propertyName)
+    public void OnPropertyChanged(string propertyName)
     {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }

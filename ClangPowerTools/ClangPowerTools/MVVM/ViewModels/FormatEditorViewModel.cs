@@ -26,6 +26,7 @@ namespace ClangPowerTools
     private readonly StyleFormatter formatter;
     private readonly FormatEditorView formatEditorView;
     private InputMultipleDataView inputMultipleDataView;
+    private ToggleMultipleDataView toggleMultipleDataView;
     private ICommand selctCodeFileCommand;
     private ICommand createFormatFileCommand;
     private ICommand formatCodeCommand;
@@ -263,12 +264,22 @@ namespace ClangPowerTools
     public void OpenMultipleInput(int index)
     {
       if (windowLoaded == false) return;
-      if (!(FormatOptions[index] is FormatOptionMultipleInputModel element)) return;
+      var element = FormatOptions[index];
 
-      SelectedOption = element;
-      SelectedOption.IsEnabled = true;
+      if (element is FormatOptionMultipleInputModel)
+      {
+        SelectedOption = element;
+        SelectedOption.IsEnabled = true;
 
-      OpenInputDataView();
+        OpenInputDataView();
+      }
+      else if (element is FormatOptionMultipleToggleModel)
+      {
+        SelectedOption = element;
+        SelectedOption.IsEnabled = true;
+
+        OpenToggleDataView();
+      }
     }
 
     public bool IsAnyOptionEnabled()
@@ -337,16 +348,31 @@ namespace ClangPowerTools
       inputMultipleDataView.Show();
     }
 
+    private void OpenToggleDataView()
+    {
+      if (!(selectedOption is FormatOptionMultipleToggleModel multipleToggleModel)) return;
+      toggleMultipleDataView = new ToggleMultipleDataView(multipleToggleModel.ToggleFlags);
+
+      toggleMultipleDataView.Closed += CloseInputDataView;
+      toggleMultipleDataView.Show();
+    }
+
     private void CloseInputDataView(object sender, EventArgs e)
     {
       if (selectedOption is FormatOptionMultipleInputModel multipleInputModel
        && inputMultipleDataView.DataContext is InputMultipleDataViewModel inputMultipleDataViewModel)
       {
         multipleInputModel.MultipleInput = inputMultipleDataViewModel.Input;
+        inputMultipleDataView.Closed -= CloseInputDataView;
+      }
+      else if (selectedOption is FormatOptionMultipleToggleModel multipleToggleModel
+       && toggleMultipleDataView.DataContext is ToggleMultipleDataViewModel toggleMultipleDataViewModel)
+      {
+        multipleToggleModel.ToggleFlags = toggleMultipleDataViewModel.Input;
+        toggleMultipleDataView.Closed -= CloseInputDataView;
       }
 
       RunFormat();
-      inputMultipleDataView.Closed -= CloseInputDataView;
     }
 
     private void OpenUri(string uri)
