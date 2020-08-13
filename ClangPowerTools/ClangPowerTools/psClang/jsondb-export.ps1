@@ -36,7 +36,7 @@ function JsonDB-Push($directory, $file, $command)
   $command = $command.Replace("$directory/", "")
   $file = $file.Replace("$directory/", "")
   
-  JsonDB-Append "  {`n    ""directory"": ""$directory"",`n    ""command"": ""$command"",`n    ""file"": ""$file""`n  }"
+  JsonDB-Append "  {`r`n    ""directory"": ""$directory"",`r`n    ""command"": ""$command"",`r`n    ""file"": ""$file""`r`n  }"
    
   Set-Variable -name "kJsonCompilationDbCount" -value ($kJsonCompilationDbCount + 1) -scope Global
 }
