@@ -130,6 +130,15 @@
                         Content="Modify Input"
                         FontSize="12"
                         Visibility="{Binding Path=HasMultipleInputTextBox, Converter={StaticResource BoolToVis}}" />
+                      <Button
+                        Grid.Column="1"
+                        Width="80"
+                        Height="20"
+                        HorizontalAlignment="Right"
+                        Click="OpenMultipleInput"
+                        Content="Modify Input"
+                        FontSize="12"
+                        Visibility="{Binding Path=HasMultipleToggle, Converter={StaticResource BoolToVis}}" />
                     </Grid>
                   </DataTemplate>
                 </GridViewColumn.CellTemplate>
