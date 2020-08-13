@@ -2,28 +2,23 @@
 {
   public class InputMultipleDataViewModel
   {
-    #region Members;
+    #region Properties
 
-    private string input;
+    public string Input { get; set; }
 
     #endregion
-
 
     #region Constructor 
 
     public InputMultipleDataViewModel(string input)
     {
-      this.input = input;
+      Input = input;
     }
 
-    #endregion
-
-    #region Properties
-
-    public string Input
+    // Empty constructor for XAML intelisense
+    public InputMultipleDataViewModel()
     {
-      get => input;
-      set => input = value;
+
     }
 
     #endregion
