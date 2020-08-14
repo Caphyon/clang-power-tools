@@ -51,7 +51,7 @@
         <ColumnDefinition Width="Auto" />
       </Grid.ColumnDefinitions>
 
-      <controls:LicenseTypeButton
+      <controls:ThreePieceButton
         Title="Personal Use"
         Grid.Column="0"
         Width="240"
@@ -61,7 +61,7 @@
         Description="Free for hobby and EDU projects"
         Image="/ClangPowerTools;component/Resources/iconPersonal.png" />
 
-      <controls:LicenseTypeButton
+      <controls:ThreePieceButton
         Title="Commercial Team License"
         Grid.Column="1"
         Width="240"
@@ -71,7 +71,7 @@
         Description="From $39/team/month"
         Image="/ClangPowerTools;component/Resources/iconCommercial.png" />
 
-      <controls:LicenseTypeButton
+      <controls:ThreePieceButton
         Title="14-day Free Trial"
         Grid.Column="2"
         Width="240"
