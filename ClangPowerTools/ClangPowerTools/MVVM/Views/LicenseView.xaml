@@ -66,7 +66,7 @@
       <controls:ThreePieceButton
         Title="Commercial Team License"
         Grid.Column="1"
-        Margin="30,61,0,0"
+        Margin="24,61,0,0"
         BackgroundValue="#C383E0"
         ButtonCommand="{Binding CommercialLicense}"
         Description="From $39/team/month"
@@ -78,7 +78,7 @@
       <controls:ThreePieceButton
         Title="14-day Free Trial"
         Grid.Column="2"
-        Margin="30,61,32,0"
+        Margin="24,61,0,0"
         BackgroundValue="#C383E0"
         ButtonCommand="{Binding TrialLicense}"
         Description="No account required"
