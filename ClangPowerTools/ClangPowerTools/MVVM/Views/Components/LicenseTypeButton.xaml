@@ -1,0 +1,81 @@
+﻿<UserControl
+  x:Class="ClangPowerTools.MVVM.Views.Components.LicenseTypeButton"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views.Components"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  Name="_LicenseTypeButton"
+  mc:Ignorable="d">
+
+  <Button
+    Name="FreeLicenseButton"
+    HorizontalAlignment="Center"
+    Background="Transparent"
+    BorderThickness="0"
+    Command="{Binding ButtonCommand, ElementName=_LicenseTypeButton}">
+
+    <Button.Content>
+      <Grid Width="240" Height="152">
+        <Grid.Background>
+          <SolidColorBrush Opacity="0.15" Color="#C383E0" />
+        </Grid.Background>
+
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Image
+          Grid.Row="0"
+          Width="53"
+          Height="53"
+          Margin="0,22,0,0"
+          HorizontalAlignment="Center"
+          Source="{Binding Image, ElementName=_LicenseTypeButton}" />
+
+        <TextBlock
+          Grid.Row="1"
+          Margin="0,18,0,0"
+          HorizontalAlignment="Center"
+          FontSize="18"
+          Foreground="#C6C6D5"
+          Text="{Binding Title, ElementName=_LicenseTypeButton}" />
+
+        <TextBlock
+          Grid.Row="2"
+          Margin="0,9,0,0"
+          HorizontalAlignment="Center"
+          FontSize="14"
+          Foreground="White"
+          Text="{Binding Description, ElementName=_LicenseTypeButton}" />
+
+      </Grid>
+    </Button.Content>
+
+    <Button.Template>
+      <ControlTemplate TargetType="{x:Type Button}">
+        <Border>
+          <Grid>
+            <ContentPresenter />
+            <Grid
+              x:Name="StatusPanel"
+              Background="White"
+              Opacity="0" />
+          </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+          <Trigger Property="IsMouseOver" Value="true">
+            <Setter TargetName="StatusPanel" Property="Opacity" Value="0.1" />
+          </Trigger>
+          <Trigger Property="IsPressed" Value="true">
+            <Setter TargetName="StatusPanel" Property="Opacity" Value="0.3" />
+          </Trigger>
+        </ControlTemplate.Triggers>
+      </ControlTemplate>
+    </Button.Template>
+
+  </Button>
+
+</UserControl>
