@@ -5,11 +5,11 @@ using System.Windows.Input;
 namespace ClangPowerTools.MVVM.Views.Components
 {
   /// <summary>
-  /// Interaction logic for LicenseTypeButton.xaml
+  /// Interaction logic for ThreePieceButton.xaml
   /// </summary>
-  public partial class LicenseTypeButton : UserControl
+  public partial class ThreePieceButton : UserControl
   {
-    public LicenseTypeButton()
+    public ThreePieceButton()
     {
       InitializeComponent();
     }
@@ -21,7 +21,7 @@ namespace ClangPowerTools.MVVM.Views.Components
     }
 
     public static readonly DependencyProperty ImageProperty =
-      DependencyProperty.Register("Image", typeof(string), typeof(LicenseTypeButton), new PropertyMetadata(null));
+      DependencyProperty.Register("Image", typeof(string), typeof(ThreePieceButton), new PropertyMetadata(null));
 
 
     public string Title
@@ -31,7 +31,7 @@ namespace ClangPowerTools.MVVM.Views.Components
     }
 
     public static readonly DependencyProperty TitleProperty =
-      DependencyProperty.Register("Title", typeof(string), typeof(LicenseTypeButton), new PropertyMetadata(null));
+      DependencyProperty.Register("Title", typeof(string), typeof(ThreePieceButton), new PropertyMetadata(null));
 
     public string Description
     {
@@ -40,7 +40,7 @@ namespace ClangPowerTools.MVVM.Views.Components
     }
 
     public static readonly DependencyProperty DescriptionProperty =
-      DependencyProperty.Register("Description", typeof(string), typeof(LicenseTypeButton), new PropertyMetadata(null));
+      DependencyProperty.Register("Description", typeof(string), typeof(ThreePieceButton), new PropertyMetadata(null));
 
     public ICommand ButtonCommand
     {
@@ -49,7 +49,7 @@ namespace ClangPowerTools.MVVM.Views.Components
     }
 
     public static readonly DependencyProperty ButtonCommandProperty =
-      DependencyProperty.Register("ButtonCommand", typeof(ICommand), typeof(LicenseTypeButton), new PropertyMetadata(null));
+      DependencyProperty.Register("ButtonCommand", typeof(ICommand), typeof(ThreePieceButton), new PropertyMetadata(null));
 
 
   }
