@@ -73,5 +73,25 @@ namespace ClangPowerTools.MVVM.Views.Components
     public static readonly DependencyProperty OpacityValueProperty =
       DependencyProperty.Register("OpacityValue", typeof(string), typeof(ThreePieceButton), new PropertyMetadata(null));
 
+
+    public string WidthValue
+    {
+      get { return (string)GetValue(WidthValueProperty); }
+      set { SetValue(WidthValueProperty, value); }
+    }
+
+    public static readonly DependencyProperty WidthValueProperty =
+      DependencyProperty.Register("WidthValue", typeof(string), typeof(ThreePieceButton), new PropertyMetadata(null));
+
+
+    public string HeightValue
+    {
+      get { return (string)GetValue(HeightValueProperty); }
+      set { SetValue(HeightValueProperty, value); }
+    }
+
+    public static readonly DependencyProperty HeightValueProperty =
+      DependencyProperty.Register("HeightValue", typeof(string), typeof(ThreePieceButton), new PropertyMetadata(null));
+
   }
 }

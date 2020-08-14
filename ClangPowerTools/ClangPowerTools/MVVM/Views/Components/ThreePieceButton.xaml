@@ -15,7 +15,7 @@
     Command="{Binding ButtonCommand, ElementName=_LicenseTypeButton}">
 
     <Button.Content>
-      <Grid Width="240" Height="152">
+      <Grid Width="{Binding WidthValue, ElementName=_LicenseTypeButton}" Height="{Binding HeightValue, ElementName=_LicenseTypeButton}">
         <Grid.Background>
           <SolidColorBrush Opacity="{Binding OpacityValue, ElementName=_LicenseTypeButton}" Color="{Binding BackgroundValue, ElementName=_LicenseTypeButton}" />
         </Grid.Background>
