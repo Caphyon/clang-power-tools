@@ -209,6 +209,9 @@
     <Compile Include="MVVM\Views\AccountView.xaml.cs">
       <DependentUpon>AccountView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MVVM\Views\Components\LicenseTypeButton.xaml.cs">
+      <DependentUpon>LicenseTypeButton.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\Views\Components\BuyNowFooter.xaml.cs">
       <DependentUpon>BuyNowFooter.xaml</DependentUpon>
     </Compile>
@@ -605,6 +608,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="MVVM\Views\AccountView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MVVM\Views\Components\LicenseTypeButton.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
