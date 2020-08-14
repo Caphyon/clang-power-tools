@@ -11,14 +11,13 @@
   <Button
     Name="FreeLicenseButton"
     HorizontalAlignment="Center"
-    Background="Transparent"
     BorderThickness="0"
     Command="{Binding ButtonCommand, ElementName=_LicenseTypeButton}">
 
     <Button.Content>
       <Grid Width="240" Height="152">
         <Grid.Background>
-          <SolidColorBrush Opacity="0.15" Color="#C383E0" />
+          <SolidColorBrush Opacity="{Binding OpacityValue, ElementName=_LicenseTypeButton}" Color="{Binding BackgroundValue, ElementName=_LicenseTypeButton}" />
         </Grid.Background>
 
         <Grid.RowDefinitions>

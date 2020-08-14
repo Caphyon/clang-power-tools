@@ -57,9 +57,11 @@
         Width="240"
         Height="152"
         Margin="20,61,0,0"
+        BackgroundValue="#C383E0"
         ButtonCommand="{Binding PersonalLicense}"
         Description="Free for hobby and EDU projects"
-        Image="/ClangPowerTools;component/Resources/iconPersonal.png" />
+        Image="/ClangPowerTools;component/Resources/iconPersonal.png"
+        OpacityValue="0.15" />
 
       <controls:ThreePieceButton
         Title="Commercial Team License"
@@ -67,9 +69,11 @@
         Width="240"
         Height="152"
         Margin="30,61,0,0"
+        BackgroundValue="#C383E0"
         ButtonCommand="{Binding CommercialLicense}"
         Description="From $39/team/month"
-        Image="/ClangPowerTools;component/Resources/iconCommercial.png" />
+        Image="/ClangPowerTools;component/Resources/iconCommercial.png"
+        OpacityValue="0.30" />
 
       <controls:ThreePieceButton
         Title="14-day Free Trial"
@@ -77,9 +81,11 @@
         Width="240"
         Height="152"
         Margin="30,61,32,0"
+        BackgroundValue="#C383E0"
         ButtonCommand="{Binding TrialLicense}"
         Description="No account required"
-        Image="/ClangPowerTools;component/Resources/iconFreeTrial.png" />
+        Image="/ClangPowerTools;component/Resources/iconFreeTrial.png"
+        OpacityValue="0.10" />
 
     </Grid>
 
