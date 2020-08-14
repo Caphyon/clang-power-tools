@@ -28,8 +28,8 @@
 
         <Image
           Grid.Row="0"
-          Width="53"
-          Height="53"
+          Width="{Binding ImageWidthValue, ElementName=_LicenseTypeButton}"
+          Height="{Binding ImageHeightValue, ElementName=_LicenseTypeButton}"
           Margin="0,22,0,0"
           HorizontalAlignment="Center"
           Source="{Binding Image, ElementName=_LicenseTypeButton}" />
@@ -38,16 +38,16 @@
           Grid.Row="1"
           Margin="0,18,0,0"
           HorizontalAlignment="Center"
-          FontSize="18"
-          Foreground="#C6C6D5"
+          FontSize="{Binding TitleFontSize, ElementName=_LicenseTypeButton}"
+          Foreground="{Binding TitleForeground, ElementName=_LicenseTypeButton}"
           Text="{Binding Title, ElementName=_LicenseTypeButton}" />
 
         <TextBlock
           Grid.Row="2"
           Margin="0,9,0,0"
           HorizontalAlignment="Center"
-          FontSize="14"
-          Foreground="White"
+          FontSize="{Binding DescriptionFontSize, ElementName=_LicenseTypeButton}"
+          Foreground="{Binding DescriptionForeground, ElementName=_LicenseTypeButton}"
           Text="{Binding Description, ElementName=_LicenseTypeButton}" />
 
       </Grid>
