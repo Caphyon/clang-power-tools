@@ -33,6 +33,7 @@ namespace ClangPowerTools.MVVM.Views.Components
     public static readonly DependencyProperty TitleProperty =
       DependencyProperty.Register("Title", typeof(string), typeof(ThreePieceButton), new PropertyMetadata(null));
 
+
     public string Description
     {
       get { return (string)GetValue(DescriptionProperty); }
@@ -41,6 +42,7 @@ namespace ClangPowerTools.MVVM.Views.Components
 
     public static readonly DependencyProperty DescriptionProperty =
       DependencyProperty.Register("Description", typeof(string), typeof(ThreePieceButton), new PropertyMetadata(null));
+
 
     public ICommand ButtonCommand
     {
@@ -51,6 +53,25 @@ namespace ClangPowerTools.MVVM.Views.Components
     public static readonly DependencyProperty ButtonCommandProperty =
       DependencyProperty.Register("ButtonCommand", typeof(ICommand), typeof(ThreePieceButton), new PropertyMetadata(null));
 
+
+    public string BackgroundValue
+    {
+      get { return (string)GetValue(BackgroundValueProperty); }
+      set { SetValue(BackgroundValueProperty, value); }
+    }
+
+    public static readonly DependencyProperty BackgroundValueProperty =
+      DependencyProperty.Register("BackgroundValue", typeof(string), typeof(ThreePieceButton), new PropertyMetadata(null));
+
+
+    public string OpacityValue
+    {
+      get { return (string)GetValue(OpacityValueProperty); }
+      set { SetValue(OpacityValueProperty, value); }
+    }
+
+    public static readonly DependencyProperty OpacityValueProperty =
+      DependencyProperty.Register("OpacityValue", typeof(string), typeof(ThreePieceButton), new PropertyMetadata(null));
 
   }
 }
