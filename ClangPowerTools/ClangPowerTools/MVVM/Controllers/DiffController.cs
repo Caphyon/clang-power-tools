@@ -129,8 +129,38 @@ namespace ClangPowerTools.MVVM.Controllers
         case FormatOptionInputModel inputModel:
           SetOptionInput(inputModel);
           break;
+        case FormatOptionMultipleToggleModel multipleToggleModel:
+          SetOptionMultipleToggle(multipleToggleModel);
+          break;
         default:
           break;
+      }
+    }
+
+    /// <summary>
+    /// Set all possible values to the MultipleToggleModel and e use Levenshtein Diff to find the best one
+    /// </summary>
+    /// <param name="multipleToggleModel"></param>
+    private void SetOptionMultipleToggle(FormatOptionMultipleToggleModel multipleToggleModel)
+    {
+      var toggleValues = multipleToggleModel.ToggleFlags;
+      var inputValuesLevenshtein = new Dictionary<ToggleValues, int>();
+
+      foreach (var modelToggle in toggleValues)
+      {
+        var previousInput = modelToggle.Value;
+
+        modelToggle.Value = ToggleValues.False;
+        inputValuesLevenshtein.Add(modelToggle.Value, GetLevenshteinAfterOptionChange());
+
+        modelToggle.Value = ToggleValues.True;
+        inputValuesLevenshtein.Add(modelToggle.Value, GetLevenshteinAfterOptionChange());
+
+        var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
+        modelToggle.Value = inputValue.Value == inputValuesLevenshtein[previousInput] ?
+                                      previousInput : inputValue.Key;
+
+        inputValuesLevenshtein.Clear();
       }
     }
 
@@ -144,10 +174,10 @@ namespace ClangPowerTools.MVVM.Controllers
       var inputValuesLevenshtein = new Dictionary<ToggleValues, int>();
 
       modelToggle.BooleanCombobox = ToggleValues.False;
-      inputValuesLevenshtein.Add(ToggleValues.False, GetLevenshteinAfterOptionChange());
+      inputValuesLevenshtein.Add(modelToggle.BooleanCombobox, GetLevenshteinAfterOptionChange());
 
       modelToggle.BooleanCombobox = ToggleValues.True;
-      inputValuesLevenshtein.Add(ToggleValues.True, GetLevenshteinAfterOptionChange());
+      inputValuesLevenshtein.Add(modelToggle.BooleanCombobox, GetLevenshteinAfterOptionChange());
 
       var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
 
