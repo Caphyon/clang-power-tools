@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.MVVM.Views;
@@ -413,37 +414,31 @@ namespace ClangPowerTools
 
     private async Task DetectStyleOptionsAsync()
     {
-      // Open new Style Detection Menu
+      var loadingView = new DetectingView
+      {
+        Owner = formatEditorView
+      };
+      loadingView.Show();
+      formatEditorView.IsEnabled = false;
 
+      var diffController = new DiffController(CreateFormatFile);
+      loadingView.Closed += diffController.ClosedWindow;
+      var (matchedStyle, matchedOptions) = await diffController.GetFormatOptionsAsync(formatEditorView.CodeEditor.Text);
 
+      if (loadingView.IsLoaded == false)
+      {
+        formatEditorView.IsEnabled = true;
+        return;
+      }
 
+      SetEditorStyleOptions(matchedStyle, matchedOptions);
 
+      var formatOptionFile = FormatOptionFile.CreateOutput(formatStyleOptions, selectedStyle).ToString();
 
-      //var loadingView = new DetectingView
-      //{
-      //  Owner = formatEditorView
-      //};
-      //loadingView.Show();
-      //formatEditorView.IsEnabled = false;
+      await diffController.ShowHtmlAfterDiffAsync(formatOptionFile);
 
-      //var diffController = new DiffController(CreateFormatFile);
-      //loadingView.Closed += diffController.ClosedWindow;
-      //var (matchedStyle, matchedOptions) = await diffController.GetFormatOptionsAsync(formatEditorView.CodeEditor.Text);
-
-      //if (loadingView.IsLoaded == false)
-      //{
-      //  formatEditorView.IsEnabled = true;
-      //  return;
-      //}
-
-      //SetEditorStyleOptions(matchedStyle, matchedOptions);
-
-      //var formatOptionFile = FormatOptionFile.CreateOutput(formatStyleOptions, selectedStyle).ToString();
-
-      //await diffController.ShowHtmlAfterDiffAsync(formatOptionFile);
-
-      //loadingView.Close();
-      //formatEditorView.IsEnabled = true;
+      loadingView.Close();
+      formatEditorView.IsEnabled = true;
     }
 
     private void SetEditorStyleOptions(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)
