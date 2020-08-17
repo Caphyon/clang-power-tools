@@ -105,6 +105,11 @@ namespace ClangPowerTools
         await StopCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kStopClang);
       }
 
+      if (JsonCompilationDatabase.Instance == null)
+      {
+        await JsonCompilationDatabase.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kJsonCompilationDatabase);
+      }
+
       if (SettingsCommand.Instance == null)
       {
         await SettingsCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kSettingsId);
@@ -235,6 +240,11 @@ namespace ClangPowerTools
         case CommandIds.kIgnoreCompileId:
           {
             IgnoreCompileCommand.Instance.RunIgnoreCompileCommand();
+            break;
+          }
+        case CommandIds.kJsonCompilationDatabase:
+          {
+            JsonCompilationDatabase.Instance.Export();
             break;
           }
         default:
