@@ -66,17 +66,17 @@ namespace ClangPowerTools
         {
           activeDocument = dte.ActiveDocument;
         }
-        catch(Exception)
+        catch (Exception)
         {
           return;
         }
 
-        if (activeDocument == null || activeDocument.ProjectItem == null) 
+        if (activeDocument == null || activeDocument.ProjectItem == null)
           return;
- 
+
         IItem item = null;
         var projectName = activeDocument.ProjectItem.ContainingProject.FullName;
-        
+
         if (SolutionInfo.IsOpenFolderModeActive())
         {
           item = new CurrentDocument(activeDocument);
@@ -129,16 +129,22 @@ namespace ClangPowerTools
     /// </summary>
     public List<string> GetDocumentsToEncode()
     {
-        CollectCurrentProjectItems();
-        HashSet<string> selectedFiles = new HashSet<string>();
-        Items.ForEach(i => selectedFiles.Add(i.GetPath()));
-        return selectedFiles.ToList();
+      CollectCurrentProjectItems();
+      HashSet<string> selectedFiles = new HashSet<string>();
+      Items.ForEach(i => selectedFiles.Add(i.GetPath()));
+      return selectedFiles.ToList();
+    }
+
+    public bool SolutionOrProjectIsSelected()
+    {
+      CollectSelectedItems(true);
+      return Items.Count > 0;
     }
 
     /// <summary>
     /// Collect all selected items in the Solution explorer for commands
     /// </summary>
-    public void CollectSelectedItems()
+    public void CollectSelectedItems(bool jsonCompilationDatabaseActive = false)
     {
       if (selectedItems == null || selectedItems.Length == 0)
         return;
@@ -155,7 +161,7 @@ namespace ClangPowerTools
           var project = item.Object as Project;
           AddProject(project);
         }
-        else if (item.Object is ProjectItem)
+        else if (item.Object is ProjectItem && !jsonCompilationDatabaseActive)
         {
           GetProjectItem(item.Object as ProjectItem);
         }
