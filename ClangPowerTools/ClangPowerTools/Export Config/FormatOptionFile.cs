@@ -19,32 +19,32 @@ namespace ClangPowerTools
       {
         case EditorStyles.LLVM:
           output.AppendLine("BasedOnStyle: LLVM");
-          options = CompareFormatOptions(formatOptions, new FormatOptionsData().FormatOptions);
+          options = GetChangedOptions(formatOptions, new FormatOptionsData().FormatOptions);
           AddActiveOptionToFile(options, output);
           break;
         case EditorStyles.Google:
           output.AppendLine("BasedOnStyle: Google");
-          options = CompareFormatOptions(formatOptions, new FormatOptionsGoogleData().FormatOptions);
+          options = GetChangedOptions(formatOptions, new FormatOptionsGoogleData().FormatOptions);
           AddActiveOptionToFile(options, output);
           break;
         case EditorStyles.Chromium:
           output.AppendLine("BasedOnStyle: Chromium");
-          options = CompareFormatOptions(formatOptions, new FormatOptionsChromiumData().FormatOptions);
+          options = GetChangedOptions(formatOptions, new FormatOptionsChromiumData().FormatOptions);
           AddActiveOptionToFile(options, output);
           break;
         case EditorStyles.Mozilla:
           output.AppendLine("BasedOnStyle: Mozilla");
-          options = CompareFormatOptions(formatOptions, new FormatOptionsMozillaData().FormatOptions);
+          options = GetChangedOptions(formatOptions, new FormatOptionsMozillaData().FormatOptions);
           AddActiveOptionToFile(options, output);
           break;
         case EditorStyles.WebKit:
           output.AppendLine("BasedOnStyle: WebKit");
-          options = CompareFormatOptions(formatOptions, new FormatOptionsWebKitData().FormatOptions);
+          options = GetChangedOptions(formatOptions, new FormatOptionsWebKitData().FormatOptions);
           AddActiveOptionToFile(options, output);
           break;
         case EditorStyles.Microsoft:
           output.AppendLine("BasedOnStyle: Microsoft");
-          options = CompareFormatOptions(formatOptions, new FormatOptionsMicrosoftData().FormatOptions);
+          options = GetChangedOptions(formatOptions, new FormatOptionsMicrosoftData().FormatOptions);
           AddActiveOptionToFile(options, output);
           break;
         default:
@@ -56,13 +56,11 @@ namespace ClangPowerTools
       return output;
     }
 
-    private static List<IFormatOption> CompareFormatOptions(List<IFormatOption> currentOptions, List<IFormatOption> defaultOptions)
+    private static List<IFormatOption> GetChangedOptions(List<IFormatOption> currentOptions, List<IFormatOption> defaultOptions)
     {
       var optionsToInclude = new List<IFormatOption>();
       for (int i = 0; i < currentOptions.Count; i++)
       {
-        // TODO use switch
-
         if (currentOptions[i] is FormatOptionToggleModel)
         {
           var currentOption = currentOptions[i] as FormatOptionToggleModel;
@@ -94,7 +92,6 @@ namespace ClangPowerTools
         {
           var currentOption = currentOptions[i] as FormatOptionMultipleToggleModel;
           var defaultOption = defaultOptions[i] as FormatOptionMultipleToggleModel;
-
           var toggleFlags = RemoveUnchagedToogleFlags(currentOption.ToggleFlags, defaultOption.ToggleFlags);
 
           if (toggleFlags.Count == 0)
@@ -108,8 +105,8 @@ namespace ClangPowerTools
               ToggleFlags = toggleFlags,
               Name = currentOption.Name
             };
-            optionsToInclude.Add(formatOptionMultipleToggleModel);
 
+            optionsToInclude.Add(formatOptionMultipleToggleModel);
             continue;
           }
         }
