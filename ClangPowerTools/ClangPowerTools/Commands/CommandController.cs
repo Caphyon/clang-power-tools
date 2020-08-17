@@ -512,6 +512,11 @@ namespace ClangPowerTools
       {
         command.Visible = command.Enabled = false;
       }
+      else if (command.CommandID.ID == CommandIds.kJsonCompilationDatabase)
+      {
+        ItemsCollector itemsCollector = new ItemsCollector();
+        command.Visible = command.Enabled = itemsCollector.SolutionOrProjectIsSelected();
+      }
       else if (vsBuildRunning && command.CommandID.ID != CommandIds.kSettingsId)
       {
         command.Visible = command.Enabled = false;
