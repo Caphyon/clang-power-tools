@@ -21,7 +21,8 @@ namespace ClangPowerTools
       0x0107,
       0x0108,
       0x1032,
-      0x1033
+      0x1033,
+      0X0106
     };
 
     public const int kCompileId = 0x0102;
@@ -45,6 +46,8 @@ namespace ClangPowerTools
 
     public const int kITidyExportConfigId = 0x1032;
     public const int kLogoutId = 0x1033;
+
+    public const int kJsonCompilationDatabase = 0X0106;
 
     #endregion
   }
