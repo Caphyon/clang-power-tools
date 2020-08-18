@@ -136,6 +136,9 @@ namespace ClangPowerTools
     /// <returns></returns>
     public (FlowDocument, FlowDocument) DiffAsFlowDocuments(string editorInput, string editorOutput)
     {
+      editorInput = editorInput.TrimEnd();
+      editorOutput = editorOutput.TrimEnd();
+
       var inputLines = editorInput.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
       var outputLines = editorOutput.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
@@ -173,22 +176,37 @@ namespace ClangPowerTools
         if (lineDiffs.Count > 1 && inputLines.Count != outputLines.Count
           && index + 1 <= lineCount && lineDiffs.Last().operation != Operation.EQUAL)
         {
-          var inputNextLine = inputLines[index + 1];
-          var outputNextLine = outputLines[index + 1];
+          var tempIndex = index + 1;
+          var numberOfNewLines = 0;
+          var insertOutputNewline = false;
+          var insertInputNewline = false;
 
-          var insertOutputNewline = lineDiffs.Any(e => e.operation != Operation.EQUAL &&
-                                             e.text.Replace(" ", string.Empty) == inputNextLine.Replace(" ", string.Empty));
-          var insertInputNewline = lineDiffs.Any(e => e.operation != Operation.EQUAL &&
-                                              e.text.Replace(" ", string.Empty) == outputNextLine.Replace(" ", string.Empty));
+          while (tempIndex < inputLines.Count && tempIndex < outputLines.Count
+                       && insertOutputNewline == false && insertInputNewline == false)
+          {
+            var inputNextLine = inputLines[tempIndex];
+            var outputNextLine = outputLines[tempIndex];
+
+            insertOutputNewline = lineDiffs.Any(e => e.operation != Operation.EQUAL &&
+                                               e.text.Replace(" ", string.Empty) == inputNextLine.Replace(" ", string.Empty));
+            insertInputNewline = lineDiffs.Any(e => e.operation != Operation.EQUAL &&
+                                                e.text.Replace(" ", string.Empty) == outputNextLine.Replace(" ", string.Empty));
+
+            numberOfNewLines++;
+            tempIndex++;
+          }
+
 
           if (insertOutputNewline)
           {
-            NewLineDiffOperation(inputLines, outputLines, outputOperationPerLine, inputOperationPerLine, ref index);
+            NewLineDiffOperation(inputLines, outputLines, outputOperationPerLine, inputOperationPerLine, numberOfNewLines, ref index);
+            lineCount = GetLargestLinesCount(inputLines, outputLines);
             continue;
           }
           else if (insertInputNewline)
           {
-            NewLineDiffOperation(outputLines, inputLines, inputOperationPerLine, outputOperationPerLine, ref index);
+            NewLineDiffOperation(outputLines, inputLines, inputOperationPerLine, outputOperationPerLine, numberOfNewLines, ref index);
+            lineCount = GetLargestLinesCount(inputLines, outputLines);
             continue;
           }
         }
@@ -206,19 +224,31 @@ namespace ClangPowerTools
         }
 
         index++;
-        lineCount = GetLargestLinesCount(inputLines, outputLines);
       }
     }
 
     // Set operations per line after finding a new line(\r\n) diff
-    private void NewLineDiffOperation(List<string> fewerLines, List<string> moreLines, List<(object, LineChanges)> fewerOperationPerLine, List<(object, LineChanges)> moreOperationPerLine, ref int index)
+    private void NewLineDiffOperation(List<string> moreLines, List<string> fewerLines, List<(object, LineChanges)> fewerOperationPerLine, List<(object, LineChanges)> moreOperationPerLine, int linesToAdd, ref int index)
     {
-      moreLines.Insert(index + 1, Environment.NewLine);
-      moreOperationPerLine.Add((fewerLines[index], LineChanges.HASCHANGES));
-      moreOperationPerLine.Add((fewerLines[index + 1], LineChanges.HASCHANGES));
-      fewerOperationPerLine.Add((moreLines[index], LineChanges.HASCHANGES));
-      fewerOperationPerLine.Add((moreLines[index + 1], LineChanges.NEWLINE));
-      index += 2;
+      if (linesToAdd == 1)
+      {
+        fewerLines.Insert(index + 1, Environment.NewLine);
+        moreOperationPerLine.Add((moreLines[index], LineChanges.HASCHANGES));
+        moreOperationPerLine.Add((moreLines[index + 1], LineChanges.HASCHANGES));
+        fewerOperationPerLine.Add((fewerLines[index], LineChanges.HASCHANGES));
+        fewerOperationPerLine.Add((fewerLines[index + 1], LineChanges.NEWLINE));
+        index += 2;
+      }
+      else
+      {
+        for (int i = 0; i < linesToAdd; i++)
+        {
+          fewerLines.Insert(index, Environment.NewLine);
+          moreOperationPerLine.Add((moreLines[index], LineChanges.HASCHANGES));
+          fewerOperationPerLine.Add((fewerLines[index], LineChanges.NEWLINE));
+          index++;
+        }
+      }
     }
 
     private int GetLargestLinesCount(List<string> inputLines, List<string> outputLines)
