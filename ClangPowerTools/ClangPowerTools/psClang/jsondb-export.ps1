@@ -1,6 +1,6 @@
 function JsonDB-Init()
 {
-  Set-Variable -name "kJsonCompilationDbPath" -value ("$(Get-Location)\compile_commands.json") -option Constant -scope Global
+  Set-Variable -name "kJsonCompilationDbPath" -value ("$(Get-SourceDirectory)\compile_commands.json") -option Constant -scope Global
   Set-Variable -name "kJsonCompilationDbCount" -value 0 -scope Global
   
   "[" | Out-File $kJsonCompilationDbPath -Encoding "UTF8"
