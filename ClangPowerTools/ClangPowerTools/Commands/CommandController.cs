@@ -244,7 +244,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kJsonCompilationDatabase:
           {
-            JsonCompilationDatabase.Instance.Export();
+            await JsonCompilationDatabase.Instance.ExportAsync();
             break;
           }
         default:

@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
-using System.Windows;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
@@ -9,7 +9,7 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  internal sealed class JsonCompilationDatabase : BasicCommand
+  internal sealed class JsonCompilationDatabase : ClangCommand
   {
     #region Properties
 
@@ -74,11 +74,27 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
-    public void Export()
+    public async Task ExportAsync()
     {
-      ThreadHelper.ThrowIfNotOnUIThread();
+      await PrepareCommmandAsync(CommandUILocation.ContextMenu);
 
-      MessageBox.Show("JSON Compilation Database");
+      await Task.Run(() =>
+      {
+        lock (mutex)
+        {
+          try
+          {
+            RunScript(CommandIds.kCompileId, true);
+          }
+          catch (Exception exception)
+          {
+            VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
+              OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+          }
+        }
+
+      });
+
     }
 
     #endregion
