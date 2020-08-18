@@ -4,6 +4,7 @@ using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
 using System;
+using System.Text;
 
 namespace ClangPowerTools.Script
 {
@@ -23,6 +24,8 @@ namespace ClangPowerTools.Script
     private string mVsEdition;
     private string mVsVersion;
     private int mCommandId;
+    private bool jsonCompilationDbActive;
+
     #endregion
 
 
@@ -31,11 +34,12 @@ namespace ClangPowerTools.Script
     /// <summary>
     /// Instance constructor
     /// </summary>
-    public GenericScriptBuilder(string aVsEdition, string aVsVersion, int aCommandId)
+    public GenericScriptBuilder(string aVsEdition, string aVsVersion, int aCommandId, bool jsonCompilation = false)
     {
       mVsEdition = aVsEdition;
       mVsVersion = aVsVersion;
       mCommandId = aCommandId;
+      jsonCompilationDbActive = jsonCompilation;
     }
 
     #endregion
@@ -95,33 +99,36 @@ namespace ClangPowerTools.Script
     private string GetGeneralParameters()
     {
       var compilerSettings = SettingsProvider.CompilerSettingsModel;
-      var parameters = string.Empty;
+      var parameters = new StringBuilder();
 
       // Get the Clang Flags list
       if (!string.IsNullOrWhiteSpace(compilerSettings.CompileFlags))
-        parameters = GetClangFlags();
+        parameters.Append(GetClangFlags());
 
       // Get the continue when errors are detected flag 
       if (compilerSettings.ContinueOnError)
-        parameters += $" {ScriptConstants.kContinue}";
+        parameters.Append($" {ScriptConstants.kContinue}");
 
       // Get the verbose mode flag 
       if (compilerSettings.VerboseMode)
-        parameters += $" {ScriptConstants.kVerboseMode}";
+        parameters.Append($" {ScriptConstants.kVerboseMode}");
 
       // Get the projects to ignore list 
       if (!string.IsNullOrWhiteSpace(compilerSettings.ProjectsToIgnore))
-        parameters += $" {ScriptConstants.kProjectsToIgnore} (''{TransformInPowerShellArray(compilerSettings.ProjectsToIgnore)}'')";
+        parameters.Append($" {ScriptConstants.kProjectsToIgnore} (''{TransformInPowerShellArray(compilerSettings.ProjectsToIgnore)}'')");
 
       // Get the files to ignore list
       if (!string.IsNullOrWhiteSpace(compilerSettings.FilesToIgnore))
-        parameters += $" {ScriptConstants.kFilesToIgnore} (''{TransformInPowerShellArray(compilerSettings.FilesToIgnore)}'')";
+        parameters.Append($" {ScriptConstants.kFilesToIgnore} (''{TransformInPowerShellArray(compilerSettings.FilesToIgnore)}'')");
 
       // Get the selected Additional Includes type  
       if (0 == string.Compare(ClangGeneralAdditionalIncludesConvertor.ToString(compilerSettings.AdditionalIncludes), ComboBoxConstants.kSystemIncludeDirectories))
-        parameters += $" {ScriptConstants.kSystemIncludeDirectories}";
+        parameters.Append($" {ScriptConstants.kSystemIncludeDirectories}");
 
-      return parameters;
+      if (jsonCompilationDbActive)
+        parameters.Append($" {ScriptConstants.kJsonCompilationDb}");
+
+      return parameters.ToString();
     }
 
 
@@ -204,13 +211,13 @@ namespace ClangPowerTools.Script
     {
       ClangTidyUseChecksFrom useChecksFrom = tidyModel.UseChecksFrom;
 
-      if(useChecksFrom == ClangTidyUseChecksFrom.CustomChecks)
+      if (useChecksFrom == ClangTidyUseChecksFrom.CustomChecks)
       {
         return ScriptConstants.kTidyCheckFirstElement + tidyModel.CustomChecks.Replace(';', ',').TrimEnd(',');
       }
       else if (useChecksFrom == ClangTidyUseChecksFrom.PredefinedChecks)
       {
-        return ScriptConstants.kTidyCheckFirstElement + tidyModel.PredefinedChecks.Replace(';', ',').TrimEnd(',') ;
+        return ScriptConstants.kTidyCheckFirstElement + tidyModel.PredefinedChecks.Replace(';', ',').TrimEnd(',');
       }
       else
       {

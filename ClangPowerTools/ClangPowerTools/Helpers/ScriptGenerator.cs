@@ -15,9 +15,9 @@ namespace ClangPowerTools.Helpers
       return runModeParameters;
     }
 
-    public static string GetGenericParamaters(int aCommandId, string vsEdition, string vsVersion)
+    public static string GetGenericParamaters(int aCommandId, string vsEdition, string vsVersion, bool jsonCompilationDbActive)
     {
-      IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(vsEdition, vsVersion, aCommandId);
+      IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(vsEdition, vsVersion, aCommandId, jsonCompilationDbActive);
       genericScriptBuilder.Build();
       var genericParameters = genericScriptBuilder.GetResult();
       return genericParameters;
