@@ -94,6 +94,13 @@ namespace ClangPowerTools
 
     #endregion
 
+
+    #region JSON Compilation DB
+
+    public const string kJsonCompilationDb = "-export-jsondb";
+
+    #endregion
+
     #endregion
 
   }
