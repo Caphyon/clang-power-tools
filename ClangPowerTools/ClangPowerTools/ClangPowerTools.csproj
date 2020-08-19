@@ -83,6 +83,7 @@
     <Compile Include="Commands\BackgroundTidy\PowerShellWrapperBackground.cs" />
     <Compile Include="Commands\IgnoreCommand.cs" />
     <Compile Include="Commands\JsonCompilationDatabaseCommand.cs" />
+    <Compile Include="Diff\DiffAggregator.cs" />
     <Compile Include="Diff\DiffMatchPatch.cs" />
     <Compile Include="Diff\DiffMatchPatchWrapper.cs" />
     <Compile Include="Error\TaskErrorViewModel.cs" />
