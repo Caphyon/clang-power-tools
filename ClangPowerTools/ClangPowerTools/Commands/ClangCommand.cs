@@ -234,6 +234,9 @@ namespace ClangPowerTools
 
     private void ExportJsonCompilationDatabase(string runModeParameters, string genericParameters)
     {
+      if (mItemsCollector.IsEmpty)
+        return;
+
       if (mItemsCollector.Items[0].GetObject() is Solution)
         Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), genericParameters, "'");
       else if (mItemsCollector.Items[0].GetObject() is Project)

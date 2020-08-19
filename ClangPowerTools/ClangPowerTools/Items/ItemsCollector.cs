@@ -35,7 +35,7 @@ namespace ClangPowerTools
     #region Properties
 
     public List<IItem> Items { get; private set; } = new List<IItem>();
-    public bool HaveItems => Items.Count != 0;
+    public bool IsEmpty => Items.Count == 0;
 
     #endregion
 

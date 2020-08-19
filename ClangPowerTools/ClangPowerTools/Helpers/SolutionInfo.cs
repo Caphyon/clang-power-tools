@@ -97,10 +97,9 @@ namespace ClangPowerTools.Helpers
       ItemsCollector itemCollector = new ItemsCollector();
       itemCollector.CollectSelectedItems();
       List<string> selectedItems = new List<string>();
-      if (itemCollector.HaveItems == false)
-      {
+      if (itemCollector.IsEmpty)
         return false;
-      }
+
       itemCollector.Items.ForEach(e => selectedItems.Add(e.GetName()));
 
       if (selectedItems.Count == 0)
@@ -123,17 +122,13 @@ namespace ClangPowerTools.Helpers
     public static bool AreToolbarCommandsEnabled()
     {
       if (IsOpenFolderModeActive())
-      {
         return true;
-      }
 
       ItemsCollector itemCollector = new ItemsCollector();
       itemCollector.CollectActiveProjectItem();
 
-      if (itemCollector.HaveItems == false)
-      {
+      if (itemCollector.IsEmpty)
         return false;
-      }
 
       string activeItem = itemCollector.Items[0].GetName().ToLower();
       var fileExtension = Path.GetExtension(activeItem);
