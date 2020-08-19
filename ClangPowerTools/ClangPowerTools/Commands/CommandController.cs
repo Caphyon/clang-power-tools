@@ -309,10 +309,12 @@ namespace ClangPowerTools
 
       OnClangCommandBegin(new ClearEventArgs());
 
-      if (OutputWindowConstants.commandName.ContainsKey(aCommandId))
+      if (OutputWindowConstants.commandName.ContainsKey(aCommandId) &&
+        currentCommand != CommandIds.kJsonCompilationDatabase)
+      {
         DisplayStartedMessage(aCommandId, true);
+      }
     }
-
 
     private void OnClangCommandBegin(ClearEventArgs e)
     {
@@ -349,7 +351,8 @@ namespace ClangPowerTools
 
       DisplayFinishedMessage(false);
 
-      OnErrorDetected(new EventArgs());
+      if (currentCommand != CommandIds.kJsonCompilationDatabase)
+        OnErrorDetected(new EventArgs());
     }
 
     protected void OnErrorDetected(EventArgs e)

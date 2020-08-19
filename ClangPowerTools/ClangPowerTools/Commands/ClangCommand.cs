@@ -246,6 +246,7 @@ namespace ClangPowerTools
       }
 
       PowerShellWrapper.Invoke(Script, runningProcesses);
+      OnDataStreamClose(new CloseDataStreamingEventArgs(false));
     }
 
     #endregion
