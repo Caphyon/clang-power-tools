@@ -95,6 +95,7 @@
     <Compile Include="Helpers\ScriptGenerator.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
     <Compile Include="IgnoreActions\IgnoreItem.cs" />
+    <Compile Include="Items\CurrentSolution.cs" />
     <Compile Include="MVVM\Constants\CPPKeywords.cs" />
     <Compile Include="MVVM\Constants\LlvmConstants.cs" />
     <Compile Include="MVVM\Constants\LlvmVersionsAlternate.cs" />
