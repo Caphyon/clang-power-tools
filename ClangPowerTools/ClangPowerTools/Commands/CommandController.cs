@@ -244,7 +244,11 @@ namespace ClangPowerTools
           }
         case CommandIds.kJsonCompilationDatabase:
           {
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kJsonCompilationDatabase);
+
             await JsonCompilationDatabase.Instance.ExportAsync();
+            OnAfterClangCommand();
             break;
           }
         default:
@@ -474,7 +478,7 @@ namespace ClangPowerTools
 
       var itemsCollector = new ItemsCollector();
       itemsCollector.CollectSelectedProjectItems();
-      command.Enabled = itemsCollector.HaveItems;
+      command.Enabled = !itemsCollector.IsEmpty;
     }
 
     /// <summary>
