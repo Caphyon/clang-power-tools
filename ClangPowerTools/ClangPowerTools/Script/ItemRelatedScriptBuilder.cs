@@ -51,7 +51,7 @@ namespace ClangPowerTools.Script
     /// </summary>
     public void Build()
     {
-      if(SolutionInfo.OpenFolderModeActive)
+      if (SolutionInfo.OpenFolderModeActive)
       {
         CreateScriptForOpenFolderProjectItem();
       }
@@ -68,6 +68,14 @@ namespace ClangPowerTools.Script
       }
     }
 
+    private void CreateScriptForOpenFolderProjectItem()
+    {
+      var document = DocumentHandler.GetActiveDocument();
+
+      mScript = $"{mScript} " +
+        $"{ScriptConstants.kFile} ''{document.FullName}'' ";
+    }
+
     private void CreateScriptForProjectItem()
     {
       ProjectItem projectItem = mItem.GetObject() as ProjectItem;
@@ -82,21 +90,12 @@ namespace ClangPowerTools.Script
         $"''{configuration}|{platform}''";
     }
 
-    private void CreateScriptForOpenFolderProjectItem()
-    {
-      var document = DocumentHandler.GetActiveDocument();
-
-      mScript = $"{mScript} " +
-        $"{ScriptConstants.kFile} ''{document.FullName}'' ";
-    }
-
     private void CreateScriptForProject()
     {
       Project project = mItem.GetObject() as Project;
       mScript = $"{mScript} {ScriptConstants.kProject} ''{project.FullName}'' {ScriptConstants.kActiveConfiguration} " +
         $"''{ProjectConfigurationHandler.GetConfiguration(project)}|{ProjectConfigurationHandler.GetPlatform(project)}''";
     }
-
 
     #endregion
 
