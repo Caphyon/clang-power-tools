@@ -14,20 +14,23 @@ namespace ClangPowerTools
   public class ItemsCollector
   {
     #region Members
+
     private readonly Array selectedItems;
     private readonly DTE2 dte2;
+    private readonly bool jsonCompilationDbActive;
 
     #endregion
 
     #region Constructor
 
-    public ItemsCollector()
+    public ItemsCollector(bool jsonCompilationActive = false)
     {
       dte2 = (DTE2)VsServiceProvider.GetService(typeof(DTE));
       selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
+      jsonCompilationDbActive = jsonCompilationActive;
     }
 
-    #endregion 
+    #endregion
 
     #region Properties
 
@@ -137,14 +140,14 @@ namespace ClangPowerTools
 
     public bool SolutionOrProjectIsSelected()
     {
-      CollectSelectedItems(true);
+      CollectSelectedItems();
       return Items.Count > 0;
     }
 
     /// <summary>
     /// Collect all selected items in the Solution explorer for commands
     /// </summary>
-    public void CollectSelectedItems(bool jsonCompilationDatabaseActive = false)
+    public void CollectSelectedItems()
     {
       if (selectedItems == null || selectedItems.Length == 0)
         return;
@@ -154,14 +157,18 @@ namespace ClangPowerTools
         if (item.Object is Solution)
         {
           var solution = item.Object as Solution;
-          GetProjectsFromSolution(solution);
+
+          if (jsonCompilationDbActive)
+            Items.Add(new CurrentSolution(solution));
+          else
+            GetProjectsFromSolution(solution);
         }
         else if (item.Object is Project)
         {
           var project = item.Object as Project;
           AddProject(project);
         }
-        else if (item.Object is ProjectItem && !jsonCompilationDatabaseActive)
+        else if (item.Object is ProjectItem)
         {
           GetProjectItem(item.Object as ProjectItem);
         }
