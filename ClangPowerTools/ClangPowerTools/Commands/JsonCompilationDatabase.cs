@@ -76,7 +76,7 @@ namespace ClangPowerTools.Commands
     /// <param name="e">Event args.</param>
     public async Task ExportAsync()
     {
-      await PrepareCommmandAsync(CommandUILocation.ContextMenu);
+      await PrepareCommmandAsync(CommandUILocation.ContextMenu, true);
 
       await Task.Run(() =>
       {
