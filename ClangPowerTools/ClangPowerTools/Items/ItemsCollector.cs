@@ -168,7 +168,7 @@ namespace ClangPowerTools
           var project = item.Object as Project;
           AddProject(project);
         }
-        else if (item.Object is ProjectItem)
+        else if (item.Object is ProjectItem && !jsonCompilationDbActive)
         {
           GetProjectItem(item.Object as ProjectItem);
         }
