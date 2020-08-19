@@ -109,15 +109,19 @@ namespace ClangPowerTools
       CMakeBuilder cMakeBuilder = new CMakeBuilder();
       cMakeBuilder.Build();
 
-      InvokeCommand(runModeParameters, genericParameters);
+      if (jsonCompilationDbActive)
+        ExportJsonCompilationDatabase(runModeParameters, genericParameters);
+      else
+        Compile(runModeParameters, genericParameters);
 
       cMakeBuilder.ClearBuildCashe();
     }
 
     //Collect files
-    protected IEnumerable<IItem> CollectItemsDependingOnCommandLocation(CommandUILocation commandUILocation = CommandUILocation.ContextMenu)
+    protected IEnumerable<IItem> CollectItemsDependingOnCommandLocation(
+      CommandUILocation commandUILocation = CommandUILocation.ContextMenu, bool jsonCompilationDbActive = false)
     {
-      mItemsCollector = new ItemsCollector();
+      mItemsCollector = new ItemsCollector(jsonCompilationDbActive);
       switch (commandUILocation)
       {
         case CommandUILocation.Toolbar:
@@ -143,7 +147,7 @@ namespace ClangPowerTools
       }
     }
 
-    protected async Task PrepareCommmandAsync(CommandUILocation commandUILocation)
+    protected async Task PrepareCommmandAsync(CommandUILocation commandUILocation, bool jsonCompilationDbActive = false)
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -153,7 +157,7 @@ namespace ClangPowerTools
         return;
 
       AutomationUtil.SaveDirtyProjects((dte as DTE2).Solution);
-      CollectItemsDependingOnCommandLocation(commandUILocation);
+      CollectItemsDependingOnCommandLocation(commandUILocation, jsonCompilationDbActive);
     }
 
     protected void OnActiveFileCheck(ActiveDocumentEventArgs e)
@@ -180,7 +184,7 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private void InvokeCommand(string runModeParameters, string genericParameters)
+    private void Compile(string runModeParameters, string genericParameters)
     {
       var vsSolution = SolutionInfo.IsOpenFolderModeActive() == false ?
         (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution)) : null;
@@ -226,6 +230,19 @@ namespace ClangPowerTools
       {
         MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
+    }
+
+    private void ExportJsonCompilationDatabase(string runModeParameters, string genericParameters)
+    {
+      if (mItemsCollector.Items[0].GetObject() is Solution)
+        Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), genericParameters, "'");
+      else if (mItemsCollector.Items[0].GetObject() is Project)
+      {
+        var itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(mItemsCollector.Items[0]);
+        Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
+      }
+
+      PowerShellWrapper.Invoke(Script, runningProcesses);
     }
 
     #endregion
