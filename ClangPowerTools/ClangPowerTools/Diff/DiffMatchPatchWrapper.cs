@@ -179,15 +179,17 @@ namespace ClangPowerTools
 
       for (int index = 0; index < outputLines.Count; index++)
       {
+        var inn = inputLines[index];
+        var outt = outputLines[index];
         var lineDiffs = GetDiff(inputLines[index], outputLines[index]);
         var insertOutputNewline = false;
         var insertInputNewline = false;
 
-        if (outputLines[index] == "$$$")
+        if (outputLines[index] == Environment.NewLine)
         {
           insertOutputNewline = true;
         }
-        else if (inputLines[index] == "$$$")
+        else if (inputLines[index] == Environment.NewLine)
         {
           insertInputNewline = true;
         }
@@ -207,7 +209,7 @@ namespace ClangPowerTools
         if (containsChanges)
         {
           inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
-          outputOperationPerLine.Add((new List<Diff>(lineDiffs), LineChanges.HASCHANGES));
+          outputOperationPerLine.Add((outputLines[index], LineChanges.HASCHANGES));
         }
         else
         {
@@ -222,63 +224,60 @@ namespace ClangPowerTools
       var diff = GetDiff(input, output);
       var lines = new List<string>();
       var totalNewLineFound = 0;
-      var insertNewFound = false;
 
-      for (int i = 0; i < diff.Count; i++)
+      for (int index = 0; index < diff.Count; index++)
       {
-        var text = diff[i].text;
+        var text = diff[index].text;
         var newLineFoundPerOperation = Regex.Matches(text, Environment.NewLine).Count;
-        switch (diff[i].operation)
+        switch (diff[index].operation)
         {
           case Operation.DELETE:
             if (newLineFoundPerOperation != 0)
             {
               totalNewLineFound += newLineFoundPerOperation;
             }
-            else if (newLineFoundPerOperation == 0 && lines.Count > 0)
-            {
-              lines[lines.Count - 1] = lines.Last() + text;
-            }
             break;
           case Operation.INSERT:
+
             if (newLineFoundPerOperation != 0)
             {
               totalNewLineFound -= newLineFoundPerOperation;
-              if (text.Replace(" ", string.Empty) == Environment.NewLine)
-              {
-                if (i + 1 < diff.Count)
-                {
-                  var sub = text.Substring(text.LastIndexOf(Environment.NewLine) + 2);
-                  diff[i + 1].text = sub + diff[i + 1].text;
-                }
-                insertNewFound = true;
-                break;
-              }
             }
-            else if (newLineFoundPerOperation == 0)
+
+            if (newLineFoundPerOperation == 0)
             {
-              lines[lines.Count - 1] = lines.Last() + text;
+              lines[lines.Count - 1] += text;
+              break;
             }
+
+            if (newLineFoundPerOperation == 1)
+            {
+              lines[lines.Count - 1] += text.SubstringBefore(Environment.NewLine);
+              lines.Add(text.SubstringAfter(Environment.NewLine));
+              break;
+            }
+
+            var insertLines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+            lines[lines.Count - 1] += insertLines[0];
+            insertLines.RemoveAt(0);
+
+            lines.AddRange(insertLines);
+
             break;
           case Operation.EQUAL:
             var equalLines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
-            if (insertNewFound)
-            {
-              equalLines.Insert(0, "");
-              insertNewFound = false;
-            }
             if (lines.Count > 0 && equalLines.Count >= 1 && equalLines.Count > newLineFoundPerOperation)
             {
-              lines[lines.Count - 1] = lines.Last() + equalLines.First();
+              lines[lines.Count - 1] += equalLines.First();
               equalLines.RemoveAt(0);
             }
 
             if (newLineFoundPerOperation > 1)
             {
-              for (int j = 0; j < totalNewLineFound; j++)
+              for (int i = 0; i < totalNewLineFound; i++)
               {
-                lines.Add("$$$");
+                lines.Add(Environment.NewLine);
               }
               totalNewLineFound = 0;
             }
@@ -294,6 +293,8 @@ namespace ClangPowerTools
       {
         yb.AppendLine(item);
       }
+
+      var y = yb.ToString();
 
       return lines;
     }
