@@ -138,81 +138,69 @@ namespace ClangPowerTools
     /// <returns></returns>
     public (FlowDocument, FlowDocument) DiffAsFlowDocuments(string editorInput, string editorOutput)
     {
-      editorInput = editorInput.TrimEnd();
-      editorOutput = editorOutput.TrimEnd();
-
-      var inputLines = editorInput.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
-      var outputLines = editorOutput.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
-
-      return CreateFlowDocumentsAfterDiff(inputLines, outputLines, editorInput, editorOutput);
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    private (FlowDocument, FlowDocument) CreateFlowDocumentsAfterDiff(List<string> inputLines, List<string> outputLines, string input, string output)
-    {
       var paragraphInput = new Paragraph();
       var paragraphOutput = new Paragraph();
       var inputOperationPerLine = new List<(object, LineChanges)>();
       var outputOperationPerLine = new List<(object, LineChanges)>();
 
-      DetectOperationPerLine(inputLines, outputLines, inputOperationPerLine, outputOperationPerLine, input, output);
+      DetectOperationPerLine(editorInput, editorOutput, inputOperationPerLine, outputOperationPerLine);
       CreateDiffParagraph(paragraphInput, inputOperationPerLine, Brushes.Orange);
       CreateDiffParagraph(paragraphOutput, outputOperationPerLine, Brushes.Yellow);
 
       return CreateFlowDocuments(paragraphInput, paragraphOutput);
     }
 
-    private void DetectOperationPerLine(List<string> inputLines, List<string> outputLines, List<(object, LineChanges)> inputOperationPerLine, List<(object, LineChanges)> outputOperationPerLine, string input, string output)
+    #endregion
+
+    #region Private Methods
+
+    private void DetectOperationPerLine(string input, string output, List<(object, LineChanges)> inputOperationPerLine, List<(object, LineChanges)> outputOperationPerLine)
     {
-      var lineCount = GetLargestLinesCount(inputLines, outputLines);
-      var index = 0;
+      List<string> inputLines = EqualizeDocumentLength(output, input);
+      List<string> outputLines = EqualizeDocumentLength(input, output);
 
-      DetectNewLines(input, output);
-
-      while (lineCount != index)
+      var xb = new StringBuilder();
+      foreach (var item in inputLines)
       {
-        var lineDiffs = GetLineDiff(inputLines[index], outputLines[index]);
+        xb.AppendLine(item);
+      }
 
-        // Handle new line(\r\n)  scenario until both inputLines and outputLines are equal
-        if (lineDiffs.Count > 1 && inputLines.Count != outputLines.Count
-          && index + 1 <= lineCount && lineDiffs.Last().operation != Operation.EQUAL)
+      var yb = new StringBuilder();
+      foreach (var item in outputLines)
+      {
+        yb.AppendLine(item);
+      }
+
+
+      var x = xb.ToString();
+      var y = yb.ToString();
+
+      if (inputLines.Count != outputLines.Count) return;
+
+      for (int index = 0; index < outputLines.Count; index++)
+      {
+        var lineDiffs = GetDiff(inputLines[index], outputLines[index]);
+        var insertOutputNewline = false;
+        var insertInputNewline = false;
+
+        if (outputLines[index] == "$$$")
         {
-          var tempIndex = index + 1;
-          var numberOfNewLines = 0;
-          var insertOutputNewline = false;
-          var insertInputNewline = false;
+          insertOutputNewline = true;
+        }
+        else if (inputLines[index] == "$$$")
+        {
+          insertInputNewline = true;
+        }
 
-          while (tempIndex < inputLines.Count && tempIndex < outputLines.Count
-                       && insertOutputNewline == false && insertInputNewline == false)
-          {
-            var inputNextLine = inputLines[tempIndex];
-            var outputNextLine = outputLines[tempIndex];
-
-            insertOutputNewline = lineDiffs.Any(e => e.operation != Operation.EQUAL &&
-                                                       e.text.Replace(" ", string.Empty) == inputNextLine.Replace(" ", string.Empty));
-            insertInputNewline = lineDiffs.Any(e => e.operation != Operation.EQUAL &&
-                                                e.text.Replace(" ", string.Empty) == outputNextLine.Replace(" ", string.Empty));
-
-            numberOfNewLines++;
-            tempIndex++;
-          }
-
-
-          if (insertOutputNewline)
-          {
-            NewLineDiffOperation(inputLines, outputLines, outputOperationPerLine, inputOperationPerLine, numberOfNewLines, ref index);
-            lineCount = GetLargestLinesCount(inputLines, outputLines);
-            continue;
-          }
-          else if (insertInputNewline)
-          {
-            NewLineDiffOperation(outputLines, inputLines, inputOperationPerLine, outputOperationPerLine, numberOfNewLines, ref index);
-            lineCount = GetLargestLinesCount(inputLines, outputLines);
-            continue;
-          }
+        if (insertOutputNewline)
+        {
+          NewLineDiffOperation(inputLines, outputLines, outputOperationPerLine, inputOperationPerLine, index);
+          continue;
+        }
+        else if (insertInputNewline)
+        {
+          NewLineDiffOperation(outputLines, inputLines, inputOperationPerLine, outputOperationPerLine, index);
+          continue;
         }
 
         var containsChanges = lineDiffs.Any(e => e.operation != Operation.EQUAL);
@@ -226,19 +214,15 @@ namespace ClangPowerTools
           inputOperationPerLine.Add((inputLines[index], LineChanges.NOCHANGES));
           outputOperationPerLine.Add((outputLines[index], LineChanges.NOCHANGES));
         }
-
-        index++;
       }
     }
 
-    private void DetectNewLines(string input, string output)
+    private List<string> EqualizeDocumentLength(string input, string output)
     {
-      var diff = GetLineDiff(output, input);
-      var test = new List<string>();
+      var diff = GetDiff(input, output);
+      var lines = new List<string>();
       var totalNewLineFound = 0;
-      var linesToAdd = new Dictionary<int, int>();
       var insertNewFound = false;
-
 
       for (int i = 0; i < diff.Count; i++)
       {
@@ -251,9 +235,9 @@ namespace ClangPowerTools
             {
               totalNewLineFound += newLineFoundPerOperation;
             }
-            else if (newLineFoundPerOperation == 0)
+            else if (newLineFoundPerOperation == 0 && lines.Count > 0)
             {
-              test[test.Count - 1] = test.Last() + text;
+              lines[lines.Count - 1] = lines.Last() + text;
             }
             break;
           case Operation.INSERT:
@@ -273,10 +257,9 @@ namespace ClangPowerTools
             }
             else if (newLineFoundPerOperation == 0)
             {
-              test[test.Count - 1] = test.Last() + text;
+              lines[lines.Count - 1] = lines.Last() + text;
             }
             break;
-          // if equal contains multiple lines means we need to insert the \r\n above
           case Operation.EQUAL:
             var equalLines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
@@ -285,9 +268,9 @@ namespace ClangPowerTools
               equalLines.Insert(0, "");
               insertNewFound = false;
             }
-            if (test.Count > 0 && equalLines.Count > 1 && equalLines.Count > newLineFoundPerOperation)
+            if (lines.Count > 0 && equalLines.Count >= 1 && equalLines.Count > newLineFoundPerOperation)
             {
-              test[test.Count - 1] = test.Last() + equalLines.First();
+              lines[lines.Count - 1] = lines.Last() + equalLines.First();
               equalLines.RemoveAt(0);
             }
 
@@ -295,48 +278,31 @@ namespace ClangPowerTools
             {
               for (int j = 0; j < totalNewLineFound; j++)
               {
-                test.Add("###################");
+                lines.Add("$$$");
               }
-              newLineFoundPerOperation = 0;
               totalNewLineFound = 0;
             }
-            test.AddRange(equalLines);
+            lines.AddRange(equalLines);
             break;
           default:
             break;
         }
       }
 
-      var sb = new StringBuilder();
-      foreach (var item in test)
+      var yb = new StringBuilder();
+      foreach (var item in lines)
       {
-        sb.AppendLine(item);
+        yb.AppendLine(item);
       }
-      var cake = sb.ToString();
+
+      return lines;
     }
 
     // Set operations per line after finding a new line(\r\n) diff
-    private void NewLineDiffOperation(List<string> moreLines, List<string> fewerLines, List<(object, LineChanges)> fewerOperationPerLine, List<(object, LineChanges)> moreOperationPerLine, int linesToAdd, ref int index)
+    private void NewLineDiffOperation(List<string> input, List<string> output, List<(object, LineChanges)> outputOperations, List<(object, LineChanges)> inputOperations, int index)
     {
-      if (linesToAdd == 1)
-      {
-        fewerLines.Insert(index + 1, Environment.NewLine);
-        moreOperationPerLine.Add((moreLines[index], LineChanges.HASCHANGES));
-        moreOperationPerLine.Add((moreLines[index + 1], LineChanges.HASCHANGES));
-        fewerOperationPerLine.Add((fewerLines[index], LineChanges.HASCHANGES));
-        fewerOperationPerLine.Add((fewerLines[index + 1], LineChanges.NEWLINE));
-        index += 2;
-      }
-      else
-      {
-        for (int i = 0; i < linesToAdd; i++)
-        {
-          fewerLines.Insert(index, Environment.NewLine);
-          moreOperationPerLine.Add((moreLines[index], LineChanges.HASCHANGES));
-          fewerOperationPerLine.Add((fewerLines[index], LineChanges.NEWLINE));
-          index++;
-        }
-      }
+      inputOperations.Add((input[index], LineChanges.HASCHANGES));
+      outputOperations.Add((output[index], LineChanges.NEWLINE));
     }
 
     private int GetLargestLinesCount(List<string> inputLines, List<string> outputLines)
@@ -399,12 +365,12 @@ namespace ClangPowerTools
       return text + new string(' ', paddingCount);
     }
 
-    private List<Diff> GetLineDiff(string inputLine, string outputLine)
+    private List<Diff> GetDiff(string inputLine, string outputLine)
     {
       diffMatchPatch = new DiffMatchPatch();
-      List<Diff> lineDiffs = diffMatchPatch.diff_main(inputLine, outputLine);
-      diffMatchPatch.diff_cleanupSemantic(lineDiffs);
-      return lineDiffs;
+      List<Diff> diff = diffMatchPatch.diff_main(inputLine, outputLine);
+      diffMatchPatch.diff_cleanupSemantic(diff);
+      return diff;
     }
 
     private void ColorTextDependingOnOperation(Paragraph paragraph, List<Diff> localdiffs)
