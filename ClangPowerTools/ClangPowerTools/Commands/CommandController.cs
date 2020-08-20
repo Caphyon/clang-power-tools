@@ -309,11 +309,8 @@ namespace ClangPowerTools
 
       OnClangCommandBegin(new ClearEventArgs());
 
-      if (OutputWindowConstants.commandName.ContainsKey(aCommandId) &&
-        currentCommand != CommandIds.kJsonCompilationDatabase)
-      {
+      if (OutputWindowConstants.commandName.ContainsKey(aCommandId))
         DisplayStartedMessage(aCommandId, true);
-      }
     }
 
     private void OnClangCommandBegin(ClearEventArgs e)
