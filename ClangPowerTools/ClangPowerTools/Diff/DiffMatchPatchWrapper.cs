@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Documents;
 using System.Windows.Media;
 
@@ -142,31 +144,112 @@ namespace ClangPowerTools
       var inputLines = editorInput.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
       var outputLines = editorOutput.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
-      return CreateFlowDocumentsAfterDiff(inputLines, outputLines);
+      return CreateFlowDocumentsAfterDiff(inputLines, outputLines, editorInput, editorOutput);
     }
 
     #endregion
 
     #region Private Methods
 
-    private (FlowDocument, FlowDocument) CreateFlowDocumentsAfterDiff(List<string> inputLines, List<string> outputLines)
+    private (FlowDocument, FlowDocument) CreateFlowDocumentsAfterDiff(List<string> inputLines, List<string> outputLines, string input, string output)
     {
       var paragraphInput = new Paragraph();
       var paragraphOutput = new Paragraph();
       var inputOperationPerLine = new List<(object, LineChanges)>();
       var outputOperationPerLine = new List<(object, LineChanges)>();
 
-      DetectOperationPerLine(inputLines, outputLines, inputOperationPerLine, outputOperationPerLine);
+      DetectOperationPerLine(inputLines, outputLines, inputOperationPerLine, outputOperationPerLine, input, output);
       CreateDiffParagraph(paragraphInput, inputOperationPerLine, Brushes.Orange);
       CreateDiffParagraph(paragraphOutput, outputOperationPerLine, Brushes.Yellow);
 
       return CreateFlowDocuments(paragraphInput, paragraphOutput);
     }
 
-    private void DetectOperationPerLine(List<string> inputLines, List<string> outputLines, List<(object, LineChanges)> inputOperationPerLine, List<(object, LineChanges)> outputOperationPerLine)
+    private void DetectOperationPerLine(List<string> inputLines, List<string> outputLines, List<(object, LineChanges)> inputOperationPerLine, List<(object, LineChanges)> outputOperationPerLine, string input, string output)
     {
       var lineCount = GetLargestLinesCount(inputLines, outputLines);
       var index = 0;
+
+      var diff = GetLineDiff(input, output);
+      var test = new List<string>();
+      var totalNewLineFound = 0;
+      var linesToAdd = new Dictionary<int, int>();
+      var insertNewFound = false;
+
+
+      for (int i = 0; i < diff.Count; i++)
+      {
+        var text = diff[i].text;
+        var newLineFoundPerOperation = Regex.Matches(text, Environment.NewLine).Count;
+        switch (diff[i].operation)
+        {
+          case Operation.DELETE:
+            if (newLineFoundPerOperation != 0)
+            {
+              totalNewLineFound += newLineFoundPerOperation;
+            }
+            else if (newLineFoundPerOperation == 0)
+            {
+              test[test.Count - 1] = test.Last() + text;
+            }
+            break;
+          case Operation.INSERT:
+            if (newLineFoundPerOperation != 0)
+            {
+              totalNewLineFound -= newLineFoundPerOperation;
+              if (text.Replace(" ", string.Empty) == Environment.NewLine)
+              {
+                if (i + 1 < diff.Count)
+                {
+                  var sub = text.Substring(text.LastIndexOf(Environment.NewLine) + 1);
+                  diff[i + 1].text = sub + diff[i + 1].text;
+                }
+                insertNewFound = true;
+                break;
+              }
+            }
+            else if (newLineFoundPerOperation == 0)
+            {
+              test[test.Count - 1] = test.Last() + text;
+            }
+            break;
+          // if equal contains multiple lines means we need to insert the \r\n above
+          case Operation.EQUAL:
+            var equalLines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+
+            if (insertNewFound)
+            {
+              equalLines.Insert(0, "");
+              insertNewFound = false;
+            }
+            if (equalLines.Count > 1 && equalLines.Count > newLineFoundPerOperation)
+            {
+              test[test.Count - 1] = test.Last() + equalLines.First();
+              equalLines.RemoveAt(0);
+            }
+
+            if (newLineFoundPerOperation > 1)
+            {
+              for (int j = 0; j < totalNewLineFound; j++)
+              {
+                test.Add(" ");
+              }
+              newLineFoundPerOperation = 0;
+              totalNewLineFound = 0;
+            }
+            test.AddRange(equalLines);
+            break;
+          default:
+            break;
+        }
+      }
+
+      var sb = new StringBuilder();
+      foreach (var item in test)
+      {
+        sb.AppendLine(item);
+      }
+      var cake = sb.ToString();
 
       while (lineCount != index)
       {
@@ -188,7 +271,7 @@ namespace ClangPowerTools
             var outputNextLine = outputLines[tempIndex];
 
             insertOutputNewline = lineDiffs.Any(e => e.operation != Operation.EQUAL &&
-                                               e.text.Replace(" ", string.Empty) == inputNextLine.Replace(" ", string.Empty));
+                                                       e.text.Replace(" ", string.Empty) == inputNextLine.Replace(" ", string.Empty));
             insertInputNewline = lineDiffs.Any(e => e.operation != Operation.EQUAL &&
                                                 e.text.Replace(" ", string.Empty) == outputNextLine.Replace(" ", string.Empty));
 
