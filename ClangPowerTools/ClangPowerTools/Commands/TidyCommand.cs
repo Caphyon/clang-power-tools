@@ -120,7 +120,7 @@ namespace ClangPowerTools.Commands
               settingsHandlder.SaveSettings();
             }
 
-            RunScript(aCommandId);
+            RunScript(aCommandId, false);
           }
           catch (Exception exception)
           {

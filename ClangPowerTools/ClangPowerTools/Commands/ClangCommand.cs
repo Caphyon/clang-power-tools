@@ -101,7 +101,7 @@ namespace ClangPowerTools
     #region Protected Methods
 
 
-    protected void RunScript(int aCommandId, bool jsonCompilationDbActive = false)
+    protected void RunScript(int aCommandId, bool jsonCompilationDbActive)
     {
       string runModeParameters = ScriptGenerator.GetRunModeParamaters();
       string genericParameters = ScriptGenerator.GetGenericParamaters(aCommandId, VsEdition, VsVersion, jsonCompilationDbActive);
