@@ -170,86 +170,7 @@ namespace ClangPowerTools
       var lineCount = GetLargestLinesCount(inputLines, outputLines);
       var index = 0;
 
-      var diff = GetLineDiff(input, output);
-      var test = new List<string>();
-      var totalNewLineFound = 0;
-      var linesToAdd = new Dictionary<int, int>();
-      var insertNewFound = false;
-
-
-      for (int i = 0; i < diff.Count; i++)
-      {
-        var text = diff[i].text;
-        var newLineFoundPerOperation = Regex.Matches(text, Environment.NewLine).Count;
-        switch (diff[i].operation)
-        {
-          case Operation.DELETE:
-            if (newLineFoundPerOperation != 0)
-            {
-              totalNewLineFound += newLineFoundPerOperation;
-            }
-            else if (newLineFoundPerOperation == 0)
-            {
-              test[test.Count - 1] = test.Last() + text;
-            }
-            break;
-          case Operation.INSERT:
-            if (newLineFoundPerOperation != 0)
-            {
-              totalNewLineFound -= newLineFoundPerOperation;
-              if (text.Replace(" ", string.Empty) == Environment.NewLine)
-              {
-                if (i + 1 < diff.Count)
-                {
-                  var sub = text.Substring(text.LastIndexOf(Environment.NewLine) + 1);
-                  diff[i + 1].text = sub + diff[i + 1].text;
-                }
-                insertNewFound = true;
-                break;
-              }
-            }
-            else if (newLineFoundPerOperation == 0)
-            {
-              test[test.Count - 1] = test.Last() + text;
-            }
-            break;
-          // if equal contains multiple lines means we need to insert the \r\n above
-          case Operation.EQUAL:
-            var equalLines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
-
-            if (insertNewFound)
-            {
-              equalLines.Insert(0, "");
-              insertNewFound = false;
-            }
-            if (equalLines.Count > 1 && equalLines.Count > newLineFoundPerOperation)
-            {
-              test[test.Count - 1] = test.Last() + equalLines.First();
-              equalLines.RemoveAt(0);
-            }
-
-            if (newLineFoundPerOperation > 1)
-            {
-              for (int j = 0; j < totalNewLineFound; j++)
-              {
-                test.Add(" ");
-              }
-              newLineFoundPerOperation = 0;
-              totalNewLineFound = 0;
-            }
-            test.AddRange(equalLines);
-            break;
-          default:
-            break;
-        }
-      }
-
-      var sb = new StringBuilder();
-      foreach (var item in test)
-      {
-        sb.AppendLine(item);
-      }
-      var cake = sb.ToString();
+      DetectNewLines(input, output);
 
       while (lineCount != index)
       {
@@ -308,6 +229,90 @@ namespace ClangPowerTools
 
         index++;
       }
+    }
+
+    private void DetectNewLines(string input, string output)
+    {
+      var diff = GetLineDiff(output, input);
+      var test = new List<string>();
+      var totalNewLineFound = 0;
+      var linesToAdd = new Dictionary<int, int>();
+      var insertNewFound = false;
+
+
+      for (int i = 0; i < diff.Count; i++)
+      {
+        var text = diff[i].text;
+        var newLineFoundPerOperation = Regex.Matches(text, Environment.NewLine).Count;
+        switch (diff[i].operation)
+        {
+          case Operation.DELETE:
+            if (newLineFoundPerOperation != 0)
+            {
+              totalNewLineFound += newLineFoundPerOperation;
+            }
+            else if (newLineFoundPerOperation == 0)
+            {
+              test[test.Count - 1] = test.Last() + text;
+            }
+            break;
+          case Operation.INSERT:
+            if (newLineFoundPerOperation != 0)
+            {
+              totalNewLineFound -= newLineFoundPerOperation;
+              if (text.Replace(" ", string.Empty) == Environment.NewLine)
+              {
+                if (i + 1 < diff.Count)
+                {
+                  var sub = text.Substring(text.LastIndexOf(Environment.NewLine) + 2);
+                  diff[i + 1].text = sub + diff[i + 1].text;
+                }
+                insertNewFound = true;
+                break;
+              }
+            }
+            else if (newLineFoundPerOperation == 0)
+            {
+              test[test.Count - 1] = test.Last() + text;
+            }
+            break;
+          // if equal contains multiple lines means we need to insert the \r\n above
+          case Operation.EQUAL:
+            var equalLines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+
+            if (insertNewFound)
+            {
+              equalLines.Insert(0, "");
+              insertNewFound = false;
+            }
+            if (test.Count > 0 && equalLines.Count > 1 && equalLines.Count > newLineFoundPerOperation)
+            {
+              test[test.Count - 1] = test.Last() + equalLines.First();
+              equalLines.RemoveAt(0);
+            }
+
+            if (newLineFoundPerOperation > 1)
+            {
+              for (int j = 0; j < totalNewLineFound; j++)
+              {
+                test.Add("###################");
+              }
+              newLineFoundPerOperation = 0;
+              totalNewLineFound = 0;
+            }
+            test.AddRange(equalLines);
+            break;
+          default:
+            break;
+        }
+      }
+
+      var sb = new StringBuilder();
+      foreach (var item in test)
+      {
+        sb.AppendLine(item);
+      }
+      var cake = sb.ToString();
     }
 
     // Set operations per line after finding a new line(\r\n) diff
