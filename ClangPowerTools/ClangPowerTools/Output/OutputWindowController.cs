@@ -89,7 +89,6 @@ namespace ClangPowerTools.Output
         {
           (dte as DTE2).ExecuteCommand("View.Output", string.Empty);
         }
-        DocumentHandler.FocusActiveDocument();
       }).SafeFireAndForget();
     }
 
