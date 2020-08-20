@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
 using Task = System.Threading.Tasks.Task;
@@ -9,14 +8,14 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  internal sealed class JsonCompilationDatabase : ClangCommand
+  internal sealed class JsonCompilationDatabase : CompileCommand
   {
     #region Properties
 
     /// <summary>
     /// Gets the instance of the command.
     /// </summary>
-    public static JsonCompilationDatabase Instance
+    public static new JsonCompilationDatabase Instance
     {
       get;
       private set;
@@ -34,18 +33,7 @@ namespace ClangPowerTools.Commands
     /// <param name="package">Owner package, not null.</param>
     /// <param name="commandService">Command service to add command to, not null.</param>
     private JsonCompilationDatabase(OleMenuCommandService aCommandService, CommandController aCommandController,
-      AsyncPackage aPackage, Guid aGuid, int aId)
-        : base(aPackage, aGuid, aId)
-    {
-      if (null != aCommandService)
-      {
-        var menuCommandID = new CommandID(CommandSet, Id);
-        var menuCommand = new OleMenuCommand(aCommandController.Execute, menuCommandID);
-        menuCommand.BeforeQueryStatus += aCommandController.OnBeforeClangCommand;
-        menuCommand.Enabled = true;
-        aCommandService.AddCommand(menuCommand);
-      }
-    }
+      AsyncPackage aPackage, Guid aGuid, int aId) : base(aCommandService, aCommandController, aPackage, aGuid, aId) { }
 
     #endregion
 
@@ -56,7 +44,7 @@ namespace ClangPowerTools.Commands
     /// Initializes the singleton instance of the command.
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    public static async Task InitializeAsync(CommandController aCommandController,
+    public static new async Task InitializeAsync(CommandController aCommandController,
           AsyncPackage aPackage, Guid aGuid, int aId)
     {
       // Switch to the main thread - the call to AddCommand in ClangFormatCommand's constructor requires
@@ -76,25 +64,7 @@ namespace ClangPowerTools.Commands
     /// <param name="e">Event args.</param>
     public async Task ExportAsync()
     {
-      await PrepareCommmandAsync(CommandUILocation.ContextMenu, true);
-
-      await Task.Run(() =>
-      {
-        lock (mutex)
-        {
-          try
-          {
-            RunScript(CommandIds.kCompileId, true);
-          }
-          catch (Exception exception)
-          {
-            VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
-              OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-          }
-        }
-
-      });
-
+      await RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu, true);
     }
 
     #endregion
