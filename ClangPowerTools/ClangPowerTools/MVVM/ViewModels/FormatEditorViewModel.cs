@@ -435,7 +435,7 @@ namespace ClangPowerTools
 
       var formatOptionFile = FormatOptionFile.CreateOutput(formatStyleOptions, selectedStyle).ToString();
 
-      await diffController.ShowHtmlAfterDiffAsync(formatOptionFile);
+      await diffController.ShowDiffAsync(formatOptionFile);
 
       loadingView.Close();
       formatEditorView.IsEnabled = true;
