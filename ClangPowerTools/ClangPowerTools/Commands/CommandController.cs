@@ -495,14 +495,7 @@ namespace ClangPowerTools
       {
         if (SolutionInfo.AreToolbarCommandsEnabled() == false)
         {
-          if (command.CommandID.ID == CommandIds.kClangFormatToolbarId && SolutionInfo.ActiveDocumentValidation())
-          {
-            command.Enabled = true;
-          }
-          else
-          {
-            command.Enabled = false;
-          }
+          command.Enabled = command.CommandID.ID == CommandIds.kClangFormatToolbarId && SolutionInfo.ActiveDocumentValidation();
           return;
         }
       }
