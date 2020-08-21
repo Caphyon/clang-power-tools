@@ -2,6 +2,7 @@
 using ClangPowerTools.Error;
 using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
@@ -89,6 +90,7 @@ namespace ClangPowerTools.Output
         {
           (dte as DTE2).ExecuteCommand("View.Output", string.Empty);
         }
+        VsWindowController.Activate(VsWindowController.PreviousWindow);
       }).SafeFireAndForget();
     }
 
