@@ -143,7 +143,7 @@ namespace ClangPowerTools
       var outputOperationPerLine = new List<(object, LineChanges)>();
 
       DetectOperationPerLine(editorInput.Trim(), editorOutput.Trim(), inputOperationPerLine, outputOperationPerLine);
-      CreateDiffParagraph(paragraphInput, inputOperationPerLine, Brushes.Orange);
+      CreateDiffParagraph(paragraphInput, inputOperationPerLine, (Brush)new BrushConverter().ConvertFrom("#FED8B1"));
       CreateDiffParagraph(paragraphOutput, outputOperationPerLine, Brushes.Yellow);
 
       return CreateFlowDocuments(paragraphInput, paragraphOutput);
@@ -163,7 +163,7 @@ namespace ClangPowerTools
     private void DetectOperationPerLine(string input, string output, List<(object, LineChanges)> inputOperationPerLine, List<(object, LineChanges)> outputOperationPerLine)
     {
       // Both inputLines and outputLines must be equal. The method is run on both
-      // This is done my adding lines that contain just \r\n to the inputLines and outputLines
+      // This is done my adding lines that contain just Environment.NewLine to the inputLines and outputLines
       List<string> inputLines = EqualizeDocumentLength(output, input);
       List<string> outputLines = EqualizeDocumentLength(input, output);
 
@@ -218,7 +218,7 @@ namespace ClangPowerTools
     {
       var diff = GetDiff(input, output);
       var lines = new List<string>();
-      var totalNewLineFound = 0;
+      var emptyLinesToAdd = 0;
 
       for (int index = 0; index < diff.Count; index++)
       {
@@ -226,28 +226,28 @@ namespace ClangPowerTools
         var newLineFoundPerOperation = Regex.Matches(text, Environment.NewLine).Count;
         switch (diff[index].operation)
         {
-          // Count when \r\n are deleted 
+          // Count when Environment.NewLine are deleted 
           case Operation.DELETE:
             if (newLineFoundPerOperation != 0)
             {
-              totalNewLineFound += newLineFoundPerOperation;
+              emptyLinesToAdd += newLineFoundPerOperation;
             }
             break;
           case Operation.INSERT:
-            // If a \r\n insert was found, remove one from the total of newLineFoundPerOperation 
+            // If a Environment.NewLineinsert was found, remove one from the total of newLineFoundPerOperation 
             if (newLineFoundPerOperation != 0)
             {
-              totalNewLineFound -= newLineFoundPerOperation;
+              emptyLinesToAdd -= newLineFoundPerOperation;
             }
 
-            // If no \r\n was found,  append the text from the operation to the previous line
+            // If no Environment.NewLine was found,  append the text from the operation to the previous line
             if (newLineFoundPerOperation == 0)
             {
               lines[lines.Count - 1] += text;
               break;
             }
 
-            // If one \r\n was found, append the text before \r\n to the the previous line and 
+            // If one Environment.NewLine was found, append the text before Environment.NewLine to the the previous line and 
             // the text after add it to a new line
             if (newLineFoundPerOperation == 1)
             {
@@ -256,8 +256,8 @@ namespace ClangPowerTools
               break;
             }
 
-            // Multiple \r\n were found, append the text before the first \r\n to the the previous line 
-            // and split the remaing text based on \r\n to new lines
+            // Multiple Environment.NewLine were found, append the text before the first Environment.NewLine to the the previous line 
+            // and split the remaing text based on Environment.NewLine to new lines
             var insertLines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
             lines[lines.Count - 1] += insertLines[0];
             insertLines.RemoveAt(0);
@@ -267,7 +267,7 @@ namespace ClangPowerTools
           case Operation.EQUAL:
             var equalLines = text.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
 
-            // If one \r\n was found, append the text before \r\n to the the previous line and 
+            // If one Environment.NewLine was found, append the text before Environment.NewLine to the the previous line and 
             // the text after add it to a new line
             if (lines.Count > 0 && equalLines.Count >= 1 && equalLines.Count > newLineFoundPerOperation)
             {
@@ -278,11 +278,11 @@ namespace ClangPowerTools
             // Insert empty lines to equalize the length of the input and output
             if (newLineFoundPerOperation > 1)
             {
-              for (int i = 0; i < totalNewLineFound; i++)
+              for (int i = 0; i < emptyLinesToAdd; i++)
               {
                 lines.Add(Environment.NewLine);
               }
-              totalNewLineFound = 0;
+              emptyLinesToAdd = 0;
             }
             lines.AddRange(equalLines);
             break;
