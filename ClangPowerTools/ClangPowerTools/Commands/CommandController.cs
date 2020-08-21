@@ -105,9 +105,9 @@ namespace ClangPowerTools
         await StopCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kStopClang);
       }
 
-      if (JsonCompilationDatabase.Instance == null)
+      if (JsonCompilationDatabaseCommand.Instance == null)
       {
-        await JsonCompilationDatabase.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kJsonCompilationDatabase);
+        await JsonCompilationDatabaseCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kJsonCompilationDatabase);
       }
 
       if (SettingsCommand.Instance == null)
@@ -247,7 +247,7 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kJsonCompilationDatabase);
 
-            await JsonCompilationDatabase.Instance.ExportAsync();
+            await JsonCompilationDatabaseCommand.Instance.ExportAsync();
             OnAfterClangCommand();
             break;
           }

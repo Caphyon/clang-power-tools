@@ -8,14 +8,14 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  internal sealed class JsonCompilationDatabase : CompileCommand
+  internal sealed class JsonCompilationDatabaseCommand : CompileCommand
   {
     #region Properties
 
     /// <summary>
     /// Gets the instance of the command.
     /// </summary>
-    public static new JsonCompilationDatabase Instance
+    public static new JsonCompilationDatabaseCommand Instance
     {
       get;
       private set;
@@ -27,12 +27,12 @@ namespace ClangPowerTools.Commands
     #region Constructor
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="JsonCompilationDatabase"/> class.
+    /// Initializes a new instance of the <see cref="JsonCompilationDatabaseCommand"/> class.
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
     /// <param name="commandService">Command service to add command to, not null.</param>
-    private JsonCompilationDatabase(OleMenuCommandService aCommandService, CommandController aCommandController,
+    private JsonCompilationDatabaseCommand(OleMenuCommandService aCommandService, CommandController aCommandController,
       AsyncPackage aPackage, Guid aGuid, int aId) : base(aCommandService, aCommandController, aPackage, aGuid, aId) { }
 
     #endregion
@@ -52,7 +52,7 @@ namespace ClangPowerTools.Commands
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-      Instance = new JsonCompilationDatabase(commandService, aCommandController, aPackage, aGuid, aId);
+      Instance = new JsonCompilationDatabaseCommand(commandService, aCommandController, aPackage, aGuid, aId);
     }
 
     /// <summary>

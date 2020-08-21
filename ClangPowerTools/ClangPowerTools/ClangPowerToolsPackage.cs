@@ -401,7 +401,7 @@ namespace ClangPowerTools
 
       CompileCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       TidyCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
-      JsonCompilationDatabase.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
+      JsonCompilationDatabaseCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       FormatCommand.Instance.FormatEvent += mCommandController.OnAfterFormatCommand;
 
       CompileCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
@@ -464,7 +464,7 @@ namespace ClangPowerTools
 
       CompileCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
       TidyCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
-      JsonCompilationDatabase.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
+      JsonCompilationDatabaseCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       FormatCommand.Instance.FormatEvent -= mCommandController.OnAfterFormatCommand;
 
       CompileCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
