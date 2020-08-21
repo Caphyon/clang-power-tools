@@ -82,7 +82,7 @@
     <Compile Include="Commands\BackgroundTidy\DataProcessor.cs" />
     <Compile Include="Commands\BackgroundTidy\PowerShellWrapperBackground.cs" />
     <Compile Include="Commands\IgnoreCommand.cs" />
-    <Compile Include="Commands\JsonCompilationDatabase.cs" />
+    <Compile Include="Commands\JsonCompilationDatabaseCommand.cs" />
     <Compile Include="Error\TaskErrorViewModel.cs" />
     <Compile Include="Events\BoolEventArgs.cs" />
     <Compile Include="Events\FormatCommandEventArgs.cs" />
