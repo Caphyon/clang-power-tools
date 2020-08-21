@@ -655,6 +655,8 @@ namespace ClangPowerTools
 
     public void OnWindowActivated(Window GotFocus, Window LostFocus)
     {
+      VsWindowController.SetPreviousActiveWindow(LostFocus);
+
       if (ReleaseNotesView.WasShown == false)
       {
         var releaseNotesView = new ReleaseNotesView(true);
