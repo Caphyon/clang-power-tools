@@ -28,12 +28,14 @@ namespace ClangPowerTools.MVVM.Controllers
     public DiffController(Action CreateFormatFile)
     {
       formatter = new StyleFormatter();
+      StyleDetector.StopDetection = false;
       ClosedWindow += CloseLoadingView;
       this.CreateFormatFile = CreateFormatFile;
     }
 
     private void CloseLoadingView(object sender, EventArgs e)
     {
+      StyleDetector.StopDetection = true;
       ClosedWindow -= CloseLoadingView;
     }
 
@@ -55,12 +57,6 @@ namespace ClangPowerTools.MVVM.Controllers
         var (matchedStyle, matchedOptions) = new StyleDetector().DetectStyleOptions(text);
         formatStyle = matchedStyle;
         formatOptions = matchedOptions;
-
-        //foreach (var option in formatOptions)
-        //{
-        //  if (windowClosed) return;
-        //  SetFormatOption(option);
-        //}
       });
 
       return (formatStyle, formatOptions);
