@@ -107,6 +107,15 @@ namespace ClangPowerTools.Helpers
       sw.Write(content);
     }
 
+    public static string ReadContentToFile(string path)
+    {
+      if (File.Exists(path))
+      {
+        return File.ReadAllText(path);
+      }
+      return string.Empty;
+    }
+
     public static string CreateFullFileName(string path, string fileName)
     {
       return string.Concat(path, "\\", fileName);

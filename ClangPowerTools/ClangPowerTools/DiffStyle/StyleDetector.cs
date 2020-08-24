@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.MVVM.Interfaces;
+﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,16 +10,24 @@ namespace ClangPowerTools.DiffStyle
   {
     #region Members
 
-    private EditorStyles formatStyle;
-    private List<IFormatOption> formatOptions;
-    private string input;
-    private readonly StyleFormatter formatter;
     private readonly Dictionary<EditorStyles, List<IFormatOption>> styles;
+    private readonly Dictionary<EditorStyles, int> detectedPredefinedStyles;
+    private readonly StyleFormatter formatter;
+
+    private List<string> filePaths = new List<string>()
+    { "C:\\Users\\horat\\OneDrive\\Desktop\\A.cpp",
+      "C:\\Users\\horat\\OneDrive\\Desktop\\WW.cpp",
+      "C:\\Users\\horat\\OneDrive\\Desktop\\X.cpp",
+      "C:\\Users\\horat\\OneDrive\\Desktop\\Z.cpp"
+    };
+
 
     #endregion
 
     #region Properties
 
+    public EditorStyles FormatStyle { get; set; }
+    public List<IFormatOption> FormatOptions { get; set; }
     public static bool StopDetection { get; set; } = false;
 
     #endregion
@@ -27,6 +36,7 @@ namespace ClangPowerTools.DiffStyle
 
     public StyleDetector()
     {
+      detectedPredefinedStyles = new Dictionary<EditorStyles, int>();
       formatter = new StyleFormatter();
       styles = CreateStyles();
     }
@@ -35,30 +45,37 @@ namespace ClangPowerTools.DiffStyle
 
     #region Public Methods 
 
-
     public (EditorStyles matchedStyle, List<IFormatOption> matchedOptions) DetectStyleOptions(string input)
     {
-      this.input = input;
-      FindClosestDefaultStyle();
-      FindClosestMatchingFlags();
+      FindClosestStyle(input);
+      FindClosestMatchingFlags(input);
+      DetectStyleOptions(filePaths);
 
-      return (formatStyle, formatOptions);
+      return (FormatStyle, FormatOptions);
+    }
+
+    public (EditorStyles matchedStyle, List<IFormatOption> matchedOptions) DetectStyleOptions(List<string> filePaths)
+    {
+      //this.filePaths = filePaths;
+      MultipleFileStyleDetection();
+
+      return (FormatStyle, FormatOptions);
     }
 
     #endregion
 
     #region Private Methods
 
-    private void FindClosestMatchingFlags()
+    private void FindClosestMatchingFlags(string input)
     {
-      foreach (var option in formatOptions)
+      foreach (var option in FormatOptions)
       {
         if (StopDetection) return;
-        SetFormatOption(option);
+        SetFormatOption(option, input);
       }
     }
 
-    private void FindClosestDefaultStyle()
+    private void FindClosestStyle(string input)
     {
       var levenshteinDiffs = new List<int>();
 
@@ -75,15 +92,44 @@ namespace ClangPowerTools.DiffStyle
       var minLevenshtein = GetIndexOfSmallestLevenshtein(levenshteinDiffs);
       var matchedStyle = styles.ElementAt(minLevenshtein);
 
-      formatStyle = matchedStyle.Key;
-      formatOptions = matchedStyle.Value;
+      FormatStyle = matchedStyle.Key;
+      FormatOptions = matchedStyle.Value;
+    }
+
+    private void MultipleFileStyleDetection()
+    {
+      foreach (var path in filePaths)
+      {
+        var input = FileSystem.ReadContentToFile(path);
+        if (string.IsNullOrWhiteSpace(input)) continue;
+
+        FindClosestStyle(input);
+        if (detectedPredefinedStyles.ContainsKey(FormatStyle))
+        {
+          detectedPredefinedStyles[FormatStyle]++;
+        }
+        else
+        {
+          detectedPredefinedStyles.Add(FormatStyle, 1);
+        }
+      }
+      var maxStyle = detectedPredefinedStyles.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
+
+      FormatStyle = maxStyle;
+      FormatOptions = styles[maxStyle];
+    }
+
+    private void MultipleFileFlagsDetection()
+    {
+      // TODO 
     }
 
     /// <summary>
     /// Set all possible values to the MultipleToggleModel and e use Levenshtein Diff to find the best one
     /// </summary>
     /// <param name="multipleToggleModel"></param>
-    private void SetOptionMultipleToggle(FormatOptionMultipleToggleModel multipleToggleModel)
+    /// <param name="input"></param>
+    private void SetOptionMultipleToggle(FormatOptionMultipleToggleModel multipleToggleModel, string input)
     {
       var toggleValues = multipleToggleModel.ToggleFlags;
       var inputValuesLevenshtein = new Dictionary<ToggleValues, int>();
@@ -93,10 +139,10 @@ namespace ClangPowerTools.DiffStyle
         var previousInput = modelToggle.Value;
 
         modelToggle.Value = ToggleValues.False;
-        inputValuesLevenshtein.Add(modelToggle.Value, GetLevenshteinAfterOptionChange());
+        inputValuesLevenshtein.Add(modelToggle.Value, GetLevenshteinAfterOptionChange(input));
 
         modelToggle.Value = ToggleValues.True;
-        inputValuesLevenshtein.Add(modelToggle.Value, GetLevenshteinAfterOptionChange());
+        inputValuesLevenshtein.Add(modelToggle.Value, GetLevenshteinAfterOptionChange(input));
 
         var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
         modelToggle.Value = inputValue.Value == inputValuesLevenshtein[previousInput] ?
@@ -110,16 +156,17 @@ namespace ClangPowerTools.DiffStyle
     /// Set all possible values to the OptionToggle and e use Levenshtein Diff to find the best one
     /// </summary>
     /// <param name="modelToggle"></param>
-    private void SetOptionToggle(FormatOptionToggleModel modelToggle)
+    /// <param name="input"></param>
+    private void SetOptionToggle(FormatOptionToggleModel modelToggle, string input)
     {
       var previousInput = modelToggle.BooleanCombobox;
       var inputValuesLevenshtein = new Dictionary<ToggleValues, int>();
 
       modelToggle.BooleanCombobox = ToggleValues.False;
-      inputValuesLevenshtein.Add(modelToggle.BooleanCombobox, GetLevenshteinAfterOptionChange());
+      inputValuesLevenshtein.Add(modelToggle.BooleanCombobox, GetLevenshteinAfterOptionChange(input));
 
       modelToggle.BooleanCombobox = ToggleValues.True;
-      inputValuesLevenshtein.Add(modelToggle.BooleanCombobox, GetLevenshteinAfterOptionChange());
+      inputValuesLevenshtein.Add(modelToggle.BooleanCombobox, GetLevenshteinAfterOptionChange(input));
 
       var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
 
@@ -131,7 +178,8 @@ namespace ClangPowerTools.DiffStyle
     /// Set all possible values to the OptionInput and use Levenshtein Diff to find best one
     /// </summary>
     /// <param name="inputModel"></param>
-    private void SetOptionInput(FormatOptionInputModel inputModel)
+    /// <param name="input"></param>
+    private void SetOptionInput(FormatOptionInputModel inputModel, string input)
     {
       if (FormatOptionsInputValues.inputValues.ContainsKey(inputModel.Name) == false) return;
 
@@ -144,7 +192,7 @@ namespace ClangPowerTools.DiffStyle
       {
         if (StopDetection) return;
         inputModel.Input = item;
-        inputValuesLevenshtein.Add(item, GetLevenshteinAfterOptionChange());
+        inputValuesLevenshtein.Add(item, GetLevenshteinAfterOptionChange(input));
       }
 
       var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
@@ -153,9 +201,9 @@ namespace ClangPowerTools.DiffStyle
                          previousInput : inputValue.Key;
     }
 
-    private int GetLevenshteinAfterOptionChange()
+    private int GetLevenshteinAfterOptionChange(string input)
     {
-      var formattedText = formatter.FormatText(input, formatOptions, formatStyle);
+      var formattedText = formatter.FormatText(input, FormatOptions, FormatStyle);
 
       var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
       diffMatchPatchWrapper.Diff(input, formattedText);
@@ -169,18 +217,18 @@ namespace ClangPowerTools.DiffStyle
       return levenshteinDiffs.IndexOf(minLevenshtein);
     }
 
-    private void SetFormatOption(IFormatOption formatOption)
+    private void SetFormatOption(IFormatOption formatOption, string input)
     {
       switch (formatOption)
       {
         case FormatOptionToggleModel toggleModel:
-          SetOptionToggle(toggleModel);
+          SetOptionToggle(toggleModel, input);
           break;
         case FormatOptionInputModel inputModel:
-          SetOptionInput(inputModel);
+          SetOptionInput(inputModel, input);
           break;
         case FormatOptionMultipleToggleModel multipleToggleModel:
-          SetOptionMultipleToggle(multipleToggleModel);
+          SetOptionMultipleToggle(multipleToggleModel, input);
           break;
         default:
           break;

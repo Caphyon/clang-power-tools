@@ -83,7 +83,6 @@
     <Compile Include="Commands\BackgroundTidy\PowerShellWrapperBackground.cs" />
     <Compile Include="Commands\IgnoreCommand.cs" />
     <Compile Include="Commands\JsonCompilationDatabaseCommand.cs" />
-    <Compile Include="DiffStyle\DiffAggregator.cs" />
     <Compile Include="DiffStyle\DiffMatchPatch.cs" />
     <Compile Include="DiffStyle\DiffMatchPatchWrapper.cs" />
     <Compile Include="DiffStyle\StyleDetector.cs" />

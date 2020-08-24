@@ -162,6 +162,7 @@ namespace ClangPowerTools
     /// <param name="outputOperationPerLine"></param>
     private void DetectOperationPerLine(string input, string output, List<(object, LineChanges)> inputOperationPerLine, List<(object, LineChanges)> outputOperationPerLine)
     {
+      // TODO If input and output are equal don't equalize ##############
       // Both inputLines and outputLines must be equal. The method is run on both
       // This is done my adding lines that contain just Environment.NewLine to the inputLines and outputLines
       List<string> inputLines = EqualizeDocumentLength(output, input);
