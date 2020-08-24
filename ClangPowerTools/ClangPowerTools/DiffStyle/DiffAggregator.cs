@@ -2,6 +2,9 @@
 {
   public class DiffAggregator
   {
+    public DiffAggregator()
+    {
 
+    }
   }
 }

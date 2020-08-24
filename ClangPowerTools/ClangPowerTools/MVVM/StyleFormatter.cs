@@ -30,16 +30,16 @@ namespace ClangPowerTools
       var content = FormatFileOutsideProject(settingsPathBuilder.GetPath(""), filePath);
 
       FileSystem.DeleteDirectory(folderPath);
+
       return content;
     }
-
 
     private void CreatePaths(out string filePath, out string formatFilePath, out string folderPath)
     {
       string parentFolder = Path.Combine(settingsPathBuilder.GetPath(""), "Format");
       FileSystem.CreateDirectory(parentFolder);
 
-      folderPath = Path.Combine(parentFolder, (Directory.GetDirectories(parentFolder).Length + 1).ToString());
+      folderPath = Path.Combine(parentFolder, Guid.NewGuid().ToString());
       FileSystem.CreateDirectory(folderPath);
 
       filePath = Path.Combine(folderPath.ToString(), "FormatTemp.cpp");
