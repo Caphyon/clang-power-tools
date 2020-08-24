@@ -82,7 +82,7 @@ namespace ClangPowerTools.Commands.BackgroundTidy
       }
 
       var text = String.Join("\n", outputContent.Buffer.ToList()) + "\n";
-      if (errorDetector.Detect(text, out _))
+      if (errorDetector.Detect(text, ErrorParserConstants.kErrorMessageRegex, out _))
       {
         GetErrors(text, null, out List<TaskErrorModel> aDetectedErrors);
         outputContent.Errors.UnionWith(aDetectedErrors);
@@ -98,7 +98,7 @@ namespace ClangPowerTools.Commands.BackgroundTidy
     {
       detectedErrors = new List<TaskErrorModel>();
 
-      while (errorDetector.Detect(text, out Match aMatchResult))
+      while (errorDetector.Detect(text, ErrorParserConstants.kErrorMessageRegex, out Match aMatchResult))
       {
         detectedErrors.Add(GetDetectedError(hierarchy, aMatchResult));
         GetOutput(ref text, detectedErrors.Last().FullMessage);
