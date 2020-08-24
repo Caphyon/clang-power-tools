@@ -32,6 +32,8 @@ namespace ClangPowerTools.Output
 
     public event EventHandler<HasEncodingErrorEventArgs> HasEncodingErrorEvent;
 
+    public event EventHandler<JsonFilePathArgs> JsonCompilationDbFilePathEvent;
+
     #endregion
 
     #region Properties
@@ -141,6 +143,9 @@ namespace ClangPowerTools.Output
         return;
       }
 
+      if (!string.IsNullOrWhiteSpace(outputContent.JsonFilePath))
+        JsonCompilationDbFilePathEvent?.Invoke(this, new JsonFilePathArgs(outputContent.JsonFilePath));
+
       Write(outputContent.Text);
     }
 
@@ -154,6 +159,9 @@ namespace ClangPowerTools.Output
 
       if (VSConstants.S_FALSE == outputProcessor.ProcessData(e.Data, Hierarchy, outputContent))
         return;
+
+      if (!string.IsNullOrWhiteSpace(outputContent.JsonFilePath))
+        JsonCompilationDbFilePathEvent?.Invoke(this, new JsonFilePathArgs(outputContent.JsonFilePath));
 
       Write(outputContent.Text);
     }

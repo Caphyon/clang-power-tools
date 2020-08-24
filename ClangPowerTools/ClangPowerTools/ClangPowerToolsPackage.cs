@@ -399,6 +399,8 @@ namespace ClangPowerTools
       mCommandController.ErrorDetectedEvent += mOutputWindowController.OnErrorDetected;
       mOutputWindowController.ErrorDetectedEvent += mErrorWindowController.OnErrorDetected;
 
+      mOutputWindowController.JsonCompilationDbFilePathEvent += JsonCompilationDatabaseCommand.Instance.OpenInFileExplorer;
+
       CompileCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       TidyCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       JsonCompilationDatabaseCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
@@ -461,6 +463,8 @@ namespace ClangPowerTools
 
       mCommandController.ErrorDetectedEvent -= mOutputWindowController.OnErrorDetected;
       mOutputWindowController.ErrorDetectedEvent -= mErrorWindowController.OnErrorDetected;
+
+      mOutputWindowController.JsonCompilationDbFilePathEvent -= JsonCompilationDatabaseCommand.Instance.OpenInFileExplorer;
 
       CompileCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
       TidyCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
