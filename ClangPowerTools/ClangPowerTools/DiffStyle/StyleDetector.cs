@@ -12,10 +12,14 @@ namespace ClangPowerTools.DiffStyle
     private EditorStyles formatStyle;
     private List<IFormatOption> formatOptions;
     private string input;
-    private bool stopDetection = false;
-
     private readonly StyleFormatter formatter;
     private readonly Dictionary<EditorStyles, List<IFormatOption>> styles;
+
+    #endregion
+
+    #region Properties
+
+    public static bool StopDetection { get; set; } = false;
 
     #endregion
 
@@ -49,7 +53,7 @@ namespace ClangPowerTools.DiffStyle
     {
       foreach (var option in formatOptions)
       {
-        if (stopDetection) return;
+        if (StopDetection) return;
         SetFormatOption(option);
       }
     }
@@ -60,6 +64,7 @@ namespace ClangPowerTools.DiffStyle
 
       foreach (var style in styles)
       {
+        if (StopDetection) return;
         var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
         var formattedText = formatter.FormatText(input, style.Value, style.Key);
         diffMatchPatchWrapper.Diff(input, formattedText);
@@ -137,7 +142,7 @@ namespace ClangPowerTools.DiffStyle
 
       foreach (var item in inputValues)
       {
-        if (stopDetection) return;
+        if (StopDetection) return;
         inputModel.Input = item;
         inputValuesLevenshtein.Add(item, GetLevenshteinAfterOptionChange());
       }
