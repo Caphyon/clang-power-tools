@@ -141,7 +141,7 @@
 			<!-- Export JSON Compilation Database Context Menu button -->
 			<Button guid="guidClangPowerToolsPackageCmdSet" id="JsonCompilationDatabaseId" priority="0x0008" type="Button">
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForJsonDatabase" />
-				<Icon guid="guidImageEmpty" id="Empty" />
+				<Icon guid="guidImageJsonCompilationDb" id="JsonCompilationDb" />
 				<CommandFlag>DefaultDisabled</CommandFlag>
 				<Strings>
 					<ButtonText>JSON Compilation Database</ButtonText>
@@ -234,6 +234,7 @@
       <Bitmap guid="guidImageSettings" href="Resources\SettingsIcon.png" usedList="Settings" />
       <Bitmap guid="guidImageIgnoreFormat" href="Resources\IgnoreIcon.png" usedList="IgnoreFormat" />
       <Bitmap guid="guidImageEmpty" href="Resources\EmptyIcon.png" usedList="Empty" />
+      <Bitmap guid="guidImageJsonCompilationDb" href="Resources\JsonCompilationDatabase.png" usedList="JsonCompilationDb" />
     </Bitmaps>
 
   </Commands>
@@ -403,6 +404,10 @@
     <!-- Define Logout image -->
     <GuidSymbol name="guidImageLogout" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c72a}">
       <IDSymbol name="Logout" value="1" />
+    </GuidSymbol>    
+		
+		<GuidSymbol name="guidImageJsonCompilationDb" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c73a}">
+      <IDSymbol name="JsonCompilationDb" value="1" />
     </GuidSymbol>
 
   </Symbols>
