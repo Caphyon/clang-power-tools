@@ -86,6 +86,7 @@
     <Compile Include="Error\TaskErrorViewModel.cs" />
     <Compile Include="Events\BoolEventArgs.cs" />
     <Compile Include="Events\FormatCommandEventArgs.cs" />
+    <Compile Include="Events\JsonFilePathArgs.cs" />
     <Compile Include="Export Config\ClangFormatFile.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Events\HasEncodingErrorEventArgs.cs" />
