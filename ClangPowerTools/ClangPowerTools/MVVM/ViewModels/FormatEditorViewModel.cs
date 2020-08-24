@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.MVVM.Commands;
+﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Models;
@@ -54,6 +55,7 @@ namespace ClangPowerTools
     public FormatEditorViewModel(FormatEditorView formatEditorView)
     {
       formatEditorView.Loaded += EditorLoaded;
+      formatEditorView.Closed += EditorClosed;
       this.formatEditorView = formatEditorView;
       formatter = new StyleFormatter();
       InitializeStyleOptions(FormatOptionsProvider.CustomOptionsData);
@@ -453,6 +455,14 @@ namespace ClangPowerTools
     {
       windowLoaded = true;
       formatEditorView.Loaded -= EditorLoaded;
+    }
+
+    private void EditorClosed(object sender, EventArgs e)
+    {
+      var settingsPathBuilder = new SettingsPathBuilder();
+      string folderPath = Path.Combine(settingsPathBuilder.GetPath(""), "Format");
+      FileSystem.DeleteDirectory(folderPath);
+      formatEditorView.Closed -= EditorClosed;
     }
 
     private bool DropFileValidation(DragEventArgs e, out string droppedFile)
