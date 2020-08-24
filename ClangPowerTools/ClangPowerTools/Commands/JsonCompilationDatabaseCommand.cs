@@ -1,6 +1,9 @@
-﻿using Microsoft.VisualStudio.Shell;
+﻿using ClangPowerTools.Events;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
+using System.Diagnostics;
+using System.IO;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
@@ -38,7 +41,7 @@ namespace ClangPowerTools.Commands
     #endregion
 
 
-    #region Method
+    #region Methods
 
     /// <summary>
     /// Initializes the singleton instance of the command.
@@ -65,6 +68,20 @@ namespace ClangPowerTools.Commands
     public async Task ExportAsync()
     {
       await RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu, true);
+    }
+
+
+    internal void OpenInFileExplorer(object sender, JsonFilePathArgs e)
+    {
+      if (!File.Exists(e.FilePath))
+        return;
+
+      // combine the arguments together
+      // it doesn't matter if there is a space after ','
+      string argument = "/select, \"" + e.FilePath + "\"";
+
+      // open the file in File Explorer and select it
+      Process.Start("explorer.exe", argument);
     }
 
     #endregion
