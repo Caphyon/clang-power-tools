@@ -10,13 +10,14 @@ namespace ClangPowerTools.DiffStyle
   {
     #region Members
 
-    private readonly Dictionary<EditorStyles, List<IFormatOption>> styles;
-    private readonly Dictionary<EditorStyles, int> detectedPredefinedStyles;
-    private readonly StyleFormatter formatter;
+    private List<string> filesContent;
+    private Dictionary<EditorStyles, List<IFormatOption>> detectedStyles;
+    private Dictionary<EditorStyles, int> stylesLevenshtein;
+    private readonly Dictionary<EditorStyles, List<IFormatOption>> defaultStyles;
 
-    private List<string> filePaths = new List<string>()
+    private readonly List<string> filePaths = new List<string>()
     { "C:\\Users\\horat\\OneDrive\\Desktop\\A.cpp",
-      "C:\\Users\\horat\\OneDrive\\Desktop\\WW.cpp",
+     // "C:\\Users\\horat\\OneDrive\\Desktop\\WW.cpp",
       "C:\\Users\\horat\\OneDrive\\Desktop\\X.cpp",
       "C:\\Users\\horat\\OneDrive\\Desktop\\Z.cpp"
     };
@@ -36,9 +37,8 @@ namespace ClangPowerTools.DiffStyle
 
     public StyleDetector()
     {
-      detectedPredefinedStyles = new Dictionary<EditorStyles, int>();
-      formatter = new StyleFormatter();
-      styles = CreateStyles();
+      filesContent = new List<string>();
+      defaultStyles = CreateStyles();
     }
 
     #endregion
@@ -47,8 +47,10 @@ namespace ClangPowerTools.DiffStyle
 
     public (EditorStyles matchedStyle, List<IFormatOption> matchedOptions) DetectStyleOptions(string input)
     {
-      FindClosestStyle(input);
-      FindClosestMatchingFlags(input);
+      filesContent.Add(input);
+      DetectFileStyle();
+      DetectFileOptions();
+      // TODO remove
       DetectStyleOptions(filePaths);
 
       return (FormatStyle, FormatOptions);
@@ -56,8 +58,10 @@ namespace ClangPowerTools.DiffStyle
 
     public (EditorStyles matchedStyle, List<IFormatOption> matchedOptions) DetectStyleOptions(List<string> filePaths)
     {
-      //this.filePaths = filePaths;
-      MultipleFileStyleDetection();
+      filesContent = FileSystem.ReadContentFromMultipleFiles(filePaths);
+      DetectFileStyle();
+      DetectFileOptions();
+      SetStyleByLevenshtein();
 
       return (FormatStyle, FormatOptions);
     }
@@ -66,44 +70,13 @@ namespace ClangPowerTools.DiffStyle
 
     #region Private Methods
 
-    private void FindClosestMatchingFlags(string input)
+    private void DetectFileStyle()
     {
-      foreach (var option in FormatOptions)
+      // TODO could find column limit here
+      var detectedPredefinedStyles = new Dictionary<EditorStyles, int>();
+      foreach (var content in filesContent)
       {
-        if (StopDetection) return;
-        SetFormatOption(option, input);
-      }
-    }
-
-    private void FindClosestStyle(string input)
-    {
-      var levenshteinDiffs = new List<int>();
-
-      foreach (var style in styles)
-      {
-        if (StopDetection) return;
-        var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
-        var formattedText = formatter.FormatText(input, style.Value, style.Key);
-        diffMatchPatchWrapper.Diff(input, formattedText);
-
-        levenshteinDiffs.Add(diffMatchPatchWrapper.DiffLevenshtein());
-      }
-
-      var minLevenshtein = GetIndexOfSmallestLevenshtein(levenshteinDiffs);
-      var matchedStyle = styles.ElementAt(minLevenshtein);
-
-      FormatStyle = matchedStyle.Key;
-      FormatOptions = matchedStyle.Value;
-    }
-
-    private void MultipleFileStyleDetection()
-    {
-      foreach (var path in filePaths)
-      {
-        var input = FileSystem.ReadContentToFile(path);
-        if (string.IsNullOrWhiteSpace(input)) continue;
-
-        FindClosestStyle(input);
+        FindMatchingStyleForContent(content);
         if (detectedPredefinedStyles.ContainsKey(FormatStyle))
         {
           detectedPredefinedStyles[FormatStyle]++;
@@ -113,16 +86,83 @@ namespace ClangPowerTools.DiffStyle
           detectedPredefinedStyles.Add(FormatStyle, 1);
         }
       }
-      var maxStyle = detectedPredefinedStyles.Aggregate((l, r) => l.Value > r.Value ? l : r).Key;
-
-      FormatStyle = maxStyle;
-      FormatOptions = styles[maxStyle];
+      detectedStyles = GetMatchingStyles(detectedPredefinedStyles);
     }
 
-    private void MultipleFileFlagsDetection()
+    private void DetectFileOptions()
     {
-      // TODO 
+      stylesLevenshtein = new Dictionary<EditorStyles, int>();
+      foreach (var content in filesContent)
+      {
+        foreach (var style in detectedStyles)
+        {
+          FormatStyle = style.Key;
+          FormatOptions = style.Value;
+
+          // TODO use threads
+          foreach (var option in FormatOptions)
+          {
+            if (StopDetection) return;
+            SetFormatOption(option, content);
+          }
+
+          if (detectedStyles.Count > 1)
+          {
+            AddLevenshteinForDetectedStyles(content);
+          }
+        }
+      }
     }
+
+    private Dictionary<EditorStyles, List<IFormatOption>> GetMatchingStyles(Dictionary<EditorStyles, int> detectedStyles)
+    {
+      var matchingStyles = new Dictionary<EditorStyles, List<IFormatOption>>();
+      if (detectedStyles.Count == 1)
+      {
+        var style = detectedStyles.First().Key;
+        var styleOptions = new List<IFormatOption>(defaultStyles[style]);
+        matchingStyles.Add(style, styleOptions);
+
+        return matchingStyles;
+      }
+
+      var sorted = detectedStyles.OrderBy(e => e.Value);
+      var timesStyleFound = sorted.Last().Value;
+
+      foreach (var item in sorted)
+      {
+        if (item.Value == timesStyleFound)
+        {
+          var style = item.Key;
+          var styleOptions = new List<IFormatOption>(defaultStyles[style]);
+          matchingStyles.Add(style, styleOptions);
+        }
+      }
+      return matchingStyles;
+    }
+
+    private void FindMatchingStyleForContent(string content)
+    {
+      var levenshteinDiffs = new List<int>();
+      var styleFormatter = new StyleFormatter();
+
+      foreach (var style in defaultStyles)
+      {
+        if (StopDetection) return;
+        var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
+        var formattedText = styleFormatter.FormatText(content, style.Value, style.Key);
+        diffMatchPatchWrapper.Diff(content, formattedText);
+
+        levenshteinDiffs.Add(diffMatchPatchWrapper.DiffLevenshtein());
+      }
+
+      var minLevenshtein = GetIndexOfSmallestLevenshtein(levenshteinDiffs);
+      var matchedStyle = defaultStyles.ElementAt(minLevenshtein);
+
+      FormatStyle = matchedStyle.Key;
+      FormatOptions = matchedStyle.Value;
+    }
+
 
     /// <summary>
     /// Set all possible values to the MultipleToggleModel and e use Levenshtein Diff to find the best one
@@ -139,10 +179,10 @@ namespace ClangPowerTools.DiffStyle
         var previousInput = modelToggle.Value;
 
         modelToggle.Value = ToggleValues.False;
-        inputValuesLevenshtein.Add(modelToggle.Value, GetLevenshteinAfterOptionChange(input));
+        inputValuesLevenshtein.Add(modelToggle.Value, GetLevenshteinAfterFormat(input));
 
         modelToggle.Value = ToggleValues.True;
-        inputValuesLevenshtein.Add(modelToggle.Value, GetLevenshteinAfterOptionChange(input));
+        inputValuesLevenshtein.Add(modelToggle.Value, GetLevenshteinAfterFormat(input));
 
         var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
         modelToggle.Value = inputValue.Value == inputValuesLevenshtein[previousInput] ?
@@ -163,10 +203,10 @@ namespace ClangPowerTools.DiffStyle
       var inputValuesLevenshtein = new Dictionary<ToggleValues, int>();
 
       modelToggle.BooleanCombobox = ToggleValues.False;
-      inputValuesLevenshtein.Add(modelToggle.BooleanCombobox, GetLevenshteinAfterOptionChange(input));
+      inputValuesLevenshtein.Add(modelToggle.BooleanCombobox, GetLevenshteinAfterFormat(input));
 
       modelToggle.BooleanCombobox = ToggleValues.True;
-      inputValuesLevenshtein.Add(modelToggle.BooleanCombobox, GetLevenshteinAfterOptionChange(input));
+      inputValuesLevenshtein.Add(modelToggle.BooleanCombobox, GetLevenshteinAfterFormat(input));
 
       var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
 
@@ -192,7 +232,7 @@ namespace ClangPowerTools.DiffStyle
       {
         if (StopDetection) return;
         inputModel.Input = item;
-        inputValuesLevenshtein.Add(item, GetLevenshteinAfterOptionChange(input));
+        inputValuesLevenshtein.Add(item, GetLevenshteinAfterFormat(input));
       }
 
       var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
@@ -201,9 +241,30 @@ namespace ClangPowerTools.DiffStyle
                          previousInput : inputValue.Key;
     }
 
-    private int GetLevenshteinAfterOptionChange(string input)
+    private void AddLevenshteinForDetectedStyles(string content)
     {
-      var formattedText = formatter.FormatText(input, FormatOptions, FormatStyle);
+      if (stylesLevenshtein.ContainsKey(FormatStyle))
+      {
+        stylesLevenshtein[FormatStyle] += GetLevenshteinAfterFormat(content);
+      }
+      else
+      {
+        stylesLevenshtein.Add(FormatStyle, GetLevenshteinAfterFormat(content));
+      }
+    }
+
+    private void SetStyleByLevenshtein()
+    {
+      if (StopDetection) return;
+      var sorted = stylesLevenshtein.OrderByDescending(e => e.Value);
+      FormatStyle = sorted.Last().Key;
+      FormatOptions = detectedStyles[FormatStyle];
+    }
+
+    private int GetLevenshteinAfterFormat(string input)
+    {
+      var styleFormatter = new StyleFormatter();
+      var formattedText = styleFormatter.FormatText(input, FormatOptions, FormatStyle);
 
       var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
       diffMatchPatchWrapper.Diff(input, formattedText);
@@ -237,7 +298,7 @@ namespace ClangPowerTools.DiffStyle
 
     private Dictionary<EditorStyles, List<IFormatOption>> CreateStyles()
     {
-      var groupedStyles = new Dictionary<EditorStyles, List<IFormatOption>>
+      return new Dictionary<EditorStyles, List<IFormatOption>>
       {
         { EditorStyles.LLVM, new FormatOptionsData().FormatOptions },
         { EditorStyles.Google, new FormatOptionsGoogleData().FormatOptions },
@@ -246,8 +307,6 @@ namespace ClangPowerTools.DiffStyle
         { EditorStyles.Mozilla, new FormatOptionsMozillaData().FormatOptions },
         { EditorStyles.WebKit, new FormatOptionsWebKitData().FormatOptions }
       };
-
-      return groupedStyles;
     }
 
     #endregion
