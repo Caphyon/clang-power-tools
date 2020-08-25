@@ -51,8 +51,8 @@ namespace ClangPowerTools
       string vsixPath = Path.GetDirectoryName(typeof(RunClangPowerToolsPackage).Assembly.Location);
       string output = string.Empty;
 
-      if (String.IsNullOrWhiteSpace(vsixPath) || String.IsNullOrWhiteSpace(directoryPath)
-        || String.IsNullOrWhiteSpace(filePath))
+      if (string.IsNullOrWhiteSpace(vsixPath) || string.IsNullOrWhiteSpace(directoryPath)
+        || string.IsNullOrWhiteSpace(filePath))
       {
         return string.Empty;
       }
