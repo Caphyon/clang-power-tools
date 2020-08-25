@@ -237,11 +237,13 @@ namespace ClangPowerTools
       if (mItemsCollector.IsEmpty)
         return;
 
-      if (mItemsCollector.Items[0].GetObject() is Solution)
+      var item = mItemsCollector.Items[0];
+
+      if (item is CurrentSolution)
         Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), genericParameters, "'");
-      else if (mItemsCollector.Items[0].GetObject() is Project)
+      else if (item is CurrentProject || item is CurrentProjectItem)
       {
-        var itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(mItemsCollector.Items[0]);
+        var itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item, true);
         Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
       }
 
