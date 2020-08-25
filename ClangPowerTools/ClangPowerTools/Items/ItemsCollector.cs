@@ -63,7 +63,6 @@ namespace ClangPowerTools
         if (dte == null)
           return;
 
-        // TODO - dte.ActiveDocument is not initialized when package manager is open
         Document activeDocument = null;
         try
         {
@@ -168,7 +167,7 @@ namespace ClangPowerTools
           var project = item.Object as Project;
           AddProject(project);
         }
-        else if (item.Object is ProjectItem && !jsonCompilationDbActive)
+        else if (item.Object is ProjectItem)
         {
           GetProjectItem(item.Object as ProjectItem);
         }
