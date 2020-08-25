@@ -23,9 +23,9 @@ namespace ClangPowerTools.Helpers
       return genericParameters;
     }
 
-    public static string GetItemRelatedParameters(IItem item)
+    public static string GetItemRelatedParameters(IItem item, bool jsonCompilationDbActive = false)
     {
-      IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item);
+      IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item, jsonCompilationDbActive);
       itemRelatedScriptBuilder.Build();
       var itemRelatedParameters = itemRelatedScriptBuilder.GetResult();
       return itemRelatedParameters;

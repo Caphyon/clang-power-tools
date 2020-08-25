@@ -16,7 +16,8 @@ namespace ClangPowerTools.Script
     /// <summary>
     /// The current item for which the script will be build
     /// </summary>
-    private IItem mItem;
+    private readonly IItem mItem;
+    private readonly bool jsonCompilationDbActive;
 
     #endregion
 
@@ -30,6 +31,11 @@ namespace ClangPowerTools.Script
     /// <param name="aItem">The current item for which the script will be build</param>
     /// <param name="aSolutionPath">The path of the VS solution</param>
     public ItemRelatedScriptBuilder(IItem aItem) => mItem = aItem;
+
+    public ItemRelatedScriptBuilder(IItem aItem, bool jsonCompilationDb) : this(aItem)
+    {
+      jsonCompilationDbActive = jsonCompilationDb;
+    }
 
 
     #endregion
@@ -85,7 +91,10 @@ namespace ClangPowerTools.Script
       var configuration = ProjectConfigurationHandler.GetConfiguration(projectItem.ContainingProject);
       var platform = ProjectConfigurationHandler.GetPlatform(projectItem.ContainingProject);
 
-      mScript = $"{mScript} {ScriptConstants.kProject} ''{containingProject}'' " +
+      var projectData = jsonCompilationDbActive ?
+        string.Empty : $"{ScriptConstants.kProject} ''{containingProject}'' ";
+
+      mScript = $"{mScript} {projectData}" +
         $"{ScriptConstants.kFile} ''{filePath}'' {ScriptConstants.kActiveConfiguration} " +
         $"''{configuration}|{platform}''";
     }
