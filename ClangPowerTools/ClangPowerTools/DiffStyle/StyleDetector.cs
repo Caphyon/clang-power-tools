@@ -11,8 +11,6 @@ namespace ClangPowerTools.DiffStyle
     #region Members
 
     private List<string> filesContent;
-    private Dictionary<EditorStyles, List<IFormatOption>> detectedStyles;
-    private Dictionary<EditorStyles, int> stylesLevenshtein;
     private readonly Dictionary<EditorStyles, List<IFormatOption>> defaultStyles;
 
     private readonly List<string> filePaths = new List<string>()
@@ -48,8 +46,8 @@ namespace ClangPowerTools.DiffStyle
     public (EditorStyles matchedStyle, List<IFormatOption> matchedOptions) DetectStyleOptions(string input)
     {
       filesContent.Add(input);
-      DetectFileStyle();
-      DetectFileOptions();
+      var detectedStyles = DetectFileStyle();
+      DetectFileOptions(detectedStyles);
       // TODO remove
       DetectStyleOptions(filePaths);
 
@@ -59,9 +57,8 @@ namespace ClangPowerTools.DiffStyle
     public (EditorStyles matchedStyle, List<IFormatOption> matchedOptions) DetectStyleOptions(List<string> filePaths)
     {
       filesContent = FileSystem.ReadContentFromMultipleFiles(filePaths);
-      DetectFileStyle();
-      DetectFileOptions();
-      SetStyleByLevenshtein();
+      var detectedStyles = DetectFileStyle();
+      DetectFileOptions(detectedStyles);
 
       return (FormatStyle, FormatOptions);
     }
@@ -70,7 +67,7 @@ namespace ClangPowerTools.DiffStyle
 
     #region Private Methods
 
-    private void DetectFileStyle()
+    private Dictionary<EditorStyles, List<IFormatOption>> DetectFileStyle()
     {
       // TODO could find column limit here
       var detectedPredefinedStyles = new Dictionary<EditorStyles, int>();
@@ -86,12 +83,11 @@ namespace ClangPowerTools.DiffStyle
           detectedPredefinedStyles.Add(FormatStyle, 1);
         }
       }
-      detectedStyles = GetMatchingStyles(detectedPredefinedStyles);
+      return GetMatchingStyles(detectedPredefinedStyles);
     }
 
-    private void DetectFileOptions()
+    private void DetectFileOptions(Dictionary<EditorStyles, List<IFormatOption>> detectedStyles)
     {
-      stylesLevenshtein = new Dictionary<EditorStyles, int>();
       foreach (var content in filesContent)
       {
         foreach (var style in detectedStyles)
@@ -108,7 +104,9 @@ namespace ClangPowerTools.DiffStyle
 
           if (detectedStyles.Count > 1)
           {
-            AddLevenshteinForDetectedStyles(content);
+            var stylesLevenshtein = new Dictionary<EditorStyles, int>();
+            AddLevenshteinForDetectedStyles(content, stylesLevenshtein);
+            SetStyleByLevenshtein(detectedStyles, stylesLevenshtein);
           }
         }
       }
@@ -241,7 +239,7 @@ namespace ClangPowerTools.DiffStyle
                          previousInput : inputValue.Key;
     }
 
-    private void AddLevenshteinForDetectedStyles(string content)
+    private void AddLevenshteinForDetectedStyles(string content, Dictionary<EditorStyles, int> stylesLevenshtein)
     {
       if (stylesLevenshtein.ContainsKey(FormatStyle))
       {
@@ -253,7 +251,7 @@ namespace ClangPowerTools.DiffStyle
       }
     }
 
-    private void SetStyleByLevenshtein()
+    private void SetStyleByLevenshtein(Dictionary<EditorStyles, List<IFormatOption>> detectedStyles, Dictionary<EditorStyles, int> stylesLevenshtein)
     {
       if (StopDetection) return;
       var sorted = stylesLevenshtein.OrderByDescending(e => e.Value);
