@@ -144,7 +144,7 @@
 				<Icon guid="guidImageJsonCompilationDb" id="JsonCompilationDb" />
 				<CommandFlag>DefaultDisabled</CommandFlag>
 				<Strings>
-					<ButtonText>JSON Compilation Database</ButtonText>
+					<ButtonText>Export Compilation Database</ButtonText>
 				</Strings>
 			</Button>
 
