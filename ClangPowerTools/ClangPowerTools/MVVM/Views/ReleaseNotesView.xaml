@@ -148,7 +148,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Context Menu selection is disturbed by &quot;Track Active Item in Solution Explorer&quot; VS option"
+          Text="• Context Menu selection issue due to &quot;Track Active Item in Solution Explorer&quot;"
           TextWrapping="Wrap" />
 
       </ListView>
