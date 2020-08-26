@@ -1,8 +1,10 @@
 ﻿using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Models;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ClangPowerTools.DiffStyle
 {
@@ -11,6 +13,7 @@ namespace ClangPowerTools.DiffStyle
     #region Members
 
     private List<string> filesContent;
+    private readonly ConcurrentDictionary<EditorStyles, List<IFormatOption>> styleOptions;
     private readonly Dictionary<EditorStyles, List<IFormatOption>> defaultStyles;
 
     private readonly List<string> filePaths = new List<string>()
@@ -35,6 +38,7 @@ namespace ClangPowerTools.DiffStyle
 
     public StyleDetector()
     {
+      styleOptions = new ConcurrentDictionary<EditorStyles, List<IFormatOption>>();
       filesContent = new List<string>();
       defaultStyles = CreateStyles();
     }
@@ -43,22 +47,22 @@ namespace ClangPowerTools.DiffStyle
 
     #region Public Methods 
 
-    public (EditorStyles matchedStyle, List<IFormatOption> matchedOptions) DetectStyleOptions(string input)
+    public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(string input)
     {
-      //filesContent.Add(input);
-      //var detectedStyles = DetectFileStyle();
-      //DetectFileOptions(detectedStyles);
-      // TODO remove
-      DetectStyleOptions(filePaths);
+      filesContent.Add(input);
+      var detectedStyles = DetectFileStyle();
+      //await DetectFileOptionsAsync(detectedStyles);
+
+      await DetectStyleOptionsAsync(filePaths);
 
       return (FormatStyle, FormatOptions);
     }
 
-    public (EditorStyles matchedStyle, List<IFormatOption> matchedOptions) DetectStyleOptions(List<string> filePaths)
+    public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(List<string> filePaths)
     {
       filesContent = FileSystem.ReadContentFromMultipleFiles(filePaths);
       var detectedStyles = DetectFileStyle();
-      DetectFileOptions(detectedStyles);
+      await DetectFileOptionsAsync(detectedStyles);
 
       return (FormatStyle, FormatOptions);
     }
@@ -67,7 +71,7 @@ namespace ClangPowerTools.DiffStyle
 
     #region Private Methods
 
-    private Dictionary<EditorStyles, List<IFormatOption>> DetectFileStyle()
+    private HashSet<EditorStyles> DetectFileStyle()
     {
       // TODO could find column limit here
       var detectedPredefinedStyles = new Dictionary<EditorStyles, int>();
@@ -86,41 +90,58 @@ namespace ClangPowerTools.DiffStyle
       return GetMatchingStyles(detectedPredefinedStyles);
     }
 
-    private void DetectFileOptions(Dictionary<EditorStyles, List<IFormatOption>> detectedStyles)
+    private async Task DetectFileOptionsAsync(HashSet<EditorStyles> detectedStyles)
     {
-      var stylesLevenshtein = new Dictionary<EditorStyles, int>();
-      foreach (var content in filesContent)
-      {
-        foreach (var style in detectedStyles)
-        {
-          FormatStyle = style.Key;
-          FormatOptions = style.Value;
+      var stylesLevenshtein = new ConcurrentDictionary<EditorStyles, int>();
 
-          // TODO use threads
-          foreach (var option in FormatOptions)
+      await Task.WhenAll(filesContent.Select(e => TestAsync(detectedStyles, stylesLevenshtein, e)));
+      if (detectedStyles.Count > 1)
+      {
+        SetStyleByLevenshtein(stylesLevenshtein);
+      }
+      else
+      {
+        FormatStyle = detectedStyles.First();
+        FormatOptions = styleOptions[FormatStyle];
+      }
+
+    }
+
+
+    private async Task TestAsync(HashSet<EditorStyles> detectedStyles, ConcurrentDictionary<EditorStyles, int> stylesLevenshtein, string content)
+    {
+      foreach (var style in detectedStyles)
+      {
+        await Task.Run(() =>
+        {
+          var formatOptions = new List<IFormatOption>(defaultStyles[style]);
+          styleOptions.TryAdd(style, formatOptions);
+          foreach (var option in formatOptions)
           {
-            if (StopDetection) return;
-            SetFormatOption(option, content);
+            SetFormatOption(option, content, style, formatOptions);
           }
 
           if (detectedStyles.Count > 1)
           {
-            AddLevenshteinForDetectedStyles(content, stylesLevenshtein);
-            SetStyleByLevenshtein(detectedStyles, stylesLevenshtein);
+            if (stylesLevenshtein.ContainsKey(style))
+            {
+              stylesLevenshtein[style] += GetLevenshteinAfterFormat(content, style, formatOptions);
+            }
+            else
+            {
+              stylesLevenshtein.TryAdd(style, GetLevenshteinAfterFormat(content, style, formatOptions));
+            }
           }
-        }
+        });
       }
     }
 
-    private Dictionary<EditorStyles, List<IFormatOption>> GetMatchingStyles(Dictionary<EditorStyles, int> detectedStyles)
+    private HashSet<EditorStyles> GetMatchingStyles(Dictionary<EditorStyles, int> detectedStyles)
     {
-      var matchingStyles = new Dictionary<EditorStyles, List<IFormatOption>>();
+      var matchingStyles = new HashSet<EditorStyles>();
       if (detectedStyles.Count == 1)
       {
-        var style = detectedStyles.First().Key;
-        var styleOptions = new List<IFormatOption>(defaultStyles[style]);
-        matchingStyles.Add(style, styleOptions);
-
+        matchingStyles.Add(detectedStyles.First().Key);
         return matchingStyles;
       }
 
@@ -132,8 +153,7 @@ namespace ClangPowerTools.DiffStyle
         if (item.Value == timesStyleFound)
         {
           var style = item.Key;
-          var styleOptions = new List<IFormatOption>(defaultStyles[style]);
-          matchingStyles.Add(style, styleOptions);
+          matchingStyles.Add(style);
         }
       }
       return matchingStyles;
@@ -161,13 +181,20 @@ namespace ClangPowerTools.DiffStyle
       FormatOptions = matchedStyle.Value;
     }
 
+    private void SetStyleByLevenshtein(ConcurrentDictionary<EditorStyles, int> stylesLevenshtein)
+    {
+      var sorted = stylesLevenshtein.OrderByDescending(e => e.Value);
+      FormatStyle = sorted.Last().Key;
+      FormatOptions = styleOptions[FormatStyle];
+    }
+
 
     /// <summary>
     /// Set all possible values to the MultipleToggleModel and e use Levenshtein Diff to find the best one
     /// </summary>
     /// <param name="multipleToggleModel"></param>
     /// <param name="input"></param>
-    private void SetOptionMultipleToggle(FormatOptionMultipleToggleModel multipleToggleModel, string input)
+    private void SetOptionMultipleToggle(FormatOptionMultipleToggleModel multipleToggleModel, string input, List<IFormatOption> formatOptions, EditorStyles formatStyle)
     {
       var toggleValues = multipleToggleModel.ToggleFlags;
       var inputValuesLevenshtein = new Dictionary<ToggleValues, int>();
@@ -177,10 +204,10 @@ namespace ClangPowerTools.DiffStyle
         var previousInput = modelToggle.Value;
 
         modelToggle.Value = ToggleValues.False;
-        inputValuesLevenshtein.Add(modelToggle.Value, GetLevenshteinAfterFormat(input));
+        inputValuesLevenshtein.Add(modelToggle.Value, GetLevenshteinAfterFormat(input, formatStyle, formatOptions));
 
         modelToggle.Value = ToggleValues.True;
-        inputValuesLevenshtein.Add(modelToggle.Value, GetLevenshteinAfterFormat(input));
+        inputValuesLevenshtein.Add(modelToggle.Value, GetLevenshteinAfterFormat(input, formatStyle, formatOptions));
 
         var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
         modelToggle.Value = inputValue.Value == inputValuesLevenshtein[previousInput] ?
@@ -195,16 +222,16 @@ namespace ClangPowerTools.DiffStyle
     /// </summary>
     /// <param name="modelToggle"></param>
     /// <param name="input"></param>
-    private void SetOptionToggle(FormatOptionToggleModel modelToggle, string input)
+    private void SetOptionToggle(FormatOptionToggleModel modelToggle, string input, EditorStyles formatStyle, List<IFormatOption> formatOptions)
     {
       var previousInput = modelToggle.BooleanCombobox;
       var inputValuesLevenshtein = new Dictionary<ToggleValues, int>();
 
       modelToggle.BooleanCombobox = ToggleValues.False;
-      inputValuesLevenshtein.Add(modelToggle.BooleanCombobox, GetLevenshteinAfterFormat(input));
+      inputValuesLevenshtein.Add(modelToggle.BooleanCombobox, GetLevenshteinAfterFormat(input, formatStyle, formatOptions));
 
       modelToggle.BooleanCombobox = ToggleValues.True;
-      inputValuesLevenshtein.Add(modelToggle.BooleanCombobox, GetLevenshteinAfterFormat(input));
+      inputValuesLevenshtein.Add(modelToggle.BooleanCombobox, GetLevenshteinAfterFormat(input, formatStyle, formatOptions));
 
       var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
 
@@ -217,7 +244,7 @@ namespace ClangPowerTools.DiffStyle
     /// </summary>
     /// <param name="inputModel"></param>
     /// <param name="input"></param>
-    private void SetOptionInput(FormatOptionInputModel inputModel, string input)
+    private void SetOptionInput(FormatOptionInputModel inputModel, string input, EditorStyles formatStyle, List<IFormatOption> formatOptions)
     {
       if (FormatOptionsInputValues.inputValues.ContainsKey(inputModel.Name) == false) return;
 
@@ -230,7 +257,7 @@ namespace ClangPowerTools.DiffStyle
       {
         if (StopDetection) return;
         inputModel.Input = item;
-        inputValuesLevenshtein.Add(item, GetLevenshteinAfterFormat(input));
+        inputValuesLevenshtein.Add(item, GetLevenshteinAfterFormat(input, formatStyle, formatOptions));
       }
 
       var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
@@ -239,30 +266,10 @@ namespace ClangPowerTools.DiffStyle
                          previousInput : inputValue.Key;
     }
 
-    private void AddLevenshteinForDetectedStyles(string content, Dictionary<EditorStyles, int> stylesLevenshtein)
-    {
-      if (stylesLevenshtein.ContainsKey(FormatStyle))
-      {
-        stylesLevenshtein[FormatStyle] += GetLevenshteinAfterFormat(content);
-      }
-      else
-      {
-        stylesLevenshtein.Add(FormatStyle, GetLevenshteinAfterFormat(content));
-      }
-    }
-
-    private void SetStyleByLevenshtein(Dictionary<EditorStyles, List<IFormatOption>> detectedStyles, Dictionary<EditorStyles, int> stylesLevenshtein)
-    {
-      if (StopDetection) return;
-      var sorted = stylesLevenshtein.OrderByDescending(e => e.Value);
-      FormatStyle = sorted.Last().Key;
-      FormatOptions = detectedStyles[FormatStyle];
-    }
-
-    private int GetLevenshteinAfterFormat(string input)
+    private int GetLevenshteinAfterFormat(string input, EditorStyles formatStyle, List<IFormatOption> formatOptions)
     {
       var styleFormatter = new StyleFormatter();
-      var formattedText = styleFormatter.FormatText(input, FormatOptions, FormatStyle);
+      var formattedText = styleFormatter.FormatText(input, formatOptions, formatStyle);
 
       var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
       diffMatchPatchWrapper.Diff(input, formattedText);
@@ -275,19 +282,18 @@ namespace ClangPowerTools.DiffStyle
       var minLevenshtein = levenshteinDiffs.Min();
       return levenshteinDiffs.IndexOf(minLevenshtein);
     }
-
-    private void SetFormatOption(IFormatOption formatOption, string input)
+    private void SetFormatOption(IFormatOption formatOption, string input, EditorStyles formatStyle, List<IFormatOption> formatOptions)
     {
       switch (formatOption)
       {
         case FormatOptionToggleModel toggleModel:
-          SetOptionToggle(toggleModel, input);
+          SetOptionToggle(toggleModel, input, formatStyle, formatOptions);
           break;
         case FormatOptionInputModel inputModel:
-          SetOptionInput(inputModel, input);
+          SetOptionInput(inputModel, input, formatStyle, formatOptions);
           break;
         case FormatOptionMultipleToggleModel multipleToggleModel:
-          SetOptionMultipleToggle(multipleToggleModel, input);
+          SetOptionMultipleToggle(multipleToggleModel, input, formatOptions, formatStyle);
           break;
         default:
           break;
