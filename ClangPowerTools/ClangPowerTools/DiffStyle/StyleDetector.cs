@@ -45,9 +45,9 @@ namespace ClangPowerTools.DiffStyle
 
     public (EditorStyles matchedStyle, List<IFormatOption> matchedOptions) DetectStyleOptions(string input)
     {
-      filesContent.Add(input);
-      var detectedStyles = DetectFileStyle();
-      DetectFileOptions(detectedStyles);
+      //filesContent.Add(input);
+      //var detectedStyles = DetectFileStyle();
+      //DetectFileOptions(detectedStyles);
       // TODO remove
       DetectStyleOptions(filePaths);
 
@@ -88,6 +88,7 @@ namespace ClangPowerTools.DiffStyle
 
     private void DetectFileOptions(Dictionary<EditorStyles, List<IFormatOption>> detectedStyles)
     {
+      var stylesLevenshtein = new Dictionary<EditorStyles, int>();
       foreach (var content in filesContent)
       {
         foreach (var style in detectedStyles)
@@ -104,7 +105,6 @@ namespace ClangPowerTools.DiffStyle
 
           if (detectedStyles.Count > 1)
           {
-            var stylesLevenshtein = new Dictionary<EditorStyles, int>();
             AddLevenshteinForDetectedStyles(content, stylesLevenshtein);
             SetStyleByLevenshtein(detectedStyles, stylesLevenshtein);
           }
