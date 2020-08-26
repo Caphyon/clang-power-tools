@@ -52,13 +52,11 @@ namespace ClangPowerTools.MVVM.Controllers
     {
       editorInput = text;
 
-      await Task.Run(() =>
-      {
-        var (matchedStyle, matchedOptions) = new StyleDetector().DetectStyleOptions(text);
-        formatStyle = matchedStyle;
-        formatOptions = matchedOptions;
-      });
+      var styleDetector = new StyleDetector();
+      var (matchedStyle, matchedOptions) = await styleDetector.DetectStyleOptionsAsync(text);
 
+      formatStyle = matchedStyle;
+      formatOptions = matchedOptions;
       return (formatStyle, formatOptions);
     }
 
