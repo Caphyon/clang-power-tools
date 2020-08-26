@@ -141,6 +141,16 @@
           Text="• Always focus on the active document after running a command"
           TextWrapping="Wrap" />
 
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Context Menu selection is disturbed by &quot;Track Active Item in Solution Explorer&quot; VS option"
+          TextWrapping="Wrap" />
+
       </ListView>
     </Grid>
 
