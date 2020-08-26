@@ -107,12 +107,11 @@ namespace ClangPowerTools.DiffStyle
 
     }
 
-
     private async Task TestAsync(HashSet<EditorStyles> detectedStyles, ConcurrentDictionary<EditorStyles, int> stylesLevenshtein, string content)
     {
-      foreach (var style in detectedStyles)
+      await Task.Run(() =>
       {
-        await Task.Run(() =>
+        foreach (var style in detectedStyles)
         {
           var formatOptions = new List<IFormatOption>(defaultStyles[style]);
           styleOptions.TryAdd(style, formatOptions);
@@ -132,8 +131,8 @@ namespace ClangPowerTools.DiffStyle
               stylesLevenshtein.TryAdd(style, GetLevenshteinAfterFormat(content, style, formatOptions));
             }
           }
-        });
-      }
+        }
+      });
     }
 
     private HashSet<EditorStyles> GetMatchingStyles(Dictionary<EditorStyles, int> detectedStyles)
