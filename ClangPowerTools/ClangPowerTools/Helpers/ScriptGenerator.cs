@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.Builder;
 using ClangPowerTools.Script;
+using System.Collections.Generic;
 
 namespace ClangPowerTools.Helpers
 {
@@ -26,6 +27,14 @@ namespace ClangPowerTools.Helpers
     public static string GetItemRelatedParameters(IItem item, bool jsonCompilationDbActive = false)
     {
       IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item, jsonCompilationDbActive);
+      itemRelatedScriptBuilder.Build();
+      var itemRelatedParameters = itemRelatedScriptBuilder.GetResult();
+      return itemRelatedParameters;
+    }
+
+    public static string GetItemRelatedParameters(List<IItem> items, bool jsonCompilationDbActive = false)
+    {
+      IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(items, jsonCompilationDbActive);
       itemRelatedScriptBuilder.Build();
       var itemRelatedParameters = itemRelatedScriptBuilder.GetResult();
       return itemRelatedParameters;
