@@ -49,8 +49,8 @@ namespace ClangPowerTools.DiffStyle
 
     public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(string input)
     {
-      filesContent.Add(input);
-      var detectedStyles = DetectFileStyle();
+      //filesContent.Add(input);
+      //var detectedStyles = DetectFileStyle();
       //await DetectFileOptionsAsync(detectedStyles);
 
       await DetectStyleOptionsAsync(filePaths);
