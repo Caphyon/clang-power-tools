@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.Builder;
 using ClangPowerTools.Script;
+using System.Collections.Generic;
 
 namespace ClangPowerTools.Helpers
 {
@@ -15,17 +16,25 @@ namespace ClangPowerTools.Helpers
       return runModeParameters;
     }
 
-    public static string GetGenericParamaters(int aCommandId, string vsEdition, string vsVersion)
+    public static string GetGenericParamaters(int aCommandId, string vsEdition, string vsVersion, bool jsonCompilationDbActive)
     {
-      IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(vsEdition, vsVersion, aCommandId);
+      IBuilder<string> genericScriptBuilder = new GenericScriptBuilder(vsEdition, vsVersion, aCommandId, jsonCompilationDbActive);
       genericScriptBuilder.Build();
       var genericParameters = genericScriptBuilder.GetResult();
       return genericParameters;
     }
 
-    public static string GetItemRelatedParameters(IItem item)
+    public static string GetItemRelatedParameters(IItem item, bool jsonCompilationDbActive = false)
     {
-      IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item);
+      IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(item, jsonCompilationDbActive);
+      itemRelatedScriptBuilder.Build();
+      var itemRelatedParameters = itemRelatedScriptBuilder.GetResult();
+      return itemRelatedParameters;
+    }
+
+    public static string GetItemRelatedParameters(List<IItem> items, bool jsonCompilationDbActive = false)
+    {
+      IBuilder<string> itemRelatedScriptBuilder = new ItemRelatedScriptBuilder(items, jsonCompilationDbActive);
       itemRelatedScriptBuilder.Build();
       var itemRelatedParameters = itemRelatedScriptBuilder.GetResult();
       return itemRelatedParameters;

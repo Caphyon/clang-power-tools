@@ -11,6 +11,7 @@ namespace ClangPowerTools.Output
     public string Text { get; set; }
     public bool MissingLLVM { get; set; }
     public bool HasEncodingError { get; set; }
+    public string JsonFilePath { get; set; }
 
 
     #endregion

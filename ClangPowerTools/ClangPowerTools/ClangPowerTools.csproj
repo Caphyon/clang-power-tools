@@ -82,9 +82,11 @@
     <Compile Include="Commands\BackgroundTidy\DataProcessor.cs" />
     <Compile Include="Commands\BackgroundTidy\PowerShellWrapperBackground.cs" />
     <Compile Include="Commands\IgnoreCommand.cs" />
+    <Compile Include="Commands\JsonCompilationDatabaseCommand.cs" />
     <Compile Include="Error\TaskErrorViewModel.cs" />
     <Compile Include="Events\BoolEventArgs.cs" />
     <Compile Include="Events\FormatCommandEventArgs.cs" />
+    <Compile Include="Events\JsonFilePathArgs.cs" />
     <Compile Include="Export Config\ClangFormatFile.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Events\HasEncodingErrorEventArgs.cs" />
@@ -93,7 +95,9 @@
     <Compile Include="Helpers\RegistryUtility.cs" />
     <Compile Include="Helpers\ScriptGenerator.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
+    <Compile Include="Helpers\VsWindowController.cs" />
     <Compile Include="IgnoreActions\IgnoreItem.cs" />
+    <Compile Include="Items\CurrentSolution.cs" />
     <Compile Include="MVVM\Constants\CPPKeywords.cs" />
     <Compile Include="MVVM\Constants\LlvmConstants.cs" />
     <Compile Include="MVVM\Constants\LlvmVersionsAlternate.cs" />
@@ -368,6 +372,7 @@
     <Resource Include="Resources\iconFreeTrial.png" />
     <Resource Include="Resources\iconPersonal.png" />
     <Resource Include="Resources\Input.png" />
+    <Resource Include="Resources\JsonCompilationDatabase.png" />
     <Content Include="Resources\LICENSE.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

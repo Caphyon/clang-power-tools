@@ -6,7 +6,6 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace ClangPowerTools.Commands.BackgroundTidy
 {
@@ -79,7 +78,7 @@ namespace ClangPowerTools.Commands.BackgroundTidy
         #region Generate powershell script
 
         string runModeParameters = ScriptGenerator.GetRunModeParamaters();
-        string genericParameters = ScriptGenerator.GetGenericParamaters(commandId, vsEdition, vsVersion);
+        string genericParameters = ScriptGenerator.GetGenericParamaters(commandId, vsEdition, vsVersion, false);
 
         CMakeBuilder cMakeBuilder = new CMakeBuilder();
         cMakeBuilder.Build();

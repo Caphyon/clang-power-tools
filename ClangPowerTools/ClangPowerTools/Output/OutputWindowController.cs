@@ -2,6 +2,7 @@
 using ClangPowerTools.Error;
 using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
@@ -30,6 +31,8 @@ namespace ClangPowerTools.Output
     public event EventHandler<CloseDataConnectionEventArgs> CloseDataConnectionEvent;
 
     public event EventHandler<HasEncodingErrorEventArgs> HasEncodingErrorEvent;
+
+    public event EventHandler<JsonFilePathArgs> JsonCompilationDbFilePathEvent;
 
     #endregion
 
@@ -89,7 +92,7 @@ namespace ClangPowerTools.Output
         {
           (dte as DTE2).ExecuteCommand("View.Output", string.Empty);
         }
-        DocumentHandler.FocusActiveDocument();
+        VsWindowController.Activate(VsWindowController.PreviousWindow);
       }).SafeFireAndForget();
     }
 
@@ -140,6 +143,9 @@ namespace ClangPowerTools.Output
         return;
       }
 
+      if (!string.IsNullOrWhiteSpace(outputContent.JsonFilePath))
+        JsonCompilationDbFilePathEvent?.Invoke(this, new JsonFilePathArgs(outputContent.JsonFilePath));
+
       Write(outputContent.Text);
     }
 
@@ -153,6 +159,9 @@ namespace ClangPowerTools.Output
 
       if (VSConstants.S_FALSE == outputProcessor.ProcessData(e.Data, Hierarchy, outputContent))
         return;
+
+      if (!string.IsNullOrWhiteSpace(outputContent.JsonFilePath))
+        JsonCompilationDbFilePathEvent?.Invoke(this, new JsonFilePathArgs(outputContent.JsonFilePath));
 
       Write(outputContent.Text);
     }

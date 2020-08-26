@@ -9,7 +9,7 @@ namespace ClangPowerTools.Commands
   /// <summary>
   /// Command handler
   /// </summary>
-  public sealed class CompileCommand : ClangCommand
+  public class CompileCommand : ClangCommand
   {
     #region Properties
 
@@ -33,7 +33,7 @@ namespace ClangPowerTools.Commands
     /// Adds our command handlers for menu (commands must exist in the command table file)
     /// </summary>
     /// <param name="package">Owner package, not null.</param>
-    private CompileCommand(OleMenuCommandService aCommandService, CommandController aCommandController,
+    protected CompileCommand(OleMenuCommandService aCommandService, CommandController aCommandController,
       AsyncPackage aPackage, Guid aGuid, int aId)
         : base(aPackage, aGuid, aId)
     {
@@ -68,9 +68,9 @@ namespace ClangPowerTools.Commands
     }
 
 
-    public async Task RunClangCompileAsync(int aCommandId, CommandUILocation commandUILocation)
+    public async Task RunClangCompileAsync(int aCommandId, CommandUILocation commandUILocation, bool jsonCompilationDbActive = false)
     {
-      await PrepareCommmandAsync(commandUILocation);
+      await PrepareCommmandAsync(commandUILocation, jsonCompilationDbActive);
 
       await Task.Run(() =>
       {
@@ -78,7 +78,7 @@ namespace ClangPowerTools.Commands
         {
           try
           {
-            RunScript(aCommandId);
+            RunScript(aCommandId, jsonCompilationDbActive);
           }
           catch (Exception exception)
           {

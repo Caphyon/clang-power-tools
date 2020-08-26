@@ -108,7 +108,7 @@ namespace ClangPowerTools.Commands
               silentFileController.SilentFiles(dte2.Documents);
             }
 
-            if (tidySettings.DetectClangTidyFile && mItemsCollector.HaveItems)
+            if (tidySettings.DetectClangTidyFile && !mItemsCollector.IsEmpty)
             {
               // Check for .clang-tidy congif file
               if (FileSystem.SearchAllTopDirectories(mItemsCollector.Items[0].GetPath(), FileSystem.ConfigClangTidyFileName))
@@ -120,7 +120,7 @@ namespace ClangPowerTools.Commands
               settingsHandlder.SaveSettings();
             }
 
-            RunScript(aCommandId);
+            RunScript(aCommandId, false);
           }
           catch (Exception exception)
           {

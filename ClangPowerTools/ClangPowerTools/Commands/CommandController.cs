@@ -105,6 +105,11 @@ namespace ClangPowerTools
         await StopCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kStopClang);
       }
 
+      if (JsonCompilationDatabaseCommand.Instance == null)
+      {
+        await JsonCompilationDatabaseCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kJsonCompilationDatabase);
+      }
+
       if (SettingsCommand.Instance == null)
       {
         await SettingsCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kSettingsId);
@@ -237,6 +242,15 @@ namespace ClangPowerTools
             IgnoreCompileCommand.Instance.RunIgnoreCompileCommand();
             break;
           }
+        case CommandIds.kJsonCompilationDatabase:
+          {
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kJsonCompilationDatabase);
+
+            await JsonCompilationDatabaseCommand.Instance.ExportAsync();
+            OnAfterClangCommand();
+            break;
+          }
         default:
           break;
       }
@@ -299,7 +313,6 @@ namespace ClangPowerTools
         DisplayStartedMessage(aCommandId, true);
     }
 
-
     private void OnClangCommandBegin(ClearEventArgs e)
     {
       ClearErrorListEvent?.Invoke(this, e);
@@ -335,7 +348,8 @@ namespace ClangPowerTools
 
       DisplayFinishedMessage(false);
 
-      OnErrorDetected(new EventArgs());
+      if (currentCommand != CommandIds.kJsonCompilationDatabase)
+        OnErrorDetected(new EventArgs());
     }
 
     protected void OnErrorDetected(EventArgs e)
@@ -464,7 +478,7 @@ namespace ClangPowerTools
 
       var itemsCollector = new ItemsCollector();
       itemsCollector.CollectSelectedProjectItems();
-      command.Enabled = itemsCollector.HaveItems;
+      command.Enabled = !itemsCollector.IsEmpty;
     }
 
     /// <summary>
@@ -481,14 +495,7 @@ namespace ClangPowerTools
       {
         if (SolutionInfo.AreToolbarCommandsEnabled() == false)
         {
-          if (command.CommandID.ID == CommandIds.kClangFormatToolbarId && SolutionInfo.ActiveDocumentValidation())
-          {
-            command.Enabled = true;
-          }
-          else
-          {
-            command.Enabled = false;
-          }
+          command.Enabled = command.CommandID.ID == CommandIds.kClangFormatToolbarId && SolutionInfo.ActiveDocumentValidation();
           return;
         }
       }
@@ -502,6 +509,11 @@ namespace ClangPowerTools
       {
         command.Visible = command.Enabled = false;
       }
+      //else if (command.CommandID.ID == CommandIds.kJsonCompilationDatabase)
+      //{
+      //  ItemsCollector itemsCollector = new ItemsCollector(true);
+      //  command.Visible = command.Enabled = itemsCollector.SolutionOrProjectIsSelected();
+      //}
       else if (vsBuildRunning && command.CommandID.ID != CommandIds.kSettingsId)
       {
         command.Visible = command.Enabled = false;
@@ -643,6 +655,8 @@ namespace ClangPowerTools
 
     public void OnWindowActivated(Window GotFocus, Window LostFocus)
     {
+      VsWindowController.SetPreviousActiveWindow(LostFocus);
+
       if (ReleaseNotesView.WasShown == false)
       {
         var releaseNotesView = new ReleaseNotesView(true);

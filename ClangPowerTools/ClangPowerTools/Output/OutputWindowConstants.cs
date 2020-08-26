@@ -18,7 +18,8 @@ namespace ClangPowerTools
       {CommandIds.kTidyFixId, "Clang Tidy-Fix"},
       {CommandIds.kTidyFixToolbarId, "Clang Tidy-Fix"},
       {CommandIds.kClangFormat, "Clang Format"},
-      {CommandIds.kClangFormatToolbarId, "Clang Format"}
+      {CommandIds.kClangFormatToolbarId, "Clang Format"},
+      {CommandIds.kJsonCompilationDatabase, "JSON Compilation Database"}
     };
 
     #endregion

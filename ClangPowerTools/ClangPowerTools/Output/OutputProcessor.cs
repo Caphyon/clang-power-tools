@@ -30,7 +30,15 @@ namespace ClangPowerTools.Output
     public int ProcessData(string aMessage, IVsHierarchy aHierarchy, OutputContentModel aOutputContent)
     {
       aOutputContent.Buffer.Add(aMessage);
-      
+
+      var text = String.Join("\n", aOutputContent.Buffer.ToList()) + "\n";
+
+      if (mErrorDetector.Detect(text, ErrorParserConstants.kJsonCompilationDbFilePathRegex, out Match matchResult))
+      {
+        aOutputContent.JsonFilePath = GetJsonFilePath(matchResult);
+        return VSConstants.S_OK;
+      }
+
       if (mErrorDetector.LlvmIsMissing(aMessage))
       {
         aOutputContent.MissingLLVM = true;
@@ -42,8 +50,7 @@ namespace ClangPowerTools.Output
         aOutputContent.HasEncodingError = true;
       }
 
-      var text = String.Join("\n", aOutputContent.Buffer.ToList()) + "\n";
-      if (mErrorDetector.Detect(text, out Match aMatchResult))
+      if (mErrorDetector.Detect(text, ErrorParserConstants.kErrorMessageRegex, out Match aMatchResult))
       {
         GetOutputAndErrors(text, aHierarchy, out string outputText, out List<TaskErrorModel> aDetectedErrors);
         aOutputContent.Text = outputText;
@@ -66,13 +73,13 @@ namespace ClangPowerTools.Output
 
     #region Private Methods
 
-    private void GetOutputAndErrors(string aText, IVsHierarchy aHierarchy, 
+    private void GetOutputAndErrors(string aText, IVsHierarchy aHierarchy,
       out string aOutputText, out List<TaskErrorModel> aDetectedErrors)
     {
       var aOutputBuilder = new StringBuilder();
       aDetectedErrors = new List<TaskErrorModel>();
 
-      while (mErrorDetector.Detect(aText, out Match aMatchResult))
+      while (mErrorDetector.Detect(aText, ErrorParserConstants.kErrorMessageRegex, out Match aMatchResult))
       {
         aDetectedErrors.Add(GetDetectedError(aHierarchy, aMatchResult));
         aOutputBuilder.Append(GetOutput(ref aText, aDetectedErrors.Last().FullMessage));
@@ -101,6 +108,8 @@ namespace ClangPowerTools.Output
       return substringBefore + aSearchedSubstring;
     }
 
+
+    private string GetJsonFilePath(Match match) => match.Groups[0].Value;
 
     #endregion
 

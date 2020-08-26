@@ -14,25 +14,28 @@ namespace ClangPowerTools
   public class ItemsCollector
   {
     #region Members
+
     private readonly Array selectedItems;
     private readonly DTE2 dte2;
+    private readonly bool jsonCompilationDbActive;
 
     #endregion
 
     #region Constructor
 
-    public ItemsCollector()
+    public ItemsCollector(bool jsonCompilationActive = false)
     {
       dte2 = (DTE2)VsServiceProvider.GetService(typeof(DTE));
       selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
+      jsonCompilationDbActive = jsonCompilationActive;
     }
 
-    #endregion 
+    #endregion
 
     #region Properties
 
     public List<IItem> Items { get; private set; } = new List<IItem>();
-    public bool HaveItems => Items.Count != 0;
+    public bool IsEmpty => Items.Count == 0;
 
     #endregion
 
@@ -60,23 +63,22 @@ namespace ClangPowerTools
         if (dte == null)
           return;
 
-        // TODO - dte.ActiveDocument is not initialized when package manager is open
         Document activeDocument = null;
         try
         {
           activeDocument = dte.ActiveDocument;
         }
-        catch(Exception)
+        catch (Exception)
         {
           return;
         }
 
-        if (activeDocument == null || activeDocument.ProjectItem == null) 
+        if (activeDocument == null || activeDocument.ProjectItem == null)
           return;
- 
+
         IItem item = null;
         var projectName = activeDocument.ProjectItem.ContainingProject.FullName;
-        
+
         if (SolutionInfo.IsOpenFolderModeActive())
         {
           item = new CurrentDocument(activeDocument);
@@ -129,10 +131,16 @@ namespace ClangPowerTools
     /// </summary>
     public List<string> GetDocumentsToEncode()
     {
-        CollectCurrentProjectItems();
-        HashSet<string> selectedFiles = new HashSet<string>();
-        Items.ForEach(i => selectedFiles.Add(i.GetPath()));
-        return selectedFiles.ToList();
+      CollectCurrentProjectItems();
+      HashSet<string> selectedFiles = new HashSet<string>();
+      Items.ForEach(i => selectedFiles.Add(i.GetPath()));
+      return selectedFiles.ToList();
+    }
+
+    public bool SolutionOrProjectIsSelected()
+    {
+      CollectSelectedItems();
+      return Items.Count > 0;
     }
 
     /// <summary>
@@ -148,7 +156,11 @@ namespace ClangPowerTools
         if (item.Object is Solution)
         {
           var solution = item.Object as Solution;
-          GetProjectsFromSolution(solution);
+
+          if (jsonCompilationDbActive)
+            Items.Add(new CurrentSolution(solution));
+          else
+            GetProjectsFromSolution(solution);
         }
         else if (item.Object is Project)
         {

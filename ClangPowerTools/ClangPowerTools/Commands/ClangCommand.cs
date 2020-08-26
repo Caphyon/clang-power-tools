@@ -101,24 +101,27 @@ namespace ClangPowerTools
     #region Protected Methods
 
 
-    protected void RunScript(int aCommandId)
+    protected void RunScript(int aCommandId, bool jsonCompilationDbActive)
     {
       string runModeParameters = ScriptGenerator.GetRunModeParamaters();
-      string genericParameters = ScriptGenerator.GetGenericParamaters(aCommandId, VsEdition, VsVersion);
-
+      string genericParameters = ScriptGenerator.GetGenericParamaters(aCommandId, VsEdition, VsVersion, jsonCompilationDbActive);
 
       CMakeBuilder cMakeBuilder = new CMakeBuilder();
       cMakeBuilder.Build();
 
-      InvokeCommand(runModeParameters, genericParameters);
+      if (jsonCompilationDbActive)
+        ExportJsonCompilationDatabase(runModeParameters, genericParameters);
+      else
+        Compile(runModeParameters, genericParameters);
 
       cMakeBuilder.ClearBuildCashe();
     }
 
     //Collect files
-    protected IEnumerable<IItem> CollectItemsDependingOnCommandLocation(CommandUILocation commandUILocation = CommandUILocation.ContextMenu)
+    protected IEnumerable<IItem> CollectItemsDependingOnCommandLocation(
+      CommandUILocation commandUILocation = CommandUILocation.ContextMenu, bool jsonCompilationDbActive = false)
     {
-      mItemsCollector = new ItemsCollector();
+      mItemsCollector = new ItemsCollector(jsonCompilationDbActive);
       switch (commandUILocation)
       {
         case CommandUILocation.Toolbar:
@@ -144,7 +147,7 @@ namespace ClangPowerTools
       }
     }
 
-    protected async Task PrepareCommmandAsync(CommandUILocation commandUILocation)
+    protected async Task PrepareCommmandAsync(CommandUILocation commandUILocation, bool jsonCompilationDbActive = false)
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 
@@ -154,7 +157,7 @@ namespace ClangPowerTools
         return;
 
       AutomationUtil.SaveDirtyProjects((dte as DTE2).Solution);
-      CollectItemsDependingOnCommandLocation(commandUILocation);
+      CollectItemsDependingOnCommandLocation(commandUILocation, jsonCompilationDbActive);
     }
 
     protected void OnActiveFileCheck(ActiveDocumentEventArgs e)
@@ -181,7 +184,7 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private void InvokeCommand(string runModeParameters, string genericParameters)
+    private void Compile(string runModeParameters, string genericParameters)
     {
       var vsSolution = SolutionInfo.IsOpenFolderModeActive() == false ?
         (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution)) : null;
@@ -227,6 +230,32 @@ namespace ClangPowerTools
       {
         MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
+    }
+
+    private void ExportJsonCompilationDatabase(string runModeParameters, string genericParameters)
+    {
+      if (mItemsCollector.IsEmpty)
+        return;
+
+      var item = mItemsCollector.Items[0];
+
+      if (item is CurrentSolution)
+        Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), genericParameters, "'");
+      else if (item is CurrentProject)
+      {
+        var itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item, true);
+        Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
+      }
+      else if (item is CurrentProjectItem)
+      {
+        var itemRelatedParameters = mItemsCollector.Items.Count == 1 ?
+          ScriptGenerator.GetItemRelatedParameters(item, true) : ScriptGenerator.GetItemRelatedParameters(mItemsCollector.Items, true);
+
+        Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
+      }
+
+      PowerShellWrapper.Invoke(Script, runningProcesses);
+      OnDataStreamClose(new CloseDataStreamingEventArgs(false));
     }
 
     #endregion
