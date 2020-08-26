@@ -6,7 +6,7 @@
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   Title="Format Style Diff"
-  MinWidth="900"
+  MinWidth="1000"
   MinHeight="750"
   d:DataContext="{d:DesignInstance local:DiffViewModel,
                                    IsDesignTimeCreatable=True}"
@@ -121,7 +121,7 @@
       </Grid.RowDefinitions>
 
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="280" />
+        <ColumnDefinition Width="290" />
       </Grid.ColumnDefinitions>
 
       <!--  Title  -->
@@ -143,7 +143,7 @@
         BorderThickness="1">
         <TextBox
           Name="FormatOptions"
-          Width="300"
+          Width="290"
           Background="Transparent"
           BorderThickness="0"
           FontSize="12"
