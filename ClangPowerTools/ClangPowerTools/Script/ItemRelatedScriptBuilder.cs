@@ -1,6 +1,8 @@
 ﻿using ClangPowerTools.Builder;
 using ClangPowerTools.Helpers;
 using EnvDTE;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ClangPowerTools.Script
 {
@@ -17,6 +19,9 @@ namespace ClangPowerTools.Script
     /// The current item for which the script will be build
     /// </summary>
     private readonly IItem mItem;
+
+    private readonly List<IItem> items;
+
     private readonly bool jsonCompilationDbActive;
 
     #endregion
@@ -37,6 +42,11 @@ namespace ClangPowerTools.Script
       jsonCompilationDbActive = jsonCompilationDb;
     }
 
+    public ItemRelatedScriptBuilder(List<IItem> itemsCollection, bool jsonCompilationDb)
+    {
+      items = itemsCollection;
+      jsonCompilationDbActive = jsonCompilationDb;
+    }
 
     #endregion
 
@@ -63,14 +73,39 @@ namespace ClangPowerTools.Script
       }
       else
       {
-        if (mItem is CurrentProjectItem)
+        // Create script for single file / project
+        if (mItem != null)
         {
-          CreateScriptForProjectItem();
+          CreateScriptForSingleFile();
         }
-        else if (mItem is CurrentProject)
+        else if (items != null && items.Count > 0)
         {
-          CreateScriptForProject();
+          CreateScriptForFilesCollection();
         }
+      }
+    }
+
+    private void CreateScriptForSingleFile()
+    {
+      if (mItem is CurrentProjectItem)
+      {
+        CreateScriptForProjectItem();
+      }
+      else if (mItem is CurrentProject)
+      {
+        CreateScriptForProject();
+      }
+    }
+
+    private void CreateScriptForFilesCollection()
+    {
+      if (items[0] is CurrentProjectItem)
+      {
+        CreateScriptForProjectItemCollection();
+      }
+      else if (items[0] is CurrentProject)
+      {
+        CreateScriptForProject();
       }
     }
 
@@ -96,6 +131,23 @@ namespace ClangPowerTools.Script
 
       mScript = $"{mScript} {projectData}" +
         $"{ScriptConstants.kFile} ''{filePath}'' {ScriptConstants.kActiveConfiguration} " +
+        $"''{configuration}|{platform}''";
+    }
+
+    private void CreateScriptForProjectItemCollection()
+    {
+      ProjectItem projectItem = items[0].GetObject() as ProjectItem;
+      string containingProject = projectItem.ContainingProject.FullName;
+
+      var filesPath = string.Join("'',''", items.Select(projItem => ((ProjectItem)projItem.GetObject()).Properties.Item("FullPath").Value));
+      var configuration = ProjectConfigurationHandler.GetConfiguration(projectItem.ContainingProject);
+      var platform = ProjectConfigurationHandler.GetPlatform(projectItem.ContainingProject);
+
+      var projectData = jsonCompilationDbActive ?
+        string.Empty : $"{ScriptConstants.kProject} ''{containingProject}'' ";
+
+      mScript = $"{mScript} {projectData}" +
+        $"{ScriptConstants.kFile} (''{filesPath}'') {ScriptConstants.kActiveConfiguration} " +
         $"''{configuration}|{platform}''";
     }
 
