@@ -77,7 +77,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 6.1" />
+        Text="version 6.2" />
 
       <ListView
         Grid.Row="3"
@@ -118,62 +118,8 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Team Cloud Settings - a faster way to store and share your configuration"
+          Text="• Export JSON Compilation Database"
           TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Quick access to your profile information from the settings panel"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Clang-Format can be used to format C# files"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Microsoft style integration for Clang-Format"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Possibility to select multiples Clang-Tidy predefined checks at once"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Clang-Format can be configured using the '_clang-format' file"
-          TextWrapping="Wrap" />
-
-
-
-
 
         <!--  Bug Fixes  -->
         <TextBox
@@ -192,7 +138,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Exported Clang Tidy checks do not disable the default ones"
+          Text="• Always focus on the active document after running a command"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -202,47 +148,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Reset Settings does not refresh the panels; it requires a window reload"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Tooltip information is shown just over the option name"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• The output window is not cleared after running Clang-Format"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Fallback style is enabled for all the Clang-Format Style options"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Editor focus is lost when displaying a log message"
+          Text="• Context Menu selection issue due to &quot;Track Active Item in Solution Explorer&quot;"
           TextWrapping="Wrap" />
 
       </ListView>
