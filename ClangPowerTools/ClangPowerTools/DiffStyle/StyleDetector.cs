@@ -13,8 +13,10 @@ namespace ClangPowerTools.DiffStyle
     #region Members
 
     private List<string> filesContent;
-    private readonly ConcurrentDictionary<EditorStyles, List<IFormatOption>> styleOptions;
+    private readonly ConcurrentDictionary<EditorStyles, (List<IFormatOption>, int)> styleOptions;
+    private readonly ConcurrentDictionary<EditorStyles, int> detectedPredefinedStyles;
     private readonly Dictionary<EditorStyles, List<IFormatOption>> defaultStyles;
+    private readonly object defaultLock;
 
     private readonly List<string> filePaths = new List<string>()
     { "C:\\Users\\horat\\OneDrive\\Desktop\\A.cpp",
@@ -28,8 +30,6 @@ namespace ClangPowerTools.DiffStyle
 
     #region Properties
 
-    public EditorStyles FormatStyle { get; set; }
-    public List<IFormatOption> FormatOptions { get; set; }
     public static bool StopDetection { get; set; } = false;
 
     #endregion
@@ -38,8 +38,10 @@ namespace ClangPowerTools.DiffStyle
 
     public StyleDetector()
     {
-      styleOptions = new ConcurrentDictionary<EditorStyles, List<IFormatOption>>();
+      styleOptions = new ConcurrentDictionary<EditorStyles, (List<IFormatOption>, int)>();
+      detectedPredefinedStyles = new ConcurrentDictionary<EditorStyles, int>();
       filesContent = new List<string>();
+      defaultLock = new object();
       defaultStyles = CreateStyles();
     }
 
@@ -49,105 +51,80 @@ namespace ClangPowerTools.DiffStyle
 
     public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(string input)
     {
-      //filesContent.Add(input);
-      //var detectedStyles = DetectFileStyle();
-      //await DetectFileOptionsAsync(detectedStyles);
+      filesContent.Add(input);
+      await Task.WhenAll(filesContent.Select(e => DetectFileStyleAsync(e)));
+      var detectedStyles = GetMatchingStyles(detectedPredefinedStyles);
+      await Task.WhenAll(detectedStyles.Select(e => DetectFileOptionsAsync(e)));
 
-      await DetectStyleOptionsAsync(filePaths);
+      //await DetectStyleOptionsAsync(filePaths);
 
-      return (FormatStyle, FormatOptions);
+      return GetStyleByLevenshtein(styleOptions);
     }
 
     public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(List<string> filePaths)
     {
       filesContent = FileSystem.ReadContentFromMultipleFiles(filePaths);
-      var detectedStyles = DetectFileStyle();
-      await DetectFileOptionsAsync(detectedStyles);
 
-      return (FormatStyle, FormatOptions);
+      await Task.WhenAll(filesContent.Select(e => DetectFileStyleAsync(e)));
+      var detectedStyles = GetMatchingStyles(detectedPredefinedStyles);
+      await Task.WhenAll(detectedStyles.Select(e => DetectFileOptionsAsync(e)));
+
+      return GetStyleByLevenshtein(styleOptions);
     }
 
     #endregion
 
     #region Private Methods
 
-    private HashSet<EditorStyles> DetectFileStyle()
-    {
-      // TODO could find column limit here
-      var detectedPredefinedStyles = new Dictionary<EditorStyles, int>();
-      foreach (var content in filesContent)
-      {
-        FindMatchingStyleForContent(content);
-        if (detectedPredefinedStyles.ContainsKey(FormatStyle))
-        {
-          detectedPredefinedStyles[FormatStyle]++;
-        }
-        else
-        {
-          detectedPredefinedStyles.Add(FormatStyle, 1);
-        }
-      }
-      return GetMatchingStyles(detectedPredefinedStyles);
-    }
-
-    private async Task DetectFileOptionsAsync(HashSet<EditorStyles> detectedStyles)
-    {
-      var stylesLevenshtein = new ConcurrentDictionary<EditorStyles, int>();
-
-      await Task.WhenAll(filesContent.Select(e => TestAsync(detectedStyles, stylesLevenshtein, e)));
-
-      if (detectedStyles.Count > 1)
-      {
-        SetStyleByLevenshtein(stylesLevenshtein);
-      }
-      else
-      {
-        FormatStyle = detectedStyles.First();
-        FormatOptions = styleOptions[FormatStyle];
-      }
-
-    }
-
-    private async Task TestAsync(HashSet<EditorStyles> detectedStyles, ConcurrentDictionary<EditorStyles, int> stylesLevenshtein, string content)
+    private async Task DetectFileStyleAsync(string content)
     {
       await Task.Run(() =>
       {
-        foreach (var style in detectedStyles)
+        foreach (var style in defaultStyles)
         {
-          var formatOptions = new List<IFormatOption>(defaultStyles[style]);
-          styleOptions.TryAdd(style, formatOptions);
-
-          foreach (var option in formatOptions)
+          var levenshtein = GetLevenshteinAfterFormat(content, style.Key, style.Value);
+          lock (defaultLock)
           {
-            SetFormatOption(option, content, style, formatOptions);
-          }
-
-          if (detectedStyles.Count > 1)
-          {
-            if (stylesLevenshtein.ContainsKey(style))
+            if (detectedPredefinedStyles.ContainsKey(style.Key))
             {
-              stylesLevenshtein[style] += GetLevenshteinAfterFormat(content, style, formatOptions);
+              detectedPredefinedStyles[style.Key] += levenshtein;
             }
             else
             {
-              stylesLevenshtein.TryAdd(style, GetLevenshteinAfterFormat(content, style, formatOptions));
+              detectedPredefinedStyles.TryAdd(style.Key, levenshtein);
             }
           }
         }
       });
     }
 
-    private HashSet<EditorStyles> GetMatchingStyles(Dictionary<EditorStyles, int> detectedStyles)
+    private async Task DetectFileOptionsAsync(EditorStyles style)
+    {
+      await Task.Run(() =>
+      {
+        var formatOptions = new List<IFormatOption>(defaultStyles[style]);
+        var levenshtein = 0;
+        foreach (var content in filesContent)
+        {
+          foreach (var option in formatOptions)
+          {
+            SetFormatOption(option, content, style, formatOptions);
+          }
+          levenshtein += GetLevenshteinAfterFormat(content, style, formatOptions);
+        }
+        lock (defaultLock)
+        {
+          styleOptions.TryAdd(style, (formatOptions, levenshtein));
+        }
+      });
+    }
+
+
+    private HashSet<EditorStyles> GetMatchingStyles(ConcurrentDictionary<EditorStyles, int> detectedStyles)
     {
       var matchingStyles = new HashSet<EditorStyles>();
-      if (detectedStyles.Count == 1)
-      {
-        matchingStyles.Add(detectedStyles.First().Key);
-        return matchingStyles;
-      }
-
       var sorted = detectedStyles.OrderBy(e => e.Value);
-      var timesStyleFound = sorted.Last().Value;
+      var timesStyleFound = sorted.First().Value;
 
       foreach (var item in sorted)
       {
@@ -160,34 +137,10 @@ namespace ClangPowerTools.DiffStyle
       return matchingStyles;
     }
 
-    private void FindMatchingStyleForContent(string content)
+    private (EditorStyles, List<IFormatOption>) GetStyleByLevenshtein(ConcurrentDictionary<EditorStyles, (List<IFormatOption>, int)> stylesLevenshtein)
     {
-      var levenshteinDiffs = new List<int>();
-      var styleFormatter = new StyleFormatter();
-
-      foreach (var style in defaultStyles)
-      {
-        if (StopDetection) return;
-        var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
-        var formattedText = styleFormatter.FormatText(content, style.Value, style.Key);
-        diffMatchPatchWrapper.Diff(content, formattedText);
-
-        levenshteinDiffs.Add(diffMatchPatchWrapper.DiffLevenshtein());
-      }
-
-      var minLevenshtein = GetIndexOfSmallestLevenshtein(levenshteinDiffs);
-      var matchedStyle = defaultStyles.ElementAt(minLevenshtein);
-
-      FormatStyle = matchedStyle.Key;
-      FormatOptions = matchedStyle.Value;
-    }
-
-    private void SetStyleByLevenshtein(ConcurrentDictionary<EditorStyles, int> stylesLevenshtein)
-    {
-      if (stylesLevenshtein.Count < 1) return;
-      var sorted = stylesLevenshtein.OrderByDescending(e => e.Value);
-      FormatStyle = sorted.Last().Key;
-      FormatOptions = styleOptions[FormatStyle];
+      var sorted = stylesLevenshtein.OrderBy(e => e.Value.Item2).First();
+      return (sorted.Key, sorted.Value.Item1);
     }
 
 
@@ -277,12 +230,6 @@ namespace ClangPowerTools.DiffStyle
       diffMatchPatchWrapper.Diff(input, formattedText);
 
       return diffMatchPatchWrapper.DiffLevenshtein();
-    }
-
-    private int GetIndexOfSmallestLevenshtein(List<int> levenshteinDiffs)
-    {
-      var minLevenshtein = levenshteinDiffs.Min();
-      return levenshteinDiffs.IndexOf(minLevenshtein);
     }
 
     private void SetFormatOption(IFormatOption formatOption, string input, EditorStyles formatStyle, List<IFormatOption> formatOptions)
