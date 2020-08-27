@@ -161,7 +161,6 @@ namespace ClangPowerTools
     private static string CreateMultipleToggleFlag(List<ToggleModel> toggleModels)
     {
       var sb = new StringBuilder();
-
       foreach (var item in toggleModels)
       {
         sb.AppendLine(string.Concat("  ", item.Name, ": ", item.Value.ToString().ToLower()));

@@ -95,6 +95,7 @@ namespace ClangPowerTools.DiffStyle
       var stylesLevenshtein = new ConcurrentDictionary<EditorStyles, int>();
 
       await Task.WhenAll(filesContent.Select(e => TestAsync(detectedStyles, stylesLevenshtein, e)));
+
       if (detectedStyles.Count > 1)
       {
         SetStyleByLevenshtein(stylesLevenshtein);
@@ -115,6 +116,7 @@ namespace ClangPowerTools.DiffStyle
         {
           var formatOptions = new List<IFormatOption>(defaultStyles[style]);
           styleOptions.TryAdd(style, formatOptions);
+
           foreach (var option in formatOptions)
           {
             SetFormatOption(option, content, style, formatOptions);
@@ -182,6 +184,7 @@ namespace ClangPowerTools.DiffStyle
 
     private void SetStyleByLevenshtein(ConcurrentDictionary<EditorStyles, int> stylesLevenshtein)
     {
+      if (stylesLevenshtein.Count < 1) return;
       var sorted = stylesLevenshtein.OrderByDescending(e => e.Value);
       FormatStyle = sorted.Last().Key;
       FormatOptions = styleOptions[FormatStyle];
@@ -281,6 +284,7 @@ namespace ClangPowerTools.DiffStyle
       var minLevenshtein = levenshteinDiffs.Min();
       return levenshteinDiffs.IndexOf(minLevenshtein);
     }
+
     private void SetFormatOption(IFormatOption formatOption, string input, EditorStyles formatStyle, List<IFormatOption> formatOptions)
     {
       switch (formatOption)
