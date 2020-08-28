@@ -13,5 +13,10 @@
       return number;
     }
 
+    public static int RoundUp(this int number)
+    {
+      return 10 * ((number + 9) / 10);
+    }
+
   }
 }
