@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Models;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,11 +13,14 @@ namespace ClangPowerTools.DiffStyle
   {
     #region Members
 
-    private List<string> filesContent;
     private readonly ConcurrentDictionary<EditorStyles, (List<IFormatOption>, int)> styleOptions;
     private readonly ConcurrentDictionary<EditorStyles, int> detectedPredefinedStyles;
     private readonly Dictionary<EditorStyles, List<IFormatOption>> defaultStyles;
+    private readonly ConcurrentBag<string> customInput;
+    private readonly ConcurrentBag<int> columnLimits;
+    private readonly ConcurrentBag<int> tabWidths;
     private readonly object defaultLock;
+    private List<string> filesContent;
 
     private readonly List<string> filePaths = new List<string>()
     { "C:\\Users\\horat\\OneDrive\\Desktop\\A.cpp",
@@ -41,8 +45,11 @@ namespace ClangPowerTools.DiffStyle
       styleOptions = new ConcurrentDictionary<EditorStyles, (List<IFormatOption>, int)>();
       detectedPredefinedStyles = new ConcurrentDictionary<EditorStyles, int>();
       filesContent = new List<string>();
+      columnLimits = new ConcurrentBag<int>();
+      tabWidths = new ConcurrentBag<int>();
       defaultLock = new object();
       defaultStyles = CreateStyles();
+      customInput = new ConcurrentBag<string>() { "TabWidth", "ColumnLimit" };
     }
 
     #endregion
@@ -52,29 +59,29 @@ namespace ClangPowerTools.DiffStyle
     public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(string input)
     {
       filesContent.Add(input);
-      await Task.WhenAll(filesContent.Select(e => DetectFileStyleAsync(e)));
-      var detectedStyles = GetMatchingStyles(detectedPredefinedStyles);
-      await Task.WhenAll(detectedStyles.Select(e => DetectFileOptionsAsync(e)));
-
+      await DetectAsync();
       //await DetectStyleOptionsAsync(filePaths);
-
       return GetStyleByLevenshtein(styleOptions);
     }
 
     public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(List<string> filePaths)
     {
       filesContent = FileSystem.ReadContentFromMultipleFiles(filePaths);
-
-      await Task.WhenAll(filesContent.Select(e => DetectFileStyleAsync(e)));
-      var detectedStyles = GetMatchingStyles(detectedPredefinedStyles);
-      await Task.WhenAll(detectedStyles.Select(e => DetectFileOptionsAsync(e)));
-
+      await DetectAsync();
       return GetStyleByLevenshtein(styleOptions);
     }
 
     #endregion
 
     #region Private Methods
+
+    private async Task DetectAsync()
+    {
+      await Task.WhenAll(filesContent.Select(e => CalculateColumTabAsync(e)));
+      await Task.WhenAll(filesContent.Select(e => DetectFileStyleAsync(e)));
+      var detectedStyles = GetMatchingStyles(detectedPredefinedStyles);
+      await Task.WhenAll(detectedStyles.Select(e => DetectFileOptionsAsync(e)));
+    }
 
     private async Task DetectFileStyleAsync(string content)
     {
@@ -112,10 +119,7 @@ namespace ClangPowerTools.DiffStyle
           }
           levenshtein += GetLevenshteinAfterFormat(content, style, formatOptions);
         }
-        lock (defaultLock)
-        {
-          styleOptions.TryAdd(style, (formatOptions, levenshtein));
-        }
+        styleOptions.TryAdd(style, (formatOptions, levenshtein));
       });
     }
 
@@ -203,22 +207,29 @@ namespace ClangPowerTools.DiffStyle
     {
       if (FormatOptionsInputValues.inputValues.ContainsKey(inputModel.Name) == false) return;
 
-      string[] inputValues = FormatOptionsInputValues.inputValues[inputModel.Name];
-      var previousInput = inputModel.Input;
-
-      var inputValuesLevenshtein = new Dictionary<string, int>();
-
-      foreach (var item in inputValues)
+      if (customInput.Contains(inputModel.Name))
       {
-        if (StopDetection) return;
-        inputModel.Input = item;
-        inputValuesLevenshtein.Add(item, GetLevenshteinAfterFormat(input, formatStyle, formatOptions));
+        if (int.TryParse(inputModel.Input, out int result))
+        {
+          inputModel.Input = SetColumnTab(result, inputModel.Name);
+        }
       }
+      else
+      {
+        var inputValuesLevenshtein = new Dictionary<string, int>();
+        string[] inputValues = FormatOptionsInputValues.inputValues[inputModel.Name];
+        var previousInput = inputModel.Input;
+        foreach (var item in inputValues)
+        {
+          if (StopDetection) return;
+          inputModel.Input = item;
+          inputValuesLevenshtein.Add(item, GetLevenshteinAfterFormat(input, formatStyle, formatOptions));
+        }
 
-      var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
-
-      inputModel.Input = inputValue.Value == inputValuesLevenshtein[previousInput] ?
-                         previousInput : inputValue.Key;
+        var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
+        inputModel.Input = inputValue.Value == inputValuesLevenshtein[previousInput] ?
+                           previousInput : inputValue.Key;
+      }
     }
 
     private int GetLevenshteinAfterFormat(string input, EditorStyles formatStyle, List<IFormatOption> formatOptions)
@@ -262,6 +273,50 @@ namespace ClangPowerTools.DiffStyle
         { EditorStyles.WebKit, new FormatOptionsWebKitData().FormatOptions }
       };
     }
+
+    private async Task CalculateColumTabAsync(string content)
+    {
+      await Task.Run(() =>
+      {
+        var lines = content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+        var lineLengths = new List<int>();
+        var tabs = new List<int>();
+        foreach (var line in lines)
+        {
+          lineLengths.Add(line.Length);
+          var tabCount = line.TakeWhile(e => e == '\t').Count();
+          tabs.Add(tabCount);
+        }
+
+        columnLimits.Add(lineLengths.Max());
+        tabWidths.Add(tabs.Max());
+      });
+    }
+
+    private string SetColumnTab(int optionInput, string optionName)
+    {
+      switch (optionName)
+      {
+        case "TabWidth":
+          var maxTabWidth = tabWidths.Max();
+          if (maxTabWidth > optionInput)
+          {
+            return maxTabWidth.RoundUp().ToString();
+          }
+          break;
+        case "ColumnLimit":
+          var maxColumnLimit = columnLimits.Max();
+          if (maxColumnLimit > optionInput)
+          {
+            return maxColumnLimit.RoundUp().ToString();
+          }
+          break;
+        default:
+          break;
+      }
+      return optionInput.ToString();
+    }
+
 
     #endregion
 
