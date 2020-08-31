@@ -14,14 +14,15 @@ namespace ClangPowerTools.DiffStyle
   {
     #region Members
 
-    private readonly ConcurrentDictionary<EditorStyles, (List<IFormatOption>, int)> styleOptions;
-    private readonly ConcurrentDictionary<EditorStyles, int> detectedPredefinedStyles;
+    private EditorStyles detectedStyle;
+    private List<string> filesContent;
+    private Dictionary<string, (IFormatOption, bool)> styleOptions;
+    private readonly Dictionary<EditorStyles, int> detectedPredefinedStyles;
     private readonly Dictionary<EditorStyles, List<IFormatOption>> defaultStyles;
     private readonly ConcurrentBag<string> customInput;
     private readonly ConcurrentBag<int> columnLimits;
     private readonly ConcurrentBag<int> tabWidths;
     private readonly object defaultLock;
-    private List<string> filesContent;
 
     private readonly List<string> filePaths = new List<string>()
     { "C:\\Users\\horat\\OneDrive\\Desktop\\A.cpp",
@@ -43,14 +44,14 @@ namespace ClangPowerTools.DiffStyle
 
     public StyleDetector()
     {
-      styleOptions = new ConcurrentDictionary<EditorStyles, (List<IFormatOption>, int)>();
-      detectedPredefinedStyles = new ConcurrentDictionary<EditorStyles, int>();
+      styleOptions = new Dictionary<string, (IFormatOption, bool)>();
+      detectedPredefinedStyles = new Dictionary<EditorStyles, int>();
       filesContent = new List<string>();
       columnLimits = new ConcurrentBag<int>();
       tabWidths = new ConcurrentBag<int>();
       defaultLock = new object();
-      defaultStyles = CreateStyles();
       customInput = new ConcurrentBag<string>() { "TabWidth", "ColumnLimit" };
+      defaultStyles = CreateStyles();
     }
 
     #endregion
@@ -60,23 +61,38 @@ namespace ClangPowerTools.DiffStyle
     public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(string input)
     {
       //filesContent.Add(input);
+      //var stopwatch = new Stopwatch();
+      //stopwatch.Start();
       //await DetectAsync();
-      await DetectStyleOptionsAsync(filePaths);
-      return GetStyleByLevenshtein(styleOptions);
+      return await DetectStyleOptionsAsync(filePaths);
+      //var options = new List<IFormatOption>();
+      ////foreach (var item in styleOptions)
+      ////{
+      ////  options.Add(item.Value.Item1);
+      ////}
+      ////stopwatch.Stop();
+      //return (detectedStyle, options);
     }
 
     public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(List<string> filePaths)
     {
       //filesContent = FileSystem.ReadContentFromMultipleFiles(filePaths);
       var cpps = Directory.GetFiles("C:\\Users\\horat\\OneDrive\\Documente\\ai_advinst\\custact", "*.cpp", SearchOption.AllDirectories);
-      //var hs = Directory.GetFiles("C:\\Users\\horat\\OneDrive\\Documente\\ai_advinst\\custact", "*.h", SearchOption.AllDirectories);
+      var hs = Directory.GetFiles("C:\\Users\\horat\\OneDrive\\Documente\\ai_advinst\\custact", "*.h", SearchOption.AllDirectories);
       filesContent.AddRange(cpps);
 
       var watch = new Stopwatch();
       watch.Start();
       await DetectAsync();
+
+
+      var options = new List<IFormatOption>();
+      foreach (var item in styleOptions)
+      {
+        options.Add(item.Value.Item1);
+      }
       watch.Stop();
-      return GetStyleByLevenshtein(styleOptions);
+      return (detectedStyle, options);
     }
 
     #endregion
@@ -87,8 +103,10 @@ namespace ClangPowerTools.DiffStyle
     {
       await Task.WhenAll(filesContent.Select(e => CalculateColumTabAsync(e)));
       await Task.WhenAll(filesContent.Select(e => DetectFileStyleAsync(e)));
-      var detectedStyles = GetMatchingStyles(detectedPredefinedStyles);
-      await Task.WhenAll(detectedStyles.Select(e => DetectFileOptionsAsync(e)));
+      detectedStyle = GetStyleByLevenshtein(detectedPredefinedStyles);
+      styleOptions = CreateDetectedStyleOptions(detectedStyle);
+
+      await Task.WhenAll(filesContent.Select(e => DetectFileOptionsAsync(e, detectedStyle)));
     }
 
     private async Task DetectFileStyleAsync(string content)
@@ -106,55 +124,30 @@ namespace ClangPowerTools.DiffStyle
             }
             else
             {
-              detectedPredefinedStyles.TryAdd(style.Key, levenshtein);
+              detectedPredefinedStyles.Add(style.Key, levenshtein);
             }
           }
         }
       });
     }
 
-    private async Task DetectFileOptionsAsync(EditorStyles style)
+    private async Task DetectFileOptionsAsync(string content, EditorStyles style)
     {
       await Task.Run(() =>
       {
         var formatOptions = new List<IFormatOption>(defaultStyles[style]);
-        var levenshtein = 0;
-        foreach (var content in filesContent)
+        foreach (var option in formatOptions)
         {
-          foreach (var option in formatOptions)
-          {
-            SetFormatOption(option, content, style, formatOptions);
-          }
-          levenshtein += GetLevenshteinAfterFormat(content, style, formatOptions);
+          SetFormatOption(option, content, style, formatOptions);
         }
-        styleOptions.TryAdd(style, (formatOptions, levenshtein));
       });
     }
 
-
-    private HashSet<EditorStyles> GetMatchingStyles(ConcurrentDictionary<EditorStyles, int> detectedStyles)
+    private EditorStyles GetStyleByLevenshtein(Dictionary<EditorStyles, int> stylesLevenshtein)
     {
-      var matchingStyles = new HashSet<EditorStyles>();
-      var sorted = detectedStyles.OrderBy(e => e.Value);
-      var timesStyleFound = sorted.First().Value;
-
-      foreach (var item in sorted)
-      {
-        if (item.Value == timesStyleFound)
-        {
-          var style = item.Key;
-          matchingStyles.Add(style);
-        }
-      }
-      return matchingStyles;
+      var sorted = stylesLevenshtein.OrderBy(e => e.Value).First();
+      return sorted.Key;
     }
-
-    private (EditorStyles, List<IFormatOption>) GetStyleByLevenshtein(ConcurrentDictionary<EditorStyles, (List<IFormatOption>, int)> stylesLevenshtein)
-    {
-      var sorted = stylesLevenshtein.OrderBy(e => e.Value.Item2).First();
-      return (sorted.Key, sorted.Value.Item1);
-    }
-
 
     /// <summary>
     /// Set all possible values to the MultipleToggleModel and e use Levenshtein Diff to find the best one
@@ -165,6 +158,7 @@ namespace ClangPowerTools.DiffStyle
     {
       var toggleValues = multipleToggleModel.ToggleFlags;
       var inputValuesLevenshtein = new Dictionary<ToggleValues, int>();
+      bool modelChanged = false;
 
       foreach (var modelToggle in toggleValues)
       {
@@ -180,7 +174,19 @@ namespace ClangPowerTools.DiffStyle
         modelToggle.Value = inputValue.Value == inputValuesLevenshtein[previousInput] ?
                                       previousInput : inputValue.Key;
 
+        if (inputValue.Value != inputValuesLevenshtein[previousInput]) modelChanged = true;
         inputValuesLevenshtein.Clear();
+      }
+
+      lock (defaultLock)
+      {
+        if (modelChanged)
+        {
+          if (styleOptions[multipleToggleModel.Name].Item2 == false)
+          {
+            styleOptions[multipleToggleModel.Name] = (multipleToggleModel, true);
+          }
+        }
       }
     }
 
@@ -202,8 +208,21 @@ namespace ClangPowerTools.DiffStyle
 
       var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
 
-      modelToggle.BooleanCombobox = inputValue.Value == inputValuesLevenshtein[previousInput] ?
-                                    previousInput : inputValue.Key;
+      lock (defaultLock)
+      {
+        if (inputValue.Value == inputValuesLevenshtein[previousInput])
+        {
+          modelToggle.BooleanCombobox = previousInput;
+        }
+        else
+        {
+          modelToggle.BooleanCombobox = inputValue.Key;
+          if (styleOptions[modelToggle.Name].Item2 == false)
+          {
+            styleOptions[modelToggle.Name] = (modelToggle, true);
+          }
+        }
+      }
     }
 
     /// <summary>
@@ -235,8 +254,22 @@ namespace ClangPowerTools.DiffStyle
         }
 
         var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
-        inputModel.Input = inputValue.Value == inputValuesLevenshtein[previousInput] ?
-                           previousInput : inputValue.Key;
+
+        lock (defaultLock)
+        {
+          if (inputValue.Value == inputValuesLevenshtein[previousInput])
+          {
+            inputModel.Input = previousInput;
+          }
+          else
+          {
+            inputModel.Input = inputValue.Key;
+            if (styleOptions[inputModel.Name].Item2 == false)
+            {
+              styleOptions[inputModel.Name] = (inputModel, true);
+            }
+          }
+        }
       }
     }
 
@@ -280,6 +313,17 @@ namespace ClangPowerTools.DiffStyle
         { EditorStyles.Mozilla, new FormatOptionsMozillaData().FormatOptions },
         { EditorStyles.WebKit, new FormatOptionsWebKitData().FormatOptions }
       };
+    }
+
+    private Dictionary<string, (IFormatOption, bool)> CreateDetectedStyleOptions(EditorStyles style)
+    {
+      var defaultOptions = new List<IFormatOption>(defaultStyles[style]);
+      var options = new Dictionary<string, (IFormatOption, bool)>();
+      foreach (var item in defaultOptions)
+      {
+        options.Add(item.Name, (item, false));
+      }
+      return options;
     }
 
     private async Task CalculateColumTabAsync(string content)
