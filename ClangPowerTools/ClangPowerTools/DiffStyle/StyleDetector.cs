@@ -1,9 +1,10 @@
-﻿using ClangPowerTools.Helpers;
-using ClangPowerTools.MVVM.Interfaces;
+﻿using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -58,16 +59,23 @@ namespace ClangPowerTools.DiffStyle
 
     public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(string input)
     {
-      filesContent.Add(input);
-      await DetectAsync();
-      //await DetectStyleOptionsAsync(filePaths);
+      //filesContent.Add(input);
+      //await DetectAsync();
+      await DetectStyleOptionsAsync(filePaths);
       return GetStyleByLevenshtein(styleOptions);
     }
 
     public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(List<string> filePaths)
     {
-      filesContent = FileSystem.ReadContentFromMultipleFiles(filePaths);
+      //filesContent = FileSystem.ReadContentFromMultipleFiles(filePaths);
+      var cpps = Directory.GetFiles("C:\\Users\\horat\\OneDrive\\Documente\\ai_advinst\\custact", "*.cpp", SearchOption.AllDirectories);
+      //var hs = Directory.GetFiles("C:\\Users\\horat\\OneDrive\\Documente\\ai_advinst\\custact", "*.h", SearchOption.AllDirectories);
+      filesContent.AddRange(cpps);
+
+      var watch = new Stopwatch();
+      watch.Start();
       await DetectAsync();
+      watch.Stop();
       return GetStyleByLevenshtein(styleOptions);
     }
 
