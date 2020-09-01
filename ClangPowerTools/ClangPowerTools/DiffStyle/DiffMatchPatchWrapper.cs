@@ -162,11 +162,17 @@ namespace ClangPowerTools
     /// <param name="outputOperationPerLine"></param>
     private void DetectOperationPerLine(string input, string output, List<(object, LineChanges)> inputOperationPerLine, List<(object, LineChanges)> outputOperationPerLine)
     {
-      // TODO If input and output are equal don't equalize ##############
-      // Both inputLines and outputLines must be equal. The method is run on both
-      // This is done my adding lines that contain just Environment.NewLine to the inputLines and outputLines
-      List<string> inputLines = EqualizeDocumentLength(output, input);
-      List<string> outputLines = EqualizeDocumentLength(input, output);
+      var inputLines = input.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).ToList();
+      var outputLines = output.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).ToList();
+      bool equalTexts = inputLines.Count == outputLines.Count;
+
+      if (equalTexts == false)
+      {
+        // Both inputLines and outputLines must be equal. The method is run on both
+        // This is done my adding lines that contain just Environment.NewLine to the inputLines and outputLines
+        inputLines = EqualizeDocumentLength(output, input);
+        outputLines = EqualizeDocumentLength(input, output);
+      }
 
       if (inputLines.Count != outputLines.Count) return;
 
@@ -174,30 +180,30 @@ namespace ClangPowerTools
       {
         var lineDiffs = GetDiff(inputLines[index], outputLines[index]);
 
-        if (outputLines[index] == Environment.NewLine)
+        if (equalTexts == false && outputLines[index] == Environment.NewLine)
         {
           inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
           outputOperationPerLine.Add((outputLines[index], LineChanges.NEWLINE));
           continue;
         }
-        else if (inputLines[index] == Environment.NewLine)
+        else if (equalTexts == false && inputLines[index] == Environment.NewLine)
         {
           outputOperationPerLine.Add((outputLines[index], LineChanges.HASCHANGES));
           inputOperationPerLine.Add((inputLines[index], LineChanges.NEWLINE));
           continue;
         }
 
-        var containsChanges = lineDiffs.Any(e => e.operation != Operation.EQUAL);
-        if (containsChanges)
+        NumberOfOperations(lineDiffs, out int inserations, out int deletions, out int equalities);
+        if (inserations > 0 || deletions > 0)
         {
-          inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
-
-          if (lineDiffs.Last().operation != Operation.EQUAL)
+          if (inserations > 0 && deletions > 0 || equalities == 0)
           {
+            inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
             outputOperationPerLine.Add((outputLines[index], LineChanges.HASCHANGES));
           }
           else
           {
+            inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
             outputOperationPerLine.Add((new List<Diff>(lineDiffs), LineChanges.HASCHANGES));
           }
         }
@@ -208,6 +214,7 @@ namespace ClangPowerTools
         }
       }
     }
+
 
     /// <summary>
     /// Run Diff and interpret operations to recreate the output as a list of lines.
@@ -355,6 +362,30 @@ namespace ClangPowerTools
       List<Diff> diff = diffMatchPatch.diff_main(inputLine, outputLine);
       diffMatchPatch.diff_cleanupSemantic(diff);
       return diff;
+    }
+
+    private static void NumberOfOperations(List<Diff> lineDiffs, out int inserations, out int deletions, out int equalities)
+    {
+      inserations = 0;
+      deletions = 0;
+      equalities = 0;
+      foreach (var item in lineDiffs)
+      {
+        switch (item.operation)
+        {
+          case Operation.INSERT:
+            inserations++;
+            break;
+          case Operation.DELETE:
+            deletions++;
+            break;
+          case Operation.EQUAL:
+            equalities++;
+            break;
+          default:
+            break;
+        }
+      }
     }
 
     private void ColorTextDependingOnOperation(Paragraph paragraph, List<Diff> localdiffs)
