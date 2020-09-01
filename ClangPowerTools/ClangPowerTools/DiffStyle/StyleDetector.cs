@@ -1,10 +1,10 @@
-﻿using ClangPowerTools.MVVM.Interfaces;
+﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -65,33 +65,23 @@ namespace ClangPowerTools.DiffStyle
       //stopwatch.Start();
       //await DetectAsync();
       return await DetectStyleOptionsAsync(filePaths);
-      //var options = new List<IFormatOption>();
-      ////foreach (var item in styleOptions)
-      ////{
-      ////  options.Add(item.Value.Item1);
-      ////}
+      //var options = styleOptions.Select(e => e.Value.Item1).ToList();
       ////stopwatch.Stop();
       //return (detectedStyle, options);
     }
 
     public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(List<string> filePaths)
     {
-      //filesContent = FileSystem.ReadContentFromMultipleFiles(filePaths);
-      var cpps = Directory.GetFiles("C:\\Users\\horat\\OneDrive\\Documente\\ai_advinst\\custact", "*.cpp", SearchOption.AllDirectories);
-      var hs = Directory.GetFiles("C:\\Users\\horat\\OneDrive\\Documente\\ai_advinst\\custact", "*.h", SearchOption.AllDirectories);
-      filesContent.AddRange(cpps);
+      filesContent = FileSystem.ReadContentFromMultipleFiles(filePaths);
+      //var cpps = Directory.GetFiles("C:\\Users\\horat\\OneDrive\\Documente\\ai_advinst\\custact", "*.cpp", SearchOption.AllDirectories);
+      //var hs = Directory.GetFiles("C:\\Users\\horat\\OneDrive\\Documente\\ai_advinst\\custact", "*.h", SearchOption.AllDirectories);
+      //filesContent.AddRange(cpps);
 
       var watch = new Stopwatch();
       watch.Start();
       await DetectAsync();
 
-
-      var options = new List<IFormatOption>();
-      foreach (var item in styleOptions)
-      {
-        options.Add(item.Value.Item1);
-      }
-      watch.Stop();
+      var options = styleOptions.Select(e => e.Value.Item1).ToList();
       return (detectedStyle, options);
     }
 
