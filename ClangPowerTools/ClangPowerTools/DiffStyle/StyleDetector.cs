@@ -80,7 +80,7 @@ namespace ClangPowerTools.DiffStyle
       var watch = new Stopwatch();
       watch.Start();
       await DetectAsync();
-
+      watch.Stop();
       var options = styleOptions.Select(e => e.Value.Item1).ToList();
       return (detectedStyle, options);
     }
