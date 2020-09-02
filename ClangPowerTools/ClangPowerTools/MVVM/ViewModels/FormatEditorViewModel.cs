@@ -425,7 +425,23 @@ namespace ClangPowerTools
 
       var diffController = new DiffController(CreateFormatFile);
       loadingView.Closed += diffController.ClosedWindow;
-      var (matchedStyle, matchedOptions) = await diffController.GetFormatOptionsAsync(formatEditorView.CodeEditor.Text);
+
+
+      // ###### TODO REMOVE TEST
+      var filePaths = new List<string>();
+
+      filePaths = new List<string>()
+    { "C:\\Users\\horat\\OneDrive\\Desktop\\A.cpp",
+     "C:\\Users\\horat\\OneDrive\\Desktop\\WW.cpp",
+      "C:\\Users\\horat\\OneDrive\\Desktop\\X.cpp",
+      "C:\\Users\\horat\\OneDrive\\Desktop\\Z.cpp"
+    };
+      //var cpps = Directory.GetFiles("C:\\Users\\horat\\OneDrive\\Documente\\ai_advinst\\custact", "*.cpp", SearchOption.AllDirectories);
+      //var hs = Directory.GetFiles("C:\\Users\\horat\\OneDrive\\Documente\\ai_advinst\\custact", "*.h", SearchOption.AllDirectories);
+      //filePaths.AddRange(cpps);
+      // ###### TODO REMOVE TEST
+
+      var (matchedStyle, matchedOptions) = await diffController.GetFormatOptionsAsync(formatEditorView.CodeEditor.Text, filePaths);
 
       if (loadingView.IsLoaded == false)
       {
@@ -434,10 +450,7 @@ namespace ClangPowerTools
       }
 
       SetEditorStyleOptions(matchedStyle, matchedOptions);
-
-      var formatOptionFile = FormatOptionFile.CreateOutput(formatStyleOptions, selectedStyle).ToString();
-
-      await diffController.ShowDiffAsync(formatOptionFile);
+      await diffController.ShowDiffAsync();
 
       loadingView.Close();
       formatEditorView.IsEnabled = true;
