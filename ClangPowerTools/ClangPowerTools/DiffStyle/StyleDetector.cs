@@ -23,14 +23,6 @@ namespace ClangPowerTools.DiffStyle
     private readonly ConcurrentBag<List<IFormatOption>> allFoundOptions;
     private readonly object defaultLock;
 
-    private readonly List<string> filePaths = new List<string>()
-    { "C:\\Users\\horat\\OneDrive\\Desktop\\A.cpp",
-     "C:\\Users\\horat\\OneDrive\\Desktop\\WW.cpp",
-      "C:\\Users\\horat\\OneDrive\\Desktop\\X.cpp",
-      "C:\\Users\\horat\\OneDrive\\Desktop\\Z.cpp"
-    };
-
-
     #endregion
 
     #region Properties
@@ -65,16 +57,11 @@ namespace ClangPowerTools.DiffStyle
       var options = AggregateOptions();
       stopwatch.Stop();
       return (detectedStyle, options);
-      //return await DetectStyleOptionsAsync(filePaths);
     }
 
     public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(List<string> filePaths)
     {
       filesContent = FileSystem.ReadContentFromMultipleFiles(filePaths);
-      // var cpps = Directory.GetFiles("C:\\Users\\horat\\OneDrive\\Documente\\ai_advinst\\custact", "*.cpp", SearchOption.AllDirectories);
-      //var hs = Directory.GetFiles("C:\\Users\\horat\\OneDrive\\Documente\\ai_advinst\\custact", "*.h", SearchOption.AllDirectories);
-      //filesContent.AddRange(cpps);
-
       var watch = new Stopwatch();
       watch.Start();
       await DetectAsync();
