@@ -1,7 +1,9 @@
-﻿using System;
+﻿using ClangPowerTools.MVVM.Interfaces;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 
 namespace ClangPowerTools.MVVM.Views
 {
@@ -10,11 +12,33 @@ namespace ClangPowerTools.MVVM.Views
   /// </summary>
   public partial class DiffWindow : Window
   {
-    public DiffWindow(FlowDocument diffInput, FlowDocument diffOutput, string formatOptionFile, Action exportFormatOptionFile)
+    #region Members
+
+    private readonly DiffViewModel diffViewModel;
+
+    #endregion
+
+    #region Constructor
+
+    public DiffWindow(List<IFormatOption> formatOptions, EditorStyles editorStyle, string editorInput, List<string> filePaths, Action exportFormatOptionFile)
     {
       InitializeComponent();
-      DataContext = new DiffViewModel(this, diffInput, diffOutput, formatOptionFile, exportFormatOptionFile);
+      diffViewModel = new DiffViewModel(this, formatOptions, editorStyle, editorInput, filePaths, exportFormatOptionFile);
+      DataContext = diffViewModel;
     }
+
+    #endregion
+
+    #region Public Methods
+
+    public async Task ShowDiffAsync()
+    {
+      await diffViewModel.ShowDiffAsync();
+    }
+
+    #endregion
+
+    #region Private Methods
 
     private void Diff_ScrollChanged(object sender, ScrollChangedEventArgs e)
     {
@@ -30,5 +54,7 @@ namespace ClangPowerTools.MVVM.Views
         DiffInput.ScrollToHorizontalOffset(e.HorizontalOffset);
       }
     }
+
+    #endregion
   }
 }

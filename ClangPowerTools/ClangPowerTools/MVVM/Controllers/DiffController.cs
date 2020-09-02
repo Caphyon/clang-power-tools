@@ -4,7 +4,6 @@ using ClangPowerTools.MVVM.Views;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Documents;
 
 namespace ClangPowerTools.MVVM.Controllers
 {
@@ -14,11 +13,11 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public EventHandler ClosedWindow;
 
-    private readonly StyleFormatter formatter;
-    private EditorStyles formatStyle;
-    private List<IFormatOption> formatOptions;
-    private string editorInput;
     private readonly Action CreateFormatFile;
+    private List<IFormatOption> formatOptions;
+    private EditorStyles formatStyle;
+    private string editorInput;
+    private List<string> filePaths;
 
     #endregion
 
@@ -27,7 +26,6 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public DiffController(Action CreateFormatFile)
     {
-      formatter = new StyleFormatter();
       StyleDetector.StopDetection = false;
       ClosedWindow += CloseLoadingView;
       this.CreateFormatFile = CreateFormatFile;
@@ -48,12 +46,22 @@ namespace ClangPowerTools.MVVM.Controllers
     /// </summary>
     /// <param name="text"></param>
     /// <returns></returns>
-    public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> GetFormatOptionsAsync(string text)
+    public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> GetFormatOptionsAsync(string editorInput, List<string> filePaths)
     {
-      editorInput = text;
+      this.editorInput = editorInput;
+      this.filePaths = filePaths;
 
       var styleDetector = new StyleDetector();
-      var (matchedStyle, matchedOptions) = await styleDetector.DetectStyleOptionsAsync(text);
+      EditorStyles matchedStyle;
+      List<IFormatOption> matchedOptions;
+      if (filePaths.Count > 0)
+      {
+        (matchedStyle, matchedOptions) = await styleDetector.DetectStyleOptionsAsync(filePaths);
+      }
+      else
+      {
+        (matchedStyle, matchedOptions) = await styleDetector.DetectStyleOptionsAsync(editorInput);
+      }
 
       formatStyle = matchedStyle;
       formatOptions = matchedOptions;
@@ -61,31 +69,13 @@ namespace ClangPowerTools.MVVM.Controllers
     }
 
     /// <summary>
-    /// Display the diffs in an html format after GetFormatOptionsAsync
+    /// Display the diffs after GetFormatOptionsAsync
     /// </summary>
     /// <returns></returns>
-    public async Task ShowDiffAsync(string formatOptionFile)
+    public async Task ShowDiffAsync()
     {
-      string editorOutput = string.Empty;
-      var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
-      await Task.Run(() =>
-      {
-        editorOutput = formatter.FormatText(editorInput, formatOptions, formatStyle);
-        diffMatchPatchWrapper.Diff(editorInput, editorOutput);
-        diffMatchPatchWrapper.CleanupSemantic();
-      });
-
-      DisplayDiffWindow(formatOptionFile, editorOutput, diffMatchPatchWrapper);
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    private void DisplayDiffWindow(string formatOptionFile, string editorOutput, DiffMatchPatchWrapper diffMatchPatchWrapper)
-    {
-      (FlowDocument diffInput, FlowDocument diffOutput) = diffMatchPatchWrapper.DiffAsFlowDocuments(editorInput, editorOutput);
-      var diffWindow = new DiffWindow(diffInput, diffOutput, formatOptionFile, CreateFormatFile);
+      var diffWindow = new DiffWindow(formatOptions, formatStyle, editorInput, filePaths, CreateFormatFile);
+      await diffWindow.ShowDiffAsync();
       diffWindow.Show();
     }
 
