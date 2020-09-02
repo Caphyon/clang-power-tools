@@ -67,10 +67,15 @@
           Margin="3"
           Source="/ClangPowerTools;component/Resources/Input.png" />
         <TextBlock
-          Width="65"
+          Width="50"
           FontSize="16"
           FontWeight="DemiBold"
           Text="Input" />
+        <ComboBox
+          Width="300"
+          Height="25"
+          ItemsSource="{Binding Files}"
+          SelectedItem="{Binding SelectedFile, Mode=TwoWay}" />
       </StackPanel>
 
       <RichTextBox
@@ -148,7 +153,7 @@
           BorderThickness="0"
           FontSize="12"
           IsReadOnly="True"
-          Text="{Binding FormatOptionFile}"
+          Text="{Binding FormatFile}"
           TextWrapping="Wrap"
           VerticalScrollBarVisibility="Auto" />
       </Border>
