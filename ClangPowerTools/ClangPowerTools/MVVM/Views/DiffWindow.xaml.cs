@@ -1,9 +1,8 @@
-﻿using ClangPowerTools.MVVM.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 
 namespace ClangPowerTools.MVVM.Views
 {
@@ -20,20 +19,11 @@ namespace ClangPowerTools.MVVM.Views
 
     #region Constructor
 
-    public DiffWindow(List<IFormatOption> formatOptions, EditorStyles editorStyle, string editorInput, List<string> filePaths, Action exportFormatOptionFile)
+    public DiffWindow(List<(FlowDocument, FlowDocument)> flowDocuments, List<string> fileNames, string optionsFile, Action CreateFormatFile)
     {
       InitializeComponent();
-      diffViewModel = new DiffViewModel(this, formatOptions, editorStyle, editorInput, filePaths, exportFormatOptionFile);
+      diffViewModel = new DiffViewModel(this, flowDocuments, fileNames, optionsFile, CreateFormatFile);
       DataContext = diffViewModel;
-    }
-
-    #endregion
-
-    #region Public Methods
-
-    public async Task ShowDiffAsync()
-    {
-      await diffViewModel.ShowDiffAsync();
     }
 
     #endregion

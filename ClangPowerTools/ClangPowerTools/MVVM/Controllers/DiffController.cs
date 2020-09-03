@@ -1,9 +1,13 @@
 ﻿using ClangPowerTools.DiffStyle;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Views;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 
 namespace ClangPowerTools.MVVM.Controllers
 {
@@ -18,9 +22,9 @@ namespace ClangPowerTools.MVVM.Controllers
     private EditorStyles formatStyle;
     private string editorInput;
     private List<string> filePaths;
+    private List<(FlowDocument, FlowDocument)> flowDocuments;
 
     #endregion
-
 
     #region Constructor
 
@@ -74,9 +78,66 @@ namespace ClangPowerTools.MVVM.Controllers
     /// <returns></returns>
     public async Task ShowDiffAsync()
     {
-      var diffWindow = new DiffWindow(formatOptions, formatStyle, editorInput, filePaths, CreateFormatFile);
-      await diffWindow.ShowDiffAsync();
+      await PopulateFlowDocumentsListAsync();
+      string optionsFile = CleanOptionsFile();
+      List<string> fileNames = GetFileNames();
+      var diffWindow = new DiffWindow(flowDocuments, fileNames, optionsFile, CreateFormatFile);
       diffWindow.Show();
+    }
+
+    private async Task PopulateFlowDocumentsListAsync()
+    {
+      flowDocuments = new List<(FlowDocument, FlowDocument)>();
+      if (filePaths.Count > 0)
+      {
+        foreach (var path in filePaths)
+        {
+          var input = FileSystem.ReadContentFromFile(path);
+          var documents = await CreateFlowDocumentAsync(input);
+          flowDocuments.Add(documents);
+        }
+      }
+      else
+      {
+        var documents = await CreateFlowDocumentAsync(editorInput);
+        flowDocuments.Add(documents);
+      }
+    }
+
+    private async Task<(FlowDocument, FlowDocument)> CreateFlowDocumentAsync(string input)
+    {
+      var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
+      string output = string.Empty;
+      await Task.Run(() =>
+      {
+        var formatter = new StyleFormatter();
+        output = formatter.FormatText(input, formatOptions, formatStyle);
+        diffMatchPatchWrapper.Diff(input, output);
+        diffMatchPatchWrapper.CleanupSemantic();
+      });
+      return diffMatchPatchWrapper.DiffAsFlowDocuments(input, output);
+    }
+
+    private string CleanOptionsFile()
+    {
+      var formatOptionFile = FormatOptionFile.CreateOutput(formatOptions, formatStyle).ToString();
+      var lines = formatOptionFile.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+      var sb = new StringBuilder();
+      for (int i = 2; i < lines.Length - 1; i++)
+      {
+        sb.AppendLine(lines[i]);
+      }
+      return sb.ToString();
+    }
+
+    private List<string> GetFileNames()
+    {
+      var fileNames = new List<string>();
+      foreach (var path in filePaths)
+      {
+        fileNames.Add(Path.GetFileName(path));
+      }
+      return fileNames;
     }
 
     #endregion
