@@ -72,8 +72,9 @@
           FontWeight="DemiBold"
           Text="Input" />
         <ComboBox
-          Width="300"
-          Height="25"
+          Name="FilesComboBox"
+          Height="23"
+          VerticalAlignment="Top"
           ItemsSource="{Binding Files}"
           SelectedItem="{Binding SelectedFile, Mode=TwoWay}" />
       </StackPanel>
@@ -153,7 +154,7 @@
           BorderThickness="0"
           FontSize="12"
           IsReadOnly="True"
-          Text="{Binding FormatFile}"
+          Text="{Binding OptionsFile}"
           TextWrapping="Wrap"
           VerticalScrollBarVisibility="Auto" />
       </Border>

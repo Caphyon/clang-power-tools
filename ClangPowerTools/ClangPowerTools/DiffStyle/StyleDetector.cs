@@ -371,7 +371,6 @@ namespace ClangPowerTools.DiffStyle
       return optionInput.ToString();
     }
 
-
     #endregion
 
   }
