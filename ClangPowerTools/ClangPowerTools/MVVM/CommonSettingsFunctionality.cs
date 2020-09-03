@@ -31,6 +31,24 @@ namespace ClangPowerTools
       return path;
     }
 
+    /// <summary>
+    /// Browse for folder from where the files path acording to the given seach instruction will be collected 
+    /// </summary>
+    /// <param name="searchFilePattern">Search pattern to apply in the file search</param>
+    /// <param name="searchOption">Information about how to search inside the selected folder</param>
+    /// <returns>Array of files path</returns>
+    protected string[] BrowseForFolderFiles(string searchFilePattern, SearchOption searchOption)
+    {
+      using var folderBrowseDialog = new System.Windows.Forms.FolderBrowserDialog();
+      System.Windows.Forms.DialogResult result = folderBrowseDialog.ShowDialog();
+
+      if (result != System.Windows.Forms.DialogResult.OK || string.IsNullOrWhiteSpace(folderBrowseDialog.SelectedPath))
+        return null;
+
+      return Directory.GetFiles(folderBrowseDialog.SelectedPath, searchFilePattern, searchOption);
+    }
+
+
     protected string SaveFile(string fileName, string defaultExt, string filter)
     {
       SaveFileDialog saveFileDialog = new SaveFileDialog();

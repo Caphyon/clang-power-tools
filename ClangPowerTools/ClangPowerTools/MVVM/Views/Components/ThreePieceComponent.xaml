@@ -1,0 +1,52 @@
+﻿<UserControl
+  x:Class="ClangPowerTools.MVVM.Views.Components.ThreePieceComponent"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views.Components"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  Name="_ThreePieceComponent"
+  mc:Ignorable="d">
+
+  <Grid Width="{Binding WidthValue, ElementName=_ThreePieceComponent}" Height="{Binding HeightValue, ElementName=_ThreePieceComponent}">
+    <Grid.Background>
+      <SolidColorBrush Opacity="{Binding OpacityValue, ElementName=_ThreePieceComponent}" Color="{Binding BackgroundValue, ElementName=_ThreePieceComponent}" />
+    </Grid.Background>
+
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <Image
+      Grid.Row="0"
+      Width="{Binding ImageWidthValue, ElementName=_ThreePieceComponent}"
+      Height="{Binding ImageHeightValue, ElementName=_ThreePieceComponent}"
+      Margin="0,0,0,25"
+      HorizontalAlignment="Center"
+      VerticalAlignment="Center"
+      Source="{Binding Image, ElementName=_ThreePieceComponent}" />
+
+    <TextBlock
+      Grid.Row="1"
+      Margin="0,0,0,8"
+      HorizontalAlignment="Center"
+      FontSize="{Binding TitleFontSize, ElementName=_ThreePieceComponent}"
+      Foreground="{Binding TitleForeground, ElementName=_ThreePieceComponent}"
+      Text="{Binding Title, ElementName=_ThreePieceComponent}"
+      TextAlignment="Center"
+      TextWrapping="Wrap" />
+
+    <TextBlock
+      Grid.Row="2"
+      HorizontalAlignment="Center"
+      FontSize="{Binding DescriptionFontSize, ElementName=_ThreePieceComponent}"
+      Foreground="{Binding DescriptionForeground, ElementName=_ThreePieceComponent}"
+      Text="{Binding Description, ElementName=_ThreePieceComponent}"
+      TextAlignment="Center"
+      TextWrapping="Wrap" />
+
+  </Grid>
+
+</UserControl>

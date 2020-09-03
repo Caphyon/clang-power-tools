@@ -164,6 +164,7 @@
     <Compile Include="MVVM\Provider\SettingsProvider.cs" />
     <Compile Include="MVVM\CollectionElementsCounter.cs" />
     <Compile Include="MVVM\ViewModels\AccountViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\DetectFormatStyleMenuViewModel.cs" />
     <Compile Include="MVVM\ViewModels\DiffViewModel.cs" />
     <Compile Include="MVVM\ViewModels\FormatEditorViewModel.cs" />
     <Compile Include="MVVM\ViewModels\TeamSettingsViewModel.cs" />
@@ -219,6 +220,12 @@
     </Compile>
     <Compile Include="MVVM\Views\Components\BuyNowFooter.xaml.cs">
       <DependentUpon>BuyNowFooter.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Views\Components\ThreePieceComponent.xaml.cs">
+      <DependentUpon>ThreePieceComponent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Views\DetectFormatStyleMenuView.xaml.cs">
+      <DependentUpon>DetectFormatStyleMenuView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\DiffWindow.xaml.cs">
       <DependentUpon>DiffWindow.xaml</DependentUpon>
@@ -380,6 +387,7 @@
     <Resource Include="Resources\ClangSplitBackground.png" />
     <Resource Include="Resources\AccountAvatarIcon.png" />
     <Resource Include="Resources\AccountIcon.png" />
+    <Resource Include="Resources\CodeInputIcon.png" />
     <Content Include="Resources\CPTLogoManageExtensionVS.png">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -593,6 +601,7 @@
     <Resource Include="Resources\RemoveInputIdle.png" />
     <Resource Include="Resources\Output.png" />
     <Resource Include="Resources\LogoutIcon.png" />
+    <Resource Include="Resources\ProjectFilesIcon.png" />
     <Content Include="Resources\RunPowerShellCommandPackage.ico">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -622,6 +631,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="MVVM\Views\Components\BuyNowFooter.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\Components\ThreePieceComponent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\DetectFormatStyleMenuView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

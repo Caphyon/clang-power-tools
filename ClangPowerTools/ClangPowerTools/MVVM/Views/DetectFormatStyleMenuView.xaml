@@ -1,0 +1,96 @@
+﻿<Window
+  x:Class="ClangPowerTools.MVVM.Views.DetectFormatStyleMenuView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:ClangPowerTools.MVVM.Views.Components"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:ClangPowerTools"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  Title="Clang Format Style"
+  Width="800"
+  Height="400"
+  d:DataContext="{d:DesignInstance local:DetectFormatStyleMenuViewModel,
+                                   IsDesignTimeCreatable=True}"
+  Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
+  ResizeMode="NoResize"
+  WindowStartupLocation="CenterScreen"
+  WindowStyle="ThreeDBorderWindow"
+  mc:Ignorable="d">
+
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Styles/AppResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+
+  <Grid>
+    <Grid.Background>
+      <ImageBrush ImageSource="/ClangPowerTools;component/Resources/ClangSplitBackground.png" Stretch="UniformToFill" />
+    </Grid.Background>
+
+    <Grid Grid.Row="1" Margin="0,82,0,0">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+
+      <StackPanel Grid.Column="0">
+        <controls:ThreePieceComponent
+          Title="On code input"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Top"
+          Description="Identify Clang Format style from the code inside the input tab"
+          DescriptionFontSize="12"
+          DescriptionForeground="white"
+          Image="/ClangPowerTools;component/Resources/CodeInputIcon.png"
+          ImageHeightValue="42"
+          ImageWidthValue="48"
+          OpacityValue="0"
+          TitleFontSize="20"
+          TitleForeground="white"
+          WidthValue="240" />
+
+        <Button
+          Width="192"
+          Height="35"
+          Margin="0,25,0,0"
+          Command="{Binding DetectFormatOnCodeInput}"
+          Content="Continue with Code Based"
+          FontSize="14"
+          Foreground="#FBFBFB"
+          Style="{StaticResource SettingsButton}" />
+      </StackPanel>
+
+      <StackPanel Grid.Column="1">
+        <controls:ThreePieceComponent
+          Title="On code input"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Top"
+          Description="Identify Clang Format style from the code inside the input tab"
+          DescriptionFontSize="12"
+          DescriptionForeground="#333333"
+          Image="/ClangPowerTools;component/Resources/ProjectFilesIcon.png"
+          ImageHeightValue="42"
+          ImageWidthValue="48"
+          OpacityValue="0"
+          TitleFontSize="20"
+          TitleForeground="black"
+          WidthValue="240" />
+
+        <Button
+          Width="192"
+          Height="35"
+          Margin="0,25,0,0"
+          Command="{Binding DetectFormatOnProjectFiles}"
+          Content="Continue with Project Files"
+          FontSize="14"
+          Foreground="#FBFBFB"
+          Style="{StaticResource SettingsButton}" />
+      </StackPanel>
+
+    </Grid>
+  </Grid>
+
+</Window>
