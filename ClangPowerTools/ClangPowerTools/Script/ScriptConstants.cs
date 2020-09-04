@@ -43,6 +43,8 @@ namespace ClangPowerTools
         ".vcxproj"
       };
 
+    public const string FileExtensionsSelectFile = "Code files (*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx;)|*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx";
+
     public const string kCMakeConfigFile = "cmakelists.txt";
 
     public const string kPowerShellPath = @"WindowsPowerShell\v1.0\powershell.exe";
