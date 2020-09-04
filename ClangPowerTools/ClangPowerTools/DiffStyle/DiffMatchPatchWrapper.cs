@@ -162,8 +162,8 @@ namespace ClangPowerTools
     /// <param name="outputOperationPerLine"></param>
     private void DetectOperationPerLine(string input, string output, List<(object, LineChanges)> inputOperationPerLine, List<(object, LineChanges)> outputOperationPerLine)
     {
-      var inputLines = input.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).ToList();
-      var outputLines = output.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None).ToList();
+      var inputLines = input.Split(DiffConstants.NewLines, StringSplitOptions.None).ToList();
+      var outputLines = output.Split(DiffConstants.NewLines, StringSplitOptions.None).ToList();
       bool equalTexts = inputLines.Count == outputLines.Count;
 
       if (equalTexts == false)

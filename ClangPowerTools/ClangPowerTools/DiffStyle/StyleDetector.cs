@@ -332,7 +332,7 @@ namespace ClangPowerTools.DiffStyle
     {
       await Task.Run(() =>
       {
-        var lines = content.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+        var lines = content.Split(DiffConstants.NewLines, StringSplitOptions.None);
         var lineLengths = new List<int>();
         var tabs = new List<int>();
         foreach (var line in lines)

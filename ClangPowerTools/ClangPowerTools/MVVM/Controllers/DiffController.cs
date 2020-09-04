@@ -121,7 +121,7 @@ namespace ClangPowerTools.MVVM.Controllers
     private string CleanOptionsFile()
     {
       var formatOptionFile = FormatOptionFile.CreateOutput(formatOptions, formatStyle).ToString();
-      var lines = formatOptionFile.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
+      var lines = formatOptionFile.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
       var sb = new StringBuilder();
       for (int i = 2; i < lines.Length - 1; i++)
       {
