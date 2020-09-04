@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 
 namespace ClangPowerTools.Helpers
@@ -116,12 +117,32 @@ namespace ClangPowerTools.Helpers
       return string.Empty;
     }
 
-    public static List<string> ReadContentFromMultipleFiles(List<string> filePaths)
+    public static string ReadContentFromFile(string path, string wantedLineEnding)
+    {
+      if (File.Exists(path))
+      {
+        var sb = new StringBuilder();
+        using var sr = new StreamReader(path);
+        while (sr.Peek() >= 0)
+        {
+          string line = sr.ReadLine();
+          sb.Append(line).Append(wantedLineEnding);
+        }
+        return sb.ToString();
+      }
+      return string.Empty;
+    }
+
+    public static List<string> ReadContentFromMultipleFiles(List<string> filePaths, string wantedLineEnding)
     {
       var filesContent = new List<string>();
       foreach (var path in filePaths)
       {
-        var content = ReadContentFromFile(path);
+        var content = ReadContentFromFile(path, wantedLineEnding);
+        if (string.IsNullOrWhiteSpace(content))
+        {
+          continue;
+        }
         filesContent.Add(content);
       }
 

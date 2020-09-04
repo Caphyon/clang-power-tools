@@ -61,7 +61,7 @@ namespace ClangPowerTools.DiffStyle
 
     public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(List<string> filePaths)
     {
-      filesContent = FileSystem.ReadContentFromMultipleFiles(filePaths);
+      filesContent = FileSystem.ReadContentFromMultipleFiles(filePaths, Environment.NewLine);
       var watch = new Stopwatch();
       watch.Start();
       await DetectAsync();
@@ -332,7 +332,7 @@ namespace ClangPowerTools.DiffStyle
     {
       await Task.Run(() =>
       {
-        var lines = content.Split(DiffConstants.NewLines, StringSplitOptions.None);
+        var lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
         var lineLengths = new List<int>();
         var tabs = new List<int>();
         foreach (var line in lines)

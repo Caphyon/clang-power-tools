@@ -132,17 +132,17 @@ namespace ClangPowerTools
     /// <summary>
     /// Takes a diff array and returns a FlowDocument.
     /// </summary>
-    /// <param name="editorInput">The input from the Format Editor</param>
-    /// <param name="editorOutput">The output from the Format Editor</param>
+    /// <param name="input">The input code thar will be formatted </param>
+    /// <param name="output">The output after the format</param>
     /// <returns></returns>
-    public (FlowDocument, FlowDocument) DiffAsFlowDocuments(string editorInput, string editorOutput)
+    public (FlowDocument, FlowDocument) DiffAsFlowDocuments(string input, string output)
     {
       var paragraphInput = new Paragraph();
       var paragraphOutput = new Paragraph();
       var inputOperationPerLine = new List<(object, LineChanges)>();
       var outputOperationPerLine = new List<(object, LineChanges)>();
 
-      DetectOperationPerLine(editorInput.Trim(), editorOutput.Trim(), inputOperationPerLine, outputOperationPerLine);
+      DetectOperationPerLine(input.Trim(), output.Trim(), inputOperationPerLine, outputOperationPerLine);
       CreateDiffParagraph(paragraphInput, inputOperationPerLine, (Brush)new BrushConverter().ConvertFrom("#FED8B1"));
       CreateDiffParagraph(paragraphOutput, outputOperationPerLine, Brushes.Yellow);
 
@@ -162,8 +162,8 @@ namespace ClangPowerTools
     /// <param name="outputOperationPerLine"></param>
     private void DetectOperationPerLine(string input, string output, List<(object, LineChanges)> inputOperationPerLine, List<(object, LineChanges)> outputOperationPerLine)
     {
-      var inputLines = input.Split(DiffConstants.NewLines, StringSplitOptions.None).ToList();
-      var outputLines = output.Split(DiffConstants.NewLines, StringSplitOptions.None).ToList();
+      var inputLines = input.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+      var outputLines = output.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
       bool equalTexts = inputLines.Count == outputLines.Count;
 
       if (equalTexts == false)

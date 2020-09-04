@@ -92,7 +92,7 @@ namespace ClangPowerTools.MVVM.Controllers
       {
         foreach (var path in filePaths)
         {
-          var input = FileSystem.ReadContentFromFile(path);
+          var input = FileSystem.ReadContentFromFile(path, Environment.NewLine);
           var documents = await CreateFlowDocumentAsync(input);
           flowDocuments.Add(documents);
         }
