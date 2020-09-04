@@ -4,7 +4,6 @@ using ClangPowerTools.MVVM.Models;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -51,22 +50,16 @@ namespace ClangPowerTools.DiffStyle
     public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(string input)
     {
       filesContent.Add(input);
-      var stopwatch = new Stopwatch();
-      stopwatch.Start();
       await DetectAsync();
       var options = AggregateOptions();
-      stopwatch.Stop();
       return (detectedStyle, options);
     }
 
     public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(List<string> filePaths)
     {
       filesContent = FileSystem.ReadContentFromMultipleFiles(filePaths, Environment.NewLine);
-      var watch = new Stopwatch();
-      watch.Start();
       await DetectAsync();
       var options = AggregateOptions();
-      watch.Stop();
       return (detectedStyle, options);
     }
 
@@ -84,6 +77,7 @@ namespace ClangPowerTools.DiffStyle
 
     private async Task DetectFileStyleAsync(string content)
     {
+      if (StopDetection) return;
       await Task.Run(() =>
       {
         foreach (EditorStyles style in Enum.GetValues(typeof(EditorStyles)))
@@ -175,6 +169,7 @@ namespace ClangPowerTools.DiffStyle
 
     private async Task DetectFileOptionsAsync(string content, EditorStyles style)
     {
+      if (StopDetection) return;
       await Task.Run(() =>
       {
         var formatOptions = GetDefaultOptionsForStyle(style);
@@ -264,7 +259,6 @@ namespace ClangPowerTools.DiffStyle
         var previousInput = inputModel.Input;
         foreach (var item in inputValues)
         {
-          if (StopDetection) return;
           inputModel.Input = item;
           inputValuesLevenshtein.Add(item, GetLevenshteinAfterFormat(input, formatStyle, formatOptions));
         }
@@ -288,6 +282,7 @@ namespace ClangPowerTools.DiffStyle
 
     private void SetFormatOption(IFormatOption formatOption, string input, EditorStyles formatStyle, List<IFormatOption> formatOptions)
     {
+      if (StopDetection) return;
       switch (formatOption)
       {
         case FormatOptionToggleModel toggleModel:
@@ -330,6 +325,7 @@ namespace ClangPowerTools.DiffStyle
 
     private async Task CalculateColumTabAsync(string content)
     {
+      if (StopDetection) return;
       await Task.Run(() =>
       {
         var lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
