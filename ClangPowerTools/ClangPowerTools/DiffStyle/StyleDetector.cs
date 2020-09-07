@@ -5,6 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ClangPowerTools.DiffStyle
@@ -15,6 +16,8 @@ namespace ClangPowerTools.DiffStyle
 
     private EditorStyles detectedStyle;
     private List<string> filesContent;
+    private CancellationTokenSource cancellationSource;
+    private bool stopDetector;
     private readonly Dictionary<EditorStyles, int> detectedPredefinedStyles;
     private readonly ConcurrentBag<string> customInput;
     private readonly ConcurrentBag<int> columnLimits;
@@ -26,7 +29,21 @@ namespace ClangPowerTools.DiffStyle
 
     #region Properties
 
-    public static bool StopDetection { get; set; } = false;
+    public bool StopDetector
+    {
+      get
+      {
+        return stopDetector;
+      }
+      set
+      {
+        stopDetector = value;
+        if (stopDetector)
+        {
+          cancellationSource.Cancel();
+        }
+      }
+    }
 
     #endregion
 
@@ -41,6 +58,7 @@ namespace ClangPowerTools.DiffStyle
       allFoundOptions = new ConcurrentBag<List<IFormatOption>>();
       customInput = new ConcurrentBag<string>() { "TabWidth", "ColumnLimit" };
       defaultLock = new object();
+      stopDetector = false;
     }
 
     #endregion
@@ -69,15 +87,26 @@ namespace ClangPowerTools.DiffStyle
 
     private async Task DetectAsync()
     {
-      await Task.WhenAll(filesContent.Select(e => CalculateColumTabAsync(e)));
-      await Task.WhenAll(filesContent.Select(e => DetectFileStyleAsync(e)));
-      detectedStyle = GetStyleByLevenshtein(detectedPredefinedStyles);
-      await Task.WhenAll(filesContent.Select(e => DetectFileOptionsAsync(e, detectedStyle)));
+      cancellationSource = new CancellationTokenSource();
+      CancellationToken cancelToken = cancellationSource.Token;
+      try
+      {
+        await Task.WhenAll(filesContent.Select(e => CalculateColumTabAsync(e, cancelToken)));
+        await Task.WhenAll(filesContent.Select(e => DetectFileStyleAsync(e, cancelToken)));
+        detectedStyle = GetStyleByLevenshtein(detectedPredefinedStyles);
+        await Task.WhenAll(filesContent.Select(e => DetectFileOptionsAsync(e, detectedStyle, cancelToken)));
+      }
+      catch (OperationCanceledException)
+      {
+      }
+      finally
+      {
+        cancellationSource.Dispose();
+      }
     }
 
-    private async Task DetectFileStyleAsync(string content)
+    private async Task DetectFileStyleAsync(string content, CancellationToken cancelToken)
     {
-      if (StopDetection) return;
       await Task.Run(() =>
       {
         foreach (EditorStyles style in Enum.GetValues(typeof(EditorStyles)))
@@ -96,7 +125,7 @@ namespace ClangPowerTools.DiffStyle
             }
           }
         }
-      });
+      }, cancelToken);
     }
 
     private List<IFormatOption> AggregateOptions()
@@ -167,18 +196,18 @@ namespace ClangPowerTools.DiffStyle
       return defaultOptions;
     }
 
-    private async Task DetectFileOptionsAsync(string content, EditorStyles style)
+    private async Task DetectFileOptionsAsync(string content, EditorStyles style, CancellationToken cancelToken)
     {
-      if (StopDetection) return;
       await Task.Run(() =>
       {
         var formatOptions = GetDefaultOptionsForStyle(style);
         foreach (var option in formatOptions)
         {
+          if (cancelToken.IsCancellationRequested) break;
           SetFormatOption(option, content, style, formatOptions);
         }
         allFoundOptions.Add(formatOptions);
-      });
+      }, cancelToken);
     }
 
     private EditorStyles GetStyleByLevenshtein(Dictionary<EditorStyles, int> stylesLevenshtein)
@@ -282,7 +311,6 @@ namespace ClangPowerTools.DiffStyle
 
     private void SetFormatOption(IFormatOption formatOption, string input, EditorStyles formatStyle, List<IFormatOption> formatOptions)
     {
-      if (StopDetection) return;
       switch (formatOption)
       {
         case FormatOptionToggleModel toggleModel:
@@ -323,9 +351,8 @@ namespace ClangPowerTools.DiffStyle
       return new FormatOptionsData().FormatOptions;
     }
 
-    private async Task CalculateColumTabAsync(string content)
+    private async Task CalculateColumTabAsync(string content, CancellationToken cancelToken)
     {
-      if (StopDetection) return;
       await Task.Run(() =>
       {
         var lines = content.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
@@ -340,7 +367,7 @@ namespace ClangPowerTools.DiffStyle
 
         columnLimits.Add(lineLengths.Max());
         tabWidths.Add(tabs.Max());
-      });
+      }, cancelToken);
     }
 
     private string SetColumnTab(int optionInput, string optionName)

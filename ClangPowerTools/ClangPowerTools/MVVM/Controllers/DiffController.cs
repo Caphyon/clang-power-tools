@@ -18,6 +18,7 @@ namespace ClangPowerTools.MVVM.Controllers
     public EventHandler ClosedWindow;
 
     private readonly Action CreateFormatFile;
+    private readonly StyleDetector styleDetector;
     private List<IFormatOption> formatOptions;
     private EditorStyles formatStyle;
     private string editorInput;
@@ -30,14 +31,17 @@ namespace ClangPowerTools.MVVM.Controllers
 
     public DiffController(Action CreateFormatFile)
     {
-      StyleDetector.StopDetection = false;
+      styleDetector = new StyleDetector();
       ClosedWindow += CloseLoadingView;
       this.CreateFormatFile = CreateFormatFile;
     }
 
     private void CloseLoadingView(object sender, EventArgs e)
     {
-      StyleDetector.StopDetection = true;
+      if (styleDetector.StopDetector == false)
+      {
+        styleDetector.StopDetector = true;
+      }
       ClosedWindow -= CloseLoadingView;
     }
 
@@ -55,7 +59,6 @@ namespace ClangPowerTools.MVVM.Controllers
       this.editorInput = editorInput;
       this.filePaths = filePaths;
 
-      var styleDetector = new StyleDetector();
       EditorStyles matchedStyle;
       List<IFormatOption> matchedOptions;
       if (filePaths.Count > 0)
