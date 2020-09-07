@@ -1,0 +1,163 @@
+﻿<UserControl
+  x:Class="ClangPowerTools.MVVM.Views.Components.InputList"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views.Components"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  Name="_InputList"
+  d:DesignHeight="450"
+  d:DesignWidth="800"
+  mc:Ignorable="d">
+
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="../Styles/AppResources.xaml" />
+        <ResourceDictionary>
+          <Style TargetType="{x:Type ListView}">
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="13" />
+          </Style>
+
+          <BitmapImage x:Key="AddInputImage" UriSource="/ClangPowerTools;component/Resources/AddInput.png" />
+          <ImageBrush x:Key="RemoveImage" ImageSource="/ClangPowerTools;component/Resources/RemoveInputIdle.png" />
+          <ImageBrush x:Key="RemoverHoverImage" ImageSource="/ClangPowerTools;component/Resources/RemoveInputHover.png" />
+        </ResourceDictionary>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <!--  Main grid  -->
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="15" />
+      <ColumnDefinition Width="7*" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="15" />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="10" />
+    </Grid.RowDefinitions>
+
+    <!--  Input field  -->
+    <TextBox
+      Grid.Row="0"
+      Grid.ColumnSpan="2"
+      Height="30"
+      Margin="15,15,5,10"
+      VerticalContentAlignment="Center"
+      FontSize="15"
+      Text="{Binding InputToAdd, ElementName=_InputList}">
+      <TextBox.Style>
+        <Style xmlns:sys="clr-namespace:System;assembly=mscorlib" TargetType="TextBox">
+          <Style.Resources>
+            <VisualBrush
+              x:Key="CueBannerBrush"
+              AlignmentX="Left"
+              AlignmentY="Center"
+              Stretch="None">
+              <VisualBrush.Visual>
+                <Label Content="Add your input" Foreground="Gray" />
+              </VisualBrush.Visual>
+            </VisualBrush>
+          </Style.Resources>
+          <Style.Triggers>
+            <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+              <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+            </Trigger>
+            <Trigger Property="Text" Value="{x:Null}">
+              <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+            </Trigger>
+            <Trigger Property="IsKeyboardFocused" Value="True">
+              <Setter Property="Background" Value="White" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </TextBox.Style>
+    </TextBox>
+
+    <Button
+      Grid.Row="0"
+      Grid.Column="2"
+      Margin="0,5,0,0"
+      Command="{Binding AddCommand, ElementName=_InputList}"
+      Style="{StaticResource SettingsButton}">
+      <Button.Content>
+        <Image Source="{StaticResource AddInputImage}" />
+      </Button.Content>
+    </Button>
+
+    <!--  Inputs  -->
+    <ListView
+      x:Name="InputsList"
+      Grid.Row="1"
+      Grid.Column="1"
+      Grid.ColumnSpan="2"
+      Background="White"
+      ItemsSource="{Binding Collection, ElementName=_InputList}"
+      ScrollViewer.CanContentScroll="True"
+      ScrollViewer.VerticalScrollBarVisibility="Visible"
+      SelectionMode="Single">
+
+      <ListView.ItemContainerStyle>
+        <Style TargetType="ListViewItem">
+          <Setter Property="Background" Value="Transparent" />
+          <Setter Property="BorderBrush" Value="WhiteSmoke" />
+          <Setter Property="BorderThickness" Value="1" />
+          <Setter Property="Focusable" Value="True" />
+        </Style>
+      </ListView.ItemContainerStyle>
+
+      <ListView.ItemTemplate>
+        <DataTemplate>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="400" />
+              <ColumnDefinition Width="45" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="38" />
+            </Grid.RowDefinitions>
+            <TextBox
+              x:Name="InputField"
+              VerticalAlignment="Center"
+              BorderThickness="0"
+              IsReadOnly="{Binding ReadOnly, ElementName=_InputList}"
+              Text="{Binding Item, ElementName=_InputList}" />
+            <Button
+              Grid.Column="2"
+              Width="20"
+              Height="20"
+              Margin="20,0,0,0"
+              BorderThickness="0"
+              Click="DeleteButton">
+              <Button.Style>
+                <Style TargetType="{x:Type Button}">
+                  <Setter Property="Background" Value="{StaticResource RemoveImage}" />
+                  <Setter Property="Template">
+                    <Setter.Value>
+                      <ControlTemplate TargetType="Button">
+                        <Grid Background="{TemplateBinding Background}">
+                          <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Grid>
+                      </ControlTemplate>
+                    </Setter.Value>
+                  </Setter>
+                  <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                      <Setter Property="Background" Value="{StaticResource RemoverHoverImage}" />
+                    </Trigger>
+                  </Style.Triggers>
+                </Style>
+              </Button.Style>
+            </Button>
+          </Grid>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+    </ListView>
+  </Grid>
+</UserControl>

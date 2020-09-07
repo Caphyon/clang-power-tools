@@ -219,6 +219,9 @@
     <Compile Include="MVVM\Views\AccountView.xaml.cs">
       <DependentUpon>AccountView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MVVM\Views\Components\InputList.xaml.cs">
+      <DependentUpon>InputList.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\Views\Components\ThreePieceButton.xaml.cs">
       <DependentUpon>ThreePieceButton.xaml</DependentUpon>
     </Compile>
@@ -629,6 +632,10 @@
     <Page Include="MVVM\Views\AccountView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="MVVM\Views\Components\InputList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\Views\Components\ThreePieceButton.xaml">
       <Generator>MSBuild:Compile</Generator>
