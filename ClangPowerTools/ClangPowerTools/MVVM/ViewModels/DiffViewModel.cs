@@ -29,6 +29,8 @@ namespace ClangPowerTools
 
     public List<string> Files { get; }
 
+    public int SelectedIndex { get; set; }
+
     public string SelectedFile
     {
       get
@@ -106,9 +108,8 @@ namespace ClangPowerTools
         {
           SelectedFile = Files.First();
         }
-        int index = Files.IndexOf(selectedFile);
-        diffInput = flowDocuments[index].Item1;
-        diffOutput = flowDocuments[index].Item2;
+        diffInput = flowDocuments[SelectedIndex].Item1;
+        diffOutput = flowDocuments[SelectedIndex].Item2;
 
       }
 

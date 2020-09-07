@@ -76,6 +76,7 @@
           Height="23"
           VerticalAlignment="Top"
           ItemsSource="{Binding Files}"
+          SelectedIndex="{Binding SelectedIndex}"
           SelectedItem="{Binding SelectedFile, Mode=TwoWay}" />
       </StackPanel>
 
