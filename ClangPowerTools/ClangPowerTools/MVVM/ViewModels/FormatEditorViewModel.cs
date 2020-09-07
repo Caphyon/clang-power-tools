@@ -435,24 +435,6 @@ namespace ClangPowerTools
       var diffController = new DiffController(CreateFormatFile);
       loadingView.Closed += diffController.ClosedWindow;
 
-
-      // ###### TODO REMOVE TEST
-
-      //var filePaths = new List<string>();
-
-      //filePaths = new List<string>()
-      //{ "C:\\Users\\horat\\OneDrive\\Desktop\\A.cpp",
-      // "C:\\Users\\horat\\OneDrive\\Desktop\\WW.cpp",
-      // //"C:\\Users\\horat\\OneDrive\\Desktop\\W.cpp",
-      //  "C:\\Users\\horat\\OneDrive\\Desktop\\X.cpp",
-      //  "C:\\Users\\horat\\OneDrive\\Desktop\\Z.cpp"
-      //};
-
-      //var cpps = Directory.GetFiles("C:\\Users\\horat\\OneDrive\\Documente\\ai_advinst\\custact", "*.cpp", SearchOption.AllDirectories);
-      //var hs = Directory.GetFiles("C:\\Users\\horat\\OneDrive\\Documente\\ai_advinst\\custact", "*.h", SearchOption.AllDirectories);
-      //filePaths.AddRange(cpps);
-      // ###### TODO REMOVE TEST
-
       var (matchedStyle, matchedOptions) = await diffController.GetFormatOptionsAsync(formatEditorView.CodeEditor.Text, files);
 
       if (loadingView.IsLoaded == false)
