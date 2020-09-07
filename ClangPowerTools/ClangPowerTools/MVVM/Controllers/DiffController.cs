@@ -15,8 +15,6 @@ namespace ClangPowerTools.MVVM.Controllers
   {
     #region Members
 
-    public EventHandler ClosedWindow;
-
     private readonly Action CreateFormatFile;
     private readonly StyleDetector styleDetector;
     private List<IFormatOption> formatOptions;
@@ -32,17 +30,12 @@ namespace ClangPowerTools.MVVM.Controllers
     public DiffController(Action CreateFormatFile)
     {
       styleDetector = new StyleDetector();
-      ClosedWindow += CloseLoadingView;
       this.CreateFormatFile = CreateFormatFile;
     }
 
-    private void CloseLoadingView(object sender, EventArgs e)
+    public void CloseLoadingView(object sender, EventArgs e)
     {
-      if (styleDetector.StopDetector == false)
-      {
-        styleDetector.StopDetector = true;
-      }
-      ClosedWindow -= CloseLoadingView;
+      styleDetector.CancellationSource.Cancel();
     }
 
     #endregion

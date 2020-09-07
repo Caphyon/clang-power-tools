@@ -425,19 +425,20 @@ namespace ClangPowerTools
 
     public async Task DetectStyleAsync(List<string> files)
     {
-      var loadingView = new DetectingView
+      // TODO refactor entire method
+      var detectingView = new DetectingView
       {
         Owner = formatEditorView
       };
-      loadingView.Show();
+      detectingView.Show();
       formatEditorView.IsEnabled = false;
 
       var diffController = new DiffController(CreateFormatFile);
-      loadingView.Closed += diffController.ClosedWindow;
+      detectingView.Closed += diffController.CloseLoadingView;
 
       var (matchedStyle, matchedOptions) = await diffController.GetFormatOptionsAsync(formatEditorView.CodeEditor.Text, files);
 
-      if (loadingView.IsLoaded == false)
+      if (detectingView.IsLoaded == false)
       {
         formatEditorView.IsEnabled = true;
         return;
@@ -446,7 +447,8 @@ namespace ClangPowerTools
       SetEditorStyleOptions(matchedStyle, matchedOptions);
       await diffController.ShowDiffAsync();
 
-      loadingView.Close();
+      detectingView.Closed -= diffController.CloseLoadingView;
+      detectingView.Close();
       formatEditorView.IsEnabled = true;
     }
 

@@ -16,8 +16,6 @@ namespace ClangPowerTools.DiffStyle
 
     private EditorStyles detectedStyle;
     private List<string> filesContent;
-    private CancellationTokenSource cancellationSource;
-    private bool stopDetector;
     private readonly Dictionary<EditorStyles, int> detectedPredefinedStyles;
     private readonly ConcurrentBag<string> customInput;
     private readonly ConcurrentBag<int> columnLimits;
@@ -29,21 +27,7 @@ namespace ClangPowerTools.DiffStyle
 
     #region Properties
 
-    public bool StopDetector
-    {
-      get
-      {
-        return stopDetector;
-      }
-      set
-      {
-        stopDetector = value;
-        if (stopDetector)
-        {
-          cancellationSource.Cancel();
-        }
-      }
-    }
+    public CancellationTokenSource CancellationSource { get; private set; }
 
     #endregion
 
@@ -58,7 +42,6 @@ namespace ClangPowerTools.DiffStyle
       allFoundOptions = new ConcurrentBag<List<IFormatOption>>();
       customInput = new ConcurrentBag<string>() { "TabWidth", "ColumnLimit" };
       defaultLock = new object();
-      stopDetector = false;
     }
 
     #endregion
@@ -87,8 +70,8 @@ namespace ClangPowerTools.DiffStyle
 
     private async Task DetectAsync()
     {
-      cancellationSource = new CancellationTokenSource();
-      CancellationToken cancelToken = cancellationSource.Token;
+      CancellationSource = new CancellationTokenSource();
+      CancellationToken cancelToken = CancellationSource.Token;
       try
       {
         await Task.WhenAll(filesContent.Select(e => CalculateColumTabAsync(e, cancelToken)));
@@ -101,7 +84,7 @@ namespace ClangPowerTools.DiffStyle
       }
       finally
       {
-        cancellationSource.Dispose();
+        CancellationSource.Dispose();
       }
     }
 
