@@ -111,34 +111,27 @@ namespace ClangPowerTools
     public async Task DiffDocumentsAsync(List<string> filePaths)
     {
       var detectingView = new DetectingView();
-      //{
-      //  Owner = diffWindow
-      //};
       detectingView.Show();
       detectingView.Closed += diffController.CloseLoadingView;
 
       (FormatStyle, FormatOptions) = await diffController.GetFormatOptionsAsync(filePaths);
       flowDocuments = await diffController.CreateFlowDocumentsAsync(filePaths, FormatStyle, FormatOptions);
+
+      if (detectingView.IsLoaded)
+      {
+        InitializeUIElements(filePaths);
+        detectingView.Closed -= diffController.CloseLoadingView;
+        detectingView.Close();
+        diffWindow.Show();
+      }
+    }
+
+    private void InitializeUIElements(List<string> filePaths)
+    {
       FileNames = diffController.GetFileNames(filePaths);
       SetFlowDocuments();
-
-      // TODO remove
       OptionsFile = string.Empty;
-
-
-      //if (detectingView.IsLoaded == false)
-      //{
-      //  formatEditorView.IsEnabled = true;
-      //  return;
-      //}
-
       //SetEditorStyleOptions(matchedStyle, matchedOptions);
-
-
-      detectingView.Closed -= diffController.CloseLoadingView;
-      detectingView.Close();
-
-      diffWindow.Show();
     }
 
     private void SetFlowDocuments()
