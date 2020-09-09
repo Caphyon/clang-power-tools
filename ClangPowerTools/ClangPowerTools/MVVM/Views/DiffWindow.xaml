@@ -122,6 +122,7 @@
       <Grid.RowDefinitions>
         <RowDefinition Height="10" />
         <RowDefinition Height="25" />
+        <RowDefinition Height="15" />
         <RowDefinition Height="*" />
         <RowDefinition Height="50" />
       </Grid.RowDefinitions>
@@ -141,10 +142,21 @@
         Text="Detected Clang-Format Style Options"
         TextWrapping="Wrap" />
 
+      <!--  Style  -->
+      <TextBlock
+        Grid.Row="2"
+        Grid.Column="0"
+        HorizontalAlignment="Center"
+        FontSize="12"
+        FontWeight="DemiBold"
+        Foreground="Black"
+        Text="STYLE NAME HERE"
+        TextWrapping="Wrap" />
+
       <!--  Format options  -->
       <ListView
         Name="FormatOptions"
-        Grid.Row="2"
+        Grid.Row="3"
         Grid.Column="0"
         HorizontalAlignment="Left"
         ItemsSource="{Binding FormatOptions, Mode=TwoWay}"
@@ -222,7 +234,7 @@
 
       <!--  Export button  -->
       <Button
-        Grid.Row="3"
+        Grid.Row="4"
         Grid.Column="0"
         Width="150"
         Height="30"

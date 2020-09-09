@@ -402,7 +402,6 @@ namespace ClangPowerTools
 
     private void CreateFormatFile()
     {
-      // TODO move outside of editor
       string fileName = ".clang-format";
       string defaultExt = ".clang-format";
       string filter = "Configuration files (.clang-format)|*.clang-format";

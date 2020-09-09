@@ -2,6 +2,7 @@
 using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Views;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -11,7 +12,7 @@ using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class DiffViewModel : INotifyPropertyChanged
+  public class DiffViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
   {
     #region Members
 
@@ -31,6 +32,13 @@ namespace ClangPowerTools
 
     public List<IFormatOption> FormatOptions { get; set; }
     public EditorStyles FormatStyle { get; set; }
+    public IEnumerable<ToggleValues> BooleanComboboxValues
+    {
+      get
+      {
+        return Enum.GetValues(typeof(ToggleValues)).Cast<ToggleValues>();
+      }
+    }
     public string OptionsFile { get; set; }
     public List<string> FileNames { get; set; }
     public int SelectedIndex { get; set; }
@@ -48,19 +56,10 @@ namespace ClangPowerTools
         }
         return selectedFile;
       }
-      set
-      {
-        selectedFile = value;
-      }
+      set => selectedFile = value;
     }
 
-    public bool CanExecute
-    {
-      get
-      {
-        return true;
-      }
-    }
+    public bool CanExecute => true;
 
     #endregion
 
@@ -84,8 +83,7 @@ namespace ClangPowerTools
 
     public ICommand CreateFormatFileCommand
     {
-      // TODO change method to export
-      get => createFormatFileCommand ??= new RelayCommand(() => SetFlowDocuments(), () => CanExecute);
+      get => createFormatFileCommand ??= new RelayCommand(() => CreateFormatFile(), () => CanExecute);
     }
 
     #endregion
@@ -103,22 +101,20 @@ namespace ClangPowerTools
 
       if (detectingView.IsLoaded)
       {
-        InitializeUIElements(filePaths);
+        InitializeDiffView(filePaths);
         detectingView.Closed -= diffController.CloseLoadingView;
         detectingView.Close();
         diffWindow.Show();
       }
     }
 
-    private void InitializeUIElements(List<string> filePaths)
+    private void InitializeDiffView(List<string> filePaths)
     {
       FileNames = diffController.GetFileNames(filePaths);
       SetFlowDocuments();
-      OptionsFile = string.Empty;
 
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileNames"));
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
-      //SetEditorStyleOptions(matchedStyle, matchedOptions);
     }
 
     private void SetFlowDocuments()
@@ -130,6 +126,7 @@ namespace ClangPowerTools
         return;
       }
 
+      //TODO need to test if section should be removed
       if (string.IsNullOrEmpty(selectedFile))
       {
         SelectedFile = FileNames.First();
@@ -140,6 +137,19 @@ namespace ClangPowerTools
       diffOutput.PageWidth = PageWith;
       diffWindow.DiffInput.Document = diffInput;
       diffWindow.DiffOutput.Document = diffOutput;
+    }
+
+    private void CreateFormatFile()
+    {
+      string fileName = ".clang-format";
+      string defaultExt = ".clang-format";
+      string filter = "Configuration files (.clang-format)|*.clang-format";
+
+      string path = SaveFile(fileName, defaultExt, filter);
+      if (string.IsNullOrEmpty(path) == false)
+      {
+        WriteContentToFile(path, FormatOptionFile.CreateOutput(FormatOptions, FormatStyle).ToString());
+      }
     }
 
     #endregion
