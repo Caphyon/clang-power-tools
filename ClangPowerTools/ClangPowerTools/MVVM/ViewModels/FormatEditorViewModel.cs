@@ -45,7 +45,7 @@ namespace ClangPowerTools
     private string nameColumnWidth;
     private string droppedFile;
     private const string nameColumnWidthMax = "340";
-    public const string FileExtensionsSelectFile = "Code files (*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx;)|*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx";
+
 
     #endregion
 
@@ -383,7 +383,7 @@ namespace ClangPowerTools
 
     private void ReadCodeFromFile()
     {
-      var filePath = OpenFile(string.Empty, ".cpp", FileExtensionsSelectFile);
+      var filePath = OpenFile(string.Empty, ".cpp", FormatConstants.FileExtensionsCodeFiles);
 
       if (File.Exists(filePath))
         formatEditorView.CodeEditor.Text = File.ReadAllText(filePath);

@@ -102,6 +102,7 @@
     <Compile Include="IgnoreActions\IgnoreItem.cs" />
     <Compile Include="Items\CurrentSolution.cs" />
     <Compile Include="MVVM\Constants\CPPKeywords.cs" />
+    <Compile Include="MVVM\Constants\FormatConstants.cs" />
     <Compile Include="MVVM\Constants\LlvmConstants.cs" />
     <Compile Include="MVVM\Constants\LlvmVersionsAlternate.cs" />
     <Compile Include="MVVM\Controllers\DiffController.cs" />
