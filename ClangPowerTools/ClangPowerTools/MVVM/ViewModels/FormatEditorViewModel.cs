@@ -427,37 +427,6 @@ namespace ClangPowerTools
     {
       var diffWin = new DiffWindow();
       await diffWin.ShowDiffAsync(files);
-
-      // TODO refactor entire method
-      //var detectingView = new DetectingView
-      //{
-      //  Owner = formatEditorView
-      //};
-      //detectingView.Show();
-
-      //detectingView.Closed += diffController.CloseLoadingView;
-
-      //var (matchedStyle, matchedOptions) = await diffController.GetFormatOptionsAsync(files);
-
-      //if (detectingView.IsLoaded == false)
-      //{
-      //  formatEditorView.IsEnabled = true;
-      //  return;
-      //}
-
-      //SetEditorStyleOptions(matchedStyle, matchedOptions);
-      //await diffController.ShowDiffAsync();
-
-      //detectingView.Closed -= diffController.CloseLoadingView;
-      //detectingView.Close();
-    }
-
-    private void SetEditorStyleOptions(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)
-    {
-      selectedStyle = matchedStyle;
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedStyle"));
-      SetStyleControls(nameColumnWidthMax, "0", matchedOptions);
-      RunFormat();
     }
 
     private void EditorLoaded(object sender, EventArgs e)
