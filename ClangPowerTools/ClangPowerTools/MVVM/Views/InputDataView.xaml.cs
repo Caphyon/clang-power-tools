@@ -25,7 +25,7 @@ namespace ClangPowerTools.Views
     private int GetElementIndex(FrameworkElement frameworkElement)
     {
       var element = frameworkElement.DataContext;
-      return InputsList.Items.IndexOf(element);
+      return InputList.InputsList.Items.IndexOf(element);
     }
   }
 }
