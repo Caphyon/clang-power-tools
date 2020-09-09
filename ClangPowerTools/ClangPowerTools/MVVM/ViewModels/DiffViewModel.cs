@@ -20,7 +20,6 @@ namespace ClangPowerTools
     private readonly DiffWindow diffWindow;
     private readonly DiffController diffController;
     private List<(FlowDocument, FlowDocument)> flowDocuments;
-    private List<string> fileNames;
     private ICommand createFormatFileCommand;
     private string selectedFile;
     private const int PageWith = 1000;
@@ -32,31 +31,16 @@ namespace ClangPowerTools
 
     public List<IFormatOption> FormatOptions { get; set; }
     public EditorStyles FormatStyle { get; set; }
-
     public string OptionsFile { get; set; }
-
-    public List<string> FileNames
-    {
-      get
-      {
-        return fileNames;
-      }
-      set
-      {
-        fileNames = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileNames"));
-      }
-    }
-
+    public List<string> FileNames { get; set; }
     public int SelectedIndex { get; set; }
-
     public string SelectedFile
     {
       get
       {
         if (string.IsNullOrEmpty(selectedFile) && FileNames.Count > 0)
         {
-          selectedFile = fileNames.First();
+          selectedFile = FileNames.First();
         }
         if (diffWindow.IsActive)
         {
@@ -85,7 +69,7 @@ namespace ClangPowerTools
     {
       this.diffWindow = diffWindow;
       diffController = new DiffController();
-      fileNames = new List<string>();
+      FileNames = new List<string>();
     }
 
     //Empty constructor used for XAML IntelliSense
@@ -131,6 +115,9 @@ namespace ClangPowerTools
       FileNames = diffController.GetFileNames(filePaths);
       SetFlowDocuments();
       OptionsFile = string.Empty;
+
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileNames"));
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
       //SetEditorStyleOptions(matchedStyle, matchedOptions);
     }
 

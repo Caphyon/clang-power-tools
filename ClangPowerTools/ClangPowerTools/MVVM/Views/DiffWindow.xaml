@@ -39,7 +39,7 @@
       <ColumnDefinition Width="5" />
       <ColumnDefinition Width="*" />
       <ColumnDefinition Width="5" />
-      <ColumnDefinition Width="auto" />
+      <ColumnDefinition Width="385" />
       <ColumnDefinition Width="5" />
     </Grid.ColumnDefinitions>
 
@@ -122,12 +122,12 @@
       <Grid.RowDefinitions>
         <RowDefinition Height="10" />
         <RowDefinition Height="25" />
-        <RowDefinition Height="auto" />
+        <RowDefinition Height="*" />
         <RowDefinition Height="50" />
       </Grid.RowDefinitions>
 
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="290" />
+        <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
 
       <!--  Title  -->
@@ -146,7 +146,6 @@
         Name="FormatOptions"
         Grid.Row="2"
         Grid.Column="0"
-        Width="auto"
         HorizontalAlignment="Left"
         ItemsSource="{Binding FormatOptions, Mode=TwoWay}"
         SelectedItem="{Binding SelectedOption}"
