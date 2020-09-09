@@ -32,6 +32,7 @@ namespace ClangPowerTools
 
     public List<IFormatOption> FormatOptions { get; set; }
     public EditorStyles FormatStyle { get; set; }
+    public string Style { get; set; }
     public IEnumerable<ToggleValues> BooleanComboboxValues
     {
       get
@@ -112,9 +113,11 @@ namespace ClangPowerTools
     {
       FileNames = diffController.GetFileNames(filePaths);
       SetFlowDocuments();
+      Style = "Style: " + FormatStyle.ToString();
 
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileNames"));
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Style"));
     }
 
     private void SetFlowDocuments()

@@ -121,8 +121,8 @@
     <Grid Grid.Row="1" Grid.Column="3">
       <Grid.RowDefinitions>
         <RowDefinition Height="10" />
-        <RowDefinition Height="25" />
-        <RowDefinition Height="15" />
+        <RowDefinition Height="20" />
+        <RowDefinition Height="20" />
         <RowDefinition Height="*" />
         <RowDefinition Height="50" />
       </Grid.RowDefinitions>
@@ -139,7 +139,7 @@
         FontSize="15"
         FontWeight="DemiBold"
         Foreground="#9E005A"
-        Text="Detected Clang-Format Style Options"
+        Text="Detection Results"
         TextWrapping="Wrap" />
 
       <!--  Style  -->
@@ -147,10 +147,10 @@
         Grid.Row="2"
         Grid.Column="0"
         HorizontalAlignment="Center"
-        FontSize="12"
+        FontSize="15"
         FontWeight="DemiBold"
         Foreground="Black"
-        Text="STYLE NAME HERE"
+        Text="{Binding Style}"
         TextWrapping="Wrap" />
 
       <!--  Format options  -->
