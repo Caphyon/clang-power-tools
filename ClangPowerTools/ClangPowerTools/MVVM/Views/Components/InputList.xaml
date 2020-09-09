@@ -129,12 +129,13 @@
               IsReadOnly="{Binding ReadOnly, ElementName=_InputList}"
               Text="{Binding Item, ElementName=_InputList}" />
             <Button
+              Name="DeleteButton"
               Grid.Column="2"
               Width="20"
               Height="20"
               Margin="20,0,0,0"
               BorderThickness="0"
-              Click="DeleteButton">
+              Click="DeleteButton_Click">
               <Button.Style>
                 <Style TargetType="{x:Type Button}">
                   <Setter Property="Background" Value="{StaticResource RemoveImage}" />
