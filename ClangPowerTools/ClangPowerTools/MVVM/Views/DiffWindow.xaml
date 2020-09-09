@@ -75,7 +75,7 @@
           Name="FilesComboBox"
           Height="23"
           VerticalAlignment="Top"
-          ItemsSource="{Binding Files}"
+          ItemsSource="{Binding FileNames}"
           SelectedIndex="{Binding SelectedIndex}"
           SelectedItem="{Binding SelectedFile, Mode=TwoWay}" />
       </StackPanel>
@@ -115,7 +115,6 @@
         IsReadOnly="True"
         ScrollViewer.ScrollChanged="Diff_ScrollChanged"
         VerticalScrollBarVisibility="Auto" />
-
     </Grid>
 
     <!--  Detected Format Options  -->
@@ -142,23 +141,85 @@
         Text="Detected Clang-Format Style Options"
         TextWrapping="Wrap" />
 
-      <!--  Format Options  -->
-      <Border
+      <!--  Format options  -->
+      <ListView
+        Name="FormatOptions"
         Grid.Row="2"
         Grid.Column="0"
-        BorderBrush="#9E005A"
-        BorderThickness="1">
-        <TextBox
-          Name="FormatOptions"
-          Width="290"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="12"
-          IsReadOnly="True"
-          Text="{Binding OptionsFile}"
-          TextWrapping="Wrap"
-          VerticalScrollBarVisibility="Auto" />
-      </Border>
+        Width="auto"
+        HorizontalAlignment="Left"
+        ItemsSource="{Binding FormatOptions, Mode=TwoWay}"
+        SelectedItem="{Binding SelectedOption}"
+        SelectionMode="Single"
+        VirtualizingStackPanel.IsVirtualizing="False">
+        <ListView.View>
+          <GridView>
+            <GridView.ColumnHeaderContainerStyle>
+              <Style TargetType="{x:Type GridViewColumnHeader}">
+                <Setter Property="IsEnabled" Value="False" />
+              </Style>
+            </GridView.ColumnHeaderContainerStyle>
+            <GridViewColumn Width="{Binding NameColumnWidth}" Header="Name">
+              <GridViewColumn.CellTemplate>
+                <DataTemplate>
+                  <TextBlock
+                    Grid.Column="0"
+                    Width="250"
+                    FontSize="12"
+                    Foreground="Black"
+                    Text="{Binding Name}"
+                    TextWrapping="Wrap" />
+                </DataTemplate>
+              </GridViewColumn.CellTemplate>
+            </GridViewColumn>
+            <GridViewColumn Width="auto" Header="Value">
+              <GridViewColumn.CellTemplate>
+                <DataTemplate>
+                  <Grid>
+                    <TextBox
+                      x:Name="InputText"
+                      Grid.Column="1"
+                      Width="80"
+                      Height="18"
+                      HorizontalAlignment="Right"
+                      FontSize="12"
+                      Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}"
+                      TextChanged="InputText_TextChanged"
+                      Visibility="{Binding Path=HasInputTextBox, Converter={StaticResource BoolToVis}}" />
+                    <ComboBox
+                      x:Name="BooleanCombobox"
+                      Grid.Column="1"
+                      Width="80"
+                      HorizontalAlignment="Right"
+                      DropDownClosed="BooleanCombobox_DropDownClosed"
+                      ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.BooleanComboboxValues}"
+                      SelectedItem="{Binding BooleanCombobox}"
+                      Visibility="{Binding Path=HasBooleanCombobox, Converter={StaticResource BoolToVis}}" />
+                    <Button
+                      Grid.Column="1"
+                      Width="80"
+                      Height="20"
+                      HorizontalAlignment="Right"
+                      Click="OpenMultipleInput"
+                      Content="Modify Input"
+                      FontSize="12"
+                      Visibility="{Binding Path=HasMultipleInputTextBox, Converter={StaticResource BoolToVis}}" />
+                    <Button
+                      Grid.Column="1"
+                      Width="80"
+                      Height="20"
+                      HorizontalAlignment="Right"
+                      Click="OpenMultipleInput"
+                      Content="Modify Input"
+                      FontSize="12"
+                      Visibility="{Binding Path=HasMultipleToggle, Converter={StaticResource BoolToVis}}" />
+                  </Grid>
+                </DataTemplate>
+              </GridViewColumn.CellTemplate>
+            </GridViewColumn>
+          </GridView>
+        </ListView.View>
+      </ListView>
 
       <!--  Export button  -->
       <Button

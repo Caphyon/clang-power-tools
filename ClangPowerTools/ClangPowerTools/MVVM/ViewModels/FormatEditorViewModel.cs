@@ -1,6 +1,5 @@
 ﻿using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Commands;
-using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.MVVM.Views;
@@ -403,6 +402,7 @@ namespace ClangPowerTools
 
     private void CreateFormatFile()
     {
+      // TODO move outside of editor
       string fileName = ".clang-format";
       string defaultExt = ".clang-format";
       string filter = "Configuration files (.clang-format)|*.clang-format";
@@ -425,31 +425,31 @@ namespace ClangPowerTools
 
     public async Task DetectStyleAsync(List<string> files)
     {
+      var diffWin = new DiffWindow();
+      await diffWin.ShowDiffAsync(files);
+
       // TODO refactor entire method
-      var detectingView = new DetectingView
-      {
-        Owner = formatEditorView
-      };
-      detectingView.Show();
-      formatEditorView.IsEnabled = false;
+      //var detectingView = new DetectingView
+      //{
+      //  Owner = formatEditorView
+      //};
+      //detectingView.Show();
 
-      var diffController = new DiffController(CreateFormatFile);
-      detectingView.Closed += diffController.CloseLoadingView;
+      //detectingView.Closed += diffController.CloseLoadingView;
 
-      var (matchedStyle, matchedOptions) = await diffController.GetFormatOptionsAsync(formatEditorView.CodeEditor.Text, files);
+      //var (matchedStyle, matchedOptions) = await diffController.GetFormatOptionsAsync(files);
 
-      if (detectingView.IsLoaded == false)
-      {
-        formatEditorView.IsEnabled = true;
-        return;
-      }
+      //if (detectingView.IsLoaded == false)
+      //{
+      //  formatEditorView.IsEnabled = true;
+      //  return;
+      //}
 
-      SetEditorStyleOptions(matchedStyle, matchedOptions);
-      await diffController.ShowDiffAsync();
+      //SetEditorStyleOptions(matchedStyle, matchedOptions);
+      //await diffController.ShowDiffAsync();
 
-      detectingView.Closed -= diffController.CloseLoadingView;
-      detectingView.Close();
-      formatEditorView.IsEnabled = true;
+      //detectingView.Closed -= diffController.CloseLoadingView;
+      //detectingView.Close();
     }
 
     private void SetEditorStyleOptions(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)

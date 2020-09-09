@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Documents;
 
 namespace ClangPowerTools.MVVM.Views
 {
@@ -18,12 +17,20 @@ namespace ClangPowerTools.MVVM.Views
     #endregion
 
     #region Constructor
-
-    public DiffWindow(List<(FlowDocument, FlowDocument)> flowDocuments, List<string> fileNames, string optionsFile, Action CreateFormatFile)
+    public DiffWindow()
     {
       InitializeComponent();
-      diffViewModel = new DiffViewModel(this, flowDocuments, fileNames, optionsFile, CreateFormatFile);
+      diffViewModel = new DiffViewModel(this);
       DataContext = diffViewModel;
+    }
+
+    #endregion
+
+    #region Public Methods
+
+    public async Task ShowDiffAsync(List<string> filePaths)
+    {
+      await diffViewModel.DiffDocumentsAsync(filePaths);
     }
 
     #endregion
@@ -43,6 +50,22 @@ namespace ClangPowerTools.MVVM.Views
         DiffInput.ScrollToVerticalOffset(e.VerticalOffset);
         DiffInput.ScrollToHorizontalOffset(e.HorizontalOffset);
       }
+    }
+
+    //TODO try to bind to ViewModel
+    private void InputText_TextChanged(object sender, TextChangedEventArgs e)
+    {
+
+    }
+
+    private void BooleanCombobox_DropDownClosed(object sender, System.EventArgs e)
+    {
+
+    }
+
+    private void OpenMultipleInput(object sender, RoutedEventArgs e)
+    {
+
     }
 
     #endregion

@@ -1,21 +1,26 @@
 ﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.Controllers;
+using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Views;
-using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using System.Windows;
+using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class DiffViewModel
+  public class DiffViewModel : INotifyPropertyChanged
   {
     #region Members
 
-    private readonly Action CreateFormatFile;
+    public event PropertyChangedEventHandler PropertyChanged;
+
     private readonly DiffWindow diffWindow;
-    private readonly List<(FlowDocument, FlowDocument)> flowDocuments;
+    private readonly DiffController diffController;
+    private List<(FlowDocument, FlowDocument)> flowDocuments;
+    private List<string> fileNames;
     private ICommand createFormatFileCommand;
     private string selectedFile;
     private const int PageWith = 1000;
@@ -25,9 +30,23 @@ namespace ClangPowerTools
 
     #region Properties
 
+    public List<IFormatOption> FormatOptions { get; set; }
+    public EditorStyles FormatStyle { get; set; }
+
     public string OptionsFile { get; set; }
 
-    public List<string> Files { get; }
+    public List<string> FileNames
+    {
+      get
+      {
+        return fileNames;
+      }
+      set
+      {
+        fileNames = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileNames"));
+      }
+    }
 
     public int SelectedIndex { get; set; }
 
@@ -35,9 +54,9 @@ namespace ClangPowerTools
     {
       get
       {
-        if (string.IsNullOrEmpty(selectedFile) && Files.Count > 0)
+        if (string.IsNullOrEmpty(selectedFile) && FileNames.Count > 0)
         {
-          selectedFile = Files.First();
+          selectedFile = fileNames.First();
         }
         if (diffWindow.IsActive)
         {
@@ -62,16 +81,11 @@ namespace ClangPowerTools
     #endregion
 
     #region Constructor 
-    public DiffViewModel(DiffWindow diffWindow, List<(FlowDocument, FlowDocument)> flowDocuments, List<string> fileNames, string optionsFile, Action CreateFormatFile)
+    public DiffViewModel(DiffWindow diffWindow)
     {
-      Files = fileNames;
-      OptionsFile = optionsFile;
-      this.CreateFormatFile = CreateFormatFile;
       this.diffWindow = diffWindow;
-      this.flowDocuments = flowDocuments;
-
-      SetFilesComboBoxVisibility();
-      SetFlowDocuments();
+      diffController = new DiffController();
+      fileNames = new List<string>();
     }
 
     //Empty constructor used for XAML IntelliSense
@@ -86,49 +100,66 @@ namespace ClangPowerTools
 
     public ICommand CreateFormatFileCommand
     {
-      get => createFormatFileCommand ??= new RelayCommand(() => CreateFormatFile.Invoke(), () => CanExecute);
+      // TODO change method to export
+      get => createFormatFileCommand ??= new RelayCommand(() => SetFlowDocuments(), () => CanExecute);
     }
 
     #endregion
 
     #region Private Methods
 
+    public async Task DiffDocumentsAsync(List<string> filePaths)
+    {
+      var detectingView = new DetectingView();
+      //{
+      //  Owner = diffWindow
+      //};
+      detectingView.Show();
+      detectingView.Closed += diffController.CloseLoadingView;
+
+      (FormatStyle, FormatOptions) = await diffController.GetFormatOptionsAsync(filePaths);
+      flowDocuments = await diffController.CreateFlowDocumentsAsync(filePaths, FormatStyle, FormatOptions);
+      FileNames = diffController.GetFileNames(filePaths);
+      SetFlowDocuments();
+
+      // TODO remove
+      OptionsFile = string.Empty;
+
+
+      //if (detectingView.IsLoaded == false)
+      //{
+      //  formatEditorView.IsEnabled = true;
+      //  return;
+      //}
+
+      //SetEditorStyleOptions(matchedStyle, matchedOptions);
+
+
+      detectingView.Closed -= diffController.CloseLoadingView;
+      detectingView.Close();
+
+      diffWindow.Show();
+    }
+
     private void SetFlowDocuments()
     {
       FlowDocument diffInput;
       FlowDocument diffOutput;
-      if (Files.Count == 0)
+      if (FileNames.Count == 0)
       {
-        diffInput = flowDocuments[0].Item1;
-        diffOutput = flowDocuments[0].Item2;
-      }
-      else
-      {
-        if (string.IsNullOrEmpty(selectedFile))
-        {
-          SelectedFile = Files.First();
-        }
-        diffInput = flowDocuments[SelectedIndex].Item1;
-        diffOutput = flowDocuments[SelectedIndex].Item2;
-
+        return;
       }
 
+      if (string.IsNullOrEmpty(selectedFile))
+      {
+        SelectedFile = FileNames.First();
+      }
+      diffInput = flowDocuments[SelectedIndex].Item1;
+      diffOutput = flowDocuments[SelectedIndex].Item2;
       diffInput.PageWidth = PageWith;
       diffOutput.PageWidth = PageWith;
       diffWindow.DiffInput.Document = diffInput;
       diffWindow.DiffOutput.Document = diffOutput;
-    }
-
-    private void SetFilesComboBoxVisibility()
-    {
-      if (Files.Count == 0)
-      {
-        diffWindow.FilesComboBox.Visibility = Visibility.Hidden;
-      }
-      else
-      {
-        diffWindow.FilesComboBox.Visibility = Visibility.Visible;
-      }
     }
 
     #endregion
