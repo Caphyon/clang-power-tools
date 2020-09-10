@@ -7,7 +7,11 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   mc:Ignorable="d">
 
-  <Style x:Key="SettingsButton" TargetType="Button">
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="ImageResources.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <Style x:Key="SettingsButton" TargetType="{x:Type Button}">
     <Setter Property="Background" Value="#9E005A" />
     <Setter Property="Height" Value="30" />
     <Setter Property="Width" Value="50" />
@@ -15,8 +19,18 @@
       <Setter.Value>
         <ControlTemplate TargetType="Button">
           <Grid Background="{TemplateBinding Background}">
+            <Image x:Name="ButtonImageContent" />
             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
           </Grid>
+          <ControlTemplate.Triggers>
+            <Trigger Property="Tag" Value="add">
+              <Setter TargetName="ButtonImageContent" Property="Source" Value="/ClangPowerTools;component/Resources/AddInput.png" />
+            </Trigger>
+
+            <Trigger Property="Tag" Value="browse">
+              <Setter TargetName="ButtonImageContent" Property="Source" Value="/ClangPowerTools;component/Resources/Browse.png" />
+            </Trigger>
+          </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
