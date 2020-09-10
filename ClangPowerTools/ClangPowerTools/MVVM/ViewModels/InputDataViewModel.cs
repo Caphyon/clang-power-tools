@@ -101,8 +101,10 @@ namespace ClangPowerTools
 
     private void AddBrowseFilePathsToCollection()
     {
-      var filePaths = OpenFiles(string.Empty, ".cpp", ScriptConstants.FileExtensionsSelectFile)
-        .Where(path => !string.IsNullOrWhiteSpace(path));
+      var filePaths = OpenFiles(string.Empty, ".cpp", ScriptConstants.FileExtensionsSelectFile);
+
+      if (filePaths == null || filePaths.Length <= 0)
+        return;
 
       foreach (var path in filePaths)
         Inputs.Add(new InputDataModel(path));
