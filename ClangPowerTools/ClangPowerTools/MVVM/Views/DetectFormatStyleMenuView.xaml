@@ -7,7 +7,7 @@
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   Title="Clang Format Style"
-  Width="800"
+  Width="525"
   Height="400"
   d:DataContext="{d:DesignInstance local:DetectFormatStyleMenuViewModel,
                                    IsDesignTimeCreatable=True}"
@@ -17,80 +17,30 @@
   WindowStyle="ThreeDBorderWindow"
   mc:Ignorable="d">
 
+  <!--  Static resources  -->
   <Window.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="Styles/AppResources.xaml" />
+        <ResourceDictionary>
+          <Style TargetType="{x:Type ListView}">
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="13" />
+          </Style>
+
+          <BitmapImage x:Key="AddInputImage" UriSource="/ClangPowerTools;component/Resources/AddInput.png" />
+          <ImageBrush x:Key="RemoveImage" ImageSource="/ClangPowerTools;component/Resources/RemoveInputIdle.png" />
+          <ImageBrush x:Key="RemoverHoverImage" ImageSource="/ClangPowerTools;component/Resources/RemoveInputHover.png" />
+        </ResourceDictionary>
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Window.Resources>
 
-  <Grid>
-    <Grid.Background>
-      <ImageBrush ImageSource="/ClangPowerTools;component/Resources/ClangSplitBackground.png" Stretch="UniformToFill" />
-    </Grid.Background>
-
-    <Grid Grid.Row="1" Margin="0,82,0,0">
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="*" />
-      </Grid.ColumnDefinitions>
-
-      <StackPanel Grid.Column="0">
-        <controls:ThreePieceComponent
-          Title="On code input"
-          HorizontalAlignment="Center"
-          VerticalAlignment="Top"
-          Description="Identify Clang Format style from the code inside the input tab"
-          DescriptionFontSize="12"
-          DescriptionForeground="white"
-          Image="/ClangPowerTools;component/Resources/CodeInputIcon.png"
-          ImageHeightValue="42"
-          ImageWidthValue="48"
-          OpacityValue="0"
-          TitleFontSize="20"
-          TitleForeground="white"
-          WidthValue="240" />
-
-        <Button
-          Width="192"
-          Height="35"
-          Margin="0,25,0,0"
-          Command="{Binding DetectFormatOnCodeInput}"
-          Content="Continue with Code Based"
-          FontSize="14"
-          Foreground="#FBFBFB"
-          Style="{StaticResource SettingsButton}" />
-      </StackPanel>
-
-      <StackPanel Grid.Column="1">
-        <controls:ThreePieceComponent
-          Title="On code input"
-          HorizontalAlignment="Center"
-          VerticalAlignment="Top"
-          Description="Identify Clang Format style from the code inside the input tab"
-          DescriptionFontSize="12"
-          DescriptionForeground="#333333"
-          Image="/ClangPowerTools;component/Resources/ProjectFilesIcon.png"
-          ImageHeightValue="42"
-          ImageWidthValue="48"
-          OpacityValue="0"
-          TitleFontSize="20"
-          TitleForeground="black"
-          WidthValue="240" />
-
-        <Button
-          Width="192"
-          Height="35"
-          Margin="0,25,0,0"
-          Command="{Binding DetectFormatOnProjectFiles}"
-          Content="Continue with Project Files"
-          FontSize="14"
-          Foreground="#FBFBFB"
-          Style="{StaticResource SettingsButton}" />
-      </StackPanel>
-
-    </Grid>
-  </Grid>
+  <controls:InputList
+    x:Name="InputList"
+    AddCommand="{Binding AddCommand}"
+    Collection="{Binding Inputs, Mode=TwoWay}"
+    InputToAdd="{Binding InputToAdd, Mode=TwoWay}" />
 
 </Window>
