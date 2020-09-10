@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class InputDataViewModel : INotifyPropertyChanged
+  public class InputDataViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
   {
     #region Members
 
@@ -30,10 +30,17 @@ namespace ClangPowerTools
 
     public InputDataViewModel() { }
 
+    public InputDataViewModel(bool browse)
+    {
+      BrowseForFiles = browse;
+    }
+
     #endregion
 
 
     #region Properties
+
+    private bool BrowseForFiles { get; set; } = false;
 
     public string InputToAdd
     {
@@ -81,6 +88,27 @@ namespace ClangPowerTools
     }
 
     private void AddInput()
+    {
+      if (BrowseForFiles)
+      {
+        AddBrowseFilePathsToCollection();
+      }
+      else
+      {
+        AddInputToCollection();
+      }
+    }
+
+    private void AddBrowseFilePathsToCollection()
+    {
+      var filePaths = OpenFiles(string.Empty, ".cpp", ScriptConstants.FileExtensionsSelectFile)
+        .Where(path => !string.IsNullOrWhiteSpace(path));
+
+      foreach (var path in filePaths)
+        Inputs.Add(new InputDataModel(path));
+    }
+
+    private void AddInputToCollection()
     {
       if (string.IsNullOrWhiteSpace(inputToAdd) == false)
       {
