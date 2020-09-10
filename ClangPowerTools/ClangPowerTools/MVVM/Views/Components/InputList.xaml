@@ -98,7 +98,7 @@
       Grid.Column="1"
       Grid.ColumnSpan="2"
       Background="White"
-      ItemsSource="{Binding Collection, ElementName=_InputList}"
+      ItemsSource="{Binding Collection, ElementName=_InputList, Mode=TwoWay}"
       ScrollViewer.CanContentScroll="True"
       ScrollViewer.VerticalScrollBarVisibility="Visible"
       SelectionMode="Single">
@@ -126,8 +126,8 @@
               x:Name="InputField"
               VerticalAlignment="Center"
               BorderThickness="0"
-              IsReadOnly="{Binding ReadOnly, ElementName=_InputList}"
-              Text="{Binding Item, ElementName=_InputList}" />
+              IsReadOnly="{Binding IsReadOnly, Mode=TwoWay}"
+              Text="{Binding InputData, Mode=TwoWay}" />
             <Button
               Name="DeleteButton"
               Grid.Column="2"

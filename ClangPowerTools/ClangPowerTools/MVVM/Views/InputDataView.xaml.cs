@@ -8,6 +8,7 @@ namespace ClangPowerTools.Views
   public partial class InputDataView : Window
   {
     private readonly InputDataViewModel inputDataViewModel = new InputDataViewModel();
+
     public InputDataView(InputDataViewModel inputDataViewModel)
     {
       InitializeComponent();

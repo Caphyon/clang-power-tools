@@ -41,10 +41,8 @@
   <components:InputList
     x:Name="InputList"
     AddCommand="{Binding AddCommand}"
-    Collection="{Binding Inputs}"
+    Collection="{Binding Inputs, Mode=TwoWay}"
     DeleteButtonClick="DeleteButton"
-    InputToAdd="{Binding InputToAdd}"
-    Item="{Binding InputData}"
-    ReadOnlyItem="{Binding IsReadOnly}" />
+    InputToAdd="{Binding InputToAdd, Mode=TwoWay}" />
 
 </Window>

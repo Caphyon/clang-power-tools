@@ -50,31 +50,7 @@ namespace ClangPowerTools.MVVM.Views.Components
     }
 
     public static readonly DependencyProperty CollectionProperty =
-      DependencyProperty.Register("Collection", typeof(ObservableCollection<InputDataModel>), typeof(InputList), new PropertyMetadata(null));
-
-
-    #region Properties on data model
-
-    public bool ReadOnlyItem
-    {
-      get { return (bool)GetValue(ReadOnlyProperty); }
-      set { SetValue(ReadOnlyProperty, value); }
-    }
-
-    public static readonly DependencyProperty ReadOnlyProperty =
-      DependencyProperty.Register("ReadOnlyItem", typeof(bool), typeof(InputList), new PropertyMetadata(null));
-
-
-    public string Item
-    {
-      get { return (string)GetValue(ItemProperty); }
-      set { SetValue(ItemProperty, value); }
-    }
-
-    public static readonly DependencyProperty ItemProperty =
-      DependencyProperty.Register("Item", typeof(string), typeof(InputList), new PropertyMetadata(null));
-
-    #endregion
+      DependencyProperty.Register("Collection", typeof(ObservableCollection<InputDataModel>), typeof(InputList), null);
 
     #endregion
 

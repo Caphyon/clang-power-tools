@@ -18,6 +18,7 @@ namespace ClangPowerTools
     private InputDataView inputDataView;
     private ICommand addCommand;
 
+
     #endregion
 
     #region Constructor
@@ -30,6 +31,7 @@ namespace ClangPowerTools
     public InputDataViewModel() { }
 
     #endregion
+
 
     #region Properties
 
@@ -48,7 +50,6 @@ namespace ClangPowerTools
 
     public ObservableCollection<InputDataModel> Inputs { get; set; } = new ObservableCollection<InputDataModel>();
 
-
     public ICommand AddCommand
     {
       get => addCommand ?? (addCommand = new RelayCommand(() => AddInput(), () => CanExecute));
@@ -63,6 +64,7 @@ namespace ClangPowerTools
     }
 
     #endregion
+
 
     #region Methods
 
@@ -89,7 +91,8 @@ namespace ClangPowerTools
 
     private void CreateInputsCollection(string content)
     {
-      if (string.IsNullOrWhiteSpace(content)) return;
+      if (string.IsNullOrWhiteSpace(content))
+        return;
 
       var splitContent = content.Split(';').ToList();
       foreach (var item in splitContent)
