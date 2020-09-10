@@ -8,19 +8,14 @@
   mc:Ignorable="d">
 
   <ResourceDictionary.MergedDictionaries>
+
     <ResourceDictionary Source="ToggleStyle.xaml" />
     <ResourceDictionary Source="SettingsButtonStyle.xaml" />
     <ResourceDictionary Source="SettingsComboBoxStyle.xaml" />
     <ResourceDictionary Source="YellowButtonStyle.xaml" />
     <ResourceDictionary Source="HyperlinkStyle.xaml" />
-    <ResourceDictionary>
-      <BitmapImage x:Key="AddInputImage" UriSource="/ClangPowerTools;component/Resources/AddInput.png" />
-      <BitmapImage x:Key="BrowseImage" UriSource="/ClangPowerTools;component/Resources/Browse.png" />
-      <BitmapImage x:Key="AccountAvatarIcon" UriSource="/ClangPowerTools;component/Resources/AccountAvatarIcon.png" />
-      <BitmapImage x:Key="LogoutIcon" UriSource="/ClangPowerTools;component/Resources/LogoutIcon.png" />
-      <ImageBrush x:Key="RemoveImage" ImageSource="/ClangPowerTools;component/Resources/RemoveInputIdle.png" />
-      <ImageBrush x:Key="RemoverHoverImage" ImageSource="/ClangPowerTools;component/Resources/RemoveInputHover.png" />
-    </ResourceDictionary>
+    <ResourceDictionary Source="ImageResources.xaml" />
+
   </ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>
