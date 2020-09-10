@@ -23,6 +23,16 @@ namespace ClangPowerTools.MVVM.Views.Components
 
     #region Properties
 
+    public string ImageTag
+    {
+      get { return (string)GetValue(ImageTagProperty); }
+      set { SetValue(ImageTagProperty, value); }
+    }
+
+    public static readonly DependencyProperty ImageTagProperty =
+      DependencyProperty.Register("ImageTag", typeof(string), typeof(InputList), new PropertyMetadata(null));
+
+
     public string InputToAdd
     {
       get { return (string)GetValue(InputToAddProperty); }

@@ -42,6 +42,7 @@
     x:Name="InputList"
     AddCommand="{Binding AddCommand}"
     Collection="{Binding Inputs, Mode=TwoWay}"
+    ImageTag="add"
     InputToAdd="{Binding InputToAdd, Mode=TwoWay}" />
 
 </Window>

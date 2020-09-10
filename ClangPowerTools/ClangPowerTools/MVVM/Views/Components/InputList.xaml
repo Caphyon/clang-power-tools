@@ -81,11 +81,8 @@
       Grid.Column="2"
       Margin="0,5,0,0"
       Command="{Binding AddCommand, ElementName=_InputList}"
-      Style="{StaticResource SettingsButton}">
-      <Button.Content>
-        <Image Source="{StaticResource AddInputImage}" />
-      </Button.Content>
-    </Button>
+      Style="{StaticResource SettingsButton}"
+      Tag="{Binding ImageTag, ElementName=_InputList}" />
 
     <!--  Inputs  -->
     <ListView

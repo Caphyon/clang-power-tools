@@ -9,7 +9,7 @@
   Title="Clang Format Style"
   Width="525"
   Height="400"
-  d:DataContext="{d:DesignInstance local:DetectFormatStyleMenuViewModel,
+  d:DataContext="{d:DesignInstance local:InputDataViewModel,
                                    IsDesignTimeCreatable=True}"
   Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
@@ -21,6 +21,7 @@
     x:Name="InputList"
     AddCommand="{Binding AddCommand}"
     Collection="{Binding Inputs, Mode=TwoWay}"
+    ImageTag="browse"
     InputToAdd="{Binding InputToAdd, Mode=TwoWay}" />
 
 </Window>
