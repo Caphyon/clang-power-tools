@@ -17,26 +17,6 @@
   WindowStyle="ThreeDBorderWindow"
   mc:Ignorable="d">
 
-  <!--  Static resources  -->
-  <Window.Resources>
-    <ResourceDictionary>
-      <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="Styles/AppResources.xaml" />
-        <ResourceDictionary>
-          <Style TargetType="{x:Type ListView}">
-            <Setter Property="FontFamily" Value="Segoe UI" />
-            <Setter Property="FontWeight" Value="SemiBold" />
-            <Setter Property="FontSize" Value="13" />
-          </Style>
-
-          <BitmapImage x:Key="AddInputImage" UriSource="/ClangPowerTools;component/Resources/AddInput.png" />
-          <ImageBrush x:Key="RemoveImage" ImageSource="/ClangPowerTools;component/Resources/RemoveInputIdle.png" />
-          <ImageBrush x:Key="RemoverHoverImage" ImageSource="/ClangPowerTools;component/Resources/RemoveInputHover.png" />
-        </ResourceDictionary>
-      </ResourceDictionary.MergedDictionaries>
-    </ResourceDictionary>
-  </Window.Resources>
-
   <controls:InputList
     x:Name="InputList"
     AddCommand="{Binding AddCommand}"
