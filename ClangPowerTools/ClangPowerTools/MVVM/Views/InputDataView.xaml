@@ -42,7 +42,6 @@
     x:Name="InputList"
     AddCommand="{Binding AddCommand}"
     Collection="{Binding Inputs, Mode=TwoWay}"
-    DeleteButtonClick="DeleteButton"
     InputToAdd="{Binding InputToAdd, Mode=TwoWay}" />
 
 </Window>

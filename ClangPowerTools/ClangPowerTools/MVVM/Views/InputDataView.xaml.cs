@@ -17,16 +17,16 @@ namespace ClangPowerTools.Views
       Owner = SettingsProvider.SettingsView;
     }
 
-    private void DeleteButton(object sender, RoutedEventArgs e)
-    {
-      var elementIndex = GetElementIndex(sender as FrameworkElement);
-      inputDataViewModel.DeleteInput(elementIndex);
-    }
+    //private void DeleteButton(object sender, RoutedEventArgs e)
+    //{
+    //  var elementIndex = GetElementIndex(sender as FrameworkElement);
+    //  inputDataViewModel.DeleteInput(elementIndex);
+    //}
 
-    private int GetElementIndex(FrameworkElement frameworkElement)
-    {
-      var element = frameworkElement.DataContext;
-      return InputList.InputsList.Items.IndexOf(element);
-    }
+    //private int GetElementIndex(FrameworkElement frameworkElement)
+    //{
+    //  var element = InputList.CollectionItems.DataContext;
+    //  return InputList.CollectionItems.Items.IndexOf(element);
+    //}
   }
 }

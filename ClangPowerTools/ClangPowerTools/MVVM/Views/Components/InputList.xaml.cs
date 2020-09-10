@@ -55,21 +55,37 @@ namespace ClangPowerTools.MVVM.Views.Components
     #endregion
 
 
-    #region Routed Events
+    //#region Routed Events
 
-    public static readonly RoutedEvent DeleteButtonClickEvent = EventManager.RegisterRoutedEvent(
-      "DeleteButtonClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(InputList));
+    //public static readonly RoutedEvent DeleteButtonClickEvent = EventManager.RegisterRoutedEvent(
+    //  "DeleteButtonClick", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(InputList));
 
-    public event RoutedEventHandler DeleteButtonClick
-    {
-      add { AddHandler(DeleteButtonClickEvent, value); }
-      remove { RemoveHandler(DeleteButtonClickEvent, value); }
-    }
+    //public event RoutedEventHandler DeleteButtonClick
+    //{
+    //  add { AddHandler(DeleteButtonClickEvent, value); }
+    //  remove { RemoveHandler(DeleteButtonClickEvent, value); }
+    //}
+
+    //private void DeleteButton_Click(object sender, RoutedEventArgs e)
+    //{
+    //  var newEventArgs = new RoutedEventArgs(DeleteButtonClickEvent);
+    //  RaiseEvent(newEventArgs);
+    //}
+
+    //#endregion
+
+    #region Methods
 
     private void DeleteButton_Click(object sender, RoutedEventArgs e)
     {
-      var newEventArgs = new RoutedEventArgs(DeleteButtonClickEvent);
-      RaiseEvent(newEventArgs);
+      var elementIndex = GetElementIndex(sender as FrameworkElement);
+      ((InputDataViewModel)DataContext).DeleteInput(elementIndex);
+    }
+
+    private int GetElementIndex(FrameworkElement frameworkElement)
+    {
+      var element = frameworkElement.DataContext;
+      return CollectionItems.Items.IndexOf(element);
     }
 
     #endregion
