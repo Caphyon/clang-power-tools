@@ -89,7 +89,7 @@ namespace ClangPowerTools
 
     private void AddInput()
     {
-      if (BrowseForFiles)
+      if (BrowseForFiles && string.IsNullOrWhiteSpace(inputToAdd))
       {
         AddBrowseFilePathsToCollection();
       }
