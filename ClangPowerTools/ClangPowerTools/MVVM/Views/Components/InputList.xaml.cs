@@ -43,6 +43,23 @@ namespace ClangPowerTools.MVVM.Views.Components
       DependencyProperty.Register("InputToAdd", typeof(string), typeof(InputList), new PropertyMetadata(null));
 
 
+    public string Placeholder
+    {
+      get { return (string)GetValue(PlaceholderProperty); }
+      set { SetValue(PlaceholderProperty, value); }
+    }
+
+    public static readonly DependencyProperty PlaceholderProperty =
+      DependencyProperty.Register(
+        "Placeholder",
+        typeof(string),
+        typeof(InputList),
+        new PropertyMetadata(null));
+
+    private static void PlaceholderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+    {
+    }
+
     public ICommand AddCommand
     {
       get { return (ICommand)GetValue(AddCommandProperty); }

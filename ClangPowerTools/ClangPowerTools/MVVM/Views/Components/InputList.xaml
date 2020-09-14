@@ -46,7 +46,7 @@
       Height="30"
       Margin="15,15,5,10"
       VerticalContentAlignment="Center"
-      FontSize="15"
+      FontSize="13"
       Text="{Binding InputToAdd, ElementName=_InputList}">
       <TextBox.Style>
         <Style xmlns:sys="clr-namespace:System;assembly=mscorlib" TargetType="TextBox">
@@ -57,7 +57,7 @@
               AlignmentY="Center"
               Stretch="None">
               <VisualBrush.Visual>
-                <Label Content="Add your input" Foreground="Gray" />
+                <Label Content="{Binding Placeholder, Mode=TwoWay, ElementName=mainWindow}" Foreground="Gray" />
               </VisualBrush.Visual>
             </VisualBrush>
           </Style.Resources>

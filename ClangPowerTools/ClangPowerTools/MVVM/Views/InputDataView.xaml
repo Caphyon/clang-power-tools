@@ -43,6 +43,7 @@
     AddCommand="{Binding AddCommand}"
     Collection="{Binding Inputs, Mode=TwoWay}"
     ImageTag="add"
-    InputToAdd="{Binding InputToAdd, Mode=TwoWay}" />
+    InputToAdd="{Binding InputToAdd, Mode=TwoWay}"
+    Placeholder="{Binding Placeholder, Mode=TwoWay}" />
 
 </Window>

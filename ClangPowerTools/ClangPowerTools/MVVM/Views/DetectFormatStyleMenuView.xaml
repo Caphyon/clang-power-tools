@@ -6,9 +6,10 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  Title="Clang Format Style"
-  Width="525"
-  Height="400"
+  x:Name="mainWindow"
+  Title="File Selector"
+  Width="530"
+  Height="500"
   d:DataContext="{d:DesignInstance local:InputDataViewModel,
                                    IsDesignTimeCreatable=True}"
   Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
@@ -17,11 +18,52 @@
   WindowStyle="ThreeDBorderWindow"
   mc:Ignorable="d">
 
-  <controls:InputList
-    x:Name="InputList"
-    AddCommand="{Binding AddCommand}"
-    Collection="{Binding Inputs, Mode=TwoWay}"
-    ImageTag="browse"
-    InputToAdd="{Binding InputToAdd, Mode=TwoWay}" />
+  <!--  Static resources  -->
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Styles/AppResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+
+  <Grid>
+
+    <Grid.RowDefinitions>
+      <RowDefinition Height="80" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="40" />
+    </Grid.RowDefinitions>
+
+    <TextBox
+      Margin="0,20,0,0"
+      HorizontalAlignment="Center"
+      BorderThickness="0"
+      FontSize="18"
+      FontWeight="SemiBold"
+      Text="Select your most representative files" />
+
+    <controls:InputList
+      x:Name="InputList"
+      Grid.Row="1"
+      AddCommand="{Binding AddCommand}"
+      Collection="{Binding Inputs, Mode=TwoWay}"
+      ImageTag="browse"
+      InputToAdd="{Binding InputToAdd, Mode=TwoWay}" />
+
+    <Button
+      Grid.Row="2"
+      Width="65"
+      Margin="0,0,15,5"
+      HorizontalAlignment="Right"
+      VerticalAlignment="Center"
+      Command="{Binding DetectFormatStyle}"
+      Content="Run"
+      FontSize="15"
+      FontWeight="SemiBold"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}" />
+
+  </Grid>
 
 </Window>

@@ -15,8 +15,10 @@ namespace ClangPowerTools
     public event PropertyChangedEventHandler PropertyChanged;
 
     private string inputToAdd;
+    private string placeholder;
     private InputDataView inputDataView;
     private ICommand addCommand;
+    private ICommand detectFormatStyleCommand;
 
 
     #endregion
@@ -55,11 +57,29 @@ namespace ClangPowerTools
       }
     }
 
+    public string Placeholder
+    {
+      get
+      {
+        return placeholder;
+      }
+      set
+      {
+        placeholder = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Placeholder"));
+      }
+    }
+
     public ObservableCollection<InputDataModel> Inputs { get; set; } = new ObservableCollection<InputDataModel>();
 
     public ICommand AddCommand
     {
       get => addCommand ?? (addCommand = new RelayCommand(() => AddInput(), () => CanExecute));
+    }
+
+    public ICommand DetectFormatStyleCommand
+    {
+      get => detectFormatStyleCommand ?? (detectFormatStyleCommand = new RelayCommand(() => DetectFormatStyle(), () => CanExecute));
     }
 
     public bool CanExecute
@@ -129,6 +149,11 @@ namespace ClangPowerTools
       {
         Inputs.Add(new InputDataModel(item));
       }
+    }
+
+    private void DetectFormatStyle()
+    {
+
     }
 
     #endregion
