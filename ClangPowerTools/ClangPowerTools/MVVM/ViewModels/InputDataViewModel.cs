@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace ClangPowerTools
 {
@@ -22,6 +23,14 @@ namespace ClangPowerTools
     private ICommand detectFormatStyleCommand;
     private string warningText;
     private readonly DetectFormatStyleMenuView view;
+
+    private const int MAX_FILE_NUMBER = 20;
+    private const int MID_FILE_NUMBER = 10;
+
+    private const string MAX_FILE_WARNING = "This action will take very long time due to the high number of selected files.";
+    private const string MID_FILE_WARNING = "This action will take some time due to the number of selected files.";
+
+
 
     #endregion
 
@@ -126,25 +135,39 @@ namespace ClangPowerTools
     {
       if (index >= 0)
         Inputs.RemoveAt(index);
+
+      if (Inputs.Count > MAX_FILE_NUMBER)
+      {
+        WarningText = MAX_FILE_WARNING;
+        view.WarningTextBox.Foreground = Brushes.Red;
+      }
+      else if (Inputs.Count > MID_FILE_NUMBER)
+      {
+        WarningText = MID_FILE_WARNING;
+        view.WarningTextBox.Foreground = Brushes.Orange;
+      }
+      else
+        view.WarningTextBox.Visibility = System.Windows.Visibility.Hidden;
     }
 
     private void AddInput()
     {
       if (BrowseForFiles && string.IsNullOrWhiteSpace(inputToAdd))
-      {
         AddBrowseFilePathsToCollection();
-      }
       else
-      {
         AddInputToCollection();
-      }
 
-      WarningText = "WARNIG";
-      view.WarningTextBox.Visibility = System.Windows.Visibility.Visible;
-
-      if (Inputs.Count > 20)
+      if (Inputs.Count > MAX_FILE_NUMBER)
       {
-
+        WarningText = MAX_FILE_WARNING;
+        view.WarningTextBox.Foreground = Brushes.Red;
+        view.WarningTextBox.Visibility = System.Windows.Visibility.Visible;
+      }
+      else if (Inputs.Count > MID_FILE_NUMBER)
+      {
+        WarningText = MID_FILE_WARNING;
+        view.WarningTextBox.Foreground = Brushes.Orange;
+        view.WarningTextBox.Visibility = System.Windows.Visibility.Visible;
       }
     }
 

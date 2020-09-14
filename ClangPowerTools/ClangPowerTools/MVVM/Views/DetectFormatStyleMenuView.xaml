@@ -38,7 +38,7 @@
 
     <TextBox
       Grid.Row="0"
-      Margin="0,20,0,20"
+      Margin="0,20,0,5"
       HorizontalAlignment="Center"
       BorderThickness="0"
       FontSize="18"
