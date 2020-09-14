@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Models;
+using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Views;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -19,7 +20,8 @@ namespace ClangPowerTools
     private InputDataView inputDataView;
     private ICommand addCommand;
     private ICommand detectFormatStyleCommand;
-
+    private string warningText;
+    private readonly DetectFormatStyleMenuView view;
 
     #endregion
 
@@ -34,6 +36,12 @@ namespace ClangPowerTools
 
     public InputDataViewModel(bool browse)
     {
+      BrowseForFiles = browse;
+    }
+
+    public InputDataViewModel(DetectFormatStyleMenuView view, bool browse)
+    {
+      this.view = view;
       BrowseForFiles = browse;
     }
 
@@ -67,6 +75,19 @@ namespace ClangPowerTools
       {
         placeholder = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Placeholder"));
+      }
+    }
+
+    public string WarningText
+    {
+      get
+      {
+        return warningText;
+      }
+      set
+      {
+        warningText = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("WarningText"));
       }
     }
 
@@ -116,6 +137,14 @@ namespace ClangPowerTools
       else
       {
         AddInputToCollection();
+      }
+
+      WarningText = "WARNIG";
+      view.WarningTextBox.Visibility = System.Windows.Visibility.Visible;
+
+      if (Inputs.Count > 20)
+      {
+
       }
     }
 
