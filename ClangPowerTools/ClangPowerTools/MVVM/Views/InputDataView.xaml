@@ -6,7 +6,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  Title="Input"
+  Title="Clang Flags"
   Width="525"
   Height="400"
   d:DataContext="{d:DesignInstance local:InputDataViewModel,
