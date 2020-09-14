@@ -46,6 +46,15 @@
       Text="Select your most representative files" />
 
     <TextBox
+      Grid.Row="0"
+      Margin="0,50,0,0"
+      HorizontalAlignment="Center"
+      BorderThickness="0"
+      FontSize="12"
+      Foreground="Gray"
+      Text="We recommend to select up to 10 files" />
+
+    <TextBox
       x:Name="WarningTextBox"
       Grid.Row="1"
       Margin="0,20,0,0"
