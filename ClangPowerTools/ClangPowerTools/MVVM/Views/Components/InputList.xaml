@@ -57,7 +57,7 @@
               AlignmentY="Center"
               Stretch="None">
               <VisualBrush.Visual>
-                <Label Content="{Binding Placeholder, Mode=TwoWay, ElementName=mainWindow}" Foreground="Gray" />
+                <Label Content="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Placeholder}" Foreground="Gray" />
               </VisualBrush.Visual>
             </VisualBrush>
           </Style.Resources>
