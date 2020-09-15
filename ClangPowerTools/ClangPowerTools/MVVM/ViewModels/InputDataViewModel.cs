@@ -136,6 +136,9 @@ namespace ClangPowerTools
       if (index >= 0)
         Inputs.RemoveAt(index);
 
+      if (view == null)
+        return;
+
       if (Inputs.Count > MAX_FILE_NUMBER)
       {
         WarningText = MAX_FILE_WARNING;
@@ -156,6 +159,9 @@ namespace ClangPowerTools
         AddBrowseFilePathsToCollection();
       else
         AddInputToCollection();
+
+      if (view == null)
+        return;
 
       if (Inputs.Count > MAX_FILE_NUMBER)
       {
