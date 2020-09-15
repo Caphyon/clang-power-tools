@@ -28,9 +28,8 @@
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="15" />
-      <ColumnDefinition Width="7*" />
       <ColumnDefinition Width="*" />
-      <ColumnDefinition Width="15" />
+      <ColumnDefinition Width="20" />
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
@@ -39,51 +38,56 @@
     </Grid.RowDefinitions>
 
     <!--  Input field  -->
-    <TextBox
-      x:Name="InputTextbox"
-      Grid.Row="0"
-      Grid.ColumnSpan="2"
-      Height="30"
-      Margin="15,15,5,10"
-      VerticalContentAlignment="Center"
-      FontSize="13"
-      Text="{Binding InputToAdd, ElementName=_InputList}">
-      <TextBox.Style>
-        <Style xmlns:sys="clr-namespace:System;assembly=mscorlib" TargetType="TextBox">
-          <Style.Resources>
-            <VisualBrush
-              x:Key="CueBannerBrush"
-              AlignmentX="Left"
-              AlignmentY="Center"
-              Stretch="None">
-              <VisualBrush.Visual>
-                <Label Content="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Placeholder}" Foreground="Gray" />
-              </VisualBrush.Visual>
-            </VisualBrush>
-          </Style.Resources>
-          <Style.Triggers>
-            <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
-              <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-            </Trigger>
-            <Trigger Property="Text" Value="{x:Null}">
-              <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-            </Trigger>
-            <Trigger Property="IsKeyboardFocused" Value="True">
-              <Setter Property="Background" Value="White" />
-            </Trigger>
-          </Style.Triggers>
-        </Style>
-      </TextBox.Style>
-    </TextBox>
+    <Grid Grid.Row="0" Grid.Column="1">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
 
-    <Button
-      x:Name="InputButton"
-      Grid.Row="0"
-      Grid.Column="2"
-      Margin="0,5,0,0"
-      Command="{Binding AddCommand, ElementName=_InputList}"
-      Style="{StaticResource SettingsButton}"
-      Tag="{Binding ImageTag, ElementName=_InputList}" />
+      <TextBox
+        x:Name="InputTextbox"
+        Grid.Column="0"
+        Height="30"
+        Margin="0,15,5,10"
+        VerticalContentAlignment="Center"
+        FontSize="13"
+        Text="{Binding InputToAdd, ElementName=_InputList}">
+        <TextBox.Style>
+          <Style xmlns:sys="clr-namespace:System;assembly=mscorlib" TargetType="TextBox">
+            <Style.Resources>
+              <VisualBrush
+                x:Key="CueBannerBrush"
+                AlignmentX="Left"
+                AlignmentY="Center"
+                Stretch="None">
+                <VisualBrush.Visual>
+                  <Label Content="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Placeholder}" Foreground="Gray" />
+                </VisualBrush.Visual>
+              </VisualBrush>
+            </Style.Resources>
+            <Style.Triggers>
+              <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+                <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+              </Trigger>
+              <Trigger Property="Text" Value="{x:Null}">
+                <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+              </Trigger>
+              <Trigger Property="IsKeyboardFocused" Value="True">
+                <Setter Property="Background" Value="White" />
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+        </TextBox.Style>
+      </TextBox>
+
+      <Button
+        x:Name="InputButton"
+        Grid.Column="1"
+        Margin="5,5,0,0"
+        Command="{Binding AddCommand, ElementName=_InputList}"
+        Style="{StaticResource SettingsButton}"
+        Tag="{Binding ImageTag, ElementName=_InputList}" />
+    </Grid>
 
     <!--  Inputs  -->
     <ListView
@@ -128,6 +132,8 @@
               Width="20"
               Height="20"
               Margin="20,0,0,0"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Center"
               BorderThickness="0"
               Click="DeleteButton_Click">
               <Button.Style>
