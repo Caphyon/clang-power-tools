@@ -1,9 +1,7 @@
 ﻿using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Interfaces;
-using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.MVVM.Views;
-using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,16 +15,13 @@ using Process = System.Diagnostics.Process;
 
 namespace ClangPowerTools
 {
-  public class FormatEditorViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
+  public class FormatEditorViewModel : CommonFormatEditorFunctionality, INotifyPropertyChanged
   {
     #region Members
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private readonly StyleFormatter formatter;
     private readonly FormatEditorView formatEditorView;
-    private InputMultipleDataView inputMultipleDataView;
-    private ToggleMultipleDataView toggleMultipleDataView;
     private ICommand selctCodeFileCommand;
     private ICommand createFormatFileCommand;
     private ICommand formatCodeCommand;
@@ -37,15 +32,11 @@ namespace ClangPowerTools
 
     private string checkSearch = string.Empty;
     private bool showOptionDescription = true;
-    private IFormatOption selectedOption;
-    private List<IFormatOption> formatStyleOptions;
     private List<IFormatOption> searchResultFormatStyleOptions;
-    private EditorStyles selectedStyle = EditorStyles.Custom;
     private bool windowLoaded = false;
     private string nameColumnWidth;
     private string droppedFile;
     private const string nameColumnWidthMax = "340";
-
 
     #endregion
 
@@ -56,7 +47,6 @@ namespace ClangPowerTools
       formatEditorView.Loaded += EditorLoaded;
       formatEditorView.Closed += EditorClosed;
       this.formatEditorView = formatEditorView;
-      formatter = new StyleFormatter();
       InitializeStyleOptions(FormatOptionsProvider.CustomOptionsData);
     }
 
@@ -256,31 +246,26 @@ namespace ClangPowerTools
     public void RunFormat()
     {
       if (windowLoaded == false) return;
-
-      var text = formatEditorView.CodeEditor.Text;
-      var formattedText = formatter.FormatText(text, formatStyleOptions, selectedStyle);
-      formatEditorView.CodeEditorReadOnly.Text = formattedText;
+      SetEditorOutputAfterFormat();
     }
-
     public void OpenMultipleInput(int index)
     {
       if (windowLoaded == false) return;
-      var element = FormatOptions[index];
+      CloseMultipleInput += FormatAfterClosingMultipleInput;
+      SelectedOption = FormatOptions[index];
+      OpenMultipleInput(SelectedOption);
+    }
 
-      if (element is FormatOptionMultipleInputModel)
-      {
-        SelectedOption = element;
-        SelectedOption.IsEnabled = true;
+    private void FormatAfterClosingMultipleInput(object sender, EventArgs e)
+    {
+      SelectedOption.IsEnabled = true;
+      SetEditorOutputAfterFormat();
+      CloseMultipleInput -= FormatAfterClosingMultipleInput;
+    }
 
-        OpenInputDataView();
-      }
-      else if (element is FormatOptionMultipleToggleModel)
-      {
-        SelectedOption = element;
-        SelectedOption.IsEnabled = true;
-
-        OpenToggleDataView();
-      }
+    private void SetEditorOutputAfterFormat()
+    {
+      formatEditorView.CodeEditorReadOnly.Text = RunFormat(formatEditorView.CodeEditor.Text);
     }
 
     public bool IsAnyOptionEnabled()
@@ -338,42 +323,6 @@ namespace ClangPowerTools
       EnableOptionColumnWidth = enableOptionColumnWidth;
       FormatOptions = options;
       SelectedOption = FormatOptions.FirstOrDefault();
-    }
-
-    private void OpenInputDataView()
-    {
-      if (!(selectedOption is FormatOptionMultipleInputModel multipleInputModel)) return;
-      inputMultipleDataView = new InputMultipleDataView(multipleInputModel.MultipleInput);
-
-      inputMultipleDataView.Closed += CloseInputDataView;
-      inputMultipleDataView.Show();
-    }
-
-    private void OpenToggleDataView()
-    {
-      if (!(selectedOption is FormatOptionMultipleToggleModel multipleToggleModel)) return;
-      toggleMultipleDataView = new ToggleMultipleDataView(multipleToggleModel.ToggleFlags);
-
-      toggleMultipleDataView.Closed += CloseInputDataView;
-      toggleMultipleDataView.Show();
-    }
-
-    private void CloseInputDataView(object sender, EventArgs e)
-    {
-      if (selectedOption is FormatOptionMultipleInputModel multipleInputModel
-       && inputMultipleDataView.DataContext is InputMultipleDataViewModel inputMultipleDataViewModel)
-      {
-        multipleInputModel.MultipleInput = inputMultipleDataViewModel.Input;
-        inputMultipleDataView.Closed -= CloseInputDataView;
-      }
-      else if (selectedOption is FormatOptionMultipleToggleModel multipleToggleModel
-       && toggleMultipleDataView.DataContext is ToggleMultipleDataViewModel toggleMultipleDataViewModel)
-      {
-        multipleToggleModel.ToggleFlags = toggleMultipleDataViewModel.Input;
-        toggleMultipleDataView.Closed -= CloseInputDataView;
-      }
-
-      RunFormat();
     }
 
     private void OpenUri(string uri)

@@ -101,6 +101,7 @@
     <Compile Include="Helpers\VsWindowController.cs" />
     <Compile Include="IgnoreActions\IgnoreItem.cs" />
     <Compile Include="Items\CurrentSolution.cs" />
+    <Compile Include="MVVM\CommonFormatEditorFunctionality.cs" />
     <Compile Include="MVVM\Constants\CPPKeywords.cs" />
     <Compile Include="MVVM\Constants\FormatConstants.cs" />
     <Compile Include="MVVM\Constants\LlvmConstants.cs" />

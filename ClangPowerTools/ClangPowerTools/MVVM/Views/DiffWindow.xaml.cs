@@ -55,17 +55,19 @@ namespace ClangPowerTools.MVVM.Views
     //TODO try to bind to ViewModel
     private void InputText_TextChanged(object sender, TextChangedEventArgs e)
     {
-
+      diffViewModel.RunFormat();
     }
 
     private void BooleanCombobox_DropDownClosed(object sender, System.EventArgs e)
     {
-
+      diffViewModel.RunFormat();
     }
 
     private void OpenMultipleInput(object sender, RoutedEventArgs e)
     {
-
+      var element = (sender as FrameworkElement).DataContext;
+      if (element == null) return;
+      //diffViewModel.OpenMultipleInput(FormatOptions.Items.IndexOf(element));
     }
 
     #endregion

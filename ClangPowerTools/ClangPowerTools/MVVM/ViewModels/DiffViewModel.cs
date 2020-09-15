@@ -7,12 +7,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class DiffViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
+  public class DiffViewModel : CommonFormatEditorFunctionality, INotifyPropertyChanged
   {
     #region Members
 
@@ -24,14 +25,23 @@ namespace ClangPowerTools
     private ICommand createFormatFileCommand;
     private string selectedFile;
     private const int PageWith = 1000;
+    private bool windowLoaded = true;
 
     #endregion
 
 
     #region Properties
 
-    public List<IFormatOption> FormatOptions { get; set; }
-    public EditorStyles FormatStyle { get; set; }
+    public List<IFormatOption> FormatOptions
+    {
+      get => formatStyleOptions;
+      set => formatStyleOptions = value;
+    }
+    public EditorStyles FormatStyle
+    {
+      get => selectedStyle;
+      set => selectedStyle = value;
+    }
     public string Style { get; set; }
     public IEnumerable<ToggleValues> BooleanComboboxValues
     {
@@ -68,8 +78,14 @@ namespace ClangPowerTools
     public DiffViewModel(DiffWindow diffWindow)
     {
       this.diffWindow = diffWindow;
+      diffWindow.Loaded += DiffWindow_Loaded;
       diffController = new DiffController();
       FileNames = new List<string>();
+    }
+
+    private void DiffWindow_Loaded(object sender, RoutedEventArgs e)
+    {
+      throw new NotImplementedException();
     }
 
     //Empty constructor used for XAML IntelliSense
@@ -85,6 +101,20 @@ namespace ClangPowerTools
     public ICommand CreateFormatFileCommand
     {
       get => createFormatFileCommand ??= new RelayCommand(() => CreateFormatFile(), () => CanExecute);
+    }
+
+    #endregion
+
+    #region Public Methods
+
+
+    public void RunFormat()
+    {
+      if (windowLoaded == false) return;
+
+      //var text = formatEditorView.CodeEditor.Text;
+      //var formattedText = formatter.FormatText(text, formatStyleOptions, selectedStyle);
+      //formatEditorView.CodeEditorReadOnly.Text = formattedText;
     }
 
     #endregion
