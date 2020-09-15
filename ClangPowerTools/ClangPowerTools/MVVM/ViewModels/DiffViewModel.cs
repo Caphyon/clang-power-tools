@@ -150,15 +150,8 @@ namespace ClangPowerTools
 
     public void OpenMultipleInput(int index)
     {
-      CloseMultipleInput += FormatAfterClosingMultipleInput;
       SelectedOption = FormatOptions[index];
       OpenMultipleInput(SelectedOption);
-    }
-
-    public void FormatAfterClosingMultipleInput(object sender, EventArgs e)
-    {
-      CloseMultipleInput -= FormatAfterClosingMultipleInput;
-      ReloadDiffAsync().SafeFireAndForget();
     }
 
     #endregion

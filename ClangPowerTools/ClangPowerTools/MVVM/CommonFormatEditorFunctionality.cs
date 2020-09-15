@@ -31,13 +31,6 @@ namespace ClangPowerTools
       }
     }
 
-    protected string RunFormat(string text)
-    {
-      var formatter = new StyleFormatter();
-      var formattedText = formatter.FormatText(text, formatStyleOptions, selectedStyle);
-      return formattedText;
-    }
-
     #endregion
 
     #region Private Methods

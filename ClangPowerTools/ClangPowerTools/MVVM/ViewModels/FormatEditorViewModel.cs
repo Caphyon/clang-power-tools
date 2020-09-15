@@ -282,6 +282,13 @@ namespace ClangPowerTools
       formatEditorView.CodeEditorReadOnly.Text = RunFormat(formatEditorView.CodeEditor.Text);
     }
 
+    private string RunFormat(string text)
+    {
+      var formatter = new StyleFormatter();
+      var formattedText = formatter.FormatText(text, formatStyleOptions, selectedStyle);
+      return formattedText;
+    }
+
     private void InitializeStyleOptions(FormatOptionsData formatOptionsData)
     {
       formatStyleOptions = formatOptionsData.FormatOptions;
