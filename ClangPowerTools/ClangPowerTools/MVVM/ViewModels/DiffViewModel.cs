@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 
@@ -22,13 +21,13 @@ namespace ClangPowerTools
 
     private readonly DiffWindow diffWindow;
     private readonly DiffController diffController;
+    private List<IFormatOption> detectedOptions;
     private List<(FlowDocument, FlowDocument)> flowDocuments;
     private List<string> filesContent;
     private ICommand createFormatFileCommand;
     private ICommand reloadCommand;
     private string selectedFile;
     private const int PageWith = 1000;
-    private bool windowLoaded = true;
 
     #endregion
 
@@ -93,15 +92,8 @@ namespace ClangPowerTools
     public DiffViewModel(DiffWindow diffWindow)
     {
       this.diffWindow = diffWindow;
-      diffWindow.Loaded += DiffWindowLoaded;
       diffController = new DiffController();
       FileNames = new List<string>();
-    }
-
-    private void DiffWindowLoaded(object sender, RoutedEventArgs e)
-    {
-      windowLoaded = true;
-      diffWindow.Loaded -= DiffWindowLoaded;
     }
 
     //Empty constructor used for XAML IntelliSense
@@ -165,7 +157,6 @@ namespace ClangPowerTools
 
     public void OpenMultipleInput(int index)
     {
-      if (windowLoaded == false) return;
       CloseMultipleInput += FormatAfterClosingMultipleInput;
       SelectedOption = FormatOptions[index];
       OpenMultipleInput(SelectedOption);
@@ -192,17 +183,10 @@ namespace ClangPowerTools
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Style"));
     }
 
-
     private void SetFlowDocuments()
     {
       FlowDocument diffInput;
       FlowDocument diffOutput;
-      if (FileNames.Count == 0)
-      {
-        return;
-      }
-
-      //TODO need to test if section should be removed
       if (string.IsNullOrEmpty(selectedFile))
       {
         SelectedFile = FileNames.First();
