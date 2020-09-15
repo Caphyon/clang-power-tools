@@ -106,6 +106,7 @@
           <Setter Property="BorderBrush" Value="WhiteSmoke" />
           <Setter Property="BorderThickness" Value="1" />
           <Setter Property="Focusable" Value="True" />
+          <Setter Property="HorizontalContentAlignment" Value="Stretch" />
         </Style>
       </ListView.ItemContainerStyle>
 
@@ -113,26 +114,26 @@
         <DataTemplate>
           <Grid>
             <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="400" />
-              <ColumnDefinition Width="45" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
               <RowDefinition Height="38" />
             </Grid.RowDefinitions>
             <TextBox
               x:Name="InputField"
+              Grid.Column="0"
               VerticalAlignment="Center"
               BorderThickness="0"
               IsReadOnly="{Binding IsReadOnly, Mode=TwoWay}"
               Text="{Binding InputData, Mode=TwoWay}" />
             <Button
               Name="DeleteButton"
-              Grid.Column="2"
+              Grid.Column="1"
               Width="20"
               Height="20"
-              Margin="20,0,0,0"
+              Margin="10,0,10,0"
               HorizontalAlignment="Right"
-              VerticalAlignment="Center"
               BorderThickness="0"
               Click="DeleteButton_Click">
               <Button.Style>
