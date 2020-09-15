@@ -29,7 +29,7 @@
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="15" />
       <ColumnDefinition Width="*" />
-      <ColumnDefinition Width="20" />
+      <ColumnDefinition Width="15" />
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
@@ -94,7 +94,6 @@
       x:Name="CollectionItems"
       Grid.Row="1"
       Grid.Column="1"
-      Grid.ColumnSpan="2"
       Background="White"
       ItemsSource="{Binding Collection, ElementName=_InputList, Mode=TwoWay}"
       ScrollViewer.CanContentScroll="True"
