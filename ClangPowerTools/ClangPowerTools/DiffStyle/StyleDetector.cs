@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.Helpers;
-using ClangPowerTools.MVVM.Interfaces;
+﻿using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Models;
 using System;
 using System.Collections.Concurrent;
@@ -48,9 +47,9 @@ namespace ClangPowerTools.DiffStyle
 
     #region Public Methods 
 
-    public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(List<string> filePaths)
+    public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(List<string> filesContent)
     {
-      filesContent = FileSystem.ReadContentFromMultipleFiles(filePaths, Environment.NewLine);
+      this.filesContent = filesContent;
       await DetectAsync();
       var options = AggregateOptions();
       return (detectedStyle, options);

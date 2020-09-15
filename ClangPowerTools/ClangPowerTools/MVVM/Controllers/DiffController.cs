@@ -1,5 +1,4 @@
 ﻿using ClangPowerTools.DiffStyle;
-using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -33,19 +32,18 @@ namespace ClangPowerTools.MVVM.Controllers
 
     #region Public Methods
 
-    public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> GetFormatOptionsAsync(List<string> filePaths)
+    public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> GetFormatOptionsAsync(List<string> filesContent)
     {
-      return await styleDetector.DetectStyleOptionsAsync(filePaths);
+      return await styleDetector.DetectStyleOptionsAsync(filesContent);
     }
 
-    public async Task<List<(FlowDocument, FlowDocument)>> CreateFlowDocumentsAsync(List<string> filePaths, EditorStyles formatStyle, List<IFormatOption> formatOptions)
+    public async Task<List<(FlowDocument, FlowDocument)>> CreateFlowDocumentsAsync(List<string> filesContent, EditorStyles formatStyle, List<IFormatOption> formatOptions)
     {
       var flowDocuments = new List<(FlowDocument, FlowDocument)>();
 
-      foreach (var path in filePaths)
+      foreach (var file in filesContent)
       {
-        var input = FileSystem.ReadContentFromFile(path, Environment.NewLine);
-        var documents = await CreateFlowDocumentAsync(input, formatStyle, formatOptions);
+        var documents = await CreateFlowDocumentAsync(file, formatStyle, formatOptions);
         flowDocuments.Add(documents);
       }
       return flowDocuments;

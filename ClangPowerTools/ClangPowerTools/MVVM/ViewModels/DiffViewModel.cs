@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.MVVM.Commands;
+﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Views;
@@ -13,7 +14,7 @@ using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class DiffViewModel : CommonFormatEditorFunctionality, INotifyPropertyChanged
+  public class DiffViewModel : CommonFormatEditorFunctionality, INotifyPropertyChanged, IFormatEditor
   {
     #region Members
 
@@ -22,7 +23,9 @@ namespace ClangPowerTools
     private readonly DiffWindow diffWindow;
     private readonly DiffController diffController;
     private List<(FlowDocument, FlowDocument)> flowDocuments;
+    private List<string> filesContent;
     private ICommand createFormatFileCommand;
+    private ICommand reloadCommand;
     private string selectedFile;
     private const int PageWith = 1000;
     private bool windowLoaded = true;
@@ -37,7 +40,7 @@ namespace ClangPowerTools
       get => formatStyleOptions;
       set => formatStyleOptions = value;
     }
-    public EditorStyles FormatStyle
+    public EditorStyles SelectedStyle
     {
       get => selectedStyle;
       set => selectedStyle = value;
@@ -70,6 +73,18 @@ namespace ClangPowerTools
       set => selectedFile = value;
     }
 
+    public IFormatOption SelectedOption
+    {
+      get
+      {
+        return selectedOption;
+      }
+      set
+      {
+        selectedOption = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedOption"));
+      }
+    }
     public bool CanExecute => true;
 
     #endregion
@@ -78,14 +93,15 @@ namespace ClangPowerTools
     public DiffViewModel(DiffWindow diffWindow)
     {
       this.diffWindow = diffWindow;
-      diffWindow.Loaded += DiffWindow_Loaded;
+      diffWindow.Loaded += DiffWindowLoaded;
       diffController = new DiffController();
       FileNames = new List<string>();
     }
 
-    private void DiffWindow_Loaded(object sender, RoutedEventArgs e)
+    private void DiffWindowLoaded(object sender, RoutedEventArgs e)
     {
-      throw new NotImplementedException();
+      windowLoaded = true;
+      diffWindow.Loaded -= DiffWindowLoaded;
     }
 
     //Empty constructor used for XAML IntelliSense
@@ -102,53 +118,80 @@ namespace ClangPowerTools
     {
       get => createFormatFileCommand ??= new RelayCommand(() => CreateFormatFile(), () => CanExecute);
     }
+    public ICommand ReloadCommand
+    {
+      get => reloadCommand ??= new RelayCommand(() => ReloadDiffAsync().SafeFireAndForget(), () => CanExecute);
+    }
+    public ICommand ResetCommand => throw new NotImplementedException();
 
     #endregion
 
     #region Public Methods
 
-
-    public void RunFormat()
+    public async Task ReloadDiffAsync()
     {
-      if (windowLoaded == false) return;
+      var detectingView = new DetectingView
+      {
+        Owner = diffWindow
+      };
+      detectingView.Show();
+      detectingView.Closed += diffController.CloseLoadingView;
 
-      //var text = formatEditorView.CodeEditor.Text;
-      //var formattedText = formatter.FormatText(text, formatStyleOptions, selectedStyle);
-      //formatEditorView.CodeEditorReadOnly.Text = formattedText;
+      flowDocuments = await diffController.CreateFlowDocumentsAsync(filesContent, SelectedStyle, FormatOptions);
+      SetFlowDocuments();
+
+      detectingView.Closed -= diffController.CloseLoadingView;
+      detectingView.Close();
     }
 
-    #endregion
-
-    #region Private Methods
-
-    public async Task DiffDocumentsAsync(List<string> filePaths)
+    public async Task DiffDocumentsAsync(List<string> filesPath)
     {
       var detectingView = new DetectingView();
       detectingView.Show();
       detectingView.Closed += diffController.CloseLoadingView;
 
-      (FormatStyle, FormatOptions) = await diffController.GetFormatOptionsAsync(filePaths);
-      flowDocuments = await diffController.CreateFlowDocumentsAsync(filePaths, FormatStyle, FormatOptions);
+      filesContent = FileSystem.ReadContentFromMultipleFiles(filesPath, Environment.NewLine);
+      (SelectedStyle, FormatOptions) = await diffController.GetFormatOptionsAsync(filesContent);
+      flowDocuments = await diffController.CreateFlowDocumentsAsync(filesContent, SelectedStyle, FormatOptions);
 
       if (detectingView.IsLoaded)
       {
-        InitializeDiffView(filePaths);
+        InitializeDiffView(filesPath);
         detectingView.Closed -= diffController.CloseLoadingView;
         detectingView.Close();
         diffWindow.Show();
       }
     }
 
+    public void OpenMultipleInput(int index)
+    {
+      if (windowLoaded == false) return;
+      CloseMultipleInput += FormatAfterClosingMultipleInput;
+      SelectedOption = FormatOptions[index];
+      OpenMultipleInput(SelectedOption);
+    }
+
+    public void FormatAfterClosingMultipleInput(object sender, EventArgs e)
+    {
+      CloseMultipleInput -= FormatAfterClosingMultipleInput;
+      ReloadDiffAsync().SafeFireAndForget();
+    }
+
+    #endregion
+
+    #region Private Methods
+
     private void InitializeDiffView(List<string> filePaths)
     {
       FileNames = diffController.GetFileNames(filePaths);
       SetFlowDocuments();
-      Style = "Style: " + FormatStyle.ToString();
+      Style = "Style: " + SelectedStyle.ToString();
 
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileNames"));
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Style"));
     }
+
 
     private void SetFlowDocuments()
     {
@@ -181,7 +224,7 @@ namespace ClangPowerTools
       string path = SaveFile(fileName, defaultExt, filter);
       if (string.IsNullOrEmpty(path) == false)
       {
-        WriteContentToFile(path, FormatOptionFile.CreateOutput(FormatOptions, FormatStyle).ToString());
+        WriteContentToFile(path, FormatOptionFile.CreateOutput(FormatOptions, SelectedStyle).ToString());
       }
     }
 

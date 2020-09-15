@@ -15,7 +15,7 @@ using Process = System.Diagnostics.Process;
 
 namespace ClangPowerTools
 {
-  public class FormatEditorViewModel : CommonFormatEditorFunctionality, INotifyPropertyChanged
+  public class FormatEditorViewModel : CommonFormatEditorFunctionality, INotifyPropertyChanged, IFormatEditor
   {
     #region Members
 
@@ -256,16 +256,11 @@ namespace ClangPowerTools
       OpenMultipleInput(SelectedOption);
     }
 
-    private void FormatAfterClosingMultipleInput(object sender, EventArgs e)
+    public void FormatAfterClosingMultipleInput(object sender, EventArgs e)
     {
       SelectedOption.IsEnabled = true;
       SetEditorOutputAfterFormat();
       CloseMultipleInput -= FormatAfterClosingMultipleInput;
-    }
-
-    private void SetEditorOutputAfterFormat()
-    {
-      formatEditorView.CodeEditorReadOnly.Text = RunFormat(formatEditorView.CodeEditor.Text);
     }
 
     public bool IsAnyOptionEnabled()
@@ -281,6 +276,11 @@ namespace ClangPowerTools
 
 
     #region Private Methods
+
+    private void SetEditorOutputAfterFormat()
+    {
+      formatEditorView.CodeEditorReadOnly.Text = RunFormat(formatEditorView.CodeEditor.Text);
+    }
 
     private void InitializeStyleOptions(FormatOptionsData formatOptionsData)
     {

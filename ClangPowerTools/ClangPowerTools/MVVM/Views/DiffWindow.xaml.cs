@@ -28,9 +28,9 @@ namespace ClangPowerTools.MVVM.Views
 
     #region Public Methods
 
-    public async Task ShowDiffAsync(List<string> filePaths)
+    public async Task ShowDiffAsync(List<string> filesPath)
     {
-      await diffViewModel.DiffDocumentsAsync(filePaths);
+      await diffViewModel.DiffDocumentsAsync(filesPath);
     }
 
     #endregion
@@ -52,22 +52,11 @@ namespace ClangPowerTools.MVVM.Views
       }
     }
 
-    //TODO try to bind to ViewModel
-    private void InputText_TextChanged(object sender, TextChangedEventArgs e)
-    {
-      diffViewModel.RunFormat();
-    }
-
-    private void BooleanCombobox_DropDownClosed(object sender, System.EventArgs e)
-    {
-      diffViewModel.RunFormat();
-    }
-
     private void OpenMultipleInput(object sender, RoutedEventArgs e)
     {
       var element = (sender as FrameworkElement).DataContext;
       if (element == null) return;
-      //diffViewModel.OpenMultipleInput(FormatOptions.Items.IndexOf(element));
+      diffViewModel.OpenMultipleInput(FormatOptions.Items.IndexOf(element));
     }
 
     #endregion
