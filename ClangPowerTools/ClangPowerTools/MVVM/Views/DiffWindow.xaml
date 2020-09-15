@@ -39,7 +39,7 @@
       <ColumnDefinition Width="5" />
       <ColumnDefinition Width="*" />
       <ColumnDefinition Width="5" />
-      <ColumnDefinition Width="385" />
+      <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="5" />
     </Grid.ColumnDefinitions>
 
@@ -120,7 +120,6 @@
     <!--  Detected Format Options  -->
     <Grid Grid.Row="1" Grid.Column="3">
       <Grid.RowDefinitions>
-        <RowDefinition Height="10" />
         <RowDefinition Height="20" />
         <RowDefinition Height="20" />
         <RowDefinition Height="*" />
@@ -133,7 +132,7 @@
 
       <!--  Title  -->
       <TextBlock
-        Grid.Row="1"
+        Grid.Row="0"
         Grid.Column="0"
         HorizontalAlignment="Center"
         FontSize="15"
@@ -144,7 +143,7 @@
 
       <!--  Style  -->
       <TextBlock
-        Grid.Row="2"
+        Grid.Row="1"
         Grid.Column="0"
         HorizontalAlignment="Center"
         FontSize="15"
@@ -156,7 +155,7 @@
       <!--  Format options  -->
       <ListView
         Name="FormatOptions"
-        Grid.Row="3"
+        Grid.Row="2"
         Grid.Column="0"
         HorizontalAlignment="Left"
         ItemsSource="{Binding FormatOptions, Mode=TwoWay}"
@@ -170,20 +169,18 @@
                 <Setter Property="IsEnabled" Value="False" />
               </Style>
             </GridView.ColumnHeaderContainerStyle>
-            <GridViewColumn Width="{Binding NameColumnWidth}" Header="Name">
+            <GridViewColumn Header="Name">
               <GridViewColumn.CellTemplate>
                 <DataTemplate>
                   <TextBlock
                     Grid.Column="0"
-                    Width="250"
                     FontSize="12"
                     Foreground="Black"
-                    Text="{Binding Name}"
-                    TextWrapping="Wrap" />
+                    Text="{Binding Name}" />
                 </DataTemplate>
               </GridViewColumn.CellTemplate>
             </GridViewColumn>
-            <GridViewColumn Width="auto" Header="Value">
+            <GridViewColumn Header="Value">
               <GridViewColumn.CellTemplate>
                 <DataTemplate>
                   <Grid>
@@ -195,14 +192,12 @@
                       HorizontalAlignment="Right"
                       FontSize="12"
                       Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}"
-                      TextChanged="InputText_TextChanged"
                       Visibility="{Binding Path=HasInputTextBox, Converter={StaticResource BoolToVis}}" />
                     <ComboBox
                       x:Name="BooleanCombobox"
                       Grid.Column="1"
                       Width="80"
                       HorizontalAlignment="Right"
-                      DropDownClosed="BooleanCombobox_DropDownClosed"
                       ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.BooleanComboboxValues}"
                       SelectedItem="{Binding BooleanCombobox}"
                       Visibility="{Binding Path=HasBooleanCombobox, Converter={StaticResource BoolToVis}}" />
@@ -211,7 +206,6 @@
                       Width="80"
                       Height="20"
                       HorizontalAlignment="Right"
-                      Click="OpenMultipleInput"
                       Content="Modify Input"
                       FontSize="12"
                       Visibility="{Binding Path=HasMultipleInputTextBox, Converter={StaticResource BoolToVis}}" />
@@ -220,7 +214,6 @@
                       Width="80"
                       Height="20"
                       HorizontalAlignment="Right"
-                      Click="OpenMultipleInput"
                       Content="Modify Input"
                       FontSize="12"
                       Visibility="{Binding Path=HasMultipleToggle, Converter={StaticResource BoolToVis}}" />
@@ -232,18 +225,39 @@
         </ListView.View>
       </ListView>
 
-      <!--  Export button  -->
-      <Button
-        Grid.Row="4"
-        Grid.Column="0"
-        Width="150"
-        Height="30"
-        Margin="20,0,0,0"
-        Command="{Binding CreateFormatFileCommand}"
-        Content="Export .clang-format"
-        FontSize="14"
-        Foreground="White"
-        Style="{StaticResource SettingsButton}" />
+      <Grid Grid.Row="4" Grid.Column="0">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <!--  Export button  -->
+        <Button
+          Grid.Row="0"
+          Grid.Column="0"
+          Width="150"
+          Height="30"
+          Command="{Binding CreateFormatFileCommand}"
+          Content="Export .clang-format"
+          FontSize="14"
+          Foreground="White"
+          Style="{StaticResource SettingsButton}" />
+
+        <Button
+          Grid.Row="0"
+          Grid.Column="1"
+          Width="150"
+          Height="30"
+          Margin="10,0,0,0"
+          Command="{Binding ReloadCommand}"
+          Content="Reload"
+          FontSize="14"
+          Foreground="White"
+          Style="{StaticResource SettingsButton}" />
+      </Grid>
     </Grid>
 
   </Grid>
