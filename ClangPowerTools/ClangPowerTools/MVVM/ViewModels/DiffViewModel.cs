@@ -138,21 +138,14 @@ namespace ClangPowerTools
 
     public async Task DiffDocumentsAsync(List<string> filesPath)
     {
-      var detectingView = new DetectingView();
-      detectingView.Show();
-      detectingView.Closed += diffController.CloseLoadingView;
+      DetectingView detectingView = ShowDetectingView();
 
       filesContent = FileSystem.ReadContentFromMultipleFiles(filesPath, Environment.NewLine);
       (SelectedStyle, FormatOptions) = await diffController.GetFormatOptionsAsync(filesContent);
+      detectedOptions = new List<IFormatOption>(FormatOptions);
       flowDocuments = await diffController.CreateFlowDocumentsAsync(filesContent, SelectedStyle, FormatOptions);
 
-      if (detectingView.IsLoaded)
-      {
-        InitializeDiffView(filesPath);
-        detectingView.Closed -= diffController.CloseLoadingView;
-        detectingView.Close();
-        diffWindow.Show();
-      }
+      DetectionFinished(filesPath, detectingView);
     }
 
     public void OpenMultipleInput(int index)
@@ -197,6 +190,25 @@ namespace ClangPowerTools
       diffOutput.PageWidth = PageWith;
       diffWindow.DiffInput.Document = diffInput;
       diffWindow.DiffOutput.Document = diffOutput;
+    }
+
+    private void DetectionFinished(List<string> filesPath, DetectingView detectingView)
+    {
+      if (detectingView.IsLoaded)
+      {
+        InitializeDiffView(filesPath);
+        detectingView.Closed -= diffController.CloseLoadingView;
+        detectingView.Close();
+        diffWindow.Show();
+      }
+    }
+
+    private DetectingView ShowDetectingView()
+    {
+      var detectingView = new DetectingView();
+      detectingView.Show();
+      detectingView.Closed += diffController.CloseLoadingView;
+      return detectingView;
     }
 
     private void CreateFormatFile()
