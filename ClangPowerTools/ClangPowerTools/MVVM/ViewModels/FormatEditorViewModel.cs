@@ -293,7 +293,7 @@ namespace ClangPowerTools
     {
       formatStyleOptions = formatOptionsData.FormatOptions;
       formatOptionsData.DisableAllOptions();
-      SelectedOption = FormatOptions.FirstOrDefault();
+      selectedOption = FormatOptions.FirstOrDefault();
     }
 
     private void ChangeControlsDependingOnStyle()
@@ -352,10 +352,9 @@ namespace ClangPowerTools
       {
         FormatOptionsProvider.ResetOptions();
         InitializeStyleOptions(FormatOptionsProvider.CustomOptionsData);
-        SelectedStyle = EditorStyles.Custom;
       });
 
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedStyle"));
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedOption"));
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
     }
 
