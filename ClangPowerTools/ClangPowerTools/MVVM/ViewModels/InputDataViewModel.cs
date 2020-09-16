@@ -133,8 +133,17 @@ namespace ClangPowerTools
 
     public void DeleteInput(int index)
     {
-      if (index >= 0)
-        Inputs.RemoveAt(index);
+      if (index < 0 || index >= Inputs.Count)
+        return;
+
+      Inputs.RemoveAt(index);
+
+      // Is not the last element
+      if (index != Inputs.Count)
+      {
+        for (int position = index; position < Inputs.Count; ++position)
+          Inputs[position].LineNumber = position + 1;
+      }
 
       if (view == null)
         return;
@@ -184,15 +193,20 @@ namespace ClangPowerTools
       if (filePaths == null || filePaths.Length <= 0)
         return;
 
-      foreach (var path in filePaths)
-        Inputs.Add(new InputDataModel(path));
+      for (int index = 0; index < filePaths.Length; ++index)
+      {
+        int position = Inputs.Count == 0 ? 1 : Inputs.Last().LineNumber + 1;
+        Inputs.Add(new InputDataModel(filePaths[index], position));
+
+      }
     }
 
     private void AddInputToCollection()
     {
       if (string.IsNullOrWhiteSpace(inputToAdd) == false)
       {
-        Inputs.Add(new InputDataModel(inputToAdd));
+        int index = Inputs.Count == 0 ? 1 : Inputs.Last().LineNumber + 1;
+        Inputs.Add(new InputDataModel(inputToAdd, index));
         InputToAdd = string.Empty;
       }
     }
@@ -203,10 +217,8 @@ namespace ClangPowerTools
         return;
 
       var splitContent = content.Split(';').ToList();
-      foreach (var item in splitContent)
-      {
-        Inputs.Add(new InputDataModel(item));
-      }
+      for (int index = 0; index < splitContent.Count; ++index)
+        Inputs.Add(new InputDataModel(splitContent[index], index + 1));
     }
 
     private void DetectFormatStyle()
