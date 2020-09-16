@@ -138,6 +138,9 @@ namespace ClangPowerTools
       if (index < 0 || index >= Inputs.Count)
         return;
 
+      var model = Inputs[index];
+      totalFilesSize -= model.FileSize;
+
       Inputs.RemoveAt(index);
 
       // Is not the last element
@@ -150,17 +153,7 @@ namespace ClangPowerTools
       if (view == null)
         return;
 
-      if (Inputs.Count > MAX_FILE_NUMBER)
-      {
-        WarningText = MAX_FILE_WARNING;
-        view.WarningTextBox.Foreground = Brushes.Red;
-      }
-      else if (Inputs.Count > MID_FILE_NUMBER)
-      {
-        WarningText = MID_FILE_WARNING;
-        view.WarningTextBox.Foreground = Brushes.Orange;
-      }
-      else
+      if (totalFilesSize <= MAX_FILE_SIZE)
         view.WarningTextBox.Visibility = System.Windows.Visibility.Hidden;
     }
 
