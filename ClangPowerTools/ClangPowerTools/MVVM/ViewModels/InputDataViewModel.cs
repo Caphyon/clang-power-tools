@@ -185,10 +185,7 @@ namespace ClangPowerTools
       for (int index = 0; index < filePaths.Length; ++index)
       {
         int position = Inputs.Count == 0 ? 1 : Inputs.Last().LineNumber + 1;
-        var model = new InputDataModel(filePaths[index], position);
-
-        totalFilesSize += model.FileSize;
-        Inputs.Add(model);
+        AddNewElement(filePaths[index], position);
       }
     }
 
@@ -197,10 +194,7 @@ namespace ClangPowerTools
       if (string.IsNullOrWhiteSpace(inputToAdd) == false)
       {
         int index = Inputs.Count == 0 ? 1 : Inputs.Last().LineNumber + 1;
-        var model = new InputDataModel(inputToAdd, index);
-
-        totalFilesSize += model.FileSize;
-        Inputs.Add(model);
+        AddNewElement(inputToAdd, index);
         InputToAdd = string.Empty;
       }
     }
@@ -212,20 +206,15 @@ namespace ClangPowerTools
 
       var splitContent = content.Split(';').ToList();
       for (int index = 0; index < splitContent.Count; ++index)
-      {
-        var model = new InputDataModel(splitContent[index], index + 1);
-
-        totalFilesSize += model.FileSize;
-        Inputs.Add(model);
-      }
+        AddNewElement(splitContent[index], index + 1);
     }
 
-    //private void AddNewElement(string filePath, int index)
-    //{
-    //  var model = new InputDataModel(filePath, index);
-    //  totalFilesSize += model.FileSize;
-    //  Inputs.Add(model);
-    //}
+    private void AddNewElement(string filePath, int index)
+    {
+      var model = new InputDataModel(filePath, index);
+      totalFilesSize += model.FileSize;
+      Inputs.Add(model);
+    }
 
     private void DetectFormatStyle()
     {
