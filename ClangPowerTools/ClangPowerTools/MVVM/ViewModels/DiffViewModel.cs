@@ -139,6 +139,7 @@ namespace ClangPowerTools
       {
         formatStyleOptions = FormatOptionsProvider.CloneDetectedOptions(detectedOptions);
       });
+      await ReloadDiffAsync();
       OnPropertyChanged("FormatOptions");
     }
 
