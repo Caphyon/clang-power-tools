@@ -55,7 +55,10 @@ namespace ClangPowerTools
       var inputMultipleDataView = (InputMultipleDataView)sender;
       multipleInputModel.MultipleInput = ((InputMultipleDataViewModel)inputMultipleDataView.DataContext).Input;
       inputMultipleDataView.Closed -= CloseInputDataView;
-      CloseMultipleInput.Invoke(sender, e);
+      if (CloseMultipleInput != null)
+      {
+        CloseMultipleInput.Invoke(sender, e);
+      }
     }
 
     private void CloseToggleDataView(object sender, EventArgs e)
@@ -64,7 +67,10 @@ namespace ClangPowerTools
       var toggleMultipleDataView = (ToggleMultipleDataView)sender;
       multipleToggleModel.ToggleFlags = ((ToggleMultipleDataViewModel)toggleMultipleDataView.DataContext).Input;
       toggleMultipleDataView.Closed -= CloseInputDataView;
-      CloseMultipleInput.Invoke(sender, e);
+      if (CloseMultipleInput != null)
+      {
+        CloseMultipleInput.Invoke(sender, e);
+      }
     }
 
     #endregion

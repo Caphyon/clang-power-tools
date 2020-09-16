@@ -2,6 +2,7 @@
 using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.Interfaces;
+using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.MVVM.Views;
 using System;
 using System.Collections.Generic;
@@ -81,7 +82,7 @@ namespace ClangPowerTools
       set
       {
         selectedOption = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedOption"));
+        OnPropertyChanged("SelectedOption");
       }
     }
     public bool CanExecute => true;
@@ -94,6 +95,18 @@ namespace ClangPowerTools
       this.diffWindow = diffWindow;
       diffController = new DiffController();
       FileNames = new List<string>();
+    }
+
+    private void ChangeFontWeight()
+    {
+      foreach (var item in formatStyleOptions)
+      {
+        var option = (FormatOptionModel)item;
+        if (option.IsModifed)
+        {
+          option.NameFontWeight = FormatConstants.BoldFontWeight;
+        }
+      }
     }
 
     //Empty constructor used for XAML IntelliSense
@@ -144,6 +157,7 @@ namespace ClangPowerTools
       (SelectedStyle, FormatOptions) = await diffController.GetFormatOptionsAsync(filesContent);
       detectedOptions = new List<IFormatOption>(FormatOptions);
       flowDocuments = await diffController.CreateFlowDocumentsAsync(filesContent, SelectedStyle, FormatOptions);
+      ChangeFontWeight();
 
       DetectionFinished(filesPath, detectingView);
     }
@@ -152,6 +166,13 @@ namespace ClangPowerTools
     {
       SelectedOption = FormatOptions[index];
       OpenMultipleInput(SelectedOption);
+    }
+
+    public void OptionChanged(int index)
+    {
+      var option = (FormatOptionModel)FormatOptions[index];
+      option.IsModifed = true;
+      option.NameFontWeight = FormatConstants.BoldFontWeight;
     }
 
     #endregion
@@ -164,9 +185,9 @@ namespace ClangPowerTools
       SetFlowDocuments();
       Style = "Style: " + SelectedStyle.ToString();
 
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileNames"));
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));
-      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Style"));
+      OnPropertyChanged("FileNames");
+      OnPropertyChanged("FormatOptions");
+      OnPropertyChanged("Style");
     }
 
     private void SetFlowDocuments()
@@ -215,6 +236,11 @@ namespace ClangPowerTools
       {
         WriteContentToFile(path, FormatOptionFile.CreateOutput(FormatOptions, SelectedStyle).ToString());
       }
+    }
+
+    public void OnPropertyChanged(string propertyName)
+    {
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
     #endregion

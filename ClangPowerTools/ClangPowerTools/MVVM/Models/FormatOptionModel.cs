@@ -11,6 +11,7 @@ namespace ClangPowerTools.MVVM.Models
     public event PropertyChangedEventHandler PropertyChanged;
 
     private bool isEnabled = true;
+    private string nameFontWeight = FormatConstants.NormalFontWeight;
 
     #endregion
 
@@ -32,6 +33,20 @@ namespace ClangPowerTools.MVVM.Models
       }
     }
 
+    public string NameFontWeight
+    {
+      get
+      {
+        return nameFontWeight;
+      }
+      set
+      {
+        nameFontWeight = value;
+        OnPropertyChanged("NameFontWeight");
+      }
+    }
+
+    public bool IsModifed { get; set; } = false;
     public bool HasBooleanCombobox { get; set; } = false;
     public bool HasInputTextBox { get; set; } = false;
     public bool HasMultipleInputTextBox { get; set; } = false;

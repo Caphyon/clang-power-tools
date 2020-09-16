@@ -104,7 +104,6 @@ namespace ClangPowerTools.DiffStyle
 
     private List<IFormatOption> AggregateOptions()
     {
-      var fileCount = filesContent.Count;
       var defaultOptions = GetDefaultOptionsForStyle(detectedStyle);
       for (int i = 0; i < defaultOptions.Count; i++)
       {
@@ -115,38 +114,39 @@ namespace ClangPowerTools.DiffStyle
         {
           switch (option[i])
           {
-            case FormatOptionToggleModel toggleModel:
+            case FormatOptionToggleModel foundToggleModel:
               var defaultToggle = (FormatOptionToggleModel)defaultOptions[i];
-              if (toggleModel.BooleanCombobox != defaultToggle.BooleanCombobox)
+              if (foundToggleModel.BooleanCombobox != defaultToggle.BooleanCombobox)
               {
                 toggleChanged.Item1++;
-                toggleChanged.Item2 = toggleModel.BooleanCombobox;
+                toggleChanged.Item2 = foundToggleModel.BooleanCombobox;
               }
               break;
-            case FormatOptionInputModel inputModel:
+            case FormatOptionInputModel foundInputModel:
               var defaultInput = (FormatOptionInputModel)defaultOptions[i];
-              if (inputModel.Input != defaultInput.Input)
+              if (foundInputModel.Input != defaultInput.Input)
               {
-                if (inputChanged.ContainsKey(inputModel.Input))
+                if (inputChanged.ContainsKey(foundInputModel.Input))
                 {
-                  inputChanged[inputModel.Input]++;
+                  inputChanged[foundInputModel.Input]++;
                 }
                 else
                 {
-                  inputChanged.Add(inputModel.Input, 1);
+                  inputChanged.Add(foundInputModel.Input, 1);
                 }
               }
               break;
-            case FormatOptionMultipleToggleModel multipleToggleModel:
+            case FormatOptionMultipleToggleModel foundMultipleToggleModel:
               if (multipleToggleChanged) break;
               var defaultToggleFlags = ((FormatOptionMultipleToggleModel)defaultOptions[i]).ToggleFlags;
-              var toggleflags = multipleToggleModel.ToggleFlags;
+              var toggleflags = foundMultipleToggleModel.ToggleFlags;
               for (int j = 0; j < defaultToggleFlags.Count; j++)
               {
                 if (toggleflags[j].Value != defaultToggleFlags[j].Value)
                 {
                   multipleToggleChanged = true;
-                  defaultOptions[i] = multipleToggleModel;
+                  foundMultipleToggleModel.IsModifed = true;
+                  defaultOptions[i] = foundMultipleToggleModel;
                   break;
                 }
               }
@@ -157,14 +157,18 @@ namespace ClangPowerTools.DiffStyle
         }
         if (toggleChanged.Item1 > 0)
         {
-          ((FormatOptionToggleModel)defaultOptions[i]).BooleanCombobox = toggleChanged.Item2;
+          var optionToggle = (FormatOptionToggleModel)defaultOptions[i];
+          optionToggle.BooleanCombobox = toggleChanged.Item2;
+          optionToggle.IsModifed = true;
           continue;
         }
 
         if (inputChanged.Count > 0)
         {
           var input = inputChanged.OrderBy(e => e.Value).Last();
-          ((FormatOptionInputModel)defaultOptions[i]).Input = input.Key;
+          var inputToogle = (FormatOptionInputModel)defaultOptions[i];
+          inputToogle.Input = input.Key;
+          inputToogle.IsModifed = true;
         }
       }
       return defaultOptions;

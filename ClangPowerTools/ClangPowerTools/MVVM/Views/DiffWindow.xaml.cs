@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -52,11 +53,27 @@ namespace ClangPowerTools.MVVM.Views
       }
     }
 
+    private void OptionInputChanged(object sender, TextChangedEventArgs e)
+    {
+      var element = (sender as FrameworkElement).DataContext;
+      if (element == null) return;
+      diffViewModel.OptionChanged(FormatOptions.Items.IndexOf(element));
+    }
+
+    private void OptionDropDownClosed(object sender, EventArgs e)
+    {
+      var element = (sender as FrameworkElement).DataContext;
+      if (element == null) return;
+      diffViewModel.OptionChanged(FormatOptions.Items.IndexOf(element));
+    }
+
     private void OpenMultipleInput(object sender, RoutedEventArgs e)
     {
       var element = (sender as FrameworkElement).DataContext;
       if (element == null) return;
-      diffViewModel.OpenMultipleInput(FormatOptions.Items.IndexOf(element));
+      int index = FormatOptions.Items.IndexOf(element);
+      diffViewModel.OpenMultipleInput(index);
+      diffViewModel.OptionChanged(index);
     }
 
     #endregion
