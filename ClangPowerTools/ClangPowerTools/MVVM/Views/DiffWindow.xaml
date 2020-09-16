@@ -123,7 +123,7 @@
         <RowDefinition Height="20" />
         <RowDefinition Height="20" />
         <RowDefinition Height="*" />
-        <RowDefinition Height="50" />
+        <RowDefinition Height="70" />
       </Grid.RowDefinitions>
 
       <Grid.ColumnDefinitions>
@@ -230,35 +230,51 @@
         </ListView.View>
       </ListView>
 
-      <Grid Grid.Row="4" Grid.Column="0">
+      <Grid
+        Grid.Row="4"
+        Grid.Column="0"
+        HorizontalAlignment="Center">
         <Grid.RowDefinitions>
+          <RowDefinition Height="*" />
           <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-          <ColumnDefinition Width="*" />
-          <ColumnDefinition Width="5" />
-          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="auto" />
+          <ColumnDefinition Width="20" />
+          <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
         <!--  Reload button  -->
         <Button
           Grid.Row="0"
           Grid.Column="0"
-          Width="150"
-          Height="30"
+          Width="120"
+          Height="28"
           Command="{Binding ReloadCommand}"
           Content="Reload Diff"
           FontSize="14"
           Foreground="White"
           Style="{StaticResource SettingsButton}" />
 
-        <!--  Export button  -->
+        <!--  Reset button  -->
         <Button
           Grid.Row="0"
           Grid.Column="2"
+          Width="120"
+          Height="28"
+          Command="{Binding ResetCommand}"
+          Content="Reset Options"
+          FontSize="14"
+          Foreground="White"
+          Style="{StaticResource SettingsButton}" />
+
+        <!--  Export button  -->
+        <Button
+          Grid.Row="1"
+          Grid.ColumnSpan="3"
           Width="150"
-          Height="30"
+          Height="28"
           Command="{Binding CreateFormatFileCommand}"
           Content="Export .clang-format"
           FontSize="14"

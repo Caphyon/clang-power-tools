@@ -206,7 +206,7 @@ namespace ClangPowerTools
 
     public ICommand ResetCommand
     {
-      get => resetCommand ??= new RelayCommand(() => ResetOptions(), () => CanExecute);
+      get => resetCommand ??= new RelayCommand(() => ResetOptionsAsync().SafeFireAndForget(), () => CanExecute);
     }
 
     public ICommand SelctCodeFileCommand
@@ -345,12 +345,15 @@ namespace ClangPowerTools
         formatEditorView.CodeEditor.Text = File.ReadAllText(filePath);
     }
 
-    private void ResetOptions()
+    private async Task ResetOptionsAsync()
     {
       if (windowLoaded == false) return;
-      FormatOptionsProvider.ResetOptions();
-      InitializeStyleOptions(FormatOptionsProvider.CustomOptionsData);
-      SelectedStyle = EditorStyles.Custom;
+      await Task.Run(() =>
+      {
+        FormatOptionsProvider.ResetOptions();
+        InitializeStyleOptions(FormatOptionsProvider.CustomOptionsData);
+        SelectedStyle = EditorStyles.Custom;
+      });
 
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedStyle"));
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatOptions"));

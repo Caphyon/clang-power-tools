@@ -1,4 +1,6 @@
-﻿using ClangPowerTools.MVVM.Interfaces;
+﻿using ClangPowerTools.Extensions;
+using ClangPowerTools.MVVM.Interfaces;
+using ClangPowerTools.MVVM.Models;
 using System.Collections.Generic;
 
 namespace ClangPowerTools
@@ -56,6 +58,32 @@ namespace ClangPowerTools
       return new FormatOptionsData().FormatOptions;
     }
 
+    public static List<IFormatOption> CloneDetectedOptions(List<IFormatOption> formatOptions)
+    {
+      var clonedOptions = new List<IFormatOption>();
+      foreach (var option in formatOptions)
+      {
+        switch (option)
+        {
+          case FormatOptionToggleModel toggleModel:
+            clonedOptions.Add(toggleModel.Clone());
+            break;
+          case FormatOptionInputModel inputModel:
+            clonedOptions.Add(inputModel.Clone());
+            break;
+          case FormatOptionMultipleToggleModel multipleToggleModel:
+            clonedOptions.Add(multipleToggleModel.Clone());
+            break;
+          case FormatOptionMultipleInputModel multipleInputModel:
+            clonedOptions.Add(multipleInputModel.Clone());
+            break;
+          default:
+            break;
+        }
+      }
+      return clonedOptions;
+    }
+
     private static void InitializeFormatData()
     {
       CustomOptionsData = new FormatOptionsData();
@@ -67,9 +95,6 @@ namespace ClangPowerTools
       MicrosoftOptionsData = new FormatOptionsMicrosoftData();
     }
 
-
-
     #endregion
-
   }
 }

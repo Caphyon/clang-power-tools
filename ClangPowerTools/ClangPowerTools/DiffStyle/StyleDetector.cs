@@ -86,7 +86,7 @@ namespace ClangPowerTools.DiffStyle
         foreach (EditorStyles style in Enum.GetValues(typeof(EditorStyles)))
         {
           if (style == EditorStyles.Custom) continue;
-          var levenshtein = GetLevenshteinAfterFormat(content, style, GetDefaultOptionsForStyle(style));
+          var levenshtein = GetLevenshteinAfterFormat(content, style, FormatOptionsProvider.GetDefaultOptionsForStyle(style));
           lock (defaultLock)
           {
             if (detectedPredefinedStyles.ContainsKey(style))
@@ -104,7 +104,7 @@ namespace ClangPowerTools.DiffStyle
 
     private List<IFormatOption> AggregateOptions()
     {
-      var defaultOptions = GetDefaultOptionsForStyle(detectedStyle);
+      var defaultOptions = FormatOptionsProvider.GetDefaultOptionsForStyle(detectedStyle);
       for (int i = 0; i < defaultOptions.Count; i++)
       {
         var toggleChanged = (0, ToggleValues.False);
@@ -178,7 +178,7 @@ namespace ClangPowerTools.DiffStyle
     {
       await Task.Run(() =>
       {
-        var formatOptions = GetDefaultOptionsForStyle(style);
+        var formatOptions = FormatOptionsProvider.GetDefaultOptionsForStyle(style);
         foreach (var option in formatOptions)
         {
           if (cancelToken.IsCancellationRequested) break;
@@ -303,30 +303,6 @@ namespace ClangPowerTools.DiffStyle
         default:
           break;
       }
-    }
-
-    private List<IFormatOption> GetDefaultOptionsForStyle(EditorStyles style)
-    {
-      switch (style)
-      {
-        case EditorStyles.Custom:
-          break;
-        case EditorStyles.LLVM:
-          return new FormatOptionsData().FormatOptions;
-        case EditorStyles.Google:
-          return new FormatOptionsGoogleData().FormatOptions;
-        case EditorStyles.Chromium:
-          return new FormatOptionsChromiumData().FormatOptions;
-        case EditorStyles.Microsoft:
-          return new FormatOptionsMicrosoftData().FormatOptions;
-        case EditorStyles.Mozilla:
-          return new FormatOptionsMozillaData().FormatOptions;
-        case EditorStyles.WebKit:
-          return new FormatOptionsWebKitData().FormatOptions;
-        default:
-          break;
-      }
-      return new FormatOptionsData().FormatOptions;
     }
 
     private async Task CalculateColumTabAsync(string content, CancellationToken cancelToken)

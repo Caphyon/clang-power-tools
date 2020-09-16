@@ -27,6 +27,7 @@ namespace ClangPowerTools
     private List<string> filesContent;
     private ICommand createFormatFileCommand;
     private ICommand reloadCommand;
+    private ICommand resetCommand;
     private string selectedFile;
     private const int PageWith = 1000;
 
@@ -97,7 +98,7 @@ namespace ClangPowerTools
       FileNames = new List<string>();
     }
 
-    private void ChangeFontWeight()
+    private void ChangeOptionsFontWeight()
     {
       foreach (var item in formatStyleOptions)
       {
@@ -127,7 +128,19 @@ namespace ClangPowerTools
     {
       get => reloadCommand ??= new RelayCommand(() => ReloadDiffAsync().SafeFireAndForget(), () => CanExecute);
     }
-    public ICommand ResetCommand => throw new NotImplementedException();
+    public ICommand ResetCommand
+    {
+      get => resetCommand ??= new RelayCommand(() => ResetToDetectedOptionsAsync().SafeFireAndForget(), () => CanExecute);
+    }
+
+    private async Task ResetToDetectedOptionsAsync()
+    {
+      await Task.Run(() =>
+      {
+        formatStyleOptions = FormatOptionsProvider.CloneDetectedOptions(detectedOptions);
+      });
+      OnPropertyChanged("FormatOptions");
+    }
 
     #endregion
 
@@ -155,9 +168,9 @@ namespace ClangPowerTools
 
       filesContent = FileSystem.ReadContentFromMultipleFiles(filesPath, Environment.NewLine);
       (SelectedStyle, FormatOptions) = await diffController.GetFormatOptionsAsync(filesContent);
-      detectedOptions = new List<IFormatOption>(FormatOptions);
+      ChangeOptionsFontWeight();
       flowDocuments = await diffController.CreateFlowDocumentsAsync(filesContent, SelectedStyle, FormatOptions);
-      ChangeFontWeight();
+      detectedOptions = FormatOptionsProvider.CloneDetectedOptions(FormatOptions);
 
       DetectionFinished(filesPath, detectingView);
     }
