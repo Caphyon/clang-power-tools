@@ -167,13 +167,7 @@ namespace ClangPowerTools
       if (view == null)
         return;
 
-      if (Inputs.Count > MAX_FILE_NUMBER)
-      {
-        WarningText = MAX_FILE_WARNING;
-        view.WarningTextBox.Foreground = Brushes.Red;
-        view.WarningTextBox.Visibility = System.Windows.Visibility.Visible;
-      }
-      else if (Inputs.Count > MID_FILE_NUMBER)
+      if (totalFilesSize > MAX_FILE_SIZE)
       {
         WarningText = MID_FILE_WARNING;
         view.WarningTextBox.Foreground = Brushes.Orange;
