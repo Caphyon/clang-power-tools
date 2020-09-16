@@ -8,8 +8,8 @@ namespace ClangPowerTools
   {
     IEnumerable<ToggleValues> BooleanComboboxValues { get; }
     ICommand CreateFormatFileCommand { get; }
-    List<IFormatOption> FormatOptions { get; set; }
     ICommand ResetCommand { get; }
+    List<IFormatOption> FormatOptions { get; set; }
     IFormatOption SelectedOption { get; set; }
     EditorStyles SelectedStyle { get; set; }
 
