@@ -61,7 +61,7 @@
                 AlignmentY="Center"
                 Stretch="None">
                 <VisualBrush.Visual>
-                  <Label Content="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.Placeholder}" Foreground="Gray" />
+                  <Label Content="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}, Path=Placeholder}" Foreground="Gray" />
                 </VisualBrush.Visual>
               </VisualBrush>
             </Style.Resources>
@@ -114,22 +114,29 @@
         <DataTemplate>
           <Grid>
             <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="50" />
               <ColumnDefinition Width="*" />
               <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
               <RowDefinition Height="38" />
             </Grid.RowDefinitions>
+            <TextBlock
+              Grid.Column="0"
+              Margin="5,0,15,0"
+              HorizontalAlignment="Right"
+              VerticalAlignment="Center"
+              Text="{Binding LineNumber, Mode=TwoWay}" />
             <TextBox
               x:Name="InputField"
-              Grid.Column="0"
+              Grid.Column="1"
               VerticalAlignment="Center"
               BorderThickness="0"
               IsReadOnly="{Binding IsReadOnly, Mode=TwoWay}"
               Text="{Binding InputData, Mode=TwoWay}" />
             <Button
               Name="DeleteButton"
-              Grid.Column="1"
+              Grid.Column="2"
               Width="20"
               Height="20"
               Margin="10,0,10,0"
