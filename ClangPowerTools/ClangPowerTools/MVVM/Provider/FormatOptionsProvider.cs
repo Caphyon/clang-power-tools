@@ -1,8 +1,5 @@
-﻿using System;
+﻿using ClangPowerTools.MVVM.Interfaces;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ClangPowerTools
 {
@@ -35,6 +32,30 @@ namespace ClangPowerTools
       InitializeFormatData();
     }
 
+    public static List<IFormatOption> GetDefaultOptionsForStyle(EditorStyles style)
+    {
+      switch (style)
+      {
+        case EditorStyles.Custom:
+          break;
+        case EditorStyles.LLVM:
+          return new FormatOptionsData().FormatOptions;
+        case EditorStyles.Google:
+          return new FormatOptionsGoogleData().FormatOptions;
+        case EditorStyles.Chromium:
+          return new FormatOptionsChromiumData().FormatOptions;
+        case EditorStyles.Microsoft:
+          return new FormatOptionsMicrosoftData().FormatOptions;
+        case EditorStyles.Mozilla:
+          return new FormatOptionsMozillaData().FormatOptions;
+        case EditorStyles.WebKit:
+          return new FormatOptionsWebKitData().FormatOptions;
+        default:
+          break;
+      }
+      return new FormatOptionsData().FormatOptions;
+    }
+
     private static void InitializeFormatData()
     {
       CustomOptionsData = new FormatOptionsData();
@@ -45,6 +66,8 @@ namespace ClangPowerTools
       WebkitOptionsData = new FormatOptionsWebKitData();
       MicrosoftOptionsData = new FormatOptionsMicrosoftData();
     }
+
+
 
     #endregion
 
