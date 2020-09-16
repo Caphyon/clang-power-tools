@@ -30,9 +30,11 @@ namespace ClangPowerTools
     private const string MAX_FILE_WARNING = "This action will take very long time due to the high number of selected files.";
     private const string MID_FILE_WARNING = "This action will take some time due to the number of selected files.";
 
-
+    private const long MAX_FILE_SIZE = 5000;
+    private long totalFilesSize = 0;
 
     #endregion
+
 
     #region Constructor
 
@@ -196,8 +198,10 @@ namespace ClangPowerTools
       for (int index = 0; index < filePaths.Length; ++index)
       {
         int position = Inputs.Count == 0 ? 1 : Inputs.Last().LineNumber + 1;
-        Inputs.Add(new InputDataModel(filePaths[index], position));
+        var model = new InputDataModel(filePaths[index], position);
 
+        totalFilesSize += model.FileSize;
+        Inputs.Add(model);
       }
     }
 
@@ -206,7 +210,10 @@ namespace ClangPowerTools
       if (string.IsNullOrWhiteSpace(inputToAdd) == false)
       {
         int index = Inputs.Count == 0 ? 1 : Inputs.Last().LineNumber + 1;
-        Inputs.Add(new InputDataModel(inputToAdd, index));
+        var model = new InputDataModel(inputToAdd, index);
+
+        totalFilesSize += model.FileSize;
+        Inputs.Add(model);
         InputToAdd = string.Empty;
       }
     }
@@ -218,8 +225,20 @@ namespace ClangPowerTools
 
       var splitContent = content.Split(';').ToList();
       for (int index = 0; index < splitContent.Count; ++index)
-        Inputs.Add(new InputDataModel(splitContent[index], index + 1));
+      {
+        var model = new InputDataModel(splitContent[index], index + 1);
+
+        totalFilesSize += model.FileSize;
+        Inputs.Add(model);
+      }
     }
+
+    //private void AddNewElement(string filePath, int index)
+    //{
+    //  var model = new InputDataModel(filePath, index);
+    //  totalFilesSize += model.FileSize;
+    //  Inputs.Add(model);
+    //}
 
     private void DetectFormatStyle()
     {
