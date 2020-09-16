@@ -9,6 +9,7 @@ namespace ClangPowerTools.MVVM.Models
     public event PropertyChangedEventHandler PropertyChanged;
 
     private bool isReadOnly = false;
+    private int lineNumber = 0;
     private string inputData = string.Empty;
 
     #endregion
@@ -16,6 +17,12 @@ namespace ClangPowerTools.MVVM.Models
     public InputDataModel(string input)
     {
       inputData = input;
+    }
+
+    public InputDataModel(string input, int line)
+    {
+      inputData = input;
+      lineNumber = line;
     }
 
     #region Properties
@@ -30,6 +37,19 @@ namespace ClangPowerTools.MVVM.Models
       {
         inputData = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("InputData"));
+      }
+    }
+
+    public int LineNumber
+    {
+      get
+      {
+        return lineNumber;
+      }
+      set
+      {
+        lineNumber = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LineNumber"));
       }
     }
 
