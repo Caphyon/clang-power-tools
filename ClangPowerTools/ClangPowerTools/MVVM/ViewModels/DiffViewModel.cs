@@ -160,6 +160,7 @@ namespace ClangPowerTools
       {
         filesContent = FileSystem.ReadContentFromMultipleFiles(filesPath, Environment.NewLine);
         (SelectedStyle, FormatOptions) = await diffController.GetFormatOptionsAsync(filesContent, cancelToken);
+        SelectedOption = FormatOptions.First();
         ChangeOptionsFontWeight();
         flowDocuments = await diffController.CreateFlowDocumentsAsync(filesContent, SelectedStyle, FormatOptions, cancelToken);
         detectedOptions = FormatOptionsProvider.CloneDetectedOptions(FormatOptions);
