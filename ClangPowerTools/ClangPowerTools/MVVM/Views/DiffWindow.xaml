@@ -32,7 +32,6 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="5" />
       <RowDefinition Height="*" />
-      <RowDefinition Height="5" />
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
@@ -126,7 +125,7 @@
         <RowDefinition Height="50" />
         <RowDefinition Height="120" />
         <RowDefinition Height="10" />
-        <RowDefinition Height="70" />
+        <RowDefinition Height="55" />
       </Grid.RowDefinitions>
 
       <Grid.ColumnDefinitions>
@@ -277,7 +276,9 @@
 
         <Grid.ColumnDefinitions>
           <ColumnDefinition Width="auto" />
-          <ColumnDefinition Width="20" />
+          <ColumnDefinition Width="8" />
+          <ColumnDefinition Width="auto" />
+          <ColumnDefinition Width="8" />
           <ColumnDefinition Width="auto" />
         </Grid.ColumnDefinitions>
 
@@ -285,7 +286,7 @@
         <Button
           Grid.Row="0"
           Grid.Column="0"
-          Width="120"
+          Width="110"
           Height="28"
           Command="{Binding ReloadCommand}"
           Content="Reload Diff"
@@ -297,7 +298,7 @@
         <Button
           Grid.Row="0"
           Grid.Column="2"
-          Width="120"
+          Width="110"
           Height="28"
           Command="{Binding ResetCommand}"
           Content="Reset Options"
@@ -307,8 +308,8 @@
 
         <!--  Export button  -->
         <Button
-          Grid.Row="1"
-          Grid.ColumnSpan="3"
+          Grid.Row="0"
+          Grid.Column="4"
           Width="150"
           Height="28"
           Command="{Binding CreateFormatFileCommand}"
