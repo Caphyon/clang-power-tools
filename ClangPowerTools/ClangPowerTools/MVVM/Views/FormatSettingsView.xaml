@@ -34,6 +34,7 @@
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
@@ -306,6 +307,36 @@
         HorizontalAlignment="Left"
         Command="{Binding CreateFormatFileCommand}"
         Content="Open"
+        FontSize="14"
+        Foreground="White"
+        Style="{StaticResource SettingsButton}" />
+    </WrapPanel>
+
+    <!--  Create format file  -->
+    <WrapPanel Grid.Row="9" Grid.Column="1">
+      <WrapPanel.ToolTip>
+        <ToolTip>
+          <TextBlock
+            MaxWidth="400"
+            Text="{Binding Tooltip.CreateFormatFile}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </WrapPanel.ToolTip>
+
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Detect Format Style" />
+
+      <Button
+        Width="80"
+        Height="30"
+        HorizontalAlignment="Left"
+        Command="{Binding DetectFormatStyleCommand}"
+        Content="Detect"
         FontSize="14"
         Foreground="White"
         Style="{StaticResource SettingsButton}" />
