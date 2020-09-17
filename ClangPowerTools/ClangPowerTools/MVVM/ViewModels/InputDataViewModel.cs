@@ -24,11 +24,7 @@ namespace ClangPowerTools
     private string warningText;
     private readonly DetectFormatStyleMenuView view;
 
-    private const int MAX_FILE_NUMBER = 20;
-    private const int MID_FILE_NUMBER = 10;
-
-    private const string MAX_FILE_WARNING = "This action will take very long time due to the high number of selected files.";
-    private const string MID_FILE_WARNING = "This action will take some time due to the number of selected files.";
+    private const string MAX_FILE_WARNING = "This action will take some time due to the number of selected files.";
 
     private const long MAX_FILE_SIZE = 5000;
     private long totalFilesSize = 0;
@@ -143,7 +139,7 @@ namespace ClangPowerTools
 
       Inputs.RemoveAt(index);
 
-      // Is not the last element
+      // Is not the last element update all the elements position from the index to the end
       if (index != Inputs.Count)
       {
         for (int position = index; position < Inputs.Count; ++position)
@@ -169,7 +165,7 @@ namespace ClangPowerTools
 
       if (totalFilesSize > MAX_FILE_SIZE)
       {
-        WarningText = MID_FILE_WARNING;
+        WarningText = MAX_FILE_WARNING;
         view.WarningTextBox.Foreground = Brushes.Orange;
         view.WarningTextBox.Visibility = System.Windows.Visibility.Visible;
       }
