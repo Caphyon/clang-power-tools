@@ -31,6 +31,22 @@ namespace ClangPowerTools
       return path;
     }
 
+    protected string[] OpenFiles(string fileName, string defaultExt, string filter)
+    {
+      OpenFileDialog openFileDialog = new OpenFileDialog();
+
+      openFileDialog.FileName = fileName;
+      openFileDialog.DefaultExt = defaultExt;
+      openFileDialog.Filter = filter;
+      openFileDialog.Multiselect = true;
+
+      if (openFileDialog.ShowDialog() != true)
+        return null;
+
+      return openFileDialog.FileNames;
+    }
+
+
     /// <summary>
     /// Browse for folder from where the files path acording to the given seach instruction will be collected 
     /// </summary>

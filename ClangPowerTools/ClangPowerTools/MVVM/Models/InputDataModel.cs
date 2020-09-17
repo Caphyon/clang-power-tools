@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.IO;
 
 namespace ClangPowerTools.MVVM.Models
 {
@@ -9,6 +10,7 @@ namespace ClangPowerTools.MVVM.Models
     public event PropertyChangedEventHandler PropertyChanged;
 
     private bool isReadOnly = false;
+    private int lineNumber = 0;
     private string inputData = string.Empty;
 
     #endregion
@@ -16,6 +18,18 @@ namespace ClangPowerTools.MVVM.Models
     public InputDataModel(string input)
     {
       inputData = input;
+    }
+
+    public InputDataModel(string input, int line)
+    {
+      inputData = input;
+      if (File.Exists(inputData))
+      {
+        var fileInfo = new FileInfo(inputData);
+        FileSize = fileInfo.Length;
+      }
+
+      lineNumber = line;
     }
 
     #region Properties
@@ -33,6 +47,19 @@ namespace ClangPowerTools.MVVM.Models
       }
     }
 
+    public int LineNumber
+    {
+      get
+      {
+        return lineNumber;
+      }
+      set
+      {
+        lineNumber = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LineNumber"));
+      }
+    }
+
     public bool IsReadOnly
     {
       get
@@ -45,6 +72,8 @@ namespace ClangPowerTools.MVVM.Models
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CanEdit"));
       }
     }
+
+    public long FileSize { get; private set; } = 0;
 
     #endregion
   }

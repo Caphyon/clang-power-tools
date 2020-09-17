@@ -7,10 +7,14 @@ namespace ClangPowerTools.MVVM.Views
   /// </summary>
   public partial class DetectFormatStyleMenuView : Window
   {
-    public DetectFormatStyleMenuView(FormatEditorViewModel formatEditorViewModel)
+
+    private readonly InputDataViewModel inputDataViewModel;
+
+    public DetectFormatStyleMenuView()
     {
       InitializeComponent();
-      DataContext = new DetectFormatStyleMenuViewModel(this, formatEditorViewModel);
+      inputDataViewModel = new InputDataViewModel(this, true);
+      DataContext = inputDataViewModel;
     }
   }
 }

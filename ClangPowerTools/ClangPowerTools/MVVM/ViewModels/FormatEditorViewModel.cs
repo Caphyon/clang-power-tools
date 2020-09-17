@@ -373,7 +373,7 @@ namespace ClangPowerTools
 
     private void OpenMenu()
     {
-      var menuView = new DetectFormatStyleMenuView(this)
+      var menuView = new DetectFormatStyleMenuView()
       {
         Owner = formatEditorView
       };
