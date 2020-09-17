@@ -123,11 +123,14 @@
         <RowDefinition Height="20" />
         <RowDefinition Height="20" />
         <RowDefinition Height="*" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="120" />
+        <RowDefinition Height="10" />
         <RowDefinition Height="70" />
       </Grid.RowDefinitions>
 
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="390" />
       </Grid.ColumnDefinitions>
 
       <!--  Title  -->
@@ -230,8 +233,41 @@
         </ListView.View>
       </ListView>
 
-      <Grid
+      <!--  Option description  -->
+      <RichTextBox
+        Grid.Row="3"
+        Grid.Column="0"
+        MaxWidth="480"
+        Margin="0,20,0,0"
+        HorizontalAlignment="Left"
+        Background="Transparent"
+        BorderThickness="0"
+        FontSize="14"
+        IsReadOnly="True">
+        <FlowDocument>
+          <Paragraph>
+            <Run FontWeight="DemiBold" Text="{Binding SelectedOption.Name}" />
+            <Run Text="(" />
+            <Run Background="#FFCDCDCD" Text="{Binding SelectedOption.Paramater}" />
+            <Run Text=")" />
+          </Paragraph>
+        </FlowDocument>
+      </RichTextBox>
+
+      <TextBox
         Grid.Row="4"
+        Grid.Column="0"
+        HorizontalAlignment="Left"
+        Background="Transparent"
+        BorderThickness="0"
+        FontSize="12"
+        IsReadOnly="True"
+        Text="{Binding SelectedOption.Description}"
+        TextWrapping="Wrap"
+        VerticalScrollBarVisibility="Auto" />
+
+      <Grid
+        Grid.Row="6"
         Grid.Column="0"
         HorizontalAlignment="Center">
         <Grid.RowDefinitions>
