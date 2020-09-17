@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -22,6 +23,7 @@ namespace ClangPowerTools
 
     private readonly DiffWindow diffWindow;
     private readonly DiffController diffController;
+    private DetectingView detectingView;
     private List<IFormatOption> detectedOptions;
     private List<(FlowDocument, FlowDocument)> flowDocuments;
     private List<string> filesContent;
@@ -147,33 +149,31 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public async Task ReloadDiffAsync()
-    {
-      var detectingView = new DetectingView
-      {
-        Owner = diffWindow
-      };
-      detectingView.Show();
-      detectingView.Closed += diffController.CloseLoadingView;
-
-      flowDocuments = await diffController.CreateFlowDocumentsAsync(filesContent, SelectedStyle, FormatOptions);
-      SetFlowDocuments();
-
-      detectingView.Closed -= diffController.CloseLoadingView;
-      detectingView.Close();
-    }
-
     public async Task DiffDocumentsAsync(List<string> filesPath)
     {
-      DetectingView detectingView = ShowDetectingView();
+      ShowDetectingView();
 
-      filesContent = FileSystem.ReadContentFromMultipleFiles(filesPath, Environment.NewLine);
-      (SelectedStyle, FormatOptions) = await diffController.GetFormatOptionsAsync(filesContent);
-      ChangeOptionsFontWeight();
-      flowDocuments = await diffController.CreateFlowDocumentsAsync(filesContent, SelectedStyle, FormatOptions);
-      detectedOptions = FormatOptionsProvider.CloneDetectedOptions(FormatOptions);
+      diffController.CancellationSource = new CancellationTokenSource();
+      diffController.CancelTokenDisposed = false;
+      CancellationToken cancelToken = diffController.CancellationSource.Token;
+      try
+      {
+        filesContent = FileSystem.ReadContentFromMultipleFiles(filesPath, Environment.NewLine);
+        (SelectedStyle, FormatOptions) = await diffController.GetFormatOptionsAsync(filesContent, cancelToken);
+        ChangeOptionsFontWeight();
+        flowDocuments = await diffController.CreateFlowDocumentsAsync(filesContent, SelectedStyle, FormatOptions, cancelToken);
+        detectedOptions = FormatOptionsProvider.CloneDetectedOptions(FormatOptions);
+      }
+      catch (OperationCanceledException)
+      {
+      }
+      finally
+      {
+        diffController.CancelTokenDisposed = true;
+        diffController.CancellationSource.Dispose();
+      }
 
-      DetectionFinished(filesPath, detectingView);
+      DetectionFinished(filesPath);
     }
 
     public void OpenMultipleInput(int index)
@@ -204,6 +204,32 @@ namespace ClangPowerTools
       OnPropertyChanged("Style");
     }
 
+    private async Task ReloadDiffAsync()
+    {
+      ShowDetectingView();
+
+      diffController.CancellationSource = new CancellationTokenSource();
+      diffController.CancelTokenDisposed = false;
+      CancellationToken cancelToken = diffController.CancellationSource.Token;
+      try
+      {
+        flowDocuments = await diffController.CreateFlowDocumentsAsync(filesContent, SelectedStyle, FormatOptions, cancelToken);
+        SetFlowDocuments();
+      }
+      catch (OperationCanceledException)
+      {
+      }
+      finally
+      {
+        diffController.CancelTokenDisposed = true;
+        diffController.CancellationSource.Dispose();
+      }
+
+      //TODO find a better solution
+      await Task.Delay(2000);
+      CloseDetectionView();
+    }
+
     private void SetFlowDocuments()
     {
       FlowDocument diffInput;
@@ -220,23 +246,27 @@ namespace ClangPowerTools
       diffWindow.DiffOutput.Document = diffOutput;
     }
 
-    private void DetectionFinished(List<string> filesPath, DetectingView detectingView)
+    private void DetectionFinished(List<string> filesPath)
     {
       if (detectingView.IsLoaded)
       {
         InitializeDiffView(filesPath);
-        detectingView.Closed -= diffController.CloseLoadingView;
-        detectingView.Close();
+        CloseDetectionView();
         diffWindow.Show();
       }
     }
 
-    private DetectingView ShowDetectingView()
+    private void ShowDetectingView()
     {
-      var detectingView = new DetectingView();
+      detectingView = new DetectingView();
       detectingView.Show();
-      detectingView.Closed += diffController.CloseLoadingView;
-      return detectingView;
+      detectingView.Closed += diffController.CloseLoadDetectionView;
+    }
+
+    private void CloseDetectionView()
+    {
+      detectingView.Closed -= diffController.CloseLoadDetectionView;
+      detectingView.Close();
     }
 
     private void CreateFormatFile()

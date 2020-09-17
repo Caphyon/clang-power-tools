@@ -24,12 +24,6 @@ namespace ClangPowerTools.DiffStyle
 
     #endregion
 
-    #region Properties
-
-    public CancellationTokenSource CancellationSource { get; private set; }
-
-    #endregion
-
     #region Constructor
 
     public StyleDetector()
@@ -47,10 +41,10 @@ namespace ClangPowerTools.DiffStyle
 
     #region Public Methods 
 
-    public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(List<string> filesContent)
+    public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> DetectStyleOptionsAsync(List<string> filesContent, CancellationToken cancelToken)
     {
       this.filesContent = filesContent;
-      await DetectAsync();
+      await DetectAsync(cancelToken);
       var options = AggregateOptions();
       return (detectedStyle, options);
     }
@@ -59,24 +53,12 @@ namespace ClangPowerTools.DiffStyle
 
     #region Private Methods
 
-    private async Task DetectAsync()
+    private async Task DetectAsync(CancellationToken cancelToken)
     {
-      CancellationSource = new CancellationTokenSource();
-      CancellationToken cancelToken = CancellationSource.Token;
-      try
-      {
-        await Task.WhenAll(filesContent.Select(e => CalculateColumTabAsync(e, cancelToken)));
-        await Task.WhenAll(filesContent.Select(e => DetectFileStyleAsync(e, cancelToken)));
-        detectedStyle = GetStyleByLevenshtein(detectedPredefinedStyles);
-        await Task.WhenAll(filesContent.Select(e => DetectFileOptionsAsync(e, detectedStyle, cancelToken)));
-      }
-      catch (OperationCanceledException)
-      {
-      }
-      finally
-      {
-        CancellationSource.Dispose();
-      }
+      await Task.WhenAll(filesContent.Select(e => CalculateColumTabAsync(e, cancelToken)));
+      await Task.WhenAll(filesContent.Select(e => DetectFileStyleAsync(e, cancelToken)));
+      detectedStyle = GetStyleByLevenshtein(detectedPredefinedStyles);
+      await Task.WhenAll(filesContent.Select(e => DetectFileOptionsAsync(e, detectedStyle, cancelToken)));
     }
 
     private async Task DetectFileStyleAsync(string content, CancellationToken cancelToken)

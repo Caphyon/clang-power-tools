@@ -3,6 +3,7 @@ using ClangPowerTools.MVVM.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Documents;
 
@@ -23,33 +24,44 @@ namespace ClangPowerTools.MVVM.Controllers
       styleDetector = new StyleDetector();
     }
 
-    public void CloseLoadingView(object sender, EventArgs e)
-    {
-      styleDetector.CancellationSource.Cancel();
-    }
+    #endregion
+
+    #region Properties 
+
+    public CancellationTokenSource CancellationSource { get; set; }
+
+    public bool CancelTokenDisposed { get; set; }
 
     #endregion
 
     #region Public Methods
 
-    public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> GetFormatOptionsAsync(List<string> filesContent)
+    public void CloseLoadDetectionView(object sender, EventArgs e)
     {
-      return await styleDetector.DetectStyleOptionsAsync(filesContent);
+      if (CancelTokenDisposed == false)
+      {
+        CancellationSource.Cancel();
+      }
     }
 
-    public async Task<List<(FlowDocument, FlowDocument)>> CreateFlowDocumentsAsync(List<string> filesContent, EditorStyles formatStyle, List<IFormatOption> formatOptions)
+    public async Task<(EditorStyles matchedStyle, List<IFormatOption> matchedOptions)> GetFormatOptionsAsync(List<string> filesContent, CancellationToken cancelToken)
+    {
+      return await styleDetector.DetectStyleOptionsAsync(filesContent, cancelToken);
+    }
+
+    public async Task<List<(FlowDocument, FlowDocument)>> CreateFlowDocumentsAsync(List<string> filesContent, EditorStyles formatStyle, List<IFormatOption> formatOptions, CancellationToken cancelToken)
     {
       var flowDocuments = new List<(FlowDocument, FlowDocument)>();
 
       foreach (var file in filesContent)
       {
-        var documents = await CreateFlowDocumentAsync(file, formatStyle, formatOptions);
+        var documents = await CreateFlowDocumentAsync(file, formatStyle, formatOptions, cancelToken);
         flowDocuments.Add(documents);
       }
       return flowDocuments;
     }
 
-    public async Task<(FlowDocument, FlowDocument)> CreateFlowDocumentAsync(string input, EditorStyles formatStyle, List<IFormatOption> formatOptions)
+    public async Task<(FlowDocument, FlowDocument)> CreateFlowDocumentAsync(string input, EditorStyles formatStyle, List<IFormatOption> formatOptions, CancellationToken cancelToken)
     {
       var diffMatchPatchWrapper = new DiffMatchPatchWrapper();
       string output = string.Empty;
@@ -59,7 +71,7 @@ namespace ClangPowerTools.MVVM.Controllers
         output = formatter.FormatText(input, formatOptions, formatStyle);
         diffMatchPatchWrapper.Diff(input, output);
         diffMatchPatchWrapper.CleanupSemantic();
-      });
+      }, cancelToken);
       return diffMatchPatchWrapper.DiffAsFlowDocuments(input, output);
     }
 
