@@ -16,7 +16,7 @@
         <ResourceDictionary>
           <Style TargetType="{x:Type ListView}">
             <Setter Property="FontFamily" Value="Segoe UI" />
-            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontWeight" Value="Normal" />
             <Setter Property="FontSize" Value="13" />
           </Style>
         </ResourceDictionary>
@@ -51,6 +51,7 @@
         Margin="0,15,5,10"
         VerticalContentAlignment="Center"
         FontSize="13"
+        Tag="{Binding Placeholder, ElementName=_InputList}"
         Text="{Binding InputToAdd, ElementName=_InputList}">
         <TextBox.Style>
           <Style xmlns:sys="clr-namespace:System;assembly=mscorlib" TargetType="TextBox">
@@ -61,7 +62,7 @@
                 AlignmentY="Center"
                 Stretch="None">
                 <VisualBrush.Visual>
-                  <Label Content="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=UserControl}, Path=Placeholder}" Foreground="Gray" />
+                  <TextBlock Foreground="Gray" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=TextBox}, Path=Tag}" />
                 </VisualBrush.Visual>
               </VisualBrush>
             </Style.Resources>
@@ -126,6 +127,8 @@
               Margin="5,0,15,0"
               HorizontalAlignment="Right"
               VerticalAlignment="Center"
+              FontWeight="Normal"
+              Foreground="Gray"
               Text="{Binding LineNumber, Mode=TwoWay}" />
             <TextBox
               x:Name="InputField"

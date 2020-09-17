@@ -8,7 +8,7 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   x:Name="mainWindow"
   Title="File Selector"
-  Width="730"
+  Width="760"
   Height="700"
   d:DataContext="{d:DesignInstance local:InputDataViewModel,
                                    IsDesignTimeCreatable=True}"
@@ -45,14 +45,14 @@
       FontWeight="SemiBold"
       Text="Select your most representative files" />
 
-    <TextBox
+    <!--<TextBox
       Grid.Row="0"
       Margin="0,50,0,0"
       HorizontalAlignment="Center"
       BorderThickness="0"
       FontSize="12"
       Foreground="Gray"
-      Text="We recommend to select up to 10 files " />
+      Text="We recommend to select up to 50 files " />-->
 
     <TextBox
       x:Name="WarningTextBox"
@@ -76,14 +76,13 @@
 
     <Button
       Grid.Row="3"
-      Width="65"
-      Margin="0,0,15,5"
-      HorizontalAlignment="Right"
+      Width="200"
+      Margin="0,0,0,9"
+      HorizontalAlignment="Center"
       VerticalAlignment="Center"
       Command="{Binding DetectFormatStyle}"
-      Content="Run"
+      Content="Detect Format Style"
       FontSize="15"
-      FontWeight="SemiBold"
       Foreground="White"
       Style="{StaticResource SettingsButton}" />
 

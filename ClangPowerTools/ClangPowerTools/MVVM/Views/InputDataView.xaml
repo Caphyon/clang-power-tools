@@ -44,6 +44,6 @@
     Collection="{Binding Inputs, Mode=TwoWay}"
     ImageTag="add"
     InputToAdd="{Binding InputToAdd, Mode=TwoWay}"
-    Placeholder="{Binding Placeholder, Mode=TwoWay}" />
+    Placeholder="Your text here" />
 
 </Window>
