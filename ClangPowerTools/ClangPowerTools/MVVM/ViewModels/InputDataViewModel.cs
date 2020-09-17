@@ -2,9 +2,11 @@
 using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Views;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -107,7 +109,7 @@ namespace ClangPowerTools
 
     public ICommand DetectFormatStyleCommand
     {
-      get => detectFormatStyleCommand ?? (detectFormatStyleCommand = new RelayCommand(() => DetectFormatStyle(), () => CanExecute));
+      get => detectFormatStyleCommand ?? (detectFormatStyleCommand = new RelayCommand(() => DetectFormatStyleAsync().SafeFireAndForget(), () => CanExecute));
     }
 
     public bool CanExecute
@@ -212,9 +214,11 @@ namespace ClangPowerTools
       Inputs.Add(model);
     }
 
-    private void DetectFormatStyle()
+    private async Task DetectFormatStyleAsync()
     {
-
+      var diffWin = new DiffWindow();
+      List<string> filesPath = Inputs.Select(model => model.InputData).ToList();
+      await diffWin.ShowDiffAsync(filesPath);
     }
 
     #endregion

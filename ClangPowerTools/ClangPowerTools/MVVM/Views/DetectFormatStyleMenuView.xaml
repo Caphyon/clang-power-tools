@@ -80,7 +80,7 @@
       Margin="0,0,0,9"
       HorizontalAlignment="Center"
       VerticalAlignment="Center"
-      Command="{Binding DetectFormatStyle}"
+      Command="{Binding DetectFormatStyleCommand}"
       Content="Detect Format Style"
       FontSize="15"
       Foreground="White"
