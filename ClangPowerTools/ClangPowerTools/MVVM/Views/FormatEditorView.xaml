@@ -367,19 +367,6 @@
           Foreground="White"
           Style="{StaticResource SettingsButton}" />
 
-        <!--  Detect Clang-Format style  -->
-        <Button
-          Grid.Row="3"
-          Grid.ColumnSpan="7"
-          Width="250"
-          Height="30"
-          HorizontalAlignment="Center"
-          Command="{Binding DetectFormatStyle}"
-          Content="Detect Format Style"
-          FontSize="14"
-          Foreground="White"
-          Style="{StaticResource SettingsButton}" />
-
       </Grid>
 
     </Grid>

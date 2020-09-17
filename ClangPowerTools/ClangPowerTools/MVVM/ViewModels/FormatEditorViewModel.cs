@@ -28,7 +28,6 @@ namespace ClangPowerTools
     private ICommand resetCommand;
     private ICommand openUri;
     private ICommand resetSearchCommand;
-    private ICommand detectFormatStyle;
 
     private string checkSearch = string.Empty;
     private bool showOptionDescription = true;
@@ -219,11 +218,6 @@ namespace ClangPowerTools
       get => resetSearchCommand ??= new RelayCommand(() => ResetSearchField(), () => CanExecute);
     }
 
-    public ICommand DetectFormatStyle
-    {
-      get => detectFormatStyle ??= new RelayCommand(() => OpenMenu(), () => CanExecute);
-    }
-
     #endregion
 
 
@@ -371,14 +365,14 @@ namespace ClangPowerTools
       }
     }
 
-    private void OpenMenu()
-    {
-      var menuView = new DetectFormatStyleMenuView()
-      {
-        Owner = formatEditorView
-      };
-      menuView.Show();
-    }
+    //private void OpenMenu()
+    //{
+    //  var menuView = new DetectFormatStyleMenuView()
+    //  {
+    //    Owner = formatEditorView
+    //  };
+    //  menuView.Show();
+    //}
 
     public async Task DetectStyleAsync(List<string> files)
     {
