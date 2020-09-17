@@ -167,7 +167,6 @@
     <Compile Include="MVVM\Provider\SettingsProvider.cs" />
     <Compile Include="MVVM\CollectionElementsCounter.cs" />
     <Compile Include="MVVM\ViewModels\AccountViewModel.cs" />
-    <Compile Include="MVVM\ViewModels\DetectFormatStyleMenuViewModel.cs" />
     <Compile Include="MVVM\ViewModels\DiffViewModel.cs" />
     <Compile Include="MVVM\ViewModels\FormatEditorViewModel.cs" />
     <Compile Include="MVVM\Interfaces\IFormatEditor.cs" />

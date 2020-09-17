@@ -365,21 +365,6 @@ namespace ClangPowerTools
       }
     }
 
-    //private void OpenMenu()
-    //{
-    //  var menuView = new DetectFormatStyleMenuView()
-    //  {
-    //    Owner = formatEditorView
-    //  };
-    //  menuView.Show();
-    //}
-
-    public async Task DetectStyleAsync(List<string> files)
-    {
-      var diffWin = new DiffWindow();
-      await diffWin.ShowDiffAsync(files);
-    }
-
     private void EditorLoaded(object sender, EventArgs e)
     {
       windowLoaded = true;
