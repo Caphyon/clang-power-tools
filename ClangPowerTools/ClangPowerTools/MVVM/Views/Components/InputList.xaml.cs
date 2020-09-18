@@ -69,6 +69,16 @@ namespace ClangPowerTools.MVVM.Views.Components
     public static readonly DependencyProperty AddCommandProperty =
       DependencyProperty.Register("AddCommand", typeof(ICommand), typeof(InputList), new PropertyMetadata(null));
 
+    public ICommand ClearCommand
+    {
+      get { return (ICommand)GetValue(ClearCommandProperty); }
+      set { SetValue(ClearCommandProperty, value); }
+    }
+
+    public static readonly DependencyProperty ClearCommandProperty =
+      DependencyProperty.Register("ClearCommand", typeof(ICommand), typeof(InputList), new PropertyMetadata(null));
+
+
 
     public ObservableCollection<InputDataModel> Collection
     {
