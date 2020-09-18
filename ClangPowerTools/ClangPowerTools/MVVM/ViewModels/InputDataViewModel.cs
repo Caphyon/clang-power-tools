@@ -222,7 +222,9 @@ namespace ClangPowerTools
     private void ClearList()
     {
       Inputs.Clear();
-      view.WarningTextBox.Visibility = System.Windows.Visibility.Hidden;
+
+      if (view != null)
+        view.WarningTextBox.Visibility = System.Windows.Visibility.Hidden;
     }
 
     private async Task DetectFormatStyleAsync()
