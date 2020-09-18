@@ -33,6 +33,7 @@
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
+      <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
       <RowDefinition Height="10" />
     </Grid.RowDefinitions>
@@ -90,10 +91,21 @@
         Tag="{Binding ImageTag, ElementName=_InputList}" />
     </Grid>
 
+    <Button
+      Grid.Row="1"
+      Grid.Column="1"
+      Margin="0,10,0,5"
+      HorizontalAlignment="Right"
+      Command="{Binding ClearCommand, ElementName=_InputList}"
+      Content="Clear"
+      FontSize="15"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}" />
+
     <!--  Inputs  -->
     <ListView
       x:Name="CollectionItems"
-      Grid.Row="1"
+      Grid.Row="2"
       Grid.Column="1"
       Background="White"
       ItemsSource="{Binding Collection, ElementName=_InputList, Mode=TwoWay}"
