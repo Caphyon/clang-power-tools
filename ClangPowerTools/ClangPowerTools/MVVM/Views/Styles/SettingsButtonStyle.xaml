@@ -33,7 +33,7 @@
 
             <MultiDataTrigger>
               <MultiDataTrigger.Conditions>
-                <Condition Binding="{Binding Tag, ElementName=InputButton}" Value="browse" />
+                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Tag}" Value="browse" />
                 <Condition Binding="{Binding Text.Length, ElementName=InputTextbox}" Value="0" />
               </MultiDataTrigger.Conditions>
               <Setter TargetName="ButtonImageContent" Property="Source" Value="/ClangPowerTools;component/Resources/Browse.png" />
