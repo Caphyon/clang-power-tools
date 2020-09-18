@@ -22,6 +22,7 @@ namespace ClangPowerTools
     private string placeholder;
     private InputDataView inputDataView;
     private ICommand addCommand;
+    private ICommand clearCommand;
     private ICommand detectFormatStyleCommand;
     private string warningText;
     private readonly DetectFormatStyleMenuView view;
@@ -105,6 +106,10 @@ namespace ClangPowerTools
     public ICommand AddCommand
     {
       get => addCommand ?? (addCommand = new RelayCommand(() => AddInput(), () => CanExecute));
+    }
+    public ICommand ClearCommand
+    {
+      get => clearCommand ?? (clearCommand = new RelayCommand(() => ClearList(), () => CanExecute));
     }
 
     public ICommand DetectFormatStyleCommand
@@ -212,6 +217,12 @@ namespace ClangPowerTools
       var model = new InputDataModel(filePath, index);
       totalFilesSize += model.FileSize;
       Inputs.Add(model);
+    }
+
+    private void ClearList()
+    {
+      Inputs.Clear();
+      view.WarningTextBox.Visibility = System.Windows.Visibility.Hidden;
     }
 
     private async Task DetectFormatStyleAsync()

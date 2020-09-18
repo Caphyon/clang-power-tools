@@ -69,6 +69,7 @@
       x:Name="InputList"
       Grid.Row="2"
       AddCommand="{Binding AddCommand}"
+      ClearCommand="{Binding ClearCommand}"
       Collection="{Binding Inputs, Mode=TwoWay}"
       ImageTag="browse"
       InputToAdd="{Binding InputToAdd, Mode=TwoWay}"
