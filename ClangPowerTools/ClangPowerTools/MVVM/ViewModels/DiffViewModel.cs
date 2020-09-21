@@ -208,6 +208,7 @@ namespace ClangPowerTools
     private async Task ReloadDiffAsync()
     {
       ShowDetectingView();
+      diffWindow.IsEnabled = false;
 
       diffController.CancellationSource = new CancellationTokenSource();
       diffController.CancelTokenDisposed = false;
@@ -228,6 +229,7 @@ namespace ClangPowerTools
 
       //TODO find a better solution
       await Task.Delay(2000);
+      diffWindow.IsEnabled = true;
       CloseDetectionView();
     }
 
