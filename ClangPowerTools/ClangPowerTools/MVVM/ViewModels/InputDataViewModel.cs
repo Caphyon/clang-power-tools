@@ -44,15 +44,11 @@ namespace ClangPowerTools
 
     public InputDataViewModel() { }
 
-    public InputDataViewModel(bool browse)
-    {
-      BrowseForFiles = browse;
-    }
-
     public InputDataViewModel(DetectFormatStyleMenuView view, bool browse)
     {
       this.view = view;
       BrowseForFiles = browse;
+      view.InputList.ClearButton.IsEnabled = false;
     }
 
     #endregion
@@ -153,6 +149,9 @@ namespace ClangPowerTools
           Inputs[position].LineNumber = position + 1;
       }
 
+      if (Inputs.Count == 0)
+        view.InputList.ClearButton.IsEnabled = false;
+
       if (view == null)
         return;
 
@@ -166,6 +165,9 @@ namespace ClangPowerTools
         AddBrowseFilePathsToCollection();
       else
         AddInputToCollection();
+
+      if (Inputs.Count > 0)
+        view.InputList.ClearButton.IsEnabled = true;
 
       if (view == null)
         return;
@@ -222,6 +224,8 @@ namespace ClangPowerTools
     private void ClearList()
     {
       Inputs.Clear();
+
+      view.InputList.ClearButton.IsEnabled = false;
 
       if (view != null)
         view.WarningTextBox.Visibility = System.Windows.Visibility.Hidden;

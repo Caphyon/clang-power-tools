@@ -92,6 +92,7 @@
     </Grid>
 
     <Button
+      x:Name="ClearButton"
       Grid.Row="1"
       Grid.Column="1"
       Margin="0,10,0,5"
