@@ -198,7 +198,7 @@ namespace ClangPowerTools
     {
       FileNames = diffController.GetFileNames(filePaths);
       SetFlowDocuments();
-      Style = "Style: " + SelectedStyle.ToString();
+      Style = "Base Style: " + SelectedStyle.ToString();
 
       OnPropertyChanged("FileNames");
       OnPropertyChanged("FormatOptions");
