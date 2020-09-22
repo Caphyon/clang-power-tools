@@ -47,11 +47,13 @@
         Text="A small number of files with a wide variety of code syntaxes is a better way to discover your best Clang Format style."
         TextWrapping="Wrap" />
     </StackPanel>
+
     <Button
       Grid.Row="2"
       Width="100"
       HorizontalAlignment="Center"
       VerticalAlignment="Center"
+      Click="ContinueButton_Click"
       Content="Continue"
       FontSize="14"
       Foreground="White"

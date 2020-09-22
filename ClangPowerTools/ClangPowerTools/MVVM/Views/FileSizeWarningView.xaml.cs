@@ -11,5 +11,10 @@ namespace ClangPowerTools.MVVM.Views
     {
       InitializeComponent();
     }
+
+    private void ContinueButton_Click(object sender, RoutedEventArgs e)
+    {
+      this.Close();
+    }
   }
 }
