@@ -418,8 +418,7 @@ namespace ClangPowerTools
 
     private void AddLineNumberToParagraphLine(Paragraph paragraph, int currentLineNumber, int numberOfLines, int paddingLeft)
     {
-      // A digit occupies two '  ' not ' ' in a Run
-      int numberOfSpaces = (LengthOfNumber(numberOfLines) - LengthOfNumber(currentLineNumber) + paddingLeft) * 2;
+      int numberOfSpaces = LengthOfNumber(numberOfLines) - LengthOfNumber(currentLineNumber) + paddingLeft;
       var lineNumber = string.Concat(new string(' ', numberOfSpaces), (currentLineNumber).ToString(), " ");
       var lineNumberRun = new Run(lineNumber)
       {
