@@ -123,7 +123,7 @@
       <Grid.RowDefinitions>
         <RowDefinition Height="20" />
         <RowDefinition Height="20" />
-        <RowDefinition Height="530" />
+        <RowDefinition Height="*" />
         <RowDefinition Height="36" />
         <RowDefinition Height="30" />
         <RowDefinition Height="40" />
@@ -132,7 +132,7 @@
       </Grid.RowDefinitions>
 
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="390" />
+        <ColumnDefinition Width="410" />
       </Grid.ColumnDefinitions>
 
       <!--  Title  -->
@@ -174,7 +174,7 @@
                 <Setter Property="IsEnabled" Value="False" />
               </Style>
             </GridView.ColumnHeaderContainerStyle>
-            <GridViewColumn Header="Name">
+            <GridViewColumn Width="auto" Header="Name">
               <GridViewColumn.CellTemplate>
                 <DataTemplate>
                   <TextBlock
@@ -186,13 +186,12 @@
                 </DataTemplate>
               </GridViewColumn.CellTemplate>
             </GridViewColumn>
-            <GridViewColumn Header="Value">
+            <GridViewColumn Width="114" Header="Value">
               <GridViewColumn.CellTemplate>
                 <DataTemplate>
-                  <Grid>
+                  <StackPanel Orientation="Horizontal">
                     <TextBox
                       x:Name="InputText"
-                      Grid.Column="1"
                       Width="80"
                       Height="18"
                       HorizontalAlignment="Right"
@@ -202,7 +201,6 @@
                       Visibility="{Binding Path=HasInputTextBox, Converter={StaticResource BoolToVis}}" />
                     <ComboBox
                       x:Name="BooleanCombobox"
-                      Grid.Column="1"
                       Width="80"
                       HorizontalAlignment="Right"
                       DropDownClosed="OptionDropDownClosed"
@@ -210,7 +208,6 @@
                       SelectedItem="{Binding BooleanCombobox}"
                       Visibility="{Binding Path=HasBooleanCombobox, Converter={StaticResource BoolToVis}}" />
                     <Button
-                      Grid.Column="1"
                       Width="80"
                       Height="20"
                       HorizontalAlignment="Right"
@@ -219,7 +216,6 @@
                       FontSize="12"
                       Visibility="{Binding Path=HasMultipleInputTextBox, Converter={StaticResource BoolToVis}}" />
                     <Button
-                      Grid.Column="1"
                       Width="80"
                       Height="20"
                       HorizontalAlignment="Right"
@@ -227,7 +223,17 @@
                       Content="Modify Input"
                       FontSize="12"
                       Visibility="{Binding Path=HasMultipleToggle, Converter={StaticResource BoolToVis}}" />
-                  </Grid>
+                    <Button
+                      Width="15"
+                      Height="15"
+                      Margin="8,0,0,0">
+                      <Button.Template>
+                        <ControlTemplate>
+                          <Image Source="/ClangPowerTools;component/Resources/Output.png" />
+                        </ControlTemplate>
+                      </Button.Template>
+                    </Button>
+                  </StackPanel>
                 </DataTemplate>
               </GridViewColumn.CellTemplate>
             </GridViewColumn>
@@ -255,7 +261,7 @@
         Width="387"
         Height="28"
         Command="{Binding ResetCommand}"
-        Content="Reset Options"
+        Content="Restore Detection"
         FontSize="14"
         Foreground="White"
         Style="{StaticResource SettingsButton}" />
@@ -304,10 +310,27 @@
         Command="{Binding CreateFormatFileCommand}"
         Content="Generate Clang-Format"
         FontSize="14"
-        Foreground="White"
-        Background="Green"
-        Style="{StaticResource SettingsButton}" />
+        Foreground="White">
+        <Button.Style>
+          <Style TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="Green" />
+            <Setter Property="Template">
+              <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                  <Border Background="{TemplateBinding Background}">
+                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                  </Border>
+                </ControlTemplate>
+              </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="LimeGreen" />
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+        </Button.Style>
+      </Button>
     </Grid>
-
   </Grid>
 </Window>
