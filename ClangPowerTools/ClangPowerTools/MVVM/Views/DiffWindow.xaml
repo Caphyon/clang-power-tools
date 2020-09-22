@@ -123,12 +123,12 @@
       <Grid.RowDefinitions>
         <RowDefinition Height="20" />
         <RowDefinition Height="20" />
-        <RowDefinition Height="550" />
+        <RowDefinition Height="530" />
         <RowDefinition Height="36" />
         <RowDefinition Height="30" />
         <RowDefinition Height="40" />
-        <RowDefinition Height="120" />
-        <RowDefinition Height="55" />
+        <RowDefinition Height="170" />
+        <RowDefinition Height="40" />
       </Grid.RowDefinitions>
 
       <Grid.ColumnDefinitions>
@@ -299,12 +299,13 @@
       <Button
         Grid.Row="8"
         Grid.Column="0"
-        Width="300"
+        Width="240"
         Height="28"
         Command="{Binding CreateFormatFileCommand}"
         Content="Generate Clang-Format"
         FontSize="14"
         Foreground="White"
+        Background="Green"
         Style="{StaticResource SettingsButton}" />
     </Grid>
 
