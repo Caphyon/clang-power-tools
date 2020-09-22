@@ -186,7 +186,7 @@
                 </DataTemplate>
               </GridViewColumn.CellTemplate>
             </GridViewColumn>
-            <GridViewColumn Width="114" Header="Value">
+            <GridViewColumn Width="118" Header="Value">
               <GridViewColumn.CellTemplate>
                 <DataTemplate>
                   <StackPanel Orientation="Horizontal">
@@ -226,7 +226,9 @@
                     <Button
                       Width="15"
                       Height="15"
-                      Margin="8,0,0,0">
+                      Margin="10,0,0,0"
+                      Cursor="Hand"
+                      ToolTip="Reset option to the detected style default value">
                       <Button.Template>
                         <ControlTemplate>
                           <Image Source="/ClangPowerTools;component/Resources/Output.png" />
