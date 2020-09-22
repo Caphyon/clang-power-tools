@@ -60,7 +60,7 @@
   <StackPanel>
     <components:MessageBanner
       Banner="/ClangPowerTools;component/Resources/BannersError.png"
-      Icon="/ClangPowerTools;component/Resources/iconError.png"
+      Icon="/ClangPowerTools;component/Resources/ErrorIcon.png"
       Type="Error" />
 
     <StackPanel Margin="17" Orientation="Vertical">
