@@ -14,17 +14,29 @@
   <Grid>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
-      <RowDefinition />
-      <RowDefinition />
+      <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
     <components:MessageBanner
-      Grid.Row="1"
+      Grid.Row="0"
       Banner="/ClangPowerTools;component/Resources/BannerWarning.png"
       Icon="/ClangPowerTools;component/Resources/WarningIcon.png"
-      Type="Warning" />
+      Type="Large files detected" />
 
+    <StackPanel Grid.Row="1" Margin="20">
+      <TextBlock
+        Margin="0,5"
+        FontSize="14"
+        Text="Large files will significantly increase the waiting time of this operation."
+        TextWrapping="Wrap" />
 
+      <TextBlock
+        Margin="0,5"
+        FontSize="14"
+        Text="A small number of files with a wide variety of code syntaxes is a better way to discover your best Clang Format style."
+        TextWrapping="Wrap" />
+
+    </StackPanel>
 
   </Grid>
 </Window>
