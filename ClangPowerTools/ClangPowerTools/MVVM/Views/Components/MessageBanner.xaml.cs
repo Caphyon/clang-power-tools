@@ -42,11 +42,5 @@ namespace ClangPowerTools.MVVM.Views.Components
     public static readonly DependencyProperty TypeProperty =
       DependencyProperty.Register("Type", typeof(string), typeof(MessageBanner), new PropertyMetadata(null));
 
-    // pack://application:,,,/ClangPowerTools;component/Resources/BannersError.png
-
-    // pack://application:,,,/ClangPowerTools;component/Resources/iconError.png
-
-    // Error , Warning
-
   }
 }
