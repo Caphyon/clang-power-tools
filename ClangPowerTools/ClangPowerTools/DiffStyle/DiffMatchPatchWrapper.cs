@@ -12,8 +12,8 @@ namespace ClangPowerTools
   {
     #region Members
 
+    public List<Diff> diffs;
     private DiffMatchPatch diffMatchPatch;
-    private List<Diff> diffs;
 
     // DiffMatchPatch defaults
     private readonly float diffTimeout = 1.0f;
@@ -144,7 +144,14 @@ namespace ClangPowerTools
 
       DetectOperationPerLine(input.Trim(), output.Trim(), inputOperationPerLine, outputOperationPerLine);
       CreateDiffParagraph(paragraphInput, inputOperationPerLine, (Brush)new BrushConverter().ConvertFrom("#FED8B1"));
-      CreateDiffParagraph(paragraphOutput, outputOperationPerLine, Brushes.Yellow);
+      if (diffs.Count == 1 && diffs.First().operation == Operation.EQUAL)
+      {
+        paragraphOutput.Inlines.Add(FormatConstants.DiffPerfectMatchFound);
+      }
+      else
+      {
+        CreateDiffParagraph(paragraphOutput, outputOperationPerLine, Brushes.Yellow);
+      }
 
       return CreateFlowDocuments(paragraphInput, paragraphOutput);
     }
