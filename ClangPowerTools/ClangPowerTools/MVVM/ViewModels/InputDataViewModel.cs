@@ -29,7 +29,7 @@ namespace ClangPowerTools
 
     private const string MAX_FILE_WARNING = "This action will take some time due to the number of selected files.";
 
-    private const long MAX_FILE_SIZE = 5000;
+    private const long MAX_FILE_SIZE = 1500000;
     private long totalFilesSize = 0;
 
     #endregion
@@ -44,15 +44,12 @@ namespace ClangPowerTools
 
     public InputDataViewModel() { }
 
-    public InputDataViewModel(bool browse)
-    {
-      BrowseForFiles = browse;
-    }
-
     public InputDataViewModel(DetectFormatStyleMenuView view, bool browse)
     {
       this.view = view;
       BrowseForFiles = browse;
+      view.InputList.ClearButton.IsEnabled = false;
+      view.DetectFormatStyleButton.IsEnabled = false;
     }
 
     #endregion
@@ -153,6 +150,12 @@ namespace ClangPowerTools
           Inputs[position].LineNumber = position + 1;
       }
 
+      if (Inputs.Count == 0)
+      {
+        view.InputList.ClearButton.IsEnabled = false;
+        view.DetectFormatStyleButton.IsEnabled = false;
+      }
+
       if (view == null)
         return;
 
@@ -167,6 +170,12 @@ namespace ClangPowerTools
       else
         AddInputToCollection();
 
+      if (Inputs.Count > 0)
+      {
+        view.InputList.ClearButton.IsEnabled = true;
+        view.DetectFormatStyleButton.IsEnabled = true;
+      }
+
       if (view == null)
         return;
 
@@ -175,6 +184,9 @@ namespace ClangPowerTools
         WarningText = MAX_FILE_WARNING;
         view.WarningTextBox.Foreground = Brushes.Orange;
         view.WarningTextBox.Visibility = System.Windows.Visibility.Visible;
+
+        var warning = new FileSizeWarningView(view);
+        warning.ShowDialog();
       }
     }
 
@@ -187,6 +199,9 @@ namespace ClangPowerTools
 
       for (int index = 0; index < filePaths.Length; ++index)
       {
+        if (IsDuplicate(filePaths[index]))
+          continue;
+
         int position = Inputs.Count == 0 ? 1 : Inputs.Last().LineNumber + 1;
         AddNewElement(filePaths[index], position);
       }
@@ -194,13 +209,18 @@ namespace ClangPowerTools
 
     private void AddInputToCollection()
     {
-      if (string.IsNullOrWhiteSpace(inputToAdd) == false)
-      {
-        int index = Inputs.Count == 0 ? 1 : Inputs.Last().LineNumber + 1;
-        AddNewElement(inputToAdd, index);
-        InputToAdd = string.Empty;
-      }
+      if (string.IsNullOrWhiteSpace(inputToAdd))
+        return;
+
+      if (IsDuplicate(inputToAdd))
+        return;
+
+      int index = Inputs.Count == 0 ? 1 : Inputs.Last().LineNumber + 1;
+      AddNewElement(inputToAdd, index);
+      InputToAdd = string.Empty;
     }
+
+    private bool IsDuplicate(string filePath) => Inputs.Where(model => model.InputData == filePath).Count() > 0;
 
     private void CreateInputsCollection(string content)
     {
@@ -222,6 +242,9 @@ namespace ClangPowerTools
     private void ClearList()
     {
       Inputs.Clear();
+
+      view.InputList.ClearButton.IsEnabled = false;
+      view.DetectFormatStyleButton.IsEnabled = false;
 
       if (view != null)
         view.WarningTextBox.Visibility = System.Windows.Visibility.Hidden;

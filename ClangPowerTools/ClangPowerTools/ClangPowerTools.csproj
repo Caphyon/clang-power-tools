@@ -221,6 +221,9 @@
     <Compile Include="MVVM\Views\Components\InputList.xaml.cs">
       <DependentUpon>InputList.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MVVM\Views\Components\MessageBanner.xaml.cs">
+      <DependentUpon>MessageBanner.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\Views\Components\ThreePieceButton.xaml.cs">
       <DependentUpon>ThreePieceButton.xaml</DependentUpon>
     </Compile>
@@ -235,6 +238,9 @@
     </Compile>
     <Compile Include="MVVM\Views\DiffWindow.xaml.cs">
       <DependentUpon>DiffWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Views\FileSizeWarningView.xaml.cs">
+      <DependentUpon>FileSizeWarningView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\FormatEditorView.xaml.cs">
       <DependentUpon>FormatEditorView.xaml</DependentUpon>
@@ -384,7 +390,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\BannersError.png" />
-    <Resource Include="Resources\iconError.png" />
+    <Resource Include="Resources\ErrorIcon.png" />
     <Resource Include="Resources\CleanSearchIcon.PNG" />
     <Resource Include="Resources\CompileIcon.png" />
     <Resource Include="Resources\SearchIcon.PNG" />
@@ -394,6 +400,7 @@
     <Resource Include="Resources\AccountAvatarIcon.png" />
     <Resource Include="Resources\AccountIcon.png" />
     <Resource Include="Resources\CodeInputIcon.png" />
+    <Resource Include="Resources\BannerWarning.png" />
     <Content Include="Resources\CPTLogoManageExtensionVS.png">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -408,6 +415,7 @@
     <Resource Include="Resources\iconPersonal.png" />
     <Resource Include="Resources\Input.png" />
     <Resource Include="Resources\JsonCompilationDatabase.png" />
+    <Resource Include="Resources\WarningIcon.png" />
     <Content Include="Resources\LICENSE.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -636,6 +644,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="MVVM\Views\Components\MessageBanner.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MVVM\Views\Components\ThreePieceButton.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -653,6 +665,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\Views\DiffWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\FileSizeWarningView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

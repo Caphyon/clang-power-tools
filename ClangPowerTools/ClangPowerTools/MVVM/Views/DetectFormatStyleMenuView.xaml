@@ -31,8 +31,8 @@
 
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
       <RowDefinition Height="40" />
     </Grid.RowDefinitions>
 
@@ -54,20 +54,10 @@
       Foreground="Gray"
       Text="We recommend to select up to 50 files " />-->
 
-    <TextBox
-      x:Name="WarningTextBox"
-      Grid.Row="1"
-      Margin="0,20,0,0"
-      HorizontalAlignment="Center"
-      BorderThickness="0"
-      FontSize="12"
-      Foreground="Black"
-      Text="{Binding WarningText, Mode=OneWay}"
-      Visibility="Hidden" />
-
     <controls:InputList
       x:Name="InputList"
-      Grid.Row="2"
+      Grid.Row="1"
+      Margin="0,30,0,0"
       AddCommand="{Binding AddCommand}"
       ClearCommand="{Binding ClearCommand}"
       Collection="{Binding Inputs, Mode=TwoWay}"
@@ -75,7 +65,20 @@
       InputToAdd="{Binding InputToAdd, Mode=TwoWay}"
       Placeholder="File path" />
 
+    <TextBox
+      x:Name="WarningTextBox"
+      Grid.Row="2"
+      Margin="0,20,0,20"
+      HorizontalAlignment="Center"
+      BorderThickness="0"
+      FontSize="12"
+      Foreground="Black"
+      Text="{Binding WarningText, Mode=OneWay}"
+      Visibility="Visible" />
+
+
     <Button
+      x:Name="DetectFormatStyleButton"
       Grid.Row="3"
       Width="200"
       Margin="0,0,0,9"
