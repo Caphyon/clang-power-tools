@@ -196,6 +196,9 @@ namespace ClangPowerTools
 
       for (int index = 0; index < filePaths.Length; ++index)
       {
+        if (IsDuplicate(filePaths[index]))
+          continue;
+
         int position = Inputs.Count == 0 ? 1 : Inputs.Last().LineNumber + 1;
         AddNewElement(filePaths[index], position);
       }
@@ -203,13 +206,18 @@ namespace ClangPowerTools
 
     private void AddInputToCollection()
     {
-      if (string.IsNullOrWhiteSpace(inputToAdd) == false)
-      {
-        int index = Inputs.Count == 0 ? 1 : Inputs.Last().LineNumber + 1;
-        AddNewElement(inputToAdd, index);
-        InputToAdd = string.Empty;
-      }
+      if (string.IsNullOrWhiteSpace(inputToAdd))
+        return;
+
+      if (IsDuplicate(inputToAdd))
+        return;
+
+      int index = Inputs.Count == 0 ? 1 : Inputs.Last().LineNumber + 1;
+      AddNewElement(inputToAdd, index);
+      InputToAdd = string.Empty;
     }
+
+    private bool IsDuplicate(string filePath) => Inputs.Where(model => model.InputData == filePath).Count() > 0;
 
     private void CreateInputsCollection(string content)
     {
