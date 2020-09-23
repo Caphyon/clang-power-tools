@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.DiffStyle;
 using ClangPowerTools.MVVM.Interfaces;
+using ClangPowerTools.MVVM.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -83,6 +84,69 @@ namespace ClangPowerTools.MVVM.Controllers
         fileNames.Add(Path.GetFileName(path));
       }
       return fileNames;
+    }
+
+    public void CopyOptionValues(IFormatOption option, IFormatOption defaultOption)
+    {
+      switch (option)
+      {
+        case FormatOptionToggleModel toggleModel:
+          toggleModel.BooleanCombobox = ((FormatOptionToggleModel)defaultOption).BooleanCombobox;
+          break;
+        case FormatOptionInputModel inputModel:
+          inputModel.Input = ((FormatOptionInputModel)defaultOption).Input;
+          break;
+        case FormatOptionMultipleToggleModel multipleToggleModel:
+          var defaultMultipleToggle = (FormatOptionMultipleToggleModel)defaultOption;
+          for (int i = 0; i < multipleToggleModel.ToggleFlags.Count; i++)
+          {
+            multipleToggleModel.ToggleFlags[i] = defaultMultipleToggle.ToggleFlags[i];
+          }
+          break;
+        case FormatOptionMultipleInputModel multipleInputModel:
+          multipleInputModel.MultipleInput = ((FormatOptionMultipleInputModel)defaultOption).MultipleInput;
+          break;
+        default:
+          break;
+      }
+    }
+
+    public bool IsOptionChanged(IFormatOption option, IFormatOption defaultOption)
+    {
+      switch (option)
+      {
+        case FormatOptionToggleModel toggleModel:
+          if (toggleModel.BooleanCombobox != ((FormatOptionToggleModel)defaultOption).BooleanCombobox)
+          {
+            return true;
+          }
+          break;
+        case FormatOptionInputModel inputModel:
+          if (inputModel.Input != ((FormatOptionInputModel)defaultOption).Input)
+          {
+            return true;
+          }
+          break;
+        case FormatOptionMultipleToggleModel multipleToggleModel:
+          var defaultMultipleToggle = (FormatOptionMultipleToggleModel)defaultOption;
+          for (int i = 0; i < multipleToggleModel.ToggleFlags.Count; i++)
+          {
+            if (multipleToggleModel.ToggleFlags[i] != defaultMultipleToggle.ToggleFlags[i])
+            {
+              return true;
+            }
+          }
+          break;
+        case FormatOptionMultipleInputModel multipleInputModel:
+          if (multipleInputModel.MultipleInput != ((FormatOptionMultipleInputModel)defaultOption).MultipleInput)
+          {
+            return true;
+          }
+          break;
+        default:
+          break;
+      }
+      return false;
     }
 
     #endregion

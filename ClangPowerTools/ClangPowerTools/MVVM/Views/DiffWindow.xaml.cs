@@ -76,6 +76,14 @@ namespace ClangPowerTools.MVVM.Views
       diffViewModel.OptionChanged(index);
     }
 
+    private void ResetOption(object sender, RoutedEventArgs e)
+    {
+      var element = (sender as FrameworkElement).DataContext;
+      if (element == null) return;
+      int index = FormatOptions.Items.IndexOf(element);
+      diffViewModel.ResetOption(index);
+    }
+
     #endregion
   }
 }

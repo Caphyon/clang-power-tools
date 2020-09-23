@@ -25,6 +25,7 @@ namespace ClangPowerTools
     private readonly DiffController diffController;
     private DetectingView detectingView;
     private List<IFormatOption> detectedOptions;
+    private List<IFormatOption> defaultOptions;
     private List<(FlowDocument, FlowDocument)> flowDocuments;
     private List<string> filesContent;
     private ICommand createFormatFileCommand;
@@ -100,18 +101,6 @@ namespace ClangPowerTools
       FileNames = new List<string>();
     }
 
-    private void ChangeOptionsFontWeight()
-    {
-      foreach (var item in formatStyleOptions)
-      {
-        var option = (FormatOptionModel)item;
-        if (option.IsModifed)
-        {
-          option.NameFontWeight = FormatConstants.BoldFontWeight;
-        }
-      }
-    }
-
     //Empty constructor used for XAML IntelliSense
     public DiffViewModel()
     {
@@ -162,9 +151,10 @@ namespace ClangPowerTools
         filesContent = FileSystem.ReadContentFromMultipleFiles(filesPath, Environment.NewLine);
         (SelectedStyle, FormatOptions) = await diffController.GetFormatOptionsAsync(filesContent, cancelToken);
         SelectedOption = FormatOptions.First();
-        ChangeOptionsFontWeight();
+        ChangeOptionsFontWeight(FormatConstants.BoldFontWeight);
         flowDocuments = await diffController.CreateFlowDocumentsAsync(filesContent, SelectedStyle, FormatOptions, cancelToken);
         detectedOptions = FormatOptionsProvider.CloneDetectedOptions(FormatOptions);
+        defaultOptions = FormatOptionsProvider.GetDefaultOptionsForStyle(SelectedStyle);
       }
       catch (OperationCanceledException)
       {
@@ -186,9 +176,24 @@ namespace ClangPowerTools
 
     public void OptionChanged(int index)
     {
-      var option = (FormatOptionModel)FormatOptions[index];
-      option.IsModifed = true;
-      option.NameFontWeight = FormatConstants.BoldFontWeight;
+      var option = formatStyleOptions[index];
+      var defaultOption = defaultOptions[index];
+      if (diffController.IsOptionChanged(option, defaultOption))
+      {
+        MarkOptionChange((FormatOptionModel)option, true, FormatConstants.BoldFontWeight);
+      }
+      else
+      {
+        MarkOptionChange((FormatOptionModel)option, false, FormatConstants.NormalFontWeight);
+      }
+    }
+
+    public void ResetOption(int index)
+    {
+      var option = formatStyleOptions[index];
+      var defaultOption = defaultOptions[index];
+      diffController.CopyOptionValues(option, defaultOption);
+      MarkOptionChange((FormatOptionModel)option, false, FormatConstants.NormalFontWeight);
     }
 
     #endregion
@@ -273,6 +278,18 @@ namespace ClangPowerTools
       detectingView.Close();
     }
 
+    private void ChangeOptionsFontWeight(string fontWeight)
+    {
+      foreach (var item in formatStyleOptions)
+      {
+        var option = (FormatOptionModel)item;
+        if (option.IsModifed)
+        {
+          option.NameFontWeight = fontWeight;
+        }
+      }
+    }
+
     private void CreateFormatFile()
     {
       string fileName = ".clang-format";
@@ -286,12 +303,17 @@ namespace ClangPowerTools
       }
     }
 
-    public void OnPropertyChanged(string propertyName)
+    private void MarkOptionChange(FormatOptionModel option, bool isModified, string fontWeight)
+    {
+      option.NameFontWeight = fontWeight;
+      option.IsModifed = isModified;
+    }
+
+    private void OnPropertyChanged(string propertyName)
     {
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
     #endregion
-
   }
 }

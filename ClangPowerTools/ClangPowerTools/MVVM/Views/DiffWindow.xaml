@@ -227,6 +227,7 @@
                       Width="15"
                       Height="15"
                       Margin="10,0,0,0"
+                      Click="ResetOption"
                       Cursor="Hand"
                       ToolTip="Reset option to the detected style default value">
                       <Button.Template>
