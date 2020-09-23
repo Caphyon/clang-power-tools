@@ -6,12 +6,14 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  Title="Clang Power Tools"
+  Title="Warning"
   Width="650"
   Height="450"
   Closed="Window_Closed"
   Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
+  ResizeMode="NoResize"
   WindowStartupLocation="CenterScreen"
+  WindowStyle="ThreeDBorderWindow"
   mc:Ignorable="d">
 
   <!--  Static resources  -->
