@@ -49,6 +49,7 @@ namespace ClangPowerTools
       this.view = view;
       BrowseForFiles = browse;
       view.InputList.ClearButton.IsEnabled = false;
+      view.DetectFormatStyleButton.IsEnabled = false;
     }
 
     #endregion
@@ -150,7 +151,10 @@ namespace ClangPowerTools
       }
 
       if (Inputs.Count == 0)
+      {
         view.InputList.ClearButton.IsEnabled = false;
+        view.DetectFormatStyleButton.IsEnabled = false;
+      }
 
       if (view == null)
         return;
@@ -167,7 +171,10 @@ namespace ClangPowerTools
         AddInputToCollection();
 
       if (Inputs.Count > 0)
+      {
         view.InputList.ClearButton.IsEnabled = true;
+        view.DetectFormatStyleButton.IsEnabled = true;
+      }
 
       if (view == null)
         return;
@@ -226,6 +233,7 @@ namespace ClangPowerTools
       Inputs.Clear();
 
       view.InputList.ClearButton.IsEnabled = false;
+      view.DetectFormatStyleButton.IsEnabled = false;
 
       if (view != null)
         view.WarningTextBox.Visibility = System.Windows.Visibility.Hidden;
