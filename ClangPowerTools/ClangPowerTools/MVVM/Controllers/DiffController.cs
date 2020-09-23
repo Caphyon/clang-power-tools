@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.DiffStyle;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Models;
 using System;
@@ -147,6 +148,13 @@ namespace ClangPowerTools.MVVM.Controllers
           break;
       }
       return false;
+    }
+
+    public void DeleteFormatFolder()
+    {
+      var settingsPathBuilder = new SettingsPathBuilder();
+      string folderPath = Path.Combine(settingsPathBuilder.GetPath(""), "Format");
+      FileSystem.DeleteDirectory(folderPath);
     }
 
     #endregion

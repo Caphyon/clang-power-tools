@@ -97,6 +97,7 @@ namespace ClangPowerTools
     public DiffViewModel(DiffWindow diffWindow)
     {
       this.diffWindow = diffWindow;
+      diffWindow.Closed += DiffWindow_Closed;
       diffController = new DiffController();
       FileNames = new List<string>();
     }
@@ -309,6 +310,12 @@ namespace ClangPowerTools
     {
       option.NameFontWeight = fontWeight;
       option.IsModifed = isModified;
+    }
+
+    private void DiffWindow_Closed(object sender, EventArgs e)
+    {
+      diffController.DeleteFormatFolder();
+      diffWindow.Closed -= DiffWindow_Closed;
     }
 
     private void OnPropertyChanged(string propertyName)
