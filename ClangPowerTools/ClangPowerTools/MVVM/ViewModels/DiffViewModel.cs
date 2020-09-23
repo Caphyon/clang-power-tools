@@ -182,12 +182,12 @@ namespace ClangPowerTools
       if (diffController.IsOptionChanged(option, defaultOption))
       {
         MarkOptionChange((FormatOptionModel)option, true, FormatConstants.BoldFontWeight);
-        diffWindow.ReloadButton.IsEnabled = true;
       }
       else
       {
         MarkOptionChange((FormatOptionModel)option, false, FormatConstants.NormalFontWeight);
       }
+      diffWindow.ReloadButton.IsEnabled = true;
     }
 
     public void ResetOption(int index)
