@@ -186,7 +186,7 @@
                 </DataTemplate>
               </GridViewColumn.CellTemplate>
             </GridViewColumn>
-            <GridViewColumn Width="118" Header="Value">
+            <GridViewColumn Width="auto" Header="Value">
               <GridViewColumn.CellTemplate>
                 <DataTemplate>
                   <StackPanel Orientation="Horizontal">
@@ -226,13 +226,13 @@
                     <Button
                       Width="15"
                       Height="15"
-                      Margin="10,0,0,0"
+                      Margin="6,0,0,0"
                       Click="ResetOption"
                       Cursor="Hand"
                       ToolTip="Reset option to the detected style default value">
                       <Button.Template>
                         <ControlTemplate>
-                          <Image Source="/ClangPowerTools;component/Resources/Output.png" />
+                          <Image Source="/ClangPowerTools;component/Resources/ResetIcon.png" />
                         </ControlTemplate>
                       </Button.Template>
                     </Button>
@@ -246,9 +246,10 @@
 
       <!--  Reload / Apply Option Changes button  -->
       <Button
+        x:Name="ReloadButton"
         Grid.Row="3"
         Grid.Column="0"
-        Width="387"
+        Width="408"
         Height="28"
         Command="{Binding ReloadCommand}"
         Content="Apply Option Changes"
@@ -261,7 +262,7 @@
       <Button
         Grid.Row="4"
         Grid.Column="0"
-        Width="387"
+        Width="408"
         Height="28"
         Command="{Binding ResetCommand}"
         Content="Restore Detection"
@@ -302,18 +303,13 @@
         TextWrapping="Wrap"
         VerticalScrollBarVisibility="Auto" />
 
-
-
       <!--  Export / Generate button  -->
       <Button
         Grid.Row="8"
         Grid.Column="0"
         Width="240"
-        Height="28"
-        Command="{Binding CreateFormatFileCommand}"
-        Content="Generate Clang-Format"
-        FontSize="14"
-        Foreground="White">
+        Height="30"
+        Command="{Binding CreateFormatFileCommand}">
         <Button.Style>
           <Style TargetType="{x:Type Button}">
             <Setter Property="Background" Value="Green" />
@@ -333,6 +329,18 @@
             </Style.Triggers>
           </Style>
         </Button.Style>
+        <StackPanel Orientation="Horizontal">
+          <Image
+            Width="16"
+            Height="16"
+            Source="/ClangPowerTools;component/Resources/GenerateClangFormatFile.png" />
+          <Label
+            Padding="2"
+            FontSize="16"
+            Foreground="White">
+            Generate Clang-Format
+          </Label>
+        </StackPanel>
       </Button>
     </Grid>
   </Grid>
