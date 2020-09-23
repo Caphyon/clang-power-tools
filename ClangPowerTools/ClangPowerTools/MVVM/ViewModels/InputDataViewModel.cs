@@ -29,7 +29,7 @@ namespace ClangPowerTools
 
     private const string MAX_FILE_WARNING = "This action will take some time due to the number of selected files.";
 
-    private const long MAX_FILE_SIZE = 5000;
+    private const long MAX_FILE_SIZE = 1500000;
     private long totalFilesSize = 0;
 
     #endregion
