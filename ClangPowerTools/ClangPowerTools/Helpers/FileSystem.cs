@@ -26,7 +26,7 @@ namespace ClangPowerTools.Helpers
     {
       while (string.IsNullOrEmpty(filePath) == false)
       {
-        if (FileSystem.DoesFileExist(filePath, searchedFileName))
+        if (DoesFileExist(filePath, searchedFileName))
           return true;
 
         var index = filePath.LastIndexOf("\\");
@@ -45,7 +45,7 @@ namespace ClangPowerTools.Helpers
       {
         foreach (var file in searchedFiles)
         {
-          if (FileSystem.DoesFileExist(filePath, file))
+          if (DoesFileExist(filePath, file))
             return true;
         }
 
