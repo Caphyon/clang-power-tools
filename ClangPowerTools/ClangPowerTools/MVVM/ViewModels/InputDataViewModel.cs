@@ -184,6 +184,9 @@ namespace ClangPowerTools
         WarningText = MAX_FILE_WARNING;
         view.WarningTextBox.Foreground = Brushes.Orange;
         view.WarningTextBox.Visibility = System.Windows.Visibility.Visible;
+
+        var warning = new FileSizeWarningView(view);
+        warning.ShowDialog();
       }
     }
 
