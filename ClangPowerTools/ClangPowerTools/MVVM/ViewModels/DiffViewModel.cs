@@ -132,6 +132,7 @@ namespace ClangPowerTools
       });
       await ReloadDiffAsync();
       SelectedOption = FormatOptions.First();
+      diffWindow.ReloadButton.IsEnabled = false;
       OnPropertyChanged("FormatOptions");
     }
 
@@ -181,6 +182,7 @@ namespace ClangPowerTools
       if (diffController.IsOptionChanged(option, defaultOption))
       {
         MarkOptionChange((FormatOptionModel)option, true, FormatConstants.BoldFontWeight);
+        diffWindow.ReloadButton.IsEnabled = true;
       }
       else
       {
