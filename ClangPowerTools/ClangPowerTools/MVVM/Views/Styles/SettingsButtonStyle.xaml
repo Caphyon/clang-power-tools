@@ -31,6 +31,10 @@
               <Setter TargetName="ButtonImageContent" Property="Source" Value="/ClangPowerTools;component/Resources/AddInput.png" />
             </Trigger>
 
+            <Trigger Property="Tag" Value="greenButton">
+              <Setter Property="Background" Value="#158B86" />
+            </Trigger>
+
             <MultiDataTrigger>
               <MultiDataTrigger.Conditions>
                 <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Tag}" Value="browse" />
@@ -38,18 +42,22 @@
               </MultiDataTrigger.Conditions>
               <Setter TargetName="ButtonImageContent" Property="Source" Value="/ClangPowerTools;component/Resources/Browse.png" />
             </MultiDataTrigger>
-
           </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
     </Setter>
+
     <Style.Triggers>
       <Trigger Property="IsMouseOver" Value="True">
         <Setter Property="Background" Value="#c70071" />
       </Trigger>
-      <Trigger Property="IsPressed" Value="True">
-        <Setter Property="Background" Value="#750043" />
-      </Trigger>
+      <MultiTrigger>
+        <MultiTrigger.Conditions>
+          <Condition Property="Tag" Value="greenButton" />
+          <Condition Property="IsMouseOver" Value="True" />
+        </MultiTrigger.Conditions>
+        <Setter Property="Background" Value="#38B5B2" />
+      </MultiTrigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Background" Value="#A0A0A0" />
       </Trigger>

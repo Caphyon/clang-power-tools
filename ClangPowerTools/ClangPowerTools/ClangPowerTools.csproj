@@ -416,8 +416,8 @@
     <Resource Include="Resources\Input.png" />
     <Resource Include="Resources\JsonCompilationDatabase.png" />
     <Resource Include="Resources\WarningIcon.png" />
-    <Resource Include="Resources\GenerateClangFormatFile.png" />
     <Resource Include="Resources\ResetIcon.png" />
+    <Resource Include="Resources\GenerateClangFormatFile.png" />
     <Content Include="Resources\LICENSE.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

@@ -307,28 +307,11 @@
       <Button
         Grid.Row="8"
         Grid.Column="0"
-        Width="240"
+        Width="408"
         Height="30"
-        Command="{Binding CreateFormatFileCommand}">
-        <Button.Style>
-          <Style TargetType="{x:Type Button}">
-            <Setter Property="Background" Value="Green" />
-            <Setter Property="Template">
-              <Setter.Value>
-                <ControlTemplate TargetType="{x:Type Button}">
-                  <Border Background="{TemplateBinding Background}">
-                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                  </Border>
-                </ControlTemplate>
-              </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-              <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="LimeGreen" />
-              </Trigger>
-            </Style.Triggers>
-          </Style>
-        </Button.Style>
+        Command="{Binding CreateFormatFileCommand}"
+        Style="{StaticResource SettingsButton}"
+        Tag="greenButton">
         <StackPanel Orientation="Horizontal">
           <Image
             Width="16"
