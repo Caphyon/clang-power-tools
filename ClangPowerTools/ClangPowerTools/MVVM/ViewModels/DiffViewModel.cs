@@ -275,8 +275,8 @@ namespace ClangPowerTools
         CloseDetectionView();
         diffWindow.Show();
 
-        DetectedFormatStyleInfo info = new DetectedFormatStyleInfo(diffWindow);
-        info.ShowDialog();
+        var info = new DetectedFormatStyleInfo(diffWindow);
+        info.Show();
       }
     }
 

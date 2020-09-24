@@ -7,24 +7,22 @@ namespace ClangPowerTools.MVVM.Views
   /// </summary>
   public partial class DetectedFormatStyleInfo : Window
   {
-    private readonly DiffWindow owner;
-
     public DetectedFormatStyleInfo(DiffWindow view)
     {
       InitializeComponent();
-      owner = view;
-      owner.IsEnabled = false;
+      Owner = view;
+      Owner.IsEnabled = false;
     }
 
     private void ContinueButton_Click(object sender, RoutedEventArgs e)
     {
-      owner.IsEnabled = true;
-      this.Close();
+      Owner.IsEnabled = true;
+      Close();
     }
 
     private void Window_Closed(object sender, System.EventArgs e)
     {
-      owner.IsEnabled = true;
+      Owner.IsEnabled = true;
     }
   }
 }
