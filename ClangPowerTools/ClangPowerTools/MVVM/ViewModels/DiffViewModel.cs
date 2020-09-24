@@ -10,8 +10,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
+using Brushes = System.Windows.Media.Brushes;
 
 namespace ClangPowerTools
 {
@@ -219,25 +221,32 @@ namespace ClangPowerTools
       ShowDetectingView();
       diffWindow.IsEnabled = false;
 
-      diffController.CancellationSource = new CancellationTokenSource();
-      diffController.CancelTokenDisposed = false;
-      CancellationToken cancelToken = diffController.CancellationSource.Token;
-      try
+      bool errorDetected = await AreOptionsValidAsync();
+      if (errorDetected == false)
       {
-        flowDocuments = await diffController.CreateFlowDocumentsAsync(filesContent, SelectedStyle, FormatOptions, cancelToken);
-        SetFlowDocuments();
+        diffController.CancellationSource = new CancellationTokenSource();
+        diffController.CancelTokenDisposed = false;
+        CancellationToken cancelToken = diffController.CancellationSource.Token;
+        try
+        {
+          flowDocuments = await diffController.CreateFlowDocumentsAsync(filesContent, SelectedStyle, FormatOptions, cancelToken);
+          SetFlowDocuments();
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        finally
+        {
+          diffController.CancelTokenDisposed = true;
+          diffController.CancellationSource.Dispose();
+        }
+        await Task.Delay(2000);
       }
-      catch (OperationCanceledException)
+      else
       {
-      }
-      finally
-      {
-        diffController.CancelTokenDisposed = true;
-        diffController.CancellationSource.Dispose();
+        await Task.Delay(500);
       }
 
-      //TODO find a better solution
-      await Task.Delay(2000);
       diffWindow.IsEnabled = true;
       CloseDetectionView();
     }
@@ -293,6 +302,34 @@ namespace ClangPowerTools
         {
           option.NameFontWeight = fontWeight;
         }
+      }
+    }
+
+    private async Task<bool> AreOptionsValidAsync()
+    {
+      if (flowDocuments.Count == 0) return false;
+      (var errorDetected, var errorMessage) = await diffController.CheckOptionValidityAsync(filesContent.First(), SelectedStyle, FormatOptions);
+
+      if (errorDetected)
+      {
+        WriteErrorMessageInView(errorMessage);
+      }
+      return errorDetected;
+    }
+
+    private void WriteErrorMessageInView(string errorMessage)
+    {
+      foreach (var flowDocument in flowDocuments)
+      {
+        var paragraph = new Paragraph
+        {
+          Foreground = Brushes.Red,
+          FontWeight = FontWeights.DemiBold
+        };
+        paragraph.Inlines.Add(errorMessage);
+
+        flowDocument.Item2.Blocks.Clear();
+        flowDocument.Item2.Blocks.Add(paragraph);
       }
     }
 
