@@ -401,6 +401,7 @@
     <Resource Include="Resources\AccountIcon.png" />
     <Resource Include="Resources\CodeInputIcon.png" />
     <Resource Include="Resources\BannerWarning.png" />
+    <Resource Include="Resources\BannerInfo.png" />
     <Content Include="Resources\CPTLogoManageExtensionVS.png">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -418,6 +419,7 @@
     <Resource Include="Resources\WarningIcon.png" />
     <Resource Include="Resources\ResetIcon.png" />
     <Resource Include="Resources\GenerateClangFormatFile.png" />
+    <Resource Include="Resources\InfoIcon.png" />
     <Content Include="Resources\LICENSE.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
