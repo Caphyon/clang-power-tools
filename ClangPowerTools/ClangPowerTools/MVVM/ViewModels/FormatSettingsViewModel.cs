@@ -142,6 +142,9 @@ namespace ClangPowerTools
 
     private void OpenMenu()
     {
+      DetectedFormatStyleInfo info = new DetectedFormatStyleInfo();
+      info.ShowDialog();
+
       SettingsProvider.SettingsView.Close();
       var menuView = new DetectFormatStyleMenuView();
       menuView.Show();

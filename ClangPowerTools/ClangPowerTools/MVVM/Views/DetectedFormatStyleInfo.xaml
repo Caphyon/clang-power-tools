@@ -35,5 +35,19 @@
       Icon="/ClangPowerTools;component/Resources/InfoIcon.png"
       Type="Large files detected" />
 
+    <StackPanel Grid.Row="1" Margin="20">
+      <TextBlock
+        Margin="0,5"
+        FontSize="14"
+        Text="Information Information Information Information Information Information "
+        TextWrapping="Wrap" />
+
+      <TextBlock
+        Margin="0,5"
+        FontSize="14"
+        Text="More information More information More information More information More information More information More information More information More information More information "
+        TextWrapping="Wrap" />
+    </StackPanel>
+
   </Grid>
 </Window>
