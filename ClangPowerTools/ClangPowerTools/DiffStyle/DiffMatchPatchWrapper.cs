@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
 
@@ -146,6 +147,8 @@ namespace ClangPowerTools
       CreateDiffParagraph(paragraphInput, inputOperationPerLine, (Brush)new BrushConverter().ConvertFrom("#FED8B1"));
       if (diffs.Count == 1 && diffs.First().operation == Operation.EQUAL)
       {
+        paragraphOutput.FontWeight = FontWeights.DemiBold;
+        paragraphOutput.Foreground = Brushes.Green;
         paragraphOutput.Inlines.Add(FormatConstants.DiffPerfectMatchFound);
       }
       else
