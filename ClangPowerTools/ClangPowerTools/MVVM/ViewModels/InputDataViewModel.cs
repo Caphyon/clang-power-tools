@@ -256,7 +256,7 @@ namespace ClangPowerTools
       List<string> filesPath = Inputs.Select(model => model.InputData).ToList();
 
       view.IsEnabled = false;
-      await diffWin.ShowDiffAsync(filesPath);
+      await diffWin.ShowDiffAsync(filesPath, view);
       view.IsEnabled = true;
     }
 

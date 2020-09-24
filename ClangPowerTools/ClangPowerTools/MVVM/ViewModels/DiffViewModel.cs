@@ -143,9 +143,9 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public async Task DiffDocumentsAsync(List<string> filesPath)
+    public async Task DiffDocumentsAsync(List<string> filesPath, Window detectingWindowOwner)
     {
-      ShowDetectingView();
+      ShowDetectingView(detectingWindowOwner);
 
       diffController.CancellationSource = new CancellationTokenSource();
       diffController.CancelTokenDisposed = false;
@@ -218,7 +218,7 @@ namespace ClangPowerTools
 
     private async Task ReloadDiffAsync()
     {
-      ShowDetectingView();
+      ShowDetectingView(diffWindow);
       diffWindow.IsEnabled = false;
 
       bool errorDetected = await AreOptionsValidAsync();
@@ -280,9 +280,12 @@ namespace ClangPowerTools
       }
     }
 
-    private void ShowDetectingView()
+    private void ShowDetectingView(Window detectingWindowOwner)
     {
-      detectingView = new DetectingView();
+      detectingView = new DetectingView
+      {
+        Owner = detectingWindowOwner
+      };
       detectingView.Show();
       detectingView.Closed += diffController.CloseLoadDetectionView;
     }

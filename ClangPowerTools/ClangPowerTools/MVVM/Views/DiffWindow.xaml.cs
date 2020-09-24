@@ -29,9 +29,9 @@ namespace ClangPowerTools.MVVM.Views
 
     #region Public Methods
 
-    public async Task ShowDiffAsync(List<string> filesPath)
+    public async Task ShowDiffAsync(List<string> filesPath, Window detectingWindowOwner)
     {
-      await diffViewModel.DiffDocumentsAsync(filesPath);
+      await diffViewModel.DiffDocumentsAsync(filesPath, detectingWindowOwner);
     }
 
     #endregion
