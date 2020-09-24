@@ -10,6 +10,7 @@
   Width="650"
   Height="450"
   Closed="Window_Closed"
+  Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
   WindowStartupLocation="CenterScreen"
   WindowStyle="ThreeDBorderWindow"
