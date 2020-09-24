@@ -9,6 +9,7 @@
   Title="Information"
   Width="650"
   Height="450"
+  Closed="Window_Closed"
   ResizeMode="NoResize"
   WindowStartupLocation="CenterScreen"
   WindowStyle="ThreeDBorderWindow"
