@@ -6,8 +6,12 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  d:DesignHeight="450"
-  d:DesignWidth="800"
+  Title="Information"
+  Width="650"
+  Height="450"
+  ResizeMode="NoResize"
+  WindowStartupLocation="CenterScreen"
+  WindowStyle="ThreeDBorderWindow"
   mc:Ignorable="d">
 
   <Window.Resources>
