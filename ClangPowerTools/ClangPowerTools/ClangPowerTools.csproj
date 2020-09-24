@@ -233,6 +233,9 @@
     <Compile Include="MVVM\Views\Components\ThreePieceComponent.xaml.cs">
       <DependentUpon>ThreePieceComponent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="MVVM\Views\DetectedFormatStyleInfo.xaml.cs">
+      <DependentUpon>DetectedFormatStyleInfo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\Views\DetectFormatStyleMenuView.xaml.cs">
       <DependentUpon>DetectFormatStyleMenuView.xaml</DependentUpon>
     </Compile>
@@ -661,6 +664,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\Views\Components\ThreePieceComponent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\DetectedFormatStyleInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
