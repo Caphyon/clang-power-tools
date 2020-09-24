@@ -254,7 +254,10 @@ namespace ClangPowerTools
     {
       var diffWin = new DiffWindow();
       List<string> filesPath = Inputs.Select(model => model.InputData).ToList();
+
+      view.IsEnabled = false;
       await diffWin.ShowDiffAsync(filesPath);
+      view.IsEnabled = true;
     }
 
     #endregion
