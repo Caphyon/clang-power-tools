@@ -8,5 +8,14 @@
   d:DesignHeight="450"
   d:DesignWidth="800"
   mc:Ignorable="d">
+
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Styles/AppResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+
   <Grid />
 </Window>
