@@ -186,7 +186,7 @@ namespace ClangPowerTools
         view.WarningTextBox.Visibility = System.Windows.Visibility.Visible;
 
         var warning = new FileSizeWarningView(view);
-        warning.ShowDialog();
+        warning.Show();
       }
     }
 

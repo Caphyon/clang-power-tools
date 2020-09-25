@@ -7,24 +7,22 @@ namespace ClangPowerTools.MVVM.Views
   /// </summary>
   public partial class FileSizeWarningView : Window
   {
-    private readonly DetectFormatStyleMenuView owner;
-
     public FileSizeWarningView(DetectFormatStyleMenuView view)
     {
       InitializeComponent();
-      owner = view;
-      owner.IsEnabled = false;
+      Owner = view;
+      Owner.IsEnabled = false;
     }
 
     private void ContinueButton_Click(object sender, RoutedEventArgs e)
     {
-      owner.IsEnabled = true;
+      Owner.IsEnabled = true;
       this.Close();
     }
 
     private void Window_Closed(object sender, System.EventArgs e)
     {
-      owner.IsEnabled = true;
+      Owner.IsEnabled = true;
     }
   }
 }
