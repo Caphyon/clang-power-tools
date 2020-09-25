@@ -5,6 +5,7 @@ using ClangPowerTools.Views;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -205,6 +206,11 @@ namespace ClangPowerTools
         int position = Inputs.Count == 0 ? 1 : Inputs.Last().LineNumber + 1;
         AddNewElement(filePaths[index], position);
       }
+
+      if (view.ValidFilePathTextBlock.Visibility == System.Windows.Visibility.Visible)
+      {
+        view.ValidFilePathTextBlock.Visibility = System.Windows.Visibility.Hidden;
+      }
     }
 
     private void AddInputToCollection()
@@ -214,6 +220,24 @@ namespace ClangPowerTools
 
       if (IsDuplicate(inputToAdd))
         return;
+
+      if (!File.Exists(inputToAdd))
+      {
+        view.ValidFilePathTextBlock.Visibility = System.Windows.Visibility.Visible;
+        return;
+      }
+
+      var extension = Path.GetExtension(inputToAdd);
+      if (string.IsNullOrWhiteSpace(extension) || !ScriptConstants.kAcceptedFileExtensions.Contains(extension))
+      {
+        view.ValidFilePathTextBlock.Visibility = System.Windows.Visibility.Visible;
+        return;
+      }
+
+      if (view.ValidFilePathTextBlock.Visibility == System.Windows.Visibility.Visible)
+      {
+        view.ValidFilePathTextBlock.Visibility = System.Windows.Visibility.Hidden;
+      }
 
       int index = Inputs.Count == 0 ? 1 : Inputs.Last().LineNumber + 1;
       AddNewElement(inputToAdd, index);
