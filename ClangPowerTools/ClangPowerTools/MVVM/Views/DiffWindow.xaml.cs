@@ -73,7 +73,6 @@ namespace ClangPowerTools.MVVM.Views
       if (element == null) return;
       int index = FormatOptions.Items.IndexOf(element);
       diffViewModel.OpenMultipleInput(index);
-      diffViewModel.OptionChanged(index);
     }
 
     private void ResetOption(object sender, RoutedEventArgs e)

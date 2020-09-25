@@ -34,6 +34,7 @@ namespace ClangPowerTools
     private ICommand reloadCommand;
     private ICommand resetCommand;
     private string selectedFile;
+    private int multipleInputDataIndex;
     private const int PageWith = 1000;
 
     #endregion
@@ -176,6 +177,8 @@ namespace ClangPowerTools
     {
       SelectedOption = FormatOptions[index];
       OpenMultipleInput(SelectedOption);
+      multipleInputDataIndex = index;
+      CloseMultipleInput += CloseMultipleInputDataView;
     }
 
     public void OptionChanged(int index)
@@ -359,6 +362,12 @@ namespace ClangPowerTools
     {
       diffController.DeleteFormatFolder();
       diffWindow.Closed -= DiffWindow_Closed;
+    }
+
+    private void CloseMultipleInputDataView(object sender, EventArgs e)
+    {
+      OptionChanged(multipleInputDataIndex);
+      CloseMultipleInput -= CloseMultipleInputDataView;
     }
 
     private void OnPropertyChanged(string propertyName)
