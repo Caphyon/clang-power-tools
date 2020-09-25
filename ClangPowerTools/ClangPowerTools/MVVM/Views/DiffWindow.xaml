@@ -256,7 +256,8 @@
         FontSize="14"
         Foreground="White"
         IsEnabled="False"
-        Style="{StaticResource SettingsButton}" />
+        Style="{StaticResource SettingsButton}"
+        ToolTip="Apply your option changes and see the effects in Format Preview" />
 
       <!--  Reset button  -->
       <Button
@@ -268,7 +269,8 @@
         Content="Restore Detection"
         FontSize="14"
         Foreground="White"
-        Style="{StaticResource SettingsButton}" />
+        Style="{StaticResource SettingsButton}"
+        ToolTip="Set the options to the initial detected values" />
 
       <!--  Option description  -->
       <RichTextBox
@@ -311,7 +313,8 @@
         Height="30"
         Command="{Binding CreateFormatFileCommand}"
         Style="{StaticResource SettingsButton}"
-        Tag="greenButton">
+        Tag="greenButton"
+        ToolTip="Create a .clang-format file containing the detected options">
         <StackPanel Orientation="Horizontal">
           <Image
             Width="16"
