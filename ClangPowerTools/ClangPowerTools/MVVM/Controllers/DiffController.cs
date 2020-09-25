@@ -149,7 +149,7 @@ namespace ClangPowerTools.MVVM.Controllers
           var defaultMultipleToggle = (FormatOptionMultipleToggleModel)defaultOption;
           for (int i = 0; i < multipleToggleModel.ToggleFlags.Count; i++)
           {
-            if (multipleToggleModel.ToggleFlags[i] != defaultMultipleToggle.ToggleFlags[i])
+            if (multipleToggleModel.ToggleFlags[i].Value != defaultMultipleToggle.ToggleFlags[i].Value)
             {
               return true;
             }
