@@ -124,10 +124,9 @@
         <RowDefinition Height="20" />
         <RowDefinition Height="20" />
         <RowDefinition Height="*" />
-        <RowDefinition Height="36" />
-        <RowDefinition Height="30" />
-        <RowDefinition Height="40" />
-        <RowDefinition Height="170" />
+        <RowDefinition Height="48" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="210" />
         <RowDefinition Height="40" />
       </Grid.RowDefinitions>
 
@@ -157,12 +156,26 @@
         Text="{Binding Style}"
         TextWrapping="Wrap" />
 
+      <!--  Reset button  -->
+      <Button
+        Width="15"
+        Height="15"
+        Command="{Binding ResetCommand}"
+        Cursor="Hand"
+        Style="{StaticResource SettingsButton}"
+        ToolTip="Apply your option changes and see the effects in Format Preview">
+        <Button.Template>
+          <ControlTemplate>
+            <Image Source="/ClangPowerTools;component/Resources/ResetIcon.png" />
+          </ControlTemplate>
+        </Button.Template>
+      </Button>
+
       <!--  Format options  -->
       <ListView
         Name="FormatOptions"
         Grid.Row="2"
         Grid.Column="0"
-        HorizontalAlignment="Left"
         ItemsSource="{Binding FormatOptions, Mode=TwoWay}"
         SelectedItem="{Binding SelectedOption}"
         SelectionMode="Single"
@@ -177,12 +190,14 @@
             <GridViewColumn Width="auto" Header="Name">
               <GridViewColumn.CellTemplate>
                 <DataTemplate>
-                  <TextBlock
-                    Grid.Column="0"
-                    FontSize="12"
-                    FontWeight="{Binding NameFontWeight}"
-                    Foreground="Black"
-                    Text="{Binding Name}" />
+                  <StackPanel Orientation="Vertical">
+                    <TextBlock
+                      Grid.Column="0"
+                      FontSize="12"
+                      FontWeight="{Binding NameFontWeight}"
+                      Foreground="Black"
+                      Text="{Binding Name}" />
+                  </StackPanel>
                 </DataTemplate>
               </GridViewColumn.CellTemplate>
             </GridViewColumn>
@@ -244,7 +259,7 @@
         </ListView.View>
       </ListView>
 
-      <!--  Reload / Apply Option Changes button  -->
+      <!--  Reload / Preview Style Changes button  -->
       <Button
         x:Name="ReloadButton"
         Grid.Row="3"
@@ -252,32 +267,17 @@
         Width="408"
         Height="28"
         Command="{Binding ReloadCommand}"
-        Content="Apply Option Changes"
+        Content="Preview Style"
         FontSize="14"
         Foreground="White"
         IsEnabled="False"
         Style="{StaticResource SettingsButton}"
-        ToolTip="Apply your option changes and see the effects in Format Preview" />
-
-      <!--  Reset button  -->
-      <Button
-        Grid.Row="4"
-        Grid.Column="0"
-        Width="408"
-        Height="28"
-        Command="{Binding ResetCommand}"
-        Content="Restore Detection"
-        FontSize="14"
-        Foreground="White"
-        Style="{StaticResource SettingsButton}"
-        ToolTip="Set the options to the initial detected values" />
+        ToolTip="Apply the option changes and see the effects in Format Preview" />
 
       <!--  Option description  -->
       <RichTextBox
-        Grid.Row="5"
+        Grid.Row="4"
         Grid.Column="0"
-        MaxWidth="480"
-        Margin="0,20,0,0"
         HorizontalAlignment="Left"
         Background="Transparent"
         BorderThickness="0"
@@ -285,17 +285,17 @@
         IsReadOnly="True">
         <FlowDocument>
           <Paragraph>
-            <Run FontWeight="DemiBold" Text="{Binding SelectedOption.Name}" />
+            <Run FontWeight="Bold" Text="{Binding SelectedOption.Name}" />
             <Run Text="(" />
             <Run Background="#FFCDCDCD" Text="{Binding SelectedOption.Paramater}" />
             <Run Text=")" />
           </Paragraph>
         </FlowDocument>
       </RichTextBox>
-
       <TextBox
-        Grid.Row="6"
+        Grid.Row="5"
         Grid.Column="0"
+        Padding="4,0,0,0"
         HorizontalAlignment="Left"
         Background="Transparent"
         BorderThickness="0"
@@ -307,13 +307,12 @@
 
       <!--  Export / Generate button  -->
       <Button
-        Grid.Row="8"
+        Grid.Row="6"
         Grid.Column="0"
         Width="408"
         Height="30"
         Command="{Binding CreateFormatFileCommand}"
         Style="{StaticResource SettingsButton}"
-        Tag="greenButton"
         ToolTip="Create a .clang-format file containing the detected options">
         <StackPanel Orientation="Horizontal">
           <Image
