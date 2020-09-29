@@ -7,9 +7,14 @@ namespace ClangPowerTools.MVVM.Views
   /// </summary>
   public partial class DetectedFormatStyleInfo : Window
   {
-    public DetectedFormatStyleInfo(DiffWindow view)
+    public readonly DetectedStyleInfoViewModel detectedStyleInfoViewModel;
+
+    public DetectedFormatStyleInfo(DiffWindow view, string styleInfo)
     {
       InitializeComponent();
+      detectedStyleInfoViewModel = new DetectedStyleInfoViewModel();
+      DataContext = detectedStyleInfoViewModel;
+      detectedStyleInfoViewModel.DetectedOptions = styleInfo;
       Owner = view;
       Owner.IsEnabled = false;
     }

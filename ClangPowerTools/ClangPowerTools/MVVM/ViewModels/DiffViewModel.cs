@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -278,9 +279,21 @@ namespace ClangPowerTools
         CloseDetectionView();
         diffWindow.Show();
 
-        var info = new DetectedFormatStyleInfo(diffWindow);
+        var info = new DetectedFormatStyleInfo(diffWindow, GetDetectedOptions());
         info.Show();
       }
+    }
+
+    private string GetDetectedOptions()
+    {
+      var options = FormatOptionFile.CreateOutput(FormatOptions, SelectedStyle).ToString().Split(new string[] { "\r\n" }, StringSplitOptions.None);
+      var sb = new StringBuilder();
+
+      for (int i = 2; i < options.Length - 2; i++)
+      {
+        sb.AppendLine(options[i]);
+      }
+      return sb.ToString();
     }
 
     private void ShowDetectingView(Window detectingWindowOwner)

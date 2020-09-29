@@ -35,19 +35,26 @@
       Grid.Row="0"
       Banner="/ClangPowerTools;component/Resources/BannerInfo.png"
       Icon="/ClangPowerTools;component/Resources/InfoIcon.png"
-      Type="Large files detected" />
+      Type="Detection Results" />
 
     <StackPanel Grid.Row="1" Margin="20">
       <TextBlock
         Margin="0,5"
         FontSize="14"
-        Text="Information Information Information Information Information Information "
+        FontWeight="DemiBold"
+        Text="{Binding DetectedOptions}"
         TextWrapping="Wrap" />
 
       <TextBlock
-        Margin="0,5"
+        HorizontalAlignment="Center"
         FontSize="14"
-        Text="More information More information More information More information More information More information More information More information More information More information "
+        Text="Use the Clang-Format Generator diff and see how your formatted code looks. "
+        TextWrapping="Wrap" />
+
+      <TextBlock
+        HorizontalAlignment="Center"
+        FontSize="14"
+        Text="Additional tweaks can be done using the displayed options on the right side. "
         TextWrapping="Wrap" />
     </StackPanel>
 
