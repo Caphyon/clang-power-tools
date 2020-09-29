@@ -7,7 +7,7 @@
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   x:Name="mainWindow"
-  Title="File Selector"
+  Title="Detect Format Style"
   Width="760"
   Height="700"
   d:DataContext="{d:DesignInstance local:InputDataViewModel,
@@ -31,7 +31,7 @@
 
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
-      <RowDefinition Height="Auto" />
+      <RowDefinition Height="25" />
       <RowDefinition Height="*" />
       <RowDefinition Height="Auto" />
       <RowDefinition Height="40" />
@@ -43,17 +43,14 @@
       HorizontalAlignment="Center"
       FontSize="18"
       FontWeight="SemiBold"
-      Text="Select your most representative files" />
+      Text="File Selector" />
 
     <TextBlock
       x:Name="ValidFilePathTextBlock"
       Grid.Row="1"
-      Margin="20,30,0,0"
-      HorizontalAlignment="Left"
+      HorizontalAlignment="Center"
       FontSize="12"
-      Foreground="Red"
-      Text="* This is not a valid file path. The file must have one the following extensions: .c, .cpp, .cxx, .cc, .tli, .tlh, .h, .hh, .hpp, .hxx"
-      Visibility="Hidden" />
+      Text="Selecting representative files with diverse code syntax will give better format detection results" />
 
     <controls:InputList
       x:Name="InputList"

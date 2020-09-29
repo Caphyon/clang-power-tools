@@ -36,7 +36,7 @@
       Grid.Row="0"
       Banner="/ClangPowerTools;component/Resources/BannerWarning.png"
       Icon="/ClangPowerTools;component/Resources/WarningIcon.png"
-      Type="Large files detected" />
+      Type="Large Files Detected" />
 
     <StackPanel Grid.Row="1" Margin="20">
       <TextBlock

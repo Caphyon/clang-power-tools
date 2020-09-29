@@ -318,7 +318,7 @@
         <ToolTip>
           <TextBlock
             MaxWidth="400"
-            Text="{Binding Tooltip.CreateFormatFile}"
+            Text="{Binding Tooltip.DetectStyle}"
             TextWrapping="Wrap" />
         </ToolTip>
       </WrapPanel.ToolTip>
