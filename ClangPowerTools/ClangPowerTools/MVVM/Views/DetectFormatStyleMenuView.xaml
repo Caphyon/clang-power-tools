@@ -43,7 +43,7 @@
       HorizontalAlignment="Center"
       FontSize="18"
       FontWeight="SemiBold"
-      Text="File Selector" />
+      Text="Selected Files" />
 
     <TextBlock
       x:Name="ValidFilePathTextBlock"

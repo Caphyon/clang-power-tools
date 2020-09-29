@@ -41,6 +41,7 @@
       <TextBlock
         Margin="3,0,0,5"
         FontSize="14"
+        FontWeight="DemiBold"
         Text="Detected Clang-Format options" />
 
       <ListView
@@ -85,16 +86,9 @@
       </ListView>
 
       <TextBlock
-        Margin="0,20,0,0"
         HorizontalAlignment="Center"
         FontSize="14"
-        Text="Use the Clang-Format Generator diff and see how your formatted code looks. "
-        TextWrapping="Wrap" />
-
-      <TextBlock
-        HorizontalAlignment="Center"
-        FontSize="14"
-        Text="Additional tweaks can be done using the displayed options on the right side. "
+        Text="Additional tweaks to Format Options may be required to find the best Format Style"
         TextWrapping="Wrap" />
     </StackPanel>
 
