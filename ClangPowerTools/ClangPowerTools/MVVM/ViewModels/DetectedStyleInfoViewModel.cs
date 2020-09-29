@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace ClangPowerTools
 {
@@ -11,9 +12,24 @@ namespace ClangPowerTools
     #endregion
 
 
+    #region Constructor
+
+    public DetectedStyleInfoViewModel(string styleInfo)
+    {
+      var styleInfoArray = styleInfo.Split('\n');
+      foreach (var item in styleInfoArray)
+        FlagsCollection.Add(item);
+    }
+
+    #endregion
+
+
     #region Properties
 
     public string DetectedOptions { get; set; }
+
+    public ObservableCollection<string> FlagsCollection { get; set; } = new ObservableCollection<string>();
+
 
     #endregion
 

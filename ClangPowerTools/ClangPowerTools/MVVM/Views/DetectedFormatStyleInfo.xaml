@@ -37,15 +37,55 @@
       Icon="/ClangPowerTools;component/Resources/InfoIcon.png"
       Type="Detection Results" />
 
-    <StackPanel Grid.Row="1" Margin="20">
+    <StackPanel Grid.Row="1" Margin="20,20,20,10">
       <TextBlock
-        Margin="0,5"
+        Margin="3,0,0,5"
         FontSize="14"
-        FontWeight="DemiBold"
-        Text="{Binding DetectedOptions}"
-        TextWrapping="Wrap" />
+        Text="Detected Clang-Format options" />
+
+      <ListView
+        Grid.Row="2"
+        Grid.Column="1"
+        Height="130"
+        Background="White"
+        ItemsSource="{Binding FlagsCollection, Mode=TwoWay}"
+        ScrollViewer.CanContentScroll="True"
+        ScrollViewer.VerticalScrollBarVisibility="Visible"
+        SelectionMode="Single">
+
+        <ListView.ItemContainerStyle>
+          <Style TargetType="ListViewItem">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="WhiteSmoke" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Focusable" Value="True" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+          </Style>
+        </ListView.ItemContainerStyle>
+
+        <ListView.ItemTemplate>
+          <DataTemplate>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="25" />
+              </Grid.RowDefinitions>
+
+              <TextBox
+                BorderThickness="0"
+                FontSize="13"
+                IsReadOnly="True"
+                Text="{Binding Path=., Mode=TwoWay}" />
+            </Grid>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+      </ListView>
 
       <TextBlock
+        Margin="0,20,0,0"
         HorizontalAlignment="Center"
         FontSize="14"
         Text="Use the Clang-Format Generator diff and see how your formatted code looks. "

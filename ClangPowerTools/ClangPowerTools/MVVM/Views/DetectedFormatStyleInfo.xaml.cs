@@ -12,7 +12,7 @@ namespace ClangPowerTools.MVVM.Views
     public DetectedFormatStyleInfo(DiffWindow view, string styleInfo)
     {
       InitializeComponent();
-      detectedStyleInfoViewModel = new DetectedStyleInfoViewModel();
+      detectedStyleInfoViewModel = new DetectedStyleInfoViewModel(styleInfo);
       DataContext = detectedStyleInfoViewModel;
       detectedStyleInfoViewModel.DetectedOptions = styleInfo;
       Owner = view;
