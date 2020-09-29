@@ -121,8 +121,7 @@
     <!--  Detected Format Options  -->
     <Grid Grid.Row="1" Grid.Column="3">
       <Grid.RowDefinitions>
-        <RowDefinition Height="20" />
-        <RowDefinition Height="20" />
+        <RowDefinition Height="40" />
         <RowDefinition Height="*" />
         <RowDefinition Height="48" />
         <RowDefinition Height="auto" />
@@ -134,47 +133,74 @@
         <ColumnDefinition Width="410" />
       </Grid.ColumnDefinitions>
 
-      <!--  Title  -->
-      <TextBlock
+      <!--  Title, Style, and  Reload button  -->
+      <Grid
         Grid.Row="0"
         Grid.Column="0"
-        HorizontalAlignment="Center"
-        FontSize="15"
-        FontWeight="DemiBold"
-        Foreground="#9E005A"
-        Text="Detection Results"
-        TextWrapping="Wrap" />
+        HorizontalAlignment="Center">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" />
+          <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-      <!--  Style  -->
-      <TextBlock
-        Grid.Row="1"
-        Grid.Column="0"
-        HorizontalAlignment="Center"
-        FontSize="15"
-        FontWeight="DemiBold"
-        Foreground="Black"
-        Text="{Binding Style}"
-        TextWrapping="Wrap" />
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="280" />
+          <ColumnDefinition Width="50" />
+          <ColumnDefinition Width="16" />
+        </Grid.ColumnDefinitions>
 
-      <!--  Reset button  -->
-      <Button
-        Width="15"
-        Height="15"
-        Command="{Binding ResetCommand}"
-        Cursor="Hand"
-        Style="{StaticResource SettingsButton}"
-        ToolTip="Apply your option changes and see the effects in Format Preview">
-        <Button.Template>
-          <ControlTemplate>
-            <Image Source="/ClangPowerTools;component/Resources/ResetIcon.png" />
-          </ControlTemplate>
-        </Button.Template>
-      </Button>
+        <!--  Title  -->
+        <TextBlock
+          Grid.Row="0"
+          Grid.Column="0"
+          HorizontalAlignment="Center"
+          FontSize="15"
+          FontWeight="DemiBold"
+          Foreground="#9E005A"
+          Text="Detection Results" />
+
+        <!--  Style  -->
+        <TextBlock
+          Grid.Row="1"
+          Grid.Column="0"
+          HorizontalAlignment="Center"
+          FontSize="15"
+          FontWeight="DemiBold"
+          Foreground="Black"
+          Text="{Binding Style}" />
+
+        <!--  Reset All  -->
+        <TextBlock
+          Grid.Row="1"
+          Grid.Column="1"
+          HorizontalAlignment="Center"
+          FontSize="12"
+          Foreground="Black"
+          Text="Reset All"
+          TextWrapping="Wrap" />
+
+        <!--  Reset button  -->
+        <Button
+          Grid.Row="1"
+          Grid.Column="2"
+          Width="15"
+          Height="15"
+          Command="{Binding ResetCommand}"
+          Cursor="Hand"
+          Style="{StaticResource SettingsButton}"
+          ToolTip="Reset all options to the detected values">
+          <Button.Template>
+            <ControlTemplate>
+              <Image Source="/ClangPowerTools;component/Resources/ResetIcon.png" />
+            </ControlTemplate>
+          </Button.Template>
+        </Button>
+      </Grid>
 
       <!--  Format options  -->
       <ListView
         Name="FormatOptions"
-        Grid.Row="2"
+        Grid.Row="1"
         Grid.Column="0"
         ItemsSource="{Binding FormatOptions, Mode=TwoWay}"
         SelectedItem="{Binding SelectedOption}"
@@ -244,7 +270,7 @@
                       Margin="6,0,0,0"
                       Click="ResetOption"
                       Cursor="Hand"
-                      ToolTip="Reset option to the detected style default value">
+                      ToolTip="Reset option to the detected value">
                       <Button.Template>
                         <ControlTemplate>
                           <Image Source="/ClangPowerTools;component/Resources/ResetIcon.png" />
@@ -262,7 +288,7 @@
       <!--  Reload / Preview Style Changes button  -->
       <Button
         x:Name="ReloadButton"
-        Grid.Row="3"
+        Grid.Row="2"
         Grid.Column="0"
         Width="408"
         Height="28"
@@ -276,7 +302,7 @@
 
       <!--  Option description  -->
       <RichTextBox
-        Grid.Row="4"
+        Grid.Row="3"
         Grid.Column="0"
         HorizontalAlignment="Left"
         Background="Transparent"
@@ -293,9 +319,9 @@
         </FlowDocument>
       </RichTextBox>
       <TextBox
-        Grid.Row="5"
+        Grid.Row="4"
         Grid.Column="0"
-        Padding="4,0,0,0"
+        Padding="4,4,0,0"
         HorizontalAlignment="Left"
         Background="Transparent"
         BorderThickness="0"
@@ -307,7 +333,7 @@
 
       <!--  Export / Generate button  -->
       <Button
-        Grid.Row="6"
+        Grid.Row="5"
         Grid.Column="0"
         Width="408"
         Height="30"
