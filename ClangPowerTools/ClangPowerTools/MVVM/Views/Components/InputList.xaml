@@ -52,7 +52,6 @@
         Margin="0,0,5,0"
         VerticalContentAlignment="Center"
         FontSize="13"
-        Tag="{Binding Placeholder, ElementName=_InputList}"
         Text="{Binding InputToAdd, ElementName=_InputList}">
         <TextBox.Style>
           <Style xmlns:sys="clr-namespace:System;assembly=mscorlib" TargetType="TextBox">
@@ -63,11 +62,12 @@
                 AlignmentY="Center"
                 Stretch="None">
                 <VisualBrush.Visual>
-                  <TextBlock Foreground="Gray" Text="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType=TextBox}, Path=Tag}" />
+                  <TextBlock Foreground="Gray" Text="Type here" />
                 </VisualBrush.Visual>
               </VisualBrush>
             </Style.Resources>
             <Style.Triggers>
+
               <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
                 <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
               </Trigger>
@@ -87,28 +87,19 @@
         Grid.Column="1"
         HorizontalAlignment="Right"
         Command="{Binding AddCommand, ElementName=_InputList}"
-        Style="{StaticResource SettingsButton}"
-        Tag="{Binding ImageTag, ElementName=_InputList}" />
+        Style="{StaticResource SettingsButton}">
+        <Button.Content>
+          <Image Source="{StaticResource AddInputImage}" />
+        </Button.Content>
+      </Button>
     </Grid>
-
-    <Button
-      x:Name="ClearButton"
-      Grid.Row="1"
-      Grid.Column="1"
-      Margin="0,10,0,5"
-      HorizontalAlignment="Right"
-      VerticalAlignment="Center"
-      Command="{Binding ClearCommand, ElementName=_InputList}"
-      Content="Clear"
-      FontSize="15"
-      Foreground="White"
-      Style="{StaticResource SettingsButton}" />
 
     <!--  Inputs  -->
     <ListView
       x:Name="CollectionItems"
       Grid.Row="2"
       Grid.Column="1"
+      Margin="0,5,0,0"
       Background="White"
       ItemsSource="{Binding Collection, ElementName=_InputList, Mode=TwoWay}"
       ScrollViewer.CanContentScroll="True"
@@ -129,31 +120,22 @@
         <DataTemplate>
           <Grid>
             <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="50" />
               <ColumnDefinition Width="*" />
               <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
               <RowDefinition Height="38" />
             </Grid.RowDefinitions>
-            <TextBlock
-              Grid.Column="0"
-              Margin="5,0,15,0"
-              HorizontalAlignment="Right"
-              VerticalAlignment="Center"
-              FontWeight="Normal"
-              Foreground="Gray"
-              Text="{Binding LineNumber, Mode=TwoWay}" />
             <TextBox
               x:Name="InputField"
-              Grid.Column="1"
+              Grid.Column="0"
               VerticalAlignment="Center"
               BorderThickness="0"
               IsReadOnly="{Binding IsReadOnly, Mode=TwoWay}"
               Text="{Binding InputData, Mode=TwoWay}" />
             <Button
               Name="DeleteButton"
-              Grid.Column="2"
+              Grid.Column="1"
               Width="20"
               Height="20"
               Margin="10,0,10,0"
