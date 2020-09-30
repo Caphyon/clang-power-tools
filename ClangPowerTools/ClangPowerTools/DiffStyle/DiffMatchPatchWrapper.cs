@@ -206,7 +206,7 @@ namespace ClangPowerTools
         NumberOfOperations(lineDiffs, out int inserations, out int deletions, out int equalities);
         if (inserations > 0 || deletions > 0)
         {
-          if (inserations > 0 && deletions > 0 || equalities == 0)
+          if (inserations > 0 && deletions > 0 || equalities > 0 && lineDiffs.Last().operation == Operation.DELETE)
           {
             inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
             outputOperationPerLine.Add((outputLines[index], LineChanges.HASCHANGES));
@@ -224,7 +224,6 @@ namespace ClangPowerTools
         }
       }
     }
-
 
     /// <summary>
     /// Run Diff and interpret operations to recreate the output as a list of lines.
