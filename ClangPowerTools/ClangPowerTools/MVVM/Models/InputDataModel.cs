@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.IO;
 
 namespace ClangPowerTools.MVVM.Models
 {
@@ -18,18 +17,6 @@ namespace ClangPowerTools.MVVM.Models
     public InputDataModel(string input)
     {
       inputData = input;
-    }
-
-    public InputDataModel(string input, int line)
-    {
-      inputData = input;
-      if (File.Exists(inputData))
-      {
-        var fileInfo = new FileInfo(inputData);
-        FileSize = fileInfo.Length;
-      }
-
-      lineNumber = line;
     }
 
     #region Properties
