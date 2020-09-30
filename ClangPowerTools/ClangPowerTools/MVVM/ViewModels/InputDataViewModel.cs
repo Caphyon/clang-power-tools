@@ -80,13 +80,6 @@ namespace ClangPowerTools
         return;
 
       Inputs.RemoveAt(index);
-
-      // Is not the last element update all the elements position from the index to the end
-      if (index != Inputs.Count)
-      {
-        for (int position = index; position < Inputs.Count; ++position)
-          Inputs[position].LineNumber = position + 1;
-      }
     }
 
     private void AddInput()
