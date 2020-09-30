@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using ClangPowerTools.MVVM.ViewModels;
+using System.Windows;
 
 namespace ClangPowerTools.MVVM.Views
 {
@@ -7,14 +8,13 @@ namespace ClangPowerTools.MVVM.Views
   /// </summary>
   public partial class DetectStyleFileSelectorView : Window
   {
-
-    private readonly InputDataViewModel inputDataViewModel;
+    private readonly DetectStyleFileSelectorViewModel fileSelectorViewModel;
 
     public DetectStyleFileSelectorView()
     {
       InitializeComponent();
-      inputDataViewModel = new InputDataViewModel(this, true);
-      DataContext = inputDataViewModel;
+      fileSelectorViewModel = new DetectStyleFileSelectorViewModel(this);
+      DataContext = fileSelectorViewModel;
     }
   }
 }
