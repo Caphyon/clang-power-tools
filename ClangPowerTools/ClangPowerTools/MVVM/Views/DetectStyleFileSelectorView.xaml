@@ -65,87 +65,105 @@
       FontSize="12"
       Text="Selecting representative files with diverse code syntax will give better format detection results" />
 
-    <!--  Inputs  -->
-    <ListView
-      x:Name="CollectionItems"
+    <Grid
       Grid.Row="2"
       Grid.Column="1"
-      Background="White"
-      ItemsSource="{Binding Collection, ElementName=_InputList, Mode=TwoWay}"
-      ScrollViewer.CanContentScroll="True"
-      ScrollViewer.VerticalScrollBarVisibility="Visible"
-      SelectionMode="Single">
+      Margin="0,20,0,0">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="40" />
+        <RowDefinition />
+      </Grid.RowDefinitions>
+      <Button
+        Grid.Row="0"
+        HorizontalAlignment="Right"
+        VerticalAlignment="Center"
+        FontSize="15"
+        Foreground="White"
+        Style="{StaticResource SettingsButton}">
+        <Button.Content>
+          <Image Source="{StaticResource BrowseImage}" />
+        </Button.Content>
+      </Button>
 
-      <ListView.ItemContainerStyle>
-        <Style TargetType="ListViewItem">
-          <Setter Property="Background" Value="Transparent" />
-          <Setter Property="BorderBrush" Value="WhiteSmoke" />
-          <Setter Property="BorderThickness" Value="1" />
-          <Setter Property="Focusable" Value="True" />
-          <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-        </Style>
-      </ListView.ItemContainerStyle>
+      <!--  Inputs  -->
+      <ListView
+        x:Name="CollectionItems"
+        Grid.Row="1"
+        Background="White"
+        ItemsSource="{Binding Collection, ElementName=_InputList, Mode=TwoWay}"
+        ScrollViewer.CanContentScroll="True"
+        ScrollViewer.VerticalScrollBarVisibility="Visible"
+        SelectionMode="Single">
 
-      <ListView.ItemTemplate>
-        <DataTemplate>
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="50" />
-              <ColumnDefinition Width="*" />
-              <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-              <RowDefinition Height="38" />
-            </Grid.RowDefinitions>
-            <TextBlock
-              Grid.Column="0"
-              Margin="5,0,15,0"
-              HorizontalAlignment="Right"
-              VerticalAlignment="Center"
-              FontWeight="Normal"
-              Foreground="Gray"
-              Text="{Binding LineNumber, Mode=TwoWay}" />
-            <TextBox
-              x:Name="InputField"
-              Grid.Column="1"
-              VerticalAlignment="Center"
-              BorderThickness="0"
-              IsReadOnly="{Binding IsReadOnly, Mode=TwoWay}"
-              Text="{Binding InputData, Mode=TwoWay}" />
-            <Button
-              Name="DeleteButton"
-              Grid.Column="2"
-              Width="20"
-              Height="20"
-              Margin="10,0,10,0"
-              HorizontalAlignment="Right"
-              BorderThickness="0"
-              Click="DeleteButton_Click">
-              <Button.Style>
-                <Style TargetType="{x:Type Button}">
-                  <Setter Property="Background" Value="{StaticResource RemoveImage}" />
-                  <Setter Property="Template">
-                    <Setter.Value>
-                      <ControlTemplate TargetType="Button">
-                        <Grid Background="{TemplateBinding Background}">
-                          <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Grid>
-                      </ControlTemplate>
-                    </Setter.Value>
-                  </Setter>
-                  <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                      <Setter Property="Background" Value="{StaticResource RemoverHoverImage}" />
-                    </Trigger>
-                  </Style.Triggers>
-                </Style>
-              </Button.Style>
-            </Button>
-          </Grid>
-        </DataTemplate>
-      </ListView.ItemTemplate>
-    </ListView>
+        <ListView.ItemContainerStyle>
+          <Style TargetType="ListViewItem">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="WhiteSmoke" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Focusable" Value="True" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+          </Style>
+        </ListView.ItemContainerStyle>
 
+        <ListView.ItemTemplate>
+          <DataTemplate>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="38" />
+              </Grid.RowDefinitions>
+              <TextBlock
+                Grid.Column="0"
+                Margin="5,0,15,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                FontWeight="Normal"
+                Foreground="Gray"
+                Text="{Binding LineNumber, Mode=TwoWay}" />
+              <TextBox
+                x:Name="InputField"
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                BorderThickness="0"
+                IsReadOnly="{Binding IsReadOnly, Mode=TwoWay}"
+                Text="{Binding InputData, Mode=TwoWay}" />
+              <Button
+                Name="DeleteButton"
+                Grid.Column="2"
+                Width="20"
+                Height="20"
+                Margin="10,0,10,0"
+                HorizontalAlignment="Right"
+                BorderThickness="0">
+                <Button.Style>
+                  <Style TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="{StaticResource RemoveImage}" />
+                    <Setter Property="Template">
+                      <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                          <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                          </Grid>
+                        </ControlTemplate>
+                      </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                      <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource RemoverHoverImage}" />
+                      </Trigger>
+                    </Style.Triggers>
+                  </Style>
+                </Button.Style>
+              </Button>
+            </Grid>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+      </ListView>
+    </Grid>
     <TextBox
       x:Name="WarningTextBox"
       Grid.Row="3"
