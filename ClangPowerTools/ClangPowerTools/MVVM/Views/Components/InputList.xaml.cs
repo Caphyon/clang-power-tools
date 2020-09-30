@@ -23,16 +23,6 @@ namespace ClangPowerTools.MVVM.Views.Components
 
     #region Properties
 
-    public string ImageTag
-    {
-      get { return (string)GetValue(ImageTagProperty); }
-      set { SetValue(ImageTagProperty, value); }
-    }
-
-    public static readonly DependencyProperty ImageTagProperty =
-      DependencyProperty.Register("ImageTag", typeof(string), typeof(InputList), new PropertyMetadata(null));
-
-
     public string InputToAdd
     {
       get { return (string)GetValue(InputToAddProperty); }
@@ -43,23 +33,6 @@ namespace ClangPowerTools.MVVM.Views.Components
       DependencyProperty.Register("InputToAdd", typeof(string), typeof(InputList), new PropertyMetadata(null));
 
 
-    public string Placeholder
-    {
-      get { return (string)GetValue(PlaceholderProperty); }
-      set { SetValue(PlaceholderProperty, value); }
-    }
-
-    public static readonly DependencyProperty PlaceholderProperty =
-      DependencyProperty.Register(
-        "Placeholder",
-        typeof(string),
-        typeof(InputList),
-        new PropertyMetadata(null));
-
-    private static void PlaceholderChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-    {
-    }
-
     public ICommand AddCommand
     {
       get { return (ICommand)GetValue(AddCommandProperty); }
@@ -68,16 +41,6 @@ namespace ClangPowerTools.MVVM.Views.Components
 
     public static readonly DependencyProperty AddCommandProperty =
       DependencyProperty.Register("AddCommand", typeof(ICommand), typeof(InputList), new PropertyMetadata(null));
-
-    public ICommand ClearCommand
-    {
-      get { return (ICommand)GetValue(ClearCommandProperty); }
-      set { SetValue(ClearCommandProperty, value); }
-    }
-
-    public static readonly DependencyProperty ClearCommandProperty =
-      DependencyProperty.Register("ClearCommand", typeof(ICommand), typeof(InputList), new PropertyMetadata(null));
-
 
 
     public ObservableCollection<InputDataModel> Collection
