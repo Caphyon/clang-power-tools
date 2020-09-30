@@ -104,25 +104,25 @@ namespace ClangPowerTools.MVVM.Controllers
       return fileNames;
     }
 
-    public void CopyOptionValues(IFormatOption option, IFormatOption defaultOption)
+    public void CopyOptionValues(IFormatOption optionToChange, IFormatOption optionToCopy)
     {
-      switch (option)
+      switch (optionToChange)
       {
         case FormatOptionToggleModel toggleModel:
-          toggleModel.BooleanCombobox = ((FormatOptionToggleModel)defaultOption).BooleanCombobox;
+          toggleModel.BooleanCombobox = ((FormatOptionToggleModel)optionToCopy).BooleanCombobox;
           break;
         case FormatOptionInputModel inputModel:
-          inputModel.Input = ((FormatOptionInputModel)defaultOption).Input;
+          inputModel.Input = ((FormatOptionInputModel)optionToCopy).Input;
           break;
         case FormatOptionMultipleToggleModel multipleToggleModel:
-          var defaultMultipleToggle = (FormatOptionMultipleToggleModel)defaultOption;
+          var defaultMultipleToggle = (FormatOptionMultipleToggleModel)optionToCopy;
           for (int i = 0; i < multipleToggleModel.ToggleFlags.Count; i++)
           {
             multipleToggleModel.ToggleFlags[i].Value = defaultMultipleToggle.ToggleFlags[i].Value;
           }
           break;
         case FormatOptionMultipleInputModel multipleInputModel:
-          multipleInputModel.MultipleInput = ((FormatOptionMultipleInputModel)defaultOption).MultipleInput;
+          multipleInputModel.MultipleInput = ((FormatOptionMultipleInputModel)optionToCopy).MultipleInput;
           break;
         default:
           break;

@@ -8,5 +8,6 @@
     public bool HasBooleanCombobox { get; }
     public bool HasInputTextBox { get; }
     public bool IsEnabled { get; set; }
+    public bool IsModifed { get; set; }
   }
 }

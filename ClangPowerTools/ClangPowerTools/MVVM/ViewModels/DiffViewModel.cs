@@ -200,9 +200,16 @@ namespace ClangPowerTools
     public void ResetOption(int index)
     {
       var option = formatStyleOptions[index];
-      var defaultOption = defaultOptions[index];
-      diffController.CopyOptionValues(option, defaultOption);
-      MarkOptionChange((FormatOptionModel)option, false, FormatConstants.NormalFontWeight);
+      var detectedOption = detectedOptions[index];
+      diffController.CopyOptionValues(option, detectedOption);
+      if (detectedOption.IsModifed)
+      {
+        MarkOptionChange((FormatOptionModel)option, true, FormatConstants.BoldFontWeight);
+      }
+      else
+      {
+        MarkOptionChange((FormatOptionModel)option, false, FormatConstants.NormalFontWeight);
+      }
     }
 
     #endregion
