@@ -41,10 +41,7 @@
   <components:InputList
     x:Name="InputList"
     AddCommand="{Binding AddCommand}"
-    ClearCommand="{Binding ClearCommand}"
     Collection="{Binding Inputs, Mode=TwoWay}"
-    ImageTag="add"
-    InputToAdd="{Binding InputToAdd, Mode=TwoWay}"
-    Placeholder="Your text here" />
+    InputToAdd="{Binding InputToAdd, Mode=TwoWay}" />
 
 </Window>
