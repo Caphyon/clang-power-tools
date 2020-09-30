@@ -45,7 +45,7 @@
       <RowDefinition Height="25" />
       <RowDefinition Height="*" />
       <RowDefinition Height="Auto" />
-      <RowDefinition Height="40" />
+      <RowDefinition Height="60" />
     </Grid.RowDefinitions>
 
     <TextBlock
@@ -70,25 +70,31 @@
       Grid.Column="1"
       Margin="0,20,0,0">
       <Grid.RowDefinitions>
-        <RowDefinition Height="40" />
         <RowDefinition />
+        <RowDefinition Height="40" />
       </Grid.RowDefinitions>
       <Button
-        Grid.Row="0"
+        Grid.Row="1"
+        Width="115"
         HorizontalAlignment="Right"
         VerticalAlignment="Center"
         FontSize="15"
         Foreground="White"
         Style="{StaticResource SettingsButton}">
-        <Button.Content>
-          <Image Source="{StaticResource BrowseImage}" />
-        </Button.Content>
+        <StackPanel Orientation="Horizontal">
+          <Image Height="28" Source="{StaticResource BrowseImage}" />
+          <TextBlock
+            Margin="-5,0,10,0"
+            VerticalAlignment="Center"
+            FontSize="15"
+            Text="Browse" />
+        </StackPanel>
       </Button>
 
       <!--  Inputs  -->
       <ListView
         x:Name="CollectionItems"
-        Grid.Row="1"
+        Grid.Row="0"
         Background="White"
         ItemsSource="{Binding Collection, ElementName=_InputList, Mode=TwoWay}"
         ScrollViewer.CanContentScroll="True"
@@ -182,9 +188,8 @@
       Grid.Row="4"
       Grid.Column="1"
       Width="200"
-      Margin="0,0,0,9"
       HorizontalAlignment="Center"
-      VerticalAlignment="Center"
+      VerticalAlignment="Top"
       Command="{Binding DetectFormatStyleCommand}"
       Content="Detect Format Style"
       FontSize="15"
