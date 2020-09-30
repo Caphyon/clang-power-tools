@@ -5,12 +5,12 @@ namespace ClangPowerTools.MVVM.Views
   /// <summary>
   /// Interaction logic for DetectFormatStyleMenuView.xaml
   /// </summary>
-  public partial class DetectFormatStyleMenuView : Window
+  public partial class DetectStyleFileSelectorView : Window
   {
 
     private readonly InputDataViewModel inputDataViewModel;
 
-    public DetectFormatStyleMenuView()
+    public DetectStyleFileSelectorView()
     {
       InitializeComponent();
       inputDataViewModel = new InputDataViewModel(this, true);

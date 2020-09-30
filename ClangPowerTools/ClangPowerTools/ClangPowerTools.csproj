@@ -237,8 +237,8 @@
     <Compile Include="MVVM\Views\DetectedFormatStyleInfo.xaml.cs">
       <DependentUpon>DetectedFormatStyleInfo.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MVVM\Views\DetectFormatStyleMenuView.xaml.cs">
-      <DependentUpon>DetectFormatStyleMenuView.xaml</DependentUpon>
+    <Compile Include="MVVM\Views\DetectStyleFileSelectorView.xaml.cs">
+      <DependentUpon>DetectStyleFileSelectorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\DiffWindow.xaml.cs">
       <DependentUpon>DiffWindow.xaml</DependentUpon>
@@ -672,7 +672,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MVVM\Views\DetectFormatStyleMenuView.xaml">
+    <Page Include="MVVM\Views\DetectStyleFileSelectorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
