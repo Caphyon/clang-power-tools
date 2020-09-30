@@ -28,7 +28,7 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
       <RowDefinition Height="*" />
-      <RowDefinition Height="50" />
+      <RowDefinition Height="40" />
     </Grid.RowDefinitions>
 
     <components:MessageBanner
@@ -42,13 +42,12 @@
         Margin="3,0,0,5"
         FontSize="14"
         FontWeight="DemiBold"
-        Text="Detected Clang-Format options" />
+        Text="Detected Clang-Format Options" />
 
       <ListView
         Grid.Row="2"
         Grid.Column="1"
-        Height="130"
-        Background="White"
+        Height="180"
         ItemsSource="{Binding FlagsCollection, Mode=TwoWay}"
         ScrollViewer.CanContentScroll="True"
         ScrollViewer.VerticalScrollBarVisibility="Visible"
@@ -59,9 +58,7 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="WhiteSmoke" />
             <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Focusable" Value="True" />
-            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="Focusable" Value="False" />
           </Style>
         </ListView.ItemContainerStyle>
 
@@ -72,12 +69,14 @@
                 <ColumnDefinition Width="*" />
               </Grid.ColumnDefinitions>
               <Grid.RowDefinitions>
-                <RowDefinition Height="25" />
+                <RowDefinition Height="20" />
               </Grid.RowDefinitions>
 
               <TextBox
+                HorizontalAlignment="Stretch"
+                Background="Transparent"
                 BorderThickness="0"
-                FontSize="13"
+                FontSize="12"
                 IsReadOnly="True"
                 Text="{Binding Path=., Mode=TwoWay}" />
             </Grid>
@@ -87,7 +86,7 @@
 
       <TextBlock
         HorizontalAlignment="Center"
-        FontSize="14"
+        FontSize="12"
         Text="Additional tweaks to Format Options may be required to find the best Format Style"
         TextWrapping="Wrap" />
     </StackPanel>
@@ -96,7 +95,7 @@
       Grid.Row="2"
       Width="100"
       HorizontalAlignment="Center"
-      VerticalAlignment="Center"
+      VerticalAlignment="Top"
       Click="ContinueButton_Click"
       Content="Continue"
       FontSize="14"
