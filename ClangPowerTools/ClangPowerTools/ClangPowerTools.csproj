@@ -168,6 +168,7 @@
     <Compile Include="MVVM\CollectionElementsCounter.cs" />
     <Compile Include="MVVM\ViewModels\AccountViewModel.cs" />
     <Compile Include="MVVM\ViewModels\DetectedStyleInfoViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\DetectStyleFileSelectorViewModel.cs" />
     <Compile Include="MVVM\ViewModels\DiffViewModel.cs" />
     <Compile Include="MVVM\ViewModels\FormatEditorViewModel.cs" />
     <Compile Include="MVVM\Interfaces\IFormatEditor.cs" />
