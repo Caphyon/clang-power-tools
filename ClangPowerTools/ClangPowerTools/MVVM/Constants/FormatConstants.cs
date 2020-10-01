@@ -6,5 +6,13 @@
     public const string BoldFontWeight = "Bold";
     public const string NormalFontWeight = "Normal";
     public const string DiffPerfectMatchFound = "// Clang Power Tools has found a perfect diff match for this file.\r\n//\r\n// Generate your Clang-Format file and start using it in your projects.";
+
+    public const string DetectingTitle = "Detecting Clang-Format Style";
+    public const string DetectingDescription = "Process will take some time depending on size (10 000 lines ~2 minutes)";
+    public const string DetectingDescriptionExtra = "Larger code samples may result in detecting more format flags";
+
+    public const string ReloadTitle = "Updating Format Preview";
+    public const string ReloadDescription = "The Format Options you changed are being applied to the preview diff";
+    public const string ReloadDescriptionExtra = "";
   }
 }

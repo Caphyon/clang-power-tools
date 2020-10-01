@@ -147,7 +147,7 @@ namespace ClangPowerTools
 
     public async Task DiffDocumentsAsync(List<string> filesPath, Window detectingWindowOwner)
     {
-      ShowDetectingView(detectingWindowOwner);
+      ShowDetectingView(detectingWindowOwner, FormatConstants.DetectingTitle, FormatConstants.DetectingDescription, FormatConstants.DetectingDescriptionExtra);
 
       diffController.CancellationSource = new CancellationTokenSource();
       diffController.CancelTokenDisposed = false;
@@ -229,7 +229,7 @@ namespace ClangPowerTools
 
     private async Task ReloadDiffAsync()
     {
-      ShowDetectingView(diffWindow);
+      ShowDetectingView(diffWindow, FormatConstants.ReloadTitle, FormatConstants.ReloadDescription, string.Empty);
       diffWindow.IsEnabled = false;
 
       bool errorDetected = await AreOptionsValidAsync();
@@ -303,12 +303,14 @@ namespace ClangPowerTools
       return sb.ToString();
     }
 
-    private void ShowDetectingView(Window detectingWindowOwner)
+    private void ShowDetectingView(Window detectingWindowOwner, string title, string description, string descriptionExtra)
     {
-      detectingView = new DetectingView
-      {
-        Owner = detectingWindowOwner
-      };
+      var detectingView = new DetectingView();
+      detectingView.Title.Text = title;
+      detectingView.Description.Text = description;
+      detectingView.DescriptionExtra.Text = descriptionExtra;
+      detectingView.Owner = detectingWindowOwner;
+
       detectingView.Show();
       detectingView.Closed += diffController.CloseLoadDetectionView;
     }
