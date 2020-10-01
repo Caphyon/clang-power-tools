@@ -122,7 +122,7 @@ namespace ClangPowerTools
     }
     public ICommand ReloadCommand
     {
-      get => reloadCommand ??= new RelayCommand(() => ReloadDiffAsync().SafeFireAndForget(), () => CanExecute);
+      get => reloadCommand ??= new RelayCommand(() => ReloadDiffAsync(FormatConstants.UpdateTitle, FormatConstants.UpdateDescription, string.Empty).SafeFireAndForget(), () => CanExecute);
     }
     public ICommand ResetCommand
     {
@@ -135,7 +135,7 @@ namespace ClangPowerTools
       {
         formatStyleOptions = FormatOptionsProvider.CloneDetectedOptions(detectedOptions);
       });
-      await ReloadDiffAsync();
+      await ReloadDiffAsync(FormatConstants.ResetTitle, FormatConstants.ResetDescription, string.Empty);
       SelectedOption = FormatOptions.First();
       diffWindow.ReloadButton.IsEnabled = false;
       OnPropertyChanged("FormatOptions");
@@ -227,9 +227,9 @@ namespace ClangPowerTools
       OnPropertyChanged("Style");
     }
 
-    private async Task ReloadDiffAsync()
+    private async Task ReloadDiffAsync(string title, string description, string descriptionExtra)
     {
-      ShowDetectingView(diffWindow, FormatConstants.ReloadTitle, FormatConstants.ReloadDescription, string.Empty);
+      ShowDetectingView(diffWindow, title, description, descriptionExtra);
       diffWindow.IsEnabled = false;
 
       bool errorDetected = await AreOptionsValidAsync();

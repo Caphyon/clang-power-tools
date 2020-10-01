@@ -11,8 +11,10 @@
     public const string DetectingDescription = "Process will take some time depending on size (10 000 lines ~2 minutes)";
     public const string DetectingDescriptionExtra = "Larger code samples may result in detecting more format flags";
 
-    public const string ReloadTitle = "Updating Format Preview";
-    public const string ReloadDescription = "The Format Options you changed are being applied to the preview diff";
-    public const string ReloadDescriptionExtra = "";
+    public const string UpdateTitle = "Updating Format Preview";
+    public const string UpdateDescription = "The changed Format Options are being applied to the Format Preview diff";
+
+    public const string ResetTitle = "Restoring Format Options";
+    public const string ResetDescription = "Restore to detected Format Options";
   }
 }
