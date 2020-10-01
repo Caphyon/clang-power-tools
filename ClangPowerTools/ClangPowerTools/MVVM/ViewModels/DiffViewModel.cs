@@ -305,7 +305,7 @@ namespace ClangPowerTools
 
     private void ShowDetectingView(Window detectingWindowOwner, string title, string description, string descriptionExtra)
     {
-      var detectingView = new DetectingView();
+      detectingView = new DetectingView();
       detectingView.Title.Text = title;
       detectingView.Description.Text = description;
       detectingView.DescriptionExtra.Text = descriptionExtra;
