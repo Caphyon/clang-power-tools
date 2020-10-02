@@ -72,24 +72,6 @@
         <RowDefinition />
         <RowDefinition Height="40" />
       </Grid.RowDefinitions>
-      <Button
-        Grid.Row="1"
-        Width="115"
-        HorizontalAlignment="Right"
-        VerticalAlignment="Center"
-        FontSize="15"
-        Foreground="White"
-        Style="{StaticResource SettingsButton}">
-        <StackPanel Orientation="Horizontal">
-          <Image Height="28" Source="{StaticResource BrowseImage}" />
-          <TextBlock
-            Margin="-5,0,10,0"
-            VerticalAlignment="Center"
-            FontSize="15"
-            Text="Browse" />
-        </StackPanel>
-      </Button>
-
       <!--  Inputs  -->
       <ListView
         x:Name="CollectionItems"
@@ -168,6 +150,25 @@
           </DataTemplate>
         </ListView.ItemTemplate>
       </ListView>
+
+      <Button
+        Grid.Row="1"
+        Width="115"
+        HorizontalAlignment="Right"
+        VerticalAlignment="Center"
+        Command="{Binding Browse}"
+        FontSize="15"
+        Foreground="White"
+        Style="{StaticResource SettingsButton}">
+        <StackPanel Orientation="Horizontal">
+          <Image Height="28" Source="{StaticResource BrowseImage}" />
+          <TextBlock
+            Margin="-5,0,10,0"
+            VerticalAlignment="Center"
+            FontSize="15"
+            Text="Browse" />
+        </StackPanel>
+      </Button>
     </Grid>
     <TextBlock
       x:Name="WarningTextBox"

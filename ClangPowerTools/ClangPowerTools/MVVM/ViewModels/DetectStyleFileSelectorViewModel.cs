@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace ClangPowerTools.MVVM.ViewModels
+namespace ClangPowerTools
 {
   public class DetectStyleFileSelectorViewModel : CommonSettingsFunctionality
   {

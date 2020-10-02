@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.MVVM.ViewModels;
-using System.Windows;
+﻿using System.Windows;
 
 namespace ClangPowerTools.MVVM.Views
 {
