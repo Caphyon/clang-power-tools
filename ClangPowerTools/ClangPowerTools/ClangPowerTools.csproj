@@ -110,6 +110,7 @@
     <Compile Include="MVVM\Controllers\DiffController.cs" />
     <Compile Include="MVVM\FormatData\FormatOptionsInputValues.cs" />
     <Compile Include="MVVM\Models\FormatOptionMultipleToggleModel.cs" />
+    <Compile Include="MVVM\Models\SelectedFileModel.cs" />
     <Compile Include="MVVM\Models\ToggleModel.cs" />
     <Compile Include="MVVM\StyleFormatter.cs" />
     <Compile Include="MVVM\Controllers\FreeTrialController.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="MVVM\CollectionElementsCounter.cs" />
     <Compile Include="MVVM\ViewModels\AccountViewModel.cs" />
     <Compile Include="MVVM\ViewModels\DetectedStyleInfoViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\DetectStyleFileSelectorViewModel.cs" />
     <Compile Include="MVVM\ViewModels\DiffViewModel.cs" />
     <Compile Include="MVVM\ViewModels\FormatEditorViewModel.cs" />
     <Compile Include="MVVM\Interfaces\IFormatEditor.cs" />
@@ -237,8 +239,8 @@
     <Compile Include="MVVM\Views\DetectedFormatStyleInfo.xaml.cs">
       <DependentUpon>DetectedFormatStyleInfo.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MVVM\Views\DetectFormatStyleMenuView.xaml.cs">
-      <DependentUpon>DetectFormatStyleMenuView.xaml</DependentUpon>
+    <Compile Include="MVVM\Views\DetectStyleFileSelectorView.xaml.cs">
+      <DependentUpon>DetectStyleFileSelectorView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\DiffWindow.xaml.cs">
       <DependentUpon>DiffWindow.xaml</DependentUpon>
@@ -672,7 +674,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MVVM\Views\DetectFormatStyleMenuView.xaml">
+    <Page Include="MVVM\Views\DetectStyleFileSelectorView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

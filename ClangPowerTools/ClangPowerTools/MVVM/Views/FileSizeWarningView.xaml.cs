@@ -7,7 +7,7 @@ namespace ClangPowerTools.MVVM.Views
   /// </summary>
   public partial class FileSizeWarningView : Window
   {
-    public FileSizeWarningView(DetectFormatStyleMenuView view)
+    public FileSizeWarningView(DetectStyleFileSelectorView view)
     {
       InitializeComponent();
       Owner = view;

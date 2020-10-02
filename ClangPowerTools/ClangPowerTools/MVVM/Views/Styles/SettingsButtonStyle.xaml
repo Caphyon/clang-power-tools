@@ -18,10 +18,10 @@
       <Setter.Value>
         <ControlTemplate TargetType="Button">
           <Grid Background="{TemplateBinding Background}">
-            <Image x:Name="ButtonImageContent" />
+            <!--<Image x:Name="ButtonImageContent" />-->
             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
           </Grid>
-          <ControlTemplate.Triggers>
+          <!--<ControlTemplate.Triggers>
 
             <Trigger Property="Tag" Value="add">
               <Setter TargetName="ButtonImageContent" Property="Source" Value="/ClangPowerTools;component/Resources/AddInput.png" />
@@ -31,10 +31,6 @@
               <Setter TargetName="ButtonImageContent" Property="Source" Value="/ClangPowerTools;component/Resources/AddInput.png" />
             </Trigger>
 
-            <Trigger Property="Tag" Value="greenButton">
-              <Setter Property="Background" Value="#158B86" />
-            </Trigger>
-
             <MultiDataTrigger>
               <MultiDataTrigger.Conditions>
                 <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Tag}" Value="browse" />
@@ -42,7 +38,7 @@
               </MultiDataTrigger.Conditions>
               <Setter TargetName="ButtonImageContent" Property="Source" Value="/ClangPowerTools;component/Resources/Browse.png" />
             </MultiDataTrigger>
-          </ControlTemplate.Triggers>
+          </ControlTemplate.Triggers>-->
         </ControlTemplate>
       </Setter.Value>
     </Setter>
@@ -51,13 +47,6 @@
       <Trigger Property="IsMouseOver" Value="True">
         <Setter Property="Background" Value="#c70071" />
       </Trigger>
-      <MultiTrigger>
-        <MultiTrigger.Conditions>
-          <Condition Property="Tag" Value="greenButton" />
-          <Condition Property="IsMouseOver" Value="True" />
-        </MultiTrigger.Conditions>
-        <Setter Property="Background" Value="#38B5B2" />
-      </MultiTrigger>
       <Trigger Property="IsEnabled" Value="False">
         <Setter Property="Background" Value="#A0A0A0" />
       </Trigger>
