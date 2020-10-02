@@ -77,7 +77,7 @@
         x:Name="CollectionItems"
         Grid.Row="0"
         Background="White"
-        ItemsSource="{Binding Collection, ElementName=_InputList, Mode=TwoWay}"
+        ItemsSource="{Binding SelectedFiles, Mode=TwoWay}"
         ScrollViewer.CanContentScroll="True"
         ScrollViewer.VerticalScrollBarVisibility="Visible"
         SelectionMode="Single">
@@ -110,22 +110,23 @@
                 VerticalAlignment="Center"
                 FontWeight="Normal"
                 Foreground="Gray"
-                Text="{Binding LineNumber, Mode=TwoWay}" />
+                Text="1" />
               <TextBox
                 x:Name="InputField"
                 Grid.Column="1"
                 VerticalAlignment="Center"
                 BorderThickness="0"
-                IsReadOnly="{Binding IsReadOnly, Mode=TwoWay}"
-                Text="{Binding InputData, Mode=TwoWay}" />
+                IsReadOnly="True"
+                Text="{Binding FilePath, Mode=OneTime}" />
               <Button
-                Name="DeleteButton"
+                Name="RemoveFileButton"
                 Grid.Column="2"
                 Width="20"
                 Height="20"
                 Margin="10,0,10,0"
                 HorizontalAlignment="Right"
-                BorderThickness="0">
+                BorderThickness="0"
+                Click="RemoveFileButton_Click">
                 <Button.Style>
                   <Style TargetType="{x:Type Button}">
                     <Setter Property="Background" Value="{StaticResource RemoveImage}" />

@@ -15,5 +15,18 @@ namespace ClangPowerTools.MVVM.Views
       fileSelectorViewModel = new DetectStyleFileSelectorViewModel(this);
       DataContext = fileSelectorViewModel;
     }
+
+    private void RemoveFileButton_Click(object sender, RoutedEventArgs e)
+    {
+      var elementIndex = GetElementIndex(sender as FrameworkElement);
+      ((DetectStyleFileSelectorViewModel)DataContext).RemoveFile(elementIndex);
+    }
+
+    private int GetElementIndex(FrameworkElement frameworkElement)
+    {
+      var element = frameworkElement.DataContext;
+      return CollectionItems.Items.IndexOf(element);
+    }
+
   }
 }

@@ -81,7 +81,8 @@ namespace ClangPowerTools
 
       view.DetectFormatStyleButton.IsEnabled = SelectedFiles.Count > 0;
 
-      if (totalFilesSize > MAX_FILE_SIZE)
+      if (totalFilesSize > MAX_FILE_SIZE &&
+        view.WarningTextBox.Visibility != System.Windows.Visibility.Visible)
       {
         view.WarningTextBox.Visibility = System.Windows.Visibility.Visible;
         var warning = new FileSizeWarningView(view);
@@ -98,8 +99,7 @@ namespace ClangPowerTools
       SelectedFiles.Add(model);
     }
 
-
-    public void DeleteInput(int index)
+    public void RemoveFile(int index)
     {
       if (index < 0 || index >= SelectedFiles.Count)
         return;
@@ -108,7 +108,7 @@ namespace ClangPowerTools
       totalFilesSize -= model.FileSize;
       SelectedFiles.RemoveAt(index);
 
-      view.DetectFormatStyleButton.IsEnabled = SelectedFiles.Count == 0;
+      view.DetectFormatStyleButton.IsEnabled = SelectedFiles.Count != 0;
 
       if (totalFilesSize <= MAX_FILE_SIZE)
         view.WarningTextBox.Visibility = System.Windows.Visibility.Hidden;
