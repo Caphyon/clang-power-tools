@@ -69,13 +69,58 @@
       Grid.Column="1"
       Margin="0,20,0,0">
       <Grid.RowDefinitions>
+        <RowDefinition Height="30" />
         <RowDefinition />
         <RowDefinition Height="40" />
       </Grid.RowDefinitions>
-      <!--  Inputs  -->
+
+      <StackPanel
+        x:Name="RemoveAllSection"
+        Grid.Row="0"
+        Margin="0,0,35,0"
+        HorizontalAlignment="Right"
+        Orientation="Horizontal">
+        <TextBlock
+          x:Name="RemoveAllTextBlock"
+          Margin="0,0,5,0"
+          VerticalAlignment="Center"
+          FontSize="13"
+          Foreground="Gray"
+          Text="Remove All" />
+        <Button
+          Name="RemoveAllFileButton"
+          Grid.Column="2"
+          Width="20"
+          Height="20"
+          HorizontalAlignment="Right"
+          BorderThickness="0"
+          Command="{Binding RemoveAllFilesCommand}">
+          <Button.Style>
+            <Style TargetType="{x:Type Button}">
+              <Setter Property="Background" Value="{StaticResource RemoveImage}" />
+              <Setter Property="Template">
+                <Setter.Value>
+                  <ControlTemplate TargetType="Button">
+                    <Grid Background="{TemplateBinding Background}">
+                      <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
+                  </ControlTemplate>
+                </Setter.Value>
+              </Setter>
+              <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                  <Setter Property="Background" Value="{StaticResource RemoverHoverImage}" />
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </Button.Style>
+        </Button>
+      </StackPanel>
+
+
       <ListView
         x:Name="CollectionItems"
-        Grid.Row="0"
+        Grid.Row="1"
         Background="White"
         ItemsSource="{Binding SelectedFiles, Mode=TwoWay}"
         ScrollViewer.CanContentScroll="True"
@@ -153,7 +198,7 @@
       </ListView>
 
       <Button
-        Grid.Row="1"
+        Grid.Row="2"
         Width="115"
         HorizontalAlignment="Right"
         VerticalAlignment="Center"
@@ -171,6 +216,7 @@
         </StackPanel>
       </Button>
     </Grid>
+
     <TextBlock
       x:Name="WarningTextBox"
       Grid.Row="3"
