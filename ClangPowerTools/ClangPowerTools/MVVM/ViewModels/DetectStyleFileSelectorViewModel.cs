@@ -16,6 +16,7 @@ namespace ClangPowerTools
     private readonly DetectStyleFileSelectorView view;
 
     private ICommand browseCommand;
+    private ICommand removeAllFilesCommand;
     private ICommand detectFormatStyleCommand;
 
     long totalFilesSize = 0;
@@ -32,6 +33,7 @@ namespace ClangPowerTools
     {
       this.view = view;
       view.DetectFormatStyleButton.IsEnabled = false;
+      view.RemoveAllSection.IsEnabled = false;
     }
 
     #endregion
@@ -44,6 +46,10 @@ namespace ClangPowerTools
     public ICommand Browse
     {
       get => browseCommand ?? (browseCommand = new RelayCommand(() => BrowseForFiles(), () => CanExecute));
+    }
+    public ICommand RemoveAllFilesCommand
+    {
+      get => removeAllFilesCommand ?? (removeAllFilesCommand = new RelayCommand(() => RemoveAllFiles(), () => CanExecute));
     }
 
     public ICommand DetectFormatStyleCommand
@@ -79,7 +85,7 @@ namespace ClangPowerTools
         AddNewElement(filePaths[index]);
       }
 
-      view.DetectFormatStyleButton.IsEnabled = SelectedFiles.Count > 0;
+      ChangeButtonsState(SelectedFiles.Count > 0);
 
       if (totalFilesSize > MAX_FILE_SIZE &&
         view.WarningTextBox.Visibility != System.Windows.Visibility.Visible)
@@ -99,6 +105,13 @@ namespace ClangPowerTools
       SelectedFiles.Add(model);
     }
 
+    private void RemoveAllFiles()
+    {
+      SelectedFiles.Clear();
+      view.WarningTextBox.Visibility = System.Windows.Visibility.Hidden;
+      ChangeButtonsState(false);
+    }
+
     public void RemoveFile(int index)
     {
       if (index < 0 || index >= SelectedFiles.Count)
@@ -108,7 +121,7 @@ namespace ClangPowerTools
       totalFilesSize -= model.FileSize;
       SelectedFiles.RemoveAt(index);
 
-      view.DetectFormatStyleButton.IsEnabled = SelectedFiles.Count != 0;
+      ChangeButtonsState(SelectedFiles.Count != 0);
 
       if (totalFilesSize <= MAX_FILE_SIZE)
         view.WarningTextBox.Visibility = System.Windows.Visibility.Hidden;
@@ -122,6 +135,14 @@ namespace ClangPowerTools
       view.IsEnabled = false;
       await diffWin.ShowDiffAsync(filesPath, view);
       view.IsEnabled = true;
+    }
+
+    private void ChangeButtonsState(bool stateFlag)
+    {
+      view.DetectFormatStyleButton.IsEnabled = stateFlag;
+      view.RemoveAllSection.IsEnabled = stateFlag;
+      view.RemoveAllTextBlock.Foreground = stateFlag ?
+        System.Windows.Media.Brushes.Black : System.Windows.Media.Brushes.Gray;
     }
 
     #endregion
