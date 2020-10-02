@@ -8,7 +8,6 @@ namespace ClangPowerTools.MVVM.Models
     #region Members
 
     public event PropertyChangedEventHandler PropertyChanged;
-    private bool isReadOnly = false;
     private string filePath = string.Empty;
 
     #endregion
@@ -18,7 +17,7 @@ namespace ClangPowerTools.MVVM.Models
 
     public SelectedFileModel(string path)
     {
-      if (!File.Exists(FilePath))
+      if (!File.Exists(path))
         return;
 
       FilePath = path;
@@ -44,20 +43,6 @@ namespace ClangPowerTools.MVVM.Models
     }
 
     public long FileSize { get; private set; } = 0;
-
-    public bool IsReadOnly
-    {
-      get
-      {
-        return isReadOnly;
-      }
-      set
-      {
-        isReadOnly = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CanEdit"));
-      }
-    }
-
 
     #endregion
   }
