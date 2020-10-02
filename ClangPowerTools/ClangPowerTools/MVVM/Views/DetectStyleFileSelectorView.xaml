@@ -85,7 +85,6 @@
           Margin="0,0,5,0"
           VerticalAlignment="Center"
           FontSize="13"
-          Foreground="Gray"
           Text="Remove All" />
         <Button
           Name="RemoveAllFileButton"
@@ -121,6 +120,7 @@
       <ListView
         x:Name="CollectionItems"
         Grid.Row="1"
+        AlternationCount="2"
         Background="White"
         ItemsSource="{Binding SelectedFiles, Mode=TwoWay}"
         ScrollViewer.CanContentScroll="True"
@@ -134,6 +134,14 @@
             <Setter Property="BorderThickness" Value="1" />
             <Setter Property="Focusable" Value="True" />
             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Style.Triggers>
+              <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                <Setter Property="Background" Value="White" />
+              </Trigger>
+              <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                <Setter Property="Background" Value="WhiteSmoke" />
+              </Trigger>
+            </Style.Triggers>
           </Style>
         </ListView.ItemContainerStyle>
 
@@ -153,6 +161,7 @@
                 Margin="5,0,15,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
+                Background="Transparent"
                 FontWeight="Normal"
                 Foreground="Gray"
                 Text="1" />
@@ -160,6 +169,7 @@
                 x:Name="InputField"
                 Grid.Column="1"
                 VerticalAlignment="Center"
+                Background="Transparent"
                 BorderThickness="0"
                 IsReadOnly="True"
                 Text="{Binding FilePath, Mode=OneTime}" />
