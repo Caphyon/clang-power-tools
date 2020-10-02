@@ -149,7 +149,7 @@
           <DataTemplate>
             <Grid>
               <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50" />
+                <ColumnDefinition Width="75" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
@@ -157,22 +157,23 @@
                 <RowDefinition Height="38" />
               </Grid.RowDefinitions>
               <TextBlock
+                x:Name="FileSizeTextBlock"
                 Grid.Column="0"
                 Margin="5,0,15,0"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Background="Transparent"
                 FontWeight="Normal"
-                Foreground="Gray"
-                Text="1" />
-              <TextBox
+                Foreground="{Binding ForgroundColor}"
+                Text="{Binding FileSizeAsString}" />
+              <TextBlock
                 x:Name="InputField"
                 Grid.Column="1"
                 VerticalAlignment="Center"
                 Background="Transparent"
-                BorderThickness="0"
-                IsReadOnly="True"
-                Text="{Binding FilePath, Mode=OneTime}" />
+                Foreground="{Binding ForgroundColor}"
+                Text="{Binding FilePath, Mode=TwoWay}" />
+
               <Button
                 Name="RemoveFileButton"
                 Grid.Column="2"

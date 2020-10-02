@@ -20,7 +20,7 @@ namespace ClangPowerTools
     private ICommand detectFormatStyleCommand;
 
     long totalFilesSize = 0;
-    private const long MAX_FILE_SIZE = 1500000; // 1.5 MB
+    private const long MAX_FILE_SIZE = 1000000; //  1 MB
 
     #endregion
 
