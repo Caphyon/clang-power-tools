@@ -8,13 +8,13 @@
     public const string DiffPerfectMatchFound = "// Clang Power Tools has found a perfect diff match for this file.\r\n//\r\n// Generate your Clang-Format file and start using it in your projects.";
 
     public const string DetectingTitle = "Detecting Clang-Format Style";
-    public const string DetectingDescription = "Process will take some time depending on size (10 000 lines ~2 minutes)";
-    public const string DetectingDescriptionExtra = "Larger code samples may result in detecting more format flags";
+    public const string DetectingDescription = "Process will take some time, depending on size (10 000 lines ~2 minutes)";
+    public const string DetectingDescriptionExtra = "Varied code samples may result in detecting more format flags";
 
     public const string UpdateTitle = "Updating Format Preview";
-    public const string UpdateDescription = "The changed Format Options are being applied to the Format Preview diff";
+    public const string UpdateDescription = "The modified Format Options are being applied to the Format Preview";
 
-    public const string ResetTitle = "Restoring Format Options";
-    public const string ResetDescription = "Restore to detected Format Options";
+    public const string ResetTitle = "Reseting Format Options";
+    public const string ResetDescription = "Format Options are being reset to their initial detected values";
   }
 }
