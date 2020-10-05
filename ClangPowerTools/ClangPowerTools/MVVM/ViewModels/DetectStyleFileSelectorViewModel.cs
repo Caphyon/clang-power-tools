@@ -21,7 +21,7 @@ namespace ClangPowerTools
 
     long totalFilesSize = 0;
     private const long MAX_FILE_SIZE = 1000000; //  1 MB
-    private const int MAX_SIZE_FILE_PATH = 90;
+    private const int MAX_SIZE_FILE_PATH = 90; // KB
 
     #endregion
 
@@ -33,8 +33,7 @@ namespace ClangPowerTools
     public DetectStyleFileSelectorViewModel(DetectStyleFileSelectorView view)
     {
       this.view = view;
-      view.DetectFormatStyleButton.IsEnabled = false;
-      view.RemoveAllSection.IsEnabled = false;
+      ChangeButtonsState(false);
     }
 
     #endregion
@@ -85,6 +84,14 @@ namespace ClangPowerTools
 
         string filePathToShow = CreateMiddleEllipsis(filePaths[index]);
         AddNewElement(filePaths[index], filePathToShow);
+      }
+
+      var sorted = SelectedFiles.OrderByDescending(file => file.FileSize).ToList();
+
+      SelectedFiles.Clear();
+      foreach (var file in sorted)
+      {
+        SelectedFiles.Add(file);
       }
 
       ChangeButtonsState(SelectedFiles.Count > 0);
