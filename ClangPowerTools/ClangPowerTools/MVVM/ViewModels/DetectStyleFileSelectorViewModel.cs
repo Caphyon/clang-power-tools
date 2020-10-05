@@ -21,6 +21,7 @@ namespace ClangPowerTools
 
     long totalFilesSize = 0;
     private const long MAX_FILE_SIZE = 1000000; //  1 MB
+    private const int MAX_SIZE_FILE_PATH = 90;
 
     #endregion
 
@@ -82,7 +83,8 @@ namespace ClangPowerTools
         if (IsDuplicate(filePaths[index]))
           continue;
 
-        AddNewElement(filePaths[index]);
+        string filePathToShow = CreateMiddleEllipsis(filePaths[index]);
+        AddNewElement(filePaths[index], filePathToShow);
       }
 
       ChangeButtonsState(SelectedFiles.Count > 0);
@@ -98,11 +100,28 @@ namespace ClangPowerTools
 
     private bool IsDuplicate(string filePath) => SelectedFiles.FirstOrDefault(model => model.FilePath == filePath) != null;
 
-    private void AddNewElement(string filePath)
+    private void AddNewElement(string filePath, string filePathToShow)
     {
-      var model = new SelectedFileModel(filePath);
+      var model = new SelectedFileModel(filePath, filePathToShow);
       totalFilesSize += model.FileSize;
       SelectedFiles.Add(model);
+    }
+
+    private string CreateMiddleEllipsis(string filePath)
+    {
+      if (filePath.Length <= MAX_SIZE_FILE_PATH)
+        return filePath;
+
+      while (filePath.Length > MAX_SIZE_FILE_PATH)
+        filePath = filePath.Remove(filePath.Length / 2, 1);
+
+      var begin = filePath.Substring(0, filePath.Length / 2);
+      begin = begin.Reverse().SubstringAfter("\\").Reverse();
+
+      var end = filePath.Substring(filePath.Length / 2);
+      end = end.SubstringAfter("\\");
+
+      return $"{begin}\\...\\{end}";
     }
 
     private void RemoveAllFiles()

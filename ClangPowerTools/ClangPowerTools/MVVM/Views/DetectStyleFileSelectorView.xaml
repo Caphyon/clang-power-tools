@@ -172,7 +172,8 @@
                 VerticalAlignment="Center"
                 Background="Transparent"
                 Foreground="{Binding ForgroundColor}"
-                Text="{Binding FilePath, Mode=TwoWay}" />
+                Text="{Binding FilePathToShow}"
+                ToolTip="{Binding FilePath}" />
 
               <Button
                 Name="RemoveFileButton"

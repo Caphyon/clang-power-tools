@@ -1,32 +1,28 @@
-﻿using System.ComponentModel;
-using System.IO;
+﻿using System.IO;
 
 namespace ClangPowerTools.MVVM.Models
 {
-  public class SelectedFileModel : INotifyPropertyChanged
+  public class SelectedFileModel
   {
     #region Members
 
-    public event PropertyChangedEventHandler PropertyChanged;
-    private string filePath = string.Empty;
     private const int MAX_FILE_SIZE = 500; // KB
-    private const int MAX_SIZE_FILE_PATH = 100;
 
     #endregion
 
 
     #region Constructor
 
-    public SelectedFileModel(string path)
+    public SelectedFileModel(string path, string pathToShow)
     {
       if (!File.Exists(path))
         return;
 
-      filePath = path;
-      FileSize = new FileInfo(filePath).Length / 1000;
+      FilePath = path;
+      FileSize = new FileInfo(FilePath).Length / 1000;
+      FilePathToShow = pathToShow;
 
       ForgroundColor = FileSize > MAX_FILE_SIZE ? "DarkOrange" : "Black";
-
       FileSizeAsString = FileSize.ToString() + " KB";
     }
 
@@ -35,18 +31,9 @@ namespace ClangPowerTools.MVVM.Models
 
     #region Properties
 
-    public string FilePath
-    {
-      get
-      {
-        return filePath.Length <= MAX_SIZE_FILE_PATH ? filePath : CreateMiddleEllipsis();
-      }
-      set
-      {
-        filePath = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FilePath"));
-      }
-    }
+    public string FilePath { get; private set; }
+
+    public string FilePathToShow { get; private set; }
 
     public long FileSize { get; private set; }
 
@@ -56,18 +43,5 @@ namespace ClangPowerTools.MVVM.Models
 
     #endregion
 
-    private string CreateMiddleEllipsis()
-    {
-      while (filePath.Length > MAX_SIZE_FILE_PATH)
-        filePath = filePath.Remove(filePath.Length / 2, 1);
-
-      var begin = filePath.Substring(0, filePath.Length / 2);
-      begin = begin.Reverse().SubstringAfter("\\").Reverse();
-
-      var end = filePath.Substring(filePath.Length / 2);
-      end = end.SubstringAfter("\\");
-
-      return $"{begin}\\...\\{end}";
-    }
   }
 }
