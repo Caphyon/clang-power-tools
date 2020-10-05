@@ -10,6 +10,7 @@ namespace ClangPowerTools.MVVM.Models
     public event PropertyChangedEventHandler PropertyChanged;
     private string filePath = string.Empty;
     private const int MAX_FILE_SIZE = 500; // KB
+    private const int MAX_SIZE_FILE_PATH = 100;
 
     #endregion
 
@@ -21,8 +22,8 @@ namespace ClangPowerTools.MVVM.Models
       if (!File.Exists(path))
         return;
 
-      FilePath = path;
-      FileSize = new FileInfo(FilePath).Length / 1000;
+      filePath = path;
+      FileSize = new FileInfo(filePath).Length / 1000;
 
       ForgroundColor = FileSize > MAX_FILE_SIZE ? "DarkOrange" : "Black";
 
@@ -38,7 +39,7 @@ namespace ClangPowerTools.MVVM.Models
     {
       get
       {
-        return filePath;
+        return filePath.Length <= MAX_SIZE_FILE_PATH ? filePath : CreateMiddleEllipsis();
       }
       set
       {
@@ -54,5 +55,19 @@ namespace ClangPowerTools.MVVM.Models
     public string ForgroundColor { get; private set; }
 
     #endregion
+
+    private string CreateMiddleEllipsis()
+    {
+      while (filePath.Length > MAX_SIZE_FILE_PATH)
+        filePath = filePath.Remove(filePath.Length / 2, 1);
+
+      var begin = filePath.Substring(0, filePath.Length / 2);
+      begin = begin.Reverse().SubstringAfter("\\").Reverse();
+
+      var end = filePath.Substring(filePath.Length / 2);
+      end = end.SubstringAfter("\\");
+
+      return $"{begin}\\...\\{end}";
+    }
   }
 }
