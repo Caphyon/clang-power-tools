@@ -6,7 +6,7 @@ namespace ClangPowerTools.MVVM.Models
   {
     #region Members
 
-    private const int MAX_FILE_SIZE = 500; // KB
+    private const int MAX_FILE_SIZE = 80; // KB
 
     #endregion
 
