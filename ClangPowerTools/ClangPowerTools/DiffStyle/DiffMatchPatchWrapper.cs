@@ -182,9 +182,9 @@ namespace ClangPowerTools
         // This is done my adding lines that contain just Environment.NewLine to the inputLines and outputLines
         inputLines = EqualizeDocumentLength(output, input);
         outputLines = EqualizeDocumentLength(input, output);
-      }
 
-      if (inputLines.Count != outputLines.Count) return;
+        if (inputLines.Count < outputLines.Count) return;
+      }
 
       for (int index = 0; index < outputLines.Count; index++)
       {
@@ -206,7 +206,9 @@ namespace ClangPowerTools
         NumberOfOperations(lineDiffs, out int inserations, out int deletions, out int equalities);
         if (inserations > 0 || deletions > 0)
         {
-          if (inserations > 0 && deletions > 0 || equalities > 0 && lineDiffs.Last().operation == Operation.DELETE)
+          if (inserations > 0 && deletions > 0
+            || equalities > 0 && lineDiffs.Last().operation == Operation.DELETE
+            || equalities > 0 && lineDiffs.First().operation == Operation.DELETE)
           {
             inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
             outputOperationPerLine.Add((outputLines[index], LineChanges.HASCHANGES));
