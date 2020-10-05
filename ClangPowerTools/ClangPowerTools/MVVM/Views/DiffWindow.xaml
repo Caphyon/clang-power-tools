@@ -123,10 +123,10 @@
       <Grid.RowDefinitions>
         <RowDefinition Height="40" />
         <RowDefinition Height="*" />
-        <RowDefinition Height="48" />
+        <RowDefinition Height="10" />
         <RowDefinition Height="auto" />
         <RowDefinition Height="210" />
-        <RowDefinition Height="40" />
+        <RowDefinition Height="60" />
       </Grid.RowDefinitions>
 
       <Grid.ColumnDefinitions>
@@ -234,7 +234,7 @@
                     <TextBox
                       x:Name="InputText"
                       Width="80"
-                      Height="18"
+                      Height="20"
                       HorizontalAlignment="Right"
                       FontSize="12"
                       Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}"
@@ -285,22 +285,7 @@
         </ListView.View>
       </ListView>
 
-      <!--  Reload / Preview Style Changes button  -->
-      <Button
-        x:Name="ReloadButton"
-        Grid.Row="2"
-        Grid.Column="0"
-        Width="408"
-        Height="28"
-        Command="{Binding ReloadCommand}"
-        Content="Preview Style"
-        FontSize="14"
-        Foreground="White"
-        IsEnabled="False"
-        Style="{StaticResource SettingsButton}"
-        ToolTip="Apply the option changes and see the effects in Format Preview" />
-
-      <!--  Option description  -->
+      <!--  Selected Option  -->
       <RichTextBox
         Grid.Row="3"
         Grid.Column="0"
@@ -331,28 +316,60 @@
         TextWrapping="Wrap"
         VerticalScrollBarVisibility="Auto" />
 
-      <!--  Export / Generate button  -->
-      <Button
+      <!--  Bottom Buttons  -->
+      <Grid
         Grid.Row="5"
         Grid.Column="0"
-        Width="408"
-        Height="30"
-        Command="{Binding CreateFormatFileCommand}"
-        Style="{StaticResource SettingsButton}"
-        ToolTip="Create a .clang-format file containing the detected options">
-        <StackPanel Orientation="Horizontal">
-          <Image
-            Width="16"
-            Height="16"
-            Source="/ClangPowerTools;component/Resources/GenerateClangFormatFile.png" />
-          <Label
-            Padding="2"
-            FontSize="16"
-            Foreground="White">
-            Generate Clang-Format
-          </Label>
-        </StackPanel>
-      </Button>
+        HorizontalAlignment="Center">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="10" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="12" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="10" />
+        </Grid.ColumnDefinitions>
+
+        <!--  Reload / Preview Style Changes button  -->
+        <Button
+          x:Name="ReloadButton"
+          Grid.Column="1"
+          Width="185"
+          Height="28"
+          Command="{Binding ReloadCommand}"
+          Content="Preview Style"
+          FontSize="14"
+          Foreground="White"
+          IsEnabled="False"
+          Style="{StaticResource SettingsButton}"
+          ToolTip="Apply the option changes and see the effects in Format Preview" />
+
+        <!--  Export / Generate button  -->
+        <Button
+          Grid.Column="3"
+          Width="185"
+          Height="30"
+          Command="{Binding CreateFormatFileCommand}"
+          Style="{StaticResource SettingsButton}"
+          ToolTip="Create a .clang-format file containing the detected options">
+          <StackPanel Orientation="Horizontal">
+            <Image
+              Width="16"
+              Height="16"
+              Source="/ClangPowerTools;component/Resources/GenerateClangFormatFile.png" />
+            <Label
+              Padding="2"
+              FontSize="14"
+              Foreground="White">
+              Generate Clang-Format
+            </Label>
+          </StackPanel>
+        </Button>
+      </Grid>
+
     </Grid>
   </Grid>
 </Window>
