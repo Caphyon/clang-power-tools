@@ -20,8 +20,11 @@ namespace ClangPowerTools
     private ICommand detectFormatStyleCommand;
 
     long totalFilesSize = 0;
-    private const long MAX_FILE_SIZE = 1000000; //  1 MB
-    private const int MAX_SIZE_FILE_PATH = 90; // KB
+    private const long MAX_FILE_SIZE = 1000; //  1 MB
+    private const int MAX_LENGTH_FILE_PATH = 90; // KB
+    private const int MAX_SIZE_PER_FILE = 80; // KB
+
+    private bool totalFileSizeFlag = false;
 
     #endregion
 
@@ -96,10 +99,15 @@ namespace ClangPowerTools
 
       ChangeButtonsState(SelectedFiles.Count > 0);
 
-      if (totalFilesSize > MAX_FILE_SIZE &&
-        view.WarningTextBox.Visibility != System.Windows.Visibility.Visible)
+      if (view.WarningTextBox.Visibility != System.Windows.Visibility.Visible &&
+        SelectedFiles.Any(file => file.FileSize > MAX_SIZE_PER_FILE))
       {
         view.WarningTextBox.Visibility = System.Windows.Visibility.Visible;
+      }
+
+      if (!totalFileSizeFlag && totalFilesSize > MAX_FILE_SIZE)
+      {
+        totalFileSizeFlag = true;
         var warning = new FileSizeWarningView(view);
         warning.Show();
       }
@@ -116,10 +124,10 @@ namespace ClangPowerTools
 
     private string CreateMiddleEllipsis(string filePath)
     {
-      if (filePath.Length <= MAX_SIZE_FILE_PATH)
+      if (filePath.Length <= MAX_LENGTH_FILE_PATH)
         return filePath;
 
-      while (filePath.Length > MAX_SIZE_FILE_PATH)
+      while (filePath.Length > MAX_LENGTH_FILE_PATH)
         filePath = filePath.Remove(filePath.Length / 2, 1);
 
       var begin = filePath.Substring(0, filePath.Length / 2);
@@ -134,6 +142,8 @@ namespace ClangPowerTools
     private void RemoveAllFiles()
     {
       SelectedFiles.Clear();
+      totalFileSizeFlag = false;
+      totalFilesSize = 0;
       view.WarningTextBox.Visibility = System.Windows.Visibility.Hidden;
       ChangeButtonsState(false);
     }
@@ -149,8 +159,10 @@ namespace ClangPowerTools
 
       ChangeButtonsState(SelectedFiles.Count != 0);
 
-      if (totalFilesSize <= MAX_FILE_SIZE)
+      if (!SelectedFiles.Any(file => file.FileSize > MAX_SIZE_PER_FILE))
         view.WarningTextBox.Visibility = System.Windows.Visibility.Hidden;
+
+      totalFileSizeFlag = totalFilesSize > MAX_FILE_SIZE;
     }
 
     private async Task DetectFormatStyleAsync()
