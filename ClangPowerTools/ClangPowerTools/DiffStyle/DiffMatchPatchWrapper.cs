@@ -145,6 +145,7 @@ namespace ClangPowerTools
 
       DetectOperationPerLine(input.Trim(), output.Trim(), inputOperationPerLine, outputOperationPerLine);
       CreateDiffParagraph(paragraphInput, inputOperationPerLine, (Brush)new BrushConverter().ConvertFrom("#FED8B1"));
+
       if (diffs.Count == 1 && diffs.First().operation == Operation.EQUAL)
       {
         paragraphOutput.FontWeight = FontWeights.DemiBold;
