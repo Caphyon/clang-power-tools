@@ -7,7 +7,6 @@ using ClangPowerTools.MVVM.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -37,7 +36,6 @@ namespace ClangPowerTools
     private ICommand resetCommand;
     private string selectedFile;
     private int multipleInputDataIndex;
-    private double pageWith = 1024.0;
 
     #endregion
 
@@ -274,45 +272,8 @@ namespace ClangPowerTools
       diffInput = flowDocuments[SelectedIndex].Item1;
       diffOutput = flowDocuments[SelectedIndex].Item2;
 
-      pageWith = GetMaxWidth(diffInput, diffOutput);
-      diffInput.PageWidth = pageWith;
-      diffOutput.PageWidth = pageWith;
-
       diffWindow.DiffInput.Document = diffInput;
       diffWindow.DiffOutput.Document = diffOutput;
-    }
-
-    private double GetMaxWidth(FlowDocument diffInput, FlowDocument diffOutput)
-    {
-      var inputMaxLineLenght = GetDocumentMaxLineWidth(diffInput);
-      var outputMaxLineLenght = GetDocumentMaxLineWidth(diffOutput);
-
-      return inputMaxLineLenght > outputMaxLineLenght ? inputMaxLineLenght : outputMaxLineLenght;
-    }
-
-    private double GetDocumentMaxLineWidth(FlowDocument document)
-    {
-      var maxWidth = -1;
-      TextRange textRange = new TextRange(document.ContentStart, document.ContentEnd);
-      using StringReader sr = new StringReader(textRange.Text);
-      string line;
-      while ((line = sr.ReadLine()) != null)
-      {
-        if (line.Length > maxWidth)
-        {
-          maxWidth = line.Length;
-        }
-      }
-
-      if (maxWidth < 0)
-      {
-        return pageWith;
-      }
-      else
-      {
-        // Flowdocument width is set in pixels depending on font type and size 
-        return maxWidth * 1.2;
-      }
     }
 
     private void DetectionFinished(List<string> filesPath)
