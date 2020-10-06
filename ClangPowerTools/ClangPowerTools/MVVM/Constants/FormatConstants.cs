@@ -16,5 +16,8 @@
 
     public const string ResetTitle = "Reseting Format Options";
     public const string ResetDescription = "Format Options are being reset to their initial detected values";
+
+    public const string FontFamily = "Consolas";
+    public const int FontSize = 12;
   }
 }
