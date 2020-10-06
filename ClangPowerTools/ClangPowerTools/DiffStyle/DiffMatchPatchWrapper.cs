@@ -1,6 +1,7 @@
 ﻿using Compare.DiffMatchPatch;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -14,7 +15,11 @@ namespace ClangPowerTools
     #region Members
 
     public List<Diff> diffs;
+
     private DiffMatchPatch diffMatchPatch;
+    private int maxLineWidth;
+    private List<string> inputLines;
+    private List<string> outputLines;
 
     // DiffMatchPatch defaults
     private readonly float diffTimeout = 1.0f;
@@ -24,8 +29,7 @@ namespace ClangPowerTools
     private readonly float patchDeleteThreshold = 0.5f;
     private readonly short patchMargin = 4;
 
-    private const int LineWith = 1000;
-
+    private const int PaddingSafety = 80;
     #endregion
 
     #region Constructors
@@ -143,7 +147,12 @@ namespace ClangPowerTools
       var inputOperationPerLine = new List<(object, LineChanges)>();
       var outputOperationPerLine = new List<(object, LineChanges)>();
 
-      DetectOperationPerLine(input.Trim(), output.Trim(), inputOperationPerLine, outputOperationPerLine);
+      input = input.Trim();
+      output = output.Trim();
+      CreateIntputOutputLines(input, output);
+      SetMaxLineWidth();
+      DetectOperationPerLine(input, output, inputOperationPerLine, outputOperationPerLine);
+
       CreateDiffParagraph(paragraphInput, inputOperationPerLine, (Brush)new BrushConverter().ConvertFrom("#FED8B1"));
 
       if (diffs.Count == 1 && diffs.First().operation == Operation.EQUAL)
@@ -160,6 +169,12 @@ namespace ClangPowerTools
       return CreateFlowDocuments(paragraphInput, paragraphOutput);
     }
 
+    private void CreateIntputOutputLines(string input, string output)
+    {
+      inputLines = input.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+      outputLines = output.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
+    }
+
     #endregion
 
     #region Private Methods
@@ -173,8 +188,6 @@ namespace ClangPowerTools
     /// <param name="outputOperationPerLine"></param>
     private void DetectOperationPerLine(string input, string output, List<(object, LineChanges)> inputOperationPerLine, List<(object, LineChanges)> outputOperationPerLine)
     {
-      var inputLines = input.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
-      var outputLines = output.Split(new[] { Environment.NewLine }, StringSplitOptions.None).ToList();
       bool equalTexts = inputLines.Count == outputLines.Count;
 
       if (equalTexts == false)
@@ -315,6 +328,9 @@ namespace ClangPowerTools
 
     private void CreateDiffParagraph(Paragraph paragraph, List<(object, LineChanges)> operationLines, Brush lineDiffColor)
     {
+      paragraph.FontFamily = new FontFamily(FormatConstants.FontFamily);
+      paragraph.FontSize = FormatConstants.FontSize;
+
       for (int i = 0; i < operationLines.Count; i++)
       {
         AddLineNumberToParagraphLine(paragraph, i + 1, operationLines.Count, 2);
@@ -334,14 +350,14 @@ namespace ClangPowerTools
             }
             else
             {
-              run.Text = AddPadding((string)operationLines[i].Item1, LineWith, false);
+              run.Text = AddPadding((string)operationLines[i].Item1, maxLineWidth, false);
               run.Background = lineDiffColor;
               paragraph.Inlines.Add(run);
               paragraph.Inlines.Add(Environment.NewLine);
             }
             break;
           case LineChanges.NEWLINE:
-            run.Text = AddPadding((string)operationLines[i].Item1, LineWith, true);
+            run.Text = AddPadding((string)operationLines[i].Item1, maxLineWidth, true);
             run.Background = (Brush)new BrushConverter().ConvertFrom("#D3D3D3");
             paragraph.Inlines.Add(run);
             break;
@@ -355,7 +371,40 @@ namespace ClangPowerTools
       var diffOutput = new FlowDocument();
       diffInput.Blocks.Add(paragraphInput);
       diffOutput.Blocks.Add(paragraphOutput);
+
+      diffInput.PageWidth = maxLineWidth;
+      diffOutput.PageWidth = maxLineWidth;
+
       return (diffInput, diffOutput);
+    }
+
+    private void SetMaxLineWidth()
+    {
+      var maxLengthInputLine = GetMaxLineWidth(inputLines);
+      var maxLengthOutputLine = GetMaxLineWidth(outputLines);
+      maxLineWidth = maxLengthInputLine > maxLengthOutputLine ? maxLengthInputLine : maxLengthOutputLine;
+    }
+
+    private int GetMaxLineWidth(List<string> lines)
+    {
+      var maxSize = .0;
+      foreach (var line in lines)
+      {
+        var formattedText = new FormattedText(
+        line,
+        CultureInfo.GetCultureInfo("en-us"),
+        FlowDirection.LeftToRight,
+        new Typeface(FormatConstants.FontFamily),
+        FormatConstants.FontSize,
+        Brushes.Black
+        );
+
+        if (formattedText.Width > maxSize)
+        {
+          maxSize = formattedText.Width;
+        }
+      }
+      return (int)maxSize + PaddingSafety;
     }
 
     private string AddPadding(string text, int targetPadding, bool isNewLine)
