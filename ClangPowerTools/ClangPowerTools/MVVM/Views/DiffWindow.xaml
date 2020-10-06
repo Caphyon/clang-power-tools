@@ -64,7 +64,8 @@
           Width="15"
           Height="15"
           Margin="3"
-          Source="/ClangPowerTools;component/Resources/Input.png" />
+          VerticalAlignment="Center"
+          Source="/ClangPowerTools;component/Resources/FileIcon.png" />
         <TextBlock
           Width="32"
           FontSize="16"
@@ -96,10 +97,11 @@
         HorizontalAlignment="Center"
         Orientation="Horizontal">
         <Image
-          Width="15"
-          Height="15"
+          Width="20"
+          Height="20"
           Margin="3"
-          Source="/ClangPowerTools;component/Resources/Output.png" />
+          VerticalAlignment="Center"
+          Source="/ClangPowerTools;component/Resources/PreviewIcon.png" />
         <TextBlock
           Width="112"
           FontSize="16"
@@ -340,12 +342,24 @@
           Width="185"
           Height="28"
           Command="{Binding ReloadCommand}"
-          Content="Preview Style"
           FontSize="14"
           Foreground="White"
           IsEnabled="False"
           Style="{StaticResource SettingsButton}"
-          ToolTip="Apply the option changes and see the effects in Format Preview" />
+          ToolTip="Apply the option changes and see the effects in Format Preview">
+          <StackPanel Orientation="Horizontal">
+            <Image
+              Width="23"
+              Height="23"
+              Source="/ClangPowerTools;component/Resources/PreviewWhiteIcon.png" />
+            <Label
+              Padding="2"
+              FontSize="14"
+              Foreground="White">
+              Preview Style
+            </Label>
+          </StackPanel>
+        </Button>
 
         <!--  Export / Generate button  -->
         <Button

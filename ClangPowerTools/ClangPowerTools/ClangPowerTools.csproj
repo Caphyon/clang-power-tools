@@ -426,6 +426,7 @@
     <Resource Include="Resources\ResetIcon.png" />
     <Resource Include="Resources\GenerateClangFormatFile.png" />
     <Resource Include="Resources\InfoIcon.png" />
+    <Resource Include="Resources\FileIcon.png" />
     <Content Include="Resources\LICENSE.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -626,6 +627,8 @@
     <Resource Include="Resources\Output.png" />
     <Resource Include="Resources\LogoutIcon.png" />
     <Resource Include="Resources\ProjectFilesIcon.png" />
+    <Resource Include="Resources\PreviewIcon.png" />
+    <Resource Include="Resources\PreviewWhiteIcon.png" />
     <Content Include="Resources\RunPowerShellCommandPackage.ico">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
