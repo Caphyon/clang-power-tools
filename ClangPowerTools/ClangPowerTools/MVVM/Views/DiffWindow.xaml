@@ -340,7 +340,7 @@
           x:Name="ReloadButton"
           Grid.Column="1"
           Width="185"
-          Height="28"
+          Height="30"
           Command="{Binding ReloadCommand}"
           FontSize="14"
           Foreground="White"
