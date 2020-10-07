@@ -272,7 +272,6 @@ namespace ClangPowerTools.DiffStyle
 
     private void SetFormatOption(IFormatOption formatOption, string input, EditorStyles formatStyle, List<IFormatOption> formatOptions)
     {
-      var test = formatOption.Name;
       switch (formatOption)
       {
         case FormatOptionToggleModel toggleModel:
