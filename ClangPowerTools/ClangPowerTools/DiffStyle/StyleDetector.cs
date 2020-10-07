@@ -232,7 +232,7 @@ namespace ClangPowerTools.DiffStyle
     /// <param name="input"></param>
     private void SetOptionInput(FormatOptionInputModel inputModel, string input, EditorStyles formatStyle, List<IFormatOption> formatOptions)
     {
-      if (FormatOptionsInputValues.inputValues.ContainsKey(inputModel.Name) == false) return;
+      if (FormatOptionsInputValues.inputValues.ContainsKey(inputModel.Name.Trim()) == false) return;
 
       if (customInput.Contains(inputModel.Name))
       {
@@ -248,8 +248,10 @@ namespace ClangPowerTools.DiffStyle
         var previousInput = inputModel.Input;
         foreach (var item in inputValues)
         {
+          // cake
           inputModel.Input = item;
-          inputValuesLevenshtein.Add(item, GetLevenshteinAfterFormat(input, formatStyle, formatOptions));
+          var levenshtein = GetLevenshteinAfterFormat(input, formatStyle, formatOptions);
+          inputValuesLevenshtein.Add(item, levenshtein);
         }
 
         var inputValue = inputValuesLevenshtein.OrderBy(e => e.Value).First();
@@ -271,6 +273,7 @@ namespace ClangPowerTools.DiffStyle
 
     private void SetFormatOption(IFormatOption formatOption, string input, EditorStyles formatStyle, List<IFormatOption> formatOptions)
     {
+      var test = formatOption.Name;
       switch (formatOption)
       {
         case FormatOptionToggleModel toggleModel:
