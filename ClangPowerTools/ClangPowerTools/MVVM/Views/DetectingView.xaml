@@ -57,13 +57,14 @@
       IsIndeterminate="True"
       Style="{StaticResource ProgressBarStyle}" />
 
+    <!--  Text is changed programmatically  -->
     <TextBlock
       Name="Description"
       Grid.Row="3"
       Grid.Column="1"
       HorizontalAlignment="Center"
       Foreground="Gray"
-      Text="Process will take some time depending on size (10 000 lines ~2 minutes)"
+      Text="TEXT"
       TextWrapping="WrapWithOverflow" />
 
     <TextBlock
@@ -72,7 +73,7 @@
       Grid.Column="1"
       HorizontalAlignment="Center"
       Foreground="Gray"
-      Text="Larger code samples may result in detecting more format flags"
+      Text="TEXT"
       TextWrapping="WrapWithOverflow" />
   </Grid>
 </Window>
