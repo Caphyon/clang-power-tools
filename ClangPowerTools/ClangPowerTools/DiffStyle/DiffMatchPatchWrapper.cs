@@ -29,7 +29,7 @@ namespace ClangPowerTools
     private readonly float patchDeleteThreshold = 0.5f;
     private readonly short patchMargin = 4;
 
-    private const int PaddingSafety = 80;
+    private const int LineWidthSafety = 80;
     #endregion
 
     #region Constructors
@@ -404,7 +404,7 @@ namespace ClangPowerTools
           maxSize = formattedText.Width;
         }
       }
-      return (int)maxSize + PaddingSafety;
+      return (int)maxSize + LineWidthSafety;
     }
 
     private string AddPadding(string text, int targetPadding, bool isNewLine)

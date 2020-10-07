@@ -19,7 +19,6 @@
       <Setter Property="VerticalAlignment" Value="Center" />
       <Setter Property="Background" Value="#BCBAC1" />
       <Setter Property="Foreground" Value="#852012" />
-      <Setter Property="Margin" Value="0,0,15,0" />
     </Style>
   </Window.Resources>
 
@@ -52,6 +51,9 @@
     <ProgressBar
       Grid.Row="2"
       Grid.Column="1"
+      Width="480"
+      HorizontalAlignment="Center"
+      VerticalAlignment="Center"
       IsIndeterminate="True"
       Style="{StaticResource ProgressBarStyle}" />
 

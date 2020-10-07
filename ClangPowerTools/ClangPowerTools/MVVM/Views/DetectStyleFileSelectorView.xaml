@@ -36,9 +36,9 @@
 
   <Grid>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="15" />
-      <ColumnDefinition />
-      <ColumnDefinition Width="15" />
+      <ColumnDefinition Width="16" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="16" />
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
