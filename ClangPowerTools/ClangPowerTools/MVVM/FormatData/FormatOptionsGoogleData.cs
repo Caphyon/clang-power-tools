@@ -72,7 +72,7 @@ namespace ClangPowerTools
       new FormatOptionToggleModel{ Name = "ObjCSpaceAfterProperty", Paramater = "bool", Description = "Add a space after @property in Objective-C, i.e. use @property (readonly) instead of @property(readonly)", BooleanCombobox = ToggleValues.False },
       new FormatOptionToggleModel{ Name = "ObjCSpaceBeforeProtocolList", Paramater = "bool", Description = "Add a space in front of an Objective-C protocol list, i.e. use Foo <Protocol> instead of Foo<Protocol>.", BooleanCombobox = ToggleValues.True },
       new FormatOptionInputModel{ Name = "PenaltyBreakAssignment", Paramater = "unsigned", Description = "The penalty for breaking around an assignment operator.", Input = "2" },
-      new FormatOptionInputModel{ Name = "PenaltyBreakBeforeFirstCallParameter ", Paramater = "unsigned", Description = "The penalty for breaking a function call after \"call(\".", Input = "1" },
+      new FormatOptionInputModel{ Name = "PenaltyBreakBeforeFirstCallParameter", Paramater = "unsigned", Description = "The penalty for breaking a function call after \"call(\".", Input = "1" },
       new FormatOptionInputModel{ Name = "PenaltyBreakComment", Paramater = "unsigned", Description = "The penalty for each line break introduced inside a comment.", Input = "300" },
       new FormatOptionInputModel{ Name = "PenaltyBreakFirstLessLess", Paramater = "unsigned", Description = "The penalty for breaking before the first <<.", Input = "120" },
       new FormatOptionInputModel{ Name = "PenaltyBreakString", Paramater = "unsigned", Description = "The penalty for each line break introduced inside a string literal.", Input = "1000" },

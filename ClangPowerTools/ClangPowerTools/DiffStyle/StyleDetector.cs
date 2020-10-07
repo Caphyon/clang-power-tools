@@ -244,11 +244,10 @@ namespace ClangPowerTools.DiffStyle
       else
       {
         var inputValuesLevenshtein = new Dictionary<string, int>();
-        string[] inputValues = FormatOptionsInputValues.inputValues[inputModel.Name];
+        string[] inputValues = FormatOptionsInputValues.inputValues[inputModel.Name.Trim()];
         var previousInput = inputModel.Input;
         foreach (var item in inputValues)
         {
-          // cake
           inputModel.Input = item;
           var levenshtein = GetLevenshteinAfterFormat(input, formatStyle, formatOptions);
           inputValuesLevenshtein.Add(item, levenshtein);
