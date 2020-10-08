@@ -240,7 +240,6 @@
       Text="This operation will take longer due to the large file size."
       Visibility="Hidden" />
 
-
     <Button
       x:Name="DetectFormatStyleButton"
       Grid.Row="4"
@@ -249,10 +248,18 @@
       HorizontalAlignment="Center"
       VerticalAlignment="Top"
       Command="{Binding DetectFormatStyleCommand}"
-      Content="Detect Format Style"
       FontSize="15"
       Foreground="White"
-      Style="{StaticResource SettingsButton}" />
+      Style="{StaticResource SettingsButton}">
+      <StackPanel Orientation="Horizontal">
+        <Image Height="20" Source="{StaticResource DetectOnFileIcon}" />
+        <TextBlock
+          Margin="5,0,10,0"
+          VerticalAlignment="Center"
+          FontSize="15"
+          Text="Detect Format Style" />
+      </StackPanel>
+    </Button>
 
   </Grid>
 

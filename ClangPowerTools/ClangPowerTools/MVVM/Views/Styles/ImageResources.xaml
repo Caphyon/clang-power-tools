@@ -10,6 +10,7 @@
   <BitmapImage x:Key="BrowseImage" UriSource="/ClangPowerTools;component/Resources/Browse.png" />
   <BitmapImage x:Key="AccountAvatarIcon" UriSource="/ClangPowerTools;component/Resources/AccountAvatarIcon.png" />
   <BitmapImage x:Key="LogoutIcon" UriSource="/ClangPowerTools;component/Resources/LogoutIcon.png" />
+  <BitmapImage x:Key="DetectOnFileIcon" UriSource="/ClangPowerTools;component/Resources/DetectOnFileIcon.png" />
   <ImageBrush x:Key="RemoveImage" ImageSource="/ClangPowerTools;component/Resources/RemoveInputIdle.png" />
   <ImageBrush x:Key="RemoverHoverImage" ImageSource="/ClangPowerTools;component/Resources/RemoveInputHover.png" />
 
