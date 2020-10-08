@@ -15,7 +15,7 @@ namespace ClangPowerTools
       { "AlwaysBreakAfterReturnType", new string[]{ "None", "All", "TopLevel", "AllDefinitions", "TopLevelDefinitions" }},
       { "AlwaysBreakTemplateDeclarations", new string[]{ "No", "MultiLine", "Yes" }},
       { "BreakBeforeBinaryOperators", new string[]{ "None", "NonAssignment", "All" }},
-      { "BreakBeforeBraces", new string[]{ "Attach", "Linux", "Stroustrup", "Allman" }},
+      { "BreakBeforeBraces", new string[]{ "Attach", "Linux", "Stroustrup", "Allman", "Mozilla", "WebKit", "Custom" }},
       { "BreakInheritanceList", new string[]{ "BeforeColon", "BeforeComma", "AfterColon" }},
       { "BreakConstructorInitializers", new string[]{ "BeforeColon", "BeforeComma", "AfterColon" }},
       { "ColumnLimit", new string[]{ "0", "20", "60", "80", "100", "120" }},

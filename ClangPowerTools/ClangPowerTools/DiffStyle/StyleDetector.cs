@@ -232,7 +232,7 @@ namespace ClangPowerTools.DiffStyle
     /// <param name="input"></param>
     private void SetOptionInput(FormatOptionInputModel inputModel, string input, EditorStyles formatStyle, List<IFormatOption> formatOptions)
     {
-      if (FormatOptionsInputValues.inputValues.ContainsKey(inputModel.Name.Trim()) == false) return;
+      if (FormatOptionsInputValues.inputValues.ContainsKey(inputModel.Name) == false) return;
 
       if (customInput.Contains(inputModel.Name))
       {
@@ -244,7 +244,7 @@ namespace ClangPowerTools.DiffStyle
       else
       {
         var inputValuesLevenshtein = new Dictionary<string, int>();
-        string[] inputValues = FormatOptionsInputValues.inputValues[inputModel.Name.Trim()];
+        string[] inputValues = FormatOptionsInputValues.inputValues[inputModel.Name];
         var previousInput = inputModel.Input;
         foreach (var item in inputValues)
         {
