@@ -216,28 +216,42 @@ namespace ClangPowerTools
           inputOperationPerLine.Add((inputLines[index], LineChanges.NEWLINE));
           continue;
         }
+        HighlightDiffLines(lineDiffs, inputOperationPerLine, outputOperationPerLine, index);
+      }
+    }
 
-        NumberOfOperations(lineDiffs, out int inserations, out int deletions, out int equalities);
-        if (inserations > 0 || deletions > 0)
+    /// <summary>
+    /// Set the color highlight for each diff change
+    /// </summary>
+    /// <param name="lineDiffs"></param>
+    /// <param name="inputOperationPerLine"></param>
+    /// <param name="outputOperationPerLine"></param>
+    /// <param name="index"></param>
+    private void HighlightDiffLines(List<Diff> lineDiffs, List<(object, LineChanges)> inputOperationPerLine, List<(object, LineChanges)> outputOperationPerLine, int index)
+    {
+      DiffChanges(lineDiffs, out List<Diff> inserations, out List<Diff> deletions);
+      if (inserations.Count > 0 || deletions.Count > 0)
+      {
+        if (deletions.Count == 0)
         {
-          if (inserations > 0 && deletions > 0
-            || equalities > 0 && lineDiffs.Last().operation == Operation.DELETE
-            || equalities > 0 && lineDiffs.First().operation == Operation.DELETE)
-          {
-            inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
-            outputOperationPerLine.Add((outputLines[index], LineChanges.HASCHANGES));
-          }
-          else
-          {
-            inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
-            outputOperationPerLine.Add((new List<Diff>(lineDiffs), LineChanges.HASCHANGES));
-          }
+          inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
+          outputOperationPerLine.Add((new List<Diff>(lineDiffs), LineChanges.HASCHANGES));
+        }
+        else if (inserations.Count == 0)
+        {
+          inputOperationPerLine.Add((new List<Diff>(lineDiffs), LineChanges.HASCHANGES));
+          outputOperationPerLine.Add((outputLines[index], LineChanges.HASCHANGES));
         }
         else
         {
-          inputOperationPerLine.Add((inputLines[index], LineChanges.NOCHANGES));
-          outputOperationPerLine.Add((outputLines[index], LineChanges.NOCHANGES));
+          inputOperationPerLine.Add((inputLines[index], LineChanges.HASCHANGES));
+          outputOperationPerLine.Add((outputLines[index], LineChanges.HASCHANGES));
         }
+      }
+      else
+      {
+        inputOperationPerLine.Add((inputLines[index], LineChanges.NOCHANGES));
+        outputOperationPerLine.Add((outputLines[index], LineChanges.NOCHANGES));
       }
     }
 
@@ -425,23 +439,19 @@ namespace ClangPowerTools
       return diff;
     }
 
-    private static void NumberOfOperations(List<Diff> lineDiffs, out int inserations, out int deletions, out int equalities)
+    private static void DiffChanges(List<Diff> lineDiffs, out List<Diff> inserations, out List<Diff> deletions)
     {
-      inserations = 0;
-      deletions = 0;
-      equalities = 0;
+      inserations = new List<Diff>();
+      deletions = new List<Diff>();
       foreach (var item in lineDiffs)
       {
         switch (item.operation)
         {
           case Operation.INSERT:
-            inserations++;
+            inserations.Add(item);
             break;
           case Operation.DELETE:
-            deletions++;
-            break;
-          case Operation.EQUAL:
-            equalities++;
+            deletions.Add(item);
             break;
           default:
             break;
