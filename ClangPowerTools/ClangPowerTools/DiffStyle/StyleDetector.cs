@@ -21,6 +21,7 @@ namespace ClangPowerTools.DiffStyle
     private readonly ConcurrentBag<int> tabWidths;
     private readonly ConcurrentBag<List<IFormatOption>> allFoundOptions;
     private readonly object defaultLock;
+    private const int maxNumberOfTasks = 6;
 
     #endregion
 
@@ -58,7 +59,30 @@ namespace ClangPowerTools.DiffStyle
       await Task.WhenAll(filesContent.Select(e => CalculateColumTabAsync(e, cancelToken)));
       await Task.WhenAll(filesContent.Select(e => DetectFileStyleAsync(e, cancelToken)));
       detectedStyle = GetStyleByLevenshtein(detectedPredefinedStyles);
-      await Task.WhenAll(filesContent.Select(e => DetectFileOptionsAsync(e, detectedStyle, cancelToken)));
+      await DetectOptionsForFilesAsync(cancelToken);
+    }
+
+    public async Task DetectOptionsForFilesAsync(CancellationToken cancelToken)
+    {
+      var tasksPool = new List<Task>();
+      var limiter = new SemaphoreSlim(initialCount: maxNumberOfTasks);
+      foreach (var content in filesContent)
+      {
+        await limiter.WaitAsync();
+        tasksPool.Add(
+          Task.Run(async () =>
+          {
+            try
+            {
+              await DetectFileOptionsAsync(content, detectedStyle, cancelToken);
+            }
+            finally
+            {
+              limiter.Release();
+            }
+          }, cancelToken));
+      }
+      await Task.WhenAll(tasksPool);
     }
 
     private async Task DetectFileStyleAsync(string content, CancellationToken cancelToken)
