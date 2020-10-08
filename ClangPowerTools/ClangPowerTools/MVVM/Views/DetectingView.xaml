@@ -41,7 +41,7 @@
 
     <!--  Detecting style progress  -->
     <TextBlock
-      Name="Title"
+      Name="WindowTitle"
       Grid.Row="1"
       Grid.Column="1"
       HorizontalAlignment="Center"
