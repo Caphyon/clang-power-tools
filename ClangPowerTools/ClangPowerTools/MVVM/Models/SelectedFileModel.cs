@@ -20,6 +20,10 @@ namespace ClangPowerTools.MVVM.Models
 
       FilePath = path;
       FileSize = new FileInfo(FilePath).Length / 1000;
+      if (FileSize == 0)
+      {
+        FileSize = 1;
+      }
       FilePathToShow = pathToShow;
 
       ForgroundColor = FileSize > MAX_FILE_SIZE ? "DarkOrange" : "Black";

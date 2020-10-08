@@ -19,7 +19,7 @@ namespace ClangPowerTools
     private ICommand removeAllFilesCommand;
     private ICommand detectFormatStyleCommand;
 
-    long totalFilesSize = 0;
+    private long totalFilesSize = 0;
     private const long MAX_FILE_SIZE = 1000; //  1 MB
     private const int MAX_LENGTH_FILE_PATH = 90; // KB
     private const int MAX_SIZE_PER_FILE = 80; // KB
