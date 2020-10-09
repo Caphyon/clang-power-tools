@@ -1,4 +1,4 @@
-﻿<Window
+﻿<platformui:DialogWindow
   x:Class="ClangPowerTools.MVVM.Views.DetectStyleFileSelectorView"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -6,12 +6,16 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:platformui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
   x:Name="mainWindow"
   Title="Detect Format Style"
   Width="760"
   Height="700"
   d:DataContext="{d:DesignInstance local:DetectStyleFileSelectorViewModel,
                                    IsDesignTimeCreatable=True}"
+  HasHelpButton="False"
+  HasMaximizeButton="False"
+  HasMinimizeButton="False"
   Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
   WindowStartupLocation="CenterScreen"
@@ -263,4 +267,4 @@
 
   </Grid>
 
-</Window>
+</platformui:DialogWindow>

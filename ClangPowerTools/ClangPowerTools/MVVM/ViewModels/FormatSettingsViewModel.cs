@@ -144,7 +144,7 @@ namespace ClangPowerTools
     {
       SettingsProvider.SettingsView.Close();
       var menuView = new DetectStyleFileSelectorView();
-      menuView.Show();
+      menuView.ShowModal();
     }
 
     #endregion

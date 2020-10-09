@@ -1,8 +1,8 @@
-﻿using System;
-using System.ComponentModel.Design;
-using ClangPowerTools.MVVM.LicenseValidation;
+﻿using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.Views;
 using Microsoft.VisualStudio.Shell;
+using System;
+using System.ComponentModel.Design;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
@@ -68,9 +68,8 @@ namespace ClangPowerTools.Commands
     public async Task ShowSettingsAsync()
     {
       bool activeLicense = await new CommercialLicenseValidator().ValidateAsync();
-
       SettingsView settingsView = new SettingsView(activeLicense);
-      settingsView.ShowDialog();
+      settingsView.ShowModal();
     }
 
 

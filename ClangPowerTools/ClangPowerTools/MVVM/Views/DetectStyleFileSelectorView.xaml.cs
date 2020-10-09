@@ -1,11 +1,12 @@
-﻿using System.Windows;
+﻿using Microsoft.VisualStudio.PlatformUI;
+using System.Windows;
 
 namespace ClangPowerTools.MVVM.Views
 {
   /// <summary>
   /// Interaction logic for DetectFormatStyleMenuView.xaml
   /// </summary>
-  public partial class DetectStyleFileSelectorView : Window
+  public partial class DetectStyleFileSelectorView : DialogWindow
   {
     private readonly DetectStyleFileSelectorViewModel fileSelectorViewModel;
 
