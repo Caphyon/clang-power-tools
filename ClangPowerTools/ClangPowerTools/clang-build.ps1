@@ -258,6 +258,8 @@ Set-Variable -name kClangTidyFlagChecks       -value "-checks="         -option 
 Set-Variable -name kClangTidyUseFile          -value ".clang-tidy"      -option Constant
 Set-Variable -name kClangTidyFormatStyle      -value "-format-style="   -option Constant
 
+Set-Variable -name kClangTidyFlagTempFile     -value ""
+
 # ------------------------------------------------------------------------------------------------
 # Default install locations of LLVM. If present there, we automatically use it
 
@@ -758,14 +760,28 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
     Push-Location $job.WorkingDirectory
 
     [string] $clangConfigFile = [System.IO.Path]::GetTempFileName()
-
+    [string] $cppDirectory = (Get-ChildItem -Path $job.File).DirectoryName
     [string] $clangConfigContent = ""
+    [string] $clangTidyFile      = ""
+    [string] $clangTidyBackupFile = ""
     if ($job.FilePath -like '*tidy*')
     {
+      # try to save tidy flags in a config file, to avoid issues with command
+      # line arguments being too long when invoking the Clang tool
+
+      $clangTidyFile       = "$cppDirectory\.clang-tidy"
+      $clangTidyBackupFile = "$cppDirectory\.clang-tidy.cpt_backup"
+      if (Test-Path($clangTidyFile))
+      {
+        # file already exists, temporarily rename it
+        Rename-Item -Path $clangTidyFile -NewName $clangTidyBackupFile
+      }
+
       # We have to separate Clang args from Tidy args
       $splitparams = $job.ArgumentList -split "--"
       $clangConfigContent = $splitparams[1]
-      $job.ArgumentList = ($splitparams[0] + " -- --config ""$clangConfigFile""")
+
+      $job.ArgumentList += "$($splitparams[0]) -- --config ""$clangConfigFile"""
     }
     else
     {
@@ -781,6 +797,11 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
     # save arguments to clang config file
     $clangConfigContent > $clangConfigFile
 
+    if (![string]::IsNullOrWhiteSpace($clangTidyFile))
+    {
+      Copy-Item -Path $job.TidyFlagsTempFile -Destination $clangTidyFile
+    }
+
     # When PowerShell encounters errors, the first one is handled differently from consecutive ones
     # To circumvent this, do not execute the job directly, but execute it via cmd.exe
     # See also https://stackoverflow.com/a/35980675
@@ -790,6 +811,17 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
     $callSuccess = $LASTEXITCODE -eq 0
 
     Remove-Item $clangConfigFile
+    if (![string]::IsNullOrWhiteSpace($clangTidyFile))
+    {
+      Remove-Item $clangTidyFile
+
+      # make sure to restore previous file, if any
+      if (Test-Path $clangTidyBackupFile)
+      {
+        Rename-Item -Path $clangTidyBackupFile -NewName $clangTidyFile
+      }
+    }
+
     Pop-Location
 
     return New-Object PsObject -Prop @{ "File"    = $job.File
@@ -1165,11 +1197,12 @@ Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPat
                                                -includeDirectories      $includeDirectories `
                                                -additionalIncludeDirectories $additionalIncludeDirectories
 
-    $newJob = New-Object PsObject -Prop @{ 'FilePath'        = $exeToCall
-                                         ; 'WorkingDirectory'= Get-SourceDirectory
-                                         ; 'ArgumentList'    = $exeArgs
-                                         ; 'File'            = $cpp
-                                         ; 'JobCounter'      = 0 <# will be lazy initialized #>
+    $newJob = New-Object PsObject -Prop @{ 'FilePath'          = $exeToCall
+                                         ; 'WorkingDirectory'  = Get-SourceDirectory
+                                         ; 'ArgumentList'      = $exeArgs
+                                         ; 'File'              = $cpp
+                                         ; 'JobCounter'        = 0 <# will be lazy initialized #>
+                                         ; 'TidyFlagsTempFile' = $kClangTidyFlagTempFile
                                          }
     $clangJobs += $newJob
   }
@@ -1427,11 +1460,19 @@ foreach ($project in $projectsToProcess)
   if (![string]::IsNullOrEmpty($aTidyFlags))
   {
      $workloadType = [WorkloadType]::Tidy
+     if (Test-Path $aTidyFlags)
+     {
+       $kClangTidyFlagTempFile = $aTidyFlags
+     }
   }
 
   if (![string]::IsNullOrEmpty($aTidyFixFlags))
   {
      $workloadType = [WorkloadType]::TidyFix
+     if (Test-Path $aTidyFixFlags)
+     {
+       $kClangTidyFlagTempFile = $aTidyFixFlags
+     }
   }
 
   Write-Output ("PROJECT$(if ($localProjectCounter -gt 1) { " #$localProjectCounter" } else { } ): " + $vcxprojPath)
