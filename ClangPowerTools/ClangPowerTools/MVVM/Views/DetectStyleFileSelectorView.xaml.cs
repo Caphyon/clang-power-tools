@@ -29,5 +29,9 @@ namespace ClangPowerTools.MVVM.Views
       return CollectionItems.Items.IndexOf(element);
     }
 
+    private void FileSelectorWindow_Closed(object sender, System.EventArgs e)
+    {
+      fileSelectorViewModel.CloseWindow();
+    }
   }
 }

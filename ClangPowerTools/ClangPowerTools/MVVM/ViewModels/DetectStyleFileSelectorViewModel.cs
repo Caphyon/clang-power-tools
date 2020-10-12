@@ -26,6 +26,8 @@ namespace ClangPowerTools
 
     private bool totalFileSizeFlag = false;
 
+    private FileSizeWarningView warningWindow;
+
     #endregion
 
 
@@ -108,10 +110,24 @@ namespace ClangPowerTools
       if (!totalFileSizeFlag && totalFilesSize > MAX_FILE_SIZE)
       {
         totalFileSizeFlag = true;
-        var warning = new FileSizeWarningView(view);
-        warning.Show();
+        warningWindow = new FileSizeWarningView(view);
+        warningWindow.Closed += WarningWindow_Closed;
+        warningWindow.Show();
       }
     }
+
+    private void WarningWindow_Closed(object sender, System.EventArgs e)
+    {
+      warningWindow.Closed -= WarningWindow_Closed;
+      warningWindow = null;
+    }
+
+    public void CloseWindow()
+    {
+      if (warningWindow != null)
+        warningWindow.Close();
+    }
+
 
     private bool IsDuplicate(string filePath) => SelectedFiles.FirstOrDefault(model => model.FilePath == filePath) != null;
 
