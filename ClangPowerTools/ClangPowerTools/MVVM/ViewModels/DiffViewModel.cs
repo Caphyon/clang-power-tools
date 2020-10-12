@@ -38,6 +38,8 @@ namespace ClangPowerTools
     private string selectedFile;
     private int multipleInputDataIndex;
 
+    private DetectedFormatStyleInfo infoWindow;
+
     #endregion
 
 
@@ -284,12 +286,24 @@ namespace ClangPowerTools
         InitializeDiffView(filesPath);
         CloseDetectionView();
 
-        var info = new DetectedFormatStyleInfo(diffWindow, GetDetectedOptions());
-        info.ShowDialog();
+        diffWindow.Show();
 
-        diffWindow.ShowModal();
+        infoWindow = new DetectedFormatStyleInfo(diffWindow, GetDetectedOptions());
+        infoWindow.Closed += CloseInfoWindow;
+
+        infoWindow.Show();
       }
     }
+
+    private void CloseInfoWindow(object sender, System.EventArgs e)
+    {
+      if (infoWindow == null)
+        return;
+
+      infoWindow.Closed -= CloseInfoWindow;
+      infoWindow = null;
+    }
+
 
     private string GetDetectedOptions()
     {
@@ -384,6 +398,9 @@ namespace ClangPowerTools
     {
       diffController.DeleteFormatFolder();
       diffWindow.Closed -= DiffWindow_Closed;
+
+      if (infoWindow != null)
+        infoWindow.Close();
     }
 
     private void CloseMultipleInputDataView(object sender, EventArgs e)

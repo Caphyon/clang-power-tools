@@ -27,6 +27,7 @@ namespace ClangPowerTools
     private bool totalFileSizeFlag = false;
 
     private FileSizeWarningView warningWindow;
+    private DiffWindow diffWindow;
 
     #endregion
 
@@ -111,23 +112,34 @@ namespace ClangPowerTools
       {
         totalFileSizeFlag = true;
         warningWindow = new FileSizeWarningView(view);
-        warningWindow.Closed += WarningWindow_Closed;
+        warningWindow.Closed += ChildWindow_Closed;
         warningWindow.Show();
       }
     }
 
-    private void WarningWindow_Closed(object sender, System.EventArgs e)
+    private void ChildWindow_Closed(object sender, System.EventArgs e)
     {
-      warningWindow.Closed -= WarningWindow_Closed;
-      warningWindow = null;
+      if (warningWindow != null)
+      {
+        warningWindow.Closed -= ChildWindow_Closed;
+        warningWindow = null;
+      }
+
+      if (diffWindow != null)
+      {
+        diffWindow.Closed -= ChildWindow_Closed;
+        diffWindow = null;
+      }
     }
 
     public void CloseWindow()
     {
       if (warningWindow != null)
         warningWindow.Close();
-    }
 
+      if (diffWindow != null)
+        diffWindow.Close();
+    }
 
     private bool IsDuplicate(string filePath) => SelectedFiles.FirstOrDefault(model => model.FilePath == filePath) != null;
 
@@ -183,11 +195,16 @@ namespace ClangPowerTools
 
     private async Task DetectFormatStyleAsync()
     {
-      var diffWin = new DiffWindow();
+      diffWindow = new DiffWindow()
+      {
+        Owner = view
+      };
+      diffWindow.Closed += ChildWindow_Closed;
+
       List<string> filesPath = SelectedFiles.Select(model => model.FilePath).ToList();
 
       view.IsEnabled = false;
-      await diffWin.ShowDiffAsync(filesPath, view);
+      await diffWindow.ShowDiffAsync(filesPath, view);
       view.IsEnabled = true;
     }
 
