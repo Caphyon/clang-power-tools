@@ -12,6 +12,7 @@
   Closed="Window_Closed"
   Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
+  ShowInTaskbar="False"
   WindowStartupLocation="CenterScreen"
   WindowStyle="ThreeDBorderWindow"
   mc:Ignorable="d">

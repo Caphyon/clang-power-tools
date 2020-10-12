@@ -10,6 +10,7 @@
   x:Name="mainWindow"
   Title="Detect Format Style"
   Width="760"
+  Closed="FileSelectorWindow_Closed"
   Height="700"
   d:DataContext="{d:DesignInstance local:DetectStyleFileSelectorViewModel,
                                    IsDesignTimeCreatable=True}"
@@ -18,6 +19,7 @@
   HasMinimizeButton="False"
   Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
+  ShowInTaskbar="False"
   WindowStartupLocation="CenterScreen"
   WindowStyle="ThreeDBorderWindow"
   mc:Ignorable="d">

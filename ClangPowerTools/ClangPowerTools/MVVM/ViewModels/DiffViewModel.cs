@@ -4,6 +4,7 @@ using ClangPowerTools.MVVM.Controllers;
 using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.MVVM.Views;
+using Microsoft.VisualStudio.PlatformUI;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -144,7 +145,7 @@ namespace ClangPowerTools
 
     #region Public Methods
 
-    public async Task DiffDocumentsAsync(List<string> filesPath, Window detectingWindowOwner)
+    public async Task DiffDocumentsAsync(List<string> filesPath, DialogWindow detectingWindowOwner)
     {
       ShowDetectingView(detectingWindowOwner, FormatConstants.DetectingTitle, FormatConstants.DetectingDescription, FormatConstants.DetectingDescriptionExtra);
 
@@ -282,10 +283,11 @@ namespace ClangPowerTools
       {
         InitializeDiffView(filesPath);
         CloseDetectionView();
-        diffWindow.Show();
 
         var info = new DetectedFormatStyleInfo(diffWindow, GetDetectedOptions());
-        info.Show();
+        info.ShowDialog();
+
+        diffWindow.ShowModal();
       }
     }
 
@@ -301,7 +303,7 @@ namespace ClangPowerTools
       return sb.ToString();
     }
 
-    private void ShowDetectingView(Window detectingWindowOwner, string title, string description, string descriptionExtra)
+    private void ShowDetectingView(DialogWindow detectingWindowOwner, string title, string description, string descriptionExtra)
     {
       detectingView = new DetectingView();
       detectingView.WindowTitle.Text = title;

@@ -8,6 +8,7 @@
   Height="140"
   Background="WhiteSmoke"
   ResizeMode="NoResize"
+  ShowInTaskbar="False"
   WindowStartupLocation="CenterScreen"
   WindowStyle="ToolWindow"
   mc:Ignorable="d">
