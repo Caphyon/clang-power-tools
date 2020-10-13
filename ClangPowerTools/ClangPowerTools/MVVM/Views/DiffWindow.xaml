@@ -12,6 +12,8 @@
   d:DataContext="{d:DesignInstance local:DiffViewModel,
                                    IsDesignTimeCreatable=True}"
   Background="WhiteSmoke"
+  HasMaximizeButton="True"
+  HasMinimizeButton="False"
   Icon="/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="CanResize"
   ShowInTaskbar="False"
