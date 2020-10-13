@@ -28,8 +28,8 @@ namespace ClangPowerTools
     private readonly int matchDistance = 1000;
     private readonly float patchDeleteThreshold = 0.5f;
     private readonly short patchMargin = 4;
+    private readonly int LineWidthSafety = 160;
 
-    private const int LineWidthSafety = 80;
     #endregion
 
     #region Constructors
