@@ -9,14 +9,12 @@ namespace ClangPowerTools.MVVM.Views
   {
     public readonly DetectedStyleInfoViewModel detectedStyleInfoViewModel;
 
-    public DetectedFormatStyleInfo(DiffWindow view, string styleInfo)
+    public DetectedFormatStyleInfo(string styleInfo)
     {
       InitializeComponent();
       detectedStyleInfoViewModel = new DetectedStyleInfoViewModel(styleInfo);
       DataContext = detectedStyleInfoViewModel;
       detectedStyleInfoViewModel.DetectedOptions = styleInfo;
-      Owner = view;
-      Owner.IsEnabled = false;
     }
 
     private void ContinueButton_Click(object sender, RoutedEventArgs e)

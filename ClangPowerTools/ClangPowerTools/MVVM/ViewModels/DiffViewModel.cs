@@ -284,12 +284,15 @@ namespace ClangPowerTools
       if (detectingView.IsLoaded)
       {
         InitializeDiffView(filesPath);
+
+        infoWindow = new DetectedFormatStyleInfo(GetDetectedOptions());
+        infoWindow.Closed += CloseInfoWindow;
+
         CloseDetectionView();
 
         diffWindow.Show();
-
-        infoWindow = new DetectedFormatStyleInfo(diffWindow, GetDetectedOptions());
-        infoWindow.Closed += CloseInfoWindow;
+        infoWindow.Owner = diffWindow;
+        diffWindow.IsEnabled = false;
 
         infoWindow.Show();
       }
