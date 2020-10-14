@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 
 namespace ClangPowerTools.MVVM.Views
 {
@@ -14,6 +15,12 @@ namespace ClangPowerTools.MVVM.Views
       WasShown = wasShown;
       InitializeComponent();
       DataContext = new ReleaseNotesViewModel();
+    }
+
+    private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+    {
+      Process.Start(new ProcessStartInfo("https://youtu.be/9-8jtjExzv4"));
+      e.Handled = true;
     }
   }
 }
