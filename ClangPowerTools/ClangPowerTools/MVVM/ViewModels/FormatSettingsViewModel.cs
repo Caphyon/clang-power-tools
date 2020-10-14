@@ -20,6 +20,7 @@ namespace ClangPowerTools
     private ICommand assumeFilenameAddDataCommand;
     private ICommand customExecutableBrowseCommand;
     private ICommand createformatFileCommand;
+    private ICommand detectFormatStyleCommand;
     #endregion
 
     #region Constructor
@@ -99,6 +100,11 @@ namespace ClangPowerTools
       get => createformatFileCommand ?? (createformatFileCommand = new RelayCommand(() => OpenCreateFormatFileWindow(), () => CanExecute));
     }
 
+    public ICommand DetectFormatStyleCommand
+    {
+      get => detectFormatStyleCommand ?? (detectFormatStyleCommand = new RelayCommand(() => OpenMenu(), () => CanExecute));
+    }
+
     #endregion
 
     #region Methods
@@ -132,6 +138,13 @@ namespace ClangPowerTools
       var formatEditorView = new FormatEditorView();
       SettingsProvider.FormatEditorView = formatEditorView;
       formatEditorView.ShowDialog();
+    }
+
+    private void OpenMenu()
+    {
+      SettingsProvider.SettingsView.Close();
+      var menuView = new DetectStyleFileSelectorView();
+      menuView.ShowModal();
     }
 
     #endregion

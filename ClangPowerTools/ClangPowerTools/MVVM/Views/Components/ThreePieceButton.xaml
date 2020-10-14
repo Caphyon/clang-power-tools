@@ -1,0 +1,80 @@
+﻿<UserControl
+  x:Class="ClangPowerTools.MVVM.Views.Components.ThreePieceButton"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views.Components"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  Name="_LicenseTypeButton"
+  mc:Ignorable="d">
+
+  <Button
+    Name="FreeLicenseButton"
+    HorizontalAlignment="Center"
+    BorderThickness="0"
+    Command="{Binding ButtonCommand, ElementName=_LicenseTypeButton}">
+
+    <Button.Content>
+      <Grid Width="{Binding WidthValue, ElementName=_LicenseTypeButton}" Height="{Binding HeightValue, ElementName=_LicenseTypeButton}">
+        <Grid.Background>
+          <SolidColorBrush Opacity="{Binding OpacityValue, ElementName=_LicenseTypeButton}" Color="{Binding BackgroundValue, ElementName=_LicenseTypeButton}" />
+        </Grid.Background>
+
+        <Grid.RowDefinitions>
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+          <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Image
+          Grid.Row="0"
+          Width="{Binding ImageWidthValue, ElementName=_LicenseTypeButton}"
+          Height="{Binding ImageHeightValue, ElementName=_LicenseTypeButton}"
+          Margin="0,22,0,0"
+          HorizontalAlignment="Center"
+          Source="{Binding Image, ElementName=_LicenseTypeButton}" />
+
+        <TextBlock
+          Grid.Row="1"
+          Margin="0,18,0,0"
+          HorizontalAlignment="Center"
+          FontSize="{Binding TitleFontSize, ElementName=_LicenseTypeButton}"
+          Foreground="{Binding TitleForeground, ElementName=_LicenseTypeButton}"
+          Text="{Binding Title, ElementName=_LicenseTypeButton}" />
+
+        <TextBlock
+          Grid.Row="2"
+          Margin="0,9,0,0"
+          HorizontalAlignment="Center"
+          FontSize="{Binding DescriptionFontSize, ElementName=_LicenseTypeButton}"
+          Foreground="{Binding DescriptionForeground, ElementName=_LicenseTypeButton}"
+          Text="{Binding Description, ElementName=_LicenseTypeButton}" />
+
+      </Grid>
+    </Button.Content>
+
+    <Button.Template>
+      <ControlTemplate TargetType="{x:Type Button}">
+        <Border>
+          <Grid>
+            <ContentPresenter />
+            <Grid
+              x:Name="StatusPanel"
+              Background="White"
+              Opacity="0" />
+          </Grid>
+        </Border>
+        <ControlTemplate.Triggers>
+          <Trigger Property="IsMouseOver" Value="true">
+            <Setter TargetName="StatusPanel" Property="Opacity" Value="0.1" />
+          </Trigger>
+          <Trigger Property="IsPressed" Value="true">
+            <Setter TargetName="StatusPanel" Property="Opacity" Value="0.3" />
+          </Trigger>
+        </ControlTemplate.Triggers>
+      </ControlTemplate>
+    </Button.Template>
+
+  </Button>
+
+</UserControl>

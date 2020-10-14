@@ -18,6 +18,7 @@
   ResizeMode="CanResize"
   ShowInTaskbar="true"
   WindowStartupLocation="CenterScreen"
+  WindowState="Maximized"
   mc:Ignorable="d">
 
   <!--  Static resources  -->
@@ -73,7 +74,7 @@
           Grid.Row="1"
           Width="465"
           HorizontalAlignment="Left"
-          ItemsSource="{Binding FormatOptions}"
+          ItemsSource="{Binding FormatOptions, Mode=TwoWay}"
           SelectedItem="{Binding SelectedOption}"
           SelectionMode="Single"
           VirtualizingStackPanel.IsVirtualizing="False">
@@ -108,8 +109,8 @@
                         Height="18"
                         HorizontalAlignment="Right"
                         FontSize="12"
-                        Text="{Binding Input, UpdateSourceTrigger=PropertyChanged, Delay=200}"
-                        TextChanged="RunFormat_TextChanged"
+                        Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}"
+                        TextChanged="RunFormat_TextBoxChanged"
                         Visibility="{Binding Path=HasInputTextBox, Converter={StaticResource BoolToVis}}" />
                       <ComboBox
                         x:Name="BooleanCombobox"
@@ -129,6 +130,15 @@
                         Content="Modify Input"
                         FontSize="12"
                         Visibility="{Binding Path=HasMultipleInputTextBox, Converter={StaticResource BoolToVis}}" />
+                      <Button
+                        Grid.Column="1"
+                        Width="80"
+                        Height="20"
+                        HorizontalAlignment="Right"
+                        Click="OpenMultipleInput"
+                        Content="Modify Input"
+                        FontSize="12"
+                        Visibility="{Binding Path=HasMultipleToggle, Converter={StaticResource BoolToVis}}" />
                     </Grid>
                   </DataTemplate>
                 </GridViewColumn.CellTemplate>
@@ -178,7 +188,7 @@
             Height="25"
             Margin="0,5,0,5"
             ItemsSource="{Binding Styles}"
-            SelectedItem="{Binding SelectedStyle}" />
+            SelectedItem="{Binding SelectedStyle, Mode=TwoWay}" />
         </StackPanel>
 
         <!--  Option description  -->
@@ -304,70 +314,61 @@
       </TabControl>
 
       <!--  Buttons  -->
-      <StackPanel
-        Grid.Row="1"
-        Margin="0,20,0,0"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Top"
-        Orientation="Horizontal">
+      <Grid Grid.Row="1">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="20" />
+          <RowDefinition Height="auto" />
+          <RowDefinition Height="20" />
+          <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
 
-        <!--  Export button  -->
-        <Button
-          Width="150"
-          Height="30"
-          Margin="20,0,0,0"
-          Command="{Binding ResetCommand}"
-          FontSize="14"
-          Foreground="White"
-          Style="{StaticResource SettingsButton}">
-          <Button.Content>
-            Reset Options
-          </Button.Content>
-        </Button>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="150" />
+          <ColumnDefinition Width="20" />
+          <ColumnDefinition Width="150" />
+          <ColumnDefinition Width="20" />
+          <ColumnDefinition Width="150" />
+          <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
 
         <!--  Reset button  -->
         <Button
+          Grid.Row="1"
+          Grid.Column="1"
           Width="150"
           Height="30"
-          Margin="20,0,0,0"
-          Command="{Binding CreateFormatFileCommand}"
+          Command="{Binding ResetCommand}"
+          Content="Reset Options"
           FontSize="14"
           Foreground="White"
-          Style="{StaticResource SettingsButton}">
-          <Button.Content>
-            Export .clang-format
-          </Button.Content>
-        </Button>
+          Style="{StaticResource SettingsButton}" />
+
+        <!--  Export button  -->
+        <Button
+          Grid.Row="1"
+          Grid.Column="3"
+          Width="150"
+          Command="{Binding CreateFormatFileCommand}"
+          Content="Export .clang-format"
+          FontSize="14"
+          Foreground="White"
+          Style="{StaticResource SettingsButton}" />
 
         <!--  Select file button  -->
         <Button
+          Grid.Row="1"
+          Grid.Column="5"
           Width="150"
           Height="30"
-          Margin="20,0,0,0"
           Command="{Binding SelctCodeFileCommand}"
+          Content="Select Code File"
           FontSize="14"
           Foreground="White"
-          Style="{StaticResource SettingsButton}">
-          <Button.Content>
-            Select Code File
-          </Button.Content>
-        </Button>
+          Style="{StaticResource SettingsButton}" />
 
-        <!--  Format button
-        <Button
-          Grid.Row="1"
-          Grid.Column="2"
-          Width="100"
-          Height="30"
-          Command="{Binding FormatCodeCommand}"
-          FontSize="14"
-          Foreground="White"
-          Style="{StaticResource SettingsButton}">
-          <Button.Content>
-            Format
-          </Button.Content>
-        </Button>-->
-      </StackPanel>
+      </Grid>
+
     </Grid>
   </Grid>
 </Window>

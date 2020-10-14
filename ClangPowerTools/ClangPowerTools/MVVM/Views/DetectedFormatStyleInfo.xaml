@@ -1,0 +1,107 @@
+﻿<Window
+  x:Class="ClangPowerTools.MVVM.Views.DetectedFormatStyleInfo"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:components="clr-namespace:ClangPowerTools.MVVM.Views.Components"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  Title="Information"
+  Width="650"
+  Height="450"
+  Closed="Window_Closed"
+  Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
+  ResizeMode="NoResize"
+  ShowInTaskbar="False"
+  WindowStartupLocation="CenterScreen"
+  WindowStyle="ThreeDBorderWindow"
+  mc:Ignorable="d">
+
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Styles/AppResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="40" />
+    </Grid.RowDefinitions>
+
+    <components:MessageBanner
+      Grid.Row="0"
+      Banner="/ClangPowerTools;component/Resources/BannerInfo.png"
+      Icon="/ClangPowerTools;component/Resources/InfoIcon.png"
+      Type="Detection Results" />
+
+    <StackPanel Grid.Row="1" Margin="20,20,20,10">
+      <TextBlock
+        Margin="3,0,0,5"
+        FontSize="14"
+        FontWeight="DemiBold"
+        Text="Detected Clang-Format Options" />
+
+      <ListView
+        Grid.Row="2"
+        Grid.Column="1"
+        Height="180"
+        ItemsSource="{Binding FlagsCollection, Mode=TwoWay}"
+        ScrollViewer.CanContentScroll="True"
+        ScrollViewer.VerticalScrollBarVisibility="Visible"
+        SelectionMode="Single">
+
+        <ListView.ItemContainerStyle>
+          <Style TargetType="ListViewItem">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="WhiteSmoke" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Focusable" Value="False" />
+          </Style>
+        </ListView.ItemContainerStyle>
+
+        <ListView.ItemTemplate>
+          <DataTemplate>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="20" />
+              </Grid.RowDefinitions>
+
+              <TextBox
+                HorizontalAlignment="Stretch"
+                Background="Transparent"
+                BorderThickness="0"
+                FontSize="12"
+                IsReadOnly="True"
+                Text="{Binding Path=., Mode=TwoWay}" />
+            </Grid>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+      </ListView>
+
+      <TextBlock
+        HorizontalAlignment="Center"
+        FontSize="12"
+        Text="Additional tweaks to Format Options may be required to find the best Format Style"
+        TextWrapping="Wrap" />
+    </StackPanel>
+
+    <Button
+      Grid.Row="2"
+      Width="100"
+      HorizontalAlignment="Center"
+      VerticalAlignment="Top"
+      Click="ContinueButton_Click"
+      Content="Continue"
+      FontSize="14"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}" />
+
+  </Grid>
+</Window>

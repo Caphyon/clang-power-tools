@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.MVVM.Models;
-using System;
+﻿using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -24,13 +23,14 @@ namespace ClangPowerTools.MVVM.Views
       CodeEditorReadOnly.Text = outputWindowDefaulText;
     }
 
-    private void RunFormat_TextChanged(object sender, TextChangedEventArgs e)
+    private void RunFormat_TextBoxChanged(object sender, TextChangedEventArgs e)
     {
       formatEditorViewModel.RunFormat();
     }
 
     private void RunFormat_Editor(object sender, EventArgs e)
     {
+      if (formatEditorViewModel.IsAnyOptionEnabled() == false) return;
       formatEditorViewModel.RunFormat();
     }
 
@@ -43,7 +43,7 @@ namespace ClangPowerTools.MVVM.Views
     {
       var element = (sender as FrameworkElement).DataContext;
       if (element == null) return;
-      formatEditorViewModel.OpenMultipleInput(FormatOptions.Items.IndexOf(element));      
+      formatEditorViewModel.OpenMultipleInput(FormatOptions.Items.IndexOf(element));
     }
 
     private void CodeEditor_PreviewDragOver(object sender, DragEventArgs e)

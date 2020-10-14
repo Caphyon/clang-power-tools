@@ -102,11 +102,11 @@ namespace ClangPowerTools
 
         BeforeSave(this, document);
       }
-      catch (Exception e)     
+      catch (Exception e)
       {
         MessageBox.Show("Error while running clang command on save. " + e.Message, "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
-      
+
       return VSConstants.S_OK;
     }
 
@@ -121,13 +121,13 @@ namespace ClangPowerTools
       {
         var documentInfo = mRunningDocumentTable.GetDocumentInfo(docCookie);
 
-        if( VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+        if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
           document = (dte as DTE).Documents.Cast<Document>().FirstOrDefault(doc => doc.FullName == documentInfo.Moniker);
       }
-      catch (Exception e)
+      catch (Exception)
       {
         //TODO find solution for DTE not intialized correctly sometimes
-       // MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        // MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
 
       return document;

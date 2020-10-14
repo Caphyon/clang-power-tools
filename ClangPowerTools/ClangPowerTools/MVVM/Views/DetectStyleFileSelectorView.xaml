@@ -1,0 +1,272 @@
+﻿<platformui:DialogWindow
+  x:Class="ClangPowerTools.MVVM.Views.DetectStyleFileSelectorView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:controls="clr-namespace:ClangPowerTools.MVVM.Views.Components"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:ClangPowerTools"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:platformui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+  x:Name="mainWindow"
+  Title="Detect Format Style"
+  Width="760"
+  Closed="FileSelectorWindow_Closed"
+  Height="700"
+  d:DataContext="{d:DesignInstance local:DetectStyleFileSelectorViewModel,
+                                   IsDesignTimeCreatable=True}"
+  HasHelpButton="False"
+  HasMaximizeButton="False"
+  HasMinimizeButton="False"
+  Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
+  ResizeMode="NoResize"
+  ShowInTaskbar="False"
+  WindowStartupLocation="CenterScreen"
+  WindowStyle="ThreeDBorderWindow"
+  mc:Ignorable="d">
+
+  <!--  Static resources  -->
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Styles/AppResources.xaml" />
+        <ResourceDictionary>
+          <Style TargetType="{x:Type ListView}">
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="FontSize" Value="13" />
+          </Style>
+        </ResourceDictionary>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="16" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="16" />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="25" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="60" />
+    </Grid.RowDefinitions>
+
+    <TextBlock
+      Grid.Row="0"
+      Grid.Column="1"
+      Margin="0,20,0,5"
+      HorizontalAlignment="Center"
+      FontSize="18"
+      FontWeight="SemiBold"
+      Text="Selected Files" />
+
+    <TextBlock
+      Grid.Row="1"
+      Grid.Column="1"
+      HorizontalAlignment="Center"
+      FontSize="12"
+      Text="Selecting representative files with diverse code syntax will give better format detection results" />
+
+    <Grid
+      Grid.Row="2"
+      Grid.Column="1"
+      Margin="0,20,0,0">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="30" />
+        <RowDefinition />
+        <RowDefinition Height="40" />
+      </Grid.RowDefinitions>
+
+      <StackPanel
+        x:Name="RemoveAllSection"
+        Grid.Row="0"
+        Margin="0,0,35,0"
+        HorizontalAlignment="Right"
+        Orientation="Horizontal">
+        <TextBlock
+          x:Name="RemoveAllTextBlock"
+          Margin="0,0,5,0"
+          VerticalAlignment="Center"
+          FontSize="13"
+          Text="Remove All" />
+        <Button
+          Name="RemoveAllFileButton"
+          Grid.Column="2"
+          Width="20"
+          Height="20"
+          HorizontalAlignment="Right"
+          BorderThickness="0"
+          Command="{Binding RemoveAllFilesCommand}">
+          <Button.Style>
+            <Style TargetType="{x:Type Button}">
+              <Setter Property="Background" Value="{StaticResource RemoveImage}" />
+              <Setter Property="Template">
+                <Setter.Value>
+                  <ControlTemplate TargetType="Button">
+                    <Grid Background="{TemplateBinding Background}">
+                      <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Grid>
+                  </ControlTemplate>
+                </Setter.Value>
+              </Setter>
+              <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                  <Setter Property="Background" Value="{StaticResource RemoverHoverImage}" />
+                </Trigger>
+              </Style.Triggers>
+            </Style>
+          </Button.Style>
+        </Button>
+      </StackPanel>
+
+
+      <ListView
+        x:Name="CollectionItems"
+        Grid.Row="1"
+        AlternationCount="2"
+        Background="White"
+        ItemsSource="{Binding SelectedFiles, Mode=TwoWay}"
+        ScrollViewer.CanContentScroll="True"
+        ScrollViewer.VerticalScrollBarVisibility="Visible"
+        SelectionMode="Single">
+
+        <ListView.ItemContainerStyle>
+          <Style TargetType="ListViewItem">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="WhiteSmoke" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Focusable" Value="True" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Style.Triggers>
+              <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                <Setter Property="Background" Value="White" />
+              </Trigger>
+              <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                <Setter Property="Background" Value="WhiteSmoke" />
+              </Trigger>
+            </Style.Triggers>
+          </Style>
+        </ListView.ItemContainerStyle>
+
+        <ListView.ItemTemplate>
+          <DataTemplate>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="75" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="38" />
+              </Grid.RowDefinitions>
+              <TextBlock
+                x:Name="FileSizeTextBlock"
+                Grid.Column="0"
+                Margin="5,0,15,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Background="Transparent"
+                FontWeight="Normal"
+                Foreground="{Binding ForgroundColor}"
+                Text="{Binding FileSizeAsString}" />
+              <TextBlock
+                x:Name="InputField"
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Background="Transparent"
+                Foreground="{Binding ForgroundColor}"
+                Text="{Binding FilePathToShow}"
+                ToolTip="{Binding FilePath}" />
+
+              <Button
+                Name="RemoveFileButton"
+                Grid.Column="2"
+                Width="20"
+                Height="20"
+                Margin="10,0,10,0"
+                HorizontalAlignment="Right"
+                BorderThickness="0"
+                Click="RemoveFileButton_Click">
+                <Button.Style>
+                  <Style TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="{StaticResource RemoveImage}" />
+                    <Setter Property="Template">
+                      <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                          <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                          </Grid>
+                        </ControlTemplate>
+                      </Setter.Value>
+                    </Setter>
+                    <Style.Triggers>
+                      <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource RemoverHoverImage}" />
+                      </Trigger>
+                    </Style.Triggers>
+                  </Style>
+                </Button.Style>
+              </Button>
+            </Grid>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+      </ListView>
+
+      <Button
+        Grid.Row="2"
+        Width="115"
+        HorizontalAlignment="Right"
+        VerticalAlignment="Center"
+        Command="{Binding Browse}"
+        FontSize="15"
+        Foreground="White"
+        Style="{StaticResource SettingsButton}">
+        <StackPanel Orientation="Horizontal">
+          <Image Height="28" Source="{StaticResource BrowseImage}" />
+          <TextBlock
+            Margin="-5,0,10,0"
+            VerticalAlignment="Center"
+            FontSize="15"
+            Text="Browse" />
+        </StackPanel>
+      </Button>
+    </Grid>
+
+    <TextBlock
+      x:Name="WarningTextBox"
+      Grid.Row="3"
+      Grid.Column="1"
+      Margin="0,20,0,20"
+      HorizontalAlignment="Center"
+      FontSize="12"
+      Foreground="DarkOrange"
+      Text="This operation will take longer due to the large file size."
+      Visibility="Hidden" />
+
+    <Button
+      x:Name="DetectFormatStyleButton"
+      Grid.Row="4"
+      Grid.Column="1"
+      Width="200"
+      HorizontalAlignment="Center"
+      VerticalAlignment="Top"
+      Command="{Binding DetectFormatStyleCommand}"
+      FontSize="15"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}">
+      <StackPanel Orientation="Horizontal">
+        <Image Height="20" Source="{StaticResource DetectOnFileIcon}" />
+        <TextBlock
+          Margin="5,0,10,0"
+          VerticalAlignment="Center"
+          FontSize="15"
+          Text="Detect Format Style" />
+      </StackPanel>
+    </Button>
+
+  </Grid>
+
+</platformui:DialogWindow>

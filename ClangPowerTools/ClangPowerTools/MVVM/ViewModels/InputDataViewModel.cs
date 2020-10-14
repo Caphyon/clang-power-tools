@@ -8,7 +8,7 @@ using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class InputDataViewModel : INotifyPropertyChanged
+  public class InputDataViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
   {
     #region Members
 
@@ -20,6 +20,7 @@ namespace ClangPowerTools
 
     #endregion
 
+
     #region Constructor
 
     public InputDataViewModel(string content)
@@ -30,6 +31,7 @@ namespace ClangPowerTools
     public InputDataViewModel() { }
 
     #endregion
+
 
     #region Properties
 
@@ -48,7 +50,6 @@ namespace ClangPowerTools
 
     public ObservableCollection<InputDataModel> Inputs { get; set; } = new ObservableCollection<InputDataModel>();
 
-
     public ICommand AddCommand
     {
       get => addCommand ?? (addCommand = new RelayCommand(() => AddInput(), () => CanExecute));
@@ -64,6 +65,7 @@ namespace ClangPowerTools
 
     #endregion
 
+
     #region Methods
 
     public void ShowViewDialog()
@@ -74,28 +76,40 @@ namespace ClangPowerTools
 
     public void DeleteInput(int index)
     {
-      if (index >= 0)
-        Inputs.RemoveAt(index);
+      if (index < 0 || index >= Inputs.Count)
+        return;
+
+      Inputs.RemoveAt(index);
     }
 
     private void AddInput()
     {
-      if (string.IsNullOrWhiteSpace(inputToAdd) == false)
-      {
-        Inputs.Add(new InputDataModel(inputToAdd));
-        InputToAdd = string.Empty;
-      }
+      if (string.IsNullOrWhiteSpace(inputToAdd))
+        return;
+
+      if (IsDuplicate(inputToAdd))
+        return;
+
+      AddNewElement(inputToAdd);
+      InputToAdd = string.Empty;
     }
+
+    private bool IsDuplicate(string element) => Inputs.FirstOrDefault(model => model.InputData == element) != null;
 
     private void CreateInputsCollection(string content)
     {
-      if (string.IsNullOrWhiteSpace(content)) return;
+      if (string.IsNullOrWhiteSpace(content))
+        return;
 
       var splitContent = content.Split(';').ToList();
-      foreach (var item in splitContent)
-      {
-        Inputs.Add(new InputDataModel(item));
-      }
+      for (int index = 0; index < splitContent.Count; ++index)
+        AddNewElement(splitContent[index]);
+    }
+
+    private void AddNewElement(string newElement)
+    {
+      var model = new InputDataModel(newElement);
+      Inputs.Add(model);
     }
 
     #endregion

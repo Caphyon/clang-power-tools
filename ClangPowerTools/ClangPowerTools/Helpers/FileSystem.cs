@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 
 namespace ClangPowerTools.Helpers
@@ -25,7 +26,7 @@ namespace ClangPowerTools.Helpers
     {
       while (string.IsNullOrEmpty(filePath) == false)
       {
-        if (FileSystem.DoesFileExist(filePath, searchedFileName))
+        if (DoesFileExist(filePath, searchedFileName))
           return true;
 
         var index = filePath.LastIndexOf("\\");
@@ -44,7 +45,7 @@ namespace ClangPowerTools.Helpers
       {
         foreach (var file in searchedFiles)
         {
-          if (FileSystem.DoesFileExist(filePath, file))
+          if (DoesFileExist(filePath, file))
             return true;
         }
 
@@ -105,6 +106,47 @@ namespace ClangPowerTools.Helpers
       using FileStream fs = new FileStream(path, FileMode.Create);
       using StreamWriter sw = new StreamWriter(fs);
       sw.Write(content);
+    }
+
+    public static string ReadContentFromFile(string path)
+    {
+      if (File.Exists(path))
+      {
+        return File.ReadAllText(path);
+      }
+      return string.Empty;
+    }
+
+    public static string ReadContentFromFile(string path, string wantedLineEnding)
+    {
+      if (File.Exists(path))
+      {
+        var sb = new StringBuilder();
+        using var sr = new StreamReader(path);
+        while (sr.Peek() >= 0)
+        {
+          string line = sr.ReadLine();
+          sb.Append(line).Append(wantedLineEnding);
+        }
+        return sb.ToString();
+      }
+      return string.Empty;
+    }
+
+    public static List<string> ReadContentFromMultipleFiles(List<string> filePaths, string wantedLineEnding)
+    {
+      var filesContent = new List<string>();
+      foreach (var path in filePaths)
+      {
+        var content = ReadContentFromFile(path, wantedLineEnding);
+        if (string.IsNullOrWhiteSpace(content))
+        {
+          continue;
+        }
+        filesContent.Add(content);
+      }
+
+      return filesContent;
     }
 
     public static string CreateFullFileName(string path, string fileName)

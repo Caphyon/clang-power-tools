@@ -1,0 +1,392 @@
+﻿<platformui:DialogWindow
+  x:Class="ClangPowerTools.MVVM.Views.DiffWindow"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:ClangPowerTools"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:platformui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+  Title="Clang-Format Generator"
+  MinWidth="1000"
+  MinHeight="750"
+  d:DataContext="{d:DesignInstance local:DiffViewModel,
+                                   IsDesignTimeCreatable=True}"
+  Background="WhiteSmoke"
+  HasMaximizeButton="True"
+  HasMinimizeButton="False"
+  Icon="/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
+  ResizeMode="CanResize"
+  ShowInTaskbar="False"
+  WindowStartupLocation="CenterScreen"
+  WindowState="Maximized"
+  mc:Ignorable="d">
+
+  <!--  Static resources  -->
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Styles/AppResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+      <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </ResourceDictionary>
+  </Window.Resources>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="5" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="5" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="5" />
+      <ColumnDefinition Width="auto" />
+      <ColumnDefinition Width="5" />
+    </Grid.ColumnDefinitions>
+
+    <!--  Diff flow document  -->
+    <Grid Grid.Row="1" Grid.Column="1">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="25" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+
+      <!--  Input Diff  -->
+      <StackPanel
+        Grid.Row="0"
+        Grid.Column="0"
+        HorizontalAlignment="Center"
+        Orientation="Horizontal">
+        <Image
+          Width="15"
+          Height="15"
+          Margin="3"
+          VerticalAlignment="Center"
+          Source="/ClangPowerTools;component/Resources/FileIcon.png" />
+        <TextBlock
+          Width="32"
+          FontSize="16"
+          FontWeight="DemiBold"
+          Text="File" />
+        <ComboBox
+          Name="FilesComboBox"
+          Height="23"
+          VerticalAlignment="Top"
+          ItemsSource="{Binding FileNames}"
+          SelectedIndex="{Binding SelectedIndex}"
+          SelectedItem="{Binding SelectedFile, Mode=TwoWay}" />
+      </StackPanel>
+
+      <RichTextBox
+        x:Name="DiffInput"
+        Grid.Row="1"
+        Grid.Column="0"
+        FontFamily="Consolas"
+        HorizontalScrollBarVisibility="Auto"
+        IsReadOnly="True"
+        ScrollViewer.ScrollChanged="Diff_ScrollChanged"
+        VerticalScrollBarVisibility="Auto" />
+
+      <!--  Output Diff  -->
+      <StackPanel
+        Grid.Row="0"
+        Grid.Column="1"
+        HorizontalAlignment="Center"
+        Orientation="Horizontal">
+        <Image
+          Width="20"
+          Height="20"
+          Margin="3"
+          VerticalAlignment="Center"
+          Source="/ClangPowerTools;component/Resources/PreviewIcon.png" />
+        <TextBlock
+          Width="112"
+          FontSize="16"
+          FontWeight="DemiBold"
+          Text="Format Preview" />
+      </StackPanel>
+
+      <RichTextBox
+        x:Name="DiffOutput"
+        Grid.Row="1"
+        Grid.Column="1"
+        FontFamily="Consolas"
+        HorizontalScrollBarVisibility="Auto"
+        IsReadOnly="True"
+        ScrollViewer.ScrollChanged="Diff_ScrollChanged"
+        VerticalScrollBarVisibility="Auto" />
+    </Grid>
+
+    <!--  Detected Format Options  -->
+    <Grid Grid.Row="1" Grid.Column="3">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="40" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="10" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="210" />
+        <RowDefinition Height="60" />
+      </Grid.RowDefinitions>
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="410" />
+      </Grid.ColumnDefinitions>
+
+      <!--  Title, Style, and  Reload button  -->
+      <Grid
+        Grid.Row="0"
+        Grid.Column="0"
+        HorizontalAlignment="Center">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" />
+          <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="280" />
+          <ColumnDefinition Width="50" />
+          <ColumnDefinition Width="16" />
+        </Grid.ColumnDefinitions>
+
+        <!--  Title  -->
+        <TextBlock
+          Grid.Row="0"
+          Grid.Column="0"
+          HorizontalAlignment="Center"
+          FontSize="15"
+          FontWeight="DemiBold"
+          Foreground="#9E005A"
+          Text="Detection Results" />
+
+        <!--  Style  -->
+        <TextBlock
+          Grid.Row="1"
+          Grid.Column="0"
+          HorizontalAlignment="Center"
+          FontSize="15"
+          FontWeight="DemiBold"
+          Foreground="Black"
+          Text="{Binding Style}" />
+
+        <!--  Reset All  -->
+        <TextBlock
+          Grid.Row="1"
+          Grid.Column="1"
+          HorizontalAlignment="Center"
+          FontSize="12"
+          Foreground="Black"
+          Text="Reset All"
+          TextWrapping="Wrap" />
+
+        <!--  Reset button  -->
+        <Button
+          Grid.Row="1"
+          Grid.Column="2"
+          Width="15"
+          Height="15"
+          Command="{Binding ResetCommand}"
+          Cursor="Hand"
+          Style="{StaticResource SettingsButton}"
+          ToolTip="Reset all options to the detected values">
+          <Button.Template>
+            <ControlTemplate>
+              <Image Source="/ClangPowerTools;component/Resources/ResetIcon.png" />
+            </ControlTemplate>
+          </Button.Template>
+        </Button>
+      </Grid>
+
+      <!--  Format options  -->
+      <ListView
+        Name="FormatOptions"
+        Grid.Row="1"
+        Grid.Column="0"
+        ItemsSource="{Binding FormatOptions, Mode=TwoWay}"
+        SelectedItem="{Binding SelectedOption}"
+        SelectionMode="Single"
+        VirtualizingStackPanel.IsVirtualizing="False">
+        <ListView.View>
+          <GridView>
+            <GridView.ColumnHeaderContainerStyle>
+              <Style TargetType="{x:Type GridViewColumnHeader}">
+                <Setter Property="IsEnabled" Value="False" />
+              </Style>
+            </GridView.ColumnHeaderContainerStyle>
+            <GridViewColumn Width="auto" Header="Name">
+              <GridViewColumn.CellTemplate>
+                <DataTemplate>
+                  <StackPanel Orientation="Vertical">
+                    <TextBlock
+                      Grid.Column="0"
+                      FontSize="12"
+                      FontWeight="{Binding NameFontWeight}"
+                      Foreground="Black"
+                      Text="{Binding Name}" />
+                  </StackPanel>
+                </DataTemplate>
+              </GridViewColumn.CellTemplate>
+            </GridViewColumn>
+            <GridViewColumn Width="auto" Header="Value">
+              <GridViewColumn.CellTemplate>
+                <DataTemplate>
+                  <StackPanel Orientation="Horizontal">
+                    <TextBox
+                      x:Name="InputText"
+                      Width="80"
+                      Height="20"
+                      HorizontalAlignment="Right"
+                      FontSize="12"
+                      Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}"
+                      TextChanged="OptionInputChanged"
+                      Visibility="{Binding Path=HasInputTextBox, Converter={StaticResource BoolToVis}}" />
+                    <ComboBox
+                      x:Name="BooleanCombobox"
+                      Width="80"
+                      HorizontalAlignment="Right"
+                      DropDownClosed="OptionDropDownClosed"
+                      ItemsSource="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.BooleanComboboxValues}"
+                      SelectedItem="{Binding BooleanCombobox}"
+                      Visibility="{Binding Path=HasBooleanCombobox, Converter={StaticResource BoolToVis}}" />
+                    <Button
+                      Width="80"
+                      Height="20"
+                      HorizontalAlignment="Right"
+                      Click="OpenMultipleInput"
+                      Content="Modify Input"
+                      FontSize="12"
+                      Visibility="{Binding Path=HasMultipleInputTextBox, Converter={StaticResource BoolToVis}}" />
+                    <Button
+                      Width="80"
+                      Height="20"
+                      HorizontalAlignment="Right"
+                      Click="OpenMultipleInput"
+                      Content="Modify Input"
+                      FontSize="12"
+                      Visibility="{Binding Path=HasMultipleToggle, Converter={StaticResource BoolToVis}}" />
+                    <Button
+                      Width="15"
+                      Height="15"
+                      Margin="6,0,0,0"
+                      Click="ResetOption"
+                      Cursor="Hand"
+                      ToolTip="Reset option to the detected value">
+                      <Button.Template>
+                        <ControlTemplate>
+                          <Image Source="/ClangPowerTools;component/Resources/ResetIcon.png" />
+                        </ControlTemplate>
+                      </Button.Template>
+                    </Button>
+                  </StackPanel>
+                </DataTemplate>
+              </GridViewColumn.CellTemplate>
+            </GridViewColumn>
+          </GridView>
+        </ListView.View>
+      </ListView>
+
+      <!--  Selected Option  -->
+      <RichTextBox
+        Grid.Row="3"
+        Grid.Column="0"
+        HorizontalAlignment="Left"
+        Background="Transparent"
+        BorderThickness="0"
+        FontSize="14"
+        IsReadOnly="True">
+        <FlowDocument>
+          <Paragraph>
+            <Run FontWeight="Bold" Text="{Binding SelectedOption.Name}" />
+            <Run Text="(" />
+            <Run Background="#FFCDCDCD" Text="{Binding SelectedOption.Paramater}" />
+            <Run Text=")" />
+          </Paragraph>
+        </FlowDocument>
+      </RichTextBox>
+      <TextBox
+        Grid.Row="4"
+        Grid.Column="0"
+        Padding="4,4,0,0"
+        HorizontalAlignment="Left"
+        Background="Transparent"
+        BorderThickness="0"
+        FontSize="12"
+        IsReadOnly="True"
+        Text="{Binding SelectedOption.Description}"
+        TextWrapping="Wrap"
+        VerticalScrollBarVisibility="Auto" />
+
+      <!--  Bottom Buttons  -->
+      <Grid
+        Grid.Row="5"
+        Grid.Column="0"
+        HorizontalAlignment="Center">
+        <Grid.RowDefinitions>
+          <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="10" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="12" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="10" />
+        </Grid.ColumnDefinitions>
+
+        <!--  Reload / Preview Style Changes button  -->
+        <Button
+          x:Name="ReloadButton"
+          Grid.Column="1"
+          Width="185"
+          Height="30"
+          Command="{Binding ReloadCommand}"
+          FontSize="14"
+          Foreground="White"
+          IsEnabled="False"
+          Style="{StaticResource SettingsButton}"
+          ToolTip="Apply the option changes and see the effects in Format Preview">
+          <StackPanel Orientation="Horizontal">
+            <Image
+              Width="23"
+              Height="23"
+              Source="/ClangPowerTools;component/Resources/PreviewWhiteIcon.png" />
+            <Label
+              Padding="2"
+              FontSize="14"
+              Foreground="White">
+              Preview Style
+            </Label>
+          </StackPanel>
+        </Button>
+
+        <!--  Export / Generate button  -->
+        <Button
+          Grid.Column="3"
+          Width="185"
+          Height="30"
+          Command="{Binding CreateFormatFileCommand}"
+          Style="{StaticResource SettingsButton}"
+          ToolTip="Create a .clang-format file containing the detected options">
+          <StackPanel Orientation="Horizontal">
+            <Image
+              Width="16"
+              Height="16"
+              Source="/ClangPowerTools;component/Resources/GenerateClangFormatFile.png" />
+            <Label
+              Padding="2"
+              FontSize="14"
+              Foreground="White">
+              Generate Clang-Format
+            </Label>
+          </StackPanel>
+        </Button>
+      </Grid>
+
+    </Grid>
+  </Grid>
+</platformui:DialogWindow>
