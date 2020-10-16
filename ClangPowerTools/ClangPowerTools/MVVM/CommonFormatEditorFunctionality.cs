@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace ClangPowerTools
 {
-  public class CommonFormatEditorFunctionality : CommonSettingsFunctionality
+  public abstract class CommonFormatEditorFunctionality : CommonSettingsFunctionality
   {
     #region Members
 

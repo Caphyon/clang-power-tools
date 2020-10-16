@@ -8,7 +8,7 @@ using System.Text;
 
 namespace ClangPowerTools
 {
-  public class CommonSettingsFunctionality
+  public abstract class CommonSettingsFunctionality
   {
     #region Methods
 
