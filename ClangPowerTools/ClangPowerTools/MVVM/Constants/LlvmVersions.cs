@@ -6,6 +6,7 @@ namespace ClangPowerTools
   {
     public static List<string> Versions { get; } = new List<string>
     {
+      "11.0.0",
       "10.0.0",
       "9.0.1",
       "9.0.0",
@@ -20,7 +21,7 @@ namespace ClangPowerTools
       "5.0.1",
       "5.0.0",
       "4.0.1",
-      "4.0.0",
+      "4.0.0"
     };
   }
 }
