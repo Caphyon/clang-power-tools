@@ -1,6 +1,23 @@
 # REQUIRES io.ps1 to be included
 
-[System.Reflection.Assembly]::LoadWithPartialName("Microsoft.Build.Utilities.Core") > $null
+[string[]] $buildUtilPaths = @(
+    ,"${Env:ProgramFiles(x86)}\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\Microsoft.Build.Utilities.Core.dll"
+    ,"${Env:ProgramFiles(x86)}\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\Microsoft.Build.Utilities.Core.dll"
+    ,"${Env:ProgramFiles(x86)}\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\Microsoft.Build.Utilities.Core.dll"
+    ,"${Env:ProgramFiles(x86)}\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin\Microsoft.Build.Utilities.Core.dll"
+    ,"${Env:ProgramFiles(x86)}\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\Microsoft.Build.Utilities.Core.dll"
+    ,"${Env:ProgramFiles(x86)}\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\Microsoft.Build.Utilities.Core.dll"
+)
+
+foreach ($buildUtilPath in $buildUtilPaths)
+{
+    if (Test-Path $buildUtilPath)
+    {
+        Add-Type -path $buildUtilPath
+        Write-Verbose "Loaded assembly $buildUtilPath"
+        break
+    }
+}
 
 Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>     `
     -value @(                                                             `
