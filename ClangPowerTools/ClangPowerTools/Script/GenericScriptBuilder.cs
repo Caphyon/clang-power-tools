@@ -4,6 +4,7 @@ using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
 using System;
+using System.IO;
 using System.Text;
 
 namespace ClangPowerTools.Script
@@ -167,10 +168,18 @@ namespace ClangPowerTools.Script
       // Get the clang tidy parameters depending on the tidy mode
       var parameters = GetTidyChecks(tidySettings);
 
-
       // Append the clang tidy type(tidy / tidy-fix) with / without clang tidy config file option attached  
       if (!string.IsNullOrWhiteSpace(parameters))
-        parameters = AppendClangTidyType(parameters);
+      {
+        var filePath = Path.Combine(Path.GetTempPath(), ".clang-tidy");
+        var text = $"Checks: '{parameters.Remove(0, 3)}'";
+
+        using FileStream fs = new FileStream(filePath, FileMode.Create);
+        using StreamWriter sw = new StreamWriter(fs);
+        sw.Write(text);
+
+        parameters = AppendClangTidyType(filePath);
+      }
 
       // Get the header filter option 
       if (null != tidySettings.HeaderFilter && !string.IsNullOrWhiteSpace(tidySettings.HeaderFilter))
