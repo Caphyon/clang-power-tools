@@ -77,7 +77,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 6.3" />
+        Text="version 6.4" />
 
       <ListView
         Grid.Row="3"
@@ -112,20 +112,15 @@
           Text="What's New" />
 
 
-        <!--
-          
-          IsReadOnly="True"-->
-
-        <TextBlock
+        <TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           Background="Transparent"
-          Width="450"
-          TextWrapping="Wrap"
-          FontSize="15">
-          • Clang-Format Detector helps you to discover the best format style for your projects 
-          <Hyperlink Foreground="#9E005A" NavigateUri="https://youtu.be/9-8jtjExzv4" RequestNavigate="Hyperlink_RequestNavigate">(link)</Hyperlink>
-        </TextBlock>
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• LLVM 11"
+          TextWrapping="Wrap" />
 
         <!--  Bug Fixes  -->
         <TextBox
@@ -144,27 +139,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Not all selected clang-tidy checks are applied"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Local settings import is not applied on the entire compiler tab"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• The tidy process is not triggered when the &quot;Tidy on save&quot; option is enabled"
+          Text="• Clang-tidy doesn't run when too many flags are checked"
           TextWrapping="Wrap" />
 
       </ListView>
