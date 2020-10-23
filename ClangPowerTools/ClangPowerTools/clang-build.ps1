@@ -766,22 +766,24 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
     [string] $clangTidyBackupFile = ""
     if ($job.FilePath -like '*tidy*')
     {
-      # try to save tidy flags in a config file, to avoid issues with command
-      # line arguments being too long when invoking the Clang tool
-
-      $clangTidyFile       = "$cppDirectory\.clang-tidy"
-      $clangTidyBackupFile = "$cppDirectory\.clang-tidy.cpt_backup"
-      if (Test-Path($clangTidyFile))
+      # if we need to place a .clang-tidy file make sure we don't override
+      # an existing one
+      if (Test-Path $job.TidyFlagsTempFile)
       {
-        # file already exists, temporarily rename it
-        Rename-Item -Path $clangTidyFile -NewName $clangTidyBackupFile
+        $clangTidyFile       = "$cppDirectory\.clang-tidy"
+        $clangTidyBackupFile = "$cppDirectory\.clang-tidy.cpt_backup"
+        if (Test-Path($clangTidyFile))
+        {
+          # file already exists, temporarily rename it
+          Rename-Item -Path $clangTidyFile -NewName $clangTidyBackupFile
+        }
       }
 
       # We have to separate Clang args from Tidy args
       $splitparams = $job.ArgumentList -split "--"
       $clangConfigContent = $splitparams[1]
 
-      $job.ArgumentList += "$($splitparams[0]) -- --config ""$clangConfigFile"""
+      $job.ArgumentList = "$($splitparams[0]) -- --config ""$clangConfigFile"""
     }
     else
     {
