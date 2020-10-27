@@ -169,7 +169,7 @@ namespace ClangPowerTools.Script
       var parameters = GetTidyChecks(tidySettings);
 
       // Append the clang tidy type(tidy / tidy-fix) with / without clang tidy config file option attached  
-      if (!string.IsNullOrWhiteSpace(parameters))
+      if (!string.IsNullOrWhiteSpace(parameters) && tidySettings.UseChecksFrom != ClangTidyUseChecksFrom.TidyFile)
       {
         var filePath = Path.Combine(Path.GetTempPath(), ".clang-tidy");
         var text = $"Checks: '{parameters.Remove(0, 3)}'";
