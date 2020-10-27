@@ -171,14 +171,20 @@ namespace ClangPowerTools.Script
       // Append the clang tidy type(tidy / tidy-fix) with / without clang tidy config file option attached  
       if (!string.IsNullOrWhiteSpace(parameters))
       {
-        var filePath = Path.Combine(Path.GetTempPath(), ".clang-tidy");
-        var text = $"Checks: '{parameters.Remove(0, 3)}'";
+        if (tidySettings.UseChecksFrom != ClangTidyUseChecksFrom.TidyFile)
+        {
+          var filePath = Path.Combine(Path.GetTempPath(), ".clang-tidy");
+          var text = $"Checks: '{parameters.Remove(0, 3)}'";
 
-        using FileStream fs = new FileStream(filePath, FileMode.Create);
-        using StreamWriter sw = new StreamWriter(fs);
-        sw.Write(text);
-
-        parameters = AppendClangTidyType(filePath);
+          using FileStream fs = new FileStream(filePath, FileMode.Create);
+          using StreamWriter sw = new StreamWriter(fs);
+          sw.Write(text);
+          parameters = AppendClangTidyType(filePath);
+        }
+        else
+        {
+          parameters = AppendClangTidyType(parameters);
+        }
       }
 
       // Get the header filter option 
