@@ -768,7 +768,7 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
     {
       # if we need to place a .clang-tidy file make sure we don't override
       # an existing one
-      if (Test-Path $job.TidyFlagsTempFile)
+      if (![string]::IsNullOrWhiteSpace($job.TidyFlagsTempFile) -and (Test-Path $job.TidyFlagsTempFile))
       {
         $clangTidyFile       = "$cppDirectory\.clang-tidy"
         $clangTidyBackupFile = "$cppDirectory\.clang-tidy.cpt_backup"
