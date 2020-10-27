@@ -139,7 +139,27 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Clang-tidy doesn't run when too many flags are checked"
+          Text="• Clang-Tidy doesn't run when too many flags are checked"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Clang-Tidy command does not work on TidyFile mode"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Fix configuration file warnings for Clang-Tidy"
           TextWrapping="Wrap" />
 
       </ListView>
