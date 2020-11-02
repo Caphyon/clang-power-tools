@@ -5,8 +5,6 @@ using ClangPowerTools.Error;
 using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
 using ClangPowerTools.Helpers;
-using ClangPowerTools.MVVM.Controllers;
-using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
 using EnvDTE;
@@ -118,31 +116,31 @@ namespace ClangPowerTools
 
     public async void Execute(object sender, EventArgs e)
     {
-      var freeTrialController = new FreeTrialController();
+      // var freeTrialController = new FreeTrialController();
 
       // First app install - choose license
-      if (SettingsProvider.AccountModel.LicenseType == LicenseType.NoLicense)
-      {
-        LicenseView licenseView = new LicenseView();
-        licenseView.ShowDialog();
-        return;
-      }
+      //if (SettingsProvider.AccountModel.LicenseType == LicenseType.NoLicense)
+      //{
+      //  LicenseView licenseView = new LicenseView();
+      //  licenseView.ShowDialog();
+      //  return;
+      //}
 
       // Trial expired
-      if (SettingsProvider.AccountModel.LicenseType == LicenseType.Trial && freeTrialController.IsActive() == false)
-      {
-        TrialExpiredView trialExpiredView = new TrialExpiredView();
-        trialExpiredView.ShowDialog();
-        return;
-      }
+      //if (SettingsProvider.AccountModel.LicenseType == LicenseType.Trial && freeTrialController.IsActive() == false)
+      //{
+      //  TrialExpiredView trialExpiredView = new TrialExpiredView();
+      //  trialExpiredView.ShowDialog();
+      //  return;
+      //}
 
       // Session Expired
-      if (SettingsProvider.AccountModel.LicenseType == LicenseType.SessionExpired)
-      {
-        LoginView loginView = new LoginView();
-        loginView.ShowDialog();
-        return;
-      }
+      //if (SettingsProvider.AccountModel.LicenseType == LicenseType.SessionExpired)
+      //{
+      //  LoginView loginView = new LoginView();
+      //  loginView.ShowDialog();
+      //  return;
+      //}
 
       var command = CreateCommand(sender);
       if (command == null)
