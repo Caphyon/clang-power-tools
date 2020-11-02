@@ -137,7 +137,7 @@ namespace ClangPowerTools
 
       string version = SettingsProvider.GeneralSettingsModel.Version;
       ShowToolbar(version);
-      UpdateVersionAsync(version).SafeFireAndForget();
+      UpdateVersion(version); //.SafeFireAndForget();
 
       await mCommandController.InitializeCommandsAsync(this);
 
@@ -306,7 +306,7 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private async Task UpdateVersionAsync(string version)
+    private void UpdateVersion(string version)
     {
       var generalSettingsModel = SettingsProvider.GeneralSettingsModel;
 
