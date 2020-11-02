@@ -1,7 +1,5 @@
 ﻿using ClangPowerTools.Commands;
 using ClangPowerTools.Helpers;
-using ClangPowerTools.MVVM.Controllers;
-using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
@@ -320,11 +318,11 @@ namespace ClangPowerTools
         var settingsHandler = new SettingsHandler();
         settingsHandler.SaveSettings();
 
-        var freeTrialController = new FreeTrialController();
-        bool activeLicense = await new LocalLicenseValidator().ValidateAsync();
+        //var freeTrialController = new FreeTrialController();
+        //bool activeLicense = await new LocalLicenseValidator().ValidateAsync();
 
-        if (activeLicense)
-          freeTrialController.MarkAsExpired();
+        //if (activeLicense)
+        //  freeTrialController.MarkAsExpired();
 
         ReleaseNotesView.WasShown = false;
       }
