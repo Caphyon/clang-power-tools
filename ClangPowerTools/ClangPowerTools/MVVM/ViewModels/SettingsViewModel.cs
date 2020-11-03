@@ -68,7 +68,7 @@ namespace ClangPowerTools
 
     private void UpgradeAction()
     {
-      Process.Start(new ProcessStartInfo("https://clangpowertools.com/download.html"));
+      Process.Start(new ProcessStartInfo("https://clangpowertools.com/purchase.html"));
     }
 
     #endregion
