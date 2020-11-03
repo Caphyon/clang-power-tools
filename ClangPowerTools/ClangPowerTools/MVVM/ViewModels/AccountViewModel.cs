@@ -39,7 +39,7 @@ namespace ClangPowerTools
     {
       get
       {
-        SetAccountNameInTrial();
+        SetAccountNameToTrial();
         return accountModel;
       }
       set
@@ -105,11 +105,11 @@ namespace ClangPowerTools
     }
 
 
-    private void SetAccountNameInTrial()
+    private void SetAccountNameToTrial()
     {
-      if (accountModel.LicenseType == LicenseType.Trial)
+      if (accountModel.LicenseType == LicenseType.NoLicense)
       {
-        accountModel.UserName = "Trial Account";
+        accountModel.UserName = string.Empty;
         DisplayCreateAccount = true;
         DisplayLogout = false;
       }
