@@ -77,7 +77,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 6.4.1" />
+        Text="version 6.4.2" />
 
       <ListView
         Grid.Row="3"
@@ -120,6 +120,16 @@
           FontSize="15"
           IsReadOnly="True"
           Text="• LLVM 11"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Login action can be skipped"
           TextWrapping="Wrap" />
 
         <!--  Bug Fixes  -->
