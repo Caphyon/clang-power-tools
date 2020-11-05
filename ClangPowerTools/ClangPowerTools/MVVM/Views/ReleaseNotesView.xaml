@@ -129,7 +129,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Login action can be skipped"
+          Text="• Easier access to Clang functionality. No account needed."
           TextWrapping="Wrap" />
 
         <!--  Bug Fixes  -->
