@@ -195,7 +195,7 @@
       Background="Transparent"
       Command="{Binding LogoutCommand}"
       Style="{StaticResource SettingsButton}"
-      Visibility="{Binding Path=DisplayCreateAccount, Converter={StaticResource BooleanToVisibilityConverter}}">
+      Visibility="{Binding Path=DisplayLogIn, Converter={StaticResource BooleanToVisibilityConverter}}">
       <Button.Content>
         <StackPanel Orientation="Horizontal">
           <Image
@@ -210,7 +210,7 @@
             FontFamily="SegoeUI"
             FontSize="15"
             Foreground="#9E005A"
-            Text="Create Account" />
+            Text="Log in" />
         </StackPanel>
       </Button.Content>
     </Button>

@@ -35,7 +35,8 @@ namespace ClangPowerTools
     {
       get
       {
-        return SettingsProvider.AccountModel.LicenseType == LicenseType.Commercial;
+        return SettingsProvider.AccountModel.LicenseType == LicenseType.Commercial ||
+              SettingsProvider.AccountModel.LicenseType == LicenseType.Personal;
       }
     }
 
@@ -163,7 +164,7 @@ namespace ClangPowerTools
 
     private void NoCloudFunctionalityMessage()
     {
-      MessageBox.Show("Cloud settings can only be used if you have a Commercial License.",
+      MessageBox.Show("Cloud settings can only be used if you are logged in with a Clang Power Tools account.",
                       "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Warning);
     }
 

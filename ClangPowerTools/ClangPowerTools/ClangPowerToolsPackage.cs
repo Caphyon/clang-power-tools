@@ -1,7 +1,5 @@
 ﻿using ClangPowerTools.Commands;
 using ClangPowerTools.Helpers;
-using ClangPowerTools.MVVM.Controllers;
-using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
@@ -139,7 +137,7 @@ namespace ClangPowerTools
 
       string version = SettingsProvider.GeneralSettingsModel.Version;
       ShowToolbar(version);
-      UpdateVersionAsync(version).SafeFireAndForget();
+      UpdateVersion(version); //.SafeFireAndForget();
 
       await mCommandController.InitializeCommandsAsync(this);
 
@@ -308,7 +306,7 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private async Task UpdateVersionAsync(string version)
+    private void UpdateVersion(string version)
     {
       var generalSettingsModel = SettingsProvider.GeneralSettingsModel;
 
@@ -320,11 +318,11 @@ namespace ClangPowerTools
         var settingsHandler = new SettingsHandler();
         settingsHandler.SaveSettings();
 
-        var freeTrialController = new FreeTrialController();
-        bool activeLicense = await new LocalLicenseValidator().ValidateAsync();
+        //var freeTrialController = new FreeTrialController();
+        //bool activeLicense = await new LocalLicenseValidator().ValidateAsync();
 
-        if (activeLicense)
-          freeTrialController.MarkAsExpired();
+        //if (activeLicense)
+        //  freeTrialController.MarkAsExpired();
 
         ReleaseNotesView.WasShown = false;
       }

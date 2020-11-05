@@ -39,7 +39,7 @@ namespace ClangPowerTools
     {
       get
       {
-        SetAccountNameInTrial();
+        SetAccountNameToTrial();
         return accountModel;
       }
       set
@@ -72,7 +72,7 @@ namespace ClangPowerTools
 
     public bool DisplayLogout { get; set; }
 
-    public bool DisplayCreateAccount { get; set; }
+    public bool DisplayLogIn { get; set; }
 
     #endregion
 
@@ -97,7 +97,7 @@ namespace ClangPowerTools
       if (File.Exists(path))
         File.Delete(path);
 
-      SettingsProvider.AccountModel.LicenseType = LicenseType.SessionExpired;
+      SettingsProvider.AccountModel.LicenseType = LicenseType.NoLicense;
       SettingsProvider.SettingsView.Close();
 
       LoginView loginView = new LoginView();
@@ -105,18 +105,18 @@ namespace ClangPowerTools
     }
 
 
-    private void SetAccountNameInTrial()
+    private void SetAccountNameToTrial()
     {
-      if (accountModel.LicenseType == LicenseType.Trial)
+      if (accountModel.LicenseType == LicenseType.Commercial || accountModel.LicenseType == LicenseType.Personal)
       {
-        accountModel.UserName = "Trial Account";
-        DisplayCreateAccount = true;
-        DisplayLogout = false;
+        DisplayLogIn = false;
+        DisplayLogout = true;
       }
       else
       {
-        DisplayCreateAccount = false;
-        DisplayLogout = true;
+        accountModel.UserName = string.Empty;
+        DisplayLogIn = true;
+        DisplayLogout = false;
       }
     }
 
