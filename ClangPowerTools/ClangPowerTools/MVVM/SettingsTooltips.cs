@@ -41,7 +41,7 @@
     public string FileExtensions { get; } = "When formatting on save, clang-format will be applied only to files with these extensions.";
     public string FilesToIgnoreFormat { get; } = "When formatting on save, clang-format will not be applied on these files.";
     public string AssumeFilename { get; } = "When reading from stdin, clang-format assumes this filename to look for a style config file (with -style=file) and to determine the language.";
-    public string CustomExecutableFormat { get; } = "Specify a custom path for \"clang-format.exe\" file to run instead of the built-in one (v9.0).";
+    public string CustomExecutableFormat { get; } = "Specify a custom path for \"clang-format.exe\" file to run instead of the built-in one.";
 
     public string Style { get; } = "Coding style, currently supports: LLVM, Google, Chromium, Mozilla, WebKit.\nUse -style=file to load " +
       "style configuration from .clang-format file located in one of the parent directories of the " +
