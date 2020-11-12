@@ -29,10 +29,12 @@ namespace ClangPowerTools
       var llvmSettingsModel = SettingsProvider.LlvmSettingsModel;
 
       GetPathAndVersion(out string path, out string version);
-      if (string.IsNullOrWhiteSpace(path) || string.IsNullOrWhiteSpace(version)) return;
+      if (string.IsNullOrWhiteSpace(path) || string.IsNullOrWhiteSpace(version))
+        return;
 
       SetPathAndVersion(path, version);
-      if (llvmSettingsModel.PreinstalledLlvmVersion == string.Empty) return;
+      if (llvmSettingsModel.PreinstalledLlvmVersion == string.Empty)
+        return;
 
       installedLlvms.Add(llvmSettingsModel.PreinstalledLlvmVersion);
     }
@@ -41,8 +43,8 @@ namespace ClangPowerTools
     {
       var settingsProviderLlvmModel = SettingsProvider.LlvmSettingsModel;
       var llvmModel = new LlvmModel();
-      if (string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmVersion)
-        || string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmPath))
+      if ((string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmVersion) || string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmPath)) ||
+        (!string.IsNullOrWhiteSpace(path) && !string.IsNullOrWhiteSpace(version) && version != settingsProviderLlvmModel.PreinstalledLlvmVersion))
       {
         llvmModel = llvms.Find(e => e.Version == version);
         llvmModel.HasPreinstalledLlvm = true;
