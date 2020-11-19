@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.Services;
+﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -32,7 +33,6 @@ namespace ClangPowerTools.Commands
       get;
       private set;
     }
-
 
     #endregion
 
@@ -109,7 +109,12 @@ namespace ClangPowerTools.Commands
           string solutionFolder = solutionPath.Substring(0, solutionPath.LastIndexOf('\\'));
           mPCHCleaner.Remove(solutionFolder);
         }
-        mDirectoriesPath.Clear();
+        if (DirectoryPaths.Count > 0)
+        {
+          var tidyFileCleaner = new ClangTidyCleaner();
+          tidyFileCleaner.Remove(DirectoryPaths);
+          DirectoryPaths.Clear();
+        }
       }
       catch (Exception e)
       {
