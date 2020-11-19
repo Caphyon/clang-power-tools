@@ -209,18 +209,7 @@ namespace ClangPowerTools
           if (commandId == CommandIds.kTidyId || commandId == CommandIds.kTidyFixId ||
             commandId == CommandIds.kTidyToolbarId || commandId == CommandIds.kTidyFixToolbarId)
           {
-            var directoryPath = Directory.GetParent(item.GetPath()).FullName;
-            StopCommand.Instance.DirectoryPaths.Add(directoryPath);
-
-            var clangTidyFilePath = Path.Combine(directoryPath, ".clang-tidy");
-            if (File.Exists(clangTidyFilePath))
-            {
-              var settingsPathBuilder = new SettingsPathBuilder();
-              var settingsPath = settingsPathBuilder.GetPath("");
-
-              var tempClangTidyFilePath = Path.Combine(settingsPath, ".clang-tidy");
-              File.Copy(clangTidyFilePath, tempClangTidyFilePath, true);
-            }
+            CreateTemporaryFileForTidy(item);
           }
 
           var itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item);
@@ -248,6 +237,22 @@ namespace ClangPowerTools
       catch (Exception e)
       {
         MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+    }
+
+    private void CreateTemporaryFileForTidy(IItem item)
+    {
+      var directoryPath = Directory.GetParent(item.GetPath()).FullName;
+      StopCommand.Instance.DirectoryPaths.Add(directoryPath);
+
+      var clangTidyFilePath = Path.Combine(directoryPath, ScriptConstants.kTidyFile);
+      if (File.Exists(clangTidyFilePath))
+      {
+        var settingsPathBuilder = new SettingsPathBuilder();
+        var settingsPath = settingsPathBuilder.GetPath("");
+
+        var tempClangTidyFilePath = Path.Combine(settingsPath, ScriptConstants.kTidyFile);
+        File.Copy(clangTidyFilePath, tempClangTidyFilePath, true);
       }
     }
 
