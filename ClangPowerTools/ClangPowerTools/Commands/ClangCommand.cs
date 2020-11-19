@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
@@ -24,7 +25,6 @@ namespace ClangPowerTools
 
     protected ItemsCollector mItemsCollector;
     protected FilePathCollector mFilePahtCollector;
-    protected List<string> mDirectoriesPath = new List<string>();
     private readonly Dictionary<string, string> mVsVersions = new Dictionary<string, string>
     {
       {"11.0", "2010"},
@@ -63,6 +63,8 @@ namespace ClangPowerTools
     protected string VsVersion { get; set; }
 
     protected string WorkingDirectoryPath { get; set; }
+
+    public List<string> DirectoryPaths { get; set; } = new List<string>();
 
     protected IVsHierarchy ItemHierarchy
     {
@@ -112,7 +114,7 @@ namespace ClangPowerTools
       if (jsonCompilationDbActive)
         ExportJsonCompilationDatabase(runModeParameters, genericParameters);
       else
-        Compile(runModeParameters, genericParameters);
+        Compile(runModeParameters, genericParameters, aCommandId);
 
       cMakeBuilder.ClearBuildCashe();
     }
@@ -184,7 +186,7 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private void Compile(string runModeParameters, string genericParameters)
+    private void Compile(string runModeParameters, string genericParameters, int commandId)
     {
       var vsSolution = SolutionInfo.IsOpenFolderModeActive() == false ?
         (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution)) : null;
@@ -202,6 +204,23 @@ namespace ClangPowerTools
           {
             OnIgnoreItem(new ClangCommandMessageEventArgs(ignoreItem.IgnoreCompileOrTidyMessage, false));
             continue;
+          }
+
+          if (commandId == CommandIds.kTidyId || commandId == CommandIds.kTidyFixId ||
+            commandId == CommandIds.kTidyToolbarId || commandId == CommandIds.kTidyFixToolbarId)
+          {
+            var directoryPath = Directory.GetParent(item.GetPath()).FullName;
+            StopCommand.Instance.DirectoryPaths.Add(directoryPath);
+
+            var clangTidyFilePath = Path.Combine(directoryPath, ".clang-tidy");
+            if (File.Exists(clangTidyFilePath))
+            {
+              var settingsPathBuilder = new SettingsPathBuilder();
+              var settingsPath = settingsPathBuilder.GetPath("");
+
+              var tempClangTidyFilePath = Path.Combine(settingsPath, ".clang-tidy");
+              File.Copy(clangTidyFilePath, tempClangTidyFilePath, true);
+            }
           }
 
           var itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item);
