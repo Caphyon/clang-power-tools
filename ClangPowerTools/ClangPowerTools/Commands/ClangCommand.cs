@@ -193,6 +193,7 @@ namespace ClangPowerTools
 
       try
       {
+        var tempClangTidyFilePath = string.Empty;
         foreach (var item in mItemsCollector.Items)
         {
           if (StopCommandActivated)
@@ -209,7 +210,7 @@ namespace ClangPowerTools
           if (commandId == CommandIds.kTidyId || commandId == CommandIds.kTidyFixId ||
             commandId == CommandIds.kTidyToolbarId || commandId == CommandIds.kTidyFixToolbarId)
           {
-            CreateTemporaryFileForTidy(item);
+            tempClangTidyFilePath = CreateTemporaryFileForTidy(item);
           }
 
           var itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item);
@@ -231,8 +232,13 @@ namespace ClangPowerTools
         }
         else
         {
+          if (File.Exists(tempClangTidyFilePath))
+          {
+            File.Delete(tempClangTidyFilePath);
+          }
           OnDataStreamClose(new CloseDataStreamingEventArgs(false));
         }
+
       }
       catch (Exception e)
       {
@@ -240,7 +246,7 @@ namespace ClangPowerTools
       }
     }
 
-    private void CreateTemporaryFileForTidy(IItem item)
+    private string CreateTemporaryFileForTidy(IItem item)
     {
       var directoryPath = Directory.GetParent(item.GetPath()).FullName;
       StopCommand.Instance.DirectoryPaths.Add(directoryPath);
@@ -253,7 +259,10 @@ namespace ClangPowerTools
 
         var tempClangTidyFilePath = Path.Combine(settingsPath, ScriptConstants.kTidyFile);
         File.Copy(clangTidyFilePath, tempClangTidyFilePath, true);
+        return tempClangTidyFilePath;
       }
+
+      return string.Empty;
     }
 
     private void ExportJsonCompilationDatabase(string runModeParameters, string genericParameters)
