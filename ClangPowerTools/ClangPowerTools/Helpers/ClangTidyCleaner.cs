@@ -43,7 +43,7 @@ namespace ClangPowerTools.Helpers
 
       // the .clang-tidy file was created by the script
       // if it wasn't deteled by the script then delete it now
-      if (File.Exists(clangTidyFilePath))
+      if (File.Exists(clangTidyFilePath) && File.Exists(tempClangTidyFilePath))
         File.Delete(clangTidyFilePath);
     }
 
