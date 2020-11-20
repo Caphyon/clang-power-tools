@@ -155,9 +155,9 @@
     <Button
       Grid.Row="4"
       Grid.Column="2"
-      Width="70"
+      Width="auto"
       Height="20"
-      Margin="21,50,0,0"
+      Margin="23,50,0,0"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
       Background="Transparent"
@@ -186,16 +186,15 @@
     <Button
       Grid.Row="4"
       Grid.Column="2"
-      Grid.ColumnSpan="2"
-      Width="120"
+      Width="auto"
       Height="20"
-      Margin="21,50,0,0"
+      Margin="23,50,0,0"
       HorizontalAlignment="Left"
       VerticalAlignment="Center"
       Background="Transparent"
       Command="{Binding LogoutCommand}"
       Style="{StaticResource SettingsButton}"
-      Visibility="{Binding Path=DisplayLogIn, Converter={StaticResource BooleanToVisibilityConverter}}">
+      Visibility="{Binding Path=DisplayLogIn, Converter={StaticResource BoolToVis}}">
       <Button.Content>
         <StackPanel Orientation="Horizontal">
           <Image
