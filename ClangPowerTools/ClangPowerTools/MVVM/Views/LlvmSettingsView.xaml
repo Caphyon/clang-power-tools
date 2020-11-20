@@ -14,41 +14,48 @@
   <!--  User control static resources  -->
   <UserControl.Resources>
 
-    <Style TargetType="{x:Type Label}">
-      <Setter Property="FontFamily" Value="Segoe UI" />
-      <Setter Property="FontWeight" Value="SemiBold" />
-      <Setter Property="FontSize" Value="15" />
-    </Style>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Styles/AppResources.xaml" />
 
-    <Style TargetType="{x:Type ListView}">
-      <Setter Property="FontFamily" Value="Segoe UI" />
-      <Setter Property="FontWeight" Value="SemiBold" />
-      <Setter Property="FontSize" Value="15" />
-    </Style>
+        <ResourceDictionary>
+          <Style TargetType="{x:Type Label}">
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="15" />
+          </Style>
 
-    <Style x:Key="ProgressBarStyle" TargetType="ProgressBar">
-      <Setter Property="Width" Value="475" />
-      <Setter Property="Height" Value="6" />
-      <Setter Property="VerticalAlignment" Value="Center" />
-      <Setter Property="Background" Value="#BCBAC1" />
-      <Setter Property="Foreground" Value="#852012" />
-      <Setter Property="Margin" Value="0,0,15,0" />
-    </Style>
+          <Style TargetType="{x:Type ListView}">
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="15" />
+          </Style>
+          <Style x:Key="ProgressBarStyle" TargetType="ProgressBar">
+            <Setter Property="Width" Value="475" />
+            <Setter Property="Height" Value="6" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Background" Value="#BCBAC1" />
+            <Setter Property="Foreground" Value="#852012" />
+            <Setter Property="Margin" Value="0,0,15,0" />
+          </Style>
 
-    <Style x:Key="HyperlinkStyle" TargetType="Hyperlink">
-      <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-      <Setter Property="Foreground" Value="#852012" />
-      <Setter Property="TextBlock.TextDecorations" Value="{x:Null}" />
-      <Style.Triggers>
-        <Trigger Property="IsMouseOver" Value="True">
-          <Setter Property="Foreground" Value="#FFBF8880" />
-          <Setter Property="TextBlock.TextDecorations" Value="Underline" />
-        </Trigger>
-        <DataTrigger Binding="{Binding CanExecuteCommand}" Value="False">
-          <Setter Property="Foreground" Value="#BCBAC1" />
-        </DataTrigger>
-      </Style.Triggers>
-    </Style>
+          <Style x:Key="HyperlinkStyle" TargetType="Hyperlink">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Foreground" Value="#852012" />
+            <Setter Property="TextBlock.TextDecorations" Value="{x:Null}" />
+            <Style.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="#FFBF8880" />
+                <Setter Property="TextBlock.TextDecorations" Value="Underline" />
+              </Trigger>
+              <DataTrigger Binding="{Binding CanExecuteCommand}" Value="False">
+                <Setter Property="Foreground" Value="#BCBAC1" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </ResourceDictionary>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
   </UserControl.Resources>
 
   <Grid>
@@ -306,6 +313,16 @@
         Height="30"
         ItemsSource="{Binding InstalledLlvms}"
         SelectedItem="{Binding VersionUsed}" />
+      <Button 
+        Margin="335 0 0 0"
+        Width="150"
+        Style="{StaticResource SettingsButton}"
+        Content="Browse for LLVM"
+        Foreground="White"
+        FontSize="15"
+        FontFamily="Segoe UI"
+        />
+
     </StackPanel>
 
   </Grid>
