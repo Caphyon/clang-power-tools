@@ -320,8 +320,8 @@
         Content="Browse for LLVM"
         Foreground="White"
         FontSize="15"
-        FontFamily="Segoe UI"
-        />
+        Command="{Binding BrowseForLLVMCommand}"
+        FontFamily="Segoe UI" />
 
     </StackPanel>
 
