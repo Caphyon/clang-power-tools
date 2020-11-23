@@ -94,6 +94,7 @@
     <Compile Include="Extensions\ObjectExtension.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Events\HasEncodingErrorEventArgs.cs" />
+    <Compile Include="Helpers\ClangTidyCleaner.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
     <Compile Include="Helpers\JoinUtility.cs" />
     <Compile Include="Helpers\RegistryUtility.cs" />
