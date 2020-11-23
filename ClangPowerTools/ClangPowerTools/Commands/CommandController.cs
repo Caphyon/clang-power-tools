@@ -29,6 +29,8 @@ namespace ClangPowerTools
     public bool tokenExists = false;
     public bool clearOutputOnFormat = false;
 
+    public bool showOpenFolderWarning = true;
+
     public static readonly Guid mCommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
 
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
@@ -659,6 +661,13 @@ namespace ClangPowerTools
       {
         var releaseNotesView = new ReleaseNotesView(true);
         releaseNotesView.Show();
+      }
+
+      if (showOpenFolderWarning && SolutionInfo.IsOpenFolderModeActive())
+      {
+        showOpenFolderWarning = false;
+        CMakeBetaWarning cMakeBetaWarning = new CMakeBetaWarning();
+        cMakeBetaWarning.ShowDialog();
       }
 
       if (SettingsProvider.CompilerSettingsModel.ShowSquiggles == false)
