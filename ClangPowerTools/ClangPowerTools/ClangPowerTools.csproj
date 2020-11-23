@@ -172,6 +172,7 @@
     <Compile Include="MVVM\ViewModels\DetectedStyleInfoViewModel.cs" />
     <Compile Include="MVVM\ViewModels\DetectStyleFileSelectorViewModel.cs" />
     <Compile Include="MVVM\ViewModels\DiffViewModel.cs" />
+    <Compile Include="MVVM\ViewModels\FeedbackViewModel.cs" />
     <Compile Include="MVVM\ViewModels\FormatEditorViewModel.cs" />
     <Compile Include="MVVM\Interfaces\IFormatEditor.cs" />
     <Compile Include="MVVM\ViewModels\TeamSettingsViewModel.cs" />
@@ -219,6 +220,9 @@
     <Compile Include="MVVM\CommonSettingsFunctionality.cs" />
     <Compile Include="MVVM\ViewModels\ToggleMultipleDataViewModel.cs" />
     <Compile Include="MVVM\ViewModels\TrialExpiredViewModel.cs" />
+    <Compile Include="MVVM\Views\FeedbackView.xaml.cs">
+      <DependentUpon>FeedbackView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MVVM\Views\AccountView.xaml.cs">
       <DependentUpon>AccountView.xaml</DependentUpon>
     </Compile>
@@ -651,6 +655,10 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="MVVM\Views\FeedbackView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="MVVM\Views\AccountView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
