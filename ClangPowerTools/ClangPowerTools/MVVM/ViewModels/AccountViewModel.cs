@@ -12,6 +12,7 @@ namespace ClangPowerTools
   {
     #region Members
 
+    private string accoutCellHeight;
     private AccountModel accountModel;
     private GeneralSettingsModel generalModel;
 
@@ -46,6 +47,19 @@ namespace ClangPowerTools
       {
         accountModel = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AccountModel"));
+      }
+    }
+
+    public string AccoutCellHeight
+    {
+      get
+      {
+        return accoutCellHeight;
+      }
+      set
+      {
+        accoutCellHeight = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AccoutCellHeight"));
       }
     }
 
@@ -109,12 +123,14 @@ namespace ClangPowerTools
     {
       if (accountModel.LicenseType == LicenseType.Commercial || accountModel.LicenseType == LicenseType.Personal)
       {
+        AccoutCellHeight = "auto";
         DisplayLogIn = false;
         DisplayLogout = true;
       }
       else
       {
         accountModel.UserName = string.Empty;
+        AccoutCellHeight = "0";
         DisplayLogIn = true;
         DisplayLogout = false;
       }

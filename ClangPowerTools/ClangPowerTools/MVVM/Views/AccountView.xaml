@@ -27,31 +27,36 @@
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
     <Grid.RowDefinitions>
-      <RowDefinition Height="60" />
-      <RowDefinition Height="66" />
+      <RowDefinition Height="30" />
+      <RowDefinition Height="90" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="57" />
-      <ColumnDefinition Width="66" />
-      <ColumnDefinition Width="auto" />
+      <ColumnDefinition Width="235" />
+      <ColumnDefinition Width="300" />
+      <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
-    <Ellipse Grid.Row="1" Grid.Column="1">
-      <Ellipse.Fill>
-        <ImageBrush
-          AlignmentX="Center"
-          AlignmentY="Center"
-          ImageSource="{StaticResource AccountAvatarIcon}" />
-      </Ellipse.Fill>
-    </Ellipse>
+    <Rectangle
+      Grid.Row="1"
+      Grid.Column="1"
+      Width="65"
+      Height="65"
+      HorizontalAlignment="Center">
+      <Rectangle.Fill>
+        <ImageBrush ImageSource="{StaticResource AccountAvatarIcon}" />
+      </Rectangle.Fill>
+    </Rectangle>
 
     <StackPanel
-      Grid.Row="1"
-      Grid.Column="2"
+      Grid.Row="2"
+      Grid.Column="1"
+      Height="{Binding AccoutCellHeight}"
       Margin="21,0,0,0"
       HorizontalAlignment="Left"
       VerticalAlignment="Center">
@@ -73,9 +78,9 @@
     </StackPanel>
 
     <Grid
-      Grid.Row="2"
-      Grid.Column="2"
-      Margin="21,46,0,0"
+      Grid.Row="3"
+      Grid.Column="1"
+      Margin="21,30,0,0"
       VerticalAlignment="Center">
       <Grid.RowDefinitions>
         <RowDefinition Height="auto" />
@@ -128,9 +133,9 @@
     </Grid>
 
     <StackPanel
-      Grid.Row="3"
-      Grid.Column="2"
-      Margin="21,40,0,0"
+      Grid.Row="4"
+      Grid.Column="1"
+      Margin="21,30,0,0"
       Orientation="Horizontal">
       <TextBlock
         Grid.Row="1"
@@ -152,68 +157,34 @@
         Text="{Binding GeneralSettingsModel.Version}" />
     </StackPanel>
 
-    <Button
-      Grid.Row="4"
-      Grid.Column="2"
-      Width="70"
-      Height="20"
-      Margin="21,50,0,0"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      Background="Transparent"
-      Command="{Binding LogoutCommand}"
-      Style="{StaticResource SettingsButton}"
-      Visibility="{Binding Path=DisplayLogout, Converter={StaticResource BoolToVis}}">
-      <Button.Content>
-        <StackPanel Orientation="Horizontal">
-          <Image
-            Width="17"
-            Height="25"
-            VerticalAlignment="Center"
-            Source="{StaticResource LogoutIcon}" />
-          <TextBlock
-            Margin="3,0,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Center"
-            FontFamily="SegoeUI"
-            FontSize="15"
-            Foreground="#9E005A"
-            Text="Log out" />
-        </StackPanel>
-      </Button.Content>
-    </Button>
 
     <Button
-      Grid.Row="4"
-      Grid.Column="2"
-      Grid.ColumnSpan="2"
-      Width="120"
-      Height="20"
-      Margin="21,50,0,0"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center"
-      Background="Transparent"
+      Grid.Row="5"
+      Grid.Column="1"
+      Width="140"
+      Height="30"
+      Margin="0,40,0,0"
+      HorizontalAlignment="Center"
       Command="{Binding LogoutCommand}"
+      Content="Log Out"
+      FontSize="14"
+      Foreground="White"
       Style="{StaticResource SettingsButton}"
-      Visibility="{Binding Path=DisplayLogIn, Converter={StaticResource BooleanToVisibilityConverter}}">
-      <Button.Content>
-        <StackPanel Orientation="Horizontal">
-          <Image
-            Width="17"
-            Height="25"
-            VerticalAlignment="Center"
-            Source="{StaticResource LogoutIcon}" />
-          <TextBlock
-            Margin="3,0,0,0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Center"
-            FontFamily="SegoeUI"
-            FontSize="15"
-            Foreground="#9E005A"
-            Text="Log in" />
-        </StackPanel>
-      </Button.Content>
-    </Button>
+      Visibility="{Binding Path=DisplayLogout, Converter={StaticResource BoolToVis}}" />
+
+    <Button
+      Grid.Row="5"
+      Grid.Column="1"
+      Width="140"
+      Height="30"
+      Margin="0,40,0,0"
+      HorizontalAlignment="Center"
+      Command="{Binding LogoutCommand}"
+      Content="Log In"
+      FontSize="14"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}"
+      Visibility="{Binding Path=DisplayLogIn, Converter={StaticResource BoolToVis}}" />
 
   </Grid>
 </UserControl>

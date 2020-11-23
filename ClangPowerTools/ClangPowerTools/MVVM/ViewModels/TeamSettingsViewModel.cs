@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.LicenseValidation;
+using ClangPowerTools.MVVM.Views;
 using Microsoft.VisualStudio.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -164,8 +165,15 @@ namespace ClangPowerTools
 
     private void NoCloudFunctionalityMessage()
     {
-      MessageBox.Show("Cloud settings can only be used if you are logged in with a Clang Power Tools account.",
-                      "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+      DialogResult dialogResult = MessageBox.Show("Cloud settings can only be used if you are logged in with a Clang Power Tools account.\r\n\r\nCreate account?",
+                                                  "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+      if (dialogResult == DialogResult.OK)
+      {
+        SettingsProvider.SettingsView.Close();
+        var loginView = new LoginView();
+        loginView.ShowDialog();
+      }
     }
 
     #endregion
