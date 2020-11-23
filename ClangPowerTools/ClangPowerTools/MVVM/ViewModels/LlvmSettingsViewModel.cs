@@ -1,15 +1,20 @@
 ﻿using ClangPowerTools.Handlers;
+using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Controllers;
+using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
+using System.Windows.Forms;
+using System.Windows.Input;
 
 namespace ClangPowerTools
 {
-  public class LlvmSettingsViewModel : INotifyPropertyChanged
+  public class LlvmSettingsViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
   {
     #region Members
 
@@ -21,12 +26,18 @@ namespace ClangPowerTools
     private PreinstalledLlvm preinstalledLlvm;
     private const string uninstall = "Uninstall";
 
+    private ICommand browseForLlvmCommand;
+
+    private LlvmSettingsView view;
+
+
     #endregion
 
     #region Constructor
 
-    public LlvmSettingsViewModel()
+    public LlvmSettingsViewModel(LlvmSettingsView view)
     {
+      this.view = view;
       llvmController.InstallFinished = InstallFinished;
       llvmController.UninstallFinished = UninstallFinished;
       llvmController.OnOperationCanceldEvent += OperationCanceled;
@@ -67,7 +78,26 @@ namespace ClangPowerTools
       }
     }
 
+    public bool CanExecute
+    {
+      get
+      {
+        return true;
+      }
+    }
+
     #endregion
+
+
+    #region Commands
+
+    public ICommand BrowseForLLVMCommand
+    {
+      get => browseForLlvmCommand ??= new RelayCommand(() => BrowseForLLVM(), () => CanExecute);
+    }
+
+    #endregion
+
 
     #region Public Methods
 
@@ -92,6 +122,35 @@ namespace ClangPowerTools
       DisableButtons(elementIndex);
       llvmController.llvmModel = llvms[elementIndex];
       llvmController.Uninstall(llvmController.llvmModel.Version);
+    }
+
+    public void BrowseForLLVM()
+    {
+      var llvmBinDirectoryPath = BrowseForFolderFiles();
+      if (string.IsNullOrWhiteSpace(llvmBinDirectoryPath))
+        return;
+
+      var clangPath = Path.Combine(llvmBinDirectoryPath, "clang.exe");
+      if (!File.Exists(clangPath))
+      {
+        clangPath = Path.Combine(llvmBinDirectoryPath, "bin", "clang.exe");
+        if (!File.Exists(clangPath))
+        {
+          MessageBox.Show("LLVM version can't be detected", "Clang Power Tools",
+            MessageBoxButtons.OK, MessageBoxIcon.Warning);
+          return;
+        }
+        llvmBinDirectoryPath = Path.Combine(llvmBinDirectoryPath, "bin");
+      }
+
+      var versionInfo = FileVersionInfo.GetVersionInfo(clangPath);
+      string version = versionInfo.FileVersion.Split()[0];
+
+      preinstalledLlvm = new PreinstalledLlvm(Llvms, InstalledLlvms);
+      preinstalledLlvm.SetPreinstalledLlvm(llvmBinDirectoryPath, version);
+
+      view.VersionsList.Items.Refresh();
+      VersionUsed = version;
     }
 
     #endregion

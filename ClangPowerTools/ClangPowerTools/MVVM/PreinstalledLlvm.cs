@@ -24,11 +24,13 @@ namespace ClangPowerTools
 
     #region Methods
 
-    public void SetPreinstalledLlvm()
+    public void SetPreinstalledLlvm(string path = null, string version = null)
     {
       var llvmSettingsModel = SettingsProvider.LlvmSettingsModel;
 
-      GetPathAndVersion(out string path, out string version);
+      if (path == null || version == null)
+        GetPathAndVersion(out path, out version);
+
       if (string.IsNullOrWhiteSpace(path) || string.IsNullOrWhiteSpace(version))
         return;
 
