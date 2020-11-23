@@ -161,7 +161,7 @@
     <Button
       Grid.Row="5"
       Grid.Column="1"
-      Width="200"
+      Width="140"
       Height="30"
       Margin="0,40,0,0"
       HorizontalAlignment="Center"
@@ -175,7 +175,7 @@
     <Button
       Grid.Row="5"
       Grid.Column="1"
-      Width="200"
+      Width="140"
       Height="30"
       Margin="0,40,0,0"
       HorizontalAlignment="Center"
