@@ -9,10 +9,11 @@ namespace ClangPowerTools.Views
   /// </summary>
   public partial class LlvmSettingsView : UserControl, IView
   {
-    private LlvmSettingsViewModel llvmSettingsViewModel = new LlvmSettingsViewModel();
+    private LlvmSettingsViewModel llvmSettingsViewModel;
 
     public LlvmSettingsView()
     {
+      llvmSettingsViewModel = new LlvmSettingsViewModel(this);
       DataContext = llvmSettingsViewModel;
       InitializeComponent();
       this.Loaded += LlvmSettingsViewLoaded;
@@ -21,7 +22,7 @@ namespace ClangPowerTools.Views
 
     public void ResetView()
     {
-      llvmSettingsViewModel = new LlvmSettingsViewModel();
+      llvmSettingsViewModel = new LlvmSettingsViewModel(this);
       DataContext = llvmSettingsViewModel;
     }
 
