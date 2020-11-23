@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.CMake;
-using ClangPowerTools.Commands;
+﻿using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.IgnoreActions;
@@ -106,15 +105,10 @@ namespace ClangPowerTools
       string runModeParameters = ScriptGenerator.GetRunModeParamaters();
       string genericParameters = ScriptGenerator.GetGenericParamaters(aCommandId, VsEdition, VsVersion, jsonCompilationDbActive);
 
-      CMakeBuilder cMakeBuilder = new CMakeBuilder();
-      cMakeBuilder.Build();
-
       if (jsonCompilationDbActive)
         ExportJsonCompilationDatabase(runModeParameters, genericParameters);
       else
         Compile(runModeParameters, genericParameters);
-
-      cMakeBuilder.ClearBuildCashe();
     }
 
     //Collect files

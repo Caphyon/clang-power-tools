@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.CMake;
-using ClangPowerTools.Commands;
+﻿using ClangPowerTools.Commands;
 using ClangPowerTools.Commands.BackgroundTidy;
 using ClangPowerTools.Error;
 using ClangPowerTools.Events;
@@ -319,8 +318,6 @@ namespace ClangPowerTools
     private void OnAfterClangCommand()
     {
       running = false;
-      var cMakeBuilder = new CMakeBuilder();
-      cMakeBuilder.ClearBuildCashe();
     }
 
     public void OnAfterFormatCommand(object sender, FormatCommandEventArgs e)

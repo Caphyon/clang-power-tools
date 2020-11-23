@@ -1,5 +1,4 @@
-﻿using ClangPowerTools.CMake;
-using ClangPowerTools.Helpers;
+﻿using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
 using EnvDTE;
 using EnvDTE80;
@@ -80,9 +79,6 @@ namespace ClangPowerTools.Commands.BackgroundTidy
         string runModeParameters = ScriptGenerator.GetRunModeParamaters();
         string genericParameters = ScriptGenerator.GetGenericParamaters(commandId, vsEdition, vsVersion, false);
 
-        CMakeBuilder cMakeBuilder = new CMakeBuilder();
-        cMakeBuilder.Build();
-
         var vsSolution = SolutionInfo.IsOpenFolderModeActive() == false ?
           (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution)) : null;
 
@@ -98,8 +94,6 @@ namespace ClangPowerTools.Commands.BackgroundTidy
         powerShell.Invoke(psScript, new RunningProcesses(true));
 
         #endregion
-
-        cMakeBuilder.ClearBuildCashe();
 
       }
       catch (Exception)

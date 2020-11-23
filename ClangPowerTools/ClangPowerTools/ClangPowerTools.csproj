@@ -77,7 +77,6 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="CMake\CMakeBuilder.cs" />
     <Compile Include="Commands\BackgroundTidy\BackgroundTidy.cs" />
     <Compile Include="Commands\BackgroundTidy\DataProcessor.cs" />
     <Compile Include="Commands\BackgroundTidy\PowerShellWrapperBackground.cs" />
