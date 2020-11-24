@@ -49,6 +49,12 @@
         FontSize="14"
         Text="More detalis about how to send feedback"
         TextWrapping="Wrap" />
+
+      <CheckBox 
+        Margin="235 150 0 0" 
+        Content="Don't show this again." 
+        Checked="CheckBox_Checked" 
+        Unchecked="CheckBox_Unchecked" />
     </StackPanel>
 
     <Button
