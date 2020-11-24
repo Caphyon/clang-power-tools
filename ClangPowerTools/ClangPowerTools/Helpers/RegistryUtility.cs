@@ -68,14 +68,14 @@ namespace ClangPowerTools.Helpers
     {
       try
       {
-        using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryName);
+        using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryName, true);
         if (key == null)
           return false;
 
         key.DeleteValue(keyName);
         return true;
       }
-      catch (Exception)
+      catch (Exception e)
       {
         return false;
       }
