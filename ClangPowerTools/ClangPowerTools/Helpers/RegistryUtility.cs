@@ -34,7 +34,7 @@ namespace ClangPowerTools.Helpers
       }
     }
 
-    public string ReadCurrentUserdKey(string keyName)
+    public string ReadCurrentUserKey(string keyName)
     {
       try
       {
