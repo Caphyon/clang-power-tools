@@ -41,17 +41,23 @@
       <TextBlock
         Margin="0,5"
         FontSize="14"
-        Text="We are happy to announce to you that the CMake support is now in the BETA stage."
+        Text="CMake support is in early access and is considered a BETA feature."
         TextWrapping="Wrap" />
 
       <TextBlock
         Margin="0,5"
         FontSize="14"
-        Text="More detalis about how to send feedback"
+        Text="Using this feature may result in some changes to your &quot;vcxproj&quot;. We highly recommend using version control software to ensure you have everything backed-up before using Clang Build and Tidy on your project."
+        TextWrapping="Wrap" />      
+      
+      <TextBlock
+        Margin="0,30"
+        FontSize="14"
+        Text="For any issues or suggestions, see the Feedback tab in Clang Power Tools Settings."
         TextWrapping="Wrap" />
 
       <CheckBox 
-        Margin="0 100 0 0" 
+        Margin="0 10 0 0" 
         Content="Don't show this again." 
         Checked="CheckBox_Checked" 
         Unchecked="CheckBox_Unchecked" />
