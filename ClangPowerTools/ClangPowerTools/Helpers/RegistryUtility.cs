@@ -64,6 +64,23 @@ namespace ClangPowerTools.Helpers
 
     public bool Exists() => Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryName) != null;
 
+    public bool DeleteCurrentUserKey(string keyName)
+    {
+      try
+      {
+        using var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(registryName);
+        if (key == null)
+          return false;
+
+        key.DeleteValue(keyName);
+        return true;
+      }
+      catch (Exception)
+      {
+        return false;
+      }
+    }
+
     #endregion
 
   }
