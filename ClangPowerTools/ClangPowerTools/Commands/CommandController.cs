@@ -29,6 +29,8 @@ namespace ClangPowerTools
     public bool tokenExists = false;
     public bool clearOutputOnFormat = false;
 
+    public bool showOpenFolderWarning = true;
+
     public static readonly Guid mCommandSet = new Guid("498fdff5-5217-4da9-88d2-edad44ba3874");
 
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
@@ -46,6 +48,10 @@ namespace ClangPowerTools
     private string oldActiveDocumentName = null;
 
     private readonly object mutex = new object();
+
+    private readonly string registryName = @"Software\Caphyon\Clang Power Tools";
+    private readonly string keyName = "CMakeBetaWarning";
+
 
     #endregion
 
@@ -659,6 +665,19 @@ namespace ClangPowerTools
       {
         var releaseNotesView = new ReleaseNotesView(true);
         releaseNotesView.Show();
+      }
+
+      if (showOpenFolderWarning)
+      {
+        var registryUtility = new RegistryUtility(registryName);
+        string showCMakeBetaWarning = registryUtility.ReadCurrentUserKey(keyName);
+
+        if (showCMakeBetaWarning == null && SolutionInfo.IsOpenFolderModeActive())
+        {
+          showOpenFolderWarning = false;
+          CMakeBetaWarning cMakeBetaWarning = new CMakeBetaWarning();
+          cMakeBetaWarning.Show();
+        }
       }
 
       if (SettingsProvider.CompilerSettingsModel.ShowSquiggles == false)

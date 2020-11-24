@@ -33,7 +33,7 @@ namespace ClangPowerTools.MVVM.Controllers
       if (WasEverInTrial() == false)
         return string.Empty;
 
-      return registryUtility.ReadCurrentUserdKey(keyName);
+      return registryUtility.ReadCurrentUserKey(keyName);
     }
 
     public string GetExpirationDateAsString()
@@ -64,7 +64,7 @@ namespace ClangPowerTools.MVVM.Controllers
     }
 
     public bool WasEverInTrial() => registryUtility.Exists() &&
-                                    !string.IsNullOrWhiteSpace(registryUtility.ReadCurrentUserdKey(keyName));
+                                    !string.IsNullOrWhiteSpace(registryUtility.ReadCurrentUserKey(keyName));
 
     #endregion
 
