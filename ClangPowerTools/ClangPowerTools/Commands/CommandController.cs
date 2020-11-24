@@ -667,13 +667,17 @@ namespace ClangPowerTools
         releaseNotesView.Show();
       }
 
-      var registryUtility = new RegistryUtility(registryName);
-      string showCMakeBetaWarning = registryUtility.ReadCurrentUserKey(keyName);
-
-      if (showCMakeBetaWarning == null && SolutionInfo.IsOpenFolderModeActive())
+      if (showOpenFolderWarning)
       {
-        CMakeBetaWarning cMakeBetaWarning = new CMakeBetaWarning();
-        cMakeBetaWarning.Show();
+        var registryUtility = new RegistryUtility(registryName);
+        string showCMakeBetaWarning = registryUtility.ReadCurrentUserKey(keyName);
+
+        if (showCMakeBetaWarning == null && SolutionInfo.IsOpenFolderModeActive())
+        {
+          showOpenFolderWarning = false;
+          CMakeBetaWarning cMakeBetaWarning = new CMakeBetaWarning();
+          cMakeBetaWarning.Show();
+        }
       }
 
       if (SettingsProvider.CompilerSettingsModel.ShowSquiggles == false)
