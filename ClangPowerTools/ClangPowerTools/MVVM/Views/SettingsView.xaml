@@ -139,7 +139,7 @@
               Width="15"
               Height="15"
               Margin="3"
-              Source="/ClangPowerTools;component/Resources/AccountIcon.png" />
+              Source="/ClangPowerTools;component/Resources/FeedbackIcon.png" />
             <TextBlock Width="65" Text="Feedback" />
           </StackPanel>
         </TabItem.Header>

@@ -434,6 +434,7 @@
     <Resource Include="Resources\FileIcon.png" />
     <Resource Include="Resources\DetectOnFileIcon.png" />
     <Resource Include="Resources\GitHubMark.png" />
+    <Resource Include="Resources\FeedbackIcon.png" />
     <Content Include="Resources\LICENSE.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
