@@ -119,7 +119,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• LLVM 11"
+          Text="• Possibility to select a custom path for LLVM"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -129,9 +129,18 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Easier access to Clang functionality. No account needed."
+          Text="• Detect the LLVM version updates from disk"
           TextWrapping="Wrap" />
 
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Share your experience more quickly with the new Feedback tab"
+          TextWrapping="Wrap" />
         <!--  Bug Fixes  -->
         <TextBox
           Margin="5,35,0,0"
@@ -149,27 +158,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Clang-Tidy doesn't run when too many flags are checked"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Clang-Tidy command does not work on TidyFile mode"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Fix configuration file warnings for Clang-Tidy"
+          Text="• Stopping a clang command sometimes left unhandled temporary files"
           TextWrapping="Wrap" />
 
       </ListView>
