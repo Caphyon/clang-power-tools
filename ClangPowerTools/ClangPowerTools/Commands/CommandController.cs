@@ -49,6 +49,10 @@ namespace ClangPowerTools
 
     private readonly object mutex = new object();
 
+    private readonly string registryName = @"Software\Caphyon\Clang Power Tools";
+    private readonly string keyName = "CMakeBetaWarning";
+
+
     #endregion
 
 
@@ -663,11 +667,13 @@ namespace ClangPowerTools
         releaseNotesView.Show();
       }
 
-      if (showOpenFolderWarning && SolutionInfo.IsOpenFolderModeActive())
+      var registryUtility = new RegistryUtility(registryName);
+      string showCMakeBetaWarning = registryUtility.ReadCurrentUserKey(keyName);
+
+      if (showCMakeBetaWarning == null && SolutionInfo.IsOpenFolderModeActive())
       {
-        showOpenFolderWarning = false;
         CMakeBetaWarning cMakeBetaWarning = new CMakeBetaWarning();
-        cMakeBetaWarning.ShowDialog();
+        cMakeBetaWarning.Show();
       }
 
       if (SettingsProvider.CompilerSettingsModel.ShowSquiggles == false)
