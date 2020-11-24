@@ -11,7 +11,7 @@
   Height="450"
   Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
-  ShowInTaskbar="False"
+  Topmost="True"
   WindowStartupLocation="CenterScreen"
   WindowStyle="ThreeDBorderWindow">
 
@@ -35,7 +35,7 @@
       Grid.Row="0"
       Banner="/ClangPowerTools;component/Resources/BannerWarning.png"
       Icon="/ClangPowerTools;component/Resources/WarningIcon.png"
-      Type="Large Files Detected" />
+      Type="CMake Beta support" />
 
     <StackPanel Grid.Row="1" Margin="20">
       <TextBlock
@@ -51,7 +51,7 @@
         TextWrapping="Wrap" />
 
       <CheckBox 
-        Margin="235 150 0 0" 
+        Margin="0 100 0 0" 
         Content="Don't show this again." 
         Checked="CheckBox_Checked" 
         Unchecked="CheckBox_Unchecked" />
