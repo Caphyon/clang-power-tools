@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace ClangPowerTools
@@ -77,6 +78,7 @@ namespace ClangPowerTools
     #endregion
 
     #region Commands
+
     public ICommand FileExtensionsAddDataCommand
     {
       get => fileExtensionsAddDataCommand ?? (fileExtensionsAddDataCommand = new RelayCommand(() => UpdateFileExtensions(), () => CanExecute));
@@ -110,11 +112,24 @@ namespace ClangPowerTools
     #endregion
 
     #region Methods
+
     private void OpenClangFormatDetector()
     {
       SettingsProvider.SettingsView.Close();
       string vsixPath = Path.GetDirectoryName(typeof(RunClangPowerToolsPackage).Assembly.Location);
-      Process.Start(Path.Combine(vsixPath, FormatConstants.ClangFormatDetector));
+
+      try
+      {
+        var process = new Process();
+        process.StartInfo.FileName = Path.Combine(vsixPath, FormatConstants.ClangFormatDetector);
+        process.StartInfo.WorkingDirectory = vsixPath;
+
+        process.Start();
+      }
+      catch (Exception e)
+      {
+        MessageBox.Show(e.Message, "Clang Format Detector", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
     }
 
     private void UpdateFileExtensions()
