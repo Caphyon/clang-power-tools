@@ -19,5 +19,7 @@
 
     public const string FontFamily = "Consolas";
     public const int FontSize = 12;
+
+    public const string ClangFormatDetector = "ClangFormatDetector.exe";
   }
 }
