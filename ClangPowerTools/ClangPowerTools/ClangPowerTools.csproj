@@ -98,6 +98,7 @@
     <Compile Include="Helpers\ScriptGenerator.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
     <Compile Include="Helpers\VsWindowController.cs" />
+    <Compile Include="Helpers\YAMLHandler.cs" />
     <Compile Include="IgnoreActions\IgnoreItem.cs" />
     <Compile Include="Items\CurrentSolution.cs" />
     <Compile Include="MVVM\CommonFormatEditorFunctionality.cs" />
@@ -105,7 +106,9 @@
     <Compile Include="MVVM\Constants\FormatConstants.cs" />
     <Compile Include="MVVM\Constants\LlvmConstants.cs" />
     <Compile Include="MVVM\Constants\LlvmVersionsAlternate.cs" />
+    <Compile Include="MVVM\FormatData\FormatOptionsAllData.cs" />
     <Compile Include="MVVM\FormatData\FormatOptionsInputValues.cs" />
+    <Compile Include="MVVM\Models\FormatModel.cs" />
     <Compile Include="MVVM\Models\FormatOptionMultipleToggleModel.cs" />
     <Compile Include="MVVM\Models\SelectedFileModel.cs" />
     <Compile Include="MVVM\Models\ToggleModel.cs" />
@@ -602,6 +605,9 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="WindowsBase" />
     <Reference Include="WindowsFormsIntegration" />
+    <Reference Include="YamlDotNet, Version=9.0.0.0, Culture=neutral, PublicKeyToken=ec19458f3c15af5e, processorArchitecture=MSIL">
+      <HintPath>..\packages\YamlDotNet.9.1.1\lib\net45\YamlDotNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <VSCTCompile Include="ClangPowerTools.vsct">
