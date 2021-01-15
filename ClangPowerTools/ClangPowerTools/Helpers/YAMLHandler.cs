@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.MVVM.Models;
+﻿using ClangPowerTools.MVVM.Interfaces;
+using ClangPowerTools.MVVM.Models;
 using System;
 using System.IO;
 using System.Text;
@@ -22,7 +23,8 @@ namespace ClangPowerTools
       var mapping = (YamlMappingNode)yaml.Documents[0].RootNode;
       foreach (var entry in mapping.Children)
       {
-        if (FormatOptionsAllData.FormatOptions.TryGetValue(entry.Key.ToString(), out FormatOptionModel option))
+        //TODO handle if not found, add empty node
+        if (FormatOptionsAllData.FormatOptions.TryGetValue(entry.Key.ToString(), out IFormatOption option))
         {
           switch (option)
           {
@@ -81,6 +83,8 @@ namespace ClangPowerTools
           }
         }
       }
+
+
     }
   }
 }
