@@ -36,7 +36,8 @@ namespace ClangPowerTools
 
             case FormatOptionInputModel inputModel:
               var inputValue = entry.Value.ToString();
-              if (inputValue.Contains(':'))
+              //TODO check on file creation
+              if (inputValue.Contains('^') || inputValue.Length == 0)
               {
                 inputModel.Input = string.Concat("'", inputValue, "'");
                 break;
@@ -69,18 +70,24 @@ namespace ClangPowerTools
                 switch (node.NodeType)
                 {
                   case YamlNodeType.Mapping:
+                    //TODO see if elements like '' are removed when exporting .clang-format
                     var mappingNode = (YamlMappingNode)node;
-                    sb.Append("  - ");
                     for (int i = 0; i < mappingNode.Children.Count; i++)
                     {
-                      var cake = mappingNode.Children[i];
+                      var nodeName = mappingNode.Children[i].Key.ToString();
+                      var nodeValue = mappingNode.Children[i].Value.ToString();
+                      if (nodeValue.Contains('^'))
+                      {
+                        nodeValue = string.Concat("'", nodeValue, "'");
+                      }
+
                       if (i == 0)
                       {
-                        sb.AppendLine(string.Concat(cake.Key.ToString(), ": ", cake.Value.ToString()));
+                        sb.AppendLine(string.Concat("  - ", nodeName, ": ", nodeValue));
                       }
                       else
                       {
-                        sb.AppendLine(string.Concat("    ", cake.Key.ToString(), ": ", cake.Value.ToString()));
+                        sb.AppendLine(string.Concat("    ", nodeName, ": ", nodeValue));
                       }
                     }
                     break;
