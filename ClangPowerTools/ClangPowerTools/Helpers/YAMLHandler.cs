@@ -2,6 +2,7 @@
 using ClangPowerTools.MVVM.Models;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YamlDotNet.RepresentationModel;
@@ -34,7 +35,13 @@ namespace ClangPowerTools
               break;
 
             case FormatOptionInputModel inputModel:
-              inputModel.Input = entry.Value.ToString();
+              var inputValue = entry.Value.ToString();
+              if (inputValue.Contains(':'))
+              {
+                inputModel.Input = string.Concat("'", inputValue, "'");
+                break;
+              }
+              inputModel.Input = inputValue;
               break;
 
             case FormatOptionMultipleToggleModel multipleToggleModel:
@@ -64,9 +71,17 @@ namespace ClangPowerTools
                   case YamlNodeType.Mapping:
                     var mappingNode = (YamlMappingNode)node;
                     sb.Append("  - ");
-                    foreach (var test in mappingNode.Children)
+                    for (int i = 0; i < mappingNode.Children.Count; i++)
                     {
-                      sb.AppendLine(string.Concat("    ", test.Key.ToString(), ": ", test.Value.ToString()));
+                      var cake = mappingNode.Children[i];
+                      if (i == 0)
+                      {
+                        sb.AppendLine(string.Concat(cake.Key.ToString(), ": ", cake.Value.ToString()));
+                      }
+                      else
+                      {
+                        sb.AppendLine(string.Concat("    ", cake.Key.ToString(), ": ", cake.Value.ToString()));
+                      }
                     }
                     break;
                   case YamlNodeType.Scalar:
@@ -76,7 +91,7 @@ namespace ClangPowerTools
                     break;
                 }
               }
-              multipleInputModel.MultipleInput = sb.ToString();
+              multipleInputModel.MultipleInput = sb.ToString().TrimEnd('\r', '\n');
               break;
             default:
               break;

@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Text;
-
-namespace ClangPowerTools.MVVM.Models
+﻿namespace ClangPowerTools.MVVM.Models
 {
   class FormatOptionMultipleInputModel : FormatOptionModel
   {
@@ -26,34 +23,13 @@ namespace ClangPowerTools.MVVM.Models
     {
       get
       {
-        var editedInput = new StringBuilder();
-        using (var reader = new StringReader(input))
-        {
-          string line;
-          while ((line = reader.ReadLine()) != null)
-          {
-            editedInput.AppendLine(line.TrimStart());
-          }
-        }
-        return editedInput.ToString();
+        return input;
       }
       set
       {
         input = value;
         if (IsEnabled == false)
           IsEnabled = true;
-
-        var editedInput = new StringBuilder();
-        using (var reader = new StringReader(input))
-        {
-          string line;
-          while ((line = reader.ReadLine()) != null)
-          {
-            editedInput.Append("  ");
-            editedInput.AppendLine(line);
-          }
-        }
-        input = editedInput.ToString();
 
         OnPropertyChanged("MultipleInput");
       }
