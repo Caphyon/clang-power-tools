@@ -75,7 +75,7 @@ namespace ClangPowerTools.Helpers
         key.DeleteValue(keyName);
         return true;
       }
-      catch (Exception e)
+      catch (Exception)
       {
         return false;
       }
