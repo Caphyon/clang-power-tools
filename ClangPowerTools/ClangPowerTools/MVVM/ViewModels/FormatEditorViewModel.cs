@@ -383,6 +383,7 @@ namespace ClangPowerTools
           YAMLHandler yaml = new YAMLHandler();
           yaml.ReadFormatOptionsYaml(path);
           FormatOptions = FormatOptionsAllData.FormatOptions.Values.ToList();
+          SelectedOption = FormatOptions.First();
         }
         catch (Exception e)
         {
