@@ -29,8 +29,6 @@ namespace ClangPowerTools
       ActiveLicense = activeLicense;
       Heigth = ActiveLicense ? COMMERCIAL_LICENSE_HEIGTH : PERSONAL_LICENSE_HEIGTH;
 
-      YAMLHandler.ReadYAMLAsync("C:\\Users\\horat\\OneDrive\\Desktop\\test-clang-format\\webkit").SafeFireAndForget();
-      //TODO - create license 
     }
 
     #endregion
@@ -51,7 +49,7 @@ namespace ClangPowerTools
 
     public ICommand Upgrade
     {
-      get => upgradeCommand ?? (upgradeCommand = new RelayCommand(() => UpgradeAction(), () => CanExecute));
+      get => upgradeCommand ??= new RelayCommand(() => UpgradeAction(), () => CanExecute);
     }
 
     #endregion
