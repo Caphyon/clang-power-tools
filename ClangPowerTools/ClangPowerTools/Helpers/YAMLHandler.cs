@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using YamlDotNet.RepresentationModel;
 
 namespace ClangPowerTools
@@ -19,10 +18,11 @@ namespace ClangPowerTools
     #endregion
 
     #region Public Methods 
-    public async Task ReadYAMLAsync(string path)
+
+    public void ReadFormatOptionsYaml(string path)
     {
       using var reader = new StreamReader(path);
-      var input = await reader.ReadToEndAsync();
+      var input = reader.ReadToEnd();
 
       var yaml = new YamlStream();
       yaml.Load(new StringReader(input));
