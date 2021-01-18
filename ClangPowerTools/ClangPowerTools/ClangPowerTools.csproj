@@ -108,7 +108,6 @@
     <Compile Include="MVVM\Constants\LlvmVersionsAlternate.cs" />
     <Compile Include="MVVM\FormatData\FormatOptionsAllData.cs" />
     <Compile Include="MVVM\FormatData\FormatOptionsInputValues.cs" />
-    <Compile Include="MVVM\Models\FormatModel.cs" />
     <Compile Include="MVVM\Models\FormatOptionMultipleToggleModel.cs" />
     <Compile Include="MVVM\Models\SelectedFileModel.cs" />
     <Compile Include="MVVM\Models\ToggleModel.cs" />
