@@ -384,6 +384,7 @@ namespace ClangPowerTools
           yaml.ReadFormatOptionsYaml(path);
           FormatOptions = FormatOptionsAllData.FormatOptions.Values.ToList();
           SelectedOption = FormatOptions.First();
+          RunFormat();
         }
         catch (Exception e)
         {
