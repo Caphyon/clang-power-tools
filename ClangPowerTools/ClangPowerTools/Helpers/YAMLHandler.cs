@@ -88,7 +88,7 @@ namespace ClangPowerTools
         {
           if (item.Name == node.Key.ToString())
           {
-            Enum.TryParse(entry.Value.ToString(), out ToggleValues toogleValue);
+            Enum.TryParse(node.Value.ToString(), true, out ToggleValues toogleValue);
             item.Value = toogleValue;
             break;
           }
@@ -109,7 +109,7 @@ namespace ClangPowerTools
 
     private void MapToggleModel(KeyValuePair<YamlNode, YamlNode> entry, FormatOptionToggleModel toggleModel)
     {
-      Enum.TryParse(entry.Value.ToString(), out ToggleValues value);
+      Enum.TryParse(entry.Value.ToString(), true, out ToggleValues value);
       toggleModel.BooleanCombobox = value;
     }
 
