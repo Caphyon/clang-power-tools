@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,7 +14,6 @@ namespace ClangPowerTools
       var output = new StringBuilder();
       output.AppendLine("# Format Style Options - Created with Clang Power Tools");
       output.AppendLine("---");
-      output.AppendLine("Language: Cpp");
 
       switch (style)
       {
@@ -122,26 +122,35 @@ namespace ClangPowerTools
       {
         if (item.IsEnabled == false) continue;
 
-        var styleOption = string.Empty;
+        string styleOption;
         switch (item)
         {
           case FormatOptionToggleModel option:
             styleOption = string.Concat(option.Name, ": ", option.BooleanCombobox.ToString().ToLower());
+            output.AppendLine(styleOption);
             break;
-          case FormatOptionInputModel option when string.IsNullOrEmpty(option.Input) == false:
+          case FormatOptionInputModel option when string.IsNullOrWhiteSpace(option.Input) == false:
             styleOption = string.Concat(option.Name, ": ", option.Input);
+            output.AppendLine(styleOption);
             break;
-          case FormatOptionMultipleInputModel option when string.IsNullOrEmpty(option.MultipleInput) == false:
+          case FormatOptionMultipleInputModel option when string.IsNullOrWhiteSpace(option.MultipleInput) == false:
+            var sb = new StringBuilder();
+            var test = option.MultipleInput.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+            foreach (var item1 in test)
+            {
+              sb.AppendLine(string.Concat("  ", item1));
+            }
+
             styleOption = string.Concat(option.Name, ": \r\n", option.MultipleInput);
+            output.AppendLine(styleOption);
             break;
           case FormatOptionMultipleToggleModel option:
             styleOption = string.Concat(option.Name, ": \r\n", CreateMultipleToggleFlag(option.ToggleFlags));
+            output.AppendLine(styleOption);
             break;
           default:
             break;
         }
-
-        output.AppendLine(styleOption);
       }
     }
 
