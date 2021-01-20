@@ -4,8 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using YamlDotNet.RepresentationModel;
+using YamlDotNet.Serialization;
 
 namespace ClangPowerTools
 {
@@ -38,27 +38,31 @@ namespace ClangPowerTools
 
     private void MapToFormatOptions()
     {
+      FormatOptionsAllData.DisableAllOptions();
       foreach (var entry in mapping.Children)
       {
-        //TODO handle if not found, add empty node
         if (FormatOptionsAllData.FormatOptions.TryGetValue(entry.Key.ToString(), out IFormatOption option))
         {
           switch (option)
           {
             case FormatOptionToggleModel toggleModel:
               MapToggleModel(entry, toggleModel);
+              toggleModel.IsEnabled = true;
               break;
 
             case FormatOptionInputModel inputModel:
               MapInputModel(entry, inputModel);
+              inputModel.IsEnabled = true;
               break;
 
             case FormatOptionMultipleToggleModel multipleToggleModel:
               MapMultipleToogleModel(entry, multipleToggleModel, option.Name);
+              multipleToggleModel.IsEnabled = true;
               break;
 
             case FormatOptionMultipleInputModel multipleInputModel:
-              MapMultipleInputModel(entry, multipleInputModel, option.Name);
+              MapMultipleInputModel(multipleInputModel, option.Name);
+              multipleInputModel.IsEnabled = true;
               break;
             default:
               break;
@@ -67,45 +71,12 @@ namespace ClangPowerTools
       }
     }
 
-    private void MapMultipleInputModel(KeyValuePair<YamlNode, YamlNode> entry, FormatOptionMultipleInputModel multipleInputModel, string name)
+    private void MapMultipleInputModel(FormatOptionMultipleInputModel multipleInputModel, string name)
     {
       var sequenceInputNode = (YamlSequenceNode)mapping.Children[new YamlScalarNode(name)];
-      var sb = new StringBuilder();
-      sb.AppendLine(string.Concat(name, ":"));
-      foreach (var node in sequenceInputNode)
-      {
-        switch (node.NodeType)
-        {
-          case YamlNodeType.Mapping:
-            //TODO see if elements like '' are removed when exporting .clang-format
-            var mappingNode = (YamlMappingNode)node;
-            for (int i = 0; i < mappingNode.Children.Count; i++)
-            {
-              var nodeName = mappingNode.Children[i].Key.ToString();
-              var nodeValue = mappingNode.Children[i].Value.ToString();
-              if (nodeValue.Contains('^'))
-              {
-                nodeValue = string.Concat("'", nodeValue, "'");
-              }
-
-              if (i == 0)
-              {
-                sb.AppendLine(string.Concat("  - ", nodeName, ": ", nodeValue));
-              }
-              else
-              {
-                sb.AppendLine(string.Concat("    ", nodeName, ": ", nodeValue));
-              }
-            }
-            break;
-          case YamlNodeType.Scalar:
-            sb.AppendLine(string.Concat("  - " + ((YamlScalarNode)node).Value));
-            break;
-          default:
-            break;
-        }
-      }
-      multipleInputModel.MultipleInput = sb.ToString().TrimEnd('\r', '\n');
+      var serializer = new SerializerBuilder().Build();
+      var yaml = serializer.Serialize(sequenceInputNode);
+      multipleInputModel.MultipleInput = yaml.TrimEnd(Environment.NewLine);
     }
 
     private void MapMultipleToogleModel(KeyValuePair<YamlNode, YamlNode> entry, FormatOptionMultipleToggleModel multipleToggleModel, string name)
