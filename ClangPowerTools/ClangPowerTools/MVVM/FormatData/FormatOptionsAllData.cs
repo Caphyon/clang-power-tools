@@ -134,5 +134,13 @@ namespace ClangPowerTools
       { "UseTab", new FormatOptionInputModel{ Name = "UseTab", Paramater = "UseTabStyle", Description = "The way to use tab characters in the resulting file.\r\nPossible values:\r\n- UT_Never (in configuration: Never) Never use tab.\r\n- UT_ForIndentation (in configuration: ForIndentation) Use tabs only for indentation.\r\n- UT_ForContinuationAndIndentation (in configuration: ForContinuationAndIndentation) Use tabs only for line continuation and indentation.\r\n- UT_Always (in configuration: Always) Use tabs whenever we need to fill whitespace that spans at least from one tab stop to the next on", Input = "Never"} },
       { "WhitespaceSensitiveMacros", new FormatOptionMultipleInputModel{ Name = "WhitespaceSensitiveMacros", Paramater = "std::vector<std::string>", Description = "A vector of macros which are whitespace-sensitive and should not be touched.", MultipleInput = "" } }
     };
+
+    public static void DisableAllOptions()
+    {
+      foreach (var item in FormatOptions.Values)
+      {
+        item.IsEnabled = false;
+      }
+    }
   }
 }
