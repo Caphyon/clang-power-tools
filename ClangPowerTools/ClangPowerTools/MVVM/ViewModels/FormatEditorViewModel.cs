@@ -23,6 +23,7 @@ namespace ClangPowerTools
     private readonly FormatEditorView formatEditorView;
     private ICommand selctCodeFileCommand;
     private ICommand createFormatFileCommand;
+    private ICommand importFormatFileCommand;
     private ICommand formatCodeCommand;
     private ICommand resetCommand;
     private ICommand openUri;
@@ -189,6 +190,11 @@ namespace ClangPowerTools
     public ICommand CreateFormatFileCommand
     {
       get => createFormatFileCommand ??= new RelayCommand(() => CreateFormatFile(), () => CanExecute);
+    }
+
+    public ICommand ImportFormatFileCommand
+    {
+      get => importFormatFileCommand ??= new RelayCommand(() => ImportFormatTile(), () => CanExecute);
     }
 
     public ICommand FormatCodeCommand
@@ -360,6 +366,30 @@ namespace ClangPowerTools
       if (string.IsNullOrEmpty(path) == false)
       {
         WriteContentToFile(path, FormatOptionFile.CreateOutput(formatStyleOptions, selectedStyle).ToString());
+      }
+    }
+
+    private void ImportFormatTile()
+    {
+      string fileName = ".clang-format";
+      string defaultExt = ".clang-format";
+      string filter = "Configuration files (.clang-format)|*.clang-format";
+
+      string path = OpenFile(fileName, defaultExt, filter);
+      if (string.IsNullOrEmpty(path) == false)
+      {
+        try
+        {
+          YAMLHandler yaml = new YAMLHandler();
+          yaml.ImportFormatOptions(path);
+          FormatOptions = FormatOptionsAllData.FormatOptions.Values.ToList();
+          SelectedOption = FormatOptions.First();
+          RunFormat();
+        }
+        catch (Exception e)
+        {
+          MessageBox.Show(e.Message, "Clang-Format Import Failed", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
       }
     }
 

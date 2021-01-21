@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Models;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -13,7 +14,6 @@ namespace ClangPowerTools
       var output = new StringBuilder();
       output.AppendLine("# Format Style Options - Created with Clang Power Tools");
       output.AppendLine("---");
-      output.AppendLine("Language: Cpp");
 
       switch (style)
       {
@@ -122,27 +122,40 @@ namespace ClangPowerTools
       {
         if (item.IsEnabled == false) continue;
 
-        var styleOption = string.Empty;
+        string styleOption;
         switch (item)
         {
           case FormatOptionToggleModel option:
             styleOption = string.Concat(option.Name, ": ", option.BooleanCombobox.ToString().ToLower());
+            output.AppendLine(styleOption);
             break;
-          case FormatOptionInputModel option when string.IsNullOrEmpty(option.Input) == false:
+          case FormatOptionInputModel option when string.IsNullOrWhiteSpace(option.Input) == false:
             styleOption = string.Concat(option.Name, ": ", option.Input);
+            output.AppendLine(styleOption);
             break;
-          case FormatOptionMultipleInputModel option when string.IsNullOrEmpty(option.MultipleInput) == false:
-            styleOption = string.Concat(option.Name, ": \r\n", option.MultipleInput);
+          case FormatOptionMultipleInputModel option when string.IsNullOrWhiteSpace(option.MultipleInput) == false:
+            styleOption = CreateMultipleInput(option);
+            output.AppendLine(styleOption);
             break;
           case FormatOptionMultipleToggleModel option:
             styleOption = string.Concat(option.Name, ": \r\n", CreateMultipleToggleFlag(option.ToggleFlags));
+            output.AppendLine(styleOption);
             break;
           default:
             break;
         }
-
-        output.AppendLine(styleOption);
       }
+    }
+
+    private static string CreateMultipleInput(FormatOptionMultipleInputModel option)
+    {
+      var sb = new StringBuilder();
+      var input = option.MultipleInput.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+      foreach (var item in input)
+      {
+        sb.AppendLine(string.Concat("  ", item));
+      }
+      return string.Concat(option.Name, ": \r\n", sb.ToString().TrimEnd(Environment.NewLine.ToCharArray()));
     }
 
     private static List<ToggleModel> RemoveUnchagedToogleFlags(List<ToggleModel> currentOption, List<ToggleModel> defaultOption)

@@ -2,6 +2,7 @@
 using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ClangPowerTools
 {
@@ -39,7 +40,7 @@ namespace ClangPowerTools
       switch (style)
       {
         case EditorStyles.Custom:
-          break;
+          return FormatOptionsAllData.FormatOptions.Values.ToList();
         case EditorStyles.LLVM:
           return new FormatOptionsData().FormatOptions;
         case EditorStyles.Google:
@@ -86,7 +87,11 @@ namespace ClangPowerTools
 
     private static void InitializeFormatData()
     {
-      CustomOptionsData = new FormatOptionsData();
+      //TODO use FormatOptionsAllData for all option types 
+      CustomOptionsData = new FormatOptionsData
+      {
+        FormatOptions = FormatOptionsAllData.GetFormatOptionsValues()
+      };
       LlvmOptionsData = new FormatOptionsData();
       GoogleOptionsData = new FormatOptionsGoogleData();
       ChromiumOptionsData = new FormatOptionsChromiumData();
