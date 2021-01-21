@@ -19,7 +19,7 @@ namespace ClangPowerTools
 
     #region Public Methods 
 
-    public void ReadFormatOptionsYaml(string path)
+    public void ImportFormatOptions(string path)
     {
       using var reader = new StreamReader(path);
       var input = reader.ReadToEnd();

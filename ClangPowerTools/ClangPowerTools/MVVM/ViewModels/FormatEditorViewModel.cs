@@ -381,7 +381,7 @@ namespace ClangPowerTools
         try
         {
           YAMLHandler yaml = new YAMLHandler();
-          yaml.ReadFormatOptionsYaml(path);
+          yaml.ImportFormatOptions(path);
           FormatOptions = FormatOptionsAllData.FormatOptions.Values.ToList();
           SelectedOption = FormatOptions.First();
           RunFormat();
