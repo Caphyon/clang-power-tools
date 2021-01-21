@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.MVVM.Interfaces;
 using ClangPowerTools.MVVM.Models;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ClangPowerTools
 {
@@ -141,6 +142,11 @@ namespace ClangPowerTools
       {
         item.IsEnabled = false;
       }
+    }
+
+    public static List<IFormatOption> GetFormatOptionsValues()
+    {
+      return FormatOptions.Values.ToList();
     }
   }
 }
