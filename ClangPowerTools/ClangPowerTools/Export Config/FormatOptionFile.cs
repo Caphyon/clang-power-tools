@@ -134,14 +134,7 @@ namespace ClangPowerTools
             output.AppendLine(styleOption);
             break;
           case FormatOptionMultipleInputModel option when string.IsNullOrWhiteSpace(option.MultipleInput) == false:
-            var sb = new StringBuilder();
-            var test = option.MultipleInput.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
-            foreach (var item1 in test)
-            {
-              sb.AppendLine(string.Concat("  ", item1));
-            }
-
-            styleOption = string.Concat(option.Name, ": \r\n", option.MultipleInput);
+            styleOption = CreateMultipleInput(option);
             output.AppendLine(styleOption);
             break;
           case FormatOptionMultipleToggleModel option:
@@ -152,6 +145,17 @@ namespace ClangPowerTools
             break;
         }
       }
+    }
+
+    private static string CreateMultipleInput(FormatOptionMultipleInputModel option)
+    {
+      var sb = new StringBuilder();
+      var input = option.MultipleInput.Split(new[] { Environment.NewLine }, StringSplitOptions.None);
+      foreach (var item in input)
+      {
+        sb.AppendLine(string.Concat("  ", item));
+      }
+      return string.Concat(option.Name, ": \r\n", sb.ToString().TrimEnd(Environment.NewLine.ToCharArray()));
     }
 
     private static List<ToggleModel> RemoveUnchagedToogleFlags(List<ToggleModel> currentOption, List<ToggleModel> defaultOption)
