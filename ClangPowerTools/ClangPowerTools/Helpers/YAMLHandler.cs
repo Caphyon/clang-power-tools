@@ -56,7 +56,7 @@ namespace ClangPowerTools
               break;
 
             case FormatOptionMultipleToggleModel multipleToggleModel:
-              MapMultipleToogleModel(entry, multipleToggleModel, option.Name);
+              MapMultipleToogleModel(multipleToggleModel, option.Name);
               multipleToggleModel.IsEnabled = true;
               break;
 
@@ -79,7 +79,7 @@ namespace ClangPowerTools
       multipleInputModel.MultipleInput = yaml.TrimEnd(Environment.NewLine);
     }
 
-    private void MapMultipleToogleModel(KeyValuePair<YamlNode, YamlNode> entry, FormatOptionMultipleToggleModel multipleToggleModel, string name)
+    private void MapMultipleToogleModel(FormatOptionMultipleToggleModel multipleToggleModel, string name)
     {
       var sequenceToggleNode = (YamlMappingNode)mapping.Children[new YamlScalarNode(name)];
       foreach (var node in sequenceToggleNode)
