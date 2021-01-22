@@ -26,17 +26,6 @@ namespace ClangPowerTools
     WebKit
   }
 
-  public enum EditorStyles
-  {
-    Custom,
-    LLVM,
-    Google,
-    Chromium,
-    Microsoft,
-    Mozilla,
-    WebKit,
-  }
-
   [Serializable]
   [JsonConverter(typeof(StringEnumConverter))]
   public enum ClangFormatFallbackStyle

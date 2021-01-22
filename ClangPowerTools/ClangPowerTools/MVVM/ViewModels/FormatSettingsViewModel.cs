@@ -121,7 +121,8 @@ namespace ClangPowerTools
       try
       {
         var process = new Process();
-        process.StartInfo.FileName = Path.Combine(vsixPath, FormatConstants.ClangFormatDetector);
+        //TODO use the new exe name
+        process.StartInfo.FileName = Path.Combine(vsixPath, "ClangFormatDetector.exe");
         process.StartInfo.WorkingDirectory = vsixPath;
 
         process.Start();
@@ -158,10 +159,7 @@ namespace ClangPowerTools
 
     private void OpenCreateFormatFileWindow()
     {
-      SettingsProvider.SettingsView.Close();
-      var formatEditorView = new FormatEditorView();
-      SettingsProvider.FormatEditorView = formatEditorView;
-      formatEditorView.ShowDialog();
+     //TODO 
     }
 
     #endregion
