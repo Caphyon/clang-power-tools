@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Views;
 using System;
 using System.Diagnostics;
@@ -47,9 +48,9 @@ namespace ClangPowerTools
       }
     }
 
-    public ICommand Upgrade
+    public ICommand LogIn
     {
-      get => upgradeCommand ??= new RelayCommand(() => UpgradeAction(), () => CanExecute);
+      get => upgradeCommand ??= new RelayCommand(() => LogInAction(), () => CanExecute);
     }
 
     #endregion
@@ -67,9 +68,11 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private void UpgradeAction()
+    private void LogInAction()
     {
-      Process.Start(new ProcessStartInfo("https://clangpowertools.com/purchase.html"));
+      settingsView.Close();
+      LoginView loginView = new LoginView();
+      loginView.ShowDialog();
     }
 
     #endregion
