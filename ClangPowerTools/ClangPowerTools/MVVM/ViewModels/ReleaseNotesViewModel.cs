@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.Views;
 using System.Diagnostics;
 using System.Windows.Input;
 
@@ -10,6 +11,16 @@ namespace ClangPowerTools
 
     private ICommand upgradeCommand;
     private ICommand openBlogCommand;
+    private readonly ReleaseNotesView releaseNotesView;
+
+    #endregion
+
+    #region Constructor
+
+    public ReleaseNotesViewModel(ReleaseNotesView release)
+    {
+      releaseNotesView = release;
+    }
 
     #endregion
 
@@ -27,9 +38,9 @@ namespace ClangPowerTools
 
     #region Commands
 
-    public ICommand Upgrade
+    public ICommand LogIn
     {
-      get => upgradeCommand ?? (upgradeCommand = new RelayCommand(() => UpgradeAction(), () => CanExecute));
+      get => upgradeCommand ?? (upgradeCommand = new RelayCommand(() => LogInAction(), () => CanExecute));
     }
 
     public ICommand OpenBlog
@@ -41,9 +52,11 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private void UpgradeAction()
+    private void LogInAction()
     {
-      Process.Start(new ProcessStartInfo("https://clangpowertools.com/download.html"));
+      releaseNotesView.Close();
+      LoginView loginView = new LoginView();
+      loginView.ShowDialog();
     }
 
     private void OpenBlogAction()

@@ -14,7 +14,7 @@ namespace ClangPowerTools.MVVM.Views
     {
       WasShown = wasShown;
       InitializeComponent();
-      DataContext = new ReleaseNotesViewModel();
+      DataContext = new ReleaseNotesViewModel(this);
     }
 
     private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
