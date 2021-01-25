@@ -41,7 +41,7 @@
       HorizontalAlignment="Left"
       FontSize="15"
       Foreground="White"
-      Text="Using Clang Power Tools commercially?" />
+      Text="Want to share your settings configuration?" />
 
     <TextBlock
       Grid.Row="0"
@@ -51,7 +51,7 @@
       HorizontalAlignment="Left"
       FontSize="12"
       Foreground="White"
-      Text="Clang Power Tools for your commercial projects with plans for any team size, cancel anytime."
+      Text="Create a free Clang Power Tools account to share your Cloud Settings across devices or with your team."
       TextWrapping="Wrap" />
 
     <Button
@@ -61,8 +61,8 @@
       HorizontalAlignment="Right"
       VerticalAlignment="Center"
       BorderThickness="0"
-      Command="{Binding Upgrade}"
-      Content="Subscribe"
+      Command="{Binding LogIn}"
+      Content="LOG IN"
       FontSize="16"
       FontWeight="Bold"
       Style="{StaticResource YellowButtonBackgroundStyle}" />
