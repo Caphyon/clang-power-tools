@@ -7,13 +7,13 @@ namespace ClangPowerTools.Views
   /// </summary>
   public partial class SettingsView : DialogWindow
   {
-    public SettingsView(bool activeLicense)
+    public SettingsView(bool showFooter)
     {
       var settingsHandler = new SettingsHandler();
       settingsHandler.LoadSettings();
 
       InitializeComponent();
-      DataContext = new SettingsViewModel(this, activeLicense);
+      DataContext = new SettingsViewModel(this, showFooter);
 
       SettingsProvider.SettingsView = this;
     }
