@@ -29,11 +29,12 @@
     Can be passed as comma separated values.
 
 .PARAMETER aVcxprojConfigPlatform
-    Alias 'active-config'. The configuration-platform pair, separated by |,
+    Alias 'active-config'. Array of configuration-platform pairs, each pair being separated by |,
     to be used when processing project files.
 
-    E.g. 'Debug|Win32'.
+    E.g. "Debug|Win32", "Debug|x64".
     If not specified, the first configuration-platform found in the current project is used.
+    Projects will be processed for each configuration-platform specified, the ones that are missing will be skipped.
 
 .PARAMETER aCppToCompile
     Alias 'file'. What cpp(s) to compile from the found project(s). If empty, all CPPs are compiled.
@@ -122,7 +123,7 @@ param( [alias("proj")]
 
      , [alias("active-config")]
        [Parameter(Mandatory=$false, HelpMessage="Config/platform to be used, e.g. Debug|Win32")]
-       [string] $aVcxprojConfigPlatform
+       [string[]] $aVcxprojConfigPlatform = @()
 
      , [alias("file")]
        [Parameter(Mandatory=$false, HelpMessage="Filter file(s) to compile/tidy")]
@@ -276,6 +277,14 @@ Add-Type -TypeDefinition @"
     Compile,
     Tidy,
     TidyFix
+  }
+"@
+
+Add-Type -TypeDefinition @"
+  public enum StopReason
+  {
+    Unknown,
+    ConfigurationNotFound
   }
 "@
 
@@ -918,12 +927,33 @@ Function Get-ProjectFileSetting( [Parameter(Mandatory=$true)] [string] $fileFull
   throw "Could not find $propertyName for $fileFullName. No default value specified."
 }
 
-Function Process-Project( [Parameter(Mandatory=$true)][string]       $vcxprojPath
-                        , [Parameter(Mandatory=$true)][WorkloadType] $workloadType)
+Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPath
+                        , [Parameter(Mandatory=$true)] [WorkloadType] $workloadType
+                        , [Parameter(Mandatory=$false)][string]       $platformConfig
+                        )
 {
   #-----------------------------------------------------------------------------------------------
-  # Load data
-  LoadProject($vcxprojPath)
+  $global:cptCurrentConfigPlatform = $platformConfig
+
+  $projCounter = $global:cptProjectCounter
+  [string] $projectOutputString = ("PROJECT$(if ($projCounter -gt 1) { " #$projCounter" } else { } ): " + $vcxprojPath)
+  
+  try
+  { 
+    LoadProject($vcxprojPath)
+    Write-Output "$projectOutputString [$($global:cptCurrentConfigPlatform)]"
+  }
+  catch [ProjectConfigurationNotFound]
+  {
+    [string] $configPlatform = ([ProjectConfigurationNotFound]$_.Exception).ConfigPlatform
+    
+    Write-Output "$projectOutputString [$($global:cptCurrentConfigPlatform)]"
+    Write-Output ("Skipped. Configuration not present: " + $configPlatform);
+    
+    Pop-Location
+    return
+  }
+
 
   #-----------------------------------------------------------------------------------------------
   # DETECT PLATFORM TOOLSET
@@ -1477,9 +1507,18 @@ foreach ($project in $projectsToProcess)
      }
   }
 
-  Write-Output ("PROJECT$(if ($localProjectCounter -gt 1) { " #$localProjectCounter" } else { } ): " + $vcxprojPath)
-  Process-Project -vcxprojPath $vcxprojPath -workloadType $workloadType
-  Write-Output "" # empty line separator
+    [string[]] $configPlatforms = $aVcxprojConfigPlatform
+    if ($configPlatforms.Count -eq 0)
+    {
+      $configPlatforms += @("")
+    }
+
+    foreach ($crtPlatformConfig in $configPlatforms)
+    {
+       Process-Project -vcxprojPath $vcxprojPath -workloadType $workloadType -platformConfig $crtPlatformConfig
+       Write-Output "" # empty line separator
+    }
+
 
   $localProjectCounter -= 1
   $global:cptProjectCounter = $localProjectCounter
