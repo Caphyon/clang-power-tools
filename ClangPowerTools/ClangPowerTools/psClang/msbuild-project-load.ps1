@@ -30,6 +30,17 @@ Set-Variable -name "kRedundantSeparatorsReplaceRules" -option Constant `
                       , ("^;" , "")                                    `
                       )
 
+class ProjectConfigurationNotFound: System.Exception
+{
+    [string] $ConfigPlatform
+    [string] $Project
+    ProjectConfigurationNotFound([string] $proj, [string] $configPlatform)
+    {
+        $this.ConfigPlatform = $configPlatform
+        $this.Project = $proj
+    }
+}
+
 Function Set-Var([parameter(Mandatory = $false)][string] $name
                 ,[parameter(Mandatory = $false)]         $value
                 ,[parameter(Mandatory = $false)][switch] $asScriptParameter
@@ -354,27 +365,55 @@ Function InitializeMsBuildCurrentFileProperties([Parameter(Mandatory = $true)][s
 #>
 function Detect-ProjectDefaultConfigPlatform()
 {
-    [string]$configPlatformName = ""
+    [string] $configPlatformName = ""
 
-    if (![string]::IsNullOrEmpty($aVcxprojConfigPlatform))
+    # detect the first platform/config pair from the project itemgroup
+    $configItems = @(Get-Project-ItemList "ProjectConfiguration")
+
+    if (![string]::IsNullOrWhiteSpace($global:cptCurrentConfigPlatform))
     {
         # we have script parameters we can use to set the platform/config
-        $configPlatformName = $aVcxprojConfigPlatform
+        $configPlatformName = $global:cptCurrentConfigPlatform
     }
-    else
+    
+
+    if ((!$configItems -or $configItems.Count -eq 0))
     {
-        # detect the first platform/config pair from the project itemgroup
-        $configItems = @(Get-Project-ItemList "ProjectConfiguration")
-
-        if (!$configItems -or $configItems.Count -eq 0)
+        if ([string]::IsNullOrWhiteSpace($configPlatformName))
         {
-            throw "Could not automatically detect a configuration platform"
+            throw [ProjectConfigurationNotFound]::new($global:vcxprojPath, "");
         }
-
-        $firstConfiguration = $configItems[0]
-
-        $configPlatformName = $firstConfiguration[0]
     }
+    else 
+    {
+        $targetConfiguration = $null
+
+        if ([string]::IsNullOrEmpty($configPlatformName))
+        {
+            $targetConfiguration = $configItems[0]
+        }
+        else 
+        {
+            foreach ($configItem in $configItems)
+            {
+                [string] $platformName = $configItem[0]
+                if ($platformName -ieq $configPlatformName)
+                {
+                    $targetConfiguration = $configItem
+                
+                    break
+                }
+            }
+            if ($null -eq $targetConfiguration)
+            {
+                throw [ProjectConfigurationNotFound]::new($global:vcxprojPath, $configPlatformName);
+            }
+        }
+        
+        $configPlatformName = $targetConfiguration[0]
+    }
+
+    $global:cptCurrentConfigPlatform = $configPlatformName
 
     [string[]] $configAndPlatform = $configPlatformName.Split('|')
     Set-Var -Name "Configuration" -Value $configAndPlatform[0]
