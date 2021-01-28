@@ -2,7 +2,6 @@
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Views;
 using System;
-using System.Diagnostics;
 using System.Windows.Input;
 
 namespace ClangPowerTools
@@ -23,20 +22,19 @@ namespace ClangPowerTools
 
     #region Constructors
 
-    public SettingsViewModel(SettingsView settingsView, bool activeLicense)
+    public SettingsViewModel(SettingsView settingsView, bool showFooter)
     {
       this.settingsView = settingsView;
       settingsView.Closed += OnClosed;
-      ActiveLicense = activeLicense;
-      Heigth = ActiveLicense ? COMMERCIAL_LICENSE_HEIGTH : PERSONAL_LICENSE_HEIGTH;
-
+      ShowFooter = showFooter;
+      Heigth = ShowFooter ? COMMERCIAL_LICENSE_HEIGTH : PERSONAL_LICENSE_HEIGTH;
     }
 
     #endregion
 
     #region Properties
 
-    public bool ActiveLicense { get; private set; }
+    public bool ShowFooter { get; private set; }
 
     public int Heigth { get; set; }
 
