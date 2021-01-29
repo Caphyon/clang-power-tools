@@ -1,6 +1,5 @@
 ﻿using ClangPowerTools.MVVM;
 using ClangPowerTools.MVVM.Commands;
-using ClangPowerTools.MVVM.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -22,8 +21,7 @@ namespace ClangPowerTools
     private ICommand filesToIgnoreAddDataCommand;
     private ICommand assumeFilenameAddDataCommand;
     private ICommand customExecutableBrowseCommand;
-    private ICommand createformatFileCommand;
-    private ICommand detectFormatStyleCommand;
+    private ICommand openClangFormatEditorCommand;
     #endregion
 
     #region Constructor
@@ -81,39 +79,34 @@ namespace ClangPowerTools
 
     public ICommand FileExtensionsAddDataCommand
     {
-      get => fileExtensionsAddDataCommand ?? (fileExtensionsAddDataCommand = new RelayCommand(() => UpdateFileExtensions(), () => CanExecute));
+      get => fileExtensionsAddDataCommand ??= new RelayCommand(() => UpdateFileExtensions(), () => CanExecute);
     }
 
     public ICommand FilesToIgnoreAddDataCommand
     {
-      get => filesToIgnoreAddDataCommand ?? (filesToIgnoreAddDataCommand = new RelayCommand(() => UpdateFilesToIgnore(), () => CanExecute));
+      get => filesToIgnoreAddDataCommand ??= new RelayCommand(() => UpdateFilesToIgnore(), () => CanExecute);
     }
 
     public ICommand AssumeFilenameAddDataCommand
     {
-      get => assumeFilenameAddDataCommand ?? (assumeFilenameAddDataCommand = new RelayCommand(() => UpdateAssumeFilename(), () => CanExecute));
+      get => assumeFilenameAddDataCommand ??= new RelayCommand(() => UpdateAssumeFilename(), () => CanExecute);
     }
 
     public ICommand CustomExecutableBrowseCommand
     {
-      get => customExecutableBrowseCommand ?? (customExecutableBrowseCommand = new RelayCommand(() => UpdateCustomExecutable(), () => CanExecute));
+      get => customExecutableBrowseCommand ??= new RelayCommand(() => UpdateCustomExecutable(), () => CanExecute);
     }
 
-    public ICommand CreateFormatFileCommand
+    public ICommand OpenClangFormatEditorCommand
     {
-      get => createformatFileCommand ?? (createformatFileCommand = new RelayCommand(() => OpenCreateFormatFileWindow(), () => CanExecute));
-    }
-
-    public ICommand DetectFormatStyleCommand
-    {
-      get => detectFormatStyleCommand ?? (detectFormatStyleCommand = new RelayCommand(() => OpenClangFormatDetector(), () => CanExecute));
+      get => openClangFormatEditorCommand ??= new RelayCommand(() => OpenClangFormatEditor(), () => CanExecute);
     }
 
     #endregion
 
     #region Methods
 
-    private void OpenClangFormatDetector()
+    private void OpenClangFormatEditor()
     {
       SettingsProvider.SettingsView.Close();
       string vsixPath = Path.GetDirectoryName(typeof(RunClangPowerToolsPackage).Assembly.Location);
@@ -121,15 +114,14 @@ namespace ClangPowerTools
       try
       {
         var process = new Process();
-        //TODO use the new exe name
-        process.StartInfo.FileName = Path.Combine(vsixPath, "ClangFormatDetector.exe");
+        process.StartInfo.FileName = Path.Combine(vsixPath, "ClangFormatEditor.exe");
         process.StartInfo.WorkingDirectory = vsixPath;
 
         process.Start();
       }
       catch (Exception e)
       {
-        MessageBox.Show(e.Message, "Clang Format Detector", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(e.Message, "Clang Format Editor", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
 
@@ -155,11 +147,6 @@ namespace ClangPowerTools
     {
       formatModel.CustomExecutable = OpenFile(string.Empty, ".exe", "Executable files|*.exe");
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatModel"));
-    }
-
-    private void OpenCreateFormatFileWindow()
-    {
-     //TODO 
     }
 
     #endregion

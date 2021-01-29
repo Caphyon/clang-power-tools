@@ -366,15 +366,13 @@
     <Resource Include="Resources\CodeInputIcon.png" />
     <Resource Include="Resources\BannerWarning.png" />
     <Resource Include="Resources\BannerInfo.png" />
-    <Content Include="Executables\ClangFormatDetector.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="Executables\ClangFormatEditor.exe">
       <IncludeInVSIX>true</IncludeInVSIX>
-      <VSIXSubPath>.</VSIXSubPath>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Executables\ClangFormatDetector.pdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="Executables\ClangFormatEditor.pdb">
       <IncludeInVSIX>true</IncludeInVSIX>
-      <VSIXSubPath>.</VSIXSubPath>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Resources\CPTLogoManageExtensionVS.png">
       <IncludeInVSIX>true</IncludeInVSIX>
