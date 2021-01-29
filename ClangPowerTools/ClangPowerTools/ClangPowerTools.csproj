@@ -388,7 +388,6 @@
     <Resource Include="Resources\iconCommercial.png" />
     <Resource Include="Resources\iconFreeTrial.png" />
     <Resource Include="Resources\iconPersonal.png" />
-    <Resource Include="Resources\Input.png" />
     <Resource Include="Resources\JsonCompilationDatabase.png" />
     <Resource Include="Resources\WarningIcon.png" />
     <Resource Include="Resources\ResetIcon.png" />
@@ -598,10 +597,8 @@
     <Resource Include="Resources\SettingsLLVM.png" />
     <Resource Include="Resources\RemoveInputHover.png" />
     <Resource Include="Resources\RemoveInputIdle.png" />
-    <Resource Include="Resources\Output.png" />
     <Resource Include="Resources\LogoutIcon.png" />
     <Resource Include="Resources\ProjectFilesIcon.png" />
-    <Resource Include="Resources\PreviewIcon.png" />
     <Resource Include="Resources\PreviewWhiteIcon.png" />
     <Content Include="Resources\RunPowerShellCommandPackage.ico">
       <IncludeInVSIX>true</IncludeInVSIX>
