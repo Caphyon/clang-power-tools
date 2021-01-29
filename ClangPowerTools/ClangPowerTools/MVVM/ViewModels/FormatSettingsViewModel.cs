@@ -1,12 +1,10 @@
 ﻿using ClangPowerTools.MVVM;
 using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.Controllers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace ClangPowerTools
@@ -109,20 +107,7 @@ namespace ClangPowerTools
     private void OpenClangFormatEditor()
     {
       SettingsProvider.SettingsView.Close();
-      string vsixPath = Path.GetDirectoryName(typeof(RunClangPowerToolsPackage).Assembly.Location);
-
-      try
-      {
-        var process = new Process();
-        process.StartInfo.FileName = Path.Combine(vsixPath, "ClangFormatEditor.exe");
-        process.StartInfo.WorkingDirectory = vsixPath;
-
-        process.Start();
-      }
-      catch (Exception e)
-      {
-        MessageBox.Show(e.Message, "Clang Format Editor", MessageBoxButtons.OK, MessageBoxIcon.Error);
-      }
+      FormatEditorController.OpenEditor();
     }
 
     private void UpdateFileExtensions()
