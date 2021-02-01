@@ -1,6 +1,7 @@
-﻿using ClangPowerTools.MVVM;
+﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.MVVM;
 using ClangPowerTools.MVVM.Commands;
-using ClangPowerTools.MVVM.Controllers;
+using ClangPowerTools.MVVM.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -106,8 +107,16 @@ namespace ClangPowerTools
 
     private void OpenClangFormatEditor()
     {
-      SettingsProvider.SettingsView.Close();
-      FormatEditorController.OpenEditor();
+      if (FormatEditorUtility.FrameworkInstalled())
+      {
+        SettingsProvider.SettingsView.Close();
+        FormatEditorController.OpenEditor();
+      }
+      else
+      {
+        var formatEditorWarning = new FormatEditorWarning();
+        formatEditorWarning.ShowDialog();
+      }
     }
 
     private void UpdateFileExtensions()

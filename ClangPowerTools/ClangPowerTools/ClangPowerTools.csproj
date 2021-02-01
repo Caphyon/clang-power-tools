@@ -92,6 +92,7 @@
     <Compile Include="Events\HasEncodingErrorEventArgs.cs" />
     <Compile Include="Helpers\ClangTidyCleaner.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
+    <Compile Include="Helpers\FormatEditorUtility.cs" />
     <Compile Include="Helpers\JoinUtility.cs" />
     <Compile Include="Helpers\RegistryUtility.cs" />
     <Compile Include="Helpers\ScriptGenerator.cs" />
@@ -219,6 +220,9 @@
     </Compile>
     <Compile Include="MVVM\Views\Components\ThreePieceComponent.xaml.cs">
       <DependentUpon>ThreePieceComponent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="MVVM\Views\FormatEditorWarning.xaml.cs">
+      <DependentUpon>FormatEditorWarning.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\FormatSettingsView.xaml.cs">
       <DependentUpon>FormatSettingsView.xaml</DependentUpon>
@@ -651,6 +655,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="MVVM\Views\Components\ThreePieceComponent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MVVM\Views\FormatEditorWarning.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
