@@ -87,42 +87,30 @@
     <Compile Include="Events\BoolEventArgs.cs" />
     <Compile Include="Events\FormatCommandEventArgs.cs" />
     <Compile Include="Events\JsonFilePathArgs.cs" />
-    <Compile Include="Export Config\FormatOptionFile.cs" />
     <Compile Include="Extensions\ObjectExtension.cs" />
     <Compile Include="Extensions\TaskExtensions.cs" />
     <Compile Include="Events\HasEncodingErrorEventArgs.cs" />
     <Compile Include="Helpers\ClangTidyCleaner.cs" />
     <Compile Include="Helpers\FileSystem.cs" />
+    <Compile Include="Helpers\FormatEditorUtility.cs" />
     <Compile Include="Helpers\JoinUtility.cs" />
     <Compile Include="Helpers\RegistryUtility.cs" />
     <Compile Include="Helpers\ScriptGenerator.cs" />
     <Compile Include="Helpers\SolutionInfo.cs" />
     <Compile Include="Helpers\VsWindowController.cs" />
-    <Compile Include="Helpers\YAMLHandler.cs" />
     <Compile Include="IgnoreActions\IgnoreItem.cs" />
     <Compile Include="Items\CurrentSolution.cs" />
-    <Compile Include="MVVM\CommonFormatEditorFunctionality.cs" />
     <Compile Include="MVVM\Constants\CPPKeywords.cs" />
-    <Compile Include="MVVM\Constants\FormatConstants.cs" />
+    <Compile Include="MVVM\Constants\FormatEditorConstants.cs" />
     <Compile Include="MVVM\Constants\LlvmConstants.cs" />
     <Compile Include="MVVM\Constants\LlvmVersionsAlternate.cs" />
-    <Compile Include="MVVM\FormatData\FormatOptionsAllData.cs" />
-    <Compile Include="MVVM\FormatData\FormatOptionsInputValues.cs" />
-    <Compile Include="MVVM\Models\FormatOptionMultipleToggleModel.cs" />
+    <Compile Include="MVVM\Controllers\FormatEditorController.cs" />
     <Compile Include="MVVM\Models\SelectedFileModel.cs" />
     <Compile Include="MVVM\Models\ToggleModel.cs" />
-    <Compile Include="MVVM\StyleFormatter.cs" />
     <Compile Include="MVVM\Controllers\FreeTrialController.cs" />
     <Compile Include="MVVM\Controllers\LlvmController.cs" />
     <Compile Include="Helpers\SettingsApi.cs" />
-    <Compile Include="MVVM\FormatData\FormatOptionsMicrosoftData.cs" />
-    <Compile Include="MVVM\FormatData\FormatOptionsWebKitData.cs" />
-    <Compile Include="MVVM\FormatData\FormatOptionsMozillaData.cs" />
-    <Compile Include="MVVM\FormatData\FormatOptionsChromiumData.cs" />
-    <Compile Include="MVVM\FormatData\FormatOptionsGoogleData.cs" />
-    <Compile Include="MVVM\FormatData\FormatOptionsData.cs" />
     <Compile Include="MVVM\Interfaces\IDownload.cs" />
-    <Compile Include="MVVM\Interfaces\IFormatOption.cs" />
     <Compile Include="MVVM\Interfaces\IInstall.cs" />
     <Compile Include="MVVM\Interfaces\IView.cs" />
     <Compile Include="MVVM\LicenseValidation\LicenseType.cs" />
@@ -136,10 +124,6 @@
     <Compile Include="MVVM\LicenseValidation\PersonalLicenseValidator.cs" />
     <Compile Include="MVVM\Models\AccountModel.cs" />
     <Compile Include="MVVM\Models\AccountApiModel.cs" />
-    <Compile Include="MVVM\Models\FormatOptionInputModel.cs" />
-    <Compile Include="MVVM\Models\FormatOptionModel.cs" />
-    <Compile Include="MVVM\Models\FormatOptionMultipleInputModel.cs" />
-    <Compile Include="MVVM\Models\FormatOptionToggleModel.cs" />
     <Compile Include="MVVM\Models\GeneralSettingsModel.cs" />
     <Compile Include="MVVM\Models\InputDataModel.cs" />
     <Compile Include="MVVM\Models\LlvmSettingsModel.cs" />
@@ -158,7 +142,6 @@
     <Compile Include="MVVM\Models\FormatSettingsModel.cs" />
     <Compile Include="MVVM\Models\LicenseModel.cs" />
     <Compile Include="MVVM\PreinstalledLlvm.cs" />
-    <Compile Include="MVVM\Provider\FormatOptionsProvider.cs" />
     <Compile Include="MVVM\SettingsHandler.cs" />
     <Compile Include="MVVM\SettingsTooltips.cs" />
     <Compile Include="MVVM\TextManipulation.cs" />
@@ -169,8 +152,6 @@
     <Compile Include="MVVM\ViewModels\AccountViewModel.cs" />
     <Compile Include="MVVM\ViewModels\DetectedStyleInfoViewModel.cs" />
     <Compile Include="MVVM\ViewModels\FeedbackViewModel.cs" />
-    <Compile Include="MVVM\ViewModels\FormatEditorViewModel.cs" />
-    <Compile Include="MVVM\Interfaces\IFormatEditor.cs" />
     <Compile Include="MVVM\ViewModels\TeamSettingsViewModel.cs" />
     <Compile Include="MVVM\ViewModels\InputDataViewModel.cs" />
     <Compile Include="MVVM\ViewModels\InputMultipleDataViewModel.cs" />
@@ -240,8 +221,8 @@
     <Compile Include="MVVM\Views\Components\ThreePieceComponent.xaml.cs">
       <DependentUpon>ThreePieceComponent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MVVM\Views\FormatEditorView.xaml.cs">
-      <DependentUpon>FormatEditorView.xaml</DependentUpon>
+    <Compile Include="MVVM\Views\FormatEditorWarning.xaml.cs">
+      <DependentUpon>FormatEditorWarning.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\FormatSettingsView.xaml.cs">
       <DependentUpon>FormatSettingsView.xaml</DependentUpon>
@@ -249,14 +230,8 @@
     <Compile Include="MVVM\Views\CompilerSettingsView.xaml.cs">
       <DependentUpon>CompilerSettingsView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="MVVM\Views\ToggleMultipleDataView.xaml.cs">
-      <DependentUpon>ToggleMultipleDataView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="MVVM\Views\TeamSettingsView.xaml.cs">
       <DependentUpon>TeamSettingsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="MVVM\Views\InputMultipleDataView.xaml.cs">
-      <DependentUpon>InputMultipleDataView.xaml</DependentUpon>
     </Compile>
     <Compile Include="MVVM\Views\LlvmSettingsView.xaml.cs">
       <DependentUpon>LlvmSettingsView.xaml</DependentUpon>
@@ -397,14 +372,14 @@
     <Resource Include="Resources\CodeInputIcon.png" />
     <Resource Include="Resources\BannerWarning.png" />
     <Resource Include="Resources\BannerInfo.png" />
-    <Content Include="Executables\ClangFormatDetector.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="Executables\ClangFormatEditor.exe">
       <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <VSIXSubPath>.</VSIXSubPath>
     </Content>
-    <Content Include="Executables\ClangFormatDetector.pdb">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <Content Include="Executables\ClangFormatEditor.pdb">
       <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <VSIXSubPath>.</VSIXSubPath>
     </Content>
     <Content Include="Resources\CPTLogoManageExtensionVS.png">
@@ -419,7 +394,6 @@
     <Resource Include="Resources\iconCommercial.png" />
     <Resource Include="Resources\iconFreeTrial.png" />
     <Resource Include="Resources\iconPersonal.png" />
-    <Resource Include="Resources\Input.png" />
     <Resource Include="Resources\JsonCompilationDatabase.png" />
     <Resource Include="Resources\WarningIcon.png" />
     <Resource Include="Resources\ResetIcon.png" />
@@ -629,10 +603,8 @@
     <Resource Include="Resources\SettingsLLVM.png" />
     <Resource Include="Resources\RemoveInputHover.png" />
     <Resource Include="Resources\RemoveInputIdle.png" />
-    <Resource Include="Resources\Output.png" />
     <Resource Include="Resources\LogoutIcon.png" />
     <Resource Include="Resources\ProjectFilesIcon.png" />
-    <Resource Include="Resources\PreviewIcon.png" />
     <Resource Include="Resources\PreviewWhiteIcon.png" />
     <Content Include="Resources\RunPowerShellCommandPackage.ico">
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -686,7 +658,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MVVM\Views\FormatEditorView.xaml">
+    <Page Include="MVVM\Views\FormatEditorWarning.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -706,19 +678,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MVVM\Views\ToggleMultipleDataView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="MVVM\Views\Styles\HyperlinkStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="MVVM\Views\TeamSettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MVVM\Views\InputMultipleDataView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

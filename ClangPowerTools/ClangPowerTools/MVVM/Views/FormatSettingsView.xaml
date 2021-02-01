@@ -282,13 +282,13 @@
         Tag="On" />
     </WrapPanel>
 
-    <!--  Create format file  -->
+    <!--  Open Clang Format Editor  -->
     <WrapPanel Grid.Row="8" Grid.Column="1">
       <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
             MaxWidth="400"
-            Text="{Binding Tooltip.CreateFormatFile}"
+            Text="{Binding Tooltip.FormatEditor}"
             TextWrapping="Wrap" />
         </ToolTip>
       </WrapPanel.ToolTip>
@@ -299,44 +299,14 @@
         VerticalAlignment="Center"
         FontFamily="SegoeUI"
         FontSize="16"
-        Text="Clang-Format editor" />
+        Text="Clang Format Editor" />
 
       <Button
         Width="80"
         Height="30"
         HorizontalAlignment="Left"
-        Command="{Binding CreateFormatFileCommand}"
+        Command="{Binding OpenClangFormatEditorCommand}"
         Content="Open"
-        FontSize="14"
-        Foreground="White"
-        Style="{StaticResource SettingsButton}" />
-    </WrapPanel>
-
-    <!--  Create format file  -->
-    <WrapPanel Grid.Row="9" Grid.Column="1">
-      <WrapPanel.ToolTip>
-        <ToolTip>
-          <TextBlock
-            MaxWidth="400"
-            Text="{Binding Tooltip.DetectStyle}"
-            TextWrapping="Wrap" />
-        </ToolTip>
-      </WrapPanel.ToolTip>
-
-      <TextBlock
-        Width="180"
-        Padding="10"
-        VerticalAlignment="Center"
-        FontFamily="SegoeUI"
-        FontSize="16"
-        Text="Detect Format Style" />
-
-      <Button
-        Width="80"
-        Height="30"
-        HorizontalAlignment="Left"
-        Command="{Binding DetectFormatStyleCommand}"
-        Content="Detect"
         FontSize="14"
         Foreground="White"
         Style="{StaticResource SettingsButton}" />

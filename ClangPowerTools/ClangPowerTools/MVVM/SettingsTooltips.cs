@@ -53,9 +53,7 @@
 
     public string FormatOnSave { get; } = "Enable running clang-format when modified files are saved. Will only format if Style is found (ignores Fallback Style).";
 
-    public string CreateFormatFile { get; } = "Create a .clang-format file from scratch or configure a predefined one. Preview what .clang-format style option does.";
-
-    public string DetectStyle { get; } = "Detect the best matching format style for a list of files";
+    public string FormatEditor { get; } = "Create a .clang-format file from scratch or configure a predefined one. Detect the best matching format style for your code.";
 
     #endregion
 
