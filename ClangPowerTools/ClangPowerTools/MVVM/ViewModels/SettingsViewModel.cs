@@ -27,7 +27,7 @@ namespace ClangPowerTools
       this.settingsView = settingsView;
       settingsView.Closed += OnClosed;
       ShowFooter = showFooter;
-      Heigth = ShowFooter ? COMMERCIAL_LICENSE_HEIGTH : PERSONAL_LICENSE_HEIGTH;
+      Heigth = ShowFooter ? PERSONAL_LICENSE_HEIGTH : COMMERCIAL_LICENSE_HEIGTH;
     }
 
     #endregion
