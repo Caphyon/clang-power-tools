@@ -36,7 +36,7 @@
       Grid.Row="0"
       Banner="/ClangPowerTools;component/Resources/BannerWarning.png"
       Icon="/ClangPowerTools;component/Resources/WarningIcon.png"
-      Type="CMake Beta support" />
+      Type="Format Editor Warning" />
 
     <StackPanel Grid.Row="1" Margin="20">
       <TextBlock
