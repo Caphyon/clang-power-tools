@@ -299,7 +299,7 @@
         VerticalAlignment="Center"
         FontFamily="SegoeUI"
         FontSize="16"
-        Text="Clang-Format Editor" />
+        Text="Clang Format Editor" />
 
       <Button
         Width="80"
