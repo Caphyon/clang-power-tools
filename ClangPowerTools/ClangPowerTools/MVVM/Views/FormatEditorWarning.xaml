@@ -36,25 +36,25 @@
       Grid.Row="0"
       Banner="/ClangPowerTools;component/Resources/BannerWarning.png"
       Icon="/ClangPowerTools;component/Resources/WarningIcon.png"
-      Type="CMake Beta support" />
+      Type="Format Editor Warning" />
 
     <StackPanel Grid.Row="1" Margin="20">
       <TextBlock
         Margin="0,5"
         FontSize="14"
-        Text=".NET 5.0 Runtime not detected!"
+        Text=".NET 5.0 Desktop Runtime not detected!"
         TextWrapping="Wrap" />
 
       <TextBlock
         Margin="0,5"
         FontSize="14"
-        Text="To use the Clang Format Editor you need to install .NET 5.0 Runtime (v5.0.0 or newer)."
+        Text="To use the Clang Format Editor you need to install .NET 5.0 Desktop Runtime (v5.0.0 or newer)."
         TextWrapping="Wrap" />
 
       <TextBlock
         Margin="0,30"
         FontSize="14"
-        Text="Download .NET 5.0 Runtime?"
+        Text="Download .NET 5.0 Desktop Runtime?"
         TextWrapping="Wrap" />
 
     </StackPanel>

@@ -16,6 +16,7 @@ namespace ClangPowerTools.MVVM.Views
     private void DownloadButton(object sender, RoutedEventArgs e)
     {
       FormatEditorUtility.OpenBrowser();
+      Close();
     }
   }
 }
