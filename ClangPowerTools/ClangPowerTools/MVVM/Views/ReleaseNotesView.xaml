@@ -149,7 +149,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Now you can import your own .clang-format file in our Format Editor"
+          Text="• Import your own .clang-format file in our Format Editor"
           TextWrapping="Wrap" />
 
         <TextBox
