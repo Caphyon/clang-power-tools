@@ -63,6 +63,19 @@ namespace ClangPowerTools
       }
     }
 
+    public string Alignment
+    {
+      get
+      {
+        return accoutCellHeight;
+      }
+      set
+      {
+        accoutCellHeight = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("AccoutCellHeight"));
+      }
+    }
+
     public GeneralSettingsModel GeneralSettingsModel
     {
       get
@@ -87,6 +100,11 @@ namespace ClangPowerTools
     public bool DisplayLogout { get; set; }
 
     public bool DisplayLogIn { get; set; }
+
+    public bool Visible { get; set; }
+
+    public bool DisplayUserNameAndEmail { get; set; }
+
 
     #endregion
 
@@ -124,15 +142,21 @@ namespace ClangPowerTools
       if (accountModel.LicenseType == LicenseType.Commercial || accountModel.LicenseType == LicenseType.Personal)
       {
         AccoutCellHeight = "auto";
+        DisplayUserNameAndEmail = true;
+        Visible = accountModel.LicenseType == LicenseType.Commercial;
         DisplayLogIn = false;
         DisplayLogout = true;
+        Alignment = "Left";
       }
       else
       {
-        accountModel.UserName = string.Empty;
         AccoutCellHeight = "0";
+        accountModel.UserName = string.Empty;
+        DisplayUserNameAndEmail = false;
+        Visible = false;
         DisplayLogIn = true;
         DisplayLogout = false;
+        Alignment = "Center";
       }
     }
 
