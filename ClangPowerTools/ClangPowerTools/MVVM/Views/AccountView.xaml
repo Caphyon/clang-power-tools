@@ -66,7 +66,8 @@
         VerticalAlignment="Center"
         FontFamily="SegoeUI"
         FontSize="20"
-        Text="{Binding AccountModel.UserName}" />
+        Text="{Binding AccountModel.UserName}"
+        Visibility="{Binding Path=DisplayUserNameAndEmail, Converter={StaticResource BoolToVis}}" />
 
       <TextBlock
         Grid.Row="1"
@@ -74,14 +75,16 @@
         FontFamily="SegoeUI"
         FontSize="15"
         Foreground="#333333"
-        Text="{Binding AccountModel.Email}" />
+        Text="{Binding AccountModel.Email}"
+        Visibility="{Binding Path=DisplayUserNameAndEmail, Converter={StaticResource BoolToVis}}" />
     </StackPanel>
 
     <Grid
       Grid.Row="3"
       Grid.Column="1"
       Margin="21,30,0,0"
-      VerticalAlignment="Center">
+      VerticalAlignment="Center"
+      Visibility="{Binding Path=Visible, Converter={StaticResource BoolToVis}}">
       <Grid.RowDefinitions>
         <RowDefinition Height="auto" />
         <RowDefinition Height="auto" />
@@ -130,12 +133,14 @@
         FontSize="15"
         Foreground="#333333"
         Text="{Binding AccountModel.LicenseExpirationDate}" />
+
     </Grid>
 
     <StackPanel
       Grid.Row="4"
       Grid.Column="1"
       Margin="21,30,0,0"
+      HorizontalAlignment="{Binding Alignment}"
       Orientation="Horizontal">
       <TextBlock
         Grid.Row="1"
