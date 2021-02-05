@@ -377,11 +377,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <VSIXSubPath>.</VSIXSubPath>
     </Content>
-    <Content Include="Executables\ClangFormatEditor.pdb">
-      <IncludeInVSIX>true</IncludeInVSIX>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <VSIXSubPath>.</VSIXSubPath>
-    </Content>
     <Content Include="Resources\CPTLogoManageExtensionVS.png">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
