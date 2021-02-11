@@ -13,6 +13,7 @@ namespace ClangPowerTools
     public static Process EditorProcess;
 
     private static string vsixPath;
+
     #endregion 
 
     #region Constructor
@@ -26,6 +27,7 @@ namespace ClangPowerTools
     #endregion
 
     #region Methods
+
     public void OpenEditor()
     {
       try
