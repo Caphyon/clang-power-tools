@@ -13,7 +13,9 @@ namespace ClangPowerTools
     public static void OpenEditor()
     {
       string vsixPath = Path.GetDirectoryName(typeof(RunClangPowerToolsPackage).Assembly.Location);
-      string startInfoArguments = string.Concat(FormatEditorConstants.CommandLineArgument, "\"", Path.Combine(vsixPath, FormatEditorConstants.ExecutableName), "\"");
+      string startInfoArguments = string.Concat(FormatEditorConstants.CommandLineArgument, "\"",
+                                  Path.Combine(vsixPath, FormatEditorConstants.ExecutableName), "\"",
+                                  FormatEditorConstants.UpdaterParameter);
 
       try
       {
