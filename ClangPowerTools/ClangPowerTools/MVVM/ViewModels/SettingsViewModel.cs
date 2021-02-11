@@ -16,7 +16,7 @@ namespace ClangPowerTools
     private readonly SettingsView settingsView;
 
     private const int COMMERCIAL_LICENSE_HEIGTH = 535;
-    private const int PERSONAL_LICENSE_HEIGTH = 595;
+    private const int PERSONAL_LICENSE_HEIGTH = 600;
 
     #endregion
 

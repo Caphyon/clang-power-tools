@@ -8,7 +8,7 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   Title="Release Notes"
   Width="550"
-  Height="720"
+  Height="710"
   d:DataContext="{d:DesignInstance local:ReleaseNotesViewModel,
                                    IsDesignTimeCreatable=True}"
   Icon="/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"

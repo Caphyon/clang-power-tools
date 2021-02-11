@@ -26,6 +26,20 @@
   </Window.Resources>
 
   <Grid>
+
+    <Grid.Resources>
+      <Style TargetType="{x:Type Hyperlink}">
+        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+        <Setter Property="Foreground" Value="#FFFAA8B4" />
+        <Setter Property="TextBlock.TextDecorations" Value="{x:Null}" />
+        <Style.Triggers>
+          <Trigger Property="IsMouseOver" Value="True">
+            <Setter Property="Foreground" Value="#FFFAD4DB" />
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+    </Grid.Resources>
+
     <Grid.RowDefinitions>
       <RowDefinition Height="*" />
       <RowDefinition Height="Auto" />
