@@ -30,16 +30,19 @@ Set-Variable -name "kRedundantSeparatorsReplaceRules" -option Constant `
                       , ("^;" , "")                                    `
                       )
 
-class ProjectConfigurationNotFound: System.Exception
+Add-Type -TypeDefinition @"
+public class ProjectConfigurationNotFound : System.Exception
 {
-    [string] $ConfigPlatform
-    [string] $Project
-    ProjectConfigurationNotFound([string] $proj, [string] $configPlatform)
+    public string ConfigPlatform;
+    public string Project;
+
+    public ProjectConfigurationNotFound(string proj, string configPlatform)
     {
-        $this.ConfigPlatform = $configPlatform
-        $this.Project = $proj
+        this.Project = proj;
+        this.ConfigPlatform = configPlatform;
     }
 }
+"@
 
 Function Set-Var([parameter(Mandatory = $false)][string] $name
                 ,[parameter(Mandatory = $false)]         $value
