@@ -1,33 +1,58 @@
-﻿using System;
+﻿using ClangPowerTools.Helpers;
+using System;
 using System.Diagnostics;
 using System.IO;
-using System.Windows.Forms;
+using System.Windows;
 
 namespace ClangPowerTools
 {
   public class FormatEditorController
   {
-    #region Methods
+    #region Members
+
     public static Process EditorProcess;
 
-    public static void OpenEditor()
-    {
-      string vsixPath = Path.GetDirectoryName(typeof(RunClangPowerToolsPackage).Assembly.Location);
-      string startInfoArguments = string.Concat(FormatEditorConstants.CommandLineArgument, "\"",
-                                  Path.Combine(vsixPath, FormatEditorConstants.ExecutableName), "\"",
-                                  FormatEditorConstants.UpdaterParameter);
+    private static string vsixPath;
+    #endregion 
 
+    #region Constructor
+
+    public FormatEditorController()
+    {
+      vsixPath = Path.GetDirectoryName(typeof(RunClangPowerToolsPackage).Assembly.Location);
+      CreateEditorDirectory();
+    }
+
+    #endregion
+
+    #region Methods
+    public void OpenEditor()
+    {
       try
       {
         EditorProcess = new Process();
-        EditorProcess.StartInfo.FileName = FormatEditorConstants.CommandLineExe;
-        EditorProcess.StartInfo.Arguments = startInfoArguments;
-        EditorProcess.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+        EditorProcess.StartInfo.FileName = Path.Combine(vsixPath, FormatEditorConstants.ExecutableName);
         EditorProcess.Start();
       }
       catch (Exception e)
       {
-        MessageBox.Show(e.Message, FormatEditorConstants.ClangFormatEditor, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(e.Message, FormatEditorConstants.ClangFormatEditor, MessageBoxButton.OK, MessageBoxImage.Error);
+      }
+    }
+
+    private static void CreateEditorDirectory()
+    {
+      var appDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), FormatEditorConstants.ClangFormatDetectorFolder);
+      try
+      {
+        if (FileSystem.DoesFileExist(appDataDirectory, FormatEditorConstants.ClangFormatExe)) return;
+        FileSystem.CreateDirectory(appDataDirectory);
+        File.Copy(Path.Combine(vsixPath, FormatEditorConstants.ClangFormatExe),
+                  Path.Combine(appDataDirectory, FormatEditorConstants.ClangFormatExe));
+      }
+      catch (Exception e)
+      {
+        MessageBox.Show(e.Message, FormatEditorConstants.SetupFailed, MessageBoxButton.OK, MessageBoxImage.Error);
       }
     }
 

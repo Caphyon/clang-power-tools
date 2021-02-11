@@ -110,7 +110,8 @@ namespace ClangPowerTools
       if (FormatEditorUtility.FrameworkInstalled())
       {
         SettingsProvider.SettingsView.Close();
-        FormatEditorController.OpenEditor();
+        var formatEditorController = new FormatEditorController();
+        formatEditorController.OpenEditor();
       }
       else
       {
