@@ -44,7 +44,7 @@ namespace ClangPowerTools
 
     private static void CreateEditorDirectory()
     {
-      var appDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), FormatEditorConstants.ClangFormatDetectorFolder);
+      var appDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), FormatEditorConstants.ClangFormatEditorFolder);
       try
       {
         if (FileSystem.DoesFileExist(appDataDirectory, FormatEditorConstants.ClangFormatExe)) return;

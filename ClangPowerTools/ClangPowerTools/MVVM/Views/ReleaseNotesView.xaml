@@ -77,7 +77,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 7.0.1" />
+        Text="version 7.1" />
 
       <ListView
         Grid.Row="3"
@@ -119,47 +119,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Clang Power Tools is entirely free"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Clang Format Editor offers a better experience by incorporating the Style Detector and the Format Configurator"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Now you can use the Clang Format Editor as a stand-alone tool. Visual Studio is not needed"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Import your own .clang-format file in our Format Editor"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Enable all checks option is available for predefined Clang Tidy check"
+          Text="• Support for LLVM 11.0.1"
           TextWrapping="Wrap" />
 
         <!--  Bug Fixes  -->
@@ -179,7 +139,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Clang-Format Editor process doesn't stop in certain conditions"
+          Text="• Settings crash when a pre-built LLVM version is installed"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -189,7 +149,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Last Clang Format flag is ignored"
+          Text="• Fixed regression on Windows 8 / PowerShell 3"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -199,27 +159,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Footer component overlaps with the settings window"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Several format flags are ignored during the lookup"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Settings view is resized in certain situations"
+          Text="• Clang-Format Editor cannot locate clang-format.exe"
           TextWrapping="Wrap" />
 
       </ListView>

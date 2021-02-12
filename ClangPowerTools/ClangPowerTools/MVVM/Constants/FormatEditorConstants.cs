@@ -3,7 +3,7 @@
   public static class FormatEditorConstants
   {
     public const string ExecutableName = "ClangFormatEditor.exe";
-    public const string ClangFormatDetectorFolder = "ClangFormatEditor";
+    public const string ClangFormatEditorFolder = "ClangFormatEditor";
     public const string UpdaterParameter = " VisualStudio";
     public const string ClangFormatEditor = "Clang Format Editor";
     public const string FrameworkdUrlDownload = @"https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-desktop-5.0.2-windows-x86-installer";
