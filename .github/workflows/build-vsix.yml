@@ -25,9 +25,7 @@ jobs:
         id: MsBuildSetup
         with:
          vs-version: '[14.0, 16.9)'
-         
-      - name: Visual Studio SDK
-              
+                   
       - name: Restore Nuget packages
         run: nuget restore ClangPowerTools/ClangPowerTools.sln
       
