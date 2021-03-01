@@ -27,7 +27,7 @@ jobs:
         uses: NuGet/setup-nuget@v1.0.5
       
       - name: Restore Nuget packages
-        run: nuget restore ClangFormatEditor.sln
+        run: nuget restore ClangPowerTools.sln
       
       - name: Build Solution
         run: msbuild ClangPowerTools.sln /t:ClangPowerTools /p:Configuration="Release"
