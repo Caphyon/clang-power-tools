@@ -1,4 +1,3 @@
-![Build-VSIX](https://github.com/Caphyon/clang-power-tools/workflows/Build-VSIX/badge.svg?branch=master)
 # <img src="ClangPowerTools.png" height="48"> Clang Power Tools
 
 A tool bringing clang-tidy magic to Visual Studio C++ developers.
