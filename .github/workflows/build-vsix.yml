@@ -21,9 +21,9 @@ jobs:
       - uses: actions/checkout@v2
             
       - name: Setup MSBuild.exe
-        uses: microsoft/setup-msbuild@v1.0.2
+        uses: microsoft/setup-msbuild@v1
         with:
-         vs-version: '14.0'
+         vs-version: '[14.0, 16.0)'
              
       - name: Setup NuGet 
         uses: NuGet/setup-nuget@v1.0.5  
