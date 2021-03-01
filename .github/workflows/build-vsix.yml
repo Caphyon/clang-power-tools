@@ -22,8 +22,9 @@ jobs:
             
       - name: Setup MSBuild.exe
         uses: microsoft/setup-msbuild@v1.0.2
+        id: MsBuildSetup
         with:
-         vs-version: '14.0'
+         vs-version: '[14.0, 16.9)'
          
       - name: Visual Studio SDK
               
