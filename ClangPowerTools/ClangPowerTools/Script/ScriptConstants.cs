@@ -40,7 +40,8 @@ namespace ClangPowerTools
         ".hxx",
         ".tli",
         ".tlh",
-        ".vcxproj"
+        ".vcxproj",
+        ".inl"
       };
 
     public const string FileExtensionsSelectFile = "Code files (*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx;)|*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx";
