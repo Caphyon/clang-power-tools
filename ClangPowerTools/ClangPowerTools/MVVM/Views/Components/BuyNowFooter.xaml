@@ -21,7 +21,7 @@
       <Style TargetType="Grid">
         <Setter Property="Visibility" Value="Visible" />
         <Style.Triggers>
-          <DataTrigger Binding="{Binding ActiveLicense}" Value="True">
+          <DataTrigger Binding="{Binding ShowFooter}" Value="True">
             <Setter Property="Visibility" Value="Collapsed" />
           </DataTrigger>
         </Style.Triggers>
