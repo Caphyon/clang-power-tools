@@ -15,8 +15,8 @@ namespace ClangPowerTools
     private readonly SettingsHandler settingsHandler = new SettingsHandler();
     private readonly SettingsView settingsView;
 
-    private const int COMMERCIAL_LICENSE_HEIGTH = 535;
-    private const int PERSONAL_LICENSE_HEIGTH = 600;
+    private const int PERSONAL_LICENSE_HEIGTH = 535;
+    private const int NO_ACCOUNT_HEIGTH = 600;
 
     #endregion
 
@@ -27,7 +27,7 @@ namespace ClangPowerTools
       this.settingsView = settingsView;
       settingsView.Closed += OnClosed;
       ShowFooter = showFooter;
-      Heigth = ShowFooter ? PERSONAL_LICENSE_HEIGTH : COMMERCIAL_LICENSE_HEIGTH;
+      Heigth = ShowFooter ? PERSONAL_LICENSE_HEIGTH : NO_ACCOUNT_HEIGTH;
     }
 
     #endregion
