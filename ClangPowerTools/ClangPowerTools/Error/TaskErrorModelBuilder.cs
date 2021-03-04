@@ -42,7 +42,7 @@ namespace ClangPowerTools.Error
       if (string.IsNullOrWhiteSpace(messageDescription))
         return;
 
-      string path = groups[1].Value;
+      string path = groups[1].Value.Replace('/', '\\');
       int.TryParse(groups[4].Value, out int line);
       int.TryParse(groups[6].Value, out int column);
 
