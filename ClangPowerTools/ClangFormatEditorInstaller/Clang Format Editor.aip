@@ -9,10 +9,10 @@
     <ROW Property="AiSkipExitDlg" Value="1"/>
     <ROW Property="CTRLS" Value="2"/>
     <ROW Property="Manufacturer" Value="Caphyon"/>
-    <ROW Property="ProductCode" Value="1033:{D02B3698-0B82-4F18-B734-330B9A67F169} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{FF4ECB98-8705-40AB-94F6-F9F255FB7F77} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="Clang Format Editor"/>
-    <ROW Property="ProductVersion" Value="7.1.0" Type="32"/>
+    <ROW Property="ProductVersion" Value="7.2.0" Type="32"/>
     <ROW Property="RUNAPPLICATION" Value="1" Type="4"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{778A3EA3-4711-4833-B55A-139B2EFB0DDF}"/>
@@ -48,9 +48,9 @@
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
-    <ROW File="clangformat.exe" Component_="clangformat.exe" FileName="CLANG-~1.EXE|clang-format.exe" Attributes="0" SourcePath="Resources\clang-format.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="ClangFormatEditor.exe" Component_="ClangFormatEditor.exe" FileName="CLANGF~1.EXE|ClangFormatEditor.exe" Attributes="0" SourcePath="Resources\ClangFormatEditor.exe" SelfReg="false" DigSign="true"/>
-    <ROW File="license.txt" Component_="license.txt" FileName="license.txt" Attributes="0" SourcePath="Resources\license.txt" SelfReg="false"/>
+    <ROW File="clangformat.exe" Component_="clangformat.exe" FileName="CLANG-~1.EXE|clang-format.exe" Attributes="0" SourcePath="\\storage\shared\Company\Releases\Clang Power Tools\v7.2.0\Clang-Format Editor Resources\clang-format.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="ClangFormatEditor.exe" Component_="ClangFormatEditor.exe" FileName="CLANGF~1.EXE|ClangFormatEditor.exe" Attributes="0" SourcePath="\\storage\shared\Company\Releases\Clang Power Tools\v7.2.0\Clang-Format Editor Resources\ClangFormatEditor.exe" SelfReg="false" DigSign="true"/>
+    <ROW File="license.txt" Component_="license.txt" FileName="license.txt" Attributes="0" SourcePath="\\storage\shared\Company\Releases\Clang Power Tools\v7.2.0\Clang-Format Editor Resources\license.txt" SelfReg="false"/>
     <ROW File="updater.exe" Component_="updater.exe" FileName="CLANGF~2.EXE|Clang Format Editor Updater.exe" Version="65535.65535.65535.65535" Attributes="0" SourcePath="&lt;AI_STUBS&gt;updater.exe" SelfReg="false" DigSign="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BootstrOptComponent">
