@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<DOCUMENT Type="Advanced Installer" CreateVersion="16.9" version="17.9" Modules="enterprise" RootPath="." Language="en" Id="{FCC76E6F-F035-4FEE-89F7-C29FBFF6D0CA}">
+<DOCUMENT Type="Advanced Installer" CreateVersion="16.9" version="18.0" Modules="enterprise" RootPath="." Language="en" Id="{FCC76E6F-F035-4FEE-89F7-C29FBFF6D0CA}" Backup="false">
   <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
     <ROW Property="AI_BITMAP_DISPLAY_MODE" Value="0"/>
     <ROW Property="AI_PREDEF_LCONDS_PROPS" Value="AI_DETECTED_INTERNET_CONNECTION"/>
@@ -60,7 +60,7 @@
     <ROW Action="AI_DetectSoftware" Sequence="151"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
-    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="1" PackageFolder=".." Languages="en" InstallationType="4" UseLargeSchema="true"/>
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="1" PackageFolder="\\storage\shared\Company\Releases\Clang Power Tools\v[|ProductVersion]" Languages="en" InstallationType="4" UseLargeSchema="true"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.CacheComponent">
     <ATTRIBUTE name="Enable" value="false"/>
@@ -172,7 +172,6 @@
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
     <ROW Name="ClangFormatEditor.exe" SourcePath="\\storage\shared\Company\Releases\Clang Power Tools\v7.1.0\Clang Format Editor Installer\Resources\ClangFormatEditor.exe" Index="0"/>
-    <ROW Name="ClangFormatEditor_1.exe" SourcePath="Resources\ClangFormatEditor.exe" Index="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIniFileComponent">
     <ROW IniFile="AppDir" FileName="CLANGF~1.INI|Clang Format Editor Updater.ini" DirProperty="APPDIR" Section="General" Key="AppDir" Value="[APPDIR]" Action="0" Component_="updater.exe"/>
@@ -229,9 +228,9 @@
     <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
-    <ROW Shortcut="ClangFormatEditor" Directory_="DesktopFolder" Name="CLANGF~2|Clang Format Editor" Component_="ClangFormatEditor.exe" Target="[#ClangFormatEditor.exe]" Hotkey="0" Icon_="ClangFormatEditor_1.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ClangFormatEditor" Directory_="DesktopFolder" Name="CLANGF~2|Clang Format Editor" Component_="ClangFormatEditor.exe" Target="[#ClangFormatEditor.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
     <ROW Shortcut="ClangFormatEditorUpdater" Directory_="ClangFormatEditor_Dir" Name="CLANGF~2|Clang Format Editor Updater" Component_="updater.exe" Target="[#updater.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="ClangFormatEditor_1" Directory_="ClangFormatEditor_Dir" Name="CLANGF~1|Clang Format Editor" Component_="ClangFormatEditor.exe" Target="[#ClangFormatEditor.exe]" Hotkey="0" Icon_="ClangFormatEditor_1.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="ClangFormatEditor_1" Directory_="ClangFormatEditor_Dir" Name="CLANGF~1|Clang Format Editor" Component_="ClangFormatEditor.exe" Target="[#ClangFormatEditor.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
     <ATTRIBUTE name="UsedTheme" value="classic"/>
