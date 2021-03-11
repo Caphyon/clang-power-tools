@@ -486,7 +486,9 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
   [string] $stdafxSource = (Canonize-Path -base $stdafxDir -child $stdafxHeaderName)
   [string] $stdafx = $stdafxSource + ".hpp"
 
-  Copy-Item -Path $stdafxSource -Destination $stdafx > $null
+  # Clients using Perforce will have their source checked-out as readonly files, so the 
+  # PCH copy would be, by-default, readonly as well, which would present problems. Make sure to remove the RO attribute.
+  Copy-Item -Path $stdafxSource -Destination $stdafx -PassThru | Set-ItemProperty -name isreadonly -Value $false
   $global:FilesToDeleteWhenScriptQuits.Add($stdafx) > $null
 
   [string] $vcxprojShortName = [System.IO.Path]::GetFileNameWithoutExtension($global:vcxprojPath);
