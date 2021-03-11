@@ -522,7 +522,7 @@ Function Get-PchCppIncludeHeader([Parameter(Mandatory = $true)][string] $pchCppF
 {
     [string] $cppPath = Canonize-Path -base $ProjectDir -child $pchCppFile
 
-    [string[]] $fileLines = @(Get-Content -path $cppPath)
+    [string[]] $fileLines = @(Get-Content -LiteralPath $cppPath)
     foreach ($line in $fileLines)
     {
         $regexMatch = [regex]::match($line, '^\s*#include\s+"(\S+)"')
