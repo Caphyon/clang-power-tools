@@ -318,7 +318,7 @@ Function Exit-Script([Parameter(Mandatory=$false)][int] $code = 0)
   # Clean-up
   foreach ($file in $global:FilesToDeleteWhenScriptQuits)
   {
-    Remove-Item $file -ErrorAction SilentlyContinue > $null
+    Remove-Item -LiteralPath $file -ErrorAction SilentlyContinue > $null
   }
 
   # Restore working directory
@@ -338,7 +338,7 @@ Function Fail-Script([parameter(Mandatory=$false)][string] $msg = "Got errors.")
 
 Function Get-SourceDirectory()
 {
-  [bool] $isDirectory = ($(Get-Item $aSolutionsPath) -is [System.IO.DirectoryInfo])
+  [bool] $isDirectory = ($(Get-Item -LiteralPath $aSolutionsPath) -is [System.IO.DirectoryInfo])
   if ($isDirectory)
   {
     return $aSolutionsPath
@@ -357,7 +357,7 @@ function Load-Solutions()
    {
      Write-Verbose "Caching solution file $sln"
      $slnPath = $sln.FullName
-     $global:slnFiles[$slnPath] = (Get-Content $slnPath)
+     $global:slnFiles[$slnPath] = (Get-Content -LiteralPath $slnPath)
      Write-Verbose "Solution full path: $slnPath"
      Write-Verbose "Solution data length: $($global:slnFiles[$slnPath].Length)"
    }
@@ -488,13 +488,14 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
 
   # Clients using Perforce will have their source checked-out as readonly files, so the 
   # PCH copy would be, by-default, readonly as well, which would present problems. Make sure to remove the RO attribute.
-  Copy-Item -Path $stdafxSource -Destination $stdafx -PassThru | Set-ItemProperty -name isreadonly -Value $false
+  Copy-Item -LiteralPath $stdafxSource -Destination $stdafx -PassThru | Set-ItemProperty -name isreadonly -Value $false
+
   $global:FilesToDeleteWhenScriptQuits.Add($stdafx) > $null
 
   [string] $vcxprojShortName = [System.IO.Path]::GetFileNameWithoutExtension($global:vcxprojPath);
   [string] $stdafxPch = (Join-Path -path (Get-SourceDirectory) `
                                    -ChildPath "$vcxprojShortName$kExtensionClangPch")
-  Remove-Item -Path "$stdafxPch" -ErrorAction SilentlyContinue > $null
+  Remove-Item -LiteralPath "$stdafxPch" -ErrorAction SilentlyContinue > $null
 
   $global:FilesToDeleteWhenScriptQuits.Add($stdafxPch) > $null
 
@@ -525,7 +526,6 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
 
   [System.Diagnostics.Process] $processInfo = Start-Process -FilePath $kClangCompiler `
                                                             -ArgumentList $compilationFlags `
-                                                            -WorkingDirectory "$(Get-SourceDirectory)" `
                                                             -NoNewWindow `
                                                             -Wait `
                                                             -PassThru
@@ -534,7 +534,7 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
     Fail-Script "Errors encountered during PCH creation"
   }
 
-  if (Test-Path $stdafxPch)
+  if (Test-Path -LiteralPath $stdafxPch)
   {
     return $stdafxPch
   }
@@ -768,10 +768,10 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
   {
     param( $job )
 
-    Push-Location $job.WorkingDirectory
+    Push-Location -LiteralPath $job.WorkingDirectory
 
     [string] $clangConfigFile = [System.IO.Path]::GetTempFileName()
-    [string] $cppDirectory = (Get-ChildItem -Path $job.File).DirectoryName
+    [string] $cppDirectory = (Get-ChildItem -LiteralPath $job.File).DirectoryName
     [string] $clangConfigContent = ""
     [string] $clangTidyFile      = ""
     [string] $clangTidyBackupFile = ""
@@ -1287,8 +1287,9 @@ Clear-Host # clears console
 
 if (!$aSolutionsPath)
 {
-  $aSolutionsPath = Get-Location
+  $aSolutionsPath = (Get-Location).Path
 }
+
 
 # ------------------------------------------------------------------------------------------------
 # Load param values from configuration file (if exists)
@@ -1334,7 +1335,7 @@ if ($aExportJsonDB)
   JsonDB-Init 
 }
 
-Push-Location (Get-SourceDirectory)
+Push-Location -LiteralPath (Get-SourceDirectory)
 
 # fetch .sln paths and data
 Load-Solutions

@@ -248,9 +248,17 @@ Function Canonize-Path( [Parameter(Mandatory = $true)][string] $base
 {
     [string] $errorAction = If ($ignoreErrors) {"SilentlyContinue"} Else {"Stop"}
 
+    if (Test-Path -LiteralPath $base)
+    {
+        # Join-Path doesn't support LiteralPath so make sure we sanitize
+        # the base path for unsupported characters
+        $base = $base.Replace('[', '`[');
+        $base = $base.Replace(']', '`]');
+    }
+    
     if ([System.IO.Path]::IsPathRooted($child))
     {
-        if (!(Test-Path $child))
+        if (!(Test-Path -LiteralPath $child))
         {
             return ""
         }

@@ -620,10 +620,10 @@ function ParseProjectFile([string] $projectFilePath)
 
     Write-Verbose "`nSanitizing $projectFilePath"
 
-    [xml] $fileXml = Get-Content $projectFilePath
+    [xml] $fileXml = Get-Content -LiteralPath $projectFilePath
     $global:currentMSBuildFile = $projectFilePath
 
-    Push-Location (Get-FileDirectory -filePath $projectFilePath)
+    Push-Location -LiteralPath (Get-FileDirectory -filePath $projectFilePath)
 
     InitializeMsBuildCurrentFileProperties -filePath $projectFilePath
     SanitizeProjectNode($fileXml.Project)
