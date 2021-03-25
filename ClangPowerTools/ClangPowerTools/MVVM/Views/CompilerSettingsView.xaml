@@ -336,7 +336,7 @@
         VerticalAlignment="Center"
         FontFamily="SegoeUI"
         FontSize="16"
-        Text="Show squiggles" />
+        Text="Show squiggles (BETA)" />
 
       <ToggleButton
         HorizontalAlignment="Left"
