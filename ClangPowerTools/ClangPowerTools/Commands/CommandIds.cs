@@ -6,7 +6,7 @@ namespace ClangPowerTools
   {
     #region Constants
 
-    public static readonly HashSet<int> ids = new HashSet<int>()
+    public static readonly HashSet<int> idsHexa = new HashSet<int>()
     {
       0x0102,
       0x1100,
@@ -23,6 +23,25 @@ namespace ClangPowerTools
       0x1032,
       0x1033,
       0X0106
+    };
+
+    public static readonly HashSet<int> idsNumeric = new HashSet<int>()
+    {
+      258,
+      4352,
+      257,
+      4353,
+      265,
+      4354,
+      261,
+      4355,
+      260,
+      259,
+      263,
+      264,
+      4146,
+      4147,
+      262
     };
 
     public const int kCompileId = 0x0102;
