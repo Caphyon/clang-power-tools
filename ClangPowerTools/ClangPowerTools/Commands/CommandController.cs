@@ -18,7 +18,7 @@ using Task = System.Threading.Tasks.Task;
 namespace ClangPowerTools
 {
   /// <summary>
-  /// Contains all the logic of disable and enable the clang custom commands  
+  /// Contains all the logic of disable and enable the clang custom commands
   /// </summary>
   public class CommandController
   {
@@ -447,9 +447,6 @@ namespace ClangPowerTools
         if (null == mCommand)
           return string.Empty;
 
-        if (CommandIds.ids.Contains(aId) == false)
-          return string.Empty;
-
         Command cmd = mCommand.Item(aGuid, aId);
         if (null == cmd)
           return string.Empty;
@@ -486,7 +483,7 @@ namespace ClangPowerTools
     }
 
     /// <summary>
-    /// It is called before every command. Update the running state.  
+    /// It is called before every command. Update the running state.
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -551,8 +548,7 @@ namespace ClangPowerTools
 
     private async Task OnMSVCBuildSucceededAsync()
     {
-      var runClang = SettingsProvider.CompilerSettingsModel.ClangAfterMSVC;
-      if (runClang == false || SolutionInfo.ContainsCppProject() == false)
+      if (SettingsProvider.CompilerSettingsModel.ClangAfterMSVC == false || SolutionInfo.ContainsCppProject() == false)
         return;
 
       var exitCode = int.MaxValue;
@@ -642,7 +638,7 @@ namespace ClangPowerTools
         return;
 
       string commandName = GetCommandName(aGuid, aId);
-      if (0 != string.Compare("Build.Compile", commandName))
+      if (0 != string.Compare(VsCommands.Compile, commandName))
         return;
     }
 
@@ -650,11 +646,9 @@ namespace ClangPowerTools
     private void BeforeExecuteClangTidy(string aGuid, int aId)
     {
       string commandName = GetCommandName(aGuid, aId);
-      if (0 != string.Compare("File.SaveAll", commandName) && 0 != string.Compare("File.SaveSelectedItems", commandName))
-      {
-        return;
-      }
-      mSaveCommandWasGiven = true;
+
+      if (VsCommands.SaveCommands.Contains(commandName))
+        mSaveCommandWasGiven = true;
     }
 
     public void OnWindowActivated(Window GotFocus, Window LostFocus)
