@@ -11,7 +11,7 @@
 
 foreach ($buildUtilPath in $buildUtilPaths)
 {
-    if (Test-Path $buildUtilPath)
+    if (Test-Path -LiteralPath $buildUtilPath)
     {
         Add-Type -path $buildUtilPath
         Write-Verbose "Loaded assembly $buildUtilPath"

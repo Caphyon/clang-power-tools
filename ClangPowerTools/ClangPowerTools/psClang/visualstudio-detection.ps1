@@ -135,7 +135,7 @@ Function Get-VisualStudio-Path()
     else
     {
         # modern Visual Studio (> 2017). Use VSWhere to locate it.
-        if (Test-Path $kVsWhereLocation)
+        if (Test-Path -LiteralPath $kVsWhereLocation)
         {
 
             [string] $product = "*"
@@ -171,7 +171,7 @@ Function Get-VisualStudio-Path()
         }
 
         [string] $kVsDefaultLocation = "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$global:cptVisualStudioVersion\$aVisualStudioSku"
-        if (Test-Path -Path $kVsDefaultLocation)
+        if (Test-Path -LiteralPath $kVsDefaultLocation)
         {
             return $kVsDefaultLocation
         }

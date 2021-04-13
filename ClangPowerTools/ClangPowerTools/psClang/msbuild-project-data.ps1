@@ -240,7 +240,7 @@ Function Get-ProjectPlatformToolset()
 function Get-LatestSDKVersion()
 {
     [string] $parentDir = "${Env:ProgramFiles(x86)}\Windows Kits\10\Include\"
-    if (!(Test-Path $parentDir))
+    if (!(Test-Path -LiteralPath $parentDir))
     {
         Write-Verbose "Windows 10 SDK parent directory could not be located"
         return ""

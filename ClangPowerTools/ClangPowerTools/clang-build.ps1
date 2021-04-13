@@ -524,8 +524,14 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
   }
   Write-Verbose "INVOKE: $exeToCallVerbosePath $compilationFlags"
 
+  $kClangWorkingDir = "$(Get-SourceDirectory)" -replace '\[', '`[' -replace ']', '`]'
+  # We could skip the WorkingDir parameter as all paths are absolute but 
+  # Powershell 3-5 has a bug when calling Start-Process from a directory containing square brackets
+  # in its path. This can be overcome by providing escaped brackets in the WorkingDirectory arg.
+  # Powershell 7 does not have this limitation.
   [System.Diagnostics.Process] $processInfo = Start-Process -FilePath $kClangCompiler `
                                                             -ArgumentList $compilationFlags `
+                                                            -WorkingDirectory $kClangWorkingDir `
                                                             -NoNewWindow `
                                                             -Wait `
                                                             -PassThru
@@ -779,11 +785,11 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
     {
       # if we need to place a .clang-tidy file make sure we don't override
       # an existing one
-      if (![string]::IsNullOrWhiteSpace($job.TidyFlagsTempFile) -and (Test-Path $job.TidyFlagsTempFile))
+      if (![string]::IsNullOrWhiteSpace($job.TidyFlagsTempFile) -and (Test-Path -LiteralPath $job.TidyFlagsTempFile))
       {
         $clangTidyFile       = "$cppDirectory\.clang-tidy"
         $clangTidyBackupFile = "$cppDirectory\.clang-tidy.cpt_backup"
-        if (Test-Path($clangTidyFile))
+        if (Test-Path -LiteralPath $clangTidyFile)
         {
           # file already exists, temporarily rename it
           Rename-Item -Path $clangTidyFile -NewName $clangTidyBackupFile
@@ -829,7 +835,7 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
       Remove-Item $clangTidyFile
 
       # make sure to restore previous file, if any
-      if (Test-Path $clangTidyBackupFile)
+      if (Test-Path -LiteralPath $clangTidyBackupFile)
       {
         Rename-Item -Path $clangTidyBackupFile -NewName $clangTidyFile
       }
@@ -1319,7 +1325,7 @@ if (! (Exists-Command($kClangCompiler)) )
 {
   foreach ($locationLLVM in $kLLVMInstallLocations)
   {
-    if (Test-Path $locationLLVM)
+    if (Test-Path -LiteralPath $locationLLVM)
     {
       Write-Verbose "LLVM location: $locationLLVM"
       $env:Path += ";$locationLLVM"
@@ -1495,7 +1501,7 @@ foreach ($project in $projectsToProcess)
   if (![string]::IsNullOrEmpty($aTidyFlags))
   {
      $workloadType = [WorkloadType]::Tidy
-     if (Test-Path $aTidyFlags)
+     if (Test-Path -LiteralPath $aTidyFlags)
      {
        $kClangTidyFlagTempFile = $aTidyFlags
      }
@@ -1504,7 +1510,7 @@ foreach ($project in $projectsToProcess)
   if (![string]::IsNullOrEmpty($aTidyFixFlags))
   {
      $workloadType = [WorkloadType]::TidyFix
-     if (Test-Path $aTidyFixFlags)
+     if (Test-Path -LiteralPath $aTidyFixFlags)
      {
        $kClangTidyFlagTempFile = $aTidyFixFlags
      }

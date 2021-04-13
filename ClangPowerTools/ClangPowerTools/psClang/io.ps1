@@ -290,7 +290,7 @@ function cpt::Exists([Parameter(Mandatory = $false)][string] $path)
         return $false
     }
 
-    return Test-Path $path
+    return Test-Path -LiteralPath $path
 }
 
 function cpt::MakePathRelative( [Parameter(Mandatory = $true)][string] $base
