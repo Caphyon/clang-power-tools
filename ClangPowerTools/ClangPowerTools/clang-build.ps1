@@ -467,8 +467,17 @@ Function Get-ProjectFileLanguageFlag([Parameter(Mandatory=$true)] [string]   $fi
 
   try
   {
-    $isCpp = (Get-ProjectFileSetting -fileFullName $fileFullName -propertyName "CompileAs") -ine $kCProjectCompile
-  }
+    [string] $compileAsVal = (Get-ProjectFileSetting -fileFullName $fileFullName -propertyName "CompileAs")
+    [bool] $isDefault = [string]::IsNullOrWhiteSpace($compileAsVal) -or $compileAsVal -ieq "Default"
+    if ($isDefault)
+    {
+      $isCpp = ! $fileFullName.EndsWith($kExtensionC)
+    }
+    else 
+    {
+      $isCpp = $compileAsVal -ine $kCProjectCompile
+    }
+  }  
   catch {}
 
   [string] $languageFlag = If ($isCpp) { $kClangFlagFileIsCPP } else { $kClangFlagFileIsC }
