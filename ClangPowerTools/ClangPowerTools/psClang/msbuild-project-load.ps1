@@ -513,7 +513,18 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
                 if ($nodePropChild.GetType().Name -ine "XmlElement")
                 {
                     continue
+                }                
+
+                if ($nodePropChild.HasAttribute("Condition"))
+                {
+                    [string] $nodeCondition = $nodePropChild.GetAttribute("Condition")
+                    [bool] $conditionSatisfied = ((Evaluate-MSBuildCondition($nodeCondition)) -eq $true)
+                    if (!$conditionSatisfied)
+                    {
+                        continue
+                    }
                 }
+
                 $itemProperties[$nodePropChild.Name] = Evaluate-MSBuildExpression $nodePropChild.InnerText
             }
 
