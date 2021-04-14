@@ -255,7 +255,7 @@ Function Get-ConfigFileParameters()
 
   [string] $startDir = If ( VariableExistsAndNotEmpty 'ProjectDir' )  { $ProjectDir } else { $aSolutionsPath }
   [string] $configFile = (cpt::GetDirNameOfFileAbove -startDir $startDir -targetFile "cpt.config") + "\cpt.config"
-  if (!(Test-Path $configFile))
+  if (!(Test-Path -LiteralPath $configFile))
   {
       return $retArgs
   }
@@ -449,7 +449,7 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
 
         foreach ($path in $paths)
         {
-            if (![string]::IsNullOrEmpty($path) -and (Test-Path $path))
+            if (![string]::IsNullOrEmpty($path) -and (Test-Path -LiteralPath $path))
             {
                 Write-Verbose "Property sheet: $path"
                 ParseProjectFile($path)
@@ -513,7 +513,18 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
                 if ($nodePropChild.GetType().Name -ine "XmlElement")
                 {
                     continue
+                }                
+
+                if ($nodePropChild.HasAttribute("Condition"))
+                {
+                    [string] $nodeCondition = $nodePropChild.GetAttribute("Condition")
+                    [bool] $conditionSatisfied = ((Evaluate-MSBuildCondition($nodeCondition)) -eq $true)
+                    if (!$conditionSatisfied)
+                    {
+                        continue
+                    }
                 }
+
                 $itemProperties[$nodePropChild.Name] = Evaluate-MSBuildExpression $nodePropChild.InnerText
             }
 
@@ -647,13 +658,13 @@ function LoadDirectoryBuildPropSheetFile()
         # Multiple Directory.Build.props sheets are not supported.
         [string] $directoryBuildSheetPath = (cpt::GetDirNameOfFileAbove -startDir $ProjectDir `
                                              -targetFile "Directory.Build.props") + "\Directory.Build.props"
-        if (Test-Path $directoryBuildSheetPath)
+        if (Test-Path -LiteralPath $directoryBuildSheetPath)
         {
             ParseProjectFile($directoryBuildSheetPath)
         }
 
         [string] $vcpkgIncludePath = "$env:LOCALAPPDATA\vcpkg\vcpkg.user.targets"
-        if (Test-Path $vcpkgIncludePath)
+        if (Test-Path -LiteralPath $vcpkgIncludePath)
         {
             ParseProjectFile($vcpkgIncludePath)
         }
