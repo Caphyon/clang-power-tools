@@ -455,7 +455,7 @@ namespace ClangPowerTools
       }
       catch (Exception e)
       {
-        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
 
       return string.Empty;
