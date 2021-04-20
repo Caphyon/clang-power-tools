@@ -224,7 +224,6 @@ Set-Variable -name kVarEnvClangTidyPath     -value "CLANG_TIDY_PATH"-option Cons
 
 Set-Variable -name kClangFlagSupressLINK    -value @("-fsyntax-only")   -option Constant
 Set-Variable -name kClangFlagIncludePch     -value "-include-pch"       -option Constant
-Set-Variable -name kClangFlagEmitPch        -value "-emit-pch"          -option Constant
 Set-Variable -name kClangFlagMinusO         -value "-o"                 -option Constant
 
 Set-Variable -name kClangDefinePrefix       -value "-D"                 -option Constant
@@ -511,7 +510,6 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
   [string] $languageFlag = (Get-ProjectFileLanguageFlag -fileFullName $stdafxCpp)
 
   [string[]] $compilationFlags = @((Get-QuotedPath $stdafx)
-                                  ,$kClangFlagEmitPch
                                   ,$kClangFlagMinusO
                                   ,(Get-QuotedPath $stdafxPch)
                                   ,$languageFlag
