@@ -624,15 +624,14 @@ function ParseProjectFile([string] $projectFilePath)
 {
     # keep current file path, we'll need to restore it
     [string] $currentFile = ""
-    if (VariableExistsAndNotEmpty 'global:currentMSBuildFile')
+    if (VariableExistsAndNotEmpty 'MSBuildThisFileFullPath')
     {
-        $currentFile = $global:currentMSBuildFile
+        $currentFile = $MSBuildThisFileFullPath
     }
 
     Write-Verbose "`nSanitizing $projectFilePath"
 
     [xml] $fileXml = Get-Content -LiteralPath $projectFilePath
-    $global:currentMSBuildFile = $projectFilePath
 
     Push-Location -LiteralPath (Get-FileDirectory -filePath $projectFilePath)
 
@@ -644,8 +643,8 @@ function ParseProjectFile([string] $projectFilePath)
     # restore previous path
     if (![string]::IsNullOrWhiteSpace(($currentFile)))
     {
-        $global:currentMSBuildFile = $currentFile
-        InitializeMsBuildCurrentFileProperties -filePath $global:currentMSBuildFile
+        Write-Verbose "[INFO] Restoring project file properties localstate to parent file"
+        InitializeMsBuildCurrentFileProperties -filePath $currentFile
     }
 }
 
