@@ -313,16 +313,16 @@
         Height="30"
         ItemsSource="{Binding InstalledLlvms}"
         SelectedItem="{Binding VersionUsed}" />
-      <Button 
-        Margin="335 0 0 0"
+      <Button
         Width="150"
-        Style="{StaticResource SettingsButton}"
-        Content="Add Existing LLVM"
-        ToolTip="Select the custom path to the LLVM  &quot;bin&quot; directory. The LLVM version is automatically detected and it will be displayed in the list above."
-        Foreground="White"
-        FontSize="15"
+        Margin="335,0,0,0"
         Command="{Binding BrowseForLLVMCommand}"
-        FontFamily="Segoe UI" />
+        Content="Add Existing LLVM"
+        FontFamily="Segoe UI"
+        FontSize="15"
+        Foreground="White"
+        Style="{StaticResource SettingsButton}"
+        ToolTip="Select the custom path to the LLVM  &quot;bin&quot; directory. The LLVM version is automatically detected and it will be displayed in the list above." />
 
     </StackPanel>
 
