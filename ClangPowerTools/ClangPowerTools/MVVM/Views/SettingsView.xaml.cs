@@ -1,11 +1,11 @@
-﻿using Microsoft.VisualStudio.PlatformUI;
+﻿using System.Windows;
 
 namespace ClangPowerTools.Views
 {
   /// <summary>
   /// Interaction logic for SettingsView.xaml
   /// </summary>
-  public partial class SettingsView : DialogWindow
+  public partial class SettingsView : Window
   {
     public SettingsView(bool showFooter)
     {

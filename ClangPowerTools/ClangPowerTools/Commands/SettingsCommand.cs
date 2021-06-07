@@ -69,7 +69,7 @@ namespace ClangPowerTools.Commands
     {
       bool activeLicense = await new PersonalLicenseValidator().ValidateAsync();
       SettingsView settingsView = new SettingsView(activeLicense);
-      settingsView.ShowModal();
+      settingsView.ShowDialog();
     }
 
 
