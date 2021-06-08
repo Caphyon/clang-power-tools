@@ -20,7 +20,7 @@ namespace ClangPowerTools.MVVM.Controllers
 
         if (userAccoutHttpRestul.IsSuccessStatusCode)
         {
-          TokenModel tokenModel = await userAccoutHttpRestul.Content.ReadAsAsync<TokenModel>();
+          TokenModel tokenModel = JsonConvert.DeserializeObject<TokenModel>(await userAccoutHttpRestul.Content.ReadAsStringAsync());
 
           if (string.IsNullOrWhiteSpace(tokenModel.jwt))
             return false;
