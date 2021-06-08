@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,7 +32,7 @@ namespace ClangPowerTools.MVVM.LicenseValidation
         if (httpResponse.Key == false)
           return false;
 
-        List<LicenseModel> licenses = await httpResponse.Value.Content.ReadAsAsync<List<LicenseModel>>();
+        List<LicenseModel> licenses = JsonConvert.DeserializeObject < List < LicenseModel >> (await httpResponse.Value.Content.ReadAsStringAsync());
         return licenses.Count > 0 && VerifyLicense(licenses);
       }
       catch (Exception)
