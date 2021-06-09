@@ -366,3 +366,17 @@ Function Exists-Command([Parameter(Mandatory = $true)][string] $command)
         return $false
     }
 }
+
+Function Get-ClangVersion()
+{
+    if (Exists-Command "clang")
+    {
+        [string] $s = &"clang" --version
+        $regexMatch = [regex]::match($s, 'clang version (\d+).')
+        if ($regexMatch)
+        {
+            return ($regexMatch.Groups[1].Value -as [int])
+        }
+    }
+    return 0
+}

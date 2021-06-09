@@ -224,6 +224,7 @@ Set-Variable -name kVarEnvClangTidyPath     -value "CLANG_TIDY_PATH"-option Cons
 
 Set-Variable -name kClangFlagSupressLINK    -value @("-fsyntax-only")   -option Constant
 Set-Variable -name kClangFlagIncludePch     -value "-include-pch"       -option Constant
+Set-Variable -name kClangFlagFasterPch      -value "-fpch-instantiate-templates" -option Constant
 Set-Variable -name kClangFlagMinusO         -value "-o"                 -option Constant
 
 Set-Variable -name kClangDefinePrefix       -value "-D"                 -option Constant
@@ -517,6 +518,13 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
                                   ,$kClangFlagNoUnusedArg
                                   ,$preprocessorDefinitions
                                   )
+  [int] $clangVer = Get-ClangVersion 
+  if ($clangVer -ge 11)
+  {
+    # this flag gets around 15% faster PCH compilation times
+    # https://www.phoronix.com/scan.php?page=news_item&px=LLVM-Clang-11-PCH-Instant-Temp
+    $compilationFlags += $kClangFlagFasterPch
+  }
 
   $compilationFlags += Get-ClangIncludeDirectories -includeDirectories           $includeDirectories `
                                                    -additionalIncludeDirectories $additionalIncludeDirectories
