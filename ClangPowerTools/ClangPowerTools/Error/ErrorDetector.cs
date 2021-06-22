@@ -31,7 +31,7 @@ namespace ClangPowerTools
 
     public bool HasEncodingError(string message)
     {
-      return message.Contains(Resources.EncodingError);
+      return message.Contains(Resource.EncodingError);
     }
     #endregion
 

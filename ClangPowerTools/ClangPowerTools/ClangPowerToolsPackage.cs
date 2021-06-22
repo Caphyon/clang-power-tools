@@ -3,7 +3,6 @@ using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
-using ClangPowerTools.Tests;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;
@@ -39,7 +38,6 @@ namespace ClangPowerTools
   [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
   [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
   [ProvideMenuResource("Menus.ctmenu", 1)]
-  [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
   [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)]
   [ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string, PackageAutoLoadFlags.BackgroundLoad)]
   [ProvideMenuResource("Menus.ctmenu", 1)]
@@ -99,7 +97,6 @@ namespace ClangPowerTools
       await RegisterVsServicesAsync();
 
       mCommandController = new CommandController(this);
-      CommandTestUtility.CommandController = mCommandController;
 
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
 
