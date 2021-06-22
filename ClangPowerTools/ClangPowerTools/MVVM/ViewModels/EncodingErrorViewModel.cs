@@ -42,7 +42,7 @@ namespace ClangPowerTools
       {
         if (checkAllItems == value) { return; }
         checkAllItems = value;
-        SelectAllTooltipText = value ? Resources.DeselectAllTooltipText : Resources.SelectAllTooltipText;
+        SelectAllTooltipText = value ? Resource.DeselectAllTooltipText : Resource.SelectAllTooltipText;
         foreach (var file in FilesNotEncodedInUTF8)
         {
           file.IsChecked = value;
@@ -82,7 +82,7 @@ namespace ClangPowerTools
 
     private readonly List<string> fileNames = new List<string>();
 
-    private string selectAllTooltipText = Resources.DeselectAllTooltipText;
+    private string selectAllTooltipText = Resource.DeselectAllTooltipText;
 
     private bool checkAllItems = true;
     #endregion

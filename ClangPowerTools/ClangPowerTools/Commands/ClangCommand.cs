@@ -4,7 +4,6 @@ using ClangPowerTools.Events;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.IgnoreActions;
 using ClangPowerTools.Services;
-using ClangPowerTools.Tests;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -218,7 +217,6 @@ namespace ClangPowerTools
           // From the first parameter is removed the last character which is mandatory "'"
           // and added to the end of the string to close the script escaping command
           Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
-          CommandTestUtility.ScriptCommand = Script;
 
           ItemHierarchy = vsSolution != null ? AutomationUtil.GetItemHierarchy(vsSolution, item) : null;
 
