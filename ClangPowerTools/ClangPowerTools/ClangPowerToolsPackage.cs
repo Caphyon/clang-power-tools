@@ -118,14 +118,14 @@ namespace ClangPowerTools
       #endregion
 
       // Get-Set the build and command events from DTE
-      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+      if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
       {
-        var dte2 = dte as DTE2;
+        //var dte2 = dte as DTE2;
 
-        mBuildEvents = dte2.Events.BuildEvents;
-        mCommandEvents = dte2.Events.CommandEvents;
-        mDteEvents = dte2.Events.DTEEvents;
-        windowEvents = dte2.Events.WindowEvents;
+        //mBuildEvents = dte2.Events.BuildEvents;
+        //mCommandEvents = dte2.Events.CommandEvents;
+        //mDteEvents = dte2.Events.DTEEvents;
+        //windowEvents = dte2.Events.WindowEvents;
       }
 
       var settingsHandler = new SettingsHandler();
@@ -133,12 +133,14 @@ namespace ClangPowerTools
       await settingsHandler.InitializeAccountSettingsAsync();
 
       string version = SettingsProvider.GeneralSettingsModel.Version;
+      //TODO fix 
       ShowToolbar(version);
-      UpdateVersion(version); //.SafeFireAndForget();
+      //UpdateVersion(version); //.SafeFireAndForget();
 
       await mCommandController.InitializeCommandsAsync(this);
 
-      RegisterToEvents();
+      //TODO fix
+      //RegisterToEvents();
 
       await base.InitializeAsync(cancellationToken, progress);
     }
@@ -328,11 +330,10 @@ namespace ClangPowerTools
     private void ShowToolbar(string version)
     {
       // Detect the first install 
-      if (!string.IsNullOrWhiteSpace(version))
-        return;
+      //if (!string.IsNullOrWhiteSpace(version)) return;
 
       // Show the toolbar on the first install
-      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+      if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
       {
         var cbs = ((CommandBars)(dte as DTE2).CommandBars);
         CommandBar cb = cbs["Clang Power Tools"];
@@ -346,7 +347,7 @@ namespace ClangPowerTools
     {
       // Get DTE service async 
       var dte = await GetServiceAsync(typeof(DTE)) as DTE2;
-      VsServiceProvider.Register(typeof(DTE), dte);
+      VsServiceProvider.Register(typeof(DTE2), dte);
 
       // Get VS Output Window service async
       var vsOutputWindow = await GetServiceAsync(typeof(SVsOutputWindow));
