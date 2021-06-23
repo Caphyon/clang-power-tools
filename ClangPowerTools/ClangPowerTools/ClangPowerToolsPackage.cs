@@ -120,12 +120,12 @@ namespace ClangPowerTools
       // Get-Set the build and command events from DTE
       if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
       {
-        //var dte2 = dte as DTE2;
+        var dte2 = dte as DTE2;
 
-        //mBuildEvents = dte2.Events.BuildEvents;
-        //mCommandEvents = dte2.Events.CommandEvents;
-        //mDteEvents = dte2.Events.DTEEvents;
-        //windowEvents = dte2.Events.WindowEvents;
+        mBuildEvents = dte2.Events.BuildEvents;
+        mCommandEvents = dte2.Events.CommandEvents;
+        mDteEvents = dte2.Events.DTEEvents;
+        windowEvents = dte2.Events.WindowEvents;
       }
 
       var settingsHandler = new SettingsHandler();
@@ -135,12 +135,12 @@ namespace ClangPowerTools
       string version = SettingsProvider.GeneralSettingsModel.Version;
       //TODO fix 
       ShowToolbar(version);
-      //UpdateVersion(version); //.SafeFireAndForget();
+      UpdateVersion(version); //.SafeFireAndForget();
 
       await mCommandController.InitializeCommandsAsync(this);
 
       //TODO fix
-      //RegisterToEvents();
+      RegisterToEvents();
 
       await base.InitializeAsync(cancellationToken, progress);
     }
@@ -342,7 +342,6 @@ namespace ClangPowerTools
       }
     }
 
-
     private async Task RegisterVsServicesAsync()
     {
       // Get DTE service async 
@@ -374,7 +373,7 @@ namespace ClangPowerTools
     private void RegisterToEvents()
     {
       RegisterToCPTEvents();
-      RegisterToVsEvents();
+      //RegisterToVsEvents();
     }
 
     private void RegisterToCPTEvents()
