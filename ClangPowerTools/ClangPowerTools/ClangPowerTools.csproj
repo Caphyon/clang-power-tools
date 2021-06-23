@@ -407,7 +407,10 @@
     <Content Include="Resources\IgnoreIcon.png" />
     <Content Include="Resources\InfoIcon.png" />
     <Content Include="Resources\JsonCompilationDatabase.png" />
-    <Content Include="Resources\LICENSE.txt" />
+    <Content Include="Resources\LICENSE.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\LoginBackground.png" />
     <Content Include="Resources\LogoutIcon.png" />
     <Content Include="Resources\PreviewWhiteIcon.png" />
