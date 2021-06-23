@@ -381,9 +381,13 @@
   <ItemGroup>
     <Content Include="Executables\clang-format.exe">
       <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <VSIXSubPath>.</VSIXSubPath>
     </Content>
     <Content Include="Executables\ClangFormatEditor.exe">
       <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <VSIXSubPath>.</VSIXSubPath>
     </Content>
     <Content Include="psClang\integration-projects\CptIntegrationProjects.sln" />
     <Resource Include="Resources\AccountAvatarIcon.png" />
@@ -394,7 +398,9 @@
     <Resource Include="Resources\bannerWarning.png" />
     <Resource Include="Resources\Browse.png" />
     <Resource Include="Resources\ClangFormatIcon.png" />
-    <Resource Include="Resources\ClangPowerToolsIco.ico" />
+    <Resource Include="Resources\ClangPowerToolsIco.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\ClangSplitBackground.png" />
     <Resource Include="Resources\CleanSearchIcon.PNG" />
     <Resource Include="Resources\CloudIcon.png" />
@@ -403,6 +409,7 @@
     <Resource Include="Resources\CPTLogo.png" />
     <Content Include="Resources\CPTLogoManageExtensionVS.png">
       <IncludeInVSIX>true</IncludeInVSIX>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\DetectOnFileIcon.png" />
     <Resource Include="Resources\EmptyIcon.png" />
