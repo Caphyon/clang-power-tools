@@ -99,7 +99,7 @@ namespace ClangPowerTools.Commands
           return;
 
         runningProcesses.Kill(backgroundRunners);
-        if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+        if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
         {
           string solutionPath = (dte as DTE2).Solution.FullName;
 

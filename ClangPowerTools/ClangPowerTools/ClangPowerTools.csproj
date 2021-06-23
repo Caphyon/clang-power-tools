@@ -373,7 +373,12 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ClangPowerTools.vsct" />
+    <VSCTCompile Include="ClangPowerTools.vsct">
+      <ResourceName>Menus.ctmenu</ResourceName>
+      <SubType>Designer</SubType>
+    </VSCTCompile>
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Executables\clang-format.exe" />
     <Content Include="Executables\ClangFormatEditor.exe" />
     <Content Include="Executables\license.txt" />

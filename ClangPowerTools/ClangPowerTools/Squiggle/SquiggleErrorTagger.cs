@@ -79,7 +79,7 @@ namespace ClangPowerTools.Squiggle
       if (TaskErrorViewModel.FileErrorsPair == null || TaskErrorViewModel.FileErrorsPair.Count == 0)
         return;
 
-      var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
+      var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE2));
       var activeDocument = dte.ActiveDocument;
 
       if (activeDocument == null)

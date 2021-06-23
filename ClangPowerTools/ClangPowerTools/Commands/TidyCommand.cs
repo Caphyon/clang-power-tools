@@ -94,7 +94,7 @@ namespace ClangPowerTools.Commands
             {
               fileChangerWatcher.OnChanged += FileOpener.Open;
 
-              var dte2 = VsServiceProvider.GetService(typeof(DTE)) as DTE2;
+              var dte2 = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
               string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
                 dte2.Solution.FullName : dte2.Solution.FullName
                                           .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));

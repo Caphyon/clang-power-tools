@@ -67,7 +67,7 @@ namespace ClangPowerTools.Commands.BackgroundTidy
 
         #region Get VS edition and version
 
-        var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
+        var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE2));
 
         var vsEdition = dte.Edition;
         mVsVersions.TryGetValue(dte.Version, out string vsVersion);
