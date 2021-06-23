@@ -10,7 +10,6 @@ using Microsoft.VisualStudio.CommandBars;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
@@ -121,7 +120,7 @@ namespace ClangPowerTools
       if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
       {
         var dte2 = dte as DTE2;
-
+        
         mBuildEvents = dte2.Events.BuildEvents;
         mCommandEvents = dte2.Events.CommandEvents;
         mDteEvents = dte2.Events.DTEEvents;
@@ -133,14 +132,14 @@ namespace ClangPowerTools
       await settingsHandler.InitializeAccountSettingsAsync();
 
       string version = SettingsProvider.GeneralSettingsModel.Version;
-      //TODO fix 
+
       ShowToolbar(version);
       UpdateVersion(version); //.SafeFireAndForget();
 
       await mCommandController.InitializeCommandsAsync(this);
 
       //TODO fix
-      RegisterToEvents();
+      //RegisterToEvents();
 
       await base.InitializeAsync(cancellationToken, progress);
     }
@@ -330,6 +329,7 @@ namespace ClangPowerTools
     private void ShowToolbar(string version)
     {
       // Detect the first install 
+      //TODO fix
       //if (!string.IsNullOrWhiteSpace(version)) return;
 
       // Show the toolbar on the first install
