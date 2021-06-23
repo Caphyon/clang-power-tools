@@ -379,61 +379,68 @@
     </VSCTCompile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Executables\clang-format.exe" />
-    <Content Include="Executables\ClangFormatEditor.exe" />
-    <Content Include="Executables\license.txt" />
+    <Content Include="Executables\clang-format.exe">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Executables\ClangFormatEditor.exe">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="psClang\integration-projects\CptIntegrationProjects.sln" />
-    <Content Include="Resources\AccountAvatarIcon.png" />
-    <Content Include="Resources\AccountIcon.png" />
-    <Content Include="Resources\AddInput.png" />
-    <Content Include="Resources\BannerInfo.png" />
-    <Content Include="Resources\BannersError.png" />
-    <Content Include="Resources\bannerWarning.png" />
-    <Content Include="Resources\Browse.png" />
-    <Content Include="Resources\ClangFormatIcon.png" />
-    <Content Include="Resources\ClangPowerToolsIco.ico" />
-    <Content Include="Resources\ClangSplitBackground.png" />
-    <Content Include="Resources\CleanSearchIcon.PNG" />
-    <Content Include="Resources\CloudIcon.png" />
-    <Content Include="Resources\CodeInputIcon.png" />
-    <Content Include="Resources\CompileIcon.png" />
-    <Content Include="Resources\CPTLogo.png" />
-    <Content Include="Resources\CPTLogoManageExtensionVS.png" />
-    <Content Include="Resources\DetectOnFileIcon.png" />
-    <Content Include="Resources\EmptyIcon.png" />
-    <Content Include="Resources\ErrorIcon.png" />
-    <Content Include="Resources\FeedbackIcon.png" />
-    <Content Include="Resources\FileIcon.png" />
-    <Content Include="Resources\GenerateClangFormatFile.png" />
-    <Content Include="Resources\GitHubMark.png" />
-    <Content Include="Resources\iconCommercial.png" />
-    <Content Include="Resources\iconFreeTrial.png" />
-    <Content Include="Resources\iconPersonal.png" />
-    <Content Include="Resources\IgnoreIcon.png" />
-    <Content Include="Resources\InfoIcon.png" />
-    <Content Include="Resources\JsonCompilationDatabase.png" />
+    <Resource Include="Resources\AccountAvatarIcon.png" />
+    <Resource Include="Resources\AccountIcon.png" />
+    <Resource Include="Resources\AddInput.png" />
+    <Resource Include="Resources\BannerInfo.png" />
+    <Resource Include="Resources\BannersError.png" />
+    <Resource Include="Resources\bannerWarning.png" />
+    <Resource Include="Resources\Browse.png" />
+    <Resource Include="Resources\ClangFormatIcon.png" />
+    <Resource Include="Resources\ClangPowerToolsIco.ico" />
+    <Resource Include="Resources\ClangSplitBackground.png" />
+    <Resource Include="Resources\CleanSearchIcon.PNG" />
+    <Resource Include="Resources\CloudIcon.png" />
+    <Resource Include="Resources\CodeInputIcon.png" />
+    <Resource Include="Resources\CompileIcon.png" />
+    <Resource Include="Resources\CPTLogo.png" />
+    <Content Include="Resources\CPTLogoManageExtensionVS.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Resource Include="Resources\DetectOnFileIcon.png" />
+    <Resource Include="Resources\EmptyIcon.png" />
+    <Resource Include="Resources\ErrorIcon.png" />
+    <Resource Include="Resources\FeedbackIcon.png" />
+    <Resource Include="Resources\FileIcon.png" />
+    <Resource Include="Resources\GenerateClangFormatFile.png" />
+    <Resource Include="Resources\GitHubMark.png" />
+    <Resource Include="Resources\iconCommercial.png" />
+    <Resource Include="Resources\iconFreeTrial.png" />
+    <Resource Include="Resources\iconPersonal.png" />
+    <Resource Include="Resources\IgnoreIcon.png" />
+    <Resource Include="Resources\InfoIcon.png" />
+    <Resource Include="Resources\JsonCompilationDatabase.png" />
     <Content Include="Resources\LICENSE.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Resources\LoginBackground.png" />
-    <Content Include="Resources\LogoutIcon.png" />
-    <Content Include="Resources\PreviewWhiteIcon.png" />
-    <Content Include="Resources\ProjectFilesIcon.png" />
-    <Content Include="Resources\ReleaseNotesBackground.png" />
-    <Content Include="Resources\RemoveInputHover.png" />
-    <Content Include="Resources\RemoveInputIdle.png" />
-    <Content Include="Resources\ResetIcon.png" />
-    <Content Include="Resources\RunPowerShellCommandPackage.ico" />
-    <Content Include="Resources\SearchIcon.PNG" />
-    <Content Include="Resources\SettingsBackground.png" />
-    <Content Include="Resources\SettingsIcon.png" />
-    <Content Include="Resources\SettingsLLVM.png" />
-    <Content Include="Resources\StopCommandIcon.png" />
-    <Content Include="Resources\StorageIcon.png" />
-    <Content Include="Resources\TeamIcon.png" />
-    <Content Include="Resources\TidyIcon.png" />
-    <Content Include="Resources\WarningIcon.png" />
+    <Resource Include="Resources\LoginBackground.png" />
+    <Resource Include="Resources\LogoutIcon.png" />
+    <Resource Include="Resources\PreviewWhiteIcon.png" />
+    <Resource Include="Resources\ProjectFilesIcon.png" />
+    <Resource Include="Resources\ReleaseNotesBackground.png" />
+    <Resource Include="Resources\RemoveInputHover.png" />
+    <Resource Include="Resources\RemoveInputIdle.png" />
+    <Resource Include="Resources\ResetIcon.png" />
+    <Content Include="Resources\RunPowerShellCommandPackage.ico">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Resource Include="Resources\SearchIcon.PNG" />
+    <Resource Include="Resources\SettingsBackground.png" />
+    <Resource Include="Resources\SettingsIcon.png" />
+    <Resource Include="Resources\SettingsLLVM.png" />
+    <Resource Include="Resources\StopCommandIcon.png" />
+    <Resource Include="Resources\StorageIcon.png" />
+    <Resource Include="Resources\TeamIcon.png" />
+    <Resource Include="Resources\TidyIcon.png" />
+    <Resource Include="Resources\WarningIcon.png" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="MVVM\Views\AccountView.xaml">
