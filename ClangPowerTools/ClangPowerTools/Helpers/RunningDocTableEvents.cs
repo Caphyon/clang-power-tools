@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.Services;
 using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -121,8 +122,8 @@ namespace ClangPowerTools
       {
         var documentInfo = mRunningDocumentTable.GetDocumentInfo(docCookie);
 
-        if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
-          document = (dte as DTE).Documents.Cast<Document>().FirstOrDefault(doc => doc.FullName == documentInfo.Moniker);
+        if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
+          document = (dte as DTE2).Documents.Cast<Document>().FirstOrDefault(doc => doc.FullName == documentInfo.Moniker);
       }
       catch (Exception)
       {

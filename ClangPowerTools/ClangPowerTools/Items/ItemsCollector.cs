@@ -25,7 +25,7 @@ namespace ClangPowerTools
 
     public ItemsCollector(bool jsonCompilationActive = false)
     {
-      dte2 = (DTE2)VsServiceProvider.GetService(typeof(DTE));
+      dte2 = (DTE2)VsServiceProvider.GetService(typeof(DTE2));
       selectedItems = dte2.ToolWindows.SolutionExplorer.SelectedItems as Array;
       jsonCompilationDbActive = jsonCompilationActive;
     }
@@ -58,7 +58,7 @@ namespace ClangPowerTools
     {
       try
       {
-        DTE dte = (DTE)VsServiceProvider.GetService(typeof(DTE));
+        var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE2));
 
         if (dte == null)
           return;

@@ -72,7 +72,7 @@ namespace ClangPowerTools.Script
       mScript += $" {ScriptConstants.kVsVersion} {mVsVersion} {ScriptConstants.kVsEdition} {mVsEdition}";
 
       // Append the solution path
-      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+      if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
         mScript += $" {ScriptConstants.kDirectory} ''{(dte as DTE2).Solution.FullName}''";
     }
 

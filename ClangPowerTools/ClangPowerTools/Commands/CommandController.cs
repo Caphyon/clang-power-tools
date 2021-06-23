@@ -60,7 +60,7 @@ namespace ClangPowerTools
 
     public CommandController(AsyncPackage aAsyncPackage)
     {
-      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+      if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
       {
         var dte2 = (DTE2)dte;
         mCommand = (Commands2)dte2.Commands;
@@ -506,7 +506,7 @@ namespace ClangPowerTools
         return;
       }
 
-      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte) && !(dte as DTE2).Solution.IsOpen)
+      if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte) && !(dte as DTE2).Solution.IsOpen)
       {
         command.Visible = command.Enabled = false;
       }
@@ -552,7 +552,7 @@ namespace ClangPowerTools
         return;
 
       var exitCode = int.MaxValue;
-      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+      if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
         exitCode = (dte as DTE2).Solution.SolutionBuild.LastBuildInfo;
 
       // VS compile detected errors and there is not necessary to run clang compile

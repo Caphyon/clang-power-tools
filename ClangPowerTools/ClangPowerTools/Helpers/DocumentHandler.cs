@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.Services;
 using EnvDTE;
+using EnvDTE80;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,7 +16,7 @@ namespace ClangPowerTools
     /// <returns>Active documents</returns>
     public static Documents GetActiveDocuments()
     {
-      return VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE).Documents : null;
+      return VsServiceProvider.TryGetService(typeof(DTE2), out object dte) ? (dte as DTE2).Documents : null;
     }
 
     /// <summary>
@@ -38,7 +39,7 @@ namespace ClangPowerTools
     /// <returns>Active document</returns>
     public static Document GetActiveDocument()
     {
-      return VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE).ActiveDocument : null;
+      return VsServiceProvider.TryGetService(typeof(DTE2), out object dte) ? (dte as DTE2).ActiveDocument : null;
     }
 
     /// <summary>
@@ -47,7 +48,7 @@ namespace ClangPowerTools
     /// <returns></returns>
     public static SelectedItems GetSelectedItems()
     {
-      DTE vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE), out object dte) ? (dte as DTE) : null;
+      var vsServiceProvider = VsServiceProvider.TryGetService(typeof(DTE2), out object dte) ? (dte as DTE2) : null;
 
       return vsServiceProvider.SelectedItems;
     }

@@ -88,7 +88,7 @@ namespace ClangPowerTools
         : base(aPackage, aGuid, aId)
     {
 
-      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+      if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
       {
         var dte2 = dte as DTE2;
         VsEdition = dte2.Edition;
@@ -154,7 +154,7 @@ namespace ClangPowerTools
 
       DocumentHandler.SaveActiveDocuments();
 
-      if (!VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+      if (!VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
         return;
 
       AutomationUtil.SaveDirtyProjects((dte as DTE2).Solution);

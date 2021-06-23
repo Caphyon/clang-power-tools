@@ -10,7 +10,7 @@ namespace ClangPowerTools
 
     public static ProjectItem GetProjectItemOfActiveWindow()
     {
-      if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+      if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
       {
         var activeWindow = (dte as DTE2).ActiveWindow;
         activeWindow.Activate();

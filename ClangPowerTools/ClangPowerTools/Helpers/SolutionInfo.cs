@@ -59,7 +59,7 @@ namespace ClangPowerTools.Helpers
 
     public static bool ContainsCppProject()
     {
-      DTE2 dte = (DTE2)VsServiceProvider.GetService(typeof(DTE));
+      DTE2 dte = (DTE2)VsServiceProvider.GetService(typeof(DTE2));
       Solution solution = dte.Solution;
 
       if (solution == null)

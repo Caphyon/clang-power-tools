@@ -88,7 +88,7 @@ namespace ClangPowerTools.Output
       UIUpdater.InvokeAsync(() =>
       {
         outputWindow.Pane.Activate();
-        if (VsServiceProvider.TryGetService(typeof(DTE), out object dte))
+        if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
         {
           (dte as DTE2).ExecuteCommand("View.Output", string.Empty);
         }
