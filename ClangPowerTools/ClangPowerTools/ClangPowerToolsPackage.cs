@@ -99,6 +99,7 @@ namespace ClangPowerTools
 
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
 
+      //TODO output window crash
       mOutputWindowController = new OutputWindowController();
       mOutputWindowController.Initialize(this, vsOutputWindow);
 
@@ -139,7 +140,7 @@ namespace ClangPowerTools
       await mCommandController.InitializeCommandsAsync(this);
 
       //TODO fix
-      //RegisterToEvents();
+      await RegisterToEventsAsync();
 
       await base.InitializeAsync(cancellationToken, progress);
     }
@@ -345,7 +346,7 @@ namespace ClangPowerTools
     private async Task RegisterVsServicesAsync()
     {
       // Get DTE service async 
-      var dte = await GetServiceAsync(typeof(DTE)) as DTE2;
+      var dte = await GetServiceAsync(typeof(_DTE)) as DTE2;
       VsServiceProvider.Register(typeof(DTE2), dte);
 
       // Get VS Output Window service async
@@ -370,10 +371,13 @@ namespace ClangPowerTools
     }
 
 
-    private void RegisterToEvents()
+    private async Task RegisterToEventsAsync()
     {
-      RegisterToCPTEvents();
-      //RegisterToVsEvents();
+      await Task.Run(() =>
+      {
+        RegisterToCPTEvents();
+        RegisterToVsEvents();
+      });
     }
 
     private void RegisterToCPTEvents()
