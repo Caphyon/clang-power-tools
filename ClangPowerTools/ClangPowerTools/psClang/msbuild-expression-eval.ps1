@@ -85,6 +85,25 @@ function GetRegValue([Parameter(Mandatory = $true)][string] $regPath)
     }
 }
 
+function Initialize-ExpressionVariables([string] $expression)
+{
+    # expressions that call member functions of unintialized variables will throw
+    # unless we initialize those variables
+    $regexMatches = [regex]::matches($expression, '\$(\w+)\.')
+    if ($regexMatches.Count -gt 0)
+    {
+        foreach ($regexMatch in $regexMatches)
+        {
+            $varName = $regexMatch.Groups[1].Value
+            if (! ( Get-Variable $varName  -ErrorAction 'Ignore') )
+            {
+                Write-Debug "Initializing expression variable $varName to empty value"
+                Set-Var -name $varName -value "" 
+            }
+        }
+    }
+}
+
 function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
 {
     # A lot of MSBuild expressions refer uninitialized variables
@@ -105,6 +124,7 @@ function Evaluate-MSBuildExpression([string] $expression, [switch] $isCondition)
 
     Write-Debug "Intermediate PS expression: $expression"
 
+    Initialize-ExpressionVariables $expression
     [string] $res = ""
 
     try
