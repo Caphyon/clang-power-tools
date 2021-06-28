@@ -314,7 +314,10 @@
     <Compile Include="TextOperationsInterfaces\ITextFormatter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="clang-build.ps1" />
+    <Content Include="clang-build.ps1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="cpt.config" />
     <None Include="psClang\get-header-references.ps1" />
     <None Include="psClang\integration-project.tests.ps1" />
