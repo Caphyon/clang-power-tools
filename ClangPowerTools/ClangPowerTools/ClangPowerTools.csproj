@@ -319,22 +319,30 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="cpt.config" />
-    <None Include="psClang\get-header-references.ps1" />
-    <None Include="psClang\integration-project.tests.ps1" />
-    <None Include="psClang\integration-projects\itemgroups\test.vcxproj" />
-    <None Include="psClang\io.ps1" />
-    <None Include="psClang\io.tests.ps1" />
-    <None Include="psClang\itemdefinition-context.ps1" />
-    <None Include="psClang\jsondb-export.ps1" />
-    <None Include="psClang\msbuild-expression-eval.ps1" />
-    <None Include="psClang\msbuild-expression-eval.tests.ps1" />
-    <None Include="psClang\msbuild-project-data.ps1" />
-    <None Include="psClang\msbuild-project-data.tests.ps1" />
-    <None Include="psClang\msbuild-project-load.ps1" />
-    <None Include="psClang\msbuild-project-load.tests.ps1" />
-    <None Include="psClang\visualstudio-detection.ps1" />
-    <None Include="psClang\visualstudio-detection.tests.ps1" />
-    <None Include="psClang\~advinst.tests.ps1" />
+    <Content Include="psClang\get-header-references.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="psClang\io.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="psClang\itemdefinition-context.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="psClang\jsondb-export.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="psClang\msbuild-expression-eval.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="psClang\msbuild-project-data.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="psClang\msbuild-project-load.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="psClang\visualstudio-detection.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
@@ -397,7 +405,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <VSIXSubPath>.</VSIXSubPath>
     </Content>
-    <Content Include="psClang\integration-projects\CptIntegrationProjects.sln" />
     <Resource Include="Resources\AccountAvatarIcon.png" />
     <Resource Include="Resources\AccountIcon.png" />
     <Resource Include="Resources\AddInput.png" />
