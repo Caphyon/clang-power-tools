@@ -1007,6 +1007,10 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     {
       $desiredVisualStudioVer = "2019";
     }
+    elseif ($toolsetVersion -eq 143)
+    {
+      $desiredVisualStudioVer = "2022";
+    }
 
     [string] $desiredVisualStudioVerNumber = (Get-VisualStudio-VersionNumber $desiredVisualStudioVer)
     if ($VisualStudioVersion -ne $desiredVisualStudioVerNumber)
