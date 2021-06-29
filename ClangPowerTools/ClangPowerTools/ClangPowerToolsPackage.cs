@@ -99,7 +99,6 @@ namespace ClangPowerTools
 
       var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
 
-      //TODO output window crash
       mOutputWindowController = new OutputWindowController();
       mOutputWindowController.Initialize(this, vsOutputWindow);
 
@@ -139,7 +138,6 @@ namespace ClangPowerTools
 
       await mCommandController.InitializeCommandsAsync(this);
 
-      //TODO fix
       await RegisterToEventsAsync();
 
       await base.InitializeAsync(cancellationToken, progress);
@@ -330,8 +328,7 @@ namespace ClangPowerTools
     private void ShowToolbar(string version)
     {
       // Detect the first install 
-      //TODO fix
-      //if (!string.IsNullOrWhiteSpace(version)) return;
+      if (!string.IsNullOrWhiteSpace(version)) return;
 
       // Show the toolbar on the first install
       if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
