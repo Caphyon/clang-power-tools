@@ -453,7 +453,7 @@ namespace ClangPowerTools
 
         return cmd.Name;
       }
-      catch (Exception e)
+      catch (Exception)
       {
         //MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
