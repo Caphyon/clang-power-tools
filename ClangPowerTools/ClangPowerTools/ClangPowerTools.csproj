@@ -103,13 +103,13 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.0-previews-1-31410-273" ExcludeAssets="runtime">
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.10.31321.278" ExcludeAssets="runtime">
       <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Shell.Framework">
-      <Version>17.0.0-previews-1-31410-258</Version>
+      <Version>16.10.31321.278</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.0.3155-preview3">
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.10.1055">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
@@ -162,16 +162,20 @@
     <Resource Include="Resources\bannerWarning.png" />
     <Resource Include="Resources\Browse.png" />
     <Resource Include="Resources\ClangFormatIcon.png" />
-    <Resource Include="Resources\ClangPowerToolsIco.ico" />
+    <Resource Include="Resources\ClangPowerToolsIco.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\ClangSplitBackground.png" />
     <Resource Include="Resources\CleanSearchIcon.PNG" />
     <Resource Include="Resources\CloudIcon.png" />
     <Resource Include="Resources\CodeInputIcon.png" />
     <Resource Include="Resources\CompileIcon.png" />
     <Resource Include="Resources\CPTLogo.png" />
-    <Resource Include="Resources\CPTLogoManageExtensionVS.png" />
+    <Content Include="Resources\CPTLogoManageExtensionVS.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Resource Include="Resources\DetectOnFileIcon.png" />
-    <Resource Include="Resources\EmptyIcon.png" />
+    <Content Include="Resources\EmptyIcon.png" />
     <Resource Include="Resources\ErrorIcon.png" />
     <Resource Include="Resources\FeedbackIcon.png" />
     <Resource Include="Resources\FileIcon.png" />
@@ -195,7 +199,9 @@
     <Resource Include="Resources\RemoveInputHover.png" />
     <Resource Include="Resources\RemoveInputIdle.png" />
     <Resource Include="Resources\ResetIcon.png" />
-    <Resource Include="Resources\RunPowerShellCommandPackage.ico" />
+    <Content Include="Resources\RunPowerShellCommandPackage.ico">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Resource Include="Resources\SearchIcon.PNG" />
     <Resource Include="Resources\SettingsBackground.png" />
     <Resource Include="Resources\SettingsIcon.png" />
