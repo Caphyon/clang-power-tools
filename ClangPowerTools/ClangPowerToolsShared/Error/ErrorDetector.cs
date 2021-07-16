@@ -1,4 +1,5 @@
-﻿using ClangPowerTools.Properties;
+﻿using ClangPowerTools.MVVM.Constants;
+using ClangPowerTools.Properties;
 using ClangPowerTools.TextOperationsInterfaces;
 using System.Text.RegularExpressions;
 
@@ -31,7 +32,7 @@ namespace ClangPowerTools
 
     public bool HasEncodingError(string message)
     {
-      return message.Contains(Resource.EncodingError);
+      return message.Contains(ResourceConstants.EncodingError);
     }
     #endregion
 

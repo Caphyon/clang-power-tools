@@ -1,0 +1,183 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="17.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MinimumVisualStudioVersion>17.0</MinimumVisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectTypeGuids>{82b43b9b-a64c-4715-b499-d71e9ca2bd60};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <ProjectGuid>{655738C7-B212-44B8-A3F9-AE5E848F637E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ClangPowerTools</RootNamespace>
+    <AssemblyName>ClangPowerTools</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <GeneratePkgDefFile>true</GeneratePkgDefFile>
+    <UseCodebase>true</UseCodebase>
+    <IncludeAssemblyInVSIXContainer>true</IncludeAssemblyInVSIXContainer>
+    <IncludeDebugSymbolsInVSIXContainer>false</IncludeDebugSymbolsInVSIXContainer>
+    <IncludeDebugSymbolsInLocalVSIXDeployment>false</IncludeDebugSymbolsInLocalVSIXDeployment>
+    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
+    <StartAction>Program</StartAction>
+    <StartProgram Condition="'$(DevEnvDir)' != ''">$(DevEnvDir)devenv.exe</StartProgram>
+    <StartArguments>/rootsuffix Exp</StartArguments>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpt.config" />
+    <None Include="source.extension.vsixmanifest">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.0-previews-1-31410-273" ExcludeAssets="runtime">
+      <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Shell.Framework">
+      <Version>17.0.0-previews-1-31410-258</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.0.3155-preview3">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="System.ComponentModel.Annotations">
+      <Version>5.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Linq">
+      <Version>4.3.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Management">
+      <Version>5.0.0</Version>
+    </PackageReference>
+    <PackageReference Include="System.Runtime">
+      <Version>4.3.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Threading">
+      <Version>4.3.0</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <VSCTCompile Include="ClangPowerTools.vsct">
+      <ResourceName>Menus.ctmenu</ResourceName>
+      <SubType>Designer</SubType>
+    </VSCTCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="VSPackage.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Resources\AccountAvatarIcon.png" />
+    <Content Include="Resources\AccountIcon.png" />
+    <Content Include="Resources\AddInput.png" />
+    <Content Include="Resources\BannerInfo.png" />
+    <Content Include="Resources\BannersError.png" />
+    <Content Include="Resources\bannerWarning.png" />
+    <Content Include="Resources\Browse.png" />
+    <Content Include="Resources\ClangFormatIcon.png" />
+    <Content Include="Resources\ClangPowerToolsIco.ico" />
+    <Content Include="Resources\ClangSplitBackground.png" />
+    <Content Include="Resources\CleanSearchIcon.PNG" />
+    <Content Include="Resources\CloudIcon.png" />
+    <Content Include="Resources\CodeInputIcon.png" />
+    <Content Include="Resources\CompileIcon.png" />
+    <Content Include="Resources\CPTLogo.png" />
+    <Content Include="Resources\CPTLogoManageExtensionVS.png" />
+    <Content Include="Resources\DetectOnFileIcon.png" />
+    <Content Include="Resources\EmptyIcon.png" />
+    <Content Include="Resources\ErrorIcon.png" />
+    <Content Include="Resources\FeedbackIcon.png" />
+    <Content Include="Resources\FileIcon.png" />
+    <Content Include="Resources\GenerateClangFormatFile.png" />
+    <Content Include="Resources\GitHubMark.png" />
+    <Content Include="Resources\iconCommercial.png" />
+    <Content Include="Resources\iconFreeTrial.png" />
+    <Content Include="Resources\iconPersonal.png" />
+    <Content Include="Resources\IgnoreIcon.png" />
+    <Content Include="Resources\InfoIcon.png" />
+    <Content Include="Resources\JsonCompilationDatabase.png" />
+    <Content Include="Resources\LICENSE.txt">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Resources\LoginBackground.png" />
+    <Content Include="Resources\LogoutIcon.png" />
+    <Content Include="Resources\PreviewWhiteIcon.png" />
+    <Content Include="Resources\ProjectFilesIcon.png" />
+    <Content Include="Resources\ReleaseNotesBackground.png" />
+    <Content Include="Resources\RemoveInputHover.png" />
+    <Content Include="Resources\RemoveInputIdle.png" />
+    <Content Include="Resources\ResetIcon.png" />
+    <Content Include="Resources\RunPowerShellCommandPackage.ico" />
+    <Content Include="Resources\SearchIcon.PNG" />
+    <Content Include="Resources\SettingsBackground.png" />
+    <Content Include="Resources\SettingsIcon.png" />
+    <Content Include="Resources\SettingsLLVM.png" />
+    <Content Include="Resources\StopCommandIcon.png" />
+    <Content Include="Resources\StorageIcon.png" />
+    <Content Include="Resources\TeamIcon.png" />
+    <Content Include="Resources\TidyIcon.png" />
+    <Content Include="Resources\WarningIcon.png" />
+  </ItemGroup>
+  <Import Project="..\ClangPowerToolsShared\ClangPowerToolsShared.projitems" Label="Shared" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

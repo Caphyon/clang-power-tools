@@ -1,6 +1,6 @@
 ﻿namespace ClangPowerTools.MVVM.Constants
 {
-  class LlvmConstants
+  public static class LlvmConstants
   {
     public const string InstallExeParameters = "/S /D=";
     public const string UninstallExeParameters = "/S";

@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.Constants;
 using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.Properties;
 using System;
@@ -42,7 +43,7 @@ namespace ClangPowerTools
       {
         if (checkAllItems == value) { return; }
         checkAllItems = value;
-        SelectAllTooltipText = value ? Resource.DeselectAllTooltipText : Resource.SelectAllTooltipText;
+        SelectAllTooltipText = value ? ResourceConstants.DeselectAllTooltipText : ResourceConstants.SelectAllTooltipText;
         foreach (var file in FilesNotEncodedInUTF8)
         {
           file.IsChecked = value;
@@ -82,7 +83,7 @@ namespace ClangPowerTools
 
     private readonly List<string> fileNames = new List<string>();
 
-    private string selectAllTooltipText = Resource.DeselectAllTooltipText;
+    private string selectAllTooltipText = ResourceConstants.DeselectAllTooltipText;
 
     private bool checkAllItems = true;
     #endregion

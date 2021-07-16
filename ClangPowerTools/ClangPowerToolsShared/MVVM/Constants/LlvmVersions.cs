@@ -2,7 +2,7 @@
 
 namespace ClangPowerTools
 {
-  public class LlvmVersions
+  public static class LlvmVersions
   {
     public static List<string> Versions { get; } = new List<string>
     {
