@@ -79,12 +79,14 @@ namespace ClangPowerTools.Commands
 
         var settingsModel = SettingsProvider.CompilerSettingsModel;
         AddItemsToIgnore(projectsToIgnore, settingsModel, "ProjectsToIgnore");
+
         if (projectsToIgnore.Any() == false)
         {
           List<string> filesToIgnore = itemsCollector.GetFilesToIgnore();
           AddItemsToIgnore(filesToIgnore, settingsModel, "FilesToIgnore");
-          settingsHandler.SaveSettings();
         }
+
+        settingsHandler.SaveSettings();
       });
     }
 

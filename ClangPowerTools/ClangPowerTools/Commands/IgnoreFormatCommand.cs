@@ -74,8 +74,8 @@ namespace ClangPowerTools.Commands
     {
       _ = Task.Run(() =>
       {
-        ItemsCollector itemsCollector = new ItemsCollector();
-        SettingsHandler settingsHandler = new SettingsHandler();
+        var itemsCollector = new ItemsCollector();
+        var settingsHandler = new SettingsHandler();
 
         var settings = SettingsProvider.FormatSettingsModel;
         List<string> documentsToIgnore = itemsCollector.GetFilesToIgnore();
