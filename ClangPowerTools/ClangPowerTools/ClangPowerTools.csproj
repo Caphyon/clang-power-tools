@@ -7,6 +7,12 @@
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -59,7 +65,6 @@
     <Content Include="clang-build.ps1">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <None Include="cpt.config" />
     <Content Include="psClang\get-header-references.ps1">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -84,6 +89,7 @@
     <Content Include="psClang\visualstudio-detection.ps1">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <None Include="Key.snk" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
