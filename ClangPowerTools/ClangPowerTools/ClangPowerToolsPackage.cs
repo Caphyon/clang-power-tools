@@ -39,7 +39,6 @@ namespace ClangPowerTools
   [ProvideMenuResource("Menus.ctmenu", 1)]
   [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)]
   [ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string, PackageAutoLoadFlags.BackgroundLoad)]
-  [ProvideMenuResource("Menus.ctmenu", 1)]
   [Guid(PackageGuidString)]
   public sealed class RunClangPowerToolsPackage : AsyncPackage, IVsSolutionEvents, IVsSolutionLoadEvents, IVsSolutionEvents7
   {
