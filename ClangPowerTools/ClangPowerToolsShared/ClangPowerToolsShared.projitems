@@ -271,25 +271,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)TextOperationsInterfaces\ITextFormatter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="$(MSBuildThisFileDirectory)clang-build.ps1">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="$(MSBuildThisFileDirectory)Executables\clang-format.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="$(MSBuildThisFileDirectory)Executables\ClangFormatEditor.exe">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="$(MSBuildThisFileDirectory)psClang\get-header-references.ps1" />
-    <Content Include="$(MSBuildThisFileDirectory)psClang\io.ps1" />
-    <Content Include="$(MSBuildThisFileDirectory)psClang\itemdefinition-context.ps1" />
-    <Content Include="$(MSBuildThisFileDirectory)psClang\jsondb-export.ps1" />
-    <Content Include="$(MSBuildThisFileDirectory)psClang\msbuild-expression-eval.ps1" />
-    <Content Include="$(MSBuildThisFileDirectory)psClang\msbuild-project-data.ps1" />
-    <Content Include="$(MSBuildThisFileDirectory)psClang\msbuild-project-load.ps1" />
-    <Content Include="$(MSBuildThisFileDirectory)psClang\visualstudio-detection.ps1" />
-  </ItemGroup>
-  <ItemGroup>
     <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\AccountView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
