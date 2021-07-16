@@ -160,16 +160,20 @@
     <Resource Include="Resources\bannerWarning.png" />
     <Resource Include="Resources\Browse.png" />
     <Resource Include="Resources\ClangFormatIcon.png" />
-    <Resource Include="Resources\ClangPowerToolsIco.ico" />
+    <Resource Include="Resources\ClangPowerToolsIco.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\ClangSplitBackground.png" />
     <Resource Include="Resources\CleanSearchIcon.PNG" />
     <Resource Include="Resources\CloudIcon.png" />
     <Resource Include="Resources\CodeInputIcon.png" />
     <Resource Include="Resources\CompileIcon.png" />
     <Resource Include="Resources\CPTLogo.png" />
-    <Resource Include="Resources\CPTLogoManageExtensionVS.png" />
+    <Content Include="Resources\CPTLogoManageExtensionVS.png">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Resource Include="Resources\DetectOnFileIcon.png" />
-    <Resource Include="Resources\EmptyIcon.png" />
+    <Content Include="Resources\EmptyIcon.png" />
     <Resource Include="Resources\ErrorIcon.png" />
     <Resource Include="Resources\FeedbackIcon.png" />
     <Resource Include="Resources\FileIcon.png" />
@@ -193,7 +197,9 @@
     <Resource Include="Resources\RemoveInputHover.png" />
     <Resource Include="Resources\RemoveInputIdle.png" />
     <Resource Include="Resources\ResetIcon.png" />
-    <Resource Include="Resources\RunPowerShellCommandPackage.ico" />
+    <Content Include="Resources\RunPowerShellCommandPackage.ico">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Resource Include="Resources\SearchIcon.PNG" />
     <Resource Include="Resources\SettingsBackground.png" />
     <Resource Include="Resources\SettingsIcon.png" />
