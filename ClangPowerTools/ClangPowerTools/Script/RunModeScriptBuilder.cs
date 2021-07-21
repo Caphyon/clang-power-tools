@@ -57,7 +57,7 @@ namespace ClangPowerTools.Script
       var assemblyPath = Assembly.GetExecutingAssembly().Location;
       var scriptDirectory = assemblyPath.Substring(0, assemblyPath.LastIndexOf('\\'));
 
-      return Path.Combine(scriptDirectory, ScriptConstants.kScriptName);
+      return Path.Combine(scriptDirectory, ScriptConstants.ToolingV1, ScriptConstants.kScriptName);
     }
 
 

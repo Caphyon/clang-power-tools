@@ -351,6 +351,35 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>.</VSIXSubPath>
     </Content>
+    <Content Include="Tooling\v1\psClang\integration-projects\CptIntegrationProjects.sln" />
+    <Content Include="Tooling\v1\clang-build.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Tooling\v1\psClang\get-header-references.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <None Include="Tooling\v1\psClang\integration-projects\itemgroups\test.vcxproj" />
+    <Content Include="Tooling\v1\psClang\io.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Tooling\v1\psClang\itemdefinition-context.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Tooling\v1\psClang\jsondb-export.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Tooling\v1\psClang\msbuild-expression-eval.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Tooling\v1\psClang\msbuild-project-data.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Tooling\v1\psClang\msbuild-project-load.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="Tooling\v1\psClang\visualstudio-detection.ps1">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Resource Include="Resources\CloudIcon.png" />
     <Resource Include="Resources\StorageIcon.png" />
     <Resource Include="Resources\TeamIcon.png" />
@@ -409,10 +438,6 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="app.config" />
-    <Content Include="clang-build.ps1">
-      <IncludeInVSIX>true</IncludeInVSIX>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <None Include="Key.snk" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
