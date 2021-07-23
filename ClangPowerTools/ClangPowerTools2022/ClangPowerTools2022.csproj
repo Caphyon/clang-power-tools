@@ -108,6 +108,16 @@
     <Resource Include="..\ClangPowerToolsShared\Resources\CPTLogo.png">
       <Link>Resources\CPTLogo.png</Link>
     </Resource>
+    <Content Include="..\ClangPowerToolsShared\Executables\clang-format.exe">
+      <Link>Executables\clang-format.exe</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <VSIXSubPath>.</VSIXSubPath>
+    </Content>
+    <Content Include="..\ClangPowerToolsShared\Executables\ClangFormatEditor.exe">
+      <Link>Executables\ClangFormatEditor.exe</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+      <VSIXSubPath>.</VSIXSubPath>
+    </Content>
     <Content Include="..\ClangPowerToolsShared\Resources\CPTLogoManageExtensionVS.png">
       <Link>Resources\CPTLogoManageExtensionVS.png</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -311,16 +321,6 @@
     <EmbeddedResource Include="VSPackage.resx">
       <SubType>Designer</SubType>
     </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Executables\clang-format.exe">
-      <IncludeInVSIX>true</IncludeInVSIX>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Executables\ClangFormatEditor.exe">
-      <IncludeInVSIX>true</IncludeInVSIX>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="..\ClangPowerToolsShared\ClangPowerToolsShared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
