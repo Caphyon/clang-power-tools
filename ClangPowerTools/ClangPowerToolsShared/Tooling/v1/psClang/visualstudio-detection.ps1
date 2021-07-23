@@ -20,6 +20,7 @@ Function Convert-PlatformToolset2VsVer([Parameter(Mandatory = $true)][string] $t
     {
         "141" { "2017" }
         "142" { "2019" }
+        "143" { "2022" }
     }
 }
 
@@ -75,6 +76,7 @@ Function Get-VsWhere-VisualStudio-Version()
         "2015"  { return "[14.0, 15)" }
         "2017"  { return "[15.0, 16)" }
         "2019"  { return "[16.0, 17)" }
+        "2022"  { return "[17.0, 18)" }
         default { throw "Unsupported Visual Studio version: $cptVisualStudioVersion" }
     }
 }
@@ -87,6 +89,7 @@ Function Get-VisualStudio-VersionNumber([Parameter(Mandatory = $true)][string]  
         "2015"  { return "14.0" }
         "2017"  { return "15.0" }
         "2019"  { return "16.0" }
+        "2022"  { return "17.0" }
         default { throw "Unsupported Visual Studio version: $vsYearVersion" }
     }
 }
@@ -95,11 +98,20 @@ Function Get-VisualStudio-VersionNumber([Parameter(Mandatory = $true)][string]  
 # Returns default instalation path of the current VS version/toolset.
 Function Get-VisualStudio-CompatiblityToolset-InstallLocation()
 {
+     if ( ([int] $global:cptVisualStudioVersion) -le 2022)
+     {
+        return "${Env:ProgramFiles}\Microsoft Visual Studio " + (Get-VisualStudio-VersionNumber $global:cptVisualStudioVersion)
+     }
+       
     return "${Env:ProgramFiles(x86)}\Microsoft Visual Studio " + (Get-VisualStudio-VersionNumber $global:cptVisualStudioVersion)
 }
 
 Function Get-VisualStudio-RegistryLocation()
 {
+     if ( ([int] $global:cptVisualStudioVersion) -le 2022)
+     {
+        return "HKLM:SOFTWARE\Microsoft\VisualStudio\" + (Get-VisualStudio-VersionNumber $global:cptVisualStudioVersion)
+     }
     return "HKLM:SOFTWARE\Wow6432Node\Microsoft\VisualStudio\" + (Get-VisualStudio-VersionNumber $global:cptVisualStudioVersion)
 }
 

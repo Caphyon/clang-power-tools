@@ -1,6 +1,9 @@
 # REQUIRES io.ps1 to be included
 
 [string[]] $buildUtilPaths = @(
+    ,"${Env:ProgramFiles}\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\Microsoft.Build.Utilities.Core.dll"
+    ,"${Env:ProgramFiles}\Microsoft Visual Studio\2022\Professional\MSBuild\Current\Bin\Microsoft.Build.Utilities.Core.dll"
+    ,"${Env:ProgramFiles}\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\Microsoft.Build.Utilities.Core.dll"
     ,"${Env:ProgramFiles(x86)}\Microsoft Visual Studio\2019\Community\MSBuild\Current\Bin\Microsoft.Build.Utilities.Core.dll"
     ,"${Env:ProgramFiles(x86)}\Microsoft Visual Studio\2019\Professional\MSBuild\Current\Bin\Microsoft.Build.Utilities.Core.dll"
     ,"${Env:ProgramFiles(x86)}\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\Microsoft.Build.Utilities.Core.dll"

@@ -222,39 +222,39 @@
     <Resource Include="..\ClangPowerToolsShared\Resources\WarningIcon.png">
       <Link>Resources\WarningIcon.png</Link>
     </Resource>
-    <Content Include="..\clangpowertoolsshared\tooling\v1\clang-build.ps1">
+    <Content Include="..\ClangPowerToolsShared\Tooling\v1\clang-build.ps1">
       <Link>Tooling\v1\clang-build.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="..\clangpowertoolsshared\tooling\v1\psclang\get-header-references.ps1">
+    <Content Include="..\ClangPowerToolsShared\Tooling\v1\psclang\get-header-references.ps1">
       <Link>Tooling\v1\psClang\get-header-references.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="..\clangpowertoolsshared\tooling\v1\psclang\io.ps1">
+    <Content Include="..\ClangPowerToolsShared\Tooling\v1\psclang\io.ps1">
       <Link>Tooling\v1\psClang\io.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="..\clangpowertoolsshared\tooling\v1\psclang\itemdefinition-context.ps1">
+    <Content Include="..\ClangPowerToolsShared\Tooling\v1\psclang\itemdefinition-context.ps1">
       <Link>Tooling\v1\psClang\itemdefinition-context.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="..\clangpowertoolsshared\tooling\v1\psclang\jsondb-export.ps1">
+    <Content Include="..\ClangPowerToolsShared\Tooling\v1\psclang\jsondb-export.ps1">
       <Link>Tooling\v1\psClang\jsondb-export.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="..\clangpowertoolsshared\tooling\v1\psclang\msbuild-expression-eval.ps1">
+    <Content Include="..\ClangPowerToolsShared\Tooling\v1\psclang\msbuild-expression-eval.ps1">
       <Link>Tooling\v1\psClang\msbuild-expression-eval.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="..\clangpowertoolsshared\tooling\v1\psclang\msbuild-project-data.ps1">
+    <Content Include="..\ClangPowerToolsShared\Tooling\v1\psclang\msbuild-project-data.ps1">
       <Link>Tooling\v1\psClang\msbuild-project-data.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="..\clangpowertoolsshared\tooling\v1\psclang\msbuild-project-load.ps1">
+    <Content Include="..\ClangPowerToolsShared\Tooling\v1\psclang\msbuild-project-load.ps1">
       <Link>Tooling\v1\psClang\msbuild-project-load.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="..\clangpowertoolsshared\tooling\v1\psclang\visualstudio-detection.ps1">
+    <Content Include="..\ClangPowerToolsShared\Tooling\v1\psclang\visualstudio-detection.ps1">
       <Link>Tooling\v1\psClang\visualstudio-detection.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
