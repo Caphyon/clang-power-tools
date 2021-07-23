@@ -62,6 +62,156 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="..\ClangPowerToolsShared\Resources\AccountAvatarIcon.png">
+      <Link>Resources\AccountAvatarIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\AccountIcon.png">
+      <Link>Resources\AccountIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\AddInput.png">
+      <Link>Resources\AddInput.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\BannerInfo.png">
+      <Link>Resources\BannerInfo.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\BannersError.png">
+      <Link>Resources\BannersError.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\bannerWarning.png">
+      <Link>Resources\bannerWarning.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\Browse.png">
+      <Link>Resources\Browse.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\ClangFormatIcon.png">
+      <Link>Resources\ClangFormatIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\ClangPowerToolsIco.ico">
+      <Link>Resources\ClangPowerToolsIco.ico</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\ClangSplitBackground.png">
+      <Link>Resources\ClangSplitBackground.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\CleanSearchIcon.PNG">
+      <Link>Resources\CleanSearchIcon.PNG</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\CloudIcon.png">
+      <Link>Resources\CloudIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\CodeInputIcon.png">
+      <Link>Resources\CodeInputIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\CompileIcon.png">
+      <Link>Resources\CompileIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\CPTLogo.png">
+      <Link>Resources\CPTLogo.png</Link>
+    </Resource>
+    <Content Include="..\ClangPowerToolsShared\Resources\CPTLogoManageExtensionVS.png">
+      <Link>Resources\CPTLogoManageExtensionVS.png</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Resource Include="..\ClangPowerToolsShared\Resources\DetectOnFileIcon.png">
+      <Link>Resources\DetectOnFileIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\EmptyIcon.png">
+      <Link>Resources\EmptyIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\ErrorIcon.png">
+      <Link>Resources\ErrorIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\FeedbackIcon.png">
+      <Link>Resources\FeedbackIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\FileIcon.png">
+      <Link>Resources\FileIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\GenerateClangFormatFile.png">
+      <Link>Resources\GenerateClangFormatFile.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\GitHubMark.png">
+      <Link>Resources\GitHubMark.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\iconCommercial.png">
+      <Link>Resources\iconCommercial.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\iconFreeTrial.png">
+      <Link>Resources\iconFreeTrial.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\iconPersonal.png">
+      <Link>Resources\iconPersonal.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\IgnoreIcon.png">
+      <Link>Resources\IgnoreIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\InfoIcon.png">
+      <Link>Resources\InfoIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\JsonCompilationDatabase.png">
+      <Link>Resources\JsonCompilationDatabase.png</Link>
+    </Resource>
+    <Content Include="..\ClangPowerToolsShared\Resources\LICENSE.txt">
+      <Link>Resources\LICENSE.txt</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Resource Include="..\ClangPowerToolsShared\Resources\LoginBackground.png">
+      <Link>Resources\LoginBackground.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\LogoutIcon.png">
+      <Link>Resources\LogoutIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\PreviewWhiteIcon.png">
+      <Link>Resources\PreviewWhiteIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\ProjectFilesIcon.png">
+      <Link>Resources\ProjectFilesIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\ReleaseNotesBackground.png">
+      <Link>Resources\ReleaseNotesBackground.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\RemoveInputHover.png">
+      <Link>Resources\RemoveInputHover.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\RemoveInputIdle.png">
+      <Link>Resources\RemoveInputIdle.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\ResetIcon.png">
+      <Link>Resources\ResetIcon.png</Link>
+    </Resource>
+    <Content Include="..\ClangPowerToolsShared\Resources\RunPowerShellCommandPackage.ico">
+      <Link>Resources\RunPowerShellCommandPackage.ico</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Resource Include="..\ClangPowerToolsShared\Resources\SearchIcon.PNG">
+      <Link>Resources\SearchIcon.PNG</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\SettingsBackground.png">
+      <Link>Resources\SettingsBackground.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\SettingsIcon.png">
+      <Link>Resources\SettingsIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\SettingsLLVM.png">
+      <Link>Resources\SettingsLLVM.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\StopCommandIcon.png">
+      <Link>Resources\StopCommandIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\StorageIcon.png">
+      <Link>Resources\StorageIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\TeamIcon.png">
+      <Link>Resources\TeamIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\TidyIcon.png">
+      <Link>Resources\TidyIcon.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\WarningIcon.png">
+      <Link>Resources\WarningIcon.png</Link>
+    </Resource>
     <Content Include="clang-build.ps1" />
     <Content Include="psClang\get-header-references.ps1">
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -147,7 +297,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="VSPackage.resx" />
+    <EmbeddedResource Include="VSPackage.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Executables\clang-format.exe">
@@ -158,63 +310,6 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Resource Include="Resources\AccountAvatarIcon.png" />
-    <Resource Include="Resources\AccountIcon.png" />
-    <Resource Include="Resources\AddInput.png" />
-    <Resource Include="Resources\BannerInfo.png" />
-    <Resource Include="Resources\BannersError.png" />
-    <Resource Include="Resources\bannerWarning.png" />
-    <Resource Include="Resources\Browse.png" />
-    <Resource Include="Resources\ClangFormatIcon.png" />
-    <Resource Include="Resources\ClangPowerToolsIco.ico">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\ClangSplitBackground.png" />
-    <Resource Include="Resources\CleanSearchIcon.PNG" />
-    <Resource Include="Resources\CloudIcon.png" />
-    <Resource Include="Resources\CodeInputIcon.png" />
-    <Resource Include="Resources\CompileIcon.png" />
-    <Resource Include="Resources\CPTLogo.png" />
-    <Content Include="Resources\CPTLogoManageExtensionVS.png">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Resource Include="Resources\DetectOnFileIcon.png" />
-    <Content Include="Resources\EmptyIcon.png" />
-    <Resource Include="Resources\ErrorIcon.png" />
-    <Resource Include="Resources\FeedbackIcon.png" />
-    <Resource Include="Resources\FileIcon.png" />
-    <Resource Include="Resources\GenerateClangFormatFile.png" />
-    <Resource Include="Resources\GitHubMark.png" />
-    <Resource Include="Resources\iconCommercial.png" />
-    <Resource Include="Resources\iconFreeTrial.png" />
-    <Resource Include="Resources\iconPersonal.png" />
-    <Resource Include="Resources\IgnoreIcon.png" />
-    <Resource Include="Resources\InfoIcon.png" />
-    <Resource Include="Resources\JsonCompilationDatabase.png" />
-    <Content Include="Resources\LICENSE.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Resource Include="Resources\LoginBackground.png" />
-    <Resource Include="Resources\LogoutIcon.png" />
-    <Resource Include="Resources\PreviewWhiteIcon.png" />
-    <Resource Include="Resources\ProjectFilesIcon.png" />
-    <Resource Include="Resources\ReleaseNotesBackground.png" />
-    <Resource Include="Resources\RemoveInputHover.png" />
-    <Resource Include="Resources\RemoveInputIdle.png" />
-    <Resource Include="Resources\ResetIcon.png" />
-    <Content Include="Resources\RunPowerShellCommandPackage.ico">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Resource Include="Resources\SearchIcon.PNG" />
-    <Resource Include="Resources\SettingsBackground.png" />
-    <Resource Include="Resources\SettingsIcon.png" />
-    <Resource Include="Resources\SettingsLLVM.png" />
-    <Resource Include="Resources\StopCommandIcon.png" />
-    <Resource Include="Resources\StorageIcon.png" />
-    <Resource Include="Resources\TeamIcon.png" />
-    <Resource Include="Resources\TidyIcon.png" />
-    <Resource Include="Resources\WarningIcon.png" />
   </ItemGroup>
   <Import Project="..\ClangPowerToolsShared\ClangPowerToolsShared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

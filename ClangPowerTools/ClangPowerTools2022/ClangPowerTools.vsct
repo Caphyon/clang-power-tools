@@ -225,18 +225,18 @@
     </Buttons>
 
     <!--Declare all the image resources -->
-   <Bitmaps>
-      <Bitmap guid="guidImages" href="Resources\CPTLogo.png" usedList="bmpPic1" />
-      <Bitmap guid="guidImageTidy" href="Resources\TidyIcon.png" usedList="Tidy" />
-      <Bitmap guid="guidImageCompile" href="Resources\CompileIcon.png" usedList="Compile" />
-      <Bitmap guid="guidImageFormat" href="Resources\ClangFormatIcon.png" usedList="Format" />
-      <Bitmap guid="guidImageStopClang" href="Resources\StopCommandIcon.png" usedList="StopClang" />
-      <Bitmap guid="guidImageSettings" href="Resources\SettingsIcon.png" usedList="Settings" />
-      <Bitmap guid="guidImageIgnoreFormat" href="Resources\IgnoreIcon.png" usedList="IgnoreFormat" />
-      <Bitmap guid="guidImageEmpty" href="Resources\EmptyIcon.png" usedList="Empty" />
-      <Bitmap guid="guidImageJsonCompilationDb" href="Resources\JsonCompilationDatabase.png" usedList="JsonCompilationDb" />
-    </Bitmaps>
-
+		<Bitmaps>
+			<Bitmap guid="guidImages" href="..\ClangPowerToolsShared\Resources\CPTLogo.png" usedList="bmpPic1" />
+			<Bitmap guid="guidImageTidy" href="..\ClangPowerToolsShared\Resources\TidyIcon.png" usedList="Tidy" />
+			<Bitmap guid="guidImageCompile" href="..\ClangPowerToolsShared\Resources\CompileIcon.png" usedList="Compile" />
+			<Bitmap guid="guidImageFormat" href="..\ClangPowerToolsShared\Resources\ClangFormatIcon.png" usedList="Format" />
+			<Bitmap guid="guidImageStopClang" href="..\ClangPowerToolsShared\Resources\StopCommandIcon.png" usedList="StopClang" />
+			<Bitmap guid="guidImageSettings" href="..\ClangPowerToolsShared\Resources\SettingsIcon.png" usedList="Settings" />
+			<Bitmap guid="guidImageIgnoreFormat" href="..\ClangPowerToolsShared\Resources\IgnoreIcon.png" usedList="IgnoreFormat" />
+			<Bitmap guid="guidImageEmpty" href="..\ClangPowerToolsShared\Resources\EmptyIcon.png" usedList="Empty" />
+			<Bitmap guid="guidImageJsonCompilationDb" href="..\ClangPowerToolsShared\Resources\JsonCompilationDatabase.png" usedList="JsonCompilationDb" />
+		</Bitmaps>
+		
   </Commands>
 
   <!-- Shortcuts for commands-->
