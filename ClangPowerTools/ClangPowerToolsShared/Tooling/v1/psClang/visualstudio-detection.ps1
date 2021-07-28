@@ -182,7 +182,15 @@ Function Get-VisualStudio-Path()
             return $installationPath
         }
 
-        [string] $kVsDefaultLocation = "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$global:cptVisualStudioVersion\$aVisualStudioSku"
+        if ( ([int] $global:cptVisualStudioVersion) -le 2022)
+        {
+           [string] $kVsDefaultLocation = "${Env:ProgramFiles}\Microsoft Visual Studio\$global:cptVisualStudioVersion\$aVisualStudioSku"
+        }
+        else
+        {
+           [string] $kVsDefaultLocation = "${Env:ProgramFiles(x86)}\Microsoft Visual Studio\$global:cptVisualStudioVersion\$aVisualStudioSku"
+        }
+      
         if (Test-Path -LiteralPath $kVsDefaultLocation)
         {
             return $kVsDefaultLocation
