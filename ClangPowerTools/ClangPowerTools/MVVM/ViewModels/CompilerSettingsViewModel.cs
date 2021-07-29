@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.MVVM;
 using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,11 +16,13 @@ namespace ClangPowerTools
     public event PropertyChangedEventHandler PropertyChanged;
 
     private CompilerSettingsModel compilerModel;
-    
+    private readonly PowerShellService powerShellService;
+
     private ICommand compileFlagsAddDataCommand;
     private ICommand filesToIgnoreAddDataCommand;
     private ICommand projectsToIgnoreAddDataCommand;
-    
+    private ICommand powerShellUpdateScriptsCommand;
+
     #endregion
 
     #region Constructor
@@ -27,6 +30,7 @@ namespace ClangPowerTools
     public CompilerSettingsViewModel()
     {
       compilerModel = SettingsProvider.CompilerSettingsModel;
+      powerShellService = new PowerShellService();
     }
 
     #endregion
@@ -80,6 +84,11 @@ namespace ClangPowerTools
     {
       get => projectsToIgnoreAddDataCommand ?? (projectsToIgnoreAddDataCommand = new RelayCommand(() => UpdateProjectsToIgnore(), () => CanExecute));
     }
+
+    public ICommand PowerShellUpdateScriptsCommand
+    {
+      get => powerShellUpdateScriptsCommand ?? (powerShellUpdateScriptsCommand = new RelayCommand(() => UpdateScripts(), () => CanExecute));
+    }
     #endregion
 
     #region Methods
@@ -99,6 +108,12 @@ namespace ClangPowerTools
     {
       compilerModel.ProjectsToIgnore = OpenContentDialog(compilerModel.ProjectsToIgnore);
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CompilerModel"));
+    }
+
+
+    private void UpdateScripts()
+    {
+      powerShellService.UpdateScripts();
     }
     #endregion;
 
