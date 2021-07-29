@@ -1,8 +1,10 @@
 ﻿using ClangPowerTools.MVVM.Constants;
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace ClangPowerTools.Services
@@ -20,9 +22,9 @@ namespace ClangPowerTools.Services
 
     #region Public Methods
 
-    public void UpdateScripts()
+    public async Task UpdateScriptsAsync()
     {
-      DownloadScript();
+      await DownloadScriptAsync(PowerShellConstants.ClangBuildScriptUri, PowerShellConstants.ClangBuildScriptName);
     }
 
     #endregion
@@ -30,15 +32,16 @@ namespace ClangPowerTools.Services
 
     #region Private Methods
 
-    private void DownloadScript(string fileUri, string fileName)
+
+    private async Task DownloadScriptAsync(string fileUri, string fileName)
     {
-      var appDataFolder = settingsPathBuilder.GetPath("clang-build.ps1");
+      string scriptFullName = settingsPathBuilder.GetPath(fileName);
       try
       {
         using WebClient client = new();
         client.DownloadFileCompleted += DownloadCompleted;
         downloadCancellationToken.Token.Register(client.CancelAsync);
-        client.DownloadFileAsync(new Uri(PowerShellConstants.ClangBuildScriptUri), appDataFolder);
+        await client.DownloadFileTaskAsync(new Uri(fileUri), scriptFullName);
       }
       catch (Exception)
       {
@@ -50,7 +53,7 @@ namespace ClangPowerTools.Services
     {
       //OnOperationCanceldEvent();
 
-      MessageBox.Show("The download process has stopped.", "PowerShell script udpate", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+      MessageBox.Show("The download process has stopped.", "PowerShell Scripts", MessageBoxButtons.OK, MessageBoxIcon.Warning);
     }
 
     private void DownloadCompleted(object sender, AsyncCompletedEventArgs e)
@@ -68,6 +71,8 @@ namespace ClangPowerTools.Services
 
     private void ReplaceScripts()
     {
+      string installationPath = Path.GetDirectoryName(settingsPathBuilder.GetAssemblyLocalPath());
+      MessageBox.Show("PowerShell scripts are updated to the latest version.", "PowerShell Scripts", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
     }
 
