@@ -17,6 +17,7 @@ namespace ClangPowerTools
     #region Methods
 
     public string GetPath(string aFileName) => Path.Combine(GetFolderPath(), aFileName);
+    public string GetPath() => GetFolderPath();
 
     public string GetLlvmPath(string version)
     {
@@ -42,10 +43,10 @@ namespace ClangPowerTools
     {
       string folderPath = Path.Combine
         (Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), folderName);
-      
+
       if (!Directory.Exists(folderPath))
         Directory.CreateDirectory(folderPath);
-      
+
       return folderPath;
     }
 
