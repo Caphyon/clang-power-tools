@@ -14,7 +14,7 @@ namespace ClangPowerTools
 
     #endregion
 
-    #region Methods
+    #region Methods Public
 
     public string GetPath(string aFileName) => Path.Combine(GetFolderPath(), aFileName);
 
@@ -37,6 +37,15 @@ namespace ClangPowerTools
       var executable = string.Concat(executableName, fileExtension);
       return Path.Combine(path, executable);
     }
+
+    public string GetAssemblyLocalPath()
+    {
+      return System.Reflection.Assembly.GetExecutingAssembly().Location;
+    }
+
+    #endregion
+
+    #region Private Methods
 
     private string GetFolderPath()
     {
