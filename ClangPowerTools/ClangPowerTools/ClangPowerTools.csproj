@@ -105,7 +105,7 @@
     <Compile Include="MVVM\Constants\FormatEditorConstants.cs" />
     <Compile Include="MVVM\Constants\LlvmConstants.cs" />
     <Compile Include="MVVM\Constants\LlvmVersionsAlternate.cs" />
-    <Compile Include="MVVM\Constants\PowerShellConstants.cs" />
+    <Compile Include="MVVM\Constants\PsUpdaterConstants.cs" />
     <Compile Include="MVVM\Controllers\FormatEditorController.cs" />
     <Compile Include="MVVM\Models\SelectedFileModel.cs" />
     <Compile Include="MVVM\Models\ToggleModel.cs" />
