@@ -1,8 +1,9 @@
-﻿using ClangPowerTools.MVVM.Constants;
+﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.MVVM.Constants;
 using System;
-using System.ComponentModel;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -24,7 +25,18 @@ namespace ClangPowerTools.Services
 
     public async Task UpdateScriptsAsync()
     {
-      await DownloadScriptAsync(PowerShellConstants.ClangBuildScriptUri, PowerShellConstants.ClangBuildScriptName);
+      string scriptUri = PsUpdaterConstants.GitHubUri + PsUpdaterConstants.ClangBuildScript;
+      await DownloadScriptAsync(scriptUri, PsUpdaterConstants.ClangBuildScript);
+
+      var sb = new StringBuilder();
+      foreach (string script in PsUpdaterConstants.ScriptsInPsClangFolder)
+      {
+        sb.Append(PsUpdaterConstants.GitHubUri).Append(PsUpdaterConstants.PsClangFolder).Append("/").Append(script);
+        await DownloadScriptAsync(sb.ToString(), script);
+        sb.Clear();
+      }
+
+      ReplaceScripts();
     }
 
     #endregion
@@ -35,50 +47,57 @@ namespace ClangPowerTools.Services
 
     private async Task DownloadScriptAsync(string fileUri, string fileName)
     {
-      string scriptFullName = settingsPathBuilder.GetPath(fileName);
+      string scriptsDirectory = settingsPathBuilder.GetPath(PsUpdaterConstants.PowerShellScriptsFolder);
+      string scriptFullName = Path.Combine(scriptsDirectory, fileName);
       try
       {
+        FileSystem.CreateDirectory(scriptsDirectory);
         using WebClient client = new();
-        client.DownloadFileCompleted += DownloadCompleted;
-        downloadCancellationToken.Token.Register(client.CancelAsync);
         await client.DownloadFileTaskAsync(new Uri(fileUri), scriptFullName);
       }
-      catch (Exception)
+      catch (Exception e)
       {
-        DownloadCanceled();
+        MessageBox.Show(e.Message, "PowerShell Scripts", MessageBoxButtons.OK, MessageBoxIcon.Warning);
       }
     }
-
-    private void DownloadCanceled()
-    {
-      //OnOperationCanceldEvent();
-
-      MessageBox.Show("The download process has stopped.", "PowerShell Scripts", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-    }
-
-    private void DownloadCompleted(object sender, AsyncCompletedEventArgs e)
-    {
-      if (downloadCancellationToken.IsCancellationRequested)
-      {
-        DownloadCanceled();
-      }
-      else
-      {
-        ReplaceScripts();
-      }
-    }
-
 
     private void ReplaceScripts()
     {
-      string installationPath = Path.GetDirectoryName(settingsPathBuilder.GetAssemblyLocalPath());
-      MessageBox.Show("PowerShell scripts are updated to the latest version.", "PowerShell Scripts", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      string destFolder = Path.GetDirectoryName(settingsPathBuilder.GetAssemblyLocalPath());
+      destFolder = Path.Combine(destFolder, PsUpdaterConstants.ToolingFolder, PsUpdaterConstants.V1Folder);
+      string sourceFolder = settingsPathBuilder.GetPath(PsUpdaterConstants.PowerShellScriptsFolder);
 
+      try
+      {
+        FileSystem.MoveFile(Path.Combine(sourceFolder, PsUpdaterConstants.ClangBuildScript),
+                            Path.Combine(destFolder, PsUpdaterConstants.ClangBuildScript));
+
+        destFolder = Path.Combine(destFolder, PsUpdaterConstants.PsClangFolder);
+        foreach (string script in PsUpdaterConstants.ScriptsInPsClangFolder)
+        {
+          FileSystem.MoveFile(Path.Combine(sourceFolder, script), Path.Combine(destFolder, script));
+        }
+      }
+      catch (Exception e)
+      {
+        MessageBox.Show(e.Message, "PowerShell Scripts", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
+
+      ClearFilesAfterReplace();
+      MessageBox.Show("PowerShell scripts are updated to the latest version.", "PowerShell Scripts", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 
     private void ClearFilesAfterReplace()
     {
-
+      string scriptsDirectory = settingsPathBuilder.GetPath(PsUpdaterConstants.PowerShellScriptsFolder);
+      try
+      {
+        FileSystem.DeleteDirectory(scriptsDirectory);
+      }
+      catch (Exception e)
+      {
+        MessageBox.Show(e.Message, "PowerShell Scripts", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
     }
 
     #endregion
