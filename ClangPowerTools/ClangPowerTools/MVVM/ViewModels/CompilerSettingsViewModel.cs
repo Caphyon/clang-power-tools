@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace ClangPowerTools
@@ -88,7 +88,7 @@ namespace ClangPowerTools
 
     public ICommand PowerShellUpdateScriptsCommand
     {
-      get => powerShellUpdateScriptsCommand ?? (powerShellUpdateScriptsCommand = new RelayCommand(() => UpdateScriptsAsync().SafeFireAndForget(), () => CanExecute));
+      get => powerShellUpdateScriptsCommand ?? (powerShellUpdateScriptsCommand = new RelayCommand(() => UpdateScripts(), () => CanExecute));
     }
     #endregion
 
@@ -112,9 +112,14 @@ namespace ClangPowerTools
     }
 
 
-    private async Task UpdateScriptsAsync()
+    private void UpdateScripts()
     {
-      await powerShellService.UpdateScriptsAsync();
+      DialogResult dialogResult = MessageBox.Show("Do you want to update the PowerShell scripts?",
+                                                  "Clang Power Tools", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+      if (dialogResult == DialogResult.Yes)
+      {
+        powerShellService.UpdateScriptsAsync().SafeFireAndForget();
+      }
     }
     #endregion;
 

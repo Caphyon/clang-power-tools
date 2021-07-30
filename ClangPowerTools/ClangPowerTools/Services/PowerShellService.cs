@@ -41,9 +41,7 @@ namespace ClangPowerTools.Services
 
     #endregion
 
-
     #region Private Methods
-
 
     private async Task DownloadScriptAsync(string fileUri, string fileName)
     {
