@@ -154,6 +154,15 @@ namespace ClangPowerTools.Helpers
       return string.Concat(path, "\\", fileName);
     }
 
+    public static void MoveFile(string sourceFileName, string destFileName)
+    {
+      if (File.Exists(destFileName))
+      {
+        File.Delete(destFileName);
+      }
+      File.Move(sourceFileName, destFileName);
+    }
+
     #endregion
 
   }
