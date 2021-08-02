@@ -111,7 +111,6 @@ namespace ClangPowerTools
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CompilerModel"));
     }
 
-
     private void UpdateScripts()
     {
       DialogResult dialogResult = MessageBox.Show("Do you want to update the PowerShell scripts?",
