@@ -8,7 +8,7 @@
   xmlns:views="clr-namespace:ClangPowerTools.MVVM.Views"
   d:DataContext="{d:DesignInstance local:CompilerSettingsViewModel,
                                    IsDesignTimeCreatable=True}"
-  d:DesignHeight="460"
+  d:DesignHeight="490"
   d:DesignWidth="770"
   mc:Ignorable="d">
 
@@ -369,6 +369,36 @@
         VerticalAlignment="Center"
         IsChecked="{Binding CompilerModel.VerboseMode}"
         Tag="On" />
+    </WrapPanel>
+
+    <!--  Update PowerShell  -->
+    <WrapPanel Grid.Row="12" Grid.Column="1">
+      <WrapPanel.ToolTip>
+        <ToolTip>
+          <TextBlock
+            MaxWidth="400"
+            Text="{Binding Tooltip.PowerShellScripts}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </WrapPanel.ToolTip>
+
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="PowerShell scripts" />
+
+      <Button
+        Width="80"
+        Height="30"
+        HorizontalAlignment="Left"
+        Command="{Binding PowerShellUpdateScriptsCommand}"
+        Content="Update"
+        FontSize="14"
+        Foreground="White"
+        Style="{StaticResource SettingsButton}" />
     </WrapPanel>
 
   </Grid>

@@ -105,6 +105,7 @@
     <Compile Include="MVVM\Constants\FormatEditorConstants.cs" />
     <Compile Include="MVVM\Constants\LlvmConstants.cs" />
     <Compile Include="MVVM\Constants\LlvmVersionsAlternate.cs" />
+    <Compile Include="MVVM\Constants\PsUpdaterConstants.cs" />
     <Compile Include="MVVM\Controllers\FormatEditorController.cs" />
     <Compile Include="MVVM\Models\SelectedFileModel.cs" />
     <Compile Include="MVVM\Models\ToggleModel.cs" />
@@ -304,6 +305,7 @@
     <Compile Include="Script\ItemRelatedScriptBuilder.cs" />
     <Compile Include="Script\RunModeScriptBuilder.cs" />
     <Compile Include="Script\RunningProcesses.cs" />
+    <Compile Include="Services\PowerShellService.cs" />
     <Compile Include="Services\VsServiceProvider.cs" />
     <Compile Include="Helpers\SettingsPathBuilder.cs" />
     <Compile Include="SilentFile\SilentFileChangerBuilder.cs" />

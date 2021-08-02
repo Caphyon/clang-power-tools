@@ -12,11 +12,11 @@ namespace ClangPowerTools
 
     private ICommand upgradeCommand;
 
-    private readonly SettingsHandler settingsHandler = new SettingsHandler();
+    private readonly SettingsHandler settingsHandler = new();
     private readonly SettingsView settingsView;
 
-    private const int PERSONAL_LICENSE_HEIGTH = 535;
-    private const int NO_ACCOUNT_HEIGTH = 600;
+    private const int PERSONAL_LICENSE_HEIGTH = 575;
+    private const int NO_ACCOUNT_HEIGTH = 640;
 
     #endregion
 
