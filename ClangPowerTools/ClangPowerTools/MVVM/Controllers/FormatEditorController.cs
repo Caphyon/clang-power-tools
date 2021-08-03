@@ -47,10 +47,9 @@ namespace ClangPowerTools
       var appDataDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), FormatEditorConstants.ClangFormatEditorFolder);
       try
       {
-        if (FileSystem.DoesFileExist(appDataDirectory, FormatEditorConstants.ClangFormatExe)) return;
         FileSystem.CreateDirectory(appDataDirectory);
         File.Copy(Path.Combine(vsixPath, FormatEditorConstants.ClangFormatExe),
-                  Path.Combine(appDataDirectory, FormatEditorConstants.ClangFormatExe));
+                  Path.Combine(appDataDirectory, FormatEditorConstants.ClangFormatExe), true);
       }
       catch (Exception e)
       {
