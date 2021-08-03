@@ -82,7 +82,7 @@ namespace ClangPowerTools.Services
       }
 
       ClearFilesAfterReplace();
-      MessageBox.Show("PowerShell scripts are updated to the latest version.", "PowerShell Scripts", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      MessageBox.Show("PowerShell scripts were updated to the latest version.", "PowerShell Scripts", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
 
     private void ClearFilesAfterReplace()
