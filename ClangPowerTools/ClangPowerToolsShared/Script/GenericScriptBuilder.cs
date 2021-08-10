@@ -69,7 +69,7 @@ namespace ClangPowerTools.Script
         mScript += $" {ScriptConstants.kClangFormatStyle} {formatSettings.Style}";
 
       // Append the Visual Studio Version and Edition
-      mScript += $" {ScriptConstants.kVsVersion} {mVsVersion} {ScriptConstants.kVsEdition} {mVsEdition}";
+      mScript += $" {ScriptConstants.kVsVersion} {mVsVersion}";
 
       // Append the solution path
       if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
