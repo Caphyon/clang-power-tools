@@ -178,7 +178,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\AccountView.xaml.cs">
       <DependentUpon>AccountView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\CMakeBetaWarning.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\CMakeBetaWarning.xaml.cs">
+      <DependentUpon>CMakeBetaWarning.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\CompilerSettingsView.xaml.cs">
       <DependentUpon>CompilerSettingsView.xaml</DependentUpon>
     </Compile>
