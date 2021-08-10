@@ -105,6 +105,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\CPPKeywords.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\FormatEditorConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\EncodingConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\PsUpdaterConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\ResourceConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\LlvmConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\LlvmVersions.cs" />
@@ -256,6 +257,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Script\RunModeScriptBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Script\RunningProcesses.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Script\ScriptConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\PowerShellService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\VsServiceProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SilentFile\SilentFileChangerBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SilentFile\SilentFileChangerController.cs" />
