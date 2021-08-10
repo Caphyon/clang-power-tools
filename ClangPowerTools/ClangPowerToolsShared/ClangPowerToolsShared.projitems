@@ -175,7 +175,36 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TidySettingsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\ToggleMultipleDataViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TrialExpiredViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\AccountView.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\WebApi\WebApiUrl.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\XmlSerializer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Output\OutputContentModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Output\OutputProcessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Output\OutputWindowBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Output\OutputWindowConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Output\OutputWindowController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Output\OutputWindowModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Script\ClangTidyModeParametersFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Script\GenericScriptBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Script\ItemRelatedScriptBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Script\PowerShellWrapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Script\RunModeScriptBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Script\RunningProcesses.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Script\ScriptConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\PowerShellService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Services\VsServiceProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SilentFile\SilentFileChangerBuilder.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SilentFile\SilentFileChangerController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SilentFile\SilentFileChangerEqualityComparer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SilentFile\SilentFileChangerModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Squiggle\SquiggleErrorTag.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Squiggle\SquiggleErrorTagger.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Squiggle\SquiggleErrorTaggerProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Squiggle\SquiggleModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Squiggle\SquigglesFactory.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Squiggle\SquiggleViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TextOperationsInterfaces\IDetector.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TextOperationsInterfaces\ITextFormatter.cs" />
+	    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\AccountView.xaml.cs">
       <DependentUpon>AccountView.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\CMakeBetaWarning.xaml.cs">
@@ -244,35 +273,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\TrialExpiredView.xaml.cs">
       <DependentUpon>TrialExpiredView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\WebApi\WebApiUrl.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\XmlSerializer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Output\OutputContentModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Output\OutputProcessor.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Output\OutputWindowBuilder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Output\OutputWindowConstants.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Output\OutputWindowController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Output\OutputWindowModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Script\ClangTidyModeParametersFactory.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Script\GenericScriptBuilder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Script\ItemRelatedScriptBuilder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Script\PowerShellWrapper.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Script\RunModeScriptBuilder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Script\RunningProcesses.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Script\ScriptConstants.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Services\PowerShellService.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Services\VsServiceProvider.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SilentFile\SilentFileChangerBuilder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SilentFile\SilentFileChangerController.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SilentFile\SilentFileChangerEqualityComparer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)SilentFile\SilentFileChangerModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Squiggle\SquiggleErrorTag.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Squiggle\SquiggleErrorTagger.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Squiggle\SquiggleErrorTaggerProvider.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Squiggle\SquiggleModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Squiggle\SquigglesFactory.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Squiggle\SquiggleViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TextOperationsInterfaces\IDetector.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)TextOperationsInterfaces\ITextFormatter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\AccountView.xaml">
