@@ -5,6 +5,7 @@ using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -99,6 +100,10 @@ namespace ClangPowerTools
 
         var document = FindDocumentByCookie(docCookie);
         if (null == document)
+          return VSConstants.S_OK;
+
+        bool acceptedExtension = ScriptConstants.kExtendedAcceptedFileExtensions.Contains(Path.GetExtension(document.Name));
+        if (acceptedExtension == false)
           return VSConstants.S_OK;
 
         BeforeSave(this, document);
