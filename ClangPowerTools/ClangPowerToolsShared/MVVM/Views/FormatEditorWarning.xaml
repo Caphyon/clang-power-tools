@@ -1,0 +1,74 @@
+﻿<Window
+  x:Class="ClangPowerTools.MVVM.Views.FormatEditorWarning"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:components="clr-namespace:ClangPowerTools.MVVM.Views.Components"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:ClangPowerTools.MVVM.Views"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  Title="Warning"
+  Width="650"
+  Height="450"
+  Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
+  ResizeMode="NoResize"
+  Topmost="True"
+  WindowStartupLocation="CenterScreen"
+  WindowStyle="ThreeDBorderWindow"
+  mc:Ignorable="d">
+
+  <!--  Static resources  -->
+  <Window.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/ClangPowerTools;component/MVVM/Views/Styles/AppResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Window.Resources>
+
+  <Grid>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="50" />
+    </Grid.RowDefinitions>
+
+    <components:MessageBanner
+      Grid.Row="0"
+      Banner="/ClangPowerTools;component/Resources/BannerWarning.png"
+      Icon="/ClangPowerTools;component/Resources/WarningIcon.png"
+      Type="Format Editor Warning" />
+
+    <StackPanel Grid.Row="1" Margin="20">
+      <TextBlock
+        Margin="0,5"
+        FontSize="14"
+        Text=".NET 5.0 Desktop Runtime not detected!"
+        TextWrapping="Wrap" />
+
+      <TextBlock
+        Margin="0,5"
+        FontSize="14"
+        Text="To use the Clang Format Editor you need to install .NET 5.0 Desktop Runtime (v5.0.0 or newer)."
+        TextWrapping="Wrap" />
+
+      <TextBlock
+        Margin="0,30"
+        FontSize="14"
+        Text="Download .NET 5.0 Desktop Runtime?"
+        TextWrapping="Wrap" />
+
+    </StackPanel>
+
+    <Button
+      Grid.Row="2"
+      Width="100"
+      HorizontalAlignment="Center"
+      VerticalAlignment="Center"
+      Click="DownloadButton"
+      Content="Download"
+      FontSize="14"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}" />
+
+  </Grid>
+</Window>

@@ -1,0 +1,196 @@
+﻿<UserControl
+  x:Class="ClangPowerTools.Views.AccountView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:ClangPowerTools"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  d:DataContext="{d:DesignInstance local:AccountViewModel,
+                                   IsDesignTimeCreatable=True}"
+  d:DesignHeight="460"
+  d:DesignWidth="770"
+  mc:Ignorable="d">
+
+  <!--  Static resources  -->
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/ClangPowerTools;component/MVVM/Views/Styles/AppResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+      <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+
+
+  <Grid>
+    <Grid.Background>
+      <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
+    </Grid.Background>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="30" />
+      <RowDefinition Height="90" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="235" />
+      <ColumnDefinition Width="300" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <Rectangle
+      Grid.Row="1"
+      Grid.Column="1"
+      Width="65"
+      Height="65"
+      HorizontalAlignment="Center">
+      <Rectangle.Fill>
+        <ImageBrush ImageSource="{StaticResource AccountAvatarIcon}" />
+      </Rectangle.Fill>
+    </Rectangle>
+
+    <StackPanel
+      Grid.Row="2"
+      Grid.Column="1"
+      Height="{Binding AccoutCellHeight}"
+      Margin="21,0,0,0"
+      HorizontalAlignment="Left"
+      VerticalAlignment="Center">
+      <TextBlock
+        Grid.Row="0"
+        Margin="0,0,0,6"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="20"
+        Text="{Binding AccountModel.UserName}"
+        Visibility="{Binding Path=DisplayUserNameAndEmail, Converter={StaticResource BoolToVis}}" />
+
+      <TextBlock
+        Grid.Row="1"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Foreground="#333333"
+        Text="{Binding AccountModel.Email}"
+        Visibility="{Binding Path=DisplayUserNameAndEmail, Converter={StaticResource BoolToVis}}" />
+    </StackPanel>
+
+    <Grid
+      Grid.Row="3"
+      Grid.Column="1"
+      Margin="21,30,0,0"
+      VerticalAlignment="Center"
+      Visibility="{Binding Path=Visible, Converter={StaticResource BoolToVis}}">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="auto" />
+        <ColumnDefinition Width="auto" />
+      </Grid.ColumnDefinitions>
+
+      <TextBlock
+        Grid.Row="0"
+        Grid.Column="0"
+        Margin="0,0,0,10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        FontWeight="SemiBold"
+        Text="License type" />
+
+      <TextBlock
+        Grid.Row="0"
+        Grid.Column="1"
+        Margin="30,0,0,0"
+        VerticalAlignment="Top"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Foreground="#333333"
+        Text="{Binding AccountModel.LicenseType}" />
+
+      <TextBlock
+        Grid.Row="1"
+        Grid.Column="0"
+        Margin="0,0,0,6"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        FontWeight="SemiBold"
+        Text="Expiration date" />
+
+      <TextBlock
+        Grid.Row="1"
+        Grid.Column="1"
+        Margin="30,0,0,0"
+        VerticalAlignment="Top"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Foreground="#333333"
+        Text="{Binding AccountModel.LicenseExpirationDate}" />
+
+    </Grid>
+
+    <StackPanel
+      Grid.Row="4"
+      Grid.Column="1"
+      Margin="21,30,0,0"
+      HorizontalAlignment="{Binding Alignment}"
+      Orientation="Horizontal">
+      <TextBlock
+        Grid.Row="1"
+        Grid.Column="0"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        FontWeight="SemiBold"
+        Text="Version number" />
+
+      <TextBlock
+        Grid.Row="1"
+        Grid.Column="1"
+        Margin="30,0,0,0"
+        VerticalAlignment="Top"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Foreground="#333333"
+        Text="{Binding GeneralSettingsModel.Version}" />
+    </StackPanel>
+
+
+    <Button
+      Grid.Row="5"
+      Grid.Column="1"
+      Width="140"
+      Height="30"
+      Margin="0,40,0,0"
+      HorizontalAlignment="Center"
+      Command="{Binding LogoutCommand}"
+      Content="Log Out"
+      FontSize="14"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}"
+      Visibility="{Binding Path=DisplayLogout, Converter={StaticResource BoolToVis}}" />
+
+    <Button
+      Grid.Row="5"
+      Grid.Column="1"
+      Width="140"
+      Height="30"
+      Margin="0,40,0,0"
+      HorizontalAlignment="Center"
+      Command="{Binding LogoutCommand}"
+      Content="Log In"
+      FontSize="14"
+      Foreground="White"
+      Style="{StaticResource SettingsButton}"
+      Visibility="{Binding Path=DisplayLogIn, Converter={StaticResource BoolToVis}}" />
+
+  </Grid>
+</UserControl>

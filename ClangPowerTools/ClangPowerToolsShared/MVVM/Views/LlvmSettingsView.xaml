@@ -1,0 +1,330 @@
+﻿<UserControl
+  x:Class="ClangPowerTools.Views.LlvmSettingsView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:ClangPowerTools"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  d:DataContext="{d:DesignInstance local:LlvmSettingsViewModel,
+                                   IsDesignTimeCreatable=True}"
+  d:DesignHeight="420"
+  d:DesignWidth="770"
+  mc:Ignorable="d">
+
+  <!--  User control static resources  -->
+  <UserControl.Resources>
+
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/ClangPowerTools;component/MVVM/Views/Styles/AppResources.xaml" />
+
+        <ResourceDictionary>
+          <Style TargetType="{x:Type Label}">
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="15" />
+          </Style>
+
+          <Style TargetType="{x:Type ListView}">
+            <Setter Property="FontFamily" Value="Segoe UI" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="FontSize" Value="15" />
+          </Style>
+          <Style x:Key="ProgressBarStyle" TargetType="ProgressBar">
+            <Setter Property="Width" Value="475" />
+            <Setter Property="Height" Value="6" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Background" Value="#BCBAC1" />
+            <Setter Property="Foreground" Value="#852012" />
+            <Setter Property="Margin" Value="0,0,15,0" />
+          </Style>
+
+          <Style x:Key="HyperlinkStyle" TargetType="Hyperlink">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Foreground" Value="#852012" />
+            <Setter Property="TextBlock.TextDecorations" Value="{x:Null}" />
+            <Style.Triggers>
+              <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="#FFBF8880" />
+                <Setter Property="TextBlock.TextDecorations" Value="Underline" />
+              </Trigger>
+              <DataTrigger Binding="{Binding CanExecuteCommand}" Value="False">
+                <Setter Property="Foreground" Value="#BCBAC1" />
+              </DataTrigger>
+            </Style.Triggers>
+          </Style>
+        </ResourceDictionary>
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <Grid>
+    <Grid.Background>
+      <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
+    </Grid.Background>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="10" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="10" />
+    </Grid.RowDefinitions>
+
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="10" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="10" />
+    </Grid.ColumnDefinitions>
+
+
+    <!--  Versions  -->
+    <ListView
+      x:Name="VersionsList"
+      Grid.Row="1"
+      Grid.Column="1"
+      Background="White"
+      Focusable="True"
+      ItemsSource="{Binding Llvms}"
+      ScrollViewer.CanContentScroll="True"
+      SelectionMode="Single">
+
+      <ListView.ItemContainerStyle>
+        <Style TargetType="ListViewItem">
+          <Setter Property="Background" Value="Transparent" />
+          <Setter Property="BorderBrush" Value="WhiteSmoke" />
+          <Setter Property="BorderThickness" Value="1" />
+          <Setter Property="Focusable" Value="False" />
+        </Style>
+      </ListView.ItemContainerStyle>
+
+      <ListView.ItemTemplate>
+        <DataTemplate>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="10" />
+              <ColumnDefinition Width="90" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="38" />
+            </Grid.RowDefinitions>
+
+            <!--  Version name and action  -->
+            <TextBlock
+              Grid.Column="1"
+              VerticalAlignment="Center"
+              Text="{Binding Version, StringFormat='LLVM {0}'}" />
+            <!--  Download button  -->
+            <Button
+              Grid.Column="2"
+              Width="80"
+              Height="20"
+              Margin="490,0,0,0"
+              Click="DownloadButton"
+              Content="Download"
+              FontSize="13"
+              IsEnabled="{Binding CanExecuteCommand}">
+              <Button.Style>
+                <Style TargetType="Button">
+                  <Setter Property="Focusable" Value="False" />
+                  <Setter Property="Visibility" Value="Visible" />
+                  <Setter Property="IsEnabled" Value="True" />
+                  <Setter Property="Template">
+                    <Setter.Value>
+                      <ControlTemplate TargetType="Button">
+                        <TextBlock>
+                          <Hyperlink Style="{StaticResource HyperlinkStyle}">
+                            <Run Text="{TemplateBinding Content}" />
+                          </Hyperlink>
+                        </TextBlock>
+                      </ControlTemplate>
+                    </Setter.Value>
+                  </Setter>
+                  <Style.Triggers>
+                    <MultiDataTrigger>
+                      <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsDownloading}" Value="True" />
+                        <Condition Binding="{Binding IsInstalled}" Value="False" />
+                      </MultiDataTrigger.Conditions>
+                      <Setter Property="Visibility" Value="Hidden" />
+                    </MultiDataTrigger>
+                    <DataTrigger Binding="{Binding IsInstalling}" Value="True">
+                      <Setter Property="Visibility" Value="Hidden" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding HasPreinstalledLlvm}" Value="True">
+                      <Setter Property="Visibility" Value="Hidden" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsInstalled}" Value="True">
+                      <Setter Property="Visibility" Value="Hidden" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding CanExecuteCommand}" Value="False">
+                      <Setter Property="IsEnabled" Value="False" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </Button.Style>
+            </Button>
+
+            <!--  Already installed LLVM  -->
+            <TextBlock
+              Grid.Column="2"
+              Height="20"
+              HorizontalAlignment="Right"
+              FontSize="13"
+              Text="{Binding PreinstalledLlvmPath}">
+              <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                  <Setter Property="Foreground" Value="#BCBAC1" />
+                  <Setter Property="Visibility" Value="Hidden" />
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding HasPreinstalledLlvm}" Value="True">
+                      <Setter Property="Visibility" Value="Visible" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+
+              </TextBlock.Style>
+            </TextBlock>
+
+            <!--  Uninstall button  -->
+            <Button
+              Grid.Column="2"
+              Width="80"
+              Height="20"
+              Margin="490,0,0,0"
+              VerticalAlignment="Center"
+              Click="UninstallButton"
+              Content="Uninstall"
+              FontSize="13"
+              IsEnabled="{Binding CanExecuteCommand}">
+              <Button.Style>
+                <Style TargetType="Button">
+                  <Setter Property="Focusable" Value="False" />
+                  <Setter Property="Template">
+                    <Setter.Value>
+                      <ControlTemplate TargetType="Button">
+                        <TextBlock>
+                          <Hyperlink Style="{StaticResource HyperlinkStyle}">
+                            <Run Text="{TemplateBinding Content}" />
+                          </Hyperlink>
+                        </TextBlock>
+                      </ControlTemplate>
+                    </Setter.Value>
+                  </Setter>
+                  <Setter Property="Visibility" Value="Hidden" />
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsInstalled}" Value="True">
+                      <Setter Property="Visibility" Value="Visible" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding CanExecuteCommand}" Value="False">
+                      <Setter Property="IsEnabled" Value="False" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </Button.Style>
+            </Button>
+
+            <!--  Installing  -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+              <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                  <Setter Property="Visibility" Value="Hidden" />
+                  <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsInstalling}" Value="True">
+                      <Setter Property="Visibility" Value="Visible" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </StackPanel.Style>
+              <ProgressBar IsIndeterminate="True" Style="{StaticResource ProgressBarStyle}" />
+              <TextBlock
+                Grid.Column="3"
+                Width="80"
+                Height="20"
+                VerticalAlignment="Center"
+                FontSize="13"
+                Text="Installing" />
+            </StackPanel>
+
+            <!--  Download in progress  -->
+            <StackPanel Grid.Column="2" Orientation="Horizontal">
+              <StackPanel.Style>
+                <Style TargetType="StackPanel">
+                  <Setter Property="Visibility" Value="Hidden" />
+                  <Style.Triggers>
+                    <MultiDataTrigger>
+                      <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsDownloading}" Value="True" />
+                        <Condition Binding="{Binding IsInstalling}" Value="False" />
+                        <Condition Binding="{Binding IsInstalled}" Value="False" />
+                      </MultiDataTrigger.Conditions>
+                      <Setter Property="Visibility" Value="Visible" />
+                    </MultiDataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </StackPanel.Style>
+              <ProgressBar
+                Maximum="{Binding MaxProgress}"
+                Minimum="{Binding MinProgress}"
+                Style="{StaticResource ProgressBarStyle}"
+                Value="{Binding DownloadProgress}" />
+              <Button
+                Width="80"
+                Height="20"
+                VerticalAlignment="Center"
+                Click="CancelButton"
+                Content="Stop"
+                FontSize="13"
+                Foreground="#852012">
+                <Button.Style>
+                  <Style TargetType="Button">
+                    <Setter Property="Focusable" Value="False" />
+                    <Setter Property="Template">
+                      <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                          <TextBlock>
+                            <Hyperlink Style="{StaticResource HyperlinkStyle}">
+                              <Run Text="{TemplateBinding Content}" />
+                            </Hyperlink>
+                          </TextBlock>
+                        </ControlTemplate>
+                      </Setter.Value>
+                    </Setter>
+                  </Style>
+                </Button.Style>
+              </Button>
+            </StackPanel>
+          </Grid>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+    </ListView>
+
+    <!--  Use LLVM  -->
+    <StackPanel
+      Grid.Row="2"
+      Grid.Column="1"
+      Margin="0,5,0,5"
+      Orientation="Horizontal">
+      <Label
+        Width="80"
+        Height="30"
+        Content="Use LLVM" />
+      <ComboBox
+        Width="150"
+        Height="30"
+        ItemsSource="{Binding InstalledLlvms}"
+        SelectedItem="{Binding VersionUsed}" />
+      <Button
+        Width="150"
+        Margin="335,0,0,0"
+        Command="{Binding BrowseForLLVMCommand}"
+        Content="Add Existing LLVM"
+        FontFamily="Segoe UI"
+        FontSize="15"
+        Foreground="White"
+        Style="{StaticResource SettingsButton}"
+        ToolTip="Select the custom path to the LLVM  &quot;bin&quot; directory. The LLVM version is automatically detected and it will be displayed in the list above." />
+
+    </StackPanel>
+
+  </Grid>
+</UserControl>
