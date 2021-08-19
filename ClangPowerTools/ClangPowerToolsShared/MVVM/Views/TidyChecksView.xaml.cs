@@ -27,5 +27,12 @@ namespace ClangPowerTools.Views
     {
       viewModel.MultipleStateChange(false);
     }
+
+    private void OpenDescription(object sender, RoutedEventArgs e)
+    {
+      viewModel.OpenBrowser();
+      //var elementIndex = GetElementIndex(sender as FrameworkElement);
+      //llvmSettingsViewModel.DownloadCommand(elementIndex);
+    }
   }
 }

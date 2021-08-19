@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.Events;
 using ClangPowerTools.MVVM;
 using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
@@ -151,6 +152,12 @@ namespace ClangPowerTools
         if (model.IsChecked != checkValue)
           model.IsChecked = checkValue;
       }
+    }
+
+    public void OpenBrowser()
+    {
+      var browserView = new BrowserView();
+      browserView.ShowDialog();
     }
 
     private void TickPredefinedChecks()

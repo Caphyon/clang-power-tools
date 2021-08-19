@@ -90,7 +90,7 @@
               Grid.Column="1"
               Width="70"
               Height="20"
-              Command="{Binding DefaultChecks}"
+              Click="OpenDescription"
               Content="Description"
               FontSize="12"
               Foreground="White"
