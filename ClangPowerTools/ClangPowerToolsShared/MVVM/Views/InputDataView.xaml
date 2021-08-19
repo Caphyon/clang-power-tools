@@ -9,8 +9,6 @@
   Title="Clang Flags"
   Width="525"
   Height="400"
-  d:DataContext="{d:DesignInstance local:InputDataViewModel,
-                                   IsDesignTimeCreatable=True}"
   Background="WhiteSmoke"
   Icon="/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ShowInTaskbar="False"

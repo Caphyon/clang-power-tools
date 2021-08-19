@@ -9,8 +9,6 @@
   Title="Tidy Checks"
   Width="650"
   Height="630"
-  d:DataContext="{d:DesignInstance local:TidyChecksViewModel,
-                                   IsDesignTimeCreatable=True}"
   Background="WhiteSmoke"
   ResizeMode="NoResize"
   ShowActivated="True"

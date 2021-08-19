@@ -5,8 +5,6 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  d:DataContext="{d:DesignInstance local:FeedbackViewModel,
-                                   IsDesignTimeCreatable=True}"
   d:DesignHeight="460"
   d:DesignWidth="770"
   mc:Ignorable="d">

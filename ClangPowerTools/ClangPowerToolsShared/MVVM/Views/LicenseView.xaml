@@ -9,8 +9,6 @@
   Title="Welcome"
   Width="844"
   Height="470"
-  d:DataContext="{d:DesignInstance local:LicenseViewModel,
-                                   IsDesignTimeCreatable=True}"
   Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
   WindowStartupLocation="CenterScreen"

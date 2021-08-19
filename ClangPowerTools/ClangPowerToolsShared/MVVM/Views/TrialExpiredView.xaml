@@ -8,8 +8,6 @@
   Title="Trial Expired"
   Width="760"
   Height="470"
-  d:DataContext="{d:DesignInstance local:TrialExpiredViewModel,
-                                   IsDesignTimeCreatable=True}"
   Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
   WindowStartupLocation="CenterScreen"
