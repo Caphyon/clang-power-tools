@@ -35,24 +35,7 @@
       <RowDefinition Height="40" />
     </Grid.RowDefinitions>
 
-
-    <!--  Select all checkbox  -->
-
-    <!--<CheckBox
-      x:Name="SelectAllCheckBox"
-      Grid.Row="0"
-      Margin="5,0,0,0"
-      HorizontalAlignment="Left"
-      VerticalAlignment="Center" />-->
-
-    <!--  Search  -->
-    <searchBox:SearchBoxView
-      Grid.Row="0"
-      Width="250"
-      Height="30"
-      Margin="5,0,0,0"
-      HorizontalAlignment="left" />
-
+    <!--  Select all -->
     <ToggleButton
       x:Name="EnableDisableButton"
       Grid.Row="0"
@@ -62,6 +45,14 @@
       HorizontalAlignment="right"
       VerticalAlignment="Center"
       Tag="Enable" />
+
+    <!--  Search  -->
+    <searchBox:SearchBoxView
+      Grid.Row="0"
+      Width="250"
+      Height="30"
+      Margin="5,0,0,0"
+      HorizontalAlignment="left" />
 
     <!--  Checks list  -->
     <ListBox
@@ -76,10 +67,11 @@
       <ListBox.ItemTemplate>
         <DataTemplate>
           <Grid>
-
             <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="500" />
-              <ColumnDefinition Width="Auto" />
+              <ColumnDefinition Width="420" />
+              <ColumnDefinition Width="auto" />
+              <ColumnDefinition Width="10" />
+              <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
               <RowDefinition Height="25" />
@@ -91,22 +83,24 @@
               FontSize="14"
               Text="{Binding Name}"
               TextWrapping="Wrap">
-              <TextBlock.ToolTip>
-                <ToolTip>
-                  <TextBlock
-                    Width="400"
-                    Text="{Binding Description}"
-                    TextWrapping="Wrap" />
-                </ToolTip>
-              </TextBlock.ToolTip>
             </TextBlock>
+
+            <Button
+              Grid.Row="1"
+              Grid.Column="1"
+              Width="70"
+              Height="20"
+              Command="{Binding DefaultChecks}"
+              Content="Description"
+              FontSize="12"
+              Foreground="White"
+              Style="{StaticResource SettingsButton}" />
 
             <ToggleButton
               Grid.Row="1"
-              Grid.Column="1"
-              Width="120"
+              Grid.Column="3"
+              Width="80"
               Height="20"
-              HorizontalAlignment="Right"
               Checked="ToggleButton_Checked"
               IsChecked="{Binding IsChecked, Mode=TwoWay}"
               Tag="On"
