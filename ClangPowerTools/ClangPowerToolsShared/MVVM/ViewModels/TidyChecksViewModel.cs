@@ -128,12 +128,12 @@ namespace ClangPowerTools
 
     public ICommand ResetSearchCommand
     {
-      get => resetSearchCommand ?? (resetSearchCommand = new RelayCommand(() => ResetSearchField(), () => CanExecute));
+      get => resetSearchCommand ??= new RelayCommand(() => ResetSearchField(), () => CanExecute);
     }
 
     public ICommand DefaultChecks
     {
-      get => defaultChecks ?? (defaultChecks = new RelayCommand(() => SetDefaultChecks(), () => CanExecute));
+      get => defaultChecks ??= new RelayCommand(() => SetDefaultChecks(), () => CanExecute);
     }
 
     #endregion
