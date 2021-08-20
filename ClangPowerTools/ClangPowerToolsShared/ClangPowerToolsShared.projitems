@@ -110,6 +110,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\LlvmConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\LlvmVersions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\LLVMVersionsAlternate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\TidyConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\AccountController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\FormatEditorController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\FreeTrialController.cs" />
@@ -208,7 +209,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\AccountView.xaml.cs">
       <DependentUpon>AccountView.xaml</DependentUpon>
     </Compile>
-	<Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\BrowserView.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\BrowserView.xaml.cs">
       <DependentUpon>BrowserView.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\CMakeBetaWarning.xaml.cs">
