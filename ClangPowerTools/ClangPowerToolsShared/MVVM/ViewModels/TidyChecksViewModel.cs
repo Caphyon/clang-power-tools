@@ -23,8 +23,8 @@ namespace ClangPowerTools
     private string checkSearch = string.Empty;
     private TidySettingsModel tidyModel;
     private TidyChecksView tidyChecksView;
-    private TidyCheckModel selectedCheck = new TidyCheckModel();
-    private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>();
+    private TidyCheckModel selectedCheck = new();
+    private List<TidyCheckModel> tidyChecksList = new();
     private ICommand resetSearchCommand;
     private ICommand defaultChecks;
 
@@ -154,10 +154,11 @@ namespace ClangPowerTools
       }
     }
 
-    public void OpenBrowser()
+    public void OpenBrowser(string tidyCheckName)
     {
-      var browserView = new BrowserView();
-      browserView.ShowDialog();
+      var browserView = new BrowserView(tidyCheckName);
+      browserView.Owner = tidyChecksView;
+      browserView.OpenDescription();
     }
 
     private void TickPredefinedChecks()
@@ -185,8 +186,6 @@ namespace ClangPowerTools
 
     private void InitializeChecks()
     {
-      string predefinedChecks = SettingsProvider.TidySettingsModel.PredefinedChecks;
-
       var tidyChecksClean = new TidyChecksClean();
       tidyChecksList = new List<TidyCheckModel>(tidyChecksClean.Checks);
       TickPredefinedChecks();

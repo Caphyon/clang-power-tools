@@ -12,6 +12,13 @@
   WindowStartupLocation="CenterScreen"
   mc:Ignorable="d">
   <Grid>
-    <WebBrowser x:Name="webBrowser" Source="https://clang.llvm.org/extra/clang-tidy/checks/abseil-duration-addition.html"/>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <WebBrowser Grid.Row="0" Grid.Column="0" x:Name="webBrowser"/>
   </Grid>
 </Window>

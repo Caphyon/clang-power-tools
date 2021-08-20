@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 
 namespace ClangPowerTools.Views
 {
@@ -30,9 +31,15 @@ namespace ClangPowerTools.Views
 
     private void OpenDescription(object sender, RoutedEventArgs e)
     {
-      viewModel.OpenBrowser();
-      //var elementIndex = GetElementIndex(sender as FrameworkElement);
-      //llvmSettingsViewModel.DownloadCommand(elementIndex);
+      var elementIndex = GetElementIndex(sender as FrameworkElement);
+      var tidyCheckModel = viewModel.TidyChecksList.ElementAt(elementIndex);
+      viewModel.OpenBrowser(tidyCheckModel.Name);
+    }
+
+    private int GetElementIndex(FrameworkElement frameworkElement)
+    {
+      var element = frameworkElement.DataContext;
+      return TidyChecksListBox.Items.IndexOf(element);
     }
   }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Navigation;
 
 namespace ClangPowerTools.MVVM.Views
 {
@@ -7,10 +8,30 @@ namespace ClangPowerTools.MVVM.Views
   /// </summary>
   public partial class BrowserView : Window
   {
-    public BrowserView()
+    private readonly BrowserViewModel viewModel;
+    private readonly string tidyCheckName;
+
+    public BrowserView(string tidyCheckName)
     {
       InitializeComponent();
-      DataContext = new BrowserViewModel();
+      this.tidyCheckName = tidyCheckName;
+      viewModel = new BrowserViewModel();
+      DataContext = viewModel;
+    }
+
+
+    public void OpenDescription()
+    {
+      var uri = viewModel.CreateFlagUri(tidyCheckName);
+      webBrowser.Navigated += WebBrowser_LoadCompleted;
+      webBrowser.Navigate(uri);
+
+    }
+
+    private void WebBrowser_LoadCompleted(object sender, NavigationEventArgs e)
+    {
+      webBrowser.Navigated -= WebBrowser_LoadCompleted;
+      Show();
     }
   }
 }
