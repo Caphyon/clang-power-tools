@@ -4,18 +4,14 @@
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  Title="Flag Description"
+  Title="Tidy Check Description"
   Topmost="True"
-  Width="760"
-  Height="470"
+  Width="980"
+  Height="570"
   Icon="pack://application:,,,/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   WindowStartupLocation="CenterScreen"
   mc:Ignorable="d">
-  <StackPanel>
-
-
-    <WebBrowser x:Name="webBrowser" Source="https://clang.llvm.org/extra/clang-tidy/checks/abseil-duration-addition.html"   
-                Width="760" Height="470"  />
-
-  </StackPanel>
+  <Grid>
+    <WebBrowser x:Name="webBrowser" Source="https://clang.llvm.org/extra/clang-tidy/checks/abseil-duration-addition.html"/>
+  </Grid>
 </Window>
