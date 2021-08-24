@@ -214,18 +214,13 @@ namespace ClangPowerTools
     private void SetDefaultTidyPredefindedChecks()
     {
       var checks = new StringBuilder();
-      var tidyCheckModel = new TidyChecks();
-      var tidyModel = SettingsProvider.TidySettingsModel;
 
-      foreach (TidyCheckModel item in tidyCheckModel.Checks)
+      foreach (var item in TidyChecksDefault.Checks)
       {
-        if (item.IsChecked)
-        {
-          checks.Append(item.Name).Append(";");
-        }
+          checks.Append(item).Append(";");
       }
       checks.Length--;
-      tidyModel.PredefinedChecks = checks.ToString();
+      SettingsProvider.TidySettingsModel.PredefinedChecks = checks.ToString();
     }
 
     private void ImportOldSettings()
@@ -251,9 +246,6 @@ namespace ClangPowerTools
 
       ClangTidyOptions clangTidyOptions = LoadOldSettingsFromFile(new ClangTidyOptions(), TidyOptionsConfigurationFileName);
       MapClangTidyOptionsToSettings(clangTidyOptions);
-
-      ClangTidyPredefinedChecksOptions clangTidyPredefinedChecksOptions = LoadOldSettingsFromFile(new ClangTidyPredefinedChecksOptions(), TidyPredefinedChecksConfigurationFileName);
-      MapTidyPredefinedChecksToTidyettings(clangTidyPredefinedChecksOptions);
     }
 
     private T LoadOldSettingsFromFile<T>(T settings, string settingsFileName) where T : new()
