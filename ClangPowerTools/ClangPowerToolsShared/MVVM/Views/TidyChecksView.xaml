@@ -7,7 +7,7 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:searchBox="clr-namespace:ClangPowerTools.Views"
   Title="Tidy Checks"
-  Width="650"
+  Width="690"
   Height="630"
   Background="WhiteSmoke"
   ResizeMode="NoResize"
@@ -68,7 +68,7 @@
         <DataTemplate>
           <Grid>
             <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="420" />
+              <ColumnDefinition Width="464" />
               <ColumnDefinition Width="auto" />
               <ColumnDefinition Width="10" />
               <ColumnDefinition Width="auto" />
