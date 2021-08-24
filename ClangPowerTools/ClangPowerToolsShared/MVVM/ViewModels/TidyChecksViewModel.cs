@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.Events;
 using ClangPowerTools.MVVM;
 using ClangPowerTools.MVVM.Commands;
+using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
@@ -22,8 +23,8 @@ namespace ClangPowerTools
     private string checkSearch = string.Empty;
     private TidySettingsModel tidyModel;
     private TidyChecksView tidyChecksView;
-    private TidyCheckModel selectedCheck = new TidyCheckModel();
-    private List<TidyCheckModel> tidyChecksList = new List<TidyCheckModel>();
+    private TidyCheckModel selectedCheck = new();
+    private List<TidyCheckModel> tidyChecksList = new();
     private ICommand resetSearchCommand;
     private ICommand defaultChecks;
 
@@ -127,12 +128,12 @@ namespace ClangPowerTools
 
     public ICommand ResetSearchCommand
     {
-      get => resetSearchCommand ?? (resetSearchCommand = new RelayCommand(() => ResetSearchField(), () => CanExecute));
+      get => resetSearchCommand ??= new RelayCommand(() => ResetSearchField(), () => CanExecute);
     }
 
     public ICommand DefaultChecks
     {
-      get => defaultChecks ?? (defaultChecks = new RelayCommand(() => SetDefaultChecks(), () => CanExecute));
+      get => defaultChecks ??= new RelayCommand(() => SetDefaultChecks(), () => CanExecute);
     }
 
     #endregion
@@ -151,6 +152,13 @@ namespace ClangPowerTools
         if (model.IsChecked != checkValue)
           model.IsChecked = checkValue;
       }
+    }
+
+    public void OpenBrowser(string tidyCheckName)
+    {
+      var browserView = new BrowserView(tidyCheckName);
+      browserView.Owner = tidyChecksView;
+      browserView.OpenDescription();
     }
 
     private void TickPredefinedChecks()
@@ -178,13 +186,8 @@ namespace ClangPowerTools
 
     private void InitializeChecks()
     {
-      string predefinedChecks = SettingsProvider.TidySettingsModel.PredefinedChecks;
-
-      var tidyChecksClean = new TidyChecksClean();
-      tidyChecksList = new List<TidyCheckModel>(tidyChecksClean.Checks);
+      tidyChecksList = new TidyChecks().Checks;
       TickPredefinedChecks();
-
-      // Set the toggle button state on the first loading of tidy checks list
       SetStateForEnableDisableAllButton(tidyChecksList);
     }
 
@@ -270,10 +273,16 @@ namespace ClangPowerTools
 
     private void SetDefaultChecks()
     {
-      var tidyChecks = new TidyChecks();
-      for (int index = 0; index < tidyChecks.Checks.Count; ++index)
+      foreach (TidyCheckModel check in tidyChecksList)
       {
-        tidyChecksList[index].IsChecked = tidyChecks.Checks[index].IsChecked;
+        if (TidyChecksDefault.Checks.Contains(check.Name))
+        {
+          check.IsChecked = true;
+        }
+        else
+        {
+          check.IsChecked = false;
+        }
       }
     }
 

@@ -6,8 +6,6 @@
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:views="clr-namespace:ClangPowerTools.MVVM.Views"
-  d:DataContext="{d:DesignInstance local:CompilerSettingsViewModel,
-                                   IsDesignTimeCreatable=True}"
   d:DesignHeight="490"
   d:DesignWidth="770"
   mc:Ignorable="d">

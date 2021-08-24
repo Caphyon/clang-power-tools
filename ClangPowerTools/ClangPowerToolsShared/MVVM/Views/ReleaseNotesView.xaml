@@ -9,8 +9,6 @@
   Title="Release Notes"
   Width="550"
   Height="710"
-  d:DataContext="{d:DesignInstance local:ReleaseNotesViewModel,
-                                   IsDesignTimeCreatable=True}"
   Icon="/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
   Topmost="True"
