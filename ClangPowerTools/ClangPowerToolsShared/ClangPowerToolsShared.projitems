@@ -157,7 +157,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\SettingsTooltips.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\TextManipulation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\TidyChecks.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\TidyChecksClean.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\TidyChecksDefault.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\AccountViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\BrowserViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\CompilerSettingsViewModel.cs" />
