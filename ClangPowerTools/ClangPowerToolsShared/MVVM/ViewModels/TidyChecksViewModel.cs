@@ -6,6 +6,7 @@ using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -156,9 +157,15 @@ namespace ClangPowerTools
 
     public void OpenBrowser(string tidyCheckName)
     {
-      var browserView = new BrowserView(tidyCheckName);
-      browserView.Owner = tidyChecksView;
-      browserView.OpenDescription();
+      var uri = CreateFlagUri(tidyCheckName);
+      Process.Start(uri);
+    }
+
+    private string CreateFlagUri(string tidyCheckName)
+    {
+      StringBuilder sb = new();
+      sb.Append(TidyConstants.FlagsUri).Append(tidyCheckName).Append(".html");
+      return sb.ToString();
     }
 
     private void TickPredefinedChecks()

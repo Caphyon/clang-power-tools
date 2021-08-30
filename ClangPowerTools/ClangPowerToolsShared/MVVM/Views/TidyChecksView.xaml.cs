@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Text;
 using System.Windows;
 
 namespace ClangPowerTools.Views
@@ -34,6 +36,7 @@ namespace ClangPowerTools.Views
       var elementIndex = GetElementIndex(sender as FrameworkElement);
       var tidyCheckModel = viewModel.TidyChecksList.ElementAt(elementIndex);
       viewModel.OpenBrowser(tidyCheckModel.Name);
+
     }
 
     private int GetElementIndex(FrameworkElement frameworkElement)
