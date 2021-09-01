@@ -8,7 +8,7 @@
   xmlns:searchBox="clr-namespace:ClangPowerTools.Views"
   Title="Tidy Checks"
   Width="690"
-  Height="630"
+  Height="626"
   Background="WhiteSmoke"
   ResizeMode="NoResize"
   ShowActivated="True"
@@ -31,13 +31,13 @@
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="30" />
+      <RowDefinition Height="30" />
       <RowDefinition Height="*" />
-      <RowDefinition Height="40" />
     </Grid.RowDefinitions>
 
     <!--  Select all -->
     <ToggleButton
-      x:Name="EnableDisableButton"
+      x:Name="EnableDisableAll"
       Grid.Row="0"
       Width="120"
       Height="20"
@@ -45,6 +45,17 @@
       HorizontalAlignment="right"
       VerticalAlignment="Center"
       Tag="Enable" />
+
+    <!--  Select defaults -->
+    <ToggleButton
+      x:Name="EnableDisableDefaults"
+      Grid.Row="1"
+      Width="120"
+      Height="20"
+      Margin="0,0,7,0"
+      HorizontalAlignment="right"
+      VerticalAlignment="Center" 
+      Tag="Defaults" />
 
     <!--  Search  -->
     <searchBox:SearchBoxView
@@ -57,7 +68,7 @@
     <!--  Checks list  -->
     <ListBox
       x:Name="TidyChecksListBox"
-      Grid.Row="1"
+      Grid.Row="2"
       Grid.Column="0"
       ItemsSource="{Binding TidyChecksList}"
       ScrollViewer.CanContentScroll="True"
@@ -125,19 +136,6 @@
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>
-
-    <Button
-      Grid.Row="2"
-      Grid.Column="2"
-      Width="110"
-      Height="30"
-      Margin="5,0,0,0"
-      HorizontalAlignment="Left"
-      Command="{Binding DefaultChecks}"
-      Content="Default Checks"
-      FontSize="14"
-      Foreground="White"
-      Style="{StaticResource SettingsButton}" />
 
   </Grid>
 
