@@ -154,6 +154,32 @@
                 <Setter TargetName="StateToggleSwitch" Property="Text" Value="Disable All" />
               </MultiTrigger.Setters>
             </MultiTrigger>
+
+            <!--  Enable defaults Switch  -->
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsChecked" Value="false" />
+                <Condition Property="Tag" Value="Defaults" />
+              </MultiTrigger.Conditions>
+              <MultiTrigger.Setters>
+                <Setter TargetName="BackgroundToggleSwitch" Property="Fill" Value="#A0A0A0" />
+                <Setter TargetName="DotToggleSwitch" Property="Margin" Value="-20,0,0,0" />
+                <Setter TargetName="StateToggleSwitch" Property="Text" Value="Defaults" />
+              </MultiTrigger.Setters>
+            </MultiTrigger>
+
+            <MultiTrigger>
+              <MultiTrigger.Conditions>
+                <Condition Property="IsChecked" Value="true" />
+                <Condition Property="Tag" Value="Defaults" />
+              </MultiTrigger.Conditions>
+              <MultiTrigger.Setters>
+                <Setter TargetName="BackgroundToggleSwitch" Property="Fill" Value="#9E005A" />
+                <Setter TargetName="DotToggleSwitch" Property="Margin" Value="0,0,-20,0" />
+                <Setter TargetName="StateToggleSwitch" Property="Text" Value="Defaults" />
+              </MultiTrigger.Setters>
+            </MultiTrigger>
+
           </ControlTemplate.Triggers>
         </ControlTemplate>
       </Setter.Value>
