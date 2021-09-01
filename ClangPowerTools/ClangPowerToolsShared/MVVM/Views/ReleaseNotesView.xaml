@@ -116,7 +116,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Support for LLVM 12.0.1"
+          Text="• Update cland-tidy checks"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -126,7 +126,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• PowerShell script updater"
+          Text="• Easy access to clang-tidy checks documentation"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -136,19 +136,9 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• New format options added to the Format Editor"
+          Text="• Improved UI in the clang-tidy checks window"
           TextWrapping="Wrap" />
 
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          FontWeight="Bold"
-          IsReadOnly="True"
-          Text="• IMPORTANT: This is the final release that supports Visual Studio 2015"
-          TextWrapping="Wrap" />
 
         <!--  Bug Fixes  -->
         <TextBox
@@ -167,7 +157,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Projects are not added in the Projects to ignore section"
+          Text="• Deprecated clang-tidy flags found in the list"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -177,17 +167,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Certain format options don't work due to the new value type"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• MSBuildThisFileDirectory evaluates to wrong value in some cases"
+          Text="• Error due to Open Project type check"
           TextWrapping="Wrap" />
 
       </ListView>
