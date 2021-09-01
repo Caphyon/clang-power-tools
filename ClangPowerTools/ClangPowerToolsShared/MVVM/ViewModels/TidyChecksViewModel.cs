@@ -1,7 +1,6 @@
 ﻿using ClangPowerTools.Events;
 using ClangPowerTools.MVVM;
 using ClangPowerTools.MVVM.Commands;
-using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
@@ -27,7 +26,6 @@ namespace ClangPowerTools
     private TidyCheckModel selectedCheck = new();
     private List<TidyCheckModel> tidyChecksList = new();
     private ICommand resetSearchCommand;
-    private ICommand defaultChecks;
 
     #endregion
 
@@ -42,11 +40,18 @@ namespace ClangPowerTools
 
       // Click event is used because the Check value is changed many time from the code
       // In this way we don't need to make more checks to see from where the Check event was triggered 
-      tidyChecksView.EnableDisableButton.Click += (object sender, RoutedEventArgs e) =>
+      tidyChecksView.EnableDisableAll.Click += (object sender, RoutedEventArgs e) =>
       {
         // Check event is triggered before Click event. 
         // IsChecked property will already have the new value when the Click event will happend 
-        EnableDisableAllChecks(tidyChecksView.EnableDisableButton.IsChecked == true ? true : false);
+        EnableDisableAllChecks(tidyChecksView.EnableDisableAll.IsChecked == true ? true : false);
+      };
+
+      tidyChecksView.EnableDisableDefaults.Click += (object sender, RoutedEventArgs e) =>
+      {
+        // Check event is triggered before Click event. 
+        // IsChecked property will already have the new value when the Click event will happend 
+        SetDefaultsToggle(tidyChecksView.EnableDisableDefaults.IsChecked == true ? true : false);
       };
 
       InitializeChecks();
@@ -81,7 +86,7 @@ namespace ClangPowerTools
         CollectionElementsCounter.Initialize(checks);
         CollectionElementsCounter.StateEvent += SetStateForEnableDisableAllButton;
 
-        SetStateForEnableDisableAllButton(checks);
+        SetInitialStateEnableAllToggle(checks);
 
         return checks;
       }
@@ -132,11 +137,6 @@ namespace ClangPowerTools
       get => resetSearchCommand ??= new RelayCommand(() => ResetSearchField(), () => CanExecute);
     }
 
-    public ICommand DefaultChecks
-    {
-      get => defaultChecks ??= new RelayCommand(() => SetDefaultChecks(), () => CanExecute);
-    }
-
     #endregion
 
 
@@ -147,17 +147,27 @@ namespace ClangPowerTools
       if (tidyChecksView.TidyChecksListBox.SelectedItems.Count <= 1)
         return;
 
-      foreach (var item in tidyChecksView.TidyChecksListBox.SelectedItems)
+      foreach (object item in tidyChecksView.TidyChecksListBox.SelectedItems)
       {
-        var model = (TidyCheckModel)item;
+        TidyCheckModel model = (TidyCheckModel)item;
         if (model.IsChecked != checkValue)
+        {
           model.IsChecked = checkValue;
+        }
+      }
+    }
+
+    public void DeactivateDefaultsToggle()
+    {
+      if (tidyChecksView.EnableDisableDefaults.IsChecked.Value)
+      {
+        tidyChecksView.EnableDisableDefaults.IsChecked = false;
       }
     }
 
     public void OpenBrowser(string tidyCheckName)
     {
-      var uri = CreateFlagUri(tidyCheckName);
+      string uri = CreateFlagUri(tidyCheckName);
       Process.Start(uri);
     }
 
@@ -168,16 +178,18 @@ namespace ClangPowerTools
       return sb.ToString();
     }
 
-    private void TickPredefinedChecks()
+    private void LoadChecks()
     {
       string input = SettingsProvider.TidySettingsModel.PredefinedChecks;
 
       if (string.IsNullOrWhiteSpace(input))
+      {
         return;
+      }
 
       input = Regex.Replace(input, @"\s+", "");
       input = input.Remove(input.Length - 1, 1);
-      var checkNames = input.Split(';').ToList();
+      List<string> checkNames = input.Split(';').ToList();
 
       foreach (string check in checkNames)
       {
@@ -194,9 +206,44 @@ namespace ClangPowerTools
     private void InitializeChecks()
     {
       tidyChecksList = new TidyChecks().Checks;
-      TickPredefinedChecks();
-      SetStateForEnableDisableAllButton(tidyChecksList);
+      LoadChecks();
+      SetInitialStateEnableAllToggle(tidyChecksList);
+      SetInitialStateDefaultsToggle();
     }
+
+    private void SetDefaultsToggle(bool value)
+    {
+      if (value)
+      {
+        SetDefaultChecks();
+      }
+      else
+      {
+        EnableDisableAllChecks(false);
+      }
+    }
+
+    private void SetInitialStateDefaultsToggle()
+    {
+      int count = tidyChecksList.Where(e => e.IsChecked).Count();
+      if (count == 0 || count != TidyChecksDefault.Checks.Count)
+      {
+        tidyChecksView.EnableDisableDefaults.IsChecked = false;
+        return;
+      }
+
+      foreach (TidyCheckModel check in tidyChecksList)
+      {
+        if (check.IsChecked == false && TidyChecksDefault.Checks.Contains(check.Name))
+        {
+          tidyChecksView.EnableDisableDefaults.IsChecked = false;
+          return;
+        }
+      }
+
+      tidyChecksView.EnableDisableDefaults.IsChecked = true;
+    }
+
 
     /// <summary>
     /// Enable or disable all the tidy checks from the current tidy checks list 
@@ -217,26 +264,26 @@ namespace ClangPowerTools
     /// Set the state for Enable/Disable All toggle button
     /// </summary>
     /// <param name="checks">Tidy checks collection</param>
-    private void SetStateForEnableDisableAllButton(IEnumerable<TidyCheckModel> checks)
+    private void SetInitialStateEnableAllToggle(IEnumerable<TidyCheckModel> checks)
     {
       // to avoid enter in the second condition the first one must be split in two if statements
       // uncheck the Enable All toggle button if the retured list of checks has 0 elements
       if (checks.Count() == 0)
       {
-        if (tidyChecksView.EnableDisableButton.IsChecked == true)
-          tidyChecksView.EnableDisableButton.IsChecked = false;
+        if (tidyChecksView.EnableDisableAll.IsChecked == true)
+          tidyChecksView.EnableDisableAll.IsChecked = false;
       }
 
       // check the Enable All toggle button if all the checks from the current view are enabled
-      else if (tidyChecksView.EnableDisableButton.IsChecked == false && !checks.Any(c => c.IsChecked == false))
+      else if (tidyChecksView.EnableDisableAll.IsChecked == false && !checks.Any(c => c.IsChecked == false))
       {
-        tidyChecksView.EnableDisableButton.IsChecked = true;
+        tidyChecksView.EnableDisableAll.IsChecked = true;
       }
 
       // uncheck the Enable All toggle button if any check from the list is disabled
-      else if (tidyChecksView.EnableDisableButton.IsChecked == true && checks.Any(c => c.IsChecked == false))
+      else if (tidyChecksView.EnableDisableAll.IsChecked == true && checks.Any(c => c.IsChecked == false))
       {
-        tidyChecksView.EnableDisableButton.IsChecked = false;
+        tidyChecksView.EnableDisableAll.IsChecked = false;
       }
     }
 
@@ -247,7 +294,7 @@ namespace ClangPowerTools
     /// <param name="e">Contains the state of the toggle button</param>
     private void SetStateForEnableDisableAllButton(object sender, BoolEventArgs e)
     {
-      tidyChecksView.EnableDisableButton.IsChecked = e.Value;
+      tidyChecksView.EnableDisableAll.IsChecked = e.Value;
     }
 
     private void OnClosed(object sender, EventArgs e)
@@ -260,7 +307,7 @@ namespace ClangPowerTools
 
     private string GetSelectedChecks()
     {
-      var checks = new StringBuilder();
+      StringBuilder checks = new();
 
       foreach (TidyCheckModel item in tidyChecksList)
       {
@@ -282,14 +329,7 @@ namespace ClangPowerTools
     {
       foreach (TidyCheckModel check in tidyChecksList)
       {
-        if (TidyChecksDefault.Checks.Contains(check.Name))
-        {
-          check.IsChecked = true;
-        }
-        else
-        {
-          check.IsChecked = false;
-        }
+        check.IsChecked = TidyChecksDefault.Checks.Contains(check.Name);
       }
     }
 
