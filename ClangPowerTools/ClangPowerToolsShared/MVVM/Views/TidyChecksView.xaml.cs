@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Text;
 using System.Windows;
 
 namespace ClangPowerTools.Views
@@ -22,11 +24,13 @@ namespace ClangPowerTools.Views
     private void ToggleButton_Checked(object sender, RoutedEventArgs e)
     {
       viewModel.MultipleStateChange(true);
+      viewModel.DeactivateDefaultsToggle();
     }
 
     private void ToggleButton_Unchecked(object sender, RoutedEventArgs e)
     {
       viewModel.MultipleStateChange(false);
+      viewModel.DeactivateDefaultsToggle();
     }
 
     private void OpenDescription(object sender, RoutedEventArgs e)

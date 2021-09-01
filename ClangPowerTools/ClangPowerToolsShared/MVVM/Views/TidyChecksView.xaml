@@ -8,7 +8,7 @@
   xmlns:searchBox="clr-namespace:ClangPowerTools.Views"
   Title="Tidy Checks"
   Width="690"
-  Height="630"
+  Height="626"
   Background="WhiteSmoke"
   ResizeMode="NoResize"
   ShowActivated="True"
@@ -31,13 +31,13 @@
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="30" />
+      <RowDefinition Height="30" />
       <RowDefinition Height="*" />
-      <RowDefinition Height="40" />
     </Grid.RowDefinitions>
 
     <!--  Select all -->
     <ToggleButton
-      x:Name="EnableDisableButton"
+      x:Name="EnableDisableAll"
       Grid.Row="0"
       Width="120"
       Height="20"
@@ -45,6 +45,17 @@
       HorizontalAlignment="right"
       VerticalAlignment="Center"
       Tag="Enable" />
+
+    <!--  Select defaults -->
+    <ToggleButton
+      x:Name="EnableDisableDefaults"
+      Grid.Row="1"
+      Width="120"
+      Height="20"
+      Margin="0,0,7,0"
+      HorizontalAlignment="right"
+      VerticalAlignment="Center" 
+      Tag="Defaults" />
 
     <!--  Search  -->
     <searchBox:SearchBoxView
@@ -57,7 +68,7 @@
     <!--  Checks list  -->
     <ListBox
       x:Name="TidyChecksListBox"
-      Grid.Row="1"
+      Grid.Row="2"
       Grid.Column="0"
       ItemsSource="{Binding TidyChecksList}"
       ScrollViewer.CanContentScroll="True"
@@ -68,7 +79,7 @@
         <DataTemplate>
           <Grid>
             <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="464" />
+              <ColumnDefinition Width="472" />
               <ColumnDefinition Width="auto" />
               <ColumnDefinition Width="10" />
               <ColumnDefinition Width="auto" />
@@ -85,16 +96,31 @@
               TextWrapping="Wrap">
             </TextBlock>
 
-            <Button
-              Grid.Row="1"
-              Grid.Column="1"
-              Width="70"
-              Height="20"
-              Click="OpenDescription"
-              Content="Description"
-              FontSize="12"
-              Foreground="White"
-              Style="{StaticResource SettingsButton}" />
+            <Button 
+              Margin="0,2,0,0" 
+              Grid.Row="1" 
+              Grid.Column="1" 
+              Content="Description" 
+              Cursor="Hand" 
+              Click="OpenDescription">
+              <Button.Template>
+                <ControlTemplate TargetType="Button">
+                  <TextBlock TextDecorations="Underline">
+                    <ContentPresenter />
+                  </TextBlock>
+                </ControlTemplate>
+              </Button.Template>
+              <Button.Style>
+                <Style TargetType="Button">
+                  <Setter Property="Foreground" Value="#852012" />
+                  <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="true">
+                      <Setter Property="Foreground" Value="#FFBF8880" />
+                    </Trigger>
+                  </Style.Triggers>
+                </Style>
+              </Button.Style>
+            </Button>
 
             <ToggleButton
               Grid.Row="1"
@@ -110,19 +136,6 @@
         </DataTemplate>
       </ListBox.ItemTemplate>
     </ListBox>
-
-    <Button
-      Grid.Row="2"
-      Grid.Column="2"
-      Width="110"
-      Height="30"
-      Margin="5,0,0,0"
-      HorizontalAlignment="Left"
-      Command="{Binding DefaultChecks}"
-      Content="Default Checks"
-      FontSize="14"
-      Foreground="White"
-      Style="{StaticResource SettingsButton}" />
 
   </Grid>
 
