@@ -216,10 +216,12 @@ namespace ClangPowerTools
       if (value)
       {
         SetDefaultChecks();
+        tidyChecksView.EnableDisableDefaults.IsChecked = true;
       }
       else
       {
         EnableDisableAllChecks(false);
+        tidyChecksView.EnableDisableDefaults.IsChecked = false;
       }
     }
 
