@@ -116,7 +116,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Update cland-tidy checks"
+          Text="• Update clang-tidy checks"
           TextWrapping="Wrap" />
 
         <TextBox
