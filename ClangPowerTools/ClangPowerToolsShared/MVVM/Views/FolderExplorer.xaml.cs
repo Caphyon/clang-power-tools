@@ -1,9 +1,5 @@
-﻿using ClangPowerTools.MVVM.Models;
-using ClangPowerToolsShared.MVVM.ViewModels;
-using System.Collections.ObjectModel;
+﻿using ClangPowerToolsShared.MVVM.ViewModels;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace ClangPowerTools.MVVM.Views
 {
@@ -18,8 +14,7 @@ namespace ClangPowerTools.MVVM.Views
     public FolderExplorer()
     {
       InitializeComponent();
-      viewModel= new FolderExplorerViewModel(this);
-      DataContext = viewModel;
+      DataContext = new FolderExplorerViewModel(this);
       Owner = SettingsProvider.SettingsView;
     }
     #endregion
