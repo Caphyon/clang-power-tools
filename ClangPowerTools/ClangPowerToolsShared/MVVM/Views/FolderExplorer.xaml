@@ -10,12 +10,12 @@
     <!--  Static resources  -->
 
 
-    <Grid Margin="2,2,-0.4,0" RenderTransformOrigin="0.5,0.5" Height="303" VerticalAlignment="Top">
+    <Grid Margin="2,0,0,0" RenderTransformOrigin="0.5,0.5" Height="317" VerticalAlignment="Center">
         <Grid.RenderTransform>
             <TransformGroup>
                 <ScaleTransform/>
                 <SkewTransform/>
-                <RotateTransform Angle="-0.188"/>
+                <RotateTransform/>
                 <TranslateTransform/>
             </TransformGroup>
         </Grid.RenderTransform>
@@ -51,13 +51,13 @@
         <TextBox x:Name="FolderPathTextBox" 
                  Grid.ColumnSpan="3" 
                  HorizontalAlignment="Left"
-                 Margin="110,6,0,0"
+                 Margin="108,7,0,0"
                  Grid.Row="6"
                  TextWrapping="Wrap"
                  VerticalAlignment="Top"
                  Width="437"
                  Height="28"
-                 Text="{Binding folderPath}"/>
-
+                 Text="{Binding PathFolder}"/>
+        <Button x:Name="button" Content="Ok" Grid.Column="1" HorizontalAlignment="Left" Margin="110,130,0,0" Grid.Row="6" VerticalAlignment="Top" Width="75" Command="{Binding DownloadLLVMCommand}"/>
     </Grid>
 </Window>

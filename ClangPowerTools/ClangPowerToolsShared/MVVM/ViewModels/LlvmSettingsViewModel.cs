@@ -45,7 +45,6 @@ namespace ClangPowerTools
     #endregion
 
     #region Properties
-
     public List<LlvmModel> Llvms
     {
       get
@@ -124,34 +123,8 @@ namespace ClangPowerTools
 
     public void BrowseForLLVM()
     {
-      FolderExplorer view = new FolderExplorer();
-      view.Show();
-      //FolderExplorer.show();
-      //var llvmBinDirectoryPath = BrowseForFolderFiles();
-      //if (string.IsNullOrWhiteSpace(llvmBinDirectoryPath))
-      //  return;
-
-      //var clangPath = Path.Combine(llvmBinDirectoryPath, "clang.exe");
-      //if (!File.Exists(clangPath))
-      //{
-      //  clangPath = Path.Combine(llvmBinDirectoryPath, "bin", "clang.exe");
-      //  if (!File.Exists(clangPath))
-      //  {
-      //    MessageBox.Show("LLVM version can't be detected", "Clang Power Tools",
-      //      MessageBoxButtons.OK, MessageBoxIcon.Warning);
-      //    return;
-      //  }
-      //  llvmBinDirectoryPath = Path.Combine(llvmBinDirectoryPath, "bin");
-      //}
-
-      //var versionInfo = FileVersionInfo.GetVersionInfo(clangPath);
-      //string version = versionInfo.FileVersion.Split()[0];
-
-      //preinstalledLlvm = new PreinstalledLlvm(Llvms, InstalledLlvms);
-      //preinstalledLlvm.SetPreinstalledLlvm(llvmBinDirectoryPath, version);
-
-      //view.VersionsList.Items.Refresh();
-      //VersionUsed = version;
+      FolderExplorer folderExplorerview = new FolderExplorer();
+      folderExplorerview.ShowDialog();
     }
 
     #endregion

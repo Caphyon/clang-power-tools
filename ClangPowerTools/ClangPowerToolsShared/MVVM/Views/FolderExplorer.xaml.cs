@@ -14,9 +14,14 @@ namespace ClangPowerTools.MVVM.Views
     public FolderExplorer()
     {
       InitializeComponent();
-      DataContext = new FolderExplorerViewModel(this);
+      DataContext = new FolderExplorerViewModel();
       Owner = SettingsProvider.SettingsView;
     }
     #endregion
+
+    public void ResetView()
+    {
+      DataContext = new FolderExplorerViewModel();
+    }
   }
 }
