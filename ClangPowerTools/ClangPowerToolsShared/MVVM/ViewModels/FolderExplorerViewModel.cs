@@ -26,6 +26,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private ICommand findFolderPathCommand;
     private ICommand downloadLLVMCommand;
     #endregion
+    public FolderExplorerViewModel(FolderExplorer folderExplorer)
+    {
+      folderExplorerView = folderExplorer;
+    }
 
     #region Properties
     public ObservableCollection<string> InstalledLlvms { get; set; } = new ObservableCollection<string>();
@@ -106,7 +110,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       preinstalledLlvm = new PreinstalledLlvm(Llvms, InstalledLlvms);
       preinstalledLlvm.SetPreinstalledLlvm(PathFolder, version);
       VersionUsed = version;
-      
+      folderExplorerView.Close();
     }
 
     public void GetFolderPath()
