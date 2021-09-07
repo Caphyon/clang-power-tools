@@ -17,9 +17,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
   public class FolderExplorerViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
   {
     #region Members
+    public event PropertyChangedEventHandler PropertyChanged;
+
     private readonly FolderExplorer folderExplorerView;
     private string pathFolder = string.Empty;
-    public event PropertyChangedEventHandler PropertyChanged;
     private PreinstalledLlvm preinstalledLlvm;
     private List<LlvmModel> llvms = new List<LlvmModel>();
 

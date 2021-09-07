@@ -138,7 +138,6 @@ namespace ClangPowerTools
       UIUpdater.InvokeAsync(InsertVersionToInstalledLlvms).SafeFireAndForget();
     }
 
-
     private void UninstallFinished(object sender, EventArgs e)
     {
       ResetVersionUsedIfRequired();
