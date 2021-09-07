@@ -6,10 +6,10 @@ namespace ClangPowerTools.MVVM.Views
   /// <summary>
   /// Interaction logic for InputList.xaml
   /// </summary>
-  public partial class FolderExplorer : Window
+  public partial class FolderExplorerView : Window
   {
     #region Constructor
-    public FolderExplorer()
+    public FolderExplorerView()
     {
       InitializeComponent();
       DataContext = new FolderExplorerViewModel(this);

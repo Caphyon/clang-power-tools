@@ -123,7 +123,7 @@ namespace ClangPowerTools
 
     public void BrowseForLLVM()
     {
-      FolderExplorer folderExplorerview = new FolderExplorer();
+      FolderExplorerView folderExplorerview = new FolderExplorerView();
       folderExplorerview.ShowDialog();
     }
 

@@ -19,7 +19,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private readonly FolderExplorer folderExplorerView;
+    private readonly FolderExplorerView folderExplorerView;
     private string pathFolder = string.Empty;
     private PreinstalledLlvm preinstalledLlvm;
     private List<LlvmModel> llvms = new List<LlvmModel>();
@@ -27,7 +27,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private ICommand findFolderPathCommand;
     private ICommand downloadLLVMCommand;
     #endregion
-    public FolderExplorerViewModel(FolderExplorer folderExplorer)
+    public FolderExplorerViewModel(FolderExplorerView folderExplorer)
     {
       folderExplorerView = folderExplorer;
     }

@@ -177,8 +177,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TidySettingsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\ToggleMultipleDataViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TrialExpiredViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\FolderExplorer.xaml.cs">
-      <DependentUpon>FolderExplorer.xaml</DependentUpon>
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\FolderExplorerView.xaml.cs">
+      <DependentUpon>FolderExplorerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\WebApi\WebApiUrl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\XmlSerializer.cs" />
@@ -292,7 +292,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\FolderExplorer.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\FolderExplorerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
