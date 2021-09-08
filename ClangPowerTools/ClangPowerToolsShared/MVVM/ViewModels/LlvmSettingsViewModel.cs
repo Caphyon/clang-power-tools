@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net;
 using System.Windows.Input;
+using System.Windows.Forms;
 
 namespace ClangPowerTools
 {
@@ -23,7 +24,6 @@ namespace ClangPowerTools
     private List<LlvmModel> llvms = new List<LlvmModel>();
     private PreinstalledLlvm preinstalledLlvm;
     private const string uninstall = "Uninstall";
-
     private ICommand browseForLlvmCommand;
 
     private LlvmSettingsView view;
@@ -41,6 +41,8 @@ namespace ClangPowerTools
       llvmController.OnOperationCanceldEvent += OperationCanceled;
       WindowClosed += llvmController.SettingsWindowClosed;
       IntitializeView();
+      SettingsProvider.Llvms = llvms;
+      SettingsProvider.InstalledLlvms = InstalledLlvms;
     }
     #endregion
 
@@ -125,6 +127,7 @@ namespace ClangPowerTools
     {
       FolderExplorerView folderExplorerview = new FolderExplorerView();
       folderExplorerview.ShowDialog();
+      VersionUsed = SettingsProvider.LlvmSettingsModel.LlvmSelectedVersion;
     }
 
     #endregion

@@ -31,9 +31,9 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="9" />
-            <ColumnDefinition Width="424"/>
-            <ColumnDefinition Width="157*" />
+            <ColumnDefinition Width="15" />
+            <ColumnDefinition Width="453"/>
+            <ColumnDefinition Width="122*" />
             <ColumnDefinition Width="15*"/>
         </Grid.ColumnDefinitions>
         <Button Grid.Column="2"
@@ -52,17 +52,16 @@
             Grid.Row="1" 
             Grid.Column="1"
             Content="LLVM Path"
+            FontSize="16"
             HorizontalAlignment="Left" 
             VerticalAlignment="Center" 
             Height="30" 
-            Width="72"/>
+            Width="83"/>
         <TextBox Grid.Row="1"
-                 HorizontalAlignment="Left"
-                 TextWrapping="Wrap"
-                 VerticalAlignment="Center"
-                 Width="337"
-                 Height="30"
-                 Text="{Binding PathFolder}" Margin="77,0,0,0" Grid.Column="1"/>
+                 VerticalContentAlignment="Center"
+                 FontFamily="SegoeUI"
+                 FontSize="15"
+                 Text="{Binding PathFolder}" Margin="88,3,4,3" Grid.Column="1"/>
         <Button Grid.Column="1"
                 Grid.Row="3"
                 Content="Ok" 

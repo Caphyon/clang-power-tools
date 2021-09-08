@@ -22,7 +22,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private readonly FolderExplorerView folderExplorerView;
     private string pathFolder = string.Empty;
     private PreinstalledLlvm preinstalledLlvm;
-    private List<LlvmModel> llvms = new List<LlvmModel>();
 
     private ICommand findFolderPathCommand;
     private ICommand downloadLLVMCommand;
@@ -34,7 +33,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     }
 
     #region Properties
-    public ObservableCollection<string> InstalledLlvms { get; set; } = new ObservableCollection<string>();
 
     public string PathFolder
     {
@@ -74,19 +72,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
     }
 
-    public List<LlvmModel> Llvms
-    {
-      get
-      {
-        return llvms;
-      }
-
-      set
-      {
-        llvms = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Llvms"));
-      }
-    }
     #endregion
 
     #region Public Methods
@@ -108,8 +93,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
       var versionInfo = FileVersionInfo.GetVersionInfo(clangPath);
       string version = versionInfo.FileVersion.Split()[0];
-
-      preinstalledLlvm = new PreinstalledLlvm(Llvms, InstalledLlvms);
+      
+      preinstalledLlvm = new PreinstalledLlvm(SettingsProvider.Llvms, SettingsProvider.InstalledLlvms);
       preinstalledLlvm.SetPreinstalledLlvm(PathFolder, version);
       VersionUsed = version;
       folderExplorerView.Close();
