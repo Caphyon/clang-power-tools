@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ClangPowerTools"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d" Height="268" Width="514"
+    mc:Ignorable="d" Height="291" Width="605"
     ResizeMode="NoResize" 
     >
 
@@ -23,60 +23,66 @@
             <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
         </Grid.Background>
         <Grid.RowDefinitions>
-            <RowDefinition Height="58" />
-            <RowDefinition Height="31*" />
-            <RowDefinition Height="68*"/>
+            <RowDefinition Height="64" />
+            <RowDefinition Height="36*" />
+            <RowDefinition Height="74*"/>
+            <RowDefinition Height="40*"/>
+            <RowDefinition Height="61*"/>
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="70" />
-            <ColumnDefinition Width="310" />
-            <ColumnDefinition />
+            <ColumnDefinition Width="9" />
+            <ColumnDefinition Width="424"/>
+            <ColumnDefinition Width="157*" />
+            <ColumnDefinition Width="15*"/>
         </Grid.ColumnDefinitions>
         <Button Grid.Column="2"
                 Grid.Row="1"
-                Content="Browse" 
                 HorizontalAlignment="Center" 
                 VerticalAlignment="Center" 
-                Width="86" 
+                Width="80" 
                 Height="30"
                 Command="{Binding FindFolderPathCommand}"                
-                Style="{StaticResource SettingsButton}"
-                FontSize="14"
-                Foreground="White"/>
+                Style="{StaticResource SettingsButton}">
+            <Button.Content>
+                <Image Source="{StaticResource BrowseImage}" />
+            </Button.Content>
+        </Button>
         <Label 
             Grid.Row="1" 
-            Grid.Column="0"
+            Grid.Column="1"
             Content="LLVM Path"
             HorizontalAlignment="Left" 
             VerticalAlignment="Center" 
-            Height="26" 
-            Width="65"/>
+            Height="30" 
+            Width="72"/>
         <TextBox Grid.Row="1"
-                 Grid.Column="1"
-                 HorizontalAlignment="Center"
+                 HorizontalAlignment="Left"
                  TextWrapping="Wrap"
                  VerticalAlignment="Center"
-                 Width="462"
-                 Height="28"
-                 Text="{Binding PathFolder}"/>
-        <Button Grid.Column="1" 
-                Grid.Row="2"
+                 Width="337"
+                 Height="30"
+                 Text="{Binding PathFolder}" Margin="77,0,0,0" Grid.Column="1"/>
+        <Button Grid.Column="1"
+                Grid.Row="3"
                 Content="Ok" 
-                HorizontalAlignment="Center" 
+                HorizontalAlignment="Left" 
                 VerticalAlignment="Center" 
-                Width="90" 
-                Command="{Binding DownloadLLVMCommand}" 
-                Height="32"
+                Width="80" 
+                Command="{Binding SetLLVMCommand}" 
+                Height="30"
                 Style="{StaticResource SettingsButton}"
                 FontSize="14"
-                Foreground="White"/>
-        <Label
-                Grid.Column="1" 
-                FontSize="24"
-                Content="Browse for LLVM path" 
-                HorizontalAlignment="Center" 
-                VerticalAlignment="Center" Height="54" Width="272"
-                />
+                Foreground="White" Margin="223,0,0,0" />
+        <Label 
+            FontSize="18"
+            Content="Browse for LLVM " 
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Center" 
+            Height="30" 
+            Width="150" 
+            Margin="193,0,0,0"
+            Grid.Column="1"
+            />
     </Grid>
 </Window>

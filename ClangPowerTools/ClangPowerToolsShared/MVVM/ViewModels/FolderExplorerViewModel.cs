@@ -30,6 +30,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public FolderExplorerViewModel(FolderExplorerView folderExplorer)
     {
       folderExplorerView = folderExplorer;
+      PathFolder = string.Empty;
     }
 
     #region Properties
@@ -54,9 +55,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       get => findFolderPathCommand ?? (findFolderPathCommand = new RelayCommand(() => GetFolderPath(), () => CanExecute));
     }
-    public ICommand DownloadLLVMCommand
+    public ICommand SetLLVMCommand
     {
-      get => downloadLLVMCommand ?? (downloadLLVMCommand = new RelayCommand(() => DownloadLLVM(), () => CanExecute));
+      get => downloadLLVMCommand ?? (downloadLLVMCommand = new RelayCommand(() => SetLLVM(), () => CanExecute));
     }
 
     public string VersionUsed
@@ -89,7 +90,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     #endregion
 
     #region Public Methods
-    public void DownloadLLVM()
+    public void SetLLVM()
     {
       var clangPath = Path.Combine(PathFolder, "clang.exe");
       if (!File.Exists(clangPath))
