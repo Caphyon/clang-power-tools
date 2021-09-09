@@ -40,9 +40,8 @@ namespace ClangPowerTools
       llvmController.OnOperationCanceldEvent += OperationCanceled;
       WindowClosed += llvmController.SettingsWindowClosed;
       IntitializeView();
-      SettingsProvider.Llvms = llvms;
-      SettingsProvider.InstalledLlvms = InstalledLlvms;
     }
+
     #endregion
 
     #region Properties

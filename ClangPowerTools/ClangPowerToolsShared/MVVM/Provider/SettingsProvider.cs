@@ -17,9 +17,6 @@ namespace ClangPowerTools
     public static LlvmSettingsModel LlvmSettingsModel { get; set; } = new LlvmSettingsModel();
     public static AccountModel AccountModel { get; set; } = new AccountModel();
     public static SettingsView SettingsView { get; set; }
-    public static List<LlvmModel> Llvms { get; set; } = new List<LlvmModel>();
-    public static ObservableCollection<string> InstalledLlvms { get; set; } = new ObservableCollection<string>();
-
 
     public SettingsProvider Instance
     {

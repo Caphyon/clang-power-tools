@@ -35,19 +35,19 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public string PathFolder
     {
-      get
-      {
-        return pathFolder;
-      }
+      get => pathFolder;
       set
       {
         pathFolder = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PathFolder"));
       }
     }
+
+    public bool CanExecute => true;
     #endregion
 
     #region Commands
+
     public ICommand FindFolderPathCommand
     {
       get => findFolderPathCommand ?? (findFolderPathCommand = new RelayCommand(() => GetFolderPath(), () => CanExecute));
@@ -74,6 +74,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     #endregion
 
     #region Public Methods
+
     public void SetLLVM()
     {
       var clangPath = Path.Combine(PathFolder, "clang.exe");
@@ -127,13 +128,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         return;
     }
 
-    public bool CanExecute
-    {
-      get
-      {
-        return true;
-      }
-    }
     #endregion
   }
 }
