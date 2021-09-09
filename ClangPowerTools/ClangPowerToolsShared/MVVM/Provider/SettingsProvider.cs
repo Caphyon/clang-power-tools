@@ -1,5 +1,4 @@
 ﻿using ClangPowerTools.MVVM.Models;
-using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Views;
 
 namespace ClangPowerTools

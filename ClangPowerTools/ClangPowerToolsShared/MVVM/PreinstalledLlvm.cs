@@ -44,7 +44,7 @@ namespace ClangPowerTools
     private void SetPathAndVersion(string path, string version)
     {
       var settingsProviderLlvmModel = SettingsProvider.LlvmSettingsModel;
-      if ((string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmVersion) || string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmPath)) ||
+      if (string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmVersion) || string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmPath) ||
         (!string.IsNullOrWhiteSpace(path) && !string.IsNullOrWhiteSpace(version) && version != settingsProviderLlvmModel.PreinstalledLlvmVersion))
       {
         if (llvms.Find(e => e.Version == version) != null)

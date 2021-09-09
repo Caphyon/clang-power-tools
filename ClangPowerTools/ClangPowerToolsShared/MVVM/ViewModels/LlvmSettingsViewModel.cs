@@ -1,15 +1,13 @@
 ﻿using ClangPowerTools.Handlers;
 using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.MVVM.Controllers;
+using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
 using System.Net;
-using System.Windows.Forms;
 using System.Windows.Input;
 
 namespace ClangPowerTools
@@ -25,7 +23,6 @@ namespace ClangPowerTools
     private List<LlvmModel> llvms = new List<LlvmModel>();
     private PreinstalledLlvm preinstalledLlvm;
     private const string uninstall = "Uninstall";
-
     private ICommand browseForLlvmCommand;
 
     private LlvmSettingsView view;
@@ -44,10 +41,10 @@ namespace ClangPowerTools
       WindowClosed += llvmController.SettingsWindowClosed;
       IntitializeView();
     }
+
     #endregion
 
     #region Properties
-
     public List<LlvmModel> Llvms
     {
       get
@@ -126,31 +123,9 @@ namespace ClangPowerTools
 
     public void BrowseForLLVM()
     {
-      var llvmBinDirectoryPath = BrowseForFolderFiles();
-      if (string.IsNullOrWhiteSpace(llvmBinDirectoryPath))
-        return;
-
-      var clangPath = Path.Combine(llvmBinDirectoryPath, "clang.exe");
-      if (!File.Exists(clangPath))
-      {
-        clangPath = Path.Combine(llvmBinDirectoryPath, "bin", "clang.exe");
-        if (!File.Exists(clangPath))
-        {
-          MessageBox.Show("LLVM version can't be detected", "Clang Power Tools",
-            MessageBoxButtons.OK, MessageBoxIcon.Warning);
-          return;
-        }
-        llvmBinDirectoryPath = Path.Combine(llvmBinDirectoryPath, "bin");
-      }
-
-      var versionInfo = FileVersionInfo.GetVersionInfo(clangPath);
-      string version = versionInfo.FileVersion.Split()[0];
-
-      preinstalledLlvm = new PreinstalledLlvm(Llvms, InstalledLlvms);
-      preinstalledLlvm.SetPreinstalledLlvm(llvmBinDirectoryPath, version);
-
-      view.VersionsList.Items.Refresh();
-      VersionUsed = version;
+      FolderExplorerView folderExplorerview = new FolderExplorerView(Llvms, InstalledLlvms);
+      folderExplorerview.ShowDialog();
+      VersionUsed = SettingsProvider.LlvmSettingsModel.LlvmSelectedVersion;
     }
 
     #endregion
@@ -163,7 +138,6 @@ namespace ClangPowerTools
       VersionUsed = llvmController.llvmModel.Version;
       UIUpdater.InvokeAsync(InsertVersionToInstalledLlvms).SafeFireAndForget();
     }
-
 
     private void UninstallFinished(object sender, EventArgs e)
     {
