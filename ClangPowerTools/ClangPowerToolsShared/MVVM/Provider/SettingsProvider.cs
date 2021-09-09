@@ -1,8 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Models;
-using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Views;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace ClangPowerTools
 {
