@@ -312,10 +312,10 @@
         ItemsSource="{Binding InstalledLlvms}"
         SelectedItem="{Binding VersionUsed}" />
       <Button
-        Width="150"
-        Margin="335,0,0,0"
+        Width="120"
+        Margin="365,0,0,0"
         Command="{Binding BrowseForLLVMCommand}"
-        Content="Add Existing LLVM"
+        Content="Add LLVM"
         FontFamily="Segoe UI"
         FontSize="15"
         Foreground="White"

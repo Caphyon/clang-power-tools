@@ -9,7 +9,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Net;
 using System.Windows.Input;
-using System.Windows.Forms;
 
 namespace ClangPowerTools
 {
@@ -125,7 +124,7 @@ namespace ClangPowerTools
 
     public void BrowseForLLVM()
     {
-      FolderExplorerView folderExplorerview = new FolderExplorerView();
+      FolderExplorerView folderExplorerview = new FolderExplorerView(Llvms, InstalledLlvms);
       folderExplorerview.ShowDialog();
       VersionUsed = SettingsProvider.LlvmSettingsModel.LlvmSelectedVersion;
     }

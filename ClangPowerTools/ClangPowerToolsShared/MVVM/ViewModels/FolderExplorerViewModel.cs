@@ -1,14 +1,11 @@
 ﻿using ClangPowerTools;
 using ClangPowerTools.MVVM.Command;
 using ClangPowerTools.MVVM.Views;
-using ClangPowerTools.Views;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Windows.Forms;
 using System.Windows.Input;
 
@@ -18,18 +15,20 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
   {
     #region Members
     public event PropertyChangedEventHandler PropertyChanged;
-
-    private readonly FolderExplorerView folderExplorerView;
+    private FolderExplorerView folderExplorerView;
     private string pathFolder = string.Empty;
     private PreinstalledLlvm preinstalledLlvm;
+    private readonly List<LlvmModel> llvms;
+    private ObservableCollection<string> installedLlvms;
 
     private ICommand findFolderPathCommand;
     private ICommand downloadLLVMCommand;
     #endregion
-    public FolderExplorerViewModel(FolderExplorerView folderExplorer)
+    public FolderExplorerViewModel(FolderExplorerView folderExplorerView, List<LlvmModel> llvms, ObservableCollection<string> installedLlvms)
     {
-      folderExplorerView = folderExplorer;
-      PathFolder = string.Empty;
+      this.llvms = llvms;
+      this.installedLlvms = installedLlvms;
+      this.folderExplorerView = folderExplorerView;
     }
 
     #region Properties
@@ -93,11 +92,30 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
       var versionInfo = FileVersionInfo.GetVersionInfo(clangPath);
       string version = versionInfo.FileVersion.Split()[0];
-      
-      preinstalledLlvm = new PreinstalledLlvm(SettingsProvider.Llvms, SettingsProvider.InstalledLlvms);
+
+      if (IsVersionInstalled(version))
+      {
+        MessageBox.Show("This LLVM is already installed", "Clang Power Tools",
+           MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        return;
+      }
+
+      preinstalledLlvm = new PreinstalledLlvm(llvms, installedLlvms);
       preinstalledLlvm.SetPreinstalledLlvm(PathFolder, version);
       VersionUsed = version;
       folderExplorerView.Close();
+    }
+
+    private bool IsVersionInstalled(string version)
+    {
+      foreach (var llvm in installedLlvms)
+      {
+        if (llvm == version)
+        {
+          return true;
+        }
+      }
+      return false;
     }
 
     public void GetFolderPath()
