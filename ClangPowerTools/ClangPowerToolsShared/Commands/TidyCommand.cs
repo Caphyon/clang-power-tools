@@ -18,6 +18,7 @@ namespace ClangPowerTools.Commands
   /// </summary>
   public sealed class TidyCommand : ClangCommand
   {
+
     #region Properties
     private TidySettingsViewModel TidySettingsViewModel { get; set; }
     /// <summary>
@@ -52,6 +53,7 @@ namespace ClangPowerTools.Commands
         menuCommand.Enabled = true;
         aCommandService.AddCommand(menuCommand);
       }
+      TidySettingsViewModel = new TidySettingsViewModel();
     }
 
 
@@ -111,7 +113,7 @@ namespace ClangPowerTools.Commands
 
             if (tidySettings.DetectClangTidyFile && !mItemsCollector.IsEmpty)
             {
-              // Check for .clang-tidy congif file
+              // Check for .clang-tidy config file
               if (FileSystem.SearchAllTopDirectories(mItemsCollector.Items[0].GetPath(), FileSystem.ConfigClangTidyFileName))
                 tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
               else
@@ -140,10 +142,40 @@ namespace ClangPowerTools.Commands
       }
       else
       {
+        //Delete files from directory
+        DirectoryInfo di = new DirectoryInfo(TidyConstants.TidyTempPath);
+        FileInfo[] files = di.GetFiles();
+        foreach (FileInfo file in files)
+        {
+          file.Delete();
+        }
         Directory.Delete(TidyConstants.TidyTempPath);
+        
         Directory.CreateDirectory(TidyConstants.TidyTempPath);
       }
       TidySettingsViewModel.ExportTidyConfigInClangTidyTemp();
+
+      //File.Copy(Path.Combine(SettingsProvider.LlvmSettingsModel.PreinstalledLlvmPath, "clang-tidy.exe"), Path.Combine(TidyConstants.TidyTempPath, "clang-tidy.exe"));
+      FilePathCollector fileCollector = new FilePathCollector();
+      var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
+
+      var vsProcess = System.Diagnostics.Process.GetCurrentProcess();
+      string vsFullPath = vsProcess.MainModule.FileName;
+
+      foreach (string path in filesPath)
+      {
+        FileInfo file = new(path);
+        File.Copy(file.FullName, Path.Combine(TidyConstants.TidyTempPath, "_" + file.Name));
+        await RunClangTidyAsync(aCommandId, commandUILocation, document);
+        System.Diagnostics.Process p = new();
+        var startInfo = new System.Diagnostics.ProcessStartInfo();
+        startInfo.FileName = vsFullPath;
+        startInfo.Arguments = "/diff \"" + file.FullName + "\" \"" + Path.Combine(TidyConstants.TidyTempPath, "_" + file.Name) + "\"";
+        p.StartInfo = startInfo;
+        p.Start();
+      }
+
+
     }
   }
 

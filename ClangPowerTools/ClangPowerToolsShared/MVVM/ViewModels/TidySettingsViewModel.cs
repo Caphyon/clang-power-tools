@@ -131,7 +131,6 @@ namespace ClangPowerTools
       if (string.IsNullOrEmpty(path) == false)
       {
         WriteContentToFile(path, tidyConfigFile.CreateOutput().ToString());
-        MessageBox.Show(".clang-tidy file exported at the selected location.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
       }
     }
 
