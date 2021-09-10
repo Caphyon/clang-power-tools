@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
+using System.IO;
 using System.Linq;
 using Task = System.Threading.Tasks.Task;
 
@@ -18,7 +19,7 @@ namespace ClangPowerTools.Commands
   public sealed class TidyCommand : ClangCommand
   {
     #region Properties
-
+    private TidySettingsViewModel TidySettingsViewModel { get; set; }
     /// <summary>
     /// Gets the instance of the command.
     /// </summary>
@@ -130,8 +131,21 @@ namespace ClangPowerTools.Commands
         }
       });
     }
+
+    public async Task RunClangTidyFixAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)
+    {
+      if (!Directory.Exists(TidyConstants.TidyTempPath))
+      {
+        Directory.CreateDirectory(TidyConstants.TidyTempPath);
+      }
+      else
+      {
+        Directory.Delete(TidyConstants.TidyTempPath);
+        Directory.CreateDirectory(TidyConstants.TidyTempPath);
+      }
+      TidySettingsViewModel.ExportTidyConfigInClangTidyTemp();
+    }
   }
 
   #endregion
-
 }

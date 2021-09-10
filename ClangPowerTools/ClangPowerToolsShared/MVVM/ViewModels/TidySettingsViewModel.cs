@@ -4,6 +4,7 @@ using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -122,6 +123,18 @@ namespace ClangPowerTools
     #endregion
 
     #region Methods
+
+    public void ExportTidyConfigInClangTidyTemp()
+    {
+      var tidyConfigFile = new TidyConfigFile();
+      string path = Path.Combine(TidyConstants.TidyTempPath, ".clang-tidy");
+      if (string.IsNullOrEmpty(path) == false)
+      {
+        WriteContentToFile(path, tidyConfigFile.CreateOutput().ToString());
+        MessageBox.Show(".clang-tidy file exported at the selected location.", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      }
+    }
+
     private void UpdateHeaderFilter()
     {
       tidyModel.HeaderFilter = OpenContentDialog(tidyModel.HeaderFilter);
@@ -154,7 +167,7 @@ namespace ClangPowerTools
       string fileName = ".clang-tidy";
       string defaultExt = ".clang-tidy";
       string filter = "Configuration files (.clang-tidy)|*.clang-tidy";
-
+      
       string path = SaveFile(fileName, defaultExt, filter);
       if (string.IsNullOrEmpty(path) == false)
       {
