@@ -145,25 +145,32 @@ namespace ClangPowerTools.Commands
         DeleteTempTidyFolder();
         Directory.CreateDirectory(TidyConstants.TidyTempPath);
       }
+      await PrepareCommmandAsync(commandUILocation);
+
       TidySettingsViewModel.ExportTidyConfigInClangTidyTemp();
-      //File.Copy(Path.Combine(SettingsProvider.LlvmSettingsModel.PreinstalledLlvmPath, "clang-tidy.exe"), Path.Combine(TidyConstants.TidyTempPath, "clang-tidy.exe"));
-      FilePathCollector fileCollector = new FilePathCollector();
-      var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
+      var tidySettings = SettingsProvider.TidySettingsModel;
 
-      var vsProcess = System.Diagnostics.Process.GetCurrentProcess();
-      string vsFullPath = vsProcess.MainModule.FileName;
-
-      foreach (string path in filesPath)
+      if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
       {
-        FileInfo file = new(path);
-        File.Copy(file.FullName, Path.Combine(TidyConstants.TidyTempPath, "_" + file.Name));
-        await RunClangTidyAsync(aCommandId, commandUILocation, document);
-        System.Diagnostics.Process p = new();
-        var startInfo = new System.Diagnostics.ProcessStartInfo();
-        startInfo.FileName = vsFullPath;
-        startInfo.Arguments = "/diff \"" + Path.Combine(TidyConstants.TidyTempPath, "_" + file.Name) + "\" \"" + file.FullName + "\"";
-        p.StartInfo = startInfo;
-        p.Start();
+        FilePathCollector fileCollector = new FilePathCollector();
+        var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
+
+        var vsProcess = System.Diagnostics.Process.GetCurrentProcess();
+        string vsFullPath = vsProcess.MainModule.FileName;
+
+        foreach (string path in filesPath)
+        {
+          FileInfo file = new(path);
+          File.Copy(file.FullName, Path.Combine(TidyConstants.TidyTempPath, "_" + file.Name));
+          await RunClangTidyAsync(aCommandId, commandUILocation, document);
+          System.Diagnostics.Process p = new();
+          var startInfo = new System.Diagnostics.ProcessStartInfo();
+          startInfo.FileName = vsFullPath;
+          startInfo.Arguments = "/diff \"" + Path.Combine(TidyConstants.TidyTempPath, "_" + file.Name) + "\" \"" + file.FullName + "\"";
+          p.StartInfo = startInfo;
+          p.Start();
+          p.WaitForExit();
+        }
       }
       DeleteTempTidyFolder();
     }
