@@ -142,19 +142,10 @@ namespace ClangPowerTools.Commands
       }
       else
       {
-        //Delete files from directory
-        DirectoryInfo di = new DirectoryInfo(TidyConstants.TidyTempPath);
-        FileInfo[] files = di.GetFiles();
-        foreach (FileInfo file in files)
-        {
-          file.Delete();
-        }
-        Directory.Delete(TidyConstants.TidyTempPath);
-        
+        DeleteTempTidyFolder();
         Directory.CreateDirectory(TidyConstants.TidyTempPath);
       }
       TidySettingsViewModel.ExportTidyConfigInClangTidyTemp();
-
       //File.Copy(Path.Combine(SettingsProvider.LlvmSettingsModel.PreinstalledLlvmPath, "clang-tidy.exe"), Path.Combine(TidyConstants.TidyTempPath, "clang-tidy.exe"));
       FilePathCollector fileCollector = new FilePathCollector();
       var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
@@ -170,14 +161,23 @@ namespace ClangPowerTools.Commands
         System.Diagnostics.Process p = new();
         var startInfo = new System.Diagnostics.ProcessStartInfo();
         startInfo.FileName = vsFullPath;
-        startInfo.Arguments = "/diff \"" + file.FullName + "\" \"" + Path.Combine(TidyConstants.TidyTempPath, "_" + file.Name) + "\"";
+        startInfo.Arguments = "/diff \"" + Path.Combine(TidyConstants.TidyTempPath, "_" + file.Name) + "\" \"" + file.FullName + "\"";
         p.StartInfo = startInfo;
         p.Start();
       }
+      DeleteTempTidyFolder();
+    }
 
-
+    private void DeleteTempTidyFolder()
+    {
+      DirectoryInfo di = new DirectoryInfo(TidyConstants.TidyTempPath);
+      FileInfo[] files = di.GetFiles();
+      foreach (FileInfo file in files)
+      {
+        file.Delete();
+      }
+      Directory.Delete(TidyConstants.TidyTempPath);
     }
   }
-
   #endregion
 }
