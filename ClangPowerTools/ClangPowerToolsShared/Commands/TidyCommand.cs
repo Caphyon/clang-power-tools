@@ -142,7 +142,7 @@ namespace ClangPowerTools.Commands
       }
       else
       {
-        DeleteTempTidyFolder();
+        Directory.Delete(TidyConstants.TidyTempPath, true);
         Directory.CreateDirectory(TidyConstants.TidyTempPath);
       }
       await PrepareCommmandAsync(commandUILocation);
@@ -163,27 +163,17 @@ namespace ClangPowerTools.Commands
           FileInfo file = new(path);
           File.Copy(file.FullName, Path.Combine(TidyConstants.TidyTempPath, "_" + file.Name));
           await RunClangTidyAsync(aCommandId, commandUILocation, document);
-          System.Diagnostics.Process p = new();
-          var startInfo = new System.Diagnostics.ProcessStartInfo();
-          startInfo.FileName = vsFullPath;
-          startInfo.Arguments = "/diff \"" + Path.Combine(TidyConstants.TidyTempPath, "_" + file.Name) + "\" \"" + file.FullName + "\"";
-          p.StartInfo = startInfo;
-          p.Start();
-          p.WaitForExit();
+          DiffFilesUsingDefaultTool(Path.Combine(TidyConstants.TidyTempPath, "_" + file.Name), file.FullName);
         }
       }
-      DeleteTempTidyFolder();
+      Directory.Delete(TidyConstants.TidyTempPath, true);
     }
 
-    private void DeleteTempTidyFolder()
+    private static void DiffFilesUsingDefaultTool(string file1, string file2)
     {
-      DirectoryInfo di = new DirectoryInfo(TidyConstants.TidyTempPath);
-      FileInfo[] files = di.GetFiles();
-      foreach (FileInfo file in files)
-      {
-        file.Delete();
-      }
-      Directory.Delete(TidyConstants.TidyTempPath);
+      object args = $"\"{file1}\" \"{file2}\"";
+      var dte = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
+      dte.Commands.Raise(TidyConstants.ToolsDiffFilesCmd, TidyConstants.ToolsDiffFilesId, ref args, ref args);
     }
   }
   #endregion
