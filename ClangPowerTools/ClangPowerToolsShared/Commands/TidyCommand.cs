@@ -147,7 +147,7 @@ namespace ClangPowerTools.Commands
     {
       await PrepareCommmandAsync(commandUILocation);
       var tidySettings = SettingsProvider.TidySettingsModel;
-      if (tidySettings.TidyDiff)
+      if (tidySettings.DiffAfterTidy)
       {
         var clangTidyPath = Path.Combine(SettingsProvider.LlvmSettingsModel.PreinstalledLlvmPath, "clang-tidy.exe");
       

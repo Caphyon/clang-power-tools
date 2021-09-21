@@ -242,8 +242,34 @@
                 Tag="On" />
         </WrapPanel>
 
-        <!--  Format after tidy  -->
+        <!--  Diff after tidy  -->
         <WrapPanel Grid.Row="7" Grid.Column="1">
+            <WrapPanel.ToolTip>
+                <ToolTip>
+                    <TextBlock
+                        MaxWidth="400"
+                        Text="{Binding Tooltip.DiffAfterTidy}"
+                        TextWrapping="Wrap" />
+                </ToolTip>
+            </WrapPanel.ToolTip>
+
+            <TextBlock
+                Width="180"
+                Padding="10"
+                VerticalAlignment="Center"
+                FontFamily="SegoeUI"
+                FontSize="16"
+                Text="Diff after Tidy" />
+
+            <ToggleButton
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                IsChecked="{Binding TidyModel.DiffAfterTidy}"
+                Tag="On" />
+        </WrapPanel>
+        
+        <!--  Format after tidy  -->
+        <WrapPanel Grid.Row="8" Grid.Column="1">
             <WrapPanel.ToolTip>
                 <ToolTip>
                     <TextBlock
@@ -269,7 +295,7 @@
         </WrapPanel>
 
         <!--  Tidy on save  -->
-        <WrapPanel Grid.Row="8" Grid.Column="1">
+        <WrapPanel Grid.Row="9" Grid.Column="1">
             <WrapPanel.ToolTip>
                 <ToolTip>
                     <TextBlock
@@ -294,33 +320,6 @@
                 Tag="On" />
         </WrapPanel>
 
-
-        <!--  Tidy diff  -->
-        <WrapPanel Grid.Row="9" Grid.Column="1">
-            <WrapPanel.ToolTip>
-                <ToolTip>
-                    <TextBlock
-                        MaxWidth="400"
-                        Text="{Binding Tooltip.TidyDiff}"
-                        TextWrapping="Wrap" />
-                </ToolTip>
-            </WrapPanel.ToolTip>
-
-            <TextBlock
-                Width="180"
-                Padding="10"
-                VerticalAlignment="Center"
-                FontFamily="SegoeUI"
-                FontSize="16"
-                Text="Tidy diff" />
-
-            <ToggleButton
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                IsChecked="{Binding TidyModel.TidyDiff}"
-                Tag="On" />
-        </WrapPanel>
-      
         <!--  Export tidy config  -->
         <WrapPanel Grid.Row="10" Grid.Column="1">
             <WrapPanel.ToolTip>
