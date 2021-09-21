@@ -127,10 +127,13 @@ namespace ClangPowerTools
     public void ExportTidyConfigInClangTidyTemp()
     {
       var tidyConfigFile = new TidyConfigFile();
-      string path = Path.Combine(TidyConstants.TidyTempPath, ".clang-tidy");
-      if (string.IsNullOrEmpty(path) == false)
+      if(Directory.Exists(TidyConstants.TidyTempPath))
       {
-        WriteContentToFile(path, tidyConfigFile.CreateOutput().ToString());
+        string path = Path.Combine(TidyConstants.TidyTempPath, ".clang-tidy");
+        if (string.IsNullOrEmpty(path) == false)
+        {
+          WriteContentToFile(path, tidyConfigFile.CreateOutput().ToString());
+        }
       }
     }
 

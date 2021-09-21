@@ -139,41 +139,37 @@ namespace ClangPowerTools.Commands
       await TidyDiffAsync(aCommandId, commandUILocation, document); 
     }
 
-    public async Task TidyDiffAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)
+    #endregion
+
+    #region Private Method
+    
+    private async Task TidyDiffAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)
     {
-      if (!Directory.Exists(TidyConstants.TidyTempPath))
-      {
-        Directory.CreateDirectory(TidyConstants.TidyTempPath);
-      }
-      else
-      {
-        Directory.Delete(TidyConstants.TidyTempPath, true);
-        Directory.CreateDirectory(TidyConstants.TidyTempPath);
-      }
       await PrepareCommmandAsync(commandUILocation);
-
-      TidySettingsViewModel.ExportTidyConfigInClangTidyTemp();
       var tidySettings = SettingsProvider.TidySettingsModel;
-      var clangTidyPath = Path.Combine(SettingsProvider.LlvmSettingsModel.PreinstalledLlvmPath, "clang-tidy.exe");
-
-      if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
+      if (tidySettings.TidyDiff)
       {
-        FilePathCollector fileCollector = new FilePathCollector();
-        var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
-
-        foreach (string path in filesPath)
+        var clangTidyPath = Path.Combine(SettingsProvider.LlvmSettingsModel.PreinstalledLlvmPath, "clang-tidy.exe");
+      
+        if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
         {
-          FileInfo file = new(path);
-          var copyFile = Path.Combine(file.Directory.FullName , "_" + file.Name);
-          File.Copy(file.FullName, copyFile, true);
-          System.Diagnostics.Process p = new();
-          p.StartInfo.FileName = clangTidyPath;
-          p.StartInfo.CreateNoWindow = true;
-          p.StartInfo.UseShellExecute = false;
-          p.StartInfo.Arguments = $"-fix \"{copyFile}\"";
-          p.Start();
-          p.WaitForExit();
-          DiffFilesUsingDefaultTool(copyFile, file.FullName);
+          FilePathCollector fileCollector = new FilePathCollector();
+          var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
+
+          foreach (string path in filesPath)
+          {
+            FileInfo file = new(path);
+            var copyFile = Path.Combine(file.Directory.FullName , "_" + file.Name);
+            File.Copy(file.FullName, copyFile, true);
+            System.Diagnostics.Process process = new();
+            process.StartInfo.FileName = clangTidyPath;
+            process.StartInfo.CreateNoWindow = true;
+            process.StartInfo.UseShellExecute = false;
+            process.StartInfo.Arguments = $"-fix \"{copyFile}\"";
+            process.Start();
+            process.WaitForExit();
+            DiffFilesUsingDefaultTool(copyFile, file.FullName);
+          }
         }
       }
     }
@@ -185,5 +181,6 @@ namespace ClangPowerTools.Commands
       dte.Commands.Raise(TidyConstants.ToolsDiffFilesCmd, TidyConstants.ToolsDiffFilesId, ref args, ref args);
     }
   }
+
   #endregion
 }
