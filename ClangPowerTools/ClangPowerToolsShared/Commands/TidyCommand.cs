@@ -136,6 +136,11 @@ namespace ClangPowerTools.Commands
 
     public async Task RunClangTidyFixAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)
     {
+      await TidyDiffAsync(aCommandId, commandUILocation, document); 
+    }
+
+    public async Task TidyDiffAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)
+    {
       if (!Directory.Exists(TidyConstants.TidyTempPath))
       {
         Directory.CreateDirectory(TidyConstants.TidyTempPath);
@@ -149,24 +154,28 @@ namespace ClangPowerTools.Commands
 
       TidySettingsViewModel.ExportTidyConfigInClangTidyTemp();
       var tidySettings = SettingsProvider.TidySettingsModel;
+      var clangTidyPath = Path.Combine(SettingsProvider.LlvmSettingsModel.PreinstalledLlvmPath, "clang-tidy.exe");
 
       if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
       {
         FilePathCollector fileCollector = new FilePathCollector();
         var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
 
-        var vsProcess = System.Diagnostics.Process.GetCurrentProcess();
-        string vsFullPath = vsProcess.MainModule.FileName;
-
         foreach (string path in filesPath)
         {
           FileInfo file = new(path);
-          File.Copy(file.FullName, Path.Combine(TidyConstants.TidyTempPath, "_" + file.Name));
-          await RunClangTidyAsync(aCommandId, commandUILocation, document);
-          DiffFilesUsingDefaultTool(Path.Combine(TidyConstants.TidyTempPath, "_" + file.Name), file.FullName);
+          var copyFile = Path.Combine(file.Directory.FullName , "_" + file.Name);
+          File.Copy(file.FullName, copyFile, true);
+          System.Diagnostics.Process p = new();
+          p.StartInfo.FileName = clangTidyPath;
+          p.StartInfo.CreateNoWindow = true;
+          p.StartInfo.UseShellExecute = false;
+          p.StartInfo.Arguments = $"-fix \"{copyFile}\"";
+          p.Start();
+          p.WaitForExit();
+          DiffFilesUsingDefaultTool(copyFile, file.FullName);
         }
       }
-      Directory.Delete(TidyConstants.TidyTempPath, true);
     }
 
     private static void DiffFilesUsingDefaultTool(string file1, string file2)
