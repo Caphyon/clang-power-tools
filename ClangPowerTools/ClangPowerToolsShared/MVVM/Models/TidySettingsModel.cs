@@ -17,5 +17,6 @@
     public bool FormatAfterTidy { get; set; } = false;
 
     public bool TidyOnSave { get; set; } = false;
+    public bool TidyDiff { get; set; } = true;
   }
 }

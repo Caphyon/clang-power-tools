@@ -33,6 +33,7 @@
     public string FormatAfterTidy { get; } = "Automatically run clang-format after clang tidy finished.";
     public string TidyOnSave { get; } = "Automatically run clang-tidy when saving the current source file.";
     public string TidyFileConfig { get; } = "Export tidy options into a \".clang-tidy\" config file.";
+    public string TidyDiff { get; } = "Open a diff file after Tidy action.";
 
     #endregion
 
