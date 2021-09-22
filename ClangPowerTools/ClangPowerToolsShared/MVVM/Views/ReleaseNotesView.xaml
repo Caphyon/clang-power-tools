@@ -126,7 +126,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Add custom LLVM path directly from settings"
+          Text="• Added custom LLVM path directly from settings"
           TextWrapping="Wrap" />
 
         <!--  Bug Fixes  -->
