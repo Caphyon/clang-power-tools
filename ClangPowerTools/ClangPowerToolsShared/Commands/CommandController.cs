@@ -7,6 +7,7 @@ using ClangPowerTools.Handlers;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
+using ClangPowerToolsShared.Commands;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -86,6 +87,8 @@ namespace ClangPowerTools
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyToolbarId);
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyFixId);
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyFixToolbarId);
+        await DiffCommand.InitializeAsync(this, aAsyncPackage,mCommandSet, CommandIds.kTidyDiffId);
+        await DiffCommand.InitializeAsync(this, aAsyncPackage,mCommandSet, CommandIds.kTidyDiffToolbarId);
       }
 
       if (FormatCommand.Instance == null)
@@ -214,6 +217,24 @@ namespace ClangPowerTools
             OnBeforeClangCommand(CommandIds.kTidyId);
 
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
+            OnAfterClangCommand();
+            break;
+          }
+        case CommandIds.kTidyDiffId:
+          {
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kTidyDiffId);
+
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyDiffId, aCommandUILocation);
+            OnAfterClangCommand();
+            break;
+          }
+        case CommandIds.kTidyDiffToolbarId:
+          {
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kTidyDiffToolbarId);
+
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyDiffToolbarId, aCommandUILocation);
             OnAfterClangCommand();
             break;
           }

@@ -25,6 +25,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CommandIds.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CommandUILocation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CompileCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\DiffCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\FormatCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\IgnoreCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\IgnoreCompileCommand.cs" />

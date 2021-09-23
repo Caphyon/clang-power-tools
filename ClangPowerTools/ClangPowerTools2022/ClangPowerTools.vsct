@@ -98,6 +98,16 @@
         </Strings>
       </Button>
 
+      <!-- Clang Tidy-Diff context menu button  -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyDiffId" priority="0x0002" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
+        <Icon guid="guidImageEmpty" id="Empty" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Tidy-Diff</ButtonText>
+        </Strings>
+      </Button>
+
       <!-- Clang Format Context Menu button -->
       <Button guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0004" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
@@ -174,7 +184,7 @@
       <!-- Clang Tidy & Clang Tidy Fix Drop Down submenu in toolbar-->
 
       <!-- Clang Tidy-Fix toolbar button  -->
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" priority="0x0002" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" priority="0x0003" type="Button">
         <Icon guid="guidImageTidy" id="Tidy" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
@@ -191,7 +201,16 @@
         </Strings>
       </Button>
 
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" priority="0x0002" type="Button">
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyDiffToolbarId" priority="0x0002" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="DropDownToolbarMenuGroup" />
+        <Icon guid="guidImageTidy" id="Tidy" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Tidy-Diff</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" priority="0x0003" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="DropDownToolbarMenuGroup" />
         <Strings>
           <ButtonText>Tidy-Fix</ButtonText>
@@ -337,9 +356,11 @@
       <IDSymbol name="CompileToolbarId" value="0x1100" />
 
       <IDSymbol name="TidyId" value="0x0101" />
+      <IDSymbol name="TidyDiffId" value="0x010A" />
       <IDSymbol name="TidyFixId" value="0x0109" />
 
       <IDSymbol name="TidyToolbarId" value="0x1101" />
+      <IDSymbol name="TidyDiffToolbarId" value="0x1104" />
       <IDSymbol name="TidyFixToolbarId" value="0x1102" />
 
       <IDSymbol name="ClangFormatId" value="0x0105" />
