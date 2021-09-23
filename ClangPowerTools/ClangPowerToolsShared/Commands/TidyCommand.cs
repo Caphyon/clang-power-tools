@@ -123,10 +123,10 @@ namespace ClangPowerTools.Commands
             }
 
             RunScript(aCommandId, false);
-            if((CommandIds.kTidyId == aCommandId || CommandIds.kTidyToolbarId == aCommandId) && tidySettings.DiffAfterTidy)
-            {
-              TidyDiffAsync(commandUILocation);
-            }
+            //if((CommandIds.kTidyId == aCommandId || CommandIds.kTidyToolbarId == aCommandId) && tidySettings.DiffAfterTidy)
+            //{
+            //  TidyDiffAsync(commandUILocation);
+            //}
           }
           catch (Exception exception)
           {

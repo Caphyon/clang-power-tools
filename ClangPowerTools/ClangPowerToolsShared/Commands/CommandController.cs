@@ -223,18 +223,20 @@ namespace ClangPowerTools
         case CommandIds.kTidyDiffId:
           {
             await StopBackgroundRunnersAsync();
-            OnBeforeClangCommand(CommandIds.kTidyDiffId);
+            OnBeforeClangCommand(CommandIds.kTidyId);
 
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyDiffId, aCommandUILocation);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
+            await DiffCommand.Instance.TidyDiffAsync(CommandIds.kTidyDiffId, aCommandUILocation);
             OnAfterClangCommand();
             break;
           }
         case CommandIds.kTidyDiffToolbarId:
           {
             await StopBackgroundRunnersAsync();
-            OnBeforeClangCommand(CommandIds.kTidyDiffToolbarId);
+            OnBeforeClangCommand(CommandIds.kTidyToolbarId);
 
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyDiffToolbarId, aCommandUILocation);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyToolbarId, CommandUILocation.Toolbar);
+            await DiffCommand.Instance.TidyDiffAsync(CommandIds.kTidyDiffToolbarId, CommandUILocation.Toolbar);
             OnAfterClangCommand();
             break;
           }
@@ -596,6 +598,15 @@ namespace ClangPowerTools
       BeforeSaveClangTidyAsync(aDocument).SafeFireAndForget();
       BeforeSaveClangFormat(aDocument);
     }
+
+
+    //private async Task BeforeSaveClangDiffAsync(Document document)
+    //{
+    //  await StopBackgroundRunnersAsync();
+    //  OnBeforeClangCommand(CommandIds.kTidyDiffToolbarId);
+    //  await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyDiffToolbarId, CommandUILocation.Toolbar);
+    //  OnAfterClangCommand();
+    //}
 
     private async Task BeforeSaveClangTidyAsync(Document document)
     {
