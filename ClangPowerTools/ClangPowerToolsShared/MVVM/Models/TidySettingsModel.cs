@@ -15,7 +15,6 @@
     public bool DetectClangTidyFile { get; set; } = true;
 
     public bool FormatAfterTidy { get; set; } = false;
-    public bool DiffAfterTidy { get; set; } = true;
     public bool TidyOnSave { get; set; } = false;
   }
 }

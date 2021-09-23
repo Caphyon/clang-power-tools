@@ -31,7 +31,6 @@
     public string CustomExecutableTidy { get; } = "Specify a custom path for \"clang-tidy.exe\" file to run instead of the built-in one (v8.0).";
     public string DetectClangTidyFile { get; } = "Automatically detect the \".clang-tidy\" file and set the \"Use checks from\" option to \"TidyFile\" if the file exists. Otherwise, set the \"Use checks from\" option to \"PredefinedChecks\".";
     public string FormatAfterTidy { get; } = "Automatically run clang-format after clang-tidy finished.";
-    public string DiffAfterTidy { get; } = "Automatically run diff after clang-tidy.";
     public string TidyOnSave { get; } = "Automatically run clang-tidy when saving the current source file.";
     public string TidyFileConfig { get; } = "Export tidy options into a \".clang-tidy\" config file.";
 
