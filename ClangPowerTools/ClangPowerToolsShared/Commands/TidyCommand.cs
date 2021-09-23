@@ -81,7 +81,6 @@ namespace ClangPowerTools.Commands
     public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)
     {
       await PrepareCommmandAsync(commandUILocation);
-      var tidySettings = SettingsProvider.TidySettingsModel;
       await Task.Run(() =>
       {
         lock (mutex)
@@ -91,6 +90,7 @@ namespace ClangPowerTools.Commands
             using var silentFileController = new SilentFileChangerController();
             using var fileChangerWatcher = new FileChangerWatcher();
 
+            var tidySettings = SettingsProvider.TidySettingsModel;
 
             if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
             {
@@ -123,10 +123,6 @@ namespace ClangPowerTools.Commands
             }
 
             RunScript(aCommandId, false);
-            //if((CommandIds.kTidyId == aCommandId || CommandIds.kTidyToolbarId == aCommandId) && tidySettings.DiffAfterTidy)
-            //{
-            //  TidyDiffAsync(commandUILocation);
-            //}
           }
           catch (Exception exception)
           {
@@ -138,40 +134,5 @@ namespace ClangPowerTools.Commands
     }
 
     #endregion
-
-    #region Private Method
-    
-    private async Task TidyDiffAsync(CommandUILocation commandUILocation)
-    {
-      await PrepareCommmandAsync(commandUILocation);
-      var clangTidyPath = Path.Combine(SettingsProvider.LlvmSettingsModel.PreinstalledLlvmPath, "clang-tidy.exe");
-      FilePathCollector fileCollector = new FilePathCollector();
-      var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
-
-      foreach (string path in filesPath)
-      {
-        FileInfo file = new(path);
-        var copyFile = Path.Combine(file.Directory.FullName , "_" + file.Name);
-        File.Copy(file.FullName, copyFile, true);
-        System.Diagnostics.Process process = new();
-        process.StartInfo.FileName = clangTidyPath;
-        process.StartInfo.CreateNoWindow = true;
-        process.StartInfo.UseShellExecute = false;
-        process.StartInfo.Arguments = $"-fix \"{copyFile}\"";
-        process.Start();
-        process.WaitForExit();
-        DiffFilesUsingDefaultTool(copyFile, file.FullName);
-        File.Delete(copyFile);
-      }
-    }
-
-    private static void DiffFilesUsingDefaultTool(string file1, string file2)
-    {
-      object args = $"\"{file1}\" \"{file2}\"";
-      var dte = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
-      dte.Commands.Raise(TidyConstants.ToolsDiffFilesCmd, TidyConstants.ToolsDiffFilesId, ref args, ref args);
-    }
   }
-
-  #endregion
 }

@@ -75,7 +75,7 @@ namespace ClangPowerToolsShared.Commands
       FilePathCollector fileCollector = new FilePathCollector();
       var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
 
-      if ((filesPath.Count == 1) && (aCommandId == CommandIds.kTidyDiffId) || (aCommandId == CommandIds.kTidyDiffToolbarId))
+      if (filesPath.Count == 1)
       {
         foreach (string path in filesPath)
         {

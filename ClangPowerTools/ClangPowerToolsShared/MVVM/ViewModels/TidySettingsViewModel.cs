@@ -124,19 +124,6 @@ namespace ClangPowerTools
 
     #region Methods
 
-    public void ExportTidyConfigInClangTidyTemp()
-    {
-      var tidyConfigFile = new TidyConfigFile();
-      if(Directory.Exists(TidyConstants.TidyTempPath))
-      {
-        string path = Path.Combine(TidyConstants.TidyTempPath, ".clang-tidy");
-        if (string.IsNullOrEmpty(path) == false)
-        {
-          WriteContentToFile(path, tidyConfigFile.CreateOutput().ToString());
-        }
-      }
-    }
-
     private void UpdateHeaderFilter()
     {
       tidyModel.HeaderFilter = OpenContentDialog(tidyModel.HeaderFilter);

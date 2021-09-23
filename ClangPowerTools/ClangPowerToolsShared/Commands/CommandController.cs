@@ -233,7 +233,7 @@ namespace ClangPowerTools
         case CommandIds.kTidyDiffToolbarId:
           {
             await StopBackgroundRunnersAsync();
-            OnBeforeClangCommand(CommandIds.kTidyToolbarId);
+            OnBeforeClangCommand(CommandIds.kTidyId);
 
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyToolbarId, aCommandUILocation);
             await DiffCommand.Instance.TidyDiffAsync(CommandIds.kTidyDiffToolbarId, aCommandUILocation);
@@ -610,15 +610,6 @@ namespace ClangPowerTools
       BeforeSaveClangTidyAsync(aDocument).SafeFireAndForget();
       BeforeSaveClangFormat(aDocument);
     }
-
-
-    //private async Task BeforeSaveClangDiffAsync(Document document)
-    //{
-    //  await StopBackgroundRunnersAsync();
-    //  OnBeforeClangCommand(CommandIds.kTidyDiffToolbarId);
-    //  await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyDiffToolbarId, CommandUILocation.Toolbar);
-    //  OnAfterClangCommand();
-    //}
 
     private async Task BeforeSaveClangTidyAsync(Document document)
     {
