@@ -139,13 +139,28 @@ namespace ClangPowerTools
 
     public bool SolutionOrProjectIsSelected()
     {
-      CollectSelectedItems();
-      return Items.Count > 0;
+
+      if (selectedItems == null || selectedItems.Length == 0)
+        return false;
+
+      foreach (UIHierarchyItem item in selectedItems)
+      {
+        if (item.Object is Solution)
+        {
+          return true;
+        }
+        else if (item.Object is Project)
+        {
+          return true;
+        }
+      }
+        return false;
     }
 
     /// <summary>
     /// Collect all selected items in the Solution explorer for commands
     /// </summary>
+    /// 
     public void CollectSelectedItems()
     {
       if (selectedItems == null || selectedItems.Length == 0)

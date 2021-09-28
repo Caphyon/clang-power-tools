@@ -550,11 +550,11 @@ namespace ClangPowerTools
       ItemsCollector itemsCollector = new ItemsCollector(true);
       itemsCollector.CollectSelectedItems();
       //disable tidy diff
-      if ((command.CommandID.ID == CommandIds.kTidyDiffId) && (itemsCollector.Items.Count != 1))
+      if ((command.CommandID.ID == CommandIds.kTidyDiffId) && (itemsCollector.Items.Count > 1 || itemsCollector.SolutionOrProjectIsSelected() == true))
       {
         command.Visible = command.Enabled = false;
       }
-      if ((command.CommandID.ID == CommandIds.kTidyDiffId) && (itemsCollector.Items.Count == 1))
+      if ((command.CommandID.ID == CommandIds.kTidyDiffId) && itemsCollector.Items.Count == 1 && itemsCollector.SolutionOrProjectIsSelected() == false)
       {
         command.Visible = command.Enabled = true;
       }
