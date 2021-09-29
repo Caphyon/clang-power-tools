@@ -46,7 +46,6 @@ namespace ClangPowerTools
     private int currentCommand;
     private bool mSaveCommandWasGiven = false;
     private bool mFormatAfterTidyFlag = false;
-    private bool isStoped = false;
     private string oldActiveDocumentName = null;
 
     private readonly object mutex = new object();
@@ -227,9 +226,8 @@ namespace ClangPowerTools
             OnBeforeClangCommand(CommandIds.kTidyDiffId);
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
 
-            if (!isStoped)
+            if (running)
             {
-              await StopBackgroundRunnersAsync();
               await DiffCommand.Instance.TidyDiffAsync(CommandIds.kTidyDiffId, aCommandUILocation);
             }
             OnAfterClangCommand();
@@ -241,9 +239,8 @@ namespace ClangPowerTools
             OnBeforeClangCommand(CommandIds.kTidyDiffId);
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
 
-            if (!isStoped)
+            if (running)
             {
-              await StopBackgroundRunnersAsync();
               await DiffCommand.Instance.TidyDiffAsync(CommandIds.kTidyDiffId, aCommandUILocation);
             }
             OnAfterClangCommand();
@@ -343,7 +340,6 @@ namespace ClangPowerTools
     {
       currentCommand = aCommandId;
       running = true;
-      isStoped = false;
 
       OnClangCommandBegin(new ClearEventArgs());
 
@@ -381,7 +377,7 @@ namespace ClangPowerTools
       if (e.IsStopped)
       {
         DisplayStoppedMessage(false);
-        isStoped = true;
+        running = false;
         return;
       }
 

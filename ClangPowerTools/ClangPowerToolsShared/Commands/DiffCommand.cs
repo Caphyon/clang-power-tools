@@ -1,6 +1,5 @@
 ﻿using ClangPowerTools;
 using ClangPowerTools.Commands;
-using ClangPowerTools.Events;
 using ClangPowerTools.Services;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -8,6 +7,7 @@ using System;
 using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerToolsShared.Commands
@@ -75,12 +75,9 @@ namespace ClangPowerToolsShared.Commands
 
       if (filesPath.Count == 1)
       {
-        foreach (string path in filesPath)
+        try
         {
-          if (StopCommandActivated)
-            break;
-
-          FileInfo file = new(path);
+          FileInfo file = new(filesPath.First());
           var copyFile = Path.Combine(file.Directory.FullName, "_" + file.Name);
           File.Copy(file.FullName, copyFile, true);
           System.Diagnostics.Process process = new();
@@ -92,13 +89,13 @@ namespace ClangPowerToolsShared.Commands
           process.WaitForExit();
           DiffFilesUsingDefaultTool(copyFile, file.FullName);
           File.Delete(copyFile);
+
+        }
+        catch (Exception e)
+        {
+          MessageBox.Show(e.Message, "Tidy-Diff Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
       }
-      if (StopCommandActivated)
-      {
-        StopCommandActivated = false;
-      }
-
     }
 
     private static void DiffFilesUsingDefaultTool(string file1, string file2)
