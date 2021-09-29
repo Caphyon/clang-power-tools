@@ -7,6 +7,7 @@ using ClangPowerTools.Handlers;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
+using ClangPowerToolsShared.Commands;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -86,6 +87,8 @@ namespace ClangPowerTools
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyToolbarId);
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyFixId);
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyFixToolbarId);
+        await DiffCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyDiffId);
+        await DiffCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyDiffToolbarId);
       }
 
       if (FormatCommand.Instance == null)
@@ -217,6 +220,32 @@ namespace ClangPowerTools
             OnAfterClangCommand();
             break;
           }
+        case CommandIds.kTidyDiffId:
+          {
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kTidyDiffId);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
+
+            if (running)
+            {
+              await DiffCommand.Instance.TidyDiffAsync(CommandIds.kTidyDiffId, aCommandUILocation);
+            }
+            OnAfterClangCommand();
+            break;
+          }
+        case CommandIds.kTidyDiffToolbarId:
+          {
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kTidyDiffId);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
+
+            if (running)
+            {
+              await DiffCommand.Instance.TidyDiffAsync(CommandIds.kTidyDiffId, aCommandUILocation);
+            }
+            OnAfterClangCommand();
+            break;
+          }
         case CommandIds.kTidyFixId:
           {
             await StopBackgroundRunnersAsync();
@@ -288,6 +317,7 @@ namespace ClangPowerTools
         case CommandIds.kCompileToolbarId:
         case CommandIds.kTidyToolbarId:
         case CommandIds.kTidyFixToolbarId:
+        case CommandIds.kTidyDiffToolbarId:
           commandUILocation = CommandUILocation.Toolbar;
           break;
         default:
@@ -347,6 +377,7 @@ namespace ClangPowerTools
       if (e.IsStopped)
       {
         DisplayStoppedMessage(false);
+        running = false;
         return;
       }
 
@@ -505,16 +536,10 @@ namespace ClangPowerTools
         command.Enabled = false;
         return;
       }
-
       if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte) && !(dte as DTE2).Solution.IsOpen)
       {
         command.Visible = command.Enabled = false;
       }
-      //else if (command.CommandID.ID == CommandIds.kJsonCompilationDatabase)
-      //{
-      //  ItemsCollector itemsCollector = new ItemsCollector(true);
-      //  command.Visible = command.Enabled = itemsCollector.SolutionOrProjectIsSelected();
-      //}
       else if (vsBuildRunning && command.CommandID.ID != CommandIds.kSettingsId)
       {
         command.Visible = command.Enabled = false;
@@ -522,6 +547,18 @@ namespace ClangPowerTools
       else
       {
         command.Visible = command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !running : running;
+      }
+
+      ItemsCollector itemsCollector = new ItemsCollector(true);
+      itemsCollector.CollectSelectedItems();
+      //disable tidy diff
+      if ((command.CommandID.ID == CommandIds.kTidyDiffId) && (itemsCollector.Items.Count > 1 || itemsCollector.SolutionOrProjectIsSelected() == true))
+      {
+        command.Visible = command.Enabled = false;
+      }
+      if ((command.CommandID.ID == CommandIds.kTidyDiffId) && itemsCollector.Items.Count == 1 && itemsCollector.SolutionOrProjectIsSelected() == false && !running)
+      {
+        command.Visible = command.Enabled = true;
       }
     }
 

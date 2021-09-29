@@ -3,6 +3,7 @@ using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
+using ClangPowerToolsShared.Commands;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;
@@ -392,6 +393,7 @@ namespace ClangPowerTools
 
       CompileCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
       TidyCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
+      DiffCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
 
       mCommandController.ErrorDetectedEvent += mOutputWindowController.OnErrorDetected;
       mOutputWindowController.ErrorDetectedEvent += mErrorWindowController.OnErrorDetected;
@@ -400,14 +402,17 @@ namespace ClangPowerTools
 
       CompileCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       TidyCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
+      DiffCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       JsonCompilationDatabaseCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       FormatCommand.Instance.FormatEvent += mCommandController.OnAfterFormatCommand;
 
       CompileCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
       TidyCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
+      DiffCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
 
       CompileCommand.Instance.IgnoredItemsEvent += mCommandController.OnItemIgnore;
       TidyCommand.Instance.IgnoredItemsEvent += mCommandController.OnItemIgnore;
+      DiffCommand.Instance.IgnoredItemsEvent += mCommandController.OnItemIgnore;
       FormatCommand.Instance.IgnoredItemsEvent += mCommandController.OnItemIgnore;
 
       PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
@@ -457,6 +462,7 @@ namespace ClangPowerTools
 
       CompileCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
       TidyCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
+      DiffCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
 
       mCommandController.ErrorDetectedEvent -= mOutputWindowController.OnErrorDetected;
       mOutputWindowController.ErrorDetectedEvent -= mErrorWindowController.OnErrorDetected;
@@ -465,14 +471,17 @@ namespace ClangPowerTools
 
       CompileCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
       TidyCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
+      DiffCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
       JsonCompilationDatabaseCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       FormatCommand.Instance.FormatEvent -= mCommandController.OnAfterFormatCommand;
 
       CompileCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
       TidyCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
+      DiffCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
 
       CompileCommand.Instance.IgnoredItemsEvent -= mCommandController.OnItemIgnore;
       TidyCommand.Instance.IgnoredItemsEvent -= mCommandController.OnItemIgnore;
+      DiffCommand.Instance.IgnoredItemsEvent -= mCommandController.OnItemIgnore;
       FormatCommand.Instance.IgnoredItemsEvent -= mCommandController.OnItemIgnore;
 
       PowerShellWrapper.DataHandler -= mOutputWindowController.OutputDataReceived;

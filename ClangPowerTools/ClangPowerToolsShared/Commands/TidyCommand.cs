@@ -17,8 +17,9 @@ namespace ClangPowerTools.Commands
   /// </summary>
   public sealed class TidyCommand : ClangCommand
   {
-    #region Properties
 
+    #region Properties
+    private TidySettingsViewModel TidySettingsViewModel { get; set; }
     /// <summary>
     /// Gets the instance of the command.
     /// </summary>
@@ -29,7 +30,6 @@ namespace ClangPowerTools.Commands
     }
 
     #endregion
-
 
     #region Constructor
 
@@ -51,11 +51,11 @@ namespace ClangPowerTools.Commands
         menuCommand.Enabled = true;
         aCommandService.AddCommand(menuCommand);
       }
+      TidySettingsViewModel = new TidySettingsViewModel();
     }
 
 
     #endregion
-
 
     #region Public Methods
 
@@ -74,11 +74,9 @@ namespace ClangPowerTools.Commands
       Instance = new TidyCommand(commandService, aCommandController, aPackage, aGuid, aId);
     }
 
-
     public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)
     {
       await PrepareCommmandAsync(commandUILocation);
-
       await Task.Run(() =>
       {
         lock (mutex)
@@ -110,7 +108,7 @@ namespace ClangPowerTools.Commands
 
             if (tidySettings.DetectClangTidyFile && !mItemsCollector.IsEmpty)
             {
-              // Check for .clang-tidy congif file
+              // Check for .clang-tidy config file
               if (FileSystem.SearchAllTopDirectories(mItemsCollector.Items[0].GetPath(), FileSystem.ConfigClangTidyFileName))
                 tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
               else
@@ -130,8 +128,8 @@ namespace ClangPowerTools.Commands
         }
       });
     }
+
+    #endregion
+
   }
-
-  #endregion
-
 }

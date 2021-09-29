@@ -122,6 +122,7 @@ namespace ClangPowerTools
     #endregion
 
     #region Methods
+
     private void UpdateHeaderFilter()
     {
       tidyModel.HeaderFilter = OpenContentDialog(tidyModel.HeaderFilter);
