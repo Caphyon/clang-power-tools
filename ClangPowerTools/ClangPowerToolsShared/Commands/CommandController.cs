@@ -544,11 +544,6 @@ namespace ClangPowerTools
       {
         command.Visible = command.Enabled = false;
       }
-      //else if (command.CommandID.ID == CommandIds.kJsonCompilationDatabase)
-      //{
-      //  ItemsCollector itemsCollector = new ItemsCollector(true);
-      //  command.Visible = command.Enabled = itemsCollector.SolutionOrProjectIsSelected();
-      //}
       else if (vsBuildRunning && command.CommandID.ID != CommandIds.kSettingsId)
       {
         command.Visible = command.Enabled = false;
@@ -565,7 +560,7 @@ namespace ClangPowerTools
       {
         command.Visible = command.Enabled = false;
       }
-      if ((command.CommandID.ID == CommandIds.kTidyDiffId) && itemsCollector.Items.Count == 1 && itemsCollector.SolutionOrProjectIsSelected() == false)
+      if ((command.CommandID.ID == CommandIds.kTidyDiffId) && itemsCollector.Items.Count == 1 && itemsCollector.SolutionOrProjectIsSelected() == false && !running)
       {
         command.Visible = command.Enabled = true;
       }
