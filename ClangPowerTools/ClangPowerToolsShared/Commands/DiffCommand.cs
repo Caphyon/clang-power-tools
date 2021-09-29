@@ -14,13 +14,11 @@ namespace ClangPowerToolsShared.Commands
 {
   public sealed class DiffCommand : ClangCommand
   {
-
     public static DiffCommand Instance
     {
       get;
       private set;
     }
-
 
     #region Constructor
 
@@ -43,7 +41,6 @@ namespace ClangPowerToolsShared.Commands
         aCommandService.AddCommand(menuCommand);
       }
     }
-
 
     #endregion
 
@@ -72,7 +69,6 @@ namespace ClangPowerToolsShared.Commands
       var clangTidyPath = Path.Combine(SettingsProvider.LlvmSettingsModel.PreinstalledLlvmPath, "clang-tidy.exe");
       FilePathCollector fileCollector = new FilePathCollector();
       var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
-
       if (filesPath.Count == 1)
       {
         try
@@ -89,7 +85,6 @@ namespace ClangPowerToolsShared.Commands
           process.WaitForExit();
           DiffFilesUsingDefaultTool(copyFile, file.FullName);
           File.Delete(copyFile);
-
         }
         catch (Exception e)
         {

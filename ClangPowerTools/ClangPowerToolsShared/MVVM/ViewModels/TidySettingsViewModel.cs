@@ -4,7 +4,6 @@ using ClangPowerTools.Views;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Input;
@@ -156,7 +155,7 @@ namespace ClangPowerTools
       string fileName = ".clang-tidy";
       string defaultExt = ".clang-tidy";
       string filter = "Configuration files (.clang-tidy)|*.clang-tidy";
-      
+
       string path = SaveFile(fileName, defaultExt, filter);
       if (string.IsNullOrEmpty(path) == false)
       {

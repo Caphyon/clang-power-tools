@@ -7,7 +7,6 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
-using System.IO;
 using System.Linq;
 using Task = System.Threading.Tasks.Task;
 
@@ -31,7 +30,6 @@ namespace ClangPowerTools.Commands
     }
 
     #endregion
-
 
     #region Constructor
 
@@ -59,7 +57,6 @@ namespace ClangPowerTools.Commands
 
     #endregion
 
-
     #region Public Methods
 
     /// <summary>
@@ -76,7 +73,6 @@ namespace ClangPowerTools.Commands
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
       Instance = new TidyCommand(commandService, aCommandController, aPackage, aGuid, aId);
     }
-
 
     public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)
     {
@@ -134,5 +130,6 @@ namespace ClangPowerTools.Commands
     }
 
     #endregion
+
   }
 }
