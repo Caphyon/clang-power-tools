@@ -46,6 +46,7 @@ namespace ClangPowerTools
     private int currentCommand;
     private bool mSaveCommandWasGiven = false;
     private bool mFormatAfterTidyFlag = false;
+    private bool isStoped = false;
     private string oldActiveDocumentName = null;
 
     private readonly object mutex = new object();
@@ -87,8 +88,8 @@ namespace ClangPowerTools
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyToolbarId);
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyFixId);
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyFixToolbarId);
-        await DiffCommand.InitializeAsync(this, aAsyncPackage,mCommandSet, CommandIds.kTidyDiffId);
-        await DiffCommand.InitializeAsync(this, aAsyncPackage,mCommandSet, CommandIds.kTidyDiffToolbarId);
+        await DiffCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyDiffId);
+        await DiffCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyDiffToolbarId);
       }
 
       if (FormatCommand.Instance == null)
@@ -224,17 +225,27 @@ namespace ClangPowerTools
           {
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kTidyDiffId);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
 
-            await DiffCommand.Instance.TidyDiffAsync(CommandIds.kTidyDiffId, aCommandUILocation);
+            if (!isStoped)
+            {
+              await StopBackgroundRunnersAsync();
+              await DiffCommand.Instance.TidyDiffAsync(CommandIds.kTidyDiffId, aCommandUILocation);
+            }
             OnAfterClangCommand();
             break;
           }
         case CommandIds.kTidyDiffToolbarId:
           {
             await StopBackgroundRunnersAsync();
-           
             OnBeforeClangCommand(CommandIds.kTidyDiffId);
-            await DiffCommand.Instance.TidyDiffAsync(CommandIds.kTidyDiffId, aCommandUILocation);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
+
+            if (!isStoped)
+            {
+              await StopBackgroundRunnersAsync();
+              await DiffCommand.Instance.TidyDiffAsync(CommandIds.kTidyDiffId, aCommandUILocation);
+            }
             OnAfterClangCommand();
             break;
           }
@@ -332,6 +343,7 @@ namespace ClangPowerTools
     {
       currentCommand = aCommandId;
       running = true;
+      isStoped = false;
 
       OnClangCommandBegin(new ClearEventArgs());
 
@@ -369,6 +381,7 @@ namespace ClangPowerTools
       if (e.IsStopped)
       {
         DisplayStoppedMessage(false);
+        isStoped = true;
         return;
       }
 

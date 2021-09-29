@@ -5,12 +5,9 @@ using ClangPowerTools.Services;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerToolsShared.Commands
@@ -72,42 +69,36 @@ namespace ClangPowerToolsShared.Commands
     {
       await PrepareCommmandAsync(commandUILocation);
 
-        var clangTidyPath = Path.Combine(SettingsProvider.LlvmSettingsModel.PreinstalledLlvmPath, "clang-tidy.exe");
-        FilePathCollector fileCollector = new FilePathCollector();
-        var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
+      var clangTidyPath = Path.Combine(SettingsProvider.LlvmSettingsModel.PreinstalledLlvmPath, "clang-tidy.exe");
+      FilePathCollector fileCollector = new FilePathCollector();
+      var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
 
-        if (filesPath.Count == 1)
+      if (filesPath.Count == 1)
+      {
+        foreach (string path in filesPath)
         {
-          foreach (string path in filesPath)
-          {
-            if (StopCommandActivated)
-            {
-              break;
-            }
+          if (StopCommandActivated)
+            break;
 
-            FileInfo file = new(path);
-            var copyFile = Path.Combine(file.Directory.FullName, "_" + file.Name);
-            File.Copy(file.FullName, copyFile, true);
-            System.Diagnostics.Process process = new();
-            process.StartInfo.FileName = clangTidyPath;
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.UseShellExecute = false;
-            process.StartInfo.Arguments = $"-fix \"{copyFile}\"";
-            process.Start();
-            process.WaitForExit();
-            DiffFilesUsingDefaultTool(copyFile, file.FullName);
-            File.Delete(copyFile);
-          }
+          FileInfo file = new(path);
+          var copyFile = Path.Combine(file.Directory.FullName, "_" + file.Name);
+          File.Copy(file.FullName, copyFile, true);
+          System.Diagnostics.Process process = new();
+          process.StartInfo.FileName = clangTidyPath;
+          process.StartInfo.CreateNoWindow = true;
+          process.StartInfo.UseShellExecute = false;
+          process.StartInfo.Arguments = $"-fix \"{copyFile}\"";
+          process.Start();
+          process.WaitForExit();
+          DiffFilesUsingDefaultTool(copyFile, file.FullName);
+          File.Delete(copyFile);
         }
-        if (StopCommandActivated)
-        {
-          OnDataStreamClose(new CloseDataStreamingEventArgs(true));
-          StopCommandActivated = false;
-        }
-        //else
-        //{
-        //  OnDataStreamClose(new CloseDataStreamingEventArgs(false));
-        //}
+      }
+      if (StopCommandActivated)
+      {
+        StopCommandActivated = false;
+      }
+
     }
 
     private static void DiffFilesUsingDefaultTool(string file1, string file2)
