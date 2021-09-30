@@ -230,7 +230,7 @@ namespace ClangPowerTools
         case CommandIds.kTidyFixToolbarId:
           {
             await StopBackgroundRunnersAsync();
-            OnBeforeClangCommand(CommandIds.kTidyFixId);
+            //OnBeforeClangCommand(CommandIds.kTidyFixId);
 
             await TidyCommand.Instance.RunClangTidyFixAsync(CommandIds.kTidyFixId, aCommandUILocation);
             OnAfterClangCommand();
