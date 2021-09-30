@@ -2,6 +2,8 @@
 using ClangPowerTools.Services;
 using ClangPowerTools.SilentFile;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
+using ClangPowerTools.Views;
+using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -20,12 +22,21 @@ namespace ClangPowerTools.Commands
   {
 
     #region Properties
+    private TidySettingsViewModel TidySettingsViewModel { get; set; }
     private readonly AsyncPackage package;
 
     /// <summary>
     /// Gets the instance of the command.
     /// </summary>
     /// 
+    private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider
+    {
+      get
+      {
+        return this.package;
+      }
+    }
+
     public static TidyCommand Instance
     {
       get;
@@ -48,13 +59,16 @@ namespace ClangPowerTools.Commands
     {
       if (null != aCommandService)
       {
-        package = aPackage;
+        this.package = package ?? throw new ArgumentNullException(nameof(package));
+
         var menuCommandID = new CommandID(CommandSet, Id);
         var menuCommand = new OleMenuCommand(aCommandController.Execute, menuCommandID);
         menuCommand.BeforeQueryStatus += aCommandController.OnBeforeClangCommand;
         menuCommand.Enabled = true;
         aCommandService.AddCommand(menuCommand);
       }
+      TidySettingsViewModel = new TidySettingsViewModel();
+
     }
 
 

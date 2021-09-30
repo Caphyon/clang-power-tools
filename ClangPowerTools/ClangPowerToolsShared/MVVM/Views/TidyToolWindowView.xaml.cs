@@ -1,10 +1,11 @@
-﻿using ClangPowerTools.MVVM.Models;
+﻿﻿using ClangPowerTools.MVVM.Models;
 using ClangPowerToolsShared.MVVM.Commands;
 using ClangPowerToolsShared.MVVM.ViewModels;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+// using ClangPowerTools.MVVM.Interfaces;
 
 namespace ClangPowerTools.Views
 {

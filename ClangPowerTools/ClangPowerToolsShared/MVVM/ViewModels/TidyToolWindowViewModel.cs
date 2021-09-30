@@ -1,4 +1,4 @@
-﻿using ClangPowerTools;
+﻿﻿using ClangPowerTools;
 using ClangPowerTools.Commands;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Command;
