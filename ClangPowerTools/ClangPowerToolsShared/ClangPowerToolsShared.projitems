@@ -177,10 +177,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TeamSettingsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TidyChecksViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TidySettingsViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TidyToolWindowViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\ToggleMultipleDataViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TrialExpiredViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\FolderExplorerView.xaml.cs">
       <DependentUpon>FolderExplorerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\TidyToolWindowView.xaml.cs">
+      <DependentUpon>TidyToolWindowView.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\WebApi\WebApiUrl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\XmlSerializer.cs" />
@@ -401,6 +405,10 @@
     <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\TidySettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\TidyToolWindowView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\TrialExpiredView.xaml">
       <SubType>Designer</SubType>

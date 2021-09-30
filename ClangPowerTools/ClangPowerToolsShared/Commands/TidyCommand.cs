@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
 using ClangPowerTools.SilentFile;
+using ClangPowerTools.Views;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -20,9 +21,20 @@ namespace ClangPowerTools.Commands
 
     #region Properties
     private TidySettingsViewModel TidySettingsViewModel { get; set; }
+    private readonly AsyncPackage package;
+
     /// <summary>
     /// Gets the instance of the command.
     /// </summary>
+    /// 
+    private Microsoft.VisualStudio.Shell.IAsyncServiceProvider ServiceProvider
+    {
+      get
+      {
+        return this.package;
+      }
+    }
+
     public static TidyCommand Instance
     {
       get;
@@ -45,6 +57,8 @@ namespace ClangPowerTools.Commands
     {
       if (null != aCommandService)
       {
+        this.package = package ?? throw new ArgumentNullException(nameof(package));
+
         var menuCommandID = new CommandID(CommandSet, Id);
         var menuCommand = new OleMenuCommand(aCommandController.Execute, menuCommandID);
         menuCommand.BeforeQueryStatus += aCommandController.OnBeforeClangCommand;
@@ -52,6 +66,7 @@ namespace ClangPowerTools.Commands
         aCommandService.AddCommand(menuCommand);
       }
       TidySettingsViewModel = new TidySettingsViewModel();
+
     }
 
 
@@ -72,7 +87,26 @@ namespace ClangPowerTools.Commands
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
       Instance = new TidyCommand(commandService, aCommandController, aPackage, aGuid, aId);
+      
     }
+
+    public void Execute(object sender, EventArgs e)
+    {
+      this.package.JoinableTaskFactory.RunAsync(async delegate
+      {
+        ToolWindowPane window = await this.package.ShowToolWindowAsync(typeof(TidyToolWindowView), 0, true, this.package.DisposalToken);
+        if ((null == window) || (null == window.Frame))
+        {
+          throw new NotSupportedException("Cannot create tool window");
+        }
+      });
+    }
+
+    //public async Task ShowTidyToolWindowAync()
+    //{
+    //  TidyToolWindowView tidyToolWindowView = new TidyToolWindowView();
+    //  tidyToolWindowView.
+    //}
 
     public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)
     {
