@@ -186,6 +186,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\TidyToolWindowView.xaml.cs">
       <DependentUpon>TidyToolWindowView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\ToolWindows\TidyToolWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\WebApi\WebApiUrl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\XmlSerializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Output\OutputContentModel.cs" />

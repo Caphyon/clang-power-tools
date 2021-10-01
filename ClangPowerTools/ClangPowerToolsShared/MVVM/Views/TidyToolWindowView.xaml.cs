@@ -12,7 +12,7 @@ namespace ClangPowerTools.Views
   {
     public TidyToolWindowView()
     {
-      DataContext = new TidyToolWindowViewModel(this);
+      DataContext = new TidyToolWindowViewModel();
       InitializeComponent();
     }
     private void button1_Click(object sender, RoutedEventArgs e)
