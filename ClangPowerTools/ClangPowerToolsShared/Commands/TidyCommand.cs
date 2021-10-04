@@ -143,6 +143,8 @@ namespace ClangPowerTools.Commands
         {
           FileInfo file = new(filesPath.First());
           string tempFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp");
+          if(Directory.Exists(tempFolderPath))
+            Directory.Delete(tempFolderPath, true);
           Directory.CreateDirectory(tempFolderPath);
           var copyFile = Path.Combine(tempFolderPath, file.Name);
           File.Copy(file.FullName, copyFile, true);
@@ -162,6 +164,8 @@ namespace ClangPowerTools.Commands
 
     #endregion
 
+    #region Private Methods
+
     private static void DiffFilesUsingDefaultTool(string file1, string file2)
     {
       object args = $"\"{file1}\" \"{file2}\"";
@@ -169,6 +173,6 @@ namespace ClangPowerTools.Commands
       dte.Commands.Raise(TidyConstants.ToolsDiffFilesCmd, TidyConstants.ToolsDiffFilesId, ref args, ref args);
     }
 
-
+    #endregion
   }
 }
