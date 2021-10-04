@@ -146,6 +146,16 @@ namespace ClangPowerTools
       await base.InitializeAsync(cancellationToken, progress);
     }
 
+    public override IVsAsyncToolWindowFactory GetAsyncToolWindowFactory(Guid toolWindowType)
+    {
+      return toolWindowType.Equals(Guid.Parse(TidyToolWindow.WindowGuidString)) ? this : null;
+    }
+
+    protected override string GetToolWindowTitle(Type toolWindowType, int id)
+    {
+      return toolWindowType == typeof(TidyToolWindow) ? TidyToolWindow.Title : base.GetToolWindowTitle(toolWindowType, id);
+    }
+
     #endregion
 
 
