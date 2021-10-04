@@ -281,6 +281,9 @@
     <PackageReference Include="Microsoft.VisualStudio.SDK">
       <Version>15.0.1</Version>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Shell.15.0">
+      <Version>15.9.28307</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Shell.Framework">
       <Version>15.9.28307</Version>
     </PackageReference>
