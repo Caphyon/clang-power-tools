@@ -10,7 +10,7 @@ namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
   {
     #region Members
 
-    public const string WindowGuidString = "e4e2ba26-a955-5c53-adb3-8335fb696f8b";
+    public const string WindowGuidString = "e4e2ba26-a455-4c53-adb3-8225fb696f9b";
     public const string Title = "Sample Tool Window";
 
     #endregion
