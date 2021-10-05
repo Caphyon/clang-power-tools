@@ -1,4 +1,4 @@
-﻿﻿using ClangPowerTools;
+﻿using ClangPowerTools;
 using ClangPowerTools.Commands;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Command;
@@ -121,6 +121,13 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       TidyToolWindowModel = tidyToolWindowModel;
       Files = files;
       this.tidyToolWindowView = tidyToolWindowView;
+      itemsCollector.CollectSelectedItems();
+      foreach (var item in itemsCollector.Items)
+      {
+        files.Add(new FileModel { FileName = item.GetName() });
+      }
+      files.Add(new FileModel { FileName = "just a test" });
+      Files = files;
     }
 
     #endregion
