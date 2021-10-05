@@ -122,7 +122,7 @@ namespace ClangPowerTools
       if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
       {
         var dte2 = dte as DTE2;
-        
+
         mBuildEvents = dte2.Events.BuildEvents;
         mCommandEvents = dte2.Events.CommandEvents;
         mDteEvents = dte2.Events.DTEEvents;
@@ -382,9 +382,11 @@ namespace ClangPowerTools
 
     private async Task RegisterToEventsAsync()
     {
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-      await Task.Run(() =>
+      //await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      Microsoft.VisualStudio.Shell.ThreadHelper.JoinableTaskFactory.Run(async delegate
       {
+        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+
         RegisterToCPTEvents();
         RegisterToVsEvents();
       });
@@ -429,6 +431,7 @@ namespace ClangPowerTools
 
     private void RegisterToVsEvents()
     {
+
       if (null != mBuildEvents)
       {
         mBuildEvents.OnBuildBegin += mErrorWindowController.OnBuildBegin;
