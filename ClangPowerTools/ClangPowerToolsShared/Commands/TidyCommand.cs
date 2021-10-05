@@ -1,11 +1,6 @@
-﻿using ClangPowerTools.Helpers;
-using ClangPowerTools.Services;
-using ClangPowerTools.SilentFile;
-using ClangPowerToolsShared.MVVM.Views.ToolWindows;
+﻿using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using EnvDTE;
-using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
 using System.Linq;
@@ -92,57 +87,57 @@ namespace ClangPowerTools.Commands
     {
 
       await ShowTidy();
-      await PrepareCommmandAsync(commandUILocation);
-      await Task.Run(() =>
-      {
-        lock (mutex)
-        {
-          try
-          {
-            using var silentFileController = new SilentFileChangerController();
-            using var fileChangerWatcher = new FileChangerWatcher();
+      //await PrepareCommmandAsync(commandUILocation);
+      //await Task.Run(() =>
+      //{
+      //  lock (mutex)
+      //  {
+      //    try
+      //    {
+      //      using var silentFileController = new SilentFileChangerController();
+      //      using var fileChangerWatcher = new FileChangerWatcher();
 
-            var tidySettings = SettingsProvider.TidySettingsModel;
+      //      var tidySettings = SettingsProvider.TidySettingsModel;
 
-            if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
-            {
-              fileChangerWatcher.OnChanged += FileOpener.Open;
+      //      if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
+      //      {
+      //        fileChangerWatcher.OnChanged += FileOpener.Open;
 
-              var dte2 = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
-              string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
-                dte2.Solution.FullName : dte2.Solution.FullName
-                                          .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
+      //        var dte2 = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
+      //        string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
+      //          dte2.Solution.FullName : dte2.Solution.FullName
+      //                                    .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
 
-              fileChangerWatcher.Run(solutionFolderPath);
+      //        fileChangerWatcher.Run(solutionFolderPath);
 
-              FilePathCollector fileCollector = new FilePathCollector();
-              var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
+      //        FilePathCollector fileCollector = new FilePathCollector();
+      //        var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
 
-              silentFileController.SilentFiles(filesPath);
-              silentFileController.SilentFiles(dte2.Documents);
-            }
+      //        silentFileController.SilentFiles(filesPath);
+      //        silentFileController.SilentFiles(dte2.Documents);
+      //      }
 
-            if (tidySettings.DetectClangTidyFile && !mItemsCollector.IsEmpty)
-            {
-              // Check for .clang-tidy config file
-              if (FileSystem.SearchAllTopDirectories(mItemsCollector.Items[0].GetPath(), FileSystem.ConfigClangTidyFileName))
-                tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
-              else
-                tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.PredefinedChecks;
+      //      if (tidySettings.DetectClangTidyFile && !mItemsCollector.IsEmpty)
+      //      {
+      //        // Check for .clang-tidy config file
+      //        if (FileSystem.SearchAllTopDirectories(mItemsCollector.Items[0].GetPath(), FileSystem.ConfigClangTidyFileName))
+      //          tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
+      //        else
+      //          tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.PredefinedChecks;
 
-              var settingsHandlder = new SettingsHandler();
-              settingsHandlder.SaveSettings();
-            }
+      //        var settingsHandlder = new SettingsHandler();
+      //        settingsHandlder.SaveSettings();
+      //      }
 
-            RunScript(aCommandId, false);
-          }
-          catch (Exception exception)
-          {
-            VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
-              OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-          }
-        }
-      });
+      //      RunScript(aCommandId, false);
+      //    }
+      //    catch (Exception exception)
+      //    {
+      //      VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
+      //        OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+      //    }
+      //  }
+      //});
     }
 
     #endregion

@@ -9,111 +9,27 @@
   d:DesignHeight="490"
   d:DesignWidth="770"
   mc:Ignorable="d">
-  
+
   <Grid>
     <StackPanel Orientation="Vertical">
       <TextBlock Margin="10" HorizontalAlignment="Center">TidyToolWindow</TextBlock>
-      <Button Content="Click me!" Click="button1_Click" Width="120" Height="80" Name="button1"/>
+      <Button
+        Name="button1"
+        Width="120"
+        Height="80"
+        Click="button1_Click"
+        Content="Click me!" />
     </StackPanel>
 
-    <!--<ListView
-        x:Name="CollectionItems"
-        Grid.Row="1"
-        AlternationCount="2"
-        Background="White"
-        ItemsSource="{Binding SelectedFiles, Mode=TwoWay}"
-        ScrollViewer.CanContentScroll="True"
-        ScrollViewer.VerticalScrollBarVisibility="Visible"
-        SelectionMode="Single">
-
-      <ListView.ItemContainerStyle>
-        <Style TargetType="ListViewItem">
-          <Setter Property="Background" Value="Transparent" />
-          <Setter Property="BorderBrush" Value="WhiteSmoke" />
-          <Setter Property="BorderThickness" Value="1" />
-          <Setter Property="Focusable" Value="True" />
-          <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-          <Style.Triggers>
-            <Trigger Property="ItemsControl.AlternationIndex" Value="0">
-              <Setter Property="Background" Value="White" />
-            </Trigger>
-            <Trigger Property="ItemsControl.AlternationIndex" Value="1">
-              <Setter Property="Background" Value="WhiteSmoke" />
-            </Trigger>
-          </Style.Triggers>
-        </Style>
-      </ListView.ItemContainerStyle>
-
-      <ListView.ItemTemplate>
-        <DataTemplate>
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="75" />
-              <ColumnDefinition Width="*" />
-              <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-              <RowDefinition Height="38" />
-            </Grid.RowDefinitions>
-            <TextBlock
-                x:Name="FileSizeTextBlock"
-                Grid.Column="0"
-                Margin="5,0,15,0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                Background="Transparent"
-                FontWeight="Normal"
-                Foreground="{Binding ForgroundColor}"
-                Text="{Binding FileSizeAsString}" />
-            <TextBlock
-                x:Name="InputField"
-                Grid.Column="1"
-                VerticalAlignment="Center"
-                Background="Transparent"
-                Foreground="{Binding ForgroundColor}"
-                Text="{Binding FilePathToShow}"
-                ToolTip="{Binding FilePath}" />
-
-            --><!--<Button
-                Name="RemoveFileButton"
-                Grid.Column="2"
-                Width="20"
-                Height="20"
-                Margin="10,0,10,0"
-                HorizontalAlignment="Right"
-                BorderThickness="0"
-                Click="RemoveFileButton_Click">
-              <Button.Style>
-                <Style TargetType="{x:Type Button}">
-                  <Setter Property="Background" Value="{StaticResource RemoveImage}" />
-                  <Setter Property="Template">
-                    <Setter.Value>
-                      <ControlTemplate TargetType="Button">
-                        <Grid Background="{TemplateBinding Background}">
-                          <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
-                        </Grid>
-                      </ControlTemplate>
-                    </Setter.Value>
-                  </Setter>
-                  <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                      <Setter Property="Background" Value="{StaticResource RemoverHoverImage}" />
-                    </Trigger>
-                  </Style.Triggers>
-                </Style>
-              </Button.Style>
-            </Button>--><!--
-          </Grid>
-        </DataTemplate>
-      </ListView.ItemTemplate>
-    </ListView>-->
-    <ListView Margin="10" Name="Files">
+    <ListView Margin="10" ItemsSource="{Binding Files}">
       <ListView.View>
         <GridView>
-          <GridViewColumn Header="Name" Width="120" DisplayMemberBinding="{Binding FileName}" />
+          <GridViewColumn DisplayMemberBinding="{Binding FileName}" Header="Name" />
         </GridView>
       </ListView.View>
     </ListView>
+
+
   </Grid>
-  
+
 </UserControl>
