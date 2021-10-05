@@ -78,14 +78,20 @@ namespace ClangPowerTools.Commands
 
     }
 
+    private async Task ShowTidy()
+    {
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      ToolWindowPane window = await package.ShowToolWindowAsync(
+      typeof(TidyToolWindow),
+      0,
+      create: true,
+      cancellationToken: package.DisposalToken);
+    }
+
     public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)
     {
-      ToolWindowPane window = await package.ShowToolWindowAsync(
-          typeof(TidyToolWindow),
-          0,
-          create: true,
-          cancellationToken: package.DisposalToken);
 
+      await ShowTidy();
       await PrepareCommmandAsync(commandUILocation);
       await Task.Run(() =>
       {
