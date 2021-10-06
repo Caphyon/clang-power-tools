@@ -82,7 +82,10 @@ namespace ClangPowerTools.Commands
       create: true,
       cancellationToken: package.DisposalToken);
       var tidyToolWindow = (TidyToolWindow)window;
-      tidyToolWindow.UpdateToolWindow();
+
+      FilePathCollector fileCollector = new FilePathCollector();
+      var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
+      tidyToolWindow.UpdateToolWindow(filesPath);
     }
 
     public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)

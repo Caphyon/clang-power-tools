@@ -1,5 +1,6 @@
 ﻿using ClangPowerToolsShared.MVVM.ViewModels;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -18,9 +19,9 @@ namespace ClangPowerTools.Views
       InitializeComponent();
     }
 
-    public void UpdateView()
+    public void UpdateView(List<string> filesPath)
     {
-      tidyToolWindowViewModel.UpdateViewModel();
+      tidyToolWindowViewModel.UpdateViewModel(filesPath);
     }
 
     private void button1_Click(object sender, RoutedEventArgs e)

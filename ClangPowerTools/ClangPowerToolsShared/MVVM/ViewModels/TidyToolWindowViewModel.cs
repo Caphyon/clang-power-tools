@@ -2,8 +2,10 @@
 using ClangPowerTools.MVVM.Command;
 using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.Views;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Windows.Input;
 
@@ -22,31 +24,21 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
 
       this.tidyToolWindowView = tidyToolWindowView;
-      itemsCollector.CollectSelectedItems();
-      foreach (var item in itemsCollector.Items)
-      {
-        files.Add(new FileModel { FileName = item.GetName() });
-      }
-      files.Add(new FileModel { FileName = "just a test" });
-      Files = files;
     }
 
     #region Properties
 
     public ObservableCollection<FileModel> Files { get; set; } = new ObservableCollection<FileModel>();
 
-    public void UpdateViewModel()
+    public void UpdateViewModel(List<string> filesPath)
     {
-      ItemsCollector itemsCollectora = new ItemsCollector();
-      itemsCollectora.CollectSelectedItems();
 
-      FilePathCollector fileCollector = new FilePathCollector();
-      var filesPath = fileCollector.Collect(itemsCollectora.Items).ToList();
-      foreach (var item in filesPath)
+      foreach (string file in filesPath)
       {
-        files.Add(new FileModel { FileName = item });
+        FileInfo path = new FileInfo(file);
+        files.Add(new FileModel { FileName = path.Name });
       }
-      files.Add(new FileModel { FileName = "show selected files method executed" });
+      files.Add(new FileModel { FileName = "------------------------------" });
       Files = files;
     }
 
