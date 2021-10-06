@@ -3,6 +3,7 @@ using ClangPowerToolsShared.MVVM.ViewModels;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
@@ -29,9 +30,9 @@ namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
     }
 
     #endregion
-    public void UpdateToolWindow()
+    public void UpdateToolWindow(List<string> filesPath)
     {
-      tidyToolWindowView.UpdateView();
+      tidyToolWindowView.UpdateView(filesPath);
     }
   }
 }
