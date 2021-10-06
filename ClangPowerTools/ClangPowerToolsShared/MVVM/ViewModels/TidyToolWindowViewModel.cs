@@ -2,9 +2,9 @@
 using ClangPowerTools.MVVM.Command;
 using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.Views;
-using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Input;
 
 namespace ClangPowerToolsShared.MVVM.ViewModels
@@ -17,10 +17,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private ItemsCollector itemsCollector = new ItemsCollector();
     private ICommand showFiles;
 
-    
+
     public TidyToolWindowViewModel(TidyToolWindowView tidyToolWindowView)
     {
-      
+
       this.tidyToolWindowView = tidyToolWindowView;
       itemsCollector.CollectSelectedItems();
       foreach (var item in itemsCollector.Items)
@@ -37,6 +37,17 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void UpdateViewModel()
     {
+      ItemsCollector itemsCollectora = new ItemsCollector();
+      itemsCollectora.CollectSelectedItems();
+
+      FilePathCollector fileCollector = new FilePathCollector();
+      var filesPath = fileCollector.Collect(itemsCollectora.Items).ToList();
+      foreach (var item in filesPath)
+      {
+        files.Add(new FileModel { FileName = item });
+      }
+      files.Add(new FileModel { FileName = "show selected files method executed" });
+      Files = files;
     }
 
     public void DisplayFiles()

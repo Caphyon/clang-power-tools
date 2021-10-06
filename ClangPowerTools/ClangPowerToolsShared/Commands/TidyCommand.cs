@@ -81,15 +81,15 @@ namespace ClangPowerTools.Commands
       0,
       create: true,
       cancellationToken: package.DisposalToken);
-      var test = (TidyToolWindow)window;
-      test.test();
+      var tidyToolWindow = (TidyToolWindow)window;
+      tidyToolWindow.UpdateToolWindow();
     }
 
     public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)
     {
 
+      await PrepareCommmandAsync(commandUILocation);
       await ShowTidy();
-      //await PrepareCommmandAsync(commandUILocation);
       //await Task.Run(() =>
       //{
       //  lock (mutex)
