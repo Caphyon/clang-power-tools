@@ -81,6 +81,8 @@ namespace ClangPowerTools.Commands
       0,
       create: true,
       cancellationToken: package.DisposalToken);
+      var test = (TidyToolWindow)window;
+      test.test();
     }
 
     public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)
