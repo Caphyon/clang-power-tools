@@ -28,19 +28,11 @@
           <GridViewColumn DisplayMemberBinding="{Binding FileName}" Header="File Name" Width="500" />
         </GridView>
       </ListView.View>
+      <ListView.ItemContainerStyle>
+        <Style TargetType="ListViewItem">
+          <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
+        </Style>
+      </ListView.ItemContainerStyle>
     </ListView>
-    <Button
-      Width="100"
-      Height="100"
-      Margin="0,400,0,0"
-      Command="{Binding ShowFiles}"
-      Content="Show files"
-      FontFamily="Segoe UI"
-      FontSize="15"
-      Foreground="White"
-      ToolTip="Select the custom path to the LLVM  &quot;bin&quot; directory. The LLVM version is automatically detected and it will be displayed in the list above." />
-
-
   </Grid>
-
 </UserControl>

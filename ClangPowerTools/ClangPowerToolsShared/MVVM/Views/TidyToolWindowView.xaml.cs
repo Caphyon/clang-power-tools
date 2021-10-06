@@ -1,8 +1,11 @@
-﻿using ClangPowerToolsShared.MVVM.ViewModels;
+﻿using ClangPowerTools.MVVM.Models;
+using ClangPowerToolsShared.MVVM.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ClangPowerTools.Views
 {
@@ -24,13 +27,14 @@ namespace ClangPowerTools.Views
       tidyToolWindowViewModel.UpdateViewModel(filesPath);
     }
 
-    private void button1_Click(object sender, RoutedEventArgs e)
+    private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
-      MessageBox.Show(
-          string.Format(System.Globalization.CultureInfo.CurrentUICulture, "Invoked '{0}'", this.ToString()),
-          "TidyToolWindow");
+      var item = sender as ListViewItem;
+      var i = item.Content as FileModel;
+      if (item != null && item.IsSelected)
+      {
+        //Do your stuff
+      }
     }
-
-
   }
 }
