@@ -11,23 +11,34 @@
   mc:Ignorable="d">
 
   <Grid>
-    <StackPanel Orientation="Vertical">
-      <TextBlock Margin="10" HorizontalAlignment="Center">TidyToolWindow</TextBlock>
-      <Button
+    <!--<StackPanel Orientation="Vertical">
+      --><!--<TextBlock HorizontalAlignment="Center">TidyToolWindow</TextBlock>-->
+      <!--<Button
         Name="button1"
         Width="120"
         Height="80"
-        Click="button1_Click"
-        Content="Click me!" />
-    </StackPanel>
+        Margin="1,300,1,1"
+        Command="{Binding ShowFiles}"
+        Content="Click me!" />--><!--
+    </StackPanel>-->
 
-    <ListView Margin="10" ItemsSource="{Binding Files}">
+    <ListView Background="WhiteSmoke" ItemsSource="{Binding Files}">
       <ListView.View>
         <GridView>
-          <GridViewColumn DisplayMemberBinding="{Binding FileName}" Header="Name" />
+          <GridViewColumn DisplayMemberBinding="{Binding FileName}" Header="File Name" Width="500" />
         </GridView>
       </ListView.View>
     </ListView>
+    <Button
+      Width="100"
+      Height="100"
+      Margin="0,400,0,0"
+      Command="{Binding ShowFiles}"
+      Content="Show files"
+      FontFamily="Segoe UI"
+      FontSize="15"
+      Foreground="White"
+      ToolTip="Select the custom path to the LLVM  &quot;bin&quot; directory. The LLVM version is automatically detected and it will be displayed in the list above." />
 
 
   </Grid>

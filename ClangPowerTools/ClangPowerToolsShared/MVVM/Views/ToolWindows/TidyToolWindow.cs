@@ -1,6 +1,8 @@
 ﻿using ClangPowerTools.Views;
+using ClangPowerToolsShared.MVVM.ViewModels;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
+using System;
 using System.Runtime.InteropServices;
 
 namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
@@ -12,6 +14,7 @@ namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
 
     public const string WindowGuidString = "e4e2ba26-a455-4c53-adb3-8225fb696f9b";
     public const string Title = "Sample Tool Window";
+    private TidyToolWindowView tidyToolWindowView;
 
     #endregion
 
@@ -21,9 +24,19 @@ namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
     {
       Caption = "Tidy Tool window ";
       BitmapImageMoniker = KnownMonikers.ImageIcon;
-      Content = new TidyToolWindowView();
+      tidyToolWindowView = new TidyToolWindowView();
+      Content = tidyToolWindowView;
     }
 
     #endregion
+    public void test()
+    {
+      //here
+      tidyToolWindowView.UpdateView();
+    }
+    protected override void OnCreate()
+    {
+      base.OnCreate();
+    }
   }
 }

@@ -1,4 +1,5 @@
 ﻿using ClangPowerToolsShared.MVVM.ViewModels;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -9,13 +10,18 @@ namespace ClangPowerTools.Views
   /// </summary>
   public partial class TidyToolWindowView : UserControl
   {
+    private TidyToolWindowViewModel tidyToolWindowViewModel;
     public TidyToolWindowView()
     {
-      DataContext = new TidyToolWindowViewModel(this);
-
+      tidyToolWindowViewModel = new TidyToolWindowViewModel(this);
+      DataContext = tidyToolWindowViewModel;
       InitializeComponent();
     }
 
+    public void UpdateView()
+    {
+      tidyToolWindowViewModel.UpdateViewModel();
+    }
 
     private void button1_Click(object sender, RoutedEventArgs e)
     {
@@ -23,5 +29,7 @@ namespace ClangPowerTools.Views
           string.Format(System.Globalization.CultureInfo.CurrentUICulture, "Invoked '{0}'", this.ToString()),
           "TidyToolWindow");
     }
+
+
   }
 }
