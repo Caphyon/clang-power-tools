@@ -29,14 +29,9 @@ namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
     }
 
     #endregion
-    public void test()
+    public void UpdateToolWindow()
     {
-      //here
       tidyToolWindowView.UpdateView();
-    }
-    protected override void OnCreate()
-    {
-      base.OnCreate();
     }
   }
 }
