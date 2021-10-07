@@ -10,6 +10,7 @@ using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Models;
 using EnvDTE80;
 using Microsoft.VisualStudio.PlatformUI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
