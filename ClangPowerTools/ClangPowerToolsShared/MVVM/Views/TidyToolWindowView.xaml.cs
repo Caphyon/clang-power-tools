@@ -1,8 +1,11 @@
-﻿using ClangPowerTools.MVVM.Models;
+﻿using ClangPowerTools.Commands;
+using ClangPowerTools.MVVM.Models;
+using ClangPowerToolsShared.MVVM.Commands;
 using ClangPowerToolsShared.MVVM.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -33,7 +36,10 @@ namespace ClangPowerTools.Views
       var i = item.Content as FileModel;
       if (item != null && item.IsSelected)
       {
-        //Do your stuff
+        TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, null, new List<string> { i.FullFileName});
+        //tidyDiffCommand.TidyDiff(i.FullFileName);
+        string tempFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp", i.FileName);
+        TidyDiffCommand.DiffFilesUsingDefaultTool(tempFolderPath, i.FullFileName);  
       }
     }
   }
