@@ -39,7 +39,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         FileInfo path = new FileInfo(file);
         files.Add(new FileModel { FileName = path.Name });
       }
-      files.Add(new FileModel { FileName = "------------------------------" });
       Files = files;
     }
 
