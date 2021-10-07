@@ -1,10 +1,12 @@
-﻿﻿using ClangPowerTools.Helpers;
+﻿﻿﻿using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
 using ClangPowerTools.SilentFile;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using ClangPowerTools.Views;
 using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -93,6 +95,7 @@ namespace ClangPowerTools.Commands
     //display tidy tool window - progress bar, run tidy again
     public async Task ShowTidyToolWindowEmptyAsync()
     {
+      await PrepareCommmandAsync(commandUILocation);
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       ToolWindowPane window = await package.ShowToolWindowAsync(
       typeof(TidyToolWindow),
