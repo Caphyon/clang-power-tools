@@ -1,7 +1,10 @@
 ﻿using ClangPowerTools;
+using ClangPowerTools.Commands;
 using ClangPowerTools.MVVM.Command;
 using ClangPowerTools.MVVM.Models;
+using ClangPowerTools.Services;
 using ClangPowerTools.Views;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -33,13 +36,29 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void UpdateViewModel(List<string> filesPath)
     {
-
+      files.Clear();
       foreach (string file in filesPath)
       {
         FileInfo path = new FileInfo(file);
         files.Add(new FileModel { FileName = path.Name });
       }
       Files = files;
+      //copy files in temp folder
+      string tempFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp");
+      if (Directory.Exists(tempFolderPath))
+        Directory.Delete(tempFolderPath, true);
+      Directory.CreateDirectory(tempFolderPath);
+      if (Directory.Exists(tempFolderPath))
+      {
+        foreach (string path in filesPath)
+        {
+          FileInfo file = new(path);
+          var copyFile = Path.Combine(tempFolderPath, file.Name);
+          File.Copy(file.FullName, copyFile, true);
+        }
+      }
+
+      TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, CommandUILocation.ContextMenu, null, filesPath);
     }
 
     public bool CanExecute
