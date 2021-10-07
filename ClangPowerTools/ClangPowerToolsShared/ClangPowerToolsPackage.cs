@@ -41,7 +41,7 @@ namespace ClangPowerTools
   [ProvideAutoLoad(VSConstants.UICONTEXT.SolutionExistsAndFullyLoaded_string, PackageAutoLoadFlags.BackgroundLoad)]
   [ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string, PackageAutoLoadFlags.BackgroundLoad)]
   [ProvideMenuResource("Menus.ctmenu", 1)]
-  [ProvideToolWindow(typeof(TidyToolWindow), Style = VsDockStyle.Tabbed, DockedWidth = 300, Window = "DocumentWell", Orientation = ToolWindowOrientation.Left)]
+  [ProvideToolWindow(typeof(TidyToolWindow), Style = VsDockStyle.Tabbed, DockedWidth = 300, Window = "DocumentWell", Orientation = ToolWindowOrientation.Left, Transient = true)]
   [Guid(PackageGuidString)]
   public sealed class RunClangPowerToolsPackage : AsyncPackage, IVsSolutionEvents, IVsSolutionLoadEvents, IVsSolutionEvents7
   {
@@ -145,10 +145,10 @@ namespace ClangPowerTools
       await base.InitializeAsync(cancellationToken, progress);
     }
 
-    public override IVsAsyncToolWindowFactory GetAsyncToolWindowFactory(Guid toolWindowType)
-    {
-      return toolWindowType.Equals(Guid.Parse(TidyToolWindow.WindowGuidString)) ? this : null;
-    }
+    //public override IVsAsyncToolWindowFactory GetAsyncToolWindowFactory(Guid toolWindowType)
+    //{
+    //  return toolWindowType.Equals(Guid.Parse(TidyToolWindow.WindowGuidString)) ? this : null;
+    //}
 
     protected override string GetToolWindowTitle(Type toolWindowType, int id)
     {
