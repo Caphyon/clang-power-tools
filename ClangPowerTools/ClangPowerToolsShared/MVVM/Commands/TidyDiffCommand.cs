@@ -68,7 +68,7 @@ namespace ClangPowerToolsShared.MVVM.Commands
       
     }
 
-    private static void DiffFilesUsingDefaultTool(string file1, string file2)
+    public static void DiffFilesUsingDefaultTool(string file1, string file2)
     {
       object args = $"\"{file1}\" \"{file2}\"";
       var dte = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
