@@ -1,9 +1,12 @@
 ﻿using ClangPowerTools;
 using ClangPowerTools.Commands;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Command;
 using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.Services;
+using ClangPowerTools.SilentFile;
 using ClangPowerTools.Views;
+using EnvDTE80;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -23,6 +26,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private TidyToolWindowView tidyToolWindowView;
     private ItemsCollector itemsCollector = new ItemsCollector();
     private ICommand showFiles;
+    private readonly string tempFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp");
 
     #endregion
 
@@ -34,6 +38,31 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public ObservableCollection<FileModel> Files { get; set; } = new ObservableCollection<FileModel>();
 
+    public void DiscardFile(string path)
+    {
+      FileInfo file = new(path);
+      using var silentFileController = new SilentFileChangerController();
+      using var fileChangerWatcher = new FileChangerWatcher();
+
+      var dte2 = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
+      string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
+        dte2.Solution.FullName : dte2.Solution.FullName
+                                  .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
+      fileChangerWatcher.Run(solutionFolderPath);
+
+      var copyFile = Path.Combine(tempFolderPath, file.Name);
+      if(File.Exists(copyFile))
+      {
+        File.Copy(copyFile, file.FullName, true);
+        File.Delete(copyFile);
+      }
+    }
+
+    public void DiscardAllFiles(List<string> paths)
+    {
+
+    }
+
     public void UpdateViewModel(List<string> filesPath)
     {
       files.Clear();
@@ -44,7 +73,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
       Files = files;
       //copy files in temp folder
-      string tempFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp");
       if (Directory.Exists(tempFolderPath))
         Directory.Delete(tempFolderPath, true);
       Directory.CreateDirectory(tempFolderPath);
