@@ -30,6 +30,17 @@ namespace ClangPowerTools.Views
       tidyToolWindowViewModel.UpdateViewModel(filesPath);
     }
 
+    private void DiffButton(object sender, RoutedEventArgs e)
+    {
+      var elementIndex = sender as FrameworkElement;
+      var element = elementIndex.DataContext as FileModel;
+
+      if (element != null)
+      {
+        tidyDiffCommand.TidyDiff(element.FullFileName);
+      }
+    }
+
     private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
       var item = sender as ListViewItem;
