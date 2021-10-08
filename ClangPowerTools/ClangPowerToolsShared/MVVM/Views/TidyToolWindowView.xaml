@@ -12,18 +12,29 @@
 
   <Grid>
     <!--<StackPanel Orientation="Vertical">
-      --><!--<TextBlock HorizontalAlignment="Center">TidyToolWindow</TextBlock>-->
-      <!--<Button
+      -->
+    <!--<TextBlock HorizontalAlignment="Center">TidyToolWindow</TextBlock>-->
+    <!--<Button
         Name="button1"
         Width="120"
         Height="80"
         Margin="1,300,1,1"
         Command="{Binding ShowFiles}"
-        Content="Click me!" />--><!--
+        Content="Click me!" />-->
+    <!--
     </StackPanel>-->
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="770" />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="30"/>
+      <RowDefinition Height="*"/>
+    </Grid.RowDefinitions>
 
-    <ListView Background="WhiteSmoke" ItemsSource="{Binding Files}">
-      <ListView.View>
+    <Button Grid.Column="0" Grid.Row="0" Height="20" Margin="149,5,516,5" Content="Fix all" />
+    <Button Grid.Column="0" Grid.Row="0" Height="20" Margin="17,5,651,5" Content="Discard all" />
+    <ListView Grid.Row="1" Background="WhiteSmoke" ItemsSource="{Binding Files}">
+      <!--<ListView.View>
         <GridView>
           <GridViewColumn DisplayMemberBinding="{Binding FileName}" Header="File Name" Width="500" />
         </GridView>
@@ -32,7 +43,83 @@
         <Style TargetType="ListViewItem">
           <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
         </Style>
-      </ListView.ItemContainerStyle>
+      </ListView.ItemContainerStyle>-->
+      <ListView.ItemTemplate>
+        <DataTemplate>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="200" />
+              <ColumnDefinition Width="90" />
+              <ColumnDefinition Width="90" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock
+              Grid.Column="0"
+              VerticalAlignment="Center"
+              Text="{Binding FileName}">
+            </TextBlock>
+            <Button Grid.Column="1" Width="80" Height="20" Margin="2,0,0,0" Content="Diff" />
+            <Button Grid.Column="2" Width="80" Height="20" Margin="2,0,0,0" Content="Apply" />
+            <Button Grid.Column="3" Width="80" Height="20" Margin="2,0,0,0" Content="Discard" />
+
+            <!--<Button
+              Grid.Column="2"
+              Width="80"
+              Height="20"
+              Margin="490,0,0,0"
+              Click="DownloadButton"
+              Content="Download"
+              FontSize="13"
+              IsEnabled="{Binding CanExecuteCommand}">
+              <Button.Style>
+                <Style TargetType="Button">
+                  <Setter Property="Focusable" Value="False" />
+                  <Setter Property="Visibility" Value="Visible" />
+                  <Setter Property="IsEnabled" Value="True" />
+                  <Setter Property="Template">
+                    <Setter.Value>
+                      <ControlTemplate TargetType="Button">
+                        <TextBlock>
+                          <Hyperlink Style="{StaticResource HyperlinkStyle}">
+                            <Run Text="{TemplateBinding Content}" />
+                          </Hyperlink>
+                        </TextBlock>
+                      </ControlTemplate>
+                    </Setter.Value>
+                  </Setter>
+                  <Style.Triggers>
+                    <MultiDataTrigger>
+                      <MultiDataTrigger.Conditions>
+                        <Condition Binding="{Binding IsDownloading}" Value="True" />
+                        <Condition Binding="{Binding IsInstalled}" Value="False" />
+                      </MultiDataTrigger.Conditions>
+                      <Setter Property="Visibility" Value="Hidden" />
+                    </MultiDataTrigger>
+                    <DataTrigger Binding="{Binding IsInstalling}" Value="True">
+                      <Setter Property="Visibility" Value="Hidden" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding HasPreinstalledLlvm}" Value="True">
+                      <Setter Property="Visibility" Value="Hidden" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding IsInstalled}" Value="True">
+                      <Setter Property="Visibility" Value="Hidden" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding CanExecuteCommand}" Value="False">
+                      <Setter Property="IsEnabled" Value="False" />
+                    </DataTrigger>
+                  </Style.Triggers>
+                </Style>
+              </Button.Style>
+            </Button>-->
+
+
+          </Grid>
+        </DataTemplate>
+      </ListView.ItemTemplate>
     </ListView>
   </Grid>
 </UserControl>
