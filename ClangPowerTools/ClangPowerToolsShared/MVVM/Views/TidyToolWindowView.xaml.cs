@@ -33,13 +33,10 @@ namespace ClangPowerTools.Views
     private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
       var item = sender as ListViewItem;
-      var i = item.Content as FileModel;
+      var file = item.Content as FileModel;
       if (item != null && item.IsSelected)
       {
-        TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, null, new List<string> { i.FullFileName});
-        //tidyDiffCommand.TidyDiff(i.FullFileName);
-        string tempFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp", i.FileName);
-        TidyDiffCommand.DiffFilesUsingDefaultTool(tempFolderPath, i.FullFileName);  
+        tidyDiffCommand.TidyDiff(file.FullFileName);
       }
     }
   }
