@@ -31,6 +31,19 @@ namespace ClangPowerTools
       return Path.Combine(path, binFolder);
     }
 
+    public string GetCurrentExecutableLlvmPath()
+    {
+      var llvmSetPath = SettingsProvider.LlvmSettingsModel.PreinstalledLlvmPath;
+      if (llvmSetPath == "")
+      {
+        return GetLlvmExecutablePath(SettingsProvider.LlvmSettingsModel.LlvmSelectedVersion, "bin\\clang-tidy");
+      }
+      else
+      {
+        return Path.Combine(llvmSetPath, "clang-tidy.exe");
+      }
+    }
+
     public string GetLlvmExecutablePath(string version, string executableName)
     {
       var path = GetLlvmPath(version);
