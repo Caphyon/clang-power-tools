@@ -7,7 +7,9 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
+using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
@@ -129,7 +131,48 @@ namespace ClangPowerTools.Commands
       });
     }
 
+    public async Task RunClangTidyFixAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)
+    {
+      await PrepareCommmandAsync(commandUILocation);
+
+      FilePathCollector fileCollector = new FilePathCollector();
+      var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
+      if (filesPath.Count == 1)
+      {
+        try
+        {
+          FileInfo file = new(filesPath.First());
+          string tempFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp");
+          if(Directory.Exists(tempFolderPath))
+            Directory.Delete(tempFolderPath, true);
+          Directory.CreateDirectory(tempFolderPath);
+          var copyFile = Path.Combine(tempFolderPath, file.Name);
+          File.Copy(file.FullName, copyFile, true);
+          await RunClangTidyAsync(aCommandId, commandUILocation, document);
+          DiffFilesUsingDefaultTool(copyFile, file.FullName);
+          Directory.Delete(tempFolderPath, true);
+        }
+        catch (Exception e)
+        {
+          MessageBox.Show(e.Message, "Tidy-Diff Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+      }else
+      {
+        await RunClangTidyAsync(aCommandId, commandUILocation, document);
+      }
+    }
+
     #endregion
 
+    #region Private Methods
+
+    private static void DiffFilesUsingDefaultTool(string file1, string file2)
+    {
+      object args = $"\"{file1}\" \"{file2}\"";
+      var dte = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
+      dte.Commands.Raise(TidyConstants.ToolsDiffFilesCmd, TidyConstants.ToolsDiffFilesId, ref args, ref args);
+    }
+
+    #endregion
   }
 }
