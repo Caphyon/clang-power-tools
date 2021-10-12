@@ -75,7 +75,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 7.6.0" />
+        Text="version 7.7.0" />
 
       <ListView
         Grid.Row="3"
@@ -116,7 +116,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Update clang-tidy checks"
+          Text="• LLVM 13.0.0"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -126,19 +126,8 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Easy access to clang-tidy checks documentation"
+          Text="• Added custom LLVM path directly from settings"
           TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Improved UI in the clang-tidy checks window"
-          TextWrapping="Wrap" />
-
 
         <!--  Bug Fixes  -->
         <TextBox
@@ -157,19 +146,8 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Deprecated clang-tidy flags found in the list"
+          Text="• Error on before save due to file type"
           TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Error due to Open Project type check"
-          TextWrapping="Wrap" />
-
       </ListView>
     </Grid>
 
