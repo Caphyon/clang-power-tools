@@ -77,6 +77,12 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void SetLLVM()
     {
+      if (string.IsNullOrWhiteSpace(PathFolder))
+      {
+        MessageBox.Show("LLVM version can't be detected", "Clang Power Tools",
+           MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        return;
+      }
       var clangPath = Path.Combine(PathFolder, "clang.exe");
       if (!File.Exists(clangPath))
       {
@@ -94,29 +100,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       var versionInfo = FileVersionInfo.GetVersionInfo(clangPath);
       string version = versionInfo.FileVersion.Split()[0];
 
-      if (IsVersionInstalled(version))
-      {
-        MessageBox.Show("This LLVM is already installed", "Clang Power Tools",
-           MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        return;
-      }
-
       preinstalledLlvm = new PreinstalledLlvm(llvms, installedLlvms);
       preinstalledLlvm.SetPreinstalledLlvm(PathFolder, version);
       VersionUsed = version;
       folderExplorerView.Close();
-    }
-
-    private bool IsVersionInstalled(string version)
-    {
-      foreach (var llvm in installedLlvms)
-      {
-        if (llvm == version)
-        {
-          return true;
-        }
-      }
-      return false;
     }
 
     public void GetFolderPath()

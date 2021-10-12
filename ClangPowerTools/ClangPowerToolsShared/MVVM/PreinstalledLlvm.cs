@@ -37,8 +37,20 @@ namespace ClangPowerTools
       SetPathAndVersion(path, version);
       if (llvmSettingsModel.PreinstalledLlvmVersion == string.Empty)
         return;
+      if (!IsVersionInstalled(version))
+        installedLlvms.Add(llvmSettingsModel.PreinstalledLlvmVersion);
+    }
 
-      installedLlvms.Add(llvmSettingsModel.PreinstalledLlvmVersion);
+    private bool IsVersionInstalled(string version)
+    {
+      foreach (var llvm in installedLlvms)
+      {
+        if (llvm == version)
+        {
+          return true;
+        }
+      }
+      return false;
     }
 
     private void SetPathAndVersion(string path, string version)
