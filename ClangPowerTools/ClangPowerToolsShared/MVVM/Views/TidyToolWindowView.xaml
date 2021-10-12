@@ -48,6 +48,7 @@
         <DataTemplate>
           <Grid>
             <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="20" />
               <ColumnDefinition Width="200" />
               <ColumnDefinition Width="90" />
               <ColumnDefinition Width="90" />
@@ -56,16 +57,16 @@
             <Grid.RowDefinitions>
               <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
-
+            <CheckBox Grid.Column="0" VerticalAlignment="Center" IsChecked="{Binding IsChecked, Mode=TwoWay}"></CheckBox>
             <TextBlock
-              Grid.Column="0"
+              Grid.Column="1"
               VerticalAlignment="Center"
               Foreground="WhiteSmoke"
               Text="{Binding FileName}">
             </TextBlock>
             <!--<Button Grid.Column="1" Width="80" Height="20" Margin="2,0,0,0" Click="DiffButton" Content="Diff" />-->
-            <Button Grid.Column="1" Width="80" Height="20" Margin="2,0,0,0" Click="DiffButton" Content="Fix" />
-            <Button Grid.Column="2" Width="80" Height="20" Margin="2,0,0,0" Click="DiscardButton" Content="Discard" />
+            <Button Grid.Column="2" Width="80" Height="20" Margin="2,0,0,0" Click="DiffButton" Content="Fix" />
+            <Button Grid.Column="3" Width="80" Height="20" Margin="2,0,0,0" Click="DiscardButton" Content="Discard" />
           </Grid>
         </DataTemplate>
       </ListView.ItemTemplate>

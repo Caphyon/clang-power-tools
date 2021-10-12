@@ -46,7 +46,7 @@ namespace ClangPowerToolsShared.MVVM.Commands
     {
 
       SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
-      clangTidyPath = settingsPathBuilder.GetCurrentExecutableLlvmPath();
+      var clangTidyPath = settingsPathBuilder.GetCurrentExecutableLlvmPath();
       try
       {
         FileInfo file = new(filePath);
