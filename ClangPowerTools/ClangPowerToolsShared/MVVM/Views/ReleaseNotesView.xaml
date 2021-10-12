@@ -116,7 +116,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• File diff is shown after running the Tidy command"
+          Text="• LLVM 13.0.0"
           TextWrapping="Wrap" />
 
         <TextBox
