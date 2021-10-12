@@ -69,7 +69,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       foreach (string file in filesPath)
       {
         FileInfo path = new FileInfo(file);
-        files.Add(new FileModel { FileName = path.Name });
+        files.Add(new FileModel { FileName = path.Name, FullFileName = path.FullName });
       }
       Files = files;
       //copy files in temp folder

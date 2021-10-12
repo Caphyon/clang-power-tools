@@ -18,8 +18,11 @@ namespace ClangPowerTools.Views
   public partial class TidyToolWindowView : UserControl
   {
     private TidyToolWindowViewModel tidyToolWindowViewModel;
+    private TidyDiffCommand tidyDiffCommand;
+
     public TidyToolWindowView()
     {
+      tidyDiffCommand= new TidyDiffCommand(); 
       tidyToolWindowViewModel = new TidyToolWindowViewModel(this);
       DataContext = tidyToolWindowViewModel;
       InitializeComponent();

@@ -5,6 +5,7 @@ namespace ClangPowerTools.MVVM.Models
   public class FileModel : INotifyPropertyChanged
   {
     public string FileName { get; set; }
+    public string FullFileName { get; set; }
     public bool IsChecked
     {
       get { return isChecked; }
