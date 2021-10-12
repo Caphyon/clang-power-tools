@@ -25,7 +25,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CommandIds.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CommandUILocation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CompileCommand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Commands\DiffCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\FormatCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\IgnoreCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\IgnoreCompileCommand.cs" />
@@ -100,6 +99,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Items\ItemsCollector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\CollectionElementsCounter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Commands\RelayCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Commands\TidyDiffCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Command\RelayCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\CommonSettingsFunctionality.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\ComboBoxConstants.cs" />
