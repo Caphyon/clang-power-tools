@@ -49,7 +49,7 @@ namespace ClangPowerTools.Views
       var element = elementIndex.DataContext as FileModel;
       if (element != null)
       {
-        tidyDiffCommand.TidyDiff(element.FullFileName);
+        tidyDiffCommand.TidyFixDiff(element.FullFileName);
       }
     }
 
@@ -59,7 +59,7 @@ namespace ClangPowerTools.Views
       var file = item.Content as FileModel;
       if (item != null && item.IsSelected)
       {
-        tidyDiffCommand.TidyDiff(file.FullFileName);
+        tidyDiffCommand.TidyFixDiff(file.FullFileName);
       }
     }
   }
