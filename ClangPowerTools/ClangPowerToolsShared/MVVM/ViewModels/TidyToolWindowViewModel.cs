@@ -97,17 +97,17 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       get => fixAllCommand ?? (fixAllCommand = new RelayCommand(() => FixAllFilesAsync().SafeFireAndForget(), () => CanExecute));
     }
 
-    public ICommand DiscardAllCommand
-    {
-      get => discardAllCommand ?? (discardAllCommand = new RelayCommand(() => DiscardAllFiles(), () => CanExecute));
-    }
+        public ICommand DiscardAllCommand
+        {
+            get => discardAllCommand ?? (discardAllCommand = new RelayCommand(() => DiscardAllFiles(), () => CanExecute));
+        }
 
-    public ICommand RemoveAllCommand
-    {
-      get => removeAllCommand ?? (removeAllCommand = new RelayCommand(() => RemoveAllFiles(), () => CanExecute));
-    }
+        public ICommand RemoveAllCommand
+        {
+            get => removeAllCommand ?? (removeAllCommand = new RelayCommand(() => RemoveAllFiles(), () => CanExecute));
+        }
 
-    #endregion
+        #endregion
 
     #region Constructos
 
