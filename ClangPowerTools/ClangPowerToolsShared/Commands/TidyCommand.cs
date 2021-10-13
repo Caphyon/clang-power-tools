@@ -137,20 +137,6 @@ namespace ClangPowerTools.Commands
               silentFileController.SilentFiles(filesPath);
               silentFileController.SilentFiles(dte2.Documents);
 
-              ////copy files in temp folder
-              //string tempFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp");
-              //if (Directory.Exists(tempFolderPath))
-              //  Directory.Delete(tempFolderPath, true);
-              //Directory.CreateDirectory(tempFolderPath);
-              //if (Directory.Exists(tempFolderPath))
-              //{
-              //  foreach (string path in filesPath)
-              //  {
-              //    FileInfo file = new(path);
-              //    var copyFile = Path.Combine(tempFolderPath, file.Name);
-              //    File.Copy(file.FullName, copyFile, true);
-              //  }
-              //}
             }
 
             if (tidySettings.DetectClangTidyFile && !mItemsCollector.IsEmpty)
@@ -188,7 +174,7 @@ namespace ClangPowerTools.Commands
         {
           FileInfo file = new(filesPath.First());
           string tempFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp");
-          if(Directory.Exists(tempFolderPath))
+          if (Directory.Exists(tempFolderPath))
             Directory.Delete(tempFolderPath, true);
           Directory.CreateDirectory(tempFolderPath);
           var copyFile = Path.Combine(tempFolderPath, file.Name);
@@ -201,7 +187,8 @@ namespace ClangPowerTools.Commands
         {
           MessageBox.Show(e.Message, "Tidy-Diff Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
-      }else
+      }
+      else
       {
         await RunClangTidyAsync(aCommandId, commandUILocation, document);
       }
