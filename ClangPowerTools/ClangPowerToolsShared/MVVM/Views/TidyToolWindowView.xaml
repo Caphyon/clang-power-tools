@@ -33,10 +33,10 @@
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
 
-    <Button Grid.Column="1" Grid.Row="0" Height="20" Width="80" Margin="10,5,310,5" Content="Tidy" />
-    <Button Grid.Column="1" Grid.Row="0" Height="20" Width="80"  Margin="120,5,200,5" Content="Fix" />
-    <Button Grid.Column="1" Grid.Row="0" Height="20" Width="80" Margin="215,5,105,5" Content="Remove"/>
-    <Button Grid.Column="1" Grid.Row="0" Height="20" Width="80" Margin="310,5,10,5" Content="Discard" />
+    <Button Grid.Column="1" Grid.Row="0" Height="20" Width="80" Margin="10,5,310,5" Command="{Binding TidyAllCommand}" Content="Tidy" />
+    <Button Grid.Column="1" Grid.Row="0" Height="20" Width="80"  Margin="120,5,200,5" Command="{Binding FixAllCommand}" Content="Fix" />
+    <Button Grid.Column="1" Grid.Row="0" Height="20" Width="80" Margin="215,5,105,5" Command="{Binding RemoveAllCommand}" Content="Remove"/>
+    <Button Grid.Column="1" Grid.Row="0" Height="20" Width="80" Margin="310,5,10,5" Command="{Binding DiscardAllCommand}" Content="Discard" />
     <ListView Grid.Row="1" Grid.Column="1" Background="#1f2120" x:Name="FilesList" ItemsSource="{Binding Files}">
       <!--<ListView.View>
         <GridView>
