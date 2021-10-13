@@ -26,7 +26,34 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private TidyToolWindowView tidyToolWindowView;
     private ItemsCollector itemsCollector = new ItemsCollector();
     private ICommand showFiles;
+    private ICommand tidyAllCommand;
+    private ICommand fixAllCommand;
+    private ICommand discardAllCommand;
+    private ICommand removeAllCommand;
     private readonly string tempFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp");
+
+    #endregion
+
+    #region Commands
+    public ICommand TidyAllCommand
+    {
+      get => tidyAllCommand ?? (tidyAllCommand = new RelayCommand(() => TidyAllFiles(), () => CanExecute));
+    }
+
+    public ICommand FixAllCommand
+    {
+      get => fixAllCommand ?? (fixAllCommand = new RelayCommand(() => FixAllFiles(), () => CanExecute));
+    }
+
+    public ICommand DiscardAllCommand
+    {
+      get => discardAllCommand ?? (discardAllCommand = new RelayCommand(() => DiscardAllFiles(), () => CanExecute));
+    }
+
+    public ICommand RemoveAllCommand
+    {
+      get => removeAllCommand ?? (removeAllCommand = new RelayCommand(() => RemoveAllFiles(), () => CanExecute));
+    }
 
     #endregion
 
@@ -58,7 +85,22 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
     }
 
-    public void DiscardAllFiles(List<string> paths)
+    public void DiscardAllFiles()
+    {
+
+    }
+
+    public void TidyAllFiles()
+    {
+
+    }
+
+    public void RemoveAllFiles()
+    {
+
+    }
+
+    public void FixAllFiles()
     {
 
     }
