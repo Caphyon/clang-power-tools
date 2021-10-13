@@ -7,7 +7,7 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:views="clr-namespace:ClangPowerTools.MVVM.Views"
   d:DesignHeight="490"
-  d:DesignWidth="770"
+  d:DesignWidth="450"
   mc:Ignorable="d">
 
   <Grid>
@@ -24,16 +24,20 @@
     <!--
     </StackPanel>-->
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="770" />
+      <ColumnDefinition Width="10" />
+      <ColumnDefinition Width="400" />
+      <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="30"/>
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
 
-    <Button Grid.Column="0" Grid.Row="0" Height="20" Margin="149,5,516,5" Content="Fix all" />
-    <Button Grid.Column="0" Grid.Row="0" Height="20" Margin="17,5,651,5" Content="Discard all" />
-    <ListView Grid.Row="1" Background="#1f2120" x:Name="FilesList" ItemsSource="{Binding Files}">
+    <Button Grid.Column="1" Grid.Row="0" Height="20" Width="80" Margin="10,5,310,5" Content="Tidy" />
+    <Button Grid.Column="1" Grid.Row="0" Height="20" Width="80"  Margin="120,5,200,5" Content="Fix" />
+    <Button Grid.Column="1" Grid.Row="0" Height="20" Width="80" Margin="215,5,105,5" Content="Remove"/>
+    <Button Grid.Column="1" Grid.Row="0" Height="20" Width="80" Margin="310,5,10,5" Content="Discard" />
+    <ListView Grid.Row="1" Grid.Column="1" Background="#1f2120" x:Name="FilesList" ItemsSource="{Binding Files}">
       <!--<ListView.View>
         <GridView>
           <GridViewColumn DisplayMemberBinding="{Binding FileName}" Header="File Name" Width="500" />
@@ -46,7 +50,7 @@
       </ListView.ItemContainerStyle>-->
       <ListView.ItemTemplate>
         <DataTemplate>
-          <Grid>
+          <Grid >
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="20" />
               <ColumnDefinition Width="200" />
@@ -64,9 +68,8 @@
               Foreground="WhiteSmoke"
               Text="{Binding FileName}">
             </TextBlock>
-            <!--<Button Grid.Column="1" Width="80" Height="20" Margin="2,0,0,0" Click="DiffButton" Content="Diff" />-->
-            <Button Grid.Column="2" Width="80" Height="20" Margin="2,0,0,0" Click="DiffButton" Content="Fix" />
-            <Button Grid.Column="3" Width="80" Height="20" Margin="2,0,0,0" Click="DiscardButton" Content="Discard" />
+            <Button Grid.Column="2" Width="80" Height="20" Margin="2,0,0,0" Click="DiffButton" Content="Diff" />
+            <!--<Button Grid.Column="3" Width="80" Height="20" Margin="2,0,0,0" Click="DiscardButton" Content="Discard" />-->
           </Grid>
         </DataTemplate>
       </ListView.ItemTemplate>
