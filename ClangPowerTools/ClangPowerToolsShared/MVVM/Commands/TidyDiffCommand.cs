@@ -13,36 +13,36 @@ namespace ClangPowerToolsShared.MVVM.Commands
   public class TidyDiffCommand
   {
 
-    public async Task TidyDiffAsync(List<string> filesPath)
-    {
-      SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
-      var clangTidyPath = Path.Combine(ClangPowerTools.SettingsProvider.LlvmSettingsModel.PreinstalledLlvmPath, "clang-tidy.exe");
-      clangTidyPath = settingsPathBuilder.GetCurrentExecutableLlvmPath();
-      if (filesPath.Count == 1)
-      {
-        try
-        {
-          FileInfo file = new(filesPath.First());
-          var copyFile = Path.Combine(file.Directory.FullName, "_" + file.Name);
-          File.Copy(file.FullName, copyFile, true);
-          System.Diagnostics.Process process = new();
-          process.StartInfo.FileName = clangTidyPath;
-          process.StartInfo.CreateNoWindow = true;
-          process.StartInfo.UseShellExecute = false;
-          process.StartInfo.Arguments = $"-fix \"{copyFile}\"";
-          process.Start();
-          process.WaitForExit();
-          DiffFilesUsingDefaultTool(copyFile, file.FullName);
-          File.Delete(copyFile);
-        }
-        catch (Exception e)
-        {
-          MessageBox.Show(e.Message, "Tidy-Diff Failed - you do not have an llvm set", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-    }
+    //public async Task TidyDiffAsync(List<string> filesPath)
+    //{
+    //  SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
+    //  var clangTidyPath = Path.Combine(ClangPowerTools.SettingsProvider.LlvmSettingsModel.PreinstalledLlvmPath, "clang-tidy.exe");
+    //  clangTidyPath = settingsPathBuilder.GetCurrentExecutableLlvmPath();
+    //  if (filesPath.Count == 1)
+    //  {
+    //    try
+    //    {
+    //      FileInfo file = new(filesPath.First());
+    //      var copyFile = Path.Combine(file.Directory.FullName, "_" + file.Name);
+    //      File.Copy(file.FullName, copyFile, true);
+    //      System.Diagnostics.Process process = new();
+    //      process.StartInfo.FileName = clangTidyPath;
+    //      process.StartInfo.CreateNoWindow = true;
+    //      process.StartInfo.UseShellExecute = false;
+    //      process.StartInfo.Arguments = $"-fix \"{copyFile}\"";
+    //      process.Start();
+    //      process.WaitForExit();
+    //      DiffFilesUsingDefaultTool(copyFile, file.FullName);
+    //      File.Delete(copyFile);
+    //    }
+    //    catch (Exception e)
+    //    {
+    //      MessageBox.Show(e.Message, "Tidy-Diff Failed - you do not have an llvm set", MessageBoxButtons.OK, MessageBoxIcon.Error);
+    //    }
+    //  }
+    //}
 
-    public void TidyDiff(string filePath)
+    public void TidyFixDiff(string filePath, bool makeDiff = true)
     {
 
       SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
@@ -59,12 +59,13 @@ namespace ClangPowerToolsShared.MVVM.Commands
         process.StartInfo.Arguments = $"-fix \"{file.FullName}\"";
         process.Start();
         process.WaitForExit();
-        DiffFilesUsingDefaultTool(copyFile, file.FullName);
+        if(makeDiff)
+          DiffFilesUsingDefaultTool(copyFile, file.FullName);
         //File.Delete(copyFile);
       }
       catch (Exception e)
       {
-        MessageBox.Show(e.Message, "Tidy-Diff Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(e.Message, "Tidy-Diff Failed - you do not have an llvm set", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
 
     }

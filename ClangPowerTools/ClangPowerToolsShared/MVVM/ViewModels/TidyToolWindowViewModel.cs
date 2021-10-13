@@ -6,6 +6,7 @@ using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.Services;
 using ClangPowerTools.SilentFile;
 using ClangPowerTools.Views;
+using ClangPowerToolsShared.MVVM.Commands;
 using EnvDTE80;
 using System;
 using System.Collections.Generic;
@@ -23,6 +24,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public event PropertyChangedEventHandler PropertyChanged;
     private ObservableCollection<FileModel> files = new ObservableCollection<FileModel>();
+    private TidyDiffCommand tidyDiffCommand;
     private TidyToolWindowView tidyToolWindowView;
     private ItemsCollector itemsCollector = new ItemsCollector();
     private ICommand showFiles;
@@ -61,6 +63,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       Files = files;
       this.tidyToolWindowView = tidyToolWindowView;
+      tidyDiffCommand = new TidyDiffCommand();
     }
 
     public ObservableCollection<FileModel> Files { get; set; } = new ObservableCollection<FileModel>();
@@ -87,7 +90,13 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void DiscardAllFiles()
     {
-
+      foreach (var file in Files)
+      {
+        if (file.IsChecked)
+        {
+          DiscardFile(file.FileName);
+        }
+      }
     }
 
     public void TidyAllFiles()
@@ -97,12 +106,22 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void RemoveAllFiles()
     {
-
+      foreach (var file in Files.ToList())
+      {
+        if(file.IsChecked)
+        {
+          Files.Remove(file);
+        }
+      }
     }
 
     public void FixAllFiles()
     {
-
+      var filesPaths = GetCheckedPathsList();
+      foreach (var path in filesPaths)
+      {
+        tidyDiffCommand.TidyFixDiff(path, false);
+      }
     }
 
     public void UpdateViewModel(List<string> filesPath)
