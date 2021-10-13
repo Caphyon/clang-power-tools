@@ -92,7 +92,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void TidyAllFiles()
     {
-
+      TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, CommandUILocation.Toolbar, null, GetCheckedPathsList());
     }
 
     public void RemoveAllFiles()
@@ -137,6 +137,17 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       {
         return true;
       }
+    }
+
+    private List<string> GetCheckedPathsList()
+    {
+      var pathList = new List<string>();
+      foreach (var path in files)
+      {
+        if (path.IsChecked)
+          pathList.Add(path.FullFileName);
+      }
+      return pathList;
     }
 
   }
