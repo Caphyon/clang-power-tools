@@ -98,7 +98,11 @@ namespace ClangPowerTools.Commands
 
     public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null, List<string> paths = null)
     {
-      await PrepareCommmandAsync(commandUILocation);
+      if (paths == null)
+        await PrepareCommmandAsync(commandUILocation);
+      else
+        await PrepareCommmandAsync(paths);
+
       await Task.Run(() =>
       {
         lock (mutex)
