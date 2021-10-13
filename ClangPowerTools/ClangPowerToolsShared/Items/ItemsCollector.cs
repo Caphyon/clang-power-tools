@@ -154,14 +154,14 @@ namespace ClangPowerTools
           return true;
         }
       }
-        return false;
+      return false;
     }
 
     /// <summary>
     /// Collect all selected items in the Solution explorer for commands
     /// </summary>
     /// 
-    public void CollectSelectedItems()
+    public void CollectSelectedItems(List<string> paths = null)
     {
       if (selectedItems == null || selectedItems.Length == 0)
         return;
@@ -184,7 +184,19 @@ namespace ClangPowerTools
         }
         else if (item.Object is ProjectItem)
         {
-          GetProjectItem(item.Object as ProjectItem);
+          if (paths != null)
+          {
+            foreach (var path in paths)
+            {
+              FileInfo file = new FileInfo(path);
+              if (item.Name == file.Name)
+                GetProjectItem(item.Object as ProjectItem);
+            }
+          }
+          else
+          {
+            GetProjectItem(item.Object as ProjectItem);
+          }
         }
       }
     }
