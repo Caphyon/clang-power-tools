@@ -1,4 +1,4 @@
-﻿﻿﻿using ClangPowerTools.Helpers;
+﻿﻿using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
 using ClangPowerTools.SilentFile;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
