@@ -1,4 +1,4 @@
-﻿﻿using ClangPowerTools.Helpers;
+﻿using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
 using ClangPowerTools.SilentFile;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
@@ -95,7 +95,6 @@ namespace ClangPowerTools.Commands
     //display tidy tool window - progress bar, run tidy again
     public async Task ShowTidyToolWindowEmptyAsync()
     {
-      await PrepareCommmandAsync(commandUILocation);
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       ToolWindowPane window = await package.ShowToolWindowAsync(
       typeof(TidyToolWindow),
@@ -185,6 +184,11 @@ namespace ClangPowerTools.Commands
               VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
                 OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
             }
+<<<<<<< HEAD
+=======
+
+            RunScript(aCommandId, false);
+>>>>>>> 07e859f4 (﻿Create CommandControllerInstance, add kTidyTollWindowId and new case, add OriginalItems, delete unused code from check IgnoreItems,)
           }
         });
       }
