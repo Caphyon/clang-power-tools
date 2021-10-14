@@ -103,7 +103,7 @@ namespace ClangPowerTools
     #region Protected Methods
 
 
-    protected void RunScript(int aCommandId, bool jsonCompilationDbActive)
+    protected void RunScript(int aCommandId, bool jsonCompilationDbActive, List<string> paths = null)
     {
       string runModeParameters = ScriptGenerator.GetRunModeParamaters();
       string genericParameters = ScriptGenerator.GetGenericParamaters(aCommandId, VsEdition, VsVersion, jsonCompilationDbActive);
@@ -114,7 +114,7 @@ namespace ClangPowerTools
       if (jsonCompilationDbActive)
         ExportJsonCompilationDatabase(runModeParameters, genericParameters);
       else
-        Compile(runModeParameters, genericParameters, aCommandId);
+        Compile(runModeParameters, genericParameters, aCommandId, paths);
 
       cMakeBuilder.ClearBuildCashe();
     }
@@ -202,7 +202,7 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private void Compile(string runModeParameters, string genericParameters, int commandId)
+    private void Compile(string runModeParameters, string genericParameters, int commandId, List<string> paths = null)
     {
       var vsSolution = SolutionInfo.IsOpenFolderModeActive() == false ?
         (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution)) : null;
@@ -217,7 +217,7 @@ namespace ClangPowerTools
 
           var ignoreItem = new IgnoreItem();
 
-          if (ignoreItem.Check(item))
+          if (ignoreItem.Check(item, paths))
           {
             OnIgnoreItem(new ClangCommandMessageEventArgs(ignoreItem.IgnoreCompileOrTidyMessage, false));
             continue;
