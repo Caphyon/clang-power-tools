@@ -155,6 +155,30 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void DiscardFile(string path)
     {
+      files.Clear();
+      foreach (string file in filesPath)
+      {
+        FileInfo path = new FileInfo(file);
+        files.Add(new FileModel { FileName = path.Name, FullFileName = path.FullName });
+      }
+      Files = files;
+      //copy files in temp folder
+      if (Directory.Exists(tempFolderPath))
+        Directory.Delete(tempFolderPath, true);
+      Directory.CreateDirectory(tempFolderPath);
+      if (Directory.Exists(tempFolderPath))
+      {
+        foreach (string path in filesPath)
+        {
+          FileInfo file = new(path);
+          var copyFile = Path.Combine(tempFolderPath, file.Name);
+          File.Copy(file.FullName, copyFile, true);
+        }
+      }
+    }
+
+    public void DiscardFile(string path)
+    {
       RefreshValues();
       CheckAll();
       TidyAllFilesAsync(filesPath);
@@ -195,6 +219,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         UncheckAll();
       }
       UpdateCheckedNumber();
+    }
+    
     public async Task TidyAllFilesAsync()
     {
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, GetCheckedPathsList());
