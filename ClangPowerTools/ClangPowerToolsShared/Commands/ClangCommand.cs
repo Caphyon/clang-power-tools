@@ -149,22 +149,6 @@ namespace ClangPowerTools
       }
     }
 
-    //PrepareCommmandAsync for explicit paths 
-    protected async Task PrepareCommmandAsync(List<string> paths = null)
-    {
-      if (paths != null)
-      {
-        await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
-        DocumentHandler.SaveActiveDocuments();
-
-        if (!VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
-          return;
-        AutomationUtil.SaveDirtyProjects((dte as DTE2).Solution);
-        mItemsCollector = new ItemsCollector(false);
-        mItemsCollector.CollectSelectedItems(paths);
-
-      }
-    }
     protected async Task PrepareCommmandAsync(CommandUILocation commandUILocation, bool jsonCompilationDbActive = false)
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
