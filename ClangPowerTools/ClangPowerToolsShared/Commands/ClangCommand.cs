@@ -124,7 +124,7 @@ namespace ClangPowerTools
       }
     }
 
-    protected void RunScript(int aCommandId, bool jsonCompilationDbActive, List<string> paths = null)
+    protected void RunScript(int aCommandId, bool jsonCompilationDbActive)
     {
       string runModeParameters = ScriptGenerator.GetRunModeParamaters();
       string genericParameters = ScriptGenerator.GetGenericParamaters(aCommandId, VsEdition, VsVersion, jsonCompilationDbActive);
@@ -135,7 +135,7 @@ namespace ClangPowerTools
       if (jsonCompilationDbActive)
         ExportJsonCompilationDatabase(runModeParameters, genericParameters);
       else
-        Compile(runModeParameters, genericParameters, aCommandId, paths);
+        Compile(runModeParameters, genericParameters, aCommandId);
 
       cMakeBuilder.ClearBuildCashe();
     }
