@@ -123,20 +123,37 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       TidyToolWindowModel = tidyToolWindowModel;
       Files = files;
       this.tidyToolWindowView = tidyToolWindowView;
-      itemsCollector.CollectSelectedItems();
-      foreach (var item in itemsCollector.Items)
-      {
-        files.Add(new FileModel { FileName = item.GetName() });
-      }
-      files.Add(new FileModel { FileName = "just a test" });
-      Files = files;
     }
 
     #endregion
 
     #region Public Methods
 
-    public void OpenTidyToolWindow(List<string> filesPath)
+    public void UpdateViewModel(List<string> filesPath)
+    {
+      files.Clear();
+      foreach (string file in filesPath)
+      {
+        FileInfo path = new FileInfo(file);
+        files.Add(new FileModel { FileName = path.Name, FullFileName = path.FullName });
+      }
+      Files = files;
+      //copy files in temp folder
+      if (Directory.Exists(tempFolderPath))
+        Directory.Delete(tempFolderPath, true);
+      Directory.CreateDirectory(tempFolderPath);
+      if (Directory.Exists(tempFolderPath))
+      {
+        foreach (string path in filesPath)
+        {
+          FileInfo file = new(path);
+          var copyFile = Path.Combine(tempFolderPath, file.Name);
+          File.Copy(file.FullName, copyFile, true);
+        }
+      }
+    }
+
+    public void DiscardFile(string path)
     {
       RefreshValues();
       CheckAll();
