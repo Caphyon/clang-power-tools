@@ -95,7 +95,6 @@ namespace ClangPowerTools.Commands
 
     public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, List<string> paths = null)
     {
-
       await PrepareCommmandAsync(commandUILocation);
 
       if (paths != null)
@@ -168,17 +167,6 @@ namespace ClangPowerTools.Commands
       });
     }
 
-
-    #endregion
-
-    #region Private Methods
-
-    private static void DiffFilesUsingDefaultTool(string file1, string file2)
-    {
-      object args = $"\"{file1}\" \"{file2}\"";
-      var dte = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
-      dte.Commands.Raise(TidyConstants.ToolsDiffFilesCmd, TidyConstants.ToolsDiffFilesId, ref args, ref args);
-    }
 
     #endregion
   }

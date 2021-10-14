@@ -25,7 +25,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public event PropertyChangedEventHandler PropertyChanged;
     private ObservableCollection<FileModel> files = new ObservableCollection<FileModel>();
-    private TidyDiffCommand tidyDiffCommand;
     private TidyToolWindowView tidyToolWindowView;
     private ItemsCollector itemsCollector = new ItemsCollector();
     private ICommand showFiles;
@@ -41,12 +40,12 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     #region Commands
     public ICommand TidyAllCommand
     {
-      get => tidyAllCommand ?? (tidyAllCommand = new RelayCommand(() => TidyAllFiles().SafeFireAndForget(), () => CanExecute));
+      get => tidyAllCommand ?? (tidyAllCommand = new RelayCommand(() => TidyAllFilesAsync().SafeFireAndForget(), () => CanExecute));
     }
 
     public ICommand FixAllCommand
     {
-      get => fixAllCommand ?? (fixAllCommand = new RelayCommand(() => FixAllFiles(), () => CanExecute));
+      get => fixAllCommand ?? (fixAllCommand = new RelayCommand(() => FixAllFilesAsync().SafeFireAndForget(), () => CanExecute));
     }
 
     public ICommand DiscardAllCommand
@@ -67,12 +66,35 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       Files = files;
       this.tidyToolWindowView = tidyToolWindowView;
-      tidyDiffCommand = new TidyDiffCommand();
     }
 
     #endregion
 
     #region Public Methods
+
+    public void UpdateViewModel(List<string> filesPath)
+    {
+      files.Clear();
+      foreach (string file in filesPath)
+      {
+        FileInfo path = new FileInfo(file);
+        files.Add(new FileModel { FileName = path.Name, FullFileName = path.FullName });
+      }
+      Files = files;
+      //copy files in temp folder
+      if (Directory.Exists(tempFolderPath))
+        Directory.Delete(tempFolderPath, true);
+      Directory.CreateDirectory(tempFolderPath);
+      if (Directory.Exists(tempFolderPath))
+      {
+        foreach (string path in filesPath)
+        {
+          FileInfo file = new(path);
+          var copyFile = Path.Combine(tempFolderPath, file.Name);
+          File.Copy(file.FullName, copyFile, true);
+        }
+      }
+    }
 
     public void DiscardFile(string path)
     {
@@ -105,10 +127,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
     }
 
-    public async Task TidyAllFiles()
+    public async Task TidyAllFilesAsync()
     {
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, GetCheckedPathsList());
-      //TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, CommandUILocation.ContextMenu, GetCheckedPathsList());
     }
 
     public void RemoveAllFiles()
@@ -122,43 +143,11 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
     }
 
-    public void FixAllFiles()
+    public async Task FixAllFilesAsync()
     {
       var filesPaths = GetCheckedPathsList();
-      //foreach (var path in filesPaths)
-      //{
-      //    tidyDiffCommand.TidyFixDiff(path, false);
-      //}
-      //TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, null, filesPaths);
-
-    }
-
-    public void UpdateViewModel(List<string> filesPath)
-    {
-      files.Clear();
-      foreach (string file in filesPath)
-      {
-        FileInfo path = new FileInfo(file);
-        files.Add(new FileModel { FileName = path.Name, FullFileName = path.FullName });
-      }
-      Files = files;
-      //copy files in temp folder
-      if (Directory.Exists(tempFolderPath))
-        Directory.Delete(tempFolderPath, true);
-      Directory.CreateDirectory(tempFolderPath);
-      if (Directory.Exists(tempFolderPath))
-      {
-        foreach (string path in filesPath)
-        {
-          FileInfo file = new(path);
-          var copyFile = Path.Combine(tempFolderPath, file.Name);
-          File.Copy(file.FullName, copyFile, true);
-        }
-      }
-
-      //CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds., CommandUILocation.ContextMenu, GetCheckedPathsList());
-
-      //TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, CommandUILocation.ContextMenu, null, filesPath);
+      TidyDiffCommand.CopyFilesInTemp(filesPaths);
+      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
     }
 
     public bool CanExecute

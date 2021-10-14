@@ -18,11 +18,9 @@ namespace ClangPowerTools.Views
   public partial class TidyToolWindowView : UserControl
   {
     private TidyToolWindowViewModel tidyToolWindowViewModel;
-    private TidyDiffCommand tidyDiffCommand;
 
     public TidyToolWindowView()
     {
-      tidyDiffCommand= new TidyDiffCommand(); 
       tidyToolWindowViewModel = new TidyToolWindowViewModel(this);
       DataContext = tidyToolWindowViewModel;
       InitializeComponent();
@@ -49,7 +47,7 @@ namespace ClangPowerTools.Views
       var element = elementIndex.DataContext as FileModel;
       if (element != null)
       {
-        tidyDiffCommand.TidyFixDiff(element.FullFileName);
+        TidyDiffCommand.TidyFixDiff(element.FullFileName);
       }
     }
 
@@ -59,7 +57,7 @@ namespace ClangPowerTools.Views
       var file = item.Content as FileModel;
       if (item != null && item.IsSelected)
       {
-        tidyDiffCommand.TidyFixDiff(file.FullFileName);
+        TidyDiffCommand.TidyFixDiff(file.FullFileName);
       }
     }
   }
