@@ -95,7 +95,6 @@ namespace ClangPowerTools.Commands
 
     public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, List<string> paths = null)
     {
-
       await PrepareCommmandAsync(commandUILocation);
 
       if (paths != null)
@@ -169,6 +168,5 @@ namespace ClangPowerTools.Commands
     }
 
     #endregion
-
   }
 }
