@@ -126,7 +126,13 @@ namespace ClangPowerTools.Commands
 
     public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, List<string> paths = null)
     {
+<<<<<<< HEAD
       if (CommandIds.kTidyToolWindowId != aCommandId && CommandIds.kTidyFixId != aCommandId)
+=======
+      await PrepareCommmandAsync(commandUILocation);
+
+      if (paths != null)
+>>>>>>> 367cbfaa (﻿Implement CopyFileInTemp in static class DiffTidyCommand, add tidy fix)
       {
         await PrepareCommmandAsync(commandUILocation);
         CacheProjectsFromItems();
