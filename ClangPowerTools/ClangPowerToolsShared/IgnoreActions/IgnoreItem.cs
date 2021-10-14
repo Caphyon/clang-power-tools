@@ -1,5 +1,6 @@
 ﻿using EnvDTE;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace ClangPowerTools.IgnoreActions
@@ -72,14 +73,25 @@ namespace ClangPowerTools.IgnoreActions
     /// </summary>
     /// <param name="checkedItem">Object to be checked</param>
     /// <returns>True if the given parameter is on the clang compile/tidy ignore list. False otherwise</returns>
-    public bool Check(IItem checkedItem)
+    public bool Check(IItem checkedItem, List<string> paths = null)
     {
       if (checkedItem is CurrentProjectItem)
       {
         ProjectItem projectItem = checkedItem.GetObject() as ProjectItem;
         IgnoreCompileOrTidyMessage = $"\"{projectItem.Name}\" file";
 
-        return SettingsProvider.CompilerSettingsModel.FilesToIgnore.Contains(projectItem.Name);
+        var result = SettingsProvider.CompilerSettingsModel.FilesToIgnore.Contains(projectItem.Name);
+        if (paths != null && !result)
+        {
+          var filePath = projectItem.Properties.Item("FullPath").Value;
+          var matchPath = paths.Where(a => a == filePath.ToString()).Any();
+          if (!paths.Where(a => a == filePath.ToString()).Any())
+            return true;
+        }
+        else
+        {
+          return result;
+        }
       }
       else if (checkedItem is CurrentProject)
       {
@@ -88,6 +100,7 @@ namespace ClangPowerTools.IgnoreActions
 
         return SettingsProvider.CompilerSettingsModel.ProjectsToIgnore.Contains(project.Name);
       }
+
 
       return false;
     }

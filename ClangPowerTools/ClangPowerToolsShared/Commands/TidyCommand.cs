@@ -100,10 +100,7 @@ namespace ClangPowerTools.Commands
 
     public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null, List<string> paths = null)
     {
-      if (paths == null)
-        await PrepareCommmandAsync(commandUILocation);
-      else
-        await PrepareCommmandAsync(paths);
+      await PrepareCommmandAsync(commandUILocation);
 
       await Task.Run(() =>
       {
@@ -155,7 +152,7 @@ namespace ClangPowerTools.Commands
               settingsHandlder.SaveSettings();
             }
 
-            RunScript(aCommandId, false);
+            RunScript(aCommandId, false, paths);
           }
           catch (Exception exception)
           {
