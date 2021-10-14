@@ -2,16 +2,13 @@
 using ClangPowerTools.Services;
 using ClangPowerTools.SilentFile;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
-using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
-using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
@@ -81,9 +78,8 @@ namespace ClangPowerTools.Commands
 
     }
 
-    public async Task ShowTidyToolWindow(int aCommandId, CommandUILocation commandUILocation, Document document = null, List<string> paths = null)
+    public async Task ShowTidyToolWindowAsync()
     {
-      await PrepareCommmandAsync(commandUILocation);
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       ToolWindowPane window = await package.ShowToolWindowAsync(
       typeof(TidyToolWindow),
@@ -93,14 +89,23 @@ namespace ClangPowerTools.Commands
       var tidyToolWindow = (TidyToolWindow)window;
 
       FilePathCollector fileCollector = new FilePathCollector();
-      var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
+      var filesPath = fileCollector.Collect(mItemsCollector.OriginalItems).ToList();
       tidyToolWindow.UpdateToolWindow(filesPath);
-      await RunClangTidyAsync(aCommandId, commandUILocation);
     }
 
-    public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null, List<string> paths = null)
+    public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, List<string> paths = null)
     {
+
       await PrepareCommmandAsync(commandUILocation);
+
+      if (paths != null)
+      {
+        mItemsCollector.Items = new List<IItem>();
+        foreach (var path in paths)
+        {
+          mItemsCollector.Items.Add(mItemsCollector.OriginalItems.Where(a => a.GetPath() == path).FirstOrDefault());
+        }
+      }
 
       await Task.Run(() =>
       {
@@ -152,7 +157,7 @@ namespace ClangPowerTools.Commands
               settingsHandlder.SaveSettings();
             }
 
-            RunScript(aCommandId, false, paths);
+            RunScript(aCommandId, false);
           }
           catch (Exception exception)
           {
@@ -163,37 +168,6 @@ namespace ClangPowerTools.Commands
       });
     }
 
-    public async Task RunClangTidyFixAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)
-    {
-      await PrepareCommmandAsync(commandUILocation);
-
-      FilePathCollector fileCollector = new FilePathCollector();
-      var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
-      if (filesPath.Count == 1)
-      {
-        try
-        {
-          FileInfo file = new(filesPath.First());
-          string tempFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp");
-          if (Directory.Exists(tempFolderPath))
-            Directory.Delete(tempFolderPath, true);
-          Directory.CreateDirectory(tempFolderPath);
-          var copyFile = Path.Combine(tempFolderPath, file.Name);
-          File.Copy(file.FullName, copyFile, true);
-          await RunClangTidyAsync(aCommandId, commandUILocation, document);
-          DiffFilesUsingDefaultTool(copyFile, file.FullName);
-          Directory.Delete(tempFolderPath, true);
-        }
-        catch (Exception e)
-        {
-          MessageBox.Show(e.Message, "Tidy-Diff Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-        }
-      }
-      else
-      {
-        await RunClangTidyAsync(aCommandId, commandUILocation, document);
-      }
-    }
 
     #endregion
 

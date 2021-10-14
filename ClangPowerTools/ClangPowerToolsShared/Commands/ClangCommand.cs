@@ -103,7 +103,7 @@ namespace ClangPowerTools
     #region Protected Methods
 
 
-    protected void RunScript(int aCommandId, bool jsonCompilationDbActive, List<string> paths = null)
+    protected void RunScript(int aCommandId, bool jsonCompilationDbActive)
     {
       string runModeParameters = ScriptGenerator.GetRunModeParamaters();
       string genericParameters = ScriptGenerator.GetGenericParamaters(aCommandId, VsEdition, VsVersion, jsonCompilationDbActive);
@@ -114,13 +114,13 @@ namespace ClangPowerTools
       if (jsonCompilationDbActive)
         ExportJsonCompilationDatabase(runModeParameters, genericParameters);
       else
-        Compile(runModeParameters, genericParameters, aCommandId, paths);
+        Compile(runModeParameters, genericParameters, aCommandId);
 
       cMakeBuilder.ClearBuildCashe();
     }
 
     //Collect files
-    protected IEnumerable<IItem> CollectItemsDependingOnCommandLocation(
+    protected void CollectItemsDependingOnCommandLocation(
       CommandUILocation commandUILocation = CommandUILocation.ContextMenu, bool jsonCompilationDbActive = false)
     {
       mItemsCollector = new ItemsCollector(jsonCompilationDbActive);
@@ -134,7 +134,6 @@ namespace ClangPowerTools
           mItemsCollector.CollectSelectedItems();
           break;
       }
-      return mItemsCollector.Items;
     }
 
     private void SetActiveDocumentEvent()
@@ -186,7 +185,7 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private void Compile(string runModeParameters, string genericParameters, int commandId, List<string> paths = null)
+    private void Compile(string runModeParameters, string genericParameters, int commandId)
     {
       var vsSolution = SolutionInfo.IsOpenFolderModeActive() == false ?
         (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution)) : null;
@@ -201,7 +200,7 @@ namespace ClangPowerTools
 
           var ignoreItem = new IgnoreItem();
 
-          if (ignoreItem.Check(item, paths))
+          if (ignoreItem.Check(item))
           {
             OnIgnoreItem(new ClangCommandMessageEventArgs(ignoreItem.IgnoreCompileOrTidyMessage, false));
             continue;

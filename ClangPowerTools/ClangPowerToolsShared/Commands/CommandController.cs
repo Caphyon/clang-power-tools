@@ -11,6 +11,7 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
@@ -51,7 +52,6 @@ namespace ClangPowerTools
 
     private readonly string registryName = @"Software\Caphyon\Clang Power Tools";
     private readonly string keyName = "CMakeBetaWarning";
-
 
     #endregion
 
@@ -155,7 +155,7 @@ namespace ClangPowerTools
       await LaunchCommandAsync(command.CommandID.ID, commandUILocation);
     }
 
-    public async Task LaunchCommandAsync(int aCommandId, CommandUILocation aCommandUILocation)
+    public async Task LaunchCommandAsync(int aCommandId, CommandUILocation aCommandUILocation, List<string> paths = null)
     {
       switch (aCommandId)
       {
@@ -204,7 +204,9 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kTidyId);
 
-            await TidyCommand.Instance.ShowTidyToolWindow(CommandIds.kTidyId, aCommandUILocation);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
+            await TidyCommand.Instance.ShowTidyToolWindowAsync();
+
             OnAfterClangCommand();
             break;
           }
@@ -213,7 +215,18 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kTidyId);
 
-            await TidyCommand.Instance.ShowTidyToolWindow(CommandIds.kTidyId, aCommandUILocation);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
+            await TidyCommand.Instance.ShowTidyToolWindowAsync();
+
+            OnAfterClangCommand();
+            break;
+          }
+        case CommandIds.kTidyToolWindowId:
+          {
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kTidyId);
+
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation, paths);
             OnAfterClangCommand();
             break;
           }
