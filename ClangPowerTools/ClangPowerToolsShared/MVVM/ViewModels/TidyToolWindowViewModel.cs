@@ -195,6 +195,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         UncheckAll();
       }
       UpdateCheckedNumber();
+    public async Task TidyAllFilesAsync()
+    {
+      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, GetCheckedPathsList());
     }
 
     public async Task FixAllFilesAsync(FileModel file = null)
@@ -292,6 +295,11 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       tidyToolWindowModel.TotalChecked = files.Count;
       Files = files;
       TidyToolWindowModel = tidyToolWindowModel;
+    public async Task FixAllFilesAsync()
+    {
+      var filesPaths = GetCheckedPathsList();
+      TidyDiffCommand.CopyFilesInTemp(filesPaths);
+      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
     }
 
     private void SaveLastUpdatesToUI()
