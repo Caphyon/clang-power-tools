@@ -2,7 +2,6 @@
 using ClangPowerTools.Services;
 using ClangPowerTools.SilentFile;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
-using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -79,9 +78,8 @@ namespace ClangPowerTools.Commands
 
     }
 
-    public async Task ShowTidyToolWindow(int aCommandId, CommandUILocation commandUILocation, Document document = null, List<string> paths = null)
+    public async Task ShowTidyToolWindowAsync()
     {
-      await PrepareCommmandAsync(commandUILocation);
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       ToolWindowPane window = await package.ShowToolWindowAsync(
       typeof(TidyToolWindow),
@@ -91,14 +89,23 @@ namespace ClangPowerTools.Commands
       var tidyToolWindow = (TidyToolWindow)window;
 
       FilePathCollector fileCollector = new FilePathCollector();
-      var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
+      var filesPath = fileCollector.Collect(mItemsCollector.OriginalItems).ToList();
       tidyToolWindow.UpdateToolWindow(filesPath);
-      await RunClangTidyAsync(aCommandId, commandUILocation);
     }
 
-    public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null, List<string> paths = null)
+    public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, List<string> paths = null)
     {
+
       await PrepareCommmandAsync(commandUILocation);
+
+      if (paths != null)
+      {
+        mItemsCollector.Items = new List<IItem>();
+        foreach (var path in paths)
+        {
+          mItemsCollector.Items.Add(mItemsCollector.OriginalItems.Where(a => a.GetPath() == path).FirstOrDefault());
+        }
+      }
 
       await Task.Run(() =>
       {
@@ -150,7 +157,7 @@ namespace ClangPowerTools.Commands
               settingsHandlder.SaveSettings();
             }
 
-            RunScript(aCommandId, false, paths);
+            RunScript(aCommandId, false);
           }
           catch (Exception exception)
           {

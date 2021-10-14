@@ -80,18 +80,7 @@ namespace ClangPowerTools.IgnoreActions
         ProjectItem projectItem = checkedItem.GetObject() as ProjectItem;
         IgnoreCompileOrTidyMessage = $"\"{projectItem.Name}\" file";
 
-        var result = SettingsProvider.CompilerSettingsModel.FilesToIgnore.Contains(projectItem.Name);
-        if (paths != null && !result)
-        {
-          var filePath = projectItem.Properties.Item("FullPath").Value;
-          var matchPath = paths.Where(a => a == filePath.ToString()).Any();
-          if (!paths.Where(a => a == filePath.ToString()).Any())
-            return true;
-        }
-        else
-        {
-          return result;
-        }
+        return SettingsProvider.CompilerSettingsModel.FilesToIgnore.Contains(projectItem.Name);
       }
       else if (checkedItem is CurrentProject)
       {

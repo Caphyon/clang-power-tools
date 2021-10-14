@@ -32,6 +32,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Commands\JsonCompilationDatabaseCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\SettingsCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\StopCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\CommandControllerInstance.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\TidyCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\VsCommands.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Convertors\BooleanToVisibilityConverter.cs" />
