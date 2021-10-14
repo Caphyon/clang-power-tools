@@ -161,7 +161,7 @@ namespace ClangPowerTools
     /// Collect all selected items in the Solution explorer for commands
     /// </summary>
     /// 
-    public void CollectSelectedItems(List<string> paths = null)
+    public void CollectSelectedItems()
     {
       if (selectedItems == null || selectedItems.Length == 0)
         return;
@@ -184,19 +184,7 @@ namespace ClangPowerTools
         }
         else if (item.Object is ProjectItem)
         {
-          if (paths != null)
-          {
-            foreach (var path in paths)
-            {
-              FileInfo file = new FileInfo(path);
-              if (item.Name == file.Name)
-                GetProjectItem(item.Object as ProjectItem);
-            }
-          }
-          else
-          {
-            GetProjectItem(item.Object as ProjectItem);
-          }
+          GetProjectItem(item.Object as ProjectItem);
         }
       }
     }
