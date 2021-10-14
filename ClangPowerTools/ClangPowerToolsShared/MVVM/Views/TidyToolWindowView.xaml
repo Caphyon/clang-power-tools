@@ -10,35 +10,35 @@
   d:DesignWidth="450"
   mc:Ignorable="d">
 
-  <Grid>
-    <!--<StackPanel Orientation="Vertical">
+    <Grid>
+        <!--<StackPanel Orientation="Vertical">
       -->
-    <!--<TextBlock HorizontalAlignment="Center">TidyToolWindow</TextBlock>-->
-    <!--<Button
+        <!--<TextBlock HorizontalAlignment="Center">TidyToolWindow</TextBlock>-->
+        <!--<Button
         Name="button1"
         Width="120"
         Height="80"
         Margin="1,300,1,1"
         Command="{Binding ShowFiles}"
         Content="Click me!" />-->
-    <!--
+        <!--
     </StackPanel>-->
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="10" />
-      <ColumnDefinition Width="400" />
-      <ColumnDefinition Width="*" />
-    </Grid.ColumnDefinitions>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="30"/>
-      <RowDefinition Height="*"/>
-    </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10" />
+            <ColumnDefinition Width="392.8" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-    <Button Grid.Column="1" Grid.Row="0" Height="20" Width="80" Margin="10,5,310,5" Command="{Binding TidyAllCommand}" Content="Tidy" />
-    <Button Grid.Column="1" Grid.Row="0" Height="20" Width="80"  Margin="120,5,200,5" Command="{Binding FixAllCommand}" Content="Fix" />
-    <Button Grid.Column="1" Grid.Row="0" Height="20" Width="80" Margin="215,5,105,5" Command="{Binding RemoveAllCommand}" Content="Remove"/>
-    <Button Grid.Column="1" Grid.Row="0" Height="20" Width="80" Margin="310,5,10,5" Command="{Binding DiscardAllCommand}" Content="Discard" />
-    <ListView Grid.Row="1" Grid.Column="1" Background="#1f2120" x:Name="FilesList" ItemsSource="{Binding Files}">
-      <!--<ListView.View>
+        <Button Grid.Column="1" Grid.Row="0" Margin="10.4,5,309.4,5.4" Command="{Binding TidyAllCommand}" Content="Tidy" />
+        <Button Grid.Column="1" Grid.Row="0"  Margin="99.4,5,220.4,5.4" Command="{Binding FixAllCommand}" Content="Fix" />
+        <Button Grid.Column="1" Grid.Row="0" Margin="282.4,5,37.4,5.4" Command="{Binding RemoveAllCommand}" Content="Remove"/>
+        <Button Grid.Column="1" Grid.Row="0" Margin="190.4,5,129.4,5.4" Command="{Binding DiscardAllCommand}" Content="Discard Fix" />
+        <ListView Grid.Column="1" Background="#1f2120" x:Name="FilesList" ItemsSource="{Binding Files}" Margin="0.4,30,5.4,-0.4" Grid.RowSpan="2">
+            <!--<ListView.View>
         <GridView>
           <GridViewColumn DisplayMemberBinding="{Binding FileName}" Header="File Name" Width="500" />
         </GridView>
@@ -48,31 +48,31 @@
           <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
         </Style>
       </ListView.ItemContainerStyle>-->
-      <ListView.ItemTemplate>
-        <DataTemplate>
-          <Grid >
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="20" />
-              <ColumnDefinition Width="200" />
-              <ColumnDefinition Width="90" />
-              <ColumnDefinition Width="90" />
-              <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-              <RowDefinition Height="30"/>
-            </Grid.RowDefinitions>
-            <CheckBox Grid.Column="0" VerticalAlignment="Center" IsChecked="{Binding IsChecked, Mode=TwoWay}"></CheckBox>
-            <TextBlock
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="90" />
+                            <ColumnDefinition Width="90" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <CheckBox Grid.Column="0" VerticalAlignment="Center" IsChecked="{Binding IsChecked, Mode=TwoWay}"></CheckBox>
+                        <TextBlock
               Grid.Column="1"
               VerticalAlignment="Center"
               Foreground="WhiteSmoke"
               Text="{Binding FileName}">
-            </TextBlock>
-            <Button Grid.Column="2" Width="80" Height="20" Margin="2,0,0,0" Click="DiffButton" Content="Diff" />
-            <!--<Button Grid.Column="3" Width="80" Height="20" Margin="2,0,0,0" Click="DiscardButton" Content="Discard" />-->
-          </Grid>
-        </DataTemplate>
-      </ListView.ItemTemplate>
-    </ListView>
-  </Grid>
+                        </TextBlock>
+                        <Button Grid.Column="2" Width="80" Height="20" Margin="2,0,0,0" Click="DiffButton" Content="Diff" />
+                        <!--<Button Grid.Column="3" Width="80" Height="20" Margin="2,0,0,0" Click="DiscardButton" Content="Discard" />-->
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
 </UserControl>
