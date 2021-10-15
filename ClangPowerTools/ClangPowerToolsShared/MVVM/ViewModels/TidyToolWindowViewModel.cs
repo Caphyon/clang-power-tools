@@ -99,8 +99,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public void DiscardFile(string path)
     {
       FileInfo file = new(path);
-      using var silentFileController = new SilentFileChangerController();
-      using var fileChangerWatcher = new FileChangerWatcher();
+      var fileChangerWatcher = new FileChangerWatcher();
 
       var dte2 = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
       string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
