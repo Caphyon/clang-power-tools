@@ -95,7 +95,10 @@ namespace ClangPowerTools.Commands
 
     public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, List<string> paths = null)
     {
-      await PrepareCommmandAsync(commandUILocation);
+      if (CommandIds.kTidyToolWindowId != aCommandId && CommandIds.kTidyFixId != aCommandId)
+      {
+        await PrepareCommmandAsync(commandUILocation);
+      }
 
       if (paths != null)
       {
@@ -104,7 +107,12 @@ namespace ClangPowerTools.Commands
         {
           mItemsCollector.Items.Add(mItemsCollector.OriginalItems.Where(a => a.GetPath() == path).FirstOrDefault());
         }
+      }else
+      {
+        mItemsCollector.OriginalItems = new List<IItem>(mItemsCollector.Items);
       }
+
+
 
       await Task.Run(() =>
       {

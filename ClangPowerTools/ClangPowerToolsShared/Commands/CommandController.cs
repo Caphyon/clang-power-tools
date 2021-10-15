@@ -226,7 +226,7 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kTidyId);
 
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation, paths);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyToolWindowId, aCommandUILocation, paths);
             OnAfterClangCommand();
             break;
           }
