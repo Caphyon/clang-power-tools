@@ -127,20 +127,11 @@ namespace ClangPowerTools.Commands
                                           .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
 
               fileChangerWatcher.Run(solutionFolderPath);
-              var filesPath = new List<string>();
+              //FilePathCollector fileCollector = new FilePathCollector();
+              //var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
 
-              if (paths is null)
-              {
-                FilePathCollector fileCollector = new FilePathCollector();
-                filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
-              }
-              else
-              {
-                filesPath = paths;
-              }
-
-              silentFileController.SilentFiles(filesPath);
-              silentFileController.SilentFiles(dte2.Documents);
+              //silentFileController.SilentFiles(filesPath);
+              //silentFileController.SilentFiles(dte2.Documents);
 
             }
 
