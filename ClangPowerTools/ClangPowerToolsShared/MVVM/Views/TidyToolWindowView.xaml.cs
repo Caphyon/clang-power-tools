@@ -47,7 +47,9 @@ namespace ClangPowerTools.Views
       var element = elementIndex.DataContext as FileModel;
       if (element != null)
       {
-        TidyDiffCommand.TidyFixDiff(element.FullFileName);
+        TidyDiffCommand.CopyFileInTemp(element.FullFileName);
+        CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, new List<string> { element.FullFileName});
+        TidyDiffCommand.DiffFilesUsingDefaultTool(TidyDiffCommand.CreateTempFilePath(element.FullFileName), element.FullFileName);
       }
     }
 
