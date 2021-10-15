@@ -145,7 +145,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public async Task FixAllFilesAsync()
     {
       var filesPaths = GetCheckedPathsList();
-      TidyDiffCommand.CopyFilesInTemp(filesPaths);
+      FileCommand.CopyFilesInTemp(filesPaths);
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
     }
 

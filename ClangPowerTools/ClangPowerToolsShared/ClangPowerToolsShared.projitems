@@ -100,7 +100,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Items\ItemsCollector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\CollectionElementsCounter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Commands\RelayCommand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Commands\TidyDiffCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Commands\FileCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Command\RelayCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\CommonSettingsFunctionality.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\ComboBoxConstants.cs" />
