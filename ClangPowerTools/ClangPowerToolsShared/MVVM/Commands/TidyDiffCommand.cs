@@ -10,6 +10,7 @@ namespace ClangPowerToolsShared.MVVM.Commands
 {
   public static class TidyDiffCommand
   {
+    public static readonly string tempPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp");
     public static void TidyFixDiff(string filePath, bool makeDiff = true)
     {
 
@@ -18,7 +19,7 @@ namespace ClangPowerToolsShared.MVVM.Commands
       try
       {
         FileInfo file = new(filePath);
-        var copyFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp", file.Name);
+        var copyFile = Path.Combine(tempPath, file.Name);
         File.Copy(file.FullName, copyFile, true);
         System.Diagnostics.Process process = new();
         process.StartInfo.FileName = clangTidyPath;
@@ -41,7 +42,7 @@ namespace ClangPowerToolsShared.MVVM.Commands
     public static void CopyFileInTemp(string filePath)
     {
       FileInfo file = new(filePath);
-      var copyFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp", file.Name);
+      var copyFile = Path.Combine(tempPath, file.Name);
       File.Copy(file.FullName, copyFile, true);
     }
 
@@ -50,9 +51,15 @@ namespace ClangPowerToolsShared.MVVM.Commands
       foreach(var path in filePaths)
       {
         FileInfo file = new(path);
-        var copyFile = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp", file.Name);
+        var copyFile = Path.Combine(tempPath, file.Name);
         File.Copy(file.FullName, copyFile, true);
       }
+    }
+
+    public static string CreateTempFilePath(string path)
+    {
+      FileInfo fileInfo = new(path);
+      return Path.Combine(tempPath, fileInfo.Name);
     }
 
     public static void DiffFilesUsingDefaultTool(string file1, string file2)
