@@ -53,6 +53,11 @@ namespace ClangPowerTools.Views
       }
     }
 
+    private void FixButton(object sender, RoutedEventArgs e)
+    {
+      //implement
+    }
+
     private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
       var item = sender as ListViewItem;

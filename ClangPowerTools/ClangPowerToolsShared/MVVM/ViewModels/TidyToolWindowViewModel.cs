@@ -147,6 +147,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       var filesPaths = GetCheckedPathsList();
       FileCommand.CopyFilesInTemp(filesPaths);
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
+      MarkFixedFiles();
     }
 
     public bool CanExecute
@@ -160,6 +161,20 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     #endregion
 
     #region Private Method
+
+    private void MarkFixedFiles()
+    {
+      var checkedFiles = GetCheckedFiles();
+      foreach (var file in checkedFiles)
+      {
+        file.IsFixed = true;
+      }
+    }
+
+    private List<FileModel> GetCheckedFiles()
+    {
+      return  files.Where(f => f.IsChecked).ToList();
+    }
 
     private List<string> GetCheckedPathsList()
     {
