@@ -117,13 +117,15 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void DiscardAllFiles()
     {
-      foreach (var file in Files)
+      var checkFiles = GetCheckedFiles();
+      foreach (var file in checkFiles)
       {
         if (file.IsChecked)
         {
           DiscardFile(file.FullFileName);
         }
       }
+      MarkUnFixedFiles();
     }
 
     public async Task TidyAllFilesAsync()
@@ -168,6 +170,15 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       foreach (var file in checkedFiles)
       {
         file.IsFixed = true;
+      }
+    }
+
+    private void MarkUnFixedFiles()
+    {
+      var checkedFiles = GetCheckedFiles();
+      foreach (var file in checkedFiles)
+      {
+        file.IsFixed = false;
       }
     }
 
