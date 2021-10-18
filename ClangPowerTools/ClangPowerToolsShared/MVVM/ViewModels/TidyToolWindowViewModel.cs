@@ -78,6 +78,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       foreach (string file in filesPath)
       {
         FileInfo path = new FileInfo(file);
+        var dte2 = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
         files.Add(new FileModel { FileName = path.Name, FullFileName = path.FullName });
       }
       Files = files;
@@ -203,6 +204,15 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           pathList.Add(path.FullFileName);
       }
       return pathList;
+    }
+
+    private string GetProjectPathToFile(string file)
+    {
+      FileInfo path = new FileInfo(file);
+      string directoryName = path.Directory.Name;
+      var fullFileName = path.FullName;
+      var result = fullFileName.Split(new[] { directoryName }, StringSplitOptions.None).First();
+      return fullFileName.Replace(result, "");
     }
 
     #endregion
