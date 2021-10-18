@@ -84,8 +84,6 @@ namespace ClangPowerTools
       {
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyId);
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyToolbarId);
-        await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyFixId);
-        await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyFixToolbarId);
       }
 
       if (FormatCommand.Instance == null)
