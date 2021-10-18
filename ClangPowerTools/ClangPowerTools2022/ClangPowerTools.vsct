@@ -44,9 +44,9 @@
 
       <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0000" />
 
-      <Group guid="guidClangPowerToolsPackageCmdSet" id="DropDownToolbarMenuGroup" priority="0x0000">
+      <!--<Group guid="guidClangPowerToolsPackageCmdSet" id="DropDownToolbarMenuGroup" priority="0x0000">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownMenu" />
-      </Group>
+      </Group>-->
 
       <Group guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" priority="0x0000">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="Toolbar" />
@@ -88,7 +88,7 @@
         </Strings>
       </Button>
 
-      <!-- Clang Tidy-Fix context menu button  -->
+      <!-- Clang Tidy-Fix context menu button  --><!--
       <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixId" priority="0x0003" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
         <Icon guid="guidImageEmpty" id="Empty" />
@@ -96,7 +96,7 @@
         <Strings>
           <ButtonText>Tidy-Fix</ButtonText>
         </Strings>
-      </Button>
+      </Button>-->
 
       <!-- Clang Format Context Menu button -->
       <Button guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0004" type="Button">
@@ -143,6 +143,8 @@
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForJsonDatabase" />
 				<Icon guid="guidImageJsonCompilationDb" id="JsonCompilationDb" />
 				<CommandFlag>DefaultDisabled</CommandFlag>
+				
+				
 				<Strings>
 					<ButtonText>Export Compilation Database</ButtonText>
 				</Strings>
@@ -173,17 +175,17 @@
 
       <!-- Clang Tidy & Clang Tidy Fix Drop Down submenu in toolbar-->
 
-      <!-- Clang Tidy-Fix toolbar button  -->
+      <!-- Clang Tidy-Fix toolbar button  --><!--
       <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" priority="0x0003" type="Button">
         <Icon guid="guidImageTidy" id="Tidy" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Tidy-Fix</ButtonText>
         </Strings>
-      </Button>
+      </Button>-->
 
       <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyToolbarId" priority="0x0001" type="Button">
-        <Parent guid="guidClangPowerToolsPackageCmdSet" id="DropDownToolbarMenuGroup" />
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
         <Icon guid="guidImageTidy" id="Tidy" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
@@ -191,12 +193,12 @@
         </Strings>
       </Button>
 
-      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" priority="0x0003" type="Button">
+      <!--<Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" priority="0x0003" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="DropDownToolbarMenuGroup" />
         <Strings>
           <ButtonText>Tidy-Fix</ButtonText>
         </Strings>
-      </Button>
+      </Button>-->
 
       <Button guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatToolbarId" priority="0x0003" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
@@ -247,8 +249,8 @@
     <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyToolbarId" editor="guidVSStd97"
                     key1="Y" mod1="ALT" />
     
-    <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" editor="guidVSStd97"
-                key1="X" mod1="ALT" />
+    <!--<KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" editor="guidVSStd97"
+                key1="X" mod1="ALT" />-->
     
     <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatToolbarId" editor="guidVSStd97"
                 key1="M" mod1="ALT" />
@@ -326,7 +328,7 @@
       <IDSymbol name="GroupForJsonDatabase" value="0x1024" />
       <IDSymbol name="ToolbarGroup" value="0x1050" />
       <IDSymbol name="GroupForToolbarMenu" value="0x1030" />
-      <IDSymbol name ="DropDownToolbarMenuGroup" value="0x0110"/>
+      <!--<IDSymbol name ="DropDownToolbarMenuGroup" value="0x0110"/>-->
 
       <!-- Define the unique identifires for menus -->
       <IDSymbol name="Submenu" value="0x0100" />
@@ -337,10 +339,10 @@
       <IDSymbol name="CompileToolbarId" value="0x1100" />
 
       <IDSymbol name="TidyId" value="0x0101" />
-      <IDSymbol name="TidyFixId" value="0x0109" />
+      <!--<IDSymbol name="TidyFixId" value="0x0109" />-->
 
       <IDSymbol name="TidyToolbarId" value="0x1101" />
-      <IDSymbol name="TidyFixToolbarId" value="0x1102" />
+      <!--<IDSymbol name="TidyFixToolbarId" value="0x1102" />-->
 
       <IDSymbol name="ClangFormatId" value="0x0105" />
       <IDSymbol name="ClangFormatToolbarId" value="0x1103" />
