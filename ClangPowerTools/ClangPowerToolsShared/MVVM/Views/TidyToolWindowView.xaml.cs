@@ -47,15 +47,21 @@ namespace ClangPowerTools.Views
       var element = elementIndex.DataContext as FileModel;
       if (element != null)
       {
-        FileCommand.CopyFileInTemp(element.FullFileName);
-        CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, new List<string> { element.FullFileName});
         FileCommand.DiffFilesUsingDefaultTool(FileCommand.CreateTempFilePath(element.FullFileName), element.FullFileName);
       }
     }
 
     private void FixButton(object sender, RoutedEventArgs e)
     {
-      //implement
+      var elementIndex = sender as FrameworkElement;
+      var element = elementIndex.DataContext as FileModel;
+      if (element != null)
+      {
+        FileCommand.CopyFileInTemp(element.FullFileName);
+        CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, new List<string> { element.FullFileName });
+        FileCommand.DiffFilesUsingDefaultTool(FileCommand.CreateTempFilePath(element.FullFileName), element.FullFileName);
+        tidyToolWindowViewModel.MarkFixedFile(element);
+      }
     }
 
     private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)

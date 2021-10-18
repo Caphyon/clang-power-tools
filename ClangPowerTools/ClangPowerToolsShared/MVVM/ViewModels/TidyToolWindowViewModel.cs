@@ -160,6 +160,13 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
     }
 
+    public void MarkFixedFile(FileModel currentFile)
+    {
+      var rfile =  files.Where(f => f.FullFileName == currentFile.FullFileName).SingleOrDefault();
+      rfile.IsFixed = true;
+      Files = files;
+    }
+
     #endregion
 
     #region Private Method
