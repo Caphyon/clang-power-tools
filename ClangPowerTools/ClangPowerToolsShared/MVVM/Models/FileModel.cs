@@ -27,6 +27,7 @@ namespace ClangPowerTools.MVVM.Models
 
     public string FileName { get; set; }
     public string FullFileName { get; set; }
+    public string CopyFullFileName { get; set; }
     public string DiffVisibility {
       get { return diffVisibility; } 
       set

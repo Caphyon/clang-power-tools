@@ -7,7 +7,9 @@ using ClangPowerTools.Services;
 using ClangPowerTools.SilentFile;
 using ClangPowerTools.Views;
 using ClangPowerToolsShared.MVVM.Commands;
+using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -27,6 +29,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private ObservableCollection<FileModel> files = new ObservableCollection<FileModel>();
     private TidyToolWindowView tidyToolWindowView;
     private ItemsCollector itemsCollector = new ItemsCollector();
+    private readonly string folderGuid = Guid.NewGuid().ToString();
     private ICommand showFiles;
     private ICommand tidyAllCommand;
     private ICommand fixAllCommand;
@@ -78,8 +81,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       foreach (string file in filesPath)
       {
         FileInfo path = new FileInfo(file);
-        var dte2 = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
-        files.Add(new FileModel { FileName = path.Name, FullFileName = path.FullName });
+        files.Add(new FileModel { FileName = path.Name, FullFileName = path.FullName, CopyFullFileName = Path.Combine(tempFolderPath, folderGuid + "_" + GetProjectPathToFile(file))});
       }
       Files = files;
       //copy files in temp folder
@@ -88,18 +90,12 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       Directory.CreateDirectory(tempFolderPath);
       if (Directory.Exists(tempFolderPath))
       {
-        foreach (string path in filesPath)
-        {
-          FileInfo file = new(path);
-          var copyFile = Path.Combine(tempFolderPath, file.Name);
-          File.Copy(file.FullName, copyFile, true);
-        }
+        FileCommand.CopyFilesInTemp(files.ToList());
       }
     }
 
-    public void DiscardFile(string path)
+    public void DiscardFile(FileModel file)
     {
-      FileInfo file = new(path);
       var fileChangerWatcher = new FileChangerWatcher();
 
       var dte2 = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
@@ -108,11 +104,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
                                   .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
       fileChangerWatcher.Run(solutionFolderPath);
 
-      var copyFile = Path.Combine(tempFolderPath, file.Name);
-      if (File.Exists(copyFile))
+      if (File.Exists(file.CopyFullFileName))
       {
-        File.Copy(copyFile, file.FullName, true);
-        File.Delete(copyFile);
+        File.Copy(file.CopyFullFileName, file.FullFileName, true);
+        File.Delete(file.CopyFullFileName);
       }
     }
 
@@ -123,7 +118,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       {
         if (file.IsChecked)
         {
-          DiscardFile(file.FullFileName);
+          DiscardFile(file);
         }
       }
       MarkUnFixedFiles();
@@ -147,9 +142,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public async Task FixAllFilesAsync()
     {
-      var filesPaths = GetCheckedPathsList();
+      var filesPaths = GetCheckedFiles();
       FileCommand.CopyFilesInTemp(filesPaths);
-      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
+      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, GetCheckedPathsList());
       MarkFixedFiles();
     }
 
@@ -211,8 +206,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       FileInfo path = new FileInfo(file);
       string directoryName = path.Directory.Name;
       var fullFileName = path.FullName;
-      var result = fullFileName.Split(new[] { directoryName }, StringSplitOptions.None).First();
-      return fullFileName.Replace(result, "");
+      var index = fullFileName.IndexOf(directoryName);
+      return fullFileName.Substring(index, fullFileName.Length - index); ;
     }
 
     #endregion

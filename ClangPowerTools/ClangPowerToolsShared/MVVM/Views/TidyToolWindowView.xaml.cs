@@ -37,7 +37,7 @@ namespace ClangPowerTools.Views
       var element = elementIndex.DataContext as FileModel;
       if (element != null)
       {
-        tidyToolWindowViewModel.DiscardFile(element.FullFileName);
+        tidyToolWindowViewModel.DiscardFile(element);
       }
     }
 
@@ -47,7 +47,7 @@ namespace ClangPowerTools.Views
       var element = elementIndex.DataContext as FileModel;
       if (element != null)
       {
-        FileCommand.DiffFilesUsingDefaultTool(FileCommand.CreateTempFilePath(element.FullFileName), element.FullFileName);
+        FileCommand.DiffFilesUsingDefaultTool(element.CopyFullFileName, element.FullFileName);
       }
     }
 
@@ -57,9 +57,9 @@ namespace ClangPowerTools.Views
       var element = elementIndex.DataContext as FileModel;
       if (element != null)
       {
-        FileCommand.CopyFileInTemp(element.FullFileName);
+        FileCommand.CopyFileInTemp(element);
         CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, new List<string> { element.FullFileName });
-        FileCommand.DiffFilesUsingDefaultTool(FileCommand.CreateTempFilePath(element.FullFileName), element.FullFileName);
+        FileCommand.DiffFilesUsingDefaultTool(element.CopyFullFileName, element.FullFileName);
         tidyToolWindowViewModel.MarkFixedFile(element);
       }
     }
@@ -70,7 +70,7 @@ namespace ClangPowerTools.Views
       var file = item.Content as FileModel;
       if (item != null && item.IsSelected)
       {
-        FileCommand.TidyFixDiff(file.FullFileName);
+        FileCommand.TidyFixDiff(file);
       }
     }
   }
