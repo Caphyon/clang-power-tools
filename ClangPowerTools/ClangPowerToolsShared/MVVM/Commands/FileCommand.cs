@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools;
+using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.Services;
 using EnvDTE80;
 using System;
@@ -10,17 +11,15 @@ namespace ClangPowerToolsShared.MVVM.Commands
 {
   public static class FileCommand
   {
-    public static readonly string tempPathCopy = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp");
-    public static void TidyFixDiff(string filePath, bool makeDiff = true)
+    public static void TidyFixDiff(FileModel filePath, bool makeDiff = true)
     {
 
       SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
       var clangTidyPath = settingsPathBuilder.GetCurrentExecutableLlvmPath();
       try
       {
-        FileInfo file = new(filePath);
-        var copyFile = Path.Combine(tempPathCopy, file.Name);
-        File.Copy(file.FullName, copyFile, true);
+        FileInfo file = new(filePath.FullFileName);
+        File.Copy(file.FullName, filePath.CopyFullFileName, true);
         System.Diagnostics.Process process = new();
         process.StartInfo.FileName = clangTidyPath;
         process.StartInfo.CreateNoWindow = true;
@@ -29,7 +28,7 @@ namespace ClangPowerToolsShared.MVVM.Commands
         process.Start();
         process.WaitForExit();
         if (makeDiff)
-          DiffFilesUsingDefaultTool(copyFile, file.FullName);
+          DiffFilesUsingDefaultTool(filePath.CopyFullFileName, file.FullName);;
       }
       catch (Exception e)
       {
@@ -38,27 +37,20 @@ namespace ClangPowerToolsShared.MVVM.Commands
 
     }
 
-    public static void CopyFileInTemp(string filePath)
+    public static void CopyFileInTemp(FileModel file)
     {
-      FileInfo file = new(filePath);
-      var copyFile = Path.Combine(tempPathCopy, file.Name);
-      File.Copy(file.FullName, copyFile, true);
+      FileInfo fileInfo = new(file.CopyFullFileName);
+      var a  = fileInfo.Directory.FullName;
+      Directory.CreateDirectory(a);
+      File.Copy(file.FullFileName, file.CopyFullFileName, true);
     }
 
-    public static void CopyFilesInTemp(List<string> filePaths)
+    public static void CopyFilesInTemp(List<FileModel> files)
     {
-      foreach(var path in filePaths)
+      foreach(var file in files)
       {
-        FileInfo file = new(path);
-        var copyFile = Path.Combine(tempPathCopy, file.Name);
-        File.Copy(file.FullName, copyFile, true);
+        CopyFileInTemp(file);
       }
-    }
-
-    public static string CreateTempFilePath(string path)
-    {
-      FileInfo fileInfo = new(path);
-      return Path.Combine(tempPathCopy, fileInfo.Name);
     }
 
     public static void DiffFilesUsingDefaultTool(string file1, string file2)
