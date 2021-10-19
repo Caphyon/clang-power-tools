@@ -7,7 +7,7 @@
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:views="clr-namespace:ClangPowerTools.MVVM.Views"
   d:DesignHeight="490"
-  d:DesignWidth="450"
+  d:DesignWidth="394.015"
   mc:Ignorable="d">
 
   <Grid>
@@ -38,26 +38,40 @@
       Grid.Row="0"
       Margin="10.4,5,309.4,5.4"
       Command="{Binding TidyAllCommand}"
+      Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
       Content="Tidy" />
     <Button
       Grid.Column="1"
       Grid.Row="0"
       Margin="99.4,5,220.4,5.4"
       Command="{Binding FixAllCommand}"
+      Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
       Content="Fix" />
     <Button
       Grid.Column="1"
       Grid.Row="0"
       Margin="282.4,5,37.4,5.4"
       Command="{Binding RemoveAllCommand}"
+      Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
       Content="Remove"/>
     <Button 
       Grid.Column="1"
       Grid.Row="0"
       Margin="190.4,5,129.4,5.4"
       Command="{Binding DiscardAllCommand}"
+      Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
       Content="Discard Fix" />
-    <!--<ProgressBar Grid.Column="1" Grid.Row="0" Foreground="#296cba" Minimum="0" Height="20" Maximum="100" Name="pbStatus" IsIndeterminate="True"/>-->
+    
+    <ProgressBar
+      Grid.Column="1"
+      Grid.Row="0"
+      Foreground="#296cba"
+      Minimum="0"
+      Height="20"
+      Maximum="100"
+      Name="pbStatus"
+      Visibility="{Binding TidyToolWindowModel.ProgressBarVisibility}"
+      IsIndeterminate="True"/>
 
     <ListView
       Grid.Column="1"
@@ -66,17 +80,6 @@
       ItemsSource="{Binding Files}"
       Margin="0.4,30,5.4,-0.4"
       Grid.RowSpan="2">
-      <!--<ListView.View>
-         <GridView>
-         <GridViewColumn DisplayMemberBinding="{Binding FileName}" Header="File Name" Width="500" />
-         </GridView>
-         </ListView.View>
-         <ListView.ItemContainerStyle>
-         <Style TargetType="ListViewItem">
-         <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
-         </Style>
-         </ListView.ItemContainerStyle>-->
-
       <ListView.ItemTemplate>
         <DataTemplate>
           <Grid >
