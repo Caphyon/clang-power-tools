@@ -143,6 +143,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\SelectedFileModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyCheckModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidySettingsModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyToolWindowModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToggleModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TokenModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\UserModel.cs" />

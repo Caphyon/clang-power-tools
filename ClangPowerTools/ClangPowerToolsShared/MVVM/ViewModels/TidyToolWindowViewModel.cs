@@ -28,9 +28,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public event PropertyChangedEventHandler PropertyChanged;
     private ObservableCollection<FileModel> files = new ObservableCollection<FileModel>();
     private TidyToolWindowView tidyToolWindowView;
-    private ItemsCollector itemsCollector = new ItemsCollector();
     private readonly string folderGuid = Guid.NewGuid().ToString();
-    private ICommand showFiles;
     private ICommand tidyAllCommand;
     private ICommand fixAllCommand;
     private ICommand discardAllCommand;

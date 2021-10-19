@@ -57,6 +57,8 @@
       Margin="190.4,5,129.4,5.4"
       Command="{Binding DiscardAllCommand}"
       Content="Discard Fix" />
+    <!--<ProgressBar Grid.Column="1" Grid.Row="0" Foreground="#296cba" Minimum="0" Height="20" Maximum="100" Name="pbStatus" IsIndeterminate="True"/>-->
+
     <ListView
       Grid.Column="1"
       Background="#1f2120"
@@ -74,6 +76,7 @@
          <EventSetter Event="MouseDoubleClick" Handler="ListViewItem_MouseDoubleClick"/>
          </Style>
          </ListView.ItemContainerStyle>-->
+
       <ListView.ItemTemplate>
         <DataTemplate>
           <Grid >
