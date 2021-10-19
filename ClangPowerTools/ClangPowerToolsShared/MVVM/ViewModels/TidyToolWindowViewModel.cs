@@ -7,6 +7,7 @@ using ClangPowerTools.Services;
 using ClangPowerTools.SilentFile;
 using ClangPowerTools.Views;
 using ClangPowerToolsShared.MVVM.Commands;
+using ClangPowerToolsShared.MVVM.Models;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -23,22 +24,40 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 {
   public class TidyToolWindowViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
   {
-    #region Properties
+    #region Members
 
     public event PropertyChangedEventHandler PropertyChanged;
+    private readonly string tempFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp");
     private ObservableCollection<FileModel> files = new ObservableCollection<FileModel>();
     private TidyToolWindowView tidyToolWindowView;
     private readonly string folderGuid = Guid.NewGuid().ToString();
+    private TidyToolWindowModel tidyToolWindowModel;
+
     private ICommand tidyAllCommand;
     private ICommand fixAllCommand;
     private ICommand discardAllCommand;
     private ICommand removeAllCommand;
-    private readonly string tempFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp");
+    
     public ObservableCollection<FileModel> Files { get; set; } = new ObservableCollection<FileModel>();
 
     #endregion
 
+    #region Properties
+
+    public TidyToolWindowModel TidyToolWindowModel
+    {
+      get {  return tidyToolWindowModel; }
+      set
+      {
+        tidyToolWindowModel = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyToolWindowModel"));
+      }
+    }
+
+    #endregion
+
     #region Commands
+
     public ICommand TidyAllCommand
     {
       get => tidyAllCommand ?? (tidyAllCommand = new RelayCommand(() => TidyAllFilesAsync().SafeFireAndForget(), () => CanExecute));
@@ -65,6 +84,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public TidyToolWindowViewModel(TidyToolWindowView tidyToolWindowView)
     {
+      tidyToolWindowModel = new TidyToolWindowModel();
       Files = files;
       this.tidyToolWindowView = tidyToolWindowView;
     }
