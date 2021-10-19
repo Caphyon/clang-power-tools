@@ -2,18 +2,33 @@
 
 namespace ClangPowerToolsShared.MVVM.Models
 {
-  class TidyToolWindowModel
+  public class TidyToolWindowModel
   {
     #region Members
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private bool canExecuteCommand = true;
+    private readonly string hidden = "Hidden";
+    private readonly string visibile = "Visible";
+
+    private bool isRunning;
     private bool selectedAll;
+    private string progressBarVisibility;
+    private string buttonVisibility;
     private int tidyNr = 0;
     private int fixNr = 0;
     private int removeNr = 0;
     private int discardNr = 0;
+
+    #endregion
+
+    #region 
+
+    public TidyToolWindowModel()
+    {
+      ProgressBarVisibility = hidden;
+      buttonVisibility = visibile;
+    }
 
     #endregion
 
@@ -23,26 +38,57 @@ namespace ClangPowerToolsShared.MVVM.Models
     {
       get
       {
-        return canExecuteCommand;
+        return isRunning;
       }
 
       set
       {
-        canExecuteCommand = value;
+        if (value)
+        {
+          ProgressBarVisibility = visibile;
+          ButtonVisibility = hidden;
+        }
+        else
+        {
+          ProgressBarVisibility = hidden;
+          ButtonVisibility = visibile;
+        }
+        isRunning = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CanExecuteCommand"));
       }
     }
 
-    public bool SelectedAll 
+    public bool SelectedAll
     {
       get
       {
-        return selectedAll; 
+        return selectedAll;
       }
+
       set
       {
         selectedAll = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedAll"));
+      }
+    }
+
+    public string ProgressBarVisibility
+    {
+      get { return progressBarVisibility; }
+      set
+      {
+        progressBarVisibility = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ProgressBarVisibility"));
+      }
+    }
+
+    public string ButtonVisibility
+    {
+      get { return buttonVisibility; }
+      set
+      {
+        buttonVisibility = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ButtonVisibility"));
       }
     }
 
