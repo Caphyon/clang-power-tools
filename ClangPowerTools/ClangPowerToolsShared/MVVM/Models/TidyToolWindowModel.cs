@@ -27,7 +27,7 @@ namespace ClangPowerToolsShared.MVVM.Models
     public TidyToolWindowModel()
     {
       ProgressBarVisibility = hidden;
-      buttonVisibility = visibile;
+      ButtonVisibility = visibile;
     }
 
     #endregion
