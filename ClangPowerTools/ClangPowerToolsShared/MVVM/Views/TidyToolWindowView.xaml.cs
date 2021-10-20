@@ -58,6 +58,11 @@ namespace ClangPowerTools.Views
       tidyToolWindowViewModel.AfterCommand();
     }
 
+    private void CheckBox_Click(object sender, RoutedEventArgs e)
+    {
+      // ... do some stuff
+    }
+
     private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
       var item = sender as ListViewItem;

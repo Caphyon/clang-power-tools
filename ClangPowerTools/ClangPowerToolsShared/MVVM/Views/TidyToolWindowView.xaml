@@ -96,6 +96,7 @@
             <CheckBox
               Grid.Column="0"
               VerticalAlignment="Center"
+              Click="CheckBox_Click"
               IsChecked="{Binding IsChecked, Mode=TwoWay}"></CheckBox>
             <TextBlock
               Grid.Column="1"

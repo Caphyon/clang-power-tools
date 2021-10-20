@@ -136,6 +136,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         }
       }
       MarkUnfixedFiles();
+      ++tidyToolWindowModel.DiscardNr;
       AfterCommand();
     }
 

@@ -34,6 +34,46 @@ namespace ClangPowerToolsShared.MVVM.Models
 
     #region Properties
 
+    public int DiscardNr
+    {
+      get { return discardNr; }
+      set
+      {
+        discardNr = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiscardNr"));
+      }
+    }
+
+    public int RemoveNr
+    {
+      get { return removeNr; }
+      set
+      {
+        removeNr = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RemoveNr"));
+      }
+    }
+
+    public int FixNr
+    {
+      get { return fixNr; }
+      set
+      {
+        fixNr = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixNr"));
+      }
+    }
+
+    public int TidyNr 
+    { 
+      get { return tidyNr; }
+      set
+      {
+        tidyNr = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyNr"));
+      }
+    }
+
     public bool IsRunning
     {
       get
