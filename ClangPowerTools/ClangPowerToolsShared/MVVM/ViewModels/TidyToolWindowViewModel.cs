@@ -54,6 +54,14 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
     }
 
+    public bool CanExecute
+    {
+      get
+      {
+        return true;
+      }
+    }
+
     #endregion
 
     #region Commands
@@ -85,6 +93,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public TidyToolWindowViewModel(TidyToolWindowView tidyToolWindowView)
     {
       tidyToolWindowModel = new TidyToolWindowModel();
+
+      tidyToolWindowModel.ButtonVisibility = "Visibile";
+      tidyToolWindowModel.ProgressBarVisibility = "Hidden";
+      TidyToolWindowModel = tidyToolWindowModel;
       Files = files;
       this.tidyToolWindowView = tidyToolWindowView;
     }
@@ -112,25 +124,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
     }
 
-    public void DiscardFile(FileModel file)
-    {
-      var fileChangerWatcher = new FileChangerWatcher();
-
-      var dte2 = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
-      string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
-        dte2.Solution.FullName : dte2.Solution.FullName
-                                  .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
-      fileChangerWatcher.Run(solutionFolderPath);
-
-      if (File.Exists(file.CopyFullFileName))
-      {
-        File.Copy(file.CopyFullFileName, file.FullFileName, true);
-        File.Delete(file.CopyFullFileName);
-      }
-    }
-
     public void DiscardAllFiles()
     {
+      BeforeCommand();
       var checkFiles = GetCheckedFiles();
       foreach (var file in checkFiles)
       {
@@ -139,16 +135,20 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           DiscardFile(file);
         }
       }
-      MarkUnFixedFiles();
+      MarkUnfixedFiles();
+      AfterCommand();
     }
 
     public async Task TidyAllFilesAsync()
     {
+      BeforeCommand();
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, GetCheckedPathsList());
+      AfterCommand();
     }
 
     public void RemoveAllFiles()
     {
+      BeforeCommand();
       foreach (var file in Files.ToList())
       {
         if (file.IsChecked)
@@ -156,22 +156,17 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           Files.Remove(file);
         }
       }
+      AfterCommand();
     }
 
     public async Task FixAllFilesAsync()
     {
+      BeforeCommand();
       var filesPaths = GetCheckedFiles();
       FileCommand.CopyFilesInTemp(filesPaths);
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, GetCheckedPathsList());
       MarkFixedFiles();
-    }
-
-    public bool CanExecute
-    {
-      get
-      {
-        return true;
-      }
+      AfterCommand();
     }
 
     public void MarkFixedFile(FileModel currentFile)
@@ -194,7 +189,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
     }
 
-    private void MarkUnFixedFiles()
+    private void MarkUnfixedFiles()
     {
       var checkedFiles = GetCheckedFiles();
       foreach (var file in checkedFiles)
@@ -226,6 +221,35 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       var fullFileName = path.FullName;
       var index = fullFileName.IndexOf(directoryName);
       return fullFileName.Substring(index, fullFileName.Length - index); ;
+    }
+
+    private void DiscardFile(FileModel file)
+    {
+      var fileChangerWatcher = new FileChangerWatcher();
+
+      var dte2 = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
+      string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
+        dte2.Solution.FullName : dte2.Solution.FullName
+                                  .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
+      fileChangerWatcher.Run(solutionFolderPath);
+
+      if (File.Exists(file.CopyFullFileName))
+      {
+        File.Copy(file.CopyFullFileName, file.FullFileName, true);
+        File.Delete(file.CopyFullFileName);
+      }
+    }
+
+    private void BeforeCommand()
+    {
+      tidyToolWindowModel.IsRunning = true;
+      TidyToolWindowModel = tidyToolWindowModel;
+    }
+
+    private void AfterCommand()
+    {
+      TidyToolWindowModel.IsRunning = false;
+      TidyToolWindowModel = tidyToolWindowModel;
     }
 
     #endregion

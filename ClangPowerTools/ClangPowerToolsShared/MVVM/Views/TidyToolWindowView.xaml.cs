@@ -31,16 +31,6 @@ namespace ClangPowerTools.Views
       tidyToolWindowViewModel.UpdateViewModel(filesPath);
     }
 
-    private void DiscardButton(object sender, RoutedEventArgs e)
-    {
-      var elementIndex = sender as FrameworkElement;
-      var element = elementIndex.DataContext as FileModel;
-      if (element != null)
-      {
-        tidyToolWindowViewModel.DiscardFile(element);
-      }
-    }
-
     private void DiffButton(object sender, RoutedEventArgs e)
     {
       var elementIndex = sender as FrameworkElement;
