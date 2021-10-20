@@ -34,7 +34,7 @@ namespace ClangPowerToolsShared.MVVM.Models
 
     #region Properties
 
-    public bool CanExecuteCommand
+    public bool IsRunning
     {
       get
       {
@@ -54,7 +54,7 @@ namespace ClangPowerToolsShared.MVVM.Models
           ButtonVisibility = visibile;
         }
         isRunning = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CanExecuteCommand"));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsRunning"));
       }
     }
 
