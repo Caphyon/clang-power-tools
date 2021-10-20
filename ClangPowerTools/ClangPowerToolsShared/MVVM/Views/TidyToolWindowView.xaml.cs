@@ -33,16 +33,19 @@ namespace ClangPowerTools.Views
 
     private void DiffButton(object sender, RoutedEventArgs e)
     {
+      tidyToolWindowViewModel.BeforeCommand();
       var elementIndex = sender as FrameworkElement;
       var element = elementIndex.DataContext as FileModel;
       if (element != null)
       {
         FileCommand.DiffFilesUsingDefaultTool(element.CopyFullFileName, element.FullFileName);
       }
+      tidyToolWindowViewModel.AfterCommand();
     }
 
     private void FixButton(object sender, RoutedEventArgs e)
     {
+      tidyToolWindowViewModel.BeforeCommand();
       var elementIndex = sender as FrameworkElement;
       var element = elementIndex.DataContext as FileModel;
       if (element != null)
@@ -52,6 +55,7 @@ namespace ClangPowerTools.Views
         FileCommand.DiffFilesUsingDefaultTool(element.CopyFullFileName, element.FullFileName);
         tidyToolWindowViewModel.MarkFixedFile(element);
       }
+      tidyToolWindowViewModel.AfterCommand();
     }
 
     private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)

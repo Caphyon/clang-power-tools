@@ -169,6 +169,18 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       AfterCommand();
     }
 
+    public void BeforeCommand()
+    {
+      tidyToolWindowModel.IsRunning = true;
+      TidyToolWindowModel = tidyToolWindowModel;
+    }
+
+    public void AfterCommand()
+    {
+      TidyToolWindowModel.IsRunning = false;
+      TidyToolWindowModel = tidyToolWindowModel;
+    }
+
     public void MarkFixedFile(FileModel currentFile)
     {
       var rfile =  files.Where(f => f.FullFileName == currentFile.FullFileName).SingleOrDefault();
@@ -238,18 +250,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         File.Copy(file.CopyFullFileName, file.FullFileName, true);
         File.Delete(file.CopyFullFileName);
       }
-    }
-
-    private void BeforeCommand()
-    {
-      tidyToolWindowModel.IsRunning = true;
-      TidyToolWindowModel = tidyToolWindowModel;
-    }
-
-    private void AfterCommand()
-    {
-      TidyToolWindowModel.IsRunning = false;
-      TidyToolWindowModel = tidyToolWindowModel;
     }
 
     #endregion
