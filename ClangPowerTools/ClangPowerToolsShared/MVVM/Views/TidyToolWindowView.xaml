@@ -6,80 +6,108 @@
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
   xmlns:views="clr-namespace:ClangPowerTools.MVVM.Views"
-  d:DesignHeight="490"
-  d:DesignWidth="394.015"
+  d:DesignHeight="700"
+  d:DesignWidth="350"
   mc:Ignorable="d">
 
   <Grid>
-    <!--<StackPanel Orientation="Vertical">
-    -->
-    <!--<TextBlock HorizontalAlignment="Center">TidyToolWindow</TextBlock>-->
-    <!--<Button
-       Name="button1"
-       Width="120"
-       Height="80"
-       Margin="1,300,1,1"
-       Command="{Binding ShowFiles}"
-       Content="Click me!" />-->
-    <!--
-       </StackPanel>-->
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="10" />
-      <ColumnDefinition Width="392.8" />
+      <ColumnDefinition Width="330" />
+      <ColumnDefinition Width="*" />
       <ColumnDefinition />
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
-      <RowDefinition Height="30"/>
+      <RowDefinition Height="10"/>
+      <RowDefinition Height="25"/>
+      <RowDefinition Height="20"/>
       <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
 
-    <Button
-      Grid.Column="1"
-      Grid.Row="0"
-      Margin="62,5,258,5"
-      Command="{Binding TidyAllCommand}"
-      Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
-      Content="Tidy" />
-    <Button
-      Grid.Column="1"
-      Grid.Row="0"
-      Margin="140,4,180,6"
-      Command="{Binding FixAllCommand}"
-      Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
-      Content="Fix" />
-    <Button
-      Grid.Column="1"
-      Grid.Row="0"
-      Margin="296,4,25,6"
-      Command="{Binding RemoveAllCommand}"
-      Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
-      Content="Remove"/>
-    <Button 
-      Grid.Column="1"
-      Grid.Row="0"
-      Margin="218,4,102,6"
-      Command="{Binding DiscardAllCommand}"
-      Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
-      Content="Discard Fix" />
+    <Grid Grid.Row="1" Grid.Column="1">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="5" />
+        <ColumnDefinition Width="80" />
+        <ColumnDefinition Width="80" />
+        <ColumnDefinition Width="80" />
+        <ColumnDefinition Width="80" />
+        <ColumnDefinition Width="5" />
+        <ColumnDefinition />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="2.5"/>
+        <RowDefinition Height="20"/>
+        <RowDefinition Height="2.5"/>
+      </Grid.RowDefinitions>
 
-    <CheckBox
-      Grid.Column="1"
-      VerticalAlignment="Top"
-      Click="CheckAll"
-      Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
-      IsChecked="{Binding TidyToolWindowModel.IsChecked, Mode=TwoWay}"
-      Margin="0,10,373,0"/>
-    <TextBlock 
-      x:Name="textBox"
-      Foreground="WhiteSmoke"
-      Grid.Column="1"
-      HorizontalAlignment="Left"
-      TextWrapping="Wrap"
-      Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
-      Text="{Binding TidyToolWindowModel.TotalChecked}"
-      VerticalAlignment="Center"
-      Width="28"
-      Margin="25,0,0,0"/>
+      <Button
+        Grid.Column="1"
+        Grid.Row="1"
+        Width="70"
+        HorizontalAlignment="Center"
+        Command="{Binding TidyAllCommand}"
+        Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
+        Content="Tidy" />
+      <Button
+        Grid.Column="2"
+        Grid.Row="1"
+        Width="70"
+        HorizontalAlignment="Center"
+        Command="{Binding FixAllCommand}"
+        Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
+        Content="Fix" />
+      <Button
+        Grid.Column="3"
+        Grid.Row="1"
+        Width="70"
+        HorizontalAlignment="Center"
+        Command="{Binding RemoveAllCommand}"
+        Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
+        Content="Remove"/>
+      <Button 
+        Grid.Column="4"
+        Grid.Row="1"
+        Width="70"
+        HorizontalAlignment="Center"
+        Command="{Binding DiscardAllCommand}"
+        Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
+        Content="Discard Fix" />
+    </Grid>
+
+    <Grid Grid.Column="1" Grid.Row="2">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="5" />
+        <ColumnDefinition Width="20" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="2.5"/>
+        <RowDefinition Height="15"/>
+        <RowDefinition Height="2.5"/>
+      </Grid.RowDefinitions>
+    
+      <CheckBox
+        Grid.Column="1"
+        Grid.Row="1"
+        Width="15"
+        VerticalAlignment="Center"
+        Click="CheckAll"
+        Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
+        IsChecked="{Binding TidyToolWindowModel.IsChecked, Mode=TwoWay}"/>
+      <TextBlock 
+        x:Name="textBox"
+        Foreground="WhiteSmoke"
+        Grid.Column="2"
+        Grid.Row="1"
+        HorizontalAlignment="Left"
+        Width="28"
+        TextWrapping="Wrap"
+        Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
+        Text="{Binding TidyToolWindowModel.TotalChecked}"
+        VerticalAlignment="Center"/>
+    </Grid>
+    
     <ProgressBar
        Grid.Column="1"
        Grid.Row="0"
@@ -93,51 +121,53 @@
 
     <ListView
       Grid.Column="1"
-      Background="#1f2120"
+      Grid.Row="3"
+      Background="Transparent"
       x:Name="FilesList"
-      ItemsSource="{Binding Files}"
-      Margin="0.4,30,5.4,-0.4"
-      Grid.RowSpan="2">
+      ItemsSource="{Binding Files}">
       <ListView.ItemTemplate>
         <DataTemplate>
           <Grid >
             <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="5" />
               <ColumnDefinition Width="20" />
-              <ColumnDefinition Width="200" />
-              <ColumnDefinition Width="90" />
-              <ColumnDefinition Width="90" />
-              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="340" />
+              <ColumnDefinition Width="80" />
+              <ColumnDefinition Width="20" />
+              <ColumnDefinition Width="5" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-              <RowDefinition Height="30"/>
+              <RowDefinition Height="25"/>
             </Grid.RowDefinitions>
             <CheckBox
-              Grid.Column="0"
-              VerticalAlignment="Center"
-              Click="CheckBox_Click"
-              IsChecked="{Binding IsChecked, Mode=TwoWay}"></CheckBox>
-            <TextBlock
-              Grid.Column="1"
-              VerticalAlignment="Center"
-              Foreground="WhiteSmoke"
-              Text="{Binding FileName}">
-            </TextBlock>
-            <Button
-              Grid.Column="2"
-              Visibility="{Binding DiffVisibility}"
-              Width="80"
-              Height="20"
-              Margin="2,0,0,0"
-              Click="DiffButton"
-              Content="Diff" />
-            <Button
-              Grid.Column="2"
-              Visibility="{Binding FixVisibility}"
-              Width="80"
-              Height="20"
-              Margin="2,0,0,0"
-              Click="FixButton"
-              Content="Fix" />
+               Grid.Column="1"
+               VerticalAlignment="Center"
+               Click="CheckBox_Click"
+               IsChecked="{Binding IsChecked, Mode=TwoWay}"></CheckBox>
+               <TextBlock
+               Grid.Column="2"
+               VerticalAlignment="Center"
+               HorizontalAlignment="Left"
+               Width="170"
+               Foreground="WhiteSmoke"
+               Text="{Binding FileName}">
+               </TextBlock>
+               <Button
+               Grid.Column="3"
+               Visibility="{Binding DiffVisibility}"
+               VerticalAlignment="Center"  
+               Width="80"
+               Height="20"
+               Click="DiffButton"
+               Content="Diff" />
+               <Button
+               Grid.Column="3"
+               Visibility="{Binding FixVisibility}"
+               Width="80"
+               Height="20"
+               VerticalAlignment="Center"
+               Click="FixButton"
+               Content="Fix" />
           </Grid>
         </DataTemplate>
       </ListView.ItemTemplate>
