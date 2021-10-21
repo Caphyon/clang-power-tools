@@ -125,42 +125,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
     }
 
-    public void DiscardAllFiles()
-    {
-      BeforeCommand();
-      var checkFiles = GetCheckedFiles();
-      foreach (var file in checkFiles)
-      {
-        if (file.IsChecked)
-        {
-          DiscardFile(file);
-        }
-      }
-      MarkUnfixedFiles();
-      ++tidyToolWindowModel.DiscardNr;
-      AfterCommand();
-    }
-
-    public async Task TidyAllFilesAsync()
-    {
-      BeforeCommand();
-      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, GetCheckedPathsList());
-      AfterCommand();
-    }
-
-    public void RemoveAllFiles()
-    {
-      BeforeCommand();
-      foreach (var file in Files.ToList())
-      {
-        if (file.IsChecked)
-        {
-          Files.Remove(file);
-        }
-      }
-      AfterCommand();
-    }
-
     public void CheckOrUncheckAll()
     {
       if(tidyToolWindowModel.IsChecked)
@@ -191,20 +155,12 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
       FileCommand.CopyFilesInTemp(filesPathsCopy);
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
+      if (file is not null)
+      {
+        file.IsFixed = true;
+      }
       MarkFixedFiles();
       AfterCommand();
-    }
-
-    public void BeforeCommand()
-    {
-      tidyToolWindowModel.IsRunning = true;
-      TidyToolWindowModel = tidyToolWindowModel;
-    }
-
-    public void AfterCommand()
-    {
-      TidyToolWindowModel.IsRunning = false;
-      TidyToolWindowModel = tidyToolWindowModel;
     }
 
     public void UpdateCheckedNumber(FileModel file)
@@ -221,6 +177,13 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
     }
 
+    public void DiffFile(FileModel file)
+    {
+      BeforeCommand();
+      FileCommand.DiffFilesUsingDefaultTool(file.CopyFullFileName, file.FullFileName);
+      AfterCommand();
+    }
+
     public void MarkFixedFile(FileModel currentFile)
     {
       var rfile =  files.Where(f => f.FullFileName == currentFile.FullFileName).SingleOrDefault();
@@ -231,6 +194,18 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     #endregion
 
     #region Private Method
+
+    private void BeforeCommand()
+    {
+      tidyToolWindowModel.IsRunning = true;
+      TidyToolWindowModel = tidyToolWindowModel;
+    }
+
+    private void AfterCommand()
+    {
+      TidyToolWindowModel.IsRunning = false;
+      TidyToolWindowModel = tidyToolWindowModel;
+    }
 
     private void CheckAll()
     {
@@ -310,6 +285,26 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
     }
 
+    private void RemoveAllFiles()
+    {
+      BeforeCommand();
+      foreach (var file in Files.ToList())
+      {
+        if (file.IsChecked)
+        {
+          Files.Remove(file);
+        }
+      }
+      AfterCommand();
+    }
+
+    private async Task TidyAllFilesAsync()
+    {
+      BeforeCommand();
+      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, GetCheckedPathsList());
+      AfterCommand();
+    }
+
     private void UpdateCheckedNumber()
     {
       tidyToolWindowModel.TotalChecked = 0;
@@ -321,6 +316,22 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         }
       }
       TidyToolWindowModel = tidyToolWindowModel;
+    }
+
+    private void DiscardAllFiles()
+    {
+      BeforeCommand();
+      var checkFiles = GetCheckedFiles();
+      foreach (var file in checkFiles)
+      {
+        if (file.IsChecked)
+        {
+          DiscardFile(file);
+        }
+      }
+      MarkUnfixedFiles();
+      ++tidyToolWindowModel.DiscardNr;
+      AfterCommand();
     }
 
     #endregion
