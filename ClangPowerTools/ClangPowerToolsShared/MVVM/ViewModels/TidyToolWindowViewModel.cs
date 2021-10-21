@@ -108,7 +108,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void UpdateViewModel(List<string> filesPath)
     {
-      files.Clear();
+      RefreshValues();
       foreach (string file in filesPath)
       {
         FileInfo path = new FileInfo(file);
@@ -173,6 +173,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       else
       {
         --tidyToolWindowModel.TotalChecked;
+        tidyToolWindowModel.IsChecked = tidyToolWindowModel.TotalChecked == 0 ? false : true;
         TidyToolWindowModel = tidyToolWindowModel;
       }
     }
@@ -295,6 +296,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           Files.Remove(file);
         }
       }
+      UpdateCheckedNumber();
       AfterCommand();
     }
 
@@ -332,6 +334,13 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       MarkUnfixedFiles();
       ++tidyToolWindowModel.DiscardNr;
       AfterCommand();
+    }
+
+    private void RefreshValues()
+    {
+      tidyToolWindowModel.TotalChecked = 0;
+      TidyToolWindowModel = tidyToolWindowModel;
+      files.Clear();
     }
 
     #endregion
