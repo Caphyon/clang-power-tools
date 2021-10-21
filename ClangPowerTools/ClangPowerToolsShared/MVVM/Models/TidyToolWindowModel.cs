@@ -19,6 +19,8 @@ namespace ClangPowerToolsShared.MVVM.Models
     private int fixNr = 0;
     private int removeNr = 0;
     private int discardNr = 0;
+    private int totalChecked = 0;
+    private bool isChecked;
 
     #endregion
 
@@ -33,6 +35,27 @@ namespace ClangPowerToolsShared.MVVM.Models
     #endregion
 
     #region Properties
+
+    public bool IsChecked
+    {
+      get { return isChecked; }
+      set
+      {
+        if (isChecked == value) { return; }
+        isChecked = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsChecked"));
+      }
+    }
+
+    public int TotalChecked
+    {  
+      get {  return totalChecked; } 
+      set 
+      {
+        totalChecked = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalChecked"));
+      }
+    }
 
     public int DiscardNr
     {

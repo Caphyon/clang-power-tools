@@ -36,42 +36,57 @@
     <Button
       Grid.Column="1"
       Grid.Row="0"
-      Margin="10.4,5,309.4,5.4"
+      Margin="62,5,258,5"
       Command="{Binding TidyAllCommand}"
       Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
       Content="Tidy" />
     <Button
       Grid.Column="1"
       Grid.Row="0"
-      Margin="99.4,5,220.4,5.4"
+      Margin="140,4,180,6"
       Command="{Binding FixAllCommand}"
       Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
       Content="Fix" />
     <Button
       Grid.Column="1"
       Grid.Row="0"
-      Margin="282.4,5,37.4,5.4"
+      Margin="296,4,25,6"
       Command="{Binding RemoveAllCommand}"
       Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
       Content="Remove"/>
     <Button 
       Grid.Column="1"
       Grid.Row="0"
-      Margin="190.4,5,129.4,5.4"
+      Margin="218,4,102,6"
       Command="{Binding DiscardAllCommand}"
       Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
       Content="Discard Fix" />
-    
-    <ProgressBar
+
+    <CheckBox
       Grid.Column="1"
-      Grid.Row="0"
-      Foreground="#296cba"
-      Minimum="0"
-      Height="20"
-      Maximum="100"
-      Name="pbStatus"
-      Visibility="{Binding TidyToolWindowModel.ProgressBarVisibility}"
-      IsIndeterminate="True"/>
+      VerticalAlignment="Center"
+      Click="CheckAll"
+      IsChecked="{Binding TidyToolWindowModel.IsChecked, Mode=TwoWay}"></CheckBox>
+    <TextBlock 
+      x:Name="textBox"
+      Foreground="WhiteSmoke"
+      Grid.Column="1"
+      HorizontalAlignment="Left"
+      TextWrapping="Wrap"
+      Text="{Binding TidyToolWindowModel.TotalChecked}"
+      VerticalAlignment="Center"
+      Width="28"
+      Margin="25,0,0,0"/>
+    <ProgressBar
+       Grid.Column="1"
+       Grid.Row="0"
+       Foreground="#296cba"
+       Minimum="0"
+       Height="20"
+       Maximum="100"
+       Name="pbStatus"
+       Visibility="{Binding TidyToolWindowModel.ProgressBarVisibility}"
+       IsIndeterminate="True"/>
 
     <ListView
       Grid.Column="1"
