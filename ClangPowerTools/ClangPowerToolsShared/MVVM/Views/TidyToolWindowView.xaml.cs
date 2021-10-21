@@ -46,17 +46,12 @@ namespace ClangPowerTools.Views
 
     private void FixButton(object sender, RoutedEventArgs e)
     {
-      tidyToolWindowViewModel.BeforeCommand();
       var elementIndex = sender as FrameworkElement;
       var element = elementIndex.DataContext as FileModel;
       if (element != null)
       {
-        FileCommand.CopyFileInTemp(element);
-        CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, new List<string> { element.FullFileName });
-        FileCommand.DiffFilesUsingDefaultTool(element.CopyFullFileName, element.FullFileName);
-        tidyToolWindowViewModel.MarkFixedFile(element);
+        tidyToolWindowViewModel.FixAllFilesAsync(element).SafeFireAndForget();
       }
-      tidyToolWindowViewModel.AfterCommand();
     }
 
     private void CheckAll(object sender, RoutedEventArgs e)

@@ -19,6 +19,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerToolsShared.MVVM.ViewModels
 {
@@ -173,12 +174,23 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       UpdateCheckedNumber();
     }
 
-    public async Task FixAllFilesAsync()
+    public async Task FixAllFilesAsync(FileModel file = null)
     {
       BeforeCommand();
-      var filesPaths = GetCheckedFiles();
-      FileCommand.CopyFilesInTemp(filesPaths);
-      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, GetCheckedPathsList());
+      var filesPaths = new List<string>();
+      var filesPathsCopy = new List<FileModel>();
+      if (file is null)
+      {
+        filesPathsCopy = GetCheckedFiles();
+        filesPaths = GetCheckedPathsList();
+      }
+      else
+      {
+        filesPathsCopy = new List<FileModel> { file };
+        filesPaths = new List<string> { file.FullFileName }; 
+      }
+      FileCommand.CopyFilesInTemp(filesPathsCopy);
+      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
       MarkFixedFiles();
       AfterCommand();
     }
