@@ -168,12 +168,13 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       if(file.IsChecked)
       {
         ++tidyToolWindowModel.TotalChecked;
+        tidyToolWindowModel.IsChecked = tidyToolWindowModel.TotalChecked == files.Count ? true : false;
         TidyToolWindowModel = tidyToolWindowModel;
       }
       else
       {
         --tidyToolWindowModel.TotalChecked;
-        tidyToolWindowModel.IsChecked = tidyToolWindowModel.TotalChecked == 0 ? false : true;
+        tidyToolWindowModel.IsChecked = tidyToolWindowModel.TotalChecked == 0 || tidyToolWindowModel.TotalChecked != files.Count  ? false : true;
         TidyToolWindowModel = tidyToolWindowModel;
       }
     }
