@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.Commands;
 using ClangPowerTools.MVVM.Models;
 using ClangPowerToolsShared.MVVM.Commands;
+using ClangPowerToolsShared.MVVM.Models;
 using ClangPowerToolsShared.MVVM.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -58,9 +59,18 @@ namespace ClangPowerTools.Views
       tidyToolWindowViewModel.AfterCommand();
     }
 
+    private void CheckAll(object sender, RoutedEventArgs e)
+    {
+      tidyToolWindowViewModel.CheckOrUncheckAll();
+    }
     private void CheckBox_Click(object sender, RoutedEventArgs e)
     {
-      // ... do some stuff
+      var elementIndex = sender as FrameworkElement;
+      var element = elementIndex.DataContext as FileModel;
+      if (element != null)
+      {
+        tidyToolWindowViewModel.UpdateCheckedNumber(element);
+      }
     }
 
     private void ListViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)

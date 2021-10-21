@@ -160,6 +160,19 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       AfterCommand();
     }
 
+    public void CheckOrUncheckAll()
+    {
+      if(tidyToolWindowModel.IsChecked)
+      {
+        CheckAll();
+      }
+      else
+      {
+        UncheckAll();
+      }
+      UpdateCheckedNumber();
+    }
+
     public async Task FixAllFilesAsync()
     {
       BeforeCommand();
@@ -182,6 +195,20 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       TidyToolWindowModel = tidyToolWindowModel;
     }
 
+    public void UpdateCheckedNumber(FileModel file)
+    {
+      if(file.IsChecked)
+      {
+        ++tidyToolWindowModel.TotalChecked;
+        TidyToolWindowModel = tidyToolWindowModel;
+      }
+      else
+      {
+        --tidyToolWindowModel.TotalChecked;
+        TidyToolWindowModel = tidyToolWindowModel;
+      }
+    }
+
     public void MarkFixedFile(FileModel currentFile)
     {
       var rfile =  files.Where(f => f.FullFileName == currentFile.FullFileName).SingleOrDefault();
@@ -192,6 +219,24 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     #endregion
 
     #region Private Method
+
+    private void CheckAll()
+    {
+      foreach (var file in files)
+      {
+        file.IsChecked = true;
+      }
+      Files = files;
+    }
+
+    private void UncheckAll()
+    {
+      foreach (var file in files)
+      {
+        file.IsChecked = false;
+      }
+      Files = files;
+    }
 
     private void MarkFixedFiles()
     {
@@ -251,6 +296,19 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         File.Copy(file.CopyFullFileName, file.FullFileName, true);
         File.Delete(file.CopyFullFileName);
       }
+    }
+
+    private void UpdateCheckedNumber()
+    {
+      tidyToolWindowModel.TotalChecked = 0;
+      foreach(var file in files)
+      {
+        if(file.IsChecked)
+        {
+          ++tidyToolWindowModel.TotalChecked;
+        }
+      }
+      TidyToolWindowModel = tidyToolWindowModel;
     }
 
     #endregion
