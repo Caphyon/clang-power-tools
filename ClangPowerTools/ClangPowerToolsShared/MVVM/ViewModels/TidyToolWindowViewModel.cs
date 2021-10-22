@@ -153,7 +153,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
       if (file is not null)
       {
-        file.IsFixed = true;
+        MarkFixedFile(file);
       }
       else
       {
@@ -185,13 +185,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       AfterCommand();
     }
 
-    public void MarkFixedFile(FileModel currentFile)
-    {
-      var rfile = files.Where(f => f.FullFileName == currentFile.FullFileName).SingleOrDefault();
-      rfile.IsFixed = true;
-      Files = files;
-    }
-
     #endregion
 
     #region Private Method
@@ -206,6 +199,13 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       TidyToolWindowModel.IsRunning = false;
       TidyToolWindowModel = tidyToolWindowModel;
+    }
+
+    private void MarkFixedFile(FileModel currentFile)
+    {
+      var rfile = files.Where(f => f.FullFileName == currentFile.FullFileName).SingleOrDefault();
+      rfile.IsFixed = true;
+      Files = files;
     }
 
     private void CheckAll()
@@ -231,7 +231,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       var checkedFiles = GetCheckedFiles();
       foreach (var file in checkedFiles)
       {
-        file.IsFixed = true;
+        MarkFixedFile(file);
       }
     }
 

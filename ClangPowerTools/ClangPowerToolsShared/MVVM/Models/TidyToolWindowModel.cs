@@ -21,7 +21,7 @@ namespace ClangPowerToolsShared.MVVM.Models
     private int discardNr = 0;
     private int totalChecked = 0;
     private bool isChecked;
-
+    public bool isDiscardEnabled;
     #endregion
 
     #region 
@@ -49,8 +49,8 @@ namespace ClangPowerToolsShared.MVVM.Models
 
     public int TotalChecked
     {  
-      get {  return totalChecked; } 
-      set 
+      get {  return totalChecked; }
+      set
       {
         totalChecked = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalChecked"));
@@ -103,7 +103,7 @@ namespace ClangPowerToolsShared.MVVM.Models
       {
         if(totalChecked is not 0)
           return !isRunning;
-        else 
+        else
           return false;
       }
       set { }
