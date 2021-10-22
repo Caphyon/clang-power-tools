@@ -1,4 +1,4 @@
-﻿<UserControl Focusable="False"
+﻿<UserControl
              x:Class="ClangPowerTools.Views.TidyToolWindowView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -10,7 +10,7 @@
              d:DesignWidth="350"
              mc:Ignorable="d">
 
-  <Grid Focusable="False">
+  <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="10" />
       <ColumnDefinition Width="*" />
@@ -41,12 +41,14 @@
         Grid.Column="0"
         Width="70"
         HorizontalAlignment="Left"
+        IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
         Command="{Binding TidyAllCommand}"
         Content="Tidy" />
       <Button
         Grid.Row="1"
         Grid.Column="1"
         Width="70"
+        IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
         HorizontalAlignment="Left"
         Command="{Binding FixAllCommand}"
         Content="Fix" />
@@ -55,18 +57,20 @@
         Grid.Column="2"
         Width="70"
         HorizontalAlignment="Left"
+        IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
         Command="{Binding DiscardAllCommand}"
         Content="Discard Fix" />
       <Button
         Grid.Row="1"
         Grid.Column="3"
         Width="70"
+        IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
         HorizontalAlignment="Left"
         Command="{Binding RemoveAllCommand}"
         Content="Remove" />
     </Grid>
 
-    <Grid Focusable="False" Grid.Row="2" Grid.Column="1">
+    <Grid Grid.Row="2" Grid.Column="1">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="7" />
         <ColumnDefinition Width="20" />
@@ -118,7 +122,6 @@
       Grid.Row="3"
       Grid.Column="1"
       Background="Transparent"
-      Focusable="False"
       HorizontalContentAlignment="Stretch"
       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
       ItemsSource="{Binding Files}">
@@ -131,7 +134,7 @@
               <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-              <RowDefinition Focusable="False" Height="25" />
+              <RowDefinition Height="25" />
             </Grid.RowDefinitions>
             <CheckBox
               Grid.Column="0"
@@ -145,12 +148,12 @@
               HorizontalAlignment="Left"
               VerticalAlignment="Center"
               Foreground="WhiteSmoke"
-              Focusable="False"
               Text="{Binding FileName}" />
             <Button
               Grid.Column="2"
               Width="70"
               Height="20"
+              IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
               HorizontalAlignment="Right"
               Click="DiffButton"
               Content="Diff"
@@ -160,6 +163,7 @@
               Width="70"
               Height="20"
               HorizontalAlignment="Right"
+              IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
               Click="FixButton"
               Content="Fix"
               Visibility="{Binding FixVisibility}" />
