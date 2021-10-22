@@ -4,20 +4,16 @@ using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Command;
 using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.Services;
-using ClangPowerTools.SilentFile;
 using ClangPowerTools.Views;
 using ClangPowerToolsShared.MVVM.Commands;
 using ClangPowerToolsShared.MVVM.Models;
-using EnvDTE;
 using EnvDTE80;
-using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Task = System.Threading.Tasks.Task;
 
@@ -38,7 +34,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private ICommand fixAllCommand;
     private ICommand discardAllCommand;
     private ICommand removeAllCommand;
-    
+
     public ObservableCollection<FileModel> Files { get; set; } = new ObservableCollection<FileModel>();
 
     #endregion
@@ -47,7 +43,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public TidyToolWindowModel TidyToolWindowModel
     {
-      get {  return tidyToolWindowModel; }
+      get { return tidyToolWindowModel; }
       set
       {
         tidyToolWindowModel = value;
@@ -112,7 +108,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       foreach (string file in filesPath)
       {
         FileInfo path = new FileInfo(file);
-        files.Add(new FileModel { FileName = path.Name, FullFileName = path.FullName, CopyFullFileName = Path.Combine(tempFolderPath, folderGuid + "_" + GetProjectPathToFile(file))});
+        files.Add(new FileModel { FileName = path.Name, FullFileName = path.FullName, CopyFullFileName = Path.Combine(tempFolderPath, folderGuid + "_" + GetProjectPathToFile(file)) });
       }
       Files = files;
       //copy files in temp folder
@@ -127,7 +123,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void CheckOrUncheckAll()
     {
-      if(tidyToolWindowModel.IsChecked)
+      if (tidyToolWindowModel.IsChecked)
       {
         CheckAll();
       }
@@ -151,7 +147,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       else
       {
         filesPathsCopy = new List<FileModel> { file };
-        filesPaths = new List<string> { file.FullFileName }; 
+        filesPaths = new List<string> { file.FullFileName };
       }
       FileCommand.CopyFilesInTemp(filesPathsCopy);
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
@@ -159,13 +155,16 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       {
         file.IsFixed = true;
       }
-      MarkFixedFiles();
+      else
+      {
+        MarkFixedFiles();
+      }
       AfterCommand();
     }
 
     public void UpdateCheckedNumber(FileModel file)
     {
-      if(file.IsChecked)
+      if (file.IsChecked)
       {
         ++tidyToolWindowModel.TotalChecked;
         tidyToolWindowModel.IsChecked = tidyToolWindowModel.TotalChecked == files.Count ? true : false;
@@ -174,7 +173,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       else
       {
         --tidyToolWindowModel.TotalChecked;
-        tidyToolWindowModel.IsChecked = tidyToolWindowModel.TotalChecked == 0 || tidyToolWindowModel.TotalChecked != files.Count  ? false : true;
+        tidyToolWindowModel.IsChecked = tidyToolWindowModel.TotalChecked == 0 || tidyToolWindowModel.TotalChecked != files.Count ? false : true;
         TidyToolWindowModel = tidyToolWindowModel;
       }
     }
@@ -188,7 +187,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void MarkFixedFile(FileModel currentFile)
     {
-      var rfile =  files.Where(f => f.FullFileName == currentFile.FullFileName).SingleOrDefault();
+      var rfile = files.Where(f => f.FullFileName == currentFile.FullFileName).SingleOrDefault();
       rfile.IsFixed = true;
       Files = files;
     }
@@ -247,7 +246,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     private List<FileModel> GetCheckedFiles()
     {
-      return  files.Where(f => f.IsChecked).ToList();
+      return files.Where(f => f.IsChecked).ToList();
     }
 
     private List<string> GetCheckedPathsList()
@@ -311,9 +310,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private void UpdateCheckedNumber()
     {
       tidyToolWindowModel.TotalChecked = 0;
-      foreach(var file in files)
+      foreach (var file in files)
       {
-        if(file.IsChecked)
+        if (file.IsChecked)
         {
           ++tidyToolWindowModel.TotalChecked;
         }
