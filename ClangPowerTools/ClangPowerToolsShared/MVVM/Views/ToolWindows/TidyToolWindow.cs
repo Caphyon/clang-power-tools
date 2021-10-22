@@ -23,7 +23,7 @@ namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
 
     public TidyToolWindow() : base()
     {
-      Caption = "Tidy Tool window ";
+      Caption = "Tidy";
       BitmapImageMoniker = KnownMonikers.ImageIcon;
       tidyToolWindowView = new TidyToolWindowView();
       Content = tidyToolWindowView;
