@@ -303,6 +303,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           ++tidyToolWindowModel.TotalChecked;
         }
       }
+      tidyToolWindowModel.IsChecked = tidyToolWindowModel.TotalChecked is 0 ? false : true;
       TidyToolWindowModel = tidyToolWindowModel;
     }
 
@@ -325,6 +326,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private void RefreshValues()
     {
       tidyToolWindowModel.TotalChecked = 0;
+      tidyToolWindowModel.IsChecked = false;
       TidyToolWindowModel = tidyToolWindowModel;
       files.Clear();
     }
