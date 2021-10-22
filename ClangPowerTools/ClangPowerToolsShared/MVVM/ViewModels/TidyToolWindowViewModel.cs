@@ -151,14 +151,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
       FileCommand.CopyFilesInTemp(filesPathsCopy);
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
-      if (file is not null)
-      {
-        MarkFixedFile(file);
-      }
-      else
-      {
-        MarkFixedFiles();
-      }
+      MarkFixedFiles(filesPathsCopy);
       AfterCommand();
     }
 
@@ -201,13 +194,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       TidyToolWindowModel = tidyToolWindowModel;
     }
 
-    private void MarkFixedFile(FileModel currentFile)
-    {
-      var rfile = files.Where(f => f.FullFileName == currentFile.FullFileName).SingleOrDefault();
-      rfile.IsFixed = true;
-      Files = files;
-    }
-
     private void CheckAll()
     {
       foreach (var file in files)
@@ -226,22 +212,22 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       Files = files;
     }
 
-    private void MarkFixedFiles()
+    private void MarkFixedFiles(List<FileModel> fixedFiles)
     {
-      var checkedFiles = GetCheckedFiles();
-      foreach (var file in checkedFiles)
+      foreach (var file in fixedFiles)
       {
-        MarkFixedFile(file);
+        file.IsFixed = true;
       }
+      Files = files;
     }
 
-    private void MarkUnfixedFiles()
+    private void MarkUnfixedFiles(List<FileModel> checkedFiles)
     {
-      var checkedFiles = GetCheckedFiles();
       foreach (var file in checkedFiles)
       {
         file.IsFixed = false;
       }
+      Files = files;
     }
 
     private List<FileModel> GetCheckedFiles()
@@ -331,7 +317,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           DiscardFile(file);
         }
       }
-      MarkUnfixedFiles();
+      MarkUnfixedFiles(checkFiles);
       ++tidyToolWindowModel.DiscardNr;
       AfterCommand();
     }

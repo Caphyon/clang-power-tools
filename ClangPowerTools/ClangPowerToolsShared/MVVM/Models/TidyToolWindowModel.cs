@@ -57,6 +57,28 @@ namespace ClangPowerToolsShared.MVVM.Models
       }
     }
 
+    //public bool IsDiscardEnabled
+    //{
+    //  get 
+    //  {
+    //    if(!IsEnabled)
+    //    {
+    //      return false;
+    //    }
+    //    else
+    //    {
+    //      return true;
+    //    }
+    //    return IsDiscardEnabled;
+    //  }
+    //  set
+    //  {
+        
+    //    IsDiscardEnabled = value;
+    //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsDiscardEnabled"));
+    //  }
+    //}
+
     public int DiscardNr
     {
       get { return discardNr; }
