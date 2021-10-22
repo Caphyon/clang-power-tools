@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:ClangPowerTools"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:views="clr-namespace:ClangPowerTools.MVVM.Views"
+             xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
              d:DesignHeight="700"
              d:DesignWidth="350"
              mc:Ignorable="d">
@@ -19,6 +20,7 @@
       <RowDefinition Height="10" />
       <RowDefinition Height="25" />
       <RowDefinition Height="20" />
+      <RowDefinition Height="10" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
@@ -98,7 +100,7 @@
         Width="28"
         HorizontalAlignment="Left"
         VerticalAlignment="Center"
-        Foreground="WhiteSmoke"
+        Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
         Text="{Binding TidyToolWindowModel.TotalChecked}"
         TextWrapping="Wrap"
         Visibility="{Binding TidyToolWindowModel.ButtonVisibility}" />
@@ -117,11 +119,16 @@
       Minimum="0"
       Visibility="{Binding TidyToolWindowModel.ProgressBarVisibility}" />
 
+    <Separator Background="{DynamicResource {x:Static vsfx:VsBrushes.PanelSeparatorKey}}" VerticalAlignment="Center" Grid.Row="3" Grid.ColumnSpan="2"></Separator>
+    
     <ListView
       x:Name="FilesList"
-      Grid.Row="3"
+      Grid.Row="4"
       Grid.Column="1"
       Background="Transparent"
+      SelectionMode="Single"
+      BorderBrush="Transparent"
+
       HorizontalContentAlignment="Stretch"
       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
       ItemsSource="{Binding Files}">
@@ -147,7 +154,7 @@
               Width="170"
               HorizontalAlignment="Left"
               VerticalAlignment="Center"
-              Foreground="WhiteSmoke"
+              Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
               Text="{Binding FileName}" />
             <Button
               Grid.Column="2"
@@ -171,5 +178,6 @@
         </DataTemplate>
       </ListView.ItemTemplate>
     </ListView>
+    
   </Grid>
 </UserControl>
