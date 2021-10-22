@@ -13,9 +13,7 @@
   <Grid Focusable="False">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="10" />
-      <ColumnDefinition Width="330" />
       <ColumnDefinition Width="*" />
-      <ColumnDefinition />
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="10" />
@@ -30,7 +28,6 @@
         <ColumnDefinition Width="85" />
         <ColumnDefinition Width="85" />
         <ColumnDefinition Width="85" />
-        <ColumnDefinition Width="*" />
         <ColumnDefinition />
       </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
@@ -128,9 +125,8 @@
           <Grid>
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="20" />
-              <ColumnDefinition Width="220" />
-              <ColumnDefinition Width="80" />
               <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
               <RowDefinition Focusable="False" Height="25" />
@@ -151,9 +147,9 @@
               Text="{Binding FileName}" />
             <Button
               Grid.Column="2"
-              Width="80"
+              Width="70"
               Height="20"
-              VerticalAlignment="Center"
+              HorizontalAlignment="Right"
               Click="DiffButton"
               Content="Diff"
               Visibility="{Binding DiffVisibility}" />
@@ -161,7 +157,7 @@
               Grid.Column="2"
               Width="70"
               Height="20"
-              VerticalAlignment="Center"
+              HorizontalAlignment="Right"
               Click="FixButton"
               Content="Fix"
               Visibility="{Binding FixVisibility}" />
