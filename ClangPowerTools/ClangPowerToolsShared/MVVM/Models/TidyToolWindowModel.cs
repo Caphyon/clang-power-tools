@@ -97,6 +97,18 @@ namespace ClangPowerToolsShared.MVVM.Models
       }
     }
 
+    public bool IsEnabled
+    {
+      get 
+      {
+        if(totalChecked is not 0)
+          return !isRunning;
+        else 
+          return false;
+      }
+      set { }
+    }
+
     public bool IsRunning
     {
       get
