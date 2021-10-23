@@ -186,14 +186,23 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private void BeforeCommand()
     {
       tidyToolWindowModel.IsRunning = true;
+      foreach(var file in files)
+      {
+        file.IsRunning = true;
+      }
+      Files = files;
       TidyToolWindowModel = tidyToolWindowModel;
     }
 
     private void AfterCommand()
     {
       TidyToolWindowModel.IsRunning = false;
-      TidyToolWindowModel = tidyToolWindowModel;
+      foreach (var file in files)
+      {
+        file.IsRunning = false;
+      }
       Files = files;
+      TidyToolWindowModel = tidyToolWindowModel;
     }
 
     private void UpdateTidyToolWindowModelFixedNr()

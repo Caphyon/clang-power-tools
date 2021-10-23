@@ -119,10 +119,10 @@ namespace ClangPowerToolsShared.MVVM.Models
     {
       get 
       {
-        if(totalChecked is not 0)
-          return !isRunning;
-        else
-          return false;
+        if (!isRunning && totalChecked is not 0)
+          return true;
+
+        return false;
       }
       set { }
     }
