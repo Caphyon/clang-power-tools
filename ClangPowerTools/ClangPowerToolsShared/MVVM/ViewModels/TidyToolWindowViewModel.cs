@@ -152,6 +152,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       FileCommand.CopyFilesInTemp(filesPathsCopy);
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
       MarkFixedFiles(filesPathsCopy);
+      UpdateTidyToolWindowModelFixedNr();
       AfterCommand();
     }
 
@@ -192,6 +193,16 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       TidyToolWindowModel.IsRunning = false;
       TidyToolWindowModel = tidyToolWindowModel;
+    }
+
+    private void UpdateTidyToolWindowModelFixedNr()
+    {
+      tidyToolWindowModel.FixNr = 0;
+      foreach(var file in files)
+      {
+        if(file.IsFixed)
+          ++tidyToolWindowModel.FixNr;
+      }
     }
 
     private void CheckAll()
