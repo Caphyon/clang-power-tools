@@ -151,7 +151,6 @@
               IsChecked="{Binding IsChecked, Mode=TwoWay}" />
             <TextBlock
               Grid.Column="1"
-              Width="170"
               HorizontalAlignment="Left"
               VerticalAlignment="Center"
               ToolTip="{Binding FullFileName}"
