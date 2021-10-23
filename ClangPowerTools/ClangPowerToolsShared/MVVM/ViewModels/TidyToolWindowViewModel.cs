@@ -108,7 +108,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       foreach (string file in filesPath)
       {
         FileInfo path = new FileInfo(file);
-        files.Add(new FileModel { FileName = path.Name, FullFileName = path.FullName, CopyFullFileName = Path.Combine(tempFolderPath, folderGuid + "_" + GetProjectPathToFile(file)) });
+        files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(tempFolderPath, folderGuid + "_" + GetProjectPathToFile(file)) });
       }
       Files = files;
       //copy files in temp folder
@@ -151,6 +151,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
       FileCommand.CopyFilesInTemp(filesPathsCopy);
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
+      if(file is not null)
+      {
+        DiffFile(file);
+      }
       MarkFixedFiles(filesPathsCopy);
       UpdateTidyToolWindowModelFixedNr();
       AfterCommand();
