@@ -111,6 +111,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(tempFolderPath, folderGuid + "_" + GetProjectPathToFile(file)) });
       }
       Files = files;
+      CheckAll();
       //copy files in temp folder
       if (Directory.Exists(tempFolderPath))
         Directory.Delete(tempFolderPath, true);
@@ -221,20 +222,26 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     private void CheckAll()
     {
+      tidyToolWindowModel.IsChecked = true;
       foreach (var file in files)
       {
         file.IsChecked = true;
       }
+      tidyToolWindowModel.TotalChecked = files.Count;
       Files = files;
+      TidyToolWindowModel = tidyToolWindowModel;
     }
 
     private void UncheckAll()
     {
+      tidyToolWindowModel.IsChecked = false;
       foreach (var file in files)
       {
         file.IsChecked = false;
       }
+      tidyToolWindowModel.TotalChecked = 0;
       Files = files;
+      TidyToolWindowModel = tidyToolWindowModel;
     }
 
     private void MarkFixedFiles(List<FileModel> fixedFiles)
