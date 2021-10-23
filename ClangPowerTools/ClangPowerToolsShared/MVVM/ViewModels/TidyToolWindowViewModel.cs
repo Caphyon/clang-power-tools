@@ -193,15 +193,16 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       TidyToolWindowModel.IsRunning = false;
       TidyToolWindowModel = tidyToolWindowModel;
+      Files = files;
     }
 
     private void UpdateTidyToolWindowModelFixedNr()
     {
-      tidyToolWindowModel.FixNr = 0;
+      tidyToolWindowModel.FixedNr = 0;
       foreach(var file in files)
       {
         if(file.IsFixed)
-          ++tidyToolWindowModel.FixNr;
+          ++tidyToolWindowModel.FixedNr;
       }
     }
 
@@ -229,7 +230,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       {
         file.IsFixed = true;
       }
-      Files = files;
     }
 
     private void MarkUnfixedFiles(List<FileModel> checkedFiles)
@@ -238,7 +238,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       {
         file.IsFixed = false;
       }
-      Files = files;
     }
 
     private List<FileModel> GetCheckedFiles()
