@@ -6,11 +6,16 @@ namespace ClangPowerTools.MVVM.Models
   {
     public event PropertyChangedEventHandler PropertyChanged;
 
-    #region Readonly Members
+    #region Members
 
     private readonly string hidden = "Hidden";
     private readonly string visibile = "Visible";
 
+    private bool isRunning;
+    private bool isFixed;
+    private bool isChecked;
+    private string diffVisibility;
+    private string fixVisibility;
     #endregion
 
     #region Constructor
@@ -68,6 +73,26 @@ namespace ClangPowerTools.MVVM.Models
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsFixed"));
       }
     }
+
+    public bool IsRunning
+    {
+      get
+      {
+        return isRunning;
+      }
+
+      set
+      {
+        isRunning = value;
+      }
+    }
+
+    public bool IsEnabled 
+    { 
+      get;
+      set;
+    }
+
     public bool IsChecked
     {
       get { return isChecked; }
@@ -80,15 +105,6 @@ namespace ClangPowerTools.MVVM.Models
     }
 
     #endregion
-
-    #region Private Members
-
-    private bool isFixed;
-    private bool isChecked;
-    private string diffVisibility;
-    private string fixVisibility;
-
-    #endregion 
 
   }
 }

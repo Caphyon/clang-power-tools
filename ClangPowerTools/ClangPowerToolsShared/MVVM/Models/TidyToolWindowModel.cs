@@ -16,7 +16,7 @@ namespace ClangPowerToolsShared.MVVM.Models
     private string progressBarVisibility;
     private string buttonVisibility;
     private int tidyNr = 0;
-    private int fixNr = 0;
+    private int fixedNr = 0;
     private int removeNr = 0;
     private int discardNr = 0;
     private int totalChecked = 0;
@@ -59,21 +59,17 @@ namespace ClangPowerToolsShared.MVVM.Models
 
     //public bool IsDiscardEnabled
     //{
-    //  get 
+    //  get
     //  {
-    //    if(!IsEnabled)
+    //    if(IsEnabled)
     //    {
-    //      return false;
+
     //    }
-    //    else
-    //    {
-    //      return true;
-    //    }
-    //    return IsDiscardEnabled;
+    //    return !IsEnabled ? false : true;
     //  }
     //  set
     //  {
-        
+
     //    IsDiscardEnabled = value;
     //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsDiscardEnabled"));
     //  }
@@ -99,13 +95,13 @@ namespace ClangPowerToolsShared.MVVM.Models
       }
     }
 
-    public int FixNr
+    public int FixedNr
     {
-      get { return fixNr; }
+      get { return fixedNr; }
       set
       {
-        fixNr = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixNr"));
+        fixedNr = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixedNr"));
       }
     }
 
