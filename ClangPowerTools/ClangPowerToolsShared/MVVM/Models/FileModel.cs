@@ -12,6 +12,7 @@ namespace ClangPowerTools.MVVM.Models
     private readonly string visibile = "Visible";
 
     private bool isRunning;
+    private bool isEnabled;
     private bool isFixed;
     private bool isChecked;
     private string diffVisibility;
@@ -24,6 +25,7 @@ namespace ClangPowerTools.MVVM.Models
     {
       DiffVisibility = hidden;
       FixVisibility = visibile;
+      IsEnabled = true;
     }
 
     #endregion
@@ -33,36 +35,38 @@ namespace ClangPowerTools.MVVM.Models
     public string FileName { get; set; }
     public string FullFileName { get; set; }
     public string CopyFullFileName { get; set; }
-    public string DiffVisibility {
-      get { return diffVisibility; } 
+    public string DiffVisibility
+    {
+      get { return diffVisibility; }
       set
       {
         diffVisibility = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiffVisibility"));
       }
     }
-    public string FixVisibility {
+    public string FixVisibility
+    {
       get { return fixVisibility; }
-      set 
+      set
       {
         fixVisibility = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixVisibility"));
       }
     }
 
-  
     public bool IsFixed
-    { 
-      get 
+    {
+      get
       {
-        return isFixed; } 
-      set 
+        return isFixed;
+      }
+      set
       {
-        if(value)
+        if (value)
         {
           DiffVisibility = visibile;
           FixVisibility = hidden;
-        }  
+        }
         else
         {
           DiffVisibility = hidden;
@@ -84,13 +88,18 @@ namespace ClangPowerTools.MVVM.Models
       set
       {
         isRunning = value;
+        IsEnabled = !value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsRunning"));
       }
     }
 
-    public bool IsEnabled 
-    { 
-      get;
-      set;
+    public bool IsEnabled { 
+      get { return isEnabled; }
+      set
+      {
+        isEnabled = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsEnabled"));
+      }
     }
 
     public bool IsChecked
