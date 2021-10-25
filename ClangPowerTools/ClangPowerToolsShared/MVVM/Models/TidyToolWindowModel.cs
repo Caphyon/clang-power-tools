@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using ClangPowerToolsShared.MVVM.Constants;
+using System.ComponentModel;
 
 namespace ClangPowerToolsShared.MVVM.Models
 {
@@ -7,9 +8,6 @@ namespace ClangPowerToolsShared.MVVM.Models
     #region Members
 
     public event PropertyChangedEventHandler PropertyChanged;
-
-    private readonly string hidden = "Hidden";
-    private readonly string visibile = "Visible";
 
     private bool isRunning;
     private bool selectedAll;
@@ -28,8 +26,8 @@ namespace ClangPowerToolsShared.MVVM.Models
 
     public TidyToolWindowModel()
     {
-      ProgressBarVisibility = hidden;
-      ButtonVisibility = visibile;
+      ProgressBarVisibility = UIElementsConstants.Hidden;
+      ButtonVisibility = UIElementsConstants.Visibile;
     }
 
     #endregion
@@ -138,13 +136,13 @@ namespace ClangPowerToolsShared.MVVM.Models
       {
         if (value)
         {
-          ProgressBarVisibility = visibile;
-          ButtonVisibility = hidden;
+          ProgressBarVisibility = UIElementsConstants.Visibile;
+          ButtonVisibility = UIElementsConstants.Hidden;
         }
         else
         {
-          ProgressBarVisibility = hidden;
-          ButtonVisibility = visibile;
+          ProgressBarVisibility = UIElementsConstants.Hidden;
+          ButtonVisibility = UIElementsConstants.Visibile;
         }
         isRunning = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsRunning"));
