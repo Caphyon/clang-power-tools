@@ -113,10 +113,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       Files = files;
       CheckAll();
       //copy files in temp folder
-      if (Directory.Exists(tempFolderPath))
-        Directory.Delete(tempFolderPath, true);
-      Directory.CreateDirectory(tempFolderPath);
-      if (Directory.Exists(tempFolderPath))
+      if (Directory.Exists(@"\\?\" + tempFolderPath))
+        Directory.Delete(@"\\?\" + tempFolderPath, true);
+      Directory.CreateDirectory(@"\\?\" + tempFolderPath);
+      if (Directory.Exists(@"\\?\" + tempFolderPath))
       {
         FileCommand.CopyFilesInTemp(files.ToList());
       }
