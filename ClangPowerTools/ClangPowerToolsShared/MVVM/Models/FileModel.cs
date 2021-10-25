@@ -5,10 +5,10 @@ namespace ClangPowerTools.MVVM.Models
 {
   public class FileModel : INotifyPropertyChanged
   {
-    public event PropertyChangedEventHandler PropertyChanged;
 
     #region Members
 
+    public event PropertyChangedEventHandler PropertyChanged;
     private bool isRunning;
     private bool isEnabled;
     private bool isFixed;
@@ -29,11 +29,12 @@ namespace ClangPowerTools.MVVM.Models
 
     #endregion
 
-    #region Public Members
+    #region Public Properities
 
     public string FileName { get; set; }
     public string FullFileName { get; set; }
     public string CopyFullFileName { get; set; }
+
     public string DiffVisibility
     {
       get { return diffVisibility; }
@@ -43,6 +44,7 @@ namespace ClangPowerTools.MVVM.Models
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiffVisibility"));
       }
     }
+
     public string FixVisibility
     {
       get { return fixVisibility; }
