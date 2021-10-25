@@ -42,7 +42,19 @@ namespace ClangPowerToolsShared.MVVM.Commands
       FileInfo fileInfo = new(file.CopyFullFileName);
       var a  = fileInfo.Directory.FullName;
       Directory.CreateDirectory(a);
-      File.Copy(file.FullFileName, file.CopyFullFileName, true);
+      //File.Copy(file.FullFileName, file.CopyFullFileName, true);
+      Copy(file.FullFileName, file.CopyFullFileName);
+    }
+
+    public static void Copy(string source, string destination)
+    {
+      System.Diagnostics.Process process = new();
+      process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
+      process.StartInfo.CreateNoWindow = true;
+      process.StartInfo.UseShellExecute = false;
+      process.StartInfo.Arguments = $"Copy-Item -LiteralPath " + source + " " + destination;
+      process.Start();
+      process.WaitForExit();
     }
 
     public static void CopyFilesInTemp(List<FileModel> files)
