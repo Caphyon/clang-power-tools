@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using ClangPowerToolsShared.MVVM.Constants;
+using System.ComponentModel;
 
 namespace ClangPowerTools.MVVM.Models
 {
@@ -8,23 +9,21 @@ namespace ClangPowerTools.MVVM.Models
 
     #region Members
 
-    private readonly string hidden = "Hidden";
-    private readonly string visibile = "Visible";
-
     private bool isRunning;
     private bool isEnabled;
     private bool isFixed;
     private bool isChecked;
     private string diffVisibility;
     private string fixVisibility;
+
     #endregion
 
     #region Constructor
 
     public FileModel()
     {
-      DiffVisibility = hidden;
-      FixVisibility = visibile;
+      DiffVisibility = UIElementsConstants.Hidden;
+      FixVisibility = UIElementsConstants.Visibile;
       IsEnabled = true;
     }
 
@@ -64,13 +63,13 @@ namespace ClangPowerTools.MVVM.Models
       {
         if (value)
         {
-          DiffVisibility = visibile;
-          FixVisibility = hidden;
+          DiffVisibility = UIElementsConstants.Visibile;
+          FixVisibility = UIElementsConstants.Hidden;
         }
         else
         {
-          DiffVisibility = hidden;
-          FixVisibility = visibile;
+          DiffVisibility = UIElementsConstants.Hidden;
+          FixVisibility = UIElementsConstants.Visibile;
         }
         if (isFixed == value) return;
         isFixed = value;
