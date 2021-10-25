@@ -122,7 +122,6 @@
     <Separator Background="{DynamicResource {x:Static vsfx:VsBrushes.PanelSeparatorKey}}" VerticalAlignment="Center" Grid.Row="3" Grid.ColumnSpan="2"></Separator>
    
     <ListView
-      Visibility="Hidden"
       x:Name="FilesList"
       Grid.Row="4"
       Grid.Column="1"
@@ -131,6 +130,7 @@
       BorderBrush="Transparent"
       HorizontalContentAlignment="Stretch"
       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+      Visibility="{Binding ListVisibility}"
       ItemsSource="{Binding Files}">
       <ListView.ItemTemplate>
         <DataTemplate>
@@ -195,6 +195,7 @@
         Grid.Row="1"
         BorderThickness="1"
         BorderBrush="{DynamicResource {x:Static vsfx:VsBrushes.PanelSeparatorKey}}"
+        Visibility="{Binding MessageModel.Visibility}"
         CornerRadius="5">
         <TextBlock
           Grid.Column="1"
@@ -202,7 +203,7 @@
           HorizontalAlignment="Center"
           VerticalAlignment="Center"
           FontSize="17"
-          Text="{Binding Message}"
+          Text="{Binding MessageModel.TextMessage}"
           Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"/>
       </Border>
     </Grid>
