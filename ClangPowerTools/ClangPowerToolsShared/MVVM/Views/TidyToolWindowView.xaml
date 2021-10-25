@@ -120,15 +120,15 @@
       Visibility="{Binding TidyToolWindowModel.ProgressBarVisibility}" />
 
     <Separator Background="{DynamicResource {x:Static vsfx:VsBrushes.PanelSeparatorKey}}" VerticalAlignment="Center" Grid.Row="3" Grid.ColumnSpan="2"></Separator>
-    
+   
     <ListView
+      Visibility="Hidden"
       x:Name="FilesList"
       Grid.Row="4"
       Grid.Column="1"
       Background="Transparent"
       SelectionMode="Single"
       BorderBrush="Transparent"
-
       HorizontalContentAlignment="Stretch"
       ScrollViewer.HorizontalScrollBarVisibility="Disabled"
       ItemsSource="{Binding Files}">
@@ -178,6 +178,27 @@
         </DataTemplate>
       </ListView.ItemTemplate>
     </ListView>
-    
+
+    <Grid Grid.Row="4" Grid.Column="1">
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="20" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="20" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+          <RowDefinition Height="10" />
+          <RowDefinition Height="50" />
+        </Grid.RowDefinitions>
+
+      <Border Grid.Column="1" Grid.Row="1" BorderThickness="1" BorderBrush="{DynamicResource {x:Static vsfx:VsBrushes.PanelSeparatorKey}}" CornerRadius="5">
+        <TextBlock
+              Grid.Column="1"
+              Grid.Row="1"
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              FontSize="17" Text="This is WPF TextBlock Example. "
+              Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"/>
+      </Border>
+      </Grid>
   </Grid>
 </UserControl>
