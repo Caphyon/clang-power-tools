@@ -42,8 +42,8 @@ namespace ClangPowerToolsShared.MVVM.Commands
       FileInfo fileInfo = new(file.CopyFullFileName);
       var a  = fileInfo.Directory.FullName;
       Directory.CreateDirectory(a);
-      //File.Copy(file.FullFileName, file.CopyFullFileName, true);
-      Copy(file.FullFileName, file.CopyFullFileName);
+      File.Copy(@"\\?\" + file.FullFileName, @"\\?\" + file.CopyFullFileName, true);
+      //Copy(file.FullFileName, file.CopyFullFileName);
     }
 
     public static void Copy(string source, string destination)
