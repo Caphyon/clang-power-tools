@@ -6,6 +6,7 @@ using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.Services;
 using ClangPowerTools.Views;
 using ClangPowerToolsShared.MVVM.Commands;
+using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Models;
 using EnvDTE80;
 using System;
@@ -29,6 +30,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private TidyToolWindowView tidyToolWindowView;
     private readonly string folderGuid = Guid.NewGuid().ToString();
     private TidyToolWindowModel tidyToolWindowModel;
+    private MessageModel messageModel;
+    private string listVisibility = UIElementsConstants.Visibile;
 
     private ICommand tidyAllCommand;
     private ICommand fixAllCommand;
@@ -48,6 +51,26 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       {
         tidyToolWindowModel = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyToolWindowModel"));
+      }
+    }
+
+    public MessageModel MessageModel
+    {
+      get { return messageModel; }
+      set
+      {
+        messageModel = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MessageModel"));
+      }
+    }    
+    
+    public string ListVisibility
+    {
+      get { return listVisibility; }
+      set
+      {
+        listVisibility = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ListVisibility"));
       }
     }
 
@@ -90,6 +113,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public TidyToolWindowViewModel(TidyToolWindowView tidyToolWindowView)
     {
       tidyToolWindowModel = new TidyToolWindowModel();
+      messageModel = new MessageModel();
 
       tidyToolWindowModel.ButtonVisibility = "Visibile";
       tidyToolWindowModel.ProgressBarVisibility = "Hidden";
@@ -311,6 +335,14 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         {
           Files.Remove(file);
         }
+      }
+      if (Files.Count == 0)
+      {
+        listVisibility = UIElementsConstants.Hidden;
+        ListVisibility = ListVisibility;
+        messageModel.Visibility = UIElementsConstants.Visibile;
+        messageModel.TextMessage = "You don't have any files, run tidy to add files";
+        MessageModel = messageModel;
       }
       UpdateCheckedNumber();
       AfterCommand();

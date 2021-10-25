@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace ClangPowerToolsShared.MVVM.Models
 {
-  class MessageModel
+  public class MessageModel
   {
 
     #region Members
@@ -11,7 +11,7 @@ namespace ClangPowerToolsShared.MVVM.Models
     public event PropertyChangedEventHandler PropertyChanged;
 
     private string textMessage = string.Empty;  
-    private string visibitily = UIElementsConstants.Hidden;
+    private string visibility = UIElementsConstants.Hidden;
 
     #endregion
 
@@ -19,10 +19,10 @@ namespace ClangPowerToolsShared.MVVM.Models
 
     public string Visibility 
     { 
-      get { return visibitily; }
+      get { return visibility; }
       set
       {
-        visibitily = value;
+        visibility = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Visibility"));
       }
     }
