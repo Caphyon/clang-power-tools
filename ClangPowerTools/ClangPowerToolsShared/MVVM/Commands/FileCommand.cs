@@ -5,12 +5,24 @@ using EnvDTE80;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Forms;
 
 namespace ClangPowerToolsShared.MVVM.Commands
 {
   public static class FileCommand
   {
+    [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
+    public static extern uint GetShortPathName(string lpszLongPath, StringBuilder lpszShortPath, uint cchBuffer);
+    
+    public static string GetShortPath(string longPath)
+    {
+      StringBuilder shortPath = new StringBuilder(255);
+      GetShortPathName(longPath, shortPath, 255);
+      return shortPath.ToString();
+    }
+
     public static void TidyFixDiff(FileModel filePath, bool makeDiff = true)
     {
 

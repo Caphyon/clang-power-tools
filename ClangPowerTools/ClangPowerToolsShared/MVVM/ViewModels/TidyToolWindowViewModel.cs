@@ -15,6 +15,8 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
 using System.Windows.Input;
 using Task = System.Threading.Tasks.Task;
 
@@ -206,7 +208,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public void DiffFile(FileModel file)
     {
       BeforeCommand();
-      FileCommand.DiffFilesUsingDefaultTool(file.CopyFullFileName, file.FullFileName);
+      var test = FileCommand.GetShortPath(file.CopyFullFileName);
+      var t = FileCommand.GetShortPath(file.FullFileName);
+      FileCommand.DiffFilesUsingDefaultTool(FileCommand.GetShortPath(file.CopyFullFileName), FileCommand.GetShortPath(file.FullFileName));
       AfterCommand();
     }
 
@@ -321,10 +325,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
                                   .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
       fileChangerWatcher.Run(solutionFolderPath);
 
-      if (File.Exists(file.CopyFullFileName))
+      if (File.Exists(@"\\?\" + file.CopyFullFileName))
       {
-        File.Copy(file.CopyFullFileName, file.FullFileName, true);
-        File.Delete(file.CopyFullFileName);
+        File.Copy(@"\\?\" + file.CopyFullFileName, @"\\?\" + file.FullFileName, true);
+        File.Delete(@"\\?\" + file.CopyFullFileName);
       }
     }
 
