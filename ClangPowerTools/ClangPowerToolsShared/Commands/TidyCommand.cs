@@ -107,34 +107,36 @@ namespace ClangPowerTools.Commands
         {
           mItemsCollector.Items.Add(mItemsCollector.OriginalItems.Where(a => a.GetPath() == path).FirstOrDefault());
         }
-      }else
+      }
+      else
       {
         mItemsCollector.OriginalItems = new List<IItem>(mItemsCollector.Items);
       }
 
-
-
-      await Task.Run(() =>
+      if (CommandIds.kTidyToolWindowId == aCommandId || CommandIds.kTidyFixId == aCommandId)
       {
-        lock (mutex)
+
+        await Task.Run(() =>
         {
-          try
+          lock (mutex)
           {
-            using var silentFileController = new SilentFileChangerController();
-            using var fileChangerWatcher = new FileChangerWatcher();
-
-            var tidySettings = SettingsProvider.TidySettingsModel;
-
-            if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
+            try
             {
-              fileChangerWatcher.OnChanged += FileOpener.Open;
+              using var silentFileController = new SilentFileChangerController();
+              using var fileChangerWatcher = new FileChangerWatcher();
 
-              var dte2 = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
-              string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
-                dte2.Solution.FullName : dte2.Solution.FullName
-                                          .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
+              var tidySettings = SettingsProvider.TidySettingsModel;
 
-              fileChangerWatcher.Run(solutionFolderPath);
+              if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
+              {
+                fileChangerWatcher.OnChanged += FileOpener.Open;
+
+                var dte2 = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
+                string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
+                  dte2.Solution.FullName : dte2.Solution.FullName
+                                            .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
+
+                fileChangerWatcher.Run(solutionFolderPath);
               //FilePathCollector fileCollector = new FilePathCollector();
               //var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
 
@@ -143,27 +145,31 @@ namespace ClangPowerTools.Commands
 
             }
 
-            if (tidySettings.DetectClangTidyFile && !mItemsCollector.IsEmpty)
-            {
+              if (tidySettings.DetectClangTidyFile && !mItemsCollector.IsEmpty)
+              {
               // Check for .clang-tidy config file
               if (FileSystem.SearchAllTopDirectories(mItemsCollector.Items[0].GetPath(), FileSystem.ConfigClangTidyFileName))
-                tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
-              else
-                tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.PredefinedChecks;
+                  tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
+                else
+                  tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.PredefinedChecks;
 
-              var settingsHandlder = new SettingsHandler();
-              settingsHandlder.SaveSettings();
+                var settingsHandlder = new SettingsHandler();
+                settingsHandlder.SaveSettings();
+              }
+
+              RunScript(aCommandId, false);
             }
-
-            RunScript(aCommandId, false);
+            catch (Exception exception)
+            {
+              VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
+                OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            }
           }
-          catch (Exception exception)
-          {
-            VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
-              OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-          }
-        }
-      });
+        });
+      }else
+      {
+        await ShowTidyToolWindowAsync();
+      }
     }
 
     #endregion
