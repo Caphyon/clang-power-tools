@@ -138,6 +138,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         files.Add(new FileModel { FileName = path.Name, FullFileName = path.FullName });
       }
       Files = files;
+      CheckAll();
+      //make tify
+      TidyAllFilesAsync();
       //copy files in temp folder
       if (Directory.Exists(tempFolderPath))
         Directory.Delete(tempFolderPath, true);
