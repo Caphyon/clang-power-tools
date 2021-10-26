@@ -138,7 +138,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
       Files = files;
       CheckAll();
-      //make tify
+      //make tidy
       TidyAllFilesAsync();
       //copy files in temp folder
       if (Directory.Exists(@"\\?\" + tempFolderPath))
