@@ -77,6 +77,7 @@ namespace ClangPowerTools.Commands
       Instance = new TidyCommand(commandService, aCommandController, aPackage, aGuid, aId);
 
     }
+    public IVsWindowFrame tidy;
 
     public async Task ShowTidyToolWindowAsync()
     {
@@ -99,6 +100,7 @@ namespace ClangPowerTools.Commands
       {
         await PrepareCommmandAsync(commandUILocation);
       }
+
 
       if (paths != null)
       {

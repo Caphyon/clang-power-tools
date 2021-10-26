@@ -208,8 +208,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public void DiffFile(FileModel file)
     {
       BeforeCommand();
-      var test = FileCommand.GetShortPath(file.CopyFullFileName);
-      var t = FileCommand.GetShortPath(file.FullFileName);
       FileCommand.DiffFilesUsingDefaultTool(FileCommand.GetShortPath(file.CopyFullFileName), FileCommand.GetShortPath(file.FullFileName));
       AfterCommand();
     }
