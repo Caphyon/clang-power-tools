@@ -115,8 +115,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       tidyToolWindowModel = new TidyToolWindowModel();
       messageModel = new MessageModel();
 
-      tidyToolWindowModel.ButtonVisibility = "Visibile";
-      tidyToolWindowModel.ProgressBarVisibility = "Hidden";
+      tidyToolWindowModel.ButtonVisibility = UIElementsConstants.Visibile;
+      tidyToolWindowModel.ProgressBarVisibility = UIElementsConstants.Hidden;
       TidyToolWindowModel = tidyToolWindowModel;
       Files = files;
       this.tidyToolWindowView = tidyToolWindowView;
@@ -136,6 +136,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
       Files = files;
       CheckAll();
+      //make tify
+      TidyAllFilesAsync();
       //copy files in temp folder
       if (Directory.Exists(@"\\?\" + tempFolderPath))
         Directory.Delete(@"\\?\" + tempFolderPath, true);
@@ -387,10 +389,14 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     private void RefreshValues()
     {
+      files.Clear();
+      listVisibility = UIElementsConstants.Visibile;
+      messageModel.Visibility = UIElementsConstants.Hidden;
+      ListVisibility = listVisibility;
+      MessageModel = messageModel;
       tidyToolWindowModel.TotalChecked = 0;
       tidyToolWindowModel.IsChecked = false;
       TidyToolWindowModel = tidyToolWindowModel;
-      files.Clear();
     }
 
     #endregion
