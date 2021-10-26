@@ -91,6 +91,7 @@ namespace ClangPowerTools.Commands
       Instance = new TidyCommand(commandService, aCommandController, aPackage, aGuid, aId);
 
     }
+    public IVsWindowFrame tidy;
 
     //display tidy tool window - progress bar, run tidy again
     public async Task ShowTidyToolWindowEmptyAsync()
