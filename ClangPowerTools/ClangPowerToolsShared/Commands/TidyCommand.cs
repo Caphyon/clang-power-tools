@@ -184,11 +184,8 @@ namespace ClangPowerTools.Commands
               VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
                 OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
             }
-<<<<<<< HEAD
-=======
 
             RunScript(aCommandId, false);
->>>>>>> 07e859f4 (﻿Create CommandControllerInstance, add kTidyTollWindowId and new case, add OriginalItems, delete unused code from check IgnoreItems,)
           }
         });
       }
