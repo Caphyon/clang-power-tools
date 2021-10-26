@@ -15,17 +15,18 @@
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="10" />
       <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="10" />
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="10" />
       <RowDefinition Height="25" />
-      <RowDefinition Height="20" />
-      <RowDefinition Height="10" />
+      <RowDefinition Height="15" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
     <Grid Grid.Row="1" Grid.Column="1">
       <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="30" />
         <ColumnDefinition Width="85" />
         <ColumnDefinition Width="85" />
         <ColumnDefinition Width="85" />
@@ -38,41 +39,54 @@
         <RowDefinition Height="2.5" />
       </Grid.RowDefinitions>
 
-      <Button
+      <CheckBox
         Grid.Row="1"
         Grid.Column="0"
-        Width="70"
+        Width="20"
+        VerticalAlignment="Center"
         HorizontalAlignment="Left"
-        IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
-        Command="{Binding TidyAllCommand}"
-        Content="Tidy" />
+        Click="CheckAll"
+        IsChecked="{Binding TidyToolWindowModel.IsChecked, Mode=TwoWay}"
+        Visibility="{Binding TidyToolWindowModel.ButtonVisibility}" />
       <Button
         Grid.Row="1"
         Grid.Column="1"
         Width="70"
-        IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
         HorizontalAlignment="Left"
-        Command="{Binding FixAllCommand}"
-        Content="Fix" />
+        IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
+        Command="{Binding TidyAllCommand}"
+        Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
+        Content="Tidy" />
       <Button
         Grid.Row="1"
         Grid.Column="2"
         Width="70"
-        HorizontalAlignment="Left"
         IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
-        Command="{Binding DiscardAllCommand}"
-        Content="Discard Fix" />
+        HorizontalAlignment="Left"
+        Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
+        Command="{Binding FixAllCommand}"
+        Content="Fix" />
       <Button
         Grid.Row="1"
         Grid.Column="3"
         Width="70"
+        HorizontalAlignment="Left"
+        IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
+        Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
+        Command="{Binding DiscardAllCommand}"
+        Content="Discard Fix" />
+      <Button
+        Grid.Row="1"
+        Grid.Column="4"
+        Width="70"
         IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
         HorizontalAlignment="Left"
         Command="{Binding RemoveAllCommand}"
+        Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
         Content="Remove" />
     </Grid>
 
-    <Grid Grid.Row="2" Grid.Column="1">
+    <Grid Grid.Row="1" Grid.Column="1">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="7" />
         <ColumnDefinition Width="20" />
@@ -84,42 +98,22 @@
         <RowDefinition Height="15" />
         <RowDefinition Height="5" />
       </Grid.RowDefinitions>
-
-      <CheckBox
-        Grid.Row="1"
-        Grid.Column="1"
-        Width="15"
-        VerticalAlignment="Center"
-        Click="CheckAll"
-        IsChecked="{Binding TidyToolWindowModel.IsChecked, Mode=TwoWay}"
-        Visibility="{Binding TidyToolWindowModel.ButtonVisibility}" />
-      <TextBlock
-        x:Name="textBox"
-        Grid.Row="1"
-        Grid.Column="2"
-        Width="28"
-        HorizontalAlignment="Left"
-        VerticalAlignment="Center"
-        Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
-        Text="{Binding TidyToolWindowModel.TotalChecked}"
-        TextWrapping="Wrap"
-        Visibility="{Binding TidyToolWindowModel.ButtonVisibility}" />
     </Grid>
 
     <ProgressBar
       Name="pbStatus"
-      Grid.Row="2"
+      Grid.Row="1"
       Grid.Column="1"
-      Height="12"
+      Height="13"
       Background="Transparent"
-      BorderBrush="#296cba"
+      BorderBrush="#6d8ca3"
       Foreground="#296cba"
       IsIndeterminate="True"
       Maximum="100"
       Minimum="0"
       Visibility="{Binding TidyToolWindowModel.ProgressBarVisibility}" />
 
-    <Separator Background="{DynamicResource {x:Static vsfx:VsBrushes.PanelSeparatorKey}}" VerticalAlignment="Center" Grid.Row="3" Grid.ColumnSpan="2"></Separator>
+    <Separator Background="{DynamicResource {x:Static vsfx:VsBrushes.PanelSeparatorKey}}" VerticalAlignment="Center" Grid.Row="2" Grid.ColumnSpan="3"></Separator>
    
     <ListView
       x:Name="FilesList"
@@ -179,7 +173,7 @@
       </ListView.ItemTemplate>
     </ListView>
 
-    <Grid Grid.Row="4" Grid.Column="1">
+    <Grid Grid.Row="3" Grid.Column="1">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="20" />
         <ColumnDefinition Width="*" />
