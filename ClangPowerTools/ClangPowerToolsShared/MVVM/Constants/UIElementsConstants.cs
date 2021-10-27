@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ClangPowerToolsShared.MVVM.Constants
+﻿namespace ClangPowerToolsShared.MVVM.Constants
 {
-    public static class UIElementsConstants
-    {
-      public static string Hidden { get; } = "Hidden";
-      public static string Visibile { get; } = "Visible";
-    }
+  public static class UIElementsConstants
+  {
+    public static string Hidden { get; } = "Hidden";
+    public static string Visibile { get; } = "Visible";
+    public static string ObliqueStyleFont { get; } = "Oblique";
+    public static string NormalStyleFont { get; } = "Normal";
+
+  }
 }

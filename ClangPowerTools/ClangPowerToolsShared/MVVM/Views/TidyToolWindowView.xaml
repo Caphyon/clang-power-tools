@@ -148,6 +148,7 @@
               HorizontalAlignment="Left"
               VerticalAlignment="Center"
               ToolTip="{Binding FullFileName}"
+              FontStyle="{Binding FontStyle}"
               Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
               Text="{Binding FileName}" />
             <Button
