@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.CommandBars;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
@@ -201,6 +202,8 @@ namespace ClangPowerTools
 
     public int OnQueryCloseProject(IVsHierarchy aPHierarchy, int aFRemoving, ref int aPfCancel)
     {
+      DeleteTempSolution();
+      HideToolWindow();
       return VSConstants.S_OK;
     }
 
@@ -215,31 +218,24 @@ namespace ClangPowerTools
 
     public int OnAfterLoadProject(IVsHierarchy aPStubHierarchy, IVsHierarchy aPRealHierarchy)
     {
-      var tidyToolWindow = FindToolWindow(typeof(TidyToolWindow), 0, false);
-      if (tidyToolWindow is null) return VSConstants.S_OK;
-      var window = tidyToolWindow.Frame as IVsWindowFrame;
-      window.Hide();
+      DeleteTempSolution();
+      HideToolWindow();
       return VSConstants.S_OK;
     }
 
     public int OnQueryUnloadProject(IVsHierarchy aPRealHierarchy, ref int aPfCancel)
     {
-      var tidyToolWindow = FindToolWindow(typeof(TidyToolWindow), 0, false);
-      if (tidyToolWindow is null) return VSConstants.S_OK;
-      var window = tidyToolWindow.Frame as IVsWindowFrame;
-      window.Hide();
+      DeleteTempSolution();
+      HideToolWindow();
       return VSConstants.S_OK;
     }
 
     public int OnBeforeUnloadProject(IVsHierarchy aPRealHierarchy, IVsHierarchy aPStubHierarchy)
     {
-      var tidyToolWindow = FindToolWindow(typeof(TidyToolWindow), 0, false);
-      if (tidyToolWindow is null) return VSConstants.S_OK;
-      var window = tidyToolWindow.Frame as IVsWindowFrame;
-      window.Hide();
+      DeleteTempSolution();
+      HideToolWindow();
       return VSConstants.S_OK;
     }
-
 
     public int OnAfterOpenSolution(object aPUnkReserved, int aFNewSolution)
     {
@@ -254,6 +250,7 @@ namespace ClangPowerTools
 
     public int OnBeforeCloseSolution(object aPUnkReserved)
     {
+      DeleteTempSolution();
       var tidyToolWindow = FindToolWindow(typeof(TidyToolWindow), 0, false);
       if (tidyToolWindow is null) return VSConstants.S_OK;
       var window = tidyToolWindow.Frame as IVsWindowFrame;
@@ -510,6 +507,24 @@ namespace ClangPowerTools
       PowerShellWrapper.DataHandler -= mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler -= mOutputWindowController.OutputDataErrorReceived;
       PowerShellWrapper.ExitedHandler -= mOutputWindowController.ClosedDataConnection;
+    }
+
+    private void DeleteTempSolution()
+    {
+      var solutionPath = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid);
+      if (Directory.Exists(solutionPath))
+      {
+        Directory.Delete(TidyConstants.LongFilePrefix + solutionPath, true);
+      }
+    }
+
+    private int HideToolWindow()
+    {
+      var tidyToolWindow = FindToolWindow(typeof(TidyToolWindow), 0, false);
+      if (tidyToolWindow is null) return VSConstants.S_OK;
+      var window = tidyToolWindow.Frame as IVsWindowFrame;
+      window.Hide();
+      return VSConstants.S_OK;
     }
 
     private void UnregisterFromVsEvents()
