@@ -27,7 +27,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     #region Members
 
     public event PropertyChangedEventHandler PropertyChanged;
-    private readonly string tempFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "Temp");
     private ObservableCollection<FileModel> files = new ObservableCollection<FileModel>();
     private TidyToolWindowView tidyToolWindowView;
     private readonly string folderGuid = Guid.NewGuid().ToString();
@@ -134,17 +133,17 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       foreach (string file in filesPath)
       {
         FileInfo path = new FileInfo(file);
-        files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(tempFolderPath, folderGuid + "_" + GetProjectPathToFile(file)) });
+        files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, folderGuid + "_" + GetProjectPathToFile(file)) });
       }
       Files = files;
       CheckAll();
       //make tidy
       TidyAllFilesAsync();
       //copy files in temp folder
-      if (Directory.Exists(@"\\?\" + tempFolderPath))
-        Directory.Delete(@"\\?\" + tempFolderPath, true);
-      Directory.CreateDirectory(@"\\?\" + tempFolderPath);
-      if (Directory.Exists(@"\\?\" + tempFolderPath))
+      if (Directory.Exists(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath))
+        Directory.Delete(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath, true);
+      Directory.CreateDirectory(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath);
+      if (Directory.Exists(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath))
       {
         FileCommand.CopyFilesInTemp(files.ToList());
       }
@@ -323,10 +322,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
                                   .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
       fileChangerWatcher.Run(solutionFolderPath);
 
-      if (File.Exists(@"\\?\" + file.CopyFullFileName))
+      if (File.Exists(TidyConstants.LongFilePrefix + file.CopyFullFileName))
       {
-        File.Copy(@"\\?\" + file.CopyFullFileName, @"\\?\" + file.FullFileName, true);
-        File.Delete(@"\\?\" + file.CopyFullFileName);
+        File.Copy(TidyConstants.LongFilePrefix + file.CopyFullFileName, TidyConstants.LongFilePrefix + file.FullFileName, true);
+        File.Delete(TidyConstants.LongFilePrefix + file.CopyFullFileName);
       }
     }
 
