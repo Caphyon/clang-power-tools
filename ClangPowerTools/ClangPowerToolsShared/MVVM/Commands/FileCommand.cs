@@ -25,7 +25,6 @@ namespace ClangPowerToolsShared.MVVM.Commands
 
     public static void TidyFixDiff(FileModel filePath, bool makeDiff = true)
     {
-
       SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
       var clangTidyPath = settingsPathBuilder.GetCurrentExecutableLlvmPath();
       try
@@ -46,7 +45,6 @@ namespace ClangPowerToolsShared.MVVM.Commands
       {
         MessageBox.Show(e.Message, "Tidy-Diff Failed - you do not have an llvm set", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
-
     }
 
     public static void CopyFileInTemp(FileModel file)
@@ -54,8 +52,7 @@ namespace ClangPowerToolsShared.MVVM.Commands
       FileInfo fileInfo = new(file.CopyFullFileName);
       var a  = fileInfo.Directory.FullName;
       Directory.CreateDirectory(a);
-      File.Copy(@"\\?\" + file.FullFileName, @"\\?\" + file.CopyFullFileName, true);
-      //Copy(file.FullFileName, file.CopyFullFileName);
+      File.Copy(TidyConstants.LongFilePrefix + file.FullFileName, TidyConstants.LongFilePrefix + file.CopyFullFileName, true);
     }
 
     public static void Copy(string source, string destination)
