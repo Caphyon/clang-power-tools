@@ -15,6 +15,7 @@ namespace ClangPowerTools.MVVM.Models
     private bool isChecked;
     private string diffVisibility;
     private string fixVisibility;
+    private string fontStyle;
 
     #endregion
 
@@ -24,6 +25,7 @@ namespace ClangPowerTools.MVVM.Models
     {
       DiffVisibility = UIElementsConstants.Hidden;
       FixVisibility = UIElementsConstants.Visibile;
+      FontStyle = UIElementsConstants.NormalStyleFont;
       IsEnabled = true;
     }
 
@@ -34,6 +36,16 @@ namespace ClangPowerTools.MVVM.Models
     public string FileName { get; set; }
     public string FullFileName { get; set; }
     public string CopyFullFileName { get; set; }
+
+    public string FontStyle 
+    { 
+      get { return fontStyle; }
+      set
+      {
+        fontStyle = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FontStyle"));
+      }
+    }
 
     public string DiffVisibility
     {
@@ -67,11 +79,13 @@ namespace ClangPowerTools.MVVM.Models
         {
           DiffVisibility = UIElementsConstants.Visibile;
           FixVisibility = UIElementsConstants.Hidden;
+          FontStyle = UIElementsConstants.ObliqueStyleFont;
         }
         else
         {
           DiffVisibility = UIElementsConstants.Hidden;
           FixVisibility = UIElementsConstants.Visibile;
+          FontStyle = UIElementsConstants.NormalStyleFont;
         }
         if (isFixed == value) return;
         isFixed = value;
