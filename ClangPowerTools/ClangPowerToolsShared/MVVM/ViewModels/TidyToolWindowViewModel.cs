@@ -15,8 +15,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Windows.Input;
 using Task = System.Threading.Tasks.Task;
 
@@ -29,7 +27,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public event PropertyChangedEventHandler PropertyChanged;
     private ObservableCollection<FileModel> files = new ObservableCollection<FileModel>();
     private TidyToolWindowView tidyToolWindowView;
-    private readonly string folderGuid = Guid.NewGuid().ToString();
     private TidyToolWindowModel tidyToolWindowModel;
     private MessageModel messageModel;
     private string listVisibility = UIElementsConstants.Visibile;
@@ -63,8 +60,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         messageModel = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MessageModel"));
       }
-    }    
-    
+    }
+
     public string ListVisibility
     {
       get { return listVisibility; }
@@ -133,19 +130,18 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       foreach (string file in filesPath)
       {
         FileInfo path = new FileInfo(file);
-        files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, folderGuid + "_" + GetProjectPathToFile(file)) });
+        files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) });
       }
       Files = files;
       CheckAll();
       //make tidy
       TidyAllFilesAsync();
       //copy files in temp folder
-      if (Directory.Exists(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath))
-        Directory.Delete(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath, true);
-      Directory.CreateDirectory(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath);
+      if (!Directory.Exists(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath))
+        Directory.CreateDirectory(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath);
       if (Directory.Exists(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath))
       {
-        FileCommand.CopyFilesInTemp(files.ToList());
+        FileCommand.CopyFilesInTempSolution(files.ToList());
       }
     }
 
@@ -177,9 +173,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         filesPathsCopy = new List<FileModel> { file };
         filesPaths = new List<string> { file.FullFileName };
       }
-      FileCommand.CopyFilesInTemp(filesPathsCopy);
+      FileCommand.CopyFilesInTempSolution(filesPathsCopy);
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
-      if(file is not null)
+      if (file is not null)
       {
         DiffFile(file);
       }
@@ -218,7 +214,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private void BeforeCommand()
     {
       tidyToolWindowModel.IsRunning = true;
-      foreach(var file in files)
+      foreach (var file in files)
       {
         file.IsRunning = true;
       }
@@ -240,9 +236,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private void UpdateTidyToolWindowModelFixedNr()
     {
       tidyToolWindowModel.FixedNr = 0;
-      foreach(var file in files)
+      foreach (var file in files)
       {
-        if(file.IsFixed)
+        if (file.IsFixed)
           ++tidyToolWindowModel.FixedNr;
       }
     }

@@ -47,11 +47,10 @@ namespace ClangPowerToolsShared.MVVM.Commands
       }
     }
 
-    public static void CopyFileInTemp(FileModel file)
+    public static void CopyFileInTempSolution(FileModel file)
     {
       FileInfo fileInfo = new(file.CopyFullFileName);
-      var a  = fileInfo.Directory.FullName;
-      Directory.CreateDirectory(a);
+      Directory.CreateDirectory(fileInfo.Directory.FullName);
       File.Copy(TidyConstants.LongFilePrefix + file.FullFileName, TidyConstants.LongFilePrefix + file.CopyFullFileName, true);
     }
 
@@ -66,11 +65,11 @@ namespace ClangPowerToolsShared.MVVM.Commands
       process.WaitForExit();
     }
 
-    public static void CopyFilesInTemp(List<FileModel> files)
+    public static void CopyFilesInTempSolution(List<FileModel> files)
     {
       foreach(var file in files)
       {
-        CopyFileInTemp(file);
+        CopyFileInTempSolution(file);
       }
     }
 
