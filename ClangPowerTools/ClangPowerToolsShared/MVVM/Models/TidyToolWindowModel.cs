@@ -88,7 +88,6 @@ namespace ClangPowerToolsShared.MVVM.Models
       }
     }
 
-
     public string RemoveTooltip
     {
       get { return removeTooltip; }
