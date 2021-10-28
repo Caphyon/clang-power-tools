@@ -17,6 +17,10 @@ namespace ClangPowerToolsShared.MVVM.Models
     private int fixedNr = 0;
     private int removeNr = 0;
     private int discardNr = 0;
+    private string removeTooltip = string.Empty;
+    private string discardTooltip = string.Empty;
+    private string tidyTooltip = string.Empty;
+    private string fixTooltip = string.Empty;
     private int totalChecked = 0;
     private bool isChecked;
     public bool isDiscardEnabled;
@@ -33,6 +37,46 @@ namespace ClangPowerToolsShared.MVVM.Models
     #endregion
 
     #region Properties
+
+    public string RemoveTooltip
+    {
+      get { return removeTooltip; }
+      set 
+      { 
+        removeTooltip = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RemoveTooltip"));
+      }
+    }
+
+    public string DiscardTooltip
+    {
+      get { return discardTooltip; }
+      set
+      {
+        discardTooltip = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiscardTooltip"));
+      }
+    }
+
+    public string FixTooltip
+    {
+      get { return fixTooltip; }
+      set
+      {
+        fixTooltip = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixTooltip"));
+      }
+    }
+
+    public string TidyTooltip
+    {
+      get { return tidyTooltip; }
+      set
+      {
+        tidyTooltip = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyTooltip"));
+      }
+    }
 
     public bool IsChecked
     {
@@ -51,27 +95,13 @@ namespace ClangPowerToolsShared.MVVM.Models
       set
       {
         totalChecked = value;
+        TidyTooltip = UIElementsConstants.TidyTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
+        RemoveTooltip = UIElementsConstants.RemoveTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
+        FixTooltip = UIElementsConstants.FixTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
+        DiscardTooltip = UIElementsConstants.DiscardTooltip + totalChecked.ToString() + " fixed " + UIElementsConstants.FilesTooltip;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalChecked"));
       }
     }
-
-    //public bool IsDiscardEnabled
-    //{
-    //  get
-    //  {
-    //    if(IsEnabled)
-    //    {
-
-    //    }
-    //    return !IsEnabled ? false : true;
-    //  }
-    //  set
-    //  {
-
-    //    IsDiscardEnabled = value;
-    //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsDiscardEnabled"));
-    //  }
-    //}
 
     public int DiscardNr
     {
