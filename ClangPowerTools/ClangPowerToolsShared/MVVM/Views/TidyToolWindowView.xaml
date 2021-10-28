@@ -26,6 +26,7 @@
 
     <Grid Grid.Row="1" Grid.Column="1">
       <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="9" />
         <ColumnDefinition Width="30" />
         <ColumnDefinition Width="85" />
         <ColumnDefinition Width="85" />
@@ -41,7 +42,7 @@
 
       <CheckBox
         Grid.Row="1"
-        Grid.Column="0"
+        Grid.Column="1"
         Width="20"
         VerticalAlignment="Center"
         HorizontalAlignment="Left"
@@ -50,7 +51,7 @@
         Visibility="{Binding TidyToolWindowModel.ButtonVisibility}" />
       <Button
         Grid.Row="1"
-        Grid.Column="1"
+        Grid.Column="2"
         Width="70"
         HorizontalAlignment="Left"
         ToolTip="{Binding TidyToolWindowModel.TidyTooltip}"
@@ -60,7 +61,7 @@
         Content="Tidy" />
       <Button
         Grid.Row="1"
-        Grid.Column="2"
+        Grid.Column="3"
         Width="70"
         HorizontalAlignment="Left"
         ToolTip="{Binding TidyToolWindowModel.FixTooltip}"
@@ -70,7 +71,7 @@
         Content="Fix" />
       <Button
         Grid.Row="1"
-        Grid.Column="3"
+        Grid.Column="4"
         Width="70"
         HorizontalAlignment="Left"
         ToolTip="{Binding TidyToolWindowModel.DiscardTooltip}"
@@ -80,7 +81,7 @@
         Content="Discard Fix" />
       <Button
         Grid.Row="1"
-        Grid.Column="4"
+        Grid.Column="5"
         Width="70"
         HorizontalAlignment="Left"
         ToolTip="{Binding TidyToolWindowModel.RemoveTooltip}"
