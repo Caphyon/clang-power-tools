@@ -135,7 +135,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       foreach (string file in filesPath)
       {
         FileInfo path = new FileInfo(file);
-        files.Add(new FileModel { FileName = path.Name, FullFileName = path.FullName });
+        files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) });
       }
       Files = files;
       CheckAll();
