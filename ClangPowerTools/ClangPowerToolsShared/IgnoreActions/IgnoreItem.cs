@@ -86,7 +86,7 @@ namespace ClangPowerTools.IgnoreActions
         Project project = checkedItem.GetObject() as Project;
         IgnoreCompileOrTidyMessage = $"\"{project.Name}\" project";
 
-        return SettingsProvider.CompilerSettingsModel.FilesToIgnore.Contains(project.Name);
+        return SettingsProvider.CompilerSettingsModel.ProjectsToIgnore.Contains(project.Name);
       }
 
       return false;
