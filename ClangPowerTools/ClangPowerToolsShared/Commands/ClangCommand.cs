@@ -206,7 +206,7 @@ namespace ClangPowerTools
             continue;
           }
 
-          if (commandId == CommandIds.kTidyId || commandId == CommandIds.kTidyFixId ||
+          if (commandId == CommandIds.kTidyId || commandId == CommandIds.kTidyFixId || CommandIds.kTidyToolWindowId == commandId ||
             commandId == CommandIds.kTidyToolbarId || commandId == CommandIds.kTidyFixToolbarId)
           {
             tempClangTidyFilePath = CreateTemporaryFileForTidy(item);
