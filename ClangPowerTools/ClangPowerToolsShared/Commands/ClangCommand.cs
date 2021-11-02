@@ -4,6 +4,7 @@ using ClangPowerTools.Events;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.IgnoreActions;
 using ClangPowerTools.Services;
+using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -212,7 +213,15 @@ namespace ClangPowerTools
             tempClangTidyFilePath = CreateTemporaryFileForTidy(item);
           }
 
-          var itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item);
+          var itemRelatedParameters = string.Empty;
+          if (item is CurrentProject || item is Project || item is Solution)
+          {
+            itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item);
+          }
+          else if (item is CurrentProjectItem || item is ProjectItem)
+          {
+            itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(mItemsCollector.Items);
+          }
 
           // From the first parameter is removed the last character which is mandatory "'"
           // and added to the end of the string to close the script escaping command
@@ -221,6 +230,10 @@ namespace ClangPowerTools
           ItemHierarchy = vsSolution != null ? AutomationUtil.GetItemHierarchy(vsSolution, item) : null;
 
           PowerShellWrapper.Invoke(Script, runningProcesses);
+          if (item is ProjectItem || item is CurrentProjectItem)
+          {
+            break;
+          }
         }
 
         if (StopCommandActivated)
