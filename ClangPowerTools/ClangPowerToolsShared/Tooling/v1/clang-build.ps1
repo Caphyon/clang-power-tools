@@ -624,11 +624,11 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
   [string[]] $tidyArgs = @((Get-QuotedPath $fileToTidy))
   if ($fix -and $aTidyFixFlags -ne $kClangTidyUseFile)
   {
-    $tidyArgs += "$kClangTidyFlagChecks$aTidyFixFlags"
+    $tidyArgs += "$kClangTidyFlagChecks`"$aTidyFixFlags`""
   }
   elseif ($aTidyFlags -ne $kClangTidyUseFile)
   {
-    $tidyArgs += "$kClangTidyFlagChecks$aTidyFlags"
+    $tidyArgs += "$kClangTidyFlagChecks`"$aTidyFlags`""
   }
 
   # The header-filter flag enables clang-tidy to run on headers too.
