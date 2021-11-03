@@ -1,5 +1,4 @@
 ﻿using ClangPowerTools.Views;
-using ClangPowerToolsShared.MVVM.ViewModels;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
 using System;
@@ -14,7 +13,7 @@ namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
     #region Members
 
     public const string WindowGuidString = "e4e2ba26-a455-4c53-adb3-8225fb696f9b";
-    public const string Title = "Sample Tool Window";
+    public const string Title = "Clang Power Tools - Tidy";
     private TidyToolWindowView tidyToolWindowView;
 
     #endregion
@@ -23,7 +22,7 @@ namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
 
     public TidyToolWindow() : base()
     {
-      Caption = "Clang Power Tools - Tidy";
+      Caption = Title;
       BitmapImageMoniker = KnownMonikers.ImageIcon;
       tidyToolWindowView = new TidyToolWindowView();
       Content = tidyToolWindowView;

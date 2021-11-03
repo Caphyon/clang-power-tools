@@ -4,7 +4,7 @@ using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
-using EnvDTE;
+using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -55,13 +55,14 @@ namespace ClangPowerTools.Output
     #region Methods
 
     #region Output window operations
-
+    private Package package;
     public void Initialize(AsyncPackage aPackage, IVsOutputWindow aVsOutputWindow)
     {
       if (null == outputWindowBuilder)
         outputWindowBuilder = new OutputWindowBuilder(aPackage, aVsOutputWindow);
 
       outputWindowBuilder.Build();
+      package = aPackage;
     }
 
     public void ClearPanel(object sender, ClearEventArgs e) => Clear();
@@ -208,6 +209,13 @@ namespace ClangPowerTools.Output
     public void OnEncodingErrorDetected(object sender, EventArgs e)
     {
       HasEncodingErrorEvent?.Invoke(this, new HasEncodingErrorEventArgs(outputContent));
+    }
+
+    private bool CheckTidyToolWindow()
+    {
+      var tidyToolWindow = package.FindToolWindow(typeof(TidyToolWindow), 0, false);
+      if (tidyToolWindow is not null) return true;
+      return false;
     }
 
     #endregion
