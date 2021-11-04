@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.Builder;
+using ClangPowerTools.Commands;
 using ClangPowerTools.Error;
 using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
@@ -190,7 +191,7 @@ namespace ClangPowerTools.Output
       OnErrorDetected(this, e);
 
       //open tidy tool window and pass paths
-      //CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyId, CommandUILocation.ContextMenu, paths);
+      CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowFilesId, CommandUILocation.ContextMenu, paths);
       //paths.Clear();
     }
 
