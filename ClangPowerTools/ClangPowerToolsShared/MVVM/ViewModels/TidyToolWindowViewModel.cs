@@ -123,16 +123,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     #region Public Methods
 
-    public void UpdateToolWindowViewFiles(List<string> filesPath)
+    public void OpenTidyToolWindow()
     {
       RefreshValues();
-      foreach (string file in filesPath)
-      {
-        FileInfo path = new FileInfo(file);
-        files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) });
-      }
       Files = files;
-      CheckAll();
     }
 
     public void UpdateViewModel(List<string> filesPath)
@@ -146,7 +140,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       Files = files;
       CheckAll();
       //make tidy
-      TidyAllFilesAsync();
+      //TidyAllFilesAsync();
       //copy files in temp folder
       if (!Directory.Exists(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath))
         Directory.CreateDirectory(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath);

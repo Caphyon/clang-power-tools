@@ -27,9 +27,9 @@ namespace ClangPowerTools.Views
       tidyToolWindowViewModel.UpdateViewModel(filesPath);
     }
 
-    public void UpdateToolWindowViewFiles(List<string> filesPath)
+    public void OpenTidyToolWindow()
     {
-      tidyToolWindowViewModel.UpdateToolWindowViewFiles(filesPath);
+      tidyToolWindowViewModel.OpenTidyToolWindow();
     }
 
     private void DiffButton(object sender, RoutedEventArgs e)
