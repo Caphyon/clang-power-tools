@@ -88,8 +88,10 @@ namespace ClangPowerTools.Commands
       create: true,
       cancellationToken: package.DisposalToken);
       var tidyToolWindow = (TidyToolWindow)window;
+      FilePathCollector fileCollector = new FilePathCollector();
+      var paths = fileCollector.Collect(mItemsCollector.OriginalItems).ToList();
       if (tidyToolWindow != null)
-        tidyToolWindow.OpenTidyToolWindow();
+        tidyToolWindow.OpenTidyToolWindow(paths);
     }
 
     public async Task ShowTidyToolWindowAsync(List<string> paths = null)
@@ -129,13 +131,7 @@ namespace ClangPowerTools.Commands
         mItemsCollector.OriginalItems = new List<IItem>(mItemsCollector.Items);
       }
 
-      if (CommandIds.kTidyId == aCommandId || CommandIds.kTidyToolbarId == aCommandId)
-      {
-        await ShowTidyToolWindowEmptyAsync();
-      }
-
-      if (CommandIds.kTidyToolWindowId == aCommandId || CommandIds.kTidyFixId == aCommandId
-        || CommandIds.kTidyId == aCommandId || CommandIds.kTidyToolbarId == aCommandId)
+      if (CommandIds.kTidyToolWindowId == aCommandId || CommandIds.kTidyFixId == aCommandId)
       {
 
         await Task.Run(() =>

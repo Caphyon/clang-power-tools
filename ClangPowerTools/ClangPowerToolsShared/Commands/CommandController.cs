@@ -203,6 +203,7 @@ namespace ClangPowerTools
             OnBeforeClangCommand(CommandIds.kTidyId);
 
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
+            await TidyCommand.Instance.ShowTidyToolWindowEmptyAsync();
 
             OnAfterClangCommand();
             break;
@@ -213,6 +214,7 @@ namespace ClangPowerTools
             OnBeforeClangCommand(CommandIds.kTidyId);
 
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
+            await TidyCommand.Instance.ShowTidyToolWindowEmptyAsync();
 
             OnAfterClangCommand();
             break;
@@ -229,7 +231,7 @@ namespace ClangPowerTools
         case CommandIds.kTidyToolWindowFilesId:
           {
             await StopBackgroundRunnersAsync();
-            OnBeforeClangCommand(CommandIds.kTidyToolWindowFilesId);
+            OnBeforeClangCommand(CommandIds.kTidyId);
 
             await TidyCommand.Instance.ShowTidyToolWindowAsync(paths);
 
