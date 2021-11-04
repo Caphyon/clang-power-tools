@@ -1179,8 +1179,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   [string[]] $includeDirectories = @(Get-ProjectIncludeDirectories)
   Write-Verbose-Array -array $includeDirectories -name "Include directories"
 
-  
-  Write-InformationTimed "Before include directories"
+  Write-InformationTimed "Detected include directories"
 
   #-----------------------------------------------------------------------------------------------
   # FIND LIST OF CPPs TO PROCESS
@@ -1205,11 +1204,24 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   [string] $stdafxHeader = ""
   [string] $stdafxHeaderFullPath = ""
 
-  foreach ($projCpp in $global:cptFilesToProcess.Keys)
+  [bool] $kPchIsNeeded = $global:cptFilesToProcess.Keys.Count -ge 2
+  if ($kPchIsNeeded)
   {
-    if ( (Get-ProjectFileSetting -fileFullName $projCpp -propertyName 'PrecompiledHeader') -ieq 'Create')
+    # if we have only one rooted file in the script parameters, then we don't need to detect PCH
+    if ($aCppToCompile.Count -eq 1 -and [System.IO.Path]::IsPathRooted($aCppToCompile[0]))
     {
-      $stdafxCpp = $projCpp
+      $kPchIsNeeded = $false
+    }
+  }
+
+  if ($kPchIsNeeded)
+  {
+    foreach ($projCpp in $global:cptFilesToProcess.Keys)
+    {
+      if ( (Get-ProjectFileSetting -fileFullName $projCpp -propertyName 'PrecompiledHeader') -ieq 'Create')
+      {
+        $stdafxCpp = $projCpp
+      }
     }
   }
 
@@ -1245,6 +1257,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   if ([string]::IsNullOrEmpty($stdafxDir))
   {
     Write-Verbose ("PCH not enabled for this project!")
+    $kPchIsNeeded = $false
   }
   else
   {
@@ -1255,7 +1268,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     $stdafxHeaderFullPath = Canonize-Path -base $stdafxDir -child $stdafxHeader -ignoreErrors
   }
   
-  Write-InformationTimed "Finished with PCH stuff"
+  Write-InformationTimed "Detected PCH information"
 
   #-----------------------------------------------------------------------------------------------
   # FILTER LIST OF CPPs TO PROCESS
@@ -1313,9 +1326,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   # so we disable PCH creation for that case as well.
 
   [string] $pchFilePath = ""
-  if ($global:cptFilesToProcess.Keys.Count -ge 2 -and
-      ![string]::IsNullOrEmpty($stdafxDir) -and $workloadType -ne [WorkloadType]::TidyFix -and
-      !$aExportJsonDB)
+  if ($kPchIsNeeded -and $workloadType -ne [WorkloadType]::TidyFix -and !$aExportJsonDB)
   {
     # COMPILE PCH
     Write-Verbose "Generating PCH..."
@@ -1331,9 +1342,8 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
       Write-Output "Skipping project. Reason: cannot create PCH."
       return
     }
-  }
-  
-  Write-InformationTimed "Created PCH"
+    Write-InformationTimed "Created PCH"
+  }  
 
   #-----------------------------------------------------------------------------------------------
   # PROCESS CPP FILES. CONSTRUCT COMMAND LINE JOBS TO BE INVOKED
@@ -1422,8 +1432,8 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
 
 Clear-Host # clears console
 
-
 Write-InformationTimed "Cleared console. Let's begin..."
+
 #-------------------------------------------------------------------------------------------------
 # If we didn't get a location to run CPT at, use the current working directory
 
@@ -1432,11 +1442,11 @@ if (!$aSolutionsPath)
   $aSolutionsPath = (Get-Location).Path
 }
 
-
 # ------------------------------------------------------------------------------------------------
 # Load param values from configuration file (if exists)
 
 Update-ParametersFromConfigFile
+Write-InformationTimed "Updated script parameters from cpt.config"
 
 # ------------------------------------------------------------------------------------------------
 # Initialize the Visual Studio version variable
@@ -1481,8 +1491,8 @@ if ($aExportJsonDB)
 
 Push-Location -LiteralPath (Get-SourceDirectory)
 
-
 Write-InformationTimed "Searching for solutions"
+
 # fetch .sln paths and data
 Load-Solutions
 
@@ -1490,13 +1500,16 @@ Write-InformationTimed "End solution search"
 
 # This PowerShell process may already have completed jobs. Discard them.
 Remove-Job -State Completed
+Write-InformationTimed "Discarded already finished jobs"
 
 Write-Verbose "Source directory: $(Get-SourceDirectory)"
 Write-Verbose "Scanning for project files"
 
+Write-InformationTimed "Searching for project files"
 [System.IO.FileInfo[]] $projects = @(Get-Projects)
 [int] $initialProjectCount       = $projects.Count
 Write-Verbose ("Found $($projects.Count) projects")
+Write-InformationTimed "End project files search"
 
 # ------------------------------------------------------------------------------------------------
 # If we get headers in the -file arg we have to detect CPPs that include that header
