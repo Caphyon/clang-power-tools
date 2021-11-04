@@ -315,6 +315,8 @@ if (Test-Path $kCptRegHiveSettings)
 ForEach-Object { cpt:ensureScriptExists $_ $shouldRedownload } |
 ForEach-Object { . $_ }
 
+Write-InformationTimed "Imported scripts"
+
 #-------------------------------------------------------------------------------------------------
 # we may have a custom path for Clang-Tidy. Use it if that's the case.
 
@@ -330,6 +332,9 @@ else
 
 #-------------------------------------------------------------------------------------------------
 # Custom Types
+
+
+Write-InformationTimed "Before .NET types"
 
 Add-Type -TypeDefinition @"
   public enum WorkloadType
@@ -348,6 +353,7 @@ Add-Type -TypeDefinition @"
   }
 "@
 
+Write-InformationTimed "Created .NET types"
 #-------------------------------------------------------------------------------------------------
 # Global variables
 
@@ -1023,7 +1029,11 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   
   try
   { 
+    
+    Write-InformationTimed "Before project load"
     LoadProject($vcxprojPath)
+    
+    Write-InformationTimed "After project load"
     Write-Output "$projectOutputString [$($global:cptCurrentConfigPlatform)]"
   }
   catch [ProjectConfigurationNotFound]
@@ -1036,6 +1046,8 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     Pop-Location
     return
   }
+  
+  Write-InformationTimed "Detecting toolset"
 
 
   #-----------------------------------------------------------------------------------------------
@@ -1106,9 +1118,13 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
 
         $global:cptVisualStudioVersion = $desiredVisualStudioVer
         LoadProject($vcxprojPath)
+        
+        Write-InformationTimed "Project reloaded"
       }
     }
   }
+  
+  Write-InformationTimed "Detected toolset"
 
   #-----------------------------------------------------------------------------------------------
   # FIND FORCE INCLUDES
@@ -1128,6 +1144,8 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
 
     $preprocessorDefinitions += @('"-D_DEBUG_FUNCTIONAL_MACHINERY"')
   }
+  
+  Write-InformationTimed "Detected preprocessor definitions"
 
   Write-Verbose-Array -array $preprocessorDefinitions -name "Preprocessor definitions"
 
@@ -1139,6 +1157,9 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
 
   [string[]] $includeDirectories = @(Get-ProjectIncludeDirectories)
   Write-Verbose-Array -array $includeDirectories -name "Include directories"
+
+  
+  Write-InformationTimed "Before include directories"
 
   #-----------------------------------------------------------------------------------------------
   # FIND LIST OF CPPs TO PROCESS
@@ -1152,6 +1173,8 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
       $global:cptFilesToProcess[$fileToCompileInfo.File] = $fileToCompileInfo
     }
   }
+  
+  Write-InformationTimed "Detected cpps to process"
 
   #-----------------------------------------------------------------------------------------------
   # LOCATE STDAFX.H DIRECTORY
@@ -1210,6 +1233,8 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
 
     $stdafxHeaderFullPath = Canonize-Path -base $stdafxDir -child $stdafxHeader -ignoreErrors
   }
+  
+  Write-InformationTimed "Finished with PCH stuff"
 
   #-----------------------------------------------------------------------------------------------
   # FILTER LIST OF CPPs TO PROCESS
@@ -1255,6 +1280,8 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
       Write-Verbose "PCH header has been targeted as dirty. Building entire project"
     }
   }
+  
+  Write-InformationTimed "Filtered out CPPs from bucket"
 
   Write-Verbose ("Processing " + $global:cptFilesToProcess.Count + " cpps")
 
@@ -1284,6 +1311,8 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
       return
     }
   }
+  
+  Write-InformationTimed "Created PCH"
 
   #-----------------------------------------------------------------------------------------------
   # PROCESS CPP FILES. CONSTRUCT COMMAND LINE JOBS TO BE INVOKED
@@ -1325,6 +1354,8 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
                                          }
     $clangJobs += $newJob
   }
+  
+  Write-InformationTimed "Created job workers"
 
   #-----------------------------------------------------------------------------------------------
   # PRINT DIAGNOSTICS
@@ -1338,6 +1369,9 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     }
     Write-Verbose "INVOKE: $exeToCallVerbosePath $($clangJobs[0].ArgumentList)"
   }
+
+  
+  Write-InformationTimed "Running workers"
 
   #-----------------------------------------------------------------------------------------------
   # RUN CLANG JOBS
@@ -1367,6 +1401,8 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
 
 Clear-Host # clears console
 
+
+Write-InformationTimed "Cleared console. Let's begin..."
 #-------------------------------------------------------------------------------------------------
 # If we didn't get a location to run CPT at, use the current working directory
 
@@ -1391,6 +1427,8 @@ $global:cptVisualStudioVersion = If ( $aVisualStudioVersion ) `
 #-------------------------------------------------------------------------------------------------
 # Print script parameters
 
+
+Write-InformationTimed "Print args"
 Print-InvocationArguments
 
 #-------------------------------------------------------------------------------------------------
@@ -1422,8 +1460,12 @@ if ($aExportJsonDB)
 
 Push-Location -LiteralPath (Get-SourceDirectory)
 
+
+Write-InformationTimed "Searching for solutions"
 # fetch .sln paths and data
 Load-Solutions
+
+Write-InformationTimed "End solution search"
 
 # This PowerShell process may already have completed jobs. Discard them.
 Remove-Job -State Completed
@@ -1471,6 +1513,8 @@ if ($aCppToIgnore -and $aCppToIgnore.Count -gt 0)
 }
 
 # ------------------------------------------------------------------------------------------------
+
+Write-InformationTimed "Starting projects"
 
 [System.IO.FileInfo[]] $projectsToProcess = @()
 [System.IO.FileInfo[]] $ignoredProjects   = @()
@@ -1603,7 +1647,11 @@ foreach ($project in $projectsToProcess)
 
     foreach ($crtPlatformConfig in $configPlatforms)
     {
+      
+       Write-InformationTimed "Before project process"
        Process-Project -vcxprojPath $vcxprojPath -workloadType $workloadType -platformConfig $crtPlatformConfig
+       Write-InformationTimed "After project process"
+
        Write-Output "" # empty line separator
     }
 
@@ -1616,6 +1664,9 @@ if ($aExportJsonDB)
 { 
   JsonDB-Finalize
 }
+
+
+Write-InformationTimed "Goodbye"
 
 if ($global:FoundErrors)
 {
