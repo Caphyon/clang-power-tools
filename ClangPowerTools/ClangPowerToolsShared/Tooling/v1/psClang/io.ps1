@@ -9,6 +9,22 @@ Function Write-Message([parameter(Mandatory = $true)][string] $msg
     $host.ui.RawUI.ForegroundColor = $foregroundColor
 }
 
+function Write-InformationTimed($message)
+{
+  [DateTime] $lastTime = [DateTime]::Now
+  [string] $kTimeStampVar = "lastCptTimestamp"
+  if (VariableExists -name $kTimeStampVar)
+  {
+     $lastTime = (Get-Variable -name $kTimeStampVar -scope Global).Value
+  }
+  Set-Variable -name $kTimeStampVar -scope Global -value ([DateTime]::Now)
+  
+  [DateTime] $now = [DateTime]::Now;
+  [System.TimeSpan] $delta = $now - $lastTime
+
+  Write-Information "$message at $([DateTime]::Now.ToString("mm:ss:fff")). dt = $($delta.TotalMilliseconds)"
+}
+
 # Writes an error without the verbose PowerShell extra-info (script line location, etc.)
 Function Write-Err([parameter(ValueFromPipeline, Mandatory = $true)][string] $msg)
 {
