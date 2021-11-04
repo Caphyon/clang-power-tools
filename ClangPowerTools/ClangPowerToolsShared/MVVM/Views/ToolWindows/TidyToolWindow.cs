@@ -35,9 +35,9 @@ namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
       tidyToolWindowView.UpdateView(filesPath);
     }
 
-    public void OpenTidyToolWindow()
+    public void OpenTidyToolWindow(List<string> filesPath)
     {
-      tidyToolWindowView.OpenTidyToolWindow();
+      tidyToolWindowView.OpenTidyToolWindow(filesPath);
     }
   }
 }
