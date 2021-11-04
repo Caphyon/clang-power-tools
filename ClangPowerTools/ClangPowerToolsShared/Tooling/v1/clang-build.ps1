@@ -275,8 +275,10 @@ Set-Variable -name kPsMajorVersion          -value (Get-Host).Version.Major -Opt
 # Custom Types
 
 
-Write-InformationTimed "Before .NET types"
+Write-InformationTimed "Before .NET enum types"
 
+if ($kPsMajorVersion -lt 5)
+{
 Add-Type -TypeDefinition @"
   public enum WorkloadType
   {
@@ -293,8 +295,27 @@ Add-Type -TypeDefinition @"
     ConfigurationNotFound
   }
 "@
+}
+else 
+{
+  # this is much faster if PowerShell supports enums, we will save some time
+  Invoke-Expression @"
+  enum WorkloadType 
+  {
+    Compile
+    Tidy
+    TidyFix
+  }
 
-Write-InformationTimed "Created .NET types"
+  enum StopReason 
+  {
+    Unknown
+    ConfigurationNotFound
+  }
+"@
+}
+
+Write-InformationTimed "Created .NET enum types"
 #-------------------------------------------------------------------------------------------------
 # Global variables
 
