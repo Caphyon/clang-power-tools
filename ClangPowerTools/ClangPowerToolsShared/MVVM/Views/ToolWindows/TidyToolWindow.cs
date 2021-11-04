@@ -29,9 +29,15 @@ namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
     }
 
     #endregion
+
     public void UpdateToolWindow(List<string> filesPath)
     {
       tidyToolWindowView.UpdateView(filesPath);
+    }
+
+    public void UpdateToolWindowViewFiles(List<string> filesPath)
+    {
+      tidyToolWindowView.UpdateToolWindowViewFiles(filesPath);
     }
   }
 }

@@ -13,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace ClangPowerTools.Output
 {
@@ -126,6 +127,19 @@ namespace ClangPowerTools.Output
     #endregion
 
     #region Data Handlers
+    List<string> paths = new List<string>();
+
+    public void GetFilesFromOutput(string output)
+    {
+      var resultFiles = Regex.Matches(output, @"[A-Z]:\\[A-Z].*(.cpp)");
+      foreach (var resultFile in resultFiles)
+      {
+        paths.Add(resultFile.ToString().Trim());
+      }
+      //apply regex
+      //string MatchPhrase = "(?=("  "))";
+      //int mathes = Regex.Matches(input, MatchPhrase).Count;
+    }
 
     public void OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
@@ -146,7 +160,7 @@ namespace ClangPowerTools.Output
 
       if (!string.IsNullOrWhiteSpace(outputContent.JsonFilePath))
         JsonCompilationDbFilePathEvent?.Invoke(this, new JsonFilePathArgs(outputContent.JsonFilePath));
-
+      GetFilesFromOutput(outputContent.Text);
       Write(outputContent.Text);
     }
 
@@ -174,6 +188,10 @@ namespace ClangPowerTools.Output
 
       CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
       OnErrorDetected(this, e);
+
+      //open tidy tool window and pass paths
+      //CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyId, CommandUILocation.ContextMenu, paths);
+      //paths.Clear();
     }
 
     public void OnFileHierarchyDetected(object sender, VsHierarchyDetectedEventArgs e)
@@ -211,7 +229,7 @@ namespace ClangPowerTools.Output
       HasEncodingErrorEvent?.Invoke(this, new HasEncodingErrorEventArgs(outputContent));
     }
 
-    private bool CheckTidyToolWindow()
+    private bool CheckTidyToolWindowExists()
     {
       var tidyToolWindow = package.FindToolWindow(typeof(TidyToolWindow), 0, false);
       if (tidyToolWindow is not null) return true;

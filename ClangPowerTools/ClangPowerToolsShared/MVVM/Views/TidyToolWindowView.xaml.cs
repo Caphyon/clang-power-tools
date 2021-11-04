@@ -1,12 +1,7 @@
-﻿using ClangPowerTools.Commands;
-using ClangPowerTools.MVVM.Models;
+﻿using ClangPowerTools.MVVM.Models;
 using ClangPowerToolsShared.MVVM.Commands;
-using ClangPowerToolsShared.MVVM.Models;
 using ClangPowerToolsShared.MVVM.ViewModels;
-using System;
 using System.Collections.Generic;
-using System.Data;
-using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -30,6 +25,11 @@ namespace ClangPowerTools.Views
     public void UpdateView(List<string> filesPath)
     {
       tidyToolWindowViewModel.UpdateViewModel(filesPath);
+    }
+
+    public void UpdateToolWindowViewFiles(List<string> filesPath)
+    {
+      tidyToolWindowViewModel.UpdateToolWindowViewFiles(filesPath);
     }
 
     private void DiffButton(object sender, RoutedEventArgs e)

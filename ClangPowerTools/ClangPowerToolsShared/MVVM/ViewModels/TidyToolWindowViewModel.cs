@@ -9,7 +9,6 @@ using ClangPowerToolsShared.MVVM.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Models;
 using EnvDTE80;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -123,6 +122,18 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     #endregion
 
     #region Public Methods
+
+    public void UpdateToolWindowViewFiles(List<string> filesPath)
+    {
+      RefreshValues();
+      foreach (string file in filesPath)
+      {
+        FileInfo path = new FileInfo(file);
+        files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) });
+      }
+      Files = files;
+      CheckAll();
+    }
 
     public void UpdateViewModel(List<string> filesPath)
     {
