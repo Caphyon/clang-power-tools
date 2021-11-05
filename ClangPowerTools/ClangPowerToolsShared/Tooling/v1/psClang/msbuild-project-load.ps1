@@ -209,6 +209,104 @@ Function Clear-Vars()
     Reset-ProjectItemContext
 }
 
+Function Load-CacheRepositoryIndex()
+{
+  if (! (Test-Path $kCptCacheRepo))
+  {
+    New-Item $kCptCacheRepo -ItemType "Directory"
+  }
+
+  [string] $cptCacheRepoIndex = "$kCptCacheRepo\index.dat"
+  [System.Collections.Hashtable] $cacheIndex = @{}
+  if (Test-Path $cptCacheRepoIndex)
+  {
+    $cacheIndex = [System.Management.Automation.PSSerializer]::Deserialize((Get-Content $cptCacheRepoIndex))
+  }
+  return $cacheIndex
+}
+
+Function Save-CacheRepositoryIndex([System.Collections.Hashtable] $cacheIndex)
+{
+  if (! (Test-Path $kCptCacheRepo))
+  {
+    New-Item $kCptCacheRepo -ItemType "Directory"
+  }
+
+  [string] $cptCacheRepoIndex = "$kCptCacheRepo\index.dat"
+  $serialized = [System.Management.Automation.PSSerializer]::Serialize($cacheIndex)
+  $serialized > $cptCacheRepoIndex
+}
+
+Function Save-ProjectToCacheRepo()
+{
+  [System.Collections.Hashtable] $dataMap = @{}
+  foreach ($varName in $global:ProjectSpecificVariables)
+  {
+    $dataMap[$varName] = Get-Variable -name $varName
+  }
+  
+  [string] $pathToSave = "$kCptCacheRepo\$(Get-RandomString).dat"
+  $serialized = [System.Management.Automation.PSSerializer]::Serialize($dataMap)
+  $serialized > $pathToSave
+
+  $projHash = (Get-FileHash $MSBuildProjectFullPath)
+  
+  [System.Collections.Hashtable] $cacheIndex = Load-CacheRepositoryIndex
+
+  $cacheObject = New-Object PsObject -Prop @{ "ProjectFile"            = $MSBuildProjectFullPath
+                                            ; "ProjectHash"            = $projHash.Hash
+                                            ; "CachedDataPath"         = $pathToSave
+                                            ; "ConfigurationPlatform"  = $aVcxprojConfigPlatform
+                                            }
+  $cacheIndex[$MSBuildProjectFullPath] = $cacheObject
+  
+  Save-CacheRepositoryIndex $cacheIndex
+}
+
+Function Load-ProjectFromCache([string] $aVcxprojPath)
+{
+  [System.Collections.Hashtable] $cacheIndex = Load-CacheRepositoryIndex
+  if ( ! $cacheIndex.ContainsKey($aVcxprojPath))
+  {
+    return $false
+  }
+
+  $projectCacheObject = $cacheIndex[$aVcxprojPath]
+  if ( ! (Test-Path $projectCacheObject.CachedDataPath))
+  {
+    return $false
+  }
+  
+  $projHash = (Get-FileHash $aVcxprojPath)
+  if ($projectCacheObject.ProjectHash -ne $projHash.Hash)
+  {
+    Remove-Item $projectCacheObject.CachedDataPath
+    return $false
+  }
+
+  if ($projectCacheObject.ConfigurationPlatform -ne $aVcxprojConfigPlatform)
+  {
+    Remove-Item $projectCacheObject.CachedDataPath
+    return $false
+  }
+
+  # Clean global variables that have been set by a previous project load
+  Clear-Vars
+
+  $global:vcxprojPath = $aVcxprojPath
+
+  [System.Collections.Hashtable] $deserialized = @{}
+  [string] $data = Get-Content $projectCacheObject.CachedDataPath
+  $deserialized = [System.Management.Automation.PSSerializer]::Deserialize($data)
+
+  foreach ($var in $deserialized.Keys)
+  {
+    Set-Var -name $var -value $deserialized[$var].Value
+  }
+
+  return $true
+}
+
 Function UpdateScriptParameter([Parameter(Mandatory = $true)] [string] $paramName
                               ,[Parameter(Mandatory = $false)][string] $paramValue)
 {

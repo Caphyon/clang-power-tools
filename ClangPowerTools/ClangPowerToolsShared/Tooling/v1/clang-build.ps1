@@ -105,6 +105,11 @@
 
       If not given, the first detected Visual Studio SKU will be used.
 
+.PARAMETER aUseCacheRepo
+      Alias 'use-cache'. Switch to enable project data caching. If this is enabled
+      ClangPowerTools will reuse .vcxproj parse information between calls, as long
+      as the .vcxproj content and current Configuration Platform do not change.
+
 .NOTES
     Author: Gabriel Diaconita
 #>
@@ -180,6 +185,10 @@ param( [alias("proj")]
      , [alias("export-jsondb")]
        [Parameter(Mandatory=$false, HelpMessage="Switch to generate a JSON compilation database file, in the current working directory")]
        [switch]   $aExportJsonDB
+
+     , [alias("use-cache")]
+       [Parameter(Mandatory=$false, HelpMessage="Switch to activate project caching. This will minimize .vcxproj parsing between calls")]
+       [switch]   $aUseCacheRepo
      )
 
 Set-StrictMode -version latest
@@ -329,6 +338,9 @@ else
 {
   Set-Variable -name kClangTidy             -value "clang-tidy.exe"     -option Constant
 }
+
+
+Set-Variable -name kCptCacheRepo            -value "$env:APPDATA\ClangPowerTools\CacheRepository" -option Constant
 
 #-------------------------------------------------------------------------------------------------
 # Custom Types
@@ -1052,7 +1064,25 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   { 
     
     Write-InformationTimed "Before project load"
-    LoadProject($vcxprojPath)
+    
+    if ($aUseCacheRepo)
+    {
+      Write-InformationTimed "Fast loading project"
+      [bool] $loadedFromCache = Load-ProjectFromCache $vcxprojPath
+      if (!$loadedFromCache)
+      {
+        LoadProject $vcxprojPath
+      }
+      else 
+      {
+        $aUseCacheRepo = $false
+      }
+      Write-InformationTimed "Loaded project from cache"
+    }
+    else 
+    {
+      LoadProject $vcxprojPath
+    }
     
     Write-InformationTimed "After project load"
     Write-Output "$projectOutputString [$($global:cptCurrentConfigPlatform)]"
@@ -1069,7 +1099,6 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   }
   
   Write-InformationTimed "Detecting toolset"
-
 
   #-----------------------------------------------------------------------------------------------
   # DETECT PLATFORM TOOLSET
@@ -1344,6 +1373,13 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     }
     Write-InformationTimed "Created PCH"
   }  
+
+  if ($aUseCacheRepo)
+  {
+    Write-InformationTimed "Before serializing project"
+    Save-ProjectToCacheRepo
+    Write-InformationTimed "After serializing project"
+  }
 
   #-----------------------------------------------------------------------------------------------
   # PROCESS CPP FILES. CONSTRUCT COMMAND LINE JOBS TO BE INVOKED
