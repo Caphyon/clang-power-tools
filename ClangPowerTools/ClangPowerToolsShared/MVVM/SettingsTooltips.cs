@@ -19,8 +19,8 @@
 
     #region Tidy
 
-    public string HeaderFilter { get; } = "Regular expression matching the names of the headers to output diagnostics from or auto-fix. Diagnostics from the source file are always displayed." +
-      "This option overrides the 'HeaderFilter' option in .clang-tidy file, if any.\n" +
+    public string HeaderFilter { get; } = "Regular expression matching the names of the headers to output diagnostics from. Diagnostics from the source file are always displayed." +
+      "This option overrides the 'HeaderFilterRegex' option in .clang-tidy file, if any.\n" +
       "\"Corresponding Header\" : output diagnostics/fix only the corresponding header (same filename) for each source file analyzed.";
 
     public string UseChecksFrom { get; } = "Tidy checks: switch between explicitly specified checks (predefined or custom) and using checks from .clang-tidy configuration files.\n" +
