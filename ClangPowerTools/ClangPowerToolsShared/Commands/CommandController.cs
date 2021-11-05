@@ -43,6 +43,7 @@ namespace ClangPowerTools
 
     private readonly Commands2 mCommand;
     private CommandUILocation commandUILocation;
+    private int _commandId = 0;
     private int currentCommand;
     private bool mSaveCommandWasGiven = false;
     private bool mFormatAfterTidyFlag = false;
@@ -153,8 +154,14 @@ namespace ClangPowerTools
       await LaunchCommandAsync(command.CommandID.ID, commandUILocation);
     }
 
+    public int GetCommandId()
+    {
+      return _commandId;
+    }
+
     public async Task LaunchCommandAsync(int aCommandId, CommandUILocation aCommandUILocation, List<string> paths = null)
     {
+      _commandId = aCommandId;
       switch (aCommandId)
       {
         case CommandIds.kSettingsId:

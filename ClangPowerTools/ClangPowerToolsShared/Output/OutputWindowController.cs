@@ -200,12 +200,16 @@ namespace ClangPowerTools.Output
       OnErrorDetected(this, e);
 
       //open tidy tool window and pass paths
-      foreach (var path in paths)
+      var id = CommandControllerInstance.CommandController.GetCommandId();
+      if (id == CommandIds.kTidyToolWindowId)
       {
-        tempPaths.Add(path);
+        foreach (var path in paths)
+        {
+          tempPaths.Add(path);
+        }
+        CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowFilesId, CommandUILocation.ContextMenu, tempPaths);
+        paths.Clear();
       }
-      CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowFilesId, CommandUILocation.ContextMenu, tempPaths);
-      paths.Clear();
     }
 
     public void OnFileHierarchyDetected(object sender, VsHierarchyDetectedEventArgs e)
