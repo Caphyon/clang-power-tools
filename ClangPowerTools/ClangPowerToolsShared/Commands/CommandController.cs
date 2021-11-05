@@ -230,8 +230,8 @@ namespace ClangPowerTools
           }
         case CommandIds.kTidyToolWindowFilesId:
           {
+            OnAfterClangCommand();
             await StopBackgroundRunnersAsync();
-            OnBeforeClangCommand(CommandIds.kTidyId);
 
             await TidyCommand.Instance.ShowTidyToolWindowAsync(paths);
 
