@@ -241,6 +241,11 @@ Function FileHasExtension( [Parameter(Mandatory = $true)][string]   $filePath
     return $false
 }
 
+Function Get-RandomString( [Parameter(Mandatory=$false)][int] $aLength = 10)
+{
+  return (-Join ((65..90) + (97..122) | Get-Random -Count $aLength | % { [char] $_ }))
+}
+
 <#
   .DESCRIPTION
   Merges an absolute and a relative file path.
