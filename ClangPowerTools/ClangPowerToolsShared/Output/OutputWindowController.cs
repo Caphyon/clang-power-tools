@@ -51,14 +51,14 @@ namespace ClangPowerTools.Output
 
     private IVsHierarchy Hierarchy { get; set; }
 
-    private List<string> paths;
+    private HashSet<string> paths;
     private List<string> tempPaths;
 
     #endregion
 
     public OutputWindowController()
     {
-      paths = new List<string>();
+      paths = new HashSet<string>();
       tempPaths = new List<string>();
     }
 
