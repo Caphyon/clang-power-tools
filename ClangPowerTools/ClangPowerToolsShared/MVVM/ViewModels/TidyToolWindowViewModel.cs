@@ -128,14 +128,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public void OpenTidyToolWindow(List<string> filesPath)
     {
       RefreshValues();
-      Files = files;
-      foreach (string file in filesPath)
-      {
-        FileInfo path = new FileInfo(file);
-        files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) });
-      }
       CheckAll();
-      TidyAllFilesAsync();
+      TidyAllFilesAsync(filesPath);
     }
 
     public void UpdateViewModel(List<string> filesPath)
@@ -148,8 +142,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           FileInfo path = new FileInfo(file);
           files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) });
         }
-        Files = files;
         CheckAll();
+        SaveLastUpdatesToUI();
         filesAlreadyExists = true;
       }
       if (!Directory.Exists(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath))
@@ -165,6 +159,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       if (tidyToolWindowModel.IsChecked)
       {
         CheckAll();
+        SaveLastUpdatesToUI();
       }
       else
       {
@@ -270,6 +265,12 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       TidyToolWindowModel = tidyToolWindowModel;
     }
 
+    private void SaveLastUpdatesToUI()
+    {
+      Files = files;
+      TidyToolWindowModel = tidyToolWindowModel;
+    }
+
     private void UncheckAll()
     {
       tidyToolWindowModel.IsChecked = false;
@@ -278,8 +279,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         file.IsChecked = false;
       }
       tidyToolWindowModel.TotalChecked = 0;
-      Files = files;
-      TidyToolWindowModel = tidyToolWindowModel;
+      SaveLastUpdatesToUI();
     }
 
     private void MarkFixedFiles(List<FileModel> fixedFiles)
@@ -362,10 +362,14 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       AfterCommand();
     }
 
-    private async Task TidyAllFilesAsync()
+    private async Task TidyAllFilesAsync(List<string> paths = null)
     {
       BeforeCommand();
-      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, GetCheckedPathsList());
+      if (paths is null)
+      {
+        paths = GetCheckedPathsList();
+      }
+      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, paths);
       AfterCommand();
     }
 
@@ -408,7 +412,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       MessageModel = messageModel;
       tidyToolWindowModel.TotalChecked = 0;
       tidyToolWindowModel.IsChecked = false;
-      TidyToolWindowModel = tidyToolWindowModel;
+      SaveLastUpdatesToUI();
     }
 
     #endregion
