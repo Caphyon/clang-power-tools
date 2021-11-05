@@ -81,7 +81,7 @@ function Set-ProjectItemProperty([Parameter(Mandatory = $true)][string] $propert
     if (! $global:itemProperties.ContainsKey($global:itemPropertyNamespace))
     {
         $global:itemProperties.Add($global:itemPropertyNamespace, @{})
-        $global:ProjectSpecificVariables.Add('itemProperties');
+        $global:ProjectSpecificVariables.Add('itemProperties') | out-null
     }
 
     [System.Collections.Hashtable] $propMap = $global:itemProperties[$global:itemPropertyNamespace]
