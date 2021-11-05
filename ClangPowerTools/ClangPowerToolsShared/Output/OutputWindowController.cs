@@ -51,8 +51,16 @@ namespace ClangPowerTools.Output
 
     private IVsHierarchy Hierarchy { get; set; }
 
+    private List<string> paths;
+    private List<string> tempPaths;
 
     #endregion
+
+    public OutputWindowController()
+    {
+      paths = new List<string>();
+      tempPaths = new List<string>();
+    }
 
     #region Methods
 
@@ -128,7 +136,7 @@ namespace ClangPowerTools.Output
     #endregion
 
     #region Data Handlers
-    List<string> paths = new List<string>();
+
 
     public void GetFilesFromOutput(string output)
     {
@@ -184,6 +192,7 @@ namespace ClangPowerTools.Output
 
     public void ClosedDataConnection(object sender, EventArgs e)
     {
+      tempPaths.Clear();
       if (Buffer.Count != 0 && outputContent.MissingLLVM == false)
         Write(String.Join("\n", Buffer));
 
@@ -191,8 +200,12 @@ namespace ClangPowerTools.Output
       OnErrorDetected(this, e);
 
       //open tidy tool window and pass paths
-      CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowFilesId, CommandUILocation.ContextMenu, paths);
-      //paths.Clear();
+      foreach (var path in paths)
+      {
+        tempPaths.Add(path);
+      }
+      CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowFilesId, CommandUILocation.ContextMenu, tempPaths);
+      paths.Clear();
     }
 
     public void OnFileHierarchyDetected(object sender, VsHierarchyDetectedEventArgs e)

@@ -29,6 +29,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private TidyToolWindowModel tidyToolWindowModel;
     private MessageModel messageModel;
     private string listVisibility = UIElementsConstants.Visibile;
+    //To not refresh files value every time (with the same files), and to not refresh check box value
+    bool filesAlreadyExists = false;
 
     private ICommand tidyAllCommand;
     private ICommand fixAllCommand;
@@ -138,17 +140,18 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void UpdateViewModel(List<string> filesPath)
     {
-      RefreshValues();
-      foreach (string file in filesPath)
+      if (!filesAlreadyExists)
       {
-        FileInfo path = new FileInfo(file);
-        files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) });
+        RefreshValues();
+        foreach (string file in filesPath)
+        {
+          FileInfo path = new FileInfo(file);
+          files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) });
+        }
+        Files = files;
+        CheckAll();
+        filesAlreadyExists = true;
       }
-      Files = files;
-      CheckAll();
-      //make tidy
-      //TidyAllFilesAsync();
-      //copy files in temp folder
       if (!Directory.Exists(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath))
         Directory.CreateDirectory(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath);
       if (Directory.Exists(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath))
