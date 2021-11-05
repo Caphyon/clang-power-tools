@@ -130,6 +130,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       RefreshValues();
       CheckAll();
       TidyAllFilesAsync(filesPath);
+      filesAlreadyExists = false;
     }
 
     public void UpdateViewModel(List<string> filesPath)
