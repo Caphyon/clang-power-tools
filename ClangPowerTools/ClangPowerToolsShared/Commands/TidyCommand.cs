@@ -78,7 +78,7 @@ namespace ClangPowerTools.Commands
 
     }
 
-
+    //display tidy tool window - progress bar, run tidy again
     public async Task ShowTidyToolWindowEmptyAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
