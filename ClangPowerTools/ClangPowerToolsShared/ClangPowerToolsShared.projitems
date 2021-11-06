@@ -30,6 +30,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Commands\IgnoreCompileCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\IgnoreFormatCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\JsonCompilationDatabaseCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\Models\CacheProjectsItemsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\SettingsCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\StopCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CommandControllerInstance.cs" />

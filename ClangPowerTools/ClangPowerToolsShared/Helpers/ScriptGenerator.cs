@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.Builder;
 using ClangPowerTools.Script;
+using ClangPowerToolsShared.Commands.Models;
 using System.Collections.Generic;
 using System.Text;
 
@@ -25,15 +26,23 @@ namespace ClangPowerTools.Helpers
       return genericParameters;
     }
 
-    public static string GetItemRelatedParametersCustomPaths(List<string> paths)
+    public static string GetItemRelatedParametersCustomPaths(List<string> filePaths, CacheProjectsItemsModel cacheProjectsItemsModel)
     {
-      StringBuilder stringBuilder = new StringBuilder("\"");
+      //    var projectData = jsonCompilationDbActive ?
+      //string.Empty : $"{ScriptConstants.kProject} ''{containingProject}'' ";
+      string script = $"{ScriptConstants.kProject} {JoinPathsToStringScript(cacheProjectsItemsModel.ProjectsStringList)} {ScriptConstants.kFile} {JoinPathsToStringScript(filePaths)} {ScriptConstants.kActiveConfiguration} ''{cacheProjectsItemsModel.Configuration}|{cacheProjectsItemsModel.Platform}''";
+      return script;
+    }
+
+    private static string JoinPathsToStringScript(List<string> paths)
+    {
+      StringBuilder stringBuilder = new StringBuilder("(''");
       foreach (string path in paths)
       {
-        stringBuilder.Append(path).Append(",");
+        stringBuilder.Append(path).Append("'',''");
       }
-      stringBuilder.Remove(stringBuilder.Length - 1, 1);
-      return stringBuilder.Append("\"").ToString();
+      stringBuilder.Remove(stringBuilder.Length - 3, 3);
+      return stringBuilder.Append(")").ToString();
     }
 
     public static string GetItemRelatedParameters(IItem item, bool jsonCompilationDbActive = false)
