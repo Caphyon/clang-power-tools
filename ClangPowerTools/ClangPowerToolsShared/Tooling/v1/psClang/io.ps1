@@ -11,6 +11,10 @@ Function Write-Message([parameter(Mandatory = $true)][string] $msg
 
 function Write-InformationTimed($message)
 {
+  if ($InformationPreference -eq "SilentlyContinue")
+  {
+    return
+  }
   [DateTime] $lastTime = [DateTime]::Now
   [string] $kTimeStampVar = "lastCptTimestamp"
   if (VariableExists -name $kTimeStampVar)
