@@ -451,12 +451,16 @@ Function Get-SourceDirectory()
 function Load-Solutions()
 {
    Write-Verbose "Scanning for solution files"
-   $slns = Get-ChildItem -recurse -LiteralPath "$aSolutionsPath" -Filter "*$kExtensionSolution"
+   $slns = Get-ChildItem -recurse -LiteralPath "\\?\$aSolutionsPath" -Filter "*$kExtensionSolution"
    foreach ($sln in $slns)
    {
      Write-Verbose "Caching solution file $sln"
      $slnPath = $sln.FullName
+
+     # remove the UNC long path prefix
+     $slnPath = $slnPath.Replace('\\?\', '')
      $global:slnFiles[$slnPath] = (Get-Content -LiteralPath $slnPath)
+     
      Write-Verbose "Solution full path: $slnPath"
      Write-Verbose "Solution data length: $($global:slnFiles[$slnPath].Length)"
    }
