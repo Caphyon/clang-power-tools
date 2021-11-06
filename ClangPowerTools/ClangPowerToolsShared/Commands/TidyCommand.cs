@@ -117,7 +117,6 @@ namespace ClangPowerTools.Commands
         await PrepareCommmandAsync(commandUILocation);
       }
 
-
       if (paths != null)
       {
         mItemsCollector.Items = new List<IItem>();
@@ -133,7 +132,6 @@ namespace ClangPowerTools.Commands
 
       if (CommandIds.kTidyToolWindowId == aCommandId || CommandIds.kTidyFixId == aCommandId)
       {
-
         await Task.Run(() =>
         {
           lock (mutex)
