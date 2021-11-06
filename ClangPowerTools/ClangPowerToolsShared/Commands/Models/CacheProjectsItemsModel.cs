@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools;
 using EnvDTE;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ClangPowerToolsShared.Commands.Models
 {
@@ -11,6 +12,15 @@ namespace ClangPowerToolsShared.Commands.Models
   {
     public List<Project> Projects { get; set; } = new List<Project>();
     public List<ProjectItem> ProjectItems { get; set; } = new List<ProjectItem>();
+
+    public List<string> ProjectsStringList
+    {
+      get
+      {
+        return Projects.Select(e => e.FullName).ToList();
+      }
+    }
+
     public string Configuration
     {
       get
@@ -26,6 +36,7 @@ namespace ClangPowerToolsShared.Commands.Models
         return string.Empty;
       }
     }
+
     public string Platform
     {
       get
