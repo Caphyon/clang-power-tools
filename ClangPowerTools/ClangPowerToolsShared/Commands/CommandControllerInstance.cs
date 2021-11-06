@@ -5,15 +5,5 @@
     public static CommandControllerInstance Instance { get { return instance; } }
     public static CommandController CommandController { get; set; }
     public static readonly CommandControllerInstance instance = new();
-
-    static CommandControllerInstance()
-    {
-
-    }
-
-    private CommandControllerInstance()
-    {
-
-    }
   }
 }
