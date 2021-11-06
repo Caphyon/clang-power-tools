@@ -244,6 +244,7 @@ Function Save-ProjectToCacheRepo()
   {
     $dataMap[$varName] = Get-Variable -name $varName
   }
+  $dataMap['cptVisualStudioVersion'] = Get-Variable 'cptVisualStudioVersion'
   
   [string] $pathToSave = "$kCptCacheRepo\$(Get-RandomString).dat"
   $serialized = [System.Management.Automation.PSSerializer]::Serialize($dataMap)
