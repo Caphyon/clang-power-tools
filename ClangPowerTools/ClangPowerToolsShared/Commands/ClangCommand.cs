@@ -102,8 +102,7 @@ namespace ClangPowerTools
 
     #region Protected Methods
 
-
-    protected void RunScript(int aCommandId, bool jsonCompilationDbActive)
+    protected void RunScript(int aCommandId, bool jsonCompilationDbActive, List<string> paths = null)
     {
       string runModeParameters = ScriptGenerator.GetRunModeParamaters();
       string genericParameters = ScriptGenerator.GetGenericParamaters(aCommandId, VsEdition, VsVersion, jsonCompilationDbActive);
@@ -114,7 +113,7 @@ namespace ClangPowerTools
       if (jsonCompilationDbActive)
         ExportJsonCompilationDatabase(runModeParameters, genericParameters);
       else
-        Compile(runModeParameters, genericParameters, aCommandId);
+        Compile(runModeParameters, genericParameters, aCommandId, paths);
 
       cMakeBuilder.ClearBuildCashe();
     }
@@ -185,7 +184,7 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private void Compile(string runModeParameters, string genericParameters, int commandId)
+    private void Compile(string runModeParameters, string genericParameters, int commandId, List<string> paths)
     {
       var vsSolution = SolutionInfo.IsOpenFolderModeActive() == false ?
         (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution)) : null;
@@ -193,45 +192,54 @@ namespace ClangPowerTools
       try
       {
         var tempClangTidyFilePath = string.Empty;
-        foreach (var item in mItemsCollector.Items)
+        if (paths is not null)
         {
-          if (StopCommandActivated)
-            break;
+          var itemRelatedParameters = ScriptGenerator.GetItemRelatedParametersCustomPaths(paths);
 
-          var ignoreItem = new IgnoreItem();
-
-          if (ignoreItem.Check(item))
-          {
-            OnIgnoreItem(new ClangCommandMessageEventArgs(ignoreItem.IgnoreCompileOrTidyMessage, false));
-            continue;
-          }
-
-          if (commandId == CommandIds.kTidyId || commandId == CommandIds.kTidyFixId || CommandIds.kTidyToolWindowId == commandId ||
-            commandId == CommandIds.kTidyToolbarId || commandId == CommandIds.kTidyFixToolbarId)
-          {
-            tempClangTidyFilePath = CreateTemporaryFileForTidy(item);
-          }
-
-          var itemRelatedParameters = string.Empty;
-          if (item is CurrentProject || item is Project || item is Solution)
-          {
-            itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item);
-          }
-          else if (item is CurrentProjectItem || item is ProjectItem)
-          {
-            itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(mItemsCollector.Items);
-          }
-
-          // From the first parameter is removed the last character which is mandatory "'"
-          // and added to the end of the string to close the script escaping command
           Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
-
-          ItemHierarchy = vsSolution != null ? AutomationUtil.GetItemHierarchy(vsSolution, item) : null;
-
-          PowerShellWrapper.Invoke(Script, runningProcesses);
-          if (item is ProjectItem || item is CurrentProjectItem)
+        }
+        else
+        {
+          foreach (var item in mItemsCollector.Items)
           {
-            break;
+            if (StopCommandActivated)
+              break;
+
+            var ignoreItem = new IgnoreItem();
+
+            if (ignoreItem.Check(item))
+            {
+              OnIgnoreItem(new ClangCommandMessageEventArgs(ignoreItem.IgnoreCompileOrTidyMessage, false));
+              continue;
+            }
+
+            if (commandId == CommandIds.kTidyId || commandId == CommandIds.kTidyFixId || CommandIds.kTidyToolWindowId == commandId ||
+              commandId == CommandIds.kTidyToolbarId || commandId == CommandIds.kTidyFixToolbarId)
+            {
+              tempClangTidyFilePath = CreateTemporaryFileForTidy(item);
+            }
+
+            var itemRelatedParameters = string.Empty;
+            if (item is CurrentProject || item is Project || item is Solution)
+            {
+              itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item);
+            }
+            else if (item is CurrentProjectItem || item is ProjectItem)
+            {
+              itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(mItemsCollector.Items);
+            }
+
+            // From the first parameter is removed the last character which is mandatory "'"
+            // and added to the end of the string to close the script escaping command
+            Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
+
+            ItemHierarchy = vsSolution != null ? AutomationUtil.GetItemHierarchy(vsSolution, item) : null;
+
+            PowerShellWrapper.Invoke(Script, runningProcesses);
+            if (item is ProjectItem || item is CurrentProjectItem)
+            {
+              break;
+            }
           }
         }
 
