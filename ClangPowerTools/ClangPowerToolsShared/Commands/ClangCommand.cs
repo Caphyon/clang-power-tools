@@ -22,6 +22,8 @@ namespace ClangPowerTools
 
     public static RunningProcesses runningProcesses = new RunningProcesses();
 
+    private HashSet<Project> projects = new HashSet<Project>();
+
     protected ItemsCollector mItemsCollector;
     protected FilePathCollector mFilePahtCollector;
     private readonly Dictionary<string, string> mVsVersions = new Dictionary<string, string>
@@ -101,6 +103,14 @@ namespace ClangPowerTools
     #endregion
 
     #region Protected Methods
+
+    protected void CacheProjectsFromItems()
+    {
+      foreach (var item in mItemsCollector.Items)
+      {
+        projects.Add(item.GetObject() as Project);
+      }
+    }
 
     protected void RunScript(int aCommandId, bool jsonCompilationDbActive, List<string> paths = null)
     {
