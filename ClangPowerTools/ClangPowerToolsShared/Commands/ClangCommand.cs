@@ -4,6 +4,7 @@ using ClangPowerTools.Events;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.IgnoreActions;
 using ClangPowerTools.Services;
+using ClangPowerToolsShared.Commands.Models;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -22,7 +23,7 @@ namespace ClangPowerTools
 
     public static RunningProcesses runningProcesses = new RunningProcesses();
 
-    private HashSet<Project> projects = new HashSet<Project>();
+    private CacheProjectsItemsModel cacheProjectsItemsModel = new CacheProjectsItemsModel();
 
     protected ItemsCollector mItemsCollector;
     protected FilePathCollector mFilePahtCollector;
@@ -111,15 +112,15 @@ namespace ClangPowerTools
         if (item.GetObject() is Project)
         {
           var project = item.GetObject() as Project;
-          var name = project.FullName;
+          //var name = project.FullName;
+          cacheProjectsItemsModel.Projects.Add(project);
         }
         else if (item.GetObject() is ProjectItem)
         {
-          var proj = item.GetObject() as ProjectItem;
-          var name = proj.ContainingProject.FullName;
+          var projectItem = item.GetObject() as ProjectItem;
+          cacheProjectsItemsModel.ProjectItems.Add(projectItem);
+          //var name = proj.ContainingProject.FullName;
         }
-        //var name = proj.con
-        //projects.Add(item.GetObject() as Project);
       }
     }
 
