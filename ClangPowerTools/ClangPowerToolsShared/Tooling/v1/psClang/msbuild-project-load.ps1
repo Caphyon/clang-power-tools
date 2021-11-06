@@ -29,6 +29,7 @@ Set-Variable -name "kRedundantSeparatorsReplaceRules" -option Constant `
                         <# handle separator at beginning          #>   `
                       , ("^;" , "")                                    `
                       )
+Set-Variable -name "kCacheSyntaxVer" -Option Constant -value "1"
 
 Add-Type -TypeDefinition @"
 public class ProjectConfigurationNotFound : System.Exception
@@ -259,6 +260,7 @@ Function Save-ProjectToCacheRepo()
                                             ; "ProjectHash"            = $projHash.Hash
                                             ; "CachedDataPath"         = $pathToSave
                                             ; "ConfigurationPlatform"  = $aVcxprojConfigPlatform
+                                            ; "CptCacheSyntaxVersion"  = $kCacheSyntaxVer
                                             }
   $cacheIndex[$MSBuildProjectFullPath] = $cacheObject
   
@@ -274,8 +276,16 @@ Function Load-ProjectFromCache([string] $aVcxprojPath)
   }
 
   $projectCacheObject = $cacheIndex[$aVcxprojPath]
+
   if ( ! (Test-Path $projectCacheObject.CachedDataPath))
   {
+    return $false
+  }
+  
+  if ($projectCacheObject.CptCacheSyntaxVersion -ne $kCacheSyntaxVer)
+  {
+    # the cached version uses an outdated syntax, discard it
+    Remove-Item $projectCacheObject.CachedDataPath
     return $false
   }
   
