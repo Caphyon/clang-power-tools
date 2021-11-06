@@ -1,4 +1,5 @@
-﻿using EnvDTE;
+﻿using ClangPowerTools;
+using EnvDTE;
 using System.Collections.Generic;
 
 namespace ClangPowerToolsShared.Commands.Models
@@ -8,9 +9,37 @@ namespace ClangPowerToolsShared.Commands.Models
   /// </summary>
   public class CacheProjectsItemsModel
   {
-    public HashSet<Project> Projects { get; set; } = new HashSet<Project>();
-    public HashSet<ProjectItem> ProjectItems { get; set; } = new HashSet<ProjectItem>();
-    public string Configuration { get; }
-    public string Platform { get; }
+    public List<Project> Projects { get; set; } = new List<Project>();
+    public List<ProjectItem> ProjectItems { get; set; } = new List<ProjectItem>();
+    public string Configuration
+    {
+      get
+      {
+        if (ProjectItems.Count > 0)
+        {
+          return ProjectConfigurationHandler.GetConfiguration(ProjectItems[0].ContainingProject);
+        }
+        else if (Projects.Count > 0)
+        {
+          return ProjectConfigurationHandler.GetConfiguration(Projects[0]);
+        }
+        return string.Empty;
+      }
+    }
+    public string Platform
+    {
+      get
+      {
+        if (ProjectItems.Count > 0)
+        {
+          return ProjectConfigurationHandler.GetPlatform(ProjectItems[0].ContainingProject);
+        }
+        else if (Projects.Count > 0)
+        {
+          return ProjectConfigurationHandler.GetPlatform(Projects[0]);
+        }
+        return string.Empty;
+      }
+    }
   }
 }

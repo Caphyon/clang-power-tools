@@ -112,8 +112,8 @@ namespace ClangPowerTools
         if (item.GetObject() is Project)
         {
           var project = item.GetObject() as Project;
-          //var name = project.FullName;
           cacheProjectsItemsModel.Projects.Add(project);
+          //var name = project.FullName;
         }
         else if (item.GetObject() is ProjectItem)
         {
