@@ -162,6 +162,15 @@ namespace ClangPowerTools
     /// Collect all selected items in the Solution explorer for commands
     /// </summary>
     /// 
+    public void CollectCustomItemsByPath(List<string> customPath)
+    {
+      foreach (var path in customPath)
+      {
+        var item = dte2.ToolWindows.SolutionExplorer.GetItem(path);
+        AddProjectItem(item.Object as ProjectItem);
+      }
+    }
+
     public void CollectSelectedItems()
     {
       if (selectedItems == null || selectedItems.Length == 0)
