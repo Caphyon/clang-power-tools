@@ -216,8 +216,7 @@ namespace ClangPowerTools
         var tempClangTidyFilePath = string.Empty;
         if (paths is not null)
         {
-          var itemRelatedParameters = ScriptGenerator.GetItemRelatedParametersCustomPaths(paths);
-
+          var itemRelatedParameters = ScriptGenerator.GetItemRelatedParametersCustomPaths(paths, cacheProjectsItemsModel);
           Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
         }
         else
