@@ -240,16 +240,23 @@ Function Save-CacheRepositoryIndex([System.Collections.Hashtable] $cacheIndex)
 
 Function Save-ProjectToCacheRepo()
 {
-  [System.Collections.Hashtable] $dataMap = @{}
+  [System.Collections.Hashtable] $projectVariablesMap = @{}
   foreach ($varName in $global:ProjectSpecificVariables)
   {
-    $dataMap[$varName] = Get-Variable -name $varName -ValueOnly
+    $projectVariablesMap[$varName] = Get-Variable -name $varName -ValueOnly
   }
-  $dataMap['cptVisualStudioVersion']   = Get-Variable 'cptVisualStudioVersion'   -scope Global   -ValueOnly
-  $dataMap['cptCurrentConfigPlatform'] = Get-Variable 'cptCurrentConfigPlatform' -scope Global   -ValueOnly
+
+  
+  [System.Collections.Hashtable] $genericVariablesMap = @{}
+  $genericVariablesMap['cptVisualStudioVersion'  ] = Get-Variable 'cptVisualStudioVersion'   -scope Global -ValueOnly
+  $genericVariablesMap['cptCurrentConfigPlatform'] = Get-Variable 'cptCurrentConfigPlatform' -scope Global -ValueOnly
+
+  $dataToSerialize = New-Object PsObject -Prop @{ "ProjectSpecificVariables"  = $projectVariablesMap
+                                                ; "GenericVariables"          = $genericVariablesMap
+                                                }
   
   [string] $pathToSave = "$kCptCacheRepo\$(Get-RandomString).dat"
-  $serialized = [System.Management.Automation.PSSerializer]::Serialize($dataMap)
+  $serialized = [System.Management.Automation.PSSerializer]::Serialize($dataToSerialize)
   $serialized > $pathToSave
 
   $projHash = (Get-FileHash $MSBuildProjectFullPath)
@@ -307,13 +314,22 @@ Function Load-ProjectFromCache([string] $aVcxprojPath)
 
   $global:vcxprojPath = $aVcxprojPath
 
-  [System.Collections.Hashtable] $deserialized = @{}
   [string] $data = Get-Content $projectCacheObject.CachedDataPath
   $deserialized = [System.Management.Automation.PSSerializer]::Deserialize($data)
 
-  foreach ($var in $deserialized.Keys)
+  [System.Collections.Hashtable] $projectSpecificVariablesMap = $deserialized.ProjectSpecificVariables
+  [System.Collections.Hashtable] $genericVariablesMap = $deserialized.GenericVariables
+
+  foreach ($var in $projectSpecificVariablesMap.Keys)
   {
-    Set-Var -name $var -value $deserialized[$var]
+    Set-Var -name $var -value $projectSpecificVariablesMap[$var]
+  }
+  
+  # these variables should be garbage collected between projects
+  # using our custom Set-Var would allow that to happen
+  foreach ($var in $genericVariablesMap.Keys)
+  {
+    Set-Variable -name $var -value $genericVariablesMap[$var] -scope Global
   }
 
   return $true
