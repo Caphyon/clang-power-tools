@@ -242,9 +242,10 @@ Function Save-ProjectToCacheRepo()
   [System.Collections.Hashtable] $dataMap = @{}
   foreach ($varName in $global:ProjectSpecificVariables)
   {
-    $dataMap[$varName] = Get-Variable -name $varName
+    $dataMap[$varName] = Get-Variable -name $varName -ValueOnly
   }
-  $dataMap['cptVisualStudioVersion'] = Get-Variable 'cptVisualStudioVersion'
+  $dataMap['cptVisualStudioVersion']   = Get-Variable 'cptVisualStudioVersion'   -scope Global   -ValueOnly
+  $dataMap['cptCurrentConfigPlatform'] = Get-Variable 'cptCurrentConfigPlatform' -scope Global   -ValueOnly
   
   [string] $pathToSave = "$kCptCacheRepo\$(Get-RandomString).dat"
   $serialized = [System.Management.Automation.PSSerializer]::Serialize($dataMap)
@@ -302,7 +303,7 @@ Function Load-ProjectFromCache([string] $aVcxprojPath)
 
   foreach ($var in $deserialized.Keys)
   {
-    Set-Var -name $var -value $deserialized[$var].Value
+    Set-Var -name $var -value $deserialized[$var]
   }
 
   return $true
