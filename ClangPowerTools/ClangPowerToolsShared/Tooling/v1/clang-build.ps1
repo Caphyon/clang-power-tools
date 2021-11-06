@@ -1358,6 +1358,11 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   # JSON Compilation Database file will outlive this execution run, while the PCH is temporary 
   # so we disable PCH creation for that case as well.
 
+  if ($kPchIsNeeded -and $global:cptFilesToProcess.Count -lt 2)
+  {
+    $kPchIsNeeded = $false
+  }
+
   [string] $pchFilePath = ""
   if ($kPchIsNeeded -and $workloadType -ne [WorkloadType]::TidyFix -and !$aExportJsonDB)
   {
@@ -1441,7 +1446,6 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     Write-Verbose "INVOKE: $exeToCallVerbosePath $($clangJobs[0].ArgumentList)"
   }
 
-  
   Write-InformationTimed "Running workers"
 
   #-----------------------------------------------------------------------------------------------
@@ -1498,9 +1502,8 @@ $global:cptVisualStudioVersion = If ( $aVisualStudioVersion ) `
 #-------------------------------------------------------------------------------------------------
 # Print script parameters
 
-
-Write-InformationTimed "Print args"
 Print-InvocationArguments
+Write-InformationTimed "Print args"
 
 #-------------------------------------------------------------------------------------------------
 # Script entry point
