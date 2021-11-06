@@ -108,7 +108,18 @@ namespace ClangPowerTools
     {
       foreach (var item in mItemsCollector.Items)
       {
-        projects.Add(item.GetObject() as Project);
+        if (item.GetObject() is Project)
+        {
+          var project = item.GetObject() as Project;
+          var name = project.FullName;
+        }
+        else if (item.GetObject() is ProjectItem)
+        {
+          var proj = item.GetObject() as ProjectItem;
+          var name = proj.ContainingProject.FullName;
+        }
+        //var name = proj.con
+        //projects.Add(item.GetObject() as Project);
       }
     }
 
