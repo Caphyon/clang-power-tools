@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.Builder;
 using ClangPowerTools.Script;
 using System.Collections.Generic;
+using System.Text;
 
 namespace ClangPowerTools.Helpers
 {
@@ -22,6 +23,17 @@ namespace ClangPowerTools.Helpers
       genericScriptBuilder.Build();
       var genericParameters = genericScriptBuilder.GetResult();
       return genericParameters;
+    }
+
+    public static string GetItemRelatedParametersCustomPaths(List<string> paths)
+    {
+      StringBuilder stringBuilder = new StringBuilder("\"");
+      foreach (string path in paths)
+      {
+        stringBuilder.Append(path).Append(",");
+      }
+      stringBuilder.Remove(stringBuilder.Length - 1, 1);
+      return stringBuilder.Append("\"").ToString();
     }
 
     public static string GetItemRelatedParameters(IItem item, bool jsonCompilationDbActive = false)

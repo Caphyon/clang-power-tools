@@ -173,7 +173,7 @@ namespace ClangPowerTools.Commands
                 settingsHandlder.SaveSettings();
               }
 
-              RunScript(aCommandId, false);
+              RunScript(aCommandId, false, paths);
             }
             catch (Exception exception)
             {
