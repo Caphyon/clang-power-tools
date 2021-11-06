@@ -17,7 +17,15 @@ namespace ClangPowerToolsShared.Commands.Models
     {
       get
       {
-        return Projects.Select(e => e.FullName).ToList();
+        if (ProjectItems.Count > 0)
+        {
+          return ProjectItems.Select(p => p.ContainingProject.FullName).ToList();
+        }
+        else if (Projects.Count > 0)
+        {
+          return Projects.Select(e => e.FullName).ToList();
+        }
+        return new();
       }
     }
 

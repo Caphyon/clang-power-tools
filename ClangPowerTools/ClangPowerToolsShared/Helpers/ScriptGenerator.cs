@@ -28,10 +28,13 @@ namespace ClangPowerTools.Helpers
 
     public static string GetItemRelatedParametersCustomPaths(List<string> filePaths, CacheProjectsItemsModel cacheProjectsItemsModel)
     {
-      //    var projectData = jsonCompilationDbActive ?
-      //string.Empty : $"{ScriptConstants.kProject} ''{containingProject}'' ";
-      string script = $"{ScriptConstants.kProject} {JoinPathsToStringScript(cacheProjectsItemsModel.ProjectsStringList)} {ScriptConstants.kFile} {JoinPathsToStringScript(filePaths)} {ScriptConstants.kActiveConfiguration} ''{cacheProjectsItemsModel.Configuration}|{cacheProjectsItemsModel.Platform}''";
-      return script;
+      var tokens = new List<string>
+      {
+        $"{ScriptConstants.kProject} {JoinPathsToStringScript(cacheProjectsItemsModel.ProjectsStringList)}",
+        $"{ScriptConstants.kFile} {JoinPathsToStringScript(filePaths)}",
+        $"{ScriptConstants.kActiveConfiguration} ''{cacheProjectsItemsModel.Configuration}|{cacheProjectsItemsModel.Platform}''"
+      };
+      return string.Join(" ", tokens);
     }
 
     private static string JoinPathsToStringScript(List<string> paths)
