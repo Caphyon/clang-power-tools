@@ -218,6 +218,7 @@ namespace ClangPowerTools
         {
           var itemRelatedParameters = ScriptGenerator.GetItemRelatedParametersCustomPaths(paths, cacheProjectsItemsModel);
           Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
+          PowerShellWrapper.Invoke(Script, runningProcesses);
         }
         else
         {
