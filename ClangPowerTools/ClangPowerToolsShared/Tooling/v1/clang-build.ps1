@@ -1214,20 +1214,22 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     #-----------------------------------------------------------------------------------------------
     # FIND LIST OF CPPs TO PROCESS
 
-    $global:cptFilesToProcess = @{ } # reset to empty
-
+    $global:projectAllCpps = @{}
     foreach ($fileToCompileInfo in (Get-ProjectFilesToCompile))
     {
       if ($fileToCompileInfo.File)
       {
-        $global:cptFilesToProcess[$fileToCompileInfo.File] = $fileToCompileInfo
+        $global:projectAllCpps[$fileToCompileInfo.File] = $fileToCompileInfo
       }
     }
     
-    Add-ToProjectSpecificVariables 'cptFilesToProcess'
+    Add-ToProjectSpecificVariables 'projectAllCpps'
     
     Write-InformationTimed "Detected cpps to process"
-  }
+  } # past the caching boundary here, we must see what else needs to be computed live 
+  
+  $global:cptFilesToProcess = $global:projectAllCpps # reset to full project cpp list
+  
   #-----------------------------------------------------------------------------------------------
   # LOCATE STDAFX.H DIRECTORY
 
