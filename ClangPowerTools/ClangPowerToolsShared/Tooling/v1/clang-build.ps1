@@ -189,6 +189,7 @@ $ErrorActionPreference = 'Continue'
  , "$PSScriptRoot\psClang\visualstudio-detection.ps1"
  , "$PSScriptRoot\psClang\msbuild-expression-eval.ps1"
  , "$PSScriptRoot\psClang\msbuild-project-load.ps1"
+ , "$PSScriptRoot\psClang\msbuild-project-cache-repository.ps1"
  , "$PSScriptRoot\psClang\msbuild-project-data.ps1"
  , "$PSScriptRoot\psClang\get-header-references.ps1"
  , "$PSScriptRoot\psClang\itemdefinition-context.ps1"
@@ -271,10 +272,7 @@ Set-Variable -name kLLVMInstallLocations    -value @("${Env:ProgramW6432}\LLVM\b
 
 Set-Variable -name kPsMajorVersion          -value (Get-Host).Version.Major -Option Constant 
 
-
-Set-Variable -name kCptCacheRepo            -value "$env:APPDATA\ClangPowerTools\CacheRepository" -option Constant
 Set-Variable -name kCacheRepositorySaveIsNeeded -value $false 
-
 #-------------------------------------------------------------------------------------------------
 # Custom Types
 
@@ -999,17 +997,18 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   
   try
   { 
-    Set-Variable 'kCacheRepositorySaveIsNeeded' -scope Global -value $false
+    Set-Variable 'kCacheRepositorySaveIsNeeded' -value $false
     Write-InformationTimed "Before project load"
     
     if (Is-CacheLoadingEnabled)
     {
       Write-InformationTimed "Trying to load project from cache"
       [bool] $loadedFromCache = Load-ProjectFromCache $vcxprojPath
+      
       if (!$loadedFromCache)
       {
         LoadProject $vcxprojPath
-        Set-Variable 'kCacheRepositorySaveIsNeeded' -scope Global -value $true
+        Set-Variable 'kCacheRepositorySaveIsNeeded' -value $true
       }
     }
     else 
@@ -1314,6 +1313,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
 
   if ($kCacheRepositorySaveIsNeeded)
   {
+    write-output "LK"
     Write-InformationTimed "Before serializing project"
     Save-ProjectToCacheRepo
     Write-InformationTimed "After serializing project"
