@@ -1056,6 +1056,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   $projCounter = $global:cptProjectCounter
   [string] $projectOutputString = ("PROJECT$(if ($projCounter -gt 1) { " #$projCounter" } else { } ): " + $vcxprojPath)
   
+  [bool] $loadedFromCache = $false
   try
   { 
     Set-Variable 'kCacheRepositorySaveIsNeeded' -value $false
@@ -1064,7 +1065,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     if (Is-CacheLoadingEnabled)
     {
       Write-InformationTimed "Trying to load project from cache"
-      [bool] $loadedFromCache = Load-ProjectFromCache $vcxprojPath
+      $loadedFromCache = Load-ProjectFromCache $vcxprojPath
       
       if (!$loadedFromCache)
       {
@@ -1096,128 +1097,137 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   #-----------------------------------------------------------------------------------------------
   # DETECT PLATFORM TOOLSET
 
-  [string] $platformToolset = Get-ProjectPlatformToolset
-  Write-Verbose "Platform toolset: $platformToolset"
-
-  if ( $platformToolset -match "^v\d+(_xp)?$" )
+  if (! $loadedFromCache)
   {
-    [int] $toolsetVersion = [int]$platformToolset.Remove(0, 1).Replace("_xp", "")
+    [string] $global:platformToolset = Get-ProjectPlatformToolset
+    Write-Verbose "Platform toolset: $platformToolset"
+    Add-ToProjectSpecificVariables 'platformToolset'
 
-    [string] $desiredVisualStudioVer = ""
+    if ( $platformToolset -match "^v\d+(_xp)?$" )
+    {
+      [int] $toolsetVersion = [int]$platformToolset.Remove(0, 1).Replace("_xp", "")
 
-    # toolsets attached to specific Visual Studio versions
-    if ($toolsetVersion -le 120)
-    {
-      $desiredVisualStudioVer = "2013"
-    }
-    elseif ($toolsetVersion -eq 140)
-    {
-      $desiredVisualStudioVer = "2015"
-    }
-    elseif ($toolsetVersion -eq 141)
-    {
-      $desiredVisualStudioVer = "2017"
-    }
-    elseif ($toolsetVersion -eq 142)
-    {
-      $desiredVisualStudioVer = "2019";
-    }
-    elseif ($toolsetVersion -eq 143)
-    {
-      $desiredVisualStudioVer = "2022";
-    }
+      [string] $desiredVisualStudioVer = ""
 
-    [string] $desiredVisualStudioVerNumber = (Get-VisualStudio-VersionNumber $desiredVisualStudioVer)
-    if ($VisualStudioVersion -ne $desiredVisualStudioVerNumber)
-    {
-      [bool] $shouldReload = $false
-
-      if ([double]::Parse($VisualStudioVersion) -gt [double]::Parse($desiredVisualStudioVerNumber))
+      # toolsets attached to specific Visual Studio versions
+      if ($toolsetVersion -le 120)
       {
-        # in this case we may have a newer Visual Studio with older toolsets installed
-        [string[]] $supportedVsToolsets = Get-VisualStudioToolsets
-  
-        if ($supportedVsToolsets -notcontains $toolsetVersion)
+        $desiredVisualStudioVer = "2013"
+      }
+      elseif ($toolsetVersion -eq 140)
+      {
+        $desiredVisualStudioVer = "2015"
+      }
+      elseif ($toolsetVersion -eq 141)
+      {
+        $desiredVisualStudioVer = "2017"
+      }
+      elseif ($toolsetVersion -eq 142)
+      {
+        $desiredVisualStudioVer = "2019";
+      }
+      elseif ($toolsetVersion -eq 143)
+      {
+        $desiredVisualStudioVer = "2022";
+      }
+
+      [string] $desiredVisualStudioVerNumber = (Get-VisualStudio-VersionNumber $desiredVisualStudioVer)
+      if ($VisualStudioVersion -ne $desiredVisualStudioVerNumber)
+      {
+        [bool] $shouldReload = $false
+
+        if ([double]::Parse($VisualStudioVersion) -gt [double]::Parse($desiredVisualStudioVerNumber))
         {
-            $shouldReload = $true
+          # in this case we may have a newer Visual Studio with older toolsets installed
+          [string[]] $supportedVsToolsets = Get-VisualStudioToolsets
+    
+          if ($supportedVsToolsets -notcontains $toolsetVersion)
+          {
+              $shouldReload = $true
+          }
+          else 
+          {
+            Write-Verbose "[ INFO ] Detected project using older toolset ($toolsetVersion)"
+            Write-Verbose "Loading using Visual Studio $VisualStudioVersion with toolset $toolsetVersion"
+          }
         }
         else 
         {
-          Write-Verbose "[ INFO ] Detected project using older toolset ($toolsetVersion)"
-          Write-Verbose "Loading using Visual Studio $VisualStudioVersion with toolset $toolsetVersion"
+          # project uses a newer VS version, clearly we should reload using the newer version
+          $shouldReload = $true
+        }
+
+        if ($shouldReload)
+        {
+          # We need to reload everything and use the VS version we decided upon above
+          Write-Verbose "[ RELOAD ] Project will reload because of toolset requirements change..."
+          Write-Verbose "Current = $VisualStudioVersion. Required = $desiredVisualStudioVerNumber."
+
+          $global:cptVisualStudioVersion = $desiredVisualStudioVer
+          LoadProject($vcxprojPath)
+          
+          Write-InformationTimed "Project reloaded"
         }
       }
-      else 
-      {
-        # project uses a newer VS version, clearly we should reload using the newer version
-        $shouldReload = $true
-      }
-
-      if ($shouldReload)
-      {
-        # We need to reload everything and use the VS version we decided upon above
-        Write-Verbose "[ RELOAD ] Project will reload because of toolset requirements change..."
-        Write-Verbose "Current = $VisualStudioVersion. Required = $desiredVisualStudioVerNumber."
-
-        $global:cptVisualStudioVersion = $desiredVisualStudioVer
-        LoadProject($vcxprojPath)
-        
-        Write-InformationTimed "Project reloaded"
-      }
     }
-  }
   
-  Write-InformationTimed "Detected toolset"
+    Write-InformationTimed "Detected toolset"
 
-  #-----------------------------------------------------------------------------------------------
-  # FIND FORCE INCLUDES
+    #-----------------------------------------------------------------------------------------------
+    # FIND FORCE INCLUDES
 
-  [string[]] $forceIncludeFiles = @(Get-ProjectForceIncludes)
-  Write-Verbose-Array -array $forceIncludeFiles -name "Force includes"
+    [string[]] $global:forceIncludeFiles = @(Get-ProjectForceIncludes)
+    Write-Verbose-Array -array $forceIncludeFiles -name "Force includes"
+    Add-ToProjectSpecificVariables 'forceIncludeFiles'
 
-  #-----------------------------------------------------------------------------------------------
-  # DETECT PROJECT PREPROCESSOR DEFINITIONS
+    #-----------------------------------------------------------------------------------------------
+    # DETECT PROJECT PREPROCESSOR DEFINITIONS
 
-  [string[]] $preprocessorDefinitions = @(Get-ProjectPreprocessorDefines)
-  if ([int]$global:cptVisualStudioVersion -ge 2017)
-  {
-    # [HACK] pch generation crashes on VS 15.5 because of STL library, known bug.
-    # Triggered by addition of line directives to improve std::function debugging.
-    # There's a definition that supresses line directives.
-
-    $preprocessorDefinitions += @('"-D_DEBUG_FUNCTIONAL_MACHINERY"')
-  }
-  
-  Write-InformationTimed "Detected preprocessor definitions"
-
-  Write-Verbose-Array -array $preprocessorDefinitions -name "Preprocessor definitions"
-
-  #-----------------------------------------------------------------------------------------------
-  # DETECT PROJECT ADDITIONAL INCLUDE DIRECTORIES AND CONSTRUCT INCLUDE PATHS
-
-  [string[]] $additionalIncludeDirectories = @(Get-ProjectAdditionalIncludes)
-  Write-Verbose-Array -array $additionalIncludeDirectories -name "Additional include directories"
-
-  [string[]] $includeDirectories = @(Get-ProjectIncludeDirectories)
-  Write-Verbose-Array -array $includeDirectories -name "Include directories"
-
-  Write-InformationTimed "Detected include directories"
-
-  #-----------------------------------------------------------------------------------------------
-  # FIND LIST OF CPPs TO PROCESS
-
-  $global:cptFilesToProcess = @{ } # reset to empty
-
-  foreach ($fileToCompileInfo in (Get-ProjectFilesToCompile))
-  {
-    if ($fileToCompileInfo.File)
+    [string[]] $global:preprocessorDefinitions = @(Get-ProjectPreprocessorDefines)
+    if ([int]$global:cptVisualStudioVersion -ge 2017)
     {
-      $global:cptFilesToProcess[$fileToCompileInfo.File] = $fileToCompileInfo
-    }
-  }
-  
-  Write-InformationTimed "Detected cpps to process"
+      # [HACK] pch generation crashes on VS 15.5 because of STL library, known bug.
+      # Triggered by addition of line directives to improve std::function debugging.
+      # There's a definition that supresses line directives.
 
+      $preprocessorDefinitions += @('"-D_DEBUG_FUNCTIONAL_MACHINERY"')
+    }
+    Add-ToProjectSpecificVariables 'preprocessorDefinitions'
+    
+    Write-InformationTimed "Detected preprocessor definitions"
+
+    Write-Verbose-Array -array $preprocessorDefinitions -name "Preprocessor definitions"
+
+    #-----------------------------------------------------------------------------------------------
+    # DETECT PROJECT ADDITIONAL INCLUDE DIRECTORIES AND CONSTRUCT INCLUDE PATHS
+
+    [string[]] $global:additionalIncludeDirectories = @(Get-ProjectAdditionalIncludes)
+    Write-Verbose-Array -array $additionalIncludeDirectories -name "Additional include directories"
+    Add-ToProjectSpecificVariables 'additionalIncludeDirectories'
+
+    [string[]] $includeDirectories = @(Get-ProjectIncludeDirectories)
+    Write-Verbose-Array -array $includeDirectories -name "Include directories"
+    Add-ToProjectSpecificVariables 'includeDirectories'
+
+    Write-InformationTimed "Detected include directories"
+
+    #-----------------------------------------------------------------------------------------------
+    # FIND LIST OF CPPs TO PROCESS
+
+    $global:cptFilesToProcess = @{ } # reset to empty
+
+    foreach ($fileToCompileInfo in (Get-ProjectFilesToCompile))
+    {
+      if ($fileToCompileInfo.File)
+      {
+        $global:cptFilesToProcess[$fileToCompileInfo.File] = $fileToCompileInfo
+      }
+    }
+    
+    Add-ToProjectSpecificVariables 'cptFilesToProcess'
+    
+    Write-InformationTimed "Detected cpps to process"
+  }
   #-----------------------------------------------------------------------------------------------
   # LOCATE STDAFX.H DIRECTORY
 
@@ -1291,6 +1301,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   }
   
   Write-InformationTimed "Detected PCH information"
+
 
   #-----------------------------------------------------------------------------------------------
   # FILTER LIST OF CPPs TO PROCESS
