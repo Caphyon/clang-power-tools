@@ -1387,7 +1387,6 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
 
   if ($kCacheRepositorySaveIsNeeded)
   {
-    write-output "LK"
     Write-InformationTimed "Before serializing project"
     Save-ProjectToCacheRepo
     Write-InformationTimed "After serializing project"
