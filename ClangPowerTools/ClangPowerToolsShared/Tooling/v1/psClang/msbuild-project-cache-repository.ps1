@@ -14,7 +14,7 @@ Function Remove-CachedProjectFile([Parameter(Mandatory = $true)][string] $aCache
   }
 }
 
-Function Load-CacheRepositoryIndex()
+Function Get-CacheRepositoryIndex()
 {
   Write-Verbose "Loading project cache repository index"
   [System.Collections.Hashtable] $cacheIndex = @{}
@@ -23,7 +23,15 @@ Function Load-CacheRepositoryIndex()
     [string] $cptCacheRepoIndex = "$kCptCacheRepo\index.dat"
     if (Test-Path $cptCacheRepoIndex)
     {
-      $cacheIndex = [System.Management.Automation.PSSerializer]::Deserialize((Get-Content $cptCacheRepoIndex))
+      try
+      {
+        $cacheIndex = [System.Management.Automation.PSSerializer]::Deserialize((Get-Content $cptCacheRepoIndex))
+      }
+      catch
+      {
+        Write-Verbose "Error: Could not deserialize corrupted cache repository index. Rebuilding from scratch..."
+        return $cacheIndex
+      }
     }
   }
   return $cacheIndex
@@ -77,7 +85,7 @@ Function Save-ProjectToCacheRepo()
 
   $projHash = (Get-FileHash $MSBuildProjectFullPath)
   
-  [System.Collections.Hashtable] $cacheIndex = Load-CacheRepositoryIndex
+  [System.Collections.Hashtable] $cacheIndex = Get-CacheRepositoryIndex
 
   $cacheObject = New-Object PsObject -Prop @{ "ProjectFile"            = $MSBuildProjectFullPath
                                             ; "ProjectHash"            = $projHash.Hash
@@ -99,7 +107,7 @@ Function Load-ProjectFromCache([Parameter(Mandatory = $true)][string] $aVcxprojP
     return $false
   }
 
-  [System.Collections.Hashtable] $cacheIndex = Load-CacheRepositoryIndex
+  [System.Collections.Hashtable] $cacheIndex = Get-CacheRepositoryIndex
   if ( ! $cacheIndex.ContainsKey($aVcxprojPath))
   {
     Write-Verbose "Cache repository does not contain record of project"
@@ -110,7 +118,7 @@ Function Load-ProjectFromCache([Parameter(Mandatory = $true)][string] $aVcxprojP
 
   if ( ! (Test-Path $projectCacheObject.CachedDataPath))
   {
-    Write-Verbose "[ERR] Cache repository contains record of project but cached file no longer exists"
+    Write-Verbose "Error: Cache repository contains record of project but cached file no longer exists"
     return $false
   }
   
@@ -144,8 +152,19 @@ Function Load-ProjectFromCache([Parameter(Mandatory = $true)][string] $aVcxprojP
 
   $global:vcxprojPath = $aVcxprojPath
 
+  Write-Verbose "Loading cached project from $($projectCacheObject.CachedDataPath)"
   [string] $data = Get-Content $projectCacheObject.CachedDataPath
-  $deserialized = [System.Management.Automation.PSSerializer]::Deserialize($data)
+  $deserialized = $null
+  try 
+  {
+    $deserialized = [System.Management.Automation.PSSerializer]::Deserialize($data)
+  }
+  catch
+  {
+    Write-Verbose "Error: Failure to deserialize cached project data. Discarding corrupted file"
+    Remove-CachedProjectFile $projectCacheObject.CachedDataPath
+    return $false
+  }
 
   [System.Collections.Hashtable] $projectSpecificVariablesMap = $deserialized.ProjectSpecificVariables
   [System.Collections.Hashtable] $genericVariablesMap = $deserialized.GenericVariables
