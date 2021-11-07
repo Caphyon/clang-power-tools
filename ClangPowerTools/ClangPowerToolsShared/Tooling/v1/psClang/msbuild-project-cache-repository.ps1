@@ -6,7 +6,7 @@ Function Is-CacheLoadingEnabled()
   return (Test-Path $kCptCacheRepo)
 }
 
-Function Remove-CachedProjectFile([Parameter(Mandatory = $false)][string] $aCachedFilePath)
+Function Remove-CachedProjectFile([Parameter(Mandatory = $true)][string] $aCachedFilePath)
 {
   if ($aCachedFilePath.StartsWith($kCptCacheRepo))
   {
@@ -16,6 +16,7 @@ Function Remove-CachedProjectFile([Parameter(Mandatory = $false)][string] $aCach
 
 Function Load-CacheRepositoryIndex()
 {
+  Write-Verbose "Loading project cache repository index"
   [System.Collections.Hashtable] $cacheIndex = @{}
   if (Is-CacheLoadingEnabled)
   {
@@ -28,8 +29,9 @@ Function Load-CacheRepositoryIndex()
   return $cacheIndex
 }
 
-Function Save-CacheRepositoryIndex([System.Collections.Hashtable] $cacheIndex)
+Function Save-CacheRepositoryIndex([Parameter(Mandatory = $true)][System.Collections.Hashtable] $cacheIndex)
 {
+  Write-Verbose "Saving project cache repository index"
   if (!  (Is-CacheLoadingEnabled) )
   {
     return
@@ -47,17 +49,18 @@ Function Join-ConfigurationPlatformScriptArgs()
 
 Function Save-ProjectToCacheRepo()
 {
+  Write-Verbose "Saving current project data to cache repository"
   if (!  (Is-CacheLoadingEnabled) )
   {
     return
   }
 
+  Write-Verbose "Collecting $($global:ProjectSpecificVariables.Count) project specific variables"
   [System.Collections.Hashtable] $projectVariablesMap = @{}
   foreach ($varName in $global:ProjectSpecificVariables)
   {
     $projectVariablesMap[$varName] = Get-Variable -name $varName -ValueOnly
   }
-
   
   [System.Collections.Hashtable] $genericVariablesMap = @{}
   $genericVariablesMap['cptVisualStudioVersion'  ] = Get-Variable 'cptVisualStudioVersion'   -scope Global -ValueOnly
@@ -70,6 +73,7 @@ Function Save-ProjectToCacheRepo()
   [string] $pathToSave = "$kCptCacheRepo\$(Get-RandomString).dat"
   $serialized = [System.Management.Automation.PSSerializer]::Serialize($dataToSerialize)
   $serialized > $pathToSave
+  Write-Verbose "Wrote project to cache repository using moniker $pathToSave"
 
   $projHash = (Get-FileHash $MSBuildProjectFullPath)
   
@@ -87,15 +91,18 @@ Function Save-ProjectToCacheRepo()
 }
 
 Function Load-ProjectFromCache([Parameter(Mandatory = $true)][string] $aVcxprojPath)
-{    
+{
+  Write-Verbose "Trying to load project $aVcxprojPath from cache repository"
   if (!  (Is-CacheLoadingEnabled) )
   {
+    Write-Verbose "Cache repository not enabled in %APPDATA%/ClangPowerTools/CacheRepository"
     return $false
   }
 
   [System.Collections.Hashtable] $cacheIndex = Load-CacheRepositoryIndex
   if ( ! $cacheIndex.ContainsKey($aVcxprojPath))
   {
+    Write-Verbose "Cache repository does not contain record of project"
     return $false
   }
 
@@ -103,11 +110,13 @@ Function Load-ProjectFromCache([Parameter(Mandatory = $true)][string] $aVcxprojP
 
   if ( ! (Test-Path $projectCacheObject.CachedDataPath))
   {
+    Write-Verbose "[ERR] Cache repository contains record of project but cached file no longer exists"
     return $false
   }
   
   if ($projectCacheObject.CptCacheSyntaxVersion -ne $kCacheSyntaxVer)
   {
+    Write-Verbose "Cached version of project uses older syntax version. Discarding..."
     # the cached version uses an outdated syntax, safely discard it
     Remove-CachedProjectFile $projectCacheObject.CachedDataPath
     return $false
@@ -116,6 +125,7 @@ Function Load-ProjectFromCache([Parameter(Mandatory = $true)][string] $aVcxprojP
   $projHash = (Get-FileHash $aVcxprojPath)
   if ($projectCacheObject.ProjectHash -ne $projHash.Hash)
   {
+    Write-Verbose "Cached version of project has different file hash. Discarding..."
     # project file hash not matching, safely discard cached version
     Remove-CachedProjectFile $projectCacheObject.CachedDataPath
     return $false
@@ -123,6 +133,7 @@ Function Load-ProjectFromCache([Parameter(Mandatory = $true)][string] $aVcxprojP
 
   if ($projectCacheObject.ConfigurationPlatform -ne (Join-ConfigurationPlatformScriptArgs))
   {
+    Write-Verbose "Cached version of project uses different configuration platform. Discarding..."
     # config-platform not maching, safely discard cached version
     Remove-CachedProjectFile $projectCacheObject.CachedDataPath
     return $false
@@ -139,6 +150,7 @@ Function Load-ProjectFromCache([Parameter(Mandatory = $true)][string] $aVcxprojP
   [System.Collections.Hashtable] $projectSpecificVariablesMap = $deserialized.ProjectSpecificVariables
   [System.Collections.Hashtable] $genericVariablesMap = $deserialized.GenericVariables
 
+  Write-Verbose "Cached version of project has $($projectSpecificVariablesMap.Count) variables to load"
   foreach ($var in $projectSpecificVariablesMap.Keys)
   {
     Set-Var -name $var -value $projectSpecificVariablesMap[$var]
@@ -151,5 +163,6 @@ Function Load-ProjectFromCache([Parameter(Mandatory = $true)][string] $aVcxprojP
     Set-Variable -name $var -value $genericVariablesMap[$var] -scope Global
   }
 
+  Write-Verbose "Cache repository - project load was successful"
   return $true
 }
