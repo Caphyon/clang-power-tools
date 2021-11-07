@@ -308,6 +308,7 @@ if (Test-Path $kCptRegHiveSettings)
  , "msbuild-expression-eval.ps1"
  , "msbuild-project-data.ps1"
  , "msbuild-project-load.ps1"
+ , "msbuild-project-cache-repository.ps1"
  , "get-header-references.ps1"
  , "itemdefinition-context.ps1"
  , "jsondb-export.ps1"
@@ -330,9 +331,8 @@ else
   Set-Variable -name kClangTidy             -value "clang-tidy.exe"     -option Constant
 }
 
-
-Set-Variable -name kCptCacheRepo            -value "$env:APPDATA\ClangPowerTools\CacheRepository" -option Constant
 Set-Variable -name kCacheRepositorySaveIsNeeded -value $false 
+Set-Variable -name kPsMajorVersion          -value (Get-Host).Version.Major -Option Constant 
 
 #-------------------------------------------------------------------------------------------------
 # Custom Types
@@ -1058,17 +1058,18 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   
   try
   { 
-    Set-Variable 'kCacheRepositorySaveIsNeeded' -scope Global -value $false
+    Set-Variable 'kCacheRepositorySaveIsNeeded' -value $false
     Write-InformationTimed "Before project load"
     
     if (Is-CacheLoadingEnabled)
     {
       Write-InformationTimed "Trying to load project from cache"
       [bool] $loadedFromCache = Load-ProjectFromCache $vcxprojPath
+      
       if (!$loadedFromCache)
       {
         LoadProject $vcxprojPath
-        Set-Variable 'kCacheRepositorySaveIsNeeded' -scope Global -value $true
+        Set-Variable 'kCacheRepositorySaveIsNeeded' -value $true
       }
     }
     else 
@@ -1373,6 +1374,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
 
   if ($kCacheRepositorySaveIsNeeded)
   {
+    write-output "LK"
     Write-InformationTimed "Before serializing project"
     Save-ProjectToCacheRepo
     Write-InformationTimed "After serializing project"
