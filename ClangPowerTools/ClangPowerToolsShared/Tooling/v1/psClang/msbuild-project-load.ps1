@@ -287,7 +287,7 @@ Function Load-ProjectFromCache([string] $aVcxprojPath)
 {    
   if (!  (Is-CacheLoadingEnabled) )
   {
-    return
+    return $false
   }
 
   [System.Collections.Hashtable] $cacheIndex = Load-CacheRepositoryIndex

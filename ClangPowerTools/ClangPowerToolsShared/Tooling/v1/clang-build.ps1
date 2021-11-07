@@ -999,7 +999,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   
   try
   { 
-    
+    Set-Variable 'kCacheRepositorySaveIsNeeded' -scope Global -value $false
     Write-InformationTimed "Before project load"
     
     if (Is-CacheLoadingEnabled)
