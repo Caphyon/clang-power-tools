@@ -6,6 +6,14 @@ Function Is-CacheLoadingEnabled()
   return (Test-Path $kCptCacheRepo)
 }
 
+Function Remove-CachedProjectFile([Parameter(Mandatory = $false)][string] $aCachedFilePath)
+{
+  if ($aCachedFilePath.StartsWith($kCptCacheRepo))
+  {
+    Remove-Item $aCachedFilePath | Out-Null
+  }
+}
+
 Function Load-CacheRepositoryIndex()
 {
   [System.Collections.Hashtable] $cacheIndex = @{}
@@ -30,6 +38,11 @@ Function Save-CacheRepositoryIndex([System.Collections.Hashtable] $cacheIndex)
   [string] $cptCacheRepoIndex = "$kCptCacheRepo\index.dat"
   $serialized = [System.Management.Automation.PSSerializer]::Serialize($cacheIndex)
   $serialized > $cptCacheRepoIndex
+}
+
+Function Join-ConfigurationPlatformScriptArgs()
+{
+  return ($aVcxprojConfigPlatform -join ",")
 }
 
 Function Save-ProjectToCacheRepo()
@@ -65,7 +78,7 @@ Function Save-ProjectToCacheRepo()
   $cacheObject = New-Object PsObject -Prop @{ "ProjectFile"            = $MSBuildProjectFullPath
                                             ; "ProjectHash"            = $projHash.Hash
                                             ; "CachedDataPath"         = $pathToSave
-                                            ; "ConfigurationPlatform"  = $aVcxprojConfigPlatform
+                                            ; "ConfigurationPlatform"  = Join-ConfigurationPlatformScriptArgs
                                             ; "CptCacheSyntaxVersion"  = $kCacheSyntaxVer
                                             }
   $cacheIndex[$MSBuildProjectFullPath] = $cacheObject
@@ -73,7 +86,7 @@ Function Save-ProjectToCacheRepo()
   Save-CacheRepositoryIndex $cacheIndex
 }
 
-Function Load-ProjectFromCache([string] $aVcxprojPath)
+Function Load-ProjectFromCache([Parameter(Mandatory = $true)][string] $aVcxprojPath)
 {    
   if (!  (Is-CacheLoadingEnabled) )
   {
@@ -95,21 +108,23 @@ Function Load-ProjectFromCache([string] $aVcxprojPath)
   
   if ($projectCacheObject.CptCacheSyntaxVersion -ne $kCacheSyntaxVer)
   {
-    # the cached version uses an outdated syntax, discard it
-    Remove-Item $projectCacheObject.CachedDataPath
+    # the cached version uses an outdated syntax, safely discard it
+    Remove-CachedProjectFile $projectCacheObject.CachedDataPath
     return $false
   }
   
   $projHash = (Get-FileHash $aVcxprojPath)
   if ($projectCacheObject.ProjectHash -ne $projHash.Hash)
   {
-    Remove-Item $projectCacheObject.CachedDataPath
+    # project file hash not matching, safely discard cached version
+    Remove-CachedProjectFile $projectCacheObject.CachedDataPath
     return $false
   }
 
-  if ($projectCacheObject.ConfigurationPlatform -ne $aVcxprojConfigPlatform)
+  if ($projectCacheObject.ConfigurationPlatform -ne (Join-ConfigurationPlatformScriptArgs))
   {
-    Remove-Item $projectCacheObject.CachedDataPath
+    # config-platform not maching, safely discard cached version
+    Remove-CachedProjectFile $projectCacheObject.CachedDataPath
     return $false
   }
 
