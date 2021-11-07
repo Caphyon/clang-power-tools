@@ -12,6 +12,11 @@ if (! (Test-Path variable:global:ProjectSpecificVariables))
   [System.Collections.ArrayList] $global:ProjectSpecificVariables    = @()
 }
 
+Function Add-ToProjectSpecificVariables([Parameter(Mandatory = $true)] [string] $variableName)
+{
+  $global:ProjectSpecificVariables.Add($variableName) > $null
+}
+
 if (! (Test-Path variable:global:ScriptParameterBackupValues))
 {
   [System.Collections.Hashtable] $global:ScriptParameterBackupValues = @{}
@@ -91,7 +96,7 @@ Function Set-Var([parameter(Mandatory = $false)][string] $name
 
     if (!$asScriptParameter -and !$global:ProjectSpecificVariables.Contains($name))
     {
-        $global:ProjectSpecificVariables.Add($name) > $null
+      Add-ToProjectSpecificVariables $name
     }
 }
 
