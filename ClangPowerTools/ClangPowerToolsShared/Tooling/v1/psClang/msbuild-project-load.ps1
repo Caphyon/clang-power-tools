@@ -210,27 +210,31 @@ Function Clear-Vars()
     Reset-ProjectItemContext
 }
 
+Function Is-CacheLoadingEnabled()
+{
+  # if the cache repository directory exists, then we use caching
+  return (Test-Path $kCptCacheRepo)
+}
+
 Function Load-CacheRepositoryIndex()
 {
-  if (! (Test-Path $kCptCacheRepo))
-  {
-    New-Item $kCptCacheRepo -ItemType "Directory"
-  }
-
-  [string] $cptCacheRepoIndex = "$kCptCacheRepo\index.dat"
   [System.Collections.Hashtable] $cacheIndex = @{}
-  if (Test-Path $cptCacheRepoIndex)
+  if (Is-CacheLoadingEnabled)
   {
-    $cacheIndex = [System.Management.Automation.PSSerializer]::Deserialize((Get-Content $cptCacheRepoIndex))
+    [string] $cptCacheRepoIndex = "$kCptCacheRepo\index.dat"
+    if (Test-Path $cptCacheRepoIndex)
+    {
+      $cacheIndex = [System.Management.Automation.PSSerializer]::Deserialize((Get-Content $cptCacheRepoIndex))
+    }
   }
   return $cacheIndex
 }
 
 Function Save-CacheRepositoryIndex([System.Collections.Hashtable] $cacheIndex)
 {
-  if (! (Test-Path $kCptCacheRepo))
+  if (!  (Is-CacheLoadingEnabled) )
   {
-    New-Item $kCptCacheRepo -ItemType "Directory"
+    return
   }
 
   [string] $cptCacheRepoIndex = "$kCptCacheRepo\index.dat"
@@ -240,6 +244,11 @@ Function Save-CacheRepositoryIndex([System.Collections.Hashtable] $cacheIndex)
 
 Function Save-ProjectToCacheRepo()
 {
+  if (!  (Is-CacheLoadingEnabled) )
+  {
+    return
+  }
+
   [System.Collections.Hashtable] $projectVariablesMap = @{}
   foreach ($varName in $global:ProjectSpecificVariables)
   {
@@ -275,7 +284,12 @@ Function Save-ProjectToCacheRepo()
 }
 
 Function Load-ProjectFromCache([string] $aVcxprojPath)
-{
+{    
+  if (!  (Is-CacheLoadingEnabled) )
+  {
+    return
+  }
+
   [System.Collections.Hashtable] $cacheIndex = Load-CacheRepositoryIndex
   if ( ! $cacheIndex.ContainsKey($aVcxprojPath))
   {

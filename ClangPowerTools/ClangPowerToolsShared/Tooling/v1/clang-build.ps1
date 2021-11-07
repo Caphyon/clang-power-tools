@@ -184,7 +184,6 @@ param( [alias("proj")]
 
 Set-StrictMode -version latest
 $ErrorActionPreference = 'Continue'
-cd D:\work\advinst
 
 # System Architecture Constants
 # ------------------------------------------------------------------------------------------------
@@ -1062,12 +1061,19 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     
     Write-InformationTimed "Before project load"
     
-    Write-InformationTimed "Trying to load project from cache"
-    [bool] $loadedFromCache = Load-ProjectFromCache $vcxprojPath
-    if (!$loadedFromCache)
+    if (Is-CacheLoadingEnabled)
+    {
+      Write-InformationTimed "Trying to load project from cache"
+      [bool] $loadedFromCache = Load-ProjectFromCache $vcxprojPath
+      if (!$loadedFromCache)
+      {
+        LoadProject $vcxprojPath
+        Set-Variable 'kCacheRepositorySaveIsNeeded' -scope Global -value $true
+      }
+    }
+    else 
     {
       LoadProject $vcxprojPath
-      Set-Variable 'kCacheRepositorySaveIsNeeded' -scope Global -value $true
     }
     
     Write-InformationTimed "After project load"
@@ -1456,7 +1462,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
 #-------------------------------------------------------------------------------------------------
 # Script entry point
 
-Clear-Host # clears console
+#Clear-Host # clears console
 
 Write-InformationTimed "Cleared console. Let's begin..."
 
