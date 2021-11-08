@@ -77,13 +77,19 @@ Function Save-ProjectToCacheRepo()
   $dataToSerialize = New-Object PsObject -Prop @{ "ProjectSpecificVariables"  = $projectVariablesMap
                                                 ; "GenericVariables"          = $genericVariablesMap
                                                 }
-  
-  [string] $pathToSave = "$kCptCacheRepo\$(Get-RandomString).dat"
+  [string] $pathToSave = ""
+  while ($true)
+  {
+    [string] $pathToSave = "$kCptCacheRepo\$(Get-RandomString).dat"
+    # make sure we don't overwrite an already existing cache entry
+    if (! (Test-Path $pathToSave))
+    {
+      break
+    }
+  }
   $serialized = [System.Management.Automation.PSSerializer]::Serialize($dataToSerialize)
   $serialized > $pathToSave
   Write-Verbose "Wrote project to cache repository using moniker $pathToSave"
-
-  #$projHash = (Get-FileHash $MSBuildProjectFullPath)
   
   [System.Collections.Hashtable] $projectFilesHashes = @{}
   foreach ($projectFile in $global:ProjectInputFiles)
