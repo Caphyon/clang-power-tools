@@ -45,6 +45,23 @@ Function Save-CacheRepositoryIndex([Parameter(Mandatory = $true)][System.Collect
     return
   }
 
+  [System.Collections.ArrayList] $indexKeys = @()
+  foreach ($keyIndex in $cacheIndex.Keys)
+  {
+    # make sure we don't invalidate the cacheIndex.Keys collection iterators when modifying it
+    $indexKeys.Add($keyIndex) > $null
+  }
+
+  foreach ($indexKey in $indexKeys)
+  {
+    [string] $CachedDataPath = $cacheIndex[$indexKey].CachedDataPath
+    if (! (Test-Path $CachedDataPath))
+    {
+      Write-Verbose "Pruning zombie entry ($($indexKey) : $($CachedDataPath)) from cache repository index"
+      $cacheIndex.Remove($indexKey) > $null
+    }
+  }
+
   [string] $cptCacheRepoIndex = "$kCptCacheRepo\index.dat"
   $serialized = [System.Management.Automation.PSSerializer]::Serialize($cacheIndex)
   $serialized > $cptCacheRepoIndex
@@ -144,7 +161,7 @@ Function Load-ProjectFromCache([Parameter(Mandatory = $true)][string] $aVcxprojP
   [System.Collections.Hashtable] $projectFilesHashes = $projectCacheObject.ProjectFilesHashes
   foreach ($projectFilePath in $projectFilesHashes.Keys)
   {
-    Write-Verbose 'Checking hash of project file $projectFilePath'
+    Write-Verbose "Checking hash of project file $projectFilePath"
 
     $newFileHash = (Get-FileHash $projectFilePath).Hash
 
