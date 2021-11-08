@@ -89,7 +89,7 @@ namespace ClangPowerTools.Commands
       cancellationToken: package.DisposalToken);
       var tidyToolWindow = (TidyToolWindow)window;
       FilePathCollector fileCollector = new FilePathCollector();
-      var paths = fileCollector.Collect(mItemsCollector.OriginalItems).ToList();
+      var paths = fileCollector.Collect(mItemsCollector.Items).ToList();
       if (tidyToolWindow != null)
         tidyToolWindow.OpenTidyToolWindow(paths);
     }
@@ -104,8 +104,8 @@ namespace ClangPowerTools.Commands
       cancellationToken: package.DisposalToken);
       var tidyToolWindow = (TidyToolWindow)window;
       FilePathCollector fileCollector = new FilePathCollector();
-      if (paths == null)
-        paths = fileCollector.Collect(mItemsCollector.OriginalItems).ToList();
+      //if (paths == null)
+      //  paths = fileCollector.Collect(mItemsCollector.OriginalItems).ToList();
       if (tidyToolWindow != null && paths != null)
         tidyToolWindow.UpdateToolWindow(paths);
     }
@@ -115,19 +115,7 @@ namespace ClangPowerTools.Commands
       if (CommandIds.kTidyToolWindowId != aCommandId && CommandIds.kTidyFixId != aCommandId)
       {
         await PrepareCommmandAsync(commandUILocation);
-      }
-
-      if (paths != null)
-      {
-        mItemsCollector.Items = new List<IItem>();
-        foreach (var path in paths)
-        {
-          mItemsCollector.Items.Add(mItemsCollector.OriginalItems.Where(a => a.GetPath() == path).FirstOrDefault());
-        }
-      }
-      else
-      {
-        mItemsCollector.OriginalItems = new List<IItem>(mItemsCollector.Items);
+        CacheProjectsFromItems();
       }
 
       if (CommandIds.kTidyToolWindowId == aCommandId || CommandIds.kTidyFixId == aCommandId)
@@ -173,7 +161,7 @@ namespace ClangPowerTools.Commands
                 settingsHandlder.SaveSettings();
               }
 
-              RunScript(aCommandId, false);
+              RunScript(aCommandId, false, paths);
             }
             catch (Exception exception)
             {
