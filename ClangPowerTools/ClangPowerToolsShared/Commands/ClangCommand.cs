@@ -244,7 +244,7 @@ namespace ClangPowerTools
             var itemRelatedParameters = string.Empty;
             if (item is CurrentProject || item is Project || item is Solution)
             {
-              itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item);
+              itemRelatedParameters = ScriptGenerator.GetProjectRelatedParameters(cacheProjectsItemsModel);
             }
             else if (item is CurrentProjectItem || item is ProjectItem)
             {

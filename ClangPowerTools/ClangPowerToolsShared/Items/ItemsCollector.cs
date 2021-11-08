@@ -196,7 +196,6 @@ namespace ClangPowerTools
           GetProjectItem(item.Object as ProjectItem);
         }
       }
-      OriginalItems = new(Items);
     }
 
     /// <summary>

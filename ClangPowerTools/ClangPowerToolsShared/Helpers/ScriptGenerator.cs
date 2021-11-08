@@ -37,6 +37,16 @@ namespace ClangPowerTools.Helpers
       return string.Join(" ", tokens);
     }
 
+    public static string GetProjectsRelatedParameters(CacheProjectsItemsModel cacheProjectsItemsModel)
+    {
+      var tokens = new List<string>
+      {
+        $"{ScriptConstants.kProject} {JoinPathsToStringScript(cacheProjectsItemsModel.ProjectsStringList)}",
+        $"{ScriptConstants.kActiveConfiguration} ''{cacheProjectsItemsModel.Configuration}|{cacheProjectsItemsModel.Platform}''"
+      };
+      return string.Join(" ", tokens);
+    }
+
     private static string JoinPathsToStringScript(List<string> paths)
     {
       StringBuilder stringBuilder = new StringBuilder("(''");
