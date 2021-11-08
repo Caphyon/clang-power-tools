@@ -218,52 +218,42 @@ namespace ClangPowerTools
         {
           var itemRelatedParameters = ScriptGenerator.GetItemRelatedParametersCustomPaths(paths, cacheProjectsItemsModel);
           Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
-          PowerShellWrapper.Invoke(Script, runningProcesses);
         }
         else
         {
-          foreach (var item in mItemsCollector.Items)
+          var item = mItemsCollector.Items[0];
+          var ignoreItem = new IgnoreItem();
+
+          //TODO Display all ignored files
+          //if (ignoreItem.Check(item))
+          //{
+          //  OnIgnoreItem(new ClangCommandMessageEventArgs(ignoreItem.IgnoreCompileOrTidyMessage, false));
+          //}
+
+          //TODO Handle CreateTemporaryFileForTidy
+          if (commandId == CommandIds.kTidyId || commandId == CommandIds.kTidyFixId || CommandIds.kTidyToolWindowId == commandId ||
+            commandId == CommandIds.kTidyToolbarId || commandId == CommandIds.kTidyFixToolbarId)
           {
-            if (StopCommandActivated)
-              break;
-
-            var ignoreItem = new IgnoreItem();
-
-            if (ignoreItem.Check(item))
-            {
-              OnIgnoreItem(new ClangCommandMessageEventArgs(ignoreItem.IgnoreCompileOrTidyMessage, false));
-              continue;
-            }
-
-            if (commandId == CommandIds.kTidyId || commandId == CommandIds.kTidyFixId || CommandIds.kTidyToolWindowId == commandId ||
-              commandId == CommandIds.kTidyToolbarId || commandId == CommandIds.kTidyFixToolbarId)
-            {
-              tempClangTidyFilePath = CreateTemporaryFileForTidy(item);
-            }
-
-            var itemRelatedParameters = string.Empty;
-            if (item is CurrentProject || item is Project || item is Solution)
-            {
-              itemRelatedParameters = ScriptGenerator.GetProjectRelatedParameters(cacheProjectsItemsModel);
-            }
-            else if (item is CurrentProjectItem || item is ProjectItem)
-            {
-              itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(mItemsCollector.Items);
-            }
-
-            // From the first parameter is removed the last character which is mandatory "'"
-            // and added to the end of the string to close the script escaping command
-            Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
-
-            ItemHierarchy = vsSolution != null ? AutomationUtil.GetItemHierarchy(vsSolution, item) : null;
-
-            PowerShellWrapper.Invoke(Script, runningProcesses);
-            if (item is ProjectItem || item is CurrentProjectItem)
-            {
-              break;
-            }
+            tempClangTidyFilePath = CreateTemporaryFileForTidy(item);
           }
+
+          var itemRelatedParameters = string.Empty;
+          if (item is CurrentProject || item is Project || item is Solution)
+          {
+            itemRelatedParameters = ScriptGenerator.GetProjectRelatedParameters(cacheProjectsItemsModel);
+          }
+          else if (item is CurrentProjectItem || item is ProjectItem)
+          {
+            itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(mItemsCollector.Items);
+          }
+
+          // From the first parameter is removed the last character which is mandatory "'"
+          // and added to the end of the string to close the script escaping command
+          Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
+
+          ItemHierarchy = vsSolution != null ? AutomationUtil.GetItemHierarchy(vsSolution, item) : null;
         }
+        PowerShellWrapper.Invoke(Script, runningProcesses);
 
         if (StopCommandActivated)
         {
