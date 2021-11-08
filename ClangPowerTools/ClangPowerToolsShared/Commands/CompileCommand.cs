@@ -71,6 +71,7 @@ namespace ClangPowerTools.Commands
     public async Task RunClangCompileAsync(int aCommandId, CommandUILocation commandUILocation, bool jsonCompilationDbActive = false)
     {
       await PrepareCommmandAsync(commandUILocation, jsonCompilationDbActive);
+      CacheProjectsFromItems();
 
       await Task.Run(() =>
       {
