@@ -44,6 +44,7 @@ namespace ClangPowerTools
         ".inl"
       };
 
+    public const string kProjectFileExtension = ".vcxproj";
     public const string FileExtensionsSelectFile = "Code files (*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx;)|*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx";
 
     public const string kCMakeConfigFile = "cmakelists.txt";

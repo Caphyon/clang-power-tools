@@ -2,6 +2,7 @@
 using ClangPowerTools.Script;
 using ClangPowerToolsShared.Commands.Models;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace ClangPowerTools.Helpers
@@ -28,6 +29,10 @@ namespace ClangPowerTools.Helpers
 
     public static string GetItemRelatedParametersCustomPaths(List<string> filePaths, CacheProjectsItemsModel cacheProjectsItemsModel)
     {
+      if (filePaths.Count > 0 && ScriptConstants.kProjectFileExtension == (Path.GetExtension(filePaths[0])))
+      {
+        return GetProjectRelatedParameters(cacheProjectsItemsModel);
+      }
       var tokens = new List<string>
       {
         $"{ScriptConstants.kProject} {JoinPathsToStringScript(cacheProjectsItemsModel.ProjectsStringList)}",
@@ -37,7 +42,7 @@ namespace ClangPowerTools.Helpers
       return string.Join(" ", tokens);
     }
 
-    public static string GetProjectsRelatedParameters(CacheProjectsItemsModel cacheProjectsItemsModel)
+    public static string GetProjectRelatedParameters(CacheProjectsItemsModel cacheProjectsItemsModel)
     {
       var tokens = new List<string>
       {
