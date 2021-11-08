@@ -12,6 +12,11 @@ if (! (Test-Path variable:global:ProjectSpecificVariables))
   [System.Collections.ArrayList] $global:ProjectSpecificVariables    = @()
 }
 
+if (! (Test-Path variable:global:ProjectInputFiles))
+{
+  [System.Collections.ArrayList] $global:ProjectInputFiles = @{}
+}
+
 Function Add-ToProjectSpecificVariables([Parameter(Mandatory = $true)] [string] $variableName)
 {
   $global:ProjectSpecificVariables.Add($variableName) > $null
@@ -211,6 +216,8 @@ Function Clear-Vars()
     $global:ScriptParameterBackupValues.Clear()
 
     $global:ProjectSpecificVariables.Clear()
+
+    $global:ProjectInputFiles.Clear()
 
     Reset-ProjectItemContext
 }
@@ -638,6 +645,8 @@ function ParseProjectFile([string] $projectFilePath)
     Write-Verbose "`nSanitizing $projectFilePath"
 
     [xml] $fileXml = Get-Content -LiteralPath $projectFilePath
+
+    $global:ProjectInputFiles.Add($projectFilePath) > $null
 
     Push-Location -LiteralPath (Get-FileDirectory -filePath $projectFilePath)
 

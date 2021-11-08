@@ -83,12 +83,17 @@ Function Save-ProjectToCacheRepo()
   $serialized > $pathToSave
   Write-Verbose "Wrote project to cache repository using moniker $pathToSave"
 
-  $projHash = (Get-FileHash $MSBuildProjectFullPath)
+  #$projHash = (Get-FileHash $MSBuildProjectFullPath)
+  
+  [System.Collections.Hashtable] $projectFilesHashes = @{}
+  foreach ($projectFile in $global:ProjectInputFiles)
+  {
+    $projectFilesHashes[$projectFile] = (Get-FileHash $projectFile).Hash
+  }
   
   [System.Collections.Hashtable] $cacheIndex = Get-CacheRepositoryIndex
 
-  $cacheObject = New-Object PsObject -Prop @{ "ProjectFile"            = $MSBuildProjectFullPath
-                                            ; "ProjectHash"            = $projHash.Hash
+  $cacheObject = New-Object PsObject -Prop @{ "ProjectFilesHashes"     = $projectFilesHashes
                                             ; "CachedDataPath"         = $pathToSave
                                             ; "ConfigurationPlatform"  = Join-ConfigurationPlatformScriptArgs
                                             ; "CptCacheSyntaxVersion"  = $kCacheSyntaxVer
@@ -130,13 +135,20 @@ Function Load-ProjectFromCache([Parameter(Mandatory = $true)][string] $aVcxprojP
     return $false
   }
   
-  $projHash = (Get-FileHash $aVcxprojPath)
-  if ($projectCacheObject.ProjectHash -ne $projHash.Hash)
+  [System.Collections.Hashtable] $projectFilesHashes = $projectCacheObject.ProjectFilesHashes
+  foreach ($projectFilePath in $projectFilesHashes.Keys)
   {
-    Write-Verbose "Cached version of project has different file hash. Discarding..."
-    # project file hash not matching, safely discard cached version
-    Remove-CachedProjectFile $projectCacheObject.CachedDataPath
-    return $false
+    Write-Verbose 'Checking hash of project file $projectFilePath'
+
+    $newFileHash = (Get-FileHash $projectFilePath).Hash
+
+    if ($newFileHash -ne $projectFilesHashes[$projectFilePath])
+    {
+      Write-Verbose "Cached version of project has different file hash. Discarding..."
+      # project file hash not matching, safely discard cached version
+      Remove-CachedProjectFile $projectCacheObject.CachedDataPath
+      return $false
+    }
   }
 
   if ($projectCacheObject.ConfigurationPlatform -ne (Join-ConfigurationPlatformScriptArgs))
