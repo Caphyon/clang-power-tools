@@ -111,7 +111,7 @@ Function Save-ProjectToCacheRepo()
   [System.Collections.Hashtable] $projectFilesHashes = @{}
   foreach ($projectFile in $global:ProjectInputFiles)
   {
-    $projectFilesHashes[$projectFile] = (Get-FileHash $projectFile).Hash
+    $projectFilesHashes[$projectFile] = (Get-FileHash $projectFile -Algorithm "SHA1").Hash
   }
   
   [System.Collections.Hashtable] $cacheIndex = Get-CacheRepositoryIndex
@@ -163,7 +163,7 @@ Function Load-ProjectFromCache([Parameter(Mandatory = $true)][string] $aVcxprojP
   {
     Write-Verbose "Checking hash of project file $projectFilePath"
 
-    $newFileHash = (Get-FileHash $projectFilePath).Hash
+    $newFileHash = (Get-FileHash $projectFilePath -Algorithm "SHA1").Hash
 
     if ($newFileHash -ne $projectFilesHashes[$projectFilePath])
     {
