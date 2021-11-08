@@ -160,8 +160,10 @@ namespace ClangPowerTools.Commands
                 var settingsHandlder = new SettingsHandler();
                 settingsHandlder.SaveSettings();
               }
-
-              RunScript(aCommandId, false, paths);
+              if (CommandIds.kTidyToolWindowId == aCommandId)
+                RunScript(CommandIds.kTidyId, false, paths);
+              else
+                RunScript(aCommandId, false, paths);
             }
             catch (Exception exception)
             {
