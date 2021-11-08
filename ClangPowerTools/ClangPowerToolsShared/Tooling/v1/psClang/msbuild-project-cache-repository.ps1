@@ -188,6 +188,20 @@ Function Load-ProjectFromCache([Parameter(Mandatory = $true)][string] $aVcxprojP
   [System.Collections.Hashtable] $genericVariablesMap = $deserialized.GenericVariables
 
   Write-Verbose "Cached version of project has $($projectSpecificVariablesMap.Count) variables to load"
+  if ($projectSpecificVariablesMap.Keys -notcontains "MSBuildThisFileFullPath")
+  {
+    Write-Verbose "Cached project does not contain MSBuildThisFileFullPath. Discarding..."
+    Remove-CachedProjectFile $projectCacheObject.CachedDataPath
+    return $false
+  }
+  
+  if ( $projectSpecificVariablesMap['MSBuildThisFileFullPath'] -ne $aVcxprojPath )
+  {
+    Write-Verbose "Cached project looks to be a different project ($($projectSpecificVariablesMap['MSBuildThisFileFullPath'])). Discarding..."
+    Remove-CachedProjectFile $projectCacheObject.CachedDataPath
+    return $false
+  }
+
   foreach ($var in $projectSpecificVariablesMap.Keys)
   {
     Set-Var -name $var -value $projectSpecificVariablesMap[$var]
