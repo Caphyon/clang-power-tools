@@ -104,6 +104,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Commands\FileCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Command\RelayCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\CommonSettingsFunctionality.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\IconResourceConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\ComboBoxConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\CPPKeywords.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\FormatEditorConstants.cs" />
