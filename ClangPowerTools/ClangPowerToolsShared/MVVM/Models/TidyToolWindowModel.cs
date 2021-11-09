@@ -24,6 +24,14 @@ namespace ClangPowerToolsShared.MVVM.Models
     private int totalChecked = 0;
     private bool isChecked;
     public bool isDiscardEnabled;
+
+    //icons
+    private string removeIcon = string.Empty;
+    private string discardFixIcon = string.Empty;
+    private string tidyFixIcon = string.Empty;
+    private string refreshTidyIcon = string.Empty;
+    private string diffIcon = string.Empty;
+
     #endregion
 
     #region 
@@ -38,11 +46,61 @@ namespace ClangPowerToolsShared.MVVM.Models
 
     #region Properties
 
+    public string RemoveIcon
+    {
+      get { return removeIcon; }
+      set
+      {
+        removeIcon = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RemoveIcon"));
+      }
+    }
+
+    public string DiscardFixIcon
+    {
+      get { return discardFixIcon; }
+      set
+      {
+        discardFixIcon = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiscardFixIcon"));
+      }
+    }
+
+    public string TidyFixIcon
+    {
+      get { return tidyFixIcon; }
+      set
+      {
+        tidyFixIcon = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyFixIcon"));
+      }
+    }
+
+    public string RefreshTidyIcon
+    {
+      get { return refreshTidyIcon; }
+      set
+      {
+        refreshTidyIcon = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RefreshTidyIcon"));
+      }
+    }
+
+    public string DiffIcon
+    {
+      get { return diffIcon; }
+      set
+      {
+        diffIcon = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiffIcon"));
+      }
+    }
+
     public string RemoveTooltip
     {
       get { return removeTooltip; }
-      set 
-      { 
+      set
+      {
         removeTooltip = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RemoveTooltip"));
       }
@@ -90,8 +148,8 @@ namespace ClangPowerToolsShared.MVVM.Models
     }
 
     public int TotalChecked
-    {  
-      get {  return totalChecked; }
+    {
+      get { return totalChecked; }
       set
       {
         totalChecked = value;
@@ -133,8 +191,8 @@ namespace ClangPowerToolsShared.MVVM.Models
       }
     }
 
-    public int TidyNr 
-    { 
+    public int TidyNr
+    {
       get { return tidyNr; }
       set
       {
@@ -145,7 +203,7 @@ namespace ClangPowerToolsShared.MVVM.Models
 
     public bool IsEnabled
     {
-      get 
+      get
       {
         if (!isRunning && totalChecked is not 0)
           return true;
