@@ -110,6 +110,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\CPPKeywords.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\FormatEditorConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\EncodingConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\PathConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\PsUpdaterConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\ResourceConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\LlvmConstants.cs" />
@@ -422,5 +423,8 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)MVVM\Constants\NewFolder\" />
   </ItemGroup>
 </Project>
