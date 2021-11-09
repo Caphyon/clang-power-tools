@@ -204,6 +204,7 @@ namespace ClangPowerTools
     {
       DeleteTempSolution();
       HideToolWindow();
+      DeleteCacheReporitory();
       return VSConstants.S_OK;
     }
 
@@ -220,6 +221,7 @@ namespace ClangPowerTools
     {
       DeleteTempSolution();
       HideToolWindow();
+      DeleteCacheReporitory();
       return VSConstants.S_OK;
     }
 
@@ -525,6 +527,16 @@ namespace ClangPowerTools
       var window = tidyToolWindow.Frame as IVsWindowFrame;
       window.Hide();
       return VSConstants.S_OK;
+    }
+
+    private void DeleteCacheReporitory()
+    {
+      //Delete cache repository
+      var cacheRepository = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "CacheRepository";
+      if (Directory.Exists(cacheRepository))
+      {
+        Directory.Delete(cacheRepository, true);
+      }
     }
 
     private void UnregisterFromVsEvents()
