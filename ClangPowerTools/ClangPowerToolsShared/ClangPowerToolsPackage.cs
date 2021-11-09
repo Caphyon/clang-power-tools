@@ -3,7 +3,6 @@ using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
-using ClangPowerToolsShared.Commands;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;
@@ -11,6 +10,7 @@ using Microsoft.VisualStudio.CommandBars;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
@@ -121,7 +121,7 @@ namespace ClangPowerTools
       if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
       {
         var dte2 = dte as DTE2;
-        
+
         mBuildEvents = dte2.Events.BuildEvents;
         mCommandEvents = dte2.Events.CommandEvents;
         mDteEvents = dte2.Events.DTEEvents;
@@ -189,6 +189,7 @@ namespace ClangPowerTools
 
     public int OnQueryCloseProject(IVsHierarchy aPHierarchy, int aFRemoving, ref int aPfCancel)
     {
+      DeleteCacheReporitory();
       return VSConstants.S_OK;
     }
 
@@ -203,6 +204,7 @@ namespace ClangPowerTools
 
     public int OnAfterLoadProject(IVsHierarchy aPStubHierarchy, IVsHierarchy aPRealHierarchy)
     {
+      DeleteCacheReporitory();
       return VSConstants.S_OK;
     }
 
@@ -479,6 +481,16 @@ namespace ClangPowerTools
       PowerShellWrapper.DataHandler -= mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler -= mOutputWindowController.OutputDataErrorReceived;
       PowerShellWrapper.ExitedHandler -= mOutputWindowController.ClosedDataConnection;
+    }
+
+    private void DeleteCacheReporitory()
+    {
+      //Delete cache repository
+      var cacheRepository = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "CacheRepository";
+      if (Directory.Exists(cacheRepository))
+      {
+        Directory.Delete(cacheRepository, true);
+      }
     }
 
     private void UnregisterFromVsEvents()
