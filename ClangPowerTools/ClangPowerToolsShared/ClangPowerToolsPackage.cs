@@ -3,6 +3,7 @@ using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
+using ClangPowerToolsShared.MVVM.Constants;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;
@@ -184,6 +185,7 @@ namespace ClangPowerTools
 
     public int OnAfterOpenProject(IVsHierarchy aPHierarchy, int aFAdded)
     {
+      CreateCacheRepository();
       return VSConstants.S_OK;
     }
 
@@ -204,7 +206,6 @@ namespace ClangPowerTools
 
     public int OnAfterLoadProject(IVsHierarchy aPStubHierarchy, IVsHierarchy aPRealHierarchy)
     {
-      DeleteCacheReporitory();
       return VSConstants.S_OK;
     }
 
@@ -221,6 +222,7 @@ namespace ClangPowerTools
 
     public int OnAfterOpenSolution(object aPUnkReserved, int aFNewSolution)
     {
+      CreateCacheRepository();
       return VSConstants.S_OK;
     }
 
@@ -485,12 +487,21 @@ namespace ClangPowerTools
 
     private void DeleteCacheReporitory()
     {
-      //Delete cache repository
-      var cacheRepository = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "CacheRepository";
-      if (Directory.Exists(cacheRepository))
+      //Delete cache repository;
+      if (Directory.Exists(PathConstants.CacheRepositoryPath))
       {
-        Directory.Delete(cacheRepository, true);
+        Directory.Delete(PathConstants.CacheRepositoryPath, true);
       }
+    }
+
+    private void CreateCacheRepository()
+    {
+      //Create cache repository
+      if (Directory.Exists(PathConstants.CacheRepositoryPath))
+      {
+        DeleteCacheReporitory();
+      }
+      Directory.CreateDirectory(PathConstants.CacheRepositoryPath);
     }
 
     private void UnregisterFromVsEvents()
