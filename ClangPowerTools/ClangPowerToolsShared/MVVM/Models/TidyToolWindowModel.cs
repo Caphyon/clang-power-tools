@@ -34,10 +34,16 @@ namespace ClangPowerToolsShared.MVVM.Models
 
     #endregion
 
-    #region 
+    #region
 
     public TidyToolWindowModel()
     {
+      removeIcon = IconResourceConstants.RemoveDark;
+      discardFixIcon = IconResourceConstants.RemoveFixDark;
+      tidyFixIcon = IconResourceConstants.FixDark;
+      refreshTidyIcon = IconResourceConstants.RefreshTidyDark;
+      diffIcon = IconResourceConstants.DiffDark;
+
       ProgressBarVisibility = UIElementsConstants.Hidden;
       ButtonVisibility = UIElementsConstants.Visibile;
     }
