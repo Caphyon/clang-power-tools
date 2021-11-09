@@ -237,6 +237,12 @@ namespace ClangPowerTools
             tempClangTidyFilePath = CreateTemporaryFileForTidy(item);
           }
 
+          //Create cache repository
+          if (Directory.Exists(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools")))
+          {
+            Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "ClangPowerTools", "CacheRepository"));
+          }
+
           var itemRelatedParameters = string.Empty;
           if (item is CurrentProject || item is Project || item is Solution)
           {
