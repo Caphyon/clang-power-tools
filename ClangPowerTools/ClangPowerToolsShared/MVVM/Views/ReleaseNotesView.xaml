@@ -116,7 +116,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Tidy and Compile commands now are running nine times faster on filters"
+          Text="• Tidy and Compile much faster now, when running on solution explorer filters"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -126,7 +126,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Better optimization running on ignored projects, now they take less time to be checked"
+          Text="• Ignored projects are now skipped quicker"
           TextWrapping="Wrap" />
 
         <!--  Bug Fixes  -->
@@ -146,7 +146,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Error when running commands on a project that contains single quote in the path"
+          Text="• An error when running commands on a project that contains single quotes in its path"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -156,7 +156,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Error when current user name path contains a space"
+          Text="• An error when current user name contains spaces"
           TextWrapping="Wrap" />
       </ListView>
     </Grid>
