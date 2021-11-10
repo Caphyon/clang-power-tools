@@ -146,7 +146,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Error when are run commands on a project that contains single quote in the path"
+          Text="• Error when running commands on a project that contains single quote in the path"
           TextWrapping="Wrap" />
 
         <TextBox
