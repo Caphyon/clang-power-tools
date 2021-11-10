@@ -75,7 +75,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 7.7.0" />
+        Text="version 7.8.0" />
 
       <ListView
         Grid.Row="3"
@@ -116,7 +116,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• LLVM 13.0.0"
+          Text="• Tidy and Compile commands now are running nine times faster on filters"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -126,7 +126,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Added custom LLVM path directly from settings"
+          Text="• Better optimization running on ignored projects, now they take less time to be checked"
           TextWrapping="Wrap" />
 
         <!--  Bug Fixes  -->
@@ -146,7 +146,17 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Error on before save due to file type"
+          Text="• Error when are run commands on a project that contains single quote in the path"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Error when current user name path contains a space"
           TextWrapping="Wrap" />
       </ListView>
     </Grid>
