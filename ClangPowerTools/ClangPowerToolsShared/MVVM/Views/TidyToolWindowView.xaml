@@ -11,6 +11,26 @@
   d:DesignWidth="350"
   mc:Ignorable="d">
 
+  <UserControl.Resources>
+    <Style TargetType="{x:Type Button}">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type Button}">
+            <Border Background="{TemplateBinding Background}" BorderThickness="1">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+      <Style.Triggers>
+        <Trigger Property="IsMouseOver" Value="True">
+          <Setter Property="Background" Value="Transparent"/>
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+  </UserControl.Resources>
+
   <Grid>
     
     <Grid.ColumnDefinitions>
@@ -55,8 +75,6 @@
         Grid.Row="1"
         Grid.Column="2"
         Width="30"
-        Background="Transparent"
-        BorderBrush="Transparent"
         HorizontalAlignment="Left"
         ToolTip="{Binding TidyToolWindowModel.TidyTooltip}"
         IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
@@ -73,8 +91,6 @@
         Grid.Column="3"
         Width="30"
         HorizontalAlignment="Left"
-        Background="Transparent"
-        BorderBrush="Transparent"
         ToolTip="{Binding TidyToolWindowModel.FixTooltip}"
         IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
         Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
@@ -89,8 +105,6 @@
         Grid.Column="4"
         Width="30"
         HorizontalAlignment="Left"
-        Background="Transparent"
-        BorderBrush="Transparent"
         ToolTip="{Binding TidyToolWindowModel.DiscardTooltip}"
         IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
         Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
@@ -105,8 +119,6 @@
         Grid.Column="5"
         Width="30"
         HorizontalAlignment="Left"
-        Background="Transparent"
-        BorderBrush="Transparent"
         ToolTip="{Binding TidyToolWindowModel.RemoveTooltip}"
         IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
         Command="{Binding RemoveAllCommand}"
