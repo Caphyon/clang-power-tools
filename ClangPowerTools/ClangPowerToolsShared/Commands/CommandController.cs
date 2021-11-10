@@ -7,7 +7,6 @@ using ClangPowerTools.Handlers;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
-using ClangPowerToolsShared.Commands;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -223,7 +222,7 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kTidyFixId);
 
-            await TidyCommand.Instance.RunClangTidyFixAsync(CommandIds.kTidyFixId, aCommandUILocation);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, aCommandUILocation);
             OnAfterClangCommand();
             break;
           }
@@ -232,7 +231,7 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kTidyFixId);
 
-            await TidyCommand.Instance.RunClangTidyFixAsync(CommandIds.kTidyFixId, aCommandUILocation);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, aCommandUILocation);
             OnAfterClangCommand();
             break;
           }
