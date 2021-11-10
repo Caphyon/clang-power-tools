@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="Caphyon.9ce239f2-d27a-432c-906c-1d55a123dbfd" Version="7.7.0" Language="en-US" Publisher="Caphyon" />
+        <Identity Id="Caphyon.9ce239f2-d27a-432c-906c-1d55a123dbfd" Version="7.8.0" Language="en-US" Publisher="Caphyon" />
         <DisplayName>Clang Power Tools 2022</DisplayName>
         <Description xml:space="preserve">A tool bringing clang-tidy magic to Visual Studio C++ developers.</Description>
         <MoreInfo>http://www.clangpowertools.com/QaA</MoreInfo>
