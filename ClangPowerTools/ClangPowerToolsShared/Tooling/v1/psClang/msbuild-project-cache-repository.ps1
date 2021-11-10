@@ -2,6 +2,10 @@ Set-Variable -name kCptCacheRepo -value "$env:APPDATA\ClangPowerTools\CacheRepos
 
 Function Is-CacheLoadingEnabled()
 {
+  if ("${Env:CPT_CACHEREPO}" -eq "0")
+  {
+    return $false
+  }
   # if the cache repository directory exists, then we use caching
   return (Test-Path $kCptCacheRepo)
 }
