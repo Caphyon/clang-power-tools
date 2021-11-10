@@ -25,7 +25,8 @@
       </Setter>
       <Style.Triggers>
         <Trigger Property="IsMouseOver" Value="True">
-          <Setter Property="Background" Value="Transparent"/>
+          <Setter Property="Background" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTabMouseOverBackgroundBeginKey}}"/>
+          <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTabMouseOverBorderKey}}"/>
         </Trigger>
       </Style.Triggers>
     </Style>
@@ -40,7 +41,7 @@
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="10" />
-      <RowDefinition Height="25" />
+      <RowDefinition Height="35" />
       <RowDefinition Height="15" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
@@ -58,7 +59,7 @@
       </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
         <RowDefinition Height="2.5" />
-        <RowDefinition Height="20" />
+        <RowDefinition Height="30" />
         <RowDefinition Height="2.5" />
       </Grid.RowDefinitions>
 
