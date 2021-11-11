@@ -1,7 +1,9 @@
 ﻿using ClangPowerTools.MVVM.Models;
 using ClangPowerToolsShared.MVVM.Commands;
 using ClangPowerToolsShared.MVVM.ViewModels;
+using Microsoft.VisualStudio.Shell;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -17,6 +19,9 @@ namespace ClangPowerTools.Views
 
     public TidyToolWindowView()
     {
+      //var test = VsBrushes.WindowTextKey;
+      var colorValues = VsColors.GetCurrentThemedColorValues();
+      var cvPair = colorValues.Where(a => a.Key.ToString() == "ToolWindowTextColorKey").FirstOrDefault();
       tidyToolWindowViewModel = new TidyToolWindowViewModel(this);
       DataContext = tidyToolWindowViewModel;
       InitializeComponent();
