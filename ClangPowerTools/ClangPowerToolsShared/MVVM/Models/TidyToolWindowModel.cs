@@ -212,11 +212,30 @@ namespace ClangPowerToolsShared.MVVM.Models
       get
       {
         if (!isRunning && totalChecked is not 0)
+        {
           return true;
+        }
 
         return false;
       }
       set { }
+    }
+
+    private void EnableAllIcons()
+    {
+      removeIcon = IconResourceConstants.RemoveDark;
+      discardFixIcon = IconResourceConstants.RemoveFixDark;
+      tidyFixIcon = IconResourceConstants.FixDark;
+      refreshTidyIcon = IconResourceConstants.RefreshTidyDark;
+      diffIcon = IconResourceConstants.DiffDark;
+
+    }
+    private void DisableAllIcons()
+    {
+      removeIcon = IconResourceConstants.RemoveDisabled;
+      discardFixIcon = IconResourceConstants.RemoveFixDisabled;
+      tidyFixIcon = IconResourceConstants.FixDisabled;
+      refreshTidyIcon = IconResourceConstants.RefreshDisabled;
     }
 
     public bool IsRunning
