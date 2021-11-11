@@ -155,7 +155,7 @@ namespace ClangPowerToolsShared.MVVM.Models
       set
       {
         totalChecked = value;
-        TidyTooltip = UIElementsConstants.TidyTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
+        TidyTooltip = UIElementsConstants.RefreshTooltip + UIElementsConstants.TidyTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
         RemoveTooltip = UIElementsConstants.RemoveTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
         FixTooltip = UIElementsConstants.FixTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
         DiscardTooltip = UIElementsConstants.DiscardTooltip + totalChecked.ToString() + " fixed " + UIElementsConstants.FilesTooltip;
@@ -221,23 +221,6 @@ namespace ClangPowerToolsShared.MVVM.Models
       set { }
     }
 
-    private void EnableAllIcons()
-    {
-      RemoveIcon = IconResourceConstants.RemoveDark;
-      DiscardFixIcon = IconResourceConstants.RemoveFixDark;
-      TidyFixIcon = IconResourceConstants.FixDark;
-      RefreshTidyIcon = IconResourceConstants.RefreshTidyDark;
-      DiffIcon = IconResourceConstants.DiffDark;
-
-    }
-    private void DisableAllIcons()
-    {
-      RemoveIcon = IconResourceConstants.RemoveDisabled;
-      DiscardFixIcon = IconResourceConstants.RemoveFixDisabled;
-      TidyFixIcon = IconResourceConstants.FixDisabled;
-      RefreshTidyIcon = IconResourceConstants.RefreshDisabled;
-    }
-
     public bool IsRunning
     {
       get
@@ -294,6 +277,23 @@ namespace ClangPowerToolsShared.MVVM.Models
         buttonVisibility = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ButtonVisibility"));
       }
+    }
+
+    private void EnableAllIcons()
+    {
+      RemoveIcon = IconResourceConstants.RemoveDark;
+      DiscardFixIcon = IconResourceConstants.RemoveFixDark;
+      TidyFixIcon = IconResourceConstants.FixDark;
+      RefreshTidyIcon = IconResourceConstants.RefreshTidyDark;
+      DiffIcon = IconResourceConstants.DiffDark;
+
+    }
+    private void DisableAllIcons()
+    {
+      RemoveIcon = IconResourceConstants.RemoveDisabled;
+      DiscardFixIcon = IconResourceConstants.RemoveFixDisabled;
+      TidyFixIcon = IconResourceConstants.FixDisabled;
+      RefreshTidyIcon = IconResourceConstants.RefreshDisabled;
     }
 
     #endregion
