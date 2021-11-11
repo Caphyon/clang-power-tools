@@ -5,7 +5,6 @@ using ClangPowerTools.Output;
 using ClangPowerTools.Services;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using ClangPowerToolsShared.MVVM.Constants;
-using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using EnvDTE;
 using EnvDTE80;
@@ -157,10 +156,10 @@ namespace ClangPowerTools
     //  return toolWindowType.Equals(Guid.Parse(TidyToolWindow.WindowGuidString)) ? this : null;
     //}
 
-    protected override string GetToolWindowTitle(Type toolWindowType, int id)
-    {
-      return toolWindowType == typeof(TidyToolWindow) ? TidyToolWindow.Title : base.GetToolWindowTitle(toolWindowType, id);
-    }
+    //protected override string GetToolWindowTitle(Type toolWindowType, int id)
+    //{
+    //  return toolWindowType == typeof(TidyToolWindow) ? TidyToolWindow.Title : base.GetToolWindowTitle(toolWindowType, id);
+    //}
 
     #endregion
 
@@ -555,6 +554,8 @@ namespace ClangPowerTools
         DeleteCacheReporitory();
       }
       Directory.CreateDirectory(PathConstants.CacheRepositoryPath);
+    }
+
     private void DeleteTempSolution()
     {
       var solutionPath = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid);
