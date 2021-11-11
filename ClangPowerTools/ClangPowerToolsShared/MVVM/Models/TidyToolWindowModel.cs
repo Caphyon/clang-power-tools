@@ -38,11 +38,7 @@ namespace ClangPowerToolsShared.MVVM.Models
 
     public TidyToolWindowModel()
     {
-      removeIcon = IconResourceConstants.RemoveDark;
-      discardFixIcon = IconResourceConstants.RemoveFixDark;
-      tidyFixIcon = IconResourceConstants.FixDark;
-      refreshTidyIcon = IconResourceConstants.RefreshTidyDark;
-      diffIcon = IconResourceConstants.DiffDark;
+      EnableAllIcons();
 
       ProgressBarVisibility = UIElementsConstants.Hidden;
       ButtonVisibility = UIElementsConstants.Visibile;
@@ -213,9 +209,13 @@ namespace ClangPowerToolsShared.MVVM.Models
       {
         if (!isRunning && totalChecked is not 0)
         {
+          EnableAllIcons();
           return true;
         }
-
+        else
+        {
+          DisableAllIcons();
+        }
         return false;
       }
       set { }
@@ -223,19 +223,19 @@ namespace ClangPowerToolsShared.MVVM.Models
 
     private void EnableAllIcons()
     {
-      removeIcon = IconResourceConstants.RemoveDark;
-      discardFixIcon = IconResourceConstants.RemoveFixDark;
-      tidyFixIcon = IconResourceConstants.FixDark;
-      refreshTidyIcon = IconResourceConstants.RefreshTidyDark;
-      diffIcon = IconResourceConstants.DiffDark;
+      RemoveIcon = IconResourceConstants.RemoveDark;
+      DiscardFixIcon = IconResourceConstants.RemoveFixDark;
+      TidyFixIcon = IconResourceConstants.FixDark;
+      RefreshTidyIcon = IconResourceConstants.RefreshTidyDark;
+      DiffIcon = IconResourceConstants.DiffDark;
 
     }
     private void DisableAllIcons()
     {
-      removeIcon = IconResourceConstants.RemoveDisabled;
-      discardFixIcon = IconResourceConstants.RemoveFixDisabled;
-      tidyFixIcon = IconResourceConstants.FixDisabled;
-      refreshTidyIcon = IconResourceConstants.RefreshDisabled;
+      RemoveIcon = IconResourceConstants.RemoveDisabled;
+      DiscardFixIcon = IconResourceConstants.RemoveFixDisabled;
+      TidyFixIcon = IconResourceConstants.FixDisabled;
+      RefreshTidyIcon = IconResourceConstants.RefreshDisabled;
     }
 
     public bool IsRunning
