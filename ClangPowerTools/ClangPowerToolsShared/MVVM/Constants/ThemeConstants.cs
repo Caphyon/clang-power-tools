@@ -1,6 +1,6 @@
 ﻿namespace ClangPowerToolsShared.MVVM.Constants
 {
-  enum VsThemes
+  public enum VsThemes
   {
     Dark,
     Light

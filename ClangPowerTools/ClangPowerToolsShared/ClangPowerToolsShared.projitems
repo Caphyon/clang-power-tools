@@ -102,6 +102,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\CollectionElementsCounter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Commands\RelayCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Commands\FileCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Commands\VSThemeCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Command\RelayCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\CommonSettingsFunctionality.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\IconResourceConstants.cs" />
@@ -115,6 +116,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\LlvmConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\LlvmVersions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\LLVMVersionsAlternate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\ThemeConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\TidyConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\UIElementsConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\AccountController.cs" />
