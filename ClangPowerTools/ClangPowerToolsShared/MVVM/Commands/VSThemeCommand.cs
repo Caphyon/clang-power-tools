@@ -1,8 +1,6 @@
 ﻿using ClangPowerToolsShared.MVVM.Constants;
 using Microsoft.VisualStudio.Shell;
-using System;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace ClangPowerToolsShared.MVVM.Commands
 {
@@ -14,17 +12,10 @@ namespace ClangPowerToolsShared.MVVM.Commands
 
     public static VsThemes GetCurrentVsTheme()
     {
-      try
-      {
-        var colorValues = VsColors.GetCurrentThemedColorValues();
-        var cvPair = colorValues.Where(a => a.Key.ToString() == textColorKey).FirstOrDefault();
-        if ((cvPair.Value.ToString() == darkThemeVs2022) || (cvPair.Value.ToString() == darkThemeVs2019))
-          return VsThemes.Dark;
-      }
-      catch (Exception e)
-      {
-        MessageBox.Show("Theme is null");
-      }
+      var colorValues = VsColors.GetCurrentThemedColorValues();
+      var cvPair = colorValues.Where(a => a.Key.ToString() == textColorKey).FirstOrDefault();
+      if ((cvPair.Value.ToString() == darkThemeVs2022) || (cvPair.Value.ToString() == darkThemeVs2019))
+        return VsThemes.Dark;
       return VsThemes.Light;
     }
   }
