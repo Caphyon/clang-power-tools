@@ -12,6 +12,6 @@
     public static string DiscardTooltip { get; } = "Discard ";
     public static string FilesTooltip { get; } = " files";
     public static string FileTooltip { get; } = "file";
-    public static string RefreshTooltip { get; } = "Refresh";
+    public static string RefreshTooltip { get; } = " Refresh";
   }
 }

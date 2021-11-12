@@ -3,7 +3,7 @@
   public static class IconResourceConstants
   {
     public static string RefreshTidyDark { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]Refresh_dark.png";
-    public static string RefreshTidyLight { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]Refresh_Tidy.png";
+    public static string RefreshTidyLight { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]Refresh-Tidy.png";
     public static string RefreshDisabled { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]Refresh_disabled.png";
 
     public static string DiffDark { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]Diff_dark.png";
