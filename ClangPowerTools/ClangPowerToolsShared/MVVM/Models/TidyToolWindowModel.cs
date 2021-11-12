@@ -88,15 +88,6 @@ namespace ClangPowerToolsShared.MVVM.Models
       }
     }
 
-    public string DiffIcon
-    {
-      get { return diffIcon; }
-      set
-      {
-        diffIcon = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiffIcon"));
-      }
-    }
 
     public string RemoveTooltip
     {
@@ -286,7 +277,6 @@ namespace ClangPowerToolsShared.MVVM.Models
       DiscardFixIcon = IconResourceConstants.RemoveFixDark;
       TidyFixIcon = IconResourceConstants.FixDark;
       RefreshTidyIcon = IconResourceConstants.RefreshTidyDark;
-      DiffIcon = IconResourceConstants.DiffDark;
     }
 
     #endregion
@@ -297,7 +287,6 @@ namespace ClangPowerToolsShared.MVVM.Models
       DiscardFixIcon = IconResourceConstants.RemoveFixLight;
       TidyFixIcon = IconResourceConstants.FixLight;
       RefreshTidyIcon = IconResourceConstants.RefreshTidyLight;
-      DiffIcon = IconResourceConstants.DiffLight;
     }
 
     private void DisableAllIcons()
