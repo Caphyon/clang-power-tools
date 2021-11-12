@@ -198,7 +198,7 @@
               Text="{Binding FileName}" />
             <Button
               Grid.Column="2"
-              Width="70"
+              Width="30"
               Height="20"
               IsEnabled="{Binding IsEnabled}"
               HorizontalAlignment="Right"
@@ -211,7 +211,7 @@
             </Button>
             <Button
               Grid.Column="2"
-              Width="70"
+              Width="30"
               Height="20"
               HorizontalAlignment="Right"
               IsEnabled="{Binding IsEnabled}"

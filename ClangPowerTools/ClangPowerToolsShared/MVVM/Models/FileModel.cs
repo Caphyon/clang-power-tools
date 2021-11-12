@@ -146,14 +146,6 @@ namespace ClangPowerTools.MVVM.Models
     {
       get
       {
-        //if (IsEnabled)
-        //{
-        //  EnableIcon();
-        //}
-        //else
-        //{
-        //  DisableIcon();
-        //}
         return isEnabled;
       }
       set
