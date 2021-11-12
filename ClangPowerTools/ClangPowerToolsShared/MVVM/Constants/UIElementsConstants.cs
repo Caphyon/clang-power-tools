@@ -13,6 +13,5 @@
     public static string FilesTooltip { get; } = " files";
     public static string FileTooltip { get; } = "file";
     public static string RefreshTooltip { get; } = "Refresh";
-
   }
 }
