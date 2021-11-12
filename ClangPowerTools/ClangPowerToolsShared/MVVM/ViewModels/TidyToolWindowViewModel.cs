@@ -9,6 +9,7 @@ using ClangPowerToolsShared.MVVM.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Models;
 using EnvDTE80;
+using Microsoft.VisualStudio.PlatformUI;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -112,6 +113,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public TidyToolWindowViewModel(TidyToolWindowView tidyToolWindowView)
     {
       tidyToolWindowModel = new TidyToolWindowModel();
+      VSColorTheme.ThemeChanged += ThemeChangeEvent;
       messageModel = new MessageModel();
 
       tidyToolWindowModel.ButtonVisibility = UIElementsConstants.Visibile;
@@ -402,6 +404,12 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       MarkUnfixedFiles(checkFiles);
       ++tidyToolWindowModel.DiscardNr;
       AfterCommand();
+    }
+
+    public void ThemeChangeEvent(ThemeChangedEventArgs e)
+    {
+      tidyToolWindowModel.EnableAllIcons();
+      SaveLastUpdatesToUI();
     }
 
     private void RefreshValues()

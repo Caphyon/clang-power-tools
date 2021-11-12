@@ -308,7 +308,7 @@ namespace ClangPowerToolsShared.MVVM.Models
       RefreshTidyIcon = IconResourceConstants.RefreshDisabled;
     }
 
-    private void EnableAllIcons()
+    public void EnableAllIcons()
     {
       if (VSThemeCommand.GetCurrentVsTheme() == VsThemes.Dark)
         EnableAllIconsDarkTheme();
