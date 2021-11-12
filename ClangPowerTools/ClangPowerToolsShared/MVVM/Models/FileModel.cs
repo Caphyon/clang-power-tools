@@ -1,4 +1,5 @@
-﻿using ClangPowerToolsShared.MVVM.Constants;
+﻿using ClangPowerToolsShared.MVVM.Commands;
+using ClangPowerToolsShared.MVVM.Constants;
 using System.ComponentModel;
 
 namespace ClangPowerTools.MVVM.Models
@@ -16,6 +17,10 @@ namespace ClangPowerTools.MVVM.Models
     private string diffVisibility;
     private string fixVisibility;
     private string fontStyle;
+
+    //icons
+    private string tidyFixIcon = string.Empty;
+    private string diffIcon = string.Empty;
 
     #endregion
 
@@ -37,8 +42,28 @@ namespace ClangPowerTools.MVVM.Models
     public string FullFileName { get; set; }
     public string CopyFullFileName { get; set; }
 
-    public string FontStyle 
-    { 
+    public string DiffIcon
+    {
+      get { return diffIcon; }
+      set
+      {
+        diffIcon = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiffIcon"));
+      }
+    }
+
+    public string TidyFixIcon
+    {
+      get { return tidyFixIcon; }
+      set
+      {
+        tidyFixIcon = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyFixIcon"));
+      }
+    }
+
+    public string FontStyle
+    {
       get { return fontStyle; }
       set
       {
@@ -108,8 +133,20 @@ namespace ClangPowerTools.MVVM.Models
       }
     }
 
-    public bool IsEnabled { 
-      get { return isEnabled; }
+    public bool IsEnabled
+    {
+      get
+      {
+        if (IsEnabled)
+        {
+          EnableAllIcons();
+        }
+        else
+        {
+          DisableAllIcons();
+        }
+        return isEnabled;
+      }
       set
       {
         isEnabled = value;
@@ -126,6 +163,33 @@ namespace ClangPowerTools.MVVM.Models
         isChecked = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsChecked"));
       }
+    }
+
+    private void EnableAllIconsDarkTheme()
+    {
+      TidyFixIcon = IconResourceConstants.FixDark;
+      DiffIcon = IconResourceConstants.DiffDark;
+    }
+
+
+    private void EnableAllIconsLightTheme()
+    {
+      TidyFixIcon = IconResourceConstants.FixLight;
+      DiffIcon = IconResourceConstants.DiffLight;
+    }
+
+    private void DisableAllIcons()
+    {
+      TidyFixIcon = IconResourceConstants.FixDisabled;
+      DiffIcon = IconResourceConstants.DiffDisabled;
+    }
+
+    public void EnableAllIcons()
+    {
+      if (VSThemeCommand.GetCurrentVsTheme() == VsThemes.Dark)
+        EnableAllIconsDarkTheme();
+      else
+        EnableAllIconsLightTheme();
     }
 
     #endregion
