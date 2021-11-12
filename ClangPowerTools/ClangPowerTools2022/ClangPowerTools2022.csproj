@@ -81,7 +81,7 @@
       <Link>Resources\TidyToolWindow\[CPT]Fix_disabled.png</Link>
     </Resource>
     <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Refresh-Tidy.png">
-      <Link>Resources\TidyToolWindow\[CPT]Refresh.png</Link>
+      <Link>Resources\TidyToolWindow\[CPT]Refresh-Tidy.png</Link>
     </Resource>
     <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Refresh_dark.png">
       <Link>Resources\TidyToolWindow\[CPT]Refresh_dark.png</Link>
