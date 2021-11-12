@@ -1,4 +1,5 @@
-﻿using ClangPowerToolsShared.MVVM.Constants;
+﻿using ClangPowerToolsShared.MVVM.Commands;
+using ClangPowerToolsShared.MVVM.Constants;
 using System.ComponentModel;
 
 namespace ClangPowerToolsShared.MVVM.Models
@@ -34,10 +35,11 @@ namespace ClangPowerToolsShared.MVVM.Models
 
     #endregion
 
-    #region
+    #region Constructors
 
     public TidyToolWindowModel()
     {
+      EnableAllIcons();
       ProgressBarVisibility = UIElementsConstants.Hidden;
       ButtonVisibility = UIElementsConstants.Visibile;
     }
@@ -207,7 +209,7 @@ namespace ClangPowerToolsShared.MVVM.Models
       {
         if (!isRunning && totalChecked is not 0)
         {
-          EnableAllIconsDarkTheme();
+          EnableAllIcons();
           return true;
         }
         else
@@ -277,6 +279,7 @@ namespace ClangPowerToolsShared.MVVM.Models
       }
     }
 
+    #region Private Methods
     private void EnableAllIconsDarkTheme()
     {
       RemoveIcon = IconResourceConstants.RemoveDark;
@@ -285,6 +288,8 @@ namespace ClangPowerToolsShared.MVVM.Models
       RefreshTidyIcon = IconResourceConstants.RefreshTidyDark;
       DiffIcon = IconResourceConstants.DiffDark;
     }
+
+    #endregion
 
     private void EnableAllIconsLightTheme()
     {
@@ -301,6 +306,14 @@ namespace ClangPowerToolsShared.MVVM.Models
       DiscardFixIcon = IconResourceConstants.RemoveFixDisabled;
       TidyFixIcon = IconResourceConstants.FixDisabled;
       RefreshTidyIcon = IconResourceConstants.RefreshDisabled;
+    }
+
+    private void EnableAllIcons()
+    {
+      if (VSThemeCommand.GetCurrentVsTheme() == VsThemes.Dark)
+        EnableAllIconsDarkTheme();
+      else
+        EnableAllIconsLightTheme();
     }
 
     #endregion
