@@ -22,6 +22,7 @@ namespace ClangPowerTools.Views
       //var test = VsBrushes.WindowTextKey;
       var colorValues = VsColors.GetCurrentThemedColorValues();
       var cvPair = colorValues.Where(a => a.Key.ToString() == "ToolWindowTextColorKey").FirstOrDefault();
+      var theme = VSThemeCommand.GetCurrentVsTheme();
       tidyToolWindowViewModel = new TidyToolWindowViewModel(this);
       DataContext = tidyToolWindowViewModel;
       InitializeComponent();
