@@ -409,6 +409,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public void ThemeChangeEvent(ThemeChangedEventArgs e)
     {
       tidyToolWindowModel.EnableAllIcons();
+      foreach (var file in files)
+      {
+        file.EnableIcon();
+      }
       SaveLastUpdatesToUI();
     }
 
