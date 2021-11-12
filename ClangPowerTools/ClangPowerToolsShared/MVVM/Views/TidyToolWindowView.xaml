@@ -203,8 +203,12 @@
               IsEnabled="{Binding IsEnabled}"
               HorizontalAlignment="Right"
               Click="DiffButton"
-              Content="Diff"
-              Visibility="{Binding DiffVisibility}" />
+              Visibility="{Binding DiffVisibility}">
+              <Image
+                Source="{Binding DiffIcon}"
+                Width="16"
+                Height="16" />
+            </Button>
             <Button
               Grid.Column="2"
               Width="70"
@@ -212,8 +216,12 @@
               HorizontalAlignment="Right"
               IsEnabled="{Binding IsEnabled}"
               Click="FixButton"
-              Content="Fix"
-              Visibility="{Binding FixVisibility}" />
+              Visibility="{Binding FixVisibility}">
+              <Image
+                Source="{Binding TidyFixIcon}"
+                Width="16"
+                Height="16" />
+            </Button>
           </Grid>
         </DataTemplate>
       </ListView.ItemTemplate>

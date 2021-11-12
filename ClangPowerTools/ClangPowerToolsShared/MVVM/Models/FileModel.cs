@@ -28,6 +28,7 @@ namespace ClangPowerTools.MVVM.Models
 
     public FileModel()
     {
+      EnableIcon();
       DiffVisibility = UIElementsConstants.Hidden;
       FixVisibility = UIElementsConstants.Visibile;
       FontStyle = UIElementsConstants.NormalStyleFont;
@@ -127,6 +128,14 @@ namespace ClangPowerTools.MVVM.Models
 
       set
       {
+        if (value)
+        {
+          DisableIcon();
+        }
+        else
+        {
+          EnableIcon();
+        }
         isRunning = value;
         IsEnabled = !value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsRunning"));
@@ -137,14 +146,14 @@ namespace ClangPowerTools.MVVM.Models
     {
       get
       {
-        if (IsEnabled)
-        {
-          EnableAllIcons();
-        }
-        else
-        {
-          DisableAllIcons();
-        }
+        //if (IsEnabled)
+        //{
+        //  EnableIcon();
+        //}
+        //else
+        //{
+        //  DisableIcon();
+        //}
         return isEnabled;
       }
       set
@@ -165,31 +174,31 @@ namespace ClangPowerTools.MVVM.Models
       }
     }
 
-    private void EnableAllIconsDarkTheme()
+    private void EnableIconDarkTheme()
     {
       TidyFixIcon = IconResourceConstants.FixDark;
       DiffIcon = IconResourceConstants.DiffDark;
     }
 
 
-    private void EnableAllIconsLightTheme()
+    private void EnableIconLightTheme()
     {
       TidyFixIcon = IconResourceConstants.FixLight;
       DiffIcon = IconResourceConstants.DiffLight;
     }
 
-    private void DisableAllIcons()
+    private void DisableIcon()
     {
       TidyFixIcon = IconResourceConstants.FixDisabled;
       DiffIcon = IconResourceConstants.DiffDisabled;
     }
 
-    public void EnableAllIcons()
+    public void EnableIcon()
     {
       if (VSThemeCommand.GetCurrentVsTheme() == VsThemes.Dark)
-        EnableAllIconsDarkTheme();
+        EnableIconDarkTheme();
       else
-        EnableAllIconsLightTheme();
+        EnableIconLightTheme();
     }
 
     #endregion
