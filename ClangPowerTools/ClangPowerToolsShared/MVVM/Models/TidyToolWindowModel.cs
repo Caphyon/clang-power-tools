@@ -1,6 +1,5 @@
 ﻿using ClangPowerToolsShared.MVVM.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
-using Microsoft.VisualStudio.PlatformUI;
 using System.ComponentModel;
 
 namespace ClangPowerToolsShared.MVVM.Models
@@ -40,15 +39,9 @@ namespace ClangPowerToolsShared.MVVM.Models
 
     public TidyToolWindowModel()
     {
-      VSColorTheme.ThemeChanged += ThemeChangeEvent;
       EnableAllIcons();
       ProgressBarVisibility = UIElementsConstants.Hidden;
       ButtonVisibility = UIElementsConstants.Visibile;
-    }
-
-    private void ThemeChangeEvent(ThemeChangedEventArgs e)
-    {
-      EnableAllIcons();
     }
 
     #endregion
@@ -315,7 +308,7 @@ namespace ClangPowerToolsShared.MVVM.Models
       RefreshTidyIcon = IconResourceConstants.RefreshDisabled;
     }
 
-    private void EnableAllIcons()
+    public void EnableAllIcons()
     {
       if (VSThemeCommand.GetCurrentVsTheme() == VsThemes.Dark)
         EnableAllIconsDarkTheme();
