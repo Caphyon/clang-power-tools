@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-// using ClangPowerTools.MVVM.Interfaces;
 
 namespace ClangPowerTools.Views
 {
@@ -73,7 +72,7 @@ namespace ClangPowerTools.Views
       var file = item.Content as FileModel;
       if (item != null && item.IsSelected)
       {
-        TidyDiffCommand.TidyFixDiff(file.FullFileName);
+        FileCommand.TidyFixDiff(file);
       }
     }
   }

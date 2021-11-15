@@ -10,13 +10,11 @@ using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Models;
 using EnvDTE80;
 using Microsoft.VisualStudio.PlatformUI;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Task = System.Threading.Tasks.Task;
 
@@ -129,58 +127,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     #region Public Methods
 
-    public void UpdateViewModel(List<string> filesPath)
-    {
-      files.Clear();
-      foreach (string file in filesPath)
-      {
-        FileInfo path = new FileInfo(file);
-        files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) });
-      }
-      Files = files;
-      CheckAll();
-      //make tidy
-      TidyAllFilesAsync();
-      //copy files in temp folder
-      if (Directory.Exists(tempFolderPath))
-        Directory.Delete(tempFolderPath, true);
-      Directory.CreateDirectory(tempFolderPath);
-      if (Directory.Exists(tempFolderPath))
-      {
-        foreach (string path in filesPath)
-        {
-          FileInfo file = new(path);
-          var copyFile = Path.Combine(tempFolderPath, file.Name);
-          File.Copy(file.FullName, copyFile, true);
-        }
-      }
-    }
-
-    public void DiscardFile(string path)
-    {
-      files.Clear();
-      foreach (string file in filesPath)
-      {
-        FileInfo path = new FileInfo(file);
-        files.Add(new FileModel { FileName = path.Name, FullFileName = path.FullName });
-      }
-      Files = files;
-      //copy files in temp folder
-      if (Directory.Exists(tempFolderPath))
-        Directory.Delete(tempFolderPath, true);
-      Directory.CreateDirectory(tempFolderPath);
-      if (Directory.Exists(tempFolderPath))
-      {
-        foreach (string path in filesPath)
-        {
-          FileInfo file = new(path);
-          var copyFile = Path.Combine(tempFolderPath, file.Name);
-          File.Copy(file.FullName, copyFile, true);
-        }
-      }
-    }
-
-    public void DiscardFile(string path)
+    public void OpenTidyToolWindow(List<string> filesPath)
     {
       RefreshValues();
       CheckAll();
@@ -222,11 +169,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         UncheckAll();
       }
       UpdateCheckedNumber();
-    }
-    
-    public async Task TidyAllFilesAsync()
-    {
-      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, GetCheckedPathsList());
     }
 
     public async Task FixAllFilesAsync(FileModel file = null)
@@ -324,11 +266,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       tidyToolWindowModel.TotalChecked = files.Count;
       Files = files;
       TidyToolWindowModel = tidyToolWindowModel;
-    public async Task FixAllFilesAsync()
-    {
-      var filesPaths = GetCheckedPathsList();
-      TidyDiffCommand.CopyFilesInTemp(filesPaths);
-      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
     }
 
     private void SaveLastUpdatesToUI()

@@ -3,7 +3,6 @@ using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
-using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using EnvDTE;
@@ -210,8 +209,6 @@ namespace ClangPowerTools
       DeleteTempSolution();
       HideToolWindow();
       DeleteCacheReporitory();
-      DeleteTempSolution();
-      HideToolWindow();
       return VSConstants.S_OK;
     }
 
@@ -554,24 +551,6 @@ namespace ClangPowerTools
         DeleteCacheReporitory();
       }
       Directory.CreateDirectory(PathConstants.CacheRepositoryPath);
-    }
-
-    private void DeleteTempSolution()
-    {
-      var solutionPath = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid);
-      if (Directory.Exists(solutionPath))
-      {
-        Directory.Delete(TidyConstants.LongFilePrefix + solutionPath, true);
-      }
-    }
-
-    private int HideToolWindow()
-    {
-      var tidyToolWindow = FindToolWindow(typeof(TidyToolWindow), 0, false);
-      if (tidyToolWindow is null) return VSConstants.S_OK;
-      var window = tidyToolWindow.Frame as IVsWindowFrame;
-      window.Hide();
-      return VSConstants.S_OK;
     }
 
     private void UnregisterFromVsEvents()
