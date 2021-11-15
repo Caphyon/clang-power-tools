@@ -19,7 +19,7 @@ namespace ClangPowerToolsShared.Commands.Models
       {
         if (ProjectItems.Count > 0)
         {
-          return ProjectItems.Select(p => p.ContainingProject.FullName).ToList();
+          return ProjectItems.Select(p => p.ContainingProject.FullName).ToList().Distinct().ToList();
         }
         else if (Projects.Count > 0)
         {
