@@ -107,6 +107,9 @@ namespace ClangPowerTools
 
     protected void CacheProjectsFromItems()
     {
+      cacheProjectsItemsModel.Projects.Clear();
+      cacheProjectsItemsModel.ProjectItems.Clear();
+
       foreach (var item in mItemsCollector.Items)
       {
         if (item.GetObject() is Project)

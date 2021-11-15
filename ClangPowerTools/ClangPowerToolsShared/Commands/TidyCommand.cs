@@ -103,9 +103,6 @@ namespace ClangPowerTools.Commands
       create: true,
       cancellationToken: package.DisposalToken);
       var tidyToolWindow = (TidyToolWindow)window;
-      FilePathCollector fileCollector = new FilePathCollector();
-      //if (paths == null)
-      //  paths = fileCollector.Collect(mItemsCollector.OriginalItems).ToList();
       if (tidyToolWindow != null && paths != null)
         tidyToolWindow.UpdateToolWindow(paths);
     }
