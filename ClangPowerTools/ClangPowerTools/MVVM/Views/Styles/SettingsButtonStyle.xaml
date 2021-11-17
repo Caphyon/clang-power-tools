@@ -1,0 +1,55 @@
+﻿<ResourceDictionary
+  x:Class="ClangPowerTools.MVVM.Views.Styles.SettingsButtonStyle"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  mc:Ignorable="d">
+
+  <ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary Source="ImageResources.xaml" />
+  </ResourceDictionary.MergedDictionaries>
+
+  <Style x:Key="SettingsButton" TargetType="{x:Type Button}">
+    <Setter Property="Background" Value="#9E005A" />
+    <Setter Property="Height" Value="30" />
+    <Setter Property="Width" Value="50" />
+    <Setter Property="Template">
+      <Setter.Value>
+        <ControlTemplate TargetType="Button">
+          <Grid Background="{TemplateBinding Background}">
+            <!--<Image x:Name="ButtonImageContent" />-->
+            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+          </Grid>
+          <!--<ControlTemplate.Triggers>
+
+            <Trigger Property="Tag" Value="add">
+              <Setter TargetName="ButtonImageContent" Property="Source" Value="/ClangPowerTools;component/Resources/AddInput.png" />
+            </Trigger>
+
+            <Trigger Property="Tag" Value="browse">
+              <Setter TargetName="ButtonImageContent" Property="Source" Value="/ClangPowerTools;component/Resources/AddInput.png" />
+            </Trigger>
+
+            <MultiDataTrigger>
+              <MultiDataTrigger.Conditions>
+                <Condition Binding="{Binding RelativeSource={RelativeSource Mode=Self}, Path=Tag}" Value="browse" />
+                <Condition Binding="{Binding Text.Length, ElementName=InputTextbox}" Value="0" />
+              </MultiDataTrigger.Conditions>
+              <Setter TargetName="ButtonImageContent" Property="Source" Value="/ClangPowerTools;component/Resources/Browse.png" />
+            </MultiDataTrigger>
+          </ControlTemplate.Triggers>-->
+        </ControlTemplate>
+      </Setter.Value>
+    </Setter>
+
+    <Style.Triggers>
+      <Trigger Property="IsMouseOver" Value="True">
+        <Setter Property="Background" Value="#c70071" />
+      </Trigger>
+      <Trigger Property="IsEnabled" Value="False">
+        <Setter Property="Background" Value="#A0A0A0" />
+      </Trigger>
+    </Style.Triggers>
+  </Style>
+</ResourceDictionary>

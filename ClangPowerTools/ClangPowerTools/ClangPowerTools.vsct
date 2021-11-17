@@ -1,0 +1,415 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <Extern href="stdidcmd.h" />
+  <Extern href="vsshlids.h" />
+  <Commands package="guidClangPowerToolsPackage">
+
+    <Menus>
+      <!--Context menu-->
+      <Menu guid="guidClangPowerToolsPackageCmdSet" id="Submenu" priority="0x0000" type="Menu">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" />
+        <Strings>
+          <ButtonText>Clang Power Tools</ButtonText>
+        </Strings>
+      </Menu>
+
+      <!--Toolbar menu-->
+      <Menu guid="guidClangPowerToolsPackageCmdSet" id="Toolbar" type="Toolbar">
+        <CommandFlag>DefaultDocked</CommandFlag>
+        <Strings>
+          <ButtonText>Clang Power Tools</ButtonText>
+          <CommandName>Clang Power Tools</CommandName>
+        </Strings>
+      </Menu>
+
+      <!--Tidy Drop-Down Menu-->
+      <Menu guid="guidClangPowerToolsPackageCmdSet" id="DromDownMenu" type="MenuController" priority="0x0001">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
+        <CommandFlag>DefaultDocked</CommandFlag>
+        <Strings>
+          <ButtonText>Clang Tidy</ButtonText>
+          <CommandName>Clang Power Tools</CommandName>
+        </Strings>
+      </Menu>
+
+    </Menus>
+
+
+    <!-- Goups declarations -->
+    <!-- All the command buttons must be placed inside of a group -->
+    <Groups>
+
+      <!-- Submenus groups -->
+
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0000" />
+
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="DropDownToolbarMenuGroup" priority="0x0000">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownMenu" />
+      </Group>
+
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" priority="0x0000">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="Toolbar" />
+      </Group>
+
+      <!-- Context Menu groups-->
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0000" />
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" priority="0x0002" />
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForJsonDatabase" priority="0x0003" />
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0004" />
+
+    </Groups>
+
+
+    <!-- Commands declaration -->
+    <!-- Each button coresponds to a specific custom command from VS Extension -->
+    <Buttons>
+
+      <!-- Context Menu buttons -->
+
+
+      <!-- Clang Compile Context Menu button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="CompileId" priority="0x0000" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
+        <Icon guid="guidImageCompile" id="Compile" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Compile</ButtonText>
+        </Strings>
+      </Button>
+
+      <!--Clang Tidy button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0001" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
+        <Icon guid="guidImageTidy" id="Tidy" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Tidy</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Clang Tidy-Fix context menu button  -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixId" priority="0x0003" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
+        <Icon guid="guidImageEmpty" id="Empty" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Tidy-Fix</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Clang Format Context Menu button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatId" priority="0x0004" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
+        <Icon guid="guidImageFormat" id="Format" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Format</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Stop Clang execution Context Menu button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0005" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
+        <Icon guid="guidImageStopClang" id="StopClang" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Stop</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Ignore file for clang compile Context Menu button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreCompileId" priority="0x0006" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
+        <Icon guid="guidImageIgnoreFormat" id="IgnoreFormat" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Ignore at Compile</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Ignore file for clang format Context Menu button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreFormatId" priority="0x0007" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
+        <Icon guid="guidImageEmpty" id="Empty" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Ignore at Format</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Export JSON Compilation Database Context Menu button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="JsonCompilationDatabaseId" priority="0x0008" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForJsonDatabase" />
+        <Icon guid="guidImageJsonCompilationDb" id="JsonCompilationDb" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Export Compilation Database</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Clang Settings Context Menu button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0009" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" />
+        <Icon guid="guidImageSettings" id="Settings" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Settings</ButtonText>
+        </Strings>
+      </Button>
+
+
+      <!-- Toolbar Buttons -->
+
+      <!-- Clang Compile toolbar button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="CompileToolbarId" priority="0x0000" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
+        <Icon guid="guidImageCompile" id="Compile" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Compile</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Clang Tidy & Clang Tidy Fix Drop Down submenu in toolbar-->
+
+      <!-- Clang Tidy-Fix toolbar button  -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" priority="0x0003" type="Button">
+        <Icon guid="guidImageTidy" id="Tidy" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Tidy-Fix</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyToolbarId" priority="0x0001" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="DropDownToolbarMenuGroup" />
+        <Icon guid="guidImageTidy" id="Tidy" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Tidy</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" priority="0x0003" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="DropDownToolbarMenuGroup" />
+        <Strings>
+          <ButtonText>Tidy-Fix</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatToolbarId" priority="0x0003" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
+        <Icon guid="guidImageFormat" id="Format" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Format</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0004" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
+        <Strings>
+          <ButtonText>Stop</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0006" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Settings</ButtonText>
+        </Strings>
+      </Button>
+
+    </Buttons>
+
+    <!--Declare all the image resources -->
+    <Bitmaps>
+      <Bitmap guid="guidImages" href="..\ClangPowerToolsShared\Resources\CPTLogo.png" usedList="bmpPic1" />
+      <Bitmap guid="guidImageTidy" href="..\ClangPowerToolsShared\Resources\TidyIcon.png" usedList="Tidy" />
+      <Bitmap guid="guidImageCompile" href="..\ClangPowerToolsShared\Resources\CompileIcon.png" usedList="Compile" />
+      <Bitmap guid="guidImageFormat" href="..\ClangPowerToolsShared\Resources\ClangFormatIcon.png" usedList="Format" />
+      <Bitmap guid="guidImageStopClang" href="..\ClangPowerToolsShared\Resources\StopCommandIcon.png" usedList="StopClang" />
+      <Bitmap guid="guidImageSettings" href="..\ClangPowerToolsShared\Resources\SettingsIcon.png" usedList="Settings" />
+      <Bitmap guid="guidImageIgnoreFormat" href="..\ClangPowerToolsShared\Resources\IgnoreIcon.png" usedList="IgnoreFormat" />
+      <Bitmap guid="guidImageEmpty" href="..\ClangPowerToolsShared\Resources\EmptyIcon.png" usedList="Empty" />
+      <Bitmap guid="guidImageJsonCompilationDb" href="..\ClangPowerToolsShared\Resources\JsonCompilationDatabase.png" usedList="JsonCompilationDb" />
+    </Bitmaps>
+
+  </Commands>
+
+  <!-- Shortcuts for commands-->
+  <KeyBindings>
+    <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="CompileToolbarId" editor="guidVSStd97"
+                key1="U" mod1="ALT" />
+
+    <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyToolbarId" editor="guidVSStd97"
+                    key1="Y" mod1="ALT" />
+
+    <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="TidyFixToolbarId" editor="guidVSStd97"
+                key1="X" mod1="ALT" />
+
+    <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="ClangFormatToolbarId" editor="guidVSStd97"
+                key1="M" mod1="ALT" />
+
+    <KeyBinding guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" editor="guidVSStd97"
+                key1="O" mod1="ALT" />
+  </KeyBindings>
+
+  <!-- Placement for commands. The parent of a command is always a group, never a menu, context menu or toolbar.-->
+
+  <CommandPlacements>
+
+    <!-- Add the Clang Power Tools submenu(the subpenu contains all the commands) 
+      in context menu of solution, project, folder, file and tab editor -->
+
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x08FF">
+      <!-- The parent of the group will be the solution context menu -->
+      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_SOLNNODE" />
+    </CommandPlacement>
+
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x07FF">
+      <!-- The parent of the group will be the project context menu -->
+      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE" />
+    </CommandPlacement>
+
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0500">
+      <!-- The parent of the group will be the folder context menu -->
+      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_FOLDERNODE" />
+    </CommandPlacement>
+
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0600">
+      <!-- The parent of the group will be the file context menu -->
+      <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_ITEMNODE" />
+    </CommandPlacement>
+
+    <!--The parent of the group will be the tab file context menu -->
+    <!--<CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0xFFFF">
+     <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_EZDOCWINTAB" /> 
+    </CommandPlacement> -->
+
+    <!-- Define which groups will be placed in the Clang Power Tools submenu  -->
+    <!-- By placing a group automatically each section it will be delimited by a separator -->
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0001">
+      <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
+    </CommandPlacement>
+
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" priority="0x0002">
+      <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
+    </CommandPlacement>
+
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForJsonDatabase" priority="0x0003">
+      <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
+    </CommandPlacement>
+
+    <CommandPlacement guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" priority="0x0004">
+      <Parent guid="guidClangPowerToolsPackageCmdSet" id="Submenu" />
+    </CommandPlacement>
+
+  </CommandPlacements>
+
+
+  <!--Contains all the unique identifires and symbols declaration-->
+  <Symbols>
+    <GuidSymbol name="guidClangPowerToolsPackage" value="{f564f9d3-01ae-493e-883b-18deebdb975e}" />
+
+
+    <!-- Define the unique identifires for commands, groups, menu and toolbar -->
+    <GuidSymbol name="guidClangPowerToolsPackageCmdSet" value="{498fdff5-5217-4da9-88d2-edad44ba3874}">
+
+      <!-- Define the unique identifires for groups -->
+      <IDSymbol name="GroupForSubmenu" value="0x1020" />
+      <IDSymbol name="GroupForCommands" value="0x1021" />
+      <IDSymbol name="GroupForSettings" value="0x1022" />
+      <IDSymbol name="GroupForIgnore" value="0x1023" />
+      <IDSymbol name="GroupForJsonDatabase" value="0x1024" />
+      <IDSymbol name="ToolbarGroup" value="0x1050" />
+      <IDSymbol name="GroupForToolbarMenu" value="0x1030" />
+      <IDSymbol name ="DropDownToolbarMenuGroup" value="0x0110"/>
+
+      <!-- Define the unique identifires for menus -->
+      <IDSymbol name="Submenu" value="0x0100" />
+      <IDSymbol name="DromDownMenu" value="0x0200" />
+
+      <!-- Define the unique identifires for commands -->
+      <IDSymbol name="CompileId" value="0x0102" />
+      <IDSymbol name="CompileToolbarId" value="0x1100" />
+
+      <IDSymbol name="TidyId" value="0x0101" />
+      <IDSymbol name="TidyFixId" value="0x0109" />
+
+      <IDSymbol name="TidyToolbarId" value="0x1101" />
+      <IDSymbol name="TidyFixToolbarId" value="0x1102" />
+
+      <IDSymbol name="ClangFormatId" value="0x0105" />
+      <IDSymbol name="ClangFormatToolbarId" value="0x1103" />
+
+      <IDSymbol name="StopClangId" value="0x0104" />
+      <IDSymbol name="IgnoreFormatId" value="0x0107" />
+      <IDSymbol name="IgnoreCompileId" value="0x0108" />
+
+      <IDSymbol name="JsonCompilationDatabaseId" value="0x0106" />
+
+      <IDSymbol name="SettingsId" value="0x0103" />
+      <IDSymbol name="TidyExportConfigId" value="0x1032" />
+      <IDSymbol name="LogoutId" value="0x1033" />
+
+      <!-- Define the unique identifires for toolbar -->
+      <IDSymbol name="Toolbar" value="0x1000" />
+    </GuidSymbol>
+
+    <!--Icon for preview image and main icon-->
+    <GuidSymbol name="guidImages" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70a}">
+      <IDSymbol name="bmpPic1" value="1" />
+    </GuidSymbol>
+
+    <!-- Define the image for each command -->
+
+    <!-- Define clang tidy image -->
+    <GuidSymbol name="guidImageTidy" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70d}">
+      <IDSymbol name="Tidy" value="1" />
+    </GuidSymbol>
+
+    <!-- Define clang compile image -->
+    <GuidSymbol name="guidImageCompile" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70e}">
+      <IDSymbol name="Compile" value="1" />
+    </GuidSymbol>
+
+    <!-- Define clang stop image -->
+    <GuidSymbol name="guidImageStopClang" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c700}">
+      <IDSymbol name="StopClang" value="1" />
+    </GuidSymbol>
+
+    <!-- Define clang  ignore format image -->
+    <GuidSymbol name="guidImageIgnoreFormat" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c708}">
+      <IDSymbol name="IgnoreFormat" value="1" />
+    </GuidSymbol>
+
+    <!-- Define empty image -->
+    <GuidSymbol name="guidImageEmpty" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c705}">
+      <IDSymbol name="Empty" value="1" />
+    </GuidSymbol>
+
+    <!-- Define clang settigns image -->
+    <GuidSymbol name="guidImageSettings" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c70f}">
+      <IDSymbol name="Settings" value="1" />
+    </GuidSymbol>
+
+    <!-- Define clang format image -->
+    <GuidSymbol name="guidImageFormat" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c71a}">
+      <IDSymbol name="Format" value="1" />
+    </GuidSymbol>
+
+    <!-- Define Logout image -->
+    <GuidSymbol name="guidImageLogout" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c72a}">
+      <IDSymbol name="Logout" value="1" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidImageJsonCompilationDb" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c73a}">
+      <IDSymbol name="JsonCompilationDb" value="1" />
+    </GuidSymbol>
+
+  </Symbols>
+
+</CommandTable>
