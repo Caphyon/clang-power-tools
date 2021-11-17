@@ -27,15 +27,6 @@ namespace ClangPowerTools.Services
     {
       string scriptUri = PsUpdaterConstants.GitHubUri + PsUpdaterConstants.ClangBuildScript;
       await DownloadScriptAsync(scriptUri, PsUpdaterConstants.ClangBuildScript);
-
-      var sb = new StringBuilder();
-      foreach (string script in PsUpdaterConstants.ScriptsInPsClangFolder)
-      {
-        sb.Append(PsUpdaterConstants.GitHubUri).Append(PsUpdaterConstants.PsClangFolder).Append("/").Append(script);
-        await DownloadScriptAsync(sb.ToString(), script);
-        sb.Clear();
-      }
-
       ReplaceScripts();
     }
 
@@ -71,10 +62,6 @@ namespace ClangPowerTools.Services
                             Path.Combine(destFolder, PsUpdaterConstants.ClangBuildScript));
 
         destFolder = Path.Combine(destFolder, PsUpdaterConstants.PsClangFolder);
-        foreach (string script in PsUpdaterConstants.ScriptsInPsClangFolder)
-        {
-          FileSystem.MoveFile(Path.Combine(sourceFolder, script), Path.Combine(destFolder, script));
-        }
       }
       catch (Exception e)
       {
