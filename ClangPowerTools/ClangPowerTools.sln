@@ -6,6 +6,10 @@ MinimumVisualStudioVersion = 15.0.0
 Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ClangPowerToolsShared", "ClangPowerToolsShared\ClangPowerToolsShared.shproj", "{A0CEA277-F6A1-4F62-862C-357C8C5654AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClangPowerTools", "ClangPowerTools\ClangPowerTools.csproj", "{51237463-9F4D-44DE-8BC0-587384B9E8B8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C866AF9F-8754-4C75-8A47-A8055F7E2D3A} = {C866AF9F-8754-4C75-8A47-A8055F7E2D3A}
+		{B71297DD-B444-4AA5-AC7B-99BD812E9129} = {B71297DD-B444-4AA5-AC7B-99BD812E9129}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClangPowerToolsLib16", "ClangPowerToolsLib16\ClangPowerToolsLib16.csproj", "{C866AF9F-8754-4C75-8A47-A8055F7E2D3A}"
 EndProject

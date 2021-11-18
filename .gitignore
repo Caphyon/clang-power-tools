@@ -26,3 +26,5 @@ bld/
 
 .vs/
 .DS_Store
+ClangPowerTools/ClangPowerTools/ClangPowerToolsLib16.dll
+ClangPowerTools/ClangPowerTools/ClangPowerToolsLib17.dll

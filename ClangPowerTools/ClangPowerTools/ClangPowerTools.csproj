@@ -326,31 +326,38 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="MVVM\Views\Styles\AppResources.xaml">
+    <Page Include="..\ClangPowerToolsShared\MVVM\Views\Styles\AppResources.xaml">
+      <Link>MVVM\Views\Styles\AppResources.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MVVM\Views\Styles\HyperlinkStyle.xaml">
+    <Page Include="..\ClangPowerToolsShared\MVVM\Views\Styles\HyperlinkStyle.xaml">
+      <Link>MVVM\Views\Styles\HyperlinkStyle.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MVVM\Views\Styles\ImageResources.xaml">
+    <Page Include="..\ClangPowerToolsShared\MVVM\Views\Styles\ImageResources.xaml">
+      <Link>MVVM\Views\Styles\ImageResources.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MVVM\Views\Styles\SettingsButtonStyle.xaml">
+    <Page Include="..\ClangPowerToolsShared\MVVM\Views\Styles\SettingsButtonStyle.xaml">
+      <Link>MVVM\Views\Styles\SettingsButtonStyle.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MVVM\Views\Styles\SettingsComboBoxStyle.xaml">
+    <Page Include="..\ClangPowerToolsShared\MVVM\Views\Styles\SettingsComboBoxStyle.xaml">
+      <Link>MVVM\Views\Styles\SettingsComboBoxStyle.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MVVM\Views\Styles\ToggleStyle.xaml">
+    <Page Include="..\ClangPowerToolsShared\MVVM\Views\Styles\ToggleStyle.xaml">
+      <Link>MVVM\Views\Styles\ToggleStyle.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="MVVM\Views\Styles\YellowButtonStyle.xaml">
+    <Page Include="..\ClangPowerToolsShared\MVVM\Views\Styles\YellowButtonStyle.xaml">
+      <Link>MVVM\Views\Styles\YellowButtonStyle.xaml</Link>
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
