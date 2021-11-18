@@ -185,20 +185,14 @@ param( [alias("proj")]
 Set-StrictMode -version latest
 $ErrorActionPreference = 'Continue'
 
-@( "$PSScriptRoot\psClang\io.ps1"
- , "$PSScriptRoot\psClang\visualstudio-detection.ps1"
- , "$PSScriptRoot\psClang\msbuild-expression-eval.ps1"
- , "$PSScriptRoot\psClang\msbuild-project-load.ps1"
- , "$PSScriptRoot\psClang\msbuild-project-data.ps1"
- , "$PSScriptRoot\psClang\get-header-references.ps1"
- , "$PSScriptRoot\psClang\itemdefinition-context.ps1"
- , "$PSScriptRoot\psClang\jsondb-export.ps1"
- ) | ForEach-Object { . $_ }
-
 # System Architecture Constants
 # ------------------------------------------------------------------------------------------------
 
 Set-Variable -name kLogicalCoreCount -value $Env:number_of_processors   -option Constant
+
+Set-Variable -name kCptGithubRepoBase -value `
+"https://raw.githubusercontent.com/Caphyon/clang-power-tools/master/ClangPowerTools/ClangPowerToolsShared/Tooling/v1/" `
+                                      -Option Constant
 
 # ------------------------------------------------------------------------------------------------
 # Return Value Constants
@@ -238,17 +232,6 @@ Set-Variable -name kClangFlagForceInclude   -value "-include"           -option 
 
 Set-Variable -name kClangCompiler           -value "clang++.exe"        -option Constant
 
-# we may have a custom path for Clang-Tidy. Use it if that's the case.
-[string] $customTidyPath = (Get-QuotedPath -path ([Environment]::GetEnvironmentVariable($kVarEnvClangTidyPath)))
-if (![string]::IsNullOrWhiteSpace($customTidyPath))
-{
-  Set-Variable -name kClangTidy             -value $customTidyPath      -option Constant
-}
-else
-{
-  Set-Variable -name kClangTidy             -value "clang-tidy.exe"     -option Constant
-}
-
 Set-Variable -name kClangTidyFlags            -value @("-quiet"
                                                       ,"--")            -option Constant
 Set-Variable -name kClangTidyFixFlags         -value @("-quiet"
@@ -267,6 +250,63 @@ Set-Variable -name kClangTidyFlagTempFile     -value ""
 Set-Variable -name kLLVMInstallLocations    -value @("${Env:ProgramW6432}\LLVM\bin"
                                                     ,"${Env:ProgramFiles(x86)}\LLVM\bin"
                                                     )                   -option Constant
+
+
+                                                    
+
+# ------------------------------------------------------------------------------------------------
+# Include required scripts, or download them if necessary
+Function DownloadIfNotPresent($relIncludePath)
+{
+  [string] $absolutePath = "$PSScriptRoot/$relIncludePath"
+
+  if (!(Test-Path $absolutePath))
+  {
+    [string] $request =  "$kCptGithubRepoBase/$relIncludePath"
+
+    Invoke-WebRequest -Uri $request -OutFile $absolutePath
+  }
+
+  if (!(Test-Path $absolutePath))
+  {
+    Write-Error "Could not download required script file ($relIncludePath). Aborting..."
+    exit 1
+  }
+
+  return $absolutePath
+}
+
+if (!(Test-Path "$PSScriptRoot/psClang"))
+{
+  New-Item "$PSScriptRoot/psClang" -ItemType Directory
+}
+
+$includedScripts = `
+@( "psClang/io.ps1"
+ , "psClang/visualstudio-detection.ps1"
+ , "psClang/msbuild-expression-eval.ps1"
+ , "psClang/msbuild-project-data.ps1"
+ , "psClang/msbuild-project-load.ps1"
+ , "psClang/get-header-references.ps1"
+ , "psClang/itemdefinition-context.ps1"
+ , "psClang/jsondb-export.ps1"
+)
+
+$includedScripts | ForEach-Object { DownloadIfNotPresent $_ } | ForEach-Object { . $_}
+
+
+#-------------------------------------------------------------------------------------------------
+# we may have a custom path for Clang-Tidy. Use it if that's the case.
+
+[string] $customTidyPath = (Get-QuotedPath -path ([Environment]::GetEnvironmentVariable($kVarEnvClangTidyPath)))
+if (![string]::IsNullOrWhiteSpace($customTidyPath))
+{
+  Set-Variable -name kClangTidy             -value $customTidyPath      -option Constant
+}
+else
+{
+  Set-Variable -name kClangTidy             -value "clang-tidy.exe"     -option Constant
+}
 
 #-------------------------------------------------------------------------------------------------
 # Custom Types
