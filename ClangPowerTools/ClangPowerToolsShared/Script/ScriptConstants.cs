@@ -10,11 +10,16 @@ namespace ClangPowerTools
 
     #region Clang Compile/Tidy constants
 
-    public static readonly List<string> kHeaderFileExtensions = new List<string>()
-    {
-        ".h",
-        ".hh",
-        ".hpp"
+    public static readonly List<string> kAcceptedFileExtensionsWithoutHeaders = new List<string>()
+    {   ".c",
+        ".cpp",
+        ".cc",
+        ".cxx",
+        ".c++",
+        ".cp",
+        ".tli",
+        ".tlh",
+        ".vcxproj"
     };
 
     public static readonly List<string> kAcceptedFileExtensions = new List<string>

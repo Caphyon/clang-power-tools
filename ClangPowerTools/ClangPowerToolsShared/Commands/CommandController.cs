@@ -545,7 +545,7 @@ namespace ClangPowerTools
         (command.CommandID.ID == CommandIds.kCompileId || command.CommandID.ID == CommandIds.kTidyId ||
         command.CommandID.ID == CommandIds.kJsonCompilationDatabase || command.CommandID.ID == CommandIds.kIgnoreCompileId || 
         command.CommandID.ID == CommandIds.kIgnoreFormatId) &&
-        ScriptConstants.kHeaderFileExtensions.Contains(Path.GetExtension(itemsCollector.Items[0].GetName())) == true)
+        ScriptConstants.kAcceptedFileExtensionsWithoutHeaders.Contains(Path.GetExtension(itemsCollector.Items[0].GetName())) == false)
       {
         command.Visible = command.Enabled = false;
       }
