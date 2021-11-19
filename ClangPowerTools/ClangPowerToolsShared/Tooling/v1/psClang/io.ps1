@@ -269,7 +269,8 @@ Function Get-RandomString( [Parameter(Mandatory=$false)][int] $aLength = 10)
   .PARAMETER base
   The absolute path from which we start.
   .PARAMETER child
-  The relative path to be merged into base.
+  The relative path(s) to be merged into base. If multiple paths are specified, they can be separated 
+  semicolon or space.
   .PARAMETER ignoreErrors
   If this switch is not present, an error will be triggered if the resulting path
   is not present on disk (e.g. c:\Windows\System33).
@@ -280,6 +281,43 @@ Function Canonize-Path( [Parameter(Mandatory = $true)][string] $base
     , [Parameter(Mandatory = $true)][string] $child
     , [switch] $ignoreErrors)
 {
+    [string[]] $children = @()
+
+    $tokensBySemicolon = $child.Trim().Split(';')
+
+    foreach ($semicolonTok in $tokensBySemicolon)
+    {
+        if ([string]::IsNullOrWhiteSpace($semicolonTok))
+        {
+            continue
+        }
+        $tokensBySpace = $semicolonTok.Trim().Split(' ')
+        $currentToken = ""
+        foreach ($tok in $tokensBySpace)
+        {
+            if ($tok -match "[A-Z]:.*")
+            {
+                if ( ! [string]::IsNullOrWhiteSpace($currentToken))
+                {
+                    $children += $currentToken
+                }
+                $currentToken = $tok
+            }
+            else
+            {
+                if ($tok -ne $tokensBySpace[0])
+                {
+                    $currentToken += ' '
+                }
+                $currentToken += $tok
+            }
+        }
+        $children += $currentToken
+    }
+
+    Write-Debug "Canonizing for base = $base and children = $children"
+
+    [string[]] $retPaths = @()
     [string] $errorAction = If ($ignoreErrors) {"SilentlyContinue"} Else {"Stop"}
 
     if (Test-Path -LiteralPath $base)
@@ -289,20 +327,24 @@ Function Canonize-Path( [Parameter(Mandatory = $true)][string] $base
         $base = $base.Replace('[', '`[');
         $base = $base.Replace(']', '`]');
     }
-    
-    if ([System.IO.Path]::IsPathRooted($child))
+
+    foreach ($childPath in $children)
     {
-        if (!(Test-Path -LiteralPath $child))
+        if ([System.IO.Path]::IsPathRooted($childPath))
         {
-            return ""
+            if ((Test-Path -LiteralPath $childPath))
+            {
+              $retPaths += @($childPath)
+            }
         }
-        return $child
+        else
+        {
+            [string[]] $paths = @(Join-Path -Path "$base" -ChildPath "$childPath" -Resolve -ErrorAction $errorAction)
+            $retPaths += $paths
+        }
     }
-    else
-    {
-        [string[]] $paths = @(Join-Path -Path "$base" -ChildPath "$child" -Resolve -ErrorAction $errorAction)
-        return $paths
-    }
+
+    return $retPaths
 }
 
 function cpt::HasTrailingSlash([Parameter(Mandatory = $true)][string] $str)

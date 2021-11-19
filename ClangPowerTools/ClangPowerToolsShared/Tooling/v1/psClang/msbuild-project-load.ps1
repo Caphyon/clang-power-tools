@@ -458,23 +458,25 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
         {
             return
         }
-        [string[]] $paths = Canonize-Path -base (Get-Location) -child $relPath -ignoreErrors
+        [string[]] $paths = @(Canonize-Path -base (Get-Location) -child $relPath -ignoreErrors)
 
+        [bool] $loadedProjectSheet = $false
         foreach ($path in $paths)
         {
             if (![string]::IsNullOrEmpty($path) -and (Test-Path -LiteralPath $path))
             {
                 Write-Verbose "Property sheet: $path"
                 ParseProjectFile($path)
+                $loadedProjectSheet = $true
             }
-            else
+        }
+        if (!$loadedProjectSheet)
+        {
+            Write-Verbose "Could not find property sheet $relPath"
+            if ($relPath -like "\Microsoft.Cpp.props")
             {
-                Write-Verbose "Could not find property sheet $relPath"
-                if ($relPath -like "\Microsoft.Cpp.props")
-                {
-                    # now we can begin to evaluate directory.build.props XML element conditions, load it
-                    LoadDirectoryBuildPropSheetFile
-                }
+                # now we can begin to evaluate directory.build.props XML element conditions, load it
+                LoadDirectoryBuildPropSheetFile
             }
         }
     }
