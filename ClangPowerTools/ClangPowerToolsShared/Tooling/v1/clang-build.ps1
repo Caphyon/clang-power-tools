@@ -192,7 +192,7 @@ Set-Variable -name kLogicalCoreCount -value $Env:number_of_processors   -option 
 
 Set-Variable -name kCptGithubRepoBase -value `
 "https://raw.githubusercontent.com/Caphyon/clang-power-tools/master/ClangPowerTools/ClangPowerToolsShared/Tooling/v1/" `
-                                      -Option Constant
+                                      -option Constant
 
 # ------------------------------------------------------------------------------------------------
 # Return Value Constants
@@ -255,45 +255,44 @@ Set-Variable -name kLLVMInstallLocations    -value @("${Env:ProgramW6432}\LLVM\b
                                                     
 
 # ------------------------------------------------------------------------------------------------
-# Include required scripts, or download them if necessary
-Function DownloadIfNotPresent($relIncludePath)
+# Include required scripts, or download them from Github, if necessary
+
+Function cpt:ensureScriptExists([Parameter(Mandatory=$true)][string] $scriptName)
 {
-  [string] $absolutePath = "$PSScriptRoot/$relIncludePath"
+  [string] $scriptFilePath = "$PSScriptRoot/psClang/$scriptName"
 
-  if (! (Test-Path $absolutePath))
+  if (! (Test-Path $scriptFilePath))
   {
-    [string] $request =  "$kCptGithubRepoBase/$relIncludePath"
+    [string] $request =  "$kCptGithubRepoBase/psClang/$scriptName"
 
-    Invoke-WebRequest -Uri $request -OutFile $absolutePath
+    if ( ! (Test-Path "$PSScriptRoot/psClang"))
+    {
+      New-Item "$PSScriptRoot/psClang" -ItemType Directory
+    }
+
+    Invoke-WebRequest -Uri $request -OutFile $scriptFilePath
+    
+    if (! (Test-Path $scriptFilePath))
+    {
+      Write-Error "Could not download required script file ($scriptName). Aborting..."
+      exit 1
+    }
   }
 
-  if (! (Test-Path $absolutePath))
-  {
-    Write-Error "Could not download required script file ($relIncludePath). Aborting..."
-    exit 1
-  }
-
-  return $absolutePath
+  return $scriptFilePath
 }
 
-if (!(Test-Path "$PSScriptRoot/psClang"))
-{
-  New-Item "$PSScriptRoot/psClang" -ItemType Directory
-}
-
-$includedScripts = `
-@( "psClang/io.ps1"
- , "psClang/visualstudio-detection.ps1"
- , "psClang/msbuild-expression-eval.ps1"
- , "psClang/msbuild-project-data.ps1"
- , "psClang/msbuild-project-load.ps1"
- , "psClang/get-header-references.ps1"
- , "psClang/itemdefinition-context.ps1"
- , "psClang/jsondb-export.ps1"
-)
-
-$includedScripts | ForEach-Object { DownloadIfNotPresent $_ } | ForEach-Object { . $_}
-
+@( "io.ps1"
+ , "visualstudio-detection.ps1"
+ , "msbuild-expression-eval.ps1"
+ , "msbuild-project-data.ps1"
+ , "msbuild-project-load.ps1"
+ , "get-header-references.ps1"
+ , "itemdefinition-context.ps1"
+ , "jsondb-export.ps1"
+)                                            |
+ForEach-Object { cpt:ensureScriptExists $_ } |
+ForEach-Object { . $_ }
 
 #-------------------------------------------------------------------------------------------------
 # we may have a custom path for Clang-Tidy. Use it if that's the case.
