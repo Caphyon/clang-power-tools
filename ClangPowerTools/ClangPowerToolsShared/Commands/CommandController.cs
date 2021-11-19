@@ -542,7 +542,9 @@ namespace ClangPowerTools
         command.Visible = command.Enabled = false;
       }
       else if (itemsCollector.Items != null && itemsCollector.Items.Count > 0 && 
-        (command.CommandID.ID == CommandIds.kCompileId ||command.CommandID.ID == CommandIds.kTidyId) &&
+        (command.CommandID.ID == CommandIds.kCompileId || command.CommandID.ID == CommandIds.kTidyId ||
+        command.CommandID.ID == CommandIds.kJsonCompilationDatabase || command.CommandID.ID == CommandIds.kIgnoreCompileId || 
+        command.CommandID.ID == CommandIds.kIgnoreFormatId) &&
         ScriptConstants.kHeaderFileExtensions.Contains(Path.GetExtension(itemsCollector.Items[0].GetName())) == true)
       {
         command.Visible = command.Enabled = false;
