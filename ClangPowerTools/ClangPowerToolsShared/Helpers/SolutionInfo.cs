@@ -132,7 +132,7 @@ namespace ClangPowerTools.Helpers
 
       string activeItem = itemCollector.Items[0].GetName().ToLower();
       var fileExtension = Path.GetExtension(activeItem);
-      return ScriptConstants.kAcceptedFileExtensions.Contains(fileExtension);
+      return ScriptConstants.kAcceptedFileExtensionsWithoutHeaders.Contains(fileExtension);
     }
 
     public static bool ActiveDocumentValidation()
