@@ -521,6 +521,9 @@ namespace ClangPowerTools
       if (!(sender is OleMenuCommand command))
         return;
 
+      var itemsCollector = new ItemsCollector();
+      itemsCollector.CollectSelectedProjectItems();
+
       if (IsAToolbarCommand(command))
       {
         if (SolutionInfo.AreToolbarCommandsEnabled() == false)
@@ -535,6 +538,12 @@ namespace ClangPowerTools
         return;
       }
       if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte) && !(dte as DTE2).Solution.IsOpen)
+      {
+        command.Visible = command.Enabled = false;
+      }
+      else if (itemsCollector.Items != null && itemsCollector.Items.Count > 0 && 
+        (command.CommandID.ID == CommandIds.kCompileId ||command.CommandID.ID == CommandIds.kTidyId) &&
+        ScriptConstants.kHeaderFileExtensions.Contains(Path.GetExtension(itemsCollector.Items[0].GetName())) == true)
       {
         command.Visible = command.Enabled = false;
       }
