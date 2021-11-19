@@ -260,14 +260,14 @@ Function DownloadIfNotPresent($relIncludePath)
 {
   [string] $absolutePath = "$PSScriptRoot/$relIncludePath"
 
-  if (!(Test-Path $absolutePath))
+  if (! (Test-Path $absolutePath))
   {
     [string] $request =  "$kCptGithubRepoBase/$relIncludePath"
 
     Invoke-WebRequest -Uri $request -OutFile $absolutePath
   }
 
-  if (!(Test-Path $absolutePath))
+  if (! (Test-Path $absolutePath))
   {
     Write-Error "Could not download required script file ($relIncludePath). Aborting..."
     exit 1
