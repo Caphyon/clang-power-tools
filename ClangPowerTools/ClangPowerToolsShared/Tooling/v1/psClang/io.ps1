@@ -9,15 +9,35 @@ Function Write-Message([parameter(Mandatory = $true)][string] $msg
     $host.ui.RawUI.ForegroundColor = $foregroundColor
 }
 
+function Write-InformationTimed($message)
+{
+  if ($InformationPreference -eq "SilentlyContinue")
+  {
+    return
+  }
+  [DateTime] $lastTime = [DateTime]::Now
+  [string] $kTimeStampVar = "lastCptTimestamp"
+  if (VariableExists -name $kTimeStampVar)
+  {
+     $lastTime = (Get-Variable -name $kTimeStampVar -scope Global).Value
+  }
+  Set-Variable -name $kTimeStampVar -scope Global -value ([DateTime]::Now)
+  
+  [DateTime] $now = [DateTime]::Now;
+  [System.TimeSpan] $delta = $now - $lastTime
+
+  Write-Information "$message at $([DateTime]::Now.ToString("mm:ss:fff")). dt = $($delta.TotalMilliseconds)"
+}
+
 # Writes an error without the verbose PowerShell extra-info (script line location, etc.)
 Function Write-Err([parameter(ValueFromPipeline, Mandatory = $true)][string] $msg)
 {
-    Write-Message -msg $msg -color Red
+  Write-Message -msg $msg -color Red
 }
 
 Function Write-Success([parameter(ValueFromPipeline, Mandatory = $true)][string] $msg)
 {
-    Write-Message -msg $msg -color Green
+  Write-Message -msg $msg -color Green
 }
 
 Function Write-Array($array, $name)
@@ -29,9 +49,13 @@ Function Write-Array($array, $name)
 
 Function Write-Verbose-Array($array, $name)
 {
-    Write-Verbose "$($name):"
-    $array | ForEach-Object { Write-Verbose "  $_" }
-    Write-Verbose "" # empty line separator
+  if ($VerbosePreference -eq "SilentlyContinue")
+  {
+    return
+  }
+  Write-Verbose "$($name):"
+  $array | ForEach-Object { Write-Verbose "  $_" }
+  Write-Verbose "" # empty line separator
 }
 
 Function Write-Verbose-Timed([parameter(ValueFromPipeline, Mandatory = $true)][string] $msg)
@@ -41,16 +65,21 @@ Function Write-Verbose-Timed([parameter(ValueFromPipeline, Mandatory = $true)][s
 
 Function Print-InvocationArguments()
 {
-    $bParams = $PSCmdlet.MyInvocation.BoundParameters
-    if ($bParams)
+  if ($VerbosePreference -eq "SilentlyContinue")
+  {
+    return
+  }
+
+  $bParams = $PSCmdlet.MyInvocation.BoundParameters
+  if ($bParams)
+  {
+    [string] $paramStr = "clang-build.ps1 invocation args: `n"
+    foreach ($key in $bParams.Keys)
     {
-        [string] $paramStr = "clang-build.ps1 invocation args: `n"
-        foreach ($key in $bParams.Keys)
-        {
-            $paramStr += "  $($key) = $($bParams[$key]) `n"
-        }
-        Write-Verbose $paramStr
+      $paramStr += "  $($key) = $($bParams[$key]) `n"
     }
+    Write-Verbose $paramStr
+  }
 }
 
 Function Print-CommandParameters([Parameter(Mandatory = $true)][string] $command)
@@ -223,6 +252,11 @@ Function FileHasExtension( [Parameter(Mandatory = $true)][string]   $filePath
         }
     }
     return $false
+}
+
+Function Get-RandomString( [Parameter(Mandatory=$false)][int] $aLength = 10)
+{
+  return (-Join ((65..90) + (97..122) | Get-Random -Count $aLength | % { [char] $_ }))
 }
 
 <#

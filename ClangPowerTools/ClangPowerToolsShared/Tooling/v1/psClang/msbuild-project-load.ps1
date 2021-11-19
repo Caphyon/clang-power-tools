@@ -12,6 +12,16 @@ if (! (Test-Path variable:global:ProjectSpecificVariables))
   [System.Collections.ArrayList] $global:ProjectSpecificVariables    = @()
 }
 
+if (! (Test-Path variable:global:ProjectInputFiles))
+{
+  [System.Collections.ArrayList] $global:ProjectInputFiles = @{}
+}
+
+Function Add-ToProjectSpecificVariables([Parameter(Mandatory = $true)] [string] $variableName)
+{
+  $global:ProjectSpecificVariables.Add($variableName) > $null
+}
+
 if (! (Test-Path variable:global:ScriptParameterBackupValues))
 {
   [System.Collections.Hashtable] $global:ScriptParameterBackupValues = @{}
@@ -29,6 +39,7 @@ Set-Variable -name "kRedundantSeparatorsReplaceRules" -option Constant `
                         <# handle separator at beginning          #>   `
                       , ("^;" , "")                                    `
                       )
+Set-Variable -name "kCacheSyntaxVer" -Option Constant -value "1"
 
 Add-Type -TypeDefinition @"
 public class ProjectConfigurationNotFound : System.Exception
@@ -90,7 +101,7 @@ Function Set-Var([parameter(Mandatory = $false)][string] $name
 
     if (!$asScriptParameter -and !$global:ProjectSpecificVariables.Contains($name))
     {
-        $global:ProjectSpecificVariables.Add($name) > $null
+      Add-ToProjectSpecificVariables $name
     }
 }
 
@@ -205,6 +216,8 @@ Function Clear-Vars()
     $global:ScriptParameterBackupValues.Clear()
 
     $global:ProjectSpecificVariables.Clear()
+
+    $global:ProjectInputFiles.Clear()
 
     Reset-ProjectItemContext
 }
@@ -632,6 +645,8 @@ function ParseProjectFile([string] $projectFilePath)
     Write-Verbose "`nSanitizing $projectFilePath"
 
     [xml] $fileXml = Get-Content -LiteralPath $projectFilePath
+
+    $global:ProjectInputFiles.Add($projectFilePath) > $null
 
     Push-Location -LiteralPath (Get-FileDirectory -filePath $projectFilePath)
 

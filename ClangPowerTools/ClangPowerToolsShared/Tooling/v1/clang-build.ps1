@@ -294,13 +294,21 @@ if (Test-Path $kCptRegHiveSettings)
   $currentTimestamp = (Get-Item $PSCommandPath).LastWriteTime.ToString()
   $scriptTimestamp = $regHive.GetValue('ScriptTimestamp');
 
-  if ($scriptTimestamp -and ($scriptTimestamp -ne $currentTimestamp))
+  [string] $featureDisableValue = '42'
+  
+  if ( $scriptTimestamp -and 
+      ($scriptTimestamp -ne $currentTimestamp) -and
+      ($scriptTimestamp -ne $featureDisableValue) )
   {
     Write-Verbose "Detected changes in main script. Will redownload helper scripts from Github..."
     Write-Verbose "Current timestamp: $currentTimeStamp. Saved timestamp: $scriptTimestamp"
     $shouldRedownload = $true
   }
-  Set-ItemProperty -path $kCptRegHiveSettings -name 'ScriptTimestamp' -value $currentTimestamp
+
+  if (!$scriptTimestamp -or $scriptTimestamp -ne $featureDisableValue)
+  {
+    Set-ItemProperty -path $kCptRegHiveSettings -name 'ScriptTimestamp' -value $currentTimestamp
+  }
 }
 
 @( "io.ps1"
@@ -308,12 +316,15 @@ if (Test-Path $kCptRegHiveSettings)
  , "msbuild-expression-eval.ps1"
  , "msbuild-project-data.ps1"
  , "msbuild-project-load.ps1"
+ , "msbuild-project-cache-repository.ps1"
  , "get-header-references.ps1"
  , "itemdefinition-context.ps1"
  , "jsondb-export.ps1"
 )                                                              |
 ForEach-Object { cpt:ensureScriptExists $_ $shouldRedownload } |
 ForEach-Object { . $_ }
+
+Write-InformationTimed "Imported scripts"
 
 #-------------------------------------------------------------------------------------------------
 # we may have a custom path for Clang-Tidy. Use it if that's the case.
@@ -328,9 +339,17 @@ else
   Set-Variable -name kClangTidy             -value "clang-tidy.exe"     -option Constant
 }
 
+Set-Variable -name kCacheRepositorySaveIsNeeded -value $false 
+Set-Variable -name kPsMajorVersion          -value (Get-Host).Version.Major -Option Constant 
+
 #-------------------------------------------------------------------------------------------------
 # Custom Types
 
+
+Write-InformationTimed "Before .NET enum types"
+
+if ($kPsMajorVersion -lt 5)
+{
 Add-Type -TypeDefinition @"
   public enum WorkloadType
   {
@@ -347,7 +366,27 @@ Add-Type -TypeDefinition @"
     ConfigurationNotFound
   }
 "@
+}
+else 
+{
+  # this is much faster if PowerShell supports enums, we will save some time
+  Invoke-Expression @"
+  enum WorkloadType 
+  {
+    Compile
+    Tidy
+    TidyFix
+  }
 
+  enum StopReason 
+  {
+    Unknown
+    ConfigurationNotFound
+  }
+"@
+}
+
+Write-InformationTimed "Created .NET enum types"
 #-------------------------------------------------------------------------------------------------
 # Global variables
 
@@ -412,12 +451,16 @@ Function Get-SourceDirectory()
 function Load-Solutions()
 {
    Write-Verbose "Scanning for solution files"
-   $slns = Get-ChildItem -recurse -LiteralPath "$aSolutionsPath" -Filter "*$kExtensionSolution"
+   $slns = Get-ChildItem -recurse -LiteralPath "\\?\$aSolutionsPath" -Filter "*$kExtensionSolution"
    foreach ($sln in $slns)
    {
      Write-Verbose "Caching solution file $sln"
      $slnPath = $sln.FullName
+
+     # remove the UNC long path prefix
+     $slnPath = $slnPath.Replace('\\?\', '')
      $global:slnFiles[$slnPath] = (Get-Content -LiteralPath $slnPath)
+     
      Write-Verbose "Solution full path: $slnPath"
      Write-Verbose "Solution data length: $($global:slnFiles[$slnPath].Length)"
    }
@@ -1021,9 +1064,29 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   $projCounter = $global:cptProjectCounter
   [string] $projectOutputString = ("PROJECT$(if ($projCounter -gt 1) { " #$projCounter" } else { } ): " + $vcxprojPath)
   
+  [bool] $loadedFromCache = $false
   try
   { 
-    LoadProject($vcxprojPath)
+    Set-Variable 'kCacheRepositorySaveIsNeeded' -value $false
+    Write-InformationTimed "Before project load"
+    
+    if (Is-CacheLoadingEnabled)
+    {
+      Write-InformationTimed "Trying to load project from cache"
+      $loadedFromCache = Load-ProjectFromCache $vcxprojPath
+      
+      if (!$loadedFromCache)
+      {
+        LoadProject $vcxprojPath
+        Set-Variable 'kCacheRepositorySaveIsNeeded' -value $true
+      }
+    }
+    else 
+    {
+      LoadProject $vcxprojPath
+    }
+    
+    Write-InformationTimed "After project load"
     Write-Output "$projectOutputString [$($global:cptCurrentConfigPlatform)]"
   }
   catch [ProjectConfigurationNotFound]
@@ -1036,123 +1099,145 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     Pop-Location
     return
   }
-
+  
+  Write-InformationTimed "Detecting toolset"
 
   #-----------------------------------------------------------------------------------------------
   # DETECT PLATFORM TOOLSET
 
-  [string] $platformToolset = Get-ProjectPlatformToolset
-  Write-Verbose "Platform toolset: $platformToolset"
-
-  if ( $platformToolset -match "^v\d+(_xp)?$" )
+  if (! $loadedFromCache)
   {
-    [int] $toolsetVersion = [int]$platformToolset.Remove(0, 1).Replace("_xp", "")
+    [string] $global:platformToolset = Get-ProjectPlatformToolset
+    Write-Verbose "Platform toolset: $platformToolset"
+    Add-ToProjectSpecificVariables 'platformToolset'
 
-    [string] $desiredVisualStudioVer = ""
+    if ( $platformToolset -match "^v\d+(_xp)?$" )
+    {
+      [int] $toolsetVersion = [int]$platformToolset.Remove(0, 1).Replace("_xp", "")
 
-    # toolsets attached to specific Visual Studio versions
-    if ($toolsetVersion -le 120)
-    {
-      $desiredVisualStudioVer = "2013"
-    }
-    elseif ($toolsetVersion -eq 140)
-    {
-      $desiredVisualStudioVer = "2015"
-    }
-    elseif ($toolsetVersion -eq 141)
-    {
-      $desiredVisualStudioVer = "2017"
-    }
-    elseif ($toolsetVersion -eq 142)
-    {
-      $desiredVisualStudioVer = "2019";
-    }
-    elseif ($toolsetVersion -eq 143)
-    {
-      $desiredVisualStudioVer = "2022";
-    }
+      [string] $desiredVisualStudioVer = ""
 
-    [string] $desiredVisualStudioVerNumber = (Get-VisualStudio-VersionNumber $desiredVisualStudioVer)
-    if ($VisualStudioVersion -ne $desiredVisualStudioVerNumber)
-    {
-      [bool] $shouldReload = $false
-
-      if ([double]::Parse($VisualStudioVersion) -gt [double]::Parse($desiredVisualStudioVerNumber))
+      # toolsets attached to specific Visual Studio versions
+      if ($toolsetVersion -le 120)
       {
-        # in this case we may have a newer Visual Studio with older toolsets installed
-        [string[]] $supportedVsToolsets = Get-VisualStudioToolsets
-  
-        if ($supportedVsToolsets -notcontains $toolsetVersion)
+        $desiredVisualStudioVer = "2013"
+      }
+      elseif ($toolsetVersion -eq 140)
+      {
+        $desiredVisualStudioVer = "2015"
+      }
+      elseif ($toolsetVersion -eq 141)
+      {
+        $desiredVisualStudioVer = "2017"
+      }
+      elseif ($toolsetVersion -eq 142)
+      {
+        $desiredVisualStudioVer = "2019";
+      }
+      elseif ($toolsetVersion -eq 143)
+      {
+        $desiredVisualStudioVer = "2022";
+      }
+
+      [string] $desiredVisualStudioVerNumber = (Get-VisualStudio-VersionNumber $desiredVisualStudioVer)
+      if ($VisualStudioVersion -ne $desiredVisualStudioVerNumber)
+      {
+        [bool] $shouldReload = $false
+
+        if ([double]::Parse($VisualStudioVersion) -gt [double]::Parse($desiredVisualStudioVerNumber))
         {
-            $shouldReload = $true
+          # in this case we may have a newer Visual Studio with older toolsets installed
+          [string[]] $supportedVsToolsets = Get-VisualStudioToolsets
+    
+          if ($supportedVsToolsets -notcontains $toolsetVersion)
+          {
+              $shouldReload = $true
+          }
+          else 
+          {
+            Write-Verbose "[ INFO ] Detected project using older toolset ($toolsetVersion)"
+            Write-Verbose "Loading using Visual Studio $VisualStudioVersion with toolset $toolsetVersion"
+          }
         }
         else 
         {
-          Write-Verbose "[ INFO ] Detected project using older toolset ($toolsetVersion)"
-          Write-Verbose "Loading using Visual Studio $VisualStudioVersion with toolset $toolsetVersion"
+          # project uses a newer VS version, clearly we should reload using the newer version
+          $shouldReload = $true
+        }
+
+        if ($shouldReload)
+        {
+          # We need to reload everything and use the VS version we decided upon above
+          Write-Verbose "[ RELOAD ] Project will reload because of toolset requirements change..."
+          Write-Verbose "Current = $VisualStudioVersion. Required = $desiredVisualStudioVerNumber."
+
+          $global:cptVisualStudioVersion = $desiredVisualStudioVer
+          LoadProject($vcxprojPath)
+          
+          Write-InformationTimed "Project reloaded"
         }
       }
-      else 
-      {
-        # project uses a newer VS version, clearly we should reload using the newer version
-        $shouldReload = $true
-      }
-
-      if ($shouldReload)
-      {
-        # We need to reload everything and use the VS version we decided upon above
-        Write-Verbose "[ RELOAD ] Project will reload because of toolset requirements change..."
-        Write-Verbose "Current = $VisualStudioVersion. Required = $desiredVisualStudioVerNumber."
-
-        $global:cptVisualStudioVersion = $desiredVisualStudioVer
-        LoadProject($vcxprojPath)
-      }
     }
-  }
+  
+    Write-InformationTimed "Detected toolset"
 
-  #-----------------------------------------------------------------------------------------------
-  # FIND FORCE INCLUDES
+    #-----------------------------------------------------------------------------------------------
+    # FIND FORCE INCLUDES
 
-  [string[]] $forceIncludeFiles = @(Get-ProjectForceIncludes)
-  Write-Verbose-Array -array $forceIncludeFiles -name "Force includes"
+    [string[]] $global:forceIncludeFiles = @(Get-ProjectForceIncludes)
+    Write-Verbose-Array -array $forceIncludeFiles -name "Force includes"
+    Add-ToProjectSpecificVariables 'forceIncludeFiles'
 
-  #-----------------------------------------------------------------------------------------------
-  # DETECT PROJECT PREPROCESSOR DEFINITIONS
+    #-----------------------------------------------------------------------------------------------
+    # DETECT PROJECT PREPROCESSOR DEFINITIONS
 
-  [string[]] $preprocessorDefinitions = @(Get-ProjectPreprocessorDefines)
-  if ([int]$global:cptVisualStudioVersion -ge 2017)
-  {
-    # [HACK] pch generation crashes on VS 15.5 because of STL library, known bug.
-    # Triggered by addition of line directives to improve std::function debugging.
-    # There's a definition that supresses line directives.
-
-    $preprocessorDefinitions += @('"-D_DEBUG_FUNCTIONAL_MACHINERY"')
-  }
-
-  Write-Verbose-Array -array $preprocessorDefinitions -name "Preprocessor definitions"
-
-  #-----------------------------------------------------------------------------------------------
-  # DETECT PROJECT ADDITIONAL INCLUDE DIRECTORIES AND CONSTRUCT INCLUDE PATHS
-
-  [string[]] $additionalIncludeDirectories = @(Get-ProjectAdditionalIncludes)
-  Write-Verbose-Array -array $additionalIncludeDirectories -name "Additional include directories"
-
-  [string[]] $includeDirectories = @(Get-ProjectIncludeDirectories)
-  Write-Verbose-Array -array $includeDirectories -name "Include directories"
-
-  #-----------------------------------------------------------------------------------------------
-  # FIND LIST OF CPPs TO PROCESS
-
-  $global:cptFilesToProcess = @{ } # reset to empty
-
-  foreach ($fileToCompileInfo in (Get-ProjectFilesToCompile))
-  {
-    if ($fileToCompileInfo.File)
+    [string[]] $global:preprocessorDefinitions = @(Get-ProjectPreprocessorDefines)
+    if ([int]$global:cptVisualStudioVersion -ge 2017)
     {
-      $global:cptFilesToProcess[$fileToCompileInfo.File] = $fileToCompileInfo
-    }
-  }
+      # [HACK] pch generation crashes on VS 15.5 because of STL library, known bug.
+      # Triggered by addition of line directives to improve std::function debugging.
+      # There's a definition that supresses line directives.
 
+      $preprocessorDefinitions += @('"-D_DEBUG_FUNCTIONAL_MACHINERY"')
+    }
+    Add-ToProjectSpecificVariables 'preprocessorDefinitions'
+    
+    Write-InformationTimed "Detected preprocessor definitions"
+
+    Write-Verbose-Array -array $preprocessorDefinitions -name "Preprocessor definitions"
+
+    #-----------------------------------------------------------------------------------------------
+    # DETECT PROJECT ADDITIONAL INCLUDE DIRECTORIES AND CONSTRUCT INCLUDE PATHS
+
+    [string[]] $global:additionalIncludeDirectories = @(Get-ProjectAdditionalIncludes)
+    Write-Verbose-Array -array $additionalIncludeDirectories -name "Additional include directories"
+    Add-ToProjectSpecificVariables 'additionalIncludeDirectories'
+
+    [string[]] $includeDirectories = @(Get-ProjectIncludeDirectories)
+    Write-Verbose-Array -array $includeDirectories -name "Include directories"
+    Add-ToProjectSpecificVariables 'includeDirectories'
+
+    Write-InformationTimed "Detected include directories"
+
+    #-----------------------------------------------------------------------------------------------
+    # FIND LIST OF CPPs TO PROCESS
+
+    $global:projectAllCpps = @{}
+    foreach ($fileToCompileInfo in (Get-ProjectFilesToCompile))
+    {
+      if ($fileToCompileInfo.File)
+      {
+        $global:projectAllCpps[$fileToCompileInfo.File] = $fileToCompileInfo
+      }
+    }
+    
+    Add-ToProjectSpecificVariables 'projectAllCpps'
+    
+    Write-InformationTimed "Detected cpps to process"
+  } # past the caching boundary here, we must see what else needs to be computed live 
+  
+  $global:cptFilesToProcess = $global:projectAllCpps # reset to full project cpp list
+  
   #-----------------------------------------------------------------------------------------------
   # LOCATE STDAFX.H DIRECTORY
 
@@ -1161,11 +1246,24 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   [string] $stdafxHeader = ""
   [string] $stdafxHeaderFullPath = ""
 
-  foreach ($projCpp in $global:cptFilesToProcess.Keys)
+  [bool] $kPchIsNeeded = $global:cptFilesToProcess.Keys.Count -ge 2
+  if ($kPchIsNeeded)
   {
-    if ( (Get-ProjectFileSetting -fileFullName $projCpp -propertyName 'PrecompiledHeader') -ieq 'Create')
+    # if we have only one rooted file in the script parameters, then we don't need to detect PCH
+    if ($aCppToCompile.Count -eq 1 -and [System.IO.Path]::IsPathRooted($aCppToCompile[0]))
     {
-      $stdafxCpp = $projCpp
+      $kPchIsNeeded = $false
+    }
+  }
+
+  if ($kPchIsNeeded)
+  {
+    foreach ($projCpp in $global:cptFilesToProcess.Keys)
+    {
+      if ( (Get-ProjectFileSetting -fileFullName $projCpp -propertyName 'PrecompiledHeader') -ieq 'Create')
+      {
+        $stdafxCpp = $projCpp
+      }
     }
   }
 
@@ -1201,6 +1299,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   if ([string]::IsNullOrEmpty($stdafxDir))
   {
     Write-Verbose ("PCH not enabled for this project!")
+    $kPchIsNeeded = $false
   }
   else
   {
@@ -1210,6 +1309,9 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
 
     $stdafxHeaderFullPath = Canonize-Path -base $stdafxDir -child $stdafxHeader -ignoreErrors
   }
+  
+  Write-InformationTimed "Detected PCH information"
+
 
   #-----------------------------------------------------------------------------------------------
   # FILTER LIST OF CPPs TO PROCESS
@@ -1255,6 +1357,8 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
       Write-Verbose "PCH header has been targeted as dirty. Building entire project"
     }
   }
+  
+  Write-InformationTimed "Filtered out CPPs from bucket"
 
   Write-Verbose ("Processing " + $global:cptFilesToProcess.Count + " cpps")
 
@@ -1264,10 +1368,13 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   # JSON Compilation Database file will outlive this execution run, while the PCH is temporary 
   # so we disable PCH creation for that case as well.
 
+  if ($kPchIsNeeded -and $global:cptFilesToProcess.Count -lt 2)
+  {
+    $kPchIsNeeded = $false
+  }
+
   [string] $pchFilePath = ""
-  if ($global:cptFilesToProcess.Keys.Count -ge 2 -and
-      ![string]::IsNullOrEmpty($stdafxDir) -and $workloadType -ne [WorkloadType]::TidyFix -and
-      !$aExportJsonDB)
+  if ($kPchIsNeeded -and $workloadType -ne [WorkloadType]::TidyFix -and !$aExportJsonDB)
   {
     # COMPILE PCH
     Write-Verbose "Generating PCH..."
@@ -1283,6 +1390,14 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
       Write-Output "Skipping project. Reason: cannot create PCH."
       return
     }
+    Write-InformationTimed "Created PCH"
+  }  
+
+  if ($kCacheRepositorySaveIsNeeded)
+  {
+    Write-InformationTimed "Before serializing project"
+    Save-ProjectToCacheRepo
+    Write-InformationTimed "After serializing project"
   }
 
   #-----------------------------------------------------------------------------------------------
@@ -1325,6 +1440,8 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
                                          }
     $clangJobs += $newJob
   }
+  
+  Write-InformationTimed "Created job workers"
 
   #-----------------------------------------------------------------------------------------------
   # PRINT DIAGNOSTICS
@@ -1338,6 +1455,8 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     }
     Write-Verbose "INVOKE: $exeToCallVerbosePath $($clangJobs[0].ArgumentList)"
   }
+
+  Write-InformationTimed "Running workers"
 
   #-----------------------------------------------------------------------------------------------
   # RUN CLANG JOBS
@@ -1367,6 +1486,8 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
 
 Clear-Host # clears console
 
+Write-InformationTimed "Cleared console. Let's begin..."
+
 #-------------------------------------------------------------------------------------------------
 # If we didn't get a location to run CPT at, use the current working directory
 
@@ -1375,11 +1496,11 @@ if (!$aSolutionsPath)
   $aSolutionsPath = (Get-Location).Path
 }
 
-
 # ------------------------------------------------------------------------------------------------
 # Load param values from configuration file (if exists)
 
 Update-ParametersFromConfigFile
+Write-InformationTimed "Updated script parameters from cpt.config"
 
 # ------------------------------------------------------------------------------------------------
 # Initialize the Visual Studio version variable
@@ -1392,6 +1513,7 @@ $global:cptVisualStudioVersion = If ( $aVisualStudioVersion ) `
 # Print script parameters
 
 Print-InvocationArguments
+Write-InformationTimed "Print args"
 
 #-------------------------------------------------------------------------------------------------
 # Script entry point
@@ -1422,18 +1544,25 @@ if ($aExportJsonDB)
 
 Push-Location -LiteralPath (Get-SourceDirectory)
 
+Write-InformationTimed "Searching for solutions"
+
 # fetch .sln paths and data
 Load-Solutions
 
+Write-InformationTimed "End solution search"
+
 # This PowerShell process may already have completed jobs. Discard them.
 Remove-Job -State Completed
+Write-InformationTimed "Discarded already finished jobs"
 
 Write-Verbose "Source directory: $(Get-SourceDirectory)"
 Write-Verbose "Scanning for project files"
 
+Write-InformationTimed "Searching for project files"
 [System.IO.FileInfo[]] $projects = @(Get-Projects)
 [int] $initialProjectCount       = $projects.Count
 Write-Verbose ("Found $($projects.Count) projects")
+Write-InformationTimed "End project files search"
 
 # ------------------------------------------------------------------------------------------------
 # If we get headers in the -file arg we have to detect CPPs that include that header
@@ -1471,6 +1600,8 @@ if ($aCppToIgnore -and $aCppToIgnore.Count -gt 0)
 }
 
 # ------------------------------------------------------------------------------------------------
+
+Write-InformationTimed "Starting projects"
 
 [System.IO.FileInfo[]] $projectsToProcess = @()
 [System.IO.FileInfo[]] $ignoredProjects   = @()
@@ -1603,7 +1734,11 @@ foreach ($project in $projectsToProcess)
 
     foreach ($crtPlatformConfig in $configPlatforms)
     {
+      
+       Write-InformationTimed "Before project process"
        Process-Project -vcxprojPath $vcxprojPath -workloadType $workloadType -platformConfig $crtPlatformConfig
+       Write-InformationTimed "After project process"
+
        Write-Output "" # empty line separator
     }
 
@@ -1616,6 +1751,9 @@ if ($aExportJsonDB)
 { 
   JsonDB-Finalize
 }
+
+
+Write-InformationTimed "Goodbye"
 
 if ($global:FoundErrors)
 {
