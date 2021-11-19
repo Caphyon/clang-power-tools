@@ -244,6 +244,8 @@ Set-Variable -name kClangTidyFormatStyle      -value "-format-style="   -option 
 
 Set-Variable -name kClangTidyFlagTempFile     -value ""
 
+Set-Variable -name kCptRegHiveSettings -value "HKCU:SOFTWARE\Caphyon\Clang Power Tools" -option Constant
+
 # ------------------------------------------------------------------------------------------------
 # Default install locations of LLVM. If present there, we automatically use it
 
@@ -251,19 +253,18 @@ Set-Variable -name kLLVMInstallLocations    -value @("${Env:ProgramW6432}\LLVM\b
                                                     ,"${Env:ProgramFiles(x86)}\LLVM\bin"
                                                     )                   -option Constant
 
-
-                                                    
-
 # ------------------------------------------------------------------------------------------------
 # Include required scripts, or download them from Github, if necessary
 
-Function cpt:ensureScriptExists([Parameter(Mandatory=$true)][string] $scriptName)
+Function cpt:ensureScriptExists( [Parameter(Mandatory=$true)] [string] $scriptName
+                               , [Parameter(Mandatory=$false)][bool]   $forceRedownload
+                               )
 {
   [string] $scriptFilePath = "$PSScriptRoot/psClang/$scriptName"
-
-  if (! (Test-Path $scriptFilePath))
+  if ( $forceRedownload -or (! (Test-Path $scriptFilePath)) )
   {
-    [string] $request =  "$kCptGithubRepoBase/psClang/$scriptName"
+    Write-Verbose 'Download required script... $scriptName'
+    [string] $request = "$kCptGithubRepoBase/psClang/$scriptName"
 
     if ( ! (Test-Path "$PSScriptRoot/psClang"))
     {
@@ -282,6 +283,26 @@ Function cpt:ensureScriptExists([Parameter(Mandatory=$true)][string] $scriptName
   return $scriptFilePath
 }
 
+[bool] $shouldRedownload = $false
+# If the main script has been updated meanwhile, we invalidate all other scripts, and force
+# them to update from github. We need to watch for this becasue older CPT VS Extensions (before v7.9)
+# did not updated all helper scripts, but a list of predefined ones; we need to update the new ones as well.
+if (Test-Path $kCptRegHiveSettings)
+{
+  Write-Verbose "Checking to see if we should redownload script helpers..."
+  $regHive = Get-Item -LiteralPath $kCptRegHiveSettings
+  $currentTimestamp = (Get-Item $PSCommandPath).LastWriteTime.ToString()
+  $scriptTimestamp = $regHive.GetValue('ScriptTimestamp');
+
+  if ($scriptTimestamp -and ($scriptTimestamp -ne $currentTimestamp))
+  {
+    Write-Verbose "Detected changes in main script. Will redownload helper scripts from Github..."
+    Write-Verbose "Current timestamp: $currentTimeStamp. Saved timestamp: $scriptTimestamp"
+    $shouldRedownload = $true
+  }
+  Set-ItemProperty -path $kCptRegHiveSettings -name 'ScriptTimestamp' -value $currentTimestamp
+}
+
 @( "io.ps1"
  , "visualstudio-detection.ps1"
  , "msbuild-expression-eval.ps1"
@@ -290,8 +311,8 @@ Function cpt:ensureScriptExists([Parameter(Mandatory=$true)][string] $scriptName
  , "get-header-references.ps1"
  , "itemdefinition-context.ps1"
  , "jsondb-export.ps1"
-)                                            |
-ForEach-Object { cpt:ensureScriptExists $_ } |
+)                                                              |
+ForEach-Object { cpt:ensureScriptExists $_ $shouldRedownload } |
 ForEach-Object { . $_ }
 
 #-------------------------------------------------------------------------------------------------
