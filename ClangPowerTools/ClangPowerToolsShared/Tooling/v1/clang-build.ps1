@@ -185,20 +185,14 @@ param( [alias("proj")]
 Set-StrictMode -version latest
 $ErrorActionPreference = 'Continue'
 
-@( "$PSScriptRoot\psClang\io.ps1"
- , "$PSScriptRoot\psClang\visualstudio-detection.ps1"
- , "$PSScriptRoot\psClang\msbuild-expression-eval.ps1"
- , "$PSScriptRoot\psClang\msbuild-project-load.ps1"
- , "$PSScriptRoot\psClang\msbuild-project-data.ps1"
- , "$PSScriptRoot\psClang\get-header-references.ps1"
- , "$PSScriptRoot\psClang\itemdefinition-context.ps1"
- , "$PSScriptRoot\psClang\jsondb-export.ps1"
- ) | ForEach-Object { . $_ }
-
 # System Architecture Constants
 # ------------------------------------------------------------------------------------------------
 
 Set-Variable -name kLogicalCoreCount -value $Env:number_of_processors   -option Constant
+
+Set-Variable -name kCptGithubRepoBase -value `
+"https://raw.githubusercontent.com/Caphyon/clang-power-tools/master/ClangPowerTools/ClangPowerToolsShared/Tooling/v1/" `
+                                      -option Constant
 
 # ------------------------------------------------------------------------------------------------
 # Return Value Constants
@@ -238,17 +232,6 @@ Set-Variable -name kClangFlagForceInclude   -value "-include"           -option 
 
 Set-Variable -name kClangCompiler           -value "clang++.exe"        -option Constant
 
-# we may have a custom path for Clang-Tidy. Use it if that's the case.
-[string] $customTidyPath = (Get-QuotedPath -path ([Environment]::GetEnvironmentVariable($kVarEnvClangTidyPath)))
-if (![string]::IsNullOrWhiteSpace($customTidyPath))
-{
-  Set-Variable -name kClangTidy             -value $customTidyPath      -option Constant
-}
-else
-{
-  Set-Variable -name kClangTidy             -value "clang-tidy.exe"     -option Constant
-}
-
 Set-Variable -name kClangTidyFlags            -value @("-quiet"
                                                       ,"--")            -option Constant
 Set-Variable -name kClangTidyFixFlags         -value @("-quiet"
@@ -261,12 +244,89 @@ Set-Variable -name kClangTidyFormatStyle      -value "-format-style="   -option 
 
 Set-Variable -name kClangTidyFlagTempFile     -value ""
 
+Set-Variable -name kCptRegHiveSettings -value "HKCU:SOFTWARE\Caphyon\Clang Power Tools" -option Constant
+
 # ------------------------------------------------------------------------------------------------
 # Default install locations of LLVM. If present there, we automatically use it
 
 Set-Variable -name kLLVMInstallLocations    -value @("${Env:ProgramW6432}\LLVM\bin"
                                                     ,"${Env:ProgramFiles(x86)}\LLVM\bin"
                                                     )                   -option Constant
+
+# ------------------------------------------------------------------------------------------------
+# Include required scripts, or download them from Github, if necessary
+
+Function cpt:ensureScriptExists( [Parameter(Mandatory=$true)] [string] $scriptName
+                               , [Parameter(Mandatory=$false)][bool]   $forceRedownload
+                               )
+{
+  [string] $scriptFilePath = "$PSScriptRoot/psClang/$scriptName"
+  if ( $forceRedownload -or (! (Test-Path $scriptFilePath)) )
+  {
+    Write-Verbose 'Download required script... $scriptName'
+    [string] $request = "$kCptGithubRepoBase/psClang/$scriptName"
+
+    if ( ! (Test-Path "$PSScriptRoot/psClang"))
+    {
+      New-Item "$PSScriptRoot/psClang" -ItemType Directory
+    }
+
+    Invoke-WebRequest -Uri $request -OutFile $scriptFilePath
+    
+    if (! (Test-Path $scriptFilePath))
+    {
+      Write-Error "Could not download required script file ($scriptName). Aborting..."
+      exit 1
+    }
+  }
+
+  return $scriptFilePath
+}
+
+[bool] $shouldRedownload = $false
+# If the main script has been updated meanwhile, we invalidate all other scripts, and force
+# them to update from github. We need to watch for this becasue older CPT VS Extensions (before v7.9)
+# did not updated all helper scripts, but a list of predefined ones; we need to update the new ones as well.
+if (Test-Path $kCptRegHiveSettings)
+{
+  Write-Verbose "Checking to see if we should redownload script helpers..."
+  $regHive = Get-Item -LiteralPath $kCptRegHiveSettings
+  $currentTimestamp = (Get-Item $PSCommandPath).LastWriteTime.ToString()
+  $scriptTimestamp = $regHive.GetValue('ScriptTimestamp');
+
+  if ($scriptTimestamp -and ($scriptTimestamp -ne $currentTimestamp))
+  {
+    Write-Verbose "Detected changes in main script. Will redownload helper scripts from Github..."
+    Write-Verbose "Current timestamp: $currentTimeStamp. Saved timestamp: $scriptTimestamp"
+    $shouldRedownload = $true
+  }
+  Set-ItemProperty -path $kCptRegHiveSettings -name 'ScriptTimestamp' -value $currentTimestamp
+}
+
+@( "io.ps1"
+ , "visualstudio-detection.ps1"
+ , "msbuild-expression-eval.ps1"
+ , "msbuild-project-data.ps1"
+ , "msbuild-project-load.ps1"
+ , "get-header-references.ps1"
+ , "itemdefinition-context.ps1"
+ , "jsondb-export.ps1"
+)                                                              |
+ForEach-Object { cpt:ensureScriptExists $_ $shouldRedownload } |
+ForEach-Object { . $_ }
+
+#-------------------------------------------------------------------------------------------------
+# we may have a custom path for Clang-Tidy. Use it if that's the case.
+
+[string] $customTidyPath = (Get-QuotedPath -path ([Environment]::GetEnvironmentVariable($kVarEnvClangTidyPath)))
+if (![string]::IsNullOrWhiteSpace($customTidyPath))
+{
+  Set-Variable -name kClangTidy             -value $customTidyPath      -option Constant
+}
+else
+{
+  Set-Variable -name kClangTidy             -value "clang-tidy.exe"     -option Constant
+}
 
 #-------------------------------------------------------------------------------------------------
 # Custom Types
