@@ -294,13 +294,21 @@ if (Test-Path $kCptRegHiveSettings)
   $currentTimestamp = (Get-Item $PSCommandPath).LastWriteTime.ToString()
   $scriptTimestamp = $regHive.GetValue('ScriptTimestamp');
 
-  if ($scriptTimestamp -and ($scriptTimestamp -ne $currentTimestamp))
+  [string] $featureDisableValue = '42'
+  
+  if ( $scriptTimestamp -and 
+      ($scriptTimestamp -ne $currentTimestamp) -and
+      ($scriptTimestamp -ne $featureDisableValue) )
   {
     Write-Verbose "Detected changes in main script. Will redownload helper scripts from Github..."
     Write-Verbose "Current timestamp: $currentTimeStamp. Saved timestamp: $scriptTimestamp"
     $shouldRedownload = $true
   }
-  Set-ItemProperty -path $kCptRegHiveSettings -name 'ScriptTimestamp' -value $currentTimestamp
+
+  if (!$scriptTimestamp -or $scriptTimestamp -ne $featureDisableValue)
+  {
+    Set-ItemProperty -path $kCptRegHiveSettings -name 'ScriptTimestamp' -value $currentTimestamp
+  }
 }
 
 @( "io.ps1"
