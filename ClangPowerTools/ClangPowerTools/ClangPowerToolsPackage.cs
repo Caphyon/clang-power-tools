@@ -44,6 +44,10 @@ namespace ClangPowerTools
     /// RunPowerShellCommandPackage GUID string.
     /// </summary>
     public const string PackageGuidString = "f564f9d3-01ae-493e-883b-18deebdb975e";
+    private const string cptLib16 = "ClangPowerToolsLib16.dll";
+    private const string cptLib17 = "ClangPowerToolsLib17.dll";
+    private const string cptNamespace = "ClangPowerTools.ClangPowerToolsPackageImpl";
+    private const string initializeAsync = "InitializeAsync";
 
     #endregion
 
@@ -80,15 +84,15 @@ namespace ClangPowerTools
       string releaseVersion = (string)releaseVersionObj;
       releaseVersion = releaseVersion.Substring(0, releaseVersion.IndexOf('.')) + ".0";
       string assemblyName = new Version(releaseVersion) < new Version("17.0")
-          ? "ClangPowerToolsLib16.dll"
-          : "ClangPowerToolsLib17.dll";
+          ? cptLib16
+          : cptLib17;
 
       string currentDir = Path.GetDirectoryName(GetType().Assembly.Location);
       Assembly assembly = Assembly.LoadFile(Path.Combine(currentDir, assemblyName));
 
-      Type type = assembly.GetType("ClangPowerTools.ClangPowerToolsPackageImpl");
+      Type type = assembly.GetType(cptNamespace);
       mClangPackageImpl = Activator.CreateInstance(type, this);
-      MethodInfo method = type.GetMethod("InitializeAsync");
+      MethodInfo method = type.GetMethod(initializeAsync);
 
       await (Task)method.Invoke(mClangPackageImpl, null);
 
