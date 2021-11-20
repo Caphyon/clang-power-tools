@@ -451,7 +451,15 @@ Function Get-SourceDirectory()
 function Load-Solutions()
 {
    Write-Verbose "Scanning for solution files"
-   $slns = Get-ChildItem -recurse -LiteralPath "\\?\$aSolutionsPath" -Filter "*$kExtensionSolution"
+   [string] $pathToCheck = $aSolutionsPath
+   if ($kPsMajorVersion -lt 6)
+   {
+     # we need not bother with long path support in PowerShell 6+
+     # only in Windows PowerShell
+     $pathToCheck = "\\?\$aSolutionsPath"
+   }
+
+   $slns = Get-ChildItem -recurse -LiteralPath $pathToCheck -Filter "*$kExtensionSolution"
    foreach ($sln in $slns)
    {
      Write-Verbose "Caching solution file $sln"
