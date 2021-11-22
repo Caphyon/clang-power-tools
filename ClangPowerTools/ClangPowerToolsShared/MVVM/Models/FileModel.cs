@@ -16,7 +16,6 @@ namespace ClangPowerTools.MVVM.Models
     private bool isChecked;
     private string diffVisibility;
     private string fixVisibility;
-    private string fontStyle;
     private string fileName;
 
     //icons
@@ -32,7 +31,6 @@ namespace ClangPowerTools.MVVM.Models
       EnableIcon();
       DiffVisibility = UIElementsConstants.Hidden;
       FixVisibility = UIElementsConstants.Visibile;
-      FontStyle = UIElementsConstants.NormalStyleFont;
       IsEnabled = true;
     }
 
@@ -72,16 +70,6 @@ namespace ClangPowerTools.MVVM.Models
       }
     }
 
-    public string FontStyle
-    {
-      get { return fontStyle; }
-      set
-      {
-        fontStyle = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FontStyle"));
-      }
-    }
-
     public string DiffVisibility
     {
       get { return diffVisibility; }
@@ -114,13 +102,11 @@ namespace ClangPowerTools.MVVM.Models
         {
           DiffVisibility = UIElementsConstants.Visibile;
           FixVisibility = UIElementsConstants.Hidden;
-          FontStyle = UIElementsConstants.ObliqueStyleFont;
         }
         else
         {
           DiffVisibility = UIElementsConstants.Hidden;
           FixVisibility = UIElementsConstants.Visibile;
-          FontStyle = UIElementsConstants.NormalStyleFont;
         }
         if (isFixed == value) return;
         isFixed = value;
