@@ -148,7 +148,7 @@ namespace ClangPowerToolsShared.MVVM.Models
         TidyTooltip = UIElementsConstants.RefreshTooltip + UIElementsConstants.TidyTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
         RemoveTooltip = UIElementsConstants.RemoveTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
         FixTooltip = UIElementsConstants.FixTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
-        DiscardTooltip = UIElementsConstants.DiscardTooltip + totalChecked.ToString() + " fixed " + UIElementsConstants.FilesTooltip;
+        DiscardTooltip = UIElementsConstants.DiscardTooltip + totalChecked.ToString() + "fixed " + UIElementsConstants.FilesTooltip;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalChecked"));
       }
     }
