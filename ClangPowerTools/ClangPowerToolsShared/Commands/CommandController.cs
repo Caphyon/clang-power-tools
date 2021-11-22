@@ -508,7 +508,16 @@ namespace ClangPowerTools
 
       var itemsCollector = new ItemsCollector();
       itemsCollector.CollectSelectedProjectItems();
-      command.Enabled = !itemsCollector.IsEmpty;
+      if (itemsCollector.Items != null && itemsCollector.Items.Count == 1 &&
+     (command.CommandID.ID == CommandIds.kIgnoreCompileId) &&
+     ScriptConstants.kAcceptedFileExtensionsWithoutHeaders.Contains(Path.GetExtension(itemsCollector.Items[0].GetName())) == false)
+      {
+        command.Visible = command.Enabled = false;
+      }
+      else
+      {
+        command.Enabled = !itemsCollector.IsEmpty;
+      }
     }
 
     /// <summary>
@@ -520,6 +529,9 @@ namespace ClangPowerTools
     {
       if (!(sender is OleMenuCommand command))
         return;
+
+      var itemsCollector = new ItemsCollector();
+      itemsCollector.CollectSelectedProjectItems();
 
       if (IsAToolbarCommand(command))
       {
@@ -537,6 +549,14 @@ namespace ClangPowerTools
       if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte) && !(dte as DTE2).Solution.IsOpen)
       {
         command.Visible = command.Enabled = false;
+      }
+      else if (itemsCollector.Items != null && itemsCollector.Items.Count == 1 &&
+        (command.CommandID.ID == CommandIds.kCompileId || command.CommandID.ID == CommandIds.kTidyId ||
+        command.CommandID.ID == CommandIds.kJsonCompilationDatabase || command.CommandID.ID == CommandIds.kIgnoreCompileId) &&
+        ScriptConstants.kAcceptedFileExtensionsWithoutHeaders.Contains(Path.GetExtension(itemsCollector.Items[0].GetName())) == false)
+      {
+        command.Visible = command.Enabled = false;
+        return;
       }
       else if (vsBuildRunning && command.CommandID.ID != CommandIds.kSettingsId)
       {
