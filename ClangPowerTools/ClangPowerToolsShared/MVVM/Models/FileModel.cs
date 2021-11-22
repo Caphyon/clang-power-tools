@@ -17,6 +17,7 @@ namespace ClangPowerTools.MVVM.Models
     private string diffVisibility;
     private string fixVisibility;
     private string fontStyle;
+    private string fileName;
 
     //icons
     private string tidyFixIcon = string.Empty;
@@ -39,7 +40,15 @@ namespace ClangPowerTools.MVVM.Models
 
     #region Public Properities
 
-    public string FileName { get; set; }
+    public string FileName 
+    { 
+      get { return fileName; }
+      set
+      {
+        fileName = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileName"));
+      }
+    }
     public string FullFileName { get; set; }
     public string CopyFullFileName { get; set; }
 

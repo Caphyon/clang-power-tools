@@ -290,6 +290,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       foreach (var file in fixedFiles)
       {
         file.IsFixed = true;
+        file.FileName += " •";
       }
     }
 
@@ -297,7 +298,11 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       foreach (var file in checkedFiles)
       {
-        file.IsFixed = false;
+        if(file.IsFixed)
+        {
+          file.IsFixed = false;
+          file.FileName = file.FileName.Remove(file.FileName.Length - 2, 2);
+        }
       }
     }
 
