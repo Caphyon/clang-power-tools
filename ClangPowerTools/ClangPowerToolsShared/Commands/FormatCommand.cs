@@ -346,7 +346,7 @@ namespace ClangPowerTools.Commands
     {
       var formatSettings = SettingsProvider.FormatSettingsModel;
       string vsixPath = Path.GetDirectoryName(
-        typeof(RunClangPowerToolsPackage).Assembly.Location);
+        GetType().Assembly.Location);
 
       Process process = new Process();
       process.StartInfo.UseShellExecute = false;

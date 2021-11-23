@@ -18,7 +18,7 @@
   <Window.Resources>
     <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/ClangPowerTools;component/MVVM/Views/Styles/AppResources.xaml" />
+        <ResourceDictionary Source="/MVVM/Views/Styles/AppResources.xaml" />
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Window.Resources>

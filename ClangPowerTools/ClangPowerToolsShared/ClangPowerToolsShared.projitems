@@ -14,7 +14,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Attributes\ClangTidyPathAttribute.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Builder\IAsyncBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Builder\IBuilder.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)ClangPowerToolsPackage.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ClangPowerToolsPackageImpl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)CMake\CMakeBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\BackgroundTidy\BackgroundTidy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\BackgroundTidy\DataProcessor.cs" />

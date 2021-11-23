@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
     <Metadata>
-        <Identity Id="Caphyon.9ce239f2-d27a-432c-906c-1d55a123dbfd" Version="7.8.0" Language="en-US" Publisher="Caphyon" />
-        <DisplayName>Clang Power Tools 2022</DisplayName>
+        <Identity Id="Caphyon.705559db-5755-43fa-a023-41a3b14d2935" Version="7.8.0" Language="en-US" Publisher="Caphyon" />
+        <DisplayName>Clang Power Tools</DisplayName>
         <Description xml:space="preserve">A tool bringing clang-tidy magic to Visual Studio C++ developers.</Description>
         <MoreInfo>http://www.clangpowertools.com/QaA</MoreInfo>
         <License>Resources\LICENSE.txt</License>
@@ -12,16 +12,25 @@
         <PreviewImage>Resources\CPTLogoManageExtensionVS.png</PreviewImage>
         <Tags>clang;clang-tidy;clang-format;compile;modernize;CoreGuidelines;static analysis;tidy;C++;cpp;analyze</Tags>
     </Metadata>
-    <Installation>
-        <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Community">
-            <ProductArchitecture>amd64</ProductArchitecture>
-        </InstallationTarget>
-        <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Pro">
-            <ProductArchitecture>amd64</ProductArchitecture>
-        </InstallationTarget>
-        <InstallationTarget Version="[17.0,18.0)" Id="Microsoft.VisualStudio.Enterprise">
-            <ProductArchitecture>amd64</ProductArchitecture>
-        </InstallationTarget>
+    <Installation InstalledByMsi="false">
+      <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0,17.0)">
+        <ProductArchitecture>x86</ProductArchitecture>
+      </InstallationTarget>
+      <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[17.0,18.0)">
+        <ProductArchitecture>amd64</ProductArchitecture>
+      </InstallationTarget>
+      <InstallationTarget Id="Microsoft.VisualStudio.Professional" Version="[15.0,17.0)">
+        <ProductArchitecture>x86</ProductArchitecture>
+      </InstallationTarget>
+      <InstallationTarget Id="Microsoft.VisualStudio.Professional" Version="[17.0,18.0)">
+        <ProductArchitecture>amd64</ProductArchitecture>
+      </InstallationTarget>
+      <InstallationTarget Id="Microsoft.VisualStudio.Enterprise" Version="[15.0,17.0)">
+        <ProductArchitecture>x86</ProductArchitecture>
+      </InstallationTarget>
+      <InstallationTarget Id="Microsoft.VisualStudio.Enterprise" Version="[17.0,18.0)">
+        <ProductArchitecture>amd64</ProductArchitecture>
+      </InstallationTarget>
     </Installation>
     <Dependencies>
         <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />

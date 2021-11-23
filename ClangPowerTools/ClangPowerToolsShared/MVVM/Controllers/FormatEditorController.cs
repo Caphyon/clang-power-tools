@@ -20,7 +20,7 @@ namespace ClangPowerTools
 
     public FormatEditorController()
     {
-      vsixPath = Path.GetDirectoryName(typeof(RunClangPowerToolsPackage).Assembly.Location);
+      vsixPath = Path.GetDirectoryName(GetType().Assembly.Location);
       CreateEditorDirectory();
     }
 
