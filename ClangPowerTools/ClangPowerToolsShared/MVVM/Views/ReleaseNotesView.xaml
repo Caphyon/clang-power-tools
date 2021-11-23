@@ -75,7 +75,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 7.8.0" />
+        Text="version 7.9.0" />
 
       <ListView
         Grid.Row="3"
@@ -102,7 +102,7 @@
         <!--  What's new  -->
         <TextBox
           Margin="5,20,0,0"
-          HorizontalAlignment="Left"
+          HorizontalAlignment="Center"
           Background="Transparent"
           BorderThickness="0"
           FontSize="22"
@@ -110,27 +110,17 @@
           Text="What's New" />
 
         <TextBox
-          Margin="15,5,0,0"
+          Margin="15,15,0,0"
           HorizontalAlignment="Left"
           Background="Transparent"
           BorderThickness="0"
-          FontSize="15"
+          FontSize="20"
           IsReadOnly="True"
-          Text="• Tidy and Compile much faster now, when running on solution explorer filters"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Ignored projects are now skipped quicker"
+          Text="Clang Power Tools now supports Visual Studio 2022 as well as 2019 and 2017."
           TextWrapping="Wrap" />
 
         <!--  Bug Fixes  -->
-        <TextBox
+        <!--<TextBox
           Margin="5,35,0,0"
           HorizontalAlignment="Left"
           Background="Transparent"
@@ -157,7 +147,7 @@
           FontSize="15"
           IsReadOnly="True"
           Text="• An error when current user name contains spaces"
-          TextWrapping="Wrap" />
+          TextWrapping="Wrap" />-->
       </ListView>
     </Grid>
 
