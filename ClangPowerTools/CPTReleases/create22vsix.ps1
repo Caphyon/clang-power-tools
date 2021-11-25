@@ -8,6 +8,20 @@ Function UpdateManifest()
   $fileContent > .\extension.vsixmanifest
 }
 
+Function UpdateManifestJson()
+{
+  $fileContent = Get-Content .\manifest.json
+  $fileContent = $fileContent -replace "Caphyon.705559db-5755-43fa-a023-41a3b14d2935", "Caphyon.9ce239f2-d27a-432c-906c-1d55a123dbfd"
+  $fileContent > .\manifest.json
+}
+
+Function UpdateCatalogJson()
+{
+  $fileContent = Get-Content .\catalog.json
+  $fileContent = $fileContent -replace "Caphyon.705559db-5755-43fa-a023-41a3b14d2935", "Caphyon.9ce239f2-d27a-432c-906c-1d55a123dbfd"
+  $fileContent > .\catalog.json
+}
+
 $errorActionPreference = "Stop"
 
 Set-Location $loc
@@ -21,9 +35,19 @@ If (!(Test-Path .\ClangPowerTools.vsix))
 Copy-Item .\ClangPowerTools.vsix .\ClangPowerTools2022.vsix
 
 7z e .\ClangPowerTools2022.vsix extension.vsixmanifest
+7z e .\ClangPowerTools2022.vsix manifest.json
+7z e .\ClangPowerTools2022.vsix catalog.json
+
 UpdateManifest
+UpdateManifestJson
+UpdateCatalogJson
+
 7z u .\ClangPowerTools2022.vsix extension.vsixmanifest
+7z u .\ClangPowerTools2022.vsix manifest.json
+7z u .\ClangPowerTools2022.vsix catalog.json
 
 Remove-Item .\extension.vsixmanifest
+Remove-Item .\manifest.json
+Remove-Item .\catalog.json
 
 explorer $loc
