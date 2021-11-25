@@ -140,14 +140,13 @@ namespace ClangPowerTools.Output
 
     public void GetFilesFromOutput(string output)
     {
+      if (output == null)
+        return;
       var resultFiles = Regex.Matches(output, @"[A-Z]:\\[A-Z].*(.cpp)");
       foreach (var resultFile in resultFiles)
       {
         paths.Add(resultFile.ToString().Trim());
       }
-      //apply regex
-      //string MatchPhrase = "(?=("  "))";
-      //int mathes = Regex.Matches(input, MatchPhrase).Count;
     }
 
     public void OutputDataReceived(object sender, DataReceivedEventArgs e)
@@ -158,6 +157,7 @@ namespace ClangPowerTools.Output
       if (outputContent.MissingLLVM)
         return;
 
+      GetFilesFromOutput(e.Data.ToString());
       if (VSConstants.S_FALSE == outputProcessor.ProcessData(e.Data, Hierarchy, outputContent))
       {
         if (outputContent.MissingLLVM)
@@ -169,7 +169,6 @@ namespace ClangPowerTools.Output
 
       if (!string.IsNullOrWhiteSpace(outputContent.JsonFilePath))
         JsonCompilationDbFilePathEvent?.Invoke(this, new JsonFilePathArgs(outputContent.JsonFilePath));
-      GetFilesFromOutput(outputContent.Text);
       Write(outputContent.Text);
     }
 
