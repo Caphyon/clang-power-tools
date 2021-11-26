@@ -296,6 +296,11 @@ namespace ClangPowerToolsShared.MVVM.Models
       RefreshTidyIcon = IconResourceConstants.RefreshDisabled;
     }
 
+    private void DisableDiscardFix()
+    {
+      DiscardFixIcon = IconResourceConstants.RemoveFixDisabled;
+    }
+
     public void EnableAllIcons()
     {
       if (VSThemeCommand.GetCurrentVsTheme() == VsThemes.Dark)
