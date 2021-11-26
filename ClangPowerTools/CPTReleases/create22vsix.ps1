@@ -1,25 +1,15 @@
 param([Parameter(Mandatory=$true, HelpMessage="Location in which to create the 2022 VSIX starting from an existing one")][string] $loc)
 
-Function UpdateManifest()
+Function ReplaceContentInFile([Parameter(Mandatory=$true)][string] $fileName,
+                              [Parameter(Mandatory=$true)][string] $oldString,
+                              [Parameter(Mandatory=$true)][string] $newString)
 {
-  $fileContent = Get-Content .\extension.vsixmanifest
-  $fileContent = $fileContent -replace "<DisplayName>Clang Power Tools</DisplayName>", "<DisplayName>Clang Power Tools 2022</DisplayName>"
-  $fileContent = $fileContent -replace "<Identity Id=""Caphyon.705559db-5755-43fa-a023-41a3b14d2935""", "<Identity Id=""Caphyon.9ce239f2-d27a-432c-906c-1d55a123dbfd"""
-  $fileContent > .\extension.vsixmanifest
-}
-
-Function UpdateManifestJson()
-{
-  $fileContent = Get-Content .\manifest.json
-  $fileContent = $fileContent -replace "Caphyon.705559db-5755-43fa-a023-41a3b14d2935", "Caphyon.9ce239f2-d27a-432c-906c-1d55a123dbfd"
-  $fileContent > .\manifest.json
-}
-
-Function UpdateCatalogJson()
-{
-  $fileContent = Get-Content .\catalog.json
-  $fileContent = $fileContent -replace "Caphyon.705559db-5755-43fa-a023-41a3b14d2935", "Caphyon.9ce239f2-d27a-432c-906c-1d55a123dbfd"
-  $fileContent > .\catalog.json
+  7z e .\ClangPowerTools2022.vsix $filename
+  $fileContent = Get-Content $fileName
+  $fileContent = $fileContent -replace $oldString, $newString
+  $fileContent > $fileName
+  7z u .\ClangPowerTools2022.vsix $filename
+  Remove-Item $fileName
 }
 
 $errorActionPreference = "Stop"
@@ -34,20 +24,9 @@ If (!(Test-Path .\ClangPowerTools.vsix))
 
 Copy-Item .\ClangPowerTools.vsix .\ClangPowerTools2022.vsix
 
-7z e .\ClangPowerTools2022.vsix extension.vsixmanifest
-7z e .\ClangPowerTools2022.vsix manifest.json
-7z e .\ClangPowerTools2022.vsix catalog.json
-
-UpdateManifest
-UpdateManifestJson
-UpdateCatalogJson
-
-7z u .\ClangPowerTools2022.vsix extension.vsixmanifest
-7z u .\ClangPowerTools2022.vsix manifest.json
-7z u .\ClangPowerTools2022.vsix catalog.json
-
-Remove-Item .\extension.vsixmanifest
-Remove-Item .\manifest.json
-Remove-Item .\catalog.json
+ReplaceContentInFile -fileName "extension.vsixmanifest" -oldString "<DisplayName>Clang Power Tools</DisplayName>" -newString "<DisplayName>Clang Power Tools 2022</DisplayName>"
+ReplaceContentInFile -fileName "extension.vsixmanifest" -oldString "Caphyon.705559db-5755-43fa-a023-41a3b14d2935" -newString "Caphyon.9ce239f2-d27a-432c-906c-1d55a123dbfd"
+ReplaceContentInFile -fileName "manifest.json" -oldString "Caphyon.705559db-5755-43fa-a023-41a3b14d2935" -newString "Caphyon.9ce239f2-d27a-432c-906c-1d55a123dbfd"
+ReplaceContentInFile -fileName "catalog.json" -oldString "Caphyon.705559db-5755-43fa-a023-41a3b14d2935" -newString "Caphyon.9ce239f2-d27a-432c-906c-1d55a123dbfd"
 
 explorer $loc
