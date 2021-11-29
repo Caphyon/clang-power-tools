@@ -58,6 +58,8 @@ namespace ClangPowerToolsShared.MVVM.Models
       }
     }
 
+    public int TotalFixedChecked { get; set; }
+
     public string DiscardFixIcon
     {
       get { return discardFixIcon; }
@@ -200,6 +202,8 @@ namespace ClangPowerToolsShared.MVVM.Models
         if (!isRunning && totalChecked is not 0)
         {
           EnableAllIcons();
+          if(TotalFixedChecked == 0)
+            DisableDiscardFixIcon();
           return true;
         }
         else
@@ -296,7 +300,7 @@ namespace ClangPowerToolsShared.MVVM.Models
       RefreshTidyIcon = IconResourceConstants.RefreshDisabled;
     }
 
-    private void DisableDiscardFix()
+    public void DisableDiscardFixIcon()
     {
       DiscardFixIcon = IconResourceConstants.RemoveFixDisabled;
     }
