@@ -203,7 +203,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       {
         ++tidyToolWindowModel.TotalChecked;
         if (file.IsFixed)
-          ++tidyToolWindowModel.TotalChecked;
+          ++tidyToolWindowModel.TotalFixedChecked;
         tidyToolWindowModel.IsChecked = tidyToolWindowModel.TotalChecked == files.Count ? true : false;
         TidyToolWindowModel = tidyToolWindowModel;
       }
@@ -211,7 +211,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       {
         --tidyToolWindowModel.TotalChecked;
         if(file.IsFixed)
-          --tidyToolWindowModel.TotalChecked;
+          --tidyToolWindowModel.TotalFixedChecked;
         tidyToolWindowModel.IsChecked = tidyToolWindowModel.TotalChecked == 0 || tidyToolWindowModel.TotalChecked != files.Count ? false : true;
         TidyToolWindowModel = tidyToolWindowModel;
       }
