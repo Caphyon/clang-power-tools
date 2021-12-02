@@ -1323,6 +1323,18 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
 
   #-----------------------------------------------------------------------------------------------
   # FILTER LIST OF CPPs TO PROCESS
+  if ($global:cptFilesToProcess.Count -gt 0 -and $aCppToIgnore.Count -gt 0)
+  {
+    [System.Collections.Hashtable] $filteredCpps = @{}
+    foreach ($cpp in $global:cptFilesToProcess.Keys)
+    {
+      if ( ! (Should-IgnoreFile -file $cpp) )
+      {
+        $filteredCpps[$cpp] = $global:cptFilesToProcess[$cpp]
+      }
+    }
+    $global:cptFilesToProcess = $filteredCpps
+  }
 
   if ($global:cptFilesToProcess.Count -gt 0 -and $aCppToCompile.Count -gt 0)
   {
