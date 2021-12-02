@@ -118,11 +118,6 @@ Function Get-ProjectFilesToCompile()
         {
             foreach ($file in $matchedFiles)
             {
-                if ( (Should-IgnoreFile -file $file) )
-                {
-                    continue
-                }
-
                 $files += New-Object PsObject -Prop @{ "File"       = $file
                                                      ; "Properties" = $itemProps
                                                      }
