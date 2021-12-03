@@ -163,6 +163,27 @@ Function Get-QuotedPath([Parameter(Mandatory = $false)][string] $path)
     return $returnPath
 }
 
+Function Get-UnquotedPath([Parameter(Mandatory = $false)][string] $path)
+{
+    [string] $retPath = $path
+    if ( ! [string]::IsNullOrWhiteSpace($retPath) -and $retPath.StartsWith('"') )
+    {
+        $retPath = $retPath.Remove(0, 1);
+
+        if ( $retPath.EndsWith('"') )
+        {
+            $retPath = $retPath.Remove($retPath.Length - 1, 1)
+        }
+        else 
+        {
+            # if it begins with double quote, should end with double quote...
+            # something else may be going on, return the original path.
+            $retPath = $path
+        }
+    }
+    return $retPath
+}
+
 Function Remove-PathTrailingSlash([Parameter(Mandatory = $true)][string] $path)
 {
     return $path -replace '\\$', ''
@@ -330,6 +351,8 @@ Function Canonize-Path( [Parameter(Mandatory = $true)][string] $base
 
     foreach ($childPath in $children)
     {
+        $childPath = Get-UnquotedPath $childPath
+
         if ([System.IO.Path]::IsPathRooted($childPath))
         {
             if ((Test-Path -LiteralPath $childPath))
