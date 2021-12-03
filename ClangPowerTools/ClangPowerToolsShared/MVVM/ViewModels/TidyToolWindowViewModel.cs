@@ -193,7 +193,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         DiffFile(file);
       }
       MarkFixedFiles(filesPathsCopy);
-      UpdateTidyToolWindowModelFixedNr();
+      UpdateCheckedNumber();
       AfterCommand();
     }
 
@@ -202,12 +202,14 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       if (file.IsChecked)
       {
         ++tidyToolWindowModel.TotalChecked;
+        UpdateTidyToolWindowModelFixedNr();
         tidyToolWindowModel.IsChecked = tidyToolWindowModel.TotalChecked == files.Count ? true : false;
         TidyToolWindowModel = tidyToolWindowModel;
       }
       else
       {
         --tidyToolWindowModel.TotalChecked;
+        UpdateTidyToolWindowModelFixedNr();
         tidyToolWindowModel.IsChecked = tidyToolWindowModel.TotalChecked == 0 || tidyToolWindowModel.TotalChecked != files.Count ? false : true;
         TidyToolWindowModel = tidyToolWindowModel;
       }
@@ -249,23 +251,31 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private void UpdateTidyToolWindowModelFixedNr()
     {
       tidyToolWindowModel.FixedNr = 0;
+      tidyToolWindowModel.TotalFixedChecked = 0;
       foreach (var file in files)
       {
         if (file.IsFixed)
+        {
           ++tidyToolWindowModel.FixedNr;
+          if (file.IsChecked)
+            ++tidyToolWindowModel.TotalFixedChecked;
+        }
       }
     }
 
     private void CheckAll()
     {
       tidyToolWindowModel.IsChecked = true;
+      tidyToolWindowModel.TotalFixedChecked = 0;
       foreach (var file in files)
       {
         file.IsChecked = true;
+        if (file.IsFixed)
+          ++tidyToolWindowModel.TotalChecked;
       }
       tidyToolWindowModel.TotalChecked = files.Count;
-      Files = files;
-      TidyToolWindowModel = tidyToolWindowModel;
+      UpdateCheckedNumber();
+      SaveLastUpdatesToUI();
     }
 
     private void SaveLastUpdatesToUI()
@@ -281,7 +291,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       {
         file.IsChecked = false;
       }
+      tidyToolWindowModel.TotalFixedChecked = 0;
       tidyToolWindowModel.TotalChecked = 0;
+      UpdateCheckedNumber();
       SaveLastUpdatesToUI();
     }
 
@@ -383,6 +395,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     private void UpdateCheckedNumber()
     {
+      UpdateTidyToolWindowModelFixedNr();
       tidyToolWindowModel.TotalChecked = 0;
       foreach (var file in files)
       {
@@ -408,6 +421,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
       MarkUnfixedFiles(checkFiles);
       ++tidyToolWindowModel.DiscardNr;
+      UpdateCheckedNumber();
       AfterCommand();
     }
 
@@ -429,6 +443,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       ListVisibility = listVisibility;
       MessageModel = messageModel;
       tidyToolWindowModel.TotalChecked = 0;
+      tidyToolWindowModel.DisableDiscardFixIcon();
+      tidyToolWindowModel.TotalFixedChecked = 0;
       tidyToolWindowModel.IsChecked = false;
       SaveLastUpdatesToUI();
     }

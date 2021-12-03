@@ -58,6 +58,8 @@ namespace ClangPowerToolsShared.MVVM.Models
       }
     }
 
+    public int TotalFixedChecked { get; set; }
+
     public string DiscardFixIcon
     {
       get { return discardFixIcon; }
@@ -148,7 +150,7 @@ namespace ClangPowerToolsShared.MVVM.Models
         TidyTooltip = UIElementsConstants.RefreshTooltip + UIElementsConstants.TidyTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
         RemoveTooltip = UIElementsConstants.RemoveTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
         FixTooltip = UIElementsConstants.FixTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
-        DiscardTooltip = UIElementsConstants.DiscardTooltip + totalChecked.ToString() + "fixed " + UIElementsConstants.FilesTooltip;
+        DiscardTooltip = UIElementsConstants.DiscardTooltip + totalChecked.ToString() + " fixed " + UIElementsConstants.FilesTooltip;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalChecked"));
       }
     }
@@ -200,6 +202,8 @@ namespace ClangPowerToolsShared.MVVM.Models
         if (!isRunning && totalChecked is not 0)
         {
           EnableAllIcons();
+          if(TotalFixedChecked == 0)
+            DisableDiscardFixIcon();
           return true;
         }
         else
@@ -294,6 +298,11 @@ namespace ClangPowerToolsShared.MVVM.Models
       DiscardFixIcon = IconResourceConstants.RemoveFixDisabled;
       TidyFixIcon = IconResourceConstants.FixDisabled;
       RefreshTidyIcon = IconResourceConstants.RefreshDisabled;
+    }
+
+    public void DisableDiscardFixIcon()
+    {
+      DiscardFixIcon = IconResourceConstants.RemoveFixDisabled;
     }
 
     public void EnableAllIcons()
