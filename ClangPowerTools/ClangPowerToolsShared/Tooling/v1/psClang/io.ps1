@@ -352,6 +352,8 @@ Function Canonize-Path( [Parameter(Mandatory = $true)][string] $base
     foreach ($childPath in $children)
     {
         $childPath = Get-UnquotedPath $childPath
+        $childPath = $childPath -replace "`r", ""
+        $childPath = $childPath -replace "`n", ""
 
         if ([System.IO.Path]::IsPathRooted($childPath))
         {
