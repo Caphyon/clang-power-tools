@@ -173,28 +173,32 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public async Task FixAllFilesAsync(FileModel file = null)
     {
-      BeforeCommand();
-      var filesPaths = new List<string>();
-      var filesPathsCopy = new List<FileModel>();
-      if (file is null)
+      UpdateTidyToolWindowModelFixedNr();
+      if (tidyToolWindowModel.TotalChecked != tidyToolWindowModel.TotalFixedChecked)
       {
-        filesPathsCopy = GetCheckedFiles();
-        filesPaths = GetCheckedPathsList();
+        BeforeCommand();
+        var filesPaths = new List<string>();
+        var filesPathsCopy = new List<FileModel>();
+        if (file is null)
+        {
+          filesPathsCopy = GetCheckedFiles();
+          filesPaths = GetCheckedPathsList();
+        }
+        else
+        {
+          filesPathsCopy = new List<FileModel> { file };
+          filesPaths = new List<string> { file.FullFileName };
+        }
+        FileCommand.CopyFilesInTempSolution(filesPathsCopy);
+        await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
+        if (file is not null)
+        {
+          DiffFile(file);
+        }
+        MarkFixedFiles(filesPathsCopy);
+        UpdateCheckedNumber();
+        AfterCommand();
       }
-      else
-      {
-        filesPathsCopy = new List<FileModel> { file };
-        filesPaths = new List<string> { file.FullFileName };
-      }
-      FileCommand.CopyFilesInTempSolution(filesPathsCopy);
-      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
-      if (file is not null)
-      {
-        DiffFile(file);
-      }
-      MarkFixedFiles(filesPathsCopy);
-      UpdateCheckedNumber();
-      AfterCommand();
     }
 
     public void UpdateCheckedNumber(FileModel file)
