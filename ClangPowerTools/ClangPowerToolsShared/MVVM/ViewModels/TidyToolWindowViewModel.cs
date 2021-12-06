@@ -151,10 +151,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
       if (!Directory.Exists(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath))
         Directory.CreateDirectory(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath);
-      if (Directory.Exists(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath))
-      {
-        FileCommand.CopyFilesInTempSolution(files.ToList());
-      }
     }
 
     public void CheckOrUncheckAll()
@@ -181,8 +177,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         var filesPathsCopy = new List<FileModel>();
         if (file is null)
         {
-          filesPathsCopy =  GetCheckedAndUnfixedFiles();
-          filesPaths = GetCheckedAndUnfixedPathsList();
+          //get checked and unfixed files
+          filesPathsCopy = files.Where(f => f.IsChecked && f.IsFixed == false).ToList();
+          filesPaths = files.Where(f => f.IsChecked).Select(f => f.FullFileName).ToList();
         }
         else
         {
@@ -325,38 +322,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
     }
 
-    private List<FileModel> GetCheckedFiles()
-    {
-      return files.Where(f => f.IsChecked).ToList();
-    }
-
-    private List<FileModel> GetCheckedAndUnfixedFiles()
-    {
-      return files.Where(f => f.IsChecked && f.IsFixed == false).ToList();
-    }
-
-    private List<string> GetCheckedPathsList()
-    {
-      var pathList = new List<string>();
-      foreach (var path in files)
-      {
-        if (path.IsChecked)
-          pathList.Add(path.FullFileName);
-      }
-      return pathList;
-    }
-
-    private List<string> GetCheckedAndUnfixedPathsList()
-    {
-      var pathList = new List<string>();
-      foreach (var path in files)
-      {
-        if (path.IsChecked && path.IsFixed == false)
-          pathList.Add(path.FullFileName);
-      }
-      return pathList;
-    }
-
     private string GetProjectPathToFile(string file)
     {
       FileInfo path = new FileInfo(file);
@@ -410,7 +375,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       BeforeCommand();
       if (paths is null)
       {
-        paths = GetCheckedPathsList();
+        paths = files.Where(f => f.IsChecked).Select(f => f.FullFileName).ToList();
       }
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, paths);
       AfterCommand();
@@ -434,7 +399,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private void DiscardAllFiles()
     {
       BeforeCommand();
-      var checkFiles = GetCheckedFiles();
+      var checkFiles = files.Where(f => f.IsChecked).ToList();
       foreach (var file in checkFiles)
       {
         if (file.IsChecked)
