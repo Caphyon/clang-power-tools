@@ -202,8 +202,10 @@ namespace ClangPowerToolsShared.MVVM.Models
         if (!isRunning && totalChecked is not 0)
         {
           EnableAllIcons();
-          if(TotalFixedChecked == 0)
+          if (TotalFixedChecked == 0)
             DisableDiscardFixIcon();
+          if (TotalChecked == TotalFixedChecked)
+            DisableFixIcon();
           return true;
         }
         else
@@ -263,6 +265,24 @@ namespace ClangPowerToolsShared.MVVM.Models
       }
     }
 
+    public void DisableDiscardFixIcon()
+    {
+      DiscardFixIcon = IconResourceConstants.RemoveFixDisabled;
+    }
+
+    public void DisableFixIcon()
+    {
+      TidyFixIcon = IconResourceConstants.FixDisabled;
+    }
+
+    public void EnableAllIcons()
+    {
+      if (VSThemeCommand.GetCurrentVsTheme() == VsThemes.Dark)
+        EnableAllIconsDarkTheme();
+      else
+        EnableAllIconsLightTheme();
+    }
+
     public string ButtonVisibility
     {
       get { return buttonVisibility; }
@@ -282,7 +302,6 @@ namespace ClangPowerToolsShared.MVVM.Models
       RefreshTidyIcon = IconResourceConstants.RefreshTidyDark;
     }
 
-    #endregion
 
     private void EnableAllIconsLightTheme()
     {
@@ -300,18 +319,7 @@ namespace ClangPowerToolsShared.MVVM.Models
       RefreshTidyIcon = IconResourceConstants.RefreshDisabled;
     }
 
-    public void DisableDiscardFixIcon()
-    {
-      DiscardFixIcon = IconResourceConstants.RemoveFixDisabled;
-    }
-
-    public void EnableAllIcons()
-    {
-      if (VSThemeCommand.GetCurrentVsTheme() == VsThemes.Dark)
-        EnableAllIconsDarkTheme();
-      else
-        EnableAllIconsLightTheme();
-    }
+    #endregion
 
     #endregion
   }
