@@ -305,8 +305,11 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       foreach (var file in fixedFiles)
       {
-        file.IsFixed = true;
-        file.FileName += " •";
+        if(!file.IsFixed)
+        {
+          file.IsFixed = true;
+          file.FileName += " •";
+        }
       }
     }
 
