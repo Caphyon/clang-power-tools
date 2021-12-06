@@ -181,8 +181,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         var filesPathsCopy = new List<FileModel>();
         if (file is null)
         {
-          filesPathsCopy = GetCheckedFiles();
-          filesPaths = GetCheckedPathsList();
+          filesPathsCopy =  GetCheckedAndUnfixedFiles();
+          filesPaths = GetCheckedAndUnfixedPathsList();
         }
         else
         {
@@ -330,12 +330,28 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       return files.Where(f => f.IsChecked).ToList();
     }
 
+    private List<FileModel> GetCheckedAndUnfixedFiles()
+    {
+      return files.Where(f => f.IsChecked && f.IsFixed == false).ToList();
+    }
+
     private List<string> GetCheckedPathsList()
     {
       var pathList = new List<string>();
       foreach (var path in files)
       {
         if (path.IsChecked)
+          pathList.Add(path.FullFileName);
+      }
+      return pathList;
+    }
+
+    private List<string> GetCheckedAndUnfixedPathsList()
+    {
+      var pathList = new List<string>();
+      foreach (var path in files)
+      {
+        if (path.IsChecked && path.IsFixed == false)
           pathList.Add(path.FullFileName);
       }
       return pathList;
