@@ -71,6 +71,7 @@ namespace ClangPowerTools
                 await RegisterVsServicesAsync();
 
                 mCommandController = new CommandController(mPackage);
+                CommandControllerInstance.CommandController = mCommandController;
 
                 var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
 

@@ -59,6 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="15.0.1"/>
+        <PackageReference Include="Microsoft.VisualStudio.Shell.15.0">
+      <Version>15.9.28307</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Shell.Framework" Version="15.9.28307"/>
     <PackageReference Include="Microsoft.VisualStudio.Threading" Version="15.8.209"/>
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.10.1055">

@@ -1,8 +1,10 @@
-﻿using ClangPowerTools.Views;
+﻿
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
@@ -14,7 +16,8 @@ namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
 
     public const string WindowGuidString = "e4e2ba26-a455-4c53-adb3-8225fb696f9b";
     public const string Title = "Clang Power Tools - Tidy";
-    private TidyToolWindowView tidyToolWindowView;
+    private object tidyToolWindowView;
+    private Type mObjType;
 
     #endregion
 
@@ -24,7 +27,12 @@ namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
     {
       Caption = Title;
       BitmapImageMoniker = KnownMonikers.ImageIcon;
-      tidyToolWindowView = new TidyToolWindowView();
+      var assembly = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(
+        asm => asm.GetName().FullName.Contains("ClangPowerToolsLib"));
+
+      mObjType = assembly.GetType("ClangPowerTools.Views.TidyToolWindowView");
+      tidyToolWindowView = Activator.CreateInstance(mObjType);
+
       Content = tidyToolWindowView;
     }
 
@@ -32,12 +40,14 @@ namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
 
     public void UpdateToolWindow(List<string> filesPath)
     {
-      tidyToolWindowView.UpdateView(filesPath);
+      MethodInfo method = mObjType.GetMethod("UpdateView");
+      method.Invoke(tidyToolWindowView, new object[] { filesPath });
     }
 
     public void OpenTidyToolWindow(List<string> filesPath)
     {
-      tidyToolWindowView.OpenTidyToolWindow(filesPath);
+      MethodInfo method = mObjType.GetMethod("OpenTidyToolWindow");
+      method.Invoke(tidyToolWindowView, new object[] { filesPath });
     }
   }
 }
