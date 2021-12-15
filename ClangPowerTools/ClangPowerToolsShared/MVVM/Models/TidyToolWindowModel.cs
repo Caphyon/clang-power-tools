@@ -1,6 +1,11 @@
-﻿using ClangPowerToolsShared.MVVM.Commands;
+﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.Services;
+using ClangPowerToolsShared.MVVM.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
+using EnvDTE80;
+using System;
 using System.ComponentModel;
+using System.IO;
 
 namespace ClangPowerToolsShared.MVVM.Models
 {
