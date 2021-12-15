@@ -66,51 +66,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Diff2.png">
-      <Link>Resources\TidyToolWindow\[CPT]Diff2.png</Link>
-    </Resource>
-    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Diff_dark.png">
-      <Link>Resources\TidyToolWindow\[CPT]Diff_dark.png</Link>
-    </Resource>
-    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Diff_disabled.png">
-      <Link>Resources\TidyToolWindow\[CPT]Diff_disabled.png</Link>
-    </Resource>
-    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Fix.png">
-      <Link>Resources\TidyToolWindow\[CPT]Fix.png</Link>
-    </Resource>
-    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Fix_dark.png">
-      <Link>Resources\TidyToolWindow\[CPT]Fix_dark.png</Link>
-    </Resource>
-    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Fix_disabled.png">
-      <Link>Resources\TidyToolWindow\[CPT]Fix_disabled.png</Link>
-    </Resource>
-    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Refresh-Tidy.png">
-      <Link>Resources\TidyToolWindow\[CPT]Refresh-Tidy.png</Link>
-    </Resource>
-    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Refresh_dark.png">
-      <Link>Resources\TidyToolWindow\[CPT]Refresh_dark.png</Link>
-    </Resource>
-    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Refresh_disabled.png">
-      <Link>Resources\TidyToolWindow\[CPT]Refresh_disabled.png</Link>
-    </Resource>
-    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Remove.png">
-      <Link>Resources\TidyToolWindow\[CPT]Remove.png</Link>
-    </Resource>
-    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]RemoveFix.png">
-      <Link>Resources\TidyToolWindow\[CPT]RemoveFix.png</Link>
-    </Resource>
-    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]RemoveFix_dark.png">
-      <Link>Resources\TidyToolWindow\[CPT]RemoveFix_dark.png</Link>
-    </Resource>
-    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]RemoveFix_disabled.png">
-      <Link>Resources\TidyToolWindow\[CPT]RemoveFix_disabled.png</Link>
-    </Resource>
-    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Remove_dark.png">
-      <Link>Resources\TidyToolWindow\[CPT]Remove_dark.png</Link>
-    </Resource>
-    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Remove_disabled.png">
-      <Link>Resources\TidyToolWindow\[CPT]Remove_disabled.png</Link>
-    </Resource>
     <Content Include="ClangPowerToolsLib16.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -119,6 +74,21 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\TidyToolWindow\[CPT]Diff2.png" />
+    <Content Include="Resources\TidyToolWindow\[CPT]Diff_dark.png" />
+    <Content Include="Resources\TidyToolWindow\[CPT]Diff_disabled.png" />
+    <Content Include="Resources\TidyToolWindow\[CPT]Fix.png" />
+    <Content Include="Resources\TidyToolWindow\[CPT]Fix_dark.png" />
+    <Content Include="Resources\TidyToolWindow\[CPT]Fix_disabled.png" />
+    <Content Include="Resources\TidyToolWindow\[CPT]Refresh-Tidy.png" />
+    <Content Include="Resources\TidyToolWindow\[CPT]Refresh_dark.png" />
+    <Content Include="Resources\TidyToolWindow\[CPT]Refresh_disabled.png" />
+    <Content Include="Resources\TidyToolWindow\[CPT]Remove.png" />
+    <Content Include="Resources\TidyToolWindow\[CPT]RemoveFix.png" />
+    <Content Include="Resources\TidyToolWindow\[CPT]RemoveFix_dark.png" />
+    <Content Include="Resources\TidyToolWindow\[CPT]RemoveFix_disabled.png" />
+    <Content Include="Resources\TidyToolWindow\[CPT]Remove_dark.png" />
+    <Content Include="Resources\TidyToolWindow\[CPT]Remove_disabled.png" />
     <Resource Include="..\ClangPowerToolsShared\Resources\SettingsBackground.png">
       <Link>Resources\SettingsBackground.png</Link>
     </Resource>
