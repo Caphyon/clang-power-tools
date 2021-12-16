@@ -143,7 +143,7 @@ namespace ClangPowerTools.Output
       if (output == null)
         return;
 
-      Regex regex = new Regex(@"([A-Z]:\\.+\.(cpp|hpp|cu|cc|cp|tlh|c|cxx|tli))\W");
+      Regex regex = new Regex(@"([A-Z]:\\.+\.(cpp|hpp|cu|cc|cp|tlh|c|cxx|tli))(\W|$)");
       Match match = regex.Match(output);
 
       while (match.Success)
