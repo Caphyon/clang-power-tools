@@ -173,7 +173,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public async Task FixAllFilesAsync(FileModel file = null)
     {
       UpdateTidyToolWindowModelFixedNr();
-      if (tidyToolWindowModel.TotalChecked != tidyToolWindowModel.TotalFixedChecked)
+      if (tidyToolWindowModel.TotalChecked != tidyToolWindowModel.TotalFixedChecked || file is not null)
       {
         BeforeCommand();
         var filesPaths = new List<string>();
