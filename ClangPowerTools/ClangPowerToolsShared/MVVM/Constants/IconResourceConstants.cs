@@ -1,8 +1,11 @@
-﻿namespace ClangPowerToolsShared.MVVM.Constants
+﻿using System.IO;
+
+namespace ClangPowerToolsShared.MVVM.Constants
 {
   public static class IconResourceConstants
   {
-    public static string RefreshTidyDark { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]Refresh_dark.png";
+    private static DirectoryInfo directoryPath = new DirectoryInfo(Directory.GetCurrentDirectory());
+    public static string RefreshTidyDark { get; } =  @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]Refresh_dark.png";
     public static string RefreshTidyLight { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]Refresh-Tidy.png";
     public static string RefreshDisabled { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]Refresh_disabled.png";
 

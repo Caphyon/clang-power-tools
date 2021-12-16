@@ -10,6 +10,7 @@ using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Models;
 using EnvDTE80;
 using Microsoft.VisualStudio.PlatformUI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -149,8 +150,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         SaveLastUpdatesToUI();
         filesAlreadyExists = true;
       }
-      if (!Directory.Exists(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath))
-        Directory.CreateDirectory(TidyConstants.LongFilePrefix + TidyConstants.TempsFolderPath);
+      var patht = TidyConstants.TempsFolderPath;
+      if (!Directory.Exists(TidyConstants.TempsFolderPath))
+          Directory.CreateDirectory(TidyConstants.TempsFolderPath);
+        
     }
 
     public void CheckOrUncheckAll()
@@ -170,7 +173,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public async Task FixAllFilesAsync(FileModel file = null)
     {
       UpdateTidyToolWindowModelFixedNr();
-      if (tidyToolWindowModel.TotalChecked != tidyToolWindowModel.TotalFixedChecked)
+      if (tidyToolWindowModel.TotalChecked != tidyToolWindowModel.TotalFixedChecked || file is not null)
       {
         BeforeCommand();
         var filesPaths = new List<string>();
@@ -341,10 +344,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
                                   .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
       fileChangerWatcher.Run(solutionFolderPath);
 
-      if (File.Exists(TidyConstants.LongFilePrefix + file.CopyFullFileName))
+      if (File.Exists(file.CopyFullFileName))
       {
-        File.Copy(TidyConstants.LongFilePrefix + file.CopyFullFileName, TidyConstants.LongFilePrefix + file.FullFileName, true);
-        File.Delete(TidyConstants.LongFilePrefix + file.CopyFullFileName);
+        File.Copy(file.CopyFullFileName, file.FullFileName, true);
+        File.Delete(file.CopyFullFileName);
       }
     }
 

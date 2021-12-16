@@ -142,10 +142,14 @@ namespace ClangPowerTools.Output
     {
       if (output == null)
         return;
-      var resultFiles = Regex.Matches(output, @"[A-Z]:\\[A-Z].*(.cpp)");
-      foreach (var resultFile in resultFiles)
+
+      Regex regex = new Regex(@"([A-Z]:\\.+\.(cpp|hpp|cu|cc|cp|tlh|c|cxx|tli))(\W|$)");
+      Match match = regex.Match(output);
+
+      while (match.Success)
       {
-        paths.Add(resultFile.ToString().Trim());
+        paths.Add(match.Groups[1].Value.Trim());
+        match = match.NextMatch();
       }
     }
 
