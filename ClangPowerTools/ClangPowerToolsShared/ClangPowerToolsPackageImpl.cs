@@ -235,6 +235,7 @@ namespace ClangPowerTools
 
     public int OnBeforeOpenSolution(string pszSolutionFilename)
     {
+      CreateCacheRepository();
       return VSConstants.S_OK;
     }
 
