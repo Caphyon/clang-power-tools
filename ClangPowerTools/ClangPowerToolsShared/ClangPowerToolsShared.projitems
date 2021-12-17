@@ -25,14 +25,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CommandIds.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CommandUILocation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\CompileCommand.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Commands\DiffCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\FormatCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\IgnoreCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\IgnoreCompileCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\IgnoreFormatCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\JsonCompilationDatabaseCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\Models\CacheProjectsItemsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\SettingsCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\StopCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\CommandControllerInstance.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\TidyCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\VsCommands.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Convertors\BooleanToVisibilityConverter.cs" />
@@ -100,8 +101,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Items\ItemsCollector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\CollectionElementsCounter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Commands\RelayCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Commands\FileCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Commands\VSThemeCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Command\RelayCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\CommonSettingsFunctionality.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\IconResourceConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\ComboBoxConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\CPPKeywords.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\FormatEditorConstants.cs" />
@@ -112,7 +116,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\LlvmConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\LlvmVersions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\LLVMVersionsAlternate.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\ThemeConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\TidyConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\UIElementsConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\AccountController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\FormatEditorController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\FreeTrialController.cs" />
@@ -139,9 +145,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\LicenseModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\LlvmModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\LlvmSettingsModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\MessageModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\SelectedFileModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyCheckModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidySettingsModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyToolWindowModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToggleModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TokenModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\UserModel.cs" />
@@ -177,11 +185,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TeamSettingsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TidyChecksViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TidySettingsViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TidyToolWindowViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\ToggleMultipleDataViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TrialExpiredViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\FolderExplorerView.xaml.cs">
       <DependentUpon>FolderExplorerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\TidyToolWindowView.xaml.cs">
+      <DependentUpon>TidyToolWindowView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\ToolWindows\TidyToolWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\WebApi\WebApiUrl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\XmlSerializer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Output\OutputContentModel.cs" />
@@ -401,6 +414,10 @@
     <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\TidySettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\TidyToolWindowView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\TrialExpiredView.xaml">
       <SubType>Designer</SubType>

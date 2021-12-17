@@ -54,6 +54,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="..\ClangPowerToolsShared\MVVM\Views\ToolWindows\TidyToolWindow.cs">
+      <Link>MVVM\Views\TidyToolWindow.cs</Link>
+    </Compile>
     <Compile Include="ClangPowerToolsPackage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resource.Designer.cs">
@@ -63,6 +66,51 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Diff2.png">
+      <Link>Resources\TidyToolWindow\[CPT]Diff2.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Diff_dark.png">
+      <Link>Resources\TidyToolWindow\[CPT]Diff_dark.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Diff_disabled.png">
+      <Link>Resources\TidyToolWindow\[CPT]Diff_disabled.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Fix.png">
+      <Link>Resources\TidyToolWindow\[CPT]Fix.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Fix_dark.png">
+      <Link>Resources\TidyToolWindow\[CPT]Fix_dark.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Fix_disabled.png">
+      <Link>Resources\TidyToolWindow\[CPT]Fix_disabled.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Refresh-Tidy.png">
+      <Link>Resources\TidyToolWindow\[CPT]Refresh-Tidy.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Refresh_dark.png">
+      <Link>Resources\TidyToolWindow\[CPT]Refresh_dark.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Refresh_disabled.png">
+      <Link>Resources\TidyToolWindow\[CPT]Refresh_disabled.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Remove.png">
+      <Link>Resources\TidyToolWindow\[CPT]Remove.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]RemoveFix.png">
+      <Link>Resources\TidyToolWindow\[CPT]RemoveFix.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]RemoveFix_dark.png">
+      <Link>Resources\TidyToolWindow\[CPT]RemoveFix_dark.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]RemoveFix_disabled.png">
+      <Link>Resources\TidyToolWindow\[CPT]RemoveFix_disabled.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Remove_dark.png">
+      <Link>Resources\TidyToolWindow\[CPT]Remove_dark.png</Link>
+    </Resource>
+    <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Remove_disabled.png">
+      <Link>Resources\TidyToolWindow\[CPT]Remove_disabled.png</Link>
+    </Resource>
     <Content Include="ClangPowerToolsLib16.dll">
       <IncludeInVSIX>true</IncludeInVSIX>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -355,7 +403,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup>
-    <PostBuildEvent>if not exist "$(SolutionDir)CPTReleases" mkdir "$(SolutionDir)CPTReleases"
+    <PostBuildEvent>
 
 xcopy "$(SolutionDir)ClangPowerTools\bin\Release\ClangPowerTools.vsix"  "$(SolutionDir)CPTReleases" /y
 

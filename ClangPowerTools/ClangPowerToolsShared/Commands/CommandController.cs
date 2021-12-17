@@ -11,6 +11,7 @@ using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
@@ -42,6 +43,7 @@ namespace ClangPowerTools
 
     private readonly Commands2 mCommand;
     private CommandUILocation commandUILocation;
+    private int _commandId = 0;
     private int currentCommand;
     private bool mSaveCommandWasGiven = false;
     private bool mFormatAfterTidyFlag = false;
@@ -51,7 +53,6 @@ namespace ClangPowerTools
 
     private readonly string registryName = @"Software\Caphyon\Clang Power Tools";
     private readonly string keyName = "CMakeBetaWarning";
-
 
     #endregion
 
@@ -84,8 +85,6 @@ namespace ClangPowerTools
       {
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyId);
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyToolbarId);
-        await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyFixId);
-        await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyFixToolbarId);
       }
 
       if (FormatCommand.Instance == null)
@@ -155,8 +154,14 @@ namespace ClangPowerTools
       await LaunchCommandAsync(command.CommandID.ID, commandUILocation);
     }
 
-    public async Task LaunchCommandAsync(int aCommandId, CommandUILocation aCommandUILocation)
+    public int GetCommandId()
     {
+      return _commandId;
+    }
+
+    public async Task LaunchCommandAsync(int aCommandId, CommandUILocation aCommandUILocation, List<string> paths = null)
+    {
+      _commandId = aCommandId;
       switch (aCommandId)
       {
         case CommandIds.kSettingsId:
@@ -205,6 +210,8 @@ namespace ClangPowerTools
             OnBeforeClangCommand(CommandIds.kTidyId);
 
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
+            await TidyCommand.Instance.ShowTidyToolWindowEmptyAsync();
+
             OnAfterClangCommand();
             break;
           }
@@ -214,6 +221,27 @@ namespace ClangPowerTools
             OnBeforeClangCommand(CommandIds.kTidyId);
 
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
+            await TidyCommand.Instance.ShowTidyToolWindowEmptyAsync();
+
+            OnAfterClangCommand();
+            break;
+          }
+        case CommandIds.kTidyToolWindowId:
+          {
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kTidyId);
+
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyToolWindowId, aCommandUILocation, paths);
+            OnAfterClangCommand();
+            break;
+          }
+        case CommandIds.kTidyToolWindowFilesId:
+          {
+            OnAfterClangCommand();
+            await StopBackgroundRunnersAsync();
+
+            await TidyCommand.Instance.ShowTidyToolWindowAsync(paths);
+
             OnAfterClangCommand();
             break;
           }
@@ -222,7 +250,7 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kTidyFixId);
 
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, aCommandUILocation);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, aCommandUILocation, paths);
             OnAfterClangCommand();
             break;
           }
@@ -480,7 +508,16 @@ namespace ClangPowerTools
 
       var itemsCollector = new ItemsCollector();
       itemsCollector.CollectSelectedProjectItems();
-      command.Enabled = !itemsCollector.IsEmpty;
+      if (itemsCollector.Items != null && itemsCollector.Items.Count == 1 &&
+     (command.CommandID.ID == CommandIds.kIgnoreCompileId) &&
+     ScriptConstants.kAcceptedFileExtensionsWithoutHeaders.Contains(Path.GetExtension(itemsCollector.Items[0].GetName())) == false)
+      {
+        command.Visible = command.Enabled = false;
+      }
+      else
+      {
+        command.Enabled = !itemsCollector.IsEmpty;
+      }
     }
 
     /// <summary>
@@ -492,6 +529,9 @@ namespace ClangPowerTools
     {
       if (!(sender is OleMenuCommand command))
         return;
+
+      var itemsCollector = new ItemsCollector();
+      itemsCollector.CollectSelectedProjectItems();
 
       if (IsAToolbarCommand(command))
       {
@@ -509,6 +549,14 @@ namespace ClangPowerTools
       if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte) && !(dte as DTE2).Solution.IsOpen)
       {
         command.Visible = command.Enabled = false;
+      }
+      else if (itemsCollector.Items != null && itemsCollector.Items.Count == 1 &&
+        (command.CommandID.ID == CommandIds.kCompileId || command.CommandID.ID == CommandIds.kTidyId ||
+        command.CommandID.ID == CommandIds.kJsonCompilationDatabase || command.CommandID.ID == CommandIds.kIgnoreCompileId) &&
+        ScriptConstants.kAcceptedFileExtensionsWithoutHeaders.Contains(Path.GetExtension(itemsCollector.Items[0].GetName())) == false)
+      {
+        command.Visible = command.Enabled = false;
+        return;
       }
       else if (vsBuildRunning && command.CommandID.ID != CommandIds.kSettingsId)
       {

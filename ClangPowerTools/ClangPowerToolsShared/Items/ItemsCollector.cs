@@ -34,7 +34,7 @@ namespace ClangPowerTools
 
     #region Properties
 
-    public List<IItem> Items { get; private set; } = new List<IItem>();
+    public List<IItem> Items { get; set; } = new List<IItem>();
     public bool IsEmpty => Items.Count == 0;
 
     #endregion
@@ -154,13 +154,22 @@ namespace ClangPowerTools
           return true;
         }
       }
-        return false;
+      return false;
     }
 
     /// <summary>
     /// Collect all selected items in the Solution explorer for commands
     /// </summary>
     /// 
+    public void CollectCustomItemsByPath(List<string> customPath)
+    {
+      foreach (var path in customPath)
+      {
+        var item = dte2.ToolWindows.SolutionExplorer.GetItem(path);
+        AddProjectItem(item.Object as ProjectItem);
+      }
+    }
+
     public void CollectSelectedItems()
     {
       if (selectedItems == null || selectedItems.Length == 0)

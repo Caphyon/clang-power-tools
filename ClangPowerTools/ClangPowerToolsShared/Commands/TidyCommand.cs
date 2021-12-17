@@ -1,11 +1,12 @@
 ﻿using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
 using ClangPowerTools.SilentFile;
-using EnvDTE;
+using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
 using Task = System.Threading.Tasks.Task;
@@ -19,10 +20,12 @@ namespace ClangPowerTools.Commands
   {
 
     #region Properties
-    private TidySettingsViewModel TidySettingsViewModel { get; set; }
+    private readonly AsyncPackage package;
+
     /// <summary>
     /// Gets the instance of the command.
     /// </summary>
+    /// 
     public static TidyCommand Instance
     {
       get;
@@ -45,13 +48,13 @@ namespace ClangPowerTools.Commands
     {
       if (null != aCommandService)
       {
+        package = aPackage;
         var menuCommandID = new CommandID(CommandSet, Id);
         var menuCommand = new OleMenuCommand(aCommandController.Execute, menuCommandID);
         menuCommand.BeforeQueryStatus += aCommandController.OnBeforeClangCommand;
         menuCommand.Enabled = true;
         aCommandService.AddCommand(menuCommand);
       }
-      TidySettingsViewModel = new TidySettingsViewModel();
     }
 
 
@@ -72,64 +75,103 @@ namespace ClangPowerTools.Commands
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
       Instance = new TidyCommand(commandService, aCommandController, aPackage, aGuid, aId);
+
     }
 
-    public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, Document document = null)
+    //display tidy tool window - progress bar, run tidy again
+    public async Task ShowTidyToolWindowEmptyAsync()
     {
-      await PrepareCommmandAsync(commandUILocation);
-      await Task.Run(() =>
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      ToolWindowPane window = await package.ShowToolWindowAsync(
+      typeof(TidyToolWindow),
+      0,
+      create: true,
+      cancellationToken: package.DisposalToken);
+      var tidyToolWindow = (TidyToolWindow)window;
+      FilePathCollector fileCollector = new FilePathCollector();
+      var paths = fileCollector.Collect(mItemsCollector.Items).ToList();
+      if (tidyToolWindow != null)
+        tidyToolWindow.OpenTidyToolWindow(paths);
+    }
+
+    public async Task ShowTidyToolWindowAsync(List<string> paths = null)
+    {
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      ToolWindowPane window = await package.ShowToolWindowAsync(
+      typeof(TidyToolWindow),
+      0,
+      create: true,
+      cancellationToken: package.DisposalToken);
+      var tidyToolWindow = (TidyToolWindow)window;
+      if (tidyToolWindow != null && paths != null)
+        tidyToolWindow.UpdateToolWindow(paths);
+    }
+
+    public async Task RunClangTidyAsync(int aCommandId, CommandUILocation commandUILocation, List<string> paths = null)
+    {
+      if (CommandIds.kTidyToolWindowId != aCommandId && CommandIds.kTidyFixId != aCommandId)
       {
-        lock (mutex)
+        await PrepareCommmandAsync(commandUILocation);
+        CacheProjectsFromItems();
+      }
+
+      if (CommandIds.kTidyToolWindowId == aCommandId || CommandIds.kTidyFixId == aCommandId)
+      {
+        await Task.Run(() =>
         {
-          try
+          lock (mutex)
           {
-            using var silentFileController = new SilentFileChangerController();
-            using var fileChangerWatcher = new FileChangerWatcher();
-
-            var tidySettings = SettingsProvider.TidySettingsModel;
-
-            if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
+            try
             {
-              fileChangerWatcher.OnChanged += FileOpener.Open;
+              using var silentFileController = new SilentFileChangerController();
+              using var fileChangerWatcher = new FileChangerWatcher();
 
-              var dte2 = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
-              string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
-                dte2.Solution.FullName : dte2.Solution.FullName
-                                          .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
+              var tidySettings = SettingsProvider.TidySettingsModel;
 
-              fileChangerWatcher.Run(solutionFolderPath);
+              if (CommandIds.kTidyFixId == aCommandId || tidySettings.TidyOnSave)
+              {
+                fileChangerWatcher.OnChanged += FileOpener.Open;
 
-              FilePathCollector fileCollector = new FilePathCollector();
-              var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
+                var dte2 = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
+                string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
+                  dte2.Solution.FullName : dte2.Solution.FullName
+                                            .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
 
-              silentFileController.SilentFiles(filesPath);
-              silentFileController.SilentFiles(dte2.Documents);
-            }
+                fileChangerWatcher.Run(solutionFolderPath);
+                //FilePathCollector fileCollector = new FilePathCollector();
+                //var filesPath = fileCollector.Collect(mItemsCollector.Items).ToList();
 
-            if (tidySettings.DetectClangTidyFile && !mItemsCollector.IsEmpty)
-            {
-              // Check for .clang-tidy config file
-              if (FileSystem.SearchAllTopDirectories(mItemsCollector.Items[0].GetPath(), FileSystem.ConfigClangTidyFileName))
-                tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
+                //silentFileController.SilentFiles(filesPath);
+                //silentFileController.SilentFiles(dte2.Documents);
+
+              }
+
+              if (tidySettings.DetectClangTidyFile && !mItemsCollector.IsEmpty)
+              {
+                // Check for .clang-tidy config file
+                if (FileSystem.SearchAllTopDirectories(mItemsCollector.Items[0].GetPath(), FileSystem.ConfigClangTidyFileName))
+                  tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
+                else
+                  tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.PredefinedChecks;
+
+                var settingsHandlder = new SettingsHandler();
+                settingsHandlder.SaveSettings();
+              }
+              if (CommandIds.kTidyToolWindowId == aCommandId)
+                RunScript(CommandIds.kTidyId, false, paths);
               else
-                tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.PredefinedChecks;
-
-              var settingsHandlder = new SettingsHandler();
-              settingsHandlder.SaveSettings();
+                RunScript(aCommandId, false, paths);
             }
-
-            RunScript(aCommandId, false);
+            catch (Exception exception)
+            {
+              VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
+                OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            }
           }
-          catch (Exception exception)
-          {
-            VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
-              OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-          }
-        }
-      });
+        });
+      }
     }
 
     #endregion
-
   }
 }

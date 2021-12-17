@@ -1,10 +1,11 @@
 ﻿using ClangPowerTools.Builder;
+using ClangPowerTools.Commands;
 using ClangPowerTools.Error;
 using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
-using EnvDTE;
+using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -13,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace ClangPowerTools.Output
 {
@@ -49,19 +51,28 @@ namespace ClangPowerTools.Output
 
     private IVsHierarchy Hierarchy { get; set; }
 
+    private HashSet<string> paths;
+    private List<string> tempPaths;
 
     #endregion
+
+    public OutputWindowController()
+    {
+      paths = new HashSet<string>();
+      tempPaths = new List<string>();
+    }
 
     #region Methods
 
     #region Output window operations
-
+    private Package package;
     public void Initialize(AsyncPackage aPackage, IVsOutputWindow aVsOutputWindow)
     {
       if (null == outputWindowBuilder)
         outputWindowBuilder = new OutputWindowBuilder(aPackage, aVsOutputWindow);
 
       outputWindowBuilder.Build();
+      package = aPackage;
     }
 
     public void ClearPanel(object sender, ClearEventArgs e) => Clear();
@@ -126,6 +137,22 @@ namespace ClangPowerTools.Output
 
     #region Data Handlers
 
+
+    public void GetFilesFromOutput(string output)
+    {
+      if (output == null)
+        return;
+
+      Regex regex = new Regex(@"([A-Z]:\\.+\.(cpp|hpp|cu|cc|cp|tlh|c|cxx|tli))(\W|$)");
+      Match match = regex.Match(output);
+
+      while (match.Success)
+      {
+        paths.Add(match.Groups[1].Value.Trim());
+        match = match.NextMatch();
+      }
+    }
+
     public void OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
       if (null == e.Data)
@@ -134,6 +161,7 @@ namespace ClangPowerTools.Output
       if (outputContent.MissingLLVM)
         return;
 
+      GetFilesFromOutput(e.Data.ToString());
       if (VSConstants.S_FALSE == outputProcessor.ProcessData(e.Data, Hierarchy, outputContent))
       {
         if (outputContent.MissingLLVM)
@@ -145,7 +173,6 @@ namespace ClangPowerTools.Output
 
       if (!string.IsNullOrWhiteSpace(outputContent.JsonFilePath))
         JsonCompilationDbFilePathEvent?.Invoke(this, new JsonFilePathArgs(outputContent.JsonFilePath));
-
       Write(outputContent.Text);
     }
 
@@ -168,11 +195,24 @@ namespace ClangPowerTools.Output
 
     public void ClosedDataConnection(object sender, EventArgs e)
     {
+      tempPaths.Clear();
       if (Buffer.Count != 0 && outputContent.MissingLLVM == false)
         Write(String.Join("\n", Buffer));
 
       CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
       OnErrorDetected(this, e);
+
+      //open tidy tool window and pass paths
+      var id = CommandControllerInstance.CommandController.GetCommandId();
+      if (id == CommandIds.kTidyToolWindowId || id == CommandIds.kTidyFixId)
+      {
+        foreach (var path in paths)
+        {
+          tempPaths.Add(path);
+        }
+        CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowFilesId, CommandUILocation.ContextMenu, tempPaths);
+        paths.Clear();
+      }
     }
 
     public void OnFileHierarchyDetected(object sender, VsHierarchyDetectedEventArgs e)
@@ -208,6 +248,13 @@ namespace ClangPowerTools.Output
     public void OnEncodingErrorDetected(object sender, EventArgs e)
     {
       HasEncodingErrorEvent?.Invoke(this, new HasEncodingErrorEventArgs(outputContent));
+    }
+
+    private bool CheckTidyToolWindowExists()
+    {
+      var tidyToolWindow = package.FindToolWindow(typeof(TidyToolWindow), 0, false);
+      if (tidyToolWindow is not null) return true;
+      return false;
     }
 
     #endregion

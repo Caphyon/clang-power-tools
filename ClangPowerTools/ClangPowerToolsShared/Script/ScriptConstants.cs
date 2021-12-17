@@ -10,6 +10,18 @@ namespace ClangPowerTools
 
     #region Clang Compile/Tidy constants
 
+    public static readonly List<string> kAcceptedFileExtensionsWithoutHeaders = new List<string>()
+    {   ".c",
+        ".cpp",
+        ".cc",
+        ".cxx",
+        ".c++",
+        ".cp",
+        ".tli",
+        ".tlh",
+        ".vcxproj"
+    };
+
     public static readonly List<string> kAcceptedFileExtensions = new List<string>
       { ".c",
         ".cpp",
@@ -44,6 +56,7 @@ namespace ClangPowerTools
         ".inl"
       };
 
+    public const string kProjectFileExtension = ".vcxproj";
     public const string FileExtensionsSelectFile = "Code files (*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx;)|*.c;*.cpp;*.cxx;*.cc;*.tli;*.tlh;*.h;*.hh;*.hpp;*.hxx";
 
     public const string kCMakeConfigFile = "cmakelists.txt";

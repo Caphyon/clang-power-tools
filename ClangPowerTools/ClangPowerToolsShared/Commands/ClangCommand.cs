@@ -4,6 +4,7 @@ using ClangPowerTools.Events;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.IgnoreActions;
 using ClangPowerTools.Services;
+using ClangPowerToolsShared.Commands.Models;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -21,6 +22,8 @@ namespace ClangPowerTools
     #region Members
 
     public static RunningProcesses runningProcesses = new RunningProcesses();
+
+    private CacheProjectsItemsModel cacheProjectsItemsModel = new CacheProjectsItemsModel();
 
     protected ItemsCollector mItemsCollector;
     protected FilePathCollector mFilePahtCollector;
@@ -102,8 +105,29 @@ namespace ClangPowerTools
 
     #region Protected Methods
 
+    protected void CacheProjectsFromItems()
+    {
+      cacheProjectsItemsModel.Projects.Clear();
+      cacheProjectsItemsModel.ProjectItems.Clear();
 
-    protected void RunScript(int aCommandId, bool jsonCompilationDbActive)
+      foreach (var item in mItemsCollector.Items)
+      {
+        if (item.GetObject() is Project)
+        {
+          var project = item.GetObject() as Project;
+          cacheProjectsItemsModel.Projects.Add(project);
+          //var name = project.FullName;
+        }
+        else if (item.GetObject() is ProjectItem)
+        {
+          var projectItem = item.GetObject() as ProjectItem;
+          cacheProjectsItemsModel.ProjectItems.Add(projectItem);
+          //var name = proj.ContainingProject.FullName;
+        }
+      }
+    }
+
+    protected void RunScript(int aCommandId, bool jsonCompilationDbActive, List<string> paths = null)
     {
       string runModeParameters = ScriptGenerator.GetRunModeParamaters();
       string genericParameters = ScriptGenerator.GetGenericParamaters(aCommandId, VsEdition, VsVersion, jsonCompilationDbActive);
@@ -114,13 +138,13 @@ namespace ClangPowerTools
       if (jsonCompilationDbActive)
         ExportJsonCompilationDatabase(runModeParameters, genericParameters);
       else
-        Compile(runModeParameters, genericParameters, aCommandId);
+        Compile(runModeParameters, genericParameters, aCommandId, paths);
 
       cMakeBuilder.ClearBuildCashe();
     }
 
     //Collect files
-    protected IEnumerable<IItem> CollectItemsDependingOnCommandLocation(
+    protected void CollectItemsDependingOnCommandLocation(
       CommandUILocation commandUILocation = CommandUILocation.ContextMenu, bool jsonCompilationDbActive = false)
     {
       mItemsCollector = new ItemsCollector(jsonCompilationDbActive);
@@ -134,7 +158,6 @@ namespace ClangPowerTools
           mItemsCollector.CollectSelectedItems();
           break;
       }
-      return mItemsCollector.Items;
     }
 
     private void SetActiveDocumentEvent()
@@ -186,7 +209,7 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private void Compile(string runModeParameters, string genericParameters, int commandId)
+    private void Compile(string runModeParameters, string genericParameters, int commandId, List<string> paths)
     {
       var vsSolution = SolutionInfo.IsOpenFolderModeActive() == false ?
         (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution)) : null;
@@ -194,20 +217,24 @@ namespace ClangPowerTools
       try
       {
         var tempClangTidyFilePath = string.Empty;
-        foreach (var item in mItemsCollector.Items)
+        if (paths is not null)
         {
-          if (StopCommandActivated)
-            break;
-
+          var itemRelatedParameters = ScriptGenerator.GetItemRelatedParametersCustomPaths(paths, cacheProjectsItemsModel);
+          Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
+        }
+        else
+        {
+          var item = mItemsCollector.Items[0];
           var ignoreItem = new IgnoreItem();
 
-          if (ignoreItem.Check(item))
-          {
-            OnIgnoreItem(new ClangCommandMessageEventArgs(ignoreItem.IgnoreCompileOrTidyMessage, false));
-            continue;
-          }
+          //TODO Display all ignored files
+          //if (ignoreItem.Check(item))
+          //{
+          //  OnIgnoreItem(new ClangCommandMessageEventArgs(ignoreItem.IgnoreCompileOrTidyMessage, false));
+          //}
 
-          if (commandId == CommandIds.kTidyId || commandId == CommandIds.kTidyFixId ||
+          //TODO Handle CreateTemporaryFileForTidy
+          if (commandId == CommandIds.kTidyId || commandId == CommandIds.kTidyFixId || CommandIds.kTidyToolWindowId == commandId ||
             commandId == CommandIds.kTidyToolbarId || commandId == CommandIds.kTidyFixToolbarId)
           {
             tempClangTidyFilePath = CreateTemporaryFileForTidy(item);
@@ -216,7 +243,7 @@ namespace ClangPowerTools
           var itemRelatedParameters = string.Empty;
           if (item is CurrentProject || item is Project || item is Solution)
           {
-            itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item);
+            itemRelatedParameters = ScriptGenerator.GetProjectRelatedParameters(cacheProjectsItemsModel);
           }
           else if (item is CurrentProjectItem || item is ProjectItem)
           {
@@ -228,13 +255,8 @@ namespace ClangPowerTools
           Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
 
           ItemHierarchy = vsSolution != null ? AutomationUtil.GetItemHierarchy(vsSolution, item) : null;
-
-          PowerShellWrapper.Invoke(Script, runningProcesses);
-          if (item is ProjectItem || item is CurrentProjectItem)
-          {
-            break;
-          }
         }
+        PowerShellWrapper.Invoke(Script, runningProcesses);
 
         if (StopCommandActivated)
         {

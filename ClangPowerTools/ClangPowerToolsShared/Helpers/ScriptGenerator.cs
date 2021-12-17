@@ -1,6 +1,9 @@
 ﻿using ClangPowerTools.Builder;
 using ClangPowerTools.Script;
+using ClangPowerToolsShared.Commands.Models;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace ClangPowerTools.Helpers
 {
@@ -22,6 +25,42 @@ namespace ClangPowerTools.Helpers
       genericScriptBuilder.Build();
       var genericParameters = genericScriptBuilder.GetResult();
       return genericParameters;
+    }
+
+    public static string GetItemRelatedParametersCustomPaths(List<string> filePaths, CacheProjectsItemsModel cacheProjectsItemsModel)
+    {
+      if (filePaths.Count > 0 && ScriptConstants.kProjectFileExtension == (Path.GetExtension(filePaths[0])))
+      {
+        return GetProjectRelatedParameters(cacheProjectsItemsModel);
+      }
+      var tokens = new List<string>
+      {
+        $"{ScriptConstants.kProject} {JoinPathsToStringScript(cacheProjectsItemsModel.ProjectsStringList)}",
+        $"{ScriptConstants.kFile} {JoinPathsToStringScript(filePaths)}",
+        $"{ScriptConstants.kActiveConfiguration} ''{cacheProjectsItemsModel.Configuration}|{cacheProjectsItemsModel.Platform}''"
+      };
+      return string.Join(" ", tokens);
+    }
+
+    public static string GetProjectRelatedParameters(CacheProjectsItemsModel cacheProjectsItemsModel)
+    {
+      var tokens = new List<string>
+      {
+        $"{ScriptConstants.kProject} {JoinPathsToStringScript(cacheProjectsItemsModel.ProjectsStringList)}",
+        $"{ScriptConstants.kActiveConfiguration} ''{cacheProjectsItemsModel.Configuration}|{cacheProjectsItemsModel.Platform}''"
+      };
+      return string.Join(" ", tokens);
+    }
+
+    private static string JoinPathsToStringScript(List<string> paths)
+    {
+      StringBuilder stringBuilder = new StringBuilder("(''");
+      foreach (string path in paths)
+      {
+        stringBuilder.Append(path).Append("'',''");
+      }
+      stringBuilder.Remove(stringBuilder.Length - 3, 3);
+      return stringBuilder.Append(")").ToString();
     }
 
     public static string GetItemRelatedParameters(IItem item, bool jsonCompilationDbActive = false)
