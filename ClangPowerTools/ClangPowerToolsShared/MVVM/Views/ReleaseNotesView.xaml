@@ -186,7 +186,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Project with long disk paths caused an error"
+          Text="• Projects with long disk paths caused an error"
           TextWrapping="Wrap" />
         <!--<TextBox
           Margin="15,5,0,0"
