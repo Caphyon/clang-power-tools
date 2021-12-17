@@ -75,7 +75,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 7.9.0" />
+        Text="version 8.0" />
 
       <ListView
         Grid.Row="3"
@@ -102,7 +102,7 @@
         <!--  What's new  -->
         <TextBox
           Margin="5,20,0,0"
-          HorizontalAlignment="Center"
+          HorizontalAlignment="Left"
           Background="Transparent"
           BorderThickness="0"
           FontSize="22"
@@ -114,13 +114,53 @@
           HorizontalAlignment="Left"
           Background="Transparent"
           BorderThickness="0"
-          FontSize="20"
+          FontSize="16"
           IsReadOnly="True"
-          Text="Clang Power Tools now supports Visual Studio 2022 as well as 2019 and 2017."
+          Text="• New interactive UI for Tidy operations, quickly visualize fixes and changes and decide on which ones to keep"
           TextWrapping="Wrap" />
 
-        <!--  Bug Fixes  -->
-        <!--<TextBox
+        <TextBox
+          Margin="15,15,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="16"
+          IsReadOnly="True"
+          Text="• Fine-grained file selection after running Tidy on a filter, project, or solution"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,15,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="16"
+          IsReadOnly="True"
+          Text="• Updated Clang-Format to version 13"
+          TextWrapping="Wrap" />
+        
+        <TextBox
+        Margin="15,15,0,0"
+        HorizontalAlignment="Left"
+        Background="Transparent"
+        BorderThickness="0"
+        FontSize="16"
+        IsReadOnly="True"
+        Text="• Visual Studio extension warm-up time is improved"
+        TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,15,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="16"
+          IsReadOnly="True"
+          Text="• Project data is now cached, faster compile/tidy operations on opened projects during a Visual Studio instance"
+          TextWrapping="Wrap" />
+
+          <!--Bug Fixes-->  
+        <TextBox
           Margin="5,35,0,0"
           HorizontalAlignment="Left"
           Background="Transparent"
@@ -136,10 +176,19 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• An error when running commands on a project that contains single quotes in its path"
+          Text="• Qt5 project include directories were not loaded correctly"
           TextWrapping="Wrap" />
 
         <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• Project with long disk paths caused an error"
+          TextWrapping="Wrap" />
+        <!--<TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           Background="Transparent"
