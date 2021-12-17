@@ -5,7 +5,7 @@
     public static string Hidden { get; } = "Hidden";
     public static string Visibile { get; } = "Visible";
     public static string TidyTooltip { get; } = "Tidy ";
-    public static string RemoveTooltip { get; } = "Remove ";
+    public static string IgnoreTooltip { get; } = "Ignore ";
     public static string FixTooltip { get; } = "Fix ";
     public static string DiscardTooltip { get; } = "Discard ";
     public static string FilesTooltip { get; } = " files";

@@ -202,6 +202,7 @@
               IsEnabled="{Binding IsEnabled}"
               HorizontalAlignment="Right"
               Click="DiffButton"
+              ToolTip="Diff"
               Visibility="{Binding DiffVisibility}">
               <Image
                 Source="{Binding DiffIcon}"
@@ -215,6 +216,7 @@
               HorizontalAlignment="Right"
               IsEnabled="{Binding IsEnabled}"
               Click="FixButton"
+              ToolTip="Fix"
               Visibility="{Binding FixVisibility}">
               <Image
                 Source="{Binding TidyFixIcon}"
