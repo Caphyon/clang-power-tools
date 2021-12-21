@@ -19,6 +19,7 @@ namespace ClangPowerTools
         ".cp",
         ".tli",
         ".tlh",
+        ".cu",
         ".vcxproj"
     };
 
@@ -29,6 +30,7 @@ namespace ClangPowerTools
         ".cxx",
         ".c++",
         ".cp",
+        ".cu",
         ".h",
         ".hh",
         ".hpp",
@@ -45,6 +47,7 @@ namespace ClangPowerTools
         ".cxx",
         ".c++",
         ".cp",
+        ".cu",
         ".cs",
         ".h",
         ".hh",
