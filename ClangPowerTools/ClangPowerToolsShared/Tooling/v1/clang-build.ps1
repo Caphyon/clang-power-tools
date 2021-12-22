@@ -194,6 +194,7 @@ Set-Variable -name kCptGithubRepoBase -value `
 "https://raw.githubusercontent.com/Caphyon/clang-power-tools/master/ClangPowerTools/ClangPowerToolsShared/Tooling/v1/" `
                                       -option Constant
 
+Set-Variable -name kPsMajorVersion    -value (Get-Host).Version.Major   -Option Constant 
 # ------------------------------------------------------------------------------------------------
 # Return Value Constants
 
@@ -271,7 +272,19 @@ Function cpt:ensureScriptExists( [Parameter(Mandatory=$true)] [string] $scriptNa
       New-Item "$PSScriptRoot/psClang" -ItemType Directory
     }
 
+    # Invoke-WebRequest has an issue when displaying progress on PowerShell 7, it won't go away
+    # and will keep nagging the user => we supress it on PowerShell, but not on Windows PowerShell.
+    
+    if ($kPsMajorVersion -ge 6)
+    {
+      $prevPreference = $progressPreference
+      $progressPreference = "SilentlyContinue"
+    }
     Invoke-WebRequest -Uri $request -OutFile $scriptFilePath
+    if ($kPsMajorVersion -ge 6)
+    {
+      $progressPreference = $prevPreference
+    }
     
     if (! (Test-Path $scriptFilePath))
     {
@@ -340,7 +353,6 @@ else
 }
 
 Set-Variable -name kCacheRepositorySaveIsNeeded -value $false 
-Set-Variable -name kPsMajorVersion          -value (Get-Host).Version.Major -Option Constant 
 
 #-------------------------------------------------------------------------------------------------
 # Custom Types
