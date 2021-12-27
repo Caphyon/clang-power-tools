@@ -413,19 +413,22 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     private void DiscardAllFiles()
     {
-      BeforeCommand();
-      var checkFiles = files.Where(f => f.IsChecked).ToList();
-      foreach (var file in checkFiles)
+      if(TidyToolWindowModel.TotalFixedChecked != 0)
       {
-        if (file.IsChecked)
+        BeforeCommand();
+        var checkFiles = files.Where(f => f.IsChecked).ToList();
+        foreach (var file in checkFiles)
         {
-          DiscardFile(file);
+          if (file.IsChecked)
+          {
+            DiscardFile(file);
+          }
         }
+        MarkUnfixedFiles(checkFiles);
+        ++tidyToolWindowModel.DiscardNr;
+        UpdateCheckedNumber();
+        AfterCommand();
       }
-      MarkUnfixedFiles(checkFiles);
-      ++tidyToolWindowModel.DiscardNr;
-      UpdateCheckedNumber();
-      AfterCommand();
     }
 
     public void ThemeChangeEvent(ThemeChangedEventArgs e)
