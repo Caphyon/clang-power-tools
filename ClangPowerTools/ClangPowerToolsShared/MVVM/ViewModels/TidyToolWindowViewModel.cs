@@ -16,6 +16,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using System.Windows.Input;
 using Task = System.Threading.Tasks.Task;
 
@@ -346,8 +347,16 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
       if (File.Exists(file.CopyFullFileName))
       {
-        File.Copy(file.CopyFullFileName, file.FullFileName, true);
-        File.Delete(file.CopyFullFileName);
+        try
+        {
+          File.Copy(file.CopyFullFileName, file.FullFileName, true);
+          File.Delete(file.CopyFullFileName);
+        }
+        catch (Exception e)
+        {
+          MessageBox.Show($"Access to path {file.FullFileName} is deneid", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
       }
     }
 
