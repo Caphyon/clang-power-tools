@@ -352,9 +352,12 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           File.Copy(file.CopyFullFileName, file.FullFileName, true);
           File.Delete(file.CopyFullFileName);
         }
-        catch (Exception e)
+        catch (UnauthorizedAccessException e)
         {
-          MessageBox.Show($"Access to path {file.FullFileName} is deneid", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            MessageBox.Show($"Access to path {file.FullFileName} is denied", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+          
+
         }
 
       }
