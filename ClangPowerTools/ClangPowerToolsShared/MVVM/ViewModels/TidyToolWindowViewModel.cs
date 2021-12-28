@@ -16,6 +16,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 using System.Windows.Input;
 using Task = System.Threading.Tasks.Task;
 
@@ -346,8 +347,19 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
       if (File.Exists(file.CopyFullFileName))
       {
-        File.Copy(file.CopyFullFileName, file.FullFileName, true);
-        File.Delete(file.CopyFullFileName);
+        try
+        {
+          File.Copy(file.CopyFullFileName, file.FullFileName, true);
+          File.Delete(file.CopyFullFileName);
+        }
+        catch (UnauthorizedAccessException e)
+        {
+
+            MessageBox.Show($"Access to path {file.FullFileName} is denied", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+          
+
+        }
+
       }
     }
 
@@ -401,19 +413,22 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     private void DiscardAllFiles()
     {
-      BeforeCommand();
-      var checkFiles = files.Where(f => f.IsChecked).ToList();
-      foreach (var file in checkFiles)
+      if(TidyToolWindowModel.TotalFixedChecked != 0)
       {
-        if (file.IsChecked)
+        BeforeCommand();
+        var checkFiles = files.Where(f => f.IsChecked).ToList();
+        foreach (var file in checkFiles)
         {
-          DiscardFile(file);
+          if (file.IsChecked)
+          {
+            DiscardFile(file);
+          }
         }
+        MarkUnfixedFiles(checkFiles);
+        ++tidyToolWindowModel.DiscardNr;
+        UpdateCheckedNumber();
+        AfterCommand();
       }
-      MarkUnfixedFiles(checkFiles);
-      ++tidyToolWindowModel.DiscardNr;
-      UpdateCheckedNumber();
-      AfterCommand();
     }
 
     public void ThemeChangeEvent(ThemeChangedEventArgs e)
