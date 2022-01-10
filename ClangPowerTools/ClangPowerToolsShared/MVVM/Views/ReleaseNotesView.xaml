@@ -75,7 +75,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 8.0" />
+        Text="version 8.1.0" />
 
       <ListView
         Grid.Row="3"
@@ -116,7 +116,7 @@
           BorderThickness="0"
           FontSize="16"
           IsReadOnly="True"
-          Text="• New interactive UI for Tidy operations, quickly visualize fixes and changes and decide on which ones to keep"
+          Text="• Run tidy, format and compile on files with extension .cu"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -126,37 +126,7 @@
           BorderThickness="0"
           FontSize="16"
           IsReadOnly="True"
-          Text="• Fine-grained file selection after running Tidy on a filter, project, or solution"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,15,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="16"
-          IsReadOnly="True"
-          Text="• Updated Clang-Format to version 13"
-          TextWrapping="Wrap" />
-        
-        <TextBox
-        Margin="15,15,0,0"
-        HorizontalAlignment="Left"
-        Background="Transparent"
-        BorderThickness="0"
-        FontSize="16"
-        IsReadOnly="True"
-        Text="• Visual Studio extension warm-up time is improved"
-        TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,15,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="16"
-          IsReadOnly="True"
-          Text="• Project data is now cached, faster compile/tidy operations on opened projects during a Visual Studio instance"
+          Text="• Display in tidy tool window headers that was modified by tidy command"
           TextWrapping="Wrap" />
 
           <!--Bug Fixes-->  
@@ -176,7 +146,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Qt5 project include directories were not loaded correctly"
+          Text="• Crash when tidy are made on long file paths"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -186,7 +156,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Projects with long disk paths caused an error"
+          Text="• Crash on access path was denied"
           TextWrapping="Wrap" />
         <!--<TextBox
           Margin="15,5,0,0"
