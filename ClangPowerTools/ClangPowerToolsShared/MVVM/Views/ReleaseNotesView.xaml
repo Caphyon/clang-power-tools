@@ -126,7 +126,7 @@
           BorderThickness="0"
           FontSize="16"
           IsReadOnly="True"
-          Text="• Display in tidy tool window headers that was modified by tidy command"
+          Text="• Display in tidy tool window headers reached by tidy command"
           TextWrapping="Wrap" />
 
           <!--Bug Fixes-->  
@@ -146,7 +146,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Crash when tidy are made on long file paths"
+          Text="• Crash after tidy on long file paths"
           TextWrapping="Wrap" />
 
         <TextBox
