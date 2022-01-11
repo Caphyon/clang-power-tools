@@ -109,7 +109,7 @@
           IsReadOnly="True"
           Text="What's New" />
 
-        <TextBox
+                <TextBox
           Margin="15,15,0,0"
           HorizontalAlignment="Left"
           Background="Transparent"
@@ -119,17 +119,7 @@
           Text="• Run tidy, format and compile on files with extension .cu"
           TextWrapping="Wrap" />
 
-        <TextBox
-          Margin="15,15,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="16"
-          IsReadOnly="True"
-          Text="• Display in tidy tool window headers reached by tidy command"
-          TextWrapping="Wrap" />
-
-          <!--Bug Fixes-->  
+                <!--Bug Fixes-->  
         <TextBox
           Margin="5,35,0,0"
           HorizontalAlignment="Left"
@@ -156,18 +146,19 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Crash on access path was denied"
+          Text="•  Application crash unexpectedly when trying to discard fix from denied file path"
           TextWrapping="Wrap" />
-        <!--<TextBox
+
+          <TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           Background="Transparent"
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• An error when current user name contains spaces"
-          TextWrapping="Wrap" />-->
-      </ListView>
+          Text="• CLI script-update download progress remains on-screen throughout execution on Powershell 6+"
+          TextWrapping="Wrap" />
+          </ListView>
     </Grid>
 
     <controls:BuyNowFooter Padding="0,0,0,15" Background="#272E58" />
