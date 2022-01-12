@@ -75,7 +75,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 8.0" />
+        Text="version 8.1.0" />
 
       <ListView
         Grid.Row="3"
@@ -109,57 +109,17 @@
           IsReadOnly="True"
           Text="What's New" />
 
-        <TextBox
+                <TextBox
           Margin="15,15,0,0"
           HorizontalAlignment="Left"
           Background="Transparent"
           BorderThickness="0"
           FontSize="16"
           IsReadOnly="True"
-          Text="• New interactive UI for Tidy operations, quickly visualize fixes and changes and decide on which ones to keep"
+          Text="• Run tidy, format and compile on files with extension .cu"
           TextWrapping="Wrap" />
 
-        <TextBox
-          Margin="15,15,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="16"
-          IsReadOnly="True"
-          Text="• Fine-grained file selection after running Tidy on a filter, project, or solution"
-          TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,15,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="16"
-          IsReadOnly="True"
-          Text="• Updated Clang-Format to version 13"
-          TextWrapping="Wrap" />
-        
-        <TextBox
-        Margin="15,15,0,0"
-        HorizontalAlignment="Left"
-        Background="Transparent"
-        BorderThickness="0"
-        FontSize="16"
-        IsReadOnly="True"
-        Text="• Visual Studio extension warm-up time is improved"
-        TextWrapping="Wrap" />
-
-        <TextBox
-          Margin="15,15,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="16"
-          IsReadOnly="True"
-          Text="• Project data is now cached, faster compile/tidy operations on opened projects during a Visual Studio instance"
-          TextWrapping="Wrap" />
-
-          <!--Bug Fixes-->  
+                <!--Bug Fixes-->  
         <TextBox
           Margin="5,35,0,0"
           HorizontalAlignment="Left"
@@ -176,7 +136,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Qt5 project include directories were not loaded correctly"
+          Text="• Crash after tidy on long file paths"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -186,18 +146,19 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Projects with long disk paths caused an error"
+          Text="•  Application crash unexpectedly when trying to discard fix from denied file path"
           TextWrapping="Wrap" />
-        <!--<TextBox
+
+          <TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           Background="Transparent"
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• An error when current user name contains spaces"
-          TextWrapping="Wrap" />-->
-      </ListView>
+          Text="• CLI script-update download progress remains on-screen throughout execution on Powershell 6+"
+          TextWrapping="Wrap" />
+          </ListView>
     </Grid>
 
     <controls:BuyNowFooter Padding="0,0,0,15" Background="#272E58" />
