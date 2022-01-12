@@ -1,5 +1,42 @@
 param([Parameter(Mandatory=$true, HelpMessage="Location in which to create the 2022 VSIX starting from an existing one")][string] $loc)
 
+
+function Get-Version()
+{
+	$data = Get-Content t.txt
+	Clear-Variable -Name "Matches"
+	$version = 0
+	$data | Where-Object {$_ -match "\d+\.\d+\.\d+.\d+"} | Foreach {$Matches[0]}
+	if($Matches.Count -eq 0)
+	{
+		$data | Where-Object {$_ -match "\d+\.\d+\.\d+"} | Foreach {$Matches[0]}
+
+		foreach($m in $Matches)
+		{
+			if($Matches[0].split(".")[0] -as [int] -ge 7)
+			{
+				$version = $m
+			}
+			$message = "Detected version " + $version
+			Write $message
+			$Matches[0] = $Matches[0] + ".0"
+		}
+		
+	}else
+	{
+		$version = $Matches[0]
+		$message = "Detected version " + $version
+		Write $message	
+		
+		$versionNumbers = $version.split(".")
+		$revisionNumber = $versionNumbers[3] -as [int]
+		++$revisionNumber
+		$version = $versionNumbers[0] + "." + $versionNumbers[1] + "." + $versionNumbers[2] + "." + $revisionNumber 
+	}
+
+	return $version
+}
+
 Function ReplaceContentInFile([Parameter(Mandatory=$true)][string] $fileName,
                               [Parameter(Mandatory=$true)][string] $oldString,
                               [Parameter(Mandatory=$true)][string] $newString)
