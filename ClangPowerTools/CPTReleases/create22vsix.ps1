@@ -1,40 +1,47 @@
 param([Parameter(Mandatory=$true, HelpMessage="Location in which to create the 2022 VSIX starting from an existing one")][string] $loc)
 
 
-function Get-Version()
+function Get-IncrementedRevisionVersion([Parameter(Mandatory=$true)][string] $filePath)
 {
-	$data = Get-Content t.txt
-	Clear-Variable -Name "Matches"
+	$data = Get-Content $filePath
+	Clear-Variable -Name "Matches" -ErrorAction SilentlyContinue
 	$version = 0
-	$data | Where-Object {$_ -match "\d+\.\d+\.\d+.\d+"} | Foreach {$Matches[0]}
+	$Null = @(
+		$data | Where-Object {$_ -match "\d+\.\d+\.\d+.\d+"} | Foreach {$Matches[0]}
+	)
 	if($Matches.Count -eq 0)
 	{
-		$data | Where-Object {$_ -match "\d+\.\d+\.\d+"} | Foreach {$Matches[0]}
-
+		$Null = @(
+			$data | Where-Object {$_ -match "\d+\.\d+\.\d+"} | Foreach {$Matches[0]}
+		)
 		foreach($m in $Matches)
 		{
 			if($Matches[0].split(".")[0] -as [int] -ge 7)
 			{
 				$version = $m
-			}
+			} 
 			$message = "Detected version " + $version
-			Write $message
-			$Matches[0] = $Matches[0] + ".0"
+			Write-Verbose $message
+			$versionUpdatedRevision = $Matches[0] + ".0"
+			$result = @{"init" = $version[0]; "final" = $versionUpdatedRevision}
 		}
+		
 		
 	}else
 	{
 		$version = $Matches[0]
 		$message = "Detected version " + $version
-		Write $message	
+		Write-Verbose $message	
 		
 		$versionNumbers = $version.split(".")
 		$revisionNumber = $versionNumbers[3] -as [int]
 		++$revisionNumber
-		$version = $versionNumbers[0] + "." + $versionNumbers[1] + "." + $versionNumbers[2] + "." + $revisionNumber 
+		$versionUpdatedRevision = $versionNumbers[0] + "." + $versionNumbers[1] + "." + $versionNumbers[2] + "." + $revisionNumber 
+		$result = @{"init" = $version; "final" = $versionUpdatedRevision}
+
 	}
 
-	return $version
+	return $result
 }
 
 Function ReplaceContentInFile([Parameter(Mandatory=$true)][string] $fileName,
