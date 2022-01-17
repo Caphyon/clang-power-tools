@@ -42,6 +42,7 @@ function Get-IncrementedRevisionVersion([Parameter(Mandatory=$true)][string] $fi
 
 	$fileContent = Get-Content $fileName
 	$fileContent = $fileContent -replace $result["init"], $result["final"]
+	$PSDefaultParameterValues['Out-File:Encoding'] = 'utf8' 
 	$fileContent > $fileName
 	return $result
 }
