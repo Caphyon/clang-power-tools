@@ -11,10 +11,9 @@ $currentVersion = [Version]::new($versionString.ToString())
 $revision = $currentVersion.Revision -as [int]
 ++$revision
 $nextVersion = [Version]::new($currentVersion.Major, $currentVersion.Minor, $currentVersion.Build, $revision)
-$nextVersion
 
 #Replace old version with new one
-$data.PackageManifest.Metadata.Identity.Version = $nextVersion
+$data.PackageManifest.Metadata.Identity.Version = $nextVersion.ToString()
 $PSDefaultParameterValues['Out-File:Encoding'] = 'utf8' 
 
 
