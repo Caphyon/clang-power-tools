@@ -409,6 +409,9 @@ xcopy "$(SolutionDir)ClangPowerTools\bin\Release\ClangPowerTools.vsix"  "$(Solut
 
 powershell.exe -executionPolicy Bypass -WindowStyle Hidden -file "$(SolutionDir)CPTReleases\create22vsix.ps1" -loc "$(SolutionDir)CPTReleases"</PostBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>powershell.exe -executionPolicy Bypass -WindowStyle Hidden -file "$(SolutionDir)CPTReleases\IncrementRevisionNumber.ps1" -loc "$(SolutionDir)CPTReleases"</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
