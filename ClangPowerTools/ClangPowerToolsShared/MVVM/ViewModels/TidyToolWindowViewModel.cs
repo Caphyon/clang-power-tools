@@ -34,6 +34,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private string listVisibility = UIElementsConstants.Visibile;
     //To not refresh files value every time (with the same files), and to not refresh check box value
     bool filesAlreadyExists = false;
+    bool wasMadeTidyOnFiles = false;
 
     private ICommand tidyAllCommand;
     private ICommand fixAllCommand;
@@ -121,7 +122,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       tidyToolWindowModel.ButtonVisibility = UIElementsConstants.Visibile;
       tidyToolWindowModel.ProgressBarVisibility = UIElementsConstants.Hidden;
       TidyToolWindowModel = tidyToolWindowModel;
-      Files = files;
+      UpdateFiles();
       this.tidyToolWindowView = tidyToolWindowView;
     }
 
@@ -145,13 +146,20 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         foreach (string file in filesPath)
         {
           FileInfo path = new FileInfo(file);
-          files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) });
+
+          if (path.FullName.Contains(".h") || path.FullName.Contains(".hpp") || path.FullName.Contains(".hh") || path.FullName.Contains(".hxx"))
+          {
+            files.Add(new FileModel { FileName = "", FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) });
+          }
+          else
+          {
+            files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) });
+          }
         }
         CheckAll();
         SaveLastUpdatesToUI();
         filesAlreadyExists = true;
       }
-      var patht = TidyConstants.TempsFolderPath;
       if (!Directory.Exists(TidyConstants.TempsFolderPath))
           Directory.CreateDirectory(TidyConstants.TempsFolderPath);
         
@@ -192,6 +200,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         }
         FileCommand.CopyFilesInTempSolution(filesPathsCopy);
         await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
+        wasMadeTidyOnFiles = false;
         if (file is not null)
         {
           DiffFile(file);
@@ -238,7 +247,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       {
         file.IsRunning = true;
       }
-      Files = files;
+      UpdateFiles();
       TidyToolWindowModel = tidyToolWindowModel;
     }
 
@@ -249,7 +258,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       {
         file.IsRunning = false;
       }
-      Files = files;
+      UpdateFiles();
       TidyToolWindowModel = tidyToolWindowModel;
     }
 
@@ -285,7 +294,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     private void SaveLastUpdatesToUI()
     {
-      Files = files;
+      UpdateFiles();
       TidyToolWindowModel = tidyToolWindowModel;
     }
 
@@ -388,6 +397,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private async Task TidyAllFilesAsync(List<string> paths = null)
     {
       BeforeCommand();
+      wasMadeTidyOnFiles = true;
       if (paths is null)
       {
         paths = files.Where(f => f.IsChecked).Select(f => f.FullFileName).ToList();
@@ -453,6 +463,17 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       tidyToolWindowModel.TotalFixedChecked = 0;
       tidyToolWindowModel.IsChecked = false;
       SaveLastUpdatesToUI();
+    }
+
+    private void UpdateFiles()
+    {
+      var resultFiles = files.Where(f => f.FileName != "").ToList();
+      ObservableCollection<FileModel> fileModels = new ObservableCollection<FileModel>();
+      Files.Clear();
+      foreach (var file in resultFiles)
+      {
+        Files.Add(new FileModel(file));
+      }
     }
 
     #endregion
