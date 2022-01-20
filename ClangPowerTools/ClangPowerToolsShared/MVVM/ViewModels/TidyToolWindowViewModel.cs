@@ -140,6 +140,24 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void UpdateViewModel(List<string> filesPath)
     {
+      //if was tidy fix was made
+      if (!wasMadeTidyOnFiles)
+      {
+        foreach (string file in filesPath)
+        {
+          FileInfo path = new FileInfo(file);
+
+          if (path.FullName.Contains(".h") || path.FullName.Contains(".hpp") || path.FullName.Contains(".hh") || path.FullName.Contains(".hxx"))
+          {
+            var newFile = new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) };
+            newFile.IsChecked = true; 
+            files.Add(newFile);
+            MarkFixedFiles(new List<FileModel> { newFile });
+          }
+        }
+        UpdateCheckedNumber();
+      }
+
       if (!filesAlreadyExists)
       {
         RefreshValues();
@@ -161,8 +179,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         filesAlreadyExists = true;
       }
       if (!Directory.Exists(TidyConstants.TempsFolderPath))
-          Directory.CreateDirectory(TidyConstants.TempsFolderPath);
-        
+        Directory.CreateDirectory(TidyConstants.TempsFolderPath);
+
     }
 
     public void CheckOrUncheckAll()
@@ -191,7 +209,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         {
           //get checked and unfixed files
           filesPathsCopy = files.Where(f => f.IsChecked && f.IsFixed == false).ToList();
-          filesPaths = files.Where(f => f.IsChecked).Select(f => f.FullFileName).ToList();
+          filesPaths = Files.Where(f => f.IsChecked).Select(f => f.FullFileName).ToList();
         }
         else
         {
@@ -316,7 +334,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       foreach (var file in fixedFiles)
       {
-        if(!file.IsFixed)
+        if (!file.IsFixed)
         {
           file.IsFixed = true;
           file.FileName += " •";
@@ -328,7 +346,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       foreach (var file in checkedFiles)
       {
-        if(file.IsFixed)
+        if (file.IsFixed)
         {
           file.IsFixed = false;
           file.FileName = file.FileName.Remove(file.FileName.Length - 2, 2);
@@ -365,8 +383,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         catch (UnauthorizedAccessException e)
         {
 
-            MessageBox.Show($"Access to path {file.FullFileName} is denied", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-          
+          MessageBox.Show($"Access to path {file.FullFileName} is denied", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
 
         }
 
@@ -424,7 +442,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     private void DiscardAllFiles()
     {
-      if(TidyToolWindowModel.TotalFixedChecked != 0)
+      if (TidyToolWindowModel.TotalFixedChecked != 0)
       {
         BeforeCommand();
         var checkFiles = files.Where(f => f.IsChecked).ToList();
