@@ -207,6 +207,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         }
         MarkFixedFiles(filesPathsCopy);
         UpdateCheckedNumber();
+        UpdateFiles();
         AfterCommand();
       }
     }
@@ -467,12 +468,12 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     private void UpdateFiles()
     {
-      var resultFiles = files.Where(f => f.FileName != "").ToList();
+      Files = files;
+      var resultFiles = files.Where(f => f.FileName == "").ToList();
       ObservableCollection<FileModel> fileModels = new ObservableCollection<FileModel>();
-      Files.Clear();
       foreach (var file in resultFiles)
       {
-        Files.Add(new FileModel(file));
+        Files.Remove(file);
       }
     }
 
