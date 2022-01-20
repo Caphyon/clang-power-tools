@@ -34,6 +34,26 @@ namespace ClangPowerTools.MVVM.Models
       IsEnabled = true;
     }
 
+    public FileModel(FileModel file)
+    {
+      EnableIcon();
+      DiffVisibility = UIElementsConstants.Hidden;
+      FixVisibility = UIElementsConstants.Visibile;
+      IsEnabled = true;
+      this.FileName = file.FileName;
+      this.FullFileName = file.FullFileName;
+      this.CopyFullFileName = file.CopyFullFileName;
+      this.DiffIcon = file.DiffIcon;
+      this.TidyFixIcon = file.TidyFixIcon;
+      this.DiffVisibility = file.DiffVisibility;
+      this.FixVisibility = file.FixVisibility;
+      this.IsFixed = file.IsFixed;
+      this.IsRunning = file.IsRunning;
+      this.IsEnabled = file.IsEnabled;
+      this.IsChecked = file.IsChecked;
+
+    }
+
     #endregion
 
     #region Public Properities
