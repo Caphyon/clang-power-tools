@@ -140,19 +140,24 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void UpdateViewModel(List<string> filesPath)
     {
-      //if was tidy fix was made
+      //if tidy fix was made
       if (!wasMadeTidyOnFiles)
       {
         foreach (string file in filesPath)
         {
           FileInfo path = new FileInfo(file);
 
+
           if (path.FullName.Contains(".h") || path.FullName.Contains(".hpp") || path.FullName.Contains(".hh") || path.FullName.Contains(".hxx"))
           {
-            var newFile = new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) };
-            newFile.IsChecked = true; 
-            files.Add(newFile);
-            MarkFixedFiles(new List<FileModel> { newFile });
+            var currentModelFile = files.Where(a => a.FullFileName == path.FullName).FirstOrDefault();
+            if(currentModelFile == null)
+            {
+              currentModelFile = new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) };
+              files.Add(currentModelFile);
+            }
+            currentModelFile.IsChecked = true; 
+            MarkFixedFiles(new List<FileModel> { currentModelFile });
           }
         }
         UpdateCheckedNumber();
