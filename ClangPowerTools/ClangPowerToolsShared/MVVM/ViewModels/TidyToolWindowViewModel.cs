@@ -28,6 +28,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public event PropertyChangedEventHandler PropertyChanged;
     private ObservableCollection<FileModel> files = new ObservableCollection<FileModel>();
+    private List<FileModel> headers = new List<FileModel>();
     private TidyToolWindowView tidyToolWindowView;
     private TidyToolWindowModel tidyToolWindowModel;
     private MessageModel messageModel;
@@ -146,8 +147,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         foreach (string file in filesPath)
         {
           FileInfo path = new FileInfo(file);
-
-
           if (path.FullName.Contains(".h") || path.FullName.Contains(".hpp") || path.FullName.Contains(".hh") || path.FullName.Contains(".hxx"))
           {
             var currentModelFile = files.Where(a => a.FullFileName == path.FullName).FirstOrDefault();
@@ -173,6 +172,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           if (path.FullName.Contains(".h") || path.FullName.Contains(".hpp") || path.FullName.Contains(".hh") || path.FullName.Contains(".hxx"))
           {
             files.Add(new FileModel { FileName = "", FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) });
+            headers.Add(new FileModel { FileName = "", FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) });
+
           }
           else
           {
@@ -221,7 +222,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           filesPathsCopy = new List<FileModel> { file };
           filesPaths = new List<string> { file.FullFileName };
         }
-        FileCommand.CopyFilesInTempSolution(filesPathsCopy);
+        CopyFilesInTemp(filesPathsCopy);
         await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
         wasMadeTidyOnFiles = false;
         if (file is not null)
@@ -233,6 +234,20 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         UpdateFiles();
         AfterCommand();
       }
+    }
+
+    private void CopyFilesInTemp(List<FileModel> fileModels)
+    {
+      var fileUnion = new List<FileModel>();
+      foreach (var file in fileModels)
+      {
+        fileUnion.Add(file);
+      }
+      foreach (var file in headers)
+      {
+        fileUnion.Add(file);
+      }
+      FileCommand.CopyFilesInTempSolution(fileUnion);
     }
 
     public void UpdateCheckedNumber(FileModel file)
@@ -387,10 +402,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         }
         catch (UnauthorizedAccessException e)
         {
-
           MessageBox.Show($"Access to path {file.FullFileName} is denied", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
-
         }
 
       }
