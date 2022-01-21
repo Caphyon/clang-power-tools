@@ -264,7 +264,7 @@ Function cpt:ensureScriptExists( [Parameter(Mandatory=$true)] [string] $scriptNa
   [string] $scriptFilePath = "$PSScriptRoot/psClang/$scriptName"
   if ( $forceRedownload -or (! (Test-Path $scriptFilePath)) )
   {
-    Write-Verbose 'Download required script... $scriptName'
+    Write-Verbose "Download required script $scriptName ..."
     [string] $request = "$kCptGithubRepoBase/psClang/$scriptName"
 
     if ( ! (Test-Path "$PSScriptRoot/psClang"))
@@ -306,10 +306,18 @@ if (Test-Path $kCptRegHiveSettings)
   $regHive = Get-Item -LiteralPath $kCptRegHiveSettings
   $currentTimestamp = (Get-Item $PSCommandPath).LastWriteTime.ToString()
   $scriptTimestamp = $regHive.GetValue('ScriptTimestamp');
-
-  [string] $featureDisableValue = '42'
   
-  if ( $scriptTimestamp -and 
+  $resp = Get-WmiObject -Class Win32_PingStatus -Filter 'Address="github.com" and Timeout=100' | Select-Object ResponseTime
+  [bool] $hasInternetConnectivity = ($resp.ResponseTime -and $resp.ResponseTime -gt 0)
+
+  if (!$hasInternetConnectivity )
+  {
+    Write-Verbose "No internet connectivity. Postponing helper scripts update from github..."
+  }
+  
+  [string] $featureDisableValue = '42'
+  if ( $hasInternetConnectivity -and 
+       $scriptTimestamp -and 
       ($scriptTimestamp -ne $currentTimestamp) -and
       ($scriptTimestamp -ne $featureDisableValue) )
   {
@@ -318,7 +326,7 @@ if (Test-Path $kCptRegHiveSettings)
     $shouldRedownload = $true
   }
 
-  if (!$scriptTimestamp -or $scriptTimestamp -ne $featureDisableValue)
+  if ( $hasInternetConnectivity -and ( !$scriptTimestamp -or $scriptTimestamp -ne $featureDisableValue) )
   {
     Set-ItemProperty -path $kCptRegHiveSettings -name 'ScriptTimestamp' -value $currentTimestamp
   }
