@@ -299,6 +299,10 @@
       <Link>Tooling\v1\psClang\msbuild-project-load.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+	<Content Include="..\ClangPowerToolsShared\Tooling\v1\psclang\msbuild-project-cache-repository.ps1">
+      <Link>Tooling\v1\psClang\msbuild-project-load.ps1</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="..\ClangPowerToolsShared\Tooling\v1\psclang\visualstudio-detection.ps1">
       <Link>Tooling\v1\psClang\visualstudio-detection.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>

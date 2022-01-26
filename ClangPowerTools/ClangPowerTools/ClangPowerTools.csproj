@@ -315,6 +315,10 @@
       <Link>Tooling\v1\psClang\visualstudio-detection.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+	<Content Include="..\ClangPowerToolsShared\Tooling\v1\psclang\msbuild-project-cache-repository.ps1">
+      <Link>Tooling\v1\psClang\msbuild-project-cache-repository.ps1</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="Key.snk" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
