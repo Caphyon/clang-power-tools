@@ -74,7 +74,7 @@
         HorizontalAlignment="Center"
         FontSize="15"
         Foreground="#3A3B40"
-        Text="version 8.1.0" />
+        Text="version 8.1.1" />
 
       <ListView
         Grid.Row="3"
@@ -98,7 +98,7 @@
           </Style>
         </ListView.ItemContainerStyle>
 
-        <!--  What's new  -->
+        <!--  What's new  --><!--
         <TextBox
           Margin="5,20,0,0"
           HorizontalAlignment="Left"
@@ -116,7 +116,7 @@
           FontSize="16"
           IsReadOnly="True"
           Text="• Run tidy, format and compile on files with extension .cu"
-          TextWrapping="Wrap" />
+          TextWrapping="Wrap" />-->
 
                 <!--Bug Fixes-->  
         <TextBox
@@ -135,7 +135,7 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Crash after tidy on long file paths"
+          Text="• Dialogs stay on top of every window in the system"
           TextWrapping="Wrap" />
 
         <TextBox
@@ -145,19 +145,9 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="•  Application crash unexpectedly when trying to discard fix from denied file path"
+          Text="• Can't run tidy or compile in offline mode"
           TextWrapping="Wrap" />
-
-          <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• CLI script-update download progress remains on-screen throughout execution on Powershell 6+"
-          TextWrapping="Wrap" />
-          </ListView>
+      </ListView>
     </Grid>
 
     <controls:BuyNowFooter Padding="0,0,0,15" Background="#272E58" />
