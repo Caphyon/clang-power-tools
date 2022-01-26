@@ -50,6 +50,7 @@
         HorizontalAlignment="Left"
         FontSize="17"
         Foreground="Black"
+        Visibility="{Binding DisplayMessage}"
         Text="Want to share your settings configuration?" />
 
     <TextBlock
@@ -59,6 +60,7 @@
         HorizontalAlignment="Left"
         FontSize="14"
         Foreground="Black"
+        Visibility="{Binding DisplayMessage}"
         Text="Create a free Clang Power Tools account to share your Cloud Settings with your team."
         TextWrapping="Wrap" />
 
@@ -157,7 +159,7 @@
     </Grid>
 
     <StackPanel
-      Grid.Row="4"
+      Grid.Row="5"
       Grid.Column="1"
       Margin="21,30,0,0"
       HorizontalAlignment="{Binding Alignment}"
@@ -184,7 +186,7 @@
 
 
     <Button
-      Grid.Row="5"
+      Grid.Row="6"
       Grid.Column="1"
       Width="140"
       Height="30"
@@ -198,7 +200,7 @@
       Visibility="{Binding Path=DisplayLogout, Converter={StaticResource BoolToVis}}" />
 
     <Button
-      Grid.Row="5"
+      Grid.Row="6"
       Grid.Column="1"
       Width="140"
       Height="30"
