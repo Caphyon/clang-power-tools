@@ -11,7 +11,6 @@
   Height="710"
   Icon="/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
   ResizeMode="NoResize"
-  Topmost="True"
   WindowStartupLocation="CenterScreen"
   mc:Ignorable="d">
 
