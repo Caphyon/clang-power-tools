@@ -108,7 +108,7 @@
           IsReadOnly="True"
           Text="What's New" />
 
-                <TextBox
+        <TextBox
           Margin="15,15,0,0"
           HorizontalAlignment="Left"
           Background="Transparent"
@@ -118,7 +118,7 @@
           Text="• Run tidy, format and compile on files with extension .cu"
           TextWrapping="Wrap" />-->
 
-                <!--Bug Fixes-->  
+        <!--Bug Fixes-->
         <TextBox
           Margin="5,35,0,0"
           HorizontalAlignment="Left"
@@ -145,13 +145,20 @@
           BorderThickness="0"
           FontSize="15"
           IsReadOnly="True"
-          Text="• Can't run tidy or compile in offline mode"
+          Text="•  Application crash unexpectedly when trying to discard fix from denied file path"
+          TextWrapping="Wrap" />
+
+        <TextBox
+          Margin="15,5,0,0"
+          HorizontalAlignment="Left"
+          Background="Transparent"
+          BorderThickness="0"
+          FontSize="15"
+          IsReadOnly="True"
+          Text="• CLI script-update download progress remains on-screen throughout execution on Powershell 6+"
           TextWrapping="Wrap" />
       </ListView>
     </Grid>
-
-    <controls:BuyNowFooter Padding="0,0,0,15" Background="#272E58" />
-
   </StackPanel>
 
 </Window>

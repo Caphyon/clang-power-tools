@@ -26,7 +26,9 @@
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
     <Grid.RowDefinitions>
-      <RowDefinition Height="30" />
+      <RowDefinition Height="20" />
+      <RowDefinition Height="35" />
+      <RowDefinition Height="70" />
       <RowDefinition Height="90" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
@@ -36,13 +38,32 @@
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="235" />
-      <ColumnDefinition Width="300" />
+      <ColumnDefinition Width="220" />
+      <ColumnDefinition Width="320" />
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
+    <TextBlock
+        Grid.Row="1"
+        Grid.Column="1"
+        Margin="0,5,0,0"
+        HorizontalAlignment="Left"
+        FontSize="17"
+        Foreground="Black"
+        Text="Want to share your settings configuration?" />
+
+    <TextBlock
+        Grid.Row="2"
+        Grid.Column="1"
+        Margin="0,5,0,0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        Foreground="Black"
+        Text="Create a free Clang Power Tools account to share your Cloud Settings with your team."
+        TextWrapping="Wrap" />
+
     <Rectangle
-      Grid.Row="1"
+      Grid.Row="3"
       Grid.Column="1"
       Width="65"
       Height="65"
@@ -53,14 +74,14 @@
     </Rectangle>
 
     <StackPanel
-      Grid.Row="2"
+      Grid.Row="4"
       Grid.Column="1"
       Height="{Binding AccoutCellHeight}"
       Margin="21,0,0,0"
       HorizontalAlignment="Left"
       VerticalAlignment="Center">
       <TextBlock
-        Grid.Row="0"
+        Grid.Row="3"
         Margin="0,0,0,6"
         VerticalAlignment="Center"
         FontFamily="SegoeUI"
@@ -69,7 +90,7 @@
         Visibility="{Binding Path=DisplayUserNameAndEmail, Converter={StaticResource BoolToVis}}" />
 
       <TextBlock
-        Grid.Row="1"
+        Grid.Row="3"
         VerticalAlignment="Center"
         FontFamily="SegoeUI"
         FontSize="15"
