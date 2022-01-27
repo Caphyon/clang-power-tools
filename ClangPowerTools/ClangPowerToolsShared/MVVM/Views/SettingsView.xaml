@@ -160,9 +160,6 @@
         </Grid>
       </TabItem>
     </TabControl>
-
-    <controls:BuyNowFooter Grid.Row="1" />
-
   </Grid>
 
 </Window>

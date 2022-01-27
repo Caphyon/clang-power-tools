@@ -98,7 +98,7 @@
           </Style>
         </ListView.ItemContainerStyle>
 
-        <!--  What's new  --><!--
+      <!--  What's new  --><!--
         <TextBox
           Margin="5,20,0,0"
           HorizontalAlignment="Left"
@@ -149,9 +149,6 @@
           TextWrapping="Wrap" />
       </ListView>
     </Grid>
-
-    <controls:BuyNowFooter Padding="0,0,0,15" Background="#272E58" />
-
   </StackPanel>
 
 </Window>

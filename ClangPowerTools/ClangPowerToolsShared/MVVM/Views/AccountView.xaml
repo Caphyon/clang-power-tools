@@ -26,7 +26,7 @@
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
     <Grid.RowDefinitions>
-      <RowDefinition Height="30" />
+      <RowDefinition Height="80" />
       <RowDefinition Height="90" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
@@ -36,14 +36,49 @@
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="235" />
+      <ColumnDefinition Width="390" />
       <ColumnDefinition Width="300" />
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
+    <TextBlock
+        Grid.Row="4"
+        Grid.Column="0"
+        Margin="10,5,0,0"
+        HorizontalAlignment="Left"
+        FontSize="17"
+        Foreground="Black"
+        Visibility="{Binding DisplayMessage}"
+        Text="Want to share your settings configuration?" />
+
+    <TextBlock
+        Grid.Row="5"
+        Grid.Column="0"
+        Margin="10,5,0,0"
+        HorizontalAlignment="Left"
+        FontSize="14"
+        Foreground="Black"
+        Visibility="{Binding DisplayMessage}"
+        Text="Create a free Clang Power Tools account to share your Cloud Settings with your team."
+        TextWrapping="Wrap" />
+
     <Rectangle
       Grid.Row="1"
       Grid.Column="1"
+      Margin="90,5,140,0"
+      Width="65"
+      Height="65"
+      HorizontalAlignment="Center">
+      <Rectangle.Fill>
+        <ImageBrush ImageSource="{StaticResource AccountAvatarIcon}" />
+      </Rectangle.Fill>
+    </Rectangle>
+    
+    <Rectangle
+      Grid.Row="1"
+      Grid.Column="1"
+      Margin="10,5,85,0"
+      Visibility="{Binding Path=DisplayLogout, Converter={StaticResource BoolToVis}}"
       Width="65"
       Height="65"
       HorizontalAlignment="Center">
@@ -78,63 +113,6 @@
         Visibility="{Binding Path=DisplayUserNameAndEmail, Converter={StaticResource BoolToVis}}" />
     </StackPanel>
 
-    <Grid
-      Grid.Row="3"
-      Grid.Column="1"
-      Margin="21,30,0,0"
-      VerticalAlignment="Center"
-      Visibility="{Binding Path=Visible, Converter={StaticResource BoolToVis}}">
-      <Grid.RowDefinitions>
-        <RowDefinition Height="auto" />
-        <RowDefinition Height="auto" />
-      </Grid.RowDefinitions>
-      <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="auto" />
-        <ColumnDefinition Width="auto" />
-      </Grid.ColumnDefinitions>
-
-      <TextBlock
-        Grid.Row="0"
-        Grid.Column="0"
-        Margin="0,0,0,10"
-        VerticalAlignment="Center"
-        FontFamily="SegoeUI"
-        FontSize="15"
-        FontWeight="SemiBold"
-        Text="License type" />
-
-      <TextBlock
-        Grid.Row="0"
-        Grid.Column="1"
-        Margin="30,0,0,0"
-        VerticalAlignment="Top"
-        FontFamily="SegoeUI"
-        FontSize="15"
-        Foreground="#333333"
-        Text="{Binding AccountModel.LicenseType}" />
-
-      <TextBlock
-        Grid.Row="1"
-        Grid.Column="0"
-        Margin="0,0,0,6"
-        VerticalAlignment="Center"
-        FontFamily="SegoeUI"
-        FontSize="15"
-        FontWeight="SemiBold"
-        Text="Expiration date" />
-
-      <TextBlock
-        Grid.Row="1"
-        Grid.Column="1"
-        Margin="30,0,0,0"
-        VerticalAlignment="Top"
-        FontFamily="SegoeUI"
-        FontSize="15"
-        Foreground="#333333"
-        Text="{Binding AccountModel.LicenseExpirationDate}" />
-
-    </Grid>
-
     <StackPanel
       Grid.Row="4"
       Grid.Column="1"
@@ -167,7 +145,7 @@
       Grid.Column="1"
       Width="140"
       Height="30"
-      Margin="0,40,0,0"
+      Margin="0,40,75,0"
       HorizontalAlignment="Center"
       Command="{Binding LogoutCommand}"
       Content="Log Out"
@@ -181,7 +159,7 @@
       Grid.Column="1"
       Width="140"
       Height="30"
-      Margin="0,40,0,0"
+      Margin="20,40,0,0"
       HorizontalAlignment="Center"
       Command="{Binding LogoutCommand}"
       Content="Log In"
@@ -189,6 +167,5 @@
       Foreground="White"
       Style="{StaticResource SettingsButton}"
       Visibility="{Binding Path=DisplayLogIn, Converter={StaticResource BoolToVis}}" />
-
   </Grid>
 </UserControl>

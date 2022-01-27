@@ -4,6 +4,7 @@ using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.MVVM.Views;
 using System.ComponentModel;
 using System.IO;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ClangPowerTools
@@ -88,6 +89,13 @@ namespace ClangPowerTools
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("GeneralSettingsModel"));
       }
     }
+    public string DisplayMessage { get { return displayMessage; }
+      set 
+      { 
+        displayMessage = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisplayMessage"));
+      } 
+    }
 
     public bool CanExecute
     {
@@ -104,7 +112,7 @@ namespace ClangPowerTools
     public bool Visible { get; set; }
 
     public bool DisplayUserNameAndEmail { get; set; }
-
+    private string displayMessage;
 
     #endregion
 
@@ -147,9 +155,12 @@ namespace ClangPowerTools
         DisplayLogIn = false;
         DisplayLogout = true;
         Alignment = "Left";
+        displayMessage = Visibility.Hidden.ToString();
+
       }
       else
       {
+        displayMessage = Visibility.Visible.ToString();
         AccoutCellHeight = "0";
         accountModel.UserName = string.Empty;
         DisplayUserNameAndEmail = false;
@@ -158,6 +169,7 @@ namespace ClangPowerTools
         DisplayLogout = false;
         Alignment = "Center";
       }
+      DisplayMessage = displayMessage;
     }
 
     #endregion
