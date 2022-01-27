@@ -36,7 +36,7 @@
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="330" />
+      <ColumnDefinition Width="390" />
       <ColumnDefinition Width="300" />
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
@@ -65,9 +65,8 @@
     <Rectangle
       Grid.Row="1"
       Grid.Column="1"
-      Margin="10,5,0,0"
+      Margin="90,5,140,0"
       Width="65"
-      Visibility="{Binding DisplayMessage}"
       Height="65"
       HorizontalAlignment="Center">
       <Rectangle.Fill>
