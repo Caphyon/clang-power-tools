@@ -17,8 +17,6 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
-    - name: list some key files
-      run:  ls -Directory .\ClangPowerTools
     - name: Restore dependencies
       run: dotnet restore build .\ClangPowerTools\ClangPowerTools.sln 
     - name: Build
