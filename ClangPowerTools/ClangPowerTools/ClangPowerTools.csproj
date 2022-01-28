@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="17.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MinimumVisualStudioVersion>17.0</MinimumVisualStudioVersion>
@@ -315,7 +315,7 @@
       <Link>Tooling\v1\psClang\visualstudio-detection.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-	<Content Include="..\ClangPowerToolsShared\Tooling\v1\psclang\msbuild-project-cache-repository.ps1">
+    <Content Include="..\ClangPowerToolsShared\Tooling\v1\psclang\msbuild-project-cache-repository.ps1">
       <Link>Tooling\v1\psClang\msbuild-project-cache-repository.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -408,13 +408,11 @@
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup>
     <PostBuildEvent>
-
-xcopy "$(SolutionDir)ClangPowerTools\bin\Release\ClangPowerTools.vsix"  "$(SolutionDir)CPTReleases" /y
-
-powershell.exe -executionPolicy Bypass -WindowStyle Hidden -file "$(SolutionDir)CPTReleases\create22vsix.ps1" -loc "$(SolutionDir)CPTReleases"</PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>powershell.exe -executionPolicy Bypass -WindowStyle Hidden -file "$(SolutionDir)CPTReleases\IncrementRevisionNumber.ps1" -loc "$(SolutionDir)CPTReleases"</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
