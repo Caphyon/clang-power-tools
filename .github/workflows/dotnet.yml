@@ -19,5 +19,7 @@ jobs:
         dotnet-version: 5.0.x
     - name: Restore dependencies
       run: dotnet restore
+    - name: list some key files
+      run: ls -lrt
     - name: Build
       run: dotnet build ${{ github.workspace }}/ClangPowerTools/ClangPowerTools.sln
