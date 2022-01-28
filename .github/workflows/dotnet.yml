@@ -20,4 +20,4 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build ${{ github.workspace }}\ClangPowerTools\ClangPowerTools.sln
+      run: dotnet build ${{ github.workspace }}/ClangPowerTools/ClangPowerTools.sln
