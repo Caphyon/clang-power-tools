@@ -182,11 +182,11 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         CheckAll();
         SaveLastUpdatesToUI();
         filesAlreadyExists = true;
+        CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(Files);
+        PropertyGroupDescription groupDescription = new PropertyGroupDescription("FilesType");
+        view.GroupDescriptions.Add(groupDescription);
       }
       
-      CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(Files);
-      PropertyGroupDescription groupDescription = new PropertyGroupDescription("FilesType");
-      view.GroupDescriptions.Add(groupDescription);
       if (!Directory.Exists(TidyConstants.TempsFolderPath))
         Directory.CreateDirectory(TidyConstants.TempsFolderPath);
 
