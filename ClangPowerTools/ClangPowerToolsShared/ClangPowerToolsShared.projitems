@@ -139,6 +139,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\AccountModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\CompilerSettingsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\FileModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\FileType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\FormatSettingsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\GeneralSettingsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\InputDataModel.cs" />

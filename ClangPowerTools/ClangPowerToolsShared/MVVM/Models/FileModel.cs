@@ -1,5 +1,6 @@
 ﻿using ClangPowerToolsShared.MVVM.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
+using ClangPowerToolsShared.MVVM.Models;
 using System.ComponentModel;
 
 namespace ClangPowerTools.MVVM.Models
@@ -58,6 +59,7 @@ namespace ClangPowerTools.MVVM.Models
 
     #region Public Properities
 
+    public FileType FilesType { get; set; }
     public string FileName 
     { 
       get { return fileName; }
