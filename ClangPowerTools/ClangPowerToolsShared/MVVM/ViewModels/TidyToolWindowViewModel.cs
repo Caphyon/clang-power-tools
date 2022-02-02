@@ -16,6 +16,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Task = System.Threading.Tasks.Task;
@@ -28,6 +29,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public event PropertyChangedEventHandler PropertyChanged;
     private ObservableCollection<FileModel> files = new ObservableCollection<FileModel>();
+    private ObservableCollection<User> users = new ObservableCollection<User>();
     private TidyToolWindowView tidyToolWindowView;
     private TidyToolWindowModel tidyToolWindowModel;
     private MessageModel messageModel;
@@ -41,6 +43,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private ICommand removeAllCommand;
 
     public ObservableCollection<FileModel> Files { get; set; } = new ObservableCollection<FileModel>();
+    public ObservableCollection<User> Users { get; set; } = new ObservableCollection<User>();
 
     #endregion
 
@@ -123,15 +126,34 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       TidyToolWindowModel = tidyToolWindowModel;
       Files = files;
       this.tidyToolWindowView = tidyToolWindowView;
+
+      Users.Add(new User() { Name = "aae", Age = 42, Sex = SexType.Male });
+      Users.Add(new User() { Name = "dddoe", Age = 39, Sex = SexType.Female });
+      Users.Add(new User() { Name = "Samfdgdfdgfe", Age = 13, Sex = SexType.Male });
+      CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(Users);
+      PropertyGroupDescription groupDescription = new PropertyGroupDescription("Sex");
+      view.GroupDescriptions.Add(groupDescription);
     }
 
+    public enum SexType { Male, Female };
+
+    public class User
+    {
+      public string Name { get; set; }
+
+      public int Age { get; set; }
+
+      public string Mail { get; set; }
+
+      public SexType Sex { get; set; }
+    }
     #endregion
 
     #region Public Methods
 
     public void OpenTidyToolWindow(List<string> filesPath)
     {
-      RefreshValues();
+
       CheckAll();
       TidyAllFilesAsync(filesPath);
       filesAlreadyExists = false;

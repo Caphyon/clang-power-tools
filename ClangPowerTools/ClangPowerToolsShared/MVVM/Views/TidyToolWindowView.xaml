@@ -159,8 +159,26 @@
       Visibility="{Binding TidyToolWindowModel.ProgressBarVisibility}" />
 
     <Separator Background="{DynamicResource {x:Static vsfx:VsBrushes.PanelSeparatorKey}}" VerticalAlignment="Center" Grid.Row="2" Grid.ColumnSpan="3"></Separator>
+    <ListView Name="Users" Grid.Row="4" Grid.Column="1" ItemsSource="{Binding Users}">
+      <ListView.View>
+        <GridView>
+          <GridViewColumn Header="Name" Width="120" DisplayMemberBinding="{Binding Name}" />
+          <GridViewColumn Header="Age" Width="50" DisplayMemberBinding="{Binding Age}" />
+        </GridView>
+      </ListView.View>
 
-    <ListView
+      <ListView.GroupStyle>
+        <GroupStyle>
+          <GroupStyle.HeaderTemplate>
+            <DataTemplate>
+              <TextBlock FontWeight="Bold" FontSize="14" Text="{Binding Name}"/>
+            </DataTemplate>
+          </GroupStyle.HeaderTemplate>
+        </GroupStyle>
+      </ListView.GroupStyle>
+    </ListView>
+    
+    <!--<ListView
       x:Name="FilesList"
       Grid.Row="4"
       Grid.Column="1"
@@ -226,7 +244,7 @@
           </Grid>
         </DataTemplate>
       </ListView.ItemTemplate>
-    </ListView>
+    </ListView>-->
 
     <Grid Grid.Row="3" Grid.Column="1">
       <Grid.ColumnDefinitions>
