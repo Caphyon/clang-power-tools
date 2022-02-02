@@ -16,6 +16,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Windows.Data;
 using System.Windows.Forms;
 using System.Windows.Input;
 using Task = System.Threading.Tasks.Task;
@@ -152,7 +153,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
             var currentModelFile = files.Where(a => a.FullFileName == path.FullName).FirstOrDefault();
             if(currentModelFile == null)
             {
-              currentModelFile = new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) };
+              currentModelFile = new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)), FilesType = FileType.File };
               files.Add(currentModelFile);
             }
             currentModelFile.IsChecked = true; 
@@ -161,7 +162,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         }
         UpdateCheckedNumber();
       }
-
       if (!filesAlreadyExists)
       {
         RefreshValues();
@@ -171,19 +171,22 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
           if (path.FullName.Contains(".h") || path.FullName.Contains(".hpp") || path.FullName.Contains(".hh") || path.FullName.Contains(".hxx"))
           {
-            files.Add(new FileModel { FileName = "", FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) });
-            headers.Add(new FileModel { FileName = "", FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) });
-
+            files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)), FilesType = FileType.Header });
+            headers.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)), FilesType = FileType.Header });
           }
           else
           {
-            files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) });
+            files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)), FilesType = FileType.File });
           }
         }
         CheckAll();
         SaveLastUpdatesToUI();
         filesAlreadyExists = true;
       }
+      
+      CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(Files);
+      PropertyGroupDescription groupDescription = new PropertyGroupDescription("FilesType");
+      view.GroupDescriptions.Add(groupDescription);
       if (!Directory.Exists(TidyConstants.TempsFolderPath))
         Directory.CreateDirectory(TidyConstants.TempsFolderPath);
 
@@ -504,12 +507,13 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private void UpdateFiles()
     {
       Files = files;
-      var resultFiles = files.Where(f => f.FileName == "").ToList();
-      ObservableCollection<FileModel> fileModels = new ObservableCollection<FileModel>();
-      foreach (var file in resultFiles)
-      {
-        Files.Remove(file);
-      }
+      //var resultFiles = files.Where(f => f.FileName == "").ToList();
+      //var resultFiles = files.Where(f => f.FileName == "").ToList();
+      //ObservableCollection<FileModel> fileModels = new ObservableCollection<FileModel>();
+      //foreach (var file in resultFiles)
+      //{
+      //  Files.Remove(file);
+      //}
     }
 
     #endregion

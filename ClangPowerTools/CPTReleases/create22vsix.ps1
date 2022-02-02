@@ -29,4 +29,4 @@ ReplaceContentInFile -fileName "extension.vsixmanifest" -oldString "Caphyon.7055
 ReplaceContentInFile -fileName "manifest.json" -oldString "Caphyon.705559db-5755-43fa-a023-41a3b14d2935" -newString "Caphyon.9ce239f2-d27a-432c-906c-1d55a123dbfd"
 ReplaceContentInFile -fileName "catalog.json" -oldString "Caphyon.705559db-5755-43fa-a023-41a3b14d2935" -newString "Caphyon.9ce239f2-d27a-432c-906c-1d55a123dbfd"
 
-explorer $loc
+# explorer $loc
