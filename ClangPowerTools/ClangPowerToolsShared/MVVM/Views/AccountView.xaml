@@ -36,24 +36,24 @@
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="260" />
       <ColumnDefinition Width="390" />
-      <ColumnDefinition Width="300" />
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
     <TextBlock
         Grid.Row="4"
-        Grid.Column="0"
+        Grid.Column="1"
         Margin="10,5,0,0"
         HorizontalAlignment="Left"
-        FontSize="17"
+        FontSize="20"
         Foreground="Black"
         Visibility="{Binding DisplayMessage}"
         Text="Want to share your settings configuration?" />
 
     <TextBlock
         Grid.Row="5"
-        Grid.Column="0"
+        Grid.Column="1"
         Margin="10,5,0,0"
         HorizontalAlignment="Left"
         FontSize="14"
@@ -62,7 +62,7 @@
         Text="Create a free Clang Power Tools account to share your Cloud Settings with your team."
         TextWrapping="Wrap" />
 
-    <Rectangle
+    <!--<Rectangle
       Grid.Row="1"
       Grid.Column="1"
       Margin="90,5,140,0"
@@ -72,16 +72,15 @@
       <Rectangle.Fill>
         <ImageBrush ImageSource="{StaticResource AccountAvatarIcon}" />
       </Rectangle.Fill>
-    </Rectangle>
+    </Rectangle>-->
     
     <Rectangle
       Grid.Row="1"
-      Grid.Column="1"
-      Margin="10,5,85,0"
-      Visibility="{Binding Path=DisplayLogout, Converter={StaticResource BoolToVis}}"
+      Grid.Column="0"
+      Margin="20,5,85,0"
       Width="65"
       Height="65"
-      HorizontalAlignment="Center">
+      HorizontalAlignment="Left">
       <Rectangle.Fill>
         <ImageBrush ImageSource="{StaticResource AccountAvatarIcon}" />
       </Rectangle.Fill>
@@ -89,7 +88,7 @@
 
     <StackPanel
       Grid.Row="2"
-      Grid.Column="1"
+      Grid.Column="0"
       Height="{Binding AccoutCellHeight}"
       Margin="21,0,0,0"
       HorizontalAlignment="Left"
@@ -115,10 +114,10 @@
 
     <StackPanel
       Grid.Row="4"
-      Grid.Column="1"
-      Margin="21,30,0,0"
-      HorizontalAlignment="{Binding Alignment}"
-      Orientation="Horizontal">
+      Grid.Column="0"
+      Margin="20,30,0,0"
+      HorizontalAlignment="Left"
+>
       <TextBlock
         Grid.Row="1"
         Grid.Column="0"
@@ -131,7 +130,8 @@
       <TextBlock
         Grid.Row="1"
         Grid.Column="1"
-        Margin="30,0,0,0"
+        Margin="0,10,0,0"
+        HorizontalAlignment="Left"
         VerticalAlignment="Top"
         FontFamily="SegoeUI"
         FontSize="15"
@@ -142,11 +142,11 @@
 
     <Button
       Grid.Row="5"
-      Grid.Column="1"
+      Grid.Column="0"
       Width="140"
       Height="30"
-      Margin="0,40,75,0"
-      HorizontalAlignment="Center"
+      Margin="20,10,0,0"
+      HorizontalAlignment="Left"
       Command="{Binding LogoutCommand}"
       Content="Log Out"
       FontSize="14"
@@ -156,11 +156,11 @@
 
     <Button
       Grid.Row="5"
-      Grid.Column="1"
+      Grid.Column="0"
       Width="140"
       Height="30"
-      Margin="20,40,0,0"
-      HorizontalAlignment="Center"
+      Margin="20,10,0,0"
+      HorizontalAlignment="Left"
       Command="{Binding LogoutCommand}"
       Content="Log In"
       FontSize="14"
