@@ -245,7 +245,8 @@ Set-Variable -name kClangTidyFormatStyle      -value "-format-style="   -option 
 
 Set-Variable -name kClangTidyFlagTempFile     -value ""
 
-Set-Variable -name kCptRegHiveSettings -value "HKCU:SOFTWARE\Caphyon\Clang Power Tools" -option Constant
+Set-Variable -name kCptRegHiveSettings -value "HKCU:SOFTWARE\Caphyon\Clang Power Tools"      -option Constant
+Set-Variable -name kCptVsixSettings    -value "${env:APPDATA}\ClangPowerTools\settings.json" -Option Constant
 
 # ------------------------------------------------------------------------------------------------
 # Default install locations of LLVM. If present there, we automatically use it
@@ -255,6 +256,23 @@ Set-Variable -name kLLVMInstallLocations    -value @("${Env:ProgramW6432}\LLVM\b
                                                     )                   -option Constant
 
 # ------------------------------------------------------------------------------------------------
+
+Function cpt:getSetting([string] $name)
+{
+  if ((Test-Path $kCptVsixSettings))
+  {
+    $settingsJson = ( (Get-Content -Raw -Path $kCptVsixSettings) | ConvertFrom-Json)
+    $settingField = $settingsJson.Where{ $_ | Get-Member $name }
+    if (!$settingField)
+    {
+      return $null
+    }
+    
+    return $settingField.$name
+  }
+  return $null
+}
+
 # Include required scripts, or download them from Github, if necessary
 
 Function cpt:ensureScriptExists( [Parameter(Mandatory=$true)] [string] $scriptName
@@ -281,6 +299,8 @@ Function cpt:ensureScriptExists( [Parameter(Mandatory=$true)] [string] $scriptNa
       $progressPreference = "SilentlyContinue"
     }
     Invoke-WebRequest -Uri $request -OutFile $scriptFilePath
+    (Get-Content $scriptFilePath -Raw).Replace("`n","`r`n") | Set-Content $scriptFilePath -Force -NoNewline
+
     if ($kPsMajorVersion -ge 6)
     {
       $progressPreference = $prevPreference
@@ -296,16 +316,27 @@ Function cpt:ensureScriptExists( [Parameter(Mandatory=$true)] [string] $scriptNa
   return $scriptFilePath
 }
 
-[bool] $shouldRedownload = $false
+[bool] $shouldRedownloadForcefully = $false
+[Version] $cptVsixVersion = cpt:getSetting "Version"
+Write-Verbose "Current Clang Power Tools VSIX version: $cptVsixVersion"
+
 # If the main script has been updated meanwhile, we invalidate all other scripts, and force
-# them to update from github. We need to watch for this becasue older CPT VS Extensions (before v7.9)
+# them to update from github. We need to watch for this because older CPT VS Extensions (before v7.9)
 # did not updated all helper scripts, but a list of predefined ones; we need to update the new ones as well.
-if (Test-Path $kCptRegHiveSettings)
+if ( ( ![string]::IsNullOrWhiteSpace($cptVsixVersion) -and 
+        [Version]::new($cptVsixVersion) -lt [Version]::new(7, 9, 0) ) -and
+     (Test-Path $kCptRegHiveSettings) )
 {
   Write-Verbose "Checking to see if we should redownload script helpers..."
   $regHive = Get-Item -LiteralPath $kCptRegHiveSettings
-  $currentTimestamp = (Get-Item $PSCommandPath).LastWriteTime.ToString()
-  $scriptTimestamp = $regHive.GetValue('ScriptTimestamp');
+  $currentHash = (Get-FileHash $PSCommandPath -Algorithm "SHA1").Hash
+  $savedHash = $regHive.GetValue('ScriptContentHash');
+
+  # we used to rely on timestamps but it's unreliable so make sure to clean up the reg value
+  if ($regHive.GetValue('ScriptTimestamp'))
+  {
+    Remove-ItemProperty -path $kCptRegHiveSettings -name 'ScriptTimestamp'
+  }
   
   $resp = Get-WmiObject -Class Win32_PingStatus -Filter 'Address="github.com" and Timeout=100' | Select-Object ResponseTime
   [bool] $hasInternetConnectivity = ($resp.ResponseTime -and $resp.ResponseTime -gt 0)
@@ -317,18 +348,13 @@ if (Test-Path $kCptRegHiveSettings)
   
   [string] $featureDisableValue = '42'
   if ( $hasInternetConnectivity -and 
-       $scriptTimestamp -and 
-      ($scriptTimestamp -ne $currentTimestamp) -and
-      ($scriptTimestamp -ne $featureDisableValue) )
+      ($savedHash -ne $currentHash) -and
+      ($savedHash -ne $featureDisableValue) )
   {
     Write-Verbose "Detected changes in main script. Will redownload helper scripts from Github..."
-    Write-Verbose "Current timestamp: $currentTimeStamp. Saved timestamp: $scriptTimestamp"
-    $shouldRedownload = $true
-  }
-
-  if ( $hasInternetConnectivity -and ( !$scriptTimestamp -or $scriptTimestamp -ne $featureDisableValue) )
-  {
-    Set-ItemProperty -path $kCptRegHiveSettings -name 'ScriptTimestamp' -value $currentTimestamp
+    Write-Verbose "Current main script SHA1: $currentHash. Saved SHA1: $savedHash"
+    Set-ItemProperty -path $kCptRegHiveSettings -name 'ScriptContentHash' -value $currentHash
+    $shouldRedownloadForcefully = $true
   }
 }
 
@@ -341,8 +367,8 @@ if (Test-Path $kCptRegHiveSettings)
  , "get-header-references.ps1"
  , "itemdefinition-context.ps1"
  , "jsondb-export.ps1"
-)                                                              |
-ForEach-Object { cpt:ensureScriptExists $_ $shouldRedownload } |
+)                                                                        |
+ForEach-Object { cpt:ensureScriptExists $_ $shouldRedownloadForcefully } |
 ForEach-Object { . $_ }
 
 Write-InformationTimed "Imported scripts"
