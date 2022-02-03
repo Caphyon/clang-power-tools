@@ -167,6 +167,7 @@
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     <ListView x:Name="FilesList"
               Grid.Row="4"
               Grid.Column="1"
@@ -182,13 +183,43 @@
 =======
     <ListView Name="Files" Grid.Row="4" Grid.Column="1" HorizontalContentAlignment="Stretch" Background="Transparent" BorderBrush="Transparent" ItemsSource="{Binding Files}">
 >>>>>>> 8646c92d (Bugfix - multiply headers and "file" (view header) on next tidy fix)
+=======
+    <ListView Name="Files"
+              Grid.Row="4"
+              Grid.Column="1"
+              SelectionMode="Single"
+              HorizontalContentAlignment="Stretch"
+              Background="Transparent"
+              BorderBrush="Transparent"
+              ItemsSource="{Binding Files}">
+      <ListView.ItemContainerStyle>
+        <Style TargetType="{x:Type ListViewItem}">
+          <Style.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+              <Setter Property="Background"
+                      Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTabMouseOverBackgroundBeginKey}}" />
+              <Setter Property="BorderBrush"
+                      Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTabMouseOverBorderKey}}" />
+            </Trigger>
+            <Trigger Property="IsSelected"
+                     Value="True">
+              <Setter Property="Background"
+                      Value="{x:Null}" />
+              <Setter Property="BorderBrush"
+                      Value="{x:Null}" />
+            </Trigger>
+          </Style.Triggers>
+        </Style>
+      </ListView.ItemContainerStyle>
+>>>>>>> f2d52ae6 (Hide Header view and change files background color on  select and hover)
       <ListView.View>
-        <GridView>
+        <GridView  ColumnHeaderContainerStyle="{StaticResource myHeaderStyle}">
           <!--<GridViewColumn Header="Filename" Width="auto" DisplayMemberBinding="{Binding FileName}" />-->
-          <GridViewColumn Width="auto">
+          <GridViewColumn>
             <GridViewColumn.CellTemplate>
               <DataTemplate>
-                <Grid Width="auto">
+                <Grid>
                   <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="20" />
                     <ColumnDefinition Width="*" />
@@ -197,46 +228,40 @@
                   <Grid.RowDefinitions>
                     <RowDefinition Height="25" />
                   </Grid.RowDefinitions>
-                  <CheckBox
-              Grid.Column="0"
-              Width="15"
-              VerticalAlignment="Center"
-              Click="CheckBox_Click"
-              IsChecked="{Binding IsChecked, Mode=TwoWay}" />
-                  <TextBlock
-              Grid.Column="1"
-              HorizontalAlignment="Left"
-              VerticalAlignment="Center"
-              ToolTip="{Binding FullFileName}"
-              Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
-              Text="{Binding FileName}" />
-                  <Button
-              Grid.Column="2"
-              Width="30"
-              Height="20"
-              IsEnabled="{Binding IsEnabled}"
-              HorizontalAlignment="Right"
-              Click="DiffButton"
-              ToolTip="Diff"
-              Visibility="{Binding DiffVisibility}">
-                    <Image
-                Source="{Binding DiffIcon}"
-                Width="16"
-                Height="16" />
+                  <CheckBox Grid.Column="0"
+                            Width="15"
+                            VerticalAlignment="Center"
+                            Click="CheckBox_Click"
+                            IsChecked="{Binding IsChecked, Mode=TwoWay}" />
+                  <TextBlock Grid.Column="1"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center"
+                             ToolTip="{Binding FullFileName}"
+                             Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
+                             Text="{Binding FileName}" />
+                  <Button Grid.Column="2"
+                          Width="30"
+                          Height="20"
+                          IsEnabled="{Binding IsEnabled}"
+                          HorizontalAlignment="Right"
+                          Click="DiffButton"
+                          ToolTip="Diff"
+                          Visibility="{Binding DiffVisibility}">
+                    <Image Source="{Binding DiffIcon}"
+                           Width="16"
+                           Height="16" />
                   </Button>
-                  <Button
-              Grid.Column="2"
-              Width="30"
-              Height="20"
-              HorizontalAlignment="Right"
-              IsEnabled="{Binding IsEnabled}"
-              Click="FixButton"
-              ToolTip="Fix"
-              Visibility="{Binding FixVisibility}">
-                    <Image
-                Source="{Binding TidyFixIcon}"
-                Width="16"
-                Height="16" />
+                  <Button Grid.Column="2"
+                          Width="30"
+                          Height="20"
+                          HorizontalAlignment="Right"
+                          IsEnabled="{Binding IsEnabled}"
+                          Click="FixButton"
+                          ToolTip="Fix"
+                          Visibility="{Binding FixVisibility}">
+                    <Image Source="{Binding TidyFixIcon}"
+                           Width="16"
+                           Height="16" />
                   </Button>
                 </Grid>
               </DataTemplate>
@@ -249,14 +274,17 @@
         <GroupStyle>
           <GroupStyle.HeaderTemplate>
             <DataTemplate>
-              <TextBlock FontWeight="Bold" Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}" FontSize="12" Text="{Binding Name}"/>
+              <TextBlock FontWeight="Bold"
+                         Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
+                         FontSize="12"
+                         Text="{Binding Name}" />
             </DataTemplate>
           </GroupStyle.HeaderTemplate>
         </GroupStyle>
       </ListView.GroupStyle>
     </ListView>
 
-      <!--<ListView
+    <!--<ListView
       x:Name="FilesList"
       Grid.Row="4"
       Grid.Column="1"
