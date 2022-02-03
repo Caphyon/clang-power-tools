@@ -166,6 +166,7 @@
                Grid.ColumnSpan="3"></Separator>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     <ListView x:Name="FilesList"
               Grid.Row="4"
               Grid.Column="1"
@@ -178,6 +179,9 @@
               ItemsSource="{Binding Files}">
 =======
     <ListView Name="Files" Grid.Row="4" Grid.Column="1" Background="Transparent" BorderBrush="Transparent" ItemsSource="{Binding Files}">
+=======
+    <ListView Name="Files" Grid.Row="4" Grid.Column="1" HorizontalContentAlignment="Stretch" Background="Transparent" BorderBrush="Transparent" ItemsSource="{Binding Files}">
+>>>>>>> 8646c92d (Bugfix - multiply headers and "file" (view header) on next tidy fix)
       <ListView.View>
         <GridView>
           <!--<GridViewColumn Header="Filename" Width="auto" DisplayMemberBinding="{Binding FileName}" />-->
