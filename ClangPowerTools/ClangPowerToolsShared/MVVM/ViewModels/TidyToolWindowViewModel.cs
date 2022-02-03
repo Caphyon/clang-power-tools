@@ -126,6 +126,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       TidyToolWindowModel = tidyToolWindowModel;
       UpdateFiles();
       this.tidyToolWindowView = tidyToolWindowView;
+      CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(Files);
+      PropertyGroupDescription groupDescription = new PropertyGroupDescription("FilesType");
+      view.GroupDescriptions.Add(groupDescription);
     }
 
     #endregion
@@ -150,14 +153,29 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           FileInfo path = new FileInfo(file);
           if (path.FullName.Contains(".h") || path.FullName.Contains(".hpp") || path.FullName.Contains(".hh") || path.FullName.Contains(".hxx"))
           {
-            var currentModelFile = files.Where(a => a.FullFileName == path.FullName).FirstOrDefault();
-            if(currentModelFile == null)
+            //TODO check if current header is null
+            var currentHeaders = headers.Where(a => a.FullFileName == path.FullName).FirstOrDefault();
+            var test = files.Where(a => a.FullFileName == currentHeaders.FullFileName).FirstOrDefault();
+            if (test is null)
             {
-              currentModelFile = new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)), FilesType = FileType.File };
-              files.Add(currentModelFile);
+              //add current header on wich was made tidy to files 
+              var currentModelFiles = UnifyFileModelLists(files.ToList(), new List<FileModel> { new FileModel(currentHeaders) });
+              files.Clear();
+              foreach(var currentFile in currentModelFiles)
+              {
+                files.Add(new FileModel(currentFile));
+              }
+              UpdateFiles();
+               
             }
-            currentModelFile.IsChecked = true; 
-            MarkFixedFiles(new List<FileModel> { currentModelFile });
+
+            //if(currentHeaders == null)
+            //{
+            //  currentHeaders = new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)), FilesType = FileType.File };
+            //  files.Add(currentHeaders);
+            //}
+            currentHeaders.IsChecked = true;
+            MarkFixedFiles(new List<FileModel> { currentHeaders });
           }
         }
         UpdateCheckedNumber();
@@ -171,7 +189,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
           if (path.FullName.Contains(".h") || path.FullName.Contains(".hpp") || path.FullName.Contains(".hh") || path.FullName.Contains(".hxx"))
           {
-            files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)), FilesType = FileType.Header });
             headers.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)), FilesType = FileType.Header });
           }
           else
@@ -182,9 +199,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         CheckAll();
         SaveLastUpdatesToUI();
         filesAlreadyExists = true;
-        CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(Files);
-        PropertyGroupDescription groupDescription = new PropertyGroupDescription("FilesType");
-        view.GroupDescriptions.Add(groupDescription);
+
       }
       
       if (!Directory.Exists(TidyConstants.TempsFolderPath))
@@ -225,7 +240,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           filesPathsCopy = new List<FileModel> { file };
           filesPaths = new List<string> { file.FullFileName };
         }
-        CopyFilesInTemp(filesPathsCopy);
+        FileCommand.CopyFilesInTempSolution(UnifyFileModelLists(filesPathsCopy, headers));
         await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
         wasMadeTidyOnFiles = false;
         if (file is not null)
@@ -239,18 +254,18 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
     }
 
-    private void CopyFilesInTemp(List<FileModel> fileModels)
+    private List<FileModel> UnifyFileModelLists(List<FileModel> firstList, List<FileModel> secondList)
     {
       var fileUnion = new List<FileModel>();
-      foreach (var file in fileModels)
+      foreach (var file in firstList)
       {
         fileUnion.Add(file);
       }
-      foreach (var file in headers)
+      foreach (var file in secondList)
       {
         fileUnion.Add(file);
       }
-      FileCommand.CopyFilesInTempSolution(fileUnion);
+      return fileUnion;
     }
 
     public void UpdateCheckedNumber(FileModel file)
