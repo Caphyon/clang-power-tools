@@ -154,28 +154,23 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           if (path.FullName.Contains(".h") || path.FullName.Contains(".hpp") || path.FullName.Contains(".hh") || path.FullName.Contains(".hxx"))
           {
             //TODO check if current header is null
-            var currentHeaders = headers.Where(a => a.FullFileName == path.FullName).FirstOrDefault();
-            var test = files.Where(a => a.FullFileName == currentHeaders.FullFileName).FirstOrDefault();
-            if (test is null)
+            var currentHeader = headers.Where(a => a.FullFileName == path.FullName).FirstOrDefault();
+
+            //var test = files.Where(a => a.FullFileName == currentHeaders.FullFileName).FirstOrDefault();
+            if (!files.Contains(currentHeader))
             {
               //add current header on wich was made tidy to files 
-              var currentModelFiles = UnifyFileModelLists(files.ToList(), new List<FileModel> { new FileModel(currentHeaders) });
+              var currentModelFiles = UnifyFileModelLists(files.ToList(), new List<FileModel> { new FileModel(currentHeader) });
               files.Clear();
-              foreach(var currentFile in currentModelFiles)
+              foreach (var currentFile in currentModelFiles)
               {
                 files.Add(new FileModel(currentFile));
               }
               UpdateFiles();
-               
-            }
 
-            //if(currentHeaders == null)
-            //{
-            //  currentHeaders = new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)), FilesType = FileType.File };
-            //  files.Add(currentHeaders);
-            //}
-            currentHeaders.IsChecked = true;
-            MarkFixedFiles(new List<FileModel> { currentHeaders });
+            }
+            currentHeader.IsChecked = true;
+            MarkFixedFiles(new List<FileModel> { currentHeader });
           }
         }
         UpdateCheckedNumber();
@@ -201,7 +196,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         filesAlreadyExists = true;
 
       }
-      
+
       if (!Directory.Exists(TidyConstants.TempsFolderPath))
         Directory.CreateDirectory(TidyConstants.TempsFolderPath);
 
