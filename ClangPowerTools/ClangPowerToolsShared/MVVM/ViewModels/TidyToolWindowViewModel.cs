@@ -151,7 +151,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         foreach (string file in filesPath)
         {
           FileInfo path = new FileInfo(file);
-          if (CheckIsHeader(path))
+          if (CheckIsHeader(file))
           {
             //TODO check if current header is null
             var currentHeader = headers.Where(a => a.FullFileName == path.FullName).FirstOrDefault();
@@ -182,7 +182,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         {
           FileInfo path = new FileInfo(file);
 
-          if (CheckIsHeader(path))
+          if (CheckIsHeader(file))
           {
             headers.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)), FilesType = FileType.Header });
           }
@@ -310,8 +310,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       UpdateFiles();
       TidyToolWindowModel = tidyToolWindowModel;
     }
-    private bool CheckIsHeader(FileInfo path)
+    private bool CheckIsHeader(string fullFilePath)
     {
+      FileInfo path = new FileInfo(fullFilePath);
       return path.FullName.Contains(".h") || path.FullName.Contains(".hpp") || path.FullName.Contains(".hh") || path.FullName.Contains(".hxx");
     }
 
@@ -413,12 +414,16 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         {
           File.Copy(file.CopyFullFileName, file.FullFileName, true);
           File.Delete(file.CopyFullFileName);
+          //TODO Implement disabled diff icon just for headers
+          if(CheckIsHeader(file.FullFileName))
+          {
+            file.DisableVisibleDiffIcon();
+          }
         }
         catch (UnauthorizedAccessException e)
         {
           MessageBox.Show($"Access to path {file.FullFileName} is denied", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
-
       }
     }
 
@@ -484,6 +489,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
             DiscardFile(file);
           }
         }
+        UpdateFiles();
         MarkUnfixedFiles(checkFiles);
         ++tidyToolWindowModel.DiscardNr;
         UpdateCheckedNumber();
