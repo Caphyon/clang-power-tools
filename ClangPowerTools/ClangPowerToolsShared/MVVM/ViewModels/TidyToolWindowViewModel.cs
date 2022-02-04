@@ -151,12 +151,11 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         foreach (string file in filesPath)
         {
           FileInfo path = new FileInfo(file);
-          if (path.FullName.Contains(".h") || path.FullName.Contains(".hpp") || path.FullName.Contains(".hh") || path.FullName.Contains(".hxx"))
+          if (CheckIsHeader(path))
           {
             //TODO check if current header is null
             var currentHeader = headers.Where(a => a.FullFileName == path.FullName).FirstOrDefault();
 
-            //var test = files.Where(a => a.FullFileName == currentHeaders.FullFileName).FirstOrDefault();
             if (!files.Contains(currentHeader))
             {
               //add current header on wich was made tidy to files 
@@ -182,7 +181,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         {
           FileInfo path = new FileInfo(file);
 
-          if (path.FullName.Contains(".h") || path.FullName.Contains(".hpp") || path.FullName.Contains(".hh") || path.FullName.Contains(".hxx"))
+          if (CheckIsHeader(path))
           {
             headers.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)), FilesType = FileType.Header });
           }
@@ -196,10 +195,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         filesAlreadyExists = true;
 
       }
-
       if (!Directory.Exists(TidyConstants.TempsFolderPath))
         Directory.CreateDirectory(TidyConstants.TempsFolderPath);
-
     }
 
     public void CheckOrUncheckAll()
@@ -312,6 +309,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
       UpdateFiles();
       TidyToolWindowModel = tidyToolWindowModel;
+    }
+    private bool CheckIsHeader(FileInfo path)
+    {
+      return path.FullName.Contains(".h") || path.FullName.Contains(".hpp") || path.FullName.Contains(".hh") || path.FullName.Contains(".hxx");
     }
 
     private void UpdateTidyToolWindowModelFixedNr()
@@ -517,13 +518,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private void UpdateFiles()
     {
       Files = files;
-      //var resultFiles = files.Where(f => f.FileName == "").ToList();
-      //var resultFiles = files.Where(f => f.FileName == "").ToList();
-      //ObservableCollection<FileModel> fileModels = new ObservableCollection<FileModel>();
-      //foreach (var file in resultFiles)
-      //{
-      //  Files.Remove(file);
-      //}
     }
 
     #endregion
