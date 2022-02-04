@@ -156,10 +156,12 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
             //TODO check if current header is null
             var currentHeader = headers.Where(a => a.FullFileName == path.FullName).FirstOrDefault();
 
-            if (!files.Contains(currentHeader))
+            //if (!files.Contains(currentHeader))
+            if (files.Where(f => f.FullFileName == currentHeader.FullFileName).FirstOrDefault() is null)
             {
               //add current header on wich was made tidy to files 
               var currentModelFiles = UnifyFileModelLists(files.ToList(), new List<FileModel> { new FileModel(currentHeader) });
+              currentHeader.IsChecked = true;
               files.Clear();
               foreach (var currentFile in currentModelFiles)
               {
@@ -168,8 +170,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
               UpdateFiles();
 
             }
-            currentHeader.IsChecked = true;
-            MarkFixedFiles(new List<FileModel> { currentHeader });
+            MarkFixedFiles(new List<FileModel>{ currentHeader });
           }
         }
         UpdateCheckedNumber();
@@ -193,7 +194,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         CheckAll();
         SaveLastUpdatesToUI();
         filesAlreadyExists = true;
-
       }
       if (!Directory.Exists(TidyConstants.TempsFolderPath))
         Directory.CreateDirectory(TidyConstants.TempsFolderPath);
