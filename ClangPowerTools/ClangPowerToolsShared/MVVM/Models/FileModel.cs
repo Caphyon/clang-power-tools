@@ -174,7 +174,7 @@ namespace ClangPowerTools.MVVM.Models
     {
       get
       {
-        return isEnabled;
+        return isEnabled;  
       }
       set
       {
