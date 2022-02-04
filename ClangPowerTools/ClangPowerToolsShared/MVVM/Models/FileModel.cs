@@ -52,6 +52,7 @@ namespace ClangPowerTools.MVVM.Models
       this.IsRunning = file.IsRunning;
       this.IsEnabled = file.IsEnabled;
       this.IsChecked = file.IsChecked;
+      this.FilesType = file.FilesType;
 
     }
 
@@ -60,8 +61,8 @@ namespace ClangPowerTools.MVVM.Models
     #region Public Properities
 
     public FileType FilesType { get; set; }
-    public string FilesTypeString 
-    { 
+    public string FilesTypeString
+    {
       get
       {
         if (FilesType == FileType.File)
@@ -70,8 +71,8 @@ namespace ClangPowerTools.MVVM.Models
           return "Fixed headers";
       }
     }
-    public string FileName 
-    { 
+    public string FileName
+    {
       get { return fileName; }
       set
       {
