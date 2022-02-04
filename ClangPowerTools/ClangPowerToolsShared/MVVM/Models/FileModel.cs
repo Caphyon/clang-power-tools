@@ -53,7 +53,6 @@ namespace ClangPowerTools.MVVM.Models
       this.IsEnabled = file.IsEnabled;
       this.IsChecked = file.IsChecked;
       this.FilesType = file.FilesType;
-
     }
 
     #endregion
@@ -200,6 +199,15 @@ namespace ClangPowerTools.MVVM.Models
       DiffIcon = IconResourceConstants.DiffDark;
     }
 
+    /// <summary>
+    /// Disable and show (maake visible) diff icon
+    /// </summary>
+    public void DisableVisibleDiffIcon()
+    {
+      DiffVisibility = UIElementsConstants.Visibile;
+      FixVisibility = UIElementsConstants.Hidden;
+      DiffIcon = IconResourceConstants.DiffDisabled;
+    }
 
     private void EnableIconLightTheme()
     {
