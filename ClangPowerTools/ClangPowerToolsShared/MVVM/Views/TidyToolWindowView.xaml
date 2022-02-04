@@ -168,6 +168,7 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     <ListView x:Name="FilesList"
               Grid.Row="4"
               Grid.Column="1"
@@ -285,6 +286,9 @@
     </ListView>
 
     <!--<ListView
+=======
+    <ListView
+>>>>>>> 8f7c42f4 (Add expanders to header and files)
       x:Name="FilesList"
       Grid.Row="4"
       Grid.Column="1"
