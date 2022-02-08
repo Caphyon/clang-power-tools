@@ -155,22 +155,24 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           {
             //TODO check if current header is null
             var currentHeader = headers.Where(a => a.FullFileName == path.FullName).FirstOrDefault();
-
-            //if (!files.Contains(currentHeader))
-            if (files.Where(f => f.FullFileName == currentHeader.FullFileName).FirstOrDefault() is null)
+            if (currentHeader != null)
             {
-              //add current header on wich was made tidy to files 
-              var currentModelFiles = UnifyFileModelLists(files.ToList(), new List<FileModel> { new FileModel(currentHeader) });
               currentHeader.IsChecked = true;
-              files.Clear();
-              foreach (var currentFile in currentModelFiles)
+              //if (!files.Contains(currentHeader))
+              if (files.Where(f => f.FullFileName == currentHeader.FullFileName).FirstOrDefault() is null)
               {
-                files.Add(new FileModel(currentFile));
-              }
-              UpdateFiles();
+                //add current header on wich was made tidy to files 
+                var currentModelFiles = UnifyFileModelLists(files.ToList(), new List<FileModel> { new FileModel(currentHeader) });
+                files.Clear();
+                foreach (var currentFile in currentModelFiles)
+                {
+                  files.Add(new FileModel(currentFile));
+                }
 
+              }
             }
-            MarkFixedFiles(new List<FileModel>{ currentHeader });
+              MarkFixedFiles(new List<FileModel> { currentHeader });
+              UpdateFiles();
           }
         }
         UpdateCheckedNumber();
@@ -415,9 +417,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           File.Copy(file.CopyFullFileName, file.FullFileName, true);
           File.Delete(file.CopyFullFileName);
           //TODO Implement disabled diff icon just for headers
-          if(CheckIsHeader(file.FullFileName))
+          if (CheckIsHeader(file.FullFileName))
           {
             file.DisableVisibleDiffIcon();
+            UpdateFiles();
           }
         }
         catch (UnauthorizedAccessException e)
