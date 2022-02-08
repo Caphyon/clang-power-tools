@@ -162,7 +162,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
               if (files.Where(f => f.FullFileName == currentHeader.FullFileName).FirstOrDefault() is null)
               {
                 //add current header on wich was made tidy to files 
-                var currentModelFiles = UnifyFileModelLists(files.ToList(), new List<FileModel> { new FileModel(currentHeader) });
+                var currentHeaderList = new List<FileModel> { currentHeader };
+                MarkFixedFiles(currentHeaderList);
+                var currentModelFiles = UnifyFileModelLists(files.ToList(), currentHeaderList);
                 files.Clear();
                 foreach (var currentFile in currentModelFiles)
                 {
@@ -171,7 +173,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
               }
             }
-              MarkFixedFiles(new List<FileModel> { currentHeader });
               UpdateFiles();
           }
         }
