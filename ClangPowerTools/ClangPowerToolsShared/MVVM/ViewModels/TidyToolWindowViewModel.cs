@@ -309,6 +309,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       foreach (var file in files)
       {
         file.IsRunning = false;
+        if (CheckIsHeader(file.FullFileName))
+        {
+          file.DisableVisibleDiffIcon();
+        }
       }
       UpdateFiles();
       TidyToolWindowModel = tidyToolWindowModel;
@@ -417,12 +421,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         {
           File.Copy(file.CopyFullFileName, file.FullFileName, true);
           File.Delete(file.CopyFullFileName);
-          //TODO Implement disabled diff icon just for headers
-          if (CheckIsHeader(file.FullFileName))
-          {
-            file.DisableVisibleDiffIcon();
-            UpdateFiles();
-          }
         }
         catch (UnauthorizedAccessException e)
         {
@@ -486,15 +484,19 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       {
         BeforeCommand();
         var checkFiles = files.Where(f => f.IsChecked).ToList();
+        MarkUnfixedFiles(checkFiles);
         foreach (var file in checkFiles)
         {
           if (file.IsChecked)
           {
             DiscardFile(file);
+            if (CheckIsHeader(file.FullFileName))
+            {
+              file.DisableVisibleDiffIcon();
+            }
           }
         }
         UpdateFiles();
-        MarkUnfixedFiles(checkFiles);
         ++tidyToolWindowModel.DiscardNr;
         UpdateCheckedNumber();
         AfterCommand();
