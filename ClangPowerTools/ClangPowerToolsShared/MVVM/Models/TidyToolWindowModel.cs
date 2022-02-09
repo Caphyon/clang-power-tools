@@ -22,6 +22,7 @@ namespace ClangPowerToolsShared.MVVM.Models
     private int tidyNr = 0;
     private int fixedNr = 0;
     private int fixFileNr = 0;
+    private int tidyFileNr = 0;
     private int removeNr = 0;
     private int discardNr = 0;
     private string removeTooltip = string.Empty;
@@ -153,7 +154,7 @@ namespace ClangPowerToolsShared.MVVM.Models
       set
       {
         totalChecked = value;
-        TidyTooltip = UIElementsConstants.RefreshTooltip + UIElementsConstants.TidyTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
+        TidyTooltip = UIElementsConstants.RefreshTooltip + UIElementsConstants.TidyTooltip + TidyFilesNr.ToString() + UIElementsConstants.FilesTooltip;
         RemoveTooltip = UIElementsConstants.IgnoreTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
         FixTooltip = UIElementsConstants.FixTooltip + FixFilesNr.ToString() + UIElementsConstants.FilesTooltip;
         DiscardTooltip = UIElementsConstants.DiscardTooltip + totalChecked.ToString() + " fixed" + UIElementsConstants.FilesTooltip;
@@ -201,6 +202,16 @@ namespace ClangPowerToolsShared.MVVM.Models
       set
       {
         fixFileNr = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixFilesNr"));
+      }
+    }
+
+    public int TidyFilesNr
+    {
+      get { return tidyFileNr; }
+      set
+      {
+        tidyFileNr = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixFilesNr"));
       }
     }
