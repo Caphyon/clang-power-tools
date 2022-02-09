@@ -21,6 +21,7 @@ namespace ClangPowerToolsShared.MVVM.Models
     private string buttonVisibility;
     private int tidyNr = 0;
     private int fixedNr = 0;
+    private int fixFileNr = 0;
     private int removeNr = 0;
     private int discardNr = 0;
     private string removeTooltip = string.Empty;
@@ -154,7 +155,7 @@ namespace ClangPowerToolsShared.MVVM.Models
         totalChecked = value;
         TidyTooltip = UIElementsConstants.RefreshTooltip + UIElementsConstants.TidyTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
         RemoveTooltip = UIElementsConstants.IgnoreTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
-        FixTooltip = UIElementsConstants.FixTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
+        FixTooltip = UIElementsConstants.FixTooltip + FixFilesNr.ToString() + UIElementsConstants.FilesTooltip;
         DiscardTooltip = UIElementsConstants.DiscardTooltip + totalChecked.ToString() + " fixed" + UIElementsConstants.FilesTooltip;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalChecked"));
       }
@@ -187,6 +188,20 @@ namespace ClangPowerToolsShared.MVVM.Models
       {
         fixedNr = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixedNr"));
+      }
+    }
+
+    /// <summary>
+    /// The next number of files will be fixed, except headers.
+    /// Number will be displayed in tooltip
+    /// </summary>
+    public int FixFilesNr
+    {
+      get { return fixFileNr; }
+      set
+      {
+        fixFileNr = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixFilesNr"));
       }
     }
 
