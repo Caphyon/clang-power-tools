@@ -159,21 +159,23 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
             {
               currentHeader.IsChecked = true;
               //if (!files.Contains(currentHeader))
-              if (files.Where(f => f.FullFileName == currentHeader.FullFileName).FirstOrDefault() is null)
+              var index = files.IndexOf(files.Where(f => f.FullFileName == currentHeader.FullFileName).FirstOrDefault());
+              if (index > - 1)
               {
-                //add current header on wich was made tidy to files 
-                var currentHeaderList = new List<FileModel> { currentHeader };
-                MarkFixedFiles(currentHeaderList);
-                var currentModelFiles = UnifyFileModelLists(files.ToList(), currentHeaderList);
-                files.Clear();
-                foreach (var currentFile in currentModelFiles)
-                {
-                  files.Add(new FileModel(currentFile));
-                }
-
+                files.RemoveAt(index);
               }
+              //add current header on wich was made tidy to files 
+              var currentHeaderList = new List<FileModel> { currentHeader };
+              MarkFixedFiles(currentHeaderList);
+              var currentModelFiles = UnifyFileModelLists(files.ToList(), currentHeaderList);
+              files.Clear();
+              foreach (var currentFile in currentModelFiles)
+              {
+                files.Add(new FileModel(currentFile));
+              }
+
             }
-              UpdateFiles();
+            UpdateFiles();
           }
         }
         UpdateCheckedNumber();
