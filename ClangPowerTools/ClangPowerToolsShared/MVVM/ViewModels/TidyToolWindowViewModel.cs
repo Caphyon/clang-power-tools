@@ -328,15 +328,19 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       tidyToolWindowModel.FixedNr = 0;
       tidyToolWindowModel.FixFilesNr = 0;
+      tidyToolWindowModel.TidyFilesNr = 0;
       tidyToolWindowModel.TotalFixedChecked = 0;
       foreach (var file in files)
       {
-
         if (file.IsFixed)
         {
           ++tidyToolWindowModel.FixedNr;
           if (file.IsChecked)
             ++tidyToolWindowModel.TotalFixedChecked;
+        }
+        if (file.FilesType != FileType.Header && file.IsChecked)
+        {
+          ++tidyToolWindowModel.TidyFilesNr;
         }
         if (file.FilesType != FileType.Header && file.IsChecked && !file.IsFixed)
         {
