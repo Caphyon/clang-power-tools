@@ -451,7 +451,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       foreach (var file in files)
       {
-        if (file.FilesType == FileType.Header)
+        if (file.FilesType == FileType.Header && file.IsChecked)
         {
           file.DisableVisibleDiffIcon();
         }
