@@ -248,6 +248,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         UpdateCheckedNumber();
         UpdateFiles();
         AfterCommand();
+        DisableDiffIconForHeaders();
       }
     }
 
@@ -265,6 +266,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       return fileUnion;
     }
 
+    /// <summary>
+    /// Update checked numer on check and uncheck action
+    /// </summary>
+    /// <param name="file"></param>
     public void UpdateCheckedNumber(FileModel file)
     {
       UpdateTidyToolWindowModelFixedNr();
@@ -304,6 +309,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       TidyToolWindowModel = tidyToolWindowModel;
     }
 
+    /// <summary>
+    /// Set isRunning for every file to make icons disabled 
+    /// </summary>
     private void AfterCommand()
     {
       TidyToolWindowModel.IsRunning = false;
@@ -436,6 +444,21 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
     }
 
+    /// <summary>
+    /// Make diff icon disabled after discard header action
+    /// </summary>
+    private void DisableDiffIconForHeaders()
+    {
+      foreach (var file in files)
+      {
+        if (file.FilesType == FileType.Header)
+        {
+          file.DisableVisibleDiffIcon();
+        }
+      }
+      UpdateFiles();
+    }
+
     private void RemoveAllFiles()
     {
       BeforeCommand();
@@ -502,15 +525,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         ++tidyToolWindowModel.DiscardNr;
         UpdateCheckedNumber();
         AfterCommand();
-        //Make diff icon disabled after discard header action
-        foreach (var file in checkFiles)
-        {
-          if (file.FilesType == FileType.Header)
-          {
-            file.DisableVisibleDiffIcon();
-          }
-        }
-        UpdateFiles();
+        DisableDiffIconForHeaders();
       }
     }
 
