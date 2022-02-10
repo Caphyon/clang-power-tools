@@ -310,10 +310,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       foreach (var file in files)
       {
         file.IsRunning = false;
-        if (CheckIsHeader(file.FullFileName))
-        {
-          file.DisableVisibleDiffIcon();
-        }
       }
       UpdateFiles();
       TidyToolWindowModel = tidyToolWindowModel;
@@ -501,16 +497,20 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           if (file.IsChecked)
           {
             DiscardFile(file);
-            if (CheckIsHeader(file.FullFileName))
-            {
-              file.DisableVisibleDiffIcon();
-            }
           }
         }
-        UpdateFiles();
         ++tidyToolWindowModel.DiscardNr;
         UpdateCheckedNumber();
         AfterCommand();
+        //Make diff icon disabled after discard header action
+        foreach (var file in checkFiles)
+        {
+          if (file.FilesType == FileType.Header)
+          {
+            file.DisableVisibleDiffIcon();
+          }
+        }
+        UpdateFiles();
       }
     }
 
