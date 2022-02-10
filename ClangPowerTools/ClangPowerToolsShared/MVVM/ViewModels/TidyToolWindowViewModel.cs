@@ -229,8 +229,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         if (file is null)
         {
           //Get checked and unfixed files
-          filesPathsCopy = files.Where(f => f.IsChecked && f.IsFixed == false).ToList();
-          filesPaths = Files.Where(f => f.IsChecked).Select(f => f.FullFileName).ToList();
+          filesPathsCopy = files.Where(f => f.IsChecked && f.IsFixed == false && f.FilesType != FileType.Header).ToList();
+          filesPaths = Files.Where(f => f.IsChecked && f.FilesType != FileType.Header).Select(f => f.FullFileName).ToList();
         }
         else
         {
@@ -487,7 +487,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       wasMadeTidyOnFiles = true;
       if (paths is null)
       {
-        paths = files.Where(f => f.IsChecked).Select(f => f.FullFileName).ToList();
+        paths = files.Where(f => f.IsChecked && f.FilesType != FileType.Header).Select(f => f.FullFileName).ToList();
       }
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, paths);
       AfterCommand();
