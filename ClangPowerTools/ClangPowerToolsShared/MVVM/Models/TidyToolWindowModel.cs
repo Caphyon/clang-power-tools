@@ -31,6 +31,7 @@ namespace ClangPowerToolsShared.MVVM.Models
     private string fixTooltip = string.Empty;
     private int totalCheckedFixedFiles = 0;
     private int totalCheckedFiles = 0;
+    private int totalCheckedHeaders = 0;
     private int totalChecked = 0;
     private bool isChecked;
     public bool isDiscardEnabled;
@@ -159,6 +160,15 @@ namespace ClangPowerToolsShared.MVVM.Models
       }
     }
 
+    public int TotalCheckedHeaders
+    {
+      get { return totalCheckedHeaders; }
+      set
+      {
+        totalCheckedHeaders = value;
+      }
+    }
+
     public int TotalCheckedFixedFiles
     {
       get { return totalCheckedFixedFiles; }
@@ -257,6 +267,8 @@ namespace ClangPowerToolsShared.MVVM.Models
             DisableDiscardFixIcon();
           if ((TotalChecked == TotalFixedChecked) || (TotalCheckedFiles == TotalCheckedFixedFiles))
             DisableFixIcon();
+          if (TotalChecked == TotalCheckedHeaders)
+            DisableTidyIcon();
           return true;
         }
         else
@@ -321,9 +333,13 @@ namespace ClangPowerToolsShared.MVVM.Models
       DiscardFixIcon = IconResourceConstants.RemoveFixDisabled;
     }
 
-    public void DisableFixIcon()
+    private void DisableFixIcon()
     {
       TidyFixIcon = IconResourceConstants.FixDisabled;
+    }
+    private void DisableTidyIcon()
+    {
+      RefreshTidyIcon = IconResourceConstants.RefreshDisabled;
     }
 
     public void EnableAllIcons()

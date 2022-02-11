@@ -353,6 +353,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
       tidyToolWindowModel.TotalCheckedFiles = files.Where(f => f.IsChecked && f.FilesType == FileType.File).Count();
       tidyToolWindowModel.TotalCheckedFixedFiles = files.Where(f => f.IsChecked && f.FilesType == FileType.File && f.IsFixed).Count();
+      tidyToolWindowModel.TotalCheckedHeaders = files.Where(f => f.IsChecked && f.FilesType == FileType.Header).Count();
       TidyToolWindowModel = tidyToolWindowModel;
     }
 
