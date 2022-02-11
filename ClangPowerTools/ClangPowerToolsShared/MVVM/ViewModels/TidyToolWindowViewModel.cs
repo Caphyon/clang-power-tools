@@ -351,6 +351,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           ++tidyToolWindowModel.FixFilesNr;
         }
       }
+      tidyToolWindowModel.TotalCheckedFiles = files.Where(f => f.IsChecked && f.FilesType == FileType.File).Count();
+      tidyToolWindowModel.TotalCheckedFixedFiles = files.Where(f => f.IsChecked && f.FilesType == FileType.File && f.IsFixed).Count();
+      TidyToolWindowModel = tidyToolWindowModel;
     }
 
     private void CheckAll()
@@ -442,6 +445,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           MessageBox.Show($"Access to path {file.FullFileName} is denied", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
       }
+      UpdateTidyToolWindowModelFixedNr();
     }
 
     /// <summary>

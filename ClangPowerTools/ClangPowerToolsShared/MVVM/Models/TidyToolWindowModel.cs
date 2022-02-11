@@ -29,6 +29,8 @@ namespace ClangPowerToolsShared.MVVM.Models
     private string discardTooltip = string.Empty;
     private string tidyTooltip = string.Empty;
     private string fixTooltip = string.Empty;
+    private int totalCheckedFixedFiles = 0;
+    private int totalCheckedFiles = 0;
     private int totalChecked = 0;
     private bool isChecked;
     public bool isDiscardEnabled;
@@ -148,6 +150,24 @@ namespace ClangPowerToolsShared.MVVM.Models
       }
     }
 
+    public int TotalCheckedFiles
+    {
+      get { return totalCheckedFiles; }
+      set
+      {
+        totalCheckedFiles = value;
+      }
+    }
+
+    public int TotalCheckedFixedFiles
+    {
+      get { return totalCheckedFixedFiles; }
+      set
+      {
+        totalCheckedFixedFiles = value;
+      }
+    }
+
     public int TotalChecked
     {
       get { return totalChecked; }
@@ -235,7 +255,7 @@ namespace ClangPowerToolsShared.MVVM.Models
           EnableAllIcons();
           if (TotalFixedChecked == 0)
             DisableDiscardFixIcon();
-          if (TotalChecked == TotalFixedChecked)
+          if ((TotalChecked == TotalFixedChecked) || (TotalCheckedFiles == TotalCheckedFixedFiles))
             DisableFixIcon();
           return true;
         }
