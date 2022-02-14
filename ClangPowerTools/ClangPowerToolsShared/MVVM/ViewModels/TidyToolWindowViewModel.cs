@@ -222,7 +222,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public async Task FixAllFilesAsync(FileModel file = null)
     {
       UpdateTidyToolWindowModelFixedNr();
-      if ((tidyToolWindowModel.TotalChecked != tidyToolWindowModel.TotalFixedChecked || file is not null) && files.Where(f => f.FilesType == FileType.File && f.IsChecked && !f.IsFixed).Any())
+      if ((tidyToolWindowModel.TotalChecked != tidyToolWindowModel.TotalFixedChecked && files.Where(f => f.FilesType == FileType.File && f.IsChecked && !f.IsFixed).Any()) || file is not null)
       {
         BeforeCommand();
         var filesPaths = new List<string>();
@@ -293,7 +293,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       BeforeCommand();
       FileCommand.DiffFilesUsingDefaultTool(FileCommand.GetShortPath(file.CopyFullFileName), FileCommand.GetShortPath(file.FullFileName));
       AfterCommand();
-      DisableDiffIconForUnfixedHeaders();
+      DisableDiffIconForHeaders();
     }
 
     #endregion
@@ -458,13 +458,18 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       foreach (var file in files)
       {
-        if (file.FilesType == FileType.Header && file.IsChecked)
+        if (file.FilesType == FileType.Header && (file.IsChecked || !file.IsFixed))
         {
           file.DisableVisibleDiffIcon();
+        }
+        if(file.FilesType == FileType.Header && file.IsFixed)
+        {
+          file.EnableDiffIcon();
         }
       }
       UpdateFiles();
     }
+
 
     private void DisableDiffIconForUnfixedHeaders()
     {

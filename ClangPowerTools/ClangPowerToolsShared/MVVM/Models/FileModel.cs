@@ -197,6 +197,7 @@ namespace ClangPowerTools.MVVM.Models
     {
       TidyFixIcon = IconResourceConstants.FixDark;
       DiffIcon = IconResourceConstants.DiffDark;
+      isEnabled = true;
     }
 
     /// <summary>
@@ -206,14 +207,23 @@ namespace ClangPowerTools.MVVM.Models
     {
       DiffVisibility = UIElementsConstants.Visibile;
       FixVisibility = UIElementsConstants.Hidden;
-      DiffIcon = IconResourceConstants.DiffDisabled;
       IsEnabled = false;
+      DiffIcon = IconResourceConstants.DiffDisabled;
+    }
+
+    public void EnableDiffIcon()
+    {
+      IsEnabled = true;
+      DiffVisibility = UIElementsConstants.Visibile;
+      FixVisibility = UIElementsConstants.Hidden;
+      EnableIcon();
     }
 
     private void EnableIconLightTheme()
     {
       TidyFixIcon = IconResourceConstants.FixLight;
       DiffIcon = IconResourceConstants.DiffLight;
+      IsEnabled = true;
     }
 
     private void DisableIcon()
