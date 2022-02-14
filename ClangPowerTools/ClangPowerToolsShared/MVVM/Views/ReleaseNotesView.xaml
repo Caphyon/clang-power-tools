@@ -1,29 +1,33 @@
-﻿<Window
-  x:Class="ClangPowerTools.MVVM.Views.ReleaseNotesView"
-  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-  xmlns:controls="clr-namespace:ClangPowerTools.MVVM.Views.Components"
-  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-  xmlns:local="clr-namespace:ClangPowerTools"
-  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  Title="Release Notes"
-  Width="550"
-  Height="710"
-  Icon="/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
-  ResizeMode="NoResize"
-  WindowStartupLocation="CenterScreen"
-  mc:Ignorable="d">
+﻿<Window x:Class="ClangPowerTools.MVVM.Views.ReleaseNotesView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:ClangPowerTools.MVVM.Views.Components"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:ClangPowerTools"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        Title="Release Notes"
+        Width="550"
+        Height="710"
+        Icon="/ClangPowerTools;component/Resources/ClangPowerToolsIco.ico"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d">
 
   <StackPanel>
 
     <StackPanel.Resources>
       <Style TargetType="{x:Type Hyperlink}">
-        <Setter Property="FocusVisualStyle" Value="{x:Null}" />
-        <Setter Property="Foreground" Value="#FFFAA8B4" />
-        <Setter Property="TextBlock.TextDecorations" Value="{x:Null}" />
+        <Setter Property="FocusVisualStyle"
+                Value="{x:Null}" />
+        <Setter Property="Foreground"
+                Value="#FFFAA8B4" />
+        <Setter Property="TextBlock.TextDecorations"
+                Value="{x:Null}" />
         <Style.Triggers>
-          <Trigger Property="IsMouseOver" Value="True">
-            <Setter Property="Foreground" Value="#FFFAD4DB" />
+          <Trigger Property="IsMouseOver"
+                   Value="True">
+            <Setter Property="Foreground"
+                    Value="#FFFAD4DB" />
           </Trigger>
         </Style.Triggers>
       </Style>
@@ -51,43 +55,40 @@
 
       </Grid.ColumnDefinitions>
 
-      <Image
-        Grid.Row="0"
-        Grid.Column="1"
-        Width="70"
-        Height="70"
-        Margin="0,5,0,0"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center"
-        Source="/ClangPowerTools;component/Resources/CPTLogo.png" />
+      <Image Grid.Row="0"
+             Grid.Column="1"
+             Width="70"
+             Height="70"
+             Margin="0,5,0,0"
+             HorizontalAlignment="Center"
+             VerticalAlignment="Center"
+             Source="/ClangPowerTools;component/Resources/CPTLogo.png" />
 
-      <TextBlock
-        Grid.Row="1"
-        Grid.Column="1"
-        HorizontalAlignment="Center"
-        FontSize="32"
-        Text="Clang Power Tools" />
+      <TextBlock Grid.Row="1"
+                 Grid.Column="1"
+                 HorizontalAlignment="Center"
+                 FontSize="32"
+                 Text="Clang Power Tools" />
 
-      <TextBlock
-        Grid.Row="2"
-        Grid.Column="1"
-        HorizontalAlignment="Center"
-        FontSize="15"
-        Foreground="#3A3B40"
-        Text="version 8.1.1" />
+      <TextBlock Grid.Row="2"
+                 Grid.Column="1"
+                 HorizontalAlignment="Center"
+                 FontSize="15"
+                 Foreground="#3A3B40"
+                 Text="version 8.2.0" />
 
-      <ListView
-        Grid.Row="3"
-        Grid.Column="1"
-        Height="420"
-        Margin="0,20,0,0"
-        Background="Transparent"
-        Focusable="False"
-        ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+      <ListView Grid.Row="3"
+                Grid.Column="1"
+                Height="420"
+                Margin="0,20,0,0"
+                Background="Transparent"
+                Focusable="False"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
         <ListView.ItemContainerStyle>
           <Style TargetType="{x:Type ListViewItem}">
-            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Background"
+                    Value="Transparent" />
             <Setter Property="Template">
               <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListViewItem}">
@@ -98,47 +99,43 @@
           </Style>
         </ListView.ItemContainerStyle>
 
-      <!--  What's new  --><!--
-        <TextBox
-          Margin="5,20,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="22"
-          IsReadOnly="True"
-          Text="What's New" />
+        <!--What's new-->
+        <TextBox Margin="5,20,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="22"
+                 IsReadOnly="True"
+                 Text="What's New" />
 
-                <TextBox
-          Margin="15,15,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="16"
-          IsReadOnly="True"
-          Text="• Run tidy, format and compile on files with extension .cu"
-          TextWrapping="Wrap" />-->
+        <TextBox Margin="15,15,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• LLVM 13.0.1"
+                 TextWrapping="Wrap" />
 
-                <!--Bug Fixes-->  
-        <TextBox
-          Margin="5,35,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="22"
-          IsReadOnly="True"
-          Text="Bug Fixes" />
+        <!--Bug Fixes-->
+        <TextBox Margin="5,20,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="22"
+                 IsReadOnly="True"
+                 Text="Bug Fixes" />
 
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Dialogs stay on top of every window in the system"
-          TextWrapping="Wrap" />
+        <TextBox Margin="15,15,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• No needed script downloads were made"
+                 TextWrapping="Wrap" />
 
-        <TextBox
+        <!--<TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
           Background="Transparent"
@@ -146,7 +143,7 @@
           FontSize="15"
           IsReadOnly="True"
           Text="• Can't run tidy or compile in offline mode"
-          TextWrapping="Wrap" />
+          TextWrapping="Wrap" />-->
       </ListView>
     </Grid>
   </StackPanel>
