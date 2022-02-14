@@ -139,7 +139,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       RefreshValues();
       CheckAll();
-      TidyAllFilesAsync(filesPath);
+      TidyFilesAsync(filesPath);
       filesAlreadyExists = false;
     }
 
@@ -462,7 +462,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         {
           file.DisableVisibleDiffIcon();
         }
-        if(file.FilesType == FileType.Header && file.IsFixed)
+        if (file.FilesType == FileType.Header && file.IsFixed)
         {
           file.EnableDiffIcon();
         }
@@ -507,6 +507,15 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     private async Task TidyAllFilesAsync(List<string> paths = null)
     {
+      if (!files.Where(f => f.FilesType == FileType.File && f.IsChecked && !f.IsFixed).Any())
+      {
+        return;
+      }
+      TidyFilesAsync(paths);
+    }
+
+    private async Task TidyFilesAsync(List<string> paths = null)
+    {
       BeforeCommand();
       wasMadeTidyOnFiles = true;
       if (paths is null)
@@ -515,6 +524,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, paths);
       AfterCommand();
+      DisableDiffIconForHeaders();
     }
 
     private void UpdateCheckedNumber()
