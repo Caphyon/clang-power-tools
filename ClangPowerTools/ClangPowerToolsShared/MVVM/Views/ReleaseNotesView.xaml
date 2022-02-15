@@ -132,7 +132,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• No needed script downloads were made"
+                 Text="• False triggers for PowerShell script auto-updater"
                  TextWrapping="Wrap" />
 
         <!--<TextBox
