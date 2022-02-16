@@ -200,12 +200,12 @@
             <Button Grid.Column="2"
                     Width="30"
                     Height="20"
-                    IsEnabled="{Binding IsEnabled}"
+                    IsEnabled="{Binding DiffIcon.IsEnabled}"
                     HorizontalAlignment="Right"
                     Click="DiffButton"
                     ToolTip="Diff"
-                    Visibility="{Binding DiffVisibility}">
-              <Image Source="{Binding DiffIcon}"
+                    Visibility="{Binding DiffIcon.Visibility}">
+              <Image Source="{Binding DiffIcon.IconPath}"
                      Width="16"
                      Height="16" />
             </Button>
@@ -213,11 +213,11 @@
                     Width="30"
                     Height="20"
                     HorizontalAlignment="Right"
-                    IsEnabled="{Binding IsEnabled}"
+                    IsEnabled="{Binding TidyFixIcon.IsEnabled}"
                     Click="FixButton"
                     ToolTip="Fix"
-                    Visibility="{Binding FixVisibility}">
-              <Image Source="{Binding TidyFixIcon}"
+                    Visibility="{Binding TidyFixIcon.Visibility}">
+              <Image Source="{Binding TidyFixIcon.IconPath}"
                      Width="16"
                      Height="16" />
             </Button>

@@ -142,6 +142,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\FileType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\FormatSettingsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\GeneralSettingsModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\IconModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\InputDataModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\LicenseModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\LlvmModel.cs" />
