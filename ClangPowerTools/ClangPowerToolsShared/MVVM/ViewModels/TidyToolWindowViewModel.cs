@@ -568,7 +568,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       tidyToolWindowModel.EnableAllIcons();
       foreach (var file in files)
       {
-        file.EnableIcon();
+        file.SelectEnableIcons();
       }
       SaveLastUpdatesToUI();
     }
