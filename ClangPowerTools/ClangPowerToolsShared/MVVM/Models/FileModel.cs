@@ -52,9 +52,9 @@ namespace ClangPowerTools.MVVM.Models
       get
       {
         if (FilesType == FileType.File)
-          return "Files";
+          return "Source files";
         else
-          return "Fixed headers";
+          return "Affected headers";
       }
     }
     public string FileName
