@@ -14,6 +14,7 @@ namespace ClangPowerTools.MVVM.Models
     private bool isRunning;
     private bool isFixed;
     private bool isChecked;
+    private string filename;
 
     #endregion
 
@@ -57,10 +58,18 @@ namespace ClangPowerTools.MVVM.Models
           return "Affected headers";
       }
     }
+
     public string FileName
     {
-      get; set;
+      get { return filename; }
+      set
+      {
+        filename = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileName"));
+      }
+
     }
+
     public string FullFileName { get; set; }
     public string CopyFullFileName { get; set; }
 
@@ -182,6 +191,8 @@ namespace ClangPowerTools.MVVM.Models
     {
       TidyFixIcon.IconPath = IconResourceConstants.FixDisabled;
       DiffIcon.IconPath = IconResourceConstants.DiffDisabled;
+      TidyFixIcon.IsEnabled = false;
+      DiffIcon.IsEnabled = false;
     }
 
     public void SelectEnableIcons()
