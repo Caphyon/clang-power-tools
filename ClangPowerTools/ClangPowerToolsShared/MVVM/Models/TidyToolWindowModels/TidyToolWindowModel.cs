@@ -1,11 +1,6 @@
-﻿using ClangPowerTools.Helpers;
-using ClangPowerTools.Services;
-using ClangPowerToolsShared.MVVM.Commands;
+﻿using ClangPowerToolsShared.MVVM.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
-using EnvDTE80;
-using System;
 using System.ComponentModel;
-using System.IO;
 
 namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
 {
@@ -14,33 +9,13 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     #region Members
 
     public event PropertyChangedEventHandler PropertyChanged;
-
     private bool isRunning;
     private bool selectedAll;
     private string progressBarVisibility;
     private string buttonVisibility;
-    private int tidyNr = 0;
-    private int fixedNr = 0;
-    private int fixFileNr = 0;
-    private int tidyFileNr = 0;
-    private int removeNr = 0;
-    private int discardNr = 0;
-    private string removeTooltip = string.Empty;
-    private string discardTooltip = string.Empty;
-    private string tidyTooltip = string.Empty;
-    private string fixTooltip = string.Empty;
-    private int totalCheckedFixedFiles = 0;
-    private int totalCheckedFiles = 0;
-    private int totalCheckedHeaders = 0;
-    private int totalChecked = 0;
     private bool isChecked;
     public bool isDiscardEnabled;
-
-    //icons
-    private string removeIcon = string.Empty;
-    private string discardFixIcon = string.Empty;
-    private string tidyFixIcon = string.Empty;
-    private string refreshTidyIcon = string.Empty;
+    public CountFilesModel CountFilesModel;
 
     #endregion
 
@@ -48,96 +23,24 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
 
     public TidyToolWindowModel()
     {
-      EnableAllIcons();
+      CountFilesModel = new CountFilesModel();
       ProgressBarVisibility = UIElementsConstants.Hidden;
       ButtonVisibility = UIElementsConstants.Visibile;
+      EnableAllIcons();
     }
 
     #endregion
 
     #region Properties
 
-    public string RemoveIcon
-    {
-      get { return removeIcon; }
-      set
-      {
-        removeIcon = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RemoveIcon"));
-      }
-    }
+    public IconModel RemoveIcon { get; set; }
 
-    public int TotalFixedChecked { get; set; }
+    public IconModel DiscardFixIcon { get; set; }
 
-    public string DiscardFixIcon
-    {
-      get { return discardFixIcon; }
-      set
-      {
-        discardFixIcon = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiscardFixIcon"));
-      }
-    }
+    public IconModel TidyFixIcon { get; set; }
 
-    public string TidyFixIcon
-    {
-      get { return tidyFixIcon; }
-      set
-      {
-        tidyFixIcon = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyFixIcon"));
-      }
-    }
+    public IconModel RefreshTidyIcon { get; set; }
 
-    public string RefreshTidyIcon
-    {
-      get { return refreshTidyIcon; }
-      set
-      {
-        refreshTidyIcon = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RefreshTidyIcon"));
-      }
-    }
-
-    public string RemoveTooltip
-    {
-      get { return removeTooltip; }
-      set
-      {
-        removeTooltip = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RemoveTooltip"));
-      }
-    }
-
-    public string DiscardTooltip
-    {
-      get { return discardTooltip; }
-      set
-      {
-        discardTooltip = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiscardTooltip"));
-      }
-    }
-
-    public string FixTooltip
-    {
-      get { return fixTooltip; }
-      set
-      {
-        fixTooltip = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixTooltip"));
-      }
-    }
-
-    public string TidyTooltip
-    {
-      get { return tidyTooltip; }
-      set
-      {
-        tidyTooltip = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyTooltip"));
-      }
-    }
 
     public bool IsChecked
     {
@@ -150,134 +53,84 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       }
     }
 
-    public int TotalCheckedFiles
-    {
-      get { return totalCheckedFiles; }
-      set
-      {
-        totalCheckedFiles = value;
-      }
-    }
+    //public int TotalCheckedFiles
+    //{
+    //  get { return totalCheckedFiles; }
+    //  set
+    //  {
+    //    totalCheckedFiles = value;
+    //  }
+    //}
 
-    public int TotalCheckedHeaders
-    {
-      get { return totalCheckedHeaders; }
-      set
-      {
-        totalCheckedHeaders = value;
-      }
-    }
+    //public int TotalCheckedHeaders
+    //{
+    //  get { return totalCheckedHeaders; }
+    //  set
+    //  {
+    //    totalCheckedHeaders = value;
+    //  }
+    //}
 
-    public int TotalCheckedFixedFiles
-    {
-      get { return totalCheckedFixedFiles; }
-      set
-      {
-        totalCheckedFixedFiles = value;
-      }
-    }
+    //public int TotalCheckedFixedFiles
+    //{
+    //  get { return totalCheckedFixedFiles; }
+    //  set
+    //  {
+    //    totalCheckedFixedFiles = value;
+    //  }
+    //}
 
-    public int TotalChecked
-    {
-      get { return totalChecked; }
-      set
-      {
-        totalChecked = value;
-        TidyTooltip = UIElementsConstants.RefreshTooltip + UIElementsConstants.TidyTooltip + TidyFilesNr.ToString() + UIElementsConstants.FilesTooltip;
-        RemoveTooltip = UIElementsConstants.IgnoreTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
-        FixTooltip = UIElementsConstants.FixTooltip + FixFilesNr.ToString() + UIElementsConstants.FilesTooltip;
-        DiscardTooltip = UIElementsConstants.DiscardTooltip + totalChecked.ToString() + " fixed" + UIElementsConstants.FilesTooltip;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalChecked"));
-      }
-    }
+    //public int TotalChecked
+    //{
+    //  get { return totalChecked; }
+    //  set
+    //  {
+    //    totalChecked = value;
+    //    //TidyTooltip = UIElementsConstants.RefreshTooltip + UIElementsConstants.TidyTooltip + TidyFilesNr.ToString() + UIElementsConstants.FilesTooltip;
+    //    //RemoveTooltip = UIElementsConstants.IgnoreTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
+    //    //FixTooltip = UIElementsConstants.FixTooltip + FixFilesNr.ToString() + UIElementsConstants.FilesTooltip;
+    //    //DiscardTooltip = UIElementsConstants.DiscardTooltip + totalChecked.ToString() + " fixed" + UIElementsConstants.FilesTooltip;
+    //    //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalChecked"));
+    //  }
+    //}
 
-    public int DiscardNr
-    {
-      get { return discardNr; }
-      set
-      {
-        discardNr = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiscardNr"));
-      }
-    }
-
-    public int RemoveNr
-    {
-      get { return removeNr; }
-      set
-      {
-        removeNr = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RemoveNr"));
-      }
-    }
-
-    public int FixedNr
-    {
-      get { return fixedNr; }
-      set
-      {
-        fixedNr = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixedNr"));
-      }
-    }
+    //public int DiscardNr
+    //{
+    //  get { return discardNr; }
+    //  set
+    //  {
+    //    discardNr = value;
+    //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiscardNr"));
+    //  }
+    //}
 
     /// <summary>
     /// The next number of files will be fixed, except headers.
     /// Number will be displayed in tooltip
     /// </summary>
-    public int FixFilesNr
-    {
-      get { return fixFileNr; }
-      set
-      {
-        fixFileNr = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixFilesNr"));
-      }
-    }
-
-    public int TidyFilesNr
-    {
-      get { return tidyFileNr; }
-      set
-      {
-        tidyFileNr = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixFilesNr"));
-      }
-    }
-
-    public int TidyNr
-    {
-      get { return tidyNr; }
-      set
-      {
-        tidyNr = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyNr"));
-      }
-    }
-
-    public bool IsEnabled
-    {
-      get
-      {
-        if (!isRunning && totalChecked is not 0)
-        {
-          EnableAllIcons();
-          if (TotalFixedChecked == 0)
-            DisableDiscardFixIcon();
-          if ((TotalChecked == TotalFixedChecked) || (TotalCheckedFiles == TotalCheckedFixedFiles))
-            DisableFixIcon();
-          if (TotalChecked == TotalCheckedHeaders)
-            DisableTidyIcon();
-          return true;
-        }
-        else
-        {
-          DisableAllIcons();
-        }
-        return false;
-      }
-      set { }
-    }
+    //public bool IsEnabled
+    //{
+    //  get
+    //  {
+    //    if (!isRunning && totalChecked is not 0)
+    //    {
+    //      EnableAllIcons();
+    //      if (TotalFixedChecked == 0)
+    //        DisableDiscardFixIcon();
+    //      if ((TotalChecked == TotalFixedChecked) || (TotalCheckedFiles == TotalCheckedFixedFiles))
+    //        DisableFixIcon();
+    //      if (TotalChecked == TotalCheckedHeaders)
+    //        DisableTidyIcon();
+    //      return true;
+    //    }
+    //    else
+    //    {
+    //      SelectDisableAllIcons();
+    //    }
+    //    return false;
+    //  }
+    //  set { }
+    //}
 
     public bool IsRunning
     {
@@ -303,19 +156,19 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       }
     }
 
-    public bool SelectedAll
-    {
-      get
-      {
-        return selectedAll;
-      }
+    //public bool SelectedAll
+    //{
+    //  get
+    //  {
+    //    return selectedAll;
+    //  }
 
-      set
-      {
-        selectedAll = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedAll"));
-      }
-    }
+    //  set
+    //  {
+    //    selectedAll = value;
+    //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedAll"));
+    //  }
+    //}
 
     public string ProgressBarVisibility
     {
@@ -329,24 +182,27 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
 
     public void DisableDiscardFixIcon()
     {
-      DiscardFixIcon = IconResourceConstants.RemoveFixDisabled;
+      DiscardFixIcon.IconPath = IconResourceConstants.RemoveFixDisabled;
+      DiscardFixIcon.IsEnabled = false;
     }
 
     private void DisableFixIcon()
     {
-      TidyFixIcon = IconResourceConstants.FixDisabled;
+      TidyFixIcon.IconPath = IconResourceConstants.FixDisabled;
+      TidyFixIcon.IsEnabled = false;
     }
     private void DisableTidyIcon()
     {
-      RefreshTidyIcon = IconResourceConstants.RefreshDisabled;
+      RefreshTidyIcon.IconPath = IconResourceConstants.RefreshDisabled;
+      RefreshTidyIcon.IsEnabled = false;
     }
 
     public void EnableAllIcons()
     {
       if (VSThemeCommand.GetCurrentVsTheme() == VsThemes.Dark)
-        EnableAllIconsDarkTheme();
+        SelectAllIconsDarkTheme();
       else
-        EnableAllIconsLightTheme();
+        SelectAllIconsLightTheme();
     }
 
     public string ButtonVisibility
@@ -360,29 +216,28 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     }
 
     #region Private Methods
-    private void EnableAllIconsDarkTheme()
+    private void SelectAllIconsDarkTheme()
     {
-      RemoveIcon = IconResourceConstants.RemoveDark;
-      DiscardFixIcon = IconResourceConstants.RemoveFixDark;
-      TidyFixIcon = IconResourceConstants.FixDark;
-      RefreshTidyIcon = IconResourceConstants.RefreshTidyDark;
+      RemoveIcon.IconPath = IconResourceConstants.RemoveDark;
+      DiscardFixIcon.IconPath = IconResourceConstants.RemoveFixDark;
+      TidyFixIcon.IconPath = IconResourceConstants.FixDark;
+      RefreshTidyIcon.IconPath = IconResourceConstants.RefreshTidyDark;
     }
 
-
-    private void EnableAllIconsLightTheme()
+    private void SelectAllIconsLightTheme()
     {
-      RemoveIcon = IconResourceConstants.RemoveLight;
-      DiscardFixIcon = IconResourceConstants.RemoveFixLight;
-      TidyFixIcon = IconResourceConstants.FixLight;
-      RefreshTidyIcon = IconResourceConstants.RefreshTidyLight;
+      RemoveIcon.IconPath = IconResourceConstants.RemoveLight;
+      DiscardFixIcon.IconPath = IconResourceConstants.RemoveFixLight;
+      TidyFixIcon.IconPath = IconResourceConstants.FixLight;
+      RefreshTidyIcon.IconPath = IconResourceConstants.RefreshTidyLight;
     }
 
-    private void DisableAllIcons()
+    private void SelectDisableAllIcons()
     {
-      RemoveIcon = IconResourceConstants.RemoveDisabled;
-      DiscardFixIcon = IconResourceConstants.RemoveFixDisabled;
-      TidyFixIcon = IconResourceConstants.FixDisabled;
-      RefreshTidyIcon = IconResourceConstants.RefreshDisabled;
+      RemoveIcon.IconPath = IconResourceConstants.RemoveDisabled;
+      DiscardFixIcon.IconPath = IconResourceConstants.RemoveFixDisabled;
+      TidyFixIcon.IconPath = IconResourceConstants.FixDisabled;
+      RefreshTidyIcon.IconPath = IconResourceConstants.RefreshDisabled;
     }
 
     #endregion
