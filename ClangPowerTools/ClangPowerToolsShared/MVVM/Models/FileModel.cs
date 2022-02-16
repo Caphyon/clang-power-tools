@@ -1,6 +1,7 @@
 ﻿using ClangPowerToolsShared.MVVM.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Models;
+using ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels;
 using System.ComponentModel;
 
 namespace ClangPowerTools.MVVM.Models

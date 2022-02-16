@@ -148,10 +148,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\LlvmSettingsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\MessageModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\SelectedFileModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyCheckModel.cs" />	
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyCheckModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidySettingsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyToolWindowModels\FileType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyToolWindowModels\TidyToolWindowModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyToolWindowModels\Class1.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToggleModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TokenModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\UserModel.cs" />
