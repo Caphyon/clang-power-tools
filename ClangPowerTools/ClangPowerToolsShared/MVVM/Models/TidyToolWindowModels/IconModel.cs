@@ -11,6 +11,7 @@ namespace ClangPowerToolsShared.MVVM.Models
     public event PropertyChangedEventHandler PropertyChanged;
     private string iconPath;
     private string visibility;
+    private string tooltip;
     private bool isEnabled;
 
     public string IconPath 
@@ -22,6 +23,17 @@ namespace ClangPowerToolsShared.MVVM.Models
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IconPath"));
       }
     }
+
+    public string Tooltip
+    {
+      get { return tooltip; }
+      set
+      {
+        tooltip = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Tooltip"));
+      }
+    }
+
     public string Visibility 
     {
       get { return visibility; }
