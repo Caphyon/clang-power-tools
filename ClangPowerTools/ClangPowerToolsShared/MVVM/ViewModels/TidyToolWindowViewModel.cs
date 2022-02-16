@@ -8,6 +8,7 @@ using ClangPowerTools.Views;
 using ClangPowerToolsShared.MVVM.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Models;
+using ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels;
 using EnvDTE80;
 using Microsoft.VisualStudio.PlatformUI;
 using System;

@@ -7,7 +7,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 
-namespace ClangPowerToolsShared.MVVM.Models
+namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
 {
   public class TidyToolWindowModel
   {
@@ -41,7 +41,6 @@ namespace ClangPowerToolsShared.MVVM.Models
     private string discardFixIcon = string.Empty;
     private string tidyFixIcon = string.Empty;
     private string refreshTidyIcon = string.Empty;
-    private string diffIcon = string.Empty;
 
     #endregion
 
