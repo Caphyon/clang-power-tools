@@ -33,10 +33,10 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     /// <summary>
     /// Given a collection of files all CountFile properies will be updated. 
     /// </summary>
-    /// <param name="Files"></param>
-    public void Update(ObservableCollection<FileModel> Files)
+    /// <param name="files"></param>
+    public void UpdateTotalChecked(ObservableCollection<FileModel> files)
     {
-
+      totalChecked = files.Count;
     }
   }
 }

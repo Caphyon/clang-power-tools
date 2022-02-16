@@ -141,7 +141,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\FileModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\FormatSettingsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\GeneralSettingsModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\IconModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyToolWindowModels\IconModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\InputDataModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\LicenseModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\LlvmModel.cs" />
@@ -153,7 +153,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyToolWindowModels\CountStateFilesModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyToolWindowModels\FileType.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyToolWindowModels\TidyToolWindowModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyToolWindowModels\TidyToolWindowTooltipModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToggleModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TokenModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\UserModel.cs" />

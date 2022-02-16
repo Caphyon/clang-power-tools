@@ -164,37 +164,19 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void CheckOrUncheckAll()
     {
-      if (tidyToolWindowModel.IsChecked)
-      {
-        CheckAll();
-        SaveLastUpdatesToUI();
-      }
-      else
-      {
-        UncheckAll();
-      }
-      UpdateCheckedNumber();
+      TidyController.CheckOrUncheckAll();
     }
 
     public async Task FixAllFilesAsync(FileModel file = null)
     {
       BeforeCommand();
-
+      TidyController.FixAllFilesAsync(file);
+      wasMadeTidyOnFiles = false;
+      if (file is not null)
+      {
+        DiffFile(file);
+      }
       AfterCommand();
-    }
-
-    private List<FileModel> UnifyFileModelLists(List<FileModel> firstList, List<FileModel> secondList)
-    {
-      var fileUnion = new List<FileModel>();
-      foreach (var file in firstList)
-      {
-        fileUnion.Add(file);
-      }
-      foreach (var file in secondList)
-      {
-        fileUnion.Add(file);
-      }
-      return fileUnion;
     }
 
     /// <summary>
