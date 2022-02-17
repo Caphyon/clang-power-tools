@@ -11,9 +11,9 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     private int totalCheckedFixedFiles = 0;
     private int totalCheckedFixedHeaders = 0;
     private int totalCheckedFixedSouceFiles = 0;
-    private int totalCheckedFiles = 0;
+    private int totalCheckedSourceFiles = 0;
     private int totalCheckedHeaders = 0;
-    private int totalChecked = 0;
+    private int totalCheckedFiles = 0;
 
     /// <summary>
     /// Returns number of checked fixed files at this moment
@@ -33,7 +33,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     /// <summary>
     /// Returns number of checked source files at this moment
     /// </summary>
-    public int TotalCheckedSourceFiles { get { return totalCheckedFiles; } }
+    public int TotalCheckedSourceFiles { get { return totalCheckedSourceFiles; } }
 
     /// <summary>
     /// Returns number of checked headers at this moment
@@ -43,7 +43,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     /// <summary>
     /// Returns number of checked files at this moment
     /// </summary>
-    public int TotalChecked { get { return totalChecked; } }
+    public int TotalCheckedFiles { get { return totalCheckedFiles; } }
 
 
     /// <summary>
@@ -52,7 +52,38 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     /// <param name="files"></param>
     public void UpdateTotalChecked(ObservableCollection<FileModel> files)
     {
-      totalChecked = files.Count;
+      totalCheckedFiles = files.Count;
+    }
+
+    /// <summary>
+    /// Update properties refering on check file 
+    /// </summary>
+    public void CheckFileUpdate(FileModel file)
+    {
+      if (file is not null && file.IsChecked)
+      {
+        ++totalCheckedFiles;
+        if (file.FilesType == FileType.SourceFile)
+          ++totalCheckedSourceFiles;
+        if (file.FilesType == FileType.Header)
+          ++totalCheckedHeaders;
+      }
+
+    }
+
+    /// <summary>
+    /// Update properties refering on uncheck file 
+    /// </summary>
+    public void UnCheckFileUpdate(FileModel file)
+    {
+      if (file is not null && !file.IsChecked)
+      {
+        --totalCheckedFiles;
+        if (file.FilesType == FileType.SourceFile)
+          --totalCheckedSourceFiles;
+        if (file.FilesType == FileType.Header)
+          --totalCheckedHeaders;
+      }
     }
 
     /// <summary>
@@ -65,53 +96,43 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       totalCheckedFixedSouceFiles = 0;
       totalCheckedFiles = 0;
       totalCheckedHeaders = 0;
-      totalChecked = 0;
+      totalCheckedFiles = 0;
     }
 
     /// <summary>
-    /// Update fixed number for source file and headers
+    /// Update fixed and unfixed number for source file and headers.
+    /// Make changes of peroperties based on fact that passed file is fixed or unfixed
     /// </summary>
     public void UpdateFixFileState(FileModel file)
     {
       if (file.IsChecked)
       {
-        ++totalCheckedFixedFiles;
-        if (file.FilesType == FileType.SourceFile)
+        if (file.IsFixed)
         {
-          ++totalCheckedFixedSouceFiles;
+          //Update just fix properties
+          ++totalCheckedFixedFiles;
+          if (file.FilesType == FileType.SourceFile)
+          {
+            ++totalCheckedFixedSouceFiles;
+          }
+          if (file.FilesType == FileType.Header)
+          {
+            ++totalCheckedFixedHeaders;
+          }
         }
-        if (file.FilesType == FileType.Header)
+        else
         {
-          ++totalCheckedFixedHeaders;
+          //Update just unfixed properties
+          --totalCheckedFixedFiles;
+          if (file.FilesType == FileType.SourceFile)
+          {
+            --totalCheckedFixedSouceFiles;
+          }
+          if (file.FilesType == FileType.Header)
+          {
+            --totalCheckedFixedHeaders;
+          }
         }
-      }else
-      {
-        --totalCheckedFixedFiles;
-        if (file.FilesType == FileType.SourceFile)
-        {
-          --totalCheckedFixedSouceFiles;
-        }
-        if (file.FilesType == FileType.Header)
-        {
-          --totalCheckedFixedHeaders;
-        }
-      }
-    }
-
-    /// <summary>
-    /// Update unfixed number for source file and headers
-    /// </summary>
-    /// <param name="file"></param>
-    public void UpdateUnfix(FileModel file)
-    {
-      --totalCheckedFixedFiles;
-      if (file.FilesType == FileType.SourceFile)
-      {
-        --totalCheckedFixedSouceFiles;
-      }
-      if (file.FilesType == FileType.Header)
-      {
-        --totalCheckedFixedHeaders;
       }
     }
 

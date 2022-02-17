@@ -163,14 +163,14 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
     {
       if (file.IsChecked)
       {
-        ++tidyToolWindowModel.TotalChecked;
+        tidyToolWindowModel.CountFilesModel.CheckFileUpdate(file);
 
-        tidyToolWindowModel.IsChecked = tidyToolWindowModel.CountFilesModel.TotalChecked == files.Count ? true : false;
+        tidyToolWindowModel.IsChecked = tidyToolWindowModel.CountFilesModel.TotalCheckedFiles == files.Count ? true : false;
       }
       else
       {
-        --tidyToolWindowModel.TotalChecked;
-        tidyToolWindowModel.IsChecked = tidyToolWindowModel.CountFilesModel.TotalChecked == 0 || tidyToolWindowModel.CountFilesModel.TotalChecked != files.Count ? false : true;
+        tidyToolWindowModel.CountFilesModel.UnCheckFileUpdate(file);
+        tidyToolWindowModel.IsChecked = tidyToolWindowModel.CountFilesModel.TotalCheckedFiles == 0 || tidyToolWindowModel.CountFilesModel.TotalCheckedFiles != files.Count ? false : true;
       }
       UpdateTidyToolWindowModelFixedNr();
     }
