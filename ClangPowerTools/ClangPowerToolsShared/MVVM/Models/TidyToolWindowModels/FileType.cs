@@ -6,7 +6,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
 {
     public enum FileType
     {
-      File,
+      SourceFile,
       Header
     }
 }

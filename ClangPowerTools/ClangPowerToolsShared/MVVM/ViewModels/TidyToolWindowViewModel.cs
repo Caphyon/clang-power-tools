@@ -419,7 +419,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     private async Task TidyAllFilesAsync(List<string> paths = null)
     {
-      if (!files.Where(f => f.FilesType == FileType.File && f.IsChecked).Any())
+      if (!files.Where(f => f.FilesType == FileType.SourceFile && f.IsChecked).Any())
       {
         return;
       }
