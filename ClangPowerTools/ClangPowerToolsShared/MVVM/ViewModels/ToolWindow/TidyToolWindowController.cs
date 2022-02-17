@@ -362,14 +362,14 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
       AfterCommand();
     }
 
-    private async Task TidyAllFilesAsync(List<string> paths = null)
-    {
-      if (!files.Where(f => f.FilesType == FileType.SourceFile && f.IsChecked).Any())
-      {
-        return;
-      }
-      TidyFilesAsync(paths);
-    }
+    //private async Task TidyAllFilesAsync(List<string> paths = null)
+    //{
+    //  if (!files.Where(f => f.FilesType == FileType.SourceFile && f.IsChecked).Any())
+    //  {
+    //    return;
+    //  }
+    //  TidyFilesAsync(paths);
+    //}
 
     private async Task TidyFilesAsync(List<string> paths = null)
     {
@@ -378,26 +378,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
         paths = files.Where(f => f.IsChecked && f.FilesType != FileType.Header).Select(f => f.FullFileName).ToList();
       }
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, paths);
-    }
-
-    private void DiscardAllFiles()
-    {
-      if (tidyToolWindowModel.CountFilesModel.TotalCheckedFixedFiles != 0)
-      {
-        BeforeCommand();
-        var checkFiles = files.Where(f => f.IsChecked).ToList();
-        MarkUnfixedFiles(checkFiles);
-        foreach (var file in checkFiles)
-        {
-          if (file.IsChecked)
-          {
-            DiscardFile(file);
-          }
-        }
-
-        AfterCommand();
-        DisableDiffIconForHeaders();
-      }
     }
 
     /// <summary>

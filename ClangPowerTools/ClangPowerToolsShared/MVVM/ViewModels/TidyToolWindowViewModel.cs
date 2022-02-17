@@ -118,12 +118,11 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public TidyToolWindowViewModel(TidyToolWindowView tidyToolWindowView)
     {
       VSColorTheme.ThemeChanged += ThemeChangeEvent;
-      //init
-      TidyController.tidyToolWindowModel = new TidyToolWindowModel();
-      messageModel = new MessageModel();
-      TidyController = new TidyToolWindowController();
-
       this.tidyToolWindowView = tidyToolWindowView;
+      //init
+      TidyController = new TidyToolWindowController();
+      messageModel = new MessageModel();
+
       TidyController.tidyToolWindowModel.ButtonVisibility = UIElementsConstants.Visibile;
       TidyController.tidyToolWindowModel.ProgressBarVisibility = UIElementsConstants.Hidden;
 
@@ -139,9 +138,14 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void OpenTidyToolWindow(List<string> filesPath)
     {
+      TidyController.BeforeCommand();
       RefreshOnWindowUpdate();
       TidyController.InitTidyToolWindow(filesPath);
+      wasMadeTidyOnFiles = true;
       filesAlreadyExists = false;
+      TidyController.AfterCommand();
+
+      UpdateUI();
     }
 
     public void UpdateViewModel(List<string> filesPath)
@@ -159,7 +163,23 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
       if (!Directory.Exists(TidyConstants.TempsFolderPath))
         Directory.CreateDirectory(TidyConstants.TempsFolderPath);
+      UpdateUI();
+
     }
+
+    private async Task TidyAllFilesAsync(List<string> paths = null)
+    {
+      TidyController.BeforeCommand();
+      wasMadeTidyOnFiles = true;
+      if (paths is null)
+      {
+        //get just string paths
+        paths = TidyController.files.Where(f => f.IsChecked && f.FilesType != FileType.Header).Select(f => f.FullFileName).ToList();
+      }
+      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, paths);
+      TidyController.AfterCommand();
+    }
+
 
     public void CheckOrUncheckAll()
     {
@@ -215,19 +235,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       TidyController.AfterCommand();
     }
 
-    private async Task TidyAllFilesAsync(List<string> paths = null)
-    {
-      TidyController.BeforeCommand();
-      wasMadeTidyOnFiles = true;
-      if (paths is null)
-      {
-        //get just string paths
-        paths = TidyController.files.Where(f => f.IsChecked && f.FilesType != FileType.Header).Select(f => f.FullFileName).ToList();
-      }
-      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, paths);
-      TidyController.AfterCommand();
-    }
-
     private void DiscardAllFiles()
     {
       if (TidyToolWindowModel.CountFilesModel.TotalCheckedFixedFiles != 0)
@@ -266,7 +273,12 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       MessageModel = messageModel;
     }
 
-    #endregion
+    private void UpdateUI()
+    {
+      Files = TidyController.files;
+      TidyToolWindowModel = TidyController.tidyToolWindowModel;
+    }
 
+    #endregion
   }
 }

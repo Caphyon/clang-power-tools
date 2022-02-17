@@ -53,6 +53,11 @@ namespace ClangPowerToolsShared.MVVM.Models
       }
     }
 
+    public IconModel()
+    {
+
+    }
+
     public IconModel(string iconPath, string visibility = "Hidden", bool isEnabled = false)
     {
       this.iconPath = iconPath;
