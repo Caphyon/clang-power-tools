@@ -86,11 +86,11 @@
               Grid.Column="2"
               Width="30"
               HorizontalAlignment="Left"
-              ToolTip="{Binding TidyToolWindowModel.TidyTooltip}"
-              IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
+              ToolTip="{Binding TidyToolWindowModel.RefreshTidyIcon.Tooltip}"
+              IsEnabled="{Binding TidyToolWindowModel.RefreshTidyIcon.IsEnabled}"
               Command="{Binding TidyAllCommand}"
-              Visibility="{Binding TidyToolWindowModel.ButtonVisibility}">
-        <Image Source="{Binding TidyToolWindowModel.RefreshTidyIcon}"
+              Visibility="{Binding TidyToolWindowModel.RefreshTidyIcon.Visibility}">
+        <Image Source="{Binding TidyToolWindowModel.RefreshTidyIcon.IconPath}"
                Width="16"
                Height="16" />
       </Button>
@@ -99,11 +99,11 @@
               Grid.Column="3"
               Width="30"
               HorizontalAlignment="Left"
-              ToolTip="{Binding TidyToolWindowModel.FixTooltip}"
-              IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
-              Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
+              ToolTip="{Binding TidyToolWindowModel.TidyFixIcon.Tooltip}"
+              IsEnabled="{Binding TidyToolWindowModel.TidyFixIcon.IsEnabled}"
+              Visibility="{Binding TidyToolWindowModel.TidyFixIcon.Visibility}"
               Command="{Binding FixAllCommand}">
-        <Image Source="{Binding TidyToolWindowModel.TidyFixIcon}"
+        <Image Source="{Binding TidyToolWindowModel.TidyFixIcon.IconPath}"
                Width="16"
                Height="16" />
       </Button>
@@ -111,11 +111,11 @@
               Grid.Column="4"
               Width="30"
               HorizontalAlignment="Left"
-              ToolTip="{Binding TidyToolWindowModel.DiscardTooltip}"
-              IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
-              Visibility="{Binding TidyToolWindowModel.ButtonVisibility}"
+              ToolTip="{Binding TidyToolWindowModel.DiscardFixIcon.Tooltip}"
+              IsEnabled="{Binding TidyToolWindowModel.DiscardFixIcon.IsEnabled}"
+              Visibility="{Binding TidyToolWindowModel.DiscardFixIcon.Visibility}"
               Command="{Binding DiscardAllCommand}">
-        <Image Source="{Binding TidyToolWindowModel.DiscardFixIcon}"
+        <Image Source="{Binding TidyToolWindowModel.DiscardFixIcon.IconPath}"
                Width="16"
                Height="16" />
       </Button>
@@ -123,11 +123,11 @@
               Grid.Column="5"
               Width="30"
               HorizontalAlignment="Left"
-              ToolTip="{Binding TidyToolWindowModel.RemoveTooltip}"
-              IsEnabled="{Binding TidyToolWindowModel.IsEnabled}"
+              ToolTip="{Binding TidyToolWindowModel.RemoveIcon.Tooltip}"
+              IsEnabled="{Binding TidyToolWindowModel.RemoveIcon.IsEnabled}"
               Command="{Binding RemoveAllCommand}"
-              Visibility="{Binding TidyToolWindowModel.ButtonVisibility}">
-        <Image Source="{Binding TidyToolWindowModel.RemoveIcon}"
+              Visibility="{Binding TidyToolWindowModel.RemoveIcon.Visibility}">
+        <Image Source="{Binding TidyToolWindowModel.RemoveIcon.IconPath}"
                Width="16"
                Height="16" />
       </Button>

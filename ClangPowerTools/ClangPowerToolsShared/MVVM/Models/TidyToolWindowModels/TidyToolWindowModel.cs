@@ -10,7 +10,6 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
 
     public event PropertyChangedEventHandler PropertyChanged;
     private bool isRunning;
-    private bool selectedAll;
     private string progressBarVisibility;
     private string buttonVisibility;
     private bool isChecked;
@@ -23,7 +22,13 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
 
     public TidyToolWindowModel()
     {
+      //init
       CountFilesModel = new CountFilesModel();
+      RemoveIcon = new IconModel(IconResourceConstants.RemoveDisabled, UIElementsConstants.Visibile, false);
+      DiscardFixIcon = new IconModel(IconResourceConstants.RemoveFixDisabled, UIElementsConstants.Visibile, false);
+      TidyFixIcon = new IconModel(IconResourceConstants.FixDisabled, UIElementsConstants.Visibile, false);
+      RefreshTidyIcon = new IconModel(IconResourceConstants.RefreshDisabled, UIElementsConstants.Visibile, false);
+
       ProgressBarVisibility = UIElementsConstants.Hidden;
       ButtonVisibility = UIElementsConstants.Visibile;
       EnableAllIcons();
