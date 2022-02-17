@@ -53,7 +53,7 @@ namespace ClangPowerTools.MVVM.Models
     {
       get
       {
-        if (FilesType == FileType.File)
+        if (FilesType == FileType.SourceFile)
           return "Source files";
         else
           return "Affected headers";

@@ -105,7 +105,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
         }
         else
         {
-          files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)), FilesType = FileType.File });
+          files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)), FilesType = FileType.SourceFile });
         }
       }
       CheckAll();
@@ -263,23 +263,25 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
       {
         file.IsChecked = true;
       }
-      tidyToolWindowModel.CountFilesModel.UpdateTotalChecked(files);
       tidyToolWindowModel.IsChecked = true;
+      tidyToolWindowModel.CountFilesModel.UpdateTotalChecked(files);
     }
 
     private void UncheckAll()
     {
-      tidyToolWindowModel.IsChecked = false;
       foreach (var file in files)
       {
         file.IsChecked = false;
       }
-      tidyToolWindowModel.TotalFixedChecked = 0;
-      tidyToolWindowModel.TotalChecked = 0;
-      UpdateCheckedNumber();
-      SaveLastUpdatesToUI();
+      tidyToolWindowModel.IsChecked = false;
+      tidyToolWindowModel.CountFilesModel.UpdateToUncheckAll();
     }
 
+    /// <summary>
+    /// Mark fixed files by adding a dot charcter "•" to the end of final file name and
+    /// update total number of fixed source files and headers
+    /// </summary>
+    /// <param name="fixedFiles"></param>
     private void MarkFixedFiles(List<FileModel> fixedFiles)
     {
       foreach (var file in fixedFiles)
@@ -288,6 +290,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
         {
           file.IsFixed = true;
           file.FileName += " •";
+          tidyToolWindowModel.CountFilesModel.UpdateFix(file);
         }
       }
     }
@@ -394,7 +397,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
 
     private async Task TidyAllFilesAsync(List<string> paths = null)
     {
-      if (!files.Where(f => f.FilesType == FileType.File && f.IsChecked).Any())
+      if (!files.Where(f => f.FilesType == FileType.SourceFile && f.IsChecked).Any())
       {
         return;
       }
