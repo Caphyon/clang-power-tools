@@ -22,16 +22,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
 {
   public class TidyToolWindowController
   {
-    public ObservableCollection<FileModel> files = new ObservableCollection<FileModel>();
-    private CountFilesModel CountFilesModel { get; set; } = new CountFilesModel();
+    public ObservableCollection<FileModel> files { get; } = new ObservableCollection<FileModel>();
     private List<FileModel> headers = new List<FileModel>();
-    private TidyToolWindowView tidyToolWindowView;
-    private TidyToolWindowModel tidyToolWindowModel;
-    private MessageModel messageModel;
-    private string listVisibility = UIElementsConstants.Visibile;
-    //To not refresh files value every time (with the same files), and to not refresh check box value
-
-    bool wasMadeTidyOnFiles = false;
+    public TidyToolWindowModel tidyToolWindowModel = new TidyToolWindowModel();
 
 
     #region Public Methods
@@ -84,9 +77,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
           }
         }
       }
-      DisableDiffIconForUnfixedHeaders();
-      UpdateFiles();
-      UpdateCheckedNumber();
     }
 
     /// <summary>
@@ -163,24 +153,25 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
     {
       if (file.IsChecked)
       {
-        tidyToolWindowModel.CountFilesModel.CheckFileUpdate(file);
-
+        //Check "global" checkbox if all files are checked
         tidyToolWindowModel.IsChecked = tidyToolWindowModel.CountFilesModel.TotalCheckedFiles == files.Count ? true : false;
+        tidyToolWindowModel.CountFilesModel.CheckFileUpdate(file);
       }
       else
       {
-        tidyToolWindowModel.CountFilesModel.UnCheckFileUpdate(file);
+        //Uncheck "global" checkbox if no file is checked
         tidyToolWindowModel.IsChecked = tidyToolWindowModel.CountFilesModel.TotalCheckedFiles == 0 || tidyToolWindowModel.CountFilesModel.TotalCheckedFiles != files.Count ? false : true;
+        tidyToolWindowModel.CountFilesModel.UnCheckFileUpdate(file);
       }
-      UpdateTidyToolWindowModelFixedNr();
     }
 
-    public void DiffFile(FileModel file)
+    /// <summary>
+    /// Make a diff betweeen copy file and current file
+    /// </summary>
+    /// <param name="file"></param>
+    public void DiffBetweenCopyAndCurrent(FileModel file)
     {
-      BeforeCommand();
       FileCommand.DiffFilesUsingDefaultTool(FileCommand.GetShortPath(file.CopyFullFileName), FileCommand.GetShortPath(file.FullFileName));
-      AfterCommand();
-      DisableDiffIconForHeaders();
     }
 
     #endregion
@@ -228,34 +219,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
       return path.FullName.Contains(".h") || path.FullName.Contains(".hpp") || path.FullName.Contains(".hh") || path.FullName.Contains(".hxx");
     }
 
-    private void UpdateTidyToolWindowModelFixedNr()
-    {
-      //tidyToolWindowModel.FixedNr = 0;
-      //tidyToolWindowModel.FixFilesNr = 0;
-      //tidyToolWindowModel.TidyFilesNr = 0;
-      //tidyToolWindowModel.TotalFixedChecked = 0;
-      //foreach (var file in files)
-      //{
-      //  if (file.IsFixed)
-      //  {
-      //    ++tidyToolWindowModel.FixedNr;
-      //    if (file.IsChecked)
-      //      ++tidyToolWindowModel.TotalFixedChecked;
-      //  }
-      //  if (file.FilesType != FileType.Header && file.IsChecked)
-      //  {
-      //    ++tidyToolWindowModel.TidyFilesNr;
-      //  }
-      //  if (file.FilesType != FileType.Header && file.IsChecked && !file.IsFixed)
-      //  {
-      //    ++tidyToolWindowModel.FixFilesNr;
-      //  }
-      //}
-      //tidyToolWindowModel.TotalCheckedFiles = files.Where(f => f.IsChecked && f.FilesType == FileType.File).Count();
-      //tidyToolWindowModel.TotalCheckedFixedFiles = files.Where(f => f.IsChecked && f.FilesType == FileType.File && f.IsFixed).Count();
-      //tidyToolWindowModel.TotalCheckedHeaders = files.Where(f => f.IsChecked && f.FilesType == FileType.Header).Count();
-    }
-
+    /// <summary>
+    /// Check all files
+    /// </summary>
     private void CheckAll()
     {
       foreach (var file in files)
@@ -281,7 +247,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
     /// update total number of fixed source files and headers
     /// </summary>
     /// <param name="fixedFiles"></param>
-    private void MarkFixedFiles(List<FileModel> fixedFiles)
+    public void MarkFixedFiles(List<FileModel> fixedFiles)
     {
       foreach (var file in fixedFiles)
       {
@@ -299,7 +265,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
     /// update total number of unfixed source files and headers
     /// </summary>
     /// <param name="checkedFiles"></param>
-    private void MarkUnfixedFiles(List<FileModel> checkedFiles)
+    public void MarkUnfixedFiles(List<FileModel> checkedFiles)
     {
       foreach (var file in checkedFiles)
       {
@@ -321,7 +287,12 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
       return fullFileName.Substring(index, fullFileName.Length - index); ;
     }
 
-    private void DiscardFile(FileModel file)
+
+    /// <summary>
+    /// Replace current file on which was made tidy fix with a copy
+    /// </summary>
+    /// <param name="file"></param>
+    public void DiscardFile(FileModel file)
     {
       var fileChangerWatcher = new FileChangerWatcher();
 
@@ -343,7 +314,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
           MessageBox.Show($"Access to path {file.FullFileName} is denied", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         }
       }
-      UpdateTidyToolWindowModelFixedNr();
     }
 
     /// <summary>
@@ -362,7 +332,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
           file.EnableDiffIcon();
         }
       }
-      UpdateFiles();
     }
 
 
@@ -375,28 +344,21 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
           file.DisableVisibleDiffIcon();
         }
       }
-      UpdateFiles();
     }
 
-    private void RemoveAllFiles()
+    /// <summary>
+    /// Remove selected files from files list
+    /// </summary>
+    public void RemoveFiles()
     {
       BeforeCommand();
-      foreach (var file in Files.ToList())
+      foreach (var file in files.ToList())
       {
         if (file.IsChecked)
         {
-          Files.Remove(file);
+          files.Remove(file);
         }
       }
-      if (Files.Count == 0)
-      {
-        listVisibility = UIElementsConstants.Hidden;
-        ListVisibility = ListVisibility;
-        messageModel.Visibility = UIElementsConstants.Visibile;
-        messageModel.TextMessage = "You don't have any files, run tidy to add files";
-        MessageModel = messageModel;
-      }
-      UpdateCheckedNumber();
       AfterCommand();
     }
 
@@ -411,35 +373,16 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
 
     private async Task TidyFilesAsync(List<string> paths = null)
     {
-      BeforeCommand();
-      wasMadeTidyOnFiles = true;
       if (paths is null)
       {
         paths = files.Where(f => f.IsChecked && f.FilesType != FileType.Header).Select(f => f.FullFileName).ToList();
       }
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, paths);
-      AfterCommand();
-      DisableDiffIconForHeaders();
-    }
-
-    private void UpdateCheckedNumber()
-    {
-      UpdateTidyToolWindowModelFixedNr();
-      tidyToolWindowModel.TotalChecked = 0;
-      foreach (var file in files)
-      {
-        if (file.IsChecked)
-        {
-          ++tidyToolWindowModel.TotalChecked;
-        }
-      }
-      tidyToolWindowModel.IsChecked = tidyToolWindowModel.TotalChecked is 0 ? false : true;
-      TidyToolWindowModel = tidyToolWindowModel;
     }
 
     private void DiscardAllFiles()
     {
-      if (TidyToolWindowModel.TotalFixedChecked != 0)
+      if (tidyToolWindowModel.CountFilesModel.TotalCheckedFixedFiles != 0)
       {
         BeforeCommand();
         var checkFiles = files.Where(f => f.IsChecked).ToList();
@@ -451,40 +394,21 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
             DiscardFile(file);
           }
         }
-        //++tidyToolWindowModel.DiscardNr;
-        UpdateCheckedNumber();
+
         AfterCommand();
         DisableDiffIconForHeaders();
       }
     }
 
-    public void ThemeChangeEvent(ThemeChangedEventArgs e)
-    {
-      tidyToolWindowModel.EnableAllIcons();
-      foreach (var file in files)
-      {
-        file.SelectEnableIcons();
-      }
-      SaveLastUpdatesToUI();
-    }
-
-    private void RefreshValues()
+    /// <summary>
+    /// Refresh values after tidy from toolbar or contextMenu
+    /// </summary>
+    public void RefreshValues()
     {
       files.Clear();
-      listVisibility = UIElementsConstants.Visibile;
-      messageModel.Visibility = UIElementsConstants.Hidden;
-      ListVisibility = listVisibility;
-      MessageModel = messageModel;
-      tidyToolWindowModel.TotalChecked = 0;
-      tidyToolWindowModel.DisableDiscardFixIcon();
-      tidyToolWindowModel.TotalFixedChecked = 0;
       tidyToolWindowModel.IsChecked = false;
-      SaveLastUpdatesToUI();
-    }
-
-    private void UpdateFiles()
-    {
-      Files = files;
+      tidyToolWindowModel.CountFilesModel.UpdateToUncheckAll();
+      tidyToolWindowModel.DisableDiscardFixIcon();
     }
 
     #endregion
