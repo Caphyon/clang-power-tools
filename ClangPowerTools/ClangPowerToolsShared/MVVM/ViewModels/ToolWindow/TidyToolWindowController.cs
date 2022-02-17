@@ -161,19 +161,18 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
     /// <param name="file"></param>
     public void UpdateCheckedNumber(FileModel file)
     {
-      UpdateTidyToolWindowModelFixedNr();
       if (file.IsChecked)
       {
         ++tidyToolWindowModel.TotalChecked;
-        tidyToolWindowModel.IsChecked = tidyToolWindowModel.TotalChecked == files.Count ? true : false;
+
+        tidyToolWindowModel.IsChecked = tidyToolWindowModel.CountFilesModel.TotalChecked == files.Count ? true : false;
       }
       else
       {
         --tidyToolWindowModel.TotalChecked;
-        tidyToolWindowModel.IsChecked = tidyToolWindowModel.TotalChecked == 0 || tidyToolWindowModel.TotalChecked != files.Count ? false : true;
+        tidyToolWindowModel.IsChecked = tidyToolWindowModel.CountFilesModel.TotalChecked == 0 || tidyToolWindowModel.CountFilesModel.TotalChecked != files.Count ? false : true;
       }
       UpdateTidyToolWindowModelFixedNr();
-      TidyToolWindowModel = tidyToolWindowModel;
     }
 
     public void DiffFile(FileModel file)
@@ -278,7 +277,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
     }
 
     /// <summary>
-    /// Mark fixed files by adding a dot charcter "•" to the end of final file name and
+    /// Mark fixed files by adding a dot charcter "•" to the end of file name and
     /// update total number of fixed source files and headers
     /// </summary>
     /// <param name="fixedFiles"></param>
@@ -290,11 +289,16 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
         {
           file.IsFixed = true;
           file.FileName += " •";
-          tidyToolWindowModel.CountFilesModel.UpdateFix(file);
+          tidyToolWindowModel.CountFilesModel.UpdateFixFileState(file);
         }
       }
     }
 
+    /// <summary>
+    /// Mark unfixed files by removing a dot charcter "•" to the end of file name and
+    /// update total number of unfixed source files and headers
+    /// </summary>
+    /// <param name="checkedFiles"></param>
     private void MarkUnfixedFiles(List<FileModel> checkedFiles)
     {
       foreach (var file in checkedFiles)
@@ -303,6 +307,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
         {
           file.IsFixed = false;
           file.FileName = file.FileName.Remove(file.FileName.Length - 2, 2);
+          tidyToolWindowModel.CountFilesModel.UpdateFixFileState(file);
         }
       }
     }
