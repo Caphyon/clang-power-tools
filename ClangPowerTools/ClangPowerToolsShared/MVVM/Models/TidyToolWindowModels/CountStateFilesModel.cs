@@ -47,7 +47,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
 
 
     /// <summary>
-    /// Given a collection of files all CountFile properies will be updated. 
+    /// Total checked property will be updated with number of files
     /// </summary>
     /// <param name="files"></param>
     public void UpdateTotalChecked(ObservableCollection<FileModel> files)
@@ -71,16 +71,30 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     /// <summary>
     /// Update fixed number for source file and headers
     /// </summary>
-    public void UpdateFix(FileModel file)
+    public void UpdateFixFileState(FileModel file)
     {
-      ++totalCheckedFixedFiles;
-      if (file.FilesType == FileType.SourceFile)
+      if (file.IsChecked)
       {
-        ++totalCheckedFixedSouceFiles;
-      }
-      if(file.FilesType == FileType.Header)
+        ++totalCheckedFixedFiles;
+        if (file.FilesType == FileType.SourceFile)
+        {
+          ++totalCheckedFixedSouceFiles;
+        }
+        if (file.FilesType == FileType.Header)
+        {
+          ++totalCheckedFixedHeaders;
+        }
+      }else
       {
-        ++totalCheckedFixedHeaders;
+        --totalCheckedFixedFiles;
+        if (file.FilesType == FileType.SourceFile)
+        {
+          --totalCheckedFixedSouceFiles;
+        }
+        if (file.FilesType == FileType.Header)
+        {
+          --totalCheckedFixedHeaders;
+        }
       }
     }
 
