@@ -148,19 +148,19 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
           --TotalCheckedSourceFiles;
         if (file.FilesType == FileType.Header)
           --TotalCheckedHeaders;
-      }
 
-      //Update values for fixed files
-      if (file.IsFixed)
-      {
-        --TotalCheckedFixedFiles;
-        if (file.FilesType == FileType.SourceFile)
+        //Update values for fixed files
+        if (file.IsFixed)
         {
-          --TotalCheckedFixedSouceFiles;
-        }
-        if (file.FilesType == FileType.Header)
-        {
-          --TotalCheckedFixedHeaders;
+          --TotalCheckedFixedFiles;
+          if (file.FilesType == FileType.SourceFile)
+          {
+            --TotalCheckedFixedSouceFiles;
+          }
+          if (file.FilesType == FileType.Header)
+          {
+            --TotalCheckedFixedHeaders;
+          }
         }
       }
     }
