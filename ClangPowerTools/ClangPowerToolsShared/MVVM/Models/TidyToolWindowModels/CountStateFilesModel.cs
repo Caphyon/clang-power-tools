@@ -77,8 +77,21 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
           ++totalCheckedSourceFiles;
         if (file.FilesType == FileType.Header)
           ++totalCheckedHeaders;
-      }
 
+        //Update values for fixed files
+        if(file.IsFixed)
+        {
+          ++TotalCheckedFixedFiles;
+          if(file.FilesType == FileType.SourceFile)
+          {
+            ++totalCheckedFixedSouceFiles;
+          }
+          if(file.FilesType == FileType.Header)
+          {
+            ++totalCheckedFixedHeaders;
+          }
+        }
+      }
     }
 
     /// <summary>
@@ -93,6 +106,20 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
           --totalCheckedSourceFiles;
         if (file.FilesType == FileType.Header)
           --totalCheckedHeaders;
+      }
+
+      //Update values for fixed files
+      if (file.IsFixed)
+      {
+        --TotalCheckedFixedFiles;
+        if (file.FilesType == FileType.SourceFile)
+        {
+          --totalCheckedFixedSouceFiles;
+        }
+        if (file.FilesType == FileType.Header)
+        {
+          --totalCheckedFixedHeaders;
+        }
       }
     }
 
