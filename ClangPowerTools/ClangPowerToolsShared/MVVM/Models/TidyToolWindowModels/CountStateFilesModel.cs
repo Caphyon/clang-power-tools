@@ -21,8 +21,11 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     /// <summary>
     /// Returns number of checked fixed files at this moment
     /// </summary>
-    public int TotalCheckedFixedFiles { get { return totalCheckedFixedFiles; }
-      set { totalCheckedFixedFiles = value;
+    public int TotalCheckedFixedFiles
+    { get { return totalCheckedFixedFiles; }
+      set
+      { 
+        totalCheckedFixedFiles = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalCheckedFixedFiles"));
       }
     }
@@ -98,7 +101,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     /// </summary>
     public void UpdateToUncheckAll()
     {
-      totalCheckedFixedFiles = 0;
+      TotalCheckedFixedFiles = 0;
       totalCheckedFixedHeaders = 0;
       totalCheckedFixedSouceFiles = 0;
       totalCheckedFiles = 0;
@@ -117,7 +120,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
         if (file.IsFixed)
         {
           //Update just fix properties
-          ++totalCheckedFixedFiles;
+          ++TotalCheckedFixedFiles;
           if (file.FilesType == FileType.SourceFile)
           {
             ++totalCheckedFixedSouceFiles;
@@ -130,7 +133,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
         else
         {
           //Update just unfixed properties
-          --totalCheckedFixedFiles;
+          --TotalCheckedFixedFiles;
           if (file.FilesType == FileType.SourceFile)
           {
             --totalCheckedFixedSouceFiles;
