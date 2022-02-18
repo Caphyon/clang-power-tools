@@ -392,7 +392,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
       files.Clear();
       tidyToolWindowModel.IsChecked = false;
       tidyToolWindowModel.CountFilesModel.UpdateToUncheckAll();
-      tidyToolWindowModel.DisableDiscardFixIcon();
+      //tidyToolWindowModel.DisableDiscardFixIcon();
     }
 
     #endregion
