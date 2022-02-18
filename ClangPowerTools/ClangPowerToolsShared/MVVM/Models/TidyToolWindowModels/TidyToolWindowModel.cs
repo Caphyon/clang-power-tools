@@ -22,16 +22,18 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
 
     public TidyToolWindowModel()
     {
+      discardFixIcon = new IconModel(IconResourceConstants.DiscardFixDisabled, UIElementsConstants.Visibile, false);
       //init
       CountFilesModel = new CountFilesModel();
-      RemoveIcon = new IconModel(IconResourceConstants.RemoveLight, UIElementsConstants.Visibile, true);
-      DiscardFixIcon = new IconModel(IconResourceConstants.DiscardFixLight, UIElementsConstants.Visibile, true);
-      TidyFixIcon = new IconModel(IconResourceConstants.FixLight, UIElementsConstants.Visibile, true);
-      RefreshTidyIcon = new IconModel(IconResourceConstants.RemoveLight, UIElementsConstants.Visibile, true);
+      RemoveIcon = new IconModel(VSThemeCommand.GetIgnoreIconEnabled(), UIElementsConstants.Visibile, true);
+      DiscardFixIcon = new IconModel(IconResourceConstants.DiscardFixDisabled, UIElementsConstants.Visibile, false);
+      TidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true);
+      RefreshTidyIcon = new IconModel(VSThemeCommand.GetRefreshTidyIconEnabled(), UIElementsConstants.Visibile, true);
+
 
       ProgressBarVisibility = UIElementsConstants.Hidden;
       ButtonVisibility = UIElementsConstants.Visibile;
-      EnableAllIcons();
+      //EnableAllIcons();
     }
 
     #endregion
@@ -39,8 +41,29 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     #region Properties
 
     public IconModel RemoveIcon { get; set; }
-
-    public IconModel DiscardFixIcon { get; set; }
+    private IconModel discardFixIcon;
+    public IconModel DiscardFixIcon
+    {
+      get
+      {
+        return discardFixIcon;
+      }
+      set
+      {
+        if (CountFilesModel.TotalCheckedFixedFiles == 0)
+        {
+          discardFixIcon.IconPath = IconResourceConstants.DiscardFixDisabled;
+          discardFixIcon.IsEnabled = false;
+        }
+        else
+        {
+          discardFixIcon.IconPath = VSThemeCommand.GetDiscardFixIconEnabled();
+          discardFixIcon.IsEnabled = true;
+        }
+        discardFixIcon = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiscardFixIcon"));
+      }
+    }
 
     public IconModel TidyFixIcon { get; set; }
 
@@ -57,85 +80,6 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsChecked"));
       }
     }
-
-    //public int TotalCheckedFiles
-    //{
-    //  get { return totalCheckedFiles; }
-    //  set
-    //  {
-    //    totalCheckedFiles = value;
-    //  }
-    //}
-
-    //public int TotalCheckedHeaders
-    //{
-    //  get { return totalCheckedHeaders; }
-    //  set
-    //  {
-    //    totalCheckedHeaders = value;
-    //  }
-    //}
-
-    //public int TotalCheckedFixedFiles
-    //{
-    //  get { return totalCheckedFixedFiles; }
-    //  set
-    //  {
-    //    totalCheckedFixedFiles = value;
-    //  }
-    //}
-
-    //public int TotalChecked
-    //{
-    //  get { return totalChecked; }
-    //  set
-    //  {
-    //    totalChecked = value;
-    //    //TidyTooltip = UIElementsConstants.RefreshTooltip + UIElementsConstants.TidyTooltip + TidyFilesNr.ToString() + UIElementsConstants.FilesTooltip;
-    //    //RemoveTooltip = UIElementsConstants.IgnoreTooltip + totalChecked.ToString() + UIElementsConstants.FilesTooltip;
-    //    //FixTooltip = UIElementsConstants.FixTooltip + FixFilesNr.ToString() + UIElementsConstants.FilesTooltip;
-    //    //DiscardTooltip = UIElementsConstants.DiscardTooltip + totalChecked.ToString() + " fixed" + UIElementsConstants.FilesTooltip;
-    //    //PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalChecked"));
-    //  }
-    //}
-
-    //public int DiscardNr
-    //{
-    //  get { return discardNr; }
-    //  set
-    //  {
-    //    discardNr = value;
-    //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiscardNr"));
-    //  }
-    //}
-
-    /// <summary>
-    /// The next number of files will be fixed, except headers.
-    /// Number will be displayed in tooltip
-    /// </summary>
-    //public bool IsEnabled
-    //{
-    //  get
-    //  {
-    //    if (!isRunning && totalChecked is not 0)
-    //    {
-    //      EnableAllIcons();
-    //      if (TotalFixedChecked == 0)
-    //        DisableDiscardFixIcon();
-    //      if ((TotalChecked == TotalFixedChecked) || (TotalCheckedFiles == TotalCheckedFixedFiles))
-    //        DisableFixIcon();
-    //      if (TotalChecked == TotalCheckedHeaders)
-    //        DisableTidyIcon();
-    //      return true;
-    //    }
-    //    else
-    //    {
-    //      SelectDisableAllIcons();
-    //    }
-    //    return false;
-    //  }
-    //  set { }
-    //}
 
     public bool IsRunning
     {
@@ -160,20 +104,6 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsRunning"));
       }
     }
-
-    //public bool SelectedAll
-    //{
-    //  get
-    //  {
-    //    return selectedAll;
-    //  }
-
-    //  set
-    //  {
-    //    selectedAll = value;
-    //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("SelectedAll"));
-    //  }
-    //}
 
     public string ProgressBarVisibility
     {

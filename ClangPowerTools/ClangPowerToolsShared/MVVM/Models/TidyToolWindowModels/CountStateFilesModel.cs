@@ -1,13 +1,16 @@
 ﻿using ClangPowerTools.MVVM.Models;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
 {
   /// <summary>
   /// This class can be used to store all data about files state
   /// </summary>
-  public class CountFilesModel
+  public class CountFilesModel : INotifyPropertyChanged
   {
+    public event PropertyChangedEventHandler PropertyChanged;
+
     private int totalCheckedFixedFiles = 0;
     private int totalCheckedFixedHeaders = 0;
     private int totalCheckedFixedSouceFiles = 0;
@@ -18,7 +21,11 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     /// <summary>
     /// Returns number of checked fixed files at this moment
     /// </summary>
-    public int TotalCheckedFixedFiles { get { return totalCheckedFixedFiles; } }
+    public int TotalCheckedFixedFiles { get { return totalCheckedFixedFiles; }
+      set { totalCheckedFixedFiles = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalCheckedFixedFiles"));
+      }
+    }
 
     /// <summary>
     /// Returns number of checked fixed headers at this moment
