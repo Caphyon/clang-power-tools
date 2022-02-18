@@ -182,14 +182,12 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public async Task FixAllFilesAsync(FileModel file = null)
     {
-      TidyController.BeforeCommand();
       TidyController.FixAllFilesAsync(file);
       wasMadeTidyOnFiles = false;
       if (file is not null)
       {
         DiffFile(file);
       }
-      TidyController.AfterCommand();
     }
 
     /// <summary>
@@ -233,7 +231,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       {
         TidyController.BeforeCommand();
         var checkedFiles = TidyController.files.Where(f => f.IsChecked).ToList();
-        TidyController.MarkUnfixedFiles(checkedFiles);
         foreach (var file in checkedFiles)
         {
           if (file.IsChecked)
