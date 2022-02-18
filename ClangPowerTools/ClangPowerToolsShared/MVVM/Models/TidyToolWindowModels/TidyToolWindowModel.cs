@@ -23,17 +23,24 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     public TidyToolWindowModel()
     {
       discardFixIcon = new IconModel(IconResourceConstants.DiscardFixDisabled, UIElementsConstants.Visibile, false);
-      //init
+      //Init
       CountFilesModel = new CountFilesModel();
+
+      //Register events
+      CountFilesModel.PropertyChanged += UpdateDiscardFixIcon;
+
+      //init private icons
+      discardFixIcon = new IconModel(IconResourceConstants.DiscardFixDisabled, UIElementsConstants.Visibile, false);
+
+      //Init public icons
       RemoveIcon = new IconModel(VSThemeCommand.GetIgnoreIconEnabled(), UIElementsConstants.Visibile, true);
       DiscardFixIcon = new IconModel(IconResourceConstants.DiscardFixDisabled, UIElementsConstants.Visibile, false);
       TidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true);
       RefreshTidyIcon = new IconModel(VSThemeCommand.GetRefreshTidyIconEnabled(), UIElementsConstants.Visibile, true);
-
-
+      
+      //Hide progress bar
       ProgressBarVisibility = UIElementsConstants.Hidden;
       ButtonVisibility = UIElementsConstants.Visibile;
-      //EnableAllIcons();
     }
 
     #endregion
@@ -41,6 +48,16 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     #region Properties
 
     public IconModel RemoveIcon { get; set; }
+
+    /// <summary>
+    /// Update discard fix icon with current values
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void UpdateDiscardFixIcon(object sender, System.EventArgs e)
+    {
+      DiscardFixIcon = discardFixIcon;
+    }
     private IconModel discardFixIcon;
     public IconModel DiscardFixIcon
     {
