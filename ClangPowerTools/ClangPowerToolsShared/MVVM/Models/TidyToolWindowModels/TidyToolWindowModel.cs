@@ -4,7 +4,7 @@ using System.ComponentModel;
 
 namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
 {
-  public class TidyToolWindowModel
+  public class TidyToolWindowModel : INotifyPropertyChanged
   {
     #region Members
 
@@ -24,10 +24,10 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     {
       //init
       CountFilesModel = new CountFilesModel();
-      RemoveIcon = new IconModel(IconResourceConstants.RemoveDisabled, UIElementsConstants.Visibile, false);
-      DiscardFixIcon = new IconModel(IconResourceConstants.RemoveFixDisabled, UIElementsConstants.Visibile, false);
-      TidyFixIcon = new IconModel(IconResourceConstants.FixDisabled, UIElementsConstants.Visibile, false);
-      RefreshTidyIcon = new IconModel(IconResourceConstants.RefreshDisabled, UIElementsConstants.Visibile, false);
+      RemoveIcon = new IconModel(IconResourceConstants.RemoveLight, UIElementsConstants.Visibile, true);
+      DiscardFixIcon = new IconModel(IconResourceConstants.DiscardFixLight, UIElementsConstants.Visibile, true);
+      TidyFixIcon = new IconModel(IconResourceConstants.FixLight, UIElementsConstants.Visibile, true);
+      RefreshTidyIcon = new IconModel(IconResourceConstants.RemoveLight, UIElementsConstants.Visibile, true);
 
       ProgressBarVisibility = UIElementsConstants.Hidden;
       ButtonVisibility = UIElementsConstants.Visibile;
@@ -187,7 +187,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
 
     public void DisableDiscardFixIcon()
     {
-      DiscardFixIcon.IconPath = IconResourceConstants.RemoveFixDisabled;
+      DiscardFixIcon.IconPath = IconResourceConstants.DiscardFixDisabled;
       DiscardFixIcon.IsEnabled = false;
     }
 
@@ -216,6 +216,10 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       set
       {
         buttonVisibility = value;
+        RefreshTidyIcon.Visibility = value;
+        TidyFixIcon.Visibility = value;
+        DiscardFixIcon.Visibility = value;
+        RemoveIcon.Visibility = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ButtonVisibility"));
       }
     }
@@ -224,7 +228,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     private void SelectAllIconsDarkTheme()
     {
       RemoveIcon.IconPath = IconResourceConstants.RemoveDark;
-      DiscardFixIcon.IconPath = IconResourceConstants.RemoveFixDark;
+      DiscardFixIcon.IconPath = IconResourceConstants.DiscardFixDark;
       TidyFixIcon.IconPath = IconResourceConstants.FixDark;
       RefreshTidyIcon.IconPath = IconResourceConstants.RefreshTidyDark;
     }
@@ -232,7 +236,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     private void SelectAllIconsLightTheme()
     {
       RemoveIcon.IconPath = IconResourceConstants.RemoveLight;
-      DiscardFixIcon.IconPath = IconResourceConstants.RemoveFixLight;
+      DiscardFixIcon.IconPath = IconResourceConstants.DiscardFixLight;
       TidyFixIcon.IconPath = IconResourceConstants.FixLight;
       RefreshTidyIcon.IconPath = IconResourceConstants.RefreshTidyLight;
     }
@@ -240,7 +244,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     private void SelectDisableAllIcons()
     {
       RemoveIcon.IconPath = IconResourceConstants.RemoveDisabled;
-      DiscardFixIcon.IconPath = IconResourceConstants.RemoveFixDisabled;
+      DiscardFixIcon.IconPath = IconResourceConstants.DiscardFixDisabled;
       TidyFixIcon.IconPath = IconResourceConstants.FixDisabled;
       RefreshTidyIcon.IconPath = IconResourceConstants.RefreshDisabled;
     }

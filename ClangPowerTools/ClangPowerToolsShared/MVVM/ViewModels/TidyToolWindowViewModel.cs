@@ -43,7 +43,13 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private ICommand discardAllCommand;
     private ICommand removeAllCommand;
 
-    public ObservableCollection<FileModel> Files { get; set; } = new ObservableCollection<FileModel>();
+    public ObservableCollection<FileModel> Files { get { return TidyController.files; }
+      set
+      {
+        TidyController.files = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Files"));
+      }
+    }
 
     #endregion
 
@@ -129,6 +135,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       //Create groups
       CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(Files);
       PropertyGroupDescription groupDescription = new PropertyGroupDescription("FilesType");
+
       view.GroupDescriptions.Add(groupDescription);
     }
 
@@ -138,14 +145,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void OpenTidyToolWindow(List<string> filesPath)
     {
-      TidyController.BeforeCommand();
       RefreshOnWindowUpdate();
       TidyController.InitTidyToolWindow(filesPath);
       wasMadeTidyOnFiles = true;
       filesAlreadyExists = false;
-      TidyController.AfterCommand();
-
-      UpdateUI();
     }
 
     public void UpdateViewModel(List<string> filesPath)
@@ -163,21 +166,12 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
       if (!Directory.Exists(TidyConstants.TempsFolderPath))
         Directory.CreateDirectory(TidyConstants.TempsFolderPath);
-      UpdateUI();
-
     }
 
     private async Task TidyAllFilesAsync(List<string> paths = null)
     {
-      TidyController.BeforeCommand();
       wasMadeTidyOnFiles = true;
-      if (paths is null)
-      {
-        //get just string paths
-        paths = TidyController.files.Where(f => f.IsChecked && f.FilesType != FileType.Header).Select(f => f.FullFileName).ToList();
-      }
-      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, paths);
-      TidyController.AfterCommand();
+      TidyController.TidyFilesAsync(paths);
     }
 
 
@@ -210,9 +204,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void DiffFile(FileModel file)
     {
-      TidyController.BeforeCommand();
       TidyController.DiffBetweenCopyAndCurrent(file);
-      TidyController.AfterCommand();
     }
 
     #endregion
@@ -271,12 +263,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       messageModel.Visibility = UIElementsConstants.Hidden;
       ListVisibility = listVisibility;
       MessageModel = messageModel;
-    }
-
-    private void UpdateUI()
-    {
-      Files = TidyController.files;
-      TidyToolWindowModel = TidyController.tidyToolWindowModel;
     }
 
     #endregion
