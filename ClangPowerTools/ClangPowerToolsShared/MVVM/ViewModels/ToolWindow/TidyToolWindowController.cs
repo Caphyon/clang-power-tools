@@ -22,7 +22,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
 {
   public class TidyToolWindowController
   {
-    public ObservableCollection<FileModel> files { get; } = new ObservableCollection<FileModel>();
+    public ObservableCollection<FileModel> files = new ObservableCollection<FileModel>();
     private List<FileModel> headers = new List<FileModel>();
     public TidyToolWindowModel tidyToolWindowModel = new TidyToolWindowModel();
 
@@ -171,7 +171,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
     /// <param name="file"></param>
     public void DiffBetweenCopyAndCurrent(FileModel file)
     {
+      BeforeCommand();
       FileCommand.DiffFilesUsingDefaultTool(FileCommand.GetShortPath(file.CopyFullFileName), FileCommand.GetShortPath(file.FullFileName));
+      AfterCommand();
     }
 
     #endregion
@@ -371,13 +373,15 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
     //  TidyFilesAsync(paths);
     //}
 
-    private async Task TidyFilesAsync(List<string> paths = null)
+    public async Task TidyFilesAsync(List<string> paths = null)
     {
+      BeforeCommand();
       if (paths is null)
       {
         paths = files.Where(f => f.IsChecked && f.FilesType != FileType.Header).Select(f => f.FullFileName).ToList();
       }
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, paths);
+      AfterCommand();
     }
 
     /// <summary>
