@@ -22,9 +22,10 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     /// Returns number of checked fixed files at this moment
     /// </summary>
     public int TotalCheckedFixedFiles
-    { get { return totalCheckedFixedFiles; }
+    {
+      get { return totalCheckedFixedFiles; }
       set
-      { 
+      {
         totalCheckedFixedFiles = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalCheckedFixedFiles"));
       }
@@ -33,27 +34,68 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     /// <summary>
     /// Returns number of checked fixed headers at this moment
     /// </summary>
-    public int TotalCheckedFixedHeaders { get { return totalCheckedFixedHeaders; } }
+    public int TotalCheckedFixedHeaders
+    {
+      get
+      { return totalCheckedFixedHeaders; }
+      set
+      {
+        totalCheckedFixedHeaders = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalCheckedFixedHeaders"));
+      }
+    }
 
     /// <summary>
     /// Returns number of checked fixed source files at this moment
     /// </summary>
-    public int TotalCheckedFixedSouceFiles { get { return totalCheckedFixedSouceFiles; } }
+    public int TotalCheckedFixedSouceFiles
+    {
+      get { return totalCheckedFixedSouceFiles; }
+      set
+      {
+        totalCheckedFixedSouceFiles = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalCheckedFixedSouceFiles"));
+      }
+    }
 
     /// <summary>
     /// Returns number of checked source files at this moment
     /// </summary>
-    public int TotalCheckedSourceFiles { get { return totalCheckedSourceFiles; } }
+    public int TotalCheckedSourceFiles
+    {
+      get { return totalCheckedSourceFiles; }
+      set
+      {
+        totalCheckedSourceFiles = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalCheckedSourceFiles"));
+      }
+    }
 
     /// <summary>
     /// Returns number of checked headers at this moment
     /// </summary>
-    public int TotalCheckedHeaders { get { return totalCheckedHeaders; } }
+    public int TotalCheckedHeaders
+    {
+      get { return totalCheckedHeaders; }
+      set
+      {
+        totalCheckedHeaders = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalCheckedHeaders"));
+      }
+    }
 
     /// <summary>
     /// Returns number of checked files at this moment
     /// </summary>
-    public int TotalCheckedFiles { get { return totalCheckedFiles; } }
+    public int TotalCheckedFiles
+    {
+      get { return totalCheckedFiles; }
+      set
+      {
+        totalCheckedFiles = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalCheckedFiles"));
+      }
+    }
 
 
     /// <summary>
@@ -62,7 +104,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     /// <param name="files"></param>
     public void UpdateTotalChecked(ObservableCollection<FileModel> files)
     {
-      totalCheckedFiles = files.Count;
+      TotalCheckedFiles = files.Count;
     }
 
     /// <summary>
@@ -72,23 +114,23 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     {
       if (file is not null && file.IsChecked)
       {
-        ++totalCheckedFiles;
+        ++TotalCheckedFiles;
         if (file.FilesType == FileType.SourceFile)
-          ++totalCheckedSourceFiles;
+          ++TotalCheckedSourceFiles;
         if (file.FilesType == FileType.Header)
-          ++totalCheckedHeaders;
+          ++TotalCheckedHeaders;
 
         //Update values for fixed files
-        if(file.IsFixed)
+        if (file.IsFixed)
         {
           ++TotalCheckedFixedFiles;
-          if(file.FilesType == FileType.SourceFile)
+          if (file.FilesType == FileType.SourceFile)
           {
-            ++totalCheckedFixedSouceFiles;
+            ++TotalCheckedFixedSouceFiles;
           }
-          if(file.FilesType == FileType.Header)
+          if (file.FilesType == FileType.Header)
           {
-            ++totalCheckedFixedHeaders;
+            ++TotalCheckedFixedHeaders;
           }
         }
       }
@@ -101,11 +143,11 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     {
       if (file is not null && !file.IsChecked)
       {
-        --totalCheckedFiles;
+        --TotalCheckedFiles;
         if (file.FilesType == FileType.SourceFile)
-          --totalCheckedSourceFiles;
+          --TotalCheckedSourceFiles;
         if (file.FilesType == FileType.Header)
-          --totalCheckedHeaders;
+          --TotalCheckedHeaders;
       }
 
       //Update values for fixed files
@@ -114,11 +156,11 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
         --TotalCheckedFixedFiles;
         if (file.FilesType == FileType.SourceFile)
         {
-          --totalCheckedFixedSouceFiles;
+          --TotalCheckedFixedSouceFiles;
         }
         if (file.FilesType == FileType.Header)
         {
-          --totalCheckedFixedHeaders;
+          --TotalCheckedFixedHeaders;
         }
       }
     }
@@ -129,11 +171,11 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     public void UpdateToUncheckAll()
     {
       TotalCheckedFixedFiles = 0;
-      totalCheckedFixedHeaders = 0;
-      totalCheckedFixedSouceFiles = 0;
-      totalCheckedFiles = 0;
-      totalCheckedHeaders = 0;
-      totalCheckedFiles = 0;
+      TotalCheckedFixedHeaders = 0;
+      TotalCheckedFixedSouceFiles = 0;
+      TotalCheckedSourceFiles = 0;
+      TotalCheckedHeaders = 0;
+      TotalCheckedFiles = 0;
     }
 
     /// <summary>
@@ -150,11 +192,11 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
           ++TotalCheckedFixedFiles;
           if (file.FilesType == FileType.SourceFile)
           {
-            ++totalCheckedFixedSouceFiles;
+            ++TotalCheckedFixedSouceFiles;
           }
           if (file.FilesType == FileType.Header)
           {
-            ++totalCheckedFixedHeaders;
+            ++TotalCheckedFixedHeaders;
           }
         }
         else
@@ -163,11 +205,11 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
           --TotalCheckedFixedFiles;
           if (file.FilesType == FileType.SourceFile)
           {
-            --totalCheckedFixedSouceFiles;
+            --TotalCheckedFixedSouceFiles;
           }
           if (file.FilesType == FileType.Header)
           {
-            --totalCheckedFixedHeaders;
+            --TotalCheckedFixedHeaders;
           }
         }
       }
