@@ -25,6 +25,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       discardFixIcon = new IconModel(IconResourceConstants.DiscardFixDisabled, UIElementsConstants.Visibile, false);
       tidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true);
       refreshTidyIcon = new IconModel(VSThemeCommand.GetRefreshTidyIconEnabled(), UIElementsConstants.Visibile, true);
+      removeIcon = new IconModel(VSThemeCommand.GetIgnoreIconEnabled(), UIElementsConstants.Visibile, true);
 
       //Init
       CountFilesModel = new CountFilesModel();
@@ -50,7 +51,6 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
 
     #region Properties
 
-    public IconModel RemoveIcon { get; set; }
 
     /// <summary>
     /// Update icons
@@ -62,6 +62,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       TidyFixIcon = tidyFixIcon;
       DiscardFixIcon = discardFixIcon;
       RefreshTidyIcon = refreshTidyIcon;
+      RemoveIcon = removeIcon;
     }
     private IconModel discardFixIcon;
     public IconModel DiscardFixIcon
@@ -115,7 +116,8 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       get { return refreshTidyIcon; }
       set
       {
-        if(CountFilesModel.TotalCheckedFiles == 0)
+        if(CountFilesModel.TotalCheckedFiles == 0 ||
+          CountFilesModel.TotalCheckedHeaders == CountFilesModel.TotalCheckedFiles)
         {
           refreshTidyIcon.IconPath = IconResourceConstants.RefreshDisabled;
           refreshTidyIcon.IsEnabled = false;
@@ -130,7 +132,27 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RefreshTidyIcon"));
       }
     }
+    public IconModel removeIcon { get; set; }
+    public IconModel RemoveIcon
+    {
+      get { return removeIcon; }
+      set
+      {
+        if(CountFilesModel.TotalCheckedFiles == 0)
+        {
+          removeIcon.IconPath = IconResourceConstants.RemoveDisabled;
+          removeIcon.IsEnabled = false;
+        }
+        else
+        {
+          removeIcon.IconPath = VSThemeCommand.GetIgnoreIconEnabled();
+          removeIcon.IsEnabled = true;
+        }
 
+        removeIcon = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RemoveIcon"));
+      }
+    }
 
     public bool IsChecked
     {
