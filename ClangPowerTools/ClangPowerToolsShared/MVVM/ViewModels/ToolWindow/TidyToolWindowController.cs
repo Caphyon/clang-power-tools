@@ -3,13 +3,9 @@ using ClangPowerTools.Commands;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Models;
 using ClangPowerTools.Services;
-using ClangPowerTools.Views;
 using ClangPowerToolsShared.MVVM.Commands;
-using ClangPowerToolsShared.MVVM.Constants;
-using ClangPowerToolsShared.MVVM.Models;
 using ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels;
 using EnvDTE80;
-using Microsoft.VisualStudio.PlatformUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -363,14 +359,28 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
     /// <summary>
     /// Remove selected files from files list
     /// </summary>
-    public void RemoveFiles()
+    public void RemoveFiles(FileModel customFile = null)
     {
       BeforeCommand();
-      foreach (var file in files.ToList())
+      if (customFile is not null)
       {
-        if (file.IsChecked)
+        //Remove file from list
+        var removeFile = files.Where(f => f.IsChecked && f.FullFileName == customFile.FullFileName).SingleOrDefault();
+        if(removeFile is not null)
         {
-          files.Remove(file);
+          tidyToolWindowModel.CountFilesModel.UnCheckFileUpdate(removeFile);
+          files.Remove(removeFile);
+        }
+      }
+      else
+      {
+        foreach (var file in files.ToList())
+        {
+          if (file.IsChecked)
+          {
+            files.Remove(file);
+            //tidyToolWindowModel.CountFilesModel.UnCheckFileUpdate(file);
+          }
         }
       }
       AfterCommand();
