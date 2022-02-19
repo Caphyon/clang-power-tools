@@ -378,22 +378,13 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
         {
           if (file.IsChecked)
           {
+            tidyToolWindowModel.CountFilesModel.UnCheckFileUpdate(file);
             files.Remove(file);
-            //tidyToolWindowModel.CountFilesModel.UnCheckFileUpdate(file);
           }
         }
       }
       AfterCommand();
     }
-
-    //private async Task TidyAllFilesAsync(List<string> paths = null)
-    //{
-    //  if (!files.Where(f => f.FilesType == FileType.SourceFile && f.IsChecked).Any())
-    //  {
-    //    return;
-    //  }
-    //  TidyFilesAsync(paths);
-    //}
 
     public async Task TidyFilesAsync(List<string> paths = null)
     {

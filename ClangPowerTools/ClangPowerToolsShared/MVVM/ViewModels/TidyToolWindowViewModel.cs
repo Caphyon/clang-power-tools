@@ -236,6 +236,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           if (file.IsChecked)
           {
             TidyController.DiscardFile(file);
+            //If is a header remove from file list
             if(file.FilesType == FileType.Header)
             {
               TidyController.RemoveFiles(file);
