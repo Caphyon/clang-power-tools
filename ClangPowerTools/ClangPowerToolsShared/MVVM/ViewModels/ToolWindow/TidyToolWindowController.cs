@@ -57,6 +57,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
           if (currentHeader != null)
           {
             currentHeader.IsChecked = true;
+            tidyToolWindowModel.CountFilesModel.CheckFileUpdate(currentHeader);
 
             //Remove old header (with disabled diff icon) if already exists in files list, add the new one 
             var index = files.IndexOf(files.Where(f => f.FullFileName == currentHeader.FullFileName).FirstOrDefault());
@@ -231,6 +232,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
       foreach (var file in files)
       {
         file.IsChecked = true;
+        tidyToolWindowModel.CountFilesModel.CheckFileUpdate(file);
       }
       tidyToolWindowModel.IsChecked = true;
       tidyToolWindowModel.CountFilesModel.UpdateTotalChecked(files);
@@ -241,6 +243,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
       foreach (var file in files)
       {
         file.IsChecked = false;
+        tidyToolWindowModel.CountFilesModel.UnCheckFileUpdate(file);
       }
       tidyToolWindowModel.IsChecked = false;
       tidyToolWindowModel.CountFilesModel.UpdateToUncheckAll();
