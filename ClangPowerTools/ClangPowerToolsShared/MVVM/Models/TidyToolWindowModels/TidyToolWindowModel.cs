@@ -24,6 +24,8 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     {
       discardFixIcon = new IconModel(IconResourceConstants.DiscardFixDisabled, UIElementsConstants.Visibile, false);
       tidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true);
+      refreshTidyIcon = new IconModel(VSThemeCommand.GetRefreshTidyIconEnabled(), UIElementsConstants.Visibile, true);
+
       //Init
       CountFilesModel = new CountFilesModel();
 
@@ -51,7 +53,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     public IconModel RemoveIcon { get; set; }
 
     /// <summary>
-    /// Update discard fix icon with current values
+    /// Update icons
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -59,6 +61,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     {
       TidyFixIcon = tidyFixIcon;
       DiscardFixIcon = discardFixIcon;
+      RefreshTidyIcon = refreshTidyIcon;
     }
     private IconModel discardFixIcon;
     public IconModel DiscardFixIcon
@@ -107,7 +110,26 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       }
     }
 
-    public IconModel RefreshTidyIcon { get; set; }
+    public IconModel refreshTidyIcon;
+    public IconModel RefreshTidyIcon {
+      get { return refreshTidyIcon; }
+      set
+      {
+        if(CountFilesModel.TotalCheckedFiles == 0)
+        {
+          refreshTidyIcon.IconPath = IconResourceConstants.RefreshDisabled;
+          refreshTidyIcon.IsEnabled = false;
+        }
+        else
+        {
+          refreshTidyIcon.IconPath = VSThemeCommand.GetRefreshTidyIconEnabled();
+          refreshTidyIcon.IsEnabled = true;
+        }
+
+        refreshTidyIcon = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RefreshTidyIcon"));
+      }
+    }
 
 
     public bool IsChecked
