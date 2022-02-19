@@ -23,11 +23,12 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     public TidyToolWindowModel()
     {
       discardFixIcon = new IconModel(IconResourceConstants.DiscardFixDisabled, UIElementsConstants.Visibile, false);
+      tidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true);
       //Init
       CountFilesModel = new CountFilesModel();
 
       //Register events
-      CountFilesModel.PropertyChanged += UpdateDiscardFixIcon;
+      CountFilesModel.PropertyChanged += UpdateIconsOnPropertyChange;
 
       //init private icons
       discardFixIcon = new IconModel(IconResourceConstants.DiscardFixDisabled, UIElementsConstants.Visibile, false);
@@ -54,8 +55,9 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void UpdateDiscardFixIcon(object sender, System.EventArgs e)
+    private void UpdateIconsOnPropertyChange(object sender, System.EventArgs e)
     {
+      TidyFixIcon = tidyFixIcon;
       DiscardFixIcon = discardFixIcon;
     }
     private IconModel discardFixIcon;
@@ -82,7 +84,28 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       }
     }
 
-    public IconModel TidyFixIcon { get; set; }
+    private IconModel tidyFixIcon;
+    public IconModel TidyFixIcon 
+    {
+      get { return tidyFixIcon; }
+      set
+      {
+        if (CountFilesModel.TotalCheckedFiles == 0 ||
+          CountFilesModel.TotalCheckedSourceFiles == CountFilesModel.TotalCheckedFixedSouceFiles ||
+          CountFilesModel.TotalCheckedSourceFiles == 0)
+        {
+          tidyFixIcon.IconPath = IconResourceConstants.FixDisabled;
+          tidyFixIcon.IsEnabled = false;
+        }
+        else
+        {
+          tidyFixIcon.IconPath = VSThemeCommand.GetTidyFixIconEnabled();
+          tidyFixIcon.IsEnabled = true;
+        }
+        tidyFixIcon = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyFixIcon"));
+      }
+    }
 
     public IconModel RefreshTidyIcon { get; set; }
 
