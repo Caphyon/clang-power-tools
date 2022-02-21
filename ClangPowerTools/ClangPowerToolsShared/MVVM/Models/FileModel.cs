@@ -144,11 +144,15 @@ namespace ClangPowerTools.MVVM.Models
         {
           TidyFixIcon.IsEnabled = false;
           TidyFixIcon.IconPath = IconResourceConstants.FixDisabled;
+          DiffIcon.IsEnabled = false;
+          DiffIcon.IconPath = IconResourceConstants.DiffDisabled;
         }
         else
         {
           TidyFixIcon.IsEnabled = true;
           TidyFixIcon.IconPath = VSThemeCommand.GetTidyFixIconEnabled();
+          DiffIcon.IsEnabled = true;
+          DiffIcon.IconPath = VSThemeCommand.GetDiffIconEnabled();
         }
         isRunning = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsRunning"));
