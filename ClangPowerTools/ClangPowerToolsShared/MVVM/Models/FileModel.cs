@@ -23,16 +23,25 @@ namespace ClangPowerTools.MVVM.Models
 
     public FileModel()
     {
-      DiffIcon = new IconModel(IconResourceConstants.DiffDark);
-      TidyFixIcon = new IconModel(IconResourceConstants.FixDark, UIElementsConstants.Visibile, true);
-      SelectEnableIcons();
+      //init private icons
+      diffIcon = new IconModel(VSThemeCommand.GetDiffIconEnabled(), UIElementsConstants.Hidden, false);
+      tidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true);
+
+      //init public icons
+      DiffIcon = new IconModel(VSThemeCommand.GetDiffIconEnabled(), UIElementsConstants.Hidden, false);
+      TidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true);
     }
 
     public FileModel(FileModel file)
     {
-      DiffIcon = new IconModel(IconResourceConstants.DiffDark);
-      TidyFixIcon = new IconModel(IconResourceConstants.FixDark, UIElementsConstants.Visibile, true);
-      SelectEnableIcons();
+      //init private icons
+      diffIcon = new IconModel(VSThemeCommand.GetDiffIconEnabled(), UIElementsConstants.Hidden, false);
+      tidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true);
+
+      //init public icons
+      DiffIcon = new IconModel(VSThemeCommand.GetDiffIconEnabled(), UIElementsConstants.Hidden, false);
+      TidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true);
+
       this.FileName = file.FileName;
       this.FullFileName = file.FullFileName;
       this.CopyFullFileName = file.CopyFullFileName;
@@ -74,14 +83,21 @@ namespace ClangPowerTools.MVVM.Models
     public string FullFileName { get; set; }
     public string CopyFullFileName { get; set; }
 
+    private IconModel diffIcon;
     public IconModel DiffIcon
     {
       get; set;
     }
 
+    private IconModel tidyFixIcon;
     public IconModel TidyFixIcon
     {
-      get; set;
+      get { return tidyFixIcon; }
+      set
+      {
+        tidyFixIcon = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyFixIcon"));
+      }
     }
 
     public bool IsFixed
@@ -95,12 +111,16 @@ namespace ClangPowerTools.MVVM.Models
         if (value)
         {
           DiffIcon.Visibility = UIElementsConstants.Visibile;
+          DiffIcon.IsEnabled = true;
           TidyFixIcon.Visibility = UIElementsConstants.Hidden;
+          TidyFixIcon.IsEnabled = false;
         }
         else
         {
           TidyFixIcon.Visibility = UIElementsConstants.Visibile;
+          TidyFixIcon.IsEnabled = true;
           DiffIcon.Visibility = UIElementsConstants.Hidden;
+          DiffIcon.IsEnabled = false;
         }
         if (isFixed == value) return;
         isFixed = value;
@@ -119,11 +139,13 @@ namespace ClangPowerTools.MVVM.Models
       {
         if (value)
         {
-          SelectDisableIcons();
+          TidyFixIcon.IsEnabled = false;
+          TidyFixIcon.IconPath = IconResourceConstants.FixDisabled;
         }
         else
         {
-          SelectEnableIcons();
+          TidyFixIcon.IsEnabled = true;
+          TidyFixIcon.IconPath = VSThemeCommand.GetTidyFixIconEnabled();
         }
         isRunning = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsRunning"));
@@ -141,68 +163,68 @@ namespace ClangPowerTools.MVVM.Models
       }
     }
 
-    private void SelectIconsDarkTheme()
-    {
-      TidyFixIcon.IconPath = IconResourceConstants.FixDark;
-      DiffIcon.IconPath = IconResourceConstants.DiffDark;
-    }
+    //private void SelectIconsDarkTheme()
+    //{
+    //  TidyFixIcon.IconPath = IconResourceConstants.FixDark;
+    //  DiffIcon.IconPath = IconResourceConstants.DiffDark;
+    //}
 
     /// <summary>
     /// Disable and show (maake visible) diff icon
     /// </summary>
-    public void DisableVisibleDiffIcon()
-    {
-      DiffIcon.Visibility = UIElementsConstants.Visibile;
-      TidyFixIcon.Visibility = UIElementsConstants.Hidden;
-      DiffIcon.IconPath = IconResourceConstants.DiffDisabled;
-      DiffIcon.IsEnabled = false;
-    }
+    //public void DisableVisibleDiffIcon()
+    //{
+    //  DiffIcon.Visibility = UIElementsConstants.Visibile;
+    //  TidyFixIcon.Visibility = UIElementsConstants.Hidden;
+    //  DiffIcon.IconPath = IconResourceConstants.DiffDisabled;
+    //  DiffIcon.IsEnabled = false;
+    //}
 
-    public void EnableDiffIcon()
-    {
-      SelectEnableIcons();
-      DiffIcon.Visibility = UIElementsConstants.Visibile;
-      DiffIcon.IsEnabled = true;
-      TidyFixIcon.Visibility = UIElementsConstants.Hidden;
-    }
+    //public void EnableDiffIcon()
+    //{
+    //  SelectEnableIcons();
+    //  DiffIcon.Visibility = UIElementsConstants.Visibile;
+    //  DiffIcon.IsEnabled = true;
+    //  TidyFixIcon.Visibility = UIElementsConstants.Hidden;
+    //}
 
-    public void EnableFixIcon()
-    {
-      SelectEnableIcons();
-      TidyFixIcon.Visibility = UIElementsConstants.Visibile;
-      TidyFixIcon.IsEnabled = true;
-      DiffIcon.Visibility = UIElementsConstants.Hidden;
-    }
+    //public void EnableFixIcon()
+    //{
+    //  SelectEnableIcons();
+    //  TidyFixIcon.Visibility = UIElementsConstants.Visibile;
+    //  TidyFixIcon.IsEnabled = true;
+    //  DiffIcon.Visibility = UIElementsConstants.Hidden;
+    //}
 
-    public void DisableVisibleTidyFixIcon()
-    {
-      TidyFixIcon.Visibility = UIElementsConstants.Visibile;
-      DiffIcon.Visibility = UIElementsConstants.Hidden;
-      TidyFixIcon.IconPath = IconResourceConstants.FixDisabled;
-      TidyFixIcon.IsEnabled = false;
-    }
+    //public void DisableVisibleTidyFixIcon()
+    //{
+    //  TidyFixIcon.Visibility = UIElementsConstants.Visibile;
+    //  DiffIcon.Visibility = UIElementsConstants.Hidden;
+    //  TidyFixIcon.IconPath = IconResourceConstants.FixDisabled;
+    //  TidyFixIcon.IsEnabled = false;
+    //}
 
-    private void SelectIconsLightTheme()
-    {
-      TidyFixIcon.IconPath = IconResourceConstants.FixLight;
-      DiffIcon.IconPath = IconResourceConstants.DiffLight;
-    }
+    //private void SelectIconsLightTheme()
+    //{
+    //  TidyFixIcon.IconPath = IconResourceConstants.FixLight;
+    //  DiffIcon.IconPath = IconResourceConstants.DiffLight;
+    //}
 
-    private void SelectDisableIcons()
-    {
-      TidyFixIcon.IconPath = IconResourceConstants.FixDisabled;
-      DiffIcon.IconPath = IconResourceConstants.DiffDisabled;
-      TidyFixIcon.IsEnabled = false;
-      DiffIcon.IsEnabled = false;
-    }
+    //private void SelectDisableIcons()
+    //{
+    //  TidyFixIcon.IconPath = IconResourceConstants.FixDisabled;
+    //  DiffIcon.IconPath = IconResourceConstants.DiffDisabled;
+    //  TidyFixIcon.IsEnabled = false;
+    //  DiffIcon.IsEnabled = false;
+    //}
 
-    public void SelectEnableIcons()
-    {
-      if (VSThemeCommand.GetCurrentVsTheme() == VsThemes.Dark)
-        SelectIconsDarkTheme();
-      else
-        SelectIconsLightTheme();
-    }
+    //public void SelectEnableIcons()
+    //{
+    //  if (VSThemeCommand.GetCurrentVsTheme() == VsThemes.Dark)
+    //    SelectIconsDarkTheme();
+    //  else
+    //    SelectIconsLightTheme();
+    //}
 
     #endregion
 

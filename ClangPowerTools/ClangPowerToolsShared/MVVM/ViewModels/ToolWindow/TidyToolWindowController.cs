@@ -326,35 +326,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
       MarkUnfixedFiles(file);
     }
 
-    /// <summary>
-    /// Make diff icon disabled after discard header action
-    /// </summary>
-    private void DisableDiffIconForHeaders()
-    {
-      foreach (var file in files)
-      {
-        if (file.FilesType == FileType.Header && (file.IsChecked || !file.IsFixed))
-        {
-          file.DisableVisibleDiffIcon();
-        }
-        if (file.FilesType == FileType.Header && file.IsFixed)
-        {
-          file.EnableDiffIcon();
-        }
-      }
-    }
-
-
-    private void DisableDiffIconForUnfixedHeaders()
-    {
-      foreach (var file in files)
-      {
-        if (file.FilesType == FileType.Header && !file.IsFixed)
-        {
-          file.DisableVisibleDiffIcon();
-        }
-      }
-    }
 
     /// <summary>
     /// Remove selected files from files list
