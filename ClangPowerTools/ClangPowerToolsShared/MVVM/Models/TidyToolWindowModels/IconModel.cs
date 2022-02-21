@@ -58,11 +58,12 @@ namespace ClangPowerToolsShared.MVVM.Models
 
     }
 
-    public IconModel(string iconPath, string visibility = "Hidden", bool isEnabled = false)
+    public IconModel(string iconPath, string visibility, bool isEnabled, string tooltip = "")
     {
       this.iconPath = iconPath;
       this.visibility = visibility;
       this.isEnabled = isEnabled;
+      this.tooltip = tooltip;
     }
   }
 }

@@ -39,7 +39,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       DiscardFixIcon = new IconModel(IconResourceConstants.DiscardFixDisabled, UIElementsConstants.Visibile, false);
       TidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true);
       RefreshTidyIcon = new IconModel(VSThemeCommand.GetRefreshTidyIconEnabled(), UIElementsConstants.Visibile, true);
-      
+
       //Hide progress bar
       ProgressBarVisibility = UIElementsConstants.Hidden;
       ButtonVisibility = UIElementsConstants.Visibile;
@@ -82,13 +82,14 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
           discardFixIcon.IconPath = VSThemeCommand.GetDiscardFixIconEnabled();
           discardFixIcon.IsEnabled = true;
         }
+        discardFixIcon.Tooltip = $"Discard {CountFilesModel.TotalCheckedFixedFiles} files";
         discardFixIcon = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiscardFixIcon"));
       }
     }
 
     private IconModel tidyFixIcon;
-    public IconModel TidyFixIcon 
+    public IconModel TidyFixIcon
     {
       get { return tidyFixIcon; }
       set
@@ -105,17 +106,19 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
           tidyFixIcon.IconPath = VSThemeCommand.GetTidyFixIconEnabled();
           tidyFixIcon.IsEnabled = true;
         }
+        tidyFixIcon.Tooltip = $"Fix {CountFilesModel.TotalCheckedSourceFiles} source files";
         tidyFixIcon = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyFixIcon"));
       }
     }
 
     private IconModel refreshTidyIcon;
-    public IconModel RefreshTidyIcon {
+    public IconModel RefreshTidyIcon
+    {
       get { return refreshTidyIcon; }
       set
       {
-        if(CountFilesModel.TotalCheckedFiles == 0 ||
+        if (CountFilesModel.TotalCheckedFiles == 0 ||
           CountFilesModel.TotalCheckedHeaders == CountFilesModel.TotalCheckedFiles)
         {
           refreshTidyIcon.IconPath = IconResourceConstants.RefreshDisabled;
@@ -127,6 +130,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
           refreshTidyIcon.IsEnabled = true;
         }
 
+        refreshTidyIcon.Tooltip = $"Refresh tidy {CountFilesModel.TotalCheckedSourceFiles} source files";
         refreshTidyIcon = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RefreshTidyIcon"));
       }
@@ -138,7 +142,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       get { return removeIcon; }
       set
       {
-        if(CountFilesModel.TotalCheckedFiles == 0)
+        if (CountFilesModel.TotalCheckedFiles == 0)
         {
           removeIcon.IconPath = IconResourceConstants.RemoveDisabled;
           removeIcon.IsEnabled = false;
@@ -149,6 +153,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
           removeIcon.IsEnabled = true;
         }
 
+        removeIcon.Tooltip = $"Ignore {CountFilesModel.TotalCheckedFiles} files";
         removeIcon = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RemoveIcon"));
       }

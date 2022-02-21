@@ -24,8 +24,8 @@ namespace ClangPowerTools.MVVM.Models
     public FileModel()
     {
       //init private icons
-      diffIcon = new IconModel(VSThemeCommand.GetDiffIconEnabled(), UIElementsConstants.Hidden, false);
-      tidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true);
+      diffIcon = new IconModel(VSThemeCommand.GetDiffIconEnabled(), UIElementsConstants.Hidden, false, "Diff");
+      tidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true, "Fix");
 
       //init public icons
       DiffIcon = new IconModel(VSThemeCommand.GetDiffIconEnabled(), UIElementsConstants.Hidden, false);
@@ -35,8 +35,8 @@ namespace ClangPowerTools.MVVM.Models
     public FileModel(FileModel file)
     {
       //init private icons
-      diffIcon = new IconModel(VSThemeCommand.GetDiffIconEnabled(), UIElementsConstants.Hidden, false);
-      tidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true);
+      diffIcon = new IconModel(VSThemeCommand.GetDiffIconEnabled(), UIElementsConstants.Hidden, false, "Diff");
+      tidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true, "Fix");
 
       //init public icons
       DiffIcon = new IconModel(VSThemeCommand.GetDiffIconEnabled(), UIElementsConstants.Hidden, false);
@@ -77,7 +77,6 @@ namespace ClangPowerTools.MVVM.Models
         filename = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileName"));
       }
-
     }
 
     public string FullFileName { get; set; }
