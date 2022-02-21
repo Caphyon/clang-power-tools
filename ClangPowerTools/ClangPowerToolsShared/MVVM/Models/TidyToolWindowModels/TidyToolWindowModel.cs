@@ -106,7 +106,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
           tidyFixIcon.IconPath = VSThemeCommand.GetTidyFixIconEnabled();
           tidyFixIcon.IsEnabled = true;
         }
-        tidyFixIcon.Tooltip = $"Fix {CountFilesModel.TotalCheckedSourceFiles} source files";
+        tidyFixIcon.Tooltip = $"Fix {CountFilesModel.TotalCheckedSourceFiles - CountFilesModel.TotalCheckedFixedSouceFiles} source files";
         tidyFixIcon = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyFixIcon"));
       }
