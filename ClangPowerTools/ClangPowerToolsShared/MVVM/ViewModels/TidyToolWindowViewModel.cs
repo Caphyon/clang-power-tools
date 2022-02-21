@@ -249,11 +249,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void ThemeChangeEvent(ThemeChangedEventArgs e)
     {
-      //TODO Handle theme color change
-      //TidyController.tidyToolWindowModel.EnableAllIcons();
+      TidyController.tidyToolWindowModel.ChangeIconsTheme();
       foreach (var file in TidyController.files)
       {
-        //file.SelectEnableIcons();
+        file.ChangeIconsTheme();
       }
     }
 
