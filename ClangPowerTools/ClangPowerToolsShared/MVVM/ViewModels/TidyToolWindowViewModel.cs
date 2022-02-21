@@ -182,12 +182,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public async Task FixAllFilesAsync(FileModel file = null)
     {
+      //TODO disable diff icon on run 
       TidyController.FixAllFilesAsync(file);
       wasMadeTidyOnFiles = false;
-      if (file is not null)
-      {
-        DiffFile(file);
-      }
     }
 
     /// <summary>

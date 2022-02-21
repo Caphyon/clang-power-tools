@@ -53,7 +53,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
           if (currentHeader != null)
           {
             currentHeader.IsChecked = true;
-            tidyToolWindowModel.CountFilesModel.CheckFileUpdate(currentHeader);
+            UpdateCheckedNumber(currentHeader);
 
             //Remove old header (with disabled diff icon) if already exists in files list, add the new one 
             var index = files.IndexOf(files.Where(f => f.FullFileName == currentHeader.FullFileName).FirstOrDefault());
@@ -108,23 +108,30 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
       //TODO apply tidy fix just on source files, ignore headers
       BeforeCommand();
       //if ((tidyToolWindowModel.TotalChecked != tidyToolWindowModel.TotalFixedChecked && files.Where(f => f.FilesType == FileType.File && f.IsChecked && !f.IsFixed).Any()) || file is not null)
+      var filesPaths = new List<string>();
+      var filesPathsCopy = new List<FileModel>();
+      if (file is null)
       {
-        var filesPaths = new List<string>();
-        var filesPathsCopy = new List<FileModel>();
-        if (file is null)
+        //Get checked and unfixed files
+        filesPathsCopy = files.Where(f => f.IsChecked && f.IsFixed == false && f.FilesType != FileType.Header).ToList();
+        filesPaths = files.Where(f => f.IsChecked && f.FilesType != FileType.Header).Select(f => f.FullFileName).ToList();
+      }
+      else
+      {
+        if (!file.IsChecked)
         {
-          //Get checked and unfixed files
-          filesPathsCopy = files.Where(f => f.IsChecked && f.IsFixed == false && f.FilesType != FileType.Header).ToList();
-          filesPaths = files.Where(f => f.IsChecked && f.FilesType != FileType.Header).Select(f => f.FullFileName).ToList();
+          file.IsChecked = true;
+          UpdateCheckedNumber(file);
         }
-        else
-        {
-          filesPathsCopy = new List<FileModel> { file };
-          filesPaths = new List<string> { file.FullFileName };
-        }
-        FileCommand.CopyFilesInTempSolution(UnifyFileModelLists(filesPathsCopy, headers));
-        await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
-        MarkFixedFiles(filesPathsCopy);
+        filesPathsCopy = new List<FileModel> { file };
+        filesPaths = new List<string> { file.FullFileName };
+      }
+      FileCommand.CopyFilesInTempSolution(UnifyFileModelLists(filesPathsCopy, headers));
+      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
+      MarkFixedFiles(filesPathsCopy);
+      if (file is not null)
+      {
+        DiffBetweenCopyAndCurrent(file);
       }
       AfterCommand();
     }
@@ -227,7 +234,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
       foreach (var file in files)
       {
         file.IsChecked = true;
-        tidyToolWindowModel.CountFilesModel.CheckFileUpdate(file);
+        UpdateCheckedNumber(file);
       }
       tidyToolWindowModel.IsChecked = true;
       tidyToolWindowModel.CountFilesModel.UpdateTotalChecked(files);
@@ -238,7 +245,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
       foreach (var file in files)
       {
         file.IsChecked = false;
-        tidyToolWindowModel.CountFilesModel.UnCheckFileUpdate(file);
+        UpdateCheckedNumber(file);
       }
       tidyToolWindowModel.IsChecked = false;
       tidyToolWindowModel.CountFilesModel.UpdateToUncheckAll();
@@ -336,9 +343,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
       {
         //Remove file from list
         var removeFile = files.Where(f => f.IsChecked && f.FullFileName == customFile.FullFileName).SingleOrDefault();
-        if(removeFile is not null)
+        if (removeFile is not null)
         {
-          tidyToolWindowModel.CountFilesModel.UnCheckFileUpdate(removeFile);
+          UpdateCheckedNumber(removeFile);
           files.Remove(removeFile);
         }
       }
@@ -348,7 +355,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
         {
           if (file.IsChecked)
           {
-            tidyToolWindowModel.CountFilesModel.UnCheckFileUpdate(file);
+            UpdateCheckedNumber(file);
             files.Remove(file);
           }
         }
