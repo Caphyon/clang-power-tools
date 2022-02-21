@@ -22,6 +22,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
 
     public TidyToolWindowModel()
     {
+      //init private icons
       discardFixIcon = new IconModel(IconResourceConstants.DiscardFixDisabled, UIElementsConstants.Visibile, false);
       tidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true);
       refreshTidyIcon = new IconModel(VSThemeCommand.GetRefreshTidyIconEnabled(), UIElementsConstants.Visibile, true);
@@ -32,9 +33,6 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
 
       //Register events
       CountFilesModel.PropertyChanged += UpdateIconsOnPropertyChange;
-
-      //init private icons
-      discardFixIcon = new IconModel(IconResourceConstants.DiscardFixDisabled, UIElementsConstants.Visibile, false);
 
       //Init public icons
       RemoveIcon = new IconModel(VSThemeCommand.GetIgnoreIconEnabled(), UIElementsConstants.Visibile, true);
@@ -111,7 +109,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       }
     }
 
-    public IconModel refreshTidyIcon;
+    private IconModel refreshTidyIcon;
     public IconModel RefreshTidyIcon {
       get { return refreshTidyIcon; }
       set
@@ -132,7 +130,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RefreshTidyIcon"));
       }
     }
-    public IconModel removeIcon { get; set; }
+    private IconModel removeIcon { get; set; }
     public IconModel RemoveIcon
     {
       get { return removeIcon; }
@@ -199,23 +197,6 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       }
     }
 
-    public void DisableDiscardFixIcon()
-    {
-      DiscardFixIcon.IconPath = IconResourceConstants.DiscardFixDisabled;
-      DiscardFixIcon.IsEnabled = false;
-    }
-
-    private void DisableFixIcon()
-    {
-      TidyFixIcon.IconPath = IconResourceConstants.FixDisabled;
-      TidyFixIcon.IsEnabled = false;
-    }
-    private void DisableTidyIcon()
-    {
-      RefreshTidyIcon.IconPath = IconResourceConstants.RefreshDisabled;
-      RefreshTidyIcon.IsEnabled = false;
-    }
-
     public void EnableAllIcons()
     {
       if (VSThemeCommand.GetCurrentVsTheme() == VsThemes.Dark)
@@ -254,15 +235,6 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       TidyFixIcon.IconPath = IconResourceConstants.FixLight;
       RefreshTidyIcon.IconPath = IconResourceConstants.RefreshTidyLight;
     }
-
-    private void SelectDisableAllIcons()
-    {
-      RemoveIcon.IconPath = IconResourceConstants.RemoveDisabled;
-      DiscardFixIcon.IconPath = IconResourceConstants.DiscardFixDisabled;
-      TidyFixIcon.IconPath = IconResourceConstants.FixDisabled;
-      RefreshTidyIcon.IconPath = IconResourceConstants.RefreshDisabled;
-    }
-
     #endregion
 
     #endregion

@@ -62,5 +62,16 @@ namespace ClangPowerToolsShared.MVVM.Commands
       else
         return IconResourceConstants.RemoveLight;
     }
+
+    /// <summary>
+    /// Get corresponding icon to visual studio theme
+    /// </summary>
+    public static string GetDiffIconEnabled()
+    {
+      if (VSThemeCommand.GetCurrentVsTheme() == VsThemes.Dark)
+        return IconResourceConstants.DiffDark;
+      else
+        return IconResourceConstants.DiffLight;
+    }
   }
 }
