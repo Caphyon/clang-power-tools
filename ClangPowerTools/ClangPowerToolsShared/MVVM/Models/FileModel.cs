@@ -86,7 +86,12 @@ namespace ClangPowerTools.MVVM.Models
     private IconModel diffIcon;
     public IconModel DiffIcon
     {
-      get; set;
+      get { return diffIcon; }
+      set
+      {
+        diffIcon = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiffIcon"));
+      }
     }
 
     private IconModel tidyFixIcon;
@@ -134,7 +139,6 @@ namespace ClangPowerTools.MVVM.Models
       {
         return isRunning;
       }
-
       set
       {
         if (value)
@@ -163,68 +167,16 @@ namespace ClangPowerTools.MVVM.Models
       }
     }
 
-    //private void SelectIconsDarkTheme()
-    //{
-    //  TidyFixIcon.IconPath = IconResourceConstants.FixDark;
-    //  DiffIcon.IconPath = IconResourceConstants.DiffDark;
-    //}
-
     /// <summary>
-    /// Disable and show (maake visible) diff icon
+    /// Change theme just for enabled icons
     /// </summary>
-    //public void DisableVisibleDiffIcon()
-    //{
-    //  DiffIcon.Visibility = UIElementsConstants.Visibile;
-    //  TidyFixIcon.Visibility = UIElementsConstants.Hidden;
-    //  DiffIcon.IconPath = IconResourceConstants.DiffDisabled;
-    //  DiffIcon.IsEnabled = false;
-    //}
-
-    //public void EnableDiffIcon()
-    //{
-    //  SelectEnableIcons();
-    //  DiffIcon.Visibility = UIElementsConstants.Visibile;
-    //  DiffIcon.IsEnabled = true;
-    //  TidyFixIcon.Visibility = UIElementsConstants.Hidden;
-    //}
-
-    //public void EnableFixIcon()
-    //{
-    //  SelectEnableIcons();
-    //  TidyFixIcon.Visibility = UIElementsConstants.Visibile;
-    //  TidyFixIcon.IsEnabled = true;
-    //  DiffIcon.Visibility = UIElementsConstants.Hidden;
-    //}
-
-    //public void DisableVisibleTidyFixIcon()
-    //{
-    //  TidyFixIcon.Visibility = UIElementsConstants.Visibile;
-    //  DiffIcon.Visibility = UIElementsConstants.Hidden;
-    //  TidyFixIcon.IconPath = IconResourceConstants.FixDisabled;
-    //  TidyFixIcon.IsEnabled = false;
-    //}
-
-    //private void SelectIconsLightTheme()
-    //{
-    //  TidyFixIcon.IconPath = IconResourceConstants.FixLight;
-    //  DiffIcon.IconPath = IconResourceConstants.DiffLight;
-    //}
-
-    //private void SelectDisableIcons()
-    //{
-    //  TidyFixIcon.IconPath = IconResourceConstants.FixDisabled;
-    //  DiffIcon.IconPath = IconResourceConstants.DiffDisabled;
-    //  TidyFixIcon.IsEnabled = false;
-    //  DiffIcon.IsEnabled = false;
-    //}
-
-    //public void SelectEnableIcons()
-    //{
-    //  if (VSThemeCommand.GetCurrentVsTheme() == VsThemes.Dark)
-    //    SelectIconsDarkTheme();
-    //  else
-    //    SelectIconsLightTheme();
-    //}
+    public void ChangeIconsTheme()
+    {
+      DiffIcon.IconPath = DiffIcon.IsEnabled == true ?
+        VSThemeCommand.GetDiffIconEnabled() : IconResourceConstants.DiffDisabled;
+      TidyFixIcon.IconPath = TidyFixIcon.IsEnabled == true ?
+        VSThemeCommand.GetTidyFixIconEnabled() : IconResourceConstants.FixDisabled;
+    }
 
     #endregion
 

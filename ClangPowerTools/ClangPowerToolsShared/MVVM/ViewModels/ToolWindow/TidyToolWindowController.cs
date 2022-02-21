@@ -99,7 +99,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
     }
 
     /// <summary>
-    /// Applies tidy fix on all selected source files or just on single file and makes diff
+    /// Applies tidy fix on all selected source files or just on single file and makes diff after
     /// </summary>
     /// <param name="file"></param>
     /// <returns></returns>
@@ -107,7 +107,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
     {
       //TODO apply tidy fix just on source files, ignore headers
       BeforeCommand();
-      var ttt = tidyToolWindowModel.CountFilesModel;
       //if ((tidyToolWindowModel.TotalChecked != tidyToolWindowModel.TotalFixedChecked && files.Where(f => f.FilesType == FileType.File && f.IsChecked && !f.IsFixed).Any()) || file is not null)
       {
         var filesPaths = new List<string>();
@@ -377,7 +376,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
       headers.Clear();
       tidyToolWindowModel.IsChecked = false;
       tidyToolWindowModel.CountFilesModel.UpdateToUncheckAll();
-      //tidyToolWindowModel.DisableDiscardFixIcon();
     }
 
     #endregion

@@ -62,6 +62,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       RefreshTidyIcon = refreshTidyIcon;
       RemoveIcon = removeIcon;
     }
+
     private IconModel discardFixIcon;
     public IconModel DiscardFixIcon
     {
@@ -130,6 +131,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("RefreshTidyIcon"));
       }
     }
+
     private IconModel removeIcon { get; set; }
     public IconModel RemoveIcon
     {
@@ -197,12 +199,19 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       }
     }
 
-    public void EnableAllIcons()
+    /// <summary>
+    /// Change theme just for enabled icons
+    /// </summary>
+    public void ChangeIconsTheme()
     {
-      if (VSThemeCommand.GetCurrentVsTheme() == VsThemes.Dark)
-        SelectAllIconsDarkTheme();
-      else
-        SelectAllIconsLightTheme();
+      RefreshTidyIcon.IconPath = RefreshTidyIcon.IsEnabled == true ?
+        VSThemeCommand.GetRefreshTidyIconEnabled() : IconResourceConstants.DiffDisabled;
+      TidyFixIcon.IconPath = TidyFixIcon.IsEnabled == true ?
+        VSThemeCommand.GetTidyFixIconEnabled() : IconResourceConstants.FixDisabled;
+      DiscardFixIcon.IconPath = DiscardFixIcon.IsEnabled == true ?
+        VSThemeCommand.GetDiscardFixIconEnabled() : IconResourceConstants.FixDisabled;
+      RemoveIcon.IconPath = RemoveIcon.IsEnabled == true ?
+        VSThemeCommand.GetIgnoreIconEnabled() : IconResourceConstants.FixDisabled;
     }
 
     public string ButtonVisibility
@@ -218,24 +227,6 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ButtonVisibility"));
       }
     }
-
-    #region Private Methods
-    private void SelectAllIconsDarkTheme()
-    {
-      RemoveIcon.IconPath = IconResourceConstants.RemoveDark;
-      DiscardFixIcon.IconPath = IconResourceConstants.DiscardFixDark;
-      TidyFixIcon.IconPath = IconResourceConstants.FixDark;
-      RefreshTidyIcon.IconPath = IconResourceConstants.RefreshTidyDark;
-    }
-
-    private void SelectAllIconsLightTheme()
-    {
-      RemoveIcon.IconPath = IconResourceConstants.RemoveLight;
-      DiscardFixIcon.IconPath = IconResourceConstants.DiscardFixLight;
-      TidyFixIcon.IconPath = IconResourceConstants.FixLight;
-      RefreshTidyIcon.IconPath = IconResourceConstants.RefreshTidyLight;
-    }
-    #endregion
 
     #endregion
   }
