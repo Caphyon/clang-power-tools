@@ -345,7 +345,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
         var removeFile = files.Where(f => f.IsChecked && f.FullFileName == customFile.FullFileName).SingleOrDefault();
         if (removeFile is not null)
         {
+          //Mark as checked, and restore to initial properties to be removed after
+          removeFile.IsChecked = false;
           UpdateCheckedNumber(removeFile);
+          removeFile.IsChecked = true;
           files.Remove(removeFile);
         }
       }
@@ -355,7 +358,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
         {
           if (file.IsChecked)
           {
+            //Mark as checked, and restore to initial properties to be removed after
+            file.IsChecked = false;
             UpdateCheckedNumber(file);
+            file.IsChecked=true;
             files.Remove(file);
           }
         }
