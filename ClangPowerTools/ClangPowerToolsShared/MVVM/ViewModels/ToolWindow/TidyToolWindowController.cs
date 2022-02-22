@@ -61,7 +61,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
             {
               files.RemoveAt(index);
             }
-
             //Add current header on wich was made tidy to files 
             var currentHeaderList = new List<FileModel> { currentHeader };
             MarkFixedFiles(currentHeaderList);
@@ -71,6 +70,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
             {
               files.Add(new FileModel(currentFile));
             }
+            UpdateTidyToolWindowCheckBox();
           }
         }
       }
@@ -166,9 +166,21 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
       {
         //Uncheck "global" checkbox if no file is checked
         tidyToolWindowModel.CountFilesModel.UnCheckFileUpdate(file);
-        tidyToolWindowModel.IsChecked = tidyToolWindowModel.CountFilesModel.TotalCheckedFiles == 0 || tidyToolWindowModel.CountFilesModel.TotalCheckedFiles != files.Count ? false : true;
+        tidyToolWindowModel.IsChecked = tidyToolWindowModel.CountFilesModel.TotalCheckedFiles == 0 ||
+          tidyToolWindowModel.CountFilesModel.TotalCheckedFiles != files.Count ? false : true;
       }
     }
+
+    /// <summary>
+    /// Update Tidy Tool Window checkbox
+    /// </summary>
+    public void UpdateTidyToolWindowCheckBox()
+    {
+      tidyToolWindowModel.IsChecked = tidyToolWindowModel.CountFilesModel.TotalCheckedFiles == files.Count ? true : false;
+      tidyToolWindowModel.IsChecked = tidyToolWindowModel.CountFilesModel.TotalCheckedFiles == 0 ||
+        tidyToolWindowModel.CountFilesModel.TotalCheckedFiles != files.Count ? false : true;
+    }
+
 
     /// <summary>
     /// Make a diff betweeen copy file and current file
@@ -361,7 +373,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
             //Mark as checked, and restore to initial properties to be removed after
             file.IsChecked = false;
             UpdateCheckedNumber(file);
-            file.IsChecked=true;
+            file.IsChecked = true;
             files.Remove(file);
           }
         }
