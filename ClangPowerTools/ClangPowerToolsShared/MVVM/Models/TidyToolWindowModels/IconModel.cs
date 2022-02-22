@@ -8,11 +8,35 @@ namespace ClangPowerToolsShared.MVVM.Models
 {
   public class IconModel : INotifyPropertyChanged
   {
-    public event PropertyChangedEventHandler PropertyChanged;
+    #region Members
+
     private string iconPath;
     private string visibility;
     private string tooltip;
     private bool isEnabled;
+
+    #endregion
+
+    #region Constructors
+
+    public IconModel()
+    {
+
+    }
+
+    public IconModel(string iconPath, string visibility, bool isEnabled, string tooltip = "")
+    {
+      this.iconPath = iconPath;
+      this.visibility = visibility;
+      this.isEnabled = isEnabled;
+      this.tooltip = tooltip;
+    }
+
+    #endregion
+
+    #region Properties
+
+    public event PropertyChangedEventHandler PropertyChanged;
 
     public string IconPath 
     { 
@@ -53,17 +77,6 @@ namespace ClangPowerToolsShared.MVVM.Models
       }
     }
 
-    public IconModel()
-    {
-
-    }
-
-    public IconModel(string iconPath, string visibility, bool isEnabled, string tooltip = "")
-    {
-      this.iconPath = iconPath;
-      this.visibility = visibility;
-      this.isEnabled = isEnabled;
-      this.tooltip = tooltip;
-    }
+    #endregion
   }
 }

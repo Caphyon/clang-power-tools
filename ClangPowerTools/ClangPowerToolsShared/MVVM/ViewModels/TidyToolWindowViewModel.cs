@@ -153,7 +153,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void UpdateViewModel(List<string> filesPath)
     {
-      //if tidy fix was made
+      //if tidy fix was made add headers
       if (!wasMadeTidyOnFiles)
       {
         TidyController.AddHeadersInFilesList(filesPath);
@@ -209,7 +209,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       TidyController.BeforeCommand();
       TidyController.RemoveFiles();
-      //Display a message if no file in list
+      //Display a message if no file is in list
       if (Files.Count == 0)
       {
         listVisibility = UIElementsConstants.Hidden;
