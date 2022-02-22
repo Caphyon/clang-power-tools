@@ -47,21 +47,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
 
     #endregion
 
-    #region Properties
-
-
-    /// <summary>
-    /// Update icons
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void UpdateIconsOnPropertyChange(object sender, System.EventArgs e)
-    {
-      TidyFixIcon = tidyFixIcon;
-      DiscardFixIcon = discardFixIcon;
-      RefreshTidyIcon = refreshTidyIcon;
-      RemoveIcon = removeIcon;
-    }
+    #region Icons
 
     private IconModel discardFixIcon;
     public IconModel DiscardFixIcon
@@ -159,6 +145,10 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       }
     }
 
+    #endregion
+
+    #region Properties
+
     public bool IsChecked
     {
       get { return isChecked; }
@@ -204,6 +194,25 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       }
     }
 
+
+    public string ButtonVisibility
+    {
+      get { return buttonVisibility; }
+      set
+      {
+        buttonVisibility = value;
+        RefreshTidyIcon.Visibility = value;
+        TidyFixIcon.Visibility = value;
+        DiscardFixIcon.Visibility = value;
+        RemoveIcon.Visibility = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ButtonVisibility"));
+      }
+    }
+
+    #endregion
+
+    #region Methods
+
     /// <summary>
     /// Change theme just for enabled icons
     /// </summary>
@@ -219,18 +228,17 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
         VSThemeCommand.GetIgnoreIconEnabled() : IconResourceConstants.FixDisabled;
     }
 
-    public string ButtonVisibility
+    /// <summary>
+    /// Update icons
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void UpdateIconsOnPropertyChange(object sender, System.EventArgs e)
     {
-      get { return buttonVisibility; }
-      set
-      {
-        buttonVisibility = value;
-        RefreshTidyIcon.Visibility = value;
-        TidyFixIcon.Visibility = value;
-        DiscardFixIcon.Visibility = value;
-        RemoveIcon.Visibility = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ButtonVisibility"));
-      }
+      TidyFixIcon = tidyFixIcon;
+      DiscardFixIcon = discardFixIcon;
+      RefreshTidyIcon = refreshTidyIcon;
+      RemoveIcon = removeIcon;
     }
 
     #endregion

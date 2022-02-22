@@ -9,6 +9,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
   /// </summary>
   public class CountFilesModel : INotifyPropertyChanged
   {
+    #region Properies
     public event PropertyChangedEventHandler PropertyChanged;
 
     private int totalCheckedFixedFiles = 0;
@@ -97,7 +98,10 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       }
     }
 
+    #endregion
 
+    #region Methods 
+    
     /// <summary>
     /// Total checked property will be updated with number of files
     /// </summary>
@@ -215,5 +219,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
       }
     }
 
+    #endregion
+  
   }
 }

@@ -18,10 +18,13 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
 {
   public class TidyToolWindowController
   {
+    #region Properties
+
     public ObservableCollection<FileModel> files = new ObservableCollection<FileModel>();
     private List<FileModel> headers = new List<FileModel>();
     public TidyToolWindowModel tidyToolWindowModel = new TidyToolWindowModel();
 
+    #endregion
 
     #region Public Methods
 
@@ -136,20 +139,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
       AfterCommand();
     }
 
-    private List<FileModel> UnifyFileModelLists(List<FileModel> firstList, List<FileModel> secondList)
-    {
-      var fileUnion = new List<FileModel>();
-      foreach (var file in firstList)
-      {
-        fileUnion.Add(file);
-      }
-      foreach (var file in secondList)
-      {
-        fileUnion.Add(file);
-      }
-      return fileUnion;
-    }
-
     /// <summary>
     /// Update checked numer on check and uncheck action
     /// </summary>
@@ -192,11 +181,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
       FileCommand.DiffFilesUsingDefaultTool(FileCommand.GetShortPath(file.CopyFullFileName), FileCommand.GetShortPath(file.FullFileName));
       AfterCommand();
     }
-
-    #endregion
-
-    #region Private Method
-
     public void CheckOrUncheckAll()
     {
       if (tidyToolWindowModel.IsChecked)
@@ -232,36 +216,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
         file.IsRunning = false;
       }
     }
-    private bool CheckIsHeader(string fullFilePath)
-    {
-      FileInfo path = new FileInfo(fullFilePath);
-      return path.FullName.Contains(".h") || path.FullName.Contains(".hpp") || path.FullName.Contains(".hh") || path.FullName.Contains(".hxx");
-    }
-
-    /// <summary>
-    /// Check all files
-    /// </summary>
-    private void CheckAll()
-    {
-      foreach (var file in files)
-      {
-        file.IsChecked = true;
-        UpdateCheckedNumber(file);
-      }
-      tidyToolWindowModel.IsChecked = true;
-      tidyToolWindowModel.CountFilesModel.UpdateTotalChecked(files);
-    }
-
-    private void UncheckAll()
-    {
-      foreach (var file in files)
-      {
-        file.IsChecked = false;
-        UpdateCheckedNumber(file);
-      }
-      tidyToolWindowModel.IsChecked = false;
-      tidyToolWindowModel.CountFilesModel.UpdateToUncheckAll();
-    }
 
     /// <summary>
     /// Mark fixed files by adding a dot charcter "•" to the end of file name and
@@ -280,40 +234,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
         }
       }
     }
-
-    /// <summary>
-    /// Mark unfixed files by removing a dot charcter "•" to the end of file name and
-    /// update total number of unfixed source files and headers
-    /// </summary>
-    /// <param name="checkedFiles"></param>
-    public void MarkUnfixedFiles(List<FileModel> checkedFiles)
-    {
-      foreach (var file in checkedFiles)
-      {
-        MarkUnfixedFiles(file);
-      }
-    }
-
-    private void MarkUnfixedFiles(FileModel file)
-    {
-      if (file.IsFixed)
-      {
-        file.IsFixed = false;
-        file.FileName = file.FileName.Remove(file.FileName.Length - 2, 2);
-        tidyToolWindowModel.CountFilesModel.UpdateFixFileState(file);
-      }
-    }
-
-
-    private string GetProjectPathToFile(string file)
-    {
-      FileInfo path = new FileInfo(file);
-      string directoryName = path.Directory.Name;
-      var fullFileName = path.FullName;
-      var index = fullFileName.IndexOf(directoryName);
-      return fullFileName.Substring(index, fullFileName.Length - index); ;
-    }
-
 
     /// <summary>
     /// Replace current file on which was made tidy fix with a copy
@@ -378,6 +298,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
           }
         }
       }
+      UpdateTidyToolWindowCheckBox();
       AfterCommand();
     }
 
@@ -393,17 +314,98 @@ namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
     }
 
     /// <summary>
+    /// Mark unfixed files by removing a dot charcter "•" to the end of file name and
+    /// update total number of unfixed source files and headers
+    /// </summary>
+    /// <param name="checkedFiles"></param>
+    public void MarkUnfixedFiles(List<FileModel> checkedFiles)
+    {
+      foreach (var file in checkedFiles)
+      {
+        MarkUnfixedFiles(file);
+      }
+    }
+
+    #endregion
+
+    #region Private Method
+
+    private bool CheckIsHeader(string fullFilePath)
+    {
+      FileInfo path = new FileInfo(fullFilePath);
+      return path.FullName.Contains(".h") || path.FullName.Contains(".hpp") || path.FullName.Contains(".hh") || path.FullName.Contains(".hxx");
+    }
+
+    /// <summary>
+    /// Check all files
+    /// </summary>
+    private void CheckAll()
+    {
+      foreach (var file in files)
+      {
+        file.IsChecked = true;
+        UpdateCheckedNumber(file);
+      }
+      tidyToolWindowModel.IsChecked = true;
+      tidyToolWindowModel.CountFilesModel.UpdateTotalChecked(files);
+    }
+
+    private void UncheckAll()
+    {
+      foreach (var file in files)
+      {
+        file.IsChecked = false;
+        UpdateCheckedNumber(file);
+      }
+      tidyToolWindowModel.IsChecked = false;
+      tidyToolWindowModel.CountFilesModel.UpdateToUncheckAll();
+    }
+
+    private void MarkUnfixedFiles(FileModel file)
+    {
+      if (file.IsFixed)
+      {
+        file.IsFixed = false;
+        file.FileName = file.FileName.Remove(file.FileName.Length - 2, 2);
+        tidyToolWindowModel.CountFilesModel.UpdateFixFileState(file);
+      }
+    }
+
+    private string GetProjectPathToFile(string file)
+    {
+      FileInfo path = new FileInfo(file);
+      string directoryName = path.Directory.Name;
+      var fullFileName = path.FullName;
+      var index = fullFileName.IndexOf(directoryName);
+      return fullFileName.Substring(index, fullFileName.Length - index); ;
+    }
+
+    private List<FileModel> UnifyFileModelLists(List<FileModel> firstList, List<FileModel> secondList)
+    {
+      var fileUnion = new List<FileModel>();
+      foreach (var file in firstList)
+      {
+        fileUnion.Add(file);
+      }
+      foreach (var file in secondList)
+      {
+        fileUnion.Add(file);
+      }
+      return fileUnion;
+    }
+
+    /// <summary>
     /// Refresh values after tidy from toolbar or contextMenu
     /// </summary>
-    public void RefreshValues()
+    private void RefreshValues()
     {
       files.Clear();
       headers.Clear();
       tidyToolWindowModel.IsChecked = false;
       tidyToolWindowModel.CountFilesModel.UpdateToUncheckAll();
     }
-
-    #endregion
-
   }
+  
+  #endregion
+
 }
