@@ -196,7 +196,8 @@
               <RowDefinition Height="30" />
             </Grid.RowDefinitions>
             <CheckBox Grid.Column="0"
-                      Width="15"
+                      Width="20"
+                      Height="20"
                       VerticalAlignment="Center"
                       Click="CheckBox_Click"
                       IsChecked="{Binding IsChecked, Mode=TwoWay}" />

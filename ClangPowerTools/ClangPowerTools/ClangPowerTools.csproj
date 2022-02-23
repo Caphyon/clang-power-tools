@@ -410,15 +410,15 @@
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <!-- <PropertyGroup> -->
-    <!-- <PostBuildEvent> -->
+  <PropertyGroup>
+    <PostBuildEvent>
 
-<!-- xcopy "$(SolutionDir)ClangPowerTools\bin\Release\ClangPowerTools.vsix"  "$(SolutionDir)CPTReleases" /y -->
+xcopy "$(SolutionDir)ClangPowerTools\bin\Release\ClangPowerTools.vsix"  "$(SolutionDir)CPTReleases" /y
 
-<!-- powershell.exe -executionPolicy Bypass -WindowStyle Hidden -file "$(SolutionDir)CPTReleases\create22vsix.ps1" -loc "$(SolutionDir)CPTReleases"</PostBuildEvent> -->
-  <!-- </PropertyGroup> -->
-  <!-- <PropertyGroup> -->
-    <!-- <PreBuildEvent>powershell.exe -executionPolicy Bypass -WindowStyle Hidden -file "$(SolutionDir)CPTReleases\IncrementRevisionNumber.ps1" -loc "$(SolutionDir)CPTReleases"</PreBuildEvent> -->
-  <!-- </PropertyGroup> -->
+powershell.exe -executionPolicy Bypass -WindowStyle Hidden -file "$(SolutionDir)CPTReleases\create22vsix.ps1" -loc "$(SolutionDir)CPTReleases"</PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>powershell.exe -executionPolicy Bypass -WindowStyle Hidden -file "$(SolutionDir)CPTReleases\IncrementRevisionNumber.ps1" -loc "$(SolutionDir)CPTReleases"</PreBuildEvent>
+  </PropertyGroup>
 
 </Project>
