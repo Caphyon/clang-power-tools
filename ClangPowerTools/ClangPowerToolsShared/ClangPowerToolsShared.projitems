@@ -190,7 +190,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TidySettingsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TidyToolWindowViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\ToggleMultipleDataViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\ToolWindow\TidyToolWindowController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\TidyToolWindowController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TrialExpiredViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\FolderExplorerView.xaml.cs">
       <DependentUpon>FolderExplorerView.xaml</DependentUpon>

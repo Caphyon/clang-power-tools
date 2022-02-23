@@ -1,25 +1,18 @@
 ﻿using ClangPowerTools;
-using ClangPowerTools.Commands;
-using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Command;
 using ClangPowerTools.MVVM.Models;
-using ClangPowerTools.Services;
 using ClangPowerTools.Views;
-using ClangPowerToolsShared.MVVM.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
+using ClangPowerToolsShared.MVVM.Controllers;
 using ClangPowerToolsShared.MVVM.Models;
 using ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels;
-using ClangPowerToolsShared.MVVM.ViewModels.ToolWindow;
-using EnvDTE80;
 using Microsoft.VisualStudio.PlatformUI;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows.Data;
-using System.Windows.Forms;
 using System.Windows.Input;
 using Task = System.Threading.Tasks.Task;
 
@@ -42,7 +35,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private ICommand discardAllCommand;
     private ICommand removeAllCommand;
 
-    public ObservableCollection<FileModel> Files { get { return TidyController.files; }
+    public ObservableCollection<FileModel> Files
+    {
+      get { return TidyController.files; }
       set
       {
         TidyController.files = value;
@@ -230,7 +225,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           {
             TidyController.DiscardFile(file);
             //If is a header remove from file list
-            if(file.FilesType == FileType.Header)
+            if (file.FilesType == FileType.Header)
             {
               TidyController.RemoveFiles(file);
             }

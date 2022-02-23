@@ -14,7 +14,7 @@ using System.Linq;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
-namespace ClangPowerToolsShared.MVVM.ViewModels.ToolWindow
+namespace ClangPowerToolsShared.MVVM.Controllers
 {
   public class TidyToolWindowController
   {
