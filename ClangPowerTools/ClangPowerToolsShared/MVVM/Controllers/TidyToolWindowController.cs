@@ -47,6 +47,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     public void AddHeadersInFilesList(List<string> filesPath)
     {
       //if tidy fix was made
+      List<FileModel> resultHeadersList = new List<FileModel>();
       foreach (string file in filesPath)
       {
         FileInfo path = new FileInfo(file);
@@ -65,18 +66,18 @@ namespace ClangPowerToolsShared.MVVM.Controllers
               files.RemoveAt(index);
             }
             //Add current header on wich was made tidy to files 
-            var currentHeaderList = new List<FileModel> { currentHeader };
-            MarkFixedFiles(currentHeaderList);
-            var currentModelFiles = UnifyFileModelLists(files.ToList(), currentHeaderList);
-            files.Clear();
-            foreach (var currentFile in currentModelFiles)
-            {
-              files.Add(new FileModel(currentFile));
-            }
-            UpdateTidyToolWindowCheckBox();
+            MarkFixedFiles(new List<FileModel> { currentHeader });
+            resultHeadersList.Add(currentHeader);
           }
         }
       }
+      var result = UnifyFileModelLists(files.ToList(), resultHeadersList);
+      files.Clear();
+      foreach (var currentFile in result)
+      {
+        files.Add(new FileModel(currentFile));
+      }
+      UpdateTidyToolWindowCheckBox();
     }
 
     /// <summary>
