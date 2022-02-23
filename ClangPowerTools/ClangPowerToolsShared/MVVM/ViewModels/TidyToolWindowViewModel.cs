@@ -1,22 +1,18 @@
 ﻿using ClangPowerTools;
-using ClangPowerTools.Commands;
-using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Command;
 using ClangPowerTools.MVVM.Models;
-using ClangPowerTools.Services;
 using ClangPowerTools.Views;
-using ClangPowerToolsShared.MVVM.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
+using ClangPowerToolsShared.MVVM.Controllers;
 using ClangPowerToolsShared.MVVM.Models;
-using EnvDTE80;
+using ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels;
 using Microsoft.VisualStudio.PlatformUI;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
+using System.Windows.Data;
 using System.Windows.Input;
 using Task = System.Threading.Tasks.Task;
 
@@ -27,20 +23,27 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     #region Members
 
     public event PropertyChangedEventHandler PropertyChanged;
-    private ObservableCollection<FileModel> files = new ObservableCollection<FileModel>();
     private TidyToolWindowView tidyToolWindowView;
-    private TidyToolWindowModel tidyToolWindowModel;
     private MessageModel messageModel;
     private string listVisibility = UIElementsConstants.Visibile;
+    private TidyToolWindowController TidyController;
     //To not refresh files value every time (with the same files), and to not refresh check box value
-    bool filesAlreadyExists = false;
+    bool wasMadeTidyOnFiles = false;
 
     private ICommand tidyAllCommand;
     private ICommand fixAllCommand;
     private ICommand discardAllCommand;
     private ICommand removeAllCommand;
 
-    public ObservableCollection<FileModel> Files { get; set; } = new ObservableCollection<FileModel>();
+    public ObservableCollection<FileModel> Files
+    {
+      get { return TidyController.files; }
+      set
+      {
+        TidyController.files = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Files"));
+      }
+    }
 
     #endregion
 
@@ -48,10 +51,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public TidyToolWindowModel TidyToolWindowModel
     {
-      get { return tidyToolWindowModel; }
+      get { return TidyController.tidyToolWindowModel; }
       set
       {
-        tidyToolWindowModel = value;
+        TidyController.tidyToolWindowModel = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyToolWindowModel"));
       }
     }
@@ -114,15 +117,20 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public TidyToolWindowViewModel(TidyToolWindowView tidyToolWindowView)
     {
-      tidyToolWindowModel = new TidyToolWindowModel();
       VSColorTheme.ThemeChanged += ThemeChangeEvent;
+      this.tidyToolWindowView = tidyToolWindowView;
+      //init
+      TidyController = new TidyToolWindowController();
       messageModel = new MessageModel();
 
-      tidyToolWindowModel.ButtonVisibility = UIElementsConstants.Visibile;
-      tidyToolWindowModel.ProgressBarVisibility = UIElementsConstants.Hidden;
-      TidyToolWindowModel = tidyToolWindowModel;
-      Files = files;
-      this.tidyToolWindowView = tidyToolWindowView;
+      TidyController.tidyToolWindowModel.ButtonVisibility = UIElementsConstants.Visibile;
+      TidyController.tidyToolWindowModel.ProgressBarVisibility = UIElementsConstants.Hidden;
+
+      //Create groups
+      CollectionView view = (CollectionView)CollectionViewSource.GetDefaultView(Files);
+      PropertyGroupDescription groupDescription = new PropertyGroupDescription("FilesType");
+
+      view.GroupDescriptions.Add(groupDescription);
     }
 
     #endregion
@@ -131,331 +139,122 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void OpenTidyToolWindow(List<string> filesPath)
     {
-      RefreshValues();
-      CheckAll();
-      TidyAllFilesAsync(filesPath);
-      filesAlreadyExists = false;
+      RefreshOnWindowUpdate();
+      TidyController.InitTidyToolWindow(filesPath);
+      wasMadeTidyOnFiles = true;
     }
 
     public void UpdateViewModel(List<string> filesPath)
     {
-      if (!filesAlreadyExists)
+      //if tidy fix was made add headers
+      if (!wasMadeTidyOnFiles)
       {
-        RefreshValues();
-        foreach (string file in filesPath)
-        {
-          FileInfo path = new FileInfo(file);
-          files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)) });
-        }
-        CheckAll();
-        SaveLastUpdatesToUI();
-        filesAlreadyExists = true;
+        TidyController.AddHeadersInFilesList(filesPath);
       }
-      var patht = TidyConstants.TempsFolderPath;
+
+      if (Files.Count == 0)
+      {
+        TidyController.AddFilesInFilesList(filesPath);
+      }
       if (!Directory.Exists(TidyConstants.TempsFolderPath))
-          Directory.CreateDirectory(TidyConstants.TempsFolderPath);
-        
+        Directory.CreateDirectory(TidyConstants.TempsFolderPath);
     }
+
+    private async Task TidyAllFilesAsync(List<string> paths = null)
+    {
+      wasMadeTidyOnFiles = true;
+      TidyController.TidyFilesAsync(paths);
+    }
+
 
     public void CheckOrUncheckAll()
     {
-      if (tidyToolWindowModel.IsChecked)
-      {
-        CheckAll();
-        SaveLastUpdatesToUI();
-      }
-      else
-      {
-        UncheckAll();
-      }
-      UpdateCheckedNumber();
+      TidyController.CheckOrUncheckAll();
     }
 
     public async Task FixAllFilesAsync(FileModel file = null)
     {
-      UpdateTidyToolWindowModelFixedNr();
-      if (tidyToolWindowModel.TotalChecked != tidyToolWindowModel.TotalFixedChecked || file is not null)
-      {
-        BeforeCommand();
-        var filesPaths = new List<string>();
-        var filesPathsCopy = new List<FileModel>();
-        if (file is null)
-        {
-          //get checked and unfixed files
-          filesPathsCopy = files.Where(f => f.IsChecked && f.IsFixed == false).ToList();
-          filesPaths = files.Where(f => f.IsChecked).Select(f => f.FullFileName).ToList();
-        }
-        else
-        {
-          filesPathsCopy = new List<FileModel> { file };
-          filesPaths = new List<string> { file.FullFileName };
-        }
-        FileCommand.CopyFilesInTempSolution(filesPathsCopy);
-        await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu, filesPaths);
-        if (file is not null)
-        {
-          DiffFile(file);
-        }
-        MarkFixedFiles(filesPathsCopy);
-        UpdateCheckedNumber();
-        AfterCommand();
-      }
+      TidyController.FixAllFilesAsync(file);
+      wasMadeTidyOnFiles = false;
     }
 
+    /// <summary>
+    /// Update checked numer on check and uncheck action
+    /// </summary>
+    /// <param name="file"></param>
     public void UpdateCheckedNumber(FileModel file)
     {
-      if (file.IsChecked)
-      {
-        ++tidyToolWindowModel.TotalChecked;
-        UpdateTidyToolWindowModelFixedNr();
-        tidyToolWindowModel.IsChecked = tidyToolWindowModel.TotalChecked == files.Count ? true : false;
-        TidyToolWindowModel = tidyToolWindowModel;
-      }
-      else
-      {
-        --tidyToolWindowModel.TotalChecked;
-        UpdateTidyToolWindowModelFixedNr();
-        tidyToolWindowModel.IsChecked = tidyToolWindowModel.TotalChecked == 0 || tidyToolWindowModel.TotalChecked != files.Count ? false : true;
-        TidyToolWindowModel = tidyToolWindowModel;
-      }
+      TidyController.UpdateCheckedNumber(file);
+      TidyToolWindowModel = TidyController.tidyToolWindowModel;
     }
 
     public void DiffFile(FileModel file)
     {
-      BeforeCommand();
-      FileCommand.DiffFilesUsingDefaultTool(FileCommand.GetShortPath(file.CopyFullFileName), FileCommand.GetShortPath(file.FullFileName));
-      AfterCommand();
+      TidyController.DiffBetweenCopyAndCurrent(file);
     }
 
     #endregion
 
     #region Private Method
 
-    private void BeforeCommand()
-    {
-      tidyToolWindowModel.IsRunning = true;
-      foreach (var file in files)
-      {
-        file.IsRunning = true;
-      }
-      Files = files;
-      TidyToolWindowModel = tidyToolWindowModel;
-    }
-
-    private void AfterCommand()
-    {
-      TidyToolWindowModel.IsRunning = false;
-      foreach (var file in files)
-      {
-        file.IsRunning = false;
-      }
-      Files = files;
-      TidyToolWindowModel = tidyToolWindowModel;
-    }
-
-    private void UpdateTidyToolWindowModelFixedNr()
-    {
-      tidyToolWindowModel.FixedNr = 0;
-      tidyToolWindowModel.TotalFixedChecked = 0;
-      foreach (var file in files)
-      {
-        if (file.IsFixed)
-        {
-          ++tidyToolWindowModel.FixedNr;
-          if (file.IsChecked)
-            ++tidyToolWindowModel.TotalFixedChecked;
-        }
-      }
-    }
-
-    private void CheckAll()
-    {
-      tidyToolWindowModel.IsChecked = true;
-      tidyToolWindowModel.TotalFixedChecked = 0;
-      foreach (var file in files)
-      {
-        file.IsChecked = true;
-        if (file.IsFixed)
-          ++tidyToolWindowModel.TotalChecked;
-      }
-      tidyToolWindowModel.TotalChecked = files.Count;
-      UpdateCheckedNumber();
-      SaveLastUpdatesToUI();
-    }
-
-    private void SaveLastUpdatesToUI()
-    {
-      Files = files;
-      TidyToolWindowModel = tidyToolWindowModel;
-    }
-
-    private void UncheckAll()
-    {
-      tidyToolWindowModel.IsChecked = false;
-      foreach (var file in files)
-      {
-        file.IsChecked = false;
-      }
-      tidyToolWindowModel.TotalFixedChecked = 0;
-      tidyToolWindowModel.TotalChecked = 0;
-      UpdateCheckedNumber();
-      SaveLastUpdatesToUI();
-    }
-
-    private void MarkFixedFiles(List<FileModel> fixedFiles)
-    {
-      foreach (var file in fixedFiles)
-      {
-        if(!file.IsFixed)
-        {
-          file.IsFixed = true;
-          file.FileName += " •";
-        }
-      }
-    }
-
-    private void MarkUnfixedFiles(List<FileModel> checkedFiles)
-    {
-      foreach (var file in checkedFiles)
-      {
-        if(file.IsFixed)
-        {
-          file.IsFixed = false;
-          file.FileName = file.FileName.Remove(file.FileName.Length - 2, 2);
-        }
-      }
-    }
-
-    private string GetProjectPathToFile(string file)
-    {
-      FileInfo path = new FileInfo(file);
-      string directoryName = path.Directory.Name;
-      var fullFileName = path.FullName;
-      var index = fullFileName.IndexOf(directoryName);
-      return fullFileName.Substring(index, fullFileName.Length - index); ;
-    }
-
-    private void DiscardFile(FileModel file)
-    {
-      var fileChangerWatcher = new FileChangerWatcher();
-
-      var dte2 = VsServiceProvider.GetService(typeof(DTE2)) as DTE2;
-      string solutionFolderPath = SolutionInfo.IsOpenFolderModeActive() ?
-        dte2.Solution.FullName : dte2.Solution.FullName
-                                  .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
-      fileChangerWatcher.Run(solutionFolderPath);
-
-      if (File.Exists(file.CopyFullFileName))
-      {
-        try
-        {
-          File.Copy(file.CopyFullFileName, file.FullFileName, true);
-          File.Delete(file.CopyFullFileName);
-        }
-        catch (UnauthorizedAccessException e)
-        {
-
-            MessageBox.Show($"Access to path {file.FullFileName} is denied", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-          
-
-        }
-
-      }
-    }
-
     private void RemoveAllFiles()
     {
-      BeforeCommand();
-      foreach (var file in Files.ToList())
-      {
-        if (file.IsChecked)
-        {
-          Files.Remove(file);
-        }
-      }
+      TidyController.BeforeCommand();
+      TidyController.RemoveFiles();
+      //Display a message if no file is in list
       if (Files.Count == 0)
       {
         listVisibility = UIElementsConstants.Hidden;
         ListVisibility = ListVisibility;
         messageModel.Visibility = UIElementsConstants.Visibile;
-        messageModel.TextMessage = "You don't have any files, run tidy to add files";
+        messageModel.TextMessage = "Files on which you run Tidy will be shown here";
         MessageModel = messageModel;
       }
-      UpdateCheckedNumber();
-      AfterCommand();
-    }
-
-    private async Task TidyAllFilesAsync(List<string> paths = null)
-    {
-      BeforeCommand();
-      if (paths is null)
-      {
-        paths = files.Where(f => f.IsChecked).Select(f => f.FullFileName).ToList();
-      }
-      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowId, CommandUILocation.ContextMenu, paths);
-      AfterCommand();
-    }
-
-    private void UpdateCheckedNumber()
-    {
-      UpdateTidyToolWindowModelFixedNr();
-      tidyToolWindowModel.TotalChecked = 0;
-      foreach (var file in files)
-      {
-        if (file.IsChecked)
-        {
-          ++tidyToolWindowModel.TotalChecked;
-        }
-      }
-      tidyToolWindowModel.IsChecked = tidyToolWindowModel.TotalChecked is 0 ? false : true;
-      TidyToolWindowModel = tidyToolWindowModel;
+      TidyController.AfterCommand();
     }
 
     private void DiscardAllFiles()
     {
-      if(TidyToolWindowModel.TotalFixedChecked != 0)
+      if (TidyToolWindowModel.CountFilesModel.TotalCheckedFixedFiles != 0)
       {
-        BeforeCommand();
-        var checkFiles = files.Where(f => f.IsChecked).ToList();
-        foreach (var file in checkFiles)
+        TidyController.BeforeCommand();
+        var checkedFiles = TidyController.files.Where(f => f.IsChecked).ToList();
+        foreach (var file in checkedFiles)
         {
           if (file.IsChecked)
           {
-            DiscardFile(file);
+            TidyController.DiscardFile(file);
+            //If is a header remove from file list
+            if (file.FilesType == FileType.Header)
+            {
+              TidyController.RemoveFiles(file);
+            }
           }
         }
-        MarkUnfixedFiles(checkFiles);
-        ++tidyToolWindowModel.DiscardNr;
-        UpdateCheckedNumber();
-        AfterCommand();
+        TidyController.AfterCommand();
       }
     }
 
     public void ThemeChangeEvent(ThemeChangedEventArgs e)
     {
-      tidyToolWindowModel.EnableAllIcons();
-      foreach (var file in files)
+      TidyController.tidyToolWindowModel.ChangeIconsTheme();
+      foreach (var file in TidyController.files)
       {
-        file.EnableIcon();
+        file.ChangeIconsTheme();
       }
-      SaveLastUpdatesToUI();
     }
 
-    private void RefreshValues()
+    /// <summary>
+    /// Make list visible after tidy from toolbar or contextMenu
+    /// </summary>
+    private void RefreshOnWindowUpdate()
     {
-      files.Clear();
       listVisibility = UIElementsConstants.Visibile;
       messageModel.Visibility = UIElementsConstants.Hidden;
       ListVisibility = listVisibility;
       MessageModel = messageModel;
-      tidyToolWindowModel.TotalChecked = 0;
-      tidyToolWindowModel.DisableDiscardFixIcon();
-      tidyToolWindowModel.TotalFixedChecked = 0;
-      tidyToolWindowModel.IsChecked = false;
-      SaveLastUpdatesToUI();
     }
 
     #endregion
-
   }
 }

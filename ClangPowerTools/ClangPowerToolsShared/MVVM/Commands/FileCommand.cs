@@ -15,7 +15,7 @@ namespace ClangPowerToolsShared.MVVM.Commands
   {
     [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
     public static extern uint GetShortPathName(string lpszLongPath, StringBuilder lpszShortPath, uint cchBuffer);
-    
+
     public static string GetShortPath(string longPath)
     {
       StringBuilder shortPath = new StringBuilder(255);
@@ -39,7 +39,7 @@ namespace ClangPowerToolsShared.MVVM.Commands
         process.Start();
         process.WaitForExit();
         if (makeDiff)
-          DiffFilesUsingDefaultTool(filePath.CopyFullFileName, file.FullName);;
+          DiffFilesUsingDefaultTool(filePath.CopyFullFileName, file.FullName); ;
       }
       catch (Exception e)
       {
@@ -47,11 +47,42 @@ namespace ClangPowerToolsShared.MVVM.Commands
       }
     }
 
-    public static void CopyFileInTempSolution(FileModel file)
+    /// <summary>
+    /// Copy a file from temp to solution
+    /// </summary>
+    /// <param name="file"></param>
+    public static void CopyFileFromTempToSolution(FileModel file)
+    {
+      if (File.Exists(file.CopyFullFileName))
+      {
+        try
+        {
+          File.Copy(file.CopyFullFileName, file.FullFileName, true);
+          File.Delete(file.CopyFullFileName);
+        }
+        catch (UnauthorizedAccessException e)
+        {
+          MessageBox.Show($"File {file.FullFileName} can't be copied, access to path is denied", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        }
+      }
+    }
+
+    /// <summary>
+    /// Copy a file from solution to temp folder
+    /// </summary>
+    /// <param name="file"></param>
+    public static void CopyFileFromSolutionToTemp(FileModel file)
     {
       FileInfo fileInfo = new(file.CopyFullFileName);
       Directory.CreateDirectory(fileInfo.Directory.FullName);
-      File.Copy(file.FullFileName, file.CopyFullFileName, true);
+      try
+      {
+        File.Copy(file.FullFileName, file.CopyFullFileName, true);
+      }
+      catch (UnauthorizedAccessException e)
+      {
+        MessageBox.Show($"File {file.FullFileName} can't be copied, access to path is denied", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+      }
     }
 
     public static void Copy(string source, string destination)
@@ -67,9 +98,9 @@ namespace ClangPowerToolsShared.MVVM.Commands
 
     public static void CopyFilesInTempSolution(List<FileModel> files)
     {
-      foreach(var file in files)
+      foreach (var file in files)
       {
-        CopyFileInTempSolution(file);
+        CopyFileFromSolutionToTemp(file);
       }
     }
 

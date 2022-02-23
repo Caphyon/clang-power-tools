@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="Caphyon.705559db-5755-43fa-a023-41a3b14d2935" Version="8.2.0.48" Language="en-US" Publisher="Caphyon" />
+    <Identity Id="Caphyon.705559db-5755-43fa-a023-41a3b14d2935" Version="8.2.0.108" Language="en-US" Publisher="Caphyon" />
     <DisplayName>Clang Power Tools</DisplayName>
     <Description xml:space="preserve">A tool bringing clang-tidy magic to Visual Studio C++ developers.</Description>
     <MoreInfo>http://www.clangpowertools.com/QaA</MoreInfo>
@@ -11,6 +11,7 @@
     <Icon>Resources\CPTLogoManageExtensionVS.png</Icon>
     <PreviewImage>Resources\CPTLogoManageExtensionVS.png</PreviewImage>
     <Tags>clang;clang-tidy;clang-format;compile;modernize;CoreGuidelines;static analysis;tidy;C++;cpp;analyze</Tags>
+    <Preview>true</Preview>
   </Metadata>
   <Installation InstalledByMsi="false">
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0,17.0)">

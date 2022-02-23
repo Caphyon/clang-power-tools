@@ -1,5 +1,7 @@
 ﻿using ClangPowerToolsShared.MVVM.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
+using ClangPowerToolsShared.MVVM.Models;
+using ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels;
 using System.ComponentModel;
 
 namespace ClangPowerTools.MVVM.Models
@@ -11,16 +13,9 @@ namespace ClangPowerTools.MVVM.Models
 
     public event PropertyChangedEventHandler PropertyChanged;
     private bool isRunning;
-    private bool isEnabled;
     private bool isFixed;
     private bool isChecked;
-    private string diffVisibility;
-    private string fixVisibility;
-    private string fileName;
-
-    //icons
-    private string tidyFixIcon = string.Empty;
-    private string diffIcon = string.Empty;
+    private string filename;
 
     #endregion
 
@@ -28,29 +23,67 @@ namespace ClangPowerTools.MVVM.Models
 
     public FileModel()
     {
-      EnableIcon();
-      DiffVisibility = UIElementsConstants.Hidden;
-      FixVisibility = UIElementsConstants.Visibile;
-      IsEnabled = true;
+      //init private icons
+      diffIcon = new IconModel(VSThemeCommand.GetDiffIconEnabled(), UIElementsConstants.Hidden, false, "Diff");
+      tidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true, "Fix");
+
+      //init public icons
+      DiffIcon = new IconModel(VSThemeCommand.GetDiffIconEnabled(), UIElementsConstants.Hidden, false);
+      TidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true);
+    }
+
+    public FileModel(FileModel file)
+    {
+      //init private icons
+      diffIcon = new IconModel(VSThemeCommand.GetDiffIconEnabled(), UIElementsConstants.Hidden, false, "Diff");
+      tidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true, "Fix");
+
+      //init public icons
+      DiffIcon = new IconModel(VSThemeCommand.GetDiffIconEnabled(), UIElementsConstants.Hidden, false);
+      TidyFixIcon = new IconModel(VSThemeCommand.GetTidyFixIconEnabled(), UIElementsConstants.Visibile, true);
+
+      this.FileName = file.FileName;
+      this.FullFileName = file.FullFileName;
+      this.CopyFullFileName = file.CopyFullFileName;
+      this.DiffIcon = file.DiffIcon;
+      this.TidyFixIcon = file.TidyFixIcon;
+      this.IsFixed = file.IsFixed;
+      this.IsRunning = file.IsRunning;
+      this.IsChecked = file.IsChecked;
+      this.FilesType = file.FilesType;
     }
 
     #endregion
 
     #region Public Properities
 
-    public string FileName 
-    { 
-      get { return fileName; }
+    public FileType FilesType { get; set; }
+    public string FilesTypeString
+    {
+      get
+      {
+        if (FilesType == FileType.SourceFile)
+          return "Source files";
+        else
+          return "Affected headers";
+      }
+    }
+
+    public string FileName
+    {
+      get { return filename; }
       set
       {
-        fileName = value;
+        filename = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FileName"));
       }
     }
+
     public string FullFileName { get; set; }
     public string CopyFullFileName { get; set; }
 
-    public string DiffIcon
+    private IconModel diffIcon;
+    public IconModel DiffIcon
     {
       get { return diffIcon; }
       set
@@ -60,33 +93,14 @@ namespace ClangPowerTools.MVVM.Models
       }
     }
 
-    public string TidyFixIcon
+    private IconModel tidyFixIcon;
+    public IconModel TidyFixIcon
     {
       get { return tidyFixIcon; }
       set
       {
         tidyFixIcon = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyFixIcon"));
-      }
-    }
-
-    public string DiffVisibility
-    {
-      get { return diffVisibility; }
-      set
-      {
-        diffVisibility = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiffVisibility"));
-      }
-    }
-
-    public string FixVisibility
-    {
-      get { return fixVisibility; }
-      set
-      {
-        fixVisibility = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FixVisibility"));
       }
     }
 
@@ -100,13 +114,17 @@ namespace ClangPowerTools.MVVM.Models
       {
         if (value)
         {
-          DiffVisibility = UIElementsConstants.Visibile;
-          FixVisibility = UIElementsConstants.Hidden;
+          DiffIcon.Visibility = UIElementsConstants.Visibile;
+          DiffIcon.IsEnabled = true;
+          TidyFixIcon.Visibility = UIElementsConstants.Hidden;
+          TidyFixIcon.IsEnabled = false;
         }
         else
         {
-          DiffVisibility = UIElementsConstants.Hidden;
-          FixVisibility = UIElementsConstants.Visibile;
+          TidyFixIcon.Visibility = UIElementsConstants.Visibile;
+          TidyFixIcon.IsEnabled = true;
+          DiffIcon.Visibility = UIElementsConstants.Hidden;
+          DiffIcon.IsEnabled = false;
         }
         if (isFixed == value) return;
         isFixed = value;
@@ -120,33 +138,24 @@ namespace ClangPowerTools.MVVM.Models
       {
         return isRunning;
       }
-
       set
       {
         if (value)
         {
-          DisableIcon();
+          TidyFixIcon.IsEnabled = false;
+          TidyFixIcon.IconPath = IconResourceConstants.FixDisabled;
+          DiffIcon.IsEnabled = false;
+          DiffIcon.IconPath = IconResourceConstants.DiffDisabled;
         }
         else
         {
-          EnableIcon();
+          TidyFixIcon.IsEnabled = true;
+          TidyFixIcon.IconPath = VSThemeCommand.GetTidyFixIconEnabled();
+          DiffIcon.IsEnabled = true;
+          DiffIcon.IconPath = VSThemeCommand.GetDiffIconEnabled();
         }
         isRunning = value;
-        IsEnabled = !value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsRunning"));
-      }
-    }
-
-    public bool IsEnabled
-    {
-      get
-      {
-        return isEnabled;
-      }
-      set
-      {
-        isEnabled = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsEnabled"));
       }
     }
 
@@ -161,31 +170,15 @@ namespace ClangPowerTools.MVVM.Models
       }
     }
 
-    private void EnableIconDarkTheme()
+    /// <summary>
+    /// Change theme just for enabled icons
+    /// </summary>
+    public void ChangeIconsTheme()
     {
-      TidyFixIcon = IconResourceConstants.FixDark;
-      DiffIcon = IconResourceConstants.DiffDark;
-    }
-
-
-    private void EnableIconLightTheme()
-    {
-      TidyFixIcon = IconResourceConstants.FixLight;
-      DiffIcon = IconResourceConstants.DiffLight;
-    }
-
-    private void DisableIcon()
-    {
-      TidyFixIcon = IconResourceConstants.FixDisabled;
-      DiffIcon = IconResourceConstants.DiffDisabled;
-    }
-
-    public void EnableIcon()
-    {
-      if (VSThemeCommand.GetCurrentVsTheme() == VsThemes.Dark)
-        EnableIconDarkTheme();
-      else
-        EnableIconLightTheme();
+      DiffIcon.IconPath = DiffIcon.IsEnabled == true ?
+        VSThemeCommand.GetDiffIconEnabled() : IconResourceConstants.DiffDisabled;
+      TidyFixIcon.IconPath = TidyFixIcon.IsEnabled == true ?
+        VSThemeCommand.GetTidyFixIconEnabled() : IconResourceConstants.FixDisabled;
     }
 
     #endregion

@@ -21,8 +21,8 @@ namespace ClangPowerToolsShared.MVVM.Constants
     public static string RemoveLight { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]Remove.png";
     public static string RemoveDisabled { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]Remove_disabled.png";
 
-    public static string RemoveFixDark { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]RemoveFix_dark.png";
-    public static string RemoveFixLight { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]RemoveFix.png";
-    public static string RemoveFixDisabled { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]RemoveFix_disabled.png";
+    public static string DiscardFixDark { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]RemoveFix_dark.png";
+    public static string DiscardFixLight { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]RemoveFix.png";
+    public static string DiscardFixDisabled { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]RemoveFix_disabled.png";
   }
 }
