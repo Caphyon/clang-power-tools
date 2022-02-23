@@ -10,6 +10,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
   public class CountFilesModel : INotifyPropertyChanged
   {
     #region Properies
+
     public event PropertyChangedEventHandler PropertyChanged;
 
     private int totalCheckedFixedFiles = 0;
@@ -25,7 +26,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     public int TotalCheckedFixedFiles
     {
       get { return totalCheckedFixedFiles; }
-      set
+      private set
       {
         totalCheckedFixedFiles = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalCheckedFixedFiles"));
@@ -39,7 +40,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     {
       get
       { return totalCheckedFixedHeaders; }
-      set
+      private set
       {
         totalCheckedFixedHeaders = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalCheckedFixedHeaders"));
@@ -52,7 +53,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     public int TotalCheckedFixedSouceFiles
     {
       get { return totalCheckedFixedSouceFiles; }
-      set
+      private set
       {
         totalCheckedFixedSouceFiles = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalCheckedFixedSouceFiles"));
@@ -65,7 +66,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     public int TotalCheckedSourceFiles
     {
       get { return totalCheckedSourceFiles; }
-      set
+      private set
       {
         totalCheckedSourceFiles = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalCheckedSourceFiles"));
@@ -78,7 +79,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     public int TotalCheckedHeaders
     {
       get { return totalCheckedHeaders; }
-      set
+      private set
       {
         totalCheckedHeaders = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalCheckedHeaders"));
@@ -91,7 +92,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     public int TotalCheckedFiles
     {
       get { return totalCheckedFiles; }
-      set
+      private set
       {
         totalCheckedFiles = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TotalCheckedFiles"));

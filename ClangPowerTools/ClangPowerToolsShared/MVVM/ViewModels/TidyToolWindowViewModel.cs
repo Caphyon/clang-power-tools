@@ -35,7 +35,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private string listVisibility = UIElementsConstants.Visibile;
     private TidyToolWindowController TidyController;
     //To not refresh files value every time (with the same files), and to not refresh check box value
-    bool filesAlreadyExists = false;
     bool wasMadeTidyOnFiles = false;
 
     private ICommand tidyAllCommand;
@@ -148,7 +147,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       RefreshOnWindowUpdate();
       TidyController.InitTidyToolWindow(filesPath);
       wasMadeTidyOnFiles = true;
-      filesAlreadyExists = false;
     }
 
     public void UpdateViewModel(List<string> filesPath)
@@ -159,10 +157,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         TidyController.AddHeadersInFilesList(filesPath);
       }
 
-      if (!filesAlreadyExists)
+      if (Files.Count == 0)
       {
         TidyController.AddFilesInFilesList(filesPath);
-        filesAlreadyExists = true;
       }
       if (!Directory.Exists(TidyConstants.TempsFolderPath))
         Directory.CreateDirectory(TidyConstants.TempsFolderPath);

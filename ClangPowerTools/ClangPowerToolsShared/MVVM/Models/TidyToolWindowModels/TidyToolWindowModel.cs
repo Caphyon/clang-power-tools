@@ -68,7 +68,7 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
           discardFixIcon.IconPath = VSThemeCommand.GetDiscardFixIconEnabled();
           discardFixIcon.IsEnabled = true;
         }
-        discardFixIcon.Tooltip = $"Discard {CountFilesModel.TotalCheckedFixedFiles} files";
+        discardFixIcon.Tooltip = $"Discard fix {CountFilesModel.TotalCheckedFixedFiles} files";
         discardFixIcon = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DiscardFixIcon"));
       }
@@ -218,13 +218,13 @@ namespace ClangPowerToolsShared.MVVM.Models.TidyToolWindowModels
     /// </summary>
     public void ChangeIconsTheme()
     {
-      RefreshTidyIcon.IconPath = RefreshTidyIcon.IsEnabled == true ?
+      RefreshTidyIcon.IconPath = RefreshTidyIcon.IsEnabled ?
         VSThemeCommand.GetRefreshTidyIconEnabled() : IconResourceConstants.DiffDisabled;
-      TidyFixIcon.IconPath = TidyFixIcon.IsEnabled == true ?
+      TidyFixIcon.IconPath = TidyFixIcon.IsEnabled ?
         VSThemeCommand.GetTidyFixIconEnabled() : IconResourceConstants.FixDisabled;
-      DiscardFixIcon.IconPath = DiscardFixIcon.IsEnabled == true ?
+      DiscardFixIcon.IconPath = DiscardFixIcon.IsEnabled ?
         VSThemeCommand.GetDiscardFixIconEnabled() : IconResourceConstants.FixDisabled;
-      RemoveIcon.IconPath = RemoveIcon.IsEnabled == true ?
+      RemoveIcon.IconPath = RemoveIcon.IsEnabled ?
         VSThemeCommand.GetIgnoreIconEnabled() : IconResourceConstants.FixDisabled;
     }
 
