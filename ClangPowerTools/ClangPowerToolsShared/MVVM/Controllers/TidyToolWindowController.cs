@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
@@ -92,14 +93,29 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         FileInfo path = new FileInfo(file);
         if (CheckIsHeader(file))
         {
-          headers.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)), FilesType = FileType.Header });
+          headers.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name),
+            FullFileName = path.FullName,
+            CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath,
+            TidyConstants.SolutionTempGuid, Guid.NewGuid().ToString()) + path.Extension,
+            FilesType = FileType.Header });
         }
         else
         {
-          files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name), FullFileName = path.FullName, CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath, TidyConstants.SolutionTempGuid, GetProjectPathToFile(file)), FilesType = FileType.SourceFile });
+          files.Add(new FileModel { FileName = ". . . " + Path.Combine(path.Directory.Name, path.Name),
+            FullFileName = path.FullName,
+            CopyFullFileName = Path.Combine(TidyConstants.TempsFolderPath,
+            TidyConstants.SolutionTempGuid, Guid.NewGuid().ToString()) + path.Extension,
+            FilesType = FileType.SourceFile });
         }
       }
       CheckAll();
+    }
+
+    private string GetExtension(string path)
+    {
+      Regex regex = new Regex(@"([A-Z]:\\.+?\.(cpp|cu|cc|cp|tlh|c|cxx|tli|h|hh|hpp|hxx))(\W|$)");
+      Match match = regex.Match(path);
+      return match.Value;
     }
 
     /// <summary>
@@ -249,19 +265,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         dte2.Solution.FullName : dte2.Solution.FullName
                                   .Substring(0, dte2.Solution.FullName.LastIndexOf('\\'));
       fileChangerWatcher.Run(solutionFolderPath);
-
-      if (File.Exists(file.CopyFullFileName))
-      {
-        try
-        {
-          File.Copy(file.CopyFullFileName, file.FullFileName, true);
-          File.Delete(file.CopyFullFileName);
-        }
-        catch (UnauthorizedAccessException e)
-        {
-          MessageBox.Show($"Access to path {file.FullFileName} is denied", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-        }
-      }
+      FileCommand.CopyFileFromTempToSolution(file);
       MarkUnfixedFiles(file);
     }
 
@@ -370,15 +374,6 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         file.FileName = file.FileName.Remove(file.FileName.Length - 2, 2);
         tidyToolWindowModel.CountFilesModel.UpdateFixFileState(file);
       }
-    }
-
-    private string GetProjectPathToFile(string file)
-    {
-      FileInfo path = new FileInfo(file);
-      string directoryName = path.Directory.Name;
-      var fullFileName = path.FullName;
-      var index = fullFileName.IndexOf(directoryName);
-      return fullFileName.Substring(index, fullFileName.Length - index); ;
     }
 
     private List<FileModel> UnifyFileModelLists(List<FileModel> firstList, List<FileModel> secondList)
