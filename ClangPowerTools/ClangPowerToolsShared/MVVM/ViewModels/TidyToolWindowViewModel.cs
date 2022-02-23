@@ -207,7 +207,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         listVisibility = UIElementsConstants.Hidden;
         ListVisibility = ListVisibility;
         messageModel.Visibility = UIElementsConstants.Visibile;
-        messageModel.TextMessage = "You don't have any files, run tidy to add files";
+        messageModel.TextMessage = "Files on which you run Tidy will be shown here";
         MessageModel = messageModel;
       }
       TidyController.AfterCommand();

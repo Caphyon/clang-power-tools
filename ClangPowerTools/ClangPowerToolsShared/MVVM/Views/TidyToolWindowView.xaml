@@ -51,7 +51,7 @@
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="10" />
-      <RowDefinition Height="35" />
+      <RowDefinition Height="40" />
       <RowDefinition Height="15" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
@@ -70,13 +70,14 @@
       </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
         <RowDefinition Height="2.5" />
-        <RowDefinition Height="30" />
+        <RowDefinition Height="35" />
         <RowDefinition Height="2.5" />
       </Grid.RowDefinitions>
 
       <CheckBox Grid.Row="1"
                 Grid.Column="1"
                 Width="20"
+                Height="20"
                 VerticalAlignment="Center"
                 HorizontalAlignment="Left"
                 Click="CheckAll"
@@ -85,12 +86,14 @@
       <Button Grid.Row="1"
               Grid.Column="2"
               Width="30"
+              Height="30"
               HorizontalAlignment="Left"
               ToolTip="{Binding TidyToolWindowModel.RefreshTidyIcon.Tooltip}"
               IsEnabled="{Binding TidyToolWindowModel.RefreshTidyIcon.IsEnabled}"
               Command="{Binding TidyAllCommand}"
               Visibility="{Binding TidyToolWindowModel.RefreshTidyIcon.Visibility}">
         <Image Source="{Binding TidyToolWindowModel.RefreshTidyIcon.IconPath}"
+               VerticalAlignment="Center"
                Width="16"
                Height="16" />
       </Button>
@@ -98,36 +101,42 @@
       <Button Grid.Row="1"
               Grid.Column="3"
               Width="30"
+              Height="30"
               HorizontalAlignment="Left"
               ToolTip="{Binding TidyToolWindowModel.TidyFixIcon.Tooltip}"
               IsEnabled="{Binding TidyToolWindowModel.TidyFixIcon.IsEnabled}"
               Visibility="{Binding TidyToolWindowModel.TidyFixIcon.Visibility}"
               Command="{Binding FixAllCommand}">
         <Image Source="{Binding TidyToolWindowModel.TidyFixIcon.IconPath}"
+               VerticalAlignment="Center"
                Width="16"
                Height="16" />
       </Button>
       <Button Grid.Row="1"
               Grid.Column="4"
               Width="30"
+              Height="30"
               HorizontalAlignment="Left"
               ToolTip="{Binding TidyToolWindowModel.DiscardFixIcon.Tooltip}"
               IsEnabled="{Binding TidyToolWindowModel.DiscardFixIcon.IsEnabled}"
               Visibility="{Binding TidyToolWindowModel.DiscardFixIcon.Visibility}"
               Command="{Binding DiscardAllCommand}">
         <Image Source="{Binding TidyToolWindowModel.DiscardFixIcon.IconPath}"
+               VerticalAlignment="Center"
                Width="16"
                Height="16" />
       </Button>
       <Button Grid.Row="1"
               Grid.Column="5"
               Width="30"
+              Height="30"
               HorizontalAlignment="Left"
               ToolTip="{Binding TidyToolWindowModel.RemoveIcon.Tooltip}"
               IsEnabled="{Binding TidyToolWindowModel.RemoveIcon.IsEnabled}"
               Command="{Binding RemoveAllCommand}"
               Visibility="{Binding TidyToolWindowModel.RemoveIcon.Visibility}">
         <Image Source="{Binding TidyToolWindowModel.RemoveIcon.IconPath}"
+               VerticalAlignment="Center"
                Width="16"
                Height="16" />
       </Button>
@@ -184,7 +193,7 @@
               <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-              <RowDefinition Height="25" />
+              <RowDefinition Height="30" />
             </Grid.RowDefinitions>
             <CheckBox Grid.Column="0"
                       Width="15"
@@ -199,25 +208,27 @@
                        Text="{Binding FileName}" />
             <Button Grid.Column="2"
                     Width="30"
-                    Height="20"
+                    Height="30"
                     IsEnabled="{Binding DiffIcon.IsEnabled}"
                     HorizontalAlignment="Right"
                     Click="DiffButton"
                     ToolTip="Diff"
                     Visibility="{Binding DiffIcon.Visibility}">
               <Image Source="{Binding DiffIcon.IconPath}"
+                     VerticalAlignment="Center"
                      Width="16"
                      Height="16" />
             </Button>
             <Button Grid.Column="2"
                     Width="30"
-                    Height="20"
+                    Height="30"
                     HorizontalAlignment="Right"
                     IsEnabled="{Binding TidyFixIcon.IsEnabled}"
                     Click="FixButton"
                     ToolTip="Fix"
                     Visibility="{Binding TidyFixIcon.Visibility}">
               <Image Source="{Binding TidyFixIcon.IconPath}"
+                     VerticalAlignment="Center"
                      Width="16"
                      Height="16" />
             </Button>
@@ -267,13 +278,15 @@
       </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
         <RowDefinition Height="10" />
-        <RowDefinition Height="50" />
+        <RowDefinition Height="*" />
+        <RowDefinition Height="*" />
       </Grid.RowDefinitions>
 
       <Border Grid.Column="1"
               Grid.Row="1"
               BorderThickness="1"
-              BorderBrush="{DynamicResource {x:Static vsfx:VsBrushes.PanelSeparatorKey}}"
+              Height="200"
+              BorderBrush="Transparent"
               Visibility="{Binding MessageModel.Visibility}"
               CornerRadius="5">
         <TextBlock Grid.Column="1"
@@ -281,6 +294,7 @@
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
                    FontSize="17"
+                   TextWrapping="Wrap"
                    Text="{Binding MessageModel.TextMessage}"
                    Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}" />
       </Border>
