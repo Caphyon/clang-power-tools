@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 8.2.0" />
+                 Text="version 8.3.0" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -114,11 +114,11 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• LLVM 13.0.1"
+                 Text="• After Tidy fix you can make diff and discard fix on affected headers"
                  TextWrapping="Wrap" />
 
         <!--Bug Fixes-->
-        <TextBox Margin="5,20,0,0"
+        <!--<TextBox Margin="5,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
@@ -133,7 +133,7 @@
                  FontSize="16"
                  IsReadOnly="True"
                  Text="• False triggers for PowerShell script auto-updater"
-                 TextWrapping="Wrap" />
+                 TextWrapping="Wrap" />-->
 
         <!--<TextBox
           Margin="15,5,0,0"
