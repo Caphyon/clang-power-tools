@@ -1,13 +1,13 @@
-namespace ClangPowerTools.Commands.BackgroundTidy
+namespace ClangPowerTools.MVVM.Views
 {
-  public class ProjectOuputsWindow : Microsoft.VisualStudio.PlatformUI.DialogWindow
+  public class DialogWindow : Microsoft.VisualStudio.PlatformUI.DialogWindow
   {
-    public ProjectOuputsWindow()
+    public DialogWindow()
       : this(string.Empty)
     {
     }
 
-    public ProjectOuputsWindow(string helpTopic)
+    public DialogWindow(string helpTopic)
       : base(helpTopic)
     {
       KeyUp += new System.Windows.Input.KeyEventHandler(DialogWindow_KeyUp);

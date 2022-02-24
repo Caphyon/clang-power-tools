@@ -7,6 +7,7 @@ using EnvDTE;
 using System.ComponentModel.Design;
 using Task = System.Threading.Tasks.Task;
 using System.Windows.Interop;
+using Microsoft.Internal.VisualStudio.PlatformUI;
 
 namespace ClangPowerTools.Commands
 {
@@ -73,11 +74,7 @@ namespace ClangPowerTools.Commands
       bool activeLicense = await new PersonalLicenseValidator().ValidateAsync();
       SettingsView settingsView = new SettingsView(activeLicense);
       DTE dte = (DTE)ServiceProvider.GetService(typeof(DTE));
-      var parentHWnd = dte.MainWindow.HWnd;
-      WindowInteropHelper wih = new WindowInteropHelper(settingsView);
-      //Set owner for settings dialog window
-      wih.Owner = (IntPtr)parentHWnd;
-      settingsView.ShowDialog();
+      WindowHelper.ShowModal(settingsView, (IntPtr) dte.MainWindow.HWnd);
     }
 
 

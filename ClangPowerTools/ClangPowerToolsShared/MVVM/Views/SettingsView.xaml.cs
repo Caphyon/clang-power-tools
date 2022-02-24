@@ -1,11 +1,13 @@
-﻿using System.Windows;
+﻿using ClangPowerTools.Commands.BackgroundTidy;
+using ClangPowerTools.MVVM.Views;
+using System.Windows;
 
 namespace ClangPowerTools.Views
 {
   /// <summary>
   /// Interaction logic for SettingsView.xaml
   /// </summary>
-  public partial class SettingsView : Window
+  public partial class SettingsView : DialogWindow
   {
     public SettingsView(bool showFooter)
     {
