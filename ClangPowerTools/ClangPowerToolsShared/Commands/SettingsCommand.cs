@@ -1,9 +1,12 @@
-﻿using ClangPowerTools.MVVM.LicenseValidation;
+﻿using ClangPowerTools.Commands.BackgroundTidy;
+using ClangPowerTools.MVVM.LicenseValidation;
 using ClangPowerTools.Views;
 using Microsoft.VisualStudio.Shell;
 using System;
+using EnvDTE;
 using System.ComponentModel.Design;
 using Task = System.Threading.Tasks.Task;
+using System.Windows.Interop;
 
 namespace ClangPowerTools.Commands
 {
@@ -69,6 +72,11 @@ namespace ClangPowerTools.Commands
     {
       bool activeLicense = await new PersonalLicenseValidator().ValidateAsync();
       SettingsView settingsView = new SettingsView(activeLicense);
+      DTE dte = (DTE)ServiceProvider.GetService(typeof(DTE));
+      var parentHWnd = dte.MainWindow.HWnd;
+      WindowInteropHelper wih = new WindowInteropHelper(settingsView);
+      //Set owner for settings dialog window
+      wih.Owner = (IntPtr)parentHWnd;
       settingsView.ShowDialog();
     }
 

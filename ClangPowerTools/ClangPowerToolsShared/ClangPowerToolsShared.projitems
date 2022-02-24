@@ -18,6 +18,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)CMake\CMakeBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\BackgroundTidy\BackgroundTidy.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\BackgroundTidy\DataProcessor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\BackgroundTidy\ProjectOuputsWindow .cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\BackgroundTidy\PowerShellWrapperBackground.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\BasicCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\ClangCommand.cs" />
