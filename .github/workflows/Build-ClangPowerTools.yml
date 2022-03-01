@@ -34,11 +34,18 @@ jobs:
       - name: Build app for release
         run: msbuild ClangPowerTools\ClangPowerTools.sln -t:rebuild -property:Configuration=Release
       
-      - name: Archive production artifacts
+      - name: Archive production CPT artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: vsixs
+          name: CptVsix
           path: |
-            ClangPowerTools\ClangPowerTools\bin\Release\ClangPowerTools.vsix
+            ClangPowerTools\CPTReleases\ClangPowerTools.vsix
+
+      - name: Archive production CPT 2022 artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: CptVsix
+          path: |
+            ClangPowerTools\CPTReleases\ClangPowerTools2022.vsix
 
 
