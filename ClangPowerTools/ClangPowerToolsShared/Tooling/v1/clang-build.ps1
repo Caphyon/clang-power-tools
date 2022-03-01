@@ -193,6 +193,8 @@ Set-Variable -name kLogicalCoreCount -value $Env:number_of_processors   -option 
 Set-Variable -name kCptGithubRepoBase -value `
 "https://raw.githubusercontent.com/Caphyon/clang-power-tools/master/ClangPowerTools/ClangPowerToolsShared/Tooling/v1/" `
                                       -option Constant
+Set-Variable -name kCptGithubLlvm -value "https://github.com/Caphyon/clang-power-tools/releases/download/v8.2.0" `
+                                      -option Constant
 
 Set-Variable -name kPsMajorVersion    -value (Get-Host).Version.Major   -Option Constant 
 # ------------------------------------------------------------------------------------------------
@@ -316,6 +318,13 @@ Function cpt:ensureScriptExists( [Parameter(Mandatory=$true)] [string] $scriptNa
   return $scriptFilePath
 }
 
+Function Has-InternetConnectivity
+{  
+  $resp = Get-WmiObject -Class Win32_PingStatus -Filter 'Address="github.com" and Timeout=100' | Select-Object ResponseTime
+  [bool] $hasInternetConnectivity = ($resp.ResponseTime -and $resp.ResponseTime -gt 0)
+  return $hasInternetConnectivity
+}
+
 [bool] $shouldRedownloadForcefully = $false
 [Version] $cptVsixVersion = cpt:getSetting "Version"
 Write-Verbose "Current Clang Power Tools VSIX version: $cptVsixVersion"
@@ -337,11 +346,8 @@ if ( ( ![string]::IsNullOrWhiteSpace($cptVsixVersion) -and
   {
     Remove-ItemProperty -path $kCptRegHiveSettings -name 'ScriptTimestamp'
   }
-  
-  $resp = Get-WmiObject -Class Win32_PingStatus -Filter 'Address="github.com" and Timeout=100' | Select-Object ResponseTime
-  [bool] $hasInternetConnectivity = ($resp.ResponseTime -and $resp.ResponseTime -gt 0)
 
-  if (!$hasInternetConnectivity )
+  if (! (Has-InternetConnectivity) )
   {
     Write-Verbose "No internet connectivity. Postponing helper scripts update from github..."
   }
@@ -1581,6 +1587,26 @@ $global:cptVisualStudioVersion = If ( $aVisualStudioVersion ) `
 Print-InvocationArguments
 Write-InformationTimed "Print args"
 
+[WorkloadType] $workloadType = [WorkloadType]::Compile
+
+if (![string]::IsNullOrEmpty($aTidyFlags))
+{
+   $workloadType = [WorkloadType]::Tidy
+   if (Test-Path -LiteralPath $aTidyFlags)
+   {
+     $kClangTidyFlagTempFile = $aTidyFlags
+   }
+}
+
+if (![string]::IsNullOrEmpty($aTidyFixFlags))
+{
+   $workloadType = [WorkloadType]::TidyFix
+   if (Test-Path -LiteralPath $aTidyFixFlags)
+   {
+     $kClangTidyFlagTempFile = $aTidyFixFlags
+   }
+}
+
 #-------------------------------------------------------------------------------------------------
 # Script entry point
 
@@ -1588,18 +1614,37 @@ Write-Verbose "CPU logical core count: $kLogicalCoreCount"
 
 # If LLVM is not in PATH try to detect it automatically
 [string] $global:llvmLocation = ""
-if (! (Exists-Command($kClangCompiler)) )
+
+$clangToolWeNeed = Get-ExeToCall -workloadType $workloadType
+if (! (Exists-Command($clangToolWeNeed)) )
 {
   foreach ($locationLLVM in $kLLVMInstallLocations)
   {
     if (Test-Path -LiteralPath $locationLLVM)
     {
-      Write-Verbose "LLVM location: $locationLLVM"
       $env:Path += ";$locationLLVM"
-      $global:llvmLocation = $locationLLVM
       break
     }
   }
+}
+
+if (!(Exists-Command($clangToolWeNeed)) -and (Has-InternetConnectivity))
+{
+  # the displayed progress slows downloads considerably, so disable it
+  $prevPreference = $ProgressPreference
+  $ProgressPreference = 'SilentlyContinue'
+  [string] $clangCompilerWebPath = "$kCptGithubLlvm/$clangToolWeNeed"
+  # grab ready-to-use LLVM binaries from Github
+  Invoke-WebRequest -Uri $clangCompilerWebPath -OutFile "$PSScriptRoot/$clangToolWeNeed"
+  $progressPreference = $prevPreference
+  $locationLLVM = $PSScriptRoot
+  $env:Path += ";$locationLLVM"
+}
+
+if (![string]::IsNullOrEmpty($global:llvmLocation))
+{
+  Write-Verbose "LLVM location: $locationLLVM"
+  $env:Path += ";$($global:llvmLocation)"
 }
 
 # initialize JSON compilation db support, if required
@@ -1771,43 +1816,22 @@ foreach ($project in $projectsToProcess)
   }
 
   [string] $vcxprojPath = $project.FullName;
+  
 
-  [WorkloadType] $workloadType = [WorkloadType]::Compile
-
-  if (![string]::IsNullOrEmpty($aTidyFlags))
+  [string[]] $configPlatforms = $aVcxprojConfigPlatform
+  if ($configPlatforms.Count -eq 0)
   {
-     $workloadType = [WorkloadType]::Tidy
-     if (Test-Path -LiteralPath $aTidyFlags)
-     {
-       $kClangTidyFlagTempFile = $aTidyFlags
-     }
+    $configPlatforms += @("")
   }
 
-  if (![string]::IsNullOrEmpty($aTidyFixFlags))
-  {
-     $workloadType = [WorkloadType]::TidyFix
-     if (Test-Path -LiteralPath $aTidyFixFlags)
-     {
-       $kClangTidyFlagTempFile = $aTidyFixFlags
-     }
+  foreach ($crtPlatformConfig in $configPlatforms)
+  {    
+    Write-InformationTimed "Before project process"
+    Process-Project -vcxprojPath $vcxprojPath -workloadType $workloadType -platformConfig $crtPlatformConfig
+    Write-InformationTimed "After project process"
+
+    Write-Output "" # empty line separator
   }
-
-    [string[]] $configPlatforms = $aVcxprojConfigPlatform
-    if ($configPlatforms.Count -eq 0)
-    {
-      $configPlatforms += @("")
-    }
-
-    foreach ($crtPlatformConfig in $configPlatforms)
-    {
-      
-       Write-InformationTimed "Before project process"
-       Process-Project -vcxprojPath $vcxprojPath -workloadType $workloadType -platformConfig $crtPlatformConfig
-       Write-InformationTimed "After project process"
-
-       Write-Output "" # empty line separator
-    }
-
 
   $localProjectCounter -= 1
   $global:cptProjectCounter = $localProjectCounter
