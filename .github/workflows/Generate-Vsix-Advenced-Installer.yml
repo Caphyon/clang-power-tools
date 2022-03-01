@@ -1,5 +1,9 @@
 name: Build Advanced Installer Project (.AIP) Clang Power Tools
-on: [workflow_dispatch]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 jobs:
   advinst-aip-build-cpt:
     runs-on: windows-latest

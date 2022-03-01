@@ -1,5 +1,9 @@
 name: Custonm download URL
-on: [workflow_dispatch]
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
 jobs:
   aiproj-demo:
     runs-on: windows-latest
