@@ -1,7 +1,7 @@
 name: Build Advanced Installer Project (.AIP) Clang Power Tools
 on: [workflow_dispatch]
 jobs:
-  advinst-aip-build-demo:
+  advinst-aip-build-cpt:
     runs-on: windows-latest
     name: Build Aip Clang Power Tools
     steps:
@@ -13,12 +13,12 @@ jobs:
           advinst-version: '19.2'
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
-          aip-path: ${{ github.workspace }}\ClangPowerTools.aip
+          aip-path: ClangPowerTools\ClangPowerTools.aip
           aip-build-name: DefaultBuild
           aip-package-name: ClangPowerToolsAI.vsix
-          aip-output-dir:  ${{ github.workspace }}\GeneratedVsixWithGithubActions
+          aip-output-dir:  ClangPowerTools\GeneratedVsixWithGithubActions
       - name: Publish setup artifact
         uses: actions/upload-artifact@v2
         with:
           name: GeneratedVsixWithGithubActions
-          path: ${{ github.workspace }}\GeneratedVsixWithGithubActions\ClangPowerToolsAI.vsix
+          path: ClangPowerTools\GeneratedVsixWithGithubActions\ClangPowerToolsAI.vsix
