@@ -39,6 +39,6 @@ jobs:
         with:
           name: vsixs
           path: |
-            ClangPowerTools\GithubActionsCPT.vsix
+            ClangPowerTools\ClangPowerTools\bin\Release\ClangPowerTools.vsix
 
 
