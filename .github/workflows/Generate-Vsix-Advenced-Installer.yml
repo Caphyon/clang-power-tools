@@ -14,7 +14,7 @@ jobs:
       - name: Build AIP
         uses: caphyon/advinst-github-action@v1.0
         with:
-          advinst-version: '19.2'
+          advinst-version: '19.0'
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
           aip-path: ClangPowerTools\ClangPowerTools.aip

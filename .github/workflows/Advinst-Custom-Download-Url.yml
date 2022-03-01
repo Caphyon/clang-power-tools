@@ -1,4 +1,4 @@
-name: Custonm download URL
+name: Custom download URL
 on:
   push:
     branches: [ master ]
