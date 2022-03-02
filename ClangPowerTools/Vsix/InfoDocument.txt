@@ -1,0 +1,1 @@
+Here i will generate ClangPowerTools.vsix and ClangPowerTools2022.vsix

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOCUMENT Type="Advanced Installer" CreateVersion="19.1" version="19.2" Modules="vsix" RootPath="." Language="en" Id="{4BC191C4-3036-4EAA-AD6F-B3743A78763D}">
+  <COMPONENT cid="caphyon.advinst.msicomp.GenericPropertyComponent">
+    <ROW Name="Author" Value="Caphyon" Type="0"/>
+    <ROW Name="Description" Value="Your application description." Type="0" ValueLocId="*"/>
+    <ROW Name="Identifier" Value="Caphyon.9ce239f2-d27a-432c-906c-1d55a123dbfd" Type="0"/>
+    <ROW Name="Locale" Value="1033" Type="0"/>
+    <ROW Name="Name" Value="Clang Power Tools 2022" Type="0" ValueLocId="*"/>
+    <ROW Name="Version" Value="9.3.0.50" Type="0"/>
+    <ROW Name="VsixLanguage" Value="en-US" Type="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
+    <ROW Path="&lt;AI_DICTS&gt;vsix.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;vsix_en.ail"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DigCertStoreComponent">
+    <ROW DigitalCertificate="cert.pfx" SignerDescription="[|ProductName]" SignOptions="0" SignTool="2" UseSha256="1"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.GenericDirectoryComponent">
+    <ROW Id="1" Name="EXTENSIONS_FOLDER" Flags="1"/>
+    <ROW Id="2" Name="Resources" Parent="1" Flags="0"/>
+    <ROW Id="3" Name="Tooling" Parent="1" Flags="0"/>
+    <ROW Id="4" Name="v1" Parent="3" Flags="0"/>
+    <ROW Id="5" Name="psClang" Parent="4" Flags="0"/>
+    <ROW Id="6" Name="integration-projects" Parent="5" Flags="0"/>
+    <ROW Id="7" Name="itemgroups" Parent="6" Flags="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.GenericFileComponent">
+    <ROW Id="1" Name="ClangPowerToolsLib16.dll" Path="ClangPowerTools\bin\Release\ClangPowerToolsLib16.dll" ParentDir="1"/>
+    <ROW Id="2" Name="ClangPowerToolsLib17.dll" Path="ClangPowerTools\bin\Release\ClangPowerToolsLib17.dll" ParentDir="1"/>
+    <ROW Id="3" Name="ClangPowerTools.dll" Path="ClangPowerTools\bin\Release\ClangPowerTools.dll" ParentDir="1"/>
+    <ROW Id="4" Name="ClangPowerTools.pkgdef" Path="ClangPowerTools\bin\Release\ClangPowerTools.pkgdef" ParentDir="1"/>
+    <ROW Id="5" Name="System.ComponentModel.Annotations.dll" Path="ClangPowerTools\bin\Release\System.ComponentModel.Annotations.dll" ParentDir="1"/>
+    <ROW Id="6" Name="Microsoft.VisualStudio.DpiAwareness.dll" Path="ClangPowerTools\bin\Release\Microsoft.VisualStudio.DpiAwareness.dll" ParentDir="1"/>
+    <ROW Id="7" Name="CPTLogoManageExtensionVS.png" Path="ClangPowerTools\bin\Release\Resources\CPTLogoManageExtensionVS.png" ParentDir="2"/>
+    <ROW Id="8" Name="LICENSE.txt" Path="ClangPowerTools\bin\Release\Resources\LICENSE.txt" ParentDir="2"/>
+    <ROW Id="9" Name="clang-build.ps1" Path="ClangPowerToolsShared\Tooling\v1\clang-build.ps1" ParentDir="4"/>
+    <ROW Id="10" Name="get-header-references.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\get-header-references.ps1" ParentDir="5"/>
+    <ROW Id="11" Name="integration-project.tests.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\integration-project.tests.ps1" ParentDir="5"/>
+    <ROW Id="12" Name="CptIntegrationProjects.sln" Path="ClangPowerToolsShared\Tooling\v1\psClang\integration-projects\CptIntegrationProjects.sln" ParentDir="6"/>
+    <ROW Id="13" Name="test.vcxproj" Path="ClangPowerToolsShared\Tooling\v1\psClang\integration-projects\itemgroups\test.vcxproj" ParentDir="7"/>
+    <ROW Id="14" Name="io.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\io.ps1" ParentDir="5"/>
+    <ROW Id="15" Name="io.tests.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\io.tests.ps1" ParentDir="5"/>
+    <ROW Id="16" Name="itemdefinition-context.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\itemdefinition-context.ps1" ParentDir="5"/>
+    <ROW Id="17" Name="jsondb-export.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\jsondb-export.ps1" ParentDir="5"/>
+    <ROW Id="18" Name="jsondb-export.tests.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\jsondb-export.tests.ps1" ParentDir="5"/>
+    <ROW Id="19" Name="msbuild-expression-eval.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\msbuild-expression-eval.ps1" ParentDir="5"/>
+    <ROW Id="20" Name="msbuild-expression-eval.tests.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\msbuild-expression-eval.tests.ps1" ParentDir="5"/>
+    <ROW Id="21" Name="msbuild-project-cache-repository.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\msbuild-project-cache-repository.ps1" ParentDir="5"/>
+    <ROW Id="22" Name="msbuild-project-cache-repository.tests.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\msbuild-project-cache-repository.tests.ps1" ParentDir="5"/>
+    <ROW Id="23" Name="msbuild-project-data.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\msbuild-project-data.ps1" ParentDir="5"/>
+    <ROW Id="24" Name="msbuild-project-data.tests.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\msbuild-project-data.tests.ps1" ParentDir="5"/>
+    <ROW Id="25" Name="msbuild-project-load.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\msbuild-project-load.ps1" ParentDir="5"/>
+    <ROW Id="26" Name="msbuild-project-load.tests.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\msbuild-project-load.tests.ps1" ParentDir="5"/>
+    <ROW Id="27" Name="visualstudio-detection.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\visualstudio-detection.ps1" ParentDir="5"/>
+    <ROW Id="28" Name="visualstudio-detection.tests.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\visualstudio-detection.tests.ps1" ParentDir="5"/>
+    <ROW Id="29" Name="~advinst.tests.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\~advinst.tests.ps1" ParentDir="5"/>
+    <ROW Id="30" Name="ClangFormatEditor.exe" Path="ClangPowerToolsShared\Executables\ClangFormatEditor.exe" ParentDir="1"/>
+    <ROW Id="31" Name="clang-format.exe" Path="ClangPowerToolsShared\Executables\clang-format.exe" ParentDir="1"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.VsixContentComponent">
+    <ROW File="4" Type="6"/>
+    <ROW File="4" Type="5"/>
+    <ROW File="3" Type="3"/>
+    <ATTRIBUTE name="OutputFileName" value="ClangPowerTools2022.vsix"/>
+    <ATTRIBUTE name="OutputFolder" value="Vsix"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.VsixReferencesComponent">
+    <ROW Id="Microsoft.Framework.NDP" Name="Microsoft .NET Framework" MinVersion="4.5" Flags="2"/>
+    <ROW Id="Microsoft.VisualStudio.Component.CoreEditor" Name="Visual Studio core editor" MinVersion="15.0" Type="1" Flags="2"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.VsixSupportedProductComponent">
+    <ROW Name="Community" Version="15.0" MaxVersion="18.0" Type="0" Flags="2"/>
+    <ROW Name="Enterprise" Version="15.0" MaxVersion="18.0" Type="0" Flags="2"/>
+    <ROW Name="Pro" Version="15.0" MaxVersion="18.0" Type="0" Flags="2"/>
+  </COMPONENT>
+</DOCUMENT>
