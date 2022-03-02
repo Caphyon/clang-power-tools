@@ -16,12 +16,12 @@ jobs:
         with:
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
-          aip-path: ClangPowerTools\ClangPowerTools.aip
+          aip-path: ${{ github.workspace }}\ClangPowerTools.aip
           aip-build-name: DefaultBuild
           aip-package-name: ClangPowerToolsAI.vsix
-          aip-output-dir:  ClangPowerTools\GeneratedVsixWithGithubActions
+          aip-output-dir:  ${{ github.workspace }}\GeneratedVsixWithGithubActions
       - name: Publish setup artifact
         uses: actions/upload-artifact@v2
         with:
           name: GeneratedVsixWithGithubActions
-          path: ClangPowerTools\GeneratedVsixWithGithubActions\ClangPowerToolsAI.vsix
+          path: ${{ github.workspace }}\GeneratedVsixWithGithubActions\ClangPowerToolsAI.vsix
