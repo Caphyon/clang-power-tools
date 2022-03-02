@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Build Clang Power Tools
+name: Build Clang Power Tools and generate vsix with Advenced Installer
 
 # Controls when the workflow will run
 on:
@@ -16,7 +16,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  build-and-generate-vsix-advenced-installer:
     # The type of runner that the job will run on
     runs-on: windows-latest
 
@@ -55,7 +55,7 @@ jobs:
           advinst-enable-automation: 'true'
           aip-path: ClangPowerTools\ClangPowerTools.aip
      
-      - name: Archive production CPT artifacts
+      - name: Archive production ClangPowerTools artifacts
         uses: actions/upload-artifact@v2
         with:
           name: Vsix
@@ -68,7 +68,7 @@ jobs:
           advinst-enable-automation: 'true'
           aip-path: ClangPowerTools\ClangPowerTools2022.aip
       
-      - name: Archive production CPT 2022 artifacts
+      - name: Archive production ClangPowerTools 2022 artifacts
         uses: actions/upload-artifact@v2
         with:
           name: Vsix
