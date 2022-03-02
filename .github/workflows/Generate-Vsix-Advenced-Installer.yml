@@ -9,17 +9,19 @@ jobs:
     runs-on: windows-latest
     name: Build Aip Clang Power Tools
     steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
       - name: Build AIP
         uses: caphyon/advinst-github-action@v1.0
         with:
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
-          aip-path: ${{ github.workspace }}\ClangPowerTools.aip
+          aip-path: ClangPowerTools\ClangPowerTools.aip
           aip-build-name: DefaultBuild
           aip-package-name: ClangPowerToolsAI.vsix
-          aip-output-dir:  ${{ github.workspace }}\GeneratedVsixWithGithubActions
+          aip-output-dir:  ClangPowerTools\GeneratedVsixWithGithubActions
       - name: Publish setup artifact
         uses: actions/upload-artifact@v2
         with:
           name: GeneratedVsixWithGithubActions
-          path: ${{ github.workspace }}\GeneratedVsixWithGithubActions\ClangPowerToolsAI.vsix
+          path: ClangPowerTools\GeneratedVsixWithGithubActions\ClangPowerToolsAI.vsix
