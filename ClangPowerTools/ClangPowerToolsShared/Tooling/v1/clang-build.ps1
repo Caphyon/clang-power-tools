@@ -289,24 +289,19 @@ Function cpt:ensureScriptExists( [Parameter(Mandatory=$true)] [string] $scriptNa
 
     if ( ! (Test-Path "$PSScriptRoot/psClang"))
     {
-      New-Item "$PSScriptRoot/psClang" -ItemType Directory
+      New-Item "$PSScriptRoot/psClang" -ItemType Directory > $null
     }
 
     # Invoke-WebRequest has an issue when displaying progress on PowerShell 7, it won't go away
-    # and will keep nagging the user => we supress it on PowerShell, but not on Windows PowerShell.
+    # and will keep nagging the user, and on PS5 it causes slow transfers  => we supress it.
     
-    if ($kPsMajorVersion -ge 6)
-    {
-      $prevPreference = $progressPreference
-      $progressPreference = "SilentlyContinue"
-    }
+    $prevPreference = $progressPreference
+    $ProgressPreference = "SilentlyContinue"
+    
     Invoke-WebRequest -Uri $request -OutFile $scriptFilePath
     (Get-Content $scriptFilePath -Raw).Replace("`n","`r`n") | Set-Content $scriptFilePath -Force -NoNewline
 
-    if ($kPsMajorVersion -ge 6)
-    {
-      $progressPreference = $prevPreference
-    }
+    $ProgressPreference = $prevPreference
     
     if (! (Test-Path $scriptFilePath))
     {
@@ -1636,7 +1631,7 @@ if (!(Exists-Command($clangToolWeNeed)) -and (Has-InternetConnectivity))
   [string] $clangCompilerWebPath = "$kCptGithubLlvm/$clangToolWeNeed"
   # grab ready-to-use LLVM binaries from Github
   Invoke-WebRequest -Uri $clangCompilerWebPath -OutFile "$PSScriptRoot/$clangToolWeNeed"
-  $progressPreference = $prevPreference
+  $ProgressPreference = $prevPreference
   $locationLLVM = $PSScriptRoot
   $env:Path += ";$locationLLVM"
 }
