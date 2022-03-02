@@ -9,6 +9,8 @@ jobs:
     runs-on: windows-latest
     name: Build Aip Clang Power Tools
     steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
       - name: Build AIP
         uses: caphyon/advinst-github-action@v1.0
         with:
