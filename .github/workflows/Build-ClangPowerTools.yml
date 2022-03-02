@@ -48,4 +48,24 @@ jobs:
           path: |
             ClangPowerTools\CPTReleases\ClangPowerTools2022.vsix
 
+  advinst-aip-build-cpt:
+    runs-on: windows-latest
+    name: Build Aip Clang Power Tools
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          ref: 1084-generate-vsix-using-AI-github-actions
+      - name: Build AIP
+        uses: caphyon/advinst-github-action@v1.0
+        with:
+          advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
+          advinst-enable-automation: 'true'
+          aip-path: ClangPowerTools\ClangPowerTools.aip
+      - name: Publish setup artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: GeneratedVsixWithGithubActions
+          path: ClangPowerTools\GeneratedVsixWithGithubActions\ClangPowerToolsAI.vsix
+
 
