@@ -19,7 +19,6 @@ jobs:
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
           aip-path: ClangPowerTools\ClangPowerTools.aip
-          aip-output-dir:  ClangPowerTools\GeneratedVsixWithGithubActions
       - name: Publish setup artifact
         uses: actions/upload-artifact@v2
         with:
