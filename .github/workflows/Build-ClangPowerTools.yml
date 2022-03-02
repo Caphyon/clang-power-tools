@@ -48,15 +48,6 @@ jobs:
           path: |
             ClangPowerTools\CPTReleases\ClangPowerTools2022.vsix
 
-  advinst-aip-build-cpt:
-    needs: build
-    runs-on: windows-latest
-    name: Build Aip Clang Power Tools
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-        with:
-          ref: 1084-generate-vsix-using-AI-github-actions
       - name: Build AIP
         uses: caphyon/advinst-github-action@v1.0
         with:
