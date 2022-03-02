@@ -11,6 +11,8 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
+        with:
+          ref: 1084-generate-vsix-using-AI-github-actions
       - name: Build AIP
         uses: caphyon/advinst-github-action@v1.0
         with:
