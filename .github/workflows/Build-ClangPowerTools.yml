@@ -49,6 +49,7 @@ jobs:
             ClangPowerTools\CPTReleases\ClangPowerTools2022.vsix
 
   advinst-aip-build-cpt:
+    needs: build
     runs-on: windows-latest
     name: Build Aip Clang Power Tools
     steps:
