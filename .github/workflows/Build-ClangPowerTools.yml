@@ -34,30 +34,44 @@ jobs:
       - name: Build app for release
         run: msbuild ClangPowerTools\ClangPowerTools.sln -t:rebuild -property:Configuration=Release
       
-      - name: Archive production CPT artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: CptVsix
-          path: |
-            ClangPowerTools\CPTReleases\ClangPowerTools.vsix
+      # - name: Archive production CPT artifacts
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: CptVsix
+      #     path: |
+      #       ClangPowerTools\CPTReleases\ClangPowerTools.vsix
 
-      - name: Archive production CPT 2022 artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: CptVsix
-          path: |
-            ClangPowerTools\CPTReleases\ClangPowerTools2022.vsix
+      # - name: Archive production CPT 2022 artifacts
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: CptVsix
+      #     path: |
+      #       ClangPowerTools\CPTReleases\ClangPowerTools2022.vsix
 
-      - name: Build AIP
+      - name: Build AIP for ClangPowerTools
         uses: caphyon/advinst-github-action@v1.0
         with:
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
           aip-path: ClangPowerTools\ClangPowerTools.aip
-      - name: Publish setup artifact
+     
+      - name: Archive production CPT artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: GeneratedVsixWithGithubActions
-          path: ClangPowerTools\GeneratedVsixWithGithubActions\ClangPowerToolsAI.vsix
+          name: Vsix
+          path: ClangPowerTools\Vsix\ClangPowerTools.vsix
+
+      - name: Build AIP for ClangPowerTools2022
+        uses: caphyon/advinst-github-action@v1.0
+        with:
+          advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
+          advinst-enable-automation: 'true'
+          aip-path: ClangPowerTools\ClangPowerTools2022.aip
+      
+      - name: Archive production CPT 2022 artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Vsix
+          path: ClangPowerTools\Vsix\ClangPowerTools2022.vsix 
 
 
