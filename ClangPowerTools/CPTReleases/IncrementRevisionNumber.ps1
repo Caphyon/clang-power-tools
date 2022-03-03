@@ -20,6 +20,9 @@ if((Test-Path $filepath) -and (Test-Path $filepathToAip))
     #Replace old version with new one in aip file
     $aipData.DOCUMENT.COMPONENT[0].ROW[5].Value = $nextVersion.ToString()
     $aipData.Save("$filepathToAip")
+    $resultData = Get-Content $filepathToAip
+    $result = $resultData -replace " />", "/>"
+    $result > $filepathToAip
 }
 else 
 {
