@@ -60,7 +60,8 @@ jobs:
         with:
           name: Vsix
           path: ClangPowerTools\Vsix\ClangPowerTools.vsix
-
+      - run: |
+          .\ClangPowerTools\CPTReleases\create22vsix.ps1 -loc ${{ github.workspace }}\ClangPowerTools\Vsix
       # - name: Build AIP for ClangPowerTools2022
       #   uses: caphyon/advinst-github-action@v1.0
       #   with:
