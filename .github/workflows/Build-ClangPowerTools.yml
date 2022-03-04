@@ -48,14 +48,12 @@ jobs:
       #     path: |
       #       ClangPowerTools\CPTReleases\ClangPowerTools2022.vsix
 
-      - name: Create ClangPowerTools.vsix - build AIP
+      - name: Create ClangPowerTools.vsix and ClangPowerTools2022.vsix - build AIP
         uses: caphyon/advinst-github-action@v1.0
         with:
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
           aip-path: ClangPowerTools\ClangPowerTools.aip
-      
-      - name: Create ClangPowerTools2022.vsix
       - run: |
           .\ClangPowerTools\CPTReleases\create22vsix.ps1 -loc ${{ github.workspace }}\ClangPowerTools\Vsix
      
