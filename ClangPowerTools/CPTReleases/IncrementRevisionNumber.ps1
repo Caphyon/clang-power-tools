@@ -20,9 +20,11 @@ if((Test-Path $filepath) -and (Test-Path $filepathToAip))
     #Replace old version with new one in aip file
     $aipData.DOCUMENT.COMPONENT[0].ROW[5].Value = $nextVersion.ToString()
     $aipData.Save("$filepathToAip")
-    $resultData = Get-Content $filepathToAip
+    $resultData = Get-Content $filepathToAip -Encoding utf8
     $result = $resultData -replace " />", "/>"
-    $result > $filepathToAip
+    # $result > $filepathToAip
+    $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding($False)
+    [System.IO.File]::WriteAllLines($filepathToAip, $result, $Utf8NoBomEncoding)
 }
 else 
 {
