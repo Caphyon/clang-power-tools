@@ -48,20 +48,28 @@ jobs:
       #     path: |
       #       ClangPowerTools\CPTReleases\ClangPowerTools2022.vsix
 
-      - name: Build AIP for ClangPowerTools
+      - name: Create ClangPowerTools.vsix - build AIP
         uses: caphyon/advinst-github-action@v1.0
         with:
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
           aip-path: ClangPowerTools\ClangPowerTools.aip
+      
+      - name: Create ClangPowerTools2022.vsix
+      - run: |
+          .\ClangPowerTools\CPTReleases\create22vsix.ps1 -loc ${{ github.workspace }}\ClangPowerTools\Vsix
      
       - name: Archive production ClangPowerTools artifacts
         uses: actions/upload-artifact@v2
         with:
           name: Vsix
           path: ClangPowerTools\Vsix\ClangPowerTools.vsix
-      - run: |
-          .\ClangPowerTools\CPTReleases\create22vsix.ps1 -loc ${{ github.workspace }}\ClangPowerTools\Vsix
+
+      - name: Archive production ClangPowerTools 2022 artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: Vsix
+          path: ClangPowerTools\Vsix\ClangPowerTools2022.vsix 
       # - name: Build AIP for ClangPowerTools2022
       #   uses: caphyon/advinst-github-action@v1.0
       #   with:
@@ -69,10 +77,5 @@ jobs:
       #     advinst-enable-automation: 'true'
       #     aip-path: ClangPowerTools\ClangPowerTools2022.aip
       
-      # - name: Archive production ClangPowerTools 2022 artifacts
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: Vsix
-      #     path: ClangPowerTools\Vsix\ClangPowerTools2022.vsix 
 
 
