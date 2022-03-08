@@ -34,44 +34,46 @@ jobs:
       - name: Build app for release
         run: msbuild ClangPowerTools\ClangPowerTools.sln -t:rebuild -property:Configuration=Release
       
-      # - name: Archive production CPT artifacts
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: CptVsix
-      #     path: |
-      #       ClangPowerTools\CPTReleases\ClangPowerTools.vsix
+      - name: Archive production CPT artifacts (cpt generated with visual studio)
+        uses: actions/upload-artifact@v2
+        with:
+          name: VsixVisualStudio
+          path: |
+            ClangPowerTools\CPTReleases\ClangPowerTools.vsix
 
-      # - name: Archive production CPT 2022 artifacts
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: CptVsix
-      #     path: |
-      #       ClangPowerTools\CPTReleases\ClangPowerTools2022.vsix
+      - name: Archive production CPT 2022 artifacts (cpt 2022 generated with visual studio)
+        uses: actions/upload-artifact@v2
+        with:
+          name: VsixVisualStudio
+          path: |
+            ClangPowerTools\CPTReleases\ClangPowerTools2022.vsix
 
-      - name: Build AIP for ClangPowerTools
+      - name: Create ClangPowerTools.vsix and ClangPowerTools2022.vsix - build AIP
         uses: caphyon/advinst-github-action@v1.0
         with:
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
           aip-path: ClangPowerTools\ClangPowerTools.aip
+      - run: |
+          .\ClangPowerTools\CPTReleases\create22vsix.ps1 -loc ${{ github.workspace }}\ClangPowerTools\Vsix
      
-      - name: Archive production ClangPowerTools artifacts
+      - name: Archive production ClangPowerTools artifacts (cpt 2022 generated with advanced installer)
         uses: actions/upload-artifact@v2
         with:
           name: Vsix
           path: ClangPowerTools\Vsix\ClangPowerTools.vsix
 
-      - name: Build AIP for ClangPowerTools2022
-        uses: caphyon/advinst-github-action@v1.0
-        with:
-          advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
-          advinst-enable-automation: 'true'
-          aip-path: ClangPowerTools\ClangPowerTools2022.aip
-      
-      - name: Archive production ClangPowerTools 2022 artifacts
+      - name: Archive production ClangPowerTools 2022 artifacts (cpt 2022 generated with advanced installer)
         uses: actions/upload-artifact@v2
         with:
           name: Vsix
           path: ClangPowerTools\Vsix\ClangPowerTools2022.vsix 
+      # - name: Build AIP for ClangPowerTools2022
+      #   uses: caphyon/advinst-github-action@v1.0
+      #   with:
+      #     advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
+      #     advinst-enable-automation: 'true'
+      #     aip-path: ClangPowerTools\ClangPowerTools2022.aip
+      
 
 
