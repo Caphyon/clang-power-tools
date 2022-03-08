@@ -48,7 +48,7 @@ jobs:
           path: |
             ClangPowerTools\CPTReleases\ClangPowerTools2022.vsix
 
-      - name: Create ClangPowerTools.vsix and ClangPowerTools2022.vsix - build AIP
+      - name: Create ClangPowerTools.vsix- build AIP
         uses: caphyon/advinst-github-action@v1.0
         with:
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
@@ -59,32 +59,25 @@ jobs:
           AdvancedInstaller.com /edit ClangPowerTools\ClangPowerTools.aip /SetProperty Name="Clang Power Tools 2022"
           AdvancedInstaller.com /edit ClangPowerTools\ClangPowerTools.aip /SetPackageName ClangPowerToolstest2022
 
-      - name: Create ClangPowerTools.vsix and ClangPowerTools2022.vsix - build AIP
+      - name: Create ClangPowerTools2022.vsix - build AIP
         uses: caphyon/advinst-github-action@v1.0
         with:
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
           aip-path: ClangPowerTools\ClangPowerTools.aip
-      # - run: |
-      #     .\ClangPowerTools\CPTReleases\create22vsix.ps1 -loc ${{ github.workspace }}\ClangPowerTools\Vsix
+
      
       - name: Archive production ClangPowerTools artifacts (cpt generated with advanced installer)
         uses: actions/upload-artifact@v2
         with:
-          name: Vsix
-          path: ClangPowerTools\Vsix\ClangPowerTools.vsix
+          name: VsixAI
+          path: ClangPowerTools\VsixAI\ClangPowerTools.vsix
 
       - name: Archive production ClangPowerTools 2022 artifacts (cpt 2022 generated with advanced installer)
         uses: actions/upload-artifact@v2
         with:
-          name: Vsix
-          path: ClangPowerTools\Vsix\ClangPowerToolstest2022.vsix 
-      # - name: Build AIP for ClangPowerTools2022
-      #   uses: caphyon/advinst-github-action@v1.0
-      #   with:
-      #     advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
-      #     advinst-enable-automation: 'true'
-      #     aip-path: ClangPowerTools\ClangPowerTools2022.aip
+          name: VsixAI
+          path: ClangPowerTools\VsixAI\ClangPowerToolstest2022.vsix
       
 
 
