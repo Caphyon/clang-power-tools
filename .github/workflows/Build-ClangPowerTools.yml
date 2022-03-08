@@ -57,7 +57,7 @@ jobs:
       - run: |
           AdvancedInstaller.com /edit ClangPowerTools\ClangPowerTools.aip /SetProperty Identifier="Caphyon.9ce239f2-d27a-432c-906c-1d55a123dbfd"
           AdvancedInstaller.com /edit ClangPowerTools\ClangPowerTools.aip /SetProperty Name="Clang Power Tools 2022"
-          AdvancedInstaller.com /edit ClangPowerTools\ClangPowerTools.aip /SetPackageName ClangPowerToolstest2022
+          AdvancedInstaller.com /edit ClangPowerTools\ClangPowerTools.aip /SetPackageName ClangPowerTools2022
 
       - name: Create ClangPowerTools2022.vsix - build AIP
         uses: caphyon/advinst-github-action@v1.0
@@ -77,7 +77,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: VsixAI
-          path: ClangPowerTools\VsixAI\ClangPowerToolstest2022.vsix
+          path: ClangPowerTools\VsixAI\ClangPowerTools2022.vsix
       
 
 
