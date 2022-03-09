@@ -63,7 +63,7 @@
     <ROW File="4" Type="5"/>
     <ROW File="3" Type="3"/>
     <ATTRIBUTE name="OutputFileName" value="ClangPowerTools.vsix"/>
-    <ATTRIBUTE name="OutputFolder" value="Vsix"/>
+    <ATTRIBUTE name="OutputFolder" value="VsixAI"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.VsixReferencesComponent">
     <ROW Id="Microsoft.Framework.NDP" Name="Microsoft .NET Framework" MinVersion="4.5" Flags="2"/>
