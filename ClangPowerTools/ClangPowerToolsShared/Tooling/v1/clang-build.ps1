@@ -195,6 +195,7 @@ Set-Variable -name kCptGithubRepoBase -value `
                                       -option Constant
 Set-Variable -name kCptGithubLlvm -value "https://github.com/Caphyon/clang-power-tools/releases/download/v8.2.0" `
                                       -option Constant
+Set-Variable -name kCptGithubLlvmVersion -value "13.0.1 (LLVM 13.0.1)" -Option Constant
 
 Set-Variable -name kPsMajorVersion    -value (Get-Host).Version.Major   -Option Constant 
 # ------------------------------------------------------------------------------------------------
@@ -313,7 +314,7 @@ Function cpt:ensureScriptExists( [Parameter(Mandatory=$true)] [string] $scriptNa
   return $scriptFilePath
 }
 
-Function Has-InternetConnectivity
+Function Test-InternetConnectivity
 {  
   $resp = Get-WmiObject -Class Win32_PingStatus -Filter 'Address="github.com" and Timeout=100' | Select-Object ResponseTime
   [bool] $hasInternetConnectivity = ($resp.ResponseTime -and $resp.ResponseTime -gt 0)
@@ -342,13 +343,13 @@ if ( ( ![string]::IsNullOrWhiteSpace($cptVsixVersion) -and
     Remove-ItemProperty -path $kCptRegHiveSettings -name 'ScriptTimestamp'
   }
 
-  if (! (Has-InternetConnectivity) )
+  if (! (Test-InternetConnectivity) )
   {
     Write-Verbose "No internet connectivity. Postponing helper scripts update from github..."
   }
   
   [string] $featureDisableValue = '42'
-  if ( $hasInternetConnectivity -and 
+  if ( (Test-InternetConnectivity) -and 
       ($savedHash -ne $currentHash) -and
       ($savedHash -ne $featureDisableValue) )
   {
@@ -1617,29 +1618,62 @@ if (! (Exists-Command($clangToolWeNeed)) )
   {
     if (Test-Path -LiteralPath $locationLLVM)
     {
-      $env:Path += ";$locationLLVM"
+      $global:llvmLocation = $locationLLVM
       break
     }
   }
 }
 
-if (!(Exists-Command($clangToolWeNeed)) -and (Has-InternetConnectivity))
+if (!(Exists-Command($clangToolWeNeed)) -and (Test-InternetConnectivity))
 {
-  # the displayed progress slows downloads considerably, so disable it
-  $prevPreference = $ProgressPreference
-  $ProgressPreference = 'SilentlyContinue'
-  [string] $clangCompilerWebPath = "$kCptGithubLlvm/$clangToolWeNeed"
-  # grab ready-to-use LLVM binaries from Github
-  Invoke-WebRequest -Uri $clangCompilerWebPath -OutFile "$PSScriptRoot/$clangToolWeNeed"
-  $ProgressPreference = $prevPreference
-  $locationLLVM = $PSScriptRoot
-  $env:Path += ";$locationLLVM"
-}
+  [string] $llvmLiteDirParent = "${env:APPDATA}\ClangPowerTools"
+  [string] $llvmLiteDir       = "$llvmLiteDirParent\LLVM_Lite"
 
-if (![string]::IsNullOrEmpty($global:llvmLocation))
-{
-  Write-Verbose "LLVM location: $locationLLVM"
-  $env:Path += ";$($global:llvmLocation)"
+  [string] $llvmLiteToolPath = "$llvmLiteDir\$clangToolWeNeed"
+  if (Test-Path $llvmLiteToolPath)
+  {
+    $versionPresent = (Get-Item $llvmLiteToolPath).VersionInfo.ProductVersion
+    if ($versionPresent -eq $kCptGithubLlvmVersion)
+    {
+      # we already have downloaded the latest standalone tool, reuse it
+      $global:llvmLocation = $llvmLiteDir
+    }
+  }
+
+  if ([string]::IsNullOrEmpty($global:llvmLocation))
+  {
+    if (!(Test-Path $llvmLiteDirParent))
+    {
+      New-Item -Path $llvmLiteDirParent -ItemType Directory | Out-Null
+    }
+    if (!(Test-Path $llvmLiteDir))
+    {
+      New-Item -Path $llvmLiteDir -ItemType Directory | Out-Null
+    }
+
+    # the displayed progress slows downloads considerably, so disable it
+    $prevPreference = $ProgressPreference
+    $ProgressPreference = 'SilentlyContinue'
+    [string] $clangCompilerWebPath = "$kCptGithubLlvm/$clangToolWeNeed"
+    
+    if (Test-Path  $llvmLiteToolPath)
+    {
+      # we have an older version downloaded, remove it first
+      Remove-Item $llvmLiteToolPath -Force
+    }
+
+    Write-Output "Downloading $clangToolWeNeed $kCptGithubLlvmVersion ..."
+    # grab ready-to-use LLVM binaries from Github
+    Invoke-WebRequest -Uri $clangCompilerWebPath -OutFile $llvmLiteToolPath
+    $ProgressPreference = $prevPreference
+
+    $global:llvmLocation = $llvmLiteDir
+  }
+
+  if (![string]::IsNullOrEmpty($global:llvmLocation))
+  {
+    $env:Path += ";" + $global:llvmLocation
+  }
 }
 
 # initialize JSON compilation db support, if required
