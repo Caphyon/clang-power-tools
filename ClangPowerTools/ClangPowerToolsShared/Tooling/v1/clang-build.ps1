@@ -193,6 +193,9 @@ Set-Variable -name kLogicalCoreCount -value $Env:number_of_processors   -option 
 Set-Variable -name kCptGithubRepoBase -value `
 "https://raw.githubusercontent.com/Caphyon/clang-power-tools/master/ClangPowerTools/ClangPowerToolsShared/Tooling/v1/" `
                                       -option Constant
+Set-Variable -name kCptGithubLlvm -value "https://github.com/Caphyon/clang-power-tools/releases/download/v8.2.0" `
+                                      -option Constant
+Set-Variable -name kCptGithubLlvmVersion -value "13.0.1 (LLVM 13.0.1)" -Option Constant
 
 Set-Variable -name kPsMajorVersion    -value (Get-Host).Version.Major   -Option Constant 
 # ------------------------------------------------------------------------------------------------
@@ -287,24 +290,19 @@ Function cpt:ensureScriptExists( [Parameter(Mandatory=$true)] [string] $scriptNa
 
     if ( ! (Test-Path "$PSScriptRoot/psClang"))
     {
-      New-Item "$PSScriptRoot/psClang" -ItemType Directory
+      New-Item "$PSScriptRoot/psClang" -ItemType Directory > $null
     }
 
     # Invoke-WebRequest has an issue when displaying progress on PowerShell 7, it won't go away
-    # and will keep nagging the user => we supress it on PowerShell, but not on Windows PowerShell.
+    # and will keep nagging the user, and on PS5 it causes slow transfers  => we supress it.
     
-    if ($kPsMajorVersion -ge 6)
-    {
-      $prevPreference = $progressPreference
-      $progressPreference = "SilentlyContinue"
-    }
+    $prevPreference = $progressPreference
+    $ProgressPreference = "SilentlyContinue"
+    
     Invoke-WebRequest -Uri $request -OutFile $scriptFilePath
     (Get-Content $scriptFilePath -Raw).Replace("`n","`r`n") | Set-Content $scriptFilePath -Force -NoNewline
 
-    if ($kPsMajorVersion -ge 6)
-    {
-      $progressPreference = $prevPreference
-    }
+    $ProgressPreference = $prevPreference
     
     if (! (Test-Path $scriptFilePath))
     {
@@ -314,6 +312,13 @@ Function cpt:ensureScriptExists( [Parameter(Mandatory=$true)] [string] $scriptNa
   }
 
   return $scriptFilePath
+}
+
+Function Test-InternetConnectivity
+{  
+  $resp = Get-WmiObject -Class Win32_PingStatus -Filter 'Address="github.com" and Timeout=100' | Select-Object ResponseTime
+  [bool] $hasInternetConnectivity = ($resp.ResponseTime -and $resp.ResponseTime -gt 0)
+  return $hasInternetConnectivity
 }
 
 [bool] $shouldRedownloadForcefully = $false
@@ -337,17 +342,14 @@ if ( ( ![string]::IsNullOrWhiteSpace($cptVsixVersion) -and
   {
     Remove-ItemProperty -path $kCptRegHiveSettings -name 'ScriptTimestamp'
   }
-  
-  $resp = Get-WmiObject -Class Win32_PingStatus -Filter 'Address="github.com" and Timeout=100' | Select-Object ResponseTime
-  [bool] $hasInternetConnectivity = ($resp.ResponseTime -and $resp.ResponseTime -gt 0)
 
-  if (!$hasInternetConnectivity )
+  if (! (Test-InternetConnectivity) )
   {
     Write-Verbose "No internet connectivity. Postponing helper scripts update from github..."
   }
   
   [string] $featureDisableValue = '42'
-  if ( $hasInternetConnectivity -and 
+  if ( (Test-InternetConnectivity) -and 
       ($savedHash -ne $currentHash) -and
       ($savedHash -ne $featureDisableValue) )
   {
@@ -1581,6 +1583,26 @@ $global:cptVisualStudioVersion = If ( $aVisualStudioVersion ) `
 Print-InvocationArguments
 Write-InformationTimed "Print args"
 
+[WorkloadType] $workloadType = [WorkloadType]::Compile
+
+if (![string]::IsNullOrEmpty($aTidyFlags))
+{
+   $workloadType = [WorkloadType]::Tidy
+   if (Test-Path -LiteralPath $aTidyFlags)
+   {
+     $kClangTidyFlagTempFile = $aTidyFlags
+   }
+}
+
+if (![string]::IsNullOrEmpty($aTidyFixFlags))
+{
+   $workloadType = [WorkloadType]::TidyFix
+   if (Test-Path -LiteralPath $aTidyFixFlags)
+   {
+     $kClangTidyFlagTempFile = $aTidyFixFlags
+   }
+}
+
 #-------------------------------------------------------------------------------------------------
 # Script entry point
 
@@ -1588,17 +1610,69 @@ Write-Verbose "CPU logical core count: $kLogicalCoreCount"
 
 # If LLVM is not in PATH try to detect it automatically
 [string] $global:llvmLocation = ""
-if (! (Exists-Command($kClangCompiler)) )
+
+$clangToolWeNeed = Get-ExeToCall -workloadType $workloadType
+if (! (Exists-Command($clangToolWeNeed)) )
 {
   foreach ($locationLLVM in $kLLVMInstallLocations)
   {
     if (Test-Path -LiteralPath $locationLLVM)
     {
-      Write-Verbose "LLVM location: $locationLLVM"
-      $env:Path += ";$locationLLVM"
       $global:llvmLocation = $locationLLVM
       break
     }
+  }
+}
+
+if (!(Exists-Command($clangToolWeNeed)) -and (Test-InternetConnectivity))
+{
+  [string] $llvmLiteDirParent = "${env:APPDATA}\ClangPowerTools"
+  [string] $llvmLiteDir       = "$llvmLiteDirParent\LLVM_Lite"
+
+  [string] $llvmLiteToolPath = "$llvmLiteDir\$clangToolWeNeed"
+  if (Test-Path $llvmLiteToolPath)
+  {
+    $versionPresent = (Get-Item $llvmLiteToolPath).VersionInfo.ProductVersion
+    if ($versionPresent -eq $kCptGithubLlvmVersion)
+    {
+      # we already have downloaded the latest standalone tool, reuse it
+      $global:llvmLocation = $llvmLiteDir
+    }
+  }
+
+  if ([string]::IsNullOrEmpty($global:llvmLocation))
+  {
+    if (!(Test-Path $llvmLiteDirParent))
+    {
+      New-Item -Path $llvmLiteDirParent -ItemType Directory | Out-Null
+    }
+    if (!(Test-Path $llvmLiteDir))
+    {
+      New-Item -Path $llvmLiteDir -ItemType Directory | Out-Null
+    }
+
+    # the displayed progress slows downloads considerably, so disable it
+    $prevPreference = $ProgressPreference
+    $ProgressPreference = 'SilentlyContinue'
+    [string] $clangCompilerWebPath = "$kCptGithubLlvm/$clangToolWeNeed"
+    
+    if (Test-Path  $llvmLiteToolPath)
+    {
+      # we have an older version downloaded, remove it first
+      Remove-Item $llvmLiteToolPath -Force
+    }
+
+    Write-Output "Downloading $clangToolWeNeed $kCptGithubLlvmVersion ..."
+    # grab ready-to-use LLVM binaries from Github
+    Invoke-WebRequest -Uri $clangCompilerWebPath -OutFile $llvmLiteToolPath
+    $ProgressPreference = $prevPreference
+
+    $global:llvmLocation = $llvmLiteDir
+  }
+
+  if (![string]::IsNullOrEmpty($global:llvmLocation))
+  {
+    $env:Path += ";" + $global:llvmLocation
   }
 }
 
@@ -1771,43 +1845,22 @@ foreach ($project in $projectsToProcess)
   }
 
   [string] $vcxprojPath = $project.FullName;
+  
 
-  [WorkloadType] $workloadType = [WorkloadType]::Compile
-
-  if (![string]::IsNullOrEmpty($aTidyFlags))
+  [string[]] $configPlatforms = $aVcxprojConfigPlatform
+  if ($configPlatforms.Count -eq 0)
   {
-     $workloadType = [WorkloadType]::Tidy
-     if (Test-Path -LiteralPath $aTidyFlags)
-     {
-       $kClangTidyFlagTempFile = $aTidyFlags
-     }
+    $configPlatforms += @("")
   }
 
-  if (![string]::IsNullOrEmpty($aTidyFixFlags))
-  {
-     $workloadType = [WorkloadType]::TidyFix
-     if (Test-Path -LiteralPath $aTidyFixFlags)
-     {
-       $kClangTidyFlagTempFile = $aTidyFixFlags
-     }
+  foreach ($crtPlatformConfig in $configPlatforms)
+  {    
+    Write-InformationTimed "Before project process"
+    Process-Project -vcxprojPath $vcxprojPath -workloadType $workloadType -platformConfig $crtPlatformConfig
+    Write-InformationTimed "After project process"
+
+    Write-Output "" # empty line separator
   }
-
-    [string[]] $configPlatforms = $aVcxprojConfigPlatform
-    if ($configPlatforms.Count -eq 0)
-    {
-      $configPlatforms += @("")
-    }
-
-    foreach ($crtPlatformConfig in $configPlatforms)
-    {
-      
-       Write-InformationTimed "Before project process"
-       Process-Project -vcxprojPath $vcxprojPath -workloadType $workloadType -platformConfig $crtPlatformConfig
-       Write-InformationTimed "After project process"
-
-       Write-Output "" # empty line separator
-    }
-
 
   $localProjectCounter -= 1
   $global:cptProjectCounter = $localProjectCounter
