@@ -32,10 +32,4 @@ jobs:
         run: dotnet restore ClangPowerTools\ClangPowerTools.sln
 
       - name: Run script tests
-        uses: caphyon/advinst-github-action@v1.0
-        with:
-          advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
-          advinst-enable-automation: 'true'
-          aip-path: ClangPowerTools\ClangPowerTools.aip
-      - run: |
-          Invoke-Pester
+        run: Invoke-Pester
