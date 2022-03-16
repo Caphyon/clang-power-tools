@@ -33,20 +33,6 @@ jobs:
 
       - name: Build app for release
         run: msbuild ClangPowerTools\ClangPowerTools.sln -t:rebuild -property:Configuration=Release
-      
-      - name: Archive production CPT artifacts (cpt generated with visual studio)
-        uses: actions/upload-artifact@v2
-        with:
-          name: VsixVisualStudio
-          path: |
-            ClangPowerTools\CPTReleases\ClangPowerTools.vsix
-
-      - name: Archive production CPT 2022 artifacts (cpt 2022 generated with visual studio)
-        uses: actions/upload-artifact@v2
-        with:
-          name: VsixVisualStudio
-          path: |
-            ClangPowerTools\CPTReleases\ClangPowerTools2022.vsix
 
       - name: Create ClangPowerTools.vsix- build AIP
         uses: caphyon/advinst-github-action@v1.0
