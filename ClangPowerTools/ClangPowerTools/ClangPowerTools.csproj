@@ -418,7 +418,6 @@
     </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>powershell.exe -executionPolicy Bypass -WindowStyle Hidden -file "$(SolutionDir)CPTReleases\IncrementRevisionNumber.ps1" -loc "$(SolutionDir)CPTReleases"</PreBuildEvent>
   </PropertyGroup>
 </Project>
