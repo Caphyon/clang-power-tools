@@ -144,15 +144,23 @@
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForJsonDatabase" />
 				<Icon guid="guidImageJsonCompilationDb" id="JsonCompilationDb" />
 				<CommandFlag>DefaultDisabled</CommandFlag>
-
-
 				<Strings>
 					<ButtonText>Export Compilation Database</ButtonText>
 				</Strings>
 			</Button>
 
+      <!-- Generate documentation Context Menu button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="DocumentationId" priority="0x0009" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForJsonDatabase" />
+        <Icon guid="guidImageJsonCompilationDb" id="JsonCompilationDb" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Generate documentation</ButtonText>
+        </Strings>
+      </Button>
+
 			<!-- Clang Settings Context Menu button -->
-			<Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0009" type="Button">
+			<Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x000A" type="Button">
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" />
 				<Icon guid="guidImageSettings" id="Settings" />
 				<CommandFlag>DefaultDisabled</CommandFlag>
@@ -354,6 +362,7 @@
 			<IDSymbol name="IgnoreCompileId" value="0x0108" />
 
 			<IDSymbol name="JsonCompilationDatabaseId" value="0x0106" />
+			<IDSymbol name="DocumentationId" value="0x0116" />
 
 			<IDSymbol name="SettingsId" value="0x0103" />
 			<IDSymbol name="TidyExportConfigId" value="0x1032" />
