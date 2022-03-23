@@ -24,7 +24,8 @@ namespace ClangPowerTools
       0x0108,
       0x1032,
       0x1033,
-      0X0106
+      0X0106,
+      0X0116
     };
 
     public static readonly HashSet<int> idsNumeric = new HashSet<int>()
@@ -45,7 +46,8 @@ namespace ClangPowerTools
       264,
       4146,
       4147,
-      262
+      262,
+      278
     };
 
     public const int kCompileId = 0x0102;
@@ -74,6 +76,7 @@ namespace ClangPowerTools
     public const int kLogoutId = 0x1033;
 
     public const int kJsonCompilationDatabase = 0X0106;
+    public const int kDocumentation = 0X0116;
 
     #endregion
   }

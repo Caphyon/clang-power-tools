@@ -155,7 +155,7 @@
         <Icon guid="guidImageJsonCompilationDb" id="JsonCompilationDb" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
-          <ButtonText>Generate documentation</ButtonText>
+          <ButtonText>Generate Documentation</ButtonText>
         </Strings>
       </Button>
 
