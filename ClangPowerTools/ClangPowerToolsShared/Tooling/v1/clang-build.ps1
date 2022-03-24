@@ -195,7 +195,7 @@ Set-Variable -name kCptGithubRepoBase -value `
                                       -option Constant
 Set-Variable -name kCptGithubLlvm -value "https://github.com/Caphyon/clang-power-tools/releases/download/v8.2.0" `
                                       -option Constant
-Set-Variable -name kCptGithubLlvmVersion -value "13.0.1 (LLVM 13.0.1)" -Option Constant
+Set-Variable -name kCptGithubLlvmVersion -value "14.0.0 (LLVM 14.0.0)" -Option Constant
 
 Set-Variable -name kPsMajorVersion    -value (Get-Host).Version.Major   -Option Constant 
 # ------------------------------------------------------------------------------------------------
