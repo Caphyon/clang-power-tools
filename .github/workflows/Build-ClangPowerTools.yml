@@ -37,6 +37,7 @@ jobs:
   generate-aip:
     runs-on: windows-latest
     needs: build
+    if: github.ref == 'refs/heads/master'
     steps:
       - uses: actions/checkout@v2
       - name: Add msbuild to PATH
