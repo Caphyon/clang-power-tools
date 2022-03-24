@@ -16,7 +16,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build-and-generate-vsix-advenced-installer:
+  build:
     # The type of runner that the job will run on
     runs-on: windows-latest
 
@@ -34,6 +34,10 @@ jobs:
       - name: Build app for release
         run: msbuild ClangPowerTools\ClangPowerTools.sln -t:rebuild -property:Configuration=Release
 
+  generate-aip:
+    runs-on: windows-latest
+    needs: build
+    steps:
       - name: Create ClangPowerTools.vsix- build AIP
         uses: caphyon/advinst-github-action@v1.0
         with:
