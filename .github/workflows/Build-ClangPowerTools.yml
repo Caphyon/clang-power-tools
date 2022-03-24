@@ -39,6 +39,14 @@ jobs:
     needs: build
     steps:
       - uses: actions/checkout@v2
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+        
+      - name: Restore dependencies
+        run: dotnet restore ClangPowerTools\ClangPowerTools.sln
+
+      - name: Build app for release
+        run: msbuild ${{ github.workspace }}\ClangPowerTools\ClangPowerTools.sln -t:rebuild -property:Configuration=Release
       - name: Create ClangPowerTools.vsix- build AIP
         uses: caphyon/advinst-github-action@v1.0
         with:
