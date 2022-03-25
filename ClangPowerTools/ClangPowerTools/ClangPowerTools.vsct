@@ -152,8 +152,7 @@
       <!-- Generate documentation Context Menu button -->
       <Button guid="guidClangPowerToolsPackageCmdSet" id="DocumentationId" priority="0x0009" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForJsonDatabase" />
-        <Icon guid="guidImageJsonCompilationDb" id="JsonCompilationDb" />
-        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Icon guid="guidImageDocumentation" id="Documentation" />
         <Strings>
           <ButtonText>Generate Documentation</ButtonText>
         </Strings>
@@ -247,6 +246,7 @@
 			<Bitmap guid="guidImageIgnoreFormat" href="..\ClangPowerToolsShared\Resources\IgnoreIcon.png" usedList="IgnoreFormat" />
 			<Bitmap guid="guidImageEmpty" href="..\ClangPowerToolsShared\Resources\EmptyIcon.png" usedList="Empty" />
 			<Bitmap guid="guidImageJsonCompilationDb" href="..\ClangPowerToolsShared\Resources\JsonCompilationDatabase.png" usedList="JsonCompilationDb" />
+			<Bitmap guid="guidImageDocumentation" href="..\ClangPowerToolsShared\Resources\[CPT]GenerateDocumentation.png" usedList="Documentation" />
 		</Bitmaps>
 
 	</Commands>
@@ -422,6 +422,11 @@
 		<GuidSymbol name="guidImageJsonCompilationDb" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c73a}">
 			<IDSymbol name="JsonCompilationDb" value="1" />
 		</GuidSymbol>
+    
+    <!-- Define Documentation image -->
+    <GuidSymbol name="guidImageDocumentation" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c74a}">
+      <IDSymbol name="Documentation" value="1" />
+    </GuidSymbol>
 
 	</Symbols>
 
