@@ -193,9 +193,10 @@ Set-Variable -name kLogicalCoreCount -value $Env:number_of_processors   -option 
 Set-Variable -name kCptGithubRepoBase -value `
 "https://raw.githubusercontent.com/Caphyon/clang-power-tools/master/ClangPowerTools/ClangPowerToolsShared/Tooling/v1/" `
                                       -option Constant
-Set-Variable -name kCptGithubLlvm -value "https://github.com/Caphyon/clang-power-tools/releases/download/v8.2.0" `
+#Url to assets (clang++ and clang-tidy) from previous release made by Clang Power Tools on github 
+Set-Variable -name kCptGithubLlvm -value "https://github.com/Caphyon/clang-power-tools/releases/download/v8.4.0" `
                                       -option Constant
-Set-Variable -name kCptGithubLlvmVersion -value "13.0.1 (LLVM 13.0.1)" -Option Constant
+Set-Variable -name kCptGithubLlvmVersion -value "14.0.0 (LLVM 14.0.0)" -Option Constant
 
 Set-Variable -name kPsMajorVersion    -value (Get-Host).Version.Major   -Option Constant 
 # ------------------------------------------------------------------------------------------------

@@ -16,7 +16,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build-and-generate-vsix-advenced-installer:
+  build:
     # The type of runner that the job will run on
     runs-on: windows-latest
 
@@ -32,38 +32,52 @@ jobs:
         run: dotnet restore ClangPowerTools\ClangPowerTools.sln
 
       - name: Build app for release
-        run: msbuild ClangPowerTools\ClangPowerTools.sln -t:rebuild -property:Configuration=Release
+        run: msbuild ${{ github.workspace }}\ClangPowerTools\ClangPowerTools.sln -t:rebuild -property:Configuration=Release
 
+  generate-aip:
+    runs-on: windows-latest
+    needs: build
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+        
+      - name: Restore dependencies
+        run: dotnet restore ClangPowerTools\ClangPowerTools.sln
+
+      - name: Build app for release
+        run: msbuild ${{ github.workspace }}\ClangPowerTools\ClangPowerTools.sln -t:rebuild -property:Configuration=Release
       - name: Create ClangPowerTools.vsix- build AIP
         uses: caphyon/advinst-github-action@v1.0
         with:
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
-          aip-path: ClangPowerTools\ClangPowerTools.aip
+          aip-path: ${{ github.workspace }}\ClangPowerTools\ClangPowerTools.aip
       - run: |
-          AdvancedInstaller.com /edit ClangPowerTools\ClangPowerTools.aip /SetProperty Identifier="Caphyon.9ce239f2-d27a-432c-906c-1d55a123dbfd"
-          AdvancedInstaller.com /edit ClangPowerTools\ClangPowerTools.aip /SetProperty Name="Clang Power Tools 2022"
-          AdvancedInstaller.com /edit ClangPowerTools\ClangPowerTools.aip /SetPackageName ClangPowerTools2022
+          AdvancedInstaller.com /edit ${{ github.workspace }}\ClangPowerTools\ClangPowerTools.aip /SetProperty Identifier="Caphyon.9ce239f2-d27a-432c-906c-1d55a123dbfd"
+          AdvancedInstaller.com /edit ${{ github.workspace }}\ClangPowerTools\ClangPowerTools.aip /SetProperty Name="Clang Power Tools 2022"
+          AdvancedInstaller.com /edit ${{ github.workspace }}\ClangPowerTools\ClangPowerTools.aip /SetPackageName ClangPowerTools2022
 
       - name: Create ClangPowerTools2022.vsix - build AIP
         uses: caphyon/advinst-github-action@v1.0
         with:
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
-          aip-path: ClangPowerTools\ClangPowerTools.aip
+          aip-path: ${{ github.workspace }}\ClangPowerTools\ClangPowerTools.aip
 
      
       - name: Archive production ClangPowerTools artifacts (cpt generated with advanced installer)
         uses: actions/upload-artifact@v2
         with:
           name: VsixAI
-          path: ClangPowerTools\VsixAI\ClangPowerTools.vsix
+          path: ${{ github.workspace }}\ClangPowerTools\VsixAI\ClangPowerTools.vsix
 
       - name: Archive production ClangPowerTools 2022 artifacts (cpt 2022 generated with advanced installer)
         uses: actions/upload-artifact@v2
         with:
           name: VsixAI
-          path: ClangPowerTools\VsixAI\ClangPowerTools2022.vsix
+          path: ${{ github.workspace }}\ClangPowerTools\VsixAI\ClangPowerTools2022.vsix
       
 
 
