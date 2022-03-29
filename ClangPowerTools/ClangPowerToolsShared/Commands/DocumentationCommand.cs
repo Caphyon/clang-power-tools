@@ -52,6 +52,35 @@ namespace ClangPowerTools.Commands
 
     }
 
+    public void GenerateDocumentation()
+    {
+      var formatSettings = SettingsProvider.FormatSettingsModel;
+
+      string vsixPath = Path.GetDirectoryName(
+        GetType().Assembly.Location);
+      //TODO Verify if compilation database exists
+      Process process = new Process();
+      process.StartInfo.UseShellExecute = false;
+      process.StartInfo.CreateNoWindow = true;
+      process.StartInfo.RedirectStandardInput = true;
+      process.StartInfo.RedirectStandardOutput = true;
+      process.StartInfo.RedirectStandardError = true;
+      process.StartInfo.FileName =
+              true == (string.IsNullOrWhiteSpace(formatSettings.CustomExecutable) == false) ?
+              formatSettings.CustomExecutable : Path.Combine(vsixPath, ScriptConstants.kClangDoc);
+      process.StartInfo.Arguments = $" {ScriptConstants.kCompilationDBFile}";
+
+      try
+      {
+        process.Start();
+      }
+      catch (Exception exception)
+      {
+        throw new Exception(
+            $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
+      }
+    }
+
 
   }
 }
