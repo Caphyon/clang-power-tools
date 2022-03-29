@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 8.4.0" />
+                 Text="version 8.5.0" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -109,26 +109,27 @@
                  Text="What's New" />
 
 
-        <TextBox Margin="15,15,0,0"
+
+        <TextBox Margin="5,25,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Download ready-to-use LLVM binaries when none is installed"
+                 Text="• Support for LLVM 14.0.0"
                  TextWrapping="Wrap" />
 
-        <TextBox Margin="15,15,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• Use esc key to exit from settings window"
-                 TextWrapping="Wrap" />
-
+        <TextBlock>
+          <Hyperlink Foreground="Blue"
+                     FontSize="16"
+                     RequestNavigate="Hyperlink_RequestNavigate"
+                     NavigateUri="https://releases.llvm.org/14.0.0/tools/clang/docs/ReleaseNotes.html#windows-support">
+              <TextBlock Margin="18,20,0,0"
+                         Text="- Read about changes on Windows" />
+          </Hyperlink>
+        </TextBlock>
         <!--Bug Fixes-->
-        <TextBox Margin="5,20,0,0"
+        <!--<TextBox Margin="5,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
@@ -143,7 +144,7 @@
                  FontSize="16"
                  IsReadOnly="True"
                  Text="• Visual Studio is blocked if settings window is behind it"
-                 TextWrapping="Wrap" />
+                 TextWrapping="Wrap" />-->
         <!--<TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
