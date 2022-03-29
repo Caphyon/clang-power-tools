@@ -19,7 +19,7 @@ namespace ClangPowerTools.MVVM.Views
 
     private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
     {
-      Process.Start(new ProcessStartInfo("https://youtu.be/9-8jtjExzv4"));
+      Process.Start(new ProcessStartInfo("https://releases.llvm.org/14.0.0/tools/clang/docs/ReleaseNotes.html#windows-support"));
       e.Handled = true;
     }
   }
