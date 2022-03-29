@@ -2,6 +2,8 @@
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
+using System.Diagnostics;
+using System.IO;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
@@ -52,8 +54,9 @@ namespace ClangPowerTools.Commands
 
     }
 
-    public void GenerateDocumentation()
+    public async Task GenerateDocumentationAsync()
     {
+      await PrepareCommmandAsync(CommandUILocation.ContextMenu);
       var formatSettings = SettingsProvider.FormatSettingsModel;
 
       string vsixPath = Path.GetDirectoryName(
