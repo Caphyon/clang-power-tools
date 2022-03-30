@@ -1,38 +1,40 @@
 ﻿#Clear-Host
 
-# IMPORT code blocks
-
-Set-Variable -name "kScriptLocation"                                              `
-             -value (Split-Path -Path $MyInvocation.MyCommand.Definition -Parent) <#`
-             -option Constant#>
-
-@(
- , "$kScriptLocation\io.ps1"
- ) | ForEach-Object { . $_ }
+BeforeAll {
+  @(
+   , "$PSScriptRoot\io.ps1"
+   ) | ForEach-Object { . $_ }
+}
 
 Describe "VariableExists" {
-  VariableExists 'Foobar_VariableExists' | Should -BeExactly $false
-  $Foobar_VariableExists = 1
-  VariableExists 'Foobar_VariableExists' | Should -BeExactly $true
-  $Foobar_VariableExists = @()
-  VariableExists 'Foobar_VariableExists' | Should -BeExactly $true
+  
+  It "Should verify VariableExists" {
+    VariableExists 'Foobar_VariableExists' | Should -BeExactly $false
+    $Foobar_VariableExists = 1
+    VariableExists 'Foobar_VariableExists' | Should -BeExactly $true
+    $Foobar_VariableExists = @()
+    VariableExists 'Foobar_VariableExists' | Should -BeExactly $true
 
-  Remove-Variable 'Foobar_VariableExists' | Out-Null
-  VariableExistsAndNotEmpty 'Foobar_VariableExists' | Should -BeExactly $false
-  $Foobar_VariableExists = "       "
-  VariableExists            'Foobar_VariableExists' | Should -BeExactly $true
-  VariableExistsAndNotEmpty 'Foobar_VariableExists' | Should -BeExactly $false
-  $Foobar_VariableExists = " "
-  VariableExistsAndNotEmpty 'Foobar_VariableExists' | Should -BeExactly $false
-  $Foobar_VariableExists = "1"
-  VariableExistsAndNotEmpty 'Foobar_VariableExists' | Should -BeExactly $true
+    Remove-Variable 'Foobar_VariableExists' | Out-Null
+    VariableExistsAndNotEmpty 'Foobar_VariableExists' | Should -BeExactly $false
+    $Foobar_VariableExists = "       "
+    VariableExists            'Foobar_VariableExists' | Should -BeExactly $true
+    VariableExistsAndNotEmpty 'Foobar_VariableExists' | Should -BeExactly $false
+    $Foobar_VariableExists = " "
+    VariableExistsAndNotEmpty 'Foobar_VariableExists' | Should -BeExactly $false
+    $Foobar_VariableExists = "1"
+    VariableExistsAndNotEmpty 'Foobar_VariableExists' | Should -BeExactly $true
+  }
 }
 
 Describe "HasProperty" {
-  [string] $s = "abc"
-  HasProperty $s "Length"  | Should -BeExactly $true
-  HasProperty Ss "Lengthh" | SHould -BeExactly $false
-  HasProperty $s "Trim"    | Should -BeExactly $false # this is a method
+  
+  It "Should verify HasProperty" {
+    [string] $s = "abc"
+    HasProperty $s "Length"  | Should -BeExactly $true
+    HasProperty Ss "Lengthh" | SHould -BeExactly $false
+    HasProperty $s "Trim"    | Should -BeExactly $false # this is a method
+  }
 }
 
 Describe "File IO" {

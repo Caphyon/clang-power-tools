@@ -2,14 +2,12 @@
 
 # IMPORT code blocks
 
-Set-Variable -name "kScriptLocation"                                              `
-             -value (Split-Path -Path $MyInvocation.MyCommand.Definition -Parent) <#`
-             -option Constant#>
-
-@(
- , "$kScriptLocation\io.ps1"
- , "$kScriptLocation\visualstudio-detection.ps1"
- ) | ForEach-Object { . $_ }
+BeforeAll {
+  @(
+   , "$PSScriptRoot\io.ps1"
+   , "$PSScriptRoot\visualstudio-detection.ps1"
+   ) | ForEach-Object { . $_ }
+}
 
 Describe "Visual Studio detection" {
   # Mock script parameters

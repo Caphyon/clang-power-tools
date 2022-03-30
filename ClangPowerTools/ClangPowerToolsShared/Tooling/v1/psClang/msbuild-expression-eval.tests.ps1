@@ -2,15 +2,13 @@
 
 # IMPORT code blocks
 
-Set-Variable -name "kScriptLocation"                                              `
-             -value (Split-Path -Path $MyInvocation.MyCommand.Definition -Parent) <#`
-             -option Constant#>
-
-@(
- , "$kScriptLocation\io.ps1"
- , "$kScriptLocation\itemdefinition-context.ps1"
- , "$kScriptLocation\msbuild-expression-eval.ps1"
- ) | ForEach-Object { . $_ }
+BeforeAll {
+  @(
+   , "$PSScriptRoot\io.ps1"
+   , "$PSScriptRoot\itemdefinition-context.ps1"
+   , "$PSScriptRoot\msbuild-expression-eval.ps1"
+   ) | ForEach-Object { . $_ }
+}
 
 Describe "MSBuild - Powershell Expression translation" {
   It "Plain expressions" {

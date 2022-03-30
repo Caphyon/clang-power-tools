@@ -1,8 +1,11 @@
-. "$PsScriptRoot\io.ps1"
+BeforeAll {
+  . "$PsScriptRoot\io.ps1"
+}
+
 Describe "ai" {
   It "Should build Advanced Installer" {
 
-   [string] $advinstRepo = $env:ADVINST
+   [string] $advinstRepo = $env:ADVINST_CPT
 
    if ($advinstRepo)
    {
