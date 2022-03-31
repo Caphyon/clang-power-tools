@@ -180,6 +180,11 @@ param( [alias("proj")]
      , [alias("export-jsondb")]
        [Parameter(Mandatory=$false, HelpMessage="Switch to generate a JSON compilation database file, in the current working directory")]
        [switch]   $aExportJsonDB
+      
+     , [alias("export-doc")]
+       [Parameter(Mandatory=$false, HelpMessage="If present, specifies the type of documentation to generate, in the current working direcotory")]
+       [ValidateSet("yaml", "md", "html")]
+       [string]   $aDocumentationExportFormat
      )
 
 Set-StrictMode -version latest
