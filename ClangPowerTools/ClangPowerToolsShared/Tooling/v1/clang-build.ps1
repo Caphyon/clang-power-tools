@@ -265,6 +265,15 @@ Function cpt:getSetting([string] $name)
   return $null
 }
 
+# We define this separately from the implementation in io.ps1 because that may not yet be present and 
+# in order to download it we need the connection-status greenlight.
+Function cpt:testInternetConnectivity
+{  
+  $resp = Get-WmiObject -Class Win32_PingStatus -Filter 'Address="github.com" and Timeout=100' | Select-Object ResponseTime
+  [bool] $hasInternetConnectivity = ($resp.ResponseTime -and $resp.ResponseTime -gt 0)
+  return $hasInternetConnectivity
+}
+
 # Include required scripts, or download them from Github, if necessary
 
 Function cpt:ensureScriptExists( [Parameter(Mandatory=$true)] [string] $scriptName
@@ -325,13 +334,13 @@ if ( ( ![string]::IsNullOrWhiteSpace($cptVsixVersion) -and
     Remove-ItemProperty -path $kCptRegHiveSettings -name 'ScriptTimestamp'
   }
 
-  if (! (Test-InternetConnectivity) )
+  if (! (cpt:testInternetConnectivity) )
   {
     Write-Verbose "No internet connectivity. Postponing helper scripts update from github..."
   }
   
   [string] $featureDisableValue = '42'
-  if ( (Test-InternetConnectivity) -and 
+  if ( (cpt:testInternetConnectivity) -and 
       ($savedHash -ne $currentHash) -and
       ($savedHash -ne $featureDisableValue) )
   {

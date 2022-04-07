@@ -481,3 +481,10 @@ Function Get-ClangVersion()
     }
     return 0
 }
+
+Function Test-InternetConnectivity
+{  
+  $resp = Get-WmiObject -Class Win32_PingStatus -Filter 'Address="github.com" and Timeout=100' | Select-Object ResponseTime
+  [bool] $hasInternetConnectivity = ($resp.ResponseTime -and $resp.ResponseTime -gt 0)
+  return $hasInternetConnectivity
+}
