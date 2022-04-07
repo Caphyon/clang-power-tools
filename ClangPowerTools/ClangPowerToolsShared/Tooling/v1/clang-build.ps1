@@ -377,6 +377,11 @@ ForEach-Object { . $_ }
 Write-InformationTimed "Imported scripts"
 
 #-------------------------------------------------------------------------------------------------
+# do not include in list above because it is an invokable script, dot-sourcing does not work.
+
+cpt:ensureScriptExists "get-llvm.ps1" $shouldRedownloadForcefully
+
+#-------------------------------------------------------------------------------------------------
 # we may have a custom path for Clang-Tidy. Use it if that's the case.
 
 [string] $customTidyPath = (Get-QuotedPath -path ([Environment]::GetEnvironmentVariable($kVarEnvClangTidyPath)))
