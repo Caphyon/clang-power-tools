@@ -40,24 +40,24 @@ Function Ensure-LLVMTool-IsPresent([Parameter(Mandatory = $true)][string] $clang
       return $locationLLVM
     }
   }
-
   # download read-to-use binary from github
+
+  [string] $llvmLiteDirParent = "${env:APPDATA}\ClangPowerTools"
+  [string] $llvmLiteDir       = "$llvmLiteDirParent\LLVM_Lite"
+
+  [string] $llvmLiteToolPath = "$llvmLiteDir\$clangToolWeNeed"
+  if (Test-Path $llvmLiteToolPath)
+  {
+    $versionPresent = (Get-Item $llvmLiteToolPath).VersionInfo.ProductVersion
+    if ($versionPresent -eq $kCptGithubLlvmVersion)
+    {
+      # we already have downloaded the latest standalone tool, reuse it
+      return $llvmLiteDir
+    }
+  }
+
   if (Test-InternetConnectivity)
   {
-    [string] $llvmLiteDirParent = "${env:APPDATA}\ClangPowerTools"
-    [string] $llvmLiteDir       = "$llvmLiteDirParent\LLVM_Lite"
-
-    [string] $llvmLiteToolPath = "$llvmLiteDir\$clangToolWeNeed"
-    if (Test-Path $llvmLiteToolPath)
-    {
-      $versionPresent = (Get-Item $llvmLiteToolPath).VersionInfo.ProductVersion
-      if ($versionPresent -eq $kCptGithubLlvmVersion)
-      {
-        # we already have downloaded the latest standalone tool, reuse it
-        $ret = $llvmLiteDir
-      }
-    }
-
     if ([string]::IsNullOrEmpty($ret))
     {
       if (!(Test-Path $llvmLiteDirParent))
