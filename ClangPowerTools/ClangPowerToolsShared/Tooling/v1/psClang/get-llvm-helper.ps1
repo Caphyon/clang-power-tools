@@ -1,28 +1,7 @@
-<#
-.SYNOPSIS
-    Downloads ready-to-use one or more LLVM binaries, if not already available on system.
-
-.DESCRIPTION
-    Purpose of this script is to ensure that LLVM binaries are available for use.
-    The strategy used, for each tool, is: 
-     * search in PATH
-     * search in Program Files
-     * search in %APPDATA%\ClangPowerTools\LLVM_Lite
-     * if not found, download tool and save in LLVM_Lite location
-
-.PARAMETER aTool
-    Alias 'tool'. The LLVM tool(s) to potentially download.
-
-.NOTES
-    Author: Gabriel Diaconita, Marina Rusu
-#>
-
-#Requires -Version 3
-
-Set-StrictMode -version latest
-$ErrorActionPreference = 'Continue'
-
-. "$PSScriptRoot/io.ps1"
+# This helper makes sure we have the LLVM tool we require present on disk.
+# If it's not available then we download it from GitHub.
+ 
+# REQUIRES "io.ps1" to be included
 
 # ------------------------------------------------------------------------------------------------
 # Default install locations of LLVM. If present there, we automatically use it

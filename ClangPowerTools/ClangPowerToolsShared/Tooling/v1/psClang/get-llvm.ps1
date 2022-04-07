@@ -25,6 +25,7 @@ param( [alias("tool")]
 Set-StrictMode -version latest
 $ErrorActionPreference = 'Continue'
 
+. "$PSScriptRoot\io.ps1"
 . "$PSScriptRoot\get-llvm-helper.ps1"
 
 $ret = @()
