@@ -19,9 +19,19 @@
 #Requires -Version 3
 param( [alias("tool")]
        [Parameter(Mandatory=$false, HelpMessage="LLVM tool(s) to ensure exist")]
-       [string[]] $aTool = @()
+       [string[]] $aTools = @()
      )
 
 Set-StrictMode -version latest
 $ErrorActionPreference = 'Continue'
-     
+
+. "$PSScriptRoot\get-llvm-helper.ps1"
+
+$ret = @()
+foreach ($tool in $aTools)
+{
+  [string] $toolLocation = Ensure-LLVMTool-IsPresent $tool
+  $ret += @($toolLocation)
+}
+
+Write-Output $ret
