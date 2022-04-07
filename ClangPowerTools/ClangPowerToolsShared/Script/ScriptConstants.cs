@@ -67,6 +67,7 @@ namespace ClangPowerTools
     public const string kPowerShellPath = @"WindowsPowerShell\v1.0\powershell.exe";
     public const string kScriptBeginning = @"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '&";
     public const string kScriptName = "clang-build.ps1";
+    public const string kGetLLVMScriptName = "get-llvm.ps1";
     public const string ToolingV1 = @"Tooling\\v1";
     public const string kEnvrionmentTidyPath = "CLANG_TIDY_PATH";
 

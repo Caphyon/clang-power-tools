@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
@@ -58,7 +59,7 @@ namespace ClangPowerTools.Commands
     {
       await PrepareCommmandAsync(CommandUILocation.ContextMenu);
       var formatSettings = SettingsProvider.FormatSettingsModel;
-
+      var getllvm = GetScriptFilePath();
       string vsixPath = Path.GetDirectoryName(
         GetType().Assembly.Location);
       //TODO Verify if compilation database exists
@@ -84,6 +85,14 @@ namespace ClangPowerTools.Commands
       }
     }
 
+
+    protected string GetScriptFilePath()
+    {
+      var assemblyPath = Assembly.GetExecutingAssembly().Location;
+      var scriptDirectory = assemblyPath.Substring(0, assemblyPath.LastIndexOf('\\'));
+
+      return Path.Combine(scriptDirectory, "Tooling\\v1\\psClang", ScriptConstants.kGetLLVMScriptName);
+    }
 
   }
 }
