@@ -22,7 +22,7 @@ Set-Variable -name kCptGithubLlvm -value "https://github.com/Caphyon/clang-power
                                   -option Constant
 Set-Variable -name kCptGithubLlvmVersion -value "14.0.0 (LLVM 14.0.0)" -Option Constant
 
-Function Ensure-LLVMTool-IsPresent($clangToolWeNeed) {
+Function Ensure-LLVMTool-IsPresent([Parameter(Mandatory = $true)][string] $clangToolWeNeed) {
   [string] $ret = ""
 
   # see if we can reach the tool through PATH
