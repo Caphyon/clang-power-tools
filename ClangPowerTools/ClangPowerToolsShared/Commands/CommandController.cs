@@ -284,7 +284,7 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kDocumentation);
 
-            await DocumentationCommand.Instance.GenerateDocumentationAsync();
+            await DocumentationCommand.Instance.GenerateDocumentationAsync(true);
 
             OnAfterClangCommand();
             break;

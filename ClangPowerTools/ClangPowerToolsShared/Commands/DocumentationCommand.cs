@@ -1,15 +1,18 @@
 ﻿using ClangPowerTools;
+using ClangPowerTools.Services;
+using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
 {
-  public sealed class DocumentationCommand : ClangCommand
+  public sealed class DocumentationCommand : CompileCommand
   {
 
     private readonly AsyncPackage package;
@@ -25,19 +28,7 @@ namespace ClangPowerTools.Commands
     }
 
     private DocumentationCommand(OleMenuCommandService aCommandService, CommandController aCommandController,
-  AsyncPackage aPackage, Guid aGuid, int aId)
-    : base(aPackage, aGuid, aId)
-    {
-      if (null != aCommandService)
-      {
-        package = aPackage;
-        var menuCommandID = new CommandID(CommandSet, Id);
-        var menuCommand = new OleMenuCommand(aCommandController.Execute, menuCommandID);
-        //menuCommand.BeforeQueryStatus += aCommandController.OnBeforeClangCommand;
-        menuCommand.Enabled = true;
-        aCommandService.AddCommand(menuCommand);
-      }
-    }
+      AsyncPackage aPackage, Guid aGuid, int aId) : base(aCommandService, aCommandController, aPackage, aGuid, aId) { }
 
     /// <summary>
     /// Initializes the singleton instance of the command.
@@ -55,9 +46,26 @@ namespace ClangPowerTools.Commands
 
     }
 
-    public async Task GenerateDocumentationAsync()
+    public async Task GenerateDocumentationAsync(bool jsonCompilationDbActive)
     {
-      await PrepareCommmandAsync(CommandUILocation.ContextMenu);
+      //generate compilation database
+      await RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu, true);
+      //await PrepareCommmandAsync(CommandUILocation.ContextMenu, jsonCompilationDbActive);
+      //CacheProjectsFromItems();
+
+      FilePathCollector fileCollector = new FilePathCollector();
+      var paths = fileCollector.Collect(mItemsCollector.Items).ToList();
+      //CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu);
+
+      string projectPath = string.Empty;
+      if(paths.Any())
+      {
+        FileInfo fileInfo = new FileInfo(paths.FirstOrDefault());
+        projectPath = fileInfo.Directory.Parent.FullName;
+      }
+
+      string jsonCompilationDatabasePath = Path.Combine(projectPath, ScriptConstants.kCompilationDBFile);
+
       var formatSettings = SettingsProvider.FormatSettingsModel;
       var getllvm = GetScriptFilePath();
       string vsixPath = Path.GetDirectoryName(
