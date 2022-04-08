@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools;
 using ClangPowerTools.Services;
+using ClangPowerToolsShared.MVVM.Constants;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
@@ -48,14 +49,12 @@ namespace ClangPowerTools.Commands
 
     public async Task GenerateDocumentationAsync(bool jsonCompilationDbActive)
     {
-      //generate compilation database
+      //generate json compilation database
       await RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu, true);
-      //await PrepareCommmandAsync(CommandUILocation.ContextMenu, jsonCompilationDbActive);
-      //CacheProjectsFromItems();
+      //CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu);
 
       FilePathCollector fileCollector = new FilePathCollector();
       var paths = fileCollector.Collect(mItemsCollector.Items).ToList();
-      //CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu);
 
       string projectPath = string.Empty;
       if(paths.Any())
@@ -65,9 +64,10 @@ namespace ClangPowerTools.Commands
       }
 
       string jsonCompilationDatabasePath = Path.Combine(projectPath, ScriptConstants.kCompilationDBFile);
+      string clangDocPath = Path.Combine(PathConstants.LlvmLitePath, ScriptConstants.kClangDoc);
+      var getllvmPath = GetScriptFilePath();
 
       var formatSettings = SettingsProvider.FormatSettingsModel;
-      var getllvm = GetScriptFilePath();
       string vsixPath = Path.GetDirectoryName(
         GetType().Assembly.Location);
       //TODO Verify if compilation database exists
@@ -77,10 +77,8 @@ namespace ClangPowerTools.Commands
       process.StartInfo.RedirectStandardInput = true;
       process.StartInfo.RedirectStandardOutput = true;
       process.StartInfo.RedirectStandardError = true;
-      process.StartInfo.FileName =
-              true == (string.IsNullOrWhiteSpace(formatSettings.CustomExecutable) == false) ?
-              formatSettings.CustomExecutable : Path.Combine(vsixPath, ScriptConstants.kClangDoc);
-      process.StartInfo.Arguments = $" {ScriptConstants.kCompilationDBFile}";
+      process.StartInfo.FileName = clangDocPath;
+      process.StartInfo.Arguments = $" {ScriptConstants.kClangDoc}";
 
       try
       {
