@@ -470,9 +470,9 @@ Function Exists-Command([Parameter(Mandatory = $true)][string] $command)
 
 Function Get-ClangVersion()
 {
-    if (Exists-Command "clang")
+    if (Exists-Command "clang++")
     {
-        [string] $s = &"clang" --version
+        [string] $s = &"clang++" --version
         $regexMatch = [regex]::match($s, 'clang version (\d+).')
         if ($regexMatch)
         {
@@ -480,4 +480,11 @@ Function Get-ClangVersion()
         }
     }
     return 0
+}
+
+Function Test-InternetConnectivity
+{  
+  $resp = Get-WmiObject -Class Win32_PingStatus -Filter 'Address="github.com" and Timeout=100' | Select-Object ResponseTime
+  [bool] $hasInternetConnectivity = ($resp.ResponseTime -and $resp.ResponseTime -gt 0)
+  return $hasInternetConnectivity
 }

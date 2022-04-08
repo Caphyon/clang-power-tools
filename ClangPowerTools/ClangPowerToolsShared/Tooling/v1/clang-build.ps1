@@ -193,11 +193,6 @@ Set-Variable -name kLogicalCoreCount -value $Env:number_of_processors   -option 
 Set-Variable -name kCptGithubRepoBase -value `
 "https://raw.githubusercontent.com/Caphyon/clang-power-tools/master/ClangPowerTools/ClangPowerToolsShared/Tooling/v1/" `
                                       -option Constant
-#Url to assets (clang++ and clang-tidy) from previous release made by Clang Power Tools on github 
-Set-Variable -name kCptGithubLlvm -value "https://github.com/Caphyon/clang-power-tools/releases/download/v8.4.0" `
-                                      -option Constant
-Set-Variable -name kCptGithubLlvmVersion -value "14.0.0 (LLVM 14.0.0)" -Option Constant
-
 Set-Variable -name kPsMajorVersion    -value (Get-Host).Version.Major   -Option Constant 
 # ------------------------------------------------------------------------------------------------
 # Return Value Constants
@@ -253,13 +248,6 @@ Set-Variable -name kCptRegHiveSettings -value "HKCU:SOFTWARE\Caphyon\Clang Power
 Set-Variable -name kCptVsixSettings    -value "${env:APPDATA}\ClangPowerTools\settings.json" -Option Constant
 
 # ------------------------------------------------------------------------------------------------
-# Default install locations of LLVM. If present there, we automatically use it
-
-Set-Variable -name kLLVMInstallLocations    -value @("${Env:ProgramW6432}\LLVM\bin"
-                                                    ,"${Env:ProgramFiles(x86)}\LLVM\bin"
-                                                    )                   -option Constant
-
-# ------------------------------------------------------------------------------------------------
 
 Function cpt:getSetting([string] $name)
 {
@@ -275,6 +263,15 @@ Function cpt:getSetting([string] $name)
     return $settingField.$name
   }
   return $null
+}
+
+# We define this separately from the implementation in io.ps1 because that may not yet be present and 
+# in order to download it we need the connection-status greenlight.
+Function cpt:testInternetConnectivity
+{  
+  $resp = Get-WmiObject -Class Win32_PingStatus -Filter 'Address="github.com" and Timeout=100' | Select-Object ResponseTime
+  [bool] $hasInternetConnectivity = ($resp.ResponseTime -and $resp.ResponseTime -gt 0)
+  return $hasInternetConnectivity
 }
 
 # Include required scripts, or download them from Github, if necessary
@@ -315,13 +312,6 @@ Function cpt:ensureScriptExists( [Parameter(Mandatory=$true)] [string] $scriptNa
   return $scriptFilePath
 }
 
-Function Test-InternetConnectivity
-{  
-  $resp = Get-WmiObject -Class Win32_PingStatus -Filter 'Address="github.com" and Timeout=100' | Select-Object ResponseTime
-  [bool] $hasInternetConnectivity = ($resp.ResponseTime -and $resp.ResponseTime -gt 0)
-  return $hasInternetConnectivity
-}
-
 [bool] $shouldRedownloadForcefully = $false
 [Version] $cptVsixVersion = cpt:getSetting "Version"
 Write-Verbose "Current Clang Power Tools VSIX version: $cptVsixVersion"
@@ -344,13 +334,13 @@ if ( ( ![string]::IsNullOrWhiteSpace($cptVsixVersion) -and
     Remove-ItemProperty -path $kCptRegHiveSettings -name 'ScriptTimestamp'
   }
 
-  if (! (Test-InternetConnectivity) )
+  if (! (cpt:testInternetConnectivity) )
   {
     Write-Verbose "No internet connectivity. Postponing helper scripts update from github..."
   }
   
   [string] $featureDisableValue = '42'
-  if ( (Test-InternetConnectivity) -and 
+  if ( (cpt:testInternetConnectivity) -and 
       ($savedHash -ne $currentHash) -and
       ($savedHash -ne $featureDisableValue) )
   {
@@ -370,11 +360,17 @@ if ( ( ![string]::IsNullOrWhiteSpace($cptVsixVersion) -and
  , "get-header-references.ps1"
  , "itemdefinition-context.ps1"
  , "jsondb-export.ps1"
+ , "get-llvm-helper.ps1"
 )                                                                        |
 ForEach-Object { cpt:ensureScriptExists $_ $shouldRedownloadForcefully } |
 ForEach-Object { . $_ }
 
 Write-InformationTimed "Imported scripts"
+
+#-------------------------------------------------------------------------------------------------
+# do not include in list above because it is an invokable script, dot-sourcing does not work.
+
+cpt:ensureScriptExists "get-llvm.ps1" $shouldRedownloadForcefully
 
 #-------------------------------------------------------------------------------------------------
 # we may have a custom path for Clang-Tidy. Use it if that's the case.
@@ -1613,68 +1609,11 @@ Write-Verbose "CPU logical core count: $kLogicalCoreCount"
 [string] $global:llvmLocation = ""
 
 $clangToolWeNeed = Get-ExeToCall -workloadType $workloadType
-if (! (Exists-Command($clangToolWeNeed)) )
+
+$global:llvmLocation = Ensure-LLVMTool-IsPresent $clangToolWeNeed
+if (![string]::IsNullOrEmpty($global:llvmLocation))
 {
-  foreach ($locationLLVM in $kLLVMInstallLocations)
-  {
-    if (Test-Path -LiteralPath $locationLLVM)
-    {
-      $global:llvmLocation = $locationLLVM
-      break
-    }
-  }
-}
-
-if (!(Exists-Command($clangToolWeNeed)) -and (Test-InternetConnectivity))
-{
-  [string] $llvmLiteDirParent = "${env:APPDATA}\ClangPowerTools"
-  [string] $llvmLiteDir       = "$llvmLiteDirParent\LLVM_Lite"
-
-  [string] $llvmLiteToolPath = "$llvmLiteDir\$clangToolWeNeed"
-  if (Test-Path $llvmLiteToolPath)
-  {
-    $versionPresent = (Get-Item $llvmLiteToolPath).VersionInfo.ProductVersion
-    if ($versionPresent -eq $kCptGithubLlvmVersion)
-    {
-      # we already have downloaded the latest standalone tool, reuse it
-      $global:llvmLocation = $llvmLiteDir
-    }
-  }
-
-  if ([string]::IsNullOrEmpty($global:llvmLocation))
-  {
-    if (!(Test-Path $llvmLiteDirParent))
-    {
-      New-Item -Path $llvmLiteDirParent -ItemType Directory | Out-Null
-    }
-    if (!(Test-Path $llvmLiteDir))
-    {
-      New-Item -Path $llvmLiteDir -ItemType Directory | Out-Null
-    }
-
-    # the displayed progress slows downloads considerably, so disable it
-    $prevPreference = $ProgressPreference
-    $ProgressPreference = 'SilentlyContinue'
-    [string] $clangCompilerWebPath = "$kCptGithubLlvm/$clangToolWeNeed"
-    
-    if (Test-Path  $llvmLiteToolPath)
-    {
-      # we have an older version downloaded, remove it first
-      Remove-Item $llvmLiteToolPath -Force
-    }
-
-    Write-Output "Downloading $clangToolWeNeed $kCptGithubLlvmVersion ..."
-    # grab ready-to-use LLVM binaries from Github
-    Invoke-WebRequest -Uri $clangCompilerWebPath -OutFile $llvmLiteToolPath
-    $ProgressPreference = $prevPreference
-
-    $global:llvmLocation = $llvmLiteDir
-  }
-
-  if (![string]::IsNullOrEmpty($global:llvmLocation))
-  {
-    $env:Path += ";" + $global:llvmLocation
-  }
+  $env:Path += ";" + $global:llvmLocation
 }
 
 # initialize JSON compilation db support, if required
