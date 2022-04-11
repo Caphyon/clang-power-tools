@@ -47,10 +47,12 @@ namespace ClangPowerTools.Commands
     public async Task GenerateDocumentationAsync(bool jsonCompilationDbActive)
     {
       //generate json compilation database
-      await RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu, true);
-      //CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu);
+      //await RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu, true);
+      CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu);
       GetClangDoc();
 
+      await PrepareCommmandAsync(CommandUILocation.ContextMenu, jsonCompilationDbActive);
+      CacheProjectsFromItems();
       FilePathCollector fileCollector = new FilePathCollector();
       var paths = fileCollector.Collect(mItemsCollector.Items).ToList();
 
@@ -76,7 +78,7 @@ namespace ClangPowerTools.Commands
         process.StartInfo.RedirectStandardError = true;
         process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
         process.StartInfo.Arguments = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
-        $" ''{clangDocPath}'' -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
+        $" ''{clangDocPath}'' --format=html -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
 
         try
         {
