@@ -48,7 +48,7 @@ namespace ClangPowerTools.Commands
     {
       //generate json compilation database
       //await RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu, true);
-      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu);
+      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu, null, false);
       GetClangDoc();
 
       await PrepareCommmandAsync(CommandUILocation.ContextMenu, jsonCompilationDbActive);

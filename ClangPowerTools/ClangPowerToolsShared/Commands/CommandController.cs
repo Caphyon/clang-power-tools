@@ -164,7 +164,8 @@ namespace ClangPowerTools
       return _commandId;
     }
 
-    public async Task LaunchCommandAsync(int aCommandId, CommandUILocation aCommandUILocation, List<string> paths = null)
+    public async Task LaunchCommandAsync(int aCommandId, CommandUILocation aCommandUILocation,
+      List<string> paths = null, bool openCompilationDatabaseInExplorer = true)
     {
       _commandId = aCommandId;
       switch (aCommandId)
@@ -294,7 +295,7 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kJsonCompilationDatabase);
 
-            await JsonCompilationDatabaseCommand.Instance.ExportAsync();
+            await JsonCompilationDatabaseCommand.Instance.ExportAsync(openCompilationDatabaseInExplorer);
             OnAfterClangCommand();
             break;
           }
