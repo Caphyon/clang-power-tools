@@ -48,7 +48,7 @@ namespace ClangPowerTools.Commands
     {
       //generate json compilation database
       //await RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu, true);
-      CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu);
+      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu);
       GetClangDoc();
 
       await PrepareCommmandAsync(CommandUILocation.ContextMenu, jsonCompilationDbActive);
@@ -60,34 +60,40 @@ namespace ClangPowerTools.Commands
       if (paths.Any())
       {
         FileInfo fileInfo = new FileInfo(paths.FirstOrDefault());
-        projectPath = fileInfo.Directory.FullName;
-      }
-
-      string jsonCompilationDatabasePath = Path.Combine(projectPath, ScriptConstants.kCompilationDBFile);
-      string documentationOutoutePath = Path.Combine(projectPath, "Documentation");
-      string clangDocPath = Path.Combine(PathConstants.LlvmLitePath, ScriptConstants.kClangDoc);
-
-      //TODO Verify if compilation database exists
-      if (File.Exists(jsonCompilationDatabasePath) && File.Exists(clangDocPath))
-      {
-        Process process = new Process();
-        process.StartInfo.UseShellExecute = false;
-        process.StartInfo.CreateNoWindow = true;
-        process.StartInfo.RedirectStandardInput = true;
-        process.StartInfo.RedirectStandardOutput = true;
-        process.StartInfo.RedirectStandardError = true;
-        process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
-        process.StartInfo.Arguments = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
-        $" ''{clangDocPath}'' --format=html -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
-
-        try
+        if(fileInfo.FullName.Contains(".sln"))
         {
-          process.Start();
+          projectPath = fileInfo.Directory.FullName;
         }
-        catch (Exception exception)
+        else
         {
-          throw new Exception(
-              $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
+          projectPath = fileInfo.Directory.Parent.FullName;
+        }
+
+        string jsonCompilationDatabasePath = Path.Combine(projectPath, ScriptConstants.kCompilationDBFile);
+        string documentationOutoutePath = Path.Combine(projectPath, "Documentation");
+        string clangDocPath = Path.Combine(PathConstants.LlvmLitePath, ScriptConstants.kClangDoc);
+
+        if (File.Exists(jsonCompilationDatabasePath) && File.Exists(clangDocPath))
+        {
+          Process process = new Process();
+          process.StartInfo.UseShellExecute = false;
+          process.StartInfo.CreateNoWindow = true;
+          process.StartInfo.RedirectStandardInput = true;
+          process.StartInfo.RedirectStandardOutput = true;
+          process.StartInfo.RedirectStandardError = true;
+          process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
+          process.StartInfo.Arguments = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
+          $" ''{clangDocPath}'' --format=html -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
+
+          try
+          {
+            process.Start();
+          }
+          catch (Exception exception)
+          {
+            throw new Exception(
+                $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
+          }
         }
       }
     }
