@@ -282,6 +282,8 @@ namespace ClangPowerTools
           }
         case CommandIds.kDocumentation:
           {
+            await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu, null, false);
+
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kDocumentation);
 

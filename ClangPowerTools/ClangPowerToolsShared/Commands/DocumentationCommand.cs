@@ -1,4 +1,5 @@
-﻿using ClangPowerToolsShared.MVVM.Constants;
+﻿using ClangPowerTools.Events;
+using ClangPowerToolsShared.MVVM.Constants;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
@@ -14,6 +15,11 @@ namespace ClangPowerTools.Commands
   {
 
     private readonly AsyncPackage package;
+    public event EventHandler<CloseDataStreamingEventArgs> CloseDataStreamingEvent;
+    protected void OnDataStreamClose(CloseDataStreamingEventArgs e)
+    {
+      CloseDataStreamingEvent?.Invoke(this, e);
+    }
 
     /// <summary>
     /// Gets the instance of the command.
@@ -48,7 +54,7 @@ namespace ClangPowerTools.Commands
     {
       //generate json compilation database
       //await RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu, true);
-      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu, null, false);
+      //await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu, null, false);
       GetClangDoc();
 
       await PrepareCommmandAsync(CommandUILocation.ContextMenu, jsonCompilationDbActive);
@@ -93,6 +99,15 @@ namespace ClangPowerTools.Commands
           {
             throw new Exception(
                 $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
+          }
+          if (StopCommandActivated)
+          {
+            OnDataStreamClose(new CloseDataStreamingEventArgs(true));
+            StopCommandActivated = false;
+          }
+          else
+          {
+            OnDataStreamClose(new CloseDataStreamingEventArgs(false));
           }
         }
       }
