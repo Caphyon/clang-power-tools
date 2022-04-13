@@ -114,11 +114,6 @@ namespace ClangPowerTools
         await JsonCompilationDatabaseCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kJsonCompilationDatabase);
       }
 
-      //if (DocumentationCommand.Instance == null)
-      //{
-      //  await DocumentationCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kDocumentationHtmlId);
-      //}
-
       if (DocumentationYamlCommand.Instance == null)
       {
         await DocumentationYamlCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kDocumentationYamlId);

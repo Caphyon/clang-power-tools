@@ -1,12 +1,9 @@
 ﻿using ClangPowerTools.Events;
-using ClangPowerToolsShared.MVVM.Constants;
+using ClangPowerToolsShared.Helpers;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerTools.Commands
@@ -47,85 +44,16 @@ namespace ClangPowerTools.Commands
 
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
       Instance = new DocumentationCommand(commandService, aCommandController, aPackage, aGuid, aId);
-
     }
 
     public async Task GenerateDocumentationAsync(bool jsonCompilationDbActive)
     {
-      //generate json compilation database
-      //await RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu, true);
-      //await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu, null, false);
-      GetClangDoc();
-
-      await PrepareCommmandAsync(CommandUILocation.ContextMenu, jsonCompilationDbActive);
+     await PrepareCommmandAsync(CommandUILocation.ContextMenu, jsonCompilationDbActive);
       CacheProjectsFromItems();
+     
       FilePathCollector fileCollector = new FilePathCollector();
       var paths = fileCollector.Collect(mItemsCollector.Items).ToList();
-
-      string projectPath = string.Empty;
-      if (paths.Any())
-      {
-        FileInfo fileInfo = new FileInfo(paths.FirstOrDefault());
-        if(fileInfo.FullName.Contains(".sln"))
-        {
-          projectPath = fileInfo.Directory.FullName;
-        }
-        else
-        {
-          projectPath = fileInfo.Directory.Parent.FullName;
-        }
-
-        string jsonCompilationDatabasePath = Path.Combine(projectPath, ScriptConstants.kCompilationDBFile);
-        string documentationOutoutePath = Path.Combine(projectPath, "Documentation");
-        string clangDocPath = Path.Combine(PathConstants.LlvmLitePath, ScriptConstants.kClangDoc);
-
-        if (File.Exists(jsonCompilationDatabasePath) && File.Exists(clangDocPath))
-        {
-          Process process = new Process();
-          process.StartInfo.UseShellExecute = false;
-          process.StartInfo.CreateNoWindow = true;
-          process.StartInfo.RedirectStandardInput = true;
-          process.StartInfo.RedirectStandardOutput = true;
-          process.StartInfo.RedirectStandardError = true;
-          process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
-          process.StartInfo.Arguments = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
-          $" ''{clangDocPath}'' --format=html -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
-
-          try
-          {
-            process.Start();
-          }
-          catch (Exception exception)
-          {
-            throw new Exception(
-                $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
-          }
-          if (StopCommandActivated)
-          {
-            OnDataStreamClose(new CloseDataStreamingEventArgs(true));
-            StopCommandActivated = false;
-          }
-          else
-          {
-            OnDataStreamClose(new CloseDataStreamingEventArgs(false));
-          }
-        }
-      }
-    }
-
-    public void GetClangDoc()
-    {
-      var getllvmPath = GetScriptFilePath();
-
-      Process process = new Process();
-      process.StartInfo.UseShellExecute = false;
-      process.StartInfo.CreateNoWindow = true;
-      process.StartInfo.RedirectStandardInput = true;
-      process.StartInfo.RedirectStandardOutput = true;
-      process.StartInfo.RedirectStandardError = true;
-      process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
-      process.StartInfo.Arguments = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
-        $" ''{getllvmPath}'' {ScriptConstants.kClangDoc} '";
+      var process = await GenerateDocumentation.CreateProcessGenerateDocumentationAsync(1, jsonCompilationDbActive, paths);
 
       try
       {
@@ -136,15 +64,15 @@ namespace ClangPowerTools.Commands
         throw new Exception(
             $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
       }
-
+      if (StopCommandActivated)
+      {
+        OnDataStreamClose(new CloseDataStreamingEventArgs(true));
+        StopCommandActivated = false;
+      }
+      else
+      {
+        OnDataStreamClose(new CloseDataStreamingEventArgs(false));
+      }
     }
-    protected string GetScriptFilePath()
-    {
-      var assemblyPath = Assembly.GetExecutingAssembly().Location;
-      var scriptDirectory = assemblyPath.Substring(0, assemblyPath.LastIndexOf('\\'));
-
-      return Path.Combine(scriptDirectory, "Tooling\\v1\\psClang", ScriptConstants.kGetLLVMScriptName);
-    }
-
   }
 }
