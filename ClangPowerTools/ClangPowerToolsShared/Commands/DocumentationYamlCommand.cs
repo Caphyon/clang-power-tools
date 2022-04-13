@@ -1,9 +1,11 @@
 ﻿using ClangPowerTools;
 using ClangPowerTools.Commands;
+using ClangPowerToolsShared.Helpers;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Linq;
 using Task = System.Threading.Tasks.Task;
 
 
@@ -36,6 +38,35 @@ namespace ClangPowerToolsShared.Commands
       OleMenuCommandService commandService = await aPackage.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
       Instance = new DocumentationYamlCommand(commandService, aCommandController, aPackage, aGuid, aId);
 
+    }
+
+    public async Task GenerateDocumentationAsync(bool jsonCompilationDbActive, int commmandId)
+    {
+      await PrepareCommmandAsync(CommandUILocation.ContextMenu, jsonCompilationDbActive);
+      CacheProjectsFromItems();
+
+      FilePathCollector fileCollector = new FilePathCollector();
+      var paths = fileCollector.Collect(mItemsCollector.Items).ToList();
+      var process = await GenerateDocumentation.CreateProcessGenerateDocumentationAsync(commmandId, jsonCompilationDbActive, paths);
+
+      try
+      {
+        process.Start();
+      }
+      catch (Exception exception)
+      {
+        throw new Exception(
+            $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
+      }
+      //if (StopCommandActivated)
+      //{
+      //  OnDataStreamClose(new CloseDataStreamingEventArgs(true));
+      //  StopCommandActivated = false;
+      //}
+      //else
+      //{
+      //  OnDataStreamClose(new CloseDataStreamingEventArgs(false));
+      //}
     }
 
   }

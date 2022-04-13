@@ -295,36 +295,36 @@ namespace ClangPowerTools
           {
             //await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu, null, false);
 
-            //await StopBackgroundRunnersAsync();
-            //OnBeforeClangCommand(CommandIds.kDocumentationYamlId);
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kDocumentationYamlId);
 
-            //await DocumentationCommand.Instance.GenerateDocumentationAsync(true);
+            await DocumentationYamlCommand.Instance.GenerateDocumentationAsync(true, CommandIds.kDocumentationYamlId);
 
-            //OnAfterClangCommand();
+            OnAfterClangCommand();
             break;
           }
         case CommandIds.kDocumentationMdId:
           {
             //await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu, null, false);
 
-            //await StopBackgroundRunnersAsync();
-            //OnBeforeClangCommand(CommandIds.kDocumentationMdId);
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kDocumentationMdId);
 
-            //await DocumentationCommand.Instance.GenerateDocumentationAsync(true);
+            await DocumentationMdCommand.Instance.GenerateDocumentationAsync(true, CommandIds.kDocumentationMdId);
 
-            //OnAfterClangCommand();
+            OnAfterClangCommand();
             break;
           }
         case CommandIds.kDocumentationHtmlId:
           {
             //await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu, null, false);
 
-            //await StopBackgroundRunnersAsync();
-            //OnBeforeClangCommand(CommandIds.kDocumentationHtmlId);
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kDocumentationHtmlId);
 
-            //await DocumentationCommand.Instance.GenerateDocumentationAsync(true);
+            await DocumentationHtmlCommand.Instance.GenerateDocumentationAsync(true, CommandIds.kDocumentationHtmlId);
 
-            //OnAfterClangCommand();
+            OnAfterClangCommand();
             break;
           }
         case CommandIds.kJsonCompilationDatabase:

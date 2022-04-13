@@ -60,7 +60,7 @@ namespace ClangPowerToolsShared.Helpers
           process.StartInfo.RedirectStandardError = true;
           process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
           process.StartInfo.Arguments = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
-          $" ''{clangDocPath}'' --format="+ formats[commandId] + "-output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
+          $" ''{clangDocPath}'' --format={formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
 
           return process;
         }

@@ -22,6 +22,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Commands\DocumentationHtmlCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\DocumentationMdCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\DocumentationYamlCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\GenerateDocumentation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\DialogWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\BackgroundTidy\PowerShellWrapperBackground.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\BasicCommand.cs" />
