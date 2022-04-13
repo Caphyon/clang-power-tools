@@ -7,6 +7,7 @@ using ClangPowerTools.Handlers;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
+using ClangPowerToolsShared.Commands;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -113,9 +114,24 @@ namespace ClangPowerTools
         await JsonCompilationDatabaseCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kJsonCompilationDatabase);
       }
 
-      if(DocumentationCommand.Instance == null)
+      //if (DocumentationCommand.Instance == null)
+      //{
+      //  await DocumentationCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kDocumentationHtmlId);
+      //}
+
+      if (DocumentationYamlCommand.Instance == null)
       {
-        await DocumentationCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kDocumentation);
+        await DocumentationYamlCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kDocumentationYamlId);
+      }
+
+      if (DocumentationHtmlCommand.Instance == null)
+      {
+        await DocumentationHtmlCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kDocumentationHtmlId);
+      }
+
+      if (DocumentationMdCommand.Instance == null)
+      {
+        await DocumentationMdCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kDocumentationMdId);
       }
 
       if (SettingsCommand.Instance == null)
@@ -280,16 +296,40 @@ namespace ClangPowerTools
             IgnoreCompileCommand.Instance.RunIgnoreCompileCommand();
             break;
           }
-        case CommandIds.kDocumentation:
+        case CommandIds.kDocumentationYamlId:
           {
-            await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu, null, false);
+            //await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu, null, false);
 
-            await StopBackgroundRunnersAsync();
-            OnBeforeClangCommand(CommandIds.kDocumentation);
+            //await StopBackgroundRunnersAsync();
+            //OnBeforeClangCommand(CommandIds.kDocumentationYamlId);
 
-            await DocumentationCommand.Instance.GenerateDocumentationAsync(true);
+            //await DocumentationCommand.Instance.GenerateDocumentationAsync(true);
 
-            OnAfterClangCommand();
+            //OnAfterClangCommand();
+            break;
+          }
+        case CommandIds.kDocumentationMdId:
+          {
+            //await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu, null, false);
+
+            //await StopBackgroundRunnersAsync();
+            //OnBeforeClangCommand(CommandIds.kDocumentationMdId);
+
+            //await DocumentationCommand.Instance.GenerateDocumentationAsync(true);
+
+            //OnAfterClangCommand();
+            break;
+          }
+        case CommandIds.kDocumentationHtmlId:
+          {
+            //await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu, null, false);
+
+            //await StopBackgroundRunnersAsync();
+            //OnBeforeClangCommand(CommandIds.kDocumentationHtmlId);
+
+            //await DocumentationCommand.Instance.GenerateDocumentationAsync(true);
+
+            //OnAfterClangCommand();
             break;
           }
         case CommandIds.kJsonCompilationDatabase:

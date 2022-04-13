@@ -17,7 +17,9 @@ namespace ClangPowerTools
       {CommandIds.kTidyToolbarId, "Clang Tidy"},
       {CommandIds.kTidyFixId, "Clang Tidy-Fix"},
       {CommandIds.kTidyFixToolbarId, "Clang Tidy-Fix"},
-      {CommandIds.kDocumentation, "Clang Generate Documentation"},
+      {CommandIds.kDocumentationHtmlId, "Clang Generate Documentation Html"},
+      {CommandIds.kDocumentationYamlId, "Clang Generate Documentation Yaml"},
+      {CommandIds.kDocumentationMdId, "Clang Generate Documentation Md"},
       {CommandIds.kClangFormat, "Clang Format"},
       {CommandIds.kClangFormatToolbarId, "Clang Format"},
       {CommandIds.kJsonCompilationDatabase, "JSON Compilation Database"}
