@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ClangPowerToolsShared.Helpers
@@ -47,7 +48,7 @@ namespace ClangPowerToolsShared.Helpers
         }
 
         string jsonCompilationDatabasePath = Path.Combine(projectPath, ScriptConstants.kCompilationDBFile);
-        string documentationOutoutePath = Path.Combine(projectPath, "Documentation");
+        string documentationOutoutePath = FindOutputFolderName(Path.Combine(projectPath, "Documentation\\"));
         string clangDocPath = Path.Combine(PathConstants.LlvmLitePath, ScriptConstants.kClangDoc);
 
         if (File.Exists(jsonCompilationDatabasePath) && File.Exists(clangDocPath))
@@ -75,6 +76,35 @@ namespace ClangPowerToolsShared.Helpers
           }
         }
       }
+    }
+
+    /// <summary>
+    /// Find a name for output documentation folder
+    /// </summary>
+    private static string FindOutputFolderName(string outputPath)
+    {
+      while(Directory.Exists(outputPath))
+      {
+        //Get number from folder path
+        FileInfo fileInfo = new FileInfo(outputPath);
+        var resultString = Regex.Match(fileInfo.Directory.Name, @"\d+").Value;
+        if(resultString != string.Empty)
+        {
+          var resultNumber = Int32.Parse(resultString);
+          //Increment number and replace in foder path
+          ++resultNumber;
+          var resultFolderName = fileInfo.Directory.Name.Replace(resultString, resultNumber.ToString());
+          outputPath = outputPath.Replace(fileInfo.Directory.Name, resultFolderName);
+        }
+        else
+        {
+          //Start folder count from 1, by adding 1 to final
+          var resultFolderName = fileInfo.Directory.Name + " (1)";
+          outputPath = outputPath.Replace(fileInfo.Directory.Name, resultFolderName);
+        }
+      }
+      //Delete last two charachers (\\) from end
+      return outputPath.Remove(outputPath.Length - 1, 1);
     }
 
     private static void DisplayInfoMessage(string outputPath)
