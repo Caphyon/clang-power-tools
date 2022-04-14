@@ -65,6 +65,8 @@ namespace ClangPowerToolsShared.Helpers
           {
             process.Start();
             DisplayInfoMessage(documentationOutoutePath);
+            process.WaitForExit();
+            OpenInFileExplorer(documentationOutoutePath);
           }
           catch (Exception exception)
           {
@@ -116,6 +118,20 @@ namespace ClangPowerToolsShared.Helpers
       var scriptDirectory = assemblyPath.Substring(0, assemblyPath.LastIndexOf('\\'));
 
       return Path.Combine(scriptDirectory, "Tooling\\v1\\psClang", ScriptConstants.kGetLLVMScriptName);
+    }
+
+
+    private static void OpenInFileExplorer(string path)
+    {
+      if (!Directory.Exists(path))
+        return;
+
+      // combine the arguments together
+      // it doesn't matter if there is a space after ','
+      string argument = " \"" + path + "\"";
+
+      // open the file in File Explorer and select it
+      Process.Start("explorer.exe", argument);
     }
   }
 
