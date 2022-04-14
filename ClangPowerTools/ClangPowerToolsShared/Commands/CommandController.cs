@@ -293,7 +293,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kDocumentationYamlId:
           {
-            //await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu, null, false);
+            await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu, null, false);
 
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kDocumentationYamlId);
@@ -305,7 +305,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kDocumentationMdId:
           {
-            //await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu, null, false);
+            await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu, null, false);
 
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kDocumentationMdId);
@@ -317,7 +317,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kDocumentationHtmlId:
           {
-            //await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu, null, false);
+            await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu, null, false);
 
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kDocumentationHtmlId);

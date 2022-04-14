@@ -3,6 +3,7 @@ using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
+using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using EnvDTE;
@@ -389,8 +390,11 @@ namespace ClangPowerTools
       CompileCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       TidyCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       JsonCompilationDatabaseCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
-      //DocumentationCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       FormatCommand.Instance.FormatEvent += mCommandController.OnAfterFormatCommand;
+
+      DocumentationYamlCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
+      DocumentationHtmlCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
+      DocumentationMdCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
 
       CompileCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
       TidyCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
@@ -455,8 +459,11 @@ namespace ClangPowerTools
       CompileCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
       TidyCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
       JsonCompilationDatabaseCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
-      //DocumentationCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
       FormatCommand.Instance.FormatEvent -= mCommandController.OnAfterFormatCommand;
+
+      DocumentationYamlCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
+      DocumentationHtmlCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
+      DocumentationMdCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
 
       CompileCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
       TidyCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;

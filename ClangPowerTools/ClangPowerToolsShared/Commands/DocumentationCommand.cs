@@ -11,7 +11,6 @@ namespace ClangPowerTools.Commands
   public sealed class DocumentationCommand : CompileCommand
   {
 
-    private readonly AsyncPackage package;
     public event EventHandler<CloseDataStreamingEventArgs> CloseDataStreamingEvent;
     protected void OnDataStreamClose(CloseDataStreamingEventArgs e)
     {

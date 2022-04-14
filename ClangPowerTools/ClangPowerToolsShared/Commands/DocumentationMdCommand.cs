@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools;
 using ClangPowerTools.Commands;
+using ClangPowerTools.Events;
 using ClangPowerToolsShared.Helpers;
 using Microsoft.VisualStudio.Shell;
 using System;
@@ -13,6 +14,11 @@ namespace ClangPowerToolsShared.Commands
 {
   public sealed class DocumentationMdCommand : CompileCommand
   {
+    public event EventHandler<CloseDataStreamingEventArgs> CloseDataStreamingEvent;
+    protected void OnDataStreamClose(CloseDataStreamingEventArgs e)
+    {
+      CloseDataStreamingEvent?.Invoke(this, e);
+    }
     public static DocumentationMdCommand Instance
     {
       get;
@@ -55,15 +61,15 @@ namespace ClangPowerToolsShared.Commands
         throw new Exception(
             $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
       }
-      //if (StopCommandActivated)
-      //{
-      //  OnDataStreamClose(new CloseDataStreamingEventArgs(true));
-      //  StopCommandActivated = false;
-      //}
-      //else
-      //{
-      //  OnDataStreamClose(new CloseDataStreamingEventArgs(false));
-      //}
+      if (StopCommandActivated)
+      {
+        OnDataStreamClose(new CloseDataStreamingEventArgs(true));
+        StopCommandActivated = false;
+      }
+      else
+      {
+        OnDataStreamClose(new CloseDataStreamingEventArgs(false));
+      }
     }
 
   }
