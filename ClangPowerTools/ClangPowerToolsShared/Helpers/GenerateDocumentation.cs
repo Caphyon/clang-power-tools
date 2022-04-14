@@ -28,7 +28,7 @@ namespace ClangPowerToolsShared.Helpers
     /// <param name="jsonCompilationDbActive"></param>
     /// <param name="paths"></param>
     /// <returns></returns>
-    public static async Task<Process> CreateProcessGenerateDocumentationAsync(int commandId, bool jsonCompilationDbActive,
+    public static void GenerateDocumentationForProject(int commandId, bool jsonCompilationDbActive,
       List<string> paths)
     {
       GetClangDoc();
@@ -61,14 +61,25 @@ namespace ClangPowerToolsShared.Helpers
           process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
           process.StartInfo.Arguments = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
           $" ''{clangDocPath}'' --format={formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
-
-          return process;
+          try
+          {
+            process.Start();
+            DisplayInfoMessage(documentationOutoutePath);
+          }
+          catch (Exception exception)
+          {
+            throw new Exception(
+                $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
+          }
         }
       }
-      return new Process();
     }
 
-
+    private static void DisplayInfoMessage(string outputPath)
+    {
+      CommandControllerInstance.CommandController.DisplayMessage(false,
+      $"Generated Documentation at path: {outputPath}");
+    }
 
     /// <summary>
     /// Run a process that download clang-doc.exe if it wasn't found on disk

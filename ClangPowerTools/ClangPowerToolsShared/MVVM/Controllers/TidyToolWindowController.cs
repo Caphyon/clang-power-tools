@@ -125,9 +125,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     /// <returns></returns>
     public async Task FixAllFilesAsync(FileModel file = null)
     {
-      //TODO apply tidy fix just on source files, ignore headers
       BeforeCommand();
-      //if ((tidyToolWindowModel.TotalChecked != tidyToolWindowModel.TotalFixedChecked && files.Where(f => f.FilesType == FileType.File && f.IsChecked && !f.IsFixed).Any()) || file is not null)
       var filesPaths = new List<string>();
       var filesPathsCopy = new List<FileModel>();
       if (file is null)

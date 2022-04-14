@@ -51,17 +51,8 @@ namespace ClangPowerToolsShared.Commands
 
       FilePathCollector fileCollector = new FilePathCollector();
       var paths = fileCollector.Collect(mItemsCollector.Items).ToList();
-      var process = await GenerateDocumentation.CreateProcessGenerateDocumentationAsync(commandId, jsonCompilationDbActive, paths);
-
-      try
-      {
-        process.Start();
-      }
-      catch (Exception exception)
-      {
-        throw new Exception(
-            $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
-      }
+      GenerateDocumentation.GenerateDocumentationForProject(commandId, jsonCompilationDbActive, paths);
+      
       if (StopCommandActivated)
       {
         OnDataStreamClose(new CloseDataStreamingEventArgs(true));

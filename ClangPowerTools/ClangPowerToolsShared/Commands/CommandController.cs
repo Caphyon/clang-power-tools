@@ -414,7 +414,7 @@ namespace ClangPowerTools
     {
       if (e.FormatConfigFound == false)
       {
-        DisplayCannotFormatMessage(e.Clear,
+        DisplayMessage(e.Clear,
       $"\n--- ERROR ---\nFormat config file not found.\nCreate the config file and place it in the solution folder or select one of the predefined format styles from Clang Power Tools settings -> Format -> Style.");
       }
       else if (e.Clear)
@@ -512,7 +512,7 @@ namespace ClangPowerTools
       StatusBarHandler.Status("Command stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
-    private void DisplayCannotFormatMessage(bool clearOutput, string message)
+    public void DisplayMessage(bool clearOutput, string message)
     {
       OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs(message, clearOutput));
       StatusBarHandler.Status("Command stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
