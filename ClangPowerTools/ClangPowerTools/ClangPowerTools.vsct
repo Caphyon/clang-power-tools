@@ -35,11 +35,11 @@
 
       <!--Documentation Drop-Down Menu-->
       <Menu guid="guidClangPowerToolsPackageCmdSet" id="DromDownDocumentationMenu" type="MenuController" priority="0x0102">
-        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" />
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForJsonDatabase" />
         <CommandFlag>DefaultDocked</CommandFlag>
         <Strings>
-          <ButtonText>Clang Documentation Group</ButtonText>
-          <CommandName>Clang Documentation Group</CommandName>
+          <ButtonText>Generate Documentation</ButtonText>
+          <CommandName>Generate Documentation</CommandName>
         </Strings>
       </Menu>
 		</Menus>
