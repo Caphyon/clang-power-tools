@@ -1,13 +1,11 @@
 ﻿using ClangPowerTools;
-using ClangPowerToolsShared.MVVM.Constants;
+using ClangPowerTools.Commands;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace ClangPowerToolsShared.Helpers
 {
@@ -29,53 +27,41 @@ namespace ClangPowerToolsShared.Helpers
     /// <param name="jsonCompilationDbActive"></param>
     /// <param name="paths"></param>
     /// <returns></returns>
-    public static void GenerateDocumentationForProject(int commandId, bool jsonCompilationDbActive,
-      List<string> paths)
+    public static void GenerateDocumentationForProject(int commandId, bool jsonCompilationDbActive)
     {
-      string projectPath = string.Empty;
-      if (paths.Any())
+      var jsonCompilationDatabasePath = Path.Combine(JsonCompilationDatabaseCommand.Instance.SolutionPath(),
+        ScriptConstants.kCompilationDBFile);
+      string documentationOutoutePath = FindOutputFolderName(Path.Combine(JsonCompilationDatabaseCommand.Instance.SolutionPath(),
+        "Documentation\\"));
+
+      string clangDocPath = GetClangDoc();
+      clangDocPath = Path.Combine(clangDocPath, ScriptConstants.kClangDoc);
+
+      if (File.Exists(jsonCompilationDatabasePath) && File.Exists(clangDocPath))
       {
-        FileInfo fileInfo = new FileInfo(paths.FirstOrDefault());
-        if (fileInfo.FullName.Contains(".sln"))
+        Process process = new Process();
+        process.StartInfo.UseShellExecute = false;
+        process.StartInfo.CreateNoWindow = true;
+        process.StartInfo.RedirectStandardInput = true;
+        process.StartInfo.RedirectStandardOutput = true;
+        process.StartInfo.RedirectStandardError = true;
+        process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
+        process.StartInfo.Arguments = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
+        $" ''{clangDocPath}'' --format={formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
+        try
         {
-          projectPath = fileInfo.Directory.FullName;
+          process.Start();
+          DisplayInfoMessage(documentationOutoutePath);
+          process.WaitForExit();
+          OpenInFileExplorer(documentationOutoutePath);
         }
-        else
+        catch (Exception exception)
         {
-          projectPath = fileInfo.Directory.Parent.FullName;
-        }
-
-        string jsonCompilationDatabasePath = Path.Combine(projectPath, ScriptConstants.kCompilationDBFile);
-        string documentationOutoutePath = FindOutputFolderName(Path.Combine(projectPath, "Documentation\\"));
-        
-        string clangDocPath = GetClangDoc();
-        clangDocPath = Path.Combine(clangDocPath, ScriptConstants.kClangDoc);
-
-        if (File.Exists(jsonCompilationDatabasePath) && File.Exists(clangDocPath))
-        {
-          Process process = new Process();
-          process.StartInfo.UseShellExecute = false;
-          process.StartInfo.CreateNoWindow = true;
-          process.StartInfo.RedirectStandardInput = true;
-          process.StartInfo.RedirectStandardOutput = true;
-          process.StartInfo.RedirectStandardError = true;
-          process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
-          process.StartInfo.Arguments = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
-          $" ''{clangDocPath}'' --format={formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
-          try
-          {
-            process.Start();
-            DisplayInfoMessage(documentationOutoutePath);
-            process.WaitForExit();
-            OpenInFileExplorer(documentationOutoutePath);
-          }
-          catch (Exception exception)
-          {
-            throw new Exception(
-                $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
-          }
+          throw new Exception(
+              $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
         }
       }
+
     }
 
     /// <summary>
@@ -83,12 +69,12 @@ namespace ClangPowerToolsShared.Helpers
     /// </summary>
     private static string FindOutputFolderName(string outputPath)
     {
-      while(Directory.Exists(outputPath))
+      while (Directory.Exists(outputPath))
       {
         //Get number from folder path
         FileInfo fileInfo = new FileInfo(outputPath);
         var resultString = Regex.Match(fileInfo.Directory.Name, @"\d+").Value;
-        if(resultString != string.Empty)
+        if (resultString != string.Empty)
         {
           var resultNumber = Int32.Parse(resultString);
           //Increment number and replace in foder path

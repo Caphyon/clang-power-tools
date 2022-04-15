@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.IO;
 using System.Linq;
 using Task = System.Threading.Tasks.Task;
 
@@ -45,12 +46,7 @@ namespace ClangPowerToolsShared.Commands
 
     public async Task GenerateDocumentationAsync(bool jsonCompilationDbActive, int commmandId)
     {
-      await PrepareCommmandAsync(CommandUILocation.ContextMenu, jsonCompilationDbActive);
-      CacheProjectsFromItems();
-
-      FilePathCollector fileCollector = new FilePathCollector();
-      var paths = fileCollector.Collect(mItemsCollector.Items).ToList();
-      GenerateDocumentation.GenerateDocumentationForProject(commmandId, jsonCompilationDbActive, paths);
+      GenerateDocumentation.GenerateDocumentationForProject(commmandId, jsonCompilationDbActive);
 
       if (StopCommandActivated)
       {
@@ -62,6 +58,5 @@ namespace ClangPowerToolsShared.Commands
         OnDataStreamClose(new CloseDataStreamingEventArgs(false));
       }
     }
-
   }
 }

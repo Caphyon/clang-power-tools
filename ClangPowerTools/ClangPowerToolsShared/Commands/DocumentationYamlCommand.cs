@@ -48,12 +48,7 @@ namespace ClangPowerToolsShared.Commands
 
     public async Task GenerateDocumentationAsync(bool jsonCompilationDbActive, int commmandId)
     {
-      await PrepareCommmandAsync(CommandUILocation.ContextMenu, jsonCompilationDbActive);
-      CacheProjectsFromItems();
-
-      FilePathCollector fileCollector = new FilePathCollector();
-      var paths = fileCollector.Collect(mItemsCollector.Items).ToList();
-      GenerateDocumentation.GenerateDocumentationForProject(commmandId, jsonCompilationDbActive, paths);
+      GenerateDocumentation.GenerateDocumentationForProject(commmandId, jsonCompilationDbActive);
 
       if (StopCommandActivated)
       {
