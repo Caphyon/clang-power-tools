@@ -163,6 +163,7 @@
       <Button guid="guidClangPowerToolsPackageCmdSet" id="DocumentationYamlId" priority="0x0000" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownDocumentationMenuGroup" />
         <Icon guid="guidImageDocumentation" id="Documentation" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Yaml</ButtonText>
         </Strings>
@@ -172,6 +173,7 @@
       <Button guid="guidClangPowerToolsPackageCmdSet" id="DocumentationHtmlId" priority="0x0001" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownDocumentationMenuGroup" />
         <Icon guid="guidImageDocumentation" id="Documentation" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Html</ButtonText>
         </Strings>
@@ -182,6 +184,7 @@
       <Button guid="guidClangPowerToolsPackageCmdSet" id="DocumentationMdId" priority="0x0002" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownDocumentationMenuGroup" />
         <Icon guid="guidImageDocumentation" id="Documentation" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Md</ButtonText>
         </Strings>

@@ -32,8 +32,6 @@ namespace ClangPowerToolsShared.Helpers
     public static void GenerateDocumentationForProject(int commandId, bool jsonCompilationDbActive,
       List<string> paths)
     {
-      GetClangDoc();
-
       string projectPath = string.Empty;
       if (paths.Any())
       {
@@ -49,7 +47,22 @@ namespace ClangPowerToolsShared.Helpers
 
         string jsonCompilationDatabasePath = Path.Combine(projectPath, ScriptConstants.kCompilationDBFile);
         string documentationOutoutePath = FindOutputFolderName(Path.Combine(projectPath, "Documentation\\"));
-        string clangDocPath = Path.Combine(PathConstants.LlvmLitePath, ScriptConstants.kClangDoc);
+        
+        //Check if llvm already exists on disk
+        SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
+        string clangDocPath = settingsPathBuilder.GetCurrentExecutableLlvmPath();
+
+        if(!File.Exists(clangDocPath))
+        {
+          //Download clang-doc.exe
+          clangDocPath = GetClangDoc();
+          if(!clangDocPath.Contains(ScriptConstants.kClangDoc))
+            clangDocPath = Path.Combine(clangDocPath, ScriptConstants.kClangDoc);
+        }else
+        {
+          //Replace clang-tidy.exe with clang-doc.exe
+          clangDocPath = clangDocPath.Replace(ScriptConstants.kClangTidy, ScriptConstants.kClangDoc);
+        }
 
         if (File.Exists(jsonCompilationDatabasePath) && File.Exists(clangDocPath))
         {
@@ -114,12 +127,12 @@ namespace ClangPowerToolsShared.Helpers
     }
 
     /// <summary>
-    /// Run a process that download clang-doc.exe if it wasn't found on disk
+    /// Run a process that download clang-doc.exe (and returns path) if it wasn't found on disk
     /// </summary>
     /// <exception cref="Exception"></exception>
-    private static void GetClangDoc()
+    private static string GetClangDoc()
     {
-      var getllvmPath = GetScriptFilePath();
+      var getllvmScriptPath = GetScriptFilePath();
 
       Process process = new Process();
       process.StartInfo.UseShellExecute = false;
@@ -129,17 +142,22 @@ namespace ClangPowerToolsShared.Helpers
       process.StartInfo.RedirectStandardError = true;
       process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
       process.StartInfo.Arguments = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
-        $" ''{getllvmPath}'' {ScriptConstants.kClangDoc} '";
+        $" ''{getllvmScriptPath}'' {ScriptConstants.kClangDoc} '";
 
       try
       {
         process.Start();
+        while (!process.StandardOutput.EndOfStream)
+        {
+          return process.StandardOutput.ReadLine();
+        }
       }
       catch (Exception exception)
       {
         throw new Exception(
             $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
       }
+      return string.Empty;
     }
 
     private static string GetScriptFilePath()

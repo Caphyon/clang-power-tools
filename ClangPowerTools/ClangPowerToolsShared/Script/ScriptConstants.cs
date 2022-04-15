@@ -107,6 +107,7 @@ namespace ClangPowerTools
 
     public const string kClangFormat = "clang-format.exe";
     public const string kClangDoc = "clang-doc.exe";
+    public const string kClangTidy = "clang-tidy.exe";
     public const string kCompilationDBFile = "compile_commands.json";
     public const string kAssumeFilename = "-assume-filename";
     public const string kFallbackStyle = "-fallback-style";
