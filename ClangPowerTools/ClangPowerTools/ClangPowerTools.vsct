@@ -186,7 +186,7 @@
         <Icon guid="guidImageDocumentation" id="Documentation" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
-          <ButtonText>Md</ButtonText>
+          <ButtonText>Markdown</ButtonText>
         </Strings>
       </Button>
       

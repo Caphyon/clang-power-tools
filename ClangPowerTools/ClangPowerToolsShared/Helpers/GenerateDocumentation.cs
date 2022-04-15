@@ -48,21 +48,8 @@ namespace ClangPowerToolsShared.Helpers
         string jsonCompilationDatabasePath = Path.Combine(projectPath, ScriptConstants.kCompilationDBFile);
         string documentationOutoutePath = FindOutputFolderName(Path.Combine(projectPath, "Documentation\\"));
         
-        //Check if llvm already exists on disk
-        SettingsPathBuilder settingsPathBuilder = new SettingsPathBuilder();
-        string clangDocPath = settingsPathBuilder.GetCurrentExecutableLlvmPath();
-
-        if(!File.Exists(clangDocPath))
-        {
-          //Download clang-doc.exe
-          clangDocPath = GetClangDoc();
-          if(!clangDocPath.Contains(ScriptConstants.kClangDoc))
-            clangDocPath = Path.Combine(clangDocPath, ScriptConstants.kClangDoc);
-        }else
-        {
-          //Replace clang-tidy.exe with clang-doc.exe
-          clangDocPath = clangDocPath.Replace(ScriptConstants.kClangTidy, ScriptConstants.kClangDoc);
-        }
+        string clangDocPath = GetClangDoc();
+        clangDocPath = Path.Combine(clangDocPath, ScriptConstants.kClangDoc);
 
         if (File.Exists(jsonCompilationDatabasePath) && File.Exists(clangDocPath))
         {
@@ -140,6 +127,7 @@ namespace ClangPowerToolsShared.Helpers
       process.StartInfo.RedirectStandardInput = true;
       process.StartInfo.RedirectStandardOutput = true;
       process.StartInfo.RedirectStandardError = true;
+      process.StartInfo.EnvironmentVariables["Path"] = PowerShellWrapper.CreatePathEnvironmentVariable();
       process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
       process.StartInfo.Arguments = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
         $" ''{getllvmScriptPath}'' {ScriptConstants.kClangDoc} '";
