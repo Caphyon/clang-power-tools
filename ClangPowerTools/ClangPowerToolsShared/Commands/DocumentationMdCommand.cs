@@ -46,7 +46,7 @@ namespace ClangPowerToolsShared.Commands
 
     public async Task GenerateDocumentationAsync(bool jsonCompilationDbActive, int commmandId)
     {
-      GenerateDocumentation.GenerateDocumentationForProject(commmandId, jsonCompilationDbActive);
+      //GenerateDocumentation.GenerateDocumentationForProjectAsync(commmandId, jsonCompilationDbActive);
 
       if (StopCommandActivated)
       {

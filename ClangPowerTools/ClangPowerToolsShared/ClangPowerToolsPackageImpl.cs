@@ -4,6 +4,7 @@ using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
 using ClangPowerToolsShared.Commands;
+using ClangPowerToolsShared.Helpers;
 using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using EnvDTE;
@@ -406,6 +407,9 @@ namespace ClangPowerTools
       PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
       PowerShellWrapper.ExitedHandler += mOutputWindowController.ClosedDataConnection;
+
+      GenerateDocumentation.ExitedHandler += GenerateDocumentation.ClosedDataConnection;
+
     }
 
     private void RegisterToVsEvents()
@@ -475,6 +479,8 @@ namespace ClangPowerTools
       PowerShellWrapper.DataHandler -= mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler -= mOutputWindowController.OutputDataErrorReceived;
       PowerShellWrapper.ExitedHandler -= mOutputWindowController.ClosedDataConnection;
+
+      GenerateDocumentation.ExitedHandler -= GenerateDocumentation.ClosedDataConnection;
     }
 
     private void DeleteTempSolution()
