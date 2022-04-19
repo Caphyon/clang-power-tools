@@ -15,11 +15,8 @@ namespace ClangPowerToolsShared.Commands
 {
   public sealed class DocumentationMdCommand : CompileCommand
   {
-    public event EventHandler<CloseDataStreamingEventArgs> CloseDataStreamingEvent;
-    protected void OnDataStreamClose(CloseDataStreamingEventArgs e)
-    {
-      CloseDataStreamingEvent?.Invoke(this, e);
-    }
+    private AsyncPackage package;
+
     public static DocumentationMdCommand Instance
     {
       get;
@@ -27,7 +24,7 @@ namespace ClangPowerToolsShared.Commands
     }
 
     private DocumentationMdCommand(OleMenuCommandService aCommandService, CommandController aCommandController,
-      AsyncPackage aPackage, Guid aGuid, int aId) : base(aCommandService, aCommandController, aPackage, aGuid, aId) { }
+      AsyncPackage aPackage, Guid aGuid, int aId) : base(aCommandService, aCommandController, aPackage, aGuid, aId) { package = aPackage; }
 
     /// <summary>
     /// Initializes the singleton instance of the command.
@@ -46,7 +43,7 @@ namespace ClangPowerToolsShared.Commands
 
     public async Task GenerateDocumentationAsync(bool jsonCompilationDbActive, int commmandId)
     {
-      //GenerateDocumentation.GenerateDocumentationForProjectAsync(commmandId, jsonCompilationDbActive);
+      await GenerateDocumentation.GenerateDocumentationForProjectAsync(commmandId, jsonCompilationDbActive, package);
 
       if (StopCommandActivated)
       {
