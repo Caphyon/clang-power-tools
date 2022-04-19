@@ -3,6 +3,7 @@ using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
 using ClangPowerToolsShared.Helpers;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
 using System.Diagnostics;
@@ -12,7 +13,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerToolsShared.Commands
 {
-  public sealed class DocumentationYamlCommand : CompileCommand
+  public sealed class DocumentationYamlCommand : ClangCommand
   {
     //public event EventHandler<CloseDataStreamingEventArgs> CloseDataStreamingEvent;
     //protected void OnDataStreamClose(CloseDataStreamingEventArgs e)
@@ -28,8 +29,19 @@ namespace ClangPowerToolsShared.Commands
     }
 
     private DocumentationYamlCommand(OleMenuCommandService aCommandService, CommandController aCommandController,
-      AsyncPackage aPackage, Guid aGuid, int aId) : base(aCommandService, aCommandController, aPackage, aGuid, aId) { package = aPackage; }
-
+      AsyncPackage aPackage, Guid aGuid, int aId)
+        : base(aPackage, aGuid, aId)
+    {
+      package = aPackage;
+      if (null != aCommandService)
+      {
+        var menuCommandID = new CommandID(CommandSet, Id);
+        var menuCommand = new OleMenuCommand(aCommandController.Execute, menuCommandID);
+        menuCommand.BeforeQueryStatus += aCommandController.OnBeforeClangCommand;
+        menuCommand.Enabled = true;
+        aCommandService.AddCommand(menuCommand);
+      }
+    }
     /// <summary>
     /// Initializes the singleton instance of the command.
     /// </summary>
@@ -46,35 +58,24 @@ namespace ClangPowerToolsShared.Commands
 
     }
 
-    public async Task GenerateDocumentationAsync(bool jsonCompilationDbActive, int commmandId)
+    public async Task GenerateDocumentationAsync(int commandId)
     {
-      await GenerateDocumentation.GenerateDocumentationForProjectAsync(commmandId, jsonCompilationDbActive, package);
-
-      if (StopCommandActivated)
+      await GenerateDocumentation.GenerateDocumentationForProjectAsync(commandId, package);
+      await Task.Run(() =>
       {
-        OnDataStreamClose(new CloseDataStreamingEventArgs(true));
-        StopCommandActivated = false;
-      }
-      else
-      {
-        OnDataStreamClose(new CloseDataStreamingEventArgs(false));
-      }
+        lock (mutex)
+        {
+          try
+          {
+            GenerateDocumentationForProjectAsync(commandId, package);
+          }
+          catch (Exception exception)
+          {
+            VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
+              OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+          }
+        }
+      });
     }
-
-
-    internal void OpenInFileExplorer(object sender, JsonFilePathArgs e)
-    {
-      if (!File.Exists(e.FilePath))
-        return;
-
-      // combine the arguments together
-      // it doesn't matter if there is a space after ','
-      string argument = "/select, \"" + e.FilePath + "\"";
-
-      // open the file in File Explorer and select it
-      Process.Start("explorer.exe", argument);
-
-    }
-
   }
 }

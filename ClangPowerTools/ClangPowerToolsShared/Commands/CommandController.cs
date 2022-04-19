@@ -297,7 +297,7 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kDocumentationYamlId);
 
-            await DocumentationYamlCommand.Instance.GenerateDocumentationAsync(true, 
+            await DocumentationYamlCommand.Instance.GenerateDocumentationAsync( 
               CommandIds.kDocumentationYamlId);
 
             OnAfterClangCommand();
@@ -311,7 +311,8 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kDocumentationMdId);
 
-            await DocumentationMdCommand.Instance.GenerateDocumentationAsync(true, CommandIds.kDocumentationMdId);
+            await DocumentationMdCommand.Instance.GenerateDocumentationAsync(
+              CommandIds.kDocumentationMdId);
 
             OnAfterClangCommand();
             break;
@@ -324,7 +325,8 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kDocumentationHtmlId);
 
-            await DocumentationHtmlCommand.Instance.GenerateDocumentationAsync(true, CommandIds.kDocumentationHtmlId);
+            await DocumentationHtmlCommand.Instance.GenerateDocumentationAsync(
+              CommandIds.kDocumentationHtmlId);
 
             OnAfterClangCommand();
             break;

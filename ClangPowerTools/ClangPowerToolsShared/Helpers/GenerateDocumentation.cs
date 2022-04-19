@@ -32,8 +32,7 @@ namespace ClangPowerToolsShared.Helpers
     /// <param name="jsonCompilationDbActive"></param>
     /// <param name="paths"></param>
     /// <returns></returns>
-    public static async Task GenerateDocumentationForProjectAsync(int commandId,
-      bool jsonCompilationDbActive, AsyncPackage package)
+    public static async Task GenerateDocumentationForProjectAsync(int commandId, AsyncPackage package)
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
       var jsonCompilationDatabasePath = Path.Combine(
@@ -161,8 +160,8 @@ namespace ClangPowerToolsShared.Helpers
       int id = CommandControllerInstance.CommandController.GetCommandId();
       if (Formats.ContainsKey(id))
       {
-        DisplayInfoMessage(OutputDir);
         OpenInFileExplorer(OutputDir);
+        DisplayInfoMessage(OutputDir);
       }
     }
 

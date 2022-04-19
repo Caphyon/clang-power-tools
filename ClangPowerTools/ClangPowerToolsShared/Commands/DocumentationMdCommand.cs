@@ -3,6 +3,7 @@ using ClangPowerTools.Commands;
 using ClangPowerTools.Events;
 using ClangPowerToolsShared.Helpers;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -13,7 +14,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerToolsShared.Commands
 {
-  public sealed class DocumentationMdCommand : CompileCommand
+  public sealed class DocumentationMdCommand : ClangCommand
   {
     private AsyncPackage package;
 
@@ -24,8 +25,19 @@ namespace ClangPowerToolsShared.Commands
     }
 
     private DocumentationMdCommand(OleMenuCommandService aCommandService, CommandController aCommandController,
-      AsyncPackage aPackage, Guid aGuid, int aId) : base(aCommandService, aCommandController, aPackage, aGuid, aId) { package = aPackage; }
-
+      AsyncPackage aPackage, Guid aGuid, int aId)
+        : base(aPackage, aGuid, aId)
+    {
+      package = aPackage;
+      if (null != aCommandService)
+      {
+        var menuCommandID = new CommandID(CommandSet, Id);
+        var menuCommand = new OleMenuCommand(aCommandController.Execute, menuCommandID);
+        menuCommand.BeforeQueryStatus += aCommandController.OnBeforeClangCommand;
+        menuCommand.Enabled = true;
+        aCommandService.AddCommand(menuCommand);
+      }
+    }
     /// <summary>
     /// Initializes the singleton instance of the command.
     /// </summary>
@@ -41,19 +53,23 @@ namespace ClangPowerToolsShared.Commands
       Instance = new DocumentationMdCommand(commandService, aCommandController, aPackage, aGuid, aId);
     }
 
-    public async Task GenerateDocumentationAsync(bool jsonCompilationDbActive, int commmandId)
+    public async Task GenerateDocumentationAsync(int commandId)
     {
-      await GenerateDocumentation.GenerateDocumentationForProjectAsync(commmandId, jsonCompilationDbActive, package);
-
-      if (StopCommandActivated)
+      await Task.Run(() =>
       {
-        OnDataStreamClose(new CloseDataStreamingEventArgs(true));
-        StopCommandActivated = false;
-      }
-      else
-      {
-        OnDataStreamClose(new CloseDataStreamingEventArgs(false));
-      }
+        lock (mutex)
+        {
+          try
+          {
+            GenerateDocumentationForProjectAsync(commandId, package);
+          }
+          catch (Exception exception)
+          {
+            VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
+              OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+          }
+        }
+      });
     }
   }
 }

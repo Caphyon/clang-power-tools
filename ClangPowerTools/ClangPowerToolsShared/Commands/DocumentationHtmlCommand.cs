@@ -53,9 +53,8 @@ namespace ClangPowerToolsShared.Commands
       Instance = new DocumentationHtmlCommand(commandService, aCommandController, aPackage, aGuid, aId);
     }
 
-    public async Task GenerateDocumentationAsync(bool jsonCompilationDbActive, int commandId)
+    public async Task GenerateDocumentationAsync(int commandId)
     {
-
       await Task.Run(() =>
       {
         lock (mutex)
@@ -70,10 +69,7 @@ namespace ClangPowerToolsShared.Commands
               OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
           }
         }
-
       });
-      //await GenerateDocumentation.GenerateDocumentationForProjectAsync(commandId, jsonCompilationDbActive, package);
-      
     }
 
   }
