@@ -5,6 +5,7 @@ using ClangPowerTools.Helpers;
 using ClangPowerTools.IgnoreActions;
 using ClangPowerTools.Services;
 using ClangPowerToolsShared.Commands.Models;
+using ClangPowerToolsShared.Helpers;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -208,6 +209,47 @@ namespace ClangPowerTools
     #endregion
 
     #region Private Methods
+
+    /// <summary>
+    /// Create a process for running clang-doc.exe resulted
+    /// format, depends on passed command
+    /// </summary>
+    /// <param name="commandId"></param>
+    /// <param name="jsonCompilationDbActive"></param>
+    /// <param name="paths"></param>
+    /// <returns></returns>
+    protected async Task GenerateDocumentationForProjectAsync(int commandId, AsyncPackage package)
+    {
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
+      var jsonCompilationDatabasePath = Path.Combine(
+        JsonCompilationDatabaseCommand.Instance.SolutionPath(),
+        ScriptConstants.kCompilationDBFile);
+      string documentationOutoutePath = GenerateDocumentation.FindOutputFolderName(
+        Path.Combine(JsonCompilationDatabaseCommand.Instance.SolutionPath(),
+        "Documentation\\"));
+
+      string clangDocPath = GenerateDocumentation.GetClangDoc();
+      clangDocPath = Path.Combine(clangDocPath, ScriptConstants.kClangDoc);
+
+      if (File.Exists(jsonCompilationDatabasePath) && File.Exists(clangDocPath))
+      {
+        GenerateDocumentation.OutputDir = documentationOutoutePath;
+        string Script = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
+        $" ''{clangDocPath}'' --format={GenerateDocumentation.Formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
+       
+        PowerShellWrapper.Invoke(Script, runningProcesses);
+
+        if (StopCommandActivated)
+        {
+          OnDataStreamClose(new CloseDataStreamingEventArgs(true));
+          StopCommandActivated = false;
+        }
+        else
+        {
+          OnDataStreamClose(new CloseDataStreamingEventArgs(false));
+        }
+      }
+    }
 
     private void Compile(string runModeParameters, string genericParameters, int commandId, List<string> paths)
     {

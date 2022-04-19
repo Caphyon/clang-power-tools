@@ -407,9 +407,7 @@ namespace ClangPowerTools
       PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
       PowerShellWrapper.ExitedHandler += mOutputWindowController.ClosedDataConnection;
-
-      GenerateDocumentation.ExitedHandler += GenerateDocumentation.ClosedDataConnection;
-
+      PowerShellWrapper.ExitedHandler += GenerateDocumentation.ClosedDataConnection;
     }
 
     private void RegisterToVsEvents()
@@ -479,8 +477,7 @@ namespace ClangPowerTools
       PowerShellWrapper.DataHandler -= mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler -= mOutputWindowController.OutputDataErrorReceived;
       PowerShellWrapper.ExitedHandler -= mOutputWindowController.ClosedDataConnection;
-
-      GenerateDocumentation.ExitedHandler -= GenerateDocumentation.ClosedDataConnection;
+      PowerShellWrapper.ExitedHandler -= GenerateDocumentation.ClosedDataConnection;
     }
 
     private void DeleteTempSolution()

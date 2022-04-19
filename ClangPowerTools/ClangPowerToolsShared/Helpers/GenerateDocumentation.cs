@@ -13,10 +13,10 @@ namespace ClangPowerToolsShared.Helpers
 {
   public static class GenerateDocumentation
   {
-    private static string OutputDir { get; set; } = string.Empty;
+    public static string OutputDir { get; set; } = string.Empty;
     public static EventHandler ExitedHandler { get; set; }
 
-    private static Dictionary<int, string> formats =
+    public static Dictionary<int, string> Formats =
       new Dictionary<int, string>()
       {
         {534, "yaml" },
@@ -36,9 +36,11 @@ namespace ClangPowerToolsShared.Helpers
       bool jsonCompilationDbActive, AsyncPackage package)
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
-      var jsonCompilationDatabasePath = Path.Combine(JsonCompilationDatabaseCommand.Instance.SolutionPath(),
+      var jsonCompilationDatabasePath = Path.Combine(
+        JsonCompilationDatabaseCommand.Instance.SolutionPath(),
         ScriptConstants.kCompilationDBFile);
-      string documentationOutoutePath = FindOutputFolderName(Path.Combine(JsonCompilationDatabaseCommand.Instance.SolutionPath(),
+      string documentationOutoutePath = FindOutputFolderName(
+        Path.Combine(JsonCompilationDatabaseCommand.Instance.SolutionPath(),
         "Documentation\\"));
 
       string clangDocPath = GetClangDoc();
@@ -56,7 +58,7 @@ namespace ClangPowerToolsShared.Helpers
 
         process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
         process.StartInfo.Arguments = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
-        $" ''{clangDocPath}'' --format={formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
+        $" ''{clangDocPath}'' --format={Formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
         try
         {
           process.Start();
@@ -78,7 +80,7 @@ namespace ClangPowerToolsShared.Helpers
     /// <summary>
     /// Find a name for output documentation folder
     /// </summary>
-    private static string FindOutputFolderName(string outputPath)
+    public static string FindOutputFolderName(string outputPath)
     {
       while (Directory.Exists(outputPath))
       {
@@ -104,7 +106,7 @@ namespace ClangPowerToolsShared.Helpers
       return outputPath.Remove(outputPath.Length - 1, 1);
     }
 
-    private static void DisplayInfoMessage(string outputPath)
+    public static void DisplayInfoMessage(string outputPath)
     {
       CommandControllerInstance.CommandController.DisplayMessage(false,
       $"Generated Documentation at path: {outputPath}");
@@ -114,7 +116,7 @@ namespace ClangPowerToolsShared.Helpers
     /// Run a process that download clang-doc.exe (and returns path) if it wasn't found on disk
     /// </summary>
     /// <exception cref="Exception"></exception>
-    private static string GetClangDoc()
+    public static string GetClangDoc()
     {
       var getllvmScriptPath = GetScriptFilePath();
 
@@ -156,11 +158,15 @@ namespace ClangPowerToolsShared.Helpers
 
     public static void ClosedDataConnection(object sender, EventArgs e)
     {
-      DisplayInfoMessage(OutputDir);
-      OpenInFileExplorer(OutputDir);
+      int id = CommandControllerInstance.CommandController.GetCommandId();
+      if (Formats.ContainsKey(id))
+      {
+        DisplayInfoMessage(OutputDir);
+        OpenInFileExplorer(OutputDir);
+      }
     }
 
-    private static void OpenInFileExplorer(string path)
+    public static void OpenInFileExplorer(string path)
     {
       if (!Directory.Exists(path))
         return;
