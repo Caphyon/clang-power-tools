@@ -6,7 +6,7 @@
     <ROW Name="Identifier" Value="Caphyon.705559db-5755-43fa-a023-41a3b14d2935" Type="0"/>
     <ROW Name="Locale" Value="1033" Type="0"/>
     <ROW Name="Name" Value="Clang Power Tools" Type="0" ValueLocId="*"/>
-    <ROW Name="Version" Value="8.5.0.427" Type="0"/>
+    <ROW Name="Version" Value="8.5.0.456" Type="0"/>
     <ROW Name="VsixLanguage" Value="en-US" Type="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">

@@ -61,7 +61,7 @@ namespace ClangPowerToolsShared.Commands
         {
           try
           {
-            GenerateDocumentationForProjectAsync(commandId, package);
+            GenerateDocumentationForProject(commandId, package);
           }
           catch (Exception exception)
           {

@@ -218,9 +218,8 @@ namespace ClangPowerTools
     /// <param name="jsonCompilationDbActive"></param>
     /// <param name="paths"></param>
     /// <returns></returns>
-    protected async Task GenerateDocumentationForProjectAsync(int commandId, AsyncPackage package)
+    protected void GenerateDocumentationForProject(int commandId, AsyncPackage package)
     {
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
       var jsonCompilationDatabasePath = Path.Combine(
         JsonCompilationDatabaseCommand.Instance.SolutionPath(),
         ScriptConstants.kCompilationDBFile);
