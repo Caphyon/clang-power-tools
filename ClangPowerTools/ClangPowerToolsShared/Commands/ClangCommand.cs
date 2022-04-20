@@ -226,7 +226,6 @@ namespace ClangPowerTools
       string documentationOutoutePath = GenerateDocumentation.FindOutputFolderName(
         Path.Combine(JsonCompilationDatabaseCommand.Instance.SolutionPath(),
         "Documentation\\"));
-
       string clangDocPath = GenerateDocumentation.GetClangDoc();
       clangDocPath = Path.Combine(clangDocPath, ScriptConstants.kClangDoc);
 
@@ -234,7 +233,7 @@ namespace ClangPowerTools
       {
         GenerateDocumentation.OutputDir = documentationOutoutePath;
         string Script = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
-        $" ''{clangDocPath}'' --public --format={GenerateDocumentation.Formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
+        $" ''{clangDocPath}'' --public --project-name=''{GetProjectName()}'' --format={GenerateDocumentation.Formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
 
         PowerShellWrapper.Invoke(Script, runningProcesses);
 
@@ -363,6 +362,18 @@ namespace ClangPowerTools
 
       PowerShellWrapper.Invoke(Script, runningProcesses);
       OnDataStreamClose(new CloseDataStreamingEventArgs(false));
+    }
+
+    private string GetProjectName()
+    {
+      if (cacheProjectsItemsModel.Projects.Count > 0)
+      {
+        return cacheProjectsItemsModel.Projects[0].FullName;
+      }
+      else
+      {
+        return cacheProjectsItemsModel.ProjectItems[0].ContainingProject.FullName;
+      }
     }
 
     #endregion

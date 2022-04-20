@@ -55,6 +55,8 @@ namespace ClangPowerToolsShared.Commands
 
     public async Task GenerateDocumentationAsync(int commandId)
     {
+      await PrepareCommmandAsync(CommandUILocation.ContextMenu, false);
+      CacheProjectsFromItems();
       await Task.Run(() =>
       {
         lock (mutex)
