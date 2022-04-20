@@ -609,7 +609,9 @@ namespace ClangPowerTools
       }
       else if (itemsCollector.Items != null && itemsCollector.Items.Count == 1 &&
         (command.CommandID.ID == CommandIds.kCompileId || command.CommandID.ID == CommandIds.kTidyId ||
-        command.CommandID.ID == CommandIds.kJsonCompilationDatabase || command.CommandID.ID == CommandIds.kIgnoreCompileId) &&
+        command.CommandID.ID == CommandIds.kJsonCompilationDatabase ||
+        command.CommandID.ID == CommandIds.kIgnoreCompileId || command.CommandID.ID == CommandIds.kDocumentationMdId ||
+        command.CommandID.ID == CommandIds.kDocumentationHtmlId || command.CommandID.ID == CommandIds.kDocumentationYamlId) &&
         ScriptConstants.kAcceptedFileExtensionsWithoutHeaders.Contains(Path.GetExtension(itemsCollector.Items[0].GetName())) == false)
       {
         command.Visible = command.Enabled = false;

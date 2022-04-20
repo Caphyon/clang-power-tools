@@ -94,7 +94,6 @@ namespace ClangPowerTools.Commands
     public string SolutionPath()
     {
       var dte = this.ServiceProvider.GetService(typeof(EnvDTE.DTE)) as EnvDTE80.DTE2;
-      dte = this.ServiceProvider.GetService(typeof(EnvDTE.DTE)) as EnvDTE80.DTE2;
       FileInfo fileInfo = new FileInfo(dte.Solution.FullName);
       return fileInfo.Directory.FullName;
     }
