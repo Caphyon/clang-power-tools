@@ -117,13 +117,11 @@ namespace ClangPowerTools
         {
           var project = item.GetObject() as Project;
           cacheProjectsItemsModel.Projects.Add(project);
-          //var name = project.FullName;
         }
         else if (item.GetObject() is ProjectItem)
         {
           var projectItem = item.GetObject() as ProjectItem;
           cacheProjectsItemsModel.ProjectItems.Add(projectItem);
-          //var name = proj.ContainingProject.FullName;
         }
       }
     }
@@ -235,7 +233,15 @@ namespace ClangPowerTools
         string Script = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
         $" ''{clangDocPath}'' --public --project-name=''{GetProjectName()}'' --format={GenerateDocumentation.Formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
 
+
         PowerShellWrapper.Invoke(Script, runningProcesses);
+
+        //Replace \\ with \ in index_json.js to avoid a json error
+        string indexJsonFileName = Path.Combine(documentationOutoutePath, "index_json.js");
+        string indexJsonFileContent = File.ReadAllText(indexJsonFileName);
+        indexJsonFileContent = indexJsonFileContent.Replace("\\\\", "\\");
+
+        File.WriteAllText(indexJsonFileName, indexJsonFileContent);
 
         if (StopCommandActivated)
         {
