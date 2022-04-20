@@ -234,8 +234,8 @@ namespace ClangPowerTools
       {
         GenerateDocumentation.OutputDir = documentationOutoutePath;
         string Script = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
-        $" ''{clangDocPath}'' --format={GenerateDocumentation.Formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
-       
+        $" ''{clangDocPath}'' --public --format={GenerateDocumentation.Formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
+
         PowerShellWrapper.Invoke(Script, runningProcesses);
 
         if (StopCommandActivated)

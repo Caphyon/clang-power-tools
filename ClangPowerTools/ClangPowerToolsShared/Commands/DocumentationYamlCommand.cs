@@ -60,7 +60,6 @@ namespace ClangPowerToolsShared.Commands
 
     public async Task GenerateDocumentationAsync(int commandId)
     {
-      await GenerateDocumentation.GenerateDocumentationForProjectAsync(commandId, package);
       await Task.Run(() =>
       {
         lock (mutex)
