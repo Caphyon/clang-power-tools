@@ -229,10 +229,11 @@ namespace ClangPowerTools
 
       if (File.Exists(jsonCompilationDatabasePath) && File.Exists(clangDocPath))
       {
+        string projectArguments = GetProjectName() == string.Empty ? string.Empty : $"--project-name=''{GetProjectName()}''";
+
         GenerateDocumentation.OutputDir = documentationOutoutePath;
         string Script = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
-        $" ''{clangDocPath}'' --public --project-name=''{GetProjectName()}'' --format={GenerateDocumentation.Formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
-
+        $" ''{clangDocPath}'' --public {projectArguments} --format={GenerateDocumentation.Formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
 
         PowerShellWrapper.Invoke(Script, runningProcesses);
 
@@ -372,14 +373,22 @@ namespace ClangPowerTools
 
     private string GetProjectName()
     {
-      if (cacheProjectsItemsModel.Projects.Count > 0)
+      string projectName = string.Empty;
+      try
       {
-        return cacheProjectsItemsModel.Projects[0].FullName;
-      }
-      else
+        if (cacheProjectsItemsModel.Projects.Count > 0)
+        {
+          projectName = cacheProjectsItemsModel.Projects[0].FullName;
+        }
+        else
+        {
+          projectName = cacheProjectsItemsModel.ProjectItems[0].ContainingProject.FullName;
+        }
+      }catch(NullReferenceException e)
       {
-        return cacheProjectsItemsModel.ProjectItems[0].ContainingProject.FullName;
+
       }
+      return projectName;
     }
 
     #endregion
