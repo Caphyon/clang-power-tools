@@ -238,12 +238,14 @@ namespace ClangPowerTools
 
         PowerShellWrapper.Invoke(Script, runningProcesses);
 
-        //Replace a string in index_json.js to avoid a json error
+        //Replace a string in index_json.js if is generated with html format, to avoid a json error
         string indexJsonFileName = Path.Combine(documentationOutoutePath, "index_json.js");
-        string indexJsonFileContent = File.ReadAllText(indexJsonFileName);
-        indexJsonFileContent = indexJsonFileContent.Replace("var JsonIndex = `", "var JsonIndex = String.raw `");
-
-        File.WriteAllText(indexJsonFileName, indexJsonFileContent);
+        if (File.Exists(indexJsonFileName) && commandId == CommandIds.kDocumentationHtmlId)
+        {
+          string indexJsonFileContent = File.ReadAllText(indexJsonFileName);
+          indexJsonFileContent = indexJsonFileContent.Replace("var JsonIndex = `", "var JsonIndex = String.raw `");
+          File.WriteAllText(indexJsonFileName, indexJsonFileContent);
+        }
 
         if (StopCommandActivated)
         {
@@ -385,7 +387,8 @@ namespace ClangPowerTools
         {
           projectName = cacheProjectsItemsModel.ProjectItems[0].ContainingProject.FullName;
         }
-      }catch(NullReferenceException e)
+      }
+      catch (NullReferenceException e)
       {
 
       }
