@@ -48,6 +48,7 @@ namespace ClangPowerTools
     private bool mSaveCommandWasGiven = false;
     private bool mFormatAfterTidyFlag = false;
     private string oldActiveDocumentName = null;
+    private int commandId = 0;
 
     private readonly object mutex = new object();
 
@@ -171,12 +172,12 @@ namespace ClangPowerTools
 
     public int GetCommandId()
     {
-      return currentCommand;
+      return commandId;
     }
-
     public async Task LaunchCommandAsync(int aCommandId, CommandUILocation aCommandUILocation,
       List<string> paths = null, bool openCompilationDatabaseInExplorer = true)
     {
+      commandId = aCommandId;
       switch (aCommandId)
       {
         case CommandIds.kSettingsId:
