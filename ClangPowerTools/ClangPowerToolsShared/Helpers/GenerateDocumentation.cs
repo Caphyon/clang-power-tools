@@ -24,57 +24,6 @@ namespace ClangPowerToolsShared.Helpers
         {294, "md" }
       };
 
-    /// <summary>
-    /// Create a process for running clang-doc.exe resulted
-    /// format, depends on passed command
-    /// </summary>
-    /// <param name="commandId"></param>
-    /// <param name="jsonCompilationDbActive"></param>
-    /// <param name="paths"></param>
-    /// <returns></returns>
-    public static async Task GenerateDocumentationForProjectAsync(int commandId, AsyncPackage package)
-    {
-      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
-      var jsonCompilationDatabasePath = Path.Combine(
-        JsonCompilationDatabaseCommand.Instance.SolutionPath(),
-        ScriptConstants.kCompilationDBFile);
-      string documentationOutoutePath = FindOutputFolderName(
-        Path.Combine(JsonCompilationDatabaseCommand.Instance.SolutionPath(),
-        "Documentation\\"));
-
-      string clangDocPath = GetClangDoc();
-      clangDocPath = Path.Combine(clangDocPath, ScriptConstants.kClangDoc);
-
-      if (File.Exists(jsonCompilationDatabasePath) && File.Exists(clangDocPath))
-      {
-        Process process = new Process();
-        process.StartInfo.UseShellExecute = false;
-        process.StartInfo.CreateNoWindow = true;
-
-        process.EnableRaisingEvents = true;
-        process.Exited += ExitedHandler;
-        process.Disposed += ExitedHandler;
-
-        process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
-        process.StartInfo.Arguments = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
-        $" ''{clangDocPath}'' --format={Formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
-        try
-        {
-          process.Start();
-          OutputDir = documentationOutoutePath;
-        }
-        catch (Exception exception)
-        {
-          process.EnableRaisingEvents = false;
-          process.Exited -= ExitedHandler;
-          process.Disposed -= ExitedHandler;
-
-          throw new Exception(
-              $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
-        }
-      }
-    }
-
 
     /// <summary>
     /// Find a name for output documentation folder
