@@ -232,8 +232,9 @@ namespace ClangPowerTools
         string projectArguments = GetProjectName() == string.Empty ? string.Empty : $"--project-name=''{GetProjectName()}''";
 
         GenerateDocumentation.OutputDir = documentationOutoutePath;
+        CommandControllerInstance.CommandController.DisplayMessage(false, "Please wait ...");
         string Script = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
-        $" ''{clangDocPath}'' --public {projectArguments} --format={GenerateDocumentation.Formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' '";
+        $"''{clangDocPath}'' --public {projectArguments} --format={GenerateDocumentation.Formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' 2>&1 | Out-Null'";
 
         PowerShellWrapper.Invoke(Script, runningProcesses);
 
