@@ -218,11 +218,10 @@ namespace ClangPowerTools
     /// <returns></returns>
     protected void GenerateDocumentationForProject(int commandId, AsyncPackage package)
     {
-      var jsonCompilationDatabasePath = Path.Combine(
-        JsonCompilationDatabaseCommand.Instance.SolutionPath(),
-        ScriptConstants.kCompilationDBFile);
+      
+      var jsonCompilationDatabasePath = JsonCompilationDatabaseCommand.Instance.JsonDBPath;
       string documentationOutoutePath = GenerateDocumentation.FindOutputFolderName(
-        Path.Combine(JsonCompilationDatabaseCommand.Instance.SolutionPath(),
+        Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
         "Documentation\\"));
       string clangDocPath = GenerateDocumentation.GetClangDoc();
       clangDocPath = Path.Combine(clangDocPath, ScriptConstants.kClangDoc);
