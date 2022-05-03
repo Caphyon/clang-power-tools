@@ -170,10 +170,16 @@ namespace ClangPowerTools
       await LaunchCommandAsync(command.CommandID.ID, commandUILocation);
     }
 
-    public int GetCommandId()
+    public int GetCommandIdTidy()
     {
       return commandId;
     }
+
+    public int GetCommandIdForGenerateDoc()
+    {
+      return currentCommand;
+    }
+
     public async Task LaunchCommandAsync(int aCommandId, CommandUILocation aCommandUILocation,
       List<string> paths = null, bool openCompilationDatabaseInExplorer = true)
     {

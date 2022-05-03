@@ -106,7 +106,7 @@ namespace ClangPowerToolsShared.Helpers
 
     public static void ClosedDataConnection(object sender, EventArgs e)
     {
-      int id = CommandControllerInstance.CommandController.GetCommandId();
+      int id = CommandControllerInstance.CommandController.GetCommandIdForGenerateDoc();
       if (Formats.ContainsKey(id))
       {
         OpenInFileExplorer(OutputDir);
