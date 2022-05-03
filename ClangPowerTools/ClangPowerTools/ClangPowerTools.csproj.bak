@@ -5,6 +5,9 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <PropertyGroup>
+    <RuntimeIdentifiers>win</RuntimeIdentifiers>
+  </PropertyGroup>
+  <PropertyGroup>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
@@ -66,6 +69,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\[CPT]GenerateDocumentation.png" />
     <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Diff2.png">
       <Link>Resources\TidyToolWindow\[CPT]Diff2.png</Link>
     </Resource>
@@ -283,6 +287,14 @@
       <Link>Tooling\v1\clang-build.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="..\ClangPowerToolsShared\Tooling\v1\psClang\get-llvm-helper.ps1">
+      <Link>Tooling\v1\psClang\get-llvm-helper.ps1</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\ClangPowerToolsShared\Tooling\v1\psClang\get-llvm.ps1">
+      <Link>Tooling\v1\psClang\get-llvm.ps1</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="..\ClangPowerToolsShared\Tooling\v1\psClang\get-header-references.ps1">
       <Link>Tooling\v1\psClang\get-header-references.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -315,8 +327,8 @@
       <Link>Tooling\v1\psClang\visualstudio-detection.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-	<Content Include="..\ClangPowerToolsShared\Tooling\v1\psclang\msbuild-project-cache-repository.ps1">
-      <Link>Tooling\v1\psClang\msbuild-project-load.ps1</Link>
+    <Content Include="..\ClangPowerToolsShared\Tooling\v1\psclang\msbuild-project-cache-repository.ps1">
+      <Link>Tooling\v1\psClang\msbuild-project-cache-repository.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="Key.snk" />
@@ -408,19 +420,13 @@
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <PropertyGroup>
     <PostBuildEvent>
-
-xcopy "$(SolutionDir)ClangPowerTools\bin\Release\ClangPowerTools.vsix"  "$(SolutionDir)CPTReleases" /y
-
-powershell.exe -executionPolicy Bypass -WindowStyle Hidden -file "$(SolutionDir)CPTReleases\create22vsix.ps1" -loc "$(SolutionDir)CPTReleases"</PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>powershell.exe -executionPolicy Bypass -WindowStyle Hidden -file "$(SolutionDir)CPTReleases\IncrementRevisionNumber.ps1" -loc "$(SolutionDir)CPTReleases"</PreBuildEvent>
   </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

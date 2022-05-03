@@ -61,9 +61,9 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.0.0-previews-2-31512-422"/>
-    <PackageReference Include="Microsoft.VisualStudio.Shell.Framework" Version="17.0.0-previews-2-31512-422"/>
-    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.0.3155-preview3">
+    <PackageReference Include="Microsoft.VisualStudio.SDK" Version="17.1.32210.191"/>
+    <PackageReference Include="Microsoft.VisualStudio.Shell.Framework" Version="17.1.32210.191"/>
+    <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="17.1.4057">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
