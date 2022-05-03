@@ -375,7 +375,7 @@ Write-InformationTimed "Imported scripts"
 #-------------------------------------------------------------------------------------------------
 # do not include in list above because it is an invokable script, dot-sourcing does not work.
 
-cpt:ensureScriptExists "get-llvm.ps1" $shouldRedownloadForcefully
+cpt:ensureScriptExists "get-llvm.ps1" $shouldRedownloadForcefully | Out-Null
 
 #-------------------------------------------------------------------------------------------------
 # we may have a custom path for Clang-Tidy. Use it if that's the case.
