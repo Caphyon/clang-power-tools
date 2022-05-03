@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 8.5.0" />
+                 Text="version 8.6.0" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -116,18 +116,17 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Support for LLVM 14.0.0"
+                 Text="• Support for LLVM 14.0.3"
                  TextWrapping="Wrap" />
 
-        <TextBlock>
-          <Hyperlink Foreground="Blue"
-                     FontSize="16"
-                     RequestNavigate="Hyperlink_RequestNavigate"
-                     NavigateUri="https://releases.llvm.org/14.0.0/tools/clang/docs/ReleaseNotes.html#windows-support">
-              <TextBlock Margin="18,20,0,0"
-                         Text="- Read about changes on Windows" />
-          </Hyperlink>
-        </TextBlock>
+        <TextBox Margin="5,25,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• Generate html, markdown and yaml documentation based on source code and comments"
+                 TextWrapping="Wrap" />
         <!--Bug Fixes-->
         <!--<TextBox Margin="5,20,0,0"
                  HorizontalAlignment="Left"
