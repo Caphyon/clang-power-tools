@@ -246,6 +246,12 @@ namespace ClangPowerTools
           File.WriteAllText(indexJsonFileName, indexJsonFileContent);
         }
 
+        //Delete JsonCompilationDatabase
+        if(File.Exists(jsonCompilationDatabasePath))
+        {
+          File.Delete(jsonCompilationDatabasePath);
+        }
+
         if (StopCommandActivated)
         {
           OnDataStreamClose(new CloseDataStreamingEventArgs(true));
