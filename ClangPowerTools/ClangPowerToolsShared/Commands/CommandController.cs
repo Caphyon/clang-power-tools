@@ -7,6 +7,7 @@ using ClangPowerTools.Handlers;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
+using ClangPowerToolsShared.Commands;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -43,11 +44,11 @@ namespace ClangPowerTools
 
     private readonly Commands2 mCommand;
     private CommandUILocation commandUILocation;
-    private int _commandId = 0;
-    private int currentCommand;
+    private int currentCommand = 0;
     private bool mSaveCommandWasGiven = false;
     private bool mFormatAfterTidyFlag = false;
     private string oldActiveDocumentName = null;
+    private int commandId = 0;
 
     private readonly object mutex = new object();
 
@@ -113,6 +114,21 @@ namespace ClangPowerTools
         await JsonCompilationDatabaseCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kJsonCompilationDatabase);
       }
 
+      if (DocumentationYamlCommand.Instance == null)
+      {
+        await DocumentationYamlCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kDocumentationYamlId);
+      }
+
+      if (DocumentationHtmlCommand.Instance == null)
+      {
+        await DocumentationHtmlCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kDocumentationHtmlId);
+      }
+
+      if (DocumentationMdCommand.Instance == null)
+      {
+        await DocumentationMdCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kDocumentationMdId);
+      }
+
       if (SettingsCommand.Instance == null)
       {
         await SettingsCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kSettingsId);
@@ -154,14 +170,20 @@ namespace ClangPowerTools
       await LaunchCommandAsync(command.CommandID.ID, commandUILocation);
     }
 
-    public int GetCommandId()
+    public int GetCommandIdTidy()
     {
-      return _commandId;
+      return commandId;
     }
 
-    public async Task LaunchCommandAsync(int aCommandId, CommandUILocation aCommandUILocation, List<string> paths = null)
+    public int GetCommandIdForGenerateDoc()
     {
-      _commandId = aCommandId;
+      return currentCommand;
+    }
+
+    public async Task LaunchCommandAsync(int aCommandId, CommandUILocation aCommandUILocation,
+      List<string> paths = null, bool openCompilationDatabaseInExplorer = true)
+    {
+      commandId = aCommandId;
       switch (aCommandId)
       {
         case CommandIds.kSettingsId:
@@ -274,12 +296,54 @@ namespace ClangPowerTools
             IgnoreCompileCommand.Instance.RunIgnoreCompileCommand();
             break;
           }
+        case CommandIds.kDocumentationYamlId:
+          {
+            await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu,
+              null, false);
+
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kDocumentationYamlId);
+
+            await DocumentationYamlCommand.Instance.GenerateDocumentationAsync( 
+              CommandIds.kDocumentationYamlId);
+
+            OnAfterClangCommand();
+            break;
+          }
+        case CommandIds.kDocumentationMdId:
+          {
+            await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu,
+              null, false);
+
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kDocumentationMdId);
+
+            await DocumentationMdCommand.Instance.GenerateDocumentationAsync(
+              CommandIds.kDocumentationMdId);
+
+            OnAfterClangCommand();
+            break;
+          }
+        case CommandIds.kDocumentationHtmlId:
+          {
+            await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu,
+              null, false);
+
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kDocumentationHtmlId);
+
+            await DocumentationHtmlCommand.Instance.GenerateDocumentationAsync(
+              CommandIds.kDocumentationHtmlId);
+
+            OnAfterClangCommand();
+            break;
+          }
         case CommandIds.kJsonCompilationDatabase:
           {
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kJsonCompilationDatabase);
 
-            await JsonCompilationDatabaseCommand.Instance.ExportAsync();
+            await JsonCompilationDatabaseCommand.Instance.ExportAsync(openCompilationDatabaseInExplorer);
             OnAfterClangCommand();
             break;
           }
@@ -361,7 +425,7 @@ namespace ClangPowerTools
     {
       if (e.FormatConfigFound == false)
       {
-        DisplayCannotFormatMessage(e.Clear,
+        DisplayMessage(e.Clear,
       $"\n--- ERROR ---\nFormat config file not found.\nCreate the config file and place it in the solution folder or select one of the predefined format styles from Clang Power Tools settings -> Format -> Style.");
       }
       else if (e.Clear)
@@ -459,7 +523,7 @@ namespace ClangPowerTools
       StatusBarHandler.Status("Command stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
-    private void DisplayCannotFormatMessage(bool clearOutput, string message)
+    public void DisplayMessage(bool clearOutput, string message)
     {
       OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs(message, clearOutput));
       StatusBarHandler.Status("Command stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
@@ -552,7 +616,9 @@ namespace ClangPowerTools
       }
       else if (itemsCollector.Items != null && itemsCollector.Items.Count == 1 &&
         (command.CommandID.ID == CommandIds.kCompileId || command.CommandID.ID == CommandIds.kTidyId ||
-        command.CommandID.ID == CommandIds.kJsonCompilationDatabase || command.CommandID.ID == CommandIds.kIgnoreCompileId) &&
+        command.CommandID.ID == CommandIds.kJsonCompilationDatabase ||
+        command.CommandID.ID == CommandIds.kIgnoreCompileId || command.CommandID.ID == CommandIds.kDocumentationMdId ||
+        command.CommandID.ID == CommandIds.kDocumentationHtmlId || command.CommandID.ID == CommandIds.kDocumentationYamlId) &&
         ScriptConstants.kAcceptedFileExtensionsWithoutHeaders.Contains(Path.GetExtension(itemsCollector.Items[0].GetName())) == false)
       {
         command.Visible = command.Enabled = false;

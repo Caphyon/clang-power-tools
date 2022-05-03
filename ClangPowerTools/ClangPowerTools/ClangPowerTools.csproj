@@ -69,6 +69,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\[CPT]GenerateDocumentation.png" />
     <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Diff2.png">
       <Link>Resources\TidyToolWindow\[CPT]Diff2.png</Link>
     </Resource>

@@ -180,6 +180,11 @@ param( [alias("proj")]
      , [alias("export-jsondb")]
        [Parameter(Mandatory=$false, HelpMessage="Switch to generate a JSON compilation database file, in the current working directory")]
        [switch]   $aExportJsonDB
+      
+     , [alias("export-doc")]
+       [Parameter(Mandatory=$false, HelpMessage="If present, specifies the type of documentation to generate, in the current working direcotory")]
+       [ValidateSet("yaml", "md", "html")]
+       [string]   $aDocumentationExportFormat
      )
 
 Set-StrictMode -version latest
@@ -370,7 +375,7 @@ Write-InformationTimed "Imported scripts"
 #-------------------------------------------------------------------------------------------------
 # do not include in list above because it is an invokable script, dot-sourcing does not work.
 
-cpt:ensureScriptExists "get-llvm.ps1" $shouldRedownloadForcefully
+cpt:ensureScriptExists "get-llvm.ps1" $shouldRedownloadForcefully | Out-Null
 
 #-------------------------------------------------------------------------------------------------
 # we may have a custom path for Clang-Tidy. Use it if that's the case.

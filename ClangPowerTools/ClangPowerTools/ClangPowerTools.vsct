@@ -33,6 +33,15 @@
 				</Strings>
 			</Menu>
 
+      <!--Documentation Drop-Down Menu-->
+      <Menu guid="guidClangPowerToolsPackageCmdSet" id="DromDownDocumentationMenu" type="MenuController" priority="0x0102">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForJsonDatabase" />
+        <CommandFlag>DefaultDocked</CommandFlag>
+        <Strings>
+          <ButtonText>Generate Documentation</ButtonText>
+          <CommandName>Generate Documentation</CommandName>
+        </Strings>
+      </Menu>
 		</Menus>
 
 
@@ -44,13 +53,14 @@
 
 			<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0000" />
 
-			<!--<Group guid="guidClangPowerToolsPackageCmdSet" id="DropDownToolbarMenuGroup" priority="0x0000">
-        <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownMenu" />
-      </Group>-->
 
 			<Group guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" priority="0x0000">
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="Toolbar" />
 			</Group>
+      
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="DromDownDocumentationMenuGroup" priority="0x0000">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownDocumentationMenu" />
+      </Group>
 
 			<!-- Context Menu groups-->
 			<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" priority="0x0000" />
@@ -144,15 +154,45 @@
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForJsonDatabase" />
 				<Icon guid="guidImageJsonCompilationDb" id="JsonCompilationDb" />
 				<CommandFlag>DefaultDisabled</CommandFlag>
-
-
 				<Strings>
 					<ButtonText>Export Compilation Database</ButtonText>
 				</Strings>
 			</Button>
 
+      <!-- Generate documentation yaml Context Menu button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="DocumentationYamlId" priority="0x0000" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownDocumentationMenuGroup" />
+        <Icon guid="guidImageDocumentation" id="Documentation" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Yaml</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Generate documentation html Context Menu button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="DocumentationHtmlId" priority="0x0001" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownDocumentationMenuGroup" />
+        <Icon guid="guidImageDocumentation" id="Documentation" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Html</ButtonText>
+        </Strings>
+      </Button>
+
+
+      <!-- Generate documentation md Context Menu button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="DocumentationMdId" priority="0x0002" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="DromDownDocumentationMenuGroup" />
+        <Icon guid="guidImageDocumentation" id="Documentation" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Markdown</ButtonText>
+        </Strings>
+      </Button>
+      
+
 			<!-- Clang Settings Context Menu button -->
-			<Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x0009" type="Button">
+			<Button guid="guidClangPowerToolsPackageCmdSet" id="SettingsId" priority="0x000A" type="Button">
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForSettings" />
 				<Icon guid="guidImageSettings" id="Settings" />
 				<CommandFlag>DefaultDisabled</CommandFlag>
@@ -239,6 +279,7 @@
 			<Bitmap guid="guidImageIgnoreFormat" href="..\ClangPowerToolsShared\Resources\IgnoreIcon.png" usedList="IgnoreFormat" />
 			<Bitmap guid="guidImageEmpty" href="..\ClangPowerToolsShared\Resources\EmptyIcon.png" usedList="Empty" />
 			<Bitmap guid="guidImageJsonCompilationDb" href="..\ClangPowerToolsShared\Resources\JsonCompilationDatabase.png" usedList="JsonCompilationDb" />
+			<Bitmap guid="guidImageDocumentation" href="..\ClangPowerToolsShared\Resources\[CPT]GenerateDocumentation.png" usedList="Documentation" />
 		</Bitmaps>
 
 	</Commands>
@@ -335,6 +376,8 @@
 			<!-- Define the unique identifires for menus -->
 			<IDSymbol name="Submenu" value="0x0100" />
 			<IDSymbol name="DromDownMenu" value="0x0200" />
+			<IDSymbol name="DromDownDocumentationMenu" value="0x020A" />
+			<IDSymbol name="DromDownDocumentationMenuGroup" value="0x010A" />
 
 			<!-- Define the unique identifires for commands -->
 			<IDSymbol name="CompileId" value="0x0102" />
@@ -354,6 +397,9 @@
 			<IDSymbol name="IgnoreCompileId" value="0x0108" />
 
 			<IDSymbol name="JsonCompilationDatabaseId" value="0x0106" />
+			<IDSymbol name="DocumentationYamlId" value="0x0216" />
+			<IDSymbol name="DocumentationHtmlId" value="0x0116" />
+			<IDSymbol name="DocumentationMdId" value="0x0126" />
 
 			<IDSymbol name="SettingsId" value="0x0103" />
 			<IDSymbol name="TidyExportConfigId" value="0x1032" />
@@ -413,6 +459,11 @@
 		<GuidSymbol name="guidImageJsonCompilationDb" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c73a}">
 			<IDSymbol name="JsonCompilationDb" value="1" />
 		</GuidSymbol>
+    
+    <!-- Define Documentation image -->
+    <GuidSymbol name="guidImageDocumentation" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c74a}">
+      <IDSymbol name="Documentation" value="1" />
+    </GuidSymbol>
 
 	</Symbols>
 

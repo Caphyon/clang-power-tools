@@ -3,6 +3,8 @@ using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Output;
 using ClangPowerTools.Services;
+using ClangPowerToolsShared.Commands;
+using ClangPowerToolsShared.Helpers;
 using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using EnvDTE;
@@ -391,6 +393,10 @@ namespace ClangPowerTools
       JsonCompilationDatabaseCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       FormatCommand.Instance.FormatEvent += mCommandController.OnAfterFormatCommand;
 
+      DocumentationYamlCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
+      DocumentationHtmlCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
+      DocumentationMdCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
+
       CompileCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
       TidyCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
 
@@ -401,6 +407,7 @@ namespace ClangPowerTools
       PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
       PowerShellWrapper.ExitedHandler += mOutputWindowController.ClosedDataConnection;
+      PowerShellWrapper.ExitedHandler += GenerateDocumentation.ClosedDataConnection;
     }
 
     private void RegisterToVsEvents()
@@ -456,6 +463,10 @@ namespace ClangPowerTools
       JsonCompilationDatabaseCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       FormatCommand.Instance.FormatEvent -= mCommandController.OnAfterFormatCommand;
 
+      DocumentationYamlCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
+      DocumentationHtmlCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
+      DocumentationMdCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
+
       CompileCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
       TidyCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
 
@@ -466,6 +477,7 @@ namespace ClangPowerTools
       PowerShellWrapper.DataHandler -= mOutputWindowController.OutputDataReceived;
       PowerShellWrapper.DataErrorHandler -= mOutputWindowController.OutputDataErrorReceived;
       PowerShellWrapper.ExitedHandler -= mOutputWindowController.ClosedDataConnection;
+      PowerShellWrapper.ExitedHandler -= GenerateDocumentation.ClosedDataConnection;
     }
 
     private void DeleteTempSolution()

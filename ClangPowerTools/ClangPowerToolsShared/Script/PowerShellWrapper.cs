@@ -85,11 +85,7 @@ namespace ClangPowerTools
       }
     }
 
-    #endregion
-
-
-    #region Private Methods
-    private static string CreatePathEnvironmentVariable()
+    public static string CreatePathEnvironmentVariable()
     {
       var path = Environment.GetEnvironmentVariable("Path");
       var llvmModel = SettingsProvider.LlvmSettingsModel;
@@ -112,6 +108,11 @@ namespace ClangPowerTools
 
       return String.Join(";", paths);
     }
+
+    #endregion
+
+
+    #region Private Methods
 
     private static string GetCustomTidyPath()
     {

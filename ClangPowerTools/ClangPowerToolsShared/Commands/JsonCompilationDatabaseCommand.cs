@@ -58,6 +58,8 @@ namespace ClangPowerTools.Commands
       Instance = new JsonCompilationDatabaseCommand(commandService, aCommandController, aPackage, aGuid, aId);
     }
 
+    private bool OpenInExplorer { get; set; }
+    public string JsonDBPath { get; set; }
     /// <summary>
     /// This function is the callback used to execute the command when the menu item is clicked.
     /// See the constructor to see how the menu item is associated with this function using
@@ -65,23 +67,28 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
-    public async Task ExportAsync()
+    public async Task ExportAsync(bool openInExplorer = true)
     {
+      OpenInExplorer = openInExplorer;
       await RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu, true);
     }
 
 
     internal void OpenInFileExplorer(object sender, JsonFilePathArgs e)
     {
-      if (!File.Exists(e.FilePath))
-        return;
+      if (OpenInExplorer)
+      {
+        if (!File.Exists(e.FilePath))
+          return;
 
-      // combine the arguments together
-      // it doesn't matter if there is a space after ','
-      string argument = "/select, \"" + e.FilePath + "\"";
+        // combine the arguments together
+        // it doesn't matter if there is a space after ','
+        string argument = "/select, \"" + e.FilePath + "\"";
 
-      // open the file in File Explorer and select it
-      Process.Start("explorer.exe", argument);
+        // open the file in File Explorer and select it
+        Process.Start("explorer.exe", argument);
+      }
+      JsonDBPath = e.FilePath;
     }
 
     #endregion

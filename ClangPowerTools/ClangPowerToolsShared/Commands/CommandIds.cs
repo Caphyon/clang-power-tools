@@ -24,7 +24,10 @@ namespace ClangPowerTools
       0x0108,
       0x1032,
       0x1033,
-      0X0106
+      0X0106,
+      0x0216,
+      0X0116,
+      0x0126,
     };
 
     public static readonly HashSet<int> idsNumeric = new HashSet<int>()
@@ -45,7 +48,10 @@ namespace ClangPowerTools
       264,
       4146,
       4147,
-      262
+      262,
+      534,
+      278,
+      294
     };
 
     public const int kCompileId = 0x0102;
@@ -73,7 +79,11 @@ namespace ClangPowerTools
     public const int kITidyExportConfigId = 0x1032;
     public const int kLogoutId = 0x1033;
 
-    public const int kJsonCompilationDatabase = 0X0106;
+    public const int kJsonCompilationDatabase = 0x0106;
+
+    public const int kDocumentationYamlId = 0x0216;
+    public const int kDocumentationHtmlId = 0x0116;
+    public const int kDocumentationMdId = 0x0126;
 
     #endregion
   }

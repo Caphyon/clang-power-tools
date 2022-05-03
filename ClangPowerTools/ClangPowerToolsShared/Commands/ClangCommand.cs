@@ -5,6 +5,7 @@ using ClangPowerTools.Helpers;
 using ClangPowerTools.IgnoreActions;
 using ClangPowerTools.Services;
 using ClangPowerToolsShared.Commands.Models;
+using ClangPowerToolsShared.Helpers;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -116,13 +117,11 @@ namespace ClangPowerTools
         {
           var project = item.GetObject() as Project;
           cacheProjectsItemsModel.Projects.Add(project);
-          //var name = project.FullName;
         }
         else if (item.GetObject() is ProjectItem)
         {
           var projectItem = item.GetObject() as ProjectItem;
           cacheProjectsItemsModel.ProjectItems.Add(projectItem);
-          //var name = proj.ContainingProject.FullName;
         }
       }
     }
@@ -208,6 +207,62 @@ namespace ClangPowerTools
     #endregion
 
     #region Private Methods
+
+    /// <summary>
+    /// Create a process for running clang-doc.exe resulted
+    /// format, depends on passed command
+    /// </summary>
+    /// <param name="commandId"></param>
+    /// <param name="jsonCompilationDbActive"></param>
+    /// <param name="paths"></param>
+    /// <returns></returns>
+    protected void GenerateDocumentationForProject(int commandId, AsyncPackage package)
+    {
+      
+      var jsonCompilationDatabasePath = JsonCompilationDatabaseCommand.Instance.JsonDBPath;
+      string documentationOutoutePath = GenerateDocumentation.FindOutputFolderName(
+        Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
+        "Documentation\\"));
+      string clangDocPath = GenerateDocumentation.GetClangDoc();
+      clangDocPath = Path.Combine(clangDocPath, ScriptConstants.kClangDoc);
+
+      if (File.Exists(jsonCompilationDatabasePath) && File.Exists(clangDocPath))
+      {
+        string projectArguments = GetProjectName() == string.Empty ? string.Empty : $"--project-name=''{GetProjectName()}''";
+
+        GenerateDocumentation.OutputDir = documentationOutoutePath;
+        CommandControllerInstance.CommandController.DisplayMessage(false, "Please wait ...");
+        string Script = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
+        $"''{clangDocPath}'' --public {projectArguments} --format={GenerateDocumentation.Formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' 2>&1 | Out-Null'";
+
+        PowerShellWrapper.Invoke(Script, runningProcesses);
+
+        //Replace a string in index_json.js if is generated with html format, to avoid a json error
+        string indexJsonFileName = Path.Combine(documentationOutoutePath, "index_json.js");
+        if (File.Exists(indexJsonFileName) && commandId == CommandIds.kDocumentationHtmlId)
+        {
+          string indexJsonFileContent = File.ReadAllText(indexJsonFileName);
+          indexJsonFileContent = indexJsonFileContent.Replace("var JsonIndex = `", "var JsonIndex = String.raw `");
+          File.WriteAllText(indexJsonFileName, indexJsonFileContent);
+        }
+
+        //Delete JsonCompilationDatabase
+        if(File.Exists(jsonCompilationDatabasePath))
+        {
+          File.Delete(jsonCompilationDatabasePath);
+        }
+
+        if (StopCommandActivated)
+        {
+          OnDataStreamClose(new CloseDataStreamingEventArgs(true));
+          StopCommandActivated = false;
+        }
+        else
+        {
+          OnDataStreamClose(new CloseDataStreamingEventArgs(false));
+        }
+      }
+    }
 
     private void Compile(string runModeParameters, string genericParameters, int commandId, List<string> paths)
     {
@@ -322,6 +377,27 @@ namespace ClangPowerTools
 
       PowerShellWrapper.Invoke(Script, runningProcesses);
       OnDataStreamClose(new CloseDataStreamingEventArgs(false));
+    }
+
+    private string GetProjectName()
+    {
+      string projectName = string.Empty;
+      try
+      {
+        if (cacheProjectsItemsModel.Projects.Count > 0)
+        {
+          projectName = cacheProjectsItemsModel.Projects[0].FullName;
+        }
+        else
+        {
+          projectName = cacheProjectsItemsModel.ProjectItems[0].ContainingProject.FullName;
+        }
+      }
+      catch (NullReferenceException e)
+      {
+
+      }
+      return projectName;
     }
 
     #endregion
