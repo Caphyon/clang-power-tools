@@ -287,6 +287,14 @@
       <Link>Tooling\v1\clang-build.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="..\ClangPowerToolsShared\Tooling\v1\psClang\get-llvm-helper.ps1">
+      <Link>Tooling\v1\psClang\get-llvm-helper.ps1</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="..\ClangPowerToolsShared\Tooling\v1\psClang\get-llvm.ps1">
+      <Link>Tooling\v1\psClang\get-llvm.ps1</Link>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="..\ClangPowerToolsShared\Tooling\v1\psClang\get-header-references.ps1">
       <Link>Tooling\v1\psClang\get-header-references.ps1</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
