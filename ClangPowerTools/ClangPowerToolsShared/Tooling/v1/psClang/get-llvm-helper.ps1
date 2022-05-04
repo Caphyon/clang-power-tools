@@ -14,6 +14,11 @@ Set-Variable -name kCptGithubLlvm -value "https://github.com/Caphyon/clang-power
                                   -option Constant
 Set-Variable -name kCptGithubLlvmVersion -value "14.0.3 (LLVM 14.0.3)" -Option Constant
 
+# Clang Constants
+
+Set-Variable -name kCss            -value "clang-doc-default-stylesheet.css"       -option Constant
+Set-Variable -name kClangDoc       -value "clang-doc.exe"                          -option Constant
+
 Function Ensure-LLVMTool-IsPresent([Parameter(Mandatory = $true)][string] $clangToolWeNeed) {
   [string] $ret = ""
 
@@ -75,15 +80,17 @@ Function Ensure-LLVMTool-IsPresent([Parameter(Mandatory = $true)][string] $clang
       Write-Verbose "Downloading $clangToolWeNeed $kCptGithubLlvmVersion ..."
       # grab ready-to-use LLVM binaries from Github
       Invoke-WebRequest -Uri $clangCompilerWebPath -OutFile $llvmLiteToolPath
-      # if needed tool is clang-doc.exe download and css file
-      if($clangToolWeNeed -eq "clang-doc.exe")
-      {
-        $clangCssWebPath = "$kCptGithubLlvm/clang-doc-default-stylesheet.css"
-        $llvmLiteCssFolderPath = "$llvmLiteDir\share\clang"
-        New-Item $llvmLiteCssFolderPath -ItemType Directory
-        Invoke-WebRequest -Uri $clangCssWebPath -OutFile "$llvmLiteCssFolderPath\clang-doc-default-stylesheet.css"
-      } 
       $ProgressPreference = $prevPreference
+      # download css file if needed tool is clang-doc.exe
+      if($clangToolWeNeed -eq $kClangDoc)
+      {
+        $clangCssWebPath = "$kCptGithubLlvm/$kCss"
+        $parentDirLite = (get-item $llvmLiteDir ).parent.FullName
+        $llvmLiteCssFolderPath = "$parentDirLite\share\clang"
+        New-Item $llvmLiteCssFolderPath -ItemType Directory | Out-Null
+        Invoke-WebRequest -Uri $clangCssWebPath -OutFile "$llvmLiteCssFolderPath\$kCss"
+        $ProgressPreference = $prevPreference
+      } 
 
       $ret = $llvmLiteDir
     }
