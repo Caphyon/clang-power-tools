@@ -19,6 +19,19 @@ Set-Variable -name kCptGithubLlvmVersion -value "14.0.3 (LLVM 14.0.3)" -Option C
 Set-Variable -name kCss            -value "clang-doc-default-stylesheet.css"       -option Constant
 Set-Variable -name kClangDoc       -value "clang-doc.exe"                          -option Constant
 
+Function Move-Tool-To-LlvmBin([Parameter(Mandatory = $true)][string] $clangToolWeNeed,
+                              [Parameter(Mandatory = $true)][string] $llvmLiteBinDir)
+{
+
+  $llvmLiteDir = (get-item $llvmLiteBinDir).parent.FullName
+
+  if(Test-Path "$llvmLiteDir\$clangToolWeNeed")
+  {
+    Move-Item -Path "$llvmLiteDir\$clangToolWeNeed" -Destination "$llvmLiteBinDir\$clangToolWeNeed"
+  }
+
+}
+
 Function Ensure-LLVMTool-IsPresent([Parameter(Mandatory = $true)][string] $clangToolWeNeed) {
   [string] $ret = ""
 
@@ -40,7 +53,7 @@ Function Ensure-LLVMTool-IsPresent([Parameter(Mandatory = $true)][string] $clang
   # download read-to-use binary from github
 
   [string] $llvmLiteDirParent = "${env:APPDATA}\ClangPowerTools"
-  [string] $llvmLiteDir       = "$llvmLiteDirParent\LLVM_Lite"
+  [string] $llvmLiteDir       = "$llvmLiteDirParent\LLVM_Lite\Bin"
 
   [string] $llvmLiteToolPath = "$llvmLiteDir\$clangToolWeNeed"
   if (Test-Path $llvmLiteToolPath)
@@ -65,6 +78,9 @@ Function Ensure-LLVMTool-IsPresent([Parameter(Mandatory = $true)][string] $clang
       {
         New-Item -Path $llvmLiteDir -ItemType Directory | Out-Null
       }
+      
+      # check if tool already exists Llvm_lite folder, to move it in Llvm_lite/bin
+      Move-Tool-To-LlvmBin $clangToolWeNeed $llvmLiteDir
 
       # the displayed progress slows downloads considerably, so disable it
       $prevPreference = $ProgressPreference
@@ -86,7 +102,10 @@ Function Ensure-LLVMTool-IsPresent([Parameter(Mandatory = $true)][string] $clang
         $clangCssWebPath = "$kCptGithubLlvm/$kCss"
         $parentDirLite = (get-item $llvmLiteDir ).parent.FullName
         $llvmLiteCssFolderPath = "$parentDirLite\share\clang"
-        New-Item $llvmLiteCssFolderPath -ItemType Directory | Out-Null
+        if (!(Test-Path $llvmLiteCssFolderPath))
+        {
+          New-Item $llvmLiteCssFolderPath -ItemType Directory | Out-Null
+        }
         Invoke-WebRequest -Uri $clangCssWebPath -OutFile "$llvmLiteCssFolderPath\$kCss"
       } 
       $ProgressPreference = $prevPreference
