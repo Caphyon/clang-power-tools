@@ -75,6 +75,14 @@ Function Ensure-LLVMTool-IsPresent([Parameter(Mandatory = $true)][string] $clang
       Write-Verbose "Downloading $clangToolWeNeed $kCptGithubLlvmVersion ..."
       # grab ready-to-use LLVM binaries from Github
       Invoke-WebRequest -Uri $clangCompilerWebPath -OutFile $llvmLiteToolPath
+      # if needed tool is clang-doc.exe download and css file
+      if($clangToolWeNeed -eq "clang-doc.exe")
+      {
+        $clangCssWebPath = "$kCptGithubLlvm/clang-doc-default-stylesheet.css"
+        $llvmLiteCssFolderPath = "$llvmLiteDir\share\clang"
+        New-Item $llvmLiteCssFolderPath -ItemType Directory
+        Invoke-WebRequest -Uri $clangCssWebPath -OutFile "$llvmLiteCssFolderPath\clang-doc-default-stylesheet.css"
+      } 
       $ProgressPreference = $prevPreference
 
       $ret = $llvmLiteDir
