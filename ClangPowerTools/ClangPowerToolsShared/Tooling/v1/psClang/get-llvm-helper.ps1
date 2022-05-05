@@ -24,7 +24,7 @@ Function Move-Tool-To-LlvmBin([Parameter(Mandatory = $true)][string] $clangToolW
                               [Parameter(Mandatory = $true)][string] $llvmLiteBinDir)
 {
 
-  $llvmLiteDir = (get-item $llvmLiteBinDir).parent.FullName
+  $llvmLiteDir = (get-item $llvmLiteBinDir).Parent.FullName
 
   if(Test-Path "$llvmLiteDir\$clangToolWeNeed")
   {
@@ -100,8 +100,8 @@ Function Ensure-LLVMTool-IsPresent([Parameter(Mandatory = $true)][string] $clang
       # download css file if needed tool is clang-doc.exe
       if($clangToolWeNeed -eq $kClangDoc)
       {
-        $parentDirLite = (get-item $llvmLiteDir ).parent.FullName
-        $llvmLiteCssFolderPath = "$parentDirLite\share\clang"
+        [string] $parentDirLite = (get-item $llvmLiteDir ).Parent.FullName
+        [string] $llvmLiteCssFolderPath = "$parentDirLite\share\clang"
         if (!(Test-Path $llvmLiteCssFolderPath))
         {
           New-Item $llvmLiteCssFolderPath -ItemType Directory | Out-Null
