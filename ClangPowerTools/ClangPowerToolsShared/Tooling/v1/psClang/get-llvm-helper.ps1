@@ -18,6 +18,7 @@ Set-Variable -name kCptGithubLlvmVersion -value "14.0.3 (LLVM 14.0.3)" -Option C
 
 Set-Variable -name kCss            -value "clang-doc-default-stylesheet.css"       -option Constant
 Set-Variable -name kClangDoc       -value "clang-doc.exe"                          -option Constant
+Set-Variable -name kIndex          -value "index.js"                               -option Constant
 
 Function Move-Tool-To-LlvmBin([Parameter(Mandatory = $true)][string] $clangToolWeNeed,
                               [Parameter(Mandatory = $true)][string] $llvmLiteBinDir)
@@ -99,14 +100,14 @@ Function Ensure-LLVMTool-IsPresent([Parameter(Mandatory = $true)][string] $clang
       # download css file if needed tool is clang-doc.exe
       if($clangToolWeNeed -eq $kClangDoc)
       {
-        $clangCssWebPath = "$kCptGithubLlvm/$kCss"
         $parentDirLite = (get-item $llvmLiteDir ).parent.FullName
         $llvmLiteCssFolderPath = "$parentDirLite\share\clang"
         if (!(Test-Path $llvmLiteCssFolderPath))
         {
           New-Item $llvmLiteCssFolderPath -ItemType Directory | Out-Null
         }
-        Invoke-WebRequest -Uri $clangCssWebPath -OutFile "$llvmLiteCssFolderPath\$kCss"
+        Invoke-WebRequest -Uri "$kCptGithubLlvm/$kCss" -OutFile "$llvmLiteCssFolderPath\$kCss"
+        Invoke-WebRequest -Uri "$kCptGithubLlvm/$kIndex" -OutFile "$llvmLiteCssFolderPath\$kIndex"
       } 
       $ProgressPreference = $prevPreference
 
