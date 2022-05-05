@@ -14,6 +14,25 @@ Set-Variable -name kCptGithubLlvm -value "https://github.com/Caphyon/clang-power
                                   -option Constant
 Set-Variable -name kCptGithubLlvmVersion -value "14.0.3 (LLVM 14.0.3)" -Option Constant
 
+# Clang Constants
+
+Set-Variable -name kCss            -value "clang-doc-default-stylesheet.css"       -option Constant
+Set-Variable -name kClangDoc       -value "clang-doc.exe"                          -option Constant
+Set-Variable -name kIndex          -value "index.js"                               -option Constant
+
+Function Move-Tool-To-LlvmBin([Parameter(Mandatory = $true)][string] $clangToolWeNeed,
+                              [Parameter(Mandatory = $true)][string] $llvmLiteBinDir)
+{
+
+  $llvmLiteDir = (get-item $llvmLiteBinDir).Parent.FullName
+
+  if(Test-Path "$llvmLiteDir\$clangToolWeNeed")
+  {
+    Move-Item -Path "$llvmLiteDir\$clangToolWeNeed" -Destination "$llvmLiteBinDir\$clangToolWeNeed"
+  }
+
+}
+
 Function Ensure-LLVMTool-IsPresent([Parameter(Mandatory = $true)][string] $clangToolWeNeed) {
   [string] $ret = ""
 
@@ -35,7 +54,7 @@ Function Ensure-LLVMTool-IsPresent([Parameter(Mandatory = $true)][string] $clang
   # download read-to-use binary from github
 
   [string] $llvmLiteDirParent = "${env:APPDATA}\ClangPowerTools"
-  [string] $llvmLiteDir       = "$llvmLiteDirParent\LLVM_Lite"
+  [string] $llvmLiteDir       = "$llvmLiteDirParent\LLVM_Lite\Bin"
 
   [string] $llvmLiteToolPath = "$llvmLiteDir\$clangToolWeNeed"
   if (Test-Path $llvmLiteToolPath)
@@ -60,6 +79,9 @@ Function Ensure-LLVMTool-IsPresent([Parameter(Mandatory = $true)][string] $clang
       {
         New-Item -Path $llvmLiteDir -ItemType Directory | Out-Null
       }
+      
+      # check if tool already exists Llvm_lite folder, to move it in Llvm_lite/bin
+      Move-Tool-To-LlvmBin $clangToolWeNeed $llvmLiteDir
 
       # the displayed progress slows downloads considerably, so disable it
       $prevPreference = $ProgressPreference
@@ -75,6 +97,18 @@ Function Ensure-LLVMTool-IsPresent([Parameter(Mandatory = $true)][string] $clang
       Write-Verbose "Downloading $clangToolWeNeed $kCptGithubLlvmVersion ..."
       # grab ready-to-use LLVM binaries from Github
       Invoke-WebRequest -Uri $clangCompilerWebPath -OutFile $llvmLiteToolPath
+      # download css file if needed tool is clang-doc.exe
+      if($clangToolWeNeed -eq $kClangDoc)
+      {
+        [string] $parentDirLite = (get-item $llvmLiteDir ).Parent.FullName
+        [string] $llvmLiteCssFolderPath = "$parentDirLite\share\clang"
+        if (!(Test-Path $llvmLiteCssFolderPath))
+        {
+          New-Item $llvmLiteCssFolderPath -ItemType Directory | Out-Null
+        }
+        Invoke-WebRequest -Uri "$kCptGithubLlvm/$kCss" -OutFile "$llvmLiteCssFolderPath\$kCss"
+        Invoke-WebRequest -Uri "$kCptGithubLlvm/$kIndex" -OutFile "$llvmLiteCssFolderPath\$kIndex"
+      } 
       $ProgressPreference = $prevPreference
 
       $ret = $llvmLiteDir
