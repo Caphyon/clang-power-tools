@@ -92,6 +92,7 @@
 			<Button guid="guidClangPowerToolsPackageCmdSet" id="TidyId" priority="0x0001" type="Button">
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
 				<Icon guid="guidImageTidy" id="Tidy" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
 				<CommandFlag>TextChanges</CommandFlag>
 				<Strings>
 					<ButtonText>Tidy</ButtonText>
@@ -229,6 +230,7 @@
 			<Button guid="guidClangPowerToolsPackageCmdSet" id="TidyToolbarId" priority="0x0001" type="Button">
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
 				<Icon guid="guidImageTidy" id="Tidy" />
+				<CommandFlag>DefaultDisabled</CommandFlag>
 				<CommandFlag>TextChanges</CommandFlag>
 				<Strings>
 					<ButtonText>Tidy</ButtonText>

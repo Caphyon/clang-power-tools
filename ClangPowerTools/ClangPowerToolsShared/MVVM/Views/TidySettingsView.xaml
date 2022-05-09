@@ -33,6 +33,7 @@
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
@@ -293,8 +294,32 @@
         Tag="On" />
     </WrapPanel>
 
+    <!--  Apply Tidy-Fix  -->
+    <WrapPanel Grid.Row="9"
+               Grid.Column="1">
+      <WrapPanel.ToolTip>
+        <ToolTip>
+          <TextBlock MaxWidth="400"
+                     Text="{Binding Tooltip.FormatAfterTidy}"
+                     TextWrapping="Wrap" />
+        </ToolTip>
+      </WrapPanel.ToolTip>
+
+      <TextBlock Width="180"
+                 Padding="10"
+                 VerticalAlignment="Center"
+                 FontFamily="SegoeUI"
+                 FontSize="16"
+                 Text="Apply Tidy-Fix" />
+
+      <ToggleButton HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding TidyModel.ApplyTidyFix}"
+                    Tag="On" />
+    </WrapPanel>
+    
     <!--  Export tidy config  -->
-    <WrapPanel Grid.Row="9" Grid.Column="1">
+    <WrapPanel Grid.Row="10" Grid.Column="1">
       <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
