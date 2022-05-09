@@ -177,6 +177,18 @@ namespace ClangPowerTools
     public async Task LaunchCommandAsync(int aCommandId, CommandUILocation aCommandUILocation,
       List<string> paths = null, bool openCompilationDatabaseInExplorer = true)
     {
+      var tidySettings = SettingsProvider.TidySettingsModel;
+      //If ApplyTidy-Fix is enabled, switch command
+      if (aCommandId == CommandIds.kTidyToolbarId && tidySettings.ApplyTidyFix)
+      {
+        aCommandId = CommandIds.kTidyFixToolbarId;
+      }
+
+      if (aCommandId == CommandIds.kTidyId && tidySettings.ApplyTidyFix)
+      {
+        aCommandId = CommandIds.kTidyFixId;
+      }
+
       switch (aCommandId)
       {
         case CommandIds.kSettingsId:
