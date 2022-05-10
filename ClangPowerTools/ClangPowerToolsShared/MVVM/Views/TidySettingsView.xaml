@@ -310,7 +310,7 @@
                  VerticalAlignment="Center"
                  FontFamily="SegoeUI"
                  FontSize="16"
-                 Text="Tidy-Fix" />
+                 Text="1-step Tidy-Fix" />
 
       <ToggleButton HorizontalAlignment="Left"
                     VerticalAlignment="Center"
@@ -323,9 +323,9 @@
                  FontFamily="SegoeUI"
                  FontSize="14"
                  Foreground="#bf710b"
-                 TextAlignment="Right"
+                 TextAlignment="Left"
                  Visibility="{Binding DisplayWarning}"
-                 Text="Tidy-Fix command is destructive" />
+                 Text="Applies fixes directly. Recommended for Git repositories." />
     </WrapPanel>
     
     <!--  Export tidy config  -->
