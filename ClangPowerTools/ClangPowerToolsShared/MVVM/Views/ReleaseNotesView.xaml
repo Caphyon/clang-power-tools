@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 8.6.0" />
+                 Text="version 8.7.0" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -116,17 +116,10 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Support for LLVM 14.0.3"
+                 Text="• Add setting for enabling Tidy-Fix to be applied directly.    (Settings → Tidy → 1-step Tidy-Fix)"
                  TextWrapping="Wrap" />
+        
 
-        <TextBox Margin="5,25,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• Generate html, markdown and yaml documentation based on source code and comments"
-                 TextWrapping="Wrap" />
         <!--Bug Fixes-->
         <!--<TextBox Margin="5,20,0,0"
                  HorizontalAlignment="Left"

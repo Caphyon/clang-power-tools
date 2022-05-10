@@ -3,8 +3,10 @@
   <COMPONENT cid="caphyon.advinst.msicomp.GenericPropertyComponent">
     <ROW Name="Author" Value="Caphyon" Type="0"/>
     <ROW Name="Description" Value="A tool bringing clang-tidy magic to Visual Studio C++ developers." Type="0" ValueLocId="*"/>
+    <ROW Name="Icon" Value="EXTENSIONS_FOLDER\Resources\ClangPowerToolsIco.ico" Type="1"/>
     <ROW Name="Identifier" Value="Caphyon.705559db-5755-43fa-a023-41a3b14d2935" Type="0"/>
-    <ROW Name="Locale" Value="1033" Type="0"/>
+    <ROW Name="License" Value="EXTENSIONS_FOLDER\Resources\LICENSE.txt" Type="1"/>
+    <ROW Name="Locale" Value="8.7.0.563" Type="0"/>
     <ROW Name="Name" Value="Clang Power Tools" Type="0" ValueLocId="*"/>
     <ROW Name="Version" Value="8.6.0.562" Type="0"/>
     <ROW Name="VsixLanguage" Value="en-US" Type="0"/>
@@ -57,6 +59,7 @@
     <ROW Id="29" Name="~advinst.tests.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\~advinst.tests.ps1" ParentDir="5"/>
     <ROW Id="30" Name="ClangFormatEditor.exe" Path="ClangPowerToolsShared\Executables\ClangFormatEditor.exe" ParentDir="1"/>
     <ROW Id="31" Name="clang-format.exe" Path="ClangPowerToolsShared\Executables\clang-format.exe" ParentDir="1"/>
+    <ROW Id="32" Name="ClangPowerToolsIco.ico" Path="ClangPowerToolsShared\Resources\ClangPowerToolsIco.ico" ParentDir="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.VsixContentComponent">
     <ROW File="4" Type="6"/>
