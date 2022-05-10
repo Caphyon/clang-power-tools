@@ -316,6 +316,17 @@
                     VerticalAlignment="Center"
                     IsChecked="{Binding TidyModel.ApplyTidyFix}"
                     Tag="On" />
+
+      <TextBlock Width="385"
+                 Padding="10"
+                 VerticalAlignment="Center"
+                 FontFamily="SegoeUI"
+                 FontSize="14"
+                 Foreground="#bf710b"
+                 TextAlignment="Right"
+                 TextTrimming="WordEllipsis"
+                 Visibility="{Binding DisplayWarning}"
+                 Text="This command is destructive. Ensure you using git" />
     </WrapPanel>
     
     <!--  Export tidy config  -->
