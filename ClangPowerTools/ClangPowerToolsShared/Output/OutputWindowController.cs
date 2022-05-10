@@ -204,7 +204,8 @@ namespace ClangPowerTools.Output
 
       //open tidy tool window and pass paths
       var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
-      if (id == CommandIds.kTidyToolWindowId || id == CommandIds.kTidyFixId)
+      var tidySettings = SettingsProvider.TidySettingsModel;
+      if (id == CommandIds.kTidyToolWindowId || (id == CommandIds.kTidyFixId && !tidySettings.ApplyTidyFix))
       {
         foreach (var path in paths)
         {

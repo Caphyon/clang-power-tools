@@ -26,7 +26,7 @@
 			<!--Tidy Drop-Down Menu-->
 			<Menu guid="guidClangPowerToolsPackageCmdSet" id="DromDownMenu" type="MenuController" priority="0x0001">
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
-				<CommandFlag>DefaultDocked</CommandFlag>
+				<CommandFlag>TextChanges</CommandFlag>
 				<Strings>
 					<ButtonText>Clang Tidy</ButtonText>
 					<CommandName>Clang Power Tools</CommandName>
@@ -93,6 +93,7 @@
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
 				<Icon guid="guidImageTidy" id="Tidy" />
 				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>TextChanges</CommandFlag>
 				<Strings>
 					<ButtonText>Tidy</ButtonText>
 				</Strings>
@@ -230,6 +231,7 @@
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" />
 				<Icon guid="guidImageTidy" id="Tidy" />
 				<CommandFlag>DefaultDisabled</CommandFlag>
+				<CommandFlag>TextChanges</CommandFlag>
 				<Strings>
 					<ButtonText>Tidy</ButtonText>
 				</Strings>

@@ -177,6 +177,9 @@ namespace ClangPowerTools
     public async Task LaunchCommandAsync(int aCommandId, CommandUILocation aCommandUILocation,
       List<string> paths = null, bool openCompilationDatabaseInExplorer = true)
     {
+      //If ApplyTidy-Fix is enabled, switch command
+      ChooseCommandIdDependingOnTidy(ref aCommandId);
+
       switch (aCommandId)
       {
         case CommandIds.kSettingsId:
@@ -348,6 +351,25 @@ namespace ClangPowerTools
     #endregion
 
     #region Private Methods
+
+    /// <summary>
+    /// Return commandId depending on tidy settings
+    /// </summary>
+    /// <param name="commandId"></param>
+    /// <returns></returns>
+    private void ChooseCommandIdDependingOnTidy(ref int aCommandId)
+    {
+      var tidySettings = SettingsProvider.TidySettingsModel;
+      if (aCommandId == CommandIds.kTidyToolbarId && tidySettings.ApplyTidyFix)
+      {
+        aCommandId = CommandIds.kTidyFixToolbarId;
+      }
+
+      if (aCommandId == CommandIds.kTidyId && tidySettings.ApplyTidyFix)
+      {
+        aCommandId = CommandIds.kTidyFixId;
+      }
+    }
 
     private OleMenuCommand CreateCommand(object sender)
     {
@@ -589,6 +611,17 @@ namespace ClangPowerTools
 
       var itemsCollector = new ItemsCollector();
       itemsCollector.CollectSelectedProjectItems();
+
+      var tidySettings = SettingsProvider.TidySettingsModel;
+      //Change button name for tidy depending on settings property
+      if (tidySettings.ApplyTidyFix && (command.CommandID.ID == CommandIds.kTidyId || command.CommandID.ID == CommandIds.kTidyToolbarId))
+      {
+        command.Text = "Tidy-Fix";
+      }
+      else if(command.CommandID.ID == CommandIds.kTidyId || command.CommandID.ID == CommandIds.kTidyToolbarId)
+      {
+        command.Text = "Tidy";
+      }
 
       if (IsAToolbarCommand(command))
       {

@@ -113,6 +113,10 @@ namespace ClangPowerTools.Commands
       {
         await PrepareCommmandAsync(commandUILocation);
         CacheProjectsFromItems();
+      }else if (CommandIds.kTidyFixId == aCommandId || CommandIds.kTidyFixToolbarId == aCommandId)
+      {
+        await PrepareCommmandAsync(commandUILocation);
+        CacheProjectsFromItems();
       }
 
       if (CommandIds.kTidyToolWindowId == aCommandId || CommandIds.kTidyFixId == aCommandId)

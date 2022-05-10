@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.MVVM;
 using ClangPowerTools.MVVM.Commands;
 using ClangPowerTools.Views;
+using ClangPowerToolsShared.MVVM.Constants;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +18,7 @@ namespace ClangPowerTools
 
     private TidySettingsModel tidyModel;
     private string headerFilter = string.Empty;
+    private string displayWarning = string.Empty;
     private ICommand headerFilterAddDataCommand;
     private ICommand customExecutableBrowseCommand;
     private ICommand predefinedChecksSelectCommand;
@@ -32,6 +34,7 @@ namespace ClangPowerTools
       tidyModel = SettingsProvider.TidySettingsModel;
       HeaderFilters = new List<string>() { tidyModel.HeaderFilter, ComboBoxConstants.kCorrespondingHeaderName };
       headerFilter = tidyModel.HeaderFilter;
+      UpdateWarningVisibility();
     }
 
     #endregion
@@ -41,12 +44,23 @@ namespace ClangPowerTools
     {
       get
       {
+        UpdateWarningVisibility();
         return tidyModel;
       }
       set
       {
         tidyModel = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyModel"));
+      }
+    }
+
+    public string DisplayWarning
+    {
+      get { return displayWarning; }
+      set
+      {
+        displayWarning = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DisplayWarning"));
       }
     }
 
@@ -122,6 +136,16 @@ namespace ClangPowerTools
     #endregion
 
     #region Methods
+
+    private void UpdateWarningVisibility()
+    {
+      var tidySettings = SettingsProvider.TidySettingsModel;
+      if (tidySettings.ApplyTidyFix)
+        displayWarning = UIElementsConstants.Visibile;
+      else
+        displayWarning = UIElementsConstants.Hidden;
+      DisplayWarning = displayWarning;
+    }
 
     private void UpdateHeaderFilter()
     {
