@@ -616,17 +616,13 @@ namespace ClangPowerTools
       //Change button name for tidy depending on settings property
       if (tidySettings.ApplyTidyFix && (command.CommandID.ID == CommandIds.kTidyId || command.CommandID.ID == CommandIds.kTidyToolbarId))
       {
-        command.Text = "Apply Tidy-Fix";
+        command.Text = "Tidy-Fix";
       }
       else if(command.CommandID.ID == CommandIds.kTidyId || command.CommandID.ID == CommandIds.kTidyToolbarId)
       {
         command.Text = "Tidy";
       }
 
-      if(command.CommandID.ID == CommandIds.kTidyId || command.CommandID.ID == CommandIds.kTidyToolbarId)
-      {
-        
-      }
       if (IsAToolbarCommand(command))
       {
         if (SolutionInfo.AreToolbarCommandsEnabled() == false)
