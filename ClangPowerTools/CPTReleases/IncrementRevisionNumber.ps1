@@ -18,7 +18,7 @@ if((Test-Path $filepath) -and (Test-Path $filepathToAip))
     $data.Save("$filepath")
 
     #Replace old version with new one in aip file
-    $aipData.DOCUMENT.COMPONENT[0].ROW[5].Value = $nextVersion.ToString()
+    $aipData.DOCUMENT.COMPONENT[0].ROW[7].Value = $nextVersion.ToString()
     $aipData.Save("$filepathToAip")
     $resultData = Get-Content $filepathToAip -Encoding utf8
     $result = $resultData -replace " />", "/>"
