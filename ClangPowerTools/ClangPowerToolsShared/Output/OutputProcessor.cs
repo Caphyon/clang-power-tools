@@ -81,8 +81,11 @@ namespace ClangPowerTools.Output
 
       while (mErrorDetector.Detect(aText, ErrorParserConstants.kErrorMessageRegex, out Match aMatchResult))
       {
-        aDetectedErrors.Add(GetDetectedError(aHierarchy, aMatchResult));
-        aOutputBuilder.Append(GetOutput(ref aText, aDetectedErrors.Last().FullMessage));
+        var detectedError = GetDetectedError(aHierarchy, aMatchResult);
+        if (detectedError != null)
+          aDetectedErrors.Add(detectedError);
+
+        aOutputBuilder.Append(GetOutput(ref aText, aDetectedErrors.Count == 0 ? "" : aDetectedErrors.Last().FullMessage));
       }
       aOutputText = aOutputBuilder.ToString();
     }
