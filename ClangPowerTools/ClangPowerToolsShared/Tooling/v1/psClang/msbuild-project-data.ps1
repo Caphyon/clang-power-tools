@@ -197,6 +197,10 @@ Function Get-Project-CppStandard()
                   ; 'stdcpp17'     = 'c++17'
                   ; 'stdcpp20'     = 'c++20'
                   }
+    if ($kLLVMVersion -ge 13)
+    {
+        $cppStdMap['stdcpplatest'] = 'c++2b'
+    }
 
     [string] $cppStdClangValue = $cppStdMap[$cppStd]
 

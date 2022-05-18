@@ -679,8 +679,7 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
                                   ,$kClangFlagNoUnusedArg
                                   ,$preprocessorDefinitions
                                   )
-  [int] $clangVer = Get-ClangVersion 
-  if ($clangVer -ge 11)
+  if ($kLLVMVersion -ge 11)
   {
     # this flag gets around 15% faster PCH compilation times
     # https://www.phoronix.com/scan.php?page=news_item&px=LLVM-Clang-11-PCH-Instant-Temp
@@ -1620,6 +1619,7 @@ if (![string]::IsNullOrEmpty($global:llvmLocation))
 {
   $env:Path += ";" + $global:llvmLocation
 }
+Set-Variable -name "kLLVMVersion" -value (Get-ClangVersion $clangToolWeNeed) -scope Global
 
 # initialize JSON compilation db support, if required
 if ($aExportJsonDB) 
