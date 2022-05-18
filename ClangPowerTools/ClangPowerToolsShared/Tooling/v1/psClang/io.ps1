@@ -468,12 +468,12 @@ Function Exists-Command([Parameter(Mandatory = $true)][string] $command)
     }
 }
 
-Function Get-ClangVersion()
+Function Get-ClangVersion([Parameter(Mandatory = $true)][string] $toolToCheck)
 {
-    if (Exists-Command "clang++")
+    if (Exists-Command $toolToCheck)
     {
-        [string] $s = &"clang++" --version
-        $regexMatch = [regex]::match($s, 'clang version (\d+).')
+        [string] $s = &"$toolToCheck" --version
+        $regexMatch = [regex]::match($s, 'version (\d+).')
         if ($regexMatch)
         {
             return ($regexMatch.Groups[1].Value -as [int])
