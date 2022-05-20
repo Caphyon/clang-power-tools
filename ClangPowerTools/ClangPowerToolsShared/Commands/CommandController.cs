@@ -93,7 +93,7 @@ namespace ClangPowerTools
         await FormatCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kClangFormatToolbarId);
       }
 
-      if (FormatCommand.Instance == null)
+      if (FindCommand.Instance == null)
       {
         await FindCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kClangFind);
       }
@@ -214,7 +214,7 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kClangFind);
 
-            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kClangFind, aCommandUILocation);
+            FindCommand.Instance.Find();
             OnAfterClangCommand();
             break;
           }

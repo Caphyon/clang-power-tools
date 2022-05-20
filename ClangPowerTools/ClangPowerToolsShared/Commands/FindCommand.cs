@@ -53,7 +53,7 @@ namespace ClangPowerToolsShared.Commands
       Instance = new FindCommand(commandService, aCommandController, aPackage, aGuid, aId);
     }
 
-    void Find()
+    public void Find()
     {
 
     }
