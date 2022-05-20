@@ -93,6 +93,11 @@ namespace ClangPowerTools
         await FormatCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kClangFormatToolbarId);
       }
 
+      if (FormatCommand.Instance == null)
+      {
+        await FindCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kClangFind);
+      }
+
       if (IgnoreFormatCommand.Instance == null)
       {
         await IgnoreFormatCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kIgnoreFormatId);
@@ -202,6 +207,15 @@ namespace ClangPowerTools
           {
             clearOutputOnFormat = true;
             FormatCommand.Instance.RunClangFormat(aCommandUILocation);
+            break;
+          }
+        case CommandIds.kClangFind:
+          {
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kClangFind);
+
+            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kClangFind, aCommandUILocation);
+            OnAfterClangCommand();
             break;
           }
         case CommandIds.kCompileId:
