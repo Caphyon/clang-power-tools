@@ -35,6 +35,7 @@ namespace ClangPowerTools
   [ProvideAutoLoad(VSConstants.UICONTEXT.NoSolution_string, PackageAutoLoadFlags.BackgroundLoad)]
   [ProvideMenuResource("Menus.ctmenu", 1)]
   [ProvideToolWindow(typeof(TidyToolWindow), Style = VsDockStyle.Tabbed, DockedWidth = 300, Window = "DocumentWell", Orientation = ToolWindowOrientation.Left, Transient = true)]
+  [ProvideToolWindow(typeof(FindToolWindow), Style = VsDockStyle.Tabbed, DockedWidth = 300, Window = "DocumentWell", Orientation = ToolWindowOrientation.Left, Transient = true)]
   [Guid(PackageGuidString)]
   public sealed class RunClangPowerToolsPackage2 : AsyncPackage
   {

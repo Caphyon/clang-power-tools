@@ -198,6 +198,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\ToggleMultipleDataViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\TidyToolWindowController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TrialExpiredViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\FindToolWindowView.xaml.cs">
+      <DependentUpon>FindToolWindowView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\FolderExplorerView.xaml.cs">
       <DependentUpon>FolderExplorerView.xaml</DependentUpon>
     </Compile>
@@ -317,6 +320,10 @@
     <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\CompilerSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\FindToolWindowView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\FolderExplorerView.xaml">
       <SubType>Designer</SubType>
