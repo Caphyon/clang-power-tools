@@ -120,6 +120,16 @@
 				</Strings>
 			</Button>
 
+      <!-- Clang Find Context Menu button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="FindId" priority="0x0004" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
+        <Icon guid="guidImageFormat" id="Format" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Find</ButtonText>
+        </Strings>
+      </Button>
+
 			<!-- Stop Clang execution Context Menu button -->
 			<Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0005" type="Button">
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
@@ -393,6 +403,7 @@
 
 			<IDSymbol name="ClangFormatId" value="0x0105" />
 			<IDSymbol name="ClangFormatToolbarId" value="0x1103" />
+			<IDSymbol name="FindId" value="0x0115" />
 
 			<IDSymbol name="StopClangId" value="0x0104" />
 			<IDSymbol name="IgnoreFormatId" value="0x0107" />
