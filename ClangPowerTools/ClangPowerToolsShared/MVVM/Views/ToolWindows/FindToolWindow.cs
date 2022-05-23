@@ -3,14 +3,17 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
 {
+  [Guid(WindowGuidString)]
   public class FindToolWindow : ToolWindowPane
   {
     #region Members
-    public const string WindowGuidString = "CC497953-EA7E-431B-AF21-029C70E90C2D";
+    public const string WindowGuidString = "b6c99e5a-0649-4973-922a-a1a2a4057aeb";
     public const string Title = "Clang Power Tools - Find";
     private object findToolWindowView;
     private Type mObjType;
@@ -31,6 +34,12 @@ namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
 
       Content = findToolWindowView;
     }
+
+    //public void OpenFindToolWindow(List<string> filesPath)
+    //{
+    //  MethodInfo method = mObjType.GetMethod("OpenFindToolWindow");
+    //  method.Invoke(findToolWindowView, new object[] { filesPath });
+    //}
 
     #endregion
 

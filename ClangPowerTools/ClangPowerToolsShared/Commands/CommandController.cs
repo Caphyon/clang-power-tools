@@ -214,7 +214,7 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kClangFind);
 
-            FindCommand.Instance.Find();
+            await FindCommand.Instance.FindAsyc();
             OnAfterClangCommand();
             break;
           }

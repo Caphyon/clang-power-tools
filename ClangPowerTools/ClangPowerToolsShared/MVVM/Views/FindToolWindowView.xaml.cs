@@ -13,13 +13,19 @@ namespace ClangPowerTools.Views
   /// </summary>
   public partial class FindToolWindowView : UserControl
   {
-    //private TidyToolWindowViewModel tidyToolWindowViewModel;
+    private FindToolWindowViewModel findToolWindowViewModel;
 
     public FindToolWindowView()
     {
-      //tidyToolWindowViewModel = new TidyToolWindowViewModel(this);
-      //DataContext = tidyToolWindowViewModel;
-      //InitializeComponent();
+      findToolWindowViewModel = new FindToolWindowViewModel(this);
+      DataContext = findToolWindowViewModel;
+      InitializeComponent();
     }
+
+    //public void OpenTidyToolWindow(List<string> filesPath)
+    //{
+    //  //tidyToolWindowViewModel.OpenTidyToolWindow(filesPath);
+    //}
+
   }
 }

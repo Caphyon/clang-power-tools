@@ -251,13 +251,6 @@ namespace ClangPowerTools.Output
       HasEncodingErrorEvent?.Invoke(this, new HasEncodingErrorEventArgs(outputContent));
     }
 
-    private bool CheckTidyToolWindowExists()
-    {
-      var tidyToolWindow = package.FindToolWindow(typeof(TidyToolWindow), 0, false);
-      if (tidyToolWindow is not null) return true;
-      return false;
-    }
-
     #endregion
 
   }

@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools;
+using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
@@ -9,6 +10,7 @@ namespace ClangPowerToolsShared.Commands
   public class FindCommand : ClangCommand
   {
     #region Properties
+    private readonly AsyncPackage package;
 
     public static FindCommand Instance
     {
@@ -26,6 +28,7 @@ namespace ClangPowerToolsShared.Commands
     {
       if (null != aCommandService)
       {
+        package = aPackage;
         var menuCommandID = new CommandID(CommandSet, Id);
         var menuCommand = new OleMenuCommand(aCommandController.Execute, menuCommandID);
         menuCommand.BeforeQueryStatus += aCommandController.OnBeforeClangCommand;
@@ -53,9 +56,18 @@ namespace ClangPowerToolsShared.Commands
       Instance = new FindCommand(commandService, aCommandController, aPackage, aGuid, aId);
     }
 
-    public void Find()
+    public async Task FindAsyc()
     {
-
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      ToolWindowPane window = await package.ShowToolWindowAsync(
+      typeof(FindToolWindow),
+      0,
+      create: true,
+      cancellationToken: package.DisposalToken);
+      var findToolWindow = (FindToolWindow)window;
+      //FilePathCollector fileCollector = new FilePathCollector();
+      //if (findToolWindow != null)
+      //  findToolWindow.OpenFindToolWindow();
     }
 
     #endregion
