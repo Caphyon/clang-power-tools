@@ -6,7 +6,7 @@ namespace ClangPowerToolsShared.MVVM.Commands
 {
   public static class VSThemeCommand
   {
-    private const string darkThemeVs2022 = "4293256677";
+    private const string darkThemeVs2022 = "4294638330";
     private const string darkThemeVs2019 = "4294046193";
     private const string textColorKey = "ToolWindowTextColorKey";
 
