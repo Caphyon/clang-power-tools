@@ -3,6 +3,7 @@ using ClangPowerTools.Commands;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using Microsoft.VisualStudio.Shell;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Linq;
 using Task = System.Threading.Tasks.Task;
@@ -69,8 +70,10 @@ namespace ClangPowerToolsShared.Commands
       create: true,
       cancellationToken: package.DisposalToken);
       var findToolWindow = (FindToolWindow)window;
+      ItemsCollector itemsCollector = new ItemsCollector();
+      itemsCollector.CollectSelectedProjectItems();
       FilePathCollector fileCollector = new FilePathCollector();
-      var paths = fileCollector.Collect(mItemsCollector.Items).ToList();
+      var paths = fileCollector.Collect(itemsCollector.Items).ToList();
       if (findToolWindow != null)
         findToolWindow.OpenFindToolWindow(paths);
     }
