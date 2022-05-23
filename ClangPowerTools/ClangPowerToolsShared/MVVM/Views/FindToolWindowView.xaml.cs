@@ -2,6 +2,7 @@
 using ClangPowerToolsShared.MVVM.Commands;
 using ClangPowerToolsShared.MVVM.ViewModels;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -22,10 +23,10 @@ namespace ClangPowerTools.Views
       InitializeComponent();
     }
 
-    //public void OpenTidyToolWindow(List<string> filesPath)
-    //{
-    //  //tidyToolWindowViewModel.OpenTidyToolWindow(filesPath);
-    //}
+    public void OpenFindToolWindow(List<string> filesPath)
+    {
+      findToolWindowViewModel.OpenToolWindow(filesPath);
+    }
 
   }
 }

@@ -1,8 +1,10 @@
 ﻿using ClangPowerTools;
+using ClangPowerTools.Commands;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
+using System.Linq;
 using Task = System.Threading.Tasks.Task;
 
 namespace ClangPowerToolsShared.Commands
@@ -56,8 +58,10 @@ namespace ClangPowerToolsShared.Commands
       Instance = new FindCommand(commandService, aCommandController, aPackage, aGuid, aId);
     }
 
-    public async Task FindAsyc()
+    public async Task FindAsyc(CommandUILocation commandUILocation)
     {
+      await PrepareCommmandAsync(commandUILocation);
+
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       ToolWindowPane window = await package.ShowToolWindowAsync(
       typeof(FindToolWindow),
@@ -65,9 +69,10 @@ namespace ClangPowerToolsShared.Commands
       create: true,
       cancellationToken: package.DisposalToken);
       var findToolWindow = (FindToolWindow)window;
-      //FilePathCollector fileCollector = new FilePathCollector();
-      //if (findToolWindow != null)
-      //  findToolWindow.OpenFindToolWindow();
+      FilePathCollector fileCollector = new FilePathCollector();
+      var paths = fileCollector.Collect(mItemsCollector.Items).ToList();
+      if (findToolWindow != null)
+        findToolWindow.OpenFindToolWindow(paths);
     }
 
     #endregion

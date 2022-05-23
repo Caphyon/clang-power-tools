@@ -35,11 +35,11 @@ namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
       Content = findToolWindowView;
     }
 
-    //public void OpenFindToolWindow(List<string> filesPath)
-    //{
-    //  MethodInfo method = mObjType.GetMethod("OpenFindToolWindow");
-    //  method.Invoke(findToolWindowView, new object[] { filesPath });
-    //}
+    public void OpenFindToolWindow(List<string> filesPath)
+    {
+      MethodInfo method = mObjType.GetMethod("OpenFindToolWindow");
+      method.Invoke(findToolWindowView, new object[] { filesPath });
+    }
 
     #endregion
 

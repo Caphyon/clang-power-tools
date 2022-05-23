@@ -1,6 +1,8 @@
 ﻿using ClangPowerTools;
 using ClangPowerTools.Views;
 using System.ComponentModel;
+using System;
+using System.Collections.Generic;
 
 namespace ClangPowerToolsShared.MVVM.ViewModels
 {
@@ -13,6 +15,11 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
     {
       this.findToolWindowView = findToolWindowView;
+    }
+
+    public void OpenToolWindow(List<string> filesPath)
+    {
+
     }
   }
 }

@@ -9,6 +9,8 @@
              d:DesignHeight="700"
              d:DesignWidth="350"
              mc:Ignorable="d">
-
+  <Grid>
+    
+  </Grid>
 
 </UserControl>
