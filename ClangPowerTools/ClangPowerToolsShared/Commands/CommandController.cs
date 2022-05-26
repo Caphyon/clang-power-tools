@@ -218,6 +218,15 @@ namespace ClangPowerTools
             OnAfterClangCommand();
             break;
           }
+        case CommandIds.kClangFindRun:
+          {
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kClangFindRun);
+
+            await FindCommand.Instance.RunQuery();
+            OnAfterClangCommand();
+            break;
+          }
         case CommandIds.kCompileId:
           {
             await StopBackgroundRunnersAsync();
