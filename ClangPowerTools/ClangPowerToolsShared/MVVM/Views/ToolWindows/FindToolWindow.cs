@@ -41,6 +41,12 @@ namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
       method.Invoke(findToolWindowView, new object[] { filesPath });
     }
 
+    public void RunQuery()
+    {
+      MethodInfo method = mObjType.GetMethod("RunQuery");
+      method.Invoke(findToolWindowView, null);
+    }
+
     #endregion
 
   }

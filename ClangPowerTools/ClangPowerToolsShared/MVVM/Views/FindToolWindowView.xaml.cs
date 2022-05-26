@@ -27,6 +27,11 @@ namespace ClangPowerTools.Views
     {
       findToolWindowViewModel.OpenToolWindow(filesPath);
     }
+    
+    public void RunQuery()
+    {
+      findToolWindowViewModel.RunQuery();
+    }
 
   }
 }

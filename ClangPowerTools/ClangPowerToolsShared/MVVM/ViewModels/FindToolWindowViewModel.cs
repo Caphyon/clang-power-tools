@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
 using ClangPowerTools.MVVM.Command;
+using System.Threading.Tasks;
+using ClangPowerTools.Commands;
 
 namespace ClangPowerToolsShared.MVVM.ViewModels
 {
@@ -42,16 +44,20 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public ICommand MatchCommand
     {
-      get => matchCommand ?? (matchCommand = new RelayCommand(() => Match(), () => CanExecute));
+      get => matchCommand ?? (matchCommand = new RelayCommand(() => MatchAsync().SafeFireAndForget(), () => CanExecute));
     }
 
-    public void Match()
+    public async Task MatchAsync()
     {
-
-
+      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kClangFindRun, CommandUILocation.ContextMenu);
     }
 
     public void OpenToolWindow(List<string> filesPath)
+    {
+
+    }
+
+    public void RunQuery()
     {
 
     }

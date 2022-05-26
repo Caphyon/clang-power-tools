@@ -78,6 +78,23 @@ namespace ClangPowerToolsShared.Commands
         findToolWindow.OpenFindToolWindow(paths);
     }
 
+    public async Task RunQuery()
+    {
+      await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
+      ToolWindowPane window = await package.ShowToolWindowAsync(
+      typeof(FindToolWindow),
+      0,
+      create: true,
+      cancellationToken: package.DisposalToken);
+      var findToolWindow = (FindToolWindow)window;
+      ItemsCollector itemsCollector = new ItemsCollector();
+      itemsCollector.CollectSelectedProjectItems();
+      FilePathCollector fileCollector = new FilePathCollector();
+      var paths = fileCollector.Collect(itemsCollector.Items).ToList();
+      if (findToolWindow != null)
+        findToolWindow.RunQuery();
+    }
+
     #endregion
 
   }
