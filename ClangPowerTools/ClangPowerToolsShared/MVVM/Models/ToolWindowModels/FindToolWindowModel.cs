@@ -6,7 +6,7 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
   {
     public event PropertyChangedEventHandler PropertyChanged;
     private bool isRunning = false;
-    public DefaultArgsModel DefaultArgs { get; set; }
+    public DefaultArgsModel DefaultArgs { get; set; } = new DefaultArgsModel();
 
     public bool IsRunning
     {

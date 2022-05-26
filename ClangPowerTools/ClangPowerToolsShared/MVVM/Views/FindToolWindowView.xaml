@@ -9,6 +9,11 @@
              d:DesignHeight="700"
              d:DesignWidth="350"
              mc:Ignorable="d">
+
+  <UserControl.Resources>
+
+  </UserControl.Resources>
+
   <Grid>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="10" />
@@ -17,19 +22,29 @@
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="10" />
-      <RowDefinition Height="40" />
       <RowDefinition Height="15" />
       <RowDefinition Height="40" />
+      <RowDefinition Height="20" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
     <!--<Expander Grid.Row="3" Grid.Column="1" Name="myExpander" Background="Tan" 
           HorizontalAlignment="Left" Header="My Expander" 
           ExpandDirection="Down" IsExpanded="True" Width="1000">
-
     </Expander>-->
-    
-    <Grid Grid.Row="3" Grid.Column="1">
+
+    <Button 
+      Grid.Column="1" 
+      Grid.Row="3"
+      Height="20"
+      Width="40"
+      Content="Match"
+      HorizontalAlignment="Right"
+      Command="{Binding MatchCommand}" />
+    <!--Foreground="White"
+      Background="#106e05"-->
+
+    <Grid Grid.Row="2" Grid.Column="1">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="90" />
         <ColumnDefinition Width="*" />
@@ -41,7 +56,7 @@
         <RowDefinition Height="*" />
       </Grid.RowDefinitions>
       <Label Grid.Row="0" Grid.Column="0" Content="CalledFunction:" Height="28" HorizontalAlignment="Left" Foreground="AliceBlue" />
-      <TextBox Grid.Row="0" Grid.Column="1" Height="18" Name="BaseTextBox" Opacity="0.8">
+      <TextBox Grid.Row="0" Grid.Column="1" Height="18" Text="{Binding FindToolWindowModel.DefaultArgs.FunctionName}" Name="BaseTextBox" Opacity="0.8">
         <TextBox.Resources>
           <Style TargetType="{x:Type Border}">
             <Setter Property="CornerRadius" Value="4"/>
@@ -49,7 +64,7 @@
         </TextBox.Resources>
       </TextBox>
       <Label Grid.Row="0" Grid.Column="3" Content="DefaultArgPosition:" Height="28" HorizontalAlignment="Left" Foreground="AliceBlue" />
-      <TextBox Grid.Row="0" Grid.Column="4" Height="18" Opacity="0.8">
+      <TextBox Grid.Row="0" Grid.Column="4" Height="18" Text="{Binding FindToolWindowModel.DefaultArgs.DefaultArgsPosition}" Opacity="0.8">
         <TextBox.Resources>
           <Style TargetType="{x:Type Border}">
             <Setter Property="CornerRadius" Value="4"/>
@@ -57,6 +72,23 @@
         </TextBox.Resources>
       </TextBox>
     </Grid>
+
+
+
+      <!--<ProgressBar Name="pbStatus"
+                 Grid.Row="1"
+                 Grid.Column="1"
+                 Height="13"
+                 Background="Transparent"
+                 BorderBrush="#6d8ca3"
+                 Foreground="#296cba"
+                 IsIndeterminate="True"
+                 Maximum="100"
+                 Minimum="0"
+                 Visibility="Visible" />-->
     
+
   </Grid>
+
+
 </UserControl>
