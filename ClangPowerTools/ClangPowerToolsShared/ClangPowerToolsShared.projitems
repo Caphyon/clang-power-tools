@@ -23,7 +23,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)Commands\DocumentationYamlCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\FindCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\GenerateDocumentation.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\FindToolWindowModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\DefaultArgsModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\FindToolWindowModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\FindToolWindowViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\DialogWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\BackgroundTidy\PowerShellWrapperBackground.cs" />

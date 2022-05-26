@@ -1,7 +1,10 @@
-﻿namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
+﻿using System.ComponentModel;
+
+namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 {
-  public class DefaultArgsModel
+  public class DefaultArgsModel : INotifyPropertyChanged
   {
+    public event PropertyChangedEventHandler PropertyChanged;
     private string functionName = string.Empty;
     private int defaultArgsPosition = 0;
 
@@ -11,6 +14,17 @@
       set
       {
         functionName = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FunctionName"));
+      }
+    }
+
+    public int DefaultArgsPosition
+    {
+      get { return defaultArgsPosition; }
+      set
+      {
+        defaultArgsPosition = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DefaultArgsPosition"));
       }
     }
   }
