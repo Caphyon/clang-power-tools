@@ -33,14 +33,7 @@
           ExpandDirection="Down" IsExpanded="True" Width="1000">
     </Expander>-->
 
-    <Button 
-      Grid.Column="1" 
-      Grid.Row="3"
-      Height="20"
-      Width="40"
-      Content="Match"
-      HorizontalAlignment="Right"
-      Command="{Binding MatchCommand}" />
+
     <!--Foreground="White"
       Background="#106e05"-->
 
@@ -51,6 +44,8 @@
         <ColumnDefinition Width="20" />
         <ColumnDefinition Width="115" />
         <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="20" />
+        <ColumnDefinition Width="40" />
       </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
         <RowDefinition Height="*" />
@@ -71,6 +66,15 @@
           </Style>
         </TextBox.Resources>
       </TextBox>
+
+      <Button 
+      Grid.Column="6" 
+      Grid.Row="0"
+      Height="20"
+      Width="40"
+      Content="Match"
+      HorizontalAlignment="Left"
+      Command="{Binding MatchCommand}" />
     </Grid>
 
 
