@@ -83,6 +83,8 @@ namespace ClangPowerTools
     public const string kVerboseMode = "-Verbose";
     public const string kSystemIncludeDirectories = "-treat-sai";
 
+    public const string kQueryFile = "clang-query.exe";
+
     public const string kTidy = "-tidy";
     public const string kTidyFix = "-tidy-fix";
     public const string kTidyCheckFirstElement = "-*,";

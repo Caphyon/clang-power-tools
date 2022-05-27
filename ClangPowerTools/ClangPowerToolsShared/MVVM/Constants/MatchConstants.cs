@@ -21,14 +21,6 @@ namespace ClangPowerToolsShared.MVVM.Constants
       }
     }
 
-    public static string GetListPowershell(List<string> args)
-    {
-      var listPowershell = ScriptGenerator.JoinPathsToStringScript(args);
-      string command = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
-        $"@{listPowershell} '";
-
-      return command;
-    }
   }
 
 }
