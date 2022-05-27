@@ -67,14 +67,15 @@
         </TextBox.Resources>
       </TextBox>
 
-      <Button 
+      <Button
+      x:Name="matchDefaultArgs"
+      Click="matchDefaultArgs_click"
       Grid.Column="6" 
       Grid.Row="0"
       Height="20"
       Width="40"
       Content="Match"
-      HorizontalAlignment="Left"
-      Command="{Binding MatchCommand}" />
+      HorizontalAlignment="Left" />
     </Grid>
 
 

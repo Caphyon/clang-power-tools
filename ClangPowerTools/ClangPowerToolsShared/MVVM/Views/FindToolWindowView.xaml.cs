@@ -1,4 +1,5 @@
 ﻿using ClangPowerTools.MVVM.Models;
+using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Commands;
 using ClangPowerToolsShared.MVVM.ViewModels;
 using System.Collections.Generic;
@@ -33,5 +34,9 @@ namespace ClangPowerTools.Views
       findToolWindowViewModel.RunQuery();
     }
 
+    private void matchDefaultArgs_click(object sender, RoutedEventArgs e)
+    {
+      findToolWindowViewModel.SelectCommandToRun(FindCommandIds.kDefaultArgs);
+    }
   }
 }

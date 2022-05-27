@@ -18,6 +18,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private FindToolWindowView findToolWindowView;
     private FindToolWindowModel findToolWindowModel = new();
     private ICommand matchCommand;
+    private List<string> filesPaths = new();
+    private int currentCommandId = 0;
 
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
     {
@@ -54,12 +56,17 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void OpenToolWindow(List<string> filesPath)
     {
-
+      filesPaths = filesPath;
     }
 
     public void RunQuery()
     {
 
+    }
+
+    public void SelectCommandToRun(int commandId)
+    {
+      currentCommandId = commandId;
     }
   }
 }

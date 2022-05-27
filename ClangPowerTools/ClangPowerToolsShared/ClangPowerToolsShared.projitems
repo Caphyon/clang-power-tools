@@ -24,6 +24,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Commands\FindCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\FindCommandIds.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\GenerateDocumentation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\FindController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\DefaultArgsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\FindToolWindowModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\FindToolWindowViewModel.cs" />
