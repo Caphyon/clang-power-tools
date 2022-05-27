@@ -39,23 +39,23 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
     }
 
-    public bool CanExecute
-    {
-      get
-      {
-        return true;
-      }
-    }
+    //public bool CanExecute
+    //{
+    //  get
+    //  {
+    //    return true;
+    //  }
+    //}
 
-    public ICommand MatchCommand
-    {
-      get => matchCommand ?? (matchCommand = new RelayCommand(() => MatchAsync().SafeFireAndForget(), () => CanExecute));
-    }
+    //public ICommand MatchCommand
+    //{
+    //  get => matchCommand ?? (matchCommand = new RelayCommand(() => MatchAsync().SafeFireAndForget(), () => CanExecute));
+    //}
 
-    public async Task MatchAsync()
-    {
-      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kClangFindRun, CommandUILocation.ContextMenu);
-    }
+    //public async Task MatchAsync()
+    //{
+    //  await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kClangFindRun, CommandUILocation.ContextMenu);
+    //}
 
     public void OpenToolWindow(List<string> filesPath)
     {
@@ -64,13 +64,13 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void RunQuery()
     {
-
+      findController.RunQuery();
     }
 
     public void SelectCommandToRun(int commandId)
     {
       currentCommandId = commandId;
-      findController.LaunchCommand(currentCommandId, filesPaths);
+      findController.LaunchCommand(currentCommandId, filesPaths, FindToolWindowModel);
     }
   }
 }

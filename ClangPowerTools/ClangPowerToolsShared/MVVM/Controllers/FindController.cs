@@ -1,10 +1,12 @@
 ﻿using ClangPowerTools;
+using ClangPowerTools.Commands;
 using ClangPowerTools.Helpers;
 using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace ClangPowerToolsShared.MVVM.Controllers
 {
@@ -12,7 +14,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
   {
     private int currentCommand;
     private string pathToClangQuery;
-    public FindToolWindowModel FindToolWindowModel = new();
+    List<string> commands = new();
 
     public FindController()
     {
@@ -20,23 +22,39 @@ namespace ClangPowerToolsShared.MVVM.Controllers
       pathToClangQuery = string.Empty;
     }
 
-    public void LaunchCommand(int commandId, List<string> paths)
+    public void LaunchCommand(int commandId, List<string> paths, FindToolWindowModel findToolWindowModel)
     {
       currentCommand = commandId;
       GetPathToClangQuery();
+      if (commands.Count > 0)
+      {
+        commands.Clear();
+        commands.Add(GetListPowershell(paths, pathToClangQuery));
+      }else
+      {
+        commands.Add(GetListPowershell(paths, pathToClangQuery));
+      }
 
       switch (currentCommand)
       {
         case FindCommandIds.kDefaultArgs:
-        {
-          List<string> commands = new();
-            commands.Add(GetListPowershell(paths, pathToClangQuery));
-            //commands.Add(MatchConstants.CalledExprDefaultArg.Replace("{0}", ))
-          break;
-        }
+          {
+
+            commands.Add(MatchConstants.CalledExprDefaultArg.Replace("{0}", findToolWindowModel.DefaultArgs
+                        .FunctionName).Replace("{1}", findToolWindowModel.DefaultArgs.DefaultArgsPosition.ToString()));
+            break;
+          }
         default:
           break;
+
+         CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kClangFindRun, CommandUILocation.ContextMenu);
+
       }
+    }
+
+    public void RunQuery()
+    {
+      PowerShellWrapper.InvokePassSequentialCommands(commands);
     }
 
     private void GetPathToClangQuery()
