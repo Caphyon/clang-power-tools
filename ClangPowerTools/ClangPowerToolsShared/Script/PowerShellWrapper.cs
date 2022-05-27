@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace ClangPowerTools
@@ -191,10 +192,53 @@ namespace ClangPowerTools
       return String.Join(";", paths);
     }
 
+    /// <summary>
+    /// Run a process that download a tool (and returns path) if it wasn't found on disk
+    /// </summary>
+    /// <exception cref="Exception"></exception>
+    public static string DownloadTool(string tool)
+    {
+      var getllvmScriptPath = GetScriptFilePath();
+
+      Process process = new Process();
+      process.StartInfo.UseShellExecute = false;
+      process.StartInfo.CreateNoWindow = true;
+      process.StartInfo.RedirectStandardInput = true;
+      process.StartInfo.RedirectStandardOutput = true;
+      process.StartInfo.RedirectStandardError = true;
+      process.StartInfo.EnvironmentVariables["Path"] = PowerShellWrapper.CreatePathEnvironmentVariable();
+      process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
+      process.StartInfo.Arguments = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
+        $" ''{getllvmScriptPath}'' {tool} '";
+
+      try
+      {
+        process.Start();
+        while (!process.StandardOutput.EndOfStream)
+        {
+          return process.StandardOutput.ReadLine();
+        }
+      }
+      catch (Exception exception)
+      {
+        throw new Exception(
+            $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
+      }
+      return string.Empty;
+    }
+
     #endregion
 
 
     #region Private Methods
+
+    private static string GetScriptFilePath()
+    {
+      var assemblyPath = Assembly.GetExecutingAssembly().Location;
+      var scriptDirectory = assemblyPath.Substring(0, assemblyPath.LastIndexOf('\\'));
+
+      return Path.Combine(scriptDirectory, "Tooling\\v1\\psClang", ScriptConstants.kGetLLVMScriptName);
+    }
 
     private static string GetCustomTidyPath()
     {

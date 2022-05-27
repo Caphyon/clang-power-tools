@@ -223,7 +223,7 @@ namespace ClangPowerTools
       string documentationOutoutePath = GenerateDocumentation.FindOutputFolderName(
         Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
         "Documentation\\"));
-      string clangDocPath = GenerateDocumentation.GetClangDoc();
+      string clangDocPath = PowerShellWrapper.DownloadTool(ScriptConstants.kClangDoc);
       clangDocPath = Path.Combine(clangDocPath, ScriptConstants.kClangDoc);
 
       if (File.Exists(jsonCompilationDatabasePath) && File.Exists(clangDocPath))
