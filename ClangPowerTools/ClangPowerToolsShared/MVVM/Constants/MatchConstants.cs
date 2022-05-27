@@ -1,4 +1,7 @@
-﻿namespace ClangPowerToolsShared.MVVM.Constants
+﻿using ClangPowerTools.Helpers;
+using System.Collections.Generic;
+
+namespace ClangPowerToolsShared.MVVM.Constants
 {
   /// <summary>
   /// AST Matchers
@@ -16,6 +19,15 @@
       {
         return "match callExpr(callee(functionDecl(hasName(\"{0}\"))), hasArgument({1}, cxxDefaultArgExpr()))";
       }
+    }
+
+    public static string GetListPowershell(List<string> args)
+    {
+      var listPowershell = ScriptGenerator.JoinPathsToStringScript(args);
+      string command = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
+        $"@{listPowershell} '";
+
+      return command;
     }
   }
 

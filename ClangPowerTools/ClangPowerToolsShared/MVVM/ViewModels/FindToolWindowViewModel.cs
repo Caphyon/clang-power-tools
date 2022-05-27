@@ -8,6 +8,7 @@ using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
 using ClangPowerTools.MVVM.Command;
 using System.Threading.Tasks;
 using ClangPowerTools.Commands;
+using ClangPowerToolsShared.MVVM.Controllers;
 
 namespace ClangPowerToolsShared.MVVM.ViewModels
 {
@@ -17,9 +18,11 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public event PropertyChangedEventHandler PropertyChanged;
     private FindToolWindowView findToolWindowView;
     private FindToolWindowModel findToolWindowModel = new();
-    private ICommand matchCommand;
+    private FindController findController = new();
+
     private List<string> filesPaths = new();
     private int currentCommandId = 0;
+    private ICommand matchCommand;
 
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
     {
@@ -67,6 +70,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public void SelectCommandToRun(int commandId)
     {
       currentCommandId = commandId;
+      findController.LaunchCommand(currentCommandId, filesPaths);
     }
   }
 }
