@@ -220,6 +220,9 @@ namespace ClangPowerTools
           }
         case CommandIds.kClangFindRun:
           {
+            await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu,
+            null, false);
+
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kClangFindRun);
 

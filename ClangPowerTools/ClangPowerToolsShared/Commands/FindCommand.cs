@@ -5,6 +5,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.IO;
 using System.Linq;
 using Task = System.Threading.Tasks.Task;
 
@@ -93,6 +94,10 @@ namespace ClangPowerToolsShared.Commands
       var paths = fileCollector.Collect(itemsCollector.Items).ToList();
       if (findToolWindow != null)
         findToolWindow.RunQuery();
+
+      var jsonCompilationDatabasePath = JsonCompilationDatabaseCommand.Instance.JsonDBPath;
+      if(File.Exists(jsonCompilationDatabasePath))
+        File.Delete(jsonCompilationDatabasePath);
     }
 
     #endregion
