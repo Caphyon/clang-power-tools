@@ -21,6 +21,17 @@ namespace ClangPowerToolsShared.MVVM.Constants
       }
     }
 
+    /// <summary>
+    /// Diagnostic mode can be re-entered with set output diag for source code exploration
+    /// </summary>
+    public static string SetOutpuDump
+    {
+      get
+      {
+        return "set output dump";
+      }
+    }
+
   }
 
 }

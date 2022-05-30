@@ -29,6 +29,11 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         GetPathToClangQuery();
       script = GetListPowershell(paths, pathToClangQuery);
 
+      if(commands.Count > 0)
+        commands.Clear();
+      
+      commands.Add(MatchConstants.SetOutpuDump);
+
       switch (currentCommand)
       {
         case FindCommandIds.kDefaultArgs:
