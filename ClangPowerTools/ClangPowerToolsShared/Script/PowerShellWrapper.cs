@@ -98,6 +98,7 @@ namespace ClangPowerTools
           FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}",
           RedirectStandardError = true,
           RedirectStandardOutput = true,
+          RedirectStandardInput = true,
           CreateNoWindow = true,
           UseShellExecute = false,
 
@@ -135,16 +136,16 @@ namespace ClangPowerTools
 
         process.Start();
 
-        //using (StreamWriter sw = process.StandardInput)
-        //{
-        //  if (sw.BaseStream.CanWrite)
-        //  {
-        //    foreach (var command in commands)
-        //    {
-        //      sw.WriteLine(command);
-        //    }
-        //  }
-        //}
+        using (StreamWriter sw = process.StandardInput)
+        {
+          if (sw.BaseStream.CanWrite)
+          {
+            foreach (var command in commands)
+            {
+              sw.WriteLine(command);
+            }
+          }
+        }
 
         process.BeginErrorReadLine();
         process.BeginOutputReadLine();
