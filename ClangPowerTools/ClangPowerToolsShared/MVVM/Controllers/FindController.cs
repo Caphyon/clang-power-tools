@@ -14,8 +14,8 @@ namespace ClangPowerToolsShared.MVVM.Controllers
   {
     private int currentCommand;
     private string pathToClangQuery;
+    string script = string.Empty;
     List<string> commands = new();
-
     public FindController()
     {
       currentCommand = 0;
@@ -25,15 +25,9 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     public void LaunchCommand(int commandId, List<string> paths, FindToolWindowModel findToolWindowModel)
     {
       currentCommand = commandId;
-      GetPathToClangQuery();
-      if (commands.Count > 0)
-      {
-        commands.Clear();
-        commands.Add(GetListPowershell(paths, pathToClangQuery));
-      }else
-      {
-        commands.Add(GetListPowershell(paths, pathToClangQuery));
-      }
+      if(pathToClangQuery == string.Empty)
+        GetPathToClangQuery();
+      script = GetListPowershell(paths, pathToClangQuery);
 
       switch (currentCommand)
       {
@@ -46,15 +40,12 @@ namespace ClangPowerToolsShared.MVVM.Controllers
           }
         default:
           break;
-
-         CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kClangFindRun, CommandUILocation.ContextMenu);
-
       }
     }
 
     public void RunQuery()
     {
-      PowerShellWrapper.InvokePassSequentialCommands(commands);
+      PowerShellWrapper.InvokePassSequentialCommands(commands, script);
     }
 
     private void GetPathToClangQuery()

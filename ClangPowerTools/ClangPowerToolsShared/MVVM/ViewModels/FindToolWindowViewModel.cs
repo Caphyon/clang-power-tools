@@ -71,6 +71,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       currentCommandId = commandId;
       findController.LaunchCommand(currentCommandId, filesPaths, FindToolWindowModel);
+      CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kClangFindRun, CommandUILocation.ContextMenu);
     }
   }
 }

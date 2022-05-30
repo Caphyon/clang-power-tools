@@ -88,7 +88,7 @@ namespace ClangPowerTools
       }
     }
 
-    public static void InvokePassSequentialCommands(List<string> commands)
+    public static void InvokePassSequentialCommands(List<string> commands, string aScript)
     {
       Process process = new Process();
       try
@@ -118,6 +118,7 @@ namespace ClangPowerTools
           file paths containing single quotes will never have spaces to the left or right of them, but the ones we 
           are not interested in will have space either to the left or the right.
            */
+          Arguments = Regex.Replace(aScript, @"([\w|\\])'([\w|\\])", "$1''''$2")
         };
         process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
 
@@ -134,16 +135,16 @@ namespace ClangPowerTools
 
         process.Start();
 
-        using (StreamWriter sw = process.StandardInput)
-        {
-          if (sw.BaseStream.CanWrite)
-          {
-            foreach (var command in commands)
-            {
-              sw.WriteLine(command);
-            }
-          }
-        }
+        //using (StreamWriter sw = process.StandardInput)
+        //{
+        //  if (sw.BaseStream.CanWrite)
+        //  {
+        //    foreach (var command in commands)
+        //    {
+        //      sw.WriteLine(command);
+        //    }
+        //  }
+        //}
 
         process.BeginErrorReadLine();
         process.BeginOutputReadLine();
