@@ -36,17 +36,58 @@ namespace ClangPowerTools.Error
 
     public void Build()
     {
+      if (CommandControllerInstance.CommandController.GetCurrentCommandId() == CommandIds.kClangFindRun)
+      {
+        BuildMatch();
+      }
+      else
+      {
+        var groups = mMatchResult.Groups;
+        string messageDescription = groups[10].Value;
+
+        if (string.IsNullOrWhiteSpace(messageDescription))
+          return;
+
+        string path = groups[1].Value.Replace('/', '\\');
+        int.TryParse(groups[4].Value, out int line);
+        int.TryParse(groups[6].Value, out int column);
+
+        string categoryAsString = groups[8].Value;
+        TaskErrorCategory category = FindErrorCategory(ref categoryAsString);
+
+        string fullMessage = CreateFullErrorMessage(path, line, categoryAsString, messageDescription);
+
+        // Add clang prefix for error list
+        messageDescription = messageDescription.Insert(0, ErrorParserConstants.kClangTag);
+
+        mError = new TaskErrorModel()
+        {
+          Document = path,
+          Line = line - 1,
+          Column = column - 1,
+          ErrorCategory = category,
+          Text = messageDescription,
+          FullMessage = fullMessage,
+          HierarchyItem = mHierarchy,
+          Category = TaskCategory.BuildCompile,
+          Priority = TaskPriority.High
+        };
+      }
+    }
+
+    private void BuildMatch()
+    {
       var groups = mMatchResult.Groups;
-      string messageDescription = groups[10].Value;
+      string messageDescription = groups[0].Value;
 
       if (string.IsNullOrWhiteSpace(messageDescription))
         return;
 
       string path = groups[1].Value.Replace('/', '\\');
-      int.TryParse(groups[4].Value, out int line);
-      int.TryParse(groups[6].Value, out int column);
+      int.TryParse(groups[3].Value, out int line);
+      int.TryParse(groups[4].Value, out int column);
 
-      string categoryAsString = groups[8].Value;
+      string categoryAsString = ErrorParserConstants.kMessageTag;
       TaskErrorCategory category = FindErrorCategory(ref categoryAsString);
 
       string fullMessage = CreateFullErrorMessage(path, line, categoryAsString, messageDescription);

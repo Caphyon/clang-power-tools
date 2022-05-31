@@ -12,6 +12,7 @@
     public const string kWarningTag = "warning";
     public const string kMessageTag = "message";
     public const string kErrorMessageRegex = @"(.\:(\\|\/)[ \S+\\\/.]*[c|C|h|H|cpp|CPP|cc|CC|cxx|CXX|c++|C++|cp|CP])(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*(\d+)(\r\n|\r|\n| |:)*(error|note|warning)[^s](\r\n|\r|\n| |:)*(.*)";
+    public const string kMatchMessageRegex = @"<([A-Z]:.+?\.(cpp|cu|cc|cp|tlh|c|cxx|tli|h|hh|hpp|hxx)):(\d+):(\d+),\scol:(\d+)>";
     public const string kJsonCompilationDbFilePathRegex = @"(.\:(\\|\/)[ \S+\\\/.]*json)";
 
     #endregion
