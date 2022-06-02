@@ -9,6 +9,8 @@ using ClangPowerTools.MVVM.Command;
 using System.Threading.Tasks;
 using ClangPowerTools.Commands;
 using ClangPowerToolsShared.MVVM.Controllers;
+using System.Collections.ObjectModel;
+using ClangPowerToolsShared.Commands;
 
 namespace ClangPowerToolsShared.MVVM.ViewModels
 {
@@ -19,14 +21,27 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private FindToolWindowView findToolWindowView;
     private FindToolWindowModel findToolWindowModel = new();
     private FindController findController = new();
+    public List<string> files = new List<string>();
 
     private List<string> filesPaths = new();
     private int currentCommandId = 0;
     private ICommand matchCommand;
 
+    public List<string> Files
+    {
+      get { return files; }
+      set
+      {
+        files = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Files"));
+      }
+    }
+
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
     {
       this.findToolWindowView = findToolWindowView;
+      files = FindCommandIds.CommandsName;
+      Files = files;
     }
 
     public FindToolWindowModel FindToolWindowModel

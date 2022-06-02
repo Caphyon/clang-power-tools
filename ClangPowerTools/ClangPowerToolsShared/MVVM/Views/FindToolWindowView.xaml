@@ -23,21 +23,43 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="10" />
       <RowDefinition Height="15" />
-      <RowDefinition Height="40" />
+      <RowDefinition Height="300" />
       <RowDefinition Height="20" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
+    <ListView x:Name="FilesList"
+              Grid.Row="2"
+              Grid.Column="1"
+              Background="Transparent"
+              SelectionMode="Single"
+              BorderBrush="Transparent"
+              HorizontalContentAlignment="Stretch"
+              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+              Visibility="Visible"
+              ItemsSource="{Binding Files}">
+      <ListView.ItemTemplate>
+        <DataTemplate>
+          <Grid>
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="20" />
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Column="1"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
+                       Text="{Binding}" />
+ 
+          </Grid>
+        </DataTemplate>
+      </ListView.ItemTemplate>
+    </ListView>
 
-    <!--<Expander Grid.Row="3" Grid.Column="1" Name="myExpander" Background="Tan" 
-          HorizontalAlignment="Left" Header="My Expander" 
-          ExpandDirection="Down" IsExpanded="True" Width="1000">
-    </Expander>-->
-
-
-    <!--Foreground="White"
-      Background="#106e05"-->
-
-    <Grid Grid.Row="2" Grid.Column="1">
+    <!--<Grid Grid.Row="2" Grid.Column="1">
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="90" />
         <ColumnDefinition Width="*" />
@@ -76,7 +98,7 @@
       Width="40"
       Content="Match"
       HorizontalAlignment="Left" />
-    </Grid>
+    </Grid>-->
 
 
 
