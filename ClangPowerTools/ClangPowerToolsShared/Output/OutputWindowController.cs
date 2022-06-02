@@ -110,7 +110,8 @@ namespace ClangPowerTools.Output
     public void Write(string aMessage)
     {
       var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
-      if ((id == CommandIds.kClangFindRun || id == CommandIds.kClangFind) && !SettingsProvider.CompilerSettingsModel.VerboseMode)
+      if (id == CommandIds.kClangFind &&
+        !SettingsProvider.CompilerSettingsModel.VerboseMode)
         return;
       if (string.IsNullOrWhiteSpace(aMessage))
         return;
@@ -146,7 +147,7 @@ namespace ClangPowerTools.Output
       if (output == null)
         return;
 
-      Regex regex = new Regex(@"([A-Z]:\\.+?\.(cpp|cu|cc|cp|tlh|c|cxx|tli|h|hh|hpp|hxx))(\W|$)");
+      Regex regex = new Regex(ErrorParserConstants.kMatchTidyFileRegex);
       Match match = regex.Match(output);
 
       while (match.Success)
