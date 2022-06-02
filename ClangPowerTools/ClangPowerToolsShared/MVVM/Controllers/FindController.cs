@@ -50,7 +50,10 @@ namespace ClangPowerToolsShared.MVVM.Controllers
 
     public void RunQuery()
     {
+      CommandControllerInstance.CommandController.DisplayMessage(false, "Please wait ...");
       PowerShellWrapper.InvokePassSequentialCommands(commands, script);
+      CommandControllerInstance.CommandController.DisplayMessage(false, "------- Find all matches in Error List -> Messages ------");
+
     }
 
     private void GetPathToClangQuery()

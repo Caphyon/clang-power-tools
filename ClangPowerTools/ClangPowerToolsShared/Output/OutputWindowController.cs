@@ -109,6 +109,9 @@ namespace ClangPowerTools.Output
 
     public void Write(string aMessage)
     {
+      var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
+      if ((id == CommandIds.kClangFindRun || id == CommandIds.kClangFind) && !SettingsProvider.CompilerSettingsModel.VerboseMode)
+        return;
       if (string.IsNullOrWhiteSpace(aMessage))
         return;
 
