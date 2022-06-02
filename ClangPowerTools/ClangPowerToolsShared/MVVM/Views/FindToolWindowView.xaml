@@ -36,7 +36,7 @@
               HorizontalContentAlignment="Stretch"
               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
               Visibility="Visible"
-              ItemsSource="{Binding Files}">
+              ItemsSource="{Binding Matchers}">
       <ListView.ItemTemplate>
         <DataTemplate>
           <Grid>

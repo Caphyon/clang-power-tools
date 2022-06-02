@@ -21,27 +21,18 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private FindToolWindowView findToolWindowView;
     private FindToolWindowModel findToolWindowModel = new();
     private FindController findController = new();
-    public List<string> files = new List<string>();
-
     private List<string> filesPaths = new();
     private int currentCommandId = 0;
     private ICommand matchCommand;
 
-    public List<string> Files
+    public List<string> Matchers
     {
-      get { return files; }
-      set
-      {
-        files = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Files"));
-      }
+      get { return FindCommandIds.CommandsName; }
     }
 
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
     {
       this.findToolWindowView = findToolWindowView;
-      files = FindCommandIds.CommandsName;
-      Files = files;
     }
 
     public FindToolWindowModel FindToolWindowModel
