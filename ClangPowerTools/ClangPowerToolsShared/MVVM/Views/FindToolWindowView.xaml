@@ -77,16 +77,40 @@
       <Grid.RowDefinitions>
         <RowDefinition Height="*" />
       </Grid.RowDefinitions>
-      <Label Grid.Row="0" Grid.Column="0" Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}" Content="CalledFunction:" Height="28" HorizontalAlignment="Left" Foreground="AliceBlue" />
-      <TextBox Grid.Row="0" Grid.Column="1" Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}"  Height="18" Text="{Binding FindToolWindowModel.DefaultArgs.FunctionName}" Name="BaseTextBox" Opacity="0.8">
+      <Label 
+        Grid.Row="0"
+        Grid.Column="0"
+        Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}"
+        Content="CalledFunction:"
+        Height="28"
+        HorizontalAlignment="Left"
+        Foreground="AliceBlue" />
+      <TextBox Grid.Row="0"
+               Grid.Column="1"
+               Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}" 
+               Height="18"
+               Text="{Binding FindToolWindowModel.DefaultArgs.FunctionName}"
+               Name="BaseTextBox"
+               Opacity="0.8">
         <TextBox.Resources>
           <Style TargetType="{x:Type Border}">
             <Setter Property="CornerRadius" Value="4"/>
           </Style>
         </TextBox.Resources>
       </TextBox>
-      <Label Grid.Row="0" Grid.Column="3" Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}" Content="DefaultArgPosition:" Height="28" HorizontalAlignment="Left" Foreground="AliceBlue" />
-      <TextBox Grid.Row="0" Grid.Column="4" Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}" Height="18" Text="{Binding FindToolWindowModel.DefaultArgs.DefaultArgsPosition}" Opacity="0.8">
+      <Label Grid.Row="0"
+             Grid.Column="3"
+             Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}"
+             Content="DefaultArgPosition:"
+             Height="28"
+             HorizontalAlignment="Left"
+             Foreground="AliceBlue" />
+      <TextBox Grid.Row="0"
+               Grid.Column="4"
+               Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}"
+               Height="18"
+               Text="{Binding FindToolWindowModel.DefaultArgs.DefaultArgsPosition}"
+               Opacity="0.8">
         <TextBox.Resources>
           <Style TargetType="{x:Type Border}">
             <Setter Property="CornerRadius" Value="4"/>
@@ -107,7 +131,7 @@
 
 
 
-      <!--<ProgressBar Name="pbStatus"
+    <!--<ProgressBar Name="pbStatus"
                  Grid.Row="1"
                  Grid.Column="1"
                  Height="13"
@@ -118,7 +142,7 @@
                  Maximum="100"
                  Minimum="0"
                  Visibility="Visible" />-->
-    
+
 
   </Grid>
 
