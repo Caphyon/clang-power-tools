@@ -1,12 +1,8 @@
-﻿using ClangPowerTools.MVVM.Models;
-using ClangPowerToolsShared.Commands;
-using ClangPowerToolsShared.MVVM.Commands;
+﻿using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.ViewModels;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 namespace ClangPowerTools.Views
 {
@@ -28,15 +24,31 @@ namespace ClangPowerTools.Views
     {
       findToolWindowViewModel.OpenToolWindow(filesPath);
     }
-    
+
     public void RunQuery()
     {
       findToolWindowViewModel.RunQuery();
     }
 
-    private void matchDefaultArgs_click(object sender, RoutedEventArgs e)
+    private void Matcher_Click(object sender, RoutedEventArgs e)
     {
-      findToolWindowViewModel.SelectCommandToRun(FindCommandIds.kDefaultArgs);
+      var item = (sender as ListView).SelectedItem;
+      if (item != null)
+      {
+        var type = item.GetType();
+        if (type.IsGenericType)
+        {
+          if (type == typeof(KeyValuePair<int,string>))
+          {
+            var key = type.GetProperty("Key");
+            var value = type.GetProperty("Value");
+            var keyObj = key.GetValue(item, null);
+            var valueObj = value.GetValue(item, null);
+            var keyValueResult =  new KeyValuePair<object, object>(keyObj, valueObj);
+            findToolWindowViewModel.SelectCommandToRun((int)keyValueResult.Key);
+          }
+        }
+      }
     }
   }
 }

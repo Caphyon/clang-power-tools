@@ -36,6 +36,7 @@
               HorizontalContentAlignment="Stretch"
               ScrollViewer.HorizontalScrollBarVisibility="Disabled"
               Visibility="Visible"
+              PreviewMouseLeftButtonUp="Matcher_Click"
               ItemsSource="{Binding Matchers}">
       <ListView.ItemTemplate>
         <DataTemplate>
@@ -48,12 +49,16 @@
             <Grid.RowDefinitions>
               <RowDefinition Height="30" />
             </Grid.RowDefinitions>
+            <TextBlock Grid.Column="0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Center"
+                       Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
+                       Text="{Binding Key}" />
             <TextBlock Grid.Column="1"
                        HorizontalAlignment="Left"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
                        Text="{Binding Value}" />
- 
           </Grid>
         </DataTemplate>
       </ListView.ItemTemplate>
