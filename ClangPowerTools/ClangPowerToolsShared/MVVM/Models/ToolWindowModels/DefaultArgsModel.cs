@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using ClangPowerToolsShared.MVVM.Constants;
+using System.ComponentModel;
 
 namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 {
@@ -7,6 +8,12 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
     public event PropertyChangedEventHandler PropertyChanged;
     private string functionName = string.Empty;
     private int defaultArgsPosition = 0;
+    private string visibility = string.Empty;
+
+    public DefaultArgsModel()
+    {
+      visibility = UIElementsConstants.Hidden;
+    }
 
     public string FunctionName
     {
@@ -18,6 +25,16 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       }
     }
 
+    public string Visibility
+    {
+      get { return visibility; }
+      set
+      {
+        visibility = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Visibility"));
+      }
+    }
+
     public int DefaultArgsPosition
     {
       get { return defaultArgsPosition; }
@@ -26,6 +43,16 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
         defaultArgsPosition = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("DefaultArgsPosition"));
       }
+    }
+
+    public void Hide()
+    {
+      visibility = UIElementsConstants.Hidden;
+    }
+
+    public void Show()
+    {
+      visibility
     }
   }
 }

@@ -15,12 +15,9 @@ using ClangPowerToolsShared.Commands;
 namespace ClangPowerToolsShared.MVVM.ViewModels
 {
 
-  public class FindToolWindowViewModel : CommonSettingsFunctionality, INotifyPropertyChanged
+  public class FindToolWindowViewModel : FindController
   {
-    public event PropertyChangedEventHandler PropertyChanged;
     private FindToolWindowView findToolWindowView;
-    private FindToolWindowModel findToolWindowModel = new();
-    private FindController findController = new();
     private List<string> filesPaths = new();
     private int currentCommandId = 0;
 
@@ -34,16 +31,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       this.findToolWindowView = findToolWindowView;
     }
 
-    public FindToolWindowModel FindToolWindowModel
-    {
-      get { return findToolWindowModel; }
-      set
-      {
-        findToolWindowModel = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FindToolWindowModel"));
-      }
-    }
-
     public void OpenToolWindow(List<string> filesPath)
     {
       filesPaths = filesPath;
@@ -51,14 +38,14 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void RunQuery()
     {
-      findController.RunQuery();
+      RunQuery();
     }
 
     public void SelectCommandToRun(int commandId)
     {
       currentCommandId = commandId;
-      findController.LaunchCommand(currentCommandId, filesPaths, FindToolWindowModel);
+      LaunchCommand(currentCommandId, filesPaths, FindToolWindowModel);
       CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kClangFindRun, CommandUILocation.ContextMenu);
     }
-  }
+  } 
 }

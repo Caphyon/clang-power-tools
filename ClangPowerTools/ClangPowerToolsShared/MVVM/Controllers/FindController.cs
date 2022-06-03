@@ -5,17 +5,31 @@ using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace ClangPowerToolsShared.MVVM.Controllers
 {
-  public class FindController
+  public class FindController : INotifyPropertyChanged
   {
+    public event PropertyChangedEventHandler PropertyChanged;
+
     private int currentCommand;
     private string pathToClangQuery;
     string script = string.Empty;
+    private FindToolWindowModel findToolWindowModel = new();
     List<string> commands = new();
+
+    public FindToolWindowModel FindToolWindowModel
+    {
+      get { return findToolWindowModel; }
+      set
+      {
+        findToolWindowModel = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FindToolWindowModel"));
+      }
+    }
     public FindController()
     {
       currentCommand = 0;
@@ -38,7 +52,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
       {
         case FindCommandIds.kDefaultArgs:
           {
-
+            findToolWindowModel.DefaultArgs.Show();
             commands.Add(MatchConstants.CalledExprDefaultArg.Replace("{0}", findToolWindowModel.DefaultArgs
                         .FunctionName).Replace("{1}", findToolWindowModel.DefaultArgs.DefaultArgsPosition.ToString()));
             break;
