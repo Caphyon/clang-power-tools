@@ -30,6 +30,11 @@ namespace ClangPowerTools.Views
       findToolWindowViewModel.RunQuery();
     }
 
+    private void MatchDefaultArgs_click(object sender, RoutedEventArgs e)
+    {
+      findToolWindowViewModel.RunCommandFromView();
+    }
+
     private void Matcher_Click(object sender, RoutedEventArgs e)
     {
       var item = (sender as ListView).SelectedItem;

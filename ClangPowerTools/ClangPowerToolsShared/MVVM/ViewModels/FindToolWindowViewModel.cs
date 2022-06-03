@@ -29,23 +29,30 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
     {
       this.findToolWindowView = findToolWindowView;
+      findToolWindowModel.DefaultArgs.Show();
     }
 
     public void OpenToolWindow(List<string> filesPath)
     {
       filesPaths = filesPath;
+      SelectCommandToRun(FindCommandIds.kDefaultArgsId);
     }
 
     public void RunQuery()
     {
-      RunQuery();
+      RunPowershellQuery();
     }
 
     public void SelectCommandToRun(int commandId)
     {
       currentCommandId = commandId;
       LaunchCommand(currentCommandId, filesPaths, FindToolWindowModel);
+    }
+
+    public void RunCommandFromView()
+    {
       CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kClangFindRun, CommandUILocation.ContextMenu);
+
     }
   } 
 }

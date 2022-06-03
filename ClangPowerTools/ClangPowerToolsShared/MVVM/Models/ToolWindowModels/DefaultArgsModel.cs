@@ -52,7 +52,7 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 
     public void Show()
     {
-      visibility
+      visibility = UIElementsConstants.Visibile;
     }
   }
 }

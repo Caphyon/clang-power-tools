@@ -18,7 +18,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     private int currentCommand;
     private string pathToClangQuery;
     string script = string.Empty;
-    private FindToolWindowModel findToolWindowModel = new();
+    protected FindToolWindowModel findToolWindowModel = new();
     List<string> commands = new();
 
     public FindToolWindowModel FindToolWindowModel
@@ -50,7 +50,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
 
       switch (currentCommand)
       {
-        case FindCommandIds.kDefaultArgs:
+        case FindCommandIds.kDefaultArgsId:
           {
             findToolWindowModel.DefaultArgs.Show();
             commands.Add(MatchConstants.CalledExprDefaultArg.Replace("{0}", findToolWindowModel.DefaultArgs
@@ -62,7 +62,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
       }
     }
 
-    public void RunQuery()
+    public void RunPowershellQuery()
     {
       CommandControllerInstance.CommandController.DisplayMessage(false, "Please wait ...");
       PowerShellWrapper.InvokePassSequentialCommands(commands, script);

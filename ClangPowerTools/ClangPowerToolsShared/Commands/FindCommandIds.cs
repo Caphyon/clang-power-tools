@@ -17,6 +17,6 @@ namespace ClangPowerToolsShared.Commands
     public static List<int> CommandIds { get { return matchers.Select(a => a.Key).ToList(); }  }
 
 
-    public const int kDefaultArgs = 1;
+    public const int kDefaultArgsId = 1;
   }
 }
