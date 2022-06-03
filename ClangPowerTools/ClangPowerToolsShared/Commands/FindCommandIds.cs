@@ -8,6 +8,7 @@ namespace ClangPowerToolsShared.Commands
     public static List<KeyValuePair<int, string>> matchers = new List<KeyValuePair<int, string>>()
     {
         new KeyValuePair<int, string>(1,"Default arguments"),
+        new KeyValuePair<int, string>(11,"test input"),
     };
 
     public static List<KeyValuePair<int, string>> Matchers { get { return matchers; } }

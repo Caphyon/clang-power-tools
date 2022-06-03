@@ -52,7 +52,7 @@
                        HorizontalAlignment="Left"
                        VerticalAlignment="Center"
                        Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
-                       Text="{Binding}" />
+                       Text="{Binding Value}" />
  
           </Grid>
         </DataTemplate>

@@ -23,11 +23,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private FindController findController = new();
     private List<string> filesPaths = new();
     private int currentCommandId = 0;
-    private ICommand matchCommand;
 
-    public List<string> Matchers
+    public List<KeyValuePair<int, string>> Matchers
     {
-      get { return FindCommandIds.CommandsName; }
+      get { return FindCommandIds.Matchers; }
     }
 
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
@@ -44,24 +43,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FindToolWindowModel"));
       }
     }
-
-    //public bool CanExecute
-    //{
-    //  get
-    //  {
-    //    return true;
-    //  }
-    //}
-
-    //public ICommand MatchCommand
-    //{
-    //  get => matchCommand ?? (matchCommand = new RelayCommand(() => MatchAsync().SafeFireAndForget(), () => CanExecute));
-    //}
-
-    //public async Task MatchAsync()
-    //{
-    //  await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kClangFindRun, CommandUILocation.ContextMenu);
-    //}
 
     public void OpenToolWindow(List<string> filesPath)
     {
