@@ -23,59 +23,57 @@
     <Grid.RowDefinitions>
       <RowDefinition Height="10" />
       <RowDefinition Height="15" />
-      <RowDefinition Height="300" />
-      <RowDefinition Height="300" />
+      <RowDefinition Height="70" />
+      <RowDefinition Height="150" />
+      <RowDefinition Height="20" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
+
     <ListView x:Name="FilesList"
-              Grid.Row="2"
-              Grid.Column="1"
-              Background="Transparent"
-              SelectionMode="Single"
-              BorderBrush="Transparent"
-              HorizontalContentAlignment="Stretch"
-              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-              Visibility="Visible"
-              PreviewMouseLeftButtonUp="Matcher_Click"
-              ItemsSource="{Binding Matchers}">
-      <ListView.ItemTemplate>
-        <DataTemplate>
-          <Grid>
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="20" />
-              <ColumnDefinition Width="*" />
-              <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-              <RowDefinition Height="30" />
-            </Grid.RowDefinitions>
-            <TextBlock Grid.Column="0"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"
-                       Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
-                       Text="{Binding Key}" />
-            <TextBlock Grid.Column="1"
-                       HorizontalAlignment="Left"
-                       VerticalAlignment="Center"
-                       Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
-                       Text="{Binding Value}" />
-          </Grid>
-        </DataTemplate>
-      </ListView.ItemTemplate>
-    </ListView>
+                Grid.Row="2"
+                Grid.Column="1"
+                Background="Transparent"
+                SelectionMode="Single"
+                BorderBrush="{DynamicResource {x:Static vsfx:VsBrushes.AccentDarkKey}}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                Visibility="Visible"
+                PreviewMouseLeftButtonUp="Matcher_Click"
+                ItemsSource="{Binding Matchers}">
+        <ListView.ItemTemplate>
+          <DataTemplate>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="30" />
+              </Grid.RowDefinitions>
+              <TextBlock Grid.Column="0"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Center"
+                         Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
+                         Text="{Binding Key}" />
+              <TextBlock Grid.Column="1"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Center"
+                         Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
+                         Text="{Binding Value}" />
+            </Grid>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+      </ListView>
 
     <Grid Grid.Row="3" Grid.Column="1">
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="90" />
+        <ColumnDefinition Width="110" />
+        <ColumnDefinition Width="5" />
         <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="20" />
-        <ColumnDefinition Width="115" />
-        <ColumnDefinition Width="*" />
-        <ColumnDefinition Width="20" />
-        <ColumnDefinition Width="40" />
       </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
-        <RowDefinition Height="*" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="50" />
       </Grid.RowDefinitions>
       <Label 
         Grid.Row="0"
@@ -86,7 +84,7 @@
         HorizontalAlignment="Left"
         Foreground="AliceBlue" />
       <TextBox Grid.Row="0"
-               Grid.Column="1"
+               Grid.Column="2"
                Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}" 
                Height="18"
                Text="{Binding FindToolWindowModel.DefaultArgs.FunctionName}"
@@ -98,17 +96,19 @@
           </Style>
         </TextBox.Resources>
       </TextBox>
-      <Label Grid.Row="0"
-             Grid.Column="3"
+      <Label Grid.Row="1"
+             Grid.Column="0"
              Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}"
              Content="DefaultArgPosition:"
              Height="28"
              HorizontalAlignment="Left"
              Foreground="AliceBlue" />
-      <TextBox Grid.Row="0"
-               Grid.Column="4"
+      <TextBox Grid.Row="1"
+               Grid.Column="2"
                Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}"
                Height="18"
+               Width="60"
+               HorizontalAlignment="Left"
                Text="{Binding FindToolWindowModel.DefaultArgs.DefaultArgsPosition}"
                Opacity="0.8">
         <TextBox.Resources>
@@ -117,18 +117,18 @@
           </Style>
         </TextBox.Resources>
       </TextBox>
-
-      <Button
-      x:Name="MatchDefaultArgs"
-      Click="MatchDefaultArgs_click"
-      Grid.Column="6" 
-      Grid.Row="0"
-      Height="20"
-      Width="40"
-      Content="Match"
-      HorizontalAlignment="Left" />
     </Grid>
 
+    <Button
+      x:Name="MatchDefaultArgs"
+      Click="MatchDefaultArgs_click"
+      Grid.Column="1" 
+      Grid.Row="4"
+      Height="20"
+      Width="100"
+      Content="Match"
+      VerticalAlignment="Center"
+      HorizontalAlignment="Center" />
 
 
     <!--<ProgressBar Name="pbStatus"
