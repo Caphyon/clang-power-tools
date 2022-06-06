@@ -59,8 +59,8 @@ namespace ClangPowerTools.Output
         aOutputContent.Buffer.Clear();
         return VSConstants.S_OK;
       }
-
-      if (mErrorDetector.Detect(text, ErrorParserConstants.kErrorMessageRegex, out Match aMatchResult))
+      else if (CommandControllerInstance.CommandController.GetCurrentCommandId() != CommandIds.kClangFindRun &&
+              mErrorDetector.Detect(text, ErrorParserConstants.kErrorMessageRegex, out Match aMatchResult))
       {
         GetOutputAndErrors(text, aHierarchy, out string outputText, out List<TaskErrorModel> aDetectedErrors, ErrorParserConstants.kErrorMessageRegex);
         aOutputContent.Text = outputText;
