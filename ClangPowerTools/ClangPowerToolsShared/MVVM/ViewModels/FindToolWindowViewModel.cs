@@ -19,7 +19,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
   {
     private FindToolWindowView findToolWindowView;
     private List<string> filesPaths = new();
-    private int currentCommandId = 0;
 
     public List<KeyValuePair<int, string>> Matchers
     {
@@ -34,18 +33,19 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void OpenToolWindow(List<string> filesPath)
     {
+      SetCommandId(FindCommandIds.kDefaultArgsId);
       filesPaths = filesPath;
-      SelectCommandToRun(FindCommandIds.kDefaultArgsId);
     }
 
     public void RunQuery()
     {
+      SelectCommandToRun(currentCommandId);
       RunPowershellQuery();
     }
 
     public void SelectCommandToRun(int commandId)
     {
-      currentCommandId = commandId;
+      SetCommandId(commandId);
       LaunchCommand(currentCommandId, filesPaths, FindToolWindowModel);
     }
 

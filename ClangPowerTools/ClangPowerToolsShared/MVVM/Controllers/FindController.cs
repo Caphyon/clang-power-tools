@@ -15,7 +15,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
   {
     public event PropertyChangedEventHandler PropertyChanged;
 
-    private int currentCommand;
+    protected int currentCommandId;
     private string pathToClangQuery;
     string script = string.Empty;
     protected FindToolWindowModel findToolWindowModel = new();
@@ -32,13 +32,13 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     }
     public FindController()
     {
-      currentCommand = 0;
+      currentCommandId = 0;
       pathToClangQuery = string.Empty;
     }
 
     public void LaunchCommand(int commandId, List<string> paths, FindToolWindowModel findToolWindowModel)
     {
-      currentCommand = commandId;
+      SetCommandId(commandId);
       if(pathToClangQuery == string.Empty)
         GetPathToClangQuery();
       script = GetListPowershell(paths, pathToClangQuery);
@@ -48,7 +48,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
       
       commands.Add(MatchConstants.SetOutpuDump);
 
-      switch (currentCommand)
+      switch (currentCommandId)
       {
         case FindCommandIds.kDefaultArgsId:
           {
@@ -77,6 +77,11 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         pathToClangQuery = PowerShellWrapper.DownloadTool(ScriptConstants.kQueryFile);
         pathToClangQuery = Path.Combine(pathToClangQuery, ScriptConstants.kQueryFile);
       }
+    }
+
+    protected void SetCommandId(int commandId)
+    {
+      currentCommandId = commandId;
     }
 
     private string GetListPowershell(List<string> args, string pathToBinary)
