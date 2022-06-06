@@ -82,7 +82,7 @@
         Content="CalledFunction:"
         Height="28"
         HorizontalAlignment="Left"
-        Foreground="{Binding FindToolWindowModel.DefaultArgs.FunctionName}" />
+        Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}" />
       <TextBox Grid.Row="0"
                Grid.Column="2"
                Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}" 
@@ -102,7 +102,7 @@
              Content="DefaultArgPosition:"
              Height="28"
              HorizontalAlignment="Left"
-             Foreground="{Binding FindToolWindowModel.DefaultArgs.FunctionName}" />
+             Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}" />
       <TextBox Grid.Row="1"
                Grid.Column="2"
                Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}"

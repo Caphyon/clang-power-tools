@@ -64,9 +64,9 @@ namespace ClangPowerToolsShared.MVVM.Controllers
 
     public void RunPowershellQuery()
     {
-      CommandControllerInstance.CommandController.DisplayMessage(false, "Please wait ...");
+      CommandControllerInstance.CommandController.DisplayMessage(false, "\n⌛ Please wait ...\n");
       PowerShellWrapper.InvokePassSequentialCommands(commands, script);
-      CommandControllerInstance.CommandController.DisplayMessage(false, "------- Find all matches in Error List -> Messages ------");
+      CommandControllerInstance.CommandController.DisplayMessage(false, "\nⒾ Find all matches in Error List -> Ⓘ Messages\n");
 
     }
 

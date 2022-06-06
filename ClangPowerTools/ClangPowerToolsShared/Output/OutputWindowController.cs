@@ -109,10 +109,6 @@ namespace ClangPowerTools.Output
 
     public void Write(string aMessage)
     {
-      var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
-      if (id == CommandIds.kClangFind &&
-        !SettingsProvider.CompilerSettingsModel.VerboseMode)
-        return;
       if (string.IsNullOrWhiteSpace(aMessage))
         return;
 
@@ -177,6 +173,12 @@ namespace ClangPowerTools.Output
 
       if (!string.IsNullOrWhiteSpace(outputContent.JsonFilePath))
         JsonCompilationDbFilePathEvent?.Invoke(this, new JsonFilePathArgs(outputContent.JsonFilePath));
+
+      var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
+      if ((id == CommandIds.kClangFind || id == CommandIds.kClangFindRun) &&
+        !SettingsProvider.CompilerSettingsModel.VerboseMode)
+        return;
+
       Write(outputContent.Text);
     }
 
@@ -194,20 +196,39 @@ namespace ClangPowerTools.Output
       if (!string.IsNullOrWhiteSpace(outputContent.JsonFilePath))
         JsonCompilationDbFilePathEvent?.Invoke(this, new JsonFilePathArgs(outputContent.JsonFilePath));
 
+      var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
+      if ((id == CommandIds.kClangFind || id == CommandIds.kClangFindRun) &&
+        !SettingsProvider.CompilerSettingsModel.VerboseMode)
+        return;
+
       Write(outputContent.Text);
     }
 
     public void ClosedDataConnection(object sender, EventArgs e)
     {
+      var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
+
       tempPaths.Clear();
       if (Buffer.Count != 0 && outputContent.MissingLLVM == false)
-        Write(String.Join("\n", Buffer));
-
+      {
+        var outputResult = String.Join("\n", Buffer);
+        if (id == CommandIds.kClangFindRun)
+        {
+          Regex regex = new Regex(ErrorParserConstants.kNumberMatchesRegex);
+          var matchResult = regex.Match(outputResult);
+          if(matchResult != null && matchResult.Groups[0] != null
+            && matchResult.Groups[0].Value != null)
+          {
+            outputResult = "🔎 We found " + matchResult.Groups[0].Value.ToString();
+          }
+        }
+        Write(outputResult);
+      }
       CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
+
       OnErrorDetected(this, e);
 
       //open tidy tool window and pass paths
-      var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
       var tidySettings = SettingsProvider.TidySettingsModel;
       if (id == CommandIds.kTidyToolWindowId || (id == CommandIds.kTidyFixId && !tidySettings.ApplyTidyFix))
       {
