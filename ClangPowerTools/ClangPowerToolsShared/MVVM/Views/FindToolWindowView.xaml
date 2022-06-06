@@ -24,8 +24,8 @@
       <RowDefinition Height="10" />
       <RowDefinition Height="15" />
       <RowDefinition Height="70" />
-      <RowDefinition Height="150" />
-      <RowDefinition Height="20" />
+      <RowDefinition Height="120" />
+      <RowDefinition Height="40" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
@@ -82,7 +82,7 @@
         Content="CalledFunction:"
         Height="28"
         HorizontalAlignment="Left"
-        Foreground="AliceBlue" />
+        Foreground="{Binding FindToolWindowModel.DefaultArgs.FunctionName}" />
       <TextBox Grid.Row="0"
                Grid.Column="2"
                Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}" 
@@ -102,7 +102,7 @@
              Content="DefaultArgPosition:"
              Height="28"
              HorizontalAlignment="Left"
-             Foreground="AliceBlue" />
+             Foreground="{Binding FindToolWindowModel.DefaultArgs.FunctionName}" />
       <TextBox Grid.Row="1"
                Grid.Column="2"
                Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}"
@@ -124,11 +124,11 @@
       Click="MatchDefaultArgs_click"
       Grid.Column="1" 
       Grid.Row="4"
-      Height="20"
-      Width="100"
-      Content="Match"
+      Height="30"
+      Width="180"
+      Content="Find"
       VerticalAlignment="Center"
-      HorizontalAlignment="Center" />
+      HorizontalAlignment="Left" />
 
 
     <!--<ProgressBar Name="pbStatus"
