@@ -45,19 +45,14 @@
           <DataTemplate>
             <Grid>
               <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="20" />
+                <ColumnDefinition Width="5" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="auto" />
               </Grid.ColumnDefinitions>
-              <Grid.RowDefinitions>
-                <RowDefinition Height="30" />
-              </Grid.RowDefinitions>
-              <TextBlock Grid.Column="0"
-                         HorizontalAlignment="Left"
-                         VerticalAlignment="Center"
-                         Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
-                         Text="{Binding Key}" />
-              <TextBlock Grid.Column="1"
+            <Grid.RowDefinitions>
+              <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Column="1"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center"
                          Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
@@ -80,16 +75,16 @@
       <Label 
         Grid.Row="0"
         Grid.Column="0"
-        Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}"
+        Visibility="{Binding FindToolWindowModel.DefaultArgsModel.Visibility}"
         Content="CalledFunction:"
         Height="28"
         HorizontalAlignment="Left"
         Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}" />
       <TextBox Grid.Row="0"
                Grid.Column="2"
-               Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}" 
+               Visibility="{Binding FindToolWindowModel.DefaultArgsModel.Visibility}" 
                Height="18"
-               Text="{Binding FindToolWindowModel.DefaultArgs.FunctionName}"
+               Text="{Binding FindToolWindowModel.DefaultArgsModel.FunctionName}"
                Name="BaseTextBox"
                Opacity="0.8">
         <TextBox.Resources>
@@ -100,18 +95,18 @@
       </TextBox>
       <Label Grid.Row="1"
              Grid.Column="0"
-             Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}"
+             Visibility="{Binding FindToolWindowModel.DefaultArgsModel.Visibility}"
              Content="DefaultArgPosition:"
              Height="28"
              HorizontalAlignment="Left"
              Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}" />
       <TextBox Grid.Row="1"
                Grid.Column="2"
-               Visibility="{Binding FindToolWindowModel.DefaultArgs.Visibility}"
+               Visibility="{Binding FindToolWindowModel.DefaultArgsModel.Visibility}"
                Height="18"
                Width="60"
                HorizontalAlignment="Left"
-               Text="{Binding FindToolWindowModel.DefaultArgs.DefaultArgsPosition}"
+               Text="{Binding FindToolWindowModel.DefaultArgsModel.DefaultArgsPosition}"
                Opacity="0.8">
         <TextBox.Resources>
           <Style TargetType="{x:Type Border}">
