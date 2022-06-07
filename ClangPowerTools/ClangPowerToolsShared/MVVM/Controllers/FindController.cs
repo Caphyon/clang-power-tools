@@ -54,7 +54,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
           {
             findToolWindowModel.DefaultArgs.Show();
             commands.Add(MatchConstants.CalledExprDefaultArg.Replace("{0}", findToolWindowModel.DefaultArgs
-                        .FunctionName).Replace("{1}", findToolWindowModel.DefaultArgs.DefaultArgsPosition.ToString()));
+                        .FunctionName).Replace("{1}", findToolWindowModel.DefaultArgs.DefaultArgsPosition.ToString())); 
             break;
           }
         default:
