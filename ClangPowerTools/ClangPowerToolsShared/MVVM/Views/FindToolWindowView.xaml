@@ -27,6 +27,8 @@
       <RowDefinition Height="120" />
       <RowDefinition Height="40" />
       <RowDefinition Height="*" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="10" />
     </Grid.RowDefinitions>
 
     <ListView x:Name="FilesList"
@@ -142,6 +144,30 @@
                  Maximum="100"
                  Minimum="0"
                  Visibility="Visible" />-->
+
+
+
+    <!--<Grid Grid.Column="1" Grid.Row="5">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="100" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="100" />
+      </Grid.RowDefinitions>
+    </Grid>-->
+    <Border Grid.Column="1"
+              Grid.Row="6"
+              BorderThickness="1"
+              BorderBrush="{DynamicResource {x:Static vsfx:VsBrushes.AccentDarkKey}}">
+      <TextBlock Grid.Row="6"
+               Grid.Column="1"
+               Margin="5,5,5,5"
+               Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
+               VerticalAlignment="Top"
+               TextWrapping="Wrap"
+               Text="{Binding FindToolWindowModel.MatcherDetails}"/>
+    </Border>
+
 
 
   </Grid>

@@ -28,7 +28,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
     {
       this.findToolWindowView = findToolWindowView;
-      findToolWindowModel.DefaultArgs.Show();
+      findToolWindowModel.DefaultArgsModel.Show();
     }
 
     public void OpenToolWindow(List<string> filesPath)

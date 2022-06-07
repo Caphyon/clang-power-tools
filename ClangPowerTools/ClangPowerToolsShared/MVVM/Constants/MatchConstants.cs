@@ -13,24 +13,12 @@ namespace ClangPowerToolsShared.MVVM.Constants
     /// Replace {0} with expersion name.
     /// Replace {1} with position of default arg
     /// </summary>
-    public static string CalledExprDefaultArg
-    {
-      get 
-      {
-        return "match callExpr(callee(functionDecl(hasName(\"{0}\"))), hasArgument({1}, cxxDefaultArgExpr()))";
-      }
-    }
+    public const string CalledExprDefaultArg = "match callExpr(callee(functionDecl(hasName(\"{0}\"))), hasArgument({1}, cxxDefaultArgExpr()))";
 
     /// <summary>
     /// Diagnostic mode can be re-entered with set output diag for source code exploration
     /// </summary>
-    public static string SetOutpuDump
-    {
-      get
-      {
-        return "set output dump";
-      }
-    }
+    public const string SetOutpuDump = "set output dump";
 
   }
 

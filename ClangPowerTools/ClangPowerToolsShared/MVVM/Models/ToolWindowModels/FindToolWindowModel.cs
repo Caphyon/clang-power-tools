@@ -6,7 +6,26 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
   {
     public event PropertyChangedEventHandler PropertyChanged;
     private bool isRunning = false;
-    public DefaultArgsModel DefaultArgs { get; set; } = new DefaultArgsModel();
+    private string matcherDetails = string.Empty;
+    public DefaultArgsModel DefaultArgsModel { get; set; } = new DefaultArgsModel();
+
+    public FindToolWindowModel()
+    {
+       matcherDetails = DefaultArgsModel.Details;
+    }
+
+    public string MatcherDetails
+    {
+      get
+      {
+        return matcherDetails;
+      }
+      set
+      {
+        matcherDetails = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MatcherDetails"));
+      }
+    }
 
     public bool IsRunning
     {

@@ -52,9 +52,9 @@ namespace ClangPowerToolsShared.MVVM.Controllers
       {
         case FindCommandIds.kDefaultArgsId:
           {
-            findToolWindowModel.DefaultArgs.Show();
-            commands.Add(MatchConstants.CalledExprDefaultArg.Replace("{0}", findToolWindowModel.DefaultArgs
-                        .FunctionName).Replace("{1}", findToolWindowModel.DefaultArgs.DefaultArgsPosition.ToString())); 
+            findToolWindowModel.DefaultArgsModel.Show();
+            commands.Add(MatchConstants.CalledExprDefaultArg.Replace("{0}", findToolWindowModel.DefaultArgsModel
+                        .FunctionName).Replace("{1}", findToolWindowModel.DefaultArgsModel.DefaultArgsPosition.ToString())); 
             break;
           }
         default:
