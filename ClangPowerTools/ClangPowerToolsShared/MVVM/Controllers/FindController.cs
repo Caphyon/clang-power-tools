@@ -67,7 +67,18 @@ namespace ClangPowerToolsShared.MVVM.Controllers
       CommandControllerInstance.CommandController.DisplayMessage(false, "\n⌛ Please wait ...\n");
       PowerShellWrapper.InvokePassSequentialCommands(commands, script);
       CommandControllerInstance.CommandController.DisplayMessage(false, "\nⒾ Find all matches in Error List -> Ⓘ Messages\n");
+    }
 
+    protected void BeforeCommand()
+    {
+      findToolWindowModel.IsRunning = true;
+      FindToolWindowModel = findToolWindowModel;
+    }
+
+    protected void AfterCommand()
+    {
+      findToolWindowModel.IsRunning = false;
+      FindToolWindowModel = findToolWindowModel;
     }
 
     private void GetPathToClangQuery()

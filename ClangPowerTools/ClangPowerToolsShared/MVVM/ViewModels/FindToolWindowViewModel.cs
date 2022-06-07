@@ -41,6 +41,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       SelectCommandToRun(currentCommandId);
       RunPowershellQuery();
+      AfterCommand();
     }
 
     public void SelectCommandToRun(int commandId)
@@ -51,6 +52,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void RunCommandFromView()
     {
+      BeforeCommand();
       CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kClangFindRun, CommandUILocation.ContextMenu);
 
     }

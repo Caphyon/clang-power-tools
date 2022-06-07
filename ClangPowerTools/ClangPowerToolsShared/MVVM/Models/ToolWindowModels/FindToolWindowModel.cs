@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using ClangPowerToolsShared.MVVM.Constants;
+using System.ComponentModel;
 
 namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 {
@@ -7,11 +8,13 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
     public event PropertyChangedEventHandler PropertyChanged;
     private bool isRunning = false;
     private string matcherDetails = string.Empty;
+
     public DefaultArgsModel DefaultArgsModel { get; set; } = new DefaultArgsModel();
 
     public FindToolWindowModel()
     {
        matcherDetails = DefaultArgsModel.Details;
+       HideProgressBar();
     }
 
     public string MatcherDetails
@@ -27,6 +30,27 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       }
     }
 
+    private string progressBarVisibility;
+    public string ProgressBarVisibility
+    {
+      get { return progressBarVisibility; }
+      set
+      {
+        progressBarVisibility = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ProgressBarVisibility"));
+      }
+    }
+
+    public bool IsEnabled
+    {
+      get { return !IsRunning; }
+      set
+      {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsEnabled"));
+      }
+    }
+
+
     public bool IsRunning
     {
       get
@@ -35,9 +59,24 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       }
       set
       {
+        if (value)
+          ShowProgressBar();
+        else
+          HideProgressBar();
         isRunning = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsRunning"));
       }
+    }
+
+
+    private void ShowProgressBar()
+    {
+      ProgressBarVisibility = UIElementsConstants.Visibile;
+    }
+
+    private void HideProgressBar()
+    {
+      ProgressBarVisibility = UIElementsConstants.Hidden;
     }
   }
 }
