@@ -95,10 +95,10 @@ namespace ClangPowerTools.Commands
         if (backgroundRunners == false)
           StopCommandActivated = true;
 
-        if (runningProcesses.Exists(backgroundRunners) == false)
+        if (PowerShellWrapper.runningProcesses.Exists(backgroundRunners) == false)
           return;
 
-        runningProcesses.Kill(backgroundRunners);
+        PowerShellWrapper.runningProcesses.Kill(backgroundRunners);
         if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
         {
           string solutionPath = (dte as DTE2).Solution.FullName;

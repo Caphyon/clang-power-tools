@@ -23,7 +23,7 @@ namespace ClangPowerTools
   {
     #region Members
 
-    public static RunningProcesses runningProcesses = new RunningProcesses();
+    //public static RunningProcesses runningProcesses = new RunningProcesses();
 
     private CacheProjectsItemsModel cacheProjectsItemsModel = new CacheProjectsItemsModel();
 
@@ -53,8 +53,6 @@ namespace ClangPowerTools
     protected static bool StopCommandActivated { get; set; } = false;
 
     protected static object mutex = new object();
-
-    public RunningProcesses GetClangProcesses => runningProcesses;
 
     #endregion
 
@@ -214,8 +212,6 @@ namespace ClangPowerTools
       if (findToolWindow != null)
         findToolWindow.RunQuery();
 
-      DeleteJsonCompilationDB();
-
       if (StopCommandActivated)
       {
         OnDataStreamClose(new CloseDataStreamingEventArgs(true));
@@ -225,6 +221,8 @@ namespace ClangPowerTools
       {
         OnDataStreamClose(new CloseDataStreamingEventArgs(false));
       }
+      DeleteJsonCompilationDB();
+
     }
 
     /// <summary>
@@ -254,7 +252,7 @@ namespace ClangPowerTools
         string Script = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
         $"''{clangDocPath}'' --public {projectArguments} --format={GenerateDocumentation.Formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' 2>&1 | Out-Null'";
 
-        PowerShellWrapper.Invoke(Script, runningProcesses);
+        PowerShellWrapper.Invoke(Script);
 
         //Replace a string in index_json.js if is generated with html format, to avoid a json error
         string indexJsonFileName = Path.Combine(documentationOutoutePath, "index_json.js");
@@ -333,7 +331,7 @@ namespace ClangPowerTools
 
           ItemHierarchy = vsSolution != null ? AutomationUtil.GetItemHierarchy(vsSolution, item) : null;
         }
-        PowerShellWrapper.Invoke(Script, runningProcesses);
+        PowerShellWrapper.Invoke(Script);
 
         if (StopCommandActivated)
         {
@@ -397,7 +395,7 @@ namespace ClangPowerTools
         Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
       }
 
-      PowerShellWrapper.Invoke(Script, runningProcesses);
+      PowerShellWrapper.Invoke(Script);
       OnDataStreamClose(new CloseDataStreamingEventArgs(false));
     }
 

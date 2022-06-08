@@ -16,11 +16,13 @@ namespace ClangPowerTools
     public static DataReceivedEventHandler DataHandler { get; set; }
     public static EventHandler ExitedHandler { get; set; }
 
+    public static RunningProcesses runningProcesses = new RunningProcesses();
+
     #endregion
 
     #region Public Methods
 
-    public static void Invoke(string aScript, RunningProcesses runningProcesses)
+    public static void Invoke(string aScript)
     {
       Process process = new Process();
       try
@@ -134,6 +136,8 @@ namespace ClangPowerTools
         process.Exited += ExitedHandler;
         process.Disposed += ExitedHandler;
 
+        runningProcesses.Add(process);
+
         process.Start();
 
         using (StreamWriter sw = process.StandardInput)
@@ -208,6 +212,8 @@ namespace ClangPowerTools
       process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
       process.StartInfo.Arguments = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
         $" ''{getllvmScriptPath}'' {tool} '";
+
+      runningProcesses.Add(process);
 
       try
       {
