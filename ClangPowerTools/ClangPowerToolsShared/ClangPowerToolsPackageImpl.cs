@@ -491,12 +491,22 @@ namespace ClangPowerTools
       }
     }
 
+    /// <summary>
+    /// Hide Find Tool Window and Tidy Tool Window
+    /// </summary>
+    /// <returns></returns>
     private int HideToolWindow()
     {
       var tidyToolWindow = mPackage.FindToolWindow(typeof(TidyToolWindow), 0, false);
       if (tidyToolWindow is null) return VSConstants.S_OK;
-      var window = tidyToolWindow.Frame as IVsWindowFrame;
-      window.Hide();
+      var tidyWindow = tidyToolWindow.Frame as IVsWindowFrame;
+      tidyWindow.Hide();
+
+      var findToolWindow = mPackage.FindToolWindow(typeof(FindToolWindow), 0, false);
+      if (findToolWindow is null) return VSConstants.S_OK;
+      var findWindow = findToolWindow.Frame as IVsWindowFrame;
+      findWindow.Hide();
+
       return VSConstants.S_OK;
     }
 

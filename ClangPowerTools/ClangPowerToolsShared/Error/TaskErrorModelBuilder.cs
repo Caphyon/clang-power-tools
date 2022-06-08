@@ -93,7 +93,7 @@ namespace ClangPowerTools.Error
       string fullMessage = CreateFullErrorMessage(path, line, categoryAsString, messageDescription);
 
       // Add clang prefix for error list
-      messageDescription = messageDescription.Insert(0, ErrorParserConstants.kClangTag);
+      messageDescription = messageDescription.Insert(0, ErrorParserConstants.kCptMatcher);
 
       mError = new TaskErrorModel()
       {
