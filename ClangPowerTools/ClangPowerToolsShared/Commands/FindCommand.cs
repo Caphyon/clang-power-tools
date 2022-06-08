@@ -2,6 +2,7 @@
 using ClangPowerTools.Commands;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
@@ -60,7 +61,7 @@ namespace ClangPowerToolsShared.Commands
       Instance = new FindCommand(commandService, aCommandController, aPackage, aGuid, aId);
     }
 
-    public async Task FindAsyc(CommandUILocation commandUILocation)
+    public async Task FindAsync(CommandUILocation commandUILocation)
     {
       await PrepareCommmandAsync(commandUILocation);
 
@@ -79,7 +80,7 @@ namespace ClangPowerToolsShared.Commands
         findToolWindow.OpenFindToolWindow(paths);
     }
 
-    public async Task RunQuery()
+    public async Task RunQueryAsync()
     {
       await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
       ToolWindowPane window = await package.ShowToolWindowAsync(
@@ -88,16 +89,22 @@ namespace ClangPowerToolsShared.Commands
       create: true,
       cancellationToken: package.DisposalToken);
       var findToolWindow = (FindToolWindow)window;
-      ItemsCollector itemsCollector = new ItemsCollector();
-      itemsCollector.CollectSelectedProjectItems();
-      FilePathCollector fileCollector = new FilePathCollector();
-      var paths = fileCollector.Collect(itemsCollector.Items).ToList();
-      if (findToolWindow != null)
-        findToolWindow.RunQuery();
 
-      var jsonCompilationDatabasePath = JsonCompilationDatabaseCommand.Instance.JsonDBPath;
-      if(File.Exists(jsonCompilationDatabasePath))
-        File.Delete(jsonCompilationDatabasePath);
+      await Task.Run(() =>
+      {
+        lock (mutex)
+        {
+          try
+          {
+            InvokeFindCommand(findToolWindow);
+          }
+          catch (Exception exception)
+          {
+            VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
+              OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+          }
+        }
+      });
     }
 
     #endregion

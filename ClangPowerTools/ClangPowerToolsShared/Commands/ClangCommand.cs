@@ -6,6 +6,7 @@ using ClangPowerTools.IgnoreActions;
 using ClangPowerTools.Services;
 using ClangPowerToolsShared.Commands.Models;
 using ClangPowerToolsShared.Helpers;
+using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -208,6 +209,24 @@ namespace ClangPowerTools
 
     #region Private Methods
 
+    protected void InvokeFindCommand(FindToolWindow findToolWindow)
+    {
+      if (findToolWindow != null)
+        findToolWindow.RunQuery();
+
+      DeleteJsonCompilationDB();
+
+      if (StopCommandActivated)
+      {
+        OnDataStreamClose(new CloseDataStreamingEventArgs(true));
+        StopCommandActivated = false;
+      }
+      else
+      {
+        OnDataStreamClose(new CloseDataStreamingEventArgs(false));
+      }
+    }
+
     /// <summary>
     /// Create a process for running clang-doc.exe resulted
     /// format, depends on passed command
@@ -246,11 +265,7 @@ namespace ClangPowerTools
           File.WriteAllText(indexJsonFileName, indexJsonFileContent);
         }
 
-        //Delete JsonCompilationDatabase
-        if(File.Exists(jsonCompilationDatabasePath))
-        {
-          File.Delete(jsonCompilationDatabasePath);
-        }
+        DeleteJsonCompilationDB();
 
         if (StopCommandActivated)
         {
@@ -262,6 +277,13 @@ namespace ClangPowerTools
           OnDataStreamClose(new CloseDataStreamingEventArgs(false));
         }
       }
+    }
+
+    private void DeleteJsonCompilationDB()
+    {
+      var jsonCompilationDatabasePath = JsonCompilationDatabaseCommand.Instance.JsonDBPath;
+      if (File.Exists(jsonCompilationDatabasePath))
+        File.Delete(jsonCompilationDatabasePath);
     }
 
     private void Compile(string runModeParameters, string genericParameters, int commandId, List<string> paths)
