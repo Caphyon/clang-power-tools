@@ -46,8 +46,8 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
     }
 
     public string Details { get; } = "Matches all called expressions with a default argument on a given position.\n" +
-    "For example:\nvoid foo(int a = 0, int b = 1) { }\n\nvoid main() {\nfoo();\nfoo(1);\n}" +
-      "\nCalledFunction: foo\nDefaultArgPosition: 0\n🔎 Will match foo()";
+    "For example:\nvoid foo(int a = 0, int b = 1) { }\n\nvoid main() {\nfoo( );\nfoo(1);\n}" +
+      "\nCalledFunction: foo\nDefaultArgPosition: 0\n🔎 Will match foo( )";
 
 
     public void Hide()

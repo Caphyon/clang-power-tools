@@ -1,6 +1,7 @@
 ﻿using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.ViewModels;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -33,6 +34,12 @@ namespace ClangPowerTools.Views
     private void MatchDefaultArgs_click(object sender, RoutedEventArgs e)
     {
       findToolWindowViewModel.RunCommandFromView();
+    }
+
+    private void Hyperlink_Feedback(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+    {
+      Process.Start(new ProcessStartInfo("https://clangpowertools.com/contact.html"));
+      e.Handled = true;
     }
 
     private void Matcher_Click(object sender, RoutedEventArgs e)
