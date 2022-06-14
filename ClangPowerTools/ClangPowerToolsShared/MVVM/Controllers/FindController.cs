@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace ClangPowerToolsShared.MVVM.Controllers
 {
@@ -40,13 +39,13 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     public void LaunchCommand(int commandId, List<string> paths, FindToolWindowModel findToolWindowModel)
     {
       SetCommandId(commandId);
-      if(pathToClangQuery == string.Empty)
+      if (pathToClangQuery == string.Empty)
         GetPathToClangQuery();
       script = GetListPowershell(paths, pathToClangQuery);
 
-      if(commands.Count > 0)
+      if (commands.Count > 0)
         commands.Clear();
-      
+
       commands.Add(MatchConstants.SetOutpuDump);
 
       switch (currentCommandId)
@@ -55,7 +54,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
           {
             findToolWindowModel.DefaultArgsModel.Show();
             commands.Add(MatchConstants.CalledExprDefaultArg.Replace("{0}", findToolWindowModel.DefaultArgsModel
-                        .FunctionName).Replace("{1}", findToolWindowModel.DefaultArgsModel.DefaultArgsPosition.ToString())); 
+                        .FunctionName).Replace("{1}", findToolWindowModel.DefaultArgsModel.DefaultArgsPosition.ToString()));
             break;
           }
         default:
@@ -65,9 +64,17 @@ namespace ClangPowerToolsShared.MVVM.Controllers
 
     public void RunPowershellQuery()
     {
+      using (StreamWriter sw = File.AppendText(PathConstants.GetPathToFindCommands()))
+      {
+        foreach (var command in commands)
+        {
+          sw.WriteLine(command);
+        }
+      }
       CommandControllerInstance.CommandController.DisplayMessage(false, "\n⌛ Please wait ...\n");
-      PowerShellWrapper.InvokePassSequentialCommands(commands, script);
+      PowerShellWrapper.InvokePassSequentialCommands(script);
       CommandControllerInstance.CommandController.DisplayMessage(false, "\nⒾ Find all matches in Error List -> Ⓘ Messages\n");
+      File.Delete(PathConstants.GetPathToFindCommands());
     }
 
     protected void BeforeCommand()
@@ -98,11 +105,12 @@ namespace ClangPowerToolsShared.MVVM.Controllers
 
     private string GetListPowershell(List<string> args, string pathToBinary)
     {
-      var paths = args.Where(a => ScriptConstants.kAcceptedFileExtensions
+      var paths = args.Where(a => ScriptConstants.kAcceptedFileExtensionsWithoutHeaders
       .Contains(Path.GetExtension(a))).ToList();
       return $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive " +
         $"-command '& ''{pathToBinary}''  @{ScriptGenerator.JoinPathsToStringScript(paths)} " +
-        $"-p ''{JsonCompilationDatabaseCommand.Instance.JsonDBPath}'' '";
+        $"-p ''{JsonCompilationDatabaseCommand.Instance.JsonDBPath}'' " +
+        $"-f ''{PathConstants.GetPathToFindCommands()}'' '";
     }
 
   }

@@ -90,7 +90,7 @@ namespace ClangPowerTools
       }
     }
 
-    public static void InvokePassSequentialCommands(List<string> commands, string aScript)
+    public static void InvokePassSequentialCommands(string aScript)
     {
       Process process = new Process();
       try
@@ -139,17 +139,6 @@ namespace ClangPowerTools
         runningProcesses.Add(process);
 
         process.Start();
-
-        using (StreamWriter sw = process.StandardInput)
-        {
-          if (sw.BaseStream.CanWrite)
-          {
-            foreach (var command in commands)
-            {
-              sw.WriteLine(command);
-            }
-          }
-        }
 
         process.BeginErrorReadLine();
         process.BeginOutputReadLine();
