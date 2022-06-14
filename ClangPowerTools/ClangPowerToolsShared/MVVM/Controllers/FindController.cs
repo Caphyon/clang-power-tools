@@ -7,6 +7,7 @@ using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ClangPowerToolsShared.MVVM.Controllers
@@ -97,8 +98,11 @@ namespace ClangPowerToolsShared.MVVM.Controllers
 
     private string GetListPowershell(List<string> args, string pathToBinary)
     {
+      var paths = args.Where(a => ScriptConstants.kAcceptedFileExtensions
+      .Contains(Path.GetExtension(a))).ToList();
       return $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive " +
-        $"-command '& ''{pathToBinary}'' @{ScriptGenerator.JoinPathsToStringScript(args)} '";
+        $"-command '& ''{pathToBinary}''  @{ScriptGenerator.JoinPathsToStringScript(paths)} " +
+        $"-p ''{JsonCompilationDatabaseCommand.Instance.JsonDBPath}'' '";
     }
 
   }
