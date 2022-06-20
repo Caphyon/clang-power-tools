@@ -1313,14 +1313,11 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     }
   }
 
-  if ($kPchIsNeeded)
+  foreach ($projCpp in $global:cptFilesToProcess.Keys)
   {
-    foreach ($projCpp in $global:cptFilesToProcess.Keys)
+    if ( (Get-ProjectFileSetting -fileFullName $projCpp -propertyName 'PrecompiledHeader') -ieq 'Create')
     {
-      if ( (Get-ProjectFileSetting -fileFullName $projCpp -propertyName 'PrecompiledHeader') -ieq 'Create')
-      {
-        $stdafxCpp = $projCpp
-      }
+      $stdafxCpp = $projCpp
     }
   }
 
@@ -1355,7 +1352,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
 
   if ([string]::IsNullOrEmpty($stdafxDir))
   {
-    Write-Verbose ("PCH not enabled for this project!")
+    Write-Verbose ("No PCH information for this project!")
     $kPchIsNeeded = $false
   }
   else
@@ -1365,6 +1362,11 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     $includeDirectories = @(Remove-PathTrailingSlash -path $stdafxDir) + $includeDirectories
 
     $stdafxHeaderFullPath = Canonize-Path -base $stdafxDir -child $stdafxHeader -ignoreErrors
+
+    if (!$kPchIsNeeded)
+    {
+      Write-Verbose "PCH is disabled for this project. Will not generate."
+    }
   }
   
   Write-InformationTimed "Detected PCH information"
