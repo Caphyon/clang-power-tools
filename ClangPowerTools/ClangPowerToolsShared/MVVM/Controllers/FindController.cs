@@ -17,7 +17,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
 
     protected int currentCommandId;
     private string pathToClangQuery;
-    List<string> scripts = new();
+    Dictionary<string, string> pathCommandPairs = new();
     protected FindToolWindowModel findToolWindowModel = new();
     List<string> commands = new();
 
@@ -71,8 +71,8 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         }
       }
       CommandControllerInstance.CommandController.DisplayMessage(false, "\n⌛ Please wait ...\n");
-      scripts = GetCommandForPowershell(paths, pathToClangQuery);
-      PowerShellWrapper.InvokePassSequentialCommands(scripts);
+      pathCommandPairs = GetCommandForPowershell(paths, pathToClangQuery);
+      PowerShellWrapper.InvokePassSequentialCommands(pathCommandPairs);
       CommandControllerInstance.CommandController.DisplayMessage(false, "\nⒾ Find all matches in Error List -> Ⓘ Messages\n");
       File.Delete(PathConstants.GetPathToFindCommands());
     }
@@ -103,19 +103,19 @@ namespace ClangPowerToolsShared.MVVM.Controllers
       currentCommandId = commandId;
     }
 
-    private List<string> GetCommandForPowershell(List<string> args, string pathToBinary)
+    private Dictionary<string, string> GetCommandForPowershell(List<string> args, string pathToBinary)
     {
       var paths = args.Where(a => ScriptConstants.kAcceptedFileExtensionsWithoutHeaders
                       .Contains(Path.GetExtension(a))).ToList();
 
-      List<string> commands = new List<string>();
+      Dictionary<string, string> commands = new();
       foreach (var path in paths)
       {
         var command = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive " +
         $"-command '& ''{pathToBinary}''  ''{path}'' " +
         $"-p ''{JsonCompilationDatabaseCommand.Instance.JsonDBPath}'' " +
         $"-f ''{PathConstants.GetPathToFindCommands()}'' '";
-        commands.Add(command);
+        commands.Add(path, command);
       }
       return commands;
     }

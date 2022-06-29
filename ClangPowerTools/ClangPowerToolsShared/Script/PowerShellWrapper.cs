@@ -96,13 +96,13 @@ namespace ClangPowerTools
       }
     }
 
-    public static void InvokePassSequentialCommands(List<string> aScripts)
+    public static void InvokePassSequentialCommands(Dictionary<string, string> aPathCommandPair)
     {
       int count = 0;
-      mOutputWindowController.Write("Will be processed " + aScripts.Count + " files");
+      mOutputWindowController.Write("Will be processed " + aPathCommandPair.Count + " files");
 
       List<Task> tasks = new List<Task>();
-      foreach (string script in aScripts)
+      foreach (KeyValuePair<string, string> pathCommand in aPathCommandPair)
       {
         tasks.Add(Task.Run(delegate
         {
@@ -135,7 +135,7 @@ namespace ClangPowerTools
               file paths containing single quotes will never have spaces to the left or right of them, but the ones we 
               are not interested in will have space either to the left or the right.
                */
-              Arguments = Regex.Replace(script, @"([\w|\\])'([\w|\\])", "$1''''$2")
+              Arguments = Regex.Replace(pathCommand.Value, @"([\w|\\])'([\w|\\])", "$1''''$2")
             };
             process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
 
@@ -150,7 +150,8 @@ namespace ClangPowerTools
             process.Exited += ExitedHandler;
             process.Disposed += ExitedHandler;
             Interlocked.Increment(ref count);
-            //mOutputWindowController.Write(count.ToString() + ": " + script.Key + "\n");
+            mOutputWindowController.Write($"{count}: {pathCommand.Key}");
+            //TODO display pathCommand value, if is in verbose mode
 
             runningProcesses.Add(process);
 
