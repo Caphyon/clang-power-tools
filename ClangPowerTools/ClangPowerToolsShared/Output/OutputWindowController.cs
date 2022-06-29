@@ -220,6 +220,7 @@ namespace ClangPowerTools.Output
 
     public void ClosedDataConnection(object sender, EventArgs e)
     {
+      mutex.WaitOne();
       var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
 
       tempPaths.Clear();
@@ -254,6 +255,7 @@ namespace ClangPowerTools.Output
         CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowFilesId, CommandUILocation.ContextMenu, tempPaths);
         paths.Clear();
       }
+      mutex.ReleaseMutex();
     }
 
     public void OnFileHierarchyDetected(object sender, VsHierarchyDetectedEventArgs e)
@@ -265,6 +267,7 @@ namespace ClangPowerTools.Output
 
     public void OnErrorDetected(object sender, EventArgs e)
     {
+      mutex.WaitOne();
       if (Errors.Count > 0)
       {
         TaskErrorViewModel.Errors = Errors.ToList();
@@ -284,6 +287,7 @@ namespace ClangPowerTools.Output
 
         ErrorDetectedEvent?.Invoke(this, new ErrorDetectedEventArgs(Errors));
       }
+      mutex.ReleaseMutex();
     }
 
     public void OnEncodingErrorDetected(object sender, EventArgs e)
