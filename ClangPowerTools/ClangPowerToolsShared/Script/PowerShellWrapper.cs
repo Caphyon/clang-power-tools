@@ -1,10 +1,13 @@
-﻿using System;
+﻿using ClangPowerTools.Output;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ClangPowerTools
 {
@@ -17,10 +20,13 @@ namespace ClangPowerTools
     public static EventHandler ExitedHandler { get; set; }
 
     public static RunningProcesses runningProcesses = new RunningProcesses();
+    public static OutputWindowController mOutputWindowController;
+
 
     #endregion
 
     #region Public Methods
+
 
     public static void Invoke(string aScript)
     {
@@ -90,74 +96,85 @@ namespace ClangPowerTools
       }
     }
 
-    public static void InvokePassSequentialCommands(string aScript)
+    public static void InvokePassSequentialCommands(List<string> aScripts)
     {
-      Process process = new Process();
-      try
+      int count = 0;
+      mOutputWindowController.Write("Will be processed " + aScripts.Count + " files");
+
+      List<Task> tasks = new List<Task>();
+      foreach (string script in aScripts)
       {
-        process.StartInfo = new ProcessStartInfo()
+        tasks.Add(Task.Run(delegate
         {
-          FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}",
-          RedirectStandardError = true,
-          RedirectStandardOutput = true,
-          RedirectStandardInput = true,
-          CreateNoWindow = true,
-          UseShellExecute = false,
+          Process process = new Process();
+          try
+          {
+            process.StartInfo = new ProcessStartInfo()
+            {
+              FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}",
+              RedirectStandardError = true,
+              RedirectStandardOutput = true,
+              RedirectStandardInput = true,
+              CreateNoWindow = true,
+              UseShellExecute = false,
 
-          /*
-          When we are dealing with file paths that contain single quotes, we are running into 
-          trouble because whey are messing up our script invocation text. The situation is further 
-          complicated by the fact that this invocation is imbricated (invoke inside invoke).
-          Explanation: we are invoking powershell.exe and telling it using -command what to invoke itself, 
-          which would be our very own clang-buils.ps1 script. 
+              /*
+              When we are dealing with file paths that contain single quotes, we are running into 
+              trouble because whey are messing up our script invocation text. The situation is further 
+              complicated by the fact that this invocation is imbricated (invoke inside invoke).
+              Explanation: we are invoking powershell.exe and telling it using -command what to invoke itself, 
+              which would be our very own clang-buils.ps1 script. 
 
-          All this script invocation command is enveloped in single quotes. One, quick to mind solution 
-          would be to use double quotes. However, this is not practical because it would lead to further 
-          issues down the road since those strings are interpolated (and the $ sign is valid in a Windows file path).
+              All this script invocation command is enveloped in single quotes. One, quick to mind solution 
+              would be to use double quotes. However, this is not practical because it would lead to further 
+              issues down the road since those strings are interpolated (and the $ sign is valid in a Windows file path).
 
-          We have to keep using single quotes, but make sure that we double escape them when we find them.
-          IMPORTANT: there are single quotes which we should not escape. 
-          In order to precisely match the quotes that we need, we are exploiting the following detail:
-          file paths containing single quotes will never have spaces to the left or right of them, but the ones we 
-          are not interested in will have space either to the left or the right.
-           */
-          Arguments = Regex.Replace(aScript, @"([\w|\\])'([\w|\\])", "$1''''$2")
-        };
-        process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
+              We have to keep using single quotes, but make sure that we double escape them when we find them.
+              IMPORTANT: there are single quotes which we should not escape. 
+              In order to precisely match the quotes that we need, we are exploiting the following detail:
+              file paths containing single quotes will never have spaces to the left or right of them, but the ones we 
+              are not interested in will have space either to the left or the right.
+               */
+              Arguments = Regex.Replace(script, @"([\w|\\])'([\w|\\])", "$1''''$2")
+            };
+            process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
 
-        var customTidyExecutable = GetCustomTidyPath();
+            var customTidyExecutable = GetCustomTidyPath();
 
-        if (string.IsNullOrWhiteSpace(customTidyExecutable) == false)
-          process.StartInfo.EnvironmentVariables[ScriptConstants.kEnvrionmentTidyPath] = customTidyExecutable;
+            if (string.IsNullOrWhiteSpace(customTidyExecutable) == false)
+              process.StartInfo.EnvironmentVariables[ScriptConstants.kEnvrionmentTidyPath] = customTidyExecutable;
 
-        process.EnableRaisingEvents = true;
-        process.ErrorDataReceived += DataErrorHandler;
-        process.OutputDataReceived += DataHandler;
-        process.Exited += ExitedHandler;
-        process.Disposed += ExitedHandler;
+            process.EnableRaisingEvents = true;
+            process.ErrorDataReceived += DataErrorHandler;
+            process.OutputDataReceived += DataHandler;
+            process.Exited += ExitedHandler;
+            process.Disposed += ExitedHandler;
+            Interlocked.Increment(ref count);
+            //mOutputWindowController.Write(count.ToString() + ": " + script.Key + "\n");
 
-        runningProcesses.Add(process);
+            runningProcesses.Add(process);
 
-        process.Start();
+            process.Start();
 
-        process.BeginErrorReadLine();
-        process.BeginOutputReadLine();
+            process.BeginErrorReadLine();
+            process.BeginOutputReadLine();
 
-        process.WaitForExit();
+            process.WaitForExit();
+
+          }
+          catch (Exception e)
+          {
+            process.EnableRaisingEvents = false;
+            process.Close();
+
+            throw e;
+          }
+
+        }));
       }
-      catch (Exception e)
-      {
-        process.EnableRaisingEvents = false;
-        process.ErrorDataReceived -= DataErrorHandler;
-        process.OutputDataReceived -= DataHandler;
-        process.Exited -= ExitedHandler;
-        process.Disposed -= ExitedHandler;
-
-        process.Close();
-
-        throw e;
-      }
+      Task.WaitAll(tasks.ToArray());
     }
+
 
     public static string CreatePathEnvironmentVariable()
     {

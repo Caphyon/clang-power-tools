@@ -32,7 +32,6 @@ namespace ClangPowerTools
     private uint mHSolutionEvents = uint.MaxValue;
     private RunningDocTableEvents mRunningDocTableEvents;
     private ErrorWindowController mErrorWindowController;
-    private OutputWindowController mOutputWindowController;
     private CommandController mCommandController;
 
     private CommandEvents mCommandEvents;
@@ -76,8 +75,8 @@ namespace ClangPowerTools
 
         var vsOutputWindow = VsServiceProvider.GetService(typeof(SVsOutputWindow)) as IVsOutputWindow;
 
-        mOutputWindowController = new OutputWindowController();
-        mOutputWindowController.Initialize(mPackage, vsOutputWindow);
+        PowerShellWrapper.mOutputWindowController = new OutputWindowController();
+        PowerShellWrapper.mOutputWindowController.Initialize(mPackage, vsOutputWindow);
 
         mRunningDocTableEvents = new RunningDocTableEvents(mPackage);
         mErrorWindowController = new ErrorWindowController(mPackage);
@@ -370,23 +369,23 @@ namespace ClangPowerTools
 
     private void RegisterToCPTEvents()
     {
-      mCommandController.ClangCommandMessageEvent += mOutputWindowController.Write;
-      mCommandController.ClearOutputWindowEvent += mOutputWindowController.ClearPanel;
+      mCommandController.ClangCommandMessageEvent += PowerShellWrapper.mOutputWindowController.Write;
+      mCommandController.ClearOutputWindowEvent += PowerShellWrapper.mOutputWindowController.ClearPanel;
 
-      mCommandController.HierarchyDetectedEvent += mOutputWindowController.OnFileHierarchyDetected;
+      mCommandController.HierarchyDetectedEvent += PowerShellWrapper.mOutputWindowController.OnFileHierarchyDetected;
 
-      mCommandController.HasEncodingErrorEvent += mOutputWindowController.OnEncodingErrorDetected;
-      mOutputWindowController.HasEncodingErrorEvent += mCommandController.OnEncodingErrorDetected;
+      mCommandController.HasEncodingErrorEvent += PowerShellWrapper.mOutputWindowController.OnEncodingErrorDetected;
+      PowerShellWrapper.mOutputWindowController.HasEncodingErrorEvent += mCommandController.OnEncodingErrorDetected;
 
       mCommandController.ClearErrorListEvent += mErrorWindowController.OnClangCommandBegin;
 
       CompileCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
       TidyCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
 
-      mCommandController.ErrorDetectedEvent += mOutputWindowController.OnErrorDetected;
-      mOutputWindowController.ErrorDetectedEvent += mErrorWindowController.OnErrorDetected;
+      mCommandController.ErrorDetectedEvent += PowerShellWrapper.mOutputWindowController.OnErrorDetected;
+      PowerShellWrapper.mOutputWindowController.ErrorDetectedEvent += mErrorWindowController.OnErrorDetected;
 
-      mOutputWindowController.JsonCompilationDbFilePathEvent += JsonCompilationDatabaseCommand.Instance.OpenInFileExplorer;
+      PowerShellWrapper.mOutputWindowController.JsonCompilationDbFilePathEvent += JsonCompilationDatabaseCommand.Instance.OpenInFileExplorer;
 
       CompileCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
       FindCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
@@ -405,9 +404,9 @@ namespace ClangPowerTools
       TidyCommand.Instance.IgnoredItemsEvent += mCommandController.OnItemIgnore;
       FormatCommand.Instance.IgnoredItemsEvent += mCommandController.OnItemIgnore;
 
-      PowerShellWrapper.DataHandler += mOutputWindowController.OutputDataReceived;
-      PowerShellWrapper.DataErrorHandler += mOutputWindowController.OutputDataErrorReceived;
-      PowerShellWrapper.ExitedHandler += mOutputWindowController.ClosedDataConnection;
+      PowerShellWrapper.DataHandler += PowerShellWrapper.mOutputWindowController.OutputDataReceived;
+      PowerShellWrapper.DataErrorHandler += PowerShellWrapper.mOutputWindowController.OutputDataErrorReceived;
+      PowerShellWrapper.ExitedHandler += PowerShellWrapper.mOutputWindowController.ClosedDataConnection;
       PowerShellWrapper.ExitedHandler += GenerateDocumentation.ClosedDataConnection;
     }
 
@@ -441,23 +440,23 @@ namespace ClangPowerTools
 
     private void UnregisterFromCPTEvents()
     {
-      mCommandController.ClangCommandMessageEvent -= mOutputWindowController.Write;
-      mCommandController.ClearOutputWindowEvent -= mOutputWindowController.ClearPanel;
+      mCommandController.ClangCommandMessageEvent -= PowerShellWrapper.mOutputWindowController.Write;
+      mCommandController.ClearOutputWindowEvent -= PowerShellWrapper.mOutputWindowController.ClearPanel;
 
-      mCommandController.HierarchyDetectedEvent -= mOutputWindowController.OnFileHierarchyDetected;
+      mCommandController.HierarchyDetectedEvent -= PowerShellWrapper.mOutputWindowController.OnFileHierarchyDetected;
 
-      mCommandController.HasEncodingErrorEvent -= mOutputWindowController.OnEncodingErrorDetected;
-      mOutputWindowController.HasEncodingErrorEvent -= mCommandController.OnEncodingErrorDetected;
+      mCommandController.HasEncodingErrorEvent -= PowerShellWrapper.mOutputWindowController.OnEncodingErrorDetected;
+      PowerShellWrapper.mOutputWindowController.HasEncodingErrorEvent -= mCommandController.OnEncodingErrorDetected;
 
       mCommandController.ClearErrorListEvent -= mErrorWindowController.OnClangCommandBegin;
 
       CompileCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
       TidyCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
 
-      mCommandController.ErrorDetectedEvent -= mOutputWindowController.OnErrorDetected;
-      mOutputWindowController.ErrorDetectedEvent -= mErrorWindowController.OnErrorDetected;
+      mCommandController.ErrorDetectedEvent -= PowerShellWrapper.mOutputWindowController.OnErrorDetected;
+      PowerShellWrapper.mOutputWindowController.ErrorDetectedEvent -= mErrorWindowController.OnErrorDetected;
 
-      mOutputWindowController.JsonCompilationDbFilePathEvent -= JsonCompilationDatabaseCommand.Instance.OpenInFileExplorer;
+      PowerShellWrapper.mOutputWindowController.JsonCompilationDbFilePathEvent -= JsonCompilationDatabaseCommand.Instance.OpenInFileExplorer;
 
       CompileCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
       FindCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
@@ -476,9 +475,9 @@ namespace ClangPowerTools
       TidyCommand.Instance.IgnoredItemsEvent -= mCommandController.OnItemIgnore;
       FormatCommand.Instance.IgnoredItemsEvent -= mCommandController.OnItemIgnore;
 
-      PowerShellWrapper.DataHandler -= mOutputWindowController.OutputDataReceived;
-      PowerShellWrapper.DataErrorHandler -= mOutputWindowController.OutputDataErrorReceived;
-      PowerShellWrapper.ExitedHandler -= mOutputWindowController.ClosedDataConnection;
+      PowerShellWrapper.DataHandler -= PowerShellWrapper.mOutputWindowController.OutputDataReceived;
+      PowerShellWrapper.DataErrorHandler -= PowerShellWrapper.mOutputWindowController.OutputDataErrorReceived;
+      PowerShellWrapper.ExitedHandler -= PowerShellWrapper.mOutputWindowController.ClosedDataConnection;
       PowerShellWrapper.ExitedHandler -= GenerateDocumentation.ClosedDataConnection;
     }
 

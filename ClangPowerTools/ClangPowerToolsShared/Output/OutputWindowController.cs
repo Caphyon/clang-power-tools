@@ -15,6 +15,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace ClangPowerTools.Output
 {
@@ -112,8 +113,10 @@ namespace ClangPowerTools.Output
       if (string.IsNullOrWhiteSpace(aMessage))
         return;
 
+      mutex.WaitOne();
       var outputWindow = outputWindowBuilder.GetResult();
       outputWindow.Pane.OutputStringThreadSafe(aMessage + "\n");
+      mutex.ReleaseMutex();
     }
 
     public void Write(object sender, ClangCommandMessageEventArgs e)
@@ -137,6 +140,7 @@ namespace ClangPowerTools.Output
 
     #region Data Handlers
 
+    private static Mutex mutex = new Mutex();
 
     public void GetFilesFromOutput(string output)
     {
@@ -155,14 +159,23 @@ namespace ClangPowerTools.Output
 
     public void OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
+      var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
       if (null == e.Data)
         return;
 
       if (outputContent.MissingLLVM)
         return;
 
-      GetFilesFromOutput(e.Data.ToString());
-      if (VSConstants.S_FALSE == outputProcessor.ProcessData(e.Data, Hierarchy, outputContent))
+      //TODO Verify all cases
+      if (id == CommandIds.kTidyId || id == CommandIds.kTidyToolbarId)
+      {
+        GetFilesFromOutput(e.Data.ToString());
+      }
+
+      mutex.WaitOne();
+      var result = outputProcessor.ProcessData(e.Data, Hierarchy, outputContent);
+      mutex.ReleaseMutex();
+      if (VSConstants.S_FALSE == result)
       {
         if (outputContent.MissingLLVM)
         {
@@ -174,7 +187,6 @@ namespace ClangPowerTools.Output
       if (!string.IsNullOrWhiteSpace(outputContent.JsonFilePath))
         JsonCompilationDbFilePathEvent?.Invoke(this, new JsonFilePathArgs(outputContent.JsonFilePath));
 
-      var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
       if ((id == CommandIds.kClangFind || id == CommandIds.kClangFindRun) &&
         !SettingsProvider.CompilerSettingsModel.VerboseMode)
         return;
@@ -189,8 +201,10 @@ namespace ClangPowerTools.Output
 
       if (outputContent.MissingLLVM)
         return;
-
-      if (VSConstants.S_FALSE == outputProcessor.ProcessData(e.Data, Hierarchy, outputContent))
+      mutex.WaitOne();
+      var result = outputProcessor.ProcessData(e.Data, Hierarchy, outputContent);
+      mutex.ReleaseMutex();
+      if (VSConstants.S_FALSE == result)
         return;
 
       if (!string.IsNullOrWhiteSpace(outputContent.JsonFilePath))
@@ -216,8 +230,9 @@ namespace ClangPowerTools.Output
         {
           Regex regex = new Regex(ErrorParserConstants.kNumberMatchesRegex);
           var matchResult = regex.Match(outputResult);
-          if(matchResult != null && matchResult.Groups[0] != null
-            && matchResult.Groups[0].Value != null)
+          if (matchResult != null && matchResult.Groups[0] != null
+            && matchResult.Groups[0].Value != null
+            && matchResult.Groups[0].Value.ToString() != string.Empty)
           {
             outputResult = "🔎 We found " + matchResult.Groups[0].Value.ToString();
           }

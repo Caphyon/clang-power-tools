@@ -40,7 +40,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public void RunQuery()
     {
       SelectCommandToRun(currentCommandId);
-      RunPowershellQuery();
+      RunPowershellQuery(filesPaths);
       AfterCommand();
     }
 
