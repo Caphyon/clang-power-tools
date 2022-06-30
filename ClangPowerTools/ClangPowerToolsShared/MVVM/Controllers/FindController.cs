@@ -1,6 +1,5 @@
 ﻿using ClangPowerTools;
 using ClangPowerTools.Commands;
-using ClangPowerTools.Helpers;
 using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
@@ -115,7 +114,8 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         $"-command '& ''{pathToBinary}''  ''{path}'' " +
         $"-p ''{JsonCompilationDatabaseCommand.Instance.JsonDBPath}'' " +
         $"-f ''{PathConstants.GetPathToFindCommands()}'' '";
-        commands.Add(path, command);
+        if (!commands.ContainsKey(path))
+          commands.Add(path, command);
       }
       return commands;
     }
