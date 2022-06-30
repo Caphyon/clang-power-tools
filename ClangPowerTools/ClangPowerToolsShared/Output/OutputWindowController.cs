@@ -167,7 +167,9 @@ namespace ClangPowerTools.Output
         return;
 
       //TODO Verify all cases
-      if (id == CommandIds.kTidyId || id == CommandIds.kTidyToolbarId)
+      if (id == CommandIds.kTidyId || id == CommandIds.kTidyToolbarId 
+        || id == CommandIds.kTidyToolWindowId || id == CommandIds.kTidyFixId
+        || id == CommandIds.kTidyFixToolbarId)
       {
         GetFilesFromOutput(e.Data.ToString());
       }
