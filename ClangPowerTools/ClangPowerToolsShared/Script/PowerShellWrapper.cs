@@ -98,7 +98,9 @@ namespace ClangPowerTools
 
     public static void InvokePassSequentialCommands(Dictionary<string, string> aPathCommandPair)
     {
+      var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
       int count = 0;
+
       mOutputWindowController.Write("Will be processed " + aPathCommandPair.Count + " files");
 
       List<Task> tasks = new List<Task>();
@@ -152,6 +154,13 @@ namespace ClangPowerTools
             Interlocked.Increment(ref count);
             mOutputWindowController.Write($"{count}: {pathCommand.Key}");
             //TODO display pathCommand value, if is in verbose mode
+
+
+            if (SettingsProvider.CompilerSettingsModel.VerboseMode)
+            {
+              mOutputWindowController.Write($"{count}: {pathCommand.Value}");
+            }
+
 
             runningProcesses.Add(process);
 
