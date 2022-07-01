@@ -387,15 +387,9 @@ namespace ClangPowerTools
 
       PowerShellWrapper.mOutputWindowController.JsonCompilationDbFilePathEvent += JsonCompilationDatabaseCommand.Instance.OpenInFileExplorer;
 
-      CompileCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
-      FindCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
-      TidyCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
-      JsonCompilationDatabaseCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
-      FormatCommand.Instance.FormatEvent += mCommandController.OnAfterFormatCommand;
 
-      DocumentationYamlCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
-      DocumentationHtmlCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
-      DocumentationMdCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
+      RunController.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
+      FormatCommand.Instance.FormatEvent += mCommandController.OnAfterFormatCommand;
 
       CompileCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
       TidyCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
@@ -458,15 +452,8 @@ namespace ClangPowerTools
 
       PowerShellWrapper.mOutputWindowController.JsonCompilationDbFilePathEvent -= JsonCompilationDatabaseCommand.Instance.OpenInFileExplorer;
 
-      CompileCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
-      FindCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
-      TidyCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
-      JsonCompilationDatabaseCommand.Instance.CloseDataStreamingEvent += mCommandController.OnAfterRunCommand;
+      RunController.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
       FormatCommand.Instance.FormatEvent -= mCommandController.OnAfterFormatCommand;
-
-      DocumentationYamlCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
-      DocumentationHtmlCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
-      DocumentationMdCommand.Instance.CloseDataStreamingEvent -= mCommandController.OnAfterRunCommand;
 
       CompileCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
       TidyCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;

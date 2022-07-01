@@ -1,4 +1,6 @@
-﻿using ClangPowerTools.Output;
+﻿using ClangPowerTools.Events;
+using ClangPowerTools.Output;
+using ClangPowerToolsShared.Commands;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,7 +21,6 @@ namespace ClangPowerTools
     public static DataReceivedEventHandler DataHandler { get; set; }
     public static EventHandler ExitedHandler { get; set; }
 
-    public static RunningProcesses runningProcesses = new RunningProcesses();
     public static OutputWindowController mOutputWindowController;
 
 
@@ -73,7 +74,7 @@ namespace ClangPowerTools
         process.Exited += ExitedHandler;
         process.Disposed += ExitedHandler;
 
-        runningProcesses.Add(process);
+        RunController.runningProcesses.Add(process);
 
         process.Start();
 
@@ -111,6 +112,10 @@ namespace ClangPowerTools
           Process process = new Process();
           try
           {
+            if (RunController.StopCommandActivated)
+            {
+              return;
+            }
             process.StartInfo = new ProcessStartInfo()
             {
               FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}",
@@ -162,7 +167,7 @@ namespace ClangPowerTools
             }
 
 
-            runningProcesses.Add(process);
+            RunController.runningProcesses.Add(process);
 
             process.Start();
 
@@ -170,7 +175,6 @@ namespace ClangPowerTools
             process.BeginOutputReadLine();
 
             process.WaitForExit();
-
           }
           catch (Exception e)
           {
@@ -229,7 +233,7 @@ namespace ClangPowerTools
       process.StartInfo.Arguments = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
         $" ''{getllvmScriptPath}'' {tool} '";
 
-      runningProcesses.Add(process);
+      RunController.runningProcesses.Add(process);
 
       try
       {

@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
+using ClangPowerToolsShared.Commands;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -90,15 +91,19 @@ namespace ClangPowerTools.Commands
 
     public void StopClangCommand(bool backgroundRunners)
     {
+      var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
       try
       {
         if (backgroundRunners == false)
-          StopCommandActivated = true;
+          RunController.StopCommandActivated = true;
 
-        if (PowerShellWrapper.runningProcesses.Exists(backgroundRunners) == false)
+        if (RunController.runningProcesses.Exists(backgroundRunners) == false)
           return;
-
-        PowerShellWrapper.runningProcesses.Kill(backgroundRunners);
+        
+        if(id != CommandIds.kClangFindRun)
+        {
+          RunController.runningProcesses.Kill(backgroundRunners);
+        }
         if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
         {
           string solutionPath = (dte as DTE2).Solution.FullName;

@@ -40,7 +40,7 @@ namespace ClangPowerTools.Output
 
     #region Properties
 
-
+    private static Mutex mutex = new Mutex();
     public List<string> Buffer => outputContent.Buffer;
 
     public bool IsBufferEmpty => 0 == outputContent.Buffer.Count;
@@ -138,8 +138,6 @@ namespace ClangPowerTools.Output
     #endregion
 
     #region Data Handlers
-
-    private static Mutex mutex = new Mutex();
 
     public void GetFilesFromOutput(string output)
     {

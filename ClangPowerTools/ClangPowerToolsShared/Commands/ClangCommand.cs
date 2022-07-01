@@ -4,6 +4,7 @@ using ClangPowerTools.Events;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.IgnoreActions;
 using ClangPowerTools.Services;
+using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.Commands.Models;
 using ClangPowerToolsShared.Helpers;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
@@ -45,13 +46,9 @@ namespace ClangPowerTools
     // private object 
 
     public event EventHandler<VsHierarchyDetectedEventArgs> HierarchyDetectedEvent;
-    public event EventHandler<CloseDataStreamingEventArgs> CloseDataStreamingEvent;
     public event EventHandler<ActiveDocumentEventArgs> ActiveDocumentEvent;
 
     public event EventHandler<ClangCommandMessageEventArgs> IgnoredItemsEvent;
-
-    protected static bool StopCommandActivated { get; set; } = false;
-
     protected static object mutex = new object();
 
     #endregion
@@ -193,11 +190,6 @@ namespace ClangPowerTools
       HierarchyDetectedEvent?.Invoke(this, e);
     }
 
-    protected void OnDataStreamClose(CloseDataStreamingEventArgs e)
-    {
-      CloseDataStreamingEvent?.Invoke(this, e);
-    }
-
     protected void OnIgnoreItem(ClangCommandMessageEventArgs e)
     {
       IgnoredItemsEvent?.Invoke(this, e);
@@ -212,14 +204,14 @@ namespace ClangPowerTools
       if (findToolWindow != null)
         findToolWindow.RunQuery();
 
-      if (StopCommandActivated)
+      if (RunController.StopCommandActivated)
       {
-        OnDataStreamClose(new CloseDataStreamingEventArgs(true));
-        StopCommandActivated = false;
+        RunController.OnDataStreamClose(new CloseDataStreamingEventArgs(true));
+        RunController.StopCommandActivated = false;
       }
       else
       {
-        OnDataStreamClose(new CloseDataStreamingEventArgs(false));
+        RunController.OnDataStreamClose(new CloseDataStreamingEventArgs(false));
       }
       DeleteJsonCompilationDB();
 
@@ -265,14 +257,14 @@ namespace ClangPowerTools
 
         DeleteJsonCompilationDB();
 
-        if (StopCommandActivated)
+        if (RunController.StopCommandActivated)
         {
-          OnDataStreamClose(new CloseDataStreamingEventArgs(true));
-          StopCommandActivated = false;
+          RunController.OnDataStreamClose(new CloseDataStreamingEventArgs(true));
+          RunController.StopCommandActivated = false;
         }
         else
         {
-          OnDataStreamClose(new CloseDataStreamingEventArgs(false));
+          RunController.OnDataStreamClose(new CloseDataStreamingEventArgs(false));
         }
       }
     }
@@ -333,10 +325,10 @@ namespace ClangPowerTools
         }
         PowerShellWrapper.Invoke(Script);
 
-        if (StopCommandActivated)
+        if (RunController.StopCommandActivated)
         {
-          OnDataStreamClose(new CloseDataStreamingEventArgs(true));
-          StopCommandActivated = false;
+          RunController.OnDataStreamClose(new CloseDataStreamingEventArgs(true));
+          RunController.StopCommandActivated = false;
         }
         else
         {
@@ -344,7 +336,7 @@ namespace ClangPowerTools
           {
             File.Delete(tempClangTidyFilePath);
           }
-          OnDataStreamClose(new CloseDataStreamingEventArgs(false));
+          RunController.OnDataStreamClose(new CloseDataStreamingEventArgs(false));
         }
 
       }
@@ -396,7 +388,7 @@ namespace ClangPowerTools
       }
 
       PowerShellWrapper.Invoke(Script);
-      OnDataStreamClose(new CloseDataStreamingEventArgs(false));
+      RunController.OnDataStreamClose(new CloseDataStreamingEventArgs(false));
     }
 
     private string GetProjectName()
