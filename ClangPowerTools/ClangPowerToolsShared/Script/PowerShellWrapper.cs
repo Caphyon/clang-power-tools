@@ -104,89 +104,63 @@ namespace ClangPowerTools
       mOutputWindowController.Write("Will be processed " + aPathCommandPair.Count + " files");
 
       List<Task> tasks = new List<Task>();
-      //new Thread(() =>
-      //{
-        foreach (KeyValuePair<string, string> pathCommand in aPathCommandPair)
+      Parallel.ForEach(aPathCommandPair, pathCommand =>
+      {
+        Process process = new Process();
+        try
         {
-          tasks.Add(Task.Factory.StartNew(delegate
+          if (RunController.StopCommandActivated)
           {
-            Process process = new Process();
-            try
-            {
-              if (RunController.StopCommandActivated)
-              {
-                return;
-              }
-              process.StartInfo = new ProcessStartInfo()
-              {
-                FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}",
-                RedirectStandardError = true,
-                RedirectStandardOutput = true,
-                RedirectStandardInput = true,
-                CreateNoWindow = true,
-                UseShellExecute = false,
+            return;
+          }
+          process.StartInfo = new ProcessStartInfo()
+          {
+            FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}",
+            RedirectStandardError = true,
+            RedirectStandardOutput = true,
+            RedirectStandardInput = true,
+            CreateNoWindow = true,
+            UseShellExecute = false,
+            Arguments = Regex.Replace(pathCommand.Value, @"([\w|\\])'([\w|\\])", "$1''''$2")
+          };
+          process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
 
-                /*
-                When we are dealing with file paths that contain single quotes, we are running into 
-                trouble because whey are messing up our script invocation text. The situation is further 
-                complicated by the fact that this invocation is imbricated (invoke inside invoke).
-                Explanation: we are invoking powershell.exe and telling it using -command what to invoke itself, 
-                which would be our very own clang-buils.ps1 script. 
+          var customTidyExecutable = GetCustomTidyPath();
 
-                All this script invocation command is enveloped in single quotes. One, quick to mind solution 
-                would be to use double quotes. However, this is not practical because it would lead to further 
-                issues down the road since those strings are interpolated (and the $ sign is valid in a Windows file path).
+          if (string.IsNullOrWhiteSpace(customTidyExecutable) == false)
+            process.StartInfo.EnvironmentVariables[ScriptConstants.kEnvrionmentTidyPath] = customTidyExecutable;
 
-                We have to keep using single quotes, but make sure that we double escape them when we find them.
-                IMPORTANT: there are single quotes which we should not escape. 
-                In order to precisely match the quotes that we need, we are exploiting the following detail:
-                file paths containing single quotes will never have spaces to the left or right of them, but the ones we 
-                are not interested in will have space either to the left or the right.
-                 */
-                Arguments = Regex.Replace(pathCommand.Value, @"([\w|\\])'([\w|\\])", "$1''''$2")
-              };
-              process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
+          process.EnableRaisingEvents = true;
+          process.ErrorDataReceived += DataErrorHandler;
+          process.OutputDataReceived += DataHandler;
+          process.Exited += ExitedHandler;
+          process.Disposed += ExitedHandler;
+          Interlocked.Increment(ref count);
+          mOutputWindowController.Write($"{count}: {pathCommand.Key}");
 
-              var customTidyExecutable = GetCustomTidyPath();
+          //Display pathCommand value, if is in verbose mode
+          if (SettingsProvider.CompilerSettingsModel.VerboseMode)
+          {
+            mOutputWindowController.Write($"{count}: {pathCommand.Value}");
+          }
 
-              if (string.IsNullOrWhiteSpace(customTidyExecutable) == false)
-                process.StartInfo.EnvironmentVariables[ScriptConstants.kEnvrionmentTidyPath] = customTidyExecutable;
+          RunController.runningProcesses.Add(process);
 
-              process.EnableRaisingEvents = true;
-              process.ErrorDataReceived += DataErrorHandler;
-              process.OutputDataReceived += DataHandler;
-              process.Exited += ExitedHandler;
-              process.Disposed += ExitedHandler;
-              Interlocked.Increment(ref count);
-              mOutputWindowController.Write($"{count}: {pathCommand.Key}");
+          process.Start();
 
-              //Display pathCommand value, if is in verbose mode
-              if (SettingsProvider.CompilerSettingsModel.VerboseMode)
-              {
-                mOutputWindowController.Write($"{count}: {pathCommand.Value}");
-              }
+          process.BeginErrorReadLine();
+          process.BeginOutputReadLine();
 
-              RunController.runningProcesses.Add(process);
-
-              process.Start();
-
-              process.BeginErrorReadLine();
-              process.BeginOutputReadLine();
-
-              process.WaitForExit();
-            }
-            catch (Exception e)
-            {
-              process.EnableRaisingEvents = false;
-              process.Close();
-
-              throw e;
-            }
-
-          }, CancellationToken.None, TaskCreationOptions.DenyChildAttach, TaskScheduler.Default));
+          process.WaitForExit();
         }
-        Task.WaitAll(tasks.ToArray());
-      //}).Start();
+        catch (Exception e)
+        {
+          process.EnableRaisingEvents = false;
+          process.Close();
+
+          throw e;
+        }
+      });
     }
 
 
