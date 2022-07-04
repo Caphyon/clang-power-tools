@@ -99,11 +99,8 @@ namespace ClangPowerTools.Commands
 
         if (RunController.runningProcesses.Exists(backgroundRunners) == false)
           return;
-        
-        if(id != CommandIds.kClangFindRun)
-        {
-          RunController.runningProcesses.Kill(backgroundRunners);
-        }
+
+        RunController.runningProcesses.Kill(backgroundRunners);
         if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
         {
           string solutionPath = (dte as DTE2).Solution.FullName;
