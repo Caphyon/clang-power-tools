@@ -8,9 +8,12 @@ using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
 using ClangPowerToolsShared.Commands;
+using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using EnvDTE;
 using EnvDTE80;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -48,6 +51,7 @@ namespace ClangPowerTools
     private bool mSaveCommandWasGiven = false;
     private bool mFormatAfterTidyFlag = false;
     private string oldActiveDocumentName = null;
+    private AsyncPackage package; 
 
     private readonly object mutex = new object();
 
@@ -61,6 +65,7 @@ namespace ClangPowerTools
 
     public CommandController(AsyncPackage aAsyncPackage)
     {
+      package = aAsyncPackage;
       if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
       {
         var dte2 = (DTE2)dte;
@@ -211,6 +216,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kClangFind:
           {
+            HideTidyToolWindow();
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kClangFind);
 
@@ -250,6 +256,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kTidyId:
           {
+            HideFindToolWindow();
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kTidyId);
 
@@ -261,6 +268,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kTidyToolbarId:
           {
+            HideFindToolWindow();
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kTidyId);
 
@@ -670,7 +678,8 @@ namespace ClangPowerTools
         (command.CommandID.ID == CommandIds.kCompileId || command.CommandID.ID == CommandIds.kTidyId ||
         command.CommandID.ID == CommandIds.kJsonCompilationDatabase || command.CommandID.ID == CommandIds.kClangFindRun ||
         command.CommandID.ID == CommandIds.kIgnoreCompileId || command.CommandID.ID == CommandIds.kDocumentationMdId ||
-        command.CommandID.ID == CommandIds.kDocumentationHtmlId || command.CommandID.ID == CommandIds.kDocumentationYamlId) &&
+        command.CommandID.ID == CommandIds.kDocumentationHtmlId || command.CommandID.ID == CommandIds.kDocumentationYamlId ||
+        command.CommandID.ID == CommandIds.kClangFind) &&
         ScriptConstants.kAcceptedFileExtensionsWithoutHeaders.Contains(Path.GetExtension(itemsCollector.Items[0].GetName())) == false)
       {
         command.Visible = command.Enabled = false;
@@ -727,6 +736,26 @@ namespace ClangPowerTools
       OnBeforeClangCommand(CommandIds.kCompileId);
       await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu);
       OnAfterClangCommand();
+    }
+
+    private int HideFindToolWindow()
+    {
+      var findToolWindow = package.FindToolWindow(typeof(FindToolWindow), 0, false);
+      if (findToolWindow is null) return VSConstants.S_OK;
+      var findWindow = findToolWindow.Frame as IVsWindowFrame;
+      findWindow.Hide();
+
+      return VSConstants.S_OK;
+    }
+
+    private int HideTidyToolWindow()
+    {
+      var tidyToolWindow = package.FindToolWindow(typeof(TidyToolWindow), 0, false);
+      if (tidyToolWindow is null) return VSConstants.S_OK;
+      var tidyWindow = tidyToolWindow.Frame as IVsWindowFrame;
+      tidyWindow.Hide();
+
+      return VSConstants.S_OK;
     }
 
     public void OnBeforeSave(object sender, Document aDocument)

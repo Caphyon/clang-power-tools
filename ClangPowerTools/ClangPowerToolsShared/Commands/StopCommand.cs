@@ -6,6 +6,7 @@ using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
+using System.Threading;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
@@ -89,6 +90,7 @@ namespace ClangPowerTools.Commands
       });
     }
 
+    private static Mutex mutex = new Mutex();
     public void StopClangCommand(bool backgroundRunners)
     {
       var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
@@ -100,7 +102,9 @@ namespace ClangPowerTools.Commands
         if (RunController.runningProcesses.Exists(backgroundRunners) == false)
           return;
 
+        mutex.WaitOne();
         RunController.runningProcesses.Kill(backgroundRunners);
+        mutex.ReleaseMutex();
         if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
         {
           string solutionPath = (dte as DTE2).Solution.FullName;
