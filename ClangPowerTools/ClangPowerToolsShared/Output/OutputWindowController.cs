@@ -50,6 +50,7 @@ namespace ClangPowerTools.Output
     public bool HasErrors => 0 != outputContent.Errors.Count;
 
     private IVsHierarchy Hierarchy { get; set; }
+    private int machesNr = 0;
 
     private HashSet<string> paths;
     private List<string> tempPaths;
@@ -233,10 +234,9 @@ namespace ClangPowerTools.Output
             && matchResult.Groups[0].Value != null
             && matchResult.Groups[0].Value.ToString() != string.Empty)
           {
-            outputResult = "🔎 We found " + matchResult.Groups[0].Value.ToString();
+            machesNr += Int32.Parse(matchResult.Groups[1].Value);
           }
         }
-        Write(outputResult);
       }
       CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
 
@@ -286,6 +286,16 @@ namespace ClangPowerTools.Output
         ErrorDetectedEvent?.Invoke(this, new ErrorDetectedEventArgs(Errors));
       }
       mutex.ReleaseMutex();
+    }
+
+    public void WriteMatchesNr()
+    {
+      Write($"🔎 We found {machesNr.ToString()} matches");
+    }
+
+    public void ResetMatchesNr()
+    {
+      machesNr = 0;
     }
 
     public void OnEncodingErrorDetected(object sender, EventArgs e)

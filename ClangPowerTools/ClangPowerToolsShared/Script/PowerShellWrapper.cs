@@ -102,6 +102,7 @@ namespace ClangPowerTools
       int count = 0;
 
       mOutputWindowController.Write("Will be processed " + aPathCommandPair.Count + " files");
+      mOutputWindowController.ResetMatchesNr();
 
       List<Task> tasks = new List<Task>();
       Parallel.ForEach(aPathCommandPair, pathCommand =>
@@ -161,6 +162,7 @@ namespace ClangPowerTools
           throw e;
         }
       });
+      mOutputWindowController.WriteMatchesNr();
     }
 
 
