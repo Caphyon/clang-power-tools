@@ -35,7 +35,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
       pathToClangQuery = string.Empty;
     }
 
-    public void LaunchCommand(int commandId, List<string> paths, FindToolWindowModel findToolWindowModel)
+    public void LaunchCommand(int commandId, FindToolWindowModel findToolWindowModel)
     {
       SetCommandId(commandId);
       if (pathToClangQuery == string.Empty)

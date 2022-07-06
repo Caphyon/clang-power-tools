@@ -47,7 +47,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public void SelectCommandToRun(int commandId)
     {
       SetCommandId(commandId);
-      LaunchCommand(currentCommandId, filesPaths, FindToolWindowModel);
+      LaunchCommand(currentCommandId, FindToolWindowModel);
     }
 
     public void RunCommandFromView()
