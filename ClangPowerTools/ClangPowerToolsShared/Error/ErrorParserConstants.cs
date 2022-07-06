@@ -16,7 +16,7 @@
     public const string kMatchMessageRegex = @"<([A-Z]:.+?\.(cpp|cu|cc|cp|tlh|c|cxx|tli|h|hh|hpp|hxx)):(\d+):(\d+),\scol:(\d+)>";
     public const string kMatchTidyFileRegex = @"([A-Z]:\\.+?\.(cpp|cu|cc|cp|tlh|c|cxx|tli|h|hh|hpp|hxx))(\W|$)";
     public const string kNumberMatchesRegex = @"(\d+)\s(matches|match)\.";
-    public const string kJsonCompilationDbFilePathRegex = @"(.\:(\\|\/)[ \S+\\\/.]*json)";
+    public const string kJsonCompilationDbFilePathRegex = @"Exported JSON Compilation Database to (.+\.json)";
 
     #endregion
   }

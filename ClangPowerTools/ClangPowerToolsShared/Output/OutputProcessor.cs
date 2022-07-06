@@ -119,7 +119,7 @@ namespace ClangPowerTools.Output
     }
 
 
-    private string GetJsonFilePath(Match match) => match.Groups[0].Value;
+    private string GetJsonFilePath(Match match) => match.Groups[1].Value;
 
     #endregion
 
