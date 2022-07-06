@@ -33,6 +33,7 @@ namespace ClangPowerTools
     public bool vsBuildRunning = false;
     public bool tokenExists = false;
     public bool clearOutputOnFormat = false;
+    public bool keepJsonCompilationDb = false;
 
     public bool showOpenFolderWarning = true;
 
@@ -51,7 +52,7 @@ namespace ClangPowerTools
     private bool mSaveCommandWasGiven = false;
     private bool mFormatAfterTidyFlag = false;
     private string oldActiveDocumentName = null;
-    private AsyncPackage package; 
+    private AsyncPackage package;
 
     private readonly object mutex = new object();
 
@@ -216,6 +217,8 @@ namespace ClangPowerTools
           }
         case CommandIds.kClangFind:
           {
+            keepJsonCompilationDb = false;
+
             HideTidyToolWindow();
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kClangFind);
@@ -226,8 +229,13 @@ namespace ClangPowerTools
           }
         case CommandIds.kClangFindRun:
           {
-            await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu,
-            null, false);
+            if (!keepJsonCompilationDb)
+            {
+              await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu,
+              null, false);
+            }
+
+            keepJsonCompilationDb = true;
 
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kClangFindRun);
@@ -334,7 +342,7 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kDocumentationYamlId);
 
-            await DocumentationYamlCommand.Instance.GenerateDocumentationAsync( 
+            await DocumentationYamlCommand.Instance.GenerateDocumentationAsync(
               CommandIds.kDocumentationYamlId);
 
             OnAfterClangCommand();
@@ -652,7 +660,7 @@ namespace ClangPowerTools
       {
         command.Text = "Tidy-Fix";
       }
-      else if(command.CommandID.ID == CommandIds.kTidyId || command.CommandID.ID == CommandIds.kTidyToolbarId)
+      else if (command.CommandID.ID == CommandIds.kTidyId || command.CommandID.ID == CommandIds.kTidyToolbarId)
       {
         command.Text = "Tidy";
       }

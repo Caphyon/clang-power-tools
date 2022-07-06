@@ -213,8 +213,6 @@ namespace ClangPowerTools
       {
         RunController.OnDataStreamClose(new CloseDataStreamingEventArgs(false));
       }
-      DeleteJsonCompilationDB();
-
     }
 
     /// <summary>
