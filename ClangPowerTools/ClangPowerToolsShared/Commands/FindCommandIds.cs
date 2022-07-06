@@ -7,7 +7,7 @@ namespace ClangPowerToolsShared.Commands
   {
     public static List<KeyValuePair<int, string>> matchers = new List<KeyValuePair<int, string>>()
     {
-        new KeyValuePair<int, string>(1,"Called function with a default argument"),
+        new KeyValuePair<int, string>(1,"Function called with default argument(s)"),
     };
 
     public static List<KeyValuePair<int, string>> Matchers { get { return matchers; } }

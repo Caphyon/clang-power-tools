@@ -86,7 +86,7 @@
         Grid.Row="0"
         Grid.Column="0"
         Visibility="{Binding FindToolWindowModel.DefaultArgsModel.Visibility}"
-        Content="CalledFunction:"
+        Content="Called function:"
         Height="28"
         HorizontalAlignment="Left"
         Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}" />
@@ -106,7 +106,7 @@
       <Label Grid.Row="1"
              Grid.Column="0"
              Visibility="{Binding FindToolWindowModel.DefaultArgsModel.Visibility}"
-             Content="DefaultArgPosition:"
+             Content="Explicit arguments:"
              Height="28"
              HorizontalAlignment="Left"
              Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}" />
@@ -124,6 +124,14 @@
           </Style>
         </TextBox.Resources>
       </TextBox>
+      <Label Grid.Row="1"
+             Grid.Column="2"
+             Visibility="{Binding FindToolWindowModel.DefaultArgsModel.Visibility}"
+             Content="or less"
+             Height="28"
+             Margin="60,10,10,10"
+             HorizontalAlignment="Left"
+             Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}" />
     </Grid>
 
     <Button

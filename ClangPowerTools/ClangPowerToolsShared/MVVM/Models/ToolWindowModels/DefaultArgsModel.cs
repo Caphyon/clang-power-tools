@@ -45,9 +45,11 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       }
     }
 
-    public string Details { get; } = "Matches all called expressions with a default argument on a given position.\n" +
-    "For example:\nvoid foo(int a = 0, int b = 1) { }\n\nvoid main() {\nfoo( );\nfoo(1);\n}" +
-      "\nCalledFunction: foo\nDefaultArgPosition: 0\n🔎 Will match foo( )";
+    public string Details { get; } = "Matches invocations of a function where some of the parameters are not explicitly set (default parameters).\n\n" +
+    "For example:\nvoid test(int p1 = 10, string p2 = \"a\") { }\n" +
+      "test();               // Matched by 1 or 0 explicit arguments\n" +
+      "test(20);           // Matched by 1 explicit arguments\n" +
+      "test(20, \"Z\");    // Never matched \n";
 
 
     public void Hide()
