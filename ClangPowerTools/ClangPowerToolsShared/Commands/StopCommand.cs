@@ -1,10 +1,12 @@
 ﻿using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
+using ClangPowerToolsShared.Commands;
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
+using System.Threading;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
@@ -88,17 +90,21 @@ namespace ClangPowerTools.Commands
       });
     }
 
+    private static Mutex mutex = new Mutex();
     public void StopClangCommand(bool backgroundRunners)
     {
+      var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
       try
       {
         if (backgroundRunners == false)
-          StopCommandActivated = true;
+          RunController.StopCommandActivated = true;
 
-        if (runningProcesses.Exists(backgroundRunners) == false)
+        if (RunController.runningProcesses.Exists(backgroundRunners) == false)
           return;
 
-        runningProcesses.Kill(backgroundRunners);
+        mutex.WaitOne();
+        RunController.runningProcesses.Kill(backgroundRunners);
+        mutex.ReleaseMutex();
         if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
         {
           string solutionPath = (dte as DTE2).Solution.FullName;

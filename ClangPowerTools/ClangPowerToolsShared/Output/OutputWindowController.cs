@@ -5,7 +5,6 @@ using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
-using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -15,6 +14,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace ClangPowerTools.Output
 {
@@ -40,7 +40,7 @@ namespace ClangPowerTools.Output
 
     #region Properties
 
-
+    private static Mutex mutex = new Mutex();
     public List<string> Buffer => outputContent.Buffer;
 
     public bool IsBufferEmpty => 0 == outputContent.Buffer.Count;
@@ -50,6 +50,7 @@ namespace ClangPowerTools.Output
     public bool HasErrors => 0 != outputContent.Errors.Count;
 
     private IVsHierarchy Hierarchy { get; set; }
+    private int machesNr = 0;
 
     private HashSet<string> paths;
     private List<string> tempPaths;
@@ -112,8 +113,10 @@ namespace ClangPowerTools.Output
       if (string.IsNullOrWhiteSpace(aMessage))
         return;
 
+      mutex.WaitOne();
       var outputWindow = outputWindowBuilder.GetResult();
       outputWindow.Pane.OutputStringThreadSafe(aMessage + "\n");
+      mutex.ReleaseMutex();
     }
 
     public void Write(object sender, ClangCommandMessageEventArgs e)
@@ -137,13 +140,12 @@ namespace ClangPowerTools.Output
 
     #region Data Handlers
 
-
     public void GetFilesFromOutput(string output)
     {
       if (output == null)
         return;
 
-      Regex regex = new Regex(@"([A-Z]:\\.+?\.(cpp|cu|cc|cp|tlh|c|cxx|tli|h|hh|hpp|hxx))(\W|$)");
+      Regex regex = new Regex(ErrorParserConstants.kMatchTidyFileRegex);
       Match match = regex.Match(output);
 
       while (match.Success)
@@ -155,14 +157,24 @@ namespace ClangPowerTools.Output
 
     public void OutputDataReceived(object sender, DataReceivedEventArgs e)
     {
+      var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
       if (null == e.Data)
         return;
 
       if (outputContent.MissingLLVM)
         return;
 
-      GetFilesFromOutput(e.Data.ToString());
-      if (VSConstants.S_FALSE == outputProcessor.ProcessData(e.Data, Hierarchy, outputContent))
+      if (id == CommandIds.kTidyId || id == CommandIds.kTidyToolbarId
+        || id == CommandIds.kTidyToolWindowId || id == CommandIds.kTidyFixId
+        || id == CommandIds.kTidyFixToolbarId)
+      {
+        GetFilesFromOutput(e.Data.ToString());
+      }
+
+      mutex.WaitOne();
+      var result = outputProcessor.ProcessData(e.Data, Hierarchy, outputContent);
+      mutex.ReleaseMutex();
+      if (VSConstants.S_FALSE == result)
       {
         if (outputContent.MissingLLVM)
         {
@@ -173,6 +185,11 @@ namespace ClangPowerTools.Output
 
       if (!string.IsNullOrWhiteSpace(outputContent.JsonFilePath))
         JsonCompilationDbFilePathEvent?.Invoke(this, new JsonFilePathArgs(outputContent.JsonFilePath));
+
+      if ((id == CommandIds.kClangFind || id == CommandIds.kClangFindRun) &&
+        !SettingsProvider.CompilerSettingsModel.VerboseMode)
+        return;
+
       Write(outputContent.Text);
     }
 
@@ -183,27 +200,49 @@ namespace ClangPowerTools.Output
 
       if (outputContent.MissingLLVM)
         return;
-
-      if (VSConstants.S_FALSE == outputProcessor.ProcessData(e.Data, Hierarchy, outputContent))
+      mutex.WaitOne();
+      var result = outputProcessor.ProcessData(e.Data, Hierarchy, outputContent);
+      mutex.ReleaseMutex();
+      if (VSConstants.S_FALSE == result)
         return;
 
       if (!string.IsNullOrWhiteSpace(outputContent.JsonFilePath))
         JsonCompilationDbFilePathEvent?.Invoke(this, new JsonFilePathArgs(outputContent.JsonFilePath));
+
+      var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
+      if ((id == CommandIds.kClangFind || id == CommandIds.kClangFindRun) &&
+        !SettingsProvider.CompilerSettingsModel.VerboseMode)
+        return;
 
       Write(outputContent.Text);
     }
 
     public void ClosedDataConnection(object sender, EventArgs e)
     {
+      mutex.WaitOne();
+      var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
+
       tempPaths.Clear();
       if (Buffer.Count != 0 && outputContent.MissingLLVM == false)
-        Write(String.Join("\n", Buffer));
-
+      {
+        var outputResult = String.Join("\n", Buffer);
+        if (id == CommandIds.kClangFindRun)
+        {
+          Regex regex = new Regex(ErrorParserConstants.kNumberMatchesRegex);
+          var matchResult = regex.Match(outputResult);
+          if (matchResult != null && matchResult.Groups[0] != null
+            && matchResult.Groups[0].Value != null
+            && matchResult.Groups[0].Value.ToString() != string.Empty)
+          {
+            machesNr += Int32.Parse(matchResult.Groups[1].Value);
+          }
+        }
+      }
       CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
+
       OnErrorDetected(this, e);
 
       //open tidy tool window and pass paths
-      var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
       var tidySettings = SettingsProvider.TidySettingsModel;
       if (id == CommandIds.kTidyToolWindowId || (id == CommandIds.kTidyFixId && !tidySettings.ApplyTidyFix))
       {
@@ -214,6 +253,7 @@ namespace ClangPowerTools.Output
         CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowFilesId, CommandUILocation.ContextMenu, tempPaths);
         paths.Clear();
       }
+      mutex.ReleaseMutex();
     }
 
     public void OnFileHierarchyDetected(object sender, VsHierarchyDetectedEventArgs e)
@@ -225,6 +265,7 @@ namespace ClangPowerTools.Output
 
     public void OnErrorDetected(object sender, EventArgs e)
     {
+      mutex.WaitOne();
       if (Errors.Count > 0)
       {
         TaskErrorViewModel.Errors = Errors.ToList();
@@ -244,18 +285,22 @@ namespace ClangPowerTools.Output
 
         ErrorDetectedEvent?.Invoke(this, new ErrorDetectedEventArgs(Errors));
       }
+      mutex.ReleaseMutex();
+    }
+
+    public void WriteMatchesNr()
+    {
+      Write($"🔎 We found {machesNr.ToString()} matches");
+    }
+
+    public void ResetMatchesNr()
+    {
+      machesNr = 0;
     }
 
     public void OnEncodingErrorDetected(object sender, EventArgs e)
     {
       HasEncodingErrorEvent?.Invoke(this, new HasEncodingErrorEventArgs(outputContent));
-    }
-
-    private bool CheckTidyToolWindowExists()
-    {
-      var tidyToolWindow = package.FindToolWindow(typeof(TidyToolWindow), 0, false);
-      if (tidyToolWindow is not null) return true;
-      return false;
     }
 
     #endregion

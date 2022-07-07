@@ -120,6 +120,16 @@
 				</Strings>
 			</Button>
 
+      <!-- Clang Find Context Menu button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="FindId" priority="0x0004" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
+        <Icon guid="guidImageFind" id="Find" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Find</ButtonText>
+        </Strings>
+      </Button>
+
 			<!-- Stop Clang execution Context Menu button -->
 			<Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0005" type="Button">
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
@@ -276,6 +286,7 @@
 			<Bitmap guid="guidImageTidy" href="..\ClangPowerToolsShared\Resources\TidyIcon.png" usedList="Tidy" />
 			<Bitmap guid="guidImageCompile" href="..\ClangPowerToolsShared\Resources\CompileIcon.png" usedList="Compile" />
 			<Bitmap guid="guidImageFormat" href="..\ClangPowerToolsShared\Resources\ClangFormatIcon.png" usedList="Format" />
+			<Bitmap guid="guidImageFind" href="..\ClangPowerToolsShared\Resources\[CPT]Find.png" usedList="Find" />
 			<Bitmap guid="guidImageStopClang" href="..\ClangPowerToolsShared\Resources\StopCommandIcon.png" usedList="StopClang" />
 			<Bitmap guid="guidImageSettings" href="..\ClangPowerToolsShared\Resources\SettingsIcon.png" usedList="Settings" />
 			<Bitmap guid="guidImageIgnoreFormat" href="..\ClangPowerToolsShared\Resources\IgnoreIcon.png" usedList="IgnoreFormat" />
@@ -393,6 +404,7 @@
 
 			<IDSymbol name="ClangFormatId" value="0x0105" />
 			<IDSymbol name="ClangFormatToolbarId" value="0x1103" />
+			<IDSymbol name="FindId" value="0x0115" />
 
 			<IDSymbol name="StopClangId" value="0x0104" />
 			<IDSymbol name="IgnoreFormatId" value="0x0107" />
@@ -452,6 +464,11 @@
 		<GuidSymbol name="guidImageFormat" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c71a}">
 			<IDSymbol name="Format" value="1" />
 		</GuidSymbol>
+
+    <!-- Define clang find image -->
+    <GuidSymbol name="guidImageFind" value="{d46b5b3e-8c5a-4a6d-972f-37146878a106}">
+      <IDSymbol name="Find" value="1" />
+    </GuidSymbol>
 
 		<!-- Define Logout image -->
 		<GuidSymbol name="guidImageLogout" value="{6ef146ba-e044-43ab-989d-c4a1d6d5c72a}">

@@ -21,7 +21,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)Commands\DocumentationHtmlCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\DocumentationMdCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\DocumentationYamlCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\FindCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\FindCommandIds.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\RunController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\GenerateDocumentation.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\MatchConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\FindController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\DefaultArgsModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\FindToolWindowModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\FindToolWindowViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\DialogWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\BackgroundTidy\PowerShellWrapperBackground.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\BasicCommand.cs" />
@@ -146,7 +154,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\FileModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\FormatSettingsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\GeneralSettingsModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyToolWindowModels\IconModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\IconModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\InputDataModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\LicenseModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\LlvmModel.cs" />
@@ -155,9 +163,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\SelectedFileModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyCheckModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidySettingsModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyToolWindowModels\CountStateFilesModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyToolWindowModels\FileType.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TidyToolWindowModels\TidyToolWindowModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\CountStateFilesModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\FileType.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\TidyToolWindowModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToggleModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\TokenModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\UserModel.cs" />
@@ -197,12 +205,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\ToggleMultipleDataViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\TidyToolWindowController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TrialExpiredViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\FindToolWindowView.xaml.cs">
+      <DependentUpon>FindToolWindowView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\FolderExplorerView.xaml.cs">
       <DependentUpon>FolderExplorerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\TidyToolWindowView.xaml.cs">
       <DependentUpon>TidyToolWindowView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\ToolWindows\FindToolWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\ToolWindows\TidyToolWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\WebApi\WebApiUrl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\XmlSerializer.cs" />
@@ -315,6 +327,10 @@
     <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\CompilerSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\FindToolWindowView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\FolderExplorerView.xaml">
       <SubType>Designer</SubType>

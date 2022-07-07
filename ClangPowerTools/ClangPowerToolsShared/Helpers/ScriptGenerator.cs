@@ -52,7 +52,7 @@ namespace ClangPowerTools.Helpers
       return string.Join(" ", tokens);
     }
 
-    private static string JoinPathsToStringScript(List<string> paths)
+    public static string JoinPathsToStringScript(List<string> paths)
     {
       StringBuilder stringBuilder = new StringBuilder("(''");
       foreach (string path in paths)

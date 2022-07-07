@@ -50,9 +50,19 @@ namespace ClangPowerTools.Output
         aOutputContent.HasEncodingError = true;
       }
 
-      if (mErrorDetector.Detect(text, ErrorParserConstants.kErrorMessageRegex, out Match aMatchResult))
+      if (CommandControllerInstance.CommandController.GetCurrentCommandId() == CommandIds.kClangFindRun
+        && mErrorDetector.Detect(text, ErrorParserConstants.kMatchMessageRegex, out Match aMatchResultt))
       {
-        GetOutputAndErrors(text, aHierarchy, out string outputText, out List<TaskErrorModel> aDetectedErrors);
+        GetOutputAndErrors(text, aHierarchy, out string outputText, out List<TaskErrorModel> aDetectedErrors, ErrorParserConstants.kMatchMessageRegex);
+        aOutputContent.Text = outputText;
+        aOutputContent.Errors.UnionWith(aDetectedErrors);
+        aOutputContent.Buffer.Clear();
+        return VSConstants.S_OK;
+      }
+      else if (CommandControllerInstance.CommandController.GetCurrentCommandId() != CommandIds.kClangFindRun &&
+              mErrorDetector.Detect(text, ErrorParserConstants.kErrorMessageRegex, out Match aMatchResult))
+      {
+        GetOutputAndErrors(text, aHierarchy, out string outputText, out List<TaskErrorModel> aDetectedErrors, ErrorParserConstants.kErrorMessageRegex);
         aOutputContent.Text = outputText;
         aOutputContent.Errors.UnionWith(aDetectedErrors);
         aOutputContent.Buffer.Clear();
@@ -74,12 +84,12 @@ namespace ClangPowerTools.Output
     #region Private Methods
 
     private void GetOutputAndErrors(string aText, IVsHierarchy aHierarchy,
-      out string aOutputText, out List<TaskErrorModel> aDetectedErrors)
+      out string aOutputText, out List<TaskErrorModel> aDetectedErrors, string parser)
     {
       var aOutputBuilder = new StringBuilder();
       aDetectedErrors = new List<TaskErrorModel>();
 
-      while (mErrorDetector.Detect(aText, ErrorParserConstants.kErrorMessageRegex, out Match aMatchResult))
+      while (mErrorDetector.Detect(aText, parser, out Match aMatchResult))
       {
         aDetectedErrors.Add(GetDetectedError(aHierarchy, aMatchResult));
         aOutputBuilder.Append(GetOutput(ref aText, aDetectedErrors.Last().FullMessage));
@@ -109,7 +119,7 @@ namespace ClangPowerTools.Output
     }
 
 
-    private string GetJsonFilePath(Match match) => match.Groups[0].Value;
+    private string GetJsonFilePath(Match match) => match.Groups[1].Value;
 
     #endregion
 

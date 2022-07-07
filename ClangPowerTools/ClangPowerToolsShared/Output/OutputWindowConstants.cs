@@ -22,6 +22,8 @@ namespace ClangPowerTools
       {CommandIds.kDocumentationYamlId, "Clang Generate Documentation Yaml"},
       {CommandIds.kDocumentationMdId, "Clang Generate Documentation Md"},
       {CommandIds.kClangFormat, "Clang Format"},
+      {CommandIds.kClangFind, "Clang open Find Tool Window"},
+      {CommandIds.kClangFindRun, "Clang Find"},
       {CommandIds.kClangFormatToolbarId, "Clang Format"},
       {CommandIds.kJsonCompilationDatabase, "JSON Compilation Database"}
     };

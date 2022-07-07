@@ -1,0 +1,181 @@
+﻿<UserControl x:Class="ClangPowerTools.Views.FindToolWindowView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:ClangPowerTools"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:views="clr-namespace:ClangPowerTools.MVVM.Views"
+             xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
+             d:DesignHeight="700"
+             d:DesignWidth="350"
+             mc:Ignorable="d">
+
+  <UserControl.Resources>
+
+  </UserControl.Resources>
+
+  <Grid>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="10" />
+      <ColumnDefinition Width="*" />
+      <ColumnDefinition Width="10" />
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="20" />
+      <RowDefinition Height="20" />
+      <RowDefinition Height="70" />
+      <RowDefinition Height="120" />
+      <RowDefinition Height="40" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="10" />
+    </Grid.RowDefinitions>
+
+    <TextBlock Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom">
+          <Hyperlink Foreground="#4096ff"
+                     FontSize="12"
+                     RequestNavigate="Hyperlink_Feedback"
+                     NavigateUri="https://clangpowertools.com/contact.html">
+              <TextBlock
+                         Text="Propose a matcher" />
+          </Hyperlink>
+    </TextBlock>
+
+    <ListView x:Name="FilesList"
+                Grid.Row="2"
+                Grid.Column="1"
+                Background="Transparent"
+                SelectionMode="Single"
+                BorderBrush="{DynamicResource {x:Static vsfx:VsBrushes.AccentDarkKey}}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                Visibility="Visible"
+                PreviewMouseLeftButtonUp="Matcher_Click"
+                ItemsSource="{Binding Matchers}">
+        <ListView.ItemTemplate>
+          <DataTemplate>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+              </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="30" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Column="1"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Center"
+                         Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
+                         Text="{Binding Value}" />
+            </Grid>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+      </ListView>
+
+    <Grid Grid.Row="3" Grid.Column="1">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="110" />
+        <ColumnDefinition Width="5" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="50" />
+        <RowDefinition Height="50" />
+      </Grid.RowDefinitions>
+      <Label 
+        Grid.Row="0"
+        Grid.Column="0"
+        Visibility="{Binding FindToolWindowModel.DefaultArgsModel.Visibility}"
+        Content="Called function:"
+        Height="28"
+        HorizontalAlignment="Left"
+        Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}" />
+      <TextBox Grid.Row="0"
+               Grid.Column="2"
+               Visibility="{Binding FindToolWindowModel.DefaultArgsModel.Visibility}" 
+               Height="18"
+               Text="{Binding FindToolWindowModel.DefaultArgsModel.FunctionName}"
+               Name="BaseTextBox"
+               Opacity="0.8">
+        <TextBox.Resources>
+          <Style TargetType="{x:Type Border}">
+            <Setter Property="CornerRadius" Value="4"/>
+          </Style>
+        </TextBox.Resources>
+      </TextBox>
+      <Label Grid.Row="1"
+             Grid.Column="0"
+             Visibility="{Binding FindToolWindowModel.DefaultArgsModel.Visibility}"
+             Content="Explicit arguments:"
+             Height="28"
+             HorizontalAlignment="Left"
+             Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}" />
+      <TextBox Grid.Row="1"
+               Grid.Column="2"
+               Visibility="{Binding FindToolWindowModel.DefaultArgsModel.Visibility}"
+               Height="18"
+               Width="60"
+               HorizontalAlignment="Left"
+               Text="{Binding FindToolWindowModel.DefaultArgsModel.DefaultArgsPosition}"
+               Opacity="0.8">
+        <TextBox.Resources>
+          <Style TargetType="{x:Type Border}">
+            <Setter Property="CornerRadius" Value="4"/>
+          </Style>
+        </TextBox.Resources>
+      </TextBox>
+      <Label Grid.Row="1"
+             Grid.Column="2"
+             Visibility="{Binding FindToolWindowModel.DefaultArgsModel.Visibility}"
+             Content="or less"
+             Height="28"
+             Margin="60,10,10,10"
+             HorizontalAlignment="Left"
+             Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}" />
+    </Grid>
+
+    <Button
+      x:Name="MatchDefaultArgs"
+      Click="MatchDefaultArgs_click"
+      Grid.Column="1" 
+      Grid.Row="4"
+      Height="30"
+      Width="180"
+      Content="Find"
+      IsEnabled="{Binding FindToolWindowModel.IsEnabled}"
+      VerticalAlignment="Center"
+      HorizontalAlignment="Left" />
+
+
+    <ProgressBar Name="pbStatus"
+                 Grid.Row="1"
+                 Grid.Column="1"
+                 Height="13"
+                 Background="Transparent"
+                 BorderBrush="#6d8ca3"
+                 Foreground="#296cba"
+                 IsIndeterminate="True"
+                 Maximum="100"
+                 Minimum="0"
+                 VerticalAlignment="Top"
+                 Visibility="{Binding FindToolWindowModel.ProgressBarVisibility}" />
+
+    <Border Grid.Column="1"
+              Grid.Row="6"
+              BorderThickness="1"
+              BorderBrush="{DynamicResource {x:Static vsfx:VsBrushes.AccentDarkKey}}">
+      <TextBlock Grid.Row="6"
+               Grid.Column="1"
+               Margin="5,5,5,5"
+               Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
+               VerticalAlignment="Top"
+               TextWrapping="Wrap"
+               Text="{Binding FindToolWindowModel.MatcherDetails}"/>
+    </Border>
+
+
+
+  </Grid>
+
+
+</UserControl>

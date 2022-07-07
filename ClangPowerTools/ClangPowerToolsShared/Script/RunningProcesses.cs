@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Management;
+using System.Threading;
 
 namespace ClangPowerTools
 {
@@ -13,6 +14,7 @@ namespace ClangPowerTools
     private readonly static List<Process> commandProcesses = new List<Process>();
     private readonly static List<Process> backgroundCommandProcesses = new List<Process>();
     private readonly bool backgroundProcess = false;
+    private static Mutex mutex = new Mutex();
 
     #endregion
 
@@ -31,10 +33,12 @@ namespace ClangPowerTools
 
     public void Add(Process aProcess)
     {
+      mutex.WaitOne();
       if (backgroundProcess)
         backgroundCommandProcesses.Add(aProcess);
       else
         commandProcesses.Add(aProcess);
+      mutex.ReleaseMutex();
     }
 
     public void Add(Process aProcess, bool background = false)
@@ -53,6 +57,7 @@ namespace ClangPowerTools
 
     public void Kill(bool background)
     {
+      mutex.WaitOne();
       var processes = GetProcesses(background);
 
       foreach (var process in processes)
@@ -64,6 +69,14 @@ namespace ClangPowerTools
       }
 
       Clear(processes);
+      mutex.ReleaseMutex();
+    }
+
+    public void Remove(Process process)
+    {
+      mutex.WaitOne();
+      commandProcesses.Remove(process);
+      mutex.ReleaseMutex();
     }
 
     public void KillById(int aId)

@@ -60,50 +60,6 @@ namespace ClangPowerToolsShared.Helpers
       $"Generated Documentation at path: {outputPath}");
     }
 
-    /// <summary>
-    /// Run a process that download clang-doc.exe (and returns path) if it wasn't found on disk
-    /// </summary>
-    /// <exception cref="Exception"></exception>
-    public static string GetClangDoc()
-    {
-      var getllvmScriptPath = GetScriptFilePath();
-
-      Process process = new Process();
-      process.StartInfo.UseShellExecute = false;
-      process.StartInfo.CreateNoWindow = true;
-      process.StartInfo.RedirectStandardInput = true;
-      process.StartInfo.RedirectStandardOutput = true;
-      process.StartInfo.RedirectStandardError = true;
-      process.StartInfo.EnvironmentVariables["Path"] = PowerShellWrapper.CreatePathEnvironmentVariable();
-      process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
-      process.StartInfo.Arguments = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
-        $" ''{getllvmScriptPath}'' {ScriptConstants.kClangDoc} '";
-
-      try
-      {
-        process.Start();
-        while (!process.StandardOutput.EndOfStream)
-        {
-          return process.StandardOutput.ReadLine();
-        }
-      }
-      catch (Exception exception)
-      {
-        throw new Exception(
-            $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
-      }
-      return string.Empty;
-    }
-
-    private static string GetScriptFilePath()
-    {
-      var assemblyPath = Assembly.GetExecutingAssembly().Location;
-      var scriptDirectory = assemblyPath.Substring(0, assemblyPath.LastIndexOf('\\'));
-
-      return Path.Combine(scriptDirectory, "Tooling\\v1\\psClang", ScriptConstants.kGetLLVMScriptName);
-    }
-
-
     public static void ClosedDataConnection(object sender, EventArgs e)
     {
       int id = CommandControllerInstance.CommandController.GetCurrentCommandId();
