@@ -235,12 +235,13 @@ namespace ClangPowerTools
               null, false);
             }
 
-            keepJsonCompilationDb = true;
+            keepJsonCompilationDb = !RunController.StopCommandActivated;
 
             await StopBackgroundRunnersAsync();
-            OnBeforeClangCommand(CommandIds.kClangFindRun);
-
+            OnBeforeClangCommand(CommandIds.kClangFindRun);  
+           
             await FindCommand.Instance.RunQueryAsync();
+
             OnAfterClangCommand();
             break;
           }
