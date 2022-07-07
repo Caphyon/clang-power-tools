@@ -72,6 +72,13 @@ namespace ClangPowerTools
       mutex.ReleaseMutex();
     }
 
+    public void Remove(Process process)
+    {
+      mutex.WaitOne();
+      commandProcesses.Remove(process);
+      mutex.ReleaseMutex();
+    }
+
     public void KillById(int aId)
     {
       var procees = commandProcesses.FirstOrDefault(p => p.Id == aId);

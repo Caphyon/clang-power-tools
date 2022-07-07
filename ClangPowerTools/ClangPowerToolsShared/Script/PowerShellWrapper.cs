@@ -72,6 +72,12 @@ namespace ClangPowerTools
         process.OutputDataReceived += DataHandler;
         process.Exited += ExitedHandler;
         process.Disposed += ExitedHandler;
+        process.Exited += (sender, e) =>
+        {
+          RunController.runningProcesses.Remove(process);
+        };
+
+
 
         RunController.runningProcesses.Add(process);
 
