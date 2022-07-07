@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 8.7.0" />
+                 Text="version 9.0" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -109,6 +109,22 @@
                  Text="What's New" />
 
 
+        <TextBox Margin="5,25,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• Introducing CPT Find: bringing the power of clang-query to your codebase"
+                 TextWrapping="Wrap" />
+        <TextBox Margin="30,5,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="14"
+                 IsReadOnly="True"
+                 Text="- Invocations of functions using default argument(s)"
+                 TextWrapping="Wrap" />
 
         <TextBox Margin="5,25,0,0"
                  HorizontalAlignment="Left"
@@ -116,12 +132,12 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Add setting for enabling Tidy-Fix to be applied directly.    (Settings → Tidy → 1-step Tidy-Fix)"
+                 Text="• LLVM 14.0.6"
                  TextWrapping="Wrap" />
         
 
         <!--Bug Fixes-->
-        <!--<TextBox Margin="5,20,0,0"
+        <TextBox Margin="5,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
@@ -135,8 +151,8 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Visual Studio is blocked if settings window is behind it"
-                 TextWrapping="Wrap" />-->
+                 Text="• PCH directory was not automatically included when compiling only one cpp"
+                 TextWrapping="Wrap" />
         <!--<TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
