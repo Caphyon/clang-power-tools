@@ -27,6 +27,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\GenerateDocumentation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\MatchConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\FindController.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\CustomMatchesModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\DefaultArgsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\FindToolWindowModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\FindToolWindowViewModel.cs" />

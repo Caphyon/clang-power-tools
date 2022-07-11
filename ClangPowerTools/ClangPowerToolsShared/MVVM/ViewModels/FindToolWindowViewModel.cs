@@ -17,7 +17,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
   public class FindToolWindowViewModel : FindController
   {
-    private FindToolWindowView findToolWindowView;
     private List<string> filesPaths = new();
 
     public List<KeyValuePair<int, string>> Matchers
@@ -41,7 +40,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       if (!RunController.StopCommandActivated)
       {
-        SelectCommandToRun(currentCommandId);
+        SelectCommandToRun(GetCommandId());
         RunPowershellQuery(filesPaths);
       }
       AfterCommand();
@@ -50,7 +49,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public void SelectCommandToRun(int commandId)
     {
       SetCommandId(commandId);
-      LaunchCommand(currentCommandId, FindToolWindowModel);
+      LaunchCommand(commandId, FindToolWindowModel);
     }
 
     public void RunCommandFromView()

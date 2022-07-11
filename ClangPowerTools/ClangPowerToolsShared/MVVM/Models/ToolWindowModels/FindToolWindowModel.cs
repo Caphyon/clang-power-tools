@@ -10,6 +10,13 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
     private string matcherDetails = string.Empty;
 
     public DefaultArgsModel DefaultArgsModel { get; set; } = new DefaultArgsModel();
+    public CustomMatchesModel CustomMatchesModel { get; set; } = new CustomMatchesModel();
+
+    public void HideModelsOptions()
+    {
+      DefaultArgsModel.Hide();
+      CustomMatchesModel.Hide();
+    }
 
     public FindToolWindowModel()
     {

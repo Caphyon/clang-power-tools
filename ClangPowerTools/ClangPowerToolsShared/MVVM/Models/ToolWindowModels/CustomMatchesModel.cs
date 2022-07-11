@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using ClangPowerToolsShared.MVVM.Constants;
+using System.ComponentModel;
 
 namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 {
@@ -6,6 +7,12 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
   {
     public event PropertyChangedEventHandler PropertyChanged;
     private string matches = string.Empty;
+    private string visibility = string.Empty;
+
+    public CustomMatchesModel()
+    {
+      visibility = UIElementsConstants.Hidden;
+    }
 
     public string Matches
     {
@@ -17,6 +24,26 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       }
     }
 
+    public string Visibility
+    {
+      get { return visibility; }
+      set
+      {
+        visibility = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Visibility"));
+      }
+    }
+
     public string Details { get; } = "Details\n";
+
+    public void Hide()
+    {
+      visibility = UIElementsConstants.Hidden;
+    }
+
+    public void Show()
+    {
+      visibility = UIElementsConstants.Visibile;
+    }
   }
 }

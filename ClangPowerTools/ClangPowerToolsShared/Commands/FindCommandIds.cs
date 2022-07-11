@@ -8,6 +8,7 @@ namespace ClangPowerToolsShared.Commands
     public static List<KeyValuePair<int, string>> matchers = new List<KeyValuePair<int, string>>()
     {
         new KeyValuePair<int, string>(1,"Function called with default argument(s)"),
+        new KeyValuePair<int, string>(2,"Custom matches"),
     };
 
     public static List<KeyValuePair<int, string>> Matchers { get { return matchers; } }
@@ -17,5 +18,6 @@ namespace ClangPowerToolsShared.Commands
 
 
     public const int kDefaultArgsId = 1;
+    public const int kCustomMatchesId = 2;
   }
 }

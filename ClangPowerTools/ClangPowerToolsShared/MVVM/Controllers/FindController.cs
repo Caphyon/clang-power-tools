@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools;
 using ClangPowerTools.Commands;
+using ClangPowerTools.Views;
 using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
@@ -13,8 +14,8 @@ namespace ClangPowerToolsShared.MVVM.Controllers
   public class FindController : INotifyPropertyChanged
   {
     public event PropertyChangedEventHandler PropertyChanged;
-
-    protected int currentCommandId;
+    protected FindToolWindowView findToolWindowView;
+    private int currentCommandId;
     private string pathToClangQuery;
     Dictionary<string, string> pathCommandPairs = new();
     protected FindToolWindowModel findToolWindowModel = new();
@@ -45,6 +46,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         commands.Clear();
 
       commands.Add(MatchConstants.SetOutpuDump);
+      findToolWindowModel.HideModelsOptions();
 
       switch (currentCommandId)
       {
@@ -55,9 +57,15 @@ namespace ClangPowerToolsShared.MVVM.Controllers
                         .FunctionName).Replace("{1}", findToolWindowModel.DefaultArgsModel.DefaultArgsPosition.ToString()));
             break;
           }
+        case FindCommandIds.kCustomMatchesId:
+          {
+            findToolWindowModel.CustomMatchesModel.Show();
+            break;
+          }
         default:
           break;
       }
+      FindToolWindowModel = findToolWindowModel;
     }
 
     public void RunPowershellQuery(List<string> paths)
@@ -100,6 +108,11 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     protected void SetCommandId(int commandId)
     {
       currentCommandId = commandId;
+    }
+
+    protected int GetCommandId()
+    {
+      return currentCommandId;
     }
 
     private Dictionary<string, string> GetCommandForPowershell(List<string> args, string pathToBinary)
