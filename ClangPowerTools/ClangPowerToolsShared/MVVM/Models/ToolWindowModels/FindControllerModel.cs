@@ -10,24 +10,14 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 
     public DefaultArgsModel DefaultArgsModel { get; set; } = new DefaultArgsModel();
     public CustomMatchesModel CustomMatchesModel { get; set; } = new CustomMatchesModel();
-
     public List<IViewMatche> viewMatchers = new List<IViewMatche>();
     protected int currentCommandId = 0;
+
     public FindControllerModel()
     {
       currentCommandId = FindCommandIds.kDefaultArgsId;
-      viewMatchers.Add(DefaultArgsModel);
-      viewMatchers.Add(CustomMatchesModel);
-
+      ShowSelectedModel(currentCommandId);
       matcherDetails = DefaultArgsModel.Details;
-    }
-
-    public void HideAllModelsOptions()
-    {
-      foreach (var matche in viewMatchers)
-      {
-        matche.Hide();
-      }
     }
 
     protected void HidePreviousSelectedModel()
@@ -68,6 +58,5 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
           break;
       }
     }
-
   }
 }

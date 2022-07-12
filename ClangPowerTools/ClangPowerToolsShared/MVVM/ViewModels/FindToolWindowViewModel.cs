@@ -27,12 +27,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
     {
       this.findToolWindowView = findToolWindowView;
-      findToolWindowModel.DefaultArgsModel.Show();
     }
 
     public void OpenToolWindow(List<string> filesPath)
     {
-      SetCommandId(FindCommandIds.kDefaultArgsId);
       filesPaths = filesPath;
     }
 
@@ -40,7 +38,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       if (!RunController.StopCommandActivated)
       {
-        SelectCommandToRun(GetCommandId());
+        SelectCommandToRun(findToolWindowModel.CurrentCommandId);
         RunPowershellQuery(filesPaths);
       }
       AfterCommand();
@@ -48,8 +46,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void SelectCommandToRun(int commandId)
     {
-      SetCommandId(commandId);
-      LaunchCommand(commandId, FindToolWindowModel);
+      findToolWindowModel.UpdateUiToSelectedModel(commandId);
+      LaunchCommand();
     }
 
     public void RunCommandFromView()

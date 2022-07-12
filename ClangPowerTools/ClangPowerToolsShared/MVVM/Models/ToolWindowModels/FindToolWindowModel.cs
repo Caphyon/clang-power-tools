@@ -21,6 +21,8 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       ShowSelectedModel(commandId);
     }
 
+    public int CurrentCommandId { get { return currentCommandId; } }
+
     public string MatcherDetails
     {
       get

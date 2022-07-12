@@ -15,11 +15,10 @@ namespace ClangPowerToolsShared.MVVM.Controllers
   {
     public event PropertyChangedEventHandler PropertyChanged;
     protected FindToolWindowView findToolWindowView;
-    private int currentCommandId;
-    private string pathToClangQuery;
-    Dictionary<string, string> pathCommandPairs = new();
     protected FindToolWindowModel findToolWindowModel = new();
+    Dictionary<string, string> pathCommandPairs = new();
     List<string> commands = new();
+    private string pathToClangQuery;
 
     public FindToolWindowModel FindToolWindowModel
     {
@@ -32,16 +31,11 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     }
     public FindController()
     {
-      currentCommandId = 0;
       pathToClangQuery = string.Empty;
     }
 
-    public void LaunchCommand(int commandId, FindToolWindowModel findToolWindowModel)
+    public void LaunchCommand()
     {
-      SetCommandId(commandId);
-
-      findToolWindowModel.UpdateUiToSelectedModel(commandId);
-
       if (pathToClangQuery == string.Empty)
         GetPathToClangQuery();
 
@@ -50,7 +44,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
 
       commands.Add(MatchConstants.SetOutpuDump);
 
-      switch (currentCommandId)
+      switch (findToolWindowModel.CurrentCommandId)
       {
         case FindCommandIds.kDefaultArgsId:
           {
@@ -104,16 +98,6 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         pathToClangQuery = PowerShellWrapper.DownloadTool(ScriptConstants.kQueryFile);
         pathToClangQuery = Path.Combine(pathToClangQuery, ScriptConstants.kQueryFile);
       }
-    }
-
-    protected void SetCommandId(int commandId)
-    {
-      currentCommandId = commandId;
-    }
-
-    protected int GetCommandId()
-    {
-      return currentCommandId;
     }
 
     private Dictionary<string, string> GetCommandForPowershell(List<string> args, string pathToBinary)
