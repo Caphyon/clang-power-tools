@@ -4,17 +4,14 @@ using System.ComponentModel;
 
 namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 {
-  public class DefaultArgsModel : INotifyPropertyChanged, IViewMatche
+  public class DefaultArgsModel : ComponentVisibility, IViewMatche
   {
     public event PropertyChangedEventHandler PropertyChanged;
+
     private string functionName = string.Empty;
     private int defaultArgsPosition = 0;
-    private string visibility = string.Empty;
 
-    public DefaultArgsModel()
-    {
-      visibility = UIElementsConstants.Hidden;
-    }
+    public DefaultArgsModel() { }
 
     public string FunctionName
     {
@@ -26,15 +23,6 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       }
     }
 
-    public string Visibility
-    {
-      get { return visibility; }
-      set
-      {
-        visibility = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Visibility"));
-      }
-    }
 
     public int DefaultArgsPosition
     {
@@ -51,16 +39,5 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       "test();               // Matched by 1 or 0 explicit arguments\n" +
       "test(20);           // Matched by 1 explicit arguments\n" +
       "test(20, \"Z\");    // Never matched \n";
-
-
-    public void Hide()
-    {
-      visibility = UIElementsConstants.Hidden;
-    }
-
-    public void Show()
-    {
-      visibility = UIElementsConstants.Visibile;
-    }
   }
 }
