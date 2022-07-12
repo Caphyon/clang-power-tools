@@ -1,9 +1,11 @@
 ﻿using ClangPowerToolsShared.MVVM.Constants;
+using ClangPowerToolsShared.MVVM.Interfaces;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 {
-  public class CustomMatchesModel : INotifyPropertyChanged
+  public class CustomMatchesModel : INotifyPropertyChanged, IViewMatche
   {
     public event PropertyChangedEventHandler PropertyChanged;
     private string matches = string.Empty;

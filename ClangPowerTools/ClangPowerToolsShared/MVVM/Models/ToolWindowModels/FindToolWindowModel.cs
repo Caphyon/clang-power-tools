@@ -1,4 +1,6 @@
 ﻿using ClangPowerToolsShared.MVVM.Constants;
+using ClangPowerToolsShared.MVVM.Interfaces;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
@@ -12,16 +14,22 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
     public DefaultArgsModel DefaultArgsModel { get; set; } = new DefaultArgsModel();
     public CustomMatchesModel CustomMatchesModel { get; set; } = new CustomMatchesModel();
 
+    public List<IViewMatche> viewMatchers = new List<IViewMatche>();
     public void HideModelsOptions()
     {
-      DefaultArgsModel.Hide();
-      CustomMatchesModel.Hide();
+      foreach (var matche in viewMatchers)
+      {
+        matche.Hide();
+      }
     }
 
     public FindToolWindowModel()
     {
-       matcherDetails = DefaultArgsModel.Details;
-       HideProgressBar();
+      viewMatchers.Add(DefaultArgsModel);
+      viewMatchers.Add(CustomMatchesModel);
+
+      matcherDetails = DefaultArgsModel.Details;
+      HideProgressBar();
     }
 
     public string MatcherDetails

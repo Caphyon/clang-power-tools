@@ -1,9 +1,10 @@
 ﻿using ClangPowerToolsShared.MVVM.Constants;
+using ClangPowerToolsShared.MVVM.Interfaces;
 using System.ComponentModel;
 
 namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 {
-  public class DefaultArgsModel : INotifyPropertyChanged
+  public class DefaultArgsModel : INotifyPropertyChanged, IViewMatche
   {
     public event PropertyChangedEventHandler PropertyChanged;
     private string functionName = string.Empty;
