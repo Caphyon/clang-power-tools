@@ -39,6 +39,9 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     public void LaunchCommand(int commandId, FindToolWindowModel findToolWindowModel)
     {
       SetCommandId(commandId);
+
+      findToolWindowModel.UpdateUiToSelectedModel(commandId);
+
       if (pathToClangQuery == string.Empty)
         GetPathToClangQuery();
 
@@ -46,20 +49,18 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         commands.Clear();
 
       commands.Add(MatchConstants.SetOutpuDump);
-      findToolWindowModel.HideModelsOptions();
 
       switch (currentCommandId)
       {
         case FindCommandIds.kDefaultArgsId:
           {
-            findToolWindowModel.DefaultArgsModel.Show();
             commands.Add(MatchConstants.CalledExprDefaultArg.Replace("{0}", findToolWindowModel.DefaultArgsModel
                         .FunctionName).Replace("{1}", findToolWindowModel.DefaultArgsModel.DefaultArgsPosition.ToString()));
             break;
           }
         case FindCommandIds.kCustomMatchesId:
           {
-            findToolWindowModel.CustomMatchesModel.Show();
+            commands.Add(findToolWindowModel.CustomMatchesModel.Matches);
             break;
           }
         default:

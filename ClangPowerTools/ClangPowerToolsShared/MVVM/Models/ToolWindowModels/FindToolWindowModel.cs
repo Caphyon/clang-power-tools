@@ -9,12 +9,16 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
   {
     public event PropertyChangedEventHandler PropertyChanged;
     private bool isRunning = false;
-
     
     public FindToolWindowModel()
     {
-     
       HideProgressBar();
+    }
+
+    public void UpdateUiToSelectedModel(int commandId)
+    {
+      HidePreviousSelectedModel();
+      ShowSelectedModel(commandId);
     }
 
     public string MatcherDetails
