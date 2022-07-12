@@ -97,7 +97,7 @@
                Visibility="{Binding FindToolWindowModel.CustomMatchesModel.Visibility}" 
                Height="50"
                TextWrapping="Wrap"
-               Text=""
+               Text="{Binding FindToolWindowModel.CustomMatchesModel.Matches}"
                Opacity="0.8">
         <TextBox.Resources>
           <Style TargetType="{x:Type Border}">

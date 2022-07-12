@@ -47,12 +47,13 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public void SelectCommandToRun(int commandId)
     {
       findToolWindowModel.UpdateUiToSelectedModel(commandId);
-      LaunchCommand();
+      FindToolWindowModel = findToolWindowModel;
     }
 
     public void RunCommandFromView()
     {
       BeforeCommand();
+      LaunchCommand();
       CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kClangFindRun, CommandUILocation.ContextMenu);
 
     }

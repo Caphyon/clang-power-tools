@@ -60,7 +60,6 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         default:
           break;
       }
-      FindToolWindowModel = findToolWindowModel;
     }
 
     public void RunPowershellQuery(List<string> paths)
