@@ -9,7 +9,6 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
   {
     public event PropertyChangedEventHandler PropertyChanged;
     private string matches = string.Empty;
-    private string visibility = string.Empty;
 
     public CustomMatchesModel() { }
 

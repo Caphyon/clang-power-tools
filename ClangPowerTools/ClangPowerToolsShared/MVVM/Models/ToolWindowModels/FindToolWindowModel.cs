@@ -5,30 +5,15 @@ using System.ComponentModel;
 
 namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 {
-  public class FindToolWindowModel : INotifyPropertyChanged
+  public class FindToolWindowModel : FindControllerModel, INotifyPropertyChanged
   {
     public event PropertyChangedEventHandler PropertyChanged;
     private bool isRunning = false;
-    private string matcherDetails = string.Empty;
 
-    public DefaultArgsModel DefaultArgsModel { get; set; } = new DefaultArgsModel();
-    public CustomMatchesModel CustomMatchesModel { get; set; } = new CustomMatchesModel();
-
-    public List<IViewMatche> viewMatchers = new List<IViewMatche>();
-    public void HideModelsOptions()
-    {
-      foreach (var matche in viewMatchers)
-      {
-        matche.Hide();
-      }
-    }
-
+    
     public FindToolWindowModel()
     {
-      viewMatchers.Add(DefaultArgsModel);
-      viewMatchers.Add(CustomMatchesModel);
-
-      matcherDetails = DefaultArgsModel.Details;
+     
       HideProgressBar();
     }
 
@@ -65,7 +50,6 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       }
     }
 
-
     public bool IsRunning
     {
       get
@@ -82,7 +66,6 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsRunning"));
       }
     }
-
 
     private void ShowProgressBar()
     {
