@@ -22,6 +22,6 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       }
     }
 
-    public string Details { get; } = "Details\n";
+    public string Details { get; } = "Ex: match functionDecl(hasName(\"test\"))  // Matches call expressions with name test";
   }
 }

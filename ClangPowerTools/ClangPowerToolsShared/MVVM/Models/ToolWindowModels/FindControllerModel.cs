@@ -17,7 +17,6 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
     {
       currentCommandId = FindCommandIds.kDefaultArgsId;
       ShowSelectedModel(currentCommandId);
-      matcherDetails = DefaultArgsModel.Details;
     }
 
     protected void HidePreviousSelectedModel()
@@ -47,11 +46,13 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
         case FindCommandIds.kDefaultArgsId:
           {
             DefaultArgsModel.Show();
+            matcherDetails = DefaultArgsModel.Details;
             break;
           }
         case FindCommandIds.kCustomMatchesId:
           {
             CustomMatchesModel.Show();
+            matcherDetails = CustomMatchesModel.Details;
             break;
           }
         default:

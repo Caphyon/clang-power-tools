@@ -71,11 +71,25 @@ namespace ClangPowerToolsShared.MVVM.Controllers
           sw.WriteLine(command);
         }
       }
-      CommandControllerInstance.CommandController.DisplayMessage(false, "\n⌛ Please wait ...\n");
+      DisplayMessageBeforeFind();
       pathCommandPairs = GetCommandForPowershell(paths, pathToClangQuery);
       PowerShellWrapper.InvokePassSequentialCommands(pathCommandPairs);
-      CommandControllerInstance.CommandController.DisplayMessage(false, "\nⒾ Find all matches in Error List -> Ⓘ Messages\n");
+      DisplayMessageAfterFind();
       File.Delete(PathConstants.GetPathToFindCommands());
+    }
+
+    private void DisplayMessageAfterFind()
+    {
+      CommandControllerInstance.CommandController.DisplayMessage(false, "\nⒾ Find all matches in Error List -> Ⓘ Messages\n");
+    }
+
+    private void DisplayMessageBeforeFind()
+    {
+      CommandControllerInstance.CommandController.DisplayMessage(false, "\n⌛ Please wait ...\n");
+
+      if (!SettingsProvider.CompilerSettingsModel.VerboseMode)
+        CommandControllerInstance.CommandController.DisplayMessage(false, "\nYou can activate verbose mode to see the" +
+          " complete output. Settings -> Compile -> Verbose mode\n");
     }
 
     protected void BeforeCommand()
