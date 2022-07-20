@@ -11,6 +11,7 @@ using ClangPowerTools.Commands;
 using ClangPowerToolsShared.MVVM.Controllers;
 using System.Collections.ObjectModel;
 using ClangPowerToolsShared.Commands;
+using ClangPowerToolsShared.MVVM.Interfaces;
 
 namespace ClangPowerToolsShared.MVVM.ViewModels
 {
@@ -19,9 +20,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
   {
     private List<string> filesPaths = new();
 
-    public List<KeyValuePair<int, string>> Matchers
+    public List<IViewMatcher> ViewMatchers
     {
-      get { return FindCommandIds.Matchers; }
+      get { return FindToolWindowModel.ViewMatchers;  }
     }
 
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
@@ -38,15 +39,15 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       if (!RunController.StopCommandActivated)
       {
-        SelectCommandToRun(findToolWindowModel.CurrentCommandId);
+        SelectCommandToRun(findToolWindowModel.CurrentViewMatcher);
         RunPowershellQuery(filesPaths);
       }
       AfterCommand();
     }
 
-    public void SelectCommandToRun(int commandId)
+    public void SelectCommandToRun(IViewMatcher viewMatcher)
     {
-      findToolWindowModel.UpdateUiToSelectedModel(commandId);
+      findToolWindowModel.UpdateUiToSelectedModel(viewMatcher);
       FindToolWindowModel = findToolWindowModel;
     }
 

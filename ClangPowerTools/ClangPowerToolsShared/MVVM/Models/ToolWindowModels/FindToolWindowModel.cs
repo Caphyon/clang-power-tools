@@ -15,25 +15,11 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       HideProgressBar();
     }
 
-    public void UpdateUiToSelectedModel(int commandId)
+    public void UpdateUiToSelectedModel(IViewMatcher viewMatcher)
     {
       HidePreviousSelectedModel();
-      ShowSelectedModel(commandId);
-    }
-
-    public int CurrentCommandId { get { return currentCommandId; } }
-
-    public string MatcherDetails
-    {
-      get
-      {
-        return matcherDetails;
-      }
-      set
-      {
-        matcherDetails = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MatcherDetails"));
-      }
+      ShowSelectedModel(viewMatcher);
+      CurrentViewMatcher = currentViewMatcher;
     }
 
     private string progressBarVisibility;
@@ -44,6 +30,16 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       {
         progressBarVisibility = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ProgressBarVisibility"));
+      }
+    }
+
+    public IViewMatcher CurrentViewMatcher
+    {
+      get { return currentViewMatcher; }
+      set
+      {
+        currentViewMatcher = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CurrentViewMatcher"));
       }
     }
 

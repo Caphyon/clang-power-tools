@@ -44,7 +44,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
 
       commands.Add(MatchConstants.SetOutpuDump);
 
-      switch (findToolWindowModel.CurrentCommandId)
+      switch (findToolWindowModel.CurrentViewMatcher.Id)
       {
         case FindCommandIds.kDefaultArgsId:
           {
@@ -54,7 +54,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
           }
         case FindCommandIds.kCustomMatchesId:
           {
-            commands.Add(findToolWindowModel.CustomMatchesModel.Matches);
+            commands.Add(findToolWindowModel.CustomMatchesModel.Matchers);
             break;
           }
         default:

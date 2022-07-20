@@ -8,56 +8,34 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
   {
     protected string matcherDetails = string.Empty;
 
-    public DefaultArgsModel DefaultArgsModel { get; set; } = new DefaultArgsModel();
-    public CustomMatchesModel CustomMatchesModel { get; set; } = new CustomMatchesModel();
-    public List<IViewMatche> viewMatchers = new List<IViewMatche>();
-    protected int currentCommandId = 0;
+    public DefaultArgsModel DefaultArgsModel { get; set; }
+    public CustomMatchesModel CustomMatchesModel { get; set; }
+    public List<IViewMatcher> ViewMatchers;
+    protected IViewMatcher currentViewMatcher;
 
     public FindControllerModel()
     {
-      currentCommandId = FindCommandIds.kDefaultArgsId;
-      ShowSelectedModel(currentCommandId);
+      DefaultArgsModel = new DefaultArgsModel();
+      CustomMatchesModel = new CustomMatchesModel();
+      ViewMatchers = new List<IViewMatcher>();
+
+      ViewMatchers.Add(DefaultArgsModel);
+      ViewMatchers.Add(CustomMatchesModel);
+
+      currentViewMatcher = DefaultArgsModel;
+      ShowSelectedModel(currentViewMatcher);
     }
+
 
     protected void HidePreviousSelectedModel()
     {
-      switch (currentCommandId)
-      {
-        case FindCommandIds.kDefaultArgsId:
-          {
-            DefaultArgsModel.Hide();
-            break;
-          }
-        case FindCommandIds.kCustomMatchesId:
-          {
-            CustomMatchesModel.Hide();
-            break;
-          }
-        default:
-          break;
-      }
+      currentViewMatcher.Hide();
     }
 
-    protected void ShowSelectedModel(int commandId)
+    protected void ShowSelectedModel(IViewMatcher viewMatcher)
     {
-      currentCommandId = commandId;
-      switch (currentCommandId)
-      {
-        case FindCommandIds.kDefaultArgsId:
-          {
-            DefaultArgsModel.Show();
-            matcherDetails = DefaultArgsModel.Details;
-            break;
-          }
-        case FindCommandIds.kCustomMatchesId:
-          {
-            CustomMatchesModel.Show();
-            matcherDetails = CustomMatchesModel.Details;
-            break;
-          }
-        default:
-          break;
-      }
+      currentViewMatcher = viewMatcher;
+      currentViewMatcher.Show();
     }
   }
 }
