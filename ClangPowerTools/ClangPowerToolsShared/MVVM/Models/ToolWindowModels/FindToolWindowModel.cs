@@ -1,33 +1,25 @@
 ﻿using ClangPowerToolsShared.MVVM.Constants;
+using ClangPowerToolsShared.MVVM.Interfaces;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 {
-  public class FindToolWindowModel : INotifyPropertyChanged
+  public class FindToolWindowModel : FindControllerModel, INotifyPropertyChanged
   {
     public event PropertyChangedEventHandler PropertyChanged;
     private bool isRunning = false;
-    private string matcherDetails = string.Empty;
-
-    public DefaultArgsModel DefaultArgsModel { get; set; } = new DefaultArgsModel();
-
+    
     public FindToolWindowModel()
     {
-       matcherDetails = DefaultArgsModel.Details;
-       HideProgressBar();
+      HideProgressBar();
     }
 
-    public string MatcherDetails
+    public void UpdateUiToSelectedModel(IViewMatcher viewMatcher)
     {
-      get
-      {
-        return matcherDetails;
-      }
-      set
-      {
-        matcherDetails = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("MatcherDetails"));
-      }
+      HidePreviousSelectedModel();
+      ShowSelectedModel(viewMatcher);
+      CurrentViewMatcher = currentViewMatcher;
     }
 
     private string progressBarVisibility;
@@ -41,6 +33,16 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       }
     }
 
+    public IViewMatcher CurrentViewMatcher
+    {
+      get { return currentViewMatcher; }
+      set
+      {
+        currentViewMatcher = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CurrentViewMatcher"));
+      }
+    }
+
     public bool IsEnabled
     {
       get { return !IsRunning; }
@@ -49,7 +51,6 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsEnabled"));
       }
     }
-
 
     public bool IsRunning
     {
@@ -67,7 +68,6 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("IsRunning"));
       }
     }
-
 
     private void ShowProgressBar()
     {

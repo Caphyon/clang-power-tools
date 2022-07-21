@@ -1,19 +1,22 @@
-﻿using ClangPowerToolsShared.MVVM.Constants;
+﻿using ClangPowerToolsShared.Commands;
+using ClangPowerToolsShared.MVVM.Constants;
+using ClangPowerToolsShared.MVVM.Interfaces;
 using System.ComponentModel;
 
 namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 {
-  public class DefaultArgsModel : INotifyPropertyChanged
+  public class DefaultArgsModel : ComponentVisibility, IViewMatcher
   {
     public event PropertyChangedEventHandler PropertyChanged;
+
     private string functionName = string.Empty;
     private int defaultArgsPosition = 0;
-    private string visibility = string.Empty;
 
-    public DefaultArgsModel()
-    {
-      visibility = UIElementsConstants.Hidden;
-    }
+    public DefaultArgsModel() { }
+
+    public string Name { get; } = "Function called with default argument(s)";
+
+    public int Id { get; } = FindCommandIds.kDefaultArgsId;
 
     public string FunctionName
     {
@@ -25,15 +28,6 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       }
     }
 
-    public string Visibility
-    {
-      get { return visibility; }
-      set
-      {
-        visibility = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Visibility"));
-      }
-    }
 
     public int DefaultArgsPosition
     {
@@ -50,16 +44,6 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       "test();               // Matched by 1 or 0 explicit arguments\n" +
       "test(20);           // Matched by 1 explicit arguments\n" +
       "test(20, \"Z\");    // Never matched \n";
-
-
-    public void Hide()
-    {
-      visibility = UIElementsConstants.Hidden;
-    }
-
-    public void Show()
-    {
-      visibility = UIElementsConstants.Visibile;
-    }
   }
+
 }

@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools;
 using ClangPowerTools.Commands;
+using ClangPowerTools.Views;
 using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
@@ -13,12 +14,11 @@ namespace ClangPowerToolsShared.MVVM.Controllers
   public class FindController : INotifyPropertyChanged
   {
     public event PropertyChangedEventHandler PropertyChanged;
-
-    protected int currentCommandId;
-    private string pathToClangQuery;
-    Dictionary<string, string> pathCommandPairs = new();
+    protected FindToolWindowView findToolWindowView;
     protected FindToolWindowModel findToolWindowModel = new();
+    Dictionary<string, string> pathCommandPairs = new();
     List<string> commands = new();
+    private string pathToClangQuery;
 
     public FindToolWindowModel FindToolWindowModel
     {
@@ -31,13 +31,11 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     }
     public FindController()
     {
-      currentCommandId = 0;
       pathToClangQuery = string.Empty;
     }
 
-    public void LaunchCommand(int commandId, FindToolWindowModel findToolWindowModel)
+    public void LaunchCommand()
     {
-      SetCommandId(commandId);
       if (pathToClangQuery == string.Empty)
         GetPathToClangQuery();
 
@@ -46,13 +44,17 @@ namespace ClangPowerToolsShared.MVVM.Controllers
 
       commands.Add(MatchConstants.SetOutpuDump);
 
-      switch (currentCommandId)
+      switch (findToolWindowModel.CurrentViewMatcher.Id)
       {
         case FindCommandIds.kDefaultArgsId:
           {
-            findToolWindowModel.DefaultArgsModel.Show();
             commands.Add(MatchConstants.CalledExprDefaultArg.Replace("{0}", findToolWindowModel.DefaultArgsModel
                         .FunctionName).Replace("{1}", findToolWindowModel.DefaultArgsModel.DefaultArgsPosition.ToString()));
+            break;
+          }
+        case FindCommandIds.kCustomMatchesId:
+          {
+            commands.Add(findToolWindowModel.CustomMatchesModel.Matchers);
             break;
           }
         default:
@@ -69,11 +71,25 @@ namespace ClangPowerToolsShared.MVVM.Controllers
           sw.WriteLine(command);
         }
       }
-      CommandControllerInstance.CommandController.DisplayMessage(false, "\n⌛ Please wait ...\n");
+      DisplayMessageBeforeFind();
       pathCommandPairs = GetCommandForPowershell(paths, pathToClangQuery);
       PowerShellWrapper.InvokePassSequentialCommands(pathCommandPairs);
-      CommandControllerInstance.CommandController.DisplayMessage(false, "\nⒾ Find all matches in Error List -> Ⓘ Messages\n");
+      DisplayMessageAfterFind();
       File.Delete(PathConstants.GetPathToFindCommands());
+    }
+
+    private void DisplayMessageAfterFind()
+    {
+      CommandControllerInstance.CommandController.DisplayMessage(false, "\nⒾ Find all matches in Error List -> Ⓘ Messages\n");
+    }
+
+    private void DisplayMessageBeforeFind()
+    {
+      CommandControllerInstance.CommandController.DisplayMessage(false, "\n⌛ Please wait ...\n");
+
+      if (!SettingsProvider.CompilerSettingsModel.VerboseMode)
+        CommandControllerInstance.CommandController.DisplayMessage(false, "\nYou can activate verbose mode to see the" +
+          " complete output. Settings -> Compile -> Verbose mode\n");
     }
 
     protected void BeforeCommand()
@@ -95,11 +111,6 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         pathToClangQuery = PowerShellWrapper.DownloadTool(ScriptConstants.kQueryFile);
         pathToClangQuery = Path.Combine(pathToClangQuery, ScriptConstants.kQueryFile);
       }
-    }
-
-    protected void SetCommandId(int commandId)
-    {
-      currentCommandId = commandId;
     }
 
     private Dictionary<string, string> GetCommandForPowershell(List<string> args, string pathToBinary)

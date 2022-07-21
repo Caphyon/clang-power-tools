@@ -50,7 +50,7 @@
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 Visibility="Visible"
                 PreviewMouseLeftButtonUp="Matcher_Click"
-                ItemsSource="{Binding Matchers}">
+                ItemsSource="{Binding ViewMatchers}">
         <ListView.ItemTemplate>
           <DataTemplate>
             <Grid>
@@ -66,13 +66,48 @@
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center"
                          Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
-                         Text="{Binding Value}" />
+                         Text="{Binding Name}" />
             </Grid>
           </DataTemplate>
         </ListView.ItemTemplate>
       </ListView>
 
-    <Grid Grid.Row="3" Grid.Column="1">
+
+    <Grid Grid.Row="3" Grid.Column="1" Visibility="{Binding FindToolWindowModel.CustomMatchesModel.Visibility}" >
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="110" />
+        <ColumnDefinition Width="5" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="100" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+      <Label 
+        Grid.Row="0"
+        Grid.Column="0"
+        Visibility="{Binding FindToolWindowModel.CustomMatchesModel.Visibility}"
+        Content="Custom Matches:"
+        Height="28"
+        HorizontalAlignment="Left"
+        Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}" />
+      <TextBox Grid.Row="0"
+               Grid.Column="2"
+               Name="Matches"
+               Visibility="{Binding FindToolWindowModel.CustomMatchesModel.Visibility}" 
+               Height="50"
+               TextWrapping="Wrap"
+               Text="{Binding FindToolWindowModel.CustomMatchesModel.Matchers}"
+               Opacity="0.8">
+        <TextBox.Resources>
+          <Style TargetType="{x:Type Border}">
+            <Setter Property="CornerRadius" Value="4"/>
+          </Style>
+        </TextBox.Resources>
+      </TextBox>
+    </Grid>
+
+    <Grid Grid.Row="3" Grid.Column="1" Visibility="{Binding FindToolWindowModel.DefaultArgsModel.Visibility}" >
       <Grid.ColumnDefinitions>
         <ColumnDefinition Width="110" />
         <ColumnDefinition Width="5" />
@@ -170,7 +205,7 @@
                Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
                VerticalAlignment="Top"
                TextWrapping="Wrap"
-               Text="{Binding FindToolWindowModel.MatcherDetails}"/>
+               Text="{Binding FindToolWindowModel.CurrentViewMatcher.Details}"/>
     </Border>
 
 

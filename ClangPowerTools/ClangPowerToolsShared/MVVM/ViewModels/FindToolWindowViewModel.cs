@@ -11,29 +11,27 @@ using ClangPowerTools.Commands;
 using ClangPowerToolsShared.MVVM.Controllers;
 using System.Collections.ObjectModel;
 using ClangPowerToolsShared.Commands;
+using ClangPowerToolsShared.MVVM.Interfaces;
 
 namespace ClangPowerToolsShared.MVVM.ViewModels
 {
 
   public class FindToolWindowViewModel : FindController
   {
-    private FindToolWindowView findToolWindowView;
     private List<string> filesPaths = new();
 
-    public List<KeyValuePair<int, string>> Matchers
+    public List<IViewMatcher> ViewMatchers
     {
-      get { return FindCommandIds.Matchers; }
+      get { return FindToolWindowModel.ViewMatchers;  }
     }
 
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
     {
       this.findToolWindowView = findToolWindowView;
-      findToolWindowModel.DefaultArgsModel.Show();
     }
 
     public void OpenToolWindow(List<string> filesPath)
     {
-      SetCommandId(FindCommandIds.kDefaultArgsId);
       filesPaths = filesPath;
     }
 
@@ -41,21 +39,22 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       if (!RunController.StopCommandActivated)
       {
-        SelectCommandToRun(currentCommandId);
+        SelectCommandToRun(findToolWindowModel.CurrentViewMatcher);
         RunPowershellQuery(filesPaths);
       }
       AfterCommand();
     }
 
-    public void SelectCommandToRun(int commandId)
+    public void SelectCommandToRun(IViewMatcher viewMatcher)
     {
-      SetCommandId(commandId);
-      LaunchCommand(currentCommandId, FindToolWindowModel);
+      findToolWindowModel.UpdateUiToSelectedModel(viewMatcher);
+      FindToolWindowModel = findToolWindowModel;
     }
 
     public void RunCommandFromView()
     {
       BeforeCommand();
+      LaunchCommand();
       CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kClangFindRun, CommandUILocation.ContextMenu);
 
     }

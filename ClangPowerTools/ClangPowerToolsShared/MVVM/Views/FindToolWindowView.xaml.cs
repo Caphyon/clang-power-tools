@@ -1,4 +1,5 @@
 ﻿using ClangPowerToolsShared.Commands;
+using ClangPowerToolsShared.MVVM.Interfaces;
 using ClangPowerToolsShared.MVVM.ViewModels;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -44,22 +45,10 @@ namespace ClangPowerTools.Views
 
     private void Matcher_Click(object sender, RoutedEventArgs e)
     {
-      var item = (sender as ListView).SelectedItem;
+      var item = (sender as ListView).SelectedItem as IViewMatcher;
       if (item != null)
       {
-        var type = item.GetType();
-        if (type.IsGenericType)
-        {
-          if (type == typeof(KeyValuePair<int,string>))
-          {
-            var key = type.GetProperty("Key");
-            var value = type.GetProperty("Value");
-            var keyObj = key.GetValue(item, null);
-            var valueObj = value.GetValue(item, null);
-            var keyValueResult =  new KeyValuePair<object, object>(keyObj, valueObj);
-            findToolWindowViewModel.SelectCommandToRun((int)keyValueResult.Key);
-          }
-        }
+        findToolWindowViewModel.SelectCommandToRun(item);
       }
     }
   }
