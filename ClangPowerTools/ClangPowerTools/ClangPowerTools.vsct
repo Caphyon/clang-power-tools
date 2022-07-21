@@ -53,6 +53,9 @@
 
 			<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0000" />
 
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_VIEW" />
+      </Group>
 
 			<Group guid="guidClangPowerToolsPackageCmdSet" id="ToolbarGroup" priority="0x0000">
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="Toolbar" />
@@ -159,6 +162,14 @@
 					<ButtonText>Ignore at Format</ButtonText>
 				</Strings>
 			</Button>
+      
+      <!-- Find Command from view menu -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="FindToolWindowId" priority="0x0100" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="MyMenuGroup" />
+        <Strings>
+          <ButtonText>Invoke FirstCommand</ButtonText>
+        </Strings>
+      </Button>
 
 			<!-- Export JSON Compilation Database Context Menu button -->
 			<Button guid="guidClangPowerToolsPackageCmdSet" id="JsonCompilationDatabaseId" priority="0x0008" type="Button">
@@ -385,6 +396,9 @@
 			<IDSymbol name="ToolbarGroup" value="0x1050" />
 			<IDSymbol name="GroupForToolbarMenu" value="0x1030" />
 			<!--<IDSymbol name ="DropDownToolbarMenuGroup" value="0x0110"/>-->
+      <IDSymbol name="MyMenuGroup" value="0x000D" />
+      <IDSymbol name="FindToolWindowId" value="0x1A20" />
+
 
 			<!-- Define the unique identifires for menus -->
 			<IDSymbol name="Submenu" value="0x0100" />
