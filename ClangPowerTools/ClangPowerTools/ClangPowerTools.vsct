@@ -53,7 +53,7 @@
 
 			<Group guid="guidClangPowerToolsPackageCmdSet" id="GroupForSubmenu" priority="0x0000" />
 
-      <Group guid="guidClangPowerToolsPackageCmdSet" id="MyMenuGroup" priority="0x0600">
+      <Group guid="guidClangPowerToolsPackageCmdSet" id="FindToolWindowGroup" priority="0x0600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_VIEW" />
       </Group>
 
@@ -165,9 +165,10 @@
       
       <!-- Find Command from view menu -->
       <Button guid="guidClangPowerToolsPackageCmdSet" id="FindToolWindowId" priority="0x0100" type="Button">
-        <Parent guid="guidClangPowerToolsPackageCmdSet" id="MyMenuGroup" />
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="FindToolWindowGroup" />
+        <Icon guid="guidImageFind" id="Find" />
         <Strings>
-          <ButtonText>Invoke FirstCommand</ButtonText>
+          <ButtonText>Find Tool Window - Clang Power Tools</ButtonText>
         </Strings>
       </Button>
 
@@ -396,7 +397,9 @@
 			<IDSymbol name="ToolbarGroup" value="0x1050" />
 			<IDSymbol name="GroupForToolbarMenu" value="0x1030" />
 			<!--<IDSymbol name ="DropDownToolbarMenuGroup" value="0x0110"/>-->
-      <IDSymbol name="MyMenuGroup" value="0x000D" />
+      
+      <!-- Find Command from view menu -->
+      <IDSymbol name="FindToolWindowGroup" value="0x000D" />
       <IDSymbol name="FindToolWindowId" value="0x1A20" />
 
 
