@@ -454,6 +454,9 @@ namespace ClangPowerTools
         case CommandIds.kTidyFixToolbarId:
           commandUILocation = CommandUILocation.Toolbar;
           break;
+        case CommandIds.kFindViewMenuId:
+          commandUILocation = CommandUILocation.ViweMenu;
+          break;
         default:
           commandUILocation = CommandUILocation.ContextMenu;
           break;
