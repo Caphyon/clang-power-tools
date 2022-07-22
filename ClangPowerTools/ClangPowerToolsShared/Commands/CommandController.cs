@@ -81,6 +81,11 @@ namespace ClangPowerTools
 
     public async Task InitializeCommandsAsync(AsyncPackage aAsyncPackage)
     {
+      if (FindViewMenuCommand.Instance == null)
+      {
+        await FindViewMenuCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kFindViewMenuId);
+      }
+
       if (CompileCommand.Instance == null)
       {
         await CompileCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kCompileId);
@@ -193,6 +198,15 @@ namespace ClangPowerTools
 
       switch (aCommandId)
       {
+        case CommandIds.kFindViewMenuId:
+          {
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kFindViewMenuId);
+
+            await FindViewMenuCommand.Instance.FindAsync(aCommandUILocation);
+            OnAfterClangCommand();
+            break;
+          }
         case CommandIds.kSettingsId:
           {
             await SettingsCommand.Instance.ShowSettingsAsync();

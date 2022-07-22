@@ -8,6 +8,7 @@ namespace ClangPowerTools
 
     public static readonly HashSet<int> idsHexa = new HashSet<int>()
     {
+      0x1A20,
       0x0102,
       0x1100,
       0x010A,
@@ -34,6 +35,7 @@ namespace ClangPowerTools
 
     public static readonly HashSet<int> idsNumeric = new HashSet<int>()
     {
+      6688,
       258,
       4352,
       266,
@@ -57,6 +59,8 @@ namespace ClangPowerTools
       278,
       294
     };
+
+    public const int kFindViewMenuId = 0x1A20;
 
     public const int kCompileId = 0x0102;
     public const int kCompileToolbarId = 0x1100;
