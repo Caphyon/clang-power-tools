@@ -22,8 +22,8 @@
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="20" />
-      <RowDefinition Height="20" />
-      <RowDefinition Height="70" />
+      <RowDefinition Height="50" />
+      <RowDefinition Height="110" />
       <RowDefinition Height="120" />
       <RowDefinition Height="40" />
       <RowDefinition Height="*" />
@@ -31,16 +31,81 @@
       <RowDefinition Height="10" />
     </Grid.RowDefinitions>
 
-    <TextBlock Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom">
+    <Grid Grid.Column="1" Grid.Row="1" >
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="20" />
+      </Grid.RowDefinitions>
+      <TextBlock Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right">
           <Hyperlink Foreground="#4096ff"
                      FontSize="12"
                      RequestNavigate="Hyperlink_Feedback"
                      NavigateUri="https://clangpowertools.com/contact.html">
-              <TextBlock
-                         Text="Propose a matcher" />
+              <TextBlock Text="Propose a matcher" />
           </Hyperlink>
-    </TextBlock>
+      </TextBlock>
 
+      <ComboBox
+        Grid.Column="0"
+        Grid.Row="0"
+        x:Name="menu"
+        HorizontalAlignment="Left"
+        VerticalAlignment="Top"
+        Loaded="ComboBox_Loaded"
+        SelectionChanged="ComboBox_SelectionChanged"
+        Width="120" />
+
+      <!--<ComboBox x:Name="cmbCountryList"   
+                ItemsSource="{Binding MenuOptions}"
+                Width="220"
+                Height="50"
+                FontSize="18"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                BorderThickness="0"
+                VerticalContentAlignment="Center"
+                Padding="15,0,0,0"
+                Background="Transparent"
+                Foreground="Black"
+                IsEditable="True"
+                DisplayMemberPath="Name"
+                Margin="0" />-->
+
+
+
+      <!--<ComboBox HorizontalAlignment="Left"   
+                  VerticalAlignment="Top"   
+                  Width="120"   
+                  ItemsSource="{Binding Path=MenuOptions}"    
+                  DisplayMemberPath="Name"/>
+
+      <ComboBox ItemsSource="{Binding Path=MenuOptions}"
+                Grid.Column="0"
+                Grid.Row="0"
+                Width="200"
+                Background="Red"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top">
+        <ComboBox.ItemTemplate>
+          <DataTemplate>
+            <StackPanel Orientation="Horizontal">
+              <TextBlock Foreground="Blue" Text="hklhk"/>
+              <TextBlock Text=" - "/>
+              <TextBlock Foreground="Blue" Text="{Binding Path=Name}"/>
+            </StackPanel>
+          </DataTemplate>
+        </ComboBox.ItemTemplate>
+      </ComboBox>-->
+      
+    </Grid>
+
+
+
+
+    
     <ListView x:Name="FilesList"
                 Grid.Row="2"
                 Grid.Column="1"
@@ -103,7 +168,7 @@
           <Style TargetType="{x:Type Border}">
             <Setter Property="CornerRadius" Value="4"/>
           </Style>
-        </TextBox.Resources>
+        </TextBox.Resources> 
       </TextBox>
     </Grid>
 

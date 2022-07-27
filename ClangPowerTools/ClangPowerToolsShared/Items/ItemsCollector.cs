@@ -169,6 +169,62 @@ namespace ClangPowerTools
         AddProjectItem(item.Object as ProjectItem);
       }
     }
+    private static UIHierarchyItem[] RecurseUIHierarchyItems(UIHierarchyItems items)
+    {
+      List<UIHierarchyItem> list = new List<UIHierarchyItem>();
+      if (items != null)
+      {
+        foreach (UIHierarchyItem hierItem in items)
+        {
+          list.Add(hierItem);
+          list.AddRange(RecurseUIHierarchyItems(hierItem.UIHierarchyItems));
+        }
+      }
+      return list.ToArray();
+    }
+
+    public void CollectProjectItems()
+    {
+
+      //1-------------------------------------
+      var zrt = dte2.ActiveDocument.ProjectItem.Properties.Item("FullPath").Value;
+
+      var sss = dte2.Solution.Projects;
+      var sj = dte2.Solution.FullName;
+      //var t = dte2.Solution.Properties
+
+      var sol = dte2.Solution.SolutionBuild;
+
+      var projectFile12 = dte2.ActiveSolutionProjects;
+
+      foreach (var s in (Array)dte2.ActiveSolutionProjects)
+      {
+        var t = s as Project;
+        var tt = t.FullName;
+      }
+
+      //foreach (UIHierarchyItem item in zzza)
+      //{
+      //  if (item.Object is Solution)
+      //  {
+      //    var solution = item.Object as Solution;
+
+      //    if (jsonCompilationDbActive)
+      //      Items.Add(new CurrentSolution(solution));
+      //    else
+      //      GetProjectsFromSolution(solution);
+      //  }
+      //  else if (item.Object is Project)
+      //  {
+      //    var project = item.Object as Project;
+      //    AddProject(project);
+      //  }
+      //  else if (item.Object is ProjectItem)
+      //  {
+      //    GetProjectItem(item.Object as ProjectItem);
+      //  }
+      //}
+    }
 
     public void CollectSelectedItems()
     {
@@ -274,6 +330,10 @@ namespace ClangPowerTools
       Items = AutomationUtil.GetAllProjects(aSolution);
     }
 
+    private List<IItem> GetResultProjectsFromSolution(Solution aSolution)
+    {
+      return AutomationUtil.GetAllProjects(aSolution);
+    }
 
     private void AddProject(Project aProject) => Items.Add(new CurrentProject(aProject));
 

@@ -20,6 +20,23 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     List<string> commands = new();
     private string pathToClangQuery;
 
+    public List<MenuItem> MenuOptions
+    {
+      get
+      {
+        return LookInMenuController.MenuOptions;
+      }
+    }
+
+    public MenuItem SMenuOption
+    {
+      get
+      {
+        return LookInMenuController.MenuOptions.Last();
+      }
+    }
+
+
     public FindToolWindowModel FindToolWindowModel
     {
       get { return findToolWindowModel; }
