@@ -4,6 +4,6 @@
   {
     Toolbar,
     ContextMenu,
-    ViweMenu
+    ViewMenu
   };
 }

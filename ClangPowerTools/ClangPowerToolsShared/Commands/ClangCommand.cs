@@ -152,6 +152,9 @@ namespace ClangPowerTools
         case CommandUILocation.ContextMenu:
           mItemsCollector.CollectSelectedItems();
           break;
+        case CommandUILocation.ViewMenu:
+          mItemsCollector.CollectProjectItems();
+          break;
       }
     }
 

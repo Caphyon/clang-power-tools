@@ -455,7 +455,7 @@ namespace ClangPowerTools
           commandUILocation = CommandUILocation.Toolbar;
           break;
         case CommandIds.kFindViewMenuId:
-          commandUILocation = CommandUILocation.ViweMenu;
+          commandUILocation = CommandUILocation.ViewMenu;
           break;
         default:
           commandUILocation = CommandUILocation.ContextMenu;
