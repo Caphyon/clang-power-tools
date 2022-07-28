@@ -9,6 +9,7 @@
 
   public class MenuItem
   {
+    public MenuItem() { }
     public MenuItem(string name, LookInMenu lookInMenu)
     {
       Name = name;

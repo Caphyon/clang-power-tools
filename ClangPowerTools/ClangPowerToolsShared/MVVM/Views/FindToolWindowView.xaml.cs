@@ -47,8 +47,7 @@ namespace ClangPowerTools.Views
     private void ComboBox_Loaded(object sender, RoutedEventArgs e)
     {
       var combo = sender as ComboBox;
-      var list = LookInMenuController.MenuOptions;
-      combo.ItemsSource = list;
+      combo.ItemsSource = LookInMenuController.MenuOptions;
       combo.SelectedIndex = 0;
     }
 
@@ -57,6 +56,7 @@ namespace ClangPowerTools.Views
       if(menu.SelectedItem != null)
       {
         var item = menu.SelectedItem as ClangPowerToolsShared.Commands.MenuItem;
+        LookInMenuController.SetSelectedOption(item);
       }
     }
 
