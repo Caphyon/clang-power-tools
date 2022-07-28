@@ -245,7 +245,7 @@ namespace ClangPowerTools
           {
             if (!keepJsonCompilationDb)
             {
-              await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu,
+              await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ViewMenu,
               null, false);
             }
 
@@ -396,7 +396,7 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kJsonCompilationDatabase);
 
-            await JsonCompilationDatabaseCommand.Instance.ExportAsync(openCompilationDatabaseInExplorer);
+            await JsonCompilationDatabaseCommand.Instance.ExportAsync(aCommandUILocation, openCompilationDatabaseInExplorer);
             OnAfterClangCommand();
             break;
           }

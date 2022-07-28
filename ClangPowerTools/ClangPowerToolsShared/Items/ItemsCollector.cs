@@ -1,6 +1,7 @@
 using ClangPowerTools.Helpers;
 using ClangPowerTools.Items;
 using ClangPowerTools.Services;
+using ClangPowerToolsShared.Commands;
 using EnvDTE;
 using EnvDTE80;
 using System;
@@ -185,23 +186,40 @@ namespace ClangPowerTools
 
     public void CollectProjectItems()
     {
+      
+      var selectedMenuItem = LookInMenuController.GetSelectedMenuItem();
+      switch (selectedMenuItem.LookInMenu)
+      {
+        //case LookInMenu.EntireSolution:
+        //  Items.Add(new CurrentSolution(dte2.Solution));
+        //break;
+        //case LookInMenu.CurrentSetProject:
+        //  if(dte2.ActiveSolutionProjects != null)
+        //  {
+        //    //(dte2.ActiveSolutionProjects as Array)[0]
+        //  }
+        //  break;
+        case LookInMenu.CurrentActiveDocument:
+          CollectActiveProjectItem();
+          break;
+      }
 
       //1-------------------------------------
-      var zrt = dte2.ActiveDocument.ProjectItem.Properties.Item("FullPath").Value;
+      //var zrt = dte2.ActiveDocument.ProjectItem.Properties.Item("FullPath").Value;
 
-      var sss = dte2.Solution.Projects;
-      var sj = dte2.Solution.FullName;
-      //var t = dte2.Solution.Properties
+      //var sss = dte2.Solution.Projects;
+      //var sj = dte2.Solution.FullName;
+      ////var t = dte2.Solution.Properties
 
-      var sol = dte2.Solution.SolutionBuild;
+      //var sol = dte2.Solution.SolutionBuild;
 
-      var projectFile12 = dte2.ActiveSolutionProjects;
+      //var projectFile12 = dte2.ActiveSolutionProjects;
 
-      foreach (var s in (Array)dte2.ActiveSolutionProjects)
-      {
-        var t = s as Project;
-        var tt = t.FullName;
-      }
+      //foreach (var s in (Array)dte2.ActiveSolutionProjects)
+      //{
+      //  var t = s as Project;
+      //  var tt = t.FullName;
+      //}
 
       //foreach (UIHierarchyItem item in zzza)
       //{

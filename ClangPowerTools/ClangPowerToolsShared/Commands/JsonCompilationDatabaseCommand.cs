@@ -67,10 +67,10 @@ namespace ClangPowerTools.Commands
     /// </summary>
     /// <param name="sender">Event sender.</param>
     /// <param name="e">Event args.</param>
-    public async Task ExportAsync(bool openInExplorer = true)
+    public async Task ExportAsync(CommandUILocation aCommandUILocation, bool openInExplorer = true)
     {
       OpenInExplorer = openInExplorer;
-      await RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu, true);
+      await RunClangCompileAsync(CommandIds.kCompileId, aCommandUILocation, true);
     }
 
 
