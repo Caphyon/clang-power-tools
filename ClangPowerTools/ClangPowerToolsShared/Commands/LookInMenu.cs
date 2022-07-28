@@ -15,7 +15,7 @@
       LookInMenu = lookInMenu;
     }
 
-    public string Name;
-    public LookInMenu LookInMenu;
+    public string Name { get; set; }
+    public LookInMenu LookInMenu { get; set; }
   }
 }

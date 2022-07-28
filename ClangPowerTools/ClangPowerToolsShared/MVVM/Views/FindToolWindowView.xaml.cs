@@ -47,17 +47,17 @@ namespace ClangPowerTools.Views
     private void ComboBox_Loaded(object sender, RoutedEventArgs e)
     {
       var combo = sender as ComboBox;
-      //combo.ItemsSource = data;
-      var list = LookInMenuController.MenuOptions.Select(a => a.Name).ToList();
+      var list = LookInMenuController.MenuOptions;
       combo.ItemsSource = list;
       combo.SelectedIndex = 0;
     }
 
     private void ComboBox_SelectionChanged(object sender, RoutedEventArgs e)
     {
-      var selectedItem = sender as ComboBox;
-      //string name = selectedItem.SelectedItem as string;
-      //MessageBox.Show(name);
+      if(menu.SelectedItem != null)
+      {
+        var item = menu.SelectedItem as ClangPowerToolsShared.Commands.MenuItem;
+      }
     }
 
     private void Matcher_Click(object sender, RoutedEventArgs e)
