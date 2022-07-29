@@ -23,7 +23,7 @@ namespace ClangPowerToolsShared.Commands
         return new List<MenuItem>()
         {
           new MenuItem ("Entire solution", LookInMenu.EntireSolution),
-          new MenuItem ("Current set project", LookInMenu.CurrentSetProject),
+          new MenuItem ("Current project", LookInMenu.CurrentProject),
           new MenuItem ("Current active document", LookInMenu.CurrentActiveDocument),
         };
       }

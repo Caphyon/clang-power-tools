@@ -167,6 +167,7 @@
       <Button guid="guidClangPowerToolsPackageCmdSet" id="FindToolWindowId" priority="0x0100" type="Button">
         <Parent guid="guidClangPowerToolsPackageCmdSet" id="FindToolWindowGroup" />
         <Icon guid="guidImageFind" id="Find" />
+        <CommandFlag>DynamicVisibility</CommandFlag>
         <Strings>
           <ButtonText>Find Tool Window - Clang Power Tools</ButtonText>
         </Strings>

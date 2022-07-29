@@ -81,11 +81,6 @@ namespace ClangPowerTools
 
     public async Task InitializeCommandsAsync(AsyncPackage aAsyncPackage)
     {
-      if (FindViewMenuCommand.Instance == null)
-      {
-        await FindViewMenuCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kFindViewMenuId);
-      }
-
       if (CompileCommand.Instance == null)
       {
         await CompileCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kCompileId);
@@ -148,6 +143,12 @@ namespace ClangPowerTools
       {
         await SettingsCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kSettingsId);
       }
+
+      if (FindViewMenuCommand.Instance == null)
+      {
+        await FindViewMenuCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kFindViewMenuId);
+      }
+
     }
 
     public async void Execute(object sender, EventArgs e)

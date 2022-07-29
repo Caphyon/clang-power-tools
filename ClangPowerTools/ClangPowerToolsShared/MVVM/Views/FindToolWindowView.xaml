@@ -57,7 +57,7 @@
         VerticalAlignment="Top"
         Loaded="ComboBox_Loaded"
         SelectionChanged="ComboBox_SelectionChanged"
-        Width="120" />
+        Width="170" />
     </Grid>
     
     <ListView x:Name="FilesList"

@@ -3,7 +3,7 @@
   public enum LookInMenu
   {
     EntireSolution,
-    CurrentSetProject,
+    CurrentProject,
     CurrentActiveDocument,
   }
 
