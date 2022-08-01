@@ -18,8 +18,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
   public class FindToolWindowViewModel : FindController
   {
-    private List<string> filesPaths = new();
-
     public List<IViewMatcher> ViewMatchers
     {
       get { return FindToolWindowModel.ViewMatchers;  }
@@ -30,17 +28,14 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       this.findToolWindowView = findToolWindowView;
     }
 
-    public void OpenToolWindow(List<string> filesPath)
-    {
-      filesPaths = filesPath;
-    }
+    public void OpenToolWindow() { }
 
     public void RunQuery()
     {
       if (!RunController.StopCommandActivated)
       {
         SelectCommandToRun(findToolWindowModel.CurrentViewMatcher);
-        RunPowershellQuery(filesPaths);
+        RunPowershellQuery();
       }
       AfterCommand();
     }

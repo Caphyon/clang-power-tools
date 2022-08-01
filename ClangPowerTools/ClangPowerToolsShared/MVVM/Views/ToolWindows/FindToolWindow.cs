@@ -38,7 +38,7 @@ namespace ClangPowerToolsShared.MVVM.Views.ToolWindows
     public void OpenFindToolWindow(List<string> filesPath)
     {
       MethodInfo method = mObjType.GetMethod("OpenFindToolWindow");
-      method.Invoke(findToolWindowView, new object[] { filesPath });
+      method.Invoke(findToolWindowView, null);
     }
 
     public void RunQuery()

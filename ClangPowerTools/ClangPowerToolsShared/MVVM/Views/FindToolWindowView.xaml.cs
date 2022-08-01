@@ -23,10 +23,7 @@ namespace ClangPowerTools.Views
       InitializeComponent();
     }
 
-    public void OpenFindToolWindow(List<string> filesPath)
-    {
-      findToolWindowViewModel.OpenToolWindow(filesPath);
-    }
+    public void OpenFindToolWindow() { }
 
     public void RunQuery()
     {

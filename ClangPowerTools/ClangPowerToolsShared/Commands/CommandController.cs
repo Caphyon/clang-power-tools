@@ -232,7 +232,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kClangFind:
           {
-            keepJsonCompilationDb = false;
+            //keepJsonCompilationDb = false;
 
             HideTidyToolWindow();
             await StopBackgroundRunnersAsync();
@@ -244,11 +244,11 @@ namespace ClangPowerTools
           }
         case CommandIds.kClangFindRun:
           {
-            if (!keepJsonCompilationDb)
-            {
+            //if (!keepJsonCompilationDb)
+            //{
               await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ViewMenu,
               null, false);
-            }
+            //}
 
             keepJsonCompilationDb = !RunController.StopCommandActivated;
 
