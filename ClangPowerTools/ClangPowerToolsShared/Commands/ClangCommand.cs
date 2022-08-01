@@ -7,6 +7,7 @@ using ClangPowerTools.Services;
 using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.Commands.Models;
 using ClangPowerToolsShared.Helpers;
+using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using EnvDTE;
 using EnvDTE80;
@@ -229,7 +230,7 @@ namespace ClangPowerTools
     protected void GenerateDocumentationForProject(int commandId, AsyncPackage package)
     {
       
-      var jsonCompilationDatabasePath = JsonCompilationDatabaseCommand.Instance.JsonDBPath;
+      var jsonCompilationDatabasePath = PathConstants.JsonCompilationDBPath;
       string documentationOutoutePath = GenerateDocumentation.FindOutputFolderName(
         Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
         "Documentation\\"));
@@ -272,7 +273,7 @@ namespace ClangPowerTools
 
     private void DeleteJsonCompilationDB()
     {
-      var jsonCompilationDatabasePath = JsonCompilationDatabaseCommand.Instance.JsonDBPath;
+      var jsonCompilationDatabasePath = PathConstants.JsonCompilationDBPath;
       if (File.Exists(jsonCompilationDatabasePath))
         File.Delete(jsonCompilationDatabasePath);
     }

@@ -82,7 +82,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
 
     public void RunPowershellQuery()
     {
-      using (StreamWriter sw = File.AppendText(PathConstants.GetPathToFindCommands()))
+      using (StreamWriter sw = File.AppendText(PathConstants.GetPathToFindCommands))
       {
         foreach (var command in commands)
         {
@@ -93,7 +93,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
       pathCommandPairs = GetCommandForPowershell(pathToClangQuery);
       PowerShellWrapper.InvokePassSequentialCommands(pathCommandPairs);
       DisplayMessageAfterFind();
-      File.Delete(PathConstants.GetPathToFindCommands());
+      File.Delete(PathConstants.GetPathToFindCommands);
     }
 
     private void DisplayMessageAfterFind()
@@ -138,9 +138,9 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     private Dictionary<string, string> GetCommandForPowershell(string pathToBinary)
     {
       string compilationDatabaseContent = string.Empty;
-      if (File.Exists(JsonCompilationDatabaseCommand.Instance.JsonDBPath))
+      if (File.Exists(PathConstants.JsonCompilationDBPath))
       {
-        compilationDatabaseContent = File.ReadAllText(JsonCompilationDatabaseCommand.Instance.JsonDBPath);
+        compilationDatabaseContent = File.ReadAllText(PathConstants.JsonCompilationDBPath);
       }
       List<FileCompilationDB> files = JsonConvert.DeserializeObject<List<FileCompilationDB>>(compilationDatabaseContent);
 
@@ -149,8 +149,8 @@ namespace ClangPowerToolsShared.MVVM.Controllers
       {
         var command = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive " +
         $"-command '& ''{pathToBinary}''  ''{path}'' " +
-        $"-p ''{JsonCompilationDatabaseCommand.Instance.JsonDBPath}'' " +
-        $"-f ''{PathConstants.GetPathToFindCommands()}'' '";
+        $"-p ''{PathConstants.JsonCompilationDBPath}'' " +
+        $"-f ''{PathConstants.GetPathToFindCommands}'' '";
         if (!commands.ContainsKey(path))
           commands.Add(path, command);
       }

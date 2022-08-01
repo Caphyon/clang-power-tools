@@ -54,6 +54,8 @@ namespace ClangPowerTools
     private string oldActiveDocumentName = null;
     private AsyncPackage package;
 
+    public AsyncPackage Package { get { return package; } }
+
     private readonly object mutex = new object();
 
     private readonly string registryName = @"Software\Caphyon\Clang Power Tools";

@@ -59,7 +59,6 @@ namespace ClangPowerTools.Commands
     }
 
     private bool OpenInExplorer { get; set; }
-    public string JsonDBPath { get; set; }
     /// <summary>
     /// This function is the callback used to execute the command when the menu item is clicked.
     /// See the constructor to see how the menu item is associated with this function using
@@ -88,7 +87,6 @@ namespace ClangPowerTools.Commands
         // open the file in File Explorer and select it
         Process.Start("explorer.exe", argument);
       }
-      JsonDBPath = e.FilePath;
     }
 
     #endregion
