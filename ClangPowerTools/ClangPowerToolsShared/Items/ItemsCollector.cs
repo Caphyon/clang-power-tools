@@ -201,7 +201,7 @@ namespace ClangPowerTools
       }
       catch (Exception exception)
       {
-        throw;
+        CommandControllerInstance.CommandController.DisplayMessage(false, "CPT Error: Can't collect ProjectItems from based on look in menu");
       }
     }
 

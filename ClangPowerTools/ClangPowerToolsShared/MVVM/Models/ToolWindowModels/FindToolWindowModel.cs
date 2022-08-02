@@ -9,10 +9,13 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
   {
     public event PropertyChangedEventHandler PropertyChanged;
     private bool isRunning = false;
-    
+    private ComponentVisibility progressBarVisibility = new();
+    private ComponentVisibility menuVisibility = new();
+
     public FindToolWindowModel()
     {
       HideProgressBar();
+      menuVisibility.Show();
     }
 
     public void UpdateUiToSelectedModel(IViewMatcher viewMatcher)
@@ -22,15 +25,15 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       CurrentViewMatcher = currentViewMatcher;
     }
 
-    private string progressBarVisibility;
+
     public string ProgressBarVisibility
     {
-      get { return progressBarVisibility; }
-      set
-      {
-        progressBarVisibility = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ProgressBarVisibility"));
-      }
+      get { return progressBarVisibility.Visibility; }
+    }
+
+    public string MenuVisibility
+    {
+      get { return menuVisibility.Visibility; }
     }
 
     public IViewMatcher CurrentViewMatcher
@@ -71,12 +74,14 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 
     private void ShowProgressBar()
     {
-      ProgressBarVisibility = UIElementsConstants.Visibile;
+      progressBarVisibility.Show();
+      menuVisibility.Hide();
     }
 
     private void HideProgressBar()
     {
-      ProgressBarVisibility = UIElementsConstants.Hidden;
+      progressBarVisibility.Hide();
+      menuVisibility.Show();
     }
   }
 }

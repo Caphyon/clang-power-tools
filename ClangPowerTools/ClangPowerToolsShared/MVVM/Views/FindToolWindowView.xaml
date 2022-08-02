@@ -21,7 +21,7 @@
       <ColumnDefinition Width="10" />
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
-      <RowDefinition Height="20" />
+      <RowDefinition Height="30" />
       <RowDefinition Height="50" />
       <RowDefinition Height="110" />
       <RowDefinition Height="120" />
@@ -33,15 +33,20 @@
 
     <Grid Grid.Column="1" Grid.Row="1" >
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="140" />
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
-        <RowDefinition Height="20" />
+        <RowDefinition Height="25" />
       </Grid.RowDefinitions>
-      <TextBlock Grid.Column="1" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right">
+      <TextBlock 
+        Grid.Column="1"
+        Grid.Row="0"
+        VerticalAlignment="Center"
+        HorizontalAlignment="Right"
+        Visibility="{Binding FindToolWindowModel.MenuVisibility}">
           <Hyperlink Foreground="#4096ff"
-                     FontSize="12"
+                     FontSize="13"
                      RequestNavigate="Hyperlink_Feedback"
                      NavigateUri="https://clangpowertools.com/contact.html">
               <TextBlock Text="Propose a matcher" />
@@ -52,12 +57,15 @@
         x:Name="menu"
         Grid.Column="0"
         Grid.Row="0"
+        Visibility="{Binding FindToolWindowModel.MenuVisibility}"
         DisplayMemberPath="Name"
         HorizontalAlignment="Left"
-        VerticalAlignment="Top"
+        HorizontalContentAlignment="Left"
+        VerticalContentAlignment="Center"
         Loaded="ComboBox_Loaded"
         SelectionChanged="ComboBox_SelectionChanged"
-        Width="170" />
+        Height="20"
+        Width="140" />
     </Grid>
     
     <ListView x:Name="FilesList"
