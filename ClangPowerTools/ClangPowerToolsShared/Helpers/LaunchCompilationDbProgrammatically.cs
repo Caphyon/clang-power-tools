@@ -2,26 +2,40 @@
 using ClangPowerTools.Commands;
 using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
+using System.Threading.Tasks;
+using System.Windows.Controls;
+using MenuItem = ClangPowerToolsShared.Commands.MenuItem;
 
 namespace ClangPowerToolsShared.Helpers
 {
-  public class LaunchCompilationDbProgrammatically
+  internal class LaunchCompilationDbProgrammatically
   {
     private string lastHash = string.Empty;
-    private MenuItem lastSlectedMenuOption = new();
+    private MenuItem lastSelectedMenuOption = new();
 
-    public void FromFindToolWindow()
+    public async Task FromFindToolWindowAsync()
     {
       var currentHash = CryptographyAlgo.HashFile(PathConstants.VcxprojPath);
-      if (currentHash == lastHash)
+
+      var selectedItem = LookInMenuController.GetSelectedMenuItem();
+      if (lastSelectedMenuOption == selectedItem && lastHash == currentHash &&
+        selectedItem.LookInMenu == LookInMenu.EntireSolution)
+      {
         return;
-      if(string.IsNullOrEmpty(lastHash))
+      }else if(lastHash != currentHash || string.IsNullOrEmpty(lastHash) ||
+        lastSelectedMenuOption != LookInMenuController.GetSelectedMenuItem())
       {
         lastHash = currentHash;
+        lastSelectedMenuOption = LookInMenuController.GetSelectedMenuItem();
       }
-
-      CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kJsonCompilationDatabase,
+      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kJsonCompilationDatabase,
         CommandUILocation.ViewMenu, null, false);
+    }
+
+    public async Task FromGenerateDocumentationAsync()
+    {
+      await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu,
+             null, false);
     }
   }
 }

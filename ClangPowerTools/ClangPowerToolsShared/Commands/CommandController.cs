@@ -54,6 +54,7 @@ namespace ClangPowerTools
     private bool mFormatAfterTidyFlag = false;
     private string oldActiveDocumentName = null;
     private AsyncPackage package;
+    private LaunchCompilationDbProgrammatically launchCompilationDbProgrammatically = new();
 
     public AsyncPackage Package { get { return package; } }
 
@@ -235,8 +236,6 @@ namespace ClangPowerTools
           }
         case CommandIds.kClangFind:
           {
-            //keepJsonCompilationDb = false;
-
             HideTidyToolWindow();
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kClangFind);
@@ -247,14 +246,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kClangFindRun:
           {
-            //if (!keepJsonCompilationDb)
-            //{
-              await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ViewMenu,
-              null, false);
-            //}
-            //LaunchCompilationDbProgrammatically aa = new();
-            //keepJsonCompilationDb = !RunController.StopCommandActivated;
-            await StopBackgroundRunnersAsync();
+            await launchCompilationDbProgrammatically.FromFindToolWindowAsync();
             OnBeforeClangCommand(CommandIds.kClangFindRun);  
            
             await FindCommand.Instance.RunQueryAsync();
@@ -354,8 +346,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kDocumentationYamlId:
           {
-            await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu,
-              null, false);
+            await launchCompilationDbProgrammatically.FromGenerateDocumentationAsync();
 
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kDocumentationYamlId);
@@ -368,8 +359,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kDocumentationMdId:
           {
-            await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu,
-              null, false);
+            await launchCompilationDbProgrammatically.FromGenerateDocumentationAsync();
 
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kDocumentationMdId);
@@ -382,8 +372,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kDocumentationHtmlId:
           {
-            await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu,
-              null, false);
+            await launchCompilationDbProgrammatically.FromGenerateDocumentationAsync();
 
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kDocumentationHtmlId);
