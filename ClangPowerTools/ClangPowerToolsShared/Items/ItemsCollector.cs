@@ -177,6 +177,9 @@ namespace ClangPowerTools
       }
     }
 
+    /// <summary>
+    /// Collect project items based on look in menu from find tool window
+    /// </summary>
     public void CollectProjectItems()
     {
       var dte2 = (DTE2)VsServiceProvider.GetService(typeof(DTE2));

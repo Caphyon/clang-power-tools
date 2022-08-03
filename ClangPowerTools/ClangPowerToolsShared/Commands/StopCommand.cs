@@ -90,7 +90,7 @@ namespace ClangPowerTools.Commands
       });
     }
 
-    private static Mutex mutex = new Mutex();
+    private Mutex mutex = new Mutex();
     public void StopClangCommand(bool backgroundRunners)
     {
       var id = CommandControllerInstance.CommandController.GetCurrentCommandId();

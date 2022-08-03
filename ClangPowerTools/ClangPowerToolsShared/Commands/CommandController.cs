@@ -8,6 +8,7 @@ using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
 using ClangPowerToolsShared.Commands;
+using ClangPowerToolsShared.Helpers;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using EnvDTE;
 using EnvDTE80;
@@ -251,9 +252,8 @@ namespace ClangPowerTools
               await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ViewMenu,
               null, false);
             //}
-
-            keepJsonCompilationDb = !RunController.StopCommandActivated;
-
+            //LaunchCompilationDbProgrammatically aa = new();
+            //keepJsonCompilationDb = !RunController.StopCommandActivated;
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kClangFindRun);  
            
