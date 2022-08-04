@@ -21,9 +21,9 @@
       <ColumnDefinition Width="10" />
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
-      <RowDefinition Height="20" />
-      <RowDefinition Height="20" />
-      <RowDefinition Height="70" />
+      <RowDefinition Height="30" />
+      <RowDefinition Height="50" />
+      <RowDefinition Height="110" />
       <RowDefinition Height="120" />
       <RowDefinition Height="40" />
       <RowDefinition Height="*" />
@@ -31,16 +31,43 @@
       <RowDefinition Height="10" />
     </Grid.RowDefinitions>
 
-    <TextBlock Grid.Column="1" Grid.Row="0" VerticalAlignment="Bottom">
+    <Grid Grid.Column="1" Grid.Row="1" >
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="140" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="25" />
+      </Grid.RowDefinitions>
+      <TextBlock 
+        Grid.Column="1"
+        Grid.Row="0"
+        VerticalAlignment="Center"
+        HorizontalAlignment="Right"
+        Visibility="{Binding FindToolWindowModel.MenuVisibility}">
           <Hyperlink Foreground="#4096ff"
-                     FontSize="12"
+                     FontSize="13"
                      RequestNavigate="Hyperlink_Feedback"
                      NavigateUri="https://clangpowertools.com/contact.html">
-              <TextBlock
-                         Text="Propose a matcher" />
+              <TextBlock Text="Propose a matcher" />
           </Hyperlink>
-    </TextBlock>
+      </TextBlock>
 
+      <ComboBox
+        x:Name="menu"
+        Grid.Column="0"
+        Grid.Row="0"
+        Visibility="{Binding FindToolWindowModel.MenuVisibility}"
+        DisplayMemberPath="Name"
+        HorizontalAlignment="Left"
+        HorizontalContentAlignment="Left"
+        VerticalContentAlignment="Center"
+        Loaded="ComboBox_Loaded"
+        SelectionChanged="ComboBox_SelectionChanged"
+        Height="20"
+        Width="140" />
+    </Grid>
+    
     <ListView x:Name="FilesList"
                 Grid.Row="2"
                 Grid.Column="1"
@@ -103,7 +130,7 @@
           <Style TargetType="{x:Type Border}">
             <Setter Property="CornerRadius" Value="4"/>
           </Style>
-        </TextBox.Resources>
+        </TextBox.Resources> 
       </TextBox>
     </Grid>
 

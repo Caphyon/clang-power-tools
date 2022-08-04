@@ -4,6 +4,7 @@ using ClangPowerTools.Views;
 using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -16,9 +17,26 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     public event PropertyChangedEventHandler PropertyChanged;
     protected FindToolWindowView findToolWindowView;
     protected FindToolWindowModel findToolWindowModel = new();
-    Dictionary<string, string> pathCommandPairs = new();
-    List<string> commands = new();
+    private Dictionary<string, string> pathCommandPairs = new();
+    private List<string> commands = new();
     private string pathToClangQuery;
+
+    public List<MenuItem> MenuOptions
+    {
+      get
+      {
+        return LookInMenuController.MenuOptions;
+      }
+    }
+
+    public MenuItem SMenuOption
+    {
+      get
+      {
+        return LookInMenuController.MenuOptions.Last();
+      }
+    }
+
 
     public FindToolWindowModel FindToolWindowModel
     {
@@ -62,9 +80,9 @@ namespace ClangPowerToolsShared.MVVM.Controllers
       }
     }
 
-    public void RunPowershellQuery(List<string> paths)
+    public void RunPowershellQuery()
     {
-      using (StreamWriter sw = File.AppendText(PathConstants.GetPathToFindCommands()))
+      using (StreamWriter sw = File.AppendText(PathConstants.GetPathToFindCommands))
       {
         foreach (var command in commands)
         {
@@ -72,10 +90,10 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         }
       }
       DisplayMessageBeforeFind();
-      pathCommandPairs = GetCommandForPowershell(paths, pathToClangQuery);
+      pathCommandPairs = GetCommandForPowershell(pathToClangQuery);
       PowerShellWrapper.InvokePassSequentialCommands(pathCommandPairs);
       DisplayMessageAfterFind();
-      File.Delete(PathConstants.GetPathToFindCommands());
+      File.Delete(PathConstants.GetPathToFindCommands);
     }
 
     private void DisplayMessageAfterFind()
@@ -113,18 +131,26 @@ namespace ClangPowerToolsShared.MVVM.Controllers
       }
     }
 
-    private Dictionary<string, string> GetCommandForPowershell(List<string> args, string pathToBinary)
+    private class FileCompilationDB
     {
-      var paths = args.Where(a => ScriptConstants.kAcceptedFileExtensionsWithoutHeaders
-                      .Contains(Path.GetExtension(a))).ToList();
+      public string file { get; set; } 
+    }
+    private Dictionary<string, string> GetCommandForPowershell(string pathToBinary)
+    {
+      string compilationDatabaseContent = string.Empty;
+      if (File.Exists(PathConstants.JsonCompilationDBPath))
+      {
+        compilationDatabaseContent = File.ReadAllText(PathConstants.JsonCompilationDBPath);
+      }
+      List<FileCompilationDB> files = JsonConvert.DeserializeObject<List<FileCompilationDB>>(compilationDatabaseContent);
 
       Dictionary<string, string> commands = new();
-      foreach (var path in paths)
+      foreach (var path in files.Select(a => a.file).ToList())
       {
         var command = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive " +
         $"-command '& ''{pathToBinary}''  ''{path}'' " +
-        $"-p ''{JsonCompilationDatabaseCommand.Instance.JsonDBPath}'' " +
-        $"-f ''{PathConstants.GetPathToFindCommands()}'' '";
+        $"-p ''{PathConstants.JsonCompilationDBPath}'' " +
+        $"-f ''{PathConstants.GetPathToFindCommands}'' '";
         if (!commands.ContainsKey(path))
           commands.Add(path, command);
       }

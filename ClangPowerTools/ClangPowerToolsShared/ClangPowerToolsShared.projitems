@@ -23,6 +23,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)Commands\DocumentationYamlCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\FindCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\FindCommandIds.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\FindViewMenuCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Commands\LookInMenu.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\CryptographyAlgo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Helpers\LaunchCompilationDbProgrammatically.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\LookInMenuController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\RunController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\GenerateDocumentation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\MatchConstants.cs" />

@@ -8,6 +8,7 @@ using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Views;
 using ClangPowerTools.Services;
 using ClangPowerToolsShared.Commands;
+using ClangPowerToolsShared.Helpers;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using EnvDTE;
 using EnvDTE80;
@@ -53,6 +54,9 @@ namespace ClangPowerTools
     private bool mFormatAfterTidyFlag = false;
     private string oldActiveDocumentName = null;
     private AsyncPackage package;
+    private LaunchCompilationDbProgrammatically launchCompilationDbProgrammatically = new();
+
+    public AsyncPackage Package { get { return package; } }
 
     private readonly object mutex = new object();
 
@@ -143,6 +147,12 @@ namespace ClangPowerTools
       {
         await SettingsCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kSettingsId);
       }
+
+      if (FindViewMenuCommand.Instance == null)
+      {
+        await FindViewMenuCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kFindViewMenuId);
+      }
+
     }
 
     public async void Execute(object sender, EventArgs e)
@@ -193,6 +203,15 @@ namespace ClangPowerTools
 
       switch (aCommandId)
       {
+        case CommandIds.kFindViewMenuId:
+          {
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kFindViewMenuId);
+
+            await FindViewMenuCommand.Instance.FindAsync(aCommandUILocation);
+            OnAfterClangCommand();
+            break;
+          }
         case CommandIds.kSettingsId:
           {
             await SettingsCommand.Instance.ShowSettingsAsync();
@@ -217,8 +236,6 @@ namespace ClangPowerTools
           }
         case CommandIds.kClangFind:
           {
-            keepJsonCompilationDb = false;
-
             HideTidyToolWindow();
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kClangFind);
@@ -229,15 +246,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kClangFindRun:
           {
-            if (!keepJsonCompilationDb)
-            {
-              await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu,
-              null, false);
-            }
-
-            keepJsonCompilationDb = !RunController.StopCommandActivated;
-
-            await StopBackgroundRunnersAsync();
+            await launchCompilationDbProgrammatically.FromFindToolWindowAsync();
             OnBeforeClangCommand(CommandIds.kClangFindRun);  
            
             await FindCommand.Instance.RunQueryAsync();
@@ -337,8 +346,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kDocumentationYamlId:
           {
-            await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu,
-              null, false);
+            await launchCompilationDbProgrammatically.FromGenerateDocumentationAsync();
 
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kDocumentationYamlId);
@@ -351,8 +359,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kDocumentationMdId:
           {
-            await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu,
-              null, false);
+            await launchCompilationDbProgrammatically.FromGenerateDocumentationAsync();
 
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kDocumentationMdId);
@@ -365,8 +372,7 @@ namespace ClangPowerTools
           }
         case CommandIds.kDocumentationHtmlId:
           {
-            await LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu,
-              null, false);
+            await launchCompilationDbProgrammatically.FromGenerateDocumentationAsync();
 
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kDocumentationHtmlId);
@@ -382,7 +388,7 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kJsonCompilationDatabase);
 
-            await JsonCompilationDatabaseCommand.Instance.ExportAsync(openCompilationDatabaseInExplorer);
+            await JsonCompilationDatabaseCommand.Instance.ExportAsync(aCommandUILocation, openCompilationDatabaseInExplorer);
             OnAfterClangCommand();
             break;
           }
@@ -439,6 +445,9 @@ namespace ClangPowerTools
         case CommandIds.kTidyToolbarId:
         case CommandIds.kTidyFixToolbarId:
           commandUILocation = CommandUILocation.Toolbar;
+          break;
+        case CommandIds.kFindViewMenuId:
+          commandUILocation = CommandUILocation.ViewMenu;
           break;
         default:
           commandUILocation = CommandUILocation.ContextMenu;

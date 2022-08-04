@@ -220,12 +220,13 @@ namespace ClangPowerTools.Output
     public void ClosedDataConnection(object sender, EventArgs e)
     {
       mutex.WaitOne();
+      string outputResult = String.Empty;
       var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
 
       tempPaths.Clear();
       if (Buffer.Count != 0 && outputContent.MissingLLVM == false)
       {
-        var outputResult = String.Join("\n", Buffer);
+        outputResult = String.Join("\n", Buffer);
         if (id == CommandIds.kClangFindRun)
         {
           Regex regex = new Regex(ErrorParserConstants.kNumberMatchesRegex);
@@ -246,6 +247,7 @@ namespace ClangPowerTools.Output
       var tidySettings = SettingsProvider.TidySettingsModel;
       if (id == CommandIds.kTidyToolWindowId || (id == CommandIds.kTidyFixId && !tidySettings.ApplyTidyFix))
       {
+        Write(outputResult);
         foreach (var path in paths)
         {
           tempPaths.Add(path);

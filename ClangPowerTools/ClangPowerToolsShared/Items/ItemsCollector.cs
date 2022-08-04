@@ -1,6 +1,7 @@
 using ClangPowerTools.Helpers;
 using ClangPowerTools.Items;
 using ClangPowerTools.Services;
+using ClangPowerToolsShared.Commands;
 using EnvDTE;
 using EnvDTE80;
 using System;
@@ -54,14 +55,15 @@ namespace ClangPowerTools
       Items.Add(item);
     }
 
-    public void CollectActiveProjectItem()
+    public List<IItem> CollectActiveProjectItem(bool saveInItems = true)
     {
       try
       {
+        List<IItem> items = new List<IItem>();
         var dte = (DTE2)VsServiceProvider.GetService(typeof(DTE2));
 
         if (dte == null)
-          return;
+          return items;
 
         Document activeDocument = null;
         try
@@ -70,11 +72,11 @@ namespace ClangPowerTools
         }
         catch (Exception)
         {
-          return;
+          return items;
         }
 
         if (activeDocument == null || activeDocument.ProjectItem == null)
-          return;
+          return items;
 
         IItem item = null;
         var projectName = activeDocument.ProjectItem.ContainingProject.FullName;
@@ -82,13 +84,18 @@ namespace ClangPowerTools
         if (SolutionInfo.IsOpenFolderModeActive())
         {
           item = new CurrentDocument(activeDocument);
-          Items.Add(item);
         }
         else if (string.IsNullOrWhiteSpace(projectName) == false)
         {
           item = new CurrentProjectItem(activeDocument.ProjectItem);
-          Items.Add(item);
         }
+
+        if (saveInItems)
+          Items.Add(item);
+
+        items.Add(item);
+
+        return items;
       }
       catch (Exception e)
       {
@@ -167,6 +174,37 @@ namespace ClangPowerTools
       {
         var item = dte2.ToolWindows.SolutionExplorer.GetItem(path);
         AddProjectItem(item.Object as ProjectItem);
+      }
+    }
+
+    /// <summary>
+    /// Collect project items based on look in menu from find tool window
+    /// </summary>
+    public void CollectProjectItems()
+    {
+      var dte2 = (DTE2)VsServiceProvider.GetService(typeof(DTE2));
+
+      var selectedMenuItem = LookInMenuController.GetSelectedMenuItem();
+      try
+      {
+        switch (selectedMenuItem.LookInMenu)
+        {
+          case LookInMenu.EntireSolution:
+            Items.Add(new CurrentSolution(dte2.Solution));
+            break;
+          case LookInMenu.CurrentProject:
+            List<IItem> items = CollectActiveProjectItem(false);
+            var projItem = items.First().GetObject() as ProjectItem;
+            Items.Add(new CurrentProject(projItem.ContainingProject));
+            break;
+          case LookInMenu.CurrentActiveDocument:
+            CollectActiveProjectItem();
+            break;
+        }
+      }
+      catch (Exception exception)
+      {
+        CommandControllerInstance.CommandController.DisplayMessage(false, "CPT Error: Can't collect ProjectItems from based on look in menu");
       }
     }
 
@@ -274,6 +312,10 @@ namespace ClangPowerTools
       Items = AutomationUtil.GetAllProjects(aSolution);
     }
 
+    private List<IItem> GetResultProjectsFromSolution(Solution aSolution)
+    {
+      return AutomationUtil.GetAllProjects(aSolution);
+    }
 
     private void AddProject(Project aProject) => Items.Add(new CurrentProject(aProject));
 

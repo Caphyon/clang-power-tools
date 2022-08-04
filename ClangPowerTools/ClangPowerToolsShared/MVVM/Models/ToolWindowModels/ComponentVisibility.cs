@@ -12,17 +12,11 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
     public ComponentVisibility()
     {
       visibility = UIElementsConstants.Hidden;
-
     }
 
     public string Visibility
     {
       get { return visibility; }
-      set
-      {
-        visibility = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Visibility"));
-      }
     }
 
     public void Hide()

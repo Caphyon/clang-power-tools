@@ -3,6 +3,7 @@
   public enum CommandUILocation
   {
     Toolbar,
-    ContextMenu
+    ContextMenu,
+    ViewMenu
   };
 }
