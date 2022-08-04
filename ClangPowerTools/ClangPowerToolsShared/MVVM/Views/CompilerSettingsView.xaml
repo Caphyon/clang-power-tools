@@ -37,6 +37,7 @@
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
@@ -399,5 +400,34 @@
         Style="{StaticResource SettingsButton}" />
     </WrapPanel>
 
+    <!--  Add cpt alias  -->
+    <WrapPanel Grid.Row="13" Grid.Column="1">
+      <WrapPanel.ToolTip>
+        <ToolTip>
+          <TextBlock
+            MaxWidth="400"
+            Text="{Binding Tooltip.PowerShellScripts}"
+            TextWrapping="Wrap" />
+        </ToolTip>
+      </WrapPanel.ToolTip>
+
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Add cpt alias" />
+
+      <Button
+        Width="80"
+        Height="30"
+        HorizontalAlignment="Left"
+        Command="{Binding AddCptAliasCommand}"
+        Content="Update"
+        FontSize="14"
+        Foreground="White"
+        Style="{StaticResource SettingsButton}" />
+    </WrapPanel>
   </Grid>
 </UserControl>

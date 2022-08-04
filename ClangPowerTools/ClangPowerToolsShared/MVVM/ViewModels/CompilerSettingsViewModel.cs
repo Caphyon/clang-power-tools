@@ -23,6 +23,7 @@ namespace ClangPowerTools
     private ICommand filesToIgnoreAddDataCommand;
     private ICommand projectsToIgnoreAddDataCommand;
     private ICommand powerShellUpdateScriptsCommand;
+    private ICommand addCptAliasCommand;
 
     #endregion
 
@@ -90,6 +91,11 @@ namespace ClangPowerTools
     {
       get => powerShellUpdateScriptsCommand ?? (powerShellUpdateScriptsCommand = new RelayCommand(() => UpdateScripts(), () => CanExecute));
     }
+
+    public ICommand AddCptAliasCommand
+    {
+      get => addCptAliasCommand ?? (addCptAliasCommand = new RelayCommand(() => AddCptAlias(), () => CanExecute));
+    }
     #endregion
 
     #region Methods
@@ -109,6 +115,11 @@ namespace ClangPowerTools
     {
       compilerModel.ProjectsToIgnore = OpenContentDialog(compilerModel.ProjectsToIgnore);
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CompilerModel"));
+    }
+
+    private void AddCptAlias()
+    {
+      PowerShellWrapper.Invoke(@"write-output ""test"" ");
     }
 
     private void UpdateScripts()
