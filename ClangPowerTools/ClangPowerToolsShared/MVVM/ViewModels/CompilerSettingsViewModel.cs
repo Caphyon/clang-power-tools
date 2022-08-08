@@ -120,8 +120,11 @@ namespace ClangPowerTools
 
     private void AddCptAlias()
     {
-      string ScriptWindowsPowerShell = $"Add-Content $profile 'Set-Alias -Name cpt -Value ''{PowerShellWrapper.GetClangBuildScriptPath()}'' ' ";
+      string ScriptWindowsPowerShell =
+        "if ((Test-Path -Path $profile -PathType Leaf) -eq $false) { New-Item -Path $profile -ItemType \"file\" -Force};" +
+        $"Add-Content $profile ' Set-Alias -Name cpt -Value ''{PowerShellWrapper.GetClangBuildScriptPath()}'' ' ";
       PowerShellWrapper.Invoke(ScriptWindowsPowerShell);
+
       DialogResult dialogResult = MessageBox.Show("Cpt alias for Clang Power Tools script was added in your Windows Powershell",
                                             "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
     }
