@@ -406,7 +406,7 @@
         <ToolTip>
           <TextBlock
             MaxWidth="400"
-            Text="{Binding Tooltip.PowerShellScripts}"
+            Text="{Binding Tooltip.AliasPowerShellScripts}"
             TextWrapping="Wrap" />
         </ToolTip>
       </WrapPanel.ToolTip>
@@ -417,14 +417,14 @@
         VerticalAlignment="Center"
         FontFamily="SegoeUI"
         FontSize="16"
-        Text="Add cpt alias" />
+        Text="Cpt alias in PowerShell" />
 
       <Button
         Width="80"
         Height="30"
         HorizontalAlignment="Left"
         Command="{Binding AddCptAliasCommand}"
-        Content="Update"
+        Content="Add"
         FontSize="14"
         Foreground="White"
         Style="{StaticResource SettingsButton}" />

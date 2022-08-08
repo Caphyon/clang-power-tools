@@ -57,6 +57,7 @@
     public string FormatEditor { get; } = "Create a .clang-format file from scratch or configure a predefined one. Detect the best matching format style for your code.";
 
     public string PowerShellScripts { get; } = "Manually update the PowerShell scripts used for running Clang commands.";
+    public string AliasPowerShellScripts { get; } = "Manually add cpt alias in Windows PowerShell used for running Clang commands.";
 
     #endregion
 

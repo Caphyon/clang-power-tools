@@ -67,6 +67,8 @@ namespace ClangPowerTools
         if (string.IsNullOrWhiteSpace(customTidyExecutable) == false)
           process.StartInfo.EnvironmentVariables[ScriptConstants.kEnvrionmentTidyPath] = customTidyExecutable;
 
+        var FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
+
         process.EnableRaisingEvents = true;
         process.ErrorDataReceived += DataErrorHandler;
         process.OutputDataReceived += DataHandler;
@@ -76,8 +78,6 @@ namespace ClangPowerTools
         {
           RunController.runningProcesses.Remove(process);
         };
-
-
 
         RunController.runningProcesses.Add(process);
 
@@ -163,8 +163,11 @@ namespace ClangPowerTools
         catch (Exception e)
         {
           process.EnableRaisingEvents = false;
+          process.ErrorDataReceived -= DataErrorHandler;
+          process.OutputDataReceived -= DataHandler;
+          process.Exited -= ExitedHandler;
+          process.Disposed -= ExitedHandler;
           process.Close();
-
           throw e;
         }
       });
@@ -202,7 +205,7 @@ namespace ClangPowerTools
     /// <exception cref="Exception"></exception>
     public static string DownloadTool(string tool)
     {
-      var getllvmScriptPath = GetScriptFilePath();
+      var getllvmScriptPath = GetLLVMScriptFilePath();
 
       Process process = new Process();
       process.StartInfo.UseShellExecute = false;
@@ -238,7 +241,7 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private static string GetScriptFilePath()
+    private static string GetLLVMScriptFilePath()
     {
       var assemblyPath = Assembly.GetExecutingAssembly().Location;
       var scriptDirectory = assemblyPath.Substring(0, assemblyPath.LastIndexOf('\\'));
@@ -253,6 +256,13 @@ namespace ClangPowerTools
       return string.IsNullOrWhiteSpace(executablePath) == false ? executablePath : string.Empty;
     }
 
+    public static string GetClangBuildScriptPath()
+    {
+      var assemblyPath = Assembly.GetExecutingAssembly().Location;
+      var scriptDirectory = assemblyPath.Substring(0, assemblyPath.LastIndexOf('\\'));
+
+      return Path.Combine(scriptDirectory, ScriptConstants.ToolingV1, ScriptConstants.kScriptName);
+    }
 
     private static string GetUsedLlvmVersionPath(string llvmVersion)
     {
