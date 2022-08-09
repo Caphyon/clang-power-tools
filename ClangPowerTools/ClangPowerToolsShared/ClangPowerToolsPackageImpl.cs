@@ -486,12 +486,12 @@ namespace ClangPowerTools
       var tidyToolWindow = mPackage.FindToolWindow(typeof(TidyToolWindow), 0, false);
       if (tidyToolWindow is null) return VSConstants.S_OK;
       var tidyWindow = tidyToolWindow.Frame as IVsWindowFrame;
-      tidyWindow.Hide();
+      tidyWindow?.Hide();
 
       var findToolWindow = mPackage.FindToolWindow(typeof(FindToolWindow), 0, false);
       if (findToolWindow is null) return VSConstants.S_OK;
       var findWindow = findToolWindow.Frame as IVsWindowFrame;
-      findWindow.Hide();
+      findWindow?.Hide();
 
       return VSConstants.S_OK;
     }

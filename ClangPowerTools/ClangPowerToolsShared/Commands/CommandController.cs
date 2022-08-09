@@ -497,7 +497,9 @@ namespace ClangPowerTools
       }
       else if (e.Clear)
       {
-        ClearOutputWindowEvent.Invoke(this, new ClearEventArgs());
+        EventHandler<ClearEventArgs> handler = ClearOutputWindowEvent;
+        if (handler != null)
+          handler(this, new ClearEventArgs());
       }
     }
 
@@ -519,7 +521,9 @@ namespace ClangPowerTools
     protected void OnErrorDetected(EventArgs e)
     {
       ErrorDetectedEvent?.Invoke(this, e);
-      HasEncodingErrorEvent.Invoke(this, new EventArgs());
+      EventHandler<EventArgs> handler = HasEncodingErrorEvent;
+      if (handler != null)
+        handler(this, new EventArgs());
     }
 
     public void OnEncodingErrorDetected(object sender, HasEncodingErrorEventArgs e)
@@ -761,7 +765,7 @@ namespace ClangPowerTools
       var findToolWindow = package.FindToolWindow(typeof(FindToolWindow), 0, false);
       if (findToolWindow is null) return VSConstants.S_OK;
       var findWindow = findToolWindow.Frame as IVsWindowFrame;
-      findWindow.Hide();
+      findWindow?.Hide();
 
       return VSConstants.S_OK;
     }
@@ -771,7 +775,7 @@ namespace ClangPowerTools
       var tidyToolWindow = package.FindToolWindow(typeof(TidyToolWindow), 0, false);
       if (tidyToolWindow is null) return VSConstants.S_OK;
       var tidyWindow = tidyToolWindow.Frame as IVsWindowFrame;
-      tidyWindow.Hide();
+      tidyWindow?.Hide();
 
       return VSConstants.S_OK;
     }

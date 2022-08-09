@@ -124,7 +124,9 @@ namespace ClangPowerTools.MVVM.Controllers
       catch (Exception e)
       {
         DefaultState();
-        OnOperationCanceldEvent();
+        OnOperationCanceled handler = OnOperationCanceldEvent;
+        if (handler != null)
+            handler();
         DeleteLlvmDirectory(llvmModel.Version);
         MessageBox.Show(e.Message, "Installation Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
