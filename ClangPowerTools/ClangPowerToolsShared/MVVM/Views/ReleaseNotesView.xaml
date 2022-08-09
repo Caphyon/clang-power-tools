@@ -132,16 +132,16 @@
                  BorderThickness="0"
                  FontSize="14"
                  IsReadOnly="True"
-                 Text="- Select where to run find"
+                 Text="- Select where to run find command"
                  TextWrapping="Wrap" />
 
-        <TextBox Margin="5,25,0,0"
+        <TextBox Margin="30,5,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
-                 FontSize="16"
+                 FontSize="14"
                  IsReadOnly="True"
-                 Text="• Open Find tool window and from View menu"
+                 Text="- Open Find tool window from View menu"
                  TextWrapping="Wrap" />
 
         <!--Bug Fixes-->
@@ -168,7 +168,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Error: not found on update scripts in Visual Studio 2015"
+                 Text="• Can't update scripts on Visual Studio 2015"
                  TextWrapping="Wrap" />
         <!--<TextBox
           Margin="15,5,0,0"
