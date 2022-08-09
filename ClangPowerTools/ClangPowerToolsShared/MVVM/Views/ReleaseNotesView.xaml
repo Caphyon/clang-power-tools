@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 9.0" />
+                 Text="version 9.1" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -123,7 +123,16 @@
                  BorderThickness="0"
                  FontSize="14"
                  IsReadOnly="True"
-                 Text="- Invocations of functions using default argument(s)"
+                 Text="- Write your own custom match"
+                 TextWrapping="Wrap" />
+
+        <TextBox Margin="30,5,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="14"
+                 IsReadOnly="True"
+                 Text="- Select where to run find"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="5,25,0,0"
@@ -132,9 +141,8 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• LLVM 14.0.6"
+                 Text="• Open Find tool window and from View menu"
                  TextWrapping="Wrap" />
-        
 
         <!--Bug Fixes-->
         <TextBox Margin="5,20,0,0"
@@ -151,7 +159,16 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• PCH directory was not automatically included when compiling only one cpp"
+                 Text="• Not displaying full AST in verbose mode"
+                 TextWrapping="Wrap" />
+
+        <TextBox Margin="15,15,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• Error: not found on update scripts in Visual Studio 2015"
                  TextWrapping="Wrap" />
         <!--<TextBox
           Margin="15,5,0,0"
