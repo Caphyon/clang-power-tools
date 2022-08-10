@@ -23,6 +23,11 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       get { return FindToolWindowModel.ViewMatchers;  }
     }
 
+    public List<string> TestItems
+    {
+      get { return new List<string> { "test","test2", "not important", "marina" }; }
+    }
+
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
     {
       this.findToolWindowView = findToolWindowView;

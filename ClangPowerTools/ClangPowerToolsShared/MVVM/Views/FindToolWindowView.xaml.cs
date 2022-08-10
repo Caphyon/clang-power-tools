@@ -1,9 +1,12 @@
 ﻿using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Interfaces;
 using ClangPowerToolsShared.MVVM.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -18,6 +21,20 @@ namespace ClangPowerTools.Views
 
     public FindToolWindowView()
     {
+      AppDomain currentDomain = AppDomain.CurrentDomain;
+      //Provide the current application domain evidence for the assembly.
+      Evidence asEvidence = currentDomain.Evidence;
+      //Load the assembly from the application directory using a simple name.
+
+      //Make an array for the list of assemblies.
+      Assembly[] assems = currentDomain.GetAssemblies();
+
+      var a = assems.Where(a => a.GetName().Name.Contains("WPFTextBoxAutoComplete")).SingleOrDefault();
+      //Create an assembly called CustomLibrary to run this sample.
+      //Assembly.Load(a.FullName);
+      var aaa = Assembly.GetExecutingAssembly();
+      var aaddsa = Assembly.LoadFrom(@"C:\Users\Marina\Desktop\clang-power-tools\ClangPowerTools\ClangPowerTools\bin\Debug\WPFTextBoxAutoComplete.dll");
+      //var a = Assembly.Load("WPFTextBoxAutoComplete.dll");
       findToolWindowViewModel = new FindToolWindowViewModel(this);
       DataContext = findToolWindowViewModel;
       InitializeComponent();
