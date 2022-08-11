@@ -49,6 +49,7 @@ namespace ClangPowerTools
     public const string PackageGuidString = "f564f9d3-01ae-493e-883b-18deebdb975e";
     private const string cptLib16 = "ClangPowerToolsLib16.dll";
     private const string cptLib17 = "ClangPowerToolsLib17.dll";
+    private const string WPFTextBoxAutoComplete = "WPFTextBoxAutoComplete.dll";
     private const string cptNamespace = "ClangPowerTools.ClangPowerToolsPackageImpl";
     private const string initializeAsync = "InitializeAsync";
 
@@ -92,6 +93,7 @@ namespace ClangPowerTools
 
       string currentDir = Path.GetDirectoryName(GetType().Assembly.Location);
       Assembly assembly = Assembly.LoadFile(Path.Combine(currentDir, assemblyName));
+      Assembly.LoadFile(Path.Combine(currentDir, WPFTextBoxAutoComplete));
 
       Type type = assembly.GetType(cptNamespace);
       mClangPackageImpl = Activator.CreateInstance(type, this);
