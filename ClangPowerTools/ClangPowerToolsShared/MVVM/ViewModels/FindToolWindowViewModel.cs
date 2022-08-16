@@ -12,12 +12,14 @@ using ClangPowerToolsShared.MVVM.Controllers;
 using System.Collections.ObjectModel;
 using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Interfaces;
+using ClangPowerToolsShared.MVVM.AutoCompleteHistory;
 
 namespace ClangPowerToolsShared.MVVM.ViewModels
 {
 
   public class FindToolWindowViewModel : FindController
   {
+    private ASTMatchers ASTMatchers;
     public List<IViewMatcher> ViewMatchers
     {
       get { return FindToolWindowModel.ViewMatchers;  }
@@ -25,12 +27,13 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public List<string> TestItems
     {
-      get { return new List<string> { "test","test2", "not important", "marina" }; }
+      get { return ASTMatchers.AutoCompleteMatchers; }
     }
 
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
     {
       this.findToolWindowView = findToolWindowView;
+      ASTMatchers = new();
     }
 
     public void OpenToolWindow() { }
