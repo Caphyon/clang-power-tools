@@ -19,21 +19,21 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
   public class FindToolWindowViewModel : FindController
   {
-    private ASTMatchers ASTMatchers;
+    private ASTMatchers astMatchers;
     public List<IViewMatcher> ViewMatchers
     {
       get { return FindToolWindowModel.ViewMatchers;  }
     }
 
-    public List<string> TestItems
+    public List<string> ASTMatchers
     {
-      get { return ASTMatchers.AutoCompleteMatchers; }
+      get { return astMatchers.AutoCompleteMatchers; }
     }
 
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
     {
       this.findToolWindowView = findToolWindowView;
-      ASTMatchers = new();
+      astMatchers = new();
     }
 
     public void OpenToolWindow() { }

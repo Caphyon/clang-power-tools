@@ -7,7 +7,8 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
   public class ASTMatchers
   {
     public List<string> AutoCompleteMatchers { get; } = new List<string>
-    {
+    { 
+      "match",
       "attr()",
       "cxxBaseSpecifier()",
       "cxxCtorInitializer()",

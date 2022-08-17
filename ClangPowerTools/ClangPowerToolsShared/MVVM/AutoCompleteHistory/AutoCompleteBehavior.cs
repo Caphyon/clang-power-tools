@@ -113,7 +113,7 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
     /// <param name="e"></param>
     static void OnPreviewKeyDown(object sender, KeyEventArgs e)
     {
-      if (e.Key != Key.Enter)
+      if (e.Key != Key.Enter && e.Key != Key.Tab)
         return;
 
       TextBox tb = e.OriginalSource as TextBox;
@@ -125,6 +125,20 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
       {
         tb.SelectionStart = tb.CaretIndex = tb.Text.Length;
         tb.SelectionLength = 0;
+      }
+
+      if (e.Key == Key.Enter)
+      {
+        TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
+        request.Wrapped = true;
+        ((TextBox)sender).MoveFocus(request);
+      }
+
+      if (e.Key == Key.Tab)
+      {
+        TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Previous);
+        request.Wrapped = true;
+        ((TextBox)sender).MoveFocus(request);
       }
     }
 
@@ -156,33 +170,25 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
         return;
 
       List<string> indicators = new List<string>() { " ", "(", ")", "," };
-      //string indicator = GetAutoCompleteIndicator(tb);
       int startIndex = 0; //Start from the beginning of the line.
       string matchingString = tb.Text;
       //If we have a trigger string, make sure that it has been typed before
       //giving auto-completion suggestions.
-
       string rememberIndicator = string.Empty;
       if (indicators != null && !String.IsNullOrEmpty(indicators.First()))
       {
-        if (tb.Text.Length != 1)
+        if (tb.Text.Length > 0)
         {
-          bool foundIndicator = false;
-          foreach (var indicator in indicators)
+          List<int> indicatorsIndex = new();
+          indicatorsIndex = indicators.Select(a => tb.Text.LastIndexOf(a)).ToList();
+          int maxIndicatorIndex = indicatorsIndex.Max();
+          if (maxIndicatorIndex == -1)
           {
-            foundIndicator = tb.Text.Contains(indicator);
-            if (foundIndicator)
-              break;
+            startIndex = 0;
           }
-          if (!foundIndicator)
-            return;
-          startIndex = tb.Text.Length - 1;
+          startIndex = 1 + maxIndicatorIndex;
+          matchingString = tb.Text.Substring(startIndex, (tb.Text.Length - startIndex));
         }
-        else
-        {
-          startIndex = 0;
-        }
-        matchingString = tb.Text.Substring(startIndex, 1);
       }
 
       //If we don't have anything after the trigger string, return.

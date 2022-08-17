@@ -96,9 +96,6 @@
       <LastGenOutput>Resource.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="WPFTextBoxAutoComplete.dll" />
-  </ItemGroup>
   <Import Project="..\ClangPowerToolsShared\ClangPowerToolsShared.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

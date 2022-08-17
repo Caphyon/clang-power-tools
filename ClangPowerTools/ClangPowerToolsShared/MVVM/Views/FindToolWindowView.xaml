@@ -126,7 +126,7 @@
                Height="50"
                TextWrapping="Wrap"
                Text="{Binding FindToolWindowModel.CustomMatchesModel.Matchers}"
-               behaviors:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding TestItems}"
+               behaviors:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding ASTMatchers}"
                behaviors:AutoCompleteBehavior.AutoCompleteStringComparison="CurrentCulture"
                Opacity="0.8">
         <TextBox.Resources>
