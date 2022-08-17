@@ -3,7 +3,6 @@ using System.Collections.Generic;
 
 namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
 {
-  [Serializable]
   public class ASTMatchers
   {
     public List<string> AutoCompleteMatchers { get; } = new List<string>

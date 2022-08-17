@@ -32,8 +32,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
     {
-      this.findToolWindowView = findToolWindowView;
       astMatchers = new();
+      this.findToolWindowView = findToolWindowView;
     }
 
     public void OpenToolWindow() { }

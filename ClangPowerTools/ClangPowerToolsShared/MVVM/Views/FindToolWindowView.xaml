@@ -25,8 +25,8 @@
       <RowDefinition Height="30" />
       <RowDefinition Height="50" />
       <RowDefinition Height="110" />
-      <RowDefinition Height="120" />
-      <RowDefinition Height="40" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="50" />
       <RowDefinition Height="*" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="10" />
@@ -135,6 +135,36 @@
           </Style>
         </TextBox.Resources> 
       </TextBox>
+
+      <ListView x:Name="AstMatchers"
+                Grid.Row="1"
+                Grid.Column="2"
+                Background="Transparent"
+                SelectionMode="Single"
+                BorderBrush="{DynamicResource {x:Static vsfx:VsBrushes.AccentDarkKey}}"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                Visibility="Visible"
+                ItemsSource="{Binding ASTMatchers}">
+        <ListView.ItemTemplate>
+          <DataTemplate>
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+              </Grid.ColumnDefinitions>
+              <Grid.RowDefinitions>
+                <RowDefinition Height="25" />
+              </Grid.RowDefinitions>
+              <TextBlock Grid.Column="1"
+                         HorizontalAlignment="Left"
+                         VerticalAlignment="Center"
+                         Text="{Binding}"
+                         Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"/>
+            </Grid>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+      </ListView>
     </Grid>
 
     <Grid Grid.Row="3" Grid.Column="1" Visibility="{Binding FindToolWindowModel.DefaultArgsModel.Visibility}" >

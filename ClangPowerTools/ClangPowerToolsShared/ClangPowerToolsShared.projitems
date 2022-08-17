@@ -29,6 +29,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\LaunchCompilationDbProgrammatically.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\AutoCompleteHistory\ASTMatchers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\AutoCompleteHistory\AutoCompleteBehavior.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\AutoCompleteHistory\HistoryMatchers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\LookInMenuController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\RunController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\GenerateDocumentation.cs" />
@@ -40,6 +41,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\DefaultArgsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\FindControllerModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\FindToolWindowModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Provider\FindToolWindowProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\AutoCompleteHistoryViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\FindToolWindowViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\DialogWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\BackgroundTidy\PowerShellWrapperBackground.cs" />

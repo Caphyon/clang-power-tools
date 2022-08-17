@@ -11,6 +11,7 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
   {
     private static TextChangedEventHandler onTextChanged = new TextChangedEventHandler(OnTextChanged);
     private static KeyEventHandler onKeyDown = new KeyEventHandler(OnPreviewKeyDown);
+    public static List<string> AutocompleteResult = new();
 
     /// <summary>
     /// The collection to search for matches from.
@@ -213,6 +214,21 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
         where value.Substring(0, textLength).Equals(matchingString, comparer)
         select value.Substring(textLength, value.Length - textLength)/*Only select the last part of the suggestion*/
       ).FirstOrDefault();
+
+      AutocompleteResult =
+        (
+          from
+            value
+          in
+          (
+            from subvalue
+            in values
+            where subvalue != null && subvalue.Length >= textLength
+            select subvalue
+          )
+          where value.Substring(0, textLength).Equals(matchingString, comparer)
+          select value.Substring(textLength, value.Length - textLength)/*Only select the last part of the suggestion*/
+        ).ToList();
 
       //Nothing.  Leave 'em alone
       if (String.IsNullOrEmpty(match))
