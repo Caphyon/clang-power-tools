@@ -5,8 +5,8 @@
              xmlns:local="clr-namespace:ClangPowerTools"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:views="clr-namespace:ClangPowerTools.MVVM.Views"
+             xmlns:behaviors="clr-namespace:ClangPowerToolsShared.MVVM.AutoCompleteHistory"
              xmlns:vsfx="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.15.0"
-             xmlns:behaviors="clr-namespace:WPFTextBoxAutoComplete;assembly=WPFTextBoxAutoComplete"
              d:DesignHeight="700"
              d:DesignWidth="350"
              mc:Ignorable="d">

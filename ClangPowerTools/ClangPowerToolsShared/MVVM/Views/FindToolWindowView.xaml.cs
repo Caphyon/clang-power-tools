@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
+using ClangPowerToolsShared.Helpers;
 
 namespace ClangPowerTools.Views
 {

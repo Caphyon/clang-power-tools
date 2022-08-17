@@ -74,7 +74,6 @@
   <ItemGroup>
     <Content Include="Resources\[CPT]Find.png" />
     <Content Include="Resources\[CPT]GenerateDocumentation.png" />
-    <Content Include="WPFTextBoxAutoComplete.dll" />
     <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Diff2.png">
       <Link>Resources\TidyToolWindow\[CPT]Diff2.png</Link>
     </Resource>

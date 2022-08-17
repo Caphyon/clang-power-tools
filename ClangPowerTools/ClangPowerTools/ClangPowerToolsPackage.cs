@@ -93,7 +93,6 @@ namespace ClangPowerTools
 
       string currentDir = Path.GetDirectoryName(GetType().Assembly.Location);
       Assembly assembly = Assembly.LoadFile(Path.Combine(currentDir, assemblyName));
-      Assembly.LoadFile(Path.Combine(currentDir, WPFTextBoxAutoComplete));
 
       Type type = assembly.GetType(cptNamespace);
       mClangPackageImpl = Activator.CreateInstance(type, this);

@@ -28,6 +28,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\CryptographyAlgo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\LaunchCompilationDbProgrammatically.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\AutoCompleteHistory\ASTMatchers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\AutoCompleteHistory\AutoCompleteBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\LookInMenuController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\RunController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\GenerateDocumentation.cs" />
