@@ -7,7 +7,7 @@ namespace ClangPowerToolsShared.MVVM.Provider
   public class FindToolWindowProvider
   {
     private static readonly FindToolWindowProvider instance = new FindToolWindowProvider();
-    public static List<string> AutoCompleteHistory { get; set; } = new List<string>();
+    public static List<AutoCompleteHistoryViewModel> AutoCompleteHistory { get; set; } = new List<AutoCompleteHistoryViewModel>();
     public static FindToolWindowProvider Instance = new FindToolWindowProvider();
 
     static FindToolWindowProvider() { }

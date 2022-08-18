@@ -11,6 +11,7 @@ using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
 using ClangPowerToolsShared.Helpers;
+using ClangPowerToolsShared.MVVM;
 
 namespace ClangPowerTools.Views
 {
@@ -23,6 +24,8 @@ namespace ClangPowerTools.Views
 
     public FindToolWindowView()
     {
+      var findToolWindowHandler = new FindToolWindowHandler();
+      findToolWindowHandler.LoadFindToolWindowData();
       findToolWindowViewModel = new FindToolWindowViewModel(this);
       DataContext = findToolWindowViewModel;
       InitializeComponent();

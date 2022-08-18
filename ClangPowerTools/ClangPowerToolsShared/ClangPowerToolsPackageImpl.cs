@@ -5,6 +5,7 @@ using ClangPowerTools.Output;
 using ClangPowerTools.Services;
 using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.Helpers;
+using ClangPowerToolsShared.MVVM;
 using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using EnvDTE;
@@ -102,6 +103,9 @@ namespace ClangPowerTools
           mDteEvents = dte2.Events.DTEEvents;
           windowEvents = dte2.Events.WindowEvents;
         }
+
+        var findToolWindowHandler = new FindToolWindowHandler();
+        findToolWindowHandler.Initialize();
 
         var settingsHandler = new SettingsHandler();
         settingsHandler.InitializeSettings();
@@ -303,6 +307,9 @@ namespace ClangPowerTools
       if (string.IsNullOrWhiteSpace(currentVersion) == false && 0 > string.Compare(version, currentVersion))
       {
         generalSettingsModel.Version = currentVersion;
+
+        var findToolWindowHandler = new FindToolWindowHandler();
+        findToolWindowHandler.SaveMatchersHiistoryData();
 
         var settingsHandler = new SettingsHandler();
         settingsHandler.SaveSettings();

@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools;
 using ClangPowerToolsShared.MVVM.Provider;
+using ClangPowerToolsShared.MVVM.ViewModels;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,16 +11,17 @@ namespace ClangPowerToolsShared.MVVM
 {
   public class FindToolWindowHandler
   {
-    public static Action RefreshSettingsView;
+    public static Action RefreshHistoryMatchersView;
 
     private const string matchersHistoryFileName = "matchersHistory.json";
     private string matcherHistoryPath = string.Empty;
     public FindToolWindowHandler()
     {
       var settingsPathBuilder = new SettingsPathBuilder();
-      matcherHistoryPath = settingsPathBuilder.GetPath(matcherHistoryPath);
+      matcherHistoryPath = Path.Combine(settingsPathBuilder.GetPath(matcherHistoryPath),
+        matchersHistoryFileName);
     }
-    public void InitializeSettings()
+    public void Initialize()
     {
       if (File.Exists(matcherHistoryPath))
       {
@@ -33,17 +35,22 @@ namespace ClangPowerToolsShared.MVVM
 
     private void CreateDeaultFindToolWindow()
     {
-      FindToolWindowProvider.AutoCompleteHistory = new List<string>();
+      FindToolWindowProvider.AutoCompleteHistory = new List<AutoCompleteHistoryViewModel>();
     }
 
     public void SaveMatchersHiistoryData()
     {
-      List<string> matchersHiistoryData = new List<string>();
-      matchersHiistoryData = FindToolWindowProvider.AutoCompleteHistory;
-      SerializeHistoryData(matchersHiistoryData);
+      FindToolWindowProvider.AutoCompleteHistory.Add(new AutoCompleteHistoryViewModel
+      { Name = "test", Value = "a test matcher", RememberAsFavorit = true });
+      List<object> models = new List<object>
+      {
+        FindToolWindowProvider.AutoCompleteHistory
+      };
+
+      SerializeHistoryData(models, matcherHistoryPath);
     }
 
-    private void SerializeHistoryData(List<string> matchersHiistoryData)
+    private void SerializeHistoryData(List<AutoCompleteHistoryViewModel> matchersHiistoryData)
     {
       FileInfo fileInfo;
       if (File.Exists(matcherHistoryPath))
@@ -65,7 +72,46 @@ namespace ClangPowerToolsShared.MVVM
       }
     }
 
-    private void LoadFindToolWindowData()
+    private void SerializeHistoryData(List<object> models, string path)
+    {
+      using StreamWriter file = File.CreateText(path);
+      var serializer = new JsonSerializer
+      {
+        Formatting = Formatting.Indented
+      };
+      serializer.Serialize(file, models);
+    }
+
+    //private void SerializeSettings(object models, string path)
+    //{
+    //  // Remove the hidden attribute of the file in order to overwrite it
+    //  FileInfo fileInfo;
+    //  if (File.Exists(path))
+    //  {
+    //    fileInfo = new FileInfo(path);
+    //    fileInfo.Attributes &= ~FileAttributes.Hidden;
+    //  }
+
+    //  // Overwrite the file
+    //  using StreamWriter file = new StreamWriter(path);
+    //  var serializer = new JsonSerializer
+    //  {
+    //    Formatting = Formatting.Indented
+    //  };
+    //  serializer.Serialize(file, models);
+
+    //  // Set back the hidden attribute
+    //  fileInfo = new FileInfo(path);
+    //  fileInfo.Attributes |= FileAttributes.Hidden;
+    //}
+
+
+    private string ReadFile(string path)
+    {
+      using StreamReader sw = new StreamReader(path);
+      return sw.ReadToEnd();
+    }
+    public void LoadFindToolWindowData()
     {
       if(File.Exists(matcherHistoryPath))
       {
@@ -74,19 +120,13 @@ namespace ClangPowerToolsShared.MVVM
       }
     }
 
-    private string ReadFile(string path)
-    {
-      using StreamReader sw = new StreamReader(path);
-      return sw.ReadToEnd();
-    }
-
-    private void LoadFindToolWindowData(string path)
+    public void LoadFindToolWindowData(string path)
     {
       if (File.Exists(path))
       {
         string json = ReadFile(path);
         DeserializeMatchersHistory(json);
-        RefreshSettingsView?.Invoke();
+        RefreshHistoryMatchersView?.Invoke();
       }
     }
 
@@ -94,7 +134,7 @@ namespace ClangPowerToolsShared.MVVM
     {
       try
       {
-        var history = JsonConvert.DeserializeObject<List<string>>(json);
+        var history = JsonConvert.DeserializeObject<List<AutoCompleteHistoryViewModel>>(json);
         FindToolWindowProvider.AutoCompleteHistory = history;
       }
       catch (Exception e)
