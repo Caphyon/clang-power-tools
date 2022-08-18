@@ -25,7 +25,7 @@
       <RowDefinition Height="30" />
       <RowDefinition Height="50" />
       <RowDefinition Height="110" />
-      <RowDefinition Height="*" />
+      <RowDefinition Height="400" />
       <RowDefinition Height="50" />
       <RowDefinition Height="*" />
       <RowDefinition Height="auto" />
@@ -235,11 +235,11 @@
       Grid.Column="1" 
       Grid.Row="4"
       Height="30"
-      Width="180"
+      Width="340"
       Content="Find"
       IsEnabled="{Binding FindToolWindowModel.IsEnabled}"
       VerticalAlignment="Center"
-      HorizontalAlignment="Left" />
+      HorizontalAlignment="Center" />
 
 
     <ProgressBar Name="pbStatus"

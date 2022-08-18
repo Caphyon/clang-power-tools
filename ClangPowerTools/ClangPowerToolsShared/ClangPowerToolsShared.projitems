@@ -36,6 +36,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\MatchConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\FindController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Interfaces\IViewMatche.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\FindToolWindowHandler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\ComponentVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\CustomMatchesModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\DefaultArgsModel.cs" />
