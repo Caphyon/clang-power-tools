@@ -1,18 +1,13 @@
 ﻿using ClangPowerTools;
-using ClangPowerTools.Views;
-using System.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Windows.Input;
-using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
-using ClangPowerTools.MVVM.Command;
-using System.Threading.Tasks;
 using ClangPowerTools.Commands;
-using ClangPowerToolsShared.MVVM.Controllers;
-using System.Collections.ObjectModel;
+using ClangPowerTools.Views;
 using ClangPowerToolsShared.Commands;
-using ClangPowerToolsShared.MVVM.Interfaces;
 using ClangPowerToolsShared.MVVM.AutoCompleteHistory;
+using ClangPowerToolsShared.MVVM.Controllers;
+using ClangPowerToolsShared.MVVM.Interfaces;
+using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
+using ClangPowerToolsShared.MVVM.Provider;
+using System.Collections.Generic;
 
 namespace ClangPowerToolsShared.MVVM.ViewModels
 {
@@ -22,7 +17,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     private ASTMatchers astMatchers;
     public List<IViewMatcher> ViewMatchers
     {
-      get { return FindToolWindowModel.ViewMatchers;  }
+      get { return FindToolWindowModel.ViewMatchers; }
     }
 
     public List<string> ASTMatchers
@@ -43,6 +38,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       if (!RunController.StopCommandActivated)
       {
         SelectCommandToRun(findToolWindowModel.CurrentViewMatcher);
+
         RunPowershellQuery();
       }
       AfterCommand();
@@ -58,8 +54,23 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       BeforeCommand();
       LaunchCommand();
+      //add in history
+      AddMatcherInHistory();
       CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kClangFindRun, CommandUILocation.ContextMenu);
-
     }
-  } 
+
+    private void AddMatcherInHistory()
+    {
+      if (findToolWindowModel.CurrentViewMatcher.Id == 2)
+      {
+        var matcher = findToolWindowModel.CurrentViewMatcher as CustomMatchesModel;
+        AutoCompleteHistoryViewModel autoCompleteHistoryViewModel = new AutoCompleteHistoryViewModel
+        { Name = matcher.Name, RememberAsFavorit = false, Value = matcher.Matchers };
+
+        FindToolWindowProvider.AutoCompleteHistory.Add(autoCompleteHistoryViewModel);
+        FindToolWindowHandler findToolWindowHandler = new FindToolWindowHandler();
+        findToolWindowHandler.SaveMatchersHistoryData();
+      }
+    }
+  }
 }

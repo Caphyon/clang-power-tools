@@ -309,7 +309,7 @@ namespace ClangPowerTools
         generalSettingsModel.Version = currentVersion;
 
         var findToolWindowHandler = new FindToolWindowHandler();
-        findToolWindowHandler.SaveMatchersHiistoryData();
+        findToolWindowHandler.SaveMatchersHistoryData();
 
         var settingsHandler = new SettingsHandler();
         settingsHandler.SaveSettings();

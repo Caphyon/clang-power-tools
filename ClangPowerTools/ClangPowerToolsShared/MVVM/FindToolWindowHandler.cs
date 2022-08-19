@@ -23,27 +23,16 @@ namespace ClangPowerToolsShared.MVVM
     }
     public void Initialize()
     {
+      FindToolWindowProvider.AutoCompleteHistory = new List<AutoCompleteHistoryViewModel>();
       if (File.Exists(matcherHistoryPath))
       {
         LoadFindToolWindowData();
       }
-      else
-      {
-        CreateDeaultFindToolWindow();
-      }
     }
 
-    private void CreateDeaultFindToolWindow()
-    {
-      FindToolWindowProvider.AutoCompleteHistory = new List<AutoCompleteHistoryViewModel>();
-    }
 
-    public void SaveMatchersHiistoryData()
+    public void SaveMatchersHistoryData()
     {
-      FindToolWindowProvider.AutoCompleteHistory = new List<AutoCompleteHistoryViewModel>();
-      //FindToolWindowProvider.AutoCompleteHistory.Add(new AutoCompleteHistoryViewModel
-      //{ Name = "test", Value = "a test matcher", RememberAsFavorit = true });
-
       SerializeHistoryData(FindToolWindowProvider.AutoCompleteHistory, matcherHistoryPath);
     }
 
@@ -63,6 +52,7 @@ namespace ClangPowerToolsShared.MVVM
       using StreamReader sw = new StreamReader(path);
       return sw.ReadToEnd();
     }
+
     public void LoadFindToolWindowData()
     {
       if(File.Exists(matcherHistoryPath))
