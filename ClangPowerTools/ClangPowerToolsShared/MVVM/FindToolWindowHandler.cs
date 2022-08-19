@@ -40,39 +40,14 @@ namespace ClangPowerToolsShared.MVVM
 
     public void SaveMatchersHiistoryData()
     {
-      FindToolWindowProvider.AutoCompleteHistory.Add(new AutoCompleteHistoryViewModel
-      { Name = "test", Value = "a test matcher", RememberAsFavorit = true });
-      List<object> models = new List<object>
-      {
-        FindToolWindowProvider.AutoCompleteHistory
-      };
+      FindToolWindowProvider.AutoCompleteHistory = new List<AutoCompleteHistoryViewModel>();
+      //FindToolWindowProvider.AutoCompleteHistory.Add(new AutoCompleteHistoryViewModel
+      //{ Name = "test", Value = "a test matcher", RememberAsFavorit = true });
 
-      SerializeHistoryData(models, matcherHistoryPath);
+      SerializeHistoryData(FindToolWindowProvider.AutoCompleteHistory, matcherHistoryPath);
     }
 
-    private void SerializeHistoryData(List<AutoCompleteHistoryViewModel> matchersHiistoryData)
-    {
-      FileInfo fileInfo;
-      if (File.Exists(matcherHistoryPath))
-      {
-        fileInfo = new FileInfo(matcherHistoryPath);
-        fileInfo.Attributes &= ~FileAttributes.Hidden;
-
-        // Overwrite the file
-        using StreamWriter file = new StreamWriter(matcherHistoryPath);
-        var serializer = new JsonSerializer
-        {
-          Formatting = Formatting.Indented
-        };
-        serializer.Serialize(file, matchersHiistoryData);
-
-        // Set back the hidden attribute
-        fileInfo = new FileInfo(matcherHistoryPath);
-        fileInfo.Attributes |= FileAttributes.Hidden;
-      }
-    }
-
-    private void SerializeHistoryData(List<object> models, string path)
+    private void SerializeHistoryData(List<AutoCompleteHistoryViewModel> models, string path)
     {
       using StreamWriter file = File.CreateText(path);
       var serializer = new JsonSerializer
@@ -80,31 +55,8 @@ namespace ClangPowerToolsShared.MVVM
         Formatting = Formatting.Indented
       };
       serializer.Serialize(file, models);
+      file.Close();
     }
-
-    //private void SerializeSettings(object models, string path)
-    //{
-    //  // Remove the hidden attribute of the file in order to overwrite it
-    //  FileInfo fileInfo;
-    //  if (File.Exists(path))
-    //  {
-    //    fileInfo = new FileInfo(path);
-    //    fileInfo.Attributes &= ~FileAttributes.Hidden;
-    //  }
-
-    //  // Overwrite the file
-    //  using StreamWriter file = new StreamWriter(path);
-    //  var serializer = new JsonSerializer
-    //  {
-    //    Formatting = Formatting.Indented
-    //  };
-    //  serializer.Serialize(file, models);
-
-    //  // Set back the hidden attribute
-    //  fileInfo = new FileInfo(path);
-    //  fileInfo.Attributes |= FileAttributes.Hidden;
-    //}
-
 
     private string ReadFile(string path)
     {
