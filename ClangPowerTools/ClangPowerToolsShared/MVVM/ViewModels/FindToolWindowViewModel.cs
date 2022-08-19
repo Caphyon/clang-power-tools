@@ -8,27 +8,46 @@ using ClangPowerToolsShared.MVVM.Interfaces;
 using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
 using ClangPowerToolsShared.MVVM.Provider;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Controls;
 
 namespace ClangPowerToolsShared.MVVM.ViewModels
 {
 
   public class FindToolWindowViewModel : FindController
   {
-    private ASTMatchers astMatchers;
+    public static event PropertyChangedEventHandler PropertyChanged;
+
+    private static ObservableCollection<string> astMatcherFunctions = new();
     public List<IViewMatcher> ViewMatchers
     {
       get { return FindToolWindowModel.ViewMatchers; }
     }
 
-    public List<string> ASTMatchers
+    public static ObservableCollection<string> ASTMatcherFunctions
     {
-      get { return astMatchers.AutoCompleteMatchers; }
+      get { return astMatcherFunctions; }
+      set
+      {
+        astMatcherFunctions = value;
+        PropertyChanged?.Invoke(null, new PropertyChangedEventArgs("ASTMatcherFunctions"));
+      }
     }
 
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
     {
-      astMatchers = new();
+      AutoCompleteBehavior.OnListUpdate += OnListChange;
+      astMatcherFunctions = new ObservableCollection<string>
+        (ASTMatchers.AutoCompleteMatchers);
       this.findToolWindowView = findToolWindowView;
+    }
+
+    static void OnListChange(object sender, TextChangedEventArgs e)
+    {
+      astMatcherFunctions = new ObservableCollection<string>
+        (ASTMatchers.AutoCompleteMatchers);
+      ASTMatcherFunctions = astMatcherFunctions;
     }
 
     public void OpenToolWindow() { }
@@ -38,7 +57,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       if (!RunController.StopCommandActivated)
       {
         SelectCommandToRun(findToolWindowModel.CurrentViewMatcher);
-
         RunPowershellQuery();
       }
       AfterCommand();

@@ -9,6 +9,7 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
 {
   public static class AutoCompleteBehavior
   {
+    public static TextChangedEventHandler OnListUpdate = delegate { };
     private static TextChangedEventHandler onTextChanged = new TextChangedEventHandler(OnTextChanged);
     private static KeyEventHandler onKeyDown = new KeyEventHandler(OnPreviewKeyDown);
     public static List<string> AutocompleteResult = new();
@@ -229,6 +230,8 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
           where value.Substring(0, textLength).Equals(matchingString, comparer)
           select value.Substring(textLength, value.Length - textLength)/*Only select the last part of the suggestion*/
         ).ToList();
+
+      OnListUpdate?.Invoke(sender, e);
 
       //Nothing.  Leave 'em alone
       if (String.IsNullOrEmpty(match))

@@ -5,14 +5,11 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
 {
   public class HistoryMatchers : INotifyPropertyChanged
   {
-    private Queue<string> historyMatchers = new();
+    private List<string> historyMatchers = new();
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    public void AddInHistory(string matcher)
-    {
-      historyMatchers.Enqueue(matcher);
-    }
-    //public static List<string> AutoCompleteMatchersAndHistory { get { return ASTMatchers.AutoCompleteMatchers; } }
+    //public static List<string> AutoCompleteMatchersAndHistory 
+    //{ get { return ASTMatchers.AutoCompleteMatchers; } }
   }
 }

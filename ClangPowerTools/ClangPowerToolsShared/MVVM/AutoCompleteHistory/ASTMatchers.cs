@@ -1,11 +1,12 @@
-﻿using System;
+﻿using ClangPowerToolsShared.MVVM.ViewModels;
+using System;
 using System.Collections.Generic;
 
 namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
 {
-  public class ASTMatchers
+  public static class ASTMatchers
   {
-    public List<string> AutoCompleteMatchers { get; } = new List<string>
+    public static List<string> AutoCompleteMatchers { get; } = new List<string>
     { 
       "match",
       "attr()",
@@ -668,5 +669,6 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
       "hasBody()",
       "hasCondition()",
     };
+
   }
 }
