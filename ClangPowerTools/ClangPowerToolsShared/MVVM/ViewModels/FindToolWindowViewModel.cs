@@ -50,7 +50,6 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void OnListChange(object sender, TextChangedEventArgs e)
     {
-
       astMatcherFunctions.Clear();
       foreach (var item in AutoCompleteBehavior.AutocompleteResult)
       {
@@ -82,7 +81,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       BeforeCommand();
       LaunchCommand();
       //add in history
-      AddMatcherInHistory();
+      //AddMatcherInHistory();
       CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kClangFindRun, CommandUILocation.ContextMenu);
     }
 

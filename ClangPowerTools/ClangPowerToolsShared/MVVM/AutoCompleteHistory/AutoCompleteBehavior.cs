@@ -134,6 +134,8 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
         TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
         request.Wrapped = true;
         ((TextBox)sender).MoveFocus(request);
+        System.Windows.Forms.SendKeys.Send("{TAB}");
+        System.Windows.Forms.SendKeys.Send("{ENTER}");
       }
 
       if (e.Key == Key.Tab)
