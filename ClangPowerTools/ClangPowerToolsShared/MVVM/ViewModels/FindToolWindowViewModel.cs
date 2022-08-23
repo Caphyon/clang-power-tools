@@ -18,6 +18,11 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
   public class FindToolWindowViewModel : FindController
   {
     public event PropertyChangedEventHandler PropertyChanged;
+    public List<string> ASTMatchersConst
+    {
+      get { return ASTMatchers.AutoCompleteMatchers; }
+    }
+
 
     private ObservableCollection<string> astMatcherFunctions = new();
     public List<IViewMatcher> ViewMatchers

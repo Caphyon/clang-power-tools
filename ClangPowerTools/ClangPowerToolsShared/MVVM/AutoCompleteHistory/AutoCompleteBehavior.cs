@@ -195,7 +195,11 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
 
       //If we don't have anything after the trigger string, return.
       if (String.IsNullOrEmpty(matchingString))
+      {
+        AutocompleteResult = values.ToList();
+        OnListUpdate?.Invoke(sender, e);
         return;
+      }
 
       Int32 textLength = matchingString.Length;
 
@@ -230,6 +234,7 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
           where value.Substring(0, textLength).Equals(matchingString, comparer)
           select value.Substring(textLength, value.Length - textLength)/*Only select the last part of the suggestion*/
         ).ToList();
+
 
       OnListUpdate?.Invoke(sender, e);
 
