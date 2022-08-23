@@ -17,21 +17,21 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
   public class FindToolWindowViewModel : FindController
   {
-    public static event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler PropertyChanged;
 
-    private static ObservableCollection<string> astMatcherFunctions = new();
+    private ObservableCollection<string> astMatcherFunctions = new();
     public List<IViewMatcher> ViewMatchers
     {
       get { return FindToolWindowModel.ViewMatchers; }
     }
 
-    public static ObservableCollection<string> ASTMatcherFunctions
+    public ObservableCollection<string> ASTMatcherFunctions
     {
       get { return astMatcherFunctions; }
       set
       {
         astMatcherFunctions = value;
-        PropertyChanged?.Invoke(null, new PropertyChangedEventArgs("ASTMatcherFunctions"));
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ASTMatcherFunctions"));
       }
     }
 
@@ -43,10 +43,14 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       this.findToolWindowView = findToolWindowView;
     }
 
-    static void OnListChange(object sender, TextChangedEventArgs e)
+    public void OnListChange(object sender, TextChangedEventArgs e)
     {
-      astMatcherFunctions = new ObservableCollection<string>
-        (ASTMatchers.AutoCompleteMatchers);
+
+      astMatcherFunctions.Clear();
+      foreach (var item in AutoCompleteBehavior.AutocompleteResult)
+      {
+        astMatcherFunctions.Add(item);
+      }
       ASTMatcherFunctions = astMatcherFunctions;
     }
 
