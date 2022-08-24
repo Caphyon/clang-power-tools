@@ -10,6 +10,7 @@ using ClangPowerToolsShared.MVVM.Provider;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Controls;
 
 namespace ClangPowerToolsShared.MVVM.ViewModels
@@ -18,13 +19,20 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
   public class FindToolWindowViewModel : FindController
   {
     public event PropertyChangedEventHandler PropertyChanged;
+    private ObservableCollection<string> astMatcherFunctions = new();
+
+    private List<string> astMatchersConst = new();
     public List<string> ASTMatchersConst
     {
-      get { return ASTMatchers.AutoCompleteMatchers; }
+      get { return astMatchersConst; }
+      set
+      {
+        astMatchersConst = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ASTMatchersConst"));
+      }
     }
 
 
-    private ObservableCollection<string> astMatcherFunctions = new();
     public List<IViewMatcher> ViewMatchers
     {
       get { return FindToolWindowModel.ViewMatchers; }
@@ -43,9 +51,14 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
     {
       AutoCompleteBehavior.OnListUpdate += OnListChange;
-      astMatcherFunctions = new ObservableCollection<string>
-        (ASTMatchers.AutoCompleteMatchers);
+      astMatcherFunctions = new ObservableCollection<string>(GetASTMatchersWithHistory());
+      astMatchersConst = new List<string>(GetASTMatchersWithHistory());
       this.findToolWindowView = findToolWindowView;
+    }
+
+    private List<string> GetASTMatchersWithHistory()
+    {
+      return ASTMatchers.AutoCompleteMatchers.Concat(FindToolWindowProvider.AutoCompleteHistory.Select(a => a.Value).ToList()).ToList();
     }
 
     public void OnListChange(object sender, TextChangedEventArgs e)
@@ -81,7 +94,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       BeforeCommand();
       LaunchCommand();
       //add in history
-      //AddMatcherInHistory();
+      AddMatcherInHistory();
       CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kClangFindRun, CommandUILocation.ContextMenu);
     }
 
@@ -93,6 +106,15 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         AutoCompleteHistoryViewModel autoCompleteHistoryViewModel = new AutoCompleteHistoryViewModel
         { Name = matcher.Name, RememberAsFavorit = false, Value = matcher.Matchers };
 
+        //add matchers in existing displayed list
+        astMatchersConst.Add(matcher.Matchers);
+        astMatcherFunctions.Add(matcher.Matchers);
+
+        //save matchers displayed list
+        ASTMatcherFunctions = astMatcherFunctions;
+        ASTMatchersConst = astMatchersConst;
+
+        //save matchers on json history file
         FindToolWindowProvider.AutoCompleteHistory.Add(autoCompleteHistoryViewModel);
         FindToolWindowHandler findToolWindowHandler = new FindToolWindowHandler();
         findToolWindowHandler.SaveMatchersHistoryData();
