@@ -58,7 +58,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     private List<string> GetASTMatchersWithHistory()
     {
-      return ASTMatchers.AutoCompleteMatchers.Concat(FindToolWindowProvider.AutoCompleteHistory.Select(a => a.Value).ToList()).ToList();
+      return FindToolWindowProvider.AutoCompleteHistory.Select(a => a.Value).ToList().Concat(ASTMatchers.AutoCompleteMatchers).ToList();
     }
 
     public void OnListChange(object sender, TextChangedEventArgs e)
@@ -106,8 +106,11 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         AutoCompleteHistoryViewModel autoCompleteHistoryViewModel = new AutoCompleteHistoryViewModel
         { Name = matcher.Name, RememberAsFavorit = false, Value = matcher.Matchers };
 
+        if (ASTMatchersConst.Contains(matcher.Matchers))
+          return;
+
         //add matchers in existing displayed list
-        astMatchersConst.Add(matcher.Matchers);
+        astMatchersConst.Insert(0,matcher.Matchers);
         astMatcherFunctions.Add(matcher.Matchers);
 
         //save matchers displayed list
@@ -115,7 +118,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         ASTMatchersConst = astMatchersConst;
 
         //save matchers on json history file
-        FindToolWindowProvider.AutoCompleteHistory.Add(autoCompleteHistoryViewModel);
+        FindToolWindowProvider.AddAutoCompleteHistory(autoCompleteHistoryViewModel);
         FindToolWindowHandler findToolWindowHandler = new FindToolWindowHandler();
         findToolWindowHandler.SaveMatchersHistoryData();
       }

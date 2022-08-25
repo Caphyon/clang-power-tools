@@ -23,7 +23,6 @@ namespace ClangPowerToolsShared.MVVM
     }
     public void Initialize()
     {
-      FindToolWindowProvider.AutoCompleteHistory = new List<AutoCompleteHistoryViewModel>();
       if (File.Exists(matcherHistoryPath))
       {
         LoadFindToolWindowData();
@@ -77,7 +76,7 @@ namespace ClangPowerToolsShared.MVVM
       try
       {
         var history = JsonConvert.DeserializeObject<List<AutoCompleteHistoryViewModel>>(json);
-        FindToolWindowProvider.AutoCompleteHistory = history;
+        FindToolWindowProvider.UpdateAutoCompleteList(history);
       }
       catch (Exception e)
       {
