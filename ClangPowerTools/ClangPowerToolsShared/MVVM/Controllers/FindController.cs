@@ -1,5 +1,4 @@
 ﻿using ClangPowerTools;
-using ClangPowerTools.Commands;
 using ClangPowerTools.Views;
 using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
@@ -72,7 +71,15 @@ namespace ClangPowerToolsShared.MVVM.Controllers
           }
         case FindCommandIds.kCustomMatchesId:
           {
-            commands.Add(findToolWindowModel.CustomMatchesModel.Matchers);
+            if ((findToolWindowModel.CustomMatchesModel.Matchers.Length > 0 && findToolWindowModel.CustomMatchesModel.Matchers[0] == 'm')
+              || findToolWindowModel.CustomMatchesModel.Matchers.Contains("match"))
+            {
+              commands.Add(findToolWindowModel.CustomMatchesModel.Matchers);
+            }
+            else
+            {
+              commands.Add("m " + findToolWindowModel.CustomMatchesModel.Matchers);
+            }
             break;
           }
         default:
@@ -133,7 +140,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
 
     private class FileCompilationDB
     {
-      public string file { get; set; } 
+      public string file { get; set; }
     }
     private Dictionary<string, string> GetCommandForPowershell(string pathToBinary)
     {

@@ -153,6 +153,18 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
     /// <param name="e"></param>
     static void OnTextChanged(object sender, TextChangedEventArgs e)
     {
+      TextBox tb = e.OriginalSource as TextBox;
+      if (sender == null)
+        return;
+      IEnumerable<String> values = GetAutoCompleteItemsSource(tb);
+      //No reason to search if we don't have any values.
+      if (values == null)
+        return;
+      if (String.IsNullOrEmpty(tb.Text))
+      {
+        AutocompleteResult = values.ToList();
+        OnListUpdate?.Invoke(sender, e);
+      }
       if
       (
           (from change in e.Changes where change.RemovedLength > 0 select change).Any() &&
@@ -160,14 +172,7 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
       )
         return;
 
-      TextBox tb = e.OriginalSource as TextBox;
-      if (sender == null)
-        return;
 
-      IEnumerable<String> values = GetAutoCompleteItemsSource(tb);
-      //No reason to search if we don't have any values.
-      if (values == null)
-        return;
 
       //No reason to search if there's nothing there.
       if (String.IsNullOrEmpty(tb.Text))
