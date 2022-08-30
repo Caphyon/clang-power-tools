@@ -161,6 +161,22 @@
                          VerticalAlignment="Center"
                          Text="{Binding Value}"
                          Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"/>
+              
+              <Button
+                    Grid.Column="2"
+                    Grid.Row="0"
+                    Width="30"
+                    Height="30"
+                    IsEnabled="{Binding FindToolWindowModel.PinIcon.IsEnabled}"
+                    HorizontalAlignment="Right"
+                    ToolTip="Diff"
+                    Visibility="{Binding FindToolWindowModel.CustomMatchesModel.Visibility}">
+                <Image
+                     Source="{Binding FindToolWindowModel.PinIcon.IconPath}"
+                     VerticalAlignment="Center"
+                     Width="16"
+                     Height="16" />
+              </Button>
             </Grid>
           </DataTemplate>
         </ListView.ItemTemplate>

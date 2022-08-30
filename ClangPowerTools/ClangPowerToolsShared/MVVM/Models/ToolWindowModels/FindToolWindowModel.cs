@@ -1,4 +1,5 @@
-﻿using ClangPowerToolsShared.MVVM.Constants;
+﻿using ClangPowerToolsShared.MVVM.Commands;
+using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Interfaces;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -11,9 +12,22 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
     private bool isRunning = false;
     private ComponentVisibility progressBarVisibility = new();
     private ComponentVisibility menuVisibility = new();
+    public IconModel pinIcon { get; set; }
+
+    public IconModel PinIcon
+    {
+      get { return pinIcon; }
+      set
+      {
+        pinIcon = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PinIcon"));
+      }
+    }
 
     public FindToolWindowModel()
     {
+      pinIcon = new IconModel(VSThemeCommand.GetIgnoreIconEnabled(), UIElementsConstants.Visibile, true);
+      PinIcon = new IconModel(VSThemeCommand.GetIgnoreIconEnabled(), UIElementsConstants.Visibile, true);
       HideProgressBar();
       menuVisibility.Show();
     }
@@ -24,7 +38,6 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       ShowSelectedModel(viewMatcher);
       CurrentViewMatcher = currentViewMatcher;
     }
-
 
     public string ProgressBarVisibility
     {
