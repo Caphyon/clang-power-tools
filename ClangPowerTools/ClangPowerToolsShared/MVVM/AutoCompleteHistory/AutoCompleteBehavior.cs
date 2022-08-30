@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClangPowerToolsShared.MVVM.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -12,7 +13,7 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
     public static TextChangedEventHandler OnListUpdate = delegate { };
     private static TextChangedEventHandler onTextChanged = new TextChangedEventHandler(OnTextChanged);
     private static KeyEventHandler onKeyDown = new KeyEventHandler(OnPreviewKeyDown);
-    public static List<string> AutocompleteResult = new();
+    public static List<AutoCompleteHistoryViewModel> AutocompleteResult = new();
 
     /// <summary>
     /// The collection to search for matches from.
@@ -21,7 +22,7 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
         DependencyProperty.RegisterAttached
         (
             "AutoCompleteItemsSource",
-            typeof(IEnumerable<String>),
+            typeof(IEnumerable<AutoCompleteHistoryViewModel>),
             typeof(AutoCompleteBehavior),
             new UIPropertyMetadata(null, OnAutoCompleteItemsSource)
         );
@@ -51,11 +52,11 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
             );
 
     #region Items Source
-    public static IEnumerable<String> GetAutoCompleteItemsSource(DependencyObject obj)
+    public static IEnumerable<AutoCompleteHistoryViewModel> GetAutoCompleteItemsSource(DependencyObject obj)
     {
       object objRtn = obj.GetValue(AutoCompleteItemsSource);
-      if (objRtn is IEnumerable<String>)
-        return (objRtn as IEnumerable<String>);
+      if (objRtn is IEnumerable<AutoCompleteHistoryViewModel>)
+        return (objRtn as IEnumerable<AutoCompleteHistoryViewModel>);
 
       return null;
     }
@@ -156,7 +157,7 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
       TextBox tb = e.OriginalSource as TextBox;
       if (sender == null)
         return;
-      IEnumerable<String> values = GetAutoCompleteItemsSource(tb);
+      IEnumerable<AutoCompleteHistoryViewModel> values = GetAutoCompleteItemsSource(tb);
       //No reason to search if we don't have any values.
       if (values == null)
         return;
@@ -212,7 +213,7 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
 
       StringComparison comparer = GetAutoCompleteStringComparison(tb);
       //Do search and changes here.
-      String match =
+      AutoCompleteHistoryViewModel match =
       (
         from
           value
@@ -220,12 +221,17 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
         (
           from subvalue
           in values
-          where subvalue != null && subvalue.Length >= textLength
+          where subvalue != null && subvalue.Value.Length >= textLength
           select subvalue
         )
-        where value.Substring(0, textLength).Equals(matchingString, comparer)
-        select value.Substring(textLength, value.Length - textLength)/*Only select the last part of the suggestion*/
+        where value.Value.Substring(0, textLength).Equals(matchingString, comparer)
+        select new AutoCompleteHistoryViewModel
+        {
+          Value = value.Value.Substring(textLength, value.Value.Length - textLength),
+          RememberAsFavorit = value.RememberAsFavorit,
+        }/*Only select the last part of the suggestion*/
       ).FirstOrDefault();
+
 
       AutocompleteResult =
         (
@@ -235,23 +241,27 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
           (
             from subvalue
             in values
-            where subvalue != null && subvalue.Length >= textLength
+            where subvalue != null && subvalue.Value.Length >= textLength
             select subvalue
           )
-          where value.Substring(0, textLength).Equals(matchingString, comparer)
-          select value.Substring(textLength, value.Length - textLength)/*Only select the last part of the suggestion*/
-        ).ToList();
+          where value.Value.Substring(0, textLength).Equals(matchingString, comparer)
+          select new AutoCompleteHistoryViewModel
+          {
+            Value = value.Value.Substring(textLength, value.Value.Length - textLength),
+            RememberAsFavorit = value.RememberAsFavorit,
+          }/*Only select the last part of the suggestion*/
+      ).ToList();
 
 
       OnListUpdate?.Invoke(sender, e);
 
       //Nothing.  Leave 'em alone
-      if (String.IsNullOrEmpty(match))
+      if (match is null || String.IsNullOrEmpty(match.Value))
         return;
 
       int matchStart = (startIndex + matchingString.Length);
       tb.TextChanged -= onTextChanged;
-      tb.Text += match;
+      tb.Text += match.Value;
       tb.CaretIndex = matchStart;
       tb.SelectionStart = matchStart;
       tb.SelectionLength = (tb.Text.Length - startIndex);

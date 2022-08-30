@@ -159,7 +159,7 @@
               <TextBlock Grid.Column="1"
                          HorizontalAlignment="Left"
                          VerticalAlignment="Center"
-                         Text="{Binding}"
+                         Text="{Binding Value}"
                          Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"/>
             </Grid>
           </DataTemplate>
