@@ -104,7 +104,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       {
         var matcher = findToolWindowModel.CurrentViewMatcher as CustomMatchesModel;
         AutoCompleteHistoryViewModel autoCompleteHistoryViewModel = new AutoCompleteHistoryViewModel
-        { Name = matcher.Name, RememberAsFavorit = false, Value = matcher.Matchers };
+        { RememberAsFavorit = false, Value = matcher.Matchers };
 
         if (ASTMatchersConst.Contains(matcher.Matchers))
           return;

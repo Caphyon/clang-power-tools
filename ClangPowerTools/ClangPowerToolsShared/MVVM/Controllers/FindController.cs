@@ -71,8 +71,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
           }
         case FindCommandIds.kCustomMatchesId:
           {
-            if ((findToolWindowModel.CustomMatchesModel.Matchers.Length > 0 && findToolWindowModel.CustomMatchesModel.Matchers[0] == 'm')
-              || findToolWindowModel.CustomMatchesModel.Matchers.Contains("match"))
+            if ((findToolWindowModel.CustomMatchesModel.Matchers.Length > 0 && findToolWindowModel.CustomMatchesModel.Matchers[0] == 'm'))
             {
               commands.Add(findToolWindowModel.CustomMatchesModel.Matchers);
             }
