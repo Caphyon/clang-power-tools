@@ -19,7 +19,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
   public class FindToolWindowViewModel : FindController
   {
     public event PropertyChangedEventHandler PropertyChanged;
-    private ObservableCollection<AutoCompleteHistoryViewModel> astMatcherFunctions = new();
+    private ObservableCollection<AutoCompleteHistoryModel> astMatcherFunctions = new();
 
     private List<AutoCompleteHistoryViewModel> astMatchersConst = new();
     public List<IViewMatcher> ViewMatchers
@@ -39,7 +39,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     }
 
     //display list
-    public ObservableCollection<AutoCompleteHistoryViewModel> ASTMatcherFunctions
+    public ObservableCollection<AutoCompleteHistoryModel> ASTMatcherFunctions
     {
       get { return astMatcherFunctions; }
       set
@@ -52,14 +52,22 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
     {
       AutoCompleteBehavior.OnListUpdate += OnListChange;
-      astMatcherFunctions = new ObservableCollection<AutoCompleteHistoryViewModel>(GetASTMatchersWithHistory());
-      astMatchersConst = new List<AutoCompleteHistoryViewModel>(GetASTMatchersWithHistory());
+      astMatcherFunctions = new ObservableCollection<AutoCompleteHistoryModel>(GetASTMatchersWithHistory());
+      astMatchersConst = new List<AutoCompleteHistoryViewModel>(GetASTMatchersWithHistoryViewModel());
       this.findToolWindowView = findToolWindowView;
     }
-    private List<AutoCompleteHistoryViewModel> GetASTMatchersWithHistory()
+
+    private List<AutoCompleteHistoryModel> GetASTMatchersWithHistory()
     {
-      List<AutoCompleteHistoryViewModel> result = new List<AutoCompleteHistoryViewModel>();
-      result = ASTMatchers.AutoCompleteMatchers.Select(a => new AutoCompleteHistoryViewModel()
+      List<AutoCompleteHistoryModel> astResult = ASTMatchers.AutoCompleteMatchers.Select(a => new AutoCompleteHistoryModel()
+      { RememberAsFavorit = false, Value = a }).ToList();
+      List<AutoCompleteHistoryModel> jsonResult = FindToolWindowProvider.AutoCompleteHistory.Select(a => new AutoCompleteHistoryModel(a)).ToList();
+      return astResult.Concat(jsonResult).ToList();
+    }
+
+    private List<AutoCompleteHistoryViewModel> GetASTMatchersWithHistoryViewModel()
+    {
+      List<AutoCompleteHistoryViewModel> result = ASTMatchers.AutoCompleteMatchers.Select(a => new AutoCompleteHistoryViewModel()
       { RememberAsFavorit = false, Value = a }).ToList();
       return FindToolWindowProvider.AutoCompleteHistory.ToList().Concat(result).ToList();
     }
@@ -69,7 +77,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       astMatcherFunctions.Clear();
       foreach (var item in AutoCompleteBehavior.AutocompleteResult)
       {
-        astMatcherFunctions.Add(item);
+        astMatcherFunctions.Add(new AutoCompleteHistoryModel(item));
       }
       ASTMatcherFunctions = astMatcherFunctions;
     }
@@ -113,7 +121,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
           //add matchers in existing displayed list
           astMatchersConst.Insert(0, autoCompleteHistoryViewModel);
-          astMatcherFunctions.Insert(0, autoCompleteHistoryViewModel);
+          astMatcherFunctions.Insert(0, new AutoCompleteHistoryModel(autoCompleteHistoryViewModel));
 
           //save matchers displayed list
           ASTMatcherFunctions = astMatcherFunctions;
