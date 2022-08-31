@@ -10,9 +10,37 @@
              d:DesignHeight="700"
              d:DesignWidth="350"
              mc:Ignorable="d">
-
+  
   <UserControl.Resources>
-
+    <Style x:Key="myHeaderStyle"
+           TargetType="{x:Type GridViewColumnHeader}">
+      <Setter Property="Visibility"
+              Value="Collapsed" />
+    </Style>
+    <Style TargetType="{x:Type Button}">
+      <Setter Property="Background"
+              Value="Transparent" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="{x:Type Button}">
+            <Border Background="{TemplateBinding Background}"
+                    BorderThickness="1">
+              <ContentPresenter HorizontalAlignment="Center"
+                                VerticalAlignment="Center" />
+            </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+      <Style.Triggers>
+        <Trigger Property="IsMouseOver"
+                 Value="True">
+          <Setter Property="Background"
+                  Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTabMouseOverBackgroundBeginKey}}" />
+          <Setter Property="BorderBrush"
+                  Value="{DynamicResource {x:Static vsfx:VsBrushes.ToolWindowTabMouseOverBorderKey}}" />
+        </Trigger>
+      </Style.Triggers>
+    </Style>
   </UserControl.Resources>
 
   <Grid>
@@ -139,7 +167,8 @@
       <ListView x:Name="AstMatchers"
                 Grid.Row="1"
                 Grid.Column="2"
-                Background="Transparent"
+              Background="Transparent"
+              HorizontalContentAlignment="Stretch"
                 SelectionMode="Single"
                 BorderBrush="{DynamicResource {x:Static vsfx:VsBrushes.AccentDarkKey}}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -167,12 +196,13 @@
                     Grid.Row="0"
                     Width="30"
                     Height="30"
-                    IsEnabled="{Binding FindToolWindowModel.PinIcon.IsEnabled}"
                     HorizontalAlignment="Right"
                     ToolTip="Diff"
+                    Click="Pin_click"
+                    Command="{Binding PinCommand}"
                     Visibility="{Binding FindToolWindowModel.CustomMatchesModel.Visibility}">
                 <Image
-                     Source="{Binding FindToolWindowModel.PinIcon.IconPath}"
+                     Source="{Binding PinIcon.IconPath}"
                      VerticalAlignment="Center"
                      Width="16"
                      Height="16" />

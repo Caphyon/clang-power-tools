@@ -28,6 +28,11 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       InitIcons();
     }
 
+    public void Pin()
+    {
+      PinIcon.IconPath = VSThemeCommand.GetDiscardFixIconEnabled();
+    }
+
     public AutoCompleteHistoryModel(string value, bool remembaerAsFavorit = false)
     {
       InitIcons();
