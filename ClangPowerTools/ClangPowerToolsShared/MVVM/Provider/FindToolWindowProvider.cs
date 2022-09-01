@@ -1,4 +1,5 @@
-﻿using ClangPowerToolsShared.MVVM.ViewModels;
+﻿using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
+using ClangPowerToolsShared.MVVM.ViewModels;
 using System.Collections.Generic;
 using System.Windows.Forms;
 
@@ -15,6 +16,16 @@ namespace ClangPowerToolsShared.MVVM.Provider
     {
       autoCompleteHistory.Insert(0,matcher);
     }
+
+    public static void UpdateFavoriteValue(AutoCompleteHistoryModel autoCompleteHistoryViewModel)
+    {
+      var historyModel = autoCompleteHistory.Find(a => a.Value == autoCompleteHistoryViewModel.Value);
+      if(historyModel != null)
+      {
+        historyModel.RememberAsFavorit = autoCompleteHistoryViewModel.RememberAsFavorit;
+      }
+    }
+
     public static void UpdateAutoCompleteList(List<AutoCompleteHistoryViewModel> autoCompleteHistoryViewModels)
     {
       if(autoCompleteHistory is  null)

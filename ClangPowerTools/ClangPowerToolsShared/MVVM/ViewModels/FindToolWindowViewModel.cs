@@ -62,7 +62,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       List<AutoCompleteHistoryModel> astResult = ASTMatchers.AutoCompleteMatchers.Select(a => new AutoCompleteHistoryModel()
       { RememberAsFavorit = false, Value = a }).ToList();
       List<AutoCompleteHistoryModel> jsonResult = FindToolWindowProvider.AutoCompleteHistory.Select(a => new AutoCompleteHistoryModel(a)).ToList();
-      return astResult.Concat(jsonResult).ToList();
+      return jsonResult.Concat(astResult).ToList();
     }
 
     public void OnListChange(object sender, TextChangedEventArgs e)

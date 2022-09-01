@@ -1,5 +1,5 @@
 ﻿using ClangPowerToolsShared.MVVM.Commands;
-using ClangPowerToolsShared.MVVM.Constants;
+using ClangPowerToolsShared.MVVM.Provider;
 using ClangPowerToolsShared.MVVM.ViewModels;
 using System.ComponentModel;
 
@@ -10,7 +10,16 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
     public event PropertyChangedEventHandler PropertyChanged;
 
     public string Value { get; set; } = string.Empty;
-    public bool RememberAsFavorit { get; set; } = false;
+    private bool rememberAsFavorit = false;
+    public bool RememberAsFavorit 
+    { 
+      get { return rememberAsFavorit; } 
+      set
+      {
+        SetIcon(value);
+      }
+    }
+
     private string pinIconPath { get; set; }
 
     public string PinIconPath
@@ -23,33 +32,35 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       }
     }
 
-    public AutoCompleteHistoryModel()
-    {
-      InitIcons();
-    }
+    public AutoCompleteHistoryModel() { }
 
     public void Pin()
     {
-      PinIconPath = VSThemeCommand.GetDiscardFixIconEnabled();
+      rememberAsFavorit = !rememberAsFavorit;
+      RememberAsFavorit = rememberAsFavorit;
+      FindToolWindowProvider.UpdateFavoriteValue(this);
+      FindToolWindowHandler findToolWindowHandler = new FindToolWindowHandler();
+      findToolWindowHandler.SaveMatchersHistoryData();
+    }
+
+    private void SetIcon(bool value)
+    {
+      if (value)
+        pinIconPath = VSThemeCommand.GetIgnoreIconEnabled();
+      else
+        pinIconPath = VSThemeCommand.GetDiscardFixIconEnabled();
+      PinIconPath = pinIconPath;
     }
 
     public AutoCompleteHistoryModel(string value, bool remembaerAsFavorit = false)
-    { 
-      InitIcons();
+    {
       Value = value;
       RememberAsFavorit = remembaerAsFavorit;
-    } 
+    }
     public AutoCompleteHistoryModel(AutoCompleteHistoryViewModel autoCompleteHistoryViewModel)
     {
-      InitIcons();
       RememberAsFavorit = autoCompleteHistoryViewModel.RememberAsFavorit;
       Value = autoCompleteHistoryViewModel.Value;
-    }
-
-    private void InitIcons()
-    {
-      pinIconPath = VSThemeCommand.GetIgnoreIconEnabled();
-      PinIconPath = pinIconPath;
     }
   }
 
