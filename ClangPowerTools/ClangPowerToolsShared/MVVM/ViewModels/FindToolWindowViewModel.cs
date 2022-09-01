@@ -21,14 +21,14 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public event PropertyChangedEventHandler PropertyChanged;
     private ObservableCollection<AutoCompleteHistoryModel> astMatchersList = new();
 
-    private List<AutoCompleteHistoryViewModel> astMatchersSearchOptions = new();
+    private List<AutoCompleteHistoryModel> astMatchersSearchOptions = new();
     public List<IViewMatcher> ViewMatchers
     {
       get { return FindToolWindowModel.ViewMatchers; }
     }
 
     //search in ast consts
-    public List<AutoCompleteHistoryViewModel> ASTMatchersSearchOptions
+    public List<AutoCompleteHistoryModel> ASTMatchersSearchOptions
     {
       get { return astMatchersSearchOptions; }
       set
@@ -53,7 +53,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       AutoCompleteBehavior.OnListUpdate += OnListChange;
       astMatchersList = new ObservableCollection<AutoCompleteHistoryModel>(GetASTMatchersWithHistory());
-      astMatchersSearchOptions = new List<AutoCompleteHistoryViewModel>(GetASTMatchersWithHistoryViewModel());
+      astMatchersSearchOptions = new List<AutoCompleteHistoryModel>(GetASTMatchersWithHistory());
       this.findToolWindowView = findToolWindowView;
     }
 
@@ -65,19 +65,12 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       return astResult.Concat(jsonResult).ToList();
     }
 
-    private List<AutoCompleteHistoryViewModel> GetASTMatchersWithHistoryViewModel()
-    {
-      List<AutoCompleteHistoryViewModel> result = ASTMatchers.AutoCompleteMatchers.Select(a => new AutoCompleteHistoryViewModel()
-      { RememberAsFavorit = false, Value = a }).ToList();
-      return FindToolWindowProvider.AutoCompleteHistory.ToList().Concat(result).ToList();
-    }
-
     public void OnListChange(object sender, TextChangedEventArgs e)
     {
       astMatchersList.Clear();
       foreach (var item in AutoCompleteBehavior.AutocompleteResult)
       {
-        astMatchersList.Add(new AutoCompleteHistoryModel(item));
+        astMatchersList.Add(item);
       }
       ASTMatchersList = astMatchersList;
     }
@@ -120,7 +113,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           { RememberAsFavorit = false, Value = matcher.Matchers };
 
           //add matchers in existing displayed list
-          astMatchersSearchOptions.Insert(0, autoCompleteHistoryViewModel);
+          astMatchersSearchOptions.Insert(0, new AutoCompleteHistoryModel() { RememberAsFavorit = false, Value = matcher.Matchers });
           astMatchersList.Insert(0, new AutoCompleteHistoryModel(autoCompleteHistoryViewModel));
 
           //save matchers displayed list

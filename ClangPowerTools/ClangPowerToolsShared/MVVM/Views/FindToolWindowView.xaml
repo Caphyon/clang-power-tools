@@ -199,10 +199,9 @@
                     HorizontalAlignment="Right"
                     ToolTip="Diff"
                     Click="Pin_click"
-                    Command="{Binding PinCommand}"
                     Visibility="{Binding FindToolWindowModel.CustomMatchesModel.Visibility}">
                 <Image
-                     Source="{Binding PinIcon.IconPath}"
+                     Source="{Binding PinIconPath}"
                      VerticalAlignment="Center"
                      Width="16"
                      Height="16" />

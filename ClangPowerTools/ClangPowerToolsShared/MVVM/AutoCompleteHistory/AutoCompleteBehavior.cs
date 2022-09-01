@@ -1,4 +1,5 @@
-﻿using ClangPowerToolsShared.MVVM.ViewModels;
+﻿using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
+using ClangPowerToolsShared.MVVM.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,7 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
     public static TextChangedEventHandler OnListUpdate = delegate { };
     private static TextChangedEventHandler onTextChanged = new TextChangedEventHandler(OnTextChanged);
     private static KeyEventHandler onKeyDown = new KeyEventHandler(OnPreviewKeyDown);
-    public static List<AutoCompleteHistoryViewModel> AutocompleteResult = new();
+    public static List<AutoCompleteHistoryModel> AutocompleteResult = new();
 
     /// <summary>
     /// The collection to search for matches from.
@@ -22,7 +23,7 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
         DependencyProperty.RegisterAttached
         (
             "AutoCompleteItemsSource",
-            typeof(IEnumerable<AutoCompleteHistoryViewModel>),
+            typeof(IEnumerable<AutoCompleteHistoryModel>),
             typeof(AutoCompleteBehavior),
             new UIPropertyMetadata(null, OnAutoCompleteItemsSource)
         );
@@ -52,11 +53,11 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
             );
 
     #region Items Source
-    public static IEnumerable<AutoCompleteHistoryViewModel> GetAutoCompleteItemsSource(DependencyObject obj)
+    public static IEnumerable<AutoCompleteHistoryModel> GetAutoCompleteItemsSource(DependencyObject obj)
     {
       object objRtn = obj.GetValue(AutoCompleteItemsSource);
-      if (objRtn is IEnumerable<AutoCompleteHistoryViewModel>)
-        return (objRtn as IEnumerable<AutoCompleteHistoryViewModel>);
+      if (objRtn is IEnumerable<AutoCompleteHistoryModel>)
+        return (objRtn as IEnumerable<AutoCompleteHistoryModel>);
 
       return null;
     }
@@ -157,7 +158,7 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
       TextBox tb = e.OriginalSource as TextBox;
       if (sender == null)
         return;
-      IEnumerable<AutoCompleteHistoryViewModel> values = GetAutoCompleteItemsSource(tb);
+      IEnumerable<AutoCompleteHistoryModel> values = GetAutoCompleteItemsSource(tb);
       //No reason to search if we don't have any values.
       if (values == null)
         return;
@@ -213,7 +214,7 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
 
       StringComparison comparer = GetAutoCompleteStringComparison(tb);
       //Do search and changes here.
-      AutoCompleteHistoryViewModel match =
+      AutoCompleteHistoryModel match =
       (
         from
           value
@@ -225,10 +226,11 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
           select subvalue
         )
         where value.Value.Substring(0, textLength).Equals(matchingString, comparer)
-        select new AutoCompleteHistoryViewModel
+        select new AutoCompleteHistoryModel
         {
           Value = value.Value.Substring(textLength, value.Value.Length - textLength),
           RememberAsFavorit = value.RememberAsFavorit,
+          PinIconPath = value.PinIconPath,
         }/*Only select the last part of the suggestion*/
       ).FirstOrDefault();
 
@@ -245,10 +247,11 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
             select subvalue
           )
           where value.Value.Substring(0, textLength).Equals(matchingString, comparer)
-          select new AutoCompleteHistoryViewModel
+          select new AutoCompleteHistoryModel
           {
             Value = value.Value.Substring(textLength, value.Value.Length - textLength),
             RememberAsFavorit = value.RememberAsFavorit,
+            PinIconPath = value.PinIconPath
           }/*Only select the last part of the suggestion*/
       ).ToList();
 

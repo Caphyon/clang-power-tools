@@ -11,15 +11,15 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 
     public string Value { get; set; } = string.Empty;
     public bool RememberAsFavorit { get; set; } = false;
-    private IconModel pinIcon { get; set; }
+    private string pinIconPath { get; set; }
 
-    public IconModel PinIcon
+    public string PinIconPath
     {
-      get { return pinIcon; }
+      get { return pinIconPath; }
       set
       {
-        pinIcon = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PinIcon"));
+        pinIconPath = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("PinIconPath"));
       }
     }
 
@@ -30,7 +30,7 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 
     public void Pin()
     {
-      PinIcon.IconPath = VSThemeCommand.GetDiscardFixIconEnabled();
+      PinIconPath = VSThemeCommand.GetDiscardFixIconEnabled();
     }
 
     public AutoCompleteHistoryModel(string value, bool remembaerAsFavorit = false)
@@ -48,8 +48,8 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 
     private void InitIcons()
     {
-      pinIcon = new IconModel(VSThemeCommand.GetDiffIconEnabled(), UIElementsConstants.Visibile, true);
-      PinIcon = new IconModel(VSThemeCommand.GetDiffIconEnabled(), UIElementsConstants.Visibile, true);
+      pinIconPath = VSThemeCommand.GetIgnoreIconEnabled();
+      PinIconPath = pinIconPath;
     }
   }
 
