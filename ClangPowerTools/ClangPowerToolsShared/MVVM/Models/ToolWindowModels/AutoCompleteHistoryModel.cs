@@ -34,12 +34,11 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
     }
 
     public AutoCompleteHistoryModel(string value, bool remembaerAsFavorit = false)
-    {
+    { 
       InitIcons();
       Value = value;
       RememberAsFavorit = remembaerAsFavorit;
-    }
-
+    } 
     public AutoCompleteHistoryModel(AutoCompleteHistoryViewModel autoCompleteHistoryViewModel)
     {
       InitIcons();

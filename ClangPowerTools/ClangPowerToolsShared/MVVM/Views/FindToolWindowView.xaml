@@ -154,7 +154,7 @@
                Height="50"
                TextWrapping="Wrap"
                Text="{Binding FindToolWindowModel.CustomMatchesModel.Matchers}"
-               behaviors:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding ASTMatchersConst}"
+               behaviors:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding ASTMatchersSearchOptions}"
                behaviors:AutoCompleteBehavior.AutoCompleteStringComparison="CurrentCulture"
                Opacity="0.8">
         <TextBox.Resources>
@@ -173,7 +173,7 @@
                 BorderBrush="{DynamicResource {x:Static vsfx:VsBrushes.AccentDarkKey}}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 Visibility="Visible"
-                ItemsSource="{Binding ASTMatcherFunctions}">
+                ItemsSource="{Binding ASTMatchersList}">
         <ListView.ItemTemplate>
           <DataTemplate>
             <Grid>

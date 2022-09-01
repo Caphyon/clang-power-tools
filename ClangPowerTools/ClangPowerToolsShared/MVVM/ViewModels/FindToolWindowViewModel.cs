@@ -19,41 +19,41 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
   public class FindToolWindowViewModel : FindController
   {
     public event PropertyChangedEventHandler PropertyChanged;
-    private ObservableCollection<AutoCompleteHistoryModel> astMatcherFunctions = new();
+    private ObservableCollection<AutoCompleteHistoryModel> astMatchersList = new();
 
-    private List<AutoCompleteHistoryViewModel> astMatchersConst = new();
+    private List<AutoCompleteHistoryViewModel> astMatchersSearchOptions = new();
     public List<IViewMatcher> ViewMatchers
     {
       get { return FindToolWindowModel.ViewMatchers; }
     }
 
     //search in ast consts
-    public List<AutoCompleteHistoryViewModel> ASTMatchersConst
+    public List<AutoCompleteHistoryViewModel> ASTMatchersSearchOptions
     {
-      get { return astMatchersConst; }
+      get { return astMatchersSearchOptions; }
       set
       {
-        astMatchersConst = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ASTMatchersConst"));
+        astMatchersSearchOptions = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ASTMatchersSearchOptions"));
       }
     }
 
     //display list
-    public ObservableCollection<AutoCompleteHistoryModel> ASTMatcherFunctions
+    public ObservableCollection<AutoCompleteHistoryModel> ASTMatchersList
     {
-      get { return astMatcherFunctions; }
+      get { return astMatchersList; }
       set
       {
-        astMatcherFunctions = value;
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ASTMatcherFunctions"));
+        astMatchersList = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ASTMatchersList"));
       }
     }
 
     public FindToolWindowViewModel(FindToolWindowView findToolWindowView)
     {
       AutoCompleteBehavior.OnListUpdate += OnListChange;
-      astMatcherFunctions = new ObservableCollection<AutoCompleteHistoryModel>(GetASTMatchersWithHistory());
-      astMatchersConst = new List<AutoCompleteHistoryViewModel>(GetASTMatchersWithHistoryViewModel());
+      astMatchersList = new ObservableCollection<AutoCompleteHistoryModel>(GetASTMatchersWithHistory());
+      astMatchersSearchOptions = new List<AutoCompleteHistoryViewModel>(GetASTMatchersWithHistoryViewModel());
       this.findToolWindowView = findToolWindowView;
     }
 
@@ -74,12 +74,12 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
 
     public void OnListChange(object sender, TextChangedEventArgs e)
     {
-      astMatcherFunctions.Clear();
+      astMatchersList.Clear();
       foreach (var item in AutoCompleteBehavior.AutocompleteResult)
       {
-        astMatcherFunctions.Add(new AutoCompleteHistoryModel(item));
+        astMatchersList.Add(new AutoCompleteHistoryModel(item));
       }
-      ASTMatcherFunctions = astMatcherFunctions;
+      ASTMatchersList = astMatchersList;
     }
 
     public void OpenToolWindow() { }
@@ -114,18 +114,18 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       if (findToolWindowModel.CurrentViewMatcher.Id == 2)
       {
         var matcher = findToolWindowModel.CurrentViewMatcher as CustomMatchesModel;
-        if (ASTMatchersConst.Find(a => a.Value == matcher.Matchers) is null)
+        if (ASTMatchersSearchOptions.Find(a => a.Value == matcher.Matchers) is null)
         {
           AutoCompleteHistoryViewModel autoCompleteHistoryViewModel = new AutoCompleteHistoryViewModel
           { RememberAsFavorit = false, Value = matcher.Matchers };
 
           //add matchers in existing displayed list
-          astMatchersConst.Insert(0, autoCompleteHistoryViewModel);
-          astMatcherFunctions.Insert(0, new AutoCompleteHistoryModel(autoCompleteHistoryViewModel));
+          astMatchersSearchOptions.Insert(0, autoCompleteHistoryViewModel);
+          astMatchersList.Insert(0, new AutoCompleteHistoryModel(autoCompleteHistoryViewModel));
 
           //save matchers displayed list
-          ASTMatcherFunctions = astMatcherFunctions;
-          ASTMatchersConst = astMatchersConst;
+          ASTMatchersList = astMatchersList;
+          ASTMatchersSearchOptions = astMatchersSearchOptions;
 
           //save matchers on json history file
           FindToolWindowProvider.AddAutoCompleteHistory(autoCompleteHistoryViewModel);
