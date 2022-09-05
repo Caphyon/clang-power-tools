@@ -53,9 +53,8 @@
       <RowDefinition Height="30" />
       <RowDefinition Height="50" />
       <RowDefinition Height="110" />
-      <RowDefinition Height="400" />
-      <RowDefinition Height="50" />
       <RowDefinition Height="*" />
+      <RowDefinition Height="10" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="10" />
     </Grid.RowDefinitions>
@@ -197,7 +196,6 @@
                     Width="30"
                     Height="30"
                     HorizontalAlignment="Right"
-                    ToolTip="Diff"
                     Click="Pin_click"
                     Visibility="{Binding FindToolWindowModel.CustomMatchesModel.Visibility}">
                 <Image
@@ -277,13 +275,14 @@
     <Button
       x:Name="MatchDefaultArgs"
       Click="MatchDefaultArgs_click"
-      Grid.Column="1" 
-      Grid.Row="4"
+      Grid.Column="1"
+      Background="WhiteSmoke"
+      Grid.Row="5"
       Height="30"
-      Width="340"
+      Width="1000"
       Content="Find"
       IsEnabled="{Binding FindToolWindowModel.IsEnabled}"
-      VerticalAlignment="Center"
+      VerticalAlignment="Bottom"
       HorizontalAlignment="Center" />
 
 
@@ -299,23 +298,5 @@
                  Minimum="0"
                  VerticalAlignment="Top"
                  Visibility="{Binding FindToolWindowModel.ProgressBarVisibility}" />
-
-    <Border Grid.Column="1"
-              Grid.Row="6"
-              BorderThickness="1"
-              BorderBrush="{DynamicResource {x:Static vsfx:VsBrushes.AccentDarkKey}}">
-      <TextBlock Grid.Row="6"
-               Grid.Column="1"
-               Margin="5,5,5,5"
-               Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}"
-               VerticalAlignment="Top"
-               TextWrapping="Wrap"
-               Text="{Binding FindToolWindowModel.CurrentViewMatcher.Details}"/>
-    </Border>
-
-
-
   </Grid>
-
-
 </UserControl>
