@@ -42,26 +42,21 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       FindToolWindowHandler findToolWindowHandler = new FindToolWindowHandler();
       findToolWindowHandler.SaveMatchersHistoryData();
     }
-
-    private void SetIcon(bool value)
-    {
-      if (value)
-        pinIconPath = VSThemeCommand.GetIgnoreIconEnabled();
-      else
-        pinIconPath = VSThemeCommand.GetDiscardFixIconEnabled();
-      PinIconPath = pinIconPath;
-    }
-
-    public AutoCompleteHistoryModel(string value, bool remembaerAsFavorit = false)
-    {
-      Value = value;
-      RememberAsFavorit = remembaerAsFavorit;
-    }
     public AutoCompleteHistoryModel(AutoCompleteHistoryViewModel autoCompleteHistoryViewModel)
     {
       RememberAsFavorit = autoCompleteHistoryViewModel.RememberAsFavorit;
       Value = autoCompleteHistoryViewModel.Value;
     }
+
+    private void SetIcon(bool value)
+    {
+      if (value)
+        pinIconPath = VSThemeCommand.GetPinIcon();
+      else
+        pinIconPath = VSThemeCommand.GetUnpinIcon();
+      PinIconPath = pinIconPath;
+    }
+
   }
 
 }

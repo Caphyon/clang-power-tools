@@ -72,6 +72,18 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Pinned.png">
+      <Link>Resources\TidyToolWindow\[CPT]Pinned.png</Link>
+    </Content>
+    <Content Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]UnPinned.png">
+      <Link>Resources\TidyToolWindow\[CPT]UnPinned.png</Link>
+    </Content>
+    <Content Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CTP]Pinned_dark.png">
+      <Link>Resources\TidyToolWindow\[CTP]Pinned_dark.png</Link>
+    </Content>
+    <Content Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CTP]UnPinned_dark.png">
+      <Link>Resources\TidyToolWindow\[CTP]UnPinned_dark.png</Link>
+    </Content>
     <Content Include="Resources\[CPT]Find.png" />
     <Content Include="Resources\[CPT]GenerateDocumentation.png" />
     <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Diff2.png">

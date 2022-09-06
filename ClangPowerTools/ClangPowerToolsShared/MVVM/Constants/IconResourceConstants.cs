@@ -5,6 +5,12 @@ namespace ClangPowerToolsShared.MVVM.Constants
   public static class IconResourceConstants
   {
     private static DirectoryInfo directoryPath = new DirectoryInfo(Directory.GetCurrentDirectory());
+    public static string PinDark { get; } =  @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]Pinned_dark.png";
+    public static string PinLight { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]Pinned.png";
+
+    public static string UnpinDark { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]UnPinned_dark.png";
+    public static string UnpinLight { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]UnPinned.png";
+
     public static string RefreshTidyDark { get; } =  @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]Refresh_dark.png";
     public static string RefreshTidyLight { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]Refresh-Tidy.png";
     public static string RefreshDisabled { get; } = @"/ClangPowerTools;component/Resources/TidyToolWindow/[CPT]Refresh_disabled.png";

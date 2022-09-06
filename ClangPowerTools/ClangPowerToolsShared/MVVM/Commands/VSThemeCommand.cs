@@ -52,6 +52,29 @@ namespace ClangPowerToolsShared.MVVM.Commands
         return IconResourceConstants.RefreshTidyLight;
     }
 
+
+    /// <summary>
+    /// Get corresponding icon to visual studio theme
+    /// </summary>
+    public static string GetUnpinIcon()
+    {
+      if (VSThemeCommand.GetCurrentVsTheme() == VsThemes.Dark)
+        return IconResourceConstants.UnpinDark;
+      else
+        return IconResourceConstants.UnpinLight;
+    }
+
+    /// <summary>
+    /// Get corresponding icon to visual studio theme
+    /// </summary>
+    public static string GetPinIcon()
+    {
+      if (VSThemeCommand.GetCurrentVsTheme() == VsThemes.Dark)
+        return IconResourceConstants.PinDark;
+      else
+        return IconResourceConstants.PinLight;
+    }
+
     /// <summary>
     /// Get corresponding icon to visual studio theme
     /// </summary>
