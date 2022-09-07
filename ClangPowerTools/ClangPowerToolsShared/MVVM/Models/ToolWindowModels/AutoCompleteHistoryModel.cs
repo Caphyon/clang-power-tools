@@ -1,4 +1,5 @@
 ﻿using ClangPowerToolsShared.MVVM.Commands;
+using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Provider;
 using ClangPowerToolsShared.MVVM.ViewModels;
 using System.ComponentModel;
@@ -10,6 +11,16 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
     public event PropertyChangedEventHandler PropertyChanged;
 
     public string Value { get; set; } = string.Empty;
+    private string visibility = string.Empty;
+    public string Visibility
+    {
+      get { return visibility; }
+      set
+      {
+        visibility = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Visibility"));
+      }
+    }
     private bool rememberAsFavorit = false;
     public bool RememberAsFavorit 
     { 
@@ -32,7 +43,10 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       }
     }
 
-    public AutoCompleteHistoryModel() { }
+    public AutoCompleteHistoryModel(bool isHistory = false) 
+    {
+      UpdateVisibility(isHistory);
+    }
 
     public void Pin()
     {
@@ -42,10 +56,22 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       FindToolWindowHandler findToolWindowHandler = new FindToolWindowHandler();
       findToolWindowHandler.SaveMatchersHistoryData();
     }
-    public AutoCompleteHistoryModel(AutoCompleteHistoryViewModel autoCompleteHistoryViewModel)
+
+    public AutoCompleteHistoryModel(AutoCompleteHistoryViewModel autoCompleteHistoryViewModel, bool isHistory = true)
     {
-      RememberAsFavorit = autoCompleteHistoryViewModel.RememberAsFavorit;
+      rememberAsFavorit = autoCompleteHistoryViewModel.RememberAsFavorit;
+      RememberAsFavorit = rememberAsFavorit;
       Value = autoCompleteHistoryViewModel.Value;
+      UpdateVisibility(isHistory);
+    }
+    
+    private void UpdateVisibility(bool isHistory)
+    {
+      if (isHistory)
+        visibility = UIElementsConstants.Visibile;
+      else
+        visibility = UIElementsConstants.Hidden;
+      Visibility = visibility;
     }
 
     private void SetIcon(bool value)

@@ -85,7 +85,6 @@
       <Link>Resources\TidyToolWindow\[CTP]UnPinned_dark.png</Link>
     </Resource>
     <Content Include="Resources\[CPT]Find.png" />
-    <Content Include="Resources\[CPT]GenerateDocumentation.png" />
     <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Diff2.png">
       <Link>Resources\TidyToolWindow\[CPT]Diff2.png</Link>
     </Resource>

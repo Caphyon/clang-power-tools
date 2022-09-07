@@ -193,7 +193,7 @@
                     Height="30"
                     HorizontalAlignment="Right"
                     Click="Pin_click"
-                    Visibility="{Binding FindToolWindowModel.CustomMatchesModel.Visibility}">
+                    Visibility="{Binding Visibility}">
                 <Image
                      Source="{Binding PinIconPath}"
                      VerticalAlignment="Center"

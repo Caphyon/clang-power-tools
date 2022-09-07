@@ -231,6 +231,7 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
           Value = value.Value.Substring(textLength, value.Value.Length - textLength),
           RememberAsFavorit = value.RememberAsFavorit,
           PinIconPath = value.PinIconPath,
+          Visibility = value.Visibility,
         }/*Only select the last part of the suggestion*/
       ).FirstOrDefault();
 
@@ -251,7 +252,8 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
           {
             Value = value.Value.Substring(textLength, value.Value.Length - textLength),
             RememberAsFavorit = value.RememberAsFavorit,
-            PinIconPath = value.PinIconPath
+            PinIconPath = value.PinIconPath,
+            Visibility = value.Visibility,
           }/*Only select the last part of the suggestion*/
       ).ToList();
 

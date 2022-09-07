@@ -113,8 +113,8 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           { RememberAsFavorit = false, Value = matcher.Matchers };
 
           //add matchers in existing displayed list
-          astMatchersSearchOptions.Insert(0, new AutoCompleteHistoryModel() { RememberAsFavorit = false, Value = matcher.Matchers });
-          astMatchersList.Insert(0, new AutoCompleteHistoryModel(autoCompleteHistoryViewModel));
+          astMatchersSearchOptions.Insert(0, new AutoCompleteHistoryModel(true) { RememberAsFavorit = false, Value = matcher.Matchers });
+          astMatchersList.Insert(0, new AutoCompleteHistoryModel(autoCompleteHistoryViewModel, true));
 
           //save matchers displayed list
           ASTMatchersList = astMatchersList;
