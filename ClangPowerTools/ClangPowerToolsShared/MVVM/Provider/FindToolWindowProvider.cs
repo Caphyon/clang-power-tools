@@ -1,6 +1,7 @@
 ﻿using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
 using ClangPowerToolsShared.MVVM.ViewModels;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace ClangPowerToolsShared.MVVM.Provider
@@ -32,7 +33,7 @@ namespace ClangPowerToolsShared.MVVM.Provider
     {
       if(autoCompleteHistory is  null || autoCompleteHistoryViewModels is null)
         autoCompleteHistory = new List<AutoCompleteHistoryViewModel>();
-      autoCompleteHistory = autoCompleteHistoryViewModels;
+      autoCompleteHistory = autoCompleteHistoryViewModels.OrderBy(u => u.RememberAsFavorit ? 0 : 1).ToList();
     }
 
     static FindToolWindowProvider() { }

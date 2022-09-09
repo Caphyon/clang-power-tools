@@ -64,9 +64,10 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       List<AutoCompleteHistoryModel> astResult = ASTMatchers.AutoCompleteMatchers.Select(a => new AutoCompleteHistoryModel()
       { RememberAsFavorit = false, Value = a }).ToList();
 
-      if(FindToolWindowProvider.AutoCompleteHistory is null)
+      if (FindToolWindowProvider.AutoCompleteHistory is null)
         return astResult;
-      List<AutoCompleteHistoryModel> jsonResult = FindToolWindowProvider.AutoCompleteHistory.Select(a => new AutoCompleteHistoryModel(a)).ToList();
+      List<AutoCompleteHistoryModel> jsonResult = FindToolWindowProvider.AutoCompleteHistory
+        .Select(a => new AutoCompleteHistoryModel(a)).OrderBy(u => u.RememberAsFavorit ? 0 : 1).ToList();
       return jsonResult.Concat(astResult).ToList();
     }
 
@@ -121,9 +122,29 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         {
           AutoCompleteHistoryViewModel autoCompleteHistoryViewModel = new AutoCompleteHistoryViewModel
           { Id = Guid.NewGuid().ToString(), RememberAsFavorit = false, Value = matcher.Matchers };
+
+          int indexSearchOptions = astMatchersSearchOptions.ToList().FindLastIndex(a => a.RememberAsFavorit == true);
           //add matchers in existing displayed list
-          astMatchersSearchOptions.Insert(0, new AutoCompleteHistoryModel(true) { RememberAsFavorit = false, Value = matcher.Matchers });
-          astMatchersList.Insert(0, new AutoCompleteHistoryModel(autoCompleteHistoryViewModel, true));
+          if (indexSearchOptions > 0)
+          {
+            astMatchersSearchOptions.Insert(indexSearchOptions + 1, new AutoCompleteHistoryModel(true) { RememberAsFavorit = false, Value = matcher.Matchers });
+            //astMatchersList.Insert(index + 1, new AutoCompleteHistoryModel(autoCompleteHistoryViewModel, true));
+          }
+          else
+          {
+            astMatchersSearchOptions.Insert(0, new AutoCompleteHistoryModel(true) { RememberAsFavorit = false, Value = matcher.Matchers });
+            //astMatchersList.Insert(0, new AutoCompleteHistoryModel(autoCompleteHistoryViewModel, true));
+          }
+
+          int indexMatchersList = astMatchersList.ToList().FindLastIndex(a => a.RememberAsFavorit == true);
+          if (indexMatchersList > 0)
+          {
+            astMatchersList.Insert(indexMatchersList + 1, new AutoCompleteHistoryModel(autoCompleteHistoryViewModel, true));
+          }
+          else
+          {
+            astMatchersList.Insert(0, new AutoCompleteHistoryModel(autoCompleteHistoryViewModel, true));
+          }
 
           //save matchers displayed list
           ASTMatchersList = astMatchersList;
