@@ -3,10 +3,12 @@ using ClangPowerTools.Commands;
 using ClangPowerTools.Views;
 using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.AutoCompleteHistory;
+using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Controllers;
 using ClangPowerToolsShared.MVVM.Interfaces;
 using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
 using ClangPowerToolsShared.MVVM.Provider;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -61,16 +63,24 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     {
       List<AutoCompleteHistoryModel> astResult = ASTMatchers.AutoCompleteMatchers.Select(a => new AutoCompleteHistoryModel()
       { RememberAsFavorit = false, Value = a }).ToList();
+
+      if(FindToolWindowProvider.AutoCompleteHistory is null)
+        return astResult;
       List<AutoCompleteHistoryModel> jsonResult = FindToolWindowProvider.AutoCompleteHistory.Select(a => new AutoCompleteHistoryModel(a)).ToList();
       return jsonResult.Concat(astResult).ToList();
     }
 
     public void OnListChange(object sender, TextChangedEventArgs e)
     {
+      var tempMatchersList = astMatchersList.Where(a => a.Visibility == UIElementsConstants.Visibile).ToList();
       astMatchersList.Clear();
       foreach (var item in AutoCompleteBehavior.AutocompleteResult)
       {
-        astMatchersList.Add(item);
+        var tempItem = tempMatchersList.Where(a => item.Id == a.Id).SingleOrDefault();
+        if (tempItem != null)
+          astMatchersList.Add(tempItem);
+        else
+          astMatchersList.Add(item);
       }
       ASTMatchersList = astMatchersList;
     }
@@ -110,8 +120,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         if (ASTMatchersSearchOptions.Find(a => a.Value == matcher.Matchers) is null)
         {
           AutoCompleteHistoryViewModel autoCompleteHistoryViewModel = new AutoCompleteHistoryViewModel
-          { RememberAsFavorit = false, Value = matcher.Matchers };
-
+          { Id = Guid.NewGuid().ToString(), RememberAsFavorit = false, Value = matcher.Matchers };
           //add matchers in existing displayed list
           astMatchersSearchOptions.Insert(0, new AutoCompleteHistoryModel(true) { RememberAsFavorit = false, Value = matcher.Matchers });
           astMatchersList.Insert(0, new AutoCompleteHistoryModel(autoCompleteHistoryViewModel, true));

@@ -14,6 +14,8 @@ namespace ClangPowerToolsShared.MVVM.Provider
 
     public static void AddAutoCompleteHistory(AutoCompleteHistoryViewModel matcher)
     {
+      if (autoCompleteHistory is null)
+        autoCompleteHistory = new();
       autoCompleteHistory.Insert(0,matcher);
     }
 
@@ -28,7 +30,7 @@ namespace ClangPowerToolsShared.MVVM.Provider
 
     public static void UpdateAutoCompleteList(List<AutoCompleteHistoryViewModel> autoCompleteHistoryViewModels)
     {
-      if(autoCompleteHistory is  null)
+      if(autoCompleteHistory is  null || autoCompleteHistoryViewModels is null)
         autoCompleteHistory = new List<AutoCompleteHistoryViewModel>();
       autoCompleteHistory = autoCompleteHistoryViewModels;
     }

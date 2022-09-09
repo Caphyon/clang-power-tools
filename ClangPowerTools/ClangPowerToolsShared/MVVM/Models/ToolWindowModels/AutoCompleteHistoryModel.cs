@@ -2,6 +2,7 @@
 using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Provider;
 using ClangPowerToolsShared.MVVM.ViewModels;
+using System;
 using System.ComponentModel;
 
 namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
@@ -9,6 +10,8 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
   public class AutoCompleteHistoryModel : INotifyPropertyChanged
   {
     public event PropertyChangedEventHandler PropertyChanged;
+
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     public string Value { get; set; } = string.Empty;
     private string visibility = string.Empty;
@@ -59,6 +62,7 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 
     public AutoCompleteHistoryModel(AutoCompleteHistoryViewModel autoCompleteHistoryViewModel, bool isHistory = true)
     {
+      Id = autoCompleteHistoryViewModel.Id;
       rememberAsFavorit = autoCompleteHistoryViewModel.RememberAsFavorit;
       RememberAsFavorit = rememberAsFavorit;
       Value = autoCompleteHistoryViewModel.Value;

@@ -232,6 +232,7 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
           RememberAsFavorit = value.RememberAsFavorit,
           PinIconPath = value.PinIconPath,
           Visibility = value.Visibility,
+          Id = value.Id
         }/*Only select the last part of the suggestion*/
       ).FirstOrDefault();
 
@@ -254,6 +255,7 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
             RememberAsFavorit = value.RememberAsFavorit,
             PinIconPath = value.PinIconPath,
             Visibility = value.Visibility,
+            Id = value.Id
           }/*Only select the last part of the suggestion*/
       ).ToList();
 
