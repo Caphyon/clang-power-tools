@@ -1,11 +1,18 @@
 ﻿using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Interfaces;
 using ClangPowerToolsShared.MVVM.ViewModels;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
+using ClangPowerToolsShared.Helpers;
+using ClangPowerToolsShared.MVVM;
+using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
 
 namespace ClangPowerTools.Views
 {
@@ -18,6 +25,8 @@ namespace ClangPowerTools.Views
 
     public FindToolWindowView()
     {
+      var findToolWindowHandler = new FindToolWindowHandler();
+      findToolWindowHandler.LoadFindToolWindowData();
       findToolWindowViewModel = new FindToolWindowViewModel(this);
       DataContext = findToolWindowViewModel;
       InitializeComponent();
@@ -46,6 +55,16 @@ namespace ClangPowerTools.Views
       var combo = sender as ComboBox;
       combo.ItemsSource = LookInMenuController.MenuOptions;
       combo.SelectedIndex = 0;
+    }
+
+    private void Pin_click(object sender, RoutedEventArgs e)
+    {
+      var elementIndex = sender as FrameworkElement;
+      var element = elementIndex.DataContext as AutoCompleteHistoryModel;
+      if(element != null)
+      {
+        element.Pin();
+      }
     }
 
     private void ComboBox_SelectionChanged(object sender, RoutedEventArgs e)

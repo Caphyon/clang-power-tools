@@ -27,17 +27,23 @@
     <Compile Include="$(MSBuildThisFileDirectory)Commands\LookInMenu.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\CryptographyAlgo.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\LaunchCompilationDbProgrammatically.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\AutoCompleteHistory\ASTMatchers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\AutoCompleteHistory\AutoCompleteBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\LookInMenuController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\RunController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\GenerateDocumentation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Constants\MatchConstants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Controllers\FindController.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Interfaces\IViewMatche.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\FindToolWindowHandler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\AutoCompleteHistoryModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\ComponentVisibility.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\CustomMatchesModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\DefaultArgsModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\FindControllerModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\FindToolWindowModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Provider\FindToolWindowProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\AutoCompleteHistoryViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\FindToolWindowViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\DialogWindow.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\BackgroundTidy\PowerShellWrapperBackground.cs" />
@@ -457,8 +463,5 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)MVVM\Constants\NewFolder\" />
   </ItemGroup>
 </Project>
