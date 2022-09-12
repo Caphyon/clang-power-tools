@@ -54,10 +54,11 @@ namespace ClangPowerToolsShared.MVVM
 
     public void LoadFindToolWindowData()
     {
-      if(File.Exists(matcherHistoryPath))
+      if (File.Exists(matcherHistoryPath))
       {
         string json = ReadFile(matcherHistoryPath);
-        DeserializeMatchersHistory(json);
+        if (!string.IsNullOrEmpty(json))
+          DeserializeMatchersHistory(json);
       }
     }
 

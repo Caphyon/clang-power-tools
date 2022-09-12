@@ -77,7 +77,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       astMatchersList.Clear();
       foreach (var item in AutoCompleteBehavior.AutocompleteResult)
       {
-        var tempItem = tempMatchersList.Where(a => item.Id == a.Id).SingleOrDefault();
+        var tempItem = tempMatchersList.Where(a => item.Id == a.Id).FirstOrDefault();
         if (tempItem != null)
           astMatchersList.Add(tempItem);
         else
@@ -124,16 +124,25 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
           { Id = Guid.NewGuid().ToString(), RememberAsFavorit = false, Value = matcher.Matchers };
 
           int indexSearchOptions = astMatchersSearchOptions.ToList().FindLastIndex(a => a.RememberAsFavorit == true);
+
           //add matchers in existing displayed list
           if (indexSearchOptions > 0)
           {
-            astMatchersSearchOptions.Insert(indexSearchOptions + 1, new AutoCompleteHistoryModel(true) { RememberAsFavorit = false, Value = matcher.Matchers });
-            //astMatchersList.Insert(index + 1, new AutoCompleteHistoryModel(autoCompleteHistoryViewModel, true));
+            astMatchersSearchOptions.Insert(indexSearchOptions + 1, new AutoCompleteHistoryModel(true)
+            {
+              RememberAsFavorit = false,
+              Value = matcher.Matchers,
+              Id = autoCompleteHistoryViewModel.Id
+            });
           }
           else
           {
-            astMatchersSearchOptions.Insert(0, new AutoCompleteHistoryModel(true) { RememberAsFavorit = false, Value = matcher.Matchers });
-            //astMatchersList.Insert(0, new AutoCompleteHistoryModel(autoCompleteHistoryViewModel, true));
+            astMatchersSearchOptions.Insert(0, new AutoCompleteHistoryModel(true)
+            {
+              RememberAsFavorit = false,
+              Value = matcher.Matchers,
+              Id = autoCompleteHistoryViewModel.Id
+            });
           }
 
           int indexMatchersList = astMatchersList.ToList().FindLastIndex(a => a.RememberAsFavorit == true);
