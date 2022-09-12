@@ -12,6 +12,7 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
     private bool isRunning = false;
     private ComponentVisibility progressBarVisibility = new();
     private ComponentVisibility menuVisibility = new();
+
     public FindToolWindowModel()
     {
       HideProgressBar();

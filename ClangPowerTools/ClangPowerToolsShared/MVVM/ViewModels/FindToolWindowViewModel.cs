@@ -59,16 +59,25 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       this.findToolWindowView = findToolWindowView;
     }
 
-    private List<AutoCompleteHistoryModel> GetASTMatchersWithHistory()
+    public void AddPinOnRightPlace(AutoCompleteHistoryModel autoCompleteHistoryModel)
     {
-      List<AutoCompleteHistoryModel> astResult = ASTMatchers.AutoCompleteMatchers.Select(a => new AutoCompleteHistoryModel()
-      { RememberAsFavorit = false, Value = a }).ToList();
-
-      if (FindToolWindowProvider.AutoCompleteHistory is null)
-        return astResult;
-      List<AutoCompleteHistoryModel> jsonResult = FindToolWindowProvider.AutoCompleteHistory
-        .Select(a => new AutoCompleteHistoryModel(a)).OrderBy(u => u.RememberAsFavorit ? 0 : 1).ToList();
-      return jsonResult.Concat(astResult).ToList();
+      int itemIndex = astMatchersList.IndexOf(autoCompleteHistoryModel);
+      if (autoCompleteHistoryModel.RememberAsFavorit)
+      {
+        if (itemIndex != -1 && astMatchersList.Count >= itemIndex)
+        {
+          astMatchersList.Remove(autoCompleteHistoryModel);
+          astMatchersList.Insert(0, autoCompleteHistoryModel);
+        }
+      }
+      else
+      {
+        int lastFindIndex = astMatchersList.ToList().FindLastIndex(a => 
+        a.RememberAsFavorit == true && a.Id != autoCompleteHistoryModel.Id);
+        if (itemIndex != -1 && lastFindIndex != -1 && astMatchersList.Count >= 
+          itemIndex && astMatchersList.Count >= lastFindIndex && itemIndex - lastFindIndex != 1)
+          Swap(astMatchersList, lastFindIndex, itemIndex);
+      }
     }
 
     public void OnListChange(object sender, TextChangedEventArgs e)
@@ -111,6 +120,25 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       //add in history
       AddMatcherInHistory();
       CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kClangFindRun, CommandUILocation.ContextMenu);
+    }
+
+    private List<AutoCompleteHistoryModel> GetASTMatchersWithHistory()
+    {
+      List<AutoCompleteHistoryModel> astResult = ASTMatchers.AutoCompleteMatchers.Select(a => new AutoCompleteHistoryModel()
+      { RememberAsFavorit = false, Value = a }).ToList();
+
+      if (FindToolWindowProvider.AutoCompleteHistory is null)
+        return astResult;
+      List<AutoCompleteHistoryModel> jsonResult = FindToolWindowProvider.AutoCompleteHistory
+        .Select(a => new AutoCompleteHistoryModel(a)).OrderBy(u => u.RememberAsFavorit ? 0 : 1).ToList();
+      return jsonResult.Concat(astResult).ToList();
+    }
+
+    private void Swap<T>(IList<T> list, int indexA, int indexB)
+    {
+      T tmp = list[indexA];
+      list[indexA] = list[indexB];
+      list[indexB] = tmp;
     }
 
     private void AddMatcherInHistory()
