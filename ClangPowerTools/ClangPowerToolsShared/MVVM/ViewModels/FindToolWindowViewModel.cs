@@ -72,9 +72,9 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       }
       else
       {
-        int lastFindIndex = astMatchersList.ToList().FindLastIndex(a => 
+        int lastFindIndex = astMatchersList.ToList().FindLastIndex(a =>
         a.RememberAsFavorit == true && a.Id != autoCompleteHistoryModel.Id);
-        if (itemIndex != -1 && lastFindIndex != -1 && astMatchersList.Count >= 
+        if (itemIndex != -1 && lastFindIndex != -1 && astMatchersList.Count >=
           itemIndex && astMatchersList.Count >= lastFindIndex && itemIndex - lastFindIndex != 1)
           Swap(astMatchersList, lastFindIndex, itemIndex);
       }
@@ -88,9 +88,19 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       {
         var tempItem = tempMatchersList.Where(a => item.Id == a.Id).FirstOrDefault();
         if (tempItem != null)
-          astMatchersList.Add(tempItem);
+        {
+          if(tempItem.RememberAsFavorit && tempItem.Visibility == UIElementsConstants.Visibile)
+            astMatchersList.Insert(0, tempItem);
+          else
+            astMatchersList.Add(tempItem);
+        }
         else
-          astMatchersList.Add(item);
+        {
+          if (item.RememberAsFavorit && item.Visibility == UIElementsConstants.Visibile)
+            astMatchersList.Insert(0, item);
+          else
+            astMatchersList.Add(item);
+        }
       }
       ASTMatchersList = astMatchersList;
     }
