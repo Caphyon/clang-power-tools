@@ -263,7 +263,8 @@ namespace ClangPowerTools.Commands
 
     private bool IsFileStyleSelected(FormatSettingsModel formatSettings)
     {
-      return formatSettings.Style == ClangFormatStyle.file;
+      return formatSettings.Style == ClangFormatStyle.file && 
+        formatSettings.FallbackStyle == ClangFormatFallbackStyle.none;
     }
 
     private bool FileHasExtension(string filePath, string fileExtensions)
