@@ -64,6 +64,7 @@ namespace ClangPowerTools.Views
       if(element != null)
       {
         element.Pin();
+        findToolWindowViewModel.AddPinOnRightPlace(element);
       }
     }
 

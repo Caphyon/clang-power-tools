@@ -59,15 +59,25 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       this.findToolWindowView = findToolWindowView;
     }
 
-    private List<AutoCompleteHistoryModel> GetASTMatchersWithHistory()
+    public void AddPinOnRightPlace(AutoCompleteHistoryModel autoCompleteHistoryModel)
     {
-      List<AutoCompleteHistoryModel> astResult = ASTMatchers.AutoCompleteMatchers.Select(a => new AutoCompleteHistoryModel()
-      { RememberAsFavorit = false, Value = a }).ToList();
-
-      if(FindToolWindowProvider.AutoCompleteHistory is null)
-        return astResult;
-      List<AutoCompleteHistoryModel> jsonResult = FindToolWindowProvider.AutoCompleteHistory.Select(a => new AutoCompleteHistoryModel(a)).ToList();
-      return jsonResult.Concat(astResult).ToList();
+      int itemIndex = astMatchersList.IndexOf(autoCompleteHistoryModel);
+      if (autoCompleteHistoryModel.RememberAsFavorit)
+      {
+        if (itemIndex != -1 && astMatchersList.Count >= itemIndex)
+        {
+          astMatchersList.Remove(autoCompleteHistoryModel);
+          astMatchersList.Insert(0, autoCompleteHistoryModel);
+        }
+      }
+      else
+      {
+        int lastFindIndex = astMatchersList.ToList().FindLastIndex(a =>
+        a.RememberAsFavorit == true && a.Id != autoCompleteHistoryModel.Id);
+        if (itemIndex != -1 && lastFindIndex != -1 && astMatchersList.Count >=
+          itemIndex && astMatchersList.Count >= lastFindIndex && itemIndex - lastFindIndex != 1)
+          Swap(astMatchersList, lastFindIndex, itemIndex);
+      }
     }
 
     public void OnListChange(object sender, TextChangedEventArgs e)
@@ -76,11 +86,21 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       astMatchersList.Clear();
       foreach (var item in AutoCompleteBehavior.AutocompleteResult)
       {
-        var tempItem = tempMatchersList.Where(a => item.Id == a.Id).SingleOrDefault();
+        var tempItem = tempMatchersList.Where(a => item.Id == a.Id).FirstOrDefault();
         if (tempItem != null)
-          astMatchersList.Add(tempItem);
+        {
+          if(tempItem.RememberAsFavorit && tempItem.Visibility == UIElementsConstants.Visibile)
+            astMatchersList.Insert(0, tempItem);
+          else
+            astMatchersList.Add(tempItem);
+        }
         else
-          astMatchersList.Add(item);
+        {
+          if (item.RememberAsFavorit && item.Visibility == UIElementsConstants.Visibile)
+            astMatchersList.Insert(0, item);
+          else
+            astMatchersList.Add(item);
+        }
       }
       ASTMatchersList = astMatchersList;
     }
@@ -112,6 +132,25 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kClangFindRun, CommandUILocation.ContextMenu);
     }
 
+    private List<AutoCompleteHistoryModel> GetASTMatchersWithHistory()
+    {
+      List<AutoCompleteHistoryModel> astResult = ASTMatchers.AutoCompleteMatchers.Select(a => new AutoCompleteHistoryModel()
+      { RememberAsFavorit = false, Value = a }).ToList();
+
+      if (FindToolWindowProvider.AutoCompleteHistory is null)
+        return astResult;
+      List<AutoCompleteHistoryModel> jsonResult = FindToolWindowProvider.AutoCompleteHistory
+        .Select(a => new AutoCompleteHistoryModel(a)).OrderBy(u => u.RememberAsFavorit ? 0 : 1).ToList();
+      return jsonResult.Concat(astResult).ToList();
+    }
+
+    private void Swap<T>(IList<T> list, int indexA, int indexB)
+    {
+      T tmp = list[indexA];
+      list[indexA] = list[indexB];
+      list[indexB] = tmp;
+    }
+
     private void AddMatcherInHistory()
     {
       if (findToolWindowModel.CurrentViewMatcher.Id == 2)
@@ -121,9 +160,38 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         {
           AutoCompleteHistoryViewModel autoCompleteHistoryViewModel = new AutoCompleteHistoryViewModel
           { Id = Guid.NewGuid().ToString(), RememberAsFavorit = false, Value = matcher.Matchers };
+
+          int indexSearchOptions = astMatchersSearchOptions.ToList().FindLastIndex(a => a.RememberAsFavorit == true);
+
           //add matchers in existing displayed list
-          astMatchersSearchOptions.Insert(0, new AutoCompleteHistoryModel(true) { RememberAsFavorit = false, Value = matcher.Matchers });
-          astMatchersList.Insert(0, new AutoCompleteHistoryModel(autoCompleteHistoryViewModel, true));
+          if (indexSearchOptions > 0)
+          {
+            astMatchersSearchOptions.Insert(indexSearchOptions + 1, new AutoCompleteHistoryModel(true)
+            {
+              RememberAsFavorit = false,
+              Value = matcher.Matchers,
+              Id = autoCompleteHistoryViewModel.Id
+            });
+          }
+          else
+          {
+            astMatchersSearchOptions.Insert(0, new AutoCompleteHistoryModel(true)
+            {
+              RememberAsFavorit = false,
+              Value = matcher.Matchers,
+              Id = autoCompleteHistoryViewModel.Id
+            });
+          }
+
+          int indexMatchersList = astMatchersList.ToList().FindLastIndex(a => a.RememberAsFavorit == true);
+          if (indexMatchersList > 0)
+          {
+            astMatchersList.Insert(indexMatchersList + 1, new AutoCompleteHistoryModel(autoCompleteHistoryViewModel, true));
+          }
+          else
+          {
+            astMatchersList.Insert(0, new AutoCompleteHistoryModel(autoCompleteHistoryViewModel, true));
+          }
 
           //save matchers displayed list
           ASTMatchersList = astMatchersList;
