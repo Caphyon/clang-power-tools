@@ -89,7 +89,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         var tempItem = tempMatchersList.Where(a => item.Id == a.Id).FirstOrDefault();
         if (tempItem != null)
         {
-          if(tempItem.RememberAsFavorit && tempItem.Visibility == UIElementsConstants.Visibile)
+          if (tempItem.RememberAsFavorit && tempItem.Visibility == UIElementsConstants.Visibile)
             astMatchersList.Insert(0, tempItem);
           else
             astMatchersList.Add(tempItem);

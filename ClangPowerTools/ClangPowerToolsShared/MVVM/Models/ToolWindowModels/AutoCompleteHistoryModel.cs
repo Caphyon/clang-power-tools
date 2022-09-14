@@ -53,9 +53,9 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 
     public void Pin()
     {
-      rememberAsFavorit = !rememberAsFavorit;
-      RememberAsFavorit = rememberAsFavorit;
-      FindToolWindowProvider.UpdateFavoriteValue(this);
+      UpdateRememberAsFavorit(!rememberAsFavorit);
+      if(!FindToolWindowProvider.UpdateFavoriteValue(this))
+        UpdateRememberAsFavorit(!rememberAsFavorit);
       FindToolWindowHandler findToolWindowHandler = new FindToolWindowHandler();
       findToolWindowHandler.SaveMatchersHistoryData();
     }
@@ -63,12 +63,17 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
     public AutoCompleteHistoryModel(AutoCompleteHistoryViewModel autoCompleteHistoryViewModel, bool isHistory = true)
     {
       Id = autoCompleteHistoryViewModel.Id;
-      rememberAsFavorit = autoCompleteHistoryViewModel.RememberAsFavorit;
-      RememberAsFavorit = rememberAsFavorit;
+      UpdateRememberAsFavorit(autoCompleteHistoryViewModel.RememberAsFavorit);
       Value = autoCompleteHistoryViewModel.Value;
       UpdateVisibility(isHistory);
     }
     
+    private void UpdateRememberAsFavorit(bool value)
+    {
+      rememberAsFavorit = value;
+      RememberAsFavorit = rememberAsFavorit;
+    }
+
     private void UpdateVisibility(bool isHistory)
     {
       if (isHistory)

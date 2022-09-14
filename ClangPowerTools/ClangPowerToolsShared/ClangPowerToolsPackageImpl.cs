@@ -7,6 +7,7 @@ using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.Helpers;
 using ClangPowerToolsShared.MVVM;
 using ClangPowerToolsShared.MVVM.Constants;
+using ClangPowerToolsShared.MVVM.Provider;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using EnvDTE;
 using EnvDTE80;
@@ -16,6 +17,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
@@ -174,6 +176,7 @@ namespace ClangPowerTools
       DeleteTempSolution();
       HideToolWindow();
       DeleteCacheReporitory();
+      DeleteFromFindToolWindowHistory();
       return VSConstants.S_OK;
     }
 
@@ -182,7 +185,6 @@ namespace ClangPowerTools
       aPHierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ExtObject, out object projectObject);
       if (projectObject is Project project)
         mErrorWindowController.RemoveErrors(aPHierarchy);
-
       return VSConstants.S_OK;
     }
 
@@ -510,6 +512,13 @@ namespace ClangPowerTools
       {
         Directory.Delete(PathConstants.CacheRepositoryPath, true);
       }
+    }
+
+    private void DeleteFromFindToolWindowHistory()
+    {
+      FindToolWindowProvider.RemoveFromFullList();
+      FindToolWindowHandler findToolWindowHandler = new FindToolWindowHandler();
+      findToolWindowHandler.SaveMatchersHistoryData();
     }
 
     private void CreateCacheRepository()
