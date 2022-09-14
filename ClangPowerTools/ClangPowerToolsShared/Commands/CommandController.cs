@@ -236,7 +236,6 @@ namespace ClangPowerTools
           }
         case CommandIds.kClangFind:
           {
-            HideTidyToolWindow();
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kClangFind);
 
@@ -274,7 +273,6 @@ namespace ClangPowerTools
           }
         case CommandIds.kTidyId:
           {
-            HideFindToolWindow();
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kTidyId);
 
@@ -286,7 +284,6 @@ namespace ClangPowerTools
           }
         case CommandIds.kTidyToolbarId:
           {
-            HideFindToolWindow();
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kTidyId);
 
