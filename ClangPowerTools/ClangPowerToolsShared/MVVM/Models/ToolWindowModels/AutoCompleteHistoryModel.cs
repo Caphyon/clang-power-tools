@@ -25,9 +25,9 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       }
     }
     private bool rememberAsFavorit = false;
-    public bool RememberAsFavorit 
-    { 
-      get { return rememberAsFavorit; } 
+    public bool RememberAsFavorit
+    {
+      get { return rememberAsFavorit; }
       set
       {
         SetIcon(value);
@@ -46,16 +46,20 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       }
     }
 
-    public AutoCompleteHistoryModel(bool isHistory = false) 
+    public AutoCompleteHistoryModel(bool isHistory = false)
     {
       UpdateVisibility(isHistory);
     }
 
     public void Pin()
     {
-      UpdateRememberAsFavorit(!rememberAsFavorit);
-      if(!FindToolWindowProvider.UpdateFavoriteValue(this))
-        UpdateRememberAsFavorit(!rememberAsFavorit);
+      if (!FindToolWindowProvider.CheckRememberFavoritIsMax(this) || rememberAsFavorit)
+      {
+        rememberAsFavorit = !rememberAsFavorit;
+        RememberAsFavorit = rememberAsFavorit;
+        FindToolWindowProvider.UpdateFavoriteValue(this, rememberAsFavorit);
+      }
+      FindToolWindowProvider.UpdateFavoriteValue(this, !rememberAsFavorit);
       FindToolWindowHandler findToolWindowHandler = new FindToolWindowHandler();
       findToolWindowHandler.SaveMatchersHistoryData();
     }
@@ -63,15 +67,11 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
     public AutoCompleteHistoryModel(AutoCompleteHistoryViewModel autoCompleteHistoryViewModel, bool isHistory = true)
     {
       Id = autoCompleteHistoryViewModel.Id;
-      UpdateRememberAsFavorit(autoCompleteHistoryViewModel.RememberAsFavorit);
+      rememberAsFavorit = autoCompleteHistoryViewModel.RememberAsFavorit;
+      RememberAsFavorit = rememberAsFavorit;
       Value = autoCompleteHistoryViewModel.Value;
       UpdateVisibility(isHistory);
-    }
-    
-    private void UpdateRememberAsFavorit(bool value)
-    {
-      rememberAsFavorit = value;
-      RememberAsFavorit = rememberAsFavorit;
+      rememberAsFavorit = autoCompleteHistoryViewModel.RememberAsFavorit;
     }
 
     private void UpdateVisibility(bool isHistory)

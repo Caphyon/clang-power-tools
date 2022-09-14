@@ -32,22 +32,24 @@ namespace ClangPowerToolsShared.MVVM.Provider
       }
     }
 
-    public static bool UpdateFavoriteValue(AutoCompleteHistoryModel autoCompleteHistoryViewModel)
+    public static void UpdateFavoriteValue(AutoCompleteHistoryModel autoCompleteHistoryViewModel, bool favoriteValueChange)
     {
       var historyModel = autoCompleteHistory.Find(a => a.Value == autoCompleteHistoryViewModel.Value);
       if (historyModel != null)
       {
-        if (autoCompleteHistoryViewModel.RememberAsFavorit &&
-          autoCompleteHistory.FindAll(a => a.RememberAsFavorit == true).Count >= maxFavoritHistoryCount)
+        if (CheckRememberFavoritIsMax(autoCompleteHistoryViewModel) && favoriteValueChange)
         {
           DialogResult dialogResult = MessageBox.Show("You reached the limit(50 matchers) of favorite custom matchers, unpin from favorite to add new matcher",
                                  "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
-          return false;
         }
         historyModel.RememberAsFavorit = autoCompleteHistoryViewModel.RememberAsFavorit;
-        return true;
       }
-      return false;
+    }
+
+    public static bool CheckRememberFavoritIsMax(AutoCompleteHistoryModel autoCompleteHistoryViewModel)
+    {
+      var test = autoCompleteHistory.FindAll(a => a.RememberAsFavorit == true).Count >= maxFavoritHistoryCount;
+      return autoCompleteHistory.FindAll(a => a.RememberAsFavorit == true).Count >= maxFavoritHistoryCount;
     }
 
     public static void UpdateAutoCompleteList(List<AutoCompleteHistoryViewModel> autoCompleteHistoryViewModels)
