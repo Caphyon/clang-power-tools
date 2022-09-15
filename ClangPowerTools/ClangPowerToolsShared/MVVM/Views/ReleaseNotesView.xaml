@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 9.1" />
+                 Text="version 9.2" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -115,7 +115,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Introducing CPT Find: bringing the power of clang-query to your codebase"
+                 Text="• CPT Find: bringing the power of clang-query to your codebase"
                  TextWrapping="Wrap" />
         <TextBox Margin="30,5,0,0"
                  HorizontalAlignment="Left"
@@ -123,16 +123,7 @@
                  BorderThickness="0"
                  FontSize="14"
                  IsReadOnly="True"
-                 Text="- Write your own custom match"
-                 TextWrapping="Wrap" />
-
-        <TextBox Margin="30,5,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="14"
-                 IsReadOnly="True"
-                 Text="- Select where to run find command"
+                 Text="• Keep history of custom matchers"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="30,5,0,0"
@@ -141,7 +132,25 @@
                  BorderThickness="0"
                  FontSize="14"
                  IsReadOnly="True"
-                 Text="- Open Find tool window from View menu"
+                 Text="• Autocomplete with ast matchers and history"
+                 TextWrapping="Wrap" />
+
+        <TextBox Margin="30,5,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="14"
+                 IsReadOnly="True"
+                 Text="• Pin your favorite matcher and return to it easier"
+                 TextWrapping="Wrap" />
+
+        <TextBox Margin="30,5,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="14"
+                 IsReadOnly="True"
+                 Text="• Don't need to write &quot;m&quot; or &quot;match&quot; keyword no more"
                  TextWrapping="Wrap" />
 
         <!--Bug Fixes-->
@@ -159,16 +168,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Not displaying full AST in verbose mode"
-                 TextWrapping="Wrap" />
-
-        <TextBox Margin="15,15,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• Can't update scripts on Visual Studio 2015"
+                 Text="• Clang-format fails even if Fallback Style is set"
                  TextWrapping="Wrap" />
         <!--<TextBox
           Margin="15,5,0,0"
