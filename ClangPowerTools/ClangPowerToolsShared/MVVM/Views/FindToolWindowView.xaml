@@ -193,6 +193,7 @@
                     Height="30"
                     HorizontalAlignment="Right"
                     Click="Pin_click"
+                    ToolTip="{Binding Tooltip}"
                     Visibility="{Binding Visibility}">
                 <Image
                      Source="{Binding PinIconPath}"
@@ -261,7 +262,6 @@
       Grid.Row="5"
       Grid.Column="1"
       BorderBrush="{DynamicResource {x:Static vsfx:VsBrushes.AccentDarkKey}}"
-      Background="{DynamicResource {x:Static vsfx:VsBrushes.BackgroundKey}}"
       BorderThickness="1">
         <Button
         x:Name="MatchDefaultArgs"

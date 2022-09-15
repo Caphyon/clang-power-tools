@@ -16,6 +16,18 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 
     public string Value { get; set; } = string.Empty;
     private string visibility = string.Empty;
+
+    private string tooltip = string.Empty;
+    public string Tooltip
+    {
+      get { return tooltip; }
+      set
+      {
+        tooltip = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Tooltip"));
+      }
+    }
+
     public string Visibility
     {
       get { return visibility; }
@@ -25,6 +37,7 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Visibility"));
       }
     }
+
     private bool rememberAsFavorit = false;
     public bool RememberAsFavorit
     {
@@ -32,6 +45,7 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       set
       {
         SetIcon(value);
+        
       }
     }
 
@@ -90,9 +104,16 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
     private void SetIcon(bool value)
     {
       if (value)
+      {
+        tooltip = UIElementsConstants.Unpin;
         pinIconPath = VSThemeCommand.GetPinIcon();
+      }
       else
+      {
+        tooltip = UIElementsConstants.Pin;
         pinIconPath = VSThemeCommand.GetUnpinIcon();
+      }
+      Tooltip = tooltip;
       PinIconPath = pinIconPath;
     }
 
