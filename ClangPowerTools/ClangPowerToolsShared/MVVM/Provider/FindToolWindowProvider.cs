@@ -13,9 +13,9 @@ namespace ClangPowerToolsShared.MVVM.Provider
     private static List<AutoCompleteHistoryViewModel> autoCompleteHistory { get; set; } = new List<AutoCompleteHistoryViewModel>();
     public static FindToolWindowProvider Instance = new FindToolWindowProvider();
     public static List<AutoCompleteHistoryViewModel> AutoCompleteHistory { get { return autoCompleteHistory; } }
-    public const int maxHistoryCount = 7;
-    public const int maxFavoritHistoryCount = 3;
-    public const int countToDelete = 3;
+    public const int maxHistoryCount = 100;
+    public const int maxFavoritHistoryCount = 20;
+    public const int countToDelete = 15;
     public static void AddAutoCompleteHistory(AutoCompleteHistoryViewModel matcher)
     {
       if (autoCompleteHistory is null)
@@ -37,11 +37,6 @@ namespace ClangPowerToolsShared.MVVM.Provider
       var historyModel = autoCompleteHistory.Find(a => a.Value == autoCompleteHistoryViewModel.Value);
       if (historyModel != null)
       {
-        if (CheckRememberFavoritIsMax(autoCompleteHistoryViewModel) && favoriteValueChange)
-        {
-          DialogResult dialogResult = MessageBox.Show("You reached the limit(50 matchers) of favorite custom matchers, unpin from favorite to add new matcher",
-                                 "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
         historyModel.RememberAsFavorit = autoCompleteHistoryViewModel.RememberAsFavorit;
       }
     }

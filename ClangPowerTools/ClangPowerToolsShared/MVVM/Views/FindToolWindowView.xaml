@@ -142,7 +142,7 @@
         Grid.Row="0"
         Grid.Column="0"
         Visibility="{Binding FindToolWindowModel.CustomMatchesModel.Visibility}"
-        Content="Custom Matches:"
+        Content="Custom Matchers:"
         Height="28"
         HorizontalAlignment="Left"
         Foreground="{DynamicResource {x:Static vsfx:VsBrushes.WindowTextKey}}" />

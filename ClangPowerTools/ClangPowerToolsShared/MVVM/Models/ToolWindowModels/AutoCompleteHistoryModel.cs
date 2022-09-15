@@ -4,6 +4,7 @@ using ClangPowerToolsShared.MVVM.Provider;
 using ClangPowerToolsShared.MVVM.ViewModels;
 using System;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
 {
@@ -51,17 +52,20 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       UpdateVisibility(isHistory);
     }
 
-    public void Pin()
+    public bool Pin()
     {
-      if (!FindToolWindowProvider.CheckRememberFavoritIsMax(this) || rememberAsFavorit)
+      if (FindToolWindowProvider.CheckRememberFavoritIsMax(this) && !rememberAsFavorit)
       {
-        rememberAsFavorit = !rememberAsFavorit;
-        RememberAsFavorit = rememberAsFavorit;
-        FindToolWindowProvider.UpdateFavoriteValue(this, rememberAsFavorit);
+        DialogResult dialogResult = MessageBox.Show("You reached the limit(20 matchers) of favorite custom matchers, unpin from favorite to add new matcher",
+                       "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        return false;
       }
+      rememberAsFavorit = !rememberAsFavorit;
+      RememberAsFavorit = rememberAsFavorit;
       FindToolWindowProvider.UpdateFavoriteValue(this, !rememberAsFavorit);
       FindToolWindowHandler findToolWindowHandler = new FindToolWindowHandler();
       findToolWindowHandler.SaveMatchersHistoryData();
+      return true;
     }
 
     public AutoCompleteHistoryModel(AutoCompleteHistoryViewModel autoCompleteHistoryViewModel, bool isHistory = true)

@@ -63,8 +63,8 @@ namespace ClangPowerTools.Views
       var element = elementIndex.DataContext as AutoCompleteHistoryModel;
       if(element != null)
       {
-        element.Pin();
-        findToolWindowViewModel.AddPinOnRightPlace(element);
+        if(element.Pin())
+          findToolWindowViewModel.AddPinOnRightPlace(element);
       }
     }
 
