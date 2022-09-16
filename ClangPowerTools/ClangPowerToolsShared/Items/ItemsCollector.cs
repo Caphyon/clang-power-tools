@@ -126,7 +126,7 @@ namespace ClangPowerTools
         if (item.Object is Project)
         {
           var project = item.Object as Project;
-          projectsToIgnore.Add(project.Name);
+          projectsToIgnore.Add(project?.Name);
         }
       }
 
