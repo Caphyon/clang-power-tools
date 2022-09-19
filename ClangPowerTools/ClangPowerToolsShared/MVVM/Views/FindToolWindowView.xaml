@@ -152,8 +152,9 @@
                Visibility="{Binding FindToolWindowModel.CustomMatchesModel.Visibility}" 
                Height="50"
                Background="WhiteSmoke"
+               KeyDown="OnKeyDownHandler"
                TextWrapping="Wrap"
-               Text="{Binding FindToolWindowModel.CustomMatchesModel.Matchers}"
+               Text="{Binding  UpdateSourceTrigger=PropertyChanged, Path=FindToolWindowModel.CustomMatchesModel.Matchers}"
                behaviors:AutoCompleteBehavior.AutoCompleteItemsSource="{Binding ASTMatchersSearchOptions}"
                behaviors:AutoCompleteBehavior.AutoCompleteStringComparison="CurrentCulture"
                Opacity="0.8">

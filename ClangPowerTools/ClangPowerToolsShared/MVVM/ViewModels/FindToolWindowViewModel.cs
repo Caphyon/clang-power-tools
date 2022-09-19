@@ -56,6 +56,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       AutoCompleteBehavior.OnListUpdate += OnListChange;
       astMatchersList = new ObservableCollection<AutoCompleteHistoryModel>(GetASTMatchersWithHistory());
       astMatchersSearchOptions = new List<AutoCompleteHistoryModel>(GetASTMatchersWithHistory());
+      FindToolWindowModel = findToolWindowModel;
       this.findToolWindowView = findToolWindowView;
     }
 
@@ -126,6 +127,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public void RunCommandFromView()
     {
       BeforeCommand();
+
       LaunchCommand();
       //add in history
       AddMatcherInHistory();

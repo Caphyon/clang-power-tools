@@ -130,22 +130,6 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
         tb.SelectionStart = tb.CaretIndex = tb.Text.Length;
         tb.SelectionLength = 0;
       }
-
-      if (e.Key == Key.Enter)
-      {
-        TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
-        request.Wrapped = true;
-        ((TextBox)sender).MoveFocus(request);
-        System.Windows.Forms.SendKeys.Send("{TAB}");
-        System.Windows.Forms.SendKeys.Send("{ENTER}");
-      }
-
-      if (e.Key == Key.Tab)
-      {
-        TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Previous);
-        request.Wrapped = true;
-        ((TextBox)sender).MoveFocus(request);
-      }
     }
 
     /// <summary>
