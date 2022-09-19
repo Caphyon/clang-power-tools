@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.Builder;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using System.IO;
 using System.Text.RegularExpressions;
 
 namespace ClangPowerTools.Error
@@ -78,14 +79,15 @@ namespace ClangPowerTools.Error
     private void BuildMatch()
     {
       var groups = mMatchResult.Groups;
-      string messageDescription = groups[0].Value;
 
-      if (string.IsNullOrWhiteSpace(messageDescription))
+      if (string.IsNullOrWhiteSpace(groups[0].Value))
         return;
 
       string path = groups[1].Value.Replace('/', '\\');
       int.TryParse(groups[3].Value, out int line);
       int.TryParse(groups[4].Value, out int column);
+
+      string messageDescription = File.ReadAllLines(path)?[line - 1].Remove(0, column - 1);
 
       string categoryAsString = ErrorParserConstants.kMessageTag;
       TaskErrorCategory category = FindErrorCategory(ref categoryAsString);
@@ -102,9 +104,9 @@ namespace ClangPowerTools.Error
         Column = column - 1,
         ErrorCategory = category,
         Text = messageDescription,
-        FullMessage = fullMessage,
+        FullMessage=fullMessage,
         HierarchyItem = mHierarchy,
-        Category = TaskCategory.BuildCompile,
+        Category = TaskCategory.CodeSense,
         Priority = TaskPriority.High
       };
     }
