@@ -39,7 +39,7 @@ namespace ClangPowerToolsShared.MVVM.Commands
         process.Start();
         process.WaitForExit();
         if (makeDiff)
-          DiffFilesUsingDefaultTool(filePath.CopyFullFileName, file.FullName); ;
+          DiffFilesUsingDefaultTool(filePath.CopyFullFileName, file.FullName);
       }
       catch (Exception e)
       {

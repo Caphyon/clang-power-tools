@@ -124,7 +124,8 @@ namespace ClangPowerTools.MVVM.Controllers
       catch (Exception e)
       {
         DefaultState();
-        OnOperationCanceldEvent();
+        if (OnOperationCanceldEvent != null)
+          OnOperationCanceldEvent();
         DeleteLlvmDirectory(llvmModel.Version);
         MessageBox.Show(e.Message, "Installation Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
@@ -153,7 +154,8 @@ namespace ClangPowerTools.MVVM.Controllers
       catch (Exception e)
       {
         InstallFinishedState();
-        OnOperationCanceldEvent();
+        if (OnOperationCanceldEvent != null)
+          OnOperationCanceldEvent();
         MessageBox.Show(e.Message, "Uninstall Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }
@@ -202,7 +204,8 @@ namespace ClangPowerTools.MVVM.Controllers
     private void DownloadCanceled()
     {
       DefaultState();
-      OnOperationCanceldEvent();
+      if (OnOperationCanceldEvent != null)
+        OnOperationCanceldEvent();
       DeleteLlvmDirectory(llvmModel.Version);
       ResetDownloadProgressState();
       MessageBox.Show("The download process has stopped.", "LLVM Download", MessageBoxButtons.OK, MessageBoxIcon.Warning);
