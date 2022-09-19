@@ -81,9 +81,7 @@ namespace ClangPowerTools
       if (null == document)
         return VSConstants.S_OK;
 
-      OnBeforeActiveDocumentChange handler = BeforeActiveDocumentChange;
-      if (handler != null)
-        handler(this, document);
+      BeforeActiveDocumentChange(this, document);
 
       return VSConstants.S_OK;
     }
@@ -108,9 +106,7 @@ namespace ClangPowerTools
         if (acceptedExtension == false)
           return VSConstants.S_OK;
 
-        OnBeforeSaveHandler handler = BeforeSave;
-        if (handler != null)
-          handler(this, document);
+        BeforeSave(this, document);
       }
       catch (Exception e)
       {

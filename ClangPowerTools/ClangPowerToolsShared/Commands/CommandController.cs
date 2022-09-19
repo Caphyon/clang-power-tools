@@ -494,9 +494,7 @@ namespace ClangPowerTools
       }
       else if (e.Clear)
       {
-        EventHandler<ClearEventArgs> handler = ClearOutputWindowEvent;
-        if (handler != null)
-          handler(this, new ClearEventArgs());
+        ClearOutputWindowEvent?.Invoke(this, new ClearEventArgs());
       }
     }
 
@@ -518,9 +516,7 @@ namespace ClangPowerTools
     protected void OnErrorDetected(EventArgs e)
     {
       ErrorDetectedEvent?.Invoke(this, e);
-      EventHandler<EventArgs> handler = HasEncodingErrorEvent;
-      if (handler != null)
-        handler(this, new EventArgs());
+      HasEncodingErrorEvent?.Invoke(this, new EventArgs());
     }
 
     public void OnEncodingErrorDetected(object sender, HasEncodingErrorEventArgs e)
