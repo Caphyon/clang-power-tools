@@ -1,5 +1,6 @@
 ﻿using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM;
+using ClangPowerToolsShared.MVVM.AutoCompleteHistory;
 using ClangPowerToolsShared.MVVM.Interfaces;
 using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
 using ClangPowerToolsShared.MVVM.ViewModels;
@@ -68,6 +69,34 @@ namespace ClangPowerTools.Views
       {
         if (element.Pin())
           findToolWindowViewModel.AddPinOnRightPlace(element);
+      }
+    }
+
+    //private void CustomMatches_textChange(object sender, EventArgs e)
+    //{
+    //  var cursorPosition = Matches.SelectionStart;
+    //  if (Matches.Text.Length > 5)
+    //  {
+
+    //    Matches.Select(3, 1);
+    //    Matches.SelectionBrush = new SolidColorBrush(Colors.Black);
+    //  }
+
+    //}
+
+
+    private void OnListViewSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      ListView listView = e.Source as ListView;
+      if (listView.ItemContainerGenerator?.ContainerFromItem
+        (listView.SelectedItem) is FrameworkElement container)
+      {
+        container?.Focus();
+        var item = container?.DataContext as AutoCompleteHistoryModel;
+        /*Matches.Text =*/
+        var test =  AutoCompleteBehavior.TextBeforeAutocomplete + item?.Value;
+        Matches.Text = AutoCompleteBehavior.TextBeforeAutocomplete + item?.Value;
+        CommandControllerInstance.CommandController.DisplayMessage(false, $"\nⒾ {test} \n");
       }
     }
 

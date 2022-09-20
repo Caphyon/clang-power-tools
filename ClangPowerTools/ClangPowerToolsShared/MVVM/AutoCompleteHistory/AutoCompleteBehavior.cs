@@ -1,5 +1,4 @@
 ﻿using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
-using ClangPowerToolsShared.MVVM.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +14,10 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
     private static TextChangedEventHandler onTextChanged = new TextChangedEventHandler(OnTextChanged);
     private static KeyEventHandler onKeyDown = new KeyEventHandler(OnPreviewKeyDown);
     public static List<AutoCompleteHistoryModel> AutocompleteResult = new();
+    private static string textBeforeAutocomplete = string.Empty;
+    private static string matchString = string.Empty;
+    public static string TextBeforeAutocomplete { get { return textBeforeAutocomplete; } }
+    public static string MatchString { get { return matchString; } }
 
     /// <summary>
     /// The collection to search for matches from.
@@ -117,6 +120,12 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
     /// <param name="e"></param>
     static void OnPreviewKeyDown(object sender, KeyEventArgs e)
     {
+      if (e.Key == Key.Down)
+      {
+        ((UIElement)e.OriginalSource).MoveFocus
+          (new TraversalRequest(FocusNavigationDirection.Down));
+      }
+
       if (e.Key != Key.Enter && e.Key != Key.Tab)
         return;
 
@@ -137,6 +146,8 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
+    /// 
+
     static void OnTextChanged(object sender, TextChangedEventArgs e)
     {
       TextBox tb = e.OriginalSource as TextBox;
@@ -146,9 +157,12 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
       //No reason to search if we don't have any values.
       if (values == null)
         return;
+
+      matchString = string.Empty;
       if (String.IsNullOrEmpty(tb.Text))
       {
         AutocompleteResult = values.ToList();
+        textBeforeAutocomplete = string.Empty;
         OnListUpdate?.Invoke(sender, e);
       }
       if
@@ -157,8 +171,6 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
           (from change in e.Changes where change.AddedLength > 0 select change).Any() == false
       )
         return;
-
-
 
       //No reason to search if there's nothing there.
       if (String.IsNullOrEmpty(tb.Text))
@@ -185,11 +197,13 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
           matchingString = tb.Text.Substring(startIndex, (tb.Text.Length - startIndex));
         }
       }
+      matchString = matchingString;
 
       //If we don't have anything after the trigger string, return.
       if (String.IsNullOrEmpty(matchingString))
       {
         AutocompleteResult = values.ToList();
+        textBeforeAutocomplete = String.Empty;
         OnListUpdate?.Invoke(sender, e);
         return;
       }
@@ -220,7 +234,6 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
         }/*Only select the last part of the suggestion*/
       ).FirstOrDefault();
 
-
       AutocompleteResult =
         (
           from
@@ -243,13 +256,13 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
           }/*Only select the last part of the suggestion*/
       ).ToList();
 
-
       OnListUpdate?.Invoke(sender, e);
 
       //Nothing.  Leave 'em alone
       if (match is null || String.IsNullOrEmpty(match.Value))
         return;
 
+      textBeforeAutocomplete = tb.Text;
       int matchStart = (startIndex + matchingString.Length);
       tb.TextChanged -= onTextChanged;
       tb.Text += match.Value;
@@ -258,6 +271,6 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
       tb.SelectionLength = (tb.Text.Length - startIndex);
       tb.TextChanged += onTextChanged;
     }
-  }
 
+  }
 }

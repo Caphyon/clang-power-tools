@@ -169,6 +169,8 @@
                 BorderBrush="{DynamicResource {x:Static vsfx:VsBrushes.AccentDarkKey}}"
                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                 Visibility="Visible"
+                Focusable="True"
+                SelectionChanged="OnListViewSelectionChanged"
                 ItemsSource="{Binding ASTMatchersList}">
         <ListView.ItemTemplate>
           <DataTemplate>
