@@ -4,10 +4,13 @@ using ClangPowerToolsShared.MVVM.AutoCompleteHistory;
 using ClangPowerToolsShared.MVVM.Interfaces;
 using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
 using ClangPowerToolsShared.MVVM.ViewModels;
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using Process = System.Diagnostics.Process;
 
 namespace ClangPowerTools.Views
 {
@@ -84,19 +87,23 @@ namespace ClangPowerTools.Views
 
     //}
 
-
     private void OnListViewSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
       ListView listView = e.Source as ListView;
       if (listView.ItemContainerGenerator?.ContainerFromItem
         (listView.SelectedItem) is FrameworkElement container)
       {
-        container?.Focus();
+        Application.Current.Dispatcher.BeginInvoke(new Action(() => { Keyboard.Focus(Matches); }));
+
+        Matches.TextChanged -= AutoCompleteBehavior.onTextChanged;
         var item = container?.DataContext as AutoCompleteHistoryModel;
-        /*Matches.Text =*/
-        var test =  AutoCompleteBehavior.TextBeforeAutocomplete + item?.Value;
-        Matches.Text = AutoCompleteBehavior.TextBeforeAutocomplete + item?.Value;
-        CommandControllerInstance.CommandController.DisplayMessage(false, $"\nⒾ {test} \n");
+        Matches.Text = AutoCompleteBehavior.MatchText + item?.Value;
+        if (AutoCompleteBehavior.MatchText is null)
+          AutoCompleteBehavior.MatchText = string.Empty;
+        Matches.CaretIndex = AutoCompleteBehavior.MatchText.Length;
+        Matches.SelectionStart = AutoCompleteBehavior.MatchText.Length;
+        Matches.SelectionLength = item.Value.Length;
+        Matches.TextChanged += AutoCompleteBehavior.onTextChanged;
       }
     }
 

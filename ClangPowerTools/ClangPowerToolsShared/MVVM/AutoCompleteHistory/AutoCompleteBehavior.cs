@@ -11,13 +11,10 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
   public static class AutoCompleteBehavior
   {
     public static TextChangedEventHandler OnListUpdate = delegate { };
-    private static TextChangedEventHandler onTextChanged = new TextChangedEventHandler(OnTextChanged);
-    private static KeyEventHandler onKeyDown = new KeyEventHandler(OnPreviewKeyDown);
+    public static TextChangedEventHandler onTextChanged = new TextChangedEventHandler(OnTextChanged);
+    public static KeyEventHandler onKeyDown = new KeyEventHandler(OnPreviewKeyDown);
     public static List<AutoCompleteHistoryModel> AutocompleteResult = new();
-    private static string textBeforeAutocomplete = string.Empty;
-    private static string matchString = string.Empty;
-    public static string TextBeforeAutocomplete { get { return textBeforeAutocomplete; } }
-    public static string MatchString { get { return matchString; } }
+    public static string MatchText { get; set; } 
 
     /// <summary>
     /// The collection to search for matches from.
@@ -158,11 +155,9 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
       if (values == null)
         return;
 
-      matchString = string.Empty;
       if (String.IsNullOrEmpty(tb.Text))
       {
         AutocompleteResult = values.ToList();
-        textBeforeAutocomplete = string.Empty;
         OnListUpdate?.Invoke(sender, e);
       }
       if
@@ -173,8 +168,11 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
         return;
 
       //No reason to search if there's nothing there.
+      MatchText = String.Empty;
       if (String.IsNullOrEmpty(tb.Text))
         return;
+      
+      MatchText = tb.Text;
 
       List<string> indicators = new List<string>() { " ", "(", ")", "," };
       int startIndex = 0; //Start from the beginning of the line.
@@ -197,13 +195,11 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
           matchingString = tb.Text.Substring(startIndex, (tb.Text.Length - startIndex));
         }
       }
-      matchString = matchingString;
 
       //If we don't have anything after the trigger string, return.
       if (String.IsNullOrEmpty(matchingString))
       {
         AutocompleteResult = values.ToList();
-        textBeforeAutocomplete = String.Empty;
         OnListUpdate?.Invoke(sender, e);
         return;
       }
@@ -262,7 +258,6 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
       if (match is null || String.IsNullOrEmpty(match.Value))
         return;
 
-      textBeforeAutocomplete = tb.Text;
       int matchStart = (startIndex + matchingString.Length);
       tb.TextChanged -= onTextChanged;
       tb.Text += match.Value;
