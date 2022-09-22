@@ -147,6 +147,7 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
 
     static void OnTextChanged(object sender, TextChangedEventArgs e)
     {
+      MatchText = String.Empty;
       TextBox tb = e.OriginalSource as TextBox;
       if (sender == null)
         return;
@@ -168,7 +169,6 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
         return;
 
       //No reason to search if there's nothing there.
-      MatchText = String.Empty;
       if (String.IsNullOrEmpty(tb.Text))
         return;
       
