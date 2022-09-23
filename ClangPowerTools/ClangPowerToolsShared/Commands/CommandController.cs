@@ -47,6 +47,9 @@ namespace ClangPowerTools
     public event EventHandler<EventArgs> ErrorDetectedEvent;
     public event EventHandler<EventArgs> HasEncodingErrorEvent;
 
+    public RunningDocTableEvents mRunningDocTableEvents;
+
+
     private readonly Commands2 mCommand;
     private CommandUILocation commandUILocation;
     private int currentCommand = 0;
@@ -56,7 +59,10 @@ namespace ClangPowerTools
     private AsyncPackage package;
     private LaunchCompilationDbProgrammatically launchCompilationDbProgrammatically = new();
 
-    public AsyncPackage Package { get { return package; } }
+    public AsyncPackage Package
+    {
+      get { return package; }
+    }
 
     private readonly object mutex = new object();
 
@@ -64,7 +70,6 @@ namespace ClangPowerTools
     private readonly string keyName = "CMakeBetaWarning";
 
     #endregion
-
 
     #region Constructor
 
@@ -80,27 +85,31 @@ namespace ClangPowerTools
 
     #endregion
 
-
     #region Public Methods
 
     public async Task InitializeCommandsAsync(AsyncPackage aAsyncPackage)
     {
       if (CompileCommand.Instance == null)
       {
-        await CompileCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kCompileId);
-        await CompileCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kCompileToolbarId);
+        await CompileCommand.InitializeAsync(this, aAsyncPackage, mCommandSet,
+                                             CommandIds.kCompileId);
+        await CompileCommand.InitializeAsync(this, aAsyncPackage, mCommandSet,
+                                             CommandIds.kCompileToolbarId);
       }
 
       if (TidyCommand.Instance == null)
       {
         await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyId);
-        await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kTidyToolbarId);
+        await TidyCommand.InitializeAsync(this, aAsyncPackage, mCommandSet,
+                                          CommandIds.kTidyToolbarId);
       }
 
       if (FormatCommand.Instance == null)
       {
-        await FormatCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kClangFormat);
-        await FormatCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kClangFormatToolbarId);
+        await FormatCommand.InitializeAsync(this, aAsyncPackage, mCommandSet,
+                                            CommandIds.kClangFormat);
+        await FormatCommand.InitializeAsync(this, aAsyncPackage, mCommandSet,
+                                            CommandIds.kClangFormatToolbarId);
       }
 
       if (FindCommand.Instance == null)
@@ -110,12 +119,14 @@ namespace ClangPowerTools
 
       if (IgnoreFormatCommand.Instance == null)
       {
-        await IgnoreFormatCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kIgnoreFormatId);
+        await IgnoreFormatCommand.InitializeAsync(this, aAsyncPackage, mCommandSet,
+                                                  CommandIds.kIgnoreFormatId);
       }
 
       if (IgnoreCompileCommand.Instance == null)
       {
-        await IgnoreCompileCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kIgnoreCompileId);
+        await IgnoreCompileCommand.InitializeAsync(this, aAsyncPackage, mCommandSet,
+                                                   CommandIds.kIgnoreCompileId);
       }
 
       if (StopCommand.Instance == null)
@@ -125,34 +136,39 @@ namespace ClangPowerTools
 
       if (JsonCompilationDatabaseCommand.Instance == null)
       {
-        await JsonCompilationDatabaseCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kJsonCompilationDatabase);
+        await JsonCompilationDatabaseCommand.InitializeAsync(this, aAsyncPackage, mCommandSet,
+                                                             CommandIds.kJsonCompilationDatabase);
       }
 
       if (DocumentationYamlCommand.Instance == null)
       {
-        await DocumentationYamlCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kDocumentationYamlId);
+        await DocumentationYamlCommand.InitializeAsync(this, aAsyncPackage, mCommandSet,
+                                                       CommandIds.kDocumentationYamlId);
       }
 
       if (DocumentationHtmlCommand.Instance == null)
       {
-        await DocumentationHtmlCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kDocumentationHtmlId);
+        await DocumentationHtmlCommand.InitializeAsync(this, aAsyncPackage, mCommandSet,
+                                                       CommandIds.kDocumentationHtmlId);
       }
 
       if (DocumentationMdCommand.Instance == null)
       {
-        await DocumentationMdCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kDocumentationMdId);
+        await DocumentationMdCommand.InitializeAsync(this, aAsyncPackage, mCommandSet,
+                                                     CommandIds.kDocumentationMdId);
       }
 
       if (SettingsCommand.Instance == null)
       {
-        await SettingsCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kSettingsId);
+        await SettingsCommand.InitializeAsync(this, aAsyncPackage, mCommandSet,
+                                              CommandIds.kSettingsId);
       }
 
       if (FindViewMenuCommand.Instance == null)
       {
-        await FindViewMenuCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kFindViewMenuId);
+        await FindViewMenuCommand.InitializeAsync(this, aAsyncPackage, mCommandSet,
+                                                  CommandIds.kFindViewMenuId);
       }
-
     }
 
     public async void Execute(object sender, EventArgs e)
@@ -160,7 +176,7 @@ namespace ClangPowerTools
       // var freeTrialController = new FreeTrialController();
 
       // First app install - choose license
-      //if (SettingsProvider.AccountModel.LicenseType == LicenseType.NoLicense)
+      // if (SettingsProvider.AccountModel.LicenseType == LicenseType.NoLicense)
       //{
       //  LicenseView licenseView = new LicenseView();
       //  licenseView.ShowDialog();
@@ -168,7 +184,8 @@ namespace ClangPowerTools
       //}
 
       // Trial expired
-      //if (SettingsProvider.AccountModel.LicenseType == LicenseType.Trial && freeTrialController.IsActive() == false)
+      // if (SettingsProvider.AccountModel.LicenseType == LicenseType.Trial &&
+      // freeTrialController.IsActive() == false)
       //{
       //  TrialExpiredView trialExpiredView = new TrialExpiredView();
       //  trialExpiredView.ShowDialog();
@@ -176,7 +193,7 @@ namespace ClangPowerTools
       //}
 
       // Session Expired
-      //if (SettingsProvider.AccountModel.LicenseType == LicenseType.SessionExpired)
+      // if (SettingsProvider.AccountModel.LicenseType == LicenseType.SessionExpired)
       //{
       //  LoginView loginView = new LoginView();
       //  loginView.ShowDialog();
@@ -190,15 +207,14 @@ namespace ClangPowerTools
       await LaunchCommandAsync(command.CommandID.ID, commandUILocation);
     }
 
-    public int GetCurrentCommandId()
-    {
-      return currentCommand;
-    }
+    public int GetCurrentCommandId() { return currentCommand; }
 
-    public async Task LaunchCommandAsync(int aCommandId, CommandUILocation aCommandUILocation,
-      List<string> paths = null, bool openCompilationDatabaseInExplorer = true)
+    public async Task LaunchCommandAsync(int aCommandId,
+                                         CommandUILocation aCommandUILocation,
+                                         List<string> paths = null,
+                                         bool openCompilationDatabaseInExplorer = true)
     {
-      //If ApplyTidy-Fix is enabled, switch command
+      // If ApplyTidy-Fix is enabled, switch command
       ChooseCommandIdDependingOnTidy(ref aCommandId);
 
       switch (aCommandId)
@@ -246,8 +262,8 @@ namespace ClangPowerTools
         case CommandIds.kClangFindRun:
           {
             await launchCompilationDbProgrammatically.FromFindToolWindowAsync();
-            OnBeforeClangCommand(CommandIds.kClangFindRun);  
-           
+            OnBeforeClangCommand(CommandIds.kClangFindRun);
+
             await FindCommand.Instance.RunQueryAsync();
 
             OnAfterClangCommand();
@@ -258,7 +274,8 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kCompileId);
 
-            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, aCommandUILocation);
+            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId,
+                                                               aCommandUILocation);
             OnAfterClangCommand();
             break;
           }
@@ -267,7 +284,8 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kCompileId);
 
-            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, aCommandUILocation);
+            await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId,
+                                                               aCommandUILocation);
             OnAfterClangCommand();
             break;
           }
@@ -298,7 +316,8 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kTidyToolWindowId);
 
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyToolWindowId, aCommandUILocation, paths);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyToolWindowId,
+                                                         aCommandUILocation, paths);
             OnAfterClangCommand();
             break;
           }
@@ -317,7 +336,8 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kTidyFixId);
 
-            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, aCommandUILocation, paths);
+            await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, aCommandUILocation,
+                                                         paths);
             OnAfterClangCommand();
             break;
           }
@@ -334,7 +354,6 @@ namespace ClangPowerTools
           {
             IgnoreFormatCommand.Instance.RunIgnoreFormatCommand();
             break;
-
           }
         case CommandIds.kIgnoreCompileId:
           {
@@ -349,7 +368,7 @@ namespace ClangPowerTools
             OnBeforeClangCommand(CommandIds.kDocumentationYamlId);
 
             await DocumentationYamlCommand.Instance.GenerateDocumentationAsync(
-              CommandIds.kDocumentationYamlId);
+                CommandIds.kDocumentationYamlId);
 
             OnAfterClangCommand();
             break;
@@ -362,7 +381,7 @@ namespace ClangPowerTools
             OnBeforeClangCommand(CommandIds.kDocumentationMdId);
 
             await DocumentationMdCommand.Instance.GenerateDocumentationAsync(
-              CommandIds.kDocumentationMdId);
+                CommandIds.kDocumentationMdId);
 
             OnAfterClangCommand();
             break;
@@ -375,7 +394,7 @@ namespace ClangPowerTools
             OnBeforeClangCommand(CommandIds.kDocumentationHtmlId);
 
             await DocumentationHtmlCommand.Instance.GenerateDocumentationAsync(
-              CommandIds.kDocumentationHtmlId);
+                CommandIds.kDocumentationHtmlId);
 
             OnAfterClangCommand();
             break;
@@ -385,7 +404,8 @@ namespace ClangPowerTools
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kJsonCompilationDatabase);
 
-            await JsonCompilationDatabaseCommand.Instance.ExportAsync(aCommandUILocation, openCompilationDatabaseInExplorer);
+            await JsonCompilationDatabaseCommand.Instance.ExportAsync(
+                aCommandUILocation, openCompilationDatabaseInExplorer);
             OnAfterClangCommand();
             break;
           }
@@ -457,10 +477,7 @@ namespace ClangPowerTools
       await StopCommand.Instance.RunStopClangCommandAsync(true);
     }
 
-    private void StopBackgroundRunners()
-    {
-      StopCommand.Instance.StopClangCommand(true);
-    }
+    private void StopBackgroundRunners() { StopCommand.Instance.StopClangCommand(true); }
 
     private void OnBeforeClangCommand(int aCommandId)
     {
@@ -473,10 +490,7 @@ namespace ClangPowerTools
         DisplayStartedMessage(aCommandId, true);
     }
 
-    private void OnClangCommandBegin(ClearEventArgs e)
-    {
-      ClearErrorListEvent?.Invoke(this, e);
-    }
+    private void OnClangCommandBegin(ClearEventArgs e) { ClearErrorListEvent?.Invoke(this, e); }
 
     private void OnAfterClangCommand()
     {
@@ -489,8 +503,9 @@ namespace ClangPowerTools
     {
       if (e.FormatConfigFound == false)
       {
-        DisplayMessage(e.Clear,
-      $"\n--- ERROR ---\nFormat config file not found.\nCreate the config file and place it in the solution folder or select one of the predefined format styles from Clang Power Tools settings -> Format -> Style.");
+        DisplayMessage(
+            e.Clear,
+            $"\n--- ERROR ---\nFormat config file not found.\nCreate the config file and place it in the solution folder or select one of the predefined format styles from Clang Power Tools settings -> Format -> Style.");
       }
       else if (e.Clear)
       {
@@ -532,12 +547,14 @@ namespace ClangPowerTools
     {
       try
       {
-        UIUpdater.InvokeAsync(new Action(() =>
-        {
-          var itemsCollector = new ItemsCollector();
-          var window = new EncodingErrorView(itemsCollector.GetDocumentsToEncode());
-          window.ShowDialog();
-        })).SafeFireAndForget();
+        UIUpdater
+            .InvokeAsync(new Action(() =>
+            {
+              var itemsCollector = new ItemsCollector();
+              var window = new EncodingErrorView(itemsCollector.GetDocumentsToEncode());
+              window.ShowDialog();
+            }))
+            .SafeFireAndForget();
       }
       catch (Exception e)
       {
@@ -565,25 +582,35 @@ namespace ClangPowerTools
 
     private void DisplayStartedMessage(int aCommandId, bool clearOutput)
     {
-      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[aCommandId].ToUpper()} STARTED ---\n", clearOutput));
-      StatusBarHandler.Status(OutputWindowConstants.commandName[aCommandId] + " started...", 1, vsStatusAnimation.vsStatusAnimationBuild, 1);
+      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs(
+          $"\n--- {OutputWindowConstants.commandName[aCommandId].ToUpper()} STARTED ---\n",
+          clearOutput));
+      StatusBarHandler.Status(OutputWindowConstants.commandName[aCommandId] + " started...", 1,
+                              vsStatusAnimation.vsStatusAnimationBuild, 1);
     }
 
     private void DisplayNoActiveDocumentMessage(bool clearOutput)
     {
-      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\nToolbar Clang commands can only run on open files. Open a file or use the context menu commands by right-clicking in the Solution Explorer.\n", clearOutput));
+      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs(
+          $"\nToolbar Clang commands can only run on open files. Open a file or use the context menu commands by right-clicking in the Solution Explorer.\n",
+          clearOutput));
       StatusBarHandler.Status("Ready", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
     private void DisplayFinishedMessage(bool clearOutput)
     {
-      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[currentCommand].ToUpper()} FINISHED ---\n", clearOutput));
-      StatusBarHandler.Status(OutputWindowConstants.commandName[currentCommand] + " finished", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
+      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs(
+          $"\n--- {OutputWindowConstants.commandName[currentCommand].ToUpper()} FINISHED ---\n",
+          clearOutput));
+      StatusBarHandler.Status(OutputWindowConstants.commandName[currentCommand] + " finished", 0,
+                              vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
     private void DisplayStoppedMessage(bool clearOutput)
     {
-      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs($"\n--- {OutputWindowConstants.commandName[currentCommand].ToUpper()} STOPPED ---", clearOutput));
+      OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs(
+          $"\n--- {OutputWindowConstants.commandName[currentCommand].ToUpper()} STOPPED ---",
+          clearOutput));
       StatusBarHandler.Status("Command stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
@@ -592,7 +619,6 @@ namespace ClangPowerTools
       OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs(message, clearOutput));
       StatusBarHandler.Status("Command stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
-
 
     private string GetCommandName(string aGuid, int aId)
     {
@@ -612,14 +638,13 @@ namespace ClangPowerTools
       }
       catch (Exception)
       {
-        //MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        // MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
 
       return string.Empty;
     }
 
     #endregion
-
 
     #region Events
 
@@ -637,8 +662,9 @@ namespace ClangPowerTools
       var itemsCollector = new ItemsCollector();
       itemsCollector.CollectSelectedProjectItems();
       if (itemsCollector.Items != null && itemsCollector.Items.Count == 1 &&
-     (command.CommandID.ID == CommandIds.kIgnoreCompileId) &&
-     ScriptConstants.kAcceptedFileExtensionsWithoutHeaders.Contains(Path.GetExtension(itemsCollector.Items[0].GetName())) == false)
+          (command.CommandID.ID == CommandIds.kIgnoreCompileId) &&
+          ScriptConstants.kAcceptedFileExtensionsWithoutHeaders.Contains(
+              Path.GetExtension(itemsCollector.Items[0].GetName())) == false)
       {
         command.Visible = command.Enabled = false;
       }
@@ -662,12 +688,14 @@ namespace ClangPowerTools
       itemsCollector.CollectSelectedProjectItems();
 
       var tidySettings = SettingsProvider.TidySettingsModel;
-      //Change button name for tidy depending on settings property
-      if (tidySettings.ApplyTidyFix && (command.CommandID.ID == CommandIds.kTidyId || command.CommandID.ID == CommandIds.kTidyToolbarId))
+      // Change button name for tidy depending on settings property
+      if (tidySettings.ApplyTidyFix && (command.CommandID.ID == CommandIds.kTidyId ||
+                                        command.CommandID.ID == CommandIds.kTidyToolbarId))
       {
         command.Text = "Tidy-Fix";
       }
-      else if (command.CommandID.ID == CommandIds.kTidyId || command.CommandID.ID == CommandIds.kTidyToolbarId)
+      else if (command.CommandID.ID == CommandIds.kTidyId ||
+                 command.CommandID.ID == CommandIds.kTidyToolbarId)
       {
         command.Text = "Tidy";
       }
@@ -676,7 +704,8 @@ namespace ClangPowerTools
       {
         if (SolutionInfo.AreToolbarCommandsEnabled() == false)
         {
-          command.Enabled = command.CommandID.ID == CommandIds.kClangFormatToolbarId && SolutionInfo.ActiveDocumentValidation();
+          command.Enabled = command.CommandID.ID == CommandIds.kClangFormatToolbarId &&
+                            SolutionInfo.ActiveDocumentValidation();
           return;
         }
       }
@@ -685,17 +714,23 @@ namespace ClangPowerTools
         command.Enabled = false;
         return;
       }
-      if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte) && !(dte as DTE2).Solution.IsOpen)
+      if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte) &&
+          !(dte as DTE2).Solution.IsOpen)
       {
         command.Visible = command.Enabled = false;
       }
       else if (itemsCollector.Items != null && itemsCollector.Items.Count == 1 &&
-        (command.CommandID.ID == CommandIds.kCompileId || command.CommandID.ID == CommandIds.kTidyId ||
-        command.CommandID.ID == CommandIds.kJsonCompilationDatabase || command.CommandID.ID == CommandIds.kClangFindRun ||
-        command.CommandID.ID == CommandIds.kIgnoreCompileId || command.CommandID.ID == CommandIds.kDocumentationMdId ||
-        command.CommandID.ID == CommandIds.kDocumentationHtmlId || command.CommandID.ID == CommandIds.kDocumentationYamlId ||
-        command.CommandID.ID == CommandIds.kClangFind) &&
-        ScriptConstants.kAcceptedFileExtensionsWithoutHeaders.Contains(Path.GetExtension(itemsCollector.Items[0].GetName())) == false)
+                 (command.CommandID.ID == CommandIds.kCompileId ||
+                  command.CommandID.ID == CommandIds.kTidyId ||
+                  command.CommandID.ID == CommandIds.kJsonCompilationDatabase ||
+                  command.CommandID.ID == CommandIds.kClangFindRun ||
+                  command.CommandID.ID == CommandIds.kIgnoreCompileId ||
+                  command.CommandID.ID == CommandIds.kDocumentationMdId ||
+                  command.CommandID.ID == CommandIds.kDocumentationHtmlId ||
+                  command.CommandID.ID == CommandIds.kDocumentationYamlId ||
+                  command.CommandID.ID == CommandIds.kClangFind) &&
+                 ScriptConstants.kAcceptedFileExtensionsWithoutHeaders.Contains(
+                     Path.GetExtension(itemsCollector.Items[0].GetName())) == false)
       {
         command.Visible = command.Enabled = false;
         return;
@@ -706,7 +741,8 @@ namespace ClangPowerTools
       }
       else
       {
-        command.Visible = command.Enabled = command.CommandID.ID != CommandIds.kStopClang ? !running : running;
+        command.Visible = command.Enabled =
+            command.CommandID.ID != CommandIds.kStopClang ? !running : running;
       }
     }
 
@@ -733,7 +769,8 @@ namespace ClangPowerTools
 
     private async Task OnMSVCBuildSucceededAsync()
     {
-      if (SettingsProvider.CompilerSettingsModel.ClangAfterMSVC == false || SolutionInfo.ContainsCppProject() == false)
+      if (SettingsProvider.CompilerSettingsModel.ClangAfterMSVC == false ||
+          SolutionInfo.ContainsCppProject() == false)
         return;
 
       var exitCode = int.MaxValue;
@@ -749,14 +786,16 @@ namespace ClangPowerTools
       // Run clang compile after the VS compile succeeded
 
       OnBeforeClangCommand(CommandIds.kCompileId);
-      await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId, CommandUILocation.ContextMenu);
+      await CompileCommand.Instance.RunClangCompileAsync(CommandIds.kCompileId,
+                                                         CommandUILocation.ContextMenu);
       OnAfterClangCommand();
     }
 
     private int HideFindToolWindow()
     {
       var findToolWindow = package.FindToolWindow(typeof(FindToolWindow), 0, false);
-      if (findToolWindow is null) return VSConstants.S_OK;
+      if (findToolWindow is null)
+        return VSConstants.S_OK;
       var findWindow = findToolWindow.Frame as IVsWindowFrame;
       findWindow?.Hide();
 
@@ -766,7 +805,8 @@ namespace ClangPowerTools
     private int HideTidyToolWindow()
     {
       var tidyToolWindow = package.FindToolWindow(typeof(TidyToolWindow), 0, false);
-      if (tidyToolWindow is null) return VSConstants.S_OK;
+      if (tidyToolWindow is null)
+        return VSConstants.S_OK;
       var tidyWindow = tidyToolWindow.Frame as IVsWindowFrame;
       tidyWindow?.Hide();
 
@@ -801,19 +841,20 @@ namespace ClangPowerTools
 
       await StopBackgroundRunnersAsync();
       OnBeforeClangCommand(CommandIds.kTidyFixId);
-      await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId, CommandUILocation.ContextMenu);
+      await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyFixId,
+                                                   CommandUILocation.ContextMenu);
       OnAfterClangCommand();
 
       mSaveCommandWasGiven = false;
     }
-
 
     private void BeforeSaveClangFormat(Document aDocument)
     {
       var formatSettings = SettingsProvider.FormatSettingsModel;
       var tidySettings = SettingsProvider.TidySettingsModel;
 
-      if (currentCommand == CommandIds.kTidyFixId && running && tidySettings.FormatAfterTidy && formatSettings.FormatOnSave)
+      if (currentCommand == CommandIds.kTidyFixId && running && tidySettings.FormatAfterTidy &&
+          formatSettings.FormatOnSave)
       {
         mFormatAfterTidyFlag = true;
         return;
@@ -821,19 +862,24 @@ namespace ClangPowerTools
 
       if (false == formatSettings.FormatOnSave)
         return;
-
-      if (false == Vsix.IsDocumentDirty(aDocument) && false == mFormatAfterTidyFlag)
-        return;
-
       FormatCommand.Instance.FormatOnSave(aDocument);
+      if (mRunningDocTableEvents is not null)
+      {
+        mRunningDocTableEvents.BeforeSave -= OnBeforeSave;
+        aDocument.Save();
+        mRunningDocTableEvents.BeforeSave += OnBeforeSave;
+      }
     }
 
-    public void CommandEventsBeforeExecute(string aGuid, int aId, object aCustomIn, object aCustomOut, ref bool aCancelDefault)
+    public void CommandEventsBeforeExecute(string aGuid,
+                                           int aId,
+                                           object aCustomIn,
+                                           object aCustomOut,
+                                           ref bool aCancelDefault)
     {
       BeforeExecuteClangCompile(aGuid, aId);
       BeforeExecuteClangTidy(aGuid, aId);
     }
-
 
     private void BeforeExecuteClangCompile(string aGuid, int aId)
     {
@@ -846,7 +892,6 @@ namespace ClangPowerTools
       if (0 != string.Compare(VsCommands.Compile, commandName))
         return;
     }
-
 
     private void BeforeExecuteClangTidy(string aGuid, int aId)
     {
@@ -889,7 +934,8 @@ namespace ClangPowerTools
       if (document == null)
         return;
 
-      if (!string.IsNullOrEmpty(oldActiveDocumentName) && oldActiveDocumentName == document.FullName)
+      if (!string.IsNullOrEmpty(oldActiveDocumentName) &&
+          oldActiveDocumentName == document.FullName)
         return;
 
       oldActiveDocumentName = document.FullName;
@@ -916,8 +962,10 @@ namespace ClangPowerTools
 
     private bool IsAToolbarCommand(OleMenuCommand command)
     {
-      return command.CommandID.ID == CommandIds.kCompileToolbarId || command.CommandID.ID == CommandIds.kClangFormatToolbarId ||
-        command.CommandID.ID == CommandIds.kTidyToolbarId || command.CommandID.ID == CommandIds.kTidyFixToolbarId;
+      return command.CommandID.ID == CommandIds.kCompileToolbarId ||
+             command.CommandID.ID == CommandIds.kClangFormatToolbarId ||
+             command.CommandID.ID == CommandIds.kTidyToolbarId ||
+             command.CommandID.ID == CommandIds.kTidyFixToolbarId;
     }
 
     #endregion

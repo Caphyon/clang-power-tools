@@ -33,7 +33,6 @@ namespace ClangPowerTools
     public const string PackageGuidString = "f564f9d3-01ae-493e-883b-18deebdb975e";
 
     private uint mHSolutionEvents = uint.MaxValue;
-    private RunningDocTableEvents mRunningDocTableEvents;
     private ErrorWindowController mErrorWindowController;
     private CommandController mCommandController;
 
@@ -81,7 +80,7 @@ namespace ClangPowerTools
         PowerShellWrapper.mOutputWindowController = new OutputWindowController();
         PowerShellWrapper.mOutputWindowController.Initialize(mPackage, vsOutputWindow);
 
-        mRunningDocTableEvents = new RunningDocTableEvents(mPackage);
+        CommandControllerInstance.CommandController.mRunningDocTableEvents = new RunningDocTableEvents(mPackage);
         mErrorWindowController = new ErrorWindowController(mPackage);
 
         #region Get Pointer to IVsSolutionEvents
@@ -425,8 +424,8 @@ namespace ClangPowerTools
       if (null != mCommandEvents)
         mCommandEvents.BeforeExecute += mCommandController.CommandEventsBeforeExecute;
 
-      if (null != mRunningDocTableEvents)
-        mRunningDocTableEvents.BeforeSave += mCommandController.OnBeforeSave;
+      if (null != CommandControllerInstance.CommandController.mRunningDocTableEvents)
+        CommandControllerInstance.CommandController.mRunningDocTableEvents.BeforeSave += mCommandController.OnBeforeSave;
 
       if (null != mDteEvents)
         mDteEvents.OnBeginShutdown += UnregisterFromEvents;
@@ -543,8 +542,8 @@ namespace ClangPowerTools
       if (null != mCommandEvents)
         mCommandEvents.BeforeExecute -= mCommandController.CommandEventsBeforeExecute;
 
-      if (null != mRunningDocTableEvents)
-        mRunningDocTableEvents.BeforeSave -= mCommandController.OnBeforeSave;
+      if (null != CommandControllerInstance.CommandController.mRunningDocTableEvents)
+        CommandControllerInstance.CommandController.mRunningDocTableEvents.BeforeSave -= mCommandController.OnBeforeSave;
 
       if (null != mDteEvents)
         mDteEvents.OnBeginShutdown -= UnregisterFromEvents;
