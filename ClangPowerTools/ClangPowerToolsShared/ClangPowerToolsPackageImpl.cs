@@ -427,6 +427,9 @@ namespace ClangPowerTools
       if (null != CommandControllerInstance.CommandController.mRunningDocTableEvents)
         CommandControllerInstance.CommandController.mRunningDocTableEvents.BeforeSave += mCommandController.OnBeforeSave;
 
+      if (null != CommandControllerInstance.CommandController.mRunningDocTableEvents)
+        CommandControllerInstance.CommandController.mRunningDocTableEvents.AfterSave += mCommandController.OnAfterSave;
+
       if (null != mDteEvents)
         mDteEvents.OnBeginShutdown += UnregisterFromEvents;
 

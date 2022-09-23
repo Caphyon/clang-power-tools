@@ -499,14 +499,10 @@ namespace ClangPowerTools
       cMakeBuilder.ClearBuildCashe();
     }
 
+
+
     public void OnAfterFormatCommand(object sender, FormatCommandEventArgs e)
     {
-      if (mRunningDocTableEvents is not null)
-      {
-        mRunningDocTableEvents.BeforeSave -= OnBeforeSave;
-        FormatCommand.Instance.SaveActiveDocument();
-        mRunningDocTableEvents.BeforeSave += OnBeforeSave;
-      }
       if (e.FormatConfigFound == false)
       {
         DisplayMessage(
@@ -817,6 +813,18 @@ namespace ClangPowerTools
       tidyWindow?.Hide();
 
       return VSConstants.S_OK;
+    }
+
+    public void OnAfterSave(object sender, Document aDocument)
+    {
+      if (mRunningDocTableEvents is not null)
+      {
+        mRunningDocTableEvents.BeforeSave -= OnBeforeSave;
+        mRunningDocTableEvents.AfterSave -= OnAfterSave;
+        aDocument.Save();
+        mRunningDocTableEvents.BeforeSave += OnBeforeSave;
+        mRunningDocTableEvents.AfterSave += OnAfterSave;
+      }
     }
 
     public void OnBeforeSave(object sender, Document aDocument)
