@@ -501,6 +501,12 @@ namespace ClangPowerTools
 
     public void OnAfterFormatCommand(object sender, FormatCommandEventArgs e)
     {
+      if (mRunningDocTableEvents is not null)
+      {
+        mRunningDocTableEvents.BeforeSave -= OnBeforeSave;
+        FormatCommand.Instance.SaveActiveDocument();
+        mRunningDocTableEvents.BeforeSave += OnBeforeSave;
+      }
       if (e.FormatConfigFound == false)
       {
         DisplayMessage(
@@ -863,12 +869,6 @@ namespace ClangPowerTools
       if (false == formatSettings.FormatOnSave)
         return;
       FormatCommand.Instance.FormatOnSave(aDocument);
-      if (mRunningDocTableEvents is not null)
-      {
-        mRunningDocTableEvents.BeforeSave -= OnBeforeSave;
-        aDocument.Save();
-        mRunningDocTableEvents.BeforeSave += OnBeforeSave;
-      }
     }
 
     public void CommandEventsBeforeExecute(string aGuid,

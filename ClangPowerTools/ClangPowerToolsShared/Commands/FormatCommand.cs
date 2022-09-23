@@ -113,6 +113,15 @@ namespace ClangPowerTools.Commands
       ExecuteFormatCommand();
     }
 
+    //make sure to unsubscribe from on save event
+    public void SaveActiveDocument()
+    {
+      if(mDocument is not null)
+      {
+        mDocument.Save();
+      }
+    }
+
     public void FormatOnSave(Document document)
     {
       clearOutput = true;
