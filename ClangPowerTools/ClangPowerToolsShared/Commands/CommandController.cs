@@ -809,7 +809,7 @@ namespace ClangPowerTools
       var tidyToolWindow = package.FindToolWindow(typeof(TidyToolWindow), 0, false);
       if (tidyToolWindow is null)
         return VSConstants.S_OK;
-      var tidyWindow = tidyToolWindow.Frame as IVsWindowFrame;
+      var tidyWindow = tidyToolWindow.Frame as  IVsWindowFrame;
       tidyWindow?.Hide();
 
       return VSConstants.S_OK;
@@ -828,7 +828,7 @@ namespace ClangPowerTools
         if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
         {
           var dte2 = (DTE2)dte;
-          dte2.ExecuteCommand("File.SaveAll");
+          dte2.ExecuteCommand("File.SaveSelectedItems");
         }
         mRunningDocTableEvents.AfterSave += OnAfterSave;
       }
