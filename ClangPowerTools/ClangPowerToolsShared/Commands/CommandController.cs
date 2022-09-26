@@ -49,7 +49,7 @@ namespace ClangPowerTools
 
     public RunningDocTableEvents mRunningDocTableEvents;
 
-
+    private bool mFormatted = false;
     private readonly Commands2 mCommand;
     private CommandUILocation commandUILocation;
     private int currentCommand = 0;
@@ -817,20 +817,26 @@ namespace ClangPowerTools
 
     public void OnAfterSave(object sender, Document aDocument)
     {
+      if (mFormatted)
+      {
+        mFormatted = false;
+        return;
+      }
       StopBackgroundRunners();
-
       BeforeSaveClangTidyAsync(aDocument).SafeFireAndForget();
       BeforeSaveClangFormat(aDocument);
-      FormatCommand.Instance.FormatOnSave(aDocument);
+      if (!mFormatted)
+      {
+        FormatCommand.Instance.FormatOnSave(aDocument);
+        mFormatted = true;
+      }
       if (mRunningDocTableEvents is not null)
       {
-        mRunningDocTableEvents.AfterSave -= OnAfterSave;
         if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
         {
           var dte2 = (DTE2)dte;
           dte2.ExecuteCommand("File.SaveSelectedItems");
         }
-        mRunningDocTableEvents.AfterSave += OnAfterSave;
       }
     }
 
