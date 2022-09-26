@@ -49,7 +49,7 @@ namespace ClangPowerTools
 
     public RunningDocTableEvents mRunningDocTableEvents;
 
-
+    private bool mFormatted = false;
     private readonly Commands2 mCommand;
     private CommandUILocation commandUILocation;
     private int currentCommand = 0;
@@ -809,7 +809,7 @@ namespace ClangPowerTools
       var tidyToolWindow = package.FindToolWindow(typeof(TidyToolWindow), 0, false);
       if (tidyToolWindow is null)
         return VSConstants.S_OK;
-      var tidyWindow = tidyToolWindow.Frame as IVsWindowFrame;
+      var tidyWindow = tidyToolWindow.Frame as  IVsWindowFrame;
       tidyWindow?.Hide();
 
       return VSConstants.S_OK;
@@ -817,22 +817,27 @@ namespace ClangPowerTools
 
     public void OnAfterSave(object sender, Document aDocument)
     {
-      if (mRunningDocTableEvents is not null)
+      if (mFormatted)
       {
-        mRunningDocTableEvents.BeforeSave -= OnBeforeSave;
-        mRunningDocTableEvents.AfterSave -= OnAfterSave;
-        aDocument.Save();
-        mRunningDocTableEvents.BeforeSave += OnBeforeSave;
-        mRunningDocTableEvents.AfterSave += OnAfterSave;
+        mFormatted = false;
+        return;
       }
-    }
-
-    public void OnBeforeSave(object sender, Document aDocument)
-    {
       StopBackgroundRunners();
-
       BeforeSaveClangTidyAsync(aDocument).SafeFireAndForget();
       BeforeSaveClangFormat(aDocument);
+      if (!mFormatted)
+      {
+        FormatCommand.Instance.FormatOnSave(aDocument);
+        mFormatted = true;
+      }
+      if (mRunningDocTableEvents is not null)
+      {
+        if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
+        {
+          var dte2 = (DTE2)dte;
+          dte2.ExecuteCommand("File.SaveSelectedItems");
+        }
+      }
     }
 
     private async Task BeforeSaveClangTidyAsync(Document document)
@@ -876,7 +881,6 @@ namespace ClangPowerTools
 
       if (false == formatSettings.FormatOnSave)
         return;
-      FormatCommand.Instance.FormatOnSave(aDocument);
     }
 
     public void CommandEventsBeforeExecute(string aGuid,

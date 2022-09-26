@@ -122,7 +122,7 @@ namespace ClangPowerTools.Commands
 
     public string RunFormatProcess(string dirPath, string filePath, string text, int startPosition, int length)
     {
-      var process = CreateProcess(text, startPosition, length, dirPath, filePath);
+      var process =  CreateProcess(text, startPosition, length, dirPath, filePath);
 
       try
       {
