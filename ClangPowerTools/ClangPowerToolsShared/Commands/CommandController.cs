@@ -821,10 +821,15 @@ namespace ClangPowerTools
 
       BeforeSaveClangTidyAsync(aDocument).SafeFireAndForget();
       BeforeSaveClangFormat(aDocument);
+      FormatCommand.Instance.FormatOnSave(aDocument);
       if (mRunningDocTableEvents is not null)
       {
         mRunningDocTableEvents.AfterSave -= OnAfterSave;
-        aDocument.Save();
+        if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
+        {
+          var dte2 = (DTE2)dte;
+          dte2.ExecuteCommand("File.SaveAll");
+        }
         mRunningDocTableEvents.AfterSave += OnAfterSave;
       }
     }
@@ -870,7 +875,6 @@ namespace ClangPowerTools
 
       if (false == formatSettings.FormatOnSave)
         return;
-      FormatCommand.Instance.FormatOnSave(aDocument);
     }
 
     public void CommandEventsBeforeExecute(string aGuid,
