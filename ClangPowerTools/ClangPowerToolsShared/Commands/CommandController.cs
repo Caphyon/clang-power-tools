@@ -817,22 +817,16 @@ namespace ClangPowerTools
 
     public void OnAfterSave(object sender, Document aDocument)
     {
-      if (mRunningDocTableEvents is not null)
-      {
-        mRunningDocTableEvents.BeforeSave -= OnBeforeSave;
-        mRunningDocTableEvents.AfterSave -= OnAfterSave;
-        aDocument.Save();
-        mRunningDocTableEvents.BeforeSave += OnBeforeSave;
-        mRunningDocTableEvents.AfterSave += OnAfterSave;
-      }
-    }
-
-    public void OnBeforeSave(object sender, Document aDocument)
-    {
       StopBackgroundRunners();
 
       BeforeSaveClangTidyAsync(aDocument).SafeFireAndForget();
       BeforeSaveClangFormat(aDocument);
+      if (mRunningDocTableEvents is not null)
+      {
+        mRunningDocTableEvents.AfterSave -= OnAfterSave;
+        aDocument.Save();
+        mRunningDocTableEvents.AfterSave += OnAfterSave;
+      }
     }
 
     private async Task BeforeSaveClangTidyAsync(Document document)
