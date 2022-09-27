@@ -809,7 +809,7 @@ namespace ClangPowerTools
       var tidyToolWindow = package.FindToolWindow(typeof(TidyToolWindow), 0, false);
       if (tidyToolWindow is null)
         return VSConstants.S_OK;
-      var tidyWindow = tidyToolWindow.Frame as  IVsWindowFrame;
+      var tidyWindow = tidyToolWindow.Frame as IVsWindowFrame;
       tidyWindow?.Hide();
 
       return VSConstants.S_OK;
@@ -817,6 +817,10 @@ namespace ClangPowerTools
 
     public void OnAfterSave(object sender, Document aDocument)
     {
+      var formatSettings = SettingsProvider.FormatSettingsModel;
+
+      if (!formatSettings.FormatOnSave)
+        return;
       if (mFormatted)
       {
         mFormatted = false;

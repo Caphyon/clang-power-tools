@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 9.2.1" />
+                 Text="version 9.2.2" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -168,7 +168,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Format on save doesn't work on the latest Visual Studio version 17.3.4"
+                 Text="• Format on save ignores its own ON/OFF switch"
                  TextWrapping="Wrap" />
         <!--<TextBox
           Margin="15,5,0,0"
