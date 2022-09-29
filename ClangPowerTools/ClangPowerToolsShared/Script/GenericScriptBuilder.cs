@@ -1,10 +1,10 @@
 ﻿using ClangPowerTools.Builder;
 using ClangPowerTools.Convertors;
 using ClangPowerTools.Services;
-using EnvDTE;
 using EnvDTE80;
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace ClangPowerTools.Script
@@ -173,8 +173,10 @@ namespace ClangPowerTools.Script
       {
         if (tidySettings.UseChecksFrom != ClangTidyUseChecksFrom.TidyFile)
         {
+          if (parameters.Count() == 3)
+            parameters = parameters.Remove(2, 1);
           var filePath = Path.Combine(Path.GetTempPath(), ".clang-tidy");
-          var text = $"Checks: '{parameters.Remove(0, 3)}'";
+          var text = $"Checks: '{parameters}'";
 
           using FileStream fs = new FileStream(filePath, FileMode.Create);
           using StreamWriter sw = new StreamWriter(fs);
