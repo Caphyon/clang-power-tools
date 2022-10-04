@@ -130,7 +130,7 @@ namespace ClangPowerTools.Helpers
       if (itemCollector.IsEmpty)
         return false;
 
-      string activeItem = itemCollector.Items[0].GetName().ToLower();
+      string activeItem = itemCollector.Items[0]?.GetName().ToLower();
       var fileExtension = Path.GetExtension(activeItem);
       return ScriptConstants.kAcceptedFileExtensionsWithoutHeaders.Contains(fileExtension);
     }

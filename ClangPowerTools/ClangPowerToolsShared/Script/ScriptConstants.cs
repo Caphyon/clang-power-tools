@@ -44,6 +44,7 @@ namespace ClangPowerTools
       { ".c",
         ".cpp",
         ".cc",
+        ".inl",
         ".cxx",
         ".c++",
         ".cp",

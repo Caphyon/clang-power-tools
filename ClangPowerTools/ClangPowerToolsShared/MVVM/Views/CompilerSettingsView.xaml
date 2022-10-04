@@ -30,14 +30,6 @@
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
 
@@ -188,8 +180,33 @@
         SelectedItem="{Binding CompilerModel.AdditionalIncludes}" />
     </WrapPanel>
 
-    <!--  Warning as errors  -->
-    <WrapPanel Grid.Row="5" Grid.Column="1">
+    <Grid Grid.Row="6" Grid.Column="1">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="auto" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="auto" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="auto" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+
+      <!--  Warning as errors  -->
+      <WrapPanel Grid.Row="0" Grid.Column="0">
       <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
@@ -214,18 +231,18 @@
         Tag="On" />
     </WrapPanel>
 
-    <!--  Continue on error  -->
-    <WrapPanel Grid.Row="6" Grid.Column="1">
-      <WrapPanel.ToolTip>
-        <ToolTip>
-          <TextBlock
+      <!--  Continue on error  -->
+      <WrapPanel Grid.Row="1" Grid.Column="0">
+        <WrapPanel.ToolTip>
+          <ToolTip>
+            <TextBlock
             MaxWidth="400"
             Text="{Binding Tooltip.ContinueOnError}"
             TextWrapping="Wrap" />
-        </ToolTip>
-      </WrapPanel.ToolTip>
+          </ToolTip>
+        </WrapPanel.ToolTip>
 
-      <TextBlock
+        <TextBlock
         Width="180"
         Padding="10"
         VerticalAlignment="Center"
@@ -233,25 +250,26 @@
         FontSize="16"
         Text="Continue on error" />
 
-      <ToggleButton
+        <ToggleButton
         HorizontalAlignment="Left"
         VerticalAlignment="Center"
         IsChecked="{Binding CompilerModel.ContinueOnError}"
         Tag="On" />
-    </WrapPanel>
+      </WrapPanel>
 
-    <!--  Clang after MSCV compile  -->
-    <WrapPanel Grid.Row="7" Grid.Column="1">
-      <WrapPanel.ToolTip>
-        <ToolTip>
-          <TextBlock
+      
+      <!--  Clang after MSCV compile  -->
+      <WrapPanel Grid.Row="2" Grid.Column="0">
+        <WrapPanel.ToolTip>
+          <ToolTip>
+            <TextBlock
             MaxWidth="400"
             Text="{Binding Tooltip.ClangAfterMSVC}"
             TextWrapping="Wrap" />
-        </ToolTip>
-      </WrapPanel.ToolTip>
+          </ToolTip>
+        </WrapPanel.ToolTip>
 
-      <TextBlock
+        <TextBlock
         Width="180"
         Padding="10"
         VerticalAlignment="Center"
@@ -259,25 +277,25 @@
         FontSize="16"
         Text="Clang after MSVC" />
 
-      <ToggleButton
+        <ToggleButton
         HorizontalAlignment="Left"
         VerticalAlignment="Center"
         IsChecked="{Binding CompilerModel.ClangAfterMSVC}"
         Tag="On" />
-    </WrapPanel>
+      </WrapPanel>
 
-    <!--  Show Error List  -->
-    <WrapPanel Grid.Row="8" Grid.Column="1">
-      <WrapPanel.ToolTip>
-        <ToolTip>
-          <TextBlock
+      <!--  Show Error List  -->
+      <WrapPanel Grid.Row="3" Grid.Column="0">
+        <WrapPanel.ToolTip>
+          <ToolTip>
+            <TextBlock
             MaxWidth="400"
             Text="{Binding Tooltip.ShowErrorList}"
             TextWrapping="Wrap" />
-        </ToolTip>
-      </WrapPanel.ToolTip>
+          </ToolTip>
+        </WrapPanel.ToolTip>
 
-      <TextBlock
+        <TextBlock
         Width="180"
         Padding="10"
         VerticalAlignment="Center"
@@ -285,25 +303,25 @@
         FontSize="16"
         Text="Show Error List" />
 
-      <ToggleButton
+        <ToggleButton
         HorizontalAlignment="Left"
         VerticalAlignment="Center"
         IsChecked="{Binding CompilerModel.ShowErrorList}"
         Tag="On" />
-    </WrapPanel>
+      </WrapPanel>
 
-    <!--  Show Output Window List  -->
-    <WrapPanel Grid.Row="9" Grid.Column="1">
-      <WrapPanel.ToolTip>
-        <ToolTip>
-          <TextBlock
+      <!--  Show Output Window List  -->
+      <WrapPanel Grid.Row="4" Grid.Column="0">
+        <WrapPanel.ToolTip>
+          <ToolTip>
+            <TextBlock
             MaxWidth="400"
             Text="{Binding Tooltip.ShowOutputWindow}"
             TextWrapping="Wrap" />
-        </ToolTip>
-      </WrapPanel.ToolTip>
+          </ToolTip>
+        </WrapPanel.ToolTip>
 
-      <TextBlock
+        <TextBlock
         Width="180"
         Padding="10"
         VerticalAlignment="Center"
@@ -311,25 +329,25 @@
         FontSize="16"
         Text="Show Output Window" />
 
-      <ToggleButton
+        <ToggleButton
         HorizontalAlignment="Left"
         VerticalAlignment="Center"
         IsChecked="{Binding CompilerModel.ShowOutputWindow}"
         Tag="On" />
-    </WrapPanel>
+      </WrapPanel>
 
-    <!--  Show Squiggles  -->
-    <WrapPanel Grid.Row="10" Grid.Column="1">
-      <WrapPanel.ToolTip>
-        <ToolTip>
-          <TextBlock
+      <!--  Show Squiggles  -->
+      <WrapPanel Grid.Row="5" Grid.Column="0">
+        <WrapPanel.ToolTip>
+          <ToolTip>
+            <TextBlock
             MaxWidth="400"
             Text="{Binding Tooltip.ShowSquiggles}"
             TextWrapping="Wrap" />
-        </ToolTip>
-      </WrapPanel.ToolTip>
+          </ToolTip>
+        </WrapPanel.ToolTip>
 
-      <TextBlock
+        <TextBlock
         Width="180"
         Padding="10"
         VerticalAlignment="Center"
@@ -337,25 +355,25 @@
         FontSize="16"
         Text="Show squiggles (BETA)" />
 
-      <ToggleButton
+        <ToggleButton
         HorizontalAlignment="Left"
         VerticalAlignment="Center"
         IsChecked="{Binding CompilerModel.ShowSquiggles}"
         Tag="On" />
-    </WrapPanel>
+      </WrapPanel>
 
-    <!--  Verbose mode  -->
-    <WrapPanel Grid.Row="11" Grid.Column="1">
-      <WrapPanel.ToolTip>
-        <ToolTip>
-          <TextBlock
+      <!--  Verbose mode  -->
+      <WrapPanel Grid.Row="6" Grid.Column="0">
+        <WrapPanel.ToolTip>
+          <ToolTip>
+            <TextBlock
             MaxWidth="400"
             Text="{Binding Tooltip.VerboseMode}"
             TextWrapping="Wrap" />
-        </ToolTip>
-      </WrapPanel.ToolTip>
+          </ToolTip>
+        </WrapPanel.ToolTip>
 
-      <TextBlock
+        <TextBlock
         Width="180"
         Padding="10"
         VerticalAlignment="Center"
@@ -363,25 +381,25 @@
         FontSize="16"
         Text="Verbose mode" />
 
-      <ToggleButton
+        <ToggleButton
         HorizontalAlignment="Left"
         VerticalAlignment="Center"
         IsChecked="{Binding CompilerModel.VerboseMode}"
         Tag="On" />
-    </WrapPanel>
+      </WrapPanel>
 
-    <!--  Update PowerShell  -->
-    <WrapPanel Grid.Row="12" Grid.Column="1">
-      <WrapPanel.ToolTip>
-        <ToolTip>
-          <TextBlock
+      <!--  Update PowerShell  -->
+      <WrapPanel Grid.Row="7" Grid.Column="0">
+        <WrapPanel.ToolTip>
+          <ToolTip>
+            <TextBlock
             MaxWidth="400"
             Text="{Binding Tooltip.PowerShellScripts}"
             TextWrapping="Wrap" />
-        </ToolTip>
-      </WrapPanel.ToolTip>
+          </ToolTip>
+        </WrapPanel.ToolTip>
 
-      <TextBlock
+        <TextBlock
         Width="180"
         Padding="10"
         VerticalAlignment="Center"
@@ -389,7 +407,7 @@
         FontSize="16"
         Text="PowerShell scripts" />
 
-      <Button
+        <Button
         Width="80"
         Height="30"
         HorizontalAlignment="Left"
@@ -398,20 +416,20 @@
         FontSize="14"
         Foreground="White"
         Style="{StaticResource SettingsButton}" />
-    </WrapPanel>
+      </WrapPanel>
 
-    <!--  Add cpt alias  -->
-    <WrapPanel Grid.Row="13" Grid.Column="1">
-      <WrapPanel.ToolTip>
-        <ToolTip>
-          <TextBlock
+      <!--  Add cpt alias  -->
+      <WrapPanel Grid.Row="7" Grid.Column="2">
+        <WrapPanel.ToolTip>
+          <ToolTip>
+            <TextBlock
             MaxWidth="400"
             Text="{Binding Tooltip.AliasPowerShellScripts}"
             TextWrapping="Wrap" />
-        </ToolTip>
-      </WrapPanel.ToolTip>
+          </ToolTip>
+        </WrapPanel.ToolTip>
 
-      <TextBlock
+        <TextBlock
         Width="180"
         Padding="10"
         VerticalAlignment="Center"
@@ -419,7 +437,7 @@
         FontSize="16"
         Text="Cpt alias in PowerShell" />
 
-      <Button
+        <Button
         Width="80"
         Height="30"
         HorizontalAlignment="Left"
@@ -428,6 +446,7 @@
         FontSize="14"
         Foreground="White"
         Style="{StaticResource SettingsButton}" />
-    </WrapPanel>
+      </WrapPanel>
+    </Grid>
   </Grid>
 </UserControl>
