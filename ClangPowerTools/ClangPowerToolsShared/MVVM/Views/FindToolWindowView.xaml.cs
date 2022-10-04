@@ -4,12 +4,10 @@ using ClangPowerToolsShared.MVVM.AutoCompleteHistory;
 using ClangPowerToolsShared.MVVM.Interfaces;
 using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
 using ClangPowerToolsShared.MVVM.ViewModels;
-using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using Process = System.Diagnostics.Process;
 
 namespace ClangPowerTools.Views
@@ -75,24 +73,12 @@ namespace ClangPowerTools.Views
       }
     }
 
-    //private void CustomMatches_textChange(object sender, EventArgs e)
-    //{
-    //  var cursorPosition = Matches.SelectionStart;
-    //  if (Matches.Text.Length > 5)
-    //  {
-
-    //    Matches.Select(3, 1);
-    //    Matches.SelectionBrush = new SolidColorBrush(Colors.Black);
-    //  }
-
-    //}
-
     private void OnListViewSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
       ListView listView = e.Source as ListView;
       if (listView.ItemContainerGenerator?.ContainerFromItem(listView.SelectedItem)
-              is FrameworkElement container) {
-        Application.Current.Dispatcher.BeginInvoke(new Action(() => { Keyboard.Focus(Matches); }));
+              is FrameworkElement container)
+      {
 
         Matches.TextChanged -= AutoCompleteBehavior.onTextChanged;
         var item = container?.DataContext as AutoCompleteHistoryModel;
