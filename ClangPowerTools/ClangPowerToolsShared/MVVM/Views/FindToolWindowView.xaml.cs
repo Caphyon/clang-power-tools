@@ -90,9 +90,8 @@ namespace ClangPowerTools.Views
     private void OnListViewSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
       ListView listView = e.Source as ListView;
-      if (listView.ItemContainerGenerator?.ContainerFromItem
-        (listView.SelectedItem) is FrameworkElement container)
-      {
+      if (listView.ItemContainerGenerator?.ContainerFromItem(listView.SelectedItem)
+              is FrameworkElement container) {
         Application.Current.Dispatcher.BeginInvoke(new Action(() => { Keyboard.Focus(Matches); }));
 
         Matches.TextChanged -= AutoCompleteBehavior.onTextChanged;
