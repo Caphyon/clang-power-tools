@@ -56,6 +56,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
       AutoCompleteBehavior.OnListUpdate += OnListChange;
       astMatchersList = new ObservableCollection<AutoCompleteHistoryModel>(GetASTMatchersWithHistory());
       astMatchersSearchOptions = new List<AutoCompleteHistoryModel>(GetASTMatchersWithHistory());
+      FindToolWindowModel = findToolWindowModel;
       this.findToolWindowView = findToolWindowView;
     }
 
@@ -89,6 +90,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
         var tempItem = tempMatchersList.Where(a => item.Id == a.Id).FirstOrDefault();
         if (tempItem != null)
         {
+          tempItem.Value = item.Value;
           if (tempItem.RememberAsFavorit && tempItem.Visibility == UIElementsConstants.Visibile)
             astMatchersList.Insert(0, tempItem);
           else
@@ -126,6 +128,7 @@ namespace ClangPowerToolsShared.MVVM.ViewModels
     public void RunCommandFromView()
     {
       BeforeCommand();
+
       LaunchCommand();
       //add in history
       AddMatcherInHistory();

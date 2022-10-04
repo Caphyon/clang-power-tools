@@ -1,5 +1,4 @@
 ﻿using ClangPowerToolsShared.MVVM.Models.ToolWindowModels;
-using ClangPowerToolsShared.MVVM.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +11,10 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
   public static class AutoCompleteBehavior
   {
     public static TextChangedEventHandler OnListUpdate = delegate { };
-    private static TextChangedEventHandler onTextChanged = new TextChangedEventHandler(OnTextChanged);
-    private static KeyEventHandler onKeyDown = new KeyEventHandler(OnPreviewKeyDown);
+    public static TextChangedEventHandler onTextChanged = new TextChangedEventHandler(OnTextChanged);
+    public static KeyEventHandler onKeyDown = new KeyEventHandler(OnPreviewKeyDown);
     public static List<AutoCompleteHistoryModel> AutocompleteResult = new();
+    public static string MatchText { get; set; } 
 
     /// <summary>
     /// The collection to search for matches from.
@@ -117,6 +117,12 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
     /// <param name="e"></param>
     static void OnPreviewKeyDown(object sender, KeyEventArgs e)
     {
+      if (e.Key == Key.Down)
+      {
+        ((UIElement)e.OriginalSource).MoveFocus
+          (new TraversalRequest(FocusNavigationDirection.Down));
+      }
+
       if (e.Key != Key.Enter && e.Key != Key.Tab)
         return;
 
@@ -130,22 +136,6 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
         tb.SelectionStart = tb.CaretIndex = tb.Text.Length;
         tb.SelectionLength = 0;
       }
-
-      if (e.Key == Key.Enter)
-      {
-        TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Next);
-        request.Wrapped = true;
-        ((TextBox)sender).MoveFocus(request);
-        System.Windows.Forms.SendKeys.Send("{TAB}");
-        System.Windows.Forms.SendKeys.Send("{ENTER}");
-      }
-
-      if (e.Key == Key.Tab)
-      {
-        TraversalRequest request = new TraversalRequest(FocusNavigationDirection.Previous);
-        request.Wrapped = true;
-        ((TextBox)sender).MoveFocus(request);
-      }
     }
 
     /// <summary>
@@ -153,8 +143,11 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
+    /// 
+
     static void OnTextChanged(object sender, TextChangedEventArgs e)
     {
+      MatchText = String.Empty;
       TextBox tb = e.OriginalSource as TextBox;
       if (sender == null)
         return;
@@ -162,6 +155,7 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
       //No reason to search if we don't have any values.
       if (values == null)
         return;
+
       if (String.IsNullOrEmpty(tb.Text))
       {
         AutocompleteResult = values.ToList();
@@ -174,11 +168,11 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
       )
         return;
 
-
-
       //No reason to search if there's nothing there.
       if (String.IsNullOrEmpty(tb.Text))
         return;
+      
+      MatchText = tb.Text;
 
       List<string> indicators = new List<string>() { " ", "(", ")", "," };
       int startIndex = 0; //Start from the beginning of the line.
@@ -236,7 +230,6 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
         }/*Only select the last part of the suggestion*/
       ).FirstOrDefault();
 
-
       AutocompleteResult =
         (
           from
@@ -259,7 +252,6 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
           }/*Only select the last part of the suggestion*/
       ).ToList();
 
-
       OnListUpdate?.Invoke(sender, e);
 
       //Nothing.  Leave 'em alone
@@ -274,6 +266,6 @@ namespace ClangPowerToolsShared.MVVM.AutoCompleteHistory
       tb.SelectionLength = (tb.Text.Length - startIndex);
       tb.TextChanged += onTextChanged;
     }
-  }
 
+  }
 }
