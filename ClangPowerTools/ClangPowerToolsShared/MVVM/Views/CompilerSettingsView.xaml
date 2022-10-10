@@ -202,21 +202,21 @@
         <ColumnDefinition Width="auto" />
         <ColumnDefinition Width="*" />
         <ColumnDefinition Width="auto" />
-        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="70" />
       </Grid.ColumnDefinitions>
 
       <!--  Warning as errors  -->
       <WrapPanel Grid.Row="0" Grid.Column="0">
-      <WrapPanel.ToolTip>
-        <ToolTip>
-          <TextBlock
+        <WrapPanel.ToolTip>
+          <ToolTip>
+            <TextBlock
             MaxWidth="400"
             Text="{Binding Tooltip.WarningsAsErrors}"
             TextWrapping="Wrap" />
-        </ToolTip>
-      </WrapPanel.ToolTip>
+          </ToolTip>
+        </WrapPanel.ToolTip>
 
-      <TextBlock
+        <TextBlock
         Width="180"
         Padding="10"
         VerticalAlignment="Center"
@@ -224,12 +224,12 @@
         FontSize="16"
         Text="Warnings as errors" />
 
-      <ToggleButton
+        <ToggleButton
         HorizontalAlignment="Left"
         VerticalAlignment="Center"
         IsChecked="{Binding CompilerModel.WarningsAsErrors}"
         Tag="On" />
-    </WrapPanel>
+      </WrapPanel>
 
       <!--  Continue on error  -->
       <WrapPanel Grid.Row="1" Grid.Column="0">
@@ -257,7 +257,7 @@
         Tag="On" />
       </WrapPanel>
 
-      
+
       <!--  Clang after MSCV compile  -->
       <WrapPanel Grid.Row="2" Grid.Column="0">
         <WrapPanel.ToolTip>
@@ -419,7 +419,7 @@
       </WrapPanel>
 
       <!--  Add cpt alias  -->
-      <WrapPanel Grid.Row="7" Grid.Column="2">
+      <WrapPanel Grid.Row="0" Grid.Column="2">
         <WrapPanel.ToolTip>
           <ToolTip>
             <TextBlock
