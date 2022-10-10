@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 9.2.2" />
+                 Text="version 9.3" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -100,7 +100,7 @@
         </ListView.ItemContainerStyle>
 
         <!--What's new-->
-        <!--<TextBox Margin="5,20,0,0"
+        <TextBox Margin="5,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
@@ -123,7 +123,7 @@
                  BorderThickness="0"
                  FontSize="14"
                  IsReadOnly="True"
-                 Text="• Keep history of custom matchers"
+                 Text="• Trigger find when pressing enter on custom matches filed"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="30,5,0,0"
@@ -132,7 +132,7 @@
                  BorderThickness="0"
                  FontSize="14"
                  IsReadOnly="True"
-                 Text="• Autocomplete with ast matchers and history"
+                 Text="• Navigate through the matches history"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="30,5,0,0"
@@ -141,17 +141,26 @@
                  BorderThickness="0"
                  FontSize="14"
                  IsReadOnly="True"
-                 Text="• Pin your favorite matcher and return to it easier"
+                 Text="• Complete the custom matches field with a selected matcher"
                  TextWrapping="Wrap" />
 
-        <TextBox Margin="30,5,0,0"
+        <TextBox Margin="15,15,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
-                 FontSize="14"
+                 FontSize="16"
                  IsReadOnly="True"
-                 Text="• Don't need to write &quot;m&quot; or &quot;match&quot; keyword no more"
-                 TextWrapping="Wrap" />-->
+                 Text="• Add .inl to default file extensions in format Settings"
+                 TextWrapping="Wrap" />
+        
+        <TextBox Margin="15,15,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• Display the matching result code in the message description"
+                 TextWrapping="Wrap" />
 
         <!--Bug Fixes-->
         <TextBox Margin="5,20,0,0"
@@ -168,7 +177,16 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Format on save ignores its own ON/OFF switch"
+                 Text="• Disabling all predefined checks still results in some checks being performed"
+                 TextWrapping="Wrap" />
+
+        <TextBox Margin="15,15,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• The cpt alias in Powershell button is cut off from the settings"
                  TextWrapping="Wrap" />
         <!--<TextBox
           Margin="15,5,0,0"
