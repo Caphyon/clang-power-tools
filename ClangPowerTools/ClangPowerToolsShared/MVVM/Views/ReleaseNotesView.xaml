@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 9.3" />
+                 Text="version 9.3.1" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -100,7 +100,7 @@
         </ListView.ItemContainerStyle>
 
         <!--What's new-->
-        <TextBox Margin="5,20,0,0"
+        <!--<TextBox Margin="5,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
@@ -160,7 +160,7 @@
                  FontSize="16"
                  IsReadOnly="True"
                  Text="• Display the matching result code in the message description"
-                 TextWrapping="Wrap" />
+                 TextWrapping="Wrap" />-->
 
         <!--Bug Fixes-->
         <TextBox Margin="5,20,0,0"
@@ -177,17 +177,10 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Disabling all predefined checks still results in some checks being performed"
+                 Text="• Visual Studio blocks on build if there are any dirty documents and, format on save 'on'"
                  TextWrapping="Wrap" />
 
-        <TextBox Margin="15,15,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• The cpt alias in Powershell button is cut off from the settings"
-                 TextWrapping="Wrap" />
+       
         <!--<TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
