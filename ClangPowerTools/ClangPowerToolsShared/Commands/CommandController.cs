@@ -58,6 +58,8 @@ namespace ClangPowerTools
     private string oldActiveDocumentName = null;
     private AsyncPackage package;
     private LaunchCompilationDbProgrammatically launchCompilationDbProgrammatically = new();
+    public Dictionary<string, bool> SavedDocuments = new();
+
 
     public AsyncPackage Package
     {
@@ -75,6 +77,7 @@ namespace ClangPowerTools
 
     public CommandController(AsyncPackage aAsyncPackage)
     {
+      SavedDocuments = new Dictionary<string, bool>();
       package = aAsyncPackage;
       if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
       {
@@ -821,18 +824,25 @@ namespace ClangPowerTools
 
       if (!formatSettings.FormatOnSave)
         return;
-      if (mFormatted)
+      if (SavedDocuments.ContainsKey(aDocument.GetHashCode().ToString()) &&
+        SavedDocuments[aDocument.GetHashCode().ToString()])
       {
-        mFormatted = false;
+        SavedDocuments[aDocument.GetHashCode().ToString()] = false;
         return;
       }
+      else if (!SavedDocuments.ContainsKey(aDocument.GetHashCode().ToString()))
+      {
+        SavedDocuments.Add(aDocument.GetHashCode().ToString(), false);
+      }
+
       StopBackgroundRunners();
       BeforeSaveClangTidyAsync(aDocument).SafeFireAndForget();
       BeforeSaveClangFormat(aDocument);
-      if (!mFormatted)
+      if (SavedDocuments.ContainsKey(aDocument.GetHashCode().ToString()) &&
+        !SavedDocuments[aDocument.GetHashCode().ToString()])
       {
         FormatCommand.Instance.FormatOnSave(aDocument);
-        mFormatted = true;
+        SavedDocuments[aDocument.GetHashCode().ToString()] = true;
       }
       if (mRunningDocTableEvents is not null)
       {
