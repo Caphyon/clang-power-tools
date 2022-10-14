@@ -9,6 +9,8 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Process = System.Diagnostics.Process;
+using Thread = System.Threading.Thread;
 
 namespace ClangPowerTools
 {
@@ -21,6 +23,7 @@ namespace ClangPowerTools
     public static EventHandler ExitedHandler { get; set; }
 
     public static OutputWindowController mOutputWindowController;
+    private static Process mInteractiveProcess;
 
 
     #endregion
@@ -101,6 +104,84 @@ namespace ClangPowerTools
         throw e;
       }
     }
+
+
+    private static void GiveProcStdIn()
+    {
+      string line = "";
+      try
+      {
+        StreamReader reader = new StreamReader(mInteractiveProcess.StandardInput);// proc.StandardOutput;
+        while (!reader.EndOfStream)
+        {
+          line = reader.ReadLine();
+          mInteractiveProcess.StandardInput.WriteLine(line);
+        }
+      }
+      catch (Exception e)
+      {
+        Console.Error.WriteLine("GiveProcStdIn:" + e.Message);
+      }
+    }
+
+    public static void InvokeInteractiveMode(string aScript)
+    {
+      mOutputWindowController.Write("Interactive mode activated");
+      mOutputWindowController.ResetMatchesNr();
+
+      mInteractiveProcess = new Process();
+      try
+      {
+        if (RunController.StopCommandActivated)
+        {
+          return;
+        }
+        mInteractiveProcess.StartInfo = new ProcessStartInfo()
+        {
+          FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}",
+          RedirectStandardError = true,
+          RedirectStandardOutput = true,
+          RedirectStandardInput = true,
+          CreateNoWindow = true,
+          UseShellExecute = false,
+          Arguments = Regex.Replace(aScript, @"([\w|\\])'([\w|\\])", "$1''''$2")
+        };
+        mInteractiveProcess.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
+
+        var customTidyExecutable = GetCustomTidyPath();
+
+        if (string.IsNullOrWhiteSpace(customTidyExecutable) == false)
+          mInteractiveProcess.StartInfo.EnvironmentVariables[ScriptConstants.kEnvrionmentTidyPath] = customTidyExecutable;
+
+        mInteractiveProcess.EnableRaisingEvents = true;
+        mInteractiveProcess.ErrorDataReceived += DataErrorHandler;
+        mInteractiveProcess.OutputDataReceived += DataHandler;
+        mInteractiveProcess.Exited += ExitedHandler;
+        mInteractiveProcess.Disposed += ExitedHandler;
+
+        RunController.runningProcesses.Add(mInteractiveProcess);
+
+        mInteractiveProcess.Start();
+
+        mInteractiveProcess.BeginErrorReadLine();
+        mInteractiveProcess.BeginOutputReadLine();
+        new Thread(new ThreadStart(GiveProcStdIn)).Start();
+
+        //process.WaitForExit();
+      }
+      catch (Exception e)
+      {
+        mInteractiveProcess.EnableRaisingEvents = false;
+        mInteractiveProcess.ErrorDataReceived -= DataErrorHandler;
+        mInteractiveProcess.OutputDataReceived -= DataHandler;
+        mInteractiveProcess.Exited -= ExitedHandler;
+        mInteractiveProcess.Disposed -= ExitedHandler;
+        mInteractiveProcess.Close();
+        throw e;
+      }
+
+    }
+
 
     public static void InvokePassSequentialCommands(Dictionary<string, string> aPathCommandPair)
     {

@@ -3,7 +3,6 @@ using ClangPowerTools.Commands;
 using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using MenuItem = ClangPowerToolsShared.Commands.MenuItem;
 
 namespace ClangPowerToolsShared.Helpers
@@ -13,16 +12,22 @@ namespace ClangPowerToolsShared.Helpers
     private string lastHash = string.Empty;
     private MenuItem lastSelectedMenuOption = new();
 
+    /// <summary>
+    /// Before launching compilation database programmatically, you need to check selected option from menu
+    /// </summary>
+    /// <returns></returns>
     public async Task FromFindToolWindowAsync()
     {
       var currentHash = CryptographyAlgo.HashFile(PathConstants.VcxprojPath);
 
+      //Generate again compilation database on project, document, or files modifications
       var selectedItem = LookInMenuController.GetSelectedMenuItem();
       if (lastSelectedMenuOption == selectedItem && lastHash == currentHash &&
         selectedItem.LookInMenu == LookInMenu.EntireSolution)
       {
         return;
-      }else if(lastHash != currentHash || string.IsNullOrEmpty(lastHash) ||
+      }
+      else if (lastHash != currentHash || string.IsNullOrEmpty(lastHash) ||
         lastSelectedMenuOption != LookInMenuController.GetSelectedMenuItem())
       {
         lastHash = currentHash;
