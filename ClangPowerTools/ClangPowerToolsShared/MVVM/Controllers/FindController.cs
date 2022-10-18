@@ -96,8 +96,16 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         }
       }
       DisplayMessageBeforeFind();
-      pathCommandPairs = GetCommandForPowershell(pathToClangQuery);
-      PowerShellWrapper.InvokePassSequentialCommands(pathCommandPairs);
+      if (LookInMenuController.GetSelectedMenuItem().LookInMenu == LookInMenu.CurrentActiveDocument)
+      {
+        pathCommandPairs = GetCommandForPowershellInteractiveMode(pathToClangQuery);
+        PowerShellWrapper.InvokeInteractiveMode(pathCommandPairs.First().Value);
+      }
+      else
+      {
+        pathCommandPairs = GetCommandForPowershell(pathToClangQuery);
+        PowerShellWrapper.InvokePassSequentialCommands(pathCommandPairs);
+      }
       DisplayMessageAfterFind();
       File.Delete(PathConstants.GetPathToFindCommands);
     }
@@ -157,6 +165,27 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         $"-command '& ''{pathToBinary}''  ''{path}'' " +
         $"-p ''{PathConstants.JsonCompilationDBPath}'' " +
         $"-f ''{PathConstants.GetPathToFindCommands}'' '";
+        if (!commands.ContainsKey(path))
+          commands.Add(path, command);
+      }
+      return commands;
+    }
+
+    private Dictionary<string, string> GetCommandForPowershellInteractiveMode(string pathToBinary)
+    {
+      string compilationDatabaseContent = string.Empty;
+      if (File.Exists(PathConstants.JsonCompilationDBPath))
+      {
+        compilationDatabaseContent = File.ReadAllText(PathConstants.JsonCompilationDBPath);
+      }
+      List<FileCompilationDB> files = JsonConvert.DeserializeObject<List<FileCompilationDB>>(compilationDatabaseContent);
+
+      Dictionary<string, string> commands = new();
+      foreach (var path in files.Select(a => a.file).ToList())
+      {
+        var command = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive " +
+        $"-command '& ''{pathToBinary}''  ''{path}'' " +
+        $"-p ''{PathConstants.JsonCompilationDBPath}'' '";
         if (!commands.ContainsKey(path))
           commands.Add(path, command);
       }

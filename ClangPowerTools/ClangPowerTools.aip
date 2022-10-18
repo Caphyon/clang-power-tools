@@ -8,7 +8,7 @@
     <ROW Name="License" Value="EXTENSIONS_FOLDER\Resources\LICENSE.txt" Type="1"/>
     <ROW Name="Locale" Value="1033" Type="0"/>
     <ROW Name="Name" Value="Clang Power Tools" Type="0" ValueLocId="*"/>
-    <ROW Name="Version" Value="9.3.0.2049" Type="0"/>
+    <ROW Name="Version" Value="9.3.0.2067" Type="0"/>
     <ROW Name="VsixLanguage" Value="en-US" Type="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
