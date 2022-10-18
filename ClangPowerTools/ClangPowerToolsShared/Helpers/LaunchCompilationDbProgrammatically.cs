@@ -11,6 +11,7 @@ namespace ClangPowerToolsShared.Helpers
   {
     private string lastHash = string.Empty;
     private MenuItem lastSelectedMenuOption = new();
+    private string mActiveDocumentName = string.Empty;
 
     /// <summary>
     /// Before launching compilation database programmatically, you need to check selected option from menu
@@ -18,12 +19,21 @@ namespace ClangPowerToolsShared.Helpers
     /// <returns></returns>
     public async Task FromFindToolWindowAsync()
     {
-      var currentHash = CryptographyAlgo.HashFile(PathConstants.VcxprojPath);
+      var currentHash = PathConstants.VcxprojPath.GetHashCode().ToString();
+
+      var selectedItem = LookInMenuController.GetSelectedMenuItem();
+
+      bool sameActiveDocument = true;
+      if (DocumentHandler.GetActiveDocument()?.FullName != mActiveDocumentName
+        && selectedItem.LookInMenu == LookInMenu.CurrentActiveDocument)
+      {
+        sameActiveDocument = false;
+        mActiveDocumentName = DocumentHandler.GetActiveDocument()?.FullName;
+      }
 
       //Generate again compilation database on project, document, or files modifications
-      var selectedItem = LookInMenuController.GetSelectedMenuItem();
-      if (lastSelectedMenuOption == selectedItem && lastHash == currentHash &&
-        selectedItem.LookInMenu == LookInMenu.EntireSolution)
+      if ((lastSelectedMenuOption == selectedItem && lastHash == currentHash &&
+        selectedItem.LookInMenu == LookInMenu.EntireSolution) || (selectedItem.LookInMenu == LookInMenu.CurrentActiveDocument && sameActiveDocument))
       {
         return;
       }
