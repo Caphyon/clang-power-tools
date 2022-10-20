@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.Output;
 using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
+using EnvDTE;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -107,10 +108,19 @@ namespace ClangPowerTools
       }
     }
 
-    public static void InvokeInteractiveMode(string aScript)
+    public static void EndIneractiveMode()
     {
-      mOutputWindowController.Write("Interactive mode activated");
-      mOutputWindowController.ResetMatchesNr();
+      if (mInteractiveProcess == null)
+        return;
+      RunController.runningProcesses.Kill(mInteractiveProcess);
+      if (mInteractiveProcess.HasExited || mInteractiveProcess.Responding == false)
+        mInteractiveProcess = null;
+      mInteractiveMode = false;
+    }
+
+    public static void InvokeInteractiveMode(KeyValuePair<string, string> aKeyValuePair)
+    {
+      mOutputWindowController.Write("✅ Interactive mode activated on document: " + aKeyValuePair.Key);
 
       if (mInteractiveProcess == null)
         mInteractiveProcess = new Process();
@@ -133,7 +143,7 @@ namespace ClangPowerTools
             RedirectStandardInput = true,
             CreateNoWindow = true,
             UseShellExecute = false,
-            Arguments = Regex.Replace(aScript, @"([\w|\\])'([\w|\\])", "$1''''$2")
+            Arguments = Regex.Replace(aKeyValuePair.Value, @"([\w|\\])'([\w|\\])", "$1''''$2")
           };
           mInteractiveProcess.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
 

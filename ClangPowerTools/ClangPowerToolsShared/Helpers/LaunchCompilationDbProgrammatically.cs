@@ -2,6 +2,7 @@
 using ClangPowerTools.Commands;
 using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
+using System.IO;
 using System.Threading.Tasks;
 using MenuItem = ClangPowerToolsShared.Commands.MenuItem;
 
@@ -19,7 +20,11 @@ namespace ClangPowerToolsShared.Helpers
     /// <returns></returns>
     public async Task FromFindToolWindowAsync()
     {
-      var currentHash = PathConstants.VcxprojPath.GetHashCode().ToString();
+      string currentHash = string.Empty;
+      if(File.Exists(PathConstants.VcxprojPath))
+      {
+        currentHash = (File.ReadAllText(PathConstants.VcxprojPath)).GetHashCode().ToString();
+      }
 
       var selectedItem = LookInMenuController.GetSelectedMenuItem();
 

@@ -72,6 +72,15 @@ namespace ClangPowerTools
       mutex.ReleaseMutex();
     }
 
+    public void Kill(Process process)
+    {
+      mutex.WaitOne();
+      if (process == null || process.HasExited || process.Responding == false)
+        return;
+      KillProcessAndChildren(process.Id);
+      mutex.ReleaseMutex();
+    }
+
     public void Remove(Process process)
     {
       mutex.WaitOne();

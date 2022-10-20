@@ -19,6 +19,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     private Dictionary<string, string> pathCommandPairs = new();
     private List<string> commands = new();
     private string pathToClangQuery;
+    private string mInteractiveModeDocumentName = string.Empty;
 
     public List<MenuItem> MenuOptions
     {
@@ -99,7 +100,8 @@ namespace ClangPowerToolsShared.MVVM.Controllers
       if (LookInMenuController.GetSelectedMenuItem().LookInMenu == LookInMenu.CurrentActiveDocument)
       {
         pathCommandPairs = GetCommandForPowershellInteractiveMode(pathToClangQuery);
-        PowerShellWrapper.InvokeInteractiveMode(pathCommandPairs.First().Value);
+        CheckFileNameActiveInteractiveMode(pathCommandPairs.First().Key);
+        PowerShellWrapper.InvokeInteractiveMode(pathCommandPairs.First());
       }
       else
       {
@@ -149,6 +151,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     {
       public string file { get; set; }
     }
+
     private Dictionary<string, string> GetCommandForPowershell(string pathToBinary)
     {
       string compilationDatabaseContent = string.Empty;
@@ -169,6 +172,14 @@ namespace ClangPowerToolsShared.MVVM.Controllers
           commands.Add(path, command);
       }
       return commands;
+    }
+
+    private void CheckFileNameActiveInteractiveMode(string aFileName)
+    {
+      if (!string.IsNullOrEmpty(mInteractiveModeDocumentName) && mInteractiveModeDocumentName != aFileName)
+        PowerShellWrapper.EndIneractiveMode();
+      else
+         mInteractiveModeDocumentName = aFileName;
     }
 
     private Dictionary<string, string> GetCommandForPowershellInteractiveMode(string pathToBinary)
