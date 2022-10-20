@@ -178,8 +178,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     {
       if (!string.IsNullOrEmpty(mInteractiveModeDocumentName) && mInteractiveModeDocumentName != aFileName)
         PowerShellWrapper.EndIneractiveMode();
-      else
-         mInteractiveModeDocumentName = aFileName;
+      mInteractiveModeDocumentName = aFileName;
     }
 
     private Dictionary<string, string> GetCommandForPowershellInteractiveMode(string pathToBinary)

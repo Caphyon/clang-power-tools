@@ -108,11 +108,14 @@ namespace ClangPowerTools
       }
     }
 
-    public static void EndIneractiveMode()
+    public static void EndInteractiveMode()
     {
       if (mInteractiveProcess == null)
         return;
       RunController.runningProcesses.Kill(mInteractiveProcess);
+      {
+        mOutputWindowController.Write("❎ Interactive mode deactivated on document");
+      }
       if (mInteractiveProcess.HasExited || mInteractiveProcess.Responding == false)
         mInteractiveProcess = null;
       mInteractiveMode = false;
@@ -158,10 +161,7 @@ namespace ClangPowerTools
           mInteractiveProcess.Exited += ExitedHandler;
           mInteractiveProcess.Disposed += ExitedHandler;
 
-          RunController.runningProcesses.Add(mInteractiveProcess);
-
           mInteractiveProcess.Start();
-          var zv = mInteractiveProcess?.ProcessName;
 
           mInteractiveProcess.BeginErrorReadLine();
           mInteractiveProcess.BeginOutputReadLine();
@@ -180,8 +180,6 @@ namespace ClangPowerTools
           mInteractiveProcess.Close();
           throw e;
         }
-      var zss = mInteractiveProcess?.ProcessName;
-
     }
 
 
