@@ -174,7 +174,11 @@ namespace ClangPowerTools
     private string CreateFlagUri(string tidyCheckName)
     {
       StringBuilder sb = new();
-      sb.Append(TidyConstants.FlagsUri).Append(tidyCheckName).Append(".html");
+      var listTidyCheckName = tidyCheckName.ToCharArray();
+      if(tidyCheckName.IndexOf('-') != -1)
+        listTidyCheckName[tidyCheckName.IndexOf('-')] = '/';
+      var checkName = new string(listTidyCheckName);
+      sb.Append(TidyConstants.FlagsUri).Append(checkName).Append(".html");
       return sb.ToString();
     }
 
