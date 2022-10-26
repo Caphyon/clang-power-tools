@@ -5,6 +5,7 @@ using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
 using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
+using ClangPowerToolsShared.Commands;
 using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -190,6 +191,12 @@ namespace ClangPowerTools.Output
         !SettingsProvider.CompilerSettingsModel.VerboseMode)
         return;
 
+      if (CommandControllerInstance.CommandController.GetCurrentCommandId() == CommandIds.kClangFindRun &&
+        LookInMenuController.GetSelectedMenuItem().LookInMenu == LookInMenu.CurrentActiveDocument)
+      {
+        OnErrorDetected(this, e);
+      }
+
       Write(outputContent.Text);
     }
 
@@ -214,6 +221,11 @@ namespace ClangPowerTools.Output
         !SettingsProvider.CompilerSettingsModel.VerboseMode)
         return;
 
+      if (CommandControllerInstance.CommandController.GetCurrentCommandId() == CommandIds.kClangFindRun &&
+        LookInMenuController.GetSelectedMenuItem().LookInMenu == LookInMenu.CurrentActiveDocument)
+      {
+        OnErrorDetected(this, e);
+      }
       Write(outputContent.Text);
     }
 

@@ -491,7 +491,7 @@ namespace ClangPowerTools
     /// <returns></returns>
     private int HideToolWindow()
     {
-      PowerShellWrapper.EndIneractiveMode();
+      PowerShellWrapper.EndInteractiveMode();
 
       var tidyToolWindow = mPackage.FindToolWindow(typeof(TidyToolWindow), 0, false);
       if (tidyToolWindow is null) return VSConstants.S_OK;

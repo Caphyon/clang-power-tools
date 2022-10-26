@@ -98,7 +98,7 @@ namespace ClangPowerTools.Views
       {
         var item = menu.SelectedItem as ClangPowerToolsShared.Commands.MenuItem;
         LookInMenuController.SetSelectedOption(item);
-        PowerShellWrapper.EndIneractiveMode();
+        PowerShellWrapper.EndInteractiveMode();
       }
     }
 

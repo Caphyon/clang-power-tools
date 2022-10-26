@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.Error;
 using ClangPowerTools.Events;
 using ClangPowerTools.Handlers;
+using ClangPowerToolsShared.Commands;
 using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -38,7 +39,9 @@ namespace ClangPowerTools
 
         if (SettingsProvider.CompilerSettingsModel.ShowErrorList)
         {
-          BringToFront();
+          if (!(CommandControllerInstance.CommandController.GetCurrentCommandId() == CommandIds.kClangFindRun &&
+            LookInMenuController.GetSelectedMenuItem().LookInMenu == LookInMenu.CurrentActiveDocument))
+            BringToFront();
           DocumentHandler.FocusActiveDocument();
         }
 

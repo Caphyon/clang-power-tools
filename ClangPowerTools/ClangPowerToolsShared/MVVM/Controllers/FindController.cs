@@ -177,7 +177,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     private void CheckFileNameActiveInteractiveMode(string aFileName)
     {
       if (!string.IsNullOrEmpty(mInteractiveModeDocumentName) && mInteractiveModeDocumentName != aFileName)
-        PowerShellWrapper.EndIneractiveMode();
+        PowerShellWrapper.EndInteractiveMode();
       mInteractiveModeDocumentName = aFileName;
     }
 
