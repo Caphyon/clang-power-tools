@@ -39,9 +39,7 @@ namespace ClangPowerTools
 
         if (SettingsProvider.CompilerSettingsModel.ShowErrorList)
         {
-          if (!(CommandControllerInstance.CommandController.GetCurrentCommandId() == CommandIds.kClangFindRun &&
-            LookInMenuController.GetSelectedMenuItem().LookInMenu == LookInMenu.CurrentActiveDocument))
-            BringToFront();
+          BringToFront();
           DocumentHandler.FocusActiveDocument();
         }
 

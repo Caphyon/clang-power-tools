@@ -40,11 +40,11 @@ namespace ClangPowerTools.Output
         return VSConstants.S_OK;
       }
 
-      if (mErrorDetector.LlvmIsMissing(aMessage))
-      {
-        aOutputContent.MissingLLVM = true;
-        return VSConstants.S_FALSE;
-      }
+      //if (mErrorDetector.LlvmIsMissing(aMessage))
+      //{
+      //  aOutputContent.MissingLLVM = true;
+      //  return VSConstants.S_FALSE;
+      //}
 
       if (mErrorDetector.HasEncodingError(aMessage))
       {
@@ -79,10 +79,9 @@ namespace ClangPowerTools.Output
       return VSConstants.S_FALSE;
     }
 
-    public bool ItsMatch(string text)
+    public bool FindMatchFinishKeyword(string text)
     {
-      var test = mErrorDetector.Detect(text, ErrorParserConstants.kErrorMessageRegex, out Match aMatchResult);
-      return test;
+      return mErrorDetector.Detect(text, ErrorParserConstants.kNumberMatchesRegex, out Match aMatchResult); ;
     }
 
     #endregion

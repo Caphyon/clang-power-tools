@@ -13,6 +13,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -162,6 +163,7 @@ namespace ClangPowerTools.Output
       if (null == e.Data)
         return;
 
+
       if (outputContent.MissingLLVM)
         return;
 
@@ -175,29 +177,28 @@ namespace ClangPowerTools.Output
       mutex.WaitOne();
       var result = outputProcessor.ProcessData(e.Data, Hierarchy, outputContent);
       mutex.ReleaseMutex();
-      if (VSConstants.S_FALSE == result)
+      if (VSConstants.S_FALSE == result && 
+        !(id == CommandIds.kClangFindRun || id == CommandIds.kClangFind))
       {
-        if (outputContent.MissingLLVM)
-        {
-          Write(new object(), new ClangCommandMessageEventArgs(ErrorParserConstants.kMissingLlvmMessage, false));
-        }
+        //if (outputContent.MissingLLVM)
+        //{
+        //  Write(new object(), new ClangCommandMessageEventArgs(ErrorParserConstants.kMissingLlvmMessage, false));
+        //}
         return;
       }
 
       if (!string.IsNullOrWhiteSpace(outputContent.JsonFilePath))
         JsonCompilationDbFilePathEvent?.Invoke(this, new JsonFilePathArgs(outputContent.JsonFilePath));
 
-      if ((id == CommandIds.kClangFind || id == CommandIds.kClangFindRun) &&
-        !SettingsProvider.CompilerSettingsModel.VerboseMode)
-        return;
-
-      if (CommandControllerInstance.CommandController.GetCurrentCommandId() == CommandIds.kClangFindRun &&
-        LookInMenuController.GetSelectedMenuItem().LookInMenu == LookInMenu.CurrentActiveDocument)
+      if (outputProcessor.FindMatchFinishKeyword(e.Data))
       {
+        CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
         OnErrorDetected(this, e);
       }
 
-      Write(outputContent.Text);
+      if (!SettingsProvider.CompilerSettingsModel.VerboseMode)
+        return;
+      Write(e.Data);
     }
 
     public void OutputDataErrorReceived(object sender, DataReceivedEventArgs e)
@@ -205,27 +206,23 @@ namespace ClangPowerTools.Output
       if (null == e.Data)
         return;
 
-      if (outputContent.MissingLLVM)
-        return;
+      //if (outputContent.MissingLLVM)
+      //  return;
       mutex.WaitOne();
       var result = outputProcessor.ProcessData(e.Data, Hierarchy, outputContent);
       mutex.ReleaseMutex();
-      if (VSConstants.S_FALSE == result)
+
+      var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
+      if (VSConstants.S_FALSE == result &&
+        !(id == CommandIds.kClangFindRun || id == CommandIds.kClangFind))
         return;
 
       if (!string.IsNullOrWhiteSpace(outputContent.JsonFilePath))
         JsonCompilationDbFilePathEvent?.Invoke(this, new JsonFilePathArgs(outputContent.JsonFilePath));
 
-      var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
-      if ((id == CommandIds.kClangFind || id == CommandIds.kClangFindRun) &&
-        !SettingsProvider.CompilerSettingsModel.VerboseMode)
+      if (!SettingsProvider.CompilerSettingsModel.VerboseMode)
         return;
 
-      if (CommandControllerInstance.CommandController.GetCurrentCommandId() == CommandIds.kClangFindRun &&
-        LookInMenuController.GetSelectedMenuItem().LookInMenu == LookInMenu.CurrentActiveDocument)
-      {
-        OnErrorDetected(this, e);
-      }
       Write(outputContent.Text);
     }
 
