@@ -38,7 +38,8 @@ namespace ClangPowerToolsShared.Helpers
 
       //Generate again compilation database on project, document, or files modifications
       if ((lastSelectedMenuOption == selectedItem && lastHash == currentHash &&
-        selectedItem.LookInMenu == LookInMenu.EntireSolution) || (selectedItem.LookInMenu == LookInMenu.CurrentActiveDocument && sameActiveDocument))
+        selectedItem.LookInMenu == LookInMenu.EntireSolution) ||
+        (selectedItem.LookInMenu == LookInMenu.CurrentActiveDocument && sameActiveDocument))
       {
         return;
       }

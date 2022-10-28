@@ -177,20 +177,19 @@ namespace ClangPowerTools.Output
       mutex.WaitOne();
       var result = outputProcessor.ProcessData(e.Data, Hierarchy, outputContent);
       mutex.ReleaseMutex();
+
       if (VSConstants.S_FALSE == result && 
         !(id == CommandIds.kClangFindRun || id == CommandIds.kClangFind))
-      {
-        //if (outputContent.MissingLLVM)
-        //{
-        //  Write(new object(), new ClangCommandMessageEventArgs(ErrorParserConstants.kMissingLlvmMessage, false));
-        //}
         return;
-      }
 
       if (!string.IsNullOrWhiteSpace(outputContent.JsonFilePath))
         JsonCompilationDbFilePathEvent?.Invoke(this, new JsonFilePathArgs(outputContent.JsonFilePath));
 
-      if (outputProcessor.FindMatchFinishKeyword(e.Data))
+      //invoke show error event when match keyword was found,
+      //this will be applied on clang-query interactive mode (active document)
+      if ((id == CommandIds.kClangFindRun || id == CommandIds.kClangFind)
+        && (LookInMenuController.GetSelectedMenuItem().LookInMenu == LookInMenu.CurrentActiveDocument)
+        && outputProcessor.FindMatchFinishKeyword(e.Data))
       {
         CloseDataConnectionEvent?.Invoke(this, new CloseDataConnectionEventArgs());
         OnErrorDetected(this, e);
@@ -198,7 +197,13 @@ namespace ClangPowerTools.Output
 
       if (!SettingsProvider.CompilerSettingsModel.VerboseMode)
         return;
-      Write(e.Data);
+
+      //show full text when find command is running
+      //otherwise show just matched text
+      if (id == CommandIds.kClangFindRun || id == CommandIds.kClangFind)
+        Write(e.Data);
+      else
+        Write(outputContent.Text);
     }
 
     public void OutputDataErrorReceived(object sender, DataReceivedEventArgs e)
@@ -206,8 +211,6 @@ namespace ClangPowerTools.Output
       if (null == e.Data)
         return;
 
-      //if (outputContent.MissingLLVM)
-      //  return;
       mutex.WaitOne();
       var result = outputProcessor.ProcessData(e.Data, Hierarchy, outputContent);
       mutex.ReleaseMutex();
@@ -261,7 +264,8 @@ namespace ClangPowerTools.Output
         {
           tempPaths.Add(path);
         }
-        CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kTidyToolWindowFilesId, CommandUILocation.ContextMenu, tempPaths);
+        CommandControllerInstance.CommandController.LaunchCommandAsync
+          (CommandIds.kTidyToolWindowFilesId, CommandUILocation.ContextMenu, tempPaths);
         paths.Clear();
       }
       mutex.ReleaseMutex();

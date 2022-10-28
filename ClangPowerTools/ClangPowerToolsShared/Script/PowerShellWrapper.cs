@@ -188,7 +188,7 @@ namespace ClangPowerTools
       var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
       int count = 0;
 
-      mOutputWindowController.Write("Will be processed " + aPathCommandPair.Count + " files");
+      mOutputWindowController.Write("Will process " + aPathCommandPair.Count + " files");
       mOutputWindowController.ResetMatchesNr();
 
       List<Task> tasks = new List<Task>();
