@@ -20,6 +20,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     private List<string> commands = new();
     private string pathToClangQuery;
     private string mInteractiveModeDocumentName = string.Empty;
+    private int mInteractiveModeDocumentHash = 0;
 
     public List<MenuItem> MenuOptions
     {
@@ -114,7 +115,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
 
     private void DisplayMessageAfterFind()
     {
-      CommandControllerInstance.CommandController.DisplayMessage(false, "\nⒾ Find all matches in Error List -> Ⓘ Messages\n");
+      CommandControllerInstance.CommandController.DisplayMessage(false, "\nⒾ Find all matches in Error List -> Ⓘ Messages \nMake sure that [Build + IntelliSense] is selected\n");
     }
 
     private void DisplayMessageBeforeFind()
@@ -176,7 +177,17 @@ namespace ClangPowerToolsShared.MVVM.Controllers
 
     private void CheckFileNameActiveInteractiveMode(string aFileName)
     {
-      if (!string.IsNullOrEmpty(mInteractiveModeDocumentName) && mInteractiveModeDocumentName != aFileName)
+      bool modifedFile = false;
+      if(File.Exists(aFileName))
+      {
+        int contentHash = File.ReadAllText(aFileName).GetHashCode();
+        if (contentHash != mInteractiveModeDocumentHash)
+          modifedFile = true;
+        mInteractiveModeDocumentHash = contentHash;
+      }
+
+      if (!string.IsNullOrEmpty(mInteractiveModeDocumentName) 
+        && (mInteractiveModeDocumentName != aFileName || modifedFile))
         PowerShellWrapper.EndInteractiveMode();
       mInteractiveModeDocumentName = aFileName;
     }
