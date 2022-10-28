@@ -86,7 +86,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Events\FormatCommandEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\HasEncodingErrorEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\JsonFilePathArgs.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Events\MissingLlvmEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Events\VsHierarchyDetectedEventArgs.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Export Config\TidyConfigFile.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Extensions\IntExtension.cs" />

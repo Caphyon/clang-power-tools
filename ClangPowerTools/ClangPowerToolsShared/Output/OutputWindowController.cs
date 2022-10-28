@@ -163,10 +163,6 @@ namespace ClangPowerTools.Output
       if (null == e.Data)
         return;
 
-
-      if (outputContent.MissingLLVM)
-        return;
-
       if (id == CommandIds.kTidyId || id == CommandIds.kTidyToolbarId
         || id == CommandIds.kTidyToolWindowId || id == CommandIds.kTidyFixId
         || id == CommandIds.kTidyFixToolbarId)
@@ -236,7 +232,7 @@ namespace ClangPowerTools.Output
       var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
 
       tempPaths.Clear();
-      if (Buffer.Count != 0 && outputContent.MissingLLVM == false)
+      if (Buffer.Count != 0)
       {
         outputResult = String.Join("\n", Buffer);
         if (id == CommandIds.kClangFindRun)

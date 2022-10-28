@@ -40,12 +40,6 @@ namespace ClangPowerTools.Output
         return VSConstants.S_OK;
       }
 
-      //if (mErrorDetector.LlvmIsMissing(aMessage))
-      //{
-      //  aOutputContent.MissingLLVM = true;
-      //  return VSConstants.S_FALSE;
-      //}
-
       if (mErrorDetector.HasEncodingError(aMessage))
       {
         aOutputContent.HasEncodingError = true;
