@@ -32,7 +32,7 @@ namespace ClangPowerTools.Commands.BackgroundTidy
       if (null == e.Data)
         return;
 
-      if (outputContent.MissingLLVM || outputContent.HasEncodingError)
+      if (outputContent.HasEncodingError)
         return;
 
       Process(e.Data);
@@ -68,18 +68,6 @@ namespace ClangPowerTools.Commands.BackgroundTidy
     private void Process(string message)
     {
       outputContent.Buffer.Add(message);
-
-      if (errorDetector.LlvmIsMissing(message))
-      {
-        outputContent.MissingLLVM = true;
-        return;
-      }
-
-      if (errorDetector.HasEncodingError(message))
-      {
-        outputContent.HasEncodingError = true;
-        return;
-      }
 
       var text = String.Join("\n", outputContent.Buffer.ToList()) + "\n";
       if (errorDetector.Detect(text, ErrorParserConstants.kErrorMessageRegex, out _))

@@ -1,4 +1,6 @@
-﻿using ClangPowerToolsShared.Commands;
+﻿using ClangPowerTools;
+using ClangPowerTools.Helpers;
+using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
 using ClangPowerToolsShared.MVVM.Interfaces;
 using System.Collections.Generic;
@@ -22,6 +24,7 @@ namespace ClangPowerToolsShared.MVVM.Models.ToolWindowModels
       set
       {
         matches = value;
+        PowerShellWrapper.InteractivCommands = JoinUtility.AddMatcherKeyword(value);
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Matches"));
       }
     }

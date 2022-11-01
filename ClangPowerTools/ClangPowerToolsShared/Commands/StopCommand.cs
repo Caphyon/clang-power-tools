@@ -93,7 +93,6 @@ namespace ClangPowerTools.Commands
     private Mutex mutex = new Mutex();
     public void StopClangCommand(bool backgroundRunners)
     {
-      var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
       try
       {
         if (backgroundRunners == false)

@@ -19,6 +19,8 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     private Dictionary<string, string> pathCommandPairs = new();
     private List<string> commands = new();
     private string pathToClangQuery;
+    private string mInteractiveModeDocumentName = string.Empty;
+    private int mInteractiveModeDocumentHash = 0;
 
     public List<MenuItem> MenuOptions
     {
@@ -96,15 +98,24 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         }
       }
       DisplayMessageBeforeFind();
-      pathCommandPairs = GetCommandForPowershell(pathToClangQuery);
-      PowerShellWrapper.InvokePassSequentialCommands(pathCommandPairs);
+      if (LookInMenuController.GetSelectedMenuItem().LookInMenu == LookInMenu.CurrentActiveDocument)
+      {
+        pathCommandPairs = GetCommandForPowershellInteractiveMode(pathToClangQuery);
+        CheckFileNameActiveInteractiveMode(pathCommandPairs.First().Key);
+        PowerShellWrapper.InvokeInteractiveMode(pathCommandPairs.First());
+      }
+      else
+      {
+        pathCommandPairs = GetCommandForPowershell(pathToClangQuery);
+        PowerShellWrapper.InvokePassSequentialCommands(pathCommandPairs);
+      }
       DisplayMessageAfterFind();
       File.Delete(PathConstants.GetPathToFindCommands);
     }
 
     private void DisplayMessageAfterFind()
     {
-      CommandControllerInstance.CommandController.DisplayMessage(false, "\nⒾ Find all matches in Error List -> Ⓘ Messages\n");
+      CommandControllerInstance.CommandController.DisplayMessage(false, "\nⒾ Find all matches in Error List -> Ⓘ Messages \nMake sure that [Build + IntelliSense] is selected\n");
     }
 
     private void DisplayMessageBeforeFind()
@@ -141,6 +152,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     {
       public string file { get; set; }
     }
+
     private Dictionary<string, string> GetCommandForPowershell(string pathToBinary)
     {
       string compilationDatabaseContent = string.Empty;
@@ -157,6 +169,44 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         $"-command '& ''{pathToBinary}''  ''{path}'' " +
         $"-p ''{PathConstants.JsonCompilationDBPath}'' " +
         $"-f ''{PathConstants.GetPathToFindCommands}'' '";
+        if (!commands.ContainsKey(path))
+          commands.Add(path, command);
+      }
+      return commands;
+    }
+
+    private void CheckFileNameActiveInteractiveMode(string aFileName)
+    {
+      bool modifedFile = false;
+      if(File.Exists(aFileName))
+      {
+        int contentHash = File.ReadAllText(aFileName).GetHashCode();
+        if (contentHash != mInteractiveModeDocumentHash)
+          modifedFile = true;
+        mInteractiveModeDocumentHash = contentHash;
+      }
+
+      if (!string.IsNullOrEmpty(mInteractiveModeDocumentName) 
+        && (mInteractiveModeDocumentName != aFileName || modifedFile))
+        PowerShellWrapper.EndInteractiveMode();
+      mInteractiveModeDocumentName = aFileName;
+    }
+
+    private Dictionary<string, string> GetCommandForPowershellInteractiveMode(string pathToBinary)
+    {
+      string compilationDatabaseContent = string.Empty;
+      if (File.Exists(PathConstants.JsonCompilationDBPath))
+      {
+        compilationDatabaseContent = File.ReadAllText(PathConstants.JsonCompilationDBPath);
+      }
+      List<FileCompilationDB> files = JsonConvert.DeserializeObject<List<FileCompilationDB>>(compilationDatabaseContent);
+
+      Dictionary<string, string> commands = new();
+      foreach (var path in files.Select(a => a.file).ToList())
+      {
+        var command = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive " +
+        $"-command '& ''{pathToBinary}''  ''{path}'' " +
+        $"-p ''{PathConstants.JsonCompilationDBPath}'' '";
         if (!commands.ContainsKey(path))
           commands.Add(path, command);
       }

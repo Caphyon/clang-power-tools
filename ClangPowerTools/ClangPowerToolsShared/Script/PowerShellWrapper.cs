@@ -1,5 +1,7 @@
 ﻿using ClangPowerTools.Output;
 using ClangPowerToolsShared.Commands;
+using ClangPowerToolsShared.MVVM.Constants;
+using EnvDTE;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,6 +11,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Process = System.Diagnostics.Process;
 
 namespace ClangPowerTools
 {
@@ -21,6 +24,9 @@ namespace ClangPowerTools
     public static EventHandler ExitedHandler { get; set; }
 
     public static OutputWindowController mOutputWindowController;
+    public static string InteractivCommands { get; set; } = string.Empty;
+    private static bool mInteractiveMode = false;
+    private static Process mInteractiveProcess;
 
 
     #endregion
@@ -102,12 +108,87 @@ namespace ClangPowerTools
       }
     }
 
+    public static void EndInteractiveMode()
+    {
+      if (mInteractiveProcess == null)
+        return;
+      RunController.runningProcesses.Kill(mInteractiveProcess);
+      {
+        mOutputWindowController.Write("❎ Interactive mode deactivated on document");
+      }
+      if (mInteractiveProcess.HasExited || mInteractiveProcess.Responding == false)
+        mInteractiveProcess = null;
+      mInteractiveMode = false;
+    }
+
+    public static void InvokeInteractiveMode(KeyValuePair<string, string> aKeyValuePair)
+    {
+      mOutputWindowController.Write("✅ Interactive mode activated on document: " + aKeyValuePair.Key);
+
+      if (mInteractiveProcess == null)
+        mInteractiveProcess = new Process();
+      if (mInteractiveMode)
+      {
+        mInteractiveProcess.StandardInput.WriteLine(InteractivCommands);
+      }
+      else
+        try
+        {
+          if (RunController.StopCommandActivated)
+          {
+            return;
+          }
+          mInteractiveProcess.StartInfo = new ProcessStartInfo()
+          {
+            FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}",
+            RedirectStandardError = true,
+            RedirectStandardOutput = true,
+            RedirectStandardInput = true,
+            CreateNoWindow = true,
+            UseShellExecute = false,
+            Arguments = Regex.Replace(aKeyValuePair.Value, @"([\w|\\])'([\w|\\])", "$1''''$2")
+          };
+          mInteractiveProcess.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
+
+          var customTidyExecutable = GetCustomTidyPath();
+
+          if (string.IsNullOrWhiteSpace(customTidyExecutable) == false)
+            mInteractiveProcess.StartInfo.EnvironmentVariables[ScriptConstants.kEnvrionmentTidyPath] = customTidyExecutable;
+
+          mInteractiveProcess.EnableRaisingEvents = true;
+          mInteractiveProcess.ErrorDataReceived += DataErrorHandler;
+          mInteractiveProcess.OutputDataReceived += DataHandler;
+          mInteractiveProcess.Exited += ExitedHandler;
+          mInteractiveProcess.Disposed += ExitedHandler;
+
+          mInteractiveProcess.Start();
+
+          mInteractiveProcess.BeginErrorReadLine();
+          mInteractiveProcess.BeginOutputReadLine();
+
+          mInteractiveProcess.StandardInput.WriteLine(MatchConstants.SetOutpuDump);
+          mInteractiveProcess.StandardInput.WriteLine(InteractivCommands);
+          mInteractiveMode = true;
+        }
+        catch (Exception e)
+        {
+          mInteractiveProcess.EnableRaisingEvents = false;
+          mInteractiveProcess.ErrorDataReceived -= DataErrorHandler;
+          mInteractiveProcess.OutputDataReceived -= DataHandler;
+          mInteractiveProcess.Exited -= ExitedHandler;
+          mInteractiveProcess.Disposed -= ExitedHandler;
+          mInteractiveProcess.Close();
+          throw e;
+        }
+    }
+
+
     public static void InvokePassSequentialCommands(Dictionary<string, string> aPathCommandPair)
     {
       var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
       int count = 0;
 
-      mOutputWindowController.Write("Will be processed " + aPathCommandPair.Count + " files");
+      mOutputWindowController.Write("Will process " + aPathCommandPair.Count + " files");
       mOutputWindowController.ResetMatchesNr();
 
       List<Task> tasks = new List<Task>();

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ClangPowerTools.Output
 {
@@ -37,12 +38,6 @@ namespace ClangPowerTools.Output
       {
         aOutputContent.JsonFilePath = GetJsonFilePath(matchResult);
         return VSConstants.S_OK;
-      }
-
-      if (mErrorDetector.LlvmIsMissing(aMessage))
-      {
-        aOutputContent.MissingLLVM = true;
-        return VSConstants.S_FALSE;
       }
 
       if (mErrorDetector.HasEncodingError(aMessage))
@@ -76,6 +71,11 @@ namespace ClangPowerTools.Output
       }
 
       return VSConstants.S_FALSE;
+    }
+
+    public bool FindMatchFinishKeyword(string text)
+    {
+      return mErrorDetector.Detect(text, ErrorParserConstants.kNumberMatchesRegex, out Match aMatchResult); ;
     }
 
     #endregion
