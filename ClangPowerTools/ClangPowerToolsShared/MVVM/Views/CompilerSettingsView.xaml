@@ -447,6 +447,32 @@
         Foreground="White"
         Style="{StaticResource SettingsButton}" />
       </WrapPanel>
+
+      <!--  Support for powershell 7  -->
+      <WrapPanel Grid.Row="1" Grid.Column="2">
+        <WrapPanel.ToolTip>
+          <ToolTip>
+            <TextBlock
+            MaxWidth="400"
+            Text="{Binding Tooltip.AliasPowerShellScripts}"
+            TextWrapping="Wrap" />
+          </ToolTip>
+        </WrapPanel.ToolTip>
+        
+        <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Powershell 7" />
+
+        <ToggleButton
+        HorizontalAlignment="Left"
+        VerticalAlignment="Center"
+        IsChecked="{Binding CompilerModel.Powershell7}"
+        Tag="On" />
+      </WrapPanel>
     </Grid>
   </Grid>
 </UserControl>

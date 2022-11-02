@@ -17,6 +17,7 @@
     public bool ClangAfterMSVC { get; set; } = false;
 
     public bool VerboseMode { get; set; } = false;
+    public bool Powershell7 { get; set; } = false;
 
     public bool ShowErrorList { get; set; } = true;
 
