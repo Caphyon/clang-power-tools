@@ -10,9 +10,9 @@ Set-Variable -name kLLVMInstallLocations    -value @("${Env:ProgramW6432}\LLVM\b
                                                     ,"${Env:ProgramFiles(x86)}\LLVM\bin"
                                                     )                   -option Constant
 #Url to assets (clang++ and clang-tidy) from previous release made by Clang Power Tools on github 
-Set-Variable -name kCptGithubLlvm -value "https://github.com/Caphyon/clang-power-tools/releases/download/v9.3" `
+Set-Variable -name kCptGithubLlvm -value "https://github.com/Caphyon/clang-power-tools/releases/download/v9.2" `
                                   -option Constant
-Set-Variable -name kCptGithubLlvmVersion -value "15.0.3 (LLVM 15.0.3)" -Option Constant
+Set-Variable -name kCptGithubLlvmVersion -value "15.0.4 (LLVM 15.0.4)" -Option Constant
 
 # Clang Constants
 

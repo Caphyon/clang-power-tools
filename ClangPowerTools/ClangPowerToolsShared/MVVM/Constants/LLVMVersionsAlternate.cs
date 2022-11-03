@@ -6,6 +6,7 @@ namespace ClangPowerTools
   {
     public static List<string> VersionAlternateUri { get; } = new List<string>
     {
+      "15.0.4",
       "15.0.3",
       "15.0.0",
       "14.0.6",
