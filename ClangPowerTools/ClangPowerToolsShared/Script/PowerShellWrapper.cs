@@ -296,8 +296,13 @@ namespace ClangPowerTools
       process.StartInfo.RedirectStandardError = true;
       process.StartInfo.EnvironmentVariables["Path"] = PowerShellWrapper.CreatePathEnvironmentVariable();
       process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
-      process.StartInfo.Arguments = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
-        $" ''{getllvmScriptPath}'' {tool} '";
+
+      string powershell = string.Empty;
+      if (SettingsProvider.CompilerSettingsModel.Powershell7)
+        powershell = ScriptConstants.kScriptPwshBeginning;
+      else
+        powershell = ScriptConstants.kScriptBeginning;
+      process.StartInfo.Arguments = powershell + $" ''{getllvmScriptPath}'' {tool} '";
 
       RunController.runningProcesses.Add(process);
 
