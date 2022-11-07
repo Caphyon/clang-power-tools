@@ -1,7 +1,6 @@
 ﻿using ClangPowerTools.Output;
 using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
-using EnvDTE;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -11,6 +10,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Process = System.Diagnostics.Process;
 
 namespace ClangPowerTools
@@ -36,6 +36,11 @@ namespace ClangPowerTools
 
     public static void Invoke(string aScript)
     {
+      if(SettingsProvider.CompilerSettingsModel.Powershell7 && !CheckPowerShell7InPath())
+      {
+        mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
+        return;
+      }
       Process process = new Process();
       try
       {
@@ -123,6 +128,12 @@ namespace ClangPowerTools
 
     public static void InvokeInteractiveMode(KeyValuePair<string, string> aKeyValuePair)
     {
+      if (SettingsProvider.CompilerSettingsModel.Powershell7 && !CheckPowerShell7InPath())
+      {
+        mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
+        return;
+      }
+
       mOutputWindowController.Write("✅ Interactive mode activated on document: " + aKeyValuePair.Key);
 
       if (mInteractiveProcess == null)
@@ -185,6 +196,12 @@ namespace ClangPowerTools
 
     public static void InvokePassSequentialCommands(Dictionary<string, string> aPathCommandPair)
     {
+      if (SettingsProvider.CompilerSettingsModel.Powershell7 && !CheckPowerShell7InPath())
+      {
+        mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
+        return;
+      }
+
       var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
       int count = 0;
 
@@ -297,11 +314,21 @@ namespace ClangPowerTools
       process.StartInfo.EnvironmentVariables["Path"] = PowerShellWrapper.CreatePathEnvironmentVariable();
       process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
 
+      //Check if powershell 7 is in Path
       string powershell = string.Empty;
       if (SettingsProvider.CompilerSettingsModel.Powershell7)
+      {
         powershell = ScriptConstants.kScriptPwshBeginning;
+        if (!CheckPowerShell7InPath())
+        {
+          mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
+          return string.Empty;
+        }
+      }
       else
+      {
         powershell = ScriptConstants.kScriptBeginning;
+      }
       process.StartInfo.Arguments = powershell + $" ''{getllvmScriptPath}'' {tool} '";
 
       RunController.runningProcesses.Add(process);
@@ -320,6 +347,11 @@ namespace ClangPowerTools
             $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
       }
       return string.Empty;
+    }
+
+    public static bool CheckPowerShell7InPath()
+    {
+      return Environment.GetEnvironmentVariable("Path").Contains("PowerShell\\7");
     }
 
     #endregion
