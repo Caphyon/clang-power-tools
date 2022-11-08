@@ -10,7 +10,6 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using Process = System.Diagnostics.Process;
 
 namespace ClangPowerTools
@@ -36,11 +35,12 @@ namespace ClangPowerTools
 
     public static void Invoke(string aScript)
     {
-      if(SettingsProvider.CompilerSettingsModel.Powershell7 && !CheckPowerShell7InPath())
+      if (SettingsProvider.CompilerSettingsModel.Powershell7 && string.IsNullOrEmpty(GetPwshPath()))
       {
         mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
         return;
       }
+
       Process process = new Process();
       try
       {
@@ -128,7 +128,7 @@ namespace ClangPowerTools
 
     public static void InvokeInteractiveMode(KeyValuePair<string, string> aKeyValuePair)
     {
-      if (SettingsProvider.CompilerSettingsModel.Powershell7 && !CheckPowerShell7InPath())
+      if (SettingsProvider.CompilerSettingsModel.Powershell7 && string.IsNullOrEmpty(GetPwshPath()))
       {
         mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
         return;
@@ -196,7 +196,7 @@ namespace ClangPowerTools
 
     public static void InvokePassSequentialCommands(Dictionary<string, string> aPathCommandPair)
     {
-      if (SettingsProvider.CompilerSettingsModel.Powershell7 && !CheckPowerShell7InPath())
+      if (SettingsProvider.CompilerSettingsModel.Powershell7 && string.IsNullOrEmpty(GetPwshPath()))
       {
         mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
         return;
@@ -319,7 +319,7 @@ namespace ClangPowerTools
       if (SettingsProvider.CompilerSettingsModel.Powershell7)
       {
         powershell = ScriptConstants.kScriptPwshBeginning;
-        if (!CheckPowerShell7InPath())
+        if (string.IsNullOrEmpty(GetPwshPath()))
         {
           mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
           return string.Empty;
@@ -349,9 +349,36 @@ namespace ClangPowerTools
       return string.Empty;
     }
 
-    public static bool CheckPowerShell7InPath()
+
+    /// <summary>
+    /// Return pwsh path, if is found in enviroment variables. 
+    /// Returns empty string if path can't be found. 
+    /// </summary>
+    /// <returns></returns>
+    public static string GetPwshPath()
     {
-      return Environment.GetEnvironmentVariable("Path").Contains("PowerShell\\7");
+      var path = Environment.GetEnvironmentVariable("Path");
+      var paths = path.Split(';').ToList();
+
+      //Is powerhell 7 in path - first check
+      string powershell7Path = paths.Find(p => p.Contains(ScriptConstants.kPowershell7PathPart))?.ToString();
+      if (!string.IsNullOrWhiteSpace(powershell7Path))
+      {
+        //Check if pwsh exists on this path
+        string pwshPath = Path.Combine(powershell7Path, ScriptConstants.kPwsh);
+        if (File.Exists(pwshPath))
+          return pwshPath;
+      }
+
+      //Search pwsh in all paths - second check
+      var pathResult = paths.Find(p => File.Exists(Path.Combine(p, ScriptConstants.kPwsh)));
+      if(!string.IsNullOrEmpty(pathResult))
+      {
+        string resultPwshPath = Path.Combine(paths.Find(p => File.Exists(Path.Combine(p, ScriptConstants.kPwsh))).ToString(), ScriptConstants.kPwsh);
+        if (File.Exists(resultPwshPath))
+          return resultPwshPath;
+      }
+      return string.Empty;
     }
 
     #endregion
