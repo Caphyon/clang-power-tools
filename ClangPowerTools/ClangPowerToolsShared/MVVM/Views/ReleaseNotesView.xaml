@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 9.3" />
+                 Text="version 9.4" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -109,48 +109,13 @@
                  Text="What's New" />
 
 
-        <TextBox Margin="5,25,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• CPT Find: bringing the power of clang-query to your codebase"
-                 TextWrapping="Wrap" />
-        <TextBox Margin="30,5,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="14"
-                 IsReadOnly="True"
-                 Text="• Trigger find when pressing enter on custom matches filed"
-                 TextWrapping="Wrap" />
-
-        <TextBox Margin="30,5,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="14"
-                 IsReadOnly="True"
-                 Text="• Navigate through the matches history"
-                 TextWrapping="Wrap" />
-
-        <TextBox Margin="30,5,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="14"
-                 IsReadOnly="True"
-                 Text="• Complete the custom matches field with a selected matcher"
-                 TextWrapping="Wrap" />
-
         <TextBox Margin="15,15,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Add .inl to default file extensions in format Settings"
+                 Text="• Instant query a second time on the same active document"
                  TextWrapping="Wrap" />
         
         <TextBox Margin="15,15,0,0"
@@ -159,9 +124,18 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Display the matching result code in the message description"
+                 Text="• LLVM 15.0.3"
                  TextWrapping="Wrap" />
-
+        
+        <TextBox Margin="15,15,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• LLVM 15.0.4"
+                 TextWrapping="Wrap" />
+        
         <!--Bug Fixes-->
         <TextBox Margin="5,20,0,0"
                  HorizontalAlignment="Left"
@@ -177,7 +151,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Disabling all predefined checks still results in some checks being performed"
+                 Text="• If you don't have LLVM installed manually, the process can't be complete"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,15,0,0"
@@ -186,7 +160,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• The cpt alias in Powershell button is cut off from the settings"
+                 Text="• Invalid link to tidy checks description"
                  TextWrapping="Wrap" />
         <!--<TextBox
           Margin="15,5,0,0"
