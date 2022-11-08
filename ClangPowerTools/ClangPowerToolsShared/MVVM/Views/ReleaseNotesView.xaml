@@ -115,18 +115,18 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Instant query a second time on the same active document"
+                 Text="• Optimised CPT Find performance when running repeatedly on the same file"
                  TextWrapping="Wrap" />
-        
+
         <TextBox Margin="15,15,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• LLVM 15.0.3"
+                 Text="• Display full output for CPT Find with verbose mode activated"
                  TextWrapping="Wrap" />
-        
+
         <TextBox Margin="15,15,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
@@ -151,7 +151,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• If you don't have LLVM installed manually, the process can't be complete"
+                 Text="• If you don't have LLVM installed manually, the process of auto-install fails"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,15,0,0"
