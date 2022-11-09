@@ -47,8 +47,6 @@ namespace ClangPowerTools
     public event EventHandler<EventArgs> ErrorDetectedEvent;
     public event EventHandler<EventArgs> HasEncodingErrorEvent;
 
-    public RunningDocTableEvents mRunningDocTableEvents;
-
     private bool mFormatted = false;
     private readonly Commands2 mCommand;
     private CommandUILocation commandUILocation;
@@ -815,33 +813,12 @@ namespace ClangPowerTools
       return VSConstants.S_OK;
     }
 
-    public void OnAfterSave(object sender, Document aDocument)
+    public void OnBeforeSave(object sender, Document aDocument)
     {
-      var formatSettings = SettingsProvider.FormatSettingsModel;
-
-      if (!formatSettings.FormatOnSave)
-        return;
-      if (mFormatted)
-      {
-        mFormatted = false;
-        return;
-      }
       StopBackgroundRunners();
+
       BeforeSaveClangTidyAsync(aDocument).SafeFireAndForget();
       BeforeSaveClangFormat(aDocument);
-      if (!mFormatted)
-      {
-        FormatCommand.Instance.FormatOnSave(aDocument);
-        mFormatted = true;
-      }
-      if (mRunningDocTableEvents is not null)
-      {
-        if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
-        {
-          var dte2 = (DTE2)dte;
-          dte2.ExecuteCommand("File.SaveSelectedItems");
-        }
-      }
     }
 
     private async Task BeforeSaveClangTidyAsync(Document document)
@@ -876,8 +853,7 @@ namespace ClangPowerTools
       var formatSettings = SettingsProvider.FormatSettingsModel;
       var tidySettings = SettingsProvider.TidySettingsModel;
 
-      if (currentCommand == CommandIds.kTidyFixId && running && tidySettings.FormatAfterTidy &&
-          formatSettings.FormatOnSave)
+      if (currentCommand == CommandIds.kTidyFixId && running && tidySettings.FormatAfterTidy && formatSettings.FormatOnSave)
       {
         mFormatAfterTidyFlag = true;
         return;
@@ -885,6 +861,11 @@ namespace ClangPowerTools
 
       if (false == formatSettings.FormatOnSave)
         return;
+
+      if (currentCommand == CommandIds.kTidyFixId && false == Vsix.IsDocumentDirty(aDocument) && false == mFormatAfterTidyFlag)
+        return;
+
+      FormatCommand.Instance.FormatOnSave(aDocument);
     }
 
     public void CommandEventsBeforeExecute(string aGuid,

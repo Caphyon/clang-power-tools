@@ -18,11 +18,9 @@ namespace ClangPowerTools
     private RunningDocumentTable mRunningDocumentTable;
 
     public delegate void OnBeforeSaveHandler(object sender, Document document);
-    public delegate void OnAfterSaveHandler(object sender, Document document);
     public delegate void OnBeforeActiveDocumentChange(object sender, Document document);
 
     public event OnBeforeSaveHandler BeforeSave;
-    public event OnAfterSaveHandler AfterSave;
     public event OnBeforeActiveDocumentChange BeforeActiveDocumentChange;
 
     #endregion
@@ -68,26 +66,6 @@ namespace ClangPowerTools
 
     public int OnAfterSave(uint docCookie)
     {
-      try
-      {
-        if (null == AfterSave)
-          return VSConstants.S_OK;
-
-        var document = FindDocumentByCookie(docCookie);
-        if (null == document)
-          return VSConstants.S_OK;
-
-        bool acceptedExtension = ScriptConstants.kExtendedAcceptedFileExtensions.Contains(Path.GetExtension(document.Name));
-        if (acceptedExtension == false)
-          return VSConstants.S_OK;
-
-        AfterSave(this, document);
-      }
-      catch (Exception e)
-      {
-        MessageBox.Show("Error while running clang command on save. " + e.Message, "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Error);
-      }
-
       return VSConstants.S_OK;
     }
 
@@ -112,7 +90,6 @@ namespace ClangPowerTools
     {
       return VSConstants.S_OK;
     }
-
 
     public int OnBeforeSave(uint docCookie)
     {
