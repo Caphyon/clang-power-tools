@@ -862,7 +862,7 @@ namespace ClangPowerTools
       if (false == formatSettings.FormatOnSave)
         return;
 
-      if (false == Vsix.IsDocumentDirty(aDocument) && false == mFormatAfterTidyFlag)
+      if (currentCommand == CommandIds.kTidyFixId && false == Vsix.IsDocumentDirty(aDocument) && false == mFormatAfterTidyFlag)
         return;
 
       FormatCommand.Instance.FormatOnSave(aDocument);
