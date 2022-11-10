@@ -38,6 +38,9 @@ namespace ClangPowerTools
       if (SettingsProvider.CompilerSettingsModel.Powershell7
         && string.IsNullOrEmpty(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)))
       {
+        SettingsHandler settingsHandler = new SettingsHandler();
+        SettingsProvider.CompilerSettingsModel.Powershell7 = false;
+        settingsHandler.SaveSettings();
         mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
         return;
       }
@@ -75,12 +78,15 @@ namespace ClangPowerTools
         };
 
         //Update arguments and FileName path for Cpt alias added from pwsh
-        if (SettingsProvider.CompilerSettingsModel.Powershell7 && aUsePwshFileName)
+        if (SettingsProvider.CompilerSettingsModel.Powershell7)
         {
-          process.StartInfo.FileName = File.Exists(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)) ?
-            GetFilePathFromEnviromentVar(ScriptConstants.kPwsh) :
-            $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
           process.StartInfo.Arguments = "-Command \"" + process.StartInfo.Arguments + "\"";
+          if (aUsePwshFileName)
+          {
+            process.StartInfo.FileName = File.Exists(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)) ?
+              GetFilePathFromEnviromentVar(ScriptConstants.kPwsh) :
+              $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
+          }
         }
 
         process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
@@ -142,6 +148,9 @@ namespace ClangPowerTools
         && string.IsNullOrEmpty(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)))
       {
         mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
+        SettingsHandler settingsHandler = new SettingsHandler();
+        SettingsProvider.CompilerSettingsModel.Powershell7 = false;
+        settingsHandler.SaveSettings();
         return;
       }
 
@@ -207,10 +216,13 @@ namespace ClangPowerTools
 
     public static void InvokePassSequentialCommands(Dictionary<string, string> aPathCommandPair)
     {
-      if (SettingsProvider.CompilerSettingsModel.Powershell7 
+      if (SettingsProvider.CompilerSettingsModel.Powershell7
         && string.IsNullOrEmpty(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)))
       {
         mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
+        SettingsHandler settingsHandler = new SettingsHandler();
+        SettingsProvider.CompilerSettingsModel.Powershell7 = false;
+        settingsHandler.SaveSettings();
         return;
       }
 
@@ -334,6 +346,9 @@ namespace ClangPowerTools
         if (string.IsNullOrEmpty(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)))
         {
           mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
+          SettingsHandler settingsHandler = new SettingsHandler();
+          SettingsProvider.CompilerSettingsModel.Powershell7 = false;
+          settingsHandler.SaveSettings();
           return string.Empty;
         }
       }
