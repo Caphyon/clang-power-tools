@@ -33,9 +33,10 @@ namespace ClangPowerTools
     #region Public Methods
 
 
-    public static void Invoke(string aScript)
+    public static void Invoke(string aScript, bool aUsePwshFileName = false)
     {
-      if (SettingsProvider.CompilerSettingsModel.Powershell7 && string.IsNullOrEmpty(GetPwshPath()))
+      if (SettingsProvider.CompilerSettingsModel.Powershell7
+        && string.IsNullOrEmpty(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)))
       {
         mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
         return;
@@ -44,6 +45,7 @@ namespace ClangPowerTools
       Process process = new Process();
       try
       {
+
         process.StartInfo = new ProcessStartInfo()
         {
           FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}",
@@ -71,14 +73,22 @@ namespace ClangPowerTools
            */
           Arguments = Regex.Replace(aScript, @"([\w|\\])'([\w|\\])", "$1''''$2")
         };
+
+        //Update arguments and FileName path for Cpt alias added from pwsh
+        if (SettingsProvider.CompilerSettingsModel.Powershell7 && aUsePwshFileName)
+        {
+          process.StartInfo.FileName = File.Exists(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)) ?
+            GetFilePathFromEnviromentVar(ScriptConstants.kPwsh) :
+            $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
+          process.StartInfo.Arguments = "-Command \"" + process.StartInfo.Arguments + "\"";
+        }
+
         process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
 
         var customTidyExecutable = GetCustomTidyPath();
 
         if (string.IsNullOrWhiteSpace(customTidyExecutable) == false)
           process.StartInfo.EnvironmentVariables[ScriptConstants.kEnvrionmentTidyPath] = customTidyExecutable;
-
-        var FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
 
         process.EnableRaisingEvents = true;
         process.ErrorDataReceived += DataErrorHandler;
@@ -128,7 +138,8 @@ namespace ClangPowerTools
 
     public static void InvokeInteractiveMode(KeyValuePair<string, string> aKeyValuePair)
     {
-      if (SettingsProvider.CompilerSettingsModel.Powershell7 && string.IsNullOrEmpty(GetPwshPath()))
+      if (SettingsProvider.CompilerSettingsModel.Powershell7
+        && string.IsNullOrEmpty(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)))
       {
         mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
         return;
@@ -196,7 +207,8 @@ namespace ClangPowerTools
 
     public static void InvokePassSequentialCommands(Dictionary<string, string> aPathCommandPair)
     {
-      if (SettingsProvider.CompilerSettingsModel.Powershell7 && string.IsNullOrEmpty(GetPwshPath()))
+      if (SettingsProvider.CompilerSettingsModel.Powershell7 
+        && string.IsNullOrEmpty(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)))
       {
         mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
         return;
@@ -225,7 +237,7 @@ namespace ClangPowerTools
             RedirectStandardOutput = true,
             RedirectStandardInput = true,
             CreateNoWindow = true,
-            UseShellExecute = false,
+            UseShellExecute = true,
             Arguments = Regex.Replace(pathCommand.Value, @"([\w|\\])'([\w|\\])", "$1''''$2")
           };
           process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
@@ -319,7 +331,7 @@ namespace ClangPowerTools
       if (SettingsProvider.CompilerSettingsModel.Powershell7)
       {
         powershell = ScriptConstants.kScriptPwshBeginning;
-        if (string.IsNullOrEmpty(GetPwshPath()))
+        if (string.IsNullOrEmpty(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)))
         {
           mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
           return string.Empty;
@@ -351,32 +363,32 @@ namespace ClangPowerTools
 
 
     /// <summary>
-    /// Return pwsh path, if is found in enviroment variables. 
+    /// Return file path, if is found in enviroment variables. 
     /// Returns empty string if path can't be found. 
     /// </summary>
     /// <returns></returns>
-    public static string GetPwshPath()
+    public static string GetFilePathFromEnviromentVar(string aFile)
     {
       var path = Environment.GetEnvironmentVariable("Path");
       var paths = path.Split(';').ToList();
 
-      //Is powerhell 7 in path - first check
-      string powershell7Path = paths.Find(p => p.Contains(ScriptConstants.kPowershell7PathPart))?.ToString();
-      if (!string.IsNullOrWhiteSpace(powershell7Path))
+      //Is file in path - first check
+      string filePath = paths.Find(p => p.Contains(ScriptConstants.kPowershell7PathPart))?.ToString();
+      if (!string.IsNullOrWhiteSpace(filePath))
       {
-        //Check if pwsh exists on this path
-        string pwshPath = Path.Combine(powershell7Path, ScriptConstants.kPwsh);
-        if (File.Exists(pwshPath))
-          return pwshPath;
+        //Check if file exists on this path
+        string absoluteFilePath = Path.Combine(filePath, aFile);
+        if (File.Exists(absoluteFilePath))
+          return absoluteFilePath;
       }
 
-      //Search pwsh in all paths - second check
-      var pathResult = paths.Find(p => File.Exists(Path.Combine(p, ScriptConstants.kPwsh)));
-      if(!string.IsNullOrEmpty(pathResult))
+      //Search file in all paths - second check
+      var pathResult = paths.Find(p => File.Exists(Path.Combine(p, aFile)));
+      if (!string.IsNullOrEmpty(pathResult))
       {
-        string resultPwshPath = Path.Combine(paths.Find(p => File.Exists(Path.Combine(p, ScriptConstants.kPwsh))).ToString(), ScriptConstants.kPwsh);
-        if (File.Exists(resultPwshPath))
-          return resultPwshPath;
+        string absoluteFilePath = Path.Combine(paths.Find(p => File.Exists(Path.Combine(p, aFile))).ToString(), aFile);
+        if (File.Exists(absoluteFilePath))
+          return absoluteFilePath;
       }
       return string.Empty;
     }
