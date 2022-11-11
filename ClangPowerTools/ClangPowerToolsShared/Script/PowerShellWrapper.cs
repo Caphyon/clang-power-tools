@@ -250,7 +250,7 @@ namespace ClangPowerTools
             RedirectStandardOutput = true,
             RedirectStandardInput = true,
             CreateNoWindow = true,
-            UseShellExecute = true,
+            UseShellExecute = false,
             Arguments = Regex.Replace(pathCommand.Value, @"([\w|\\])'([\w|\\])", "$1''''$2")
           };
           process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
