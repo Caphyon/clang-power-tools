@@ -470,7 +470,7 @@
         <ToggleButton
         HorizontalAlignment="Left"
         VerticalAlignment="Center"
-        IsChecked="{Binding CompilerModel.Powershell7}"
+        IsChecked="{Binding CompilerModel.Powershell7, Mode = TwoWay}"
         Tag="On" />
       </WrapPanel>
     </Grid>

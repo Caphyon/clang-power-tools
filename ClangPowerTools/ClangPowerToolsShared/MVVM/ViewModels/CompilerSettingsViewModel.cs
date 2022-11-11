@@ -123,10 +123,16 @@ namespace ClangPowerTools
       string ScriptWindowsPowerShell =
         "if ((Test-Path -Path $profile -PathType Leaf) -eq $false) { New-Item -Path $profile -ItemType \"file\" -Force};" +
         $"Add-Content $profile ' Set-Alias -Name cpt -Value ''{PowerShellWrapper.GetClangBuildScriptPath()}'' ' ";
-      PowerShellWrapper.Invoke(ScriptWindowsPowerShell, true);
-
-      DialogResult dialogResult = MessageBox.Show("Cpt alias for Clang Power Tools script was added in your Powershell profile",
-                                            "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      if(PowerShellWrapper.Invoke(ScriptWindowsPowerShell, true))
+      {
+        DialogResult dialogResult = MessageBox.Show("Cpt alias for Clang Power Tools script was added in your Powershell profile",
+                                              "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      }
+      else 
+      {
+        DialogResult dialogResult = MessageBox.Show("Sorry, we can't find Powershell 7 in PATH enviroment variables",
+                                      "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      }
     }
 
     private void UpdateScripts()

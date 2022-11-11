@@ -33,7 +33,7 @@ namespace ClangPowerTools
     #region Public Methods
 
 
-    public static void Invoke(string aScript, bool aUsePwshFileName = false)
+    public static bool Invoke(string aScript, bool aUsePwshFileName = false)
     {
       if (SettingsProvider.CompilerSettingsModel.Powershell7
         && string.IsNullOrEmpty(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)))
@@ -42,7 +42,7 @@ namespace ClangPowerTools
         SettingsProvider.CompilerSettingsModel.Powershell7 = false;
         settingsHandler.SaveSettings();
         mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
-        return;
+        return false;
       }
 
       Process process = new Process();
@@ -127,6 +127,7 @@ namespace ClangPowerTools
 
         throw e;
       }
+      return true;
     }
 
     public static void EndInteractiveMode()
@@ -378,7 +379,7 @@ namespace ClangPowerTools
 
 
     /// <summary>
-    /// Return file path, if is found in enviroment variables. 
+    /// Return file path, if is found in PATH enviroment variables. 
     /// Returns empty string if path can't be found. 
     /// </summary>
     /// <returns></returns>
