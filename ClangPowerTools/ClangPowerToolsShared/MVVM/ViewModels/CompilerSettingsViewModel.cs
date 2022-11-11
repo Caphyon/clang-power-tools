@@ -125,12 +125,12 @@ namespace ClangPowerTools
         $"Add-Content $profile ' Set-Alias -Name cpt -Value ''{PowerShellWrapper.GetClangBuildScriptPath()}'' ' ";
       if(PowerShellWrapper.Invoke(ScriptWindowsPowerShell, true))
       {
-        DialogResult dialogResult = MessageBox.Show("Cpt alias for Clang Power Tools script was added in your Powershell profile",
+        MessageBox.Show("Cpt alias for Clang Power Tools script was added in your Powershell profile",
                                               "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
       }
       else 
       {
-        DialogResult dialogResult = MessageBox.Show("Sorry, we can't find Powershell 7 in PATH enviroment variables",
+        MessageBox.Show("Sorry, we can't find Powershell 7 in PATH enviroment variables",
                                       "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Error);
       }
     }

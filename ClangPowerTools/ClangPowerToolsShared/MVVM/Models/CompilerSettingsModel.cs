@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace ClangPowerTools
 {
@@ -26,6 +27,12 @@ namespace ClangPowerTools
       get { return powershell7; } 
       set
       {
+        if(value && string.IsNullOrEmpty(PowerShellWrapper.GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)))
+        {
+          MessageBox.Show("Sorry, we can't find Powershell 7 in PATH enviroment variables",
+                              "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          return;
+        }
         powershell7 = value;
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Powershell7"));
 
