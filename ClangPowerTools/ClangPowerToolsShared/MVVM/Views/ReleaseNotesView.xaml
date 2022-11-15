@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 9.4.1" />
+                 Text="version 9.4.2" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -151,7 +151,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Format on save causes crashes on Visual Studio v17.4"
+                 Text="• No output during compile"
                  TextWrapping="Wrap" />
 
         <!--<TextBox Margin="15,15,0,0"
