@@ -244,7 +244,7 @@ namespace ClangPowerTools
         GenerateDocumentation.OutputDir = documentationOutoutePath;
         CommandControllerInstance.CommandController.DisplayMessage(false, "Please wait ...");
         string Script = $"-ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command \"& " +
-        $"'{clangDocPath}' --public {projectArguments} --format={GenerateDocumentation.Formats[commandId]}  -output='{documentationOutoutePath}' '{jsonCompilationDatabasePath}' 2>&1 | Out-Null' \"";
+        $"'{clangDocPath}' --public {projectArguments} --format={GenerateDocumentation.Formats[commandId]}  -output='{documentationOutoutePath}' '{jsonCompilationDatabasePath}' \" 2>&1 | Out-Null ";
 
         PowerShellWrapper.Invoke(Script);
 
@@ -375,18 +375,18 @@ namespace ClangPowerTools
       var item = mItemsCollector.Items[0];
 
       if (item is CurrentSolution)
-        Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), genericParameters, "'");
+        Script = JoinUtility.Join(" ", runModeParameters, genericParameters, "\"");
       else if (item is CurrentProject)
       {
         var itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item, true);
-        Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
+        Script = JoinUtility.Join(" ", runModeParameters, itemRelatedParameters, genericParameters, "\"");
       }
       else if (item is CurrentProjectItem)
       {
         var itemRelatedParameters = mItemsCollector.Items.Count == 1 ?
           ScriptGenerator.GetItemRelatedParameters(item, true) : ScriptGenerator.GetItemRelatedParameters(mItemsCollector.Items, true);
 
-        Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
+        Script = JoinUtility.Join(" ", runModeParameters, itemRelatedParameters, genericParameters, "\"");
       }
 
       PowerShellWrapper.Invoke(Script);

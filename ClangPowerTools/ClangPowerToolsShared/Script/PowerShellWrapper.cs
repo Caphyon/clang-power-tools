@@ -357,7 +357,7 @@ namespace ClangPowerTools
       {
         powershell = ScriptConstants.kScriptBeginning;
       }
-      process.StartInfo.Arguments = powershell + $" '{getllvmScriptPath}' {tool} '";
+      process.StartInfo.Arguments = powershell + $" '{getllvmScriptPath}' {tool} \"";
 
       RunController.runningProcesses.Add(process);
 
