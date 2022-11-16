@@ -114,7 +114,7 @@ namespace ClangPowerTools.Script
       var document = DocumentHandler.GetActiveDocument();
 
       mScript = $"{mScript} " +
-        $"{ScriptConstants.kFile} ''{document.FullName}'' ";
+        $"{ScriptConstants.kFile} '{document.FullName}' ";
     }
 
     private void CreateScriptForProjectItem()
@@ -127,11 +127,11 @@ namespace ClangPowerTools.Script
       var platform = ProjectConfigurationHandler.GetPlatform(projectItem.ContainingProject);
 
       var projectData = jsonCompilationDbActive ?
-        string.Empty : $"{ScriptConstants.kProject} ''{containingProject}'' ";
+        string.Empty : $"{ScriptConstants.kProject} '{containingProject}' ";
 
       mScript = $"{mScript} {projectData}" +
-        $"{ScriptConstants.kFile} ''{filePath}'' {ScriptConstants.kActiveConfiguration} " +
-        $"''{configuration}|{platform}''";
+        $"{ScriptConstants.kFile} '{filePath}' {ScriptConstants.kActiveConfiguration} " +
+        $"'{configuration}|{platform}'";
     }
 
     private void CreateScriptForProjectItemCollection()
@@ -139,23 +139,23 @@ namespace ClangPowerTools.Script
       ProjectItem projectItem = items[0].GetObject() as ProjectItem;
       string containingProject = projectItem.ContainingProject.FullName;
 
-      var filesPath = string.Join("'',''", items.Select(projItem => ((ProjectItem)projItem.GetObject()).Properties.Item("FullPath").Value));
+      var filesPath = string.Join("','", items.Select(projItem => ((ProjectItem)projItem.GetObject()).Properties.Item("FullPath").Value));
       var configuration = ProjectConfigurationHandler.GetConfiguration(projectItem.ContainingProject);
       var platform = ProjectConfigurationHandler.GetPlatform(projectItem.ContainingProject);
 
       var projectData = jsonCompilationDbActive ?
-        string.Empty : $"{ScriptConstants.kProject} ''{containingProject}'' ";
+        string.Empty : $"{ScriptConstants.kProject} '{containingProject}' ";
 
       mScript = $"{mScript} {projectData}" +
-        $"{ScriptConstants.kFile} (''{filesPath}'') {ScriptConstants.kActiveConfiguration} " +
-        $"''{configuration}|{platform}''";
+        $"{ScriptConstants.kFile} ('{filesPath}') {ScriptConstants.kActiveConfiguration} " +
+        $"'{configuration}|{platform}'";
     }
 
     private void CreateScriptForProject()
     {
       Project project = mItem.GetObject() as Project;
-      mScript = $"{mScript} {ScriptConstants.kProject} ''{project.FullName}'' {ScriptConstants.kActiveConfiguration} " +
-        $"''{ProjectConfigurationHandler.GetConfiguration(project)}|{ProjectConfigurationHandler.GetPlatform(project)}''";
+      mScript = $"{mScript} {ScriptConstants.kProject} '{project.FullName}' {ScriptConstants.kActiveConfiguration} " +
+        $"'{ProjectConfigurationHandler.GetConfiguration(project)}|{ProjectConfigurationHandler.GetPlatform(project)}'";
     }
 
     #endregion

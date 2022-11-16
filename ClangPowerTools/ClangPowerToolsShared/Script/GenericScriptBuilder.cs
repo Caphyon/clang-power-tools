@@ -73,7 +73,7 @@ namespace ClangPowerTools.Script
 
       // Append the solution path
       if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
-        mScript += $" {ScriptConstants.kDirectory} ''{(dte as DTE2).Solution.FullName}''";
+        mScript += $" {ScriptConstants.kDirectory} '{(dte as DTE2).Solution.FullName}' ";
     }
 
 
@@ -116,11 +116,11 @@ namespace ClangPowerTools.Script
 
       // Get the projects to ignore list 
       if (!string.IsNullOrWhiteSpace(compilerSettings.ProjectsToIgnore))
-        parameters.Append($" {ScriptConstants.kProjectsToIgnore} (''{TransformInPowerShellArray(compilerSettings.ProjectsToIgnore)}'')");
+        parameters.Append($" {ScriptConstants.kProjectsToIgnore} ('{TransformInPowerShellArray(compilerSettings.ProjectsToIgnore)}')");
 
       // Get the files to ignore list
       if (!string.IsNullOrWhiteSpace(compilerSettings.FilesToIgnore))
-        parameters.Append($" {ScriptConstants.kFilesToIgnore} (''{TransformInPowerShellArray(compilerSettings.FilesToIgnore)}'')");
+        parameters.Append($" {ScriptConstants.kFilesToIgnore} ('{TransformInPowerShellArray(compilerSettings.FilesToIgnore)}')");
 
       // Get the selected Additional Includes type  
       if (0 == string.Compare(ClangGeneralAdditionalIncludesConvertor.ToString(compilerSettings.AdditionalIncludes), ComboBoxConstants.kSystemIncludeDirectories))
@@ -143,8 +143,8 @@ namespace ClangPowerTools.Script
 
       return string.Format("{0} {1}", ScriptConstants.kClangFlags,
         compilerSettings.WarningsAsErrors ?
-          $" (''{ScriptConstants.kTreatWarningsAsErrors}'',''{TransformInPowerShellArray(compilerSettings.CompileFlags)}'')" :
-          $" (''{TransformInPowerShellArray(compilerSettings.CompileFlags)}'')");
+          $" ('{ScriptConstants.kTreatWarningsAsErrors}','{TransformInPowerShellArray(compilerSettings.CompileFlags)}')" :
+          $" ('{TransformInPowerShellArray(compilerSettings.CompileFlags)}')");
     }
 
 
@@ -154,7 +154,7 @@ namespace ClangPowerTools.Script
     /// <param name="aParametersList">The list of UI parameters</param>
     /// <returns>The power shell array containing the UI parameters</returns>
     private string TransformInPowerShellArray(string aParametersList) =>
-      string.Join("'',''", aParametersList.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
+      string.Join("','", aParametersList.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries));
 
 
     /// <summary>
@@ -204,7 +204,7 @@ namespace ClangPowerTools.Script
     /// <returns>The <"aParameters"> value with the clang tidy type with / without the clang tidy config file option attached</returns>
     private string AppendClangTidyType(string aParameters)
     {
-      return string.Format("{0} ''{1}''",
+      return string.Format("{0} '{1}'",
         (CommandIds.kTidyFixId == mCommandId ? ScriptConstants.kTidyFix : ScriptConstants.kTidy),
         aParameters);
     }
@@ -218,7 +218,7 @@ namespace ClangPowerTools.Script
     {
       var tidySettings = SettingsProvider.TidySettingsModel;
 
-      return string.Format("{0} ''{1}''", ScriptConstants.kHeaderFilter,
+      return string.Format("{0} '{1}'", ScriptConstants.kHeaderFilter,
         string.IsNullOrWhiteSpace(ClangTidyHeaderFiltersConvertor.ScriptEncode(tidySettings.HeaderFilter)) ?
            tidySettings.HeaderFilter :
            ClangTidyHeaderFiltersConvertor.ScriptEncode(tidySettings.HeaderFilter));

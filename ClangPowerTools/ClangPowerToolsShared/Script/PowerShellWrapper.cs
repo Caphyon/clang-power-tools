@@ -74,7 +74,7 @@ namespace ClangPowerTools
           file paths containing single quotes will never have spaces to the left or right of them, but the ones we 
           are not interested in will have space either to the left or the right.
            */
-          Arguments = Regex.Replace(aScript, @"([\w|\\])'([\w|\\])", "$1''''$2")
+          Arguments = Regex.Replace(aScript, @"([\w|\\])'([\w|\\])", "$1''$2")
         };
 
         //Update arguments and FileName path for Cpt alias added from pwsh
@@ -178,7 +178,7 @@ namespace ClangPowerTools
             RedirectStandardInput = true,
             CreateNoWindow = true,
             UseShellExecute = false,
-            Arguments = Regex.Replace(aKeyValuePair.Value, @"([\w|\\])'([\w|\\])", "$1''''$2")
+            Arguments = Regex.Replace(aKeyValuePair.Value, @"([\w|\\])'([\w|\\])", "$1''$2")
           };
           mInteractiveProcess.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
 
@@ -251,7 +251,7 @@ namespace ClangPowerTools
             RedirectStandardInput = true,
             CreateNoWindow = true,
             UseShellExecute = false,
-            Arguments = Regex.Replace(pathCommand.Value, @"([\w|\\])'([\w|\\])", "$1''''$2")
+            Arguments = Regex.Replace(pathCommand.Value, @"([\w|\\])'([\w|\\])", "$1''$2")
           };
           process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
 
@@ -357,7 +357,7 @@ namespace ClangPowerTools
       {
         powershell = ScriptConstants.kScriptBeginning;
       }
-      process.StartInfo.Arguments = powershell + $" ''{getllvmScriptPath}'' {tool} '";
+      process.StartInfo.Arguments = powershell + $" '{getllvmScriptPath}' {tool} '";
 
       RunController.runningProcesses.Add(process);
 

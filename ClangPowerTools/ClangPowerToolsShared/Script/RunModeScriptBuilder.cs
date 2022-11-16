@@ -28,10 +28,7 @@ namespace ClangPowerTools.Script
     /// </summary>
     public void Build()
     {
-      if (SettingsProvider.CompilerSettingsModel.Powershell7)
-        mScript = $"{ScriptConstants.kScriptPwshBeginning} ''{GetScriptFilePath()}'''";
-      else
-        mScript = $"{ScriptConstants.kScriptBeginning} ''{GetScriptFilePath()}'''";
+      mScript = $"{ScriptConstants.kScriptPwshBeginning} '{GetScriptFilePath()}'";
     }
 
 
