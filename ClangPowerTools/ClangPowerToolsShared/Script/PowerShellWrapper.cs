@@ -343,7 +343,7 @@ namespace ClangPowerTools
       string powershell = string.Empty;
       if (SettingsProvider.CompilerSettingsModel.Powershell7)
       {
-        powershell = ScriptConstants.kScriptPwshBeginning;
+        powershell = ScriptConstants.kScriptBeginning;
         if (string.IsNullOrEmpty(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)))
         {
           mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
