@@ -80,12 +80,12 @@ namespace ClangPowerTools
         //Update arguments and FileName path for Cpt alias added from pwsh
         if (SettingsProvider.CompilerSettingsModel.Powershell7)
         {
-          process.StartInfo.Arguments = "-Command \"" + process.StartInfo.Arguments + "\"";
+          process.StartInfo.FileName = File.Exists(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)) ?
+            GetFilePathFromEnviromentVar(ScriptConstants.kPwsh) :
+            $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
           if (aUsePwshFileName)
           {
-            process.StartInfo.FileName = File.Exists(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)) ?
-              GetFilePathFromEnviromentVar(ScriptConstants.kPwsh) :
-              $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
+            process.StartInfo.Arguments = "-Command \"" + process.StartInfo.Arguments + "\"";
           }
         }
 
