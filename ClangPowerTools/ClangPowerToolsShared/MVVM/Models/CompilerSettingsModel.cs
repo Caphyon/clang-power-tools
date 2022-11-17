@@ -1,7 +1,12 @@
-﻿namespace ClangPowerTools
+﻿using System.ComponentModel;
+using System.Windows.Forms;
+
+namespace ClangPowerTools
 {
-  public class CompilerSettingsModel
+  public class CompilerSettingsModel : INotifyPropertyChanged
   {
+    public event PropertyChangedEventHandler PropertyChanged;
+    private bool powershell7 = false;
     public string CompileFlags { get; set; } = DefaultOptions.ClangFlags;
 
     public string FilesToIgnore { get; set; } = string.Empty;
@@ -17,6 +22,22 @@
     public bool ClangAfterMSVC { get; set; } = false;
 
     public bool VerboseMode { get; set; } = false;
+    public bool Powershell7 
+    { 
+      get { return powershell7; } 
+      set
+      {
+        if(value && string.IsNullOrEmpty(PowerShellWrapper.GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)))
+        {
+          MessageBox.Show("Sorry, we can't find Powershell 7 in PATH enviroment variables",
+                              "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Error);
+          return;
+        }
+        powershell7 = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("Powershell7"));
+
+      }
+    }
 
     public bool ShowErrorList { get; set; } = true;
 

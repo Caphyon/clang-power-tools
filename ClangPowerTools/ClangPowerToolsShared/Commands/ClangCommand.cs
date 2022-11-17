@@ -239,12 +239,12 @@ namespace ClangPowerTools
 
       if (File.Exists(jsonCompilationDatabasePath) && File.Exists(clangDocPath))
       {
-        string projectArguments = GetProjectName() == string.Empty ? string.Empty : $"--project-name=''{GetProjectName()}''";
+        string projectArguments = GetProjectName() == string.Empty ? string.Empty : $"--project-name='{GetProjectName()}'";
 
         GenerateDocumentation.OutputDir = documentationOutoutePath;
         CommandControllerInstance.CommandController.DisplayMessage(false, "Please wait ...");
-        string Script = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command '& " +
-        $"''{clangDocPath}'' --public {projectArguments} --format={GenerateDocumentation.Formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'' 2>&1 | Out-Null'";
+        string Script = $"-ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command \"& " +
+        $"'{clangDocPath}' --public {projectArguments} --format={GenerateDocumentation.Formats[commandId]}  -output='{documentationOutoutePath}' '{jsonCompilationDatabasePath}' \" 2>&1 | Out-Null ";
 
         PowerShellWrapper.Invoke(Script);
 
@@ -289,7 +289,7 @@ namespace ClangPowerTools
         if (paths is not null)
         {
           var itemRelatedParameters = ScriptGenerator.GetItemRelatedParametersCustomPaths(paths, cacheProjectsItemsModel);
-          Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
+          Script = JoinUtility.Join(" ", runModeParameters, itemRelatedParameters, genericParameters, "\"");
         }
         else
         {
@@ -321,7 +321,7 @@ namespace ClangPowerTools
 
           // From the first parameter is removed the last character which is mandatory "'"
           // and added to the end of the string to close the script escaping command
-          Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
+          Script = JoinUtility.Join(" ", runModeParameters, itemRelatedParameters, genericParameters, "\"");
 
           ItemHierarchy = vsSolution != null ? AutomationUtil.GetItemHierarchy(vsSolution, item) : null;
         }
@@ -375,18 +375,18 @@ namespace ClangPowerTools
       var item = mItemsCollector.Items[0];
 
       if (item is CurrentSolution)
-        Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), genericParameters, "'");
+        Script = JoinUtility.Join(" ", runModeParameters, genericParameters, "\"");
       else if (item is CurrentProject)
       {
         var itemRelatedParameters = ScriptGenerator.GetItemRelatedParameters(item, true);
-        Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
+        Script = JoinUtility.Join(" ", runModeParameters, itemRelatedParameters, genericParameters, "\"");
       }
       else if (item is CurrentProjectItem)
       {
         var itemRelatedParameters = mItemsCollector.Items.Count == 1 ?
           ScriptGenerator.GetItemRelatedParameters(item, true) : ScriptGenerator.GetItemRelatedParameters(mItemsCollector.Items, true);
 
-        Script = JoinUtility.Join(" ", runModeParameters.Remove(runModeParameters.Length - 1), itemRelatedParameters, genericParameters, "'");
+        Script = JoinUtility.Join(" ", runModeParameters, itemRelatedParameters, genericParameters, "\"");
       }
 
       PowerShellWrapper.Invoke(Script);

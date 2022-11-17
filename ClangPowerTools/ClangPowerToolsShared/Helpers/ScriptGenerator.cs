@@ -37,7 +37,7 @@ namespace ClangPowerTools.Helpers
       {
         $"{ScriptConstants.kProject} {JoinPathsToStringScript(cacheProjectsItemsModel.ProjectsStringList)}",
         $"{ScriptConstants.kFile} {JoinPathsToStringScript(filePaths)}",
-        $"{ScriptConstants.kActiveConfiguration} ''{cacheProjectsItemsModel.Configuration}|{cacheProjectsItemsModel.Platform}''"
+        $"{ScriptConstants.kActiveConfiguration} '{cacheProjectsItemsModel.Configuration}|{cacheProjectsItemsModel.Platform}'"
       };
       return string.Join(" ", tokens);
     }
@@ -47,19 +47,19 @@ namespace ClangPowerTools.Helpers
       var tokens = new List<string>
       {
         $"{ScriptConstants.kProject} {JoinPathsToStringScript(cacheProjectsItemsModel.ProjectsStringList)}",
-        $"{ScriptConstants.kActiveConfiguration} ''{cacheProjectsItemsModel.Configuration}|{cacheProjectsItemsModel.Platform}''"
+        $"{ScriptConstants.kActiveConfiguration} '{cacheProjectsItemsModel.Configuration}|{cacheProjectsItemsModel.Platform}'"
       };
       return string.Join(" ", tokens);
     }
 
     public static string JoinPathsToStringScript(List<string> paths)
     {
-      StringBuilder stringBuilder = new StringBuilder("(''");
+      StringBuilder stringBuilder = new StringBuilder("('");
       foreach (string path in paths)
       {
-        stringBuilder.Append(path).Append("'',''");
+        stringBuilder.Append(path).Append("','");
       }
-      stringBuilder.Remove(stringBuilder.Length - 3, 3);
+      stringBuilder.Remove(stringBuilder.Length - 2, 2);
       return stringBuilder.Append(")").ToString();
     }
 

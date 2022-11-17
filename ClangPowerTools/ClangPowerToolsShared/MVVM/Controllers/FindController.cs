@@ -165,10 +165,10 @@ namespace ClangPowerToolsShared.MVVM.Controllers
       Dictionary<string, string> commands = new();
       foreach (var path in files.Select(a => a.file).ToList())
       {
-        var command = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive " +
-        $"-command '& ''{pathToBinary}''  ''{path}'' " +
-        $"-p ''{PathConstants.JsonCompilationDBPath}'' " +
-        $"-f ''{PathConstants.GetPathToFindCommands}'' '";
+        var command = $"-ExecutionPolicy Unrestricted -NoProfile -Noninteractive " +
+        $"-command \" & '{pathToBinary}'  '{path}' " +
+        $"-p '{PathConstants.JsonCompilationDBPath}' " +
+        $"-f '{PathConstants.GetPathToFindCommands}' \"";
         if (!commands.ContainsKey(path))
           commands.Add(path, command);
       }
@@ -204,9 +204,9 @@ namespace ClangPowerToolsShared.MVVM.Controllers
       Dictionary<string, string> commands = new();
       foreach (var path in files.Select(a => a.file).ToList())
       {
-        var command = $"PowerShell.exe -ExecutionPolicy Unrestricted -NoProfile -Noninteractive " +
-        $"-command '& ''{pathToBinary}''  ''{path}'' " +
-        $"-p ''{PathConstants.JsonCompilationDBPath}'' '";
+        var command = $"-ExecutionPolicy Unrestricted -NoProfile -Noninteractive " +
+        $"-command \"& '{pathToBinary}'  '{path}' " +
+        $"-p '{PathConstants.JsonCompilationDBPath}' \"";
         if (!commands.ContainsKey(path))
           commands.Add(path, command);
       }
