@@ -30,3 +30,4 @@ ClangPowerTools/ClangPowerTools/ClangPowerToolsLib16.dll
 ClangPowerTools/ClangPowerTools/ClangPowerToolsLib17.dll
 ClangPowerTools/CPTReleases/ClangPowerTools2022.vsix
 ClangPowerTools/CPTReleases/ClangPowerTools.vsix
+ClangPowerTools/ClangPowerToolsShared/Tooling/.vscode/launch.json

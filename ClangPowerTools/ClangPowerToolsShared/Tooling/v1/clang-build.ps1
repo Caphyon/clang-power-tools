@@ -383,11 +383,12 @@ cpt:ensureScriptExists "get-llvm.ps1" $shouldRedownloadForcefully | Out-Null
 [string] $customTidyPath = (Get-QuotedPath -path ([Environment]::GetEnvironmentVariable($kVarEnvClangTidyPath)))
 if (![string]::IsNullOrWhiteSpace($customTidyPath))
 {
-  Set-Variable -name kClangTidy             -value $customTidyPath      -option Constant
+  Set-Variable -name kClangTidy                         -value $customTidyPath                    -option Constant
 }
 else
 {
-  Set-Variable -name kClangTidy             -value "clang-tidy.exe"     -option Constant
+  Set-Variable -name kClangTidy                         -value "clang-tidy.exe"                   -option Constant
+  Set-Variable -name kClangApplyReplacements            -value "clang-apply-replacements.exe"     -option Constant
 }
 
 Set-Variable -name kCacheRepositorySaveIsNeeded -value $false 
@@ -1617,6 +1618,10 @@ Write-Verbose "CPU logical core count: $kLogicalCoreCount"
 $clangToolWeNeed = Get-ExeToCall -workloadType $workloadType
 
 $global:llvmLocation = Ensure-LLVMTool-IsPresent $clangToolWeNeed
+if($aTidyFixFlags)
+{
+  Ensure-LLVMTool-IsPresent $kClangApplyReplacements
+}
 if (![string]::IsNullOrEmpty($global:llvmLocation))
 {
   $env:Path += ";" + $global:llvmLocation
