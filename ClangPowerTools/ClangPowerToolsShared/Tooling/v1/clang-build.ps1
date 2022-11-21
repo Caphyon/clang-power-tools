@@ -209,6 +209,7 @@ Set-Variable -name kScriptFailsExitCode      -value  47                 -option 
 
 Set-Variable -name kExtensionVcxproj         -value ".vcxproj"          -option Constant
 Set-Variable -name kExtensionSolution        -value ".sln"              -option Constant
+Set-Variable -name kExtensionYaml            -value ".yaml"             -option Constant
 Set-Variable -name kExtensionClangPch        -value ".clang.pch"        -option Constant
 Set-Variable -name kExtensionC               -value ".c"                -option Constant
 
@@ -249,8 +250,9 @@ Set-Variable -name kClangTidyFormatStyle      -value "-format-style="   -option 
 
 Set-Variable -name kClangTidyFlagTempFile     -value ""
 
-Set-Variable -name kCptRegHiveSettings -value "HKCU:SOFTWARE\Caphyon\Clang Power Tools"      -option Constant
-Set-Variable -name kCptVsixSettings    -value "${env:APPDATA}\ClangPowerTools\settings.json" -Option Constant
+Set-Variable -name kCptRegHiveSettings         -value "HKCU:SOFTWARE\Caphyon\Clang Power Tools"             -option Constant
+Set-Variable -name kCptVsixSettings            -value "${env:APPDATA}\ClangPowerTools\settings.json"        -option Constant
+Set-Variable -name kCptTidyFixReplacementsDir  -value "${env:APPDATA}\ClangPowerTools\TidyFixReplacements" -option Constant
 
 # ------------------------------------------------------------------------------------------------
 
@@ -449,6 +451,10 @@ Write-InformationTimed "Created .NET enum types"
 
 # flag to signal when errors are encounteres during project processing
 [Boolean]                      $global:FoundErrors                  = $false
+
+# filePath-tidyFixReplacementFilePath temporary files created after tidy command
+# if tidy-fix flag is activated
+[System.Collections.Generic.Dictionary[String,String]] $global:tidyFixReplacementFiles = @{}
 
 # default ClangPowerTools version of visual studio to use
 [string] $global:cptDefaultVisualStudioVersion = "2017"
@@ -808,6 +814,13 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
 
   if ($fix)
   {
+    # Map tidy-fix replacements temprorary file path to original file path
+    if(![string]::IsNullOrEmpty($fileToTidy))
+    {
+      $global:tidyFixReplacementFiles[$fileToTidy] = Join-Path -Path (Join-Path -Path $kCptTidyFixReplacementsDir `
+                                                                                -ChildPath (Split-Path (Get-SourceDirectory) -Leaf)) `
+                                                               -ChildPath ([guid]::NewGuid().ToString() + $kExtensionYaml)
+    }
     if (![string]::IsNullOrEmpty($aAfterTidyFixFormatStyle))
     {
       $tidyArgs += "$kClangTidyFormatStyle$aAfterTidyFixFormatStyle"
@@ -1476,6 +1489,23 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   # PROCESS CPP FILES. CONSTRUCT COMMAND LINE JOBS TO BE INVOKED
 
   $clangJobs = @()
+
+  # Create directory where to store tidy fix replacements
+  if($aTidyFixFlags)
+  {
+    $tidyFixReplacementsPathDir = (Join-Path -path $kCptTidyFixReplacementsDir `
+    -ChildPath (Split-Path (Get-SourceDirectory) -Leaf))
+    # check if SolutionDir for tidy fix replacements already exists
+    if (Test-Path -LiteralPath $tidyFixReplacementsPathDir)
+    {
+      Remove-Item $tidyFixReplacementsPathDir -Recurse
+      New-Item -Path $tidyFixReplacementsPathDir -ItemType "directory"
+    }
+    else
+    {
+      New-Item -Path $tidyFixReplacementsPathDir -ItemType "directory"
+    }
+  }
 
   foreach ($cpp in $global:cptFilesToProcess.Keys)
   {
