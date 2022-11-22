@@ -235,14 +235,13 @@ Set-Variable -name kClangFlagNoMsInclude    -value "-Wno-microsoft-include" `
 Set-Variable -name kClangFlagFileIsCPP      -value "-x c++"             -option Constant
 Set-Variable -name kClangFlagFileIsC        -value "-x c"               -option Constant
 Set-Variable -name kClangFlagForceInclude   -value "-include"           -option Constant
+Set-Variable -name kClangTidyFixExportFixes -value "--export-fixes="    -option Constant
+
 
 Set-Variable -name kClangCompiler           -value "clang++.exe"        -option Constant
 
 Set-Variable -name kClangTidyFlags            -value @("-quiet"
                                                       ,"--")            -option Constant
-Set-Variable -name kClangTidyFixFlags         -value @("-quiet"
-                                                      ,"-fix-errors"
-                                                      , "--")           -option Constant
 Set-Variable -name kClangTidyFlagHeaderFilter -value "-header-filter="  -option Constant
 Set-Variable -name kClangTidyFlagChecks       -value "-checks="         -option Constant
 Set-Variable -name kClangTidyUseFile          -value ".clang-tidy"      -option Constant
@@ -452,9 +451,8 @@ Write-InformationTimed "Created .NET enum types"
 # flag to signal when errors are encounteres during project processing
 [Boolean]                      $global:FoundErrors                  = $false
 
-# filePath-tidyFixReplacementFilePath temporary files created after tidy command
-# if tidy-fix flag is activated
-[System.Collections.Generic.Dictionary[String,String]] $global:tidyFixReplacementFiles = @{}
+# directory path where tidy fix replacement files will be stored
+[string] $global:tidyFixReplacementDirPath = ""
 
 # default ClangPowerTools version of visual studio to use
 [string] $global:cptDefaultVisualStudioVersion = "2017"
@@ -788,7 +786,20 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
                               , [Parameter(Mandatory=$false)][string]  $pchFilePath
                               , [Parameter(Mandatory=$false)][switch]  $fix)
 {
-  [string[]] $tidyArgs = @((Get-QuotedPath $fileToTidy))
+  [string[]] $tidyArgs = @()
+  if($fix)
+  {
+    # Map tidy-fix replacements temprorary file path to original file path
+    if(![string]::IsNullOrEmpty($fileToTidy))
+    {
+      [string] $tidyFixReplacementYamlPath = Join-Path  -Path (Join-Path -Path $kCptTidyFixReplacementsDir `
+                                                                         -ChildPath (Split-Path (Get-SourceDirectory) -Leaf)) `
+                                                        -ChildPath ([guid]::NewGuid().ToString() + $kExtensionYaml)
+      $tidyArgs += $kClangTidyFixExportFixes + @((Get-QuotedPath $tidyFixReplacementYamlPath))
+    }
+  }
+
+  $tidyArgs += (Get-QuotedPath $fileToTidy)
   if ($fix -and $aTidyFixFlags -ne $kClangTidyUseFile)
   {
     $tidyArgs += "$kClangTidyFlagChecks`"$aTidyFixFlags`""
@@ -814,24 +825,12 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
 
   if ($fix)
   {
-    # Map tidy-fix replacements temprorary file path to original file path
-    if(![string]::IsNullOrEmpty($fileToTidy))
-    {
-      $global:tidyFixReplacementFiles[$fileToTidy] = Join-Path -Path (Join-Path -Path $kCptTidyFixReplacementsDir `
-                                                                                -ChildPath (Split-Path (Get-SourceDirectory) -Leaf)) `
-                                                               -ChildPath ([guid]::NewGuid().ToString() + $kExtensionYaml)
-    }
     if (![string]::IsNullOrEmpty($aAfterTidyFixFormatStyle))
     {
       $tidyArgs += "$kClangTidyFormatStyle$aAfterTidyFixFormatStyle"
     }
-
-    $tidyArgs += $kClangTidyFixFlags
   }
-  else
-  {
-    $tidyArgs += $kClangTidyFlags
-  }
+  $tidyArgs += $kClangTidyFlags
 
   $tidyArgs += Get-ClangIncludeDirectories -includeDirectories           $includeDirectories `
                                            -additionalIncludeDirectories $additionalIncludeDirectories
@@ -986,7 +985,7 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
       }
 
       # We have to separate Clang args from Tidy args
-      $splitparams = $job.ArgumentList -split "--"
+      $splitparams = $job.ArgumentList -split " -- "
       $clangConfigContent = $splitparams[1]
 
       $job.ArgumentList = "$($splitparams[0]) -- --config ""$clangConfigFile"""
@@ -1493,17 +1492,18 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   # Create directory where to store tidy fix replacements
   if($aTidyFixFlags)
   {
-    $tidyFixReplacementsPathDir = (Join-Path -path $kCptTidyFixReplacementsDir `
-    -ChildPath (Split-Path (Get-SourceDirectory) -Leaf))
+    $global:tidyFixReplacementDirPath = (Join-Path -path $kCptTidyFixReplacementsDir `
+                                                   -ChildPath (Split-Path (Get-SourceDirectory) -Leaf)) `
+                                                   + "_" + ([guid]::NewGuid().ToString())
     # check if SolutionDir for tidy fix replacements already exists
-    if (Test-Path -LiteralPath $tidyFixReplacementsPathDir)
+    if (Test-Path -LiteralPath $global:tidyFixReplacementDirPath)
     {
-      Remove-Item $tidyFixReplacementsPathDir -Recurse
-      New-Item -Path $tidyFixReplacementsPathDir -ItemType "directory"
+      Remove-Item $global:tidyFixReplacementDirPath -Recurse
+      New-Item -Path $global:tidyFixReplacementDirPath -ItemType "directory"
     }
     else
     {
-      New-Item -Path $tidyFixReplacementsPathDir -ItemType "directory"
+      New-Item -Path $global:tidyFixReplacementDirPath -ItemType "directory"
     }
   }
 
