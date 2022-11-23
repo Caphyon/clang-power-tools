@@ -134,7 +134,7 @@ param( [alias("proj")]
        [System.Object[]] $aCppToIgnore = @()
 
      , [alias("parallel")]
-       [Parameter(Mandatory=$false, HelpMessage="Compile/tidy projects in parallel")]
+       [Parameter(Mandatory=$false, HelpMessage="Compile/tidy/tidy-fix projects in parallel")]
        [switch]   $aUseParallelCompile
 
      , [alias("continue")]

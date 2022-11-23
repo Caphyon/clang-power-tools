@@ -193,6 +193,7 @@ namespace ClangPowerTools.Script
       if (null != tidySettings.HeaderFilter && !string.IsNullOrWhiteSpace(tidySettings.HeaderFilter))
         parameters += $" {GetHeaderFilters()}";
 
+      parameters += $" {ScriptConstants.kParallel}";
       return parameters;
     }
 
