@@ -475,6 +475,12 @@ Function Exit-Script([Parameter(Mandatory=$false)][int] $code = 0)
     Remove-Item -LiteralPath $file -ErrorAction SilentlyContinue > $null
   }
 
+  if($aTidyFixFlags)
+  {
+    Write-Verbose "Cleaning up temporaries tidy-fix replacements"
+    Remove-Item -path $global:tidyFixReplacementDirPath -Recurse -ErrorAction SilentlyContinue > $null
+  }
+    
   # Restore working directory
   Pop-Location
 
@@ -488,6 +494,19 @@ Function Fail-Script([parameter(Mandatory=$false)][string] $msg = "Got errors.")
     Write-Err $msg
   }
   Exit-Script($kScriptFailsExitCode)
+}
+
+Function Apply-TidyFixReplacements([Parameter(Mandatory=$true) ][WorkloadType] $workloadType)
+{
+  if($workloadType -eq [WorkloadType]::TidyFix -and 
+  (Test-Path -LiteralPath $global:tidyFixReplacementDirPath))
+  {
+    Write-Verbose "Apply tidy-fix replacements"
+    [string] $pathToBinary =  (Join-Path -path $global:llvmLocation `
+                                         -ChildPath $kClangApplyReplacements)
+    Invoke-Command -ScriptBlock {& $pathToBinary $global:tidyFixReplacementDirPath  }
+    Wait-AndProcessBuildJobs
+  }
 }
 
 Function Get-SourceDirectory()
@@ -792,19 +811,14 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
     # Map tidy-fix replacements temprorary file path to original file path
     if(![string]::IsNullOrEmpty($fileToTidy))
     {
-      [string] $tidyFixReplacementYamlPath = Join-Path  -Path (Join-Path -Path $kCptTidyFixReplacementsDir `
-                                                                         -ChildPath (Split-Path (Get-SourceDirectory) -Leaf)) `
+      [string] $tidyFixReplacementYamlPath = Join-Path  -Path ($global:tidyFixReplacementDirPath) `
                                                         -ChildPath ([guid]::NewGuid().ToString() + $kExtensionYaml)
       $tidyArgs += $kClangTidyFixExportFixes + @((Get-QuotedPath $tidyFixReplacementYamlPath))
     }
   }
 
   $tidyArgs += (Get-QuotedPath $fileToTidy)
-  if ($fix -and $aTidyFixFlags -ne $kClangTidyUseFile)
-  {
-    $tidyArgs += "$kClangTidyFlagChecks`"$aTidyFixFlags`""
-  }
-  elseif ($aTidyFlags -ne $kClangTidyUseFile)
+  if (($aTidyFlags -ne $kClangTidyUseFile) -or ($aTidyFixFlags -ne $kClangTidyUseFile))
   {
     $tidyArgs += "$kClangTidyFlagChecks`"$aTidyFlags`""
   }
@@ -1076,9 +1090,7 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
     # Inform console what CPP we are processing next
     Write-Output "$($crtJobCount): $($job.File)"
 
-    # Tidy-fix can cause header corruption when run in parallel
-    # because multiple workers modify shared headers concurrently. Do not allow.
-    if ($aUseParallelCompile -and $workloadType -ne [WorkloadType]::TidyFix)
+    if ($aUseParallelCompile)
     {
       Start-Job -ScriptBlock  $jobWorkToBeDone `
                 -ArgumentList $job `
@@ -1458,7 +1470,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   }
 
   [string] $pchFilePath = ""
-  if ($kPchIsNeeded -and $workloadType -ne [WorkloadType]::TidyFix -and !$aExportJsonDB)
+  if ($kPchIsNeeded -and !$aExportJsonDB)
   {
     # COMPILE PCH
     Write-Verbose "Generating PCH..."
@@ -1499,11 +1511,11 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     if (Test-Path -LiteralPath $global:tidyFixReplacementDirPath)
     {
       Remove-Item $global:tidyFixReplacementDirPath -Recurse
-      New-Item -Path $global:tidyFixReplacementDirPath -ItemType "directory"
+      New-Item -Path $global:tidyFixReplacementDirPath -ItemType "directory" > $null
     }
     else
     {
-      New-Item -Path $global:tidyFixReplacementDirPath -ItemType "directory"
+      New-Item -Path $global:tidyFixReplacementDirPath -ItemType "directory" > $null
     }
   }
 
@@ -1580,6 +1592,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   else 
   {
     Run-ClangJobs -clangJobs $clangJobs -workloadType $workloadType
+    Apply-TidyFixReplacements -workloadType $workloadType
   }
 }
 
