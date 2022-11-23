@@ -475,7 +475,7 @@ Function Exit-Script([Parameter(Mandatory=$false)][int] $code = 0)
     Remove-Item -LiteralPath $file -ErrorAction SilentlyContinue > $null
   }
 
-  if($aTidyFixFlags)
+  if ($aTidyFixFlags)
   {
     Write-Verbose "Cleaning up temporaries tidy-fix replacements"
     Remove-Item -path $global:tidyFixReplacementDirPath -Recurse -ErrorAction SilentlyContinue > $null
@@ -498,13 +498,13 @@ Function Fail-Script([parameter(Mandatory=$false)][string] $msg = "Got errors.")
 
 Function Apply-TidyFixReplacements([Parameter(Mandatory=$true) ][WorkloadType] $workloadType)
 {
-  if($workloadType -eq [WorkloadType]::TidyFix -and 
+  if ($workloadType -eq [WorkloadType]::TidyFix -and 
   (Test-Path -LiteralPath $global:tidyFixReplacementDirPath))
   {
     Write-Verbose "Apply tidy-fix replacements"
     [string] $pathToBinary =  (Join-Path -path $global:llvmLocation `
                                          -ChildPath $kClangApplyReplacements)
-    Invoke-Command -ScriptBlock {& $pathToBinary $global:tidyFixReplacementDirPath  }
+    & $pathToBinary $global:tidyFixReplacementDirPath
     Wait-AndProcessBuildJobs
   }
 }
@@ -806,7 +806,7 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
                               , [Parameter(Mandatory=$false)][switch]  $fix)
 {
   [string[]] $tidyArgs = @()
-  if($fix)
+  if ($fix)
   {
     # Map tidy-fix replacements temprorary file path to original file path
     if(![string]::IsNullOrEmpty($fileToTidy))
@@ -1502,7 +1502,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   $clangJobs = @()
 
   # Create directory where to store tidy fix replacements
-  if($aTidyFixFlags)
+  if ($aTidyFixFlags)
   {
     $global:tidyFixReplacementDirPath = (Join-Path -path $kCptTidyFixReplacementsDir `
                                                    -ChildPath (Split-Path (Get-SourceDirectory) -Leaf)) `
@@ -1661,7 +1661,7 @@ Write-Verbose "CPU logical core count: $kLogicalCoreCount"
 $clangToolWeNeed = Get-ExeToCall -workloadType $workloadType
 
 $global:llvmLocation = Ensure-LLVMTool-IsPresent $clangToolWeNeed
-if($aTidyFixFlags)
+if ($aTidyFixFlags)
 {
   Ensure-LLVMTool-IsPresent $kClangApplyReplacements
 }
