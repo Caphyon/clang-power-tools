@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 9.4.2" />
+                 Text="version 9.5" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -100,7 +100,7 @@
         </ListView.ItemContainerStyle>
 
         <!--What's new-->
-        <!--<TextBox Margin="5,20,0,0"
+        <TextBox Margin="5,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
@@ -115,7 +115,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Optimised CPT Find performance when running repeatedly on the same file"
+                 Text="• Optimized Tidy / Tidy-Fix performance, now runs in parallel on all available CPU cores"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,15,0,0"
@@ -124,20 +124,11 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Display full output for CPT Find with verbose mode activated"
+                 Text="• Support for PowerShell 7, activate from Settings → Compiler → PowerShell 7"
                  TextWrapping="Wrap" />
 
-        <TextBox Margin="15,15,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• LLVM 15.0.4"
-                 TextWrapping="Wrap" />-->
-        
         <!--Bug Fixes-->
-        <TextBox Margin="5,20,0,0"
+        <!--<TextBox Margin="5,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
@@ -152,7 +143,7 @@
                  FontSize="16"
                  IsReadOnly="True"
                  Text="• No output during compile"
-                 TextWrapping="Wrap" />
+                 TextWrapping="Wrap" />-->
 
         <!--<TextBox Margin="15,15,0,0"
                  HorizontalAlignment="Left"
