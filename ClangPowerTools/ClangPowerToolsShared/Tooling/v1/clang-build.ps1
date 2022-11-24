@@ -134,7 +134,7 @@ param( [alias("proj")]
        [System.Object[]] $aCppToIgnore = @()
 
      , [alias("parallel")]
-       [Parameter(Mandatory=$false, HelpMessage="Compile/tidy projects in parallel")]
+       [Parameter(Mandatory=$false, HelpMessage="Compile/tidy/tidy-fix projects in parallel")]
        [switch]   $aUseParallelCompile
 
      , [alias("continue")]
@@ -209,6 +209,7 @@ Set-Variable -name kScriptFailsExitCode      -value  47                 -option 
 
 Set-Variable -name kExtensionVcxproj         -value ".vcxproj"          -option Constant
 Set-Variable -name kExtensionSolution        -value ".sln"              -option Constant
+Set-Variable -name kExtensionYaml            -value ".yaml"             -option Constant
 Set-Variable -name kExtensionClangPch        -value ".clang.pch"        -option Constant
 Set-Variable -name kExtensionC               -value ".c"                -option Constant
 
@@ -234,14 +235,13 @@ Set-Variable -name kClangFlagNoMsInclude    -value "-Wno-microsoft-include" `
 Set-Variable -name kClangFlagFileIsCPP      -value "-x c++"             -option Constant
 Set-Variable -name kClangFlagFileIsC        -value "-x c"               -option Constant
 Set-Variable -name kClangFlagForceInclude   -value "-include"           -option Constant
+Set-Variable -name kClangTidyFixExportFixes -value "--export-fixes="    -option Constant
+
 
 Set-Variable -name kClangCompiler           -value "clang++.exe"        -option Constant
 
 Set-Variable -name kClangTidyFlags            -value @("-quiet"
                                                       ,"--")            -option Constant
-Set-Variable -name kClangTidyFixFlags         -value @("-quiet"
-                                                      ,"-fix-errors"
-                                                      , "--")           -option Constant
 Set-Variable -name kClangTidyFlagHeaderFilter -value "-header-filter="  -option Constant
 Set-Variable -name kClangTidyFlagChecks       -value "-checks="         -option Constant
 Set-Variable -name kClangTidyUseFile          -value ".clang-tidy"      -option Constant
@@ -249,8 +249,9 @@ Set-Variable -name kClangTidyFormatStyle      -value "-format-style="   -option 
 
 Set-Variable -name kClangTidyFlagTempFile     -value ""
 
-Set-Variable -name kCptRegHiveSettings -value "HKCU:SOFTWARE\Caphyon\Clang Power Tools"      -option Constant
-Set-Variable -name kCptVsixSettings    -value "${env:APPDATA}\ClangPowerTools\settings.json" -Option Constant
+Set-Variable -name kCptRegHiveSettings         -value "HKCU:SOFTWARE\Caphyon\Clang Power Tools"             -option Constant
+Set-Variable -name kCptVsixSettings            -value "${env:APPDATA}\ClangPowerTools\settings.json"        -option Constant
+Set-Variable -name kCptTidyFixReplacementsDir  -value "${env:APPDATA}\ClangPowerTools\TidyFixReplacements" -option Constant
 
 # ------------------------------------------------------------------------------------------------
 
@@ -383,11 +384,12 @@ cpt:ensureScriptExists "get-llvm.ps1" $shouldRedownloadForcefully | Out-Null
 [string] $customTidyPath = (Get-QuotedPath -path ([Environment]::GetEnvironmentVariable($kVarEnvClangTidyPath)))
 if (![string]::IsNullOrWhiteSpace($customTidyPath))
 {
-  Set-Variable -name kClangTidy             -value $customTidyPath      -option Constant
+  Set-Variable -name kClangTidy                         -value $customTidyPath                    -option Constant
 }
 else
 {
-  Set-Variable -name kClangTidy             -value "clang-tidy.exe"     -option Constant
+  Set-Variable -name kClangTidy                         -value "clang-tidy.exe"                   -option Constant
+  Set-Variable -name kClangApplyReplacements            -value "clang-apply-replacements.exe"     -option Constant
 }
 
 Set-Variable -name kCacheRepositorySaveIsNeeded -value $false 
@@ -449,6 +451,9 @@ Write-InformationTimed "Created .NET enum types"
 # flag to signal when errors are encounteres during project processing
 [Boolean]                      $global:FoundErrors                  = $false
 
+# directory path where tidy fix replacement files will be stored
+[string] $global:tidyFixReplacementDirPath = ""
+
 # default ClangPowerTools version of visual studio to use
 [string] $global:cptDefaultVisualStudioVersion = "2017"
 
@@ -470,6 +475,12 @@ Function Exit-Script([Parameter(Mandatory=$false)][int] $code = 0)
     Remove-Item -LiteralPath $file -ErrorAction SilentlyContinue > $null
   }
 
+  if ($aTidyFixFlags)
+  {
+    Write-Verbose "Cleaning up temporaries tidy-fix replacements"
+    Remove-Item -path $global:tidyFixReplacementDirPath -Recurse -ErrorAction SilentlyContinue > $null
+  }
+    
   # Restore working directory
   Pop-Location
 
@@ -483,6 +494,19 @@ Function Fail-Script([parameter(Mandatory=$false)][string] $msg = "Got errors.")
     Write-Err $msg
   }
   Exit-Script($kScriptFailsExitCode)
+}
+
+Function Apply-TidyFixReplacements([Parameter(Mandatory=$true) ][WorkloadType] $workloadType)
+{
+  if ($workloadType -eq [WorkloadType]::TidyFix -and 
+  (Test-Path -LiteralPath $global:tidyFixReplacementDirPath))
+  {
+    Write-Verbose "Apply tidy-fix replacements"
+    [string] $pathToBinary =  (Join-Path -path $global:llvmLocation `
+                                         -ChildPath $kClangApplyReplacements)
+    & $pathToBinary $global:tidyFixReplacementDirPath
+    Wait-AndProcessBuildJobs
+  }
 }
 
 Function Get-SourceDirectory()
@@ -781,12 +805,20 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
                               , [Parameter(Mandatory=$false)][string]  $pchFilePath
                               , [Parameter(Mandatory=$false)][switch]  $fix)
 {
-  [string[]] $tidyArgs = @((Get-QuotedPath $fileToTidy))
-  if ($fix -and $aTidyFixFlags -ne $kClangTidyUseFile)
+  [string[]] $tidyArgs = @()
+  if ($fix)
   {
-    $tidyArgs += "$kClangTidyFlagChecks`"$aTidyFixFlags`""
+    # Map tidy-fix replacements temprorary file path to original file path
+    if(![string]::IsNullOrEmpty($fileToTidy))
+    {
+      [string] $tidyFixReplacementYamlPath = Join-Path  -Path ($global:tidyFixReplacementDirPath) `
+                                                        -ChildPath ([guid]::NewGuid().ToString() + $kExtensionYaml)
+      $tidyArgs += $kClangTidyFixExportFixes + @((Get-QuotedPath $tidyFixReplacementYamlPath))
+    }
   }
-  elseif ($aTidyFlags -ne $kClangTidyUseFile)
+
+  $tidyArgs += (Get-QuotedPath $fileToTidy)
+  if (($aTidyFlags -ne $kClangTidyUseFile) -or ($aTidyFixFlags -ne $kClangTidyUseFile))
   {
     $tidyArgs += "$kClangTidyFlagChecks`"$aTidyFlags`""
   }
@@ -811,13 +843,8 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
     {
       $tidyArgs += "$kClangTidyFormatStyle$aAfterTidyFixFormatStyle"
     }
-
-    $tidyArgs += $kClangTidyFixFlags
   }
-  else
-  {
-    $tidyArgs += $kClangTidyFlags
-  }
+  $tidyArgs += $kClangTidyFlags
 
   $tidyArgs += Get-ClangIncludeDirectories -includeDirectories           $includeDirectories `
                                            -additionalIncludeDirectories $additionalIncludeDirectories
@@ -972,7 +999,7 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
       }
 
       # We have to separate Clang args from Tidy args
-      $splitparams = $job.ArgumentList -split "--"
+      $splitparams = $job.ArgumentList -split " -- "
       $clangConfigContent = $splitparams[1]
 
       $job.ArgumentList = "$($splitparams[0]) -- --config ""$clangConfigFile"""
@@ -1063,9 +1090,7 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
     # Inform console what CPP we are processing next
     Write-Output "$($crtJobCount): $($job.File)"
 
-    # Tidy-fix can cause header corruption when run in parallel
-    # because multiple workers modify shared headers concurrently. Do not allow.
-    if ($aUseParallelCompile -and $workloadType -ne [WorkloadType]::TidyFix)
+    if ($aUseParallelCompile)
     {
       Start-Job -ScriptBlock  $jobWorkToBeDone `
                 -ArgumentList $job `
@@ -1445,7 +1470,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   }
 
   [string] $pchFilePath = ""
-  if ($kPchIsNeeded -and $workloadType -ne [WorkloadType]::TidyFix -and !$aExportJsonDB)
+  if ($kPchIsNeeded -and !$aExportJsonDB)
   {
     # COMPILE PCH
     Write-Verbose "Generating PCH..."
@@ -1475,6 +1500,24 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   # PROCESS CPP FILES. CONSTRUCT COMMAND LINE JOBS TO BE INVOKED
 
   $clangJobs = @()
+
+  # Create directory where to store tidy fix replacements
+  if ($aTidyFixFlags)
+  {
+    $global:tidyFixReplacementDirPath = (Join-Path -path $kCptTidyFixReplacementsDir `
+                                                   -ChildPath (Split-Path (Get-SourceDirectory) -Leaf)) `
+                                                   + "_" + ([guid]::NewGuid().ToString())
+    # check if SolutionDir for tidy fix replacements already exists
+    if (Test-Path -LiteralPath $global:tidyFixReplacementDirPath)
+    {
+      Remove-Item $global:tidyFixReplacementDirPath -Recurse
+      New-Item -Path $global:tidyFixReplacementDirPath -ItemType "directory" > $null
+    }
+    else
+    {
+      New-Item -Path $global:tidyFixReplacementDirPath -ItemType "directory" > $null
+    }
+  }
 
   foreach ($cpp in $global:cptFilesToProcess.Keys)
   {
@@ -1549,6 +1592,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   else 
   {
     Run-ClangJobs -clangJobs $clangJobs -workloadType $workloadType
+    Apply-TidyFixReplacements -workloadType $workloadType
   }
 }
 
@@ -1617,6 +1661,10 @@ Write-Verbose "CPU logical core count: $kLogicalCoreCount"
 $clangToolWeNeed = Get-ExeToCall -workloadType $workloadType
 
 $global:llvmLocation = Ensure-LLVMTool-IsPresent $clangToolWeNeed
+if ($aTidyFixFlags)
+{
+  Ensure-LLVMTool-IsPresent $kClangApplyReplacements
+}
 if (![string]::IsNullOrEmpty($global:llvmLocation))
 {
   $env:Path += ";" + $global:llvmLocation

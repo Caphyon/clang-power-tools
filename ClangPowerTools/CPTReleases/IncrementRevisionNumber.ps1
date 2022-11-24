@@ -8,7 +8,7 @@ if((Test-Path $filepath) -and (Test-Path $filepathToAip))
     #Get xml data from manifest file
     [xml] $data = Get-Content $filepath
     $currentVersion = [Version]::new($data.PackageManifest.Metadata.Identity.Version.ToString())
-    $nextVersion = [Version]::new($currentVersion.Major, $currentVersion.Minor, $currentVersion.Build, $currentVersion.Revision + 1)
+    $nextVersion = [Version]::new($currentVersion.Major, $currentVersion.Minor, $currentVersion.Build, $currentVersion.Revision)
     
     #Get xml data from aip file
     [xml] $aipData = Get-Content $filepathToAip
