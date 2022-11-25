@@ -6,6 +6,8 @@ using EnvDTE;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.Linq;
+using System.Threading;
 
 namespace ClangPowerTools
 {
@@ -29,7 +31,7 @@ namespace ClangPowerTools
       {
         SuspendRefresh();
 
-        foreach (TaskErrorModel error in e.ErrorList)
+        foreach (TaskErrorModel error in e.ErrorList.ToList())
         {
           error.Navigate += ErrorTaskNavigate;
           Tasks.Add(error);

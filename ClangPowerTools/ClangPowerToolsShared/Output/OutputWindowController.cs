@@ -233,9 +233,11 @@ namespace ClangPowerTools.Output
       var id = CommandControllerInstance.CommandController.GetCurrentCommandId();
 
       tempPaths.Clear();
+      outputResult = String.Join("\n", Buffer);
+      if(!(id == CommandIds.kClangFindRun || id == CommandIds.kClangFind))
+       Write(outputResult);
       if (Buffer.Count != 0)
       {
-        outputResult = String.Join("\n", Buffer);
         if (id == CommandIds.kClangFindRun)
         {
           Regex regex = new Regex(ErrorParserConstants.kNumberMatchesRegex);
@@ -256,7 +258,6 @@ namespace ClangPowerTools.Output
       var tidySettings = SettingsProvider.TidySettingsModel;
       if (id == CommandIds.kTidyToolWindowId || (id == CommandIds.kTidyFixId && !tidySettings.ApplyTidyFix))
       {
-        Write(outputResult);
         foreach (var path in paths)
         {
           tempPaths.Add(path);
