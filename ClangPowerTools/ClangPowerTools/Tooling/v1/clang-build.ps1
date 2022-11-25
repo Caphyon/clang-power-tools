@@ -1555,7 +1555,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
 #-------------------------------------------------------------------------------------------------
 # Script entry point
 
-Clear-Host # clears console
+#Clear-Host # clears console
 
 Write-InformationTimed "Cleared console. Let's begin..."
 
