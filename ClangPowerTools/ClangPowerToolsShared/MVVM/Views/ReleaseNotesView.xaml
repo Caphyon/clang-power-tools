@@ -128,7 +128,7 @@
                  TextWrapping="Wrap" />
 
         <!--Bug Fixes-->
-        <!--<TextBox Margin="5,20,0,0"
+        <TextBox Margin="5,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
@@ -143,16 +143,16 @@
                  FontSize="16"
                  IsReadOnly="True"
                  Text="• No output during compile"
-                 TextWrapping="Wrap" />-->
+                 TextWrapping="Wrap" />
 
-        <!--<TextBox Margin="15,15,0,0"
+        <TextBox Margin="15,15,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Invalid link to tidy checks description"
-                 TextWrapping="Wrap" />-->
+                 Text="• Crashes on Visual Studio when running find command"
+                 TextWrapping="Wrap" />
         <!--<TextBox
           Margin="15,5,0,0"
           HorizontalAlignment="Left"
