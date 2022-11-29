@@ -818,9 +818,13 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
   }
 
   $tidyArgs += (Get-QuotedPath $fileToTidy)
-  if (($aTidyFlags -ne $kClangTidyUseFile) -or ($aTidyFixFlags -ne $kClangTidyUseFile))
+  if (![string]::IsNullOrWhiteSpace($aTidyFlags) -and ($aTidyFlags -ne $kClangTidyUseFile) -and !(Test-Path $aTidyFlags))
   {
     $tidyArgs += "$kClangTidyFlagChecks`"$aTidyFlags`""
+  }  
+  if (![string]::IsNullOrWhiteSpace($aTidyFixFlags) -and ($aTidyFixFlags -ne $kClangTidyUseFile) -and !(Test-Path $aTidyFixFlags))
+  {
+    $tidyArgs += "$kClangTidyFlagChecks`"$aTidyFixFlags`""
   }
 
   # The header-filter flag enables clang-tidy to run on headers too.
@@ -978,35 +982,28 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
 
     Push-Location -LiteralPath $job.WorkingDirectory
 
+    # This temp file will hold compilation args for clang++ and clang-tidy, not to be
+    # confused with check-flags for clang-tidy.
     [string] $clangConfigFile = [System.IO.Path]::GetTempFileName()
-    [string] $cppDirectory = (Get-ChildItem -LiteralPath $job.File).DirectoryName
+
     [string] $clangConfigContent = ""
-    [string] $clangTidyFile      = ""
-    [string] $clangTidyBackupFile = ""
     if ($job.FilePath -like '*tidy*')
     {
-      # if we need to place a .clang-tidy file make sure we don't override
-      # an existing one
-      if (![string]::IsNullOrWhiteSpace($job.TidyFlagsTempFile) -and (Test-Path -LiteralPath $job.TidyFlagsTempFile))
-      {
-        $clangTidyFile       = "$cppDirectory\.clang-tidy"
-        $clangTidyBackupFile = "$cppDirectory\.clang-tidy.cpt_backup"
-        if (Test-Path -LiteralPath $clangTidyFile)
-        {
-          # file already exists, temporarily rename it
-          Rename-Item -Path $clangTidyFile -NewName $clangTidyBackupFile
-        }
-      }
-
       # We have to separate Clang args from Tidy args
       $splitparams = $job.ArgumentList -split " -- "
       $clangConfigContent = $splitparams[1]
+
+      # We may have an explicit .clang-tidy check-flag config file to be used
+      if (![string]::IsNullOrWhiteSpace($job.TidyFlagsTempFile) -and (Test-Path -LiteralPath $job.TidyFlagsTempFile))
+      {
+        $splitparams[0] += " --config-file=""$($job.TidyFlagsTempFile)"" "
+      }
 
       $job.ArgumentList = "$($splitparams[0]) -- --config ""$clangConfigFile"""
     }
     else
     {
-      # Tell Clang to take its args from a config file
+      # Tell Clang to take its compilation args from a config file
       $clangConfigContent = $job.ArgumentList
       $job.ArgumentList = "--config ""$clangConfigFile"""
     }
@@ -1015,13 +1012,8 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
     # make sure escaped double quotes are not messed up
     $clangConfigContent = $clangConfigContent -replace '\\([^"])', '\\$1'
 
-    # save arguments to clang config file
+    # save compilation arguments to clang config file
     $clangConfigContent > $clangConfigFile
-
-    if (![string]::IsNullOrWhiteSpace($clangTidyFile))
-    {
-      Copy-Item -Path $job.TidyFlagsTempFile -Destination $clangTidyFile
-    }
 
     # When PowerShell encounters errors, the first one is handled differently from consecutive ones
     # To circumvent this, do not execute the job directly, but execute it via cmd.exe
@@ -1030,19 +1022,11 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
     $callOutput = cmd /c "$($job.FilePath) $($job.ArgumentList) 2>&1" | Out-String
 
     $callSuccess = $LASTEXITCODE -eq 0
-
-    Remove-Item $clangConfigFile
-    if (![string]::IsNullOrWhiteSpace($clangTidyFile))
+    if (!$callSuccess)
     {
-      Remove-Item $clangTidyFile
-
-      # make sure to restore previous file, if any
-      if (Test-Path -LiteralPath $clangTidyBackupFile)
-      {
-        Rename-Item -Path $clangTidyBackupFile -NewName $clangTidyFile
-      }
     }
 
+    Remove-Item $clangConfigFile
     Pop-Location
 
     return New-Object PsObject -Prop @{ "File"    = $job.File
