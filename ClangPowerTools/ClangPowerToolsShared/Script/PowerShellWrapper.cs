@@ -305,6 +305,20 @@ namespace ClangPowerTools
 
       if (string.IsNullOrEmpty(llvmModel.LlvmSelectedVersion)) return path;
 
+      var llvmVersions = llvmModel.LlvmSelectedVersion.Split('.');
+      // for parallel execution llvm need to be >= 13.0.1
+      if ((Int16.Parse(llvmVersions[0]) >= 13))
+      {
+        if((Int16.Parse(llvmVersions[0]) == 13) && (Int16.Parse(llvmVersions[1]) == 0) && (Int16.Parse(llvmVersions[2]) == 0))
+        {
+          return path;
+        }
+      }
+      else
+      {
+        return path;
+      }
+
       var paths = path.Split(';').ToList();
       paths.RemoveAt(paths.Count - 1);
       paths.RemoveAll(ContainsLlvm);
