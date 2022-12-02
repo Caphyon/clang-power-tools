@@ -465,6 +465,24 @@ Function Get-ProjectForceIncludes()
     return $null
 }
 
+Function Get-FileForceIncludes([Parameter(Mandatory=$true)] [string] $fileFullName)
+{
+    try
+    {
+        [string] $forceIncludes = Get-ProjectFileSetting -fileFullName $fileFullName -propertyName "ForcedIncludeFiles"
+        return ($forceIncludes -split ";")                                                       | `
+               Where-Object { ![string]::IsNullOrWhiteSpace($_) }                                | `
+               ForEach-Object { Canonize-Path -base $ProjectDir -child $_.Trim() -ignoreErrors } | `
+               Where-Object { ![string]::IsNullOrEmpty($_) }                                     | `
+               ForEach-Object { $_ -replace '\\$', '' }
+    }
+    catch
+    {
+        return $null
+    }
+
+}
+
 <#
 .DESCRIPTION
   Retrieve directory in which stdafx.h resides
