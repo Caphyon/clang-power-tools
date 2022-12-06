@@ -1,6 +1,7 @@
 ﻿using ClangPowerTools.Output;
 using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
+using EnvDTE;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -90,6 +91,7 @@ namespace ClangPowerTools
         }
 
         process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
+        process.StartInfo.EnvironmentVariables["NUMBER_OF_PROCESSORS"] = GetNumberOfProcessors().ToString();
 
         var customTidyExecutable = GetCustomTidyPath();
 
@@ -181,6 +183,7 @@ namespace ClangPowerTools
             Arguments = Regex.Replace(aKeyValuePair.Value, @"([\w|\\])'([\w|\\])", "$1''$2")
           };
           mInteractiveProcess.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
+          mInteractiveProcess.StartInfo.EnvironmentVariables["NUMBER_OF_PROCESSORS"] = GetNumberOfProcessors().ToString();
 
           var customTidyExecutable = GetCustomTidyPath();
 
@@ -254,6 +257,7 @@ namespace ClangPowerTools
             Arguments = Regex.Replace(pathCommand.Value, @"([\w|\\])'([\w|\\])", "$1''$2")
           };
           process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
+          process.StartInfo.EnvironmentVariables["NUMBER_OF_PROCESSORS"] = GetNumberOfProcessors().ToString();
 
           var customTidyExecutable = GetCustomTidyPath();
 
@@ -297,6 +301,18 @@ namespace ClangPowerTools
       mOutputWindowController.WriteMatchesNr();
     }
 
+    /// <summary>
+    /// Get the number of processors that a process will run on
+    /// depend on environment var, NUMBER_OF_PROCESSORS and
+    /// percentage of CPU Limit choosed by user
+    /// </summary>
+    /// <returns></returns>
+    private static int GetNumberOfProcessors()
+    {
+      int processorsNumber = int.Parse(Environment.GetEnvironmentVariable("NUMBER_OF_PROCESSORS"));
+      int cpuLimit = SettingsProvider.CompilerSettingsModel.CpuLimit;
+      return (cpuLimit * processorsNumber) / 100;
+    }
 
     public static string CreatePathEnvironmentVariable()
     {
@@ -351,6 +367,7 @@ namespace ClangPowerTools
       process.StartInfo.RedirectStandardOutput = true;
       process.StartInfo.RedirectStandardError = true;
       process.StartInfo.EnvironmentVariables["Path"] = PowerShellWrapper.CreatePathEnvironmentVariable();
+      process.StartInfo.EnvironmentVariables["NUMBER_OF_PROCESSORS"] = GetNumberOfProcessors().ToString();
       process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
 
       //Check if powershell 7 is in Path
