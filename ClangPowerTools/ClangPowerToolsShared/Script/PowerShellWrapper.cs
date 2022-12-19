@@ -91,7 +91,7 @@ namespace ClangPowerTools
         }
 
         process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
-        process.StartInfo.EnvironmentVariables["NUMBER_OF_PROCESSORS"] = GetNumberOfProcessors().ToString();
+        process.StartInfo.EnvironmentVariables["CPT_CPULIMIT"] = GetNumberOfProcessors().ToString();
 
         var customTidyExecutable = GetCustomTidyPath();
 
@@ -183,7 +183,7 @@ namespace ClangPowerTools
             Arguments = Regex.Replace(aKeyValuePair.Value, @"([\w|\\])'([\w|\\])", "$1''$2")
           };
           mInteractiveProcess.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
-          mInteractiveProcess.StartInfo.EnvironmentVariables["NUMBER_OF_PROCESSORS"] = GetNumberOfProcessors().ToString();
+          mInteractiveProcess.StartInfo.EnvironmentVariables["CPT_CPULIMIT"] = GetNumberOfProcessors().ToString();
 
           var customTidyExecutable = GetCustomTidyPath();
 
@@ -257,7 +257,7 @@ namespace ClangPowerTools
             Arguments = Regex.Replace(pathCommand.Value, @"([\w|\\])'([\w|\\])", "$1''$2")
           };
           process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
-          process.StartInfo.EnvironmentVariables["NUMBER_OF_PROCESSORS"] = GetNumberOfProcessors().ToString();
+          process.StartInfo.EnvironmentVariables["CPT_CPULIMIT"] = GetNumberOfProcessors().ToString();
 
           var customTidyExecutable = GetCustomTidyPath();
 
@@ -367,7 +367,7 @@ namespace ClangPowerTools
       process.StartInfo.RedirectStandardOutput = true;
       process.StartInfo.RedirectStandardError = true;
       process.StartInfo.EnvironmentVariables["Path"] = PowerShellWrapper.CreatePathEnvironmentVariable();
-      process.StartInfo.EnvironmentVariables["NUMBER_OF_PROCESSORS"] = GetNumberOfProcessors().ToString();
+      process.StartInfo.EnvironmentVariables["CPT_CPULIMIT"] = GetNumberOfProcessors().ToString();
       process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
 
       //Check if powershell 7 is in Path
