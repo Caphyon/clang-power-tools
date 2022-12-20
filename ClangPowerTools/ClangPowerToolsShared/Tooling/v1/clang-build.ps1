@@ -321,10 +321,10 @@ Function cpt:ensureScriptExists( [Parameter(Mandatory=$true)] [string] $scriptNa
 Write-Verbose "Current Clang Power Tools VSIX version: $cptVsixVersion"
 
 $kLogicalCoreCount = 4;
-if($Env:NUMBER_OF_PROCESSORS -is [int])
+if($Env:NUMBER_OF_PROCESSORS -match "^\d+$")
 {
   $kLogicalCoreCount = $Env:NUMBER_OF_PROCESSORS
-  if($Env:CPT_CPULIMIT -is [int])
+  if($Env:CPT_CPULIMIT -match "^\d+$")
   {
     $kLogicalCoreCount = $Env:CPT_CPULIMIT
   }

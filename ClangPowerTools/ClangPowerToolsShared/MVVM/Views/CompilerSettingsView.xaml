@@ -480,7 +480,7 @@
           <ToolTip>
             <TextBlock
             MaxWidth="400"
-            Text="{Binding Tooltip.AliasPowerShellScripts}"
+            Text="{Binding Tooltip.CpuLimit}"
             TextWrapping="Wrap" />
           </ToolTip>
         </WrapPanel.ToolTip>
