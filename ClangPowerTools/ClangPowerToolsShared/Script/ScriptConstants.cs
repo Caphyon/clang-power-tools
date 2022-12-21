@@ -57,7 +57,7 @@ namespace ClangPowerTools
         ".tli",
         ".tlh",
         ".vcxproj",
-        ".inl"
+        ".ixx"
       };
 
     public const string kProjectFileExtension = ".vcxproj";
