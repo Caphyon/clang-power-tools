@@ -511,6 +511,12 @@
                   Name="slColorB" >
           </Slider>
         </DockPanel>
+        <TextBlock
+          Width="15"
+          VerticalAlignment="Center"
+          FontFamily="SegoeUI"
+          FontSize="16"
+          Text="%" />
       </WrapPanel>
     </Grid>
   </Grid>

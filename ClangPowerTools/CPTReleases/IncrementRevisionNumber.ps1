@@ -8,17 +8,16 @@ if((Test-Path $filepath) -and (Test-Path $filepathToAip))
     #Get xml data from manifest file
     [xml] $data = Get-Content $filepath
     $currentVersion = [Version]::new($data.PackageManifest.Metadata.Identity.Version.ToString())
-    $nextVersion = [Version]::new($currentVersion.Major, $currentVersion.Minor, $currentVersion.Build, $currentVersion.Revision)
     
     #Get xml data from aip file
     [xml] $aipData = Get-Content $filepathToAip
 		
     #Replace old version with new one in manifest
-    $data.PackageManifest.Metadata.Identity.Version = $nextVersion.ToString()
+    $data.PackageManifest.Metadata.Identity.Version = $currentVersion.ToString()
     $data.Save("$filepath")
 
     #Replace old version with new one in aip file
-    $aipData.DOCUMENT.COMPONENT[0].ROW[7].Value = $nextVersion.ToString()
+    $aipData.DOCUMENT.COMPONENT[0].ROW[7].Value = $currentVersion.ToString()
     $aipData.Save("$filepathToAip")
     $resultData = Get-Content $filepathToAip -Encoding utf8
     $result = $resultData -replace " />", "/>"
