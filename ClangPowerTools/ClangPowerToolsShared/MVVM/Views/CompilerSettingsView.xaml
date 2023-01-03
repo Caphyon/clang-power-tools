@@ -473,6 +473,45 @@
         IsChecked="{Binding CompilerModel.Powershell7, Mode = TwoWay}"
         Tag="On" />
       </WrapPanel>
+
+      <!--  CPU Limit  -->
+      <WrapPanel Grid.Row="2" Grid.Column="2">
+        <WrapPanel.ToolTip>
+          <ToolTip>
+            <TextBlock
+            MaxWidth="400"
+            Text="{Binding Tooltip.CpuLimit}"
+            TextWrapping="Wrap" />
+          </ToolTip>
+        </WrapPanel.ToolTip>
+
+        <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="CPU Limit" />
+
+        <DockPanel VerticalAlignment="Center">
+          <TextBox 
+            Background="Transparent"
+            BorderThickness="0"
+            Text="{Binding ElementName=slColorB, Path=Value}"
+            DockPanel.Dock="Right"
+            TextAlignment="Center"
+            Width="30" />
+          <Slider Maximum="100" 
+                  Minimum="50"
+                  Width="70"
+                  TickPlacement="BottomRight" 
+                  TickFrequency="5" 
+                  IsSnapToTickEnabled="True"
+                  Value="{Binding CompilerModel.CpuLimit, Mode = TwoWay}"
+                  Name="slColorB" >
+          </Slider>
+        </DockPanel>
+      </WrapPanel>
     </Grid>
   </Grid>
 </UserControl>

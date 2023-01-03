@@ -193,8 +193,6 @@ $ErrorActionPreference = 'Continue'
 # System Architecture Constants
 # ------------------------------------------------------------------------------------------------
 
-Set-Variable -name kLogicalCoreCount -value $Env:number_of_processors   -option Constant
-
 Set-Variable -name kCptGithubRepoBase -value `
 "https://raw.githubusercontent.com/Caphyon/clang-power-tools/master/ClangPowerTools/ClangPowerToolsShared/Tooling/v1/" `
                                       -option Constant
@@ -321,6 +319,17 @@ Function cpt:ensureScriptExists( [Parameter(Mandatory=$true)] [string] $scriptNa
 [bool] $shouldRedownloadForcefully = $false
 [Version] $cptVsixVersion = cpt:getSetting "Version"
 Write-Verbose "Current Clang Power Tools VSIX version: $cptVsixVersion"
+
+$kLogicalCoreCount = 4;
+if($Env:NUMBER_OF_PROCESSORS -match "^\d+$")
+{
+  $kLogicalCoreCount = $Env:NUMBER_OF_PROCESSORS
+  if($Env:CPT_CPULIMIT -match "^\d+$")
+  {
+    $kLogicalCoreCount = $Env:CPT_CPULIMIT
+  }
+  #Set-Variable -name kLogicalCoreCount -value $Env:CPT_CPULIMIT   -option Constant
+}
 
 # If the main script has been updated meanwhile, we invalidate all other scripts, and force
 # them to update from github. We need to watch for this because older CPT VS Extensions (before v7.9)

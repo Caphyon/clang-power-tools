@@ -44,5 +44,7 @@ namespace ClangPowerTools
     public bool ShowOutputWindow { get; set; } = true;
 
     public bool ShowSquiggles { get; set; } = false;
+
+    public int CpuLimit { get; set; } = 100;
   }
 }
