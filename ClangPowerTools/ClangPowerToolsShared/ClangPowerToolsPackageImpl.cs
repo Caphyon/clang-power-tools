@@ -306,7 +306,7 @@ namespace ClangPowerTools
       var generalSettingsModel = SettingsProvider.GeneralSettingsModel;
 
       string currentVersion = PackageUtility.GetVersion();
-      if (string.IsNullOrWhiteSpace(currentVersion) == false)
+      if (string.IsNullOrWhiteSpace(currentVersion) == false && version != currentVersion)
       {
         generalSettingsModel.Version = currentVersion;
 
