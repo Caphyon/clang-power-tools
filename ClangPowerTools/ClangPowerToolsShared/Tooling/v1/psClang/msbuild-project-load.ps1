@@ -391,7 +391,7 @@ function Detect-ProjectDefaultConfigPlatform()
         # we have script parameters we can use to set the platform/config
         $configPlatformName = $global:cptCurrentConfigPlatform
     }
-    
+
 
     if ((!$configItems -or $configItems.Count -eq 0))
     {
@@ -400,7 +400,7 @@ function Detect-ProjectDefaultConfigPlatform()
             throw [ProjectConfigurationNotFound]::new($global:vcxprojPath, "");
         }
     }
-    else 
+    else
     {
         $targetConfiguration = $null
 
@@ -408,7 +408,7 @@ function Detect-ProjectDefaultConfigPlatform()
         {
             $targetConfiguration = $configItems[0]
         }
-        else 
+        else
         {
             foreach ($configItem in $configItems)
             {
@@ -416,7 +416,7 @@ function Detect-ProjectDefaultConfigPlatform()
                 if ($platformName -ieq $configPlatformName)
                 {
                     $targetConfiguration = $configItem
-                
+
                     break
                 }
             }
@@ -425,7 +425,7 @@ function Detect-ProjectDefaultConfigPlatform()
                 throw [ProjectConfigurationNotFound]::new($global:vcxprojPath, $configPlatformName);
             }
         }
-        
+
         $configPlatformName = $targetConfiguration[0]
     }
 
@@ -434,6 +434,21 @@ function Detect-ProjectDefaultConfigPlatform()
     [string[]] $configAndPlatform = $configPlatformName.Split('|')
     Set-Var -Name "Configuration" -Value $configAndPlatform[0]
     Set-Var -Name "Platform"      -Value $configAndPlatform[1]
+}
+
+function XmlElementHasUnsatisfiedCondition([System.Xml.XmlNode] $node)
+{
+    if ($node.HasAttribute("Condition"))
+    {
+        [string] $nodeCondition = $node.GetAttribute("Condition")
+        [bool] $conditionSatisfied = ((Evaluate-MSBuildCondition($nodeCondition)) -eq $true)
+        if (!$conditionSatisfied)
+        {
+            return $true
+        }
+    }
+
+    return $false
 }
 
 function SanitizeProjectNode([System.Xml.XmlNode] $node)
@@ -528,16 +543,11 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
                 if ($nodePropChild.GetType().Name -ine "XmlElement")
                 {
                     continue
-                }                
+                }
 
-                if ($nodePropChild.HasAttribute("Condition"))
+                if (XmlElementHasUnsatisfiedCondition($nodePropChild))
                 {
-                    [string] $nodeCondition = $nodePropChild.GetAttribute("Condition")
-                    [bool] $conditionSatisfied = ((Evaluate-MSBuildCondition($nodeCondition)) -eq $true)
-                    if (!$conditionSatisfied)
-                    {
-                        continue
-                    }
+                    continue
                 }
 
                 $itemProperties[$nodePropChild.Name] = Evaluate-MSBuildExpression $nodePropChild.InnerText
@@ -568,6 +578,11 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
             foreach ($propNode in $child.ChildNodes)
             {
                 if ($propNode.GetType().Name -ine "XmlElement")
+                {
+                    continue
+                }
+
+                if (XmlElementHasUnsatisfiedCondition($propNode))
                 {
                     continue
                 }
@@ -656,7 +671,7 @@ function ParseProjectFile([string] $projectFilePath)
     SanitizeProjectNode($fileXml.Project)
 
     Pop-Location
-    
+
     # restore previous path
     if (![string]::IsNullOrWhiteSpace(($currentFile)))
     {

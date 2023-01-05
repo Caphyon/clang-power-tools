@@ -153,10 +153,10 @@ Function Get-Project-SDKVer()
     }
 
     if ([string]::IsNullOrEmpty($WindowsTargetPlatformVersion))
-    { 
-        return "" 
-    } 
-    
+    {
+        return ""
+    }
+
     return $WindowsTargetPlatformVersion.Trim()
 }
 
@@ -379,9 +379,9 @@ Function Get-ProjectIncludeDirectories()
     {
         return @(Get-ProjectIncludesFromIncludePathVar)
     }
-    else 
+    else
     {
-        $returnArray += @(Get-ProjectIncludesFromIncludePathVar)    
+        $returnArray += @(Get-ProjectIncludesFromIncludePathVar)
     }
 
     return ( $returnArray | ForEach-Object { Remove-PathTrailingSlash -path $_ } )
@@ -499,9 +499,10 @@ Function Get-ProjectStdafxDir( [Parameter(Mandatory = $true)]  [string]   $pchHe
 
         foreach ($dir in $searchPool)
         {
-            [string] $stdafxPath = Canonize-Path -base $dir -child $pchHeaderName -ignoreErrors
-            if (![string]::IsNullOrEmpty($stdafxPath))
+            [string] $stdafxPathTest = Canonize-Path -base $dir -child $pchHeaderName -ignoreErrors
+            if (![string]::IsNullOrEmpty($stdafxPathTest))
             {
+                $stdafxPath = $dir
                 break
             }
         }
@@ -513,8 +514,9 @@ Function Get-ProjectStdafxDir( [Parameter(Mandatory = $true)]  [string]   $pchHe
     }
     else
     {
-        [string] $stdafxDir = Get-FileDirectory($stdafxPath)
-        return $stdafxDir
+        #[string] $stdafxDir = Get-FileDirectory($stdafxPath)
+        #return $stdafxDir
+        return $stdafxPath
     }
 }
 
