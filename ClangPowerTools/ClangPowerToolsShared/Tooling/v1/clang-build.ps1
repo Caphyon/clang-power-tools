@@ -799,7 +799,7 @@ Function Get-CompileCallArguments( [Parameter(Mandatory=$false)][string[]] $prep
 
     foreach ($file in $forceIncludeFiles)
     {
-      $projectCompileArgs += "$kClangFlagForceInclude $file"
+      $projectCompileArgs += "$kClangFlagForceInclude $(Get-QuotedPath $file)"
     }
   }
 
@@ -1521,6 +1521,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
         continue # no point in compiling the PCH CPP
     }
 
+    [string[]] $cppForceIncludes = Get-FileForceIncludes -fileFullName $cpp
     [string] $exeToCall = Get-ExeToCall -workloadType $workloadType
 
     [string] $finalPchPath = $pchFilePath
@@ -1533,7 +1534,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     [string] $exeArgs   = Get-ExeCallArguments -workloadType            $workloadType `
                                                -pchFilePath             $finalPchPath `
                                                -preprocessorDefinitions $preprocessorDefinitions `
-                                               -forceIncludeFiles       $forceIncludeFiles `
+                                               -forceIncludeFiles       $cppForceIncludes `
                                                -currentFile             $cpp `
                                                -includeDirectories      $includeDirectories `
                                                -additionalIncludeDirectories $additionalIncludeDirectories
