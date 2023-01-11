@@ -417,44 +417,6 @@ namespace ClangPowerTools
       SettingsProvider.TidySettingsModel = tidySettingsModel;
     }
 
-    private void MapTidyPredefinedChecksToTidyettings(ClangTidyPredefinedChecksOptions clangTidyPredefinedChecksOptions)
-    {
-      PropertyInfo[] properties = typeof(ClangTidyPredefinedChecksOptions).GetProperties();
-      var tidySettingsModel = SettingsProvider.TidySettingsModel;
-
-      foreach (PropertyInfo propertyInfo in properties)
-      {
-        bool isChecked = (bool)propertyInfo.GetValue(clangTidyPredefinedChecksOptions, null);
-
-        if (isChecked)
-        {
-          tidySettingsModel.PredefinedChecks += string.Concat(FormatTidyCheckName(propertyInfo.Name), ";");
-        }
-      }
-
-      SettingsProvider.TidySettingsModel = tidySettingsModel;
-    }
-
-    private string FormatTidyCheckName(string name)
-    {
-      var stringBuilder = new StringBuilder();
-      stringBuilder.Append(name[0]);
-
-      for (int i = 1; i < name.Length; i++)
-      {
-        if (Char.IsUpper(name[i]))
-        {
-          stringBuilder.Append("-").Append(name[i]);
-        }
-        else
-        {
-          stringBuilder.Append(name[i]);
-        }
-      }
-
-      return stringBuilder.ToString().ToLower();
-    }
-
     /// <summary>
     /// Load the user profile data from the local file
     /// </summary>
