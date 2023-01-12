@@ -174,10 +174,17 @@ namespace ClangPowerTools
     private string CreateFlagUri(string tidyCheckName)
     {
       StringBuilder sb = new();
-      var listTidyCheckName = tidyCheckName.ToCharArray();
-      if(tidyCheckName.IndexOf('-') != -1)
+      string checkName = string.Empty;
+      if (tidyCheckName.Contains("clang-analyzer-"))
+      {
+        checkName = tidyCheckName.Replace("clang-analyzer-", "clang-analyzer/");
+      }
+      else if (tidyCheckName.IndexOf('-') != -1)
+      {
+        var listTidyCheckName = tidyCheckName.ToCharArray();
         listTidyCheckName[tidyCheckName.IndexOf('-')] = '/';
-      var checkName = new string(listTidyCheckName);
+        checkName = new string(listTidyCheckName);
+      }
       sb.Append(TidyConstants.FlagsUri).Append(checkName).Append(".html");
       return sb.ToString();
     }

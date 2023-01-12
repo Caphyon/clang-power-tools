@@ -188,7 +188,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\OldSettings\OldModels\ClangFormatOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\OldSettings\OldModels\ClangOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\OldSettings\OldModels\ClangTidyOptions.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\OldSettings\OldModels\ClangTidyPredefinedChecksOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\OldSettings\OldModels\DefaultOptions.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\PreinstalledLlvm.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Provider\SettingsProvider.cs" />
