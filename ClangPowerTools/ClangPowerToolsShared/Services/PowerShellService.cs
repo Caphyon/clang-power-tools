@@ -58,6 +58,14 @@ namespace ClangPowerTools.Services
 
       try
       {
+        //Check if file was downloaded, delete destination folder, all files will be automatically downloaded
+        //If file wasn't download, an exception will throw on MoveFile action
+        if (File.Exists(Path.Combine(sourceFolder, PsUpdaterConstants.ClangBuildScript)))
+        {
+          FileSystem.DeleteDirectory(destFolder);
+        }
+        
+        Directory.CreateDirectory(destFolder);
         FileSystem.MoveFile(Path.Combine(sourceFolder, PsUpdaterConstants.ClangBuildScript),
                             Path.Combine(destFolder, PsUpdaterConstants.ClangBuildScript));
 
