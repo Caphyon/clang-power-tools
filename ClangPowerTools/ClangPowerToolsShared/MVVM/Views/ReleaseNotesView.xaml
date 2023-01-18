@@ -123,7 +123,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Add LLVM 15.0.4"
+                 Text="• Add LLVM v15.0.7"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,15,0,0"
@@ -132,7 +132,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Updated Clang-Format to version 13"
+                 Text="• Updated Clang-Format to v15.0.7"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,15,0,0"
@@ -180,6 +180,41 @@
                  Text="• Incorrect detections on some inputs in Clang Format editor"
                  TextWrapping="Wrap" />
 
+        <TextBox Margin="15,15,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• Update cpt scripts for Visual Studio 2015"
+                 TextWrapping="Wrap" />
+
+        <TextBox Margin="15,15,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• Getting error on compile command after script update"
+                 TextWrapping="Wrap" />
+
+        <TextBox Margin="15,15,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• Cpp-specific force include headers not working correctly"
+                 TextWrapping="Wrap" />
+
+        <TextBox Margin="15,15,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• Clang Format Editor doesn't update"
+                 TextWrapping="Wrap" />
         <!--<TextBox Margin="15,15,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
