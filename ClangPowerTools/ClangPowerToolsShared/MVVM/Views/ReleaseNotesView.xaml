@@ -132,7 +132,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Updated Clang-Format to v15.0.7"
+                 Text="• Updated clang-format to v15.0.7"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,15,0,0"
@@ -177,7 +177,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Incorrect detections on some inputs in Clang Format editor"
+                 Text="• Incorrect detections on some inputs in Clang Format Editor"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,15,0,0"

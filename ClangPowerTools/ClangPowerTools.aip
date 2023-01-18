@@ -57,7 +57,7 @@
     <ROW Id="27" Name="visualstudio-detection.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\visualstudio-detection.ps1" ParentDir="5"/>
     <ROW Id="28" Name="visualstudio-detection.tests.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\visualstudio-detection.tests.ps1" ParentDir="5"/>
     <ROW Id="29" Name="~advinst.tests.ps1" Path="ClangPowerToolsShared\Tooling\v1\psClang\~advinst.tests.ps1" ParentDir="5"/>
-    <ROW Id="30" Name="ClangFormatEditor.exe" Path="ClangPowerToolsShared\Executables\ClangFormatEditor.exe" ParentDir="1"/>
+    <ROW Id="30" Name="Clang Format Editor.msi" Path="ClangPowerToolsShared\Executables\Clang Format Editor.msi" ParentDir="1"/>
     <ROW Id="31" Name="clang-format.exe" Path="ClangPowerToolsShared\Executables\clang-format.exe" ParentDir="1"/>
     <ROW Id="32" Name="ClangPowerToolsIco.ico" Path="ClangPowerToolsShared\Resources\ClangPowerToolsIco.ico" ParentDir="2"/>
   </COMPONENT>
