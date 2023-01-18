@@ -52,15 +52,13 @@ namespace ClangPowerTools
         return;
       try
       {
-        var msiName = Path.Combine(vsixPath, FormatEditorConstants.ClangFormatMsi);
-        string Script = $"-ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command \"& " +
-          $"msiexec.exe /i '{Path.Combine(vsixPath, FormatEditorConstants.ClangFormatMsi)}' /qn \" ";
         EditorProcess = new Process();
-        EditorProcess.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
-        EditorProcess.StartInfo.Arguments = Script;
+        EditorProcess.StartInfo.FileName = "msiexec.exe";
+        EditorProcess.StartInfo.Arguments = $" /i \"{Path.Combine(vsixPath, FormatEditorConstants.ClangFormatMsi)}\" /qn ";
         EditorProcess.StartInfo.UseShellExecute = true;
         EditorProcess.StartInfo.Verb = "runas";
         EditorProcess.Start();
+        EditorProcess.WaitForExit();
       }
       catch (Exception e)
       {

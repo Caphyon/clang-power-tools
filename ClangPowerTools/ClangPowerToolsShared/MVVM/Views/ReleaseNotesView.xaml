@@ -114,7 +114,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Add new Tidy Checks"
+                 Text="• Add 30 new Tidy Checks"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,15,0,0"
