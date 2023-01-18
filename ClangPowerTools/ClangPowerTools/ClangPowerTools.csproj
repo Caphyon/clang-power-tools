@@ -192,8 +192,8 @@
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>.</VSIXSubPath>
     </Content>
-    <Content Include="..\ClangPowerToolsShared\Executables\ClangFormatEditor.exe">
-      <Link>Executables\ClangFormatEditor.exe</Link>
+    <Content Include="..\ClangPowerToolsShared\Executables\Clang Format Editor.msi">
+      <Link>Executables\Clang Format Editor.msi</Link>
       <IncludeInVSIX>true</IncludeInVSIX>
       <VSIXSubPath>.</VSIXSubPath>
     </Content>

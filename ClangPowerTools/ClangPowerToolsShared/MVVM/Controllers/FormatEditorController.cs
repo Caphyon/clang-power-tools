@@ -1,5 +1,6 @@
 ﻿using ClangPowerTools.Helpers;
 using System;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.IO;
 using System.Windows;
@@ -33,8 +34,31 @@ namespace ClangPowerTools
       try
       {
         EditorProcess = new Process();
-        EditorProcess.StartInfo.FileName = Path.Combine(vsixPath, FormatEditorConstants.ExecutableName);
+        EditorProcess.StartInfo.FileName = Path.Combine(FormatEditorConstants.ClangFormatEditorPath,
+        FormatEditorConstants.ExecutableName);
         EditorProcess.Start();
+      }
+      catch (Exception e)
+      {
+        MessageBox.Show(e.Message, FormatEditorConstants.ClangFormatEditor, MessageBoxButton.OK, MessageBoxImage.Error);
+      }
+    }
+
+    //Install Clang Format Editor if this is not already installed
+    public void InstallClangFormatEditorSilent()
+    {
+      if (File.Exists(Path.Combine(FormatEditorConstants.ClangFormatEditorPath,
+        FormatEditorConstants.ExecutableName)))
+        return;
+      try
+      {
+        EditorProcess = new Process();
+        EditorProcess.StartInfo.FileName = "msiexec.exe";
+        EditorProcess.StartInfo.Arguments = $" /i \"{Path.Combine(vsixPath, FormatEditorConstants.ClangFormatMsi)}\" /qn ";
+        EditorProcess.StartInfo.UseShellExecute = true;
+        EditorProcess.StartInfo.Verb = "runas";
+        EditorProcess.Start();
+        EditorProcess.WaitForExit();
       }
       catch (Exception e)
       {

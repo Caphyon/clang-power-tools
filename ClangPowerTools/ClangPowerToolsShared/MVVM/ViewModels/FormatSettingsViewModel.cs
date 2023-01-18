@@ -111,6 +111,7 @@ namespace ClangPowerTools
       {
         SettingsProvider.SettingsView.Close();
         var formatEditorController = new FormatEditorController();
+        formatEditorController.InstallClangFormatEditorSilent();
         formatEditorController.OpenEditor();
       }
       else
