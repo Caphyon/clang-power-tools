@@ -410,6 +410,7 @@ namespace ClangPowerTools
         default:
           break;
       }
+      DisplayMessage(false);
     }
 
     #endregion
@@ -614,7 +615,7 @@ namespace ClangPowerTools
       StatusBarHandler.Status("Command stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
     }
 
-    public void DisplayMessage(bool clearOutput, string message)
+    public void DisplayMessage(bool clearOutput, string message = "")
     {
       OnClangCommandMessageTransfer(new ClangCommandMessageEventArgs(message, clearOutput));
       StatusBarHandler.Status("Command stopped", 0, vsStatusAnimation.vsStatusAnimationBuild, 0);
