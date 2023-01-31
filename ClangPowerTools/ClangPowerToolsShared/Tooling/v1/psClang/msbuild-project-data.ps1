@@ -153,10 +153,10 @@ Function Get-Project-SDKVer()
     }
 
     if ([string]::IsNullOrEmpty($WindowsTargetPlatformVersion))
-    { 
-        return "" 
-    } 
-    
+    {
+        return ""
+    }
+
     return $WindowsTargetPlatformVersion.Trim()
 }
 
@@ -379,9 +379,9 @@ Function Get-ProjectIncludeDirectories()
     {
         return @(Get-ProjectIncludesFromIncludePathVar)
     }
-    else 
+    else
     {
-        $returnArray += @(Get-ProjectIncludesFromIncludePathVar)    
+        $returnArray += @(Get-ProjectIncludesFromIncludePathVar)
     }
 
     return ( $returnArray | ForEach-Object { Remove-PathTrailingSlash -path $_ } )
@@ -517,9 +517,10 @@ Function Get-ProjectStdafxDir( [Parameter(Mandatory = $true)]  [string]   $pchHe
 
         foreach ($dir in $searchPool)
         {
-            [string] $stdafxPath = Canonize-Path -base $dir -child $pchHeaderName -ignoreErrors
-            if (![string]::IsNullOrEmpty($stdafxPath))
+            [string] $stdafxPathTest = Canonize-Path -base $dir -child $pchHeaderName -ignoreErrors
+            if (![string]::IsNullOrEmpty($stdafxPathTest))
             {
+                $stdafxPath = $stdafxPathTest
                 break
             }
         }
@@ -528,6 +529,14 @@ Function Get-ProjectStdafxDir( [Parameter(Mandatory = $true)]  [string]   $pchHe
     if ([string]::IsNullOrEmpty($stdafxPath))
     {
         return ""
+    }
+    # Handle case where the PCH header project setting contains directory names from upper hierarchy.
+    # E.g. <PrecompiledHeaderFile>$(ProjectName)\$(ProjectName)_headers.h</PrecompiledHeaderFile>
+    # More details at https://github.com/Caphyon/clang-power-tools/issues/1227
+    elseif ($stdafxPath.EndsWith($pchHeaderName))
+    {
+        [string] $stdafxDir = $stdafxPath.Remove($stdafxPath.Length - $pchHeaderName.Length)
+        return $stdafxDir
     }
     else
     {
