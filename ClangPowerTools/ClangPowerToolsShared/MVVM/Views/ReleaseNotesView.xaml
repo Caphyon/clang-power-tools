@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 2023.1.2" />
+                 Text="version 2023.2.0" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -114,34 +114,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Add 30 new Tidy Checks"
-                 TextWrapping="Wrap" />
-
-        <TextBox Margin="15,15,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• Add LLVM v15.0.7"
-                 TextWrapping="Wrap" />
-
-        <TextBox Margin="15,15,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• Updated clang-format to v15.0.7"
-                 TextWrapping="Wrap" />
-
-        <TextBox Margin="15,15,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• Updated clang-format from Clang Format Editor to v15.0.6"
+                 Text="• Updated Clang-Format from Clang Format Editor to v15.0.7"
                  TextWrapping="Wrap" />
 
         <!--Bug Fixes-->
@@ -159,7 +132,25 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Hyperlinks in Tidy Checks Not Found for clang-analyzer-* links"
+                 Text="• After using clang Tidy, the animated building icon in the status bar never clears"
+                 TextWrapping="Wrap" />
+
+        <TextBox Margin="15,15,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• Incorrect PCH detection when project setting contains directories in path"
+                 TextWrapping="Wrap" />
+
+        <TextBox Margin="15,15,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• Properties incorrectly set for ItemDefinitionGroup children excluded by condition"
                  TextWrapping="Wrap" />
         
         <TextBox Margin="15,15,0,0"
@@ -168,53 +159,21 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Wrong default value cpp-standard in Clang Format Editor"
+                 Text="• Clang-Format detector broken code view"
                  TextWrapping="Wrap" />
-
+        
         <TextBox Margin="15,15,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Incorrect detections on some inputs in Clang Format Editor"
+                 Text="• Clang-Format Editor .Net prerequisite falsely triggered"
                  TextWrapping="Wrap" />
 
-        <TextBox Margin="15,15,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• Update cpt scripts for Visual Studio 2015"
-                 TextWrapping="Wrap" />
 
-        <TextBox Margin="15,15,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• Getting error on compile command after script update"
-                 TextWrapping="Wrap" />
 
-        <TextBox Margin="15,15,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• Cpp-specific force include headers not working correctly"
-                 TextWrapping="Wrap" />
 
-        <TextBox Margin="15,15,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• Clang Format Editor doesn't update"
-                 TextWrapping="Wrap" />
         <!--<TextBox Margin="15,15,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
