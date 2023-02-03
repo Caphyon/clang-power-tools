@@ -301,12 +301,10 @@ namespace ClangPowerTools
         case CommandIds.kTidyToolbarId:
           {
             await StopBackgroundRunnersAsync();
-            OnBeforeClangCommand(CommandIds.kTidyId);
 
             await TidyCommand.Instance.RunClangTidyAsync(CommandIds.kTidyId, aCommandUILocation);
             await TidyCommand.Instance.ShowTidyToolWindowEmptyAsync();
 
-            OnAfterClangCommand();
             break;
           }
         case CommandIds.kTidyToolWindowId:
@@ -410,7 +408,6 @@ namespace ClangPowerTools
         default:
           break;
       }
-      DisplayMessage(false);
     }
 
     #endregion
