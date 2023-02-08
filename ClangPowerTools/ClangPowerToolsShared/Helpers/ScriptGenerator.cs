@@ -33,22 +33,22 @@ namespace ClangPowerTools.Helpers
       {
         return GetProjectRelatedParameters(cacheProjectsItemsModel);
       }
-      var tokens = new List<string>
-      {
-        $"{ScriptConstants.kProject} {JoinPathsToStringScript(cacheProjectsItemsModel.ProjectsStringList)}",
-        $"{ScriptConstants.kFile} {JoinPathsToStringScript(filePaths)}",
-        $"{ScriptConstants.kActiveConfiguration} '{cacheProjectsItemsModel.Configuration}|{cacheProjectsItemsModel.Platform}'"
-      };
+      var tokens = new List<string>();
+      if (cacheProjectsItemsModel.ProjectsStringList != null && cacheProjectsItemsModel.ProjectsStringList.Count > 0)
+        tokens.Add($"{ScriptConstants.kProject} {JoinPathsToStringScript(cacheProjectsItemsModel.ProjectsStringList)}");
+      tokens.Add($"{ScriptConstants.kFile} {JoinPathsToStringScript(filePaths)}");
+      if(!string.IsNullOrEmpty(cacheProjectsItemsModel.Configuration) && !string.IsNullOrEmpty(cacheProjectsItemsModel.Platform))
+        tokens.Add($"{ScriptConstants.kActiveConfiguration} '{cacheProjectsItemsModel.Configuration}|{cacheProjectsItemsModel.Platform}'");
       return string.Join(" ", tokens);
     }
 
     public static string GetProjectRelatedParameters(CacheProjectsItemsModel cacheProjectsItemsModel)
     {
-      var tokens = new List<string>
-      {
-        $"{ScriptConstants.kProject} {JoinPathsToStringScript(cacheProjectsItemsModel.ProjectsStringList)}",
-        $"{ScriptConstants.kActiveConfiguration} '{cacheProjectsItemsModel.Configuration}|{cacheProjectsItemsModel.Platform}'"
-      };
+      var tokens = new List<string>();
+      if (cacheProjectsItemsModel.ProjectsStringList != null && cacheProjectsItemsModel.ProjectsStringList.Count > 0)
+        tokens.Add($"{ScriptConstants.kProject} {JoinPathsToStringScript(cacheProjectsItemsModel.ProjectsStringList)}");
+      if (!string.IsNullOrEmpty(cacheProjectsItemsModel.Configuration) && !string.IsNullOrEmpty(cacheProjectsItemsModel.Platform))
+        tokens.Add($"{ScriptConstants.kActiveConfiguration} '{cacheProjectsItemsModel.Configuration}|{cacheProjectsItemsModel.Platform}'");
       return string.Join(" ", tokens);
     }
 
