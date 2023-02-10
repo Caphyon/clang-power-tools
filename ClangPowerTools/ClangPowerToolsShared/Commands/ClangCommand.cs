@@ -244,7 +244,8 @@ namespace ClangPowerTools
         GenerateDocumentation.OutputDir = documentationOutoutePath;
         CommandControllerInstance.CommandController.DisplayMessage(false, "Please wait ...");
         string Script = $"-ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command \"& " +
-        $"''{clangDocPath}'' --public {projectArguments} --format={GenerateDocumentation.Formats[commandId]}  -output=''{documentationOutoutePath}'' ''{jsonCompilationDatabasePath}'''";
+        $"'{clangDocPath}' --public {projectArguments} --format={GenerateDocumentation.Formats[commandId]}  " +
+        $"-output='{documentationOutoutePath}' '{jsonCompilationDatabasePath}' \"";
 
         PowerShellWrapper.Invoke(Script);
 
