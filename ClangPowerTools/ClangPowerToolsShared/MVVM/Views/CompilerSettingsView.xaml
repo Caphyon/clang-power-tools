@@ -502,7 +502,7 @@
             TextAlignment="Center"
             Width="30" />
           <Slider Maximum="100" 
-                  Minimum="50"
+                  Minimum="20"
                   Width="70"
                   TickPlacement="BottomRight" 
                   TickFrequency="5" 
