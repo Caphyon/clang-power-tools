@@ -24,6 +24,9 @@ namespace ClangPowerTools.Views
     {
       SelectPredefinedChecksButton.IsEnabled =
         UseCheckFromComboBox.SelectedItem.ToString() == ClangTidyUseChecksFrom.PredefinedChecks.ToString();
+
+      CustomChecksText.IsReadOnly =
+      !(UseCheckFromComboBox.SelectedItem.ToString() == ClangTidyUseChecksFrom.CustomChecks.ToString());
     }
   }
 }
