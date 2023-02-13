@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 2023.2.0" />
+                 Text="version 2023.2.1" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -114,7 +114,16 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Updated Clang-Format from Clang Format Editor to v15.0.7"
+                 Text="• Change core low limit to 20%"
+                 
+                 TextWrapping="Wrap" />
+        <TextBox Margin="15,15,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• Tidy Custom Checks edit field from CPT Settings now disabled when Use check from combo not set to CustomChecks"
                  TextWrapping="Wrap" />
 
         <!--Bug Fixes-->
@@ -132,7 +141,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• After using clang Tidy, the animated building icon in the status bar never clears"
+                 Text="• An unexpected token parse error when running clang-tidy with cmake"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,15,0,0"
@@ -141,7 +150,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Incorrect PCH detection when project setting contains directories in path"
+                 Text="• Clang Power Tools crashes while analysing file"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,15,0,0"
@@ -150,7 +159,16 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Properties incorrectly set for ItemDefinitionGroup children excluded by condition"
+                 Text="• Illegal two backslash characters in path on add cpt alias in Powershell"
+                 TextWrapping="Wrap" />
+
+        <TextBox Margin="15,15,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• Launching ClangFormatEditor fails because of mismatched .NET prerequisite"
                  TextWrapping="Wrap" />
         
         <TextBox Margin="15,15,0,0"
@@ -159,7 +177,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Clang-Format detector broken code view"
+                 Text="• Status bar is set to command stopped, after tidy finished"
                  TextWrapping="Wrap" />
         
         <TextBox Margin="15,15,0,0"
@@ -168,7 +186,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Clang-Format Editor .Net prerequisite falsely triggered"
+                 Text="• Closing CPT Settings screen causes the Output pane to get focus"
                  TextWrapping="Wrap" />
 
 
