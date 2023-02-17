@@ -42,7 +42,7 @@ namespace ClangPowerTools.CMake
       if (CreateBuildDirectory(directoryName, out string dirPath) == false)
         return;
 
-      var command = "cmake -DCMAKE_CONFIGURATION_TYPES=\"Debug; Release\" -DCMAKE_GENERATOR_PLATFORM=x64 -G \"Visual Studio 16 2019\" ..";
+      var command = "cmake -G \"Visual Studio 16 2019\" ..";
 
       using (System.Diagnostics.Process process = new System.Diagnostics.Process()
       {
