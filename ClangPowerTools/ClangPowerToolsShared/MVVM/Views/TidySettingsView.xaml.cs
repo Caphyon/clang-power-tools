@@ -27,6 +27,8 @@ namespace ClangPowerTools.Views
 
       CustomChecksText.IsReadOnly =
       !(UseCheckFromComboBox.SelectedItem.ToString() == ClangTidyUseChecksFrom.CustomChecks.ToString());
+
+      CustomChecksText.IsEnabled = !CustomChecksText.IsReadOnly;
     }
   }
 }
