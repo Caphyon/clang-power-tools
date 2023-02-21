@@ -129,14 +129,20 @@ namespace ClangPowerTools
       string genericParameters = ScriptGenerator.GetGenericParamaters(aCommandId, VsEdition, VsVersion, jsonCompilationDbActive);
 
       CMakeBuilder cMakeBuilder = new CMakeBuilder();
-      cMakeBuilder.Build();
+      if (SolutionInfo.IsOpenFolderModeActive())
+      {
+        cMakeBuilder.Build();
+      }
 
       if (jsonCompilationDbActive)
         ExportJsonCompilationDatabase(runModeParameters, genericParameters);
       else
         Compile(runModeParameters, genericParameters, aCommandId, paths);
 
-      cMakeBuilder.ClearBuildCashe();
+      if (SolutionInfo.IsOpenFolderModeActive())
+      {
+        cMakeBuilder.ClearBuildCashe();
+      }
     }
 
     //Collect files

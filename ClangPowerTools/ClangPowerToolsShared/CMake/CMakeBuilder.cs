@@ -8,7 +8,7 @@ namespace ClangPowerTools.CMake
     #region Members
 
     private readonly string directoryName = "CPTCMakeBuild";
-
+    private FileStream VcxprojFile;
     #endregion
 
     #region Public Methods
@@ -42,7 +42,9 @@ namespace ClangPowerTools.CMake
       if (CreateBuildDirectory(directoryName, out string dirPath) == false)
         return;
 
-      var command = "cmake -DCMAKE_CONFIGURATION_TYPES=\"Debug; Release\" -DCMAKE_GENERATOR_PLATFORM=x64 -G \"Visual Studio 16 2019\" ..";
+      LockVcxprojFile();
+
+      var command = "cmake -G \"Visual Studio 16 2019\" ..";
 
       using (System.Diagnostics.Process process = new System.Diagnostics.Process()
       {
@@ -52,12 +54,42 @@ namespace ClangPowerTools.CMake
           WindowStyle = System.Diagnostics.ProcessWindowStyle.Hidden,
           WorkingDirectory = dirPath,
           FileName = "cmd.exe",
-          Arguments = "/c " + command
+          Arguments = "/c " + command,
+          UseShellExecute = false
         }
       })
       {
         process.Start();
         process.WaitForExit();
+      }
+      UnlockVcxprojFile();
+    }
+
+
+    /// <summary>
+    /// Locks vcxproj file by opening it. This function is used before generating
+    /// .sln and .vcxproj, because if user already have a
+    /// .vcxproj generated, this file will be overriden.
+    /// We need to lock user .vcxproj file and gerenate .sln 
+    /// and .vcxproj in a temp folder
+    /// </summary>
+    private void LockVcxprojFile()
+    {
+      SolutionInfo.GetSolutionInfo(out string dir, out _, out _);
+      if (Directory.Exists(dir) == false)
+        return;
+      var dirName = new DirectoryInfo(dir).Name;
+      var vcxprojPath = Path.Combine(dir, dirName, dirName + ScriptConstants.kProjectFileExtension);
+      if(File.Exists(vcxprojPath))
+        VcxprojFile = File.Open(vcxprojPath, FileMode.Open, FileAccess.Write);
+    }
+
+    private void UnlockVcxprojFile()
+    {
+      if (VcxprojFile != null)
+      {
+        VcxprojFile.Close();
+        VcxprojFile.Dispose();
       }
     }
 

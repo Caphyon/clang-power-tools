@@ -82,7 +82,10 @@ namespace ClangPowerTools.Commands.BackgroundTidy
         string genericParameters = ScriptGenerator.GetGenericParamaters(commandId, vsEdition, vsVersion, false);
 
         CMakeBuilder cMakeBuilder = new CMakeBuilder();
-        cMakeBuilder.Build();
+        if (SolutionInfo.IsOpenFolderModeActive())
+        {
+          cMakeBuilder.Build();
+        }
 
         var vsSolution = SolutionInfo.IsOpenFolderModeActive() == false ?
           (IVsSolution)VsServiceProvider.GetService(typeof(SVsSolution)) : null;
@@ -100,8 +103,10 @@ namespace ClangPowerTools.Commands.BackgroundTidy
 
         #endregion
 
-        cMakeBuilder.ClearBuildCashe();
-
+        if (SolutionInfo.IsOpenFolderModeActive())
+        {
+          cMakeBuilder.ClearBuildCashe();
+        }
       }
       catch (Exception)
       {
