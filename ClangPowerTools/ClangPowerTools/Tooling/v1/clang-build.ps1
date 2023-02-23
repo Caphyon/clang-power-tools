@@ -108,7 +108,7 @@
 .NOTES
     Author: Gabriel Diaconita
 #>
-#Requires -Version 3
+#Requires -Version 5
 param( [alias("proj")]
        [Parameter(Mandatory=$false, HelpMessage="Filter project(s) to compile/tidy")]
        [System.Object[]] $aVcxprojToCompile = @()
