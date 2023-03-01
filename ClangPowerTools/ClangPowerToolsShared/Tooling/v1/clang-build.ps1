@@ -1284,7 +1284,8 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     #-----------------------------------------------------------------------------------------------
     # DETECT PROJECT ADDITIONAL INCLUDE DIRECTORIES AND CONSTRUCT INCLUDE PATHS
 
-    [string[]] $global:additionalIncludeDirectories = @(Get-ProjectAdditionalIncludes)
+    [string[]] $global:additionalIncludeDirectories = @(Get-ProjectExternalIncludePath)
+    $additionalIncludeDirectories += @(Get-ProjectAdditionalIncludes)
     Write-Verbose-Array -array $additionalIncludeDirectories -name "Additional include directories"
     Add-ToProjectSpecificVariables 'additionalIncludeDirectories'
 

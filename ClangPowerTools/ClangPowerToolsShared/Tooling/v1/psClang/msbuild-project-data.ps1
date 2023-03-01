@@ -431,6 +431,27 @@ Function Get-ProjectPreprocessorDefines()
     return $defines
 }
 
+Function Get-ProjectExternalIncludePath()
+{
+    $data = $ExternalIncludePath;
+
+    [string[]] $tokens = @($data -split ";")
+
+    foreach ($token in $tokens)
+    {
+        if ([string]::IsNullOrWhiteSpace($token))
+        {
+            continue
+        }
+
+        [string] $includePath = Canonize-Path -base $ProjectDir -child $token.Trim() -ignoreErrors
+        if (![string]::IsNullOrEmpty($includePath))
+        {
+            $includePath -replace '\\$', ''
+        }
+    }
+}
+
 Function Get-ProjectAdditionalIncludes()
 {
     Set-ProjectItemContext "ClCompile"
