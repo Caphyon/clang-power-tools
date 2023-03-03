@@ -431,14 +431,9 @@ Function Get-ProjectPreprocessorDefines()
     return $defines
 }
 
-Function Get-ProjectExternalIncludePath()
-{
-	if (! (Test-Path -Path "Variable:\ExternalIncludePath")) {
-		return
-    }
-	
-    $data = $ExternalIncludePath;
 
+Function Get-PathsFromElementContent([Parameter(Mandatory = $true)]  [string]   $data)
+{
     [string[]] $tokens = @($data -split ";")
 
     foreach ($token in $tokens)
@@ -456,26 +451,20 @@ Function Get-ProjectExternalIncludePath()
     }
 }
 
+Function Get-ProjectExternalIncludePath()
+{
+	if (! (Test-Path -Path "Variable:\ExternalIncludePath")) {
+       return
+    }
+    $data = $ExternalIncludePath;
+    Get-PathsFromElementContent -data $data
+}
+
 Function Get-ProjectAdditionalIncludes()
 {
     Set-ProjectItemContext "ClCompile"
     $data = Get-ProjectItemProperty "AdditionalIncludeDirectories"
-
-    [string[]] $tokens = @($data -split ";")
-
-    foreach ($token in $tokens)
-    {
-        if ([string]::IsNullOrWhiteSpace($token))
-        {
-            continue
-        }
-
-        [string] $includePath = Canonize-Path -base $ProjectDir -child $token.Trim() -ignoreErrors
-        if (![string]::IsNullOrEmpty($includePath))
-        {
-            $includePath -replace '\\$', ''
-        }
-    }
+    Get-PathsFromElementContent -data $data
 }
 
 Function Get-ProjectForceIncludes()
