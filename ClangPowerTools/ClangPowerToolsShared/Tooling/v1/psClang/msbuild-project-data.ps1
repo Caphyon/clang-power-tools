@@ -433,6 +433,10 @@ Function Get-ProjectPreprocessorDefines()
 
 Function Get-ProjectExternalIncludePath()
 {
+	if (! (Test-Path -Path "Variable:\ExternalIncludePath")) {
+		return
+    }
+	
     $data = $ExternalIncludePath;
 
     [string[]] $tokens = @($data -split ";")
