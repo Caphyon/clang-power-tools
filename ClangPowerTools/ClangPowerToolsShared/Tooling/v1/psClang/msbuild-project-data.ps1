@@ -431,12 +431,10 @@ Function Get-ProjectPreprocessorDefines()
     return $defines
 }
 
-Function Get-ProjectAdditionalIncludes()
-{
-    Set-ProjectItemContext "ClCompile"
-    $data = Get-ProjectItemProperty "AdditionalIncludeDirectories"
 
-    [string[]] $tokens = @($data -split ";")
+Function Get-ProjCanonizedPaths([Parameter(Mandatory = $true)][string] $rawPaths)
+{
+    [string[]] $tokens = @($rawPaths -split ";")
 
     foreach ($token in $tokens)
     {
@@ -451,6 +449,26 @@ Function Get-ProjectAdditionalIncludes()
             $includePath -replace '\\$', ''
         }
     }
+}
+
+Function Get-ProjectExternalIncludePaths()
+{
+    if (!(VariableExistsAndNotEmpty -name "ExternalIncludePath"))
+    {
+       return @()
+    }
+    return Get-ProjCanonizedPaths -rawPaths $ExternalIncludePath
+}
+
+Function Get-ProjectAdditionalIncludes()
+{
+    Set-ProjectItemContext "ClCompile"
+    $data = Get-ProjectItemProperty "AdditionalIncludeDirectories"
+    if (!(VariableExistsAndNotEmpty -name "data"))
+    {
+        return @()
+    }
+    return Get-ProjCanonizedPaths -rawPaths $data
 }
 
 Function Get-ProjectForceIncludes()
