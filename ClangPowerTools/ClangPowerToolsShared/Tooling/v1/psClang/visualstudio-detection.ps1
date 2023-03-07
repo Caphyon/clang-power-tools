@@ -108,10 +108,6 @@ Function Get-VisualStudio-CompatiblityToolset-InstallLocation()
 
 Function Get-VisualStudio-RegistryLocation()
 {
-     if ( ([int] $global:cptVisualStudioVersion) -le 2022)
-     {
-        return "HKLM:SOFTWARE\Microsoft\VisualStudio\" + (Get-VisualStudio-VersionNumber $global:cptVisualStudioVersion)
-     }
     return "HKLM:SOFTWARE\Wow6432Node\Microsoft\VisualStudio\" + (Get-VisualStudio-VersionNumber $global:cptVisualStudioVersion)
 }
 
@@ -122,8 +118,8 @@ Function Get-VisualStudio-Path()
     if ( ([int] $global:cptVisualStudioVersion) -le 2015 )
     {
         # Older Visual Studio (<= 2015). VSWhere is not available.
-
-        [string] $installLocation = (Get-Item (Get-VisualStudio-RegistryLocation)).GetValue("InstallDir")
+        [string] $installLocation = (((Get-Item (Get-VisualStudio-RegistryLocation)).GetValue("Source Directories")) -split ";")[0]
+        
         if ($installLocation)
         {
             $installLocation = Canonize-Path -base $installLocation -child "..\.." -ignoreErrors
