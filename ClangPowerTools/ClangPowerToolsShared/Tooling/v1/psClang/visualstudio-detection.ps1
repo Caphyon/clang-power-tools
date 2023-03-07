@@ -98,20 +98,11 @@ Function Get-VisualStudio-VersionNumber([Parameter(Mandatory = $true)][string]  
 # Returns default instalation path of the current VS version/toolset.
 Function Get-VisualStudio-CompatiblityToolset-InstallLocation()
 {
-     if ( ([int] $global:cptVisualStudioVersion) -le 2022)
-     {
-        return "${Env:ProgramFiles}\Microsoft Visual Studio " + (Get-VisualStudio-VersionNumber $global:cptVisualStudioVersion)
-     }
-       
     return "${Env:ProgramFiles(x86)}\Microsoft Visual Studio " + (Get-VisualStudio-VersionNumber $global:cptVisualStudioVersion)
 }
 
 Function Get-VisualStudio-RegistryLocation()
 {
-     if ( ([int] $global:cptVisualStudioVersion) -le 2022)
-     {
-        return "HKLM:SOFTWARE\Microsoft\VisualStudio\" + (Get-VisualStudio-VersionNumber $global:cptVisualStudioVersion)
-     }
     return "HKLM:SOFTWARE\Wow6432Node\Microsoft\VisualStudio\" + (Get-VisualStudio-VersionNumber $global:cptVisualStudioVersion)
 }
 
@@ -135,7 +126,7 @@ Function Get-VisualStudio-Path()
 
         # we may have a newer VS installation with an older toolset feature installed
         [string] $toolsetDiskLocation = (Get-VisualStudio-CompatiblityToolset-InstallLocation)
-        [string] $iostreamLocation = Canonize-Path -base toolsetDiskLocation `
+        [string] $iostreamLocation = Canonize-Path -base $toolsetDiskLocation `
                                                    -child "VC\include\iostream" -ignoreErrors
         if ($iostreamLocation)
         {
