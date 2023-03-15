@@ -55,6 +55,15 @@ public class ProjectConfigurationNotFound : System.Exception
 }
 "@
 
+Function Get-Var([parameter(Mandatory = $false)][string] $name)
+{
+    if(Test-Path "variable:$name")
+    {
+        return (Get-Variable $name).Value
+    }
+    return ""
+}
+
 Function Set-Var([parameter(Mandatory = $false)][string] $name
                 ,[parameter(Mandatory = $false)]         $value
                 ,[parameter(Mandatory = $false)][switch] $asScriptParameter
@@ -372,6 +381,7 @@ Function InitializeMsBuildCurrentFileProperties([Parameter(Mandatory = $true)][s
     Set-Var -name "MSBuildThisFile"          -value (Get-FileName -path $filePath)
     Set-Var -name "MSBuildThisFileName"      -value (Get-FileName -path $filePath -noext)
     Set-Var -name "MSBuildThisFileDirectory" -value (Get-FileDirectory -filePath $filePath)
+    Set-Var -name "VcpkgInstalledDir"        -value ((Get-Var "VcpkgRoot") + "\installed")
 }
 
 <#
@@ -676,6 +686,13 @@ function ParseProjectFile([string] $projectFilePath)
         InitializeMsBuildCurrentFileProperties -filePath $currentFile
     }
 }
+function TestPathParseProjectFile([string] $FilePath)
+{
+    if (Test-Path -LiteralPath $FilePath)
+    {
+        ParseProjectFile($FilePath)
+    }
+}
 
 function LoadDirectoryBuildPropSheetFile()
 {
@@ -686,16 +703,23 @@ function LoadDirectoryBuildPropSheetFile()
         # Multiple Directory.Build.props sheets are not supported.
         [string] $directoryBuildSheetPath = (cpt::GetDirNameOfFileAbove -startDir $ProjectDir `
                                              -targetFile "Directory.Build.props") + "\Directory.Build.props"
-        if (Test-Path -LiteralPath $directoryBuildSheetPath)
-        {
-            ParseProjectFile($directoryBuildSheetPath)
-        }
 
-        [string] $vcpkgIncludePath = "$env:LOCALAPPDATA\vcpkg\vcpkg.user.targets"
-        if (Test-Path -LiteralPath $vcpkgIncludePath)
+        TestPathParseProjectFile($directoryBuildSheetPath)
+
+        [string] $vcpkgIncludePathProps = "$env:LOCALAPPDATA\vcpkg\vcpkg.user.props"
+        TestPathParseProjectFile($vcpkgIncludePathProps)
+
+        if(Test-Path -LiteralPath $vcpkgIncludePathProps)
         {
-            ParseProjectFile($vcpkgIncludePath)
+            # Get vcpkg.props file
+            $vcpkgUserPropsContent = Get-Content $vcpkgIncludePathProps
+            $vcpkgPropsPath = [RegEx]::Matches($vcpkgUserPropsContent, "Project=`"(.+)`"")
+
+            TestPathParseProjectFile($vcpkgPropsPath.Groups[1].Value)
         }
+        [string] $vcpkgIncludePath = "$env:LOCALAPPDATA\vcpkg\vcpkg.user.targets"
+        TestPathParseProjectFile($vcpkgIncludePath)
+
     }
 }
 
