@@ -701,21 +701,23 @@ function LoadDirectoryBuildPropSheetFile()
         [string] $directoryBuildSheetPath = (cpt::GetDirNameOfFileAbove -startDir $ProjectDir `
                                              -targetFile "Directory.Build.props") + "\Directory.Build.props"
 
-        TestPathParseProjectFile($directoryBuildSheetPath)
+        TestPathParseProjectFile -FilePath $directoryBuildSheetPath
 
         [string] $vcpkgIncludePathProps = "$env:LOCALAPPDATA\vcpkg\vcpkg.user.props"
-        TestPathParseProjectFile($vcpkgIncludePathProps)
+        TestPathParseProjectFile -FilePath $vcpkgIncludePathProps
+        
+        # xxx
+        # if(Test-Path -LiteralPath $vcpkgIncludePathProps)
+        # {
+        #     # Get vcpkg.props file
+        #     $vcpkgUserPropsContent = Get-Content $vcpkgIncludePathProps
+        #     $vcpkgPropsPath = [RegEx]::Matches($vcpkgUserPropsContent, "Project=`"(.+)`"")
 
-        if(Test-Path -LiteralPath $vcpkgIncludePathProps)
-        {
-            # Get vcpkg.props file
-            $vcpkgUserPropsContent = Get-Content $vcpkgIncludePathProps
-            $vcpkgPropsPath = [RegEx]::Matches($vcpkgUserPropsContent, "Project=`"(.+)`"")
-
-            TestPathParseProjectFile($vcpkgPropsPath.Groups[1].Value)
-        }
+        #     TestPathParseProjectFile -FilePath ($vcpkgPropsPath.Groups[1].Value)
+        # }
+        
         [string] $vcpkgIncludePath = "$env:LOCALAPPDATA\vcpkg\vcpkg.user.targets"
-        TestPathParseProjectFile($vcpkgIncludePath)
+        TestPathParseProjectFile -FilePath $vcpkgIncludePath
 
     }
 }
