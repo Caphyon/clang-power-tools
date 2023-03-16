@@ -55,15 +55,6 @@ public class ProjectConfigurationNotFound : System.Exception
 }
 "@
 
-Function Get-Var([parameter(Mandatory = $false)][string] $name)
-{
-    if(Test-Path "variable:$name")
-    {
-        return (Get-Variable $name).Value
-    }
-    return ""
-}
-
 Function Set-Var([parameter(Mandatory = $false)][string] $name
                 ,[parameter(Mandatory = $false)]         $value
                 ,[parameter(Mandatory = $false)][switch] $asScriptParameter
@@ -75,6 +66,13 @@ Function Set-Var([parameter(Mandatory = $false)][string] $name
         # the HOME PowerShell variable is protected and we can't overwrite it
         $name = "CPT_SHIM_HOME"
     }
+
+    if ($name -ieq "VcpkgRoot")
+    {
+        Set-Var -name "VcpkgInstalledDir"  -value ($value + "\installed")
+    }
+
+    #------------------------------------------------------------------------------------------------------
 
     if ($asScriptParameter)
     {
@@ -381,7 +379,6 @@ Function InitializeMsBuildCurrentFileProperties([Parameter(Mandatory = $true)][s
     Set-Var -name "MSBuildThisFile"          -value (Get-FileName -path $filePath)
     Set-Var -name "MSBuildThisFileName"      -value (Get-FileName -path $filePath -noext)
     Set-Var -name "MSBuildThisFileDirectory" -value (Get-FileDirectory -filePath $filePath)
-    Set-Var -name "VcpkgInstalledDir"        -value ((Get-Var "VcpkgRoot") + "\installed")
 }
 
 <#

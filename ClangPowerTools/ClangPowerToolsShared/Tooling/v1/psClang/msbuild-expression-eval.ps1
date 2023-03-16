@@ -59,7 +59,7 @@ Set-Variable -name "kMsbuildExpressionToPsRules" <#-option Constant#>     `
         <# Rules for making sure the $ sign is put on correctly in expressions #> `
         , ('\$\(([a-zA-Z_][a-zA-Z0-9_\-]+)\)', '$${$1}'                  )`
         , ('\(([a-zA-Z_][a-zA-Z0-9_\-]+\.)'  , '($$$1'                   )`
-        , ('(EndsWith\()(\$.*[^)])(\)\))'    , '$1"$2"$3'                )`
+        , ('(EndsWith\()([^"]*?)(\)\))'    , '$1"$2"$3'                )`
 )
 
 function GetRegValue([Parameter(Mandatory = $true)][string] $regPath)
