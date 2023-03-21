@@ -152,15 +152,12 @@ namespace ClangPowerTools.Commands
 
               if (tidySettings.DetectClangTidyFile && !mItemsCollector.IsEmpty)
               {
-                // Check for .clang-tidy config file
-                if (FileSystem.SearchAllTopDirectories(mItemsCollector.Items[0].GetPath(), FileSystem.ConfigClangTidyFileName))
-                  tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
-                else
-                  tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.PredefinedChecks;
+                tidySettings.UseChecksFrom = ClangTidyUseChecksFrom.TidyFile;
 
                 var settingsHandlder = new SettingsHandler();
                 settingsHandlder.SaveSettings();
               }
+
               if (CommandIds.kTidyToolWindowId == aCommandId)
                 RunScript(CommandIds.kTidyId, false, paths);
               else

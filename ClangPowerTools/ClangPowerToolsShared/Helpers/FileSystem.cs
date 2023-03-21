@@ -22,23 +22,6 @@ namespace ClangPowerTools.Helpers
 
     #region Methods
 
-    public static bool SearchAllTopDirectories(string filePath, string searchedFileName)
-    {
-      while (string.IsNullOrEmpty(filePath) == false)
-      {
-        if (DoesFileExist(filePath, searchedFileName))
-          return true;
-
-        var index = filePath.LastIndexOf("\\");
-        if (index > 0)
-          filePath = filePath.Remove(index);
-        else
-          return false;
-      }
-
-      return false;
-    }
-
     public static bool SearchAllTopDirectories(string filePath, IEnumerable<string> searchedFiles)
     {
       while (string.IsNullOrEmpty(filePath) == false)
