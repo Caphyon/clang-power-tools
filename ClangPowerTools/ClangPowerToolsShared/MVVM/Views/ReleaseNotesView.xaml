@@ -180,7 +180,14 @@
                  Text="• Option &quot;Use checks from&quot; is reset to default"
                  TextWrapping="Wrap" />
 
-
+        <TextBox Margin="15,15,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• External Include Paths using -I instead of -isystem"
+                 TextWrapping="Wrap" />
         <!--<TextBox Margin="15,15,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
