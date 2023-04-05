@@ -98,7 +98,17 @@
             </Setter>
           </Style>
         </ListView.ItemContainerStyle>
-
+        
+        <TextBox Margin="5,20,0,0"
+                 HorizontalAlignment="Center"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="17"
+                 IsReadOnly="True"
+                 Foreground="#e69a0e"
+                 Text="Important Notice: User accounts and cloud-stored settings are going to be discontinued after May 1st 2023."
+                 TextWrapping="Wrap" />
+        
         <!--What's new-->
         <TextBox Margin="5,20,0,0"
                  HorizontalAlignment="Left"
