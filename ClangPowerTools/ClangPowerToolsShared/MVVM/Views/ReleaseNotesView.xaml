@@ -118,7 +118,7 @@
                  IsReadOnly="True"
                  Text="What's New" />
 
-        <TextBox Margin="5,20,0,0"
+        <TextBox Margin="15,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
@@ -127,7 +127,7 @@
                  Text="• Add LLVM 16.0.0"
                  TextWrapping="Wrap" />
         
-        <TextBox Margin="15,15,0,0"
+        <TextBox Margin="20,15,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
@@ -136,7 +136,7 @@
                  Text="• Updated clang-format to v16.0.0"
                  TextWrapping="Wrap" />
 
-        <TextBox Margin="15,15,0,0"
+        <TextBox Margin="20,15,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
@@ -151,7 +151,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Added new option to set preferred end-of-line characters in Clang Format Editor to v16.0.0"
+                 Text="• Added new option to set preferred end-of-line characters in Clang Format Editor"
                  TextWrapping="Wrap" />
 
         <!--<TextBox Margin="15,15,0,0"
