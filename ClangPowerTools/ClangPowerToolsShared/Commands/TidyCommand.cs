@@ -1,6 +1,8 @@
-﻿using ClangPowerTools.Helpers;
+﻿using ClangPowerTools.Events;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.Services;
 using ClangPowerTools.SilentFile;
+using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Views.ToolWindows;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
@@ -92,6 +94,7 @@ namespace ClangPowerTools.Commands
       var paths = fileCollector.Collect(mItemsCollector.Items).ToList();
       if (tidyToolWindow != null)
         tidyToolWindow.OpenTidyToolWindow(paths);
+      RunController.OnDataStreamClose(new CloseDataStreamingEventArgs(false));
     }
 
     public async Task ShowTidyToolWindowAsync(List<string> paths = null)
