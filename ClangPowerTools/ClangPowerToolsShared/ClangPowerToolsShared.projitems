@@ -42,6 +42,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\FindControllerModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Models\ToolWindowModels\FindToolWindowModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Provider\FindToolWindowProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\AboutSettingsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\AutoCompleteHistoryViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\FindToolWindowViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\DialogWindow.cs" />
@@ -260,6 +261,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\AccountView.xaml.cs">
       <DependentUpon>AccountView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\AboutSettingsView.xaml.cs">
+      <DependentUpon>AboutSettingsView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\CMakeBetaWarning.xaml.cs">
       <DependentUpon>CMakeBetaWarning.xaml</DependentUpon>
     </Compile>
@@ -328,6 +332,10 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\AboutSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\AccountView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
