@@ -649,6 +649,23 @@ function SanitizeProjectNode([System.Xml.XmlNode] $node)
 #>
 function ParseProjectFile([string] $projectFilePath)
 {
+    if ($projectFilePath.EndsWith("vcpkg.props"))
+    {
+        [string] $installDir = cpt::GetPathOfFileAbove -startDir (Get-FileDirectory $projectFilePath) -targetFile "Installed"
+        if (! [string]::IsNullOrWhiteSpace($installDir)             -and 
+            ! (VariableExistsAndNotEmpty -name "VcpkgInstalledDir") -and
+             (Evaluate-MSBuildCondition "'`$(VcpkgEnableManifest)' != 'true'" ))
+        {
+            Set-Var -name "VcpkgInstalledDir" -value $installDir 
+        }
+
+        [string] $rootDir = cpt::GetDirNameOfFileAbove -startDir (Get-FileDirectory $projectFilePath) -targetFile ".vcpkg-root"
+        if ( ![string]::IsNullOrWhiteSpace($rootDir) -and ! (VariableExistsAndNotEmpty -name "VcpkgRoot"))
+        {
+            Set-Var -name "VcpkgRoot" -value $rootDir
+        }
+    }
+
     # keep current file path, we'll need to restore it
     [string] $currentFile = ""
     if (VariableExistsAndNotEmpty 'MSBuildThisFileFullPath')
@@ -691,6 +708,11 @@ function LoadDirectoryBuildPropSheetFile()
             ParseProjectFile($directoryBuildSheetPath)
         }
 
+        [string] $vcpkgIncludePath = "$env:LOCALAPPDATA\vcpkg\vcpkg.user.props"
+        if (Test-Path -LiteralPath $vcpkgIncludePath)
+        {
+            ParseProjectFile($vcpkgIncludePath)
+        }
         [string] $vcpkgIncludePath = "$env:LOCALAPPDATA\vcpkg\vcpkg.user.targets"
         if (Test-Path -LiteralPath $vcpkgIncludePath)
         {
