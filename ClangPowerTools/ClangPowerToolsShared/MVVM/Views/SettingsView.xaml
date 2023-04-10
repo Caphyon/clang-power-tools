@@ -137,13 +137,11 @@
               Height="15"
               Margin="3"
               Source="/ClangPowerTools;component/Resources/AccountIcon.png" />
-            <TextBlock Width="65" Text="Account" />
+            <TextBlock Width="65" Text="About" />
           </StackPanel>
         </TabItem.Header>
         <Grid>
-          <!--<local:AccountView />-->
           <local:AboutSettingsView />
-
         </Grid>
       </TabItem>
 

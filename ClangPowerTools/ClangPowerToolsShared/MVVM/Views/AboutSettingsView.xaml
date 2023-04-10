@@ -18,7 +18,77 @@
       <BooleanToVisibilityConverter x:Key="BoolToVis" />
     </ResourceDictionary>
   </UserControl.Resources>
+
+
+
   <Grid>
-    
+    <Grid.Background>
+      <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
+    </Grid.Background>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="80" />
+      <RowDefinition Height="90" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="260" />
+      <ColumnDefinition Width="390" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <TextBlock
+        Grid.Row="4"
+        Grid.Column="1"
+        Margin="10,5,0,0"
+        HorizontalAlignment="Left"
+        FontSize="20"
+        Foreground="Black"
+        Visibility="{Binding DisplayMessage}"
+        Text="Want to share your settings configuration?" />
+
+    <Rectangle
+      Grid.Row="1"
+      Grid.Column="0"
+      Margin="20,5,85,0"
+      Width="65"
+      Height="65"
+      HorizontalAlignment="Left">
+      <Rectangle.Fill>
+        <ImageBrush ImageSource="{StaticResource AccountAvatarIcon}" />
+      </Rectangle.Fill>
+    </Rectangle>
+
+
+    <StackPanel
+      Grid.Row="4"
+      Grid.Column="0"
+      Margin="20,30,0,0"
+      HorizontalAlignment="Left"
+>
+      <TextBlock
+        Grid.Row="1"
+        Grid.Column="0"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        FontWeight="SemiBold"
+        Text="Version number" />
+
+      <TextBlock
+        Grid.Row="1"
+        Grid.Column="1"
+        Margin="0,10,0,0"
+        HorizontalAlignment="Left"
+        VerticalAlignment="Top"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Foreground="#333333"
+        Text="{Binding GeneralSettingsModel.Version}" />
+    </StackPanel>
   </Grid>
 </UserControl>
