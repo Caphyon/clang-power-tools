@@ -19,8 +19,6 @@
     </ResourceDictionary>
   </UserControl.Resources>
 
-
-
   <Grid>
     <Grid.Background>
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
@@ -94,10 +92,11 @@
       </StackPanel>
     </Grid>
 
-
-
-
-    <Grid Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="50,50,50,10">
+    <Grid Grid.Row="1" 
+          Grid.Column="1" 
+          VerticalAlignment="Center" 
+          HorizontalAlignment="Center" 
+          Margin="0,50,0,0">
       <Grid.RowDefinitions>
         <RowDefinition Height="50" />
         <RowDefinition Height="70" />
@@ -168,7 +167,5 @@
           Foreground="White"
           Style="{StaticResource SettingsButton}" />
     </Grid>
-
-
   </Grid>
 </UserControl>
