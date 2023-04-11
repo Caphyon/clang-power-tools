@@ -26,69 +26,149 @@
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
     <Grid.RowDefinitions>
-      <RowDefinition Height="80" />
-      <RowDefinition Height="90" />
-      <RowDefinition Height="auto" />
-      <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
-
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="260" />
-      <ColumnDefinition Width="390" />
+      <ColumnDefinition Width="200" />
+      <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
     <TextBlock
-        Grid.Row="4"
+        Grid.Row="0"
         Grid.Column="1"
-        Margin="10,5,0,0"
+        Margin="10,20,0,0"
         HorizontalAlignment="Left"
         FontSize="20"
         Foreground="Black"
         Visibility="{Binding DisplayMessage}"
         Text="Want to share your settings configuration?" />
 
-    <Rectangle
-      Grid.Row="1"
-      Grid.Column="0"
-      Margin="20,5,85,0"
-      Width="65"
-      Height="65"
-      HorizontalAlignment="Left">
-      <Rectangle.Fill>
-        <ImageBrush ImageSource="{StaticResource AccountAvatarIcon}" />
-      </Rectangle.Fill>
-    </Rectangle>
+    <Grid Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="70"/>
+        <RowDefinition Height="auto"/>
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="auto"/>
+      </Grid.ColumnDefinitions>
+
+      <Rectangle
+        Grid.Row="0"
+        Grid.Column="0"
+        Width="65"
+        Height="65"
+        HorizontalAlignment="Center">
+        <Rectangle.Fill>
+          <ImageBrush ImageSource="{StaticResource AccountAvatarIcon}" />
+        </Rectangle.Fill>
+      </Rectangle>
+      
+      <StackPanel
+        Grid.Row="1"
+        Grid.Column="0"
+        Margin="20,30,0,0"
+        HorizontalAlignment="Left"
+  >
+        <TextBlock
+          Grid.Row="1"
+          Grid.Column="0"
+          VerticalAlignment="Center"
+          FontFamily="SegoeUI"
+          FontSize="15"
+          FontWeight="SemiBold"
+          Text="Version number" />
+
+        <TextBlock
+          Grid.Row="1"
+          Grid.Column="1"
+          Margin="0,10,0,0"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Top"
+          FontFamily="SegoeUI"
+          FontSize="15"
+          Foreground="#333333"
+          Text="{Binding GeneralSettingsModel.Version}" />
+      </StackPanel>
+    </Grid>
 
 
-    <StackPanel
-      Grid.Row="4"
-      Grid.Column="0"
-      Margin="20,30,0,0"
-      HorizontalAlignment="Left"
->
+
+
+    <Grid Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="50,50,50,10">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="50" />
+        <RowDefinition Height="70" />
+        <RowDefinition Height="30" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="5" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+
+      <!--  Local Settings  -->
+      <Image
+        Grid.Row="0"
+        Grid.Column="0"
+        Width="48"
+        Height="48"
+        Source="/ClangPowerTools;component/Resources/StorageIcon.png" />
+
       <TextBlock
         Grid.Row="1"
         Grid.Column="0"
-        VerticalAlignment="Center"
-        FontFamily="SegoeUI"
-        FontSize="15"
-        FontWeight="SemiBold"
-        Text="Version number" />
+        HorizontalAlignment="Center"
+        FontSize="20"
+        Text="Local Settings"
+        TextAlignment="Center" />
+      
+        <!--  Export Settings  -->
+        <Button
+          Grid.Row="2"
+          Grid.Column="0"
+          Width="158"
+          Height="35"
+          Command="{Binding ExportSettingsCommand}"
+          Content="Export"
+          FontSize="14"
+          Foreground="White"
+          Style="{StaticResource SettingsButton}" />
 
-      <TextBlock
-        Grid.Row="1"
-        Grid.Column="1"
-        Margin="0,10,0,0"
-        HorizontalAlignment="Left"
-        VerticalAlignment="Top"
-        FontFamily="SegoeUI"
-        FontSize="15"
-        Foreground="#333333"
-        Text="{Binding GeneralSettingsModel.Version}" />
-    </StackPanel>
+
+        <!--Import Settings-->  
+        <Button
+          Grid.Row="3"
+          Grid.Column="0"
+          Width="158"
+          Height="35"
+          Command="{Binding ImportSettingssCommand}"
+          Content="Import"
+          FontSize="14"
+          Foreground="White"
+          Style="{StaticResource SettingsButton}" />
+
+
+        <!--Reset Settings-->  
+        <Button
+          Grid.Row="4"
+          Grid.Column="0"
+          Width="158"
+          Height="35"
+          Command="{Binding ResetSettingsCommand}"
+          Content="Reset"
+          FontSize="14"
+          Foreground="White"
+          Style="{StaticResource SettingsButton}" />
+    </Grid>
+
+
   </Grid>
 </UserControl>
