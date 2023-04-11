@@ -211,7 +211,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\LoginViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\ReleaseNotesViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\SettingsViewModel.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TeamSettingsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TidyChecksViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TidySettingsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\TidyToolWindowViewModel.cs" />
@@ -317,9 +316,6 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\TeamSettingsView.xaml.cs">
-      <DependentUpon>TeamSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\TidyChecksView.xaml.cs">
       <DependentUpon>TidyChecksView.xaml</DependentUpon>
@@ -445,10 +441,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\Styles\YellowButtonStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\TeamSettingsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
