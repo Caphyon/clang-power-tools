@@ -197,7 +197,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\TextManipulation.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\TidyChecks.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\TidyChecksDefault.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\AccountViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\CompilerSettingsViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\DetectedStyleInfoViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\ViewModels\EncodingErrorViewModel.cs" />
@@ -257,9 +256,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Squiggle\SquiggleViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TextOperationsInterfaces\IDetector.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)TextOperationsInterfaces\ITextFormatter.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\AccountView.xaml.cs">
-      <DependentUpon>AccountView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\Views\AboutSettingsView.xaml.cs">
       <DependentUpon>AboutSettingsView.xaml</DependentUpon>
     </Compile>
@@ -331,10 +327,6 @@
     <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\AboutSettingsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\AccountView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)MVVM\Views\CMakeBetaWarning.xaml">
       <SubType>Designer</SubType>
