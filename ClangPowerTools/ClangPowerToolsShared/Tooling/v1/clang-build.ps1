@@ -1290,6 +1290,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     Add-ToProjectSpecificVariables 'additionalIncludeDirectories'
 
     [string[]] $includeDirectories = @(Get-ProjectIncludeDirectories)
+    $includeDirectories += @(Get-ProjectExternal)
     # We use the same mechanism for injecting external include paths
     $includeDirectories += @(Get-ProjectExternalIncludePaths)
     Write-Verbose-Array -array $includeDirectories -name "Include directories"

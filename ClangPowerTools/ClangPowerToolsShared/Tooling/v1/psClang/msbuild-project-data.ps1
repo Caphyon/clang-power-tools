@@ -460,6 +460,19 @@ Function Get-ProjectExternalIncludePaths()
     return Get-ProjCanonizedPaths -rawPaths $ExternalIncludePath
 }
 
+Function Get-ProjectExternal()
+{
+    Set-ProjectItemContext "ClCompile"
+    $data = Get-ProjectItemProperty "AdditionalOptions"
+    if (!(VariableExistsAndNotEmpty -name "data"))
+    {
+        return @()
+    }
+    # $data = "..\libbabc"
+    $test = Get-ProjCanonizedPaths -rawPaths $data
+    return Get-ProjCanonizedPaths -rawPaths $data
+}
+
 Function Get-ProjectAdditionalIncludes()
 {
     Set-ProjectItemContext "ClCompile"
