@@ -460,6 +460,63 @@ Function Get-ProjectExternalIncludePaths()
     return Get-ProjCanonizedPaths -rawPaths $ExternalIncludePath
 }
 
+# we will treat two cases of specifying external headers: /external:env:var and /external:I path
+# /external:env:var - we need to get value from key var 
+# /external:I path - we need do get just path
+Function Get-PathsFromAdditionalOptions([Parameter(Mandatory = $true)][string] $options)
+{
+    # Write-Debug "Trying to get paths from AdditionalOptions"
+
+    [string] $paths = ""
+    [string[]] $tokens = @($options -split "/")
+
+    foreach ($token in $tokens)
+    {
+        if ([string]::IsNullOrWhiteSpace($token))
+        {
+            continue
+        }
+
+        if($token -like "*external:*")
+        {
+            # get the specified path after /external:I
+            if($token -like "*external:I*")
+            {
+                [string[]] $externalAndPath = @($token -split " ")
+                if(! [string]::IsNullOrWhiteSpace($externalAndPath[1]))
+                {
+                    # Write-Debug "Path from /external:I is $($externalAndPath[1])"
+                    $paths += $externalAndPath[1] + ";"
+                } else {
+                    # Write-Debug "Cannot get path from /external:I"
+                }
+            }
+            
+            # retrieve the value of the environment variable specified after the /external:env option
+            if($token -like "*external:env*")
+            {
+                [string[]] $externalAndVar = @($token -split ":")
+                if(! [string]::IsNullOrWhiteSpace($externalAndVar[2]))
+                {
+                    # Write-Output "The environment variable $($externalAndVar[2]) is not set."
+                    $envValue = [Environment]::GetEnvironmentVariable($externalAndVar[2], "User")
+                    
+                    if ($envValue -eq $null) {
+                        # Write-Output "The environment variable $($externalAndVar[2]) is not set."
+                    } else {
+                        # Write-Output "The value of $($externalAndVar[2]) is: $envValue"
+                        $paths += $envValue
+                    }
+                } 
+                # else {
+                #     Write-Debug "Cannot get path from /external:I"
+                # }
+            }
+        }
+    }
+    return $paths
+}
+
 Function Get-ProjectExternal()
 {
     Set-ProjectItemContext "ClCompile"
@@ -468,9 +525,12 @@ Function Get-ProjectExternal()
     {
         return @()
     }
-    # $data = "..\libbabc"
-    $test = Get-ProjCanonizedPaths -rawPaths $data
-    return Get-ProjCanonizedPaths -rawPaths $data
+    $paths = Get-PathsFromAdditionalOptions -options $data
+    if (!(VariableExistsAndNotEmpty -name "paths"))
+    {
+        return @()
+    }
+    return Get-ProjCanonizedPaths -rawPaths $paths
 }
 
 Function Get-ProjectAdditionalIncludes()
