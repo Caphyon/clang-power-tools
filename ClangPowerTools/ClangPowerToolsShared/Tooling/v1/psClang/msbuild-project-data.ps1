@@ -463,7 +463,7 @@ Function Get-ProjectExternalIncludePaths()
 # we will treat two cases of specifying external headers: /external:env:var and /external:I path
 # /external:env:var - we need to get value from key var 
 # /external:I path - we need do get just path
-Function Get-PathsFromAdditionalOptions([Parameter(Mandatory = $true)][string] $options)
+Function Get-TokenizeAdditionalOptions([Parameter(Mandatory = $true)][string] $options)
 {
     Write-Debug "Trying to get paths from AdditionalOptions" -Debug
 
@@ -516,7 +516,7 @@ Function Get-PathsFromAdditionalOptions([Parameter(Mandatory = $true)][string] $
     return $paths
 }
 
-Function Get-ProjectExternal()
+Function Get-ProjectAdditionalOptions()
 {
     Set-ProjectItemContext "ClCompile"
     $data = Get-ProjectItemProperty "AdditionalOptions"
@@ -524,7 +524,8 @@ Function Get-ProjectExternal()
     {
         return @()
     }
-    $paths = Get-PathsFromAdditionalOptions -options $data
+
+    $paths = Get-TokenizeAdditionalOptions -options $data
     if (!(VariableExistsAndNotEmpty -name "paths"))
     {
         return @()
