@@ -465,7 +465,7 @@ Function Get-ProjectExternalIncludePaths()
 # /external:I path - we need do get just path
 Function Get-TokenizeAdditionalOptions([Parameter(Mandatory = $true)][string] $options)
 {
-    Write-Debug "Trying to get paths from AdditionalOptions" -Debug
+    Write-Debug "Trying to get paths from AdditionalOptions"
 
     [string] $paths = ""
     [string[]] $tokens = @($options -split "/")
@@ -485,10 +485,10 @@ Function Get-TokenizeAdditionalOptions([Parameter(Mandatory = $true)][string] $o
                 [string[]] $externalAndPath = @($token -split " ")
                 if(! [string]::IsNullOrWhiteSpace($externalAndPath[1]))
                 {
-                    Write-Debug "Path from /external:I is $($externalAndPath[1])" -Debug
+                    Write-Debug "Path from /external:I is $($externalAndPath[1])"
                     $paths += $externalAndPath[1] + ";"
                 } else {
-                    Write-Debug "Cannot get path from /external:I" -Debug
+                    Write-Debug "Cannot get path from /external:I"
                 }
             }
             
@@ -501,14 +501,14 @@ Function Get-TokenizeAdditionalOptions([Parameter(Mandatory = $true)][string] $o
                     $envValue = [Environment]::GetEnvironmentVariable($externalAndVar[2], "User")
                     
                     if ($envValue -eq $null) {
-                        Write-Debug "The environment variable $($externalAndVar[2]) is not set." -Debug
+                        Write-Debug "The environment variable $($externalAndVar[2]) is not set."
                     } else {
-                        Write-Debug "The value of $($externalAndVar[2]) is: $envValue" -Debug
                         $paths += $envValue
+                        Write-Debug "The value of $($externalAndVar[2]) is: $envValue"
                     }
                 } 
                 else {
-                    Write-Debug "Cannot get path from /external:I" -Debug
+                    Write-Debug "Cannot get path from /external:I"
                 }
             }
         }
