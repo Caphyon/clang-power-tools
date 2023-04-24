@@ -460,6 +460,77 @@ Function Get-ProjectExternalIncludePaths()
     return Get-ProjCanonizedPaths -rawPaths $ExternalIncludePath
 }
 
+# we will treat two cases of specifying external headers: /external:env:var and /external:I path
+# /external:env:var - we need to get value from key var 
+# /external:I path - we need do get just path
+Function Get-PathsFromAdditionalOptions([Parameter(Mandatory = $true)][string] $options)
+{
+    Write-Verbose "Trying to get paths from AdditionalOptions"
+
+    [string[]] $paths = @()
+    [string[]] $tokens = @($options -split "/")
+
+    foreach ($token in $tokens)
+    {
+        if (([string]::IsNullOrWhiteSpace($token)) -or ($token -notlike "*external:*"))
+        {
+            continue
+        }
+
+        # get the specified path after /external:I
+        if($token -like "*external:I*")
+        {
+            [string[]] $externalAndPath = @($token -split " ")
+            if(! [string]::IsNullOrWhiteSpace($externalAndPath[1]))
+            {
+                Write-Verbose "Path from /external:I is $($externalAndPath[1])"
+                $paths += $externalAndPath[1]
+            } else {
+                Write-Verbose "Cannot get path from /external:I"
+            }
+        }
+        
+        # retrieve the value of the environment variable specified after the /external:env option
+        if($token -like "*external:env*")
+        {
+            [string[]] $externalAndVar = @($token -split ":")
+            if(! [string]::IsNullOrWhiteSpace($externalAndVar[2]))
+            {
+                $envValue = [Environment]::GetEnvironmentVariable($externalAndVar[2])
+                
+                if ($envValue -eq $null) {
+                    Write-Verbose "The environment variable $($externalAndVar[2]) is not set."
+                } else {
+                    $envPaths = $envValue -split ";"
+                    $paths += $envPaths
+                    Write-Verbose "The value of $($externalAndVar[2]) is: $envValue"
+                }
+            } 
+            else {
+                Write-Verbose "Cannot get path from /external:I"
+            }
+        }
+    }
+    return $paths
+}
+
+Function Get-IncludePathsFromAdditionalOptions()
+{
+    Set-ProjectItemContext "ClCompile"
+    $data = Get-ProjectItemProperty "AdditionalOptions"
+    if (!(VariableExistsAndNotEmpty -name "data"))
+    {
+        return @()
+    }
+
+    $paths = Get-PathsFromAdditionalOptions -options $data
+    if (!(VariableExistsAndNotEmpty -name "paths"))
+    {
+        return @()
+    }
+    return Get-ProjCanonizedPaths -rawPaths ($paths -join ";")
+}
+
 Function Get-ProjectAdditionalIncludes()
 {
     Set-ProjectItemContext "ClCompile"
