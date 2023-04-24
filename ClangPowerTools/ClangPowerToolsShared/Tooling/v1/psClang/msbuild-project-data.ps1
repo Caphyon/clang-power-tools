@@ -463,53 +463,51 @@ Function Get-ProjectExternalIncludePaths()
 # we will treat two cases of specifying external headers: /external:env:var and /external:I path
 # /external:env:var - we need to get value from key var 
 # /external:I path - we need do get just path
-Function Get-TokenizeAdditionalOptions([Parameter(Mandatory = $true)][string] $options)
+Function Get-PathsFromAdditionalOptions([Parameter(Mandatory = $true)][string] $options)
 {
-    Write-Debug "Trying to get paths from AdditionalOptions"
+    Write-Verbose "Trying to get paths from AdditionalOptions"
 
-    [string] $paths = ""
+    [string[]] $paths = @()
     [string[]] $tokens = @($options -split "/")
 
     foreach ($token in $tokens)
     {
-        if ([string]::IsNullOrWhiteSpace($token))
+        if (([string]::IsNullOrWhiteSpace($token)) -or ($token -notlike "*external:*"))
         {
             continue
         }
 
-        if($token -like "*external:*")
+        # get the specified path after /external:I
+        if($token -like "*external:I*")
         {
-            # get the specified path after /external:I
-            if($token -like "*external:I*")
+            [string[]] $externalAndPath = @($token -split " ")
+            if(! [string]::IsNullOrWhiteSpace($externalAndPath[1]))
             {
-                [string[]] $externalAndPath = @($token -split " ")
-                if(! [string]::IsNullOrWhiteSpace($externalAndPath[1]))
-                {
-                    Write-Debug "Path from /external:I is $($externalAndPath[1])"
-                    $paths += $externalAndPath[1] + ";"
-                } else {
-                    Write-Debug "Cannot get path from /external:I"
-                }
+                Write-Verbose "Path from /external:I is $($externalAndPath[1])"
+                $paths += $externalAndPath[1]
+            } else {
+                Write-Verbose "Cannot get path from /external:I"
             }
-            
-            # retrieve the value of the environment variable specified after the /external:env option
-            if($token -like "*external:env*")
+        }
+        
+        # retrieve the value of the environment variable specified after the /external:env option
+        if($token -like "*external:env*")
+        {
+            [string[]] $externalAndVar = @($token -split ":")
+            if(! [string]::IsNullOrWhiteSpace($externalAndVar[2]))
             {
-                [string[]] $externalAndVar = @($token -split ":")
-                if(! [string]::IsNullOrWhiteSpace($externalAndVar[2]))
-                {
-                    $envValue = [Environment]::GetEnvironmentVariable($externalAndVar[2], "User")
-                    
-                    if ($envValue -eq $null) {
-                        Write-Debug "The environment variable $($externalAndVar[2]) is not set."
-                    } else {
-                        $paths += $envValue
-                        Write-Debug "The value of $($externalAndVar[2]) is: $envValue"
-                    }
-                } 
-                else {
-                    Write-Debug "Cannot get path from /external:I"
+                $envValue = [Environment]::GetEnvironmentVariable($externalAndVar[2], "User")
+                
+                if ($envValue -eq $null) {
+                    Write-Verbose "The environment variable $($externalAndVar[2]) is not set."
+                } else {
+                    $envPaths = $envValue -split ";"
+                    $paths += $envPaths
+                    Write-Verbose "The value of $($externalAndVar[2]) is: $envValue"
                 }
+            } 
+            else {
+                Write-Verbose "Cannot get path from /external:I"
             }
         }
     }
@@ -525,12 +523,12 @@ Function Get-ProjectAdditionalOptions()
         return @()
     }
 
-    $paths = Get-TokenizeAdditionalOptions -options $data
+    $paths = Get-PathsFromAdditionalOptions -options $data
     if (!(VariableExistsAndNotEmpty -name "paths"))
     {
         return @()
     }
-    return Get-ProjCanonizedPaths -rawPaths $paths
+    return Get-ProjCanonizedPaths -rawPaths ($paths -join ";")
 }
 
 Function Get-ProjectAdditionalIncludes()
