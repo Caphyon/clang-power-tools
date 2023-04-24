@@ -496,7 +496,7 @@ Function Get-PathsFromAdditionalOptions([Parameter(Mandatory = $true)][string] $
             [string[]] $externalAndVar = @($token -split ":")
             if(! [string]::IsNullOrWhiteSpace($externalAndVar[2]))
             {
-                $envValue = [Environment]::GetEnvironmentVariable($externalAndVar[2], "User")
+                $envValue = [Environment]::GetEnvironmentVariable($externalAndVar[2])
                 
                 if ($envValue -eq $null) {
                     Write-Verbose "The environment variable $($externalAndVar[2]) is not set."
