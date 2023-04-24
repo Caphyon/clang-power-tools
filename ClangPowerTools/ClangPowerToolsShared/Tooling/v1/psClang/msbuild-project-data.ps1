@@ -514,7 +514,7 @@ Function Get-PathsFromAdditionalOptions([Parameter(Mandatory = $true)][string] $
     return $paths
 }
 
-Function Get-ProjectAdditionalOptions()
+Function Get-IncludePathsFromAdditionalOptions()
 {
     Set-ProjectItemContext "ClCompile"
     $data = Get-ProjectItemProperty "AdditionalOptions"
