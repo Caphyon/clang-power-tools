@@ -20,7 +20,8 @@ namespace ClangPowerTools
         ".tli",
         ".tlh",
         ".cu",
-        ".vcxproj"
+        ".vcxproj",
+        ".ixx"
     };
 
     public static readonly List<string> kAcceptedFileExtensions = new List<string>
@@ -37,7 +38,8 @@ namespace ClangPowerTools
         ".hxx",
         ".tli",
         ".tlh",
-        ".vcxproj"
+        ".vcxproj",
+        ".ixx"
       };
 
     public static readonly List<string> kExtendedAcceptedFileExtensions = new List<string>
