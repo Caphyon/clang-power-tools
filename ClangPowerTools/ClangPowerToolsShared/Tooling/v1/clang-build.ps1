@@ -106,6 +106,11 @@
       If not given, the first detected Visual Studio SKU will be used.
 
 .NOTES
+    Control environment variable values:
+    CPT_CACHEREPO = 0   disables project-loading cache mechanism
+    CPT_LOAD_ALL  = 1   enables deep loading of property sheets, but slows down loading
+    CPT_PCH_LIMIT = 1   create PCH when only one file needs to be compiled, by default this limit is 2
+
     Author: Gabriel Diaconita
 #>
 #Requires -Version 5
@@ -1317,24 +1322,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   
   $global:cptFilesToProcess = $global:projectAllCpps # reset to full project cpp list
   
-  #-----------------------------------------------------------------------------------------------
-  # LOCATE STDAFX.H DIRECTORY
-
   [string] $stdafxCpp    = ""
-  [string] $stdafxDir    = ""
-  [string] $stdafxHeader = ""
-  [string] $stdafxHeaderFullPath = ""
-
-  [bool] $kPchIsNeeded = $global:cptFilesToProcess.Keys.Count -ge 2
-  if ($kPchIsNeeded)
-  {
-    # if we have only one rooted file in the script parameters, then we don't need to detect PCH
-    if ($aCppToCompile.Count -eq 1 -and [System.IO.Path]::IsPathRooted($aCppToCompile[0]))
-    {
-      $kPchIsNeeded = $false
-    }
-  }
-
   foreach ($projCpp in $global:cptFilesToProcess.Keys)
   {
     if ( (Get-ProjectFileSetting -fileFullName $projCpp -propertyName 'PrecompiledHeader') -ieq 'Create')
@@ -1342,6 +1330,37 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
       $stdafxCpp = $projCpp
     }
   }
+
+  #-----------------------------------------------------------------------------------------------
+  # FILTER LIST OF CPPs TO PROCESS
+  if ($global:cptFilesToProcess.Count -gt 0 -and $aCppToIgnore.Count -gt 0)
+  {
+    [System.Collections.Hashtable] $filteredCpps = @{}
+    foreach ($cpp in $global:cptFilesToProcess.Keys)
+    {
+      if ( ! (Should-IgnoreFile -file $cpp) )
+      {
+        $filteredCpps[$cpp] = $global:cptFilesToProcess[$cpp]
+      }
+    }
+    $global:cptFilesToProcess = $filteredCpps
+  }
+
+  #-----------------------------------------------------------------------------------------------
+  # LOCATE STDAFX.H DIRECTORY
+
+  [string] $stdafxDir    = ""
+  [string] $stdafxHeader = ""
+  [string] $stdafxHeaderFullPath = ""
+
+  [int] $minTranslationUnitsForPCH = 2
+  if (Test-Path env:CPT_PCH_LIMIT)
+  {
+    $minTranslationUnitsForPCH = [int]$env:CPT_PCH_LIMIT
+  }
+  Write-Verbose "PCH translation unit minimum limit: $minTranslationUnitsForPCH"
+
+  [bool] $kPchIsNeeded = $global:cptFilesToProcess.Keys.Count -ge $minTranslationUnitsForPCH
 
   if (![string]::IsNullOrEmpty($stdafxCpp))
   {
@@ -1395,19 +1414,6 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
 
 
   #-----------------------------------------------------------------------------------------------
-  # FILTER LIST OF CPPs TO PROCESS
-  if ($global:cptFilesToProcess.Count -gt 0 -and $aCppToIgnore.Count -gt 0)
-  {
-    [System.Collections.Hashtable] $filteredCpps = @{}
-    foreach ($cpp in $global:cptFilesToProcess.Keys)
-    {
-      if ( ! (Should-IgnoreFile -file $cpp) )
-      {
-        $filteredCpps[$cpp] = $global:cptFilesToProcess[$cpp]
-      }
-    }
-    $global:cptFilesToProcess = $filteredCpps
-  }
 
   if ($global:cptFilesToProcess.Count -gt 0 -and $aCppToCompile.Count -gt 0)
   {
@@ -1460,11 +1466,6 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   #
   # JSON Compilation Database file will outlive this execution run, while the PCH is temporary 
   # so we disable PCH creation for that case as well.
-
-  if ($kPchIsNeeded -and $global:cptFilesToProcess.Count -lt 2)
-  {
-    $kPchIsNeeded = $false
-  }
 
   [string] $pchFilePath = ""
   if ($kPchIsNeeded -and !$aExportJsonDB)
