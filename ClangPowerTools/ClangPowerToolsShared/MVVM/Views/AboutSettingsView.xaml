@@ -24,27 +24,17 @@
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
     <Grid.RowDefinitions>
-      <RowDefinition Height="auto" />
+      <RowDefinition Height="80" />
       <RowDefinition Height="auto" />
       <RowDefinition Height="*" />
     </Grid.RowDefinitions>
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="200" />
+      <ColumnDefinition Width="140" />
       <ColumnDefinition Width="auto" />
       <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
-    <TextBlock
-        Grid.Row="0"
-        Grid.Column="1"
-        Margin="10,20,0,0"
-        HorizontalAlignment="Left"
-        FontSize="20"
-        Foreground="Black"
-        Visibility="{Binding DisplayMessage}"
-        Text="Want to share your settings configuration?" />
-
-    <Grid Grid.Row="1" Grid.Column="0" VerticalAlignment="Center">
+    <Grid Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
       <Grid.RowDefinitions>
         <RowDefinition Height="70"/>
         <RowDefinition Height="auto"/>
@@ -93,7 +83,7 @@
     </Grid>
 
     <Grid Grid.Row="1" 
-          Grid.Column="1" 
+          Grid.Column="2" 
           VerticalAlignment="Center" 
           HorizontalAlignment="Center" 
           Margin="0,50,0,0">
