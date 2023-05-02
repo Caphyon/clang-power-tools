@@ -109,6 +109,8 @@
     Control environment variable values:
     CPT_CACHEREPO = 0   disables project-loading cache mechanism
     CPT_LOAD_ALL  = 1   enables deep loading of property sheets, but slows down loading
+    CPT_CPULIMIT  = n   will use n logical processors for compile / tidy jobs, if not 
+                        specified then NUMBER_OF_PROCESSORS will be used.
     CPT_PCH_LIMIT = 1   create PCH when only one file needs to be compiled, by default this limit is 2
 
     Author: Gabriel Diaconita
