@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 2023.4.0" />
+                 Text="version 2023.5.0" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -98,17 +98,7 @@
             </Setter>
           </Style>
         </ListView.ItemContainerStyle>
-        
-        <TextBox Margin="5,20,0,0"
-                 HorizontalAlignment="Center"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="17"
-                 IsReadOnly="True"
-                 Foreground="#e69a0e"
-                 Text="Important Notice: User accounts and cloud-stored settings are going to be discontinued after May 1st 2023."
-                 TextWrapping="Wrap" />
-        
+
         <!--What's new-->
         <TextBox Margin="5,20,0,0"
                  HorizontalAlignment="Left"
@@ -124,7 +114,8 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Add LLVM 16.0.0"
+                 Foreground="#e65d22"
+                 Text="• Remove Login and Cloud storage settings"
                  TextWrapping="Wrap" />
         
         <TextBox Margin="20,15,0,0"
@@ -133,7 +124,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Updated clang-format to v16.0.0"
+                 Text="• Compile and Tidy on (*.ixx) modules"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="20,15,0,0"
@@ -142,26 +133,17 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Updated clang-format from Clang Format Editor to v16.0.0"
+                 Text="• C++ - Command line - extra compiler options /external:env:var and /external:I path"
                  TextWrapping="Wrap" />
-        
+
         <TextBox Margin="15,15,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Added new option to set preferred end-of-line characters in Clang Format Editor"
+                 Text="• Update min PowerShell version to 5"
                  TextWrapping="Wrap" />
-
-        <!--<TextBox Margin="15,15,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• Updated clang-format to v16.0.0"
-                 TextWrapping="Wrap" />-->
 
         <!--Bug Fixes-->
         <TextBox Margin="5,20,0,0"
@@ -178,7 +160,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Incorrect v140 path detection"
+                 Text="• The Clang Format Editor crashes when the Style Detector is run"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,15,0,0"
@@ -187,7 +169,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Option &quot;Use checks from&quot; is reset to default"
+                 Text="• Not added vcpkg include paths in manifest or classic mode"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,15,0,0"
@@ -196,7 +178,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• External Include Paths using -I instead of -isystem"
+                 Text="• Animated building icon in the status bar never clears"
                  TextWrapping="Wrap" />
         <!--<TextBox Margin="15,15,0,0"
                  HorizontalAlignment="Left"
