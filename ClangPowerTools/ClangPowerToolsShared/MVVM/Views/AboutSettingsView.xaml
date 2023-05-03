@@ -1,0 +1,161 @@
+﻿<UserControl
+  x:Class="ClangPowerTools.Views.AboutSettingsView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+  xmlns:local="clr-namespace:ClangPowerTools"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  d:DesignHeight="460"
+  d:DesignWidth="770"
+  mc:Ignorable="d">
+
+  <!--  Static resources  -->
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/ClangPowerTools;component/MVVM/Views/Styles/AppResources.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+      <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <Grid>
+    <Grid.Background>
+      <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
+    </Grid.Background>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="80" />
+      <RowDefinition Height="auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="140" />
+      <ColumnDefinition Width="auto" />
+      <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+
+    <Grid Grid.Row="1" Grid.Column="1" VerticalAlignment="Center">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="70"/>
+        <RowDefinition Height="auto"/>
+      </Grid.RowDefinitions>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="auto"/>
+      </Grid.ColumnDefinitions>
+
+      <Rectangle
+        Grid.Row="0"
+        Grid.Column="0"
+        Width="65"
+        Height="65"
+        HorizontalAlignment="Center">
+        <Rectangle.Fill>
+          <ImageBrush ImageSource="{StaticResource AccountAvatarIcon}" />
+        </Rectangle.Fill>
+      </Rectangle>
+      
+      <StackPanel
+        Grid.Row="1"
+        Grid.Column="0"
+        Margin="20,30,0,0"
+        HorizontalAlignment="Left"
+  >
+        <TextBlock
+          Grid.Row="1"
+          Grid.Column="0"
+          VerticalAlignment="Center"
+          FontFamily="SegoeUI"
+          FontSize="15"
+          FontWeight="SemiBold"
+          Text="Version number" />
+
+        <TextBlock
+          Grid.Row="1"
+          Grid.Column="1"
+          Margin="0,10,0,0"
+          HorizontalAlignment="Left"
+          VerticalAlignment="Top"
+          FontFamily="SegoeUI"
+          FontSize="15"
+          Foreground="#333333"
+          Text="{Binding GeneralSettingsModel.Version}" />
+      </StackPanel>
+    </Grid>
+
+    <Grid Grid.Row="1" 
+          Grid.Column="2" 
+          VerticalAlignment="Center" 
+          HorizontalAlignment="Center" 
+          Margin="0,50,0,0">
+      <Grid.RowDefinitions>
+        <RowDefinition Height="50" />
+        <RowDefinition Height="70" />
+        <RowDefinition Height="30" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="50" />
+        <RowDefinition Height="*" />
+      </Grid.RowDefinitions>
+
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="5" />
+        <ColumnDefinition Width="*" />
+      </Grid.ColumnDefinitions>
+
+      <!--  Local Settings  -->
+      <Image
+        Grid.Row="0"
+        Grid.Column="0"
+        Width="48"
+        Height="48"
+        Source="/ClangPowerTools;component/Resources/StorageIcon.png" />
+
+      <TextBlock
+        Grid.Row="1"
+        Grid.Column="0"
+        HorizontalAlignment="Center"
+        FontSize="20"
+        Text="Local Settings"
+        TextAlignment="Center" />
+      
+        <!--  Export Settings  -->
+        <Button
+          Grid.Row="2"
+          Grid.Column="0"
+          Width="158"
+          Height="35"
+          Command="{Binding ExportSettingsCommand}"
+          Content="Export"
+          FontSize="14"
+          Foreground="White"
+          Style="{StaticResource SettingsButton}" />
+
+
+        <!--Import Settings-->  
+        <Button
+          Grid.Row="3"
+          Grid.Column="0"
+          Width="158"
+          Height="35"
+          Command="{Binding ImportSettingssCommand}"
+          Content="Import"
+          FontSize="14"
+          Foreground="White"
+          Style="{StaticResource SettingsButton}" />
+
+
+        <!--Reset Settings-->  
+        <Button
+          Grid.Row="4"
+          Grid.Column="0"
+          Width="158"
+          Height="35"
+          Command="{Binding ResetSettingsCommand}"
+          Content="Reset"
+          FontSize="14"
+          Foreground="White"
+          Style="{StaticResource SettingsButton}" />
+    </Grid>
+  </Grid>
+</UserControl>

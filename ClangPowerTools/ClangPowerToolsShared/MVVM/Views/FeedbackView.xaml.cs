@@ -1,4 +1,5 @@
-﻿using System.Windows.Controls;
+﻿using System.Diagnostics;
+using System.Windows.Controls;
 
 namespace ClangPowerTools.Views
 {
@@ -11,6 +12,12 @@ namespace ClangPowerTools.Views
     {
       InitializeComponent();
       DataContext = new FeedbackViewModel();
+    }
+
+    private void Hyperlink_SupportGmail(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+    {
+      Process.Start(new ProcessStartInfo("mailto:support@clangpowertools.com"));
+      e.Handled = true;
     }
   }
 }

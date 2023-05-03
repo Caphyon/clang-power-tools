@@ -25,7 +25,7 @@
       <ImageBrush ImageSource="/ClangPowerTools;component/Resources/SettingsBackground.png" Stretch="UniformToFill" />
     </Grid.Background>
     <Grid.RowDefinitions>
-      <RowDefinition Height="100" />
+      <RowDefinition Height="150" />
       <RowDefinition Height="80" />
       <RowDefinition Height="30" />
       <RowDefinition Height="40" />
@@ -33,8 +33,8 @@
     </Grid.RowDefinitions>
 
     <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="215" />
       <ColumnDefinition Width="140" />
+      <ColumnDefinition Width="240" />
       <ColumnDefinition Width="60" />
       <ColumnDefinition Width="140" />
       <ColumnDefinition Width="*" />
@@ -60,19 +60,21 @@
       FontFamily="SegoeUI"
       FontSize="15"
       FontWeight="SemiBold"
-      Text="Website" />
+      Text="Share your ideas and issues at:" />
 
-    <Button
-      Grid.Row="3"
-      Grid.Column="1"
-      Width="140"
-      Height="30"
-      HorizontalAlignment="Center"
-      Command="{Binding WebsiteCommand}"
-      Content="Send Feedback"
-      FontSize="14"
-      Foreground="White"
-      Style="{StaticResource SettingsButton}" />
+    <TextBlock 
+        Grid.Column="1"
+        Grid.Row="3"
+        Margin="0,12,0,0"
+        VerticalAlignment="Center"
+        HorizontalAlignment="Center">
+          <Hyperlink Foreground="#b81268"
+                     FontSize="15"
+                     RequestNavigate="Hyperlink_SupportGmail"
+                     NavigateUri="https://clangpowertools.com/contact.html">
+              <TextBlock Text="support@clangpowertools.com" TextDecorations="Underline" FontWeight="SemiBold" />
+          </Hyperlink>
+      </TextBlock>
 
 
     <!--  GitHub feedback  -->

@@ -289,9 +289,6 @@
     <Resource Include="..\ClangPowerToolsShared\Resources\StorageIcon.png">
       <Link>Resources\StorageIcon.png</Link>
     </Resource>
-    <Resource Include="..\ClangPowerToolsShared\Resources\TeamIcon.png">
-      <Link>Resources\TeamIcon.png</Link>
-    </Resource>
     <Resource Include="..\ClangPowerToolsShared\Resources\TidyIcon.png">
       <Link>Resources\TidyIcon.png</Link>
     </Resource>
