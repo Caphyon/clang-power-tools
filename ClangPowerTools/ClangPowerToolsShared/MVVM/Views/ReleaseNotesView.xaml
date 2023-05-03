@@ -114,11 +114,11 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Foreground="#e65d22"
-                 Text="• Remove Login and Cloud storage settings"
+                 Foreground="#e69a0e"
+                 Text="• User accounts and cloud-stored settings are now discontinued"
                  TextWrapping="Wrap" />
-        
-        <TextBox Margin="20,15,0,0"
+
+        <TextBox Margin="15,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
@@ -127,22 +127,22 @@
                  Text="• Compile and Tidy on (*.ixx) modules"
                  TextWrapping="Wrap" />
 
-        <TextBox Margin="20,15,0,0"
+        <TextBox Margin="15,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• C++ - Command line - extra compiler options /external:env:var and /external:I path"
+                 Text="• Support for additional compiler options: /external:env:var and /external:I path"
                  TextWrapping="Wrap" />
 
-        <TextBox Margin="15,15,0,0"
+        <TextBox Margin="15,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Update min PowerShell version to 5"
+                 Text="• Vcpkg support for both classic and manifest modes"
                  TextWrapping="Wrap" />
 
         <!--Bug Fixes-->
@@ -154,25 +154,16 @@
                  IsReadOnly="True"
                  Text="Bug Fixes" />
 
-        <TextBox Margin="15,15,0,0"
+        <TextBox Margin="15,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• The Clang Format Editor crashes when the Style Detector is run"
+                 Text="• Clang Format Editor crashes when the Style Detector is run"
                  TextWrapping="Wrap" />
 
-        <TextBox Margin="15,15,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• Not added vcpkg include paths in manifest or classic mode"
-                 TextWrapping="Wrap" />
-
-        <TextBox Margin="15,15,0,0"
+        <TextBox Margin="15,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
