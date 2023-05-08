@@ -1332,7 +1332,9 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   [string] $stdafxHeader = ""
   [string] $stdafxHeaderFullPath = ""
 
-  [bool] $kPchIsNeeded = $global:cptFilesToProcess.Keys.Count -ge 2
+  [int] $minTranslationUnitsForPCH = If (Test-Path env:CPT_PCH_LIMIT) { [int]$env:CPT_PCH_LIMIT } else { 2 }
+
+  [bool] $kPchIsNeeded = $global:cptFilesToProcess.Keys.Count -ge $minTranslationUnitsForPCH
   if ($kPchIsNeeded)
   {
     # if we have only one rooted file in the script parameters, then we don't need to detect PCH
@@ -1468,7 +1470,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   # JSON Compilation Database file will outlive this execution run, while the PCH is temporary 
   # so we disable PCH creation for that case as well.
 
-  if ($kPchIsNeeded -and $global:cptFilesToProcess.Count -lt 2)
+  if ($kPchIsNeeded -and $global:cptFilesToProcess.Count -lt $minTranslationUnitsForPCH)
   {
     $kPchIsNeeded = $false
   }
