@@ -60,9 +60,14 @@ namespace ClangPowerTools.Services
       {
         //Check if file was downloaded, delete destination folder, all files will be automatically downloaded
         //If file wasn't download, an exception will throw on MoveFile action
-        if (File.Exists(Path.Combine(sourceFolder, PsUpdaterConstants.ClangBuildScript)))
+        FileInfo sourceFile = new FileInfo(Path.Combine(sourceFolder, PsUpdaterConstants.ClangBuildScript));
+        if (File.Exists(sourceFile.FullName) && sourceFile.Length > 0)
         {
           FileSystem.DeleteDirectory(destFolder);
+        }
+        else {
+          MessageBox.Show("The download of clang-build.ps1 cannot be completed due to a potential issue with your internet connection. Please verify your connectivity.", "PowerShell Scripts", MessageBoxButtons.OK, MessageBoxIcon.Information);
+          return;
         }
         
         Directory.CreateDirectory(destFolder);
