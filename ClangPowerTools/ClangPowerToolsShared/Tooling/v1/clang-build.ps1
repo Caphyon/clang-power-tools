@@ -520,7 +520,15 @@ Function Apply-TidyFixReplacements([Parameter(Mandatory=$true) ][WorkloadType] $
     Write-Verbose "Apply tidy-fix replacements"
     [string] $pathToBinary =  (Join-Path -path $global:llvmLocation `
                                          -ChildPath $kClangApplyReplacements)
-    & $pathToBinary $global:tidyFixReplacementDirPath
+
+    if (![string]::IsNullOrEmpty($aAfterTidyFixFormatStyle))
+    {
+      & $pathToBinary -format -style="$aAfterTidyFixFormatStyle" $global:tidyFixReplacementDirPath
+    }
+    else
+    {
+      & $pathToBinary $global:tidyFixReplacementDirPath
+    }
     Wait-AndProcessBuildJobs
   }
 }
@@ -857,13 +865,6 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
     }
   }
 
-  if ($fix)
-  {
-    if (![string]::IsNullOrEmpty($aAfterTidyFixFormatStyle))
-    {
-      $tidyArgs += "$kClangTidyFormatStyle$aAfterTidyFixFormatStyle"
-    }
-  }
   $tidyArgs += $kClangTidyFlags
 
   $tidyArgs += Get-ClangIncludeDirectories -includeDirectories           $includeDirectories `
