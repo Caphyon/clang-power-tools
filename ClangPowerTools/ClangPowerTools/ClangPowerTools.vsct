@@ -133,8 +133,18 @@
         </Strings>
       </Button>
 
+      <!-- Clang Optimize Includes Context Menu button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="OptimizeIncludesId" priority="0x0005" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
+        <Icon guid="guidImageFind" id="Find" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Optimize Includes</ButtonText>
+        </Strings>
+      </Button>
+
 			<!-- Stop Clang execution Context Menu button -->
-			<Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0005" type="Button">
+			<Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0006" type="Button">
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
 				<Icon guid="guidImageStopClang" id="StopClang" />
 				<CommandFlag>DefaultDisabled</CommandFlag>
@@ -144,7 +154,7 @@
 			</Button>
 
 			<!-- Ignore file for clang compile Context Menu button -->
-			<Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreCompileId" priority="0x0006" type="Button">
+			<Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreCompileId" priority="0x0007" type="Button">
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
 				<Icon guid="guidImageIgnoreFormat" id="IgnoreFormat" />
 				<CommandFlag>DefaultDisabled</CommandFlag>
@@ -154,7 +164,7 @@
 			</Button>
 
 			<!-- Ignore file for clang format Context Menu button -->
-			<Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreFormatId" priority="0x0007" type="Button">
+			<Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreFormatId" priority="0x0008" type="Button">
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
 				<Icon guid="guidImageEmpty" id="Empty" />
 				<CommandFlag>DefaultDisabled</CommandFlag>
@@ -423,6 +433,7 @@
 			<IDSymbol name="ClangFormatId" value="0x0105" />
 			<IDSymbol name="ClangFormatToolbarId" value="0x1103" />
 			<IDSymbol name="FindId" value="0x0115" />
+      <IDSymbol name="OptimizeIncludesId" value="0x01A7" />
 
 			<IDSymbol name="StopClangId" value="0x0104" />
 			<IDSymbol name="IgnoreFormatId" value="0x0107" />
