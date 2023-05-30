@@ -115,6 +115,14 @@ namespace ClangPowerTools
         await FindCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kClangFind);
       }
 
+      if (OptimizeIncludesCommand.Instance == null)
+      {
+        await OptimizeIncludesCommand.InitializeAsync(this, aAsyncPackage, mCommandSet,
+                                             CommandIds.kOptimizeIncludesId);
+        await OptimizeIncludesCommand.InitializeAsync(this, aAsyncPackage, mCommandSet,
+                                             CommandIds.kOptimizeIncludesId);
+      }
+
       if (IgnoreFormatCommand.Instance == null)
       {
         await IgnoreFormatCommand.InitializeAsync(this, aAsyncPackage, mCommandSet,

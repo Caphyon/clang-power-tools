@@ -19,6 +19,7 @@ namespace ClangPowerTools
       0x1102,
       0x0115,
       0x0117,
+      0x01A7,
       0x0105,
       0x1103,
       0x0104,
@@ -44,6 +45,7 @@ namespace ClangPowerTools
       4353,
       277,
       279,
+      423,
       265,
       4354,
       261,
@@ -77,9 +79,10 @@ namespace ClangPowerTools
     public const int kClangFind = 0x0115;
     public const int kClangFindRun = 0x0117;
 
+    public const int kOptimizeIncludesId = 0x01A7;
+
     public const int kClangFormat = 0x0105;
     public const int kClangFormatToolbarId = 0x1103;
-
 
     public const int kStopClang = 0x0104;
     public const int kSettingsId = 0x0103;
