@@ -58,13 +58,9 @@ namespace ClangPowerTools.Commands
 
     public async Task RunOptimizeIncludes(CommandUILocation commandUILocation, bool jsonCompilationDbActive = false)
     {
-      await PrepareCommmandAsync(commandUILocation, jsonCompilationDbActive);
-      const string message =
-          "test message box";
-      const string caption = "Form Closing";
-      var result = MessageBox.Show(message, caption,
-                                   MessageBoxButtons.YesNo,
-                                   MessageBoxIcon.Question);
+      //generate compilation database
+      await CommandControllerInstance.CommandController.LaunchCommandAsync(aCommandId: CommandIds.kJsonCompilationDatabase,
+        aCommandUILocation: commandUILocation, openCompilationDatabaseInExplorer: false);
     }
   }
 }

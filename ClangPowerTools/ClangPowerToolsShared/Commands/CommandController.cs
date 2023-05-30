@@ -250,7 +250,9 @@ namespace ClangPowerTools
           {
             await StopBackgroundRunnersAsync();
             OnBeforeClangCommand(CommandIds.kClangFind);
+
             await OptimizeIncludesCommand.Instance.RunOptimizeIncludes(aCommandUILocation);
+
             OnAfterClangCommand();
             break;
           }
