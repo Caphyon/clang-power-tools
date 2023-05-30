@@ -248,6 +248,14 @@ namespace ClangPowerTools
             OnAfterClangCommand();
             break;
           }
+        case CommandIds.kOptimizeIncludesId:
+          {
+            //await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kClangFind);
+            await OptimizeIncludesCommand.Instance.RunOptimizeIncludes(aCommandUILocation);
+            OnAfterClangCommand();
+            break;
+          }
         case CommandIds.kCompileId:
           {
             await StopBackgroundRunnersAsync();

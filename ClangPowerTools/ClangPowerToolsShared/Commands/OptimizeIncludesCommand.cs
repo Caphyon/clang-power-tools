@@ -2,13 +2,13 @@
 using System.ComponentModel.Design;
 using System;
 using Task = System.Threading.Tasks.Task;
+using Microsoft.VisualStudio.Shell.Interop;
+using System.Windows.Forms;
 
 namespace ClangPowerTools.Commands
 {
   public class OptimizeIncludesCommand : ClangCommand
   {
-
-
     /// <summary>
     /// Gets the instance of the command.
     /// </summary>
@@ -56,6 +56,15 @@ namespace ClangPowerTools.Commands
       Instance = new OptimizeIncludesCommand(commandService, aCommandController, aPackage, aGuid, aId);
     }
 
-
+    public async Task RunOptimizeIncludes(CommandUILocation commandUILocation, bool jsonCompilationDbActive = false)
+    {
+      await PrepareCommmandAsync(commandUILocation, jsonCompilationDbActive);
+      const string message =
+          "test message box";
+      const string caption = "Form Closing";
+      var result = MessageBox.Show(message, caption,
+                                   MessageBoxButtons.YesNo,
+                                   MessageBoxIcon.Question);
+    }
   }
 }
