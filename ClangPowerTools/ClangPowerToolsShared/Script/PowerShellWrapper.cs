@@ -1,7 +1,6 @@
 ﻿using ClangPowerTools.Output;
 using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
-using EnvDTE;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,27 +31,14 @@ namespace ClangPowerTools
     #endregion
 
     #region Public Methods
-
-
-    public static bool Invoke(string aScript, bool aUsePwshFileName = false)
+    public static bool StartProcess(string aScript, string aExecutablePath = "", bool aRunAsPwsh = false)
     {
-      if (SettingsProvider.CompilerSettingsModel.Powershell7
-        && string.IsNullOrEmpty(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)))
-      {
-        SettingsHandler settingsHandler = new SettingsHandler();
-        SettingsProvider.CompilerSettingsModel.Powershell7 = false;
-        settingsHandler.SaveSettings();
-        mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
-        return false;
-      }
-
       Process process = new Process();
       try
       {
-
         process.StartInfo = new ProcessStartInfo()
         {
-          FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}",
+          FileName = aExecutablePath,
           RedirectStandardError = true,
           RedirectStandardOutput = true,
           CreateNoWindow = true,
@@ -78,15 +64,22 @@ namespace ClangPowerTools
           Arguments = Regex.Replace(aScript, @"([\w|\\])'([\w|\\])", "$1''$2")
         };
 
-        //Update arguments and FileName path for Cpt alias added from pwsh
-        if (SettingsProvider.CompilerSettingsModel.Powershell7)
+        //Update process.StartInfo.Filename (exe to run) with aExecutablePath depending on
+        //running platform, pwsh or windows powershell.
+        //For pwsh need to add "-Command" when running a command (all this for cpt Alias command)
+        if (string.IsNullOrEmpty(aExecutablePath))
         {
-          process.StartInfo.FileName = File.Exists(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)) ?
-            GetFilePathFromEnviromentVar(ScriptConstants.kPwsh) :
-            $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
-          if (aUsePwshFileName)
+          process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
+          //Update arguments and FileName path for Cpt alias added from pwsh
+          if (SettingsProvider.CompilerSettingsModel.Powershell7)
           {
-            process.StartInfo.Arguments = "-Command \"" + process.StartInfo.Arguments + "\"";
+            process.StartInfo.FileName = File.Exists(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)) ?
+              GetFilePathFromEnviromentVar(ScriptConstants.kPwsh) :
+              $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
+            if (aRunAsPwsh)
+            {
+              process.StartInfo.Arguments = "-Command \"" + process.StartInfo.Arguments + "\"";
+            }
           }
         }
 
@@ -130,6 +123,21 @@ namespace ClangPowerTools
         throw e;
       }
       return true;
+    }
+
+    public static bool Invoke(string aScript, bool aRunAsPwsh = false)
+    {
+      if (SettingsProvider.CompilerSettingsModel.Powershell7
+        && string.IsNullOrEmpty(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)))
+      {
+        SettingsHandler settingsHandler = new SettingsHandler();
+        SettingsProvider.CompilerSettingsModel.Powershell7 = false;
+        settingsHandler.SaveSettings();
+        mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
+        return false;
+      }
+
+      return StartProcess(aScript, aRunAsPwsh:aRunAsPwsh);
     }
 
     public static void EndInteractiveMode()
@@ -325,7 +333,7 @@ namespace ClangPowerTools
       // for parallel execution llvm need to be >= 13.0.1
       if ((Int16.Parse(llvmVersions[0]) >= 13))
       {
-        if((Int16.Parse(llvmVersions[0]) == 13) && (Int16.Parse(llvmVersions[1]) == 0) && (Int16.Parse(llvmVersions[2]) == 0))
+        if ((Int16.Parse(llvmVersions[0]) == 13) && (Int16.Parse(llvmVersions[1]) == 0) && (Int16.Parse(llvmVersions[2]) == 0))
         {
           return path;
         }
