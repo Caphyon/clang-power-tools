@@ -4,6 +4,8 @@ using System;
 using Task = System.Threading.Tasks.Task;
 using Microsoft.VisualStudio.Shell.Interop;
 using System.Windows.Forms;
+using System.IO;
+using ClangPowerToolsShared.MVVM.Constants;
 
 namespace ClangPowerTools.Commands
 {
@@ -61,6 +63,19 @@ namespace ClangPowerTools.Commands
       //generate compilation database
       await CommandControllerInstance.CommandController.LaunchCommandAsync(aCommandId: CommandIds.kJsonCompilationDatabase,
         aCommandUILocation: commandUILocation, openCompilationDatabaseInExplorer: false);
+
+      //downlaod tools
+      //include what you use
+      var jsonCompilationDatabasePath = PathConstants.JsonCompilationDBPath;
+      string iwyuFilePath = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
+        "iwyu.txt");
+      string iwyuExe = PowerShellWrapper.DownloadTool(ScriptConstants.kIwyu);
+      string iwyuTool = PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuTool);
+
+
+      //apply include what you use
+
+
     }
   }
 }
