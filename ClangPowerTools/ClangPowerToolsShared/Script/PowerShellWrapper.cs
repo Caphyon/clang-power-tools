@@ -87,7 +87,7 @@ namespace ClangPowerTools
         string iwyuTool = string.Empty;
         if (CommandControllerInstance.CommandController.GetCurrentCommandId() == CommandIds.kOptimizeIncludesId)
         {
-          iwyuTool = PowerShellWrapper.DownloadTool(ScriptConstants.kIwyu);
+          iwyuTool = PowerShellWrapper.DownloadTool(ScriptConstants.kIwyu) + "\\";
         }
         process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable(iwyuTool);
         process.StartInfo.EnvironmentVariables["CPT_CPULIMIT"] = GetNumberOfProcessors().ToString();

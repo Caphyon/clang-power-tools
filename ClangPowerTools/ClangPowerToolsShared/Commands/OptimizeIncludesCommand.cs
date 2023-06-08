@@ -61,23 +61,6 @@ namespace ClangPowerTools.Commands
 
     public async Task RunOptimizeIncludes(CommandUILocation commandUILocation)
     {
-      //downlaod tools
-      //include what you use
-      var jsonCompilationDatabasePath = PathConstants.JsonCompilationDBPath;
-      string iwyuFilePath = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
-        "iwyu.txt");
-      string iwyuExe = PowerShellWrapper.DownloadTool(ScriptConstants.kIwyu);
-      //string iwyuTool = PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuTool);
-
-
-      var pythonPath = PowerShellWrapper.GetFilePathFromEnviromentVar("python.exe");
-      if (string.IsNullOrEmpty(pythonPath))
-      {
-        DialogResult dialogResult = MessageBox.Show("To use optimize includes you must add in PATH python 3.x",
-                                            "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        return;
-      }
-
       //apply include what you use
       await Task.Run(() =>
       {
@@ -85,7 +68,7 @@ namespace ClangPowerTools.Commands
         {
           try
           {
-            PowerShellWrapper.StartProcess("test", iwyuFilePath);
+            OptimizeIncludes();
           }
           catch (Exception exception)
           {

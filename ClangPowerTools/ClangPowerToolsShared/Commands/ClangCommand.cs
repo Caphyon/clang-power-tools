@@ -15,6 +15,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.IO;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
@@ -223,6 +224,34 @@ namespace ClangPowerTools
       {
         RunController.OnDataStreamClose(new CloseDataStreamingEventArgs(false));
       }
+    }
+
+    /// <summary>
+    /// Use include-what-to-use tool to remove includes.
+    /// Download all needed tools: iwyu.exe, iwyu_tool.py, fix_includes.py.
+    /// Use iwyu_tool.py to generate output in iwyuOutput.txt and apply fix with fix_includes.py
+    /// </summary>
+    protected void OptimizeIncludes()
+    {
+      //downlaod tools
+      var jsonCompilationDatabasePath = PathConstants.JsonCompilationDBPath;
+      string iwyuOutputFilePath = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
+        "iwyuOutput.txt");
+      //string iwyuExe = PowerShellWrapper.DownloadTool(ScriptConstants.kIwyu);
+      string iwyuTool = Path.Combine(PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuTool), ScriptConstants.kIwyuTool);
+
+      var pythonPath = PowerShellWrapper.GetFilePathFromEnviromentVar("python.exe");
+      if (string.IsNullOrEmpty(pythonPath))
+      {
+        DialogResult dialogResult = MessageBox.Show("To use optimize includes you must add in PATH python 3.x",
+                                            "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        return;
+      }
+
+      string arguments = $"-p \"{jsonCompilationDatabasePath}\"";
+      string Script = $"\"{iwyuTool}\" {arguments}";
+
+      PowerShellWrapper.StartProcess(Script, pythonPath);
     }
 
     /// <summary>
