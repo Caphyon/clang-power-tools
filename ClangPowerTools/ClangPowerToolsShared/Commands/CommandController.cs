@@ -248,8 +248,11 @@ namespace ClangPowerTools
           }
         case CommandIds.kOptimizeIncludesId:
           {
+            //generate compilation database here, before setting the CommandId with OptimizeIncludesId
+            await launchCompilationDbProgrammatically.FromOptimizeIncludesAsync();
+
             await StopBackgroundRunnersAsync();
-            OnBeforeClangCommand(CommandIds.kClangFind);
+            OnBeforeClangCommand(CommandIds.kOptimizeIncludesId);
 
             await OptimizeIncludesCommand.Instance.RunOptimizeIncludes(aCommandUILocation);
 

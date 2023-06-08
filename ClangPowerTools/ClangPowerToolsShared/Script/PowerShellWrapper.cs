@@ -83,7 +83,13 @@ namespace ClangPowerTools
           }
         }
 
-        process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
+        //download include what you use tool and add to PATH
+        string iwyuTool = string.Empty;
+        if (CommandControllerInstance.CommandController.GetCurrentCommandId() == CommandIds.kOptimizeIncludesId)
+        {
+          iwyuTool = PowerShellWrapper.DownloadTool(ScriptConstants.kIwyu);
+        }
+        process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable(iwyuTool);
         process.StartInfo.EnvironmentVariables["CPT_CPULIMIT"] = GetNumberOfProcessors().ToString();
 
         var customTidyExecutable = GetCustomTidyPath();
@@ -137,7 +143,7 @@ namespace ClangPowerTools
         return false;
       }
 
-      return StartProcess(aScript, aRunAsPwsh:aRunAsPwsh);
+      return StartProcess(aScript, aRunAsPwsh: aRunAsPwsh);
     }
 
     public static void EndInteractiveMode()
@@ -322,7 +328,7 @@ namespace ClangPowerTools
       return (cpuLimit * processorsNumber) / 100;
     }
 
-    public static string CreatePathEnvironmentVariable()
+    public static string CreatePathEnvironmentVariable(string aEnvPath = "")
     {
       var path = Environment.GetEnvironmentVariable("Path");
       var llvmModel = SettingsProvider.LlvmSettingsModel;
@@ -333,7 +339,9 @@ namespace ClangPowerTools
       // for parallel execution llvm need to be >= 13.0.1
       if ((Int16.Parse(llvmVersions[0]) >= 13))
       {
-        if ((Int16.Parse(llvmVersions[0]) == 13) && (Int16.Parse(llvmVersions[1]) == 0) && (Int16.Parse(llvmVersions[2]) == 0))
+        if ((Int16.Parse(llvmVersions[0]) == 13)
+          && (Int16.Parse(llvmVersions[1]) == 0)
+          && (Int16.Parse(llvmVersions[2]) == 0))
         {
           return path;
         }
@@ -357,6 +365,11 @@ namespace ClangPowerTools
         paths.Add(GetUsedLlvmVersionPath(llvmModel.LlvmSelectedVersion));
       }
 
+      //Add in path include-what-you-use on running optimize includes
+      if (!string.IsNullOrEmpty(aEnvPath))
+      {
+        paths.Add(aEnvPath);
+      }
       return String.Join(";", paths);
     }
 

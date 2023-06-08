@@ -6,6 +6,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System.Windows.Forms;
 using System.IO;
 using ClangPowerToolsShared.MVVM.Constants;
+using Microsoft.VisualStudio.TextTemplating.VSHost;
 
 namespace ClangPowerTools.Commands
 {
@@ -58,23 +59,42 @@ namespace ClangPowerTools.Commands
       Instance = new OptimizeIncludesCommand(commandService, aCommandController, aPackage, aGuid, aId);
     }
 
-    public async Task RunOptimizeIncludes(CommandUILocation commandUILocation, bool jsonCompilationDbActive = false)
+    public async Task RunOptimizeIncludes(CommandUILocation commandUILocation)
     {
-      //generate compilation database
-      await CommandControllerInstance.CommandController.LaunchCommandAsync(aCommandId: CommandIds.kJsonCompilationDatabase,
-        aCommandUILocation: commandUILocation, openCompilationDatabaseInExplorer: false);
-
       //downlaod tools
       //include what you use
       var jsonCompilationDatabasePath = PathConstants.JsonCompilationDBPath;
       string iwyuFilePath = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
         "iwyu.txt");
       string iwyuExe = PowerShellWrapper.DownloadTool(ScriptConstants.kIwyu);
-      string iwyuTool = PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuTool);
+      //string iwyuTool = PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuTool);
 
+
+      var pythonPath = PowerShellWrapper.GetFilePathFromEnviromentVar("python.exe");
+      if (string.IsNullOrEmpty(pythonPath))
+      {
+        DialogResult dialogResult = MessageBox.Show("To use optimize includes you must add in PATH python 3.x",
+                                            "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        return;
+      }
 
       //apply include what you use
+      await Task.Run(() =>
+      {
+        lock (mutex)
+        {
+          try
+          {
+            PowerShellWrapper.StartProcess("test", iwyuFilePath);
+          }
+          catch (Exception exception)
+          {
+            VsShellUtilities.ShowMessageBox(AsyncPackage, exception.Message, "Error",
+              OLEMSGICON.OLEMSGICON_CRITICAL, OLEMSGBUTTON.OLEMSGBUTTON_OK, OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+          }
+        }
 
+      });
 
     }
   }
