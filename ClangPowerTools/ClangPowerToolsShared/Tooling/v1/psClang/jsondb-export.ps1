@@ -4,7 +4,8 @@ function JsonDB-Init()
   $outputPath += "compile_commands.json"
   Set-Variable -name "kJsonCompilationDbPath" -value $outputPath -option Constant -scope Global
   Set-Variable -name "kJsonCompilationDbCount" -value 0 -scope Global
-
+  
+  Remove-Item $outputPath
   JsonDB-Append "["
 }
 

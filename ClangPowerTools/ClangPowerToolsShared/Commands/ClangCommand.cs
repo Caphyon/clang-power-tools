@@ -252,6 +252,16 @@ namespace ClangPowerTools
       string Script = $"\"{iwyuTool}\" {arguments}";
 
       PowerShellWrapper.StartProcess(Script, pythonPath);
+
+      if (RunController.StopCommandActivated)
+      {
+        RunController.OnDataStreamClose(new CloseDataStreamingEventArgs(true));
+        RunController.StopCommandActivated = false;
+      }
+      else
+      {
+        RunController.OnDataStreamClose(new CloseDataStreamingEventArgs(false));
+      }
     }
 
     /// <summary>
@@ -426,7 +436,6 @@ namespace ClangPowerTools
       }
 
       PowerShellWrapper.Invoke(Script);
-      RunController.OnDataStreamClose(new CloseDataStreamingEventArgs(false));
     }
 
     private string GetProjectName()
