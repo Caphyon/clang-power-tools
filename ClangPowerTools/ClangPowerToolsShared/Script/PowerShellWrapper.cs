@@ -87,7 +87,7 @@ namespace ClangPowerTools
         string iwyuTool = string.Empty;
         if (CommandControllerInstance.CommandController.GetCurrentCommandId() == CommandIds.kOptimizeIncludesId)
         {
-          iwyuTool = PowerShellWrapper.DownloadTool(ScriptConstants.kIwyu) + "\\";
+          iwyuTool = DownloadTool(ScriptConstants.kIwyu) + "\\";
         }
         process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable(iwyuTool);
         process.StartInfo.EnvironmentVariables["CPT_CPULIMIT"] = GetNumberOfProcessors().ToString();
@@ -425,6 +425,12 @@ namespace ClangPowerTools
       {
         throw new Exception(
             $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
+      }
+      finally
+      {
+        // Remove the process from the runningProcesses list
+        RunController.runningProcesses.Remove(process);
+        process.Dispose();
       }
       return string.Empty;
     }
