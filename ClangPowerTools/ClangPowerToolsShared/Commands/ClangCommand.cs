@@ -238,7 +238,8 @@ namespace ClangPowerTools
       var jsonCompilationDatabasePath = PathConstants.JsonCompilationDBPath;
       string iwyuOutputFilePath = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
         "iwyuOutput.txt");
-      string iwyuTool = Path.Combine(PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuTool), ScriptConstants.kIwyuTool);
+      string iwyuTool = Path.Combine(PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuTool),
+        ScriptConstants.kIwyuTool);
       var pythonPath = PowerShellWrapper.GetFilePathFromEnviromentVar("python.exe");
       if (string.IsNullOrEmpty(pythonPath))
       {
@@ -250,8 +251,18 @@ namespace ClangPowerTools
       string arguments = $"-p \"{jsonCompilationDatabasePath}\" ";
       string Script = $"cmd.exe /c \"python.exe\" " +
         $" \"{iwyuTool}\" {arguments} > \"{iwyuOutputFilePath}\"";
-
+      
+      //generate iwyu output in iwyuOutput.txt
       PowerShellWrapper.StartProcess(Script);
+
+      //apply fixes based on generated iwyuOutput.txt (encoding utf-8) file
+      string iwyuFixIncludes = Path.Combine(PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuFixIncludes),
+        ScriptConstants.kIwyuFixIncludes);
+      string includeFixScript = $"cmd.exe /c \'\"python.exe\" \"{iwyuFixIncludes}\" " +
+        $" < \"{iwyuOutputFilePath}\"\'";
+      PowerShellWrapper.StartProcess(includeFixScript);
+
+
 
       if (RunController.StopCommandActivated)
       {
