@@ -16,6 +16,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
@@ -237,21 +238,20 @@ namespace ClangPowerTools
       var jsonCompilationDatabasePath = PathConstants.JsonCompilationDBPath;
       string iwyuOutputFilePath = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
         "iwyuOutput.txt");
-      //string iwyuExe = PowerShellWrapper.DownloadTool(ScriptConstants.kIwyu);
       string iwyuTool = Path.Combine(PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuTool), ScriptConstants.kIwyuTool);
-
       var pythonPath = PowerShellWrapper.GetFilePathFromEnviromentVar("python.exe");
       if (string.IsNullOrEmpty(pythonPath))
       {
-        DialogResult dialogResult = MessageBox.Show("To use optimize includes you must add in PATH python 3.x",
+        MessageBox.Show("To use optimize includes you must add in PATH python 3.x",
                                             "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
         return;
       }
 
-      string arguments = $"-p \"{jsonCompilationDatabasePath}\"";
-      string Script = $"\"{iwyuTool}\" {arguments}";
+      string arguments = $"-p \"{jsonCompilationDatabasePath}\" ";
+      string Script = $"cmd.exe /c \"python.exe\" " +
+        $" \"{iwyuTool}\" {arguments} > \"{iwyuOutputFilePath}\"";
 
-      PowerShellWrapper.StartProcess(Script, pythonPath);
+      PowerShellWrapper.StartProcess(Script);
 
       if (RunController.StopCommandActivated)
       {
