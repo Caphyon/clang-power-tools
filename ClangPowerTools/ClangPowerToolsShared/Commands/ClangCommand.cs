@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
@@ -230,14 +231,14 @@ namespace ClangPowerTools
     /// <summary>
     /// Use include-what-to-use tool to remove includes.
     /// Download all needed tools: iwyu.exe, iwyu_tool.py, fix_includes.py.
-    /// Use iwyu_tool.py to generate output in iwyuOutput.txt and apply fix with fix_includes.py
+    /// Use iwyu_tool.py to generate output in iwyuUTF8.txt and apply fix with fix_includes.py
     /// </summary>
     protected void OptimizeIncludes()
     {
       //downlaod tools
       var jsonCompilationDatabasePath = PathConstants.JsonCompilationDBPath;
-      string iwyuOutputFilePath = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
-        "iwyuOutput.txt");
+      string iwyuUTF8BOMPath = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
+        "iwyuUTF8BOM.txt");
       string iwyuTool = Path.Combine(PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuTool),
         ScriptConstants.kIwyuTool);
       var pythonPath = PowerShellWrapper.GetFilePathFromEnviromentVar("python.exe");
@@ -250,18 +251,29 @@ namespace ClangPowerTools
 
       string arguments = $"-p \"{jsonCompilationDatabasePath}\" ";
       string Script = $"cmd.exe /c \"python.exe\" " +
-        $" \"{iwyuTool}\" {arguments} > \"{iwyuOutputFilePath}\"";
+        $" \"{iwyuTool}\" {arguments} > \"{iwyuUTF8BOMPath}\"";
       
       //generate iwyu output in iwyuOutput.txt
       PowerShellWrapper.StartProcess(Script);
+
+      //change encoding from utf8 BOM to utf8
+      string iwyuUTF8Path = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
+          "iwyuUTF8.txt");
+      using (StreamReader reader = new StreamReader(iwyuUTF8BOMPath, Encoding.UTF8, true)) 
+      {
+        string content = reader.ReadToEnd();
+        using (StreamWriter writer = new StreamWriter(iwyuUTF8Path, false, new UTF8Encoding(false)))
+        {
+          writer.Write(content);
+        }
+      }
 
       //apply fixes based on generated iwyuOutput.txt (encoding utf-8) file
       string iwyuFixIncludes = Path.Combine(PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuFixIncludes),
         ScriptConstants.kIwyuFixIncludes);
       string includeFixScript = $"cmd.exe /c \'\"python.exe\" \"{iwyuFixIncludes}\" " +
-        $" < \"{iwyuOutputFilePath}\"\'";
+        $" < \"{iwyuUTF8Path}\"\'";
       PowerShellWrapper.StartProcess(includeFixScript);
-
 
 
       if (RunController.StopCommandActivated)
