@@ -321,7 +321,7 @@ namespace ClangPowerTools
     /// percentage of CPU Limit choosed by user
     /// </summary>
     /// <returns></returns>
-    private static int GetNumberOfProcessors()
+    public static int GetNumberOfProcessors()
     {
       int processorsNumber = int.Parse(Environment.GetEnvironmentVariable("NUMBER_OF_PROCESSORS"));
       int cpuLimit = SettingsProvider.CompilerSettingsModel.CpuLimit;

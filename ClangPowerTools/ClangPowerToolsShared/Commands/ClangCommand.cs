@@ -249,9 +249,9 @@ namespace ClangPowerTools
         return;
       }
 
-      string arguments = $"-p \"{jsonCompilationDatabasePath}\" ";
       string Script = $"cmd.exe /c \"python.exe\" " +
-        $" \"{iwyuTool}\" {arguments} > \"{iwyuUTF8BOMPath}\"";
+        $" \"{iwyuTool}\" -p \"{jsonCompilationDatabasePath}\" " +
+        $"--j {PowerShellWrapper.GetNumberOfProcessors()} > \"{iwyuUTF8BOMPath}\"";
       
       //generate iwyu output in iwyuOutput.txt
       PowerShellWrapper.StartProcess(Script);
@@ -275,6 +275,9 @@ namespace ClangPowerTools
         $" < \"{iwyuUTF8Path}\"\'";
       PowerShellWrapper.StartProcess(includeFixScript);
 
+      //Remove files
+      FileSystem.DeleteFile(iwyuUTF8Path);
+      FileSystem.DeleteFile(iwyuUTF8BOMPath);
 
       if (RunController.StopCommandActivated)
       {
