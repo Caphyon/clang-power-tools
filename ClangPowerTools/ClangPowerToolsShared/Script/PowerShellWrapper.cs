@@ -102,10 +102,6 @@ namespace ClangPowerTools
         process.OutputDataReceived += DataHandler;
         process.Exited += ExitedHandler;
         process.Disposed += ExitedHandler;
-        process.Exited += (sender, e) =>
-        {
-          RunController.runningProcesses.Remove(process);
-        };
 
         RunController.runningProcesses.Add(process);
 
@@ -127,6 +123,10 @@ namespace ClangPowerTools
         process.Close();
 
         throw e;
+      }
+      finally
+      {
+        RunController.runningProcesses.Remove(process);
       }
       return true;
     }
@@ -430,7 +430,6 @@ namespace ClangPowerTools
       {
         // Remove the process from the runningProcesses list
         RunController.runningProcesses.Remove(process);
-        process.Dispose();
       }
       return string.Empty;
     }
