@@ -15,8 +15,6 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
@@ -235,49 +233,83 @@ namespace ClangPowerTools
     /// </summary>
     protected void OptimizeIncludes()
     {
-      //downlaod tools
+      if (string.IsNullOrEmpty(PathConstants.JsonCompilationDBPath))
+      {
+        MessageBox.Show("Cannot find compilationDatabase",
+                                    "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        return;
+      }
       var jsonCompilationDatabasePath = PathConstants.JsonCompilationDBPath;
       string iwyuUTF8BOMPath = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
         "iwyuUTF8BOM.txt");
-      string iwyuTool = Path.Combine(PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuTool),
-        ScriptConstants.kIwyuTool);
-      var pythonPath = PowerShellWrapper.GetFilePathFromEnviromentVar("python.exe");
-      if (string.IsNullOrEmpty(pythonPath))
-      {
-        MessageBox.Show("To use optimize includes you must add in PATH python 3.x",
-                                            "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        return;
-      }
-
-      string Script = $"cmd.exe /c \"python.exe\" " +
-        $" \"{iwyuTool}\" -p \"{jsonCompilationDatabasePath}\" " +
-        $"--j {PowerShellWrapper.GetNumberOfProcessors()} > \"{iwyuUTF8BOMPath}\"";
-      
-      //generate iwyu output in iwyuOutput.txt
-      PowerShellWrapper.StartProcess(Script);
-
-      //change encoding from utf8 BOM to utf8
       string iwyuUTF8Path = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
-          "iwyuUTF8.txt");
-      using (StreamReader reader = new StreamReader(iwyuUTF8BOMPath, Encoding.UTF8, true)) 
+        "iwyuUTF8.txt");
+      string logPath = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
+        "log.txt");
+      try
       {
-        string content = reader.ReadToEnd();
-        using (StreamWriter writer = new StreamWriter(iwyuUTF8Path, false, new UTF8Encoding(false)))
+        //downlaod tools
+        File.WriteAllText(logPath, "[1]start download iwyu_tool.py\n");
+
+        string iwyuTool = Path.Combine(PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuTool),
+          ScriptConstants.kIwyuTool);
+
+        File.AppendAllText(logPath, $"[2]finish download iwyu_tool.py\n {iwyuTool}\n");
+
+        var pythonPath = PowerShellWrapper.GetFilePathFromEnviromentVar("python.exe");
+        if (string.IsNullOrEmpty(pythonPath))
         {
-          writer.Write(content);
+          MessageBox.Show("To use optimize includes you must add in PATH python 3.x",
+                                              "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
+          return;
         }
+
+        File.AppendAllText(logPath, "[3]try to create first script\n");
+        string Script = $"-ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command \"& " +
+          $"cmd.exe /c python.exe " +
+          $" '{iwyuTool}' -p '{jsonCompilationDatabasePath}' " +
+          $"--j {PowerShellWrapper.GetNumberOfProcessors()} > '{iwyuUTF8BOMPath}' \"";
+        File.AppendAllText(logPath, $"[4]Script = {Script}\n");
+
+        //generate iwyu output in iwyuOutput.txt
+        PowerShellWrapper.StartProcess(Script);
+
+        //change encoding from utf8 BOM to utf8
+        using (StreamReader reader = new StreamReader(iwyuUTF8BOMPath, Encoding.UTF8, true))
+        {
+          string content = reader.ReadToEnd();
+          using (StreamWriter writer = new StreamWriter(iwyuUTF8Path, false, new UTF8Encoding(false)))
+          {
+            writer.Write(content);
+          }
+        }
+
+
+        //apply fixes based on generated iwyuOutput.txt (encoding utf-8) file
+        string iwyuFixIncludes = Path.Combine(PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuFixIncludes),
+          ScriptConstants.kIwyuFixIncludes);
+        File.AppendAllText(logPath, $"[5]IWYU fix path = {iwyuFixIncludes}\n");
+
+        string includeFixScript = $"-ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command \"& " +
+          $"cmd.exe /c python.exe '{iwyuFixIncludes}' " +
+          $" '<' '{iwyuUTF8Path}' \"";
+        File.AppendAllText(logPath, $"[6]Iwyu Script fix = {includeFixScript}\n");
+
+        PowerShellWrapper.StartProcess(includeFixScript);
       }
+      catch (Exception e)
+      {
+        File.AppendAllText(logPath, e.ToString());
+        throw;
+      }
+      finally
+      {
+        //Remove files
+        File.AppendAllText(logPath, $"[7]delete files");
 
-      //apply fixes based on generated iwyuOutput.txt (encoding utf-8) file
-      string iwyuFixIncludes = Path.Combine(PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuFixIncludes),
-        ScriptConstants.kIwyuFixIncludes);
-      string includeFixScript = $"cmd.exe /c \'\"python.exe\" \"{iwyuFixIncludes}\" " +
-        $" < \"{iwyuUTF8Path}\"\'";
-      PowerShellWrapper.StartProcess(includeFixScript);
-
-      //Remove files
-      FileSystem.DeleteFile(iwyuUTF8Path);
-      FileSystem.DeleteFile(iwyuUTF8BOMPath);
+        FileSystem.DeleteFile(iwyuUTF8Path);
+        FileSystem.DeleteFile(iwyuUTF8BOMPath);
+      }
 
       if (RunController.StopCommandActivated)
       {
@@ -300,7 +332,7 @@ namespace ClangPowerTools
     /// <returns></returns>
     protected void GenerateDocumentationForProject(int commandId, AsyncPackage package)
     {
-      
+
       var jsonCompilationDatabasePath = PathConstants.JsonCompilationDBPath;
       string documentationOutoutePath = GenerateDocumentation.FindOutputFolderName(
         Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
