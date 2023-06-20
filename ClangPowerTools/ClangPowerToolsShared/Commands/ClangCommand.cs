@@ -235,26 +235,21 @@ namespace ClangPowerTools
     {
       if (string.IsNullOrEmpty(PathConstants.JsonCompilationDBPath))
       {
-        MessageBox.Show("Cannot find compilationDatabase",
-                                    "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        CommandControllerInstance.CommandController.DisplayMessage(false, "Cannot find compilation database");
         return;
       }
+
       var jsonCompilationDatabasePath = PathConstants.JsonCompilationDBPath;
       string iwyuUTF8BOMPath = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
         "iwyuUTF8BOM.txt");
       string iwyuUTF8Path = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
         "iwyuUTF8.txt");
-      string logPath = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
-        "log.txt");
+
       try
       {
         //downlaod tools
-        File.WriteAllText(logPath, "[1]start download iwyu_tool.py\n");
-
         string iwyuTool = Path.Combine(PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuTool),
           ScriptConstants.kIwyuTool);
-
-        File.AppendAllText(logPath, $"[2]finish download iwyu_tool.py\n {iwyuTool}\n");
 
         var pythonPath = PowerShellWrapper.GetFilePathFromEnviromentVar("python.exe");
         if (string.IsNullOrEmpty(pythonPath))
@@ -264,12 +259,10 @@ namespace ClangPowerTools
           return;
         }
 
-        File.AppendAllText(logPath, "[3]try to create first script\n");
         string Script = $"-ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command \"& " +
           $"cmd.exe /c python.exe " +
           $" '{iwyuTool}' -p '{jsonCompilationDatabasePath}' " +
           $"--j {PowerShellWrapper.GetNumberOfProcessors()} > '{iwyuUTF8BOMPath}' \"";
-        File.AppendAllText(logPath, $"[4]Script = {Script}\n");
 
         //generate iwyu output in iwyuOutput.txt
         PowerShellWrapper.StartProcess(Script);
@@ -284,29 +277,23 @@ namespace ClangPowerTools
           }
         }
 
-
         //apply fixes based on generated iwyuOutput.txt (encoding utf-8) file
         string iwyuFixIncludes = Path.Combine(PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuFixIncludes),
           ScriptConstants.kIwyuFixIncludes);
-        File.AppendAllText(logPath, $"[5]IWYU fix path = {iwyuFixIncludes}\n");
 
         string includeFixScript = $"-ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command \"& " +
           $"cmd.exe /c python.exe '{iwyuFixIncludes}' " +
           $" '<' '{iwyuUTF8Path}' \"";
-        File.AppendAllText(logPath, $"[6]Iwyu Script fix = {includeFixScript}\n");
 
         PowerShellWrapper.StartProcess(includeFixScript);
       }
       catch (Exception e)
       {
-        File.AppendAllText(logPath, e.ToString());
-        throw;
+        CommandControllerInstance.CommandController.DisplayMessage(false, e.Message);
       }
       finally
       {
         //Remove files
-        File.AppendAllText(logPath, $"[7]delete files");
-
         FileSystem.DeleteFile(iwyuUTF8Path);
         FileSystem.DeleteFile(iwyuUTF8BOMPath);
       }
