@@ -416,6 +416,7 @@ namespace ClangPowerTools
       try
       {
         process.Start();
+        process.WaitForExit();
         while (!process.StandardOutput.EndOfStream)
         {
           return process.StandardOutput.ReadLine();
