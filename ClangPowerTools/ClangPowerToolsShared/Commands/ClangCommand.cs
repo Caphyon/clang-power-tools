@@ -239,7 +239,10 @@ namespace ClangPowerTools
         return;
       }
 
-      var jsonCompilationDatabasePath = PathConstants.JsonCompilationDBPath;
+      string jsonCompilationDatabasePath = Path.Combine(PathConstants.SolutionDirPath, "iwyu_compilation_db.json");
+      ManageEncoding.ChangeEncodingFromBomToUtf8(PathConstants.JsonCompilationDBPath,
+        jsonCompilationDatabasePath);
+
       string iwyuUTF8BOMPath = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
         "iwyuUTF8BOM.txt");
       string iwyuUTF8Path = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
@@ -254,28 +257,20 @@ namespace ClangPowerTools
         var pythonPath = PowerShellWrapper.GetFilePathFromEnviromentVar("python.exe");
         if (string.IsNullOrEmpty(pythonPath))
         {
-          MessageBox.Show("To use optimize includes you must add in PATH python 3.x",
-                                              "Clang Power Tools", MessageBoxButtons.OK, MessageBoxIcon.Information);
+          CommandControllerInstance.CommandController.DisplayMessage(false, "To use optimize includes you must add in PATH python 3.x");
           return;
         }
 
         string Script = $"-ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command \"& " +
           $"cmd.exe /c python.exe " +
-          $" '{iwyuTool}' -p '{jsonCompilationDatabasePath}' " +
+          $" '{iwyuTool}'  -v -p '{jsonCompilationDatabasePath}' " +
           $"--j {PowerShellWrapper.GetNumberOfProcessors()} > '{iwyuUTF8BOMPath}' \"";
 
         //generate iwyu output in iwyuOutput.txt
         PowerShellWrapper.StartProcess(Script);
 
         //change encoding from utf8 BOM to utf8
-        using (StreamReader reader = new StreamReader(iwyuUTF8BOMPath, Encoding.UTF8, true))
-        {
-          string content = reader.ReadToEnd();
-          using (StreamWriter writer = new StreamWriter(iwyuUTF8Path, false, new UTF8Encoding(false)))
-          {
-            writer.Write(content);
-          }
-        }
+        ManageEncoding.ChangeEncodingFromBomToUtf8(iwyuUTF8BOMPath ,iwyuUTF8Path);
 
         //apply fixes based on generated iwyuOutput.txt (encoding utf-8) file
         string iwyuFixIncludes = Path.Combine(PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuFixIncludes),
@@ -296,6 +291,7 @@ namespace ClangPowerTools
         //Remove files
         FileSystem.DeleteFile(iwyuUTF8Path);
         FileSystem.DeleteFile(iwyuUTF8BOMPath);
+        FileSystem.DeleteFile(jsonCompilationDatabasePath);
       }
 
       if (RunController.StopCommandActivated)

@@ -5,19 +5,12 @@ function JsonDB-Init()
   Set-Variable -name "kJsonCompilationDbPath" -value $outputPath -option Constant -scope Global
   Set-Variable -name "kJsonCompilationDbCount" -value 0 -scope Global
   
-  Remove-Item $outputPath
-  JsonDB-Append "["
+  "[" | Out-File $kJsonCompilationDbPath -Encoding "UTF8"
 }
 
-# Use StreamWriter for utf-8 (without BOM) encoding in powershell and windows powershell
 function JsonDB-Append($text)
 {
-  $Utf8NoBomEncoding = New-Object System.Text.UTF8Encoding($false)
-  $stream = [System.IO.File]::Open($kJsonCompilationDbPath, 'Append', 'Write', 'Read')
-  $writer = New-Object System.IO.StreamWriter($stream, $Utf8NoBomEncoding)
-  $writer.WriteLine($text)
-  $writer.Close()
-  $stream.Close()
+  $text | Out-File $kJsonCompilationDbPath -append -Encoding "UTF8"
 }
 
 function JsonDB-Finalize()
