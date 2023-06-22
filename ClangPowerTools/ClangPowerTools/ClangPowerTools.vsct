@@ -139,7 +139,7 @@
         <Icon guid="guidImageOptimizeIncludes" id="OptimizeIncludes" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
-          <ButtonText>Optimize Includes</ButtonText>
+          <ButtonText>Optimize Includes (BETA)</ButtonText>
         </Strings>
       </Button>
 
