@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 2023.5.0" />
+                 Text="version 2023.6.0" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -114,35 +114,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Foreground="#e69a0e"
-                 Text="• User accounts and cloud-stored settings are now discontinued"
-                 TextWrapping="Wrap" />
-
-        <TextBox Margin="15,20,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• Compile and Tidy on (*.ixx) modules"
-                 TextWrapping="Wrap" />
-
-        <TextBox Margin="15,20,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• Support for additional compiler options: /external:env:var and /external:I path"
-                 TextWrapping="Wrap" />
-
-        <TextBox Margin="15,20,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• Vcpkg support for both classic and manifest modes"
+                 Text="• (BETA) Optimize Includes: auto-prune the #include sections (include-what-you-use)"
                  TextWrapping="Wrap" />
 
         <!--Bug Fixes-->
@@ -160,7 +132,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Clang Format Editor crashes when the Style Detector is run"
+                 Text="• Script gets deleted on PowerShell Script Update"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,20,0,0"
@@ -169,7 +141,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Animated building icon in the status bar never clears"
+                 Text="• No clang-format after clang-tidy"
                  TextWrapping="Wrap" />
         <!--<TextBox Margin="15,15,0,0"
                  HorizontalAlignment="Left"
