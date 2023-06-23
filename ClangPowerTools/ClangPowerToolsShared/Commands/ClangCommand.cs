@@ -16,6 +16,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 using Task = System.Threading.Tasks.Task;
 
@@ -226,6 +227,85 @@ namespace ClangPowerTools
     }
 
     /// <summary>
+    /// Use include-what-to-use tool to remove includes.
+    /// Download all needed tools: iwyu.exe, iwyu_tool.py, fix_includes.py.
+    /// Use iwyu_tool.py to generate output in iwyuUTF8.txt and apply fix with fix_includes.py
+    /// </summary>
+    protected void OptimizeIncludes()
+    {
+      if (string.IsNullOrEmpty(PathConstants.JsonCompilationDBPath))
+      {
+        CommandControllerInstance.CommandController.DisplayMessage(false, "Cannot find compilation database");
+        return;
+      }
+
+      string jsonCompilationDatabasePath = Path.Combine(PathConstants.SolutionDirPath, "iwyu_compilation_db.json");
+      ManageEncoding.ChangeEncodingFromBomToUtf8(PathConstants.JsonCompilationDBPath,
+        jsonCompilationDatabasePath);
+
+      string iwyuUTF8BOMPath = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
+        "iwyuUTF8BOM.txt");
+      string iwyuUTF8Path = Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
+        "iwyuUTF8.txt");
+
+      try
+      {
+        //downlaod tools
+        string iwyuTool = Path.Combine(PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuTool),
+          ScriptConstants.kIwyuTool);
+
+        var pythonPath = PowerShellWrapper.GetFilePathFromEnviromentVar("python.exe");
+        if (string.IsNullOrEmpty(pythonPath))
+        {
+          CommandControllerInstance.CommandController.DisplayMessage(false, "To use optimize includes you must add in PATH python 3.x");
+          return;
+        }
+
+        string Script = $"-ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command \"& " +
+          $"cmd.exe /c python.exe " +
+          $" '{iwyuTool}'  -v -p '{jsonCompilationDatabasePath}' " +
+          $"--j {PowerShellWrapper.GetNumberOfProcessors()} > '{iwyuUTF8BOMPath}' \"";
+
+        //generate iwyu output in iwyuOutput.txt
+        PowerShellWrapper.StartProcess(Script);
+
+        //change encoding from utf8 BOM to utf8
+        ManageEncoding.ChangeEncodingFromBomToUtf8(iwyuUTF8BOMPath ,iwyuUTF8Path);
+
+        //apply fixes based on generated iwyuOutput.txt (encoding utf-8) file
+        string iwyuFixIncludes = Path.Combine(PowerShellWrapper.DownloadTool(ScriptConstants.kIwyuFixIncludes),
+          ScriptConstants.kIwyuFixIncludes);
+
+        string includeFixScript = $"-ExecutionPolicy Unrestricted -NoProfile -Noninteractive -command \"& " +
+          $"cmd.exe /c python.exe '{iwyuFixIncludes}' " +
+          $" '<' '{iwyuUTF8Path}' \"";
+
+        PowerShellWrapper.StartProcess(includeFixScript);
+      }
+      catch (Exception e)
+      {
+        CommandControllerInstance.CommandController.DisplayMessage(false, e.Message);
+      }
+      finally
+      {
+        //Remove files
+        FileSystem.DeleteFile(iwyuUTF8Path);
+        FileSystem.DeleteFile(iwyuUTF8BOMPath);
+        FileSystem.DeleteFile(jsonCompilationDatabasePath);
+      }
+
+      if (RunController.StopCommandActivated)
+      {
+        RunController.OnDataStreamClose(new CloseDataStreamingEventArgs(true));
+        RunController.StopCommandActivated = false;
+      }
+      else
+      {
+        RunController.OnDataStreamClose(new CloseDataStreamingEventArgs(false));
+      }
+    }
+
+    /// <summary>
     /// Create a process for running clang-doc.exe resulted
     /// format, depends on passed command
     /// </summary>
@@ -235,7 +315,7 @@ namespace ClangPowerTools
     /// <returns></returns>
     protected void GenerateDocumentationForProject(int commandId, AsyncPackage package)
     {
-      
+
       var jsonCompilationDatabasePath = PathConstants.JsonCompilationDBPath;
       string documentationOutoutePath = GenerateDocumentation.FindOutputFolderName(
         Path.Combine(new FileInfo(jsonCompilationDatabasePath).Directory.FullName,
@@ -397,7 +477,6 @@ namespace ClangPowerTools
       }
 
       PowerShellWrapper.Invoke(Script);
-      RunController.OnDataStreamClose(new CloseDataStreamingEventArgs(false));
     }
 
     private string GetProjectName()

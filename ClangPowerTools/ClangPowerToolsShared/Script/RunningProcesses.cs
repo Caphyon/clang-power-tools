@@ -127,7 +127,7 @@ namespace ClangPowerTools
 
         foreach (ManagementObject mo in moc)
           KillProcessAndChildren(Convert.ToInt32(mo["ProcessID"]));
-
+        proc.Close();
         proc = Process.GetProcessById(aPid);
         proc.Kill();
       }

@@ -72,6 +72,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="..\ClangPowerToolsShared\Resources\[CPT]OptimizeIncludes.png">
+      <Link>Resources\[CPT]OptimizeIncludes.png</Link>
+    </Resource>
     <Resource Include="..\ClangPowerToolsShared\Resources\TidyToolWindow\[CPT]Pinned.png">
       <Link>Resources\TidyToolWindow\[CPT]Pinned.png</Link>
     </Resource>

@@ -390,6 +390,8 @@ namespace ClangPowerTools
 
       CompileCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
       TidyCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
+      OptimizeIncludesCommand.Instance.HierarchyDetectedEvent += mCommandController.OnFileHierarchyChanged;
+
 
       mCommandController.ErrorDetectedEvent += PowerShellWrapper.mOutputWindowController.OnErrorDetected;
       PowerShellWrapper.mOutputWindowController.ErrorDetectedEvent += mErrorWindowController.OnErrorDetected;
@@ -402,9 +404,11 @@ namespace ClangPowerTools
 
       CompileCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
       TidyCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
+      OptimizeIncludesCommand.Instance.ActiveDocumentEvent += mCommandController.OnActiveDocumentCheck;
 
       CompileCommand.Instance.IgnoredItemsEvent += mCommandController.OnItemIgnore;
       TidyCommand.Instance.IgnoredItemsEvent += mCommandController.OnItemIgnore;
+      OptimizeIncludesCommand.Instance.IgnoredItemsEvent += mCommandController.OnItemIgnore;
       FormatCommand.Instance.IgnoredItemsEvent += mCommandController.OnItemIgnore;
 
       PowerShellWrapper.DataHandler += PowerShellWrapper.mOutputWindowController.OutputDataReceived;
@@ -455,6 +459,7 @@ namespace ClangPowerTools
 
       CompileCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
       TidyCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
+      OptimizeIncludesCommand.Instance.HierarchyDetectedEvent -= mCommandController.OnFileHierarchyChanged;
 
       mCommandController.ErrorDetectedEvent -= PowerShellWrapper.mOutputWindowController.OnErrorDetected;
       PowerShellWrapper.mOutputWindowController.ErrorDetectedEvent -= mErrorWindowController.OnErrorDetected;
@@ -466,9 +471,11 @@ namespace ClangPowerTools
 
       CompileCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
       TidyCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
+      OptimizeIncludesCommand.Instance.ActiveDocumentEvent -= mCommandController.OnActiveDocumentCheck;
 
       CompileCommand.Instance.IgnoredItemsEvent -= mCommandController.OnItemIgnore;
       TidyCommand.Instance.IgnoredItemsEvent -= mCommandController.OnItemIgnore;
+      OptimizeIncludesCommand.Instance.IgnoredItemsEvent -= mCommandController.OnItemIgnore;
       FormatCommand.Instance.IgnoredItemsEvent -= mCommandController.OnItemIgnore;
 
       PowerShellWrapper.DataHandler -= PowerShellWrapper.mOutputWindowController.OutputDataReceived;

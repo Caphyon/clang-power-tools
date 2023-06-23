@@ -133,8 +133,18 @@
         </Strings>
       </Button>
 
+      <!-- Clang Optimize Includes Context Menu button -->
+      <Button guid="guidClangPowerToolsPackageCmdSet" id="OptimizeIncludesId" priority="0x0005" type="Button">
+        <Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
+        <Icon guid="guidImageOptimizeIncludes" id="OptimizeIncludes" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Optimize Includes (BETA)</ButtonText>
+        </Strings>
+      </Button>
+
 			<!-- Stop Clang execution Context Menu button -->
-			<Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0005" type="Button">
+			<Button guid="guidClangPowerToolsPackageCmdSet" id="StopClangId" priority="0x0006" type="Button">
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForCommands" />
 				<Icon guid="guidImageStopClang" id="StopClang" />
 				<CommandFlag>DefaultDisabled</CommandFlag>
@@ -144,7 +154,7 @@
 			</Button>
 
 			<!-- Ignore file for clang compile Context Menu button -->
-			<Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreCompileId" priority="0x0006" type="Button">
+			<Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreCompileId" priority="0x0007" type="Button">
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
 				<Icon guid="guidImageIgnoreFormat" id="IgnoreFormat" />
 				<CommandFlag>DefaultDisabled</CommandFlag>
@@ -154,7 +164,7 @@
 			</Button>
 
 			<!-- Ignore file for clang format Context Menu button -->
-			<Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreFormatId" priority="0x0007" type="Button">
+			<Button guid="guidClangPowerToolsPackageCmdSet" id="IgnoreFormatId" priority="0x0008" type="Button">
 				<Parent guid="guidClangPowerToolsPackageCmdSet" id="GroupForIgnore" />
 				<Icon guid="guidImageEmpty" id="Empty" />
 				<CommandFlag>DefaultDisabled</CommandFlag>
@@ -300,6 +310,7 @@
 			<Bitmap guid="guidImageCompile" href="..\ClangPowerToolsShared\Resources\CompileIcon.png" usedList="Compile" />
 			<Bitmap guid="guidImageFormat" href="..\ClangPowerToolsShared\Resources\ClangFormatIcon.png" usedList="Format" />
 			<Bitmap guid="guidImageFind" href="..\ClangPowerToolsShared\Resources\[CPT]Find.png" usedList="Find" />
+			<Bitmap guid="guidImageOptimizeIncludes" href="..\ClangPowerToolsShared\Resources\[CPT]OptimizeIncludes.png" usedList="OptimizeIncludes" />
 			<Bitmap guid="guidImageStopClang" href="..\ClangPowerToolsShared\Resources\StopCommandIcon.png" usedList="StopClang" />
 			<Bitmap guid="guidImageSettings" href="..\ClangPowerToolsShared\Resources\SettingsIcon.png" usedList="Settings" />
 			<Bitmap guid="guidImageIgnoreFormat" href="..\ClangPowerToolsShared\Resources\IgnoreIcon.png" usedList="IgnoreFormat" />
@@ -423,6 +434,7 @@
 			<IDSymbol name="ClangFormatId" value="0x0105" />
 			<IDSymbol name="ClangFormatToolbarId" value="0x1103" />
 			<IDSymbol name="FindId" value="0x0115" />
+      <IDSymbol name="OptimizeIncludesId" value="0x01A7" />
 
 			<IDSymbol name="StopClangId" value="0x0104" />
 			<IDSymbol name="IgnoreFormatId" value="0x0107" />
@@ -486,6 +498,11 @@
     <!-- Define clang find image -->
     <GuidSymbol name="guidImageFind" value="{d46b5b3e-8c5a-4a6d-972f-37146878a106}">
       <IDSymbol name="Find" value="1" />
+    </GuidSymbol>
+
+    <!-- Define clang optimize includes image -->
+    <GuidSymbol name="guidImageOptimizeIncludes" value="{6a7c3b9d-5f2e-4a8c-9d1b-e79f2d4c1a35}">
+      <IDSymbol name="OptimizeIncludes" value="1" />
     </GuidSymbol>
 
 		<!-- Define Logout image -->

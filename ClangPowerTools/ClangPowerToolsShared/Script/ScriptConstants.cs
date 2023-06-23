@@ -114,6 +114,9 @@ namespace ClangPowerTools
 
     public const string kClangFormat = "clang-format.exe";
     public const string kClangDoc = "clang-doc.exe";
+    public const string kIwyu = "include-what-you-use.exe";
+    public const string kIwyuTool = "iwyu_tool.py";
+    public const string kIwyuFixIncludes = "fix_includes.py";
     public const string kClangTidy = "clang-tidy.exe";
     public const string kCompilationDBFile = "compile_commands.json";
     public const string kAssumeFilename = "-assume-filename";

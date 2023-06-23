@@ -115,6 +115,12 @@ namespace ClangPowerTools
         await FindCommand.InitializeAsync(this, aAsyncPackage, mCommandSet, CommandIds.kClangFind);
       }
 
+      if (OptimizeIncludesCommand.Instance == null)
+      {
+        await OptimizeIncludesCommand.InitializeAsync(this, aAsyncPackage, mCommandSet,
+                                             CommandIds.kOptimizeIncludesId);
+      }
+
       if (IgnoreFormatCommand.Instance == null)
       {
         await IgnoreFormatCommand.InitializeAsync(this, aAsyncPackage, mCommandSet,
@@ -236,6 +242,19 @@ namespace ClangPowerTools
             OnBeforeClangCommand(CommandIds.kClangFindRun);
 
             await FindCommand.Instance.RunQueryAsync();
+
+            OnAfterClangCommand();
+            break;
+          }
+        case CommandIds.kOptimizeIncludesId:
+          {
+            //generate compilation database here, before setting the CommandId with OptimizeIncludesId
+            await launchCompilationDbProgrammatically.FromOptimizeIncludesAsync();
+
+            await StopBackgroundRunnersAsync();
+            OnBeforeClangCommand(CommandIds.kOptimizeIncludesId);
+
+            await OptimizeIncludesCommand.Instance.RunOptimizeIncludes(aCommandUILocation);
 
             OnAfterClangCommand();
             break;
@@ -693,6 +712,7 @@ namespace ClangPowerTools
       else if (itemsCollector.Items != null && itemsCollector.Items.Count == 1 &&
                  (command.CommandID.ID == CommandIds.kCompileId ||
                   command.CommandID.ID == CommandIds.kTidyId ||
+                  command.CommandID.ID == CommandIds.kOptimizeIncludesId ||
                   command.CommandID.ID == CommandIds.kJsonCompilationDatabase ||
                   command.CommandID.ID == CommandIds.kClangFindRun ||
                   command.CommandID.ID == CommandIds.kIgnoreCompileId ||

@@ -15,6 +15,7 @@ namespace ClangPowerTools
       {CommandIds.kCompileId, "Clang Compile"},
       {CommandIds.kCompileToolbarId, "Clang Compile"},
       {CommandIds.kTidyId, "Clang Tidy"},
+      {CommandIds.kOptimizeIncludesId, "Clang Optimize Includes"},
       {CommandIds.kTidyToolWindowId, "Clang Tidy"},
       {CommandIds.kTidyToolbarId, "Clang Tidy"},
       {CommandIds.kTidyFixId, "Clang Tidy-Fix"},

@@ -58,5 +58,12 @@ namespace ClangPowerToolsShared.Helpers
       await CommandControllerInstance.CommandController.LaunchCommandAsync(CommandIds.kJsonCompilationDatabase, CommandUILocation.ContextMenu,
              null, false);
     }
+
+    public async Task FromOptimizeIncludesAsync()
+    {
+      ///generate compilation database here, before setting the CommandId with OptimizeIncludesId
+      await CommandControllerInstance.CommandController.LaunchCommandAsync(aCommandId: CommandIds.kJsonCompilationDatabase,
+        aCommandUILocation: CommandUILocation.ContextMenu, openCompilationDatabaseInExplorer: false);
+    }
   }
 }

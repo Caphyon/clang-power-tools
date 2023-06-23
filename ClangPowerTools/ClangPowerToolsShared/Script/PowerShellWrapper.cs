@@ -1,7 +1,6 @@
 ﻿using ClangPowerTools.Output;
 using ClangPowerToolsShared.Commands;
 using ClangPowerToolsShared.MVVM.Constants;
-using EnvDTE;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,27 +31,14 @@ namespace ClangPowerTools
     #endregion
 
     #region Public Methods
-
-
-    public static bool Invoke(string aScript, bool aUsePwshFileName = false)
+    public static bool StartProcess(string aScript, string aExecutablePath = "", bool aRunAsPwsh = false)
     {
-      if (SettingsProvider.CompilerSettingsModel.Powershell7
-        && string.IsNullOrEmpty(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)))
-      {
-        SettingsHandler settingsHandler = new SettingsHandler();
-        SettingsProvider.CompilerSettingsModel.Powershell7 = false;
-        settingsHandler.SaveSettings();
-        mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
-        return false;
-      }
-
       Process process = new Process();
       try
       {
-
         process.StartInfo = new ProcessStartInfo()
         {
-          FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}",
+          FileName = aExecutablePath,
           RedirectStandardError = true,
           RedirectStandardOutput = true,
           CreateNoWindow = true,
@@ -78,19 +64,32 @@ namespace ClangPowerTools
           Arguments = Regex.Replace(aScript, @"([\w|\\])'([\w|\\])", "$1''$2")
         };
 
-        //Update arguments and FileName path for Cpt alias added from pwsh
-        if (SettingsProvider.CompilerSettingsModel.Powershell7)
+        //Update process.StartInfo.Filename (exe to run) with aExecutablePath depending on
+        //running platform, pwsh or windows powershell.
+        //For pwsh need to add "-Command" when running a command (all this for cpt Alias command)
+        if (string.IsNullOrEmpty(aExecutablePath))
         {
-          process.StartInfo.FileName = File.Exists(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)) ?
-            GetFilePathFromEnviromentVar(ScriptConstants.kPwsh) :
-            $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
-          if (aUsePwshFileName)
+          process.StartInfo.FileName = $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
+          //Update arguments and FileName path for Cpt alias added from pwsh
+          if (SettingsProvider.CompilerSettingsModel.Powershell7)
           {
-            process.StartInfo.Arguments = "-Command \"" + process.StartInfo.Arguments + "\"";
+            process.StartInfo.FileName = File.Exists(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)) ?
+              GetFilePathFromEnviromentVar(ScriptConstants.kPwsh) :
+              $"{Environment.SystemDirectory}\\{ScriptConstants.kPowerShellPath}";
+            if (aRunAsPwsh)
+            {
+              process.StartInfo.Arguments = "-Command \"" + process.StartInfo.Arguments + "\"";
+            }
           }
         }
 
-        process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable();
+        //download include what you use tool and add to PATH
+        string iwyuTool = string.Empty;
+        if (CommandControllerInstance.CommandController.GetCurrentCommandId() == CommandIds.kOptimizeIncludesId)
+        {
+          iwyuTool = DownloadTool(ScriptConstants.kIwyu) + "\\";
+        }
+        process.StartInfo.EnvironmentVariables["Path"] = CreatePathEnvironmentVariable(iwyuTool);
         process.StartInfo.EnvironmentVariables["CPT_CPULIMIT"] = GetNumberOfProcessors().ToString();
 
         var customTidyExecutable = GetCustomTidyPath();
@@ -103,10 +102,6 @@ namespace ClangPowerTools
         process.OutputDataReceived += DataHandler;
         process.Exited += ExitedHandler;
         process.Disposed += ExitedHandler;
-        process.Exited += (sender, e) =>
-        {
-          RunController.runningProcesses.Remove(process);
-        };
 
         RunController.runningProcesses.Add(process);
 
@@ -129,7 +124,26 @@ namespace ClangPowerTools
 
         throw e;
       }
+      finally
+      {
+        RunController.runningProcesses.Remove(process);
+      }
       return true;
+    }
+
+    public static bool Invoke(string aScript, bool aRunAsPwsh = false)
+    {
+      if (SettingsProvider.CompilerSettingsModel.Powershell7
+        && string.IsNullOrEmpty(GetFilePathFromEnviromentVar(ScriptConstants.kPwsh)))
+      {
+        SettingsHandler settingsHandler = new SettingsHandler();
+        SettingsProvider.CompilerSettingsModel.Powershell7 = false;
+        settingsHandler.SaveSettings();
+        mOutputWindowController.Write("Can't find PowerShell 7 in PATH");
+        return false;
+      }
+
+      return StartProcess(aScript, aRunAsPwsh: aRunAsPwsh);
     }
 
     public static void EndInteractiveMode()
@@ -307,14 +321,14 @@ namespace ClangPowerTools
     /// percentage of CPU Limit choosed by user
     /// </summary>
     /// <returns></returns>
-    private static int GetNumberOfProcessors()
+    public static int GetNumberOfProcessors()
     {
       int processorsNumber = int.Parse(Environment.GetEnvironmentVariable("NUMBER_OF_PROCESSORS"));
       int cpuLimit = SettingsProvider.CompilerSettingsModel.CpuLimit;
       return (cpuLimit * processorsNumber) / 100;
     }
 
-    public static string CreatePathEnvironmentVariable()
+    public static string CreatePathEnvironmentVariable(string aEnvPath = "")
     {
       var path = Environment.GetEnvironmentVariable("Path");
       var llvmModel = SettingsProvider.LlvmSettingsModel;
@@ -325,7 +339,9 @@ namespace ClangPowerTools
       // for parallel execution llvm need to be >= 13.0.1
       if ((Int16.Parse(llvmVersions[0]) >= 13))
       {
-        if((Int16.Parse(llvmVersions[0]) == 13) && (Int16.Parse(llvmVersions[1]) == 0) && (Int16.Parse(llvmVersions[2]) == 0))
+        if ((Int16.Parse(llvmVersions[0]) == 13)
+          && (Int16.Parse(llvmVersions[1]) == 0)
+          && (Int16.Parse(llvmVersions[2]) == 0))
         {
           return path;
         }
@@ -349,6 +365,11 @@ namespace ClangPowerTools
         paths.Add(GetUsedLlvmVersionPath(llvmModel.LlvmSelectedVersion));
       }
 
+      //Add in path include-what-you-use on running optimize includes
+      if (!string.IsNullOrEmpty(aEnvPath))
+      {
+        paths.Add(aEnvPath);
+      }
       return String.Join(";", paths);
     }
 
@@ -395,6 +416,7 @@ namespace ClangPowerTools
       try
       {
         process.Start();
+        process.WaitForExit();
         while (!process.StandardOutput.EndOfStream)
         {
           return process.StandardOutput.ReadLine();
@@ -404,6 +426,11 @@ namespace ClangPowerTools
       {
         throw new Exception(
             $"Cannot execute {process.StartInfo.FileName}.\n{exception.Message}.");
+      }
+      finally
+      {
+        // Remove the process from the runningProcesses list
+        RunController.runningProcesses.Remove(process);
       }
       return string.Empty;
     }
