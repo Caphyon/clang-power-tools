@@ -122,9 +122,9 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     {
       CommandControllerInstance.CommandController.DisplayMessage(false, "\n⌛ Please wait ...\n");
 
-      if (!SettingsProvider.CompilerSettingsModel.VerboseMode)
-        CommandControllerInstance.CommandController.DisplayMessage(false, "\nYou can activate verbose mode to see the" +
-          " complete output. Settings -> Compile -> Verbose mode\n");
+      if (SettingsProvider.CompilerSettingsModel.VerbosityLevel != ClangVerbosityLevel.Verbose)
+        CommandControllerInstance.CommandController.DisplayMessage(false, "\nYou can select verbose mode to see the" +
+          " complete output. Settings -> Compile -> Verbosity level\n");
     }
 
     protected void BeforeCommand()

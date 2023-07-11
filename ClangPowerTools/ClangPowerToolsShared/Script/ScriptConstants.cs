@@ -82,10 +82,15 @@ namespace ClangPowerTools
     public const string kDirectory = "-dir";
     public const string kLiteral = "-literal";
 
-    public const string kContinue = "-continue";
+    public const string kStringContinue = "'continue'";
     public const string kTreatWarningsAsErrors = "-Werror";
     public const string kParallel = "-parallel";
+    public const string kContinue = "-continue";
+    public const string kErrorMode = "-ErrorAction";
+    public const string kWaringMode = "-WarningAction";
+    public const string kInformationMode = "-InformationAction";
     public const string kVerboseMode = "-Verbose";
+    public const string kDebugMode = "-debug";
     public const string kSystemIncludeDirectories = "-treat-sai";
 
     public const string kQueryFile = "clang-query.exe";

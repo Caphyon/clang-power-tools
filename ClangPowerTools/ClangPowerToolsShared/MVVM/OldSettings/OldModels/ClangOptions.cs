@@ -15,6 +15,7 @@
     public bool TreatWarningsAsErrors { get; set; } = false;
 
     public ClangGeneralAdditionalIncludes AdditionalIncludes { get; set; } = ClangGeneralAdditionalIncludes.IncludeDirectories;
+    public ClangVerbosityLevel VerbosityLevel { get; set; } = ClangVerbosityLevel.Warning;
 
     public bool VerboseMode { get; set; } = false;
 

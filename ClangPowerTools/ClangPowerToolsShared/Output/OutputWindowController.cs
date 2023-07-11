@@ -191,7 +191,8 @@ namespace ClangPowerTools.Output
         OnErrorDetected(this, e);
       }
 
-      if (!SettingsProvider.CompilerSettingsModel.VerboseMode && (id == CommandIds.kClangFindRun || id == CommandIds.kClangFind))
+      if (SettingsProvider.CompilerSettingsModel.VerbosityLevel != ClangVerbosityLevel.Verbose 
+        && (id == CommandIds.kClangFindRun || id == CommandIds.kClangFind))
         return;
 
       //show full text when find command is running
@@ -219,7 +220,7 @@ namespace ClangPowerTools.Output
       if (!string.IsNullOrWhiteSpace(outputContent.JsonFilePath))
         JsonCompilationDbFilePathEvent?.Invoke(this, new JsonFilePathArgs(outputContent.JsonFilePath));
 
-      if (!SettingsProvider.CompilerSettingsModel.VerboseMode &&
+      if (SettingsProvider.CompilerSettingsModel.VerbosityLevel != ClangVerbosityLevel.Verbose &&
         (id == CommandIds.kClangFindRun || id == CommandIds.kClangFind))
         return;
 

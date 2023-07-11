@@ -110,9 +110,28 @@ namespace ClangPowerTools.Script
       if (compilerSettings.ContinueOnError)
         parameters.Append($" {ScriptConstants.kContinue}");
 
-      // Get the verbose mode flag 
-      if (compilerSettings.VerboseMode)
-        parameters.Append($" {ScriptConstants.kVerboseMode}");
+      // Get the verbose level flag 
+      switch (compilerSettings.VerbosityLevel)
+      {
+        case ClangVerbosityLevel.Error:
+          parameters.Append($" {ScriptConstants.kErrorMode} {ScriptConstants.kStringContinue}");
+          break;
+        case ClangVerbosityLevel.Warning:
+
+          parameters.Append($" {ScriptConstants.kWaringMode} {ScriptConstants.kStringContinue}");
+          break;
+        case ClangVerbosityLevel.Info:
+          parameters.Append($" {ScriptConstants.kInformationMode} {ScriptConstants.kStringContinue}");
+          break;
+        case ClangVerbosityLevel.Verbose:
+          parameters.Append($" {ScriptConstants.kVerboseMode}");
+          break;
+        case ClangVerbosityLevel.Debug:
+          parameters.Append($" {ScriptConstants.kDebugMode}");
+          break;
+        default:
+          break;
+      }
 
       // Get the projects to ignore list 
       if (!string.IsNullOrWhiteSpace(compilerSettings.ProjectsToIgnore))

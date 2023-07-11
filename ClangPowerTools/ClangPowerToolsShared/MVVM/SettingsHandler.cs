@@ -380,7 +380,7 @@ namespace ClangPowerTools
       compilerSettingsModel.WarningsAsErrors = clangOptions.TreatWarningsAsErrors;
       compilerSettingsModel.ContinueOnError = clangOptions.Continue;
       compilerSettingsModel.ClangAfterMSVC = clangOptions.ClangCompileAfterVsCompile;
-      compilerSettingsModel.VerboseMode = clangOptions.VerboseMode;
+      compilerSettingsModel.VerbosityLevel = clangOptions.VerbosityLevel;
       generalSettingsModel.Version = clangOptions.Version;
 
       SettingsProvider.CompilerSettingsModel = compilerSettingsModel;
