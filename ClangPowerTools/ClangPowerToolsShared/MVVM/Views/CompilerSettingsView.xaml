@@ -381,11 +381,14 @@
         FontSize="16"
         Text="Verbose mode" />
 
-        <ToggleButton
+        <ComboBox
+        Width="450"
+        Height="30"
+        Margin="0,0,20,0"
         HorizontalAlignment="Left"
         VerticalAlignment="Center"
-        IsChecked="{Binding CompilerModel.VerboseMode}"
-        Tag="On" />
+        ItemsSource="{Binding VerbosityLevelItems}"
+        SelectedItem="{Binding CompilerModel.ClangVerbosityLevel}" />
       </WrapPanel>
 
       <!--  Update PowerShell  -->

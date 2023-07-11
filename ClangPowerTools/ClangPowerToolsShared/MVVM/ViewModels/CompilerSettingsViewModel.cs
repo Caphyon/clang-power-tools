@@ -68,6 +68,15 @@ namespace ClangPowerTools
       }
     }
 
+    public IEnumerable<ClangVerbosityLevel> VerbosityLevelItems
+    {
+      get
+      {
+        return Enum.GetValues(typeof(ClangVerbosityLevel)).Cast<ClangVerbosityLevel>();
+      }
+    }
+
+
     public SettingsTooltips Tooltip { get; } = new SettingsTooltips();
 
     #endregion

@@ -61,6 +61,31 @@ namespace ClangPowerTools
 
   [Serializable]
   [JsonConverter(typeof(StringEnumConverter))]
+  public enum ClangVerbosityLevel
+  {
+    [XmlEnum(Name = "Error")]
+    [EnumMember(Value = "Error")]
+    Error,
+
+    [XmlEnum(Name = "Warning")]
+    [EnumMember(Value = "Warning")]
+    Warning,
+
+    [XmlEnum(Name = "Info")]
+    [EnumMember(Value = "Info")]
+    Info,
+
+    [XmlEnum(Name = "Verbose")]
+    [EnumMember(Value = "Verbose")]
+    Verbose,
+
+    [XmlEnum(Name = "Debug")]
+    [EnumMember(Value = "Debug")]
+    Debug,
+  }
+
+  [Serializable]
+  [JsonConverter(typeof(StringEnumConverter))]
   public enum ClangTidyUseChecksFrom
   {
     [XmlEnum(Name = "predefined checks")]
