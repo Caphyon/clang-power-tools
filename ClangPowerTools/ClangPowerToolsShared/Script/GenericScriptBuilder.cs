@@ -117,7 +117,6 @@ namespace ClangPowerTools.Script
           parameters.Append($" {ScriptConstants.kErrorMode} {ScriptConstants.kStringContinue}");
           break;
         case ClangVerbosityLevel.Warning:
-
           parameters.Append($" {ScriptConstants.kWaringMode} {ScriptConstants.kStringContinue}");
           break;
         case ClangVerbosityLevel.Info:
