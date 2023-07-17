@@ -56,14 +56,13 @@ namespace ClangPowerTools
     private void SetPathAndVersion(string path, string version)
     {
       var settingsProviderLlvmModel = SettingsProvider.LlvmSettingsModel;
-      if (string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmVersion) || string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmPath) ||
-        (!string.IsNullOrWhiteSpace(path) && !string.IsNullOrWhiteSpace(version) && version != settingsProviderLlvmModel.PreinstalledLlvmVersion))
+      if (string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmVersion) || 
+        string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmPath) ||
+        (!string.IsNullOrWhiteSpace(path) && !string.IsNullOrWhiteSpace(version) && 
+        version != settingsProviderLlvmModel.PreinstalledLlvmVersion))
       {
-        if (llvms.Find(e => e.Version == version) != null)
-        {
-          settingsProviderLlvmModel.PreinstalledLlvmVersion = version;
-          settingsProviderLlvmModel.PreinstalledLlvmPath = path;
-        }
+        settingsProviderLlvmModel.PreinstalledLlvmVersion = version;
+        settingsProviderLlvmModel.PreinstalledLlvmPath = path;
       }
 
       if (Directory.Exists(settingsProviderLlvmModel.PreinstalledLlvmPath) == false)

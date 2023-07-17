@@ -348,6 +348,8 @@ namespace ClangPowerTools
       }
       else
       {
+        CommandControllerInstance.CommandController.DisplayMessage
+          (message: "⚠ Clang Power Tools requires a minimum LLVM version of 13.0.0 or higher.");
         return path;
       }
 
