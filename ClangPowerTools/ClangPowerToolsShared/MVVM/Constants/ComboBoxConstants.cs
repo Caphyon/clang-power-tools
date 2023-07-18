@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using System;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 using System.Xml.Serialization;
 
@@ -57,31 +58,6 @@ namespace ClangPowerTools
     [XmlEnum(Name = "system include directories")]
     [EnumMember(Value = "SystemIncludeDirectories")]
     SystemIncludeDirectories
-  }
-
-  [Serializable]
-  [JsonConverter(typeof(StringEnumConverter))]
-  public enum ClangVerbosityLevel
-  {
-    [XmlEnum(Name = "Error")]
-    [EnumMember(Value = "Error")]
-    Error,
-
-    [XmlEnum(Name = "Warning")]
-    [EnumMember(Value = "Warning")]
-    Warning,
-
-    [XmlEnum(Name = "Info")]
-    [EnumMember(Value = "Info")]
-    Info,
-
-    [XmlEnum(Name = "Verbose")]
-    [EnumMember(Value = "Verbose")]
-    Verbose,
-
-    [XmlEnum(Name = "Debug")]
-    [EnumMember(Value = "Debug")]
-    Debug,
   }
 
   [Serializable]

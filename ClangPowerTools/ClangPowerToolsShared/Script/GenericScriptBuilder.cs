@@ -110,22 +110,22 @@ namespace ClangPowerTools.Script
       if (compilerSettings.ContinueOnError)
         parameters.Append($" {ScriptConstants.kContinue}");
 
-      // Get the verbose level flag 
+      // Get the verbose level flag
       switch (compilerSettings.VerbosityLevel)
       {
-        case ClangVerbosityLevel.Error:
+        case "0":
           parameters.Append($" {ScriptConstants.kErrorMode} {ScriptConstants.kStringContinue}");
           break;
-        case ClangVerbosityLevel.Warning:
+        case "1":
           parameters.Append($" {ScriptConstants.kWaringMode} {ScriptConstants.kStringContinue}");
           break;
-        case ClangVerbosityLevel.Info:
+        case "2":
           parameters.Append($" {ScriptConstants.kInformationMode} {ScriptConstants.kStringContinue}");
           break;
-        case ClangVerbosityLevel.Verbose:
+        case "3":
           parameters.Append($" {ScriptConstants.kVerboseMode}");
           break;
-        case ClangVerbosityLevel.Debug:
+        case "4":
           parameters.Append($" {ScriptConstants.kDebugMode}");
           break;
         default:

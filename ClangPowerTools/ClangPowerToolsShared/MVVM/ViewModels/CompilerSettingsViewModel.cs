@@ -68,11 +68,11 @@ namespace ClangPowerTools
       }
     }
 
-    public IEnumerable<ClangVerbosityLevel> VerbosityLevelItems
+    public List<string> VerbosityLevelItems
     {
       get
       {
-        return Enum.GetValues(typeof(ClangVerbosityLevel)).Cast<ClangVerbosityLevel>();
+        return new List<string>() { "0", "1", "2", "3", "4" };
       }
     }
 
