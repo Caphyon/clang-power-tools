@@ -368,7 +368,7 @@
           <ToolTip>
             <TextBlock
             MaxWidth="400"
-            Text="{Binding Tooltip.VerboseMode}"
+            Text="{Binding Tooltip.VerboseLevel}"
             TextWrapping="Wrap" />
           </ToolTip>
         </WrapPanel.ToolTip>
