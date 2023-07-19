@@ -56,14 +56,14 @@ namespace ClangPowerTools
     private void SetPathAndVersion(string path, string version)
     {
       var settingsProviderLlvmModel = SettingsProvider.LlvmSettingsModel;
-      if (string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmVersion) || string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmPath) ||
-        (!string.IsNullOrWhiteSpace(path) && !string.IsNullOrWhiteSpace(version) && version != settingsProviderLlvmModel.PreinstalledLlvmVersion))
+      if (string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmVersion) || 
+        string.IsNullOrWhiteSpace(settingsProviderLlvmModel.PreinstalledLlvmPath) ||
+        (!string.IsNullOrWhiteSpace(path) && !string.IsNullOrWhiteSpace(version) && 
+        version != settingsProviderLlvmModel.PreinstalledLlvmVersion))
       {
-        if (llvms.Find(e => e.Version == version) != null)
-        {
-          settingsProviderLlvmModel.PreinstalledLlvmVersion = version;
-          settingsProviderLlvmModel.PreinstalledLlvmPath = path;
-        }
+        settingsProviderLlvmModel.PreinstalledLlvmVersion = version;
+        settingsProviderLlvmModel.PreinstalledLlvmPath = path;
+        CommandControllerInstance.CommandController.DisplayMessage(true, $"ℹ Added successfully LLVM path: {path}");
       }
 
       if (Directory.Exists(settingsProviderLlvmModel.PreinstalledLlvmPath) == false)
@@ -76,6 +76,9 @@ namespace ClangPowerTools
 
         settingsProviderLlvmModel.PreinstalledLlvmPath = string.Empty;
         settingsProviderLlvmModel.PreinstalledLlvmVersion = string.Empty;
+
+        CommandControllerInstance.CommandController.DisplayMessage(false, $"ℹ Remove LLVM " +
+          $"{settingsProviderLlvmModel.PreinstalledLlvmPath} from Clang Power Tools");
       }
     }
 
