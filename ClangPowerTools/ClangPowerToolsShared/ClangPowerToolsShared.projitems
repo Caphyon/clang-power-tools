@@ -244,6 +244,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Script\RunModeScriptBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Script\RunningProcesses.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Script\ScriptConstants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Script\VerbosityScriptBuilder.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\PowerShellService.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Services\VsServiceProvider.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SilentFile\SilentFileChangerBuilder.cs" />

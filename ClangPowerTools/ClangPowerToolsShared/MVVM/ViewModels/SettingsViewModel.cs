@@ -46,11 +46,6 @@ namespace ClangPowerTools
       }
     }
 
-    public ICommand LogIn
-    {
-      get => upgradeCommand ??= new RelayCommand(() => LogInAction(), () => CanExecute);
-    }
-
     #endregion
 
     #region Public Methods
@@ -60,17 +55,6 @@ namespace ClangPowerTools
       settingsHandler.SaveSettings();
       settingsView.Closed -= OnClosed;
       SettingsHandler.RefreshSettingsView = null;
-    }
-
-    #endregion
-
-    #region Private Methods
-
-    private void LogInAction()
-    {
-      settingsView.Close();
-      LoginView loginView = new LoginView();
-      loginView.ShowDialog();
     }
 
     #endregion

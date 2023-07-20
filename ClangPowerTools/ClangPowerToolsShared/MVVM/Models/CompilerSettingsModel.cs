@@ -21,7 +21,8 @@ namespace ClangPowerTools
 
     public bool ClangAfterMSVC { get; set; } = false;
 
-    public bool VerboseMode { get; set; } = false;
+    public string VerbosityLevel { get; set; } = "1";
+
     public bool Powershell7 
     { 
       get { return powershell7; } 

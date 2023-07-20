@@ -368,7 +368,7 @@
           <ToolTip>
             <TextBlock
             MaxWidth="400"
-            Text="{Binding Tooltip.VerboseMode}"
+            Text="{Binding Tooltip.VerboseLevel}"
             TextWrapping="Wrap" />
           </ToolTip>
         </WrapPanel.ToolTip>
@@ -379,13 +379,14 @@
         VerticalAlignment="Center"
         FontFamily="SegoeUI"
         FontSize="16"
-        Text="Verbose mode" />
+        Text="Verbosity Level" />
 
-        <ToggleButton
-        HorizontalAlignment="Left"
-        VerticalAlignment="Center"
-        IsChecked="{Binding CompilerModel.VerboseMode}"
-        Tag="On" />
+        <ComboBox
+        Width="70"
+        Height="30"
+        Margin="0,0,20,0"
+        ItemsSource="{Binding VerbosityLevelItems}"
+        SelectedItem="{Binding CompilerModel.VerbosityLevel}" />
       </WrapPanel>
 
       <!--  Update PowerShell  -->

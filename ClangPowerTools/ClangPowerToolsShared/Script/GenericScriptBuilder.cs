@@ -110,9 +110,10 @@ namespace ClangPowerTools.Script
       if (compilerSettings.ContinueOnError)
         parameters.Append($" {ScriptConstants.kContinue}");
 
-      // Get the verbose mode flag 
-      if (compilerSettings.VerboseMode)
-        parameters.Append($" {ScriptConstants.kVerboseMode}");
+      // Get the verbose level flags
+      VerbosityScriptBuilder verbosityScriptBuilder = new VerbosityScriptBuilder(compilerSettings.VerbosityLevel);
+      verbosityScriptBuilder.Build();
+      parameters.Append(verbosityScriptBuilder.GetResult());
 
       // Get the projects to ignore list 
       if (!string.IsNullOrWhiteSpace(compilerSettings.ProjectsToIgnore))

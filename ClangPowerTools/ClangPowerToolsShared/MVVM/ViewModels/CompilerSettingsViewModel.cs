@@ -68,6 +68,15 @@ namespace ClangPowerTools
       }
     }
 
+    public List<string> VerbosityLevelItems
+    {
+      get
+      {
+        return new List<string>() { "0", "1", "2", "3", "4" };
+      }
+    }
+
+
     public SettingsTooltips Tooltip { get; } = new SettingsTooltips();
 
     #endregion
