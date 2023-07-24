@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 2023.6.0" />
+                 Text="version 2023.7.0" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -114,7 +114,25 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• (BETA) Optimize Includes: auto-prune the #include sections (include-what-you-use)"
+                 Text="• Add LLVM 16.0.6"
+                 TextWrapping="Wrap" />
+
+        <TextBox Margin="15,20,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• Updated clang-format to v16.0.6"
+                 TextWrapping="Wrap" />
+
+        <TextBox Margin="15,20,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• Add verbosity options: minimal, detailed, complete"
                  TextWrapping="Wrap" />
 
         <!--Bug Fixes-->
@@ -132,7 +150,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Script gets deleted on PowerShell Script Update"
+                 Text="• Support for additional compiler options not working with Unix paths"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,20,0,0"
@@ -141,7 +159,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• No clang-format after clang-tidy"
+                 Text="•  LLVM could not be added outside of built-in supported list"
                  TextWrapping="Wrap" />
         <!--<TextBox Margin="15,15,0,0"
                  HorizontalAlignment="Left"
