@@ -122,8 +122,8 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     {
       CommandControllerInstance.CommandController.DisplayMessage(false, "\n⌛ Please wait ...\n");
 
-      // 3 - verbose
-      if (SettingsProvider.CompilerSettingsModel.VerbosityLevel != "3")
+      // 1 - verbose
+      if (SettingsProvider.CompilerSettingsModel.VerbosityLevel != "1")
         CommandControllerInstance.CommandController.DisplayMessage(false, "\nYou can select verbose mode to see the" +
           " complete output. Settings -> Compile -> Verbosity level\n");
     }

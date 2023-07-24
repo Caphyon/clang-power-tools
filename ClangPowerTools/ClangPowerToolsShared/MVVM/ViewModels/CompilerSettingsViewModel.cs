@@ -72,7 +72,7 @@ namespace ClangPowerTools
     {
       get
       {
-        return new List<string>() { "0", "1", "2", "3", "4" };
+        return new List<string>() { "0", "1", "2" };
       }
     }
 

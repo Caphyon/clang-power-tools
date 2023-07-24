@@ -13,12 +13,12 @@ namespace ClangPowerTools.Script
 
     public void Build()
     {
-      mResultScript = $" {ScriptConstants.kErrorMode} {ScriptConstants.kStringContinue}";
+      mResultScript = "";
       bool finishBuild = false;
 
       if (mVerbosity != "1" && !finishBuild)
       {
-        mResultScript += $" {ScriptConstants.kWaringMode} {ScriptConstants.kStringContinue}";
+        mResultScript += $" {ScriptConstants.kVerboseMode}";
       }
       else if (mVerbosity == "1")
       {
@@ -27,25 +27,8 @@ namespace ClangPowerTools.Script
 
       if (mVerbosity != "2" && !finishBuild)
       {
-        mResultScript += $" {ScriptConstants.kInformationMode} {ScriptConstants.kStringContinue}";
-      }
-      else if (mVerbosity == "2")
-      {
-        finishBuild = true;
-      }
-
-      if (mVerbosity != "3" && !finishBuild)
-      {
-        mResultScript += $" {ScriptConstants.kVerboseMode}";
-      }
-      else if (mVerbosity == "3")
-      {
-        finishBuild = true;
-      }
-
-      if (mVerbosity != "4" && !finishBuild)
-      {
-        mResultScript += $" {ScriptConstants.kDebugMode}";
+        mResultScript += $" {ScriptConstants.kInformationMode} {ScriptConstants.kStringContinue} " +
+          $"{ScriptConstants.kDebugMode} {ScriptConstants.kWaringMode} {ScriptConstants.kStringContinue}";
       }
     }
 

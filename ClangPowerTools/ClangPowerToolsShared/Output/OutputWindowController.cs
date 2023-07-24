@@ -191,8 +191,8 @@ namespace ClangPowerTools.Output
         OnErrorDetected(this, e);
       }
 
-      // 3 - verbose
-      if (SettingsProvider.CompilerSettingsModel.VerbosityLevel != "3"
+      // 1 - verbose
+      if (SettingsProvider.CompilerSettingsModel.VerbosityLevel != "1"
         && (id == CommandIds.kClangFindRun || id == CommandIds.kClangFind))
         return;
 
@@ -221,8 +221,8 @@ namespace ClangPowerTools.Output
       if (!string.IsNullOrWhiteSpace(outputContent.JsonFilePath))
         JsonCompilationDbFilePathEvent?.Invoke(this, new JsonFilePathArgs(outputContent.JsonFilePath));
 
-      // 3 - verbose
-      if (SettingsProvider.CompilerSettingsModel.VerbosityLevel != "3" &&
+      // 1 - verbose
+      if (SettingsProvider.CompilerSettingsModel.VerbosityLevel != "1" &&
         (id == CommandIds.kClangFindRun || id == CommandIds.kClangFind))
         return;
 

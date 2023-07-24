@@ -287,8 +287,8 @@ namespace ClangPowerTools
           mOutputWindowController.Write($"{count}: {pathCommand.Key}");
 
           //Display pathCommand value, if is in verbose mode
-          // 3 - verbose
-          if (int.Parse(SettingsProvider.CompilerSettingsModel.VerbosityLevel) <= 3)
+          // 1 - verbose
+          if (int.Parse(SettingsProvider.CompilerSettingsModel.VerbosityLevel) <= 1)
           {
             mOutputWindowController.Write($"{count}: {pathCommand.Value}");
           }
