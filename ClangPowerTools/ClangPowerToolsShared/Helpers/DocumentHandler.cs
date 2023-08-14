@@ -3,6 +3,7 @@ using EnvDTE;
 using EnvDTE80;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace ClangPowerTools
 {
@@ -58,7 +59,14 @@ namespace ClangPowerTools
     /// </summary>
     public static void SaveActiveDocuments()
     {
-      GetActiveDocuments().SaveAll();
+      try
+      {
+        GetActiveDocuments().SaveAll();
+      }
+      catch (System.Exception)
+      {
+        MessageBox.Show("Cannot get all active documents, close all tabs and try again", "Error");
+      }
     }
 
     /// <summary>

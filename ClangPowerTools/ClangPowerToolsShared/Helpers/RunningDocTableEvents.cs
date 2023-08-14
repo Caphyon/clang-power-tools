@@ -77,7 +77,7 @@ namespace ClangPowerTools
       if (null == BeforeActiveDocumentChange)
         return VSConstants.S_OK;
 
-      var document = FindDocumentByCookie(docCookie);
+      var document = FindDocument(docCookie);
       if (null == document)
         return VSConstants.S_OK;
 
@@ -98,7 +98,7 @@ namespace ClangPowerTools
         if (null == BeforeSave)
           return VSConstants.S_OK;
 
-        var document = FindDocumentByCookie(docCookie);
+        var document = FindDocument(docCookie);
         if (null == document)
           return VSConstants.S_OK;
 
@@ -120,20 +120,16 @@ namespace ClangPowerTools
 
     #region Private Methods
 
-    private Document FindDocumentByCookie(uint docCookie)
+    private Document FindDocument(uint docCookie)
     {
       Document document = null;
       try
       {
-        var documentInfo = mRunningDocumentTable.GetDocumentInfo(docCookie);
-
-        if (VsServiceProvider.TryGetService(typeof(DTE2), out object dte))
-          document = (dte as DTE2).Documents.Cast<Document>().FirstOrDefault(doc => doc.FullName == documentInfo.Moniker);
+        document = DocumentHandler.GetActiveDocument();
       }
       catch (Exception)
       {
-        //TODO find solution for DTE not intialized correctly sometimes
-        // MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        CommandControllerInstance.CommandController.DisplayMessage(false, "Cannot find active document, close all tabs and try again");
       }
 
       return document;
