@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 2023.7.0" />
+                 Text="version 2023.8.0" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -114,25 +114,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Add LLVM 16.0.6"
-                 TextWrapping="Wrap" />
-
-        <TextBox Margin="15,20,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• Updated clang-format to v16.0.6"
-                 TextWrapping="Wrap" />
-
-        <TextBox Margin="15,20,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• Add verbosity options: minimal, detailed, complete"
+                 Text="• Add 9 new Tidy Checks"
                  TextWrapping="Wrap" />
 
         <!--Bug Fixes-->
@@ -150,7 +132,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Support for additional compiler options not working with Unix paths"
+                 Text="• Format on save ignores its own ON/OFF switch"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,20,0,0"
@@ -159,7 +141,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="•  LLVM could not be added outside of built-in supported list"
+                 Text="• Random crashes when running compile"
                  TextWrapping="Wrap" />
         <!--<TextBox Margin="15,15,0,0"
                  HorizontalAlignment="Left"
