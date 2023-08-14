@@ -65,7 +65,8 @@ namespace ClangPowerTools
       }
       catch (System.Exception)
       {
-        MessageBox.Show("Cannot get all active documents, close all tabs and try again", "Error");
+        CommandControllerInstance.CommandController.DisplayMessage(false, 
+          "Cannot get all active documents, close all tabs and try again");
       }
     }
 
