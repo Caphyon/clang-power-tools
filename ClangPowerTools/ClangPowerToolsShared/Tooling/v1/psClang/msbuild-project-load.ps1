@@ -432,8 +432,11 @@ function Detect-ProjectDefaultConfigPlatform()
     $global:cptCurrentConfigPlatform = $configPlatformName
 
     [string[]] $configAndPlatform = $configPlatformName.Split('|')
-    Set-Var -Name "Configuration" -Value $configAndPlatform[0]
-    Set-Var -Name "Platform"      -Value $configAndPlatform[1]
+    Set-Var -Name "Configuration"       -Value $configAndPlatform[0]
+    Set-Var -Name "Platform"            -Value $configAndPlatform[1]
+    # manually set PlatformTarget for vcpkg
+    # note that $(PlatformTarget) is not available at the top of the .vcxproj file.
+    Set-Var -Name "PlatformTarget"      -Value $configAndPlatform[1]
 }
 
 function NodeHasUnsatisfiedCondition([System.Xml.XmlNode] $node)
