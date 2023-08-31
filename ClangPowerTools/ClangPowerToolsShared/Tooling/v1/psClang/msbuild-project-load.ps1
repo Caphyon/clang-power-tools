@@ -436,7 +436,16 @@ function Detect-ProjectDefaultConfigPlatform()
     Set-Var -Name "Platform"            -Value $configAndPlatform[1]
     # manually set PlatformTarget for vcpkg
     # note that $(PlatformTarget) is not available at the top of the .vcxproj file.
-    Set-Var -Name "PlatformTarget"      -Value $configAndPlatform[1]
+    if($configAndPlatform[1] -eq "Win32")
+    {
+        # solution platforms use 'x86' and 'x64', not Win32
+        # set PlatformTarget to 'x86' to build the correct path for vcpkg lib
+        Set-Var -Name "PlatformTarget"  -Value "x86"
+    }
+    else
+    {
+        Set-Var -Name "PlatformTarget"  -Value $configAndPlatform[1]
+    }
 }
 
 function NodeHasUnsatisfiedCondition([System.Xml.XmlNode] $node)
