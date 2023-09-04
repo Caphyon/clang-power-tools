@@ -558,6 +558,16 @@ Function Get-IncludePathsFromAdditionalOptions()
     return Get-ProjCanonizedPaths -rawPaths ($paths -join ";")
 }
 
+Function Get-VcpkgAdditionalInstallOptions()
+{
+    if (!(VariableExistsAndNotEmpty -name "VcpkgAdditionalInstallOptions"))
+    {
+        return @()
+    }
+    $paths = Get-Variable "VcpkgAdditionalInstallOptions" -ErrorAction 'Ignore'
+    return Get-ProjCanonizedPaths -rawPaths $paths.Value
+}
+
 Function Get-ProjectAdditionalIncludes()
 {
     Set-ProjectItemContext "ClCompile"
