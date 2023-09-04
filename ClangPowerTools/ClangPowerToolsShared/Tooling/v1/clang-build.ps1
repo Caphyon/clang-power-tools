@@ -550,14 +550,18 @@ function Load-Solutions()
 {
    Write-Verbose "Scanning for solution files"
    [string] $pathToCheck = $aSolutionsPath
-   if ($kPsMajorVersion -lt 6)
+   Try
    {
-     # we need not bother with long path support in PowerShell 6+
-     # only in Windows PowerShell
+     # no need of long path prefix for Powershell > 5.0
+     $slns = Get-ChildItem -recurse -LiteralPath $pathToCheck -Filter "*$kExtensionSolution"
+   }
+   Catch
+   {
+     # use long path prefix for PowerShell <= 5.0
      $pathToCheck = "\\?\$aSolutionsPath"
+     $slns = Get-ChildItem -recurse -LiteralPath $pathToCheck -Filter "*$kExtensionSolution"
    }
 
-   $slns = Get-ChildItem -recurse -LiteralPath $pathToCheck -Filter "*$kExtensionSolution"
    foreach ($sln in $slns)
    {
      Write-Verbose "Caching solution file $sln"
