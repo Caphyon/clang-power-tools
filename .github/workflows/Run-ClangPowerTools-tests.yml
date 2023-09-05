@@ -33,6 +33,10 @@ jobs:
         run: |
           choco install visualstudio2017buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.140"
 
+      - name: Get installation path of VC.140 from Visual Studio 2017 Build Tools
+        run: |
+          choco list --local-only --exact visualstudio2017buildtools | Out-String -Stream | Select-String -Pattern 'Installed' | ForEach-Object { $_ -replace '^.*?:\s+', '' }
+
       - name: Perform Pester tests from the command-line
         shell: pwsh
         run: Invoke-Pester
