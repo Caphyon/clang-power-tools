@@ -34,17 +34,6 @@ jobs:
       - name: Build app for release
         run: msbuild ${{ github.workspace }}\ClangPowerTools\ClangPowerTools.sln -t:rebuild -property:Configuration=Release
 
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - name: Check out repository code
-        uses: actions/checkout@v2
-
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.1
-
-      - name: Perform Pester tests from the command-line
-        shell: pwsh
-        run: Invoke-Pester
-
   generate-aip:
     runs-on: windows-latest
     needs: build

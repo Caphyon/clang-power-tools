@@ -24,10 +24,9 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v3
 
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.1
-        with:
-          vs-version: '14.0'
+      - name: Install Visual Studio 2017 Build Tools
+        run: |
+          choco install visualstudio2017buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.140"
 
       - name: Perform Pester tests from the command-line
         shell: pwsh
