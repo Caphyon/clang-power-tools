@@ -23,7 +23,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Check out repository code
         uses: actions/checkout@v3
-        
-      - name: Perform a Pester test from the command-line
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+        with:
+        vs-version: '17.0'
+
+      - name: Perform Pester tests from the command-line
         shell: pwsh
         run: Invoke-Pester
