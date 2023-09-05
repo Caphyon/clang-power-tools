@@ -28,6 +28,10 @@ jobs:
         run: |
           choco install visualstudio2017buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.140"
 
+      - name: List MSVC Tools Folder
+        run: |
+          ls "C:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Tools\MSVC"
+
       - name: Perform Pester tests from the command-line
         shell: pwsh
         run: Invoke-Pester
