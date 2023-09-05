@@ -34,6 +34,26 @@ jobs:
       - name: Build app for release
         run: msbuild ${{ github.workspace }}\ClangPowerTools\ClangPowerTools.sln -t:rebuild -property:Configuration=Release
 
+  # This workflow contains a single job called "run-script-tests"
+  run-script-tests:
+    # The type of runner that the job will run on
+    runs-on: windows-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - name: Check out repository code
+        uses: actions/checkout@v2
+
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+        with:
+          vs-version: '14.0'
+
+      - name: Perform Pester tests from the command-line
+        shell: pwsh
+        run: Invoke-Pester
+
   generate-aip:
     runs-on: windows-latest
     needs: build
