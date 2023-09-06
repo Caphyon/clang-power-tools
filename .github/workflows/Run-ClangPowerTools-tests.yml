@@ -24,8 +24,8 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
 
-      - name: Install Visual Studio 2017 Build Tools with Chocolatey
-        run: choco install visualstudio2017buildtools -y
+      - name: Install Visual Studio 2015 Build Tools with Chocolatey
+        run: choco install visualstudio2015buildtools -y
 
       - name: Install vswhere with Chocolatey
         run: choco install vswhere -y
