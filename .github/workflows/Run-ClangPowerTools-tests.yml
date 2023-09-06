@@ -24,6 +24,11 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
 
+      - uses: TheMrMilchmann/setup-msvc-dev@v2
+        with:
+          arch: x64
+          toolset: '14.0'
+
       - name: Perform Pester tests from the command-line
         shell: pwsh
         run: Invoke-Pester
