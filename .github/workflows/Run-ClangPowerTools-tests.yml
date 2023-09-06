@@ -31,11 +31,12 @@ jobs:
         run: |
           $vswherePath = Get-Command vswhere | Select-Object -ExpandProperty Source
           Write-Host "vswhere is installed at: $vswherePath"
-          & "C:\ProgramData\chocolatey\bin\vswhere.exe" -nologo `
+          $paths = & "C:\ProgramData\chocolatey\bin\vswhere.exe" -nologo `
                                                         -property installationPath `
                                                         -products * `
                                                         -version "[15.0,17.7)" `
                                                         -prerelease
+          Write-Host "vs paths: $paths"
 
       - name: Perform Pester tests from the command-line
         shell: pwsh
