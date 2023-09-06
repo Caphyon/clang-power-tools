@@ -24,13 +24,13 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
 
-      - name: Setup VSWhere.exe
-        uses: warrenbuckley/Setup-VSWhere@v1
+      - name: Install vswhere with Chocolatey
+        run: choco install vswhere -y
 
-      - name: VSWhere MSBuild
-        run: vswhere -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
-
-      - uses: TheMrMilchmann/setup-msvc-dev@v2
+      - name: Check vswhere installation path
+        run: |
+          $vswherePath = Get-Command vswhere | Select-Object -ExpandProperty Source
+          Write-Host "vswhere is installed at: $vswherePath"
 
       - name: Perform Pester tests from the command-line
         shell: pwsh
