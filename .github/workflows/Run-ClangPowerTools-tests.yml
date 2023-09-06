@@ -24,6 +24,9 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v2
 
+      - name: Install Visual Studio 2017 Build Tools with Chocolatey
+        run: choco install visualstudio2017buildtools -y
+
       - name: Install vswhere with Chocolatey
         run: choco install vswhere -y
 
@@ -37,6 +40,8 @@ jobs:
                                                         -version "[15.0,17.7)" `
                                                         -prerelease
           Write-Host "vs paths: $paths"
+
+
 
       - name: Perform Pester tests from the command-line
         shell: pwsh
