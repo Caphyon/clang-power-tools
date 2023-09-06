@@ -26,14 +26,6 @@ jobs:
 
       - uses: TheMrMilchmann/setup-msvc-dev@v2
 
-      - name: Try to run vswhere
-        shell: pwsh
-        run:  & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -nologo `
-                                                        -property installationPath `
-                                                        -products * `
-                                                        -version "[15.0,16)" `
-                                                        -prerelease
-
       - name: Perform Pester tests from the command-line
         shell: pwsh
         run: Invoke-Pester
