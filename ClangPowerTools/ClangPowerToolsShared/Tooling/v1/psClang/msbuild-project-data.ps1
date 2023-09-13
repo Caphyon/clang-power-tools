@@ -505,13 +505,13 @@ Function Get-PathsFromAdditionalOptions([Parameter(Mandatory = $true)][string] $
         }
 
         # get the specified path after /external:I
-        if($token -like "*external:I*")
+        $patternExternalIncludes = '^(external:I)\s+(.*)$'
+        if($token -match $patternExternalIncludes)
         {
-            [string[]] $externalAndPath = @($token -split " ")
-            if(! [string]::IsNullOrWhiteSpace($externalAndPath[1]))
+            if(! [string]::IsNullOrWhiteSpace($Matches[2]))
             {
-                Write-Verbose "Path from /external:I is $($externalAndPath[1])"
-                $paths += $externalAndPath[1]
+                Write-Verbose "Path from /external:I is $($Matches[2])"
+                $paths += $Matches[2]
             } else {
                 Write-Verbose "Cannot get path from /external:I"
             }
