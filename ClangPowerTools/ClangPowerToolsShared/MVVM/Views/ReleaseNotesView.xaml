@@ -75,7 +75,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 2023.8.0" />
+                 Text="version 2023.9.0" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -114,9 +114,18 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Add 9 new Tidy Checks"
+                 Text="• Add LLVM 17.0.1"
                  TextWrapping="Wrap" />
 
+        <TextBox Margin="15,20,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• Updated clang-format to v17.0.1"
+                 TextWrapping="Wrap" />
+        
         <!--Bug Fixes-->
         <TextBox Margin="5,20,0,0"
                  HorizontalAlignment="Left"
@@ -125,6 +134,15 @@
                  FontSize="22"
                  IsReadOnly="True"
                  Text="Bug Fixes" />
+        
+        <TextBox Margin="15,20,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• Vcpkg path was not constructed correctly"
+                 TextWrapping="Wrap" />
 
         <TextBox Margin="15,20,0,0"
                  HorizontalAlignment="Left"
@@ -132,7 +150,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Format on save ignores its own ON/OFF switch"
+                 Text="• Get-ChildItem error when using prefix paths on PowerShell 5.0"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,20,0,0"
@@ -141,25 +159,18 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Random crashes when running compile"
+                 Text="• The paths shown in the Tidy tool window were incorrect after running Tidy with the maximum verbosity level."
                  TextWrapping="Wrap" />
-        <!--<TextBox Margin="15,15,0,0"
+
+        <TextBox Margin="15,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Crashes on Visual Studio when running find command"
+                 Text="• Support for additional compiler options was not working properly when paths contained spaces"
                  TextWrapping="Wrap" />
-        <TextBox
-          Margin="15,5,0,0"
-          HorizontalAlignment="Left"
-          Background="Transparent"
-          BorderThickness="0"
-          FontSize="15"
-          IsReadOnly="True"
-          Text="• Can't run tidy or compile in offline mode"
-          TextWrapping="Wrap" />-->
+
       </ListView>
     </Grid>
   </StackPanel>
