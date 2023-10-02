@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Windows.Shapes;
 
 namespace ClangPowerToolsShared.MVVM.Controllers
 {
@@ -21,7 +22,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     private string pathToClangQuery;
     private string mInteractiveModeDocumentName = string.Empty;
     private int mInteractiveModeDocumentHash = 0;
-
+    private string activeDocumentPaths = string.Empty;
     public List<MenuItem> MenuOptions
     {
       get
@@ -38,6 +39,15 @@ namespace ClangPowerToolsShared.MVVM.Controllers
       }
     }
 
+    public string ActiveDocumentPaths
+    {
+      get { return activeDocumentPaths; }
+      set
+      {
+        activeDocumentPaths = value;
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("ActiveDocumentPaths"));
+      }
+    }
 
     public FindToolWindowModel FindToolWindowModel
     {
@@ -98,7 +108,13 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         }
       }
       DisplayMessageBeforeFind();
-      if (LookInMenuController.GetSelectedMenuItem().LookInMenu == LookInMenu.CurrentActiveDocument)
+      if (!string.IsNullOrEmpty(ActiveDocumentPaths))
+      {
+        CommandControllerInstance.CommandController.DisplayMessage(false, $"\nⒾ We will query paths: {ActiveDocumentPaths} \n");
+        pathCommandPairs = GetCommandForPowershellInteractiveMode(pathToClangQuery, ActiveDocumentPaths);
+        CheckFileNameActiveInteractiveMode(pathCommandPairs.First().Key);
+        PowerShellWrapper.InvokeInteractiveMode(pathCommandPairs.First());
+      } else if (LookInMenuController.GetSelectedMenuItem().LookInMenu == LookInMenu.CurrentActiveDocument)
       {
         pathCommandPairs = GetCommandForPowershellInteractiveMode(pathToClangQuery);
         CheckFileNameActiveInteractiveMode(pathCommandPairs.First().Key);
@@ -145,7 +161,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
       if (pathToClangQuery == string.Empty)
       {
         pathToClangQuery = PowerShellWrapper.DownloadTool(ScriptConstants.kQueryFile);
-        pathToClangQuery = Path.Combine(pathToClangQuery, ScriptConstants.kQueryFile);
+        pathToClangQuery = System.IO.Path.Combine(pathToClangQuery, ScriptConstants.kQueryFile);
       }
     }
 
@@ -179,7 +195,7 @@ namespace ClangPowerToolsShared.MVVM.Controllers
     private void CheckFileNameActiveInteractiveMode(string aFileName)
     {
       bool modifedFile = false;
-      if(File.Exists(aFileName))
+      if (File.Exists(aFileName))
       {
         int contentHash = File.ReadAllText(aFileName).GetHashCode();
         if (contentHash != mInteractiveModeDocumentHash)
@@ -187,13 +203,13 @@ namespace ClangPowerToolsShared.MVVM.Controllers
         mInteractiveModeDocumentHash = contentHash;
       }
 
-      if (!string.IsNullOrEmpty(mInteractiveModeDocumentName) 
+      if (!string.IsNullOrEmpty(mInteractiveModeDocumentName)
         && (mInteractiveModeDocumentName != aFileName || modifedFile))
         PowerShellWrapper.EndInteractiveMode();
       mInteractiveModeDocumentName = aFileName;
     }
 
-    private Dictionary<string, string> GetCommandForPowershellInteractiveMode(string pathToBinary)
+    private Dictionary<string, string> GetCommandForPowershellInteractiveMode(string pathToBinary, string paths = "")
     {
       string compilationDatabaseContent = string.Empty;
       if (File.Exists(PathConstants.JsonCompilationDBPath))
@@ -203,6 +219,18 @@ namespace ClangPowerToolsShared.MVVM.Controllers
       List<FileCompilationDB> files = JsonConvert.DeserializeObject<List<FileCompilationDB>>(compilationDatabaseContent);
 
       Dictionary<string, string> commands = new();
+      if (!string.IsNullOrEmpty(paths))
+      {
+
+        var command = $"-ExecutionPolicy Unrestricted -NoProfile -Noninteractive " +
+        $"-command \"& '{pathToBinary}'  @({paths}) " +
+        $"-p '{PathConstants.JsonCompilationDBPath}' \"";
+        if (!commands.ContainsKey(paths))
+          commands.Add(paths, command);
+
+        return commands;
+      }
+
       foreach (var path in files.Select(a => a.file).ToList())
       {
         var command = $"-ExecutionPolicy Unrestricted -NoProfile -Noninteractive " +

@@ -50,8 +50,8 @@
       <ColumnDefinition Width="10" />
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
-      <RowDefinition Height="30" />
       <RowDefinition Height="50" />
+      <RowDefinition Height="100" />
       <RowDefinition Height="110" />
       <RowDefinition Height="*" />
       <RowDefinition Height="10" />
@@ -61,11 +61,12 @@
 
     <Grid Grid.Column="1" Grid.Row="1" >
       <Grid.ColumnDefinitions>
-        <ColumnDefinition Width="140" />
+        <ColumnDefinition Width="140*" />
         <ColumnDefinition Width="*" />
       </Grid.ColumnDefinitions>
       <Grid.RowDefinitions>
         <RowDefinition Height="25" />
+        <RowDefinition Height="50" />
       </Grid.RowDefinitions>
       <TextBlock 
         Grid.Column="1"
@@ -80,6 +81,16 @@
               <TextBlock Text="Propose a matcher" />
           </Hyperlink>
       </TextBlock>
+
+      <TextBox Grid.Row="1"
+         Grid.Column="0"
+         Name="Matcheddds"
+         Visibility="{Binding FindToolWindowModel.MenuVisibility}"
+         Height="50"
+         Background="WhiteSmoke"
+         TextWrapping="Wrap"
+         Text="{Binding  UpdateSourceTrigger=PropertyChanged, Path=ActiveDocumentPaths}">
+      </TextBox>
 
       <ComboBox
         x:Name="menu"

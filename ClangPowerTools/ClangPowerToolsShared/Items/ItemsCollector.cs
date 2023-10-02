@@ -198,7 +198,7 @@ namespace ClangPowerTools
             Items.Add(new CurrentProject(projItem.ContainingProject));
             break;
           case LookInMenu.CurrentActiveDocument:
-            CollectActiveProjectItem();
+            Items.Add(new CurrentSolution(dte2.Solution));
             break;
         }
       }
