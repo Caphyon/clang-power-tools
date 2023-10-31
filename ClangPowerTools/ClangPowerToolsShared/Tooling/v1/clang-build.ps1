@@ -186,7 +186,11 @@ param( [alias("proj")]
        
      , [alias("export-jsondb")]
        [Parameter(Mandatory=$false, HelpMessage="Switch to generate a JSON compilation database file, in the current working directory")]
-       [switch]   $aExportJsonDB
+       [switch] $aExportJsonDB
+     , [switch] $aGenerateOnlyPCH
+     , [switch] $aGenerateCompileCmdline
+     , [switch] $aGenerateCppList
+  
      )
 
 Set-StrictMode -version latest
@@ -707,14 +711,20 @@ Function Generate-Pch( [Parameter(Mandatory=$true)] [string]   $stdafxDir
   # PCH copy would be, by-default, readonly as well, which would present problems. Make sure to remove the RO attribute.
   Copy-Item -LiteralPath $stdafxSource -Destination $stdafx -PassThru | Set-ItemProperty -name isreadonly -Value $false
 
-  $global:FilesToDeleteWhenScriptQuits.Add($stdafx) > $null
+  ###$global:FilesToDeleteWhenScriptQuits.Add($stdafx) > $null
 
   [string] $vcxprojShortName = [System.IO.Path]::GetFileNameWithoutExtension($global:vcxprojPath);
   [string] $stdafxPch = (Join-Path -path (Get-SourceDirectory) `
                                    -ChildPath "$vcxprojShortName$kExtensionClangPch")
-  Remove-Item -LiteralPath "$stdafxPch" -ErrorAction SilentlyContinue > $null
+                                   
+  if (Test-Path $stdafxPch)
+  {
+    return $stdafxPch
+  }
+  
+  ###Remove-Item -LiteralPath "$stdafxPch" -ErrorAction SilentlyContinue > $null
 
-  $global:FilesToDeleteWhenScriptQuits.Add($stdafxPch) > $null
+  ###$global:FilesToDeleteWhenScriptQuits.Add($stdafxPch) > $null
 
   [string] $languageFlag = (Get-ProjectFileLanguageFlag -fileFullName $stdafxCpp)
 
@@ -1035,7 +1045,15 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
     # To circumvent this, do not execute the job directly, but execute it via cmd.exe
     # See also https://stackoverflow.com/a/35980675
     
-    $callOutput = cmd /c "$($job.FilePath) $($job.ArgumentList) 2>&1" | Out-String
+    $callOutput = ""
+    if (!$job.IsSimulation)
+    {
+      $callOutput = cmd /c "$($job.FilePath) $($job.ArgumentList) 2>&1" | Out-String
+    }
+    else 
+    {
+      $LASTEXITCODE  = 0
+    }
 
     $callSuccess = $LASTEXITCODE -eq 0
     if (!$callSuccess)
@@ -1337,11 +1355,12 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   [bool] $kPchIsNeeded = $global:cptFilesToProcess.Keys.Count -ge $minTranslationUnitsForPCH
   if ($kPchIsNeeded)
   {
+    ###write-output "XXXXX $kPchIsNeeded"
     # if we have only one rooted file in the script parameters, then we don't need to detect PCH
-    if ($aCppToCompile.Count -eq 1 -and [System.IO.Path]::IsPathRooted($aCppToCompile[0]))
+    <#if ($aCppToCompile.Count -eq 1 -and [System.IO.Path]::IsPathRooted($aCppToCompile[0]))
     {
       $kPchIsNeeded = $false
-    }
+    }#>
   }
 
   foreach ($projCpp in $global:cptFilesToProcess.Keys)
@@ -1524,6 +1543,30 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
       New-Item -Path $global:tidyFixReplacementDirPath -ItemType "directory" > $null
     }
   }
+  
+  if ($aGenerateOnlyPCH)
+  {
+    $global:cptFilesToProcess = @{} 
+  }
+  if ($aGenerateCompileCmdline)
+  {
+    if ($global:cptFilesToProcess -and $global:cptFilesToProcess.Keys -and $global:cptFilesToProcess.Keys.Count -gt 0)
+    {
+      foreach ($file in $global:cptFilesToProcess.Keys)
+      {
+        [string] $cppPchSetting = Get-ProjectFileSetting -propertyName 'PrecompiledHeader' -fileFullName $file -defaultValue 'Use'
+
+        if ($cppPchSetting -ieq 'Create')
+        {
+          continue 
+        }
+
+          $global:cptFilesToProcess = @{ "$file" = $global:cptFilesToProcess[$file]}
+          break
+      }
+      #$global:cptFilesToProcess = @{$($global:cptFilesToProcess.Keys)[0] = $global:cptFilesToProcess[$($global:cptFilesToProcess.Keys)[0]]} 
+    }
+  }
 
   foreach ($cpp in $global:cptFilesToProcess.Keys)
   {
@@ -1558,8 +1601,14 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
                                          ; 'File'              = $cpp
                                          ; 'JobCounter'        = 0 <# will be lazy initialized #>
                                          ; 'TidyFlagsTempFile' = $kClangTidyFlagTempFile
+                                         ; 'IsSimulation'      = $aGenerateCppList
                                          }
     $clangJobs += $newJob
+  }
+  
+  if ($aGenerateCppList)
+  {
+    $aUseParallelCompile = $false
   }
   
   Write-InformationTimed "Created job workers"
@@ -1574,7 +1623,13 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     {
       $exeToCallVerbosePath = "$($global:llvmLocation)\$exeToCallVerbosePath"
     }
-    Write-Verbose "INVOKE: $exeToCallVerbosePath $($clangJobs[0].ArgumentList)"
+    $cmdLine = """$exeToCallVerbosePath"" $($clangJobs[0].ArgumentList)"
+    Write-Verbose "INVOKE: $cmdLine"
+    
+    if ($aGenerateCompileCmdline)
+    {
+      $cmdLine > "cpt-command.txt"
+    }
   }
 
   Write-InformationTimed "Running workers"
@@ -1606,7 +1661,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
 #-------------------------------------------------------------------------------------------------
 # Script entry point
 
-Clear-Host # clears console
+#Clear-Host # clears console
 
 Write-InformationTimed "Cleared console. Let's begin..."
 
