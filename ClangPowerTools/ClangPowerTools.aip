@@ -75,8 +75,8 @@
     <ROW Id="Microsoft.VisualStudio.Component.CoreEditor" Name="Visual Studio core editor" MinVersion="15.0" Type="1" Flags="2"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.VsixSupportedProductComponent">
-    <ROW Name="Pro" Version="15.0" MaxVersion="18.0" Type="0" Flags="2" Architecture="x86;amd64;arm64"/>
-    <ROW Name="Enterprise" Version="15.0" MaxVersion="18.0" Type="0" Flags="2" Architecture="x86;amd64;arm64"/>
-    <ROW Name="Community" Version="15.0" MaxVersion="18.0" Type="0" Flags="2" Architecture="x86;amd64;arm64"/>
+    <ROW Name="Community" Version="15.0" MaxVersion="18.0" Type="0" Flags="2" Architecture="amd64"/>
+    <ROW Name="Pro" Version="15.0" MaxVersion="18.0" Type="0" Flags="2" Architecture="amd64"/>
+    <ROW Name="Enterprise" Version="15.0" MaxVersion="18.0" Type="0" Flags="2" Architecture="amd64"/>
   </COMPONENT>
 </DOCUMENT>
