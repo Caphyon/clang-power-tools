@@ -55,14 +55,13 @@
 
       </Grid.ColumnDefinitions>
 
-      <Image Grid.Row="0"
+      <Image
              Grid.Column="1"
              Width="70"
-             Height="70"
-             Margin="0,5,0,0"
-             HorizontalAlignment="Center"
+             Height="75"
+             HorizontalAlignment="Left"
              VerticalAlignment="Center"
-             Source="/ClangPowerTools;component/Resources/CPTLogo.png" />
+             Source="/ClangPowerTools;component/Resources/CPTLogo.png" Margin="267,0,0,0" />
 
       <TextBlock Grid.Row="1"
                  Grid.Column="1"
@@ -75,7 +74,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 2024.3.0" />
+                 Text="version 2024.4.0" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -114,7 +113,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Add LLVM 18.1.2"
+                 Text="• Updated clang-format from Clang Format Editor to v18.1.2"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,20,0,0"
@@ -123,9 +122,18 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Updated clang-format to v18.1.2"
+                 Text="• Migrate Clang Format Editor runtime to .NET 8"
                  TextWrapping="Wrap" />
-        
+
+        <TextBox Margin="15,20,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• Added 52 new Tidy Checks"
+                 TextWrapping="Wrap" />
+
         <!--Bug Fixes-->
         <!--<TextBox Margin="5,20,0,0"
                  HorizontalAlignment="Left"
@@ -134,7 +142,7 @@
                  FontSize="22"
                  IsReadOnly="True"
                  Text="Bug Fixes" />-->
-        
+
         <!--<TextBox Margin="15,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
