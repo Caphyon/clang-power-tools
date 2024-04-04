@@ -1,0 +1,10 @@
+# Format Style Options - Created with Clang Power Tools
+---
+BasedOnStyle: WebKit
+AccessModifierOffset: -1
+BreakBeforeBraces: Attach
+ColumnLimit: 140
+IndentWidth: 2
+NamespaceIndentation: All
+SpaceBeforeParens: Never
+...
