@@ -16,11 +16,14 @@ $uniqueChecks = @{}
 # Format and add each unique check to the hashtable
 foreach ($check in $sortedChecks) {
     if (-not $uniqueChecks.ContainsKey($check)) {
-        $uniqueChecks[$check] = "    new TidyCheckModel { Name = `"$check`", IsChecked = false },"
+        $uniqueChecks[$check] = "new TidyCheckModel { Name = `"$check`", IsChecked = false },"
     }
 }
 
-# Write formatted checks to output file
-$uniqueChecks.Values | Out-File $outputFilePath
+# Sort the unique checks alphabetically again
+$sortedUniqueChecks = $uniqueChecks.Values | Sort-Object
+
+# Write sorted unique checks to output file
+$sortedUniqueChecks | Out-File $outputFilePath
 
 Write-Host "Formatted unique checks written to $outputFilePath"
