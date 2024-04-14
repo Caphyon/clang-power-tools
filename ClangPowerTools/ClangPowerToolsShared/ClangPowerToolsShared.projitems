@@ -26,6 +26,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Commands\FindViewMenuCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\LookInMenu.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Commands\OptimizeIncludesCommand.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Convertors\BooleanToGridLengthConverter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\LaunchCompilationDbProgrammatically.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\ManageEncoding.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)MVVM\AutoCompleteHistory\ASTMatchers.cs" />

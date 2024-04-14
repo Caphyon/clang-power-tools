@@ -8,7 +8,7 @@
 
   <BitmapImage x:Key="AddInputImage" UriSource="/ClangPowerTools;component/Resources/AddInput.png" />
   <BitmapImage x:Key="BrowseImage" UriSource="/ClangPowerTools;component/Resources/Browse.png" />
-  <BitmapImage x:Key="BrowseFileImage" UriSource="/ClangPowerTools;component/Resources/DetectOnFileIcon.png" />
+  <BitmapImage x:Key="BrowseFileImage" UriSource="/ClangPowerTools;component/Resources/FileIcon.png" />
   <BitmapImage x:Key="AccountAvatarIcon" UriSource="/ClangPowerTools;component/Resources/AccountAvatarIcon.png" />
   <BitmapImage x:Key="GitHubIcon" UriSource="/ClangPowerTools;component/Resources/GitHubMark.png" />
   <BitmapImage x:Key="LogoutIcon" UriSource="/ClangPowerTools;component/Resources/LogoutIcon.png" />
