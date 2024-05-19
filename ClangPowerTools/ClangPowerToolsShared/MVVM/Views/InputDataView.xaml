@@ -1,4 +1,4 @@
-﻿<Window
+<Window
   x:Class="ClangPowerTools.Views.InputDataView"
   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -40,6 +40,8 @@
     x:Name="InputList"
     AddCommand="{Binding AddCommand}"
     Collection="{Binding Inputs, Mode=TwoWay}"
-    InputToAdd="{Binding InputToAdd, Mode=TwoWay}" />
+    InputToAdd="{Binding InputToAdd, Mode=TwoWay}" 
+    PickFilesCommand="{Binding PickFilesCommand}"
+    PickFolderCommand="{Binding PickFolderCommand}"/>
 
 </Window>

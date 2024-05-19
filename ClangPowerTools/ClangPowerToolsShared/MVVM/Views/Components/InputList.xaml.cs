@@ -42,6 +42,23 @@ namespace ClangPowerTools.MVVM.Views.Components
     public static readonly DependencyProperty AddCommandProperty =
       DependencyProperty.Register("AddCommand", typeof(ICommand), typeof(InputList), new PropertyMetadata(null));
 
+    public ICommand PickFilesCommand
+    {
+      get { return (ICommand)GetValue(PickFilesCommandProperty); }
+      set { SetValue(PickFilesCommandProperty, value); }
+    }
+
+    public static readonly DependencyProperty PickFilesCommandProperty =
+      DependencyProperty.Register("PickFilesCommand", typeof(ICommand), typeof(InputList), new PropertyMetadata(null));
+
+    public ICommand PickFolderCommand
+    {
+      get { return (ICommand)GetValue(PickFolderCommandProperty); }
+      set { SetValue(PickFolderCommandProperty, value); }
+    }
+
+    public static readonly DependencyProperty PickFolderCommandProperty =
+      DependencyProperty.Register("PickFolderCommand", typeof(ICommand), typeof(InputList), new PropertyMetadata(null));
 
     public ObservableCollection<InputDataModel> Collection
     {

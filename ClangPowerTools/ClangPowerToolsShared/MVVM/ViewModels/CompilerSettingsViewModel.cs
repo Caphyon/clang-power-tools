@@ -117,7 +117,7 @@ namespace ClangPowerTools
 
     private void UpdateFilesToIgnore()
     {
-      compilerModel.FilesToIgnore = OpenContentDialog(compilerModel.FilesToIgnore);
+      compilerModel.FilesToIgnore = OpenContentDialog(compilerModel.FilesToIgnore, true, true);
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("CompilerModel"));
     }
 

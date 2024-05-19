@@ -129,7 +129,7 @@ namespace ClangPowerTools
 
     private void UpdateFilesToIgnore()
     {
-      formatModel.FilesToIgnore = OpenContentDialog(formatModel.FilesToIgnore);
+      formatModel.FilesToIgnore = OpenContentDialog(formatModel.FilesToIgnore, true, true);
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("FormatModel"));
     }
 

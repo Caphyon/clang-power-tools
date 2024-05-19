@@ -1,4 +1,4 @@
-﻿using ClangPowerTools.Helpers;
+using ClangPowerTools.Helpers;
 using ClangPowerTools.MVVM.Models;
 using Microsoft.Win32;
 using System.Collections.Generic;
@@ -70,7 +70,7 @@ namespace ClangPowerTools
     /// </summary>
     /// <param name="searchFilePattern">Search pattern to apply in the file search</param>
     /// <param name="searchOption">Information about how to search inside the selected folder</param>
-    /// <returns>Array of files path</returns>
+    /// <returns>Path to the selected folder</returns>
     protected string BrowseForFolderFiles()
     {
       using var folderBrowseDialog = new System.Windows.Forms.FolderBrowserDialog();
@@ -108,9 +108,9 @@ namespace ClangPowerTools
       FileSystem.WriteContentToFile(path, content);
     }
 
-    protected string OpenContentDialog(string content)
+    protected string OpenContentDialog(string content, bool showFilesPicker = false, bool showFolderPicker = false)
     {
-      InputDataViewModel inputDataViewModel = new InputDataViewModel(content);
+      InputDataViewModel inputDataViewModel = new InputDataViewModel(content, showFilesPicker, showFolderPicker);
       inputDataViewModel.ShowViewDialog();
       string input = CreateInput(inputDataViewModel.Inputs.ToList());
 
