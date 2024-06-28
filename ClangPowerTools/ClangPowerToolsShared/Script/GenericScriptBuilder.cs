@@ -194,6 +194,10 @@ namespace ClangPowerTools.Script
       if (null != tidySettings.HeaderFilter && !string.IsNullOrWhiteSpace(tidySettings.HeaderFilter))
         parameters += $" {GetHeaderFilters()}";
 
+      // Get the compilation database option
+      if (null != tidySettings.CompilationDatabaseDir && !string.IsNullOrWhiteSpace(tidySettings.CompilationDatabaseDir))
+        parameters += $" {GetCompilationDatabaseDir(tidySettings.CompilationDatabaseDir)}";
+
       parameters += $" {ScriptConstants.kParallel}";
       return parameters;
     }
@@ -244,6 +248,14 @@ namespace ClangPowerTools.Script
       }
     }
 
+    /// <summary>
+    /// Get the compilation database directory option from the Clang Tidy Option page
+    /// </summary>
+    /// <returns>Compilation database directory option</returns>
+    private string GetCompilationDatabaseDir(string compilationDatabaseDir)
+    {
+        return string.Format("{0} '{1}'", ScriptConstants.kCompilationDatabaseDir, compilationDatabaseDir);
+    }
     #endregion
 
 
