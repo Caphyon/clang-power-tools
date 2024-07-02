@@ -21,6 +21,7 @@ namespace ClangPowerTools
     private string displayWarning = string.Empty;
     private ICommand headerFilterAddDataCommand;
     private ICommand customExecutableBrowseCommand;
+    private ICommand compilationDatabaseDirBrowseCommand;
     private ICommand predefinedChecksSelectCommand;
     private ICommand customChecksAddDataCommand;
     private ICommand exportTidyConfigCommand;
@@ -118,6 +119,11 @@ namespace ClangPowerTools
       get => customExecutableBrowseCommand ?? (customExecutableBrowseCommand = new RelayCommand(() => UpdateCustomExecutable(), () => CanExecute));
     }
 
+    public ICommand CompilationDatabaseDirBrowseCommand
+        {
+      get => compilationDatabaseDirBrowseCommand ?? (compilationDatabaseDirBrowseCommand = new RelayCommand(() => UpdateCompilationDatabaseDir(), () => CanExecute));
+    }
+
     public ICommand PredefinedChecksSelectCommand
     {
       get => predefinedChecksSelectCommand ?? (predefinedChecksSelectCommand = new RelayCommand(() => UpdatePredefinedChecks(), () => CanExecute));
@@ -164,6 +170,12 @@ namespace ClangPowerTools
     private void UpdateCustomExecutable()
     {
       tidyModel.CustomExecutable = OpenFile(string.Empty, ".exe", "Executable files|*.exe");
+      PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyModel"));
+    }
+
+    private void UpdateCompilationDatabaseDir()
+    {
+      tidyModel.CompilationDatabaseDir = BrowseForFolderFiles();
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyModel"));
     }
 

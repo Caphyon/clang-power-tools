@@ -110,6 +110,7 @@ namespace ClangPowerTools
 
     public const string kHeaderFilter = "-header-filter";
     public const string kTidyFile = ".clang-tidy";
+    public const string kCompilationDatabaseDir = "-compilation-database-dir";
 
     public const string kClangFormatStyle = "-format-style";
 
