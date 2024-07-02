@@ -191,11 +191,11 @@ namespace ClangPowerTools.Script
       }
 
       // Get the header filter option 
-      if (null != tidySettings.HeaderFilter && !string.IsNullOrWhiteSpace(tidySettings.HeaderFilter))
+      if (!string.IsNullOrWhiteSpace(tidySettings.HeaderFilter))
         parameters += $" {GetHeaderFilters()}";
 
       // Get the compilation database option
-      if (null != tidySettings.CompilationDatabaseDir && !string.IsNullOrWhiteSpace(tidySettings.CompilationDatabaseDir))
+      if (!string.IsNullOrWhiteSpace(tidySettings.CompilationDatabaseDir))
         parameters += $" {GetCompilationDatabaseDir(tidySettings.CompilationDatabaseDir)}";
 
       parameters += $" {ScriptConstants.kParallel}";
