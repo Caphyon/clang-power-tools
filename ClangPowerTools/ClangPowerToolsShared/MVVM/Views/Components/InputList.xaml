@@ -97,7 +97,10 @@
         Command="{Binding PickFilesCommand, ElementName=_InputList}"
         Style="{StaticResource SettingsButton}">
         <Button.Content>
-                    <Image Source="{StaticResource BrowseFileImage}" />
+          <Image 
+            Source="{StaticResource BrowseFileImage}"
+            Width="16" 
+            Height="16" />
         </Button.Content>
     </Button>
     <Button
