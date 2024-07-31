@@ -21,7 +21,7 @@ namespace ClangPowerTools
     private string displayWarning = string.Empty;
     private ICommand headerFilterAddDataCommand;
     private ICommand customExecutableBrowseCommand;
-    private ICommand compilationDatabaseDirBrowseCommand;
+    private ICommand compilationDatabaseBrowseCommand;
     private ICommand predefinedChecksSelectCommand;
     private ICommand customChecksAddDataCommand;
     private ICommand exportTidyConfigCommand;
@@ -119,9 +119,9 @@ namespace ClangPowerTools
       get => customExecutableBrowseCommand ?? (customExecutableBrowseCommand = new RelayCommand(() => UpdateCustomExecutable(), () => CanExecute));
     }
 
-    public ICommand CompilationDatabaseDirBrowseCommand
-        {
-      get => compilationDatabaseDirBrowseCommand ?? (compilationDatabaseDirBrowseCommand = new RelayCommand(() => UpdateCompilationDatabaseDir(), () => CanExecute));
+    public ICommand CompilationDatabaseBrowseCommand
+    {
+      get => compilationDatabaseBrowseCommand ?? (compilationDatabaseBrowseCommand = new RelayCommand(() => UpdateCompilationDatabase(), () => CanExecute));
     }
 
     public ICommand PredefinedChecksSelectCommand
@@ -173,9 +173,13 @@ namespace ClangPowerTools
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyModel"));
     }
 
-    private void UpdateCompilationDatabaseDir()
+    private void UpdateCompilationDatabase()
     {
-      tidyModel.CompilationDatabaseDir = BrowseForFolderFiles();
+      string path = OpenFile(string.Empty, ".json", "Compilation database (*.json)|*.json");
+      if (string.IsNullOrEmpty(path) == false)
+      {
+        tidyModel.CompilationDatabase = path;
+      }
       PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TidyModel"));
     }
 

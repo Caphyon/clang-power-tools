@@ -223,7 +223,7 @@
         <ToolTip>
           <TextBlock
             MaxWidth="400"
-            Text="{Binding Tooltip.CompilationDatabaseDir}"
+            Text="{Binding Tooltip.CompilationDatabase}"
             TextWrapping="Wrap" />
           </ToolTip>
        </WrapPanel.ToolTip>
@@ -234,7 +234,7 @@
         VerticalAlignment="Center"
         FontFamily="SegoeUI"
         FontSize="16"
-        Text="Compilation DB Dir" />
+        Text="Compilation database" />
 
       <TextBox
         Width="450"
@@ -243,14 +243,17 @@
         VerticalContentAlignment="Center"
         FontFamily="SegoeUI"
         FontSize="15"
-        Text="{Binding TidyModel.CompilationDatabaseDir}" />
+        Text="{Binding TidyModel.CompilationDatabase}" />
 
       <Button
         HorizontalAlignment="Left"
-        Command="{Binding CompilationDatabaseDirBrowseCommand}"
+        Command="{Binding CompilationDatabaseBrowseCommand}"
         Style="{StaticResource SettingsButton}">
         <Button.Content>
-          <Image Source="{StaticResource BrowseImage}" />
+          <Image 
+            Source="{StaticResource BrowseFileImage}"
+            Width="16" 
+            Height="16" />
         </Button.Content>
       </Button>
     </WrapPanel>
