@@ -244,6 +244,9 @@ Set-Variable -name kClangTidyFixExportFixes -value "--export-fixes="    -option 
 
 Set-Variable -name kClangCompiler           -value "clang++.exe"        -option Constant
 
+Set-Variable -name kQuiet           -value '-quiet'  -option Constant
+Set-Variable -name kEndOptionMarker -value "--"      -option Constant
+
 Set-Variable -name kClangTidyFlagHeaderFilter -value "-header-filter="  -option Constant
 Set-Variable -name kClangTidyFlagChecks       -value "-checks="         -option Constant
 Set-Variable -name kClangTidyUseFile          -value ".clang-tidy"      -option Constant
@@ -832,7 +835,7 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
                               , [Parameter(Mandatory=$false)][switch]  $fix
                               , [Parameter(Mandatory=$false)][string]  $compilationDatabaseDir)
 {
-  [string[]] $tidyArgs = @('-quiet')
+  [string[]] $tidyArgs = @()
   if ($fix)
   {
     # Map tidy-fix replacements temprorary file path to original file path
@@ -868,6 +871,7 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
     }
   }
 
+  $tidyArgs += $kQuiet
   if (![string]::IsNullOrEmpty($compilationDatabaseDir))
   {
       if ($compilationDatabaseDir -eq '_')
@@ -881,7 +885,7 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
       return $tidyArgs
   }
 
-  $tidyArgs += "--"
+  $tidyArgs += $kEndOptionMarker
 
   $tidyArgs += Get-ClangIncludeDirectories -includeDirectories           $includeDirectories `
                                            -additionalIncludeDirectories $additionalIncludeDirectories
@@ -1025,7 +1029,7 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
     [string] $clangConfigContent = ""
     if ($job.FilePath -like '*tidy*')
     {
-      if (!$job.ArgumentList -like "$($job.kClangTidyCompilationDatabaseDir)*")
+      if (!($job.ArgumentList -like "$($job.kClangTidyCompilationDatabaseDir)*"))
       {
           # We have to separate Clang args from Tidy args
           $splitparams = $job.ArgumentList -split " -- "
