@@ -127,7 +127,7 @@ namespace ClangPowerTools
 
     private void PickFile()
     {
-      var filesToAdd = OpenFiles(string.Empty, ".h", "Header files|*.h");
+      var filesToAdd = OpenFiles(string.Empty, "*.h;*.cpp", "Header and Source files|*.h;*.cpp|Header files|*.h|Source files|*.cpp");
       if (filesToAdd == null)
         return; // no file selected
       foreach (var file in filesToAdd)
@@ -167,6 +167,12 @@ namespace ClangPowerTools
       {
         MessageBox.Show($"The file or folder does not exist: {InputToAdd}", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
         return;
+      }
+
+      if(File.Exists(inputToAdd))
+      {
+        DirectoryInfo filePath = new DirectoryInfo(inputToAdd);
+        inputToAdd = filePath.Name;
       }
 
       AddNewElement(inputToAdd);
