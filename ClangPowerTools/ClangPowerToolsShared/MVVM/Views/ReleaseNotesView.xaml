@@ -122,6 +122,15 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
+                 Text="• Update clang-format.exe to v18.1.8"
+                 TextWrapping="Wrap" />
+
+        <TextBox Margin="15,20,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
                  Text="• Support for running clang-tidy using a custom path to compile_commands.json"
                  TextWrapping="Wrap" />
 
@@ -135,7 +144,7 @@
                  TextWrapping="Wrap" />
 
         <!--Bug Fixes-->
-        <TextBox Margin="5,20,0,0"
+        <!--<TextBox Margin="5,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
@@ -150,7 +159,7 @@
                  FontSize="16"
                  IsReadOnly="True"
                  Text="• Sort tidy checks alphabetical"
-                 TextWrapping="Wrap" />
+                 TextWrapping="Wrap" />-->
 
       </ListView>
     </Grid>
