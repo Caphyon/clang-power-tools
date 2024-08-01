@@ -5,7 +5,7 @@
   xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
   xmlns:local="clr-namespace:ClangPowerTools"
   xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-  d:DesignHeight="420"
+  d:DesignHeight="440"
   d:DesignWidth="770"
   mc:Ignorable="d">
 
@@ -217,8 +217,49 @@
       </Button>
     </WrapPanel>
 
-    <!--  Auto Detect .clang-tidy file  -->
+    <!--  Path to compile database (-p) -->
     <WrapPanel Grid.Row="6" Grid.Column="1">
+      <WrapPanel.ToolTip>
+        <ToolTip>
+          <TextBlock
+            MaxWidth="400"
+            Text="{Binding Tooltip.CompilationDatabase}"
+            TextWrapping="Wrap" />
+          </ToolTip>
+       </WrapPanel.ToolTip>
+
+      <TextBlock
+        Width="180"
+        Padding="10"
+        VerticalAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="16"
+        Text="Compilation database" />
+
+      <TextBox
+        Width="450"
+        Height="30"
+        Margin="0,0,20,0"
+        VerticalContentAlignment="Center"
+        FontFamily="SegoeUI"
+        FontSize="15"
+        Text="{Binding TidyModel.CompilationDatabase}" />
+
+      <Button
+        HorizontalAlignment="Left"
+        Command="{Binding CompilationDatabaseBrowseCommand}"
+        Style="{StaticResource SettingsButton}">
+        <Button.Content>
+          <Image 
+            Source="{StaticResource BrowseFileImage}"
+            Width="16" 
+            Height="16" />
+        </Button.Content>
+      </Button>
+    </WrapPanel>
+
+    <!--  Auto Detect .clang-tidy file  -->
+    <WrapPanel Grid.Row="7" Grid.Column="1">
       <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
@@ -244,7 +285,7 @@
     </WrapPanel>
 
     <!--  Format after tidy  -->
-    <WrapPanel Grid.Row="7" Grid.Column="1">
+    <WrapPanel Grid.Row="8" Grid.Column="1">
       <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
@@ -270,7 +311,7 @@
     </WrapPanel>
 
     <!--  Tidy on save  -->
-    <WrapPanel Grid.Row="8" Grid.Column="1">
+    <WrapPanel Grid.Row="9" Grid.Column="1">
       <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock
@@ -296,7 +337,7 @@
     </WrapPanel>
 
     <!--  Apply Tidy-Fix  -->
-    <WrapPanel Grid.Row="9"
+    <WrapPanel Grid.Row="10"
                Grid.Column="1">
       <WrapPanel.ToolTip>
         <ToolTip>
@@ -330,7 +371,7 @@
     </WrapPanel>
     
     <!--  Export tidy config  -->
-    <WrapPanel Grid.Row="10" Grid.Column="1">
+    <WrapPanel Grid.Row="11" Grid.Column="1">
       <WrapPanel.ToolTip>
         <ToolTip>
           <TextBlock

@@ -11,7 +11,7 @@
     public string CustomChecks { get; set; } = string.Empty;
 
     public string CustomExecutable { get; set; } = string.Empty;
-
+    public string CompilationDatabase { get; set; } = string.Empty;
     public bool DetectClangTidyFile { get; set; } = true;
 
     public bool FormatAfterTidy { get; set; } = false;

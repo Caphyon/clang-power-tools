@@ -104,7 +104,7 @@ namespace ClangPowerTools.Script
 
       // Get the Clang Flags list
       if (!string.IsNullOrWhiteSpace(compilerSettings.CompileFlags))
-        parameters.Append(GetClangFlags());
+        parameters.Append(GetClangFlagsOption());
 
       // Get the continue when errors are detected flag 
       if (compilerSettings.ContinueOnError)
@@ -138,7 +138,7 @@ namespace ClangPowerTools.Script
     /// Get the clang flags in the power shell script format
     /// </summary>
     /// <returns>The clang flags</returns>
-    private string GetClangFlags()
+    private string GetClangFlagsOption()
     {
       var compilerSettings = SettingsProvider.CompilerSettingsModel;
 
@@ -182,17 +182,21 @@ namespace ClangPowerTools.Script
           using FileStream fs = new FileStream(filePath, FileMode.Create);
           using StreamWriter sw = new StreamWriter(fs);
           sw.Write(text);
-          parameters = AppendClangTidyType(filePath);
+          parameters = AppendClangTidyTypeOption(filePath);
         }
         else
         {
-          parameters = AppendClangTidyType(parameters);
+          parameters = AppendClangTidyTypeOption(parameters);
         }
       }
 
       // Get the header filter option 
-      if (null != tidySettings.HeaderFilter && !string.IsNullOrWhiteSpace(tidySettings.HeaderFilter))
-        parameters += $" {GetHeaderFilters()}";
+      if (!string.IsNullOrWhiteSpace(tidySettings.HeaderFilter))
+        parameters += $" {GetHeaderFiltersOption()}";
+
+      // Get the compilation database option
+      if (!string.IsNullOrWhiteSpace(tidySettings.CompilationDatabase))
+        parameters += $" {GetCompilationDatabaseOption(tidySettings.CompilationDatabase)}";
 
       parameters += $" {ScriptConstants.kParallel}";
       return parameters;
@@ -204,7 +208,7 @@ namespace ClangPowerTools.Script
     /// </summary>
     /// <param name="aParameters"></param>
     /// <returns>The <"aParameters"> value with the clang tidy type with / without the clang tidy config file option attached</returns>
-    private string AppendClangTidyType(string aParameters)
+    private string AppendClangTidyTypeOption(string aParameters)
     {
       return string.Format("{0} '{1}'",
         (CommandIds.kTidyFixId == mCommandId ? ScriptConstants.kTidyFix : ScriptConstants.kTidy),
@@ -216,7 +220,7 @@ namespace ClangPowerTools.Script
     /// Get the header filter option from the Clang Tidy Option page
     /// </summary>
     /// <returns>Header filter option</returns>
-    private string GetHeaderFilters()
+    private string GetHeaderFiltersOption()
     {
       var tidySettings = SettingsProvider.TidySettingsModel;
 
@@ -244,6 +248,15 @@ namespace ClangPowerTools.Script
       }
     }
 
+    /// <summary>
+    /// Get the compilation database file option from the Clang Tidy Option page
+    /// </summary>
+    /// <returns>Compilation database file option</returns>
+    private string GetCompilationDatabaseOption(string compilationDatabase)
+    {
+      DirectoryInfo dbPath = new DirectoryInfo(compilationDatabase);
+        return string.Format("{0} '{1}'", ScriptConstants.kCompilationDatabaseDir, dbPath.Parent.FullName);
+    }
     #endregion
 
 

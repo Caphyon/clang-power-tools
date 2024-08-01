@@ -172,6 +172,10 @@ param( [alias("proj")]
        [Parameter(Mandatory=$false, HelpMessage="Enable Clang-Tidy to run on header files")]
        [string]   $aTidyHeaderFilter
 
+     , [alias("compilation-database-dir")]
+       [Parameter(Mandatory=$false, HelpMessage="Specify a path of a directory where compile_commands.json is located.")]
+       [string]   $aCompilationDatabaseDir
+
      , [alias("format-style")]
        [Parameter(Mandatory=$false, HelpMessage="Used with 'tidy-fix'; tells CLANG TIDY-FIX to also format the fixed file(s)")]
        [string]   $aAfterTidyFixFormatStyle
@@ -240,12 +244,14 @@ Set-Variable -name kClangTidyFixExportFixes -value "--export-fixes="    -option 
 
 Set-Variable -name kClangCompiler           -value "clang++.exe"        -option Constant
 
-Set-Variable -name kClangTidyFlags            -value @("-quiet"
-                                                      ,"--")            -option Constant
+Set-Variable -name kQuiet           -value '-quiet'  -option Constant
+Set-Variable -name kEndOptionMarker -value "--"      -option Constant
+
 Set-Variable -name kClangTidyFlagHeaderFilter -value "-header-filter="  -option Constant
 Set-Variable -name kClangTidyFlagChecks       -value "-checks="         -option Constant
 Set-Variable -name kClangTidyUseFile          -value ".clang-tidy"      -option Constant
 Set-Variable -name kClangTidyFormatStyle      -value "-format-style="   -option Constant
+Set-Variable -name kClangTidyCompilationDatabaseDir -value "-p="        -option Constant
 
 Set-Variable -name kClangTidyFlagTempFile     -value ""
 
@@ -826,7 +832,8 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
                               , [Parameter(Mandatory=$false)][string[]] $forceIncludeFiles
                               , [Parameter(Mandatory=$true)][string]   $fileToTidy
                               , [Parameter(Mandatory=$false)][string]  $pchFilePath
-                              , [Parameter(Mandatory=$false)][switch]  $fix)
+                              , [Parameter(Mandatory=$false)][switch]  $fix
+                              , [Parameter(Mandatory=$false)][string]  $compilationDatabaseDir)
 {
   [string[]] $tidyArgs = @()
   if ($fix)
@@ -864,7 +871,21 @@ Function Get-TidyCallArguments( [Parameter(Mandatory=$false)][string[]] $preproc
     }
   }
 
-  $tidyArgs += $kClangTidyFlags
+  $tidyArgs += $kQuiet
+  if (![string]::IsNullOrEmpty($compilationDatabaseDir))
+  {
+      if ($compilationDatabaseDir -eq '_')
+      {
+          $compilationDatabaseDir = Get-SourceDirectory
+      }
+      # When passed to cmd.exe the quote cannot be preceded by a backslash or it's escaped
+      $tidyArgs += "$kClangTidyCompilationDatabaseDir`"$($compilationDatabaseDir.TrimEnd("\"))`""
+      # When we use compilation database, we don't need to add further args with
+      # compilation flags
+      return $tidyArgs
+  }
+
+  $tidyArgs += $kEndOptionMarker
 
   $tidyArgs += Get-ClangIncludeDirectories -includeDirectories           $includeDirectories `
                                            -additionalIncludeDirectories $additionalIncludeDirectories
@@ -900,7 +921,8 @@ Function Get-ExeCallArguments( [Parameter(Mandatory=$false)][string]       $pchF
                              , [Parameter(Mandatory=$false)][string[]]     $preprocessorDefinitions
                              , [Parameter(Mandatory=$false)][string[]]     $forceIncludeFiles
                              , [Parameter(Mandatory=$true) ][string]       $currentFile
-                             , [Parameter(Mandatory=$true) ][WorkloadType] $workloadType)
+                             , [Parameter(Mandatory=$true) ][WorkloadType] $workloadType
+                             , [Parameter(Mandatory=$false)][string]       $compilationDatabaseDir)
 {
   switch ($workloadType)
   {
@@ -915,13 +937,15 @@ Function Get-ExeCallArguments( [Parameter(Mandatory=$false)][string]       $pchF
                                            -additionalIncludeDirectories  $additionalIncludeDirectories `
                                            -forceIncludeFiles             $forceIncludeFiles `
                                            -pchFilePath                   $pchFilePath `
-                                           -fileToTidy                    $currentFile }
+                                           -fileToTidy                    $currentFile `
+                                           -compilationDatabaseDir        $compilationDatabaseDir}
     TidyFix { return Get-TidyCallArguments -preprocessorDefinitions       $preprocessorDefinitions `
                                            -includeDirectories            $includeDirectories `
                                            -additionalIncludeDirectories  $additionalIncludeDirectories `
                                            -forceIncludeFiles             $forceIncludeFiles `
                                            -pchFilePath                   $pchFilePath `
                                            -fileToTidy                    $currentFile `
+                                           -compilationDatabaseDir        $compilationDatabaseDir `
                                            -fix}
   }
 }
@@ -1005,17 +1029,20 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
     [string] $clangConfigContent = ""
     if ($job.FilePath -like '*tidy*')
     {
-      # We have to separate Clang args from Tidy args
-      $splitparams = $job.ArgumentList -split " -- "
-      $clangConfigContent = $splitparams[1]
-
-      # We may have an explicit .clang-tidy check-flag config file to be used
-      if (![string]::IsNullOrWhiteSpace($job.TidyFlagsTempFile) -and (Test-Path -LiteralPath $job.TidyFlagsTempFile))
+      if (!($job.ArgumentList -like "$($job.kClangTidyCompilationDatabaseDir)*"))
       {
-        $splitparams[0] += " --config-file=""$($job.TidyFlagsTempFile)"" "
-      }
+          # We have to separate Clang args from Tidy args
+          $splitparams = $job.ArgumentList -split " -- "
+          $clangConfigContent = $splitparams[1]
 
-      $job.ArgumentList = "$($splitparams[0]) -- --config ""$clangConfigFile"""
+          # We may have an explicit .clang-tidy check-flag config file to be used
+          if (![string]::IsNullOrWhiteSpace($job.TidyFlagsTempFile) -and (Test-Path -LiteralPath $job.TidyFlagsTempFile))
+          {
+            $splitparams[0] += " --config-file=""$($job.TidyFlagsTempFile)"" "
+          }
+
+          $job.ArgumentList = "$($splitparams[0]) -- --config ""$clangConfigFile"""
+      }
     }
     else
     {
@@ -1034,7 +1061,6 @@ Function Run-ClangJobs( [Parameter(Mandatory=$true)] $clangJobs
     # When PowerShell encounters errors, the first one is handled differently from consecutive ones
     # To circumvent this, do not execute the job directly, but execute it via cmd.exe
     # See also https://stackoverflow.com/a/35980675
-    
     $callOutput = cmd /c "$($job.FilePath) $($job.ArgumentList) 2>&1" | Out-String
 
     $callSuccess = $LASTEXITCODE -eq 0
@@ -1550,7 +1576,8 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
                                                -forceIncludeFiles       $cppForceIncludes `
                                                -currentFile             $cpp `
                                                -includeDirectories      $includeDirectories `
-                                               -additionalIncludeDirectories $additionalIncludeDirectories
+                                               -additionalIncludeDirectories $additionalIncludeDirectories `
+                                               -compilationDatabaseDir  $aCompilationDatabaseDir
 
     $newJob = New-Object PsObject -Prop @{ 'FilePath'          = $exeToCall
                                          ; 'WorkingDirectory'  = Get-SourceDirectory
@@ -1558,6 +1585,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
                                          ; 'File'              = $cpp
                                          ; 'JobCounter'        = 0 <# will be lazy initialized #>
                                          ; 'TidyFlagsTempFile' = $kClangTidyFlagTempFile
+                                         ; 'kClangTidyCompilationDatabaseDir' = $kClangTidyCompilationDatabaseDir
                                          }
     $clangJobs += $newJob
   }
