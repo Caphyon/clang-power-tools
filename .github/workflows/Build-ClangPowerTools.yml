@@ -76,7 +76,7 @@ jobs:
       - name: Archive production ClangPowerTools 2022 artifacts (cpt 2022 generated with advanced installer)
         uses: actions/upload-artifact@v4
         with:
-          name: VsixAI
+          name: VsixAI2022
           path: ${{ github.workspace }}\ClangPowerTools\VsixAI\ClangPowerTools2022.vsix
       
 
