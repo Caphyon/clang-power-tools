@@ -68,13 +68,13 @@ jobs:
 
      
       - name: Archive production ClangPowerTools artifacts (cpt generated with advanced installer)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: VsixAI
           path: ${{ github.workspace }}\ClangPowerTools\VsixAI\ClangPowerTools.vsix
 
       - name: Archive production ClangPowerTools 2022 artifacts (cpt 2022 generated with advanced installer)
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: VsixAI
           path: ${{ github.workspace }}\ClangPowerTools\VsixAI\ClangPowerTools2022.vsix
