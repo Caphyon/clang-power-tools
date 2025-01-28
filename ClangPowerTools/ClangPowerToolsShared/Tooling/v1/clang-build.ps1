@@ -191,6 +191,9 @@ param( [alias("proj")]
      , [alias("export-jsondb")]
        [Parameter(Mandatory=$false, HelpMessage="Switch to generate a JSON compilation database file, in the current working directory")]
        [switch]   $aExportJsonDB
+     , [alias("export-projcsv")]
+       [Parameter(Mandatory=$false, HelpMessage="Switch to generate a CSV file for each project containing the settings for that project")]
+       [switch]   $aExportProjCsv
      )
 
 Set-StrictMode -version latest
@@ -409,7 +412,7 @@ else
   Set-Variable -name kClangApplyReplacements            -value "clang-apply-replacements.exe"     -option Constant
 }
 
-Set-Variable -name kCacheRepositorySaveIsNeeded -value $false 
+Set-Variable -name kCacheRepositorySaveIsNeeded -value $false
 
 #-------------------------------------------------------------------------------------------------
 # Custom Types
@@ -478,6 +481,9 @@ Write-InformationTimed "Created .NET enum types"
 
 # holds file items to process and their contextual properties (inherited + locally defined)
 [System.Collections.Hashtable] $global:cptFilesToProcess = @{}
+
+# holds project settings to be exported in CSV format, if requested
+[System.Collections.Hashtable] $global:cptProjCsvData = @{}
 
 #-------------------------------------------------------------------------------------------------
 # Global functions
@@ -1322,7 +1328,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     Write-Verbose-Array -array $additionalIncludeDirectories -name "Additional include directories"
     Add-ToProjectSpecificVariables 'additionalIncludeDirectories'
 
-    [string[]] $includeDirectories = @(Get-ProjectIncludeDirectories)
+    Set-Var -name 'includeDirectories' -value @(Get-ProjectIncludeDirectories)
     # We use the same mechanism for injecting external include paths
     $includeDirectories += @(Get-IncludePathsFromAdditionalOptions)
     $includeDirectories += @(Get-ProjectExternalIncludePaths)
@@ -1502,7 +1508,7 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
   }
 
   [string] $pchFilePath = ""
-  if ($kPchIsNeeded -and !$aExportJsonDB)
+  if ($kPchIsNeeded -and !$aExportJsonDB -and !$aExportProjCsv)
   {
     # COMPILE PCH
     Write-Verbose "Generating PCH..."
@@ -1624,12 +1630,74 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
      JsonDB-Push -directory $job.WorkingDirectory -file $job.File -command $clangCommand
    }
   }
+  elseif ($aExportProjCsv)
+  {
+    $envVarNames = (Get-ChildItem Env:).Name
+    
+    $projKVData = @{}
+    foreach ($var in $global:ProjectSpecificVariables)
+    {
+      if ($envVarNames -contains ($var))
+      {
+        continue
+      }              
+      if ($var.StartsWith("CPT_"))
+      {
+        continue
+      }
+      if ($var -eq "itemProperties")
+      {
+        continue
+      }              
+      if ($var.StartsWith("_"))
+      {
+        continue
+      }
+      
+      $varval = (Get-Variable -name $var -scope Global).Value
+      Write-Output "        $var : $varval"
+      $projKVData[$var] = $varval
+    }
+    
+    $contexts = @("ClCompile", "Link", "Manifest")
+    foreach ($context in $contexts)
+    {
+      Set-ProjectItemContext $context
+      $clCompileSettings = Get-ProjectItemProperty
+      if ($clCompileSettings)
+      {
+        foreach ($propName in $clCompileSettings.Keys)
+        {
+          $varval = $clCompileSettings[$propName]
+          Write-Output "$context/$propName : $varval"
+          $projKVData["$context/$propName"] = $varval
+        }
+      }
+    }
+    
+    foreach ($propKey in $projKVData.Keys)
+    {
+      if (!$cptProjCsvData.ContainsKey($propKey))
+      {
+        $cptProjCsvData[$propKey] = @{}
+      }
+      
+      $propMap = $cptProjCsvData[$propKey]
+
+      $valueToAdd = $projKVData[$propKey]
+      if ($valueToAdd -is [System.Array])
+      {
+        $valueToAdd = $valueToAdd -join " "
+      }
+      $propMap[$MSBuildProjectName] = $valueToAdd
+    }
+  }
   else 
   {
     Run-ClangJobs -clangJobs $clangJobs -workloadType $workloadType
     Apply-TidyFixReplacements -workloadType $workloadType
   }
-}
+} # end-of-scope Process-Project
 
 #-------------------------------------------------------------------------------------------------
 # If we didn't get a location to run CPT at, use the current working directory
@@ -1892,6 +1960,51 @@ foreach ($project in $projectsToProcess)
 if ($aExportJsonDB) 
 { 
   JsonDB-Finalize
+}
+
+if ($aExportProjCsv)
+{
+  $projectsNames = @()
+  foreach ($propMap in $cptProjCsvData.Values)
+  {
+    foreach ($projName in $propMap.Keys)
+    {
+      if (!$projectsNames.Contains($projName))
+      {
+        $projectsNames += $projName
+      }
+    }
+  }
+  $projectsNames = ($projectsNames | Sort-Object)
+  $csvData = @()
+  
+  $line = [pscustomobject]@{"_" = ""}
+  foreach ($proj in $projectsNames)
+  { 
+    $line | Add-Member -Name "$proj" -Type NoteProperty -Value ""
+  }
+  $csvData += $line
+
+  $keysToAdd = $cptProjCsvData.Keys | Sort-Object
+
+  foreach ($propKey in $keysToAdd)
+  {
+    write-output  "XXXXXXXXXXXXXXX" $propKey
+    $line = [pscustomobject]@{"_" = $propKey}
+    $propValues = $cptProjCsvData[$propKey]
+    foreach ($proj in $projectsNames)
+    {
+      $valueToPut = ""
+      if ($propValues)
+      {
+        $valueToPut = $propValues[$proj]
+      }
+      $line | Add-Member -Name "$proj" -Type NoteProperty -Value $valueToPut
+    }    
+    $csvData += $line
+  }
+  
+  $csvData | Export-csv "data.csv"
 }
 
 
