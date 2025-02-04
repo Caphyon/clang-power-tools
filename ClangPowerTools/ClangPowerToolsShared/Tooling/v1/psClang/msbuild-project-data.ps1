@@ -478,8 +478,9 @@ Function Convert-UnixPathToDos([Parameter(Mandatory = $true)][string] $content)
         {
             continue
         }
-        
-        $content = $content -replace $path,($path -replace '/','\')
+        # Escape the backslashes in before using it in -replace.
+        $escapedPath = [regex]::Escape($path)
+        $content = $content -replace $escapedPath, ($path -replace '/','\')
     }
     return $content
 }
