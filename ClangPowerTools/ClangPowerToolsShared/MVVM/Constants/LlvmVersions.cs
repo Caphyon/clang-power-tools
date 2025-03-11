@@ -6,6 +6,7 @@ namespace ClangPowerTools
   {
     public static List<string> Versions { get; } = new List<string>
     {
+      "20.1.0",
       "19.1.7",
       "19.1.0",
       "18.1.8",
