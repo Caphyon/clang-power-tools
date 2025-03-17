@@ -1561,6 +1561,22 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
     }
 
     [string[]] $cppForceIncludes = Get-FileForceIncludes -fileFullName $cpp
+
+    # Combine global force includes with file-specific force includes
+    if ($forceIncludeFiles -and $forceIncludeFiles.Count -gt 0)
+    {
+        $cppForceIncludes = @($forceIncludeFiles) + @($cppForceIncludes)
+    }
+    
+    # If we're using PCH, don't force-include the same header
+    if (![string]::IsNullOrEmpty($pchFilePath) -and ![string]::IsNullOrEmpty($stdafxHeader))
+    {
+        $cppForceIncludes = $cppForceIncludes | Where-Object { 
+            $_ -ne $stdafxHeader -and 
+            $_ -ne (Get-FileName -path $stdafxHeader) 
+        }
+    }
+
     [string] $exeToCall = Get-ExeToCall -workloadType $workloadType
 
     [string] $finalPchPath = $pchFilePath
