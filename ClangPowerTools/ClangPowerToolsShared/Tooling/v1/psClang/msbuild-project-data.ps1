@@ -192,10 +192,11 @@ Function Get-Project-CppStandard()
         $cppStd = $kDefaultCppStd
     }
 
-    $cppStdMap = @{ 'stdcpplatest' = 'c++20'
+    $cppStdMap = @{ 'stdcpplatest' = 'c++2c'
                   ; 'stdcpp14'     = 'c++14'
                   ; 'stdcpp17'     = 'c++17'
                   ; 'stdcpp20'     = 'c++20'
+                  ; 'stdcpp23'     = 'c++23'
                   }
     if ($kLLVMVersion -ge 13)
     {
