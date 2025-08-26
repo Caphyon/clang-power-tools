@@ -61,7 +61,7 @@
              Height="75"
              HorizontalAlignment="Left"
              VerticalAlignment="Center"
-             Source="/ClangPowerTools;component/Resources/CPTLogo.png" Margin="267,0,0,0" />
+             Source="/ClangPowerTools;component/Resources/CPTLogo.png" Margin="202,0,0,0" />
 
       <TextBlock Grid.Row="1"
                  Grid.Column="1"
@@ -74,7 +74,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 2025.3.0" />
+                 Text="version 2025.8.0" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -113,7 +113,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Add LLVM 20.1.0"
+                 Text="• Add LLVM 20.1.8"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,20,0,0"
@@ -122,19 +122,29 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Update clang-format.exe to v20.1.0"
+                 Text="• Update clang-format.exe to v20.1.8"
                  TextWrapping="Wrap" />
 
+        <TextBox Margin="15,20,0,0"
+                 HorizontalAlignment="Left"
+                 Background="Transparent"
+                 BorderThickness="0"
+                 FontSize="16"
+                 IsReadOnly="True"
+                 Text="• Add support for C++23 language standard"
+                 TextWrapping="Wrap" />
+
+
         <!--Bug Fixes-->
-        <TextBox Margin="5,20,0,0"
+        <!--<TextBox Margin="5,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
                  FontSize="22"
                  IsReadOnly="True"
-                 Text="Bug Fixes" />
+                 Text="Bug Fixes" />-->
 
-        <TextBox Margin="15,20,0,0"
+        <!--<TextBox Margin="15,20,0,0"
                  HorizontalAlignment="Left"
                  Background="Transparent"
                  BorderThickness="0"
@@ -150,7 +160,7 @@
                  FontSize="16"
                  IsReadOnly="True"
                  Text="• Invalid regex error encountered while exporting the compilation database."
-                 TextWrapping="Wrap" />
+                 TextWrapping="Wrap" />-->
 
       </ListView>
     </Grid>
