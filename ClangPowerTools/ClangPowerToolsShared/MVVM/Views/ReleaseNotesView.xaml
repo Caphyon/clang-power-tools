@@ -61,7 +61,7 @@
              Height="75"
              HorizontalAlignment="Left"
              VerticalAlignment="Center"
-             Source="/ClangPowerTools;component/Resources/CPTLogo.png" Margin="267,0,0,0" />
+             Source="/ClangPowerTools;component/Resources/CPTLogo.png" Margin="202,0,0,0" />
 
       <TextBlock Grid.Row="1"
                  Grid.Column="1"
@@ -131,7 +131,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Add C++23 language standard option"
+                 Text="• Add support for C++23 language standard"
                  TextWrapping="Wrap" />
 
 
