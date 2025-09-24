@@ -40,7 +40,8 @@ namespace ClangPowerTools
       {"14.0", "2015"},
       {"15.0", "2017"},
       {"16.0", "2019"},
-      {"17.0", "2022"}
+      {"17.0", "2022"},
+      {"18.0", "2026"}
     };
 
     private IVsHierarchy mHierarchy;
