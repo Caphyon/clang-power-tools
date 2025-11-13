@@ -21,6 +21,7 @@ Function Convert-PlatformToolset2VsVer([Parameter(Mandatory = $true)][string] $t
         "141" { "2017" }
         "142" { "2019" }
         "143" { "2022" }
+        "145" { "2026" }
     }
 }
 
@@ -77,6 +78,7 @@ Function Get-VsWhere-VisualStudio-Version()
         "2017"  { return "[15.0, 16)" }
         "2019"  { return "[16.0, 17)" }
         "2022"  { return "[17.0, 18)" }
+        "2026"  { return "[18.0, 19)" }
         default { throw "Unsupported Visual Studio version: $cptVisualStudioVersion" }
     }
 }
@@ -90,6 +92,7 @@ Function Get-VisualStudio-VersionNumber([Parameter(Mandatory = $true)][string]  
         "2017"  { return "15.0" }
         "2019"  { return "16.0" }
         "2022"  { return "17.0" }
+        "2026"  { return "18.0" }
         default { throw "Unsupported Visual Studio version: $vsYearVersion" }
     }
 }
