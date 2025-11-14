@@ -213,6 +213,7 @@ Set-Variable -name kScriptFailsExitCode      -value  47                 -option 
 
 Set-Variable -name kExtensionVcxproj         -value ".vcxproj"          -option Constant
 Set-Variable -name kExtensionSolution        -value ".sln"              -option Constant
+Set-Variable -name kExtensionSolutionXml     -value ".slnx"             -option Constant
 Set-Variable -name kExtensionYaml            -value ".yaml"             -option Constant
 Set-Variable -name kExtensionClangPch        -value ".clang.pch"        -option Constant
 Set-Variable -name kExtensionC               -value ".c"                -option Constant
@@ -554,16 +555,23 @@ function Load-Solutions()
    Try
    {
      # no need of long path prefix for Powershell > 5.0
-     $slns = Get-ChildItem -recurse -LiteralPath $pathToCheck -Filter "*$kExtensionSolution"
+     $slns = @(Get-ChildItem -recurse -LiteralPath $pathToCheck -Filter "*$kExtensionSolution")
+     $slnxs = @(Get-ChildItem -recurse -LiteralPath $pathToCheck -Filter "*$kExtensionSolutionXml")
    }
    Catch
    {
      # use long path prefix for PowerShell <= 5.0
      $pathToCheck = "\\?\$aSolutionsPath"
-     $slns = Get-ChildItem -recurse -LiteralPath $pathToCheck -Filter "*$kExtensionSolution"
+     $slns = @(Get-ChildItem -recurse -LiteralPath $pathToCheck -Filter "*$kExtensionSolution")
+     $slnxs = @(Get-ChildItem -recurse -LiteralPath $pathToCheck -Filter "*$kExtensionSolutionXml")
    }
 
-   foreach ($sln in $slns)
+   # Combine both .sln and .slnx files
+   [System.Collections.ArrayList] $allSolutions = @()
+   if ($slns) { $allSolutions += $slns }
+   if ($slnxs) { $allSolutions += $slnxs }
+
+   foreach ($sln in $allSolutions)
    {
      Write-Verbose "Caching solution file $sln"
      $slnPath = $sln.FullName
@@ -581,17 +589,52 @@ function Load-Solutions()
 
 function Get-SolutionProjects([Parameter(Mandatory=$true)][string] $slnPath)
 {
-  Write-Verbose "Retrieving project list for solution $slnPath"
-  [string] $slnDirectory = Get-FileDirectory -file $slnPath
-
-  Write-Verbose "Solution directory: $slnDirectory"
-  $matches = [regex]::Matches($global:slnFiles[$slnPath], 'Project\([{}\"A-Z0-9\-]+\) = \".*?\",\s\"(.*?)\"')
-
-  Write-Verbose "Intermediate solution project matches count: $($matches.Count)"
-  foreach ($match in $matches)
+  Write-Verbose "Retrieving project list for solution: $slnPath"
+  
+  # Check if this is a .slnx (XML) or .sln (text) file
+  if ($slnPath.EndsWith($kExtensionSolutionXml))
   {
-    Write-Verbose $match.Groups[1].Value
+    # Parse SLNX (XML-based solution file)
+    [string] $slnDirectory = Get-FileDirectory -file $slnPath
+    Write-Verbose "SLNX solution directory: $slnDirectory"
+    
+    try
+    {
+      [xml]$slnxContent = $global:slnFiles[$slnPath]
+      $projectNodes = $slnxContent.SelectNodes("//Project[@Path]")
+      Write-Verbose "Found $($projectNodes.Count) project nodes in SLNX"
+      
+      [string[]] $projectAbsolutePaths = @()
+      
+      foreach ($projectNode in $projectNodes)
+      {
+        [string] $projectPath = $projectNode.GetAttribute("Path")
+        if ([string]::IsNullOrWhiteSpace($projectPath)) { continue }
+        
+        $projExpandedPath = [Environment]::ExpandEnvironmentVariables($projectPath)
+        if (! $projExpandedPath.EndsWith($kExtensionVcxproj)) { continue }
+        
+        $projExpandedPath = Canonize-Path -base $slnDirectory -child $projExpandedPath -ignoreErrors
+        
+        if (![string]::IsNullOrWhiteSpace($projExpandedPath)) {
+          $projectAbsolutePaths += @($projExpandedPath)
+        }
+      }
+      
+      Write-Verbose-Array -array $projectAbsolutePaths -name "Resolved SLNX project paths"
+      return $projectAbsolutePaths
+    }
+    catch
+    {
+      Write-Warning "Failed to parse SLNX file: $slnPath. Error: $($_.Exception.Message)"
+      return @()
+    }
   }
+  
+  # Parse traditional .sln (text-based solution file)
+  [string] $slnDirectory = Get-FileDirectory -file $slnPath
+  $matches = [regex]::Matches($global:slnFiles[$slnPath], 'Project\([{}\"A-Z0-9\-]+\) = \".*?\",\s\"(.*?)\"')
+  Write-Verbose "Found $($matches.Count) project matches in SLN"
 
   [string[]] $projectAbsolutePaths = @()
   foreach ($projPathMatch in $matches)
