@@ -1294,6 +1294,26 @@ Function Process-Project( [Parameter(Mandatory=$true)] [string]       $vcxprojPa
         $desiredVisualStudioVer = "2026";
       }
 
+      # If the running Visual Studio is newer than the minimum required version
+      # and it natively carries this toolset, use the running VS version so we
+      # don't force an unnecessary reload to an older install.
+      # We compare VS year versions directly: any VS >= the minimum that introduced
+      # the toolset is compatible (e.g. VS 2026 is compatible with v143 projects).
+      [string] $runningVsVer = $global:cptVisualStudioVersion
+      if (![string]::IsNullOrEmpty($runningVsVer) -and
+          ![string]::IsNullOrEmpty($desiredVisualStudioVer) -and
+          ([int]$runningVsVer -gt [int]$desiredVisualStudioVer))
+      {
+        [string] $runningVsVerNumber = (Get-VisualStudio-VersionNumber $runningVsVer)
+        if ([double]::Parse($VisualStudioVersion) -ge [double]::Parse($runningVsVerNumber))
+        {
+          # Running VS is at least as new as the version that introduced this toolset,
+          # so it is fully compatible, no disk scan needed.
+          Write-Verbose "[ INFO ] Toolset $toolsetVersion is compatible with running VS $runningVsVer (>= minimum VS $desiredVisualStudioVer); using it."
+          $desiredVisualStudioVer = $runningVsVer
+        }
+      }
+
       [string] $desiredVisualStudioVerNumber = (Get-VisualStudio-VersionNumber $desiredVisualStudioVer)
       if ($VisualStudioVersion -ne $desiredVisualStudioVerNumber)
       {
