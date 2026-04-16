@@ -49,7 +49,7 @@ jobs:
       - name: Build app for release
         run: msbuild ${{ github.workspace }}\ClangPowerTools\ClangPowerTools.sln -t:rebuild -property:Configuration=Release
       - name: Create ClangPowerTools.vsix- build AIP
-        uses: caphyon/advinst-github-action@v1.0
+        uses: caphyon/advinst-github-action@v2.0.2
         with:
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
