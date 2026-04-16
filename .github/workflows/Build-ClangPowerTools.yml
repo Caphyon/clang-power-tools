@@ -60,7 +60,7 @@ jobs:
           AdvancedInstaller.com /edit ${{ github.workspace }}\ClangPowerTools\ClangPowerTools.aip /SetPackageName ClangPowerTools2022
 
       - name: Create ClangPowerTools2022.vsix - build AIP
-        uses: caphyon/advinst-github-action@v1.0
+        uses: caphyon/advinst-github-action@v2.0.2
         with:
           advinst-license: ${{ secrets.ADVINST_LICENSE_KEY }}
           advinst-enable-automation: 'true'
