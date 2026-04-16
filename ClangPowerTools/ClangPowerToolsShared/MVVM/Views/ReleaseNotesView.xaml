@@ -74,7 +74,7 @@
                  HorizontalAlignment="Center"
                  FontSize="15"
                  Foreground="#3A3B40"
-                 Text="version 2025.11.0" />
+                 Text="version 2026.4.0" />
 
       <ListView Grid.Row="3"
                 Grid.Column="1"
@@ -113,7 +113,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Add LLVM 21.1.6"
+                 Text="• Add LLVM 22.1.3"
                  TextWrapping="Wrap" />
 
         <TextBox Margin="15,20,0,0"
@@ -122,18 +122,8 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Update clang-format.exe to v21.1.6"
+                 Text="• Update clang-format.exe to v22.1.3"
                  TextWrapping="Wrap" />
-
-        <TextBox Margin="15,20,0,0"
-                 HorizontalAlignment="Left"
-                 Background="Transparent"
-                 BorderThickness="0"
-                 FontSize="16"
-                 IsReadOnly="True"
-                 Text="• New Clang-Tidy checks to improve code quality and static analysis coverage"
-                 TextWrapping="Wrap" />
-
 
         <!--Bug Fixes-->
         <TextBox Margin="5,20,0,0"
@@ -150,7 +140,7 @@
                  BorderThickness="0"
                  FontSize="16"
                  IsReadOnly="True"
-                 Text="• Clang compilation failure in Visual Studio 2026 caused by an empty -vs-ver argument being"
+                 Text="• VsWhere error when using Visual Studio 2026"
                  TextWrapping="Wrap" />
 
         <!--<TextBox Margin="15,20,0,0"
